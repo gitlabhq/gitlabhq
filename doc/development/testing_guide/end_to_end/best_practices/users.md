@@ -14,11 +14,11 @@ E2E test framework utilizes administrator user for certain resource creation, li
 - `GITLAB_ADMIN_PASSWORD`
 - `GITLAB_QA_ADMIN_ACCESS_TOKEN`
 
-Administrator user can be accessed via global accessor method `QA::Runtime::UserStore.admin_user`.
+Administrator user can be accessed via global accessor method `QA::Runtime::User::Store.admin_user`.
 
 ## Test user
 
-All tests running against one of the [test-pipelines](../test_pipelines.md) automatically create a new test user for each test. Resource instance of this user is then made globally available via `QA::Runtime::UserStore.test_user` accessor method. All user related actions like signing in or creating other objects via API by default will use this user's credentials or personal access token. Automatic user creation is performed by using administrator user personal access token which is pre-seeded automatically on all ephemeral environments used in [test-pipelines](../test_pipelines.md).
+All tests running against one of the [test-pipelines](../test_pipelines.md) automatically create a new test user for each test. Resource instance of this user is then made globally available via `QA::Runtime::User::Store.test_user` accessor method. All user related actions like signing in or creating other objects via API by default will use this user's credentials or personal access token. Automatic user creation is performed by using administrator user personal access token which is pre-seeded automatically on all ephemeral environments used in [test-pipelines](../test_pipelines.md).
 
 ### Using single user
 
@@ -27,6 +27,13 @@ It is advised to not run all tests using single user but certain environments im
 ### No admin environments
 
 Certain environments might not have administrator user and have no ability to create one. For tests to work when running against such environment, test user must be configured via environment variables mentioned in [Using single user](#using-single-user) section. Additionally, to prevent test framework from trying to initialize administrator user, environment variable `QA_NO_ADMIN_ENV` must be set to `true`.
+
+#### Additional test user
+
+In case the test is running on an environment with no admin environment or an environment that doesn't allow user creation, it is possible to use a second pre-configured user in the test.
+Credentials for this user must be configured using `GITLAB_QA_USERNAME_1` and `GITLAB_QA_PASSWORD_1` environment variables.
+The instance of the user can be accessed using the method `QA::Runtime::User::Store.additional_test_user`.
+This method also ensures that on environments that allow for user fabrication, the test will create a new unique user rather than relying on a pre-configured one.
 
 ## Disable email verification
 

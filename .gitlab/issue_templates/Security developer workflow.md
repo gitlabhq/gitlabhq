@@ -34,7 +34,8 @@ After your merge request has been approved according to our [approval guidelines
   - You can use the script `bin/secpick` instead of the following steps, to help you cherry-picking. See the [secpick documentation]
 - [ ] Create each MR targeting the stable branch `X-Y-stable`, using the [Security merge request template].
   - Every merge request will have its own set of to-dos, so make sure to complete those.
-- [ ] On the "Related merge requests" section, ensure that `4` merge requests are associated: The one targeting `master` and the `3` backports.
+- [ ]  On the `Related merge requests` section, ensure that **ONLY** `4` merge requests are associated: **ONLY** one targeting `master` and the `3` backports.
+  - [ ]  If there are more associated MRs, re-create another security issue and ensure there are only 4 merge requests associated with that one.
 - [ ] If this issue requires less than `4` merge requests, add the ~"reduced backports" label.
 
 ## Assigning to a release
@@ -48,7 +49,7 @@ After your merge request has been approved according to our [approval guidelines
 - [ ] To avoid release delays, please nominate a developer in a different timezone who will be able to respond to any pipeline or merge failures in your absence `@gitlab-username`
 - [ ] Ensure `~severity::x` label is on this issue, all associated issues, and merge requests
 - [ ] Ensure the [Links section](#links) is completed.
-- [ ] Add the GitLab [versions](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/engineer.md#versions-affected) and editions affected to the [details section](#details)
+- [ ] Add the GitLab [versions](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/engineer.md#versions-affected), editions affected, and date introduced to the [details section](#details)
   - The Git history of the files affected may help you associate the issue with a [release](https://about.gitlab.com/releases/)
 - [ ] Fill in any upgrade notes that users may need to take into account in the [details section](#details)
 - [ ] Add Yes/No and further details if needed to the migration and settings columns in the [details section](#details)
@@ -65,15 +66,17 @@ After your merge request has been approved according to our [approval guidelines
 
 ### Details
 
-| Description                         | Details | Further details                                          |
-|-------------------------------------|---------|----------------------------------------------------------|
-| Versions affected                   | X.Y     |                                                          |
-| GitLab EE only                      | Yes/No  |                                                          |
-| Upgrade notes                       |         |                                                          |
-| GitLab Settings updated             | Yes/No  |                                                          |
-| Migration required                  | Yes/No  |                                                          |
-| Breaking change to UI or public API | Yes/No  | <!-- How should the breaking change be communicated? --> |
-| Thanks                              |         |                                                          |
+| Description                         | Details    | Further details                                           |
+|-------------------------------------|------------|-----------------------------------------------------------|
+| Version affected                    | X.Y        |                                                           |
+| Date introduced on .com             | YYYY-MM-DD | #TODO for Engineering - please follow the format          |
+| Date detected                       | YYYY-MM-DD | #TODO for AppSec - please follow the format               |
+| GitLab EE only                      | Yes/No     |                                                           |
+| Upgrade notes                       |            |                                                           |
+| GitLab Settings updated             | Yes/No     |                                                           |
+| Migration required                  | Yes/No     |                                                           |
+| Breaking change to UI or public API | Yes/No     | <!-- How should the breaking change be communicated? -->  |
+| Thanks                              |            |                                                           |
 
 [security process for engineers]: https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md
 [secpick documentation]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/utilities/secpick_script.md

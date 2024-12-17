@@ -399,6 +399,44 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         end
       end
 
+      context 'filter by blob path' do
+        let(:params) { { project_id: project_id, blob_path: blob_path } }
+
+        let_it_be(:merge_request) { create(:merge_request, :opened, source_project: project1, target_project: project1, source_branch: 'feature', target_branch: 'master') }
+        let_it_be(:merge_request_diff) { create(:merge_request_diff, merge_request: merge_request) }
+        let_it_be(:merge_request_diff_file) { create(:merge_request_diff_file, merge_request_diff: merge_request_diff) }
+
+        let(:project_id) { project1 }
+        let(:target_branch) { merge_request.target_branch }
+        let(:blob_path) { merge_request_diff_file.old_path }
+
+        it 'returns merge requests with blobs by requested path' do
+          merge_requests = described_class.new(user, params).execute
+
+          expect(merge_requests).to contain_exactly(merge_request)
+        end
+
+        context 'when blob path is not found' do
+          let(:blob_path) { 'unknown' }
+
+          it 'does not return merge requests' do
+            merge_requests = described_class.new(user, params).execute
+
+            expect(merge_requests).to be_empty
+          end
+        end
+
+        context 'when project_id is not set' do
+          let(:project_id) { nil }
+
+          it 'does not return merge requests' do
+            merge_requests = described_class.new(user, params).execute
+
+            expect(merge_requests).to be_empty
+          end
+        end
+      end
+
       describe '.scalar_params' do
         it 'contains scalar params related to merge requests' do
           scalar_params = described_class.scalar_params

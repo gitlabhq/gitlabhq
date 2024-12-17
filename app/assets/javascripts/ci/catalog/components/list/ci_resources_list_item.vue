@@ -150,7 +150,7 @@ export default {
 </script>
 <template>
   <li
-    class="gl-flex gl-items-center gl-border-b-1 gl-border-gray-100 gl-py-3 gl-text-gray-500 gl-border-b-solid"
+    class="gl-flex gl-items-center gl-border-b-1 gl-border-default gl-py-3 gl-text-subtle gl-border-b-solid"
     data-testid="catalog-resource-item"
   >
     <gl-avatar
@@ -173,7 +173,7 @@ export default {
       </div>
       <div class="gl-mb-1 gl-flex gl-flex-wrap gl-items-center gl-gap-2">
         <gl-link
-          class="gl-mr-1 !gl-text-gray-900"
+          class="gl-mr-1 !gl-text-default"
           :href="detailsPageHref"
           data-testid="ci-resource-link"
           @click="navigateToDetailsPage"
@@ -215,7 +215,7 @@ export default {
           <div
             v-if="hasComponents"
             data-testid="ci-resource-component-names"
-            class="gl-mt-1 gl-inline-flex gl-flex-wrap gl-text-sm gl-text-gray-900"
+            class="gl-mt-1 gl-inline-flex gl-flex-wrap gl-text-sm gl-text-default"
           >
             <span class="gl-font-bold"> &#8226; {{ $options.i18n.components }} </span>
             <gl-sprintf :message="componentNamesSprintfMessage">

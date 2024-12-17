@@ -49,3 +49,5 @@ module API
     end
   end
 end
+
+API::Integrations::Slack::Request.prepend_mod

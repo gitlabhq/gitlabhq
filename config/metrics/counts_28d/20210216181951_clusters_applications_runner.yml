@@ -3,6 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage_monthly.verify.clusters_applications_runner
 description: Total GitLab Managed clusters with Runner enabled
 product_group: runner
+product_categories:
+- runner
 value_type: number
 status: removed
 time_frame: 28d

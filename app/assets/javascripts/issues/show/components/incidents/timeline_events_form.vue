@@ -173,7 +173,7 @@ export default {
 </script>
 
 <template>
-  <form class="gl-grow gl-border-gray-50">
+  <form class="gl-grow gl-border-subtle">
     <div class="gl-mt-3 gl-flex gl-flex-col sm:gl-flex-row">
       <gl-form-group :label="__('Date')" class="gl-mr-5">
         <gl-datepicker id="incident-date" ref="datepicker" v-model="datePickerInput" />
@@ -251,7 +251,7 @@ export default {
             <div id="timeline-form-hint" class="gl-sr-only">{{ $options.i18n.hint }}</div>
             <div
               aria-hidden="true"
-              class="gl-absolute gl-bottom-2 gl-right-4 gl-text-sm gl-text-gray-500"
+              class="gl-absolute gl-bottom-2 gl-right-4 gl-text-sm gl-text-subtle"
             >
               {{ timelineTextRemainingCount }}
             </div>

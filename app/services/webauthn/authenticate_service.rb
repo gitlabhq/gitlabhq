@@ -49,7 +49,7 @@ module Webauthn
     #
     def verify_webauthn_credential(webauthn_credential, stored_credential, challenge, encoder)
       # We need to adjust the relaying party id (RP id) we verify against if the registration in question
-      # is a migrated U2F registration. This is beacuse the appid of U2F and the rp id of WebAuthn differ.
+      # is a migrated U2F registration. This is because the appid of U2F and the rp id of WebAuthn differ.
       rp_id = webauthn_credential.client_extension_outputs['appid'] ? WebAuthn.configuration.origin : URI(WebAuthn.configuration.origin).host
       webauthn_credential.response.verify(
         encoder.decode(challenge),

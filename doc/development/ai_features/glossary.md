@@ -11,14 +11,14 @@ specific meaning at GitLab. If you encounter a piece of technical jargon related
 to AI that you think could benefit from being in this list, add it!
 
 - **Adapters**: A variation on Fine Tuning. Instead of opening the model and adjusting the layer weights, new trained layers are added onto the model or hosted in an upstream standalone model. Also known as Adapter-based Models. By selectively fine-tuning these specific modules rather than the entire model, Adapters facilitate the customisation of pre-trained models for distinct tasks, requiring only a minimal increase in parameters. This method enables precise, task-specific adjustments of the model without altering its foundational structure.
-- **AI Gateway**: standalone service used to give access to AI features to
+- **AI gateway**: standalone service used to give access to AI features to
   non-SaaS GitLab users. This logic will be moved to Cloud Connector when that
-  service is ready. Eventually, the AI Gateway will be used to host endpoints that
+  service is ready. Eventually, the AI gateway will be used to host endpoints that
   proxy requests to AI providers, removing the need for the GitLab Rails monolith
   to integrate and communicate directly with third-party Large Language Models (LLMs).
   [Design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/).
-- **AI Gateway Prompt**: An encapsulation of prompt templates, model selection, and model parameters. As part of the [AI Gateway as the Sole Access Point for Monolith to Access Models](https://gitlab.com/groups/gitlab-org/-/epics/13024) effort we're migrating these components from the GitLab Rails monolith into [the `prompts` package in the AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/tree/main/ai_gateway/prompts).
-- **AI Gateway Prompt Registry**: A component responsible for maintaining a list of AI Gateway Prompts available to perform specific actions. Currently, we use a [`LocalPromptRegistry`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/874e05281cab50012a53685e051583e620dac8c4/ai_gateway/prompts/registry.py#L18) that reads definitions from YAML files in the AI Gateway.
+- **AI gateway Prompt**: An encapsulation of prompt templates, model selection, and model parameters. As part of the [AI gateway as the Sole Access Point for Monolith to Access Models](https://gitlab.com/groups/gitlab-org/-/epics/13024) effort we're migrating these components from the GitLab Rails monolith into [the `prompts` package in the AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/tree/main/ai_gateway/prompts).
+- **AI gateway Prompt Registry**: A component responsible for maintaining a list of AI gateway Prompts available to perform specific actions. Currently, we use a [`LocalPromptRegistry`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/874e05281cab50012a53685e051583e620dac8c4/ai_gateway/prompts/registry.py#L18) that reads definitions from YAML files in the AI gateway.
 - **Air-Gapped Model**: A hosted model that is internal to an organisations intranet only. In the context of GitLab AI features, this could be connected to an air-gapped GitLab instance.
 - **Bring Your Own Model (BYOM)**: A third-party model to be connected to one or more GitLab Duo features. Could be an off-the-shelf Open Source (OS) model, a fine-tuned model, or a closed source model. GitLab is planning to support specific, validated BYOMs for GitLab Duo features, but does not plan to support general BYOM use for GitLab Duo features.
 - **Chat Evaluation**: automated mechanism for determining the helpfulness and
@@ -53,7 +53,7 @@ to AI that you think could benefit from being in this list, add it!
 **Foundational Model**: A general purpose LLM trained using a generic objective, typically next token prediction. These models are capable and flexible, and can be adjusted to solved many domain-specific tasks (through finetuning or prompt engineering). This means that these general purpose models are ideal to serve as the foundation of many downstream models. Examples of foundational models are: GPT-4o, Claude 3.5 Sonnet.
 - **Frozen Model**: A LLM which cannot be fine-tuned (also Frozen LLM).
 - **GitLab Duo**: AI-assisted features across the GitLab DevSecOps platform. These features aim to help increase velocity and solve key pain points across the software development lifecycle. See also the [GitLab Duo](../../user/ai_features.md) features page.
-- **GitLab Managed Model**: A LLM that is managed by GitLab. Currently all [GitLab Managed Models](https://gitlab.com/gitlab-com/g**l-infra/scalability/-/issues/2864#note_1787040242) are hosted externally and accessed through the AI Gateway. GitLab-owned API keys are used to access the models.
+- **GitLab Managed Model**: A LLM that is managed by GitLab. Currently all [GitLab Managed Models](https://gitlab.com/gitlab-com/g**l-infra/scalability/-/issues/2864#note_1787040242) are hosted externally and accessed through the AI gateway. GitLab-owned API keys are used to access the models.
 - **Golden Questions**: a small subset of the types of questions we think a user
   should be able to ask GitLab Duo Chat. Used to generate data for Chat evaluation.
   [Questions for Chat Beta](https://gitlab.com/groups/gitlab-org/-/epics/10550#what-the-user-can-ask).

@@ -3,7 +3,7 @@ import {
   deleteParams,
   renderDeleteSuccessToast,
 } from '~/vue_shared/components/resource_lists/utils';
-import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/utils';
+import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
 import toast from '~/vue_shared/plugins/global_toast';
 
 jest.mock('~/vue_shared/plugins/global_toast');

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create', product_group: :source_code do
-    describe 'Snippet index page', :blocking do
+    describe 'Snippet index page' do
       let(:personal_snippet_with_single_file) do
         create(:snippet, title: "Personal snippet with one file-#{SecureRandom.hex(8)}")
       end

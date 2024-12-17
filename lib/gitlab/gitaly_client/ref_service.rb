@@ -143,7 +143,7 @@ module Gitlab
 
         case detailed_error.try(:error)
         when :invalid_format
-          raise Gitlab::Git::InvalidRefFormatError, "references have an invalid format: #{detailed_error.invalid_format.refs.join(",")}"
+          raise Gitlab::Git::InvalidRefFormatError, "references have an invalid format: #{detailed_error.invalid_format.refs.join(',')}"
         when :references_locked
           raise Gitlab::Git::ReferencesLockedError
         when :reference_state_mismatch
@@ -168,7 +168,7 @@ module Gitlab
 
         case detailed_error.try(:error)
         when :invalid_format
-          raise Gitlab::Git::InvalidRefFormatError, "references have an invalid format: #{detailed_error.invalid_format.refs.join(",")}"
+          raise Gitlab::Git::InvalidRefFormatError, "references have an invalid format: #{detailed_error.invalid_format.refs.join(',')}"
         when :references_locked
           raise Gitlab::Git::ReferencesLockedError
         else

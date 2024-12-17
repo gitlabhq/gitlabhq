@@ -35,6 +35,12 @@ describe('Test report extension', () => {
 
   const endpoint = '/root/repo/-/merge_requests/4/test_reports.json';
 
+  const defaultProps = {
+    testResultsPath: endpoint,
+    headBlobPath: 'head/blob/path',
+    pipeline: { path: 'pipeline/path' },
+  };
+
   const mockApi = (statusCode, data = mixedResultsTestReports) => {
     mock.onGet(endpoint).reply(statusCode, data, {});
   };
@@ -45,13 +51,17 @@ describe('Test report extension', () => {
   const findAllExtensionListItems = () => wrapper.findAllByTestId('extension-list-item');
   const findModal = () => wrapper.findComponent(TestCaseDetails);
 
-  const createComponent = () => {
+  const createComponent = (props, flagState = false) => {
     wrapper = mountExtended(testReportExtension, {
       propsData: {
         mr: {
-          testResultsPath: endpoint,
-          headBlobPath: 'head/blob/path',
-          pipeline: { path: 'pipeline/path' },
+          ...defaultProps,
+          ...props,
+        },
+      },
+      provide: {
+        glFeatures: {
+          mrShowReportsImmediately: flagState,
         },
       },
     });
@@ -75,20 +85,40 @@ describe('Test report extension', () => {
   });
 
   describe('summary', () => {
-    it('displays loading state initially', () => {
-      mockApi(HTTP_STATUS_OK);
-      createComponent();
+    describe('loading state', () => {
+      it('displays loading state initially', () => {
+        mockApi(HTTP_STATUS_OK);
+        createComponent();
 
-      expect(wrapper.text()).toContain(i18n.loading);
-    });
+        expect(wrapper.text()).toContain('Test summary results are being parsed');
+      });
 
-    it('with a "no content" response, continues to display loading state', async () => {
-      mockApi(HTTP_STATUS_NO_CONTENT, '');
-      createComponent();
+      it('with a "no content" response, continues to display loading state', async () => {
+        mockApi(HTTP_STATUS_NO_CONTENT, '');
+        createComponent();
 
-      await waitForPromises();
+        await waitForPromises();
 
-      expect(wrapper.text()).toContain(i18n.loading);
+        expect(wrapper.text()).toContain('Test summary results are being parsed');
+      });
+
+      describe('with feature flag mrShowReportsImmediately enabled', () => {
+        beforeEach(async () => {
+          mockApi(HTTP_STATUS_OK, recentFailures);
+          createComponent({ isPipelineActive: true }, true);
+
+          await waitForPromises();
+        });
+
+        it('displays loading state when pipeline is active and artifacts are produced', () => {
+          expect(wrapper.text()).toContain('Test summary results are being parsed');
+        });
+
+        it('displays a link to view the partial report', () => {
+          expect(findFullReportLink().text()).toBe('View partial report');
+          expect(findFullReportLink().attributes('href')).toBe('pipeline/path/test_report');
+        });
+      });
     });
 
     it('with an error response, displays failed to load text', async () => {

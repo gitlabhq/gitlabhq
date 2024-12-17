@@ -8,10 +8,11 @@ RSpec.describe Gitlab::BackgroundMigration::BatchingStrategies::PrimaryKeyBatchi
   let(:job_class) { Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) }
   let(:namespaces) { table(:namespaces) }
 
-  let!(:namespace1) { namespaces.create!(name: 'batchtest999', path: 'batch-test1') }
-  let!(:namespace2) { namespaces.create!(name: 'batchtest2', path: 'batch-test2') }
-  let!(:namespace3) { namespaces.create!(name: 'batchtest3', path: 'batch-test3') }
-  let!(:namespace4) { namespaces.create!(name: 'batchtest4', path: 'batch-test4') }
+  let!(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
+  let!(:namespace1) { namespaces.create!(name: 'batchtest999', path: 'batch-test1', organization_id: organization.id) }
+  let!(:namespace2) { namespaces.create!(name: 'batchtest2', path: 'batch-test2', organization_id: organization.id) }
+  let!(:namespace3) { namespaces.create!(name: 'batchtest3', path: 'batch-test3', organization_id: organization.id) }
+  let!(:namespace4) { namespaces.create!(name: 'batchtest4', path: 'batch-test4', organization_id: organization.id) }
 
   it { expect(described_class).to be < Gitlab::BackgroundMigration::BatchingStrategies::BaseStrategy }
 

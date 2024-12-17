@@ -20,6 +20,14 @@ class ServiceResponse
     )
   end
 
+  # This is used to help wrap old service responses that were just hashes
+  def self.from_legacy_hash(response)
+    return response if response.is_a?(ServiceResponse)
+    return ServiceResponse.new(**response) if response.is_a?(Hash)
+
+    raise ArgumentError, "argument must be a ServiceResponse or a Hash"
+  end
+
   attr_reader :status, :message, :http_status, :payload, :reason
 
   def initialize(status:, message: nil, payload: {}, http_status: nil, reason: nil)

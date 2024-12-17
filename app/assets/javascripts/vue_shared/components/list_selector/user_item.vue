@@ -1,11 +1,11 @@
 <script>
-import { GlAvatar, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlAvatarLabeled, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
 
 export default {
   name: 'UserItem',
   components: {
-    GlAvatar,
+    GlAvatarLabeled,
     GlButton,
   },
   directives: {
@@ -41,11 +41,15 @@ export default {
 
 <template>
   <span class="gl-flex gl-items-center gl-gap-3">
-    <gl-avatar :alt="name" :entity-name="name" :size="32" :src="avatarUrl" fallback-on-error />
-    <span class="gl-flex gl-grow gl-flex-col">
-      <span class="gl-font-bold">{{ name }}</span>
-      <span class="gl-text-subtle">@{{ username }}</span>
-    </span>
+    <gl-avatar-labeled
+      class="gl-grow gl-break-all"
+      :entity-name="name"
+      :label="name"
+      :sub-label="`@${username}`"
+      :size="32"
+      :src="avatarUrl"
+      fallback-on-error
+    />
 
     <gl-button
       v-if="canDelete"

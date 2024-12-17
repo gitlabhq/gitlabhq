@@ -78,7 +78,12 @@ module Gitlab
         def serialize_many_relations(key, records, options)
           log_relation_export(key, records.size)
 
-          key_preloads = preloads&.dig(key)
+          # Temporarily skip preloading associations for epics as that results in not preloading
+          # epic work item associations
+          #
+          # This should be removed once we change epics import to epic work items import.
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/504684
+          key_preloads = preloads&.dig(key) unless [:epic, :epics].include?(key)
 
           batch(records, key) do |batch|
             next if batch.empty?

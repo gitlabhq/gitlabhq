@@ -1,0 +1,17 @@
+---
+description: Tracks when user is reported for abuse
+action: select_abuse_category
+identifiers:
+- user
+product_group: authorization
+milestone: '15.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167137
+distributions:
+- ce
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  property:
+    description: The abuse category that was reported

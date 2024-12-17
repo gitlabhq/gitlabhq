@@ -13,7 +13,7 @@ Learn how to create a new cluster on Civo Kubernetes through
 and Kubernetes Terraform providers to create Civo Kubernetes clusters. You connect the clusters to GitLab
 by using the GitLab agent for Kubernetes.
 
-**Prerequisites:**
+**Before you begin:**
 
 - A [Civo account](https://dashboard.civo.com/signup).
 - [A runner](https://docs.gitlab.com/runner/install/) you can use to run the GitLab CI/CD pipeline.

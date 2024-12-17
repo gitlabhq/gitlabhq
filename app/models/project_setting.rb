@@ -4,10 +4,13 @@ class ProjectSetting < ApplicationRecord
   include ::Gitlab::Utils::StrongMemoize
   include EachBatch
   include CascadingProjectSettingAttribute
+  include Projects::SquashOption
 
   ALLOWED_TARGET_PLATFORMS = %w[ios osx tvos watchos android].freeze
 
   belongs_to :project, inverse_of: :project_setting
+
+  ignore_column :pages_multiple_versions_enabled, remove_with: '17.9', remove_after: '2025-02-20'
 
   scope :for_projects, ->(projects) { where(project_id: projects) }
   scope :with_namespace, -> { joins(project: :namespace) }
@@ -25,13 +28,6 @@ class ProjectSetting < ApplicationRecord
     algorithm: 'aes-256-gcm',
     encode: false,
     encode_iv: false
-
-  enum squash_option: {
-    never: 0,
-    always: 1,
-    default_on: 2,
-    default_off: 3
-  }, _prefix: 'squash'
 
   self.primary_key = :project_id
 
@@ -58,25 +54,8 @@ class ProjectSetting < ApplicationRecord
     where(pages_unique_domain: domain).exists?
   end
 
-  def squash_enabled_by_default?
-    %w[always default_on].include?(squash_option)
-  end
-
-  def squash_readonly?
-    %w[always never].include?(squash_option)
-  end
-
   def target_platforms=(val)
     super(val&.map(&:to_s)&.sort)
-  end
-
-  def human_squash_option
-    case squash_option
-    when 'never' then 'Do not allow'
-    when 'always' then 'Require'
-    when 'default_on' then 'Encourage'
-    when 'default_off' then 'Allow'
-    end
   end
 
   def show_diff_preview_in_email?
@@ -96,6 +75,10 @@ class ProjectSetting < ApplicationRecord
     super && project.namespace.emails_enabled?
   end
   strong_memoize_attr :emails_enabled?
+
+  def pages_default_domain_redirect=(value)
+    super(value.presence) # Call the default setter to set the value
+  end
 
   private
 

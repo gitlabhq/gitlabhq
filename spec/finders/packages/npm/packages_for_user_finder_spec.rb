@@ -48,8 +48,8 @@ RSpec.describe ::Packages::Npm::PackagesForUserFinder, feature_category: :packag
 
         context 'when the second project has the package registry disabled' do
           before_all do
-            project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-            project2.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC,
+            project.reload.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+            project2.reload.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC,
               package_registry_access_level: 'disabled', packages_enabled: false)
           end
 

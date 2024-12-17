@@ -69,7 +69,7 @@ export default {
           :task-list-update-path="taskListUpdatePath"
         />
       </div>
-      <div v-else class="gl-text-secondary" data-testid="emptyDescriptionState">
+      <div v-else class="gl-text-subtle" data-testid="emptyDescriptionState">
         {{ $options.i18n.EMPTY_VERSION_CARD_DESCRIPTION }}
       </div>
     </div>

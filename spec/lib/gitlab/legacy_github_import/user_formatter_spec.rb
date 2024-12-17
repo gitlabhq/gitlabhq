@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::UserFormatter, feature_category: :importers do
-  let_it_be(:project) { create(:project, :import_user_mapping_enabled, import_type: 'gitea') }
+  include Import::GiteaHelper
+
+  let_it_be(:project) { create(:project, :import_user_mapping_enabled, :in_group, import_type: 'gitea') }
 
   let_it_be(:source_user_mapper) do
     Gitlab::Import::SourceUserMapper.new(
@@ -72,7 +74,7 @@ RSpec.describe Gitlab::LegacyGithubImport::UserFormatter, feature_category: :imp
       context 'when user contribution mapping is disabled' do
         before do
           allow(client).to receive(:user).and_return(gitea_user)
-          allow(project).to receive_message_chain(:import_data, :user_mapping_enabled?).and_return(false)
+          stub_user_mapping_chain(project, false)
         end
 
         it 'returns GitLab user id when user confirmed primary email matches Gitea email' do
@@ -118,7 +120,7 @@ RSpec.describe Gitlab::LegacyGithubImport::UserFormatter, feature_category: :imp
       context 'and improved user mapping is disabled' do
         before do
           allow(client).to receive(:user).and_return(ghost_user)
-          allow(project).to receive_message_chain(:import_data, :user_mapping_enabled?).and_return(false)
+          stub_user_mapping_chain(project, false)
         end
 
         it 'returns nil' do
@@ -138,6 +140,30 @@ RSpec.describe Gitlab::LegacyGithubImport::UserFormatter, feature_category: :imp
         it 'creates and returns new source user' do
           expect { user_formatter.source_user }.to change { Import::SourceUser.count }.from(0).to(1)
           expect(user_formatter.source_user.class).to eq(Import::SourceUser)
+        end
+
+        it "creates a placeholder with the user's full name and username" do
+          source_user = user_formatter.source_user
+
+          expect(source_user).to have_attributes(
+            source_user_identifier: gitea_user[:id].to_s,
+            source_username: gitea_user[:login],
+            source_name: gitea_user[:full_name]
+          )
+        end
+
+        context 'when the gitea user has no full name' do
+          let(:gitea_user) { { id: 123456, login: 'octocat', email: 'user@email.com', full_name: '' } }
+
+          it 'falls back to the gitea username' do
+            source_user = user_formatter.source_user
+
+            expect(source_user).to have_attributes(
+              source_user_identifier: gitea_user[:id].to_s,
+              source_username: gitea_user[:login],
+              source_name: gitea_user[:login]
+            )
+          end
         end
       end
 
@@ -169,7 +195,7 @@ RSpec.describe Gitlab::LegacyGithubImport::UserFormatter, feature_category: :imp
     context 'when user contribution mapping is disabled' do
       before do
         allow(client).to receive(:user).and_return(gitea_user)
-        allow(project).to receive_message_chain(:import_data, :user_mapping_enabled?).and_return(false)
+        stub_user_mapping_chain(project, false)
       end
 
       it 'returns nil' do

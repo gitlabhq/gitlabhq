@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Bugzilla < BaseIssueTracker
+  class Bugzilla < Integration
+    include Base::IssueTracker
     include Integrations::HasIssueTrackerFields
     include HasAvatar
 

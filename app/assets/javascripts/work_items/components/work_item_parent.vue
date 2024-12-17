@@ -285,7 +285,7 @@ export default {
       <gl-link
         v-if="localSelectedItem"
         data-testid="work-item-parent-link"
-        class="gl-inline-block gl-max-w-full gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap gl-align-top gl-text-gray-900"
+        class="gl-inline-block gl-max-w-full gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap gl-align-top gl-text-default"
         :href="parentWebUrl"
         >{{ listboxText }}</gl-link
       >

@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Telegram < BaseChatNotification
+  class Telegram < Integration
     include HasAvatar
+    include Base::ChatNotification
+
     TELEGRAM_HOSTNAME = "%{hostname}/bot%{token}/sendMessage"
 
     field :hostname,

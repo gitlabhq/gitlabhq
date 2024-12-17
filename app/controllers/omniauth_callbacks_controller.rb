@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  include ActionView::Helpers::TextHelper
   include AuthenticatesWithTwoFactorForAdminMode
   include Devise::Controllers::Rememberable
   include AuthHelper
@@ -199,7 +200,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def redirect_identity_link_failed(error_message)
-    redirect_to profile_account_path, notice: _("Authentication failed: %{error_message}") % { error_message: error_message }
+    redirect_to profile_account_path,
+      notice: _("Authentication failed: %{error_message}") % { error_message: error_message }
   end
 
   def redirect_identity_linked
@@ -251,7 +253,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       else
         if @user.deactivated?
           @user.activate
-          flash[:notice] = _('Welcome back! Your account had been deactivated due to inactivity but is now reactivated.')
+          flash[:notice] =
+            _('Welcome back! Your account had been deactivated due to inactivity but is now reactivated.')
         end
 
         # session variable for storing bypass two-factor request from IDP
@@ -279,15 +282,31 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     redirect_path = new_user_session_path
     label = Gitlab::Auth::OAuth::Provider.label_for(oauth['provider'])
     simple_url = Settings.gitlab.url.sub(%r{^https?://(www\.)?}i, '')
-    message = [_("Signing in using your %{label} account without a pre-existing account in %{simple_url} is not allowed.") % { label: label, simple_url: simple_url }]
+    message = [
+      _('Signing in using your %{label} account without a pre-existing ' \
+        'account in %{simple_url} is not allowed.') % {
+          label: label, simple_url: simple_url
+        }
+    ]
 
     if Gitlab::CurrentSettings.allow_signup?
       redirect_path = new_user_registration_path
-      doc_pair = tag_pair(view_context.link_to('', help_page_path('user/profile/index.md', anchor: 'sign-in-services')), :doc_start, :doc_end)
-      message << safe_format(_("Create an account in %{simple_url} first, and then %{doc_start}connect it to your %{label} account%{doc_end}."), doc_pair, label: label, simple_url: simple_url)
+      doc_pair = tag_pair(view_context.link_to(
+        '',
+        help_page_path('user/profile/index.md', anchor: 'sign-in-services')),
+        :doc_start,
+        :doc_end
+      )
+      message << safe_format(
+        _('Create an account in %{simple_url} first, and then %{doc_start}connect it to ' \
+          'your %{label} account%{doc_end}.'),
+        doc_pair,
+        label: label,
+        simple_url: simple_url
+      )
     end
 
-    flash[:alert] = message.join(' ').html_safe # rubocop:disable Rails/OutputSafety -- Generated message is safe
+    flash[:alert] = sanitize(message.join(' '))
 
     redirect_to redirect_path
   end
@@ -325,7 +344,13 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def handle_identity_with_untrusted_extern_uid
     label = Gitlab::Auth::OAuth::Provider.label_for(oauth['provider'])
-    flash[:alert] = format(_("Signing in using your %{label} account has been disabled for security reasons. Please sign in to your GitLab account using another authentication method and reconnect to your %{label} account."), label: label)
+    flash[:alert] = format(
+      _('Signing in using your %{label} account has been disabled for security reasons. ' \
+        'Please sign in to your GitLab account using another authentication method and ' \
+        'reconnect to your %{label} account.'
+       ),
+      label: label
+    )
 
     redirect_to new_user_session_path
   end
@@ -402,11 +427,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     store_location_for(:user, after_sign_up_path)
   end
 
-  def onboarding_status
-    Onboarding::Status
+  def onboarding_status_presenter
+    Onboarding::StatusPresenter
       .new(request.env.fetch('omniauth.params', {}).deep_symbolize_keys, session['user_return_to'], @user)
   end
-  strong_memoize_attr :onboarding_status
+  strong_memoize_attr :onboarding_status_presenter
 
   # overridden in EE
   def sign_in_and_redirect_or_verify_identity(user, _, _)

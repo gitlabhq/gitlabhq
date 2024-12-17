@@ -53,6 +53,7 @@ describe('issue_comment_form component', () => {
   const findAddToReviewButton = () => findAddToReviewDropdown().find('button');
   const findAddCommentNowButton = () => wrapper.findByTestId('add-comment-now-button');
   const findConfidentialNoteCheckbox = () => wrapper.findByTestId('internal-note-checkbox');
+  const findInternalNoteTooltipIcon = () => wrapper.findByTestId('question-o-icon');
   const findCommentTypeDropdown = () => wrapper.findByTestId('comment-button');
   const findCommentButton = () => findCommentTypeDropdown().find('button');
   const findErrorAlerts = () => wrapper.findAllComponents(GlAlert).wrappers;
@@ -716,7 +717,7 @@ describe('issue_comment_form component', () => {
         expect(findConfidentialNoteCheckbox().exists()).toBe(true);
       });
 
-      it('should not render checkbox if user is not at least a reporter', () => {
+      it('should not render checkbox if user is not at least a planner', () => {
         mountComponent({
           mountFunction: mountExtended,
           initialData: { note: 'confidential note' },
@@ -725,6 +726,18 @@ describe('issue_comment_form component', () => {
 
         const checkbox = findConfidentialNoteCheckbox();
         expect(checkbox.exists()).toBe(false);
+      });
+
+      it('should have the tooltip explaining the internal note capabilities', () => {
+        mountComponent({
+          mountFunction: mountExtended,
+          initialData: { note: 'confidential note' },
+          noteableData: { ...notableDataMockCanUpdateIssuable },
+        });
+
+        const tooltip = findInternalNoteTooltipIcon();
+        expect(tooltip.exists()).toBe(true);
+        expect(tooltip.attributes('title')).toBe(COMMENT_FORM.internalVisibility);
       });
 
       it.each`

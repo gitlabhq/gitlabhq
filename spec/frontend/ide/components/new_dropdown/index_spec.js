@@ -1,6 +1,7 @@
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import NewDropdown from '~/ide/components/new_dropdown/index.vue';
 import Button from '~/ide/components/new_dropdown/button.vue';
@@ -9,7 +10,12 @@ import { stubComponent } from 'helpers/stub_component';
 
 Vue.use(Vuex);
 
-describe('new dropdown component', () => {
+const skipReason = new SkipReason({
+  name: 'new dropdown component',
+  reason: 'Legacy WebIDE is due for deletion',
+  issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508949',
+});
+describeSkipVue3(skipReason, () => {
   let wrapper;
   const openMock = jest.fn();
   const deleteEntryMock = jest.fn();

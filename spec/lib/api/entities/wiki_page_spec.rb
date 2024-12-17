@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::WikiPage do
+RSpec.describe API::Entities::WikiPage, feature_category: :wiki do
   let_it_be_with_reload(:wiki_page) { create(:wiki_page) }
 
   let(:params) { {} }

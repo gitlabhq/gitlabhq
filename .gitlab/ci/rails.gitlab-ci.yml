@@ -764,6 +764,7 @@ rspec-ee:predictive:trigger single-db-ci-connection:
 .rspec-ee-base-gitlab-duo:
   extends:
     - .rspec-ee-base-pg14
+  when: manual
   variables:
     REAL_AI_REQUEST: "true"
     AI_GATEWAY_URL: http://ai-gateway:5052
@@ -1297,7 +1298,7 @@ rspec-ee system pg16:
   stage: test
   script:
     - !reference [.base-script, script]
-    - rspec_section rspec_fail_fast "${MATCHING_TESTS_PATH}" "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~zoekt --tag ~click_house"
+    - rspec_section rspec_fail_fast "${MATCHING_TESTS_PATH}" "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~zoekt --tag ~click_house --tag ~real_ai_request"
 
 rspec fail-fast:
   extends:

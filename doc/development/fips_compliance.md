@@ -346,6 +346,23 @@ These are [consumed by the GitLab Environment Toolkit](#install-gitlab-with-fips
 
 See [the section on how FIPS builds are created](#how-fips-builds-are-created).
 
+### System Libgcrypt
+
+Because of a bug, FIPS Linux packages for GitLab 17.6 and earlier did not use the system
+[Libgcrypt](https://www.gnupg.org/software/libgcrypt/index.html), but the same Libgcrypt
+bundled with regular Linux packages.
+
+This issue is fixed for all FIPS Linux packages for GitLab 17.7, except for AmazonLinux 2.
+The Libgcrypt version of AmazonLinux 2 is not compatible with the
+[GPGME](https://gnupg.org/software/gpgme/index.html) and [GnuPG](https://gnupg.org/)
+versions shipped with the FIPS Linux packages.
+
+FIPS Linux packages for AmazonLinux 2 will continue to use the same Libgcrypt bundled with
+the regular Linux packages, otherwise we would have to downgrade GPGME and GnuPG.
+
+If you require full compliance, you must migrate to another operating
+system for which FIPS Linux packages are available.
+
 ### Nightly Omnibus FIPS builds
 
 The Distribution team has created [nightly FIPS Omnibus builds](https://packages.gitlab.com/gitlab/nightly-fips-builds),

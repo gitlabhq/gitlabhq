@@ -77,12 +77,12 @@ export default {
       <gl-link
         :href="suggestion.webUrl"
         target="_blank"
-        class="suggestion str-truncated-100 gl-font-bold !gl-text-gray-900"
+        class="suggestion str-truncated-100 gl-font-bold !gl-text-default"
       >
         {{ suggestion.title }}
       </gl-link>
     </div>
-    <div class="text-secondary suggestion-footer">
+    <div class="suggestion-footer gl-text-subtle">
       <span ref="state">
         <gl-icon :name="stateIconName" :class="stateIconClass" class="gl-cursor-help" />
       </span>

@@ -8,3 +8,4 @@ description: Stores external audit event destinations configurations for instanc
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141739
 milestone: '16.9'
 gitlab_schema: gitlab_main_clusterwide
+table_size: small

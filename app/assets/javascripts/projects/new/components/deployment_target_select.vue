@@ -42,7 +42,7 @@ export default {
   },
   computed: {
     isK8sOptionSelected() {
-      return this.selectedTarget === K8S_OPTION;
+      return this.selectedTarget === K8S_OPTION.value;
     },
   },
   mounted() {

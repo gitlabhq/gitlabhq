@@ -24,6 +24,9 @@ export const getPageLayoutElement = () => document.querySelector('.layout-page')
 
 export const designWidgetOf = (data) => findDesignWidget(data.workItem.widgets);
 
+export const extractCurrentDiscussion = (discussions, id) =>
+  discussions.nodes.find((discussion) => discussion.id === id);
+
 /**
  * Generates optimistic response for a design upload mutation
  * @param {Array<File>} files
@@ -82,3 +85,38 @@ export const designUploadOptimisticResponse = (files) => {
     },
   };
 };
+
+/**
+ * Generates optimistic response for a design pin move mutation
+ *  @param {Object} note
+ *  @param {Object} position
+ */
+export const repositionImageDiffNoteOptimisticResponse = (note, { position }) => ({
+  __typename: 'Mutation',
+  repositionImageDiffNote: {
+    __typename: 'RepositionImageDiffNotePayload',
+    note: {
+      ...note,
+      position: {
+        ...note.position,
+        ...position,
+      },
+    },
+    errors: [],
+  },
+});
+
+export const moveDesignOptimisticResponse = (designs) => ({
+  __typename: 'Mutation',
+  designManagementMove: {
+    __typename: 'DesignManagementMovePayload',
+    designCollection: {
+      __typename: 'DesignCollection',
+      designs: {
+        __typename: 'DesignConnection',
+        nodes: designs,
+      },
+    },
+    errors: [],
+  },
+});

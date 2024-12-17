@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.deploy_token_packages.i_package_nuget_deploy_token_monthly
 description: Count of distinct deploy tokens that have interacted with NuGet packages in the package registry in the last 28 days
 product_group: package_registry
+product_categories:
+- package_registry
 value_type: number
 status: active
 time_frame: 28d

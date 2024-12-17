@@ -427,7 +427,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
   describe 'strategies that support analyze_interval' do
     [
-      ::Gitlab::Database::Partitioning::MonthlyStrategy,
+      ::Gitlab::Database::Partitioning::Time::MonthlyStrategy,
       ::Gitlab::Database::Partitioning::SlidingListStrategy,
       ::Gitlab::Database::Partitioning::CiSlidingListStrategy
     ].each do |klass|
@@ -463,7 +463,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
     it 'creates partitions for the future then drops the oldest one after a month' do
       # 1 month for the current month, 1 month for the old month that we're retaining data for, headroom
-      expected_num_partitions = (Gitlab::Database::Partitioning::MonthlyStrategy::HEADROOM + 2.months) / 1.month
+      expected_num_partitions = (Gitlab::Database::Partitioning::Time::MonthlyStrategy::HEADROOM + 2.months) / 1.month
       expect { described_class.new(my_model).sync_partitions }.to change { num_partitions(my_model) }.from(0).to(expected_num_partitions)
 
       travel 1.month

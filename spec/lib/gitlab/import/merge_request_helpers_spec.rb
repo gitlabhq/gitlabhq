@@ -119,4 +119,35 @@ RSpec.describe Gitlab::Import::MergeRequestHelpers, type: :helper, feature_categ
       expect(note.system_note_metadata).to have_attributes(action: 'approved')
     end
   end
+
+  describe '.create_merge_request_metrics' do
+    let(:attributes) do
+      {
+        merged_by_id: user.id,
+        merged_at: Time.current - 1.hour,
+        latest_closed_by_id: user.id,
+        latest_closed_at: Time.current + 1.hour
+      }
+    end
+
+    subject(:metric) { helper.create_merge_request_metrics(attributes) }
+
+    before do
+      allow(helper).to receive(:merge_request).and_return(merge_request)
+    end
+
+    it 'returns a metric with the provided attributes' do
+      expect(metric).to have_attributes(attributes)
+    end
+
+    it 'creates a metric if none currently exists' do
+      merge_request.metrics.destroy!
+
+      expect { metric }.to change { MergeRequest::Metrics.count }.from(0).to(1)
+    end
+
+    it 'updates the existing record if one already exists' do
+      expect { metric }.not_to change { MergeRequest::Metrics.count }
+    end
+  end
 end

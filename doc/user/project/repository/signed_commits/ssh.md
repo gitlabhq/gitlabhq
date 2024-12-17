@@ -148,25 +148,14 @@ for Git to associate SSH public keys with users:
        SSH signed commit
    ```
 
-## Revoke an SSH key for signing commits
+## Signed commits with removed SSH keys
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108344) in GitLab 15.9.
+You can revoke or delete your SSH keys used to sign commits. For more information see [Remove an SSH key](../../../ssh.md#remove-an-ssh-key).
 
-If an SSH key becomes compromised, revoke it. Revoking a key changes both future and past commits:
+Removing your SSH key can impact any commits signed with the key:
 
-- Past commits signed by this key are marked as unverified.
-- Future commits signed by this key are marked as unverified.
-
-Revoking an SSH key removes it from your account.
-SSH keys that are only used for authentication do not have the option to be revoked.
-
-To revoke an SSH key:
-
-1. On the left sidebar, select your avatar.
-1. Select **Edit profile**.
-1. On the left sidebar, select **SSH Keys** (**{key}**).
-1. Next to the SSH key you want to revoke, select **Revoke**.
-1. Optional. [Delete the SSH key.](../../../ssh.md#delete-an-ssh-key)
+- Revoking your SSH key marks your previous commits as **Unverified**. Until you add a new SSH key, any new commits are also marked as **Unverified**.
+- Deleting your SSH key doesn't impact your previous commits. Until you add a new SSH key, any new commits are marked as **Unverified**.
 
 ## Related topics
 

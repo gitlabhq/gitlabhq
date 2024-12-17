@@ -182,7 +182,7 @@ module Tooling
 
         raise VersionApiError unless response.success?
 
-        version_list = response.parsed_response.map { |v| v['version'] } # rubocop:disable Rails/Pluck
+        version_list = response.parsed_response.map { |v| v['version'] }
 
         version_list.sort_by { |v| Gem::Version.new(v) }.reverse
       end

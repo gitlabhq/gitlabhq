@@ -142,4 +142,16 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
       end
     end
   end
+
+  describe '.extra_tracking_classes' do
+    it 'returns an empty array when no extra tracking classes are set' do
+      expect(described_class.new(nil, {}).extra_tracking_classes).to eq([])
+    end
+
+    it 'returns the extra tracking classes when they are set' do
+      config = attributes.merge({ extra_tracking_classes: ['Gitlab::Tracking::AiTracking'] })
+
+      expect(described_class.new(nil, config).extra_tracking_classes).to eq([Gitlab::Tracking::AiTracking])
+    end
+  end
 end

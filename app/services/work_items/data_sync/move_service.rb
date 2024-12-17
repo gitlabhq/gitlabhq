@@ -14,6 +14,12 @@ module WorkItems
       end
 
       def verify_can_move_work_item(work_item, target_namespace)
+        if work_item.namespace_id == target_namespace.id || work_item.project_id == target_namespace.id
+          error_message = s_('MoveWorkItem|Cannot move work item to same project or group it originates from.')
+
+          return error(error_message, :unprocessable_entity)
+        end
+
         unless work_item.namespace.instance_of?(target_namespace.class)
           error_message = s_('MoveWorkItem|Cannot move work item between Projects and Groups.')
 
@@ -28,12 +34,12 @@ module WorkItems
         end
 
         unless work_item.can_move?(current_user, target_namespace)
-          error_message = s_('MoveWorkItem|Cannot move work item due to insufficient permissions!')
+          error_message = s_('MoveWorkItem|Cannot move work item due to insufficient permissions.')
 
           return error(error_message, :unprocessable_entity)
         end
 
-        if target_namespace.pending_delete? # rubocop:disable Style/GuardClause -- does not read right with other checks above
+        if target_namespace.pending_delete?
           error_message = s_('MoveWorkItem|Cannot move work item to target namespace as it is pending deletion.')
 
           return error(error_message, :unprocessable_entity)

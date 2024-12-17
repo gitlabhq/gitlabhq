@@ -28,7 +28,6 @@ class CreatePartitionedCiRunnerManagers < Gitlab::Database::Migration[2.2]
 
   def create_partitioned_table(name)
     options = 'PARTITION BY LIST (runner_type)'
-    # rubocop: disable Migration/EnsureFactoryForTable -- we'll reuse the ci_runner_machines factory once migrated
     create_table name, primary_key: PARTITIONED_TABLE_PK, options: options do |t|
       t.bigint :id, null: false
       t.bigint :runner_id, null: false
@@ -59,6 +58,5 @@ class CreatePartitionedCiRunnerManagers < Gitlab::Database::Migration[2.2]
         name: "index_#{name}_on_patch_version"
       t.index :version, name: "index_#{name}_on_version"
     end
-    # rubocop: enable Migration/EnsureFactoryForTable
   end
 end

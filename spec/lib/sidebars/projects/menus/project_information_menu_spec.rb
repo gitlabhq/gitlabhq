@@ -15,7 +15,7 @@ RSpec.describe Sidebars::Projects::Menus::ProjectInformationMenu, feature_catego
   describe '#container_html_options' do
     subject { described_class.new(context).container_html_options }
 
-    specify { is_expected.to match(hash_including(class: 'shortcuts-project-information has-sub-items')) }
+    it { is_expected.to match(hash_including(class: 'shortcuts-project-information has-sub-items')) }
   end
 
   describe 'Menu Items' do
@@ -24,14 +24,14 @@ RSpec.describe Sidebars::Projects::Menus::ProjectInformationMenu, feature_catego
     describe 'Labels' do
       let(:item_id) { :labels }
 
-      specify { is_expected.not_to be_nil }
+      it { is_expected.not_to be_nil }
 
       context 'when merge requests are disabled' do
         before do
           project.project_feature.update_attribute(:merge_requests_access_level, Featurable::DISABLED)
         end
 
-        specify { is_expected.not_to be_nil }
+        it { is_expected.not_to be_nil }
       end
 
       context 'when issues are disabled' do
@@ -39,7 +39,7 @@ RSpec.describe Sidebars::Projects::Menus::ProjectInformationMenu, feature_catego
           project.project_feature.update_attribute(:issues_access_level, Featurable::DISABLED)
         end
 
-        specify { is_expected.not_to be_nil }
+        it { is_expected.not_to be_nil }
       end
 
       context 'when merge requests and issues are disabled' do
@@ -48,19 +48,19 @@ RSpec.describe Sidebars::Projects::Menus::ProjectInformationMenu, feature_catego
           project.project_feature.update_attribute(:issues_access_level, Featurable::DISABLED)
         end
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
     end
 
     describe 'Members' do
       let(:item_id) { :members }
 
-      specify { is_expected.not_to be_nil }
+      it { is_expected.not_to be_nil }
 
       describe 'when the user does not have access' do
         let(:user) { nil }
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
     end
   end

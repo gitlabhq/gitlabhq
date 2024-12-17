@@ -65,6 +65,18 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           expect(response.header).not_to have_key('X-GitLab-Trace-Update-Interval')
         end
 
+        describe 'composite identity', :request_store, :sidekiq_inline do
+          it 'is propagated to downstream Sidekiq workers' do
+            expect(::Gitlab::Auth::Identity).to receive(:link_from_job).and_call_original
+            expect(::Gitlab::Auth::Identity).to receive(:sidekiq_restore!).at_least(:once).and_call_original
+            expect(::PipelineProcessWorker).to receive(:perform_async).and_call_original
+
+            update_job(state: 'failed')
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
         context 'when runner sends an unrecognized field in a payload' do
           ##
           # This test case is here to ensure that the API used to communicate

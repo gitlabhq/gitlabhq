@@ -1,3 +1,8 @@
+import initTodosApp from '~/todos';
 import Todos from './todos';
 
-new Todos(); // eslint-disable-line no-new
+if (gon.features.todosVueApplication) {
+  initTodosApp();
+} else {
+  new Todos(); // eslint-disable-line no-new
+}

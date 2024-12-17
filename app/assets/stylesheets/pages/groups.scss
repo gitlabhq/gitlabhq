@@ -25,12 +25,12 @@
 .save-group-loader {
   margin-top: $gl-spacing-scale-9;
   margin-bottom: $gl-spacing-scale-9;
-  color: $gray-700;
+  @apply gl-text-subtle;
 }
 
 .card {
   .shared_runners_limit_under_quota {
-    color: $green-500;
+    @apply gl-text-success;
   }
 
   .shared_runners_limit_over_quota {

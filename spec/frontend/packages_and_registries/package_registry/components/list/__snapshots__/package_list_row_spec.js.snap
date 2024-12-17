@@ -2,7 +2,7 @@
 
 exports[`packages_list_row renders 1`] = `
 <div
-  class="gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid gl-border-t-1 gl-border-t-solid gl-border-t-transparent gl-flex gl-flex-col"
+  class="gl-border-b-1 gl-border-b-default gl-border-b-solid gl-border-t-1 gl-border-t-solid gl-border-t-transparent gl-flex gl-flex-col"
   data-testid="package-row"
 >
   <div
@@ -23,14 +23,14 @@ exports[`packages_list_row renders 1`] = `
         class="gl-flex gl-flex-col gl-grow gl-mb-3 gl-min-w-0 sm:gl-mb-0"
       >
         <div
-          class="gl-flex gl-font-semibold gl-items-center gl-min-h-6 gl-min-w-0 gl-text-primary"
+          class="gl-flex gl-font-semibold gl-items-center gl-min-h-6 gl-min-w-0 gl-text-default"
         >
           <div
             class="gl-flex gl-gap-3 gl-items-center gl-min-w-0 gl-mr-5"
             data-testid="package-name"
           >
             <a
-              class="gl-break-all gl-min-w-0 gl-text-primary"
+              class="gl-break-all gl-min-w-0 gl-text-default"
               data-testid="details-link"
             >
               @gitlab-org/package-15
@@ -60,10 +60,10 @@ exports[`packages_list_row renders 1`] = `
         </div>
       </div>
       <div
-        class="gl-flex gl-flex-col gl-justify-between gl-shrink-0 gl-text-secondary sm:gl-items-end"
+        class="gl-flex gl-flex-col gl-justify-between gl-shrink-0 gl-text-subtle sm:gl-items-end"
       >
         <div
-          class="gl-flex gl-items-center gl-min-h-6 sm:gl-text-primary"
+          class="gl-flex gl-items-center gl-min-h-6 sm:gl-text-default"
         >
           <publish-method-stub />
         </div>

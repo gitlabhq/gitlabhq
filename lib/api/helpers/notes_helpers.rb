@@ -27,10 +27,8 @@ module API
 
         note = ::Notes::UpdateService.new(project, current_user, opts).execute(note)
 
-        if note.errors.blank?
+        process_note_creation_result(note) do
           present note, with: Entities::Note
-        else
-          bad_request!("Failed to save note #{note.errors.messages}")
         end
       end
 
@@ -132,6 +130,21 @@ module API
 
         project = parent if parent.is_a?(Project)
         ::Notes::CreateService.new(project, current_user, opts).execute
+      end
+
+      def process_note_creation_result(note, &block)
+        quick_action_status = note.quick_actions_status
+
+        if quick_action_status&.commands_only? && quick_action_status.success?
+          status 202
+          present note, with: Entities::NoteCommands
+        elsif note.errors.present?
+          bad_request!("Note #{note.errors.messages}")
+        elsif note.persisted?
+          yield
+        elsif quick_action_status&.error?
+          bad_request!(quick_action_status.error_messages.join(', '))
+        end
       end
 
       def resolve_discussion(noteable, discussion_id, resolved)

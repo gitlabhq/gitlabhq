@@ -4,7 +4,7 @@
 
 %li.gl-justify-between{ class: "md:!gl-flex !gl-items-start !gl-px-5", data: { testid: 'tag-row' } }
   .row-main-content
-    = sprite_icon('tag', css_class: "gl-text-subtle")
+    = sprite_icon('tag', css_class: "gl-fill-icon-subtle")
     = link_to tag.name, project_tag_path(@project, tag.name), class: 'gl-font-bold'
 
     - if protected_tag?(@project, tag)

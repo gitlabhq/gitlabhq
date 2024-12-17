@@ -1,9 +1,0 @@
----
-name: duo_chat_requires_licensed_seat_sm
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/457283
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150391
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/457757
-milestone: '17.0'
-group: group::duo chat
-type: beta
-default_enabled: false

@@ -64,8 +64,8 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
 
 .design-note-pin {
   display: flex;
-  height: $design-pin-diameter;
-  width: $design-pin-diameter;
+  height: $design-pin-diameter-sm;
+  width: $design-pin-diameter-sm;
   box-sizing: content-box;
   @apply gl-bg-purple-500 dark:gl-bg-purple-700;
   color: var(--white, $white);
@@ -170,7 +170,7 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
       content: '';
       border-left: 1px solid var(--gray-100, $gray-100);
       position: absolute;
-      left: 12px;
+      left: 11px;
       top: -17px;
       height: 17px;
     }

@@ -2,7 +2,7 @@
 
 exports[`FileSha renders 1`] = `
 <div
-  class="gl-align-items-top gl-border-b-1 gl-border-b-solid gl-border-gray-100 gl-break-all gl-flex gl-font-monospace gl-py-2 gl-text-sm"
+  class="gl-align-items-top gl-border-b-1 gl-border-b-solid gl-border-default gl-break-all gl-flex gl-font-monospace gl-py-2 gl-text-sm"
 >
   <div>
     <div

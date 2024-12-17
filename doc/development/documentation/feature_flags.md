@@ -17,7 +17,7 @@ When the state of a feature flag changes, the developer who made the change
 
 Every feature introduced to the codebase, even if it's behind a disabled flag,
 must be documented. For more information, see
-[the discussion that led to this decision](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47917#note_459984428). [Experiment and beta](../../policy/experiment-beta-support.md) features are usually behind a flag and must also be documented. For more information, see [Document experiment or beta features](experiment_beta.md).
+[the discussion that led to this decision](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47917#note_459984428). [Experiment and beta](../../policy/development_stages_support.md) features are usually behind a flag and must also be documented. For more information, see [Document experiment or beta features](experiment_beta.md).
 
 When the feature is [implemented in multiple merge requests](../feature_flags/index.md#feature-flags-in-gitlab-development),
 discuss the plan with your technical writer.
@@ -43,7 +43,7 @@ To document feature flags:
 
 ## Offerings
 
-When documenting the [offerings](styleguide/availability_details.md#offering), for features 
+When documenting the [offerings](styleguide/availability_details.md#offering), for features
 **disabled on self-managed**, don't list `GitLab Dedicated` as the feature's offering.
 
 ## Add history text
@@ -148,6 +148,12 @@ Combine entries if they happened in the same release:
   > - [Introduced](https://issue-link) in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ci_include_rules`. Disabled by default.
   > - [Enabled on GitLab.com, self-managed, and GitLab Dedicated](https://issue-link) in GitLab 14.3.
   ```
+
+If the feature flag is introduced and enabled in the same release, combine the entries:
+
+```markdown
+> - [Introduced](https://issue-link) in GitLab 13.7 [with a flag](../../administration/feature_flags.md) named `forti_token_cloud`. Enabled by default.
+```
 
 Delete `Enabled on GitLab.com` entries only when the feature is enabled by default for all offerings and the flag is removed:
 

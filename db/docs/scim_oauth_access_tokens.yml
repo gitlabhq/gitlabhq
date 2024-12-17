@@ -10,3 +10,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/e9b2253fe353823
 milestone: '11.10'
 gitlab_schema: gitlab_main_cell
 exempt_from_sharding: true
+table_size: small

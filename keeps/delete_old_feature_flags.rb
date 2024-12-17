@@ -174,7 +174,7 @@ module Keeps
       matches = ROLLOUT_ISSUE_URL_REGEX.match(rollout_issue_url)
       return unless matches
 
-      response = Gitlab::HTTP_V2.try_get(
+      response = Gitlab::HTTP_V2.try_get( # rubocop:disable Gitlab/HttpV2 -- Not running inside rails application
         format(API_ISSUE_URL, project_path: CGI.escape(matches[:project_path]), issue_iid: matches[:issue_iid])
       )
 

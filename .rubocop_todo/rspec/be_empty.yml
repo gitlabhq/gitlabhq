@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 RSpec/BeEmpty:
   Exclude:
-    - 'ee/spec/controllers/subscriptions/groups_controller_spec.rb'
     - 'ee/spec/finders/groups/users_finder_spec.rb'
     - 'ee/spec/finders/merge_requests/by_approvers_finder_spec.rb'
     - 'ee/spec/graphql/mutations/merge_requests/update_approval_rules_spec.rb'
@@ -13,7 +12,6 @@ RSpec/BeEmpty:
     - 'ee/spec/helpers/ee/todos_helper_spec.rb'
     - 'ee/spec/lib/gitlab/auth/group_saml/auth_hash_spec.rb'
     - 'ee/spec/lib/gitlab/auth/oidc/auth_hash_spec.rb'
-    - 'ee/spec/lib/gitlab/elastic/project_search_results_spec.rb'
     - 'ee/spec/lib/gitlab/search/aggregation_spec.rb'
     - 'ee/spec/lib/microsoft/graph_client_spec.rb'
     - 'ee/spec/models/concerns/elastic/application_versioned_search_spec.rb'

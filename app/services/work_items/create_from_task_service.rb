@@ -15,7 +15,7 @@ module WorkItems
         create_and_link_result = CreateAndLinkService.new(
           project: @work_item.project,
           current_user: @current_user,
-          params: @work_item_params.slice(:title, :work_item_type_id),
+          params: @work_item_params.slice(:title, :work_item_type_id, :work_item_type),
           perform_spam_check: @perform_spam_check,
           link_params: { parent_work_item: @work_item }
         ).execute

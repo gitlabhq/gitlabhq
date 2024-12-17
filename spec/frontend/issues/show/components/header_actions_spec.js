@@ -38,6 +38,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import issueReferenceQuery from '~/sidebar/queries/issue_reference.query.graphql';
 import updateIssueMutation from '~/issues/show/queries/update_issue.mutation.graphql';
 import toast from '~/vue_shared/plugins/global_toast';
+import HeaderActionsConfidentialityToggle from '~/issues/show/components/header_actions_confidentiality_toggle.vue';
 
 jest.mock('~/alert');
 jest.mock('~/issues/show/event_hub', () => ({ $emit: jest.fn() }));
@@ -600,6 +601,29 @@ describe('HeaderActions component', () => {
         expect(toast).toHaveBeenCalledWith('Email address copied');
       });
     });
+  });
+
+  describe('toggle confidentiality option', () => {
+    it.each`
+      issueType            | canUpdateIssue | isVisible | showHide
+      ${TYPE_ISSUE}        | ${true}        | ${true}   | ${'shows'}
+      ${TYPE_INCIDENT}     | ${true}        | ${true}   | ${'shows'}
+      ${TYPE_ISSUE}        | ${false}       | ${false}  | ${'hides'}
+      ${TYPE_INCIDENT}     | ${false}       | ${false}  | ${'hides'}
+      ${'some_other_type'} | ${true}        | ${false}  | ${'hides'}
+    `(
+      '$showHide toggle confidentiality option for issueType $issueType and canUpdateIssue $canUpdateIssue',
+      ({ issueType, canUpdateIssue, isVisible }) => {
+        wrapper = mountComponent({
+          props: {
+            issueType,
+            canUpdateIssue,
+          },
+        });
+
+        expect(wrapper.findComponent(HeaderActionsConfidentialityToggle).exists()).toBe(isVisible);
+      },
+    );
   });
 
   describe('issue type text', () => {

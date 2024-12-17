@@ -8,3 +8,4 @@ description: Identifiable product usage data analytics from Early access program
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148990
 milestone: '17.0'
 gitlab_schema: gitlab_main_clusterwide
+table_size: small

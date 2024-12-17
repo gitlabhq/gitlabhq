@@ -6,6 +6,6 @@ RSpec.describe Types::MemberAccessLevelEnum, feature_category: :groups_and_proje
   specify { expect(described_class.graphql_name).to eq('MemberAccessLevel') }
 
   it 'exposes all the existing access levels' do
-    expect(described_class.values.keys).to include(*%w[GUEST REPORTER DEVELOPER MAINTAINER OWNER])
+    expect(described_class.values.keys).to include(*%w[GUEST PLANNER REPORTER DEVELOPER MAINTAINER OWNER])
   end
 end

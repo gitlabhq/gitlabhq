@@ -153,7 +153,7 @@ export default {
     >
       <codeowners-validation
         v-if="isCodeownersFile"
-        class="gl-text-gray-900"
+        class="gl-text-default"
         :current-ref="currentRef"
         :project-path="projectPath"
         :file-path="blob.path"
@@ -168,6 +168,7 @@ export default {
         :total-lines="chunk.totalLines"
         :starting-from="chunk.startingFrom"
         :blame-path="blob.blamePath"
+        :blob-path="blob.path"
         @appear="() => handleAppear(index)"
       />
     </div>

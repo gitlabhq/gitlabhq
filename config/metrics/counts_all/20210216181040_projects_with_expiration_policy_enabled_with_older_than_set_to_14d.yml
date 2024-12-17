@@ -4,6 +4,8 @@ key_path: counts.projects_with_expiration_policy_enabled_with_older_than_set_to_
 description: A count of projects with the cleanup policy set delete tags older than
   14 days
 product_group: container_registry
+product_categories:
+- container_registry
 value_type: number
 status: active
 time_frame: all

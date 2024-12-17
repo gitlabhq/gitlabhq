@@ -49,6 +49,8 @@ merge request, authored by the user who suggested the changes.
 
 ### Multi-line suggestions
 
+> - Multi-line suggestions [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172981/) in GitLab 17.7 to support rendering when the suggestion contains a code block.
+
 When you review a merge request diff, you can propose changes to multiple lines (up to 200)
 in a single suggestion, by either:
 
@@ -77,9 +79,9 @@ GitLab limits multi-line suggestions to 100 lines _above_ and 100
 lines _below_ the commented diff line. This allows for up to 201 changed lines per
 suggestion.
 
-Multiline comments display the comment's line numbers above the body of the comment:
+Multi-line comments display the comment's line numbers above the body of the comment:
 
-![Multiline comment selection displayed above comment](img/multiline-comment-saved_v17_5.png)
+![Multi-line comment selection displayed above comment](img/multiline-comment-saved_v17_5.png)
 
 #### Using the rich text editor
 
@@ -118,22 +120,6 @@ After you apply a suggestion, GitLab:
 - Creates a new commit with the changes.
 - (If the user has the Developer role) Pushes the suggested change directly into
   the codebase in the merge request's branch.
-
-## Nest code blocks in suggestions
-
-To add a suggestion that includes a
-[fenced code block](../../../markdown.md#code-spans-and-blocks), wrap your suggestion
-in four backticks instead of three:
-
-`````markdown
-````suggestion:-0+2
-```shell
-git config --global receive.advertisepushoptions true
-```
-````
-`````
-
-![Output of a comment with a suggestion with a fenced code block](img/suggestion_code_block_output_v16_6.png)
 
 ## Configure the commit message for applied suggestions
 

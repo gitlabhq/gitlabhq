@@ -18,7 +18,7 @@
 
 .form-group
   %b= s_('ProjectSettings|Merge method')
-  %p.text-secondary
+  %p.gl-text-subtle
     = s_('ProjectSettings|Determine what happens to the commit history when you merge a merge request.')
     = link_to s_('ProjectSettings|How do they differ?'), help_page_path('user/project/merge_requests/methods/index.md'), target: '_blank', rel: 'noopener noreferrer'
   = form.gitlab_ui_radio_component :merge_method,

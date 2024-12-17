@@ -75,7 +75,7 @@ The following information is displayed:
 
 Before you renew your GitLab.com subscription, you should [review your account](../self_managed/index.md#review-your-account).
 
-You can renew your subscription [manually](../self_managed/index.md#renew-subscription-manually) or automatically.
+You can renew your subscription [manually](../self_managed/index.md#renew-subscription-manually) or [automatically](#automatic-subscription-renewal).
 Your updated subscription is applied to your namespace.
 The renewal period start date is displayed on the group Billing page under **Next subscription term start date**.
 
@@ -90,9 +90,9 @@ if it exceeds the number of seats you want to renew for.
 To manually renew your subscription for fewer seats, you can either:
 
 - [Manually renew](../self_managed/index.md#renew-subscription-manually) within 15 days of the
-subscription renewal date. Ensure that you specify the seat quantity when you renew.
+  subscription renewal date. Ensure that you specify the seat quantity when you renew.
 - [Disable automatic renewal of your subscription](../self_managed/index.md#enable-or-disable-automatic-subscription-renewal),
-and contact the GitLab Sales team to renew it for the number of seats you want.
+  and contact the [sales team](https://about.gitlab.com/sales/) to renew it for the number of seats you want.
 
 ### Automatic subscription renewal
 
@@ -208,7 +208,7 @@ For example, if you purchase a subscription for 10 users:
 Seats owed = 12 - 10 (Maximum users - users in subscription)
 
 To prevent charges from seats owed, you can
-[turn on restricted access](../../administration/settings/sign_up_restrictions.md#turn-on-restricted-access).
+[turn on restricted access](../../user/group/manage.md#turn-on-restricted-access).
 This setting restricts groups from adding new billable users when there are no seats left in the subscription.
 
 ### Seat usage alerts
@@ -307,7 +307,7 @@ and is not affected by the current search.
 
 Your subscription cost is based on the maximum number of seats you use during the billing period.
 
-- If [restricted access](../../administration/settings/sign_up_restrictions.md#turn-on-restricted-access)
+- If [restricted access](../../user/group/manage.md#turn-on-restricted-access)
   is turned on, when there are no seats left in your subscription you must purchase more seats for groups to add new billable users.
 - If restricted access is turned off, when there are no seats left in your subscription groups can continue to add billable
   users. GitLab [bills you for the overage](../quarterly_reconciliation.md).
@@ -339,8 +339,6 @@ If you add a member to a group by using the [share a group with another group](.
 
 - [Remove the member from the shared group](../../user/group/index.md#remove-a-member-from-the-group).
 - [Remove the invited group](../../user/project/members/sharing_projects_groups.md#remove-an-invited-group).
-
-To remove a user from your self-managed instance, see [Deactivate a user](../../administration/moderate_users.md#deactivate-a-user).
 
 ## Link subscription to a group
 
@@ -434,7 +432,7 @@ state for all projects is removed, and their excess usage is deducted from the a
 If you're using GitLab.com, you can purchase additional storage so your
 pipelines aren't blocked after you have used all your storage from your
 main quota. You can find pricing for additional storage on the
-[GitLab Pricing page](https://about.gitlab.com/pricing/).
+[GitLab Pricing page](https://about.gitlab.com/pricing/#storage).
 
 To purchase additional storage for your group on GitLab.com:
 

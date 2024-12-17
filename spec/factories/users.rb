@@ -21,8 +21,15 @@ FactoryBot.define do
                     true
                   end
 
-      # TODO: Remove usage of default organization https://gitlab.com/gitlab-org/gitlab/-/issues/446293
-      user.assign_personal_namespace(create(:organization, :default)) if assign_ns
+      if assign_ns
+        org = user&.namespace&.organization ||
+          Organizations::Organization.order(:created_at).first ||
+          # We create an organization next even though we are building here. We need to ensure
+          # that an organization exists so other entities can belong to the same organization
+          create(:organization)
+
+        user.assign_personal_namespace(org)
+      end
     end
 
     trait :without_default_org do
@@ -207,6 +214,7 @@ FactoryBot.define do
     transient do
       # rubocop:disable Lint/EmptyBlock -- block is required by factorybot
       guest_of {}
+      planner_of {}
       reporter_of {}
       developer_of {}
       maintainer_of {}
@@ -216,6 +224,7 @@ FactoryBot.define do
 
     after(:create) do |user, evaluator|
       Array.wrap(evaluator.guest_of).each { |target| target.add_guest(user) }
+      Array.wrap(evaluator.planner_of).each { |target| target.add_planner(user) }
       Array.wrap(evaluator.reporter_of).each { |target| target.add_reporter(user) }
       Array.wrap(evaluator.developer_of).each { |target| target.add_developer(user) }
       Array.wrap(evaluator.maintainer_of).each { |target| target.add_maintainer(user) }

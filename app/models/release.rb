@@ -164,6 +164,14 @@ class Release < ApplicationRecord
     project.execute_hooks(hook_data, :release_hooks)
   end
 
+  def related_deployments
+    Deployment
+      .with(Gitlab::SQL::CTE.new(:available_environments, project.environments.available.select(:id)).to_arel)
+      .where('environment_id IN (SELECT * FROM available_environments)')
+      .where(ref: tag)
+      .with_environment_page_associations
+  end
+
   private
 
   def actual_sha

@@ -1,0 +1,15 @@
+#import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
+
+query getPipelineMetadata($fullPath: ID!, $iid: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    pipeline(iid: $iid) {
+      id
+      detailedStatus {
+        label
+        ...CiIcon
+      }
+      finishedAt
+    }
+  }
+}

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, :blocking, product_group: :package_registry do
+  RSpec.describe 'Package', :object_storage, product_group: :package_registry do
     describe 'Helm Registry', :external_api_calls do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures
@@ -22,7 +22,7 @@ module QA
         let(:username) do
           case authentication_token_type
           when :personal_access_token
-            Runtime::User.username
+            Runtime::User::Store.test_user.username
           when :ci_job_token
             'gitlab-ci-token'
           when :project_deploy_token

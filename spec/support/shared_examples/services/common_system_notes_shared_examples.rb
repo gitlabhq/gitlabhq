@@ -46,23 +46,15 @@ RSpec.shared_examples 'a system note' do |params|
     exclude_project = !params.nil? && params[:exclude_project]
     skip_persistence_check = !params.nil? && params[:skip_persistence_check]
 
-    Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
-      %w[
-        notes
-        system_note_metadata
-        vulnerability_user_mentions
-      ], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/482741'
-    ) do
-      expect(subject).to be_valid
-      expect(subject).to be_system
+    expect(subject).to be_valid
+    expect(subject).to be_system
 
-      expect(subject.noteable).to eq expected_noteable
-      expect(subject.project).to eq project unless exclude_project
-      expect(subject.author).to eq author
+    expect(subject.noteable).to eq expected_noteable
+    expect(subject.project).to eq project unless exclude_project
+    expect(subject.author).to eq author
 
-      expect(subject.system_note_metadata).to be_persisted unless skip_persistence_check
-      expect(subject.system_note_metadata.action).to eq(action)
-      expect(subject.system_note_metadata.commit_count).to eq(commit_count)
-    end
+    expect(subject.system_note_metadata).to be_persisted unless skip_persistence_check
+    expect(subject.system_note_metadata.action).to eq(action)
+    expect(subject.system_note_metadata.commit_count).to eq(commit_count)
   end
 end

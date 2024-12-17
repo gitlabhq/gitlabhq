@@ -9,21 +9,20 @@ export default {
   provide() {
     return {
       projectPath: this.projectPath,
-      maxAllowedFileSize: this.maxAllowedFileSize,
       markdownPreviewPath: this.markdownPreviewPath,
     };
   },
   props: {
+    indexModelsPath: {
+      type: String,
+      required: true,
+    },
     projectPath: {
       type: String,
       required: true,
     },
     canWriteModelRegistry: {
       type: Boolean,
-      required: true,
-    },
-    maxAllowedFileSize: {
-      type: Number,
       required: true,
     },
     markdownPreviewPath: {
@@ -35,5 +34,10 @@ export default {
 </script>
 
 <template>
-  <model-create v-if="canWriteModelRegistry" />
+  <model-create
+    v-if="canWriteModelRegistry"
+    :project-path="projectPath"
+    :markdown-preview-path="markdownPreviewPath"
+    :index-models-path="indexModelsPath"
+  />
 </template>

@@ -139,6 +139,7 @@ exceptions:
   - LSIF
   - LTM
   - LTS
+  - LTSS
   - LVM
   - MIME
   - MIT
@@ -214,6 +215,7 @@ exceptions:
   - SLA
   - SLI
   - SLO
+  - SLSA
   - SMS
   - SMTP
   - SOAP
@@ -225,6 +227,7 @@ exceptions:
   - SQL
   - SRE
   - SSD
+  - SSF
   - SSG
   - SSH
   - SSL

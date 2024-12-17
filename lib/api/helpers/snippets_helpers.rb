@@ -32,7 +32,7 @@ module API
           requires :action,
             type: String,
             values: SnippetInputAction::ACTIONS.map(&:to_s),
-            desc: "The type of action to perform on the file, must be one of: #{SnippetInputAction::ACTIONS.join(", ")}"
+            desc: "The type of action to perform on the file, must be one of: #{SnippetInputAction::ACTIONS.join(', ')}"
           optional :content, type: String, desc: 'The content of a snippet'
           optional :file_path, file_path: true, type: String, desc: 'The file path of a snippet file'
           optional :previous_path, file_path: true, type: String, desc: 'The previous path of a snippet file'

@@ -1,6 +1,6 @@
 ---
-stage: Govern
-group: Threat Insights
+stage: Security Risk Management
+group: Security Insights
 info: BEFORE MAKING CHANGES TO THIS FILE, PLEASE REACH OUT TO THE THREAT INSIGHTS ENGINEERING TEAM, @gitlab-org/govern/threat-insights.  To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 

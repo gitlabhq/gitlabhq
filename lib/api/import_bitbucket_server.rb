@@ -5,6 +5,10 @@ module API
     feature_category :importers
     urgency :low
 
+    before do
+      set_current_organization
+    end
+
     helpers do
       def client
         @client ||= BitbucketServer::Client.new(credentials)
@@ -45,7 +49,8 @@ module API
     end
 
     post 'import/bitbucket_server' do
-      result = Import::BitbucketServerService.new(client, current_user, params).execute(credentials)
+      result = Import::BitbucketServerService.new(client, current_user,
+        params.merge(organization_id: Current.organization.id)).execute(credentials)
 
       if result[:status] == :success
         present ProjectSerializer.new.represent(result[:project], serializer: :import)

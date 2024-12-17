@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.instances_youtrack_active
 description: Count of active instance-level integrations for YouTrack
 product_group: import_and_integrate
+product_categories:
+- integrations
 value_type: number
 status: active
 time_frame: all

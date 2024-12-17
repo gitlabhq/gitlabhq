@@ -1,6 +1,7 @@
 <script>
-import { GlIcon, GlTooltipDirective, GlSprintf } from '@gitlab/ui';
+import { GlTooltipDirective, GlSprintf } from '@gitlab/ui';
 import { sprintf } from '~/locale';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import missingBranchQuery from '../../queries/states/missing_branch.query.graphql';
 import {
@@ -16,9 +17,9 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    GlIcon,
     GlSprintf,
     StatusIcon,
+    HelpIcon,
   },
   mixins: [mergeRequestQueryVariablesMixin],
   apollo: {
@@ -72,13 +73,7 @@ export default {
           </gl-sprintf>
         </span>
         {{ restore }}
-        <gl-icon
-          v-gl-tooltip
-          :title="message"
-          :aria-label="message"
-          name="question-o"
-          class="gl-cursor-pointer gl-text-blue-600"
-        />
+        <help-icon v-gl-tooltip :title="message" :aria-label="message" class="gl-cursor-pointer" />
       </span>
     </div>
   </div>

@@ -3,6 +3,8 @@ inherit_from:
 
 AllCops:
   NewCops: enable
+  Exclude:
+    - lib/gitlab/secret_detection/grpc/generated/*.rb
 
 Style/HashSyntax:
   EnforcedShorthandSyntax: consistent

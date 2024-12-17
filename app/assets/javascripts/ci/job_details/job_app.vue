@@ -14,7 +14,6 @@ import { __, sprintf } from '~/locale';
 import delayedJobMixin from '~/ci/mixins/delayed_job_mixin';
 import Log from '~/ci/job_details/components/log/log.vue';
 import { MANUAL_STATUS } from '~/ci/constants';
-import { reportToSentry } from '~/ci/utils';
 import EmptyState from './components/empty_state.vue';
 import EnvironmentsBlock from './components/environments_block.vue';
 import ErasedBlock from './components/erased_block.vue';
@@ -173,9 +172,6 @@ export default {
     this.stopPolling();
     window.removeEventListener('resize', this.onResize);
     window.removeEventListener('scroll', this.updateScroll);
-  },
-  errorCaptured(err, _vm, info) {
-    reportToSentry(this.$options.name, `error: ${err}, info: ${info}`);
   },
   methods: {
     ...mapActions([

@@ -55,6 +55,7 @@ RSpec.describe BulkImports::Groups::Pipelines::SubgroupEntitiesPipeline, feature
         source_type: :group_entity,
         source_full_path: 'parent/subgroup',
         destination_name: 'subgroup',
+        organization_id: parent_entity.group.organization_id,
         destination_namespace: parent_entity.group.full_path,
         parent_id: parent_entity.id
       }

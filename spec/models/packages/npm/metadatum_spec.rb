@@ -4,20 +4,28 @@ require 'spec_helper'
 
 RSpec.describe Packages::Npm::Metadatum, type: :model, feature_category: :package_registry do
   describe 'relationships' do
-    it { is_expected.to belong_to(:package).inverse_of(:npm_metadatum) }
+    it { is_expected.to belong_to(:package).class_name('Packages::Npm::Package').inverse_of(:npm_metadatum) }
   end
 
   describe 'validations' do
     describe 'package', :aggregate_failures do
       it { is_expected.to validate_presence_of(:package) }
 
-      it 'ensure npm package type' do
-        metadatum = build(:npm_metadatum)
+      describe '#ensure_npm_package_type', :aggregate_failures do
+        subject(:npm_metadatum) { build(:npm_metadatum) }
 
-        metadatum.package = build(:nuget_package)
+        it 'builds a valid metadatum' do
+          expect { npm_metadatum }.not_to raise_error
+          expect(npm_metadatum).to be_valid
+        end
 
-        expect(metadatum).not_to be_valid
-        expect(metadatum.errors).to contain_exactly('Package type must be NPM')
+        context 'with a different package type' do
+          let(:package) { build(:package) }
+
+          it 'raises the error' do
+            expect { build(:npm_metadatum, package: package) }.to raise_error(ActiveRecord::AssociationTypeMismatch)
+          end
+        end
       end
     end
 

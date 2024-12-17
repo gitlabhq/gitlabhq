@@ -14,7 +14,7 @@ module Tooling
       def changed_queue_names
         @changed_queue_names ||=
           (new_queues.values_at(*old_queues.keys) - old_queues.values)
-            .compact.map { |queue| queue[:name] } # rubocop:disable Rails/Pluck
+            .compact.map { |queue| queue[:name] }
       end
 
       private

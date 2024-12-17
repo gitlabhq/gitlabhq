@@ -7,6 +7,7 @@ import {
   compositionEndNoteText,
   updateTextForToolbarBtn,
   resolveSelectedImage,
+  repeatCodeBackticks,
 } from '~/lib/utils/text_markdown';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import '~/lib/utils/jquery_at_who';
@@ -890,6 +891,17 @@ describe('init markdown', () => {
       });
 
       expect(editor.selectWithinSelection).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('repeatCodeBackticks', () => {
+    it.each([
+      ['````', '```html\\n```'],
+      ['```', '`console.log`'],
+      ['`````', '````html\\n````'],
+      ['``````', '````html\\n````\\n`````html\\n`````'],
+    ])('returns %p for markdown %p', (expected, text) => {
+      expect(repeatCodeBackticks(text)).toBe(expected);
     });
   });
 });

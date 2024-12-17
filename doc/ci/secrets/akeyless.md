@@ -13,7 +13,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164040) in GitLab 17.4.
 
 FLAG:
-This feature is an [experiment](../../policy/experiment-beta-support.md)
+This feature is an [experiment](../../policy/development_stages_support.md)
 and not intended for production use. There is no support available for this feature
 and it is subject to removal at any time in accordance to GitLab policy.
 

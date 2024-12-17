@@ -7,7 +7,8 @@ module PartitionedTable
     attr_reader :partitioning_strategy
 
     PARTITIONING_STRATEGIES = {
-      monthly: Gitlab::Database::Partitioning::MonthlyStrategy,
+      daily: Gitlab::Database::Partitioning::Time::DailyStrategy,
+      monthly: Gitlab::Database::Partitioning::Time::MonthlyStrategy,
       sliding_list: Gitlab::Database::Partitioning::SlidingListStrategy,
       ci_sliding_list: Gitlab::Database::Partitioning::CiSlidingListStrategy,
       int_range: Gitlab::Database::Partitioning::IntRangeStrategy

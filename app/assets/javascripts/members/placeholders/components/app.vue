@@ -261,11 +261,14 @@ export default {
     },
     updateTabCount({ item, placeholderCount }) {
       const message = item
-        ? sprintf(s__('UserMapping|Placeholder %{name} (@%{username}) kept as placeholder.'), {
-            name: item.placeholderUser.name,
-            username: item.placeholderUser.username,
-          })
-        : sprintf(s__('UserMapping|%{count} placeholders were kept as placeholders.'), {
+        ? sprintf(
+            s__('UserMapping|Placeholder %{name} (@%{username}) was kept as a placeholder.'),
+            {
+              name: item.placeholderUser.name,
+              username: item.placeholderUser.username,
+            },
+          )
+        : sprintf(s__('UserMapping|%{count} placeholder users were kept as placeholders.'), {
             count: placeholderCount,
           });
 
@@ -392,7 +395,7 @@ export default {
               data-testid="keep-all-as-placeholder-button"
             >
               <template #list-item>
-                {{ s__('UserMapping|Keep all as placeholder') }}
+                {{ s__('UserMapping|Keep all as placeholders') }}
               </template>
             </gl-disclosure-dropdown-item>
           </gl-disclosure-dropdown>

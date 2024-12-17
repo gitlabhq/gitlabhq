@@ -2,6 +2,8 @@
 key_path: counts.projects_google_play_active
 description: Count of projects with active integrations for Google Play
 product_group: import_and_integrate
+product_categories:
+- integrations
 value_type: number
 status: active
 milestone: "15.10"

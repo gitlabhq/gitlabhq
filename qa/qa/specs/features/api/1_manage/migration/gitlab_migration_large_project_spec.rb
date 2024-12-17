@@ -49,7 +49,6 @@ module QA
 
       let!(:api_client) do
         Runtime::API::Client.new(
-          user: user,
           # importing very large project can take multiple days
           # token must not expire while we still poll for import result
           personal_access_token: create(

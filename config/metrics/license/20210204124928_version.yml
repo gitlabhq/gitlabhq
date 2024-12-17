@@ -2,7 +2,9 @@
 data_category: operational
 key_path: gitaly.version
 description: Version of Gitaly
-product_group: gitaly_cluster
+product_group: gitaly
+product_categories:
+- gitaly
 value_type: string
 status: active
 milestone: "<13.9"

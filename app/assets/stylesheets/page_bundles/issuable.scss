@@ -99,6 +99,10 @@
 .comment-templates-modal {
   padding: 3rem 0.5rem 0;
 
+  .modal-content {
+    @apply gl-max-h-[80vh];
+  }
+
   // stylelint-disable-next-line gitlab/no-gl-class
   &.gl-modal .modal-dialog {
     align-items: flex-start;

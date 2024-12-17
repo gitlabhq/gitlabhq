@@ -1,17 +1,18 @@
 <script>
-import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlLink, GlSprintf } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import Api from '~/api';
 import { __ } from '~/locale';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import state from '../state';
 import Dropdown from './dropdown.vue';
 
 export default {
   components: {
-    GlIcon,
     GlLink,
     GlSprintf,
     Dropdown,
+    HelpIcon,
   },
   props: {
     namespacePath: {
@@ -133,8 +134,7 @@ export default {
           class="gl-inline-block gl-w-auto gl-bg-transparent gl-p-0"
           target="_blank"
         >
-          <span class="sr-only">{{ $options.i18n.readMore }}</span>
-          <gl-icon name="question-o" />
+          <help-icon :aria-label="$options.i18n.readMore" />
         </gl-link>
       </p>
     </div>

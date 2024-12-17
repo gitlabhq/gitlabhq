@@ -123,6 +123,8 @@ module QuickActions
     end
 
     def find_milestones(project, params = {})
+      return [] unless project
+
       group_ids = project.group.self_and_ancestors.select(:id) if project.group
 
       MilestonesFinder.new(params.merge(project_ids: [project.id], group_ids: group_ids)).execute

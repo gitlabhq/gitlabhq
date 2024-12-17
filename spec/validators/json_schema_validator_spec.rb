@@ -169,7 +169,7 @@ RSpec.describe JsonSchemaValidator, feature_category: :shared do
 
           expect(job.errors).not_to be_empty
           expect("#{job.errors.first.attribute} #{job.errors.first.type}").to eq(
-            "run value at /0 should use only one of: step, script"
+            "run value at `/0` is not an object"
           )
         end
       end

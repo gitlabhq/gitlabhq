@@ -5,7 +5,7 @@
 = form.fields_for :project_setting do |settings|
   .form-group
     %b= s_('ProjectSettings|Target project')
-    %p.text-secondary
+    %p.gl-text-subtle
       = s_('ProjectSettings|The default target project for merge requests created in this fork project.')
 
     = settings.gitlab_ui_radio_component :mr_default_target_self,

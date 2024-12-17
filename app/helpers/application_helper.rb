@@ -135,7 +135,6 @@ module ApplicationHelper
     {
       page: body_data_page,
       page_type_id: controller.params[:id],
-      find_file: find_file_path(ref_type: @ref_type),
       group: @group&.path,
       group_full_path: @group&.full_path
     }.merge(project_data)
@@ -209,11 +208,11 @@ module ApplicationHelper
   def edited_time_ago_with_tooltip(editable_object, placement: 'top', html_class: 'time_ago', exclude_author: false)
     return unless editable_object.edited?
 
-    content_tag :div, class: 'edited-text gl-mt-4 gl-text-gray-500 gl-text-sm' do
+    content_tag :div, class: 'edited-text gl-mt-4 gl-text-subtle gl-text-sm' do
       timeago = time_ago_with_tooltip(editable_object.last_edited_at, placement: placement, html_class: html_class)
 
       if !exclude_author && editable_object.last_edited_by
-        author_link = link_to_member(editable_object.last_edited_by, avatar: false, extra_class: 'hover:gl-underline gl-text-gray-700', author_class: nil)
+        author_link = link_to_member(editable_object.last_edited_by, avatar: false, extra_class: 'hover:gl-underline gl-text-subtle', author_class: nil)
         output = safe_format(_("Edited %{timeago} by %{author}"), timeago: timeago, author: author_link)
       else
         output = safe_format(_("Edited %{timeago}"), timeago: timeago)

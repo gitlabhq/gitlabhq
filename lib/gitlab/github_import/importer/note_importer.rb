@@ -51,7 +51,7 @@ module Gitlab
           # Gitlab::GithubImport::Importer::NoteAttachmentsImporter.
           ids = ApplicationRecord.legacy_bulk_insert(Note.table_name, [attributes], return_ids: true) # rubocop:disable Gitlab/BulkInsert
 
-          push_refs_with_ids(ids, Note, mapper.user_mapper) if mapper.user_mapping_enabled?
+          push_refs_with_ids(ids, Note, note[:author]&.id, mapper.user_mapper) if mapper.user_mapping_enabled?
         end
 
         # Returns the ID of the issue or merge request to create the note for.

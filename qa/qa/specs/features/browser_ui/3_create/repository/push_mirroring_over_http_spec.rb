@@ -2,7 +2,9 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Push mirror a repository over HTTP', :blocking, product_group: :source_code do
+    describe 'Push mirror a repository over HTTP', product_group: :source_code do
+      let(:user) { Runtime::User::Store.test_user }
+
       it('configures and syncs a (push) mirrored repository',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347741',
         quarantine: {
@@ -11,12 +13,11 @@ module QA
           type: :investigating
         }
       ) do
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        Flow::Login.sign_in
 
         target_project = create(:project, name: 'push-mirror-target-project')
         target_project_uri = target_project.repository_http_location.uri
-        target_project_uri.user = Runtime::User.username
+        target_project_uri.user = user.username
 
         source_project_push = Resource::Repository::ProjectPush.fabricate! do |push|
           push.file_name = 'README.md'
@@ -32,8 +33,8 @@ module QA
             mirror_settings.repository_url = target_project_uri
             mirror_settings.mirror_direction = 'Push'
             mirror_settings.authentication_method = 'Password'
-            mirror_settings.username = Runtime::User.username
-            mirror_settings.password = Runtime::User.password
+            mirror_settings.username = user.username
+            mirror_settings.password = user.password
             mirror_settings.mirror_repository
             mirror_settings.update_uri(target_project_uri)
             mirror_settings.verify_update(target_project_uri)

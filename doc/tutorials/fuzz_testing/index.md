@@ -123,7 +123,8 @@ To create the pipeline file:
 1. Name the file `.gitlab-ci.yml` and add the following code:
 
    ```yaml
-   image: node:18
+   default:
+     image: node:18
 
    stages:
      - fuzz

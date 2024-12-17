@@ -54,11 +54,11 @@ export default {
     },
   },
   methods: {
-    onClickAction(action) {
+    onClickAction(action, e = null) {
       this.$emit('clickedAction', action);
 
       if (action.onClick) {
-        action.onClick();
+        action.onClick(action, e);
       }
 
       if (action.tooltipOnClick) {
@@ -123,8 +123,8 @@ export default {
       :disabled="btn.loading"
       category="tertiary"
       size="small"
-      class="gl-float-left gl-hidden md:gl-block"
-      @click="onClickAction(btn)"
+      class="gl-float-left gl-hidden md:gl-inline-flex"
+      @click="($event) => onClickAction(btn, $event)"
     >
       <template v-if="btn.text">
         {{ btn.text }}

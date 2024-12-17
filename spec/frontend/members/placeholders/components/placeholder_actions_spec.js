@@ -140,13 +140,13 @@ describe('PlaceholderActions', () => {
       });
     });
 
-    describe('when "Don\'t reassign" is selected', () => {
+    describe('when "Do not reassign" is selected', () => {
       beforeEach(() => {
         findDontReassignButton().vm.$emit('click');
       });
 
-      it('renders listbox with "Don\'t reassign" toggle text', () => {
-        expect(findListbox().props('toggleText')).toBe("Don't reassign");
+      it('renders listbox with "Do not reassign" toggle text', () => {
+        expect(findListbox().props('toggleText')).toBe('Do not reassign');
       });
 
       it('renders confirm button as "Confirm"', () => {

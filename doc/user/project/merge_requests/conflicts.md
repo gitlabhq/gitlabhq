@@ -75,9 +75,7 @@ To resolve merge conflicts with interactive mode:
 1. Select **Overview**, and scroll to the merge request reports section.
 1. Find the merge conflicts message, and select **Resolve conflicts**.
    GitLab shows a list of files with merge conflicts. The lines that conflict are
-   highlighted:
-
-   ![Conflict section](img/conflict_section_v16_7.png)
+   highlighted.
 
 1. For each conflict, select **Use ours** or **Use theirs** to mark the version
    of the conflicted lines you want to keep. This decision is known as

@@ -32,36 +32,7 @@ RSpec.describe 'projects/commit/_commit_box.html.haml' do
       it 'shows pipeline stages in vue' do
         render
 
-        expect(rendered).to have_selector('.js-commit-pipeline-mini-graph')
-      end
-    end
-
-    context 'when there are multiple pipelines for a commit' do
-      it 'shows the last pipeline' do
-        create(:ci_pipeline, project: project, sha: project.commit.id, status: 'success')
-        create(:ci_pipeline, project: project, sha: project.commit.id, status: 'canceled')
-        third_pipeline = create(:ci_pipeline, project: project, sha: project.commit.id, status: 'failed')
-
-        assign(:last_pipeline, third_pipeline)
-
-        render
-
-        expect(rendered).to have_text("Pipeline ##{third_pipeline.id} failed")
-      end
-    end
-
-    context 'when pipeline for the commit is blocked' do
-      let!(:pipeline) do
-        create(:ci_pipeline, :blocked, project: project, sha: project.commit.id)
-      end
-
-      it 'shows correct pipeline description' do
-        assign(:last_pipeline, pipeline)
-
-        render
-
-        expect(rendered).to have_text "Pipeline ##{pipeline.id} " \
-                                      'waiting for manual action'
+        expect(rendered).to have_selector('.js-commit-box-pipeline-summary')
       end
     end
   end

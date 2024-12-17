@@ -1,0 +1,16 @@
+---
+table_name: container_registry_protection_tag_rules
+classes:
+- ContainerRegistry::Protection::TagRule
+feature_categories:
+- container_registry
+description: Represents container repository tag protection rules for the container
+  registry.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172580
+milestone: '17.7'
+gitlab_schema: gitlab_main_cell
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key:
+  project_id: projects
+table_size: small

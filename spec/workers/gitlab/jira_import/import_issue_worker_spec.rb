@@ -18,7 +18,7 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker, feature_category: :importe
   subject { described_class.new }
 
   describe '#perform', :clean_gitlab_redis_shared_state do
-    let(:issue_type_id) { ::WorkItems::Type.default_issue_type.id }
+    let(:issue_type) { ::WorkItems::Type.default_issue_type }
 
     let(:parent_field) do
       { 'key' => 'FOO-2', 'id' => '1050', 'fields' => { 'summary' => 'parent issue FOO' } }
@@ -55,7 +55,7 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker, feature_category: :importe
         project,
         jira_issue,
         user.id,
-        issue_type_id,
+        issue_type,
         params
       ).execute
     end
@@ -86,11 +86,17 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker, feature_category: :importe
       end
 
       context 'when import label exists' do
+        def perform_inline
+          subject.class.perform_inline(project.id, 1050, issue_attrs, some_key)
+        end
+
+        let(:delay_exec) { false }
+
         before do
           Gitlab::JiraImport.cache_import_label_id(project.id, label.id)
           Gitlab::JiraImport.cache_users_mapping(project.id, { '1234' => user.id })
 
-          subject.class.perform_inline(project.id, 1050, issue_attrs, some_key)
+          perform_inline unless delay_exec
         end
 
         it 'does not record import failure' do
@@ -106,6 +112,62 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker, feature_category: :importe
           expect(issue.namespace).to eq(project.project_namespace)
           expect(issue.labels).to eq(project.labels)
           expect(issue.assignees).to eq([user])
+          expect(issue.correct_work_item_type_id).to eq(issue_type.correct_id)
+          expect(issue.work_item_type_id).to eq(issue_type.id)
+        end
+
+        context 'when legacy work_item_type_id was part of the attributes (backward compatibility)' do
+          # Using 0 to make sure there's not another match by different columns
+          let(:old_id) { 0 }
+          let(:issue_type) { ::WorkItems::Type.default_issue_type.tap { |type| type.update!(old_id: old_id) } }
+          let(:work_item_type_id) { old_id }
+          let(:issue_attrs) do
+            Gitlab::JiraImport::IssueSerializer.new(
+              project,
+              jira_issue,
+              user.id,
+              issue_type,
+              params
+            ).execute.except(:correct_work_item_type_id).merge(work_item_type_id: work_item_type_id)
+          end
+
+          it 'creates an issue with the correct type' do
+            issue = Issue.last
+
+            expect(issue.correct_work_item_type_id).to eq(issue_type.correct_id)
+            expect(issue.work_item_type_id).to eq(issue_type.id)
+          end
+
+          context 'when the issues_set_correct_work_item_type_id feature flag is disabled' do
+            let(:delay_exec) { true }
+
+            before do
+              stub_feature_flags(issues_set_correct_work_item_type_id: false)
+            end
+
+            it 'record a failed to import issue, old_id does not exist in the work_item_types.id column' do
+              perform_inline
+
+              expect(
+                Gitlab::Cache::Import::Caching.read(Gitlab::JiraImport.failed_issues_counter_cache_key(project.id)).to_i
+              ).to eq(1)
+            end
+
+            context 'when a correct work_item_types_id is used' do
+              let(:work_item_type_id) { issue_type.id }
+
+              it 'creates an issue with the correct type' do
+                expect(::WorkItems::Type).not_to receive(:find_by_correct_id_with_fallback)
+
+                perform_inline
+
+                issue = Issue.last
+
+                expect(issue.correct_work_item_type_id).to eq(issue_type.correct_id)
+                expect(issue.work_item_type_id).to eq(issue_type.id)
+              end
+            end
+          end
         end
 
         context 'when assignee_ids is nil' do

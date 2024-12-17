@@ -39,14 +39,6 @@ RSpec.describe ::Packages::Npm::ProcessPackageFileService, feature_category: :pa
       it_behaves_like 'raising an error', 'invalid package file'
     end
 
-    context 'when linked to a non npm package' do
-      before do
-        allow(package).to receive(:npm?).and_return(false)
-      end
-
-      it_behaves_like 'raising an error', 'invalid package file'
-    end
-
     context 'with a 0 byte package file' do
       before do
         allow(package_file.file).to receive(:size).and_return(0)

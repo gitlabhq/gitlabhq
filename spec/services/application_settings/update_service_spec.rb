@@ -255,19 +255,19 @@ RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
     end
 
     it 'does not validate labels if external authorization gets disabled' do
-      expect_any_instance_of(described_class).not_to receive(:validate_classification_label)
+      expect_any_instance_of(described_class).not_to receive(:validate_classification_label_param!)
 
       described_class.new(application_settings, admin, { external_authorization_service_enabled: false }).execute
     end
 
     it 'does validate labels if external authorization gets enabled' do
-      expect_any_instance_of(described_class).to receive(:validate_classification_label)
+      expect_any_instance_of(described_class).to receive(:validate_classification_label_param!)
 
       described_class.new(application_settings, admin, { external_authorization_service_enabled: true }).execute
     end
 
     it 'does validate labels if external authorization is left unchanged' do
-      expect_any_instance_of(described_class).to receive(:validate_classification_label)
+      expect_any_instance_of(described_class).to receive(:validate_classification_label_param!)
 
       described_class.new(application_settings, admin, { external_authorization_service_default_label: 'new-label' }).execute
     end
@@ -523,8 +523,20 @@ RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
     context 'when it goes from enabled to disabled' do
       let(:params) { { require_admin_approval_after_user_signup: false } }
 
-      it 'calls ApproveBlockedPendingApprovalUsersWorker' do
-        expect(ApproveBlockedPendingApprovalUsersWorker).to receive(:perform_async)
+      describe 'when auto approval is enabled' do
+        let(:params) { { require_admin_approval_after_user_signup: false, auto_approve_pending_users: 'true' } }
+
+        it 'calls ApproveBlockedPendingApprovalUsersWorker' do
+          expect(ApproveBlockedPendingApprovalUsersWorker).to receive(:perform_async)
+
+          subject.execute
+        end
+      end
+
+      it 'does not call ApproveBlockedPendingApprovalUsersWorker' do
+        application_settings.update!(require_admin_approval_after_user_signup: false)
+
+        expect(ApproveBlockedPendingApprovalUsersWorker).not_to receive(:perform_async)
 
         subject.execute
       end

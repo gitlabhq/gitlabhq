@@ -614,16 +614,16 @@ Remember to adjust the Maven version, Java version, and other specifics accordin
 This example configures a pipeline that builds and publishes a Maven package:
 
 ```yaml
-image: maven:3.8.5-openjdk-17
+default:
+  image: maven:3.8.5-openjdk-17
+  cache:
+    paths:
+      - .m2/repository/
+      - target/
 
 variables:
   MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
-
-cache:
-  paths:
-    - .m2/repository/
-    - target/
 
 stages:
   - build
@@ -653,16 +653,16 @@ publish:
 For larger projects with multiple modules, you can use parallel jobs to speed up the build process:
 
 ```yaml
-image: maven:3.8.5-openjdk-17
+default:
+  image: maven:3.8.5-openjdk-17
+  cache:
+    paths:
+      - .m2/repository/
+      - target/
 
 variables:
   MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
-
-cache:
-  paths:
-    - .m2/repository/
-    - target/
 
 stages:
   - build
@@ -695,16 +695,16 @@ publish:
 This example creates versioned releases when a tag is pushed:
 
 ```yaml
-image: maven:3.8.5-openjdk-17
+default:
+  image: maven:3.8.5-openjdk-17
+  cache:
+    paths:
+      - .m2/repository/
+      - target/
 
 variables:
   MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
-
-cache:
-  paths:
-    - .m2/repository/
-    - target/
 
 stages:
   - build
@@ -726,8 +726,8 @@ publish:
   stage: publish
   script:
     - mvn $MAVEN_CLI_OPTS deploy
-  only:
-    - main
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 release:
   stage: release
@@ -743,16 +743,16 @@ release:
 This example publishes packages only when certain files are changed:
 
 ```yaml
-image: maven:3.8.5-openjdk-17
+default:
+  image: maven:3.8.5-openjdk-17
+  cache:
+    paths:
+      - .m2/repository/
+      - target/
 
 variables:
   MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
-
-cache:
-  paths:
-    - .m2/repository/
-    - target/
 
 stages:
   - build
@@ -773,12 +773,11 @@ publish:
   stage: publish
   script:
     - mvn $MAVEN_CLI_OPTS deploy
-  only:
-    - main
   rules:
-    - changes:
-      - pom.xml
-      - src/**/*
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      changes:
+        - pom.xml
+        - src/**/*
 ```
 
 ### Integration with code quality and security scans
@@ -786,7 +785,12 @@ publish:
 This example integrates code quality checks and security scans into the pipeline:
 
 ```yaml
-image: maven:3.8.5-openjdk-17
+default:
+  image: maven:3.8.5-openjdk-17
+  cache:
+    paths:
+      - .m2/repository/
+      - target/
 
 variables:
   MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
@@ -795,11 +799,6 @@ variables:
 include:
   - template: Security/SAST.gitlab-ci.yml
   - template: Code-Quality.gitlab-ci.yml
-
-cache:
-  paths:
-    - .m2/repository/
-    - target/
 
 stages:
   - build
@@ -859,11 +858,12 @@ Your changes are automatically saved.
 
 ### Request forwarding to Maven Central
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85299) in GitLab 15.4 [with a flag](../../../administration/feature_flags.md) named `maven_central_request_forwarding`. Disabled by default.
 > - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
 
 FLAG:
-By default this feature is not available for self-managed. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `maven_central_request_forwarding`.
-This feature is not available for GitLab.com or GitLab Dedicated users.
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
 
 When a Maven package is not found in the package registry, the request is forwarded
 to [Maven Central](https://search.maven.org/).

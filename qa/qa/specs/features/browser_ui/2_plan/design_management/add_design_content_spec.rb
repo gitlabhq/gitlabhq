@@ -18,7 +18,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'user adds a design and annotates it', :blocking,
+      it 'user adds a design and annotates it',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347822' do
         issue.visit!
 

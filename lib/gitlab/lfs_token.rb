@@ -74,7 +74,7 @@ module Gitlab
       ActionController::HttpAuthentication::Basic.encode_credentials(actor_name, token)
     end
 
-    private # rubocop:disable Lint/UselessAccessModifier
+    private
 
     attr_reader :container
 

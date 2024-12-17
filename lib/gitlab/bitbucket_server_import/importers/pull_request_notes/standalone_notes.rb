@@ -13,10 +13,12 @@ module Gitlab
               comment_id: comment[:id]
             )
 
-            merge_request.notes.create!(pull_request_comment_attributes(comment))
+            note = merge_request.notes.create!(pull_request_comment_attributes(comment))
+            push_reference(note.project, note, :author_id, comment[:author_username])
 
             comment[:comments].each do |reply|
-              merge_request.notes.create!(pull_request_comment_attributes(reply))
+              note = merge_request.notes.create!(pull_request_comment_attributes(reply))
+              push_reference(note.project, note, :author_id, reply[:author_username])
             end
           rescue StandardError => e
             Gitlab::ErrorTracking.log_exception(

@@ -68,29 +68,6 @@ RSpec.describe Projects::GoogleCloud::ConfigurationController, feature_category:
       end
     end
 
-    context 'but feature flag is disabled' do
-      before do
-        stub_feature_flags(incubation_5mp_google_cloud: false)
-      end
-
-      it 'returns not found' do
-        authorized_members.each do |authorized_member|
-          sign_in(authorized_member)
-
-          get url
-
-          expect(response).to have_gitlab_http_status(:not_found)
-          expect_snowplow_event(
-            category: 'Projects::GoogleCloud::ConfigurationController',
-            action: 'error_feature_flag_not_enabled',
-            label: nil,
-            project: project,
-            user: authorized_member
-          )
-        end
-      end
-    end
-
     context 'but google oauth2 token is not valid' do
       it 'does not return revoke oauth url' do
         allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |client|

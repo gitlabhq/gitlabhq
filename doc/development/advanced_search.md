@@ -1,5 +1,5 @@
 ---
-stage: Data Stores
+stage: Foundations
 group: Global Search
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
@@ -146,9 +146,6 @@ and the [`word_delimiter_graph`](https://www.elastic.co/guide/en/elasticsearch/r
 The `whitespace` tokenizer was selected to have more control over how tokens are split. For example the string `Foo::bar(4)` needs to generate tokens like `Foo` and `bar(4)` to be properly searched.
 
 See the `code` filter for an explanation on how tokens are split.
-
-NOTE:
-The [Elasticsearch `code_analyzer` doesn't account for all code cases](../integration/advanced_search/elasticsearch_troubleshooting.md#elasticsearch-code_analyzer-doesnt-account-for-all-code-cases).
 
 ### Tokenizers
 

@@ -102,7 +102,7 @@ export default {
     onSuccess(event) {
       this.beforeDisplayResults();
 
-      const [{ newToken }] = convertEventDetail(event);
+      const [{ newToken, total }] = convertEventDetail(event);
       this.newToken = newToken;
 
       this.alert = createAlert({ message: this.alertInfoMessage, variant: VARIANT_INFO });
@@ -112,6 +112,11 @@ export default {
       this.form.querySelectorAll('input[type=text]:not([id$=expires_at])').forEach((el) => {
         el.value = '';
       });
+
+      this.form.querySelectorAll('textarea').forEach((el) => {
+        el.value = '';
+      });
+
       this.form.querySelectorAll('input[type=checkbox]').forEach((el) => {
         el.checked = false;
       });
@@ -119,8 +124,7 @@ export default {
       document.querySelectorAll('.js-token-card').forEach((el) => {
         el.querySelector('.js-add-new-token-form').style.display = '';
         el.querySelector('.js-toggle-button').style.display = 'block';
-        el.querySelector('.js-token-count').innerText =
-          parseInt(el.querySelector('.js-token-count').innerText, 10) + 1;
+        el.querySelector('.js-token-count').innerText = total;
       });
     },
   },

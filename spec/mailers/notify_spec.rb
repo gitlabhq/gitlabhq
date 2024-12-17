@@ -1887,11 +1887,10 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
       subject { @email = described_class.send_admin_notification(user.id, 'Admin announcement', 'Text') }
 
-      it 'is sent as the author' do
-        sender = subject.header[:from].addrs[0]
-        expect(sender.display_name).to eq("GitLab")
-        expect(sender.address).to eq(gitlab_sender)
-      end
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'appearance header and footer enabled'
+      it_behaves_like 'appearance header and footer not enabled'
 
       it 'is sent to recipient' do
         is_expected.to deliver_to user.email
@@ -1905,6 +1904,21 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         unsubscribe_link = "http://localhost/unsubscribes/#{Base64.urlsafe_encode64(user.email)}"
         is_expected.to have_body_text(unsubscribe_link)
       end
+    end
+  end
+
+  describe 'admin unsubscribe notification' do
+    let(:user) { create(:user) }
+
+    subject { @email = described_class.send_unsubscribed_notification(user.id) }
+
+    it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+
+    it 'is sent to recipient' do
+      is_expected.to deliver_to user.email
     end
   end
 

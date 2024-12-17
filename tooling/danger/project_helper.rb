@@ -23,7 +23,7 @@ module Tooling
 
         [%r{usage_data\.rb}, %r{^(\+|-).*\s+(count|distinct_count|estimate_batch_distinct_count)\(.*\)(.*)$}] => [:database, :backend, :analytics_instrumentation],
 
-        %r{\A((ee|jh)/)?config/feature_flags/} => :feature_flag,
+        %r{\A((ee|jh)/)?config/feature_flags/.*(\.(yml|yaml))\z} => :feature_flag,
 
         %r{doc/api/usage_data.md} => [:analytics_instrumentation],
 
@@ -75,7 +75,6 @@ module Tooling
           \.babelrc |
           \.browserslistrc |
           \.eslintignore |
-          \.eslintrc(\.yml)? |
           \.nvmrc |
           \.prettierignore |
           \.prettierrc |
@@ -83,6 +82,7 @@ module Tooling
           \.haml-lint.yml |
           \.haml-lint_todo.yml |
           babel\.config\.js |
+          eslint\.config\.mjs |
           jest\.config\.js |
           package\.json |
           yarn\.lock |

@@ -1,0 +1,25 @@
+#import "./fragments/design_note.fragment.graphql"
+#import "./fragments/design_todo_item.fragment.graphql"
+
+mutation createImageWorkItemDiffNote($input: CreateImageDiffNoteInput!) {
+  createImageDiffNote(input: $input) {
+    note {
+      ...DesignNote
+      discussion {
+        id
+        replyId
+        noteable {
+          ... on Design {
+            ...DesignTodoItem
+          }
+        }
+        notes {
+          nodes {
+            ...DesignNote
+          }
+        }
+      }
+    }
+    errors
+  }
+}

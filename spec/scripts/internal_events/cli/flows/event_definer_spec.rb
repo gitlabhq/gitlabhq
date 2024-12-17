@@ -36,7 +36,7 @@ RSpec.describe 'InternalEventsCli::Flows::EventDefiner', :aggregate_failures, fe
       ])
 
       with_cli_thread do
-        expect { prompt.output.string }.to eventually_include_cli_text('Step 3 / 7')
+        expect { prompt.output.string }.to eventually_include_cli_text('Step 3 / 8')
       end
     end
   end

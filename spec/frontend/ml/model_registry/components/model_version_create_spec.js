@@ -3,9 +3,10 @@ import VueApollo from 'vue-apollo';
 import { GlAlert } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
+import { visitUrl, visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import ModelVersionCreate from '~/ml/model_registry/components/model_version_create.vue';
 import ImportArtifactZone from '~/ml/model_registry/components/import_artifact_zone.vue';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import { uploadModel } from '~/ml/model_registry/services/upload_model';
 import createModelVersionMutation from '~/ml/model_registry/graphql/mutations/create_model_version.mutation.graphql';
@@ -19,6 +20,7 @@ Vue.use(VueApollo);
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
+  visitUrl: jest.fn(),
   visitUrlWithAlerts: jest.fn(),
 }));
 
@@ -51,6 +53,7 @@ describe('ModelVersionCreate', () => {
 
     wrapper = shallowMountExtended(ModelVersionCreate, {
       propsData: {
+        modelPath: 'some/project/model/path',
         projectPath: 'some/project',
         markdownPreviewPath: '/markdown-preview',
       },
@@ -62,13 +65,13 @@ describe('ModelVersionCreate', () => {
       },
       apolloProvider,
       stubs: {
+        PageHeading,
         UploadDropzone,
       },
     });
   };
 
-  const findTitle = () => wrapper.findByTestId('title');
-  const findDescription = () => wrapper.findByTestId('description');
+  const findDescription = () => wrapper.findByTestId('page-heading-description');
   const findPrimaryButton = () => wrapper.findByTestId('primary-button');
   const findSecondaryButton = () => wrapper.findByTestId('secondary-button');
   const findVersionInput = () => wrapper.findByTestId('versionId');
@@ -90,7 +93,7 @@ describe('ModelVersionCreate', () => {
 
     describe('Form', () => {
       it('renders the title', () => {
-        expect(findTitle().text()).toBe('New version');
+        expect(wrapper.findByRole('heading').text()).toBe('New version');
       });
 
       it('renders the description', () => {
@@ -281,11 +284,9 @@ describe('ModelVersionCreate', () => {
     it('clicking on secondary button clears the form', async () => {
       createWrapper();
 
-      await findVersionInput().vm.$emit('input', '1.0.0');
-
       await findSecondaryButton().vm.$emit('click');
 
-      expect(findVersionInput().attributes('value')).toBe(undefined);
+      expect(visitUrl).toHaveBeenCalledWith('some/project/model/path');
     });
   });
 
@@ -293,6 +294,8 @@ describe('ModelVersionCreate', () => {
     it('Displays an alert upon failed create mutation', async () => {
       const failedCreateResolver = jest.fn().mockResolvedValue(createModelVersionResponses.failure);
       createWrapper(failedCreateResolver);
+
+      findVersionInput().vm.$emit('input', '1.0.0');
 
       await submitForm();
 

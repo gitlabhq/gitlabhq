@@ -44,11 +44,7 @@ module PersonalAccessTokens
     delegate :over_time?, to: :runtime_limiter
 
     def notification_intervals
-      if Feature.enabled?(:expiring_pats_30d_60d_notifications, :instance)
-        PersonalAccessToken::NOTIFICATION_INTERVALS.keys
-      else
-        [:seven_days]
-      end
+      PersonalAccessToken::NOTIFICATION_INTERVALS.keys
     end
 
     def process_user_tokens(interval = :seven_days)

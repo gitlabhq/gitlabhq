@@ -4,17 +4,17 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group service accounts
+# Group service accounts API
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Interact with [service accounts](../user/profile/service_accounts.md) by using the REST API.
+Use this API to interact with service accounts for your groups. For more information, see [Service accounts](../user/profile/service_accounts.md).
 
 Prerequisites:
 
-- You must be an administrator of the self-managed instance, or have the Owner role for the GitLab.com group.
+- You must have administrator access to the self-managed instance, or have the Owner role for the GitLab.com group.
 
 ## List service account users
 
@@ -169,6 +169,8 @@ Example response:
 ## Rotate a personal access token for a service account user
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
+
+Creates a new token valid for one week and revokes any previous tokens.
 
 This API endpoint works on top-level groups only. It does not work on subgroups.
 

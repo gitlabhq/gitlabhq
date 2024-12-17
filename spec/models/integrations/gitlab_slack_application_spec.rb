@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Integrations::GitlabSlackApplication, feature_category: :integrations do
   include AfterNextHelpers
 
-  it_behaves_like Integrations::BaseSlackNotification, factory: :gitlab_slack_application_integration do
+  it_behaves_like Integrations::Base::SlackNotification, factory: :gitlab_slack_application_integration do
     before do
       stub_request(:post, "#{::Slack::API::BASE_URL}/chat.postMessage").to_return(body: '{"ok":true}')
     end

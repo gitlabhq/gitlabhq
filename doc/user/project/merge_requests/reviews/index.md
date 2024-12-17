@@ -95,7 +95,8 @@ In this example, the merge request requires 3 Code Owner approvals, but has none
 ### Re-request a review
 
 After a reviewer completes their [merge request reviews](../../../discussions/index.md),
-the author of the merge request can request a new review from the reviewer:
+the author of the merge request can request a new review from the reviewer.
+To do this, either use the `/request_review @user` quick action in any text field on the merge request, or:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find your merge request.

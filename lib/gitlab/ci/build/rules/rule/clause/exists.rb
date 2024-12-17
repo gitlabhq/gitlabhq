@@ -8,7 +8,7 @@ module Gitlab
 
         # The maximum number of patterned glob comparisons that will be
         # performed before the rule assumes that it has a match
-        MAX_PATTERN_COMPARISONS = 10_000
+        MAX_PATTERN_COMPARISONS = 50_000
 
         WILDCARD_NESTED_PATTERN = "**/*"
 
@@ -18,13 +18,13 @@ module Gitlab
           @ref = clause[:ref]
         end
 
-        def satisfied_by?(pipeline, context)
+        def satisfied_by?(_pipeline, context)
           # Return early to avoid redundant Gitaly calls
           return false unless @globs.any?
 
-          context = change_context(context, pipeline) if @project_path
+          context = change_context(context) if @project_path
 
-          expanded_globs = expand_globs(context, pipeline)
+          expanded_globs = expand_globs(context)
           top_level_only = expanded_globs.all?(&method(:top_level_glob?))
 
           paths = worktree_paths(context, top_level_only)
@@ -42,15 +42,9 @@ module Gitlab
           grouped.values_at(:exact, :extension, :pattern).map { |globs| Array(globs) }
         end
 
-        def expand_globs(context, pipeline)
-          if Feature.enabled?(:expand_nested_variables_in_job_rules_exists_and_changes, pipeline&.project)
-            @globs.map do |glob|
-              expand_value_nested(glob, context)
-            end
-          else
-            @globs.map do |glob|
-              expand_value(glob, context)
-            end
+        def expand_globs(context)
+          @globs.map do |glob|
+            expand_value_nested(glob, context)
           end
         end
 
@@ -91,7 +85,19 @@ module Gitlab
         end
 
         def pattern_matches?(paths, pattern_globs, context)
-          return true if (paths.size * pattern_globs.size) > MAX_PATTERN_COMPARISONS
+          comparisons = paths.size * pattern_globs.size
+
+          if comparisons > MAX_PATTERN_COMPARISONS
+            Gitlab::AppJsonLogger.info(
+              class: self.class.name,
+              message: 'rules:exists pattern comparisons limit exceeded',
+              project_id: context.project&.id,
+              paths_size: paths.size,
+              globs_size: pattern_globs.size,
+              comparisons: comparisons
+            )
+            return true
+          end
 
           pattern_globs.any? do |glob|
             Gitlab::SafeRequestStore.fetch("ci_rules_exists_pattern_matches_#{context.project&.id}_#{glob}") do
@@ -127,10 +133,10 @@ module Gitlab
           glob.delete_prefix(WILDCARD_NESTED_PATTERN)
         end
 
-        def change_context(old_context, pipeline)
+        def change_context(old_context)
           user = find_context_user(old_context)
-          new_project = find_context_project(user, old_context, pipeline)
-          new_sha = find_context_sha(new_project, old_context, pipeline)
+          new_project = find_context_project(user, old_context)
+          new_sha = find_context_sha(new_project, old_context)
 
           Gitlab::Ci::Config::External::Context.new(
             project: new_project,
@@ -144,13 +150,8 @@ module Gitlab
           context.is_a?(Gitlab::Ci::Config::External::Context) ? context.user : context.pipeline.user
         end
 
-        def find_context_project(user, context, pipeline)
-          full_path = if Feature.enabled?(:expand_nested_variables_in_job_rules_exists_and_changes, pipeline.project)
-                        expand_value_nested(@project_path, context)
-                      else
-                        expand_value(@project_path, context)
-                      end
-
+        def find_context_project(user, context)
+          full_path = expand_value_nested(@project_path, context)
           project = Project.find_by_full_path(full_path)
 
           unless project
@@ -167,16 +168,10 @@ module Gitlab
           project
         end
 
-        def find_context_sha(project, context, pipeline)
+        def find_context_sha(project, context)
           return project.commit&.sha unless @ref
 
-          ref = if Feature.enabled?(:expand_nested_variables_in_job_rules_exists_and_changes,
-            pipeline.project)
-                  expand_value_nested(@ref, context)
-                else
-                  expand_value(@ref, context)
-                end
-
+          ref = expand_value_nested(@ref, context)
           commit = project.commit(ref)
 
           unless commit
@@ -196,10 +191,6 @@ module Gitlab
               str
             end
           end
-        end
-
-        def expand_value(value, context)
-          ExpandVariables.expand_existing(value, -> { context.variables_hash })
         end
 
         def expand_value_nested(value, context)

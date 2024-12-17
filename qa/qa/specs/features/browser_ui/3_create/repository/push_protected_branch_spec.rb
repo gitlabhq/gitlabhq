@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :blocking, product_group: :source_code do
+  RSpec.describe 'Create', product_group: :source_code do
     describe 'Protected branch support' do
       let(:branch_name) { 'protected-branch' }
       let(:commit_message) { 'Protected push commit message' }

@@ -110,6 +110,10 @@ RSpec.describe LooseForeignKeys::CleanupWorker, feature_category: :cell do
       time += 2.minutes
     when :ci
       time += 3.minutes
+    when :sec
+      time += 4.minutes
+    else
+      raise "Unsupported DB: #{db}"
     end
 
     travel_to(time) do
@@ -175,6 +179,7 @@ RSpec.describe LooseForeignKeys::CleanupWorker, feature_category: :cell do
       where(:database_name, :feature_flag) do
         :main | :loose_foreign_keys_turbo_mode_main
         :ci   | :loose_foreign_keys_turbo_mode_ci
+        :sec  | :loose_foreign_keys_turbo_mode_sec
       end
 
       with_them do
@@ -205,6 +210,7 @@ RSpec.describe LooseForeignKeys::CleanupWorker, feature_category: :cell do
       where(:database_name, :feature_flag) do
         :main | :loose_foreign_keys_turbo_mode_main
         :ci   | :loose_foreign_keys_turbo_mode_ci
+        :sec  | :loose_foreign_keys_turbo_mode_sec
       end
 
       with_them do

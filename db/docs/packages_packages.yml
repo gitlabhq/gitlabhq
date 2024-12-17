@@ -8,20 +8,19 @@ classes:
 - Packages::Go::Package
 - Packages::Helm::Package
 - Packages::MlModel::Package
+- Packages::Npm::Package
 - Packages::Nuget::Package
 - Packages::Package
 - Packages::Pypi::Package
-- Packages::TerraformModule::Package
 - Packages::Rpm::Package
 - Packages::Rubygems::Package
+- Packages::TerraformModule::Package
 feature_categories:
 - package_registry
 description: Information for individual packages in the package registry
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6607
 milestone: '11.3'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   project_id: projects
 table_size: medium

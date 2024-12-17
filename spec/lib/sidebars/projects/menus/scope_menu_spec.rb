@@ -23,6 +23,6 @@ RSpec.describe Sidebars::Projects::Menus::ScopeMenu, feature_category: :navigati
   describe '#container_html_options' do
     subject { described_class.new(context).container_html_options }
 
-    specify { is_expected.to match(hash_including(class: 'shortcuts-project')) }
+    it { is_expected.to match(hash_including(class: 'shortcuts-project')) }
   end
 end

@@ -9,6 +9,7 @@
     - "\n" # Skip MR URL
     - "instrumentation" # Filters to the analytics instrumentation group
     - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - " \n" # Select product category
     - "1\n" # Select: [free, premium, ultimate]
     - "y\n" # Create file
     - "\n" # Select: Create Metric --- define a new metric
@@ -38,6 +39,7 @@
     - "\n" # Skip MR URL
     - "instrumentation" # Filters to the analytics instrumentation group
     - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - " \n" # Select product category
     - "1\n" # Select [free, premium, ultimate]
     - "y\n" # Create file
     - "4\n" # Exit
@@ -46,7 +48,7 @@
     - path: config/events/internal_events_cli_used.yml
       content: spec/fixtures/scripts/internal_events/events/event_with_identifiers.yml
 
-- description: Does not allow existing events for action
+- description: Does not allow existing events for action; Allows explictly blank product categories
   inputs:
     files:
       - path: config/events/internal_events_cli_used.yml
@@ -61,6 +63,7 @@
     - "\n" # Skip MR URL
     - "instrumentation" # Filters to the analytics instrumentation group
     - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - "\e[A \n" # Skip product category
     - "1\n" # Select [free, premium, ultimate]
     - "y\n" # Create file
     - "4\n" # Exit
@@ -80,6 +83,7 @@
     - "\n" # Skip MR URL
     - "instrumentation" # Filters to the analytics instrumentation group
     - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - " \n" # Select product category
     - "2\n" # Select [premium, ultimate]
     - "y\n" # Create file
     - "4\n" # Exit
@@ -98,6 +102,7 @@
     - "\n" # Select (add props): None! Continue to next step!
     - "\n" # Skip MR URL
     - "\n" # Select core_platform:manage:import_and_integrate
+    - " \n" # Select product category
     - "\n" # Select [free, premium, ultimate]
     - "\n" # Create file
     - "\n" # Select: Create Metric --- define a new metric
@@ -116,10 +121,8 @@
     files:
     - path: config/events/random_name.yml
       content: spec/fixtures/scripts/internal_events/events/keyboard_smashed_event.yml
-    - path: config/metrics/counts_28d/count_distinct_user_id_from_random_name_monthly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/keyboard_smashed_metric_28d.yml
-    - path: config/metrics/counts_7d/count_distinct_user_id_from_random_name_weekly.yml
-      content: spec/fixtures/scripts/internal_events/metrics/keyboard_smashed_metric_7d.yml
+    - path: config/metrics/counts_all/count_distinct_user_id_from_random_name.yml
+      content: spec/fixtures/scripts/internal_events/metrics/keyboard_smashed_metric.yml
 
 - description: Creates an event after helping the user figure out next steps
   inputs:
@@ -136,6 +139,7 @@
     - "\n" # Skip MR URL
     - "instrumentation" # Filters to the analytics instrumentation group
     - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - " \n" # Select product category
     - "2\n" # Select [premium, ultimate]
     - "y\n" # Create file
     - "4\n" # Exit
@@ -155,6 +159,7 @@
     - "\n" # Skip MR URL
     - "instrumentation" # Filters to the analytics instrumentation group
     - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - " \n" # Select product category
     - "1\n" # Select: [free, premium, ultimate]
     - "y\n" # Create file
     - "3\n" # Select: View Usage
@@ -176,6 +181,7 @@
     - "\n" # Skip MR URL
     - "instrumentation" # Filters to the analytics instrumentation group
     - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - " \n" # Select product category
     - "1\n" # Select: [free, premium, ultimate]
     - "n\n" # Create file
     - "\n" # Select: Save event & create Metric --- define a new metric
@@ -192,7 +198,7 @@
     - path: config/metrics/counts_all/count_total_internal_events_cli_used.yml
       content: spec/fixtures/scripts/internal_events/metrics/total_single_event.yml
 
-- description: Creates a new event with an entirely valid output
+- description: Creates a new event with an entirely valid output; Allows multiple product categories
   inputs:
     keystrokes:
     - "1\n" # Enum-select: New Event -- start tracking when an action or scenario occurs on gitlab instances
@@ -203,6 +209,8 @@
     - "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143433\n" # Submit MR URL
     - "instrumentation" # Filters to the analytics instrumentation group
     - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - " " # Select default product category: service_ping
+    - "set \n" # Select additional product category: settings
     - "1\n" # Select: [free, premium, ultimate]
     - "y\n" # Create file
     - "4\n" # Exit
@@ -229,6 +237,7 @@
     - "\n" # Skip MR URL
     - "instrumentation" # Filters to the analytics instrumentation group
     - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - " \n" # Select product category
     - "1\n" # Select: [free, premium, ultimate]
     - "y\n" # Create file
     - "4\n" # Exit
@@ -237,7 +246,7 @@
     - path: config/events/internal_events_cli_used.yml
       content: spec/fixtures/scripts/internal_events/events/event_with_additional_properties.yml
 
-- description: Creates two events
+- description: Creates two events without exiting the CLI
   inputs:
     keystrokes:
     - "1\n" # Enum-select: New Event -- start tracking when an action or scenario occurs on gitlab instances
@@ -248,6 +257,8 @@
     - "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143433\n" # Submit MR URL
     - "instrumentation" # Filters to the analytics instrumentation group
     - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - " " # Select default product category: service_ping
+    - "set \n" # Select additional product category: settings
     - "1\n" # Select: [free, premium, ultimate]
     - "y\n" # Create file
     - "1\n" # Create another event
@@ -258,6 +269,7 @@
     - "\n" # Skip MR URL
     - "instrumentation" # Filters to the analytics instrumentation group
     - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - " \n" # Select default product category: service_ping
     - "2\n" # Select [premium, ultimate]
     - "y\n" # Create file
     - "4\n" # Exit
@@ -288,6 +300,7 @@
     - "\n" # Skip MR URL
     - "instrumentation" # Filters to the analytics instrumentation group
     - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - " \n" # Select product category
     - "1\n" # Select: [free, premium, ultimate]
     - "y\n" # Create file
     - "4\n" # Exit

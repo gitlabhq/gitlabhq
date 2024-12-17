@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_category: :importers do
-  let_it_be(:namespace) { create(:namespace) }
+  let_it_be(:namespace) { create(:group) }
   let_it_be(:import_type) { 'github' }
   let_it_be(:source_hostname) { 'https://github.com' }
 
@@ -96,6 +96,31 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
         end
       end
 
+      context 'when another source user was created before the lease was obtained' do
+        let(:race_condition_source_user) do
+          create(:import_source_user,
+            namespace: namespace,
+            import_type: import_type,
+            source_hostname: source_hostname,
+            source_name: source_name,
+            source_username: source_username,
+            source_user_identifier: source_user_identifier
+          )
+        end
+
+        it 'returns the existing source user' do
+          expect_next_instance_of(described_class) do |source_user_mapper|
+            expect(source_user_mapper).to receive(:create_source_user).and_wrap_original do |original_method, **args|
+              race_condition_source_user
+
+              original_method.call(**args)
+            end
+          end
+
+          expect(find_or_create_source_user).to eq(race_condition_source_user)
+        end
+      end
+
       context 'when retried and another source user is not created while waiting' do
         before do
           allow_next_instance_of(described_class) do |source_user_mapper|
@@ -175,6 +200,20 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
       end
     end
 
+    context 'when namespace is a personal namespace' do
+      let_it_be(:namespace) { create(:namespace) }
+      let_it_be(:import_user) { create(:namespace_import_user, namespace: namespace).import_user }
+
+      it 'does not create any placeholder users and assigns the import user' do
+        expect { find_or_create_source_user }
+          .to change { Import::SourceUser.count }.by(1)
+
+        new_import_source_user = Import::SourceUser.last
+
+        expect(new_import_source_user.placeholder_user).to eq(import_user)
+      end
+    end
+
     context 'when ActiveRecord::RecordNotUnique exception is raised during the source user creation' do
       before do
         allow_next_instance_of(::Import::SourceUser) do |source_user|
@@ -182,18 +221,18 @@ RSpec.describe Gitlab::Import::SourceUserMapper, :request_store, feature_categor
         end
       end
 
-      it 'raises DuplicatedSourceUserError' do
-        expect { find_or_create_source_user }.to raise_error(described_class::DuplicatedSourceUserError)
+      it 'raises DuplicatedUserError' do
+        expect { find_or_create_source_user }.to raise_error(described_class::DuplicatedUserError)
       end
     end
 
     context 'when ActiveRecord::RecordInvalid exception because the placeholder user email or username is taken' do
-      it 'rescue the exception and raises DuplicatedSourceUserError' do
+      it 'rescue the exception and raises DuplicatedUserError' do
         create(:user, email: 'user@example.com')
         user = build(:user, email: 'user@example.com').tap(&:valid?)
         allow(User).to receive(:new).and_return(user)
 
-        expect { find_or_create_source_user }.to raise_error(described_class::DuplicatedSourceUserError)
+        expect { find_or_create_source_user }.to raise_error(described_class::DuplicatedUserError)
       end
     end
 

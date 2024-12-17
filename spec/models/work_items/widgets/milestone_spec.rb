@@ -24,4 +24,8 @@ RSpec.describe WorkItems::Widgets::Milestone do
 
     it { is_expected.to eq(work_item.milestone) }
   end
+
+  describe '.quick_action_commands' do
+    it { expect(described_class.quick_action_commands).to match_array([:milestone, :remove_milestone]) }
+  end
 end

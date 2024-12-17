@@ -15,7 +15,6 @@ import { escape } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { IdState } from 'vendor/vue-virtual-scroller';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { __, s__, sprintf } from '~/locale';
@@ -48,7 +47,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
-  mixins: [IdState({ idProp: (vm) => vm.diffFile.file_hash }), glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin()],
   i18n: {
     ...DIFF_FILE_HEADER,
     compareButtonLabel: __('Compare submodule commit revisions'),
@@ -98,11 +97,6 @@ export default {
       required: false,
       default: false,
     },
-  },
-  idState() {
-    return {
-      moreActionsShown: false,
-    };
   },
   computed: {
     ...mapState('diffs', ['latestDiff']),
@@ -246,9 +240,6 @@ export default {
         }
       }
     },
-    setMoreActionsShown(val) {
-      this.idState.moreActionsShown = val;
-    },
     toggleReview(newReviewedStatus) {
       // this is the easiest way to hide an already open tooltip that triggers on focus
       document.activeElement.blur();
@@ -282,9 +273,6 @@ export default {
 <template>
   <div
     ref="header"
-    :class="{
-      'gl-z-dropdown-menu!': idState.moreActionsShown,
-    }"
     class="js-file-title file-title file-title-flex-parent"
     data-testid="file-title-container"
     :data-qa-file-name="filePath"
@@ -352,7 +340,7 @@ export default {
         v-if="isModeChanged"
         ref="fileMode"
         v-gl-tooltip.hover.focus
-        class="mr-1"
+        class="gl-mr-2 gl-text-subtle"
         :title="$options.i18n.fileModeTooltip"
       >
         {{ diffFile.a_mode }} → {{ diffFile.b_mode }}
@@ -418,8 +406,6 @@ export default {
           class="!gl-pt-0"
           data-testid="options-dropdown-button"
           lazy
-          @show="setMoreActionsShown(true)"
-          @hidden="setMoreActionsShown(false)"
         >
           <template #button-content>
             <gl-icon name="ellipsis_v" class="mr-0" />

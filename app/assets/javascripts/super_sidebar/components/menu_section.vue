@@ -141,12 +141,12 @@ export default {
         </slot>
       </span>
 
-      <span class="gl-truncate-end gl-grow gl-text-gray-900">
+      <span class="gl-truncate-end gl-grow gl-text-default">
         {{ item.title }}
       </span>
 
-      <span class="gl-text-right gl-text-gray-400">
-        <gl-icon class="super-sidebar-mix-blend-mode" :name="collapseIcon" />
+      <span class="gl-text-right">
+        <gl-icon class="super-sidebar-mix-blend-mode" :name="collapseIcon" variant="subtle" />
       </span>
     </button>
 

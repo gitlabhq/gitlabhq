@@ -28,6 +28,10 @@ $diff-file-header: 41px;
       cursor: auto;
     }
 
+    &:has(.dropdown-menu.show) {
+      z-index: $zindex-dropdown-menu;
+    }
+
     @media (max-width: map-get($grid-breakpoints, sm)-1) {
       .file-header-content {
         width: 0;
@@ -74,7 +78,7 @@ $diff-file-header: 41px;
   }
 
   .diff-content {
-    @apply gl-bg-default gl-text-primary;
+    @apply gl-bg-default gl-text-default;
 
     .unfold {
       cursor: pointer;
@@ -329,7 +333,7 @@ $diff-file-header: 41px;
 
       &.active {
         cursor: default;
-        @apply gl-text-primary;
+        @apply gl-text-default;
 
         &:hover {
           text-decoration: none;
@@ -599,6 +603,7 @@ table.code {
 }
 
 .diff-wrap-lines .line_content {
+  font-size: $code-font-size-fixed;
   white-space: pre-wrap;
 }
 

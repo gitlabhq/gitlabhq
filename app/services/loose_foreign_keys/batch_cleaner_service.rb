@@ -35,6 +35,9 @@ module LooseForeignKeys
 
     def execute
       loose_foreign_key_definitions.each do |loose_foreign_key_definition|
+        next if ::Feature.disabled?(:loose_foreign_keys_for_polymorphic_associations) && # rubocop:disable Gitlab/FeatureFlagWithoutActor -- LFK does not know about AR models and associations so we cannot pass an actor
+          loose_foreign_key_definition.options[:conditions]
+
         run_cleaner_service(loose_foreign_key_definition, with_skip_locked: true)
 
         if modification_tracker.over_limit?

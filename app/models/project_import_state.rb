@@ -84,7 +84,7 @@ class ProjectImportState < ApplicationRecord
 
       project.reset_cache_and_import_attrs
 
-      if Gitlab::ImportSources.importer_names.include?(project.import_type) && project.repo_exists?
+      if Gitlab::ImportSources.values.include?(project.import_type) && project.repo_exists? # rubocop: disable Performance/InefficientHashSearch -- not a Hash
         state.run_after_commit do
           Projects::AfterImportWorker.perform_async(project.id)
         end

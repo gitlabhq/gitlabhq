@@ -30,8 +30,8 @@ module Gitlab
         import_table.map(&:name)
       end
 
-      def importer_names
-        import_table.select(&:importer).map(&:name)
+      def has_importer?(name)
+        import_table.select(&:importer).map(&:name).include?(name)
       end
 
       def importer(name)

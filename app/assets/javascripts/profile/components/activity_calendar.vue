@@ -71,7 +71,7 @@ export default {
     />
     <div v-else class="gl-relative gl-inline-block gl-w-full">
       <div ref="calendarSvgContainer"></div>
-      <p class="gl-absolute gl-bottom-0 gl-right-0 gl-mb-0 gl-text-sm gl-text-secondary">
+      <p class="gl-absolute gl-bottom-0 gl-right-0 gl-mb-0 gl-text-sm gl-text-subtle">
         {{ $options.i18n.calendarHint }}
       </p>
     </div>

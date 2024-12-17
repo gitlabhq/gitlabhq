@@ -4,16 +4,13 @@ group: Project Management
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
-# Work items development
+# Work items and work item types
 
-- Work item lists are only available at group level `http://gdk.test:3000/groups/flightjs/-/work_items`,
-  they are enabled with feature flags: `namespace_level_work_items`
-- The new work item UI is available at project level `http://gdk.test:3000/flightjs/Flight/-/work_items/new`
-  after enabling the `work_items_alpha` feature flag.
-- The view/edit work item UI is available at project level `http://gdk.test:3000/flightjs/Flight/-/work_items/:iid`
-  after enabling the `work_items_alpha` feature flag.
-
-You can find more detail about the feature flags in [epic 11777](https://gitlab.com/groups/gitlab-org/-/epics/11777#feature-flags).
+Work items introduce a flexible model that standardizes and extends issue tracking capabilities in GitLab.
+With work items, you can define different types that can be customized with various widgets to meet
+specific needs - whether you're tracking bugs, incidents, test cases, or other units of work.
+This architectural documentation covers the development details and implementation strategies for
+work items and work item types.
 
 ## Challenges
 
@@ -74,6 +71,19 @@ Some terms have been used in the past but have since become confusing and are no
 | ---               | ---         | ---               | ---       |
 | issue type        | A former way to refer to classes of work item | _Tasks are an **issue type**_ | _Tasks are a **work item type**_ |
 
+## Work items development
+
+During development, work items progress through three stages, managed by using feature flags:
+
+1. `work_items_alpha` for internal team testing ([`gitlab-org/plan-stage`](https://gitlab.com/gitlab-org/plan-stage)).
+1. `work_items_beta` for broader internal GitLab testing ([`gitlab-org`](https://gitlab.com/gitlab-org) and [`gitlab-com`](https://gitlab.com/gitlab-com)).
+1. `work_items`, enabled by default for SaaS and self-managed environments.
+
+_Other groups may be included. For the latest information, query the feature flags within [chatops](feature_flags/controls.md)._
+
+For more information about these feature flags, see
+[Work Items Architecture Blueprint](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/#feature-flags).
+
 ## Migration strategy
 
 WI model will be built on top of the existing `Issue` model and we'll gradually migrate `Issue`
@@ -129,7 +139,7 @@ What we will do to achieve this:
 1. Ensure we write to both `issues#issue_type` and `issues#work_item_type_id` columns for
    new or updated issues.
 1. Backfill the `work_item_type_id` column to point to the `work_item_types#id` corresponding
-   to issue's project root groups. For example:
+   to issue's project top-level groups. For example:
 
    ```ruby
    issue.project.root_group.work_item_types.where(base_type: issue.issue_type).first.id.

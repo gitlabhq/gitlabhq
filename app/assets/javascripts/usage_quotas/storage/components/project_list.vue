@@ -1,10 +1,11 @@
 <script>
-import { GlTable, GlLink, GlSprintf, GlIcon } from '@gitlab/ui';
+import { GlTable, GlLink, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
-import { containerRegistryPopover } from '~/usage_quotas/storage/constants';
 import NumberToHumanSize from '~/vue_shared/components/number_to_human_size/number_to_human_size.vue';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import StorageTypeHelpLink from './storage_type_help_link.vue';
 import StorageTypeWarning from './storage_type_warning.vue';
 
@@ -14,7 +15,7 @@ export default {
     GlTable,
     GlLink,
     GlSprintf,
-    GlIcon,
+    HelpIcon,
     ProjectAvatar,
     NumberToHumanSize,
     HelpPageLink,
@@ -94,7 +95,10 @@ export default {
       return project.statistics.storageSize !== project.statistics.costFactoredStorageSize;
     },
   },
-  containerRegistryPopover,
+  containerRegistryDocsLink: helpPagePath(
+    'user/packages/container_registry/reduce_container_registry_storage.html',
+    { anchor: 'view-container-registry-usage' },
+  ),
 };
 </script>
 
@@ -121,8 +125,12 @@ export default {
           :storage-type="field.key"
           :help-links="helpLinks"
         /><storage-type-warning v-if="field.key == 'containerRegistry'">
-          {{ $options.containerRegistryPopover.content }}
-          <gl-link :href="$options.containerRegistryPopover.docsLink" target="_blank">
+          {{
+            s__(
+              'UsageQuotas|Container Registry storage statistics are not used to calculate the total project storage. Total project storage is calculated after namespace container deduplication, where the total of all unique containers is added to the namespace storage total.',
+            )
+          }}
+          <gl-link :href="$options.containerRegistryDocsLink" target="_blank">
             {{ __('Learn more.') }}
           </gl-link>
         </storage-type-warning>
@@ -141,7 +149,7 @@ export default {
 
       <gl-link
         :href="getUsageQuotasUrl(project.webUrl)"
-        class="js-project-link !gl-text-gray-900 gl-break-anywhere"
+        class="js-project-link !gl-text-default gl-break-anywhere"
         data-testid="project-link"
       >
         {{ getProjectRelativePath(project.nameWithNamespace) }}
@@ -162,7 +170,7 @@ export default {
             href="user/storage_usage_quotas#view-project-fork-storage-usage"
             target="_blank"
           >
-            <gl-icon name="question-o" :size="12" />
+            <help-icon size="small" />
           </help-page-link>
         </div>
       </template>

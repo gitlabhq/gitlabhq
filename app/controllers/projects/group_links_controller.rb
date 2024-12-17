@@ -65,6 +65,6 @@ class Projects::GroupLinksController < Projects::ApplicationController
   strong_memoize_attr :group_link
 
   def group_link_params
-    params.require(:group_link).permit(:group_access, :expires_at)
+    params.require(:group_link).permit(:group_access, :expires_at, :member_role_id)
   end
 end

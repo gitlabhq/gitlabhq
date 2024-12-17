@@ -3,6 +3,8 @@ data_category: operational
 key_path: redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly
 description: Count of distinct users that have interacted with packages in the package registry in the last 28 days
 product_group: package_registry
+product_categories:
+- package_registry
 value_type: number
 status: active
 time_frame: 28d

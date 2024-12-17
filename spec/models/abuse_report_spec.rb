@@ -438,4 +438,10 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
 
     it { is_expected.to define_enum_for(:category).with_values(**categories) }
   end
+
+  describe '#uploads_sharding_key' do
+    it 'returns empty hash' do
+      expect(report.uploads_sharding_key).to eq({})
+    end
+  end
 end

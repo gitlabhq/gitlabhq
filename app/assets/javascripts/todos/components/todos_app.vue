@@ -1,9 +1,8 @@
 <script>
 import { computed } from 'vue';
 import {
-  GlLoadingIcon,
   GlButton,
-  GlKeysetPagination,
+  GlLoadingIcon,
   GlLink,
   GlBadge,
   GlTab,
@@ -15,28 +14,28 @@ import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import {
+  DEFAULT_PAGE_SIZE,
   INSTRUMENT_TAB_LABELS,
   INSTRUMENT_TODO_FILTER_CHANGE,
-  INSTRUMENT_TODO_ITEM_CLICK,
   STATUS_BY_TAB,
+  TAB_PENDING,
+  TODO_WAIT_BEFORE_RELOAD,
+  TAB_DONE,
+  TAB_ALL,
 } from '~/todos/constants';
 import getTodosQuery from './queries/get_todos.query.graphql';
 import getPendingTodosCount from './queries/get_pending_todos_count.query.graphql';
-import markAsDoneMutation from './mutations/mark_as_done.mutation.graphql';
-import markAsPendingMutation from './mutations/mark_as_pending.mutation.graphql';
 import TodoItem from './todo_item.vue';
 import TodosEmptyState from './todos_empty_state.vue';
 import TodosFilterBar, { SORT_OPTIONS } from './todos_filter_bar.vue';
 import TodosMarkAllDoneButton from './todos_mark_all_done_button.vue';
-
-const ENTRIES_PER_PAGE = 20;
+import TodosPagination from './todos_pagination.vue';
 
 export default {
   components: {
     GlLink,
     GlButton,
     GlLoadingIcon,
-    GlKeysetPagination,
     GlBadge,
     GlTabs,
     GlTab,
@@ -44,6 +43,7 @@ export default {
     TodosFilterBar,
     TodoItem,
     TodosMarkAllDoneButton,
+    TodosPagination,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -56,8 +56,10 @@ export default {
   },
   data() {
     return {
+      updatePid: null,
+      needsRefresh: false,
       cursor: {
-        first: ENTRIES_PER_PAGE,
+        first: DEFAULT_PAGE_SIZE,
         after: null,
         last: null,
         before: null,
@@ -65,7 +67,7 @@ export default {
       currentUserId: null,
       pageInfo: {},
       todos: [],
-      currentTab: 0,
+      currentTab: TAB_PENDING,
       pendingTodosCount: '-',
       queryFilterValues: {
         groupId: [],
@@ -99,6 +101,10 @@ export default {
         this.alert = createAlert({ message: s__('Todos|Something went wrong. Please try again.') });
         Sentry.captureException(error);
       },
+      watchLoading() {
+        // We reset the `needsRefresh` when paginating or changing tabs
+        this.needsRefresh = false;
+      },
     },
     pendingTodosCount: {
       query: getPendingTodosCount,
@@ -122,15 +128,26 @@ export default {
       const { sort: _, ...filters } = this.queryFilterValues;
       return Object.values(filters).some((value) => value.length > 0);
     },
-    showPagination() {
-      return !this.isLoading && (this.pageInfo?.hasPreviousPage || this.pageInfo?.hasNextPage);
-    },
     showEmptyState() {
       return !this.isLoading && this.todos.length === 0;
     },
     showMarkAllAsDone() {
-      return this.currentTab === 0 && !this.showEmptyState;
+      return this.currentTab === TAB_PENDING && !this.showEmptyState;
     },
+  },
+  created() {
+    const searchParams = new URLSearchParams(window.location.search);
+    const stateFromUrl = searchParams.get('state');
+    switch (stateFromUrl) {
+      case 'done':
+        this.currentTab = TAB_DONE;
+        break;
+      case 'all':
+        this.currentTab = TAB_ALL;
+        break;
+      default:
+        break;
+    }
   },
   mounted() {
     document.addEventListener('visibilitychange', this.handleVisibilityChanged);
@@ -139,33 +156,41 @@ export default {
     document.removeEventListener('visibilitychange', this.handleVisibilityChanged);
   },
   methods: {
-    nextPage(item) {
-      this.cursor = {
-        first: ENTRIES_PER_PAGE,
-        after: item,
-        last: null,
-        before: null,
-      };
-    },
-    prevPage(item) {
-      this.cursor = {
-        first: null,
-        after: null,
-        last: ENTRIES_PER_PAGE,
-        before: item,
-      };
+    updateCursor(cursor) {
+      this.cursor = cursor;
     },
     tabChanged(tabIndex) {
+      if (tabIndex === this.currentTab) {
+        return;
+      }
+
       this.track(INSTRUMENT_TODO_FILTER_CHANGE, {
         label: INSTRUMENT_TAB_LABELS[tabIndex],
       });
       this.currentTab = tabIndex;
+
+      // Use the previous page size, but fetch the first N of the new tab
       this.cursor = {
-        first: ENTRIES_PER_PAGE,
+        first: this.cursor.first || this.cursor.last,
         after: null,
         last: null,
         before: null,
       };
+      this.syncActiveTabToUrl();
+    },
+    syncActiveTabToUrl() {
+      const tabIndexToUrlStateParam = {
+        [TAB_DONE]: 'done',
+        [TAB_ALL]: 'all',
+      };
+      const searchParams = new URLSearchParams(window.location.search);
+      if (this.currentTab === TAB_PENDING) {
+        searchParams.delete('state');
+      } else {
+        searchParams.set('state', tabIndexToUrlStateParam[this.currentTab]);
+      }
+
+      window.history.replaceState(null, '', `?${searchParams.toString()}`);
     },
     handleFiltersChanged(data) {
       this.alert?.dismiss();
@@ -176,27 +201,10 @@ export default {
         this.updateAllQueries(false);
       }
     },
-    async handleItemChanged(id, markedAsDone) {
-      await this.updateAllQueries(false);
-      this.showUndoToast(id, markedAsDone);
-    },
-    showUndoToast(todoId, markedAsDone) {
-      const message = markedAsDone ? s__('Todos|Marked as done') : s__('Todos|Marked as undone');
-      const mutation = markedAsDone ? markAsPendingMutation : markAsDoneMutation;
+    async handleItemChanged() {
+      this.needsRefresh = true;
 
-      const { hide } = this.$toast.show(message, {
-        action: {
-          text: s__('Todos|Undo'),
-          onClick: async () => {
-            hide();
-            await this.$apollo.mutate({ mutation, variables: { todoId } });
-            this.track(INSTRUMENT_TODO_ITEM_CLICK, {
-              label: markedAsDone ? 'undo_mark_done' : 'undo_mark_pending',
-            });
-            this.updateAllQueries(false);
-          },
-        },
-      });
+      await this.updateCounts();
     },
     updateCounts() {
       return this.$apollo.queries.pendingTodosCount.refetch();
@@ -209,14 +217,44 @@ export default {
 
       this.showSpinnerWhileLoading = true;
     },
+    markInteracting() {
+      clearTimeout(this.updatePid);
+    },
+    stoppedInteracting() {
+      if (!this.needsRefresh) {
+        return;
+      }
+
+      if (this.updatePid) {
+        clearTimeout(this.updatePid);
+      }
+
+      this.updatePid = setTimeout(() => {
+        /*
+         We double-check needsRefresh or
+         whether a query is already running
+         */
+        if (this.needsRefresh && !this.$apollo.queries.todos.loading) {
+          this.updateAllQueries(false);
+        }
+        this.updatePid = null;
+      }, TODO_WAIT_BEFORE_RELOAD);
+    },
   },
 };
 </script>
 
 <template>
   <div>
-    <div class="gl-flex gl-justify-between gl-border-b-1 gl-border-gray-100 gl-border-b-solid">
-      <gl-tabs content-class="gl-p-0" nav-class="gl-border-0" @input="tabChanged">
+    <div
+      class="gl-flex gl-flex-wrap-reverse gl-justify-between gl-border-b-1 gl-border-default gl-border-b-solid"
+    >
+      <gl-tabs
+        :value="currentTab"
+        content-class="gl-p-0"
+        nav-class="gl-border-0"
+        @input="tabChanged"
+      >
         <gl-tab>
           <template #title>
             <span>{{ s__('Todos|To Do') }}</span>
@@ -237,9 +275,9 @@ export default {
         </gl-tab>
       </gl-tabs>
 
-      <div class="gl-my-3 gl-mr-5 gl-flex gl-items-center gl-justify-end gl-gap-3">
+      <div class="gl-my-3 gl-mr-5 gl-flex gl-flex-grow gl-items-center gl-justify-end gl-gap-3">
         <todos-mark-all-done-button
-          v-if="showMarkAllAsDone"
+          v-show="showMarkAllAsDone"
           :filters="queryFilterValues"
           @change="updateAllQueries"
         />
@@ -262,7 +300,13 @@ export default {
     <div>
       <div class="gl-flex gl-flex-col">
         <gl-loading-icon v-if="isLoading && showSpinnerWhileLoading" size="lg" class="gl-mt-5" />
-        <ul v-else class="gl-m-0 gl-border-collapse gl-list-none gl-p-0">
+        <ul
+          v-else
+          data-testid="todo-item-list-container"
+          class="gl-m-0 gl-border-collapse gl-list-none gl-p-0"
+          @mouseenter="markInteracting"
+          @mouseleave="stoppedInteracting"
+        >
           <transition-group name="todos">
             <todo-item
               v-for="todo in todos"
@@ -276,16 +320,10 @@ export default {
 
         <todos-empty-state v-if="showEmptyState" :is-filtered="isFiltered" />
 
-        <gl-keyset-pagination
-          v-if="showPagination"
-          v-bind="pageInfo"
-          class="gl-mt-3 gl-self-center"
-          @prev="prevPage"
-          @next="nextPage"
-        />
+        <todos-pagination v-if="!showEmptyState" v-bind="pageInfo" @cursor-changed="updateCursor" />
 
         <div class="gl-mt-5 gl-text-center">
-          <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/498315" target="_blank">{{
+          <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/506387" target="_blank">{{
             s__('Todos|Leave feedback')
           }}</gl-link>
         </div>

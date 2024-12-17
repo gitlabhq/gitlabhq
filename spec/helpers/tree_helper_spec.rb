@@ -19,16 +19,52 @@ RSpec.describe TreeHelper do
     end
   end
 
+  describe '#breadcrumb_data_attributes' do
+    let(:ref) { 'main' }
+    let(:base_attributes) do
+      {
+        selected_branch: ref,
+        can_push_code: 'false',
+        can_push_to_branch: 'false',
+        can_collaborate: 'false',
+        new_blob_path: project_new_blob_path(project, ref),
+        upload_path: project_create_blob_path(project, ref),
+        new_dir_path: project_create_dir_path(project, ref),
+        new_branch_path: new_project_branch_path(project),
+        new_tag_path: new_project_tag_path(project),
+        can_edit_tree: 'false'
+      }
+    end
+
+    before do
+      helper.instance_variable_set(:@project, project)
+      helper.instance_variable_set(:@ref, ref)
+      allow(helper).to receive(:selected_branch).and_return(ref)
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:can?).and_return(false)
+      allow(helper).to receive(:user_access).and_return(instance_double(Gitlab::UserAccess, can_push_to_branch?: false))
+      allow(helper).to receive(:can_collaborate_with_project?).and_return(false)
+      allow(helper).to receive(:can_edit_tree?).and_return(false)
+    end
+
+    it 'returns a list of breadcrumb attributes' do
+      expect(helper.breadcrumb_data_attributes).to eq(base_attributes)
+    end
+  end
+
   describe '#vue_file_list_data' do
     it 'returns a list of attributes related to the project' do
       helper.instance_variable_set(:@ref_type, 'heads')
+      allow(helper).to receive(:selected_branch).and_return(sha)
+
       expect(helper.vue_file_list_data(project, sha)).to include(
         project_path: project.full_path,
         project_short_path: project.path,
         ref: sha,
         escaped_ref: sha,
         full_name: project.name_with_namespace,
-        ref_type: 'heads'
+        ref_type: 'heads',
+        target_branch: sha
       )
     end
   end

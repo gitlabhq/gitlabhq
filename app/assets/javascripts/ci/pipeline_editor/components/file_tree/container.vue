@@ -54,7 +54,7 @@ export default {
     <div
       v-gl-tooltip
       :title="ciConfigPath"
-      class="gl-mb-3 gl-rounded-base gl-bg-gray-50 gl-px-3 gl-py-2"
+      class="gl-mb-3 gl-rounded-base gl-bg-strong gl-px-3 gl-py-2"
     >
       <span class="file-row-name gl-str-truncated" :title="ciConfigPath">
         <file-icon class="file-row-icon" :file-name="ciConfigPath" />

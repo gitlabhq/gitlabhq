@@ -5,6 +5,32 @@ require 'spec_helper'
 RSpec.describe Integrations::Instance::Integration, feature_category: :integrations do
   subject(:instance_integration) { build(:instance_integration) }
 
+  describe 'associations' do
+    it 'has issue_tracker_data association' do
+      is_expected.to have_one(:issue_tracker_data)
+        .autosave(true)
+        .inverse_of(:instance_integration)
+        .with_foreign_key(:instance_integration_id)
+        .class_name('Integrations::IssueTrackerData')
+    end
+
+    it 'has jira_tracker_data association' do
+      is_expected.to have_one(:jira_tracker_data)
+        .autosave(true)
+        .inverse_of(:instance_integration)
+        .with_foreign_key(:instance_integration_id)
+        .class_name('Integrations::JiraTrackerData')
+    end
+
+    it 'has zentao_tracker_data association' do
+      is_expected.to have_one(:zentao_tracker_data)
+        .autosave(true)
+        .inverse_of(:instance_integration)
+        .with_foreign_key(:instance_integration_id)
+        .class_name('Integrations::ZentaoTrackerData')
+    end
+  end
+
   describe '#instance_level?' do
     it 'returns true' do
       expect(instance_integration.instance_level?).to be(true)

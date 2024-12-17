@@ -54,18 +54,26 @@ export const userPermissionsMock = {
   forkProject: true,
   downloadCode: true,
   createMergeRequestIn: true,
+  __typename: 'ProjectPermissions',
 };
 
 export const projectMock = {
   __typename: 'Project',
-  id: '1234',
+  id: 'gid://gitlab/Project/7',
   userPermissions: userPermissionsMock,
   pathLocks: {
+    __typename: 'PathLockConnection',
     nodes: [
       {
-        id: 'test',
+        __typename: 'PathLock',
+        id: 'gid://gitlab/PathLock/2',
         path: 'locked_file.js',
-        user: { id: '123', username: 'root' },
+        user: {
+          id: 'gid://gitlab/User/1',
+          username: 'root',
+          name: 'Administrator',
+          __typename: 'UserCore',
+        },
       },
     ],
   },
@@ -87,9 +95,7 @@ export const blobControlsDataMock = {
       nodes: [
         {
           id: '5678',
-          findFilePath: 'find/file.js',
           blamePath: 'blame/file.js',
-          historyPath: 'history/file.js',
           permalinkPath: 'permalink/file.js',
           storedExternally: false,
           externalStorage: '',
@@ -188,3 +194,50 @@ export const paginatedTreeResponseFactory = ({
 });
 
 export const axiosMockResponse = { html: 'text', binary: true };
+
+export const headerAppInjected = {
+  canCollaborate: true,
+  canEditTree: true,
+  canPushCode: true,
+  canPushToBranch: true,
+  originalBranch: 'main',
+  selectedBranch: 'feature/new-ui',
+  newBranchPath: '/project/new-branch',
+  newTagPath: '/project/new-tag',
+  newBlobPath: '/project/new-file',
+  forkNewBlobPath: '/project/fork/new-file',
+  forkNewDirectoryPath: '/project/fork/new-directory',
+  forkUploadBlobPath: '/project/fork/upload',
+  uploadPath: '/project/upload',
+  newDirPath: '/project/new-directory',
+  projectRootPath: '/project/root/path',
+  comparePath: undefined,
+  isReadmeView: false,
+  isFork: false,
+  needsToFork: true,
+  gitpodEnabled: false,
+  isBlob: true,
+  showEditButton: true,
+  showWebIdeButton: true,
+  showGitpodButton: false,
+  showPipelineEditorUrl: true,
+  webIdeUrl: 'https://gitlab.com/project/-/ide/',
+  editUrl: 'https://gitlab.com/project/-/edit/main/',
+  pipelineEditorUrl: 'https://gitlab.com/project/-/ci/editor',
+  gitpodUrl: 'https://gitpod.io/#https://gitlab.com/project',
+  userPreferencesGitpodPath: '/profile/preferences#gitpod',
+  userProfileEnableGitpodPath: '/profile/preferences?enable_gitpod=true',
+  httpUrl: 'https://gitlab.com/example-group/example-project.git',
+  xcodeUrl: 'xcode://clone?repo=https://gitlab.com/example-group/example-project.git',
+  sshUrl: 'git@gitlab.com:example-group/example-project.git',
+  kerberosUrl: '',
+  downloadLinks: [
+    'https://gitlab.com/example-group/example-project/-/archive/main/example-project-main.zip',
+    'https://gitlab.com/example-group/example-project/-/archive/main/example-project-main.tar.gz',
+    'https://gitlab.com/example-group/example-project/-/archive/main/example-project-main.tar.bz2',
+    'https://gitlab.com/example-group/example-project/-/releases',
+  ],
+  downloadArtifacts: [
+    'https://gitlab.com/example-group/example-project/-/jobs/artifacts/main/download?job=build',
+  ],
+};

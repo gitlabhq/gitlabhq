@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module Integrations
-  class HangoutsChat < BaseChatNotification
+  class HangoutsChat < Integration
+    include Base::ChatNotification
+
     # Enum value of the messageReplyOption query parameter that indicates that messages should be created as replies to
     # the specified threads if possible and start new threads otherwise
     # https://developers.google.com/workspace/chat/api/reference/rest/v1/spaces.messages/create#messagereplyoption
@@ -9,17 +11,22 @@ module Integrations
 
     field :webhook,
       section: SECTION_TYPE_CONNECTION,
-      help: 'https://chat.googleapis.com/v1/spaces…',
+      help: -> { _('The Hangouts Chat webhook (for example, `https://chat.googleapis.com/v1/spaces...`).') },
       required: true
 
     field :notify_only_broken_pipelines,
       type: :checkbox,
-      section: SECTION_TYPE_CONFIGURATION
+      section: SECTION_TYPE_CONFIGURATION,
+      description: -> { _('Send notifications for broken pipelines.') }
 
     field :branches_to_be_notified,
       type: :select,
       section: SECTION_TYPE_CONFIGURATION,
       title: -> { s_('Integrations|Branches for which notifications are to be sent') },
+      description: -> {
+                     _('Branches to send notifications for. Valid options are `all`, `default`, `protected`, ' \
+                       'and `default_and_protected`. The default value is `default`.')
+                   },
       choices: -> { branch_choices }
 
     def self.title

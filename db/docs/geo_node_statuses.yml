@@ -12,3 +12,4 @@ gitlab_schema: gitlab_main_cell
 exempt_from_sharding: true
 notes: Exempted because Geo nodes are an infrastructure-level concern, and are not
   org-specific.
+table_size: small

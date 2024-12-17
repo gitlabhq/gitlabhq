@@ -30,9 +30,11 @@ For more information, see [Product Stage Direction - Plan](https://about.gitlab.
 
 ## Create a test case
 
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
 Prerequisites:
 
-- You must have at least the Reporter role.
+- You must have at least the Planner role.
 
 To create a test case in a GitLab project:
 
@@ -51,7 +53,7 @@ Prerequisites:
 
 - Non-confidential test case in a public project: You don't have to be a member of the project.
 - Non-confidential test case in a private project: You must have at least the Guest role for the project.
-- Confidential test case (regardless of project visibility): You must have at least the Reporter role for the project.
+- Confidential test case (regardless of project visibility): You must have at least the Planner role for the project.
 
 To view a test case:
 
@@ -63,11 +65,13 @@ To view a test case:
 
 ## Edit a test case
 
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
 You can edit a test case's title and description.
 
 Prerequisites:
 
-- You must have at least the Reporter role.
+- You must have at least the Planner role.
 - Users demoted to the Guest role can continue to edit the test cases they created
   when they were in the higher role.
 
@@ -81,12 +85,13 @@ To edit a test case:
 ## Make a test case confidential
 
 > - Introduced for [new](https://gitlab.com/gitlab-org/gitlab/-/issues/422121) and [existing](https://gitlab.com/gitlab-org/gitlab/-/issues/422120) test cases in GitLab 16.5.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 If you're working on a test case that contains private information, you can make it confidential.
 
 Prerequisites:
 
-- You must have at least the Reporter role.
+- You must have at least the Planner role.
 
 To make a test case confidential:
 
@@ -98,11 +103,13 @@ or editing an existing one.
 
 ## Archive a test case
 
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
 When you want to stop using a test case, you can archive it. You can [reopen an archived test case](#reopen-an-archived-test-case) later.
 
 Prerequisites:
 
-- You must have at least the Reporter role.
+- You must have at least the Planner role.
 
 To archive a test case, on the test case's page, select **Archive test case**.
 
@@ -114,11 +121,13 @@ To view archived test cases:
 
 ## Reopen an archived test case
 
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
 If you decide to start using an archived test case again, you can reopen it.
 
 Prerequisites:
 
-- You must have at least the Reporter role.
+- You must have at least the Planner role.
 
 To reopen an archived test case:
 

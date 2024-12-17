@@ -70,8 +70,6 @@ Example response:
   status: active
   time_frame: 28d
   data_source: redis_hll
-  distribution:
-  - ee
   tier:
   - premium
   - ultimate

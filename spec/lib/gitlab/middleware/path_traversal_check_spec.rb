@@ -41,7 +41,7 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
           .to receive(:duration=).with(an_instance_of(Float))
         expect(::Gitlab::Metrics::Middleware::PathTraversalCheck)
           .to receive(:increment).with(
-            labels: { path_traversal_attempt_rejected: false },
+            labels: { request_rejected: false },
             duration: an_instance_of(Float)
           )
 
@@ -62,13 +62,13 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
                   message: described_class::PATH_TRAVERSAL_MESSAGE,
                   fullpath: fullpath,
                   method: method.upcase,
-                  path_traversal_attempt_rejected: true
+                  request_rejected: true
                 )).and_call_original
         expect(::Gitlab::Instrumentation::Middleware::PathTraversalCheck)
           .to receive(:duration=).with(an_instance_of(Float))
         expect(::Gitlab::Metrics::Middleware::PathTraversalCheck)
           .to receive(:increment).with(
-            labels: { path_traversal_attempt_rejected: true },
+            labels: { request_rejected: true },
             duration: an_instance_of(Float)
           )
 
@@ -207,7 +207,7 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
             .to receive(:duration=).with(an_instance_of(Float))
           expect(::Gitlab::Metrics::Middleware::PathTraversalCheck)
             .to receive(:increment).with(
-              labels: { path_traversal_attempt_rejected: false },
+              labels: { request_rejected: false },
               duration: an_instance_of(Float)
             )
 

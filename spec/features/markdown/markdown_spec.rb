@@ -78,6 +78,16 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :markdo
       aggregate_failures 'parses strikethroughs' do
         expect(doc).to have_selector(%{del:contains("and this text doesn't")})
       end
+
+      aggregate_failures 'parses definition lists' do
+        expect(doc).to have_selector(%{dt:contains("Fruit")})
+        expect(doc).to have_selector(%{dd:contains("Apple")})
+        expect(doc).to have_selector(%{dd:contains("Orange")})
+
+        expect(doc).to have_selector(%{dt:contains("Vegetables")})
+        expect(doc).to have_selector(%{dd:contains("Tomato")})
+        expect(doc).to have_selector(%{dd:contains("Celery")})
+      end
     end
 
     it 'includes SanitizationFilter' do

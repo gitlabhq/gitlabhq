@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module Integrations
-  class CustomIssueTracker < BaseIssueTracker
+  class CustomIssueTracker < Integration
+    include Base::IssueTracker
     include HasIssueTrackerFields
 
     validates :project_url, :issues_url, :new_issue_url, presence: true, public_url: true, if: :activated?

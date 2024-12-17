@@ -34,11 +34,13 @@ export default {
     },
     headerLinkTitle: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     headerLinkHref: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     roles: {
       type: Array,
@@ -108,8 +110,8 @@ export default {
         !this.hasDeployKeys
       );
     },
-    showHelpText() {
-      return Boolean(this.helpText.length);
+    showDescriptionSlot() {
+      return this.helpText || this.$scopedSlots.description;
     },
   },
 };
@@ -117,8 +119,9 @@ export default {
 
 <template>
   <crud-component :title="header" :icon="icon" :count="count" data-testid="status-checks">
-    <template v-if="showHelpText" #description>
-      {{ helpText }}
+    <template v-if="showDescriptionSlot" #description>
+      <slot v-if="$scopedSlots.description" name="description"></slot>
+      <template v-else>{{ helpText }}</template>
     </template>
     <template #actions>
       <gl-button
@@ -130,7 +133,11 @@ export default {
       </gl-button>
       <gl-link v-else :href="headerLinkHref">{{ headerLinkTitle }}</gl-link>
     </template>
-    <span v-if="showEmptyState" class="gl-text-subtle" data-testid="protection-empty-state">
+    <span
+      v-if="showEmptyState && !$scopedSlots.content"
+      class="gl-text-subtle"
+      data-testid="protection-empty-state"
+    >
       {{ emptyStateCopy }}
     </span>
 
@@ -163,5 +170,7 @@ export default {
       :status-check-url="statusCheck.externalUrl"
       :hmac="statusCheck.hmac"
     />
+
+    <slot name="content"></slot>
   </crud-component>
 </template>

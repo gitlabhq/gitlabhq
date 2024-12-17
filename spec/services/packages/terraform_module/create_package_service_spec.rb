@@ -2,11 +2,11 @@
 require 'spec_helper'
 
 RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category: :package_registry do
-  let_it_be(:namespace) { create(:group) }
-  let_it_be(:project) { create(:project, namespace: namespace) }
+  let_it_be_with_reload(:namespace) { create(:group) }
+  let_it_be_with_reload(:project) { create(:project, namespace: namespace) }
   let_it_be(:user) { create(:user) }
   let_it_be(:sha256) { '440e5e148a25331bbd7991575f7d54933c0ebf6cc735a18ee5066ac1381bb590' }
-  let_it_be(:package_settings) { create(:namespace_package_setting, namespace: namespace) }
+  let_it_be_with_reload(:package_settings) { create(:namespace_package_setting, namespace: namespace) }
 
   let(:overrides) { {} }
 
@@ -33,6 +33,51 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
       end
     end
 
+    shared_examples 'duplicate package error' do
+      it 'returns duplicate package error' do
+        is_expected.to be_error.and have_attributes(
+          reason: :forbidden,
+          message: 'A package with the same name already exists in the namespace'
+        )
+      end
+    end
+
+    shared_examples 'with duplicate regex exception, allow creation of matching package' do
+      before do
+        package_settings.update_columns(terraform_module_duplicate_exception_regex: regex)
+      end
+
+      context 'when regex matches' do
+        let(:regex) { ".*#{existing_package.name.last(3)}.*" }
+
+        it_behaves_like 'creating a package'
+      end
+
+      context 'when regex does not match' do
+        let(:regex) { '.*not-a-match.*' }
+
+        it_behaves_like 'duplicate package error'
+      end
+    end
+
+    shared_examples 'with duplicate regex exception, prevent creation of matching package' do
+      before do
+        package_settings.update_columns(terraform_module_duplicate_exception_regex: regex)
+      end
+
+      context 'when regex matches' do
+        let(:regex) { ".*#{existing_package.name.last(3)}.*" }
+
+        it_behaves_like 'duplicate package error'
+      end
+
+      context 'when regex does not match' do
+        let(:regex) { '.*not-a-match.*' }
+
+        it_behaves_like 'creating a package'
+      end
+    end
+
     context 'valid package' do
       it_behaves_like 'creating a package'
     end
@@ -44,8 +89,21 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
       end
 
       context 'when duplicates not allowed' do
-        it { expect(subject.reason).to eq :forbidden }
-        it { expect(subject.message).to be 'A package with the same name already exists in the namespace' }
+        before do
+          package_settings.update_column(:terraform_module_duplicates_allowed, false)
+        end
+
+        it_behaves_like 'duplicate package error'
+        it_behaves_like 'with duplicate regex exception, allow creation of matching package'
+
+        context 'when packages_allow_duplicate_exceptions is disabled' do
+          before do
+            stub_feature_flags(packages_allow_duplicate_exceptions: false)
+          end
+
+          it_behaves_like 'duplicate package error'
+          it_behaves_like 'with duplicate regex exception, allow creation of matching package'
+        end
       end
 
       context 'when duplicates allowed' do
@@ -54,33 +112,20 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
         end
 
         it_behaves_like 'creating a package'
-      end
+        it_behaves_like 'with duplicate regex exception, prevent creation of matching package'
 
-      context 'with duplicate regex exception' do
-        before do
-          package_settings.update_columns(
-            terraform_module_duplicates_allowed: false,
-            terraform_module_duplicate_exception_regex: regex
-          )
-        end
-
-        context 'when regex matches' do
-          let(:regex) { ".*#{existing_package.name.last(3)}.*" }
+        context 'when packages_allow_duplicate_exceptions is disabled' do
+          before do
+            stub_feature_flags(packages_allow_duplicate_exceptions: false)
+          end
 
           it_behaves_like 'creating a package'
-        end
-
-        context 'when regex does not match' do
-          let(:regex) { '.*not-a-match.*' }
-
-          it { expect(subject.reason).to eq :forbidden }
-          it { expect(subject.message).to be 'A package with the same name already exists in the namespace' }
         end
       end
 
       context 'for ancestor namespace' do
-        let_it_be(:package_settings) { create(:namespace_package_setting, :group) }
-        let_it_be(:parent_namespace) { package_settings.namespace }
+        let_it_be_with_reload(:package_settings) { create(:namespace_package_setting, :group) }
+        let_it_be_with_reload(:parent_namespace) { package_settings.namespace }
 
         before do
           namespace.update!(parent: parent_namespace)
@@ -97,12 +142,20 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
         context 'when duplicates allowed in an ancestor with exception' do
           before do
             package_settings.update_columns(
-              terraform_module_duplicates_allowed: false,
+              terraform_module_duplicates_allowed: true,
               terraform_module_duplicate_exception_regex: ".*#{existing_package.name.last(3)}.*"
             )
           end
 
-          it_behaves_like 'creating a package'
+          it_behaves_like 'duplicate package error'
+
+          context 'with packages_allow_duplicate_exceptions disabled' do
+            before do
+              stub_feature_flags(packages_allow_duplicate_exceptions: false)
+            end
+
+            it_behaves_like 'creating a package'
+          end
         end
       end
 

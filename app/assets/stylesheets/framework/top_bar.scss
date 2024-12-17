@@ -3,7 +3,7 @@
 }
 
 .top-bar-fixed {
-  @apply gl-shadow-inner-b-1-gray-100;
+  @apply gl-shadow-inner-b-1-border-default;
   @apply gl-bg-default;
   position: fixed;
   left: var(--application-bar-left);

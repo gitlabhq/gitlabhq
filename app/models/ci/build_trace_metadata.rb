@@ -8,6 +8,8 @@ module Ci
     self.table_name = :p_ci_build_trace_metadata
     self.primary_key = :build_id
 
+    before_validation :set_project_id, on: :create
+
     belongs_to :build,
       ->(trace_metadata) { in_partition(trace_metadata) },
       class_name: 'Ci::Build',
@@ -70,6 +72,10 @@ module Ci
 
     def backoff
       ::Gitlab::Ci::Trace::Backoff.new(archival_attempts).value_with_jitter
+    end
+
+    def set_project_id
+      self.project_id ||= build&.project_id
     end
   end
 end

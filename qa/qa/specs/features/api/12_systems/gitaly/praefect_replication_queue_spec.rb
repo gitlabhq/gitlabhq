@@ -22,7 +22,7 @@ module QA
         praefect_manager.clear_replication_queue
       end
 
-      it 'allows replication of different repository after interruption', :blocking,
+      it 'allows replication of different repository after interruption',
         quarantine: {
           issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/489130',
           type: :investigating
@@ -44,7 +44,7 @@ module QA
           repository.uri = project.repository_http_location.uri
           repository.use_default_credentials
           repository.clone
-          repository.configure_identity('GitLab QA', 'root@gitlab.com')
+          repository.use_default_identity
           1.upto(queue_size_target) do |i|
             repository.checkout("branch#{i}", new_branch: true)
             repository.commit_file("file#{i}", SecureRandom.random_bytes(10000000), "Add file#{i}")

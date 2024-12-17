@@ -264,7 +264,7 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
     shared_examples_for 'post pages domains' do
       it 'creates a new pages domain', :aggregate_failures do
         expect { post api(route, user), params: params }
-          .to publish_event(PagesDomains::PagesDomainCreatedEvent)
+          .to publish_event(::Pages::Domains::PagesDomainCreatedEvent)
           .with(
             project_id: project.id,
             namespace_id: project.namespace.id,
@@ -393,7 +393,7 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
 
       it 'publishes PagesDomainUpdatedEvent event' do
         expect { put api(route_secure_domain, user), params: { certificate: nil, key: nil } }
-          .to publish_event(PagesDomains::PagesDomainUpdatedEvent)
+          .to publish_event(::Pages::Domains::PagesDomainUpdatedEvent)
           .with(
             project_id: project.id,
             namespace_id: project.namespace.id,
@@ -480,7 +480,7 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
 
         it 'does not publish PagesDomainUpdatedEvent event' do
           expect { put api(route_domain, user), params: params_secure_nokey }
-            .not_to publish_event(PagesDomains::PagesDomainUpdatedEvent)
+            .not_to publish_event(::Pages::Domains::PagesDomainUpdatedEvent)
         end
 
         it 'fails to update pages domain adding certificate with missing chain' do
@@ -552,12 +552,84 @@ RSpec.describe API::PagesDomains, feature_category: :pages do
     end
   end
 
+  describe 'PUT /projects/:project_id/pages/domains/:domain/verify' do
+    let(:verify_domain_path) { "/projects/#{project.id}/pages/domains/#{pages_domain.domain}/verify" }
+
+    context 'when user is not authorized' do
+      it 'returns 401' do
+        put api(verify_domain_path)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when user is authorized' do
+      before do
+        project.add_maintainer(user)
+      end
+
+      context 'when user does not have sufficient permissions' do
+        before do
+          project.add_reporter(user)
+        end
+
+        it 'returns 403' do
+          put api(verify_domain_path, user)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'when domain does not exist' do
+        it 'returns 404' do
+          put api("/projects/#{project.id}/pages/domains/non-existent-domain.com/verify", user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when verification succeeds' do
+        before do
+          allow_next_instance_of(VerifyPagesDomainService) do |service|
+            allow(service).to receive(:execute).and_return({ status: :success })
+          end
+        end
+
+        it 'returns the verified domain' do
+          put api(verify_domain_path, user)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response['domain']).to eq(pages_domain.domain)
+        end
+      end
+
+      context 'when verification fails' do
+        before do
+          allow_next_instance_of(VerifyPagesDomainService) do |service|
+            allow(service).to receive(:execute).and_return({
+              status: :error,
+              message: 'Verification failed',
+              http_status: :unprocessable_entity
+            })
+          end
+        end
+
+        it 'returns error message' do
+          put api(verify_domain_path, user)
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to eq('Verification failed')
+        end
+      end
+    end
+  end
+
   describe 'DELETE /projects/:project_id/pages/domains/:domain' do
     shared_examples_for 'delete pages domain' do
       it 'deletes a pages domain' do
         expect { delete api(route_domain, user) }
           .to change(PagesDomain, :count).by(-1)
-          .and publish_event(PagesDomains::PagesDomainDeletedEvent)
+          .and publish_event(::Pages::Domains::PagesDomainDeletedEvent)
           .with(
             project_id: project.id,
             namespace_id: project.namespace.id,

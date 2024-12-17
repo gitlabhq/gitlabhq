@@ -9,42 +9,69 @@ description: "Settings and commands in the GitLab Workflow extension for VS Code
 
 ## Command Palette commands
 
-In VS Code, trigger these commands from the
-[Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette).
+This extension provides several sets of commands that you can trigger in the
+[Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette):
+
+### Manage projects and code
+
+- `GitLab: Authenticate`
+- [`GitLab: Compare Current Branch with Default Branch`](index.md#compare-with-default-branch):
+  Compare your branch with the repository's default branch and view changes on GitLab.
+- `GitLab: Open Current Project on GitLab`
+- [`GitLab: Open Remote Repository`](remote_urls.md): Browse a remote GitLab repository.
+- `GitLab: Pipeline Actions - View, Create, Retry, or Cancel`
+- `GitLab: Remove Account from VS Code`
+- `GitLab: Validate GitLab Accounts`
+
+### Manage issues and merge requests
 
 - [`GitLab: Advanced Search (Issues, Merge Requests, Commits, Comments...)`](index.md#search-issues-and-merge-requests)
-- [`GitLab: Compare Current Branch with Default Branch`](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#compare-with-default-branch):
-  Compare your branch with the repository's default branch and view changes on GitLab.
 - `GitLab: Copy Link to Active File on GitLab`
 - `GitLab: Create New Issue on Current Project`
 - `GitLab: Create New Merge Request on Current Project`: Open the merge request page to create a merge request.
-- [`GitLab: Create Snippet`](index.md#create-a-snippet): Create a public, internal, or private snippet
-  from an entire file or selection.
-- [`GitLab: Create Snippet Patch`](index.md#create-a-patch-file): Create a `.patch` file from the entire file, or a selection.
-- [`GitLab: Insert Snippet`](index.md#insert-a-snippet): Insert a single-file or multi-file project snippet.
-- [`GitLab: Open Active File on GitLab`](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#open-active-file) -
+- [`GitLab: Open Active File on GitLab`](index.md#open-current-file-in-gitlab-ui) -
   View active file on GitLab with highlighting active line number and selected text block.
-- `GitLab: Open Current Project on GitLab`
 - `GitLab: Open Merge Request for Current Branch`
-- [`GitLab: Open Remote Repository`](remote_urls.md): Browse a remote GitLab repository.
-- `GitLab: Remove Account from VS Code`
 - [`GitLab: Search Project Issues (Supports Filters)`](index.md#search-issues-and-merge-requests).
 - [`GitLab: Search Project Merge Requests (Supports Filters)`](index.md#search-issues-and-merge-requests).
 - `GitLab: Show Issues Assigned to Me`: Open issues assigned to you on GitLab.
 - `GitLab: Show Merge Requests Assigned to Me`: Open merge requests assigned to you on GitLab.
-- [`GitLab: Show Merged GitLab CI/CD Config`](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#show-merged-gitlab-cicd-configuration):
+
+### Manage CI/CD pipelines
+
+- [`GitLab: Show Merged GitLab CI/CD Configuration`](cicd.md#show-merged-gitlab-cicd-configuration):
   Show a preview of the GitLab CI/CD configuration file `.gitlab-ci.yml` with all includes resolved.
-- `GitLab: Toggle Code Suggestions`
-- `GitLab: Toggle Code Suggestions for current language`
-- [`GitLab: Validate GitLab CI/CD Config`](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#validate-gitlab-cicd-configuration):
+- [`GitLab: Validate GitLab CI/CD Configuration`](cicd.md#test-gitlab-cicd-configuration):
   Test the GitLab CI/CD configuration file `.gitlab-ci.yml`.
 
-### Command integrations
+### AI-assisted features
 
-This extension also integrates with these commands:
+- `GitLab: Restart GitLab Language Server`
+- `GitLab: Show Duo Workflow`
+- `GitLab: Toggle Code Suggestions`
+- `GitLab: Toggle Code Suggestions for current language`
+
+### Other features
+
+- `GitLab: Apply Snippet Patch`
+- `GitLab: Clone Wiki`
+- [`GitLab: Create Snippet`](index.md#create-a-snippet): Create a public, internal, or private snippet
+  from an entire file or selection.
+- [`GitLab: Create Snippet Patch`](index.md#create-a-patch-file): Create a `.patch` file from the entire file, or a selection.
+- [`GitLab: Insert Snippet`](index.md#insert-a-snippet): Insert a single-file or multi-file project snippet.
+- `GitLab: Publish Workspace to GitLab`
+- `GitLab: Refresh Sidebar`
+- `GitLab: Show Extension Logs`
+- `GitLab: View Security Finding Details`
+- `GitLab Workflow: Focus on For current branch View`
+- `GitLab Workflow: Focus on Issues and Merge Requests View`
+
+## Command integrations
+
+This extension also integrates with some commands provided by VS Code:
 
 - `Git: Clone`: Search for and clone projects for every GitLab instance you set up. For more information, see:
-  - [Clone GitLab projects](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#clone-gitlab-projects)
+  - [Clone GitLab projects](remote_urls.md#clone-a-git-project)
     in the extension documentation.
   - [Cloning a repository](https://code.visualstudio.com/docs/sourcecontrol/overview#_cloning-a-repository)
     in the VS Code documentation.

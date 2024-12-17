@@ -22,7 +22,7 @@ export const EVENT_DETAILS = {
     body: s__('ClusterAgents|Agent %{strongStart}connected%{strongEnd}'),
     titleIcon: {
       name: 'status-success',
-      class: 'gl-text-green-500',
+      class: 'gl-text-success',
     },
   },
   agent_disconnected: {
@@ -49,7 +49,7 @@ export const REVOKE_TOKEN_MODAL_ID = 'revoke-token-%{tokenName}';
 
 export const INTEGRATION_STATUS_VALID_TOKEN = {
   icon: 'status-success',
-  iconClass: 'gl-text-green-500',
+  iconClass: 'gl-text-success',
   text: s__('ClusterAgents|Valid access token'),
 };
 export const INTEGRATION_STATUS_NO_TOKEN = {

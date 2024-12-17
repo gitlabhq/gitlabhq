@@ -9,6 +9,10 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :team_planning do
   let_it_be(:project) { create(:project, :public, developers: user) }
   let_it_be(:issue) { create(:issue, project: project, due_date: Date.today, title: "Fix bug") }
 
+  before do
+    stub_feature_flags(todos_vue_application: false)
+  end
+
   context 'when user does not have todos' do
     before do
       sign_in(user)

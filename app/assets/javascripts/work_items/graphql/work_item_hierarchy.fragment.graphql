@@ -17,6 +17,7 @@ fragment WorkItemHierarchy on WorkItem {
     setWorkItemMetadata
     createNote
     adminWorkItemLink
+    markNoteAsInternal
   }
   widgets {
     type

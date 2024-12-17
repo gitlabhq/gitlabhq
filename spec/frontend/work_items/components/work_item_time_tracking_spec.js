@@ -61,8 +61,8 @@ describe('WorkItemTimeTracking component', () => {
     });
 
     it('has a modal directive', () => {
-      expect(getBinding(findAddTimeEntryButton().element, 'gl-modal').value).toBe(
-        'create-timelog-modal',
+      expect(getBinding(findAddTimeEntryButton().element, 'gl-modal').value).toEqual(
+        expect.stringContaining('create-timelog-modal'),
       );
     });
   });
@@ -81,15 +81,15 @@ describe('WorkItemTimeTracking component', () => {
 
     it('allows user to add an estimate by clicking "estimate"', () => {
       expect(findEstimateButton().props('variant')).toBe('link');
-      expect(getBinding(findEstimateButton().element, 'gl-modal').value).toBe(
-        'set-time-estimate-modal',
+      expect(getBinding(findEstimateButton().element, 'gl-modal').value).toEqual(
+        expect.stringContaining('set-time-estimate-modal'),
       );
     });
 
     it('allows user to add a time entry by clicking "time spent"', () => {
       expect(findAddTimeSpentButton().props('variant')).toBe('link');
-      expect(getBinding(findAddTimeSpentButton().element, 'gl-modal').value).toBe(
-        'create-timelog-modal',
+      expect(getBinding(findAddTimeSpentButton().element, 'gl-modal').value).toEqual(
+        expect.stringContaining('create-timelog-modal'),
       );
     });
   });
@@ -106,8 +106,8 @@ describe('WorkItemTimeTracking component', () => {
 
     it('time spent links to time tracking report', () => {
       expect(findViewTimeSpentButton().props('variant')).toBe('link');
-      expect(getBinding(findViewTimeSpentButton().element, 'gl-modal').value).toBe(
-        'time-tracking-report',
+      expect(getBinding(findViewTimeSpentButton().element, 'gl-modal').value).toEqual(
+        expect.stringContaining('time-tracking-modal'),
       );
       expect(getBinding(findViewTimeSpentButton().element, 'gl-tooltip').value).toBe(
         'View time tracking report',
@@ -116,8 +116,8 @@ describe('WorkItemTimeTracking component', () => {
 
     it('shows "Add estimate" button to add estimate', () => {
       expect(findAddEstimateButton().props('variant')).toBe('link');
-      expect(getBinding(findAddEstimateButton().element, 'gl-modal').value).toBe(
-        'set-time-estimate-modal',
+      expect(getBinding(findAddEstimateButton().element, 'gl-modal').value).toEqual(
+        expect.stringContaining('set-time-estimate-modal'),
       );
     });
   });
@@ -141,8 +141,8 @@ describe('WorkItemTimeTracking component', () => {
 
     it('estimate links to "Add estimate" modal', () => {
       expect(findSetEstimateButton().props('variant')).toBe('link');
-      expect(getBinding(findSetEstimateButton().element, 'gl-modal').value).toBe(
-        'set-time-estimate-modal',
+      expect(getBinding(findSetEstimateButton().element, 'gl-modal').value).toEqual(
+        expect.stringContaining('set-time-estimate-modal'),
       );
       expect(getBinding(findSetEstimateButton().element, 'gl-tooltip').value).toBe('Set estimate');
     });

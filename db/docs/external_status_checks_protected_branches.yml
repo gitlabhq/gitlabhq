@@ -18,3 +18,4 @@ desired_sharding_key:
         sharding_key: project_id
         belongs_to: external_status_check
 desired_sharding_key_migration_job_name: BackfillExternalStatusChecksProtectedBranchesProjectId
+table_size: small

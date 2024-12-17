@@ -21,6 +21,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
   const defaultActiveAccessTokens = [
     {
       name: 'a',
+      description: 'Test description',
       scopes: ['api'],
       created_at: '2021-05-01T00:00:00.000Z',
       last_used_at: null,
@@ -34,6 +35,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
     },
     {
       name: 'b',
+      description: 'Test description',
       scopes: ['api', 'sudo'],
       created_at: '2022-04-21T00:00:00.000Z',
       last_used_at: '2022-04-21T00:00:00.000Z',
@@ -131,6 +133,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
         const headers = findHeaders();
         expect(headers.wrappers.map((header) => header.text())).toStrictEqual([
           'Token name',
+          'Description',
           'Scopes',
           'Created',
           'Last Used',
@@ -145,6 +148,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
         const headers = findHeaders();
         expect(headers.wrappers.map((header) => header.text())).toStrictEqual([
           'Token name',
+          'Description',
           'Scopes',
           'Created',
           'Last Used',
@@ -159,7 +163,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       createComponent({ backendPagination });
 
       const headers = wrapper.findAll('th');
-      const lastUsed = headers.at(3);
+      const lastUsed = headers.at(4);
       const anchor = lastUsed.find('a');
       const assistiveElement = lastUsed.find('.gl-sr-only');
       expect(anchor.exists()).toBe(true);
@@ -174,16 +178,17 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       await triggerSuccess();
 
       const cells = findCells();
-      expect(cells).toHaveLength(14);
+      expect(cells).toHaveLength(16);
 
       // First row
       expect(cells.at(0).text()).toBe('a');
-      expect(cells.at(1).text()).toBe('api');
-      expect(cells.at(2).text()).not.toBe('Never');
-      expect(cells.at(3).text()).toBe('Never');
+      expect(cells.at(1).text()).toBe('Test description');
+      expect(cells.at(2).text()).toBe('api');
+      expect(cells.at(3).text()).not.toBe('Never');
       expect(cells.at(4).text()).toBe('Never');
-      expect(cells.at(5).text()).toBe('Maintainer');
-      let buttons = cells.at(6).findAllComponents(GlButton);
+      expect(cells.at(5).text()).toBe('Never');
+      expect(cells.at(6).text()).toBe('Maintainer');
+      let buttons = cells.at(7).findAllComponents(GlButton);
       expect(buttons).toHaveLength(2);
       expect(buttons.at(0).attributes()).toMatchObject({
         'aria-label': 'Revoke',
@@ -208,13 +213,14 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       expect(buttons.at(1).props('category')).toBe('tertiary');
 
       // Second row
-      expect(cells.at(7).text()).toBe('b');
-      expect(cells.at(8).text()).toBe('api, sudo');
-      expect(cells.at(9).text()).not.toBe('Never');
-      expect(cells.at(10).text()).not.toBe('Never');
-      expect(cells.at(11).text()).toBe('Expired');
-      expect(cells.at(12).text()).toBe('Maintainer');
-      buttons = cells.at(13).findAllComponents(GlButton);
+      expect(cells.at(8).text()).toBe('b');
+      expect(cells.at(9).text()).toBe('Test description');
+      expect(cells.at(10).text()).toBe('api, sudo');
+      expect(cells.at(11).text()).not.toBe('Never');
+      expect(cells.at(12).text()).not.toBe('Never');
+      expect(cells.at(13).text()).toBe('Expired');
+      expect(cells.at(14).text()).toBe('Maintainer');
+      buttons = cells.at(15).findAllComponents(GlButton);
       expect(buttons.at(0).attributes('href')).toBe(
         '/-/user_settings/personal_access_tokens/2/revoke',
       );
@@ -237,12 +243,18 @@ describe('~/access_tokens/components/access_token_table_app', () => {
           });
 
           const headers = findHeaders();
-          expect(headers).toHaveLength(6);
-          ['Token name', 'Scopes', 'Created', 'Last Used', 'Expires', 'Role'].forEach(
-            (text, index) => {
-              expect(headers.at(index).text()).toBe(text);
-            },
-          );
+          expect(headers).toHaveLength(7);
+          [
+            'Token name',
+            'Description',
+            'Scopes',
+            'Created',
+            'Last Used',
+            'Expires',
+            'Role',
+          ].forEach((text, index) => {
+            expect(headers.at(index).text()).toBe(text);
+          });
         });
       });
 
@@ -259,8 +271,8 @@ describe('~/access_tokens/components/access_token_table_app', () => {
           backendPagination,
         });
 
-        expect(findHeaders().at(6).text()).toBe('Action');
-        expect(findCells().at(6).findComponent(GlButton).exists()).toBe(false);
+        expect(findHeaders().at(7).text()).toBe('Action');
+        expect(findCells().at(7).findComponent(GlButton).exists()).toBe(false);
       });
 
       it.each([
@@ -276,8 +288,8 @@ describe('~/access_tokens/components/access_token_table_app', () => {
           backendPagination,
         });
 
-        expect(findHeaders().at(6).text()).toBe('Action');
-        expect(findCells().at(6).findComponent(GlButton).exists()).toBe(true);
+        expect(findHeaders().at(7).text()).toBe('Action');
+        expect(findCells().at(7).findComponent(GlButton).exists()).toBe(true);
       });
     });
   });
@@ -290,7 +302,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
 
       // First and second rows
       expect(cells.at(0).text()).toBe('a');
-      expect(cells.at(7).text()).toBe('b');
+      expect(cells.at(8).text()).toBe('b');
 
       const headers = findHeaders();
       await headers.at(0).trigger('click');
@@ -298,7 +310,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
 
       // First and second rows have swapped
       expect(cells.at(0).text()).toBe('b');
-      expect(cells.at(7).text()).toBe('a');
+      expect(cells.at(8).text()).toBe('a');
     });
 
     it('sorts rows by date', async () => {
@@ -307,15 +319,15 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       const cells = findCells();
 
       // First and second rows
-      expect(cells.at(3).text()).toBe('Never');
-      expect(cells.at(10).text()).not.toBe('Never');
+      expect(cells.at(4).text()).toBe('Never');
+      expect(cells.at(12).text()).not.toBe('Never');
 
       const headers = findHeaders();
-      await headers.at(3).trigger('click');
+      await headers.at(4).trigger('click');
 
       // First and second rows have swapped
-      expect(cells.at(3).text()).not.toBe('Never');
-      expect(cells.at(10).text()).toBe('Never');
+      expect(cells.at(4).text()).not.toBe('Never');
+      expect(cells.at(12).text()).toBe('Never');
     });
 
     describe('pagination', () => {
@@ -342,11 +354,11 @@ describe('~/access_tokens/components/access_token_table_app', () => {
 
         describe('when clicked on the second page', () => {
           it('shows only one token in the table', async () => {
-            expect(findCells()).toHaveLength(PAGE_SIZE * 6);
+            expect(findCells()).toHaveLength(PAGE_SIZE * 7);
             await findPagination().vm.$emit('input', 2);
             await nextTick();
 
-            expect(findCells()).toHaveLength(6);
+            expect(findCells()).toHaveLength(7);
           });
 
           it('scrolls to the top', async () => {
@@ -372,7 +384,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
 
       // First and second rows
       expect(cells.at(0).text()).toBe('a');
-      expect(cells.at(7).text()).toBe('b');
+      expect(cells.at(8).text()).toBe('b');
 
       const headers = findHeaders();
       await headers.at(0).trigger('click');
@@ -380,7 +392,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
 
       // First and second rows are not swapped
       expect(cells.at(0).text()).toBe('a');
-      expect(cells.at(7).text()).toBe('b');
+      expect(cells.at(8).text()).toBe('b');
     });
 
     it('change the busy state in the table', async () => {

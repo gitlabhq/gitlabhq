@@ -45,11 +45,13 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.project_api_limit).to eq(400) }
     it { expect(setting.project_invited_groups_api_limit).to eq(60) }
     it { expect(setting.projects_api_limit).to eq(2000) }
-    it { expect(setting.resource_token_expiry_inherited_members).to eq(true) }
     it { expect(setting.user_contributed_projects_api_limit).to eq(100) }
     it { expect(setting.user_projects_api_limit).to eq(300) }
     it { expect(setting.user_starred_projects_api_limit).to eq(100) }
     it { expect(setting.disable_password_authentication_for_users_with_sso_identities).to eq(false) }
+    it { expect(setting.resource_usage_limits).to eq({}) }
+    it { expect(setting.resource_access_token_notify_inherited).to eq(false) }
+    it { expect(setting.lock_resource_access_token_notify_inherited).to eq(false) }
   end
 
   describe 'USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS' do
@@ -92,6 +94,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       }
     end
 
+    it { expect(described_class).to validate_jsonb_schema(['resource_usage_limits']) }
     it { expect(described_class).to validate_jsonb_schema(['application_setting_rate_limits']) }
     it { expect(described_class).to validate_jsonb_schema(['application_setting_package_registry']) }
     it { expect(described_class).to validate_jsonb_schema(['application_setting_service_ping_settings']) }
@@ -202,6 +205,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { is_expected.to allow_value(http).for(:jira_connect_proxy_url) }
     it { is_expected.to allow_value(https).for(:jira_connect_proxy_url) }
+
+    it { is_expected.to allow_value(http).for(:jira_connect_additional_audience_url) }
+    it { is_expected.to allow_value(https).for(:jira_connect_additional_audience_url) }
 
     it { is_expected.not_to allow_value(apdex_slo: '10').for(:prometheus_alert_db_indicators_settings) }
     it { is_expected.to allow_value(nil).for(:prometheus_alert_db_indicators_settings) }
@@ -411,6 +417,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
         it { is_expected.not_to allow_value('http://localhost:9000').for(:grafana_url) }
         it { is_expected.not_to allow_value('http://localhost:9000').for(:jira_connect_proxy_url) }
+        it { is_expected.not_to allow_value('http://localhost:9000').for(:jira_connect_additional_audience_url) }
       end
 
       context 'with invalid grafana URL' do
@@ -1100,6 +1107,23 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
             expect(subject.encrypted_ci_jwt_signing_key).to be_present
             expect(subject.encrypted_ci_jwt_signing_key_iv).to be_present
             expect(subject.encrypted_ci_jwt_signing_key).not_to eq(subject.ci_jwt_signing_key)
+          end
+        end
+      end
+
+      describe '#ci_job_token_signing_key', :do_not_stub_ci_job_token_signing_key do
+        it { is_expected.not_to allow_value('').for(:ci_job_token_signing_key) }
+        it { is_expected.not_to allow_value('invalid RSA key').for(:ci_job_token_signing_key) }
+        it { is_expected.to allow_value(nil).for(:ci_job_token_signing_key) }
+        it { is_expected.to allow_value(OpenSSL::PKey::RSA.new(1024).to_pem).for(:ci_job_token_signing_key) }
+
+        it 'is encrypted' do
+          subject.ci_job_token_signing_key = OpenSSL::PKey::RSA.new(1024).to_pem
+
+          aggregate_failures do
+            expect(subject.encrypted_ci_job_token_signing_key).to be_present
+            expect(subject.encrypted_ci_job_token_signing_key_iv).to be_present
+            expect(subject.encrypted_ci_job_token_signing_key).not_to eq(subject.ci_job_token_signing_key)
           end
         end
       end

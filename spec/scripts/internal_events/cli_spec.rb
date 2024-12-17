@@ -58,6 +58,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "\n", # Select: None! Continue to next section!
           "\n", # Skip MR URL
           "analytics_instrumentation\n", # Input group
+          "service_ping \n", # Select product category
           "2\n", # Select [premium, ultimate]
           "y\n", # Create file
           "4\n" # Exit
@@ -81,12 +82,11 @@ RSpec.describe Cli, feature_category: :service_ping do
           "\e[B", # Arrow down to: Weekly count of unique projects
           "\n", # Select: Weekly count of unique projects
           "where a defition file was created with the CLI\n", # Input description
-          "\n", # Submit weekly description for monthly
           "2\n", # Select: Modify attributes
           "\n", # Accept group
+          "\n", # Accept product categories
           "\n", # Skip URL
           "1\n", # Select: [free, premium, ultimate]
-          "y\n", # Create file
           "y\n", # Create file
           "5\n" # Exit
         ]
@@ -102,11 +102,8 @@ RSpec.describe Cli, feature_category: :service_ping do
       let(:output_files) do
         # rubocop:disable Layout/LineLength -- Long filepaths read better unbroken
         [{
-          'path' => 'config/metrics/counts_28d/count_distinct_project_id_from_internal_events_cli_closed_and_internal_events_cli_used_monthly.yml',
-          'content' => 'spec/fixtures/scripts/internal_events/metrics/project_id_28d_multiple_events.yml'
-        }, {
-          'path' => 'config/metrics/counts_7d/count_distinct_project_id_from_internal_events_cli_closed_and_internal_events_cli_used_weekly.yml',
-          'content' => 'spec/fixtures/scripts/internal_events/metrics/project_id_7d_multiple_events.yml'
+          'path' => 'config/metrics/counts_all/count_distinct_project_id_from_internal_events_cli_closed_and_internal_events_cli_used.yml',
+          'content' => 'spec/fixtures/scripts/internal_events/metrics/project_id_multiple_events.yml'
         }]
         # rubocop:enable Layout/LineLength
       end
@@ -131,6 +128,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "\n", # Select: None! Continue to next section!
           "\n", # Skip MR URL
           "instrumentation\n", # Filter & select group
+          " \n", # Select product category
           "2\n", # Select [premium, ultimate]
           "y\n", # Create file
           "4\n" # Exit

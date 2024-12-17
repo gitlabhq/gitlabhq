@@ -8,8 +8,7 @@ description: Used to record the metadata for wiki pages when we create events.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26529
 milestone: '13.0'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   project_id: projects
   namespace_id: namespaces
+table_size: small

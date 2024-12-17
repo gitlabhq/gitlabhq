@@ -36,7 +36,7 @@ export default {
   i18n: {
     commitStatSummary: __('Showing %{conflict}'),
     resolveInfo: __(
-      'You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}.',
+      'To resolve the conflicts, either use interactive mode to select %{use_ours} or %{use_theirs}, or edit the files inline. Commit these changes into %{branch_name}.',
     ),
   },
   computed: {
@@ -182,10 +182,10 @@ export default {
             <div class="gl-mb-5" data-testid="resolve-info">
               <gl-sprintf :message="$options.i18n.resolveInfo">
                 <template #use_ours>
-                  <code>{{ s__('MergeConflict|Use ours') }}</code>
+                  <strong>{{ s__('MergeConflict|Use ours') }}</strong>
                 </template>
                 <template #use_theirs>
-                  <code>{{ s__('MergeConflict|Use theirs') }}</code>
+                  <strong>{{ s__('MergeConflict|Use theirs') }}</strong>
                 </template>
                 <template #branch_name>
                   <a class="ref-name" :href="sourceBranchPath">{{ conflictsData.sourceBranch }}</a>

@@ -1,0 +1,9 @@
+---
+name: enforce_job_token_policies
+feature_issue_url: https://gitlab.com/gitlab-org/govern/authorization/team-tasks/-/issues/67
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169264
+rollout_issue_url:
+milestone: "17.7"
+group: group::authorization
+type: wip
+default_enabled: false

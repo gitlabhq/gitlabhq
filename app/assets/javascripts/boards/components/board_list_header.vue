@@ -393,7 +393,7 @@ export default {
           v-gl-tooltip.hover
           :class="{
             '!gl-ml-2': list.collapsed && !showAssigneeListDetails,
-            'gl-text-gray-500': list.collapsed,
+            'gl-text-subtle': list.collapsed,
             'gl-block': list.collapsed || listType === 'milestone',
           }"
           :title="listTitle"
@@ -404,7 +404,7 @@ export default {
         <span
           v-if="listType === 'assignee'"
           v-show="!list.collapsed"
-          class="gl-ml-2 gl-font-normal gl-text-secondary"
+          class="gl-ml-2 gl-font-normal gl-text-subtle"
         >
           @{{ listAssignee }}
         </span>
@@ -424,9 +424,9 @@ export default {
         v-if="isSwimlanesHeader && list.collapsed"
         ref="collapsedInfo"
         aria-hidden="true"
-        class="board-header-collapsed-info-icon gl-cursor-pointer gl-text-secondary hover:gl-text-gray-900"
+        class="board-header-collapsed-info-icon gl-cursor-pointer"
       >
-        <gl-icon name="information" />
+        <gl-icon name="information" variant="subtle" />
       </span>
       <gl-tooltip v-if="isSwimlanesHeader && list.collapsed" :target="() => $refs.collapsedInfo">
         <div class="gl-pb-2 gl-font-bold">{{ collapsedTooltipTitle }}</div>
@@ -448,7 +448,7 @@ export default {
       <!-- EE end -->
 
       <div
-        class="issue-count-badge no-drag gl-inline-flex gl-pr-2 gl-text-sm gl-text-secondary"
+        class="issue-count-badge no-drag gl-inline-flex gl-pr-2 gl-text-sm gl-text-subtle"
         data-testid="issue-count-badge"
         :class="{
           '!gl-hidden': list.collapsed && isSwimlanesHeader,

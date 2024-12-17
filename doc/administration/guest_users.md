@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Users assigned the Guest role have limited access and capabilities compared to other user roles. Their permissions are restricted and are designed to provide basic visibility and interaction without compromising sensitive project data. For more information, see [Permissions and roles](../user/permissions.md).
+Users assigned the Guest role have limited access and capabilities compared to other user roles. Their permissions are restricted and are designed to provide basic visibility and interaction without compromising sensitive project data. For more information, see [Roles and permissions](../user/permissions.md).
 
 In GitLab Ultimate, the Guest role is free and does not count towards the license seat count. You can assign the Guest role to users [through the API](../api/members.md#add-a-member-to-a-group-or-project) or the GitLab UI.
 

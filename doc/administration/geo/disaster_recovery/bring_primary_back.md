@@ -107,10 +107,6 @@ Use-cases:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352530) in GitLab 16.8 [with a flag](../../feature_flags.md) named `geo_skip_download_if_exists`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435788) in GitLab 16.9. Feature flag `geo_skip_download_if_exists` removed.
 
-FLAG:
-On self-managed GitLab, by default this feature is available.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-
 When you add a secondary site which has preexisting file data, then the secondary Geo site will avoid re-transferring that data. This applies to:
 
 - CI job artifacts

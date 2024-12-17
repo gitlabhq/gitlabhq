@@ -47,8 +47,7 @@ For information on how to create and upload a package, view the GitLab documenta
 
 ## Authenticate with the registry
 
-Authentication depends on the package manager being used. For more information, see the docs on the
-specific package format you want to use.
+Authentication depends on the package manager being used. To learn what authentication protocols are supported for a specific package type, see [Authentication protocols](../../packages/package_registry/supported_functionality.md#authentication-protocols). 
 
 For most package types, the following credential types are valid:
 
@@ -83,11 +82,11 @@ CI/CD templates, which you can use to get started, are in [this repository](http
 
 For more information about using the GitLab package registry with CI/CD, see:
 
-- [Generic](../generic_packages/index.md#publish-a-generic-package-by-using-cicd)
+- [Generic](../generic_packages/index.md#publish-a-package)
 - [Maven](../maven_repository/index.md#create-maven-packages-with-gitlab-cicd)
-- [npm](../npm_registry/index.md#publishing-a-package-by-using-a-cicd-pipeline)
+- [npm](../npm_registry/index.md#publish-a-package-with-a-cicd-pipeline)
 - [NuGet](../nuget_repository/index.md#publish-a-nuget-package-by-using-cicd)
-- [PyPI](../pypi_repository/index.md#authenticate-with-a-ci-job-token)
+- [PyPI](../pypi_repository/index.md#authenticate-with-the-gitlab-package-registry)
 - [Terraform](../terraform_module_registry/index.md#authenticate-to-the-terraform-module-registry)
 
 If you use CI/CD to build a package, extended activity information is displayed

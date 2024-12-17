@@ -817,3 +817,12 @@ export const isValidDateString = (dateString) => {
   }
   return !Number.isNaN(Date.parse(isoFormatted));
 };
+
+/**
+ * Converts the given number of days to seconds.
+ *
+ * @param {number} days Number of days to convert
+ *
+ * @returns {number} The equivalent number of seconds
+ */
+export const daysToSeconds = (days) => SECONDS_IN_DAY * days;

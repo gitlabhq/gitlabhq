@@ -1,9 +1,12 @@
-import { GlEmptyState, GlLink, GlTableLite } from '@gitlab/ui';
+import { GlEmptyState, GlLink, GlTableLite, GlButton } from '@gitlab/ui';
 import MlExperimentsIndexApp from '~/ml/experiment_tracking/routes/experiments/index';
 import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { TITLE_LABEL } from '~/ml/experiment_tracking/routes/experiments/index/translations';
 import Pagination from '~/ml/experiment_tracking/components/pagination.vue';
+import { MLFLOW_USAGE_MODAL_ID } from '~/ml/experiment_tracking/routes/experiments/index/constants';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+
 import {
   startCursor,
   firstExperiment,
@@ -15,6 +18,7 @@ import {
 let wrapper;
 const createWrapper = (defaultExperiments = [], pageInfo = defaultPageInfo) => {
   wrapper = mountExtended(MlExperimentsIndexApp, {
+    directives: { GlModal: createMockDirective('gl-modal') },
     propsData: { experiments: defaultExperiments, pageInfo, emptyStateSvgPath: 'path' },
   });
 };
@@ -29,6 +33,8 @@ const findColumnInRow = (row, col) => findNthTableRow(row).findAll('td').at(col)
 const hrefInRowAndColumn = (row, col) =>
   findColumnInRow(row, col).findComponent(GlLink).attributes().href;
 const findTitleHeader = () => wrapper.findComponent(ModelExperimentsHeader);
+
+const findDocsButton = () => wrapper.findAllComponents(GlButton).at(0);
 
 describe('MlExperimentsIndex', () => {
   describe('empty state', () => {
@@ -48,6 +54,11 @@ describe('MlExperimentsIndex', () => {
 
     it('renders header', () => {
       expect(findTitleHeader().exists()).toBe(true);
+    });
+
+    it('creates button to docs', () => {
+      expect(findDocsButton().text()).toBe('Create an experiment using MLflow');
+      expect(getBinding(findDocsButton().element, 'gl-modal').value).toBe(MLFLOW_USAGE_MODAL_ID);
     });
   });
 

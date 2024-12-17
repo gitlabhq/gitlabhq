@@ -96,8 +96,9 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
       end
 
       it 'can batch-resolve merge requests from different projects', :request_store do
-        # 2 queries for project_authorizations, and 2 for merge_requests
-        results = batch_sync(max_queries: queries_per_project * 2) do
+        # 2 queries for organization_users, 2 for project_authorizations, and 2 for merge_requests
+        extra_auth_queries = 2
+        results = batch_sync(max_queries: (queries_per_project + extra_auth_queries) * 2) do
           a = resolve_mr(project, iids: [iid_1])
           b = resolve_mr(project, iids: [iid_2])
           c = resolve_mr(other_project, iids: [other_iid])
@@ -524,6 +525,18 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
       end
     end
 
+    it_behaves_like 'graphql query for searching issuables' do
+      let_it_be(:parent) { project }
+      let_it_be(:issuable1) { create(:merge_request, :unique_branches, title: 'Fixed a bug', **common_attrs) }
+      let_it_be(:issuable1) { create(:merge_request, :unique_branches, title: 'first created', **common_attrs) }
+      let_it_be(:issuable2) { create(:merge_request, :unique_branches, title: 'second created', description: 'text 1', **common_attrs) }
+      let_it_be(:issuable3) { create(:merge_request, :unique_branches, title: 'third', description: 'text 2', **common_attrs) }
+      let_it_be(:issuable4) { create(:merge_request, :unique_branches, **common_attrs) }
+
+      let_it_be(:finder_class) { MergeRequestsFinder }
+      let_it_be(:optimization_param) { :attempt_project_search_optimizations }
+    end
+
     context 'with negated milestone argument' do
       it 'filters out merge requests with given milestone title' do
         result = resolve_mr(project, not: { milestone_title: milestone.title })
@@ -547,6 +560,77 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
         result = resolve_mr(project, review_state: :reviewed)
 
         expect(result).to be_empty
+      end
+    end
+
+    context 'with blob path argument' do
+      subject(:resolve_query) { resolve_mr(project, blob_path: blob_path, target_branches: target_branches, state: state, created_after: created_after) }
+
+      let(:blob_path) { 'files/ruby/feature.rb' }
+      let(:state) { 'opened' }
+      let(:target_branches) { ['master'] }
+      let(:created_after) { 5.days.ago.to_s }
+
+      it 'filters merge requests by blob path' do
+        is_expected.to contain_exactly(merge_request_1)
+      end
+
+      context 'when state is not provided' do
+        let(:state) { nil }
+
+        it 'raises an ArgumentError' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'state field must be specified to filter by blobPath') do
+            resolve_query
+          end
+        end
+      end
+
+      context 'when target_branches are not provided' do
+        let(:target_branches) { nil }
+
+        it 'raises an ArgumentError' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'targetBranches field must be specified to filter by blobPath') do
+            resolve_query
+          end
+        end
+      end
+
+      context 'when created_after is not provided' do
+        let(:created_after) { nil }
+
+        it 'raises an ArgumentError' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'createdAfter field must be specified to filter by blobPath') do
+            resolve_query
+          end
+        end
+      end
+
+      context 'when created_after is too much in the past' do
+        let(:created_after) { 31.days.ago }
+
+        it 'raises an ArgumentError' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError, 'createdAfter must be within the last 30 days to filter by blobPath') do
+            resolve_query
+          end
+        end
+      end
+
+      context 'when there are no merge requests that changed requested blob' do
+        let(:blob_path) { 'unknown' }
+
+        it 'does not find anything' do
+          is_expected.to be_empty
+        end
+
+        context 'when feature flag "filter_blob_path" is disabled' do
+          before do
+            stub_feature_flags(filter_blob_path: false)
+          end
+
+          it 'ignores requested blob path' do
+            is_expected.to contain_exactly(merge_request_1)
+          end
+        end
       end
     end
 

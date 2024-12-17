@@ -1,33 +1,61 @@
 <script>
-import { GlLoadingIcon, GlIcon, GlButton, GlTooltipDirective, GlModalDirective } from '@gitlab/ui';
+import { GlIcon, GlAlert, GlTooltipDirective, GlModalDirective } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import { s__, __ } from '~/locale';
 import { findWidget } from '~/issues/list/utils';
 
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
-import { sprintfWorkItem, WIDGET_TYPE_DEVELOPMENT, STATE_OPEN } from '~/work_items/constants';
+import {
+  sprintfWorkItem,
+  WIDGET_TYPE_DEVELOPMENT,
+  STATE_OPEN,
+  DEVELOPMENT_ITEMS_ANCHOR,
+} from '~/work_items/constants';
 
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import WorkItemActionsSplitButton from '~/work_items/components/work_item_links/work_item_actions_split_button.vue';
 import WorkItemDevelopmentRelationshipList from './work_item_development_relationship_list.vue';
+import WorkItemCreateBranchMergeRequestModal from './work_item_create_branch_merge_request_modal.vue';
 
 export default {
+  i18n: {
+    development: s__('WorkItem|Development'),
+    fetchError: s__('WorkItem|Something went wrong when fetching items. Please refresh this page.'),
+    createMergeRequest: __('Create merge request'),
+    createBranch: __('Create branch'),
+    branchLabel: __('Branch'),
+    mergeRequestLabel: __('Merge request'),
+    addTooltipLabel: __('Add development item'),
+    openStateWithOneMergeRequestText: s__(
+      'WorkItem|This %{workItemType} will be closed when the following is merged.',
+    ),
+    openStateText: s__(
+      'WorkItem|This %{workItemType} will be closed when any of the following is merged.',
+    ),
+    closedStateText: s__(
+      'WorkItem|The %{workItemType} was closed automatically when a branch was merged.',
+    ),
+  },
   components: {
-    GlLoadingIcon,
     GlIcon,
-    GlButton,
+    GlAlert,
     WorkItemDevelopmentRelationshipList,
+    CrudComponent,
+    WorkItemActionsSplitButton,
+    WorkItemCreateBranchMergeRequestModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    GlModal: GlModalDirective,
+    GlModalDirective,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
-    workItemIid: {
+    workItemFullPath: {
       type: String,
       required: true,
     },
-    workItemFullPath: {
+    workItemType: {
       type: String,
       required: true,
     },
@@ -35,32 +63,26 @@ export default {
       type: String,
       required: true,
     },
-  },
-  apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
-    workItem: {
-      query: workItemByIidQuery,
-      variables() {
-        return {
-          fullPath: this.workItemFullPath,
-          iid: this.workItemIid,
-        };
-      },
-      update(data) {
-        return data.workspace?.workItem || {};
-      },
-      skip() {
-        return !this.workItemIid;
-      },
-      error(e) {
-        this.$emit('error', this.$options.i18n.fetchError);
-        this.error = e.message || this.$options.i18n.fetchError;
-      },
+    workItemIid: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    isModal: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
     return {
-      error: '',
+      error: undefined,
+      workItem: {},
+      showCreateBranchAndMrModal: false,
+      showBranchFlow: true,
+      showMergeRequestFlow: false,
+      isLoadingPermissionsQuery: false,
+      showCreateOptions: true,
     };
   },
   computed: {
@@ -88,14 +110,19 @@ export default {
     featureFlags() {
       return this.workItemDevelopment?.featureFlags?.nodes || [];
     },
-    shouldShowEmptyState() {
-      return this.isRelatedDevelopmentListEmpty ? this.workItemsAlphaEnabled : true;
+    relatedBranches() {
+      return this.workItemDevelopment?.relatedBranches?.nodes || [];
     },
     shouldShowDevWidget() {
-      return this.workItemDevelopment && this.shouldShowEmptyState;
+      return this.workItemDevelopment && !this.isRelatedDevelopmentListEmpty;
     },
     isRelatedDevelopmentListEmpty() {
-      return !this.error && this.linkedMergeRequests.length === 0 && this.featureFlags.length === 0;
+      return (
+        !this.error &&
+        this.linkedMergeRequests.length === 0 &&
+        this.featureFlags.length === 0 &&
+        this.relatedBranches.length === 0
+      );
     },
     showAutoCloseInformation() {
       return (
@@ -120,74 +147,144 @@ export default {
       return this.glFeatures.workItemsAlpha;
     },
     showAddButton() {
-      return this.workItemsAlphaEnabled && this.canUpdate;
+      return this.workItemsAlphaEnabled && this.canUpdate && this.showCreateOptions;
+    },
+    isConfidentialWorkItem() {
+      return this.workItem?.confidential;
+    },
+    projectId() {
+      return this.workItem?.project?.id;
+    },
+    addItemsActions() {
+      return [
+        {
+          name: this.$options.i18n.mergeRequestLabel,
+          items: [
+            {
+              text: this.$options.i18n.createMergeRequest,
+              action: this.openModal.bind(this, false, true),
+              extraAttrs: {
+                'data-testid': 'create-mr-dropdown-button',
+              },
+            },
+          ],
+        },
+        {
+          name: this.$options.i18n.branchLabel,
+          items: [
+            {
+              text: this.$options.i18n.createBranch,
+              action: this.openModal.bind(this, true, false),
+              extraAttrs: {
+                'data-testid': 'create-branch-dropdown-button',
+              },
+            },
+          ],
+        },
+      ];
     },
   },
-  createMRModalId: 'create-merge-request-modal',
-  i18n: {
-    development: s__('WorkItem|Development'),
-    fetchError: s__('WorkItem|Something went wrong when fetching items. Please refresh this page.'),
-    createMergeRequest: __('Create merge request'),
-    createBranch: __('Create branch'),
-    openStateWithOneMergeRequestText: s__(
-      'WorkItem|This %{workItemType} will be closed when the following is merged.',
-    ),
-    openStateText: s__(
-      'WorkItem|This %{workItemType} will be closed when any of the following is merged.',
-    ),
-    closedStateText: s__(
-      'WorkItem|The %{workItemType} was closed automatically when a branch was merged.',
-    ),
+  apollo: {
+    workItem: {
+      query: workItemByIidQuery,
+      variables() {
+        return {
+          fullPath: this.workItemFullPath,
+          iid: this.workItemIid,
+        };
+      },
+      update(data) {
+        return data.workspace?.workItem || {};
+      },
+      skip() {
+        return !this.workItemIid;
+      },
+      error(e) {
+        this.$emit('error', this.$options.i18n.fetchError);
+        this.error = e.message || this.$options.i18n.fetchError;
+      },
+    },
   },
+  methods: {
+    openModal(createBranch = true, createMergeRequest = false) {
+      this.toggleCreateModal(true);
+      this.showBranchFlow = createBranch;
+      this.showMergeRequestFlow = createMergeRequest;
+    },
+    toggleCreateModal(showOrhide) {
+      this.showCreateBranchAndMrModal = showOrhide;
+    },
+    updatePermissions(canCreateBranch) {
+      this.showCreateOptions = canCreateBranch;
+    },
+  },
+  DEVELOPMENT_ITEMS_ANCHOR,
 };
 </script>
+
 <template>
-  <gl-loading-icon v-if="isLoading" class="gl-my-2" />
-  <div v-else-if="shouldShowDevWidget" class="work-item-attributes-item">
-    <div class="gl-flex gl-items-center gl-justify-between gl-gap-3">
-      <h3
-        class="gl-heading-5 !gl-mb-0 gl-flex gl-items-center gl-gap-2"
-        data-testid="dev-widget-label"
-      >
-        {{ $options.i18n.development }}
-        <gl-button
+  <div>
+    <crud-component
+      v-if="shouldShowDevWidget"
+      ref="workItemDevelopment"
+      :title="$options.i18n.development"
+      :anchor-id="$options.DEVELOPMENT_ITEMS_ANCHOR"
+      :is-loading="isLoading || isLoadingPermissionsQuery"
+      is-collapsible
+      persist-collapsed-state
+      data-testid="work-item-development"
+    >
+      <template #count>
+        <span
           v-if="showAutoCloseInformation"
           v-gl-tooltip
+          tabindex="0"
           class="!gl-p-0 hover:!gl-bg-transparent"
-          category="tertiary"
           :title="tooltipText"
           :aria-label="tooltipText"
           data-testid="more-information"
         >
           <gl-icon name="information-o" variant="info" />
-        </gl-button>
-      </h3>
-      <gl-button
-        v-if="showAddButton"
-        v-gl-modal="$options.createMRModalId"
-        v-gl-tooltip.top
-        category="tertiary"
-        icon="plus"
-        size="small"
-        data-testid="add-item"
-        :title="__('Add branch or merge request')"
-        :aria-label="__('Add branch or merge request')"
-      />
-    </div>
-    <work-item-development-relationship-list
-      v-if="!isRelatedDevelopmentListEmpty"
-      :work-item-dev-widget="workItemDevelopment"
-    />
-    <template v-else>
-      <span v-if="!canUpdate" class="gl-text-secondary">{{ __('None') }}</span>
-      <template v-else>
-        <gl-button category="secondary" size="small" data-testid="create-mr-button">{{
-          $options.i18n.createMergeRequest
-        }}</gl-button>
-        <gl-button category="tertiary" size="small" data-testid="create-branch-button">{{
-          $options.i18n.createBranch
-        }}</gl-button>
+        </span>
       </template>
-    </template>
+
+      <template #actions>
+        <work-item-actions-split-button
+          v-if="showAddButton"
+          data-testid="create-options-dropdown"
+          :actions="addItemsActions"
+          :tooltip-text="$options.i18n.addTooltipLabel"
+        />
+      </template>
+
+      <template v-if="isRelatedDevelopmentListEmpty" #empty>
+        {{ __('None') }}
+      </template>
+
+      <template #default>
+        <gl-alert v-if="error" variant="danger" @dismiss="error = undefined">
+          {{ error }}
+        </gl-alert>
+        <work-item-development-relationship-list
+          v-if="!isRelatedDevelopmentListEmpty"
+          :is-modal="isModal"
+          :work-item-dev-widget="workItemDevelopment"
+        />
+      </template>
+    </crud-component>
+    <work-item-create-branch-merge-request-modal
+      v-if="!isLoading"
+      :show-modal="showCreateBranchAndMrModal"
+      :show-branch-flow="showBranchFlow"
+      :show-merge-request-flow="showMergeRequestFlow"
+      :work-item-iid="workItemIid"
+      :work-item-id="workItemId"
+      :work-item-type="workItemTypeName"
+      :work-item-full-path="workItemFullPath"
+      :is-confidential-work-item="isConfidentialWorkItem"
+      :project-id="projectId"
+      @hideModal="toggleCreateModal(false)"
+      @fetchedPermissions="updatePermissions"
+    />
   </div>
 </template>

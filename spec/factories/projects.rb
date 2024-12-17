@@ -73,9 +73,11 @@ FactoryBot.define do
       runners_token { nil }
       runner_token_expiration_interval { nil }
       runner_token_expiration_interval_human_readable { nil }
+      ci_delete_pipelines_in_seconds { nil }
 
       # rubocop:disable Lint/EmptyBlock -- block is required by factorybot
       guests {}
+      planners {}
       reporters {}
       developers {}
       maintainers {}
@@ -151,6 +153,8 @@ FactoryBot.define do
       project.ci_inbound_job_token_scope_enabled = evaluator.ci_inbound_job_token_scope_enabled unless evaluator.ci_inbound_job_token_scope_enabled.nil?
       project.runner_token_expiration_interval = evaluator.runner_token_expiration_interval unless evaluator.runner_token_expiration_interval.nil?
       project.runner_token_expiration_interval_human_readable = evaluator.runner_token_expiration_interval_human_readable unless evaluator.runner_token_expiration_interval_human_readable.nil?
+      project.ci_delete_pipelines_in_seconds = evaluator.ci_delete_pipelines_in_seconds unless evaluator.ci_delete_pipelines_in_seconds.nil?
+      project.ci_cd_settings.save!
 
       if evaluator.import_status
         import_state = project.import_state || project.build_import_state
@@ -165,6 +169,7 @@ FactoryBot.define do
       project.create_ci_project_mirror!(namespace_id: project.namespace_id) unless project.ci_project_mirror
 
       project.add_members(Array.wrap(evaluator.guests), :guest)
+      project.add_members(Array.wrap(evaluator.planners), :planner)
       project.add_members(Array.wrap(evaluator.reporters), :reporter)
       project.add_members(Array.wrap(evaluator.developers), :developer)
       project.add_members(Array.wrap(evaluator.maintainers), :maintainer)
@@ -201,6 +206,12 @@ FactoryBot.define do
 
     trait :import_canceled do
       import_status { :canceled }
+    end
+
+    trait :bitbucket_server_import do
+      import_started
+      import_url { 'https://bitbucket.example.com' }
+      import_type { :bitbucket_server }
     end
 
     trait :jira_dvcs_server do
@@ -572,7 +583,7 @@ FactoryBot.define do
   trait :pages_published do
     after(:create) do |project|
       project.mark_pages_onboarding_complete
-      create(:pages_deployment, project: project) # rubocop: disable RSpec/FactoryBot/StrategyInCallback
+      create(:pages_deployment, project: project)
     end
   end
 

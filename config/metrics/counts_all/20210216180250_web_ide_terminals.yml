@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.web_ide_terminals
 description: Count of Web Terminal tab views in the Web IDE
 product_group: remote_development
+product_categories:
+- web_ide
 value_type: number
 status: active
 time_frame: all

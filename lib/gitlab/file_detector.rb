@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'set' # -- Ruby 3.1 and earlier needs this. Drop this line after Ruby 3.2+ is only supported.
-
 module Gitlab
   # Module that can be used to detect if a path points to a special file such as
   # a README or a CONTRIBUTING file.

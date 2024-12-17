@@ -4,240 +4,489 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Generic Packages Repository
+# GitLab generic packages repository
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Publish generic files, like release binaries, in your project's package registry. Then, install the packages whenever you need to use them as a dependency.
+Use the generic packages repository to publish and manage generic files, such as release binaries, in your project's package registry. This feature is particularly useful for storing and distributing artifacts that don't fit into specific package formats like npm or Maven.
+
+The generic packages repository provides:
+
+- A place to store any file type as a package.
+- Version control for your packages.
+- Integration with GitLab CI/CD.
+- API access for automation.
 
 ## Authenticate to the package registry
 
-To authenticate to the package registry, you need either a [personal access token](../../../api/rest/authentication.md#personalprojectgroup-access-tokens),
-[CI/CD job token](../../../ci/jobs/ci_job_token.md), or [deploy token](../../project/deploy_tokens/index.md).
+To interact with the package registry, you must authenticate with one of the following methods:
 
-In addition to the standard API authentication mechanisms, the generic package
-API allows authentication with HTTP Basic authentication for use with tools that
-do not support the other available mechanisms. The `user-id` is not checked and
-may be any value, and the `password` must be either a [personal access token](../../../api/rest/authentication.md#personalprojectgroup-access-tokens),
-a [CI/CD job token](../../../ci/jobs/ci_job_token.md), or a [deploy token](../../project/deploy_tokens/index.md).
+- A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api`.
+- A [project access token](../../../user/project/settings/project_access_tokens.md) with the scope set to `api` and at least the Developer role.
+- A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
+- A [deploy token](../../project/deploy_tokens/index.md) with the scope set to `read_package_registry`, `write_package_registry`, or both.
 
 Do not use authentication methods other than the methods documented here. Undocumented authentication methods might be removed in the future.
 
-## Publish a package file
+When you authenticate with the package registry, you should follow these best practices:
 
-When you publish a package file, if the package does not exist, it is created.
+- To access permissions associated with the Developer role, use a personal access token.
+- Use CI/CD job tokens for automated pipelines.
+- Use deploy tokens for external system integration.
+- Always send authentication information over HTTPS.
 
-Prerequisites:
+### HTTP Basic authentication
 
-- You must [authenticate with the API](../../../api/rest/authentication.md).
-  If authenticating with a deploy token, it must be configured with the `write_package_registry`
-  scope. If authenticating with a personal access token or project access token, it must be
-  configured with the `api` scope. Project access tokens must have at least the Developer role.
-- You must call this API endpoint serially when attempting to upload multiple files under the
-  same package name and version. Attempts to concurrently upload multiple files into
-  a new package name and version may face partial failures with
-  `HTTP 500: Internal Server Error` responses due to the requests racing to
-  create the package.
-
-```plaintext
-PUT /projects/:id/packages/generic/:package_name/:package_version/:file_name?status=:status
-```
-
-| Attribute         | Type           | Required | Description |
-|-------------------|----------------|----------|-------------|
-| `id`              | integer/string | yes      | The ID or [URL-encoded path of the project](../../../api/rest/index.md#namespaced-paths). |
-| `package_name`    | string         | yes      | The package name. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), or underscores (`_`). |
-| `package_version` | string         | yes      | The package version. The following regex validates this: `\A(\.?[\w\+-]+\.?)+\z`. You can test your version strings on [Rubular](https://rubular.com/r/aNCV0wG5K14uq8). |
-| `file_name`       | string         | yes      | The filename. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), underscores (`_`), or slashes (`/`). |
-| `status`          | string         | no       | The package status. It can be `default` or `hidden`. Hidden packages do not appear in the UI or [package API list endpoints](../../../api/packages.md). |
-| `select`          | string         | no       | The response payload. By default, the response is empty. Valid values are: `package_file`. `package_file` returns details of the package file record created by this request. |
-
-Provide the file context in the request body.
-
-Example request using a personal access token:
+If you use a tool that doesn't support the standard authentication methods, you can use HTTP Basic authentication:
 
 ```shell
-curl --fail-with-body --header "PRIVATE-TOKEN: <your_access_token>" \
-     --upload-file path/to/file.txt \
-     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
-
-<!-- Or with a full path file -->
-
-curl --fail-with-body --user "user:<your_access_token>" \
-     --upload-file path/to/file.txt \
-     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/path/to/file.txt"
+curl --user "<username>:<token>" <other options> <GitLab API endpoint>
 ```
 
-Example response without attribute `select`:
+Although it is ignored, you must provide a username. The token is your personal access token, CI/CD job token, or deploy token.
 
-```json
-{
-  "message":"201 Created"
-}
-```
+## Publish a package
 
-Example request with attribute `select = package_file`:
+You can publish packages with the API.
+
+### Publish a single file
+
+To publish a single file, use the following API endpoint:
 
 ```shell
-curl --fail-with-body --header "PRIVATE-TOKEN: <your_access_token>" \
-     --user "<username>:<Project Access Token>" \
+PUT /projects/:id/packages/generic/:package_name/:package_version/:file_name
+```
+
+Replace the placeholders in the URL with your specific values:
+
+- `:id`: Your project ID or URL-encoded path
+- `:package_name`: Name of your package
+- `:package_version`: Version of your package
+- `:file_name`: Name of the file you're uploading
+
+For example:
+
+::Tabs
+
+:::TabTitle Personal access token
+
+With HTTP headers:
+
+```shell
+curl --location --header "PRIVATE-TOKEN: <personal_access_token>" \
      --upload-file path/to/file.txt \
-     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt?select=package_file"
+     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/1.0.0/file.txt"
 ```
 
-Example response with attribute `select = package_file`:
+With HTTP Basic authentication:
 
-```json
-{
-  "id": 1,
-  "package_id": 1,
-  "created_at": "2021-10-12T12:05:23.387Z",
-  "updated_at": "2021-10-12T12:05:23.387Z",
-  "size": 0,
-  "file_store": 1,
-  "file_md5": null,
-  "file_sha1": null,
-  "file_name": "file.txt",
-  "file": {
-    "url": "/6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b/packages/26/files/36/file.txt"
-  },
-  "file_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-  "verification_retry_at": null,
-  "verified_at": null,
-  "verification_failure": null,
-  "verification_retry_count": null,
-  "verification_checksum": null,
-  "verification_state": 0,
-  "verification_started_at": null,
-  "new_file_path": null
-}
+```shell
+curl --location --user "<username>:<personal_access_token>" \
+     --upload-file path/to/file.txt \
+     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/1.0.0/file.txt"
 ```
 
-### Publishing a package with the same name or version
+:::TabTitle Project access token
 
-When you publish a package with the same name and version as an existing package, the new package
-files are added to the existing package. When you install a generic package that has a duplicate, GitLab downloads the latest version.
+With HTTP headers:
 
-You can use the UI or API to access and view the
-existing package's older files. To delete these older package revisions, consider using the Packages
-API or the UI.
+```shell
+curl --location --header  "PRIVATE-TOKEN: <project_access_token>" \
+     --upload-file path/to/file.txt \
+     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/1.0.0/file.txt"
+```
 
-#### Do not allow duplicate Generic packages
+With HTTP Basic authentication:
+
+```shell
+curl --location --user "<project_access_token_username>:project_access_token" \
+     --upload-file path/to/file.txt \
+     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/1.0.0/file.txt"
+```
+
+:::TabTitle Deploy token
+
+With HTTP headers:
+
+```shell
+curl --location --header  "DEPLOY-TOKEN: <deploy_token>" \
+     --upload-file path/to/file.txt \
+     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/1.0.0/file.txt"
+```
+
+With HTTP Basic authentication:
+
+```shell
+curl --location --user "<deploy_token_username>:<deploy_token>" \
+     --upload-file path/to/file.txt \
+     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/1.0.0/file.txt"
+```
+
+Replace `<deploy_token_username>` with the username of your deploy token and `<deploy_token>` with your actual deploy token.
+
+:::TabTitle CI/CD job token
+
+These examples are for a `.gitlab-ci.yml` file. GitLab CI/CD automatically provides the `CI_JOB_TOKEN`.
+
+With HTTP headers:
+
+```yaml
+publish:
+  stage: deploy
+  script:
+    - |
+      curl --location --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+           --upload-file path/to/file.txt \
+           "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/${CI_COMMIT_TAG}/file.txt"
+```
+
+With HTTP Basic authentication:
+
+```yaml
+publish:
+  stage: deploy
+  script:
+    - |
+      curl --location --user "gitlab-ci-token:${CI_JOB_TOKEN}" \
+           --upload-file path/to/file.txt \
+           "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/${CI_COMMIT_TAG}/file.txt"
+```
+
+::EndTabs
+
+Each request returns a response indicating success or failure. If your upload is successful, the response status is `201 Created`.
+
+### Publish multiple files
+
+To publish multiple files or an entire directory, you must make one API call for each file.
+
+You should follow these best practices when you publish multiple files to the repository:
+
+- **Versioning**: Use a consistent versioning scheme for your package. This could be based on your project's version, build number, or date.
+- **File organization**: Consider how you want to structure your files within the package. You might want to include a manifest file that lists all the included files and their purposes.
+- **Automation**: Whenever possible, automate the publishing process through CI/CD pipelines. This ensures consistency and reduces manual errors.
+- **Error handling**: Implement error checking in your scripts. For example, check the HTTP response code from cURL to ensure each file was uploaded successfully.
+- **Logging**: Maintain logs of what files were uploaded, when, and by whom. This can be crucial for troubleshooting and auditing.
+- **Compression**: For large directories, consider compressing the contents into a single file before uploading. This can simplify the upload process and reduce the number of API calls.
+- **Checksums**: Generate and store checksums (MD5, SHA256) for your files. This allows users to verify the integrity of downloaded files.
+
+For example:
+
+::Tabs
+
+:::TabTitle With a Bash script
+
+Create a Bash script to iterate through files and upload them:
+
+```shell
+#!/bin/bash
+
+TOKEN="<access_token>"
+PROJECT_ID="24"
+PACKAGE_NAME="my_package"
+PACKAGE_VERSION="1.0.0"
+DIRECTORY_PATH="./files_to_upload"
+
+for file in "$DIRECTORY_PATH"/*; do
+    if [ -f "$file" ]; then
+        filename=$(basename "$file")
+        curl --location --header  "PRIVATE-TOKEN: $TOKEN" \
+             --upload-file "$file" \
+             "https://gitlab.example.com/api/v4/projects/$PROJECT_ID/packages/generic/$PACKAGE_NAME/$PACKAGE_VERSION/$filename"
+        echo "Uploaded: $filename"
+    fi
+done
+```
+
+:::TabTitle With GitLab CI/CD
+
+For automated uploads in your CI/CD pipeline, you can iterate through your files and upload them:
+
+```yaml
+upload_package:
+  stage: publish
+  script:
+    - |
+      for file in ./build/*; do
+        if [ -f "$file" ]; then
+          filename=$(basename "$file")
+          curl --header "JOB-TOKEN: $CI_JOB_TOKEN" \
+               --upload-file "$file" \
+               "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/${CI_COMMIT_TAG}/$filename"
+          echo "Uploaded: $filename"
+        fi
+      done
+```
+
+::EndTabs
+
+### Maintain directory structure
+
+To preserve the structure of a published directory, include the relative path in the file name:
+
+```shell
+#!/bin/bash
+
+TOKEN="<access_token>"
+PROJECT_ID="24"
+PACKAGE_NAME="my_package"
+PACKAGE_VERSION="1.0.0"
+DIRECTORY_PATH="./files_to_upload"
+
+find "$DIRECTORY_PATH" -type f | while read -r file; do
+    relative_path=${file#"$DIRECTORY_PATH/"}
+    curl --location --header  "PRIVATE-TOKEN: $TOKEN" \
+         --upload-file "$file" \
+         "https://gitlab.example.com/api/v4/projects/$PROJECT_ID/packages/generic/$PACKAGE_NAME/$PACKAGE_VERSION/$relative_path"
+    echo "Uploaded: $relative_path"
+done
+```
+
+## Download a package
+
+You can download packages with the API.
+
+### Download a single file
+
+To download a single package file, use the following API endpoint:
+
+```shell
+GET /projects/:id/packages/generic/:package_name/:package_version/:file_name
+```
+
+Replace the placeholders in the URL with your specific values:
+
+- `:id`: Your project ID or URL-encoded path
+- `:package_name`: Name of your package
+- `:package_version`: Version of your package
+- `:file_name`: Name of the file you're uploading
+
+For example:
+
+::Tabs
+
+:::TabTitle Personal access token
+
+With HTTP headers:
+
+```shell
+curl --header "PRIVATE-TOKEN: <access_token>" \
+     --location \
+     "https://gitlab.example.com/api/v4/projects/1/packages/generic/my_package/0.0.1/file.txt" \
+     --output file.txt
+```
+
+With HTTP Basic authentication:
+
+```shell
+curl --user "<username>:<access_token>" \
+     --location \
+     "https://gitlab.example.com/api/v4/projects/1/packages/generic/my_package/0.0.1/file.txt" \
+     --output file.txt
+```
+
+:::TabTitle Project access token
+
+With HTTP headers:
+
+```shell
+curl --header "PROJECT-TOKEN: <project_access_token>" \
+     --location \
+     "https://gitlab.example.com/api/v4/projects/1/packages/generic/my_package/0.0.1/file.txt" \
+     --output file.txt
+```
+
+With HTTP Basic authentication:
+
+```shell
+curl --user "<project_access_token_username>:<project_access_token>" \
+     --location \
+     "https://gitlab.example.com/api/v4/projects/1/packages/generic/my_package/0.0.1/file.txt" \
+     --output file.txt
+```
+
+:::TabTitle Deploy token
+
+With HTTP headers:
+
+```shell
+curl --header "DEPLOY-TOKEN: <deploy_token>" \
+     --location \
+     "https://gitlab.example.com/api/v4/projects/1/packages/generic/my_package/0.0.1/file.txt" \
+     --output file.txt
+```
+
+With HTTP Basic authentication:
+
+```shell
+curl --user "<deploy_token_username>:<deploy_token>" \
+     --location \
+     "https://gitlab.example.com/api/v4/projects/1/packages/generic/my_package/0.0.1/file.txt" \
+     --output file.txt
+```
+
+:::TabTitle CI/CD job token
+
+These examples are for a `.gitlab-ci.yml` file. GitLab CI/CD automatically provides the `CI_JOB_TOKEN`.
+
+With HTTP headers:
+
+```yaml
+download:
+  stage: test
+  script:
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+           --location \
+           --output file.txt \
+           "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/${CI_COMMIT_TAG}/file.txt"
+```
+
+With HTTP Basic authentication:
+
+```yaml
+download:
+  stage: test
+  script:
+    - |
+      curl --user "gitlab-ci-token:${CI_JOB_TOKEN}" \
+           --location \
+           --output file.txt \
+           "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/${CI_COMMIT_TAG}/file.txt"
+```
+
+Each request returns a response indicating success or failure. If your upload is successful, the response status is `201 Created`.
+
+::EndTabs
+
+### Download multiple files
+
+To download multiple files or an entire directory, you must make one API call for each file, or use additional tools.
+
+You should follow these best practices when you download multiple files from the repository:
+
+- **Versioning**: Always specify the exact version of the package you want to download to ensure consistency.
+- **Directory structure**: When downloading, maintain the original directory structure of the package to preserve file organization.
+- **Automation**: Integrate package downloads into your CI/CD pipelines or build scripts for automated workflows.
+- **Error handling**: Implement checks to ensure all files are downloaded successfully. You can verify the HTTP status code or check file existence after download.
+- **Caching**: For frequently used packages, consider implementing a caching mechanism to reduce network usage and improve build times.
+- **Parallel downloads**: For large packages with many files, you might want to implement parallel downloads to speed up the process.
+- **Checksums**: If available, verify the integrity of downloaded files using checksums provided by the package publisher.
+- **Incremental downloads**: For large packages that change frequently, consider implementing a mechanism to download only the files that have changed since the last download.
+
+For example:
+
+::Tabs
+
+:::TabTitle With a Bash script
+
+Create a bash script to download multiple files:
+
+```shell
+#!/bin/bash
+
+TOKEN="<access_token>"
+PROJECT_ID="24"
+PACKAGE_NAME="my_package"
+PACKAGE_VERSION="1.0.0"
+OUTPUT_DIR="./downloaded_files"
+
+# Create output directory if it doesn't exist
+mkdir -p "$OUTPUT_DIR"
+
+# Array of files to download
+files=("file1.txt" "file2.txt" "subdirectory/file3.txt")
+
+for file in "${files[@]}"; do
+    curl --location --header  "PRIVATE-TOKEN: $TOKEN" \
+         --output "$OUTPUT_DIR/$file" \
+         --create-dirs \
+         "https://gitlab.example.com/api/v4/projects/$PROJECT_ID/packages/generic/$PACKAGE_NAME/$PACKAGE_VERSION/$file"
+    echo "Downloaded: $file"
+done
+```
+
+:::TabTitle With GitLab CI/CD
+
+For automated downloads in your CI/CD pipeline:
+
+```yaml
+download_package:
+  stage: build
+  script:
+    - |
+      FILES=("file1.txt" "file2.txt" "subdirectory/file3.txt")
+      for file in "${FILES[@]}"; do
+        curl --location --header  "JOB-TOKEN: $CI_JOB_TOKEN" \
+             --output "$file" \
+             --create-dirs \
+             "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/${CI_COMMIT_TAG}/$file"
+        echo "Downloaded: $file"
+      done
+```
+
+::EndTabs
+
+### Download an entire package
+
+To download all files in a package, list the package contents using the GitLab API, then download each file:
+
+```shell
+TOKEN="<access_token>"
+PROJECT_ID="24"
+PACKAGE_NAME="my_package"
+PACKAGE_VERSION="1.0.0"
+OUTPUT_DIR="./downloaded_package"
+
+# Create output directory
+mkdir -p "$OUTPUT_DIR"
+
+# Get list of files in the package
+files=$(curl --location --header  "PRIVATE-TOKEN: $TOKEN" \
+     "https://gitlab.example.com/api/v4/projects/$PROJECT_ID/packages/generic/$PACKAGE_NAME/$PACKAGE_VERSION/files" \
+     | jq -r '.[].file_name')
+
+# Download each file
+for file in $files; do
+    curl --location --header  "PRIVATE-TOKEN: $TOKEN" \
+         --output "$OUTPUT_DIR/$file" \
+         --create-dirs \
+         "https://gitlab.example.com/api/v4/projects/$PROJECT_ID/packages/generic/$PACKAGE_NAME/$PACKAGE_VERSION/$file"
+    echo "Downloaded: $file"
+done
+```
+
+## Disable publishing duplicate package names
 
 > - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) from Developer to Maintainer in GitLab 15.0.
 > - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
 
-To prevent users from publishing duplicate generic packages, you can use the [GraphQL API](../../../api/graphql/reference/index.md#packagesettings)
-or the UI.
+By default, when you publish a package with the same name and version as an existing package, the new files are added to the existing package. You can disable publishing duplicate file names in the settings.
 
-In the UI:
+Prerequisites:
+
+- You must have the Owner role.
+
+To disable publishing duplicate file names:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Packages and registries**.
 1. In the **Generic** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
 1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names and versions of packages to allow.
 
-Your changes are automatically saved.
+## Add a package retention policy
 
-## Download package file
+Implement a package retention policy to manage storage and maintain relevant versions.
 
-Download a package file.
+To do so:
 
-If multiple packages have the same name, version, and filename, then the most recent one is retrieved.
+- Use the built-in GitLab [cleanup policies](../package_registry/reduce_package_registry_storage.md#cleanup-policy).
 
-Prerequisites:
+You can also use the API to implement custom cleanup scripts.
 
-- You need to [authenticate with the API](../../../api/rest/authentication.md).
-  - If authenticating with a deploy token, it must be configured with the `read_package_registry` and/or `write_package_registry` scope.
-  - Project access tokens require the `read_api` scope and at least the `Reporter` role.
-- If you use cURL to download artifacts from a GitLab instance with object storage enabled,
-  use the `--location` parameter, as the request might be redirected.
-
-```plaintext
-GET /projects/:id/packages/generic/:package_name/:package_version/:file_name
-```
-
-| Attribute         | Type           | Required | Description |
-|-------------------|----------------|----------|-------------|
-| `id`              | integer/string | yes      | The ID or [URL-encoded path of the project](../../../api/rest/index.md#namespaced-paths). |
-| `package_name`    | string         | yes      | The package name. |
-| `package_version` | string         | yes      | The package version. |
-| `file_name`       | string         | yes      | The filename. |
-
-The file context is served in the response body. The response content type is `application/octet-stream`.
-
-::Tabs
-
-:::TabTitle Personal access token
-
-Example request that uses a personal access token:
-
-```shell
-# Header authentication
-curl --fail-with-body --output file.txt --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
-
-# Basic authentication
-curl --fail-with-body --output file.txt --user "user:<your_access_token>" \
-     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
-```
-
-:::TabTitle CI_JOB_TOKEN
-
-Example request that uses a `CI_JOB_TOKEN`:
-
-```shell
-# Header authentication
-curl --fail-with-body --output file.txt --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
-     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
-
-# Basic authentication
-curl --fail-with-body --output file.txt --user "gitlab-ci-token:${CI_JOB_TOKEN}" \
-     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
-```
-
-::EndTabs
-
-## Publish a generic package by using CI/CD
-
-To work with generic packages in [GitLab CI/CD](../../../ci/index.md), you can use
-`CI_JOB_TOKEN` in place of the personal access token in your commands.
-
-For example:
-
-```yaml
-image: curlimages/curl:latest
-
-stages:
-  - upload
-  - download
-
-upload:
-  stage: upload
-  script:
-    - 'curl --fail-with-body --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file path/to/file.txt "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/0.0.1/file.txt"'
-
-download:
-  stage: download
-  script:
-    - 'wget --header="JOB-TOKEN: $CI_JOB_TOKEN" ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/0.0.1/file.txt'
-```
-
-When using a Windows runner with PowerShell, you must use `Invoke-WebRequest` or `Invoke-RestMethod`
-instead of `curl` in the `upload` and `download` stages.
-
-For example:
-
-```yaml
-upload:
-  stage: upload
-  script:
-    - Invoke-RestMethod -Headers @{ "JOB-TOKEN"="$CI_JOB_TOKEN" } -InFile path/to/file.txt -uri "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/0.0.1/file.txt" -Method put
-```
-
-### Generic package sample project
+## Generic package sample project
 
 The [Write CI-CD Variables in Pipeline](https://gitlab.com/guided-explorations/cfg-data/write-ci-cd-variables-in-pipeline) project contains a working example you can use to create, upload, and download generic packages in GitLab CI/CD.
 

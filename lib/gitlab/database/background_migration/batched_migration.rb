@@ -37,13 +37,21 @@ module Gitlab
 
         scope :created_after, ->(time) { where('created_at > ?', time) }
 
-        scope :for_configuration, ->(gitlab_schema, job_class_name, table_name, column_name, job_arguments) do
+        scope :for_configuration, ->(
+          gitlab_schema, job_class_name, table_name, column_name, job_arguments, include_compatible: false
+        ) do
           relation = where(job_class_name: job_class_name, table_name: table_name, column_name: column_name)
             .where("job_arguments = ?", job_arguments.to_json) # rubocop:disable Rails/WhereEquals
 
           # This method is called from migrations older than the gitlab_schema column,
           # check and add this filter only if the column exists.
-          relation = relation.for_gitlab_schema(gitlab_schema) if gitlab_schema_column_exists?
+          if gitlab_schema_column_exists?
+            relation = if include_compatible
+                         relation.for_gitlab_schema_compatible_with(gitlab_schema)
+                       else
+                         relation.for_gitlab_schema(gitlab_schema)
+                       end
+          end
 
           relation
         end
@@ -54,6 +62,20 @@ module Gitlab
 
         scope :for_gitlab_schema, ->(gitlab_schema) do
           where(gitlab_schema: gitlab_schema)
+        end
+
+        scope :for_gitlab_schema_compatible_with, ->(gitlab_schemas) do
+          connection_schemas = Gitlab::Database.gitlab_schemas_for_connection(connection)
+          connection_schemas_array = Arel.sql(
+            "ARRAY[#{connection_schemas.map { |s| "'#{s}'" }.join(', ')}]"
+          )
+
+          gitlab_schemas = Arel.sql(
+            "ARRAY[#{Array.wrap(gitlab_schemas).map { |s| "'#{s}'" }.join(', ')}]"
+          )
+
+          where("#{gitlab_schemas} <@ #{connection_schemas_array}")
+            .where(gitlab_schema: connection_schemas)
         end
 
         state_machine :status, initial: :paused do
@@ -101,8 +123,13 @@ module Gitlab
           state_machine.states.map(&:name)
         end
 
-        def self.find_for_configuration(gitlab_schema, job_class_name, table_name, column_name, job_arguments)
-          for_configuration(gitlab_schema, job_class_name, table_name, column_name, job_arguments).first
+        def self.find_for_configuration(
+          gitlab_schema, job_class_name, table_name, column_name, job_arguments, include_compatible: false
+        )
+          for_configuration(
+            gitlab_schema, job_class_name, table_name, column_name, job_arguments,
+            include_compatible: include_compatible
+          ).first
         end
 
         def self.find_executable(id, connection:)
@@ -252,8 +279,7 @@ module Gitlab
           @health_context ||= Gitlab::Database::HealthStatus::Context.new(
             self,
             connection,
-            [table_name],
-            gitlab_schema.to_sym
+            [table_name]
           )
         end
 

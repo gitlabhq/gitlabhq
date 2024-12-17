@@ -3,7 +3,7 @@
 - group_path << parent.full_path + '/' if parent
 
 = gitlab_ui_form_for '', url: import_gitlab_group_path, namespace: 'import_group', class: 'group-form gl-show-field-errors', multipart: true do |f|
-  .gl-border-l-solid.gl-border-r-solid.gl-border-gray-100.gl-border-1.gl-p-5
+  .gl-border-l-solid.gl-border-r-solid.gl-border-default.gl-border-1.gl-p-5
     %h4
       = _('Import group from file')
     = render Pajamas::AlertComponent.new(variant: :warning,
@@ -21,5 +21,5 @@
         = s_('GroupsNew|To import a group, navigate to the group settings for the GitLab source instance, %{link_start}generate an export file%{link_end}, and upload it here.').html_safe % { link_start: import_export_link_start, link_end: '</a>'.html_safe }
       .gl-mt-3
         = render 'shared/file_picker_button', f: f, field: :file, help_text: nil
-  .gl-border-gray-100.gl-border-solid.gl-border-1.gl-bg-gray-10.gl-p-5
+  .gl-border-default.gl-border-solid.gl-border-1.gl-bg-gray-10.gl-p-5
     = f.submit _('Import'), pajamas_button: true

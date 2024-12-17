@@ -10,7 +10,14 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-> - HTTP proxying for secondary sites with separate URLs is [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in GitLab 15.1.
+> - HTTP proxying for secondary sites with separate URLs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in GitLab 14.5 [with a flag](../../../administration/feature_flags.md) named `geo_secondary_proxy_separate_urls`. Disabled by default.
+> - [Enabled on GitLab.com, self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in GitLab 15.1.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+The `geo_secondary_proxy_separate_urls` feature flag is planned to be deprecated and removed in a future release.
+Support for read-only Geo secondary sites is proposed in [issue 366810](https://gitlab.com/gitlab-org/gitlab/-/issues/366810).
 
 Secondary sites behave as full read-write GitLab instances. They transparently proxy all operations to the primary site, with [some notable exceptions](#features-accelerated-by-secondary-geo-sites).
 
@@ -20,7 +27,10 @@ This behavior enables use-cases including:
 - Geographically load-balancing traffic without worrying about write access.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see: [Secondary proxying using geographic load-balancer and AWS Route53](https://www.youtube.com/watch?v=TALLy7__Na8).
+For an overview, see [Geo proxying for secondary sites](https://www.youtube.com/watch?v=TALLy7__Na8).
+<!-- Video published on 2022-01-26 -->
+
+For known issues, see [proxying-related items in the Geo documentation](../index.md#known-issues).
 
 ## Set up a unified URL for Geo sites
 
@@ -175,10 +185,6 @@ If your secondary site uses the same external URL as the primary site:
 
    To allow the sites to talk to each other, [make sure the `Internal URL` field is unique for each site](../../geo_sites.md#set-up-the-internal-urls). If the desired URL is unique to this site, then you can clear the `Internal URL` field. On save, it defaults to the external URL.
 
-## Known issues
-
-See proxying-related items in the consolidated list of [Geo Limitations](../index.md#limitations).
-
 ## Behavior of secondary sites when the primary Geo site is down
 
 Considering that web traffic is proxied to the primary, the behavior of the secondary sites differs when the primary
@@ -222,9 +228,6 @@ In this context, accelerated reads refer to read requests served from the second
 To request acceleration of a feature, check if an issue already exists in [epic 8239](https://gitlab.com/groups/gitlab-org/-/epics/8239) and upvote or comment on it to indicate your interest or ask your GitLab representative to do so on your behalf. If an applicable issue doesn't exist, open one and mention it in the epic.
 
 ## Disable secondary site HTTP proxying
-
-NOTE:
-The feature flag described in this section is planned to be deprecated and removed in a future release. Support for read-only Geo secondary sites is proposed in [issue 366810](https://gitlab.com/gitlab-org/gitlab/-/issues/366810), you can upvote and share your use cases in that issue.
 
 Secondary site HTTP proxying is enabled by default on a secondary site when it uses a unified URL, meaning, it is configured with the same `external_url` as the primary site. Disabling proxying in this case tends not to be helpful due to completely different behavior being served at the same URL, depending on routing.
 

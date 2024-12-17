@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.code_review.i_code_review_user_searches_diff_monthly
 description: Count of users who search merge request diffs
 product_group: code_review
+product_categories:
+- code_review_workflow
 value_type: number
 status: active
 milestone: '14.2'

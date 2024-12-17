@@ -9,7 +9,7 @@
   body: |  # (required) Do not modify this line, instead modify the lines below.
     [ID tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html) with OIDC support
     were introduced in GitLab 15.7. These tokens are more configurable than the old JSON web tokens (JWTs), are OIDC compliant,
-    and only available in CI/CD jobs that explictly have ID tokens configured.
+    and only available in CI/CD jobs that explicitly have ID tokens configured.
     ID tokens are more secure than the old `CI_JOB_JWT*` JSON web tokens which are exposed in every job,
     and as a result these old JSON web tokens are deprecated:
 

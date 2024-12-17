@@ -136,7 +136,7 @@ export default {
             :name="alertIcon"
             data-testid="panel-title-alert-icon"
           />
-          <strong class="gl-text-gray-700">{{ title }}</strong>
+          <strong class="gl-text-subtle">{{ title }}</strong>
           <template v-if="tooltip && tooltip.description">
             <gl-icon
               :id="titleTooltipId"

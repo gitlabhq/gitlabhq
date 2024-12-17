@@ -125,7 +125,7 @@ In addition, there are a few circumstances where we would always run the full RS
 
 #### Have you encountered a problem with backend predictive tests?
 
-If so, have a look at [the Engineering Productivity RUNBOOK on predictive tests](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbooks/predictive-tests.md) for instructions on how to act upon predictive tests issues. Additionally, if you identified any test selection gaps, let `@gl-quality/eng-prod` know so that we can take the necessary steps to optimize test selections.
+If so, have a look at [the Engineering Productivity RUNBOOK on predictive tests](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbooks/predictive-tests.md) for instructions on how to act upon predictive tests issues. Additionally, if you identified any test selection gaps, let `@gl-dx/eng-prod` know so that we can take the necessary steps to optimize test selections.
 
 ### Jest predictive jobs
 
@@ -340,6 +340,11 @@ In the following example workflow, a developer creates an MR that touches Observ
 1. If `e2e:observability-backend` succeeds, the developer can merge both MRs.
 
 In addition, the developer can manually add `pipeline:run-observability-e2e-tests-main-branch` to force the MR to run the `e2e:observability-backend-main-branch` job. This could be useful in case of changes to files that are not being tracked as related to observability.
+
+There might be situations where the developer would need to skip those tests. To skip tests:
+
+- For an MR, apply the label `pipeline:skip-observability-e2e-tests label`.
+- For a whole project, set the CI variable `SKIP_GITLAB_OBSERVABILITY_BACKEND_TRIGGER`.
 
 ### Review app jobs
 

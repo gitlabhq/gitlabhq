@@ -5,4 +5,4 @@
         = render Pajamas::AvatarComponent.new(user, size: 32, class: "gl-mr-3")
         .gl-flex.gl-flex-col
           %strong= truncate(user.name, length: 40)
-          %small.gl-text-primary= user.username
+          %small.gl-text-default= user.username

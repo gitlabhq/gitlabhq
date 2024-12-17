@@ -13,7 +13,7 @@ The recommended setup for locally developing and debugging Code Suggestions is t
 
 - IDE Extension (e.g. GitLab Workflow extension for VS Code).
 - Main application configured correctly (e.g. GDK).
-- [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist).
+- [AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist).
 
 This should enable everyone to see locally any change in an IDE being sent to the main application transformed to a prompt which is then sent to the respective model.
 
@@ -24,7 +24,7 @@ This should enable everyone to see locally any change in an IDE being sent to th
       1. In VS Code, go to the Extensions page and find "GitLab Workflow" in the list.
       1. Open the extension settings by clicking a small cog icon and select "Extension Settings" option.
       1. Check a "GitLab: Debug" checkbox.
-   1. If you'd like to test that Code Suggestions is working from inside the GitLab Workflow extension for VS Code, then follow the [steps to set up a personal access token](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#setup) with your GDK inside the new window of VS Code that pops up when you run the "Run and Debug" command.
+   1. If you'd like to test that Code Suggestions is working from inside the GitLab Workflow extension for VS Code, then follow the [authenticate with GitLab steps](../../editor_extensions/visual_studio_code/setup.md#authenticate-with-gitlab) with your GDK inside the new window of VS Code that pops up when you run the "Run and Debug" command.
       - Once you complete the steps below, to test you are hitting your local `/code_suggestions/completions` endpoint and not production, follow these steps:
         1. Inside the new window, in the built in terminal select the "Output" tab then "GitLab Language Server" from the drop down menu on the right.
         1. Open a new file inside of this VS Code window and begin typing to see Code Suggestions in action.
@@ -36,17 +36,17 @@ This should enable everyone to see locally any change in an IDE being sent to th
       1. In your terminal, go to your `gitlab-development-kit` > `gitlab` directory.
       1. Run `gdk rails console` or `bundle exec rails c` to start a Rails console.
       1. [Enable the Feature Flag](../../administration/feature_flags.md#enable-or-disable-the-feature) for the Code Suggestions tokens API by calling `Feature.enable(:ai_duo_code_suggestions_switch)` from the console.
-   1. [Setup AI Gateway](../ai_features/index.md#required-install-ai-gateway).
+   1. [Setup AI gateway](../ai_features/index.md#required-install-ai-gateway).
    1. Run your GDK server with `gdk start` if it's not already running.
 
-### Setup instructions to use staging AI Gateway
+### Setup instructions to use staging AI gateway
 
-When testing interactions with the AI Gateway, you might want to integrate your local GDK
-with the deployed staging AI Gateway. To do this:
+When testing interactions with the AI gateway, you might want to integrate your local GDK
+with the deployed staging AI gateway. To do this:
 
 1. You need a cloud staging license that has the Code Suggestions add-on,
    because add-ons are enabled on staging. Follow [these instructions](#setup-instructions-to-use-gdk-with-the-code-suggestions-add-on) to add the add-on to your license (you can reach out to `#s_fulfillment_engineering` if you have any problems). See this [handbook page](https://handbook.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses) for how to request a license for local development.
-1. Set environment variables to point customers-dot to staging, and the AI Gateway to staging:
+1. Set environment variables to point customers-dot to staging, and the AI gateway to staging:
 
    ```shell
    export GITLAB_LICENSE_MODE=test

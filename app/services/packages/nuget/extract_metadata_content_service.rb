@@ -21,30 +21,28 @@ module Packages
       XPATH_PACKAGE_TYPES = "#{ROOT_XPATH}:packageTypes/xmlns:packageType".freeze
 
       def initialize(nuspec_file_content)
-        @nuspec_file_content = nuspec_file_content
+        @doc = Nokogiri::XML(nuspec_file_content)
       end
 
       def execute
-        ServiceResponse.success(payload: extract_metadata(nuspec_file_content))
+        ServiceResponse.success(payload: extract_metadata)
       end
 
       private
 
-      attr_reader :nuspec_file_content
+      attr_reader :doc
 
-      def extract_metadata(file)
-        doc = Nokogiri::XML(file)
-
+      def extract_metadata
         XPATHS.transform_values { |query| doc.xpath(query).text.presence }
               .compact
               .tap do |metadata|
-                metadata[:package_dependencies] = extract_dependencies(doc)
-                metadata[:package_tags] = extract_tags(doc)
-                metadata[:package_types] = extract_package_types(doc)
+                metadata[:package_dependencies] = extract_dependencies
+                metadata[:package_tags] = extract_tags
+                metadata[:package_types] = extract_package_types
               end
       end
 
-      def extract_dependencies(doc)
+      def extract_dependencies
         dependencies = []
 
         doc.xpath(XPATH_DEPENDENCIES).each do |node|
@@ -69,7 +67,7 @@ module Packages
         }.compact
       end
 
-      def extract_tags(doc)
+      def extract_tags
         tags = doc.xpath(XPATH_TAGS).text
 
         return [] if tags.blank?
@@ -77,7 +75,7 @@ module Packages
         tags.split(::Packages::Tag::NUGET_TAGS_SEPARATOR)
       end
 
-      def extract_package_types(doc)
+      def extract_package_types
         doc.xpath(XPATH_PACKAGE_TYPES).map { |node| node.attr('name') }.uniq
       end
     end

@@ -286,7 +286,7 @@ More about mutations:
 ### Update project settings
 
 You can update multiple project settings in a single GraphQL mutation.
-This example is a workaround for [the major change](../../update/deprecations.md#default-cicd-job-token-ci_job_token-scope-changed)
+This example is a workaround for [the major change](../../update/deprecations.md#cicd-job-token---authorized-groups-and-projects-allowlist-enforcement)
 in `CI_JOB_TOKEN` scoping behavior.
 
 ```graphql

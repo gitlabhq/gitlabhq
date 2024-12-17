@@ -132,6 +132,9 @@ module Types
       field :source, GraphQL::Types::String, null: true,
         description: 'Policy or action that initiated the job. If not set, the value is inherited from the pipeline.'
 
+      field :exit_code, GraphQL::Types::Int, null: true,
+        description: 'Exit code of the job. Available for jobs that started after upgrading to GitLab 16.10 and failed with an exit code.'
+
       def can_play_job?
         object.playable? && Ability.allowed?(current_user, :play_job, object)
       end
@@ -274,6 +277,10 @@ module Types
         else
           []
         end
+      end
+
+      def exit_code
+        object.exit_code if object.build.respond_to?(:exit_code)
       end
     end
   end

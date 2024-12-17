@@ -3,6 +3,8 @@ data_category: operational
 key_path: counts.ingress_modsecurity_not_installed
 description: Whether or not ModSecurity has not been installed into the cluster
 product_group: security_policies
+product_categories:
+- security_policy_management
 value_type: number
 status: removed
 milestone_removed: "14.0"

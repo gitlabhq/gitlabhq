@@ -3,6 +3,8 @@ data_category: operational
 key_path: object_store.packages.enabled
 description: Whether Object Storage is enabled for Uploads
 product_group: cloud_connector
+product_categories:
+- build
 value_type: boolean
 status: active
 time_frame: none

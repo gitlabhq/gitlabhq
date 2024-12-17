@@ -100,4 +100,4 @@ This method of user contribution mapping is available for GitLab self-managed wi
 
 For information on the other method available for GitLab self-managed
 with enabled feature flags and for GitLab.com,
-see [User contribution and membership mapping](../../project/import/index.md#user-contribution-and-membership-mapping).
+see [user contribution and membership mapping](../../project/import/index.md#user-contribution-and-membership-mapping).

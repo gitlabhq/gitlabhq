@@ -290,10 +290,11 @@ export default class MergeRequestStore {
     this.sourceProjectDefaultUrl = data.source_project_default_url;
     this.userCalloutsPath = data.user_callouts_path;
     this.suggestPipelineFeatureId = data.suggest_pipeline_feature_id;
+    this.migrateJenkinsFeatureId = data.migrate_jenkins_feature_id;
     this.isDismissedSuggestPipeline = data.is_dismissed_suggest_pipeline;
+    this.isDismissedJenkinsMigration = data.is_dismissed_jenkins_migration;
     this.securityReportsDocsPath = data.security_reports_docs_path;
     this.securityConfigurationPath = data.security_configuration_path;
-    this.isIntegrationJenkinsDismissed = false;
 
     // code quality
     const blobPath = data.blob_path || {};

@@ -48,7 +48,7 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
   end
 
   context 'when the user does have access' do
-    before do
+    before_all do
       project.add_guest(current_user)
     end
 
@@ -155,7 +155,7 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
   end
 
   context 'when selecting `related_merge_requests`' do
-    let(:issue_fields) { ['relatedMergeRequests { nodes { id } }'] }
+    let(:issue_fields) { ['relatedMergeRequests { nodes { id author { id username } } }'] }
     let_it_be(:user) { create(:user) }
     let_it_be(:mr_project) { project }
     let!(:merge_request) do
@@ -178,6 +178,31 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
       project.add_developer(current_user)
 
       post_graphql(query, current_user: current_user)
+    end
+
+    it 'prevents N+1 queries' do
+      # warm-up in before block
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post_graphql(query, current_user: current_user)
+      end
+
+      attributes = {
+        author: user,
+        source_project: mr_project,
+        target_project: mr_project,
+        source_branch: 'feature2',
+        target_branch: 'master',
+        description: "See #{issue.to_reference}"
+      }
+      create(:merge_request, attributes).tap do |merge_request|
+        create(:note, :system, project: issue.project, noteable: issue,
+          author: user, note: merge_request.to_reference(full: true))
+      end
+
+      expect do
+        post_graphql(query, current_user: current_user)
+      end.not_to exceed_all_query_limit(control)
     end
 
     it 'returns the related merge request' do

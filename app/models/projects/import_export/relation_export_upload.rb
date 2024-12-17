@@ -27,6 +27,10 @@ module Projects
         skip_callback :save, :after, :store_export_file!
         set_callback :commit, :after, :store_export_file!
       end
+
+      def uploads_sharding_key
+        { project_id: relation_export&.project_id }
+      end
     end
   end
 end

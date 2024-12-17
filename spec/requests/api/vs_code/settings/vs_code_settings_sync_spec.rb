@@ -116,6 +116,41 @@ RSpec.describe API::VsCode::Settings::VsCodeSettingsSync, :aggregate_failures, f
         expect(json_response['content']).to eq('{ "key": "value" }')
       end
     end
+
+    context "when extension settings are present" do
+      let_it_be(:extensions_settings) do
+        create(:vscode_setting, setting_type: 'extensions', settings_context_hash: '5678',
+          content: '{ "key": "extensions_value" }')
+      end
+
+      let_it_be(:another_extensions_settings) do
+        create(:vscode_setting, setting_type: 'extensions', settings_context_hash: '1234',
+          content: '{ "key": "another_extensions_value" }')
+      end
+
+      let_it_be(:extensions_settings_no_settings_context_hash) do
+        create(:vscode_setting, setting_type: 'extensions',
+          content: '{ "key": "extensions_no_settings_context_hash_value" }')
+      end
+
+      it "returns latest settings based on settings_context_hash if latest resource is requested" do
+        path = "/vscode/settings_sync/1234/v1/resource/extensions/latest"
+        get api(path, personal_access_token: user_token)
+        expect(json_response['content']).to eq(another_extensions_settings.content)
+      end
+
+      it "returns latest setting based on settings_context_hash if id is 0" do
+        path = "/vscode/settings_sync/1234/v1/resource/extensions/0"
+        get api(path, personal_access_token: user_token)
+        expect(json_response['content']).to eq(another_extensions_settings.content)
+      end
+
+      it "returns correct setting if no settings_context_hash is passed" do
+        path = "/vscode/settings_sync/v1/resource/extensions/1"
+        get api(path, personal_access_token: user_token)
+        expect(json_response['content']).to eq(extensions_settings_no_settings_context_hash.content)
+      end
+    end
   end
 
   describe 'GET /vscode/settings_sync/v1/resource/:resource_name/' do
@@ -155,6 +190,25 @@ RSpec.describe API::VsCode::Settings::VsCodeSettingsSync, :aggregate_failures, f
       end
     end
 
+    context 'when settings with that type are present with settings_context_hash' do
+      let(:settings_context_hash) { '1234' }
+      let(:path) { "/vscode/settings_sync/#{settings_context_hash}/v1/resource/settings/" }
+      let_it_be(:settings) { create(:vscode_setting, content: '{ "key": "value" }') }
+
+      it 'returns settings with the correct json content' do
+        get api(path, personal_access_token: user_token)
+
+        setting_type = settings[:setting_type]
+        uuid = settings[:uuid]
+
+        resource_ref = "/api/v4/vscode/settings_sync/#{settings_context_hash}/v1/resource/#{setting_type}/#{uuid}"
+
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['url']).to eq(resource_ref)
+        expect(json_response.first['created']).to eq(settings.updated_at.to_i)
+      end
+    end
+
     context 'when setting type is machine' do
       let(:path) { "/vscode/settings_sync/v1/resource/machines/" }
 
@@ -187,14 +241,14 @@ RSpec.describe API::VsCode::Settings::VsCodeSettingsSync, :aggregate_failures, f
 
     it 'creates a new record for the setting when the setting is not present' do
       expect { request }.to change { User.find(user.id).vscode_settings.count }.from(0).to(1)
-      record = User.find(user.id).vscode_settings.by_setting_type('settings').first
+      record = User.find(user.id).vscode_settings.by_setting_types(['settings']).first
       expect(record.content).to eq('{ "editor.fontSize": 12 }')
     end
 
     it 'updates a record if the setting is already present' do
       create(:vscode_setting)
       expect { request }.not_to change { User.find(user.id).vscode_settings.count }
-      record = User.find(user.id).vscode_settings.by_setting_type('settings').first
+      record = User.find(user.id).vscode_settings.by_setting_types(['settings']).first
       expect(record.content).to eq('{ "editor.fontSize": 12 }')
     end
 

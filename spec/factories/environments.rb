@@ -108,5 +108,13 @@ FactoryBot.define do
     trait :will_auto_stop do
       auto_stop_at { 1.day.from_now }
     end
+
+    trait :auto_stop_always do
+      auto_stop_setting { :always }
+    end
+
+    trait :auto_stop_with_action do
+      auto_stop_setting { :with_action }
+    end
   end
 end

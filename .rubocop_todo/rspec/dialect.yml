@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 RSpec/Dialect:
   Exclude:
-    - 'ee/spec/controllers/admin/application_settings_controller_spec.rb'
     - 'ee/spec/helpers/ee/personal_access_tokens_helper_spec.rb'
     - 'ee/spec/lib/ee/gitlab/gon_helper_spec.rb'
     - 'ee/spec/lib/ee/gitlab/saas_spec.rb'

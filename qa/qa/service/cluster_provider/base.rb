@@ -13,7 +13,7 @@ module QA
         end
 
         def cluster_name
-          @cluster_name ||= "qa-cluster-#{Time.now.utc.strftime("%Y%m%d%H%M%S")}-#{SecureRandom.hex(4)}"
+          @cluster_name ||= "qa-cluster-#{Time.now.utc.strftime('%Y%m%d%H%M%S')}-#{SecureRandom.hex(4)}"
         end
 
         def set_credentials(admin_user)

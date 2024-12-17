@@ -322,6 +322,7 @@ These features are still accessible, but not writable.
 - Issues
 - Merge requests
 - Feature flags
+- Pull mirroring
 - All other project features
 
 Active pipeline schedules of archived projects don't become read-only.
@@ -370,6 +371,8 @@ Prerequisites:
 1. To confirm, select **OK**.
 
 The deployed Pages are not restored and you must rerun the pipeline.
+
+When a project is unarchived, its pull mirroring process will automatically resume.
 
 ## View project activity
 
@@ -523,4 +526,4 @@ repository. For example, if an administrator creates the alias `gitlab` for the 
 - [Connect an external repository to GitLab CI/CD](../../ci/ci_cd_for_external_repos/index.md).
 - [Fork a project](repository/forking_workflow.md#create-a-fork).
 - Adjust [project visibility](../../user/public_access.md#change-project-visibility) and [permissions](settings/index.md#configure-project-features-and-permissions).
-- [Limitations on project and group names](../../user/reserved_names.md#limitations-on-usernames-project-and-group-names-and-slugs)
+- [Rules for project and group names](../../user/reserved_names.md#rules-for-usernames-project-and-group-names-and-slugs)

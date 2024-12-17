@@ -66,7 +66,3 @@ export const DEFAULT_FIELDS = [
     columnClass: 'gl-w-1/5',
   },
 ];
-
-// Pipeline Mini Graph
-
-export const PIPELINE_MINI_GRAPH_POLL_INTERVAL = 5000;

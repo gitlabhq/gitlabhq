@@ -7,6 +7,7 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
     it 'creates personal access token record' do
       expect(subject.success?).to be true
       expect(token.name).to eq(params[:name])
+      expect(token.description).to eq(params[:description])
       expect(token.impersonation).to eq(params[:impersonation])
       expect(token.scopes).to eq(params[:scopes])
       expect(token.expires_at).to eq(params[:expires_at])
@@ -15,6 +16,8 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
     end
 
     it 'logs the event' do
+      allow(Gitlab::AppLogger).to receive(:info)
+
       expect(Gitlab::AppLogger).to receive(:info).with(/PAT CREATION: created_by: '#{current_user.username}', created_for: '#{user.username}', token_id: '\d+'/)
 
       subject
@@ -41,7 +44,7 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
     let(:current_user) { create(:user) }
     let(:organization) { create(:organization) }
     let(:user) { create(:user) }
-    let(:params) { { name: 'Test token', impersonation: false, scopes: [:api], expires_at: Date.today + 1.month } }
+    let(:params) { { name: 'Test token', impersonation: false, scopes: [:api], expires_at: Date.today + 1.month, description: "Test Description" } }
     let(:service) { described_class.new(current_user: current_user, target_user: user, organization_id: organization.id, params: params, concatenate_errors: false) }
     let(:token) { subject.payload[:personal_access_token] }
 
@@ -73,7 +76,17 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
       let(:params) { { name: 'Test token', impersonation: false, scopes: [:no_valid] } }
       let(:service) { described_class.new(current_user: user, organization_id: organization.id, target_user: user, params: params) }
 
-      it { expect(subject.payload[:personal_access_token].expires_at).to eq PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now.to_date }
+      context 'when buffered token length flag is disabled' do
+        before do
+          stub_feature_flags(buffered_token_expiration_limit: false)
+        end
+
+        it { expect(subject.payload[:personal_access_token].expires_at).to eq PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now.to_date }
+      end
+
+      context 'when buffered token length flag is enabled' do
+        it { expect(subject.payload[:personal_access_token].expires_at).to eq PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS_BUFFERED.days.from_now.to_date }
+      end
 
       context 'when require_personal_access_token_expiry is set to false' do
         before do
@@ -83,6 +96,15 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
         it 'returns a nil expiration date' do
           expect(subject.payload[:personal_access_token].expires_at).to be_nil
         end
+      end
+    end
+
+    context 'with no description set' do
+      let(:params) { { name: 'Test token', impersonation: false, scopes: [:api] } }
+      let(:service) { described_class.new(current_user: user, organization_id: organization.id, target_user: user, params: params) }
+
+      it 'returns a nil description' do
+        expect(subject.payload[:personal_access_token].description).to be_nil
       end
     end
 

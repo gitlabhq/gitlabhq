@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  describe 'Manage', :blocking, product_group: :import_and_integrate do
+  describe 'Manage', product_group: :import_and_integrate do
     describe 'Gitlab migration' do
       include_context "with gitlab group migration"
 

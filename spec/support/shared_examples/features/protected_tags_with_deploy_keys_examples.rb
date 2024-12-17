@@ -16,11 +16,11 @@ RSpec.shared_examples 'Deploy keys with protected tags' do
         visit project_protected_tags_path(project)
         click_button('Add tag')
 
-        find(".js-allowed-to-create").click
+        find(".js-allowed-to-create:not([disabled])").click
         wait_for_requests
 
         within('.dropdown-menu') do
-          dropdown_headers = page.all('.dropdown-header').map(&:text)
+          dropdown_headers = page.all('.dropdown-header', count: all_dropdown_sections.size).map(&:text)
 
           expect(dropdown_headers).to contain_exactly(*all_dropdown_sections)
           expect(page).to have_content('title 1')
@@ -35,10 +35,10 @@ RSpec.shared_examples 'Deploy keys with protected tags' do
         click_button('Add tag')
 
         within(".js-protected-tag-edit-form") do
-          find(".js-allowed-to-create").click
+          find(".js-allowed-to-create:not([disabled])").click
           wait_for_requests
 
-          dropdown_headers = page.all('.dropdown-header').map(&:text)
+          dropdown_headers = page.all('.dropdown-header', count: all_dropdown_sections.size).map(&:text)
 
           expect(dropdown_headers).to contain_exactly(*all_dropdown_sections)
         end
@@ -50,13 +50,36 @@ RSpec.shared_examples 'Deploy keys with protected tags' do
         visit project_protected_tags_path(project)
         click_button('Add tag')
 
-        find(".js-allowed-to-create").click
+        find(".js-allowed-to-create:not([disabled])").click
         wait_for_requests
 
-        within('.dropdown-menu') do
-          dropdown_headers = page.all('.dropdown-header').map(&:text)
+        within('.dropdown-menu', visible: true) do
+          dropdown_headers = page.all('.dropdown-header', count: dropdown_sections_minus_deploy_keys.size).map(&:text)
 
           expect(dropdown_headers).to contain_exactly(*dropdown_sections_minus_deploy_keys)
+        end
+      end
+    end
+
+    context 'when deploy key is already selected for protected branch' do
+      let(:protected_tag) { create(:protected_tag, :no_one_can_create, project: project, name: 'v1.0.0') }
+      let(:write_access_key) { create(:deploy_key, user: user, write_access_to: project) }
+
+      before do
+        create(:protected_tag_create_access_level, protected_tag: protected_tag, deploy_key: write_access_key)
+      end
+
+      it 'displays a preselected deploy key' do
+        visit project_protected_tags_path(project)
+
+        within(".js-protected-tag-edit-form") do
+          find(".js-allowed-to-create:not([disabled])").click
+          wait_for_requests
+
+          within('[data-testid="deploy_key-dropdown-item"]', visible: true) do
+            deploy_key_checkbox = find('[data-testid="dropdown-item-checkbox"]')
+            expect(deploy_key_checkbox).to have_no_css("gl-invisible")
+          end
         end
       end
     end

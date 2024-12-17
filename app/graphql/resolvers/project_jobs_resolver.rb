@@ -23,16 +23,27 @@ module Resolvers
       experiment: { milestone: '17.1' },
       description: 'Filter jobs by name.'
 
+    argument :sources, [::Types::Ci::JobSourceEnum],
+      required: false,
+      experiment: { milestone: '17.7' },
+      description: "Filter jobs by source. Ignored if " \
+        "'populate_and_use_build_source_table' feature flag is disabled."
+
     alias_method :project, :object
 
     def resolve_with_lookahead(**args)
+      filter_by_name = Feature.enabled?(:populate_and_use_build_names_table, project) && args[:name].to_s.present?
+      filter_by_sources = Feature.enabled?(:populate_and_use_build_source_table, project) && args[:sources].present?
+
       jobs = ::Ci::JobsFinder.new(
         current_user: current_user, project: project, params: {
-          scope: args[:statuses], with_artifacts: args[:with_artifacts]
+          scope: args[:statuses], with_artifacts: args[:with_artifacts],
+          skip_ordering: filter_by_sources
         }
       ).execute
 
-      if Feature.enabled?(:populate_and_use_build_names_table, project)
+      # These job filters are currently exclusive with each other
+      if filter_by_name
         jobs = ::Ci::BuildNameFinder.new(
           relation: jobs,
           name: args[:name],
@@ -42,6 +53,14 @@ module Resolvers
             asc: args[:last].present?, invert_ordering: true
           }
         ).execute
+      elsif filter_by_sources
+        jobs = ::Ci::BuildSourceFinder.new(
+          relation: jobs,
+          sources: args[:sources],
+          project: project
+        ).execute
+
+        return offset_pagination(apply_lookahead(jobs))
       end
 
       apply_lookahead(jobs)
@@ -61,7 +80,8 @@ module Resolvers
       {
         previous_stage_jobs_or_needs: [:needs, :pipeline],
         artifacts: [:job_artifacts],
-        pipeline: [:user]
+        pipeline: [:user],
+        build_source: [:source]
       }
     end
   end

@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.quickactions.i_quickactions_unapprove_monthly
 description: Count of MAU using the `/unapprove` quick action
 product_group: code_review
+product_categories:
+- code_review_workflow
 value_type: number
 status: active
 milestone: "14.3"

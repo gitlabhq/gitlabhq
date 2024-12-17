@@ -484,7 +484,7 @@ describe('DiffsStoreUtils', () => {
           updatePosition: true,
         });
 
-        expect(updatedFilesList[1].file_hash).toEqual(mock.file_hash);
+        expect(updatedFilesList[1]).toEqual(mock);
       });
 
       it('completes an existing split diff without overwriting existing diffs', () => {

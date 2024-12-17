@@ -3,11 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::NullifyOrganizationIdForSnippets, feature_category: :source_code_management do
+  let(:organizations) { table(:organizations) }
   let(:snippets) { table(:snippets) }
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }
-  let(:namespace) { namespaces.create!(name: 'foo', path: 'foo') }
-  let!(:project) { projects.create!(namespace_id: namespace.id, project_namespace_id: namespace.id) }
+
+  let(:organization) { organizations.create!(name: 'organization', path: 'organization') }
+  let(:namespace) { namespaces.create!(name: 'foo', path: 'foo', organization_id: organization.id) }
+  let!(:project) do
+    projects.create!(namespace_id: namespace.id, project_namespace_id: namespace.id, organization_id: organization.id)
+  end
 
   let!(:personal_snippet) do
     snippets.create!(

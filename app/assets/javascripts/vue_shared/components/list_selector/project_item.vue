@@ -1,11 +1,11 @@
 <script>
-import { GlAvatar, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlAvatarLabeled, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
 
 export default {
   name: 'ProjectItem',
   components: {
-    GlAvatar,
+    GlAvatarLabeled,
     GlButton,
   },
   directives: {
@@ -35,18 +35,16 @@ export default {
 
 <template>
   <span class="gl-flex gl-items-center gl-gap-3" @click="$emit('select', name)">
-    <gl-avatar
-      :alt="name"
+    <gl-avatar-labeled
+      class="gl-grow gl-break-all"
       :entity-name="name"
+      :label="name"
+      :sub-label="data.nameWithNamespace"
       :size="32"
       shape="rect"
       :src="data.avatarUrl"
       fallback-on-error
     />
-    <span class="gl-flex gl-max-w-30 gl-grow gl-flex-col">
-      <span class="gl-font-bold">{{ name }}</span>
-      <span class="gl-text-subtle">{{ data.nameWithNamespace }}</span>
-    </span>
 
     <gl-button
       v-if="canDelete"

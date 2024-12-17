@@ -6,9 +6,9 @@ import waitForPromises from 'helpers/wait_for_promises';
 
 import { formType } from '~/boards/constants';
 import BoardTopBar from '~/boards/components/board_top_bar.vue';
-import BoardsSelector from '~/boards/components/boards_selector.vue';
+import BoardsSelector from 'ee_else_ce/boards/components/boards_selector.vue';
 import ConfigToggle from '~/boards/components/config_toggle.vue';
-import IssueBoardFilteredSearch from '~/boards/components/issue_board_filtered_search.vue';
+import IssueBoardFilteredSearch from 'ee_else_ce/boards/components/issue_board_filtered_search.vue';
 import ToggleFocus from '~/boards/components/toggle_focus.vue';
 import * as cacheUpdates from '~/boards/graphql/cache_updates';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
@@ -57,6 +57,9 @@ describe('BoardTopBar', () => {
         isIssueBoard: true,
         isEpicBoard: false,
         isGroupBoard: true,
+        epicFeatureAvailable: false,
+        iterationFeatureAvailable: false,
+        healthStatusFeatureAvailable: false,
         ...provide,
       },
       stubs: { IssueBoardFilteredSearch },

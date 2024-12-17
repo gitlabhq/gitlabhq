@@ -8,6 +8,7 @@ RSpec.shared_context 'GroupPolicy context' do
   end
 
   let_it_be(:guest) { create(:user, guest_of: group) }
+  let_it_be(:planner) { create(:user, planner_of: group) }
   let_it_be(:reporter) { create(:user, reporter_of: group) }
   let_it_be(:developer) { create(:user, developer_of: group) }
   let_it_be(:maintainer) { create(:user, maintainer_of: group) }
@@ -22,6 +23,8 @@ RSpec.shared_context 'GroupPolicy context' do
     %i[
       read_group read_counts read_issue read_namespace
       read_label read_issue_board_list read_milestone read_issue_board
+      read_group_activity read_group_issues read_group_boards read_group_labels
+      read_group_milestones read_group_merge_requests
     ]
   end
 
@@ -30,6 +33,14 @@ RSpec.shared_context 'GroupPolicy context' do
       read_label read_group upload_file read_namespace_via_membership read_group_activity
       read_group_issues read_group_boards read_group_labels read_group_milestones
       read_group_merge_requests
+    ]
+  end
+
+  let(:planner_permissions) do
+    guest_permissions + %i[
+      admin_label admin_milestone admin_issue_board admin_issue_board_list
+      admin_issue update_issue destroy_issue read_confidential_issues read_internal_note
+      read_crm_contact read_crm_organization
     ]
   end
 

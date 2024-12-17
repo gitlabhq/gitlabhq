@@ -189,6 +189,7 @@ class Member < ApplicationRecord
   scope :has_access, -> { active.where('access_level > 0') }
 
   scope :guests, -> { active.where(access_level: GUEST) }
+  scope :planners, -> { active.where(access_level: PLANNER) }
   scope :reporters, -> { active.where(access_level: REPORTER) }
   scope :developers, -> { active.where(access_level: DEVELOPER) }
   scope :maintainers, -> { active.where(access_level: MAINTAINER) }
@@ -200,6 +201,7 @@ class Member < ApplicationRecord
   scope :with_user, ->(user) { where(user: user) }
   scope :by_access_level, ->(access_level) { active.where(access_level: access_level) }
   scope :all_by_access_level, ->(access_level) { where(access_level: access_level) }
+  scope :with_at_least_access_level, ->(access_level) { where(access_level: access_level..) }
 
   scope :preload_users, -> { preload(:user) }
 
@@ -228,7 +230,7 @@ class Member < ApplicationRecord
       user_id, invite_email,
       CASE WHEN source_id = #{for_object.id} and source_type = '#{obj_class}'
       THEN access_level + 1 ELSE access_level END DESC,
-      expires_at DESC, created_at ASC
+      member_role_id ASC, expires_at DESC, created_at ASC
     SQL
 
     distinct_members = select('DISTINCT ON (user_id, invite_email) *')
@@ -436,6 +438,10 @@ class Member < ApplicationRecord
       pluck(:user_id)
     end
 
+    def coerce_to_no_access
+      select(member_columns_with_no_access)
+    end
+
     def with_group_group_sharing_access(shared_groups, custom_role_for_group_link_enabled)
       columns = member_columns_with_group_sharing_access(custom_role_for_group_link_enabled)
 
@@ -443,6 +449,8 @@ class Member < ApplicationRecord
         .select(columns)
         .where(group_group_links: { shared_group_id: shared_groups })
     end
+
+    private
 
     def member_columns_with_group_sharing_access(custom_role_for_group_link_enabled)
       group_group_link_table = GroupGroupLink.arel_table
@@ -460,8 +468,16 @@ class Member < ApplicationRecord
       end
     end
 
+    def member_columns_with_no_access
+      column_names.map { |column_name| column_name == 'access_level' ? no_access_arel : arel_table[column_name] }
+    end
+
     def smallest_value_arel(args, column_alias)
       Arel::Nodes::As.new(Arel::Nodes::NamedFunction.new('LEAST', args), Arel::Nodes::SqlLiteral.new(column_alias))
+    end
+
+    def no_access_arel
+      Arel::Nodes::As.new(Arel::Nodes::SqlLiteral.new('0'), Arel::Nodes::SqlLiteral.new('access_level'))
     end
 
     # overriden in EE
@@ -743,7 +759,7 @@ class Member < ApplicationRecord
   end
 
   def higher_access_level_than_group
-    if highest_group_member && highest_group_member.access_level > access_level
+    if access_level && highest_group_member && highest_group_member.access_level > access_level
       error_parameters = { access: highest_group_member.human_access, group_name: highest_group_member.group.name }
 
       errors.add(:access_level, s_("should be greater than or equal to %{access} inherited membership from group %{group_name}") % error_parameters)

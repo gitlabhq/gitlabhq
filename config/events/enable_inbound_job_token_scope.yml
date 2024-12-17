@@ -1,0 +1,18 @@
+---
+description: Job token scope is enabled by user
+internal_events: true
+action: enable_inbound_job_token_scope
+identifiers:
+- project
+- namespace
+- user
+product_group: pipeline_security
+milestone: '17.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171945
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

@@ -4,9 +4,8 @@ import { n__, __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_CI_PIPELINE } from '~/graphql_shared/constants';
-import { getQueryHeaders, toggleQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
+import { getQueryHeaders } from '~/ci/pipeline_details/graph/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { PIPELINE_MINI_GRAPH_POLL_INTERVAL } from '~/ci/pipeline_details/constants';
 import MergeRequestStore from '../stores/mr_widget_store';
 import getMergePipeline from '../queries/get_merge_pipeline.query.graphql';
 import ArtifactsApp from './artifacts_list_app.vue';
@@ -64,7 +63,6 @@ export default {
           id: convertToGraphQLId(TYPENAME_CI_PIPELINE, this.mr.mergePipeline.id),
         };
       },
-      pollInterval: PIPELINE_MINI_GRAPH_POLL_INTERVAL,
       update({ project }) {
         return project?.pipeline || {};
       },
@@ -122,11 +120,6 @@ export default {
     ciStatus() {
       return this.isPostMerge ? this.mr?.mergePipeline?.details?.status?.text : this.mr.ciStatus;
     },
-  },
-  mounted() {
-    if (this.useMergePipelineQuery) {
-      toggleQueryPollingByVisibility(this.$apollo.queries.mergePipeline);
-    }
   },
 };
 </script>

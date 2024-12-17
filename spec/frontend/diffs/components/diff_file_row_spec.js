@@ -55,9 +55,9 @@ describe('Diff File Row component', () => {
   it.each`
     fileType  | isViewed | expected
     ${'blob'} | ${false} | ${'gl-font-bold'}
-    ${'blob'} | ${true}  | ${''}
-    ${'tree'} | ${false} | ${''}
-    ${'tree'} | ${true}  | ${''}
+    ${'blob'} | ${true}  | ${'gl-text-subtle'}
+    ${'tree'} | ${false} | ${'gl-text-subtle'}
+    ${'tree'} | ${true}  | ${'gl-text-subtle'}
   `(
     'with (fileType="$fileType", isViewed=$isViewed), sets fileClasses="$expected"',
     ({ fileType, isViewed, expected }) => {

@@ -29,7 +29,7 @@
     padding: 20px 2px;
 
     .stage {
-      color: var(--gray-500, $gray-500);
+      @apply gl-text-subtle;
       font-weight: $gl-font-weight-normal;
       vertical-align: middle;
     }
@@ -199,14 +199,6 @@
     width: 100%;
     flex: 1;
   }
-}
-
-.big-pipeline-graph-dropdown-menu {
-  @include pipeline-graph-dropdown-menu();
-  min-width: 195px;
-  left: 100%;
-  top: -10px;
-  box-shadow: 0 1px 5px $t-gray-a-24;
 }
 
 .codequality-report {

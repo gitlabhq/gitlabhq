@@ -115,7 +115,8 @@ describe('Delete merged branches component', () => {
     });
 
     it('calls hide on the modal when cancel button is clicked', () => {
-      findCancelButton().trigger('click');
+      findCancelButton().vm.$emit('click');
+
       expect(modalHideSpy).toHaveBeenCalled();
     });
 

@@ -8,7 +8,6 @@ description: "(Deprecated) Join table between 'clusters' and 'namespaces'"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/0e15eec86d83cbdfefe17966bf5c02e4d419a34d
 milestone: '11.5'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 exempt_from_sharding: true
 notes: Exempted because Table is scheduled for removal
+table_size: small

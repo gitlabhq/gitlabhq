@@ -58,7 +58,7 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
       it_behaves_like 'an error response', 'invalid assignee',
         error: s_('UserMapping|You can assign only active users with regular or auditor access. ' \
           'To assign users with administrator access, ask your GitLab administrator to ' \
-          'enable the "Allow contribution mapping to admins" setting.')
+          'enable the "Allow contribution mapping to administrators" setting.')
     end
 
     context 'when assignee user is not a human' do
@@ -67,7 +67,7 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
       it_behaves_like 'an error response', 'invalid assignee',
         error: s_('UserMapping|You can assign only active users with regular or auditor access. ' \
           'To assign users with administrator access, ask your GitLab administrator to ' \
-          'enable the "Allow contribution mapping to admins" setting.')
+          'enable the "Allow contribution mapping to administrators" setting.')
     end
 
     context 'when assignee user is not active' do
@@ -76,7 +76,7 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
       it_behaves_like 'an error response', 'invalid assignee',
         error: s_('UserMapping|You can assign only active users with regular or auditor access. ' \
           'To assign users with administrator access, ask your GitLab administrator to ' \
-          'enable the "Allow contribution mapping to admins" setting.')
+          'enable the "Allow contribution mapping to administrators" setting.')
     end
 
     context 'when assignee user is an admin' do
@@ -85,7 +85,7 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
       it_behaves_like 'an error response', 'invalid assignee',
         error: s_('UserMapping|You can assign only active users with regular or auditor access. ' \
           'To assign users with administrator access, ask your GitLab administrator to ' \
-          'enable the "Allow contribution mapping to admins" setting.')
+          'enable the "Allow contribution mapping to administrators" setting.')
     end
 
     context 'when allow_contribution_mapping_to_admins setting is enabled' do

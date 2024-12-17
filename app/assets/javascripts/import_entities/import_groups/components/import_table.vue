@@ -341,7 +341,7 @@ export default {
   methods: {
     rowClasses(groupTableItem) {
       const DEFAULT_CLASSES = [
-        'gl-border-gray-200',
+        'gl-border-strong',
         'gl-border-0',
         'gl-border-b-1',
         'gl-border-solid',
@@ -651,7 +651,9 @@ export default {
   gitlabLogo: window.gon.gitlab_logo,
   PAGE_SIZES,
   permissionsHelpPath: helpPagePath('user/permissions', { anchor: 'group-members-permissions' }),
-  betaFeatureHelpPath: helpPagePath('policy/experiment-beta-support', { anchor: 'beta-features' }),
+  betaFeatureHelpPath: helpPagePath('policy/development_stages_support', {
+    anchor: 'beta-features',
+  }),
   popoverOptions: { title: __('What is listed here?') },
   learnMoreOptions: { title: s__('BulkImport|Import user memberships') },
   i18n,
@@ -662,7 +664,7 @@ export default {
 <template>
   <div>
     <div
-      class="gl-flex gl-items-center gl-border-0 gl-border-b-1 gl-border-solid gl-border-gray-100"
+      class="gl-flex gl-items-center gl-border-0 gl-border-b-1 gl-border-solid gl-border-default"
     >
       <h1 class="gl-my-0 gl-flex gl-items-center gl-gap-3 gl-py-4 gl-text-size-h1">
         <img :src="$options.gitlabLogo" class="gl-h-6 gl-w-6" />
@@ -725,7 +727,7 @@ export default {
         </template>
       </gl-sprintf>
     </gl-alert>
-    <div class="gl-flex gl-border-0 gl-border-b-1 gl-border-solid gl-border-gray-200 gl-py-5">
+    <div class="gl-flex gl-border-0 gl-border-b-1 gl-border-solid gl-border-strong gl-py-5">
       <span v-if="!$apollo.loading && hasGroups">
         <gl-sprintf :message="statusMessage">
           <template #start>
@@ -791,7 +793,7 @@ export default {
       </gl-empty-state>
       <template v-else>
         <div
-          class="import-table-bar gl-sticky gl-z-3 gl-flex gl-flex-col gl-border-0 gl-border-b-1 gl-border-solid gl-border-gray-200 gl-bg-gray-10 gl-px-4 md:gl-flex-row md:gl-items-center md:gl-justify-between"
+          class="import-table-bar gl-sticky gl-z-3 gl-flex gl-flex-col gl-border-0 gl-border-b-1 gl-border-solid gl-border-strong gl-bg-gray-10 gl-px-4 md:gl-flex-row md:gl-items-center md:gl-justify-between"
         >
           <div class="gl-mb-3 gl-flex gl-items-center gl-pr-6 md:gl-mb-0 md:gl-grow">
             <span data-test-id="selection-count">

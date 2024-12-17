@@ -15,7 +15,7 @@ module QA
         def omnibus_configuration(cell_url:)
           <<~OMNIBUS
           gitlab_rails['lfs_enabled'] = true;
-          gitlab_rails['initial_root_password']= '#{Runtime::Env.initial_root_password}'
+          gitlab_rails['initial_root_password']= '#{Runtime::Env.admin_password}'
           external_url '#{cell_url}';
           OMNIBUS
         end

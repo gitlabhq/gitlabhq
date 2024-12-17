@@ -50,6 +50,12 @@
                   "number"
                 ]
               }
+            },
+            "operator": {
+              "type": "string",
+              "enum": [
+                "sum(value)"
+              ]
             }
           },
           "additionalProperties": false

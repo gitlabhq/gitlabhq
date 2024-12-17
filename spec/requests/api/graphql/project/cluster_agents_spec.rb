@@ -81,10 +81,13 @@ RSpec.describe 'Project.cluster_agents', feature_category: :deployment_managemen
 
   context 'selecting connections' do
     let(:agent_meta) { double(version: '1', commit_id: 'abc', pod_namespace: 'namespace', pod_name: 'pod') }
-    let(:connected_agent) { double(agent_id: agents.first.id, connected_at: 123456, connection_id: 1, agent_meta: agent_meta) }
+    let(:agent_warning) { double(version: { message: 'Warning message', type: 'warning_type' }) }
+    let(:connected_agent) { double(agent_id: agents.first.id, connected_at: 123456, connection_id: 1, agent_meta: agent_meta, warnings: [agent_warning]) }
 
     let(:metadata_fields) { query_graphql_field(:metadata, {}, [:version, :commit, :pod_namespace, :pod_name], 'AgentMetadata') }
-    let(:cluster_agents_fields) { [:id, query_nodes(:connections, [:connection_id, :connected_at, metadata_fields])] }
+    let(:version_warning_fields) { query_graphql_field(:version, {}, [:message, :type], 'AgentVersionWarning') }
+    let(:warnings_fields) { query_graphql_field(:warnings, {}, [version_warning_fields], 'AgentWarning') }
+    let(:cluster_agents_fields) { [:id, query_nodes(:connections, [:connection_id, :connected_at, metadata_fields, warnings_fields])] }
 
     before do
       allow(Gitlab::Kas::Client).to receive(:new).and_return(double(get_connected_agents_by_agent_ids: [connected_agent]))
@@ -103,7 +106,13 @@ RSpec.describe 'Project.cluster_agents', feature_category: :deployment_managemen
           'commit' => agent_meta.commit_id,
           'podNamespace' => agent_meta.pod_namespace,
           'podName' => agent_meta.pod_name
-        }
+        },
+        'warnings' => [
+          { 'version' => {
+            'message' => agent_warning.version[:message],
+            'type' => agent_warning.version[:type]
+          } }
+        ]
       })
     end
   end

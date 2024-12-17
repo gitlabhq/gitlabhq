@@ -15,7 +15,7 @@ module QA
       end
 
       context 'with Wiki Sidebar' do
-        it 'has all expected links that work', :blocking,
+        it 'has all expected links that work',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347814' do
           small_wiki.visit!
 
@@ -36,7 +36,7 @@ module QA
       end
 
       context 'with Wiki Page List' do
-        it 'has all expected links that work', :blocking,
+        it 'has all expected links that work',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347813' do
           large_wiki.visit!
 

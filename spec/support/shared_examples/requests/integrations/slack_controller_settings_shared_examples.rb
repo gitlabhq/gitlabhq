@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples_for Integrations::SlackControllerSettings do
-  let(:flag_protected) { false }
-
   describe 'GET slack_auth' do
     subject(:get_slack_auth) { get slack_auth_path }
 
@@ -36,21 +34,6 @@ RSpec.shared_examples_for Integrations::SlackControllerSettings do
         expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(redirect_url)
         expect(flash[:alert]).to eq('error')
-      end
-
-      context 'when the flag is disabled' do
-        before do
-          skip unless flag_protected
-          stub_feature_flags(gitlab_for_slack_app_instance_and_group_level: false)
-        end
-
-        it 'responds with status :not_found' do
-          expect(service).not_to receive(:new)
-
-          get_slack_auth
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
       end
 
       context 'when user is unauthorized' do
@@ -108,20 +91,6 @@ RSpec.shared_examples_for Integrations::SlackControllerSettings do
       end
 
       delete_destroy
-    end
-
-    context 'when the flag is disabled' do
-      before do
-        skip unless flag_protected
-        stub_feature_flags(gitlab_for_slack_app_instance_and_group_level: false)
-      end
-
-      it 'responds with status :not_found' do
-        expect { delete_destroy }
-          .not_to change { integration.reload.slack_integration }
-          .from(kind_of(SlackIntegration))
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
     end
 
     context 'when user is unauthorized' do

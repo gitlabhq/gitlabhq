@@ -8,3 +8,4 @@ description: Stores user details
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25483
 milestone: '12.9'
 gitlab_schema: gitlab_main_clusterwide
+table_size: small

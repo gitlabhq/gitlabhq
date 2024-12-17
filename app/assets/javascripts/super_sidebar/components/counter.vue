@@ -48,7 +48,7 @@ export default {
     :is="component"
     :aria-label="ariaLabel"
     :href="href"
-    class="user-bar-button gl-block gl-grow gl-rounded-base gl-border-none gl-py-3 gl-text-center gl-text-sm gl-leading-1 hover:gl-no-underline"
+    class="user-bar-button gl-block gl-grow gl-rounded-base gl-py-3 gl-text-center gl-text-sm gl-leading-1 hover:gl-no-underline"
   >
     <gl-icon aria-hidden="true" :name="icon" />
     <span v-if="count" aria-hidden="true" class="gl-ml-1">{{ formattedCount }}</span>

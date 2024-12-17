@@ -191,7 +191,7 @@ export default {
       return fuzzaldrinPlus.filter(items, this.searchQuery, { key });
     },
     async getProjectFiles() {
-      if (!this.projectFiles.length) {
+      if (this.projectFilesPath && !this.projectFiles.length) {
         this.loading = true;
 
         try {
@@ -300,7 +300,7 @@ export default {
       </gl-disclosure-dropdown-group>
     </ul>
 
-    <div v-else-if="hasSearchQuery && !hasResults" class="gl-py-3 gl-pl-5 gl-text-gray-700">
+    <div v-else-if="hasSearchQuery && !hasResults" class="gl-py-3 gl-pl-5 gl-text-default">
       {{ __('No results found') }}
     </div>
   </div>

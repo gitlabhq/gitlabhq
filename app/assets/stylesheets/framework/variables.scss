@@ -79,7 +79,6 @@ $gl-font-size-small: 12px;
 $gl-font-size-large: 16px;
 $gl-font-weight-normal: 400;
 $gl-font-weight-bold: 600;
-$gl-text-color: $gray-900;
 $gl-text-color-tertiary: $gray-400;
 $link-color: var(--gl-text-color-link) !default;
 $link-hover-color: var(--gl-text-color-link) !default;
@@ -98,7 +97,7 @@ $list-text-height: 42px;
  */
 $code-font-size: 90%;
 $code-line-height: 1.6;
-$code-color: $gray-950;
+$code-font-size-fixed: 13px;
 
 /*
  * Tooltips
@@ -236,7 +235,6 @@ $dropdown-min-height: 40px;
 $dropdown-max-height: 312px;
 $dropdown-max-height-lg: 445px;
 $dropdown-vertical-offset: 4px;
-$dropdown-shadow-color: rgba(#000, 0.1);
 $dropdown-title-btn-color: #bfbfbf;
 $dropdown-loading-bg: rgba($white, 0.6);
 $dropdown-toggle-active-border-color: darken($border-color, 14%);
@@ -288,11 +286,6 @@ $note-spacing-left: 2.5rem;
 $note-spacing-reply-left: 2rem;
 
 /*
-* Calendar
-*/
-$calendar-user-contrib-text: #959494;
-
-/*
 * Boards
 */
 $issue-boards-card-shadow: rgba(0, 0, 0, 0.1);
@@ -315,11 +308,11 @@ $job-line-number-width: 50px;
  */
 // See https://gitlab.com/gitlab-org/gitlab/-/issues/332150 to align with Pajamas Design System
 $calendar-activity-colors: (
-  $gray-50,
-  $data-viz-blue-100,
-  $data-viz-blue-400,
-  $data-viz-blue-700,
-  $data-viz-blue-950,
+  var(--gray-50),
+  var(--data-viz-blue-100),
+  var(--data-viz-blue-400),
+  var(--data-viz-blue-600),
+  var(--data-viz-blue-900)
 ) !default;
 
 /*
@@ -339,7 +332,6 @@ $logs-p-color: #333;
 */
 $input-height: 32px;
 $input-danger-bg: #f2dede;
-$input-group-addon-bg: $gray-10;
 $gl-field-focus-shadow: rgba(0, 0, 0, 0.075);
 $gl-field-focus-shadow-error: rgba($red-500, 0.6);
 $input-short-width: 200px;
@@ -452,3 +444,9 @@ $source-editor-hover-dark-text-color: $gl-color-neutral-900;
  - Issue: https://gitlab.com/gitlab-org/design.gitlab.com/issues/242
  */
 $enable-validation-icons: false;
+
+/*
+Enable GitLab UI CSS Feature Flag
+for GlButton migration from box-shadow to border.
+*/
+$feature-button-border: true;

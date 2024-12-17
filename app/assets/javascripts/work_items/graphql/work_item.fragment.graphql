@@ -14,6 +14,9 @@ fragment WorkItem on WorkItem {
   webUrl
   reference(full: true)
   createNoteEmail
+  project {
+    id
+  }
   namespace {
     id
     fullPath
@@ -34,6 +37,7 @@ fragment WorkItem on WorkItem {
     setWorkItemMetadata
     createNote
     adminWorkItemLink
+    markNoteAsInternal
   }
   widgets {
     ...WorkItemWidgets

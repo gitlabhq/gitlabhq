@@ -32,7 +32,8 @@ The following API resources are available in the project context:
 | [Agents](cluster_agents.md)                                                    | `/projects/:id/cluster_agents` |
 | [Branches](branches.md)                                                        | `/projects/:id/repository/branches/`, `/projects/:id/repository/merged_branches` |
 | [Commits](commits.md)                                                          | `/projects/:id/repository/commits`, `/projects/:id/statuses` |
-| [Container Registry](container_registry.md)                                    | `/projects/:id/registry/repositories` |
+| [Container registry](container_registry.md)                                    | `/projects/:id/registry/repositories` |
+| [Container repository protection rules](container_repository_protection_rules.md)  | `/projects/:id/registry/protection/repository/rules` |
 | [Custom attributes](custom_attributes.md)                                      | `/projects/:id/custom_attributes` (also available for groups and users) |
 | [Composer distributions](packages/composer.md)                                 | `/projects/:id/packages/composer` (also available for groups) |
 | [Conan distributions](packages/conan.md)                                       | `/projects/:id/packages/conan` (also available standalone) |

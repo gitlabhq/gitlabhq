@@ -16,27 +16,29 @@ const viewersMap = {
   text_parallel: 'parallel',
 };
 
-/** @type {diffFileAdapter} */
 export const ExpandLinesAdapter = {
-  async onClick(event) {
-    const { target } = event;
-    const { expandPrevLine, expandNextLine } = target.dataset;
-    const parent = target.closest('tr');
-    if (parent.dataset.loading || (!expandPrevLine && !expandNextLine)) return;
+  clicks: {
+    async expandLines(event) {
+      const { target } = event;
+      const { expandPrevLine, expandNextLine } = target.dataset;
+      if (!expandPrevLine && !expandNextLine) return;
+      const parent = target.closest('tr');
+      if (parent.dataset.loading) return;
 
-    parent.dataset.loading = true;
+      parent.dataset.loading = true;
 
-    const { blobDiffPath } = this.diffElement.dataset;
-    const lines = await getLines({
-      expandPrevLine,
-      lineData: collectLineData(parent),
-      blobDiffPath,
-      view: viewersMap[this.viewer],
-    });
+      const { blobDiffPath } = this.data;
+      const lines = await getLines({
+        expandPrevLine,
+        lineData: collectLineData(parent),
+        blobDiffPath,
+        view: viewersMap[this.viewer],
+      });
 
-    const method = expandPrevLine ? 'beforebegin' : 'afterend';
-    // eslint-disable-next-line no-unsanitized/method
-    parent.insertAdjacentHTML(method, lines);
-    parent.remove();
+      const method = expandPrevLine ? 'beforebegin' : 'afterend';
+      // eslint-disable-next-line no-unsanitized/method
+      parent.insertAdjacentHTML(method, lines);
+      parent.remove();
+    },
   },
 };

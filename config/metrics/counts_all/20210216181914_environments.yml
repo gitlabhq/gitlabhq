@@ -3,6 +3,8 @@ data_category: operational
 key_path: counts.environments
 description: Total available and stopped environments
 product_group: environments
+product_categories:
+- continuous_delivery
 value_type: number
 status: active
 time_frame: all

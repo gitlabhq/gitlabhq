@@ -21,11 +21,11 @@ global.Option = window.Option;
 DOMPurify.addHook = () => {};
 DOMPurify.sanitize = (x) => x;
 
-const defaultGlob = "doc/**/*.md";
+const defaultGlob = 'doc/**/*.md';
 const mermaidMatch = /```mermaid(.*?)```/gms;
 
 const argv = process.argv.length > 2 ? process.argv.slice(2) : [defaultGlob];
-const mdFiles = argv.flatMap((arg) => glob.sync(arg))
+const mdFiles = argv.flatMap((arg) => glob.sync(arg));
 
 console.log(`Checking ${mdFiles.length} markdown files...`);
 
@@ -43,6 +43,10 @@ mermaid.initialize({
   },
   secure: ['secure', 'securityLevel', 'startOnLoad', 'maxTextSize', 'htmlLabels'],
   securityLevel: 'strict',
+  dompurifyConfig: {
+    ADD_TAGS: ['foreignObject'],
+    HTML_INTEGRATION_POINTS: { foreignobject: true },
+  },
 });
 
 let errors = 0;
@@ -71,6 +75,8 @@ await Promise.all(
 
 if (errors > 0) {
   console.log(`Total errors: ${errors}`);
-  console.log(`To fix these errors, see https://docs.gitlab.com/ee/development/documentation/testing/#mermaid-chart-linting.`);
+  console.log(
+    `To fix these errors, see https://docs.gitlab.com/ee/development/documentation/testing/#mermaid-chart-linting.`,
+  );
   process.exit(1);
 }

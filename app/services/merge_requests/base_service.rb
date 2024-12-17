@@ -171,6 +171,10 @@ module MergeRequests
       end
     end
 
+    def request_duo_code_review(merge_request)
+      # Overriden in EE
+    end
+
     def filter_params(merge_request)
       super
 
@@ -195,7 +199,9 @@ module MergeRequests
         params[:reviewer_ids] = params[:reviewer_ids].first(1)
       end
 
-      reviewer_ids = params[:reviewer_ids].select { |reviewer_id| user_can_read?(merge_request, reviewer_id) }
+      reviewer_ids = User.id_in(params[:reviewer_ids]).select do |reviewer|
+        user_can_read?(merge_request, reviewer)
+      end.map(&:id)
 
       if params[:reviewer_ids].map(&:to_s) == [IssuableFinder::Params::NONE]
         params[:reviewer_ids] = []

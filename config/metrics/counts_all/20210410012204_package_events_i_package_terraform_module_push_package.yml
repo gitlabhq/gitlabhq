@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.package_events_i_package_terraform_module_push_package
 description: Total count of push Terraform Module packages events
 product_group: package_registry
+product_categories:
+- package_registry
 value_type: number
 status: active
 milestone: '13.11'

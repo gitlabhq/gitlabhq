@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Users, :aggregate_failures, feature_category: :user_management do
+RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feature_category: :user_management do
   include WorkhorseHelpers
   include KeysetPaginationHelpers
   include CryptoHelpers
@@ -946,7 +946,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
       let(:job_title) { 'Fullstack Engineer' }
 
       before do
-        create(:user_detail, user: user, job_title: job_title)
+        user.update!(job_title: job_title)
       end
 
       it 'returns job title of a user' do
@@ -4901,10 +4901,11 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
 
   describe 'POST /users/:user_id/personal_access_tokens', :with_current_organization do
     let(:name) { 'new pat' }
+    let(:description) { 'new pat description' }
     let(:expires_at) { 3.days.from_now.to_date.to_s }
     let(:scopes) { %w[api read_user] }
     let(:path) { "/users/#{user.id}/personal_access_tokens" }
-    let(:params) { { name: name, scopes: scopes, expires_at: expires_at } }
+    let(:params) { { name: name, scopes: scopes, expires_at: expires_at, description: description } }
 
     it_behaves_like 'POST request permissions for admin mode'
 
@@ -4941,6 +4942,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['name']).to eq(name)
+      expect(json_response['description']).to eq(description)
       expect(json_response['scopes']).to eq(scopes)
       expect(json_response['expires_at']).to eq(expires_at)
       expect(json_response['id']).to be_present
@@ -4976,9 +4978,10 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
     using RSpec::Parameterized::TableSyntax
 
     let(:name) { 'new pat' }
+    let(:description) { 'new pat description' }
     let(:scopes) { %w[k8s_proxy] }
     let(:path) { "/user/personal_access_tokens" }
-    let(:params) { { name: name, scopes: scopes } }
+    let(:params) { { name: name, scopes: scopes, description: description } }
 
     let(:all_scopes) do
       ::Gitlab::Auth::API_SCOPES + ::Gitlab::Auth::AI_FEATURES_SCOPES + ::Gitlab::Auth::OPENID_SCOPES +
@@ -5045,6 +5048,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['name']).to eq(name)
+      expect(json_response['description']).to eq(description)
       expect(json_response['scopes']).to eq(scopes)
       expect(json_response['expires_at']).to eq(1.day.from_now.to_date.to_s)
       expect(json_response['id']).to be_present
@@ -5055,7 +5059,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
     end
 
     context 'when expires_at at is given' do
-      let(:params) { { name: name, scopes: scopes, expires_at: expires_at } }
+      let(:params) { { name: name, scopes: scopes, expires_at: expires_at, description: description } }
 
       context 'when expires_at is in the past' do
         let(:expires_at) { 1.day.ago }
@@ -5076,6 +5080,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
 
           expect(response).to have_gitlab_http_status(:created)
           expect(json_response['name']).to eq(name)
+          expect(json_response['description']).to eq(description)
           expect(json_response['scopes']).to eq(scopes)
           expect(json_response['expires_at']).to eq(1.month.from_now.to_date.to_s)
           expect(json_response['id']).to be_present
@@ -5164,11 +5169,12 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
 
   describe 'POST /users/:user_id/impersonation_tokens', :with_current_organization do
     let(:name) { 'my new pat' }
+    let(:description) { 'my new pat description' }
     let(:expires_at) { '2016-12-28' }
     let(:scopes) { %w[api read_user] }
     let(:impersonation) { true }
     let(:path) { "/users/#{user.id}/impersonation_tokens" }
-    let(:params) { { name: name, expires_at: expires_at, scopes: scopes, impersonation: impersonation } }
+    let(:params) { { name: name, expires_at: expires_at, scopes: scopes, impersonation: impersonation, description: description } }
 
     it_behaves_like 'POST request permissions for admin mode'
 
@@ -5206,6 +5212,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['name']).to eq(name)
+      expect(json_response['description']).to eq(description)
       expect(json_response['scopes']).to eq(scopes)
       expect(json_response['expires_at']).to eq(expires_at)
       expect(json_response['id']).to be_present

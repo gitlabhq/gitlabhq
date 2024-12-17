@@ -67,4 +67,8 @@ RSpec.describe LoadedInGroupList do
       expect(found_group.children_count).to eq(2)
     end
   end
+
+  describe 'has_subgroups' do
+    it { expect(found_group.has_subgroups?).to be_truthy }
+  end
 end

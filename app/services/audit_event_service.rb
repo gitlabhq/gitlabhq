@@ -6,6 +6,9 @@ class AuditEventService
 
   # Instantiates a new service
   #
+  # @deprecated This service is deprecated. Use Gitlab::Audit::Auditor instead.
+  # More information: https://docs.gitlab.com/ee/development/audit_event_guide/#how-to-instrument-new-audit-events
+  #
   # @param [User, token String] author the entity who authors the change
   # @param [User, Project, Group] entity the scope which audit event belongs to
   #   This param is also used to determine the visibility of the audit event.
@@ -25,6 +28,8 @@ class AuditEventService
     @ip_address = resolve_ip_address(@author)
     @save_type = save_type
     @created_at = created_at
+
+    Gitlab::AppLogger.info(message: "AuditEventService initialized", scope_class: @entity.class.name)
   end
 
   # Builds the @details attribute for authentication

@@ -2,15 +2,25 @@
 
 module Database
   module MigrationTestingHelpers
-    def define_background_migration(name, with_base_class: true, scoping: nil)
+    def define_background_migration(
+      name, with_base_class: true, scoping: nil, block_context: :test,
+      cursor_columns: nil, &block)
+      raise "block_context must be :test or :migration" unless [:test, :migration].include?(block_context)
+
       klass = Class.new(with_base_class ? Gitlab::BackgroundMigration::BatchedMigrationJob : Object) do
         operation_name :update if with_base_class
 
-        # Can't simply def perform here as we won't have access to the block,
-        # similarly can't define_method(:perform, &block) here as it would change the block receiver
-        define_method(:perform) { |*args| yield(*args) }
+        if block_context == :test
+          # Can't simply def perform here as we won't have access to the block,
+          # similarly can't define_method(:perform, &block) here as it would change the block receiver
+          define_method(:perform) { |*args| yield(*args) }
+        elsif block_context == :migration
+          define_method(:perform, &block)
+        end
 
         scope_to(scoping) if scoping
+
+        cursor(*cursor_columns) if cursor_columns
       end
 
       stub_const("Gitlab::BackgroundMigration::#{name}", klass)

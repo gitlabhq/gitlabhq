@@ -29,6 +29,7 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-all-seats-used',
   '.js-period-in-terraform-state-name-alert',
   '.js-new-mr-dashboard-banner',
+  '.js-pipl-compliance-alert',
 ];
 
 const initCallouts = () => {

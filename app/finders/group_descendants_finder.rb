@@ -29,19 +29,19 @@ class GroupDescendantsFinder
   end
 
   def execute
-    # The children array might be extended with the ancestors of projects and
-    # subgroups when filtering. In that case, take the maximum so the array does
-    # not get limited otherwise, allow paginating through all results.
-    #
-    all_required_elements = children
+    # First paginate and then include the ancestors of the filtered children to:
+    # - Avoid truncating children or preloaded ancestors due to per_page limit
+    # - Ensure correct pagination headers are returned
+    all_required_elements = Kaminari.paginate_array(children, total_count: paginator.total_count)
+                                    .page(page)
+
+    preloaded_ancestors = []
     if params[:filter]
-      all_required_elements |= ancestors_of_filtered_subgroups
-      all_required_elements |= ancestors_of_filtered_projects
+      preloaded_ancestors |= ancestors_of_filtered_subgroups
+      preloaded_ancestors |= ancestors_of_filtered_projects
     end
 
-    total_count = [all_required_elements.size, paginator.total_count].max
-
-    Kaminari.paginate_array(all_required_elements, total_count: total_count)
+    all_required_elements.concat(preloaded_ancestors - children)
   end
 
   private

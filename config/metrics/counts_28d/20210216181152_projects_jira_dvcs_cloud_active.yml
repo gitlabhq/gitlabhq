@@ -4,6 +4,8 @@ key_path: usage_activity_by_stage_monthly.plan.projects_jira_dvcs_cloud_active
 description: Distinct count of creator_id from projects with an active Jira Cloud
   DVCS integration.
 product_group: import_and_integrate
+product_categories:
+- integrations
 value_type: number
 status: removed
 time_frame: 28d

@@ -7,6 +7,7 @@ export const COMMENT_FORM = {
   error: __('Comment could not be submitted: %{reason}.'),
   note: __('Note'),
   comment: __('Comment'),
+  wiki: __('Wiki'),
   internalComment: __('Add internal note'),
   issue: __('issue'),
   startThread: __('Start thread'),
@@ -17,7 +18,7 @@ export const COMMENT_FORM = {
   bodyPlaceholderInternal: __('Write an internal note or drag your files here…'),
   internal: s__('Notes|Make this an internal note'),
   internalVisibility: s__(
-    'Notes|Internal notes are only visible to members with the role of Reporter or higher',
+    'Notes|Internal notes are only visible to members with the role of Planner or higher',
   ),
   discussionThatNeedsResolution: __(
     'Discuss a specific suggestion or question that needs to be resolved.',

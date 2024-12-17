@@ -21,7 +21,6 @@ module Gitlab
 
       SEARCH_MAX_REQUESTS_PER_MINUTE = 30
       DEFAULT_PER_PAGE = 100
-      LOWER_PER_PAGE = 50
       CLIENT_CONNECTION_ERROR = ::Faraday::ConnectionFailed # used/set in sawyer agent which octokit uses
 
       # A single page of data and the corresponding page number.

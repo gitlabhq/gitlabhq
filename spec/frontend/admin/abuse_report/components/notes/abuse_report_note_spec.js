@@ -164,7 +164,7 @@ describe('Abuse Report Note', () => {
       });
 
       expect(findEditedAt().classes()).toEqual(
-        expect.arrayContaining(['gl-text-secondary', 'gl-pl-3']),
+        expect.arrayContaining(['gl-text-subtle', 'gl-pl-3']),
       );
     });
 
@@ -179,7 +179,7 @@ describe('Abuse Report Note', () => {
       });
 
       expect(findEditedAt().classes()).toEqual(
-        expect.arrayContaining(['gl-text-secondary', 'gl-pl-8']),
+        expect.arrayContaining(['gl-text-subtle', 'gl-pl-8']),
       );
     });
   });

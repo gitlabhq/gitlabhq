@@ -11,6 +11,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
     allow(redis).to receive(:expire)
     allow(redis).to receive(:incr)
+    allow(redis).to receive(:incrbyfloat)
     allow(redis).to receive(:multi).and_yield(redis)
     allow(redis).to receive(:pfadd)
     allow(redis).to receive(:set)
@@ -22,7 +23,8 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     allow_next_instance_of(Gitlab::Tracking::EventValidator) do |instance|
       allow(instance).to receive(:validate!)
     end
-    allow(event_definition).to receive(:event_selection_rules).and_return(event_selection_rules)
+    allow(event_definition).to receive_messages(event_selection_rules: event_selection_rules, attributes: {})
+    allow(event_definition).to receive(:extra_tracking_classes).and_return([])
     allow(fake_snowplow).to receive(:event)
   end
 
@@ -47,6 +49,12 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   def expect_redis_tracking
     redis_arguments.each do |redis_argument|
       expect(redis).to have_received(:incr).with(a_string_ending_with(redis_argument)).once
+    end
+  end
+
+  def expect_redis_sum_tracking(value)
+    redis_arguments.each do |redis_argument|
+      expect(redis).to have_received(:incrbyfloat).with(a_string_including(redis_argument), value).once
     end
   end
 
@@ -106,7 +114,8 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     [
       Gitlab::Usage::EventSelectionRule.new(name: event_name, time_framed: false),
       Gitlab::Usage::EventSelectionRule.new(name: event_name, time_framed: true),
-      Gitlab::Usage::EventSelectionRule.new(name: event_name, time_framed: true, unique_identifier_name: :user)
+      Gitlab::Usage::EventSelectionRule.new(name: event_name, time_framed: true, unique_identifier_name: :user),
+      Gitlab::Usage::EventSelectionRule.new(name: event_name, time_framed: true, operator: 'sum(value)')
     ]
   end
 
@@ -172,29 +181,36 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       }
     end
 
-    it 'is sent to Snowplow' do
+    let(:properties) { additional_properties }
+
+    subject(:track_event) do
       described_class.track_event(
         event_name,
-        additional_properties: additional_properties,
+        additional_properties: properties,
         user: user,
         project: project
       )
+    end
+
+    it 'is sent to Snowplow' do
+      track_event
 
       expect_snowplow_tracking(nil, additional_properties)
     end
 
+    it 'updates sums' do
+      track_event
+
+      expect_redis_sum_tracking(16.17)
+    end
+
     context 'with a custom property' do
-      let(:custom_properties) do
+      let(:properties) do
         additional_properties.merge(custom: 'custom_property')
       end
 
       it 'is sent to Snowplow' do
-        described_class.track_event(
-          event_name,
-          additional_properties: custom_properties,
-          user: user,
-          project: project
-        )
+        track_event
 
         expect_snowplow_tracking(nil, additional_properties, extra: { custom: 'custom_property' })
       end
@@ -393,19 +409,30 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     expect_snowplow_tracking
   end
 
-  it 'rescues error', :aggregate_failures do
-    params = { user: user, project: project }
-    error = StandardError.new("something went wrong")
-    allow(fake_snowplow).to receive(:event).and_raise(error)
+  describe 'errors handling' do
+    let(:params) { { user: user, project: project } }
+    let(:error) { StandardError.new("something went wrong") }
 
-    expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
-      .with(
-        error,
-        snowplow_category: 'InternalEventTracking',
-        snowplow_action: event_name
-      )
+    it 'rescues error from tracking', :aggregate_failures do
+      allow(fake_snowplow).to receive(:event).and_raise(error)
 
-    expect { described_class.track_event(event_name, **params) }.not_to raise_error
+      expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+        .with(
+          error,
+          snowplow_category: 'InternalEventTracking',
+          snowplow_action: event_name
+        )
+
+      expect { described_class.track_event(event_name, **params) }.not_to raise_error
+    end
+
+    it 'rescues error from validator' do
+      allow_next_instance_of(Gitlab::Tracking::EventValidator) do |instance|
+        allow(instance).to receive(:validate!).and_raise(error)
+      end
+
+      expect { described_class.track_event(event_name, **params) }.not_to raise_error
+    end
   end
 
   it 'logs warning on missing property', :aggregate_failures do
@@ -711,6 +738,27 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
         end
 
         it_behaves_like 'does not create early access program tracking event'
+      end
+    end
+  end
+
+  describe 'custom tracking classes' do
+    let(:event_kwargs) { { additional_properties: additional_properties, user: user, project: project } }
+    let(:custom_tracking_class) do
+      Class.new do
+        def self.track_event(event_name, **kwargs); end
+      end
+    end
+
+    context 'when custom classes are defined' do
+      before do
+        allow(event_definition).to receive(:extra_tracking_classes).and_return([custom_tracking_class])
+      end
+
+      it 'calls the custom classes' do
+        expect(custom_tracking_class).to receive(:track_event).with(event_name, **event_kwargs)
+
+        described_class.track_event(event_name, additional_properties: additional_properties, **event_kwargs)
       end
     end
   end

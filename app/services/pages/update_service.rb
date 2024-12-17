@@ -11,8 +11,8 @@ module Pages
       end
 
       Project.transaction do
-        update_pages_unique_domain_enabled!
         update_pages_https_only!
+        update_pages_project_settings!
       end
 
       ServiceResponse.success(payload: { project: project })
@@ -20,10 +20,11 @@ module Pages
 
     private
 
-    def update_pages_unique_domain_enabled!
-      return unless params.key?(:pages_unique_domain_enabled)
+    def update_pages_project_settings!
+      pages_project_settings = params.slice(:pages_unique_domain_enabled, :pages_default_domain_redirect)
+      return if pages_project_settings.empty?
 
-      project.project_setting.update!(pages_unique_domain_enabled: params[:pages_unique_domain_enabled])
+      project.project_setting.update!(pages_project_settings)
     end
 
     def update_pages_https_only!

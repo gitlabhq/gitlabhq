@@ -17,7 +17,7 @@
 - if issuable.respond_to?(:confidential) && can?(current_user, :set_confidentiality, issuable)
   .form-group
     = form.gitlab_ui_checkbox_component :confidential,
-      _('This issue is confidential and should only be visible to team members with at least Reporter access.')
+      _('This issue is confidential and should only be visible to team members with at least the Planner role.')
 
 - if can?(current_user, :"set_#{issuable.to_ability_name}_metadata", issuable)
   .row.gl-pt-4
@@ -49,7 +49,7 @@
             merge_after: issuable.merge_schedule&.merge_after&.strftime('%Y-%m-%dT%H:%MZ'),
             param_key: issuable.class.model_name.param_key
           } }
-          %p.gl-text-gray-500.col-12= s_('MergeRequests|Requires that merge checks pass.')
+          %p.gl-text-subtle.col-12= s_('MergeRequests|Requires that merge checks pass.')
 
     - if has_due_date
       .col-lg-6

@@ -21,7 +21,7 @@ module QA
       end
 
       let(:runner) do
-        Resource::ProjectRunner.fabricate! do |runner|
+        Resource::Ci::ProjectRunner.fabricate! do |runner|
           runner.name = "qa-runner-#{SecureRandom.hex(6)}"
           runner.tags = ["runner-for-#{imported_project.name}"]
           runner.executor = :docker
@@ -42,7 +42,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'publishes a module', :blocking,
+      it 'publishes a module',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/371583' do
         terraform_module_yaml = ERB.new(
           read_fixture('package_managers/terraform', 'module_upload.yaml.erb')

@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 WARNING:
-This API is in an [experiment](../policy/experiment-beta-support.md#experiment) and considered unstable.
+This API is in an [experiment](../policy/development_stages_support.md#experiment) and considered unstable.
 The response payload may be subject to change or breakage
 across GitLab releases.
 

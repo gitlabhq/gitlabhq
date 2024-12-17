@@ -25,7 +25,7 @@ module QA
       end
 
       context(
-        'when using HTTP endpoint integration', :blocking,
+        'when using HTTP endpoint integration',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/393589',
         quarantine: {
           only: { pipeline: :nightly },

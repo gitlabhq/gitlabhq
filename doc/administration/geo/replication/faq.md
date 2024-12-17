@@ -98,4 +98,4 @@ Yes, projects scheduled for deletion by [delayed deletion](../../settings/visibi
 When a primary site goes down,
 [your secondary will not be accessible through the UI](../secondary_proxy/index.md#behavior-of-secondary-sites-when-the-primary-geo-site-is-down)
 unless your restore the services on your primary site or you perform a promotion
-on your secondary site. 
+on your secondary site.

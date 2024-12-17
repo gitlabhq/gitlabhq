@@ -29,6 +29,7 @@ RSpec.describe 'Import/Export Project configuration', feature_category: :importe
         prohibited_keys = current_attributes.select do |attribute|
           prohibited_key?(attribute) || !relation_class.attribute_method?(attribute)
         end
+        prohibited_keys -= Gitlab::ImportExport::AttributeCleaner::ALLOWED_REFERENCES_PER_CLASS.fetch(relation_class.name.to_sym, [])
         expect(prohibited_keys).to be_empty, failure_message(relation_class.to_s, prohibited_keys)
       end
     end

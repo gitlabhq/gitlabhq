@@ -29,7 +29,7 @@ module Trigger
   class Base
     # Can be overridden
     STABLE_BRANCH_REGEX = /^[\d-]+-stable(-ee|-jh)?$/
-    def self.access_token
+    def access_token
       ENV['PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE']
     end
 
@@ -71,7 +71,7 @@ module Trigger
     def com_gitlab_client
       @com_gitlab_client ||= Gitlab.client(
         endpoint: endpoint,
-        private_token: self.class.access_token
+        private_token: access_token
       )
     end
 
@@ -246,8 +246,7 @@ module Trigger
   # - https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/b44483f05c5e22628ba3b49ec4c7f8761c688af0/gitlab-ci-config/gitlab-com.yml#L199-224
   # - https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/b44483f05c5e22628ba3b49ec4c7f8761c688af0/gitlab-ci-config/gitlab-com.yml#L356-380
   class Docs < Base
-    def self.access_token
-      # Default to "DOCS_PROJECT_API_TOKEN" at https://gitlab.com/gitlab-org/gitlab-docs/-/settings/access_tokens
+    def access_token
       ENV['DOCS_PROJECT_API_TOKEN'] || super
     end
 
@@ -342,6 +341,36 @@ module Trigger
 
     def display_success_message
       puts format(SUCCESS_MESSAGE, app_url: app_url)
+    end
+  end
+
+  class DocsHugo < Docs
+    def access_token
+      ENV['DOCS_HUGO_PROJECT_API_TOKEN'] || super
+    end
+
+    private
+
+    def downstream_environment
+      "upstream-review/mr-${CI_MERGE_REQUEST_IID}"
+    end
+
+    def review_slug
+      identifier = ENV['CI_MERGE_REQUEST_IID'] || ENV['CI_COMMIT_REF_SLUG']
+
+      "#{project_slug}-#{identifier}"
+    end
+
+    def downstream_project_path
+      ENV.fetch('DOCS_PROJECT_PATH', 'gitlab-org/technical-writing-group/gitlab-docs-hugo')
+    end
+
+    def trigger_token
+      ENV['DOCS_HUGO_TRIGGER_TOKEN']
+    end
+
+    def app_url
+      "https://new.docs.gitlab.com/upstream-review-mr-#{review_slug}/"
     end
   end
 
@@ -471,8 +500,8 @@ if $PROGRAM_NAME == __FILE__
   case ARGV[0]
   when 'gitlab-com-database-testing'
     Trigger::DatabaseTesting.new.invoke!
-  when 'docs'
-    docs_trigger = Trigger::Docs.new
+  when 'docs-hugo', 'docs'
+    docs_trigger = (ARGV[0] == 'docs-hugo' ? Trigger::DocsHugo : Trigger::Docs).new
 
     case ARGV[1]
     when 'deploy'
@@ -485,7 +514,9 @@ if $PROGRAM_NAME == __FILE__
     end
   else
     puts "Please provide a valid option:
-    omnibus - Triggers a pipeline that builds the omnibus-gitlab package
+    docs - Triggers a pipline that builds a documentation review app by using the gitlab-docs project
+    docs-hugo - Triggers a pipline that builds a documentation review app by using the gitlab-docs-hugo project
+    omnibus - Triggers a pipelines that builds the omnibus-gitlab package
     gitlab-com-database-testing - Triggers a pipeline that tests database changes on GitLab.com data"
   end
 end

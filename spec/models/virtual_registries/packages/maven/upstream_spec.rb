@@ -36,6 +36,8 @@ RSpec.describe VirtualRegistries::Packages::Maven::Upstream, type: :model, featu
     it { is_expected.to validate_presence_of(:url) }
     it { is_expected.to validate_presence_of(:username) }
     it { is_expected.to validate_presence_of(:password) }
+    it { is_expected.to validate_uniqueness_of(:encrypted_username_iv).ignoring_case_sensitivity.allow_nil }
+    it { is_expected.to validate_uniqueness_of(:encrypted_password_iv).ignoring_case_sensitivity.allow_nil }
     it { is_expected.to validate_length_of(:url).is_at_most(255) }
     it { is_expected.to validate_length_of(:username).is_at_most(255) }
     it { is_expected.to validate_length_of(:password).is_at_most(255) }
@@ -101,12 +103,12 @@ RSpec.describe VirtualRegistries::Packages::Maven::Upstream, type: :model, featu
       end
 
       context 'when url is updated' do
-        where(:new_url, :new_user, :new_pwd, :expected_user, :expected_pwd, :expected_credentials) do
-          'http://original_url.test' | 'test' | 'test' | 'test' | 'test' | { 'username' => 'test', 'password' => 'test' }
-          'http://update_url.test'   | 'test' | 'test' | 'test' | 'test' | { 'username' => 'test', 'password' => 'test' }
-          'http://update_url.test'   | :none  | :none  | nil    | nil    | { 'username' => nil, 'password' => nil }
-          'http://update_url.test'   | 'test' | :none  | nil    | nil    | { 'username' => nil, 'password' => nil }
-          'http://update_url.test'   | :none  | 'test' | nil    | nil    | { 'username' => nil, 'password' => nil }
+        where(:new_url, :new_user, :new_pwd, :expected_user, :expected_pwd) do
+          'http://original_url.test' | 'test' | 'test' | 'test' | 'test'
+          'http://update_url.test'   | 'test' | 'test' | 'test' | 'test'
+          'http://update_url.test'   | :none  | :none  | nil    | nil
+          'http://update_url.test'   | 'test' | :none  | nil    | nil
+          'http://update_url.test'   | :none  | 'test' | nil    | nil
         end
 
         with_them do
@@ -121,8 +123,52 @@ RSpec.describe VirtualRegistries::Packages::Maven::Upstream, type: :model, featu
             expect(upstream.reload.url).to eq(new_url)
             expect(upstream.username).to eq(expected_user)
             expect(upstream.password).to eq(expected_pwd)
-            expect(upstream.credentials).to eq(expected_credentials)
           end
+        end
+      end
+    end
+  end
+
+  describe 'callbacks' do
+    context 'for set_cache_validity_hours_for_maven_central' do
+      %w[
+        https://repo1.maven.org/maven2
+        https://repo1.maven.org/maven2/
+      ].each do |maven_central_url|
+        context "with url set to #{maven_central_url}" do
+          before do
+            upstream.url = maven_central_url
+          end
+
+          it 'sets the cache validity hours to 0' do
+            upstream.save!
+
+            expect(upstream.cache_validity_hours).to eq(0)
+          end
+        end
+      end
+
+      context 'with url other than maven central' do
+        before do
+          upstream.url = 'https://test.org/maven2'
+        end
+
+        it 'sets the cache validity hours to the database default value' do
+          upstream.save!
+
+          expect(upstream.cache_validity_hours).not_to eq(0)
+        end
+      end
+
+      context 'with no url' do
+        before do
+          upstream.url = nil
+        end
+
+        it 'does not set the cache validity hours' do
+          expect(upstream).not_to receive(:set_cache_validity_hours_for_maven_central)
+
+          expect { upstream.save! }.to raise_error(ActiveRecord::RecordInvalid)
         end
       end
     end

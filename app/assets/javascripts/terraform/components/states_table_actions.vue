@@ -39,6 +39,10 @@ export default {
       required: true,
       type: Object,
     },
+    terraformAdmin: {
+      required: true,
+      type: Boolean,
+    },
   },
   data() {
     return {
@@ -231,19 +235,25 @@ export default {
         {{ $options.i18n.downloadJSON }}
       </gl-dropdown-item>
 
-      <gl-dropdown-item v-if="state.lockedAt" data-testid="terraform-state-unlock" @click="unlock">
-        {{ $options.i18n.unlock }}
-      </gl-dropdown-item>
+      <template v-if="terraformAdmin">
+        <gl-dropdown-item
+          v-if="state.lockedAt"
+          data-testid="terraform-state-unlock"
+          @click="unlock"
+        >
+          {{ $options.i18n.unlock }}
+        </gl-dropdown-item>
 
-      <gl-dropdown-item v-else data-testid="terraform-state-lock" @click="lock">
-        {{ $options.i18n.lock }}
-      </gl-dropdown-item>
+        <gl-dropdown-item v-else data-testid="terraform-state-lock" @click="lock">
+          {{ $options.i18n.lock }}
+        </gl-dropdown-item>
 
-      <gl-dropdown-divider />
+        <gl-dropdown-divider />
 
-      <gl-dropdown-item data-testid="terraform-state-remove" @click="showRemoveModal = true">
-        <span class="gl-text-red-500">{{ $options.i18n.remove }}</span>
-      </gl-dropdown-item>
+        <gl-dropdown-item data-testid="terraform-state-remove" @click="showRemoveModal = true">
+          <span class="gl-text-red-500">{{ $options.i18n.remove }}</span>
+        </gl-dropdown-item>
+      </template>
     </gl-dropdown>
 
     <gl-modal

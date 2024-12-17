@@ -323,19 +323,15 @@ RSpec.describe UserPreference, feature_category: :user_profile do
 
   describe '#text_editor' do
     let(:pref) { described_class.new(text_editor_type: text_editor_type) }
-    let(:text_editor_type) { nil }
+    let(:text_editor_type) { :not_set }
 
-    context 'when text_editor_type is not set' do
-      it 'returns rich_text_editor if rich_text_editor_as_default ff is enabled' do
-        stub_feature_flags(rich_text_editor_as_default: true)
-
-        expect(pref.text_editor).to eq(:rich_text_editor)
+    context 'when text_editor_type is not_set' do
+      it 'returns not_set' do
+        expect(pref.text_editor).to eq "not_set"
       end
 
-      it 'returns plain_text_editor if rich_text_editor_as_default ff is disabled' do
-        stub_feature_flags(rich_text_editor_as_default: false)
-
-        expect(pref.text_editor).to eq(:plain_text_editor)
+      it 'returns false for default_text_editor_enabled' do
+        expect(pref.default_text_editor_enabled).to be false
       end
     end
 
@@ -343,17 +339,34 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       where(:text_editor_type) { %w[plain_text_editor rich_text_editor] }
 
       with_them do
-        it 'returns assigned text_editor_type regardless of rich_text_editor_as_default ff value' do
-          expect(pref.text_editor).to eq(text_editor_type)
-
-          stub_feature_flags(rich_text_editor_as_default: false)
-
-          expect(pref.text_editor).to eq(text_editor_type)
-
-          stub_feature_flags(rich_text_editor_as_default: true)
-
+        it 'returns assigned text_editor_type' do
           expect(pref.text_editor).to eq(text_editor_type)
         end
+
+        it 'returns true for default_text_editor_enabled' do
+          expect(pref.default_text_editor_enabled).to be true
+        end
+      end
+    end
+  end
+
+  describe '#default_text_editor_enabled' do
+    let(:pref) { described_class.new(default_text_editor_enabled: default_text_editor_enabled) }
+
+    where(:default_text_editor_enabled, :text_editor_type) do
+      [
+        [true, "rich_text_editor"],
+        [false, "not_set"]
+      ]
+    end
+
+    with_them do
+      it 'assigns correctly' do
+        expect(pref.default_text_editor_enabled).to eq(default_text_editor_enabled)
+      end
+
+      it 'returns correct value for text_editor' do
+        expect(pref.text_editor).to eq(text_editor_type)
       end
     end
   end

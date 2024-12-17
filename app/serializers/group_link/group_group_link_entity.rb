@@ -27,5 +27,3 @@ module GroupLink
     end
   end
 end
-
-GroupLink::GroupGroupLinkEntity.prepend_mod

@@ -61,6 +61,26 @@ export default {
       required: false,
       default: false,
     },
+    showUploadDesignOverlay: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    uploadDesignOverlayText: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    validateDesignUploadOnDragover: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    acceptDesignFormats: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -80,6 +100,12 @@ export default {
     },
     validMimeTypeString() {
       return this.validFileMimetypes.join();
+    },
+    showDropzoneOverlay() {
+      if (this.validateDesignUploadOnDragover && this.acceptDesignFormats) {
+        return this.dragging && this.isDragDataValid && !this.enableDragBehavior;
+      }
+      return this.dragging && !this.enableDragBehavior;
     },
   },
   methods: {
@@ -131,10 +157,19 @@ export default {
       this.$emit('change', this.singleFileSelection ? files[0] : files);
     },
     ondragenter(e) {
+      this.$emit('dragenter', e);
       this.dragCounter += 1;
       this.isDragDataValid = this.isValidDragDataType(e);
     },
-    ondragleave() {
+    ondragover({ dataTransfer }) {
+      if (this.validateDesignUploadOnDragover) {
+        this.isDragDataValid = Array.from(dataTransfer.items).some((item) =>
+          this.acceptDesignFormats.includes(item.type),
+        );
+      }
+    },
+    ondragleave(e) {
+      this.$emit('dragleave', e);
       this.dragCounter -= 1;
     },
     openFileUpload() {
@@ -155,10 +190,11 @@ export default {
 
 <template>
   <div
-    class="gl-relative gl-w-full"
+    class="gl-w-full"
+    :class="{ 'gl-relative': !showUploadDesignOverlay }"
     @dragstart.prevent.stop
     @dragend.prevent.stop
-    @dragover.prevent.stop
+    @dragover.prevent.stop="ondragover"
     @dragenter.prevent.stop="ondragenter"
     @dragleave.prevent.stop="ondragleave"
     @drop.prevent.stop="ondrop"
@@ -203,29 +239,48 @@ export default {
     </slot>
     <transition name="upload-dropzone-fade">
       <div
-        v-show="dragging && !enableDragBehavior"
-        class="card upload-dropzone-border upload-dropzone-overlay gl-absolute gl-flex gl-h-full gl-w-full gl-items-center gl-justify-center gl-p-4"
+        v-show="showDropzoneOverlay"
+        class="card gl-absolute gl-flex gl-h-full gl-w-full gl-items-center gl-justify-center gl-p-4"
+        :class="{
+          'design-upload-dropzone-overlay gl-z-200 gl-border-1 gl-border-dashed gl-border-blue-500':
+            showUploadDesignOverlay && isDragDataValid,
+          'upload-dropzone-overlay upload-dropzone-border': !showUploadDesignOverlay,
+        }"
       >
-        <div v-show="!isDragDataValid" class="gl-max-w-1/2 gl-text-center">
-          <slot name="invalid-drag-data-slot">
-            <h3 :class="{ 'gl-inline gl-text-base': !displayAsCard }">
-              {{ __('Oh no!') }}
-            </h3>
-            <span>{{
-              __(
-                'You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico.',
-              )
-            }}</span>
-          </slot>
-        </div>
-        <div v-show="isDragDataValid" class="gl-max-w-1/2 gl-text-center">
-          <slot name="valid-drag-data-slot">
-            <h3 :class="{ 'gl-inline gl-text-base': !displayAsCard }">
-              {{ __('Incoming!') }}
-            </h3>
-            <span>{{ dropToStartMessage }}</span>
-          </slot>
-        </div>
+        <!-- Design Upload Overlay Style for Work Items -->
+        <template v-if="showUploadDesignOverlay">
+          <div
+            v-if="isDragDataValid"
+            class="gl-absolute gl-bottom-6 gl-flex gl-items-center gl-rounded-base gl-bg-blue-950 gl-px-3 gl-py-2 gl-text-white"
+            data-testid="design-upload-overlay"
+          >
+            <gl-animated-upload-icon :is-on="true" name="upload" />
+            <span class="gl-ml-2">{{ uploadDesignOverlayText }}</span>
+          </div>
+        </template>
+        <!-- Design Upload Overlay Style for Legacy Issues -->
+        <template v-else>
+          <div v-if="isDragDataValid" class="gl-max-w-1/2 gl-text-center">
+            <slot name="valid-drag-data-slot">
+              <h3 :class="{ 'gl-inline gl-text-base': !displayAsCard }">
+                {{ __('Incoming!') }}
+              </h3>
+              <span>{{ dropToStartMessage }}</span>
+            </slot>
+          </div>
+          <div v-else class="gl-max-w-1/2 gl-text-center">
+            <slot name="invalid-drag-data-slot">
+              <h3 :class="{ 'gl-inline gl-text-base': !displayAsCard }">
+                {{ __('Oh no!') }}
+              </h3>
+              <span>{{
+                __(
+                  'You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico.',
+                )
+              }}</span>
+            </slot>
+          </div>
+        </template>
       </div>
     </transition>
   </div>

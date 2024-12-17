@@ -79,6 +79,10 @@ module LoadedInGroupList
   def guest_count
     @guest_count ||= members.guests.count
   end
+
+  def has_subgroups?
+    subgroup_count > 0
+  end
 end
 
 LoadedInGroupList::ClassMethods.prepend_mod_with('LoadedInGroupList::ClassMethods')

@@ -30,9 +30,9 @@ module Ci
     validates :id_tokens, json_schema: { filename: 'build_metadata_id_tokens' }
     validates :secrets, json_schema: { filename: 'build_metadata_secrets' }
 
-    attribute :config_options, :sym_jsonb
-    attribute :config_variables, :sym_jsonb
-    attribute :runtime_runner_features, :sym_jsonb
+    attribute :config_options, ::Gitlab::Database::Type::SymbolizedJsonb.new
+    attribute :config_variables, ::Gitlab::Database::Type::SymbolizedJsonb.new
+    attribute :runtime_runner_features, ::Gitlab::Database::Type::SymbolizedJsonb.new
 
     chronic_duration_attr_reader :timeout_human_readable, :timeout
 

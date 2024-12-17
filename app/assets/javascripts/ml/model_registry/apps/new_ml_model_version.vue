@@ -14,6 +14,10 @@ export default {
     };
   },
   props: {
+    modelPath: {
+      type: String,
+      required: true,
+    },
     projectPath: {
       type: String,
       required: true,
@@ -48,5 +52,6 @@ export default {
     v-if="canWriteModelRegistry"
     :project-path="projectPath"
     :markdown-preview-path="markdownPreviewPath"
+    :model-path="modelPath"
   />
 </template>

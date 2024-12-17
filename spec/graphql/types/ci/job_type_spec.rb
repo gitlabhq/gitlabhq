@@ -60,6 +60,7 @@ RSpec.describe Types::Ci::JobType, feature_category: :continuous_integration do
       scheduled
       trace
       failure_message
+      exit_code
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

@@ -146,9 +146,20 @@ export const modelVersionWithCandidateAndAuthor = {
   },
 };
 
+export const modelVersionWithCandidateAndNullAuthor = {
+  ...modelVersionWithCandidateAndAuthor,
+  author: null,
+};
+
 export const graphqlCandidates = [
   {
     id: 'gid://gitlab/Ml::Candidate/1',
+    eid: 'e9a71521-45c6-4b0a-b0c3-21f0b4528a5c',
+    ciJob: {
+      id: 'gid://gitlab/Ci::Build/1',
+      name: 'build:linux',
+    },
+    status: 'running',
     name: 'narwhal-aardvark-heron-6953',
     createdAt: '2023-12-06T12:41:48Z',
     _links: {
@@ -157,6 +168,12 @@ export const graphqlCandidates = [
   },
   {
     id: 'gid://gitlab/Ml::Candidate/2',
+    eid: 'e9a71521-45c6-4b0a-b0c3-21f0b4528a4c',
+    ciJob: {
+      id: 'gid://gitlab/Ci::Build/2',
+      name: 'build:linux',
+    },
+    status: 'failed',
     name: 'anteater-chimpanzee-snake-1254',
     createdAt: '2023-12-06T12:41:48Z',
     _links: {
@@ -383,9 +400,35 @@ export const model = {
   latestVersion: modelVersionWithCandidateAndAuthor,
 };
 
+export const modelWithNoVersion = {
+  id: 'gid://gitlab/Ml::Model/3',
+  name: 'model_3',
+  versionCount: 0,
+  latestVersion: null,
+  createdAt: '2023-12-06T12:41:48Z',
+  description: 'A model description',
+  descriptionHtml: 'A model description',
+  author: {
+    id: 'gid://gitlab/User/1',
+    name: 'name',
+    avatarUrl: 'avatarUrl',
+    webUrl: 'webUrl',
+  },
+  _links: {
+    showPath: '/my_project/-/ml/models/3',
+  },
+  candidateCount: 0,
+};
+
 export const modelDetailQuery = {
   data: {
     mlModel: model,
+  },
+};
+
+export const modelWithNoVersionDetailQuery = {
+  data: {
+    mlModel: modelWithNoVersion,
   },
 };
 

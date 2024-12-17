@@ -41,7 +41,7 @@ module WorkItems
       issue: { name: TYPE_NAMES[:issue], icon_name: 'issue-type-issue', enum_value: 0, id: 1 },
       incident: { name: TYPE_NAMES[:incident], icon_name: 'issue-type-incident', enum_value: 1, id: 2 },
       test_case: { name: TYPE_NAMES[:test_case], icon_name: 'issue-type-test-case', enum_value: 2, id: 3 }, ## EE-only
-      requirement: { name: TYPE_NAMES[:requirement], icon_name: 'issue-type-requirements', enum_value: 3, id: 4 }, ## EE-only # rubocop:disable Layout/LineLength -- Only comment exceeds length
+      requirement: { name: TYPE_NAMES[:requirement], icon_name: 'issue-type-requirements', enum_value: 3, id: 4 }, ## EE
       task: { name: TYPE_NAMES[:task], icon_name: 'issue-type-task', enum_value: 4, id: 5 },
       objective: { name: TYPE_NAMES[:objective], icon_name: 'issue-type-objective', enum_value: 5, id: 6 }, ## EE-only
       key_result: { name: TYPE_NAMES[:key_result], icon_name: 'issue-type-keyresult', enum_value: 6, id: 7 }, ## EE-only
@@ -86,6 +86,22 @@ module WorkItems
 
     scope :order_by_name_asc, -> { order(arel_table[:name].lower.asc) }
     scope :by_type, ->(base_type) { where(base_type: base_type) }
+    scope :with_correct_id_and_fallback, ->(correct_ids) {
+      return id_in(correct_ids) if Feature.disabled?(:issues_set_correct_work_item_type_id, :instance)
+
+      # This shouldn't work for nil ids as we expect newer instances to have NULL values in old_id
+      correct_ids = Array(correct_ids).compact
+      return none if correct_ids.blank?
+
+      where(correct_id: correct_ids).or(where(old_id: correct_ids))
+    }
+
+    def self.find_by_correct_id_with_fallback(correct_id)
+      results = with_correct_id_and_fallback(correct_id)
+      return results.first if results.to_a.size <= 1 # Using to_a to avoid an additional query. Loads the relationship.
+
+      results.find { |type| type.correct_id == correct_id }
+    end
 
     def self.default_by_type(type)
       found_type = find_by(base_type: type)
@@ -108,7 +124,7 @@ module WorkItems
     end
 
     def self.allowed_types_for_issues
-      base_types.keys.excluding('objective', 'key_result', 'epic', 'ticket')
+      base_types.keys.excluding('objective', 'key_result', 'epic')
     end
 
     # method overridden in EE to perform the corresponding checks for the Epic type
@@ -119,6 +135,14 @@ module WorkItems
         []
       end
     end
+
+    def to_global_id
+      return super if Feature.disabled?(:issues_set_correct_work_item_type_id, :instance)
+
+      ::Gitlab::GlobalId.build(self, id: correct_id)
+    end
+    # Alias necessary here as the Gem uses `alias` to define the `gid` method
+    alias_method :to_gid, :to_global_id
 
     # resource_parent is used in EE
     def widgets(_resource_parent)

@@ -11,7 +11,7 @@ RSpec.describe 'Upload a nuget package', :api, :js, feature_category: :package_r
 
   let(:api_path) { "/projects/#{project.id}/packages/nuget/" }
   let(:url) { capybara_url(api(api_path)) }
-  let(:file) { fixture_file_upload('spec/fixtures/dk.png') }
+  let(:file) { fixture_file_upload('spec/fixtures/packages/nuget/package.nupkg') }
 
   subject do
     HTTParty.put(

@@ -1,5 +1,5 @@
 - name: Value Streams Dashboard is now generally available
-  description: | # Do not modify this line, instead modify the lines below.
+  description: |  # Do not modify this line, instead modify the lines below.
     This [new dashboard](https://youtu.be/EA9Sbks27g4) provides strategic insights into metrics that help decision-makers identify trends and patterns to optimize software delivery. The first iteration of the GitLab Value Streams Dashboard is focused on enabling teams to continuously improve software delivery workflows by benchmarking value stream life cycle ([value stream analytics](https://docs.gitlab.com/ee/user/group/value_stream_analytics/), [DORA4](https://docs.gitlab.com/ee/user/analytics/dora_metrics.html)), and [vulnerabilities](https://docs.gitlab.com/ee/user/application_security/vulnerability_report/) metrics.
 
     Organizations can use the [Value Streams Dashboard](https://docs.gitlab.com/ee/user/analytics/value_streams_dashboard.html) to track and compare these metrics over a period of time, identify downward trends early, understand security exposure, and drill down into individual projects or metrics to take actions for improvements.
@@ -15,7 +15,7 @@
   release: 16.0
 
 - name: Upsizing GitLab SaaS runners on Linux
-  description: | # Do not modify this line, instead modify the lines below.
+  description: |  # Do not modify this line, instead modify the lines below.
     You asked, we listened! In our efforts to be best-in-class for CI/CD build speeds, we're doubling the vCPU & RAM for all GitLab SaaS runners on Linux, with no increase in the [cost factor](https://docs.gitlab.com/ee/ci/pipelines/compute_minutes.html#cost-factor).
 
     We're excited to see pipelines run faster and boost productivity.
@@ -29,7 +29,7 @@
   release: 16.0
 
 - name: GPU-enabled SaaS runners on Linux
-  description: | # Do not modify this line, instead modify the lines below.
+  description: |  # Do not modify this line, instead modify the lines below.
     We are aiming to bring the best practices of DevSecOps to data sciences by providing more powerful compute hardware within GitLab runner. Previously, data scientists may have had workloads that were compute-intensive and as a result, jobs may not have been as quickly executed in GitLab.
 
     Now, with GPU-enabled SaaS runners on Linux, these workloads can be seamlessly supported using GitLab.com.
@@ -45,7 +45,7 @@
   release: 16.0
 
 - name: Apple silicon (M1) GitLab SaaS runners on macOS - Beta
-  description: | # Do not modify this line, instead modify the lines below.
+  description: |  # Do not modify this line, instead modify the lines below.
     Mobile DevOps teams can now run their entire CI/CD workflows on Apple silicon (M1) [GitLab SaaS runners on macOS](https://docs.gitlab.com/ee/ci/runners/saas/macos_saas_runner) to seamlessly create, test, and deploy applications for the Apple ecosystem.
 
     With up to **three times** the performance of hosted x86-64 macOS Runners, you will increase your development team's velocity in building and deploying applications that require macOS in a secure, on-demand GitLab Runner build environment integrated with GitLab CI/CD.
@@ -59,7 +59,7 @@
   release: 16.0
 
 - name: Comment templates
-  description: | # Do not modify this line, instead modify the lines below.
+  description: |  # Do not modify this line, instead modify the lines below.
     When you're commenting in issues, epics, or merge requests you might repeat yourself and need to write the same comment over and over. Maybe you always need to ask for more information about a bug report. Maybe you're applying labels via a quick action as part of a triage process. Or maybe you just like to finish all your code reviews with a funny gif or appropriate emoji. 🎉
 
     Comment templates enable you to create saved responses that you can apply in comment boxes around GitLab to speed up your workflow. To create a comment template, go to **User settings > Comment templates** and then fill out your template. After it's saved, select the **Insert comment template** icon on any text area, and your saved response will be applied.
@@ -75,7 +75,7 @@
   release: 16.0
 
 - name: Update your fork from the GitLab UI
-  description: | # Do not modify this line, instead modify the lines below.
+  description: |  # Do not modify this line, instead modify the lines below.
     Managing your fork just got easier. When your fork is behind, select **Update fork** in the GitLab UI to catch it up with upstream changes. When your fork is ahead, select **Create merge request** to contribute your change back to the upstream project. Both operations previously required you to use the command line.
 
     See how many commits your fork is ahead (or behind) on your project's main page and at **Repository > Files**. If merge conflicts exist, the UI gives guidance on how to resolve them using Git from the command line.
@@ -89,7 +89,7 @@
   release: 16.0
 
 - name: Mirror specific branches only
-  description: | # Do not modify this line, instead modify the lines below.
+  description: |  # Do not modify this line, instead modify the lines below.
     Do you need to mirror a busy repository with many branches, but you only need a few of them? Limit the number of branches you mirror by creating a regular expression that matches only the branches you need.
 
     Previously, mirrors required you to mirror an entire repository, or all protected branches. This new flexibility can decrease the amount of data your mirrors push or pull, and keep sensitive branches out of public mirrors.
@@ -103,7 +103,7 @@
   release: 16.0
 
 - name: New Web IDE experience now generally available
-  description: | # Do not modify this line, instead modify the lines below.
+  description: |  # Do not modify this line, instead modify the lines below.
     Since its introduction, we've been iterating on the usability, performance, and stability of the Web IDE, which has enabled us to build features like remote development workspaces and code suggestions on a powerful foundation.
 
     We have received overwhelmingly positive feedback on the Web IDE Beta and starting in GitLab 16.0, we are making it the default multi-file code editor across GitLab.
@@ -117,7 +117,7 @@
   release: 16.0
 
 - name: Remote development workspaces available in Beta for public projects
-  description: | # Do not modify this line, instead modify the lines below.
+  description: |  # Do not modify this line, instead modify the lines below.
     Stop spending hours, or even days, troubleshooting your local development environment and interpreting inscrutable package installation errors. Now you can define a consistent, stable, and secure development environment in code and use it to create on-demand, remote development workspaces.
 
     These workspaces serve as personal, ephemeral development environments in the cloud. By eliminating the need for a local development environment, you can focus more on your code and less on your dependencies. Accelerate the process of onboarding to a new project and get up and running in minutes instead of days.
@@ -135,7 +135,7 @@
   release: 16.0
 
 - name: Security training with SecureFlag
-  description: | # Do not modify this line, instead modify the lines below.
+  description: |  # Do not modify this line, instead modify the lines below.
     As security shifts left, remediating security findings without guidance can be challenging. Developers need actionable advice so they can resolve vulnerabilities and continue building features. Contextual training that is relevant to the specific vulnerabilty detected was released in GitLab 14.9.
 
     In this release, we are adding an integration with SecureFlag based upon the CWE of the vulnerability. SecureFlag's training solution is unique in that the labs involve remediating the vulnerability in a live environment, which can be transferred to a real environment.
@@ -149,7 +149,7 @@
   release: 16.0
 
 - name: Token rotation API
-  description: | # Do not modify this line, instead modify the lines below.
+  description: |  # Do not modify this line, instead modify the lines below.
     As security shifts left, remediating security findings without guidance can be challenging. Developers need actionable advice so they can resolve vulnerabilities and continue building features. Contextual training that is relevant to the specific vulnerabilty detected was released in GitLab 14.9.
 
     In this release, we are adding an integration with SecureFlag based upon the CWE of the vulnerability. SecureFlag's training solution is unique in that the labs involve remediating the vulnerability in a live environment, which can be transferred to a real environment.
@@ -163,7 +163,7 @@
   release: 16.0
 
 - name: AI-powered workflow features
-  description: | # Do not modify this line, instead modify the lines below.
+  description: |  # Do not modify this line, instead modify the lines below.
     GitLab is evolving into an AI-powered DevSecOps platform. Over the past month, we've introduced 10 new experiments to improve efficiency and productivity across various GitLab features, all leveraging AI.
 
     These AI-powered workflows boost efficiency and reduce cycle times in every phase of the software development lifecycle.
@@ -179,7 +179,7 @@
   release: 16.0
 
 - name: Code Suggestions improvements
-  description: | # Do not modify this line, instead modify the lines below.
+  description: |  # Do not modify this line, instead modify the lines below.
     Code Suggestions is now available on GitLab.com for all users for free while the feature is in Beta. Teams can boost efficiency with the help of generative AI that suggests code while you're developing.
 
     We've extended language support from our initial six languages to now include 13 languages: C/C++, C#, Go, Java, JavaScript, Python, PHP, Ruby, Rust, Scala, Kotlin, and TypeScript.
@@ -197,7 +197,7 @@
   release: 16.0
 
 - name: Custom value streams for project-level value stream analytics
-  description: | # Do not modify this line, instead modify the lines below.
+  description: |  # Do not modify this line, instead modify the lines below.
     To improve the visibility into the complete workstream, we are adding to the project-level Value Stream Analytics (VSA) the [Overview stage](https://docs.gitlab.com/ee/user/group/value_stream_analytics) and the option to [create custom value streams](https://docs.gitlab.com/ee/user/group/value_stream_analytics/#create-a-value-stream-with-custom-stages).
 
     Until now, these features were only available at the group-level VSA only.

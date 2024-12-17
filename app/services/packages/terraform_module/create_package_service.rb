@@ -39,11 +39,18 @@ module Packages
       end
 
       def duplicates_not_allowed?
-        return true if package_settings_with_duplicates_allowed.blank?
+        ff_enabled = Feature.enabled?(:packages_allow_duplicate_exceptions, project.group)
 
         package_settings_with_duplicates_allowed.none? do |setting|
-          setting.terraform_module_duplicates_allowed ||
-            ::Gitlab::UntrustedRegexp.new("\\A#{setting.terraform_module_duplicate_exception_regex}\\z").match?(name)
+          exception_regex_matches = ::Gitlab::UntrustedRegexp
+            .new("\\A#{setting.terraform_module_duplicate_exception_regex}\\z")
+            .match?(name)
+
+          if ff_enabled
+            setting.terraform_module_duplicates_allowed ? !exception_regex_matches : exception_regex_matches
+          else
+            setting.terraform_module_duplicates_allowed || exception_regex_matches
+          end
         end
       end
 

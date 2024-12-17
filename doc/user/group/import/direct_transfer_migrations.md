@@ -62,6 +62,8 @@ GitLab 16.8.
 - You must have a role in the destination namespace that enables you to
   [create a subgroup](../../group/subgroups/index.md#create-a-subgroup) in that
   namespace.
+- To import project snippets, ensure snippets are
+  [enabled in the source project](../../snippets.md#change-default-visibility-of-snippets).
 - To import items stored in object storage, you must either:
   - [Configure `proxy_download`](../../../administration/object_storage.md#configure-the-common-parameters).
   - Ensure that the destination GitLab instance has access to the object storage of the source GitLab instance.
@@ -70,7 +72,7 @@ GitLab 16.8.
   - For [a whole instance](../../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
   - For [specific groups](../index.md#specify-who-can-add-projects-to-a-group).
 
-## User contributions and membership mapping
+## User contribution and membership mapping
 
 DETAILS:
 **Offering:** Self-managed, GitLab Dedicated
@@ -80,11 +82,11 @@ DETAILS:
 > - Full support for mapping inherited membership [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458834) in GitLab 17.1.
 > - Removed from GitLab.com direct transfer migrations in GitLab 17.5 in favor of [the alternative](../../project/import/index.md#user-contribution-and-membership-mapping).
 
-This method of user contributions and membership mapping is available for
+This method of user contribution and membership mapping is available for
 GitLab self-managed without enabled feature flags.
 For information on the other method available for GitLab self-managed
 with enabled feature flags and for GitLab.com,
-see [User contribution and membership mapping](../../project/import/index.md#user-contribution-and-membership-mapping).
+see [user contribution and membership mapping](../../project/import/index.md#user-contribution-and-membership-mapping).
 
 Users are never created during a migration. Instead, contributions and membership of users on the source instance are
 mapped to users on the destination instance. The type of mapping of a user's membership depends on the
@@ -145,7 +147,7 @@ After you have authorized access to the source GitLab instance, you are redirect
 
 If you do not want to import all user memberships from the source instance, ensure the **Import user memberships** checkbox is cleared. For example, the source instance might have 200 members, but you might want to import 50 members only. After the import completes, you can add more members to groups and projects.
 
-1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you proceed to import any of them. Group and project paths must conform to naming [limitations](../../reserved_names.md#limitations-on-usernames-project-and-group-names-and-slugs) and are normalized if necessary to avoid import failures.
+1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you proceed to import any of them. Group and project paths must conform to [naming rules](../../reserved_names.md#rules-for-usernames-project-and-group-names-and-slugs) and are normalized if necessary to avoid import failures.
 1. Next to the groups you want to import, select either:
    - **Import with projects**. If this is not available, see [prerequisites](#prerequisites).
    - **Import without projects**.
@@ -153,7 +155,7 @@ If you do not want to import all user memberships from the source instance, ensu
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
 
 WARNING:
-Importing groups with projects is in [beta](../../../policy/experiment-beta-support.md#beta). This feature is not ready for production use.
+Importing groups with projects is in [beta](../../../policy/development_stages_support.md#beta). This feature is not ready for production use.
 
 ## Group import history
 

@@ -74,26 +74,15 @@ module MergeRequests
         return unless issue.autoclose_by_merged_closing_merge_request?
 
         MergeRequests::CloseIssueWorker.perform_async(
-          *close_worker_arguments(issue, merge_request, skip_authorization)
+          project.id,
+          current_user.id,
+          issue.id,
+          merge_request.id,
+          { skip_authorization: skip_authorization }
         )
       else
         Issues::CloseService.new(container: project, current_user: current_user).execute(issue, commit: merge_request)
       end
-    end
-
-    def close_worker_arguments(issue, merge_request, skip_authorization)
-      worker_arguments = [
-        project.id,
-        current_user.id,
-        issue.id,
-        merge_request.id
-      ]
-
-      if Feature.enabled?(:mr_merge_skips_close_issue_authorization, project)
-        worker_arguments << { skip_authorization: skip_authorization }
-      end
-
-      worker_arguments
     end
 
     def delete_non_latest_diffs(merge_request)
@@ -114,7 +103,6 @@ module MergeRequests
     end
 
     def cancel_auto_merges_targeting_source_branch(merge_request)
-      return unless Feature.enabled?(:merge_when_checks_pass, merge_request.project)
       return unless params[:delete_source_branch]
 
       merge_request.source_project

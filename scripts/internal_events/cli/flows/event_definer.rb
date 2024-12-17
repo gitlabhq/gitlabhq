@@ -18,6 +18,7 @@ module InternalEventsCli
         'Context',
         'URL',
         'Group',
+        'Categories',
         'Tiers',
         'Save files'
       ].freeze
@@ -37,6 +38,7 @@ module InternalEventsCli
         prompt_for_context
         prompt_for_url
         prompt_for_product_group
+        prompt_for_product_categories
         prompt_for_tier
 
         outcome = create_event_file
@@ -48,7 +50,7 @@ module InternalEventsCli
       private
 
       def prompt_for_description
-        new_page!(1, 7, STEPS)
+        new_page!(on_step: 'Description', steps: STEPS)
         cli.say DESCRIPTION_INTRO
 
         event.description = cli.ask("Describe what the event tracks: #{input_required_text}", **input_opts) do |q|
@@ -59,7 +61,7 @@ module InternalEventsCli
       end
 
       def prompt_for_action
-        new_page!(2, 7, STEPS)
+        new_page!(on_step: 'Name', steps: STEPS)
         cli.say ACTION_INTRO
 
         event.action = cli.ask("Define the event name: #{input_required_text}", **input_opts) do |q|
@@ -74,11 +76,11 @@ module InternalEventsCli
       end
 
       def prompt_for_context
-        new_page!(3, 7, STEPS)
+        new_page!(on_step: 'Context', steps: STEPS)
         cli.say format_prompt("EVENT CONTEXT #{counter(0, 2)}")
         prompt_for_identifiers
 
-        new_page!(3, 7, STEPS) # Same "step" but increment counter
+        new_page!(on_step: 'Context', steps: STEPS) # Same "step" but increment counter
         cli.say format_prompt("EVENT CONTEXT #{counter(1, 2)}")
         prompt_for_additional_properties
       end
@@ -184,32 +186,44 @@ module InternalEventsCli
       end
 
       def prompt_for_url
-        new_page!(4, 7, STEPS)
+        new_page!(on_step: 'URL', steps: STEPS)
 
         event.introduced_by_url = prompt_for_text('Which MR URL will merge the event definition?')
       end
 
       def prompt_for_product_group
-        new_page!(5, 7, STEPS)
+        new_page!(on_step: 'Group', steps: STEPS)
 
         product_group = prompt_for_group_ownership('Which group will own the event?')
 
         event.product_group = product_group
       end
 
+      def prompt_for_product_categories
+        new_page!(on_step: 'Categories', steps: STEPS)
+        cli.say <<~TEXT
+          #{format_info('FEATURE CATEGORY')}
+          Refer to https://handbook.gitlab.com/handbook/product/categories for information on current product categories.
+
+        TEXT
+
+        event.product_categories = prompt_for_feature_categories(
+          'Which feature categories best fit this event?',
+          [event.product_group]
+        )
+      end
+
       def prompt_for_tier
-        new_page!(6, 7, STEPS)
+        new_page!(on_step: 'Tiers', steps: STEPS)
 
         event.tiers = prompt_for_array_selection(
           'Which tiers will the event be recorded on?',
           [%w[free premium ultimate], %w[premium ultimate], %w[ultimate]]
         )
-
-        event.distributions = event.tiers.include?('free') ? %w[ce ee] : %w[ee]
       end
 
       def create_event_file
-        new_page!(7, 7, STEPS)
+        new_page!(on_step: 'Save files', steps: STEPS)
 
         prompt_to_save_file(event.file_path, event.formatted_output)
       end

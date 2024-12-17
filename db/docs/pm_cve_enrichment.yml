@@ -11,3 +11,4 @@ milestone: '17.6'
 gitlab_schema: gitlab_pm
 exempt_from_sharding: true
 notes: Exempted because See discussion on keys for pm_ tables https://gitlab.com/gitlab-org/gitlab/-/issues/434988#note_1827421068
+table_size: small

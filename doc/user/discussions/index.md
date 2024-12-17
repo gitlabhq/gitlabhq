@@ -15,6 +15,7 @@ DETAILS:
 > - Paginated merge request discussions [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.2.
 > - Paginated merge request discussions [enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.3.
 > - Paginated merge request discussions [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/370075) in GitLab 15.8. Feature flag `paginated_mr_discussions` removed.
+> - Comments and threads on Wiki pages [introduced](https://gitlab.com/groups/gitlab-org/-/epics/14461) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `wiki_comments`. Disabled by default.
 
 GitLab encourages communication through comments, threads, and
 [suggesting changes for code](../project/merge_requests/reviews/suggestions.md).
@@ -32,15 +33,16 @@ which the user can accept through the user interface.
 
 You can create comments in places like:
 
-- Commit diffs
-- Commits
-- Designs
-- Epics
-- Issues
-- Merge requests
-- Snippets
-- Tasks
-- OKRs
+- Commit diffs.
+- Commits.
+- Designs.
+- Epics.
+- Issues.
+- Merge requests.
+- Snippets.
+- Tasks.
+- OKRs.
+- Wiki pages. The `wiki_comments` feature flag must be enabled. For more information, see the history.
 
 Each object can have as many as 5,000 comments.
 
@@ -321,9 +323,10 @@ such as move unresolved threads to an issue or prevent merging until all threads
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10344) in GitLab 16.0 as an [experiment](../../policy/experiment-beta-support.md#experiment).
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/454550) to GitLab Duo and promoted to [beta](../../policy/experiment-beta-support.md#beta) in GitLab 17.3 [with a flag](../../administration/feature_flags.md) named `summarize_notes_with_duo`. Disabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10344) in GitLab 16.0 as an [experiment](../../policy/development_stages_support.md#experiment).
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/454550) to GitLab Duo and promoted to [beta](../../policy/development_stages_support.md#beta) in GitLab 17.3 [with a flag](../../administration/feature_flags.md) named `summarize_notes_with_duo`. Disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162122) in GitLab 17.4.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
@@ -342,4 +345,4 @@ The comments in the issue are summarized in as many as 10 list items.
 You can ask follow up questions based on the response.
 
 **Data usage**: When you use this feature, the text of all comments on the issue are sent to
-the large [language model listed on the GitLab Duo page](../gitlab_duo/index.md#discussion-summary).
+the large language model.

@@ -1,6 +1,6 @@
 ---
-stage: Govern
-group: Threat Insights
+stage: Security Risk Management
+group: Security Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -20,6 +20,9 @@ including:
 - Linked issues
 - Actions log
 - Filename and line number of the vulnerability (if available)
+- Vulnerability risk data
+  - Severity - [Common Vulnerability Scoring System (CVSS)](severities.md)
+  - Likelihood of exploitation - [EPSS](risk_assessment_data.md#epss)
 
 If the scanner determined the vulnerability to be a false positive, an alert message is included at
 the top of the vulnerability's page.
@@ -34,9 +37,10 @@ the Vulnerability Report's [Activity filter](../vulnerability_report/index.md#ac
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**LLM:** Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
-> - Promoted to [beta](../../../policy/experiment-beta-support.md#beta) status in GitLab 16.2.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [experiment](../../../policy/development_stages_support.md#experiment) on GitLab.com.
+> - Promoted to [beta](../../../policy/development_stages_support.md#beta) status in GitLab 16.2.
 > - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/10642) in GitLab 17.2.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
@@ -94,8 +98,9 @@ DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Beta
+**LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [experiment](../../../policy/development_stages_support.md#experiment) on GitLab.com.
 > - Changed to beta in GitLab 17.3.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
@@ -129,7 +134,7 @@ To resolve the vulnerability:
 1. Select outside the filter field. The vulnerability severity totals and list of matching vulnerabilities are updated.
 1. Select the SAST vulnerability you want resolved.
    - A blue icon is shown next to vulnerabilities that support Vulnerability Resolution.
-1. In the upper-right corner, select **Resolve with AI**. If this project is a public project be aware that creating an MR will publicly expose the vulnerablity and offered resolution. To create the MR privately, please [create a private fork](../../../user/project/merge_requests/confidential.md), and repeat this process. 
+1. In the upper-right corner, select **Resolve with AI**. If this project is a public project be aware that creating an MR will publicly expose the vulnerablity and offered resolution. To create the MR privately, please [create a private fork](../../../user/project/merge_requests/confidential.md), and repeat this process.
 1. Add an additional commit to the MR. This forces a new pipeline to run.
 1. After the pipeline is complete, on the [pipeline security tab](../vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline), confirm that the vulnerability no longer appears.
 1. On the vulnerability report, [manually update the vulnerability](../vulnerability_report/index.md#change-status-of-vulnerabilities).
@@ -226,7 +231,8 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 17.6. This is a [beta](../../../policy/experiment-beta-support.md#beta) feature.
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14862) in GitLab 17.6 with a flag named [`resolve_vulnerability_in_mr`](https://gitlab.com/gitlab-org/gitlab/-/issues/482753). Disabled by default.
+> [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175150) in GitLab 17.7.
 
 Use GitLab Duo Vulnerability resolution to automatically create a merge request suggestion comment that
 resolves the vulnerability finding. By default, it is powered by the Anthropic [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.
@@ -238,8 +244,8 @@ To resolve the vulnerability finding:
 1. Select a merge request.
    - Vulnerability findings supported by Vulnerability Resolution are indicated by the tanuki AI icon (**{tanuki-ai}**).
 1. Select the supported findings to open the security finding dialog.
-1. In the lower-right corner, select **Resolve with AI**. 
- 
+1. In the lower-right corner, select **Resolve with AI**.
+
 A comment containing the AI remediation suggestions is opened in the merge request. Review the suggested changes, then apply the merge request suggestion according to your standard workflow.
 
 Provide feedback on this feature in [issue 476553](https://gitlab.com/gitlab-org/gitlab/-/issues/476553).
@@ -265,22 +271,13 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - Introduced in GitLab 17.3 with a flag. Disabled by default.
-> - Enabled on GitLab.com in GitLab 17.3.
-> - Enabled on self-managed and GitLab Dedicated in GitLab 17.4.
-> - Generally available in GitLab 17.4. Feature flag removed.
+For specific types of vulnerabilities, GitLab Advanced SAST provides [code flow](../sast/gitlab_advanced_sast.md#vulnerability-code-flow) information.
+A vulnerability's code flow is the path the data takes from the user input (source) to the vulnerable line of code (sink), through all assignments, manipulation, and sanitization.
 
-For some vulnerabilities detected by Advanced SAST, a **Code flow** tab is available. A
-vulnerability's code flow is the path the data takes from the user input (source) to the vulnerable
-line of code (sink), through all assignments, manipulation, and sanitization. This information helps
-you understand and evaluate the vulnerability's context, impact, and risk.
+For details on how to view a vulnerability's code flow, see
+[Vulnerability code flow](../sast/gitlab_advanced_sast.md#vulnerability-code-flow).
 
-The **Code flow** tab shows:
-
-- The steps from source to sink.
-- The relevant files, including code snippets.
-
-![A code flow of a Python application across two files](img/example_code_flow_of_python_applications_v17_3.png)
+![A code flow of a Python application across two files](img/code_flow_view_v17_7.png)
 
 ## Vulnerability status values
 

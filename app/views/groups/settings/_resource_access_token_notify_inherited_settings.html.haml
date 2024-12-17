@@ -1,0 +1,21 @@
+- if Feature.enabled?(:pat_expiry_inherited_members_notification, @group.root_ancestor)
+  - rat_setting_locked = cascading_namespace_setting_locked?(:resource_access_token_notify_inherited, @group)
+
+  %fieldset.form-group.gl-mb-3
+    = render 'shared/namespaces/cascading_settings/setting_label_fieldset', attribute: :resource_access_token_notify_inherited,
+        group: @group,
+        setting_locked: rat_setting_locked,
+        settings_path_helper: ->(locked_ancestor) { edit_group_path(locked_ancestor, anchor: 'js-permissions-settings') } do
+      = s_('Settings|Expiry notification emails about group and project access tokens within this group should be sent to:')
+
+    .gl-mt-3
+      = f.gitlab_ui_radio_component :resource_access_token_notify_inherited, true, s_('Settings|All direct and inherited members of the group or project'), radio_options: { disabled: rat_setting_locked }
+
+      = f.gitlab_ui_radio_component :resource_access_token_notify_inherited, false, s_('Settings|Only direct members of the group or project'), radio_options: { disabled: rat_setting_locked }
+
+  .form-group
+    = render 'shared/namespaces/cascading_settings/enforcement_checkbox',
+      attribute: :resource_access_token_notify_inherited,
+      group: @group,
+      form: f,
+      setting_locked: rat_setting_locked

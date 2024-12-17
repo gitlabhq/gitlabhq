@@ -70,8 +70,6 @@ module QA
 
           raise NotImplementedError unless resource.api_support?
 
-          resource.eager_load_api_client!
-
           do_fabricate!(resource: resource, prepare_block: prepare_block) do
             log_and_record_fabrication(:api, resource, parents, args) { resource.fabricate_via_api! }
           end
@@ -81,8 +79,6 @@ module QA
           options = args.extract_options!
           resource = options.fetch(:resource) { new }
           parents = options.fetch(:parents) { [] }
-
-          resource.eager_load_api_client!
 
           do_fabricate!(resource: resource, prepare_block: prepare_block) do
             log_and_record_fabrication(:api, resource, parents, args) { resource.remove_via_api! }
@@ -96,7 +92,7 @@ module QA
         # @return [void]
         def uses_admin_api_client
           define_method(:api_client) do
-            @api_client ||= Runtime::UserStore.admin_api_client
+            @api_client ||= Runtime::User::Store.admin_api_client
           end
           private :api_client
         end
@@ -338,6 +334,8 @@ module QA
           <#{self.class}> Attribute #{name.inspect} has both API response `#{api_value}` and a block. API response will be picked. Block will be ignored.
         MSG
       end
+
+      def api_delete_body; end
     end
   end
 end

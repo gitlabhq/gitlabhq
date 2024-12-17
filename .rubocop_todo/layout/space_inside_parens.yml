@@ -3,13 +3,11 @@
 Layout/SpaceInsideParens:
   Exclude:
     - 'spec/lib/banzai/filter/repository_link_filter_spec.rb'
-    - 'spec/lib/feature/gitaly_spec.rb'
     - 'spec/lib/gitlab/auth/o_auth/auth_hash_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/reports_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/trigger_spec.rb'
     - 'spec/lib/gitlab/ci/parsers/security/common_spec.rb'
     - 'spec/lib/gitlab/ci/parsers_spec.rb'
-    - 'spec/lib/gitlab/ci/pipeline/seed/build_spec.rb'
     - 'spec/lib/gitlab/ci/reports/test_suite_spec.rb'
     - 'spec/lib/gitlab/ci/templates/AWS/deploy_ecs_gitlab_ci_yaml_spec.rb'
     - 'spec/lib/gitlab/ci/templates/MATLAB_spec.rb'
@@ -24,7 +22,6 @@ Layout/SpaceInsideParens:
     - 'spec/lib/gitlab/ci/templates/terraform_latest_gitlab_ci_yaml_spec.rb'
     - 'spec/lib/gitlab/database/migrations/runner_spec.rb'
     - 'spec/lib/gitlab/database/reindexing/reindex_concurrently_spec.rb'
-    - 'spec/lib/gitlab/database_spec.rb'
     - 'spec/lib/gitlab/diff/highlight_cache_spec.rb'
     - 'spec/lib/gitlab/exclusive_lease_helpers_spec.rb'
     - 'spec/lib/gitlab/git/blob_spec.rb'
@@ -98,4 +95,3 @@ Layout/SpaceInsideParens:
     - 'spec/workers/pipeline_schedule_worker_spec.rb'
     - 'spec/workers/purge_dependency_proxy_cache_worker_spec.rb'
     - 'spec/workers/releases/manage_evidence_worker_spec.rb'
-    - 'spec/workers/run_pipeline_schedule_worker_spec.rb'

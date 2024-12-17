@@ -32,4 +32,18 @@ export default Code.extend({
       },
     };
   },
+
+  addCommands() {
+    return {
+      ...this.parent?.(),
+      setCode:
+        () =>
+        ({ chain }) =>
+          chain().unlinkReferencesInSelection().setMark(this.name).run(),
+      toggleCode:
+        () =>
+        ({ chain }) =>
+          chain().unlinkReferencesInSelection().toggleMark(this.name).run(),
+    };
+  },
 });

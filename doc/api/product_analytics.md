@@ -16,7 +16,7 @@ DETAILS:
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 > - `product_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/398653) by default in GitLab 16.11.
 > - Feature flag `product_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454059) in GitLab 17.1.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167296) to beta and feature flag `product_analytics_features` added in GitLab 17.5.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167296) to beta in GitLab 17.5 [with a flag](../administration/feature_flags.md) named `product_analytics_features`.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.

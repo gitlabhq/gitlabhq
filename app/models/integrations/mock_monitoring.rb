@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module Integrations
-  class MockMonitoring < BaseMonitoring
+  class MockMonitoring < Integration
+    include Base::Monitoring
+
     def self.title
       'Mock monitoring'
     end

@@ -10,3 +10,4 @@ milestone: '9.4'
 gitlab_schema: gitlab_ci
 sharding_key:
   group_id: namespaces
+table_size: small

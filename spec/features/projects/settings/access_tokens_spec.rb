@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Project > Settings > access tokens', :js, feature_category: :user_management do
   include Spec::Support::Helpers::ModalHelpers
+  include Features::AccessTokenHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:bot_user) { create(:user, :project_bot) }
@@ -82,6 +83,23 @@ RSpec.describe 'Project > Settings > access tokens', :js, feature_category: :use
         click_button 'Add new token'
         expect(page).to have_selector('#js-new-access-token-form')
       end
+    end
+  end
+
+  describe 'rotating tokens' do
+    let!(:resource_access_token) { create_resource_access_token }
+
+    it_behaves_like 'rotating token fails due to missing access rights', 'project' do
+      let_it_be(:resource) { project }
+    end
+
+    context 'when user is owner of project' do
+      before do
+        project.add_owner(user)
+      end
+
+      it_behaves_like 'rotating token succeeds', 'project'
+      it_behaves_like 'rotating already revoked token fails'
     end
   end
 

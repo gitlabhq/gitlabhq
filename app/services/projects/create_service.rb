@@ -75,7 +75,7 @@ module Projects
       @relations_block&.call(@project)
       yield(@project) if block_given?
 
-      validate_classification_label(@project, :external_authorization_classification_label)
+      validate_classification_label_param!(@project, :external_authorization_classification_label)
 
       # If the block added errors, don't try to save the project
       return @project if @project.errors.any?
@@ -92,7 +92,7 @@ module Projects
 
       @project
     rescue ActiveRecord::RecordInvalid => e
-      message = "Unable to save #{e.inspect}: #{e.record.errors.full_messages.join(", ")}"
+      message = "Unable to save #{e.inspect}: #{e.record.errors.full_messages.join(', ')}"
       fail(error: message)
     rescue ImportSourceDisabledError => e
       @project.errors.add(:import_source_disabled, e.message) if @project

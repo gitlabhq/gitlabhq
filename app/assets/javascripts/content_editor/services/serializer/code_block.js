@@ -1,3 +1,4 @@
+import { repeatCodeBackticks } from '~/lib/utils/text_markdown';
 import { preserveUnchanged } from '../serialization_helpers';
 
 const codeBlock = preserveUnchanged((state, node) => {
@@ -6,8 +7,7 @@ const codeBlock = preserveUnchanged((state, node) => {
   let { language } = node.attrs;
   if (language === 'plaintext') language = '';
 
-  const numBackticks = Math.max(2, node.textContent.match(/```+/g)?.[0]?.length || 0) + 1;
-  const backticks = state.repeat('`', numBackticks);
+  const backticks = repeatCodeBackticks(node.textContent);
   state.write(
     `${backticks}${
       (language || '') + (node.attrs.langParams ? `:${node.attrs.langParams}` : '')

@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlPagination, GlSearchBoxByType, GlTab, GlTabs } from '@gitlab/ui';
+import { GlBadge, GlPagination, GlSearchBoxByType, GlTab, GlTabs, GlLoadingIcon } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { s__, __ } from '~/locale';
 import { updateHistory, setUrlParams, queryToObject } from '~/lib/utils/url_utility';
@@ -21,7 +21,7 @@ import ConfirmRollbackModal from './confirm_rollback_modal.vue';
 import DeleteEnvironmentModal from './delete_environment_modal.vue';
 import CanaryUpdateModal from './canary_update_modal.vue';
 import EmptyState from './empty_state.vue';
-import EnviromentsAppSkeletonLoader from './environments_app_skeleton_loader.vue';
+import EnvironmentsAppSkeletonLoader from './environments_app_skeleton_loader.vue';
 
 export default {
   components: {
@@ -29,7 +29,7 @@ export default {
     CanaryUpdateModal,
     ConfirmRollbackModal,
     EmptyState,
-    EnviromentsAppSkeletonLoader,
+    EnvironmentsAppSkeletonLoader,
     EnvironmentFolder,
     EnableReviewAppModal,
     EnvironmentItem,
@@ -40,6 +40,7 @@ export default {
     GlSearchBoxByType,
     GlTab,
     GlTabs,
+    GlLoadingIcon,
   },
   apollo: {
     environmentApp: {
@@ -145,7 +146,10 @@ export default {
       return this.activeCount > 0 || this.stoppedCount > 0;
     },
     showContent() {
-      return !this.loading && (this.hasAnyEnvironment || this.hasSearch);
+      return !this.loading && this.showTabs;
+    },
+    showTabs() {
+      return this.hasAnyEnvironment || this.hasSearch;
     },
     addEnvironment() {
       if (!this.canCreateEnvironment) {
@@ -269,8 +273,7 @@ export default {
     <stop-environment-modal :environment="environmentToStop" graphql />
     <confirm-rollback-modal :environment="environmentToRollback" graphql />
     <canary-update-modal :environment="environmentToChangeCanary" :weight="weight" />
-    <enviroments-app-skeleton-loader v-if="loading" :i18n="$options.i18n" :search-value="search" />
-    <template v-if="showContent">
+    <template v-if="showTabs">
       <gl-tabs
         :action-secondary="openReviewAppModal"
         :action-primary="openCleanUpEnvsModal"
@@ -287,7 +290,8 @@ export default {
           <template #title>
             <span>{{ $options.i18n.active }}</span>
             <gl-badge class="gl-tab-counter-badge">
-              {{ activeCount }}
+              <gl-loading-icon v-if="loading" label="" variant="dots" :inline="true" />
+              <span v-else>{{ activeCount }}</span>
             </gl-badge>
           </template>
         </gl-tab>
@@ -297,8 +301,10 @@ export default {
         >
           <template #title>
             <span>{{ $options.i18n.stopped }}</span>
+
             <gl-badge class="gl-tab-counter-badge">
-              {{ stoppedCount }}
+              <gl-loading-icon v-if="loading" label="" variant="dots" :inline="true" />
+              <span v-else>{{ stoppedCount }}</span>
             </gl-badge>
           </template>
         </gl-tab>
@@ -307,24 +313,25 @@ export default {
         class="gl-mb-4"
         :value="search"
         :placeholder="$options.i18n.searchPlaceholder"
+        :is-loading="loading"
         @input="setSearch"
-      />
+    /></template>
+    <environments-app-skeleton-loader v-if="loading" />
+    <template v-else-if="showContent">
       <environment-folder
         v-for="folder in folders"
         :key="folder.name"
         class="gl-mb-3"
         :scope="scope"
         :search="search"
-        :nested-environment="folder"
-      />
+        :nested-environment="folder" />
       <environment-item
         v-for="environment in environments"
         :key="environment.name"
-        class="gl-mb-3 gl-border-1 gl-border-gray-100 gl-border-b-solid"
+        class="gl-mb-3 gl-border-1 gl-border-default gl-border-b-solid"
         :environment="environment.latest"
         @change="refetchEnvironments"
-      />
-    </template>
+    /></template>
     <empty-state
       v-if="showEmptyState"
       :help-path="helpPagePath"

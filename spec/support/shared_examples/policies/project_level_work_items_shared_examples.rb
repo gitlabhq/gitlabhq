@@ -35,6 +35,38 @@ RSpec.shared_examples 'checks abilities for project level work items' do
     )
   end
 
+  it 'checks planner abilities' do
+    # allowed
+    expect(permissions(planner, project_work_item)).to be_allowed(
+      :read_work_item, :read_issue, :read_note, :admin_work_item, :update_work_item, :admin_parent_link,
+      :set_work_item_metadata, :admin_work_item_link, :create_note
+    )
+    expect(permissions(planner, project_confidential_work_item)).to be_allowed(:read_work_item, :read_issue,
+      :read_note, :admin_work_item, :update_work_item, :admin_parent_link, :set_work_item_metadata,
+      :admin_work_item_link, :create_note
+    )
+
+    # disallowed
+    expect(permissions(planner, project_work_item)).to be_allowed(:delete_work_item)
+    expect(permissions(planner, project_confidential_work_item)).to be_allowed(:delete_work_item)
+  end
+
+  it 'checks group planner abilities' do
+    # allowed
+    expect(permissions(group_planner, project_work_item)).to be_allowed(
+      :read_work_item, :read_issue, :read_note, :admin_work_item, :update_work_item, :admin_parent_link,
+      :set_work_item_metadata, :admin_work_item_link, :create_note
+    )
+    expect(permissions(group_planner, project_confidential_work_item)).to be_allowed(:read_work_item,
+      :read_issue, :read_note, :admin_work_item, :update_work_item, :admin_parent_link, :set_work_item_metadata,
+      :admin_work_item_link, :create_note
+    )
+
+    # disallowed
+    expect(permissions(group_planner, project_work_item)).to be_allowed(:delete_work_item)
+    expect(permissions(group_planner, project_confidential_work_item)).to be_allowed(:delete_work_item)
+  end
+
   it 'checks reporter abilities' do
     # allowed
     expect(permissions(reporter, project_work_item)).to be_allowed(

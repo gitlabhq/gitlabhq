@@ -32,12 +32,8 @@ module AutoMerge
       end
     end
 
-    def available_for?(merge_request)
-      super do
-        next false if Feature.enabled?(:merge_when_checks_pass, merge_request.project)
-
-        merge_request.diff_head_pipeline_considered_in_progress?
-      end
+    def available_for?(_merge_request)
+      false
     end
 
     private

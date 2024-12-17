@@ -51,10 +51,10 @@ repository storage is either:
 ## Before deploying Gitaly Cluster
 
 Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
-Before deploying Gitaly Cluster, review:
+Before deploying Gitaly Cluster, see:
 
 - Existing [known issues](#known-issues).
-- [Snapshot limitations](#snapshot-backup-and-recovery-limitations).
+- [Snapshot backup and recovery](#snapshot-backup-and-recovery).
 - [Configuration guidance](configure_gitaly.md) and [Repository storage options](../repository_storage_paths.md) to make
   sure that Gitaly Cluster is the best setup for you.
 
@@ -77,7 +77,7 @@ the current status of these issues, refer to the referenced issues and epics.
 | Restoring a Gitaly Cluster node from a snapshot in a running cluster | Because the Gitaly Cluster runs with consistent state, introducing a single node that is behind results in the cluster not being able to reconcile the nodes data and other nodes data | Don't restore a single Gitaly Cluster node from a backup snapshot. If you must restore from backup:<br/><br/>1. [Shut down GitLab](../read_only_gitlab.md#shut-down-the-gitlab-ui).<br/>2. Snapshot all Gitaly Cluster nodes at the same time.<br/>3. Take a database dump of the Praefect database. |
 | Limitations when running in Kubernetes, Amazon ECS, or similar | Praefect (Gitaly Cluster) is not supported and Gitaly has known limitations. For more information, see [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127). | Use our [reference architectures](../reference_architectures/index.md). |
 
-### Snapshot backup and recovery limitations
+### Snapshot backup and recovery
 
 Gitaly Cluster does not support snapshot backups. Snapshot backups can cause issues where the Praefect database becomes
 out of sync with the disk storage. Because of how Praefect rebuilds the replication metadata of Gitaly disk information

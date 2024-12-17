@@ -313,7 +313,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
           end
         end
 
-        it 'sets MWPS to false for all merge requests' do
+        it 'sets auto merge to false for all merge requests' do
           MergeRequest.find_each do |merge_request|
             expect(merge_request.merge_when_pipeline_succeeds).to eq(false)
           end

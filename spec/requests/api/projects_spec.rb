@@ -2,50 +2,6 @@
 
 require 'spec_helper'
 
-RSpec.shared_examples 'languages and percentages JSON response' do
-  let(:expected_languages) { project.repository.languages.to_h { |language| language.values_at(:label, :value) } }
-
-  before do
-    allow(project.repository).to receive(:languages).and_return(
-      [{ value: 66.69, label: "Ruby", color: "#701516", highlight: "#701516" },
-       { value: 22.98, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
-       { value: 7.91, label: "HTML", color: "#e34c26", highlight: "#e34c26" },
-       { value: 2.42, label: "CoffeeScript", color: "#244776", highlight: "#244776" }]
-    )
-  end
-
-  context "when the languages haven't been detected yet" do
-    it 'returns expected language values', :aggregate_failures, :sidekiq_might_not_need_inline do
-      get api("/projects/#{project.id}/languages", user)
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response).to eq({})
-
-      get api("/projects/#{project.id}/languages", user)
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(Gitlab::Json.parse(response.body)).to eq(expected_languages)
-    end
-  end
-
-  context 'when the languages were detected before' do
-    before do
-      Projects::DetectRepositoryLanguagesService.new(project, project.first_owner).execute
-    end
-
-    it 'returns the detection from the database', :aggregate_failures do
-      # Allow this to happen once, so the expected languages can be determined
-      expect(project.repository).to receive(:languages).once
-
-      get api("/projects/#{project.id}/languages", user)
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response).to eq(expected_languages)
-      expect(json_response.count).to be > 1
-    end
-  end
-end
-
 RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and_projects do
   include ProjectForksHelper
   include WorkhorseHelpers
@@ -106,6 +62,50 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         lang_shares.each do |lang, share|
           create(:repository_language, project: proj, programming_language: lang, share: share)
         end
+      end
+    end
+  end
+
+  shared_examples 'languages and percentages JSON response' do
+    let(:expected_languages) { project.repository.languages.to_h { |language| language.values_at(:label, :value) } }
+
+    before do
+      allow(project.repository).to receive(:languages).and_return(
+        [{ value: 66.69, label: "Ruby", color: "#701516", highlight: "#701516" },
+         { value: 22.98, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
+         { value: 7.91, label: "HTML", color: "#e34c26", highlight: "#e34c26" },
+         { value: 2.42, label: "CoffeeScript", color: "#244776", highlight: "#244776" }]
+      )
+    end
+
+    context "when the languages haven't been detected yet" do
+      it 'returns expected language values', :aggregate_failures, :sidekiq_might_not_need_inline do
+        get api("/projects/#{project.id}/languages", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq({})
+
+        get api("/projects/#{project.id}/languages", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(Gitlab::Json.parse(response.body)).to eq(expected_languages)
+      end
+    end
+
+    context 'when the languages were detected before' do
+      before do
+        Projects::DetectRepositoryLanguagesService.new(project, project.first_owner).execute
+      end
+
+      it 'returns the detection from the database', :aggregate_failures do
+        # Allow this to happen once, so the expected languages can be determined
+        expect(project.repository).to receive(:languages).once
+
+        get api("/projects/#{project.id}/languages", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq(expected_languages)
+        expect(json_response.count).to be > 1
       end
     end
   end
@@ -4735,6 +4735,26 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
+
+      it 'updates ci_delete_pipelines_in_seconds' do
+        project_param = { ci_delete_pipelines_in_seconds: 1.week.to_i }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['ci_delete_pipelines_in_seconds']).to eq(1.week.to_i)
+      end
+
+      it 'clears ci_delete_pipelines_in_seconds' do
+        project3.update!(ci_delete_pipelines_in_seconds: 1.week.to_i)
+
+        project_param = { ci_delete_pipelines_in_seconds: nil }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to match(a_hash_including('ci_delete_pipelines_in_seconds' => nil))
+      end
     end
 
     context 'when authenticated as project maintainer' do
@@ -4840,6 +4860,25 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('container_expiration_policy_attributes[keep_n] is invalid')
+      end
+
+      it "doesn't update ci_delete_pipelines_in_seconds" do
+        project_param = { ci_delete_pipelines_in_seconds: 1.week.to_i }
+
+        put api("/projects/#{project3.id}", user4), params: project_param
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(project3.reload.ci_delete_pipelines_in_seconds).to be_nil
+      end
+
+      it "doesn't remove ci_delete_pipelines_in_seconds" do
+        project3.update!(ci_delete_pipelines_in_seconds: 1.week.to_i)
+        project_param = { ci_delete_pipelines_in_seconds: nil }
+
+        put api("/projects/#{project3.id}", user4), params: project_param
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(project3.reload.ci_delete_pipelines_in_seconds).to eq(1.week)
       end
     end
 

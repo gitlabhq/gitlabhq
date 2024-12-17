@@ -37,7 +37,7 @@ describe('DeleteWikiModal', () => {
   const findCloneButtonTrigger = () => wrapper.findComponent(GlButton);
   const findCloneListTrigger = () => wrapper.findComponent(GlDisclosureDropdownItem);
 
-  it('renders a delete modal', () => {
+  it('renders a modal', () => {
     const modalId = 'clone-wiki-modal';
 
     createComponent();
@@ -49,13 +49,7 @@ describe('DeleteWikiModal', () => {
   it('shows correct title', () => {
     createComponent();
 
-    expect(findModalTitle().text()).toBe('Step 1: Clone repository');
-  });
-
-  it('shows correct content', () => {
-    createComponent();
-
-    expect(findCloneModal().text()).toContain('Step 2: Install and start Gollum');
+    expect(findModalTitle().text()).toBe('Clone repository');
   });
 
   describe('setting `showAsDropdownItem`', () => {

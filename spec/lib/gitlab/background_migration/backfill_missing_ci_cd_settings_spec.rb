@@ -3,16 +3,33 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillMissingCiCdSettings, schema: 20230721095222, feature_category: :source_code_management do
+  let(:organizations_table) { table(:organizations) }
   let(:projects_table) { table(:projects) }
   let(:namespaces_table) { table(:namespaces) }
   let(:ci_cd_settings_table) { table(:project_ci_cd_settings) }
 
-  let(:namespace_1) { namespaces_table.create!(name: 'namespace', path: 'namespace-path-1') }
+  let(:organization) { organizations_table.create!(name: 'organization', path: 'organization') }
 
-  let(:project_namespace_2) { namespaces_table.create!(name: 'namespace', path: 'namespace-path-2', type: 'Project') }
-  let(:project_namespace_3) { namespaces_table.create!(name: 'namespace', path: 'namespace-path-3', type: 'Project') }
-  let(:project_namespace_4) { namespaces_table.create!(name: 'namespace', path: 'namespace-path-4', type: 'Project') }
-  let(:project_namespace_5) { namespaces_table.create!(name: 'namespace', path: 'namespace-path-4', type: 'Project') }
+  let(:namespace_1) do
+    namespaces_table.create!(name: 'namespace', path: 'namespace-path-1', organization_id: organization.id)
+  end
+
+  let(:project_namespace_2) do
+    namespaces_table.create!(name: 'np', path: 'np-path-2', type: 'Project', organization_id: organization.id)
+  end
+
+  let(:project_namespace_3) do
+    namespaces_table.create!(name: 'np', path: 'np-path-3', type: 'Project', organization_id: organization.id)
+  end
+
+  let(:project_namespace_4) do
+    namespaces_table.create!(name: 'np', path: 'np-path-4', type: 'Project', organization_id: organization.id)
+  end
+
+  let(:project_namespace_5) do
+    namespaces_table.create!(name: 'np', path: 'np-path-5', type: 'Project', organization_id: organization.id)
+  end
+
   let!(:project_1) do
     projects_table
     .create!(

@@ -30,7 +30,17 @@ class UsersController < ApplicationController
   before_action only: [:exists] do
     check_rate_limit!(:username_exists, scope: request.ip)
   end
-  before_action only: [:show, :activity, :groups, :projects, :contributed, :starred, :snippets, :followers, :following] do
+  before_action only: [
+    :show,
+    :activity,
+    :groups,
+    :projects,
+    :contributed,
+    :starred,
+    :snippets,
+    :followers,
+    :following
+  ] do
     push_frontend_feature_flag(:profile_tabs_vue, current_user)
   end
 
@@ -153,7 +163,15 @@ class UsersController < ApplicationController
       format.json do
         projects = yield
 
-        pager_json("shared/projects/_list", projects.count, projects: projects, skip_pagination: skip_pagination, skip_namespace: skip_namespace, compact_mode: compact_mode, card_mode: card_mode)
+        pager_json(
+          "shared/projects/_list",
+          projects.count,
+          projects: projects,
+          skip_pagination: skip_pagination,
+          skip_namespace: skip_namespace,
+          compact_mode: compact_mode,
+          card_mode: card_mode
+        )
       end
     end
   end

@@ -1,5 +1,4 @@
 import {
-  formatRelevantDigits,
   bytesToKiB,
   bytesToMiB,
   bytesToGiB,
@@ -13,51 +12,11 @@ import {
   formattedChangeInPercent,
   isNumeric,
   isPositiveInteger,
+  splitDecimalNumber,
+  countFloatingPointDigits,
 } from '~/lib/utils/number_utils';
 
 describe('Number Utils', () => {
-  describe('formatRelevantDigits', () => {
-    it('returns an empty string when the number is NaN', () => {
-      expect(formatRelevantDigits('fail')).toBe('');
-    });
-
-    it('returns 4 decimals when there is 4 plus digits to the left', () => {
-      const formattedNumber = formatRelevantDigits('1000.1234567');
-      const rightFromDecimal = formattedNumber.split('.')[1];
-      const leftFromDecimal = formattedNumber.split('.')[0];
-
-      expect(rightFromDecimal.length).toBe(4);
-      expect(leftFromDecimal.length).toBe(4);
-    });
-
-    it('returns 3 decimals when there is 1 digit to the left', () => {
-      const formattedNumber = formatRelevantDigits('0.1234567');
-      const rightFromDecimal = formattedNumber.split('.')[1];
-      const leftFromDecimal = formattedNumber.split('.')[0];
-
-      expect(rightFromDecimal.length).toBe(3);
-      expect(leftFromDecimal.length).toBe(1);
-    });
-
-    it('returns 2 decimals when there is 2 digits to the left', () => {
-      const formattedNumber = formatRelevantDigits('10.1234567');
-      const rightFromDecimal = formattedNumber.split('.')[1];
-      const leftFromDecimal = formattedNumber.split('.')[0];
-
-      expect(rightFromDecimal.length).toBe(2);
-      expect(leftFromDecimal.length).toBe(2);
-    });
-
-    it('returns 1 decimal when there is 3 digits to the left', () => {
-      const formattedNumber = formatRelevantDigits('100.1234567');
-      const rightFromDecimal = formattedNumber.split('.')[1];
-      const leftFromDecimal = formattedNumber.split('.')[0];
-
-      expect(rightFromDecimal.length).toBe(1);
-      expect(leftFromDecimal.length).toBe(3);
-    });
-  });
-
   describe('bytesToKiB', () => {
     it('calculates KiB for the given bytes', () => {
       expect(bytesToKiB(1024)).toEqual(1);
@@ -262,6 +221,37 @@ describe('Number Utils', () => {
   `('isPositiveInteger', ({ value, outcome }) => {
     it(`when called with ${typeof value} ${value} it returns ${outcome}`, () => {
       expect(isPositiveInteger(value)).toBe(outcome);
+    });
+  });
+
+  describe('splitDecimalNumber', () => {
+    it.each`
+      value          | integer   | decimal
+      ${null}        | ${null}   | ${null}
+      ${0}           | ${'0'}    | ${'0'}
+      ${'1.0'}       | ${'1'}    | ${'0'}
+      ${'1024.1293'} | ${'1024'} | ${'1293'}
+    `(
+      'when called with $value it returns integer=$integer and decimal=$decimal',
+      ({ value, integer, decimal }) => {
+        expect(splitDecimalNumber(value)).toEqual({ integer, decimal });
+      },
+    );
+  });
+
+  describe('countFloatingPointDigits', () => {
+    it.each`
+      value          | digits
+      ${null}        | ${0}
+      ${0}           | ${0}
+      ${'1.0'}       | ${1}
+      ${'5.3'}       | ${1}
+      ${'3.20'}      | ${2}
+      ${'3.04'}      | ${2}
+      ${'14.123'}    | ${3}
+      ${'1024.1293'} | ${4}
+    `('when called with $value it returns $digits', ({ value, digits }) => {
+      expect(countFloatingPointDigits(value)).toBe(digits);
     });
   });
 });

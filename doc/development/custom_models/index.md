@@ -15,7 +15,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
    Feature.enable(:ai_custom_model)
    ```
 
-1. For AI Gateway:
+1. For AI gateway:
 
 - Set `AIGW_CUSTOM_MODELS__ENABLED=True`
 - Set `AIGW_AUTH__BYPASS_EXTERNAL=False` or `AIGW_GITLAB_URL=<your-gitlab-instance>`
@@ -31,7 +31,7 @@ AI-powered features are now powered by self-hosted models.
 
 ## Configure features to use AI vendor models
 
-After adding [support](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164924) for configuring features to either use self-hosted models for AI Vendor, setting `CLOUD_CONNECTOR_SELF_SIGN_TOKENS` is no longer necessary for the customers. But it is harder for developers to configure the features to use AI vendored because we still want to send all requests to the local AI Gateway instead of Cloud Connector.
+After adding [support](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164924) for configuring features to either use self-hosted models for AI Vendor, setting `CLOUD_CONNECTOR_SELF_SIGN_TOKENS` is no longer necessary for the customers. But it is harder for developers to configure the features to use AI vendored because we still want to send all requests to the local AI gateway instead of Cloud Connector.
 
 Setting [`CLOUD_CONNECTOR_BASE_URL`](https://gitlab.com/gitlab-org/gitlab/-/blob/1452de8cde035bb5eba53ba2a2903c28fc237455/config/initializers/1_settings.rb#L1028) is not sufficient because we [add](https://gitlab.com/gitlab-org/gitlab/-/blob/1452de8cde035bb5eba53ba2a2903c28fc237455/ee/lib/gitlab/ai_gateway.rb#L14) `/ai` suffix to it.
 
@@ -48,11 +48,11 @@ Ai::FeatureSetting.find_by(feature: :duo_chat).destroy!
 
 To comprehensively test that a feature using Custom Models works as expected, you must write `system` specs.
 
-This is required because, unlike `unit` tests, `system` specs invoke all the components involved in the custom models stack. For example, the Puma, Workhorse, AI Gateway + LLM Mock server.
+This is required because, unlike `unit` tests, `system` specs invoke all the components involved in the custom models stack. For example, the Puma, Workhorse, AI gateway + LLM Mock server.
 
 To write a new `system` test and for it to run successfully, there are the following prerequisites:
 
-- AI Gateway must be running (usually on port `5052`), and you must configure the environment variable `AI_GATEWAY_URL`:
+- AI gateway must be running (usually on port `5052`), and you must configure the environment variable `AI_GATEWAY_URL`:
 
   ```shell
   export AI_GATEWAY_URL="http://localhost:5052"
@@ -83,7 +83,7 @@ For an example, see [`ee/spec/features/custom_models/code_suggestions_spec.rb`](
 
 ### Testing On CI
 
-On CI, AI Gateway and LiteLLM proxy are already configured to run for all tests tagged with `requires_custom_models_setup`.
+On CI, AI gateway and LiteLLM proxy are already configured to run for all tests tagged with `requires_custom_models_setup`.
 
 <!-- markdownlint-disable proper-names -->
 <!-- vale gitlab_base.Substitutions = NO -->

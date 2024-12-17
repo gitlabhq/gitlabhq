@@ -17,6 +17,8 @@ RSpec.describe Emails::PagesDomains do
     it_behaves_like 'an email sent from GitLab'
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like 'a user cannot unsubscribe through footer link'
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
 
     it 'has the expected content' do
       aggregate_failures do
@@ -65,7 +67,6 @@ RSpec.describe Emails::PagesDomains do
     subject { Notify.pages_domain_enabled_email(domain, user) }
 
     it_behaves_like 'a pages domain verification email'
-
     it { is_expected.to have_body_text 'has been enabled' }
   end
 

@@ -1140,4 +1140,61 @@ RSpec.describe ApplicationController, feature_category: :shared do
       end
     end
   end
+
+  describe '#after_sign_in_path_for' do
+    subject(:get_index) { get :index }
+
+    let_it_be(:user) { create(:user) }
+
+    controller(described_class) do
+      skip_before_action :authenticate_user!
+
+      def index
+        resource = User.last
+        redirect_to after_sign_in_path_for(resource)
+      end
+    end
+
+    it 'redirects to root_path by default' do
+      get_index
+
+      expect(response).to redirect_to(root_path)
+    end
+
+    context 'when resource is nil' do
+      before do
+        allow(User).to receive(:last).and_return(nil)
+      end
+
+      it 'redirects to root_path without raising error' do
+        get_index
+
+        expect(response).to redirect_to(root_path)
+      end
+    end
+
+    context 'when user has stored location to route to' do
+      before do
+        controller.send(:store_location_for, user, user_settings_profile_path)
+      end
+
+      it 'redirects to root_path by default' do
+        get_index
+
+        expect(response).to redirect_to(user_settings_profile_path)
+      end
+    end
+
+    context 'when a redirect location is stored' do
+      before do
+        controller.send(:store_location_for, :redirect, user_settings_profile_path)
+      end
+
+      it 'redirects to root_path by default' do
+        get_index
+
+        expect(response).to redirect_to(user_settings_profile_path)
+      end
+    end
+  end
 end

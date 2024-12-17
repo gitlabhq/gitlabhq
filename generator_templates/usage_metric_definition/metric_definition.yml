@@ -11,7 +11,5 @@ data_source:
 data_category: optional
 instrumentation_class: <%= class_name %>
 performance_indicator_type: []
-distribution:
-<%= distribution %>
 tier:
 <%= tier %>

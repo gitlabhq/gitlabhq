@@ -1,5 +1,6 @@
-import { GlIcon, GlFormInput, GlCollapsibleListbox } from '@gitlab/ui';
+import { GlFormInput, GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import AlertMappingBuilder, { i18n } from '~/alerts_settings/components/alert_mapping_builder.vue';
 import * as transformationUtils from '~/alerts_settings/utils/mapping_transformations';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
@@ -15,6 +16,9 @@ describe('AlertMappingBuilder', () => {
         parsedPayload: parsedMapping.payloadAlertFields,
         savedMapping: parsedMapping.payloadAttributeMappings,
         alertFields,
+      },
+      stubs: {
+        HelpIcon,
       },
     });
   }
@@ -35,7 +39,7 @@ describe('AlertMappingBuilder', () => {
     expect(findColumnInRow(0, 2).text()).toContain(i18n.columns.payloadKeyTitle);
     expect(findColumnInRow(0, 3).text()).toContain(i18n.columns.fallbackKeyTitle);
 
-    const fallbackColumnIcon = findColumnInRow(0, 3).findComponent(GlIcon);
+    const fallbackColumnIcon = findColumnInRow(0, 3).findComponent(HelpIcon);
     expect(fallbackColumnIcon.exists()).toBe(true);
     expect(fallbackColumnIcon.attributes('name')).toBe('question-o');
     expect(fallbackColumnIcon.attributes('title')).toBe(i18n.fallbackTooltip);

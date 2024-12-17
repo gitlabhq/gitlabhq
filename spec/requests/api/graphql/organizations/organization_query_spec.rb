@@ -22,6 +22,7 @@ RSpec.describe 'getting organization information', feature_category: :cell do
 
   let_it_be(:organization_owner) { create(:organization_owner) }
   let_it_be(:organization) { organization_owner.organization }
+  let_it_be(:default_organization) { create(:organization, :default) }
   let_it_be(:user) { organization_owner.user }
   let_it_be(:project) { create(:project, organization: organization) { |p| p.add_developer(user) } }
   let_it_be(:other_group) do

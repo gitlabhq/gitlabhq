@@ -14,8 +14,10 @@ module QA
 
           @test_mapping = Hash.new { |hsh, key| hsh[key] = [] }
           @logger = Runtime::Logger.logger
-          @headers_access_token = { "PRIVATE-TOKEN" => Runtime::Env.admin_personal_access_token }
           @cov_api_endpoint = "#{Runtime::Scenario.gitlab_address}/api/v4/internal/coverage"
+          @headers_access_token = {
+            "PRIVATE-TOKEN" => Runtime::User::Data.admin_api_token || Runtime::User::Data::DEFAULT_ADMIN_API_TOKEN
+          }
         end
 
         ::RSpec::Core::Formatters.register(
@@ -55,7 +57,7 @@ module QA
           return if example_notification.example.metadata[:skip] || example_failed?(example_notification)
 
           response = nil
-          QA::Support::Retrier.retry_until(max_attempts: 10, sleep_interval: 2) do
+          QA::Support::Retrier.retry_until(max_attempts: 1, sleep_interval: 2) do
             response = get(cov_api_endpoint, headers: headers_access_token)
             coverage = JSON.parse(response.body)
             next true if response.code == 200 && coverage.any?

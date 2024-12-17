@@ -597,7 +597,7 @@
       height: $sidebar-toggle-height;
       margin-top: 0;
       margin-left: 0;
-      border-bottom: 1px solid $border-color;
+      border-bottom: 1px solid $border-color !important;
       border-radius: 0;
     }
 
@@ -774,7 +774,7 @@
 .reviewer-merge-icon,
 .assignee .merge-icon,
 .reviewer .merge-icon {
-  color: $orange-400;
+  color: var(--gl-status-warning-icon-color);
   position: absolute;
   bottom: -3px;
   right: -3px;
@@ -831,17 +831,5 @@
 
   .compare-display-container {
     font-size: 13px;
-  }
-}
-
-@include media-breakpoint-down(sm) {
-  // Overriding the following rule with the negative margin
-  // https://gitlab.com/gitlab-org/gitlab/-/blob/146c43c931c3743a140529307aea616e4aa9ff21/app/assets/stylesheets/framework/sidebar.scss#L1-5
-  .container-fluid {
-    .issuable-list,
-    .issues-filters,
-    .epics-filters {
-      margin: 0 (-$gl-padding);
-    }
   }
 }

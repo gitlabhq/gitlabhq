@@ -57,7 +57,7 @@ module Gitlab
                   script: echo 'hello'
                 job2:
                   run:
-                    - name: 'Test run'
+                    - name: test_run
                       script: echo run step
               YAML
             end

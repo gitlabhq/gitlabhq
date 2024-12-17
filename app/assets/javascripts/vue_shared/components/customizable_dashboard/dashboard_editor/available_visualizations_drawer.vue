@@ -153,7 +153,7 @@ export default {
 
     <div v-else>
       <div v-for="(category, key) in filteredCategorizedVisualizations" :key="key">
-        <div data-testid="category-title" class="gl-mb-4 gl-font-bold gl-text-gray-900">
+        <div data-testid="category-title" class="gl-mb-4 gl-font-bold gl-text-default">
           {{ category.title }}
         </div>
         <ul class="gl-mb-6 gl-list-none gl-p-0">

@@ -50,6 +50,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    isSidebarOpen: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -328,7 +333,7 @@ export default {
         :notes="discussionStartingNotes"
         :current-comment-form="currentCommentForm"
         :disable-commenting="!isLoggedIn || isDraggingDesign || disableCommenting"
-        :disable-notes="false"
+        :disable-notes="!isSidebarOpen"
         :resolved-discussions-expanded="resolvedDiscussionsExpanded"
         @openCommentForm="openCommentForm"
         @closeCommentForm="closeCommentForm"

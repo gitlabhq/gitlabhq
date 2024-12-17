@@ -5,7 +5,7 @@
   reporter: thiagocsf
   stage: secure
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/438123
-  body: | # Do not modify this line, instead modify the lines below.
+  body: |  # Do not modify this line, instead modify the lines below.
     The Secure stage will be bumping the major versions of its analyzers in tandem with the GitLab
     17.0 release.
 
@@ -28,6 +28,7 @@
     - DAST: version 4
     - DAST API: version 3
     - Fuzz API: version 3
+    - IaC Scanning: version 4
     - Secret Detection: version 5
     - Static Application Security Testing (SAST): version 4 of [all analyzers](https://docs.gitlab.com/ee/user/application_security/sast/analyzers/)
       - `brakeman`

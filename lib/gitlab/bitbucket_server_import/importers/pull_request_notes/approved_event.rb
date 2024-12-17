@@ -15,8 +15,11 @@ module Gitlab
               event_id: approved_event[:id]
             )
 
-            user_id = if Feature.enabled?(:bitbucket_server_user_mapping_by_username, project, type: :ops)
-                        user_finder.find_user_id(by: :username, value: approved_event[:approver_username])
+            user_id = if user_mapping_enabled?(project)
+                        user_finder.uid(
+                          username: approved_event[:approver_username],
+                          display_name: approved_event[:approver_name]
+                        )
                       else
                         user_finder.find_user_id(by: :email, value: approved_event[:approver_email])
                       end
@@ -34,8 +37,12 @@ module Gitlab
 
             submitted_at = approved_event[:created_at] || merge_request[:updated_at]
 
-            create_approval!(project.id, merge_request.id, user_id, submitted_at)
-            create_reviewer!(merge_request.id, user_id, submitted_at)
+            approval, approval_note = create_approval!(project.id, merge_request.id, user_id, submitted_at)
+            push_reference(project, approval, :user_id, approved_event[:approver_username])
+            push_reference(project, approval_note, :author_id, approved_event[:approver_username])
+
+            reviewer = create_reviewer!(merge_request.id, user_id, submitted_at)
+            push_reference(project, reviewer, :user_id, approved_event[:approver_username]) if reviewer
 
             log_info(
               import_stage: 'import_approved_event',

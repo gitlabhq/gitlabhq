@@ -47,8 +47,14 @@ module Gitlab
           @diffs ||= compare.diffs(max_files: 30, max_lines: 5000, expanded: true).diff_files
         end
 
+        def changed_files
+          return unless compare
+
+          @changed_files ||= compare.changed_paths
+        end
+
         def diffs_count
-          diffs&.size
+          changed_files&.size
         end
 
         def compare

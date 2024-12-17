@@ -123,7 +123,6 @@ RSpec.describe Gitlab::Database::HealthStatus, feature_category: :database do
           Gitlab::Database::HealthStatus::Context.new(
             deferred_worker_health_checker,
             ActiveRecord::Base.connection,
-            :gitlab_main,
             [:users]
           )
         end

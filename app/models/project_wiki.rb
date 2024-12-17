@@ -29,7 +29,7 @@ class ProjectWiki < Wiki
   override :after_post_receive
   def after_post_receive
     # Update storage statistics
-    ProjectCacheWorker.perform_async(project.id, [], [:wiki_size])
+    ProjectCacheWorker.perform_async(project.id, [], %w[wiki_size])
 
     # This call is repeated for post-receive, to make sure we're updating
     # the activity columns for Git pushes as well.

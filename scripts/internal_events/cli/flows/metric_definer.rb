@@ -19,6 +19,7 @@ module InternalEventsCli
         'Descriptions',
         'Copy event',
         'Group',
+        'Categories',
         'URL',
         'Tiers',
         'Save files'
@@ -47,6 +48,7 @@ module InternalEventsCli
         prompt_for_descriptions
         defaults = prompt_for_copying_event_properties
         prompt_for_product_group(defaults)
+        prompt_for_product_categories(defaults)
         prompt_for_url(defaults)
         prompt_for_tier(defaults)
         outcomes = create_metric_files
@@ -70,7 +72,7 @@ module InternalEventsCli
       def prompt_for_metric_type
         return if @selected_event_paths.any?
 
-        new_page!(1, 9, STEPS)
+        new_page!(on_step: 'Type', steps: STEPS)
 
         cli.select("Which best describes what the metric should track?", **select_opts) do |menu|
           menu.enum "."
@@ -87,7 +89,7 @@ module InternalEventsCli
       def prompt_for_events(type)
         return if @selected_event_paths.any?
 
-        new_page!(2, 9, STEPS)
+        new_page!(on_step: 'Events', steps: STEPS)
 
         case type
         when :event_metric
@@ -124,7 +126,7 @@ module InternalEventsCli
           return
         end
 
-        new_page!(3, 9, STEPS)
+        new_page!(on_step: 'Scope', steps: STEPS)
         cli.say format_info('SELECTED EVENTS')
         cli.say selected_events_filter_options.join
         cli.say "\n"
@@ -137,6 +139,7 @@ module InternalEventsCli
           per_page: 20,
           &disabled_format_callback
         )
+        @metrics = reduce_metrics_by_time_frame(@metrics)
 
         assign_shared_attrs(:actions, :milestone) do
           {
@@ -190,7 +193,7 @@ module InternalEventsCli
 
         @metrics.each_with_index do |metric, idx|
           if idx == 0 || separate_page_per_metric
-            new_page!(4, 9, STEPS)
+            new_page!(on_step: 'Descriptions', steps: STEPS)
 
             cli.say DESCRIPTION_INTRO
             cli.say selected_event_descriptions.join
@@ -219,8 +222,21 @@ module InternalEventsCli
       def file_saved_context_message(attributes)
         format_prefix "  ", <<~TEXT.chomp
           - Visit #{format_info('https://metrics.gitlab.com')} to find dashboard links for this metric
-          - Metric trend dashboard: #{format_info(metric_trend_path(attributes['key_path']))}
+          #{metric_dashboard_links(attributes)}
         TEXT
+      end
+
+      def metric_dashboard_links(attributes)
+        time_frames = attributes['time_frame']
+        unless time_frames.is_a?(Array)
+          return "- Metric trend dashboard: #{format_info(metric_trend_path(attributes['key_path']))}"
+        end
+
+        dashboards = time_frames.map do |time_frame|
+          key_path = TimeFramedKeyPath.build(attributes['key_path'], time_frame)
+          "  - #{format_info(metric_trend_path(key_path))}"
+        end
+        ["- Metric trend dashboards:", *dashboards].join("\n")
       end
 
       # Check existing event files for attributes to copy over
@@ -232,7 +248,7 @@ module InternalEventsCli
 
         return shared_values if defaults.none?
 
-        new_page!(5, 9, STEPS)
+        new_page!(on_step: 'Copy event', steps: STEPS)
 
         cli.say <<~TEXT
           #{format_info('Convenient! We can copy these attributes from the event definition(s):')}
@@ -253,15 +269,37 @@ module InternalEventsCli
 
       def prompt_for_product_group(defaults)
         assign_shared_attr(:product_group) do
-          new_page!(6, 9, STEPS)
+          new_page!(on_step: 'Group', steps: STEPS)
 
           prompt_for_group_ownership('Which group owns the metric?', defaults)
         end
       end
 
+      def prompt_for_product_categories(defaults)
+        assign_shared_attr(:product_categories) do
+          new_page!(on_step: 'Categories', steps: STEPS)
+          cli.say <<~TEXT
+            #{format_info('FEATURE CATEGORY')}
+            Refer to https://handbook.gitlab.com/handbook/product/categories for information on current product categories.
+
+          TEXT
+
+          potential_groups = [
+            *@metrics.map(&:product_group),
+            *selected_events.map(&:product_group),
+            defaults[:product_group]
+          ]
+          prompt_for_feature_categories(
+            'Which feature categories best fit this metric?',
+            potential_groups,
+            defaults[:product_categories]
+          )
+        end
+      end
+
       def prompt_for_url(defaults)
         assign_shared_attr(:introduced_by_url) do
-          new_page!(7, 9, STEPS)
+          new_page!(on_step: 'URL', steps: STEPS)
 
           prompt_for_text(
             'Which MR URL introduced the metric?',
@@ -271,26 +309,20 @@ module InternalEventsCli
       end
 
       def prompt_for_tier(defaults)
-        assign_shared_attr(:tier) do
-          new_page!(8, 9, STEPS)
+        assign_shared_attr(:tiers) do
+          new_page!(on_step: 'Tiers', steps: STEPS)
 
           prompt_for_array_selection(
             'Which tiers will the metric be reported from?',
             [%w[free premium ultimate], %w[premium ultimate], %w[ultimate]],
-            defaults[:tier]
+            defaults[:tiers]
           )
-        end
-
-        assign_shared_attr(:tiers) { |metric| [*metric.tier] }
-
-        assign_shared_attr(:distribution) do |metric|
-          metric.tier.include?('free') ? %w[ce ee] : %w[ee]
         end
       end
 
       def create_metric_files
         @metrics.map.with_index do |metric, idx|
-          new_page!(9, 9, STEPS) # Repeat the same step number but increment metric counter
+          new_page!(on_step: 'Save files', steps: STEPS) # Repeat the same step but increment metric counter
 
           cli.say format_prompt(format_subheader('SAVING FILE', metric.description, idx, @metrics.length))
           cli.say "\n"
@@ -365,6 +397,19 @@ module InternalEventsCli
 
           "  - #{event.action}#{format_help(filter_phrase)}\n"
         end
+      end
+
+      def reduce_metrics_by_time_frame(metrics)
+        # MetricOptions class returns one metric per time_frame value,
+        # here we merge them into a singular metric including all the time_frame values
+        return metrics unless metrics.length > 1
+
+        time_frames = metrics.map do |metric|
+          metric.time_frame.value
+        end
+
+        attributes = metrics.first.to_h.merge(time_frame: time_frames)
+        [Metric.new(**attributes)]
       end
 
       # Helper for #prompt_for_event_filters
@@ -537,17 +582,26 @@ module InternalEventsCli
           fields[:product_group] << event.product_group
           fields[:stage] << find_stage(event.product_group)
           fields[:section] << find_section(event.product_group)
-          fields[:distribution] << event.distributions&.sort
-          fields[:tier] << event.tiers&.sort
+          fields[:product_categories] << event.product_categories
           fields[:tiers] << event.tiers&.sort
         end
 
-        # Keep event values if every selected event is the same
-        fields.each_with_object({}) do |(attr, values), defaults|
+        defaults = {}
+
+        # Use event value as default if it's the same for all
+        # selected events because it's unlikely to be different
+        fields.each do |field, values|
           next unless values.compact.uniq.length == 1
 
-          defaults[attr] ||= values.first
+          defaults[field] ||= values.first
         end
+
+        # If an event is relevant to a category, then the metric
+        # will be too, so we'll collect all categories
+        defaults[:product_categories] = KNOWN_CATEGORIES & fields[:product_categories].flatten
+        defaults.delete(:product_categories) if defaults[:product_categories].empty?
+
+        defaults
       end
 
       # ----- Shared Helpers ----------------------

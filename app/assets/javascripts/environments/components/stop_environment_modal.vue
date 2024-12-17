@@ -6,7 +6,9 @@ import eventHub from '../event_hub';
 import stopEnvironmentMutation from '../graphql/mutations/stop_environment.mutation.graphql';
 
 export default {
-  yamlDocsLink: helpPagePath('ci/yaml/index'),
+  environmentOnStopLink: helpPagePath('ci/yaml/index.html', {
+    anchor: 'environmenton_stop',
+  }),
   stoppingEnvironmentDocsLink: helpPagePath('ci/environments/index', {
     anchor: 'stopping-an-environment',
   }),
@@ -50,6 +52,11 @@ export default {
     hasStopAction() {
       return this.graphql ? this.environment.hasStopAction : this.environment.has_stop_action;
     },
+    stopMessage() {
+      return this.hasStopAction
+        ? this.$options.i18n.hasStopActionMessage
+        : this.$options.i18n.noStopActionMessage;
+    },
   },
 
   methods: {
@@ -64,6 +71,15 @@ export default {
       }
     },
   },
+
+  i18n: {
+    noStopActionMessage: s__(
+      'Environments|You are about to stop the environment %{environmentName}. The environment will be moved to the Stopped tab. There is no %{actionStopLinkStart}action:stop%{actionStopLinkEnd} defined for this environment, so your existing deployments will not be affected.',
+    ),
+    hasStopActionMessage: s__(
+      'Environments|You are about to stop the environment %{environmentName}. Any deployments associated with this environment will no longer be accessible, and the environment will be moved to the Stopped tab.',
+    ),
+  },
 };
 </script>
 
@@ -75,40 +91,36 @@ export default {
     @primary="onSubmit"
   >
     <template #modal-title>
-      <gl-sprintf :message="s__('Environments|Stopping %{environmentName}')">
+      <gl-sprintf :message="s__('Environments|Stop %{environmentName}')">
         <template #environmentName>
-          <span v-gl-tooltip :title="environment.name" class="gl-ml-2 gl-mr-2 gl-grow gl-truncate">
+          <span v-gl-tooltip :title="environment.name" class="gl-grow gl-truncate">
             {{ environment.name }}?
           </span>
         </template>
       </gl-sprintf>
     </template>
 
-    <p>{{ s__('Environments|Are you sure you want to stop this environment?') }}</p>
+    <p :class="!hasStopAction ? 'warning_message' : null">
+      <gl-sprintf :message="stopMessage">
+        <template #environmentName>
+          <span>{{ environment.name }}</span>
+        </template>
 
-    <div v-if="!hasStopAction" class="warning_message">
-      <p>
-        <gl-sprintf
-          :message="
-            s__(`Environments|Note that this action will stop the environment,
-        but it will %{emphasisStart}not%{emphasisEnd} have an effect on any existing deployment
-        due to no “stop environment action” being defined
-        in the %{ciConfigLinkStart}.gitlab-ci.yml%{ciConfigLinkEnd} file.`)
-          "
-        >
-          <template #emphasis="{ content }">
-            <strong>{{ content }}</strong>
-          </template>
-          <template #ciConfigLink="{ content }">
-            <a :href="$options.yamlDocsLink" target="_blank" rel="noopener noreferrer">
-              {{ content }}</a
-            >
-          </template>
-        </gl-sprintf>
-      </p>
-      <a :href="$options.stoppingEnvironmentDocsLink" target="_blank" rel="noopener noreferrer">{{
-        s__('Environments|Learn more about stopping environments')
-      }}</a>
-    </div>
+        <template v-if="!hasStopAction" #actionStopLink="{ content }">
+          <a :href="$options.environmentOnStopLink" target="_blank" rel="noopener noreferrer">
+            <span>{{ content }}</span>
+          </a>
+        </template>
+      </gl-sprintf>
+
+      <a
+        :href="$options.stoppingEnvironmentDocsLink"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="gl-mt-5 gl-inline-block"
+      >
+        {{ s__('Environments|Learn more about stopping environments') }} </a
+      >.
+    </p>
   </gl-modal>
 </template>

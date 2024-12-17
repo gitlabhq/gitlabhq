@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.deploy_token_packages.i_package_container_deploy_token_monthly
 description: Count of distinct deploy tokens that have interacted with container repositories in the container registry in the last 28
 product_group: container_registry
+product_categories:
+- container_registry
 value_type: number
 status: removed
 time_frame: 28d

@@ -282,7 +282,7 @@ export default {
           :pipeline-iid="item.iid"
           :pipeline-path="item.path"
           :project-path="getProjectPath(item)"
-          class="-gl-mb-1 -gl-ml-4 -gl-mt-3"
+          class="-gl-my-3 -gl-ml-4"
         />
       </template>
     </gl-table-lite>

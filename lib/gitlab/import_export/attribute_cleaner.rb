@@ -20,6 +20,11 @@ module Gitlab
         /\Aremote_\w+_(url|urls|request_header)\Z/ # carrierwave automatically creates these attribute methods for uploads
       ).freeze
 
+      ALLOWED_REFERENCES_PER_CLASS = {
+        'Vulnerabilities::Scanner': ['external_id'],
+        'Vulnerabilities::Identifier': ['external_id']
+      }.freeze
+
       def self.clean(*args, **kwargs)
         new(*args, **kwargs).clean
       end
@@ -40,6 +45,8 @@ module Gitlab
       private
 
       def prohibited_key?(key)
+        return false if ALLOWED_REFERENCES_PER_CLASS[@relation_class.name.to_sym]&.include?(key)
+
         key =~ PROHIBITED_REFERENCES && !permitted_key?(key)
       end
 

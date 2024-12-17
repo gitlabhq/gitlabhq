@@ -9,8 +9,6 @@ import { MOCK_QUERY, MOCK_NAVIGATION, MOCK_NAVIGATION_ITEMS } from '../../mock_d
 
 Vue.use(Vuex);
 
-const MOCK_NAVIGATION_ENTRIES = Object.entries(MOCK_NAVIGATION);
-
 describe('ScopeSidebarNavigation', () => {
   let wrapper;
 
@@ -23,13 +21,18 @@ describe('ScopeSidebarNavigation', () => {
     navigationItems: jest.fn(() => MOCK_NAVIGATION_ITEMS),
   };
 
-  const createComponent = (initialState) => {
+  const createComponent = (
+    initialState,
+    provide = { glFeatures: { workItemScopeFrontend: true } },
+  ) => {
+    const state = {
+      urlQuery: MOCK_QUERY,
+      navigation: MOCK_NAVIGATION,
+      ...initialState,
+    };
+
     const store = new Vuex.Store({
-      state: {
-        urlQuery: MOCK_QUERY,
-        navigation: MOCK_NAVIGATION,
-        ...initialState,
-      },
+      state,
       actions: actionSpies,
       getters: getterSpies,
     });
@@ -39,6 +42,7 @@ describe('ScopeSidebarNavigation', () => {
       stubs: {
         NavItem,
       },
+      provide,
     });
   };
 
@@ -46,7 +50,7 @@ describe('ScopeSidebarNavigation', () => {
   const findNavItems = () => wrapper.findAllComponents(NavItem);
   const findNavItemActive = () => wrapper.find('[aria-current=page]');
   const findNavItemActiveLabel = () =>
-    findNavItemActive().find('[class="gl-grow gl-text-gray-900"]');
+    findNavItemActive().find('[data-testid="nav-item-link-label"]');
 
   describe('scope navigation', () => {
     beforeEach(() => {
@@ -64,7 +68,7 @@ describe('ScopeSidebarNavigation', () => {
     });
 
     it('renders all nav item components', () => {
-      expect(findNavItems()).toHaveLength(MOCK_NAVIGATION_ENTRIES.length);
+      expect(findNavItems()).toHaveLength(14);
     });
 
     it('has all proper links', () => {
@@ -77,12 +81,31 @@ describe('ScopeSidebarNavigation', () => {
 
   describe('scope navigation sets proper state with url scope set', () => {
     beforeEach(() => {
-      createComponent();
+      const navigationClone = { ...MOCK_NAVIGATION };
+      delete navigationClone.epics.active;
+      createComponent({ navigation: navigationClone });
     });
 
     it('has correct active item', () => {
       expect(findNavItemActive().exists()).toBe(true);
-      expect(findNavItemActiveLabel().text()).toBe('Issues');
+      expect(findNavItemActiveLabel().text()).toBe('Epics');
+    });
+  });
+
+  describe('scope navigation sets proper state with Feature Flag off', () => {
+    beforeEach(() => {
+      const navigationClone = { ...MOCK_NAVIGATION };
+      delete navigationClone.epics.active;
+      createComponent(
+        { navigation: navigationClone },
+        { glFeatures: { workItemScopeFrontend: false } },
+      );
+    });
+
+    it('does not render work items subitems', () => {
+      expect(findNavItemActive().exists()).toBe(true);
+      expect(findNavItemActiveLabel().text()).toBe('Work items');
+      expect(findNavItems()).toHaveLength(11);
     });
   });
 });

@@ -5,11 +5,15 @@ require 'carrierwave/orm/activerecord'
 module Projects
   class Topic < ApplicationRecord
     include Avatarable
+    include CacheMarkdownField
     include Gitlab::SQL::Pattern
 
     SLUG_ALLOWED_REGEX = %r{\A[a-zA-Z0-9_\-.]+\z}
 
+    cache_markdown_field :description
+
     validates :name, presence: true, length: { maximum: 255 }
+    validates :description, length: { maximum: 1024 }
     validates :name, uniqueness: { scope: :organization_id, case_sensitive: false }, if: :name_changed?
     validate :validate_name_format, if: :name_changed?
 
@@ -74,6 +78,10 @@ module Projects
         where(id: topics_to_increment).update_counters(non_private_projects_count: 1) unless topics_to_increment.empty?
         where(id: topics_to_decrement).where('non_private_projects_count > 0').update_counters(non_private_projects_count: -1) unless topics_to_decrement.empty?
       end
+    end
+
+    def uploads_sharding_key
+      { organization_id: organization_id }
     end
 
     private

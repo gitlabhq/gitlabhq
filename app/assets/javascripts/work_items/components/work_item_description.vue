@@ -368,7 +368,7 @@ export default {
               </gl-button>
             </template>
           </gl-alert>
-          <div v-else-if="showButtonsBelowField" class="gl-mt-5">
+          <div v-else-if="showButtonsBelowField" class="gl-mt-5 gl-flex gl-gap-3">
             <gl-button
               category="primary"
               variant="confirm"
@@ -377,7 +377,7 @@ export default {
               type="submit"
               >{{ saveButtonText }}
             </gl-button>
-            <gl-button category="secondary" class="gl-ml-3" data-testid="cancel" type="reset"
+            <gl-button category="secondary" data-testid="cancel" type="reset"
               >{{ __('Cancel') }}
             </gl-button>
           </div>

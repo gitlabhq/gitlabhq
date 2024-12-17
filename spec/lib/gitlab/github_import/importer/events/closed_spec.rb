@@ -11,6 +11,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Closed, feature_category:
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
   let(:issuable) { create(:issue, project: project) }
   let(:commit_id) { nil }
+  let(:created_at) { 1.month.ago }
 
   let(:issue_event) do
     Gitlab::GithubImport::Representation::IssueEvent.from_json_hash(
@@ -19,7 +20,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Closed, feature_category:
       'url' => 'https://api.github.com/repos/elhowm/test-import/issues/events/6501124486',
       'actor' => { 'id' => user.id, 'login' => user.username },
       'event' => 'closed',
-      'created_at' => '2022-04-26 18:30:53 UTC',
+      'created_at' => created_at.iso8601,
       'commit_id' => commit_id,
       'issue' => { 'number' => issuable.iid, pull_request: issuable.is_a?(MergeRequest) }
     )
@@ -55,6 +56,29 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Closed, feature_category:
       expect(issuable.resource_state_events.count).to eq 1
       expect(issuable.resource_state_events[0].attributes)
         .to include expected_state_event_attrs
+    end
+
+    context 'when event is outside the cutoff date and would be pruned' do
+      let(:created_at) { (PruneOldEventsWorker::CUTOFF_DATE + 1.minute).ago }
+
+      it 'does not create the event, but does create the state event' do
+        importer.execute(issue_event)
+
+        expect(issuable.events.count).to eq 0
+        expect(issuable.resource_state_events.count).to eq 1
+      end
+
+      context 'when pruning events is disabled' do
+        before do
+          stub_feature_flags(ops_prune_old_events: false)
+        end
+
+        it 'creates the event' do
+          importer.execute(issue_event)
+
+          expect(issuable.events.count).to eq 1
+        end
+      end
     end
 
     context 'when closed by commit' do

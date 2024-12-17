@@ -20,10 +20,14 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedPackagesDependencies, 
 
   let(:packages_dependencies) { table(:packages_dependencies) }
 
-  let!(:namespace) { table(:namespaces).create!(name: 'project', path: 'project', type: 'Project') }
+  let!(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
+  let!(:namespace) do
+    table(:namespaces).create!(name: 'project', path: 'project', type: 'Project', organization_id: organization.id)
+  end
+
   let!(:project) do
     table(:projects).create!(name: 'project', path: 'project', project_namespace_id: namespace.id,
-      namespace_id: namespace.id)
+      namespace_id: namespace.id, organization_id: organization.id)
   end
 
   let!(:package) do

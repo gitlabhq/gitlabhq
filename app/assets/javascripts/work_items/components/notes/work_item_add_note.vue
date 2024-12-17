@@ -172,7 +172,7 @@ export default {
     },
     parentClass() {
       return {
-        'gl-relative gl-flex gl-items-start gl-flex-nowrap': !this.isEditing,
+        'gl-relative gl-flex gl-items-start gl-flex-wrap sm:gl-flex-nowrap': !this.isEditing,
       };
     },
     isProjectArchived() {

@@ -49,7 +49,7 @@ export default {
       <template v-if="value || $scopedSlots.value">
         <slot name="value">{{ value }}</slot>
       </template>
-      <span v-else class="gl-text-secondary">{{ emptyValue }}</span>
+      <span v-else class="gl-text-subtle">{{ emptyValue }}</span>
     </dd>
   </div>
 </template>

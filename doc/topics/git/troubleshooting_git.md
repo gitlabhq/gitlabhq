@@ -350,6 +350,11 @@ The bug was reported [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issu
 If you receive an `HTTP Basic: Access denied` error when using Git over HTTP(S),
 refer to the [two-factor authentication troubleshooting guide](../../user/profile/account/two_factor_authentication_troubleshooting.md).
 
+This error may also occur with [Git for Windows](https://gitforwindows.org/)
+2.46.0 and later when specifying an empty username.
+When authenticating with a token, the username can be any value, but an empty value
+could trigger an authentication error. To resolve this, specify a username string.
+
 ## `401` errors logged during successful `git clone`
 
 When cloning a repository with HTTP, the

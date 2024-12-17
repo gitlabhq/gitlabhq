@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::EmailsOnPush do
-  let_it_be(:project) { create_default(:project).freeze }
+RSpec.describe Integrations::EmailsOnPush, feature_category: :integrations do
+  let_it_be(:project) { create(:project, :repository) }
 
   describe 'Validations' do
     context 'when integration is active' do
@@ -87,7 +87,6 @@ RSpec.describe Integrations::EmailsOnPush do
   end
 
   describe '#execute' do
-    let_it_be(:project) { create(:project, :repository) }
     let(:push_data) { { object_kind: 'push' } }
     let(:integration) { create(:emails_on_push_integration, project: project) }
     let(:recipients) { 'test@gitlab.com' }

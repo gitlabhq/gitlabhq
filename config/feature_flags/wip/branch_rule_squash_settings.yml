@@ -1,0 +1,9 @@
+---
+name: branch_rule_squash_settings
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/498701
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173991
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/506542
+milestone: '17.7'
+group: group::source code
+type: wip
+default_enabled: false

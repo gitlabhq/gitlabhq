@@ -12,8 +12,11 @@ DETAILS:
 
 ## Get current application statistics
 
-List the current statistics of the GitLab instance. You have to be an
-administrator to perform this action.
+Use this API to retrieve statistics from your GitLab instance.
+
+Prerequisites:
+
+- You must have administrator access to the instance.
 
 NOTE:
 These statistics show exact counts for values less than 10,000. For values of 10,000 and higher, these statistics show approximate data

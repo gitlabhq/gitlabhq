@@ -1,6 +1,6 @@
-mutation inboundRemoveGroupCIJobTokenScope($projectPath: ID!, $targetGroupPath: ID!) {
-  ciJobTokenScopeRemoveGroup(
-    input: { projectPath: $projectPath, targetGroupPath: $targetGroupPath }
+mutation inboundRemoveGroupCIJobTokenScope($projectPath: ID!, $targetPath: ID!) {
+  removeNamespace: ciJobTokenScopeRemoveGroup(
+    input: { projectPath: $projectPath, targetGroupPath: $targetPath }
   ) {
     errors
   }

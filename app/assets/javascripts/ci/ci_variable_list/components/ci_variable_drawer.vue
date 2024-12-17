@@ -10,7 +10,6 @@ import {
   GlFormInput,
   GlCollapsibleListbox,
   GlFormTextarea,
-  GlIcon,
   GlLink,
   GlModal,
   GlModalDirective,
@@ -24,6 +23,7 @@ import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import Tracking from '~/tracking';
 import CiEnvironmentsDropdown from '~/ci/common/private/ci_environments_dropdown';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import {
   defaultVariableState,
   ADD_VARIABLE_ACTION,
@@ -122,12 +122,12 @@ export default {
     GlFormInput,
     GlCollapsibleListbox,
     GlFormTextarea,
-    GlIcon,
     GlLink,
     GlModal,
     GlSprintf,
     GlFormRadio,
     GlFormRadioGroup,
+    HelpIcon,
   },
   directives: {
     GlModalDirective,
@@ -494,7 +494,7 @@ export default {
               target="_blank"
               data-testid="environment-scope-link"
             >
-              <gl-icon name="question-o" :size="14" />
+              <help-icon />
             </gl-link>
           </div>
         </template>
@@ -562,13 +562,13 @@ export default {
               data-testid="ci-variable-flags-docs-link"
               target="_blank"
             >
-              <gl-icon name="question-o" :size="14" />
+              <help-icon />
             </gl-link>
           </div>
         </template>
         <gl-form-checkbox v-model="variable.protected" data-testid="ci-variable-protected-checkbox">
           {{ $options.i18n.protectedField }}
-          <p class="gl-text-secondary">
+          <p class="gl-text-subtle">
             {{ $options.i18n.protectedDescription }}
           </p>
         </gl-form-checkbox>
@@ -578,8 +578,8 @@ export default {
           @change="setRaw"
         >
           {{ $options.i18n.expandedField }}
-          <p class="gl-text-secondary">
-            <gl-sprintf :message="$options.i18n.expandedDescription" class="gl-text-secondary">
+          <p class="gl-text-subtle">
+            <gl-sprintf :message="$options.i18n.expandedDescription" class="gl-text-subtle">
               <template #code="{ content }">
                 <code>{{ content }}</code>
               </template>
@@ -615,7 +615,7 @@ export default {
       >
         {{ $options.i18n.keyFeedback }}
       </p>
-      <p class="gl-mb-0 gl-border-none !gl-pb-0 !gl-pt-3 gl-text-secondary">
+      <p class="gl-mb-0 gl-border-none !gl-pb-0 !gl-pt-3 gl-text-subtle">
         <gl-sprintf :message="$options.i18n.keyHelpText">
           <template #link="{ content }"
             ><gl-link
@@ -649,7 +649,7 @@ export default {
         />
         <p
           v-if="variable.raw"
-          class="text-secondary gl-mb-0 gl-mt-2"
+          class="gl-mb-0 gl-mt-2 gl-text-subtle"
           data-testid="raw-variable-tip"
         >
           {{ $options.i18n.valueFeedback.rawHelpText }}

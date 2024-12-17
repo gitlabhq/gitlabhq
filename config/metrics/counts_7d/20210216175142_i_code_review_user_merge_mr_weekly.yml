@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.code_review.i_code_review_user_merge_mr_weekly
 description: Count of unique users per week who merged a MR
 product_group: code_review
+product_categories:
+- code_review_workflow
 value_type: number
 status: active
 time_frame: 7d

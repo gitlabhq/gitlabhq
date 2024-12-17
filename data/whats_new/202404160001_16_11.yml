@@ -18,7 +18,7 @@
 
 - name: Understand your users better with Product Analytics
   description: |
-    With GitLab's new Product Analytics feature, you can instrument your applications, collect key usage and adoption data about your users, and then display it inside GitLab.
+    With the new Product Analytics feature, you can instrument your applications, collect key usage and adoption data about your users, and then display it inside GitLab.
 
     You can visualize data in dashboards, report on it, and filter it in a variety of different ways to find insights about your users. Your team can now quickly identify and respond to unexpected dips or spikes in customer usage that signify an issue, as well as celebrate the success of their recent releases.
   stage: monitor
@@ -46,9 +46,9 @@
 
 - name: GitLab Duo Chat available in JetBrains IDEs
   description: |
-   As part of GitLab's AI offerings, Duo Chat further streamlines the developer experience by directly bringing an interactive chat window into any supported JetBrains IDE and the ability to explain code, write tests, and refactor existing code.
+    As part of GitLab AI offerings, Duo Chat further streamlines the developer experience by directly bringing an interactive chat window into any supported JetBrains IDE and the ability to explain code, write tests, and refactor existing code.
 
-   For a complete list of capabilities, see our [Duo Chat documentation](https://docs.gitlab.com/ee/user/gitlab_duo_chat.html).
+    For a complete list of capabilities, see our [Duo Chat documentation](https://docs.gitlab.com/ee/user/gitlab_duo_chat.html).
   stage: govern
   self-managed: true
   gitlab-com: true
@@ -102,9 +102,9 @@
 
 - name: Email notifications for changes made using Switchboard
   description: |
-   Configuration changes made to your GitLab Dedicated instance by tenant administrators using Switchboard will now generate email notifications when complete.
+    Configuration changes made to your GitLab Dedicated instance by tenant administrators using Switchboard will now generate email notifications when complete.
 
-   All users with access to view or edit your tenant in Switchboard will receive a notification for each change made.
+    All users with access to view or edit your tenant in Switchboard will receive a notification for each change made.
   stage: platforms
   self-managed: true
   gitlab-com: false
@@ -116,7 +116,7 @@
 
 - name: Option to cancel a pipeline immediately if any jobs fails
   description: |
-   Sometimes after you notice a job fails, you might manually cancel the rest of the pipeline to save resources while you work on the issue causing the failure. With GitLab 16.11, you can now configure pipelines to be cancelled automatically when any job fails. With large pipelines that take a long time to run, especially with many long-running jobs that run in parallel, this can be an effective way to reduce resource usage and costs.
+    Sometimes after you notice a job fails, you might manually cancel the rest of the pipeline to save resources while you work on the issue causing the failure. With GitLab 16.11, you can now configure pipelines to be canceled automatically when any job fails. With large pipelines that take a long time to run, especially with many long-running jobs that run in parallel, this can be an effective way to reduce resource usage and costs.
 
     You can even configure a pipeline to immediately [cancel if a downstream pipeline fails](https://docs.gitlab.com/ee/ci/pipelines/downstream_pipelines.html#auto-cancel-the-parent-pipeline-from-a-downstream-pipeline), which cancels the parent pipeline and all other downstream pipelines.
 

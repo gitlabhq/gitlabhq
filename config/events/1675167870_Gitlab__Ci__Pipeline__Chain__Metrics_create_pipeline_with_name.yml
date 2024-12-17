@@ -8,6 +8,8 @@ identifiers:
 - user
 - namespace
 product_group: pipeline_execution
+product_categories:
+- continuous_integration
 milestone: "15.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109549
 distributions:

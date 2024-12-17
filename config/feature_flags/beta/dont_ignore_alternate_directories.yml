@@ -1,9 +1,0 @@
----
-name: dont_ignore_alternate_directories
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/438245
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164082
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/480875
-milestone: '17.4'
-group: group::source code
-type: beta
-default_enabled: false

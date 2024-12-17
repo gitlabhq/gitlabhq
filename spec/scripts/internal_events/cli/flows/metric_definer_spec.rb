@@ -48,8 +48,7 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
         " ", # Multi-select: __event2
         "\n", # Submit selections
         "\n", # Select: Weekly/Monthly count of unique users
-        "aggregate metric description\n", # Submit description
-        "\n" # Accept description for weekly
+        "aggregate metric description\n" # Submit description
       ])
 
       # Filter down to "dev" options
@@ -81,8 +80,7 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
         " ", # Multi-select: __event3
         "\n", # Submit selections
         "\n", # Select: Weekly/Monthly count of unique users
-        "aggregate metric description\n", # Submit description
-        "\n" # Accept description for weekly
+        "aggregate metric description\n" # Submit description
       ])
 
       # Filter down to "dev:create" options
@@ -118,7 +116,6 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
         "\n", # Select: 00__event1
         "\n", # Select: Weekly/Monthly count of unique users
         "aggregate metric description\n", # Submit description
-        "\n", # Accept description for weekly
         "2\n" # Modify attributes
       ])
 
@@ -220,14 +217,9 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
 
       # existing metrics which use both events
       File.write(
-        'config/metrics/counts_7d/' \
-          'count_distinct_project_id_from_internal_events_cli_closed_and_internal_events_cli_used_weekly.yml',
-        File.read('spec/fixtures/scripts/internal_events/metrics/project_id_7d_multiple_events.yml')
-      )
-      File.write(
-        'config/metrics/counts_28d/' \
-          'count_distinct_project_id_from_internal_events_cli_closed_and_internal_events_cli_used_monthly.yml',
-        File.read('spec/fixtures/scripts/internal_events/metrics/project_id_28d_multiple_events.yml')
+        'config/metrics/counts_all/' \
+          'count_distinct_project_id_from_internal_events_cli_closed_and_internal_events_cli_used.yml',
+        File.read('spec/fixtures/scripts/internal_events/metrics/project_id_multiple_events.yml')
       )
 
       # Non-conflicting metric which uses only one of the events
@@ -430,6 +422,79 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
             'internal_events_cli_opened(label=a label value)',
             'internal_events_cli_used(label=a label value property=a property value)'
           )
+        end
+      end
+    end
+  end
+
+  context 'when succeeded in saving the file' do
+    let(:events) do
+      [{
+        action: 'internal_events_cli_closed', internal_events: true, product_group: 'optimize', tiers: ['ultimate']
+      }, {
+        action: 'internal_events_cli_used', internal_events: true, product_group: 'optimize', tiers: ['ultimate']
+      }]
+    end
+
+    before do
+      events.each do |event|
+        File.write("config/events/#{event[:action]}.yml", event.transform_keys(&:to_s).to_yaml)
+      end
+    end
+
+    context "when creating a single metric" do
+      it 'shows link to the metric dashboard' do
+        queue_cli_inputs([
+          "2\n", # Enum-select: New Metric   -- calculate how often one or more existing events occur over time
+          "2\n", # Enum-select: Multiple events -- count occurrences of several separate events or interactions
+          'internal_events_cli', # Filters to the relevant events
+          ' ', # Multi-select: internal_events_cli_closed
+          "\e[B", # Arrow down to: internal_events_cli_used
+          ' ', # Multi-select: internal_events_cli_used
+          "\n", # Submit selections
+          "\e[B", # Arrow down to: Total count
+          "\n", # Select: Total count
+          "where a definition file was created with the CLI\n", # Input description
+          "1\n", # Select: Copy & continue
+          "\e[B \n", # Skip product categories
+          "y\n" # Create file
+        ])
+
+        expected_output = <<~TEXT.chomp
+        - Metric trend dashboard: https://10az.online.tableau.com/#/site/gitlab/views/PDServicePingExplorationDashboard/MetricTrend?Metrics%20Path=counts.count_total_internal_events_cli_closed_and_internal_events_cli_used
+        TEXT
+
+        with_cli_thread do
+          expect { plain_last_lines }.to eventually_include_cli_text(expected_output)
+        end
+      end
+    end
+
+    context "when creating a multiple metrics" do
+      it 'shows link to the metric dashboard' do
+        queue_cli_inputs([
+          "2\n", # Enum-select: New Metric   -- calculate how often one or more existing events occur over time
+          "2\n", # Enum-select: Multiple events -- count occurrences of several separate events or interactions
+          'internal_events_cli', # Filters to the relevant events
+          ' ', # Multi-select: internal_events_cli_closed
+          "\e[B", # Arrow down to: internal_events_cli_used
+          ' ', # Multi-select: internal_events_cli_used
+          "\n", # Submit selections
+          "\n", # Select: Weekly/Monthly count
+          "where a definition file was created with the CLI\n", # Input description
+          "1\n", # Select: Copy & continue
+          "\e[B \n", # Skip product categories
+          "y\n" # Create file
+        ])
+
+        expected_output = <<-TEXT.chomp # <<- used instead of <<~ to save indentation
+      - Metric trend dashboards:
+        - https://10az.online.tableau.com/#/site/gitlab/views/PDServicePingExplorationDashboard/MetricTrend?Metrics%20Path=counts.count_total_internal_events_cli_closed_and_internal_events_cli_used_monthly
+        - https://10az.online.tableau.com/#/site/gitlab/views/PDServicePingExplorationDashboard/MetricTrend?Metrics%20Path=counts.count_total_internal_events_cli_closed_and_internal_events_cli_used_weekly
+        TEXT
+
+        with_cli_thread do
+          expect { plain_last_lines }.to eventually_include_cli_text(expected_output)
         end
       end
     end

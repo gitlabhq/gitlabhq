@@ -163,7 +163,7 @@ export default {
 
 <template>
   <div class="detail-page-header gl-flex-col md:gl-flex-row">
-    <div class="detail-page-header-body gl-flex-wrap gl-gap-x-2">
+    <div class="detail-page-header-body gl-flex-wrap gl-gap-x-2 gl-text-subtle">
       <gl-badge :variant="badgeVariant" :icon="statusIcon" data-testid="issue-state-badge">
         <slot name="status-badge">{{ badgeText }}</slot>
       </gl-badge>
@@ -180,6 +180,7 @@ export default {
         v-if="shouldShowWorkItemTypeIcon"
         show-text
         :work-item-type="issuableType"
+        icon-class="gl-fill-icon-subtle"
       />
       <gl-sprintf :message="createdMessage">
         <template #timeAgo>

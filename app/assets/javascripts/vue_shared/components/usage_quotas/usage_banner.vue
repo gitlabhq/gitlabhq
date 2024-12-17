@@ -28,7 +28,7 @@ export default {
                 'left-primary-text'
               ]
             "
-            class="gl-flex gl-min-h-6 gl-min-w-0 gl-items-center gl-font-bold gl-text-primary"
+            class="gl-flex gl-min-h-6 gl-min-w-0 gl-items-center gl-font-bold gl-text-default"
           >
             <slot name="left-primary-text"></slot>
           </div>
@@ -38,13 +38,13 @@ export default {
                 'left-secondary-text'
               ]
             "
-            class="gl-flex gl-min-h-6 gl-w-7/10 gl-min-w-0 gl-grow gl-items-center gl-text-gray-500 md:gl-max-w-7/10"
+            class="gl-flex gl-min-h-6 gl-w-7/10 gl-min-w-0 gl-grow gl-items-center gl-text-subtle md:gl-max-w-7/10"
           >
             <slot name="left-secondary-text"></slot>
           </div>
         </div>
         <div
-          class="gl-flex gl-shrink-0 gl-flex-col gl-justify-between gl-text-gray-500 sm:gl-items-end"
+          class="gl-flex gl-shrink-0 gl-flex-col gl-justify-between gl-text-subtle sm:gl-items-end"
         >
           <div
             v-if="
@@ -52,7 +52,7 @@ export default {
                 'right-primary-text'
               ]
             "
-            class="gl-flex gl-min-h-6 gl-items-center sm:gl-font-bold sm:gl-text-primary"
+            class="gl-flex gl-min-h-6 gl-items-center sm:gl-font-bold sm:gl-text-default"
           >
             <slot name="right-primary-text"></slot>
           </div>

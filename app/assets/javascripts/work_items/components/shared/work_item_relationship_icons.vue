@@ -129,7 +129,7 @@ export default {
         :id="itemsBlockedByIconId"
         :aria-label="blockedByLabel"
         tabIndex="0"
-        class="gl-cursor-pointer gl-text-sm gl-text-secondary"
+        class="gl-cursor-pointer gl-text-sm gl-text-subtle"
         data-testid="relationship-blocked-by-icon"
         @mouseenter="handleMouseEnter"
       >
@@ -152,7 +152,7 @@ export default {
         :id="itemsBlocksIconId"
         :aria-label="blocksLabel"
         tabIndex="0"
-        class="gl-cursor-pointer gl-text-sm gl-text-secondary"
+        class="gl-cursor-pointer gl-text-sm gl-text-subtle"
         data-testid="relationship-blocks-icon"
         @mouseenter="handleMouseEnter"
       >

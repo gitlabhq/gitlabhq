@@ -31,7 +31,7 @@ Vue.use(IdeRouter);
 
 // Unfortunately Vue Router doesn't work without at least a fake component
 // If you do only data handling
-const EmptyRouterComponent = {
+export const EmptyRouterComponent = {
   render(createElement) {
     return createElement('div');
   },

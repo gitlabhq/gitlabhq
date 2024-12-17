@@ -1,16 +1,12 @@
 # frozen_string_literal: true
 
 class PlanLimits < ApplicationRecord
-  include SafelyChangeColumnDefault
-
-  columns_changing_default :repository_size
-
   ALLOWED_LIMITS_HISTORY_ATTRIBUTES = %i[notification_limit enforcement_limit storage_size_limit
     dashboard_limit_enabled_at].freeze
 
   ignore_column :ci_max_artifact_size_running_container_scanning, remove_with: '14.3', remove_after: '2021-08-22'
 
-  attribute :limits_history, :ind_jsonb, default: -> { {} }
+  attribute :limits_history, ::Gitlab::Database::Type::IndifferentJsonb.new, default: -> { {} }
   validates :limits_history, json_schema: { filename: 'plan_limits_history' }
 
   LimitUndefinedError = Class.new(StandardError)

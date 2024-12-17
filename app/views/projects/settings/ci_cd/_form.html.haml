@@ -3,6 +3,7 @@
 - help_link_prevent_outdated = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings.md', anchor: 'prevent-outdated-deployment-jobs'), target: '_blank', rel: 'noopener noreferrer'
 - help_link_prevent_outdated_allow_rollback = link_to sprite_icon('question-o'), help_page_path('ci/environments/deployment_safety.md', anchor: 'job-retries-for-rollback-deployments'), target: '_blank', rel: 'noopener noreferrer'
 - help_link_separated_caches = link_to sprite_icon('question-o'), help_page_path('ci/caching/index.md', anchor: 'cache-key-names'), target: '_blank', rel: 'noopener noreferrer'
+- terms_link = '<a href="https://about.gitlab.com/handbook/legal/testing-agreement/" target="_blank" rel="noopener noreferrer">GitLab Testing Agreement</a>'.html_safe
 
 .row.gl-mt-3
   .col-lg-12
@@ -84,6 +85,16 @@
             %p.form-text.gl-text-subtle
               = _("The maximum file size in megabytes for individual job artifacts.")
               = link_to sprite_icon('question-o'), help_page_path('administration/settings/continuous_integration.md', anchor: 'maximum-artifacts-size'), target: '_blank', rel: 'noopener noreferrer'
+
+        - if Feature.enabled?(:ci_delete_old_pipelines, :instance, type: :beta) && can?(current_user, :destroy_pipeline, @project)
+          .form-group
+            = f.fields_for :ci_cd_settings_attributes, @project.ci_cd_settings do |form|
+              = form.label :delete_pipelines_in_human_readable, s_('CICD|Automatic pipeline cleanup'), class: 'label-bold'
+              = render('shared/beta_badge', style: 'gl-ml-1 gl-mt-1')
+              = form.text_field :delete_pipelines_in_human_readable, { class: 'form-control gl-form-input' }
+              %p.form-text.gl-text-subtle
+                = html_escape(s_("CICD|Pipelines older than the configured time are deleted. Leave empty to never delete pipelines automatically. The default unit is in seconds, but you can use other units, for example %{code_open}15 days%{code_close}, %{code_open}1 month%{code_close}, %{code_open}1 year%{code_close}. Can be between 1 day to 1 year. Subject to the %{terms_link}.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe, terms_link: terms_link }
+                = link_to sprite_icon('question-o'), help_page_path('ci/pipelines/settings.md', anchor: 'automatic-pipeline-cleanup'), target: '_blank', rel: 'noopener noreferrer'
 
         = f.submit _('Save changes'), pajamas_button: true
 

@@ -16,7 +16,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'by adding a home page to the wiki', :blocking,
+      it 'by adding a home page to the wiki',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347809' do
         project.visit!
 
@@ -37,7 +37,7 @@ module QA
         end
       end
 
-      it 'by adding a second page to the wiki', :blocking,
+      it 'by adding a second page to the wiki',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347808' do
         wiki.visit!
 
@@ -91,7 +91,7 @@ module QA
         end
       end
 
-      it 'by adding a wiki page with spaces in the path using git push', :blocking,
+      it 'by adding a wiki page with spaces in the path using git push',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/442387' do
         Resource::Repository::WikiPush.fabricate! do |push|
           push.file_name = "#{new_wiki_page_with_spaces_in_the_path}.md"

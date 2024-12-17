@@ -130,13 +130,13 @@ Some examples of non-breaking changes:
 
 ## Experimental, beta, and generally available features
 
-You can add API elements as [experimental and beta features](../policy/experiment-beta-support.md). They must be additive changes, otherwise they are categorized as
+You can add API elements as [experimental and beta features](../policy/development_stages_support.md). They must be additive changes, otherwise they are categorized as
 [a breaking change](#what-is-not-a-breaking-change).
 
 API elements marked as experiment or beta are exempt from the [ensuring backward compatibility](#accommodating-backward-compatibility-instead-of-breaking-changes) policy,
 and can be changed or removed at any time without prior notice.
 
-While in the [experiment status](../policy/experiment-beta-support.md#experiment):
+While in the [experiment status](../policy/development_stages_support.md#experiment):
 
 - Use a feature flag that is [off by default](feature_flags/index.md#beta-type).
 - When the flag is off:
@@ -146,13 +146,13 @@ While in the [experiment status](../policy/experiment-beta-support.md#experiment
 - The [API documentation](../api/api_resources.md) must [document the experimental status](documentation/experiment_beta.md) and the feature flag [must be documented](documentation/feature_flags.md).
 - The [OpenAPI documentation](../api/openapi/openapi_interactive.md) must not describe the changes (for example, using [the `hidden` option](https://github.com/ruby-grape/grape-swagger#hiding-an-endpoint-)).
 
-While in the [beta status](../policy/experiment-beta-support.md#beta):
+While in the [beta status](../policy/development_stages_support.md#beta):
 
 - Use a feature flag that is [on by default](feature_flags/index.md#beta-type).
 - The [API documentation](../api/api_resources.md) must [document the beta status](documentation/experiment_beta.md) and the feature flag [must be documented](documentation/feature_flags.md).
 - The [OpenAPI documentation](../api/openapi/openapi_interactive.md) must not describe the changes.
 
-When the feature becomes [generally available](../policy/experiment-beta-support.md#generally-available-ga):
+When the feature becomes [generally available](../policy/development_stages_support.md#generally-available-ga):
 
 - [Remove](feature_flags/controls.md#cleaning-up) the feature flag.
 - Remove the [experiment or beta status](documentation/experiment_beta.md) from the [API documentation](../api/api_resources.md).

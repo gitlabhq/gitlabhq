@@ -11,7 +11,7 @@ export const initAdminNewUserOrganizationField = () => {
     dataset: { appData },
   } = el;
 
-  const { initialAccessLevel, initialOrganization } = convertObjectPropsToCamelCase(
+  const { organizationUser, initialOrganization } = convertObjectPropsToCamelCase(
     JSON.parse(appData),
     { deep: true },
   );
@@ -22,11 +22,11 @@ export const initAdminNewUserOrganizationField = () => {
     render(createElement) {
       return createElement(NewUserOrganizationField, {
         props: {
-          initialAccessLevel,
+          organizationUser,
           initialOrganization,
           hasMultipleOrganizations: false,
-          organizationInputName: 'user[organization_user][][organization_id]',
-          organizationRoleInputName: 'user[organization_user][][access_level]',
+          organizationInputName: 'user[organization_users_attributes][][organization_id]',
+          organizationRoleInputName: 'user[organization_users_attributes][][access_level]',
         },
       });
     },

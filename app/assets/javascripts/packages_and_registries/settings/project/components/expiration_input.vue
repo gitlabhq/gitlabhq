@@ -1,5 +1,5 @@
 <script>
-import { GlFormGroup, GlFormInput, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlFormGroup, GlFormInputGroup, GlInputGroupText, GlSprintf, GlLink } from '@gitlab/ui';
 import {
   NAME_REGEX_LENGTH,
   TEXT_AREA_INVALID_FEEDBACK,
@@ -8,7 +8,8 @@ import {
 export default {
   components: {
     GlFormGroup,
-    GlFormInput,
+    GlFormInputGroup,
+    GlInputGroupText,
     GlSprintf,
     GlLink,
   },
@@ -67,12 +68,19 @@ export default {
         this.$emit('validation', this.isInputValid(value));
       },
     },
+    inputGroupTextClass() {
+      return {
+        'gl-border-default gl-text-gray-400': this.disabled,
+      };
+    },
   },
   methods: {
     isInputValid(value) {
       return !value || value.length <= NAME_REGEX_LENGTH;
     },
   },
+  appendAnchor: '\\z',
+  prependAnchor: '\\A',
 };
 </script>
 
@@ -92,16 +100,32 @@ export default {
         </gl-sprintf>
       </span>
     </template>
-    <gl-form-input
+
+    <gl-form-input-group
       :id="name"
       v-model="internalValue"
       :placeholder="placeholder"
       :state="inputValidation.state"
       :disabled="disabled"
+      aria-describedby="regex-anchors-help-text"
       trim
-    />
+    >
+      <template #prepend>
+        <gl-input-group-text :class="inputGroupTextClass" aria-hidden="true">{{
+          $options.prependAnchor
+        }}</gl-input-group-text>
+      </template>
+      <template #append>
+        <gl-input-group-text :class="inputGroupTextClass" aria-hidden="true">{{
+          $options.appendAnchor
+        }}</gl-input-group-text>
+      </template>
+    </gl-form-input-group>
+    <p id="regex-anchors-help-text" data-testid="regex-anchors-help-text" class="gl-sr-only">
+      {{ s__('ContainerRegistry|Regular expression without the \\A and \\z anchors.') }}
+    </p>
     <template #description>
-      <span data-testid="description" class="gl-text-gray-500">
+      <span data-testid="description" class="gl-text-subtle">
         <gl-sprintf :message="description">
           <template #link="{ content }">
             <gl-link :href="tagsRegexHelpPagePath">{{ content }}</gl-link>

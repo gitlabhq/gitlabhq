@@ -9,7 +9,7 @@ module BulkImports
     PERFORM_DELAY = 1.minute
 
     idempotent!
-    data_consistency :always
+    data_consistency :sticky
     feature_category :importers
     sidekiq_options status_expiration: StuckExportJobsWorker::EXPORT_JOBS_EXPIRATION, retry: 6
     worker_resource_boundary :memory

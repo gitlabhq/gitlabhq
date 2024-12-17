@@ -9,3 +9,4 @@ description: Stores Atlassian credentials that are used to integrate with Atlass
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40176
 milestone: '13.4'
 gitlab_schema: gitlab_main_clusterwide
+table_size: small

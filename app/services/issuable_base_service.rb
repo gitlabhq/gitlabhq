@@ -99,7 +99,7 @@ class IssuableBaseService < ::BaseContainerService
       params[id_key] = params[id_key].first(1)
     end
 
-    assignee_ids = params[id_key].select { |assignee_id| user_can_read?(issuable, assignee_id) }
+    assignee_ids = User.id_in(params[id_key]).select { |assignee| user_can_read?(issuable, assignee) }.map(&:id)
 
     if params[id_key].map(&:to_s) == [IssuableFinder::Params::NONE]
       params[id_key] = []
@@ -110,11 +110,7 @@ class IssuableBaseService < ::BaseContainerService
     end
   end
 
-  def user_can_read?(issuable, user_id)
-    user = User.find_by_id(user_id)
-
-    return false unless user
-
+  def user_can_read?(issuable, user)
     ability_name = :"read_#{issuable.to_ability_name}"
 
     can?(user, ability_name, issuable.resource_parent)
@@ -277,18 +273,19 @@ class IssuableBaseService < ::BaseContainerService
 
     old_associations = associations_before_update(issuable)
 
+    # We need to set the lock version early in case some of the callbacks below does a save
+    # that increments the lock version. This will prevent a stale lock version when we get to
+    # the `#assign_attributes` call below.
+    issuable.lock_version = params.delete(:lock_version) if params.key?(:lock_version)
+
     handle_quick_actions(issuable)
     filter_params(issuable)
 
     change_additional_attributes(issuable)
 
-    assign_requested_assignees(issuable)
-    assign_requested_crm_contacts(issuable)
-    widget_params = filter_widget_params
-
     initialize_callbacks!(issuable)
 
-    if issuable.changed? || params.present? || widget_params.present? || @callbacks.present?
+    if issuable.changed? || params.present? || @callbacks.present?
       issuable.assign_attributes(allowed_update_params(params))
 
       before_update(issuable)
@@ -325,23 +322,11 @@ class IssuableBaseService < ::BaseContainerService
         invalidate_cache_counts(issuable, users: affected_assignees.compact)
         after_update(issuable, old_associations)
         issuable.create_new_cross_references!(current_user)
-        Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
-          %w[
-            internal_ids
-            issues
-            issue_user_mentions
-            issue_metrics
-            notes
-            system_note_metadata
-            vulnerability_issue_links
-          ], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480369'
-        ) do
-          execute_hooks(
-            issuable,
-            'update',
-            old_associations: old_associations
-          )
-        end
+        execute_hooks(
+          issuable,
+          'update',
+          old_associations: old_associations
+        )
 
         issuable.update_project_counter_caches if update_project_counters
       end
@@ -447,6 +432,9 @@ class IssuableBaseService < ::BaseContainerService
     change_subscription(issuable)
     change_todo(issuable)
     toggle_award(issuable)
+
+    assign_requested_assignees(issuable)
+    assign_requested_crm_contacts(issuable)
   end
 
   def change_state(issuable)
@@ -625,10 +613,6 @@ class IssuableBaseService < ::BaseContainerService
     return unless issuable_sla = issuable.issuable_sla
 
     issuable_sla.update(issuable_closed: issuable.closed?)
-  end
-
-  def filter_widget_params
-    params.delete(:widget_params)
   end
 
   def filter_contact_params(issuable)

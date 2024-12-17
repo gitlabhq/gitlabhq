@@ -4,29 +4,43 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillProjectFeaturePackageRegistryAccessLevel do
   let(:non_null_project_features) { { pages_access_level: 20 } }
+  let(:organizations) { table(:organizations) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:project_features) { table(:project_features) }
 
-  let(:namespace1) { namespaces.create!(name: 'namespace 1', path: 'namespace1') }
-  let(:namespace2) { namespaces.create!(name: 'namespace 2', path: 'namespace2') }
-  let(:namespace3) { namespaces.create!(name: 'namespace 3', path: 'namespace3') }
-  let(:namespace4) { namespaces.create!(name: 'namespace 4', path: 'namespace4') }
-  let(:namespace5) { namespaces.create!(name: 'namespace 5', path: 'namespace5') }
-  let(:namespace6) { namespaces.create!(name: 'namespace 6', path: 'namespace6') }
+  let(:organization) { organizations.create!(name: 'organization', path: 'organization') }
+
+  let(:namespace1) { namespaces.create!(name: 'namespace 1', path: 'namespace1', organization_id: organization.id) }
+  let(:namespace2) { namespaces.create!(name: 'namespace 2', path: 'namespace2', organization_id: organization.id) }
+  let(:namespace3) { namespaces.create!(name: 'namespace 3', path: 'namespace3', organization_id: organization.id) }
+  let(:namespace4) { namespaces.create!(name: 'namespace 4', path: 'namespace4', organization_id: organization.id) }
+  let(:namespace5) { namespaces.create!(name: 'namespace 5', path: 'namespace5', organization_id: organization.id) }
+  let(:namespace6) { namespaces.create!(name: 'namespace 6', path: 'namespace6', organization_id: organization.id) }
 
   let(:project1) do
-    projects.create!(namespace_id: namespace1.id, project_namespace_id: namespace1.id, packages_enabled: false)
+    projects.create!(
+      namespace_id: namespace1.id,
+      project_namespace_id: namespace1.id,
+      organization_id: organization.id,
+      packages_enabled: false
+    )
   end
 
   let(:project2) do
-    projects.create!(namespace_id: namespace2.id, project_namespace_id: namespace2.id, packages_enabled: nil)
+    projects.create!(
+      namespace_id: namespace2.id,
+      project_namespace_id: namespace2.id,
+      organization_id: organization.id,
+      packages_enabled: nil
+    )
   end
 
   let(:project3) do
     projects.create!(
       namespace_id: namespace3.id,
       project_namespace_id: namespace3.id,
+      organization_id: organization.id,
       packages_enabled: true,
       visibility_level: Gitlab::VisibilityLevel::PRIVATE
     )
@@ -36,6 +50,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillProjectFeaturePackageRegistr
     projects.create!(
       namespace_id: namespace4.id,
       project_namespace_id: namespace4.id,
+      organization_id: organization.id,
       packages_enabled: true, visibility_level: Gitlab::VisibilityLevel::INTERNAL)
   end
 
@@ -43,13 +58,19 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillProjectFeaturePackageRegistr
     projects.create!(
       namespace_id: namespace5.id,
       project_namespace_id: namespace5.id,
+      organization_id: organization.id,
       packages_enabled: true,
       visibility_level: Gitlab::VisibilityLevel::PUBLIC
     )
   end
 
   let(:project6) do
-    projects.create!(namespace_id: namespace6.id, project_namespace_id: namespace6.id, packages_enabled: false)
+    projects.create!(
+      namespace_id: namespace6.id,
+      project_namespace_id: namespace6.id,
+      organization_id: organization.id,
+      packages_enabled: false
+    )
   end
 
   let!(:project_feature1) do

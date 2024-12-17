@@ -1,9 +1,7 @@
 <script>
 import { GlSprintf, GlLink } from '@gitlab/ui';
 import { pickBy } from 'lodash';
-
 import { s__ } from '~/locale';
-
 import { FEED_TOKEN, INCOMING_EMAIL_TOKEN, STATIC_OBJECT_TOKEN } from '../constants';
 import Token from './token.vue';
 
@@ -79,7 +77,7 @@ export default {
 </script>
 
 <template>
-  <div class="settings-section js-search-settings-section !gl-pt-0">
+  <div>
     <token
       v-for="(tokenData, tokenType) in enabledTokenTypes"
       :key="tokenType"
@@ -91,17 +89,11 @@ export default {
       size="md"
     >
       <template #title>
-        <div class="settings-sticky-header">
-          <div class="settings-sticky-header-inner">
-            {{ $options.i18n[tokenType].label }}
-          </div>
-        </div>
+        {{ $options.i18n[tokenType].label }}
       </template>
       <template #description>
-        <p class="gl-text-secondary">
-          {{ $options.i18n[tokenType].description }}
-          {{ $options.i18n.canNotAccessOtherData }}
-        </p>
+        {{ $options.i18n[tokenType].description }}
+        {{ $options.i18n.canNotAccessOtherData }}
       </template>
       <template #input-description>
         <gl-sprintf :message="$options.i18n[tokenType].inputDescription">

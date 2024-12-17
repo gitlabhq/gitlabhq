@@ -156,7 +156,7 @@ export default {
         />
         <file-icon
           class="file-row-icon"
-          :class="{ 'text-secondary': file.type === 'tree' }"
+          :class="{ 'gl-text-subtle': file.type === 'tree' }"
           :file-name="file.name"
           :loading="file.loading"
           :folder="isTree"

@@ -36,10 +36,14 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillNugetNormalizedVersion, sche
   let(:migration) { described_class.new(**migration_attrs) }
   let(:packages) { table(:packages_packages) }
 
-  let(:namespace) { table(:namespaces).create!(name: 'project', path: 'project', type: 'Project') }
+  let(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
+  let(:namespace) do
+    table(:namespaces).create!(name: 'project', path: 'project', type: 'Project', organization_id: organization.id)
+  end
+
   let(:project) do
     table(:projects).create!(name: 'project', path: 'project', project_namespace_id: namespace.id,
-      namespace_id: namespace.id)
+      namespace_id: namespace.id, organization_id: organization.id)
   end
 
   let(:package_ids) { [] }

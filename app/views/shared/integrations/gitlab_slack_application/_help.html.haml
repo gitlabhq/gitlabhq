@@ -6,5 +6,4 @@
     %p
       = s_("SlackIntegration|See the list of available commands in Slack after setting up this integration by entering")
       %kbd.gl-inline-block /gitlab help
-- if integration.project_level? || Feature.enabled?(:gitlab_for_slack_app_instance_and_group_level, type: :beta)
-  = render "shared/integrations/#{integration.to_param}/slack_integration_form", integration: integration
+= render "shared/integrations/#{integration.to_param}/slack_integration_form", integration: integration

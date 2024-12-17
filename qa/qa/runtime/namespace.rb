@@ -37,7 +37,7 @@ module QA
 
           # Memoize the result of this check so every call doesn't parse gitlab address and check hostname
           # There is no case to change gitlab address in the middle of test process so it should be safe to do
-          @live_env = Runtime::Env.running_on_dot_com? || Runtime::Env.running_on_release?
+          @live_env = Runtime::Env.running_on_live_env?
         end
       end
     end

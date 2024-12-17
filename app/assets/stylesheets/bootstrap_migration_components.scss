@@ -90,7 +90,7 @@ input[type='file'] {
 
   &.badge-gray {
     background-color: $label-gray-bg;
-    color: $gl-text-color;
+    @apply gl-text-default;
     text-shadow: none;
   }
 
@@ -122,13 +122,6 @@ input[type='file'] {
 
   .well-segment {
     padding: 1rem;
-
-    &.pipeline-info {
-      align-items: center;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.25rem;
-    }
 
     &:not(:first-of-type) {
       @apply gl-border-t gl-border-t-section;

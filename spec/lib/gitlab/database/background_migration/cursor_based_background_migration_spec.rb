@@ -69,6 +69,13 @@ RSpec.describe 'Cursor based batched background migrations', feature_category: :
     it 'migrates correctly' do
       runner.run_entire_migration(migration)
       expect(model.where(backfilled: 1).count).to eq(model.count)
+
+      unless migration.batched_jobs.count == 100
+        migration.batched_jobs.find_each do |job|
+          puts job.inspect
+        end
+      end
+
       expect(migration.batched_jobs.count).to eq(100)
     end
 

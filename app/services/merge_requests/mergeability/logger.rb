@@ -34,9 +34,8 @@ module MergeRequests
       attr_reader :destination, :merge_request, :stored_result
 
       def observe_result(name, result)
-        return unless result.respond_to?(:success?)
-
-        observe("mergeability.#{name}.successful", result.success?)
+        observe("mergeability.#{name}.successful", result.success?) if result.respond_to?(:success?)
+        observe("mergeability.#{name}.status", result.status.to_s) if result.respond_to?(:status)
       end
 
       def observe(name, value)
@@ -69,10 +68,9 @@ module MergeRequests
       end
 
       def observations
-        strong_memoize(:observations) do
-          Hash.new { |hash, key| hash[key] = [] }
-        end
+        Hash.new { |hash, key| hash[key] = [] }
       end
+      strong_memoize_attr :observations
 
       def observe_sql_counters(name, start_db_counters, end_db_counters)
         end_db_counters.each do |key, value|

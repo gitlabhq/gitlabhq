@@ -76,8 +76,8 @@ export default {
     },
     permissions() {
       return this.isIssue
-        ? __('at least the Reporter role, the author, and assignees')
-        : __('at least the Reporter role');
+        ? __('at least the Planner role, the author, and assignees')
+        : __('at least the Planner role');
     },
     issuableTypeText() {
       return issuableTypeText[this.issuableType];

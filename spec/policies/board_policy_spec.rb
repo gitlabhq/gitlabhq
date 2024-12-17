@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe BoardPolicy do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :private) }
-  let(:group) { create(:group, :private) }
-  let(:group_board) { create(:board, group: group) }
-  let(:project_board) { create(:board, project: project) }
+RSpec.describe BoardPolicy, feature_category: :portfolio_management do
+  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :private) }
+  let_it_be_with_reload(:group) { create(:group, :private) }
+  let_it_be(:group_board) { create(:board, group: group) }
+  let_it_be(:project_board) { create(:board, project: project) }
 
   let(:board_permissions) do
     [
@@ -21,7 +21,7 @@ RSpec.describe BoardPolicy do
     subject { described_class.new(user, group_board) }
 
     context 'user has access' do
-      before do
+      before_all do
         group.add_developer(user)
       end
 
@@ -41,7 +41,7 @@ RSpec.describe BoardPolicy do
     subject { described_class.new(user, project_board) }
 
     context 'user has access' do
-      before do
+      before_all do
         project.add_developer(user)
       end
 
@@ -83,7 +83,7 @@ RSpec.describe BoardPolicy do
 
       context 'when user can admin project issues' do
         it 'allows to add non backlog issues from issue board' do
-          project.add_reporter(current_user)
+          project.add_planner(current_user)
 
           expect_allowed(:create_non_backlog_issues)
         end
@@ -99,29 +99,34 @@ RSpec.describe BoardPolicy do
     end
 
     context 'for group boards' do
-      let!(:current_user) { create(:user) }
-      let!(:project_1) { create(:project, namespace: group) }
-      let!(:project_2) { create(:project, namespace: group) }
-      let!(:group_board) { create(:board, group: group) }
+      let_it_be(:guest) { create(:user) }
+      let_it_be(:planner) { create(:user) }
+      let_it_be(:reporter) { create(:user) }
+      let_it_be(:group_board) { create(:board, group: group) }
+      let_it_be(:project_2) do
+        create(:project, namespace: group, guests: guest, planners: planner, reporters: reporter)
+      end
+
+      let(:current_user) { nil }
 
       subject { described_class.new(current_user, group_board) }
 
       it_behaves_like 'with admin'
 
-      context 'when user is at least reporter in one of the child projects' do
-        it 'allows to add non backlog issues from issue board' do
-          project_2.add_reporter(current_user)
+      context 'with planner or reporter role in a child project' do
+        where(role: %w[planner reporter])
 
-          expect_allowed(:create_non_backlog_issues)
+        with_them do
+          let(:current_user) { public_send(role) }
+
+          it { expect_allowed(:create_non_backlog_issues) }
         end
       end
 
-      context 'when user is not a reporter from any child projects' do
-        it 'does not allow to add non backlog issues from issue board' do
-          project_2.add_guest(current_user)
+      context 'when user is not at least a planner from any child projects' do
+        let(:current_user) { guest }
 
-          expect_disallowed(:create_non_backlog_issues)
-        end
+        it { expect_disallowed(:create_non_backlog_issues) }
       end
     end
   end

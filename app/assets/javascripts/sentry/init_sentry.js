@@ -1,10 +1,12 @@
 /* eslint-disable no-restricted-imports */
 import {
   init,
+  browserSessionIntegration,
   browserTracingIntegration,
 
   // exports
   captureException,
+  addBreadcrumb,
   SDK_VERSION,
 } from '@sentry/browser';
 
@@ -23,13 +25,19 @@ const initSentry = () => {
         ? [gon.gitlab_url]
         : [gon.gitlab_url, 'webpack-internal://'],
     environment: gon.sentry_environment,
-    autoSessionTracking: true,
+
+    ignoreErrors: [
+      // Network errors create noise in Sentry and can't be fixed, ignore them.
+      /Network Error/i,
+      /NetworkError/i,
+    ],
 
     // Browser tracing configuration
     enableTracing: true,
     tracePropagationTargets: [/^\//], // only trace internal requests
     tracesSampleRate: gon.sentry_clientside_traces_sample_rate || 0,
     integrations: [
+      browserSessionIntegration(),
       browserTracingIntegration({
         beforeStartSpan(context) {
           return {
@@ -65,6 +73,7 @@ const initSentry = () => {
   // eslint-disable-next-line no-underscore-dangle
   window._Sentry = {
     captureException,
+    addBreadcrumb,
     SDK_VERSION, // used to verify compatibility with the Sentry instance
   };
 };

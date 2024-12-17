@@ -3,6 +3,8 @@ data_category: operational
 key_path: counts.ci_pipeline_config_repository
 description: Total Pipelines from CI files in repository
 product_group: pipeline_execution
+product_categories:
+- continuous_integration
 value_type: number
 status: active
 time_frame: all

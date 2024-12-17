@@ -103,12 +103,23 @@ GitLab sends an email notification with the recalculated repository size after t
 
 Use this method to permanently delete files containing sensitive or confidential information from your repository.
 
+WARNING:
+**This action is irreversible.**
+After rewriting history and running housekeeping, the changes are permanent.
+Be aware of the following impacts when removing blobs from your repository:
+
+- Open merge requests might fail to merge and require manual rebasing.
+- Existing local clones are incompatible with the updated repository and must be re-cloned.
+- Pipelines referencing old commit SHAs might break and require reconfiguration.
+- Historical tags and branches based on the old commit history might not function correctly.
+- Commit signatures are dropped during the rewrite process.
+
 NOTE:
 To replace strings with `***REMOVED***`, see [Redact information](../../../topics/git/undo.md#redact-information).
 
 Prerequisites:
 
-- Owner role for the project
+- You must have the Owner role for the project
 - [A list of object IDs](#get-a-list-of-object-ids) to remove.
 
 To remove blobs from your repository:

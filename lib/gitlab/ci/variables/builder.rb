@@ -90,16 +90,12 @@ module Gitlab
         end
 
         def kubernetes_variables(environment:, token:, kubernetes_namespace:)
-          if ci_variables_optimize_kubernetes_variables_enabled?
-            ::Gitlab::Ci::Variables::Collection.new.tap do |collection|
-              # NOTE: deployment_variables will be removed as part of cleanup for
-              # https://gitlab.com/groups/gitlab-org/configure/-/epics/8
-              # Until then, we need to make both the old and the new KUBECONFIG contexts available
-              collection.concat(deployment_variables(environment, kubernetes_namespace))
-              collection.concat(kubeconfig_variables(environment, kubernetes_namespace, token, collection['KUBECONFIG']&.value))
-            end
-          else
-            legacy_kubernetes_variables(environment: environment, token: token, kubernetes_namespace: kubernetes_namespace)
+          ::Gitlab::Ci::Variables::Collection.new.tap do |collection|
+            # NOTE: deployment_variables will be removed as part of cleanup for
+            # https://gitlab.com/groups/gitlab-org/configure/-/epics/8
+            # Until then, we need to make both the old and the new KUBECONFIG contexts available
+            collection.concat(deployment_variables(environment, kubernetes_namespace))
+            collection.concat(kubeconfig_variables(environment, kubernetes_namespace, token, collection['KUBECONFIG']&.value))
           end
         end
 
@@ -127,31 +123,6 @@ module Gitlab
               collection.append(key: 'KUBECONFIG', value: template.to_yaml, public: false, file: true)
             end
           end
-        end
-
-        def legacy_kubernetes_variables(environment:, token:, kubernetes_namespace:)
-          ::Gitlab::Ci::Variables::Collection.new.tap do |collection|
-            # NOTE: deployment_variables will be removed as part of cleanup for
-            # https://gitlab.com/groups/gitlab-org/configure/-/epics/8
-            # Until then, we need to make both the old and the new KUBECONFIG contexts available
-            collection.concat(legacy_deployment_variables(environment: environment, kubernetes_namespace: kubernetes_namespace))
-            template = ::Ci::GenerateKubeconfigService.new(pipeline, token: token, environment: environment).execute
-            kubeconfig_yaml = collection['KUBECONFIG']&.value
-            template.merge_yaml(kubeconfig_yaml) if kubeconfig_yaml.present?
-
-            if template.valid?
-              collection.append(key: 'KUBECONFIG', value: template.to_yaml, public: false, file: true)
-            end
-          end
-        end
-
-        def legacy_deployment_variables(environment:, kubernetes_namespace:)
-          return [] unless environment
-
-          project.deployment_variables(
-            environment: environment,
-            kubernetes_namespace: kubernetes_namespace
-          )
         end
 
         def user_variables(user)
@@ -321,11 +292,6 @@ module Gitlab
             project.batch_loaded_environment_by_name(environment)
           end
         end
-
-        def ci_variables_optimize_kubernetes_variables_enabled?
-          ::Feature.enabled?(:ci_variables_optimize_kubernetes_variables, project)
-        end
-        strong_memoize_attr :ci_variables_optimize_kubernetes_variables_enabled?
       end
     end
   end

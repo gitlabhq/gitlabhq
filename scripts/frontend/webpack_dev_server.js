@@ -58,7 +58,7 @@ nodemon
       console.log('The JavaScript assets are recompiled only if they change');
       console.log('If you change them often, you might want to unset DEV_SERVER_STATIC');
     }
-    /* eslint-disable import/extensions, promise/catch-or-return */
+    /* eslint-disable promise/catch-or-return */
     import('./lib/compile_css.mjs').then(({ simplePluginForNodemon }) => {
       plugin = simplePluginForNodemon({ shouldWatch: !STATIC_MODE });
       return plugin?.start();
@@ -67,7 +67,7 @@ nodemon
       plugin = webpackTailwindCompilerPlugin({ shouldWatch: !STATIC_MODE });
       return plugin?.start();
     });
-    /* eslint-enable import/extensions, promise/catch-or-return */
+    /* eslint-enable promise/catch-or-return */
   })
   .on('quit', () => {
     console.log('Shutting down CSS compilation process');

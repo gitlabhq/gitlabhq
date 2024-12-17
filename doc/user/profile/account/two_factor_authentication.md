@@ -91,6 +91,10 @@ in a safe place.
 
 ### Enable a one-time password authenticator using FortiAuthenticator
 
+DETAILS:
+**Offering:** Self-managed
+
+FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can
 [enable the feature flag](../../../administration/feature_flags.md) named `forti_authenticator`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
@@ -152,10 +156,10 @@ Configure FortiAuthenticator in GitLab. On your GitLab server:
 
 ### Enable a one-time password authenticator using Cisco Duo
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15760) in GitLab 15.10.
+DETAILS:
+**Offering:** Self-managed
 
-FLAG:
-On self-managed GitLab, by default this feature is available. On GitLab.com this feature is not available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15760) in GitLab 15.10.
 
 You can use Cisco Duo as an OTP provider in GitLab.
 

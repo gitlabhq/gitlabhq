@@ -18,7 +18,7 @@ GCP accounts to get started with the GitLab integration with Google Kubernetes E
 [Follow this link](https://cloud.google.com/partners?pcn_code=0014M00001h35gDQAQ&hl=en#contact-form)
 and apply for credit.
 
-**Prerequisites:**
+**Before you begin:**
 
 - A [Google Cloud Platform (GCP) service account](https://cloud.google.com/docs/authentication#service-accounts).
 - [A runner](https://docs.gitlab.com/runner/install/) you can use to run the GitLab CI/CD pipeline.
@@ -57,8 +57,7 @@ This project provides you with:
 
 ## Register the agent
 
-FLAG:
-A [flag](../../../../administration/feature_flags.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. The flag is [enabled on GitLab.com, GitLab Dedicated, and self-managed](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81054) in GitLab 14.9: A [flag](../../../../administration/feature_flags.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. Disabled by default.
 
 To create a GitLab agent for Kubernetes:
 

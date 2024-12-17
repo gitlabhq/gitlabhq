@@ -87,7 +87,12 @@ export default {
     @mouseup="$emit('mouseup', $event)"
     @click="$emit('click', $event)"
   >
-    <gl-icon v-if="isNewNote" name="image-comment-dark" :size="24" />
+    <gl-icon
+      v-if="isNewNote"
+      name="image-comment-dark"
+      :size="24"
+      class="gl-rounded-full gl-border-2 gl-border-solid gl-border-white gl-bg-white"
+    />
     <template v-else>
       {{ label }}
     </template>

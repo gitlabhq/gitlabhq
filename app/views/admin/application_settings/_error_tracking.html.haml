@@ -12,7 +12,7 @@
         %h4= _('Access Token')
         .form-group
           .form-text
-            %p.text-secondary
+            %p.gl-text-subtle
               = s_("ErrorTracking|Access token is %{token_in_code_tag}").html_safe % { token_in_code_tag: content_tag(:code, Gitlab::CurrentSettings.error_tracking_access_token, id: 'error-tracking-access-token') }
           .form-inline
             - reset_url = reset_error_tracking_access_token_admin_application_settings_url

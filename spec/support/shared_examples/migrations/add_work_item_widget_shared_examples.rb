@@ -48,51 +48,51 @@ RSpec.shared_examples(
   end
 end
 
-# Shared examples for testing migration that adds a single widget to a work item type
+# Shared examples for testing migration that adds widgets to a work item type
 #
-# It expects the following variables
-# - `target_type_enum_value`: Int, enum value for the target work item type, typically defined in the migration
-#                             as a constant
-# - `target_type`: Symbol, the target type's name
-# - `additional_types`: Hash (optional), name of work item types and their corresponding enum value that are defined
-#                       at the time the migration was created but are missing from `base_types`.
-# - `widgets_for_type`: Hash, name of the widgets included in the target type with their corresponding enum value
-RSpec.shared_examples 'migration that adds a widget to a work item type' do
+# It expects that the following constants are available in the migration
+# - `WORK_ITEM_TYPE_ENUM_VALUE`: Int, enum value for the work item type
+# - `WIDGET`: Hash, widget definitions (name:, widget_type:)
+# - (Old) `WIDGET_ENUM_VALUE`: Int, enum value for the widget type
+# - (Old) `WIDGET_NAME`: String, name of the widget
+#
+# You can override `target_type_enum_value` to explicitly define the work item type enum value
+RSpec.shared_examples 'migration that adds widgets to a work item type' do
   let(:work_item_types) { table(:work_item_types) }
   let(:work_item_widget_definitions) { table(:work_item_widget_definitions) }
-  let(:additional_base_types) { try(:additional_types) || {} }
-  let(:base_types) do
-    {
-      issue: 0,
-      incident: 1,
-      test_case: 2,
-      requirement: 3,
-      task: 4,
-      objective: 5,
-      key_result: 6,
-      epic: 7
-    }.merge!(additional_base_types)
+  let(:target_type_enum_value) { described_class::WORK_ITEM_TYPE_ENUM_VALUE }
+  let(:widgets) do
+    if defined?(described_class::WIDGETS)
+      described_class::WIDGETS
+    else
+      [
+        {
+          name: described_class::WIDGET_NAME,
+          widget_type: described_class::WIDGET_ENUM_VALUE
+        }
+      ]
+    end
   end
 
   describe '#up', :migration_with_transaction do
-    it "adds widget to work item type", :aggregate_failures do
+    it "adds widgets to work item type", :aggregate_failures do
       expect do
         migrate!
-      end.to change { work_item_widget_definitions.count }.by(1)
+      end.to change { work_item_widget_definitions.count }.by(widgets.size)
 
       work_item_type = work_item_types.find_by(base_type: target_type_enum_value)
-      created_widget = work_item_widget_definitions.last
+      created_widgets = work_item_widget_definitions.last(widgets.size)
 
-      expect(created_widget).to have_attributes(
-        widget_type: described_class::WIDGET_ENUM_VALUE,
-        name: described_class::WIDGET_NAME,
-        work_item_type_id: work_item_type.id
-      )
+      widgets.each do |widget|
+        expect(created_widgets).to include(
+          have_attributes(widget.merge(work_item_type_id: work_item_type.id))
+        )
+      end
     end
 
     context 'when type does not exist' do
-      it 'skips creating the new widget definition' do
-        work_item_types.where(base_type: base_types[target_type]).delete_all
+      it 'skips creating the new widget definitions' do
+        work_item_types.where(base_type: target_type_enum_value).delete_all
 
         expect do
           migrate!
@@ -102,10 +102,10 @@ RSpec.shared_examples 'migration that adds a widget to a work item type' do
   end
 
   describe '#down', :migration_with_transaction do
-    it "removes widget from work item type" do
+    it "removes widgets from work item type" do
       migrate!
 
-      expect { schema_migrate_down! }.to change { work_item_widget_definitions.count }.by(-1)
+      expect { schema_migrate_down! }.to change { work_item_widget_definitions.count }.by(-widgets.size)
     end
   end
 end

@@ -69,4 +69,11 @@ RSpec.describe 'seed production settings' do
       expect { OpenSSL::PKey::RSA.new(settings.ci_jwt_signing_key) }.not_to raise_error
     end
   end
+
+  context 'CI Job Token signing key', :do_not_stub_ci_job_token_signing_key do
+    it 'writes valid RSA key to the database' do
+      expect { load(settings_file) }.to change { settings.reload.ci_job_token_signing_key }.from(nil)
+      expect { OpenSSL::PKey::RSA.new(settings.ci_job_token_signing_key) }.not_to raise_error
+    end
+  end
 end

@@ -336,6 +336,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:ci_schedule_old_pipelines_removal_cron
+  :worker_name: Ci::ScheduleOldPipelinesRemovalCronWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:ci_schedule_unlock_pipelines_in_queue_cron
   :worker_name: Ci::ScheduleUnlockPipelinesInQueueCronWorker
   :feature_category: :job_artifacts
@@ -392,7 +401,7 @@
   :tags: []
 - :name: cronjob:concurrency_limit_resume
   :worker_name: ConcurrencyLimit::ResumeWorker
-  :feature_category: :global_search
+  :feature_category: :scalability
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2878,7 +2887,7 @@
   :worker_name: Ci::CancelRedundantPipelinesWorker
   :feature_category: :continuous_integration
   :has_external_dependencies: false
-  :urgency: :high
+  :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
@@ -2894,6 +2903,15 @@
   :tags: []
 - :name: ci_delete_objects
   :worker_name: Ci::DeleteObjectsWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: ci_destroy_old_pipelines
+  :worker_name: Ci::DestroyOldPipelinesWorker
   :feature_category: :continuous_integration
   :has_external_dependencies: false
   :urgency: :low
@@ -3166,6 +3184,15 @@
   :worker_name: Environments::CanaryIngress::UpdateWorker
   :feature_category: :continuous_delivery
   :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: environments_recalculate_auto_stop
+  :worker_name: Environments::RecalculateAutoStopWorker
+  :feature_category: :environment_management
+  :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
@@ -3773,6 +3800,15 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
+  :tags: []
+- :name: pages_reset_pages_default_domain_redirect
+  :worker_name: Pages::ResetPagesDefaultDomainRedirectWorker
+  :feature_category: :pages
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: post_receive
   :worker_name: PostReceive

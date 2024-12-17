@@ -255,7 +255,7 @@ module QA
       alias_method :use_lfs?, :use_lfs
 
       def default_user
-        @default_user ||= Runtime::UserStore.test_user || Runtime::UserStore.admin_user
+        @default_user ||= Runtime::User::Store.test_user || Runtime::User::Store.admin_user
       end
 
       def add_credentials?
@@ -281,11 +281,7 @@ module QA
       end
 
       def default_credentials
-        if Runtime::User.ldap_user?
-          [Runtime::User.ldap_username, Runtime::User.ldap_password]
-        else
-          [default_user.username, default_user.password]
-        end
+        [default_user.username, default_user.password]
       end
 
       def read_netrc_content

@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe IssuablePolicy, :models do
   let_it_be(:user) { create(:user) }
   let_it_be(:guest) { create(:user) }
+  let_it_be(:planner) { create(:user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
@@ -15,6 +16,7 @@ RSpec.describe IssuablePolicy, :models do
   before do
     project.add_developer(developer)
     project.add_guest(guest)
+    project.add_planner(planner)
     project.add_reporter(reporter)
   end
 
@@ -44,6 +46,10 @@ RSpec.describe IssuablePolicy, :models do
       context 'Timeline events' do
         it 'allows non-members to read time line events' do
           expect(permissions(guest, issue)).to be_allowed(:read_incident_management_timeline_event)
+        end
+
+        it 'disallows planners from managing timeline events' do
+          expect(permissions(planner, issue)).to be_disallowed(:admin_incident_management_timeline_event)
         end
 
         it 'disallows reporters from managing timeline events' do
@@ -77,6 +83,10 @@ RSpec.describe IssuablePolicy, :models do
 
           it 'allows guests to read time line events' do
             expect(permissions(guest, issue)).to be_allowed(:read_incident_management_timeline_event)
+          end
+
+          it 'disallows planners from managing timeline events' do
+            expect(permissions(planner, issue)).to be_disallowed(:admin_incident_management_timeline_event)
           end
 
           it 'disallows reporters from managing timeline events' do
@@ -166,6 +176,16 @@ RSpec.describe IssuablePolicy, :models do
 
       it 'does not allow timelogs creation' do
         expect(permissions(guest, issue)).to be_disallowed(:create_timelog)
+      end
+    end
+
+    context 'when user is at planner of the project' do
+      it 'allows timelogs creation' do
+        expect(permissions(planner, issue)).to be_allowed(:create_timelog)
+      end
+
+      it 'allows reading internal notes' do
+        expect(permissions(planner, issue)).to be_allowed(:read_internal_note)
       end
     end
 

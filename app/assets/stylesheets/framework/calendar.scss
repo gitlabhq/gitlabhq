@@ -1,12 +1,15 @@
 .user-contrib-cell {
-  &:hover {
+  &:hover,
+  &:focus,
+  &.is-active {
     cursor: pointer;
-    outline: 1px solid var(--gl-text-color-default);
+    outline: none;
+    stroke: var(--gl-text-color-default);
   }
 
-  &:focus {
-    outline: 1px solid var(--gl-focus-ring-outer-color);
-    outline-offset: 1px;
+  &:active,
+  &.is-active {
+    stroke-width: 2px;
   }
 
   // `app/assets/javascripts/pages/users/activity_calendar.js` sets this attribute

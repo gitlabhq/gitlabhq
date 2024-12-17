@@ -124,9 +124,9 @@ OpenSSH configured to use AuthorizedKeysCommand ... skipped
   doc/administration/operations/fast_ssh_key_lookup.md
 ```
 
-This issue may occur if:
+This issue might occur if:
 
-- You [use SELinux](../../../operations/fast_ssh_key_lookup.md#selinux-support-and-limitations).
+- You use [SELinux](../../../operations/fast_ssh_key_lookup.md#selinux-support).
 - You don't use SELinux, and the `git` user cannot access the OpenSSH configuration file due to restricted file permissions.
 
 In the latter case, the following output shows that only the `root` user can read this file:
@@ -162,58 +162,69 @@ The output includes:
 Example:
 
 ```plaintext
-http://secondary.example.com/
------------------------------------------------------
-                        GitLab Version: 14.9.2-ee
-                              Geo Role: Secondary
-                         Health Status: Healthy
-                  Project Repositories: succeeded 12345 / total 12345 (100%)
-             Project Wiki Repositories: succeeded 6789 / total 6789 (100%)
-                           Attachments: succeeded 4 / total 4 (100%)
-                      CI job artifacts: succeeded 0 / total 0 (0%)
-        Design management repositories: succeeded 1 / total 1 (100%)
-                           LFS Objects: failed 1 / succeeded 2 / total 3 (67%)
-                   Merge Request Diffs: succeeded 0 / total 0 (0%)
-                         Package Files: failed 1 / succeeded 2 / total 3 (67%)
-              Terraform State Versions: failed 1 / succeeded 2 / total 3 (67%)
-                  Snippet Repositories: failed 1 / succeeded 2 / total 3 (67%)
-               Group Wiki Repositories: succeeded 4 / total 4 (100%)
-                    Pipeline Artifacts: failed 3 / succeeded 0 / total 3 (0%)
-                     Pages Deployments: succeeded 0 / total 0 (0%)
-                  Repositories Checked: failed 5 / succeeded 0 / total 5 (0%)
-                Package Files Verified: succeeded 0 / total 10 (0%)
-     Terraform State Versions Verified: succeeded 0 / total 10 (0%)
-         Snippet Repositories Verified: succeeded 99 / total 100 (99%)
-           Pipeline Artifacts Verified: succeeded 0 / total 10 (0%)
-         Project Repositories Verified: succeeded 12345 / total 12345 (100%)
-    Project Wiki Repositories Verified: succeeded 6789 / total 6789 (100%)
-                         Sync Settings: Full
-              Database replication lag: 0 seconds
-       Last event ID seen from primary: 12345 (about 2 minutes ago)
-               Last event ID processed: 12345 (about 2 minutes ago)
-                Last status report was: 1 minute ago
+                        Geo Site Information
+--------------------------------------------
+                                      Name: example-us-east-2
+                                       URL: https://gitlab.example.com
+                                  Geo Role: Secondary
+                             Health Status: Healthy
+                This Node's GitLab Version: 17.7.0-ee
+
+                     Replication Information
+--------------------------------------------
+                             Sync Settings: Full
+                  Database replication lag: 0 seconds
+           Last event ID seen from primary: 12345 (about 2 minutes ago)
+                   Last event ID processed: 12345 (about 2 minutes ago)
+                    Last status report was: 1 minute ago
+
+                          Replication Status
+--------------------------------------------
+                    Lfs Objects replicated: succeeded 111 / total 111 (100%)
+            Merge Request Diffs replicated: succeeded 28 / total 28 (100%)
+                  Package Files replicated: succeeded 90 / total 90 (100%)
+       Terraform State Versions replicated: succeeded 65 / total 65 (100%)
+           Snippet Repositories replicated: succeeded 63 / total 63 (100%)
+        Group Wiki Repositories replicated: succeeded 14 / total 14 (100%)
+             Pipeline Artifacts replicated: succeeded 112 / total 112 (100%)
+              Pages Deployments replicated: succeeded 55 / total 55 (100%)
+                        Uploads replicated: succeeded 2 / total 2 (100%)
+                  Job Artifacts replicated: succeeded 32 / total 32 (100%)
+                Ci Secure Files replicated: succeeded 44 / total 44 (100%)
+         Dependency Proxy Blobs replicated: succeeded 15 / total 15 (100%)
+     Dependency Proxy Manifests replicated: succeeded 2 / total 2 (100%)
+      Project Wiki Repositories replicated: succeeded 2 / total 2 (100%)
+ Design Management Repositories replicated: succeeded 1 / total 1 (100%)
+           Project Repositories replicated: succeeded 2 / total 2 (100%)
+
+                         Verification Status
+--------------------------------------------
+                      Lfs Objects verified: succeeded 111 / total 111 (100%)
+              Merge Request Diffs verified: succeeded 28 / total 28 (100%)
+                    Package Files verified: succeeded 90 / total 90 (100%)
+         Terraform State Versions verified: succeeded 65 / total 65 (100%)
+             Snippet Repositories verified: succeeded 63 / total 63 (100%)
+          Group Wiki Repositories verified: succeeded 14 / total 14 (100%)
+               Pipeline Artifacts verified: succeeded 112 / total 112 (100%)
+                Pages Deployments verified: succeeded 55 / total 55 (100%)
+                          Uploads verified: succeeded 2 / total 2 (100%)
+                    Job Artifacts verified: succeeded 32 / total 32 (100%)
+                  Ci Secure Files verified: succeeded 44 / total 44 (100%)
+           Dependency Proxy Blobs verified: succeeded 15 / total 15 (100%)
+       Dependency Proxy Manifests verified: succeeded 2 / total 2 (100%)
+        Project Wiki Repositories verified: succeeded 2 / total 2 (100%)
+   Design Management Repositories verified: succeeded 1 / total 1 (100%)
+             Project Repositories verified: succeeded 2 / total 2 (100%)
+
 ```
 
-Each item can have up to three statuses. For example, for `Project Repositories`, you see the following lines:
-
-```plaintext
-  Project Repositories: succeeded 12345 / total 12345 (100%)
-  Project Repositories Verified: succeeded 12345 / total 12345 (100%)
-  Repositories Checked: failed 5 / succeeded 0 / total 5 (0%)
-```
-
-The 3 status items are defined as follows:
-
-- The `Project Repositories` output shows how many project repositories are synced from the primary to the secondary.
-- The `Project Verified Repositories` output shows how many project repositories on this secondary have a matching repository checksum with the Primary.
-- The `Repositories Checked` output shows how many project repositories have passed a local Git repository check (`git fsck`) on the secondary.
+All objects are replicated and verified, which are defined in the [Geo glossary](../../glossary.md). Read more about the
+methods we use for replicating and verifying each data type in [supported Geo data types](../../replication/datatypes.md#data-types).
 
 To find more details about failed items, check
 [the `gitlab-rails/geo.log` file](../../../logs/log_parsing.md#find-most-common-geo-sync-errors)
 
-If you notice synchronization or verification failures, you can try to [resolve them](replication.md).
-
-If there are Repository check failures, you can try to [resolve them](synchronization_verification.md#find-repository-check-failures-in-a-geo-secondary-site).
+If you notice replication or verification failures, you can try to [resolve them](replication.md).
 
 ##### Fixing errors found when running the Geo check Rake task
 
@@ -570,6 +581,21 @@ If you are using the Linux package installation, something might have failed dur
 
 This can be caused by orphaned records in the project registry. They are being cleaned
 periodically using a registry worker, so give it some time to fix it itself.
+
+### Failed checksums on primary site
+
+Failed checksums identified by the Geo Primary Verification information screen can be caused by missing files or mismatched checksums. You can find error messages like `"Repository cannot be checksummed because it does not exist"` or `"File is not checksummable"` in the `gitlab-rails/geo.log` file.
+
+For additional information about failed items, run the [integrity check Rake tasks](../../../raketasks/check.md#uploaded-files-integrity):
+
+```ruby
+sudo gitlab-rake gitlab:artifacts:check
+sudo gitlab-rake gitlab:ci_secure_files:check
+sudo gitlab-rake gitlab:lfs:check
+sudo gitlab-rake gitlab:uploads:check
+```
+
+For detailed information about individual errors, use the `VERBOSE=1` variable.
 
 ### Secondary site shows "Unhealthy" in UI
 

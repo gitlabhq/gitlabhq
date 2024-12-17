@@ -29,6 +29,6 @@ export default {
 <template>
   <div
     v-safe-html="signedOutText"
-    class="disabled-comment gl-relative gl-text-center gl-text-secondary"
+    class="disabled-comment gl-relative gl-text-center gl-text-subtle"
   ></div>
 </template>

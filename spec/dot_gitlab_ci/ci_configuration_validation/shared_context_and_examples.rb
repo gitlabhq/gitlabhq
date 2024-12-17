@@ -2,9 +2,9 @@
 
 RSpec.shared_context 'with simulated pipeline attributes and shared project and user' do
   let(:ci_server_host) { 'gitlab.com' }
-  let(:ci_project_namespace) { 'gitlab-org' }
+  let(:ci_project_namespace) { pipeline_project.namespace.path }
   let(:ci_project_path) { "#{ci_project_namespace}/#{ci_project_name}" }
-  let(:ci_project_name) { 'gitlab' }
+  let(:ci_project_name) { pipeline_project.path }
   let(:ci_pipeline_source) { 'push' }
 
   let(:variables_attributes_base) do
@@ -43,6 +43,7 @@ RSpec.shared_context 'with simulated pipeline attributes and shared project and 
   end
 
   before do
+    pipeline_project.update!(ci_pipeline_variables_minimum_override_role: :developer)
     # delete once we have a migration to permanently increase limit
     stub_application_setting(max_yaml_size_bytes: 2.megabytes)
   end
@@ -104,6 +105,7 @@ end
 RSpec.shared_examples 'default branch pipeline' do
   it 'is valid' do
     expect(pipeline.yaml_errors).to be nil
+    expect(pipeline.errors).to be_empty
     expect(pipeline.status).to eq('created')
     expect(jobs).to include(expected_job_name)
   end
@@ -112,6 +114,7 @@ end
 RSpec.shared_examples 'merge request pipeline' do
   it "succeeds with expected job" do
     expect(pipeline.yaml_errors).to be nil
+    expect(pipeline.errors).to be_empty
     expect(pipeline.status).to eq('created')
     expect(jobs).to include(expected_job_name)
   end
@@ -122,6 +125,7 @@ RSpec.shared_examples 'merge train pipeline' do
 
   it "succeeds with expected job" do
     expect(pipeline.yaml_errors).to be nil
+    expect(pipeline.errors).to be_empty
     expect(pipeline.status).to eq('created')
     expect(jobs).to include('pre-merge-checks')
     expect(jobs).not_to include('upload-frontend-fixtures')

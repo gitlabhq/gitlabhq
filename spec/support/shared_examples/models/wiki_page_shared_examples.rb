@@ -57,6 +57,17 @@ RSpec.shared_examples 'wiki_page' do |container_type|
     subject { persisted_page }
   end
 
+  describe '#meta' do
+    let(:wiki_page) { create(:wiki_page, container: container, content: 'test content') }
+    let!(:meta) { create(:wiki_page_meta, :for_wiki_page, container: container, wiki_page: wiki_page) }
+
+    subject { wiki_page.meta }
+
+    it 'finds the meta record for the page' do
+      expect(subject).to eq(meta)
+    end
+  end
+
   describe '#front_matter' do
     let(:wiki_page) { create(:wiki_page, container: container, content: content) }
 

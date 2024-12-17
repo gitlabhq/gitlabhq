@@ -39,6 +39,11 @@ export default {
       type: Object,
       required: true,
     },
+    isHiddenBySaml: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     noteText() {
@@ -56,14 +61,24 @@ export default {
         this.todo.action !== TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON
       );
     },
+    author() {
+      if (this.isHiddenBySaml) {
+        return {
+          name: s__('Todos|Someone'),
+          webUrl: this.todo.targetUrl,
+          avatarUrl: gon.default_avatar_url,
+        };
+      }
+      return this.todo.author;
+    },
     userIsAuthor() {
-      return this.todo.author.id === this.currentUserId;
+      return this.author.id === this.currentUserId;
     },
     authorOnNote() {
-      return this.userIsAuthor ? s__('Todos|You') : this.todo.author.name;
+      return this.userIsAuthor ? s__('Todos|You') : this.author.name;
     },
     actionSubject() {
-      return this.userIsAuthor ? s__('Todos|yourself') : s__('Todos|you');
+      return this.userIsAuthor && !this.isHiddenBySaml ? s__('Todos|yourself') : s__('Todos|you');
     },
     actionName() {
       if (this.todo.note) {
@@ -158,13 +173,13 @@ export default {
 <template>
   <div class="gl-flex gl-items-start gl-px-2">
     <div class="gl-mr-3 gl-hidden sm:gl-inline-block">
-      <gl-avatar-link :href="todo.author.webUrl">
-        <gl-avatar :size="24" :src="todo.author.avatarUrl" role="none" />
+      <gl-avatar-link :href="author.webUrl">
+        <gl-avatar :size="24" :src="author.avatarUrl" role="none" />
       </gl-avatar-link>
     </div>
     <div>
       <div v-if="showAuthorOnNote" class="gl-inline-flex gl-font-bold">
-        <gl-link v-if="todo.author" :href="todo.author.webUrl" class="!gl-text-gray-900">{{
+        <gl-link v-if="author" :href="author.webUrl" class="!gl-text-default">{{
           authorOnNote
         }}</gl-link>
         <span v-else>{{ $options.i18n.removed }}</span>

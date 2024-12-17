@@ -217,7 +217,7 @@ RSpec.describe MembersFinder, feature_category: :groups_and_projects do
       described_class.new(project, user2).execute(include_relations: [:inherited, :direct, :invited_groups])
     end
 
-    let_it_be(:linked_group) { create(:group, :public) }
+    let_it_be(:linked_group) { create(:group, parent: group) }
     let_it_be(:nested_linked_group) { create(:group, parent: linked_group) }
     let_it_be(:linked_group_member) { linked_group.add_guest(user1) }
     let_it_be(:nested_linked_group_member) { nested_linked_group.add_guest(user2) }
@@ -241,6 +241,38 @@ RSpec.describe MembersFinder, feature_category: :groups_and_projects do
       create(:project_group_link, project: project, group: private_linked_group)
 
       expect(members).to contain_exactly(linked_group_member)
+    end
+
+    context 'when share with group lock is enabled', :sidekiq_inline do
+      let_it_be(:top_group_member) { create(:group_member, :developer, group: group) }
+      let_it_be(:double_nested_linked_group) { create(:group, parent: nested_linked_group) }
+      let_it_be(:double_nested_linked_group_member) { double_nested_linked_group.add_developer(user3) }
+
+      before_all do
+        create(:group_group_link, shared_group: nested_group, shared_with_group: linked_group)
+        create(:project_group_link, project: project, group: double_nested_linked_group)
+      end
+
+      before do
+        project.group.update!(share_with_group_lock: true)
+      end
+
+      it 'returns no access for invited group members including members inherited from ancestors of invited groups' do
+        expect(member_access_level(nested_linked_group_member)).to eq(Gitlab::Access::NO_ACCESS)
+        expect(member_access_level(double_nested_linked_group_member)).to eq(Gitlab::Access::NO_ACCESS)
+      end
+
+      it 'returns access of inherited members' do
+        expect(member_access_level(top_group_member)).to eq(Gitlab::Access::DEVELOPER)
+      end
+
+      it 'returns access of inherited members through group sharing' do
+        expect(member_access_level(linked_group_member)).to eq(Gitlab::Access::GUEST)
+      end
+
+      def member_access_level(member)
+        members.id_in(member).first.access_level
+      end
     end
 
     context 'when current user is a member of the shared project but not of invited group' do

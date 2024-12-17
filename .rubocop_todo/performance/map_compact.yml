@@ -64,7 +64,6 @@ Performance/MapCompact:
     - 'ee/lib/elastic/latest/repository_instance_proxy.rb'
     - 'ee/lib/gitlab/alert_management/alert_payload_field_extractor.rb'
     - 'ee/lib/gitlab/ci/parsers/security/dast.rb'
-    - 'ee/lib/gitlab/ci/reports/license_scanning/report.rb'
     - 'ee/lib/gitlab/ci/reports/metrics/reports_comparer.rb'
     - 'ee/lib/gitlab/search/aggregation_parser.rb'
     - 'ee/spec/models/ee/member_spec.rb'

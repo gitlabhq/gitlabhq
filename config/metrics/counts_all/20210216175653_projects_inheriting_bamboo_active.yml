@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.projects_inheriting_bamboo_active
 description: Count of active projects inheriting integrations for Bamboo CI
 product_group: import_and_integrate
+product_categories:
+- integrations
 value_type: number
 status: active
 time_frame: all

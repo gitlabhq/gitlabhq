@@ -99,7 +99,7 @@ This happens because the value of `$CI_JOB_TOKEN` is only valid for the duration
 
 As a workaround, use [http backend configuration variables](https://www.terraform.io/language/settings/backends/http#configuration-variables) in your CI job,
 which is what happens behind the scenes when following the
-[Get started using GitLab CI](terraform_state.md#initialize-a-terraform-state-as-a-backend-by-using-gitlab-cicd) instructions.
+[Get started using GitLab CI](terraform_state.md#initialize-an-opentofu-state-as-a-backend-by-using-gitlab-cicd) instructions.
 
 ### Error: "address": required field is not set
 
@@ -159,4 +159,10 @@ variables:
 If your `TF_HTTP_ADDRESS`, `TF_HTTP_LOCK_ADDRESS` and `TF_HTTP_UNLOCK_ADDRESS` are set, be sure
 to update the state names there.
 
-Alternatively, you can [migrate your terraform state](terraform_state.md#migrate-to-a-gitlab-managed-terraform-state).
+Alternatively, you can [migrate your OpenTofu state](terraform_state.md#migrate-to-a-gitlab-managed-opentofu-state).
+
+### Error saving state: HTTP error: 404
+
+This error might happen if the state name includes a forward slash (`/`) character.
+To resolve this, ensure that state name does not contain any forward slash (`/`)
+characters.

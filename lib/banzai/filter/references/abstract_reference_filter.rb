@@ -228,7 +228,7 @@ module Banzai
 
               url.chomp!(matches[:format]) if matches.names.include?("format")
 
-              content = link_content || object_link_text(object, matches)
+              content = context[:link_text] || link_content || object_link_text(object, matches)
 
               link = %(<a href="#{url}" #{data}
                           title="#{escape_once(title)}"
@@ -286,7 +286,7 @@ module Banzai
           text = object.reference_link_text(parent)
 
           extras = object_link_text_extras(object, matches)
-          text += " (#{extras.join(", ")})" if extras.any?
+          text += " (#{extras.join(', ')})" if extras.any?
 
           text
         end

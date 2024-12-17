@@ -292,7 +292,7 @@ export default {
           :key="organizationName"
           data-testid="organization"
         >
-          <div class="gl-mt-3 gl-text-secondary">{{ organizationName }}</div>
+          <div class="gl-mt-3 gl-text-subtle">{{ organizationName }}</div>
           <div v-for="contact in contacts" :key="contact.id" data-testid="contact">
             <gl-link
               :id="`contact_${contact.id}`"
@@ -317,11 +317,11 @@ export default {
                   ><div>{{ contact.description }}</div></gl-truncate-text
                 >
                 <div v-if="contact.email" class="gl-flex gl-flex-col gl-gap-1">
-                  <div class="gl-text-secondary">{{ __('Email') }}</div>
+                  <div class="gl-text-subtle">{{ __('Email') }}</div>
                   <a :href="`mailto:${contact.email}`">{{ contact.email }}</a>
                 </div>
                 <div v-if="contact.phone" class="gl-flex gl-flex-col gl-gap-1">
-                  <div class="gl-text-secondary">{{ __('Phone') }}</div>
+                  <div class="gl-text-subtle">{{ __('Phone') }}</div>
                   <div>{{ contact.phone }}</div>
                 </div>
                 <div

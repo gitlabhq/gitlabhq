@@ -100,24 +100,6 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
         expect(merge_request.reload).to be_merged
       end
 
-      context 'when mr_merge_skips_close_issue_authorization feature flag is disabled' do
-        before do
-          stub_feature_flags(mr_merge_skips_close_issue_authorization: false)
-        end
-
-        it 'does not use the last optional argument of the worker' do
-          create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue)
-
-          expect(MergeRequests::CloseIssueWorker)
-            .to receive(:perform_async)
-            .with(project.id, user.id, issue.id, merge_request.id)
-
-          subject
-
-          expect(merge_request.reload).to be_merged
-        end
-      end
-
       context 'when issue is an external issue' do
         let_it_be(:issue) { ExternalIssue.new('JIRA-123', project) }
 
@@ -198,11 +180,11 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
       let(:params) { { delete_source_branch: true } }
 
       it 'aborts auto merges' do
-        mr_1 = create(:merge_request, :merge_when_pipeline_succeeds, target_branch: merge_request.source_branch,
+        mr_1 = create(:merge_request, :merge_when_checks_pass, target_branch: merge_request.source_branch,
           source_branch: "test", source_project: merge_request.project)
         mr_2 = create(:merge_request, :merge_when_checks_pass, target_branch: merge_request.source_branch,
           source_branch: "feature", source_project: merge_request.project)
-        mr_3 = create(:merge_request, :merge_when_pipeline_succeeds, target_branch: 'feature',
+        mr_3 = create(:merge_request, :merge_when_checks_pass, target_branch: 'feature',
           source_branch: 'second', source_project: merge_request.project)
 
         expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2, mr_3)
@@ -213,30 +195,11 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
 
     context 'when source branch is not be deleted' do
       it 'does not abort any auto merges' do
-        mr_1 = create(:merge_request, :merge_when_pipeline_succeeds, target_branch: merge_request.source_branch,
+        mr_1 = create(:merge_request, :merge_when_checks_pass, target_branch: merge_request.source_branch,
           source_branch: "test", source_project: merge_request.project)
         mr_2 = create(:merge_request, :merge_when_checks_pass, target_branch: merge_request.source_branch,
           source_branch: "feature", source_project: merge_request.project)
-        mr_3 = create(:merge_request, :merge_when_pipeline_succeeds, target_branch: 'feature',
-          source_branch: 'second', source_project: merge_request.project)
-
-        expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2, mr_3)
-        subject
-        expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2, mr_3)
-      end
-    end
-
-    context 'when merge_when_checks_pass is disabled' do
-      before do
-        stub_feature_flags(merge_when_checks_pass: false)
-      end
-
-      it 'does not aborts any auto merges' do
-        mr_1 = create(:merge_request, :merge_when_pipeline_succeeds, target_branch: merge_request.source_branch,
-          source_branch: "test", source_project: merge_request.project)
-        mr_2 = create(:merge_request, :merge_when_checks_pass, target_branch: merge_request.source_branch,
-          source_branch: "feature", source_project: merge_request.project)
-        mr_3 = create(:merge_request, :merge_when_pipeline_succeeds, target_branch: 'feature',
+        mr_3 = create(:merge_request, :merge_when_checks_pass, target_branch: 'feature',
           source_branch: 'second', source_project: merge_request.project)
 
         expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2, mr_3)

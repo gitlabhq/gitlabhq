@@ -69,6 +69,7 @@ RSpec.describe ApplicationCable::Connection, :clean_gitlab_redis_sessions do
           expect(connection.current_user).to be_nil
           expect(app_context['meta.auth_fail_reason']).to eq('token_expired')
           expect(app_context['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{user_pat.id}")
+          expect(app_context['meta.auth_fail_requested_scopes']).to be_nil
         end
       end
 
@@ -85,6 +86,7 @@ RSpec.describe ApplicationCable::Connection, :clean_gitlab_redis_sessions do
           expect(connection.current_user).to be_nil
           expect(app_context['meta.auth_fail_reason']).to eq('token_revoked')
           expect(app_context['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{user_pat.id}")
+          expect(app_context['meta.auth_fail_requested_scopes']).to be_nil
         end
       end
     end

@@ -248,10 +248,13 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
       end
 
       context 'with existing package' do
-        let!(:existing_package) { create(:nuget_package, project: package.project, name: package_name, version: package_version) }
+        let!(:existing_package) do
+          create(:nuget_package, :with_symbol_package, project: package.project, name: package_name, version: package_version, without_package_files: true)
+        end
+
         let(:package_id) { existing_package.id }
         let(:package_zip_file) do
-          Zip::File.open(package_file.file.path) do |zipfile|
+          Zip::File.open(existing_package.package_files.first.file.path) do |zipfile|
             zipfile.add('package.pdb', expand_fixture_path('packages/nuget/symbol/package.pdb'))
             zipfile
           end

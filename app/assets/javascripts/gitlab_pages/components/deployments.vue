@@ -162,7 +162,7 @@ export default {
       <h2 class="gl-text-h2">
         {{ $options.i18n.title }}
       </h2>
-      <span class="gl-text-secondary">
+      <span>
         <gl-toggle
           v-model="showInactive"
           :label="$options.i18n.showInactiveLabel"
@@ -220,7 +220,7 @@ export default {
     </div>
     <div
       v-else-if="!loadedPrimaryDeploymentsCount && !loadedParallelDeploymentsCount"
-      class="gl-text-center gl-text-secondary"
+      class="gl-text-center gl-text-subtle"
     >
       {{ $options.i18n.noDeploymentsMessage }}
     </div>

@@ -15,11 +15,11 @@ and [Anthropic Claude](https://www.anthropic.com/product).
 
 ## Progressive enhancement
 
-GitLab Duo AI-powered features are designed as a progressive enhancement to existing GitLab features across the DevSecOps platform. These features are designed to fail gracefully and should not prevent the core functionality of the underlying feature. You should note each feature is subject to its expected functionality as defined by the relevant [feature support policy](../../policy/experiment-beta-support.md).
+GitLab Duo AI-powered features are designed as a progressive enhancement to existing GitLab features across the DevSecOps platform. These features are designed to fail gracefully and should not prevent the core functionality of the underlying feature. You should note each feature is subject to its expected functionality as defined by the relevant [feature support policy](../../policy/development_stages_support.md).
 
 ## Stability and performance
 
-GitLab Duo AI-powered features are in a variety of [feature support levels](../../policy/experiment-beta-support.md#beta). Due to the nature of these features, there may be high demand for usage which may cause degraded performance or unexpected downtime of the feature. We have built these features to gracefully degrade and have controls in place to allow us to mitigate abuse or misuse. GitLab may disable beta and experimental features for any or all customers at any time at our discretion.
+GitLab Duo AI-powered features are in a variety of [feature support levels](../../policy/development_stages_support.md#beta). Due to the nature of these features, there may be high demand for usage which may cause degraded performance or unexpected downtime of the feature. We have built these features to gracefully degrade and have controls in place to allow us to mitigate abuse or misuse. GitLab may disable beta and experimental features for any or all customers at any time at our discretion.
 
 ## Data privacy
 
@@ -29,8 +29,7 @@ GitLab Duo AI-powered features are powered by a generative AI model. The process
 
 The below reflects the current retention periods of GitLab AI model [Sub-Processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors):
 
-- Anthropic discards model input and output data immediately after the output is provided. Anthropic currently does not store data for abuse monitoring. Model input and output is not used to train models. GitLab has arranged [zero data retention](https://support.anthropic.com/en/articles/8956058-i-have-a-zero-retention-agreement-with-anthropic-what-products-does-it-apply-to) with Anthropic for GitLab Duo requests.
-- [Google discards model input and output data](https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance#prediction) immediately after the output is provided. Google currently does not store data for abuse monitoring. Model input and output is not used to train models. Additionally, GitLab [has disabled caching](https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/multimodal-faqs#caching) for GitLab Duo requests.
+GitLab has arranged zero-day data retention with Anthropic and Google for GitLab Duo requests. Anthropic and Google discard model input and output data immediately after the output is provided; input and output data is not stored for abuse monitoring. Model input and output is not used to train models.
 
 All of these AI providers are under data protection agreements with GitLab that prohibit the use of Customer Content for their own purposes, except to perform their independent legal obligations.
 

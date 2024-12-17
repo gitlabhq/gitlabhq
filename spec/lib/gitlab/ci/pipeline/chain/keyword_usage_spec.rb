@@ -39,21 +39,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::KeywordUsage, feature_category: :pip
         perform
       end
     end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(run_keyword_instrumentation: false)
-
-        allow(command).to receive(:yaml_processor_result)
-          .and_return(instance_double(Gitlab::Ci::YamlProcessor::Result, uses_keyword?: true))
-      end
-
-      it 'does not track the usage of the :run keyword' do
-        expect(step).not_to receive(:track_internal_event)
-
-        perform
-      end
-    end
   end
 
   describe '#break?' do

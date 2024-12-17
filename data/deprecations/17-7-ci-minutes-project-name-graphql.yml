@@ -1,0 +1,16 @@
+- title: "Deprecation of `name` field in `ProjectMonthlyUsageType` GraphQL API"
+  removal_milestone: "18.0"
+  announcement_milestone: "17.7"
+  breaking_change: true
+  window: 1
+  reporter: sheldonled
+  stage: Fulfillment
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/381894
+  impact: low
+  scope: project
+  resolution_role: Developer
+  manual_task: true
+  body: |
+    The `name` field in the `ProjectMonthlyUsageType` of the GitLab GraphQL API will be removed in GitLab 18.0.
+
+    To prepare for this change, we recommend reviewing and updating your GraphQL queries that interact with the `ProjectMonthlyUsageType`. Replace any references to the `name` field with `project.name`.

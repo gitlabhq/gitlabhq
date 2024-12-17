@@ -6,9 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab remote URL format
 
-In VS Code, you can browse GitLab repositories
-[in read-only mode](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/README.md#browse-a-repository-without-cloning)
-with a custom remote URL.
+In VS Code, you can clone Git repositories, or browse them
+in read-only mode.
 
 GitLab remote URLs require these parameters:
 
@@ -41,13 +40,38 @@ For example, the `projectID` for the main GitLab project is `278964`, so the rem
 gitlab-remote://gitlab.com/<label>?project=278964&ref=master
 ```
 
+## Clone a Git project
+
+GitLab Workflow extends the `Git: Clone` command. For GitLab projects, it supports cloning with either
+HTTPS or Git URLs.
+
+Prerequisites:
+
+- To return search results from a GitLab instance, you must have
+  [added an access token](setup.md#authenticate-with-gitlab) to that GitLab instance.
+- You must be a member of a project for search to return it as a result.
+
+To search for, then clone, a GitLab project:
+
+1. Open the Command Palette by pressing:
+   - MacOS: <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>.
+   - Windows: <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>.
+1. Run the **Git: Clone** command.
+1. Select either GitHub or GitLab as a repository source.
+1. Search for, then select, a **Repository name**.
+1. Select a local folder to clone the repository into.
+1. If cloning a GitLab repository, select a cloning method:
+   - To clone with Git, select the URL that begins with `user@hostname.com`.
+   - To clone with HTTPS, select the URL that begins with `https://`. This method uses your access token to clone the repository, fetch commits, and push commits.
+1. Select whether to open the cloned repository, or add it to your current workspace.
+
 ## Browse a repository in read-only mode
 
 With this extension, you can browse a GitLab repository in read-only mode without cloning it.
 
 Prerequisites:
 
-- You have [registered an access token](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#setup) for that GitLab instance.
+- You have [registered an access token](setup.md#authenticate-with-gitlab) for that GitLab instance.
 
 To browse a GitLab repository in read-only mode:
 

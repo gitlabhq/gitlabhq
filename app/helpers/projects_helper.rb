@@ -439,12 +439,11 @@ module ProjectsHelper
   end
 
   def show_lfs_misconfiguration_banner?(project)
-    return false unless Feature.enabled?(:lfs_misconfiguration_banner)
-    return false unless project.repository
-    return false unless project.lfs_enabled?
+    return false unless Feature.enabled?(:lfs_misconfiguration_banner, project)
+    return false unless project.repository && project.lfs_enabled?
 
     Rails.cache.fetch("show_lfs_misconfiguration_banner_#{project.id}", expires_in: 5.minutes) do
-      project.lfs_objects.any? && !project.repository.has_gitattributes?
+      project.lfs_objects_projects.project_repository_type.any? && !project.repository.has_gitattributes?
     end
   end
 
@@ -510,12 +509,11 @@ module ProjectsHelper
     return unless current_user
     return if project.empty_repo?
 
-    if current_user.already_forked?(project) && current_user.forkable_namespaces.size < 2
+    if current_user.already_forked?(project) && !current_user.has_forkable_groups?
       user_fork_url = namespace_project_path(current_user, current_user.fork_of(project))
     end
 
     {
-      can_create_fork: can?(current_user, :create_fork).to_s,
       can_fork_project: can?(current_user, :fork_project, project).to_s,
       can_read_code: can?(current_user, :read_code, project).to_s,
       forks_count: project.forks_count,
@@ -730,7 +728,46 @@ module ProjectsHelper
     dashboard_projects_landing_paths.include?(request.path) && !current_user.authorized_projects.present?
   end
 
+  def delete_immediately_message(project)
+    message = _('This action deletes %{codeOpen}%{project_path_with_namespace}%{codeClose} and everything this ' \
+      'project contains. %{strongOpen}There is no going back.%{strongClose}')
+
+    ERB::Util.html_escape(message) % delete_message_data(project)
+  end
+
+  def project_delete_immediately_button_data(project)
+    project_delete_button_shared_data(project).merge({
+      form_path: project_path(project, permanently_delete: true)
+    })
+  end
+
   private
+
+  def delete_message_data(project)
+    {
+      project_path_with_namespace: project.path_with_namespace,
+      project: project.path,
+      strongOpen: '<strong>'.html_safe,
+      strongClose: '</strong>'.html_safe,
+      codeOpen: '<code>'.html_safe,
+      codeClose: '</code>'.html_safe
+    }
+  end
+
+  def project_delete_button_shared_data(project)
+    merge_requests_count = Projects::AllMergeRequestsCountService.new(project).count
+    issues_count = Projects::AllIssuesCountService.new(project).count
+    forks_count = Projects::ForksCountService.new(project).count
+
+    {
+      confirm_phrase: delete_confirm_phrase(project),
+      is_fork: project.forked? ? 'true' : 'false',
+      issues_count: number_with_delimiter(issues_count),
+      merge_requests_count: number_with_delimiter(merge_requests_count),
+      forks_count: number_with_delimiter(forks_count),
+      stars_count: number_with_delimiter(project.star_count)
+    }
+  end
 
   def visibility_level_name(project)
     if project.created_and_owned_by_banned_user? && Feature.enabled?(:hide_projects_of_banned_users)
@@ -771,6 +808,7 @@ module ProjectsHelper
       Gitlab::Access::NO_ACCESS => _('No access'),
       Gitlab::Access::MINIMAL_ACCESS => _("Minimal Access"),
       Gitlab::Access::GUEST => _('Guest'),
+      Gitlab::Access::PLANNER => _('Planner'),
       Gitlab::Access::REPORTER => _('Reporter'),
       Gitlab::Access::DEVELOPER => _('Developer'),
       Gitlab::Access::MAINTAINER => _('Maintainer'),
@@ -910,15 +948,6 @@ module ProjectsHelper
     Gitlab::VisibilityLevel.values.select do |level|
       project.visibility_level_allowed?(level) && restricted_levels.exclude?(level)
     end
-  end
-
-  def find_file_path(ref_type: nil)
-    return unless @project && !@project.empty_repo?
-    return unless can?(current_user, :read_code, @project)
-
-    ref = @ref || @project.repository.root_ref
-
-    project_find_file_path(@project, ref, ref_type: ref_type)
   end
 
   def can_show_last_commit_in_list?(project)

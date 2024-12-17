@@ -12,7 +12,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'can delete a page', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347815' do
+      it 'can delete a page', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347815' do
         initial_wiki.visit!
 
         Page::Project::Wiki::Show.perform(&:click_edit)

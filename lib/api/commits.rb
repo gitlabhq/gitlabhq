@@ -6,6 +6,8 @@ module API
     include PaginationParams
     include Helpers::Unidiff
 
+    helpers ::API::Helpers::NotesHelpers
+
     feature_category :source_code_management
 
     before do
@@ -530,10 +532,8 @@ module API
 
         note = ::Notes::CreateService.new(user_project, current_user, opts).execute
 
-        if note.save
+        process_note_creation_result(note) do
           present note, with: Entities::CommitNote
-        else
-          render_api_error!("Failed to save note #{note.errors.messages}", 400)
         end
       end
 

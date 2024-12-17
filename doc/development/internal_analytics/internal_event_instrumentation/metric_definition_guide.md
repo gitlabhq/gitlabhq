@@ -59,11 +59,6 @@ time_frame: all
 data_source: internal_events
 events:
 - name: view_productivity_analytics
-distribution:
-- ee
-tier:
-- premium
-- ultimate
 tiers:
 - premium
 - ultimate
@@ -89,10 +84,6 @@ milestone: '16.9'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142328
 data_source: internal_events
 data_category: optional
-distribution:
-  - ee
-tier:
-  - ultimate
 tiers:
   - ultimate
 time_frame: 7d
@@ -119,10 +110,6 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138150
 time_frame: 28d
 data_source: internal_events
 data_category: optional
-distribution:
-- ee
-tier:
-- ultimate
 tiers:
 - ultimate
 events:

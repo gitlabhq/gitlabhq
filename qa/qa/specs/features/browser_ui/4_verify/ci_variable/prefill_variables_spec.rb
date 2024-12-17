@@ -47,7 +47,7 @@ module QA
         Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
       end
 
-      it 'shows only variables with description as prefill variables on the run pipeline page', :blocking,
+      it 'shows only variables with description as prefill variables on the run pipeline page',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/378977' do
         Page::Project::Pipeline::New.perform do |new|
           aggregate_failures do
@@ -68,7 +68,7 @@ module QA
         end
       end
 
-      it 'shows dropdown for variables with description, value, and options defined', :blocking,
+      it 'shows dropdown for variables with description, value, and options defined',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/383820' do
         Page::Project::Pipeline::New.perform do |new|
           aggregate_failures do

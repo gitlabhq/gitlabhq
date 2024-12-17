@@ -585,7 +585,13 @@ export default {
         await this.$apollo.mutate({
           mutation: listIssuablesQueries[this.issuableType].createMutation,
           variables: {
-            input: this.isEpicBoard ? input : { ...input, moveAfterId: this.boardListItems[0]?.id },
+            input: this.isEpicBoard
+              ? input
+              : {
+                  ...input,
+                  moveAfterId: this.boardListItems[0]?.id,
+                  iterationId: this.list.iteration?.id,
+                },
           },
           update: (cache, { data: { createIssuable } }) => {
             issuable = createIssuable.issuable;
@@ -751,7 +757,7 @@ export default {
         <!-- for supporting previous structure with intersection observer -->
         <li
           v-if="showCount"
-          class="board-list-count gl-py-4 gl-text-center gl-text-secondary"
+          class="board-list-count gl-py-4 gl-text-center gl-text-subtle"
           data-issue-id="-1"
         >
           <gl-loading-icon

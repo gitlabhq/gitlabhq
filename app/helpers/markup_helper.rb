@@ -108,6 +108,7 @@ module MarkupHelper
   def markup(file_name, text, context = {})
     context[:project] ||= @project
     context[:text_source] ||= :blob
+    context[:requested_path] ||= @path if context[:text_source] == :blob
     prepare_asciidoc_context(file_name, context)
 
     html = Markup::RenderingService

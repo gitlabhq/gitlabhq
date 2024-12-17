@@ -19,13 +19,13 @@ jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
 const initialProps = {
   modalId: 'Delete-blob',
-  deletePath: 'some/path',
   commitMessage: 'Delete File',
   targetBranch: 'some-target-branch',
   originalBranch: 'main',
   canPushCode: true,
   canPushToBranch: true,
   emptyRepo: false,
+  handleFormSubmit: jest.fn(),
 };
 
 const { i18n } = CommitChangesModal;
@@ -35,7 +35,7 @@ describe('CommitChangesModal', () => {
 
   const createComponentFactory =
     (mountFn) =>
-    (props = {}) => {
+    ({ props, slots } = {}) => {
       wrapper = mountFn(CommitChangesModal, {
         propsData: {
           ...initialProps,
@@ -49,6 +49,7 @@ describe('CommitChangesModal', () => {
           GlSprintf,
           GlModal: stubComponent(GlModal, { template: RENDER_ALL_SLOTS_TEMPLATE }),
         },
+        slots,
       });
     };
 
@@ -56,6 +57,7 @@ describe('CommitChangesModal', () => {
   const createFullComponent = createComponentFactory(mount);
 
   const findModal = () => wrapper.findComponent(GlModal);
+  const findSlot = () => wrapper.findByTestId('test-slot');
   const findForm = () => findModal().findComponent(GlForm);
   const findCommitTextarea = () => findForm().findComponent(GlFormTextarea);
   const findFormRadioGroup = () => findForm().findComponent(GlFormRadioGroup);
@@ -65,6 +67,8 @@ describe('CommitChangesModal', () => {
   const findCreateMrCheckbox = () => findForm().findComponent(GlFormCheckbox);
   const findTargetInput = () => findForm().findComponent(GlFormInput);
   const findCommitHint = () => wrapper.find('[data-testid="hint"]');
+  const findBranchInForkMessage = () =>
+    wrapper.findByText('GitLab will create a branch in your fork and start a merge request.');
 
   const fillForm = async (inputValue = {}) => {
     const { targetText, commitText } = inputValue;
@@ -84,7 +88,7 @@ describe('CommitChangesModal', () => {
       linkEnd: '',
     });
 
-    beforeEach(() => createComponent({ isUsingLfs: true }));
+    beforeEach(() => createComponent({ props: { isUsingLfs: true } }));
 
     it('renders a modal containing LFS text', () => {
       expect(findModal().props('title')).toBe(lfsTitleText);
@@ -102,24 +106,74 @@ describe('CommitChangesModal', () => {
     });
   });
 
-  it('renders Modal component', () => {
-    createComponent();
+  describe('renders modal component', () => {
+    it('renders with correct props', () => {
+      createComponent();
 
-    expect(findModal().props()).toMatchObject({
-      size: 'md',
-      actionPrimary: {
-        text: 'Commit changes',
-      },
-      actionCancel: {
-        text: 'Cancel',
-      },
+      expect(findModal().props()).toMatchObject({
+        size: 'md',
+        actionPrimary: {
+          text: 'Commit changes',
+        },
+        actionCancel: {
+          text: 'Cancel',
+        },
+      });
+      expect(findSlot().exists()).toBe(false);
+    });
+
+    it('renders the body slot when one is provided', () => {
+      createComponent({
+        slots: {
+          body: '<div data-testid="test-slot">test body slot</div>',
+        },
+      });
+      expect(findSlot().text()).toBe('test body slot');
+    });
+
+    it('renders the form field slot when one is provided', () => {
+      createComponent({
+        slots: {
+          body: '<div data-testid="test-slot">test form fields slot</div>',
+        },
+      });
+      expect(findSlot().text()).toBe('test form fields slot');
+    });
+
+    it('disables actionable while loading', () => {
+      createComponent({ props: { loading: true } });
+
+      expect(findModal().props('actionPrimary').attributes).toEqual(
+        expect.objectContaining({ disabled: true }),
+      );
+      expect(findModal().props('actionCancel').attributes).toEqual(
+        expect.objectContaining({ disabled: true }),
+      );
+      expect(findCommitTextarea().attributes()).toEqual(
+        expect.objectContaining({ disabled: 'true' }),
+      );
+      expect(findCurrentBranchRadioOption().attributes()).toEqual(
+        expect.objectContaining({ disabled: 'true' }),
+      );
+      expect(findNewBranchRadioOption().attributes()).toEqual(
+        expect.objectContaining({ disabled: 'true' }),
+      );
     });
   });
 
   describe('form', () => {
     it('gets passed the path for action attribute', () => {
       createComponent();
-      expect(findForm().attributes('action')).toBe(initialProps.deletePath);
+      expect(findForm().attributes('action')).toBe(initialProps.actionPath);
+    });
+
+    it('shows the correct form fields when repo is empty', () => {
+      createComponent({ props: { emptyRepo: true } });
+      expect(findCommitTextarea().exists()).toBe(true);
+      expect(findRadioGroup().exists()).toBe(false);
+      expect(findModal().text()).toContain(
+        'GitLab will create a default branch, main, and commit your changes.',
+      );
     });
 
     it('shows the correct form fields when commit to current branch', () => {
@@ -142,12 +196,38 @@ describe('CommitChangesModal', () => {
     });
 
     it('shows the correct form fields when `canPushToBranch` is `false`', () => {
-      createComponent({ canPushToBranch: false, canPushCode: true });
-      expect(wrapper.vm.$data.form.fields.branch_name.value).toBe('');
+      createComponent({ props: { canPushToBranch: false, canPushCode: true } });
+      expect(wrapper.vm.$data.form.fields.branch_name.value).toBe('some-target-branch');
       expect(findCommitTextarea().exists()).toBe(true);
       expect(findRadioGroup().exists()).toBe(false);
       expect(findTargetInput().exists()).toBe(true);
       expect(findCreateMrCheckbox().text()).toBe('Create a merge request for this change');
+    });
+
+    describe('when `canPushToCode` is `false`', () => {
+      const commitInBranchMessage =
+        'Your changes can be committed to main because a merge request is open.';
+
+      it('shows the correct form fields when `branchAllowsCollaboration` is `true`', () => {
+        createComponent({ props: { canPushCode: false, branchAllowsCollaboration: true } });
+        expect(findCommitTextarea().exists()).toBe(true);
+        expect(findRadioGroup().exists()).toBe(false);
+        expect(findModal().text()).toContain(commitInBranchMessage);
+        expect(findBranchInForkMessage().exists()).toBe(false);
+      });
+
+      it('shows the correct form fields when `branchAllowsCollaboration` is `false`', () => {
+        createComponent({
+          props: {
+            canPushCode: false,
+            branchAllowsCollaboration: false,
+          },
+        });
+        expect(findCommitTextarea().exists()).toBe(true);
+        expect(findRadioGroup().exists()).toBe(false);
+        expect(findModal().text()).not.toContain(commitInBranchMessage);
+        expect(findBranchInForkMessage().exists()).toBe(true);
+      });
     });
 
     it('clear branch name when new branch option is selected', async () => {
@@ -156,7 +236,7 @@ describe('CommitChangesModal', () => {
         feedback: null,
         required: true,
         state: true,
-        value: 'main',
+        value: 'some-target-branch',
       });
 
       findFormRadioGroup().vm.$emit('input', true);
@@ -174,8 +254,6 @@ describe('CommitChangesModal', () => {
       input                     | value                          | emptyRepo | canPushCode | canPushToBranch | exist
       ${'authenticity_token'}   | ${'mock-csrf-token'}           | ${false}  | ${true}     | ${true}         | ${true}
       ${'authenticity_token'}   | ${'mock-csrf-token'}           | ${true}   | ${false}    | ${true}         | ${true}
-      ${'_method'}              | ${'delete'}                    | ${false}  | ${true}     | ${true}         | ${true}
-      ${'_method'}              | ${'delete'}                    | ${true}   | ${false}    | ${true}         | ${true}
       ${'original_branch'}      | ${initialProps.originalBranch} | ${false}  | ${true}     | ${true}         | ${true}
       ${'original_branch'}      | ${undefined}                   | ${true}   | ${true}     | ${true}         | ${false}
       ${'create_merge_request'} | ${'1'}                         | ${false}  | ${false}    | ${true}         | ${true}
@@ -187,9 +265,11 @@ describe('CommitChangesModal', () => {
       'passes $input as a hidden input with the correct value',
       ({ input, value, emptyRepo, canPushCode, canPushToBranch, exist }) => {
         createComponent({
-          emptyRepo,
-          canPushCode,
-          canPushToBranch,
+          props: {
+            emptyRepo,
+            canPushCode,
+            canPushToBranch,
+          },
         });
 
         const inputMethod = findForm().find(`input[name="${input}"]`);
@@ -237,16 +317,9 @@ describe('CommitChangesModal', () => {
   });
 
   describe('form submission', () => {
-    let submitSpy;
-
     beforeEach(async () => {
       createFullComponent();
       await nextTick();
-      submitSpy = jest.spyOn(findForm().element, 'submit');
-    });
-
-    afterEach(() => {
-      submitSpy.mockRestore();
     });
 
     describe('invalid form', () => {
@@ -265,7 +338,24 @@ describe('CommitChangesModal', () => {
 
       it('does not submit form', () => {
         findModal().vm.$emit('primary', { preventDefault: () => {} });
-        expect(submitSpy).not.toHaveBeenCalled();
+        expect(wrapper.emitted('submit-form')).toBeUndefined();
+      });
+    });
+
+    describe('invalid prop is passed in', () => {
+      beforeEach(() => {
+        createComponent({ props: { isValid: false } });
+      });
+
+      it('disables submit button', () => {
+        expect(findModal().props('actionPrimary').attributes).toEqual(
+          expect.objectContaining({ disabled: true }),
+        );
+      });
+
+      it('does not submit form', () => {
+        findModal().vm.$emit('primary', { preventDefault: () => {} });
+        expect(wrapper.emitted('submit-form')).toBeUndefined();
       });
     });
 
@@ -285,9 +375,18 @@ describe('CommitChangesModal', () => {
         );
       });
 
-      it('submits form', () => {
-        findModal().vm.$emit('primary', { preventDefault: () => {} });
-        expect(submitSpy).toHaveBeenCalled();
+      it('submits form', async () => {
+        await findModal().vm.$emit('primary', { preventDefault: jest.fn() });
+        await nextTick();
+        const submission = wrapper.emitted('submit-form')[0][0];
+        expect(Object.fromEntries(submission)).toStrictEqual({
+          authenticity_token: 'mock-csrf-token',
+          branch_name: 'some valid target branch',
+          branch_selection: 'true',
+          commit_message: 'some valid commit message',
+          create_merge_request: '1',
+          original_branch: 'main',
+        });
       });
     });
   });

@@ -297,5 +297,47 @@ RSpec.describe Gitlab::Database::AsyncIndexes::MigrationHelpers, feature_categor
         end.not_to change { index_model.where(name: index_name).count }
       end
     end
+
+    context 'when targeting a partitioned table' do
+      let(:table_name) { '_test_partitioned_table' }
+      let(:index_name) { '_test_partitioning_index_name' }
+      let(:column_name) { 'created_at' }
+      let(:partition_schema) { 'gitlab_partitions_dynamic' }
+      let(:partition1_identifier) { "#{partition_schema}.#{table_name}_202001" }
+      let(:partition2_identifier) { "#{partition_schema}.#{table_name}_202002" }
+
+      before do
+        connection.execute(<<~SQL)
+          DROP TABLE IF EXISTS #{table_name};
+          CREATE TABLE #{table_name} (
+            id serial NOT NULL,
+            created_at timestamptz NOT NULL,
+            updated_at timestamptz NOT NULL,
+            PRIMARY KEY (id, created_at)
+          ) PARTITION BY RANGE (created_at);
+
+          DROP TABLE IF EXISTS #{partition1_identifier};
+          CREATE TABLE #{partition1_identifier} PARTITION OF #{table_name}
+          FOR VALUES FROM ('2020-01-01') TO ('2020-02-01');
+
+          DROP TABLE IF EXISTS #{partition2_identifier};
+          CREATE TABLE #{partition2_identifier} PARTITION OF #{table_name}
+          FOR VALUES FROM ('2020-02-01') TO ('2020-03-01');
+
+          CREATE INDEX #{index_name} ON #{table_name}(#{column_name});
+        SQL
+      end
+
+      it 'creates the record for the async index removal' do
+        expect do
+          migration.prepare_async_index_removal(table_name, column_name, name: index_name)
+        end.to change { index_model.where(name: index_name).count }.by(1)
+
+        record = index_model.find_by(name: index_name)
+
+        expect(record.table_name).to eq(table_name)
+        expect(record.definition).to match(/DROP INDEX "#{index_name}"/)
+      end
+    end
   end
 end

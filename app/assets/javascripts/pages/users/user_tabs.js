@@ -18,25 +18,25 @@ const CALENDAR_TEMPLATE = `
       <div class="calendar-legend">
         <svg width="80px" height="20px">
           <g>
-            <rect width="13" height="13" x="2" y="2" data-level="0" class="user-contrib-cell has-tooltip contrib-legend" title="${__(
+            <rect width="13" height="13" x="2" y="2" rx="2" ry="2" data-level="0" class="user-contrib-cell has-tooltip contrib-legend" title="${__(
               'No contributions',
             )}" data-container="body"></rect>
-            <rect width="13" height="13" x="17" y="2" data-level="1" class="user-contrib-cell has-tooltip contrib-legend" title="${__(
+            <rect width="13" height="13" x="17" y="2" rx="2" ry="2" data-level="1" class="user-contrib-cell has-tooltip contrib-legend" title="${__(
               '1-9 contributions',
             )}" data-container="body"></rect>
-            <rect width="13" height="13" x="32" y="2" data-level="2" class="user-contrib-cell has-tooltip contrib-legend" title="${__(
+            <rect width="13" height="13" x="32" y="2" rx="2" ry="2" data-level="2" class="user-contrib-cell has-tooltip contrib-legend" title="${__(
               '10-19 contributions',
             )}" data-container="body"></rect>
-            <rect width="13" height="13" x="47" y="2" data-level="3" class="user-contrib-cell has-tooltip contrib-legend" title="${__(
+            <rect width="13" height="13" x="47" y="2" rx="2" ry="2" data-level="3" class="user-contrib-cell has-tooltip contrib-legend" title="${__(
               '20-29 contributions',
             )}" data-container="body"></rect>
-            <rect width="13" height="13" x="62" y="2" data-level="4" class="user-contrib-cell has-tooltip contrib-legend" title="${__(
+            <rect width="13" height="13" x="62" y="2" rx="2" ry="2" data-level="4" class="user-contrib-cell has-tooltip contrib-legend" title="${__(
               '30+ contributions',
             )}" data-container="body"></rect>
           </g>
         </svg>
       </div>
-      <div class="calendar-hint gl-text-sm gl-text-secondary"></div>
+      <div class="calendar-hint gl-text-sm gl-text-subtle"></div>
     </div>
   </div>
 `;

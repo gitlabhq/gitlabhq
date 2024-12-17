@@ -5,13 +5,14 @@ module Gitlab
     module Importers
       class PullRequestNotesImporter
         include ::Gitlab::Import::MergeRequestHelpers
+        include ::Gitlab::Import::UsernameMentionRewriter
         include Loggable
+        include ::Import::PlaceholderReferences::Pusher
 
         def initialize(project, hash)
           @project = project
           @user_finder = UserFinder.new(project)
           @formatter = Gitlab::ImportFormatter.new
-          @mentions_converter = Gitlab::Import::MentionsConverter.new('bitbucket_server', project)
           @object = hash.with_indifferent_access
         end
 
@@ -29,7 +30,7 @@ module Gitlab
 
         private
 
-        attr_reader :object, :project, :formatter, :user_finder, :mentions_converter
+        attr_reader :object, :project, :formatter, :user_finder
 
         def import_notes_in_batch(merge_request)
           activities = client.activities(project_key, repository_slug, merge_request.iid)
@@ -56,13 +57,23 @@ module Gitlab
         def import_merge_event(merge_request, merge_event)
           log_info(import_stage: 'import_merge_event', message: 'starting', iid: merge_request.iid)
 
-          committer = merge_event.committer_email
+          user_id = if user_mapping_enabled?(project)
+                      user_finder.uid(
+                        username: merge_event.committer_username,
+                        display_name: merge_event.committer_name
+                      )
+                    else
+                      user_finder.find_user_id(by: :email, value: merge_event.committer_email)
+                    end
 
-          user_id = user_finder.find_user_id(by: :email, value: committer) || project.creator_id
+          user_id ||= project.creator_id
+
           timestamp = merge_event.merge_timestamp
           merge_request.update({ merge_commit_sha: merge_event.merge_commit })
+
           metric = MergeRequest::Metrics.find_or_initialize_by(merge_request: merge_request)
           metric.update(merged_by_id: user_id, merged_at: timestamp)
+          push_reference(project, metric, :merged_by_id, merge_event.committer_username)
 
           log_info(import_stage: 'import_merge_event', message: 'finished', iid: merge_request.iid)
         end
@@ -76,8 +87,11 @@ module Gitlab
             event_id: approved_event.id
           )
 
-          user_id = if Feature.enabled?(:bitbucket_server_user_mapping_by_username, project, type: :ops)
-                      user_finder.find_user_id(by: :username, value: approved_event.approver_username)
+          user_id = if user_mapping_enabled?(project)
+                      user_finder.uid(
+                        username: approved_event.approver_username,
+                        display_name: approved_event.approver_name
+                      )
                     else
                       user_finder.find_user_id(by: :email, value: approved_event.approver_email)
                     end
@@ -86,8 +100,12 @@ module Gitlab
 
           submitted_at = approved_event.created_at || merge_request.updated_at
 
-          create_approval!(project.id, merge_request.id, user_id, submitted_at)
-          create_reviewer!(merge_request.id, user_id, submitted_at)
+          approval, approval_note = create_approval!(project.id, merge_request.id, user_id, submitted_at)
+          push_reference(project, approval, :user_id, approved_event.approver_username)
+          push_reference(project, approval_note, :author_id, approved_event.approver_username)
+
+          reviewer = create_reviewer!(merge_request.id, user_id, submitted_at)
+          push_reference(project, reviewer, :user_id, approved_event.approver_username) if reviewer
 
           log_info(
             import_stage: 'import_approved_event',
@@ -125,6 +143,7 @@ module Gitlab
 
           if note.valid?
             note.save
+            push_reference(project, note, :author_id, comment.author_username)
             return note
           end
 
@@ -152,7 +171,9 @@ module Gitlab
           note += "*\n\n#{comment.note}"
 
           attributes[:note] = note
-          merge_request.notes.create!(attributes)
+          note = merge_request.notes.create!(attributes)
+          push_reference(project, note, :author_id, comment.author_username)
+          note
         end
 
         def build_position(merge_request, pr_comment)
@@ -171,10 +192,12 @@ module Gitlab
           log_info(import_stage: 'import_standalone_pr_comments', message: 'starting', iid: merge_request.iid)
 
           pr_comments.each do |comment|
-            merge_request.notes.create!(pull_request_comment_attributes(comment))
+            note = merge_request.notes.create!(pull_request_comment_attributes(comment))
+            push_reference(project, note, :author_id, comment.author_username)
 
             comment.comments.each do |replies|
-              merge_request.notes.create!(pull_request_comment_attributes(replies))
+              note = merge_request.notes.create!(pull_request_comment_attributes(replies))
+              push_reference(project, note, :author_id, comment.author_username)
             end
           rescue StandardError => e
             Gitlab::ErrorTracking.log_exception(
@@ -190,7 +213,7 @@ module Gitlab
         end
 
         def pull_request_comment_attributes(comment)
-          author = user_finder.uid(comment)
+          author = author(comment)
           note = ''
 
           unless author
@@ -198,28 +221,37 @@ module Gitlab
             note = "*By #{comment.author_username} (#{comment.author_email})*\n\n"
           end
 
-          comment_note = if Feature.enabled?(:bitbucket_server_convert_mentions_to_users, project.creator)
-                           mentions_converter.convert(comment.note)
-                         else
-                           comment.note
-                         end
+          comment_note = comment.note
 
           note +=
             # Provide some context for replying
             if comment.parent_comment
-              "> #{comment.parent_comment.note.truncate(80)}\n\n#{comment_note}"
+              parent_comment_note = comment.parent_comment.note.truncate(80, omission: ' ...')
+
+              "> #{parent_comment_note}\n\n#{comment_note}"
             else
               comment_note
             end
 
           {
             project: project,
-            note: note,
+            note: wrap_mentions_in_backticks(note),
             author_id: author,
             created_at: comment.created_at,
             updated_at: comment.updated_at,
             imported_from: ::Import::SOURCE_BITBUCKET_SERVER
           }
+        end
+
+        def author(comment)
+          if user_mapping_enabled?(project)
+            user_finder.uid(
+              username: comment.author_username,
+              display_name: comment.author_name
+            )
+          else
+            user_finder.uid(comment)
+          end
         end
 
         def client

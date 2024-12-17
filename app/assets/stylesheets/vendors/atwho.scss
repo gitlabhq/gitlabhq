@@ -36,7 +36,10 @@
 
   .cur {
     .avatar {
-      @include disable-all-animation;
+      transition-property: none !important;
+      transform: none !important;
+      animation: none !important;
+      border: 1px solid $white;
     }
   }
 

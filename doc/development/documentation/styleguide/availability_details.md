@@ -74,6 +74,7 @@ For status, choose one:
 
 - `Beta`
 - `Experiment`
+- `Limited availability`
 
 Generally available features should not have a status.
 
@@ -91,8 +92,8 @@ In addition:
 
 - Ensure that the output generates properly.
 - Ensure the version history begins with `> -`.
-- If possible, include a link to the related issue, merge request, or epic. Do not link to confidential issues.
-  For details, see [Confidential or restricted access links](../styleguide/index.md#confidential-or-restricted-access-links).
+- If possible, include a link to the related issue. If there is no related issue, link to a merge request, or epic.
+- Do not link to [confidential issues](../styleguide/index.md#confidential-or-restricted-access-links).
 - Do not link to the pricing page. Do not include the subscription tier.
 
 #### Updated features
@@ -128,8 +129,15 @@ For features that move to another subscription tier, use `moved`:
 For a feature status change from experiment to beta, use `changed`:
 
 ```markdown
-> - [Introduced](https://issue-link) as an [experiment](../../policy/experiment-beta-support.md) in GitLab 15.7.
-> - [Changed](https://issue-link) to beta in GitLab 16.0.
+> - [Introduced](https://issue-link) as an [experiment](../../policy/development_stages_support.md) in GitLab 15.7.
+> - [Changed](https://issue-link) from experiment to beta in GitLab 16.0.
+```
+
+For a feature status change from beta to limited availability, use `changed`:
+
+```markdown
+> - [Changed](https://issue-link) from experiment to beta in GitLab 16.0.
+> - [Changed](https://issue-link) from beta to limited availability in GitLab 16.3.
 ```
 
 For a change to generally available, use:
@@ -156,8 +164,8 @@ For features introduced behind feature flags, add details about the feature flag
 Remove history items and inline text that refer to unsupported versions.
 
 GitLab supports the current major version and two previous major versions.
-For example, if 16.0 is the current major version, all major and minor releases of
-GitLab 16.0, 15.0, and 14.0 are supported.
+For example, if 17.0 is the current major version, all major and minor releases of
+GitLab 17.0, 16.0, and 15.0 are supported.
 
 For the list of current supported versions, see [Version support](https://about.gitlab.com/support/statement-of-support/#version-support).
 

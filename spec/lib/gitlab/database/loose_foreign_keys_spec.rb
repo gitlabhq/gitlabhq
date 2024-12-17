@@ -7,17 +7,29 @@ RSpec.describe Gitlab::Database::LooseForeignKeys do
     subject(:definitions) { described_class.definitions }
 
     it 'all definitions have assigned a known gitlab_schema and on_delete' do
-      is_expected.to all(have_attributes(
-        options: a_hash_including(
-          column: be_a(String),
-          gitlab_schema: be_in(Gitlab::Database.schemas_to_base_models.symbolize_keys.keys),
-          on_delete: be_in([:async_delete, :async_nullify, :update_column_to]),
-          target_column: be_a(String).or(be_a(NilClass)),
-          target_value: be_a(String).or(be_a(Integer)).or(be_a(NilClass))
-        ),
-        from_table: be_a(String),
-        to_table: be_a(String)
-      ))
+      is_expected.to all(
+        have_attributes(
+          options: a_hash_including(
+            column: be_a(String),
+            gitlab_schema: be_in(Gitlab::Database.schemas_to_base_models.symbolize_keys.keys),
+            on_delete: be_in([:async_delete, :async_nullify, :update_column_to]),
+            target_column: be_a(String).or(be_a(NilClass)),
+            target_value: be_a(String).or(be_a(Integer)).or(be_a(NilClass)),
+            conditions: be_nil.or(
+              be_an(Array).and(
+                all(
+                  a_hash_including(
+                    column: be_a(String),
+                    value: be_a(String).or(be_a(Integer))
+                  )
+                )
+              )
+            )
+          ),
+          from_table: be_a(String),
+          to_table: be_a(String)
+        )
+      )
     end
 
     context 'ensure keys are sorted' do

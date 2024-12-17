@@ -30,10 +30,10 @@ Information on testing Vue 3 is contained in [this page](../testing_guide/testin
 We use Jest to write frontend unit and integration tests.
 Jest tests can be found in `/spec/frontend` and `/ee/spec/frontend` in EE.
 
-### Limitations of jsdom
+### `jsdom`
 
-Jest uses jsdom instead of a browser for running tests.
-This comes with a number of limitations, namely:
+Jest uses `jsdom` instead of a browser for running tests.
+Known issues include:
 
 - [No scrolling support](https://github.com/jsdom/jsdom/blob/15.1.1/lib/jsdom/browser/Window.js#L623-L625)
 - [No element sizes or positions](https://github.com/jsdom/jsdom/blob/15.1.1/lib/jsdom/living/nodes/Element-impl.js#L334-L371)
@@ -173,6 +173,24 @@ expect(idGenerator.create()).toBe('1234')
 
 // Good: actually focusing on the logic of your component and just leverage the controllable mocks output
 expect(wrapper.find('div').html()).toBe('<div id="1234">...</div>')
+```
+
+### Don't use imported values in assertions
+
+Prefer literal values in assertions rather than importing constants. This makes tests easier to read, and resilient to changes. This is discussed further in [internationalization recommendations](../i18n/externalization.md#recommendations).
+
+```javascript
+// Bad: MY_CONSTANT could accidentally be set to undefined, have a typo etc. and test would still pass
+import { MY_CONSTANT } from '../constants';
+
+it('returns the correct value', () => {
+  expect(ding()).toBe(MY_CONSTANT);
+});
+
+// Good: explicit value is asserted
+it('returns the correct value', () => {
+  expect(ding()).toBe('expected literal value');
+});
 ```
 
 ### Follow the user
@@ -942,6 +960,12 @@ For running the frontend tests, you need the following commands:
 - `rake frontend:fixtures` (re-)generates [fixtures](#frontend-test-fixtures). Make sure that
   fixtures are up-to-date before running tests that require them.
 - `yarn jest` runs Jest tests.
+
+### Running CE and EE tests
+
+Whenever you create tests for both CE and EE environments, because your changes have EE features, you need to take some steps to ensure that both tests pass locally and on the pipeline when run.
+
+Check [this section](../ee_features.md#running-ee-vs-ce-tests) to learn more about testing both environments.
 
 ### Live testing and focused testing -- Jest
 

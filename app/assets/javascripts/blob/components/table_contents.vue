@@ -69,7 +69,7 @@ export default {
   <gl-disclosure-dropdown
     v-if="!isHidden && items.length"
     icon="list-bulleted"
-    class="gl-mr-2"
+    class="!gl-pr-0"
     :items="items"
   />
 </template>

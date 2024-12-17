@@ -8,6 +8,11 @@ Rails.application.configure do
   config.action_cable.url = Gitlab::Utils.append_path(Gitlab.config.gitlab.relative_url_root, '/-/cable')
   config.action_cable.worker_pool_size = Gitlab::ActionCable::Config.worker_pool_size
   config.action_cable.allowed_request_origins = [Gitlab.config.gitlab.url] if Rails.env.development? || Rails.env.test?
+  if Rails.env.development? || Rails.env.test?
+    config.action_cable.disable_request_forgery_protection = Gitlab::Utils.to_boolean(
+      ENV.fetch('ACTION_CABLE_DISABLE_REQUEST_FORGERY_PROTECTION', false)
+    )
+  end
 end
 
 ActionCable::SubscriptionAdapter::Base.prepend(Gitlab::Patch::ActionCableSubscriptionAdapterIdentifier)

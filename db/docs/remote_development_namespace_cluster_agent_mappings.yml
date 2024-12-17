@@ -10,7 +10,6 @@ description: This table records associations between Namespaces and Cluster Agen
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145101
 milestone: '16.10'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   namespace_id: namespaces
+table_size: small

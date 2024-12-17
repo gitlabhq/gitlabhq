@@ -4,16 +4,13 @@ require 'spec_helper'
 
 RSpec.describe ::Ci::DestroyPipelineService, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
+  let_it_be_with_refind(:pipeline) { create(:ci_pipeline, :success, project: project, sha: project.commit.id) }
 
-  let!(:pipeline) { create(:ci_pipeline, :success, project: project, sha: project.commit.id) }
+  let(:service) { described_class.new(project, user) }
 
-  subject { described_class.new(project, user).execute(pipeline) }
-
-  context 'user is owner' do
-    let(:user) { project.first_owner }
-
+  shared_examples 'unsafe_execute' do
     it 'destroys the pipeline' do
-      subject
+      response
 
       expect { pipeline.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
@@ -23,7 +20,7 @@ RSpec.describe ::Ci::DestroyPipelineService, feature_category: :continuous_integ
 
       expect(project.pipeline_status.has_status?).to be_truthy
 
-      subject
+      response
 
       # We need to reset lazy_latest_pipeline cache to simulate a new request
       BatchLoader::Executor.clear_current
@@ -33,14 +30,14 @@ RSpec.describe ::Ci::DestroyPipelineService, feature_category: :continuous_integ
     end
 
     it 'does not log an audit event' do
-      expect { subject }.not_to change { AuditEvent.count }
+      expect { response }.not_to change { AuditEvent.count }
     end
 
     context 'when the pipeline has jobs' do
       let!(:build) { create(:ci_build, project: project, pipeline: pipeline) }
 
       it 'destroys associated jobs' do
-        subject
+        response
 
         expect { build.reload }.to raise_error(ActiveRecord::RecordNotFound)
       end
@@ -48,7 +45,7 @@ RSpec.describe ::Ci::DestroyPipelineService, feature_category: :continuous_integ
       it 'destroys associated stages' do
         stages = pipeline.stages
 
-        subject
+        response
 
         expect(stages).to all(raise_error(ActiveRecord::RecordNotFound))
       end
@@ -57,35 +54,34 @@ RSpec.describe ::Ci::DestroyPipelineService, feature_category: :continuous_integ
         let!(:artifact) { create(:ci_job_artifact, :archive, job: build) }
 
         it 'destroys associated artifacts' do
-          subject
+          response
 
           expect { artifact.reload }.to raise_error(ActiveRecord::RecordNotFound)
         end
 
         it 'inserts deleted objects for object storage files' do
-          expect { subject }.to change { Ci::DeletedObject.count }
+          expect { response }.to change { Ci::DeletedObject.count }
         end
       end
 
       context 'when job has trace chunks' do
-        let(:connection_params) { Gitlab.config.artifacts.object_store.connection.symbolize_keys }
-        let(:connection) { ::Fog::Storage.new(connection_params) }
-
         before do
           stub_object_storage(connection_params: connection_params, remote_directory: 'artifacts')
           stub_artifacts_object_storage
         end
 
+        let(:connection_params) { Gitlab.config.artifacts.object_store.connection.symbolize_keys }
+        let(:connection) { ::Fog::Storage.new(connection_params) }
         let!(:trace_chunk) { create(:ci_build_trace_chunk, :fog_with_data, build: build) }
 
         it 'destroys associated trace chunks' do
-          subject
+          response
 
           expect { trace_chunk.reload }.to raise_error(ActiveRecord::RecordNotFound)
         end
 
         it 'removes data from object store' do
-          expect { subject }.to change { Ci::BuildTraceChunks::Fog.new.data(trace_chunk) }
+          expect { response }.to change { Ci::BuildTraceChunks::Fog.new.data(trace_chunk) }
         end
       end
     end
@@ -104,16 +100,34 @@ RSpec.describe ::Ci::DestroyPipelineService, feature_category: :continuous_integ
 
         expect(cancel_pipeline_service).to receive(:force_execute)
 
-        subject
+        response
       end
     end
   end
 
-  context 'user is not owner' do
-    let(:user) { create(:user) }
+  describe '#execute' do
+    subject(:response) { service.execute(pipeline) }
 
-    it 'raises an exception' do
-      expect { subject }.to raise_error(Gitlab::Access::AccessDeniedError)
+    context 'when user is owner' do
+      let(:user) { project.first_owner }
+
+      it_behaves_like 'unsafe_execute'
     end
+
+    context 'when user is not owner' do
+      let(:user) { create(:user) }
+
+      it 'raises an exception' do
+        expect { response }.to raise_error(Gitlab::Access::AccessDeniedError)
+      end
+    end
+  end
+
+  describe '#unsafe_execute' do
+    subject(:response) { service.unsafe_execute(pipeline) }
+
+    let(:user) { nil }
+
+    it_behaves_like 'unsafe_execute'
   end
 end

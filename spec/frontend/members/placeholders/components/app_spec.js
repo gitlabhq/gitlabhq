@@ -253,7 +253,7 @@ describe('PlaceholdersTabApp', () => {
 
     it('shows toast', () => {
       expect($toast.show).toHaveBeenCalledWith(
-        'Placeholder Placeholder 2 (@placeholder_2) kept as placeholder.',
+        'Placeholder Placeholder 2 (@placeholder_2) was kept as a placeholder.',
       );
     });
   });
@@ -327,7 +327,7 @@ describe('PlaceholdersTabApp', () => {
     });
   });
 
-  describe('keep all as placeholder', () => {
+  describe('keep all as placeholders', () => {
     beforeEach(() => {
       createComponent({ mountFn: mountExtended });
     });
@@ -365,7 +365,7 @@ describe('PlaceholdersTabApp', () => {
     });
 
     it('shows toast', () => {
-      expect($toast.show).toHaveBeenCalledWith('7 placeholders were kept as placeholders.');
+      expect($toast.show).toHaveBeenCalledWith('7 placeholder users were kept as placeholders.');
     });
   });
 });

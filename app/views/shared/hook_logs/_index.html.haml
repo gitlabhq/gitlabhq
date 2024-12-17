@@ -6,5 +6,5 @@
   .settings-sticky-header
     .settings-sticky-header-inner
       %h4.gl-my-0= _('Recent events')
-  %p.gl-text-secondary= _('GitLab events trigger webhooks. Use the request details of a webhook to help troubleshoot problems. %{link_start}How do I troubleshoot?%{link_end}').html_safe % { link_start: link_start, link_end: link_end }
+  %p.gl-text-subtle= _('GitLab events trigger webhooks. Use the request details of a webhook to help troubleshoot problems. %{link_start}How do I troubleshoot?%{link_end}').html_safe % { link_start: link_start, link_end: link_end }
   = render partial: 'shared/hook_logs/recent_deliveries_table', locals: { hook: hook, hook_logs: hook_logs }

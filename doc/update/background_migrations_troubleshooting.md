@@ -189,7 +189,7 @@ For other advanced search migrations stuck in pending, see [how to retry a halte
 If you upgrade GitLab before all pending advanced search migrations are completed, any pending migrations
 that have been removed in the new version cannot be executed or retried.
 In this case, you must
-[re-create your index from scratch](../integration/advanced_search/elasticsearch_troubleshooting.md#last-resort-to-recreate-an-index).
+[re-create your index from scratch](../integration/elasticsearch/troubleshooting/indexing.md#last-resort-to-recreate-an-index).
 
 ## What do you do for the error `Elasticsearch version not compatible`
 

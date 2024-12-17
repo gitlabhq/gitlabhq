@@ -403,8 +403,14 @@ function deduplicateFilesList(files, updatePosition) {
     if (updatePosition && id in newList) {
       // Object.values preserves key order but doesn't update order when writing to the same key
       // In order to update position of the item we have to delete it first and then add it back
+      const existingFile = newList[id];
       // eslint-disable-next-line no-param-reassign
       delete newList[id];
+      return {
+        ...newList,
+        // 'updatePosition' should be set to true only when we want to keep the existing file
+        [id]: existingFile,
+      };
     }
 
     return {

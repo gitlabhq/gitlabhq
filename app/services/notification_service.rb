@@ -76,10 +76,11 @@ class NotificationService
   end
 
   def bot_resource_access_token_about_to_expire(bot_user, token_name, params = {})
-    recipients = bot_user.resource_bot_owners_and_maintainers.select { |user| user.can?(:receive_notifications) }
     resource = bot_user.resource_bot_resource
 
-    recipients.each do |recipient|
+    bot_resource_access_token_about_to_expire_recipients(bot_user) do |recipient|
+      next unless recipient.can?(:receive_notifications)
+
       log_info("Notifying resource access token owner about expiring tokens", recipient)
 
       mailer.bot_resource_access_token_about_to_expire_email(
@@ -951,6 +952,56 @@ class NotificationService
 
   def project_maintainers_recipients(target, action:)
     NotificationRecipients::BuildService.build_project_maintainers_recipients(target, action: action)
+  end
+
+  def bot_resource_access_token_about_to_expire_recipients(bot_user)
+    resource = bot_user.resource_bot_resource
+
+    if send_bot_rat_expiry_to_inherited?(resource)
+      inherited_rat_members_relation(resource, bot_user).find_each do |membership|
+        yield membership.user
+      end
+    else
+      bot_user.resource_bot_owners_and_maintainers.find_each do |user|
+        yield user
+      end
+    end
+  end
+
+  def inherited_rat_members_relation(resource, bot_user)
+    case resource
+    when Group
+      GroupMembersFinder.new(
+        resource,
+        bot_user,
+        params: {
+          access_levels: [
+            Gitlab::Access::OWNER,
+            Gitlab::Access::ADMIN
+          ],
+          non_invite: true
+        }
+      ).execute(include_relations: [:direct, :inherited]).non_minimal_access
+    when Project
+      MembersFinder
+        .new(
+          resource,
+          bot_user,
+          params: {
+            owners_and_maintainers: true
+          }
+        ).execute(include_relations: [:direct, :inherited])
+    else
+      raise ArgumentError, "#{bot_user} is not connected to a Group or Project"
+    end
+  end
+
+  def send_bot_rat_expiry_to_inherited?(group_or_project)
+    root_ancestor = group_or_project.root_ancestor
+    namespace = group_or_project.is_a?(Namespace) ? group_or_project : group_or_project.namespace
+
+    Feature.enabled?(:pat_expiry_inherited_members_notification, root_ancestor) &&
+      namespace.resource_access_token_notify_inherited?
   end
 
   def notifiable?(...)

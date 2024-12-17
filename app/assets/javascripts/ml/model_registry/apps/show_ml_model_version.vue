@@ -4,7 +4,7 @@ import { GlAvatar, GlTab, GlTabs, GlBadge, GlButton, GlSprintf, GlIcon, GlLink }
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert, VARIANT_DANGER } from '~/alert';
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import { setUrlFragment, visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import getModelVersionQuery from '~/ml/model_registry/graphql/queries/get_model_version.query.graphql';
 import deleteModelVersionMutation from '~/ml/model_registry/graphql/mutations/delete_model_version.mutation.graphql';
@@ -232,13 +232,14 @@ export default {
     },
   },
   i18n: {
-    editModelVersionButtonLabel: s__('MlModelRegistry|Edit model version'),
+    editModelVersionButtonLabel: __('Edit'),
     authorTitle: s__('MlModelRegistry|Publisher'),
     tabs: {
       modelVersionCard: s__('MlModelRegistry|Version card'),
       artifacts: s__('MlModelRegistry|Artifacts'),
       performance: s__('MlModelRegistry|Performance'),
     },
+    noneText: __('None'),
   },
   ROUTE_DETAILS,
   ROUTE_ARTIFACTS,
@@ -264,7 +265,7 @@ export default {
                 </template>
                 <template #author>
                   <gl-link
-                    class="js-user-link gl-font-bold !gl-text-gray-500"
+                    class="js-user-link gl-font-bold !gl-text-subtle"
                     :href="author.webUrl"
                     :data-user-id="authorId"
                   >
@@ -280,7 +281,7 @@ export default {
         <gl-button
           v-if="canWriteModelRegistry"
           data-testid="edit-model-version-button"
-          variant="confirm"
+          category="secondary"
           :href="editModelVersionPath"
           >{{ $options.i18n.editModelVersionButtonLabel }}</gl-button
         >
@@ -321,15 +322,17 @@ export default {
 
       <div class="gl-pt-6 md:gl-col-span-1">
         <div class="gl-text-lg gl-font-bold">{{ $options.i18n.authorTitle }}</div>
-        <div v-if="showAuthor" class="gl-mt-3 gl-text-gray-500">
+        <div class="gl-mt-3 gl-text-subtle" data-testid="sidebar-author">
           <gl-link
+            v-if="showAuthor"
             data-testid="sidebar-author-link"
-            class="js-user-link gl-font-bold !gl-text-gray-500"
+            class="js-user-link gl-font-bold !gl-text-subtle"
             :href="author.webUrl"
           >
             <gl-avatar :label="author.name" :src="author.avatarUrl" :size="24" />
             {{ author.name }}
           </gl-link>
+          <span v-else>{{ $options.i18n.noneText }}</span>
         </div>
       </div>
     </div>

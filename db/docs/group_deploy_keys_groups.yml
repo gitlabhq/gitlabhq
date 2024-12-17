@@ -10,3 +10,4 @@ milestone: '13.2'
 gitlab_schema: gitlab_main_cell
 exempt_from_sharding: true
 notes: Exempted because Table is empty and will be removed - https://gitlab.com/gitlab-org/gitlab/-/issues/408933
+table_size: small

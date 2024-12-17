@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class OauthAccessToken < Doorkeeper::AccessToken
+  include Gitlab::Utils::StrongMemoize
+
   belongs_to :resource_owner, class_name: 'User'
   belongs_to :application, class_name: 'Doorkeeper::Application'
   belongs_to :organization, class_name: 'Organizations::Organization'
@@ -11,6 +13,9 @@ class OauthAccessToken < Doorkeeper::AccessToken
 
   scope :latest_per_application, -> { select('distinct on(application_id) *').order(application_id: :desc, created_at: :desc) }
   scope :preload_application, -> { preload(:application) }
+
+  # user scope format is: `user:$USER_ID`
+  SCOPED_USER_REGEX = /\Auser:(\d+)\z/
 
   def scopes=(value)
     if value.is_a?(Array)
@@ -35,5 +40,23 @@ class OauthAccessToken < Doorkeeper::AccessToken
   # This ensures we don't accidentally return a hashed token value.
   def self.matching_token_for(application, resource_owner, scopes)
     # no-op
+  end
+
+  def scope_user
+    user_id = extract_user_id_from_scopes
+    return unless user_id
+
+    ::User.find_by_id(user_id)
+  end
+  strong_memoize_attr :scope_user
+
+  private
+
+  def extract_user_id_from_scopes
+    # scopes are an instance of Doorkeeper:OAuth::Scopes class
+    matches = scopes.grep(SCOPED_USER_REGEX)
+    return unless matches.length == 1
+
+    matches[0][SCOPED_USER_REGEX, 1].to_i
   end
 end

@@ -119,6 +119,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_one(:service_desk_custom_email_verification).class_name('ServiceDesk::CustomEmailVerification') }
     it { is_expected.to have_one(:container_registry_data_repair_detail).class_name('ContainerRegistry::DataRepairDetail') }
     it { is_expected.to have_many(:container_registry_protection_rules).class_name('ContainerRegistry::Protection::Rule') }
+    it { is_expected.to have_many(:container_registry_protection_tag_rules).class_name('ContainerRegistry::Protection::TagRule') }
     it { is_expected.to have_many(:commit_statuses) }
     it { is_expected.to have_many(:ci_pipelines) }
     it { is_expected.to have_many(:ci_refs) }
@@ -542,6 +543,35 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       it_behaves_like 'polymorphic membership relationship'
       it_behaves_like 'member_namespace membership relationship'
+    end
+
+    shared_examples 'share with group lock' do
+      let_it_be(:group) { create(:group) }
+      let_it_be_with_reload(:project) { create(:project, group: group) }
+
+      context 'without share with group lock' do
+        it { is_expected.to be_truthy }
+      end
+
+      context 'with share with group lock' do
+        before do
+          group.update!(share_with_group_lock: true)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    describe '#allowed_to_share_with_group?' do
+      subject { project.allowed_to_share_with_group? }
+
+      it_behaves_like 'share with group lock'
+    end
+
+    describe '#share_with_group_enabled?' do
+      subject { project.share_with_group_enabled? }
+
+      it_behaves_like 'share with group lock'
     end
 
     describe '#namespace_members_and_requesters setters' do
@@ -1215,7 +1245,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe 'delegation' do
     let_it_be(:project) { create(:project) }
 
-    [:add_guest, :add_reporter, :add_developer, :add_maintainer, :add_member, :add_members].each do |method|
+    [:add_guest, :add_planner, :add_reporter, :add_developer, :add_maintainer, :add_member, :add_members].each do |method|
       it { is_expected.to delegate_method(method).to(:team) }
     end
 
@@ -1277,7 +1307,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           'inbound_job_token_scope_enabled' => 'ci_',
           'push_repository_for_job_token_allowed' => 'ci_',
           'job_token_scope_enabled' => 'ci_outbound_',
-          'id_token_sub_claim_components' => 'ci_'
+          'id_token_sub_claim_components' => 'ci_',
+          'delete_pipelines_in_seconds' => 'ci_'
         }
       end
 
@@ -2040,7 +2071,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         create(:jira_integration, project: project, category: 'issue_tracker')
       end
 
-      specify { is_expected.to eq(true) }
+      it { is_expected.to eq(true) }
 
       it 'becomes false when external issue tracker integration is destroyed' do
         expect do
@@ -4429,7 +4460,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be(:project) { create(:project) }
 
     it 'updates commit count' do
-      expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:commit_count])
+      expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], %w[commit_count])
 
       project.after_repository_change_head
     end
@@ -6164,7 +6195,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(project).to receive(:reset_counters_and_iids)
       expect(project).to receive(:after_create_default_branch)
       expect(project).to receive(:refresh_markdown_cache!)
-      expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:repository_size, :wiki_size])
+      expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], %w[repository_size wiki_size])
       expect(DetectRepositoryLanguagesWorker).to receive(:perform_async).with(project.id)
       expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:perform_async).with(project.id)
 
@@ -6884,6 +6915,31 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       it { is_expected.not_to be_valid }
+    end
+  end
+
+  describe '#pages_url' do
+    let_it_be(:project) { create(:project) }
+
+    let(:pages_url_config) { nil }
+    let(:url_builder) { ::Gitlab::Pages::UrlBuilder.new(project, pages_url_config) }
+
+    subject(:pages_url) { project.pages_url(pages_url_config) }
+
+    it "lets URL builder handle the URL resolution" do
+      expect(::Gitlab::Pages::UrlBuilder).to receive(:new).with(project, pages_url_config).and_return(url_builder)
+      expect(url_builder).to receive(:pages_url).and_return('http://namespace1.example.com/project-1/foo')
+      expect(pages_url).to eq('http://namespace1.example.com/project-1/foo')
+    end
+
+    context "when a config argument is passed" do
+      let(:pages_url_config) { { path_prefix: 'foo' } }
+
+      it "lets URL builder handle the URL resolution" do
+        expect(::Gitlab::Pages::UrlBuilder).to receive(:new).with(project, pages_url_config).and_return(url_builder)
+        expect(url_builder).to receive(:pages_url).and_return('http://namespace1.example.com/project-1/foo')
+        expect(pages_url).to eq('http://namespace1.example.com/project-1/foo')
+      end
     end
   end
 
@@ -7663,29 +7719,43 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  # this describe block tests the legacy behavior, it is to be removed with the
+  # fix_pages_ci_variables Feature flag.
   describe '#pages_variables' do
     let(:group) { build(:group, path: 'group') }
     let(:project) { build(:project, path: 'project', namespace: group) }
 
     it 'returns the pages variables' do
       expect(project.pages_variables.to_hash).to eq({
-        'CI_PAGES_DOMAIN' => 'example.com',
-        'CI_PAGES_URL' => 'http://group.example.com/project'
+        'CI_PAGES_DOMAIN' => 'example.com'
       })
     end
 
-    it 'returns the pages variables' do
-      build(
-        :project_setting,
-        project: project,
-        pages_unique_domain_enabled: true,
-        pages_unique_domain: 'unique-domain'
-      )
+    context 'with fix_pages_ci_variables disabled' do
+      before do
+        stub_feature_flags(fix_pages_ci_variables: false)
+      end
 
-      expect(project.pages_variables.to_hash).to eq({
-        'CI_PAGES_DOMAIN' => 'example.com',
-        'CI_PAGES_URL' => 'http://unique-domain.example.com'
-      })
+      it 'returns the pages variables' do
+        expect(project.pages_variables.to_hash).to eq({
+          'CI_PAGES_DOMAIN' => 'example.com',
+          'CI_PAGES_URL' => 'http://group.example.com/project'
+        })
+      end
+
+      it 'returns the pages variables' do
+        build(
+          :project_setting,
+          project: project,
+          pages_unique_domain_enabled: true,
+          pages_unique_domain: 'unique-domain'
+        )
+
+        expect(project.pages_variables.to_hash).to eq({
+          'CI_PAGES_DOMAIN' => 'example.com',
+          'CI_PAGES_URL' => 'http://unique-domain.example.com'
+        })
+      end
     end
   end
 
@@ -8189,29 +8259,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it 'includes self, ancestors and linked groups' do
         expect(project.related_group_ids).to contain_exactly(group.id, sub_group.id, linked_group.id)
       end
-    end
-  end
-
-  describe '#has_namespaced_npm_packages?' do
-    let_it_be(:namespace) { create(:namespace, path: 'test') }
-    let_it_be(:project) { create(:project, :public, namespace: namespace) }
-
-    subject { project.has_namespaced_npm_packages? }
-
-    context 'with scope of the namespace path' do
-      let_it_be(:package) { create(:npm_package, project: project, name: "@#{namespace.path}/foo") }
-
-      it { is_expected.to be true }
-    end
-
-    context 'without scope of the namespace path' do
-      let_it_be(:package) { create(:npm_package, project: project, name: "@someotherscope/foo") }
-
-      it { is_expected.to be false }
-    end
-
-    context 'without packages' do
-      it { is_expected.to be false }
     end
   end
 
@@ -9142,7 +9189,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let_it_be(:project) { create(:project, group: group) }
 
       it 'returns group links of group' do
-        expect(group).to receive_message_chain(:shared_with_group_links, :of_ancestors_and_self)
+        expect(group).to receive(:shared_with_group_links_of_ancestors_and_self)
 
         project.group_group_links
       end
@@ -9715,6 +9762,15 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let(:project) { build(:project, import_state: nil) }
 
       it { expect(project.placeholder_reference_store).to be_nil }
+    end
+  end
+
+  describe '#uploads_sharding_key' do
+    it 'returns namespace_id' do
+      namespace = build_stubbed(:namespace)
+      project = build_stubbed(:project, namespace: namespace)
+
+      expect(project.uploads_sharding_key).to eq(namespace_id: namespace.id)
     end
   end
 end

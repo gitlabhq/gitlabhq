@@ -21,11 +21,15 @@ For more information, see the history.
 This feature is available for testing, but not ready for production use.
 
 GitLab Query Language (GLQL) is an experimental attempt to create a single query language for all of
-GitLab.
-Use it to filter and embed content from anywhere in the platform, using familiar syntax.
+GitLab. Use it to filter and embed content from anywhere in the platform, using familiar syntax.
 Embed queries in Markdown code blocks.
 
-This feature is an [experiment](../../policy/experiment-beta-support.md).
+This feature is an [experiment](../../policy/development_stages_support.md).
+To test it:
+
+- On GitLab self-managed, ask your administrator to enable the `glql_integration` feature flag on your instance.
+- On GitLab.com, contact your account representative.
+
 Share your feedback in [epic 14939](https://gitlab.com/groups/gitlab-org/-/epics/14939),
 either as a comment on the epic, or by creating a new issue under the epic with labels
 `~"group::knowledge"` and `~"type::feature"` or `~"type::bug"`.
@@ -46,10 +50,12 @@ GLQL can only query issues under a project or group.
 
 ## Syntax
 
-The syntax of GLQL is composed of two parts:
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/508956) in GitLab 17.7: Configuring the presentation layer using YAML front matter is deprecated.
 
-- The query: Expressions joined together with a logical operator, such as `AND`.
-- The presentation layer: YAML front matter.
+The syntax of GLQL is a superset of YAML that consists of:
+
+- The `query` parameter: Expressions joined together with a logical operator, such as `AND`.
+- Parameters related to the presentation layer, like `display`, `limit`, `fields`.
 
 A GLQL block is defined in Markdown as a code block, similar to other code blocks like Mermaid.
 
@@ -60,12 +66,10 @@ For example:
 
 ````markdown
 ```glql
----
 display: table
 fields: title, state, health, epic, milestone, weight, updated
 limit: 5
----
-project = "gitlab-org/gitlab" AND assignee = currentUser() AND opened = true
+query: project = "gitlab-org/gitlab" AND assignee = currentUser() AND opened = true
 ```
 ````
 
@@ -78,7 +82,7 @@ This query should render a table like the one below:
 GLQL syntax consists primarily of logical expressions.
 These expressions follow the syntax of `<field name> [< | > | = | != | in] <value> [AND] ...`.
 
-**Field names** include `assignee`, `author`, `label`, and `epic`.
+**Field names** include `assignee`, `author`, `label`, and `milestone`.
 For a full list of supported fields, see the table at the bottom of this section.
 
 **Comparison operators**:
@@ -107,7 +111,6 @@ The following table lists all supported fields and their value types:
 | Field                                             | Operators                    | Values                                                                     | Examples |
 | ------------------------------------------------- | ---------------------------- | -------------------------------------------------------------------------- | -------- |
 | `assignee` <br>`author`                           | `=` <br>`!=` <br>`in`        | `String` <br>`Collection<String>` <br>`currentUser()` <br>`any` <br>`none` | `assignee = "foobar"` <br>`assignee in ("foobar", "baz")` <br>`author = currentUser()` <br>`author = any` <br>`assignee = none` |
-| `epic` <br>`reaction`                             | `=` <br>`!=`                 | `String` <br>`any` <br>`none`                                              | `epic = any` <br>`reaction = ":thumbsup:"` |
 | `project` <br>`group`                             | `=` <br>`!=`                 | `String`                                                                   | `project = "gitlab-org/gitlab"` <br>`group = "gitlab-org"` |
 | `closed` <br>`opened` <br>`confidential`          | `=` <br>`!=`                 | `Boolean`                                                                  | `closed = true` <br>`opened = true` <br>`confidential = true` |
 | `closed` <br>`opened` <br>`created` <br>`updated` | `=` <br>`!=` <br>`<` <br>`>` | `Date` <br>`String` <br>`today()`                                          | `updated = today()` <br>`created > -28d` (created in the last 28 days)<br>`created < -7d` (created at least a week ago)<br>`created > 2024-08-12` <br>`updated < "2024-08-12"` |
@@ -132,16 +135,16 @@ For example:
 
 ### Presentation syntax
 
-GLQL presentation is configured in a YAML front matter block.
-A YAML front matter block begins and ends with `---` and contains YAML.
+Aside from the `query` parameter, you can configure presentation details for your GLQL query using some
+more parameters.
 
-Three options are supported:
+Three parameters are supported:
 
-| Option    | Default | Description |
-| --------- | ------- | ----------- |
-| `display` | `table` | How to display the data. Supported options: `table`, `list` or `orderedList`. |
-| `limit`   | `100`   | How many items to display. The maximum value is `100`. |
-| `fields`  | `title` | A comma-separated list of fields. |
+| Parameter    | Default | Description |
+| ------------ | ------- | ----------- |
+| `display`    | `table` | How to display the data. Supported options: `table`, `list`, or `orderedList`. |
+| `limit`      | `100`   | How many items to display. The maximum value is `100`. |
+| `fields`     | `title` | A comma-separated list of fields. |
 
 Supported fields to display:
 
@@ -151,7 +154,6 @@ Supported fields to display:
 - `created`
 - `description`
 - `due`
-- `epic`
 - `health`
 - `iteration`
 - `cadence`
@@ -211,16 +213,13 @@ In the initial version, only the `labels` function is supported.
 
   ````markdown
   ```glql
-  ---
   display: list
   fields: title, health, due, labels("workflow::*"), labels
   limit: 5
-  ---
-  project = "gitlab-org/gitlab" AND assignee = currentUser() AND opened = true
+  query: project = "gitlab-org/gitlab" AND assignee = currentUser() AND opened = true
   ```
   ````
 
 ## Known issues
 
-For a full list of known issues, see [epic 14437](https://gitlab.com/groups/gitlab-org/-/epics/14437 "GitLab Query Language (GLQL) | Strategy") and
-[GLQL issues](https://gitlab.com/gitlab-org/gitlab-query-language/gitlab-query-language/-/issues/).
+For a full list of known issues, see [epic 14437 "GitLab Query Language (GLQL) Strategy"](https://gitlab.com/groups/gitlab-org/-/epics/14437).

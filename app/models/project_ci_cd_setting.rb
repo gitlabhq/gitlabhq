@@ -11,15 +11,17 @@ class ProjectCiCdSetting < ApplicationRecord
   MAINTAINER_ROLE = 3
   OWNER_ROLE = 4
 
+  PIPELINE_VARIABLES_OVERRIDE_ROLES =
+    { no_one_allowed: NO_ONE_ALLOWED_ROLE,
+      developer: DEVELOPER_ROLE,
+      maintainer: MAINTAINER_ROLE,
+      owner: OWNER_ROLE }.freeze
+
   ALLOWED_SUB_CLAIM_COMPONENTS = %w[project_path ref_type ref].freeze
 
-  enum pipeline_variables_minimum_override_role: {
-    no_one_allowed: NO_ONE_ALLOWED_ROLE,
-    developer: DEVELOPER_ROLE,
-    maintainer: MAINTAINER_ROLE,
-    owner: OWNER_ROLE
-  }, _prefix: true
+  enum pipeline_variables_minimum_override_role: PIPELINE_VARIABLES_OVERRIDE_ROLES, _prefix: true
 
+  before_validation :set_pipeline_variables_secure_defaults, on: :create
   before_create :set_default_git_depth
 
   validates :id_token_sub_claim_components, length: {
@@ -34,11 +36,31 @@ class ProjectCiCdSetting < ApplicationRecord
     },
     allow_nil: true
 
+  validates :delete_pipelines_in_seconds,
+    allow_nil: true,
+    numericality: {
+      only_integer: true,
+      greater_than_or_equal_to: 1.day.seconds,
+      less_than_or_equal_to: 1.year.seconds,
+      message: N_('must be between 1 day and 1 year')
+    }
+
   attribute :forward_deployment_enabled, default: true
   attribute :separated_caches, default: true
   validates :merge_trains_skip_train_allowed, inclusion: { in: [true, false] }
 
   chronic_duration_attr :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval
+  chronic_duration_attr_writer :delete_pipelines_in_human_readable, :delete_pipelines_in_seconds
+
+  scope :for_project, ->(ids) { where(project_id: ids) }
+  scope :order_project_id_asc, -> { order(project_id: :asc) }
+  scope :configured_to_delete_old_pipelines, -> do
+    where.not(delete_pipelines_in_seconds: nil)
+  end
+
+  def self.pluck_project_id(limit)
+    limit(limit).pluck(:project_id)
+  end
 
   def keep_latest_artifacts_available?
     # The project level feature can only be enabled when the feature is enabled instance wide
@@ -58,6 +80,11 @@ class ProjectCiCdSetting < ApplicationRecord
   end
 
   private
+
+  def set_pipeline_variables_secure_defaults
+    self.restrict_user_defined_variables = true
+    self.pipeline_variables_minimum_override_role = project.root_namespace.pipeline_variables_default_role
+  end
 
   def role_map_pipeline_variables_minimum_override_role
     {

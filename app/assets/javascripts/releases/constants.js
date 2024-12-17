@@ -66,3 +66,8 @@ export const i18n = {
   tagNameIsRequiredMessage: __('Tag name is required.'),
   tagIsAlredyInUseMessage: __('Selected tag is already in use. Choose another option.'),
 };
+
+export const CLICK_EXPAND_DEPLOYMENTS_ON_RELEASE_PAGE = 'click_expand_deployments_on_release_page';
+export const CLICK_EXPAND_ASSETS_ON_RELEASE_PAGE = 'click_expand_assets_on_release_page';
+export const CLICK_ENVIRONMENT_LINK_ON_RELEASE_PAGE = 'click_environment_link_on_release_page';
+export const CLICK_DEPLOYMENT_LINK_ON_RELEASE_PAGE = 'click_deployment_link_on_release_page';

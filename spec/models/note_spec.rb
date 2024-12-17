@@ -279,20 +279,24 @@ RSpec.describe Note, feature_category: :team_planning do
         note.save!
       end
 
-      it "skips #keep_around_commit if 'skip_keep_around_commits' is true" do
-        note = build(:note, project: noteable.project, noteable: noteable, skip_keep_around_commits: true)
-
-        expect(note).not_to receive(:keep_around_commit)
-
-        note.save!
-      end
-
       it "skips #keep_around_commit if 'importing' is true" do
         note = build(:note, project: noteable.project, noteable: noteable, importing: true)
 
         expect(note).not_to receive(:keep_around_commit)
 
         note.save!
+      end
+
+      describe 'on merge request' do
+        let!(:noteable) { create(:merge_request) }
+
+        it "skips #keep_around_commit" do
+          note = build(:note, project: noteable.project, noteable: noteable)
+
+          expect(note).not_to receive(:keep_around_commit)
+
+          note.save!
+        end
       end
     end
 
@@ -2012,6 +2016,15 @@ RSpec.describe Note, feature_category: :team_planning do
 
         it { is_expected.to be_truthy }
       end
+    end
+  end
+
+  describe '#uploads_sharding_key' do
+    it 'returns namespace_id' do
+      namespace = build_stubbed(:namespace)
+      note = build_stubbed(:note, namespace: namespace)
+
+      expect(note.uploads_sharding_key).to eq(namespace_id: namespace.id)
     end
   end
 end

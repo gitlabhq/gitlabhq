@@ -8,12 +8,12 @@ import * as urlUtils from '~/lib/utils/url_utility';
 describe('Branches Sort Dropdown', () => {
   let wrapper;
 
-  const createWrapper = (props = {}) => {
+  const createWrapper = (props = {}, state = 'all') => {
     return extendedWrapper(
       mount(SortDropdown, {
         provide: {
           mode: 'overview',
-          projectBranchesFilteredPath: '/root/ci-cd-project-demo/-/branches?state=all',
+          projectBranchesFilteredPath: `/root/ci-cd-project-demo/-/branches?state=${state}`,
           sortOptions: {
             name_asc: 'Name',
             updated_asc: 'Oldest updated',
@@ -88,6 +88,24 @@ describe('Branches Sort Dropdown', () => {
     });
 
     it('should call visitUrl', () => {
+      const searchTerm = 'branch-1';
+      const searchBox = findSearchBox();
+      searchBox.vm.$emit('input', searchTerm);
+      searchBox.vm.$emit('submit');
+
+      expect(urlUtils.visitUrl).toHaveBeenCalledWith(
+        '/root/ci-cd-project-demo/-/branches?state=all&sort=updated_desc&search=branch-1',
+      );
+    });
+  });
+
+  describe('when state is not "all" and search term is submitted', () => {
+    beforeEach(() => {
+      urlUtils.visitUrl = jest.fn();
+      wrapper = createWrapper({}, 'active');
+    });
+
+    it('should call visitUrl with state=all', () => {
       const searchTerm = 'branch-1';
       const searchBox = findSearchBox();
       searchBox.vm.$emit('input', searchTerm);

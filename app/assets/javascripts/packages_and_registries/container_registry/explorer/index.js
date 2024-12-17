@@ -1,4 +1,3 @@
-import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import PerformancePlugin from '~/performance/vue_performance_plugin';
@@ -10,7 +9,6 @@ import RegistryExplorer from './pages/index.vue';
 import createRouter from './router';
 
 Vue.use(Translate);
-Vue.use(GlToast);
 
 Vue.use(PerformancePlugin, {
   components: [

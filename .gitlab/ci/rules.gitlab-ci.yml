@@ -108,6 +108,9 @@
 .if-merge-request-labels-run-observability-e2e-tests-current-branch: &if-merge-request-labels-run-observability-e2e-tests-current-branch
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-observability-e2e-tests-current-branch/'
 
+.if-merge-request-labels-skip-observability-e2e-tests: &if-merge-request-labels-skip-observability-e2e-tests
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-observability-e2e-tests/'
+
 .if-merge-request-labels-run-single-db: &if-merge-request-labels-run-single-db
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-single-db/'
 
@@ -291,11 +294,6 @@
   - "doc/**/*"
   - "scripts/lint-doc.sh"
   - "scripts/lint/check_mermaid.mjs"
-
-.docs-blueprints-patterns: &docs-blueprints-patterns
-  - "doc/architecture/blueprints/**/*"
-  - "scripts/lint-docs-blueprints.rb"
-  - ".gitlab/ci/docs.gitlab-ci.yml"
 
 .docs-deprecations-and-removals-patterns: &docs-deprecations-and-removals-patterns
   - "doc/update/deprecations.md"
@@ -668,7 +666,7 @@
   - "lib/gitlab/ci/templates/**/*.gitlab-ci.yml"
 
 .static-analysis-patterns: &static-analysis-patterns
-  - ".{codeclimate,haml-lint,haml-lint_todo}.yml"
+  - ".{haml-lint,haml-lint_todo}.yml"
 
 .rubocop-patterns: &rubocop-patterns
   - ".{rubocop,rubocop_todo}.yml"
@@ -1035,7 +1033,10 @@
         ARCH: amd64,arm64
     - !reference [".build-images:rules:build-qa-image-merge-requests", rules]
     - !reference [".releases:rules:canonical-dot-com-gitlab-stable-branch-only-setup-test-env", rules]
-    - !reference [".release-environments:rules:start-release-environments-security-pipeline", rules]
+    # Always build on stable branches to serve release-environments pipeline
+    # Do not refer directly to .release-environments:rules:start-release-environments-security-pipeline
+    # to avoid the side effect of "never" rules
+    - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
 
 # When new minor release tag is pushed, re-tag gdk image with pattern ignored by registry cleanup
 .build-images:rules:retag-gdk-image:
@@ -1100,8 +1101,11 @@
       when: never
     - if: '$ENABLE_BUILD_ASSETS_IMAGE == "true"'
     - <<: *if-tag
-    - !reference [".release-environments:rules:start-release-environments-security-pipeline", rules]
     - !reference [".frontend:rules:assets-shared", rules]
+    # Always build on stable branches to serve release-environments pipeline
+    # Do not refer directly to .release-environments:rules:start-release-environments-security-pipeline
+    # to avoid the side effect of "never" rules
+    - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
 
 .build-images:rules:build-assets-image-as-if-foss:
   rules:
@@ -1223,11 +1227,6 @@
     - <<: *if-default-refs
       changes: *docs-patterns
 
-.docs:rules:docs-blueprints-lint:
-  rules:
-    - <<: *if-default-refs
-      changes: *docs-blueprints-patterns
-
 .docs:rules:deprecations-and-removals:
   rules:
     - <<: *if-default-refs
@@ -1309,8 +1308,11 @@
       when: never
     - if: '$ENABLE_COMPILE_PRODUCTION_ASSETS == "true"'
     - <<: *if-tag
-    - !reference [".release-environments:rules:start-release-environments-security-pipeline", rules]
     - !reference [".frontend:rules:assets-shared", rules]
+    # Always build on stable branches to serve release-environments pipeline
+    # Do not refer directly to .release-environments:rules:start-release-environments-security-pipeline
+    # to avoid the side effect of "never" rules
+    - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
 
 .frontend:rules:compile-test-assets:
   rules:
@@ -1501,6 +1503,10 @@
       changes: *frontend-build-patterns
       allow_failure: true
     - if: '$DANGER_GITLAB_API_TOKEN && ($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
+      changes: *frontend-dependency-patterns
+      allow_failure: true
+    - !reference [".prevent-tier-1", rules]
+    - if: '$DANGER_GITLAB_API_TOKEN && ($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
       changes: *frontend-build-patterns
       allow_failure: true
 
@@ -1537,6 +1543,8 @@
 .frontend:rules:jest-vue3-check-quarantined:
   rules:
     - <<: *if-not-merge-request
+      when: never
+    - <<: *if-security-merge-request
       when: never
     - !reference [.frontend:rules:jest, rules]
 
@@ -1651,7 +1659,7 @@
     # Run tests automatically for MRs that touch Ruby version files
     - <<: *if-merge-request
       changes: *ruby-version-patterns
-     # Run tests automatically for MRs that touch GITALY_SERVER_VERSION
+    # Run tests automatically for MRs that touch GITALY_SERVER_VERSION
     - <<: *if-merge-request
       changes: *gitaly-patterns
     - <<: *if-merge-request
@@ -2694,6 +2702,8 @@
       when: never
     - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium([^-]|$)/'
       when: never
+    # Run Dependency Scanning on master until https://gitlab.com/gitlab-org/gitlab/-/issues/504908#note_2218591981 is resolved
+    - <<: *if-default-branch-refs
     - <<: *if-default-refs
       changes: *dependency-patterns
 
@@ -2703,6 +2713,8 @@
       when: never
     - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium-python/'
       when: never
+    # Run Dependency Scanning on master until https://gitlab.com/gitlab-org/gitlab/-/issues/504908#note_2218591981 is resolved
+    - <<: *if-default-branch-refs
     - <<: *if-default-refs
       changes: *python-patterns
 
@@ -3360,7 +3372,10 @@
       when: never
     - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
 
-.release-environments:rules:ai-gateway-tagging:
+##############################
+# ai-gateway rules #
+##############################
+.ai-gateway:rules:tagging:
   rules:
     - if: '$AIGW_PIPELINE_TRIGGER_TOKEN == null'
       when: never
@@ -3384,6 +3399,8 @@
   rules:
     - <<: *if-observability-skip-e2e-jobs
       when: never
+    - <<: *if-merge-request-labels-skip-observability-e2e-tests
+      when: never
     - <<: *if-merge-request-labels-run-observability-e2e-tests-current-branch
       when: never
     - <<: *if-merge-request-labels-run-observability-e2e-tests-main-branch
@@ -3393,6 +3410,8 @@
 .observability-backend-current-branch:rules:
   rules:
     - <<: *if-observability-skip-e2e-jobs
+      when: never
+    - <<: *if-merge-request-labels-skip-observability-e2e-tests
       when: never
     - <<: *if-merge-request-labels-run-observability-e2e-tests-main-branch
       when: never

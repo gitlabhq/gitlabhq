@@ -2,17 +2,13 @@
 
 require 'spec_helper'
 
-class TestHelpersTest
-  include Gitlab::TaskHelpers
-end
-
 RSpec.describe Gitlab::TaskHelpers do
-  subject { TestHelpersTest.new }
-
   let(:repo) { 'https://gitlab.com/gitlab-org/gitlab-test.git' }
   let(:clone_path) { Rails.root.join('tmp/tests/task_helpers_tests').to_s }
   let(:version) { '1.1.0' }
   let(:tag) { 'v1.1.0' }
+
+  subject { Class.new { include Gitlab::TaskHelpers }.new }
 
   describe '#checkout_or_clone_version' do
     before do
@@ -99,6 +95,90 @@ RSpec.describe Gitlab::TaskHelpers do
 
     it 'returns and exception when command exit with non zero code' do
       expect { subject.run_command!(['bash', '-c', 'exit 1']) }.to raise_error Gitlab::TaskFailedError
+    end
+  end
+
+  describe '#download_package_file_version' do
+    let(:version) { 'some/version' }
+    let(:project_path) { 'path/to/project' }
+    let(:repo) { "https://gitlab.com/#{project_path}.git" }
+    let(:package_name) { 'some/package' }
+    let(:package_file) { 'some/file' }
+    let(:target_path) { Tempfile.new }
+    let(:file_contents) { 'content' }
+    let(:checksums) { { package_file => Digest::SHA256.hexdigest(file_contents) } }
+    let(:response_status) { 200 }
+
+    let(:api_download_url) do
+      format(
+        'https://gitlab.com/api/v4/projects/%{project_path}/packages/generic/%{package}/%{version}/%{file}',
+        project_path: CGI.escape(project_path),
+        package: CGI.escape(package_name),
+        version: CGI.escape(version),
+        file: CGI.escape(package_file)
+      )
+    end
+
+    subject(:download) do
+      described_class.download_package_file_version(
+        version: version, repo: repo, package_name: package_name, package_file: package_file,
+        package_checksums_sha256: checksums, target_path: target_path
+      )
+    end
+
+    before do
+      stub_request(:get, api_download_url).to_return(status: response_status, body: file_contents)
+    end
+
+    after do
+      target_path.unlink
+    end
+
+    context 'when download is successful' do
+      context 'and checksum matches' do
+        it 'saves the file atomically and returns true' do
+          expect(FileUtils).to receive(:mkdir_p).with(File.dirname(target_path)).and_call_original
+          expect(FileUtils).to receive(:mv).with(a_kind_of(File), target_path).and_call_original
+
+          expect(download).to be(true)
+          expect(File.read(target_path)).to eq(file_contents)
+        end
+      end
+
+      context 'and checksum mismatches' do
+        let(:checksums) { { package_file => 'badcoffee' } }
+
+        it 'raises an error' do
+          expect { download }.to raise_error do |exception|
+            expect(exception.message)
+              .to include("ERROR: Checksum mismatch for `#{package_file}`:")
+              .and include('Expected: "badcoffee"')
+              .and include(/Actual: "\h{64}"$/)
+          end
+          expect(File.read(target_path)).to eq('')
+        end
+      end
+    end
+
+    context 'when download returns 404' do
+      let(:response_status) { 404 }
+
+      it 'warns about the failure returns false' do
+        expect do
+          expect(download).to be(false)
+        end.to output(/HTTP Code: 404 for #{api_download_url}/).to_stderr
+
+        expect(File.read(target_path)).to eq('')
+      end
+    end
+
+    context 'when download returns 302' do
+      let(:response_status) { 302 }
+
+      it 'follow redirects' do
+        # See https://github.com/bblimke/webmock/issues/237
+        skip 'webmock does not support following redirects'
+      end
     end
   end
 

@@ -30,7 +30,8 @@ class Profiles::ChatNamesController < Profiles::ApplicationController
   def deny
     delete_chat_name_token
 
-    flash[:notice] = _("Denied authorization of chat nickname %{user_name}.") % { user_name: chat_name_params[:user_name] }
+    flash[:notice] =
+      _("Denied authorization of chat nickname %{user_name}.") % { user_name: chat_name_params[:user_name] }
 
     redirect_to profile_chat_names_path
   end

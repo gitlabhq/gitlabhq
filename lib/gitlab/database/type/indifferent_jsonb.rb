@@ -9,7 +9,7 @@ module Gitlab
       #
       #   class SomeModel < ApplicationRecord
       #     # some_model.a_field is of type `jsonb`
-      #     attribute :a_field, :ind_jsonb
+      #     attribute :a_field, ::Gitlab::Database::Type::IndifferentJsonb.new
       #   end
       class IndifferentJsonb < ::ActiveRecord::ConnectionAdapters::PostgreSQL::OID::Jsonb
         def type

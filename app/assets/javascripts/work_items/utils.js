@@ -152,6 +152,13 @@ export const autocompleteDataSources = ({ fullPath, iid, workItemTypeId, isGroup
     workItemTypeId,
     isGroup,
   }),
+  milestones: autocompleteSourcesPath({
+    autocompleteType: 'milestones',
+    fullPath,
+    iid,
+    workItemTypeId,
+    isGroup,
+  }),
 });
 
 export const markdownPreviewPath = ({ fullPath, iid, isGroup = false }) => {
@@ -161,12 +168,12 @@ export const markdownPreviewPath = ({ fullPath, iid, isGroup = false }) => {
 };
 
 // the path for creating a new work item of that type, e.g. /groups/gitlab-org/-/epics/new
-export const newWorkItemPath = ({ fullPath, isGroup = false, workItemTypeName }) => {
+export const newWorkItemPath = ({ fullPath, isGroup = false, workItemTypeName, query = '' }) => {
   const domain = gon.relative_url_root || '';
   const basePath = isGroup ? `groups/${fullPath}` : fullPath;
   const type =
     WORK_ITEMS_TYPE_MAP[workItemTypeName]?.routeParamName || WORK_ITEM_TYPE_ROUTE_WORK_ITEM;
-  return `${domain}/${basePath}/-/${type}/new`;
+  return `${domain}/${basePath}/-/${type}/new${query}`;
 };
 
 export const getDisplayReference = (workItemFullPath, workitemReference) => {
@@ -274,6 +281,10 @@ export const makeDrawerItemFullPath = (activeItem, fullPath, issuableType = TYPE
   if (activeItem?.fullPath) {
     return activeItem.fullPath;
   }
+  if (activeItem?.namespace?.fullPath) {
+    return activeItem.namespace.fullPath;
+  }
+
   const delimiter = issuableType === TYPE_EPIC ? '&' : '#';
   if (!activeItem?.referencePath) {
     return fullPath;
@@ -322,4 +333,19 @@ export const canRouterNav = ({ fullPath, webUrl, isGroup, issueAsWorkItem }) => 
   const canGroupNavigate = groupRegex.test(webUrl) && isGroup;
   const canProjectNavigate = projectRegex.test(webUrl) && issueAsWorkItem;
   return canGroupNavigate || canProjectNavigate;
+};
+
+export const createBranchMRApiPathHelper = {
+  canCreateBranch({ fullPath, workItemIid }) {
+    return `/${fullPath}/-/issues/${workItemIid}/can_create_branch`;
+  },
+  createBranch({ fullPath, workItemIid, sourceBranch, targetBranch }) {
+    return `/${fullPath}/-/branches?branch_name=${targetBranch}&format=json&issue_iid=${workItemIid}&ref=${sourceBranch}`;
+  },
+  createMR({ fullPath, workItemIid, sourceBranch, targetBranch }) {
+    return `/${fullPath}/-/merge_requests/new?merge_request%5Bissue_iid%5D=${workItemIid}&merge_request%5Bsource_branch%5D=${sourceBranch}&merge_request%5Btarget_branch%5D=${targetBranch}`;
+  },
+  getRefs({ fullPath }) {
+    return `/${fullPath}/refs?search=`;
+  },
 };

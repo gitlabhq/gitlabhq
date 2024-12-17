@@ -8,3 +8,4 @@ description: Access tokens for the Microsoft Graph API for self-managed
 milestone: '17.5'
 gitlab_schema: gitlab_main_cell
 exempt_from_sharding: true
+table_size: small

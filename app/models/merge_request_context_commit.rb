@@ -12,7 +12,7 @@ class MergeRequestContextCommit < ApplicationRecord
   validates :sha, presence: true
   validates :sha, uniqueness: { message: 'has already been added' }
 
-  attribute :trailers, :ind_jsonb
+  attribute :trailers, ::Gitlab::Database::Type::IndifferentJsonb.new
   validates :trailers, json_schema: { filename: 'git_trailers' }
 
   validates :merge_request_id, presence: true

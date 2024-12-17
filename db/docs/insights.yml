@@ -9,7 +9,6 @@ description: The table is used to specify a project which contains the group lev
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9665
 milestone: '11.9'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   namespace_id: namespaces
+table_size: small

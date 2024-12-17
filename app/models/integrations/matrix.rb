@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Matrix < BaseChatNotification
+  class Matrix < Integration
+    include Base::ChatNotification
+
     MATRIX_HOSTNAME = "%{hostname}/_matrix/client/v3/rooms/%{roomId}/send/m.room.message/?access_token=%{token}" # gitleaks:allow
 
     field :hostname,

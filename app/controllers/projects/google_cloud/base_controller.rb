@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 class Projects::GoogleCloud::BaseController < Projects::ApplicationController
-  feature_category :five_minute_production_app
+  feature_category :not_owned # rubocop:disable Gitlab/AvoidFeatureCategoryNotOwned -- removing code in https://gitlab.com/gitlab-org/gitlab/-/issues/478491
   urgency :low
 
   before_action :admin_project_google_cloud!
   before_action :google_oauth2_enabled!
-  before_action :feature_flag_enabled!
 
   private
 
@@ -22,17 +21,6 @@ class Projects::GoogleCloud::BaseController < Projects::ApplicationController
     if config.app_id.blank? || config.app_secret.blank?
       track_event(:error_google_oauth2_not_enabled)
       access_denied! 'This GitLab instance not configured for Google Oauth2.'
-    end
-  end
-
-  def feature_flag_enabled!
-    enabled_for_user = Feature.enabled?(:incubation_5mp_google_cloud, current_user)
-    enabled_for_group = Feature.enabled?(:incubation_5mp_google_cloud, project.group)
-    enabled_for_project = Feature.enabled?(:incubation_5mp_google_cloud, project)
-    feature_is_enabled = enabled_for_user || enabled_for_group || enabled_for_project
-    unless feature_is_enabled
-      track_event(:error_feature_flag_not_enabled)
-      access_denied!
     end
   end
 

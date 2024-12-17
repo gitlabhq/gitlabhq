@@ -8,7 +8,6 @@ description: Track Jira DVCS usage
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/21db9a55e200b23a5a47251e9df46fd548c74559
 milestone: '11.8'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   project_id: projects
+table_size: small

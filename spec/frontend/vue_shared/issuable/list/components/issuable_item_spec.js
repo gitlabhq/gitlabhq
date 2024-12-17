@@ -546,6 +546,45 @@ describe('IssuableItem', () => {
         expect(statusEl.text()).toBe(`${closedMockIssuable.state}`);
       });
 
+      it('renders the mergedAt date as a tooltip of the status badge if the issuable has that value', () => {
+        const mergedMockIssuable = {
+          ...mockIssuable,
+          state: 'merged',
+          mergedAt: '2000-01-01T00:00:00Z',
+        };
+        wrapper = createComponent({
+          issuableSymbol: '!',
+          issuable: mergedMockIssuable,
+          slots: {
+            status: mergedMockIssuable.state,
+          },
+        });
+        const statusEl = findStatusEl();
+        const statusBadge = statusEl.findComponent(GlBadge);
+
+        expect(statusBadge.exists()).toBe(true);
+        expect(statusBadge.attributes('title')).toBe('January 1, 2000 at 12:00:00 AM GMT');
+      });
+
+      it('does not render a tooltip if the issuable doesn\t have a mergedAt value', () => {
+        const mergedMockIssuable = {
+          ...mockIssuable,
+          state: 'merged',
+        };
+        wrapper = createComponent({
+          issuableSymbol: '!',
+          issuable: mergedMockIssuable,
+          slots: {
+            status: mergedMockIssuable.state,
+          },
+        });
+        const statusEl = findStatusEl();
+        const statusBadge = statusEl.findComponent(GlBadge);
+
+        expect(statusBadge.exists()).toBe(true);
+        expect(statusBadge.attributes('title')).toBe('');
+      });
+
       it('renders issuable status without badge if open', () => {
         wrapper = createComponent({
           issuableSymbol: '#',

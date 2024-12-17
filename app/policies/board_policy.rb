@@ -16,11 +16,11 @@ class BoardPolicy < BasePolicy
     enable :read_issue
   end
 
-  condition(:reporter_of_group_projects) do
+  condition(:planner_of_group_projects) do
     next unless @user
 
     group_projects_for(user: @user, group: @subject.resource_parent)
-      .visible_to_user_and_access_level(@user, ::Gitlab::Access::REPORTER)
+      .visible_to_user_and_access_level(@user, ::Gitlab::Access::PLANNER)
       .exists?
   end
 
@@ -28,7 +28,7 @@ class BoardPolicy < BasePolicy
     enable :create_non_backlog_issues
   end
 
-  rule { is_group_board & reporter_of_group_projects }.policy do
+  rule { is_group_board & planner_of_group_projects }.policy do
     enable :create_non_backlog_issues
   end
 

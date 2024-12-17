@@ -58,8 +58,7 @@ module Ci
       render_ci_icon(
         status,
         path,
-        tooltip_placement: tooltip_placement,
-        option_css_classes: 'gl-ml-3'
+        tooltip_placement: tooltip_placement
       )
     end
 
@@ -67,13 +66,12 @@ module Ci
       status,
       path = nil,
       tooltip_placement: 'left',
-      option_css_classes: '',
       container: 'body',
       show_status_text: false
     )
       content_tag_variant = path ? :a : :span
       variant = badge_variant(status)
-      badge_classes = "ci-icon ci-icon-variant-#{variant} gl-inline-flex gl-items-center gl-text-sm #{option_css_classes}"
+      badge_classes = "ci-icon ci-icon-variant-#{variant} gl-inline-flex gl-items-center gl-text-sm"
       title = "#{_('Pipeline')}: #{ci_label_for_status(status)}"
       data = { toggle: 'tooltip', placement: tooltip_placement, container: container, testid: 'ci-icon' }
 

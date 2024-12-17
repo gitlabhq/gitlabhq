@@ -64,7 +64,7 @@ export default {
       </gl-form-select>
     </div>
     <template v-if="description" #description>
-      <span data-testid="description" class="gl-text-gray-500">
+      <span data-testid="description" class="gl-text-subtle">
         {{ description }}
       </span>
     </template>

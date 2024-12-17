@@ -8,6 +8,12 @@ export const validEmoji = {
     unicodeVersion: '4.1',
     aliases: ['atom_symbol'],
   },
+  fast_reverse_button: {
+    moji: '⏪',
+    description: 'fast reverse button',
+    unicodeVersion: '4.1',
+    aliases: ['rewind'],
+  },
   bomb: {
     moji: '💣',
     unicodeVersion: '6.0',
@@ -16,17 +22,17 @@ export const validEmoji = {
   construction_worker_tone5: {
     moji: '👷🏿',
     unicodeVersion: '8.0',
-    description: 'construction worker tone 5',
+    description: 'construction worker: dark skin tone',
   },
   five: {
     moji: '5️⃣',
     unicodeVersion: '3.0',
-    description: 'keycap digit five',
+    description: 'keycap: 5',
   },
   grey_question: {
     moji: '❔',
     unicodeVersion: '6.0',
-    description: 'white question mark ornament',
+    description: 'white question mark',
   },
   black_heart: {
     moji: '🖤',
@@ -36,7 +42,7 @@ export const validEmoji = {
   heart: {
     moji: '❤',
     unicodeVersion: '1.1',
-    description: 'heavy black heart',
+    description: 'red heart',
   },
   custard: {
     moji: '🍮',
@@ -46,7 +52,7 @@ export const validEmoji = {
   star: {
     moji: '⭐',
     unicodeVersion: '5.1',
-    description: 'white medium star',
+    description: 'star',
   },
   gay_pride_flag: {
     moji: '🏳️‍🌈',
@@ -61,12 +67,77 @@ export const validEmoji = {
   thumbsup: {
     moji: '👍',
     unicodeVersion: '6.0',
-    description: 'thumbs up sign',
+    description: 'thumbs up',
   },
   thumbsdown: {
     moji: '👎',
-    description: 'thumbs down sign',
+    description: 'thumbs down',
     unicodeVersion: '6.0',
+  },
+  expressionless: {
+    moji: '😑',
+    description: 'expressionless face',
+    unicodeVersion: '6.1',
+  },
+  spy: {
+    moji: '🕵️',
+    description: 'detective',
+    unicodeVersion: '7.0',
+  },
+  metal: {
+    moji: '🤘',
+    description: 'sign of the horns',
+    unicodeVersion: '8.0',
+  },
+  rofl: {
+    moji: '🤣',
+    description: 'rolling on the floor laughing',
+    unicodeVersion: '9.0',
+  },
+  face_vomiting: {
+    moji: '🤮',
+    description: 'face vomiting',
+    unicodeVersion: '10.0',
+  },
+  man_superhero: {
+    moji: '🦸‍♂️',
+    description: 'man superhero',
+    unicodeVersion: '11.0',
+  },
+  person_standing: {
+    moji: '🧍',
+    description: 'person standing',
+    unicodeVersion: '12.0',
+  },
+  person_red_hair: {
+    moji: '🧑‍🦰',
+    description: 'person: red hair',
+    unicodeVersion: '12.1',
+  },
+  people_hugging: {
+    moji: '🫂',
+    description: 'people hugging',
+    unicodeVersion: '13.0',
+  },
+  face_with_spiral_eyes: {
+    moji: '😵‍💫',
+    description: 'face with spiral eyes',
+    unicodeVersion: '13.1',
+  },
+  coral: {
+    moji: '🪸',
+    description: 'coral',
+    unicodeVersion: '14.0',
+  },
+  jellyfish: {
+    moji: '🪼',
+    description: 'jellyfish',
+    unicodeVersion: '15.0',
+  },
+  lime: {
+    moji: '🍋‍🟩',
+    description: 'lime',
+    unicodeVersion: '15.1',
   },
 };
 

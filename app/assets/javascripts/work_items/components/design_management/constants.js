@@ -12,6 +12,11 @@ export const ACTIVE_DISCUSSION_SOURCE_TYPES = {
   url: 'url',
 };
 
+export const ALERT_VARIANTS = {
+  danger: 'danger',
+  info: 'info',
+};
+
 export const VALID_DESIGN_FILE_MIMETYPE = {
   mimetype: 'image/png, image/jpg, image/jpeg, image/gif, image/bmp, image/tiff, image/ico',
   regex: /image\/.+/,
@@ -41,8 +46,47 @@ export const DESIGN_SINGLE_ARCHIVE_ERROR = s__(
 const DESIGN_UPLOAD_SKIPPED_MESSAGE = s__('DesignManagement|Upload skipped. %{reason}');
 const MAX_SKIPPED_FILES_LISTINGS = 5;
 
+export const UPDATE_DESCRIPTION_ERROR = s__(
+  'DesignManagement|Could not update description. Please try again.',
+);
+
 export const UPLOAD_DESIGN_ERROR_MESSAGE = s__(
   'DesignManagement|Error uploading a new design. Please try again.',
+);
+
+export const ADD_DISCUSSION_COMMENT_ERROR = s__(
+  'DesignManagement|Could not add a new comment. Please try again.',
+);
+
+export const ADD_IMAGE_DIFF_NOTE_ERROR = s__(
+  'DesignManagement|Could not create new discussion. Please try again.',
+);
+
+export const UPDATE_IMAGE_DIFF_NOTE_ERROR = s__(
+  'DesignManagement|Could not update discussion. Please try again.',
+);
+
+export const UPDATE_NOTE_ERROR = s__(
+  'DesignManagement|Could not update comment. Please try again.',
+);
+
+export const DELETE_NOTE_ERROR = s__(
+  'DesignManagement|Could not delete comment. Please try again.',
+);
+
+export const RESOLVE_NOTE_ERROR = s__(
+  'DesignManagement|Could not resolve comment. Please try again.',
+);
+
+export const AWARD_EMOJI_TO_NOTE_ERROR = s__(
+  'DesignManagement|Could not award emoji. Please try again.',
+);
+
+export const TYPENAME_DISCUSSION = 'Discussion';
+export const TYPENAME_USER = 'User';
+
+export const MOVE_DESIGN_ERROR = s__(
+  'DesignManagement|Something went wrong when reordering designs. Please try again',
 );
 
 /**

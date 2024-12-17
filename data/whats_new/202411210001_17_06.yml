@@ -1,0 +1,47 @@
+- name: Use self-hosted model for GitLab Duo Chat
+  description: |
+    You can now host your own supported large language models (LLMs) and configure them to enable GitLab self-managed Duo Chat. This feature is in beta and available with an Ultimate and Duo Enterprise subscription on GitLab self-managed. With self-hosted models, you can use models hosted either on-premise or in a private cloud to enable GitLab Duo Chat or Code Suggestions (introduced as a beta feature in GitLab 17.5). For Code Suggestions, we currently support open-source Mistral models on vLLM or AWS Bedrock, Claude 3.5 Sonnet on AWS Bedrock, and OpenAI models on Azure OpenAI. For Chat, we currently support open-source Mistral models on vLLM or AWS Bedrock, and Claude 3.5 Sonnet on AWS Bedrock. By enabling self-hosted models, you can leverage the power of generative AI while maintaining complete data sovereignty and privacy.
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: false
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/administration/self_hosted_models/
+  image_url: https://about.gitlab.com/images/17_6/self-hosted-models-ui-17.6.png
+  published_at: 2024-11-21
+  release: 17.6
+
+- name: Vulnerability report grouping
+  description: |
+    Users require the ability to view vulnerabilities in groups. This will help security analysts optimize their triage tasks by utilizing bulk actions. In addition users can see how many vulnerabilities match their group; i.e. how many OWASP Top 10 vulnerabilities are there?
+  stage: security_risk_management
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/application_security/vulnerability_report/#group-vulnerabilities
+  image_url: https://about.gitlab.com/images/17_6/vulnerability_report_grouping.png
+  published_at: 2024-11-21
+  release: 17.6
+
+- name: Display release notes on deployment details page
+  description: |
+    Have you ever wondered what might be included in a deployment you’ve been asked to approve? In past versions, you could create a release with a detailed description about its content and instructions for testing, but the related environment-specific deployment did not show this data. We are happy to share that GitLab now displays the release notes under the related deployment details page.
+  stage: deploy
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/environments/deployment_approvals.html#view-blocked-deployments
+  image_url: https://about.gitlab.com/images/17_6/deploy-automatically-show-release-notes.png
+  published_at: 2024-11-21
+  release: 17.6
+
+- name: Enhanced merge request reviewer assignments
+  description: |
+    Now, when assigning reviewers, the sidebar creates a connection between the approval requirements for your merge request and reviewers. View each approval rule, then select from approvers who can satisfy that approval rule and move the merge request forward for you. If you use optional CODEOWNER sections those rules are also shown in the sidebar to help you identify appropriate subject matter experts for your changes.
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/merge_requests/reviews/#request-a-review
+  image_url: https://about.gitlab.com/images/17_6/create-enhanced-reviewer-assignment.png
+  published_at: 2024-11-21
+  release: 17.6

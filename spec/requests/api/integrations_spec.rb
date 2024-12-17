@@ -439,10 +439,6 @@ RSpec.describe API::Integrations, feature_category: :integrations do
   end
 
   describe 'POST /slack/trigger' do
-    before_all do
-      create(:gitlab_slack_application_integration, project: project)
-    end
-
     before do
       stub_application_setting(slack_app_verification_token: 'token')
     end

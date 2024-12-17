@@ -351,54 +351,6 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       include_examples 'uses requests format'
     end
 
-    context 'when feature flag "merge_commit_diff_modes" is disabled' do
-      let(:mapped_merge_commit_diff_mode) { nil }
-
-      before do
-        stub_feature_flags(merge_commit_diff_modes: false)
-      end
-
-      context 'when merge_commit_diff_mode is nil' do
-        let(:merge_commit_diff_mode) { nil }
-
-        include_examples 'includes paths different in any parent'
-
-        include_examples 'uses requests format'
-      end
-
-      context 'when merge_commit_diff_mode is :unspecified' do
-        let(:merge_commit_diff_mode) { :unspecified }
-
-        include_examples 'includes paths different in any parent'
-
-        include_examples 'uses requests format'
-      end
-
-      context 'when merge_commit_diff_mode is :include_merges' do
-        let(:merge_commit_diff_mode) { :include_merges }
-
-        include_examples 'includes paths different in any parent'
-
-        include_examples 'uses requests format'
-      end
-
-      context 'when merge_commit_diff_mode is invalid' do
-        let(:merge_commit_diff_mode) { 'invalid' }
-
-        include_examples 'includes paths different in any parent'
-
-        include_examples 'uses requests format'
-      end
-
-      context 'when merge_commit_diff_mode is :all_parents' do
-        let(:merge_commit_diff_mode) { :all_parents }
-
-        include_examples 'includes paths different in any parent'
-
-        include_examples 'uses requests format'
-      end
-    end
-
     context 'when renamed file exists' do
       let(:branch) { 'gitaly-rename-test' }
       let(:treeish_objects) { [repository.commit(branch)] }
@@ -1267,7 +1219,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
 
   describe '#get_patch_id' do
     it 'returns patch_id of given revisions' do
-      expect(client.get_patch_id('HEAD~', 'HEAD')).to eq('45435e5d7b339dd76d939508c7687701d0c17fff')
+      expect(client.get_patch_id('HEAD~', 'HEAD')).to eq('67cc1b19744f71ee68e5aa6aa0dbadf03a6ba912')
     end
 
     context 'when one of the param is invalid' do

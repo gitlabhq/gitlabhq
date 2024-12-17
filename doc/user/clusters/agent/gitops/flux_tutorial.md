@@ -24,7 +24,7 @@ To set up Flux for GitOps:
 1. [Install `agentk`](#install-agentk)
 1. [Deploy an example project](#deploy-an-example-project)
 
-Prerequisites:
+Before you begin:
 
 - You must have a Kubernetes cluster you can access locally with `kubectl`.
 - You must [install the Flux CLI](https://fluxcd.io/flux/installation/#install-the-flux-cli). Be sure to install Flux v2 or higher.

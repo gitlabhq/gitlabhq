@@ -185,6 +185,17 @@ RSpec.describe WikiPage::Meta, feature_category: :wiki do
     end
   end
 
+  describe '#wiki_page' do
+    let(:wiki_page) { create(:wiki_page, container: project, content: 'test content') }
+    let(:meta) { create(:wiki_page_meta, :for_wiki_page, container: project, wiki_page: wiki_page) }
+
+    subject { meta.wiki_page }
+
+    it 'finds the wiki page for the meta record' do
+      expect(subject).to eq(wiki_page)
+    end
+  end
+
   describe '.find_or_create' do
     let(:old_title)       { generate(:wiki_page_title) }
     let(:last_known_slug) { generate(:sluggified_title) }

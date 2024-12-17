@@ -31,7 +31,7 @@ module Gitlab
         return application_settings.send(name, *args, **kwargs, &block) if application_settings.respond_to?(name)
 
         if respond_to_organization_setting?(name, false)
-          return Organizations::OrganizationSetting.for(::Current.organization_id).send(name, *args, **kwargs, &block)
+          return ::Organizations::OrganizationSetting.for(::Current.organization_id).send(name, *args, **kwargs, &block)
         end
 
         super

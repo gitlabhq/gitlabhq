@@ -10,8 +10,6 @@ description: A rule associated to a protected environment that allows a user, gr
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6672
 milestone: '11.3'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 desired_sharding_key:
   protected_environment_project_id:
     references: projects
@@ -32,3 +30,4 @@ desired_sharding_key:
 desired_sharding_key_migration_job_name:
 - BackfillProtectedEnvironmentDeployAccessLevelsProtectedEnvironmentProjectId
 - BackfillProtectedEnvironmentDeployAccessLevelsProtectedEnvironmentGroupId
+table_size: small

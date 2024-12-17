@@ -3,18 +3,24 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillPackagesDependenciesProjectId, feature_category: :package_registry do
-  let!(:namespace_1) { table(:namespaces).create!(name: 'group-1', path: 'group-1', type: 'Group') }
+  let!(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
 
-  let!(:namespace_2) { table(:namespaces).create!(name: 'group-2', path: 'group-2', type: 'Group') }
+  let!(:namespace_1) do
+    table(:namespaces).create!(name: 'group-1', path: 'group-1', type: 'Group', organization_id: organization.id)
+  end
+
+  let!(:namespace_2) do
+    table(:namespaces).create!(name: 'group-2', path: 'group-2', type: 'Group', organization_id: organization.id)
+  end
 
   let!(:project_1) do
     table(:projects).create!(name: 'project 1', path: 'project-1', project_namespace_id: namespace_1.id,
-      namespace_id: namespace_1.id)
+      namespace_id: namespace_1.id, organization_id: organization.id)
   end
 
   let!(:project_2) do
     table(:projects).create!(name: 'project 2', path: 'project-2', project_namespace_id: namespace_2.id,
-      namespace_id: namespace_2.id)
+      namespace_id: namespace_2.id, organization_id: organization.id)
   end
 
   let!(:package_1) do

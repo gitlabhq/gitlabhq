@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.pipeline_authoring.pipeline_authoring_total_unique_counts_monthly
 description: Unique users doing commits or push MRs which contains CI cifig file
 product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
 value_type: number
 status: active
 milestone: "13.12"

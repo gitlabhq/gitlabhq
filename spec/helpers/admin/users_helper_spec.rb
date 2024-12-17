@@ -12,7 +12,9 @@ RSpec.describe Admin::UsersHelper, feature_category: :user_management do
 
     subject { helper.show_admin_new_user_organization_field? }
 
-    context 'when instance has organizations', :with_default_organization do
+    context 'when instance has organizations' do
+      let_it_be(:organization) { create(:organization) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- spec needs organization persisted to database
+
       it { is_expected.to be(true) }
 
       context 'when ui_for_organizations feature flag is disabled' do
@@ -38,7 +40,7 @@ RSpec.describe Admin::UsersHelper, feature_category: :user_management do
 
     subject { helper.show_admin_edit_user_organization_field?(user) }
 
-    context 'when user has organizations', :with_default_organization do
+    context 'when user has organizations' do
       let_it_be(:user) { create(:user, organizations: [organization]) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- spec needs organization persisted to database
 
       it { is_expected.to be(true) }
@@ -59,32 +61,34 @@ RSpec.describe Admin::UsersHelper, feature_category: :user_management do
     end
   end
 
-  describe 'admin_new_user_organization_field_app_data', :with_default_organization do
+  describe 'admin_new_user_organization_field_app_data' do
     subject { Gitlab::Json.parse(helper.admin_new_user_organization_field_app_data) }
 
     context 'when instance has one organization' do
+      let_it_be(:organization) { create(:organization) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- spec needs organization persisted to database
+
       it do
         is_expected.to eq({
           'has_multiple_organizations' => false,
           'initial_organization' => {
-            'id' => default_organization.id,
-            'name' => default_organization.name,
-            'avatar_url' => default_organization.avatar_url(size: 96)
+            'id' => organization.id,
+            'name' => organization.name,
+            'avatar_url' => organization.avatar_url(size: 96)
           }
         })
       end
     end
 
     context 'when instance has multiple organizations' do
-      let_it_be(:organization) { create(:organization) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- spec needs organization persisted to database
+      let_it_be(:organizations) { create_list(:organization, 2) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- spec needs organization persisted to database
 
       it do
         is_expected.to eq({
           'has_multiple_organizations' => true,
           'initial_organization' => {
-            'id' => default_organization.id,
-            'name' => default_organization.name,
-            'avatar_url' => default_organization.avatar_url(size: 96)
+            'id' => organizations.first.id,
+            'name' => organizations.first.name,
+            'avatar_url' => organizations.first.avatar_url(size: 96)
           }
         })
       end
@@ -94,12 +98,16 @@ RSpec.describe Admin::UsersHelper, feature_category: :user_management do
   describe 'admin_edit_user_organization_field_app_data' do
     let_it_be(:organization) { create(:organization) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- spec needs organization persisted to database
     let_it_be(:user) { create(:user, organizations: [organization]) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- spec needs organization persisted to database
+    let_it_be(:organization_user) { user.organization_users.first }
 
     subject { Gitlab::Json.parse(helper.admin_edit_user_organization_field_app_data(user)) }
 
     it do
       is_expected.to eq({
-        "initial_access_level" => 'default',
+        'organization_user' => {
+          'access_level' => organization_user.access_level,
+          'id' => organization_user.id
+        },
         'initial_organization' => {
           'id' => organization.id,
           'name' => organization.name,

@@ -14,7 +14,7 @@ module QA
       context 'when a file with the same name already exists' do
         let(:file_name) { 'README.md' }
 
-        it 'throws an error', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/390005' do
+        it 'throws an error', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/390005' do
           Page::Project::WebIDE::VSCode.perform do |ide|
             ide.upload_file(file_path)
 
@@ -45,14 +45,14 @@ module QA
         end
       end
 
-      context 'when the file is a text file', :blocking,
+      context 'when the file is a text file',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/390006' do
         let(:file_name) { 'text_file.txt' }
 
         it_behaves_like 'upload a file'
       end
 
-      context 'when the file is an image', :blocking,
+      context 'when the file is an image',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/390007' do
         let(:file_name) { 'dk.png' }
 

@@ -57,6 +57,7 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
 
   context 'when authorized' do
     before_all do
+      project.update!(ci_pipeline_variables_minimum_override_role: :developer)
       project.add_developer(current_user)
     end
 

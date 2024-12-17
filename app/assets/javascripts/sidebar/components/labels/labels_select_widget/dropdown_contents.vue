@@ -207,7 +207,6 @@ export default {
   <gl-dropdown
     ref="dropdown"
     :text="buttonText"
-    class="gl-w-full"
     block
     data-testid="labels-select-dropdown-contents"
     :toggle-attrs="toggleAttrs"

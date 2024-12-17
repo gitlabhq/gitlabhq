@@ -404,8 +404,8 @@ describe('~/environments/components/form.vue', () => {
         await selectAgent();
       });
 
-      it("doesn't render flux resource selector", () => {
-        expect(findFluxResourceSelector().exists()).toBe(false);
+      it('renders flux resource selector', () => {
+        expect(findFluxResourceSelector().exists()).toBe(true);
       });
     });
   });

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Aws::ConfigurationController, feature_category: :five_minute_production_app do
+RSpec.describe Projects::Aws::ConfigurationController, feature_category: :not_owned do # rubocop:disable RSpec/FeatureCategory -- removing code in https://gitlab.com/gitlab-org/gitlab/-/issues/478491
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:url) { project_aws_configuration_path(project) }
 

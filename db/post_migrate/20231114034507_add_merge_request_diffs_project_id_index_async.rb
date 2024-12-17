@@ -6,11 +6,11 @@ class AddMergeRequestDiffsProjectIdIndexAsync < Gitlab::Database::Migration[2.2]
 
   INDEX_NAME = 'index_merge_request_diffs_on_project_id'
 
-  # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
     prepare_async_index :merge_request_diffs, :project_id, name: INDEX_NAME
+    # rubocop:enable Migration/PreventIndexCreation
   end
-  # rubocop:enable Migration/PreventIndexCreation
 
   def down
     unprepare_async_index :merge_request_diffs, :project_id, name: INDEX_NAME

@@ -22,7 +22,7 @@ export const fetchConflictsData = async ({ commit, dispatch }, conflictsPath) =>
 };
 
 export const setConflictsData = async ({ commit }, data) => {
-  const files = decorateFiles(data.files);
+  const files = decorateFiles(data);
   commit(types.SET_CONFLICTS_DATA, { ...data, files });
 };
 

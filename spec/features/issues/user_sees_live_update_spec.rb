@@ -26,25 +26,23 @@ RSpec.describe 'Issues > User sees live update', :js, feature_category: :team_pl
   end
 
   describe 'confidential issue#show' do
-    it 'shows confidential sidebar information as confidential and can be turned off' do
+    it 'shows the confidentiality status that can be turned off' do
       issue = create(:issue, :confidential, project: project)
 
       visit project_issue_path(project, issue)
+      wait_for_requests
 
-      expect(page).to have_text('This is a confidential issue. People without permission will never get a notification.')
+      expect(page).to have_css('.gl-badge', text: 'Confidential')
 
-      within '.block.confidentiality' do
-        click_button 'Edit'
+      click_button 'Issue actions'
+      within '#new-actions-header-dropdown' do
+        click_button 'Turn off confidentiality'
       end
 
-      expect(page).to have_text('You are going to turn off the confidentiality. This means everyone will be able to see and leave a comment on this issue.')
-
-      click_button 'Turn off'
-
       visit project_issue_path(project, issue)
+      wait_for_requests
 
       expect(page).not_to have_css('.gl-badge', text: 'Confidential')
-      expect(page).not_to have_text('This is a confidential issue. People without permission will never get a notification.')
     end
   end
 end

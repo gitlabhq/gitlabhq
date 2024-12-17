@@ -4,18 +4,25 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::FixSyncedEpicWorkItemParentLinks, feature_category: :team_planning do
   let!(:author) { table(:users).create!(username: 'tester', projects_limit: 100) }
-  let!(:namespace) { table(:namespaces).create!(name: 'my test group 1', path: 'my-test-group-1') }
+  let!(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
+  let!(:namespace) { table(:namespaces).create!(name: 'group 1', path: 'group-1', organization_id: organization.id) }
 
-  let!(:project_namespace1) { table(:namespaces).create!(name: 'namespace 1', path: 'namespace-2') }
-  let!(:project1) do
-    table(:projects).create!(name: 'my test project 1', path: 'my-test-project-1', namespace_id: namespace.id,
-      project_namespace_id: project_namespace1.id)
+  let!(:project_namespace1) do
+    table(:namespaces).create!(name: 'namespace 1', path: 'namespace-2', organization_id: organization.id)
   end
 
-  let!(:project_namespace2) { table(:namespaces).create!(name: 'namespace 2', path: 'namespace-2') }
+  let!(:project1) do
+    table(:projects).create!(name: 'my test project 1', path: 'my-test-project-1', namespace_id: namespace.id,
+      project_namespace_id: project_namespace1.id, organization_id: organization.id)
+  end
+
+  let!(:project_namespace2) do
+    table(:namespaces).create!(name: 'namespace 2', path: 'namespace-2', organization_id: organization.id)
+  end
+
   let!(:project2) do
     table(:projects).create!(name: 'my test project 2', path: 'my-test-project-2', namespace_id: namespace.id,
-      project_namespace_id: project_namespace2.id)
+      project_namespace_id: project_namespace2.id, organization_id: organization.id)
   end
 
   let!(:epics) { table(:epics) }

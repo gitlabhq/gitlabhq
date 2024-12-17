@@ -6,15 +6,21 @@ module Gitlab
       module Chain
         class CancelPendingPipelines < Chain::Base
           def perform!
-            if pipeline.schedule?
-              ::Ci::LowUrgencyCancelRedundantPipelinesWorker.perform_async(pipeline.id)
-            else
-              ::Ci::CancelRedundantPipelinesWorker.perform_async(pipeline.id)
-            end
+            cancellation_worker_class.perform_async(pipeline.id, { 'partition_id' => pipeline.partition_id })
           end
 
           def break?
             false
+          end
+
+          private
+
+          def cancellation_worker_class
+            if pipeline.schedule?
+              ::Ci::LowUrgencyCancelRedundantPipelinesWorker
+            else
+              ::Ci::CancelRedundantPipelinesWorker
+            end
           end
         end
       end

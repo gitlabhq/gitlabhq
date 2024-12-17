@@ -7,12 +7,12 @@ info: Analysis of Application Settings for Cells 1.0.
 
 ## Statistics
 
-- Number of attributes: 504
-- Number of encrypted attributes: 43 (9.0%)
-- Number of attributes documented: 310 (62.0%)
-- Number of attributes on GitLab.com different from the defaults: 221 (44.0%)
-- Number of attributes with `clusterwide` set: 504 (100.0%)
-- Number of attributes with `clusterwide: true` set: 122 (24.0%)
+- Number of attributes: 510
+- Number of encrypted attributes: 45 (9.0%)
+- Number of attributes documented: 311 (61.0%)
+- Number of attributes on GitLab.com different from the defaults: 222 (44.0%)
+- Number of attributes with `clusterwide` set: 510 (100.0%)
+- Number of attributes with `clusterwide: true` set: 124 (24.0%)
 
 ## Individual columns
 
@@ -59,6 +59,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `can_create_group` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `can_create_organization` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `check_namespace_plan` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `true`| `true` |
+| `ci_job_token_signing_key` | `true` | `bytea` | `` | `false` | `null` | `false` | `true`| `false` |
 | `ci_jwt_signing_key` | `true` | `text` | `` | `false` | `null` | `true` | `true`| `false` |
 | `ci_max_includes` | `false` | `integer` | `integer` | `true` | `150` | `false` | `false`| `true` |
 | `ci_max_total_yaml_size_bytes` | `false` | `integer` | `integer` | `true` | `314572800` | `false` | `false`| `true` |
@@ -389,6 +390,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `require_personal_access_token_expiry` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `require_two_factor_authentication` | `false` | `boolean` | `boolean` | `false` | `false` | `false` | `false`| `true` |
 | `required_instance_ci_template` | `false` | `text` | `` | `false` | `null` | `false` | `false`| `false` |
+| `resource_usage_limits` | `false` | `jsonb` | `hash` | `true` | `'{}'::jsonb` | `true` | `false`| `true` |
 | `restricted_visibility_levels` | `false` | `text` | `array of strings` | `false` | `null` | `true` | `false`| `true` |
 | `rsa_key_restriction` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
 | `runner_token_expiration_interval` | `false` | `integer` | `integer` | `false` | `null` | `false` | `false`| `true` |
@@ -400,6 +402,8 @@ info: Analysis of Application Settings for Cells 1.0.
 | `search_rate_limit_allowlist` | `false` | `text[]` | `` | `true` | `'{}'::text[]` | `true` | `false`| `false` |
 | `search_rate_limit_unauthenticated` | `false` | `integer` | `integer` | `true` | `100` | `false` | `false`| `true` |
 | `secret_detection_revocation_token_types_url` | `false` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
+| `secret_detection_service_auth_token` | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
+| `secret_detection_service_url` | `false` | `text` | `` | `true` | `''::text` | `false` | `false`| `false` |
 | `secret_detection_token_revocation_enabled` | `false` | `boolean` | `` | `true` | `false` | `true` | `false`| `false` |
 | `secret_detection_token_revocation_token` | `true` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
 | `secret_detection_token_revocation_url` | `false` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
@@ -419,6 +423,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `shared_runners_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `shared_runners_minutes` | `false` | `integer` | `integer` | `true` | `0` | `true` | `false`| `true` |
 | `shared_runners_text` | `false` | `text` | `string` | `false` | `null` | `true` | `false`| `true` |
+| `show_migrate_from_jenkins_banner` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `sidekiq_job_limiter_compression_threshold_bytes` | `false` | `integer` | `integer` | `true` | `100000` | `false` | `false`| `true` |
 | `sidekiq_job_limiter_limit_bytes` | `false` | `integer` | `integer` | `true` | `0` | `true` | `false`| `true` |
 | `sidekiq_job_limiter_mode` | `false` | `smallint` | `string` | `true` | `1` | `false` | `false`| `true` |
@@ -507,6 +512,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `user_default_internal_regex` | `false` | `character` | `string` | `false` | `null` | `true` | `false`| `true` |
 | `user_defaults_to_private_profile` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `user_oauth_applications` | `false` | `boolean` | `boolean` | `false` | `true` | `false` | `false`| `true` |
+| `user_seat_management` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `user_show_add_ssh_key_message` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `users_get_by_id_limit` | `false` | `integer` | `` | `true` | `300` | `false` | `false`| `false` |
 | `users_get_by_id_limit_allowlist` | `false` | `text[]` | `` | `true` | `'{}'::text[]` | `true` | `false`| `false` |

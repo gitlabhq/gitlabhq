@@ -1,11 +1,13 @@
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { GlButton } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { provideWebIdeLink } from 'ee_else_ce/pages/projects/shared/web_ide_link/provide_web_ide_link';
 import TableOfContents from '~/blob/components/table_contents.vue';
 import { BlobViewer, initAuxiliaryViewer } from '~/blob/viewer/index';
+import { __ } from '~/locale';
 import GpgBadges from '~/gpg_badges';
 import createDefaultClient from '~/lib/graphql';
 import initBlob from '~/pages/projects/init_blob';
@@ -16,6 +18,7 @@ import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
 import '~/sourcegraph/load';
 import createStore from '~/code_navigation/store';
 import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
+import { generateHistoryUrl } from '~/repository/utils/url_utility';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -23,6 +26,8 @@ import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highl
 import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
 import { InternalEvents } from '~/tracking';
 import { initFindFileShortcut } from '~/projects/behaviors';
+import initHeaderApp from '~/repository/init_header_app';
+import createRouter from '~/repository/router';
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
@@ -31,8 +36,6 @@ Vue.use(VueRouter);
 const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient(),
 });
-
-const router = new VueRouter({ mode: 'history' });
 
 const viewBlobEl = document.querySelector('#js-view-blob-app');
 
@@ -81,6 +84,9 @@ if (viewBlobEl) {
     canDownloadCode,
     ...dataset
   } = viewBlobEl.dataset;
+  const router = createRouter(projectPath, originalBranch);
+
+  initHeaderApp({ router, isBlobView: true });
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -204,4 +210,35 @@ if (tableContentsEl) {
       return h(TableOfContents);
     },
   });
+}
+
+const initTreeHistoryLinkApp = (el) => {
+  const { historyLink } = el.dataset;
+  // eslint-disable-next-line no-new
+  new Vue({
+    el,
+    router: new VueRouter({ mode: 'history' }),
+    render(h) {
+      const url = generateHistoryUrl(
+        historyLink,
+        this.$route.params.path,
+        this.$route.meta.refType || this.$route.query.ref_type,
+      );
+      return h(
+        GlButton,
+        {
+          attrs: {
+            href: url.href,
+          },
+        },
+        [__('History')],
+      );
+    },
+  });
+};
+
+const treeHistoryLinkEl = document.getElementById('js-commit-history-link');
+
+if (treeHistoryLinkEl) {
+  initTreeHistoryLinkApp(treeHistoryLinkEl);
 }

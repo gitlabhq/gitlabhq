@@ -44,12 +44,13 @@ class Packages::Package < ApplicationRecord
   has_many :tags, inverse_of: :package, class_name: 'Packages::Tag'
 
   has_one :maven_metadatum, inverse_of: :package, class_name: 'Packages::Maven::Metadatum'
-  has_one :npm_metadatum, inverse_of: :package, class_name: 'Packages::Npm::Metadatum'
 
   has_many :build_infos, inverse_of: :package
   has_many :pipelines, through: :build_infos, disable_joins: true
 
   accepts_nested_attributes_for :maven_metadatum
+
+  before_validation :prevent_concurrent_inserts, on: :create, if: :maven?
 
   validates :project, presence: true
   validates :name, presence: true
@@ -63,14 +64,7 @@ class Packages::Package < ApplicationRecord
     },
     unless: -> { pending_destruction? || conan? }
 
-  validate :npm_package_already_taken, if: :npm?
-
-  validates :name, format: { with: Gitlab::Regex.npm_package_name_regex, message: Gitlab::Regex.npm_package_name_regex_message }, if: :npm?
-
   validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? && maven? }
-
-  validates :version, format: { with: Gitlab::Regex.semver_regex, message: Gitlab::Regex.semver_regex_message },
-    if: -> { npm? }
 
   scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
   scope :with_name, ->(name) { where(name: name) }
@@ -94,13 +88,6 @@ class Packages::Package < ApplicationRecord
   scope :including_project_namespace_route, -> { includes(project: { namespace: :route }) }
   scope :including_tags, -> { includes(:tags) }
   scope :including_dependency_links, -> { includes(dependency_links: :dependency) }
-
-  scope :preload_npm_metadatum, -> { preload(:npm_metadatum) }
-
-  scope :with_npm_scope, ->(scope) do
-    npm.where("position('/' in packages_packages.name) > 0 AND split_part(packages_packages.name, '/', 1) = :package_scope", package_scope: "@#{sanitize_sql_like(scope)}")
-  end
-
   scope :has_version, -> { where.not(version: nil) }
   scope :preload_files, -> { preload(:installable_package_files) }
   scope :preload_pipelines, -> { preload(pipelines: :user) }
@@ -156,7 +143,8 @@ class Packages::Package < ApplicationRecord
       generic: 'Packages::Generic::Package',
       pypi: 'Packages::Pypi::Package',
       terraform_module: 'Packages::TerraformModule::Package',
-      nuget: 'Packages::Nuget::Package'
+      nuget: 'Packages::Nuget::Package',
+      npm: 'Packages::Npm::Package'
     }.freeze
   end
 
@@ -258,12 +246,6 @@ class Packages::Package < ApplicationRecord
     ::Packages::Maven::Metadata::SyncWorker.perform_async(user.id, project_id, name)
   end
 
-  def sync_npm_metadata_cache
-    return unless npm?
-
-    ::Packages::Npm::CreateMetadataCacheWorker.perform_async(project_id, name)
-  end
-
   def create_build_infos!(build)
     return unless build&.pipeline
 
@@ -291,19 +273,19 @@ class Packages::Package < ApplicationRecord
 
   private
 
-  def npm_package_already_taken
-    return unless project
-    return unless follows_npm_naming_convention?
+  # This method will block while another database transaction attempts to insert the same data.
+  # After the lock is released by the other transaction, the uniqueness validation may fail
+  # with record not unique validation error.
 
-    if project.package_already_taken?(name, version, package_type: :npm)
-      errors.add(:base, _('Package already exists'))
-    end
-  end
+  # Without this block the uniqueness validation wouldn't be able to detect duplicated
+  # records as transactions can't see each other's changes.
 
-  # https://docs.gitlab.com/ee/user/packages/npm_registry/#package-naming-convention
-  def follows_npm_naming_convention?
-    return false unless project&.root_namespace&.path
+  # This is a temp advisory lock to prevent race conditions. We will switch to use database `upsert`
+  # once we have a database unique index: https://gitlab.com/gitlab-org/gitlab/-/issues/424238#note_2187274213
+  def prevent_concurrent_inserts
+    lock_key = [self.class.table_name, project_id, name, version].join('-')
+    lock_expression = "hashtext(#{connection.quote(lock_key)})"
 
-    project.root_namespace.path == ::Packages::Npm.scope_of(name)
+    connection.execute("SELECT pg_advisory_xact_lock(#{lock_expression})")
   end
 end

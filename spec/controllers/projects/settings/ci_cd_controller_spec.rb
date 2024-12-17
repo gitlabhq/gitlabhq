@@ -348,6 +348,30 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
           end
         end
 
+        context 'when delete_pipelines_in_human_readable is specified' do
+          let(:params) { { ci_cd_settings_attributes: { delete_pipelines_in_human_readable: '1 week' } } }
+
+          context 'and user is a maintainer' do
+            it 'does not set delete_pipelines_in_human_readable' do
+              subject
+
+              project.reload
+              expect(project.ci_delete_pipelines_in_seconds).to be_nil
+            end
+          end
+
+          context 'and user is an owner' do
+            it 'sets delete_pipelines_in_human_readable' do
+              project.add_owner(user)
+
+              subject
+
+              project.reload
+              expect(project.ci_delete_pipelines_in_seconds).to eq(1.week)
+            end
+          end
+        end
+
         context 'when max_artifacts_size is specified' do
           let(:params) { { max_artifacts_size: 10 } }
 

@@ -104,7 +104,7 @@ export default {
         fixed
         stacked="md"
         head-variant="white"
-        thead-class="gl-border-b-solid gl-border-b-2 gl-border-b-gray-100"
+        thead-class="gl-border-b-solid gl-border-b-2 gl-border-b-default"
       >
         <template #cell(lastUsed)="{ item }">
           <time-ago-tooltip v-if="item.lastUsedAt" :time="item.lastUsedAt" />

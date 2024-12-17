@@ -61,7 +61,7 @@ export default {
     variant="danger"
   >
     <template #list-item>
-      <span class="gl-text-red-500" data-testid="menu-item-text">
+      <span class="gl-text-danger" data-testid="menu-item-text">
         {{ $options.modal.actionPrimary.text }}
       </span>
 

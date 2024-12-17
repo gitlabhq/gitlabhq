@@ -838,11 +838,8 @@ use this setting for control over the environment the pipeline runs in.
 
 #### Set a minimum role for pipeline variables
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1
-
-When [pipeline variables are restricted](#restrict-pipeline-variables), you can also
-set a specific minimum [role](../../user/permissions.md#roles) that can run pipelines
-with pipeline variables.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1.
+> - For GitLab.com, setting defaults [updated for all new projects in new namespaces](https://gitlab.com/gitlab-org/gitlab/-/issues/502382) to `enabled` for `restrict_user_defined_variables` and `no_one_allowed` for `ci_pipeline_variables_minimum_override_role` in GitLab 17.7.
 
 Prerequisites:
 
@@ -853,10 +850,11 @@ To change the setting, use [the projects API](../../api/projects.md#edit-a-proje
 to set `ci_pipeline_variables_minimum_override_role` to one of:
 
 - `no_one_allowed`: No pipelines can run with pipeline variables.
+  Default for new projects in new namespaces on GitLab.com.
 - `owner`: Only users with the Owner role can run pipelines with pipeline variables.
   You must have the Owner role for the project to change the setting to this value.
 - `maintainer`: Only users with at least the Maintainer role can run pipelines with pipeline variables.
-  Default when not specified.
+  Default when not specified on self-managed and Dedicated.
 - `developer`: Only users with at least the Developer role can run pipelines with pipeline variables.
 
 ## Exporting variables

@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlAlert, GlFormSelect } from '@gitlab/ui';
+import { GlAlert, GlButton, GlFormSelect } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/namespace_work_item_types.query.graphql.json';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
@@ -83,6 +83,7 @@ describe('Create work item component', () => {
   const findRelatesToCheckbox = () => wrapper.find('[data-testid="relates-to-checkbox"]');
   const findCreateWorkItemView = () => wrapper.find('[data-testid="create-work-item-view"]');
 
+  const findFormButtons = () => wrapper.find('[data-testid="form-buttons"]');
   const findCreateButton = () => wrapper.find('[data-testid="create-button"]');
   const findCancelButton = () => wrapper.find('[data-testid="cancel-button"]');
 
@@ -537,6 +538,54 @@ describe('Create work item component', () => {
           },
         }),
       });
+    });
+  });
+
+  describe('form buttons', () => {
+    it('shows buttons on right and sticky when stickyFormSubmit', async () => {
+      await initialiseComponentAndSelectWorkItem({
+        props: { stickyFormSubmit: true },
+      });
+
+      expect(findFormButtons().classes('gl-sticky')).toBe(true);
+      expect(findFormButtons().classes('gl-justify-end')).toBe(true);
+
+      expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Cancel');
+      expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Create epic');
+    });
+
+    it('shows buttons on left and inside the grid when not stickyFormSubmit', async () => {
+      await initialiseComponentAndSelectWorkItem({
+        props: { stickyFormSubmit: false },
+      });
+
+      expect(findFormButtons().classes('gl-sticky')).toBe(false);
+      expect(findFormButtons().classes('gl-justify-end')).toBe(false);
+
+      expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Create epic');
+      expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Cancel');
+    });
+  });
+
+  describe('Keyboard submit events', () => {
+    beforeEach(async () => {
+      await initialiseComponentAndSelectWorkItem();
+
+      await updateWorkItemTitle();
+    });
+
+    it('should call handleKeydown method when keydown event is triggered with CTRL', () => {
+      const event = new KeyboardEvent('keydown', { key: 'Enter', ctrlKey: true });
+      document.dispatchEvent(event);
+
+      expect(createWorkItemSuccessHandler).toHaveBeenCalled();
+    });
+
+    it('should call handleKeydown method when keydown event is triggered with CMD', () => {
+      const event = new KeyboardEvent('keydown', { key: 'Enter', metaKey: true });
+      document.dispatchEvent(event);
+
+      expect(createWorkItemSuccessHandler).toHaveBeenCalled();
     });
   });
 });

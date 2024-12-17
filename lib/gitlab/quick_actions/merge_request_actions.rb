@@ -314,7 +314,7 @@ module Gitlab
         parse_params do |reviewer_param|
           extract_users(reviewer_param)
         end
-        command :assign_reviewer, :reviewer, :request_review do |users|
+        command :assign_reviewer, :reviewer do |users|
           next if users.empty?
 
           if quick_action_target.allows_multiple_reviewers?
@@ -322,6 +322,54 @@ module Gitlab
             @updates[:reviewer_ids] |= users.map(&:id)
           else
             @updates[:reviewer_ids] = [users.first.id]
+          end
+        end
+
+        ########################################################################
+        #
+        # /request_review
+        #
+        desc do
+          _('Request a review')
+        end
+        explanation do |users|
+          _('Requests a review from %{reviewer_users_sentence}.') % { reviewer_users_sentence: reviewer_users_sentence(users) }
+        end
+        execution_message do |users = nil|
+          if users.blank?
+            _("Failed to request a review because no user was specified.")
+          else
+            _('Requested a review from %{reviewer_users_sentence}.') % { reviewer_users_sentence: reviewer_users_sentence(users) }
+          end
+        end
+        params do
+          quick_action_target.allows_multiple_reviewers? ? '@user1 @user2' : '@user'
+        end
+        types MergeRequest
+        condition do
+          current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
+        end
+        parse_params do |reviewer_param|
+          extract_users(reviewer_param)
+        end
+        command :request_review do |users|
+          next if users.empty?
+
+          @updates[:reviewer_ids] ||= quick_action_target.reviewers.map(&:id)
+
+          service = ::MergeRequests::RequestReviewService.new(
+            project: quick_action_target.project,
+            current_user: current_user
+          )
+
+          reviewers_to_add(users).each do |user|
+            if @updates[:reviewer_ids].include?(user.id)
+              # Request a new review from the reviewer if they are already assigned
+              service.execute(quick_action_target, user)
+            else
+              # Assign the user as a reviewer if they are not already
+              @updates[:reviewer_ids] << user.id
+            end
           end
         end
 

@@ -25,7 +25,7 @@ module QA
         ssh_key&.remove_via_api!
       end
 
-      it 'user pushes to the repository', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347734' do
+      it 'user pushes to the repository', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347734' do
         project = create(:project, name: 'git-protocol-project')
 
         file_name = 'README.md'
@@ -36,15 +36,12 @@ module QA
         # Use Git to clone the project, push a file to it, and then check the
         # supported Git protocol
         Git::Repository.perform do |repository|
-          username = 'GitLab QA'
-          email = 'root@gitlab.com'
-
           repository.uri = project.repository_ssh_location.uri
 
           begin
             repository.use_ssh_key(ssh_key)
             repository.clone
-            repository.configure_identity(username, email)
+            repository.use_default_identity
             repository.default_branch = project.default_branch
             repository.checkout(project.default_branch, new_branch: true)
 

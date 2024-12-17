@@ -26,8 +26,6 @@ export default {
       'TimeTracking|Add an %{estimateStart}estimate%{estimateEnd} or %{timeSpentStart}time spent%{timeSpentEnd}.',
     ),
   },
-  createTimelogModalId: CREATE_TIMELOG_MODAL_ID,
-  setTimeEstimateModalId: SET_TIME_ESTIMATE_MODAL_ID,
   components: {
     TimeTrackingReport,
     CreateTimelogForm,
@@ -101,6 +99,15 @@ export default {
     timeRemainingPercent() {
       return Math.floor((this.totalTimeSpent / this.timeEstimate) * 100);
     },
+    createTimelogModalId() {
+      return `${CREATE_TIMELOG_MODAL_ID}-${this.workItemId}`;
+    },
+    setTimeEstimateModalId() {
+      return `${SET_TIME_ESTIMATE_MODAL_ID}-${this.workItemId}`;
+    },
+    timeTrackingModalId() {
+      return `time-tracking-modal-${this.workItemId}`;
+    },
   },
 };
 </script>
@@ -113,7 +120,7 @@ export default {
       </h3>
       <gl-button
         v-if="canUpdate"
-        v-gl-modal="$options.createTimelogModalId"
+        v-gl-modal="createTimelogModalId"
         v-gl-tooltip.top
         category="tertiary"
         icon="plus"
@@ -129,7 +136,7 @@ export default {
         <span class="gl-text-subtle">{{ s__('TimeTracking|Spent') }}</span>
         <gl-button
           v-if="canUpdate"
-          v-gl-modal="'time-tracking-report'"
+          v-gl-modal="timeTrackingModalId"
           v-gl-tooltip="s__('TimeTracking|View time tracking report')"
           variant="link"
           class="!gl-text-sm"
@@ -150,7 +157,7 @@ export default {
           <span class="gl-text-subtle">{{ s__('TimeTracking|Estimate') }}</span>
           <gl-button
             v-if="canUpdate"
-            v-gl-modal="$options.setTimeEstimateModalId"
+            v-gl-modal="setTimeEstimateModalId"
             v-gl-tooltip="s__('TimeTracking|Set estimate')"
             variant="link"
             class="!gl-text-sm"
@@ -164,7 +171,7 @@ export default {
         </template>
         <gl-button
           v-else-if="canUpdate"
-          v-gl-modal="$options.setTimeEstimateModalId"
+          v-gl-modal="setTimeEstimateModalId"
           class="gl-ml-auto !gl-text-sm"
           variant="link"
           data-testid="add-estimate-button"
@@ -176,7 +183,7 @@ export default {
         <gl-sprintf :message="$options.i18n.addTimeTrackingMessage">
           <template #estimate="{ content }">
             <gl-button
-              v-gl-modal="$options.setTimeEstimateModalId"
+              v-gl-modal="setTimeEstimateModalId"
               class="gl-align-baseline !gl-text-sm"
               variant="link"
               data-testid="add-estimate-button"
@@ -186,7 +193,7 @@ export default {
           </template>
           <template #timeSpent="{ content }">
             <gl-button
-              v-gl-modal="$options.createTimelogModalId"
+              v-gl-modal="createTimelogModalId"
               class="gl-align-baseline !gl-text-sm"
               variant="link"
               data-testid="add-time-spent-button"
@@ -210,7 +217,7 @@ export default {
     <create-timelog-form :work-item-id="workItemId" :work-item-type="workItemType" />
 
     <gl-modal
-      modal-id="time-tracking-report"
+      :modal-id="timeTrackingModalId"
       data-testid="time-tracking-report-modal"
       hide-footer
       size="lg"

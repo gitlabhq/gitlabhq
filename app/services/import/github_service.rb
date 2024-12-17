@@ -3,7 +3,6 @@
 module Import
   class GithubService < Import::BaseService
     include ActiveSupport::NumberHelper
-    include Gitlab::Utils::StrongMemoize
     include SafeFormatHelper
 
     attr_accessor :client
@@ -60,30 +59,6 @@ module Import
       {}
     end
 
-    def oversized?
-      repository_size_limit > 0 && repo[:size] > repository_size_limit
-    end
-
-    def oversize_error_message
-      s_('GithubImport|"%{repository_name}" size (%{repository_size}) is larger than the limit of %{limit}.') % {
-        repository_name: repo[:name],
-        repository_size: number_to_human_size(repo[:size]),
-        limit: number_to_human_size(repository_size_limit)
-      }
-    end
-
-    def repository_size_limit
-      strong_memoize :repository_size_limit do
-        namespace_limit = target_namespace.repository_size_limit.to_i
-
-        if namespace_limit > 0
-          namespace_limit
-        else
-          Gitlab::CurrentSettings.repository_size_limit.to_i
-        end
-      end
-    end
-
     def url
       @url ||= params[:github_hostname]
     end
@@ -123,24 +98,32 @@ module Import
     end
 
     def repository_access_error_message
-      s_("GithubImport|Your GitHub personal access token does not have read access to the repository. " \
-         "Please use a classic GitHub personal access token with the `repo` scope. Fine-grained tokens are not supported.")
+      s_(
+        "GithubImport|Your GitHub personal access token does not have read access to the repository. " \
+          "Please use a classic GitHub personal access token with the `repo` scope. Fine-grained tokens " \
+          "are not supported."
+      )
     end
 
     def collaborators_access_error_message
-      s_("GithubImport|Your GitHub personal access token does not have read access to collaborators. " \
-         "Please use a classic GitHub personal access token with the `read:org` scope. Fine-grained tokens are not supported.")
+      s_(
+        "GithubImport|Your GitHub personal access token does not have read access to collaborators. " \
+          "Please use a classic GitHub personal access token with the `read:org` scope. Fine-grained " \
+          "tokens are not supported."
+      )
     end
 
     def validate_context
       if blocked_url?
-        log_and_return_error("Invalid URL: #{url}", _("Invalid URL: %{url}") % { url: url }, :bad_request)
+        log_and_return_error(
+          "Invalid URL: #{url}",
+          format(_("Invalid URL: %{url}"), { url: url }),
+          :bad_request
+        )
       elsif target_namespace.nil?
         error(s_('GithubImport|Namespace or group to import repository into does not exist.'), :unprocessable_entity)
       elsif !authorized?
         error(s_('GithubImport|You are not allowed to import projects in this namespace.'), :unprocessable_entity)
-      elsif oversized?
-        error(oversize_error_message, :unprocessable_entity)
       end
     end
 
@@ -157,7 +140,16 @@ module Import
         error: exception.response_body
       )
 
-      error(s_('GithubImport|Import failed because of a GitHub error: %{original} (HTTP %{code})') % { original: exception.response_body, code: exception.response_status }, :unprocessable_entity)
+      error(
+        format(
+          s_('GithubImport|Import failed because of a GitHub error: %{original} (HTTP %{code})'),
+          {
+            original: exception.response_body,
+            code: exception.response_status
+          }
+        ),
+        :unprocessable_entity
+      )
     end
 
     def log_and_return_error(message, translated_message, http_status)
@@ -174,7 +166,8 @@ module Import
         .new(project)
         .write(
           timeout_strategy: params[:timeout_strategy] || ProjectImportData::PESSIMISTIC_TIMEOUT,
-          optional_stages: params[:optional_stages]
+          optional_stages: params[:optional_stages],
+          pagination_limit: params[:pagination_limit]
         )
     end
   end

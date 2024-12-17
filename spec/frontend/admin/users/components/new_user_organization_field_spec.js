@@ -5,7 +5,7 @@ import OrganizationRoleField from '~/admin/users/components/organization_role_fi
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import OrganizationSelect from '~/vue_shared/components/entity_select/organization_select.vue';
 import organizationsQuery from '~/organizations/shared/graphql/queries/organizations.query.graphql';
-import { ACCESS_LEVEL_OWNER } from '~/organizations/shared/constants';
+import { ACCESS_LEVEL_OWNER, ACCESS_LEVEL_DEFAULT } from '~/organizations/shared/constants';
 
 describe('NewUserOrganizationField', () => {
   let wrapper;
@@ -27,7 +27,10 @@ describe('NewUserOrganizationField', () => {
   };
 
   const findAvatar = () => wrapper.findComponent(GlAvatarLabeled);
-  const findHiddenOrganizationField = () => wrapper.find('input[type="hidden"]');
+  const findHiddenOrganizationField = () =>
+    wrapper.find('input[name="user[organization_id]"][type="hidden"]');
+  const findHiddenOrganizationUserField = () =>
+    wrapper.find('input[name="user[organization_users_attributes][][id]"][type="hidden"]');
   const findOrganizationSelect = () => wrapper.findComponent(OrganizationSelect);
   const findOrganizationRoleField = () => wrapper.findComponent(OrganizationRoleField);
 
@@ -50,7 +53,6 @@ describe('NewUserOrganizationField', () => {
       expect(findHiddenOrganizationField().element.value).toBe(
         `${defaultPropsData.initialOrganization.id}`,
       );
-      expect(findHiddenOrganizationField().attributes('name')).toBe('user[organization_id]');
     });
   });
 
@@ -80,18 +82,46 @@ describe('NewUserOrganizationField', () => {
   });
 
   it('passes initialAccessLevel prop to role field', () => {
-    createComponent({ propsData: { initialAccessLevel: ACCESS_LEVEL_OWNER } });
+    createComponent();
 
-    expect(findOrganizationRoleField().props('initialAccessLevel')).toBe(ACCESS_LEVEL_OWNER);
+    expect(findOrganizationRoleField().props('initialAccessLevel')).toBe(ACCESS_LEVEL_DEFAULT);
   });
 
   it('passes organizationRoleInputName prop to role field', () => {
     createComponent({
-      propsData: { organizationRoleInputName: 'user[organization_user][][access_level]' },
+      propsData: {
+        organizationRoleInputName: 'user[organization_users_attributes][][access_level]',
+      },
     });
 
     expect(findOrganizationRoleField().props('inputName')).toBe(
-      'user[organization_user][][access_level]',
+      'user[organization_users_attributes][][access_level]',
     );
+  });
+
+  it('does not render hidden input with organization user id', () => {
+    createComponent();
+
+    expect(findHiddenOrganizationUserField().exists()).toBe(false);
+  });
+
+  describe('when organizationUser prop is passed', () => {
+    const organizationUser = { id: 1, accessLevel: ACCESS_LEVEL_OWNER };
+
+    beforeEach(() => {
+      createComponent({
+        propsData: { organizationUser },
+      });
+    });
+
+    it('renders hidden input with organization user id', () => {
+      expect(findHiddenOrganizationUserField().element.value).toBe(organizationUser.id.toString());
+    });
+
+    it('passes initialAccessLevel prop to role field', () => {
+      expect(findOrganizationRoleField().props('initialAccessLevel')).toBe(
+        organizationUser.accessLevel,
+      );
+    });
   });
 });

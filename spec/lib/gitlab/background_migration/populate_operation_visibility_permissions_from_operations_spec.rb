@@ -3,15 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::PopulateOperationVisibilityPermissionsFromOperations do
+  let(:organizations) { table(:organizations) }
   let(:namespaces) { table(:namespaces) }
   let(:project_features) { table(:project_features) }
   let(:projects) { table(:projects) }
 
-  let(:namespace) { namespaces.create!(name: 'user', path: 'user') }
+  let(:organization) { organizations.create!(name: 'organization', path: 'organization') }
 
-  let(:proj_namespace1) { namespaces.create!(name: 'proj1', path: 'proj1', type: 'Project', parent_id: namespace.id) }
-  let(:proj_namespace2) { namespaces.create!(name: 'proj2', path: 'proj2', type: 'Project', parent_id: namespace.id) }
-  let(:proj_namespace3) { namespaces.create!(name: 'proj3', path: 'proj3', type: 'Project', parent_id: namespace.id) }
+  let(:namespace) { namespaces.create!(name: 'user', path: 'user', organization_id: organization.id) }
+
+  let(:proj_namespace1) { create_project_namespace('proj1') }
+  let(:proj_namespace2) { create_project_namespace('proj2') }
+  let(:proj_namespace3) { create_project_namespace('proj3') }
 
   let(:project1) { create_project('test1', proj_namespace1) }
   let(:project2) { create_project('test2', proj_namespace2) }
@@ -61,12 +64,23 @@ RSpec.describe Gitlab::BackgroundMigration::PopulateOperationVisibilityPermissio
     expect(record.environments_access_level).to eq(record.operations_access_level)
   end
 
+  def create_project_namespace(name)
+    namespaces.create!(
+      name: name,
+      path: name,
+      type: 'Project',
+      parent_id: namespace.id,
+      organization_id: organization.id
+    )
+  end
+
   def create_project(proj_name, proj_namespace)
     projects.create!(
       namespace_id: namespace.id,
       project_namespace_id: proj_namespace.id,
       name: proj_name,
-      path: proj_name
+      path: proj_name,
+      organization_id: organization.id
     )
   end
 

@@ -1,6 +1,6 @@
 ---
-stage: Application Security Testing
-group: Composition Analysis
+stage: Security Risk Management
+group: Security Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -43,7 +43,7 @@ GitLab already generates this document when the following requirements are met:
   supported by Gemnasium.
 - A successful pipeline was run on the default branch.
   You should not change the default behavior of allowing the
-  [application security jobs](../../application_security/index.md#application-coverage) to fail.
+  [application security jobs](../../application_security/detect/index.md) to fail.
 
 ## View project dependencies
 
@@ -61,7 +61,7 @@ Details of each dependency are listed, sorted by decreasing severity of vulnerab
 |:----------|:-----------|
 | Component | The dependency's name and version. |
 | Packager  | The packager used to install the dependency. |
-| Location  | For system dependencies, this lists the image that was scanned. For application dependencies, this shows a link to the packager-specific lock file in your project that declared the dependency. It also shows the [dependency path](#dependency-paths) to a top-level dependency, if any, and if supported. |
+| Location  | For system dependencies, this lists the image that was scanned. For application dependencies, this shows a link to the packager-specific lock file in your project that declared the dependency. It also shows the [direct dependents](#dependency-paths) of the dependency, if any, and if supported. |
 | License (for projects only) | Links to dependency's software licenses. A warning badge that includes the number of vulnerabilities detected in the dependency. |
 | Projects (for groups only) | Links to the project with the dependency. If multiple projects have the same dependency, the total number of these projects is shown. To go to a project with this dependency, select the **Projects** number, then search for and select its name. The project search feature is supported only on groups that have up to 600 occurrences in their group hierarchy. |
 
@@ -101,9 +101,7 @@ select the vulnerability's description. The [vulnerability's details](../vulnera
 > - Dependency path information from CycloneDX SBOM was [enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/434371) in GitLab 17.0.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/457633) in GitLab 17.4. Feature flag `project_level_sbom_occurrences` removed.
 
-The dependency list shows the path between a dependency and a top-level dependency it's connected
-to, if any. Multiple paths may connect a transient dependency to top-level
-dependencies, but the user interface shows only one of the shortest paths.
+The dependency list shows the direct dependents of a listed component if the component is transient and belongs to any supported package manager.
 
 NOTE:
 The dependency path is only displayed for dependencies that have vulnerabilities.

@@ -9,9 +9,15 @@ import { stubComponent } from 'helpers/stub_component';
 
 const projectPath = 'path/to/project';
 const agentId = '123';
+const selfManagedHost = 'https://gitlab.example.com';
 
+const modalDescriptionConfiguredAgent =
+  'You can connect to your cluster from the command line. Configure kubectl command-line access by running the following command:';
+const modalDescriptionNoConfiguredAgent =
+  'You can connect to your cluster from the command line. To use this feature, configure user_access in the agent configuration project.';
 const glabCommand =
   'glab cluster agent update-kubeconfig --repo path/to/project --agent 123 --use-context';
+const glabCommandSelfManaged = `GITLAB_HOST=${selfManagedHost} ${glabCommand}`;
 const yamlCommand = `user_access:
   access_as:
       agent: {} # for free
@@ -78,23 +84,50 @@ describe('ConnectToAgentModal', () => {
 
   describe('when the agent is configured', () => {
     beforeEach(() => {
+      gon.dot_com = true;
       createWrapper({ isConfigured: true });
     });
 
     it('renders correct description for the modal', () => {
-      expect(findModal().text()).toContain(
-        'You can connect to your cluster from the command line. Configure kubectl command-line access by running the following command:',
-      );
+      expect(findModal().text()).toContain(modalDescriptionConfiguredAgent);
     });
 
     it('renders code block with the correct command', () => {
-      expect(findCodeBlock().props('language')).toBe('shell');
-      expect(findCodeBlock().props('code')).toBe(glabCommand);
+      expect(findCodeBlock().props()).toMatchObject({
+        language: 'shell',
+        code: glabCommand,
+      });
     });
 
     it('renders copy button with the correct props', () => {
       expect(findModalCopyButton().props()).toMatchObject({
         text: glabCommand,
+        modalId: CONNECT_MODAL_ID,
+      });
+    });
+  });
+
+  describe('when the agent is configured on self-managed instance', () => {
+    beforeEach(() => {
+      gon.gitlab_url = selfManagedHost;
+      gon.dot_com = false;
+      createWrapper({ isConfigured: true });
+    });
+
+    it('renders correct description for the modal', () => {
+      expect(findModal().text()).toContain(modalDescriptionConfiguredAgent);
+    });
+
+    it('renders code block with the correct language', () => {
+      expect(findCodeBlock().props()).toMatchObject({
+        language: 'shell',
+        code: glabCommandSelfManaged,
+      });
+    });
+
+    it('renders copy button with the correct props', () => {
+      expect(findModalCopyButton().props()).toMatchObject({
+        text: glabCommandSelfManaged,
         modalId: CONNECT_MODAL_ID,
       });
     });
@@ -106,9 +139,7 @@ describe('ConnectToAgentModal', () => {
     });
 
     it('renders correct description for the modal', () => {
-      expect(findModal().text()).toContain(
-        'You can connect to your cluster from the command line. To use this feature, configure user_access in the agent configuration project.',
-      );
+      expect(findModal().text()).toContain(modalDescriptionNoConfiguredAgent);
     });
 
     it('renders code block with the correct command', () => {

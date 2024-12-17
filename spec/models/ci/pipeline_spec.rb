@@ -26,6 +26,8 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   it { is_expected.to belong_to(:pipeline_schedule) }
   it { is_expected.to belong_to(:merge_request) }
   it { is_expected.to belong_to(:external_pull_request) }
+  it { is_expected.to belong_to(:ci_ref).class_name('Ci::Ref').inverse_of(:pipelines).with_foreign_key(:ci_ref_id) }
+  it { is_expected.to belong_to(:trigger).class_name('Ci::Trigger').inverse_of(:pipelines) }
 
   it { is_expected.to have_many(:statuses) }
   it { is_expected.to have_many(:trigger_requests).with_foreign_key(:commit_id).inverse_of(:pipeline) }
@@ -165,6 +167,32 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
           expect(pipeline.reload.downloadable_artifacts).to contain_exactly(downloadable_artifact)
         end
+      end
+    end
+
+    describe '#limited_failed_builds' do
+      let_it_be(:pipeline) { create(:ci_pipeline) }
+
+      before do
+        stub_const("#{described_class}::COUNT_FAILED_JOBS_LIMIT", 3)
+      end
+
+      it 'returns the latest failed builds up to the limit for the pipeline' do
+        over_limit = described_class::COUNT_FAILED_JOBS_LIMIT + 1
+        create_list(:ci_build, over_limit, :failed, pipeline: pipeline)
+        create_list(:ci_build, over_limit, :success, pipeline: pipeline)
+
+        expect(pipeline.limited_failed_builds.count).to eq(described_class::COUNT_FAILED_JOBS_LIMIT)
+        expect(pipeline.limited_failed_builds).to all(be_failed)
+        expect(pipeline.limited_failed_builds).to all(have_attributes(pipeline: pipeline))
+      end
+
+      it 'does not include retried builds' do
+        retried_build = create(:ci_build, :failed, :retried, pipeline: pipeline)
+        latest_build = create(:ci_build, :failed, pipeline: pipeline)
+
+        expect(pipeline.limited_failed_builds).to include(latest_build)
+        expect(pipeline.limited_failed_builds).not_to include(retried_build)
       end
     end
   end
@@ -458,25 +486,32 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
-  describe '.created_after' do
+  context 'with created filters' do
     let_it_be(:old_pipeline) { create(:ci_pipeline, created_at: 1.week.ago) }
-    let_it_be(:pipeline) { create(:ci_pipeline) }
-
-    subject { described_class.created_after(1.day.ago) }
-
-    it 'returns the pipeline' do
-      is_expected.to contain_exactly(pipeline)
-    end
-  end
-
-  describe '.created_before_id' do
-    let_it_be(:pipeline) { create(:ci_pipeline) }
     let_it_be(:new_pipeline) { create(:ci_pipeline) }
 
-    subject { described_class.created_before_id(new_pipeline.id) }
+    describe '.created_after' do
+      subject { described_class.created_after(1.day.ago) }
 
-    it 'returns the pipeline' do
-      is_expected.to contain_exactly(pipeline)
+      it 'returns the newer pipeline' do
+        is_expected.to contain_exactly(new_pipeline)
+      end
+    end
+
+    describe '.created_before' do
+      subject { described_class.created_before(1.day.ago) }
+
+      it 'returns the older pipeline' do
+        is_expected.to contain_exactly(old_pipeline)
+      end
+    end
+
+    describe '.created_before_id' do
+      subject { described_class.created_before_id(new_pipeline.id) }
+
+      it 'returns the pipeline' do
+        is_expected.to contain_exactly(old_pipeline)
+      end
     end
   end
 
@@ -1822,7 +1857,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     describe 'auto merge' do
       context 'when auto merge is enabled' do
-        let_it_be_with_reload(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+        let_it_be_with_reload(:merge_request) { create(:merge_request, :merge_when_checks_pass) }
         let_it_be_with_reload(:pipeline) do
           create(:ci_pipeline, :running,
             project: merge_request.source_project, ref: merge_request.source_branch, sha: merge_request.diff_head_sha)

@@ -419,7 +419,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
 
         expect { update_refs }.to raise_error do |error|
           expect(error).to be_a(Gitlab::Git::InvalidRefFormatError)
-          expect(error.message).to eq("references have an invalid format: #{invalid_refs.join(",")}")
+          expect(error.message).to eq("references have an invalid format: #{invalid_refs.join(',')}")
         end
       end
     end
@@ -473,7 +473,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
 
         expect { delete_refs }.to raise_error do |error|
           expect(error).to be_a(Gitlab::Git::InvalidRefFormatError)
-          expect(error.message).to eq("references have an invalid format: #{invalid_refs.join(",")}")
+          expect(error.message).to eq("references have an invalid format: #{invalid_refs.join(',')}")
         end
       end
     end

@@ -31,7 +31,7 @@ export default {
           :href="`#${panel.name}`"
           data-testid="panel-link"
           :data-qa-panel-name="panel.name"
-          class="new-namespace-panel gl-flex gl-w-full gl-shrink-0 gl-flex-col gl-items-center gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100 gl-px-3 gl-py-6 hover:!gl-no-underline lg:gl-flex-row"
+          class="new-namespace-panel gl-flex gl-w-full gl-shrink-0 gl-flex-col gl-items-center gl-rounded-base gl-border-1 gl-border-solid gl-border-default gl-px-3 gl-py-6 hover:!gl-no-underline lg:gl-flex-row"
           @click="track('click_tab', { label: panel.name })"
         >
           <div class="new-namespace-panel-illustration gl-flex gl-shrink-0 gl-justify-center">
@@ -41,7 +41,7 @@ export default {
             <h3 class="gl-text-size-h2 gl-text-inherit">
               {{ panel.title }}
             </h3>
-            <p class="gl-text-gray-900">
+            <p class="gl-text-default">
               {{ panel.description }}
             </p>
           </div>

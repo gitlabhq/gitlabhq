@@ -212,7 +212,7 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
 
       it_behaves_like 'repository branches'
 
-      context 'caching' do
+      describe 'caching' do
         it 'caches the query' do
           get api(route), params: { per_page: 1 }
 
@@ -243,22 +243,32 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
           end
         end
 
-        context 'requests for new value if cache context changes' do
-          context 'with changes in default_branch' do
-            it 'requests for new value after 30 seconds' do
+        context 'when the default_branch changes' do
+          it 'requests for new value after 30 seconds' do
+            get api(route), params: { per_page: 1 }
+
+            default_branch = project.default_branch
+            another_branch = project.repository.branch_names.reject { |name| name == default_branch }.first
+
+            project.repository.change_head(another_branch)
+
+            travel_to 31.seconds.from_now do
+              expect(API::Entities::Branch).to receive(:represent)
+
               get api(route), params: { per_page: 1 }
-
-              default_branch = project.default_branch
-              another_branch = project.repository.branch_names.reject { |name| name == default_branch }.first
-
-              project.repository.change_head(another_branch)
-
-              travel_to 31.seconds.from_now do
-                expect(API::Entities::Branch).to receive(:represent)
-
-                get api(route), params: { per_page: 1 }
-              end
             end
+          end
+        end
+
+        context "when the project's protected branches change" do
+          it 'request for new value instantly' do
+            get api(route), params: { per_page: 1 }
+
+            ProtectedBranches::CreateService.new(project, user, { name: '*' }).execute(skip_authorization: true)
+
+            expect(API::Entities::Branch).to receive(:represent)
+
+            get api(route), params: { per_page: 1 }
           end
         end
       end

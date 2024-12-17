@@ -34,13 +34,13 @@ export default {
 
     <div class="gl-mb-8">
       <h3 class="gl-text-lg">{{ $options.i18n.learnBasics.title }}</h3>
-      <p class="gl-mb-6 gl-text-gray-800">{{ $options.i18n.learnBasics.subtitle }}</p>
+      <p class="gl-mb-6 gl-text-default">{{ $options.i18n.learnBasics.subtitle }}</p>
       <ci-cards />
     </div>
 
     <div>
       <h3 class="gl-text-lg">{{ $options.i18n.templates.title }}</h3>
-      <p class="gl-mb-6 gl-text-gray-800">{{ $options.i18n.templates.subtitle }}</p>
+      <p class="gl-mb-6 gl-text-default">{{ $options.i18n.templates.subtitle }}</p>
       <ci-templates />
     </div>
   </div>

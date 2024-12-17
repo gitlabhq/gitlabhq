@@ -3,6 +3,8 @@ data_category: operational
 key_path: counts.ci_internal_pipelines
 description: Total pipelines in GitLab repositories
 product_group: pipeline_execution
+product_categories:
+- continuous_integration
 value_type: number
 status: active
 time_frame: all

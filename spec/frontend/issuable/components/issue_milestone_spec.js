@@ -1,26 +1,28 @@
-import { GlIcon, GlTooltip } from '@gitlab/ui';
+import { GlTooltip } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { mockMilestone } from 'jest/boards/mock_data';
 import IssueMilestone from '~/issuable/components/issue_milestone.vue';
+import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
 
 describe('IssueMilestone component', () => {
   let wrapper;
 
   const findTooltip = () => wrapper.findComponent(GlTooltip);
+  const findWorkItemAttribute = () => wrapper.findComponent(WorkItemAttribute);
 
   const createComponent = (milestone = mockMilestone) =>
-    shallowMount(IssueMilestone, { propsData: { milestone } });
+    shallowMount(IssueMilestone, { propsData: { milestone }, stubs: { WorkItemAttribute } });
 
   beforeEach(() => {
     wrapper = createComponent();
   });
 
   it('renders milestone icon', () => {
-    expect(wrapper.findComponent(GlIcon).props('name')).toBe('milestone');
+    expect(findWorkItemAttribute().props('iconName')).toBe('milestone');
   });
 
   it('renders milestone title', () => {
-    expect(wrapper.find('.milestone-title').text()).toBe(mockMilestone.title);
+    expect(findWorkItemAttribute().props('title')).toBe(mockMilestone.title);
   });
 
   describe('tooltip', () => {

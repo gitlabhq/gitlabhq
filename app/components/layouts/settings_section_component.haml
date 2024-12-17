@@ -1,10 +1,10 @@
 %section.settings-section.js-search-settings-section{ options_attrs }
   .settings-sticky-header
     .settings-sticky-header-inner
-      %h2.gl-heading-2{ class: '!gl-mb-2' }
+      %h2.gl-heading-2{ class: '!gl-mb-3' }
         = heading || @heading
       - if description || @description
         %p.gl-text-subtle.gl-mb-3
           = description || @description
-  %div{ data: { testid: 'settings-section-body' } }
+  .gl-mt-3{ data: { testid: 'settings-section-body' } }
     = body

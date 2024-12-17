@@ -108,13 +108,8 @@ DETAILS:
 **Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355964) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `deactivation_email_additional_text`. Disabled by default.
-> - [Enabled on self-managed and GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111882) in GitLab 15.9.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111882) in GitLab 15.9.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392761) in GitLab 16.5. Feature flag `deactivation_email_additional_text` removed.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an
-administrator to [disable the feature flag](../../administration/feature_flags.md) named
-`deactivation_email_additional_text`.
 
 You can add additional text at the bottom of the email that GitLab sends to users when their account
 is deactivated. This email text is separate from the [custom additional text](#custom-additional-text)
@@ -127,6 +122,36 @@ To add additional text to deactivation emails:
 1. Expand **Email**.
 1. Enter your text in the **Additional text for deactivation email** field.
 1. Select **Save changes**.
+
+## Group and project access token expiry emails to inherited members
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a flag](../feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
+
+FLAG:
+The availability of emails to inherited project and group members is controlled by a feature flag. For more information, see the history.
+
+In GitLab 17.7 and later, the following inherited group and project members can receive emails about group and project access tokens that are expiring soon, in addition to direct group and project members:
+
+- For groups, members who inherit the Owner role for those groups.
+- For projects, project members who inherit the Owner or Maintainer role for projects that belong to those groups.
+
+To enable token expiration emails to inherited group and project members:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Preferences**.
+1. Expand **Email**.
+1. Under **Expiry notification emails about group and project access tokens should be sent to:**, select **All direct and inherited members of the group or project**.
+1. Select the **Enforce this setting for all groups on this instance** checkbox.
+1. Select **Save changes**.
+
+For more information on token expiration emails, see:
+
+- For groups, the [group access token expiry emails documentation](../../user/group/settings/group_access_tokens.md#group-access-token-expiry-emails).
+- For projects, the [project access token expiry emails documentation](../../user/project/settings/project_access_tokens.md#project-access-token-expiry-emails).
 
 <!-- ## Troubleshooting
 

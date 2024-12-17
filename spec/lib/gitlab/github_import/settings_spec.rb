@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
   subject(:settings) { described_class.new(project) }
 
-  let_it_be(:project) { create(:project, import_type: ::Import::SOURCE_GITHUB.to_s) }
+  let_it_be_with_reload(:project) { create(:project, import_type: ::Import::SOURCE_GITHUB.to_s) }
 
   let(:optional_stages) do
     {
@@ -23,6 +23,7 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
         collaborators_import: false,
         foo: :bar
       },
+      pagination_limit: 50,
       timeout_strategy: "optimistic"
     }.stringify_keys
   end
@@ -58,7 +59,7 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
   end
 
   describe '#write' do
-    it 'puts optional steps, timeout strategy, and user mapping setting into projects import_data' do
+    it 'puts optional steps, timeout strategy, user mapping setting and pagination_limit into projects import_data' do
       project.build_or_assign_import_data(credentials: { user: 'token' })
 
       settings.write(data_input)
@@ -69,6 +70,8 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
         .to eq("optimistic")
       expect(project.import_data.data['user_contribution_mapping_enabled'])
         .to be true
+      expect(project.import_data.data['pagination_limit'])
+        .to eq(50)
     end
   end
 
@@ -93,52 +96,81 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
   end
 
   describe '#user_mapping_enabled?' do
-    it 'returns is true by default' do
-      project.build_or_assign_import_data(credentials: { user: 'token' })
-
+    subject do
       settings.write(data_input)
-
-      expect(settings.user_mapping_enabled?).to eq true
+      settings.user_mapping_enabled?
     end
 
-    context 'when :importer_user_mapping is disabled' do
+    before do
+      project.build_or_assign_import_data(credentials: { user: 'token' })
+    end
+
+    shared_examples 'when :importer_user_mapping is disabled' do
       before do
         Feature.disable(:importer_user_mapping)
       end
 
-      it 'returns false' do
-        project.build_or_assign_import_data(credentials: { user: 'token' })
-
-        settings.write(data_input)
-
-        expect(settings.user_mapping_enabled?).to eq false
-      end
+      it { is_expected.to be(false) }
     end
 
-    context 'when :github_user_mapping is disabled' do
+    shared_examples 'when :github_user_mapping is disabled' do |expected_enabled:|
       before do
         Feature.disable(:github_user_mapping)
       end
 
-      it 'returns false' do
-        project.build_or_assign_import_data(credentials: { user: 'token' })
-
-        settings.write(data_input)
-
-        expect(settings.user_mapping_enabled?).to eq false
-      end
+      it { is_expected.to be(expected_enabled) }
     end
 
-    context 'with a gitea import' do
-      let(:project) { create(:project, import_type: ::Import::SOURCE_GITEA.to_s) }
-
-      it 'returns false' do
-        project.build_or_assign_import_data(credentials: { user: 'token' })
-
-        settings.write(data_input)
-
-        expect(settings.user_mapping_enabled?).to eq false
+    shared_examples 'when :gitea_user_mapping is disabled' do |expected_enabled:|
+      before do
+        Feature.disable(:gitea_user_mapping)
       end
+
+      it { is_expected.to be(expected_enabled) }
+    end
+
+    context 'when the project is a GitHub import' do
+      it { is_expected.to be(true) }
+
+      it_behaves_like 'when :importer_user_mapping is disabled'
+      it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: false
+      it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: true
+    end
+
+    context 'when the project is a Gitea import' do
+      before do
+        project.update!(import_type: ::Import::SOURCE_GITEA.to_s)
+      end
+
+      it { is_expected.to be(true) }
+
+      it_behaves_like 'when :importer_user_mapping is disabled'
+      it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: false
+      it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: true
+    end
+
+    context 'when the project does not have an import_type' do
+      before do
+        project.update!(import_type: nil)
+      end
+
+      it { is_expected.to be(false) }
+
+      it_behaves_like 'when :importer_user_mapping is disabled'
+      it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: false
+      it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: false
+    end
+
+    context 'when the project has an import_type without a user mapping flag' do
+      before do
+        project.update!(import_type: ::Import::SOURCE_BITBUCKET.to_s)
+      end
+
+      it { is_expected.to be(false) }
+
+      it_behaves_like 'when :importer_user_mapping is disabled'
+      it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: false
+      it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: false
     end
   end
 end

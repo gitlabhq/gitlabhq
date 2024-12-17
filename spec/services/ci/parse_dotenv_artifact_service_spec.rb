@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ParseDotenvArtifactService, feature_category: :secure_artifacts do
+RSpec.describe Ci::ParseDotenvArtifactService, feature_category: :artifact_security do
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 

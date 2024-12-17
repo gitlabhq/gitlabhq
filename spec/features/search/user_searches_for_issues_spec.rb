@@ -12,7 +12,7 @@ RSpec.describe 'User searches for issues', :js, :clean_gitlab_redis_rate_limitin
 
   def search_for_issue(search)
     submit_dashboard_search(search)
-    select_search_scope('Issues')
+    select_search_scope('Issue')
   end
 
   context 'when signed in' do
@@ -24,7 +24,24 @@ RSpec.describe 'User searches for issues', :js, :clean_gitlab_redis_rate_limitin
     end
 
     include_examples 'top right search form'
-    include_examples 'search timeouts', 'issues'
+
+    context 'when search times out' do
+      before do
+        allow_next_instance_of(SearchService) do |service|
+          allow(service).to receive(:search_results).and_raise(ActiveRecord::QueryCanceled)
+        end
+
+        visit(search_path(search: 'test', scope: 'issues', type: 'issue'))
+      end
+
+      it 'renders timeout information' do
+        expect(page).to have_content('Your search has timed out')
+      end
+
+      it 'sets tab count to 0' do
+        expect(find_by_testid('search-filter').find('[aria-current="page"]')).to have_text('Issue')
+      end
+    end
 
     it 'finds an issue' do
       search_for_issue(issue1.title)

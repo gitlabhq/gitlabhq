@@ -1,0 +1,9 @@
+---
+name: api_admin_token_revoke
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/499958
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170421
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/502413
+milestone: '17.7'
+group: group::authentication
+type: beta
+default_enabled: false

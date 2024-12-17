@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.code_review.i_code_review_post_merge_click_revert_weekly
 description: Count of users who click the revert button in the merge requet widget
 product_group: code_review
+product_categories:
+- code_review_workflow
 value_type: number
 status: active
 milestone: '14.5'

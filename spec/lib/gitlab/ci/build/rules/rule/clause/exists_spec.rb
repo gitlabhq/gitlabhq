@@ -72,14 +72,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
           let(:globs) { ['$NESTED_FULL_PATH_VALID'] }
 
           it { is_expected.to be_truthy }
-
-          context 'when expand_nested_variables_in_job_rules_exists_and_changes is disabled' do
-            before do
-              stub_feature_flags(expand_nested_variables_in_job_rules_exists_and_changes: false)
-            end
-
-            it { is_expected.to be_falsey }
-          end
         end
       end
 
@@ -107,6 +99,19 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
         end
 
         it { is_expected.to be_truthy }
+
+        it 'logs the pattern comparison limit exceeded' do
+          expect(Gitlab::AppJsonLogger).to receive(:info).with(
+            class: described_class.name,
+            message: 'rules:exists pattern comparisons limit exceeded',
+            project_id: project.id,
+            paths_size: kind_of(Integer),
+            globs_size: 1,
+            comparisons: kind_of(Integer)
+          )
+
+          satisfied_by?
+        end
       end
 
       context 'when rules:exists:project is provided' do
@@ -130,14 +135,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
             let(:globs) { ['$FILE_TXT'] }
 
             it { is_expected.to be_truthy }
-
-            context 'when expand_nested_variables_in_job_rules_exists_and_changes is disabled' do
-              before do
-                stub_feature_flags(expand_nested_variables_in_job_rules_exists_and_changes: false)
-              end
-
-              it { is_expected.to be_truthy }
-            end
           end
 
           context 'when the project path is invalid' do
@@ -158,19 +155,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
                   Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
                   "rules:exists:project `invalid/path/subdir` is not a valid project path"
                 )
-              end
-
-              context 'when expand_nested_variables_in_job_rules_exists_and_changes is disabled' do
-                before do
-                  stub_feature_flags(expand_nested_variables_in_job_rules_exists_and_changes: false)
-                end
-
-                it 'raises an error' do
-                  expect { satisfied_by? }.to raise_error(
-                    Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
-                    "rules:exists:project `invalid/path/subdir` is not a valid project path"
-                  )
-                end
               end
             end
 
@@ -202,14 +186,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
               let(:ref) { '$NEW_BRANCH' }
 
               it { is_expected.to be_truthy }
-
-              context 'when expand_nested_variables_in_job_rules_exists_and_changes is disabled' do
-                before do
-                  stub_feature_flags(expand_nested_variables_in_job_rules_exists_and_changes: false)
-                end
-
-                it { is_expected.to be_truthy }
-              end
             end
 
             context 'when the ref is invalid' do
@@ -231,20 +207,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
                     "rules:exists:ref `invalid/ref/new_branch` is not a valid ref " \
                     "in project `#{other_project.full_path}`"
                   )
-                end
-
-                context 'when expand_nested_variables_in_job_rules_exists_and_changes is disabled' do
-                  before do
-                    stub_feature_flags(expand_nested_variables_in_job_rules_exists_and_changes: false)
-                  end
-
-                  it 'raises an error' do
-                    expect { satisfied_by? }.to raise_error(
-                      Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
-                      "rules:exists:ref `invalid/ref/new_branch` is not a valid ref " \
-                        "in project `#{other_project.full_path}`"
-                    )
-                  end
                 end
               end
 

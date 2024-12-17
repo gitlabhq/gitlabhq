@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillComplianceViolationNullTargetProjectIds
+description: Backfill target_project_id for ComplianceViolation models so we can set NOT NULL to the column in the future
+feature_category: compliance_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172754
+milestone: '17.7'
+queued_migration_version: 20241114202257
+finalized_by: # version of the migration that finalized this BBM

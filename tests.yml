@@ -37,6 +37,12 @@ mapping:
   - source: 'tooling/(?<rest>.+)\.rb'
     test: 'spec/tooling/%{rest}_spec.rb'
 
+  # Trigger tooling related specs when this file changes
+  - source: 'tests\.yml'
+    test:
+      - 'spec/tooling/lib/tooling/find_tests_spec.rb'
+      - 'spec/tooling/lib/tooling/predictive_tests_spec.rb'
+
   # RuboCop related specs
   - source: 'rubocop/(?<rest>.+)\.rb'
     test: 'spec/rubocop/%{rest}_spec.rb'
@@ -297,8 +303,10 @@ mapping:
   # Registration/Onboarding
   - source:
     - 'ee/app/(controllers|services)/registrations/.*'
-    - 'ee/app/controllers/concerns/ee/onboarding/status\.rb'
-    - 'app/controllers/concerns/onboarding/status\.rb'
+    - 'ee/app/presenters/ee/onboarding/status_presenter\.rb'
+    - 'app/presenters/onboarding/status_presenter\.rb'
+    - 'ee/app/models/onboarding/.*_registration\.rb'
+    - 'ee/app/models/onboarding/user_status\.rb'
     test:
     - 'ee/spec/features/registrations/saas/*_spec.rb'
     - ee/spec/features/registrations/email_opt_in_registration_spec.rb
@@ -308,6 +316,7 @@ mapping:
     test:
     - 'ee/spec/features/gitlab_subscriptions/trials/creation_*_spec.rb'
     - ee/spec/features/gitlab_subscriptions/trials/access_denied_spec.rb
+    - ee/spec/features/trials/lead_creation_form_validation_spec.rb
 
   # duo pro trials
   - source: 'ee/app/controllers/gitlab_subscriptions/trials/duo_pro_controller\.rb'
@@ -316,3 +325,9 @@ mapping:
   # duo enterprise trials
   - source: 'ee/app/controllers/gitlab_subscriptions/trials/duo_enterprise_controller\.rb'
     test: 'ee/spec/features/gitlab_subscriptions/trials/duo_enterprise/*_spec.rb'
+
+  # Import/Export checks
+  - source:
+      - 'spec/lib/gitlab/import_export/all_models\.yml'
+      - '(?<prefix>ee/)?app/models/.+\.rb'
+    test: 'spec/lib/gitlab/import_export/model_configuration_spec.rb'

@@ -349,19 +349,6 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
       expect(item_ids).to match_array([subscribed_item.to_global_id.to_s, unsubscribed_item.to_global_id.to_s,
         item1.to_global_id.to_s, item2.to_global_id.to_s])
     end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(filter_subscriptions: false)
-      end
-
-      it 'ignores the filter' do
-        post_graphql(query(subscribed: :EXPLICITLY_SUBSCRIBED), current_user: current_user)
-
-        expect(item_ids).to match_array([subscribed_item.to_global_id.to_s, unsubscribed_item.to_global_id.to_s,
-          item1.to_global_id.to_s, item2.to_global_id.to_s])
-      end
-    end
   end
 
   describe 'sorting and pagination' do
@@ -576,7 +563,7 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
   end
 
   context 'with development widget' do
-    context 'for the related merge requests field' do
+    context 'for closing merge requests field' do
       before do
         [item1, item2].each do |item|
           create(
@@ -626,6 +613,65 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
 
         expect { post_graphql(query, current_user: current_user) }.to issue_same_number_of_queries_as(control)
         expect(graphql_errors).to be_blank
+      end
+    end
+
+    context 'for related merge requests field' do
+      let(:fields) do
+        <<~GRAPHQL
+          nodes {
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetDevelopment {
+                relatedMergeRequests {
+                  nodes {
+                    id
+                    iid
+                  }
+                }
+              }
+            }
+          }
+        GRAPHQL
+      end
+
+      it 'limits the field to 1 execution' do
+        post_graphql(query, current_user: current_user)
+
+        expect_graphql_errors_to_include(
+          '"relatedMergeRequests" field can be requested only for 1 WorkItemWidgetDevelopment(s) at a time.'
+        )
+      end
+    end
+
+    context 'for related branches field' do
+      let(:fields) do
+        <<~GRAPHQL
+          nodes {
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetDevelopment {
+                relatedBranches  {
+                  nodes {
+                    name
+                    comparePath
+                    pipelineStatus { name label favicon }
+                  }
+                }
+              }
+            }
+          }
+        GRAPHQL
+      end
+
+      it 'limits the field to 1 execution' do
+        post_graphql(query, current_user: current_user)
+
+        expect_graphql_errors_to_include(
+          '"relatedBranches" field can be requested only for 1 WorkItemWidgetDevelopment(s) at a time.'
+        )
       end
     end
   end

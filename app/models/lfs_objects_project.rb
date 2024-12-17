@@ -13,12 +13,9 @@ class LfsObjectsProject < ApplicationRecord
 
   after_commit :update_project_statistics, on: [:create, :destroy]
 
-  enum repository_type: {
-    project: 0,
-    wiki: 1,
-    design: 2
-  }
+  enum :repository_type, { project: 0, wiki: 1, design: 2 }
 
+  scope :project_repository_type, -> { project }
   scope :project_id_in, ->(ids) { where(project_id: ids) }
   scope :lfs_object_in, ->(lfs_objects) { where(lfs_object: lfs_objects) }
 
@@ -29,7 +26,7 @@ class LfsObjectsProject < ApplicationRecord
   end
 
   def self.update_statistics_for_project_id(project_id)
-    ProjectCacheWorker.perform_async(project_id, [], [:lfs_objects_size]) # rubocop:disable CodeReuse/Worker
+    ProjectCacheWorker.perform_async(project_id, [], %w[lfs_objects_size]) # rubocop:disable CodeReuse/Worker
   end
 
   private

@@ -83,14 +83,23 @@ RSpec.describe Users::ResetFeedTokenService, feature_category: :system_access do
       end
     end
 
-    context 'when the source is group_token_revocation_service' do
+    context 'when the source is valid' do
       let(:current_user) { create(:user) }
       let(:user) { alex }
-      let(:service) { described_class.new(current_user, user: user, source: :group_token_revocation_service) }
+      let(:service) { described_class.new(current_user, user: user, source: source) }
 
-      it_behaves_like 'a successfully reset token' do
-        let(:reset_by) { current_user.username }
-        let(:expected_source) { :group_token_revocation_service }
+      where(:source) do
+        [
+          :group_token_revocation_service,
+          :api_admin_token
+        ]
+      end
+
+      with_them do
+        it_behaves_like 'a successfully reset token' do
+          let(:reset_by) { current_user.username }
+          let(:expected_source) { source }
+        end
       end
     end
   end

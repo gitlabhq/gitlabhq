@@ -1162,12 +1162,6 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         it_behaves_like 'assign_reviewer command'
       end
 
-      context 'with the "request_review" alias' do
-        let(:content) { "/request_review @#{developer.username}" }
-
-        it_behaves_like 'assign_reviewer command'
-      end
-
       context 'with no user' do
         let(:content) { '/assign_reviewer' }
 
@@ -1180,6 +1174,91 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         it_behaves_like 'failed command', 'a parse error' do
           let(:match_msg) { eq _("Could not apply assign_reviewer command. Failed to find users for 'do' and 'it!'.") }
         end
+      end
+    end
+
+    describe 'request_review command' do
+      let(:content) { "/request_review @#{developer.username}" }
+      let(:issuable) { merge_request }
+
+      context 'with one user' do
+        it 'assigns a reviewer to a single user' do
+          _, updates, message = service.execute(content, issuable)
+          translated_string = _("Requested a review from %{developer_to_reference}.")
+          formatted_message = format(translated_string, developer_to_reference: developer.to_reference.to_s)
+
+          expect(updates).to eq(reviewer_ids: [developer.id])
+          expect(message).to eq(formatted_message)
+        end
+
+        it 'explains command' do
+          _, explanations = service.explain(content, issuable)
+
+          expect(explanations).to eq(["Requests a review from #{developer.to_reference}."])
+        end
+      end
+
+      context 'when user is already assigned' do
+        let(:merge_request) { create(:merge_request, source_project: project, reviewers: [developer]) }
+
+        it 'requests a review' do
+          expect_next_instance_of(::MergeRequests::RequestReviewService) do |service|
+            expect(service).to receive(:execute).with(merge_request, developer)
+          end
+
+          _, _, message = service.execute(content, issuable)
+
+          translated_string = _("Requested a review from %{developer_to_reference}.")
+          formatted_message = format(translated_string, developer_to_reference: developer.to_reference.to_s)
+
+          expect(message).to eq(formatted_message)
+        end
+      end
+
+      # CE does not have multiple reviewers
+      context 'assign command with multiple reviewers' do
+        before do
+          project.add_developer(developer2)
+        end
+
+        # There's no guarantee that the reference extractor will preserve
+        # the order of the mentioned users since this is dependent on the
+        # order in which rows are returned. We just ensure that at least
+        # one of the mentioned users is assigned.
+        context 'assigns to one of the two users' do
+          let(:content) { "/request_review @#{developer.username} @#{developer2.username}" }
+
+          it 'assigns to a single reviewer' do
+            _, updates, message = service.execute(content, issuable)
+
+            expect(updates[:reviewer_ids].count).to eq(1)
+            reviewer = updates[:reviewer_ids].first
+            expect([developer.id, developer2.id]).to include(reviewer)
+
+            user = reviewer == developer.id ? developer : developer2
+
+            expect(message).to match("Requested a review from #{user.to_reference}.")
+          end
+        end
+      end
+
+      context 'with "me" alias' do
+        let(:content) { '/request_review me' }
+
+        it 'assigns a reviewer to a single user' do
+          _, updates, message = service.execute(content, issuable)
+          translated_string = _("Requested a review from %{developer_to_reference}.")
+          formatted_message = format(translated_string, developer_to_reference: developer.to_reference.to_s)
+
+          expect(updates).to eq(reviewer_ids: [developer.id])
+          expect(message).to eq(formatted_message)
+        end
+      end
+
+      context 'with no user' do
+        let(:content) { '/request_review' }
+
+        it_behaves_like 'failed command', "Failed to request a review because no user was specified."
       end
     end
 
@@ -3619,8 +3698,12 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       context 'when user has permissions' do
         it '/relate command is available' do
           _, explanations = service.explain(relate_content, issue)
-          translated_string = _("Marks this issue as related to %{issue}.")
-          formatted_message = format(translated_string, issue: other_issue.to_s)
+          translated_string = _("Added %{target} as a linked item related to this %{work_item_type}.")
+          formatted_message = format(
+            translated_string,
+            target: other_issue,
+            work_item_type: "issue"
+          )
 
           expect(explanations).to eq([formatted_message])
         end

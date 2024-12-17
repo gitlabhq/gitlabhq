@@ -623,7 +623,7 @@ export default {
 <template>
   <div>
     <div
-      class="project-visibility-setting gl-border-1 gl-border-solid gl-border-gray-100 gl-px-5 gl-py-3"
+      class="project-visibility-setting gl-border-1 gl-border-solid gl-border-default gl-px-5 gl-py-3"
     >
       <project-setting-row
         ref="project-visibility-settings"
@@ -660,16 +660,12 @@ export default {
             </option>
           </gl-form-select>
         </div>
-        <span
-          v-if="!visibilityAllowed(visibilityLevel)"
-          class="gl-mt-2 gl-block gl-text-gray-500"
-          >{{
-            s__(
-              'ProjectSettings|Visibility options for this fork are limited by the current visibility of the source project.',
-            )
-          }}</span
-        >
-        <span class="gl-mt-2 gl-block gl-text-gray-500">
+        <span v-if="!visibilityAllowed(visibilityLevel)" class="gl-mt-2 gl-block gl-text-subtle">{{
+          s__(
+            'ProjectSettings|Visibility options for this fork are limited by the current visibility of the source project.',
+          )
+        }}</span>
+        <span class="gl-mt-2 gl-block gl-text-subtle">
           <gl-sprintf :message="visibilityLevelDescription">
             <template #membersPageLink="{ content }">
               <gl-link class="gl-link" :href="membersPagePath">{{ content }}</gl-link>
@@ -701,7 +697,7 @@ export default {
             />
             <input v-model="enforceAuthChecksOnUploads" type="checkbox" />
             {{ s__('ProjectSettings|Require authentication to view media files') }}
-            <span class="-gl-mt-3 gl-ml-5 gl-block gl-text-gray-500">{{
+            <span class="-gl-mt-3 gl-ml-5 gl-block gl-text-subtle">{{
               s__('ProjectSettings|Prevents direct linking to potentially sensitive media files')
             }}</span>
           </label>
@@ -709,7 +705,7 @@ export default {
       </project-setting-row>
     </div>
     <div
-      class="gl-mb-5 gl-flex gl-flex-col gl-gap-6 gl-border-1 gl-border-t-0 gl-border-solid gl-border-gray-100 gl-bg-gray-10 gl-px-5 gl-py-3"
+      class="gl-mb-5 gl-flex gl-flex-col gl-gap-6 gl-border-1 gl-border-t-0 gl-border-solid gl-border-default gl-bg-gray-10 gl-px-5 gl-py-3"
     >
       <project-setting-row
         ref="issues-settings"

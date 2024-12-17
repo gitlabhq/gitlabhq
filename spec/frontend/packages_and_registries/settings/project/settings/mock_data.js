@@ -192,7 +192,7 @@ export const containerProtectionRuleQueryPayload = ({
   data: {
     project: {
       id: '1',
-      containerRegistryProtectionRules: {
+      containerProtectionRepositoryRules: {
         nodes,
         pageInfo: { __typename: 'PageInfo', ...pageInfo },
       },
@@ -203,8 +203,8 @@ export const containerProtectionRuleQueryPayload = ({
 
 export const createContainerProtectionRuleMutationPayload = ({ override, errors = [] } = {}) => ({
   data: {
-    createContainerRegistryProtectionRule: {
-      containerRegistryProtectionRule: {
+    createContainerProtectionRepositoryRule: {
+      containerProtectionRepositoryRule: {
         ...containerProtectionRulesData[0],
         ...override,
       },
@@ -224,27 +224,27 @@ export const createContainerProtectionRuleMutationPayloadErrors = [
 ];
 
 export const deleteContainerProtectionRuleMutationPayload = ({
-  containerRegistryProtectionRule = { ...containerProtectionRulesData[0] },
+  containerProtectionRepositoryRule = { ...containerProtectionRulesData[0] },
   errors = [],
 } = {}) => ({
   data: {
-    deleteContainerRegistryProtectionRule: {
-      containerRegistryProtectionRule,
+    deleteContainerProtectionRepositoryRule: {
+      containerProtectionRepositoryRule,
       errors,
     },
   },
 });
 
 export const updateContainerProtectionRuleMutationPayload = ({
-  containerRegistryProtectionRule = {
+  containerProtectionRepositoryRule = {
     ...containerProtectionRulesData[0],
     minimumAccessLevelForPush: 'OWNER',
   },
   errors = [],
 } = {}) => ({
   data: {
-    updateContainerRegistryProtectionRule: {
-      containerRegistryProtectionRule,
+    updateContainerProtectionRepositoryRule: {
+      containerProtectionRepositoryRule,
       errors,
     },
   },

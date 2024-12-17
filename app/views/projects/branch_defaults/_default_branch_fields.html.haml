@@ -10,7 +10,7 @@
 
 %fieldset#default-branch-settings
   - if @project.empty_repo?
-    .text-secondary
+    .gl-text-subtle
       = s_('ProjectSettings|A default branch cannot be chosen for an empty project.')
   - else
     .form-group

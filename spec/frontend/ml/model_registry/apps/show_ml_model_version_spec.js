@@ -141,9 +141,10 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
 
     it('displays model version edit button', () => {
       expect(findModelVersionEditButton().props()).toMatchObject({
-        variant: 'confirm',
-        category: 'primary',
+        variant: 'default',
+        category: 'secondary',
       });
+      expect(findModelVersionEditButton().text()).toBe('Edit');
     });
 
     describe('when user has no permission to write model registry', () => {
@@ -175,6 +176,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
         createWrapper({ resolver: jest.fn().mockRejectedValue(new Error('Failure!')) });
         await waitForPromises();
         expect(findSidebarAuthorLink().exists()).toBe(false);
+        expect(wrapper.findByTestId('sidebar-author').text()).toBe('None');
       });
     });
   });

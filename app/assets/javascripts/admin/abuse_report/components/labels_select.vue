@@ -171,7 +171,7 @@ export default {
         {{ $options.i18n.edit }}
       </gl-button>
     </div>
-    <div class="gl-mb-2 gl-text-gray-500" data-testid="selected-labels">
+    <div class="gl-mb-2 gl-text-subtle" data-testid="selected-labels">
       <template v-if="isLabelsEmpty">{{ $options.i18n.noLabels }}</template>
       <dropdown-value
         v-else

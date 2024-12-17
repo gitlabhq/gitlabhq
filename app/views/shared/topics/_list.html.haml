@@ -5,5 +5,6 @@
 - if show_empty_search
   = render ::Layouts::EmptyResultComponent.new(type: :search)
 - else
-  = render partial: 'shared/topics/topic', collection: @topics
-  = paginate_collection @topics, remote: remote
+  %ul.content-list
+    = render partial: 'shared/topics/topic', collection: @topics
+    = paginate_collection @topics, remote: remote

@@ -25,8 +25,11 @@ module Import
     end
 
     def perform_failure(exception, import_source, import_uid)
-      fail_import(import_source, import_uid)
+      log_failure(exception, import_source, import_uid)
+      clear_placeholder_reference_store(import_source, import_uid)
+    end
 
+    def log_failure(exception, import_source, import_uid)
       ::Import::Framework::Logger.error(
         message: 'Failed to load all references to placeholder user contributions',
         error: exception.message,
@@ -35,21 +38,9 @@ module Import
       )
     end
 
-    private
-
-    def fail_import(import_source, import_uid)
-      import_state = nil
-
-      case import_source
-      when 'gitlab'
-        import_state = BulkImport.find_by_id(import_uid)
-      when 'github', 'bitbucket', 'bitbucket_server', 'fogbugz', 'gitea', 'gitlab_project'
-        import_state = ProjectImportState.find_by_id(import_uid)
-      when 'import_group_from_file'
-        import_state = GroupImportState.find_by_group_id(import_uid)
-      end
-
-      import_state&.fail_op
+    def clear_placeholder_reference_store(import_source, import_uid)
+      store = PlaceholderReferences::Store.new(import_source: import_source, import_uid: import_uid)
+      store.clear!
     end
   end
 end

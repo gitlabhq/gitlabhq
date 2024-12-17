@@ -9,3 +9,4 @@ description: Persists JWT tokens for AI features (e.g. Code Suggestions) to auth
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125383
 milestone: '16.2'
 gitlab_schema: gitlab_main_clusterwide
+table_size: small

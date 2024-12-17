@@ -670,7 +670,7 @@ MinIO is an object storage server released under the GNU AGPL v3.0. It is compat
   - [Omnibus](https://github.com/nginx/nginx)
   - [Charts](https://github.com/kubernetes/ingress-nginx/blob/master/README.md)
 - Configuration:
-  - [Omnibus](https://docs.gitlab.com/omnibus/settings/)
+  - [Omnibus](https://docs.gitlab.com/omnibus/settings/nginx.html)
   - [Charts](https://docs.gitlab.com/charts/charts/nginx/)
   - [Source](../install/installation.md#10-nginx)
 - Layer: Core Service (Processor)

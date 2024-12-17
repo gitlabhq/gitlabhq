@@ -6,13 +6,20 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateDoraDeploymentFrequencySc
   describe '#perform', :freeze_time do
     let(:environments) { table(:environments) }
     let(:namespaces) { table(:namespaces) }
+    let(:organizations) { table(:organizations) }
     let(:projects) { table(:projects) }
     let(:performance_scores) { table(:dora_performance_scores) }
     let(:daily_metrics) { table(:dora_daily_metrics) }
 
-    let!(:namespace) { namespaces.create!(name: 'gitlab', path: 'gitlab-org') }
+    let!(:organization) { organizations.create!(name: 'organization', path: 'organization') }
+    let!(:namespace) { namespaces.create!(name: 'gitlab', path: 'gitlab-org', organization_id: organization.id) }
     let!(:project) do
-      projects.create!(namespace_id: namespace.id, name: 'foo', project_namespace_id: namespace.id)
+      projects.create!(
+        namespace_id: namespace.id,
+        name: 'foo',
+        project_namespace_id: namespace.id,
+        organization_id: organization.id
+      )
     end
 
     let!(:production) { environments.create!(project_id: project.id, tier: 0, name: 'prod', slug: 'prod') }

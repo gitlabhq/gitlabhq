@@ -13,10 +13,7 @@ module Gitlab
       def initialize(group_full_path:, cut_off_date: DEFAULT_TIME_PERIOD.ago.beginning_of_day, logger: nil)
         @cut_off_date = cut_off_date
 
-        # rubocop: disable CodeReuse/ActiveRecord
         @group = Group.find_by_full_path(group_full_path)
-        # rubocop: enable CodeReuse/ActiveRecord
-
         raise "Group with full_path #{group_full_path} not found" unless @group
         raise "Invalid time: #{@cut_off_date}" unless @cut_off_date <= MINIMUM_TIME_PERIOD.ago
 

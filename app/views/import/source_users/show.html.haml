@@ -19,7 +19,7 @@
 
     - c.with_body do
       %p.gl-mb-5
-        = safe_format(s_('UserMapping|%{reassigned_by_name} (%{reassigned_by_username}) wants to reassign contributions made by %{source_name} (%{source_username}) on %{source_hostname} to you in %{destination_group}.'),
+        = safe_format(s_('UserMapping|%{reassigned_by_name} (%{reassigned_by_username}) wants to reassign contributions from %{source_name} (%{source_username}) on %{source_hostname} to you in %{destination_group}.'),
           reassigned_by_name: reassigned_by_name,
           reassigned_by_username: reassigned_by_username,
           source_name: source_name,
@@ -27,7 +27,7 @@
           source_hostname: source_hostname,
           destination_group: destination_group)
         = succeed '.' do
-          = link_to s_('UserMapping|Learn more about reassignments'), help_page_path('user/project/import/index.md', anchor: 'accept-contribution-reassignment')
+          = link_to s_('UserMapping|How do I accept reassignments?'), help_page_path('user/project/import/index.md', anchor: 'accept-contribution-reassignment')
       %h5
         = s_('UserMapping|Import details:')
       %p.gl-mb-5
@@ -44,7 +44,7 @@
         = safe_format(s_('UserMapping|Reassigned by: %{reassigned_by_name} (%{reassigned_by_username})'), reassigned_by_name: reassigned_by_name, reassigned_by_username: reassigned_by_username)
       %p.gl-mb-0
         %strong
-          = s_('UserMapping|Approve reassignments only from users that you trust. After approval, contributions will be assigned to you. The assignment is permanent.')
+          = s_('UserMapping|Approve reassignments only from users you trust. After you approve, contributions are assigned to you permanently.')
 
     - c.with_footer do
       .gl-flex.gl-gap-3

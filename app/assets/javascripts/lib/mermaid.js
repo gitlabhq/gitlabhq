@@ -51,6 +51,10 @@ const initMermaid = () => {
     },
     secure: ['secure', 'securityLevel', 'startOnLoad', 'maxTextSize', 'htmlLabels'],
     securityLevel: 'strict',
+    dompurifyConfig: {
+      ADD_TAGS: ['foreignObject'],
+      HTML_INTEGRATION_POINTS: { foreignobject: true },
+    },
   });
 };
 

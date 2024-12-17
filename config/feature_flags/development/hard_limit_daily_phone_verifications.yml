@@ -1,8 +1,0 @@
----
-name: hard_limit_daily_phone_verifications
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138627
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/433972
-milestone: '16.8'
-type: development
-group: group::anti-abuse
-default_enabled: false

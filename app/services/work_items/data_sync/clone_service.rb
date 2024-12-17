@@ -36,12 +36,12 @@ module WorkItems
         end
 
         unless work_item.can_clone?(current_user, target_namespace)
-          error_message = s_('CloneWorkItem|Cannot clone work item due to insufficient permissions!')
+          error_message = s_('CloneWorkItem|Cannot clone work item due to insufficient permissions.')
 
           return error(error_message, :unprocessable_entity)
         end
 
-        if target_namespace.pending_delete? # rubocop:disable Style/GuardClause -- does not read right with other checks above
+        if target_namespace.pending_delete?
           error_message = s_('CloneWorkItem|Cannot clone work item to target namespace as it is pending deletion.')
 
           return error(error_message, :unprocessable_entity)

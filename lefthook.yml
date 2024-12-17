@@ -100,10 +100,12 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.{rb}'
       run: bundle exec rake lint:static_verification
-    bundler-checksum-lint:
+    bundler-lint:
       tags: backend bundler
-      glob: 'Gemfile.lock'
-      run: bundle exec bundler-checksum lint
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: 'Gemfile*'
+      run: FROM_LEFTHOOK=1 bundle exec rake bundler:gemfile:check
+      fail_text: Gemfiles not in sync, please run 'bundle exec rake bundler:gemfile:sync'
     audit_event_types_docs:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD

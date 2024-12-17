@@ -1,11 +1,11 @@
 <script>
-import { GlAvatar, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlAvatarLabeled, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
 
 export default {
   name: 'GroupItem',
   components: {
-    GlAvatar,
+    GlAvatarLabeled,
     GlButton,
     HiddenGroupsItem: () => import('ee_component/approvals/components/hidden_groups_item.vue'),
   },
@@ -46,19 +46,17 @@ export default {
 <template>
   <div class="gl-flex gl-items-center gl-gap-3">
     <hidden-groups-item v-if="isHiddenGroups" class="gl-grow" />
-    <div v-else class="gl-flex gl-grow gl-items-center gl-gap-3">
-      <gl-avatar
-        :alt="fullName"
-        :entity-name="fullName"
-        :size="32"
-        :src="avatarUrl"
-        fallback-on-error
-      />
-      <span class="gl-flex gl-flex-col">
-        <span class="gl-font-bold">{{ fullName }}</span>
-        <span class="gl-text-subtle">@{{ name }}</span>
-      </span>
-    </div>
+    <gl-avatar-labeled
+      v-else
+      class="gl-grow gl-break-all"
+      :entity-name="fullName"
+      :label="fullName"
+      :sub-label="`@${name}`"
+      :size="32"
+      shape="rect"
+      :src="avatarUrl"
+      fallback-on-error
+    />
 
     <gl-button
       v-if="canDelete"

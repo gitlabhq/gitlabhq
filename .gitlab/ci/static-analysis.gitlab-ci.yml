@@ -71,9 +71,13 @@ eslint:
   needs: ['generate-apollo-graphql-schema']
   variables:
     USE_BUNDLE_INSTALL: "false"
+    ESLINT_CODE_QUALITY_REPORT: "gl-code-quality-report.json"
   script:
     - yarn_install_script
-    - run_timed_command "yarn run lint:eslint:all"
+    - run_timed_command "yarn run lint:eslint:all --format gitlab"
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
 
 eslint-docs:
   extends:
@@ -147,6 +151,7 @@ rails-next-dependency-check:
   stage: lint
   needs: []
   extends:
+    - .ruby-cache
     - .rails:rules:rails-next-dependency-check
   variables:
     BUNDLE_GEMFILE: Gemfile.next
@@ -159,7 +164,7 @@ rails-next-dependency-check:
     - |
       if [ "$CI_JOB_STATUS" == "failed" ]; then
         echo "Gemfile.next.lock contains outdated dependencies, please run the following command and push the changes:"
-        echo "cp Gemfile.lock Gemfile.next.lock && BUNDLE_GEMFILE=Gemfile.next bundle lock && BUNDLE_GEMFILE=Gemfile.next bundle exec bundler-checksum init"
+        echo "bundle exec rake bundler:gemfile:sync"
       fi
 
 feature-flags-usage:

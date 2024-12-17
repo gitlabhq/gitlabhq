@@ -15,7 +15,9 @@ exports[`Registry Breadcrumb when is not rootRoute renders 1`] = `
       <a
         target="_self"
       >
-        <span>
+        <span
+          class="gl-align-middle"
+        >
           mock name
         </span>
       </a>
@@ -28,7 +30,9 @@ exports[`Registry Breadcrumb when is not rootRoute renders 1`] = `
         href="#"
         target="_self"
       >
-        <span>
+        <span
+          class="gl-align-middle"
+        >
           mock name
         </span>
       </a>
@@ -54,7 +58,9 @@ exports[`Registry Breadcrumb when is rootRoute renders 1`] = `
         aria-current="page"
         target="_self"
       >
-        <span>
+        <span
+          class="gl-align-middle"
+        >
           mock name
         </span>
       </a>

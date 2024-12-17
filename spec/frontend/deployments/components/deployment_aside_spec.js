@@ -271,7 +271,7 @@ describe('~/deployments/components/deployment_header.vue', () => {
 
         expect(sidebarItems.classes()).not.toContain('gl-border-t-1');
         expect(sidebarItems.classes()).not.toContain('gl-mt-5');
-        expect(sidebarItems.classes()).not.toContain('gl-border-gray-100');
+        expect(sidebarItems.classes()).not.toContain('gl-border-default');
         expect(sidebarItems.classes()).not.toContain('gl-border-t-solid');
       });
     });
@@ -313,7 +313,7 @@ describe('~/deployments/components/deployment_header.vue', () => {
 
         expect(urlButtonWrapper.classes()).not.toContain('gl-mt-5');
         expect(urlButtonWrapper.classes()).not.toContain('gl-border-b-1');
-        expect(urlButtonWrapper.classes()).not.toContain('gl-border-gray-100');
+        expect(urlButtonWrapper.classes()).not.toContain('gl-border-default');
         expect(urlButtonWrapper.classes()).not.toContain('gl-pb-5');
         expect(urlButtonWrapper.classes()).not.toContain('gl-border-b-solid');
       });

@@ -21,7 +21,7 @@ To create a blank project:
 1. Select **Create blank project**.
 1. Enter the project details:
    1. **Project name**: Enter the name of your project.
-   See the [limitations on project names](../../user/reserved_names.md#limitations-on-usernames-project-and-group-names-and-slugs).
+   For more information, see [naming rules](../../user/reserved_names.md#rules-for-usernames-project-and-group-names-and-slugs).
    1. **Project slug**: Enter the path to your project. GitLab uses the slug as the URL path.
    1. **Project deployment target (optional)**: If you want to deploy your project to specific environment,
    select the relevant deployment target.
@@ -113,8 +113,7 @@ To create a project from a custom template:
 DETAILS:
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/794) in GitLab 16.9 [with a flag](../../administration/feature_flags.md)
-> - named `support_sha256_repositories`. Disabled by default. This feature is an [experiment](../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/431864) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `support_sha256_repositories`. Disabled by default. This feature is an [experiment](../../policy/development_stages_support.md#experiment).
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -158,5 +157,5 @@ encourage agencies to move away from SHA-1 earlier, if possible.
 
 - [Create a project with `git push`](../../topics/git/project.md)
 - [Reserved project and group names](../../user/reserved_names.md)
-- [Limitations on project and group names](../../user/reserved_names.md#limitations-on-usernames-project-and-group-names-and-slugs)
+- [Rules for project and group names](../../user/reserved_names.md#rules-for-usernames-project-and-group-names-and-slugs)
 - [Manage projects](working_with_projects.md)

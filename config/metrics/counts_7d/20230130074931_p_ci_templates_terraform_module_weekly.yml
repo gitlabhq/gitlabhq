@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.ci_templates.p_ci_templates_terraform_module_weekly
 description: Count of pipelines using the Terraform Module template
 product_group: environments
+product_categories:
+- infrastructure_as_code
 value_type: number
 status: active
 milestone: "15.9"

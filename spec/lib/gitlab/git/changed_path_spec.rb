@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Git::ChangedPath do
+RSpec.describe Gitlab::Git::ChangedPath, feature_category: :source_code_management do
   subject(:changed_path) do
     described_class.new(
       path: path,
@@ -36,6 +36,30 @@ RSpec.describe Gitlab::Git::ChangedPath do
       it 'returns false' do
         expect(new_file?).to eq(false)
       end
+    end
+  end
+
+  describe '#deleted_file?' do
+    subject(:deleted_file?) { changed_path.deleted_file? }
+
+    it { is_expected.to be_falsey }
+
+    context 'when it is a deleted file' do
+      let(:status) { :DELETED }
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
+  describe '#renamed_file?' do
+    subject(:renamed_file?) { changed_path.renamed_file? }
+
+    it { is_expected.to be_falsey }
+
+    context 'when it is a renamed file' do
+      let(:status) { :RENAMED }
+
+      it { is_expected.to be_truthy }
     end
   end
 

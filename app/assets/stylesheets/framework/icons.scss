@@ -7,7 +7,10 @@
 
 .ci-status-icon-success,
 .ci-status-icon-passed {
-  @include icon-styles($green-500);
+  svg,
+  .gl-icon {
+    @apply gl-fill-icon-success;
+  }
 }
 
 .ci-status-icon-error,
@@ -186,7 +189,7 @@ a.ci-icon:focus {
 .password-status-icon-success {
   svg {
     vertical-align: middle;
-    fill: $green-500;
+    @apply gl-fill-icon-success;
   }
 }
 
@@ -200,5 +203,4 @@ a.ci-icon:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $gray-500;
 }

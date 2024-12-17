@@ -16,6 +16,8 @@ module Gitlab
       rescue Timeout::Error => e
         Gitlab::ErrorTracking.log_exception(e)
         raise ParseError, 'timeout while parsing TOML'
+      rescue TomlRB::Error => e
+        raise ParseError, "error parsing TOML: #{e.message}"
       end
     end
   end

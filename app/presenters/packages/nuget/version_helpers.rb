@@ -32,8 +32,8 @@ module Packages
 
       def compare_core_parts(a_core_parts, b_core_parts)
         while a_core_parts.any? || b_core_parts.any?
-          a_part = a_core_parts.shift&.to_i || 0
-          b_part = b_core_parts.shift&.to_i || 0
+          a_part = a_core_parts.shift.to_i
+          b_part = b_core_parts.shift.to_i
           return a_part <=> b_part if a_part != b_part
         end
       end

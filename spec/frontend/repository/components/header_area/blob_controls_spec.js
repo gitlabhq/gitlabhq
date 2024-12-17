@@ -50,7 +50,6 @@ const createComponent = async () => {
 describe('Blob controls component', () => {
   const findFindButton = () => wrapper.findByTestId('find');
   const findBlameButton = () => wrapper.findByTestId('blame');
-  const findHistoryButton = () => wrapper.findByTestId('history');
   const findPermalinkButton = () => wrapper.findByTestId('permalink');
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
@@ -77,10 +76,6 @@ describe('Blob controls component', () => {
     expect(findBlameButton().attributes('href')).toBe('blame/file.js');
   });
 
-  it('renders a history button with the correct href', () => {
-    expect(findHistoryButton().attributes('href')).toBe('history/file.js');
-  });
-
   it('renders a permalink button with the correct href', () => {
     expect(findPermalinkButton().attributes('href')).toBe('permalink/file.js');
   });
@@ -98,7 +93,6 @@ describe('Blob controls component', () => {
 
       expect(findFindButton().exists()).toBe(false);
       expect(findBlameButton().exists()).toBe(false);
-      expect(findHistoryButton().exists()).toBe(false);
       expect(findPermalinkButton().exists()).toBe(false);
       expect(updateElementsVisibility).toHaveBeenCalledWith('.tree-controls', true);
     },

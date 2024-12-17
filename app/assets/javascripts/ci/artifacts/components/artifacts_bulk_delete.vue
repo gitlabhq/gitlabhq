@@ -45,7 +45,7 @@ export default {
 
     <div
       v-if="selectedArtifacts.length > 0"
-      class="gl-my-4 gl-border-1 gl-border-solid gl-border-gray-100 gl-p-4"
+      class="gl-my-4 gl-border-1 gl-border-solid gl-border-default gl-p-4"
       data-testid="bulk-delete-container"
     >
       <div class="gl-flex gl-items-center">

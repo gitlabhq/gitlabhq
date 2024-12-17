@@ -88,7 +88,7 @@ Markdown does not support any parameters, and always uses PNG format.
 Before you can enable PlantUML in GitLab, set up your own PlantUML
 server to generate the diagrams:
 
-- [In Docker](#docker).
+- Recommended. [In Docker](#docker).
 - [In Debian/Ubuntu](#debianubuntu).
 
 ### Docker
@@ -122,43 +122,15 @@ services:
      - "8005:8080"
 ```
 
-#### Configure local PlantUML access
+Next, you can:
 
-The PlantUML server runs locally on your server, so it can't be accessed
-externally by default. Your server must catch external PlantUML
-calls to `https://gitlab.example.com/-/plantuml/` and redirect them to the
-local PlantUML server. Depending on your setup, the URL is either of the
-following:
-
-- `http://plantuml:8080/`
-- `http://localhost:8080/plantuml/`
-- `http://plantuml:8005/`
-- `http://localhost:8005/plantuml/`
-
-If you're running [GitLab with TLS](https://docs.gitlab.com/omnibus/settings/ssl/index.html)
-you must configure this redirection, because PlantUML uses the insecure HTTP protocol.
-Newer browsers such as [Google Chrome 86+](https://www.chromestatus.com/feature/4926989725073408)
-don't load insecure HTTP resources on pages served over HTTPS.
-
-To enable this redirection:
-
-1. Add the following line in `/etc/gitlab/gitlab.rb`, depending on your setup method:
-
-   ```ruby
-   # Docker deployment
-   nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n  rewrite ^/-/plantuml/(.*) /$1 break;\n  proxy_cache off; \n    proxy_pass  http://plantuml:8005/; \n}\n"
-   ```
-
-1. To activate the changes, run the following command:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
+1. [Configure local PlantUML access](#configure-local-plantuml-access)
+1. [Verify that the PlantUML installation](#verify-the-plantuml-installation) succeeded
 
 ### Debian/Ubuntu
 
 You can install and configure a PlantUML server in Debian/Ubuntu distributions
-using Tomcat or Jetty.
+using Tomcat or Jetty. The instructions below are for Tomcat.
 
 Prerequisites:
 
@@ -168,7 +140,7 @@ Prerequisites:
 
 #### Installation
 
-PlantUML recommends to install Tomcat 10 or above. The scope of this page only
+PlantUML recommends to install Tomcat 10.1 or above. The scope of this page only
 includes setting up a basic Tomcat server. For more production-ready configurations,
 see the [Tomcat Documentation](https://tomcat.apache.org/tomcat-10.1-doc/index.html).
 
@@ -176,7 +148,7 @@ see the [Tomcat Documentation](https://tomcat.apache.org/tomcat-10.1-doc/index.h
 
    ```shell
    sudo apt update
-   sudo apt-get install graphviz default-jdk git-core
+   sudo apt install default-jre-headless graphviz git
    ```
 
 1. Add a user for Tomcat:
@@ -185,10 +157,10 @@ see the [Tomcat Documentation](https://tomcat.apache.org/tomcat-10.1-doc/index.h
    sudo useradd -m -d /opt/tomcat -U -s /bin/false tomcat
    ```
 
-1. Install and configure Tomcat 10:
+1. Install and configure Tomcat 10.1:
 
    ```shell
-   wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.15/bin/apache-tomcat-10.1.15.tar.gz -P /tmp
+   wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.33/bin/apache-tomcat-10.1.33.tar.gz -P /tmp
    sudo tar xzvf /tmp/apache-tomcat-10*tar.gz -C /opt/tomcat --strip-components=1
    sudo chown -R tomcat:tomcat /opt/tomcat/
    sudo chmod -R u+x /opt/tomcat/bin
@@ -227,13 +199,18 @@ see the [Tomcat Documentation](https://tomcat.apache.org/tomcat-10.1-doc/index.h
    `JAVA_HOME` should be the same path as seen in `sudo update-java-alternatives -l`.
 
 1. To configure ports, edit your `/opt/tomcat/conf/server.xml` and choose your
-   ports. Avoid using port `8080`, as [Puma](../operations/puma.md) listens on port `8080` for metrics.
+   ports. Recommended:
 
-   ```shell
-   <Server port="8006" shutdown="SHUTDOWN">
-   ...
-       <Connector port="8005" protocol="HTTP/1.1"
-   ...
+   - Change the Tomcat shutdown port from `8005` to `8006`
+   - Use port `8005` for the Tomcat HTTP endpoint. The default port `8080` should be avoided,
+     because [Puma](../operations/puma.md) listens on port `8080` for metrics.
+
+   ```diff
+   - <Server port="8006" shutdown="SHUTDOWN">
+   + <Server port="8005" shutdown="SHUTDOWN">
+
+   - <Connector port="8005" protocol="HTTP/1.1"
+   + <Connector port="8080" protocol="HTTP/1.1"
    ```
 
 1. Reload and start Tomcat:
@@ -248,46 +225,27 @@ see the [Tomcat Documentation](https://tomcat.apache.org/tomcat-10.1-doc/index.h
    The Java process should be listening on these ports:
 
    ```shell
-   root@gitlab-omnibus:/plantuml-server# netstat -plnt | grep java
-   tcp6       0      0 127.0.0.1:8006          :::*                    LISTEN      14935/java
-   tcp6       0      0 :::8005                 :::*                    LISTEN      14935/java
-   ```
-
-1. Modify your NGINX configuration in `/etc/gitlab/gitlab.rb`. Ensure the `proxy_pass` port matches the Connector port in `server.xml`:
-
-   ```shell
-   nginx['custom_gitlab_server_config'] = "location /-/plantuml {
-       rewrite ^/-/(plantuml.*) /$1 break;
-       proxy_set_header  HOST               $host;
-       proxy_set_header  X-Forwarded-Host   $host;
-       proxy_set_header  X-Forwarded-Proto  $scheme;
-       proxy_cache off;
-       proxy_pass http://localhost:8005/plantuml;
-   }"
-   ```
-
-1. Reconfigure GitLab to read the new changes:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
+   root@gitlab-omnibus:/plantuml-server# ❯ ss -plnt | grep java
+   LISTEN   0        1          [::ffff:127.0.0.1]:8006                   *:*       users:(("java",pid=27338,fd=52))
+   LISTEN   0        100                         *:8005                   *:*       users:(("java",pid=27338,fd=43))
    ```
 
 1. Install PlantUML and copy the `.war` file:
 
-   Use the [latest release](https://github.com/plantuml/plantuml-server/releases) of plantuml-jsp (example: plantuml-jsp-v1.2023.12.war). For context, see [this issue](https://github.com/plantuml/plantuml-server/issues/265).
+   Use the [latest release](https://github.com/plantuml/plantuml-server/releases) of `plantuml-jsp`
+   (for example: `plantuml-jsp-v1.2024.8.war`).
+   For context, see [issue 265](https://github.com/plantuml/plantuml-server/issues/265).
 
    ```shell
-   wget -P /tmp https://github.com/plantuml/plantuml-server/releases/download/v1.2023.12/plantuml-jsp-v1.2023.12.war
-   sudo cp /tmp/plantuml-jsp-v1.2023.12.war /opt/tomcat/webapps/plantuml.war
+   wget -P /tmp https://github.com/plantuml/plantuml-server/releases/download/v1.2024.8/plantuml-jsp-v1.2024.8.war
+   sudo cp /tmp/plantuml-jsp-v1.2024.8.war /opt/tomcat/webapps/plantuml.war
    sudo chown tomcat:tomcat /opt/tomcat/webapps/plantuml.war
    sudo systemctl restart tomcat
    ```
 
 The Tomcat service should restart. After the restart is complete, the
 PlantUML integration is ready and listening for requests on port `8005`:
-`http://localhost:8005/plantuml`
-
-To test if the PlantUML server is working, run `curl --location --verbose "http://localhost:8005/plantuml/"`.
+`http://localhost:8005/plantuml`.
 
 To change the Tomcat defaults, edit the `/opt/tomcat/conf/server.xml` file.
 
@@ -296,13 +254,76 @@ The default URL is different when using this approach. The Docker-based image
 makes the service available at the root URL, with no relative path. Adjust
 the configuration below accordingly.
 
-#### `404` error when opening the PlantUML page in the browser
+Next, you can:
 
-You might get a `404` error when visiting `https://gitlab.example.com/-/plantuml/`, when the PlantUML
-server is set up [in Debian or Ubuntu](#debianubuntu).
+1. [Configure local PlantUML access](#configure-local-plantuml-access). Ensure the `proxy_pass` port
+   configured in the link matches the Connector port in `server.xml`.
+1. [Verify that the PlantUML installation](#verify-the-plantuml-installation) succeeded.
 
-This can happen even when the integration is working.
-It does not necessarily indicate a problem with your PlantUML server or configuration.
+### Configure local PlantUML access
+
+The PlantUML server runs locally on your server, so it can't be accessed
+externally by default. Your server must catch external PlantUML
+calls to `https://gitlab.example.com/-/plantuml/` and redirect them to the
+local PlantUML server. Depending on your setup, the URL is either of the
+following:
+
+- `http://plantuml:8080/`
+- `http://localhost:8080/plantuml/`
+- `http://plantuml:8005/`
+- `http://localhost:8005/plantuml/`
+
+If you're running [GitLab with TLS](https://docs.gitlab.com/omnibus/settings/ssl/index.html)
+you must configure this redirection, because PlantUML uses the insecure HTTP protocol.
+Newer browsers, such as [Google Chrome 86+](https://www.chromestatus.com/feature/4926989725073408),
+don't load insecure HTTP resources on pages served over HTTPS.
+
+To enable this redirection:
+
+1. Add the following line in `/etc/gitlab/gitlab.rb`, depending on your setup method:
+
+   ```ruby
+   # Docker install
+   nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n  rewrite ^/-/plantuml/(.*) /$1 break;\n  proxy_cache off; \n    proxy_pass  http://plantuml:8005/; \n}\n"
+
+   # Debian/Ubuntu install
+   nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n  rewrite ^/-/plantuml/(.*) /$1 break;\n  proxy_cache off; \n    proxy_pass  http://localhost:8005/plantuml; \n}\n"
+   ```
+
+1. To activate the changes, run the following command:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+### Verify the PlantUML installation
+
+To verify the installation was successful:
+
+1. Test the PlantUML server directly:
+
+   ```shell
+   # Docker install
+   curl --location --verbose "http://localhost:8005/svg/SyfFKj2rKt3CoKnELR1Io4ZDoSa70000"
+
+   # Debian/Ubuntu install
+   curl --location --verbose "http://localhost:8005/plantuml/svg/SyfFKj2rKt3CoKnELR1Io4ZDoSa70000"
+   ```
+
+   You should receive SVG output containing the text `hello`.
+
+1. Test that GitLab can access PlantUML through NGINX by visiting:
+
+   ```plaintext
+   http://gitlab.example.com/-/plantuml/svg/SyfFKj2rKt3CoKnELR1Io4ZDoSa70000
+   ```
+
+   Replace `gitlab.example.com` with your GitLab instance URL. You should see a rendered
+   PlantUML diagram displaying `hello`.
+
+   ```plaintext
+   Bob -> Alice : hello
+   ```
 
 ### Configure PlantUML security
 
@@ -339,8 +360,8 @@ these steps:
   this command:
 
   ```ruby
-   gitlab_rails['env'] = { 'PLANTUML_ENCODING' => 'deflate' }
-   ```
+  gitlab_rails['env'] = { 'PLANTUML_ENCODING' => 'deflate' }
+  ```
 
   In GitLab Helm chart, you can set it by adding a variable to the
   [global.extraEnv](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/charts/globals.md#extraenv)
@@ -372,3 +393,13 @@ If you're still not seeing the updated URL, check the following:
 - Verify that the PlantUML integration is enabled in your GitLab settings.
 - Check the GitLab logs for errors related to PlantUML rendering.
 - [Clear your GitLab Redis cache](../raketasks/maintenance.md#clear-redis-cache).
+
+### `404` error when opening the PlantUML page in the browser
+
+You might get a `404` error when visiting `https://gitlab.example.com/-/plantuml/`, when the PlantUML
+server is set up [in Debian or Ubuntu](#debianubuntu).
+
+This can happen even when the integration is working.
+It does not necessarily indicate a problem with your PlantUML server or configuration.
+
+To confirm if PlantUML is working correctly, you can [verify the PlantUML installation](#verify-the-plantuml-installation).

@@ -194,7 +194,7 @@ export default {
               class="gl-mr-3"
               :size="24"
             />
-            <span class="gl-text-gray-900">{{ item.originProject.fullPath }}</span>
+            <span class="gl-text-default">{{ item.originProject.fullPath }}</span>
           </div>
         </template>
       </gl-table-lite>

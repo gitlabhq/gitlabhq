@@ -8,11 +8,12 @@ const initIndexMlExperiments = () => {
     return undefined;
   }
 
-  const { experiments, pageInfo, emptyStateSvgPath } = element.dataset;
+  const { experiments, pageInfo, emptyStateSvgPath, mlflowTrackingUrl } = element.dataset;
   const props = {
     experiments: JSON.parse(experiments),
     pageInfo: convertObjectPropsToCamelCase(JSON.parse(pageInfo)),
     emptyStateSvgPath,
+    mlflowTrackingUrl,
   };
 
   return new Vue({

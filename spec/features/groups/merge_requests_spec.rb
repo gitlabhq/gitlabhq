@@ -17,8 +17,6 @@ RSpec.describe 'Group merge requests page', feature_category: :code_review_workf
     let(:issuable_archived) { create(:merge_request, source_project: project_archived, target_project: project_archived, title: 'issuable of an archived project') }
 
     before do
-      stub_feature_flags(async_sidebar_counts: false)
-
       issuable_archived
       visit path
     end

@@ -19,84 +19,15 @@ GitLab can check your application for security vulnerabilities including:
 For a click-through demo, see [Integrating security to the pipeline](https://gitlab.navattic.com/gitlab-scans).
 <!-- Demo published on 2024-01-15 -->
 
+For details of how vulnerabilities are detected throughout your application's development lifecycle
+see [Detect](detect/index.md).
+
 Statistics and details on vulnerabilities are included in the merge request. Providing
 actionable information _before_ changes are merged enables you to be proactive.
 
 To help with the task of managing and addressing vulnerabilities, GitLab provides a security
 dashboard you can access from your project or group. For more details, see
 [Security Dashboard](security_dashboard/index.md).
-
-## Application coverage
-
-GitLab analyzes various details of your application, either as part of your CI/CD pipeline or on a
-schedule. Coverage includes:
-
-- Source code.
-- Dependencies in your projects or container images.
-- Vulnerabilities in a running web application.
-- Infrastructure as code configuration.
-
-Each of the GitLab application security tools is relevant to specific stages of the feature development workflow.
-
-- Commit
-  - SAST
-  - Secret Detection
-  - IaC Scanning
-  - Dependency Scanning
-  - Coverage-guided Fuzz Testing
-- Build
-  - Container Scanning
-- Test
-  - API Security
-  - DAST
-- Deploy
-  - Operational Container Scanning
-
-![CI/CD stages and matching GitLab application security tools](img/secure_tools_and_cicd_stages_v15_5.png)
-
-### Source code analysis
-
-Source code analysis occurs on every code commit. Details of vulnerabilities detected are provided
-in the merge request.
-
-A source code analysis can:
-
-- Analyze source code for vulnerabilities - [Static Application Security Testing (SAST)](sast/index.md).
-- Analyze the Git repository's history for secrets - [Secret Detection](secret_detection/index.md).
-
-### Analysis of the running web application
-
-Analysis of the web application occurs on every code commit. As part of the CI/CD pipeline, your
-application is built, deployed to a test environment, and subjected to the following tests:
-
-- Test application for known attack vectors - [Dynamic Application Security Testing (DAST)](dast/index.md).
-- Analysis of APIs for known attack vectors - [API Security](api_security_testing/index.md).
-- Analysis of web APIs for unknown bugs and vulnerabilities - [API fuzzing](api_fuzzing/index.md).
-
-### Dependency analysis
-
-Dependency analysis occurs on every code commit. Your application's dependencies are collated and
-checked against a database of known vulnerabilities.
-
-Dependency analysis can run:
-
-- At build time - [Dependency Scanning](dependency_scanning/index.md).
-- For projects that use container images, also after the final container
-  image is built - [Container Scanning](container_scanning/index.md).
-
-For more details, see
-[Dependency Scanning compared to Container Scanning](comparison_dependency_and_container_scanning.md).
-
-Additionally, dependencies in operational container images can be analyzed for vulnerabilities
-on a regular schedule or cadence. For more details, see [Operational Container Scanning](../../user/clusters/agent/vulnerabilities.md).
-
-### Infrastructure analysis
-
-Your application's infrastructure is a source of potential vulnerabilities. To help defend
-against this, infrastructure analysis occurs on every merge request. Checks are run against:
-
-- Infrastructure as Code (IaC) configuration files that define your application's deployment
-  environment - [Infrastructure as Code (IaC) Scanning](iac_scanning/index.md).
 
 ## Data privacy
 
@@ -111,7 +42,7 @@ The following vulnerability scanners and their databases are regularly updated:
 | Secure scanning tool                                            | Vulnerabilities database updates |
 |:----------------------------------------------------------------|:---------------------------------|
 | [Container Scanning](container_scanning/index.md)            | A job runs on a daily basis to build new images with the latest vulnerability database updates from the upstream scanner. GitLab monitors this job through an internal alert that tells the engineering team when the database becomes more than 48 hours old. For more information, see the [Vulnerabilities database update](container_scanning/index.md#vulnerabilities-database). |
-| [Dependency Scanning](dependency_scanning/index.md)          | Relies on the [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db). It is updated on a daily basis using [data from NVD, the `ruby-advisory-db` and the GitHub Advisory Database as data sources](https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/master/SOURCES.md). |
+| [Dependency Scanning](dependency_scanning/index.md)          | Relies on the [GitLab Advisory Database](gitlab_advisory_database/index.md) which is updated on a daily basis using data from the National Vulnerability Database (NVD) and the GitHub Advisory Database. |
 | [Dynamic Application Security Testing (DAST)](dast/index.md) | [DAST](dast/browser/index.md) analyzer is updated on a periodic basis. |
 | [Secret Detection](secret_detection/pipeline/index.md#detected-secrets) | GitLab maintains the [detection rules](secret_detection/pipeline/index.md#detected-secrets) and [accepts community contributions](secret_detection/pipeline/index.md#add-new-patterns). The scanning engine is updated at least once per month if a relevant update is available. |
 | [Static Application Security Testing (SAST)](sast/index.md)  | The source of scan rules depends on which [analyzer](sast/analyzers.md) is used for each [supported programming language](sast/index.md#supported-languages-and-frameworks). GitLab maintains a ruleset for the Semgrep-based analyzer and updates it regularly based on internal research and user feedback. For other analyzers, the ruleset is sourced from the upstream open-source scanner. Each analyzer is updated at least once per month if a relevant update is available. |

@@ -6,7 +6,7 @@ RSpec.describe Discussions::UnresolveService, feature_category: :code_review_wor
   describe "#execute" do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:user) { create(:user, developer_of: project) }
-    let_it_be(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds, source_project: project) }
+    let_it_be(:merge_request) { create(:merge_request, :merge_when_checks_pass, source_project: project) }
 
     let(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
 

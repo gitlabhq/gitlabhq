@@ -2363,6 +2363,17 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         expect(json_response['line_type']).to eq('new')
       end
 
+      it 'creates a tag with /tag quick action' do
+        path = project.repository.commit.raw_diffs.first.new_path
+        post api(route, current_user), params: { note: '/tag quick-action-tag-test some commit message', path: path, line: 1, line_type: 'new' }
+
+        expect(response).to have_gitlab_http_status(:accepted)
+        expect(json_response['commands_changes']).to be_present
+        expect(json_response.dig('commands_changes', 'tag_message')).to eq('some commit message')
+        expect(json_response.dig('commands_changes', 'tag_name')).to eq('quick-action-tag-test')
+        expect(json_response['summary']).to eq(['Tagged this commit to quick-action-tag-test with "some commit message".'])
+      end
+
       it 'correctly adds a note for the "old" line type' do
         commit    = project.repository.commit("markdown")
         commit_id = commit.id

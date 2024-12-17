@@ -2,8 +2,6 @@
 
 # rubocop:disable Gitlab/NamespacedClass -- We want this to be top level due to scope of use and no namespace due to ease of calling
 class Current < ActiveSupport::CurrentAttributes
-  include Gitlab::InternalEventsTracking
-
   class OrganizationNotAssignedError < RuntimeError
     def message
       'Assign an organization to Current.organization before calling it.'
@@ -18,6 +16,7 @@ class Current < ActiveSupport::CurrentAttributes
 
   # watch background jobs need to reset on each job if using
   attribute :organization, :organization_assigned
+  attribute :token_info
 
   def organization=(value)
     # We want to explicitly allow only one organization assignment per thread
@@ -41,7 +40,7 @@ class Current < ActiveSupport::CurrentAttributes
       Gitlab::ErrorTracking.track_and_raise_for_dev_exception(OrganizationNotAssignedError.new)
     end
 
-    track_organization_call
+    Gitlab::Organizations::FallbackOrganizationTracker.trigger
 
     super
   end
@@ -55,18 +54,6 @@ class Current < ActiveSupport::CurrentAttributes
   # Do not allow to reset this
   def organization_assigned=(value)
     organization_assigned || super(value)
-  end
-
-  def track_organization_call
-    return unless Feature.enabled?(:track_organization_fallback, Feature.current_request)
-    return unless Gitlab::SafeRequestStore[:fallback_organization_used]
-
-    track_internal_event(
-      'fallback_current_organization_to_default',
-      additional_properties: {
-        label: Gitlab::ApplicationContext.current_context_attribute(:caller_id)
-      }
-    )
   end
 end
 # rubocop:enable Gitlab/NamespacedClass

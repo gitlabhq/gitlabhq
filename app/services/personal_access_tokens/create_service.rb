@@ -38,7 +38,8 @@ module PersonalAccessTokens
         impersonation: params[:impersonation] || false,
         scopes: params[:scopes],
         expires_at: pat_expiration,
-        organization_id: organization_id
+        organization_id: organization_id,
+        description: params[:description]
       }
     end
 
@@ -51,7 +52,7 @@ module PersonalAccessTokens
     end
 
     def max_expiry_date
-      PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
+      ::PersonalAccessToken.max_expiration_lifetime_in_days.days.from_now
     end
 
     def creation_permitted?

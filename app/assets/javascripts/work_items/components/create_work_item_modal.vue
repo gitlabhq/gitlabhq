@@ -11,6 +11,7 @@ import {
   sprintfWorkItem,
   I18N_WORK_ITEM_ERROR_FETCHING_TYPES,
   ROUTES,
+  RELATED_ITEM_ID_URL_QUERY_PARAM,
 } from '../constants';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import CreateWorkItem from './create_work_item.vue';
@@ -134,6 +135,7 @@ export default {
         fullPath: this.fullPath,
         isGroup: this.isGroup,
         workItemTypeName: this.workItemTypeName,
+        query: this.relatedItem ? `?${RELATED_ITEM_ID_URL_QUERY_PARAM}=${this.relatedItem.id}` : '',
       });
     },
     newWorkItemText() {
@@ -202,7 +204,10 @@ export default {
       event.preventDefault();
 
       if (this.useVueRouter) {
-        this.$router.push({ name: ROUTES.new });
+        this.$router.push({
+          name: ROUTES.new,
+          query: { [RELATED_ITEM_ID_URL_QUERY_PARAM]: this.relatedItem?.id },
+        });
       } else {
         visitUrl(this.newWorkItemPath);
       }
@@ -236,7 +241,9 @@ export default {
     <gl-modal
       modal-id="create-work-item-modal"
       modal-class="create-work-item-modal"
+      body-class="!gl-pb-0"
       :visible="isVisible"
+      scrollable
       size="lg"
       hide-footer
       @hide="hideModal"
@@ -250,7 +257,6 @@ export default {
             :href="newWorkItemPath"
             :title="__('Open in full page')"
             category="tertiary"
-            class="gl-text-secondary"
             icon="maximize"
             size="small"
             :aria-label="__('Open in full page')"
@@ -261,6 +267,7 @@ export default {
       <create-work-item
         :description="description"
         hide-form-title
+        sticky-form-submit
         :is-group="isGroup"
         :parent-id="parentId"
         :show-project-selector="showProjectSelector"

@@ -40,3 +40,10 @@
     }
   }
 }
+
+.page-heading-actions {
+  > .gl-button,
+  > .gl-disclosure-dropdown {
+    @apply gl-w-full sm:gl-w-auto;
+  }
+}

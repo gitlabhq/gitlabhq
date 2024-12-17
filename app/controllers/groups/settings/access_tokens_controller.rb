@@ -20,6 +20,10 @@ module Groups
       def represent(tokens)
         ::GroupAccessTokenSerializer.new.represent(tokens, group: resource)
       end
+
+      def rotate_service
+        GroupAccessTokens::RotateService
+      end
     end
   end
 end

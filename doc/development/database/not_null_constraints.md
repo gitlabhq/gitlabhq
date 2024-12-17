@@ -426,3 +426,76 @@ CREATE TABLE labels (
     CONSTRAINT check_45e873b2a8 CHECK ((num_nonnulls(group_id, project_id) > 0))
 );
 ```
+
+## Dropping a `NOT NULL` constraint on a column in an existing table
+
+### Dropping a `NOT NULL` constraint with a check constraint on the column
+
+First, please verify there's a constraint in place on the column. You can do this in several ways:
+
+- Query the [`Gitlab::Database::PostgresConstraint`](https://gitlab.com/gitlab-org/gitlab/-/blob/71892a3c97f52ddcef819dd210ab32864e90c85c/lib/gitlab/database/postgres_constraint.rb) view in rails console
+- Use `psql` to check the table itself: `\d+ table_name`
+- Check `structure.sql`:
+
+```sql
+CREATE TABLE labels (
+    ...
+   CONSTRAINT check_061f6f1c91 CHECK ((project_view IS NOT NULL))
+);
+```
+
+#### Example
+
+```ruby
+# frozen_string_literal: true
+class DropNotNullConstraintFromTableColumn< Gitlab::Database::Migration[2.2]
+  disable_ddl_transaction!
+  milestone '16.7'
+
+  def up
+    remove_not_null_constraint :table_name, :column_name
+  end
+
+  def down
+    add_not_null_constraint :table_name, :column_name
+  end
+end
+```
+
+<b>NOTE:</b> The milestone number is just an example. Please use the correct version.
+
+### Dropping a `NOT NULL` constraint without a check constraint on the column
+
+If `NOT NULL` is just defined on the column and without a check constraint then we can use `change_column_null`.
+
+Example in `structure.sql`:
+
+```sql
+CREATE TABLE labels (
+    ...
+   projects_limit integer NOT NULL
+);
+```
+
+#### Example
+
+```ruby
+# frozen_string_literal: true
+class DropNotNullConstraintFromTableColumn < Gitlab::Database::Migration[2.2]
+  milestone '16.7'
+
+  def up
+    change_column_null :table_name, :column_name, true
+  end
+
+  def down
+    change_column_null :table_name, :column_name, false
+  end
+end
+```
+
+<b>NOTE:</b> The milestone number is just an example. Please use the correct version.
+
+### Dropping a `NOT NULL` constraint on a partition table
+
+Important note: we cannot drop the `NOT NULL` constraint from an individual partition if it exists on the parent table because all the partitions inherit the constraint from the parent table. For this reason, we need to drop the constraint from the parent table instead which cascades to all the child partitions.

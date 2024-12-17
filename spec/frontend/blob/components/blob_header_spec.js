@@ -81,6 +81,7 @@ describe('Blob Header Default Actions', () => {
 
         expect(findWebIdeLink().props()).toMatchObject({
           showEditButton: true,
+          buttonVariant: 'confirm',
           editUrl: editBlobPath,
           webIdeUrl: ideEditPath,
           needsToFork: showForkSuggestion,
@@ -91,6 +92,14 @@ describe('Blob Header Default Actions', () => {
           showGitpodButton: applicationInfoMock.gitpodEnabled,
           gitpodEnabled: userInfoMock.currentUser.gitpodEnabled,
         });
+      });
+
+      it('passes the edit button variant down to the WebIdeLink', () => {
+        const editButtonVariant = 'danger';
+
+        createComponent({ propsData: { editButtonVariant } });
+
+        expect(findWebIdeLink().props('buttonVariant')).toBe(editButtonVariant);
       });
 
       it.each([[{ archived: true }], [{ editBlobPath: null }]])(

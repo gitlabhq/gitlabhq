@@ -143,6 +143,16 @@ RSpec.describe GitlabSchema do
            described_class.object_from_id(user2.to_global_id)].map(&:sync)
         end.not_to exceed_query_limit(1)
       end
+
+      context 'when record is not found' do
+        let(:user) { build(:user, id: non_existing_record_id) }
+
+        it 'returns nil' do
+          result = described_class.object_from_id(user.to_global_id.to_s)
+
+          expect(result.sync).to be_nil
+        end
+      end
     end
 
     context 'with classes that are not ActiveRecord subclasses and have implemented .lazy_find' do
@@ -162,6 +172,16 @@ RSpec.describe GitlabSchema do
           [described_class.object_from_id(note1.to_global_id),
            described_class.object_from_id(note2.to_global_id)].map(&:sync)
         end.not_to exceed_query_limit(1)
+      end
+
+      context 'when record is not found' do
+        let(:note) { build(:discussion_note_on_merge_request, id: non_existing_record_id) }
+
+        it 'returns nil' do
+          result = described_class.object_from_id(note.to_global_id.to_s)
+
+          expect(result.sync).to be_nil
+        end
       end
     end
 
@@ -187,6 +207,18 @@ RSpec.describe GitlabSchema do
         expect(TestGlobalId).to receive(:find).with("123").and_return(result)
 
         expect(described_class.object_from_id(result.to_global_id)).to eq(result)
+      end
+
+      context 'when class raises an ActiveRecord::RecordNotFound' do
+        before do
+          allow(TestGlobalId).to receive(:find).with("123").and_raise(ActiveRecord::RecordNotFound)
+        end
+
+        it 'returns nil' do
+          result = TestGlobalId.new(123)
+
+          expect(described_class.object_from_id(result.to_global_id)).to be_nil
+        end
       end
     end
 

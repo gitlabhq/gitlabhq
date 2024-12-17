@@ -56,7 +56,12 @@ const fluxAnyFailed = (fluxConditions) => {
   });
 };
 
-export const fluxSyncStatus = (fluxConditions) => {
+export const fluxSyncStatus = (fluxResourceStatus) => {
+  const fluxConditions = fluxResourceStatus.conditions;
+
+  if (fluxResourceStatus.suspend) {
+    return { status: 'suspended' };
+  }
   if (fluxAnyFailed(fluxConditions)) {
     return { status: 'failed', message: fluxAnyFailed(fluxConditions).message };
   }

@@ -33,10 +33,11 @@ module BulkImports
       'project_entity' => 'projects'
     }.freeze
 
-    attr_reader :current_user, :params, :credentials
+    attr_reader :current_user, :params, :credentials, :fallback_organization
 
-    def initialize(current_user, params, credentials)
+    def initialize(current_user, params, credentials, fallback_organization:)
       @current_user = current_user
+      @fallback_organization = fallback_organization
       @params = params
       @credentials = credentials
     end
@@ -101,6 +102,7 @@ module BulkImports
 
           BulkImports::Entity.create!(
             bulk_import: bulk_import,
+            organization: organization(entity_params[:destination_namespace]),
             source_type: entity_params[:source_type],
             source_full_path: entity_params[:source_full_path],
             destination_slug: entity_params[:destination_slug] || entity_params[:destination_name],
@@ -134,6 +136,11 @@ module BulkImports
       raise BulkImports::Error.not_authorized(source_full_path) if e.response.code == 403
 
       raise e
+    end
+
+    def organization(namespace)
+      @organization ||= { '' => fallback_organization }
+      @organization[namespace] ||= Group.find_by_full_path(namespace)&.organization || fallback_organization
     end
 
     def entity_type

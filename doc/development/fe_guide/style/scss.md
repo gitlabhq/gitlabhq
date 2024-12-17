@@ -298,7 +298,7 @@ This ensures that `!important` applies only where intended without affecting oth
 
 ## Responsive design
 
-Our UI should work well on mobile and desktop. To accomplish this we use [CSS media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Using_media_queries). In general we should take a mobile first approach to media queries. This means writing CSS for mobile, then using min-width media queries to override styles on desktop.
+Our UI should work well on mobile and desktop. To accomplish this we use [CSS media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Using_media_queries). In general we should take a mobile first approach to media queries. This means writing CSS for mobile, then using min-width media queries to override styles on desktop. A exception to this rule is setting the display mode on child components. For example when hiding `GlButton` on mobile we don't want to override the display mode set by our component CSS so we should use a max-width media query such as `max-lg:gl-hidden`.
 
 ### Tailwind CSS classes
 
@@ -315,9 +315,12 @@ Our UI should work well on mobile and desktop. To accomplish this we use [CSS me
 <!-- Good -->
 <div class="gl-mt-3 sm:gl-mt-5 lg:gl-mt-3"></div>
 
-<!-- Okay if display property is dynamic (via Vue props or similar) and unknown -->
-<!-- eslint-disable-next-line @gitlab/vue-tailwind-no-max-width-media-queries -->
-<div class="max-lg:gl-hidden"></div>
+<!-- Bad -->
+<!-- Changing the display mode of child components can cause visual regressions. -->
+<gl-button class="gl-hidden lg:gl-flex">Edit</gl-button>
+
+<!-- Good -->
+<gl-button class="max-lg:gl-hidden">Edit</gl-button>
 ```
 
 ### Component classes

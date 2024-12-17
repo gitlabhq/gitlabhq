@@ -179,6 +179,8 @@
   - 1
 - - ci_delete_objects
   - 1
+- - ci_destroy_old_pipelines
+  - 1
 - - ci_initialize_pipelines_iid_sequence
   - 1
 - - ci_job_artifacts_expire_project_build_artifacts
@@ -321,8 +323,6 @@
   - 1
 - - elastic_full_index
   - 1
-- - elastic_indexing_control
-  - 1
 - - elastic_namespace_indexer
   - 1
 - - elastic_namespace_rollout
@@ -342,6 +342,8 @@
 - - environments_auto_stop
   - 1
 - - environments_canary_ingress_update
+  - 1
+- - environments_recalculate_auto_stop
   - 1
 - - environments_stop_job_failed
   - 1
@@ -378,6 +380,10 @@
 - - gitlab_subscriptions_add_on_purchases_bulk_refresh_user_assignments
   - 1
 - - gitlab_subscriptions_add_on_purchases_cleanup_user_add_on_assignment
+  - 1
+- - gitlab_subscriptions_add_on_purchases_create_user_add_on_assignment
+  - 1
+- - gitlab_subscriptions_add_on_purchases_destroy_user_add_on_assignment
   - 1
 - - gitlab_subscriptions_add_on_purchases_email_on_duo_bulk_user_assignments
   - 1
@@ -535,6 +541,8 @@
   - 1
 - - merge_requests_delete_source_branch
   - 1
+- - merge_requests_duo_code_review_chat
+  - 1
 - - merge_requests_execute_approval_hooks
   - 1
 - - merge_requests_fetch_suggested_reviewers
@@ -610,6 +618,8 @@
 - - pages_domain_ssl_renewal
   - 1
 - - pages_domain_verification
+  - 1
+- - pages_reset_pages_default_domain_redirect
   - 1
 - - personal_access_tokens
   - 1
@@ -753,6 +763,8 @@
   - 1
 - - search_wiki_elastic_delete_group_wiki
   - 1
+- - search_zoekt_adjust_indices_reserved_storage_bytes_event
+  - 1
 - - search_zoekt_default_branch_changed
   - 1
 - - search_zoekt_delete_project
@@ -762,6 +774,8 @@
 - - search_zoekt_index_marked_as_to_delete_event
   - 1
 - - search_zoekt_index_over_watermark_event
+  - 1
+- - search_zoekt_index_to_evict_event
   - 1
 - - search_zoekt_index_watermark_changed_event
   - 1
@@ -790,6 +804,8 @@
 - - search_zoekt_update_index_used_bytes
   - 1
 - - secrets_management_provision_project_secrets_manager
+  - 1
+- - security_configuration_set_group_secret_push_protection
   - 1
 - - security_create_security_policy_project
   - 1
@@ -944,6 +960,4 @@
 - - work_items_validate_epic_work_item_sync
   - 1
 - - x509_certificate_revoke
-  - 1
-- - zoekt_indexer
   - 1

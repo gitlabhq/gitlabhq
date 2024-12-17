@@ -44,12 +44,17 @@ module Gitlab
         project.project_setting.pages_unique_domain = generate_unique_domain(project)
       end
 
+      def update_default_domain_redirect(project, default_domain_redirect)
+        return unless enabled?
+
+        project.project_setting.pages_default_domain_redirect = default_domain_redirect.presence
+      end
+
       def multiple_versions_enabled_for?(project)
         return false if project.blank?
 
         ::Feature.enabled?(:pages_multiple_versions_setting, project) &&
-          project.licensed_feature_available?(:pages_multiple_versions) &&
-          project.project_setting.pages_multiple_versions_enabled
+          project.licensed_feature_available?(:pages_multiple_versions)
       end
 
       private

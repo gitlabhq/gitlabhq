@@ -42,15 +42,15 @@ describe('ProjectsList', () => {
     );
   });
 
-  describe('when `ProjectListItem` emits `delete-complete` event', () => {
+  describe('when `ProjectListItem` emits `refetch` event', () => {
     beforeEach(() => {
       createComponent();
 
-      wrapper.findComponent(ProjectsListItem).vm.$emit('delete-complete');
+      wrapper.findComponent(ProjectsListItem).vm.$emit('refetch');
     });
 
-    it('emits `delete` event', () => {
-      expect(wrapper.emitted('delete-complete')).toEqual([[]]);
+    it('emits `refetch` event', () => {
+      expect(wrapper.emitted('refetch')).toEqual([[]]);
     });
   });
 });

@@ -18,7 +18,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to have_many(:tags).inverse_of(:package) }
     it { is_expected.to have_many(:build_infos).inverse_of(:package) }
     it { is_expected.to have_one(:maven_metadatum).inverse_of(:package) }
-    it { is_expected.to have_one(:npm_metadatum).inverse_of(:package) }
   end
 
   describe '.sort_by_attribute' do
@@ -106,18 +105,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       it { is_expected.to allow_value("my/domain/com/my-app").for(:name) }
       it { is_expected.to allow_value("my.app-11.07.2018").for(:name) }
       it { is_expected.not_to allow_value("my(dom$$$ain)com.my-app").for(:name) }
-
-      context 'npm package' do
-        subject { build_stubbed(:npm_package) }
-
-        it { is_expected.to allow_value("@group-1/package").for(:name) }
-        it { is_expected.to allow_value("@any-scope/package").for(:name) }
-        it { is_expected.to allow_value("unscoped-package").for(:name) }
-        it { is_expected.not_to allow_value("@inv@lid-scope/package").for(:name) }
-        it { is_expected.not_to allow_value("@scope/../../package").for(:name) }
-        it { is_expected.not_to allow_value("@scope%2e%2e%fpackage").for(:name) }
-        it { is_expected.not_to allow_value("@scope/sub/package").for(:name) }
-      end
     end
 
     describe '#version' do
@@ -148,190 +135,20 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
         it { is_expected.not_to allow_value('../../../../../1.2.3').for(:version) }
         it { is_expected.not_to allow_value('%2e%2e%2f1.2.3').for(:version) }
       end
-
-      it_behaves_like 'validating version to be SemVer compliant for', :npm_package
     end
 
-    describe '#npm_package_already_taken' do
-      context 'maven package' do
-        let!(:package) { create(:maven_package) }
-
-        it 'will allow a package of the same name' do
-          new_package = build(:maven_package, name: package.name)
-
-          expect(new_package).to be_valid
-        end
+    describe '#prevent_concurrent_inserts' do
+      let(:maven_package) { build(:maven_package, project_id: 5) }
+      let(:lock_key) do
+        maven_package.connection.quote("#{described_class.table_name}-#{maven_package.project_id}-#{maven_package.name}-#{maven_package.version}")
       end
 
-      context 'npm package' do
-        let_it_be(:group) { create(:group) }
-        let_it_be(:project) { create(:project, namespace: group) }
-        let_it_be(:second_project) { create(:project, namespace: group) }
+      subject { maven_package.send(:prevent_concurrent_inserts) }
 
-        let(:package) { build(:npm_package, project: project, name: name) }
+      it 'executes advisory lock' do
+        expect(maven_package.connection).to receive(:execute).with("SELECT pg_advisory_xact_lock(hashtext(#{lock_key}))")
 
-        shared_examples 'validating the first package' do
-          it 'validates the first package' do
-            expect(package).to be_valid
-          end
-        end
-
-        shared_examples 'validating the second package' do
-          it 'validates the second package' do
-            package.save!
-
-            expect(second_package).to be_valid
-          end
-        end
-
-        shared_examples 'not validating the second package' do |field_with_error:|
-          it 'does not validate the second package' do
-            package.save!
-
-            expect(second_package).not_to be_valid
-            case field_with_error
-            when :base
-              expect(second_package.errors.messages[:base]).to eq ['Package already exists']
-            when :name
-              expect(second_package.errors.messages[:name]).to eq ['has already been taken']
-            else
-              raise ArgumentError, "field #{field_with_error} not expected"
-            end
-          end
-        end
-
-        shared_examples 'validating both if the first package is pending destruction' do
-          before do
-            package.status = :pending_destruction
-          end
-
-          it_behaves_like 'validating the first package'
-          it_behaves_like 'validating the second package'
-        end
-
-        context 'following the naming convention' do
-          let(:name) { "@#{group.path}/test" }
-
-          context 'with the second package in the project of the first package' do
-            let(:second_package) { build(:npm_package, project: project, name: second_package_name, version: second_package_version) }
-
-            context 'with no duplicated name' do
-              let(:second_package_name) { "@#{group.path}/test2" }
-              let(:second_package_version) { '5.0.0' }
-
-              it_behaves_like 'validating the first package'
-              it_behaves_like 'validating the second package'
-            end
-
-            context 'with duplicated name' do
-              let(:second_package_name) { package.name }
-              let(:second_package_version) { '5.0.0' }
-
-              it_behaves_like 'validating the first package'
-              it_behaves_like 'validating the second package'
-            end
-
-            context 'with duplicate name and duplicated version' do
-              let(:second_package_name) { package.name }
-              let(:second_package_version) { package.version }
-
-              it_behaves_like 'validating the first package'
-              it_behaves_like 'not validating the second package', field_with_error: :name
-              it_behaves_like 'validating both if the first package is pending destruction'
-            end
-          end
-
-          context 'with the second package in a different project than the first package' do
-            let(:second_package) { build(:npm_package, project: second_project, name: second_package_name, version: second_package_version) }
-
-            context 'with no duplicated name' do
-              let(:second_package_name) { "@#{group.path}/test2" }
-              let(:second_package_version) { '5.0.0' }
-
-              it_behaves_like 'validating the first package'
-              it_behaves_like 'validating the second package'
-            end
-
-            context 'with duplicated name' do
-              let(:second_package_name) { package.name }
-              let(:second_package_version) { '5.0.0' }
-
-              it_behaves_like 'validating the first package'
-              it_behaves_like 'validating the second package'
-            end
-
-            context 'with duplicate name and duplicated version' do
-              let(:second_package_name) { package.name }
-              let(:second_package_version) { package.version }
-
-              it_behaves_like 'validating the first package'
-              it_behaves_like 'not validating the second package', field_with_error: :base
-              it_behaves_like 'validating both if the first package is pending destruction'
-            end
-          end
-        end
-
-        context 'not following the naming convention' do
-          let(:name) { '@foobar/test' }
-
-          context 'with the second package in the project of the first package' do
-            let(:second_package) { build(:npm_package, project: project, name: second_package_name, version: second_package_version) }
-
-            context 'with no duplicated name' do
-              let(:second_package_name) { "@foobar/test2" }
-              let(:second_package_version) { '5.0.0' }
-
-              it_behaves_like 'validating the first package'
-              it_behaves_like 'validating the second package'
-            end
-
-            context 'with duplicated name' do
-              let(:second_package_name) { package.name }
-              let(:second_package_version) { '5.0.0' }
-
-              it_behaves_like 'validating the first package'
-              it_behaves_like 'validating the second package'
-            end
-
-            context 'with duplicate name and duplicated version' do
-              let(:second_package_name) { package.name }
-              let(:second_package_version) { package.version }
-
-              it_behaves_like 'validating the first package'
-              it_behaves_like 'not validating the second package', field_with_error: :name
-              it_behaves_like 'validating both if the first package is pending destruction'
-            end
-          end
-
-          context 'with the second package in a different project than the first package' do
-            let(:second_package) { build(:npm_package, project: second_project, name: second_package_name, version: second_package_version) }
-
-            context 'with no duplicated name' do
-              let(:second_package_name) { "@foobar/test2" }
-              let(:second_package_version) { '5.0.0' }
-
-              it_behaves_like 'validating the first package'
-              it_behaves_like 'validating the second package'
-            end
-
-            context 'with duplicated name' do
-              let(:second_package_name) { package.name }
-              let(:second_package_version) { '5.0.0' }
-
-              it_behaves_like 'validating the first package'
-              it_behaves_like 'validating the second package'
-            end
-
-            context 'with duplicate name and duplicated version' do
-              let(:second_package_name) { package.name }
-              let(:second_package_version) { package.version }
-
-              it_behaves_like 'validating the first package'
-              it_behaves_like 'validating the second package'
-              it_behaves_like 'validating both if the first package is pending destruction'
-            end
-          end
-        end
+        subject
       end
     end
 
@@ -440,16 +257,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
         is_expected.to match_array([package2, package3])
       end
     end
-  end
-
-  describe '.with_npm_scope' do
-    let_it_be(:package1) { create(:npm_package, name: '@test/foobar') }
-    let_it_be(:package2) { create(:npm_package, name: '@test2/foobar') }
-    let_it_be(:package3) { create(:npm_package, name: 'foobar') }
-
-    subject { described_class.with_npm_scope('test') }
-
-    it { is_expected.to contain_exactly(package1) }
   end
 
   describe '.limit_recent' do
@@ -800,30 +607,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       let_it_be(:package) { create(:npm_package) }
 
       it_behaves_like 'not enqueuing a sync worker job'
-    end
-  end
-
-  describe '#sync_npm_metadata_cache' do
-    let_it_be(:package) { create(:npm_package) }
-
-    subject { package.sync_npm_metadata_cache }
-
-    it 'enqueues a sync worker job' do
-      expect(::Packages::Npm::CreateMetadataCacheWorker)
-        .to receive(:perform_async).with(package.project_id, package.name)
-
-      subject
-    end
-
-    context 'with a non npm package' do
-      let_it_be(:package) { create(:maven_package) }
-
-      it 'does not enqueue a sync worker job' do
-        expect(::Packages::Npm::CreateMetadataCacheWorker)
-          .not_to receive(:perform_async)
-
-        subject
-      end
     end
   end
 

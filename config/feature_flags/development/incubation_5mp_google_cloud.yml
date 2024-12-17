@@ -1,8 +1,0 @@
----
-name: incubation_5mp_google_cloud
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70715
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/371332
-milestone: '14.3'
-type: development
-group: group::incubation
-default_enabled: true

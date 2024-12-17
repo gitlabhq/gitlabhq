@@ -7,6 +7,7 @@ module Mutations
 
       include FindsProject
       include Gitlab::Utils::StrongMemoize
+      include ::Ci::JobToken::InternalEventsTracking
 
       authorize :admin_project
 
@@ -49,6 +50,8 @@ module Mutations
 
         settings = project(full_path).ci_cd_settings
         settings.update(args)
+
+        track_job_token_scope_setting_changes(settings, current_user) unless settings.errors.any?
 
         {
           ci_cd_settings: settings,

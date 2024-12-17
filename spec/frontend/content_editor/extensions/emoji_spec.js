@@ -21,10 +21,7 @@ describe('content_editor/extensions/emoji', () => {
   describe('when typing a valid emoji input rule', () => {
     it('inserts an emoji node', () => {
       const expectedDoc = doc(
-        p(
-          ' ',
-          emoji({ moji: '❤', name: 'heart', title: 'heavy black heart', unicodeVersion: '1.1' }),
-        ),
+        p(' ', emoji({ moji: '❤', name: 'heart', title: 'red heart', unicodeVersion: '1.1' })),
       );
 
       triggerNodeInputRule({ tiptapEditor, inputRuleText: ':heart:' });

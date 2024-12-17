@@ -174,8 +174,8 @@ This setting limits search requests as follows:
 
 | Limit                | Default (requests per minute) |
 |----------------------|-------------------------------|
-| Authenticated user   | 300                           |
-| Unauthenticated user | 100                           |
+| Authenticated user   | 30                            |
+| Unauthenticated user | 10                            |
 
 Search requests that exceed the search rate limit per minute return the following error:
 
@@ -288,7 +288,7 @@ Plan.default.actual_limits.update!(group_hooks: 100)
 
 Set the limit to `0` to disable it.
 
-The default maximum number of webhooks is `100` per project and `50` per group. Webhooks in a child group do not count towards the webhook limit of their parent group.
+The default maximum number of webhooks is `100` per project and `50` per group. Webhooks in a subgroup do not count towards the webhook limit of their parent group.
 
 For GitLab.com, see the [webhook limits for GitLab.com](../user/gitlab_com/index.md#webhooks).
 
@@ -698,7 +698,7 @@ of parallel Pages deployments permitted for a top-level namespace is 1000.
 > - Runner stale timeout [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155795) from 3 months to 7 days in GitLab 17.1.
 
 The total number of registered runners is limited for groups and projects. Each time a new runner is registered,
-GitLab checks these limits against runners that have been active in the last 7 days.
+GitLab checks these limits against runners created or active in the last 7 days.
 A runner's registration fails if it exceeds the limit for the scope determined by the runner registration token.
 If the limit value is set to zero, the limit is disabled.
 

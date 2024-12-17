@@ -1,0 +1,10 @@
+---
+name: q_onbarding_updated
+description: Amazon Q instance settings changed
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/508250
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175501
+feature_category: ai_framework
+milestone: '17.8'
+saved_to_database: true
+streamed: true
+scope: [Instance]

@@ -97,7 +97,7 @@ export default {
       <gl-table-lite
         :fields="$options.tableHeaderFields"
         :items="devopsScoreMetrics.cards"
-        thead-class="gl-border-t-0 gl-border-b-solid gl-border-b-1 gl-border-b-gray-100"
+        thead-class="gl-border-t-0 gl-border-b-solid gl-border-b-1 gl-border-b-default"
         stacked="sm"
       >
         <template #cell(usage)="{ item }">

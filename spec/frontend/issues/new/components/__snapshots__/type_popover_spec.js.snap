@@ -5,11 +5,9 @@ exports[`Issue type info popover renders 1`] = `
   class="gl-ml-2"
   id="reference-0"
 >
-  <gl-icon-stub
+  <help-icon-stub
     id="reference-1"
-    name="question-o"
-    size="16"
-    variant="info"
+    size="default"
   />
   <gl-popover-stub
     container="popovercontainer"

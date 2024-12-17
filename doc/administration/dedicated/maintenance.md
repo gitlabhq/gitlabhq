@@ -24,7 +24,7 @@ Maintenance is performed outside standard working hours:
 | Americas (Option 1) | Tuesday | 07:00 - 11:00 |
 | Americas (Option 2) | Sunday-Monday | 21:00 - 01:00 |
 
-You can postpone scheduled maintenance to another window in the same week by contacting your Customer Success Manager at least one week in advance.
+View your maintenance window in [Switchboard](tenant_overview.md#maintenance-windows), including upcoming and recent maintenance. You can postpone scheduled maintenance to another window in the same week by contacting your Customer Success Manager at least one week in advance.
 
 NOTE:
 The scheduled weekly maintenance window is separate from [emergency maintenance](#emergency-maintenance), which cannot be postponed.

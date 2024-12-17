@@ -147,7 +147,7 @@
   font-family: $monospace-font;
   padding: $gl-padding-8 $input-horizontal-padding;
   margin: 0 0 $gl-padding-8;
-  font-size: 13px;
+  font-size: $code-font-size-fixed;
   word-break: break-all;
   word-wrap: break-word;
   color: color-yiq($builds-log-bg);
@@ -176,7 +176,7 @@
 }
 
 .job-log-line-number {
-  @apply gl-text-gray-500;
+  @apply gl-text-subtle;
   padding-right: $gl-padding-8;
   margin-right: $gl-padding-8;
   min-width: $job-line-number-width;
@@ -187,14 +187,14 @@
   &:active,
   &:visited {
     text-decoration: underline;
-    color: $gray-500;
+    @apply gl-text-subtle;
   }
 }
 
 .job-log-time {
   padding-right: $gl-padding-8;
   margin-right: $gl-padding-8;
-  color: $gray-500;
+  @apply gl-text-subtle;
   user-select: none;
   flex-shrink: 0;
 

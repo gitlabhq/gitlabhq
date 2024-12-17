@@ -4,14 +4,18 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::RecoverDeletedMlModelVersionPackages, feature_category: :mlops do
   let(:ml_model_package_type) { 14 }
+  let(:organizations_table) { table(:organizations) }
   let(:namespaces_table) { table(:namespaces) }
   let(:projects_table) { table(:projects) }
   let(:packages_table) { table(:packages_packages) }
   let(:ml_models_table) { table(:ml_models) }
   let(:ml_model_versions_table) { table(:ml_model_versions) }
 
-  let(:namespace) { namespaces_table.create!(name: 'namespace', path: 'namespace-path-1') }
-  let(:project_namespace) { namespaces_table.create!(name: 'namespace', path: 'namespace-path-2', type: 'Project') }
+  let(:organization) { organizations_table.create!(name: 'organization', path: 'organization') }
+  let(:namespace) { namespaces_table.create!(name: 'namespace', path: 'namespace-1', organization_id: organization.id) }
+  let(:project_namespace) do
+    namespaces_table.create!(name: 'namespace', path: 'namespace-2', type: 'Project', organization_id: organization.id)
+  end
 
   let!(:project) do
     projects_table
@@ -20,6 +24,7 @@ RSpec.describe Gitlab::BackgroundMigration::RecoverDeletedMlModelVersionPackages
         path: 'path1',
         namespace_id: namespace.id,
         project_namespace_id: project_namespace.id,
+        organization_id: organization.id,
         visibility_level: 0
       )
   end

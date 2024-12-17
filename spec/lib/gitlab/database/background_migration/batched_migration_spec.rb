@@ -912,7 +912,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       expect(actual).to be_empty
     end
 
-    it 'doesn not filter by gitlab schemas available for the connection if the column is nor present' do
+    it 'does not filter by gitlab schemas available for the connection if the column is not present' do
       skip_if_multiple_databases_not_setup(:ci)
 
       expect(described_class).to receive(:gitlab_schema_column_exists?).and_return(false)
@@ -920,6 +920,22 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       actual = described_class.for_configuration(:gitlab_main, 'MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]])
 
       expect(actual).to contain_exactly(migration)
+    end
+
+    context 'when include_compatible: true' do
+      it 'finds the migration with compatible gitlab_schema matching the given configuration parameters' do
+        actual = described_class.for_configuration(:gitlab_main_cell, 'MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]], include_compatible: true)
+
+        expect(actual).to contain_exactly(migration)
+      end
+
+      it 'excludes migrations with incompatible gitlab_schema even if matching the given configuration parameters' do
+        skip_if_shared_database(:ci)
+
+        actual = described_class.for_configuration(:gitlab_ci, 'MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]], include_compatible: true)
+
+        expect(actual).to be_empty
+      end
     end
   end
 
@@ -939,6 +955,23 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
       )
 
       expect(described_class.find_for_configuration(:gitlab_main, 'MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]])).to eq(migration)
+    end
+
+    context 'when include_compatible: true' do
+      it 'returns the migration with compatible gitlab_schema when it exists' do
+        migration = create(
+          :batched_background_migration,
+          job_class_name: 'MyJobClass',
+          table_name: :projects,
+          column_name: :id,
+          job_arguments: [[:id], [:id_convert_to_bigint]],
+          gitlab_schema: :gitlab_main
+        )
+
+        expect(
+          described_class.find_for_configuration(:gitlab_main_cell, 'MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]], include_compatible: true)
+        ).to eq(migration)
+      end
     end
   end
 

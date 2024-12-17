@@ -11,7 +11,7 @@
     = f.label :name, class: 'label-bold' do
       %span= _("Project name")
     = f.text_field :name, placeholder: "My awesome project", class: "form-control gl-form-input input-lg", data: { testid: 'project-name', track_label: "#{track_label}", track_action: "activate_form_input", track_property: "project_name", track_value: "" }, required: true, aria: { required: true }
-    %small#js-project-name-description.form-text.gl-text-secondary
+    %small#js-project-name-description.form-text.gl-text-subtle
       = s_("ProjectsNew|Must start with a lowercase or uppercase letter, digit, emoji, or underscore. Can also contain dots, pluses, dashes, or spaces.")
     #js-project-name-error.gl-field-error.gl-mt-2.gl-hidden
   .form-group.gl-form-group.gl-w-full.gl-flex.gl-flex-wrap

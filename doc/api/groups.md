@@ -225,6 +225,8 @@ Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also se
 - `wiki_access_level`
 - `duo_features_enabled`
 - `lock_duo_features_enabled`
+- `duo_availability`
+- `experiment_features_enabled`
 
 Additional response attributes:
 
@@ -239,6 +241,8 @@ Additional response attributes:
   "wiki_access_level": "disabled",
   "duo_features_enabled": true,
   "lock_duo_features_enabled": false,
+  "duo_availability": "default_on",
+  "experiment_features_enabled": false,
   ...
 }
 ```
@@ -299,7 +303,7 @@ Parameters:
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
 | `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles) |
-| `top_level_only`         | boolean           | no       | Limit to top level groups, excluding all subgroups |
+| `top_level_only`         | boolean           | no       | Limit to top-level groups, excluding all subgroups |
 | `repository_storage`     | string            | no       | Filter by repository storage used by the group _(administrators only)_. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419643) in GitLab 16.3. Premium and Ultimate only. |
 | `marked_for_deletion_on` | date              | no       | Filter by date when group was marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429315) in GitLab 17.1. Premium and Ultimate only. |
 
@@ -430,12 +434,16 @@ GET /groups?statistics=true
     "wiki_access_level": "private",
     "duo_features_enabled": true,
     "lock_duo_features_enabled": false,
+    "duo_availability": "default_on",
+    "experiment_features_enabled": false,
   }
 ]
 ```
 
 Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level`,
-`duo_features_enabled`, and `lock_duo_features_enabled` attributes.
+`duo_features_enabled`,
+`lock_duo_features_enabled`,
+`duo_availability`, and `experiment_features_enabled` attributes.
 
 You can search for groups by name or path, see below.
 
@@ -789,13 +797,13 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424505) in GitLab 16.6. This feature is an [experiment](../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424505) in GitLab 16.6. This feature is an [experiment](../policy/development_stages_support.md).
 
 Get a list of users for a group. This endpoint returns users that are related to a top-level group regardless
 of their current membership. For example, users that have a SAML identity connected to the group, or service accounts created
 by the group or subgroups.
 
-This endpoint is an [experiment](../policy/experiment-beta-support.md) and might be changed or removed without notice.
+This endpoint is an [experiment](../policy/development_stages_support.md) and might be changed or removed without notice.
 
 Requires Owner role for the group.
 
@@ -946,7 +954,9 @@ GET /groups/:id/subgroups
 ```
 
 Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level`,
-`duo_features_enabled`, and `lock_duo_features_enabled` attributes.
+`duo_features_enabled`,
+`lock_duo_features_enabled`,
+`duo_availability`, and `experiment_features_enabled` attributes.
 
 ### List descendant groups
 
@@ -1060,7 +1070,9 @@ GET /groups/:id/descendant_groups
 ```
 
 Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level`,
-`duo_features_enabled`, and `lock_duo_features_enabled` attributes.
+`duo_features_enabled`,
+`lock_duo_features_enabled`,
+`duo_availability`, and `experiment_features_enabled` attributes.
 
 ### List shared groups
 
@@ -1267,6 +1279,8 @@ Parameters:
 | `extra_shared_runners_minutes_limit` | integer | no       | Can be set by administrators only. Additional compute minutes for this group. Self-managed, Premium and Ultimate only. |
 | `shared_runners_minutes_limit`       | integer | no       | Can be set by administrators only. Maximum number of monthly compute minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. Self-managed, Premium and Ultimate only. |
 | `wiki_access_level`                  | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. Premium and Ultimate only. |
+| `duo_availability` | string | no | Duo availability setting. Valid values are: `default_on`, `default_off`, `never_on`. Note: In the UI, `never_on` is displayed as "Always Off". |
+| `experiment_features_enabled` | boolean | no | Enable experiment features for this group. |
 
 #### Options for `default_branch_protection`
 
@@ -1377,6 +1391,8 @@ PUT /groups/:id
 | `ip_restriction_ranges`                             | string            | no       | Comma-separated list of IP addresses or subnet masks to restrict group access. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351493) in GitLab 15.4. Premium and Ultimate only. |
 | `allowed_email_domains_list`                        | string            | no       | Comma-separated list of email address domains to allow group access. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351494) in 17.4. GitLab Premium and Ultimate only. |
 | `wiki_access_level`                                 | string            | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. Premium and Ultimate only. |
+| `duo_availability` | string | no | Duo availability setting. Valid values are: `default_on`, `default_off`, `never_on`. Note: In the UI, `never_on` is displayed as "Always Off". |
+| `experiment_features_enabled` | boolean | no | Enable experiment features for this group. |
 | `math_rendering_limits_enabled`                     | boolean           | no       | Indicates if math rendering limits are used for this group. |
 | `lock_math_rendering_limits_enabled`                | boolean           | no       | Indicates if math rendering limits are locked for all descendent groups. |
 | `duo_features_enabled`                              | boolean           | no       | Indicates whether GitLab Duo features are enabled for this group. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. Self-managed, Premium and Ultimate only. |
@@ -1464,7 +1480,9 @@ Example response:
 The `prevent_sharing_groups_outside_hierarchy` attribute is present in the response only for top-level groups.
 
 Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level`,
-`duo_features_enabled`, and`lock_duo_features_enabled` attributes.
+`duo_features_enabled`,
+`lock_duo_features_enabled`,
+`duo_availability`, and `experiment_features_enabled` attributes.
 
 #### Options for `shared_runners_setting`
 

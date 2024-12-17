@@ -18,19 +18,19 @@ RSpec.describe Sidebars::Groups::Menus::IssuesMenu, feature_category: :navigatio
     subject { menu.renderable_items.index { |e| e.item_id == item_id } }
 
     shared_examples 'menu access rights' do
-      specify { is_expected.not_to be_nil }
+      it { is_expected.not_to be_nil }
 
       describe 'when the user does not have access' do
         let(:user) { nil }
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
     end
 
     describe 'List' do
       let(:item_id) { :issue_list }
 
-      specify { is_expected.not_to be_nil }
+      it { is_expected.not_to be_nil }
 
       it_behaves_like 'menu access rights'
     end
@@ -48,43 +48,9 @@ RSpec.describe Sidebars::Groups::Menus::IssuesMenu, feature_category: :navigatio
     end
   end
 
-  it_behaves_like 'pill_count formatted results' do
-    let(:count_service) { ::Groups::OpenIssuesCountService }
-  end
-
   describe '#pill_count_field' do
     it 'returns the correct GraphQL field name' do
       expect(menu.pill_count_field).to eq('openIssuesCount')
-    end
-
-    context 'when async_sidebar_counts feature flag is disabled' do
-      before do
-        stub_feature_flags(async_sidebar_counts: false)
-      end
-
-      it 'returns nil' do
-        expect(menu.pill_count_field).to be_nil
-      end
-    end
-  end
-
-  context 'when count query times out' do
-    let(:count_service) { ::Groups::OpenIssuesCountService }
-
-    before do
-      stub_feature_flags(async_sidebar_counts: false)
-
-      allow_next_instance_of(count_service) do |service|
-        allow(service).to receive(:count).and_raise(ActiveRecord::QueryCanceled)
-      end
-    end
-
-    it 'logs the error and returns a null count' do
-      expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
-        ActiveRecord::QueryCanceled, group_id: group.id, query: 'group_sidebar_issues_count'
-      ).and_call_original
-
-      expect(menu.pill_count).to be_nil
     end
   end
 

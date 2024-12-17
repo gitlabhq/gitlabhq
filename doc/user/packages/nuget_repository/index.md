@@ -381,7 +381,8 @@ updated:
 1. Add a `deploy` job to your `.gitlab-ci.yml` file:
 
    ```yaml
-   image: mcr.microsoft.com/dotnet/core/sdk:3.1
+   default:
+     image: mcr.microsoft.com/dotnet/core/sdk:3.1
 
    stages:
      - deploy
@@ -392,8 +393,8 @@ updated:
        - dotnet pack -c Release
        - dotnet nuget add source "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password $CI_JOB_TOKEN --store-password-in-clear-text
        - dotnet nuget push "bin/Release/*.nupkg" --source gitlab
-     only:
-       - main
+     rules:
+      - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
      environment: production
    ```
 

@@ -219,7 +219,7 @@ module.exports = (path, options = {}) => {
     'monaco-marker-data-provider',
     'monaco-worker-manager',
     'fast-mersenne-twister',
-    'pdfjs-dist-v4',
+    'pdfjs-dist',
     'prosemirror-markdown',
     'marked',
     'fault',

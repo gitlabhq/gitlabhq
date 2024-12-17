@@ -1,6 +1,8 @@
 = render ::Layouts::PageHeadingComponent.new(_('Snippets')) do |c|
   - c.with_actions do
-    = link_to _("Explore snippets"), explore_snippets_path
+    = render Pajamas::ButtonComponent.new(href: explore_snippets_path, variant: :link, button_options: { class: 'gl-m-2' }) do
+      =  _("Explore snippets")
+
     - if can?(current_user, :create_snippet)
       = render Pajamas::ButtonComponent.new(href: new_snippet_path, variant: :confirm, button_options: { title: _("New snippet") }) do
         = _("New snippet")

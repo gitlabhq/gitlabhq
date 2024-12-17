@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-# rubocop:disable Cop/UserAdmin -- does not apply to test resource
 module QA
   module Resource
     class User < Base
       InvalidUserError = Class.new(RuntimeError)
 
       attr_reader :unique_id
-      attr_writer :username, :password
+      attr_writer :username, :password, :ldap_user
       attr_accessor :admin,
         :provider,
         :extern_uid,
@@ -24,23 +23,6 @@ module QA
         :email,
         :commit_email
 
-      class << self
-        # TODO: remove as these methods can end up using same user which isn't fully compatible with parallel execution
-        def fabricate_or_use(username = nil, password = nil)
-          if Runtime::Env.signup_disabled? && !Runtime::Env.personal_access_tokens_disabled?
-            fabricate_via_api! do |user|
-              user.username = username
-              user.password = password
-            end
-          else
-            fabricate! do |user|
-              user.username = username if username
-              user.password = password if password
-            end
-          end
-        end
-      end
-
       def initialize
         @admin = false
         @hard_delete_on_api_removal = false
@@ -49,6 +31,7 @@ module QA
         @email_domain = 'example.com'
         @with_personal_access_token = false
         @personal_access_tokens = []
+        @ldap_user = false
       end
 
       def admin?
@@ -58,12 +41,10 @@ module QA
       def username
         @username || "qa-user-#{unique_id}"
       end
-      alias_method :ldap_username, :username
 
       def password
         @password ||= "Pa$$w0rd"
       end
-      alias_method :ldap_password, :password
 
       def name
         @name ||= api_resource&.dig(:name) || "QA User #{unique_id}"
@@ -88,7 +69,7 @@ module QA
         @commit_email ||= begin
           api_commit_email = api_resource&.dig(:commit_email)
 
-          api_commit_email && !api_commit_email.empty? ? api_commit_email : Runtime::User.default_email
+          api_commit_email && !api_commit_email.empty? ? api_commit_email : "#{username}@#{email_domain}"
         end
       end
 
@@ -220,6 +201,13 @@ module QA
         parse_body(resp)
       end
 
+      # User registered through LDAP protocol
+      #
+      # @return [Boolean]
+      def ldap_user?
+        @ldap_user
+      end
+
       # Create new personal access token for user
       #
       # @return [QA::Resource::PersonalAccessToken]
@@ -285,7 +273,7 @@ module QA
       #
       # @return [QA::Runtime::API::Client]
       def api_client
-        @api_client ||= Runtime::UserStore.admin_api_client || Runtime::UserStore.user_api_client
+        @api_client ||= Runtime::User::Store.admin_api_client || Runtime::User::Store.user_api_client
       end
 
       protected
@@ -340,6 +328,5 @@ module QA
     end
   end
 end
-# rubocop:enable Cop/UserAdmin
 
 QA::Resource::User.prepend_mod_with("Resource::User", namespace: QA)

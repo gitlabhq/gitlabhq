@@ -51,6 +51,7 @@ other scanners) during a scan could cause inaccurate results.
 
 The following projects demonstrate API security testing scanning:
 
+- [Example OpenAPI v3 Specification project](https://gitlab.com/gitlab-org/security-products/demos/api-dast/openapi-v3-example)
 - [Example OpenAPI v2 Specification project](https://gitlab.com/gitlab-org/security-products/demos/api-dast/openapi-example)
 - [Example HTTP Archive (HAR) project](https://gitlab.com/gitlab-org/security-products/demos/api-dast/har-example)
 - [Example Postman Collection project](https://gitlab.com/gitlab-org/security-products/demos/api-dast/postman-example)

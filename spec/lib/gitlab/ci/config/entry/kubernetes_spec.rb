@@ -70,5 +70,37 @@ RSpec.describe Gitlab::Ci::Config::Entry::Kubernetes, feature_category: :kuberne
         it { is_expected.not_to be_valid }
       end
     end
+
+    describe 'flux_resource_path' do
+      let(:agent) { 'path/to/project:example-agent' }
+      let(:namespace) { 'my-namespace' }
+      let(:flux_resource_path) { 'path/to/flux/resource' }
+
+      context 'when both agent and namespace are set' do
+        let(:config) { Hash(agent: agent, namespace: namespace, flux_resource_path: flux_resource_path) }
+
+        context 'is a string' do
+          it { is_expected.to be_valid }
+        end
+
+        context 'is a hash' do
+          let(:flux_resource_path) { { key: 'flux_resource_path' } }
+
+          it { is_expected.not_to be_valid }
+        end
+      end
+
+      context 'when agent is not set' do
+        let(:config) { Hash(namespace: namespace, flux_resource_path: flux_resource_path) }
+
+        it { is_expected.not_to be_valid }
+      end
+
+      context 'when namespace is not set' do
+        let(:config) { Hash(agent: agent, flux_resource_path: flux_resource_path) }
+
+        it { is_expected.not_to be_valid }
+      end
+    end
   end
 end

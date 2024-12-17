@@ -78,7 +78,7 @@ export default {
 
     <template #cell(user)="{ item: { user } }">
       <user-avatar-link
-        class="gl-flex gl-text-gray-900 hover:gl-text-gray-900"
+        class="gl-flex gl-text-default hover:gl-text-default"
         :link-href="user.webPath"
         :img-src="user.avatarUrl"
         :img-size="16"

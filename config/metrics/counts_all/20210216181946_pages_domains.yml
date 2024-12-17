@@ -2,7 +2,9 @@
 data_category: optional
 key_path: counts.pages_domains
 description: Total GitLab Pages domains
-product_group: remote_development
+product_group: knowledge
+product_categories:
+- pages
 value_type: number
 status: active
 time_frame: all

@@ -1,8 +1,7 @@
-- breadcrumb_title s_('Pipeline|Run pipeline')
+- breadcrumb_title s_('Pipeline|New pipeline')
 - add_to_breadcrumbs s_('Pipeline|Pipelines'), project_pipelines_path(@project)
-- page_title s_('Pipeline|Run pipeline')
+- page_title s_('Pipeline|New pipeline')
 
-%h1.page-title.gl-text-size-h-display
-  = s_('Pipeline|Run pipeline')
+= render ::Layouts::PageHeadingComponent.new(s_('Pipeline|Run new pipeline'))
 
 #js-new-pipeline{ data: new_pipeline_data(@project) }

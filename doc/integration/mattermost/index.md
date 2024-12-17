@@ -362,6 +362,7 @@ Below is a list of Mattermost version changes for GitLab 15.0 and later:
 
 | GitLab version | Mattermost version | Notes                                                                                    |
 | :------------- | :----------------- | ---------------------------------------------------------------------------------------- |
+| 17.7           | 10.2               |                                                                                          |
 | 17.6           | 10.1               |                                                                                          |
 | 17.5           | 10.0               |                                                                                          |
 | 17.4           | 9.11               |                                                                                          |

@@ -13,6 +13,7 @@ RSpec.describe Types::UserPreferencesType, feature_category: :user_profile do
       extensions_marketplace_opt_in_status
       organization_groups_projects_sort
       organization_groups_projects_display
+      timezone
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

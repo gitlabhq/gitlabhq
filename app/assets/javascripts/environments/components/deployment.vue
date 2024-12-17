@@ -243,13 +243,13 @@ export default {
     <div class="gl-mt-3"><slot name="approval"></slot></div>
     <div class="gl-mt-5 gl-flex gl-flex-col gl-pr-4 md:gl-flex-row md:gl-items-center md:gl-pr-0">
       <div v-if="user" class="gl-flex gl-flex-col md:gl-max-w-3/20">
-        <span class="gl-text-gray-500">{{ $options.i18n.triggerer }}</span>
+        <span class="gl-text-subtle">{{ $options.i18n.triggerer }}</span>
         <gl-link :href="userPath" class="gl-mt-3 gl-font-monospace">
           <gl-truncate :text="username" with-tooltip />
         </gl-link>
       </div>
       <div class="gl-mt-4 gl-flex gl-flex-col md:gl-mt-0 md:gl-max-w-3/20 md:gl-pl-7">
-        <span class="gl-text-gray-500" :class="{ 'gl-ml-3': !deployable }">
+        <span class="gl-text-subtle" :class="{ 'gl-ml-3': !deployable }">
           {{ $options.i18n.job }}
         </span>
         <gl-link v-if="jobPath" :href="jobPath" class="gl-mt-3 gl-font-monospace">
@@ -266,7 +266,7 @@ export default {
         v-if="ref && !isTag"
         class="gl-mt-4 gl-flex gl-flex-col md:gl-mt-0 md:gl-max-w-3/20 md:gl-pl-7"
       >
-        <span class="gl-text-gray-500">{{ $options.i18n.branch }}</span>
+        <span class="gl-text-subtle">{{ $options.i18n.branch }}</span>
         <gl-link :href="refPath" class="gl-mt-3 gl-font-monospace">
           <gl-truncate :text="refName" with-tooltip />
         </gl-link>
@@ -275,7 +275,7 @@ export default {
         v-if="hasTags || $apollo.queries.tags.loading"
         class="gl-mt-4 gl-flex gl-flex-col md:gl-mt-0 md:gl-max-w-3/20 md:gl-pl-7"
       >
-        <span class="gl-text-gray-500">{{ $options.i18n.tags }}</span>
+        <span class="gl-text-subtle">{{ $options.i18n.tags }}</span>
         <gl-loading-icon
           v-if="$apollo.queries.tags.loading"
           class="gl-mt-3 gl-font-monospace"

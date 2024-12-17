@@ -9,6 +9,7 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
       expect(described_class.allowed_job_keys).not_to include(
         :auth_fail_reason,
         :auth_fail_token_id,
+        :auth_fail_requested_scopes,
         :http_router_rule_action,
         :http_router_rule_type
       )

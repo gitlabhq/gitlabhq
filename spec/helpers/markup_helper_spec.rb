@@ -420,6 +420,16 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
       helper.markup('foo.md', content, context)
 
       expect(context).to include(text_source: :blob)
+      expect(context).to include(requested_path: nil)
+    end
+
+    it 'sets the :requested_path to @path when :text_source is a blob' do
+      context = {}
+      assign(:path, 'path')
+
+      helper.markup('foo.md', content, context)
+
+      expect(context).to include(requested_path: 'path')
     end
 
     it 'preserves encoding' do

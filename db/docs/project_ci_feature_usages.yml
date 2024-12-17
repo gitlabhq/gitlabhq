@@ -9,7 +9,6 @@ description: Project CI feature usage information used to access CI data from th
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68186
 milestone: '14.2'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   project_id: projects
+table_size: small

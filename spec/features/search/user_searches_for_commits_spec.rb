@@ -59,7 +59,7 @@ RSpec.describe 'User searches for commits', :js, :clean_gitlab_redis_rate_limiti
       submit_search('See merge request')
       select_search_scope('Commits')
 
-      expect(page).to have_selector('.commit-row-description', visible: false, count: 9)
+      expect(page).to have_selector('.commit-detail', visible: false, count: 9)
     end
   end
 end

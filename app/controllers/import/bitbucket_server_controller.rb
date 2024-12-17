@@ -4,6 +4,7 @@ class Import::BitbucketServerController < Import::BaseController
   extend ::Gitlab::Utils::Override
 
   include ActionView::Helpers::SanitizeHelper
+  include SafeFormatHelper
 
   before_action :verify_bitbucket_server_import_enabled
   before_action :bitbucket_auth, except: [:new, :configure]
@@ -15,7 +16,8 @@ class Import::BitbucketServerController < Import::BaseController
   # As a basic sanity check to prevent URL injection, restrict project
   # repository input and repository slugs to allowed characters. For Bitbucket:
   #
-  # Project keys must start with a letter and may only consist of ASCII letters, numbers and underscores (A-Z, a-z, 0-9, _).
+  # Project keys must start with a letter and may only consist of ASCII letters,
+  # numbers and underscores (A-Z, a-z, 0-9, _).
   #
   # Repository names are limited to 128 characters. They must start with a
   # letter or number and may contain spaces, hyphens, underscores, and periods.
@@ -31,10 +33,19 @@ class Import::BitbucketServerController < Import::BaseController
     repo = client.repo(@project_key, @repo_slug)
 
     unless repo
-      return render json: { errors: _("Project %{project_repo} could not be found") % { project_repo: "#{@project_key}/#{@repo_slug}" } }, status: :unprocessable_entity
+      return render json: {
+        errors: safe_format(
+          s_("Project %{project_repo} could not be found"),
+          project_repo: "#{@project_key}/#{@repo_slug}"
+        )
+      }, status: :unprocessable_entity
     end
 
-    result = Import::BitbucketServerService.new(client, current_user, params.merge({ organization_id: Current.organization_id })).execute(credentials)
+    result = Import::BitbucketServerService.new(
+      client,
+      current_user,
+      params.merge({ organization_id: Current.organization_id })
+    ).execute(credentials)
 
     if result[:status] == :success
       render json: ProjectSerializer.new.represent(result[:project], serializer: :import)
@@ -87,7 +98,11 @@ class Import::BitbucketServerController < Import::BaseController
   end
 
   def bitbucket_repos
-    @bitbucket_repos ||= client.repos(page_offset: page_offset, limit: limit_per_page, filter: sanitized_filter_param).to_a
+    @bitbucket_repos ||= client.repos(
+      page_offset: page_offset,
+      limit: limit_per_page,
+      filter: sanitized_filter_param
+    ).to_a
   end
 
   def normalize_import_params

@@ -5,13 +5,28 @@ require 'spec_helper'
 RSpec.describe Gitlab::BackgroundMigration::BackfillIssuesCorrectWorkItemTypeId,
   feature_category: :team_planning,
   schema: 20241030165330 do
+  around do |example|
+    columns = missing_bigint_columns
+    add_missing_columns(columns)
+    example.run
+    drop_missing_columns(columns)
+  end
+
   let(:batch_column) { 'id' }
   let(:sub_batch_size) { 2 }
   let(:pause_ms) { 0 }
 
+  let(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
+  let(:namespace) { table(:namespaces).create!(name: 'namespace', path: 'namespace', organization_id: organization.id) }
+  let(:project) do
+    table(:projects).create!(
+      namespace_id: namespace.id,
+      project_namespace_id: namespace.id,
+      organization_id: organization.id
+    )
+  end
+
   let(:issue_type_enum) { { issue: 0, incident: 1, test_case: 2, requirement: 3, task: 4 } }
-  let(:namespace) { table(:namespaces).create!(name: 'namespace', path: 'namespace') }
-  let(:project) { table(:projects).create!(namespace_id: namespace.id, project_namespace_id: namespace.id) }
   let(:issues_table) { table(:issues) }
   let(:issue_type) { table(:work_item_types).find_by!(base_type: issue_type_enum[:issue]) }
   let(:task_type) { table(:work_item_types).find_by!(base_type: issue_type_enum[:task]) }
@@ -58,7 +73,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillIssuesCorrectWorkItemTypeId,
       sub_batch_size: sub_batch_size,
       pause_ms: pause_ms,
       job_arguments: [issue_type.id, issue_type.correct_id],
-      connection: ApplicationRecord.connection
+      connection: base_connection
     )
   end
 
@@ -83,5 +98,46 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillIssuesCorrectWorkItemTypeId,
     expect(migration.batch_metrics.timings).to be_empty
 
     expect { migrate }.to change { migration.batch_metrics.timings }
+  end
+
+  private
+
+  def missing_bigint_columns
+    column_names = base_connection.columns(:issues).map(&:name)
+    expected_columns = %w[
+      author_id_convert_to_bigint
+      closed_by_id_convert_to_bigint
+      duplicated_to_id_convert_to_bigint
+      id_convert_to_bigint
+      last_edited_by_id_convert_to_bigint
+      milestone_id_convert_to_bigint
+      moved_to_id_convert_to_bigint
+      project_id_convert_to_bigint
+      promoted_to_epic_id_convert_to_bigint
+      updated_by_id_convert_to_bigint
+    ]
+    expected_columns - column_names
+  end
+
+  def add_missing_columns(columns)
+    return if columns.blank?
+
+    add_columns_expression = columns.map { |c| "ADD COLUMN IF NOT EXISTS #{c} bigint" }.join(',')
+    base_connection.execute <<~SQL
+      ALTER TABLE issues #{add_columns_expression};
+    SQL
+  end
+
+  def drop_missing_columns(columns)
+    return if columns.blank?
+
+    drop_columns_expression = columns.map { |c| "DROP COLUMN IF EXISTS #{c}" }.join(',')
+    base_connection.execute <<~SQL
+      ALTER TABLE issues #{drop_columns_expression};
+    SQL
+  end
+
+  def base_connection
+    ::ApplicationRecord.connection
   end
 end

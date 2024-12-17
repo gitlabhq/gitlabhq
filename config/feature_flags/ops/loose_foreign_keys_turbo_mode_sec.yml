@@ -1,0 +1,8 @@
+---
+name: loose_foreign_keys_turbo_mode_sec
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/
+rollout_issue_url:
+milestone: '17.7'
+type: ops
+group: group::security infrastructure
+default_enabled: false

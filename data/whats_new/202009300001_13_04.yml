@@ -12,7 +12,7 @@
   release: 13.4
 - name: Introducing the GitLab Kubernetes Agent
   description: |
-    GitLab's Kubernetes integration has long enabled deployment to Kubernetes clusters without manual setup. Many users have enjoyed the ease-of-use, while others have run into some challenges. The current integration requires your cluster to be open to the Internet for GitLab to access it.
+    The GitLab Kubernetes integration has long enabled deployment to Kubernetes clusters without manual setup. Many users have enjoyed the ease-of-use, while others have run into some challenges. The current integration requires your cluster to be open to the Internet for GitLab to access it.
 
     For many organizations, this isn't possible, because they must lock down their cluster access for security, compliance, or regulatory purposes. To work around these restrictions, users needed to create custom tooling on top of GitLab, or they couldn't use the feature.
 

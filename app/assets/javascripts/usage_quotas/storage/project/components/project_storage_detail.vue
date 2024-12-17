@@ -1,12 +1,8 @@
 <script>
 import { GlIcon, GlLink, GlSprintf, GlTableLite, GlPopover } from '@gitlab/ui';
 import NumberToHumanSize from '~/vue_shared/components/number_to_human_size/number_to_human_size.vue';
-import { sprintf } from '~/locale';
-import {
-  HELP_LINK_ARIA_LABEL,
-  PROJECT_TABLE_LABEL_STORAGE_TYPE,
-  PROJECT_TABLE_LABEL_USAGE,
-} from '../../constants';
+import { sprintf, s__ } from '~/locale';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import StorageTypeIcon from './storage_type_icon.vue';
 
 export default {
@@ -19,6 +15,7 @@ export default {
     StorageTypeIcon,
     GlPopover,
     NumberToHumanSize,
+    HelpIcon,
   },
   props: {
     storageTypes: {
@@ -28,7 +25,7 @@ export default {
   },
   methods: {
     helpLinkAriaLabel(linkTitle) {
-      return sprintf(HELP_LINK_ARIA_LABEL, {
+      return sprintf(s__('UsageQuota|%{linkTitle} help link'), {
         linkTitle,
       });
     },
@@ -36,12 +33,12 @@ export default {
   projectTableFields: [
     {
       key: 'storageType',
-      label: PROJECT_TABLE_LABEL_STORAGE_TYPE,
+      label: s__('UsageQuota|Storage type'),
       thClass: 'gl-w-9/10',
     },
     {
       key: 'value',
-      label: PROJECT_TABLE_LABEL_USAGE,
+      label: s__('UsageQuota|Usage'),
       thClass: 'gl-w-1/10',
     },
   ],
@@ -70,7 +67,7 @@ export default {
               :aria-label="helpLinkAriaLabel(item.name)"
               :data-testid="`${item.id}-help-link`"
             >
-              <gl-icon name="question-o" :size="12" />
+              <help-icon size="small" />
             </gl-link>
           </p>
           <p class="gl-mb-0" :data-testid="`${item.id}-description`">

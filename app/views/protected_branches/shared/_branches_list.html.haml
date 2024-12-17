@@ -4,7 +4,7 @@
       = s_("ProtectedBranch|There are currently no protected branches, to protect a branch start by creating a new one above.")
   - else
     .flash-container
-    %table.table.b-table.gl-table.b-table-stacked-md
+    %table.table.b-table.gl-table.b-table-stacked-lg
       %colgroup
         %col{ width: "30%" }
         %col{ width: "20%" }
@@ -24,7 +24,7 @@
           %th
             = s_("ProtectedBranch|Allowed to force push")
             %span.has-tooltip{ data: { container: 'body' }, title: s_('ProtectedBranch|Allow all users with push access to force push.'), 'aria-hidden': 'true' }
-              = sprite_icon('question-o', size: 16, css_class: 'gl-text-blue-500')
+              = sprite_icon('question-o', size: 16, css_class: 'gl-fill-icon-info')
 
           = render_if_exists 'protected_branches/ee/code_owner_approval_table_head', protected_branch_entity: protected_branch_entity
 

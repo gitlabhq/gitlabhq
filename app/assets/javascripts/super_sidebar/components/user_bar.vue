@@ -51,7 +51,7 @@ export default {
       { kbdOpen: '<kbd>', kbdClose: '</kbd>' },
       false,
     ),
-    todoList: __('To-Do list'),
+    todoList: __('To-Do List'),
     stopImpersonating: __('Stop impersonating'),
     searchBtnText: __('Search or go to…'),
   },
@@ -209,7 +209,8 @@ export default {
         id="super-sidebar-search"
         v-gl-tooltip.bottom.html="searchTooltip"
         v-gl-modal="$options.SEARCH_MODAL_ID"
-        class="user-bar-button gl-block gl-w-full gl-rounded-base gl-border-none gl-bg-gray-10 gl-py-3 gl-leading-1 gl-text-gray-900"
+        class="user-bar-button gl-border-none"
+        block
         data-testid="super-sidebar-search-button"
         @click="trackEvent('click_search_button_to_activate_command_palette')"
       >

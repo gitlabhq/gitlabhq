@@ -15,7 +15,6 @@ import MrWidgetPipeline from '~/vue_merge_request_widget/components/mr_widget_pi
 import MrWidgetPipelineContainer from '~/vue_merge_request_widget/components/mr_widget_pipeline_container.vue';
 
 import getMergePipeline from '~/vue_merge_request_widget/queries/get_merge_pipeline.query.graphql';
-import * as sharedGraphQlUtils from '~/graphql_shared/utils';
 import { mockStore, mockMergePipelineQueryResponse } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -147,16 +146,6 @@ describe('MrWidgetPipelineContainer', () => {
         };
 
         expect(mergePipelineResponse).toHaveBeenCalledWith(queryVariables);
-      });
-
-      describe('polling', () => {
-        it('toggles query polling with visibility check', async () => {
-          jest.spyOn(sharedGraphQlUtils, 'toggleQueryPollingByVisibility');
-
-          await createComponent();
-
-          expect(sharedGraphQlUtils.toggleQueryPollingByVisibility).toHaveBeenCalledTimes(1);
-        });
       });
 
       describe('when the merge pipeline query is unsuccessful', () => {

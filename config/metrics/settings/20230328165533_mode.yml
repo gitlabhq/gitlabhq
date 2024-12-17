@@ -2,7 +2,7 @@
 key_path: database.mode
 description: What PostgreSQL database mode is used. Possible values are
   "single-database", "single-database-ci-connection", or "multiple-databases"
-product_group: database
+product_group: database_frameworks
 product_categories:
 - database
 value_type: string

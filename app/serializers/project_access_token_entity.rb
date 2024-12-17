@@ -15,6 +15,18 @@ class ProjectAccessTokenEntity < AccessTokenEntityBase
       project_id: project.path)
   end
 
+  expose :rotate_path do |token, options|
+    project = options.fetch(:project)
+
+    next unless project
+
+    rotate_namespace_project_settings_access_token_path(
+      id: token,
+      namespace_id: project.namespace.full_path,
+      project_id: project.path
+    )
+  end
+
   expose :role do |token, options|
     project = options.fetch(:project)
 

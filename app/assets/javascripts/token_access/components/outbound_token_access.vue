@@ -14,6 +14,7 @@ import { __, s__, n__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import ConfirmActionModal from '~/vue_shared/components/confirm_action_modal.vue';
 import addProjectCIJobTokenScopeMutation from '../graphql/mutations/add_project_ci_job_token_scope.mutation.graphql';
 import removeProjectCIJobTokenScopeMutation from '../graphql/mutations/remove_project_ci_job_token_scope.mutation.graphql';
 import updateCIJobTokenScopeMutation from '../graphql/mutations/update_ci_job_token_scope.mutation.graphql';
@@ -43,6 +44,11 @@ export default {
       `CICD|The %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}from%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting is deprecated and scheduled for removal in the 18.0 milestone. Use the %{boldStart}Authorized groups and projects%{boldEnd} setting and allowlist instead. %{linkStart}How do I do this?%{linkEnd}`,
     ),
     disableToggleWarning: s__('CICD|Disabling this feature is a permanent change.'),
+    removeNamespaceModalTitle: __('Remove %{namespace}'),
+    removeNamespaceModalText: s__(
+      'CICD|Are you sure you want to remove %{namespace} from the job token allowlist? This action cannot be undone.',
+    ),
+    removeNamespaceModalActionText: s__('CICD|Remove group or project'),
   },
   deprecationDocumentationLink: helpPagePath('ci/jobs/ci_job_token', {
     anchor: 'limit-your-projects-job-token-access-deprecated',
@@ -57,6 +63,7 @@ export default {
     GlToggle,
     CrudComponent,
     TokenAccessTable,
+    ConfirmActionModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -102,12 +109,10 @@ export default {
       jobTokenScopeEnabled: null,
       targetProjectPath: '',
       projects: [],
+      projectToRemove: null,
     };
   },
   computed: {
-    isProjectPathEmpty() {
-      return this.targetProjectPath === '';
-    },
     ciJobTokenHelpPage() {
       return helpPagePath('ci/jobs/ci_job_token#limit-your-projects-job-token-access-deprecated');
     },
@@ -121,6 +126,11 @@ export default {
           count: this.projects.length,
         },
       );
+    },
+    removeNamespaceModalTitle() {
+      return sprintf(this.$options.i18n.removeNamespaceModalTitle, {
+        namespace: this.projectToRemove?.fullPath,
+      });
     },
   },
   methods: {
@@ -173,30 +183,21 @@ export default {
         this.getProjects();
       }
     },
-    async removeProject(project) {
-      try {
-        const {
-          data: {
-            ciJobTokenScopeRemoveProject: { errors },
-          },
-        } = await this.$apollo.mutate({
-          mutation: removeProjectCIJobTokenScopeMutation,
-          variables: {
-            input: {
-              projectPath: this.fullPath,
-              targetProjectPath: project.fullPath,
-            },
-          },
-        });
+    async removeProject() {
+      const response = await this.$apollo.mutate({
+        mutation: removeProjectCIJobTokenScopeMutation,
+        variables: {
+          input: { projectPath: this.fullPath, targetProjectPath: this.projectToRemove.fullPath },
+        },
+      });
 
-        if (errors.length) {
-          throw new Error(errors[0]);
-        }
-      } catch (error) {
-        createAlert({ message: error.message });
-      } finally {
-        this.getProjects();
+      const error = response.data.ciJobTokenScopeRemoveProject.errors[0];
+      if (error) {
+        return Promise.reject(error);
       }
+
+      this.getProjects();
+      return Promise.resolve();
     },
     clearTargetProjectPath() {
       this.targetProjectPath = '';
@@ -276,7 +277,22 @@ export default {
             <gl-button size="small" disabled>{{ $options.i18n.addProject }}</gl-button>
           </template>
 
-          <token-access-table :items="projects" @removeItem="removeProject" />
+          <token-access-table :items="projects" @removeItem="projectToRemove = $event" />
+          <confirm-action-modal
+            v-if="projectToRemove"
+            modal-id="outbound-token-access-remove-confirm-modal"
+            :title="removeNamespaceModalTitle"
+            :action-fn="removeProject"
+            :action-text="$options.i18n.removeNamespaceModalActionText"
+            variant="danger"
+            @close="projectToRemove = null"
+          >
+            <gl-sprintf :message="$options.i18n.removeNamespaceModalText">
+              <template #namespace>
+                <code>{{ projectToRemove.fullPath }}</code>
+              </template>
+            </gl-sprintf>
+          </confirm-action-modal>
         </crud-component>
       </div>
     </template>

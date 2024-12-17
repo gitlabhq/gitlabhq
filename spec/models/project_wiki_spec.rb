@@ -63,7 +63,7 @@ RSpec.describe ProjectWiki, feature_category: :wiki do
     describe '#after_post_receive' do
       it 'updates project activity and expires caches' do
         expect(wiki).to receive(:after_wiki_activity)
-        expect(ProjectCacheWorker).to receive(:perform_async).with(wiki_container.id, [], [:wiki_size])
+        expect(ProjectCacheWorker).to receive(:perform_async).with(wiki_container.id, [], %w[wiki_size])
 
         subject.send(:after_post_receive)
       end

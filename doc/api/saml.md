@@ -12,7 +12,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
 
-API for accessing SAML features.
+Use this API to interact with SAML features.
 
 ## GitLab.com endpoints
 

@@ -60,10 +60,17 @@ module Gitlab
           # If `file: true` or `raw: true` has been provided we expose it, otherwise we
           # don't expose `file` and `raw` attributes at all (stems from what the runner expects).
           #
+          # This method should only be called via runner_variables->to_runner_variables->to_runner_variable
+          # because this is an expensive operation by initializing a new object.
+          ##
           def to_runner_variable
             @variable.reject do |hash_key, hash_value|
               (hash_key == :file || hash_key == :raw) && hash_value == false
             end
+          end
+
+          def to_hash_variable
+            @variable
           end
 
           def self.fabricate(resource)
@@ -71,7 +78,7 @@ module Gitlab
             when Hash
               self.new(**resource.symbolize_keys)
             when ::Ci::HasVariable
-              self.new(**resource.to_runner_variable)
+              self.new(**resource.to_hash_variable)
             when self
               resource.dup
             else
@@ -85,10 +92,11 @@ module Gitlab
             VARIABLE_REF_CHARS.any? { |symbol| value.include?(symbol) }
           end
 
+          # This is for debugging purposes only.
           def to_s
-            return to_runner_variable.to_s unless depends_on
+            return to_hash_variable.to_s unless depends_on
 
-            "#{to_runner_variable}, depends_on=#{depends_on}"
+            "#{to_hash_variable}, depends_on=#{depends_on}"
           end
         end
       end

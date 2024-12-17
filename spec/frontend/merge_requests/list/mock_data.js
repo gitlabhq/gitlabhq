@@ -1,6 +1,6 @@
 export const getQueryResponse = {
   data: {
-    project: {
+    namespace: {
       id: '1',
       __typename: 'Project',
       mergeRequests: {
@@ -21,8 +21,10 @@ export const getQueryResponse = {
             state: 'opened',
             title: 'Merge request title',
             updatedAt: '2021-05-22T04:08:01Z',
+            mergedAt: '2021-05-22T04:08:01Z',
             upvotes: 3,
-            userDiscussionsCount: 4,
+            resolvedDiscussionsCount: 4,
+            resolvableDiscussionsCount: 4,
             webUrl: 'project/-/merge_requests/789',
             assignees: {
               nodes: [
@@ -99,7 +101,7 @@ export const getQueryResponse = {
 
 export const getCountsQueryResponse = {
   data: {
-    project: {
+    namespace: {
       id: 1,
       openedMergeRequests: { count: 1 },
       mergedMergeRequests: { count: 1 },

@@ -37,7 +37,7 @@ RSpec.describe Tasks::Gitlab::AuditEventTypes::CheckDocsTask, feature_category: 
     let(:removed_definition) { Gitlab::Audit::Type::Definition.definitions.except(:feature_flag_created) }
     let(:updated_definition) do
       definitions = Gitlab::Audit::Type::Definition.definitions
-      definitions[:feature_flag_created].attributes[:streamed] = false
+      definitions[:feature_flag_created].attributes[:saved_to_database] = false
 
       definitions
     end

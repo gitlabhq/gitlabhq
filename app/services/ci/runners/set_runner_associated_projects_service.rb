@@ -9,7 +9,7 @@ module Ci
       def initialize(runner:, current_user:, project_ids:)
         @runner = runner
         @current_user = current_user
-        @project_ids = project_ids
+        @project_ids = project_ids || []
       end
 
       def execute
@@ -17,8 +17,6 @@ module Ci
           return ServiceResponse.error(message: _('user not allowed to assign runner'),
             reason: :not_authorized_to_assign_runner)
         end
-
-        return ServiceResponse.success if project_ids.nil?
 
         set_associated_projects
       end
@@ -28,20 +26,31 @@ module Ci
       def set_associated_projects
         new_project_ids = [runner.owner&.id].compact + project_ids
 
-        response = ServiceResponse.success
+        associate_response = ServiceResponse.success
+        dissociate_response = ServiceResponse.success
         runner.transaction do
-          current_project_ids = runner.project_ids # rubocop:disable CodeReuse/ActiveRecord -- reasonable use
+          current_project_ids = runner.runner_projects.map(&:project_id)
 
-          response = associate_new_projects(new_project_ids, current_project_ids)
-          response = disassociate_old_projects(new_project_ids, current_project_ids) if response.success?
-          raise ActiveRecord::Rollback, response.errors unless response.success?
+          associate_response = associate_new_projects(new_project_ids, current_project_ids)
+          raise ActiveRecord::Rollback, associate_response.errors if associate_response.error?
+
+          dissociate_response = disassociate_old_projects(new_project_ids, current_project_ids)
+          raise ActiveRecord::Rollback, dissociate_response.errors if dissociate_response.error?
         end
 
-        response
+        return associate_response if associate_response.error?
+        return dissociate_response if dissociate_response.error?
+
+        ServiceResponse.success(payload: {
+          added_to_projects: associate_response.payload[:added_to_projects],
+          deleted_from_projects: dissociate_response.payload[:deleted_from_projects]
+        })
       end
 
       def associate_new_projects(new_project_ids, current_project_ids)
-        missing_projects = Project.id_in(new_project_ids - current_project_ids)
+        missing_projects =
+          Project.id_in(new_project_ids - current_project_ids)
+           .sort_by { |project| new_project_ids.index(project.id) }
 
         error_responses = missing_projects.map do |project|
           Ci::Runners::AssignRunnerService.new(runner, project, current_user, quiet: true)
@@ -56,20 +65,26 @@ module Ci
           )
         end
 
-        ServiceResponse.success
+        ServiceResponse.success(payload: { added_to_projects: missing_projects })
       end
 
       def disassociate_old_projects(new_project_ids, current_project_ids)
-        projects_to_be_deleted = current_project_ids - new_project_ids
-        return ServiceResponse.success if projects_to_be_deleted.empty?
+        project_ids_to_be_deleted = current_project_ids - new_project_ids
 
-        all_destroyed =
-          Ci::RunnerProject
-            .destroy_by(project_id: projects_to_be_deleted)
-            .all?(&:destroyed?)
-        return ServiceResponse.success if all_destroyed
+        if project_ids_to_be_deleted.any?
+          all_destroyed =
+            Ci::RunnerProject
+              .destroy_by(project_id: project_ids_to_be_deleted)
+              .all?(&:destroyed?)
 
-        ServiceResponse.error(message: _('failed to destroy runner project'), reason: :failed_runner_project_destroy)
+          unless all_destroyed
+            return ServiceResponse.error(
+              message: _('failed to destroy runner project'),
+              reason: :failed_runner_project_destroy)
+          end
+        end
+
+        ServiceResponse.success(payload: { deleted_from_projects: ::Project.id_in(project_ids_to_be_deleted) })
       end
 
       attr_reader :runner, :current_user, :project_ids

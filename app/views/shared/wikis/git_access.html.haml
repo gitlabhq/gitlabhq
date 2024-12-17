@@ -6,29 +6,6 @@
 
 .wiki-page-header.has-sidebar-toggle.gl-flex-col.gl-py-5
   %h1.gl-heading-1{ class: '!gl-mt-0' }= s_('WikiClone|Clone Wiki repository')
-  %h2.gl-heading-3{ class: '!gl-mb-0' }= s_('WikiClone|Step 1: Clone repository')
-
-  %h5= s_("WikiClone|Clone repository")
   = wiki_sidebar_toggle_button
-
   = render "shared/clone_panel", container: @wiki
-
-.wiki-git-access.gl-mt-3
-  %h2.gl-heading-3= s_('WikiClone|Step 2: Install and start Gollum')
-
-  %h5.gl-mt-2= s_("WikiClone|Go to directory")
-  %pre.dark
-    :preserve
-      cd #{h @wiki.path}
-
-  %h5= s_("WikiClone|Install Gollum")
-  %pre.dark
-    :preserve
-      gem install gollum
-
-  %h5.gl-mt-2= s_("WikiClone|Start Gollum and edit locally")
-  %pre.dark
-    :preserve
-      gollum
-
 = render 'shared/wikis/sidebar'

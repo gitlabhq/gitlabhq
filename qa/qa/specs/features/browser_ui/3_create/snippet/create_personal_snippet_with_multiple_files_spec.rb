@@ -22,7 +22,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'creates a personal snippet with multiple files', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347723' do
+      it 'creates a personal snippet with multiple files', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347723' do
         snippet
 
         Page::Dashboard::Snippet::Show.perform do |snippet|

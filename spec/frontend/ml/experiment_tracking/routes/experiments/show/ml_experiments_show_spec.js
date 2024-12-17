@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import MlExperimentsShow from '~/ml/experiment_tracking/routes/experiments/show/ml_experiments_show.vue';
 import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
 import Pagination from '~/ml/experiment_tracking/components/pagination.vue';
+import PerformanceGraph from '~/ml/experiment_tracking/components/performance_graph.vue';
 import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -61,7 +62,8 @@ describe('MlExperimentsShow', () => {
   const findMetadataTableRow = (idx) => wrapper.findAll('.experiment-metadata tbody > tr').at(idx);
   const findMetadataTableColumn = (row, col) => findMetadataTableRow(row).findAll('td').at(col);
   const findMetadataHeader = () => wrapper.find('.experiment-metadata h3');
-  const findMetadataEmptyState = () => wrapper.find('.experiment-metadata .gl-text-secondary');
+  const findMetadataEmptyState = () => wrapper.find('.experiment-metadata .gl-text-subtle');
+  const findPerformanceGraph = () => wrapper.findComponent(PerformanceGraph);
 
   const hrefInRowAndColumn = (row, col) =>
     findColumnInRow(row, col).findComponent(GlLink).attributes().href;
@@ -361,6 +363,22 @@ describe('MlExperimentsShow', () => {
         expect(findMetadataTableColumn(idx, 0).text()).toContain(metadata.name);
         expect(findMetadataTableColumn(idx, 1).text()).toContain(metadata.value);
       });
+    });
+  });
+
+  describe('Performance graph', () => {
+    it('does not render the graph when candidates are missing', () => {
+      createWrapper();
+
+      expect(findPerformanceGraph().exists()).toBe(false);
+    });
+
+    it('renders the graph when candidates are present', () => {
+      createWrapperWithCandidates();
+
+      expect(findPerformanceGraph().exists()).toBe(true);
+      expect(findPerformanceGraph().props('candidates')).toMatchObject(MOCK_CANDIDATES);
+      expect(findPerformanceGraph().props('metricNames')).toMatchObject(['rmse', 'auc', 'mae']);
     });
   });
 });

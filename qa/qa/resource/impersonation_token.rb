@@ -48,7 +48,7 @@ module QA
       end
 
       def revoke_via_browser_ui!
-        Flow::Login.sign_in_unless_signed_in(user: Runtime::User.admin)
+        Flow::Login.sign_in_unless_signed_in(user: Runtime::User::Store.admin_user)
 
         Page::Main::Menu.perform(&:go_to_admin_area)
         Page::Admin::Menu.perform(&:go_to_users_overview)
@@ -72,7 +72,7 @@ module QA
       end
 
       def fabricate!
-        Flow::Login.sign_in_unless_signed_in(user: Runtime::User.admin)
+        Flow::Login.sign_in_unless_signed_in(user: Runtime::User::Store.admin_user)
 
         Page::Main::Menu.perform(&:go_to_admin_area)
         Page::Admin::Menu.perform(&:go_to_users_overview)

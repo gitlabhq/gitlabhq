@@ -25,7 +25,6 @@ RSpec.shared_examples 'work items rolled up dates' do
 
   context 'when feature flag is enabled' do
     before do
-      stub_feature_flags(work_items_rolledup_dates: true)
       stub_licensed_features(epics: true, subepics: true, epic_colors: true)
 
       page.refresh
@@ -57,7 +56,7 @@ RSpec.shared_examples 'work items rolled up dates' do
           wait_for_all_requests
         end
 
-        within_testid('work-item-detail-modal') do
+        within_testid('work-item-drawer') do
           find_and_click_edit work_item_rolledup_dates_selector
           # set empty value before the value to ensure
           # the current value don't mess with the new value input
@@ -65,10 +64,10 @@ RSpec.shared_examples 'work items rolled up dates' do
           fill_in 'Start', with: start_date
           fill_in 'Due', with: "" # ensure to reset the input first to avoid wrong date values
           fill_in 'Due', with: due_date
-        end
 
-        find_by_testid('work-item-close').click
-        wait_for_all_requests
+          find_by_testid('close-icon').click
+          wait_for_all_requests
+        end
 
         page.refresh
         wait_for_all_requests

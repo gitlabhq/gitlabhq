@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', :orchestrated, :smtp, product_group: :project_management do
+  RSpec.describe 'Plan', :orchestrated, :smtp, :requires_admin, product_group: :project_management do
     describe 'Email Notification' do
       include Support::API
 
-      let!(:user) do
-        Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
-      end
+      let!(:user) { create(:user) }
 
       let(:project) { create(:project, name: 'email-notification-test') }
 
@@ -15,7 +13,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'is received by a user for project invitation', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347961' do
+      it 'is received by a user for project invitation', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347961' do
         project.visit!
 
         Page::Project::Menu.perform(&:go_to_members)

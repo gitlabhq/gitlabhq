@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::JiraTrackerData do
+RSpec.describe Integrations::JiraTrackerData, feature_category: :integrations do
   it_behaves_like Integrations::BaseDataFields
 
   describe 'deployment_type' do

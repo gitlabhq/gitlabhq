@@ -16,7 +16,7 @@ module Types
           Types::WorkItems::ClosingMergeRequestType.connection_type,
           null: true,
           description: 'Merge requests that will close the work item when merged.'
-        field :related_branches, # rubocop:disable GraphQL/ExtractType -- no need to extract to related
+        field :related_branches,
           Types::WorkItems::RelatedBranchType.connection_type,
           calls_gitaly: true,
           description: 'Branches that have referred to the work item, but do not have an associated merge request.',
@@ -26,8 +26,12 @@ module Types
         field :related_merge_requests, # rubocop:disable GraphQL/ExtractType -- no need to extract to related
           Types::MergeRequestType.connection_type,
           null: true,
-          description: 'Merge requests where the work item has been mentioned. Not implemented, returns empty list.',
-          experiment: { milestone: '17.6' }
+          resolver: ::Resolvers::MergeRequests::WorkItemRelatedResolver,
+          description: 'Merge requests where the work item has been mentioned. ' \
+            'This field can only be resolved for one work item in any single request.',
+          experiment: { milestone: '17.6' } do
+            extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
+          end
         field :will_auto_close_by_merge_request,
           GraphQL::Types::Boolean,
           null: false,
@@ -47,12 +51,6 @@ module Types
           else
             object.closing_merge_requests.preload_merge_request_for_authorization
           end
-        end
-
-        # Adding as empty list first to make the field available in next release
-        #  TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/503834
-        def related_merge_requests
-          MergeRequest.none
         end
       end
       # rubocop:enable Graphql/AuthorizeTypes

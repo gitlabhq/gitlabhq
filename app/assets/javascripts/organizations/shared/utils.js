@@ -34,7 +34,7 @@ export const formatGroups = (groups) =>
     }) => ({
       ...group,
       id: getIdFromGraphQLId(id),
-      name: fullName,
+      avatarLabel: fullName,
       fullName,
       webUrl,
       parent: parent?.id || null,

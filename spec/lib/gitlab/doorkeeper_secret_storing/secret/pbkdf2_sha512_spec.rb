@@ -8,7 +8,7 @@ RSpec.describe Gitlab::DoorkeeperSecretStoring::Secret::Pbkdf2Sha512 do
 
     it 'generates a PBKDF2+SHA512 hashed value in the correct format' do
       expect(described_class.transform_secret(plaintext_secret))
-        .to eq("$pbkdf2-sha512$20000$$.c0G5XJVEew1TyeJk5TrkvB0VyOaTmDzPrsdNRED9vVeZlSyuG3G90F0ow23zUCiWKAVwmNnR/ceh.nJG3MdpQ") # rubocop:disable Layout/LineLength
+        .to eq("$pbkdf2-sha512$20000$$.c0G5XJVEew1TyeJk5TrkvB0VyOaTmDzPrsdNRED9vVeZlSyuG3G90F0ow23zUCiWKAVwmNnR/ceh.nJG3MdpQ")
     end
   end
 
@@ -27,7 +27,7 @@ RSpec.describe Gitlab::DoorkeeperSecretStoring::Secret::Pbkdf2Sha512 do
   describe '.secret_matches?' do
     it "match by hashing the input if the stored value is hashed" do
       plain_secret = 'plain_secret'
-      stored_value = '$pbkdf2-sha512$20000$$/BwQRdwSpL16xkQhstavh7nvA5avCP7.4n9LLKe9AupgJDeA7M5xOAvG3N3E5XbRyGWWBbbr.BsojPVWzd1Sqg' # rubocop:disable Layout/LineLength
+      stored_value = '$pbkdf2-sha512$20000$$/BwQRdwSpL16xkQhstavh7nvA5avCP7.4n9LLKe9AupgJDeA7M5xOAvG3N3E5XbRyGWWBbbr.BsojPVWzd1Sqg'
       expect(described_class.secret_matches?(plain_secret, stored_value)).to be true
     end
   end

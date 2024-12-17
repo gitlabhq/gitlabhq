@@ -22,8 +22,6 @@ In this tutorial, use the GitLab CLI (`glab`) to:
 ## Before you begin
 
 - You must install and sign in to the [GitLab CLI](../../editor_extensions/gitlab_cli/index.md) (`glab`).
-- On GitLab.com and self-managed in GitLab 17.3 and later, you must include the
-  `image: registry.gitlab.com/gitlab-org/step-runner:v0` runner image in the `.gitlab-ci.yml` file.
 
 ## Create a step
 
@@ -56,8 +54,8 @@ First, create a step with:
    spec:
      inputs:
        who:
-         default: world
          type: string
+         default: world
    ```
 
    - `spec` has one input called `who`.
@@ -69,14 +67,14 @@ First, create a step with:
    spec:
      inputs:
        who:
-         default: world
          type: string
+         default: world
    ---
    exec:
      command:
        - bash
        - -c
-       - "echo hello ${{ inputs.who }}"
+       - echo 'hello ${{inputs.who}}'
    ```
 
 The triple em dash (`---`) separates the file into two YAML documents:
@@ -87,7 +85,7 @@ The triple em dash (`---`) separates the file into two YAML documents:
 The `bash` and `-c` arguments start a Bash shell and take the script input from the command line arguments.
 In addition to shell scripts, you can use `command` to execute programs like `docker` or `terraform`.
 
-The `"echo hello ${{ input.name }}"` argument includes an expression inside `${{` and `}}`.
+The `echo 'hello ${{input.name}}'` argument includes an expression inside `${{` and `}}`.
 Expressions are evaluated at the last possible moment and have access to the current execution context.
 This expression accesses `inputs` and reads the value of `who`:
 
@@ -105,47 +103,37 @@ This expression accesses `inputs` and reads the value of `who`:
 1. In the `.gitlab-ci.yml`, add the following job:
 
    ```yaml
-    hello-world:
-      variables:
-        STEPS:
-          expand: false
-          value: |
-            - name: hello_world
-              step: .
-      image: registry.gitlab.com/gitlab-org/step-runner:v0
-      script:
-        - /step-runner ci
+   hello-world:
+     run:
+       - name: hello_world
+         step: .
    ```
 
-   - The steps are given in an environment variable called `STEPS`. `STEPS` is a list of step invocations.
+   - The `run` keyword has a list of step invocations.
      - Each invocation is given a `name` so you can reference the outputs in later steps.
-     - Each invocations specifies a `step` to run. A local reference (`.`) points to the root of the repository.
-   - The job script invokes `step-runner ci` which is in the `step-runner:v0` image.
+     - Each invocation specifies a `step` to run. A local reference (`.`) points to the root of the repository.
 
-   For an example of how this code should look in your repository, see [this example](https://gitlab.com/josephburnett/zero-to-steps/-/tree/part-1?ref_type=tags).
+   For an example of how this code should look in your repository, see the [Steps tutorial, part 1](https://gitlab.com/gitlab-org/step-runner/-/tree/main/examples/tutorial_part_1).
 
 1. Commit both files and push the project repository. This triggers a pipeline that runs the job:
 
    ```shell
    git add .
    git commit -m 'Part 1 complete'
-   git push --set-upstream origin master
+   git push --set-upstream origin main
    glab ci status
    ```
 
 1. Follow the job under "View Logs" until the pipeline completes. Here's an example of a successful job:
 
    ```shell
-   $ /step-runner ci
+   Step Runner version: a7c7c8fd
+   See https://gitlab.com/gitlab-org/step-runner/-/blob/main/CHANGELOG.md for changes.
+   ...
    hello world
-   trace written to step-results.json
    Cleaning up project directory and file based variables
    Job succeeded
    ```
-
-NOTE:
-Usage of an environment variable is a temporary work-around until the `run` keyword is implemented.
-See [the `run` keyword epic](https://gitlab.com/groups/gitlab-org/-/epics/11846).
 
 You've now created and used your first step!
 
@@ -157,24 +145,18 @@ You can have more than one step in a job.
 
    ```yaml
    hello-world:
-     variables:
-       STEPS:
-         expand: false
-         value: |
-           - name: hello_world
-             step: .
-           - name: hello_steps
-             step: .
-             inputs:
-               who: gitlab steps
-     image: registry.gitlab.com/gitlab-org/step-runner:v0
-     script:
-       - /step-runner ci
+     run:
+       - name: hello_world
+         step: .
+       - name: hello_steps
+         step: .
+         inputs:
+           who: gitlab steps
    ```
 
    This `hello_steps` step provides a non-default input `who` of `gitlab steps`.
 
-   For an example of how this code should look in your repository, see [this example](https://gitlab.com/josephburnett/zero-to-steps/-/tree/part-2-a?ref_type=tags).
+   For an example of how this code should look in your repository, see the [Steps tutorial, part 2a](https://gitlab.com/gitlab-org/step-runner/-/tree/main/examples/tutorial_part_2a).
 
 1. Commit and push the changes:
 
@@ -187,10 +169,11 @@ You can have more than one step in a job.
 1. In the terminal, select **View Logs** and follow the pipeline until it completes. Here's an example of a successful output:
 
    ```shell
-   $ /step-runner ci
+   Step Runner version: a7c7c8fd
+   See https://gitlab.com/gitlab-org/step-runner/-/blob/main/CHANGELOG.md for changes.
+   ...
    hello world
    hello gitlab steps
-   trace written to step-results.json
    Cleaning up project directory and file based variables
    Job succeeded
    ```
@@ -216,9 +199,9 @@ To refactor your steps by moving them from CI Config into a dedicated file:
 1. Add the following configuration to the new `step.yml`:
 
    ```yaml
-   spec: {}
+   spec:
    ---
-   steps:
+   run:
      - name: hello_world
        step: ./hello
      - name: hello_steps
@@ -227,7 +210,7 @@ To refactor your steps by moving them from CI Config into a dedicated file:
          who: gitlab steps
    ```
 
-   This new step has no inputs, so the `spec` is empty (`{}`).
+   This new step has no inputs, so the `spec` is empty.
    It is a `steps` type, which has the same syntax as steps in `.gitlab-ci.yml`.
    However, the local reference now points to your step in the `hello` directory.
 
@@ -235,21 +218,15 @@ To refactor your steps by moving them from CI Config into a dedicated file:
 
    ```yaml
    hello-world:
-     variables:
-        STEPS:
-          expand: false
-          value: |
-            - name: hello_everybody
-              step: .
-     image: registry.gitlab.com/gitlab-org/step-runner:v0
-     script:
-       - /step-runner ci
+     run:
+       - name: hello_everybody
+         step: .
    ```
 
    Now your job invokes only the new step with no inputs.
    You've refactored the details of the job into a separate file.
 
-   For an example of how this code should look in your repository, see [this example](https://gitlab.com/josephburnett/zero-to-steps/-/tree/part-2-b?ref_type=tags).
+   For an example of how this code should look in your repository, see the [Steps tutorial, part 2b](https://gitlab.com/gitlab-org/step-runner/-/tree/main/examples/tutorial_part_2b).
 
 1. Commit and push the changes:
 
@@ -267,7 +244,6 @@ To refactor your steps by moving them from CI Config into a dedicated file:
    $ /step-runner ci
    hello world
    hello gitlab steps
-   trace written to step-results.json
    Cleaning up project directory and file based variables
    Job succeeded
    ```
@@ -282,8 +258,8 @@ Add an output to your `hello` step.
    spec:
      inputs:
        who:
-         default: world
          type: string
+         default: world
      outputs:
        greeting:
          type: string
@@ -292,22 +268,25 @@ Add an output to your `hello` step.
      command:
        - bash
        - -c
-       - "echo greeting=\"hello ${{ inputs.who }}\" | tee ${{ output_file }}"
+       - echo '{"name":"greeting","value":"hello ${{inputs.who}}"}' | tee ${{output_file}}
    ```
 
    - In this `spec`, you've defined a single output `greeting` without a default. Because
      there is no default, the output `greeting` is required.
-   - Outputs are written to a file `${{ output_file }}` (provided at run time) in the form `key=value`.
-   - This step runs `echo greeting=\"hello ${{ inputs.name }}\"` and sends the output to the logs and the output file (`tee ${{ output_file }}`).
+   - Outputs are written to the `${{output_file}}` file provided at run time in JSON Line format. Each line written to the
+     output file must be a JSON object with two keys, `name` and `value`.
+   - This step runs `echo '{"name":"greeting","value":"hello ${{inputs.who}}"}'` and sends the output to the job log and
+     the output file (`tee ${{output_file}}`).
 
 1. In `step.yml`, add an output to the step:
 
    ```yaml
    spec:
      outputs:
-       all_greetings: {}
+       all_greetings:
+         type: string
    ---
-   steps:
+   run:
      - name: hello_world
        step: ./hello
      - name: hello_steps
@@ -315,18 +294,19 @@ Add an output to your `hello` step.
        inputs:
          who: gitlab steps
    outputs:
-     all_greetings: "${{ steps.hello_world.outputs.greeting }} and ${{ steps.hello_steps.outputs.greeting }}"
+     all_greetings: "${{steps.hello_world.outputs.greeting}} and ${{steps.hello_steps.outputs.greeting}}"
    ```
 
-You've now added an output to this step called `all_greetings`.
+   You've now added an output to this step called `all_greetings`.
 
-This output shows the use of a new expression syntax: `${{ steps.hello_world.outputs.greeting }}`.
-This expression reads the `outputs` of the two sub-steps, `hello_world` and `hello_steps`.
-Both sub-step outputs are concatenated into a single string output.
+   This output shows the expression syntax: `${{steps.hello_world.outputs.greeting}}`.
+   `all_greetings` reads the outputs of the two sub-steps, `hello_world` and `hello_steps`.
+   Both sub-step outputs are concatenated into a single string output.
 
 ## Use a remote step
 
-Before you commit and run your code, add another step to your job to see the final `all_greetings` output of your main `step.yml`.
+Before you commit and run your code, add another step to your job to see the final `all_greetings` output of your main
+`step.yml`.
 
 This step invocation references a remote step named `echo-step`.
 The echo step takes a single input `echo`, prints it to the logs, and outputs it as `echo`.
@@ -335,22 +315,16 @@ The echo step takes a single input `echo`, prints it to the logs, and outputs it
 
    ```yaml
    hello-world:
-     variables:
-       STEPS:
-         expand: false
-         value: |
-           - name: hello_everybody
-             step: .
-           - name: all_my_greetings
-             step: gitlab.com/gitlab-org/ci-cd/runner-tools/echo-step@main
-             inputs:
-               echo: "all my greetings say ${{ steps.hello_everybody.outputs.all_greetings }}"
-     image: registry.gitlab.com/gitlab-org/step-runner:v0
-     script:
-       - /step-runner ci
+     run:
+       - name: hello_everybody
+         step: .
+       - name: all_my_greetings
+         step: gitlab.com/gitlab-org/ci-cd/runner-tools/echo-step@main
+         inputs:
+           echo: "all my greetings say ${{steps.hello_everybody.outputs.all_greetings}}"
    ```
 
-   For an example of how this code should look in your repository, see [this example](https://gitlab.com/josephburnett/zero-to-steps/-/tree/part-2-c?ref_type=tags).
+   For an example of how this code should look in your repository, see the [Steps tutorial, part 2c](https://gitlab.com/gitlab-org/step-runner/-/tree/main/examples/tutorial_part_2c).
 
 1. Commit and push the changes:
 
@@ -363,11 +337,12 @@ The echo step takes a single input `echo`, prints it to the logs, and outputs it
 1. Follow the job under "View Logs" until the pipeline completes. Here's an example of a successful output:
 
    ```shell
-   $ /step-runner ci
-   greeting=hello world
-   greeting=hello gitlab steps
-   echo=all my greetings say hello world and hello gitlab steps
-   trace written to step-results.json
+   Step Runner version: a7c7c8fd
+   See https://gitlab.com/gitlab-org/step-runner/-/blob/main/CHANGELOG.md for changes.
+   ...
+   {"name":"greeting","value":"hello world"}
+   {"name":"greeting","value":"hello gitlab steps"}
+   all my greetings say hello world and hello gitlab steps
    Cleaning up project directory and file based variables
    Job succeeded
    ```

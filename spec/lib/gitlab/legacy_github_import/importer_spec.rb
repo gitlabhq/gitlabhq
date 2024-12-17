@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::Importer, :clean_gitlab_redis_shared_state, feature_category: :importers do
+  include Import::GiteaHelper
+
   subject(:importer) { described_class.new(project) }
 
   let_it_be(:api_root) { 'https://try.gitea.io/api/v1' }
@@ -254,7 +256,7 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer, :clean_gitlab_redis_shared_
 
       context 'when user contribution mapping is disabled' do
         before do
-          allow(project).to receive_message_chain(:import_data, :user_mapping_enabled?).and_return(false)
+          stub_user_mapping_chain(project, false)
         end
 
         it 'does not enqueue the worker to load placeholder references' do

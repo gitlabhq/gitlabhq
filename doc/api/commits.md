@@ -784,10 +784,10 @@ POST /projects/:id/statuses/:sha
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths)                                           |
 | `sha`     | string  | yes   | The commit SHA                                                                                                        |
 | `state`   | string  | yes   | The state of the status. Can be one of the following: `pending`, `running`, `success`, `failed`, `canceled`, `skipped` |
-| `ref`     | string  | no    | The `ref` (branch or tag) to which the status refers                                                                  |
+| `ref`     | string  | no    | The `ref` (branch or tag) to which the status refers. Must be 255 characters or fewer.                                                                  |
 | `name` or `context` | string  | no | The label to differentiate this status from the status of other systems. Default value is `default`                   |
-| `target_url` |  string  | no  | The target URL to associate with this status                                                                          |
-| `description` | string  | no  | The short description of the status                                                                                   |
+| `target_url` |  string  | no  | The target URL to associate with this status. Must be 255 characters or fewer.                                                                          |
+| `description` | string  | no  | The short description of the status. Must be 255 characters or fewer.                                                                                   |
 | `coverage` | float  | no    | The total code coverage                                                                                               |
 | `pipeline_id` |  integer  | no  | The ID of the pipeline to set status. Use in case of several pipeline on same SHA.                                    |
 

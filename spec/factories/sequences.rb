@@ -20,7 +20,6 @@ FactoryBot.define do
   sequence(:jira_description) { |n| "This is a description\n here is the description\n Related to: PROJ-#{n}" }
   sequence(:jira_branch) { |n| "feature/PROJ-#{n}" }
   sequence(:job_name) { |n| "job #{n}" }
-  sequence(:work_item_type_name) { |n| "bug#{n}" }
   sequence(:short_text) { |n| "someText#{n}" }
   sequence(:token) { SecureRandom.hex(10) }
 end

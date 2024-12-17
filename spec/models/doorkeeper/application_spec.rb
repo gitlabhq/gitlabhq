@@ -8,4 +8,9 @@ RSpec.describe Doorkeeper::Application, type: :model, feature_category: :system_
   it 'uses a prefixed secret' do
     expect(application.plaintext_secret).to match(/gloas-\h{64}/)
   end
+
+  it 'allows dynamic scopes' do
+    application.scopes = 'api user:*'
+    expect(application).to be_valid
+  end
 end

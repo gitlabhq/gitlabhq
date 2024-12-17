@@ -18,6 +18,7 @@
   wiki_url: wiki_page_path(@wiki, @page),
   format_options: wiki_markup_hash_by_name_id.to_json,
   templates: templates.to_json,
+  templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
 } }
 
 = render 'shared/wikis/sidebar', editing: true

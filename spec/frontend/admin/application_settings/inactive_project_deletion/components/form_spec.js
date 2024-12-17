@@ -9,16 +9,16 @@ describe('Form component', () => {
   const findProjectDeletionSettings = () =>
     wrapper.findByTestId('inactive-project-deletion-settings');
   const findMinSizeGroup = () => wrapper.findByTestId('min-size-group');
-  const findMinSizeInputGroup = () => wrapper.findByTestId('min-size-input-group');
+  const findMinSizeInputGroupText = () => wrapper.findByTestId('min-size-input-group-text');
   const findMinSizeInput = () => wrapper.findByTestId('min-size-input');
   const findDeleteAfterMonthsGroup = () => wrapper.findByTestId('delete-after-months-group');
-  const findDeleteAfterMonthsInputGroup = () =>
-    wrapper.findByTestId('delete-after-months-input-group');
+  const findDeleteAfterMonthsInputGroupText = () =>
+    wrapper.findByTestId('delete-after-months-input-group-text');
   const findDeleteAfterMonthsInput = () => wrapper.findByTestId('delete-after-months-input');
   const findSendWarningEmailAfterMonthsGroup = () =>
     wrapper.findByTestId('send-warning-email-after-months-group');
-  const findSendWarningEmailAfterMonthsInputGroup = () =>
-    wrapper.findByTestId('send-warning-email-after-months-input-group');
+  const findSendWarningEmailAfterMonthsInputGroupText = () =>
+    wrapper.findByTestId('send-warning-email-after-months-input-group-text');
   const findSendWarningEmailAfterMonthsInput = () =>
     wrapper.findByTestId('send-warning-email-after-months-input');
 
@@ -60,7 +60,7 @@ describe('Form component', () => {
     });
 
     it('has the appended text on the field', () => {
-      expect(findMinSizeInputGroup().text()).toContain('MB');
+      expect(findMinSizeInputGroupText().text()).toContain('MB');
     });
 
     it.each`
@@ -89,7 +89,7 @@ describe('Form component', () => {
     });
 
     it('has the appended text on the field', () => {
-      expect(findDeleteAfterMonthsInputGroup().text()).toContain('months');
+      expect(findDeleteAfterMonthsInputGroupText().text()).toContain('months');
     });
 
     it.each`
@@ -124,7 +124,7 @@ describe('Form component', () => {
     });
 
     it('has the appended text on the field', () => {
-      expect(findSendWarningEmailAfterMonthsInputGroup().text()).toContain('months');
+      expect(findSendWarningEmailAfterMonthsInputGroupText().text()).toContain('months');
     });
 
     it.each`

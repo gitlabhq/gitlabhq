@@ -89,11 +89,9 @@ class PagesDeployment < ApplicationRecord
   end
 
   def url
-    base_url = ::Gitlab::Pages::UrlBuilder
-      .new(project)
+    ::Gitlab::Pages::UrlBuilder
+      .new(project, { path_prefix: path_prefix.to_s })
       .pages_url
-
-    File.join(base_url.to_s, path_prefix.to_s)
   end
 
   def deactivate

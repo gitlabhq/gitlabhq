@@ -109,6 +109,9 @@ module LooseForeignKeys
       in_query = Arel::SelectManager.new
       in_query.from(quoted_table_name)
       in_query.where(arel_table[loose_foreign_key_definition.column].in(deleted_parent_records.map(&:primary_key_value)))
+      loose_foreign_key_definition.options[:conditions]&.each do |condition|
+        in_query.where(arel_table[condition[:column]].eq(condition[:value]))
+      end
       in_query.projections = primary_keys
       in_query.take(limit)
       in_query.lock(Arel.sql('FOR UPDATE SKIP LOCKED')) if with_skip_locked

@@ -160,6 +160,18 @@ due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388943). To
    Feature.disable(:jira_connect_oauth_self_managed)
    ```
 
+### Error: `Invalid audience`
+
+If you're using a [reverse proxy](jira_cloud_app.md#using-a-reverse-proxy),
+[`exceptions_json.log`](../../administration/logs/index.md#exceptions_jsonlog) might contain a message like:
+
+```plaintext
+Invalid audience. Expected https://proxy.example.com/-/jira_connect, received https://gitlab.example.com/-/jira_connect
+```
+
+To resolve this issue, set the reverse proxy FQDN as an
+[additional JWT audience](jira_cloud_app.md#set-an-additional-jwt-audience).
+
 ### Debugging Jira Connect Proxy issues
 
 If you set **Jira Connect Proxy URL** to `https://gitlab.com` when you

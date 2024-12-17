@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'yaml'
-require 'set' # -- Ruby 3.1 and earlier needs this. Drop this line after Ruby 3.2+ is only supported.
 
 # These methods are called by `sidekiq-cluster`, which runs outside of
 # the bundler/Rails context, so we cannot use any gem or Rails methods.

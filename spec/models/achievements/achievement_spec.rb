@@ -32,4 +32,13 @@ RSpec.describe Achievements::Achievement, type: :model, feature_category: :user_
   it_behaves_like Avatarable do
     let(:model) { create(:achievement, :with_avatar) }
   end
+
+  describe '#uploads_sharding_key' do
+    it 'returns namespace_id' do
+      namespace = build_stubbed(:namespace)
+      achievement = build_stubbed(:achievement, namespace: namespace)
+
+      expect(achievement.uploads_sharding_key).to eq(namespace_id: namespace.id)
+    end
+  end
 end

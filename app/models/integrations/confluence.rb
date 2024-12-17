@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Confluence < BaseThirdPartyWiki
+  class Confluence < Integration
+    include Base::ThirdPartyWiki
+
     VALID_SCHEME_MATCH = %r{\Ahttps?\Z}
     VALID_HOST_MATCH = %r{\A.+\.atlassian\.net\Z}
     VALID_PATH_MATCH = %r{\A/wiki(/|\Z)}

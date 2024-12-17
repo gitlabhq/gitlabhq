@@ -61,9 +61,11 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
       'ci_job_artifacts.project_id',
       'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
+      'ci_pipeline_chat_data.project_id',
       'ci_builds_metadata.project_id',
       'ci_deleted_objects.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'p_ci_job_annotations.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
+      'p_ci_pipelines_config.project_id', # LFK already present on p_ci_pipelines and cascade delete all ci resources
       'ldap_group_links.group_id',
       'namespace_descendants.namespace_id',
       'p_batched_git_ref_updates_deletions.project_id',
@@ -79,7 +81,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'analytics_cycle_analytics_merge_request_stage_events.group_id',
       # This is event log table for gitlab_subscriptions and should not be deleted.
       # See more: https://gitlab.com/gitlab-org/gitlab/-/issues/462598#note_1949768698
-      'gitlab_subscription_histories.namespace_id'
+      'gitlab_subscription_histories.namespace_id',
+      # allowed as it points to itself
+      'organizations.id'
     ]
   end
 
@@ -188,19 +192,23 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       "projects" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476211',
       "push_rules" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476212',
       "snippets" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476216',
-      "upcoming_reconciliations" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476217',
-      "vulnerability_exports" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476219',
       "topics" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/463254',
       "oauth_access_tokens" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
       "oauth_access_grants" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
       "oauth_openid_requests" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
-      "oauth_device_grants" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717"
+      "oauth_device_grants" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
+      "uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199"
+    }
+
+    # Link to any discussions for tables where an exception to this rule was agreed.
+    exceptions = {
+      "bulk_import_entities" => "https://gitlab.com/gitlab-org/gitlab/-/issues/463854#note_2162355315"
     }
 
     has_lfk = ->(lfks) { lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' } }
 
     organization_id_columns = ApplicationRecord.connection.select_rows(sql)
-    checks = organization_id_columns.reject { |column| work_in_progress[column[0]] }
+    checks = organization_id_columns.reject { |column| work_in_progress[column[0]] || exceptions[column[0]] }
     messages = checks.filter_map do |check|
       table_name, *violations = check
 

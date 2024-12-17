@@ -18,7 +18,7 @@ import { getSelectedFragment } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__, __, sprintf } from '~/locale';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
-import { updateText } from '~/lib/utils/text_markdown';
+import { updateText, repeatCodeBackticks } from '~/lib/utils/text_markdown';
 import ToolbarButton from './toolbar_button.vue';
 import DrawioToolbarButton from './drawio_toolbar_button.vue';
 import CommentTemplatesModal from './comment_templates_modal.vue';
@@ -133,9 +133,13 @@ export default {
       ].join('\n');
     },
     mdSuggestion() {
-      return [['```', `suggestion:-${this.suggestionStartIndex}+0`].join(''), `{text}`, '```'].join(
-        '\n',
-      );
+      const codeblockChars = repeatCodeBackticks(this.lineContent);
+
+      return [
+        `${codeblockChars}suggestion:-${this.suggestionStartIndex}+0`,
+        `{text}`,
+        codeblockChars,
+      ].join('\n');
     },
     mdCollapsibleSection() {
       const expandText = s__('MarkdownEditor|Click to expand');
@@ -564,6 +568,7 @@ export default {
             <header-divider />
             <summarize-code-changes />
           </template>
+          <slot v-if="!previewMarkdown" name="header-buttons"></slot>
         </div>
         <div v-if="!previewMarkdown" class="full-screen gl-flex gl-grow gl-justify-end">
           <toolbar-button

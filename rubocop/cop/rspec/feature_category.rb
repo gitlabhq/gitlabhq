@@ -71,7 +71,7 @@ module RuboCop
             value_node: value_node,
             document_link: DOCUMENT_LINK
           ) do |message|
-            add_offense(value_node || node, message: message)
+            add_offense(value_node || node.send_node, message: message)
           end
         end
 

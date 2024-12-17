@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.groups_inheriting_flowdock_active
 description: Count of active groups inheriting integrations for Flowdock
 product_group: import_and_integrate
+product_categories:
+- integrations
 value_type: number
 status: removed
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102394

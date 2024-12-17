@@ -1,9 +1,10 @@
 <script>
 import { GlModal, GlLink, GlSprintf, GlButton, GlAlert } from '@gitlab/ui';
+import { createAlert } from '~/alert';
+import axios from '~/lib/utils/axios_utils';
 import { validateFileFromAllowList } from '~/lib/utils/file_upload';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
-import csrf from '~/lib/utils/csrf';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 
 export default {
@@ -28,8 +29,8 @@ export default {
   },
   data() {
     return {
+      file: null,
       fileName: null,
-      fileContents: null,
       uploadError: false,
     };
   },
@@ -40,7 +41,19 @@ export default {
   },
   methods: {
     reassignContributions() {
-      this.$refs.form.submit();
+      const formData = new FormData();
+      formData.append('file', this.file);
+
+      axios
+        .post(this.reassignmentCsvPath, formData)
+        .then(() => {
+          // nothing to do here, modal already closes itself
+        })
+        .catch(() => {
+          createAlert({
+            message: s__('UserMapping|Something went wrong while uploading the CSV file.'),
+          });
+        });
     },
     isValidFileType(file) {
       return validateFileFromAllowList(file.name, this.$options.dropzoneAllowList);
@@ -51,17 +64,10 @@ export default {
     onChange(file) {
       this.clearError();
       this.fileName = file?.name;
-      this.readFile(file);
+      this.file = file;
     },
     onError() {
       this.uploadError = this.$options.i18n.errorMessage;
-    },
-    readFile(file) {
-      const reader = new FileReader();
-      reader.readAsText(file);
-      reader.onload = (evt) => {
-        this.fileContents = evt.target.result;
-      };
     },
     close() {
       this.clearError();
@@ -74,10 +80,10 @@ export default {
   }),
   i18n: {
     description: s__(
-      'UserMapping|Use a CSV file to reassign contributions from placeholder users to existing group members. This can be done in a few steps. %{linkStart}Learn more about matching users by CSV%{linkEnd}.',
+      'UserMapping|Use a CSV file to reassign contributions from placeholder users to existing group members. For more information, see %{linkStart}reassign contributions and memberships%{linkEnd}.',
     ),
     errorMessage: s__(
-      'UserMapping|Unable to upload the file. Check that the file follows the CSV template and try again.',
+      'UserMapping|Could not upload the file. Check that the file follows the CSV template and try again.',
     ),
     dropzoneDescriptionText: s__(
       'UserMapping|Drop your file here or %{linkStart}click to upload%{linkEnd}.',
@@ -89,7 +95,6 @@ export default {
   cancelAction: {
     text: __('Cancel'),
   },
-  csrf,
 };
 </script>
 <template>
@@ -114,11 +119,11 @@ export default {
           icon="download"
           data-testid="csv-download-button"
           class="vertical-align-text-top"
-          >{{ s__('UserMapping|Download the pre-filled CSV template.') }}</gl-button
+          >{{ s__('UserMapping|Download the prefilled CSV template.') }}</gl-button
         >
       </li>
-      <li>{{ s__('UserMapping|Review and complete filling out the CSV file.') }}</li>
-      <li>{{ s__('UserMapping|Upload reviewed and completed CSV file.') }}</li>
+      <li>{{ s__('UserMapping|Review and complete the CSV file.') }}</li>
+      <li>{{ s__('UserMapping|Upload the completed CSV file.') }}</li>
     </ol>
     <upload-dropzone
       class="gl-my-5"
@@ -154,13 +159,9 @@ export default {
     <gl-alert variant="warning" :dismissible="false">
       {{
         s__(
-          'UserMapping|Once you select "Reassign", the processing will start and users will receive an email to accept the contribution reassignment. Once a user has accepted the reassignment, it cannot be undone. Check all data is correct before continuing.',
+          'UserMapping|After you select "Reassign", users receive an email to accept the reassignment. Accepted reassignments cannot be undone, so check all data carefully before you continue.',
         )
       }}
     </gl-alert>
-    <form ref="form" :action="reassignmentCsvPath" enctype="multipart/form-data" method="post">
-      <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
-      <input :value="fileContents || false" type="hidden" name="file" />
-    </form>
   </gl-modal>
 </template>

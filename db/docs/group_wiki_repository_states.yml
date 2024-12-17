@@ -18,3 +18,5 @@ desired_sharding_key:
         table_primary_key: group_id
         sharding_key: group_id
         belongs_to: group_wiki_repository
+table_size: small
+desired_sharding_key_migration_job_name: BackfillGroupWikiRepositoryStatesGroupId

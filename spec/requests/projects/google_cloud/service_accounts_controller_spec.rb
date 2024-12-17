@@ -250,22 +250,6 @@ RSpec.describe Projects::GoogleCloud::ServiceAccountsController, feature_categor
           end
         end
       end
-
-      context 'but feature flag is disabled' do
-        before do
-          stub_feature_flags(incubation_5mp_google_cloud: false)
-        end
-
-        it 'returns not found' do
-          authorized_members.each do |authorized_member|
-            sign_in(authorized_member)
-
-            get url
-
-            expect(response).to have_gitlab_http_status(:not_found)
-          end
-        end
-      end
     end
   end
 end

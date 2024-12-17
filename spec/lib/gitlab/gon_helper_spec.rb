@@ -81,6 +81,8 @@ RSpec.describe Gitlab::GonHelper, feature_category: :shared do
 
     context 'when ui_for_organizations feature flag is enabled' do
       context 'when current_organization is set', :with_current_organization do
+        subject(:add_gon_variables) { helper.add_gon_variables }
+
         before do
           Current.organization = current_organization
         end
@@ -90,8 +92,10 @@ RSpec.describe Gitlab::GonHelper, feature_category: :shared do
             current_organization.slice(:id, :name, :web_url, :avatar_url)
           )
 
-          helper.add_gon_variables
+          add_gon_variables
         end
+
+        it_behaves_like 'internal event not tracked'
       end
 
       context 'when current_organization is not set' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Count::ReltuplesCountStrategy do
+RSpec.describe Gitlab::Database::Count::ReltuplesCountStrategy, feature_category: :database do
   before do
     create_list(:project, 3)
     create_list(:ci_instance_variable, 2)
@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Database::Count::ReltuplesCountStrategy do
     end
 
     context 'when models using single-type inheritance are used' do
-      let(:models) { [Group, Integrations::BaseCi, Namespace] }
+      let(:models) { [Group, Namespace] }
 
       before do
         models.each do |model|

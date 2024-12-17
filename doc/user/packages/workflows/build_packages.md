@@ -498,7 +498,7 @@ After you create a project, you can create a package.
    about this file, see [creating `pyproject.toml`](https://packaging.python.org/en/latest/tutorials/packaging-projects/#creating-pyproject-toml).
    Because GitLab identifies packages based on
    [Python normalized names (PEP-503)](https://www.python.org/dev/peps/pep-0503/#normalized-names),
-   ensure your package name meets these requirements. See the [installation section](../pypi_repository/index.md#authenticate-with-a-ci-job-token)
+   ensure your package name meets these requirements. See the [installation section](../pypi_repository/index.md#authenticate-with-the-gitlab-package-registry)
    for details.
 
 1. Open the `pyproject.toml` file, and then add basic information:

@@ -14,4 +14,8 @@ class PersonalSnippet < Snippet
   def skip_project_check?
     true
   end
+
+  def uploads_sharding_key
+    { organization_id: organization_id }
+  end
 end

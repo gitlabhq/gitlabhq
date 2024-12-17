@@ -36,7 +36,7 @@ describe('GroupsListItem', () => {
   };
 
   const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
-  const findGroupDescription = () => wrapper.findByTestId('group-description');
+  const findGroupDescription = () => wrapper.findByTestId('description');
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
   const findListActions = () => wrapper.findComponent(ListActions);
   const findConfirmationModal = () => wrapper.findComponent(GroupListItemDeleteModal);
@@ -76,34 +76,31 @@ describe('GroupsListItem', () => {
   it('renders subgroup count', () => {
     createComponent();
 
-    const countWrapper = wrapper.findByTestId('subgroups-count');
-    const tooltip = getBinding(countWrapper.element, 'gl-tooltip');
-
-    expect(tooltip.value).toBe(GroupsListItem.i18n.subgroups);
-    expect(countWrapper.text()).toBe(group.descendantGroupsCount.toString());
-    expect(countWrapper.findComponent(GlIcon).props('name')).toBe('subgroup');
+    expect(wrapper.findByTestId('subgroups-count').props()).toEqual({
+      tooltipText: 'Subgroups',
+      iconName: 'subgroup',
+      stat: group.descendantGroupsCount.toString(),
+    });
   });
 
   it('renders projects count', () => {
     createComponent();
 
-    const countWrapper = wrapper.findByTestId('projects-count');
-    const tooltip = getBinding(countWrapper.element, 'gl-tooltip');
-
-    expect(tooltip.value).toBe(GroupsListItem.i18n.projects);
-    expect(countWrapper.text()).toBe(group.projectsCount.toString());
-    expect(countWrapper.findComponent(GlIcon).props('name')).toBe('project');
+    expect(wrapper.findByTestId('projects-count').props()).toEqual({
+      tooltipText: 'Projects',
+      iconName: 'project',
+      stat: group.projectsCount.toString(),
+    });
   });
 
   it('renders members count', () => {
     createComponent();
 
-    const countWrapper = wrapper.findByTestId('members-count');
-    const tooltip = getBinding(countWrapper.element, 'gl-tooltip');
-
-    expect(tooltip.value).toBe(GroupsListItem.i18n.directMembers);
-    expect(countWrapper.text()).toBe(group.groupMembersCount.toString());
-    expect(countWrapper.findComponent(GlIcon).props('name')).toBe('users');
+    expect(wrapper.findByTestId('members-count').props()).toEqual({
+      tooltipText: 'Direct members',
+      iconName: 'users',
+      stat: group.groupMembersCount.toString(),
+    });
   });
 
   describe('when visibility is not provided', () => {

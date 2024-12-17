@@ -3,6 +3,7 @@
 module Resolvers
   class MergeRequestsResolver < BaseResolver
     include ResolvesMergeRequests
+    include SearchArguments
     extend ::Gitlab::Graphql::NegatableArguments
 
     type ::Types::MergeRequestType.connection_type, null: true
@@ -86,11 +87,14 @@ module Resolvers
                Available only when the feature flag `mr_approved_filter` is enabled.
       DESC
 
-    argument :subscribed, Types::Issuables::SubscriptionStatusEnum,
-      description: 'Merge requests the current user is subscribed to. Is ignored if ' \
-        '`filter_subscriptions` feature flag is disabled.',
-      experiment: { milestone: '17.5' },
-      required: false
+    argument :blob_path, GraphQL::Types::String,
+      required: false,
+      experiment: { milestone: '17.7' },
+      description: <<~DESC
+               Path of the blob changed in merge request.
+               Requires state, targetBranches, and createdAfter arguments.
+               Available only when the feature flag `filter_blob_path` is enabled.
+      DESC
 
     argument :created_after, Types::TimeType,
       required: false,
@@ -150,6 +154,9 @@ module Resolvers
       description: 'Sort merge requests by the criteria.',
       required: false,
       default_value: :created_desc
+    argument :subscribed, Types::Issuables::SubscriptionStatusEnum,
+      description: 'Merge requests the current user is subscribed to.',
+      required: false
 
     negated do
       argument :approved_by, [GraphQL::Types::String],
@@ -163,10 +170,14 @@ module Resolvers
       argument :author_username, GraphQL::Types::String,
         required: false,
         description: 'Filters merge requests to exclude any that are authored by the given user.'
-      argument :labels, [GraphQL::Types::String],
+      argument :label_name, [GraphQL::Types::String],
         required: false,
-        as: :label_name,
         description: 'Filters merge requests to exclude any that have the labels provided in the given array.'
+      argument :labels, [GraphQL::Types::String],
+        as: :label_name,
+        required: false,
+        description: 'Filters merge requests to exclude any that have the labels provided in the given array.',
+        deprecated: { reason: 'Use `labelName`', milestone: '17.7' }
       argument :milestone_title, GraphQL::Types::String,
         required: false,
         description: 'Filters merge requests to those not in the given milestone.'

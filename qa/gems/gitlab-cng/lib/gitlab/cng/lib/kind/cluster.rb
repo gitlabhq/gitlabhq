@@ -55,11 +55,12 @@ module Gitlab
           end
         end
 
-        def initialize(ci:, host_http_port:, host_ssh_port:, docker_hostname: nil)
+        def initialize(ci:, host_http_port:, host_ssh_port:, host_registry_port:, docker_hostname: nil)
           @ci = ci
           @name = CLUSTER_NAME
           @host_http_port = host_http_port
           @host_ssh_port = host_ssh_port
+          @host_registry_port = host_registry_port
           @docker_hostname = ci ? docker_hostname || "docker" : docker_hostname
         end
 
@@ -78,7 +79,7 @@ module Gitlab
 
         private
 
-        attr_reader :ci, :name, :docker_hostname, :host_http_port, :host_ssh_port
+        attr_reader :ci, :name, :docker_hostname, :host_http_port, :host_ssh_port, :host_registry_port
 
         # Helm client instance
         #
@@ -184,6 +185,9 @@ module Gitlab
                   - containerPort: #{ssh_port}
                     hostPort: #{host_ssh_port}
                     listenAddress: "0.0.0.0"
+                  - containerPort: #{registry_port}
+                    hostPort: #{host_registry_port}
+                    listenAddress: "0.0.0.0"
           YML
 
           kind_config_file(config_yml)
@@ -218,6 +222,9 @@ module Gitlab
                 - containerPort: #{ssh_port}
                   hostPort: #{host_ssh_port}
                   listenAddress: "0.0.0.0"
+                - containerPort: #{registry_port}
+                  hostPort: #{host_registry_port}
+                  listenAddress: "0.0.0.0"
           YML
 
           kind_config_file(template.result(binding))
@@ -228,6 +235,13 @@ module Gitlab
         # @return [Integer]
         def http_port
           @http_port ||= rand(30000..31000)
+        end
+
+        # Set container registry port to expose outside cluster
+        #
+        # @return [Integer]
+        def registry_port
+          @registry_port ||= 32495
         end
 
         # Random ssh port to expose outside cluster

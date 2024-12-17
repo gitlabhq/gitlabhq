@@ -1,0 +1,14 @@
+---
+table_name: ai_conversation_threads
+classes:
+- Ai::Conversation::Thread
+feature_categories:
+- ai_abstraction_layer
+- duo_chat
+description: Threads of messages for GitLab Duo features.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171934
+milestone: '17.7'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  organization_id: organizations
+table_size: small

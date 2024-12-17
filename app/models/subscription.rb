@@ -2,6 +2,7 @@
 
 class Subscription < ApplicationRecord
   include FromUnion
+  include EachBatch
 
   belongs_to :user
   belongs_to :project

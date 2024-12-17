@@ -71,7 +71,7 @@ RSpec.describe QA::Resource::ApiFabricator do
   let(:api_client_instance) { QA::Runtime::API::Client.new(personal_access_token: 'foo') }
 
   before do
-    allow(QA::Runtime::UserStore).to receive(:default_api_client).and_return(api_client_instance)
+    allow(QA::Runtime::User::Store).to receive(:default_api_client).and_return(api_client_instance)
   end
 
   subject { resource.tap { |f| f.include(described_class) }.new }

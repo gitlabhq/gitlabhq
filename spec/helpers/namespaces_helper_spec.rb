@@ -3,16 +3,17 @@
 require 'spec_helper'
 
 RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
-  let!(:admin) { create(:admin) }
+  let_it_be(:organization) { create(:organization) }
+  let!(:admin) { create(:admin, organizations: [organization]) }
   let!(:admin_project_creation_level) { nil }
   let!(:admin_group) do
-    create(:group, :private, project_creation_level: admin_project_creation_level)
+    create(:group, :private, project_creation_level: admin_project_creation_level, organization: organization)
   end
 
-  let!(:user) { create(:user) }
+  let!(:user) { create(:user, organizations: [organization]) }
   let!(:user_project_creation_level) { nil }
   let!(:user_group) do
-    create(:group, :private, project_creation_level: user_project_creation_level)
+    create(:group, :private, project_creation_level: user_project_creation_level, organization: organization)
   end
 
   let!(:subgroup1) do
@@ -39,7 +40,7 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
 
   let!(:project1) { build(:project, namespace: subgroup1) }
   let!(:project2) do
-    user.create_namespace!(path: user.username, name: user.name) unless user.namespace
+    user.create_namespace!(path: user.username, name: user.name, organization: organization) unless user.namespace
     build(:project, namespace: user.namespace)
   end
 
@@ -257,11 +258,17 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
     it 'returns a hash with necessary data for the frontend' do
       expect(helper.pipeline_usage_app_data(user_group)).to eql({
         namespace_actual_plan_name: user_group.actual_plan_name,
-        namespace_path: user_group.full_path,
         namespace_id: user_group.id,
         user_namespace: user_group.user_namespace?.to_s,
         page_size: Kaminari.config.default_per_page
       })
+    end
+  end
+
+  describe '#group_usage_quotas_url', feature_category: :consumables_cost_management do
+    it 'returns the url of the usage quotas page of the root ancestor of the group' do
+      usage_quotas_pipelines_url = Rails.application.routes.url_helpers.group_usage_quotas_url(admin_group)
+      expect(helper.group_usage_quotas_url(subgroup1)).to eql(usage_quotas_pipelines_url)
     end
   end
 end

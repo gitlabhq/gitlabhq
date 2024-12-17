@@ -89,4 +89,20 @@ describe('Workload details drawer component', () => {
       expect(findDrawer().props('open')).toBe(false);
     });
   });
+
+  describe('when receives toggle event with the item and section specified', () => {
+    beforeEach(() => {
+      // This method is always triggered from outside of
+      // the workload_details_drawer component
+      wrapper.vm.toggle(mockPodsTableItems[0], 'actions');
+    });
+
+    it('provides the resource details to the drawer', () => {
+      expect(findWorkloadDetails().props('item')).toEqual(mockPodsTableItems[0]);
+    });
+
+    it('provides the selected section to the drawer', () => {
+      expect(findWorkloadDetails().props('selectedSection')).toEqual('actions');
+    });
+  });
 });

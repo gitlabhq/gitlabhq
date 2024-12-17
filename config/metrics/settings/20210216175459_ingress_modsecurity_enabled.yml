@@ -3,6 +3,8 @@ data_category: operational
 key_path: ingress_modsecurity_enabled
 description: Whether or not ModSecurity is enabled within Ingress
 product_group: security_policies
+product_categories:
+- security_policy_management
 value_type: boolean
 status: removed
 milestone_removed: "14.0"

@@ -107,6 +107,9 @@ function bundle_install_script() {
   run_timed_command "bundle install ${BUNDLE_INSTALL_FLAGS} ${extra_install_args}"
 
   if [[ $(bundle info pg) ]]; then
+    # Bundler will complain about replacing gems in world-writeable directories, so lock down access.
+    # This appears to happen when the gems are uncached, since the Runner uses a restrictive umask.
+    find vendor -type d -exec chmod 700 {} +
     # When we test multiple versions of PG in the same pipeline, we have a single `setup-test-env`
     # job but the `pg` gem needs to be rebuilt since it includes extensions (https://guides.rubygems.org/gems-with-extensions).
     # Uncomment the following line if multiple versions of PG are tested in the same pipeline.
@@ -517,7 +520,60 @@ function log_disk_usage() {
       echo "If this problem persists, please contact #g_hosted_runners team."
       echo "NOTE: This job will be retried automatically."
       echo "********************************************************************"
-      exit 111
+
+      exit_code=111
+      alert_job_in_slack $exit_code "Auto-retried due to low free disk space."
+
+      exit $exit_code
     fi
   fi
+}
+
+function alert_job_in_slack() {
+  exit_code=$1
+  alert_reason=$2
+  local slack_channel="#dx_development-analytics_alerts"
+
+  echo "Reporting ${CI_JOB_URL} to Slack channel ${slack_channel}"
+
+  json_payload=$(cat <<JSON
+{
+	"blocks": [
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Job <${CI_JOB_URL}|${CI_JOB_NAME}> in pipeline <${CI_PIPELINE_URL}|#${CI_PIPELINE_ID}> needs attention*"
+			}
+		},
+		{
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": "*Branch:* \n\`${CI_COMMIT_REF_NAME}\`"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*Project:* \n<${CI_PROJECT_URL}|${CI_PROJECT_PATH}>"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*Error code:* \n\`${exit_code}\`"
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*Reason:* \n${alert_reason}"
+				}
+			]
+		}
+	],
+  "channel": "${slack_channel}"
+}
+JSON
+)
+
+  curl --silent -o /dev/null -X POST "${CI_SLACK_WEBHOOK_URL}" \
+    -H 'Content-type: application/json' \
+    -d "${json_payload}"
 }

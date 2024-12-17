@@ -91,14 +91,14 @@ RSpec.describe API::Keys, :aggregate_failures, feature_category: :system_access 
       end
 
       it 'returns 404 for non-existing SSH sha256 fingerprint' do
-        get api("/keys?fingerprint=#{URI.encode_www_form_component("SHA256:nUhzNyftwADy8AH3wFY31tAKs7HufskYTte2aXo1lCg")}", admin, admin_mode: true)
+        get api("/keys?fingerprint=#{URI.encode_www_form_component('SHA256:nUhzNyftwADy8AH3wFY31tAKs7HufskYTte2aXo1lCg')}", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 Key Not Found')
       end
 
       it 'returns user if SSH sha256 fingerprint found' do
-        get api("/keys?fingerprint=#{URI.encode_www_form_component("SHA256:" + key.fingerprint_sha256)}", admin, admin_mode: true)
+        get api("/keys?fingerprint=#{URI.encode_www_form_component('SHA256:' + key.fingerprint_sha256)}", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['title']).to eq(key.title)
@@ -107,7 +107,7 @@ RSpec.describe API::Keys, :aggregate_failures, feature_category: :system_access 
       end
 
       it 'returns user if SSH sha256 fingerprint found' do
-        get api("/keys?fingerprint=#{URI.encode_www_form_component("sha256:" + key.fingerprint_sha256)}", admin, admin_mode: true)
+        get api("/keys?fingerprint=#{URI.encode_www_form_component('sha256:' + key.fingerprint_sha256)}", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['title']).to eq(key.title)
@@ -116,7 +116,7 @@ RSpec.describe API::Keys, :aggregate_failures, feature_category: :system_access 
       end
 
       it "does not include the user's `is_admin` flag" do
-        get api("/keys?fingerprint=#{URI.encode_www_form_component("sha256:" + key.fingerprint_sha256)}", admin, admin_mode: true)
+        get api("/keys?fingerprint=#{URI.encode_www_form_component('sha256:' + key.fingerprint_sha256)}", admin, admin_mode: true)
 
         expect(json_response['user']['is_admin']).to be_nil
       end
@@ -137,7 +137,7 @@ RSpec.describe API::Keys, :aggregate_failures, feature_category: :system_access 
         it 'returns user and projects if SSH sha256 fingerprint for DeployKey found' do
           user.keys << deploy_key
 
-          get api("/keys?fingerprint=#{URI.encode_www_form_component("SHA256:" + deploy_key.fingerprint_sha256)}", admin, admin_mode: true)
+          get api("/keys?fingerprint=#{URI.encode_www_form_component('SHA256:' + deploy_key.fingerprint_sha256)}", admin, admin_mode: true)
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['title']).to eq(deploy_key.title)

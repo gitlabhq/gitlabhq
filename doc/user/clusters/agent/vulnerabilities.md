@@ -131,9 +131,11 @@ By default the scanner pod's default resource requirements are:
 requests:
   cpu: 100m
   memory: 100Mi
+  ephemeral_storage: 1Gi
 limits:
   cpu: 500m
   memory: 500Mi
+  ephemeral_storage: 3Gi
 ```
 
 You can customize it with a `resource_requirements` field.
@@ -144,15 +146,19 @@ container_scanning:
     requests:
       cpu: '0.2'
       memory: 200Mi
+      ephemeral_storage: 2Gi
     limits:
       cpu: '0.7'
       memory: 700Mi
+      ephemeral_storage: 4Gi
 ```
 
 When using a fractional value for CPU, format the value as a string.
 
 NOTE:
-Resource requirements can only be set up using the agent configuration. If you enabled `Operational Container Scanning` through `scan execution policies`, you would need to define the resource requirements within the agent configuration file.
+
+- Resource requirements can only be set by using the agent configuration. If you enabled Operational Container Scanning through scan execution policies and need to configure resource requirements, you should do so via the agent configuration file.
+- When using Google Kubernetes Engine (GKE) for Kubernetes orchestration, [the ephemeral storage limit value will always be set to equal the request value](https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits). This is enforced by GKE.
 
 ## Custom repository for Trivy K8s Wrapper
 
@@ -164,6 +170,40 @@ If your cluster's firewall restricts access to the Trivy K8s Wrapper repository,
 container_scanning:
   trivy_k8s_wrapper_image:
     repository: "your-custom-registry/your-image-path"
+```
+
+## Configure scan timeout
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/497460) in GitLab 17.7.
+
+By default, the Trivy scan times out after five minutes. The agent itself provides an extra 15 minutes to read the chained configmaps and transmit the vulnerabilities.
+
+To customize the Trivy timeout duration:
+
+- Specify the duration in seconds with the `scanner_timeout` field.
+
+For example:
+
+```yaml
+container_scanning:
+  scanner_timeout: "3600s" # 60 minutes
+```
+
+## Configure Trivy report size
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/497460) in GitLab 17.7.
+
+By default, the Trivy report is limited to 100 MB, which is sufficient for most scans. However, if you have a lot of workloads, you might need to increase the limit.
+
+To do this:
+
+- Specify the limit in bytes with the `report_max_size` field.
+
+For example:
+
+```yaml
+container_scanning:
+  report_max_size: "300000000" # 300MB
 ```
 
 ## View cluster vulnerabilities
@@ -188,16 +228,37 @@ You must have at least the Developer role.
 
 To scan private images, the scanner relies on the image pull secrets (direct references and from the service account) to pull the image.
 
-## Limitations
+## Known issues
 
 In GitLab agent 16.9 and later, operational container scanning:
 
-- handles Trivy reports of up to 100MB. For previous releases this limit is 10MB.
-- is [disabled](../../../development/fips_compliance.md#unsupported-features-in-fips-mode) when the GitLab agent runs in `fips` mode.
+- Handles Trivy reports of up to 100 MB. For previous releases, this limit is 10 MB.
+- Is [disabled](../../../development/fips_compliance.md#unsupported-features-in-fips-mode) when the GitLab agent runs in `fips` mode.
 
 ## Troubleshooting
 
 ### `Error running Trivy scan. Container terminated reason: OOMKilled`
 
 OCS might fail with an OOM error if there are too many resources to be scanned or if the images being scanned are large.
+
 To resolve this, [configure the resource requirement](#configure-scanner-resource-requirements) to increase the amount of memory available.
+
+### `Pod ephemeral local storage usage exceeds the total limit of containers`
+
+OCS scans could fail for Kubernetes clusters that have low default ephemeral storage. For example, [GKE autopilot](https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#defaults) sets the default ephemeral storage to 1GB. This is an issue for OCS when scanning namespaces with large images, as there may not be enough space to store all data necessary for OCS.
+
+To resolve this, [configure the resource requirement](#configure-scanner-resource-requirements) to increase the amount of ephemeral storage available.
+
+Another message indicative of this issue may be: `OCS Scanning pod evicted due to low resources. Please configure higher resource limits.`
+
+### `Error running Trivy scan due to context timeout`
+
+OCS might fail to complete a scan if it takes Trivy too long to complete the scan. The default scan timeout is 5 minutes, with an extra 15 minutes for the agent to read the results and transmit the vulnerabilities.
+
+To resolve this, [configure the scanner timeout](#configure-scan-timeout) to increase the amount of memory available.
+
+### `trivy report size limit exceeded`
+
+OCS might fail with this error if the generated Trivy report size is larger than the default maximum limit.
+
+To resolve this, [configure the max Trivy report size](#configure-trivy-report-size) to increase the maximum allowed size of the Trivy report.

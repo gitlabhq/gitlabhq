@@ -8,13 +8,16 @@ import {
   GlLoadingIcon,
   GlTable,
   GlTooltipDirective,
+  GlSprintf,
+  GlLink,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
 import { fetchPolicies } from '~/lib/graphql';
 
 import { DEFAULT_PAGE_SIZE } from '~/members/constants';
-
+import { helpPagePath } from '~/helpers/help_page_helper';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import {
   PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER,
   PLACEHOLDER_STATUS_COMPLETED,
@@ -35,7 +38,10 @@ export default {
     GlKeysetPagination,
     GlLoadingIcon,
     GlTable,
+    GlSprintf,
+    GlLink,
     PlaceholderActions,
+    HelpPopover,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -94,7 +100,7 @@ export default {
       },
       error() {
         createAlert({
-          message: s__('UserMapping|There was a problem fetching placeholder users.'),
+          message: s__('UserMapping|Placeholder users could not be fetched.'),
         });
       },
     },
@@ -188,6 +194,9 @@ export default {
       this.$emit('confirm', item);
     },
   },
+  placeholderUsersHelpPath: helpPagePath('user/project/import/index', {
+    anchor: 'placeholder-users',
+  }),
 };
 </script>
 
@@ -221,7 +230,35 @@ export default {
           <span>{{ item.sourceHostname }}</span>
         </div>
         <div class="gl-mt-2">{{ item.sourceName }}</div>
-        <div class="gl-mt-2">@{{ item.sourceUsername }}</div>
+        <div class="gl-mt-2 gl-flex gl-gap-1">
+          <span v-if="item.sourceUsername">@{{ item.sourceUsername }}</span>
+          <template v-else>
+            <help-popover
+              :aria-label="s__('UserMapping|Full user details missing')"
+              class="gl-inline-flex"
+            >
+              <gl-sprintf
+                :message="
+                  s__(
+                    'UserMapping|Full user details could not be fetched from source instance. %{linkStart}Why are placeholder users created%{linkEnd}?',
+                  )
+                "
+              >
+                <template #link="{ content }">
+                  <gl-link
+                    class="gl-text-sm"
+                    :href="$options.placeholderUsersHelpPath"
+                    target="_blank"
+                    >{{ content }}</gl-link
+                  >
+                </template>
+              </gl-sprintf>
+            </help-popover>
+            <span class="gl-font-subtle gl-italic"
+              >{{ s__('UserMapping|User ID') }}: {{ item.sourceUserIdentifier }}</span
+            >
+          </template>
+        </div>
       </template>
 
       <template #cell(status)="{ item }">

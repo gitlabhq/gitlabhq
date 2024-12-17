@@ -24,6 +24,7 @@ module RuboCop
           Search EE::Search API::Search EE::API::Search API::Admin::Search RuboCop::Cop::Search Types Resolvers
           API::Entities::Search::Zoekt API::Internal::Search::Zoekt
           Keeps
+          Gitlab::SidekiqMiddleware::PauseControl::Strategies::AdvancedSearch
         ].map { |x| x.split('::') }.freeze
 
         SEARCH_REGEXES = [

@@ -32,6 +32,8 @@ module Gitlab
               add_approval!(gitlab_user_id)
               add_reviewer!(gitlab_user_id) if options[:add_reviewer]
             else
+              # TODO this method and this if/else can be removed when `github_user_mapping` flag is removed
+              # because there will always be a gitlab_user_id when using placeholder users.
               add_complementary_review_note!(project.creator_id)
             end
           end
@@ -74,7 +76,7 @@ module Gitlab
 
             return unless mapper.user_mapping_enabled?
 
-            push_with_record(note, :author_id, review.author.id, mapper.user_mapper)
+            push_with_record(note, :author_id, review.author&.id, mapper.user_mapper)
           end
 
           def note_attributes(author_id, note, extra = {})
@@ -99,8 +101,8 @@ module Gitlab
 
             return unless mapper.user_mapping_enabled? && approval
 
-            push_with_record(approval, :user_id, review.author.id, mapper.user_mapper)
-            push_with_record(approval_system_note, :author_id, review.author.id, mapper.user_mapper)
+            push_with_record(approval, :user_id, review.author&.id, mapper.user_mapper)
+            push_with_record(approval_system_note, :author_id, review.author&.id, mapper.user_mapper)
           end
 
           def add_reviewer!(user_id)
@@ -108,7 +110,7 @@ module Gitlab
 
             return unless mapper.user_mapping_enabled? && reviewer
 
-            push_with_record(reviewer, :user_id, review.author.id, mapper.user_mapper)
+            push_with_record(reviewer, :user_id, review.author&.id, mapper.user_mapper)
           end
 
           def submitted_at

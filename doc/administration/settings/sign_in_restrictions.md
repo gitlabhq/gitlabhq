@@ -48,7 +48,7 @@ administrator access or use Admin Mode.
 
 With Admin Mode, your account does not have administrator access by default.
 You can continue to access groups and projects you're a member of. However, for administrative tasks,
-you must authenticate (except for [certain features](#limitations-of-admin-mode)).
+you must authenticate (except for [certain features](#known-issues)).
 
 When Admin Mode is enabled, it applies to all administrators on the instance.
 
@@ -130,7 +130,7 @@ To turn off Admin Mode for your current session:
 1. On the left sidebar, select your avatar.
 1. Select **Leave Admin Mode**.
 
-### Limitations of Admin Mode
+### Known issues
 
 Admin Mode times out after six hours, and you cannot change this timeout limit.
 
@@ -144,9 +144,7 @@ Git clients without additional authentication steps.
 To use the GitLab REST- or GraphQL API, administrators must [create a personal access token](../../user/profile/personal_access_tokens.md#create-a-personal-access-token) or [OAuth token](../../api/oauth2.md) with the [`admin_mode` scope](../../user/profile/personal_access_tokens.md#personal-access-token-scopes).
 
 If an administrator with a personal access token with the `admin_mode` scope loses their administrator access, that user cannot access the API as an administrator even though they still have the token with the `admin_mode` scope.
-
-We may address these limitations in the future. For more information see the following epic:
-[Admin Mode for GitLab Administrators](https://gitlab.com/groups/gitlab-org/-/epics/2158).
+For more information, see [epic 2158](https://gitlab.com/groups/gitlab-org/-/epics/2158).
 
 Also, when GitLab Geo is enabled, you can't view the replication status of projects and designs while
 on a secondary node. A fix is proposed when projects ([issue 367926](https://gitlab.com/gitlab-org/gitlab/-/issues/367926)) and designs ([issue 355660](https://gitlab.com/gitlab-org/gitlab/-/issues/355660)) move to the new Geo framework.

@@ -21,13 +21,13 @@ if you need clarification or spot any outdated information.
 
 1. Add a new model in `app/models/integrations` extending from `Integration`.
    - For example, `Integrations::FooBar` in `app/models/integrations/foo_bar.rb`.
-   - For certain types of integrations, you can also build on these base classes:
-     - `Integrations::BaseChatNotification`
-     - `Integrations::BaseCi`
-     - `Integrations::BaseIssueTracker`
-     - `Integrations::BaseMonitoring`
-     - `Integrations::BaseSlashCommands`
-     - `Integrations::BaseThirdPartyWiki`
+   - For certain types of integrations, you can include these base modules:
+     - `Integrations::Base::ChatNotification`
+     - `Integrations::Base::Ci`
+     - `Integrations::Base::IssueTracker`
+     - `Integrations::Base::Monitoring`
+     - `Integrations::Base::SlashCommands`
+     - `Integrations::Base::ThirdPartyWiki`
    - For integrations that primarily trigger HTTP calls to external services, you can
      also use the `Integrations::HasWebHook` concern. This reuses the [webhook functionality](../../user/project/integrations/webhooks.md)
      in GitLab through an associated `ServiceHook` model, and automatically records request logs
@@ -152,7 +152,7 @@ end
 
 #### Masking channel values
 
-Integrations that [inherit from `Integrations::BaseChatNotification`](#define-the-integration) can hide the
+Integrations that [include from `Integrations::Base::ChatNotification`](#define-the-integration) can hide the
 values of their channel input fields. Integrations should hide these values whenever the
 fields contain sensitive information such as auth tokens.
 
@@ -216,7 +216,7 @@ This method should return an array of hashes for each field, where the keys can 
 
 | Key            | Type    | Required | Default                      | Description |
 |:---------------|:--------|:---------|:-----------------------------|:--|
-| `type:`        | symbol  | true     | `:text`                      | The type of the form field. Can be `:text`, `:textarea`, `:password`, `:checkbox`, or `:select`. |
+| `type:`        | symbol  | true     | `:text`                      | The type of the form field. Can be `:text`, `:number`, `:textarea`, `:password`, `:checkbox`, or `:select`. |
 | `section:`     | symbol  | false    |                              | Specify which section the field belongs to. |
 | `name:`        | string  | true     |                              | The property name for the form field. |
 | `required:`    | boolean | false    | `false`                      | Specify if the form field is required or optional. Note [backend validations](#define-validations) for presence are still needed. |
@@ -257,7 +257,8 @@ The most commonly used sections are pre-defined and already include some UI:
 - `SECTION_TYPE_CONFIGURATION`: Contains more advanced configuration and optional settings around how the integration works.
 - `SECTION_TYPE_TRIGGER`: Contains a list of events which will trigger an integration.
 
-`SECTION_TYPE_CONNECTION` & `SECTION_TYPE_CONFIGURATION` internally renders the `dynamic-field` component. The `dynamic-field` component renders either a `checkbox`, `input`, `select` or `textarea` based on integration `type`.
+`SECTION_TYPE_CONNECTION` and `SECTION_TYPE_CONFIGURATION` render the `dynamic-field` component internally.
+The `dynamic-field` component renders a `checkbox`, `number`, `input`, `select`, or `textarea` type for the integration.
 For example:
 
 ```ruby

@@ -21,11 +21,33 @@ RSpec.describe Gitlab::Chat::Responder::Slack, feature_category: :integrations d
   let(:responder) { described_class.new(build) }
 
   describe '#send_response' do
+    before do
+      allow(Gitlab::HTTP).to receive(:post).and_call_original
+
+      stub_request(:post, "http://example.com").to_return(status: 200)
+    end
+
     it 'sends a response back to Slack' do
       expect(Gitlab::HTTP).to receive(:post).with(
         'http://example.com',
         { headers: { Accept: 'application/json' }, body: 'hello'.to_json }
       )
+
+      responder.send_response('hello')
+    end
+
+    it 'logs failure to send a response back to Slack' do
+      stub_request(:post, "http://example.com").to_return(status: 400)
+
+      expect(Gitlab::HTTP).to receive(:post).with(
+        'http://example.com',
+        { headers: { Accept: 'application/json' }, body: 'hello'.to_json }
+      )
+
+      expect(Gitlab::AppLogger)
+        .to receive(:warn)
+        .with(hash_including(code: 400, message: 'Posting chat response failed'))
+        .and_call_original
 
       responder.send_response('hello')
     end
@@ -50,6 +72,10 @@ RSpec.describe Gitlab::Chat::Responder::Slack, feature_category: :integrations d
 
     it 'does not send a response if the output is empty' do
       expect(responder).not_to receive(:send_response)
+      expect(Gitlab::AppLogger)
+        .to receive(:info)
+        .with(hash_including(message: 'Chat pipeline successful, but output is empty'))
+        .and_call_original
 
       responder.success('')
     end

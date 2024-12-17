@@ -10,20 +10,24 @@ RSpec.describe Gitlab::BackgroundMigration::MigrateOsSbomOccurrencesToComponents
     skip_if_multiple_databases_are_setup(:sec)
   end
 
+  let(:organizations) { table(:organizations) }
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }
   let(:sbom_components) { table(:sbom_components) }
   let(:sbom_component_versions) { table(:sbom_component_versions) }
   let(:sbom_occurrences) { table(:sbom_occurrences) }
 
-  let(:namespace) { namespaces.create!(name: 'gitlab', path: 'gitlab') }
+  let(:organization) { organizations.create!(name: 'organization', path: 'organization') }
+
+  let(:namespace) { namespaces.create!(name: 'gitlab', path: 'gitlab', organization_id: organization.id) }
   let(:project_namespace) do
-    namespaces.create!(name: 'project-1', path: 'project', type: 'Project', parent_id: namespace.id)
+    namespaces.create!(name: 'project-1', path: 'project', type: 'Project',
+      parent_id: namespace.id, organization_id: organization.id)
   end
 
   let(:project) do
     projects.create!(name: 'project-1', path: 'project-1', project_namespace_id: project_namespace.id,
-      namespace_id: namespace.id)
+      namespace_id: namespace.id, organization_id: organization.id)
   end
 
   def create_sbom_occurrence(src_component, src_component_version)

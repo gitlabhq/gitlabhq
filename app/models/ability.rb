@@ -80,14 +80,25 @@ class Ability
 
       before_check(policy, ability.to_sym, user, subject, opts)
 
-      case opts[:scope]
-      when :user
-        DeclarativePolicy.user_scope { policy.allowed?(ability) }
-      when :subject
-        DeclarativePolicy.subject_scope { policy.allowed?(ability) }
+      result = case opts[:scope]
+               when :user
+                 DeclarativePolicy.user_scope { policy.allowed?(ability) }
+               when :subject
+                 DeclarativePolicy.subject_scope { policy.allowed?(ability) }
+               else
+                 policy.allowed?(ability)
+               end
+
+      identity = ::Gitlab::Auth::Identity.fabricate(user)
+
+      if identity.present? && identity.composite?
+        return false unless identity.valid?
+
+        result && allowed?(identity.scoped_user, ability, subject, **opts)
       else
-        policy.allowed?(ability)
+        result
       end
+
     ensure
       # TODO: replace with runner invalidation:
       # See: https://gitlab.com/gitlab-org/declarative-policy/-/merge_requests/24
@@ -151,9 +162,7 @@ class Ability
 
       added_keys = keys_after - keys_before
       added_keys.each do |key|
-        if key.is_a?(String) && key.start_with?('/dp') && key =~ matching
-          ::Gitlab::SafeRequestStore.delete(key)
-        end
+        ::Gitlab::SafeRequestStore.delete(key) if key.is_a?(String) && key.start_with?('/dp') && key =~ matching
       end
     end
 

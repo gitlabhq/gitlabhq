@@ -1,16 +1,21 @@
 - max_topic_title_length = 30
 - detail_page_link = topic_explore_projects_cleaned_path(topic_name: topic.name)
 
-.gl-mt-5.gl-grid{ class: 'sm:gl-grid-cols-2 md:gl-grid-cols-3 ml:gl-grid-cols-3' }
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' },
-                                      body_options: { class: 'gl-flex gl-items-center' }) do |c|
-    - c.with_body do
-      = link_to detail_page_link do
-        = render Pajamas::AvatarComponent.new(topic, size: 48, alt: '', class: 'gl-mr-3')
+%li.topic-row.gl-py-3.gl-items-center{ class: '!gl-flex !gl-px-5' }
+  = render Pajamas::AvatarComponent.new(topic, size: 32, alt: '')
+
+  .gl-min-w-0.gl-grow.gl-ml-3
+    .gl-font-bold
       = link_to detail_page_link do
         - if topic.title_or_name.length > max_topic_title_length
-          %h5.gl-str-truncated.has-tooltip{ title: topic.title_or_name }
-            = truncate(topic.title_or_name, length: max_topic_title_length)
+          = truncate(topic.title_or_name, length: max_topic_title_length)
         - else
-          %h5
-            = topic.title_or_name
+          = topic.title_or_name
+    - if topic.description
+      .gl-text-sm.md.gl-truncate{ class: '*:!gl-text-subtle *:!gl-m-0' }
+        = first_line_in_markdown(topic, :description, 200)
+
+  .stats.gl-text-subtle.gl-shrink-0.gl-hidden.sm:gl-flex
+    %span.has-tooltip{ title: n_('%d project', '%d projects', topic.total_projects_count) % topic.total_projects_count }
+      = sprite_icon('chart', css_class: 'gl-align-text-bottom')
+      = number_with_delimiter(topic.total_projects_count)

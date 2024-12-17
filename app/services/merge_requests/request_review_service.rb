@@ -20,6 +20,7 @@ module MergeRequests
 
         user.invalidate_merge_request_cache_counts if user.merge_request_dashboard_enabled?
         current_user.invalidate_merge_request_cache_counts if current_user.merge_request_dashboard_enabled?
+        request_duo_code_review(merge_request) if user == ::Users::Internal.duo_code_review_bot
 
         success
       else

@@ -61,3 +61,30 @@ mixed_steps_and_scripts:
       step: gitlab.com/gitlab-org/ci-cd/runner-tools/cleanup-step
       env:
         CLEANUP_MODE: 'full'
+
+step_from_local_file_system:
+  run:
+    - name: file_system_step
+      step: ./steps/my-step
+
+step_using_git_reference:
+  run:
+    - name: git_reference_step
+      step:
+        git:
+          url: gitlab.com/components/script
+          dir: bash
+          rev: v1
+      inputs:
+        param1: value1
+      env:
+        env1: value2
+
+step_using_action:
+  run:
+    - name: github_action_step
+      action: mikefarah/yq@master
+      inputs:
+        cmd: yq .name some.yaml
+      env:
+        env1: value1

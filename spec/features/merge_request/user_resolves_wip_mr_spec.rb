@@ -30,11 +30,7 @@ RSpec.describe 'Merge request > User resolves Draft', :js, feature_category: :co
   end
 
   context 'when there is active pipeline for merge request' do
-    let(:feature_flags_state) { true }
-
     before do
-      stub_feature_flags(merge_when_checks_pass: feature_flags_state)
-
       create(:ci_build, pipeline: pipeline)
 
       sign_in(user)
@@ -57,28 +53,6 @@ RSpec.describe 'Merge request > User resolves Draft', :js, feature_category: :co
       # that should already be present.
       expect(page.find('.ci-widget-content', wait: 0)).to have_content("Pipeline ##{pipeline.id}")
       expect(page).to have_content("Set to auto-merge")
-    end
-
-    context 'when the new merge_when_checks_pass and merge blocked components are disabled' do
-      let(:feature_flags_state) { false }
-
-      it 'retains merge request data after clicking Resolve WIP status' do
-        expect(page.find('.ci-widget-content')).to have_content("Pipeline ##{pipeline.id}")
-        expect(page).to have_content "Merge blocked: 1 check failed"
-        expect(page).to have_content "Merge request must not be draft"
-
-        page.within('.mr-state-widget') do
-          click_button('Mark as ready')
-        end
-
-        wait_for_requests
-
-        # If we don't disable the wait here, the test will wait until the
-        # merge request widget refreshes, which masks missing elements
-        # that should already be present.
-        expect(page.find('.ci-widget-content', wait: 0)).to have_content("Pipeline ##{pipeline.id}")
-        expect(page).not_to have_content("Merge blocked")
-      end
     end
   end
 end

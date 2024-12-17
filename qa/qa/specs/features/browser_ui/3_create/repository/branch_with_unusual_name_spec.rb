@@ -11,7 +11,7 @@ module QA
       end
 
       context 'when branch name contains slash, hash, double dash, and capital letter' do
-        it 'renders repository file tree correctly', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347715' do
+        it 'renders repository file tree correctly', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347715' do
           create(:commit,
             project: project,
             branch: branch_name,

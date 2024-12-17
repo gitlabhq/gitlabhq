@@ -13,6 +13,7 @@ module Resolvers
     type Types::MergeRequestType.connection_type, null: true
 
     accept_assignee
+    accept_reviewer
     accept_author
 
     def project

@@ -1,7 +1,7 @@
 ---
 stage: Systems
 group: Distribution
-description: Installation settings.
+description: Configuration settings.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -48,3 +48,4 @@ Customize and configure your self-managed GitLab installation.
 - [Snippets](../administration/snippets/index.md)
 - [Host the product documentation](../administration/docs_self_host.md)
 - [Custom HTML header tags](../administration/custom_html_header_tags.md)
+- [Self-hosted models](../administration/self_hosted_models/index.md)

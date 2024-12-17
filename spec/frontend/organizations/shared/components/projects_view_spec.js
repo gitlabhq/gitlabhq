@@ -8,7 +8,7 @@ import NewProjectButton from '~/organizations/shared/components/new_project_butt
 import GroupsAndProjectsEmptyState from '~/organizations/shared/components/groups_and_projects_empty_state.vue';
 import projectsQuery from '~/organizations/shared/graphql/queries/projects.query.graphql';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
-import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/utils';
+import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
 import { TIMESTAMP_TYPE_CREATED_AT } from '~/vue_shared/components/resource_lists/constants';
 import { createAlert } from '~/alert';
 import { DEFAULT_PER_PAGE } from '~/api';
@@ -308,11 +308,11 @@ describe('ProjectsView', () => {
     });
   });
 
-  describe('when project delete is complete', () => {
+  describe('when lists emits refetch', () => {
     beforeEach(async () => {
       createComponent();
       await waitForPromises();
-      findProjectsList().vm.$emit('delete-complete');
+      findProjectsList().vm.$emit('refetch');
     });
 
     it('refetches list', () => {

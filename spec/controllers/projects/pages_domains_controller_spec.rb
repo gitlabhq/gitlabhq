@@ -93,7 +93,7 @@ RSpec.describe Projects::PagesDomainsController, feature_category: :pages do
     it "creates a new pages domain" do
       expect { post(:create, params: request_params.merge(pages_domain: pages_domain_params)) }
         .to change { PagesDomain.count }.by(1)
-        .and publish_event(PagesDomains::PagesDomainCreatedEvent)
+        .and publish_event(::Pages::Domains::PagesDomainCreatedEvent)
           .with(
             project_id: project.id,
             namespace_id: project.namespace.id,
@@ -134,7 +134,7 @@ RSpec.describe Projects::PagesDomainsController, feature_category: :pages do
 
       it 'publishes PagesDomainUpdatedEvent event' do
         expect { patch(:update, params: params) }
-          .to publish_event(PagesDomains::PagesDomainUpdatedEvent)
+          .to publish_event(::Pages::Domains::PagesDomainUpdatedEvent)
           .with(
             project_id: project.id,
             namespace_id: project.namespace.id,
@@ -175,7 +175,7 @@ RSpec.describe Projects::PagesDomainsController, feature_category: :pages do
 
       it 'does not publish PagesDomainUpdatedEvent event' do
         expect { patch(:update, params: params) }
-          .to not_publish_event(PagesDomains::PagesDomainUpdatedEvent)
+          .to not_publish_event(::Pages::Domains::PagesDomainUpdatedEvent)
       end
     end
 
@@ -228,7 +228,7 @@ RSpec.describe Projects::PagesDomainsController, feature_category: :pages do
     let(:params) { request_params.merge(id: pages_domain.domain) }
 
     it 'calls retry service and redirects' do
-      expect_next_instance_of(PagesDomains::RetryAcmeOrderService, pages_domain) do |service|
+      expect_next_instance_of(::Pages::Domains::RetryAcmeOrderService, pages_domain) do |service|
         expect(service).to receive(:execute)
       end
 
@@ -242,7 +242,7 @@ RSpec.describe Projects::PagesDomainsController, feature_category: :pages do
     it "deletes the pages domain" do
       expect { delete(:destroy, params: request_params.merge(id: pages_domain.domain)) }
         .to change(PagesDomain, :count).by(-1)
-        .and publish_event(PagesDomains::PagesDomainDeletedEvent)
+        .and publish_event(::Pages::Domains::PagesDomainDeletedEvent)
         .with(
           project_id: project.id,
           namespace_id: project.namespace.id,
@@ -268,7 +268,7 @@ RSpec.describe Projects::PagesDomainsController, feature_category: :pages do
 
     it 'publishes PagesDomainUpdatedEvent event' do
       expect { subject }
-        .to publish_event(PagesDomains::PagesDomainUpdatedEvent)
+        .to publish_event(::Pages::Domains::PagesDomainUpdatedEvent)
         .with(
           project_id: project.id,
           namespace_id: project.namespace.id,
@@ -309,7 +309,7 @@ RSpec.describe Projects::PagesDomainsController, feature_category: :pages do
 
       it 'does not publish PagesDomainUpdatedEvent event' do
         expect { subject }
-          .to not_publish_event(PagesDomains::PagesDomainUpdatedEvent)
+          .to not_publish_event(::Pages::Domains::PagesDomainUpdatedEvent)
       end
 
       it 'redirects to show page with a flash message' do

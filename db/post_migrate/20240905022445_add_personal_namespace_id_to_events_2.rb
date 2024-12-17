@@ -12,7 +12,10 @@ class AddPersonalNamespaceIdToEvents2 < Gitlab::Database::Migration[2.2]
     return if column_exists?(:events, :personal_namespace_id)
 
     with_lock_retries(raise_on_exhaustion: true) do
-      add_column :events, :personal_namespace_id, :bigint
+      # Doing DDL in post-deployment migration is discouraged in general,
+      # this is done as a workaround to prevent production incidents when
+      # changing the schema for very high-traffic table
+      add_column :events, :personal_namespace_id, :bigint # rubocop:disable Migration/PreventAddingColumns -- Legacy migration
     end
   end
 

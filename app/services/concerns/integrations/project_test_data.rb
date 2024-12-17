@@ -110,6 +110,84 @@ module Integrations
       Gitlab::DataBuilder::ResourceAccessToken.build(resource_access_token, :expiring, project)
     end
 
+    def vulnerability_events_data
+      return unless ::Feature.enabled?(:vulnerabilities_as_webhook_events, project)
+
+      vulnerability_finding_identifiers = [
+        Vulnerabilities::FindingIdentifier.new(
+          id: 1,
+          project_id: project.id,
+          identifier: Vulnerabilities::Identifier.new(
+            id: 1,
+            project: project,
+            name: 'Gemnasium-29dce398-220a-4315-8c84-16cd8b6d9b05',
+            external_id: '29dce398-220a-4315-8c84-16cd8b6d9b05',
+            external_type: 'gemnasium',
+            url: 'https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/master/gem/rexml/CVE-2024-41123.yml'
+          )
+        ),
+        Vulnerabilities::FindingIdentifier.new(
+          id: 2,
+          project_id: project.id,
+          identifier: Vulnerabilities::Identifier.new(
+            id: 2,
+            project: project,
+            name: 'CVE-2024-41123',
+            external_id: 'CVE-2024-41123',
+            external_type: 'cve',
+            url: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-41123'
+          )
+        )
+      ]
+
+      vulnerability_finding = Vulnerabilities::Finding.new(
+        id: 1,
+        project: project,
+        name: 'REXML DoS vulnerability',
+        severity: :high,
+        report_type: :dependency_scanning,
+        metadata_version: '15.1.4',
+        location: {
+          file: 'Gemfile.lock',
+          dependency: {
+            package: {
+              name: 'rexml'
+            },
+            version: '3.3.1'
+          }
+        },
+        finding_identifiers: vulnerability_finding_identifiers,
+        primary_identifier: vulnerability_finding_identifiers.first.identifier,
+        created_at: Time.zone.now,
+        updated_at: Time.zone.now
+      )
+
+      vulnerability = Vulnerability.new(
+        id: 1,
+        author: current_user,
+        project: project,
+        title: 'REXML DoS vulnerability',
+        state: 'confirmed',
+        cvss: [
+          {
+            vector: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H',
+            vendor: 'NVD'
+          }
+        ],
+        severity: :high,
+        severity_overridden: false,
+        confidence: :unknown,
+        report_type: :dependency_scanning,
+        findings: [vulnerability_finding],
+        confirmed_at: Time.zone.now,
+        confirmed_by_id: current_user.id,
+        created_at: Time.zone.now,
+        updated_at: Time.zone.now
+      )
+
+      Gitlab::DataBuilder::Vulnerability.build(vulnerability)
+    end
+
     def current_user_events_data
       {
         current_user: current_user

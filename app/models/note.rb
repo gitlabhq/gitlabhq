@@ -59,9 +59,6 @@ class Note < ApplicationRecord
   # Attribute used to store the status of quick actions.
   attr_accessor :quick_actions_status
 
-  # Attribute used to determine whether keep_around_commits will be skipped for diff notes.
-  attr_accessor :skip_keep_around_commits
-
   attribute :system, default: false
 
   attr_spammable :note, spam_description: true
@@ -188,7 +185,7 @@ class Note < ApplicationRecord
   # Syncs `confidential` with `internal` as we rename the column.
   # https://gitlab.com/gitlab-org/gitlab/-/issues/367923
   before_create :set_internal_flag
-  after_save :keep_around_commit, if: :for_project_noteable?, unless: -> { importing? || skip_keep_around_commits }
+  after_save :keep_around_commit, if: :needs_keep_around_ref?
   after_save :touch_noteable, unless: :importing?
   after_commit :notify_after_create, on: :create
   after_commit :notify_after_destroy, on: :destroy
@@ -723,6 +720,10 @@ class Note < ApplicationRecord
     attributes.keys
   end
 
+  def uploads_sharding_key
+    { namespace_id: namespace_id }
+  end
+
   private
 
   def trigger_note_subscription?
@@ -743,6 +744,10 @@ class Note < ApplicationRecord
   def system_note_viewable_by_group_ability?(user)
     group_restriction = TYPES_RESTRICTED_BY_GROUP_ABILITY[system_note_metadata.action.to_sym]
     !group_restriction || Ability.allowed?(user, group_restriction, project&.group)
+  end
+
+  def needs_keep_around_ref?
+    for_project_noteable? && !for_merge_request? && !importing?
   end
 
   def keep_around_commit

@@ -129,7 +129,7 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
           expect(Gitlab::GitalyClient).to receive(:allow_n_plus_1_calls).exactly(0).times
           expect(Gitlab::Git::Commit).to receive(:batch_by_oid).once.and_call_original
 
-          reference_filter("A big list of SHAs #{oids.join(", ")}", noteable: noteable)
+          reference_filter("A big list of SHAs #{oids.join(', ')}", noteable: noteable)
         end
       end
     end

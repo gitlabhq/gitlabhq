@@ -85,6 +85,18 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
 
     @merge_request.close
   end
+
+  # rubocop: disable CodeReuse/ActiveRecord
+  def commit
+    commit_id = params[:commit_id].presence
+    return unless commit_id
+
+    return unless @merge_request.all_commits.exists?(sha: commit_id) ||
+      @merge_request.recent_context_commits.map(&:id).include?(commit_id)
+
+    @commit ||= @project.commit(commit_id)
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
 end
 
 Projects::MergeRequests::ApplicationController.prepend_mod_with('Projects::MergeRequests::ApplicationController')

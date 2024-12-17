@@ -6,7 +6,7 @@ module QA
       it 'adds a project member', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347887' do
         Flow::Login.sign_in
 
-        user = Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
+        user = Runtime::User::Store.additional_test_user
 
         project = create(:project, name: 'add-member-project')
         project.visit!

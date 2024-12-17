@@ -68,7 +68,7 @@ describe('Delete tag modal', () => {
     });
 
     it('submits the form when the delete button is clicked', () => {
-      findDeleteButton().trigger('click');
+      findDeleteButton().vm.$emit('click');
 
       expect(findForm().attributes('action')).toBe(path);
       expect(formSubmitSpy).toHaveBeenCalledTimes(1);
@@ -85,7 +85,7 @@ describe('Delete tag modal', () => {
     });
 
     it('calls hide on the modal when cancel button is clicked', () => {
-      findCancelButton().trigger('click');
+      findCancelButton().vm.$emit('click');
 
       expect(modalHideSpy).toHaveBeenCalled();
     });

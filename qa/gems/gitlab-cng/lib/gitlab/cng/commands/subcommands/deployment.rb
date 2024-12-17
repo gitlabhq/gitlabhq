@@ -87,6 +87,10 @@ module Gitlab
             desc: "Host ssh port for gitlab",
             type: :numeric,
             default: 22
+          option :host_registry_port,
+            desc: "Host registry port for gitlab",
+            type: :numeric,
+            default: 5000
           option :print_deploy_args,
             desc: "Print all CI specific component helm values and deployment arguments." \
               "Useful for reproducing CI deployments. Only valid with --ci flag.",
@@ -97,7 +101,7 @@ module Gitlab
 
             if options[:create_cluster]
               Kind::Cluster.new(**symbolized_options.slice(
-                :docker_hostname, :ci, :host_http_port, :host_ssh_port
+                :docker_hostname, :ci, :host_http_port, :host_ssh_port, :host_registry_port
               )).create
             end
 
@@ -108,7 +112,8 @@ module Gitlab
               :admin_password,
               :admin_token,
               :host_http_port,
-              :host_ssh_port
+              :host_ssh_port,
+              :host_registry_port
             )
 
             installation(name, Cng::Deployment::Configurations::Kind.new(**configuration_args)).create

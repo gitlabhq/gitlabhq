@@ -201,14 +201,31 @@ class NotifyPreview < ActionMailer::Preview
 
   def pages_domain_enabled_email
     cleanup do
-      pages_domain = PagesDomain.new(
-        domain: 'my.example.com',
-        project: project,
-        verified_at: Time.now,
-        enabled_until: 1.week.from_now
-      )
-
       Notify.pages_domain_enabled_email(pages_domain, user).message
+    end
+  end
+
+  def pages_domain_disabled_email
+    cleanup do
+      Notify.pages_domain_disabled_email(pages_domain, user).message
+    end
+  end
+
+  def pages_domain_verification_succeeded_email
+    cleanup do
+      Notify.pages_domain_verification_succeeded_email(pages_domain, user).message
+    end
+  end
+
+  def pages_domain_verification_failed_email
+    cleanup do
+      Notify.pages_domain_verification_failed_email(pages_domain, user).message
+    end
+  end
+
+  def pages_domain_auto_ssl_failed_email
+    cleanup do
+      Notify.pages_domain_auto_ssl_failed_email(pages_domain, user).message
     end
   end
 
@@ -543,6 +560,15 @@ class NotifyPreview < ActionMailer::Preview
     end
 
     email
+  end
+
+  def pages_domain
+    @pages_domain ||= PagesDomain.new(
+      domain: 'my.example.com',
+      project: project,
+      verified_at: Time.now,
+      enabled_until: 1.week.from_now
+    )
   end
 end
 

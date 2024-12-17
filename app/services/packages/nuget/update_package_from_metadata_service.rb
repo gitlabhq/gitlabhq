@@ -31,6 +31,8 @@ module Packages
             process_package_update
           end
         end
+
+        create_symbol_files
       rescue ActiveRecord::RecordInvalid => e
         raise InvalidMetadataError, e.message
       rescue Zip::Error
@@ -57,7 +59,6 @@ module Packages
         build_infos = package_to_destroy&.build_infos || []
 
         update_package(target_package, build_infos)
-        create_symbol_files
         ::Packages::UpdatePackageFileService.new(@package_file, package_id: target_package.id, file_name: package_filename)
                                             .execute
         package_to_destroy&.destroy!

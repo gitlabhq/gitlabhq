@@ -168,7 +168,7 @@ export default {
       @click="addBlob"
       >{{ addLabel }}</gl-button
     >
-    <p v-if="!canAdd" data-testid="limitations_text" class="gl-text-secondary">
+    <p v-if="!canAdd" data-testid="limitations_text" class="gl-text-subtle">
       {{ limitationText }}
     </p>
   </div>

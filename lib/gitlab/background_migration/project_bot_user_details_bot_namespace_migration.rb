@@ -10,7 +10,6 @@ module Gitlab
 
       feature_category :system_access
 
-      # rubocop:disable Metrics/BlockLength -- Method is long due to formatted SQL
       def perform
         each_sub_batch do |sub_batch|
           connection.execute(
@@ -39,7 +38,6 @@ module Gitlab
           )
         end
       end
-      # rubocop:enable Metrics/BlockLength
     end
   end
 end

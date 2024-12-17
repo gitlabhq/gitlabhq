@@ -42,6 +42,12 @@ module Gitlab
             issue_event.issuable_type == MergeRequest.name
           end
 
+          # `PruneOldEventsWorker` deletes Event records older than a cutoff date.
+          # Before importing Events, check if they would be pruned.
+          def event_outside_cutoff?(issue_event)
+            issue_event.created_at < PruneOldEventsWorker::CUTOFF_DATE.ago && PruneOldEventsWorker.pruning_enabled?
+          end
+
           def resource_event_belongs_to(issue_event)
             belongs_to_key = merge_request_event?(issue_event) ? :merge_request_id : :issue_id
             { belongs_to_key => issuable_db_id(issue_event) }

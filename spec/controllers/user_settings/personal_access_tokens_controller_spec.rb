@@ -37,6 +37,16 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
 
+    it "does not allow creation of a token with a dynamic user scope" do
+      name = 'My PAT'
+      scopes = %w[user:*]
+
+      post :create, params: { personal_access_token: token_attributes.merge(scopes: scopes, name: name) }
+
+      expect(created_token).to be_nil
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    end
+
     it "allows creation of a token with an expiry date" do
       expires_at = 5.days.from_now.to_date
 
@@ -90,14 +100,16 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
       expect(assigns(:active_access_tokens).to_json).to eq(active_personal_access_tokens_detail.to_json)
     end
 
-    it "builds a PAT with name and scopes from params" do
+    it "builds a PAT with name, description and scopes from params" do
       name = 'My PAT'
       scopes = 'api,read_user'
+      description = 'My PAT description'
 
-      get :index, params: { name: name, scopes: scopes }
+      get :index, params: { name: name, scopes: scopes, description: description }
 
       expect(assigns(:personal_access_token)).to have_attributes(
         name: eq(name),
+        description: eq(description),
         scopes: contain_exactly(:api, :read_user)
       )
     end

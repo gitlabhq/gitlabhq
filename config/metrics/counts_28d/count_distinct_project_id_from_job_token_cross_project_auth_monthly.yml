@@ -1,0 +1,24 @@
+---
+key_path: redis_hll_counters.count_distinct_project_id_from_job_token_cross_project_auth_monthly
+description: Monthly count of unique projects receiving cross-project job token authentications while scope is disabled
+product_group: pipeline_security
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '17.7'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173400
+time_frame: 28d
+data_source: internal_events
+data_category: optional
+distribution:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
+events:
+- name: authorize_job_token_with_disabled_scope
+  unique: project.id
+  filter:
+    label: cross-project

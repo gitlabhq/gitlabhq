@@ -6,7 +6,7 @@
   stage: Enablement
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/387898
   body: |
-    Previously, [GitLab's database](https://docs.gitlab.com/omnibus/settings/database.html)
+    Previously, the [GitLab database](https://docs.gitlab.com/omnibus/settings/database.html)
     configuration had a single `main:` section. This is being deprecated. The new
     configuration has both a `main:` and a `ci:` section.
 

@@ -28,17 +28,17 @@
   &:not(.ProseMirror-hideselection) .content-editor-selection,
   a.ProseMirror-selectednode,
   span.ProseMirror-selectednode {
-    background-color: $blue-100;
-    box-shadow: 0 2px 0 $blue-100, 0 -2px 0 $blue-100;
+    @apply gl-bg-blue-100;
+    box-shadow: 0 2px 0 var(--blue-100, $blue-100), 0 -2px 0 var(--blue-100, $blue-100);
 
     &.gfm-project_member, .gfm-project_member {
       &:not(.current-user) {
-        background-color: $blue-200;
+        @apply gl-bg-blue-200;
       }
     }
 
     &.gfm-project_member {
-      box-shadow: 0 0 0 2px $blue-100;
+      box-shadow: 0 0 0 2px var(--blue-100, $blue-100);
     }
   }
 
@@ -183,6 +183,7 @@
     white-space: pre-wrap;
 
     > code {
+      font-size: $code-font-size-fixed;
       white-space: pre-wrap;
       padding: 0;
       display: flex;
@@ -202,7 +203,6 @@
     width: 100%;
 
     > code {
-      @apply gl-text-sm;
       border-left: 100px solid transparent;
       padding-left: 20px;
       border-radius: 0;
@@ -316,14 +316,16 @@
 }
 
 .table-creator-grid-item {
-  box-shadow: inset 0 0 0 $gl-spacing-scale-2 $white,
-    inset $gl-spacing-scale-1 $gl-spacing-scale-1 0 #{$gl-spacing-scale-2 * 3 / 4} $gray-100,
-    inset #{-$gl-spacing-scale-1} #{-$gl-spacing-scale-1} 0 #{$gl-spacing-scale-2 * 3 / 4} $gray-100 !important;
+  min-height: 1rem !important;
+  min-width: 1rem !important;
 
   &.active {
-    box-shadow: inset 0 0 0 $gl-spacing-scale-2 $white,
-      inset $gl-spacing-scale-1 $gl-spacing-scale-1 0 $gl-spacing-scale-2 $blue-500,
-      inset #{-$gl-spacing-scale-1} #{-$gl-spacing-scale-1} 0 $gl-spacing-scale-2 $blue-500 !important;
+    border-color: $blue-500 !important;
+    border-width: 2px;
+  }
+
+  &:focus {
+    box-shadow: none !important;
   }
 }
 

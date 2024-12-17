@@ -1,0 +1,18 @@
+#import "./fragments/design_file.fragment.graphql"
+
+mutation WorkItemDesignManagementMove(
+  $id: DesignManagementDesignID!
+  $previous: DesignManagementDesignID
+  $next: DesignManagementDesignID
+) {
+  designManagementMove(input: { id: $id, previous: $previous, next: $next }) {
+    designCollection {
+      designs {
+        nodes {
+          ...DesignFile
+        }
+      }
+    }
+    errors
+  }
+}

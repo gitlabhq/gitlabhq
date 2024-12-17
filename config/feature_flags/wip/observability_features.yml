@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158786
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/472815
 milestone: '17.3'
 type: wip
-group: group::observability
+group: group::platform insights
 default_enabled: false

@@ -10,8 +10,10 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+> - Minimum role to set due dates [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
 Due dates can be used in [issues](index.md) to keep track of deadlines and make sure features are
-shipped on time. Users need at least the Reporter role
+shipped on time. Users need at least the Planner role
 to be able to edit the due date. All users with permission to view
 the issue can view the due date.
 

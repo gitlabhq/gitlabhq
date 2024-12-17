@@ -111,6 +111,7 @@ module API
       with_options if: ->(_, _) { Ability.allowed?(options[:current_user], :admin_project, project) } do
         # CI/CD Settings
         expose :ci_default_git_depth, documentation: { type: 'integer', example: 20 }
+        expose :ci_delete_pipelines_in_seconds, documentation: { type: 'integer', example: 86400 }
         expose :ci_forward_deployment_enabled, documentation: { type: 'boolean' }
         expose :ci_forward_deployment_rollback_allowed, documentation: { type: 'boolean' }
         expose(:ci_job_token_scope_enabled, documentation: { type: 'boolean' }) { |p, _| p.ci_outbound_job_token_scope_enabled? }

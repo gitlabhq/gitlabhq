@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import Item from '~/ide/components/merge_requests/item.vue';
 import List from '~/ide/components/merge_requests/list.vue';
 import TokenedInput from '~/ide/components/shared/tokened_input.vue';
@@ -10,7 +11,12 @@ import { mergeRequests as mergeRequestsMock } from '../../mock_data';
 
 Vue.use(Vuex);
 
-describe('IDE merge requests list', () => {
+const skipReason = new SkipReason({
+  name: 'IDE merge requests list',
+  reason: 'Legacy WebIDE is due for deletion',
+  issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508949',
+});
+describeSkipVue3(skipReason, () => {
   let wrapper;
   let fetchMergeRequestsMock;
 

@@ -71,6 +71,9 @@ export default class GroupsStore {
     const childrenCount = this.hideProjects
       ? rawGroupItem.subgroup_count
       : rawGroupItem.children_count;
+    const hasChildren = this.hideProjects
+      ? rawGroupItem.has_subgroups
+      : rawGroupItem.children_count > 0;
 
     const groupItem = {
       id: rawGroupItem.id,
@@ -93,6 +96,7 @@ export default class GroupsStore {
       isBeingRemoved: false,
       parentId: rawGroupItem.parent_id,
       childrenCount,
+      hasChildren,
       projectCount: rawGroupItem.project_count,
       subgroupCount: rawGroupItem.subgroup_count,
       memberCount: rawGroupItem.number_users_with_delimiter,

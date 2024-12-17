@@ -25,7 +25,7 @@ export default {
       />
       <span class="ide-sidebar-project-title">
         <span class="sidebar-context-title"> {{ project.name }} </span>
-        <span class="sidebar-context-title text-secondary">
+        <span class="sidebar-context-title gl-font-normal gl-text-subtle">
           {{ project.path_with_namespace }}
         </span>
       </span>

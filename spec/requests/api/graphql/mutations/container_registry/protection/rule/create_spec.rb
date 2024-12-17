@@ -22,9 +22,9 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
   end
 
   let(:mutation) do
-    graphql_mutation(:create_container_registry_protection_rule, input,
+    graphql_mutation(:create_container_protection_repository_rule, input,
       <<~QUERY
-      containerRegistryProtectionRule {
+      containerProtectionRepositoryRule {
         id
         repositoryPathPattern
       }
@@ -34,7 +34,7 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
     )
   end
 
-  let(:mutation_response) { graphql_mutation_response(:create_container_registry_protection_rule) }
+  let(:mutation_response) { graphql_mutation_response(:create_container_protection_repository_rule) }
 
   subject(:post_graphql_mutation_create_container_registry_protection_rule) {
     post_graphql_mutation(mutation, current_user: user)
@@ -48,7 +48,7 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
 
       expect(mutation_response).to include(
         'errors' => be_blank,
-        'containerRegistryProtectionRule' => {
+        'containerProtectionRepositoryRule' => {
           'id' => be_present,
           'repositoryPathPattern' => input[:repository_path_pattern]
         }

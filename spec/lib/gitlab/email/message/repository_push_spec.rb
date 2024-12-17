@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Email::Message::RepositoryPush do
+RSpec.describe Gitlab::Email::Message::RepositoryPush, feature_category: :source_code_management do
   include RepoHelpers
 
   let!(:group) { create(:group, name: 'my_group') }
@@ -72,6 +72,12 @@ RSpec.describe Gitlab::Email::Message::RepositoryPush do
       subject { message.diffs }
 
       it { is_expected.to all(be_an_instance_of(Gitlab::Diff::File)) }
+    end
+
+    describe '#changed_files' do
+      subject { message.changed_files }
+
+      it { is_expected.to all(be_an_instance_of(Gitlab::Git::ChangedPath)) }
     end
 
     describe '#diffs_count' do

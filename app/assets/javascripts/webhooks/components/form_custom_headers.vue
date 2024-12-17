@@ -117,7 +117,7 @@ export default {
       >
         {{ s__('Webhooks|Add custom header') }}
       </gl-button>
-      <span v-else class="gl-text-secondary">
+      <span v-else class="gl-text-subtle">
         {{ s__("Webhooks|You've reached the maximum number of custom headers.") }}
       </span>
     </template>
@@ -138,7 +138,7 @@ export default {
       @remove="removeItem(index)"
     />
 
-    <span v-if="customHeaders.length === 0" class="gl-text-secondary">
+    <span v-if="customHeaders.length === 0" class="gl-text-subtle">
       {{ s__('Webhooks|No custom headers configured.') }}
     </span>
   </crud-component>

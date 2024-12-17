@@ -633,4 +633,4 @@ This error means that the processes are unable to decrypt encrypted data that is
 
 ## Related topics
 
-- [Elasticsearch workers overload Sidekiq](../../integration/advanced_search/elasticsearch_troubleshooting.md#elasticsearch-workers-overload-sidekiq).
+- [Elasticsearch workers overload Sidekiq](../../integration/elasticsearch/troubleshooting/migrations.md#elasticsearch-workers-overload-sidekiq).

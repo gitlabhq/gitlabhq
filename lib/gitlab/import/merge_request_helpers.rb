@@ -6,9 +6,11 @@ module Gitlab
       include DatabaseHelpers
 
       # @param attributes [Hash]
+      # @return MergeRequest::Metrics
       def create_merge_request_metrics(attributes)
         metric = MergeRequest::Metrics.find_or_initialize_by(merge_request: merge_request) # rubocop: disable CodeReuse/ActiveRecord -- no need to move this to ActiveRecord model
         metric.update(attributes)
+        metric
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
@@ -77,23 +79,17 @@ module Gitlab
       end
 
       def create_approval!(project_id, merge_request_id, user_id, submitted_at)
-        approval_attributes = {
+        approval = Approval.create(
           merge_request_id: merge_request_id,
           user_id: user_id,
           created_at: submitted_at,
-          updated_at: submitted_at
-        }
-
-        approval_result = ::Approval.insert(
-          approval_attributes,
-          returning: [:id],
-          unique_by: [:user_id, :merge_request_id]
+          updated_at: submitted_at,
+          importing: true
         )
 
-        return unless approval_result.rows.present?
+        return unless approval.persisted?
 
         note = add_approval_system_note!(project_id, merge_request_id, user_id, submitted_at)
-        approval = Approval.find(approval_result.first['id'])
 
         [approval, note]
       end

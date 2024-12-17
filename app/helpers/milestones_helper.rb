@@ -9,7 +9,7 @@ module MilestonesHelper
   end
 
   def milestone_counter_class(primary)
-    primary ? 'gl-text-white' : 'gl-text-gray-500'
+    primary ? 'gl-text-white' : 'gl-text-subtle'
   end
 
   private

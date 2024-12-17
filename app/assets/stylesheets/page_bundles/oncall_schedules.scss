@@ -1,16 +1,12 @@
 @import 'mixins_and_variables_and_functions';
 
-@mixin inset-border-1-red-500($important: false) {
-  box-shadow: inset 0 0 0 $gl-border-size-1 $red-500 if-important($important);
-}
-
 .invalid-dropdown {
   // stylelint-disable-next-line gitlab/no-gl-class
   .gl-button.gl-dropdown-toggle {
-    @include inset-border-1-red-500;
+    border-color: var(--red-500, $red-500);
 
     &:hover {
-      @include inset-border-1-red-500(true);
+      border-color: var(--red-500, $red-500);
     }
   }
 }

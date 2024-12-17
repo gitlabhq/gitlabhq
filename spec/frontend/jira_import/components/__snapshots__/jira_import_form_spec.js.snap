@@ -130,7 +130,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
                   />
                 </div>
                 <li
-                  class="gl-dropdown-text text-secondary"
+                  class="gl-dropdown-text gl-text-subtle"
                   role="presentation"
                 >
                   <p
@@ -231,7 +231,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
                   />
                 </div>
                 <li
-                  class="gl-dropdown-text text-secondary"
+                  class="gl-dropdown-text gl-text-subtle"
                   role="presentation"
                 >
                   <p

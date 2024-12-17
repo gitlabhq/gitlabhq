@@ -26,7 +26,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         target_branch: 'feature',
         target_project: @project,
         auto_merge_enabled: true,
-        auto_merge_strategy: AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS,
+        auto_merge_strategy: AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS,
         merge_user: @user
       )
 
@@ -37,7 +37,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         target_branch: 'test',
         target_project: @project,
         auto_merge_enabled: true,
-        auto_merge_strategy: AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS,
+        auto_merge_strategy: AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS,
         merge_user: @user
       )
 
@@ -543,6 +543,15 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
 
       context 'With merged MR that contains the same SHA' do
         before do
+          @merge_request.head_pipeline = create(
+            :ci_pipeline,
+            :success,
+            project: @merge_request.source_project,
+            ref: @merge_request.source_branch,
+            sha: @merge_request.diff_head_sha)
+
+          @merge_request.update_head_pipeline
+
           # Merged via UI
           MergeRequests::MergeService
             .new(project: @merge_request.target_project, current_user: @user, params: { sha: @merge_request.diff_head_sha })
@@ -1012,7 +1021,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         target_project: project,
         merge_user: user,
         auto_merge_enabled: true,
-        auto_merge_strategy: AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS
+        auto_merge_strategy: AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS
       )
     end
 
@@ -1030,7 +1039,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
       merge_request.reload
     end
 
-    it 'aborts MWPS for merge requests' do
+    it 'aborts auto merge for merge requests' do
       expect(merge_request.auto_merge_enabled?).to be_falsey
       expect(merge_request.merge_user).to be_nil
     end
@@ -1038,7 +1047,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
     context 'when merge params contains up-to-date sha' do
       let(:merge_sha) { newrev }
 
-      it 'maintains MWPS for merge requests' do
+      it 'maintains auto merge for merge requests' do
         expect(merge_request.auto_merge_enabled?).to be_truthy
         expect(merge_request.merge_user).to eq(user)
       end

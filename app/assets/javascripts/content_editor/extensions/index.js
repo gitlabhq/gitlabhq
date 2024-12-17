@@ -33,6 +33,7 @@ export { default as HorizontalRule } from './horizontal_rule';
 export { default as HTMLMarks } from './html_marks';
 export { default as HTMLNodes } from './html_nodes';
 export { default as Image } from './image';
+export { default as Indent } from './indent';
 export { default as InlineDiff } from './inline_diff';
 export { default as Italic } from './italic';
 export { default as Link } from './link';

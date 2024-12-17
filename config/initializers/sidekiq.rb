@@ -15,7 +15,6 @@ Gitlab::SidekiqSharding::Router.migrated_shards
 # can't be referred to.
 #
 # We do not need the custom command builder since Sidekiq will handle the typing of Redis arguments.
-queues_config_hash = Gitlab::Redis::Queues.params.except(:command_builder)
 queue_instance = ENV.fetch('SIDEKIQ_SHARD_NAME', Gitlab::Redis::Queues::SIDEKIQ_MAIN_SHARD_INSTANCE_NAME)
 queues_config_hash = Gitlab::Redis::Queues.instances[queue_instance].params.except(:command_builder)
 

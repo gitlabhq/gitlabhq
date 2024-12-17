@@ -66,8 +66,8 @@ RSpec.describe Todos::Destroy::EntityLeaveService, feature_category: :team_plann
     case access_name
     when :developer
       object.add_developer(user)
-    when :reporter
-      object.add_reporter(user)
+    when :planner
+      object.add_planner(user)
     when :guest
       object.add_guest(user)
     end
@@ -91,11 +91,11 @@ RSpec.describe Todos::Destroy::EntityLeaveService, feature_category: :team_plann
         context 'access permissions' do
           where(:group_access, :project_access, :method_name) do
             [
-              [nil,       :reporter, :does_not_remove_any_todos],
+              [nil,       :planner,  :does_not_remove_any_todos],
               [nil,       :guest,    :removes_confidential_issues_and_internal_notes_and_merge_request_todos],
-              [:reporter, nil,       :does_not_remove_any_todos],
+              [:planner,  nil,       :does_not_remove_any_todos],
               [:guest,    nil,       :removes_confidential_issues_and_internal_notes_and_merge_request_todos],
-              [:guest,    :reporter, :does_not_remove_any_todos],
+              [:guest,    :planner,  :does_not_remove_any_todos],
               [:guest,    :guest,    :removes_confidential_issues_and_internal_notes_and_merge_request_todos]
             ]
           end
@@ -123,11 +123,11 @@ RSpec.describe Todos::Destroy::EntityLeaveService, feature_category: :team_plann
         context 'access permissions' do
           where(:group_access, :project_access, :method_name) do
             [
-              [nil,       :reporter, :does_not_remove_any_todos],
+              [nil,       :planner,  :does_not_remove_any_todos],
               [nil,       :guest,    :removes_confidential_issues_and_internal_notes_and_merge_request_todos],
-              [:reporter, nil,       :does_not_remove_any_todos],
+              [:planner,  nil,       :does_not_remove_any_todos],
               [:guest,    nil,       :removes_confidential_issues_and_internal_notes_and_merge_request_todos],
-              [:guest,    :reporter, :does_not_remove_any_todos],
+              [:guest,    :planner,  :does_not_remove_any_todos],
               [:guest,    :guest,    :removes_confidential_issues_and_internal_notes_and_merge_request_todos]
             ]
           end
@@ -176,11 +176,11 @@ RSpec.describe Todos::Destroy::EntityLeaveService, feature_category: :team_plann
           context 'access permissions' do
             where(:group_access, :project_access, :method_name) do
               [
-                [nil,       :reporter, :does_not_remove_any_todos],
+                [nil,       :planner,  :does_not_remove_any_todos],
                 [nil,       :guest,    :removes_confidential_issues_and_internal_notes_todos],
-                [:reporter, nil,       :does_not_remove_any_todos],
+                [:planner,  nil,       :does_not_remove_any_todos],
                 [:guest,    nil,       :removes_confidential_issues_and_internal_notes_todos],
-                [:guest,    :reporter, :does_not_remove_any_todos],
+                [:guest,    :planner,  :does_not_remove_any_todos],
                 [:guest,    :guest,    :removes_confidential_issues_and_internal_notes_todos]
               ]
             end
@@ -221,11 +221,11 @@ RSpec.describe Todos::Destroy::EntityLeaveService, feature_category: :team_plann
         context 'access permissions' do
           where(:group_access, :project_access, :method_name) do
             [
-              [nil,       :reporter, :does_not_remove_any_todos],
+              [nil,       :planner,  :does_not_remove_any_todos],
               [nil,       :guest,    :removes_confidential_issues_and_internal_notes_and_merge_request_todos],
-              [:reporter, nil,       :does_not_remove_any_todos],
+              [:planner, nil,        :does_not_remove_any_todos],
               [:guest,    nil,       :removes_confidential_issues_and_internal_notes_and_merge_request_todos],
-              [:guest,    :reporter, :does_not_remove_any_todos],
+              [:guest,    :planner,  :does_not_remove_any_todos],
               [:guest,    :guest,    :removes_confidential_issues_and_internal_notes_and_merge_request_todos]
             ]
           end
@@ -336,11 +336,11 @@ RSpec.describe Todos::Destroy::EntityLeaveService, feature_category: :team_plann
           where(:group_access, :project_access, :method_name) do
             [
               [nil,       nil,       :removes_confidential_issues_and_internal_notes_todos],
-              [nil,       :reporter, :does_not_remove_any_todos],
+              [nil,       :planner,  :does_not_remove_any_todos],
               [nil,       :guest,    :removes_confidential_issues_and_internal_notes_todos],
-              [:reporter, nil,       :does_not_remove_any_todos],
+              [:planner,  nil,       :does_not_remove_any_todos],
               [:guest,    nil,       :removes_confidential_issues_and_internal_notes_todos],
-              [:guest,    :reporter, :does_not_remove_any_todos],
+              [:guest,    :planner,  :does_not_remove_any_todos],
               [:guest,    :guest,    :removes_confidential_issues_and_internal_notes_todos]
             ]
           end

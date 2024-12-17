@@ -164,7 +164,7 @@ export default {
         </tbody>
       </table>
 
-      <div v-else class="gl-text-secondary">{{ $options.i18n.NO_CI_MESSAGE }}</div>
+      <div v-else class="gl-text-subtle">{{ $options.i18n.NO_CI_MESSAGE }}</div>
     </section>
 
     <section class="gl-mb-6">
@@ -178,7 +178,7 @@ export default {
         </tbody>
       </table>
 
-      <div v-else class="gl-text-secondary">{{ $options.i18n.NO_PARAMETERS_MESSAGE }}</div>
+      <div v-else class="gl-text-subtle">{{ $options.i18n.NO_PARAMETERS_MESSAGE }}</div>
     </section>
 
     <section class="gl-mb-6">
@@ -192,7 +192,7 @@ export default {
         </tbody>
       </table>
 
-      <div v-else class="gl-text-secondary">{{ $options.i18n.NO_METADATA_MESSAGE }}</div>
+      <div v-else class="gl-text-subtle">{{ $options.i18n.NO_METADATA_MESSAGE }}</div>
     </section>
 
     <section class="gl-mb-6">
@@ -207,7 +207,7 @@ export default {
         />
       </div>
 
-      <div v-else class="gl-text-secondary">{{ $options.i18n.NO_METRICS_MESSAGE }}</div>
+      <div v-else class="gl-text-subtle">{{ $options.i18n.NO_METRICS_MESSAGE }}</div>
     </section>
   </div>
 </template>

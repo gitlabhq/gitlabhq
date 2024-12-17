@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Package', :object_storage, product_group: :package_registry, quarantine: {
     issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/455304',
-    only: { condition: -> { ENV['QA_RUN_TYPE']&.match?('gdk-qa-blocking') } },
+    only: { condition: -> { ENV['QA_RUN_TYPE']&.match?('gdk-instance') } },
     type: :investigating
   } do
     describe 'NuGet group level endpoint', :external_api_calls do
@@ -96,7 +96,7 @@ module QA
           end
         end
 
-        it 'publishes a nuget package at the project endpoint and installs it from the group endpoint', :blocking,
+        it 'publishes a nuget package at the project endpoint and installs it from the group endpoint',
           testcase: params[:testcase] do
           nuget_upload_yaml = ERB.new(read_fixture('package_managers/nuget',
             'nuget_upload_package.yaml.erb')).result(binding)

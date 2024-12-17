@@ -116,6 +116,54 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
         expect(tasks_parent).to match_array([work_item])
       end
 
+      context 'when tasks had different parent before' do
+        let_it_be(:previous_parent) { create(:work_item, :issue, project: project) }
+
+        before do
+          create(:parent_link, work_item: task1, work_item_parent: previous_parent)
+          create(:parent_link, work_item: task2, work_item_parent: previous_parent)
+        end
+
+        it 'changes the parent and triggers event', :aggregate_failures do
+          expect { subject }.to publish_event(WorkItems::WorkItemUpdatedEvent)
+            .with({
+              id: previous_parent.id,
+              namespace_id: previous_parent.namespace.id,
+              updated_widgets: ["hierarchy_widget"]
+            })
+
+          new_parent = parent_link_class.where(work_item: [task1, task2]).map(&:work_item_parent).uniq
+          expect(new_parent).to match_array([work_item])
+        end
+      end
+
+      context 'when tasks had different parents before' do
+        let_it_be(:previous_parent1) { create(:work_item, :issue, project: project) }
+        let_it_be(:previous_parent2) { create(:work_item, :issue, project: project) }
+
+        before do
+          create(:parent_link, work_item: task1, work_item_parent: previous_parent1)
+          create(:parent_link, work_item: task2, work_item_parent: previous_parent2)
+        end
+
+        it 'changes the parent and triggers event', :aggregate_failures do
+          expect { subject }.to publish_event(WorkItems::WorkItemUpdatedEvent)
+            .with({
+              id: previous_parent1.id,
+              namespace_id: previous_parent1.namespace.id,
+              updated_widgets: ["hierarchy_widget"]
+            }).and publish_event(WorkItems::WorkItemUpdatedEvent)
+            .with({
+              id: previous_parent2.id,
+              namespace_id: previous_parent2.namespace.id,
+              updated_widgets: ["hierarchy_widget"]
+            })
+
+          new_parent = parent_link_class.where(work_item: [task1, task2]).map(&:work_item_parent).uniq
+          expect(new_parent).to match_array([work_item])
+        end
+      end
+
       context 'when relative_position is set' do
         let(:params) { { issuable_references: [task1, task2], relative_position: 1337 } }
 

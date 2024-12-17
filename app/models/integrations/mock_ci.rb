@@ -2,7 +2,8 @@
 
 # For an example companion mocking service, see https://gitlab.com/gitlab-org/gitlab-mock-ci-service
 module Integrations
-  class MockCi < BaseCi
+  class MockCi < Integration
+    include Base::Ci
     prepend EnableSslVerification
 
     ALLOWED_STATES = %w[failed canceled running pending success success-with-warnings skipped not_found].freeze

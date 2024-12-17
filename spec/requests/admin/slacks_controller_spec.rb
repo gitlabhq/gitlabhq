@@ -15,7 +15,6 @@ RSpec.describe Admin::SlacksController, :enable_admin_mode, feature_category: :i
     let(:destroy_path) { admin_application_settings_slack_path }
     let(:service) { Integrations::SlackInstallation::InstanceService }
     let(:propagates_on_destroy) { true }
-    let(:flag_protected) { true }
 
     let(:redirect_url) do
       edit_admin_application_settings_integration_path(

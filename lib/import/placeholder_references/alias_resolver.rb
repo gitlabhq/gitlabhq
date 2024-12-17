@@ -210,6 +210,13 @@ module Import
             columns: { "user_id" => "user_id" }
           }
         },
+        "Vulnerability" => {
+          1 => {
+            model: Vulnerability,
+            columns: { "author_id" => "author_id", "resolved_by_id" => "resolved_by_id",
+                       "dismissed_by_id" => "dismissed_by_id", "confirmed_by_id" => "confirmed_by_id" }
+          }
+        },
         "WorkItem" => {
           1 => {
             model: WorkItem,

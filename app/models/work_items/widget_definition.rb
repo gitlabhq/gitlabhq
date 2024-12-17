@@ -36,7 +36,6 @@ module WorkItems
       award_emoji: 16,
       linked_items: 17,
       color: 18, # EE-only
-      rolledup_dates: 19, # EE-only
       participants: 20,
       time_tracking: 21,
       designs: 22,
@@ -45,7 +44,7 @@ module WorkItems
       email_participants: 25
     }
 
-    attribute :widget_options, :ind_jsonb
+    attribute :widget_options, ::Gitlab::Database::Type::IndifferentJsonb.new
 
     def self.available_widgets
       enabled.filter_map(&:widget_class).uniq

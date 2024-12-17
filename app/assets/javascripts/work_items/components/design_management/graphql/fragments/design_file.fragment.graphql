@@ -1,3 +1,5 @@
+#import "./diff_refs.fragment.graphql"
+
 fragment DesignFile on Design {
   id
   event
@@ -12,5 +14,8 @@ fragment DesignFile on Design {
     nodes {
       id
     }
+  }
+  diffRefs {
+    ...DesignDiffRefs
   }
 }

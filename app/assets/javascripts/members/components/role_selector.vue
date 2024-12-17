@@ -1,13 +1,21 @@
 <script>
-import { GlCollapsibleListbox } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlBadge, GlPopover } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
+import { ACCESS_LEVEL_PLANNER_STRING } from '~/access_level/constants';
 
 export default {
-  components: { GlCollapsibleListbox },
+  components: { GlCollapsibleListbox, GlBadge, GlPopover },
   inject: {
     manageMemberRolesPath: { default: null },
   },
+  i18n: {
+    plannerRoleDescription: s__(
+      'MemberRole|The Planner role is a hybrid of the existing Guest and Reporter roles but designed for users who need access to planning workflows.',
+    ),
+  },
+  plannerRole: ACCESS_LEVEL_PLANNER_STRING,
+  badgeId: 'planner-role-badge',
   props: {
     roles: {
       type: Object,
@@ -59,18 +67,26 @@ export default {
   >
     <template #list-item="{ item }">
       <div
-        class="gl-line-clamp-2"
+        class="gl-line-clamp-2 gl-flex gl-justify-between"
         :class="{ 'gl-font-bold': item.memberRoleId }"
-        data-testid="role-name"
+        data-testid="role-data"
       >
-        {{ item.text }}
+        <span data-testid="role-name">{{ item.text }}</span>
+        <template v-if="$options.plannerRole === item.value">
+          <gl-badge :id="$options.badgeId" variant="info" class="gl-ml-2">
+            {{ __('New') }}
+          </gl-badge>
+          <gl-popover :target="$options.badgeId">
+            {{ $options.i18n.plannerRoleDescription }}
+          </gl-popover>
+        </template>
       </div>
       <div
         v-if="item.memberRoleId"
         class="gl-mt-1 gl-line-clamp-2 gl-text-sm"
         data-testid="role-description"
       >
-        <span v-if="item.description" class="gl-text-gray-700">{{ item.description }}</span>
+        <span v-if="item.description" class="gl-text-subtle">{{ item.description }}</span>
         <span v-else class="gl-text-subtle">{{ s__('MemberRole|No description') }}</span>
       </div>
     </template>

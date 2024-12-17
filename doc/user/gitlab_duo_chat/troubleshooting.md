@@ -20,6 +20,14 @@ as well as
 After you enable GitLab Duo Chat, it might take a few minutes for the
 button to appear.
 
+If this does not work, you can also check the following troubleshooting documentation:
+
+- [GitLab Duo Code Suggestions](../project/repository/code_suggestions/troubleshooting.md)
+- [VS Code](../../editor_extensions/visual_studio_code/troubleshooting.md)
+- [Microsoft Visual Studio](../../editor_extensions/visual_studio/visual_studio_troubleshooting.md)
+- [JetBrains IDEs](../../editor_extensions/jetbrains_ide/jetbrains_troubleshooting.md)
+- [Neovim](../../editor_extensions/neovim/neovim_troubleshooting.md)
+
 ## `Error M2000`
 
 You might get an error that states
@@ -212,6 +220,14 @@ You might get an error that states
 
 This is a fallback error that occurs when there is a problem with GitLab Duo Chat.
 Please try a more specific request, enter `/clear` to start a new chat, or leave feedback to help us improve.
+
+## `Error G3001`
+
+You might get an error that states
+`I'm sorry, but answering this question requires a different Duo subscription. Please contact your administrator.`.
+
+This error occurs when GitLab Duo Chat is not available in your subscription.
+Try a different request and contact your administrator.
 
 ## Header mismatch issue
 

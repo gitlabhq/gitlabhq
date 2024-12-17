@@ -3,11 +3,11 @@ import { GlButton, GlDisclosureDropdown, GlLoadingIcon, GlTooltipDirective } fro
 import { createAlert } from '~/alert';
 import { s__, __, sprintf } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
-import { PIPELINE_MINI_GRAPH_POLL_INTERVAL } from '~/ci/pipeline_details/constants';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { getQueryHeaders, toggleQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
 import { graphqlEtagStagePath } from '~/ci/pipeline_details/utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { PIPELINE_POLL_INTERVAL_DEFAULT } from '~/ci/constants';
 import getPipelineStageJobsQuery from './graphql/queries/get_pipeline_stage_jobs.query.graphql';
 import JobItem from './job_item.vue';
 
@@ -36,22 +36,16 @@ export default {
       required: false,
       default: false,
     },
-    pollInterval: {
-      type: Number,
-      required: false,
-      default: PIPELINE_MINI_GRAPH_POLL_INTERVAL,
-    },
     stage: {
       type: Object,
       required: true,
     },
   },
-  emits: ['miniGraphStageClick'],
+  emits: ['jobActionExecuted', 'miniGraphStageClick'],
   data() {
     return {
       isDropdownOpen: false,
       stageJobs: [],
-      isPolling: false,
     };
   },
   apollo: {
@@ -66,10 +60,10 @@ export default {
         };
       },
       skip() {
-        return !this.isPolling;
+        return !this.isDropdownOpen;
       },
-      result() {
-        this.$apollo.queries.stageJobs.startPolling(this.pollInterval);
+      pollInterval() {
+        return this.pollInterval;
       },
       update(data) {
         return data?.ciPipelineStage?.jobs?.nodes || [];
@@ -93,6 +87,9 @@ export default {
     isLoading() {
       return this.$apollo.queries.stageJobs.loading;
     },
+    pollInterval() {
+      return this.isDropdownOpen ? PIPELINE_POLL_INTERVAL_DEFAULT : 0;
+    },
   },
   mounted() {
     toggleQueryPollingByVisibility(this.$apollo.queries.stageJobs);
@@ -100,11 +97,9 @@ export default {
   methods: {
     onHideDropdown() {
       this.isDropdownOpen = false;
-      this.isPolling = false;
     },
     onShowDropdown() {
       this.isDropdownOpen = true;
-      this.isPolling = true;
 
       // used for tracking in the pipeline table
       this.$emit('miniGraphStageClick');
@@ -159,13 +154,14 @@ export default {
         :key="job.id"
         :dropdown-length="stageJobs.length"
         :job="job"
+        @jobActionExecuted="$emit('jobActionExecuted')"
       />
     </ul>
 
     <template #footer>
       <div
         v-if="!isLoading && isMergeTrain"
-        class="gl-border-t gl-px-4 gl-py-3 gl-text-sm gl-text-secondary"
+        class="gl-border-t gl-px-4 gl-py-3 gl-text-sm gl-text-subtle"
         data-testid="merge-train-message"
       >
         {{ $options.i18n.mergeTrainMessage }}

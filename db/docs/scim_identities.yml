@@ -9,3 +9,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26124
 milestone: '12.9'
 gitlab_schema: gitlab_main_cell
 exempt_from_sharding: true
+table_size: small

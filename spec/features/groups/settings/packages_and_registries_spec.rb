@@ -82,7 +82,7 @@ RSpec.describe 'Group Package and registry settings', feature_category: :package
       wait_for_requests
 
       within_testid 'maven-settings' do
-        expect(page).to have_field _('Exceptions'), disabled: true
+        expect(page).to have_field _('Exceptions')
 
         click_button class: 'gl-toggle'
 
@@ -110,6 +110,29 @@ RSpec.describe 'Group Package and registry settings', feature_category: :package
       expect(page).to have_content('is an invalid regexp')
     end
 
+    context 'when packages_allow_duplicate_exceptions disabled' do
+      before do
+        stub_feature_flags(packages_allow_duplicate_exceptions: false)
+      end
+
+      it 'automatically saves changes to the server', :js do
+        visit_settings_page
+        wait_for_requests
+
+        within_testid 'maven-settings' do
+          expect(page).to have_field _('Exceptions'), disabled: true
+
+          click_button class: 'gl-toggle'
+
+          expect(page).to have_field _('Exceptions'), disabled: false
+
+          visit_settings_page
+
+          expect(page).to have_field _('Exceptions'), disabled: false
+        end
+      end
+    end
+
     context 'in a sub group' do
       it 'works correctly', :js do
         visit_sub_group_settings_page
@@ -118,11 +141,32 @@ RSpec.describe 'Group Package and registry settings', feature_category: :package
         within_testid 'maven-settings' do
           expect(page).to have_content('Allow duplicates')
 
-          expect(page).to have_field _('Exceptions'), disabled: true
+          expect(page).to have_field _('Exceptions')
 
           click_button class: 'gl-toggle'
 
           expect(page).to have_field _('Exceptions'), disabled: false
+        end
+      end
+
+      context 'when packages_allow_duplicate_exceptions disabled' do
+        before do
+          stub_feature_flags(packages_allow_duplicate_exceptions: false)
+        end
+
+        it 'works correctly', :js do
+          visit_sub_group_settings_page
+          wait_for_requests
+
+          within_testid 'maven-settings' do
+            expect(page).to have_content('Allow duplicates')
+
+            expect(page).to have_field _('Exceptions'), disabled: true
+
+            click_button class: 'gl-toggle'
+
+            expect(page).to have_field _('Exceptions'), disabled: false
+          end
         end
       end
     end

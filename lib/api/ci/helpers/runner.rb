@@ -80,6 +80,12 @@ module API
 
           forbidden! unless job.valid_token?(job_token)
 
+          # Make sure that composite identity is propagated to `PipelineProcessWorker`
+          # when the build's status change.
+          # TODO: Once https://gitlab.com/gitlab-org/gitlab/-/issues/490992 is done we should
+          # remove this because it will be embedded in `Ci::AuthJobFinder`.
+          ::Gitlab::Auth::Identity.link_from_job(job)
+
           forbidden!('Project has been deleted!') if job.project.nil? || job.project.pending_delete?
           forbidden!('Job has been erased!') if job.erased?
           job_forbidden!(job, 'Job is not processing on runner') unless processing_on_runner?(job)

@@ -35,7 +35,11 @@ To disable the GitLab issue tracker for a project:
 1. Under **Issues**, turn off the toggle.
 1. Select **Save changes**.
 
-After you disable the GitLab issue tracker, **Issues** is not visible on the left sidebar of your project.
+After you disable the GitLab issue tracker:
+
+- If an [external issue tracker is configured](#configure-an-external-issue-tracker),
+  **Issues** is visible on the left sidebar but redirects to the external issue tracker.
+- If no external issue tracker is configured, **Issues** is not visible on the left sidebar.
 
 ## Configure an external issue tracker
 

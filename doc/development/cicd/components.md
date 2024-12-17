@@ -12,7 +12,7 @@ The location for all official GitLab component projects is the [`gitlab.com/comp
 This group contains all components that are designed to be generic, served to all GitLab users, and maintained by GitLab.
 For example: SAST, Secret Detection and Code Quality components.
 A component project can initially be created under a different group (for example `gitlab-org`)
-but it needs to be moved into the `components` group before the first version gets published to the catalog.
+but it needs to be moved into the `components` group before the first version gets published to the catalog. All projects under [`gitlab.com/components`](https://gitlab.com/components) group must be public
 
 Components that are for GitLab internal use only, for example specific to `gitlab-org/gitlab` project, should be
 implemented under `gitlab-org` group.
@@ -69,7 +69,7 @@ in the catalog.
    - **Components**: Sub-sections for each component, each with:
      - **Usage**: Examples with and without inputs (when optional).
      - **Inputs**: A table showing the input names, types, default values (if any) and descriptions.
-     - **Variables** (when applicable): The variable names, possible values, and descriptions.
+     - **Variables** (when applicable): The variable names, supported values, and descriptions.
    - **Contribute**: Notes and how to get in touch with the maintainers.
      Usually the contribution process should follow the [official guide](../../ci/components/index.md).
 1. Use underscores `_` for composite input names and hyphens `-` as separators, if necessary. For example: `service_x-project_name`.

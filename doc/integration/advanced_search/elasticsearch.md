@@ -1,5 +1,5 @@
 ---
-stage: Data Stores
+stage: Foundations
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -17,6 +17,26 @@ To enable advanced search, you must:
 
 1. [Install an Elasticsearch or AWS OpenSearch cluster](#install-an-elasticsearch-or-aws-opensearch-cluster).
 1. [Enable advanced search](#enable-advanced-search).
+
+NOTE:
+Advanced search stores all projects in the same Elasticsearch indices.
+However, private projects appear in search results only to users who have access.
+
+## Elasticsearch glossary
+
+This glossary provides definitions for terms related to Elasticsearch.
+
+- **Lucene**: A full-text search library written in Java.
+- **Near real time (NRT)**: Refers to the slight latency from the time to index a
+  document to the time when it becomes searchable.
+- **Cluster**: A collection of one or more nodes that work together to hold all
+  the data, providing indexing and search capabilities.
+- **Node**: A single server that works as part of a cluster.
+- **Index**: A collection of documents that have somewhat similar characteristics.
+- **Document**: A basic unit of information that can be indexed.
+- **Shards**: Fully-functional and independent subdivisions of indices. Each shard is actually
+  a Lucene index.
+- **Replicas**: Failover mechanisms that duplicate indices.
 
 ## Install an Elasticsearch or AWS OpenSearch cluster
 
@@ -55,10 +75,11 @@ before we remove them.
 
 #### OpenSearch
 
-| GitLab version          | OpenSearch version       |
-|-------------------------|--------------------------|
-| GitLab 15.5.3 and later | OpenSearch 1.x and later |
-| GitLab 15.0 to 15.5.2   | OpenSearch 1.x           |
+| GitLab version          | OpenSearch version             |
+|-------------------------|--------------------------------|
+| GitLab 17.6 and later   | OpenSearch 1.x and later       |
+| GitLab 15.5.3 to 17.5   | OpenSearch 1.x, 2.0 to 2.17    |
+| GitLab 15.0 to 15.5.2   | OpenSearch 1.x                 |
 
 If your version of Elasticsearch or OpenSearch is incompatible, to prevent data loss, indexing pauses and
 a message is logged in the
@@ -784,7 +805,7 @@ When you believe you've fixed the cause of the failure:
 
 If you cannot get the migration to succeed, you may
 consider the
-[last resort to recreate the index from scratch](elasticsearch_troubleshooting.md#last-resort-to-recreate-an-index).
+[last resort to recreate the index from scratch](../elasticsearch/troubleshooting/indexing.md#last-resort-to-recreate-an-index).
 This may allow you to skip over
 the problem because a newly created index skips all migrations as the index
 is recreated with the correct up-to-date schema.
@@ -801,7 +822,7 @@ Migrations that have been removed are
 If you upgrade GitLab before all pending advanced search migrations are completed,
 any pending migrations that have been removed in the new version cannot be executed or retried.
 In this case, you must
-[re-create your index from scratch](elasticsearch_troubleshooting.md#last-resort-to-recreate-an-index).
+[re-create your index from scratch](../elasticsearch/troubleshooting/indexing.md#last-resort-to-recreate-an-index).
 
 ### Skippable migrations
 
@@ -809,7 +830,7 @@ Skippable migrations are only executed when a condition is met.
 For example, if a migration depends on a specific version of Elasticsearch, it could be skipped until that version is reached.
 
 If a skippable migration is not executed by the time the migration is marked as obsolete, to apply the change you must
-[re-create the index](elasticsearch_troubleshooting.md#last-resort-to-recreate-an-index).
+[re-create the index](../elasticsearch/troubleshooting/indexing.md#last-resort-to-recreate-an-index).
 
 ## GitLab advanced search Rake tasks
 

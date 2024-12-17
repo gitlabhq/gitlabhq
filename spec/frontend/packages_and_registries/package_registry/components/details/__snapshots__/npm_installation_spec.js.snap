@@ -34,7 +34,7 @@ exports[`NpmInstallation renders all the messages 1`] = `
     trackinglabel="code_instruction"
   />
   <span
-    class="gl-text-secondary"
+    class="gl-text-subtle"
   >
     You may also need to setup authentication using an auth token.
     <gl-link-stub

@@ -85,7 +85,6 @@ describe('Work Item Note', () => {
   const findNoteActions = () => wrapper.findComponent(NoteActions);
   const findCommentForm = () => wrapper.findComponent(WorkItemCommentForm);
   const findEditedAt = () => wrapper.findComponent(EditedAt);
-  const findNoteWrapper = () => wrapper.find('[data-testid="note-wrapper"]');
 
   const createComponent = ({
     note = mockWorkItemCommentNote,
@@ -134,8 +133,8 @@ describe('Work Item Note', () => {
       expect(findCommentForm().exists()).toBe(true);
     });
 
-    it('should not render note wrapper', () => {
-      expect(findNoteWrapper().exists()).toBe(false);
+    it('should not render note body', () => {
+      expect(findNoteBody().exists()).toBe(false);
     });
 
     it('updates saved draft with current note text', () => {
@@ -154,7 +153,7 @@ describe('Work Item Note', () => {
       await nextTick();
 
       expect(findCommentForm().exists()).toBe(false);
-      expect(findNoteWrapper().exists()).toBe(true);
+      expect(findNoteBody().exists()).toBe(true);
     });
 
     it('should show the awards list when in edit mode', async () => {
@@ -228,7 +227,7 @@ describe('Work Item Note', () => {
 
     it('should render note wrapper', () => {
       createComponent();
-      expect(findNoteWrapper().exists()).toBe(true);
+      expect(findNoteBody().exists()).toBe(true);
     });
 
     it('renders no "edited at" information by default', () => {

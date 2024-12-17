@@ -70,9 +70,23 @@ module Keeps
       change.title = "Finalize migration #{job_name}"
 
       change.identifiers = [self.class.name.demodulize, job_name]
+      change.description = change_description(migration_record, job_name, last_migration_file)
 
+      feature_category = migration['feature_category']
+
+      change.labels = groups_helper.labels_for_feature_category(feature_category) + [
+        'maintenance::removal'
+      ]
+
+      change.reviewers = groups_helper.pick_reviewer_for_feature_category(feature_category, change.identifiers)
+
+      change
+    end
+
+    def change_description(migration_record, job_name, last_migration_file)
       # rubocop:disable Gitlab/DocUrl -- Not running inside rails application
-      change.description = <<~MARKDOWN
+      <<~MARKDOWN
+      #{migration_code_not_present_message unless migration_code_present?(job_name)}
       This migration was finished at `#{migration_record.finished_at || migration_record.updated_at}`, you can confirm
       the status using our
       [batched background migration chatops commands](https://docs.gitlab.com/ee/development/database/batched_background_migrations.html#monitor-the-progress-and-status-of-a-batched-background-migration).
@@ -93,16 +107,6 @@ module Keeps
       last required stop.
       MARKDOWN
       # rubocop:enable Gitlab/DocUrl
-
-      feature_category = migration['feature_category']
-
-      change.labels = groups_helper.labels_for_feature_category(feature_category) + [
-        'maintenance::removal'
-      ]
-
-      change.reviewers = groups_helper.pick_reviewer_for_feature_category(feature_category, change.identifiers)
-
-      change
     end
 
     def truncate_migration_name(migration_name)
@@ -233,6 +237,33 @@ module Keeps
 
     def groups_helper
       @groups_helper ||= ::Keeps::Helpers::Groups.new
+    end
+
+    def migration_code_not_present_message
+      <<~MARKDOWN
+      ### Warning
+
+      The migration code was **not found** in the codebase, the finalization cannot complete without it.
+
+      Please re-add the background migration code to this merge request and start database testing pipeline
+      MARKDOWN
+    end
+
+    def migration_code_present?(job_name)
+      file_name = "#{job_name.underscore}.rb"
+      migration_code_in_ce?(file_name) || migration_code_in_ee?(file_name)
+    end
+
+    def migration_code_in_ce?(file_name)
+      File.exist?(
+        Rails.root.join(*%w[lib gitlab background_migration]).join(file_name)
+      )
+    end
+
+    def migration_code_in_ee?(file_name)
+      File.exist?(
+        Rails.root.join(*%w[ee lib ee gitlab background_migration]).join(file_name)
+      )
     end
   end
 end

@@ -103,7 +103,7 @@ module IconsHelper
   def boolean_to_icon(value)
     if value
       sprite_icon('check',
-        css_class: 'gl-text-green-500') + content_tag(:span, _('Enabled'), class: 'gl-pl-2 gl-text-subtle')
+        css_class: 'gl-text-success') + content_tag(:span, _('Enabled'), class: 'gl-pl-2 gl-text-subtle')
     else
       content_tag(:span, _('Not enabled'), class: 'gl-text-subtle')
     end

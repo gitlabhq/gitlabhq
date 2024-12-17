@@ -1,9 +1,14 @@
 import VueRouter from 'vue-router';
+import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import IdeRouter from '~/ide/ide_router_extension';
 
 jest.mock('vue-router');
-
-describe('IDE overrides of VueRouter', () => {
+const skipReason = new SkipReason({
+  name: 'IDE overrides of VueRouter',
+  reason: 'Legacy WebIDE is due for deletion',
+  issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508949',
+});
+describeSkipVue3(skipReason, () => {
   const paths = (branch) => [
     `${branch}`,
     `/${branch}`,

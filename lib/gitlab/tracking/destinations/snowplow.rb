@@ -109,7 +109,7 @@ module Gitlab
 
         def log_failures(failures)
           failures.each do |failure|
-            Gitlab::AppLogger.error("#{failure["se_ca"]} #{failure["se_ac"]} failed to be reported to collector at #{hostname}")
+            Gitlab::AppLogger.error("#{failure['se_ca']} #{failure['se_ac']} failed to be reported to collector at #{hostname}")
           end
         end
       end

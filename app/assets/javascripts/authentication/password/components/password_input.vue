@@ -42,6 +42,11 @@ export default {
       required: false,
       default: 'current-password',
     },
+    required: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     name: {
       type: String,
       required: true,
@@ -76,7 +81,7 @@ export default {
     <gl-form-input
       :id="id"
       class="js-password-complexity-validation js-track-error !gl-pr-8"
-      required
+      :required="required"
       :autocomplete="autocomplete"
       :name="name"
       :minlength="minimumPasswordLength"

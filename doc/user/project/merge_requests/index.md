@@ -175,10 +175,21 @@ GitLab adds the merge request to the user's **Assigned merge requests** page.
 
 ## Merge a merge request
 
-During the merge request [review process](reviews/index.md), reviewers provide feedback on your merge request.
-When a reviewer decides that the contents of your merge request are acceptable, the reviewer can set
-[auto-merge](auto_merge.md) on it, even if some merge checks are failing. When a merge request is set to auto-merge,
-it merges after all merge checks pass, without more action from you.
+During the [merge request review process](reviews/index.md), reviewers provide
+feedback on your changes. When a reviewer is satisfied with the changes,
+they can enable [auto-merge](auto_merge.md), even if some merge checks are failing.
+After all merge checks pass, the merge request is automatically merged, without further action from you.
+
+Default merge permissions:
+
+- The default branch, typically `main`, is protected.
+- Only Maintainers and higher roles can merge into the default branch.
+- Developers can merge any merge requests targeting non-protected branches.
+
+To determine if you have permission to merge a specific merge request, GitLab checks:
+
+- Your [role in the project](../../permissions.md#roles). For example, Developer, Maintainer, or Owner.
+- The [branch protections](../repository/branches/protected.md) of the target branch.
 
 ## Close a merge request
 
@@ -373,7 +384,7 @@ Threads on lines that don't change and top-level resolvable threads are not reso
 
 ## Move notifications and to-dos
 
-DETAILs:
+DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 

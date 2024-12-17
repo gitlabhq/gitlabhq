@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe API::GroupMilestones, feature_category: :team_planning do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:organization) { create(:organization) }
+  let_it_be(:user) { create(:user, organization: organization) }
   let_it_be_with_refind(:group) { create(:group, :private) }
-  let_it_be(:project) { create(:project, namespace: group) }
+  let_it_be(:project) { create(:project, namespace: group, organization: organization) }
   let_it_be(:group_member) { create(:group_member, group: group, user: user) }
   let_it_be(:closed_milestone) do
     create(:closed_milestone, group: group, title: 'version1', description: 'closed milestone')
@@ -31,7 +32,7 @@ RSpec.describe API::GroupMilestones, feature_category: :team_planning do
 
   describe 'GET /groups/:id/milestones' do
     context 'for REST only' do
-      let_it_be(:ancestor_group) { create(:group, :private) }
+      let_it_be(:ancestor_group) { create(:group, :private, organization: organization) }
       let_it_be(:ancestor_group_milestone) { create(:milestone, group: ancestor_group, updated_at: 2.days.ago) }
 
       before_all do

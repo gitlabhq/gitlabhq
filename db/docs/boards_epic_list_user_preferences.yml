@@ -9,8 +9,6 @@ description: Epic board list preferences on a per-user basis, specifically wheth
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54541
 milestone: '13.10'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 desired_sharding_key:
   group_id:
     references: namespaces
@@ -21,3 +19,4 @@ desired_sharding_key:
         sharding_key: group_id
         belongs_to: epic_list
     awaiting_backfill_on_parent: true
+table_size: small

@@ -45,7 +45,7 @@ function formatTooltipText({ date, count }) {
   if (count > 0) {
     contribText = n__('%d contribution', '%d contributions', count);
   }
-  return `${contribText}<br /><span class="gl-text-gray-300">${dateDayName} ${dateText}</span>`;
+  return `${contribText}<br /><span class="gl-text-gray-300 dark:gl-text-gray-700">${dateDayName} ${dateText}</span>`;
 }
 
 // Return the contribution level from the number of contributions
@@ -195,6 +195,8 @@ export default class ActivityCalendar {
       .append('rect')
       .attr('x', '0')
       .attr('y', (stamp) => this.dayYPos(stamp.day))
+      .attr('rx', '2')
+      .attr('ry', '2')
       .attr('width', this.daySize)
       .attr('height', this.daySize)
       .attr('data-level', (stamp) => getLevelFromContributions(stamp.count))
@@ -277,6 +279,13 @@ export default class ActivityCalendar {
         return;
       }
 
+      // Remove is-active class from all other cells
+      this.svg.selectAll('.user-contrib-cell.is-active').classed('is-active', false);
+
+      // Add is-active class to the clicked cell
+      // eslint-disable-next-line no-restricted-globals
+      d3.select(event.currentTarget).classed('is-active', true);
+
       $(this.activitiesContainer)
         .empty()
         .append(loadingIconForLegacyJS({ size: 'lg' }));
@@ -311,6 +320,9 @@ export default class ActivityCalendar {
       this.currentSelectedDate = '';
       $(this.activitiesContainer).html('');
       $(this.recentActivitiesContainer).show();
+
+      // Remove is-active class from all other cells
+      this.svg.selectAll('.user-contrib-cell.is-active').classed('is-active', false);
     }
   }
 }

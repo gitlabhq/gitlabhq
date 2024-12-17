@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [beta feature](../../policy/experiment-beta-support.md) for self-managed GitLab instances.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [beta feature](../../policy/development_stages_support.md) for self-managed GitLab instances.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 17.3.
 
 The metadata database enables many new registry features, including
@@ -643,6 +643,20 @@ You should not run the importer again if you encounter this issue.
 If you must proceed, you must delete the `database-in-use` lock file manually from the file system.
 The file is located at `/path/to/rootdirectory/docker/registry/lockfiles/database-in-use`.
 
+### Error: `pre importing all repositories: AccessDenied:`
+
+You might receive an `AccessDenied` error when [importing existing registries](#existing-registries)
+and using AWS S3 as your storage backend:
+
+```shell
+/opt/gitlab/embedded/bin/registry database import --step-one /var/opt/gitlab/registry/config.yml
+  [0s] step one: import manifests
+  [0s] step one: import manifests failed to import metadata: pre importing all repositories: AccessDenied: Access Denied
+```
+
+Ensure that the user executing the command has the
+correct [permission scopes](https://docker-docs.uclv.cu/registry/storage-drivers/s3/#s3-permission-scopes).
+
 ### Registry fails to start due to metadata management issues
 
 The registry could fail to start with of the following errors:
@@ -654,7 +668,7 @@ but you have not [migrated existing data](#existing-registries) to the metadata 
 
 #### Error: `registry metadata database in use, please enable the database`
 
-This error happens when you have completed [migrating existing data](#existing-registries) to the metadata database, 
+This error happens when you have completed [migrating existing data](#existing-registries) to the metadata database,
 but you have not enabled the database in your configuration.
 
 #### Problems checking or creating the lock files

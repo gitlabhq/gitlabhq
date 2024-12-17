@@ -213,5 +213,21 @@ describe('CRUD Component', () => {
 
       expect(findBody().exists()).toBe(false);
     });
+
+    it('emits `expanded` when clicked on a collapsed toggle', async () => {
+      createComponent({ isCollapsible: true, collapsed: true }, { default: '<p>Body slot</p>' });
+
+      await findCollapseToggle().vm.$emit('click');
+
+      expect(wrapper.emitted('expanded')).toStrictEqual([[]]);
+    });
+
+    it('emits `collapsed` when clicked on an expanded toggle', async () => {
+      createComponent({ isCollapsible: true }, { default: '<p>Body slot</p>' });
+
+      await findCollapseToggle().vm.$emit('click');
+
+      expect(wrapper.emitted('collapsed')).toStrictEqual([[]]);
+    });
   });
 });

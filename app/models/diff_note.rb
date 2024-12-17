@@ -24,7 +24,7 @@ class DiffNote < Note
   validate :verify_supported, unless: :importing?
 
   before_validation :set_line_code, if: :on_text?, unless: :importing?
-  after_save :keep_around_commits, unless: -> { importing? || skip_keep_around_commits }
+  after_save :keep_around_commits, if: -> { needs_keep_around_ref? }
 
   NoteDiffFileCreationError = Class.new(StandardError)
 
@@ -129,6 +129,17 @@ class DiffNote < Note
         a << self.position.head_sha
       end
     end
+  end
+
+  def latest_diff_file_path
+    latest_diff_file.file_path
+  end
+
+  def raw_truncated_diff_lines
+    discussion
+      .truncated_diff_lines(highlight: false)
+      .map(&:text)
+      .join("\n")
   end
 
   private

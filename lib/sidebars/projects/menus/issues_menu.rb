@@ -47,19 +47,9 @@ module Sidebars
           end
         end
 
-        override :pill_count
-        def pill_count
-          return if Feature.enabled?(:async_sidebar_counts, context.project.root_ancestor)
-
-          strong_memoize(:pill_count) do
-            count = context.project.open_issues_count(context.current_user)
-            format_cached_count(1000, count)
-          end
-        end
-
         override :pill_count_field
         def pill_count_field
-          'openIssuesCount' if Feature.enabled?(:async_sidebar_counts, context.project.root_ancestor)
+          'openIssuesCount'
         end
 
         override :pill_html_options

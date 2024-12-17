@@ -118,9 +118,7 @@ RSpec.shared_examples 'issuable record that supports quick actions' do |with_wid
     it 'assigns and sets milestone to issuable' do
       expect(issuable.assignees).to eq([assignee])
       expect(issuable.description).to eq new_descr
-      # WorkItem milestone widget does not support quick the action yet
-      expect(issuable.milestone).to eq(milestone) unless issuable.is_a?(WorkItem)
-      expect(issuable.milestone).to be_nil if issuable.is_a?(WorkItem)
+      expect(issuable.milestone).to eq(milestone)
     end
   end
 end

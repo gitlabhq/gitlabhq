@@ -127,18 +127,6 @@ RSpec.describe Gitlab::Graphql::Queries do
       expect(described_class.find(path)).to be_empty
     end
 
-    it 'ignores customer.query.graphql' do
-      path = root / 'plans.customer.query.graphql'
-
-      expect(described_class.find(path)).to be_empty
-    end
-
-    it 'ignores customer.mutation.graphql' do
-      path = root / 'plans.customer.mutation.graphql'
-
-      expect(described_class.find(path)).to be_empty
-    end
-
     it 'finds all query definitions under a root directory' do
       found = described_class.find(root)
 
@@ -152,9 +140,7 @@ RSpec.describe Gitlab::Graphql::Queries do
 
       expect(found).not_to include(
         definition_of(root / 'typedefs.graphql'),
-        definition_of(root / 'author.fragment.graphql'),
-        definition_of(root / 'plans.customer.query.graphql'),
-        definition_of(root / 'plans.customer.mutation.graphql')
+        definition_of(root / 'author.fragment.graphql')
       )
     end
   end

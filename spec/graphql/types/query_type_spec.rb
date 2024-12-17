@@ -119,7 +119,7 @@ RSpec.describe GitlabSchema.types['Query'], feature_category: :shared do
   describe 'container_repository field' do
     subject { described_class.fields['containerRepository'] }
 
-    it { is_expected.to have_graphql_type(Types::ContainerRepositoryDetailsType) }
+    it { is_expected.to have_graphql_type(Types::ContainerRegistry::ContainerRepositoryDetailsType) }
   end
 
   describe 'package field' do
@@ -175,6 +175,50 @@ RSpec.describe GitlabSchema.types['Query'], feature_category: :shared do
       is_expected.to have_graphql_type(GraphQL::Types::Boolean.to_non_null_type)
       is_expected.to have_graphql_arguments(:name)
       is_expected.to have_graphql_resolver(Resolvers::FeatureFlagResolver)
+    end
+  end
+
+  describe 'jobTokenPoliciesByCategory field' do
+    subject { described_class.fields['jobTokenPoliciesByCategory'] }
+
+    it 'returns job token policies', :aggregate_failures do
+      is_expected.to have_graphql_type(::Types::Ci::JobTokenScope::JobTokenPolicyCategoryType)
+
+      query = <<~GRAPHQL
+        query {
+          jobTokenPoliciesByCategory {
+            text
+            value
+            description
+            policies {
+              text
+              value
+              description
+              type
+            }
+          }
+        }
+      GRAPHQL
+
+      expected_result = ::Ci::JobToken::Policies::POLICIES_BY_CATEGORY.map do |category|
+        {
+          'text' => category[:text],
+          'value' => category[:value].upcase,
+          'description' => category[:description],
+          'policies' => category[:policies].map do |policy|
+            {
+              'text' => policy[:text],
+              'value' => policy[:value].upcase,
+              'description' => policy[:description],
+              'type' => policy[:type].upcase
+            }
+          end
+        }
+      end
+
+      result = GitlabSchema.execute(query).as_json.dig('data', 'jobTokenPoliciesByCategory')
+
+      expect(result).to eq(expected_result.as_json)
     end
   end
 end

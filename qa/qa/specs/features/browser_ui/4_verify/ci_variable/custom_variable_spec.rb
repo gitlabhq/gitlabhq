@@ -31,6 +31,8 @@ module QA
       before do
         Flow::Login.sign_in
 
+        project.change_pipeline_variables_minimum_override_role('developer')
+
         project.visit!
         Page::Project::Menu.perform(&:go_to_pipelines)
         Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
@@ -40,7 +42,7 @@ module QA
         runner&.remove_via_api!
       end
 
-      it 'manually creates a pipeline and uses the defined custom variable value', :blocking,
+      it 'manually creates a pipeline and uses the defined custom variable value',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/378975' do
         Page::Project::Pipeline::New.perform do |new|
           new.configure_variable(value: variable_custom_value)

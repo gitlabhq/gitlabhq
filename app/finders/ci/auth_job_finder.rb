@@ -30,7 +30,22 @@ module Ci
     attr_reader :token
 
     def find_job_by_token
-      ::Ci::Build.find_by_token(token)
+      jwt = ::Ci::JobToken::Jwt.decode(token)
+      if jwt&.job
+        link_composite_identity!(jwt)
+        jwt.job
+      else
+        # TODO: Remove fallback finder when feature flag `ci_job_token_jwt` is removed
+        ::Ci::Build.find_by_token(token)
+      end
+    end
+
+    def link_composite_identity!(jwt)
+      return unless jwt.scoped_user
+
+      # We prefer not to use `link_from_job` when we have the JWT because
+      # the JWT is the source of truth.
+      ::Gitlab::Auth::Identity.fabricate(jwt.job.user)&.link!(jwt.scoped_user)
     end
 
     def validate_job!(job)

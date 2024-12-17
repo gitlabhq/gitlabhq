@@ -1,12 +1,8 @@
 <script>
-import {
-  GlCollapsibleListbox,
-  GlIcon,
-  GlFormInput,
-  GlTooltipDirective as GlTooltip,
-} from '@gitlab/ui';
+import { GlCollapsibleListbox, GlFormInput, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 import { cloneDeep, isEqual } from 'lodash';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { s__, __ } from '~/locale';
 import { mappingFields } from '../constants';
 import {
@@ -34,8 +30,8 @@ export default {
   mappingFields,
   components: {
     GlCollapsibleListbox,
-    GlIcon,
     GlFormInput,
+    HelpIcon,
   },
   directives: {
     GlTooltip,
@@ -142,12 +138,7 @@ export default {
       </h5>
       <h5 v-if="hasFallbackColumn" id="fallbackFieldsHeader" class="gl-table-cell gl-pb-3 gl-pr-3">
         {{ $options.i18n.columns.fallbackKeyTitle }}
-        <gl-icon
-          v-gl-tooltip
-          name="question-o"
-          class="gl-text-gray-500"
-          :title="$options.i18n.fallbackTooltip"
-        />
+        <help-icon v-gl-tooltip :title="$options.i18n.fallbackTooltip" />
       </h5>
     </div>
 

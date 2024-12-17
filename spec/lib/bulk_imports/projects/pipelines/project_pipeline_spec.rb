@@ -8,7 +8,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectPipeline, feature_catego
     let_it_be(:group) { create(:group) }
     let_it_be(:bulk_import) { create(:bulk_import, user: user) }
 
-    let_it_be(:entity) do
+    let(:entity) do
       create(
         :bulk_import_entity,
         source_type: :project_entity,
@@ -19,8 +19,8 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectPipeline, feature_catego
       )
     end
 
-    let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
-    let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
+    let(:tracker) { create(:bulk_import_tracker, entity: entity) }
+    let(:context) { BulkImports::Pipeline::Context.new(tracker) }
 
     let(:project_data) do
       {
@@ -42,10 +42,14 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectPipeline, feature_catego
     end
 
     it 'imports new project into destination group', :aggregate_failures do
-      expect { project_pipeline.run }.to change { Project.count }.by(1)
+      expect { project_pipeline.run }
+        .to change { Project.count }.by(1)
+        .and change { entity.reload.organization }.to(nil)
 
       project_path = 'my-destination-project'
       imported_project = Project.find_by_path(project_path)
+
+      expect(entity.project).to eq(imported_project)
 
       expect(imported_project).not_to be_nil
       expect(imported_project.group).to eq(group)

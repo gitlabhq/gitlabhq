@@ -683,7 +683,7 @@ export default {
       role="gridcell"
       data-testid="environment-build-cell"
     >
-      <a v-if="shouldRenderBuildName" :href="buildPath" class="build-link gl-text-primary">
+      <a v-if="shouldRenderBuildName" :href="buildPath" class="build-link gl-text-default">
         <tooltip-on-truncate :title="buildName" truncate-target="child" class="gl-flex">
           <span class="flex-truncate-child">
             {{ buildName }}

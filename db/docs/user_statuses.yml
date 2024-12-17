@@ -8,3 +8,4 @@ description: Stores users' statuses
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20614
 milestone: '11.2'
 gitlab_schema: gitlab_main_clusterwide
+table_size: small

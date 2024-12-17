@@ -4,6 +4,7 @@ import { Mousetrap, MOUSETRAP_COPY_KEYBOARD_SHORTCUT } from '~/lib/mousetrap';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import {
   COPY_BUTTON_ACTION,
   DOWNLOAD_BUTTON_ACTION,
@@ -33,7 +34,7 @@ export default {
   recoveryCodeDownloadFilename: RECOVERY_CODE_DOWNLOAD_FILENAME,
   i18n,
   mousetrap: null,
-  components: { GlSprintf, GlButton, GlAlert, ClipboardButton, GlCard },
+  components: { GlSprintf, GlButton, GlAlert, ClipboardButton, GlCard, PageHeading },
   mixins: [Tracking.mixin()],
   props: {
     codes: {
@@ -100,20 +101,19 @@ export default {
 
 <template>
   <div>
-    <h1 class="page-title gl-text-size-h-display">
-      {{ $options.i18n.pageTitle }}
-    </h1>
-    <hr />
+    <page-heading :heading="$options.i18n.pageTitle">
+      <template #description>
+        <gl-sprintf :message="$options.i18n.pageDescription">
+          <template #bold="{ content }"
+            ><strong>{{ content }}</strong></template
+          >
+        </gl-sprintf>
+      </template>
+    </page-heading>
+
     <gl-alert variant="info" :dismissible="false">
       {{ $options.i18n.alertTitle }}
     </gl-alert>
-    <p class="gl-mt-5">
-      <gl-sprintf :message="$options.i18n.pageDescription">
-        <template #bold="{ content }"
-          ><strong>{{ content }}</strong></template
-        >
-      </gl-sprintf>
-    </p>
 
     <gl-card class="codes-to-print gl-my-5" data-testid="recovery-codes">
       <ul class="gl-m-0 gl-pl-5">

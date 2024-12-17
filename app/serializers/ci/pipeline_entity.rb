@@ -93,7 +93,11 @@ class Ci::PipelineEntity < Grape::Entity
   end
 
   expose :failed_builds_count do |pipeline|
-    pipeline.failed_builds.size
+    if options[:disable_failed_builds]
+      pipeline.limited_failed_builds.size
+    else
+      pipeline.failed_builds.size
+    end
   end
 
   expose :pipeline_schedule, using: Ci::PipelineScheduleEntity

@@ -1,21 +1,3 @@
-# Use this template to announce a feature deprecation or other
-# important planned changes at least three releases prior to removal.
-# Breaking changes must happen in a major release.
-#
-# See the deprecation guidelines to confirm your understanding of GitLab's definitions:
-# https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology
-#
-# If an End of Support period applies, see the OPTIONAL section below.
-#
-# For more information, see the handbook:
-# https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-and-other-planned-breaking-change-announcements
-
-# ===================
-# REQUIRED FIELDS
-# ===================
-
-# ----- DELETE EVERYTHING ABOVE THIS LINE -----
-
 - title: "`workflow:rules` templates"
   # The milestones for the deprecation announcement, and the removal.
   removal_milestone: "19.0"
@@ -27,10 +9,10 @@
   reporter: dhershkovitch
   stage: verify
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/456394
-  impact: low # Can be one of: [critical, high, medium, low]
-  scope: project # Can be one or a combination of: [instance, group, project]
-  resolution_role: Maintainer # Can be one of: [Admin, Owner, Maintainer, Developer]
-  manual_task: true # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
+  impact: low  # Can be one of: [critical, high, medium, low]
+  scope: project  # Can be one or a combination of: [instance, group, project]
+  resolution_role: Maintainer  # Can be one of: [Admin, Owner, Maintainer, Developer]
+  manual_task: true  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
   body: |  # (required) Don't change this line.
     The [`workflow:rules`](https://docs.gitlab.com/ee/ci/yaml/workflow.html#workflowrules-templates) templates are deprecated and no longer recommended for use. Using these templates greatly limits the flexibility of your pipelines and makes it hard to use new `workflow` features.
 

@@ -53,26 +53,28 @@ export default {
     {
       key: 'timeline',
       label: __('Timeline'),
-      thClass: 'gl-text-center gl-w-4/20',
-      tdClass: `${tableDataClass} gl-text-center`,
+      thClass: 'gl-w-4/20',
+      tdClass: `${tableDataClass}`,
     },
     {
       key: 'events',
       label: __('Events'),
-      thClass: 'gl-text-center gl-w-2/20',
-      tdClass: `${tableDataClass} gl-text-center`,
+      thClass: 'gl-w-2/20',
+      thAlignRight: true,
+      tdClass: `${tableDataClass} gl-text-right`,
     },
     {
       key: 'users',
       label: __('Users'),
-      thClass: 'gl-text-center gl-w-2/20',
-      tdClass: `${tableDataClass} gl-text-center`,
+      thClass: 'gl-w-2/20',
+      thAlignRight: true,
+      tdClass: `${tableDataClass} gl-text-right`,
     },
     {
       key: 'lastSeen',
       label: __('Last seen'),
-      thClass: 'gl-text-center gl-w-2/20',
-      tdClass: `${tableDataClass} gl-text-center`,
+      thClass: 'gl-w-2/20',
+      tdClass: `${tableDataClass}`,
     },
     {
       key: 'status',
@@ -86,8 +88,8 @@ export default {
     resolved: __('Resolved'),
   },
   sortFields: {
-    last_seen: __('Last Seen'),
-    first_seen: __('First Seen'),
+    last_seen: __('Last seen'),
+    first_seen: __('First seen'),
     frequency: __('Frequency'),
   },
   components: {
@@ -283,7 +285,7 @@ export default {
 </script>
 
 <template>
-  <div class="error-list">
+  <div class="gl-mt-5">
     <div v-if="errorTrackingEnabled">
       <!-- Enable ET -->
       <gl-alert
@@ -317,14 +319,17 @@ export default {
 
       <!-- Search / Filter Bar -->
       <div
-        class="gl-border gl-m-0 gl-flex gl-flex-col gl-bg-gray-50 gl-p-5 md:gl-flex-row md:gl-items-center"
+        class="gl-m-0 gl-flex gl-flex-col gl-gap-3 gl-bg-subtle gl-p-5 md:gl-flex-row md:gl-items-center"
       >
-        <div class="search-box gl-mb-2 gl-flex gl-grow md:gl-mb-0">
-          <div class="filtered-search-box gl-mb-0">
+        <div class="gl-mb-2 gl-flex gl-grow md:gl-mb-0">
+          <div class="gl-border gl-mb-0 gl-flex gl-grow gl-rounded-base gl-bg-default">
             <gl-dropdown
+              icon="history"
+              data-testid="recent-searches-dropdown"
+              text-sr-only
+              category="tertiary"
+              toggle-class="!gl-border-none !gl-rounded-r-none !gl-rounded-l-base"
               :text="__('Recent searches')"
-              class="filtered-search-history-dropdown-wrapper"
-              toggle-class="filtered-search-history-dropdown-toggle-button !gl-shadow-none !gl-border-r-dropdown !gl-border-1 !gl-rounded-none"
               :disabled="loading"
             >
               <div v-if="!$options.hasLocalStorage" class="gl-px-5">
@@ -344,34 +349,34 @@ export default {
               </template>
               <div v-else class="gl-px-5">{{ __("You don't have any recent searches") }}</div>
             </gl-dropdown>
-            <div class="filtered-search-input-container gl-grow">
+            <div class="gl-border-l gl-grow">
               <gl-form @submit.prevent="searchByQuery(errorSearchQuery)">
                 <gl-form-input
                   v-model="errorSearchQuery"
-                  class="filtered-search !gl-pl-3"
                   :disabled="loading"
+                  class="!gl-shadow-none"
                   :placeholder="__('Search or filter results…')"
                   autofocus
                 />
               </gl-form>
             </div>
-            <div class="gl-search-box-by-type-right-icons">
-              <gl-button
-                v-if="errorSearchQuery.length > 0"
-                v-gl-tooltip.hover
-                :title="__('Clear')"
-                class="clear-search gl-text-secondary"
-                name="clear"
-                icon="close"
-                @click="errorSearchQuery = ''"
-              />
-            </div>
+
+            <gl-button
+              v-if="errorSearchQuery.length > 0"
+              v-gl-tooltip.hover
+              :title="__('Clear')"
+              class="clear-search !gl-text-subtle"
+              category="tertiary"
+              name="clear"
+              icon="close"
+              @click="errorSearchQuery = ''"
+            />
           </div>
         </div>
 
         <gl-dropdown
+          data-testid="status-dropdown"
           :text="$options.statusFilters[statusFilter]"
-          class="status-dropdown gl-md-mr-2 gl-mb-2 md:gl-mb-0 md:gl-ml-2"
           :disabled="loading"
           right
         >
@@ -418,7 +423,6 @@ export default {
         <h4 class="gl-my-5 gl-block md:!gl-hidden">{{ __('Open errors') }}</h4>
 
         <gl-table
-          class="error-list-table gl-mt-5"
           :items="errors"
           :fields="$options.fields"
           :show-empty="true"
@@ -441,12 +445,12 @@ export default {
           <template #cell(error)="errors">
             <div class="gl-flex gl-flex-col">
               <gl-link
-                class="gl-flex gl-max-w-full gl-text-primary"
+                class="gl-flex gl-max-w-full gl-text-default"
                 :href="getDetailsLink(errors.item.id)"
               >
                 <strong class="gl-truncate">{{ errors.item.title.trim() }}</strong>
               </gl-link>
-              <span class="gl-max-w-full gl-truncate gl-text-secondary">
+              <span class="gl-max-w-full gl-truncate gl-text-subtle">
                 {{ errors.item.culprit }}
               </span>
             </div>
@@ -469,7 +473,7 @@ export default {
           </template>
 
           <template #cell(lastSeen)="errors">
-            <time-ago :time="errors.item.lastSeen" class="gl-text-secondary" />
+            <time-ago :time="errors.item.lastSeen" class="gl-text-subtle" />
           </template>
 
           <template #cell(status)="errors">

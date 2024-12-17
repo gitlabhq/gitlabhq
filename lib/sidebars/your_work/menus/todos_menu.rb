@@ -8,11 +8,7 @@ module Sidebars
 
         override :link
         def link
-          if Feature.enabled?(:todos_vue_application, context.current_user)
-            vue_dashboard_todos_path
-          else
-            dashboard_todos_path
-          end
+          dashboard_todos_path
         end
 
         override :title

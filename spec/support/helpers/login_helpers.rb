@@ -181,7 +181,7 @@ module LoginHelpers
         ),
         response_object: response_object
       }
-    }).merge(additional_info) { |_, old_hash, new_hash| old_hash.merge(new_hash) }
+    }).merge(additional_info)
   end
 
   def mock_auth_hash(provider, uid, email, additional_info: {}, response_object: nil, name: 'mockuser', groups: [])

@@ -24,7 +24,7 @@ export default {
   },
   computed: {
     borderClass() {
-      return this.dashed ? 'gl-border-b-solid gl-border-gray-100 gl-border-b-1' : '';
+      return this.dashed ? 'gl-border-b-solid gl-border-default gl-border-b-1' : '';
     },
   },
 };

@@ -62,14 +62,14 @@ describe('WorkItemDueDate component', () => {
         createComponent({ startDate: '2022-01-01' });
 
         expect(findStartDateValue().text()).toBe('Jan 1, 2022');
-        expect(findStartDateValue().classes('gl-text-secondary')).toBe(false);
+        expect(findStartDateValue().classes('gl-text-subtle')).toBe(false);
       });
 
       it('renders `None` when it is  not passed to the component`', () => {
         createComponent();
 
         expect(findStartDateValue().text()).toBe('None');
-        expect(findStartDateValue().classes('gl-text-secondary')).toBe(true);
+        expect(findStartDateValue().classes('gl-text-subtle')).toBe(true);
       });
     });
 
@@ -78,14 +78,14 @@ describe('WorkItemDueDate component', () => {
         createComponent({ dueDate: '2022-01-01' });
 
         expect(findDueDateValue().text()).toContain('Jan 1, 2022');
-        expect(findDueDateValue().classes('gl-text-secondary')).toBe(false);
+        expect(findDueDateValue().classes('gl-text-subtle')).toBe(false);
       });
 
       it('renders `None` when it is  not passed to the component`', () => {
         createComponent();
 
         expect(findDueDateValue().text()).toContain('None');
-        expect(findDueDateValue().classes('gl-text-secondary')).toBe(true);
+        expect(findDueDateValue().classes('gl-text-subtle')).toBe(true);
       });
     });
 

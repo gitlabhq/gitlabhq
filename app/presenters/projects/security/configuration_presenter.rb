@@ -65,7 +65,7 @@ module Projects
         scans << scan(:dast_profiles, configured: true)
 
         # Add pre-receive before secret detection
-        if dedicated_instance? || pre_receive_secret_detection_feature_flag_enabled?
+        if project.licensed_feature_available?(:pre_receive_secret_detection)
           secret_detection_index = scans.index { |scan| scan[:type] == :secret_detection } || -1
           scans.insert(secret_detection_index, scan(:pre_receive_secret_detection, configured: true))
         end
@@ -96,15 +96,6 @@ module Projects
 
       def scan_types
         ::Security::SecurityJobsFinder.allowed_job_types + ::Security::LicenseComplianceJobsFinder.allowed_job_types
-      end
-
-      def dedicated_instance?
-        ::Gitlab::CurrentSettings.gitlab_dedicated_instance?
-      end
-
-      def pre_receive_secret_detection_feature_flag_enabled?
-        project.licensed_feature_available?(:pre_receive_secret_detection) &&
-          Feature.enabled?(:pre_receive_secret_detection_push_check, project)
       end
 
       def project_settings

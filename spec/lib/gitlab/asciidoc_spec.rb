@@ -987,9 +987,9 @@ module Gitlab
         expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
           instance_of(Timeout::Error),
           project_id: context[:project].id, class_name: described_class.name.demodulize
-        )
+        ).and_call_original
 
-        render('<b>ascii</b>', context)
+        expect(render('<b>ascii</b>', context)).to eq '<b>ascii</b>'
       end
     end
 

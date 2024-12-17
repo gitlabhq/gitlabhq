@@ -197,7 +197,7 @@ For more information, see [GitLab Workflow extension for VS Code](https://gitlab
 DETAILS:
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438491) as a [beta](../../policy/experiment-beta-support.md#beta) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `allow_extensions_marketplace_in_workspace`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438491) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `allow_extensions_marketplace_in_workspace`. Disabled by default.
 > - Feature flag `allow_extensions_marketplace_in_workspace` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454669) in GitLab 17.6.
 
 You can use the
@@ -249,10 +249,14 @@ To delete the provisioned volume, you must terminate the workspace.
 
 ## Automatic workspace stop and termination
 
-1. A workspace will automatically stop 36 hours after it was last started or restarted.
-   For more details, see [the agent configuration setting documentation for `max_active_hours_before_stop`](gitlab_agent_configuration.md#max_active_hours_before_stop).
-1. A workspace will automatically terminate 722 hours after it was last stopped.
-   For more details, see [the agent configuration setting documentation for `max_stopped_hours_before_termination`](gitlab_agent_configuration.md#max_stopped_hours_before_termination).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14910) in GitLab 17.6.
+
+By default, a workspace automatically:
+
+- Stops 36 hours after the workspace was last started or restarted.
+  For more information, see [`max_active_hours_before_stop`](gitlab_agent_configuration.md#max_active_hours_before_stop).
+- Terminates 722 hours after the workspace was last stopped.
+  For more information, see [`max_stopped_hours_before_termination`](gitlab_agent_configuration.md#max_stopped_hours_before_termination).
 
 ## Arbitrary user IDs
 

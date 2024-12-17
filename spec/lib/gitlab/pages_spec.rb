@@ -59,15 +59,11 @@ RSpec.describe Gitlab::Pages, feature_category: :pages do
     context 'when a project is given' do
       let_it_be(:project) { create(:project) }
 
-      where(:setting, :feature_flag, :license, :result) do
-        false | false | false | false
-        false | false | true | false
-        false | true | false | false
-        false | true | true | false
-        true | false | false | false
-        true | false | true | false
-        true | true | false | false
-        true | true | true | true
+      where(:feature_flag, :license, :result) do
+        false | false | false
+        false | true | false
+        true | false | false
+        true | true | true
       end
 
       with_them do
@@ -78,7 +74,6 @@ RSpec.describe Gitlab::Pages, feature_category: :pages do
         before do
           stub_licensed_features(pages_multiple_versions: license)
           stub_feature_flags(pages_multiple_versions_setting: feature_flag)
-          project.project_setting.update!(pages_multiple_versions_enabled: setting)
         end
 
         # this feature is only available in EE
@@ -177,6 +172,48 @@ RSpec.describe Gitlab::Pages, feature_category: :pages do
           )
 
           expect(project.project_setting.pages_unique_domain).to be_nil
+        end
+      end
+    end
+  end
+
+  describe '#update_default_domain_redirect' do
+    let(:project) { build(:project) }
+
+    context 'when pages is not enabled' do
+      before do
+        stub_pages_setting(enabled: false)
+      end
+
+      it 'does not set pages default domain redirect' do
+        expect do
+          described_class.update_default_domain_redirect(project, 'http://example.com')
+        end.not_to change { project.project_setting.pages_default_domain_redirect }
+      end
+    end
+
+    context 'when pages is enabled' do
+      before do
+        stub_pages_setting(enabled: true)
+      end
+
+      it 'sets pages default domain redirect' do
+        expect do
+          described_class.update_default_domain_redirect(project, 'http://example.com')
+        end.to change { project.project_setting.pages_default_domain_redirect }.from(nil).to('http://example.com')
+      end
+
+      context 'when pages default domain redirect is updated with blank' do
+        before do
+          stub_pages_setting(enabled: true)
+        end
+
+        it 'sets pages default domain redirect as nil' do
+          project.project_setting.update!(pages_default_domain_redirect: 'http://example.com')
+
+          expect do
+            described_class.update_default_domain_redirect(project, '')
+          end.to change { project.project_setting.pages_default_domain_redirect }.from('http://example.com').to(nil)
         end
       end
     end

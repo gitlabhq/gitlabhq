@@ -159,7 +159,7 @@ export default {
         >
           <template #list-item="{ item }">
             <strong class="gl-block gl-w-full">{{ item.text }}</strong>
-            <gl-truncate class="gl-mt-2" :text="item.content" position="end" />
+            <gl-truncate class="gl-mt-2 gl-text-subtle" :text="item.content" position="end" />
           </template>
         </gl-disclosure-dropdown-group>
       </ul>

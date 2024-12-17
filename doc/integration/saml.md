@@ -649,7 +649,7 @@ IdPs, contact your provider's support.
 1. In the Okta administrator section choose **Applications**.
 1. On the app screen, select **Create App Integration** and then select
    **SAML 2.0** on the next screen.
-1. Optional. Choose and add a logo from [GitLab Press](https://about.gitlab.com/press/).
+1. Optional. Choose and add a logo from [GitLab Press](https://about.gitlab.com/press/press-kit/).
    You must crop and resize the logo.
 1. Complete the SAML general configuration. Enter:
    - `"Single sign-on URL"`: Use the assertion consumer service URL.
@@ -1525,7 +1525,7 @@ list.
                   idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
                   idp_sso_target_url: 'https://login.example.com/idp',
                   issuer: 'https://gitlab.example.com',
-                  name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
+                  name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
                   upstream_two_factor_authn_contexts:
                     %w(
                       urn:oasis:names:tc:SAML:2.0:ac:classes:CertificateProtectedTransport

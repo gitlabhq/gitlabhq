@@ -114,7 +114,7 @@ RSpec.describe Ci::BuildPresenter do
 
       context 'when pipeline is triggered by trigger API' do
         it 'returns variables' do
-          expect(presenter.trigger_variables).to eq([pipeline_variable.to_runner_variable])
+          expect(presenter.trigger_variables).to eq([pipeline_variable.to_hash_variable])
         end
       end
 

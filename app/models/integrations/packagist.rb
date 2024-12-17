@@ -6,22 +6,22 @@ module Integrations
 
     field :username,
       title: -> { _('Username') },
-      help: -> { _('Enter your Packagist username.') },
+      help: -> { _('Username of a Packagist account.') },
       placeholder: '',
       required: true
 
     field :token,
       type: :password,
       title: -> { _('Token') },
-      help: -> { _('Enter your Packagist token.') },
+      help: -> { _('API token of the Packagist server.') },
       non_empty_password_title: -> { s_('ProjectService|Enter new token') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },
       placeholder: '',
       required: true
 
     field :server,
-      title: -> { s_('Server (optional)') },
-      help: -> { s_('Enter your Packagist server. Defaults to https://packagist.org.') },
+      title: -> { _('Server (optional)') },
+      help: -> { _('URL of the Packagist server. The default value is `https://packagist.org`.') },
       placeholder: 'https://packagist.org',
       exposes_secrets: true,
       required: false

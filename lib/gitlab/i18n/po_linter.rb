@@ -75,8 +75,16 @@ module Gitlab
         validate_unescaped_chars(errors, entry)
         validate_html(errors, entry)
         validate_translation(errors, entry)
+        validate_namespace(errors, entry)
 
         errors
+      end
+
+      def validate_namespace(errors, entry)
+        if entry.translations_contain_namespace?
+          errors << 'contains a namespace, remove it from the translation. For more information see ' \
+                    'https://docs.gitlab.com/ee/development/i18n/translation.html#namespaced-strings'
+        end
       end
 
       def validate_unescaped_chars(errors, entry)

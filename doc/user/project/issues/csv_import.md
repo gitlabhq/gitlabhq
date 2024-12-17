@@ -10,6 +10,8 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+> - Additionally [allowed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) for Planner role in GitLab 17.7.
+
 You can import issues to a project by uploading a CSV file with the following columns:
 
 | Name          | Required?              | Description                                      |
@@ -28,7 +30,7 @@ Alternatively, you can [move an issue](managing_issues.md#move-an-issue). Moving
 
 The user uploading the CSV file is set as the author of the imported issues.
 
-You must have at least the Developer role for a project to import issues.
+You must have the Planner role or at least the Developer role for a project to import issues.
 
 ## Prepare for the import
 

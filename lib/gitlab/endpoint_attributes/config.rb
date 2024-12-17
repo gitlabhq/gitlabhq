@@ -26,7 +26,7 @@ module Gitlab
 
         if actions.empty?
           conflicted = conflicted_attributes(attributes, @default_attributes)
-          raise ArgumentError, "Attributes already defined: #{conflicted.join(", ")}" if conflicted.present?
+          raise ArgumentError, "Attributes already defined: #{conflicted.join(', ')}" if conflicted.present?
 
           @default_attributes.merge!(attributes)
         else
@@ -47,7 +47,7 @@ module Gitlab
 
       def sanitize_attributes!(attributes)
         unsupported_attributes = (attributes.keys - SUPPORTED_ATTRIBUTES).present?
-        raise ArgumentError, "Attributes not supported: #{unsupported_attributes.join(", ")}" if unsupported_attributes
+        raise ArgumentError, "Attributes not supported: #{unsupported_attributes.join(', ')}" if unsupported_attributes
 
         if attributes[:urgency].present? && !REQUEST_URGENCIES.key?(attributes[:urgency])
           raise ArgumentError, "Urgency not supported: #{attributes[:urgency]}"
@@ -57,7 +57,7 @@ module Gitlab
       def set_attributes_for_actions(actions, attributes)
         conflicted = conflicted_attributes(attributes, @default_attributes)
         if conflicted.present?
-          raise ArgumentError, "#{conflicted.join(", ")} are already defined for all actions, but re-defined for #{actions.join(", ")}"
+          raise ArgumentError, "#{conflicted.join(', ')} are already defined for all actions, but re-defined for #{actions.join(', ')}"
         end
 
         actions.each do |action|
@@ -66,7 +66,7 @@ module Gitlab
             @action_attributes[action] = attributes.dup
           else
             conflicted = conflicted_attributes(attributes, @action_attributes[action])
-            raise ArgumentError, "Attributes re-defined for action #{action}: #{conflicted.join(", ")}" if conflicted.present?
+            raise ArgumentError, "Attributes re-defined for action #{action}: #{conflicted.join(', ')}" if conflicted.present?
 
             @action_attributes[action].merge!(attributes)
           end

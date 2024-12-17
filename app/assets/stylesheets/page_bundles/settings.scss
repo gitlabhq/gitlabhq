@@ -67,7 +67,7 @@
 
 .settings-header {
   position: relative;
-  padding: $gl-spacing-scale-5 110px 0 0;
+  padding: $gl-spacing-scale-5 $gl-spacing-scale-7 0 0;
 
   h4 {
     margin-top: 0;
@@ -94,7 +94,7 @@
   position: relative;
   max-height: 1px;
   overflow-y: hidden;
-  padding-right: 110px;
+  @apply gl-pr-7;
   animation: collapseMaxHeight 300ms ease-out;
   // Keep the section from expanding when we scroll over it
   pointer-events: none;

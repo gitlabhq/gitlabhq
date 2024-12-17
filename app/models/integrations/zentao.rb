@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Zentao < BaseIssueTracker
+  class Zentao < Integration
+    include Base::IssueTracker
     include Gitlab::Routing
 
     self.field_storage = :data_fields

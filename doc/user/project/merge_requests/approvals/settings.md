@@ -199,3 +199,4 @@ To do this:
 - [Instance-level merge request approval settings](../../../../administration/merge_requests_approvals.md)
 - [Compliance center](../../../compliance/compliance_center/index.md)
 - [Merge request approvals API](../../../../api/merge_request_approvals.md)
+- [Merge request approval settings API](../../../../api/merge_request_approval_settings.md)

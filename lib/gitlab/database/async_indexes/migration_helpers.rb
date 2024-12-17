@@ -129,6 +129,8 @@ module Gitlab
         #
         # Stores the index information in the postgres_async_indexes table to be removed later. The
         # index will be always be removed CONCURRENTLY, so that option does not need to be given.
+        # Except for partitioned tables where indexes cannot be dropped using this option.
+        # https://www.postgresql.org/docs/current/sql-dropindex.html
         #
         # If the requested index has already been removed, it is not stored in the table for
         # asynchronous destruction.
@@ -141,7 +143,11 @@ module Gitlab
             return
           end
 
-          definition = "DROP INDEX CONCURRENTLY #{quote_column_name(index_name)}"
+          definition = if table_partitioned?(table_name)
+                         "DROP INDEX #{quote_column_name(index_name)}"
+                       else
+                         "DROP INDEX CONCURRENTLY #{quote_column_name(index_name)}"
+                       end
 
           async_index = PostgresAsyncIndex.find_or_create_by!(name: index_name) do |rec|
             rec.table_name = table_name

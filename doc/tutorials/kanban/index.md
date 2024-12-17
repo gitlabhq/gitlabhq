@@ -82,7 +82,7 @@ To visualize flow:
 1. Enter **To do** for the stage name.
 1. For the start event, select **Issue label was added**, then select the **status::to do** label.
 1. For the end event, select **Issue label was removed**, then select the **status::to do** label.
-1. Next, select **Add another stage**.
+1. Next, select **Add a stage**.
 1. Repeat this same process to create stages for **status::in progress** and **status::done**.
 1. When all three stages have been added, select **New value stream**.
 

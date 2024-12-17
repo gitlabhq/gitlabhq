@@ -1,9 +1,0 @@
----
-name: gitlab_for_slack_app_instance_and_group_level
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/391526
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142868
-rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17410
-milestone: '16.10'
-group: group::import and integrate
-type: beta
-default_enabled: true

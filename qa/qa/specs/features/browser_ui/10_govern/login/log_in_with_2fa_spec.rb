@@ -3,10 +3,8 @@
 module QA
   RSpec.describe 'Govern', :requires_admin, product_group: :authentication do
     describe '2FA' do
-      let(:admin_api_client) { Runtime::API::Client.as_admin }
-      let(:owner_api_client) { Runtime::API::Client.new(:gitlab, user: owner_user) }
-
-      let!(:owner_user) { create(:user, username: "owner_user_#{SecureRandom.hex(4)}", api_client: admin_api_client) }
+      let!(:owner_user) { create(:user, :with_personal_access_token, username: "owner_user_#{SecureRandom.hex(4)}") }
+      let!(:owner_api_client) { owner_user.api_client }
 
       let(:sandbox_group) do
         Flow::Login.sign_in(as: owner_user)
@@ -22,7 +20,7 @@ module QA
       end
 
       let(:developer_user) do
-        create(:user, username: "developer_user_#{SecureRandom.hex(4)}", api_client: admin_api_client)
+        create(:user, username: "developer_user_#{SecureRandom.hex(4)}")
       end
 
       let(:two_fa_expected_text) do
@@ -34,7 +32,7 @@ module QA
       end
 
       it(
-        'allows enforcing 2FA via UI and logging in with 2FA', :blocking,
+        'allows enforcing 2FA via UI and logging in with 2FA',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347931'
       ) do
         enforce_two_factor_authentication_on_group(group)

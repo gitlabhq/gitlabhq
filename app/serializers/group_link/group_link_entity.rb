@@ -62,3 +62,5 @@ module GroupLink
     end
   end
 end
+
+GroupLink::GroupLinkEntity.prepend_mod

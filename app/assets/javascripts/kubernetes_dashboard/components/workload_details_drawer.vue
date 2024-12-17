@@ -24,6 +24,7 @@ export default {
   data() {
     return {
       selectedItem: {},
+      selectedSection: '',
       showDetailsDrawer: false,
       focusedElement: null,
     };
@@ -40,15 +41,16 @@ export default {
     onDeletePod(pod) {
       this.$emit('delete-pod', pod);
     },
-    toggle(item) {
+    toggle(item, section) {
       if (!isEqual(item, this.selectedItem)) {
-        this.open(item);
+        this.open(item, section);
       } else {
         this.close();
       }
     },
-    open(item) {
+    open(item, section) {
       this.selectedItem = item;
+      this.selectedSection = section;
       this.showDetailsDrawer = true;
       this.trackEvent('open_kubernetes_resource_details', { label: item.kind });
 
@@ -60,6 +62,7 @@ export default {
     close() {
       this.showDetailsDrawer = false;
       this.selectedItem = {};
+      this.selectedSection = '';
       this.$nextTick(() => {
         this.focusedElement?.focus();
       });
@@ -85,6 +88,7 @@ export default {
       <workload-details
         v-if="hasSelectedItem"
         :item="selectedItem"
+        :selected-section="selectedSection"
         :configuration="configuration"
         @delete-pod="onDeletePod"
         @flux-reconcile="$emit('flux-reconcile')"

@@ -103,6 +103,12 @@ describe('PipelineStage', () => {
       expect(findDropdownHeader().text()).toBe('Stage: build');
     });
 
+    it('emits miniGraphStageClick', async () => {
+      await openStageDropdown();
+
+      expect(wrapper.emitted('miniGraphStageClick')).toHaveLength(1);
+    });
+
     it('has fired the stage query', async () => {
       await openStageDropdown();
       const { stage } = defaultProps;
@@ -135,7 +141,13 @@ describe('PipelineStage', () => {
         expect(findJobItems().exists()).toBe(true);
         expect(findJobItems()).toHaveLength(2);
       });
+
+      it('emits jobActionExecuted', () => {
+        findJobItems().at(0).vm.$emit('jobActionExecuted');
+        expect(wrapper.emitted('jobActionExecuted')).toHaveLength(1);
+      });
     });
+
     describe('and query is not successful', () => {
       const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
 

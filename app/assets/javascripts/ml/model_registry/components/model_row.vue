@@ -37,14 +37,14 @@ export default {
   <list-item v-bind="$attrs">
     <template #left-primary>
       <div class="gl-flex gl-items-center">
-        <gl-link class="gl-text-primary" :href="model._links.showPath">
+        <gl-link class="gl-text-default" :href="model._links.showPath">
           <gl-truncate :text="model.name" />
         </gl-link>
       </div>
     </template>
 
     <template #left-secondary>
-      <div class="gl-text-secondary">
+      <div class="gl-text-subtle">
         <gl-link v-if="hasVersions" :href="model.latestVersion._links.showPath">{{
           model.latestVersion.version
         }}</gl-link>

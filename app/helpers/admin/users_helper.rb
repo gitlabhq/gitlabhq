@@ -23,7 +23,7 @@ module Admin
       organization_user = initial_organization.organization_users.by_user(user).first
 
       {
-        initial_access_level: organization_user.access_level
+        organization_user: organization_user.slice(:id, :access_level)
       }.merge(admin_user_organization_field_shared(initial_organization)).to_json
     end
 

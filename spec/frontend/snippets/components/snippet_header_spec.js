@@ -22,7 +22,7 @@ import {
 import { Blob, BinaryBlob } from 'jest/blob/components/mock_data';
 import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
 import SnippetHeader, { i18n } from '~/snippets/components/snippet_header.vue';
-import SnippetCodeDropdown from '~/vue_shared/components/code_dropdown/snippet_code_dropdown.vue';
+import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_dropdown.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import DeleteSnippetMutation from '~/snippets/mutations/delete_snippet.mutation.graphql';
 import axios from '~/lib/utils/axios_utils';
@@ -86,7 +86,7 @@ describe('Snippet header component', () => {
         },
       },
       stubs: {
-        SnippetCodeDropdown,
+        CloneCodeDropdown,
         GlButton,
         GlDisclosureDropdown,
         GlDisclosureDropdownGroup,
@@ -113,7 +113,7 @@ describe('Snippet header component', () => {
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findTooltip = () => getBinding(findIcon().element, 'gl-tooltip');
   const findSpamIcon = () => wrapper.findByTestId('snippets-spam-icon');
-  const findCodeDropdown = () => wrapper.findComponent(SnippetCodeDropdown);
+  const findCodeDropdown = () => wrapper.findComponent(CloneCodeDropdown);
   const findImportedBadge = () => wrapper.findComponent(ImportedBadge);
 
   const webUrl = 'http://foo.bar';
@@ -199,7 +199,7 @@ describe('Snippet header component', () => {
 
     expect(findEditButton().attributes('href')).toEqual(`${snippet.webUrl}/edit`);
     expect(findEditButton().attributes('class')).toContain('gl-hidden');
-    expect(findEditButton().attributes('class')).toContain('sm:gl-inline-block');
+    expect(findEditButton().attributes('class')).toContain('sm:gl-inline-flex');
   });
 
   it('renders dropdown for action buttons', () => {

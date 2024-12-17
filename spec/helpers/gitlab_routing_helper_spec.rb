@@ -375,9 +375,5 @@ RSpec.describe GitlabRoutingHelper do
         expect(graphql_etag_pipeline_path(pipeline)).to eq('/api/graphql:pipelines/id/5')
       end
     end
-
-    it 'returns an ETag path for jobs' do
-      expect(graphql_etag_jobs_path(project)).to eq("/api/graphql:projects/#{project.full_path}/jobs")
-    end
   end
 end

@@ -10,6 +10,8 @@ import PackagesCleanupPolicy from '~/packages_and_registries/settings/project/co
 import PackagesProtectionRules from '~/packages_and_registries/settings/project/components/packages_protection_rules.vue';
 import DependencyProxyPackagesSettings from 'ee_component/packages_and_registries/settings/project/components/dependency_proxy_packages_settings.vue';
 import MetadataDatabaseAlert from '~/packages_and_registries/shared/components/container_registry_metadata_database_alert.vue';
+import PackageRegistrySection from '~/packages_and_registries/settings/project/components/package_registry_section.vue';
+import ContainerRegistrySection from '~/packages_and_registries/settings/project/components/container_registry_section.vue';
 import {
   SHOW_SETUP_SUCCESS_ALERT,
   UPDATE_SETTINGS_SUCCESS_MESSAGE,
@@ -28,15 +30,16 @@ describe('Registry Settings app', () => {
     wrapper.findComponent(DependencyProxyPackagesSettings);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findMetadataDatabaseAlert = () => wrapper.findComponent(MetadataDatabaseAlert);
+  const findContainerRegistrySection = () => wrapper.findComponent(ContainerRegistrySection);
+  const findPackageRegistrySection = () => wrapper.findComponent(PackageRegistrySection);
 
   const defaultProvide = {
-    projectPath: 'path',
     showContainerRegistrySettings: true,
     showPackageRegistrySettings: true,
     showDependencyProxySettings: false,
-    ...(IS_EE && { showDependencyProxySettings: true }),
     glFeatures: {
       containerRegistryProtectedContainers: true,
+      reorganizeProjectLevelRegistrySettings: false,
     },
     isContainerRegistryMetadataDatabaseEnabled: false,
   };
@@ -127,16 +130,14 @@ describe('Registry Settings app', () => {
       },
     );
 
-    if (IS_EE) {
-      it.each([true, false])('when showDependencyProxySettings is %s', (value) => {
-        mountComponent({
-          ...defaultProvide,
-          showDependencyProxySettings: value,
-        });
-
-        expect(findDependencyProxyPackagesSettings().exists()).toBe(value);
+    it.each([true, false])('when showDependencyProxySettings is %s', (value) => {
+      mountComponent({
+        ...defaultProvide,
+        showDependencyProxySettings: value,
       });
-    }
+
+      expect(findDependencyProxyPackagesSettings().exists()).toBe(value);
+    });
 
     describe('when feature flag "containerRegistryProtectedContainers" is disabled', () => {
       it.each([true, false])(
@@ -152,5 +153,41 @@ describe('Registry Settings app', () => {
         },
       );
     });
+  });
+
+  describe('when feature flag "reorganizeProjectLevelRegistrySettings" is enabled', () => {
+    it('does not show existing sections', () => {
+      mountComponent({
+        ...defaultProvide,
+        glFeatures: { reorganizeProjectLevelRegistrySettings: true },
+      });
+
+      expect(findContainerExpirationPolicy().exists()).toBe(false);
+      expect(findContainerProtectionRules().exists()).toBe(false);
+      expect(findPackagesCleanupPolicy().exists()).toBe(false);
+      expect(findPackagesProtectionRules().exists()).toBe(false);
+      expect(findDependencyProxyPackagesSettings().exists()).toBe(false);
+    });
+
+    it.each`
+      showContainerRegistrySettings | showPackageRegistrySettings
+      ${true}                       | ${false}
+      ${true}                       | ${true}
+      ${false}                      | ${true}
+      ${false}                      | ${false}
+    `(
+      'container registry section $showContainerRegistrySettings and package registry section is $showPackageRegistrySettings',
+      ({ showContainerRegistrySettings, showPackageRegistrySettings }) => {
+        mountComponent({
+          ...defaultProvide,
+          showContainerRegistrySettings,
+          showPackageRegistrySettings,
+          glFeatures: { reorganizeProjectLevelRegistrySettings: true },
+        });
+
+        expect(findContainerRegistrySection().exists()).toBe(showContainerRegistrySettings);
+        expect(findPackageRegistrySection().exists()).toBe(showPackageRegistrySettings);
+      },
+    );
   });
 });

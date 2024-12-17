@@ -1,15 +1,24 @@
-import { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
+import Vuex from 'vuex';
+import Vue, { nextTick } from 'vue';
 import { GlIntersectionObserver } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Chunk from '~/vue_shared/components/source_viewer/components/chunk.vue';
+import { addInteractionClass } from '~/code_navigation/utils';
 import { CHUNK_1, CHUNK_2 } from '../mock_data';
+
+jest.mock('~/code_navigation/utils');
+
+Vue.use(Vuex);
 
 describe('Chunk component', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, state = {}) => {
+    const store = new Vuex.Store({ state, mutations: {} });
     wrapper = shallowMountExtended(Chunk, {
-      propsData: { ...CHUNK_1, ...props },
+      store,
+      propsData: { blobPath: 'index.js', ...CHUNK_1, ...props },
     });
   };
 
@@ -64,6 +73,33 @@ describe('Chunk component', () => {
         expect(findContent().text()).toBe(CHUNK_2.highlightedContent);
         expect(findContent().attributes('style')).toBe('margin-left: 96px;');
       });
+    });
+  });
+
+  describe('with code navigation', () => {
+    it('adds code navigation data to current rendered chunks', async () => {
+      createComponent({}, { blobs: ['index.js'], data: { 'index.js': { '0:1': 'test' } } });
+
+      await nextTick();
+
+      expect(addInteractionClass).toHaveBeenCalledWith({ d: 'test', path: 'index.js' });
+    });
+
+    it('adds code navigation data to newly rendered chunks', async () => {
+      createComponent(
+        { chunkIndex: 1, isHighlighted: false },
+        { blobs: ['index.js'], data: { 'index.js': { '0:1': 'test' } } },
+      );
+
+      findIntersectionObserver().vm.$emit('appear');
+
+      // `nextTick` here for data watcher
+      await nextTick();
+
+      // `nextTick` here for `nextTick` in the component
+      await nextTick();
+
+      expect(addInteractionClass).toHaveBeenCalledWith({ d: 'test', path: 'index.js' });
     });
   });
 });

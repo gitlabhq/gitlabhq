@@ -11,7 +11,7 @@ RSpec.describe ::Packages::Npm::PackageFinder, feature_category: :package_regist
   let(:package_version) { package.version }
   let(:params) { { package_name: package_name, package_version: package_version }.compact }
 
-  shared_examples 'accepting a namespace for' do |example_name|
+  shared_examples 'accepting a namespace for' do |example_name, factory = :npm_package|
     before do
       project.update!(namespace: namespace)
     end
@@ -29,7 +29,7 @@ RSpec.describe ::Packages::Npm::PackageFinder, feature_category: :package_regist
         end
 
         it_behaves_like example_name
-        it_behaves_like 'avoids N+1 database queries in the package registry'
+        it_behaves_like 'avoids N+1 database queries in the package registry', factory
       end
     end
 
@@ -38,7 +38,7 @@ RSpec.describe ::Packages::Npm::PackageFinder, feature_category: :package_regist
       let_it_be(:namespace) { user.namespace }
 
       it_behaves_like example_name
-      it_behaves_like 'avoids N+1 database queries in the package registry'
+      it_behaves_like 'avoids N+1 database queries in the package registry', factory
     end
   end
 

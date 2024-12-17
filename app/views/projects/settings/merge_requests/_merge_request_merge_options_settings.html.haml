@@ -2,7 +2,7 @@
 
 .form-group#project-merge-options{ data: { project_full_path: @project.full_path } }
   %b= s_('ProjectSettings|Merge options')
-  %p.text-secondary= s_('ProjectSettings|Additional settings that influence how and when merges are done.')
+  %p.gl-text-subtle= s_('ProjectSettings|Additional settings that influence how and when merges are done.')
   = render_if_exists 'projects/settings/merge_requests/merge_pipelines_settings', form: form
   = render_if_exists 'projects/settings/merge_requests/merge_trains_settings', form: form
   = form.gitlab_ui_checkbox_component :resolve_outdated_diff_discussions,

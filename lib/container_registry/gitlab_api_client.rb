@@ -253,3 +253,5 @@ module ContainerRegistry
     end
   end
 end
+
+ContainerRegistry::GitlabApiClient.prepend_mod

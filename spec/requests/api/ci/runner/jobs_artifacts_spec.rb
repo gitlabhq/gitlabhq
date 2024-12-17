@@ -1099,12 +1099,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         end
 
         context 'when job does not exist anymore' do
-          before do
-            allow(job).to receive(:id).and_return(non_existing_record_id)
-          end
-
           it 'responds with 403 Forbidden' do
-            get api("/jobs/#{job.id}/artifacts"), params: { token: token }, headers: headers
+            get api("/jobs/#{non_existing_record_id}/artifacts"), params: { token: token }, headers: headers
 
             expect(response).to have_gitlab_http_status(:forbidden)
           end

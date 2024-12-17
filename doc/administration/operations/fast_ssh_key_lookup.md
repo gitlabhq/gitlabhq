@@ -157,7 +157,7 @@ This overview is brief. Refer to the above instructions for more context.
    from a Linux package installation.
 1. Reload `sshd`: `sudo service sshd reload`.
 
-## SELinux support and limitations
+## SELinux support
 
 GitLab supports `authorized_keys` database lookups with [SELinux](https://en.wikipedia.org/wiki/Security-Enhanced_Linux).
 

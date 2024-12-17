@@ -335,14 +335,6 @@ RSpec.describe Users::CreditCardValidation, feature_category: :user_profile do
         end
 
         it { is_expected.to eq(true) }
-
-        context 'when the feature flag is disabled' do
-          before do
-            stub_feature_flags(credit_card_validation_daily_limit: false)
-          end
-
-          it { is_expected.to eq(false) }
-        end
       end
 
       context 'when the limit is exceeded but records have credit_card_validated_at > 24 hours' do

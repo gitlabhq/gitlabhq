@@ -94,6 +94,37 @@ To enter the new names, you must edit the file.
 Organizations using SAML SSO can [set usernames](../../../integration/saml.md#set-a-username) to
 prevent users from being able to change their usernames.
 
+### Add a role as a Code Owner
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282438) in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `codeowner_role_approvers`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+You can add or set a role for direct project members as Code Owners:
+
+- Use the `@@` prefix to set a role.
+- Only Developer, Maintainer, and Owner roles are available.
+- Roles are not inclusive of higher roles. For example, specifying `@@developer`
+  does not include users with Maintainer or Owner roles.
+- Only direct project members with the specified roles are eligible Code Owners.
+- It is possible to specify plural roles. For example, `@@developers` will be accepted.
+
+The following example sets all direct project members with the Developer or Maintainer
+role as Code Owners for `file.md`:
+
+1. Open the `CODEOWNERS` file.
+1. Add a line using the following pattern:
+
+   ```plaintext
+   file.md @@developer @@maintainer
+   ```
+
+1. Save the file.
+1. Commit and merge the changes.
+
 ### Add a group as a Code Owner
 
 To set the members of a group or subgroup as a Code Owner:
@@ -113,6 +144,8 @@ file.md @group-x @group-x/subgroup-y
 
 NOTE:
 You cannot set a member of a group or subgroup as a Code Owner if [Global SAML group memberships lock](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock) is enabled.
+
+If you encounter issues, refer to [User not shown as possible approver](troubleshooting.md#user-not-shown-as-possible-approver).
 
 #### Group inheritance and eligibility
 
@@ -430,3 +463,4 @@ All changes from users _without_ the **Allowed to push** permission must be rout
 
 - [Syntax reference](reference.md)
 - [Development guidelines](../../../development/code_owners/index.md)
+- [Troubleshooting Code Owners](troubleshooting.md)

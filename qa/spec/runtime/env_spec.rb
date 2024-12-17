@@ -121,78 +121,6 @@ RSpec.describe QA::Runtime::Env do
     end
   end
 
-  describe '.personal_access_token' do
-    around do |example|
-      described_class.instance_variable_set(:@personal_access_token, nil)
-      example.run
-      described_class.instance_variable_set(:@personal_access_token, nil)
-    end
-
-    context 'when GITLAB_QA_ACCESS_TOKEN is set' do
-      before do
-        stub_env('GITLAB_QA_ACCESS_TOKEN', 'a_token_too')
-      end
-
-      it 'returns specified token from env' do
-        expect(described_class.personal_access_token).to eq 'a_token_too'
-      end
-    end
-
-    context 'when @personal_access_token is set' do
-      before do
-        described_class.personal_access_token = 'another_token'
-      end
-
-      it 'returns the instance variable value' do
-        expect(described_class.personal_access_token).to eq 'another_token'
-      end
-    end
-  end
-
-  describe '.personal_access_token=' do
-    around do |example|
-      described_class.instance_variable_set(:@personal_access_token, nil)
-      example.run
-      described_class.instance_variable_set(:@personal_access_token, nil)
-    end
-
-    it 'saves the token' do
-      described_class.personal_access_token = 'a_token'
-
-      expect(described_class.personal_access_token).to eq 'a_token'
-    end
-  end
-
-  describe '.forker?' do
-    before do
-      stub_env('GITLAB_FORKER_USERNAME', nil)
-      stub_env('GITLAB_FORKER_PASSWORD', nil)
-    end
-
-    it 'returns false if no forker credentials are defined' do
-      expect(described_class).not_to be_forker
-    end
-
-    it 'returns false if only forker username is defined' do
-      stub_env('GITLAB_FORKER_USERNAME', 'foo')
-
-      expect(described_class).not_to be_forker
-    end
-
-    it 'returns false if only forker password is defined' do
-      stub_env('GITLAB_FORKER_PASSWORD', 'bar')
-
-      expect(described_class).not_to be_forker
-    end
-
-    it 'returns true if forker username and password are defined' do
-      stub_env('GITLAB_FORKER_USERNAME', 'foo')
-      stub_env('GITLAB_FORKER_PASSWORD', 'bar')
-
-      expect(described_class).to be_forker
-    end
-  end
-
   describe '.github_access_token' do
     it 'returns "" if QA_GITHUB_ACCESS_TOKEN is not defined' do
       stub_env('QA_GITHUB_ACCESS_TOKEN', nil)
@@ -244,21 +172,6 @@ RSpec.describe QA::Runtime::Env do
       stub_env('QA_GITHUB_ACCESS_TOKEN', ' abc123 ')
 
       expect { described_class.require_github_access_token! }.not_to raise_error
-    end
-  end
-
-  describe '.require_admin_access_token!' do
-    it 'raises ArgumentError if GITLAB_QA_ADMIN_ACCESS_TOKEN is not specified' do
-      described_class.instance_variable_set(:@admin_personal_access_token, nil)
-      stub_env('GITLAB_QA_ADMIN_ACCESS_TOKEN', nil)
-
-      expect { described_class.require_admin_access_token! }.to raise_error(ArgumentError)
-    end
-
-    it 'does not raise exception if GITLAB_QA_ADMIN_ACCESS_TOKEN is specified' do
-      stub_env('GITLAB_QA_ADMIN_ACCESS_TOKEN', 'foobar123')
-
-      expect { described_class.require_admin_access_token! }.not_to raise_error
     end
   end
 

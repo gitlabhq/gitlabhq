@@ -12,11 +12,11 @@ RSpec.describe 'getting the containers protection rules linked to a project', :a
     graphql_query_for(
       :project,
       { full_path: project.full_path },
-      query_nodes(:containerRegistryProtectionRules, of: 'ContainerRegistryProtectionRule')
+      query_nodes(:containerProtectionRepositoryRules, of: 'ContainerProtectionRepositoryRule')
     )
   end
 
-  let(:protection_rules) { graphql_data_at(:project, :containerRegistryProtectionRules, :nodes) }
+  let(:protection_rules) { graphql_data_at(:project, :containerProtectionRepositoryRules, :nodes) }
 
   subject(:send_graqhql_query) { post_graphql(query, current_user: user) }
 

@@ -41,7 +41,7 @@ RSpec.describe Gitlab::Cleanup::OrphanLfsFileReferences do
     it 'prints messages and deletes invalid reference' do
       expect(null_logger).to receive(:info).with("Looking for orphan LFS files for project #{project.name_with_namespace}")
       expect(null_logger).to receive(:info).with("Removed invalid references: 1")
-      expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:lfs_objects_size])
+      expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], %w[lfs_objects_size])
       expect(service).to receive(:remove_orphan_references).and_call_original
 
       expect { service.run! }.to change { project.lfs_objects.count }.from(2).to(1)

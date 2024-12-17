@@ -662,18 +662,6 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
           let(:status) { 'merge_when_checks_pass' }
           let(:not_current_pipeline_status) { 'merge_when_checks_pass' }
         end
-
-        context 'when merge_when_checks_pass is false' do
-          before do
-            stub_feature_flags(merge_when_checks_pass: false)
-          end
-
-          it_behaves_like 'api merge with auto merge' do
-            let(:service_class) { AutoMerge::MergeWhenPipelineSucceedsService }
-            let(:status) { 'merge_when_pipeline_succeeds' }
-            let(:not_current_pipeline_status) { 'failed' }
-          end
-        end
       end
 
       describe 'only_allow_merge_if_all_discussions_are_resolved? setting' do

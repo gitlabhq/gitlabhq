@@ -42,4 +42,8 @@ export default Reference.extend({
   addNodeView() {
     return new VueNodeViewRenderer(LabelWrapper);
   },
+
+  addCommands() {
+    return [];
+  },
 });

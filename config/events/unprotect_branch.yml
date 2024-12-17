@@ -18,4 +18,8 @@ tiers:
 - ultimate
 additional_properties:
   label:
-    description: location where the event happened - repository_settings or branch_rule_details 
+    description: location where the event happened - repository_settings or branch_rule_details
+  property:
+    description: branch rules
+  value:
+    description: branch value

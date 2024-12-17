@@ -153,11 +153,7 @@ describe('SidebarEscalationStatus', () => {
       });
 
       it('updates the status', () => {
-        // Sometimes status has a intermediate wrapping component. A quirk of vue-test-utils
-        // means that in that case 'value' is exposed as a prop. If no wrapping component
-        // exists it is exposed as an attribute.
-        const statusValue =
-          findStatusComponent().props('value') || findStatusComponent().attributes('value');
+        const statusValue = findStatusComponent().props('value');
         expect(statusValue).toBe(STATUS_ACKNOWLEDGED);
       });
     });

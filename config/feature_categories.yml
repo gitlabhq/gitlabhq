@@ -18,6 +18,7 @@
 - api
 - api_security
 - application_instrumentation
+- artifact_security
 - attack_emulation
 - audit_events
 - auto_devops
@@ -35,6 +36,7 @@
 - code_suggestions
 - code_testing
 - compliance_management
+- component_catalog
 - consumables_cost_management
 - container_registry
 - container_scanning
@@ -61,12 +63,12 @@
 - environment_management
 - error_budgets
 - feature_flags
-- five_minute_production_app
 - fleet_visibility
 - fulfillment_infradev
 - fulfillment_internal_admin_tooling
 - fuzz_testing
 - geo_replication
+- git
 - gitaly
 - gitlab_cli
 - global_search
@@ -116,7 +118,6 @@
 - seat_cost_management
 - secret_detection
 - secrets_management
-- secure_artifacts
 - security_policy_management
 - self-hosted_models
 - service_desk

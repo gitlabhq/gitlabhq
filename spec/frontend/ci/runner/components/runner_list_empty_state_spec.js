@@ -3,7 +3,7 @@ import { GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
+import RunnerInstructionsModal from '~/ci/runner/components/registration/runner_instructions/runner_instructions_modal.vue';
 import {
   I18N_GET_STARTED,
   I18N_RUNNERS_ARE_AGENTS,

@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::MockCi do
+RSpec.describe Integrations::MockCi, feature_category: :integrations do
   let_it_be(:project) { build(:project) }
 
   subject(:integration) { described_class.new(project: project, mock_service_url: generate(:url)) }
 
-  it_behaves_like Integrations::BaseCi
+  it_behaves_like Integrations::Base::Ci
 
   include_context Integrations::EnableSslVerification
 

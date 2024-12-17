@@ -82,8 +82,6 @@ module Users
     end
 
     def exceeded_daily_verification_limit?
-      return false unless Feature.enabled?(:credit_card_validation_daily_limit, user, type: :gitlab_com_derisk)
-
       duplicate_record_count = self.class
         .where(stripe_card_fingerprint: stripe_card_fingerprint)
         .where('credit_card_validated_at > ?', 24.hours.ago)

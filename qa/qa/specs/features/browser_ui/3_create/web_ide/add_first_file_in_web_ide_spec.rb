@@ -13,7 +13,7 @@ module QA
       context 'when a file with the same name already exists' do
         let(:file_name) { 'README.md' }
 
-        it 'throws an error', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/432899' do
+        it 'throws an error', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/432899' do
           Page::Project::WebIDE::VSCode.perform do |ide|
             ide.create_new_file(file_name)
 
@@ -26,7 +26,7 @@ module QA
       context 'when user adds a new file' do
         let(:file_name) { 'first_file.txt' }
 
-        it 'shows successfully added and visible in project', :blocking,
+        it 'shows successfully added and visible in project',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/432898' do
           Page::Project::WebIDE::VSCode.perform do |ide|
             ide.create_new_file(file_name)

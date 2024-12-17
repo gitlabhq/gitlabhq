@@ -6,6 +6,7 @@ RSpec.describe SystemCheck::App::TableTruncateCheck, feature_category: :cell do
   context 'when running on single databases' do
     before do
       skip_if_database_exists(:ci)
+      skip_if_database_exists(:sec)
     end
 
     describe '#skip?' do
@@ -20,8 +21,15 @@ RSpec.describe SystemCheck::App::TableTruncateCheck, feature_category: :cell do
 
     before do
       skip_if_shared_database(:ci)
+      skip_if_shared_database(:sec)
 
-      allow_next_instances_of(Gitlab::Database::TablesTruncate, 2) do |instance|
+      instance_count = [
+        database_exists?(:main),
+        database_exists?(:ci),
+        database_exists?(:sec)
+      ].count(&:itself)
+
+      allow_next_instances_of(Gitlab::Database::TablesTruncate, instance_count) do |instance|
         allow(instance).to receive(:needs_truncation?).and_return(needs_truncation)
       end
     end
@@ -59,10 +67,13 @@ RSpec.describe SystemCheck::App::TableTruncateCheck, feature_category: :cell do
       subject(:show_error) { checker.show_error }
 
       it 'outputs error information' do
+        truncate_tasks = %r{gitlab:db:truncate_legacy_tables:main\sgitlab:db:truncate_legacy_tables:ci\s+}
+        truncate_tasks = %r{#{truncate_tasks}gitlab:db:truncate_legacy_tables:sec\s+} if database_exists?(:sec)
+
         expected = %r{
           Try\sfixing\sit:\s+
-          sudo\s-u\s.+?\s-H\sbundle\sexec\srake\sgitlab:db:truncate_legacy_tables:main\s
-          gitlab:db:truncate_legacy_tables:ci\s+
+          sudo\s-u\s.+?\s-H\sbundle\sexec\srake\s
+          #{truncate_tasks}
           For\smore\sinformation\ssee:\s+
           doc/development/database/multiple_databases.md\sin\ssection\s'Truncating\stables'\s+
           Please\sfix\sthe\serror\sabove\sand\srerun\sthe\schecks.\s+

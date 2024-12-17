@@ -620,6 +620,94 @@ export const MOCK_MILESTONES = [
   },
 ];
 
+export const MOCK_ITERATIONS = [
+  {
+    id: 2747,
+    title: 'Optio quod at quia ad pariatur dolores. Nov 26, 2024 - Dec 9, 2024',
+    reference: '*iteration:2747',
+  },
+  {
+    id: 2910,
+    title:
+      'Architecto illum debitis perspiciatis vero itaque consectetur. Nov 12, 2024 - Dec 9, 2024',
+    reference: '*iteration:2910',
+  },
+  {
+    id: 3141,
+    title: 'Assumenda rerum neque quisquam amet eius pariatur dolor. Nov 12, 2024 - Dec 9, 2024',
+    reference: '*iteration:3141',
+  },
+  {
+    id: 3236,
+    title:
+      'Quasi neque blanditiis necessitatibus incidunt at provident nam ea totam rem. Nov 26, 2024 - Dec 9, 2024',
+    reference: '*iteration:3236',
+  },
+  {
+    id: 3254,
+    title:
+      'Labore similique at sunt repellendus aut eveniet blanditiis esse. Nov 12, 2024 - Dec 9, 2024',
+    reference: '*iteration:3254',
+  },
+  {
+    id: 3282,
+    title:
+      'Dolorum eos maiores quidem eveniet adipisci reprehenderit odit minus dolore. Nov 12, 2024 - Dec 9, 2024',
+    reference: '*iteration:3282',
+  },
+  {
+    id: 3380,
+    title:
+      'Eaque quis officia itaque vitae repellat libero aliquid eum eligendi. Nov 12, 2024 - Dec 9, 2024',
+    reference: '*iteration:3380',
+  },
+  {
+    id: 3385,
+    title:
+      'Ducimus praesentium doloribus perspiciatis quis soluta natus. Nov 26, 2024 - Dec 9, 2024',
+    reference: '*iteration:3385',
+  },
+  {
+    id: 6191,
+    title: 'Quibusdam est culpa dolores quisquam possimus nihil ut. Dec 3, 2024 - Dec 9, 2024',
+    reference: '*iteration:6191',
+  },
+  {
+    id: 6220,
+    title:
+      'Saepe provident facere veniam maiores excepturi assumenda adipisci beatae vitae aspernatur. Dec 3, 2024 - Dec 9, 2024',
+    reference: '*iteration:6220',
+  },
+  {
+    id: 6338,
+    title: 'Illo ipsa excepturi beatae impedit ad architecto doloribus. Dec 3, 2024 - Dec 9, 2024',
+    reference: '*iteration:6338',
+  },
+  {
+    id: 2755,
+    title:
+      'Itaque repellat possimus dolor quia nesciunt hic aut iure animi vel. Nov 13, 2024 - Dec 10, 2024',
+    reference: '*iteration:2755',
+  },
+  {
+    id: 2789,
+    title:
+      'Magni eos minus vero facilis in consequuntur deserunt omnis consectetur natus. Nov 27, 2024 - Dec 10, 2024',
+    reference: '*iteration:2789',
+  },
+  {
+    id: 3061,
+    title:
+      'Dolores accusantium omnis dicta aliquam exercitationem sed laudantium placeat repellat. Nov 13, 2024 - Dec 10, 2024',
+    reference: '*iteration:3061',
+  },
+  {
+    id: 3086,
+    title: 'Enim beatae voluptatem facilis excepturi culpa quae in. Nov 13, 2024 - Dec 10, 2024',
+    reference: '*iteration:3086',
+  },
+];
+
 export const MOCK_VULNERABILITIES = [
   {
     id: 99499903,

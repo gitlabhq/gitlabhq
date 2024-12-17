@@ -3,6 +3,8 @@ data_category: operational
 key_path: counts.ci_builds
 description: Unique builds in project
 product_group: pipeline_execution
+product_categories:
+- continuous_integration
 value_type: number
 status: removed
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166524

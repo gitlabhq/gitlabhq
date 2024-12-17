@@ -3,6 +3,8 @@ key_path: usage_activity_by_stage.release.releases_with_milestones
 description: Unique users creating releases with milestones associated
 performance_indicator_type: []
 product_group: environments
+product_categories:
+- release_orchestration
 value_type: number
 status: active
 milestone: "14.4"

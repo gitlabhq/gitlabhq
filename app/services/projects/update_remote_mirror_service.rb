@@ -71,8 +71,6 @@ module Projects
         lfs_sync_failed = true
         message += "Error synchronizing LFS files:"
         message += "\n\n#{lfs_status[:message]}\n\n"
-
-        failed = Feature.enabled?(:remote_mirror_fail_on_lfs, project)
       end
 
       if response.divergent_refs.any?

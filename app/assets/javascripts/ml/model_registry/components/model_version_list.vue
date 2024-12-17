@@ -18,7 +18,7 @@ export default {
     EmptyState,
     SearchableTable,
   },
-  inject: ['createModelVersionPath'],
+  inject: ['createModelVersionPath', 'latestVersion'],
   props: {
     modelId: {
       type: String,
@@ -60,6 +60,9 @@ export default {
     versions() {
       return this.modelVersions?.nodes ?? [];
     },
+    showSearch() {
+      return Boolean(this.latestVersion);
+    },
   },
   methods: {
     fetchPage(variables) {
@@ -89,7 +92,7 @@ export default {
     },
     {
       orderBy: LIST_KEY_CREATED_AT,
-      label: s__('MlExperimentTracking|Created at'),
+      label: s__('MlExperimentTracking|Created'),
     },
   ],
   emptyState: {
@@ -101,7 +104,7 @@ export default {
 </script>
 <template>
   <searchable-table
-    show-search
+    :show-search="showSearch"
     :page-info="pageInfo"
     :model-versions="versions"
     :error-message="errorMessage"

@@ -3,9 +3,10 @@ import { GlAvatarLabeled, GlBadge, GlIcon, GlPopover } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 import projects from 'test_fixtures/api/users/projects/get.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import ProjectListItemDescription from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_description.vue';
+import ProjectListItemActions from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_actions.vue';
 import ProjectListItemInactiveBadge from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';
 import ProjectsListItem from '~/vue_shared/components/projects_list/projects_list_item.vue';
-import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -73,11 +74,11 @@ describe('ProjectsListItem', () => {
   const findForksLink = () => wrapper.findByTestId('forks-btn');
   const findProjectTopics = () => wrapper.findByTestId('project-topics');
   const findPopover = () => findProjectTopics().findComponent(GlPopover);
-  const findProjectDescription = () => wrapper.findByTestId('project-description');
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
-  const findListActions = () => wrapper.findComponent(ListActions);
+  const findListActions = () => wrapper.findComponent(ProjectListItemActions);
   const findAccessLevelBadge = () => wrapper.findByTestId('access-level-badge');
   const findCiCatalogBadge = () => wrapper.findByTestId('ci-catalog-badge');
+  const findProjectDescription = () => wrapper.findComponent(ProjectListItemDescription);
   const findInactiveBadge = () => wrapper.findComponent(ProjectListItemInactiveBadge);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const findDeleteModal = () => wrapper.findComponent(DeleteModal);
@@ -387,29 +388,10 @@ describe('ProjectsListItem', () => {
     });
   });
 
-  describe('when project has a description', () => {
-    it('renders description', () => {
-      const descriptionHtml = '<p>Foo bar</p>';
+  it('renders project description', () => {
+    createComponent();
 
-      createComponent({
-        propsData: {
-          project: {
-            ...project,
-            descriptionHtml,
-          },
-        },
-      });
-
-      expect(findProjectDescription().element.innerHTML).toBe(descriptionHtml);
-    });
-  });
-
-  describe('when project does not have a description', () => {
-    it('does not render description', () => {
-      createComponent();
-
-      expect(findProjectDescription().exists()).toBe(false);
-    });
+    expect(findProjectDescription().exists()).toBe(true);
   });
 
   describe('when `showProjectIcon` prop is `true`', () => {
@@ -447,22 +429,12 @@ describe('ProjectsListItem', () => {
     });
 
     it('displays actions dropdown', () => {
-      expect(findListActions().props()).toMatchObject({
-        actions: {
-          [ACTION_EDIT]: {
-            href: editPath,
-          },
-          [ACTION_DELETE]: {
-            action: expect.any(Function),
-          },
-        },
-        availableActions: [ACTION_EDIT, ACTION_DELETE],
-      });
+      expect(findListActions().exists()).toBe(true);
     });
 
     describe('when delete action is fired', () => {
       beforeEach(() => {
-        findListActions().props('actions')[ACTION_DELETE].action();
+        findListActions().vm.$emit('delete');
       });
 
       it('displays confirmation modal with correct props', () => {
@@ -479,7 +451,7 @@ describe('ProjectsListItem', () => {
 
       describe('when deletion is confirmed', () => {
         describe('when API call is successful', () => {
-          it('calls deleteProject, properly sets loading state, and emits delete-complete event', async () => {
+          it('calls deleteProject, properly sets loading state, and emits refetch event', async () => {
             deleteProject.mockResolvedValueOnce();
 
             await deleteModalFirePrimaryEvent();
@@ -490,7 +462,7 @@ describe('ProjectsListItem', () => {
             await waitForPromises();
 
             expect(findDeleteModal().props('confirmLoading')).toBe(false);
-            expect(wrapper.emitted('delete-complete')).toEqual([[]]);
+            expect(wrapper.emitted('refetch')).toEqual([[]]);
             expect(renderDeleteSuccessToast).toHaveBeenCalledWith(projectWithActions, 'Project');
             expect(createAlert).not.toHaveBeenCalled();
           });
@@ -511,7 +483,7 @@ describe('ProjectsListItem', () => {
 
             expect(findDeleteModal().props('confirmLoading')).toBe(false);
 
-            expect(wrapper.emitted('delete-complete')).toBeUndefined();
+            expect(wrapper.emitted('refetch')).toBeUndefined();
             expect(createAlert).toHaveBeenCalledWith({
               message:
                 'An error occurred deleting the project. Please refresh the page to try again.',

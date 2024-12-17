@@ -11,15 +11,11 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 There's no automatic removal process for blobs. Unless you delete them manually, they're stored
-indefinitely. Since this impacts your
-[storage usage quota](../../storage_usage_quotas.md),
-it's important that you clear unused items from the cache. This page covers several options for
-doing so.
+indefinitely. This page covers several options for clearing unused items from the cache.
 
 ## Check Dependency Proxy Storage Use
 
-The Usage Quotas page (**Settings > Usage Quotas > Storage**) displays storage usage for Packages, which includes the Dependency Proxy,
-however, the storage is not yet displayed.
+The [**Usage Quotas**](../../storage_usage_quotas.md) page displays storage usage for the dependency proxy.
 
 ## Use the API to clear the cache
 

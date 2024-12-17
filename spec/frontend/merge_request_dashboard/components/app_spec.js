@@ -21,10 +21,9 @@ describe('Merge requests app component', () => {
 
   const findMergeRequests = () => wrapper.findAllComponents(MergeRequest);
   const findLoadMoreButton = () => wrapper.findByTestId('load-more');
+  const findCountExplanation = () => wrapper.findByTestId('merge-request-count-explanation');
 
-  function createComponent(
-    props = { query: 'reviewRequestedMergeRequests', variables: { state: 'opened' } },
-  ) {
+  function createComponent(lists = null, provide = { newListsEnabled: false }) {
     assigneeQueryMock = jest.fn().mockResolvedValue({
       data: {
         currentUser: {
@@ -70,18 +69,20 @@ describe('Merge requests app component', () => {
         tabs: [
           {
             title: 'Needs attention',
-            lists: [
-              {
-                title: 'Assigned merge requests',
-                query: 'assignedMergeRequests',
-                variables: { state: 'opened' },
-              },
+            lists: lists || [
+              [
+                {
+                  title: 'Assigned merge requests',
+                  query: 'assignedMergeRequests',
+                  variables: { state: 'opened' },
+                },
+              ],
             ],
           },
         ],
-        ...props,
       },
       provide: {
+        ...provide,
         mergeRequestsSearchDashboardPath: '/search',
       },
       stubs: {
@@ -111,5 +112,54 @@ describe('Merge requests app component', () => {
     expect(assigneeQueryMock).toHaveBeenCalledWith(
       expect.objectContaining({ afterCursor: 'endCursor' }),
     );
+  });
+
+  describe('when newListsEnabled is true', () => {
+    it('with 1 list does not render active count explanation', async () => {
+      createComponent(
+        [
+          [
+            {
+              title: 'Assigned merge requests',
+              query: 'assignedMergeRequests',
+              variables: { state: 'opened' },
+            },
+          ],
+        ],
+        { newListsEnabled: true },
+      );
+
+      await waitForPromises();
+
+      expect(findMergeRequests()).toHaveLength(1);
+      expect(findCountExplanation().exists()).toBe(false);
+    });
+
+    it('renders active count explanation when more than 1 list', async () => {
+      createComponent(
+        [
+          [
+            {
+              title: 'Assigned merge requests',
+              query: 'assignedMergeRequests',
+              variables: { state: 'opened' },
+            },
+          ],
+          [
+            {
+              title: 'Assigned merge requests',
+              query: 'assignedMergeRequests',
+              variables: { state: 'opened' },
+            },
+          ],
+        ],
+        { newListsEnabled: true },
+      );
+
+      await waitForPromises();
+
+      expect(findMergeRequests()).toHaveLength(2);
+      expect(findCountExplanation().exists()).toBe(true);
+    });
   });
 });

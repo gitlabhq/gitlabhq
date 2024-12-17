@@ -88,7 +88,7 @@ export default {
           <time-ago-tooltip :time="updatedAt" tooltip-placement="bottom" />
         </template>
         <template #author>
-          <gl-link :href="updatedByPath" class="gl-text-gray-700 hover:gl-text-gray-900">
+          <gl-link :href="updatedByPath" class="gl-text-subtle hover:gl-text-subtle">
             {{ updatedByName }}
           </gl-link>
         </template>

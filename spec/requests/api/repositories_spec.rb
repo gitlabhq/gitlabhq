@@ -40,46 +40,9 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
       context 'when path does not exist' do
         let(:path) { 'bogus' }
 
-        context 'when handle_structured_gitaly_errors feature is disabled' do
-          before do
-            stub_feature_flags(handle_structured_gitaly_errors: false)
-          end
-
-          it 'returns an empty array' do
-            get api("#{route}?path=#{path}", current_user)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to include_pagination_headers
-            expect(json_response).to be_an(Array)
-            expect(json_response).to be_an_empty
-          end
-        end
-
-        context 'when handle_structured_gitaly_errors feature is enabled' do
-          before do
-            stub_feature_flags(handle_structured_gitaly_errors: true)
-          end
-
-          it_behaves_like '404 response' do
-            let(:request) { get api("#{route}?path=#{path}", current_user) }
-            let(:message) { '404 invalid revision or path Not Found' }
-          end
-        end
-      end
-
-      context 'when path is empty directory ' do
-        context 'when handle_structured_gitaly_errors feature is disabled' do
-          before do
-            stub_feature_flags(handle_structured_gitaly_errors: false)
-          end
-
-          it 'returns an empty array' do
-            get api(route, current_user)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to include_pagination_headers
-            expect(json_response).to be_an(Array)
-          end
+        it_behaves_like '404 response' do
+          let(:request) { get api("#{route}?path=#{path}", current_user) }
+          let(:message) { '404 invalid revision or path Not Found' }
         end
       end
 
@@ -873,6 +836,41 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
           trailer: 'Foo'
         }
       )
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['notes']).to eq(release_notes)
+    end
+
+    it 'returns generated changelog when using JOB-TOKEN auth' do
+      spy = instance_spy(Repositories::ChangelogService)
+      release_notes = 'Release notes'
+
+      allow(Repositories::ChangelogService)
+        .to receive(:new)
+        .with(
+          project,
+          user,
+          version: '1.0.0',
+          from: 'foo',
+          to: 'bar',
+          date: DateTime.new(2020, 1, 1),
+          trailer: 'Foo'
+        )
+        .and_return(spy)
+
+      expect(spy).to receive(:execute).with(commit_to_changelog: false).and_return(release_notes)
+
+      job = create(:ci_build, :running, project: project, user: user)
+
+      get api("/projects/#{project.id}/repository/changelog"),
+        params: {
+          job_token: job.token,
+          version: '1.0.0',
+          from: 'foo',
+          to: 'bar',
+          date: '2020-01-01',
+          trailer: 'Foo'
+        }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['notes']).to eq(release_notes)

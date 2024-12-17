@@ -14,6 +14,10 @@ RSpec.describe Ci::PipelineSchedules::VariablesCreateService, feature_category: 
 
   subject(:service) { described_class.new(pipeline_schedule, user, params) }
 
+  before do
+    project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
+  end
+
   describe 'execute' do
     context 'when user does not have permission' do
       subject(:service) { described_class.new(pipeline_schedule, reporter, {}) }

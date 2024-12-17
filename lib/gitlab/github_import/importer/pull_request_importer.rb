@@ -35,14 +35,16 @@ module Gitlab
             insert_git_data(mr, already_exists)
 
             if mapper.user_mapping_enabled?
-              push_with_record(mr, :author_id, pull_request.author.id, mapper.user_mapper)
+              push_with_record(mr, :author_id, pull_request.author&.id, mapper.user_mapper)
 
               # we only import one PR assignee
               assignee = mr.merge_request_assignees.first
-              push_with_record(assignee, :user_id, pull_request.assignee[:id], mapper.user_mapper) if assignee
+              push_with_record(assignee, :user_id, pull_request.assignee&.id, mapper.user_mapper) if assignee
             end
           end
         end
+
+        private
 
         # Creates the merge request and returns its ID.
         #

@@ -29,7 +29,10 @@ RSpec.describe Emails::Imports, feature_category: :importers do
   end
 
   describe '#bulk_import_complete' do
-    let(:bulk_import) { build_stubbed(:bulk_import, :finished, :with_configuration) }
+    let(:bulk_import) { build_stubbed(:bulk_import, :finished) }
+    let!(:bulk_configuration) { build(:bulk_import_configuration, bulk_import: bulk_import, url: url) }
+    let(:url) { 'http://user:secret@example.com' }
+    let(:masked_url) { 'http://*****:*****@example.com' }
 
     subject { Notify.bulk_import_complete('user_id', 'bulk_import_id') }
 
@@ -39,11 +42,11 @@ RSpec.describe Emails::Imports, feature_category: :importers do
     end
 
     it 'sends complete email' do
-      is_expected.to have_subject("Import from #{bulk_import.configuration.url} completed")
+      is_expected.to have_subject("Import from #{masked_url} completed")
       is_expected.to have_content('Import completed')
       is_expected.to have_content("The import you started on " \
         "#{I18n.l(bulk_import.created_at.to_date, format: :long)} " \
-        "from #{bulk_import.configuration.url} has completed. You can now review your import results.")
+        "from #{masked_url} has completed. You can now review your import results.")
       is_expected.to have_body_text(history_import_bulk_import_url(bulk_import.id))
     end
   end
@@ -103,7 +106,7 @@ RSpec.describe Emails::Imports, feature_category: :importers do
     end
 
     it 'sends reassign email' do
-      is_expected.to have_subject("Reassignments on #{group.full_path} waiting for review")
+      is_expected.to have_subject("Reassignments in #{group.full_path} waiting for review")
       is_expected.to have_content("Imported from: #{source_user.source_hostname}")
       is_expected.to have_content("Original user: #{source_user.source_name} (@#{source_user.source_username})")
       is_expected.to have_content("Imported to: #{group.name}")
@@ -134,7 +137,7 @@ RSpec.describe Emails::Imports, feature_category: :importers do
 
     it 'sends rejected email' do
       is_expected.to deliver_to(owner.email)
-      is_expected.to have_subject("Reassignments on #{group.full_path} rejected")
+      is_expected.to have_subject("Reassignments in #{group.full_path} rejected")
       is_expected.to have_content('Reassignment rejected')
       is_expected.to have_content("#{user.name} (@#{user.username}) has declined your request")
       is_expected.to have_body_text(group_group_members_url(group, tab: 'placeholders'))

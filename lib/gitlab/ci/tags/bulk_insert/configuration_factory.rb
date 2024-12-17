@@ -23,7 +23,8 @@ module Gitlab
 
           def strategies
             [
-              BuildsTagsConfiguration
+              BuildsTagsConfiguration,
+              RunnerTaggingsConfiguration
             ]
           end
         end

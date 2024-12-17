@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Database::Count::TablesampleCountStrategy do
     create(:group)
   end
 
-  let(:models) { [Project, Ci::InstanceVariable, Identity, Group, Namespace] }
+  let(:models) { [Project, Ci::InstanceVariable, ::Identity, Group, Namespace] }
   let(:strategy) { described_class.new(models) }
 
   subject { strategy.count }

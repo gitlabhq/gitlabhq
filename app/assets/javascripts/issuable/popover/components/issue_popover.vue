@@ -93,7 +93,7 @@ export default {
         class="gl-text-orange-500"
         :aria-label="__('Confidential')"
       />
-      <span class="gl-text-secondary">
+      <span class="gl-text-subtle">
         {{ __('Opened') }} <time :datetime="issue.createdAt">{{ formattedTime }}</time>
       </span>
     </div>
@@ -101,11 +101,11 @@ export default {
     <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
     <div>
       <work-item-type-icon v-if="!$apollo.queries.issue.loading" :work-item-type="issue.type" />
-      <span class="gl-text-secondary">{{ `${namespacePath}#${iid}` }}</span>
+      <span class="gl-text-subtle">{{ `${namespacePath}#${iid}` }}</span>
     </div>
     <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
 
-    <div v-if="!$apollo.queries.issue.loading" class="gl-mt-2 gl-flex gl-text-secondary">
+    <div v-if="!$apollo.queries.issue.loading" class="gl-mt-2 gl-flex gl-text-subtle">
       <issue-due-date
         v-if="issue.dueDate"
         :date="issue.dueDate.toString()"

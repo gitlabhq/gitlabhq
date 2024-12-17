@@ -134,3 +134,7 @@ export const SERVICES_TABLE_FIELDS = [
     label: s__('Environment|Age'),
   },
 ];
+
+export const WORKLOAD_DETAILS_SECTIONS = {
+  STATUS: 'status',
+};

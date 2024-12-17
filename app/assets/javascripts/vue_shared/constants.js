@@ -96,8 +96,8 @@ export const confidentialityInfoText = (workspaceType, issuableType) =>
       issuableType: issuableType.toLowerCase().replaceAll('_', ' '),
       permissions:
         issuableType === TYPE_ISSUE
-          ? __('at least the Reporter role, the author, and assignees')
-          : __('at least the Reporter role'),
+          ? __('at least the Planner role, the author, and assignees')
+          : __('at least the Planner role'),
     },
   );
 

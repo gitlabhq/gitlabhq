@@ -1,9 +1,0 @@
----
-name: rich_text_editor_as_default
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/423104
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168077
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/497531
-milestone: '17.5'
-group: group::knowledge
-type: gitlab_com_derisk
-default_enabled: false

@@ -23,7 +23,7 @@ export default {
     <span
       class="show-hover-layover-hint gl-hidden gl-items-center gl-justify-end gl-opacity-0 sm:gl-flex"
     >
-      <span class="gl-whitespace-nowrap gl-text-gray-700" data-testid="overlay-message">
+      <span class="gl-whitespace-nowrap gl-text-default" data-testid="overlay-message">
         <gl-sprintf :message="textMessage">
           <template #kbd="{ content }">
             <kbd class="vertical-align-normalization gl-pb-3 gl-align-middle gl-text-base">

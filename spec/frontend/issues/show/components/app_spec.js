@@ -400,7 +400,7 @@ describe('Issuable output', () => {
     });
 
     const findIncidentTabs = () => wrapper.findComponent(IncidentTabs);
-    const borderClass = 'gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid gl-mb-6';
+    const borderClass = 'gl-border-b-1 gl-border-b-default gl-border-b-solid gl-mb-6';
 
     describe('when using description component', () => {
       it('renders the description component', () => {

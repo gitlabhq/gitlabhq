@@ -1,0 +1,21 @@
+- popover_title = s_("BetaBadge|What's a beta?")
+- popover_content = capture do
+  %p
+    = s_("BetaBadge|A beta feature is not yet production-ready, but is ready for testing and unlikely to change significantly before it's released.")
+  %p.gl-mb-0
+    = s_("BetaBadge|Beta features:")
+
+  %ul.gl-pl-4
+    %li
+      = s_("BetaBadge|Have a low risk of data loss, but might still be unstable.")
+    %li
+      = s_("BetaBadge|Are supported on a commercially-reasonable effort basis.")
+    %li
+      = s_("BetaBadge|Have a near complete user experience.")
+    %li
+      = s_("BetaBadge|Are subject to the GitLab Testing Agreement.")
+
+- popover_data = { container: 'body', toggle: 'popover', placement: "top", html: 'true', triggers: 'hover focus', title: popover_title, content: popover_content }
+
+%span{ class: style }
+  = gl_badge_tag(_('Beta'), variant: :neutral, href: '#', data: popover_data)

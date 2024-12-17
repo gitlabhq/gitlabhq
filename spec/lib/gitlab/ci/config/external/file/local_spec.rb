@@ -263,7 +263,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pip
 
     subject(:metadata) { local_file.metadata }
 
-    it {
+    it do
       is_expected.to eq(
         context_project: project.full_path,
         context_sha: sha,
@@ -273,6 +273,6 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pip
         raw: "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/-/raw/#{sha}/lib/gitlab/ci/templates/existent-file.yml",
         extra: {}
       )
-    }
+    end
   end
 end

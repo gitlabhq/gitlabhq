@@ -1,4 +1,4 @@
-%table.table.gl-text-gray-500.gl-w-full
+%table.table.gl-text-subtle.gl-w-full
   %tr
     %td{ class: '!gl-p-5' }
       = s_('AdminArea|Users without a Group and Project')
@@ -6,6 +6,13 @@
     %td.gl-text-right{ class: '!gl-p-5' }
       = @users_statistics&.without_groups_and_projects
   = render_if_exists 'admin/dashboard/minimal_access_stats_row', users_statistics: @users_statistics
+  %tr
+    %td{ class: '!gl-p-5' }
+      = s_('AdminArea|Users with highest role')
+      %strong
+        = s_('AdminArea|Planner')
+    %td.gl-text-right{ class: '!gl-p-5' }
+      = @users_statistics&.with_highest_role_planner
   %tr
     %td{ class: '!gl-p-5' }
       = s_('AdminArea|Users with highest role')

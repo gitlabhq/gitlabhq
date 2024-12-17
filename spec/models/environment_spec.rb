@@ -804,10 +804,6 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     subject { environment.stop_with_actions! }
 
     shared_examples_for 'stop with playing a teardown job' do
-      before do
-        expect(environment).to receive(:available?).and_call_original
-      end
-
       context 'when no other actions' do
         context 'environment is available' do
           before do
@@ -819,6 +815,19 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
 
             expect(environment).to be_stopped
             expect(actions).to match_array([])
+          end
+
+          context 'when the auto stop setting is set to :with_action' do
+            before do
+              environment.update!(auto_stop_setting: :with_action)
+            end
+
+            it 'does not stop the environment' do
+              actions = subject
+
+              expect(environment).to be_available
+              expect(actions).to match_array([])
+            end
           end
         end
 

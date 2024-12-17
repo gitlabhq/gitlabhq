@@ -84,32 +84,6 @@ When importing GitHub projects with a large number of comments, select the **Use
 [additional item to import](github.md#select-additional-items-to-import) checkbox. This setting makes the import process take longer because it increases the number of network requests
 required to perform the import.
 
-### Reduce GitHub API request objects per page
-
-Some GitHub API endpoints might return a `500` or `502` error for project imports from large repositories.
-To reduce the chance of these errors, in the group project importing the data, enable the
-`github_importer_lower_per_page_limit` feature flag. When enabled, the flag reduces the
-page size from `100` to `50`.
-
-To enable this feature flag:
-
-1. Start a [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
-1. Run the following `enable` command:
-
-   ```ruby
-   group = Group.find_by_full_path('my/group/fullpath')
-
-   # Enable
-   Feature.enable(:github_importer_lower_per_page_limit, group)
-   ```
-
-To disable the feature flag, run this command:
-
-```ruby
-# Disable
-Feature.disable(:github_importer_lower_per_page_limit, group)
-```
-
 ## GitLab instance cannot connect to GitHub
 
 Self-managed instances that run GitLab 15.10 or earlier, and are behind proxies, cannot resolve DNS for `github.com` or `api.github.com`.

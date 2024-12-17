@@ -23,8 +23,13 @@ RSpec.describe Gitlab::BackgroundMigration::ResolveVulnerabilitiesForRemovedAnal
   let(:vulnerability_statistics) { table(:vulnerability_statistics) }
   let(:notes) { table(:notes) }
   let(:system_note_metadata) { table(:system_note_metadata) }
-  let(:namespace) { namespaces.create!(name: 'user', path: 'user') }
-  let(:project) { projects.create!(namespace_id: namespace.id, project_namespace_id: namespace.id) }
+
+  let(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
+  let(:namespace) { namespaces.create!(name: 'user', path: 'user', organization_id: organization.id) }
+  let(:project) do
+    projects.create!(namespace_id: namespace.id, project_namespace_id: namespace.id, organization_id: organization.id)
+  end
+
   let(:vulnerability_resolved_by_user) { Users::Internal.security_bot }
   let(:vulnerability_created_by_user) do
     table(:users).create!(username: 'john_doe', email: 'johndoe@gitlab.com', projects_limit: 10)
@@ -287,8 +292,13 @@ RSpec.describe Gitlab::BackgroundMigration::ResolveVulnerabilitiesForRemovedAnal
             control = ActiveRecord::QueryRecorder.new { perform_migration }
 
             removed_scanners.map do |external_id|
-              new_namespace = namespaces.create!(name: 'user', path: 'user')
-              new_project = projects.create!(namespace_id: new_namespace.id, project_namespace_id: new_namespace.id)
+              new_namespace = namespaces.create!(name: 'user', path: 'user', organization_id: organization.id)
+
+              new_project = projects.create!(
+                namespace_id: new_namespace.id,
+                project_namespace_id: new_namespace.id,
+                organization_id: organization.id
+              )
               create_vulnerability(project_id: new_project.id, external_id: external_id)
             end
 

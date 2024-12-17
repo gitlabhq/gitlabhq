@@ -83,6 +83,7 @@ class MergeRequestsFinder < IssuableFinder
     items = by_source_project_id(items)
     items = by_resource_event_state(items)
     items = by_assignee_or_reviewer(items)
+    items = by_blob_path(items)
 
     by_approved(items)
   end
@@ -278,6 +279,15 @@ class MergeRequestsFinder < IssuableFinder
       params.assigned_review_states,
       params.reviewer_review_states
     )
+  end
+
+  def by_blob_path(items)
+    blob_path = params[:blob_path]
+
+    return items unless blob_path
+    return items.none unless params.project
+
+    items.by_blob_path(blob_path)
   end
 
   def parse_datetime(input)

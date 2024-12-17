@@ -71,7 +71,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'runs in project pipeline with correct inputs', :blocking, :aggregate_failures,
+      it 'runs in project pipeline with correct inputs', :aggregate_failures,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/451582' do
         Flow::Pipeline.visit_latest_pipeline
 

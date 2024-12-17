@@ -96,6 +96,20 @@ RSpec.describe Projects::Settings::IntegrationsController, feature_category: :in
       expect(json_response).to eq({ 'my_payload' => true })
     end
 
+    it 'does not persist assigned attributes when testing the integration' do
+      original_external_wiki_url = integration.external_wiki_url
+      new_external_wiki_url = 'https://example.com/wiki'
+      integration_params = { active: 'true', external_wiki_url: new_external_wiki_url }
+
+      allow_next(Integrations::Test::ProjectService).to receive(:execute).and_return({ success: true })
+
+      put :test, params: project_params(service: integration_params)
+
+      integration.reload
+
+      expect(integration.external_wiki_url).to eq(original_external_wiki_url)
+    end
+
     it 'returns an error response if the test is not successful' do
       allow_next(Integrations::Test::ProjectService).to receive(:execute).and_return({ success: false })
 

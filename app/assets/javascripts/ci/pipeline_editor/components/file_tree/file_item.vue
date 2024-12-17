@@ -34,7 +34,7 @@ export default {
     :href="filePath"
     :title="fileName"
     target="_blank"
-    class="file-tree-includes-link gl-flex gl-justify-between gl-rounded-base gl-px-3 gl-py-2 gl-text-primary hover:gl-bg-gray-50 hover:gl-text-gray-900 hover:gl-no-underline"
+    class="file-tree-includes-link gl-flex gl-justify-between gl-rounded-base gl-px-3 gl-py-2 gl-text-default hover:gl-bg-strong hover:gl-text-strong hover:gl-no-underline"
   >
     <span class="file-row-name gl-str-truncated" :title="fileName">
       <file-icon class="file-row-icon" :file-name="fileName" />

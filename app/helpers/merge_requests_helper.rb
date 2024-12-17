@@ -439,91 +439,208 @@ module MergeRequestsHelper
     { new_comment_template_paths: new_comment_template_paths(@project.group, @project).to_json }
   end
 
-  def merge_request_dashboard_data
+  def merge_request_dashboard_data_v2
     {
       tabs: [
         {
-          title: _('Needs attention'),
+          title: 'Active',
           key: '',
           lists: [
-            {
-              id: 'returned_to_you',
-              title: _('Returned to you'),
-              helpContent: _('Reviewers left feedback, or requested changes from you, on these merge requests.'),
-              query: 'assignedMergeRequests',
-              variables: {
-                reviewStates: %w[REVIEWED REQUESTED_CHANGES]
+            [
+              {
+                id: 'returned_to_you',
+                title: _('Returned to you'),
+                helpContent: _('Reviewers left feedback, or requested changes from you, on these merge requests.'),
+                query: 'assignedMergeRequests',
+                variables: {
+                  reviewStates: %w[REVIEWED REQUESTED_CHANGES]
+                }
+              },
+              {
+                id: 'reviews_requested',
+                title: _('Review requested'),
+                helpContent: _('These merge requests need a review from you.'),
+                query: 'reviewRequestedMergeRequests',
+                variables: {
+                  reviewStates: %w[UNAPPROVED UNREVIEWED REVIEW_STARTED]
+                }
+              },
+              {
+                id: 'assigned_to_you',
+                title: _('Assigned to you'),
+                helpContent: _("You're assigned to these merge requests, but they don't have reviewers yet."),
+                query: 'assignedMergeRequests',
+                variables: {
+                  reviewerWildcardId: 'NONE'
+                }
               }
-            },
-            {
-              id: 'reviews_requested',
-              title: _('Reviews requested'),
-              helpContent: _('These merge requests need a review from you.'),
-              query: 'reviewRequestedMergeRequests',
-              variables: {
-                reviewStates: %w[UNAPPROVED UNREVIEWED REVIEW_STARTED]
+            ],
+            [
+              {
+                id: 'waiting_for_author',
+                title: _('Waiting for author'),
+                hideCount: true,
+                helpContent: _(
+                  'Your assigned merge requests that are waiting for approvals, ' \
+                    'and reviews you have requested changes for.'
+                ),
+                query: 'reviewRequestedMergeRequests',
+                variables: {
+                  reviewStates: %w[REVIEWED REQUESTED_CHANGES]
+                }
+              },
+              {
+                id: 'waiting_for_reviewer',
+                title: _('Waiting for reviewer'),
+                hideCount: true,
+                helpContent: _(
+                  'Your assigned merge requests that are waiting for approvals, ' \
+                    'and reviews you have requested changes for.'
+                ),
+                query: 'assignedMergeRequests',
+                variables: {
+                  reviewStates: %w[UNREVIEWED UNAPPROVED REVIEW_STARTED]
+                }
+              },
+              {
+                id: 'approved_by_you',
+                title: _('Approved by you'),
+                hideCount: true,
+                helpContent: _("You've reviewed and approved these merge requests."),
+                query: 'reviewRequestedMergeRequests',
+                variables: {
+                  reviewState: 'APPROVED'
+                }
+              },
+              {
+                id: 'approved_by_others',
+                title: _('Approved by others'),
+                hideCount: true,
+                helpContent: _('Includes all merge requests you are assigned to and a reviewer has approved.'),
+                query: 'assignedMergeRequests',
+                variables: {
+                  reviewState: 'APPROVED'
+                }
               }
-            },
-            {
-              id: 'assigned_to_you',
-              title: _('Assigned to you'),
-              helpContent: _("You're assigned to these merge requests, but they don't have reviewers yet."),
-              query: 'assignedMergeRequests',
-              variables: {
-                reviewerWildcardId: 'NONE'
-              }
-            }
+            ]
           ]
         },
         {
-          title: _('Following'),
-          key: 'following',
+          title: 'Merged',
+          key: 'merged',
           lists: [
-            {
-              id: 'waikting_for_others',
-              title: _('Waiting for others'),
-              helpContent: _(
-                'Your assigned merge requests that are waiting for approvals, ' \
-                  'and reviews you have requested changes for.'
-              ),
-              query: 'assigneeOrReviewerMergeRequests',
-              variables: {
-                reviewerReviewStates: %w[REVIEWED REQUESTED_CHANGES],
-                assignedReviewStates: %w[UNREVIEWED UNAPPROVED REVIEW_STARTED]
-              }
-            },
-            {
-              id: 'approved_by_you',
-              title: _('Approved by you'),
-              helpContent: _("You've reviewed and approved these merge requests."),
-              query: 'reviewRequestedMergeRequests',
-              variables: {
-                reviewState: 'APPROVED'
-              }
-            },
-            {
-              id: 'approved_by_others',
-              title: _('Approved by others'),
-              helpContent: _('Includes all merge requests you are assigned to and a reviewer has approved.'),
-              query: 'assignedMergeRequests',
-              variables: {
-                reviewState: 'APPROVED'
-              }
-            },
-            {
+            [{
               id: 'merged_recently',
               title: _('Merged recently'),
               helpContent: _('These merge requests merged after %{date}. You were an assignee or a reviewer.') % {
                 date: 2.weeks.ago.to_date.to_formatted_s(:long)
               },
-              hideCount: true,
               query: 'assigneeOrReviewerMergeRequests',
               variables: {
                 state: 'merged',
                 mergedAfter: 2.weeks.ago.to_time.iso8601,
                 sort: 'MERGED_AT_DESC'
               }
-            }
+            }]
+          ]
+        }
+      ]
+    }
+  end
+
+  def merge_request_dashboard_data
+    if ::Feature.enabled?(:merge_request_dashboard_new_lists, current_user, type: :wip)
+      return merge_request_dashboard_data_v2
+    end
+
+    {
+      tabs: [
+        {
+          title: _('Needs attention'),
+          key: '',
+          lists: [
+            [
+              {
+                id: 'returned_to_you',
+                title: _('Returned to you'),
+                helpContent: _('Reviewers left feedback, or requested changes from you, on these merge requests.'),
+                query: 'assignedMergeRequests',
+                variables: {
+                  reviewStates: %w[REVIEWED REQUESTED_CHANGES]
+                }
+              },
+              {
+                id: 'reviews_requested',
+                title: _('Reviews requested'),
+                helpContent: _('These merge requests need a review from you.'),
+                query: 'reviewRequestedMergeRequests',
+                variables: {
+                  reviewStates: %w[UNAPPROVED UNREVIEWED REVIEW_STARTED]
+                }
+              },
+              {
+                id: 'assigned_to_you',
+                title: _('Assigned to you'),
+                helpContent: _("You're assigned to these merge requests, but they don't have reviewers yet."),
+                query: 'assignedMergeRequests',
+                variables: {
+                  reviewerWildcardId: 'NONE'
+                }
+              }
+            ]
+          ]
+        },
+        {
+          title: _('Following'),
+          key: 'following',
+          lists: [
+            [
+              {
+                id: 'waikting_for_others',
+                title: _('Waiting for others'),
+                helpContent: _(
+                  'Your assigned merge requests that are waiting for approvals, ' \
+                    'and reviews you have requested changes for.'
+                ),
+                query: 'assigneeOrReviewerMergeRequests',
+                variables: {
+                  reviewerReviewStates: %w[REVIEWED REQUESTED_CHANGES],
+                  assignedReviewStates: %w[UNREVIEWED UNAPPROVED REVIEW_STARTED]
+                }
+              },
+              {
+                id: 'approved_by_you',
+                title: _('Approved by you'),
+                helpContent: _("You've reviewed and approved these merge requests."),
+                query: 'reviewRequestedMergeRequests',
+                variables: {
+                  reviewState: 'APPROVED'
+                }
+              },
+              {
+                id: 'approved_by_others',
+                title: _('Approved by others'),
+                helpContent: _('Includes all merge requests you are assigned to and a reviewer has approved.'),
+                query: 'assignedMergeRequests',
+                variables: {
+                  reviewState: 'APPROVED'
+                }
+              },
+              {
+                id: 'merged_recently',
+                title: _('Merged recently'),
+                helpContent: _('These merge requests merged after %{date}. You were an assignee or a reviewer.') % {
+                  date: 2.weeks.ago.to_date.to_formatted_s(:long)
+                },
+                hideCount: true,
+                query: 'assigneeOrReviewerMergeRequests',
+                variables: {
+                  state: 'merged',
+                  mergedAfter: 2.weeks.ago.to_time.iso8601,
+                  sort: 'MERGED_AT_DESC'
+                }
+              }
+            ]
           ]
         }
       ]

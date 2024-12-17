@@ -142,7 +142,7 @@ Prerequisites:
    - `<your_issuer_uri>` with your identity provider issuer URI, which can be
      can be copied from the IAM integration page when choosing
      manual setup and must exactly match the value. The parameter must include
-     the path of the root group. For example, if the project is under
+     the path of the top-level group. For example, if the project is under
      `my-root-group/my-subgroup/project-a`, the `issuer-uri` must be set to
      `https://auth.gcp.gitlab.com/oidc/my-root-group`.
 
@@ -203,8 +203,8 @@ The ID token includes the following custom claims:
 | `namespace_path`        | On project events         | Path of the group or user level namespace.                                                               |
 | `project_id`            | On project events         | ID of the project.                                                                                       |
 | `project_path`          | On project events         | Path of the project.                                                                                     |
-| `root_namespace_id`     | On group events           | ID of the root group or user level namespace.                                                            |
-| `root_namespace_path`   | On group events           | Path of the root group or user level namespace.                                                          |
+| `root_namespace_id`     | On group events           | ID of the top-level group or user level namespace.                                                            |
+| `root_namespace_path`   | On group events           | Path of the top-level group or user level namespace.                                                          |
 | `user_id`               | On user-trigged events    | ID of the user.                                                                                          |
 | `user_login`            | On user-trigged events    | Username of the user.                                                                                    |
 | `user_email`            | On user-trigged events    | Email of the user.                                                                                       |

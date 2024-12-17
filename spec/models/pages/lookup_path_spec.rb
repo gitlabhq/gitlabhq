@@ -50,6 +50,14 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
     end
   end
 
+  describe '#default_domain_redirect' do
+    it 'delegates to Project#project_setting#pages_default_domain_redirect' do
+      project.project_setting.pages_default_domain_redirect = 'my.domain.com'
+
+      expect(lookup_path.default_domain_redirect).to eq('my.domain.com')
+    end
+  end
+
   describe '#https_only' do
     subject(:lookup_path) { described_class.new(deployment: deployment, domain: domain) }
 

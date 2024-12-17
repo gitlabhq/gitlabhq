@@ -8,3 +8,4 @@ description: Captures events of potential abuse
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115258
 milestone: '16.1'
 gitlab_schema: gitlab_main_clusterwide
+table_size: small

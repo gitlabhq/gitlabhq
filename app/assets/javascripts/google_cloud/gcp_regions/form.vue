@@ -24,7 +24,7 @@ export default {
 
 <template>
   <div>
-    <header class="gl-my-5 gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid">
+    <header class="gl-my-5 gl-border-b-1 gl-border-b-default gl-border-b-solid">
       <h1 class="gl-text-size-h1">{{ $options.i18n.title }}</h1>
     </header>
 

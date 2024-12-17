@@ -106,7 +106,7 @@ module Gitlab
           config[:storage] = storage_paths.map { |name, _| { name: name, path: storage_paths[name].to_s } }
 
           runtime_dir = options[:runtime_dir] || File.join(gitaly_dir, 'run')
-          FileUtils.mkdir(runtime_dir) unless File.exist?(runtime_dir)
+          FileUtils.mkdir_p(runtime_dir)
           config[:runtime_dir] = runtime_dir
 
           config[:'gitlab-shell'] = { dir: Gitlab.config.gitlab_shell.path }

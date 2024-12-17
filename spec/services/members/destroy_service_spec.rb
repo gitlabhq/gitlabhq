@@ -202,30 +202,47 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
 
     context 'for project members' do
       shared_examples_for 'deletes the project member without using a lock' do
-        it 'does not try to perform the deletion of a project member within a lock' do
+        let(:lock_key_for_update_highest_role) { "update_highest_role:#{member_to_delete.user_id}" }
+        let(:lock_key_for_authorizations_refresh) { "authorized_project_update/project_recalculate_worker/projects/#{member_to_delete.project.id}" }
+
+        it 'does not try to perform the deletion of a project member within a lock', :aggregate_failures do
           # We need to account for other places involved in the Member deletion process that
           # uses ExclusiveLease.
 
           # 1. `UpdateHighestRole` concern uses locks to peform work
           # whenever a Member is committed, so that needs to be accounted for.
-          lock_key_for_update_highest_role = "update_highest_role:#{member_to_delete.user_id}"
-
           expect(Gitlab::ExclusiveLease)
             .to receive(:new).with(lock_key_for_update_highest_role, timeout: 10.minutes.to_i).and_call_original
 
-          # 2. `AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker` also uses locks to perform work,
-          # whenever a user's authorizations has to be refreshed, so that needs to be accounted for as well.
-          lock_key_for_authorizations_refresh =
-            "authorized_project_update/project_recalculate_worker/projects/#{member_to_delete.project.id}"
-
+          # 2. `AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker` does not use a lock to refresh
+          # a user's authorizations has to be refreshed
           expect(Gitlab::ExclusiveLease)
-            .to receive(:new).with(lock_key_for_authorizations_refresh, timeout: 10.seconds).and_call_original
+            .not_to receive(:new).with(lock_key_for_authorizations_refresh, timeout: 10.seconds)
 
           # We do not use any locks for the member deletion process, from within this service.
           expect(Gitlab::ExclusiveLease)
             .not_to receive(:new).with(lock_key, timeout: timeout)
 
           destroy_member
+        end
+
+        context 'when feature-flag `drop_lease_usage_project_recalculate_workers` is disabled' do
+          before do
+            stub_feature_flags(drop_lease_usage_project_recalculate_workers: false)
+          end
+
+          it 'refreshes user authorizations using a lock', :aggregate_failures do
+            expect(Gitlab::ExclusiveLease)
+            .to receive(:new).with(lock_key_for_update_highest_role, timeout: 10.minutes.to_i).and_call_original
+
+            expect(Gitlab::ExclusiveLease)
+              .to receive(:new).with(lock_key_for_authorizations_refresh, timeout: 10.seconds).and_call_original
+
+            expect(Gitlab::ExclusiveLease)
+              .not_to receive(:new).with(lock_key, timeout: timeout)
+
+            destroy_member
+          end
         end
 
         it 'destroys the membership' do

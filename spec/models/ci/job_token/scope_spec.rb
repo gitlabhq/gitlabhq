@@ -229,6 +229,59 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
     end
   end
 
+  describe '#policies_allowed?' do
+    subject { scope.policies_allowed?(accessed_project, policies) }
+
+    let(:scope) { described_class.new(target_project) }
+    let_it_be(:target_project) { create(:project) }
+    let_it_be(:allowed_policy) { ::Ci::JobToken::Policies.all_policies.pick(:value) }
+    let(:accessed_project) { create_inbound_accessible_project_for_policies(target_project, [allowed_policy]) }
+
+    context 'when no policies are given' do
+      let_it_be(:policies) { [] }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the policies are defined in the scope' do
+      let_it_be(:policies) { [allowed_policy] }
+
+      it { is_expected.to be(true) }
+
+      context 'when the accessed project is not inbound accessible' do
+        let(:accessed_project) { create(:project) }
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'when the policy are not defined in the scope' do
+      let_it_be(:policies) { [:not_allowed_policy] }
+
+      it { is_expected.to be(false) }
+
+      context 'when the accessed project is the target project' do
+        let(:accessed_project) { target_project }
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when the accessed project does not have ci_inbound_job_token_scope_enabled set to true' do
+        before do
+          accessed_project.ci_inbound_job_token_scope_enabled = false
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when the accessed project has not enabled fine grained permissions' do
+        let(:accessed_project) { create_inbound_accessible_project(target_project) }
+
+        it { is_expected.to be(true) }
+      end
+    end
+  end
+
   describe '#self_referential?' do
     subject { scope.self_referential?(access_project) }
 

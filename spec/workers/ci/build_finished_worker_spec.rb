@@ -68,7 +68,11 @@ RSpec.describe Ci::BuildFinishedWorker, feature_category: :continuous_integratio
         end
       end
 
-      context 'when it has a token' do
+      context 'when it has a database token' do
+        before do
+          stub_feature_flags(ci_job_token_jwt: false)
+        end
+
         it 'removes the token' do
           expect { subject }.to change { build.reload.token }.to(nil)
         end

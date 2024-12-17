@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', product_group: :project_management do
+  RSpec.describe 'Plan', :requires_admin, product_group: :project_management do
     describe 'Assignees' do
-      let(:user1) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1) }
-      let(:user2) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_2, Runtime::Env.gitlab_qa_password_2) }
+      let(:user1) { create(:user) }
+      let(:user2) { create(:user) }
       let(:project) { create(:project, name: 'project-to-test-assignees') }
 
       before do
@@ -14,7 +14,7 @@ module QA
         project.add_member(user2)
       end
 
-      it 'update without refresh', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347941' do
+      it 'update without refresh', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347941' do
         issue = create(:issue, project: project, assignee_ids: [user1.id])
         issue.visit!
 

@@ -63,31 +63,28 @@ class Group < Namespace
 
   has_many :milestones
   has_many :integrations
-  has_many :shared_group_links, foreign_key: :shared_with_group_id, class_name: 'GroupGroupLink'
-  has_many :shared_with_group_links, foreign_key: :shared_group_id, class_name: 'GroupGroupLink' do
-    def of_ancestors
-      group = proxy_association.owner
 
-      return GroupGroupLink.none unless group.has_parent?
+  with_options class_name: 'GroupGroupLink' do
+    has_many :shared_group_links, foreign_key: :shared_with_group_id
 
-      GroupGroupLink.where(shared_group_id: group.ancestors.reorder(nil).select(:id))
-    end
-
-    def of_ancestors_and_self
-      group = proxy_association.owner
-
-      source_ids =
-        if group.has_parent?
-          group.self_and_ancestors.reorder(nil).select(:id)
-        else
-          group.id
-        end
-
-      GroupGroupLink.where(shared_group_id: source_ids)
+    with_options foreign_key: :shared_group_id do
+      has_many :shared_with_group_links
+      has_many :shared_with_group_links_of_ancestors, ->(group) do
+        unscope(where: :shared_group_id).where(shared_group: group.ancestors)
+      end
+      has_many :shared_with_group_links_of_ancestors_and_self, ->(group) do
+        unscope(where: :shared_group_id).where(shared_group: group.self_and_ancestors)
+      end
     end
   end
+
   has_many :shared_groups, through: :shared_group_links, source: :shared_group
-  has_many :shared_with_groups, through: :shared_with_group_links, source: :shared_with_group
+  with_options source: :shared_with_group do
+    has_many :shared_with_groups, through: :shared_with_group_links
+    has_many :shared_with_groups_of_ancestors, through: :shared_with_group_links_of_ancestors
+    has_many :shared_with_groups_of_ancestors_and_self, through: :shared_with_group_links_of_ancestors_and_self
+  end
+
   has_many :project_group_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :shared_projects, through: :project_group_links, source: :project
 
@@ -412,6 +409,7 @@ class Group < Namespace
       project_creation_allowed_on_levels = [
         ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS,
         ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS,
+        ::Gitlab::Access::OWNER_PROJECT_ACCESS,
         nil
       ]
 
@@ -504,6 +502,12 @@ class Group < Namespace
     full_name
   end
 
+  def to_human_reference(from = nil)
+    return unless cross_namespace_reference?(from)
+
+    human_name
+  end
+
   def visibility_level_allowed_by_parent?(level = self.visibility_level)
     return true unless parent_id && parent_id.nonzero?
 
@@ -553,6 +557,10 @@ class Group < Namespace
 
   def add_guest(user, current_user = nil)
     add_member(user, :guest, current_user: current_user)
+  end
+
+  def add_planner(user, current_user = nil)
+    add_member(user, :planner, current_user: current_user)
   end
 
   def add_reporter(user, current_user = nil)
@@ -692,6 +700,11 @@ class Group < Namespace
       self_and_descendants.pluck(:id)
     end
   end
+
+  def self_and_ancestors_asc
+    self_and_ancestors(hierarchy_order: :asc)
+  end
+  strong_memoize_attr :self_and_ancestors_asc
 
   # Only for direct and not requested members with higher access level than MIMIMAL_ACCESS
   # It returns true for non-active users

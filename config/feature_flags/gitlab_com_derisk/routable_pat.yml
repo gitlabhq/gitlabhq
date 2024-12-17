@@ -1,0 +1,9 @@
+---
+name: routable_pat
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/487009
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169322
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/504419
+milestone: '17.7'
+group: group::cells infrastructure
+type: gitlab_com_derisk
+default_enabled: false

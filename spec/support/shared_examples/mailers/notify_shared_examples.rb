@@ -36,6 +36,16 @@ RSpec.shared_examples 'an email sent to a user' do
   end
 end
 
+RSpec.shared_examples 'an email with suffix' do
+  before do
+    stub_config_setting(email_subject_suffix: 'Suffix')
+  end
+
+  it 'adds a correct suffix to subject' do
+    expect(subject.subject).to end_with('| Suffix')
+  end
+end
+
 RSpec.shared_examples 'an email that contains a header with author username' do
   it 'has X-GitLab-Author header containing author\'s username' do
     is_expected.to have_header 'X-GitLab-Author', user.username

@@ -30,7 +30,7 @@ module API
         optional :order_by, type: String, values: %w[name path id similarity], default: 'name', desc: 'Order by name, path, id or similarity if searching'
         optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
         optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Minimum access level of authenticated user'
-        optional :top_level_only, type: Boolean, desc: 'Only include top level groups'
+        optional :top_level_only, type: Boolean, desc: 'Only include top-level groups'
         use :optional_group_list_params_ee
         use :pagination
       end
@@ -539,14 +539,14 @@ module API
         present_groups params, groups, serializer: Entities::PublicGroupDetails
       end
 
-      desc 'Transfer a group to a new parent group or promote a subgroup to a root group' do
+      desc 'Transfer a group to a new parent group or promote a subgroup to a top-level group' do
         tags %w[groups]
       end
       params do
         optional :group_id,
           type: Integer,
           desc: 'The ID of the target group to which the group needs to be transferred to.'\
-                'If not provided, the source group will be promoted to a root group.'
+                'If not provided, the source group will be promoted to a top-level group.'
       end
       post ':id/transfer', feature_category: :groups_and_projects do
         group = find_group!(params[:id])

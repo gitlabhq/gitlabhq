@@ -66,6 +66,7 @@ const CODE_BLOCK_LANGUAGES = [
   { syntax: 'gauss', variants: 'gss', label: 'GAUSS' },
   { syntax: 'gcode', variants: 'nc', label: 'G-code (ISO 6983)' },
   { syntax: 'gherkin', variants: 'feature', label: 'Gherkin' },
+  { syntax: 'glql', label: 'GitLab Query Language (GLQL)' },
   { syntax: 'glsl', label: 'GLSL' },
   { syntax: 'gml', label: 'GML' },
   { syntax: 'go', variants: 'golang', label: 'Go' },

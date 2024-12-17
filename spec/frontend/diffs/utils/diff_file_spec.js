@@ -4,6 +4,9 @@ import {
   stats,
   isNotDiffable,
   match,
+  countLinesInBetween,
+  findClosestMatchLine,
+  lineExists,
 } from '~/diffs/utils/diff_file';
 import { diffViewerModes } from '~/ide/constants';
 import { getDiffFileMock } from '../mock_data/diff_file';
@@ -300,6 +303,66 @@ describe('diff_file utilities', () => {
       it(`matches if the ${keyName} are the same`, () => {
         expect(match({ fileA: authorityFile, fileB: comparisonFiles[2], mode })).toBe(true);
       });
+    });
+  });
+
+  describe('countLinesInBetween', () => {
+    it('returns -1 for the first element', () => {
+      expect(countLinesInBetween([], 0)).toBe(-1);
+    });
+
+    it('returns -1 for the last element', () => {
+      expect(countLinesInBetween([{}, {}], 1)).toBe(-1);
+    });
+
+    it('calculates line difference for regular lines', () => {
+      expect(
+        countLinesInBetween([{ new_line: 1 }, { meta_data: { new_pos: 10 } }, { new_line: 10 }], 1),
+      ).toBe(9);
+    });
+
+    it('calculates line difference for line sides', () => {
+      expect(
+        countLinesInBetween(
+          [{ left: { new_line: 1 } }, { meta_data: { new_pos: 10 } }, { left: { new_line: 10 } }],
+          1,
+        ),
+      ).toBe(9);
+    });
+  });
+
+  describe('findClosestMatchLine', () => {
+    const lines = [
+      { meta_data: { new_pos: 5 } },
+      { new_line: 5 },
+      { meta_data: { new_pos: 10 } },
+      { new_line: 10 },
+      { meta_data: { new_pos: 20 } },
+      { new_line: 20 },
+      { new_line: 21 },
+      { meta_data: { new_pos: 21 } },
+    ];
+
+    it('finds closest match line', () => {
+      expect(findClosestMatchLine(lines, 15)).toBe(lines[4]);
+    });
+
+    it('returns first match line when outside of bounds', () => {
+      expect(findClosestMatchLine(lines, 3)).toBe(lines[0]);
+    });
+
+    it('returns last match line when outside of bounds', () => {
+      expect(findClosestMatchLine(lines, 25)).toBe(lines[lines.length - 1]);
+    });
+  });
+
+  describe('lineExists', () => {
+    it('returns true for existing line', () => {
+      expect(lineExists([{ old_line: 15, new_line: 16 }], 15, 16)).toBe(true);
+    });
+
+    it('returns false for non-existing line', () => {
+      expect(lineExists([{ old_line: 15, new_line: 16 }], 16, 16)).toBe(false);
     });
   });
 });

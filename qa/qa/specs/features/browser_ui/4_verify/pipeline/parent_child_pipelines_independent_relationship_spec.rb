@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner, :blocking, product_group: :pipeline_execution do
+  RSpec.describe 'Verify', :runner, product_group: :pipeline_execution do
     describe 'Parent-child pipelines independent relationship' do
       let!(:project) { create(:project, name: 'pipeline-independent-relationship') }
       let!(:runner) { create(:project_runner, project: project, name: project.name, tags: [project.name]) }

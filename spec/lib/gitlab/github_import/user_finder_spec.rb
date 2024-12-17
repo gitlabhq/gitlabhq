@@ -136,12 +136,46 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
       it 'creates a new source user when user identifier does not match' do
         user = { id: 6, login: 'anything' }
 
+        allow(client).to receive(:user).and_return({ name: 'Source name' })
+
         expect { finder.user_id_for(user) }.to change { Import::SourceUser.count }.by(1)
         expect(finder.user_id_for(user)).not_to eq(source_user.mapped_user_id)
       end
 
       it 'does not fail with empty input' do
         expect(finder.user_id_for(nil)).to eq(nil)
+      end
+    end
+  end
+
+  describe '#source_user' do
+    context 'when source user exists' do
+      let!(:source_user) do
+        create(:import_source_user,
+          namespace_id: project.root_ancestor.id,
+          source_user_identifier: '7',
+          source_hostname: 'https://github.com'
+        )
+      end
+
+      it 'returns the existing source user' do
+        user = { id: 7, login: 'kittens' }
+
+        expect(finder.source_user(user)).to eq(source_user)
+      end
+    end
+
+    context 'when source user does not exist' do
+      it 'fetches the user source name from GitHub and create a new source user' do
+        user = { id: 7, login: 'kittens' }
+
+        expect(client).to receive(:user).with('kittens').and_return({ name: 'Source name' })
+        expect { finder.source_user(user) }.to change { Import::SourceUser.count }.by(1)
+        expect(Import::SourceUser.last).to have_attributes(
+          source_name: 'Source name',
+          source_username: 'kittens',
+          source_user_identifier: '7'
+        )
       end
     end
   end
@@ -532,6 +566,42 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
         end
 
         it_behaves_like 'does not change caches'
+      end
+    end
+  end
+
+  describe '#fetch_source_name_from_github' do
+    let(:username) { 'kittens' }
+    let(:lease_name) { "gitlab:github_import:user_finder:#{username}" }
+
+    subject(:fetch_source_name_from_github) { finder.fetch_source_name_from_github(username) }
+
+    it 'fetches user name from GitHub and caches it' do
+      expect(finder).to receive(:in_lock).with(lease_name, sleep_sec: 0.2.seconds, retries: 30).and_call_original
+      expect(client).to receive(:user).with(username).and_return({ name: 'Source name' })
+      expect(Gitlab::Cache::Import::Caching).to receive(:write)
+        .with(format(described_class::SOURCE_NAME_CACHE_KEY, project: project.id, username: username), 'Source name')
+
+      expect(fetch_source_name_from_github).to eq('Source name')
+    end
+
+    context 'when lock is retried' do
+      it 'returns the cached value' do
+        Gitlab::Cache::Import::Caching.write(
+          format(described_class::SOURCE_NAME_CACHE_KEY, project: project.id, username: username), 'Source name'
+        )
+
+        expect(finder).to receive(:in_lock).and_yield(true)
+
+        expect(fetch_source_name_from_github).to eq('Source name')
+      end
+    end
+
+    context 'when no name is returned' do
+      it 'returns the username' do
+        expect(client).to receive(:user).with(username).and_return({})
+
+        expect(fetch_source_name_from_github).to eq(username)
       end
     end
   end

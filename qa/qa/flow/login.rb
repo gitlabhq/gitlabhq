@@ -31,7 +31,7 @@ module QA
       end
 
       def sign_in_as_admin(address: :gitlab)
-        sign_in(as: Runtime::User.admin, address: address, admin: true)
+        sign_in(as: Runtime::User::Store.admin_user, address: address, admin: true)
       end
 
       def sign_in_unless_signed_in(user: nil, address: :gitlab)

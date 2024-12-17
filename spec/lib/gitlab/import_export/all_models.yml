@@ -302,7 +302,7 @@ merge_schedule:
 - merge_request
 cleanup_schedule:
 - merge_request
-ci_pipelines:
+ci_pipelines: &pipeline_definition
 - project
 - user
 - ci_ref
@@ -320,12 +320,14 @@ ci_pipelines:
 - processables
 - generic_commit_statuses
 - trigger_requests
+- trigger
 - variables
 - auto_canceled_by
 - auto_canceled_pipelines
 - auto_canceled_jobs
 - pending_builds
 - failed_builds
+- limited_failed_builds
 - retryable_builds
 - cancelable_statuses
 - manual_actions
@@ -538,6 +540,7 @@ protected_branches:
 - approval_project_rules_with_unique_policies
 - external_status_checks
 - required_code_owners_sections
+- squash_option
 protected_tags:
 - project
 - create_access_levels
@@ -721,6 +724,7 @@ project:
 - container_repositories
 - container_registry_data_repair_detail
 - container_registry_protection_rules
+- container_registry_protection_tag_rules
 - uploads
 - file_uploads
 - import_state
@@ -901,6 +905,7 @@ project:
 - observability_logs
 - security_exclusions
 - security_statistics
+- vulnerability_management_policies
 award_emoji:
 - awardable
 - user
@@ -1164,3 +1169,56 @@ timelog_category:
   - billing_rate
 note_diff_file:
   - diff_note
+vulnerabilities:
+  - vulnerability_finding
+  - findings
+  - vulnerability_read
+  - award_emoji
+  - author
+  - resolved_by
+  - dismissed_by
+  - confirmed_by
+  - group
+  - representation_information
+  - dismissed_findings
+  - merge_request_links
+  - merge_requests
+  - external_issue_links
+  - issue_links
+  - related_issues
+  - state_transitions
+  - notes
+  - user_mentions
+vulnerability_finding:
+  - scanner
+  - primary_identifier
+  - vulnerability
+  - one_vulnerability
+  - state_transitions
+  - issue_links
+  - external_issue_links
+  - merge_request_links
+  - finding_identifiers
+  - identifiers
+  - finding_links
+  - finding_remediations
+  - remediations
+  - initial_finding_pipeline
+  - latest_finding_pipeline
+  - signatures
+  - vulnerability_flags
+  - feedbacks
+  - finding_evidence
+  - security_findings
+scanner:
+  - findings
+  - security_findings
+primary_identifier:
+  - finding_identifiers
+  - findings
+  - primary_findings
+initial_finding_pipeline: *pipeline_definition
+latest_finding_pipeline: *pipeline_definition
+vulnerability_read:
+  - vulnerability
+  - scanner

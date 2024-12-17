@@ -76,7 +76,7 @@ export default {
             <span class="gl-mr-2 gl-font-bold">
               {{ label }}
             </span>
-            <span class="gl-text-gray-500">
+            <span class="gl-text-subtle">
               {{ formattedValue }}
             </span>
           </p>

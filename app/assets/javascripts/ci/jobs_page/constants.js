@@ -68,7 +68,6 @@ export const DEFAULT_FIELDS = [
 export const JOBS_DEFAULT_FIELDS = DEFAULT_FIELDS.filter((field) => field.key !== 'stage');
 export const JOBS_TAB_FIELDS = DEFAULT_FIELDS.filter((field) => field.key !== 'pipeline');
 
-export const POLL_INTERVAL = 10000;
 export const JOBS_PER_PAGE = 30;
 export const DEFAULT_PAGINATION = {
   first: JOBS_PER_PAGE,

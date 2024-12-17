@@ -4,7 +4,6 @@ RSpec/SubjectDeclaration:
     - 'ee/spec/finders/app_sec/fuzzing/coverage/corpuses_finder_spec.rb'
     - 'ee/spec/helpers/ee/lock_helper_spec.rb'
     - 'ee/spec/helpers/nav/new_dropdown_helper_spec.rb'
-    - 'ee/spec/helpers/users/group_callouts_helper_spec.rb'
     - 'ee/spec/lib/ee/api/helpers/notes_helpers_spec.rb'
     - 'ee/spec/lib/gitlab/expiring_subscription_message_spec.rb'
     - 'ee/spec/lib/gitlab/geo/geo_node_status_check_spec.rb'

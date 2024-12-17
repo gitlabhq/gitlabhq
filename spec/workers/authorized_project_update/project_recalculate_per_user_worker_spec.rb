@@ -10,6 +10,20 @@ RSpec.describe AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker, feature
 
   subject(:worker) { described_class.new }
 
+  it 'is labeled as high urgency' do
+    expect(described_class.get_urgency).to eq(:high)
+  end
+
+  it 'has the `until_executed` deduplicate strategy' do
+    expect(described_class.get_deduplicate_strategy).to eq(:until_executed)
+  end
+
+  it 'has an option to reschedule once if deduplicated' do
+    expect(described_class.get_deduplication_options).to include(
+      { if_deduplicated: :reschedule_once, including_scheduled: true }
+    )
+  end
+
   include_examples 'an idempotent worker' do
     let(:job_args) { [project.id, user.id] }
 
@@ -45,6 +59,10 @@ RSpec.describe AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker, feature
     end
 
     context 'exclusive lease' do
+      before do
+        stub_feature_flags(drop_lease_usage_project_recalculate_workers: false)
+      end
+
       let(:lock_key) { "#{described_class.superclass.name.underscore}/projects/#{project.id}" }
       let(:timeout) { 10.seconds }
 

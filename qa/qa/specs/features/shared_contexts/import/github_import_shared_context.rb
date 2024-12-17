@@ -13,7 +13,7 @@ module QA
       create(:group, api_client: api_client, path: "destination-group-for-import-#{SecureRandom.hex(4)}")
     end
 
-    let!(:user) { Runtime::UserStore.test_user }
+    let!(:user) { Runtime::User::Store.test_user }
     let!(:user_api_client) { user.api_client }
 
     let(:imported_project) do

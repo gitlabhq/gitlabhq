@@ -6,8 +6,9 @@ RSpec.describe Members::ScheduleDeletionService, feature_category: :seat_cost_ma
   let_it_be(:namespace) { create(:group) }
   let_it_be(:user) { create(:user) }
   let_it_be(:scheduled_by) { create(:user) }
+  let_it_be(:user_id) { user.id }
 
-  subject(:service) { described_class.new(namespace, user, scheduled_by) }
+  subject(:service) { described_class.new(namespace, user_id, scheduled_by) }
 
   describe '#execute' do
     context 'when the namespace is not root' do
@@ -21,16 +22,7 @@ RSpec.describe Members::ScheduleDeletionService, feature_category: :seat_cost_ma
       end
     end
 
-    context 'when the user is not authorized' do
-      it 'returns an error' do
-        result = service.execute
-
-        expect(result[:status]).to eq :error
-        expect(result[:message]).to eq('User not authorized')
-      end
-    end
-
-    context 'when the user is authorized' do
+    context 'when the user is an owner' do
       before_all do
         namespace.add_owner(scheduled_by)
       end
@@ -63,6 +55,48 @@ RSpec.describe Members::ScheduleDeletionService, feature_category: :seat_cost_ma
           expect(result[:status]).to eq :error
           expect(result[:message]).to eq(['User already scheduled for deletion'])
         end
+      end
+
+      context 'when the target user does not exist' do
+        let(:user_id) { non_existing_record_id }
+
+        it 'returns an error' do
+          result = service.execute
+
+          expect(result[:status]).to eq :error
+          expect(result[:message]).to eq(['User must exist'])
+        end
+      end
+
+      context 'when the user_id is nil' do
+        let(:user_id) { nil }
+
+        it 'returns an error' do
+          result = service.execute
+
+          expect(result[:status]).to eq :error
+          expect(result[:message]).to eq(['User must exist'])
+        end
+      end
+    end
+
+    context 'when the user is an admin bot', :enable_admin_mode do
+      let_it_be(:scheduled_by) { Users::Internal.admin_bot }
+
+      it 'creates a deletion schedule' do
+        result = service.execute
+
+        expect(result[:status]).to eq :success
+        expect(::Members::DeletionSchedule.count).to eq(1)
+      end
+    end
+
+    context 'when the user is not authorized' do
+      it 'returns an error' do
+        result = service.execute
+
+        expect(result[:status]).to eq :error
+        expect(result[:message]).to eq('User not authorized')
       end
     end
   end

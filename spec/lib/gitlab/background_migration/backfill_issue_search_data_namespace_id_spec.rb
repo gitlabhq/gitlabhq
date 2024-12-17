@@ -4,24 +4,63 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillIssueSearchDataNamespaceId,
   schema: 20240105144908, feature_category: :team_planning do
+  let(:organizations) { table(:organizations) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:issues) { table(:issues) }
   let(:issue_search_data) { table(:issue_search_data) }
   let(:issue_type) { table(:work_item_types).find_by!(namespace_id: nil, base_type: 0) }
 
-  let(:namespace_1) { namespaces.create!(name: 'namespace1', type: 'Group', path: 'namespace1') }
-  let(:namespace_2) { namespaces.create!(name: 'namespace2', type: 'Group', path: 'namespace2') }
+  let(:organization) { organizations.create!(name: 'organization', path: 'organization') }
 
-  let(:proj_ns_1) { namespaces.create!(name: 'pn1', path: 'pn1', type: 'Project', parent_id: namespace_1.id) }
-  let(:proj_ns_2) { namespaces.create!(name: 'pn2', path: 'pn2', type: 'Project', parent_id: namespace_2.id) }
+  let(:namespace_1) do
+    namespaces
+      .create!(name: 'namespace1', type: 'Group', path: 'namespace1', organization_id: organization.id)
+  end
+
+  let(:namespace_2) do
+    namespaces
+      .create!(name: 'namespace2', type: 'Group', path: 'namespace2', organization_id: organization.id)
+  end
+
+  let(:proj_ns_1) do
+    namespaces.create!(
+      name: 'pn1',
+      path: 'pn1',
+      type: 'Project',
+      parent_id: namespace_1.id,
+      organization_id: organization.id
+    )
+  end
+
+  let(:proj_ns_2) do
+    namespaces.create!(
+      name: 'pn2',
+      path: 'pn2',
+      type: 'Project',
+      parent_id: namespace_2.id,
+      organization_id: organization.id
+    )
+  end
 
   let(:proj_1) do
-    projects.create!(name: 'proj1', path: 'proj1', namespace_id: namespace_1.id, project_namespace_id: proj_ns_1.id)
+    projects.create!(
+      name: 'proj1',
+      path: 'proj1',
+      namespace_id: namespace_1.id,
+      project_namespace_id: proj_ns_1.id,
+      organization_id: organization.id
+    )
   end
 
   let(:proj_2) do
-    projects.create!(name: 'proj2', path: 'proj2', namespace_id: namespace_2.id, project_namespace_id: proj_ns_2.id)
+    projects.create!(
+      name: 'proj2',
+      path: 'proj2',
+      namespace_id: namespace_2.id,
+      project_namespace_id: proj_ns_2.id,
+      organization_id: organization.id
+    )
   end
 
   let(:proj_1_issue_1) do

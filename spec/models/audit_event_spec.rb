@@ -110,34 +110,38 @@ RSpec.describe AuditEvent do
   end
 
   describe '#author' do
-    subject { audit_event.author }
+    subject(:author) { audit_event.author }
 
     context "when the target type is not Ci::Runner" do
       let(:audit_event) { build(:project_audit_event, target_id: 678) }
 
       it 'returns a NullAuthor' do
-        expect(::Gitlab::Audit::NullAuthor).to receive(:for)
-                                                 .and_call_original
-                                                 .once
+        expect(::Gitlab::Audit::NullAuthor).to receive(:for).and_call_original
 
         is_expected.to be_a_kind_of(::Gitlab::Audit::NullAuthor)
       end
     end
 
     context 'when the target type is Ci::Runner and details contain runner_registration_token' do
-      let(:audit_event) { build(:project_audit_event, target_type: ::Ci::Runner.name, target_id: 678, details: { runner_registration_token: 'abc123' }) }
+      let_it_be(:project) { create(:project) }
+      let(:audit_event) do
+        build(:project_audit_event, target_project: project, target_type: ::Ci::Runner.name, target_id: 678,
+          details: { runner_registration_token: 'abc123' })
+      end
 
       it 'returns a CiRunnerTokenAuthor' do
         expect(::Gitlab::Audit::CiRunnerTokenAuthor).to receive(:new)
-                                                          .with(audit_event)
-                                                          .and_call_original
-                                                          .once
+          .with(
+            entity_type: project.class.name,
+            entity_path: project.full_path,
+            runner_registration_token: 'abc123')
+          .and_call_original
 
         is_expected.to be_an_instance_of(::Gitlab::Audit::CiRunnerTokenAuthor)
       end
 
       it 'name consists of prefix and token' do
-        expect(subject.name).to eq('Registration token: abc123')
+        expect(author.name).to eq('Registration token: abc123')
       end
     end
   end

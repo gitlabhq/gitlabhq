@@ -10,7 +10,7 @@
 
   .form-group.gl-form-group{ role: 'group' }
     - if @user.allow_user_to_create_group_and_project?
-      = f.gitlab_ui_checkbox_component :can_create_group, s_('AdminUsers|Can create top level group')
+      = f.gitlab_ui_checkbox_component :can_create_group, s_('AdminUsers|Can create top-level group')
     = f.gitlab_ui_checkbox_component :private_profile, s_('AdminUsers|Private profile')
 
   %fieldset.form-group.gl-form-group

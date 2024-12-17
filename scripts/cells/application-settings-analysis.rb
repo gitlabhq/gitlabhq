@@ -198,6 +198,7 @@ class ApplicationSettingsAnalysis
       repository_storages_weighted
       require_admin_approval_after_user_signup
       require_admin_two_factor_authentication
+      resource_usage_limits
       restricted_visibility_levels
       runners_registration_token
       runners_registration_token_encrypted

@@ -19,12 +19,17 @@ RSpec.describe 'User Settings > Personal access tokens', :js, feature_category: 
   describe "token creation" do
     it "allows creation of a personal access token" do
       name = 'My PAT'
+      description = 'My PAT description'
       create(:organization, :default)
 
       visit user_settings_personal_access_tokens_path
 
+      expect(active_access_tokens_counter).to have_text('0')
+
       click_button 'Add new token'
       fill_in "Token name", with: name
+
+      fill_in "Token description", with: description
 
       # Set date to 1st of next month
       find_field("Expiration date").click
@@ -39,10 +44,12 @@ RSpec.describe 'User Settings > Personal access tokens', :js, feature_category: 
       wait_for_all_requests
 
       expect(active_access_tokens).to have_text(name)
+      expect(active_access_tokens).to have_text(description)
       expect(active_access_tokens).to have_text('in')
       expect(active_access_tokens).to have_text('read_api')
       expect(active_access_tokens).to have_text('read_user')
       expect(created_access_token).to match(/[\w-]{20}/)
+      expect(active_access_tokens_counter).to have_text('1')
     end
 
     context "when creation fails" do
@@ -122,11 +129,13 @@ RSpec.describe 'User Settings > Personal access tokens', :js, feature_category: 
 
     it "displays the newly created token" do
       visit user_settings_personal_access_tokens_path
+      expect(active_access_tokens_counter).to have_text('1')
       accept_gl_confirm(button_text: s_('AccessTokens|Rotate')) { click_on s_('AccessTokens|Rotate') }
       wait_for_all_requests
       expect(page).to have_content("Your new personal access token has been created.")
       expect(active_access_tokens).to have_text(personal_access_token.name)
       expect(created_access_token).to match(/[\w-]{20}/)
+      expect(active_access_tokens_counter).to have_text('1')
     end
 
     context "when rotation fails" do
@@ -177,11 +186,13 @@ RSpec.describe 'User Settings > Personal access tokens', :js, feature_category: 
 
   it "prefills token details" do
     name = 'My PAT'
+    description = 'My PAT description'
     scopes = 'api,read_user'
 
-    visit user_settings_personal_access_tokens_path({ name: name, scopes: scopes })
+    visit user_settings_personal_access_tokens_path({ name: name, scopes: scopes, description: description })
 
     expect(page).to have_field("Token name", with: name)
+    expect(page).to have_field("Token description", with: description)
     expect(find("#personal_access_token_scopes_api")).to be_checked
     expect(find("#personal_access_token_scopes_read_user")).to be_checked
   end

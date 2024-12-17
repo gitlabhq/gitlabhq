@@ -4,8 +4,8 @@ module Gitlab
   module GrapeLogging
     module Loggers
       class TokenLogger < ::GrapeLogging::Loggers::Base
-        def parameters(request, _)
-          params = request.env[::Gitlab::Auth::AuthFinders::API_TOKEN_ENV]
+        def parameters(_request, _)
+          params = ::Current.token_info
 
           return {} unless params
 

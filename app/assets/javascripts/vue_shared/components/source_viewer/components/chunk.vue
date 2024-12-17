@@ -1,8 +1,11 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
+// eslint-disable-next-line no-restricted-imports
+import { mapState } from 'vuex';
 import { GlIntersectionObserver } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getPageParamValue, getPageSearchString } from '~/blob/utils';
+import { addInteractionClass } from '~/code_navigation/utils';
 
 /*
  * We only highlight the chunk that is currently visible to the user.
@@ -53,13 +56,19 @@ export default {
       type: String,
       required: true,
     },
+    blobPath: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
+      number: undefined,
       hasAppeared: false,
     };
   },
   computed: {
+    ...mapState(['data', 'blobs']),
     shouldHighlight() {
       return Boolean(this.highlightedContent) && (this.hasAppeared || this.isHighlighted);
     },
@@ -72,6 +81,27 @@ export default {
       return { marginLeft: `${this.$refs.lineNumbers?.offsetWidth || defaultGutterWidth}px` };
     },
   },
+  watch: {
+    shouldHighlight: {
+      handler(newVal) {
+        if (!this.blobs?.length) return;
+
+        if (newVal) {
+          if (this.data) {
+            this.addCodeNavigationClasses();
+          } else {
+            // If there the code navigation hasn't loaded yet we need to watch
+            // for the data to be set in the state
+            this.codeNavigationDataWatcher = this.$watch('data', () => {
+              this.addCodeNavigationClasses();
+              this.codeNavigationDataWatcher();
+            });
+          }
+        }
+      },
+      immediate: true,
+    },
+  },
   methods: {
     handleChunkAppear() {
       this.hasAppeared = true;
@@ -79,6 +109,20 @@ export default {
     },
     calculateLineNumber(index) {
       return this.startingFrom + index + 1;
+    },
+    async addCodeNavigationClasses() {
+      await this.$nextTick();
+
+      Object.keys(this.data[this.blobPath]).forEach((key) => {
+        const startLine = Number(key.split(':')[0]);
+
+        if (startLine >= this.startingFrom && startLine < this.startingFrom + this.totalLines + 1) {
+          addInteractionClass({
+            path: this.blobPath,
+            d: this.data[this.blobPath][key],
+          });
+        }
+      });
     },
   },
 };

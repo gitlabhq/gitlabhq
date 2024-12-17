@@ -140,10 +140,10 @@ describe('list item', () => {
   describe('borders and selection', () => {
     it.each`
       first    | selected | shouldHave                                 | shouldNotHave
-      ${true}  | ${true}  | ${['gl-bg-blue-50', 'gl-border-blue-200']} | ${['gl-border-t-transparent', 'gl-border-t-gray-100']}
-      ${false} | ${true}  | ${['gl-bg-blue-50', 'gl-border-blue-200']} | ${['gl-border-t-transparent', 'gl-border-t-gray-100']}
-      ${true}  | ${false} | ${['gl-border-b-gray-100']}                | ${['gl-bg-blue-50', 'gl-border-blue-200']}
-      ${false} | ${false} | ${['gl-border-b-gray-100']}                | ${['gl-bg-blue-50', 'gl-border-blue-200']}
+      ${true}  | ${true}  | ${['gl-bg-blue-50', 'gl-border-blue-200']} | ${['gl-border-t-transparent', 'gl-border-t-default']}
+      ${false} | ${true}  | ${['gl-bg-blue-50', 'gl-border-blue-200']} | ${['gl-border-t-transparent', 'gl-border-t-default']}
+      ${true}  | ${false} | ${['gl-border-b-default']}                 | ${['gl-bg-blue-50', 'gl-border-blue-200']}
+      ${false} | ${false} | ${['gl-border-b-default']}                 | ${['gl-bg-blue-50', 'gl-border-blue-200']}
     `(
       'when first is $first and selected is $selected',
       ({ first, selected, shouldHave, shouldNotHave }) => {

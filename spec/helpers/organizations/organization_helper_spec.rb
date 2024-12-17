@@ -50,6 +50,37 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
     end
   end
 
+  shared_examples 'index app data' do
+    it 'returns expected data object' do
+      expect(data).to eq(
+        {
+          'new_organization_url' => new_organization_path,
+          'can_create_organization' => true
+        }
+      )
+    end
+
+    context 'when can_create_organization admin setting is disabled' do
+      before do
+        stub_application_setting(can_create_organization: false)
+      end
+
+      it 'returns false for can_create_organization' do
+        expect(data['can_create_organization']).to be(false)
+      end
+    end
+
+    context 'when allow_organization_creation feature flag is disabled' do
+      before do
+        stub_feature_flags(allow_organization_creation: false)
+      end
+
+      it 'returns false for can_create_organization' do
+        expect(data['can_create_organization']).to be(false)
+      end
+    end
+  end
+
   describe '#organization_layout_nav' do
     context 'when current controller is not organizations' do
       it 'returns organization' do
@@ -183,13 +214,9 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   end
 
   describe '#organization_index_app_data' do
-    it 'returns expected data object' do
-      expect(helper.organization_index_app_data).to eq(
-        {
-          new_organization_url: new_organization_path
-        }
-      )
-    end
+    subject(:data) { Gitlab::Json.parse(helper.organization_index_app_data) }
+
+    it_behaves_like 'index app data'
   end
 
   describe '#organization_new_app_data' do
@@ -307,13 +334,9 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   end
 
   describe '#admin_organizations_index_app_data' do
-    it 'returns expected json' do
-      expect(Gitlab::Json.parse(helper.admin_organizations_index_app_data)).to eq(
-        {
-          'new_organization_url' => new_organization_path
-        }
-      )
-    end
+    subject(:data) { Gitlab::Json.parse(helper.admin_organizations_index_app_data) }
+
+    it_behaves_like 'index app data'
   end
 
   describe '#organization_projects_edit_app_data' do

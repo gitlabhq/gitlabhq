@@ -83,6 +83,10 @@ module PersonalAccessTokens
 
       return params[:expires_at] if params[:expires_at].present?
 
+      enforced_expiration_date
+    end
+
+    def enforced_expiration_date
       return default_expiration_date if Gitlab::CurrentSettings.require_personal_access_token_expiry?
 
       nil

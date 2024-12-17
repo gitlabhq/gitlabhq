@@ -605,16 +605,25 @@ sudo gitlab-backup create GITLAB_BACKUP_MAX_CONCURRENCY=4 GITLAB_BACKUP_MAX_STOR
 sudo -u git -H bundle exec rake gitlab:backup:create GITLAB_BACKUP_MAX_CONCURRENCY=4 GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY=1
 ```
 
+:::TabTitle Helm chart (Kubernetes)
+
+```yaml
+toolbox:
+#...
+    extra: {}
+    extraEnv:
+      GITLAB_BACKUP_MAX_CONCURRENCY: 4
+      GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY: 1
+
+```
+
 ::EndTabs
 
 #### Incremental repository backups
 
-> - `PREVIOUS_BACKUP` option [introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4184) in GitLab 15.0.
-> - Server-side support for creating incremental backups [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6475) in GitLab 16.6.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../feature_flags.md) named `incremental_repository_backup`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351383) in GitLab 14.10 [with a flag](../../administration/feature_flags.md) named `incremental_repository_backup`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/355945) in GitLab 15.3. Feature flag `incremental_repository_backup` removed.
+> - Server-side support for creating incremental backups [introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5461) in GitLab 16.6.
 
 NOTE:
 Only repositories support incremental backups. Therefore, if you use `INCREMENTAL=yes`, the task
@@ -688,15 +697,21 @@ and skip the **Project D** in **Group A** (`group-a/project-d`):
 
 :::TabTitle Linux package (Omnibus)
 
-  ```shell
-  sudo gitlab-backup create REPOSITORIES_PATHS=group-a,group-b/project-c SKIP_REPOSITORIES_PATHS=group-a/project-d
-  ```
+```shell
+sudo gitlab-backup create REPOSITORIES_PATHS=group-a,group-b/project-c SKIP_REPOSITORIES_PATHS=group-a/project-d
+```
 
 :::TabTitle Self-compiled
 
-  ```shell
-  sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_PATHS=group-a,group-b/project-c SKIP_REPOSITORIES_PATHS=group-a/project-d
-  ```
+```shell
+sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_PATHS=group-a,group-b/project-c SKIP_REPOSITORIES_PATHS=group-a/project-d
+```
+
+:::TabTitle Helm chart (Kubernetes)
+
+```shell
+REPOSITORIES_PATHS=group-a SKIP_REPOSITORIES_PATHS=group-a/project_a2 backup-utility --skip db,registry,uploads,artifacts,lfs,packages,external_diffs,terraform_state,ci_secure_files,pages
+```
 
 ::EndTabs
 
@@ -1358,7 +1373,7 @@ In the following cases, consider using file system data transfer or snapshots as
 - Your GitLab instance has a problem and using the regular backup and import Rake tasks isn't possible.
 
 WARNING:
-Gitaly Cluster [does not support snapshot backups](../gitaly/index.md#snapshot-backup-and-recovery-limitations).
+Gitaly Cluster [does not support snapshot backups](../gitaly/index.md#snapshot-backup-and-recovery).
 
 When considering using file system data transfer or snapshots:
 

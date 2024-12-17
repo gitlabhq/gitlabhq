@@ -83,7 +83,7 @@ export default {
       <div class="gl-mr-3 gl-flex gl-min-w-0 gl-items-center">
         <gl-link
           :href="packageLink"
-          class="gl-min-w-0 gl-text-primary"
+          class="gl-min-w-0 gl-text-default"
           data-testid="details-link"
           :disabled="disabledRow"
         >

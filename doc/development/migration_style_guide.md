@@ -112,6 +112,10 @@ includes the timing information for migrations.
 | Post-deployment migrations | `<= 10 minutes` | A valid exception are schema changes, since they must not happen in background migrations. |
 | Background migrations | `> 10 minutes` | Since these are suitable for larger tables, it's not possible to set a precise timing guideline, however, any single query must stay below [`1 second` execution time](database/query_performance.md#timing-guidelines-for-queries) with cold caches. |
 
+## Large Tables Limitations
+
+For tables exceeding size thresholds, read our [large tables limitations](database/large_tables_limitations.md) before adding new columns or indexes.
+
 ## Decide which database to target
 
 GitLab connects to two different Postgres databases: `main` and `ci`. This split can affect migrations
@@ -185,7 +189,7 @@ part of the migration file.
 git rebase master
 
 # Rollback changes
-VERSION=<migration ID> bundle exec rails db:rollback:main
+VERSION=<migration ID> bundle exec rails db:migrate:down:main
 
 # Checkout db/structure.sql from master
 git checkout origin/master db/structure.sql
@@ -461,6 +465,22 @@ To update a migration timestamp:
 
 1. Delete the migration file.
 1. Recreate the migration following the [migration style guide](#choose-an-appropriate-migration-type).
+
+Alternatively, you can use this script to refresh all migration timestamps:
+
+```shell
+scripts/refresh-migrations-timestamps
+```
+
+This script:
+
+1. Updates all migration timestamps to be current
+1. Maintains the relative order of the migrations
+1. Updates both the filename and the timestamp within the migration class
+1. Handles both regular and post-deployment migrations
+
+NOTE:
+Run this script before merging if your migrations have been in review for a long time (_> 3 weeks_) or when rebasing old migration branches.
 
 ## Migration helpers and versioning
 
@@ -1243,7 +1263,7 @@ By default hash keys will be strings. Optionally you can add a custom data type 
 
 ```ruby
 class BuildMetadata
-  attribute :config_options, :ind_jsonb # for indifferent accesss or :sym_jsonb if you need symbols only as keys.
+  attribute :config_options, ::Gitlab::Database::Type::IndifferentJsonb.new # for indifferent accesss or ::Gitlab::Database::Type::SymbolizedJsonb.new if you need symbols only as keys.
 end
 ```
 

@@ -17,8 +17,7 @@ module Ci
       ::Ci::Build.find_by_id(build_id).try do |build|
         break unless build.scheduled?
 
-        Ci::RunScheduledBuildService
-          .new(build.project, build.user).execute(build)
+        Ci::RunScheduledBuildService.new(build).execute
       end
     end
   end

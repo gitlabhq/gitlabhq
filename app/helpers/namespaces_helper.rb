@@ -86,7 +86,6 @@ module NamespacesHelper
   def pipeline_usage_app_data(namespace)
     {
       namespace_actual_plan_name: namespace.actual_plan_name,
-      namespace_path: namespace.full_path,
       namespace_id: namespace.id,
       user_namespace: namespace.user_namespace?.to_s,
       page_size: page_size
@@ -100,6 +99,10 @@ module NamespacesHelper
       user_namespace: namespace.user_namespace?.to_s,
       default_per_page: page_size
     }
+  end
+
+  def group_usage_quotas_url(group, *args)
+    Rails.application.routes.url_helpers.group_usage_quotas_url(group.root_ancestor, *args)
   end
 end
 

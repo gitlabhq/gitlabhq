@@ -12,10 +12,14 @@ RSpec.describe Gitlab::BackgroundMigration::UpdateSbomOccurrencesComponentNameBa
 
   let(:occurrences) { table(:sbom_occurrences) }
   let(:components) { table(:sbom_components) }
+  let(:organizations) { table(:organizations) }
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }
-  let(:namespace) { namespaces.create!(name: 'name', path: 'path') }
-  let(:project) { projects.create!(namespace_id: namespace.id, project_namespace_id: namespace.id) }
+  let(:organization) { organizations.create!(name: 'organization', path: 'organization') }
+  let(:namespace) { namespaces.create!(name: 'name', path: 'path', organization_id: organization.id) }
+  let(:project) do
+    projects.create!(namespace_id: namespace.id, project_namespace_id: namespace.id, organization_id: organization.id)
+  end
 
   describe '#perform' do
     subject(:perform_migration) do

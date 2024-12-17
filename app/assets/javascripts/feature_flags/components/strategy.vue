@@ -3,6 +3,7 @@
 import { GlAlert, GlButton, GlFormSelect, GlFormGroup, GlIcon, GlLink, GlToken } from '@gitlab/ui';
 import { isNumber } from 'lodash';
 import { s__, __ } from '~/locale';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import {
   EMPTY_PARAMETERS,
   STRATEGY_SELECTIONS,
@@ -23,6 +24,7 @@ export default {
     GlToken,
     NewEnvironmentsDropdown,
     StrategyParameters,
+    HelpIcon,
   },
   inject: {
     strategyTypeDocsPagePath: {
@@ -132,14 +134,14 @@ export default {
       {{ $options.i18n.considerFlexibleRollout }}
     </gl-alert>
 
-    <div class="gl-border-t-1 gl-border-t-gray-100 gl-py-6 gl-border-t-solid">
+    <div class="gl-border-t-1 gl-border-t-default gl-py-6 gl-border-t-solid">
       <div class="flex-md-wrap gl-flex gl-flex-col md:gl-flex-row">
         <div class="mr-5">
           <gl-form-group :label="$options.i18n.strategyTypeLabel" :label-for="strategyTypeId">
             <template #description>
               {{ $options.i18n.strategyTypeDescription }}
               <gl-link :href="strategyTypeDocsPagePath" target="_blank">
-                <gl-icon name="question-o" />
+                <help-icon />
               </gl-link>
             </template>
             <gl-form-select
@@ -182,7 +184,7 @@ export default {
             class="gl-mr-3"
             @add="addEnvironment"
           />
-          <span v-if="appliesToAllEnvironments" class="text-secondary mt-md-0 ml-md-3 gl-mt-3">
+          <span v-if="appliesToAllEnvironments" class="mt-md-0 ml-md-3 gl-mt-3 gl-text-subtle">
             {{ $options.i18n.allEnvironments }}
           </span>
           <div v-else class="gl-flex gl-flex-wrap gl-items-center">

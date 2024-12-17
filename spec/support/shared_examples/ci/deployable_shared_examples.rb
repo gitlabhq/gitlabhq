@@ -169,6 +169,13 @@ RSpec.shared_examples 'a deployable job' do
       it_behaves_like 'avoid deadlock'
       it_behaves_like 'calling proper BuildFinishedWorker'
 
+      it 'queues relevant workers' do
+        expect(Environments::StopJobSuccessWorker).to receive(:perform_async).with(job.id)
+        expect(Environments::RecalculateAutoStopWorker).to receive(:perform_async).with(job.id)
+
+        subject
+      end
+
       it 'transits deployment status to success' do
         with_cross_database_modification_prevented do
           subject
@@ -507,21 +514,66 @@ RSpec.shared_examples 'a deployable job' do
       end
     end
 
-    describe '#deployment_job?' do
-      subject { job.deployment_job? }
+    describe '#expanded_auto_stop_in' do
+      let(:job) { create(factory_type, environment: 'environment', options: options, pipeline: pipeline) }
+      let(:options) do
+        {
+          environment: {
+            name: 'production',
+            auto_stop_in: auto_stop_in
+          }
+        }
+      end
 
+      subject { job.expanded_auto_stop_in }
+
+      context 'when auto_stop_in is not set' do
+        let(:auto_stop_in) { nil }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when auto_stop_in is set' do
+        let(:auto_stop_in) { '1 day' }
+
+        it { is_expected.to eq('1 day') }
+      end
+
+      context 'when auto_stop_in is set to a variable' do
+        let(:auto_stop_in) { '$TTL' }
+        let(:yaml_variables) do
+          [
+            { key: "TTL", value: '2 days', public: true }
+          ]
+        end
+
+        before do
+          job.update_attribute(:yaml_variables, yaml_variables)
+        end
+
+        it { is_expected.to eq('2 days') }
+      end
+    end
+
+    shared_examples 'environment actions' do
       context 'when environment is defined' do
         before do
           job.update!(environment: 'review')
         end
 
         context 'no action is defined' do
-          it { is_expected.to be_truthy }
+          it 'uses start as the default action' do
+            if action == 'start'
+              is_expected.to be_truthy
+            else
+              is_expected.to be_falsey
+            end
+          end
         end
 
-        context 'and start action is defined' do
+        context 'action is defined' do
           before do
-            job.update!(options: { environment: { action: 'start' } })
+            job.update!(options: { environment: { action: action } })
           end
 
           it { is_expected.to be_truthy }
@@ -535,6 +587,38 @@ RSpec.shared_examples 'a deployable job' do
 
         it { is_expected.to be_falsey }
       end
+    end
+
+    describe '#deployment_job?' do
+      let(:action) { 'start' }
+
+      subject { job.deployment_job? }
+
+      include_examples 'environment actions'
+    end
+
+    describe '#accesses_environment?' do
+      let(:action) { 'access' }
+
+      subject { job.accesses_environment? }
+
+      include_examples 'environment actions'
+    end
+
+    describe '#prepares_environment?' do
+      let(:action) { 'prepare' }
+
+      subject { job.prepares_environment? }
+
+      include_examples 'environment actions'
+    end
+
+    describe '#verifies_environment' do
+      let(:action) { 'verify' }
+
+      subject { job.verifies_environment? }
+
+      include_examples 'environment actions'
     end
 
     describe '#stops_environment?' do

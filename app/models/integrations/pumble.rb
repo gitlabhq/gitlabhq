@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Pumble < BaseChatNotification
+  class Pumble < Integration
+    include Base::ChatNotification
     include HasAvatar
 
     field :webhook,

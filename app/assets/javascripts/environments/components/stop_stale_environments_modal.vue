@@ -39,7 +39,6 @@ export default {
   modalProps: {
     primary: {
       text: s__('Environments|Clean up'),
-      attributes: [{ variant: 'info' }],
     },
     cancel: {
       text: __('Cancel'),
@@ -78,8 +77,7 @@ export default {
     <p>
       {{
         s__(
-          'Environments|Select which environments to clean up. \
-      Protected environments are excluded. Learn more about cleaning up environments.',
+          'Environments|Select which environments to clean up. Protected environments are excluded. Learn more about cleaning up environments.',
         )
       }}
     </p>

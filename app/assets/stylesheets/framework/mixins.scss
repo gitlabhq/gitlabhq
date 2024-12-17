@@ -64,7 +64,7 @@
 
     &.light {
       a {
-        color: $gl-text-color;
+        @apply gl-text-default;
       }
     }
   }
@@ -243,7 +243,7 @@
   }
 
   .controllers-buttons {
-    color: $gl-text-color;
+    @apply gl-text-default;
     margin: 0 $grid-size;
 
     &:last-child {
@@ -279,8 +279,6 @@
   line-height: 1;
   padding: 0;
   min-width: 16px;
-  color: $gray-500;
-  fill: $gray-500;
 
   .award-control-icon-positive,
   .award-control-icon-super-positive {

@@ -21,22 +21,15 @@ RSpec.describe MergeRequests::CleanupRefsService, feature_category: :code_review
       stub_feature_flags(merge_request_delete_gitaly_refs_in_batches: false)
       stub_feature_flags(merge_request_cleanup_ref_worker_async: false)
 
-      # Need to re-enable this as it's being stubbed in spec_helper for
-      # performance reasons but is needed to run for this test.
-      allow(Gitlab::Git::KeepAround).to receive(:execute).and_call_original
-
       merge_request.create_cleanup_schedule(scheduled_at: described_class::TIME_THRESHOLD.ago)
     end
 
     subject(:result) { described_class.new(merge_request).execute }
 
     shared_examples_for 'service that cleans up merge request refs' do
-      it 'creates keep around ref and deletes merge request refs' do
-        old_ref_head = ref_head
-
+      it 'deletes merge request refs' do
         aggregate_failures do
           expect(result[:status]).to eq(:success)
-          expect(kept_around?(old_ref_head)).to be_truthy
           expect(ref_head).to be_nil
           expect(merge_request.cleanup_schedule.completed_at).to be_present
         end
@@ -66,7 +59,6 @@ RSpec.describe MergeRequests::CleanupRefsService, feature_category: :code_review
 
           aggregate_failures do
             expect(result[:status]).to eq(:success)
-            expect(kept_around?(old_merge_ref_head)).to be_truthy
             expect(merge_request.reload.merge_ref_sha).to eq(old_merge_ref_head.id)
             expect(ref_exists?(merge_request.merge_ref_path)).to be_falsy
           end
@@ -84,30 +76,10 @@ RSpec.describe MergeRequests::CleanupRefsService, feature_category: :code_review
         end
       end
 
-      context 'when keep around ref cannot be created' do
-        before do
-          allow_next_instance_of(Gitlab::Git::KeepAround) do |keep_around|
-            expect(keep_around).to receive(:kept_around?).and_return(false)
-          end
-        end
-
-        it_behaves_like 'service that does not clean up merge request refs'
-      end
-
       context 'when a git error is raised' do
         context 'Gitlab::Git::Repository::GitError' do
           before do
             allow(merge_request.project.repository).to receive(:delete_refs).and_raise(Gitlab::Git::Repository::GitError)
-          end
-
-          it_behaves_like 'service that does not clean up merge request refs'
-        end
-
-        context 'Gitlab::Git::CommandError' do
-          before do
-            allow_next_instance_of(Gitlab::Git::KeepAround) do |keep_around|
-              expect(keep_around).to receive(:kept_around?).and_raise(Gitlab::Git::CommandError)
-            end
           end
 
           it_behaves_like 'service that does not clean up merge request refs'
@@ -119,12 +91,9 @@ RSpec.describe MergeRequests::CleanupRefsService, feature_category: :code_review
           allow(merge_request.cleanup_schedule).to receive(:update).and_return(false)
         end
 
-        it 'creates keep around ref and deletes merge request refs' do
-          old_ref_head = ref_head
-
+        it 'deletes merge request refs' do
           aggregate_failures do
             expect(result[:status]).to eq(:error)
-            expect(kept_around?(old_ref_head)).to be_truthy
             expect(ref_head).to be_nil
             expect(merge_request.cleanup_schedule.completed_at).not_to be_present
           end
@@ -208,10 +177,6 @@ RSpec.describe MergeRequests::CleanupRefsService, feature_category: :code_review
 
       it_behaves_like 'service that does not clean up merge request refs'
     end
-  end
-
-  def kept_around?(commit)
-    Gitlab::Git::KeepAround.new(merge_request.project.repository).kept_around?(commit.id)
   end
 
   def ref_head

@@ -132,8 +132,8 @@ export default {
     stateTimestampTypeText() {
       return this.isChildItemOpen ? this.$options.i18n.created : this.$options.i18n.closed;
     },
-    childItemTypeColorClass() {
-      return this.isChildItemOpen ? 'gl-text-subtle' : 'gl-text-disabled';
+    childItemTypeIconVariant() {
+      return this.isChildItemOpen ? 'default' : 'subtle';
     },
     displayLabels() {
       return this.showLabels && this.labels.length;
@@ -195,7 +195,10 @@ export default {
     data-testid="links-child"
   >
     <div ref="stateIcon" class="gl-cursor-help">
-      <work-item-type-icon :color-class="childItemTypeColorClass" :work-item-type="childItemType" />
+      <work-item-type-icon
+        :icon-variant="childItemTypeIconVariant"
+        :work-item-type="childItemType"
+      />
       <gl-tooltip :target="() => $refs.stateIcon">
         {{ childItemType }}
       </gl-tooltip>
@@ -217,7 +220,7 @@ export default {
             :href="childItemWebUrl"
             :class="{ '!gl-text-subtle': !isChildItemOpen }"
             class="gl-hyphens-auto gl-break-words gl-font-semibold"
-            @click.exact="handleTitleClick"
+            @click.exact.stop="handleTitleClick"
             @mouseover="$emit('mouseover')"
             @mouseout="$emit('mouseout')"
           >
@@ -225,7 +228,7 @@ export default {
           </gl-link>
         </div>
         <div
-          class="gl-flex gl-shrink-0 gl-flex-row-reverse gl-items-center gl-justify-end gl-gap-3"
+          class="gl-flex gl-shrink-0 gl-flex-row-reverse gl-items-center gl-justify-end gl-gap-3 sm:gl-flex-row"
         >
           <gl-avatars-inline
             v-if="assignees.length"
@@ -238,7 +241,7 @@ export default {
           >
             <template #avatar="{ avatar }">
               <gl-avatar-link v-gl-tooltip :href="avatar.webUrl" :title="avatar.name">
-                <gl-avatar :alt="avatar.name" :src="avatar.avatarUrl" :size="16" />
+                <gl-avatar :alt="avatar.name" :src="avatar.avatarUrl" :size="16" @click.stop />
               </gl-avatar-link>
             </template>
           </gl-avatars-inline>
@@ -283,6 +286,7 @@ export default {
           :scoped="showScopedLabel(label)"
           class="gl-mb-auto gl-mr-2 gl-mt-2"
           tooltip-placement="top"
+          @click.stop
         />
       </div>
     </div>
@@ -296,7 +300,7 @@ export default {
         :aria-label="$options.i18n.remove"
         :title="$options.i18n.remove"
         data-testid="remove-work-item-link"
-        @click="$emit('removeChild', childItem)"
+        @click.stop="$emit('removeChild', childItem)"
       />
     </div>
   </div>

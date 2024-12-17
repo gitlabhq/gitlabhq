@@ -84,6 +84,16 @@ RSpec.describe Gitlab::LegacyGithubImport::MilestoneFormatter do
           expect(milestone.attributes).to eq(expected)
         end
       end
+
+      context 'when milestone has @mentions in description' do
+        let(:original_desc) { "I said to @sam_allen.greg code should follow @bob's advice. @.ali-ce/group#9?" }
+        let(:expected_desc) { "I said to `@sam_allen.greg` code should follow `@bob`'s advice. `@.ali-ce/group#9`?" }
+        let(:raw_data) { data.merge(description: original_desc) }
+
+        it 'inserts backticks around usernames' do
+          expect(milestone.attributes[:description]).to eq(expected_desc)
+        end
+      end
     end
 
     context 'when importing a GitHub project' do

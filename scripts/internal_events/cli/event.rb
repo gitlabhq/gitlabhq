@@ -11,9 +11,9 @@ module InternalEventsCli
     :identifiers,
     :additional_properties,
     :product_group,
+    :product_categories,
     :milestone,
     :introduced_by_url,
-    :distributions,
     :tiers
   ].freeze
 
@@ -45,7 +45,7 @@ module InternalEventsCli
     def file_path
       File.join(
         *[
-          ('ee' unless distributions.include?('ce')),
+          ('ee' unless tiers.include?('free')),
           'config',
           'events',
           "#{action}.yml"

@@ -16,6 +16,10 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
   let(:base_initialization_params) { { ref: ref, before: '00000000', after: project.commit(ref).sha, variables_attributes: nil } }
   let(:initialization_params)      { base_initialization_params }
 
+  before do
+    project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
+  end
+
   context 'job:rules' do
     let(:regular_job) { find_job('regular-job') }
     let(:rules_job)   { find_job('rules-job') }
@@ -248,17 +252,6 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         it 'creates all relevant jobs' do
           expect(pipeline).to be_persisted
           expect(build_names).to contain_exactly('job1', 'job2', 'job4')
-        end
-
-        context 'when expand_nested_variables_in_job_rules_exists_and_changes is disabled' do
-          before do
-            stub_feature_flags(expand_nested_variables_in_job_rules_exists_and_changes: false)
-          end
-
-          it 'creates all relevant jobs' do
-            expect(pipeline).to be_persisted
-            expect(build_names).to contain_exactly('job1', 'job2')
-          end
         end
       end
     end
@@ -905,16 +898,6 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
 
                 it 'creates both jobs' do
                   expect(build_names).to contain_exactly('job1', 'job2')
-                end
-
-                context 'when expand_nested_variables_in_job_rules_exists_and_changes is disabled' do
-                  before do
-                    stub_feature_flags(expand_nested_variables_in_job_rules_exists_and_changes: false)
-                  end
-
-                  it 'does not create job1' do
-                    expect(build_names).to contain_exactly('job2')
-                  end
                 end
               end
             end

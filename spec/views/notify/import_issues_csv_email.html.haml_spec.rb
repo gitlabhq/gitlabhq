@@ -43,7 +43,7 @@ a delimited text file that uses a comma to separate values.")
     it 'renders correctly' do
       render
 
-      expect(rendered).to have_content("Errors found on lines: #{errored_results[:error_lines].join(", ")}. \
+      expect(rendered).to have_content("Errors found on lines: #{errored_results[:error_lines].join(', ')}. \
 Please check if these lines have an issue title.")
       expect(rendered).not_to have_content("Error parsing CSV file. Please make sure it has the correct format: \
 a delimited text file that uses a comma to separate values.")

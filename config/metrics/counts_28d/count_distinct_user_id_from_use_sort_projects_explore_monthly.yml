@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.count_distinct_user_id_from_use_sort_projects_explore_monthly
 description: Monthly count of unique users using projects explore sort
-product_group: tenant_scale
+product_group: organizations
 performance_indicator_type: []
 value_type: number
 status: active

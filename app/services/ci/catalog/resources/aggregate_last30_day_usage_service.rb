@@ -15,6 +15,8 @@ module Ci
         WINDOW_LENGTH = 30.days
 
         def execute
+          return execute_with_new_table if ::Feature.enabled?(:ci_catalog_ranking_from_new_usage_table, :instance)
+
           return ServiceResponse.success(message: "Processing complete for #{today}") if done_processing?
 
           aggregator = Gitlab::Ci::Components::Usages::Aggregator.new(
@@ -36,7 +38,44 @@ module Ci
           end
         end
 
+        def execute_with_new_table
+          update_component_counts
+          update_resource_counts
+
+          ServiceResponse.success(message: 'Usage counts updated for components and resources')
+        end
+
         private
+
+        def update_component_counts
+          Ci::Catalog::Resources::Component.find_each(batch_size: 1000) do |component|
+            usage_count = component
+              .last_usages
+              .select(:used_by_project_id)
+              .distinct
+              .count
+
+            component.update_columns(
+              last_30_day_usage_count: usage_count
+            )
+          end
+        end
+
+        def update_resource_counts
+          # Using a subquery to sum component counts for each resource
+          resource_counts = Component
+            .group(:catalog_resource_id)
+            .select(
+              :catalog_resource_id,
+              'SUM(last_30_day_usage_count) as total_usage'
+            )
+
+          resource_counts.each do |result|
+            Ci::Catalog::Resource.where(id: result.catalog_resource_id).update_all(
+              last_30_day_usage_count: result.total_usage
+            )
+          end
+        end
 
         # NOTE: New catalog resources added today are considered already processed
         # because their `last_30_day_usage_count_updated_at` is defaulted to NOW().

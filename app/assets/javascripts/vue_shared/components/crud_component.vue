@@ -129,6 +129,13 @@ export default {
   methods: {
     toggleCollapse() {
       this.isCollapsed = !this.isCollapsed;
+
+      if (this.isCollapsed) {
+        this.$emit('collapsed');
+      } else {
+        this.$emit('expanded');
+      }
+
       if (this.persistCollapsedState) {
         localStorage.setItem(this.getLocalStorageKeyName(), this.isCollapsed);
       }
@@ -168,12 +175,12 @@ export default {
       :class="[
         headerClass,
         {
-          'gl-rounded-base gl-border-b-0': !isContentVisible,
+          'gl-rounded-base gl-border-b-transparent': !isContentVisible,
           'gl-relative gl-pr-10': isCollapsible,
         },
       ]"
     >
-      <div class="gl-flex gl-flex-col gl-self-center">
+      <div class="gl-flex gl-grow gl-flex-col gl-self-center">
         <h2
           class="gl-m-0 gl-inline-flex gl-items-center gl-gap-3 gl-text-base gl-font-bold gl-leading-normal"
           :class="titleClass"
@@ -194,7 +201,7 @@ export default {
             data-testid="crud-count"
           >
             <template v-if="displayedCount">
-              <gl-icon v-if="icon" :name="icon" data-testid="crud-icon" />
+              <gl-icon v-if="icon" :name="icon" variant="subtle" data-testid="crud-icon" />
               {{ displayedCount }}
             </template>
             <slot v-if="$scopedSlots.count" name="count"></slot>
@@ -262,7 +269,7 @@ export default {
 
       <div
         v-if="$scopedSlots.pagination"
-        class="crud-pagination gl-border-t gl-flex gl-justify-center gl-p-5"
+        class="crud-pagination gl-border-t gl-flex gl-justify-center gl-border-t-section gl-p-5"
         data-testid="crud-pagination"
       >
         <slot name="pagination"></slot>

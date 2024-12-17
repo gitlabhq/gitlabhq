@@ -313,12 +313,25 @@ RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
       end
     end
 
+    context 'with top level groups only' do
+      let_it_be(:group_one) { create(:group, :public, name: 'group_one') }
+      let_it_be(:group_two) { create(:group, :public, name: 'group_two', parent: group_one) }
+      let_it_be(:group_three) { create(:group, :public, name: 'group_three', parent: group_one) }
+
+      subject { described_class.new(user, { top_level_only: true }).execute }
+
+      it 'returns only top level groups' do
+        is_expected.to contain_exactly(group_one)
+      end
+    end
+
     context 'with organization' do
       let_it_be(:organization_user) { create(:organization_user) }
       let_it_be(:organization) { organization_user.organization }
+      let_it_be(:other_organization) { create(:organization) }
       let_it_be(:user) { organization_user.user }
       let_it_be(:public_group) { create(:group, name: 'public-group', organization: organization) }
-      let_it_be(:outside_organization_group) { create(:group) }
+      let_it_be(:outside_organization_group) { create(:group, organization: other_organization) }
       let_it_be(:private_group) { create(:group, :private, name: 'private-group', organization: organization) }
       let_it_be(:no_access_group_in_org) { create(:group, :private, name: 'no-access', organization: organization) }
 

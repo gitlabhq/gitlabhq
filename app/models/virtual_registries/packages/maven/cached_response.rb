@@ -19,11 +19,11 @@ module VirtualRegistries
         enum :status, default: 0, processing: 1, pending_destruction: 2, error: 3
 
         ignore_column :downloads_count, remove_with: '17.8', remove_after: '2024-12-23'
+        ignore_column :downloaded_at, remove_with: '17.9', remove_after: '2025-01-23'
 
         validates :group, top_level_group: true, presence: true
         validates :relative_path,
           :object_storage_key,
-          :content_type,
           :size,
           :file_sha1,
           presence: true
@@ -84,13 +84,6 @@ module VirtualRegistries
           return false if upstream.cache_validity_hours == 0
 
           (upstream_checked_at + upstream.cache_validity_hours.hours).past?
-        end
-
-        def bump_statistics(include_upstream_checked_at: false)
-          now = Time.zone.now
-          updates = { downloaded_at: now }
-          updates[:upstream_checked_at] = now if include_upstream_checked_at
-          update_columns(**updates)
         end
 
         private

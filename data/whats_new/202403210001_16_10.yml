@@ -42,7 +42,7 @@
   description: |
     The [Contribution Analytics report](https://docs.gitlab.com/ee/user/group/contribution_analytics/) is now more performant and backed by an advanced analytics database using [ClickHouse](https://docs.gitlab.com/ee/architecture/blueprints/clickhouse_usage/#summary) on GitLab.com. This upgrade set the foundation for new extensive analytics and reporting features, allowing us to deliver high-performance analytics aggregations, filtering, and slicing across multiple dimensions. Support for self-managed customers to be able to add to this capability is proposed in [issue 441626](https://gitlab.com/gitlab-org/gitlab/-/issues/441626).
 
-    Although ClickHouse enhances GitLab's analytics capabilities, it's not meant to replace PostgreSQL or Redis, and the existing capabilities remain unchanged.
+    Although ClickHouse enhances GitLab analytics capabilities, it's not meant to replace PostgreSQL or Redis, and the existing capabilities remain unchanged.
   stage: plan
   self-managed: false
   gitlab-com: true

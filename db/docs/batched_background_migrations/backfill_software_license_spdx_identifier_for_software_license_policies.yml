@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillSoftwareLicenseSpdxIdentifierForSoftwareLicensePolicies
+description: Backfill software_license_spdx_identifier for software_license_policies
+feature_category: security_policy_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171688
+milestone: '17.7'
+queued_migration_version: 20241115211552
+finalized_by: # version of the migration that finalized this BBM

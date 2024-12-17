@@ -12,7 +12,7 @@
   .form-group
     = form.label :key
 
-    %p.gl-text-secondary
+    %p.gl-text-subtle
       - link_start = "<a href='#{help_page_path('user/ssh.md')}' target='_blank' rel='noreferrer noopener'>".html_safe
       - link_end = '</a>'
       = _('Paste a public key here. %{link_start}How do I generate it?%{link_end}').html_safe % { link_start: link_start, link_end: link_end.html_safe }

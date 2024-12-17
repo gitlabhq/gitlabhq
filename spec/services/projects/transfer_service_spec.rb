@@ -26,10 +26,16 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
 
     let!(:package) { create(:npm_package, project: project, name: "@testscope/test") }
 
-    context 'with a root namespace change' do
-      it 'allow the transfer' do
-        expect(transfer_service.execute(group)).to be true
+    shared_examples 'allow the transfer' do
+      it 'allows the transfer' do
+        expect(transfer_service.execute(namespace)).to be true
         expect(project.errors[:new_namespace]).to be_empty
+      end
+    end
+
+    context 'with a root namespace change' do
+      it_behaves_like 'allow the transfer' do
+        let(:namespace) { group }
       end
     end
 
@@ -38,9 +44,8 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
         package.pending_destruction!
       end
 
-      it 'allow the transfer' do
-        expect(transfer_service.execute(group)).to be true
-        expect(project.errors[:new_namespace]).to be_empty
+      it_behaves_like 'allow the transfer' do
+        let(:namespace) { group }
       end
     end
 
@@ -63,9 +68,8 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
         other_group.add_owner(user)
       end
 
-      it 'allow the transfer' do
-        expect(transfer_service.execute(other_group)).to be true
-        expect(project.errors[:new_namespace]).to be_empty
+      it_behaves_like 'allow the transfer' do
+        let(:namespace) { other_group }
       end
     end
   end
@@ -490,14 +494,6 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
     context 'when the GitLab API is not supported' do
       before do
         allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
-      end
-
-      it_behaves_like 'project transfer failed with a message', 'Project cannot be transferred, because image tags are present in its container registry'
-    end
-
-    context 'when the feature transfer_project_with_tags is disabled' do
-      before do
-        stub_feature_flags(transfer_project_with_tags: false)
       end
 
       it_behaves_like 'project transfer failed with a message', 'Project cannot be transferred, because image tags are present in its container registry'

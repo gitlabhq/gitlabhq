@@ -61,7 +61,7 @@ export default {
         </gl-button>
       </li>
     </ul>
-    <div class="gl-flex gl-justify-between gl-pt-3 gl-text-sm gl-text-gray-500">
+    <div class="gl-flex gl-justify-between gl-pt-3 gl-text-sm gl-text-subtle">
       <div>{{ $options.i18n.unhappy }}</div>
       <div>{{ $options.i18n.delighted }}</div>
     </div>

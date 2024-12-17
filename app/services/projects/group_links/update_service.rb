@@ -10,17 +10,19 @@ module Projects
       end
 
       def execute(group_link_params)
+        allowed_params = filter_params(group_link_params)
+
         if group_link.blank? || !allowed_to_update?
           return ServiceResponse.error(message: 'Not found', reason: :not_found)
         end
 
-        unless allowed_to_update_to_or_from_owner?(group_link_params)
+        unless allowed_to_update_to_or_from_owner?(allowed_params)
           return ServiceResponse.error(message: 'Forbidden', reason: :forbidden)
         end
 
-        group_link.update!(group_link_params)
+        group_link.update!(allowed_params)
 
-        refresh_authorizations if requires_authorization_refresh?(group_link_params)
+        refresh_authorizations if requires_authorization_refresh?(allowed_params)
 
         ServiceResponse.success
       end
@@ -28,6 +30,14 @@ module Projects
       private
 
       attr_reader :group_link
+
+      def permitted_attributes
+        %i[group_access expires_at].freeze
+      end
+
+      def filter_params(params)
+        params.select { |k| permitted_attributes.include?(k.to_sym) }
+      end
 
       def allowed_to_update?
         current_user.can?(:admin_project_member, group_link.project)

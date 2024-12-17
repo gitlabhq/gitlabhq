@@ -7,6 +7,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 # Group access tokens
 
 DETAILS:
+**Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 With group access tokens, you can use a single token to:
@@ -28,7 +29,7 @@ You can use a group access token to authenticate:
 > On GitLab Dedicated and self-managed instances, you can use group access tokens with any license tier. If you have the Free tier:
 >
 > - Review your security and compliance policies around [user self-enrollment](../../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups).
-> - Consider [disabling group access tokens](#enable-or-disable-group-access-token-creation) to lower potential abuse.
+> - Consider [restricting the creation of group access tokens](#restrict-the-creation-of-group-access-tokens) to lower potential abuse.
 
 Group access tokens are similar to [project access tokens](../../project/settings/project_access_tokens.md)
 and [personal access tokens](../../profile/personal_access_tokens.md), except they are
@@ -46,6 +47,7 @@ configured for personal access tokens.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days and default role of Guest is populated in the UI.
 > - Ability to create non-expiring group access tokens [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
 > - Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a flag](../../../administration/feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+> - Group access token description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443819) in GitLab 17.7.
 
 FLAG:
 The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
@@ -59,8 +61,9 @@ To create a group access token:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Access tokens**.
 1. Select **Add new token**.
-1. Enter a name. The token name is visible to any user with permissions to view the group.
-1. Enter an expiry date for the token:
+1. In **Token name**, enter a name. The token name is visible to any user with permissions to view the group.
+1. Optional. In **Token description**, enter a description for the token.
+1. In **Expiration date**, enter an expiry date for the token:
    - The token expires on that date at midnight UTC. A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
    - If you do not enter an expiry date, the expiry date is automatically set to 365 days later than the current date.
    - By default, this date can be a maximum of 365 days later than the current date. In GitLab 17.6 or later, you can [extend this limit to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901).
@@ -92,7 +95,8 @@ If you are an administrator, you can create group access tokens in the Rails con
 
    # Create the group bot user. For further group access tokens, the username should be `group_{group_id}_bot_{random_string}` and email address `group_{group_id}_bot_{random_string}@noreply.{Gitlab.config.gitlab.host}`.
    random_string = SecureRandom.hex(16)
-   bot = Users::CreateService.new(admin, { name: 'group_token', username: "group_#{group.id}_bot_#{random_string}", email: "group_#{group.id}_bot_#{random_string}@noreply.#{Gitlab.config.gitlab.host}", user_type: :project_bot }).execute
+   service_response = Users::CreateService.new(admin, { name: 'group_token', username: "group_#{group.id}_bot_#{random_string}", email: "group_#{group.id}_bot_#{random_string}@noreply.#{Gitlab.config.gitlab.host}", user_type: :project_bot }).execute
+   bot = service_response.payload[:user] if service_response.success?
 
    # Confirm the group bot.
    bot.confirm
@@ -121,6 +125,9 @@ If you are an administrator, you can create group access tokens in the Rails con
 ## Revoke a group access token
 
 > - Ability to view revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
+
+FLAG:
+The availability of being able to view revoked tokens is controlled by a feature flag. For more information, see the history.
 
 In GitLab 17.3 and later, if you enable the `retain_resource_access_token_user_after_revoke`
 feature flag, you can view both active and inactive revoked group access tokens
@@ -165,17 +172,18 @@ The scope determines the actions you can perform when you authenticate with a gr
 | `ai_features`      | Grants permission to perform API actions for GitLab Duo. This scope is designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see scope requirements.                                                                                                          |
 | `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in a group.                                                                                                                                                                                                               |
 
-## Enable or disable group access token creation
+## Restrict the creation of group access tokens
 
-To enable or disable group access token creation for all subgroups in a top-level group:
+To limit potential abuse, you can restrict users from creating tokens for a group hierarchy. This setting is only configurable for a top-level group and applies to every downstream subgroup and project. Any existing group access tokens remain valid until their expiration date or until manually revoked.
+
+To restrict the creation of group access tokens:
 
 1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. Under **Permissions**, turn on or off **Users can create project access tokens and group access tokens in this group**.
+1. Under **Permissions**, clear the **Users can create project access tokens and group access tokens in this group** checkbox.
 1. Select **Save changes**.
-
-Even when creation is disabled, you can still use and revoke existing group access tokens.
 
 ## Access token expiration
 
@@ -214,14 +222,19 @@ automatically applied:
 ### Group access token expiry emails
 
 > - Sixty and thirty day expiry notification emails [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464040) in GitLab 17.6 [with a flag](../../../administration/feature_flags.md) named `expiring_pats_30d_60d_notifications`. Disabled by default.
+> - Sixty and thirty day notification emails [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173792) in GitLab 17.7. Feature flag `expiring_pats_30d_60d_notifications` removed.
+> - Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
 
 FLAG:
 The availability of the sixty and thirty day expiry notification emails is controlled by a feature flag. For more information, see the history.
 
-GitLab runs a check every day at 1:00 AM UTC to identify group access tokens that are expiring in the near future. Direct members of the group with the Owner role are notified by email when these tokens expire in a certain number of days. The number of days differs depending on the version of GitLab:
+GitLab runs a check every day at 1:00 AM UTC to identify group access tokens that are expiring in the near future. Members of the group with the Owner role are notified by email when these tokens expire in a certain number of days. The number of days differs depending on the version of GitLab:
 
 - In GitLab 17.6 and later, group Owners are notified by email when the check identifies their group access tokens as expiring in the next sixty days. An additional email is sent when the check identifies their group access tokens as expiring in the next thirty days.
 - Group Owners are notified by email when the check identifies their group access tokens as expiring in the next seven days.
+- In GitLab 17.7 and later, members with the inherited role of Owner in the group can also receive notification emails. You can configure this by changing:
+  - The [group setting](../manage.md#expiry-emails-for-group-and-project-access-tokens) for the group or any parent group.
+  - On GitLab self-managed, the [instance setting](../../../administration/settings/email.md#group-and-project-access-token-expiry-emails-to-inherited-members).
 
 ## Bot users for groups
 

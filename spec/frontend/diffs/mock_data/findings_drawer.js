@@ -20,6 +20,13 @@ export const mockFindingDismissed = {
       url: 'https://semgrep.dev/r/gitlab.eslint.detect-disable-mustache-escape',
     },
   ],
+  details: [
+    {
+      name: 'code_flows',
+      type: 'VulnerabilityDetailCodeFlows',
+      items: [],
+    },
+  ],
 };
 
 export const mockFindingDetected = {
@@ -69,6 +76,39 @@ export const mockFindingsMultiple = [
         ...mockFindingDetected.identifiers[0],
         name: 'identifier 3',
         url: 'https://example.com/identifier3',
+      },
+    ],
+  },
+];
+
+export const mockFindingDetails = [
+  {
+    name: 'code_flows',
+    type: 'VulnerabilityDetailCodeFlows',
+    items: [
+      {
+        nodeType: 'SOURCE',
+        fileLocation: {
+          fileName: 'app/app.py',
+          lineStart: 8,
+          lineEnd: 8,
+        },
+      },
+      {
+        nodeType: 'PROPAGATION',
+        fileLocation: {
+          fileName: 'app/app.py',
+          lineStart: 8,
+          lineEnd: 8,
+        },
+      },
+      {
+        nodeType: 'SINK',
+        fileLocation: {
+          fileName: 'app/utils.py',
+          lineStart: 5,
+          lineEnd: 5,
+        },
       },
     ],
   },

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Pages::UrlBuilder, feature_category: :pages do
+  using RSpec::Parameterized::TableSyntax
+
   let(:pages_enabled) { true }
   let(:artifacts_server) { true }
   let(:access_control) { true }
@@ -15,6 +17,7 @@ RSpec.describe Gitlab::Pages::UrlBuilder, feature_category: :pages do
   let(:unique_domain) { 'unique-domain' }
   let(:unique_domain_enabled) { false }
   let(:namespace_in_path) { false }
+  let(:options) { nil }
 
   let(:project_setting) do
     instance_double(
@@ -34,7 +37,7 @@ RSpec.describe Gitlab::Pages::UrlBuilder, feature_category: :pages do
     )
   end
 
-  subject(:builder) { described_class.new(project) }
+  subject(:builder) { described_class.new(project, options) }
 
   before do
     stub_pages_setting(
@@ -148,6 +151,12 @@ RSpec.describe Gitlab::Pages::UrlBuilder, feature_category: :pages do
           it { is_expected.to eq('http://example.com/unique-domain') }
         end
       end
+
+      context 'when there is a path_prefix' do
+        let(:options) { { path_prefix: 'foo' } }
+
+        it { is_expected.to eq('http://example.com/group/project/foo') }
+      end
     end
   end
 
@@ -237,6 +246,85 @@ RSpec.describe Gitlab::Pages::UrlBuilder, feature_category: :pages do
       let(:artifact_name) { 'file.txt' }
 
       it { is_expected.to be true }
+    end
+  end
+
+  describe '#path_prefix' do
+    let(:options) { { path_prefix: path_prefix } }
+
+    subject { builder.path_prefix }
+
+    where(:path_prefix, :result) do
+      'foo-bar'  | 'foo-bar'
+      ' foo bar' | 'foo-bar'
+      'FOO_Bar'  | 'foo-bar'
+      '/foo'     | 'foo'
+      'foo-'     | 'foo'
+      '-foo'     | 'foo'
+      ''         | nil
+      ' '        | nil
+      '-'        | nil
+    end
+
+    with_them do
+      it { is_expected.to eq(result) }
+    end
+
+    context "when no config is provided to instance" do
+      subject { described_class.new(project).path_prefix }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#hostname' do
+    subject { described_class.new(project).hostname }
+
+    context 'when namespace_in_path is true' do
+      let(:namespace_in_path) { true }
+
+      it { is_expected.to eq('example.com') }
+    end
+
+    context 'when is is the namespace homepage' do
+      let(:full_path) { 'group/group.example.com' }
+
+      it { is_expected.to eq('group.example.com') }
+    end
+
+    context 'when unique domain is enabled' do
+      let(:unique_domain_enabled) { true }
+
+      it { is_expected.to eq('unique-domain.example.com') }
+    end
+
+    context 'when it is a namespaced project' do
+      it { is_expected.to eq('group.example.com') }
+    end
+
+    context 'when there is no subdomain' do
+      before do
+        allow_next_instance_of(described_class) do |instance|
+          allow(instance).to receive(:subdomain).and_return(nil)
+        end
+      end
+
+      it { is_expected.to eq('example.com') }
+    end
+  end
+
+  describe "is_namespace_homepage?" do
+    subject { described_class.new(project).is_namespace_homepage? }
+
+    where(:full_path, :result) do
+      'group/foo'               | false
+      'group/group.example.com' | true
+      'grOUP/group.example.com' | true
+      'group/Group.example.com' | true
+    end
+
+    with_them do
+      it { is_expected.to eq(result) }
     end
   end
 end

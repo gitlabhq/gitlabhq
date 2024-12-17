@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.releases
 description: Count of releases
 product_group: environments
+product_categories:
+- release_orchestration
 value_type: number
 status: active
 time_frame: all

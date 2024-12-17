@@ -788,6 +788,8 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
           .to receive(:access_allowed?).with(user, 'default_label') { true }
 
         update_project(project, user, { external_authorization_classification_label: '' })
+
+        expect(project.reload.external_authorization_classification_label).to eq('default_label')
       end
 
       it 'does not check the label when it does not change' do
@@ -967,6 +969,132 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
 
           expect { update_project(project, user, project_setting_attributes: { pages_unique_domain_enabled: false }) }
             .not_to change { project.project_setting.pages_unique_domain_enabled }
+        end
+      end
+    end
+
+    describe 'when updating pages default domain redirect', feature_category: :pages do
+      let(:domain_present) { true }
+
+      before do
+        stub_pages_setting(enabled: true)
+        allow(project).to receive(:pages_domain_present?).and_return(domain_present)
+      end
+
+      context 'when selecting an existing domain' do
+        it 'updates the pages default domain redirect setting' do
+          expect { update_project(project, user, project_setting_attributes: { pages_default_domain_redirect: "http://example.com" }) }
+            .to change { project.project_setting.pages_default_domain_redirect }
+                  .from(nil).to("http://example.com")
+        end
+      end
+
+      context 'when clearing the default domain redirect' do
+        let(:project_settings) { create(:project_setting, pages_default_domain_redirect: "http://example.com") }
+        let(:project) { build(:project, project_setting: project_settings) }
+
+        it 'removes the pages default domain redirect setting' do
+          expect(project.project_setting.pages_default_domain_redirect).to eq("http://example.com")
+
+          expect { update_project(project, user, project_setting_attributes: { pages_default_domain_redirect: "" }) }
+            .to change { project.project_setting.pages_default_domain_redirect }
+                  .from("http://example.com").to(nil)
+        end
+      end
+
+      context 'when selecting a non-existing domain' do
+        let(:domain_present) { false }
+
+        it 'returns an error to the user' do
+          result = update_project(project, user, project_setting_attributes: { pages_default_domain_redirect: "http://example.com" })
+
+          expect(result).to include(status: :error)
+          expect(result[:message]).to include(_("The `pages_default_domain_redirect` attribute is missing from the domain list in the Pages project configuration. Assign `pages_default_domain_redirect` to the Pages project or reset it."))
+
+          expect(project.project_setting.pages_default_domain_redirect).to be_nil
+        end
+      end
+    end
+
+    describe 'when project has missing CI/CD settings record' do
+      before do
+        project.ci_cd_settings.destroy!
+        project.reload
+      end
+
+      it 'does not fail and creates a ci_cd_settings record for the project' do
+        result = update_project(project, user, topics: 'topics')
+        expect(result[:status]).to eq(:success)
+
+        expect(project.reload.ci_cd_settings).to be_present
+      end
+    end
+
+    describe 'when updating ci_inbound_job_token_scope_enabled' do
+      let(:category) { described_class }
+      let(:user) { admin }
+
+      subject(:service_action) { update_project(project, admin, ci_inbound_job_token_scope_enabled: ci_inbound_job_token_scope_enabled) }
+
+      context 'when it is changed from false to true' do
+        let(:ci_inbound_job_token_scope_enabled) { true }
+
+        before do
+          project.update!(ci_inbound_job_token_scope_enabled: false)
+          project.reload
+        end
+
+        it 'updates the setting' do
+          service_action
+          expect(project.reload.ci_inbound_job_token_scope_enabled).to eq(true)
+        end
+
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'enable_inbound_job_token_scope' }
+        end
+      end
+
+      context 'when it is changed from true to false' do
+        let(:ci_inbound_job_token_scope_enabled) { false }
+
+        before do
+          project.update!(ci_inbound_job_token_scope_enabled: true)
+          project.reload
+        end
+
+        it 'updates the setting' do
+          service_action
+          expect(project.reload.ci_inbound_job_token_scope_enabled).to eq(false)
+        end
+
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'disable_inbound_job_token_scope' }
+        end
+      end
+
+      context 'when current value is true and is unchanged' do
+        let(:ci_inbound_job_token_scope_enabled) { true }
+
+        before do
+          project.update!(ci_inbound_job_token_scope_enabled: true)
+          project.reload
+        end
+
+        it 'does not trigger event' do
+          expect { service_action }.not_to trigger_internal_events('enable_inbound_job_token_scope')
+        end
+      end
+
+      context 'when current value is false and is unchanged' do
+        let(:ci_inbound_job_token_scope_enabled) { false }
+
+        before do
+          project.update!(ci_inbound_job_token_scope_enabled: false)
+          project.reload
+        end
+
+        it 'does not trigger event' do
+          expect { service_action }.not_to trigger_internal_events('disable_inbound_job_token_scope')
         end
       end
     end

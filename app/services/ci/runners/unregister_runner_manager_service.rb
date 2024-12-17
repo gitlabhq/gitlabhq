@@ -28,7 +28,7 @@ module Ci
       private
 
       def system_id_missing_error
-        ServiceResponse.error(message: '`system_id` needs to be specified for runners created in the UI.')
+        ServiceResponse.error(message: '`system_id` needs to be specified.')
       end
     end
   end

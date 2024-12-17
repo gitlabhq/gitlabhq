@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :blocking do
+  RSpec.describe 'Manage' do
     describe 'Jira issue import', :jira, :orchestrated, :requires_admin, product_group: :import_and_integrate do
       let(:jira_project_key) { "JITD" }
       let(:jira_issue_title) { "[#{jira_project_key}-1] Jira to GitLab Test Issue" }

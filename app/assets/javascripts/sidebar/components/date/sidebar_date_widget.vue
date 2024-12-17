@@ -1,6 +1,7 @@
 <script>
 import { GlIcon, GlDatepicker, GlTooltipDirective, GlLink, GlPopover } from '@gitlab/ui';
 import { createAlert } from '~/alert';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { localeDateFormat, newDate, toISODateFormat } from '~/lib/utils/datetime_utility';
 import { __, sprintf } from '~/locale';
@@ -30,6 +31,7 @@ export default {
     SidebarEditableItem,
     SidebarFormattedDate,
     SidebarInheritDate,
+    HelpIcon,
   },
   inject: ['canUpdate'],
   props: {
@@ -283,10 +285,9 @@ export default {
     @open="openDatePicker"
   >
     <template v-if="canInherit" #title-extra>
-      <gl-icon
+      <help-icon
         ref="epicDatePopover"
-        name="question-o"
-        class="hide-collapsed gl-ml-3 gl-cursor-pointer gl-text-blue-600"
+        class="hide-collapsed gl-ml-3 gl-cursor-pointer"
         tabindex="0"
         :aria-label="$options.i18n.help"
         data-testid="inherit-date-popover"

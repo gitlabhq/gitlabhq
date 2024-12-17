@@ -44,7 +44,8 @@ Example responses:
     "valid": true,
     "merged_yaml": "---\ntest_job:\n  script: echo 1\n",
     "errors": [],
-    "warnings": []
+    "warnings": [],
+    "includes": []
   }
   ```
 
@@ -53,11 +54,12 @@ Example responses:
   ```json
   {
     "valid": false,
-    "merged_yaml": "---\ntest_job:\n  script: echo 1\n",
     "errors": [
       "jobs config should contain at least one visible job"
     ],
-    "warnings": []
+    "warnings": [],
+    "merged_yaml": "---\n\".job\":\n  script:\n  - echo \"A hidden job\"\n",
+    "includes": []
   }
   ```
 
@@ -94,29 +96,81 @@ curl "https://gitlab.example.com/api/v4/projects/:id/ci/lint"
 
 Example responses:
 
-- Valid configuration:
+- Valid configuration, with `include.yml` as an [included file](../ci/yaml/index.md#include)
+  and `include_jobs` set to `true`:
 
-```json
-{
-  "valid": true,
-  "merged_yaml": "---\ntest_job:\n  script: echo 1\n",
-  "errors": [],
-  "warnings": []
-}
-```
+  ```json
+  {
+    "valid": true,
+    "errors": [],
+    "warnings": [],
+    "merged_yaml": "---\ninclude-job:\n  script:\n  - echo \"An included job\"\njob:\n  rules:\n  - if: \"$CI_COMMIT_BRANCH\"\n  script:\n  - echo \"A test job\"\n",
+    "includes": [
+      {
+        "type": "local",
+        "location": "include.yml",
+        "blob": "https://gitlab.example.com/test-group/test-project/-/blob/ef5014c045873c5c4ffeb7a2f5be021a1d3ed703/include.yml",
+        "raw": "https://gitlab.example.com/test-group/test-project/-/raw/ef5014c045873c5c4ffeb7a2f5be021a1d3ed703/include.yml",
+        "extra": {},
+        "context_project": "test-group/test-project",
+        "context_sha": "ef5014c045873c5c4ffeb7a2f5be021a1d3ed703"
+      }
+    ],
+    "jobs": [
+      {
+        "name": "include-job",
+        "stage": "test",
+        "before_script": [],
+        "script": [
+          "echo \"An included job\""
+        ],
+        "after_script": [],
+        "tag_list": [],
+        "only": {
+          "refs": [
+            "branches",
+            "tags"
+          ]
+        },
+        "except": null,
+        "environment": null,
+        "when": "on_success",
+        "allow_failure": false,
+        "needs": null
+      },
+      {
+        "name": "job",
+        "stage": "test",
+        "before_script": [],
+        "script": [
+          "echo \"A test job\""
+        ],
+        "after_script": [],
+        "tag_list": [],
+        "only": null,
+        "except": null,
+        "environment": null,
+        "when": "on_success",
+        "allow_failure": false,
+        "needs": null
+      }
+    ]
+  }
+  ```
 
 - Invalid configuration:
 
-```json
-{
-  "valid": false,
-  "merged_yaml": "---\ntest_job:\n  script: echo 1\n",
-  "errors": [
-    "jobs config should contain at least one visible job"
-  ],
-  "warnings": []
-}
-```
+  ```json
+  {
+    "valid": false,
+    "errors": [
+      "jobs config should contain at least one visible job"
+    ],
+    "warnings": [],
+    "merged_yaml": "---\n\".job\":\n  script:\n  - echo \"A hidden job\"\n",
+    "includes": []
+  }
+  ```
 
 ## Use jq to create and process YAML & JSON payloads
 

@@ -97,12 +97,16 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
     expect(merge_request_note_2.reload.note).not_to eq(old_note)
   end
 
+  it "sets the object's `importing` attribute to `true`" do
+    expect_next_found_instance_of(Note) do |object|
+      expect(object).to receive(:importing=).with(true)
+    end
+
+    described_class.new.perform([issue_note.id], 'Note', tracker.id)
+  end
+
   shared_examples 'transforms and saves references' do
     it 'transforms references and saves the object' do
-      expect_any_instance_of(object.class) do |object|
-        expect(object).to receive(:save!)
-      end
-
       expect { subject }.not_to change { object.updated_at }
 
       expect(body).to eq(expected_body)

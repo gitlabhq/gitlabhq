@@ -11,58 +11,7 @@ The [GitLab extension](https://marketplace.visualstudio.com/items?itemName=GitLa
 integrates GitLab with Visual Studio for Windows. GitLab for Visual Studio supports
 [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/index.md).
 
-## Download the extension
-
-Download the extension from the
-[Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio).
-
-The extension requires:
-
-- Visual Studio 2022, either AMD64 or Arm64.
-- The [IntelliCode](https://visualstudio.microsoft.com/services/intellicode/) component for Visual Studio.
-- GitLab version 16.1 and later.
-  - GitLab Duo Code Suggestions requires GitLab version 16.8 or later.
-- You are not using Visual Studio for Mac, as it is unsupported.
-
-## Configure the extension
-
-After you download and install the extension, you must configure it.
-
-Prerequisites:
-
-- GitLab Duo [is available and configured](../../user/gitlab_duo/turn_on_off.md) for your project.
-- Your project must use one of the
-  [supported languages](../../user/project/repository/code_suggestions/supported_extensions.md#supported-languages).
-
-To do this:
-
-1. Install the extension from the Visual Studio Marketplace, and enable it.
-1. In GitLab, create a [GitLab personal access token](../../user/profile/personal_access_tokens.md#create-a-personal-access-token)
-   with the `api` and `read_user` scopes.
-   1. Copy the token. _For security reasons, this value is never displayed again, so you must copy this value now._
-1. Open Visual Studio.
-   1. On the top bar, go to **Tools > Options > GitLab**.
-   1. For **Access Token**, paste in your token. The token is not displayed, nor is it accessible to others.
-   1. For **GitLab URL** field, provide the URL of your GitLab instance. For GitLab SaaS, use `https://gitlab.com`.
-
-No new additional data is collected to enable this feature. Private non-public GitLab customer data is not used as training data.
-Learn more about [Google Vertex AI Codey APIs Data Governance](https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance).
-
-### Customize keyboard shortcuts
-
-This extension provides these custom commands:
-
-| Command name                   | Default keyboard shortcut | Feature |
-|--------------------------------|---------------------------|---------|
-| `GitLab.ToggleCodeSuggestions` | not applicable            | Enable or disable automated Code Suggestions. |
-
-You can access the extension's custom commands with keyboard shortcuts, which you can customize:
-
-1. On the top bar, go to **Tools > Options**.
-1. Go to **Environment > Keyboard**. Commands exposed by this extension are prefixed with `GitLab.`.
-1. Select a command, and assign it a keyboard shortcut.
-
-## Report issues with the extension
+[Install and configure the extension](setup.md).
 
 Report any issues, bugs, or feature requests in the
 [`gitlab-visual-studio-extension` issue queue](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/issues).

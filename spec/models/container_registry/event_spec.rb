@@ -42,7 +42,7 @@ RSpec.describe ContainerRegistry::Event, feature_category: :container_registry d
 
     shared_examples 'event with project statistics update' do
       it 'enqueues a project statistics update' do
-        expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:container_registry_size])
+        expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], %w[container_registry_size])
 
         handle!
       end

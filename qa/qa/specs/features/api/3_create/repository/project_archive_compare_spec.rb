@@ -3,32 +3,27 @@
 require 'digest'
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'Compare archives of different user projects with the same name and check they\'re different',
-      product_group: :source_code do
+  RSpec.describe 'Create', :requires_admin, product_group: :source_code do
+    describe 'Compare archives of different user projects with the same name and check they\'re different' do
       include Support::API
-      let(:project_name) { "project-archive-download-#{SecureRandom.hex(8)}" }
 
+      let(:project_name) { "project-archive-download" }
       let(:archive_types) { %w[tar.gz tar.bz2 tar zip] }
 
       let(:users) do
-        {
-          user1: { username: Runtime::Env.gitlab_qa_username_1, password: Runtime::Env.gitlab_qa_password_1 },
-          user2: { username: Runtime::Env.gitlab_qa_username_2, password: Runtime::Env.gitlab_qa_password_2 }
-        }
-      end
-
-      before do
-        users.each do |_, user_info|
-          user_info[:user] = Resource::User.fabricate_or_use(user_info[:username], user_info[:password])
-          user_info[:api_client] = Runtime::API::Client.new(:gitlab, user: user_info[:user])
-          user_info[:api_client].personal_access_token
-          user_info[:project] = create_project(user_info[:user], user_info[:api_client], project_name)
+        create_list(:user, 2, :with_personal_access_token).each_with_index.to_h do |user, index|
+          [
+            :"user_#{index + 1}",
+            {
+              user: user,
+              api_client: user.api_client,
+              project: create_project(user, user.api_client, project_name)
+            }
+          ]
         end
       end
 
-      # TODO: refactor/fix - gitlab-org/quality/quality-engineering/team-tasks#3153
-      it 'download archives of each user project then check they are different', :blocking, :skip_live_env,
+      it 'download archives of each user project then check they are different',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347748' do
         archive_checksums = {}
 
@@ -43,11 +38,12 @@ module QA
 
         QA::Runtime::Logger.debug("Archive checksums are #{archive_checksums}")
 
-        expect(archive_checksums[:user1]).not_to include(archive_checksums[:user2])
+        expect(archive_checksums[:user_1]).not_to include(archive_checksums[:user_2])
       end
 
       def create_project(user, api_client, project_name)
-        project = create(:project, name: project_name, api_client: api_client, add_name_uuid: false, personal_namespace: user.username)
+        project = create(:project, name: project_name, api_client: api_client, add_name_uuid: false,
+          personal_namespace: user.username)
 
         create(:commit, project: project, api_client: api_client, commit_message: 'Add README.md', actions: [
           { action: 'create', file_path: 'README.md', content: '# This is a test project' }

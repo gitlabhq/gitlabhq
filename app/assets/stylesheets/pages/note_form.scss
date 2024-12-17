@@ -32,7 +32,7 @@
 .note-textarea {
   display: block;
   padding: 10px 16px;
-  @apply gl-text-primary;
+  @apply gl-text-default;
   font-family: $regular-font;
   border: 0;
 
@@ -42,7 +42,7 @@
 }
 
 .gfm-form .note-textarea, .md .ProseMirror {
-  resize: vertical !important;
+  overflow-y: auto !important;
 }
 
 .note-image-attach {
@@ -51,12 +51,16 @@
 }
 
 .common-note-form {
+  .md-area-wrapper {
+    @apply gl-bg-default;
+  }
+
   .md-area {
     @apply gl-rounded-lg;
     border: 1px solid var(--gl-control-border-color-default);
     background: var(--gl-control-background-color-default);
     transition: border-color ease-in-out 0.15s,
-      box-shadow ease-in-out 0.15s;
+    box-shadow ease-in-out 0.15s;
 
     &.is-dropzone-hover {
       border-color: $green-500;
@@ -144,7 +148,6 @@
   color: $orange-600;
   background-color: $orange-50;
   @apply gl-rounded-t-base gl-rounded-b-none;
-
   padding: 3px 12px;
   margin: auto;
   align-items: center;
@@ -186,7 +189,7 @@
   }
 
   .sidebar-item-value & {
-    fill: $gray-500;
+    @apply gl-fill-icon-subtle;
   }
 }
 
@@ -195,7 +198,7 @@
   padding: 16px;
 
   .text {
-    @apply gl-text-primary;
+    @apply gl-text-default;
   }
 
   .sidebar-item-warning-message-actions {
@@ -255,8 +258,12 @@ table {
 .note-edit-form {
   font-size: 14px;
 
+  .md-area-wrapper {
+    @apply gl-bg-subtle;
+  }
+
   .md-area {
-    @apply gl-bg-default gl-rounded-base;
+    @apply gl-rounded-base;
   }
 }
 
@@ -418,7 +425,7 @@ table {
 }
 
 .note-form-actions {
-  @apply gl-text-primary;
+  @apply gl-text-default;
 
   @include media-breakpoint-down(xs) {
     .btn {

@@ -2,6 +2,7 @@
 
 module Resolvers
   module Ci
+    # TODO: remove in 18.0, after https://gitlab.com/gitlab-org/govern/authorization/team-tasks/-/issues/87 is resolved
     class JobTokenScopeResolver < BaseResolver
       include Gitlab::Graphql::Authorize::AuthorizeResource
 

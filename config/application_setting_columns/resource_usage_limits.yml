@@ -1,0 +1,13 @@
+---
+api_type: hash
+attr: resource_usage_limits
+clusterwide: false
+column: resource_usage_limits
+db_type: jsonb
+default: "'{}'::jsonb"
+description: Definition for resource usage limits enforced in Sidekiq workers. This
+  setting is available for GitLab.com only.
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true

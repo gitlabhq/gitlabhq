@@ -15,7 +15,7 @@ export const I18N_CREATE_ERROR = s__(
 );
 
 export const FILTER_CSS_CLASSES =
-  'gl-bg-gray-10 gl-p-5 gl-border-solid gl-border-gray-100 gl-border-0 gl-border-t-1';
+  'gl-bg-gray-10 gl-p-5 gl-border-solid gl-border-default gl-border-0 gl-border-t-1';
 
 // Type
 

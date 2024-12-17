@@ -99,7 +99,7 @@ export default {
       <div class="gl-mr-5 gl-flex gl-min-w-0 gl-items-center gl-gap-3" data-testid="package-name">
         <gl-link
           v-if="containsWebPathLink"
-          class="gl-min-w-0 gl-break-all gl-text-primary"
+          class="gl-min-w-0 gl-break-all gl-text-default"
           :class="errorPackageStyle"
           :href="packageLink"
         >

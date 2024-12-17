@@ -9,4 +9,5 @@ description: Geo events implemented generically, used by the SSF where all objec
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23447
 milestone: '12.8'
 gitlab_schema: gitlab_main_cell
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/464440
+table_size: small
+exempt_from_sharding: true

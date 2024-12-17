@@ -188,6 +188,10 @@ export const workItemQueryResponse = {
         webPath: '/root',
         __typename: 'UserCore',
       },
+      project: {
+        id: 'gid://gitlab/Project/7',
+        __typename: 'Project',
+      },
       namespace: {
         __typename: 'Project',
         id: '1',
@@ -207,6 +211,7 @@ export const workItemQueryResponse = {
         adminParentLink: false,
         createNote: false,
         adminWorkItemLink: true,
+        markNoteAsInternal: true,
         __typename: 'WorkItemPermissions',
       },
       widgets: [
@@ -304,6 +309,10 @@ export const updateWorkItemMutationResponse = {
         author: {
           ...mockAssignees[0],
         },
+        project: {
+          id: 'gid://gitlab/Project/7',
+          __typename: 'Project',
+        },
         namespace: {
           __typename: 'Project',
           id: '1',
@@ -323,6 +332,7 @@ export const updateWorkItemMutationResponse = {
           adminParentLink: false,
           createNote: false,
           adminWorkItemLink: true,
+          markNoteAsInternal: true,
           __typename: 'WorkItemPermissions',
         },
         reference: 'test-project-path#1',
@@ -434,6 +444,10 @@ export const convertWorkItemMutationResponse = {
         author: {
           ...mockAssignees[0],
         },
+        project: {
+          id: 'gid://gitlab/Project/7',
+          __typename: 'Project',
+        },
         namespace: {
           __typename: 'Project',
           id: '1',
@@ -453,6 +467,7 @@ export const convertWorkItemMutationResponse = {
           adminParentLink: false,
           createNote: false,
           adminWorkItemLink: true,
+          markNoteAsInternal: true,
           __typename: 'WorkItemPermissions',
         },
         reference: 'gitlab-org/gitlab-test#1',
@@ -930,6 +945,10 @@ export const workItemDevelopmentMRNodes = [
       title: 'Karma configuration',
       webUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/merge_requests/13',
       state: 'opened',
+      sourceBranch: '13-branch',
+      reference: '!11',
+      headPipeline: null,
+      milestone: null,
       project: {
         name: 'Flight',
         id: 'gid://gitlab/Project/1',
@@ -965,6 +984,10 @@ export const workItemDevelopmentMRNodes = [
       title: 'got immutability working end to end.  Scope for some cleanup/optimization',
       webUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/merge_requests/15',
       state: 'opened',
+      sourceBranch: '13-branch',
+      reference: '!11',
+      headPipeline: null,
+      milestone: null,
       project: {
         id: 'gid://gitlab/Project/1',
         name: 'Flight',
@@ -990,6 +1013,10 @@ export const workItemDevelopmentMRNodes = [
       title: "Draft: Always call registry's trigger method from withRegistration",
       webUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/merge_requests/14',
       state: 'opened',
+      sourceBranch: '13-branch',
+      reference: '!11',
+      headPipeline: null,
+      milestone: null,
       project: {
         id: 'gid://gitlab/Project/1',
         name: 'Flight',
@@ -1015,6 +1042,10 @@ export const workItemDevelopmentMRNodes = [
       title: 'got immutability working and other changes and end to end',
       webUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/merge_requests/12',
       state: 'closed',
+      sourceBranch: '13-branch',
+      reference: '!11',
+      headPipeline: null,
+      milestone: null,
       project: {
         id: 'gid://gitlab/Project/1',
         name: 'Flight',
@@ -1050,6 +1081,10 @@ export const workItemDevelopmentMRNodes = [
       title: '[UX] Work items: Development widget (MRs, branches, feature flags)',
       webUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/merge_requests/11',
       state: 'opened',
+      sourceBranch: '13-branch',
+      reference: '!11',
+      headPipeline: null,
+      milestone: null,
       project: {
         id: 'gid://gitlab/Project/1',
         name: 'Flight',
@@ -1133,17 +1168,35 @@ export const workItemDevelopmentFeatureFlagNodes = [
   },
 ];
 
-export const workItemDevelopmentFragmentResponse = (
+export const workItemRelatedBranchNodes = [
+  {
+    name: '178-issue',
+    comparePath: '/flightjs/Flight/-/compare/master...178-issue',
+    __typename: 'WorkItemRelatedBranch',
+  },
+  {
+    name: '178-issue-10',
+    comparePath: '/flightjs/Flight/-/compare/master...178-issue-10',
+    __typename: 'WorkItemRelatedBranch',
+  },
+];
+
+export const workItemDevelopmentFragmentResponse = ({
   mrNodes = workItemDevelopmentMRNodes,
   willAutoCloseByMergeRequest = false,
   featureFlagNodes = workItemDevelopmentFeatureFlagNodes,
-) => {
+  branchNodes = workItemRelatedBranchNodes,
+} = {}) => {
   return {
     type: 'DEVELOPMENT',
     willAutoCloseByMergeRequest,
     featureFlags: {
       nodes: featureFlagNodes,
       __typename: 'FeatureFlagConnection',
+    },
+    relatedBranches: {
+      nodes: branchNodes,
+      __typename: 'WorkItemRelatedBranchConnection',
     },
     closingMergeRequests: {
       nodes: mrNodes,
@@ -1161,6 +1214,7 @@ export const workItemResponseFactory = ({
   canCreateNote = false,
   adminParentLink = false,
   canAdminWorkItemLink = true,
+  canMarkNoteAsInternal = true,
   notificationsWidgetPresent = true,
   currentUserTodosWidgetPresent = true,
   awardEmojiWidgetPresent = true,
@@ -1229,6 +1283,10 @@ export const workItemResponseFactory = ({
       updatedAt,
       closedAt: null,
       author,
+      project: {
+        id: 'gid://gitlab/Project/7',
+        __typename: 'Project',
+      },
       namespace: {
         __typename: 'Project',
         id: '1',
@@ -1243,6 +1301,7 @@ export const workItemResponseFactory = ({
         adminParentLink,
         adminWorkItemLink: canAdminWorkItemLink,
         createNote: canCreateNote,
+        markNoteAsInternal: canMarkNoteAsInternal,
         __typename: 'WorkItemPermissions',
       },
       reference: 'test-project-path#1',
@@ -1592,6 +1651,10 @@ export const createWorkItemMutationResponse = {
         author: {
           ...mockAssignees[0],
         },
+        project: {
+          id: 'gid://gitlab/Project/7',
+          __typename: 'Project',
+        },
         namespace: {
           __typename: 'Project',
           id: '1',
@@ -1611,6 +1674,7 @@ export const createWorkItemMutationResponse = {
           adminParentLink: false,
           createNote: false,
           adminWorkItemLink: true,
+          markNoteAsInternal: true,
           __typename: 'WorkItemPermissions',
         },
         reference: 'test-project-path#1',
@@ -1683,6 +1747,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
         adminParentLink: false,
         createNote: false,
         adminWorkItemLink: true,
+        markNoteAsInternal: true,
         __typename: 'WorkItemPermissions',
       },
       namespace: {
@@ -1788,6 +1853,72 @@ export const workItemObjectiveMetadataWidgets = {
     hasChildren: false,
     rolledUpCountsByType: [],
     __typename: 'WorkItemWidgetHierarchy',
+  },
+};
+
+export const workItemChangeTypeWidgets = {
+  MILESTONE: {
+    type: 'MILESTONE',
+    __typename: 'WorkItemWidgetMilestone',
+    milestone: mockMilestone,
+  },
+  ITERATION: {
+    type: 'ITERATION',
+    iteration: {
+      id: 'gid://gitlab/Iteration/86312',
+      __typename: 'Iteration',
+    },
+    __typename: 'WorkItemWidgetIteration',
+  },
+  DEVELOPMENT: {
+    type: 'DEVELOPMENT',
+    relatedBranches: {
+      nodes: [
+        {
+          id: '1',
+        },
+      ],
+      __typename: 'WorkItemRelatedBranchConnection',
+    },
+  },
+  WEIGHT: {
+    type: 'WEIGHT',
+    weight: 1,
+    __typename: 'WorkItemWidgetWeight',
+  },
+  CRM_CONTACTS: {
+    type: 'CRM_CONTACTS',
+    contacts: {
+      nodes: [
+        {
+          id: 'gid://gitlab/CustomerRelations::Contact/50',
+          __typename: 'CustomerRelationsContact',
+        },
+      ],
+      __typename: 'CustomerRelationsContactConnection',
+    },
+    __typename: 'WorkItemWidgetCrmContacts',
+  },
+  TIME_TRACKING: {
+    type: 'TIME_TRACKING',
+    timeEstimate: 10,
+    timelogs: {
+      nodes: [
+        {
+          __typename: 'WorkItemTimelog',
+          id: 'gid://gitlab/Timelog/2',
+        },
+      ],
+      __typename: 'WorkItemTimelogConnection',
+    },
+    totalTimeSpent: 10800,
+    __typename: 'WorkItemWidgetTimeTracking',
+  },
+  PROGRESS: {
+    type: 'PROGRESS',
+    progress: 33,
+    updatedAt: '2024-12-05T16:24:56Z',
+    __typename: 'WorkItemWidgetProgress',
   },
 };
 
@@ -2051,6 +2182,7 @@ export const workItemHierarchyResponse = {
           adminParentLink: true,
           createNote: true,
           adminWorkItemLink: true,
+          markNoteAsInternal: true,
           __typename: 'WorkItemPermissions',
         },
         author: {
@@ -2114,6 +2246,7 @@ export const workItemObjectiveWithChild = {
     adminParentLink: true,
     createNote: true,
     adminWorkItemLink: true,
+    markNoteAsInternal: true,
     __typename: 'WorkItemPermissions',
   },
   author: {
@@ -2170,6 +2303,7 @@ export const workItemObjectiveWithoutChild = {
     adminParentLink: true,
     createNote: true,
     adminWorkItemLink: true,
+    markNoteAsInternal: true,
     __typename: 'WorkItemPermissions',
   },
   author: {
@@ -2222,6 +2356,7 @@ export const workItemHierarchyTreeEmptyResponse = {
         adminParentLink: true,
         createNote: true,
         adminWorkItemLink: true,
+        markNoteAsInternal: true,
         __typename: 'WorkItemPermissions',
       },
       confidential: false,
@@ -2532,6 +2667,7 @@ export const workItemHierarchyTreeResponse = {
         adminParentLink: true,
         createNote: true,
         adminWorkItemLink: true,
+        markNoteAsInternal: true,
         __typename: 'WorkItemPermissions',
       },
       confidential: false,
@@ -2575,6 +2711,7 @@ export const workItemHierarchyTreeSingleClosedItemResponse = {
         adminParentLink: true,
         createNote: true,
         adminWorkItemLink: true,
+        markNoteAsInternal: true,
         __typename: 'WorkItemPermissions',
       },
       confidential: false,
@@ -2711,6 +2848,7 @@ export const workItemObjectiveWithClosedChild = {
     adminParentLink: true,
     createNote: true,
     adminWorkItemLink: true,
+    markNoteAsInternal: true,
     __typename: 'WorkItemPermissions',
   },
   author: {
@@ -2776,6 +2914,7 @@ export const changeWorkItemParentMutationResponse = {
           adminParentLink: true,
           createNote: true,
           adminWorkItemLink: true,
+          markNoteAsInternal: true,
           __typename: 'WorkItemPermissions',
         },
         description: null,
@@ -2791,6 +2930,10 @@ export const changeWorkItemParentMutationResponse = {
         closedAt: null,
         author: {
           ...mockAssignees[0],
+        },
+        project: {
+          id: 'gid://gitlab/Project/7',
+          __typename: 'Project',
         },
         namespace: {
           __typename: 'Project',
@@ -5156,6 +5299,40 @@ export const mockFrequentlyUsedProjects = [
   },
 ];
 
+export const namespaceGroupsList = {
+  data: {
+    group: {
+      id: 'gid://gitlab/Group/33',
+      name: 'Group A',
+      avatarUrl: 'http://example.com/avatar-url',
+      path: 'group-a',
+      fullPath: 'group-a',
+      descendantGroups: {
+        nodes: [
+          {
+            id: 'gid://gitlab/Group/99',
+            name: 'Group B',
+            avatarUrl: null,
+            path: 'group-b',
+            fullPath: 'group-a/group-b',
+            __typename: 'Group',
+          },
+          {
+            id: 'gid://gitlab/Group/97',
+            name: 'Group C',
+            avatarUrl: null,
+            path: 'group-c',
+            fullPath: 'group-a/group-c',
+            __typename: 'Group',
+          },
+        ],
+        __typename: 'GroupConnection',
+      },
+      __typename: 'Group',
+    },
+  },
+};
+
 export const createWorkItemQueryResponse = {
   data: {
     workspace: {
@@ -5174,6 +5351,7 @@ export const createWorkItemQueryResponse = {
         webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/-/work_items/new',
         reference: 'gitlab-org#56',
         createNoteEmail: null,
+        project: null,
         namespace: {
           id: 'full-path-epic-id',
           fullPath: 'full-path',
@@ -5203,6 +5381,7 @@ export const createWorkItemQueryResponse = {
           setWorkItemMetadata: true,
           createNote: true,
           adminWorkItemLink: true,
+          markNoteAsInternal: true,
           __typename: 'WorkItemPermissions',
         },
         widgets: [
@@ -5491,6 +5670,7 @@ const mockUserPermissions = {
   setWorkItemMetadata: true,
   createNote: true,
   adminWorkItemLink: true,
+  markNoteAsInternal: true,
   __typename: 'WorkItemPermissions',
 };
 
@@ -5647,6 +5827,7 @@ export const workItemHierarchyNoChildrenTreeResponse = {
         adminParentLink: true,
         createNote: true,
         adminWorkItemLink: true,
+        markNoteAsInternal: true,
         __typename: 'WorkItemPermissions',
       },
       confidential: false,

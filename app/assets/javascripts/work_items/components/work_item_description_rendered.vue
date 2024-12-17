@@ -124,9 +124,11 @@ export default {
       },
     },
   },
-  mounted() {
+  async mounted() {
     eventHub.$on('convert-task-list-item', this.convertTaskListItem);
     eventHub.$on('delete-task-list-item', this.deleteTaskListItem);
+    await this.$nextTick();
+    this.truncateOrScrollToAnchor();
   },
   beforeDestroy() {
     eventHub.$off('convert-task-list-item', this.convertTaskListItem);
@@ -146,8 +148,6 @@ export default {
         this.renderSortableLists();
         this.renderTaskListItemActions();
       }
-
-      this.truncateOrScrollToAnchor();
     },
     /**
      * Work Item description is truncated when they exceed 40% of the viewport height (see truncateLongDescription below)
@@ -354,7 +354,7 @@ export default {
 
 <template>
   <div class="gl-my-5">
-    <div v-if="isDescriptionEmpty" class="gl-text-secondary">{{ __('No description') }}</div>
+    <div v-if="isDescriptionEmpty" class="gl-text-subtle">{{ __('No description') }}</div>
     <div
       v-else
       ref="description"

@@ -28,7 +28,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitServ
     }
   end
 
-  let(:worker_args) { [1, 2] }
+  let(:job) { { 'class' => worker_class_name, 'args' => [1, 2] } }
 
   subject(:service) { described_class.new(worker_class_name) }
 
@@ -37,11 +37,11 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitServ
   end
 
   describe '.add_to_queue!' do
-    subject(:add_to_queue!) { described_class.add_to_queue!(worker_class_name, worker_args, worker_context) }
+    subject(:add_to_queue!) { described_class.add_to_queue!(job, worker_context) }
 
     it 'calls an instance method' do
       expect_next_instance_of(described_class) do |instance|
-        expect(instance).to receive(:add_to_queue!).with(worker_args, worker_context)
+        expect(instance).to receive(:add_to_queue!).with(job, worker_context)
       end
 
       add_to_queue!
@@ -83,7 +83,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitServ
     it 'reports the queue size' do
       expect(described_class.queue_size(worker_class_name)).to eq(0)
 
-      service.add_to_queue!(worker_args, worker_context)
+      service.add_to_queue!(job, worker_context)
 
       expect(described_class.queue_size(worker_class_name)).to eq(1)
 
@@ -157,11 +157,11 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitServ
     end
 
     it 'allows to use queues independently of each other' do
-      expect { service.add_to_queue!(worker_args, worker_context) }
+      expect { service.add_to_queue!(job, worker_context) }
         .to change { service.queue_size }
         .from(0).to(1)
 
-      expect { other_subject.add_to_queue!(worker_args, worker_context) }
+      expect { other_subject.add_to_queue!(job, worker_context) }
         .to change { other_subject.queue_size }
         .from(0).to(1)
 

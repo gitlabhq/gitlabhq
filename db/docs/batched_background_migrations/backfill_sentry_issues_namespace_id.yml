@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillSentryIssuesNamespaceId
+description: Backfills sharding key `sentry_issues.namespace_id` from `issues`.
+feature_category: observability
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174555
+milestone: '17.7'
+queued_migration_version: 20241203144837
+finalized_by: # version of the migration that finalized this BBM

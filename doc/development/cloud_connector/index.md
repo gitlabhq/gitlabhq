@@ -49,7 +49,7 @@ to register new feature, we need to update [CustomersDot configuration](configur
 Since the GitLab.com is the **JWT issuer**, because it's able to [self-sign and create JWTs](architecture.md#gitlabcom),
 to register new feature, we need to update [GitLab.com configuration](configuration.md#gitlabcom-configuration) as well.
 
-So, in total, you need to open two separate merge requests: one to [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) and another to [GitLab.com](https://gitlab.com/gitlab-org/gitlab). No synchronization between when they are merged is needed.  
+So, in total, you need to open two separate merge requests: one to [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) and another to [GitLab.com](https://gitlab.com/gitlab-org/gitlab). No synchronization between when they are merged is needed.
 
 The new feature needs to be added as a new **unit primitive**, so you can include it in the **JWT** (Service Access token).
 
@@ -220,21 +220,10 @@ As an example, the feature is delivered as a stand-alone service called `new_fea
 
 1. Ensure your request sends the required headers to the [backend service](#implement-authorization-checks-in-backend-service).
 
-   Primary header fields that should be sent to any backend service:
+   These headers can be found in the `gitlab-cloud-connector` [README](https://gitlab.com/gitlab-org/cloud-connector/gitlab-cloud-connector/-/tree/main/src/python#authentication).
 
-   - `X-Gitlab-Instance-Id`: A globally unique instance ID string.
-   - `X-Gitlab-Global-User-Id`: A globally unique anonymous user ID string.
-   - `X-Gitlab-Realm`: One of `saas`, `self-managed`.
-   - `X-Gitlab-Version`: Version of the GitLab instance.
-   - `X-Gitlab-Host-Name`: The hostname of the current GitLab instance.
-   - `Authorization`: Contains the Base64-encoded JWT as a `Bearer` token obtained from the `access_token` method in step 1.
-
-   AI-specific header fields:
-
-   - `X-Gitlab-Duo-Seat-Count`: The number of either duo pro or duo enterprise seats the customer purchased. When both add-ons are present, it will take the highest number of seats.
-
-   Some of these headers can be injected by merging the result of the `Gitlab::CloudConnector#headers` method to your payload.
-   For AI uses cases and requests targeting the AI gateway, use `Gitlab::CloudConnector#ai_headers` instead.
+   Some of these headers can be injected by merging the result of the `::CloudConnector#headers` method to your payload.
+   For AI uses cases and requests targeting the AI gateway, use `::CloudConnector#ai_headers` instead.
 
 ###### Permission checks
 
@@ -352,7 +341,7 @@ If the feature is delivered as part of the existing service, like `Duo Chat`,
 calling `CloudConnector::AvailableServices.find_by_name(:duo_chat).access_token(user_or_namespace)` would return an **IJWT** with
 access scopes including all authorized features (**unit primitives**).
 
-The **backend service** (AI Gateway) would prevent access to the specific feature (**unit primitive**) if the token scope is not included in the **JWT**.
+The **backend service** (AI gateway) would prevent access to the specific feature (**unit primitive**) if the token scope is not included in the **JWT**.
 
 ###### Permission checks
 
@@ -369,7 +358,7 @@ GitLab Rails calls a backend service to deliver functionality that would otherwi
 Dedicated instances. For GitLab Rails to be able to call this, there has to be an endpoint exposed.
 The backend service must verify each JWT sent by GitLab Rails in the Authorization header.
 
-For more information and examples on the AI Gateway authorization process, check the [Authorization in AI Gateway documentation](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/auth.md?ref_type=heads#authorization-in-ai-gateway).
+For more information and examples on the AI gateway authorization process, check the [Authorization in AI gateway documentation](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/auth.md?ref_type=heads#authorization-in-ai-gateway).
 
 ### The new feature is introduced via new backend service
 

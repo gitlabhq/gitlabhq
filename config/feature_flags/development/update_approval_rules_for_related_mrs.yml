@@ -1,8 +1,0 @@
----
-name: update_approval_rules_for_related_mrs
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142339
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/440185
-milestone: '17.0'
-type: development
-group: group::pipeline security
-default_enabled: false

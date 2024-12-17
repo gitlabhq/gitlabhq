@@ -28,7 +28,7 @@ describe('Unicode Support Map', () => {
         expect(getArgs[1][0]).toBe('gl-emoji-user-agent');
 
         expect(setArgs[0][0]).toBe('gl-emoji-version');
-        expect(setArgs[0][1]).toBe('0.2.0');
+        expect(setArgs[0][1]).toBe('0.3.0');
         expect(setArgs[1][0]).toBe('gl-emoji-user-agent');
         expect(setArgs[1][1]).toBe(navigator.userAgent);
         expect(setArgs[2][0]).toBe('gl-emoji-unicode-support-map');

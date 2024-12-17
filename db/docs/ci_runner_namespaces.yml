@@ -10,3 +10,4 @@ milestone: '10.8'
 gitlab_schema: gitlab_ci
 sharding_key:
   namespace_id: namespaces
+table_size: small

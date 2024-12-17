@@ -5,7 +5,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
 import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { isMetaKey } from '~/lib/utils/common_utils';
+import { isModifierKey } from '~/lib/utils/common_utils';
 import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { sprintf } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
@@ -93,7 +93,7 @@ export default {
   methods: {
     handleTitleClick(event) {
       if (this.workItemType === 'TASK') {
-        if (isMetaKey(event)) {
+        if (isModifierKey(event)) {
           return;
         }
         event.preventDefault();

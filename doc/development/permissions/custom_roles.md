@@ -228,7 +228,7 @@ rule { custom_role_enables_read_dependency }.enable(:read_dependency)
 ```ruby
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, :in_group) }
-  let_it_be(:role) { create(:member_role, :guest, namespace: project.group, custom_permission: true) }
+  let_it_be(:role) { create(:member_role, :guest, :custom_permission, namespace: project.group) }
   let_it_be(:membership) { create(:project_member, :guest, member_role: role, user: user, project: project) }
 
   before do
@@ -254,7 +254,7 @@ rule { custom_role_enables_read_dependency }.enable(:read_dependency)
 ```ruby
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, :in_group) }
-  let_it_be(:role) { create(:member_role, :guest, namespace: project.group, custom_permission: true) }
+  let_it_be(:role) { create(:member_role, :guest, :custom_permission, namespace: project.group) }
   let_it_be(:membership) { create(:project_member, :guest, member_role: role, user: user, project: project) }
 
   before do

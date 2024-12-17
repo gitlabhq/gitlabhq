@@ -59,7 +59,8 @@ export default class ShortcutsWorkItem {
     setTimeout(() => {
       const shortcutSelector = `.${selector} .shortcut-sidebar-dropdown-toggle`;
       const editBtn =
-        document.querySelector(`.is-modal ${shortcutSelector}`) ||
+        document.querySelector(`.gl-drawer ${shortcutSelector}`) ||
+        document.querySelector(`.modal ${shortcutSelector}`) ||
         document.querySelector(shortcutSelector);
       editBtn?.click();
     }, DEBOUNCE_DROPDOWN_DELAY);
@@ -69,13 +70,23 @@ export default class ShortcutsWorkItem {
   static editDescription() {
     // Need to click the element as on issues, editing is inline
     // on merge request, editing is on a different page
-    document.querySelector('.shortcut-edit-wi-description')?.click();
+    const editDescriptionSelector = '.shortcut-edit-wi-description';
+    const editButton =
+      document.querySelector(`.gl-drawer ${editDescriptionSelector}`) ||
+      document.querySelector(`.modal ${editDescriptionSelector}`) ||
+      document.querySelector(editDescriptionSelector);
+
+    editButton?.click();
 
     return false;
   }
 
   async copyReference() {
-    const refButton = document.querySelector('.shortcut-copy-reference');
+    const refSelector = '.shortcut-copy-reference';
+    const refButton =
+      document.querySelector(`.gl-drawer ${refSelector}`) ||
+      document.querySelector(`.modal ${refSelector}`) ||
+      document.querySelector(refSelector);
     const copiedRef = refButton?.dataset.clipboardText;
 
     if (copiedRef) {
@@ -88,7 +99,9 @@ export default class ShortcutsWorkItem {
   static replyWithSelectedText() {
     const gfmSelector = '.js-vue-markdown-field .js-gfm-input';
     let replyField =
-      document.querySelector(`.modal ${gfmSelector}`) || document.querySelector(gfmSelector);
+      document.querySelector(`.gl-drawer ${gfmSelector}`) ||
+      document.querySelector(`.modal ${gfmSelector}`) ||
+      document.querySelector(gfmSelector);
 
     // Ensure that markdown input is still present in the DOM
     // otherwise fall back to main comment input field.

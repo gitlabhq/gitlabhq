@@ -18,7 +18,10 @@ RSpec.shared_context 'conan api setup' do
 
   let_it_be(:job, freeze: true) { create(:ci_build, :running, user: user, project: project) }
 
-  let_it_be_with_reload(:package) { create(:conan_package, project: project) }
+  let_it_be(:conan_package_reference) { '1234567890abcdef1234567890abcdef12345678' }
+  let_it_be_with_reload(:package) do
+    create(:conan_package, project: project, package_references: [conan_package_reference])
+  end
 
   let(:job_token) { job.token }
   let(:auth_token) { personal_access_token.token }
@@ -50,7 +53,6 @@ RSpec.shared_context 'conan recipe endpoints' do
 
   let(:jwt) { build_jwt(personal_access_token) }
   let(:headers) { build_token_auth_header(jwt.encoded) }
-  let(:conan_package_reference) { '123456789' }
 end
 
 RSpec.shared_context 'conan file download endpoints' do

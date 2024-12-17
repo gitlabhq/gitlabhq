@@ -17,7 +17,7 @@
 <%   end %>
 <% end %>
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Compliance
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
@@ -38,20 +38,20 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172757) in GitLab 17.7, all audit events can be streamed.
+
 Audit event types are used to filter streamed audit events:
 
 - [For instances](../../administration/audit_event_streaming/index.md#update-event-filters).
 - [For top-level groups](audit_event_streaming.md#update-event-filters)
 
-Every audit event is associated with an event type. Audit event types can allow audit events to be:
+Every audit event is associated with an event type. Audit event types can allow:
 
-- Saved to the database. Available in the Premium and Ultimate tier. You can retrieve audit events associated with these
-  types by using the audit events dashboard or the [audit events API](../../api/audit_events.md).
-- Streamed to external destinations. Available in the Ultimate tier. You can stream audit events associated with these
-  types to external destinations if a destination is set.
-
-Some audit event types don't allow saving audit events to the database. Other audit event types don't allow streaming
-audit events to external destinations.
+- Most audit events to be saved to the database. Available in the Premium and Ultimate tier. You can retrieve
+  audit events associated with these types by using the audit events dashboard or the
+  [audit events API](../../api/audit_events.md).
+- All audit events to be streamed to external destinations. Available in the Ultimate tier. You can stream audit events
+  associated with these types to external destinations if a destination is set.
 
 An audit event type's scope limits the availability of the audit event type to either:
 
@@ -65,8 +65,8 @@ Audit event types belong to the following product categories.
 
 ### <%= "#{humanize(category)}" %>
 
-| Name | Description | Saved to database | Streamed | Introduced in | Scope |
+| Name | Description | Saved to database | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
-<% audit_event_types.each do |event_type| %>| <%= "[`#{event_type.name}`](#{event_type.introduced_by_mr})" %> | <%= event_type.description %> | <%= boolean_to_docs(event_type.saved_to_database) %> | <%= boolean_to_docs(event_type.streamed) %> | GitLab <%= "[#{event_type.milestone}](#{event_type.introduced_by_issue})" %> | <%= event_type.scope&.join(", ") %> |
+<% audit_event_types.each do |event_type| %>| <%= "[`#{event_type.name}`](#{event_type.introduced_by_mr})" %> | <%= event_type.description %> | <%= boolean_to_docs(event_type.saved_to_database) %> | GitLab <%= "[#{event_type.milestone}](#{event_type.introduced_by_issue})" %> | <%= event_type.scope&.join(", ") %> |
 <% end %>
 <% end %>

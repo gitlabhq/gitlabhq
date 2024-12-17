@@ -59,7 +59,7 @@ export default {
       ref="link"
       v-gl-tooltip
       :class="{
-        'issue-token-link gl-inline-flex gl-min-w-0 gl-text-gray-500': isCondensed,
+        'issue-token-link gl-inline-flex gl-min-w-0 gl-text-subtle': isCondensed,
         'issuable-main-info': !isCondensed,
       }"
       :href="computedPath"
@@ -71,7 +71,7 @@ export default {
         v-if="hasTitle"
         ref="title"
         :class="{
-          'issue-token-title issue-token-end gl-flex gl-items-baseline gl-overflow-hidden gl-pl-3 gl-text-gray-500':
+          'issue-token-title issue-token-end gl-flex gl-items-baseline gl-overflow-hidden gl-pl-3 gl-text-subtle':
             isCondensed,
           'issue-title block-truncated': !isCondensed,
           'gl-rounded-br-small gl-rounded-tr-small gl-pr-3': !canRemove,

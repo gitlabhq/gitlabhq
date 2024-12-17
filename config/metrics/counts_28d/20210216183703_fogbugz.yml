@@ -3,6 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage_monthly.manage.issue_imports.fogbugz
 description: Count of imports from Fogbugz
 product_group: import_and_integrate
+product_categories:
+- importers
 value_type: number
 status: active
 time_frame: 28d

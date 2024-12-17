@@ -149,7 +149,11 @@ RSpec.describe Users::BuildService, feature_category: :user_management do
         let(:user_params) { params }
 
         it 'sets all allowed attributes' do
-          expect(User).to receive(:new).with(hash_including(user_params)).and_call_original
+          expect_next_instance_of(User) do |instance|
+            # Due to skip_confirmation not being an actual attribute, we need to verify this way instead
+            # of checking the returned user from execute.
+            expect(instance).to receive(:assign_attributes).with(hash_including(user_params)).and_call_original
+          end
 
           service.execute
         end

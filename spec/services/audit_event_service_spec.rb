@@ -10,6 +10,21 @@ RSpec.describe AuditEventService, :with_license, feature_category: :audit_events
   let(:service) { described_class.new(user, project, { action: :destroy }) }
   let(:logger) { instance_double(Gitlab::AuditJsonLogger) }
 
+  describe '#initialize' do
+    before do
+      allow(Gitlab::AppLogger).to receive(:info).and_call_original
+    end
+
+    it 'logs initialization message' do
+      expect(Gitlab::AppLogger).to receive(:info).with(
+        message: "AuditEventService initialized",
+        scope_class: "Project"
+      )
+
+      described_class.new(user, project, { action: :destroy })
+    end
+  end
+
   describe '#security_event' do
     it 'creates an event and logs to a file' do
       expect(service).to receive(:file_logger).and_return(logger)

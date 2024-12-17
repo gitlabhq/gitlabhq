@@ -2,6 +2,9 @@
 key_path: counts.count_total_cli_interactions
 description: Total count of CLI interations
 product_group: analytics_instrumentation
+product_categories:
+- acquisition
+- service_ping
 performance_indicator_type: []
 value_type: number
 status: active
@@ -10,13 +13,6 @@ introduced_by_url: TODO
 time_frame: all
 data_source: internal_events
 data_category: optional
-distribution:
-- ce
-- ee
-tier:
-- free
-- premium
-- ultimate
 tiers:
 - free
 - premium

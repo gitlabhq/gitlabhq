@@ -85,12 +85,6 @@ const findStageEvents = () => findStageTable().props('stageEvents');
 const findEmptyStageTitle = () => wrapper.findComponent(GlEmptyState).props('title');
 const findPagination = () => wrapper.findByTestId('vsa-stage-pagination');
 
-const hasMetricsRequests = (reqs) => {
-  const foundReqs = findOverviewMetrics().props('requests');
-  expect(foundReqs.length).toEqual(reqs.length);
-  expect(foundReqs.map(({ name }) => name)).toEqual(reqs);
-};
-
 describe('Value stream analytics component', () => {
   beforeEach(() => {
     wrapper = createComponent({ initialState: { selectedStage, selectedStageEvents, pagination } });
@@ -108,8 +102,10 @@ describe('Value stream analytics component', () => {
     expect(findOverviewMetrics().exists()).toBe(true);
   });
 
-  it('passes requests prop to the metrics component', () => {
-    hasMetricsRequests(['recent activity']);
+  it('passes relevant props to the metrics component', () => {
+    expect(findOverviewMetrics().props('isLicensed')).toBe(false);
+    expect(findOverviewMetrics().props('queryType')).toBe('FLOW_METRICS_QUERY_TYPE');
+    expect(findOverviewMetrics().props('isProjectNamespace')).toBe(true);
   });
 
   it('renders the stage table', () => {
@@ -159,16 +155,6 @@ describe('Value stream analytics component', () => {
 
   it('does not render a link to the value streams dashboard', () => {
     expect(findOverviewMetrics().props('dashboardsPath')).toBeNull();
-  });
-
-  describe('with `cycleAnalyticsForGroups=true` license', () => {
-    beforeEach(() => {
-      wrapper = createComponent({ initialState: { features: { cycleAnalyticsForGroups: true } } });
-    });
-
-    it('passes requests prop to the metrics component', () => {
-      hasMetricsRequests(['time summary', 'recent activity']);
-    });
   });
 
   describe('with `groupLevelAnalyticsDashboard=true` license', () => {

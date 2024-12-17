@@ -19,7 +19,7 @@ module ApplicationSettings
     private
 
     def update_settings
-      validate_classification_label(application_setting, :external_authorization_service_default_label) unless bypass_external_auth?
+      validate_classification_label_param!(application_setting, :external_authorization_service_default_label) unless bypass_external_auth?
 
       if application_setting.errors.any?
         return false
@@ -47,7 +47,7 @@ module ApplicationSettings
         params[:usage_stats_set_by_user_id] = current_user.id
       end
 
-      @application_setting.assign_attributes(params)
+      @application_setting.assign_attributes(params.except(:auto_approve_pending_users))
 
       if invalidate_markdown_cache?
         @application_setting[:local_markdown_version] = @application_setting.local_markdown_version + 1
@@ -130,6 +130,7 @@ module ApplicationSettings
     end
 
     def auto_approve_blocked_users
+      return unless auto_approve_pending_users?
       return unless should_auto_approve_blocked_users?
 
       ApproveBlockedPendingApprovalUsersWorker.perform_async(current_user.id)
@@ -141,6 +142,10 @@ module ApplicationSettings
       enabled_previous, enabled_current = application_setting.previous_changes[:require_admin_approval_after_user_signup]
 
       enabled_previous && !enabled_current
+    end
+
+    def auto_approve_pending_users?
+      Gitlab::Utils.to_boolean(params.fetch(:auto_approve_pending_users, false))
     end
   end
 end

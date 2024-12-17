@@ -156,12 +156,12 @@ export default {
     <div class="gl-mb-2">
       <div
         v-if="shouldShowRefInfo"
-        class="gl-inline-block gl-rounded-base gl-bg-gray-50 gl-px-2 gl-text-gray-700"
+        class="gl-inline-block gl-rounded-base gl-bg-gray-50 gl-px-2 gl-text-subtle"
         data-testid="commit-ref-info"
       >
-        <gl-icon v-if="tag" name="tag" :size="12" />
-        <gl-icon v-else-if="mergeRequestRef" name="merge-request" :size="12" />
-        <gl-icon v-else name="branch" :size="12" />
+        <gl-icon v-if="tag" name="tag" :size="12" variant="subtle" />
+        <gl-icon v-else-if="mergeRequestRef" name="merge-request" :size="12" variant="subtle" />
+        <gl-icon v-else name="branch" :size="12" variant="subtle" />
 
         <tooltip-on-truncate :title="tooltipTitle" truncate-target="child" placement="top">
           <gl-link

@@ -132,7 +132,7 @@ describe('UserBar component', () => {
       it('renders it', () => {
         const todosCounter = findTodosCounter();
         expect(todosCounter.props('href')).toBe(mockSidebarData.todos_dashboard_path);
-        expect(todosCounter.props('label')).toBe('To-Do list');
+        expect(todosCounter.props('label')).toBe('To-Do List');
         expect(todosCounter.attributes('data-track-action')).toBe('click_link');
         expect(todosCounter.attributes('data-track-label')).toBe('todos_link');
         expect(todosCounter.attributes('data-track-property')).toBe('nav_core_menu');

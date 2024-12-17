@@ -61,3 +61,5 @@ class JiraConnect::ApplicationController < ApplicationController
     params[:jwt] || request.headers['Authorization']&.split(' ', 2)&.last
   end
 end
+
+JiraConnect::ApplicationController.prepend_mod

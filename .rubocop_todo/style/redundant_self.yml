@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Style/RedundantSelf:
   Exclude:
-    - 'app/models/application_setting.rb'
     - 'app/models/ci/group.rb'
     - 'app/models/ci/job_artifact.rb'
     - 'app/models/ci/job_token/project_scope_link.rb'
@@ -75,10 +74,6 @@ Style/RedundantSelf:
     - 'app/models/group_group_link.rb'
     - 'app/models/hooks/web_hook_log.rb'
     - 'app/models/identity.rb'
-    - 'app/models/integrations/base_chat_notification.rb'
-    - 'app/models/integrations/base_ci.rb'
-    - 'app/models/integrations/base_issue_tracker.rb'
-    - 'app/models/integrations/base_slash_commands.rb'
     - 'app/models/integrations/emails_on_push.rb'
     - 'app/models/integrations/pipelines_email.rb'
     - 'app/models/integrations/zentao.rb'
@@ -208,7 +203,6 @@ Style/RedundantSelf:
     - 'ee/lib/gitlab/auth/smartcard.rb'
     - 'ee/lib/gitlab/ci/reports/license_scanning/report.rb'
     - 'ee/lib/gitlab/elastic/client.rb'
-    - 'ee/lib/gitlab/elastic/document_reference.rb'
     - 'ee/lib/gitlab/elastic/helper.rb'
     - 'ee/lib/gitlab/geo.rb'
     - 'ee/lib/gitlab/geo/oauth/login_state.rb'

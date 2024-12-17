@@ -19,6 +19,7 @@ const mountWikiEditApp = () => {
     templates,
     formatOptions,
     error,
+    templatesUrl,
   } = el.dataset;
 
   Vue.use(VueApollo);
@@ -39,6 +40,7 @@ const mountWikiEditApp = () => {
       drawioUrl: gon.diagramsnet_url,
       wikiUrl,
       pagePersisted: parseBoolean(pagePersisted),
+      templatesUrl,
       error,
     },
     render(createElement) {

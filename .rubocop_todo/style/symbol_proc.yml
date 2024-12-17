@@ -141,7 +141,6 @@ Style/SymbolProc:
     - 'spec/factories/ci/builds.rb'
     - 'spec/factories/clusters/providers/aws.rb'
     - 'spec/factories/oauth_openid_requests.rb'
-    - 'spec/factories/personal_access_tokens.rb'
     - 'spec/factories/pool_repositories.rb'
     - 'spec/features/merge_request/user_creates_image_diff_notes_spec.rb'
     - 'spec/features/merge_request/user_resolves_conflicts_spec.rb'

@@ -2,6 +2,8 @@
 
 module Deployments
   class UpdateEnvironmentService
+    include Gitlab::Utils::StrongMemoize
+
     attr_reader :deployment
     attr_reader :deployable
 
@@ -32,6 +34,8 @@ module Deployments
         renew_auto_stop_in
         renew_deployment_tier
         renew_cluster_agent
+        renew_kubernetes_namespace
+        renew_flux_resource_path
         environment.fire_state_event(action)
 
         if environment.save
@@ -62,12 +66,6 @@ module Deployments
       ExpandVariables.expand(environment_url, -> { variables.sort_and_expand_all })
     end
 
-    def expanded_auto_stop_in
-      return unless auto_stop_in
-
-      ExpandVariables.expand(auto_stop_in, -> { variables.sort_and_expand_all })
-    end
-
     def expanded_cluster_agent_path
       return unless cluster_agent_path
 
@@ -82,12 +80,16 @@ module Deployments
       environment_options[:action] || 'start'
     end
 
-    def auto_stop_in
-      deployable&.environment_auto_stop_in
-    end
-
     def cluster_agent_path
       environment_options.dig(:kubernetes, :agent)
+    end
+
+    def kubernetes_namespace
+      deployable&.expanded_kubernetes_namespace
+    end
+
+    def flux_resource_path
+      environment_options.dig(:kubernetes, :flux_resource_path)
     end
 
     def renew_external_url
@@ -99,7 +101,7 @@ module Deployments
     def renew_auto_stop_in
       return unless deployable
 
-      if (value = expanded_auto_stop_in)
+      if (value = deployable.expanded_auto_stop_in)
         environment.auto_stop_in = value
       end
     end
@@ -113,16 +115,7 @@ module Deployments
     end
 
     def renew_cluster_agent
-      return unless cluster_agent_path && deployable.user
-
-      requested_project_path, requested_agent_name = expanded_cluster_agent_path.split(':')
-
-      matching_authorization = user_access_authorizations_for_project.find do |authorization|
-        requested_project_path == authorization.config_project.full_path &&
-          requested_agent_name == authorization.agent.name
-      end
-
-      return unless matching_authorization
+      return unless requested_agent_authorized?
 
       environment.cluster_agent = matching_authorization.agent
     end
@@ -130,6 +123,34 @@ module Deployments
     def user_access_authorizations_for_project
       Clusters::Agents::Authorizations::UserAccess::Finder.new(deployable.user, project: deployable.project).execute
     end
+
+    def renew_kubernetes_namespace
+      return unless requested_agent_authorized?
+
+      environment.kubernetes_namespace = kubernetes_namespace if kubernetes_namespace
+    end
+
+    def renew_flux_resource_path
+      return unless requested_agent_authorized? && kubernetes_namespace
+
+      environment.flux_resource_path = flux_resource_path if flux_resource_path
+    end
+
+    def requested_agent_authorized?
+      matching_authorization.present?
+    end
+
+    def matching_authorization
+      return false unless cluster_agent_path && deployable.user
+
+      requested_project_path, requested_agent_name = expanded_cluster_agent_path.split(':')
+
+      user_access_authorizations_for_project.find do |authorization|
+        requested_project_path == authorization.config_project.full_path &&
+          requested_agent_name == authorization.agent.name
+      end
+    end
+    strong_memoize_attr :matching_authorization
   end
 end
 

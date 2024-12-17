@@ -16,7 +16,7 @@ a warm-standby as part of a disaster recovery strategy. Geo is **not** an out of
 WARNING:
 Geo undergoes significant changes from release to release. Upgrades are
 supported and [documented](#upgrading-geo), but you should ensure that you're
-using the right version of the documentation for your installation. 
+using the right version of the documentation for your installation.
 
 To make sure you're using the right version of the documentation, go to [the Geo page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/geo/index.md) and choose the appropriate release from the **Switch branch/tag** dropdown list. For example, [`v15.7.6-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v15.7.6-ee/doc/administration/geo/index.md).
 
@@ -32,26 +32,85 @@ Be sure to familiarize yourself with those terms.
 
 ## Use cases
 
-Implementing Geo provides the following benefits:
+Implementing Geo addresses several use cases. This section provides some of the intended use cases and highlights their benefits.
 
+### Regional disaster recovery
+
+Geo as a [disaster recovery](disaster_recovery/index.md) solution gives you a warm-standby secondary site in a different region from your primary site. Data is continuously synchronized to the secondary site ensuring it is always up to date. In the event of a disaster, such as data center or network outage or hardware failure, you can failover to a fully operational secondary site. You can test your disaster recovery processes and infrastructure with [planned failovers](disaster_recovery/planned_failover.md).
+
+Benefits:
+
+- Business continuity in the event of a regional disaster.
+- Low Recovery Time Objective (RTO) and Recovery Point Objective (RPO).
+- Automated (but not automatic) failover with GitLab Environment Toolkit (GET).
+- Minimal operational effort - Unassisted continuous replication and verification ensures your secondary sites are up to date and replicated data is not corrupted during transit and at rest.
+
+### Remote team acceleration
+
+Establish Geo secondary sites geographically closer to your remote teams to provide local caches that accelerate read operations. You can have multiple Geo secondary sites, each tailored to synchronize only the projects your remote teams need. [Transparent proxying](secondary_proxy/index.md) and geographic routing with [unified URL](replication/location_aware_git_url.md) ensures a consistent and seamless developer experience.
+
+Benefits:
+
+- Improve the GitLab experience for geographically distributed teams. Geo offers a complete GitLab experience on secondary sites: maintain one primary GitLab site while enabling secondary sites with read-write access and a complete UI experience for each of your distributed teams.
 - Reduce from minutes to seconds the time taken for your distributed developers to clone and fetch large repositories and projects.
-- Enable all of your developers to contribute ideas and work in parallel, no matter where they are.
-- Balance the read load between your **primary** and **secondary** sites.
+- Enable all of your developers to contribute ideas and work in parallel, no matter where they are located.
+- Balance the read load between your primary and secondary sites.
+- Overcome slow connections between distant offices, saving time by improving speed for distributed teams.
+- Reduce the loading time for automated tasks, custom integrations, and internal workflows.
 
-In addition, it:
+### CI/CD traffic offload
 
-- Can be used for cloning and fetching projects, in addition to reading any data available in the GitLab web interface (see [limitations](#limitations)).
-- Overcomes slow connections between distant offices, saving time by improving speed for distributed teams.
-- Helps reducing the loading time for automated tasks, custom integrations, and internal workflows.
-- Can quickly fail over to a **secondary** site in a [disaster recovery](disaster_recovery/index.md) scenario.
-- Allows [planned failover](disaster_recovery/planned_failover.md) to a **secondary** site.
+You can configure your CI/CD runners to [clone from Geo secondary sites](secondary_proxy/runners.md). You can tailor your secondary sites to match the needs of the runner workload and don't need to mirror the primary site. Supported read requests are served with cached data on the secondary site, and requests are transparently forwarded to the primary site when the data on the secondary site is stale or not available.
 
-Geo provides:
+Benefits:
 
-- A complete GitLab experience on **Secondary** sites: Maintain one **primary** GitLab site while enabling **secondary** sites with full read and write and UI experience for each of your distributed teams.
-- Authentication system hooks: **Secondary** sites receive all authentication data (like user accounts and logins) from the **primary** instance.
+- On the primary site, reduce the impact of CI/CD traffic on user experience by moving traffic to secondary sites.
+- Reduce cross-region traffic and locate CI/CD compute time where it's most economical for your organization. Create a single cross-region copy of the data and make it available to repeated read requests against the secondary site.
 
-### Gitaly Cluster
+### Additional use cases
+
+#### Infrastructure migrations
+
+You can use Geo to migrate to new infrastructure. If you move your GitLab instance to a new server or data center, use Geo to migrate your GitLab data to the new instance in the background while your old instance continues to serve your users. Any changes to your active GitLab data are copied to your new instance, so there's no data loss during the cutover.
+
+Benefits:
+
+- Significantly reduce downtime during migration compared to the backup and restore migration method. Copy data to the new instance in the background without stopping the active GitLab instance before the cutover downtime window.
+
+#### Migration to GitLab Dedicated
+
+You can also use Geo to migrate your self-managed GitLab instance to [GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md). A migration to GitLab Dedicated is similar to an infrastructure migration.
+
+Benefits:
+
+- Smoother onboarding experience with significantly lower downtime. Your team can continue to use your self-managed GitLab instance while the data migration takes place in the background.
+
+## What Geo is not designed to address
+
+Geo is not designed to address every use case. This section provides examples of
+use cases where Geo is not an appropriate solution.
+
+### Enforce data export compliance
+
+While Geo's [selective synchronization](replication/selective_synchronization.md) functionality allows you to restrict projects that are synchronized to secondary sites, it was designed to reduce cross-region traffic and storage requirements, not to enforce export compliance. You must independently determine your legal obligations with regard to privacy, cybersecurity, and applicable trade control laws on an ongoing basis based on solution and documentation. Both the solution and the documentation are subject to change.
+
+### Provide access control
+
+Geo [read-only secondary site](secondary_proxy/index.md#disable-secondary-site-git-proxying) functionality is not a first-class feature, and might not be supported in the future. You should not rely on this functionality for access control purposes. GitLab provides [authentication and authorization](../auth/index.md) controls that better serve this purpose.
+
+### An alternative to zero downtime upgrades
+
+Geo is a not a solution for [zero downtime upgrades](../../update/zero_downtime.md). You must upgrade the primary Geo site before upgrading secondary sites.
+
+### Protect against malicious or unintentional corruption
+
+Geo replicates corruption on the primary site to all secondary sites. To protect against malicious or unintentional corruption you should complement Geo with [backups](../backup_restore/index.md).
+
+### Active-active, high-availability configuration
+
+Geo is designed to be a active-passive, high-availability solution. It operates an eventually consistent synchronization model which means that secondary sites are not tightly synchronized with the primary site. Secondary sites follow the primary with a small delay, which can result in a small amount of data loss after a disaster. Failover to a secondary site in the event of a disaster requires human intervention. However, large parts of the process of promoting a secondary site to become a primary is automated by the [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit), provided you deploy all your sites using GET.
+
+## Gitaly Cluster
 
 Geo should not be confused with [Gitaly Cluster](../gitaly/praefect.md). For more information about
 the difference between Geo and Gitaly Cluster, see [Comparison to Geo](../gitaly/index.md#comparison-to-geo).
@@ -77,7 +136,7 @@ Keep in mind that:
 - The **primary** site talks to the **secondary** sites for viewing replication details. The **primary** does a GraphQL query against the **secondary** site for sync and verification data (API).
 - You can push directly to a **secondary** site (for both HTTP and SSH,
   including Git LFS), and it will proxy the requests to the **primary** site.
-- There are [limitations](#limitations) when using Geo.
+- Some [known issues](#known-issues) exist when using Geo.
 
 ### Architecture
 
@@ -132,7 +191,7 @@ The following are required to run Geo:
   **must** [check OS locale data compatibility](replication/troubleshooting/common.md#check-os-locale-data-compatibility)
   across Geo sites to avoid silent corruption of database indexes.
 - [Supported PostgreSQL versions](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/data_stores/database/postgresql-upgrade-cadence/) for your GitLab releases with [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication).
-  - [PostgreSQL Logical replication](https://www.postgresql.org/docs/current/logical-replication.html) is not supported. 
+  - [PostgreSQL Logical replication](https://www.postgresql.org/docs/current/logical-replication.html) is not supported.
 - All sites must run [the same PostgreSQL versions](setup/database.md#postgresql-replication).
 - Git 2.9 or later
 - Git-lfs 2.4.2 or later on the user side when using LFS
@@ -201,12 +260,12 @@ When something is marked to be updated in the tracking database instance, asynch
 
 This new architecture allows GitLab to be resilient to connectivity issues between the sites. It doesn't matter how long the **secondary** site is disconnected from the **primary** site as it is able to replay all the events in the correct order and become synchronized with the **primary** site again.
 
-## Limitations
+## Known issues
 
 WARNING:
-This list of limitations only reflects the latest version of GitLab. If you are using an older version, extra limitations may be in place.
+These known issues reflect only the latest version of GitLab. If you are using an older version, additional issues might exist.
 
-- Pushing directly to a **secondary** site redirects (for HTTP) or proxies (for SSH) the request to the **primary** site instead of [handling it directly](https://gitlab.com/gitlab-org/gitlab/-/issues/1381). The limitation is that you cannot use Git over HTTP with credentials embedded in the URI, for example, `https://user:personal-access-token@secondary.tld`. For more information, see how to [use a Geo Site](replication/usage.md).
+- Pushing directly to a **secondary** site redirects (for HTTP) or proxies (for SSH) the request to the **primary** site instead of [handling it directly](https://gitlab.com/gitlab-org/gitlab/-/issues/1381). You cannot use Git over HTTP with credentials embedded in the URI, for example, `https://user:personal-access-token@secondary.tld`. For more information, see how to [use a Geo Site](replication/usage.md).
 - The **primary** site has to be online for OAuth login to happen. Existing sessions and Git are not affected. Support for the **secondary** site to use an OAuth provider independent from the primary is [being planned](https://gitlab.com/gitlab-org/gitlab/-/issues/208465).
 - The installation takes multiple manual steps that together can take about an hour depending on circumstances. Consider using the
   [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) Terraform and Ansible scripts to deploy and operate production
@@ -216,7 +275,8 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 - [Selective synchronization](replication/selective_synchronization.md) only limits what repositories and files are replicated. The entire PostgreSQL data is still replicated. Selective synchronization is not built to accommodate compliance / export control use cases.
 - [Pages access control](../../user/project/pages/pages_access_control.md) doesn't work on secondaries. See [GitLab issue #9336](https://gitlab.com/gitlab-org/gitlab/-/issues/9336) for details.
 - [Disaster recovery](disaster_recovery/index.md) for deployments that have multiple secondary sites causes downtime due to the need to re-initialize PostgreSQL streaming replication on all non-promoted secondaries to follow the new primary site.
-- For Git over SSH, to make the project clone URL display correctly regardless of which site you are browsing, secondary sites must use the same port as the primary. [GitLab issue #339262](https://gitlab.com/gitlab-org/gitlab/-/issues/339262) proposes to remove this limitation.
+- For Git over SSH, to make the project clone URL display correctly regardless of which site you are browsing, secondary sites must use the same port as the primary.
+  For more information, see [issue 339262](https://gitlab.com/gitlab-org/gitlab/-/issues/339262).
 - Git push over SSH against a secondary site does not work for pushes over 1.86 GB. [GitLab issue #413109](https://gitlab.com/gitlab-org/gitlab/-/issues/413109) tracks this bug.
 - Backups [cannot be run on Geo secondary sites](replication/troubleshooting/postgresql_replication.md#message-error-canceling-statement-due-to-conflict-with-recovery).
 - Git push with options over SSH against a secondary site does not work and terminates the connection. For more information, see [issue 417186](https://gitlab.com/gitlab-org/gitlab/-/issues/417186).

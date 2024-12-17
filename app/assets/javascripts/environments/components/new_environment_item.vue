@@ -169,7 +169,7 @@ export default {
     },
   },
   deploymentClasses: [
-    'gl-border-gray-100',
+    'gl-border-default',
     'gl-border-t-solid',
     'gl-border-1',
     'gl-py-5',
@@ -177,7 +177,7 @@ export default {
     'gl-bg-gray-10',
   ],
   deployBoardClasses: [
-    'gl-border-gray-100',
+    'gl-border-default',
     'gl-border-t-solid',
     'gl-border-1',
     'gl-py-4',
@@ -218,7 +218,7 @@ export default {
       <div class="gl-flex gl-items-center">
         <p
           v-if="canShowAutoStopDate"
-          class="gl-mb-0 gl-mr-5 gl-text-sm gl-text-gray-700"
+          class="gl-mb-0 gl-mr-5 gl-text-sm gl-text-subtle"
           data-testid="auto-stop-time"
         >
           <gl-sprintf :message="$options.i18n.autoStopIn">

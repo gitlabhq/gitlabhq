@@ -39,9 +39,9 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
     end
   end
 
-  describe '.importer_names' do
-    it 'returns an array of importer names' do
-      expected =
+  describe '.has_importer?' do
+    it 'returns true when has import source has importer' do
+      with_importer =
         %w[
           github
           bitbucket
@@ -51,7 +51,15 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
           gitea
         ]
 
-      expect(described_class.importer_names).to eq(expected)
+      without_importer = %w[git manifest]
+
+      with_importer.each do |import_source|
+        expect(described_class.has_importer?(import_source)).to be(true)
+      end
+
+      without_importer.each do |import_source|
+        expect(described_class.has_importer?(import_source)).to be(false)
+      end
     end
   end
 

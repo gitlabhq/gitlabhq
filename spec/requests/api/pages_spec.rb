@@ -18,7 +18,7 @@ RSpec.describe API::Pages, feature_category: :pages do
       pages_unique_domain: 'unique-domain')
   end
 
-  context "when get pages setting endpoint" do
+  describe "GET /projects/:id/pages" do
     let(:user) { create(:user) }
 
     it "returns the :ok for project maintainers (and above)" do
@@ -82,7 +82,7 @@ RSpec.describe API::Pages, feature_category: :pages do
             "created_at" => created_at.strftime('%Y-%m-%dT%H:%M:%S.%3LZ'),
             "path_prefix" => nil,
             "root_directory" => "public",
-            "url" => "http://unique-domain.example.com/"
+            "url" => "http://unique-domain.example.com"
           }
         ])
       end
@@ -105,6 +105,22 @@ RSpec.describe API::Pages, feature_category: :pages do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['force_https']).to eq(true)
           expect(json_response['is_unique_domain_enabled']).to eq(true)
+        end
+      end
+
+      context 'and updates pages default domain redirect' do
+        let(:domain) { 'my.domain.com' }
+        let(:params) { { pages_default_domain_redirect: domain } }
+
+        before do
+          create(:pages_domain, project: project, domain: domain)
+        end
+
+        it 'updates the pages settings and returns 200' do
+          patch api(path, admin, admin_mode: true), params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['pages_default_domain_redirect']).to eq(domain)
         end
       end
 
@@ -164,6 +180,40 @@ RSpec.describe API::Pages, feature_category: :pages do
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('pages_https_only is invalid')
+      end
+    end
+
+    context 'when pages default domain redirect is invalid' do
+      let(:invalid_params) { { pages_default_domain_redirect: 'other.domain.com' } }
+
+      before do
+        create(:pages_domain, project: project, domain: 'my.domain.com')
+      end
+
+      it 'returns a 400 bad request' do
+        patch api(path, admin, admin_mode: true), params: invalid_params
+
+        expected_message = '400 Bad request - The `pages_default_domain_redirect` attribute is missing from ' \
+          'the domain list in the Pages project configuration. Assign ' \
+          '`pages_default_domain_redirect` to the Pages project or reset it.'
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq(expected_message)
+      end
+    end
+
+    context 'when `pages_default_domain_redirect` is nil' do
+      let(:params) { { pages_default_domain_redirect: nil } }
+
+      before do
+        create(:pages_domain, project: project, domain: 'my.domain.com')
+      end
+
+      it 'updates the pages settings and returns 200' do
+        patch api(path, admin, admin_mode: true), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['pages_default_domain_redirect']).to eq(nil)
       end
     end
   end

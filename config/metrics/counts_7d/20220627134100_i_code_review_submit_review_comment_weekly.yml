@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.code_review.i_code_review_submit_review_comment_weekly
 description: Count of unique users per week who submit a review with a comment
 product_group: code_review
+product_categories:
+- code_review_workflow
 value_type: number
 status: active
 milestone: '15.4'

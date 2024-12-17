@@ -149,7 +149,7 @@ export default {
         <template #invalid-feedback>
           <div class="gl-w-2/5">{{ $options.i18n.minSizeMbInvalidFeedback }}</div>
         </template>
-        <gl-form-input-group data-testid="min-size-input-group">
+        <gl-form-input-group>
           <gl-form-input
             ref="minSizeMbInput"
             v-model="minSizeMb"
@@ -169,7 +169,9 @@ export default {
           />
 
           <template #append>
-            <div class="input-group-text">{{ $options.i18n.mbAppend }}</div>
+            <div class="input-group-text" data-testid="min-size-input-group-text">
+              {{ $options.i18n.mbAppend }}
+            </div>
           </template>
         </gl-form-input-group>
       </gl-form-group>
@@ -183,7 +185,7 @@ export default {
           <template #invalid-feedback>
             <div class="gl-w-3/10">{{ $options.i18n.deleteAfterMonthsInvalidFeedback }}</div>
           </template>
-          <gl-form-input-group data-testid="delete-after-months-input-group">
+          <gl-form-input-group>
             <gl-form-input
               ref="deleteAfterMonthsInput"
               v-model="deleteAfterMonths"
@@ -196,7 +198,9 @@ export default {
             />
 
             <template #append>
-              <div class="input-group-text">{{ $options.i18n.monthsAppend }}</div>
+              <div class="input-group-text" data-testid="delete-after-months-input-group-text">
+                {{ $options.i18n.monthsAppend }}
+              </div>
             </template>
           </gl-form-input-group>
         </gl-form-group>
@@ -213,7 +217,7 @@ export default {
               {{ $options.i18n.sendWarningEmailAfterMonthsInvalidFeedback }}
             </div>
           </template>
-          <gl-form-input-group data-testid="send-warning-email-after-months-input-group">
+          <gl-form-input-group>
             <gl-form-input
               ref="sendWarningEmailAfterMonthsInput"
               v-model="sendWarningEmailAfterMonths"
@@ -226,7 +230,12 @@ export default {
             />
 
             <template #append>
-              <div class="input-group-text">{{ $options.i18n.monthsAppend }}</div>
+              <div
+                class="input-group-text"
+                data-testid="send-warning-email-after-months-input-group-text"
+              >
+                {{ $options.i18n.monthsAppend }}
+              </div>
             </template>
           </gl-form-input-group>
 

@@ -137,7 +137,7 @@ export default {
         </runner-detail>
 
         <runner-maintenance-note-detail
-          class="gl-border-t-1 gl-border-t-gray-100 gl-pt-4 gl-border-t-solid"
+          class="gl-border-t-1 gl-border-t-default gl-pt-4 gl-border-t-solid"
           :value="runner.maintenanceNoteHtml"
         />
 

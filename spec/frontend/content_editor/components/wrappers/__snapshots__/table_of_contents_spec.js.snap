@@ -2,7 +2,7 @@
 
 exports[`content/components/wrappers/table_of_contents collects all headings and renders a nested list of headings 1`] = `
 <div
-  class="!gl-p-4 gl-border-1 gl-border-gray-100 gl-border-solid gl-mb-5 table-of-contents"
+  class="!gl-p-4 gl-border-1 gl-border-default gl-border-solid gl-mb-5 table-of-contents"
   data-testid="table-of-contents"
 >
   Table of contents

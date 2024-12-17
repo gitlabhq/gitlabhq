@@ -11,6 +11,10 @@ RSpec.describe Search::Worker, feature_category: :global_search do
 
       include ApplicationWorker
       include ::Search::Worker
+
+      def perform
+        logger.info 'Worker start'
+      end
     end
   end
 
@@ -25,5 +29,13 @@ RSpec.describe Search::Worker, feature_category: :global_search do
     expect(Search).to receive(:default_concurrency_limit).and_return(limit)
 
     expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: worker_class)).to eq(limit)
+  end
+
+  it 'uses a logger built with Gitlab::Elasticsearch::Logger' do
+    logger = instance_double(Gitlab::Elasticsearch::Logger)
+    expect(Gitlab::Elasticsearch::Logger).to receive(:build).and_return(logger)
+    expect(logger).to receive(:info).with('Worker start')
+
+    worker.perform
   end
 end

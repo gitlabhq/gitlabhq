@@ -31,10 +31,7 @@ describe('ImportProjectsTable', () => {
   };
 
   const findImportAllButton = () =>
-    wrapper
-      .findAllComponents(GlButton)
-      .filter((w) => w.props().variant === 'confirm')
-      .at(0);
+    wrapper.findAllComponents(GlButton).wrappers.find((w) => w.props('variant') === 'confirm');
   const findImportAllModal = () => wrapper.findComponent({ ref: 'importAllModal' });
   const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
 
@@ -105,7 +102,7 @@ describe('ImportProjectsTable', () => {
     expect(
       wrapper
         .findAll('th')
-        .filter((w) => w.text() === `From ${providerTitle}`)
+        .wrappers.find((w) => w.text() === `From ${providerTitle}`)
         .exists(),
     ).toBe(true);
 

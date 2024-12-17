@@ -17,7 +17,7 @@ import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import { keysFor, ISSUABLE_EDIT_DESCRIPTION } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { sanitize } from '~/lib/dompurify';
-import { STATUS_CLOSED, TYPE_ISSUE, issuableTypeText } from '~/issues/constants';
+import { STATUS_CLOSED, TYPE_ISSUE, TYPE_INCIDENT, issuableTypeText } from '~/issues/constants';
 import { ISSUE_STATE_EVENT_CLOSE, ISSUE_STATE_EVENT_REOPEN } from '~/issues/show/constants';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -35,6 +35,7 @@ import issuesEventHub from '../event_hub';
 import promoteToEpicMutation from '../queries/promote_to_epic.mutation.graphql';
 import updateIssueMutation from '../queries/update_issue.mutation.graphql';
 import DeleteIssueModal from './delete_issue_modal.vue';
+import HeaderActionsConfidentialityToggle from './header_actions_confidentiality_toggle.vue';
 
 const trackingMixin = Tracking.mixin({ label: 'delete_issue' });
 
@@ -70,6 +71,7 @@ export default {
     AbuseCategorySelector,
     SidebarSubscriptionsWidget,
     IssuableLockForm,
+    HeaderActionsConfidentialityToggle,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -215,6 +217,9 @@ export default {
           disabled: this.isToggleStateButtonLoading,
         },
       };
+    },
+    showConfidentialityToggle() {
+      return [TYPE_ISSUE, TYPE_INCIDENT].includes(this.issueType) && this.canUpdateIssue;
     },
   },
   created() {
@@ -378,6 +383,10 @@ export default {
         <template v-if="showLockIssueOption">
           <issuable-lock-form :is-editable="false" data-testid="lock-issue-toggle" />
         </template>
+        <header-actions-confidentiality-toggle
+          v-if="showConfidentialityToggle"
+          @closeActionsDropdown="closeActionsDropdown"
+        />
         <gl-disclosure-dropdown-item
           :data-clipboard-text="issuableReference"
           class="js-copy-reference"
@@ -478,6 +487,10 @@ export default {
       <template v-if="showLockIssueOption">
         <issuable-lock-form :is-editable="false" data-testid="lock-issue-toggle" />
       </template>
+      <header-actions-confidentiality-toggle
+        v-if="showConfidentialityToggle"
+        @closeActionsDropdown="closeActionsDropdown"
+      />
       <gl-disclosure-dropdown-item
         :data-clipboard-text="issuableReference"
         class="js-copy-reference"

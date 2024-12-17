@@ -1,0 +1,9 @@
+---
+name: bulk_import_importer_user_mapping
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/12378
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160650
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/478054
+milestone: '17.3'
+group: group::import and integrate
+type: beta
+default_enabled: true

@@ -7,7 +7,6 @@ import {
   GlTooltipDirective,
   GlPopover,
   GlSprintf,
-  GlTruncateText,
 } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 
@@ -15,6 +14,8 @@ import {
   renderDeleteSuccessToast,
   deleteParams,
 } from 'ee_else_ce/vue_shared/components/resource_lists/utils';
+import ProjectListItemDescription from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_description.vue';
+import ProjectListItemActions from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_actions.vue';
 import ProjectListItemInactiveBadge from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';
 import { VISIBILITY_TYPE_ICON, PROJECT_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
@@ -22,10 +23,8 @@ import { FEATURABLE_ENABLED } from '~/featurable/constants';
 import { __, s__ } from '~/locale';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { truncate } from '~/lib/utils/text_utility';
-import SafeHtml from '~/vue_shared/directives/safe_html';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
-import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
+import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
@@ -48,16 +47,12 @@ export default {
     moreTopics: __('More topics'),
     [TIMESTAMP_TYPE_CREATED_AT]: __('Created'),
     [TIMESTAMP_TYPE_UPDATED_AT]: __('Updated'),
-    actions: __('Actions'),
-    showMore: __('Show more'),
-    showLess: __('Show less'),
     project: __('Project'),
     deleteErrorMessage: s__(
       'Projects|An error occurred deleting the project. Please refresh the page to try again.',
     ),
     ciCatalogBadge: s__('CiCatalog|CI/CD Catalog project'),
   },
-  truncateTextToggleButtonProps: { class: '!gl-text-sm' },
   components: {
     GlAvatarLabeled,
     GlIcon,
@@ -65,10 +60,10 @@ export default {
     GlBadge,
     GlPopover,
     GlSprintf,
-    GlTruncateText,
     TimeAgoTooltip,
     DeleteModal,
-    ListActions,
+    ProjectListItemDescription,
+    ProjectListItemActions,
     ProjectListItemInactiveBadge,
     ProjectListItemDelayedDeletionModalFooter: () =>
       import(
@@ -77,7 +72,6 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml,
   },
   props: {
     /**
@@ -212,16 +206,6 @@ export default {
 
       return numberToMetricPrefix(this.project.openIssuesCount);
     },
-    actions() {
-      return {
-        [ACTION_EDIT]: {
-          href: this.project.editPath,
-        },
-        [ACTION_DELETE]: {
-          action: this.onActionDelete,
-        },
-      };
-    },
     hasActions() {
       return this.project.availableActions?.length;
     },
@@ -258,7 +242,7 @@ export default {
 
       try {
         await deleteProject(this.project.id, deleteParams(this.project));
-        this.$emit('delete-complete');
+        this.$emit('refetch');
         renderDeleteSuccessToast(this.project, this.$options.i18n.project);
       } catch (error) {
         createAlert({ message: this.$options.i18n.deleteErrorMessage, error, captureError: true });
@@ -317,26 +301,12 @@ export default {
               </div>
             </div>
           </template>
-          <gl-truncate-text
-            v-if="project.descriptionHtml"
-            :lines="2"
-            :mobile-lines="2"
-            :show-more-text="$options.i18n.showMore"
-            :show-less-text="$options.i18n.showLess"
-            :toggle-button-props="$options.truncateTextToggleButtonProps"
-            class="gl-mt-2 gl-max-w-88"
-          >
-            <div
-              v-safe-html="project.descriptionHtml"
-              class="md gl-text-sm gl-text-secondary"
-              data-testid="project-description"
-            ></div>
-          </gl-truncate-text>
+          <project-list-item-description :project="project" />
           <div v-if="hasTopics" class="gl-mt-3" data-testid="project-topics">
             <div
               class="-gl-mx-2 -gl-my-2 gl-inline-flex gl-w-full gl-flex-wrap gl-items-center gl-text-base gl-font-normal"
             >
-              <span class="gl-p-2 gl-text-sm gl-text-secondary">{{ $options.i18n.topics }}:</span>
+              <span class="gl-p-2 gl-text-sm gl-text-subtle">{{ $options.i18n.topics }}:</span>
               <div v-for="topic in visibleTopics" :key="topic" class="gl-p-2">
                 <gl-badge v-gl-tooltip="topicTooltipTitle(topic)" :href="topicPath(topic)">
                   {{ topicTitle(topic) }}
@@ -345,7 +315,7 @@ export default {
               <template v-if="popoverTopics.length">
                 <div
                   :id="topicsPopoverTarget"
-                  class="gl-p-2 gl-text-sm gl-text-secondary"
+                  class="gl-p-2 gl-text-sm gl-text-subtle"
                   role="button"
                   tabindex="0"
                 >
@@ -377,7 +347,7 @@ export default {
             v-gl-tooltip="$options.i18n.stars"
             :href="starsHref"
             :aria-label="$options.i18n.stars"
-            class="gl-text-secondary"
+            class="gl-text-subtle"
             data-testid="stars-btn"
           >
             <gl-icon name="star-o" />
@@ -388,7 +358,7 @@ export default {
             v-gl-tooltip="$options.i18n.forks"
             :href="forksHref"
             :aria-label="$options.i18n.forks"
-            class="gl-text-secondary"
+            class="gl-text-subtle"
             data-testid="forks-btn"
           >
             <gl-icon name="fork" />
@@ -399,7 +369,7 @@ export default {
             v-gl-tooltip="$options.i18n.mergeRequests"
             :href="mergeRequestsHref"
             :aria-label="$options.i18n.mergeRequests"
-            class="gl-text-secondary"
+            class="gl-text-subtle"
             data-testid="mrs-btn"
           >
             <gl-icon name="merge-request" />
@@ -410,7 +380,7 @@ export default {
             v-gl-tooltip="$options.i18n.issues"
             :href="issuesHref"
             :aria-label="$options.i18n.issues"
-            class="gl-text-secondary"
+            class="gl-text-subtle"
             data-testid="issues-btn"
           >
             <gl-icon name="issues" />
@@ -419,18 +389,18 @@ export default {
         </div>
         <div
           v-if="timestamp"
-          class="gl-mt-3 gl-whitespace-nowrap gl-text-sm gl-text-secondary md:-gl-mt-2"
+          class="gl-mt-3 gl-whitespace-nowrap gl-text-sm gl-text-subtle md:-gl-mt-2"
         >
           <span>{{ timestampText }}</span>
           <time-ago-tooltip :time="timestamp" />
         </div>
       </div>
     </div>
-    <div class="gl-ml-3 gl-flex gl-h-9 gl-items-center">
-      <list-actions
-        v-if="hasActions"
-        :actions="actions"
-        :available-actions="project.availableActions"
+    <div v-if="hasActions" class="gl-ml-3 gl-flex gl-h-9 gl-items-center">
+      <project-list-item-actions
+        :project="project"
+        @refetch="$emit('refetch')"
+        @delete="onActionDelete"
       />
     </div>
 

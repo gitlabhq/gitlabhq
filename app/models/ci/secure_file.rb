@@ -18,7 +18,7 @@ module Ci
     validates :checksum, :file_store, :name, :project_id, presence: true
     validates :name, uniqueness: { scope: :project }
 
-    attribute :metadata, :ind_jsonb
+    attribute :metadata, ::Gitlab::Database::Type::IndifferentJsonb.new
     validates :metadata, json_schema: { filename: "ci_secure_file_metadata" }, allow_nil: true
 
     attribute :file_store, default: -> { Ci::SecureFileUploader.default_store }

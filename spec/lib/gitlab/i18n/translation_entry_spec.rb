@@ -133,6 +133,140 @@ RSpec.describe Gitlab::I18n::TranslationEntry do
     end
   end
 
+  describe '#translations_contain_namespace' do
+    it 'is true when the msgstr contains namespace' do
+      data = {
+        msgid: '404|Not found',
+        msgstr: '404|No encontrado'
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_namespace?).to be_truthy
+    end
+
+    it 'is true when one plural translation contains namespace' do
+      data = {
+        msgid: 'Test|hello world',
+        msgid_plural: 'Test|hello worlds',
+        "msgstr[0]" => 'Test|hello world',
+        "msgstr[1]" => 'hello worlds'
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_namespace?).to be_truthy
+    end
+
+    it 'is true when all plural translation contains namespace' do
+      data = {
+        msgid: 'Test|hello world',
+        msgid_plural: 'Test|hello worlds',
+        "msgstr[0]" => 'Test|hello world',
+        "msgstr[1]" => 'Test|hello worlds'
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_namespace?).to be_truthy
+    end
+
+    it "is false when the msgstr doesn't contain namespace" do
+      data = {
+        msgid: '404|Not found',
+        msgstr: 'No encontrado'
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_namespace?).to be_falsy
+    end
+
+    it "is false when the msgstr contains namespace but source is from list of false positives" do
+      data = {
+        msgid: 'Example: (jar|exe)$',
+        msgstr: 'Ejemplo: (jar|exe)$'
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      data_two = {
+        msgid: 'Example: (feature|hotfix)\\\\/.*',
+        msgstr: 'Ejemplo: (feature|hotfix)\\\\/.*'
+      }
+      entry_two = described_class.new(entry_data: data_two, nplurals: 2)
+
+      expect(entry_two.translations_contain_namespace?).to be_falsy
+      expect(entry.translations_contain_namespace?).to be_falsy
+    end
+
+    it 'is false when no plural translation contains namespace' do
+      data = {
+        msgid: 'Test|hello world',
+        msgid_plural: 'Test|hello worlds',
+        "msgstr[0]" => 'hello world',
+        "msgstr[1]" => 'hello worlds'
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_namespace?).to be_falsy
+    end
+  end
+
+  describe '#contains_namespace' do
+    let(:data) { { msgid: '' } }
+    let(:entry) { described_class.new(entry_data: data, nplurals: 2) }
+
+    it 'is true when the string contains a namespace' do
+      string = '404|Not found'
+
+      expect(entry.contains_namespace?(string)).to be_truthy
+    end
+
+    it 'is true when the string contains a namespace with leading spaces' do
+      string = ' 404|Not found'
+
+      expect(entry.contains_namespace?(string)).to be_truthy
+    end
+
+    it 'is true when the string contains a namespace with trailing spaces' do
+      string = '404 |Not found'
+
+      expect(entry.contains_namespace?(string)).to be_truthy
+    end
+
+    it 'is true when the string contains a namespace with leading and trailing spaces' do
+      string = ' 404 |Not found'
+
+      expect(entry.contains_namespace?(string)).to be_truthy
+    end
+
+    it 'is true when the string contains a namespace with a space' do
+      string = '40 4|Not found'
+
+      expect(entry.contains_namespace?(string)).to be_truthy
+    end
+
+    it 'is true when the string contains a namespace with unicode characters' do
+      string = 'ZobrazeníČasu|System'
+
+      expect(entry.contains_namespace?(string)).to be_truthy
+    end
+
+    it 'is true when the string contains a namespace with unicode characters and a space' do
+      string = 'Zobrazení Času|System'
+
+      expect(entry.contains_namespace?(string)).to be_truthy
+    end
+
+    it 'is false when the string contains a pipe, but not a namespace' do
+      string = 'Example: (jar|exe)$'
+
+      expect(entry.contains_namespace?(string)).to be_falsy
+    end
+
+    it 'is false when the string does not contain a namespace' do
+      string = 'Not found'
+
+      expect(entry.contains_namespace?(string)).to be_falsy
+    end
+  end
+
   describe '#contains_unescaped_chars' do
     let(:data) { { msgid: '' } }
     let(:entry) { described_class.new(entry_data: data, nplurals: 2) }

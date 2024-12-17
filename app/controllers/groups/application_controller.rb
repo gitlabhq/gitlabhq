@@ -15,7 +15,6 @@ class Groups::ApplicationController < ApplicationController
 
   before_action do
     push_namespace_setting(:math_rendering_limits_enabled, @group)
-    push_frontend_feature_flag(:async_sidebar_counts, @group&.root_ancestor)
   end
 
   private

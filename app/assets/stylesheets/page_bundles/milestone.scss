@@ -102,7 +102,7 @@
     }
 
     .issuable-number {
-      color: var(--gray-500, $gray-500);
+      @apply gl-text-subtle;
       margin-right: 5px;
     }
 

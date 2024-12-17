@@ -43,7 +43,7 @@ RSpec.configure do |config|
 
   config.prepend_before do |example|
     QA::Runtime::Logger.info("Starting test: #{Rainbow(example.full_description).bright}")
-    QA::Runtime::UserStore.initialize_test_user
+    QA::Runtime::User::Store.initialize_test_user
 
     QA::Runtime::Example.current = example
 
@@ -82,7 +82,7 @@ RSpec.configure do |config|
     example.metadata[:browser_ui_fabrication] = Thread.current[:browser_ui_fabrication]
 
     # Reset unique test user after each spec unless running against live environment
-    QA::Runtime::UserStore.reset_test_user! unless QA::Runtime::Env.running_on_live_env?
+    QA::Runtime::User::Store.reset_test_user! unless QA::Runtime::Env.running_on_live_env?
 
     # Reset browser session between tests
     if Capybara::Session.instance_created?

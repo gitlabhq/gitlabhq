@@ -37,14 +37,12 @@ RSpec.describe Import::BulkImports::SourceUsersAttributesWorker, feature_categor
 
       expect(Import::BulkImports::UpdateSourceUsersService).to receive(:new).with(
         namespace: project.root_ancestor,
-        bulk_import: bulk_import,
-        options: {}
+        bulk_import: bulk_import
       ).and_return(service_double).ordered
 
       expect(Import::BulkImports::UpdateSourceUsersService).to receive(:new).with(
         namespace: group,
-        bulk_import: bulk_import,
-        options: {}
+        bulk_import: bulk_import
       ).and_return(service_double).ordered
 
       perform
@@ -66,14 +64,13 @@ RSpec.describe Import::BulkImports::SourceUsersAttributesWorker, feature_categor
         allow(bulk_import).to receive(:completed?).and_return(true)
       end
 
-      it 'calls the service with a minimum_batch_size set' do
+      it 'executes UpdateSourceUsersService' do
         service_double = instance_double(Import::BulkImports::UpdateSourceUsersService)
         allow(service_double).to receive(:execute)
 
         expect(Import::BulkImports::UpdateSourceUsersService).to receive(:new).with(
           namespace: anything,
-          bulk_import: bulk_import,
-          options: { minimum_batch_size: 1 }
+          bulk_import: bulk_import
         ).twice.and_return(service_double)
 
         perform

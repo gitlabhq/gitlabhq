@@ -71,4 +71,8 @@ RSpec.describe Gitlab::Audit::NullAuthor do
   describe '#current_sign_in_ip' do
     it { expect(subject.new(id: 888, name: 'Guest').current_sign_in_ip).to be_nil }
   end
+
+  describe '#impersonated?' do
+    it { expect(subject.new(id: 888, name: 'Guest').impersonated?).to be false }
+  end
 end

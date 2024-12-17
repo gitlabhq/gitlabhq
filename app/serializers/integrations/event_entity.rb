@@ -24,7 +24,7 @@ module Integrations
       end
       expose :value do |event|
         value = integration.event_channel_value(event)
-        next BaseChatNotification::SECRET_MASK if value.present? && integration.mask_configurable_channels?
+        next Base::ChatNotification::SECRET_MASK if value.present? && integration.mask_configurable_channels?
 
         value
       end

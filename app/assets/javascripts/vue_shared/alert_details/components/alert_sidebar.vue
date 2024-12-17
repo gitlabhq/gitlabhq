@@ -65,7 +65,7 @@ export default {
         :project-path="projectPath"
         :alert="alert"
         :sidebar-collapsed="sidebarStatus"
-        text-class="gl-text-gray-500"
+        text-class="gl-text-subtle"
         class="gl-w-7/10"
         @toggle-sidebar="$emit('toggle-sidebar')"
         @alert-error="$emit('alert-error', $event)"

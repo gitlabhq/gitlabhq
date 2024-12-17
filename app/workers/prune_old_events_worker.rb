@@ -13,11 +13,16 @@ class PruneOldEventsWorker # rubocop:disable Scalability/IdempotentWorker
   feature_category :user_profile
 
   DELETE_LIMIT = 10_000
+  # Contribution calendar shows maximum 12 months of events, we retain 3 years for data integrity.
+  CUTOFF_DATE = (3.years + 1.day).freeze
+
+  def self.pruning_enabled?
+    Feature.enabled?(:ops_prune_old_events, type: :ops)
+  end
 
   def perform
-    if Feature.enabled?(:ops_prune_old_events, type: :ops)
-      # Contribution calendar shows maximum 12 months of events, we retain 3 years for data integrity.
-      cutoff_date = (3.years + 1.day).ago
+    if self.class.pruning_enabled?
+      cutoff_date = CUTOFF_DATE.ago
 
       Event.unscoped.created_before(cutoff_date).delete_with_limit(DELETE_LIMIT)
     else

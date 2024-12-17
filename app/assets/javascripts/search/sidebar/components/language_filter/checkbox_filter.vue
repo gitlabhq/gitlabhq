@@ -49,7 +49,7 @@ export default {
       },
     },
     labelCountClasses() {
-      return [...NAV_LINK_COUNT_DEFAULT_CLASSES, 'gl-text-gray-500'];
+      return [...NAV_LINK_COUNT_DEFAULT_CLASSES, 'gl-text-subtle'];
     },
   },
   methods: {

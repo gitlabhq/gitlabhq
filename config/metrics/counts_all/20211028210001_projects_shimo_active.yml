@@ -2,6 +2,8 @@
 key_path: counts.projects_shimo_active
 description: Count of projects with active Shimo integrations
 product_group: import_and_integrate
+product_categories:
+- integrations
 value_type: number
 status: removed
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136143

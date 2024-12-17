@@ -416,6 +416,13 @@ module TestEnv
     Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.upsert_types
     Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter.upsert_restrictions
     Gitlab::DatabaseImporters::WorkItems::RelatedLinksRestrictionsImporter.upsert_restrictions
+
+    # We need this temporarily to make sure the app works when work_item_types.id and work_item_types.correct_id
+    # are different (as in some production apps). We can remove when work_item_types.id values are fixed (1 - 9)
+    # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/499911
+    WorkItems::Type.find_each do |work_item_type|
+      work_item_type.update!(id: -work_item_type.id, old_id: -work_item_type.id)
+    end
   end
 
   private
@@ -528,6 +535,8 @@ module TestEnv
   end
 
   def component_ahead_of_target?(component_folder, expected_version)
+    return false unless Dir.exist?(File.join(component_folder, '.git'))
+
     # The HEAD of the component_folder will be used as heuristic for the version
     # of the binaries, allowing to use Git to determine if HEAD is later than
     # the expected version. Note: Git considers HEAD to be an anchestor of HEAD.
@@ -548,6 +557,8 @@ module TestEnv
     return false unless ::Gitlab::Git::COMMIT_ID.match?(expected_version)
 
     return false unless Dir.exist?(component_folder)
+
+    return false unless Dir.exist?(File.join(component_folder, '.git'))
 
     sha, exit_status = Gitlab::Popen.popen(%W[#{Gitlab.config.git.bin_path} rev-parse HEAD], component_folder)
     return false if exit_status != 0

@@ -21,12 +21,12 @@ module Projects
     end
 
     def public_only?
-      !user_is_at_least_reporter?
+      !user_is_at_least_planner?
     end
 
-    def user_is_at_least_reporter?
-      strong_memoize(:user_is_at_least_reporter) do
-        @project.member?(@user, Gitlab::Access::REPORTER)
+    def user_is_at_least_planner?
+      strong_memoize(:user_is_at_least_planner) do
+        @project.member?(@user, Gitlab::Access::PLANNER)
       end
     end
 
@@ -57,7 +57,7 @@ module Projects
       end
     end
 
-    # We only show issues count including confidential for reporters, who are allowed to view confidential issues.
+    # We only show issues count including confidential for planners, who are allowed to view confidential issues.
     # This will still show a discrepancy on issues number but should be less than before.
     # Check https://gitlab.com/gitlab-org/gitlab-foss/issues/38418 description.
 

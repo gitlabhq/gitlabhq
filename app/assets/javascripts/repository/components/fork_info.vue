@@ -295,7 +295,7 @@ export default {
           {{ $options.i18n.forkedFrom }}
           <gl-link data-testid="forked-from-link" :href="sourcePath">{{ sourceName }}</gl-link>
           <gl-skeleton-loader v-if="isLoading" :lines="1" />
-          <div v-else class="gl-text-secondary" data-testid="divergence-message">
+          <div v-else class="gl-text-subtle" data-testid="divergence-message">
             <gl-sprintf :message="forkDivergenceMessage">
               <template #aheadLink="{ content }">
                 <gl-link :href="aheadComparePath">{{ content }}</gl-link>

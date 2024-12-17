@@ -105,3 +105,5 @@ module Sidebars
     end
   end
 end
+
+Sidebars::Admin::Menus::AdminOverviewMenu.prepend_mod_with('Sidebars::Admin::Menus::AdminOverviewMenu')

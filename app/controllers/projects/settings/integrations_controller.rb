@@ -78,7 +78,9 @@ module Projects
       end
 
       def integration_test_response
-        unless integration.update(integration_params[:integration])
+        integration.assign_attributes(integration_params[:integration])
+
+        unless integration.valid?
           return {
             error: true,
             message: _('Validations failed.'),

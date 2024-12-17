@@ -37,6 +37,9 @@ describe('Packages Settings', () => {
   const mountComponent = ({
     mountFn = shallowMountExtended,
     mutationResolver = jest.fn().mockResolvedValue(groupPackageSettingsMutationMock()),
+    features = {
+      packagesAllowDuplicateExceptions: false,
+    },
   } = {}) => {
     Vue.use(VueApollo);
 
@@ -46,7 +49,10 @@ describe('Packages Settings', () => {
 
     wrapper = mountFn(component, {
       apolloProvider,
-      provide: defaultProvide,
+      provide: {
+        ...defaultProvide,
+        glFeatures: features,
+      },
       propsData: {
         packageSettings,
       },
@@ -149,6 +155,28 @@ describe('Packages Settings', () => {
       });
     });
 
+    describe('with packagesAllowDuplicateExceptions FF enabled', () => {
+      it('renders ExceptionsInput and assigns duplication allowness and exception props', () => {
+        mountComponent({
+          mountFn: mountExtended,
+          features: { packagesAllowDuplicateExceptions: true },
+        });
+
+        const { mavenDuplicateExceptionRegex } = packageSettings;
+
+        expect(findMavenDuplicatedSettingsExceptionsInput().exists()).toBe(true);
+
+        expect(findMavenDuplicatedSettingsExceptionsInput().props()).toMatchObject({
+          duplicatesAllowed: false,
+          duplicateExceptionRegex: mavenDuplicateExceptionRegex,
+          duplicateExceptionRegexError: '',
+          loading: false,
+          name: 'mavenDuplicateExceptionRegex',
+          id: 'maven-duplicated-settings-regex-input',
+        });
+      });
+    });
+
     it('on update event calls the mutation', () => {
       const mutationResolver = jest.fn().mockResolvedValue(groupPackageSettingsMutationMock());
       mountComponent({ mountFn: mountExtended, mutationResolver });
@@ -196,6 +224,26 @@ describe('Packages Settings', () => {
         loading: false,
         name: 'genericDuplicateExceptionRegex',
         id: 'generic-duplicated-settings-regex-input',
+      });
+    });
+
+    describe('with packagesAllowDuplicateExceptions FF enabled', () => {
+      it('renders ExceptionsInput and assigns duplication allowness and exception props', () => {
+        mountComponent({
+          mountFn: mountExtended,
+          features: { packagesAllowDuplicateExceptions: true },
+        });
+
+        const { genericDuplicateExceptionRegex } = packageSettings;
+
+        expect(findGenericDuplicatedSettingsExceptionsInput().props()).toMatchObject({
+          duplicatesAllowed: false,
+          duplicateExceptionRegex: genericDuplicateExceptionRegex,
+          duplicateExceptionRegexError: '',
+          loading: false,
+          name: 'genericDuplicateExceptionRegex',
+          id: 'generic-duplicated-settings-regex-input',
+        });
       });
     });
 
@@ -300,6 +348,26 @@ describe('Packages Settings', () => {
         loading: false,
         name: 'terraformModuleDuplicateExceptionRegex',
         id: 'terraform-module-duplicated-settings-regex-input',
+      });
+    });
+
+    describe('with packagesAllowDuplicateExceptions FF enabled', () => {
+      it('renders ExceptionsInput and assigns duplication allowness and exception props', () => {
+        mountComponent({
+          mountFn: mountExtended,
+          features: { packagesAllowDuplicateExceptions: true },
+        });
+
+        const { terraformModuleDuplicateExceptionRegex } = packageSettings;
+
+        expect(findTerraformModuleDuplicatedSettingsExceptionsInput().props()).toMatchObject({
+          duplicatesAllowed: false,
+          duplicateExceptionRegex: terraformModuleDuplicateExceptionRegex,
+          duplicateExceptionRegexError: '',
+          loading: false,
+          name: 'terraformModuleDuplicateExceptionRegex',
+          id: 'terraform-module-duplicated-settings-regex-input',
+        });
       });
     });
 

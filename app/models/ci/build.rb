@@ -486,7 +486,12 @@ module Ci
     end
 
     # Overriden on EE
-    def pages; end
+    # rubocop:disable Gitlab/NoCodeCoverageComment -- Fully tested in EE and tested in Foss through feature specs in spec/models/ci/build_spec.rb
+    # :nocov:
+    def pages
+      {}
+    end
+    # rubocop:enable Gitlab/NoCodeCoverageComment
 
     def runnable?
       true
@@ -532,9 +537,7 @@ module Ci
 
     # rubocop: disable CodeReuse/ServiceClass
     def play(current_user, job_variables_attributes = nil)
-      Ci::PlayBuildService
-        .new(project, current_user)
-        .execute(self, job_variables_attributes)
+      Ci::PlayBuildService.new(current_user: current_user, build: self, variables: job_variables_attributes).execute
     end
     # rubocop: enable CodeReuse/ServiceClass
 
@@ -573,6 +576,7 @@ module Ci
           .concat(dependency_proxy_variables)
           .concat(job_jwt_variables)
           .concat(scoped_variables)
+          .concat(pages_variables)
           .concat(job_variables)
           .concat(persisted_environment_variables)
       end
@@ -652,6 +656,18 @@ module Ci
       return [] unless diffblue_cover_integration.try(:activated?)
 
       Gitlab::Ci::Variables::Collection.new(diffblue_cover_integration.ci_variables)
+    end
+
+    def pages_variables
+      ::Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        next variables unless pages_generator? && Feature.enabled?(:fix_pages_ci_variables, project)
+
+        pages_url_builder = ::Gitlab::Pages::UrlBuilder.new(project, pages)
+
+        variables
+          .append(key: 'CI_PAGES_HOSTNAME', value: pages_url_builder.hostname)
+          .append(key: 'CI_PAGES_URL', value: pages_url_builder.pages_url)
+      end
     end
 
     def features
@@ -757,7 +773,12 @@ module Ci
     end
 
     def valid_token?(token)
-      self.token && token.present? && ActiveSupport::SecurityUtils.secure_compare(token, self.token)
+      jwt = ::Ci::JobToken::Jwt.decode(token)
+      if jwt
+        jwt.job == self
+      else
+        self.token && token.present? && ActiveSupport::SecurityUtils.secure_compare(token, self.token)
+      end
     end
 
     def remove_token!
@@ -1195,6 +1216,12 @@ module Ci
       'jobs/job'
     end
 
+    def token
+      return encoded_jwt if user&.has_composite_identity? || Feature.enabled?(:ci_job_token_jwt, user)
+
+      super
+    end
+
     protected
 
     def run_status_commit_hooks!
@@ -1204,6 +1231,11 @@ module Ci
     end
 
     private
+
+    def encoded_jwt
+      ::Ci::JobToken::Jwt.encode(self)
+    end
+    strong_memoize_attr :encoded_jwt
 
     def matrix_build?
       options.dig(:parallel, :matrix).present?

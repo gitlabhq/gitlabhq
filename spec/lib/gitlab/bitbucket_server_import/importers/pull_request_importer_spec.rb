@@ -4,22 +4,26 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestImporter, feature_category: :importers do
   include AfterNextHelpers
+  include Import::UserMappingHelper
 
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:reviewer_1) { create(:user, username: 'john_smith', email: 'john@smith.com') }
-  let_it_be(:reviewer_2) { create(:user, username: 'jane_doe', email: 'jane@doe.com') }
+  let_it_be_with_reload(:project) do
+    create(:project, :repository, :bitbucket_server_import, :import_user_mapping_enabled)
+  end
+
+  # Identifiers taken from importers/bitbucket_server/pull_request.json
+  let_it_be(:author_source_user) { generate_source_user(project, 'username') }
+  let_it_be(:reviewer_1_source_user) { generate_source_user(project, 'john_smith') }
+  let_it_be(:reviewer_2_source_user) { generate_source_user(project, 'jane_doe') }
 
   let(:pull_request_data) { Gitlab::Json.parse(fixture_file('importers/bitbucket_server/pull_request.json')) }
   let(:pull_request) { BitbucketServer::Representation::PullRequest.new(pull_request_data) }
 
   subject(:importer) { described_class.new(project, pull_request.to_hash) }
 
-  describe '#execute' do
+  describe '#execute', :clean_gitlab_redis_shared_state do
     it 'imports the merge request correctly' do
       expect_next(Gitlab::Import::MergeRequestCreator, project).to receive(:execute).and_call_original
       expect_next(Gitlab::BitbucketServerImport::UserFinder, project).to receive(:author_id).and_call_original
-      expect_next(Gitlab::Import::MentionsConverter, 'bitbucket_server',
-        project).to receive(:convert).and_call_original
 
       expect { importer.execute }.to change { MergeRequest.count }.by(1)
 
@@ -30,12 +34,43 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestImporter, fe
         title: pull_request.title,
         source_branch: 'root/CODE_OF_CONDUCTmd-1530600625006',
         target_branch: 'master',
-        reviewer_ids: match_array([reviewer_1.id, reviewer_2.id]),
+        reviewer_ids: an_array_matching([reviewer_1_source_user.mapped_user_id, reviewer_2_source_user.mapped_user_id]),
         state: pull_request.state,
-        author_id: project.creator_id,
-        description: "*Created by: #{pull_request.author}*\n\n#{pull_request.description}",
+        author_id: author_source_user.mapped_user_id,
+        description: pull_request.description,
         imported_from: 'bitbucket_server'
       )
+    end
+
+    it 'pushes placeholder references', :aggregate_failures do
+      importer.execute
+
+      cached_references = placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id)
+      expect(cached_references).to contain_exactly(
+        ['MergeRequestReviewer', instance_of(Integer), 'user_id', reviewer_1_source_user.id],
+        ['MergeRequestReviewer', instance_of(Integer), 'user_id', reviewer_2_source_user.id],
+        ['MergeRequest', instance_of(Integer), 'author_id', author_source_user.id]
+      )
+    end
+
+    describe 'when handling @ username mentions' do
+      let(:original_body) { "I said to @sam_allen.greg the code should follow @bob's advice. @.ali-ce/group#9?" }
+      let(:expected_body) do
+        "I said to `@sam_allen.greg` the code should follow `@bob`'s advice. `@.ali-ce/group#9`?"
+      end
+
+      let(:pull_request_data) do
+        Gitlab::Json.parse(fixture_file('importers/bitbucket_server/pull_request.json'))
+        .merge({ "description" => original_body })
+      end
+
+      it 'inserts backticks around mentions' do
+        importer.execute
+
+        merge_request = project.merge_requests.find_by_iid(pull_request.iid)
+
+        expect(merge_request.description).to eq(expected_body)
+      end
     end
 
     describe 'refs/merge-requests/:iid/head creation' do
@@ -53,32 +88,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestImporter, fe
         expect(
           project.repository.commit("refs/#{Repository::REF_MERGE_REQUEST}/#{pull_request.iid}/head")
         ).to be_present
-      end
-    end
-
-    context 'when the `bitbucket_server_convert_mentions_to_users` flag is disabled' do
-      before do
-        stub_feature_flags(bitbucket_server_convert_mentions_to_users: false)
-      end
-
-      it 'does not convert mentions' do
-        expect_next(Gitlab::Import::MentionsConverter, 'bitbucket_server', project).not_to receive(:convert)
-
-        importer.execute
-      end
-    end
-
-    context 'when the `bitbucket_server_user_mapping_by_username` flag is disabled' do
-      before do
-        stub_feature_flags(bitbucket_server_user_mapping_by_username: false)
-      end
-
-      it 'imports reviewers correctly' do
-        importer.execute
-
-        merge_request = project.merge_requests.find_by_iid(pull_request.iid)
-
-        expect(merge_request.reviewer_ids).to match_array([reviewer_1.id, reviewer_2.id])
       end
     end
 
@@ -151,6 +160,60 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestImporter, fe
         .to receive(:info).with(include(message: 'finished', iid: pull_request.iid)).and_call_original
 
       importer.execute
+    end
+
+    context 'when user contribution mapping is disabled' do
+      let_it_be(:reviewer_1) { create(:user, username: 'john_smith', email: 'john@smith.com') }
+      let_it_be(:reviewer_2) { create(:user, username: 'jane_doe', email: 'jane@doe.com') }
+
+      before do
+        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+      end
+
+      it 'annotates the description with the source username when no matching user is found' do
+        allow_next_instance_of(Gitlab::BitbucketServerImport::UserFinder) do |finder|
+          allow(finder).to receive(:uid).and_return(nil)
+        end
+
+        importer.execute
+
+        merge_request = project.merge_requests.find_by_iid(pull_request.iid)
+
+        expect(merge_request).to have_attributes(
+          description: "*Created by: #{pull_request.author}*\n\n#{pull_request.description}"
+        )
+      end
+
+      context 'when alternate UCM flags are disabled' do
+        before do
+          stub_feature_flags(
+            bitbucket_server_user_mapping: false
+          )
+        end
+
+        it 'assigns the MR author' do
+          importer.execute
+
+          merge_request = project.merge_requests.find_by_iid(pull_request.iid)
+
+          expect(merge_request.author_id).to eq(project.creator_id)
+        end
+
+        it 'imports reviewers correctly' do
+          importer.execute
+
+          merge_request = project.merge_requests.find_by_iid(pull_request.iid)
+
+          expect(merge_request.reviewer_ids).to match_array([reviewer_1.id, reviewer_2.id])
+        end
+      end
+
+      it 'does not push placeholder references' do
+        importer.execute
+
+        cached_references = placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id)
+        expect(cached_references).to be_empty
+      end
     end
   end
 end

@@ -115,6 +115,11 @@ export default {
         issuableTypeName,
       });
     },
+    setTimeEstimateModalId() {
+      return this.workItemId
+        ? `${SET_TIME_ESTIMATE_MODAL_ID}-${this.workItemId}`
+        : SET_TIME_ESTIMATE_MODAL_ID;
+    },
   },
   watch: {
     timeTracking() {
@@ -212,7 +217,6 @@ export default {
         });
     },
   },
-  SET_TIME_ESTIMATE_MODAL_ID,
 };
 </script>
 
@@ -220,7 +224,7 @@ export default {
   <gl-modal
     ref="modal"
     :title="modalTitle"
-    :modal-id="$options.SET_TIME_ESTIMATE_MODAL_ID"
+    :modal-id="setTimeEstimateModalId"
     size="sm"
     data-testid="set-time-estimate-modal"
     :action-primary="primaryProps"

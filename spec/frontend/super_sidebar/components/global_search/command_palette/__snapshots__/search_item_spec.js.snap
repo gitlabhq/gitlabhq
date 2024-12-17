@@ -18,7 +18,7 @@ exports[`SearchItem should render the item 1`] = `
     class="gl-flex gl-flex-col"
   >
     <span
-      class="gl-text-gray-900"
+      class="gl-text-strong"
     >
       Cole Dickinson
     </span>
@@ -40,7 +40,7 @@ exports[`SearchItem should render the item 2`] = `
     class="gl-flex gl-flex-col"
   >
     <span
-      class="gl-text-gray-900"
+      class="gl-text-strong"
     >
       Manage &gt; Activity
     </span>
@@ -66,12 +66,12 @@ exports[`SearchItem should render the item 3`] = `
     class="gl-flex gl-flex-col"
   >
     <span
-      class="gl-text-gray-900"
+      class="gl-text-strong"
     >
       MockProject1
     </span>
     <span
-      class="gl-text-gray-500 gl-text-sm"
+      class="gl-text-sm gl-text-subtle"
     >
       Gitlab Org / MockProject1
     </span>
@@ -97,7 +97,7 @@ exports[`SearchItem should render the item 4`] = `
     class="gl-flex gl-flex-col"
   >
     <span
-      class="gl-text-gray-900"
+      class="gl-text-strong"
     >
       Dismiss Cipher with no integrity
     </span>

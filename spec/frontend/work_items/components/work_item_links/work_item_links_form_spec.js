@@ -9,6 +9,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemLinksForm from '~/work_items/components/work_item_links/work_item_links_form.vue';
 import WorkItemTokenInput from '~/work_items/components/shared/work_item_token_input.vue';
+import WorkItemGroupsListbox from '~/work_items/components/work_item_links/work_item_groups_listbox.vue';
 import WorkItemProjectsListbox from '~/work_items/components/work_item_links/work_item_projects_listbox.vue';
 import {
   FORM_TYPES,
@@ -132,6 +133,7 @@ describe('WorkItemLinksForm', () => {
   const findValidationElement = () => wrapper.findByTestId('work-items-invalid');
   const findWorkItemLimitValidationMessage = () => wrapper.findByTestId('work-items-limit-error');
   const findErrorMessageElement = () => wrapper.findByTestId('work-items-error');
+  const findGroupsSelector = () => wrapper.findComponent(WorkItemGroupsListbox);
   const findProjectSelector = () => wrapper.findComponent(WorkItemProjectsListbox);
 
   beforeEach(() => {
@@ -315,6 +317,26 @@ describe('WorkItemLinksForm', () => {
       });
     });
 
+    describe('for epic work item', () => {
+      beforeEach(async () => {
+        await createComponent({
+          isGroup: true,
+          parentWorkItemType: WORK_ITEM_TYPE_VALUE_EPIC,
+          childrenType: WORK_ITEM_TYPE_ENUM_EPIC,
+        });
+      });
+
+      it('renders create form with group selection', () => {
+        expect(findInput().exists()).toBe(true);
+        expect(findGroupsSelector().props()).toMatchObject({
+          fullPath: 'group-a',
+          isGroup: true,
+          selectedGroupFullPath: 'group-a',
+        });
+        expect(findAddChildButton().text()).toBe('Create epic');
+      });
+    });
+
     describe('confidentiality checkbox', () => {
       beforeEach(async () => {
         await createComponent();
@@ -376,7 +398,7 @@ describe('WorkItemLinksForm', () => {
       expect(createMutationResolver).toHaveBeenCalledWith({
         input: {
           title: 'Actually adding an epic',
-          projectPath: 'group-a',
+          namespacePath: 'group-a',
           workItemTypeId: workItemTypeIdForEpic,
           hierarchyWidget: {
             parentId: 'gid://gitlab/WorkItem/1',

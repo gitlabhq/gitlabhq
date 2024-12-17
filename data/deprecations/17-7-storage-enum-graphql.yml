@@ -1,0 +1,16 @@
+- title: "Deprecation of `STORAGE` enum in `NamespaceProjectSortEnum` GraphQL API"
+  removal_milestone: "18.0"
+  announcement_milestone: "17.7"
+  breaking_change: true
+  window: 1
+  reporter: sheldonled
+  stage: Fulfillment
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/396284
+  impact: low
+  scope: group
+  resolution_role: Developer
+  manual_task: true
+  body: |
+    The `STORAGE` enum in `NamespaceProjectSortEnum` of the GitLab GraphQL API will be removed in GitLab 18.0.
+
+    To prepare for this change, we recommend reviewing and updating your GraphQL queries that interact with the `NamespaceProjectSortEnum`. Replace any references to the `STORAGE` field with `EXCESS_REPO_STORAGE_SIZE_DESC`.

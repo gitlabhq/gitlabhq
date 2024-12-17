@@ -63,6 +63,10 @@ export const updateSettings = ({ dispatch, state }) => {
       },
     })
     .then(() => {
+      // Fixes a problem that refreshCurrentPage() does nothing when a hash is set.
+      // eslint-disable-next-line no-restricted-globals
+      history.pushState('', document.title, window.location.pathname + window.location.search);
+
       refreshCurrentPage();
     })
     .catch((err) => {

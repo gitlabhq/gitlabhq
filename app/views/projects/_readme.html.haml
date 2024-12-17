@@ -1,5 +1,7 @@
 - ref = local_assigns.fetch(:ref) { current_ref }
 - project = local_assigns.fetch(:project) { @project }
+- web_ide_button_data = web_ide_button_data({ blob: nil })
+- fork_options = fork_modal_options(@project, nil)
 - add_page_specific_style 'page_bundles/projects'
 - unless @ref.blank? ||  @repository&.root_ref == @ref
   - compare_path = project_compare_index_path(@project, from:  @repository&.root_ref, to: @ref)
@@ -7,7 +9,18 @@
 - if (readme = @repository.readme) && readme.rich_viewer
   .tree-holder.gl-mt-5
     - if params[:common_repository_blob_header_app] == 'true'
-      #js-repository-blob-header-app{ data: { project_id: @project.id, ref: ref, ref_type: @ref_type.to_s, history_link: project_commits_path(@project, @ref), breadcrumbs: breadcrumb_data_attributes, project_root_path: project_path(@project), project_path: project.full_path, compare_path: compare_path, escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref) } }
+      #js-repository-blob-header-app{ data: {
+        project_id: @project.id,
+        ref: ref,
+        ref_type: @ref_type.to_s,
+        breadcrumbs: breadcrumb_data_attributes,
+        project_root_path: project_path(@project),
+        project_path: project.full_path,
+        compare_path: compare_path,
+        web_ide_button_options: web_ide_button_data.merge(fork_options).to_json,
+        web_ide_button_default_branch: @project.default_branch_or_main,
+        escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref)
+      } }
 
     - else
       .nav-block.mt-0

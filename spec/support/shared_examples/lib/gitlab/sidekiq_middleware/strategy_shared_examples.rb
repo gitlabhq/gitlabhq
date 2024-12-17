@@ -48,7 +48,6 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
         allow(fake_duplicate_job).to receive(:check!).and_return('the jid')
         allow(fake_duplicate_job).to receive(:idempotent?).and_return(true)
         allow(fake_duplicate_job).to receive(:update_latest_wal_location!)
-        allow(fake_duplicate_job).to receive(:set_deduplicated_flag!)
         allow(fake_duplicate_job).to receive(:options).and_return({})
         job_hash = {}
 
@@ -75,7 +74,6 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
                 .and_return('the jid'))
             allow(fake_duplicate_job).to receive(:idempotent?).and_return(true)
             allow(fake_duplicate_job).to receive(:update_latest_wal_location!)
-            allow(fake_duplicate_job).to receive(:set_deduplicated_flag!)
             allow(fake_duplicate_job).to receive(:deferred?)
             job_hash = {}
 
@@ -99,7 +97,6 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
                 receive(:check!).with(time_diff.to_i + fake_duplicate_job.duplicate_key_ttl).and_return('the jid'))
               allow(fake_duplicate_job).to receive(:idempotent?).and_return(true)
               allow(fake_duplicate_job).to receive(:update_latest_wal_location!)
-              allow(fake_duplicate_job).to receive(:set_deduplicated_flag!)
               allow(fake_duplicate_job).to receive(:deferred?)
               job_hash = {}
 
@@ -130,7 +127,6 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
         schedule_result = nil
 
         allow(fake_duplicate_job).to receive(:clear_signaling_key)
-        expect(fake_duplicate_job).not_to receive(:set_deduplicated_flag!)
 
         expect { |b| schedule_result = strategy.schedule({}, &b) }.to yield_control
 
@@ -147,7 +143,6 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
         allow(fake_duplicate_job).to receive(:existing_jid).and_return('the jid')
         allow(fake_duplicate_job).to receive(:idempotent?).and_return(true)
         allow(fake_duplicate_job).to receive(:update_latest_wal_location!)
-        allow(fake_duplicate_job).to receive(:set_deduplicated_flag!)
         allow(fake_duplicate_job).to receive(:idempotency_key).and_return('abc123')
       end
 
@@ -161,7 +156,6 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
         schedule_result = nil
 
         expect(fake_duplicate_job).to receive(:idempotent?).and_return(true)
-        expect(fake_duplicate_job).to receive(:set_deduplicated_flag!).once
 
         expect { |b| schedule_result = strategy.schedule({}, &b) }.not_to yield_control
         expect(schedule_result).to be(false)
@@ -202,7 +196,6 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
       allow(fake_duplicate_job).to receive(:delete!)
       allow(fake_duplicate_job).to receive(:scheduled?) { false }
       allow(fake_duplicate_job).to receive(:options) { {} }
-      allow(fake_duplicate_job).to receive(:should_reschedule?) { false }
       allow(fake_duplicate_job).to receive(:latest_wal_locations).and_return( wal_locations )
       allow(fake_duplicate_job).to receive(:idempotency_key).and_return('abc123')
       allow(fake_duplicate_job).to receive(:strategy).and_return(:until_executed)

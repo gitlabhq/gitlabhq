@@ -1,0 +1,23 @@
+---
+table_name: remote_development_agent_configs
+classes:
+- RemoteDevelopment::RemoteDevelopmentAgentConfig
+feature_categories:
+- workspaces
+description: Remote Development Cluster Agent Configuration
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105783
+milestone: '16.0'
+gitlab_schema: gitlab_main_cell
+desired_sharding_key:
+  project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: cluster_agent_id
+        table: cluster_agents
+        sharding_key: project_id
+        belongs_to: agent
+desired_sharding_key_migration_job_name: BackfillRemoteDevelopmentAgentConfigsProjectId
+table_size: small
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164032
+removed_in_milestone: '17.7'

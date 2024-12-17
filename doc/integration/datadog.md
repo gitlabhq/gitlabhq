@@ -10,13 +10,10 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-The Datadog integration enables you to send CI/CD pipeline and job information to
-[Datadog](https://www.datadoghq.com/). The [Datadog CI Pipeline Visibility](https://www.datadoghq.com/product/ci-cd-monitoring/)
-product helps you monitor for job failures and performance issues, then troubleshoot them.
-It's based on [Webhooks](../user/project/integrations/webhooks.md),
-and only requires configuration on GitLab.
+The Datadog integration enables you to connect your GitLab projects to [Datadog](https://www.datadoghq.com/),
+synchronizing repository metadata to enrich your Datadog telemetry, have Datadog comment on Merge Requests, and send CI/CD pipeline and job information to Datadog.
 
-## Configure the integration
+## Connect your Datadog account
 
 Users with the **Administrator** role can configure the integration for the entire instance
 or for a specific project or group:
@@ -34,10 +31,26 @@ or for a specific project or group:
 1. Scroll to **Add an integration**, and select **Datadog**.
 1. Select **Active** to enable the integration.
 1. Specify the [**Datadog site**](https://docs.datadoghq.com/getting_started/site/) to send data to.
-1. Provide your Datadog **API key**.
-1. Optional. Select **Enable logs collection** to enable logs collection for the output of jobs. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346339) in GitLab 15.3.)
 1. Optional. To override the API URL used to send data directly, provide an **API URL**.
    Used only in advanced scenarios.
+1. Provide your Datadog **API key**.
+
+## Configure CI Visibility
+
+You can optionally enable [Datadog CI Visibility](https://www.datadoghq.com/product/ci-cd-monitoring/)
+to send the CI/CD pipeline and job data to Datadog. Use this feature to monitor and troubleshoot job
+failures and performance issues.
+
+For more information, see the [Datadog CI Visibility documentation](https://docs.datadoghq.com/continuous_integration/pipelines/?tab=gitlab).
+
+WARNING:
+Datadog CI Visibility is priced per committer. Using this feature might affect your Datadog bill.
+For details, see the [Datadog pricing page](https://www.datadoghq.com/pricing/?product=ci-pipeline-visibility#products).
+
+This feature is based on [Webhooks](../user/project/integrations/webhooks.md),
+and only requires configuration in GitLab:
+
+1. Optional. Select **Enable Pipeline job logs collection** to enable logs collection for the output of jobs. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346339) in GitLab 15.3.)
 1. Optional. If you use more than one GitLab instance, provide a unique **Service** name
    to differentiate between your GitLab instances.
 <!-- vale gitlab_base.Spelling = NO -->

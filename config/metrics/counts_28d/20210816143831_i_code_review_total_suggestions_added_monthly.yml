@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.code_review.i_code_review_total_suggestions_added_monthly
 description: Total number of monthly suggestions
 product_group: code_review
+product_categories:
+- code_review_workflow
 value_type: number
 status: active
 milestone: "14.3"

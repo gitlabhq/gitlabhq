@@ -55,7 +55,9 @@ module Gitlab
       # @return [Array<Symbol>]
       def public_singleton_methods_to_ignore
         # Singleton methods added by other libraries that we need to ignore.
-        Module.singleton_methods(false) + Class.singleton_methods(false)
+        Module.singleton_methods(false) +
+          Class.singleton_methods(false) +
+          [:_] # NOTE: `_` (from GettextI18nRails) is ignored because we mock it globally in fast_spec_helper
       end
     end
   end

@@ -9,6 +9,7 @@ export const groups = [
     descriptionHtml:
       '<p data-sourcepos="1:1-1:64" dir="auto">Dolorem dolorem omnis impedit cupiditate pariatur officia velit. Fusce eget orci a ipsum tempus vehicula. Donec rhoncus ante sed lacus pharetra, vitae imperdiet felis lobortis. Donec maximus dapibus orci, sit amet euismod dolor rhoncus vel. In nec mauris nibh.</p>',
     avatarUrl: 'avatar.jpg',
+    avatarLabel: 'Gitlab Org',
     descendantGroupsCount: 1,
     projectsCount: 1,
     groupMembersCount: 2,
@@ -31,6 +32,7 @@ export const groups = [
     webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/test-subgroup',
     descriptionHtml: '',
     avatarUrl: null,
+    avatarLabel: 'Gitlab Org / test subgroup',
     descendantGroupsCount: 4,
     projectsCount: 4,
     groupMembersCount: 4,

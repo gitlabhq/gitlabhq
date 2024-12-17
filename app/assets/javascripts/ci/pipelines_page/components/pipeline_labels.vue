@@ -54,7 +54,7 @@ export default {
 };
 </script>
 <template>
-  <div class="label-container gl-mt-1">
+  <div class="label-container gl-mt-1 gl-flex gl-flex-wrap gl-gap-2">
     <gl-badge
       v-if="isScheduled"
       v-gl-tooltip

@@ -9,7 +9,6 @@ description: Used to store and track the project import status when using the Im
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/0ca479d1ce0eadfcdc0e29d0e18136f5790d5b2f
 milestone: '9.3'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   project_id: projects
+table_size: small

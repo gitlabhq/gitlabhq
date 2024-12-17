@@ -49,7 +49,6 @@ module WikiActions
       end
     end
 
-    track_event :show, name: 'wiki_action'
     track_internal_event :show, name: 'view_wiki_page'
 
     helper_method :view_file_button, :diff_file_html_data

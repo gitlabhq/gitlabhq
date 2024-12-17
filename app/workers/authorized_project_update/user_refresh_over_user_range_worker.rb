@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module AuthorizedProjectUpdate
-  class UserRefreshOverUserRangeWorker # rubocop:disable Scalability/IdempotentWorker
+  class UserRefreshOverUserRangeWorker
     # This worker checks if users requires an update to their project_authorizations records.
     # This check is done via the data read from the database replica (and not from the primary).
     # If this check returns true, a completely new Sidekiq job is enqueued for a specific user

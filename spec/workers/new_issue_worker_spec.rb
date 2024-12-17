@@ -107,6 +107,36 @@ RSpec.describe NewIssueWorker, feature_category: :team_planning do
             worker.perform(issue.id, user.id, issue.class.name, true)
           end
         end
+
+        context 'when issue has multiple assignees' do
+          let_it_be(:users) do
+            users = build_list(:user, 15)
+            user_attributes = users.map { |user| user.attributes.except('id', 'otp_secret') }
+            user_ids = User.insert_all(user_attributes, returning: :id).rows.flatten
+
+            level = NotificationSetting.levels[::User::DEFAULT_NOTIFICATION_LEVEL]
+            users_global_notifications = user_ids.map do |user_id|
+              { user_id: user_id, source_id: nil, source_type: nil, level: level, created_at: Time.current }
+            end
+            NotificationSetting.insert_all(users_global_notifications)
+
+            User.id_in(user_ids)
+          end
+
+          it 'avoids N+1 database queries' do
+            new_users = create_list(:user, 2)
+            issue.assignees = new_users
+            expect(issue.reload.assignees.count).to eq(2)
+
+            control = ActiveRecord::QueryRecorder.new { worker.perform(issue.id, user.id) }
+
+            issue_assignees_attributes = users.map { |user| { user_id: user.id, issue_id: issue.id } }
+            IssueAssignee.upsert_all(issue_assignees_attributes, unique_by: [:issue_id, :user_id])
+
+            # UpdateTodoCountCacheService#QUERY_BATCH_SIZE == 10, which adds one additional query for our 15 assignees
+            expect { worker.perform(issue.id, user.id) }.not_to exceed_query_limit(control).with_threshold(1)
+          end
+        end
       end
     end
   end

@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27376) in GitLab 13.1 [with a flag](../../../administration/feature_flags.md) named `go_proxy`. Disabled by default. This feature is an [experiment](../../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27376) in GitLab 13.1 [with a flag](../../../administration/feature_flags.md) named `go_proxy`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -22,7 +22,7 @@ See [epic 3043](https://gitlab.com/groups/gitlab-org/-/epics/3043).
 With the Go proxy for GitLab, every project in GitLab can be fetched with the
 [Go proxy protocol](https://proxy.golang.org/).
 
-The Go proxy for GitLab is an [experiment](../../../policy/experiment-beta-support.md), and isn't ready for production use
+The Go proxy for GitLab is an [experiment](../../../policy/development_stages_support.md), and isn't ready for production use
 due to potential performance issues with large repositories. See [issue 218083](https://gitlab.com/gitlab-org/gitlab/-/issues/218083).
 
 GitLab doesn't display Go modules in the package registry, even if the Go proxy is enabled. See [issue 213770](https://gitlab.com/gitlab-org/gitlab/-/issues/213770).

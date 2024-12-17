@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Resource usage limits",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "rules": {
+      "type": "array",
+      "minimum": 0,
+      "description": "List of resource usage limits",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the resource usage limit"
+          },
+          "resource_key": {
+            "type": "string",
+            "description": "Lookup key to a field in the SafeRequestStore"
+          },
+          "scopes": {
+            "type": "array",
+            "description": "List of scopes for the limit",
+            "minimum": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Map of metadata pertaining to the limit"
+          },
+          "rules": {
+            "type": "array",
+            "minimum": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "selector": {
+                  "type": "string",
+                  "description": "Worker selection string, similar to Sidekiq routing"
+                },
+                "threshold": {
+                  "type": "number",
+                  "description": "Maximum resource usage value within the given window"
+                },
+                "interval": {
+                  "type": "number",
+                  "description": "Tracking window in seconds"
+                }
+              },
+              "required": [
+                "selector",
+                "threshold",
+                "interval"
+              ]
+            }
+          }
+        },
+        "required": [
+          "name",
+          "resource_key",
+          "rules",
+          "scopes"
+        ]
+      },
+      "required": [
+        "rules"
+      ]
+    }
+  }
+}

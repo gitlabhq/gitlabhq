@@ -11,7 +11,7 @@ You can create a cluster on Azure Kubernetes Service (AKS) through
 Kubernetes Terraform providers to create AKS clusters. You connect the clusters to GitLab
 by using the GitLab agent for Kubernetes.
 
-**Prerequisites:**
+**Before you begin:**
 
 - A Microsoft Azure account, with a set of configured
   [security credentials](https://learn.microsoft.com/en-us/cli/azure/authenticate-azure-cli).

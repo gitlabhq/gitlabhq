@@ -4,12 +4,8 @@
 - type_plural = _('project access tokens')
 - @force_desktop_expanded_sidebar = true
 
-.settings-section.js-search-settings-section
-  .settings-sticky-header
-    .settings-sticky-header-inner
-      %h4.gl-my-0
-        = page_title
-  %p.gl-text-secondary
+= render ::Layouts::SettingsSectionComponent.new(page_title) do |c|
+  - c.with_description do
     - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/settings/project_access_tokens.md') }
     - if current_user.can?(:create_resource_access_tokens, @project)
       = _('Generate project access tokens scoped to this project for your applications that need access to the GitLab API.')
@@ -21,32 +17,32 @@
         - link = link_to('', edit_group_path(root_group), target: '_blank', rel: 'noopener noreferrer')
         = safe_format(_('You can enable project access token creation in %{link_start}group settings%{link_end}.'), tag_pair(link, :link_start, :link_end))
       = html_escape(_('You can still use and manage existing tokens. %{link_start}Learn more.%{link_end}')) % { link_start: help_link_start, link_end: '</a>'.html_safe }
+  - c.with_body do
+    #js-new-access-token-app{ data: { access_token_type: type } }
 
-  #js-new-access-token-app{ data: { access_token_type: type } }
+    = render ::Layouts::CrudComponent.new(_('Active project access tokens'),
+      icon: 'token',
+      count: @active_access_tokens_size,
+      count_options: { class: 'js-token-count' },
+      form_options: { class: 'gl-hidden js-toggle-content js-add-new-token-form' },
+      options: { class: 'gl-mt-5 js-toggle-container js-token-card' }) do |c|
+      - c.with_actions do
+        - if current_user.can?(:create_resource_access_tokens, @project)
+          = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-toggle-button js-toggle-content', data: { testid: 'add-new-token-button' } }) do
+            = _('Add new token')
 
-  = render ::Layouts::CrudComponent.new(_('Active project access tokens'),
-    icon: 'token',
-    count: @active_access_tokens_size,
-    count_options: { class: 'js-token-count' },
-    form_options: { class: 'gl-hidden js-toggle-content js-add-new-token-form' },
-    options: { class: 'gl-mt-5 js-toggle-container js-token-card' }) do |c|
-    - c.with_actions do
-      - if current_user.can?(:create_resource_access_tokens, @project)
-        = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-toggle-button js-toggle-content', data: { testid: 'add-new-token-button' } }) do
-          = _('Add new token')
+      - c.with_form do
+        - if current_user.can?(:create_resource_access_tokens, @project)
+          = render_if_exists 'projects/settings/access_tokens/form', type: type
 
-    - c.with_form do
-      - if current_user.can?(:create_resource_access_tokens, @project)
-        = render_if_exists 'projects/settings/access_tokens/form', type: type
+      - c.with_body do
+        #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, backend_pagination: 'true', initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This project has no active access tokens.'), show_role: true } }
 
-    - c.with_body do
-      #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, backend_pagination: 'true', initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This project has no active access tokens.'), show_role: true } }
-
-  - if Feature.enabled?(:retain_resource_access_token_user_after_revoke, @project.root_ancestor)
-    .gl-mt-5
-      = render ::Layouts::CrudComponent.new(_('Inactive project access tokens'),
-        icon: 'token',
-        count: @inactive_access_tokens.size,
-        count_options: { class: 'js-token-count' }) do |c|
-        - c.with_body do
-          #js-inactive-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_inactive_access_tokens: @inactive_access_tokens.to_json, no_inactive_tokens_message: _('This project has no inactive access tokens.')} }
+    - if Feature.enabled?(:retain_resource_access_token_user_after_revoke, @project.root_ancestor)
+      .gl-mt-5
+        = render ::Layouts::CrudComponent.new(_('Inactive project access tokens'),
+          icon: 'token',
+          count: @inactive_access_tokens.size,
+          count_options: { class: 'js-token-count' }) do |c|
+          - c.with_body do
+            #js-inactive-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_inactive_access_tokens: @inactive_access_tokens.to_json, no_inactive_tokens_message: _('This project has no inactive access tokens.')} }

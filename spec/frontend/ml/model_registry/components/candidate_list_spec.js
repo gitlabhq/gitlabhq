@@ -5,8 +5,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import CandidateList from '~/ml/model_registry/components/candidate_list.vue';
-import SearchableList from '~/ml/model_registry/components/searchable_list.vue';
-import CandidateListRow from '~/ml/model_registry/components/candidate_list_row.vue';
+import SearchableTable from '~/ml/model_registry/components/searchable_table.vue';
 import getModelCandidatesQuery from '~/ml/model_registry/graphql/queries/get_model_candidates.query.graphql';
 import { GRAPHQL_PAGE_SIZE } from '~/ml/model_registry/constants';
 import {
@@ -22,8 +21,7 @@ describe('ml/model_registry/components/candidate_list.vue', () => {
   let wrapper;
   let apolloProvider;
 
-  const findSearchableList = () => wrapper.findComponent(SearchableList);
-  const findAllRows = () => wrapper.findAllComponents(CandidateListRow);
+  const findSearchableTable = () => wrapper.findComponent(SearchableTable);
 
   const mountComponent = ({
     props = {},
@@ -37,6 +35,9 @@ describe('ml/model_registry/components/candidate_list.vue', () => {
       propsData: {
         modelId: 'gid://gitlab/Ml::Model/2',
         ...props,
+      },
+      stubs: {
+        SearchableTable,
       },
     });
   };
@@ -66,7 +67,7 @@ describe('ml/model_registry/components/candidate_list.vue', () => {
     });
 
     it('is displayed', () => {
-      expect(findSearchableList().props('errorMessage')).toBe(
+      expect(findSearchableTable().props('errorMessage')).toBe(
         'Failed to load model candidates with error: Failure!',
       );
     });
@@ -83,21 +84,15 @@ describe('ml/model_registry/components/candidate_list.vue', () => {
     });
 
     it('Passes items to list', () => {
-      expect(findSearchableList().props('items')).toEqual(graphqlCandidates);
+      expect(findSearchableTable().props('candidates')).toEqual(graphqlCandidates);
     });
 
     it('displays package version rows', () => {
-      expect(findAllRows()).toHaveLength(graphqlCandidates.length);
+      expect(findSearchableTable().props('candidates')).toHaveLength(graphqlCandidates.length);
     });
 
     it('binds the correct props', () => {
-      expect(findAllRows().at(0).props()).toMatchObject({
-        candidate: expect.objectContaining(graphqlCandidates[0]),
-      });
-
-      expect(findAllRows().at(1).props()).toMatchObject({
-        candidate: expect.objectContaining(graphqlCandidates[1]),
-      });
+      expect(findSearchableTable().props('candidates')).toEqual(graphqlCandidates);
     });
   });
 
@@ -114,7 +109,7 @@ describe('ml/model_registry/components/candidate_list.vue', () => {
     });
 
     it('when list emits fetch-page fetches the next set of records', async () => {
-      findSearchableList().vm.$emit('fetch-page', {
+      findSearchableTable().vm.$emit('fetch-page', {
         after: 'eyJpZCI6IjIifQ',
         first: 30,
         id: 'gid://gitlab/Ml::Model/2',

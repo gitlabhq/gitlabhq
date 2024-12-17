@@ -168,7 +168,9 @@ module ApplicationSettingImplementation
         repository_storages_weighted: { 'default' => 100 },
         require_admin_approval_after_user_signup: true,
         require_two_factor_authentication: false,
-        resource_token_expiry_inherited_members: true,
+        resource_usage_limits: {},
+        resource_access_token_notify_inherited: false,
+        lock_resource_access_token_notify_inherited: false,
         restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
         rsa_key_restriction: default_min_key_size(:rsa),
         session_expire_delay: Settings.gitlab['session_expire_delay'],
@@ -301,7 +303,8 @@ module ApplicationSettingImplementation
         require_personal_access_token_expiry: true,
         pages_extra_deployments_default_expiry_seconds: 86400,
         scan_execution_policies_action_limit: 10,
-        seat_control: 0
+        seat_control: 0,
+        show_migrate_from_jenkins_banner: true
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

@@ -6,7 +6,7 @@ module QA
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
 
-      let(:api_client) { Runtime::UserStore.default_api_client }
+      let(:api_client) { Runtime::User::Store.default_api_client }
       let(:personal_access_token) { api_client.personal_access_token }
       let(:group_id) { 'com.gitlab.qa' }
       let(:artifact_id) { "maven-#{SecureRandom.hex(8)}" }

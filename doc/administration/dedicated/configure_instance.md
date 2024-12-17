@@ -263,10 +263,18 @@ connections made from the tenant instance are directed through the PrivateLink i
 
 ### Private hosted zones
 
-You can use a private hosted zone (PHZ) if:
+A private hosted zone (PHZ) creates custom DNS aliases (CNAMEs) that resolve in your GitLab Dedicated instance's network. 
 
-- You have multiple DNS names or aliases that will be accessed using a single endpoint. For example, if you are running a reverse proxy to connect to more than one service in your environment.
-- The domain you want to use is not public and cannot be validated for use by private DNS.
+Use a PHZ when you want to:
+
+- Create multiple DNS names or aliases that use a single endpoint, such as when running a reverse proxy to connect to multiple services.
+- Use a private domain that cannot be validated by public DNS.
+
+PHZs are commonly used with reverse PrivateLink to create readable domain names instead of using AWS-generated endpoint names. For example, you can use `alpha.beta.tenant.gitlab-dedicated.com` instead of `vpce-0987654321fedcba0-k99y1abc.vpce-svc-0a123bcd4e5f678gh.eu-west-1.vpce.amazonaws.com`.
+
+In some cases, you can also use PHZs to create aliases that resolve to publicly accessible DNS names. For example, you can create an internal DNS name that resolves to a public endpoint when you need internal systems to access a service through its private name.
+
+#### PHZ domain structure
 
 When using your GitLab Dedicated instance's domain as part of an alias, you must include two subdomains before the main domain, where:
 
@@ -309,7 +317,7 @@ If you are unable to use Switchboard to add a private hosted zone, you can open 
 
 ## Custom certificates
 
-In some cases, the GitLab Dedicated instance can't reach an internal service you own because it exposes a certificate that can't be validated using a public Certification Authority (CA). In these cases, custom certificates are required.
+Custom certificates establish trust between your GitLab Dedicated instance and certificates signed by non-public Certificate Authorities (CA). If you want to connect to a service that uses a certificate signed by a private or internal CA, you must first add that certificate to your GitLab Dedicated instance.
 
 ### Add a custom certificate with Switchboard
 

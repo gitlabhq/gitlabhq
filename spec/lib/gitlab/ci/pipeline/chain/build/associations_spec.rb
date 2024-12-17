@@ -33,6 +33,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
 
   let(:step) { described_class.new(pipeline, command) }
 
+  before do
+    project.update!(ci_pipeline_variables_minimum_override_role: :developer)
+  end
+
   shared_examples 'breaks the chain' do
     it 'returns true' do
       step.perform!
@@ -85,7 +89,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
 
   context 'when project setting restrict_user_defined_variables is enabled' do
     before do
-      project.update!(restrict_user_defined_variables: true)
+      project.update!(restrict_user_defined_variables: true, ci_pipeline_variables_minimum_override_role: :maintainer)
     end
 
     context 'when user is developer' do

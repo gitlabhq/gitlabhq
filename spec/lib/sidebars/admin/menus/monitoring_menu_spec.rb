@@ -27,13 +27,13 @@ RSpec.describe Sidebars::Admin::Menus::MonitoringMenu, feature_category: :naviga
       context 'when grafana is enabled' do
         let(:grafana_enabled) { true }
 
-        specify { is_expected.not_to be_nil }
+        it { is_expected.not_to be_nil }
       end
 
       context 'when grafana is disabled' do
         let(:grafana_enabled) { false }
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
     end
   end

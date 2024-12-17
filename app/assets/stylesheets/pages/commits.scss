@@ -43,6 +43,7 @@
 .commit-content {
   padding-right: 10px;
   white-space: normal;
+  min-width: 0;
 
   .commit-title {
     display: flex;
@@ -64,17 +65,6 @@
     .commit-author-link {
       max-width: 19ch;
     }
-  }
-}
-
-.commit-actions {
-  .ci-status-icon svg {
-    vertical-align: text-bottom;
-  }
-
-  > .btn,
-  > .commit-sha-group {
-    margin-left: $gl-padding;
   }
 }
 
@@ -123,10 +113,6 @@
     border-top-left-radius: $gl-border-radius-base;
   }
 
-  :not(:first-child) {
-    border-left: 0;
-  }
-
   :last-child {
     border-bottom-right-radius: $gl-border-radius-base;
     border-top-right-radius: $gl-border-radius-base;
@@ -150,7 +136,7 @@
 
   &.inline-commit {
     .commit-row-title {
-      font-size: 13px;
+      font-size: $code-font-size-fixed;
     }
   }
 }
@@ -173,7 +159,7 @@
 .generic-commit-status,
 .branch-commit {
   .commit-sha {
-    color: $blue-600;
+    @apply gl-text-link;
   }
 }
 

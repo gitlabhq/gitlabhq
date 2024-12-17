@@ -10,9 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - Target roles [introduced](https://gitlab.com/gitlab-org/growth/team-tasks/-/issues/461) in GitLab 14.8 [with a flag](../administration/feature_flags.md) named `role_targeted_broadcast_messages`. Disabled by default.
-> - Theme [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83251) and background color removed in GitLab 14.10.
-
 GitLab can display two types of broadcast messages to users of a GitLab instance:
 
 - Banners
@@ -22,25 +19,37 @@ Broadcast messages can be managed using the [broadcast messages API](../api/broa
 
 ## Banners
 
-Banners are shown on the top of a page and optionally in the command line as a Git remote response.
+Banners are shown on the top of a page, and optionally in the command line as a Git remote response.
 
-![A broadcast message banner displaying a welcome message.](img/broadcast_messages_banner_v15_0.png)
+![A broadcast message banner displaying a welcome message.](img/broadcast_messages_banner_v17_7.png)
 
 ```shell
 $ git push
 ...
 remote:
-remote: **Welcome** to GitLab :wave:
+remote: **Welcome to GitLab** :wave:
 remote:
 ...
 ```
 
-If more than one banner is active at one time, they are displayed at the top of the page in order of creation. In the command line, only the latest banner is shown.
+If more than one banner is active at one time, they are displayed at the top of the page in order of
+creation. In the command line, only the latest banner is shown.
 
 ## Notifications
 
-Notifications are shown on the bottom right of a page and can contain placeholders. A placeholder is replaced with an attribute of the active user. Placeholders must be surrounded by curly braces, for example `{{name}}`.
-The available placeholders are:
+GitLab shows notifications on the bottom right of a page. They can contain placeholders,
+which are replaced with the attributes of the current user:
+
+![A broadcast message notification using the name placeholder.](img/broadcast_messages_notification_v17_7.png)
+
+```markdown
+{{name}}, would you like to give us feedback?
+<a href="example.com">Take our survey!</a>
+```
+
+If more than one notification is active at one time, only the newest is shown.
+
+Notifications support these placeholders:
 
 - `{{email}}`
 - `{{name}}`
@@ -48,11 +57,7 @@ The available placeholders are:
 - `{{username}}`
 - `{{instance_id}}`
 
-If the user is not signed in, user related values are empty.
-
-![A broadcast message notification using the name placeholder.](img/broadcast_messages_notification_v12_10.png)
-
-If more than one notification is active at one time, only the newest is shown.
+If the user is not signed in, user-related values are empty.
 
 ## Add a broadcast message
 
@@ -61,25 +66,34 @@ To display messages to users on your GitLab instance, add a broadcast message.
 To add a broadcast message:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Messages**.
-1. Select **Add new message**.
-1. Add the text for the message to the **Message** field. You can style a message's content using Markdown, emoji, and the `a` and `br` HTML tags.
-   The `br` tag inserts a line break. The `a` HTML tag accepts `class` and `style` attributes with the following CSS properties:
-    - `color`
-    - `border`
-    - `background`
-    - `padding`
-    - `margin`
-    - `text-decoration`
+1. On the left sidebar, select **Messages**.
+1. On the right, select **Add new message**.
+1. Add your **Message** text:
+   - Message contents can include Markdown, emoji, and the `a` and `br` HTML tags.
+   - The `br` tag inserts a line break.
+   - The `a` HTML tag accepts `class` and `style` attributes with the following CSS properties:
+     - `color`
+     - `border`
+     - `background`
+     - `padding`
+     - `margin`
+     - `text-decoration`
+1. For **Type**, select `banner` or `notification`.
 1. Select a **Theme**. The default theme is `indigo`.
-1. Select the **Dismissable** checkbox to enable users to dismiss the broadcast message.
-1. Optional. Clear the **Git remote responses** checkbox to prevent broadcast messages from being displayed in the command line as Git remote responses.
-1. Optional. Select **Target roles** to only show the broadcast message to users with the selected roles. The message displays on group, subgroup, and project pages, and does not display in Git remote responses.
-1. If required, add a **Target Path** to only show the broadcast message on URLs matching that path. You can use the wildcard character `*` to match multiple URLs, for example `mygroup/myproject*`.
+1. To enable users to dismiss the broadcast message, select **Dismissable**.
+1. Optional. To skip showing the broadcast message in the command line as a Git remote response, select clear the **Git remote responses**.
+1. Optional. To show the message only to a subset of users, select **Target broadcast message**:
+   - Show to all users on all pages.
+   - Show to all users on specific matching pages.
+   - Show only to users who have specific roles on groups or project pages. This setting displays your message on
+     group, subgroup, and project pages, but does not display in Git remote responses.
+1. If required, select the **Target roles** to show the broadcast message to.
+1. If required, add a **Target Path** to only show the broadcast message on URLs matching that path.
+   Use the wildcard character `*` to match multiple URLs, like `mygroup/myproject*`.
 1. Select a date and time (UTC) for the message to start and end.
 1. Select **Add broadcast message**.
 
-When a broadcast message expires, it no longer displays in the user interface but is still listed in the
+When a broadcast message expires, it no longer displays in the user interface, but is still listed in the
 list of broadcast messages.
 
 ## Edit a broadcast message
@@ -107,15 +121,3 @@ To delete a broadcast message:
 1. From the list of broadcast messages, select the delete button for the message.
 
 When a broadcast message is deleted, it's removed from the list of broadcast messages.
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->

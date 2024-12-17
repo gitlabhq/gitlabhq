@@ -45,7 +45,55 @@ RSpec.shared_examples Integrations::BaseDataFields do
     it 'does not include certain attributes' do
       hash = model.to_database_hash
 
-      expect(hash.keys).not_to include('id', 'service_id', 'integration_id', 'created_at', 'updated_at')
+      expect(hash.keys).not_to include(
+        'id',
+        'service_id',
+        'integration_id',
+        'created_at',
+        'updated_at',
+        'instance_integration_id'
+      )
+    end
+  end
+
+  describe 'validations' do
+    context 'when integration is present' do
+      before do
+        model.integration = build(:integration)
+      end
+
+      it { is_expected.to be_valid }
+    end
+
+    context 'when instance integration is present' do
+      before do
+        model.instance_integration = build(:instance_integration)
+      end
+
+      it { is_expected.to be_valid }
+    end
+
+    context 'when both instance and non instance integrations are present' do
+      it 'validates mutual exclusion correctly' do
+        model.integration = build(:integration)
+        model.instance_integration = build(:instance_integration)
+
+        expect(model.valid?).to eq(false)
+        expect(model.errors.full_messages).to contain_exactly(
+          'Integration must be blank',
+          'Instance integration must be blank',
+          'one of integration or instance_integration must be present'
+        )
+      end
+    end
+
+    context 'when both instance and non instance integrations are missing' do
+      it 'validates presence correctly' do
+        expect(model.valid?).to eq(false)
+        expect(model.errors.full_messages).to contain_exactly(
+          'one of integration or instance_integration must be present'
+        )
+      end
     end
   end
 end

@@ -12,6 +12,7 @@ DETAILS:
 
 > - Milestones and iterations shown on issue cards [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25758) in GitLab 16.11.
 > - Ability to delete the last board in a group or project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499579) in GitLab 17.6.
+> - Minimum role to manage issue boards [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
 The issue board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
@@ -78,7 +79,7 @@ GitLab automatically loads the last board you visited.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To create a new issue board:
 
@@ -90,7 +91,7 @@ To create a new issue board:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To delete the open issue board:
 
@@ -230,7 +231,7 @@ card includes:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 When an issue is created, the system assigns a relative order value that is greater than the maximum value
 of that issue's project or top-level group. This means the issue is at the bottom of any issue list that
@@ -318,7 +319,7 @@ You can have a board with both label lists and assignee lists.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To add an assignee list:
 
@@ -344,7 +345,7 @@ milestone, giving you more freedom and visibility on the issue board.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To add a milestone list:
 
@@ -369,7 +370,7 @@ You can create lists of issues in an iteration.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To add an iteration list:
 
@@ -398,7 +399,7 @@ For a video overview, see [Epics Swimlanes Walkthrough - 13.6](https://www.youtu
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To group issues by epic in an issue board:
 
@@ -436,7 +437,7 @@ Examples:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To set a WIP limit for a list, in an issue board:
 
@@ -479,7 +480,7 @@ To open the right sidebar, select an issue card (not its title).
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 You can edit the following issue attributes in the right sidebar:
 
@@ -537,7 +538,7 @@ list view that's removed. You can always create it again later if you need.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To remove a list from an issue board:
 
@@ -550,7 +551,7 @@ To remove a list from an issue board:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 If your board is scoped to one or more attributes, go to the issues you want to add and apply the
 same attributes as your board scope.
@@ -568,7 +569,7 @@ When an issue should no longer belong to a list, you can remove it.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 The steps depend on the scope of the list:
 
@@ -583,7 +584,7 @@ the results you want. It's similar to the filtering used in the [issue tracker](
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 You can filter by the following:
 
@@ -614,7 +615,7 @@ You can move issues and lists by dragging them.
 
 Prerequisites:
 
-- You must have at least the Reporter role for a project in GitLab.
+- You must have at least the Planner role for a project in GitLab.
 
 To move an issue, select the issue card and drag it to another position in its current list or
 into a different list. Learn about possible effects in [Dragging issues between lists](#dragging-issues-between-lists).
@@ -632,7 +633,7 @@ Your issue is moved to the top of the list even if other issues are hidden by a 
 
 Prerequisites:
 
-- You must at least have the Reporter role for the project.
+- You must at least have the Planner role for the project.
 
 To move an issue to the start of the list:
 
@@ -649,7 +650,7 @@ Your issue is moved to the bottom of the list even if other issues are hidden by
 
 Prerequisites:
 
-- You must at least have the Reporter role for the project.
+- You must at least have the Planner role for the project.
 
 To move an issue to the end of the list:
 
@@ -685,7 +686,7 @@ another list. This makes it faster to reorder many issues at once.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To select and move multiple cards:
 

@@ -64,8 +64,9 @@ module API
       get '*package_name/-/*file_name', format: false do
         authorize_read_package!(project)
 
-        package = project.packages.npm
-          .by_name_and_file_name(params[:package_name], params[:file_name])
+        package = ::Packages::Npm::Package
+                    .for_projects(project)
+                    .by_name_and_file_name(params[:package_name], params[:file_name])
 
         not_found!('Package') unless package
 
@@ -97,7 +98,11 @@ module API
         if headers['Npm-Command'] == 'deprecate'
           authorize_destroy_package!(project)
 
-          ::Packages::Npm::DeprecatePackageService.new(project, declared(params)).execute(async: true)
+          response = ::Packages::Npm::EnqueueDeprecatePackageWorkerService.new(project, nil, declared(params).to_hash).execute
+
+          if response.error? && response.reason == :no_versions_to_deprecate
+            bad_request_missing_attribute!('package versions to deprecate')
+          end
         else
           authorize_create_package!(project)
 

@@ -421,7 +421,7 @@ describe('InviteMembersModal', () => {
           });
 
           it('displays the successful toastMessage', () => {
-            expect(showToast).toHaveBeenCalledWith('Members were successfully added');
+            expect(showToast).toHaveBeenCalledWith('Members were successfully added.');
           });
 
           it('does not call displaySuccessfulInvitationAlert on mount', () => {
@@ -577,7 +577,7 @@ describe('InviteMembersModal', () => {
           });
 
           it('displays the successful toastMessage', () => {
-            expect(showToast).toHaveBeenCalledWith('Members were successfully added');
+            expect(showToast).toHaveBeenCalledWith('Members were successfully added.');
           });
 
           it('does not call displaySuccessfulInvitationAlert on mount', () => {
@@ -827,7 +827,7 @@ describe('InviteMembersModal', () => {
           });
 
           it('displays the successful toastMessage', () => {
-            expect(showToast).toHaveBeenCalledWith('Members were successfully added');
+            expect(showToast).toHaveBeenCalledWith('Members were successfully added.');
           });
 
           it('does not call displaySuccessfulInvitationAlert on mount', () => {

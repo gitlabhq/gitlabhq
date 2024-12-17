@@ -8,8 +8,6 @@ description: Notes created during the review of an MR that are not yet published
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213
 milestone: '11.4'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 desired_sharding_key:
   project_id:
     references: projects
@@ -20,3 +18,4 @@ desired_sharding_key:
         sharding_key: target_project_id
         belongs_to: merge_request
 desired_sharding_key_migration_job_name: BackfillDraftNotesProjectId
+table_size: small

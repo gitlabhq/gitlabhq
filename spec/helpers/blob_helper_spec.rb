@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe BlobHelper do
   include TreeHelper
   include FakeBlobHelpers
+  include Devise::Test::ControllerHelpers
 
   describe "#sanitize_svg_data" do
     let(:input_svg_path) { File.join(Rails.root, 'spec', 'fixtures', 'unsanitized.svg') }
@@ -394,12 +395,15 @@ RSpec.describe BlobHelper do
 
   describe '#vue_blob_app_data' do
     let(:blob) { fake_blob(path: 'file.md', size: 2.megabytes) }
-    let(:project) { build_stubbed(:project) }
+    let(:project) { create(:project) }
     let(:user) { build_stubbed(:user) }
     let(:ref) { 'main' }
 
+    before do
+      allow(helper).to receive_messages(selected_branch: ref, current_user: user)
+    end
+
     it 'returns data related to blob app' do
-      allow(helper).to receive(:current_user).and_return(user)
       assign(:ref, ref)
 
       expect(helper.vue_blob_app_data(project, blob, ref)).to include({
@@ -472,6 +476,36 @@ RSpec.describe BlobHelper do
 
       expect(rendered_button).to have_selector('button.gl-button.btn.btn-md.btn-confirm.common-class.js-edit-blob-link-fork-toggler', text: 'Edit Fork')
       expect(rendered_button).to have_selector('button[data-action="edit"]')
+    end
+  end
+
+  describe '#vue_blob_header_app_data' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:blob) { fake_blob(path: 'README.md') }
+    let(:ref) { 'main' }
+    let(:ref_type) { :branch }
+    let(:breadcrumb_data) { { title: 'README.md', 'is-last': true } }
+
+    before do
+      assign(:project, project)
+      assign(:ref, ref)
+      assign(:ref_type, ref_type)
+      allow(helper).to receive(:breadcrumb_data_attributes).and_return(breadcrumb_data)
+    end
+
+    it 'returns data related to blob header' do
+      expect(helper.vue_blob_header_app_data(project, blob, ref)).to include({
+        blob_path: blob.path,
+        breadcrumbs: breadcrumb_data,
+        escaped_ref: ref,
+        history_link: project_commits_path(project, ref),
+        project_id: project.id,
+        project_root_path: project_path(project),
+        project_path: project.full_path,
+        project_short_path: project.path,
+        ref_type: ref_type.to_s,
+        ref: ref
+      })
     end
   end
 end

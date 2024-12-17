@@ -1,9 +1,0 @@
----
-name: spamcheck_runway_migration
-feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/platform/runway/team/-/issues/217
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171982
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/503265
-milestone: '17.6'
-group: group::anti-abuse
-type: gitlab_com_derisk
-default_enabled: false

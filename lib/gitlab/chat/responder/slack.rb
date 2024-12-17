@@ -16,20 +16,33 @@ module Gitlab
         #
         # output - The output to send back to Slack, as a Hash.
         def send_response(output)
-          Gitlab::HTTP.post(
+          response = Gitlab::HTTP.post(
             pipeline.chat_data.response_url,
             {
               headers: { Accept: 'application/json' },
               body: output.to_json
             }
           )
+
+          unless response.success?
+            Gitlab::AppLogger.warn(
+              message: 'Posting chat response failed',
+              error_message: response.message,
+              code: response.code
+            )
+          end
+
+          response
         end
 
         # Sends the output for a build that completed successfully.
         #
         # output - The output produced by the chat command.
         def success(output)
-          return if output.empty?
+          if output.empty?
+            Gitlab::AppLogger.info(message: 'Chat pipeline successful, but output is empty')
+            return
+          end
 
           send_response(
             text: message_text(limit_output(output)),

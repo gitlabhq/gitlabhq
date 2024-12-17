@@ -21,8 +21,8 @@ can then update the status of merge requests from outside of GitLab.
 
 With this integration, you can integrate with third-party workflow tools, like
 ServiceNow, or the custom tool of your choice. The third-party tool
-respond with an associated status. This status is then displayed as a non-blocking
-widget within the merge request to surface this status to the merge request author or reviewers
+responds with an associated status. This status is then displayed as a non-blocking
+widget within the merge request, which surfaces this status to the merge request author or reviewers
 at the merge request level itself.
 
 You can configure merge request status checks for each individual project. These are not shared between projects.

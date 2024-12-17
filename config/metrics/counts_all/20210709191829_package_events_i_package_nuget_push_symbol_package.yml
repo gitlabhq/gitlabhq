@@ -2,6 +2,8 @@
 key_path: counts.package_events_i_package_nuget_push_symbol_package
 description: A count of NuGet symbol packages that have been uploaded to the package registry
 product_group: package_registry
+product_categories:
+- package_registry
 value_type: number
 status: active
 milestone: "14.1"

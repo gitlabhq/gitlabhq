@@ -10,7 +10,7 @@ module Gitlab
       LOCK_SLEEP = 0.3.seconds.freeze
       LOCK_RETRIES = 100
 
-      DuplicatedSourceUserError = Class.new(StandardError)
+      DuplicatedUserError = Class.new(StandardError)
 
       def initialize(namespace:, import_type:, source_hostname:)
         @namespace = namespace.root_ancestor
@@ -45,7 +45,6 @@ module Gitlab
       # Finds a source user by the provided `source_user_identifier` or creates a new one
       def find_or_create_source_user(source_name:, source_username:, source_user_identifier:, cache: true)
         source_user = find_source_user(source_user_identifier)
-
         return source_user if source_user
 
         source_user = create_source_user(
@@ -77,6 +76,10 @@ module Gitlab
           end
 
           create_source_user_mapping(source_name, source_username, source_user_identifier)
+        rescue ActiveRecord::RecordInvalid => e
+          raise unless e.record.errors.where(:source_user_identifier, :taken).any? # rubocop: disable CodeReuse/ActiveRecord -- not ActiveRecord
+
+          find_source_user(source_user_identifier)
         end
       end
 
@@ -96,15 +99,15 @@ module Gitlab
           import_source_user
         end
       rescue PG::UniqueViolation, ActiveRecord::RecordNotUnique => e
-        raise DuplicatedSourceUserError.new(e.message), cause: e
+        raise DuplicatedUserError.new(e.message), cause: e
       rescue ActiveRecord::RecordInvalid => e
-        raise DuplicatedSourceUserError.new(e.message), cause: e if user_has_duplicated_errors?(e.record)
+        raise DuplicatedUserError.new(e.message), cause: e if duplicate_user_errors?(e.record)
 
         raise
       end
 
       def create_placeholder_user(import_source_user)
-        return namespace_import_user if placeholder_user_limit_exceeded?
+        return namespace_import_user if placeholder_user_limit_exceeded? || namespace.user_namespace?
 
         Gitlab::Import::PlaceholderUserCreator.new(import_source_user).execute
       end
@@ -121,10 +124,12 @@ module Gitlab
         "import:source_user_mapper:#{namespace.id}:#{import_type}:#{source_hostname}:#{source_user_identifier}"
       end
 
-      def user_has_duplicated_errors?(record)
-        attributes = %i[email username]
-        record.errors.filter { |error| error.type == :taken && attributes.include?(error.attribute) }.any?
+      # Check validation errors on User records (placeholder or import users) for non-uniqueness.
+      # rubocop: disable CodeReuse/ActiveRecord -- not ActiveRecord
+      def duplicate_user_errors?(record)
+        record.errors.where(:email, :taken).any? || record.errors.where(:username, :taken).any?
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

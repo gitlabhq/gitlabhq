@@ -1,4 +1,4 @@
-import { GlAvatar } from '@gitlab/ui';
+import { GlAvatarLabeled } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import UserItem from '~/vue_shared/components/list_selector/user_item.vue';
 
@@ -13,25 +13,26 @@ describe('UserItem spec', () => {
         data: MOCK_USER,
         ...props,
       },
+      stubs: {
+        GlAvatarLabeled,
+      },
     });
   };
 
-  const findAvatar = () => wrapper.findComponent(GlAvatar);
+  const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
   const findDeleteButton = () => wrapper.findByTestId('delete-user-btn');
 
   beforeEach(() => createComponent());
 
-  it('renders an Avatar component', () => {
-    expect(findAvatar().props('size')).toBe(32);
-    expect(findAvatar().attributes()).toMatchObject({
-      src: MOCK_USER.avatarUrl,
-      alt: MOCK_USER.name,
+  it('renders AvatarLabeled component', () => {
+    expect(findAvatarLabeled().props()).toMatchObject({
+      label: 'Admin',
+      subLabel: '@root',
     });
-  });
-
-  it('renders a name and username', () => {
-    expect(wrapper.text()).toContain('Admin');
-    expect(wrapper.text()).toContain('@root');
+    expect(findAvatarLabeled().attributes()).toMatchObject({
+      size: '32',
+      src: 'some/avatar.jpg',
+    });
   });
 
   it('does not render a delete button by default', () => {
@@ -47,7 +48,7 @@ describe('UserItem spec', () => {
     });
 
     it('emits a delete event if the delete button is clicked', () => {
-      findDeleteButton().trigger('click');
+      findDeleteButton().vm.$emit('click');
 
       expect(wrapper.emitted('delete')).toEqual([[MOCK_USER.id]]);
     });

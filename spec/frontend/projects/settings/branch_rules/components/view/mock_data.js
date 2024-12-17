@@ -67,6 +67,7 @@ export const protectionPropsMock = {
   users: usersMock,
   groups: groupsMock,
   statusChecks: statusChecksRulesMock,
+  emptyStateCopy: 'Test empty state',
 };
 
 export const protectionEmptyStatePropsMock = {

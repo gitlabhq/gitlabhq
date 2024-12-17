@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :alert_metric_image, class: 'AlertManagement::MetricImage' do
     association :alert, factory: :alert_management_alert
     url { generate(:url) }
+    project_id { alert&.project_id }
 
     trait :local do
       file_store { ObjectStorage::Store::LOCAL }

@@ -2,15 +2,16 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Merge request creation from fork', product_group: :code_review do
-      let!(:merge_request) { Resource::MergeRequestFromFork.fabricate_via_api! }
+    describe 'Merge request creation from fork', :requires_admin, product_group: :code_review do
+      let!(:user) { create(:user, :with_personal_access_token) }
+      let!(:fork) { create(:fork, user: user) }
+      let!(:merge_request) { create(:merge_request_from_fork, fork: fork) }
 
       before do
         Flow::Login.sign_in
       end
 
-      # TODO: refactor/fix - gitlab-org/quality/quality-engineering/team-tasks#3153
-      it 'can merge source branch from fork into upstream repository', :blocking, :skip_live_env,
+      it 'can merge source branch from fork into upstream repository',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347818' do
         merge_request.visit!
 

@@ -8,7 +8,7 @@ exports[`DependencyRow renders full dependency 1`] = `
     class="section-50 table-section"
   >
     <strong
-      class="gl-text-primary"
+      class="gl-text-default"
     >
       Ninject.Extensions.Factory
     </strong>
@@ -23,7 +23,7 @@ exports[`DependencyRow renders full dependency 1`] = `
     data-testid="version-pattern"
   >
     <span
-      class="gl-text-primary"
+      class="gl-text-default"
     >
       3.3.2
     </span>

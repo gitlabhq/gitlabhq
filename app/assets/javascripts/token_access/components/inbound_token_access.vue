@@ -14,6 +14,7 @@ import { __, s__, n__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import ConfirmActionModal from '~/vue_shared/components/confirm_action_modal.vue';
 import inboundRemoveProjectCIJobTokenScopeMutation from '../graphql/mutations/inbound_remove_project_ci_job_token_scope.mutation.graphql';
 import inboundRemoveGroupCIJobTokenScopeMutation from '../graphql/mutations/inbound_remove_group_ci_job_token_scope.mutation.graphql';
 import inboundUpdateCIJobTokenScopeMutation from '../graphql/mutations/inbound_update_ci_job_token_scope.mutation.graphql';
@@ -39,6 +40,11 @@ export default {
     projectsFetchError: __('There was a problem fetching the projects'),
     scopeFetchError: __('There was a problem fetching the job token scope value'),
     saveButtonTitle: __('Save Changes'),
+    removeNamespaceModalTitle: __('Remove %{namespace}'),
+    removeNamespaceModalText: s__(
+      'CICD|Are you sure you want to remove %{namespace} from the job token allowlist?',
+    ),
+    removeNamespaceModalActionText: s__('CICD|Remove group or project'),
   },
   inboundJobTokenScopeOptions: [
     {
@@ -61,6 +67,7 @@ export default {
     TokenAccessTable,
     GlFormRadioGroup,
     NamespaceForm,
+    ConfirmActionModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -70,9 +77,7 @@ export default {
     inboundJobTokenScopeEnabled: {
       query: inboundGetCIJobTokenScopeQuery,
       variables() {
-        return {
-          fullPath: this.fullPath,
-        };
+        return { fullPath: this.fullPath };
       },
       update({ project }) {
         return project.ciCdSettings.inboundJobTokenScopeEnabled;
@@ -87,18 +92,13 @@ export default {
     groupsAndProjectsWithAccess: {
       query: inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
       variables() {
-        return {
-          fullPath: this.fullPath,
-        };
+        return { fullPath: this.fullPath };
       },
       update({ project }) {
         const projects = project?.ciJobTokenScope?.inboundAllowlist?.nodes ?? [];
         const groups = project?.ciJobTokenScope?.groupsAllowlist?.nodes ?? [];
 
-        this.projectCount = projects.length;
-        this.groupCount = groups.length;
-
-        return [...groups, ...projects];
+        return { projects, groups };
       },
       error() {
         createAlert({ message: this.$options.i18n.projectsFetchError });
@@ -109,10 +109,9 @@ export default {
     return {
       inboundJobTokenScopeEnabled: null,
       isUpdating: false,
-      groupsAndProjectsWithAccess: [],
-      projectCount: 0,
+      groupsAndProjectsWithAccess: { groups: [], projects: [] },
       projectName: '',
-      groupCount: 0,
+      namespaceToRemove: null,
     };
   },
   computed: {
@@ -121,11 +120,29 @@ export default {
         anchor: 'control-job-token-access-to-your-project',
       });
     },
+    allowlist() {
+      const { groups, projects } = this.groupsAndProjectsWithAccess;
+      return [...groups, ...projects];
+    },
+    groupCount() {
+      return this.groupsAndProjectsWithAccess.groups.length;
+    },
+    projectCount() {
+      return this.groupsAndProjectsWithAccess.projects.length;
+    },
     groupCountTooltip() {
       return n__('%d group has access', '%d groups have access', this.groupCount);
     },
     projectCountTooltip() {
       return n__('%d project has access', '%d projects have access', this.projectCount);
+    },
+    isAllowlistLoading() {
+      return this.$apollo.queries.groupsAndProjectsWithAccess.loading;
+    },
+    removeNamespaceModalTitle() {
+      return sprintf(this.$options.i18n.removeNamespaceModalTitle, {
+        namespace: this.namespaceToRemove?.fullPath,
+      });
     },
   },
   methods: {
@@ -163,43 +180,25 @@ export default {
         this.isUpdating = false;
       }
     },
-    async removeItem(item) {
-      try {
-        let errors;
+    async removeItem() {
+      const { __typename, fullPath } = this.namespaceToRemove;
+      const mutation =
+        __typename === TYPENAME_GROUP
+          ? inboundRemoveGroupCIJobTokenScopeMutation
+          : inboundRemoveProjectCIJobTokenScopeMutation;
 
-        // eslint-disable-next-line no-underscore-dangle
-        if (item.__typename === TYPENAME_GROUP) {
-          const {
-            data: { ciJobTokenScopeRemoveGroup },
-          } = await this.$apollo.mutate({
-            mutation: inboundRemoveGroupCIJobTokenScopeMutation,
-            variables: {
-              projectPath: this.fullPath,
-              targetGroupPath: item.fullPath,
-            },
-          });
-          errors = ciJobTokenScopeRemoveGroup.errors;
-        } else {
-          const {
-            data: { ciJobTokenScopeRemoveProject },
-          } = await this.$apollo.mutate({
-            mutation: inboundRemoveProjectCIJobTokenScopeMutation,
-            variables: {
-              projectPath: this.fullPath,
-              targetProjectPath: item.fullPath,
-            },
-          });
-          errors = ciJobTokenScopeRemoveProject.errors;
-        }
+      const response = await this.$apollo.mutate({
+        mutation,
+        variables: { projectPath: this.fullPath, targetPath: fullPath },
+      });
 
-        if (errors.length) {
-          throw new Error(errors[0]);
-        }
-      } catch (error) {
-        createAlert({ message: error.message });
-      } finally {
-        this.refetchGroupsAndProjects();
+      const error = response.data.removeNamespace.errors[0];
+      if (error) {
+        return Promise.reject(error);
       }
+
+      this.refetchGroupsAndProjects();
+      return Promise.resolve();
     },
     refetchGroupsAndProjects() {
       this.$apollo.queries.groupsAndProjectsWithAccess.refetch();
@@ -210,7 +209,7 @@ export default {
 
 <template>
   <div class="gl-mt-5">
-    <gl-loading-icon v-if="$apollo.loading" size="md" />
+    <gl-loading-icon v-if="$apollo.queries.inboundJobTokenScopeEnabled.loading" size="md" />
     <template v-else>
       <div class="gl-font-bold">
         {{ $options.i18n.radioGroupTitle }}
@@ -258,33 +257,48 @@ export default {
         class="gl-mt-5"
       >
         <template #count>
-          <span class="gl-inline-flex gl-gap-3">
+          <gl-loading-icon v-if="isAllowlistLoading" data-testid="count-loading-icon" />
+          <template v-else>
             <span
-              v-gl-tooltip
-              :title="groupCountTooltip"
-              class="gl-inline-flex gl-items-center gl-gap-2 gl-text-sm gl-text-subtle"
+              v-gl-tooltip.d0="groupCountTooltip"
+              class="gl-cursor-default"
               data-testid="group-count"
             >
-              <gl-icon name="group" />
-              {{ groupCount }}
+              <gl-icon name="group" /> {{ groupCount }}
             </span>
             <span
-              v-gl-tooltip
-              :title="projectCountTooltip"
-              class="gl-inline-flex gl-items-center gl-gap-2 gl-text-sm gl-text-subtle"
+              v-gl-tooltip.d0="projectCountTooltip"
+              class="gl-ml-2 gl-cursor-default"
               data-testid="project-count"
             >
-              <gl-icon name="project" />
-              {{ projectCount }}
+              <gl-icon name="project" /> {{ projectCount }}
             </span>
-          </span>
+          </template>
         </template>
 
         <template #form="{ hideForm }">
           <namespace-form @saved="refetchGroupsAndProjects" @close="hideForm" />
         </template>
 
-        <token-access-table :items="groupsAndProjectsWithAccess" @removeItem="removeItem" />
+        <token-access-table
+          :items="allowlist"
+          :loading="isAllowlistLoading"
+          @removeItem="namespaceToRemove = $event"
+        />
+        <confirm-action-modal
+          v-if="namespaceToRemove"
+          modal-id="inbound-token-access-remove-confirm-modal"
+          :title="removeNamespaceModalTitle"
+          :action-fn="removeItem"
+          :action-text="$options.i18n.removeNamespaceModalActionText"
+          @close="namespaceToRemove = null"
+        >
+          <gl-sprintf :message="$options.i18n.removeNamespaceModalText">
+            <template #namespace>
+              <code>{{ namespaceToRemove.fullPath }}</code>
+            </template>
+          </gl-sprintf>
+        </confirm-action-modal>
       </crud-component>
     </template>
   </div>

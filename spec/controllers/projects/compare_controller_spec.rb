@@ -175,7 +175,7 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
           show_request
 
           expect(response).to be_successful
-          expect(assigns(:commits).length).to be == 0
+          expect(assigns(:commits).length).to eq 0
           expect(assigns(:diffs).diff_files.size).to be >= 4
         end
       end
@@ -190,8 +190,8 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
           show_request
 
           expect(response).to be_successful
-          expect(assigns(:commits).length).to be == 0
-          expect(assigns(:diffs).diff_files.size).to be == 0
+          expect(assigns(:commits).length).to eq 0
+          expect(assigns(:diffs).diff_files.size).to eq 0
         end
       end
     end

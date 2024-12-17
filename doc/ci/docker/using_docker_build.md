@@ -484,8 +484,8 @@ sudo gitlab-runner register -n \
   --docker-volumes /var/run/docker.sock:/var/run/docker.sock
 ```
 
-For complex Docker-in-Docker setups like Code Quality checks using Code Climate, you must match host and container paths for proper execution. For more details, see
-[Improve Code Quality performance with private runners](../testing/code_quality.md#improve-code-quality-performance-with-private-runners).
+For complex Docker-in-Docker setups like [Code Quality scanning using CodeClimate](../testing/code_quality_codeclimate_scanning.md), you must match host and container paths for proper execution. For more details, see
+[Use private runners for CodeClimate-based scanning](../testing/code_quality_codeclimate_scanning.md#use-private-runners).
 
 #### Enable registry mirror for `docker:dind` service
 

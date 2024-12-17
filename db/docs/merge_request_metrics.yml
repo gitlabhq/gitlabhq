@@ -9,8 +9,6 @@ description: Store various metrics for merge requests.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5986
 milestone: '8.12'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   target_project_id: projects
 table_size: large

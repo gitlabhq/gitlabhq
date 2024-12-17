@@ -10,21 +10,13 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-It is very common that a [CI/CD pipeline](../pipelines/index.md) contains a
-test job that verifies your code.
-If the tests fail, the pipeline fails and users get notified. The person that
-works on the merge request has to check the job logs and see where the
-tests failed so that they can fix them.
+You can configure your [CI/CD pipeline](../pipelines/index.md) to display unit test results directly in merge requests and pipeline details.
+This makes it easier to identify test failures without searching through job logs.
 
-You can configure your job to use Unit test reports, and GitLab displays a
-report on the merge request so that it's easier and faster to identify the
-failure without having to check the entire log. Unit test reports currently
-only support test reports in the JUnit report format.
+Unit test reports:
 
-If you don't use merge requests but still want to see the unit test report
-output without searching through job logs, the full
-[Unit test reports](#view-unit-test-reports-on-gitlab) are available
-in the pipeline detail view.
+- Require the JUnit report format.
+- Do not affect the job status. To make a job fail when unit tests fail, your job's [script](../yaml/index.md#script) must exit with a non-zero status.
 
 Consider the following workflow:
 

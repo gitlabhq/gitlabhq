@@ -9,7 +9,7 @@ module Gitlab
     REPLACE_SIGNALS = %w[INT TERM].freeze
 
     SIDEKIQ_CHANGED_MESSAGE =
-      "Intercepting signal handlers: #{REPLACE_SIGNALS.join(", ")} failed. " \
+      "Intercepting signal handlers: #{REPLACE_SIGNALS.join(', ')} failed. " \
       "Sidekiq should have registered them, but appears not to have done so."
 
     def self.install!(sidekiq_handlers)

@@ -96,7 +96,8 @@ export default {
       <gl-icon
         v-if="page.children.length"
         :name="isCollapsed ? 'chevron-right' : 'chevron-down'"
-        class="gl-absolute gl-right-2 gl-ml-2 gl-text-secondary"
+        class="gl-absolute gl-right-2 gl-ml-2"
+        variant="subtle"
       />
     </span>
     <ul v-if="page.children.length && !isCollapsed" dir="auto" class="!gl-pl-5">

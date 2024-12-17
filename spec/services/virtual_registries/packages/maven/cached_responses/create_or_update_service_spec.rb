@@ -33,7 +33,6 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponses::CreateOrUpda
           expect(last_cached_response).to have_attributes(
             group_id: registry.group.id,
             upstream_checked_at: Time.zone.now,
-            downloaded_at: Time.zone.now,
             relative_path: "/#{path}",
             upstream_etag: etag,
             content_type: content_type,
@@ -44,6 +43,32 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponses::CreateOrUpda
       end
 
       it_behaves_like 'creating a new cached response'
+
+      context 'with a nil content_type' do
+        let(:params) { super().merge(content_type: nil) }
+
+        it 'creates a cached response with a default content_type' do
+          expect { execute }.to change { upstream.cached_responses.count }.by(1)
+          expect(execute).to be_success
+
+          expect(upstream.cached_responses.last).to have_attributes(content_type: 'application/octet-stream')
+        end
+      end
+
+      context 'with an error' do
+        it 'returns an error response and log the error' do
+          expect(::VirtualRegistries::Packages::Maven::CachedResponse)
+            .to receive(:create_or_update_by!).and_raise(ActiveRecord::RecordInvalid)
+          expect(::Gitlab::ErrorTracking).to receive(:track_exception)
+            .with(
+              instance_of(ActiveRecord::RecordInvalid),
+              upstream_id: upstream.id,
+              group_id: upstream.group_id,
+              class: described_class.name
+            )
+          expect { execute }.not_to change { upstream.cached_responses.count }
+        end
+      end
 
       context 'in FIPS mode', :fips_mode do
         it_behaves_like 'creating a new cached response', with_md5: nil
@@ -72,7 +97,6 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponses::CreateOrUpda
           expect(execute.payload).to eq(cached_response: last_cached_response)
 
           expect(last_cached_response).to have_attributes(
-            downloaded_at: Time.zone.now,
             upstream_checked_at: Time.zone.now,
             upstream_etag: etag
           )

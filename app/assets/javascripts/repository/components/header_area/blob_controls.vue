@@ -26,7 +26,6 @@ export default {
   i18n: {
     findFile: __('Find file'),
     blame: __('Blame'),
-    history: __('History'),
     permalink: __('Permalink'),
     permalinkTooltip: __('Go to permalink'),
     errorMessage: __('An error occurred while loading the blob controls.'),
@@ -71,22 +70,7 @@ export default {
   },
   data() {
     return {
-      project: {
-        repository: {
-          blobs: {
-            nodes: [
-              {
-                findFilePath: null,
-                blamePath: null,
-                historyPath: null,
-                permalinkPath: null,
-                storedExternally: null,
-                externalStorage: null,
-              },
-            ],
-          },
-        },
-      },
+      project: {},
     };
   },
   computed: {
@@ -155,9 +139,8 @@ export default {
   },
 };
 </script>
-
 <template>
-  <div v-if="showBlobControls" class="gl-flex gl-items-baseline gl-gap-3">
+  <div v-if="showBlobControls" class="gl-flex gl-flex-wrap gl-items-baseline gl-gap-3">
     <gl-button
       v-gl-tooltip.html="findFileTooltip"
       :aria-keyshortcuts="findFileShortcutKey"
@@ -175,10 +158,6 @@ export default {
       class="js-blob-blame-link"
     >
       {{ $options.i18n.blame }}
-    </gl-button>
-
-    <gl-button data-testid="history" :href="blobInfo.historyPath" :class="$options.buttonClassList">
-      {{ $options.i18n.history }}
     </gl-button>
 
     <gl-button

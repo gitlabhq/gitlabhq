@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.ecosystem.i_ecosystem_jira_service_cross_reference_monthly
 description: Number of users that cross-referenced Jira issues by month
 product_group: import_and_integrate
+product_categories:
+- integrations
 value_type: number
 status: active
 time_frame: 28d

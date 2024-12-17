@@ -12,7 +12,7 @@ class DropUserCanonicalEmailsTable < Gitlab::Database::Migration[2.2]
     create_table :user_canonical_emails do |t|
       t.timestamps_with_timezone
       t.references :user, index: false, null: false, foreign_key: { on_delete: :cascade }
-      t.string :canonical_email, null: false, index: true # rubocop:disable Migration/AddLimitToStringColumns -- limit ignored in original migration
+      t.string :canonical_email, null: false, index: true
     end
 
     add_index :user_canonical_emails, [:user_id, :canonical_email], unique: true

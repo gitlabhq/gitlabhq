@@ -7,6 +7,8 @@ identifiers:
 - user
 - namespace
 product_group: import_and_integrate
+product_categories:
+- integrations
 milestone: "15.3"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93468
 distributions:

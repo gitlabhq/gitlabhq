@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlDisclosureDropdown, GlDisclosureDropdownGroup } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlDisclosureDropdownGroup, GlLink } from '@gitlab/ui';
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import Breadcrumbs from '~/repository/components/header_area/breadcrumbs.vue';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
@@ -57,6 +57,7 @@ describe('Repository breadcrumbs component', () => {
       apolloProvider,
       provide: {
         projectRootPath: TEST_PROJECT_PATH,
+        isBlobView: extraProps.isBlobView,
       },
       propsData: {
         currentPath,
@@ -79,7 +80,7 @@ describe('Repository breadcrumbs component', () => {
   const findDropdownGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
   const findUploadBlobModal = () => wrapper.findComponent(UploadBlobModal);
   const findNewDirectoryModal = () => wrapper.findComponent(NewDirectoryModal);
-  const findRouterLink = () => wrapper.findAllComponents(RouterLinkStub);
+  const findRouterLinks = () => wrapper.findAllComponents(GlLink);
 
   beforeEach(() => {
     permissionsQuerySpy = jest.fn().mockResolvedValue(createPermissionsQueryResponse());
@@ -105,7 +106,7 @@ describe('Repository breadcrumbs component', () => {
   `('renders $linkCount links for path $path', ({ path, linkCount }) => {
     factory(path);
 
-    expect(findRouterLink().length).toEqual(linkCount);
+    expect(findRouterLinks().length).toEqual(linkCount);
   });
 
   it.each`
@@ -118,20 +119,20 @@ describe('Repository breadcrumbs component', () => {
     'links to the correct router path when routeName is $routeName',
     ({ routeName, path, linkTo }) => {
       factory(path, {}, { name: routeName });
-      expect(findRouterLink().at(3).props('to')).toEqual(linkTo);
+      expect(findRouterLinks().at(3).attributes('to')).toEqual(linkTo);
     },
   );
 
   it('escapes hash in directory path', () => {
     factory('app/assets/javascripts#');
 
-    expect(findRouterLink().at(3).props('to')).toEqual('/-/tree/app/assets/javascripts%23');
+    expect(findRouterLinks().at(3).attributes('to')).toEqual('/-/tree/app/assets/javascripts%23');
   });
 
   it('renders last link as active', () => {
     factory('app/assets');
 
-    expect(findRouterLink().at(2).attributes('aria-current')).toEqual('page');
+    expect(findRouterLinks().at(2).attributes('aria-current')).toEqual('page');
   });
 
   it('does not render add to tree dropdown when permissions are false', async () => {
@@ -195,9 +196,20 @@ describe('Repository breadcrumbs component', () => {
     });
 
     it('renders the modal once loaded', async () => {
-      await nextTick();
+      await waitForPromises();
 
       expect(findUploadBlobModal().exists()).toBe(true);
+      expect(findUploadBlobModal().props()).toStrictEqual({
+        canPushCode: false,
+        canPushToBranch: false,
+        commitMessage: 'Upload New File',
+        emptyRepo: false,
+        modalId: 'modal-upload-blob',
+        originalBranch: '',
+        path: '',
+        replacePath: null,
+        targetBranch: '',
+      });
     });
   });
 
@@ -210,7 +222,7 @@ describe('Repository breadcrumbs component', () => {
     });
 
     it('renders the modal once loaded', async () => {
-      await nextTick();
+      await waitForPromises();
 
       expect(findNewDirectoryModal().exists()).toBe(true);
       expect(findNewDirectoryModal().props('path')).toBe('root/master/some_dir');
@@ -242,6 +254,20 @@ describe('Repository breadcrumbs component', () => {
       await waitForPromises();
 
       expect(findDropdownGroup().exists()).toBe(false);
+    });
+  });
+
+  describe('link rendering', () => {
+    it('passes `href` to GlLink when isBlobView is true', () => {
+      factory('/', { isBlobView: true });
+
+      expect(findRouterLinks().at(0).attributes('href')).toBe('/test-project/path/-/tree');
+    });
+
+    it('passes `to` to GlLink when isBlobView is false', () => {
+      factory('/', { isBlobView: false });
+
+      expect(findRouterLinks().at(0).attributes('to')).toBe('/-/tree');
     });
   });
 });

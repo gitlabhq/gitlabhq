@@ -20,11 +20,11 @@ module QA
       end
 
       def fabricate_via_api!
-        raise Runtime::UserStore::InvalidTokenError, "Admin api client is missing" unless api_client
+        raise Runtime::User::InvalidTokenError, "Admin api client is missing" unless api_client
 
         super
         self.api_client = Runtime::API::Client.new(personal_access_token: token)
-      rescue Runtime::UserStore::InvalidTokenError, NoValueError
+      rescue Runtime::User::InvalidTokenError, NoValueError
         # fabricate via UI if admin token is not present or not valid or user_id is not set
         fabricate!
       end
@@ -35,7 +35,11 @@ module QA
           usr.password = password || raise("password is required for personal access token fabrication via UI")
         end
 
-        Flow::Login.sign_in_unless_signed_in(user: user)
+        already_signed_in = Page::Main::Menu.perform do |menu|
+          menu.signed_in_as_user?(user)
+        end
+
+        Flow::Login.sign_in(as: user) unless already_signed_in
 
         Page::Main::Menu.perform(&:click_edit_profile_link)
         Page::Profile::Menu.perform(&:click_access_tokens)
@@ -51,6 +55,9 @@ module QA
           self.api_client = Runtime::API::Client.new(personal_access_token: token)
           self.id = parse_body(api_get_from("/personal_access_tokens", q_params: { search: name })).first[:id]
         end
+
+        # keep the user signed in if they were already signed in when fabrication was performed
+        Page::Main::Menu.perform(&:sign_out) unless already_signed_in
 
         reload!
       end

@@ -5,7 +5,7 @@ module Ci
     class CreatePipelineWorker # rubocop:disable Scalability/IdempotentWorker
       include ApplicationWorker
 
-      data_consistency :always
+      data_consistency :sticky
       queue_namespace :pipeline_creation
       feature_category :pipeline_composition
       urgency :high

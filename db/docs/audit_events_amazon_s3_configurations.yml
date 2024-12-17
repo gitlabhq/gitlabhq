@@ -8,7 +8,6 @@ description: Stores Amazon S3 configurations associated used for audit event str
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/333371
 milestone: '16.4'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   namespace_id: namespaces
+table_size: small

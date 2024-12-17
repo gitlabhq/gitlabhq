@@ -17,7 +17,7 @@
             %hr
           = f.hidden_field :favicon_cache
           = f.file_field :favicon, class: '', accept: 'image/*'
-          .form-text.gl-text-secondary
+          .form-text.gl-text-subtle
             = _("Maximum file size is 1 MB. Image size must be 32 x 32 pixels. Allowed image formats are %{favicon_extension_allowlist}.") % { favicon_extension_allowlist: favicon_extension_allowlist }
             %br
             = _("Images with incorrect dimensions are not resized automatically, and may result in unexpected behavior.")
@@ -30,7 +30,7 @@
         = f.label :member_guidelines, class: 'col-form-label'
         %p
           = f.text_area :member_guidelines, class: "form-control gl-form-input", rows: 10
-          .form-text.gl-text-secondary
+          .form-text.gl-text-subtle
             = parsed_with_gfm
 
   = render ::Layouts::SettingsSectionComponent.new(_('Navigation bar')) do |c|
@@ -47,9 +47,8 @@
             %hr
           = f.hidden_field :header_logo_cache
           = f.file_field :header_logo, class: "", accept: 'image/*'
-          .form-text.gl-text-secondary
+          .form-text.gl-text-subtle
             = _('Maximum file size is 1MB. Pages are optimized for a 24px tall header logo')
-
 
   = render ::Layouts::SettingsSectionComponent.new(_('New project pages')) do |c|
     - c.with_body do
@@ -57,7 +56,7 @@
         = f.label :new_project_guidelines, class: 'col-form-label'
         %p
           = f.text_area :new_project_guidelines, class: "form-control gl-form-input", rows: 10
-          .form-text.gl-text-secondary
+          .form-text.gl-text-subtle
             = parsed_with_gfm
 
   = render ::Layouts::SettingsSectionComponent.new(_('Profile image guidelines')) do |c|
@@ -68,7 +67,7 @@
         = f.label :profile_image_guidelines, class: 'col-form-label'
         %p
           = f.text_area :profile_image_guidelines, class: "form-control gl-form-input", rows: 10
-          .form-text.gl-text-secondary
+          .form-text.gl-text-subtle
             = parsed_with_gfm
 
   = render ::Layouts::SettingsSectionComponent.new(_('Progressive Web App (PWA)')) do |c|
@@ -82,7 +81,7 @@
       .form-group
         = f.label _("Description"), class: 'col-form-label'
         = f.text_area :pwa_description, class: "form-control gl-form-input", rows: 10
-        .form-text.gl-text-secondary
+        .form-text.gl-text-subtle
           = parsed_with_gfm
       .form-group
         = f.label :pwa_icon, class: 'col-form-label  gl-pt-0'
@@ -96,7 +95,7 @@
             %hr
           = f.hidden_field :pwa_icon_cache
           = f.file_field :pwa_icon, class: "", accept: 'image/*'
-          .form-text.gl-text-secondary
+          .form-text.gl-text-subtle
             = _('Maximum file size is 1MB.')
 
   = render ::Layouts::SettingsSectionComponent.new(_('Sign in/Sign up pages')) do |c|
@@ -107,7 +106,7 @@
       .form-group
         = f.label :description, class: 'col-form-label'
         = f.text_area :description, class: "form-control gl-form-input", rows: 10
-        .form-text.gl-text-secondary
+        .form-text.gl-text-subtle
           = parsed_with_gfm
       .form-group
         = f.label :logo, class: 'col-form-label  gl-pt-0'
@@ -121,7 +120,7 @@
             %hr
           = f.hidden_field :logo_cache
           = f.file_field :logo, class: "", accept: 'image/*'
-          .form-text.gl-text-secondary
+          .form-text.gl-text-subtle
             = _('Maximum file size is 1 MB. Pages are optimized for a 128x128 px logo.')
 
   = render partial: 'admin/application_settings/appearances/system_header_footer_form', locals: { form: f }
@@ -134,7 +133,7 @@
         = link_to _('New project page'), new_project_path, class: 'btn', target: '_blank', rel: 'noopener noreferrer'
 
       - if @appearance.updated_at
-        %span.gl-float-right.gl-text-secondary
+        %span.gl-float-right.gl-text-subtle
           = s_('AppearanceSettings|Last edit')
           #{time_ago_with_tooltip(@appearance.updated_at)}
 

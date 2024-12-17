@@ -27,8 +27,6 @@ namespace :gitlab do
         add_merge_request_shas(project, csv)
         add_merge_request_diff_shas(project, csv)
         add_note_shas(project, csv)
-        add_sent_notification_shas(project, csv)
-        add_todo_shas(project, csv)
 
         logger.info "Keep-around orphan report complete"
       end
@@ -77,19 +75,6 @@ namespace :gitlab do
           note.shas.each do |sha|
             add_match(csv, sha)
           end
-        end
-      end
-    end
-
-    def add_sent_notification_shas(_project, _csv)
-      logger.warn "Sent notifications will not be included."
-    end
-
-    def add_todo_shas(project, csv)
-      logger.info "Checking todo shas..."
-      Todo.where(project: project).each_batch(of: 1000) do |b|
-        b.where.not(commit_id: nil).select(:commit_id).each do |todo|
-          add_match(csv, todo.commit_id)
         end
       end
     end

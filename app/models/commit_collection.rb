@@ -175,14 +175,12 @@ class CommitCollection
   end
 
   def committer_emails_for(commits, include_author_when_signed: false)
-    commit_author_change_enabled = ::Feature.enabled?(:web_ui_commit_author_change, project)
-
-    if include_author_when_signed && commit_author_change_enabled
+    if include_author_when_signed
       commits.each(&:signature) # preload signatures
     end
 
     commits.filter_map do |commit|
-      if include_author_when_signed && commit_author_change_enabled && commit.signature&.verified_system?
+      if include_author_when_signed && commit.signature&.verified_system?
         commit.author_email
       else
         commit.committer_email

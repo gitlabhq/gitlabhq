@@ -540,7 +540,7 @@ For example:
 
 ```ruby
 field :tags,
-  Types::ContainerRepositoryTagType.connection_type,
+  Types::ContainerRegistry::ContainerRepositoryTagType.connection_type,
   null: true,
   description: 'Tags of the container repository',
   max_page_size: 20
@@ -906,7 +906,7 @@ The documentation mentions that the old Global ID style is now deprecated.
 ## Mark schema items as experiments
 
 You can mark GraphQL schema items (fields, arguments, enum values, and mutations) as
-[experiments](../policy/experiment-beta-support.md#experiment).
+[experiments](../policy/development_stages_support.md#experiment).
 
 An item marked as an experiment is
 [exempt from the deprecation process](../api/graphql/index.md#breaking-change-exemptions) and can be
@@ -2201,19 +2201,21 @@ Also see the [description style guide for sort enums](#sort-enums).
 Example from [`ContainerRepositoriesResolver`](https://gitlab.com/gitlab-org/gitlab/-/blob/dad474605a06c8ed5404978b0a9bd187e9fded80/app/graphql/resolvers/container_repositories_resolver.rb#L13-16):
 
 ```ruby
-# Types::ContainerRepositorySortEnum:
+# Types::ContainerRegistry::ContainerRepositorySortEnum:
 module Types
-  class ContainerRepositorySortEnum < SortEnum
-    graphql_name 'ContainerRepositorySort'
-    description 'Values for sorting container repositories'
+  module ContainerRegistry
+    class ContainerRepositorySortEnum < SortEnum
+      graphql_name 'ContainerRepositorySort'
+      description 'Values for sorting container repositories'
 
-    value 'NAME_ASC', 'Name by ascending order.', value: :name_asc
-    value 'NAME_DESC', 'Name by descending order.', value: :name_desc
+      value 'NAME_ASC', 'Name by ascending order.', value: :name_asc
+      value 'NAME_DESC', 'Name by descending order.', value: :name_desc
+    end
   end
 end
 
 # Resolvers::ContainerRepositoriesResolver:
-argument :sort, Types::ContainerRepositorySortEnum,
+argument :sort, Types::ContainerRegistry::ContainerRepositorySortEnum,
           description: 'Sort container repositories by this criteria.',
           required: false,
           default_value: :created_desc

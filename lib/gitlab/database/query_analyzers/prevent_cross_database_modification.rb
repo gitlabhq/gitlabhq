@@ -118,8 +118,8 @@ module Gitlab
 
           unless ::Gitlab::Database::GitlabSchema.cross_transactions_allowed?(schemas, all_tables)
             messages = []
-            messages << "Cross-database data modification of '#{schemas.to_a.join(", ")}' were detected within " \
-                        "a transaction modifying the '#{all_tables.to_a.join(", ")}' tables. "
+            messages << "Cross-database data modification of '#{schemas.to_a.join(', ')}' were detected within " \
+                        "a transaction modifying the '#{all_tables.to_a.join(', ')}' tables. "
             messages << "Please refer to https://docs.gitlab.com/ee/development/database/multiple_databases.html#removing-cross-database-transactions " \
                         "for details on how to resolve this exception."
             messages += cleaned_queries

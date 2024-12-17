@@ -6,7 +6,7 @@ RSpec.describe ::Gitlab::Graphql::Authorize::ObjectAuthorization do
   describe '#ok?' do
     subject(:authorization) { described_class.new(%i[go_fast go_slow]) }
 
-    let(:user) { double(:User, id: 10001) }
+    let_it_be(:user) { create(:user) }
     let(:scope_validator) { instance_double(::Gitlab::Auth::ScopeValidator, valid_for?: true) }
 
     let(:policy) do

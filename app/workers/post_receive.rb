@@ -174,15 +174,10 @@ class PostReceive
 
   # Schedule an update for the repository size and commit count if necessary.
   def enqueue_project_cache_update(post_received, project)
-    stats_to_invalidate = [:repository_size]
-    stats_to_invalidate << :commit_count if post_received.includes_default_branch?
+    stats_to_invalidate = %w[repository_size]
+    stats_to_invalidate << 'commit_count' if post_received.includes_default_branch?
 
-    ProjectCacheWorker.perform_async(
-      project.id,
-      [],
-      stats_to_invalidate,
-      true
-    )
+    ProjectCacheWorker.perform_async(project.id, [], stats_to_invalidate, true)
   end
 
   def process_ref_changes(project, user, params = {})

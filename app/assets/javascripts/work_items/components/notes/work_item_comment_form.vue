@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlFormCheckbox, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
@@ -13,8 +13,10 @@ import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import { findWidget } from '~/issues/list/utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import WorkItemStateToggle from '~/work_items/components/work_item_state_toggle.vue';
 import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
+import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import workItemEmailParticipantsByIidQuery from '../../graphql/notes/work_item_email_participants_by_iid.query.graphql';
 
 const DOCS_WORK_ITEM_LOCKED_TASKS_PATH = helpPagePath('user/tasks.html', {
@@ -34,7 +36,7 @@ export default {
   i18n: {
     internal: s__('Notes|Make this an internal note'),
     internalVisibility: s__(
-      'Notes|Internal notes are only visible to members with the role of Reporter or higher',
+      'Notes|Internal notes are only visible to members with the role of Planner or higher',
     ),
     addInternalNote: __('Add internal note'),
     cancelButtonText: __('Cancel'),
@@ -47,7 +49,7 @@ export default {
     GlButton,
     MarkdownEditor,
     GlFormCheckbox,
-    GlIcon,
+    HelpIcon,
     WorkItemStateToggle,
   },
   directives: {
@@ -161,6 +163,7 @@ export default {
       isNoteInternal: false,
       toggleResolveChecked: this.isDiscussionResolved,
       emailParticipants: [],
+      workItem: {},
     };
   },
   computed: {
@@ -203,6 +206,12 @@ export default {
     resolveCheckboxLabel() {
       return this.isDiscussionResolved ? __('Unresolve thread') : __('Resolve thread');
     },
+    canMarkNoteAsInternal() {
+      return this.workItem?.userPermissions?.markNoteAsInternal;
+    },
+    showInternalNoteCheckbox() {
+      return this.canMarkNoteAsInternal && this.isNewDiscussion;
+    },
   },
   apollo: {
     emailParticipants: {
@@ -225,6 +234,24 @@ export default {
           findWidget(WIDGET_TYPE_EMAIL_PARTICIPANTS, data?.workspace?.workItem)?.emailParticipants
             ?.nodes || []
         );
+      },
+    },
+    workItem: {
+      query: workItemByIidQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          iid: this.workItemIid,
+        };
+      },
+      update(data) {
+        return data.workspace.workItem ?? {};
+      },
+      skip() {
+        return !this.workItemIid;
+      },
+      error() {
+        this.$emit('error', i18n.fetchError);
       },
     },
   },
@@ -314,18 +341,15 @@ export default {
             </label>
           </div>
           <gl-form-checkbox
-            v-if="isNewDiscussion"
+            v-if="showInternalNoteCheckbox"
             v-model="isNoteInternal"
             class="gl-mb-2"
             data-testid="internal-note-checkbox"
           >
             {{ $options.i18n.internal }}
-            <gl-icon
+            <help-icon
               v-gl-tooltip:tooltipcontainer.bottom
-              name="question-o"
-              :size="16"
               :title="$options.i18n.internalVisibility"
-              class="gl-text-blue-500"
             />
           </gl-form-checkbox>
           <div class="gl-flex gl-gap-3">

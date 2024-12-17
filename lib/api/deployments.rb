@@ -135,6 +135,7 @@ module API
           values: %w[running success failed canceled]
       end
       route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, job_token_policies: [:admin_deployments, :admin_environments]
       post ':id/deployments' do
         authorize!(:create_deployment, user_project)
         authorize!(:create_environment, user_project)

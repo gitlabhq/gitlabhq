@@ -24,7 +24,7 @@ You can use the To-Do List to track [actions](#actions-that-create-to-do-items) 
 
 To access your To-Do List:
 
-On the left sidebar, at the top, select **To-Do list** (**{task-done}**).
+On the left sidebar, at the top, select **To-Do List** (**{task-done}**).
 
 ### Search the To-Do List
 
@@ -129,12 +129,12 @@ Hi, please message @frank :incoming_envelope:
 
 If you marked a to-do item as done by mistake, you can re-add it from the **Done** tab:
 
-1. On the left sidebar, at the top, select To-Do list (**{task-done}**).
+1. On the left sidebar, at the top, select **To-Do List** (**{task-done}**).
 1. At the top, select **Done**.
 1. [Find the to-do item](#search-the-to-do-list) you want to re-add.
 1. Next to this to-do item, select **Re-add this to-do item** **{redo}**.
 
-The to-do item is now visible in the **To Do** tab of the To-Do list.
+The to-do item is now visible in the **To Do** tab of the To-Do List.
 
 ## Actions that mark a to-do item as done
 

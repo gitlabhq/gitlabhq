@@ -21,7 +21,7 @@ export default {
 };
 </script>
 <template>
-  <div class="blame gl-border-r gl-bg-gray-10">
+  <div class="blame gl-border-r gl-bg-subtle">
     <div class="blame-commit !gl-border-none">
       <commit-info
         v-for="(blame, index) in blameInfo"

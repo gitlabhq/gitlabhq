@@ -44,7 +44,7 @@ class MembersFinder
     return project_members if include_relations == [:direct]
 
     union_members = group_union_members(include_relations)
-    union_members << project_members if include_relations.include?(:direct)
+    union_members << project_members.select(Member.column_names) if include_relations.include?(:direct)
 
     return project_members unless union_members.any?
 
@@ -67,7 +67,7 @@ class MembersFinder
 
   def group_union_members(include_relations)
     [].tap do |members|
-      members << direct_group_members(include_relations) if group
+      members << direct_group_members(include_relations).select(Member.column_names) if group
       members << project_invited_groups if include_relations.include?(:invited_groups)
     end
   end
@@ -90,7 +90,11 @@ class MembersFinder
     end
 
     invited_groups_ids_including_ancestors = invited_groups_including_ancestors.select(:id)
-    GroupMember.with_source_id(invited_groups_ids_including_ancestors).non_minimal_access
+    invited_group_members = GroupMember.with_source_id(invited_groups_ids_including_ancestors).non_minimal_access
+    return invited_group_members.select(Member.column_names) if project.share_with_group_enabled?
+
+    # Return no access for invited group members when project sharing with group is disabled
+    invited_group_members.coerce_to_no_access
   end
 
   def distinct_union_of_members(union_members)

@@ -28,12 +28,12 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu, feature_category: :navig
     subject { described_class.new(context).renderable_items.find { |e| e.item_id == item_id } }
 
     shared_examples 'access rights checks' do
-      specify { is_expected.not_to be_nil }
+      it { is_expected.not_to be_nil }
 
       describe 'when the user does not have access' do
         let(:user) { nil }
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
     end
 
@@ -75,16 +75,16 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu, feature_category: :navig
           allow(project).to receive(:archived?).and_return(true)
         end
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
 
       describe 'when project is not archived' do
-        specify { is_expected.not_to be_nil }
+        it { is_expected.not_to be_nil }
 
         describe 'when the user does not have access' do
           let(:user) { nil }
 
-          specify { is_expected.to be_nil }
+          it { is_expected.to be_nil }
         end
       end
     end
@@ -97,18 +97,18 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu, feature_category: :navig
           allow(project).to receive(:archived?).and_return(true)
         end
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
 
       describe 'when project is not archived' do
-        specify { is_expected.not_to be_nil }
+        it { is_expected.not_to be_nil }
 
         specify { expect(subject.title).to eq 'Monitor' }
 
         describe 'when the user does not have access' do
           let(:user) { nil }
 
-          specify { is_expected.to be_nil }
+          it { is_expected.to be_nil }
         end
       end
     end
@@ -131,18 +131,18 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu, feature_category: :navig
       describe 'when container registry setting is disabled' do
         let(:container_enabled) { false }
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
 
       describe 'when container registry setting is enabled' do
         let(:container_enabled) { true }
 
-        specify { is_expected.not_to be_nil }
+        it { is_expected.not_to be_nil }
 
         describe 'when the user does not have access' do
           let(:user) { nil }
 
-          specify { is_expected.to be_nil }
+          it { is_expected.to be_nil }
         end
       end
 
@@ -150,12 +150,12 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu, feature_category: :navig
         let(:container_enabled) { false }
         let(:packages_enabled) { true }
 
-        specify { is_expected.not_to be_nil }
+        it { is_expected.not_to be_nil }
 
         describe 'when the user does not have access' do
           let(:user) { nil }
 
-          specify { is_expected.to be_nil }
+          it { is_expected.to be_nil }
         end
       end
     end
@@ -163,12 +163,12 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu, feature_category: :navig
     describe 'Usage Quotas' do
       let(:item_id) { :usage_quotas }
 
-      specify { is_expected.not_to be_nil }
+      it { is_expected.not_to be_nil }
 
       describe 'when the user does not have access' do
         let(:user) { nil }
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
     end
   end

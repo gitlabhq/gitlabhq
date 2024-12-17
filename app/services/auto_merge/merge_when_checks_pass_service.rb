@@ -44,7 +44,6 @@ module AutoMerge
     override :available_for
     def available_for?(merge_request)
       super do
-        next false if Feature.disabled?(:merge_when_checks_pass, merge_request.project)
         next false if merge_request.project.merge_trains_enabled?
         next false if merge_request.mergeable? && !merge_request.diff_head_pipeline_considered_in_progress?
 

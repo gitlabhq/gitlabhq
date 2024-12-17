@@ -41,7 +41,7 @@ export default {
   >
     <div class="gl-flex gl-flex-col">
       <span class="gl-font-bold">{{ title }}</span>
-      <span class="gl-text-gray-500">{{ description }}</span>
+      <span class="gl-text-subtle">{{ description }}</span>
     </div>
   </gl-dropdown-item>
 </template>

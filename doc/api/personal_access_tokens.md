@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-You can read more about [personal access tokens](../user/profile/personal_access_tokens.md).
+Use this API to interact with personal access tokens. For more information, see [Personal access tokens](../user/profile/personal_access_tokens.md).
 
 ## List personal access tokens
 
@@ -71,6 +71,7 @@ Example response:
         "name": "Test Token",
         "revoked": false,
         "created_at": "2020-07-23T14:31:47.729Z",
+        "description": "Test Token description",
         "scopes": [
             "api"
         ],
@@ -97,6 +98,7 @@ Example response:
         "name": "Test Token",
         "revoked": false,
         "created_at": "2020-07-23T14:31:47.729Z",
+        "description": "Test Token description",
         "scopes": [
             "api"
         ],
@@ -123,6 +125,7 @@ Example response:
         "name": "Revoked Test Token",
         "revoked": true,
         "created_at": "2022-01-01T14:31:47.729Z",
+        "description": "Test Token description",
         "scopes": [
             "api"
         ],
@@ -197,6 +200,7 @@ Example response:
     "name": "Test Token",
     "revoked": false,
     "created_at": "2020-07-23T14:31:47.729Z",
+    "description": "Test Token description",
     "scopes": [
         "api"
     ],
@@ -246,6 +250,7 @@ Example response:
     "name": "Rotated Token",
     "revoked": false,
     "created_at": "2023-08-01T15:00:00.000Z",
+    "description": "Test Token description",
     "scopes": ["api"],
     "user_id": 1337,
     "last_used_at": null,
@@ -290,6 +295,7 @@ Example response:
     "name": "Rotated Token",
     "revoked": false,
     "created_at": "2023-08-01T15:00:00.000Z",
+    "description": "Test Token description",
     "scopes": ["api"],
     "user_id": 1337,
     "last_used_at": null,
@@ -474,7 +480,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-See the [User tokens API](user_tokens.md#create-a-personal-access-token-with-limited-scopes-for-your-account) for
+See the [User tokens API](user_tokens.md#create-a-personal-access-token) for
 information on creating a personal access token for the currently authenticated user.
 
 ## Troubleshooting access tokens

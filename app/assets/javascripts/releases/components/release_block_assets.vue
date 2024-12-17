@@ -2,7 +2,8 @@
 import { GlTooltipDirective, GlLink, GlButton, GlCollapse, GlIcon, GlBadge } from '@gitlab/ui';
 import { difference, get } from 'lodash';
 import { __, s__, sprintf } from '~/locale';
-import { ASSET_LINK_TYPE } from '../constants';
+import { InternalEvents } from '~/tracking';
+import { ASSET_LINK_TYPE, CLICK_EXPAND_ASSETS_ON_RELEASE_PAGE } from '../constants';
 
 export default {
   name: 'ReleaseBlockAssets',
@@ -16,15 +17,21 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     assets: {
       type: Object,
       required: true,
     },
+    expanded: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
-      isAssetsExpanded: true,
+      isAssetsExpanded: this.expanded,
     };
   },
   computed: {
@@ -79,6 +86,10 @@ export default {
   methods: {
     toggleAssetsExpansion() {
       this.isAssetsExpanded = !this.isAssetsExpanded;
+
+      if (this.isAssetsExpanded) {
+        this.trackEvent(CLICK_EXPAND_ASSETS_ON_RELEASE_PAGE);
+      }
     },
     linksForType(type) {
       return this.assets.links.filter((l) => l.linkType === type);

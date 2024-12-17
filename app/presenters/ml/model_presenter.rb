@@ -34,6 +34,10 @@ module Ml
       project_ml_model_path(model.project, model.id)
     end
 
+    def default_experiment_path
+      project_ml_experiment_path(model.project, model.default_experiment)
+    end
+
     private
 
     def latest_version

@@ -37,12 +37,14 @@ For a more in-depth walkthrough see [GitLab Requirements Traceability Walkthroug
 
 ## Create a requirement
 
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
 A paginated list of requirements is available in each project, and there you
 can create a new requirement.
 
 Prerequisites:
 
-- You must have at least the Reporter role.
+- You must have at least the Planner role.
 
 To create a requirement:
 
@@ -66,13 +68,14 @@ next to the requirement title.
 
 ## Edit a requirement
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424961) in GitLab 16.11: Authors and assignees can edit requirements even if they don’t have the Reporter role.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424961) in GitLab 16.11: Authors and assignees can edit requirements even if they don't have the Reporter role.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 You can edit a requirement from the requirements list page.
 
 Prerequisites:
 
-- You must have at least the Reporter role or be the author or assignee of the requirement.
+- You must have at least the Planner role or be the author or assignee of the requirement.
 
 To edit a requirement:
 
@@ -83,14 +86,15 @@ To edit a requirement:
 
 ## Archive a requirement
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424961) in GitLab 16.11: Authors and assignees can archive requirements even if they don’t have the Reporter role.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424961) in GitLab 16.11: Authors and assignees can archive requirements even if they don't have the Reporter role.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 You can archive an open requirement while
 you're in the **Open** tab.
 
 Prerequisites:
 
-- You must have at least the Reporter role or be the author or assignee of the requirement.
+- You must have at least the Planner role or be the author or assignee of the requirement.
 
 To archive a requirement, select **Archive** (**{archive}**).
 
@@ -98,13 +102,14 @@ As soon as a requirement is archived, it no longer appears in the **Open** tab.
 
 ## Reopen a requirement
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424961) in GitLab 16.11: Authors and assignees can re-open requirements even if they don’t have the Reporter role.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424961) in GitLab 16.11: Authors and assignees can re-open requirements even if they don't have the Reporter role.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 You can view the list of archived requirements in the **Archived** tab.
 
 Prerequisites:
 
-- You must have at least the Reporter role or be the author or assignee of the requirement.
+- You must have at least the Planner role or be the author or assignee of the requirement.
 
 ![archived requirements list](img/requirements_archived_list_view_v13_1.png)
 
@@ -223,7 +228,9 @@ in a project, you must replace `requirements` in above configs with `requirement
 
 ## Import requirements from a CSV file
 
-You must have at least the Reporter role.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+You must have at least the Planner role.
 
 You can import requirements to a project by uploading a [CSV file](https://en.wikipedia.org/wiki/Comma-separated_values)
 with the columns `title` and `description`.
@@ -284,6 +291,8 @@ For GitLab.com, it is set to 10 MB.
 
 ## Export requirements to a CSV file
 
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
 You can export GitLab requirements to a
 [CSV file](https://en.wikipedia.org/wiki/Comma-separated_values) sent to your default notification
 email as an attachment.
@@ -294,7 +303,7 @@ audit and regulatory compliance tasks.
 
 Prerequisites:
 
-- You must have at least the Reporter role.
+- You must have at least the Planner role.
 
 To export requirements:
 

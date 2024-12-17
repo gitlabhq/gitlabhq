@@ -138,12 +138,14 @@ have weight assigned, because issues with no weight don't show on the chart.
 
 ## Roll up weights
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381879) in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `rollup_timebox_chart`. Disabled by default.
+DETAILS:
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381879) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `rollup_timebox_chart`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `rollup_timebox_chart`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
+On self-managed GitLab, by default this feature is not available. For more information, see the history.
+This feature is available for testing, but not ready for production use.
 
 With [tasks](../../tasks.md), a more granular planning is possible.
 If this feature is enabled, the weight of issues that have tasks is derived from the tasks in the

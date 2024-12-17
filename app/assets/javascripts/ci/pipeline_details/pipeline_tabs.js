@@ -5,7 +5,6 @@ import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
 import { GlToast } from '@gitlab/ui';
 import PipelineTabs from 'ee_else_ce/ci/pipeline_details/tabs/pipeline_tabs.vue';
-import { reportToSentry } from '~/ci/utils';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import createTestReportsStore from './stores/test_reports';
 import { getPipelineDefaultTab } from './utils';
@@ -100,9 +99,6 @@ export const createAppOptions = (selector, apolloProvider, router) => {
       testsCount,
       manualVariablesCount: Number.parseInt(manualVariablesCount, 10),
       canReadVariables: parseBoolean(canReadVariables),
-    },
-    errorCaptured(err, _vm, info) {
-      reportToSentry('pipeline_tabs', `error: ${err}, info: ${info}`);
     },
     render(createElement, props = {}) {
       return createElement(PipelineTabs, { props });

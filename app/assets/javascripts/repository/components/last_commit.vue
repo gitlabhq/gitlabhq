@@ -12,10 +12,12 @@ import projectPathQuery from '../queries/project_path.query.graphql';
 import eventHub from '../event_hub';
 import { FORK_UPDATED_EVENT } from '../constants';
 import CommitInfo from './commit_info.vue';
+import CollapsibleCommitInfo from './collapsible_commit_info.vue';
 
 export default {
   components: {
     CommitInfo,
+    CollapsibleCommitInfo,
     ClipboardButton,
     SignatureBadge,
     CiIcon,
@@ -67,6 +69,11 @@ export default {
       required: false,
       default: null,
     },
+    historyUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -107,27 +114,46 @@ export default {
 </script>
 
 <template>
-  <gl-loading-icon v-if="isLoading" size="md" color="dark" class="m-auto gl-min-h-8 gl-py-6" />
-  <commit-info v-else-if="commit" :commit="commit">
-    <div class="commit-actions gl-flex-align gl-flex gl-flex-row gl-items-center">
-      <signature-badge v-if="commit.signature" :signature="commit.signature" />
-      <div v-if="commit.pipeline" class="gl-ml-5">
-        <ci-icon
-          :status="commit.pipeline.detailedStatus"
-          :aria-label="statusTitle"
-          class="js-commit-pipeline"
-        />
+  <gl-loading-icon v-if="isLoading" size="md" color="dark" class="gl-m-auto gl-py-6" />
+
+  <div v-else-if="commit">
+    <commit-info :commit="commit" class="gl-hidden sm:gl-flex">
+      <div class="commit-actions gl-flex gl-items-center gl-gap-3">
+        <signature-badge v-if="commit.signature" :signature="commit.signature" class="gl-h-7" />
+        <div v-if="commit.pipeline" class="gl-ml-5 gl-flex gl-h-7 gl-items-center">
+          <ci-icon
+            :status="commit.pipeline.detailedStatus"
+            :aria-label="statusTitle"
+            class="js-commit-pipeline gl-mr-2"
+          />
+        </div>
+        <gl-button-group class="js-commit-sha-group gl-ml-4 gl-flex gl-items-center">
+          <gl-button
+            label
+            class="gl-font-monospace dark:!gl-bg-strong"
+            data-testid="last-commit-id-label"
+            >{{ showCommitId }}</gl-button
+          >
+          <clipboard-button
+            :text="commit.sha"
+            :title="__('Copy commit SHA')"
+            class="input-group-text dark:!gl-border-l-section"
+          />
+        </gl-button-group>
+        <gl-button
+          category="secondary"
+          data-testid="last-commit-history"
+          :href="historyUrl"
+          class="!gl-ml-0"
+        >
+          {{ __('History') }}
+        </gl-button>
       </div>
-      <gl-button-group class="js-commit-sha-group gl-ml-4">
-        <gl-button label class="gl-font-monospace" data-testid="last-commit-id-label">{{
-          showCommitId
-        }}</gl-button>
-        <clipboard-button
-          :text="commit.sha"
-          :title="__('Copy commit SHA')"
-          class="input-group-text"
-        />
-      </gl-button-group>
-    </div>
-  </commit-info>
+    </commit-info>
+    <collapsible-commit-info
+      :commit="commit"
+      :history-url="historyUrl"
+      class="gl-block !gl-border-t-0 sm:gl-hidden"
+    />
+  </div>
 </template>

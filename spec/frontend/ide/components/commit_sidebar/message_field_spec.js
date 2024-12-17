@@ -1,8 +1,14 @@
 import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import CommitMessageField from '~/ide/components/commit_sidebar/message_field.vue';
+import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 
-describe('IDE commit message field', () => {
+const skipReason = new SkipReason({
+  name: 'IDE commit message field',
+  reason: 'Legacy WebIDE is due for deletion',
+  issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508949',
+});
+describeSkipVue3(skipReason, () => {
   let wrapper;
 
   beforeEach(() => {

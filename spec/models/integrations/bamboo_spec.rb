@@ -12,7 +12,7 @@ RSpec.describe Integrations::Bamboo, :use_clean_rails_memory_store_caching, feat
 
   subject(:integration) { build(:bamboo_integration, project: project, bamboo_url: bamboo_url) }
 
-  it_behaves_like Integrations::BaseCi
+  it_behaves_like Integrations::Base::Ci
 
   it_behaves_like Integrations::ResetSecretFields
 

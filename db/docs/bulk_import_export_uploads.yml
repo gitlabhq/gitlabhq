@@ -26,3 +26,4 @@ desired_sharding_key:
         table: bulk_import_exports
         sharding_key: group_id
         belongs_to: export
+table_size: small

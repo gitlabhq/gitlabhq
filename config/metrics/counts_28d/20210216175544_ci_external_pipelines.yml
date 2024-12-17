@@ -3,6 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage_monthly.verify.ci_external_pipelines
 description: Distinct users triggering pipelines in external repositories in a month
 product_group: pipeline_execution
+product_categories:
+- continuous_integration
 value_type: number
 status: active
 time_frame: 28d

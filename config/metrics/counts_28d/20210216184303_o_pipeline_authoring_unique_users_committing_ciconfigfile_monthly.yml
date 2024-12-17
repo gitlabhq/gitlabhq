@@ -4,6 +4,8 @@ key_path: redis_hll_counters.pipeline_authoring.o_pipeline_authoring_unique_user
 description: Monthly unique user count doing commits which contains the CI config
   file
 product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
 value_type: number
 status: active
 time_frame: 28d

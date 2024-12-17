@@ -3,18 +3,20 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SearchableTable from '~/ml/model_registry/components/searchable_table.vue';
 import ModelVersionsTable from '~/ml/model_registry/components/model_versions_table.vue';
 import ModelsTable from '~/ml/model_registry/components/models_table.vue';
+import CandidatesTable from '~/ml/model_registry/components/candidates_table.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import { BASE_SORT_FIELDS } from '~/ml/model_registry/constants';
 import * as urlHelpers from '~/lib/utils/url_utility';
 import LoadOrErrorOrShow from '~/ml/model_registry/components/load_or_error_or_show.vue';
 import { defaultPageInfo } from '../mock_data';
-import { graphqlModelVersions, graphqlModels } from '../graphql_mock_data';
+import { graphqlModelVersions, graphqlModels, graphqlCandidates } from '../graphql_mock_data';
 
-describe('ml/model_registry/components/searchable_list.vue', () => {
+describe('ml/model_registry/components/searchable_table.vue', () => {
   let wrapper;
 
   const findLoadOrErrorOrShow = () => wrapper.findComponent(LoadOrErrorOrShow);
   const findModelsTable = () => wrapper.findComponent(ModelsTable);
+  const findCandidatesTable = () => wrapper.findComponent(CandidatesTable);
   const findModelVersionsTable = () => wrapper.findComponent(ModelVersionsTable);
   const findSearchableTable = () => wrapper.findComponent(SearchableTable);
   const findEmptyState = () => wrapper.findByTestId('empty-state-slot');
@@ -72,6 +74,7 @@ describe('ml/model_registry/components/searchable_list.vue', () => {
     it('does not display registry list', () => {
       expect(findModelVersionsTable().exists()).toBe(false);
       expect(findModelsTable().exists()).toBe(false);
+      expect(findCandidatesTable().exists()).toBe(false);
     });
 
     it('Does not display error message', () => {
@@ -101,6 +104,7 @@ describe('ml/model_registry/components/searchable_list.vue', () => {
     it('displays model versions table', () => {
       expect(findModelVersionsTable().exists()).toBe(true);
       expect(findModelsTable().exists()).toBe(false);
+      expect(findCandidatesTable().exists()).toBe(false);
     });
 
     it('binds the right props', () => {
@@ -133,6 +137,7 @@ describe('ml/model_registry/components/searchable_list.vue', () => {
     it('displays model table', () => {
       expect(findModelsTable().exists()).toBe(true);
       expect(findModelVersionsTable().exists()).toBe(false);
+      expect(findCandidatesTable().exists()).toBe(false);
     });
 
     it('binds the right props', () => {
@@ -148,6 +153,39 @@ describe('ml/model_registry/components/searchable_list.vue', () => {
 
     it('displays model version rows', () => {
       expect(findModelsTable().props('items')).toHaveLength(1);
+    });
+
+    it('does not display loader', () => {
+      expect(findLoadOrErrorOrShow().props('isLoading')).toBe(false);
+    });
+
+    it('does not display empty state', () => {
+      expect(findEmptyState().exists()).toBe(false);
+    });
+  });
+
+  describe('when list is loaded with candidates', () => {
+    beforeEach(() => mountComponent({ candidates: graphqlCandidates }));
+
+    it('displays candidates table', () => {
+      expect(findCandidatesTable().exists()).toBe(true);
+      expect(findModelVersionsTable().exists()).toBe(false);
+      expect(findModelsTable().exists()).toBe(false);
+    });
+
+    it('binds the right props', () => {
+      expect(findSearchableTable().props()).toMatchObject({
+        candidates: graphqlCandidates,
+        isLoading: false,
+        pageInfo: defaultPageInfo,
+        showSearch: false,
+        sortableFields: [],
+        canWriteModelRegistry: true,
+      });
+    });
+
+    it('displays candidate rows', () => {
+      expect(findCandidatesTable().props('items')).toHaveLength(2);
     });
 
     it('does not display loader', () => {

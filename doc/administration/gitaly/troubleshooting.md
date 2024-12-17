@@ -242,8 +242,6 @@ update the secrets file on the Gitaly server to match the Gitaly client, then
 If you've confirmed that your `gitlab-secrets.json` file is the same on all Gitaly servers and clients,
 the application might be fetching this secret from a different file. Your Gitaly server's
 `config.toml file` indicates the secrets file in use.
-If that setting is missing, GitLab defaults to using `.gitlab_shell_secret` under
-`/opt/gitlab/embedded/service/gitlab-rails/.gitlab_shell_secret`.
 
 ## Repository pushes fail with `401 Unauthorized` and `JWT::VerificationError`
 

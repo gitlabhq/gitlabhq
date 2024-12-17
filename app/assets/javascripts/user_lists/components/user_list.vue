@@ -12,7 +12,7 @@ import { s__, __ } from '~/locale';
 import { states, ADD_USER_MODAL_ID } from '../constants/show';
 import AddUserModal from './add_user_modal.vue';
 
-const commonTableClasses = ['gl-py-5', 'gl-border-b-1', 'gl-border-b-solid', 'gl-border-gray-100'];
+const commonTableClasses = ['gl-py-5', 'gl-border-b-1', 'gl-border-b-solid', 'gl-border-default'];
 
 export default {
   components: {
@@ -49,7 +49,7 @@ export default {
       'gl-pb-5',
       'gl-border-b-1',
       'gl-border-b-solid',
-      'gl-border-gray-100',
+      'gl-border-default',
     ].join(' '),
     tableHeaderClasses: commonTableClasses.join(' '),
     tableRowClasses: [
@@ -97,7 +97,7 @@ export default {
       <div :class="$options.classes.headerClasses">
         <div>
           <h3>{{ name }}</h3>
-          <h4 class="gl-text-gray-500">{{ $options.translations.userIdLabel }}</h4>
+          <h4 class="gl-text-subtle">{{ $options.translations.userIdLabel }}</h4>
         </div>
         <div class="gl-mt-6">
           <gl-button v-if="editPath" :href="editPath" data-testid="edit-user-list" class="gl-mr-3">

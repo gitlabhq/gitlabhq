@@ -188,6 +188,73 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
           expect(response).to have_gitlab_http_status(:ok)
         end
 
+        context 'when items more than Kaminari.config.default_per_page' do
+          let_it_be(:filter) { 'filtered-group' }
+          let_it_be(:per_page) { 2 }
+          let_it_be(:params) { { group_id: group.to_param, filter: filter } }
+          let_it_be(:subgroups) { Array.new(per_page) { create(:group, parent: group) } }
+          let_it_be(:sub_subgroups) { subgroups.map { |subgroup| create(:group, parent: subgroup) } }
+          let_it_be(:matching_descendants) do
+            sub_subgroups.map.with_index do |sub_subgroup, index|
+              Array.new(per_page) do |descendant_index|
+                formatted_index = "#{index}#{descendant_index}"
+                create(:group, :public, parent: sub_subgroup, name: "#{filter}-#{formatted_index}")
+              end
+            end.flatten
+          end
+
+          before do
+            allow(Kaminari.config).to receive(:default_per_page).and_return(per_page)
+          end
+
+          it 'does not throw ArgumentError for N+1 queries' do
+            get :index, params: params, format: :json
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          it 'paginates correctly' do
+            expected_ids = [subgroups.last, sub_subgroups.last, matching_descendants.last(2)].flatten.pluck(:id)
+
+            get :index, params: params.merge(page: 2), format: :json
+
+            result_ids = descendant_ids(json_response)
+
+            expect(result_ids).to match_array(expected_ids)
+          end
+
+          context 'with a single page' do
+            let_it_be(:params) { params.merge(per_page: matching_descendants.size) }
+
+            it 'returns the correct pagination headers with per_page' do
+              get :index, params: params, format: :json
+
+              expect(response.header).to match(hash_including(
+                "X-Per-Page" => "4",
+                "X-Page" => "1",
+                "X-Next-Page" => "",
+                "X-Prev-Page" => "",
+                "X-Total" => "4",
+                "X-Total-Pages" => "1"
+              ))
+            end
+          end
+
+          def descendant_ids(data)
+            return [] if data.blank?
+
+            data = Array.wrap(data)
+
+            ids = []
+            data.each do |item|
+              ids << item['id']
+              ids << descendant_ids(item['children'])
+            end
+
+            ids.flatten
+          end
+        end
+
         it 'includes pagination headers' do
           2.times { |i| create(:group, :public, parent: public_subgroup, name: "filterme#{i}") }
 

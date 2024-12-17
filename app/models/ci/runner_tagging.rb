@@ -2,6 +2,8 @@
 
 module Ci
   class RunnerTagging < Ci::ApplicationRecord
+    include BulkInsertSafe
+
     self.table_name = :ci_runner_taggings
     self.primary_key = :id
 

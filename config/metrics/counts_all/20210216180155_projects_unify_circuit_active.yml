@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.projects_unify_circuit_active
 description: Count of projects with active integrations for Unifiy Circuit
 product_group: import_and_integrate
+product_categories:
+- integrations
 value_type: number
 status: active
 time_frame: all

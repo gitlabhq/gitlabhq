@@ -1,7 +1,7 @@
 = gitlab_ui_form_for @application_setting, url: metrics_and_profiling_admin_application_settings_path(anchor: 'js-sentry-settings'), html: { class: 'fieldset-form', id: 'sentry-settings' } do |f|
   = form_errors(@application_setting)
 
-  %fieldset.gl-text-secondary
+  %fieldset.gl-text-subtle
     = safe_format(s_('AdminSettings|GitLab uses the %{bold_start}Rails%{bold_end} and %{bold_start}Browser JavaScript%{bold_end} Sentry SDKs to send events to Sentry. For changes to Rails integration settings to take effect, restart GitLab.'), tag_pair(tag.b, :bold_start, :bold_end))
 
   %fieldset

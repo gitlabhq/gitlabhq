@@ -449,10 +449,8 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - **New value stream** feature [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/381002) from a dialog to a page in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `vsa_standalone_settings_page`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default the **New value stream** feature is not available. To make it available, an administrator can enable the [feature flag](../../../administration/feature_flags.md) named `vsa_standalone_settings_page`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use.
+> - **New value stream** [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/381002) from a dialog to a page in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `vsa_standalone_settings_page`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171856) in GitLab 17.7. Feature flag `vsa_standalone_settings_page` removed.
 
 ### Create a value stream with GitLab default stages
 
@@ -467,7 +465,7 @@ create custom stages in addition to those provided in the default template.
 1. Customize the default stages:
    - To re-order stages, select the up or down arrows.
    - To hide a stage, select **Hide** (**{eye-slash}**).
-1. To add a custom stage, select **Add another stage**.
+1. To add a custom stage, select **Add a stage**.
    - Enter a name for the stage.
    - Select a **Start event** and a **Stop event**.
 1. Select **New value stream**.
@@ -485,9 +483,13 @@ When you create a value stream, you can create and add custom stages that align 
 1. For each stage:
    - Enter a name for the stage.
    - Select a **Start event** and a **Stop event**.
-1. To add another stage, select **Add another stage**.
+1. To add another stage, select **Add a stage**.
 1. To re-order the stages, select the up or down arrows.
 1. Select **New value stream**.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a video explanation, see [Optimizing merge request review process with Value Stream Analytics](https://www.youtube.com/watch?v=kblpge6xeL8).
+<!-- Video published on 2024-07-29 -->
 
 #### Label-based stages for custom value streams
 
@@ -520,10 +522,8 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - **Edit value stream** feature [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/381002) from a dialog to a page in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `vsa_standalone_settings_page`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default the **Edit value stream** feature is not available. To make it available, an administrator can enable the [feature flag](../../../administration/feature_flags.md) named `vsa_standalone_settings_page`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use.
+> - **Edit value stream** [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/381002) from a dialog to a page in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `vsa_standalone_settings_page`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171856) in GitLab 17.7. Feature flag `vsa_standalone_settings_page` removed.
 
 After you create a value stream, you can customize it to suit your purposes. To edit a value stream:
 
@@ -535,7 +535,7 @@ After you create a value stream, you can customize it to suit your purposes. To 
    - Rename the value stream.
    - Hide or re-order default stages.
    - Remove existing custom stages.
-   - To add new stages, select **Add another stage**.
+   - To add new stages, select **Add a stage**.
    - Select the start and end events for the stage.
 1. Optional. To undo any modifications, select **Restore value stream defaults**.
 1. Select **Save Value Stream**.
@@ -745,7 +745,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10228) in GitLab 16.2 as an [experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10228) in GitLab 16.2 as an [experiment](../../../policy/development_stages_support.md#experiment).
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 Improve your planning and decision-making by predicting productivity metrics and

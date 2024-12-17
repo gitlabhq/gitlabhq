@@ -14,13 +14,13 @@ if configurations = ActiveRecord::Base.configurations.configurations
   rejected_config_names = configurations.map(&:name).to_set - all_database_names
   if rejected_config_names.any?
     raise "ERROR: This installation of GitLab uses unsupported database names " \
-      "in 'config/database.yml': #{rejected_config_names.to_a.join(", ")}. The only supported ones are " \
-      "#{all_database_names.join(", ")}."
+      "in 'config/database.yml': #{rejected_config_names.to_a.join(', ')}. The only supported ones are " \
+      "#{all_database_names.join(', ')}."
   end
 
   replicas_config_names = configurations.select(&:replica?).map(&:name)
   if replicas_config_names.any?
     raise "ERROR: This installation of GitLab uses unsupported database configuration " \
-      "with 'replica: true' parameter in 'config/database.yml' for: #{replicas_config_names.join(", ")}"
+      "with 'replica: true' parameter in 'config/database.yml' for: #{replicas_config_names.join(', ')}"
   end
 end

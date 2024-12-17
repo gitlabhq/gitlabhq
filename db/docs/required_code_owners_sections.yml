@@ -8,8 +8,6 @@ description: Keeps required code owners sections
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43573
 milestone: '13.5'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 desired_sharding_key:
   protected_branch_project_id:
     references: projects
@@ -27,3 +25,4 @@ desired_sharding_key:
         table: protected_branches
         sharding_key: namespace_id
         belongs_to: protected_branch
+table_size: small

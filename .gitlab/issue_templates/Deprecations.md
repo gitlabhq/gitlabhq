@@ -19,7 +19,9 @@ _Describe why deprecation of this feature is necessary, ideally with dashboards/
 <!--
 The description of the deprecation should state what actions the user should take to rectify the behavior. If the deprecation is scheduled for an upcoming release, the content should remain in the deprecations documentation page until it has been completed. For example, if a deprecation is announced in 14.9 and scheduled to be completed in 15.0, the same content would be included in the documentation for 14.9, 14.10, and 15.0.
 
-**If this issue proposes a breaking change outside a major release XX.0, you need to get approval from your manager and request collaboration from Product Operations on communication. Be sure to [follow the guidance](https://about.gitlab.com/handbook/product/gitlab-the-product/#deprecations-removals-and-breaking-changes).** 
+**If this issue proposes a breaking change outside a major release XX.0, you need to get approval from your manager and request collaboration from Product Operations on communication. Be sure to follow the guidance**:
+
+- https://docs.gitlab.com/ee/development/deprecation_guidelines/#requesting-a-breaking-change-in-a-minor-release
 -->
 
 ### Breaking Change?
@@ -81,6 +83,7 @@ issues that were created ahead of time, and the MRs doing the actual deprecation
 ##### Rollout Plan
 
 **DRIs:**
+
 - Engineers: `@engineer(s)`
 - Engineering Manager: `@EM`
 
@@ -97,27 +100,29 @@ issues that were created ahead of time, and the MRs doing the actual deprecation
 ##### Communication Plan
 
 **DRIs:**
+
 - Product Manager: `@PM`
 
-_Please add links to the relevant merge requests._
+_Add links to the relevant merge requests._
 
-- As soon as possible, but no later than the third milestone preceding the major release (for example, given the following release schedule: `14.8, 14.9, 14.10, 15.0` – `14.8` is the third milestone preceding the major release):
+- As soon as possible, but no later than the third milestone preceding the major release (for example, given the following release schedule: `17.8, 17.9, 17.10, 17.11, 18.0` – `17.9` is the third milestone preceding the major release):
     - [ ] A [deprecation announcement entry](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-the-announcement) has been created so the deprecation will appear in release posts and on the [general deprecation page](https://docs.gitlab.com/ee/update/deprecations).
     - [ ] Documentation has been updated to mark the feature as [deprecated](https://docs.gitlab.com/ee/development/documentation/versions.html#deprecations-and-removals).
 - On the major milestone:
     - [ ] The deprecated item has been removed.
-    - [ ] If the removal of the deprecated item is a [breaking change](https://about.gitlab.com/handbook/product/gitlab-the-product/#examples-of-breaking-changes), the merge request is labeled ~"breaking change".
-    - [ ] Document the migration plan for users, clearly outlining the actions they need to take to mitigate the impact of the breaking change. 
+    - [ ] If the removal of the deprecated item is a [breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change), the merge request is labeled ~"breaking change".
+    - [ ] Document the migration plan for users, clearly outlining the actions they need to take to mitigate the impact of the breaking change.
        - [ ] [Add link](here)
 
 #### Development
 
 **DRIs:**
+
 - Engineers: `@engineer(s)`
 - Engineering Manager: `@EM`
 
 - [ ] Measure usage of the impacted product feature
-   - [ ] Evaluate metrics across **GitLab.com, Self-Managed, Dedicated** 
+   - [ ] Evaluate metrics across **GitLab.com, Self-Managed, Dedicated**
    - [ ] _add issue link_
    - [ ] _list any metrics and/or dashboards_
 - [ ] Create tooling for customers to manually migrate their data or workflows
@@ -134,7 +139,7 @@ _Please add links to the relevant merge requests._
    - [ ] _add issue link_
 
 #### Approvals
- 
+
 - [ ] Product Manager `@PM`
 - [ ] Engineering Manager `@EM`
 - [ ] Senior Engineering Manager / Director `@senior-eng-leader`
@@ -145,7 +150,7 @@ _Please add links to the relevant merge requests._
 - [ ] Product Designer `@ProductDesigner`
 - [ ] Tech Writer `@TW`
 - [ ] Software Engineering in Test `@SET`
-- [ ] Any other stablecounterparts based on the [product categories](https://handbook.gitlab.com/handbook/product/categories/):
+- [ ] Any other stable counterparts based on the [product categories](https://handbook.gitlab.com/handbook/product/categories/):
      - [ ] Add Sales/CS counterpart or mention `@timtams`
      - [ ] Add Support counterpart or mention `@gitlab-com/support/managers`
      - [ ] Add Marketing counterpart or mention `@cfoster3`
@@ -154,11 +159,11 @@ _Please add links to the relevant merge requests._
 
 <!-- Populate the Section, Group, and Category -->
 /label ~devops:: ~group: ~"Category:
- 
+
 /label ~"awaiting-pm-approval" ~"awaiting-em-approval" ~"awaiting-senior-eng-approval" ~"awaiting-senior-product-approval"
 
 - [ ] This issue is labeled ~deprecation, and with the relevant `~devops::`, `~group::`, and `~Category:` labels.
-- [ ] This issue is labeled  ~"breaking change" if the removal of the deprecated item will be a [breaking change](https://about.gitlab.com/handbook/product/gitlab-the-product/#examples-of-breaking-changes).
+- [ ] This issue is labeled  ~"breaking change" if the removal of the deprecated item will be a [breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change).
 
 
 <!-- Label reminders - you should have one of each of the following labels.
@@ -170,3 +175,14 @@ Use the following resources to find the appropriate labels:
 <!-- Identifies that this Issue is related to deprecating a feature -->
 /label ~"deprecation"
 
+### References
+
+- [Deprecations, removals, and breaking changes](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes)
+- [Deprecation guidelines](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
+- [Deprecations and removals doc styleguide](https://docs.gitlab.com/ee/development/documentation/styleguide/deprecations_and_removals)
+- [REST API Deprecations](https://docs.gitlab.com/ee/development/documentation/restful_api_styleguide.html#deprecations) and [REST API breaking changes](https://docs.gitlab.com/ee/development/api_styleguide.html#breaking-changes).
+- [GraphQL Deprecations](https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#deprecating-schema-items) and [GraphQL API breaking changes](https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#breaking-changes).
+- [GitLab release and maintenance policy](https://docs.gitlab.com/ee/policy/maintenance.html)
+- Videos 📺
+   - [How to deprecate and remove features in GitLab releases](https://youtu.be/9gy7tg94j7s)
+   - [Review of GitLab deprecations and removals policy & Runner team deprecations and removals process](https://youtu.be/ehT1xBajCRI)

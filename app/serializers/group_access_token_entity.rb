@@ -14,6 +14,16 @@ class GroupAccessTokenEntity < AccessTokenEntityBase
       group_id: group.full_path)
   end
 
+  expose :rotate_path do |token, options|
+    group = options.fetch(:group)
+
+    next unless group
+
+    rotate_group_settings_access_token_path(
+      id: token,
+      group_id: group.full_path)
+  end
+
   expose :role do |token, options|
     group = options.fetch(:group)
 

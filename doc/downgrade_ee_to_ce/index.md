@@ -23,43 +23,57 @@ Kerberos and Atlassian Crowd are only available on the Enterprise Edition. You
 should disable these mechanisms before downgrading. Be sure to provide
 alternative authentication methods to your users.
 
-### Remove Service Integration entries from the database
+### Remove Enterprise-only integrations from the database
 
-The GitHub integration is only available in the Enterprise Edition codebase,
-so if you downgrade to the Community Edition, the following error displays:
+The following integrations are only available in the Enterprise Edition codebase:
+
+- [GitHub](../user/project/integrations/github.md)
+- [Git Guardian](../user/project/integrations/git_guardian.md)
+- [Google Artifact Management](../user/project/integrations/google_artifact_management.md)
+- [Google Cloud IAM](../integration/google_cloud_iam.md)
+
+If you downgrade to the Community Edition, the following error displays:
 
 ```plaintext
 Completed 500 Internal Server Error in 497ms (ActiveRecord: 32.2ms)
 
-ActionView::Template::Error (The single-table inheritance mechanism failed to locate the subclass: 'GithubService'. This
-error is raised because the column 'type' is reserved for storing the class in case of inheritance. Please rename this
+ActionView::Template::Error (The single-table inheritance mechanism failed to locate the subclass: 'Integrations::Github'. This
+error is raised because the column 'type_new' is reserved for storing the class in case of inheritance. Please rename this
 column if you didn't intend it to be used for storing the inheritance class or overwrite Integration.inheritance_column to
 use another column for that information.)
 ```
 
+The `subclass` in the error message can be any of the following:
+
+- `Integrations::Github`
+- `Integrations::GitGuardian`
+- `Integrations::GoogleCloudPlatform::ArtifactRegistry`
+- `Integrations::GoogleCloudPlatform::WorkloadIdentityFederation`
+
 All integrations are created automatically for every project you have.
-To avoid getting this error, you must remove all records with the type set to
-`GithubService` from your database.
+To avoid getting this error, you must remove all EE-only integration records from your database.
 
 ::Tabs
 
 :::TabTitle Linux package (Omnibus)
 
 ```shell
-sudo gitlab-rails runner "Integration.where(type: ['GithubService']).delete_all"
+sudo gitlab-rails runner "Integration.where(type_new: ['Integrations::Github']).delete_all"
+sudo gitlab-rails runner "Integration.where(type_new: ['Integrations::GitGuardian']).delete_all"
+sudo gitlab-rails runner "Integration.where(type_new: ['Integrations::GoogleCloudPlatform::ArtifactRegistry']).delete_all"
+sudo gitlab-rails runner "Integration.where(type_new: ['Integrations::GoogleCloudPlatform::WorkloadIdentityFederation']).delete_all"
 ```
 
 :::TabTitle Self-compiled (source)
 
 ```shell
-bundle exec rails runner "Integration.where(type: ['GithubService']).delete_all" production
+bundle exec rails runner "Integration.where(type_new: ['Integrations::Github']).delete_all" production
+bundle exec rails runner "Integration.where(type_new: ['Integrations::GitGuardian']).delete_all" production
+bundle exec rails runner "Integration.where(type_new: ['Integrations::GoogleCloudPlatform::ArtifactRegistry']).delete_all" production
+bundle exec rails runner "Integration.where(type_new: ['Integrations::GoogleCloudPlatform::WorkloadIdentityFederation']).delete_all" production
 ```
 
 ::EndTabs
-
-NOTE:
-If you are running `GitLab =< v13.0` you must also remove `JenkinsDeprecatedService` records
-and if you are running `GitLab =< v13.6` you must remove `JenkinsService` records.
 
 ### Variables environment scopes
 

@@ -180,6 +180,24 @@ RSpec.describe Emails::Projects do
     end
   end
 
+  describe '#repository_push_email' do
+    let(:recipient) { user }
+
+    subject { Notify.repository_push_email(project.id, { author_id: user.id, ref: 'main', action: :create }) }
+
+    it_behaves_like 'it should not have Gmail Actions links'
+    it_behaves_like 'a user cannot unsubscribe through footer link'
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+    it_behaves_like 'an email with suffix'
+
+    it 'has the correct subject and body' do
+      is_expected.to have_subject("[Git][#{project.full_path}] Pushed new branch main")
+      is_expected.to have_body_text(project.full_path)
+      is_expected.to have_body_text("#{user.name} pushed new branch main at")
+    end
+  end
+
   describe '.inactive_project_deletion_warning_email' do
     let(:recipient) { user }
     let(:deletion_date) { "2022-01-10" }

@@ -6,6 +6,12 @@ RSpec.shared_examples 'issuable link creation' do |use_references: true|
   let(:async_notes) { false }
   let(:already_assigned_error_msg) { "#{issuable_type.capitalize}(s) already assigned" }
   let(:permission_error_status) { issuable_type == :issue ? 403 : 404 }
+  let(:noteable) { issuable }
+  let(:noteable2) { issuable2 }
+  let(:noteable3) { issuable3 }
+  let(:noteable_a) { issuable_a }
+  let(:noteable_b) { issuable_b }
+  let(:noteable_link_class) { issuable_link_class }
 
   let(:no_found_error_msg) do
     "No matching #{issuable_type} found. Make sure that you are adding a valid #{issuable_type} URL."
@@ -52,7 +58,11 @@ RSpec.shared_examples 'issuable link creation' do |use_references: true|
       let(:params) { set_params([issuable]) }
 
       it 'does not create notes' do
-        expect(SystemNoteService).not_to receive(:relate_issuable)
+        if async_notes
+          expect(Issuable::RelatedLinksCreateWorker).not_to receive(:perform_async)
+        else
+          expect(SystemNoteService).not_to receive(:relate_issuable)
+        end
 
         subject
       end
@@ -83,9 +93,9 @@ RSpec.shared_examples 'issuable link creation' do |use_references: true|
           expect(Issuable::RelatedLinksCreateWorker).to receive(:perform_async) do |args|
             expect(args).to eq(
               {
-                issuable_class: issuable.class.name,
-                issuable_id: issuable.id,
-                link_ids: issuable_link_class.where(source: issuable).last(2).pluck(:id),
+                issuable_class: noteable.class.name,
+                issuable_id: noteable.id,
+                link_ids: noteable_link_class.where(source: noteable).last(2).pluck(:id),
                 link_type: 'relates_to',
                 user_id: user.id
               }
@@ -93,12 +103,12 @@ RSpec.shared_examples 'issuable link creation' do |use_references: true|
           end
         else
           # First two-way relation notes
-          expect(SystemNoteService).to receive(:relate_issuable).with(issuable, issuable2, user)
-          expect(SystemNoteService).to receive(:relate_issuable).with(issuable2, issuable, user)
+          expect(SystemNoteService).to receive(:relate_issuable).with(noteable, noteable2, user)
+          expect(SystemNoteService).to receive(:relate_issuable).with(noteable2, noteable, user)
 
           # Second two-way relation notes
-          expect(SystemNoteService).to receive(:relate_issuable).with(issuable, issuable3, user)
-          expect(SystemNoteService).to receive(:relate_issuable).with(issuable3, issuable, user)
+          expect(SystemNoteService).to receive(:relate_issuable).with(noteable, noteable3, user)
+          expect(SystemNoteService).to receive(:relate_issuable).with(noteable3, noteable, user)
         end
 
         subject
@@ -113,19 +123,19 @@ RSpec.shared_examples 'issuable link creation' do |use_references: true|
           expect(Issuable::RelatedLinksCreateWorker).to receive(:perform_async) do |args|
             expect(args).to eq(
               {
-                issuable_class: issuable.class.name,
-                issuable_id: issuable.id,
-                link_ids: issuable_link_class.where(source: issuable).last(1).pluck(:id),
+                issuable_class: noteable.class.name,
+                issuable_id: noteable.id,
+                link_ids: noteable_link_class.where(source: noteable).last(1).pluck(:id),
                 link_type: 'relates_to',
                 user_id: user.id
               }
             )
           end
         else
-          expect(SystemNoteService).to receive(:relate_issuable).with(issuable, issuable_a, anything)
-          expect(SystemNoteService).to receive(:relate_issuable).with(issuable_a, issuable, anything)
-          expect(SystemNoteService).not_to receive(:relate_issuable).with(issuable, issuable_b, anything)
-          expect(SystemNoteService).not_to receive(:relate_issuable).with(issuable_b, issuable, anything)
+          expect(SystemNoteService).to receive(:relate_issuable).with(noteable, noteable_a, anything)
+          expect(SystemNoteService).to receive(:relate_issuable).with(noteable_a, noteable, anything)
+          expect(SystemNoteService).not_to receive(:relate_issuable).with(noteable, noteable_b, anything)
+          expect(SystemNoteService).not_to receive(:relate_issuable).with(noteable_b, noteable, anything)
         end
 
         subject

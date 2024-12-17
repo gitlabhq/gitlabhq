@@ -179,7 +179,6 @@ InitializerConnections.raise_if_new_database_connection do
         draw :trial_registration
         draw :country
         draw :country_state
-        draw :subscription
         draw :gitlab_subscriptions
         draw :phone_verification
         draw :arkose

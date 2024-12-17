@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.packages
 description: The total number of packages published to the registry
 product_group: package_registry
+product_categories:
+- package_registry
 value_type: number
 status: active
 time_frame: all

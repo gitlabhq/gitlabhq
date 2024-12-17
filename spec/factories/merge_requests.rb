@@ -137,7 +137,9 @@ FactoryBot.define do
       auto_merge_enabled { true }
       auto_merge_strategy { AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS }
       merge_user { author }
-      merge_params { { sha: diff_head_sha } }
+      merge_params do
+        { 'auto_merge_strategy' => AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS, sha: diff_head_sha }
+      end
     end
 
     trait :merge_when_checks_pass do
@@ -209,6 +211,10 @@ FactoryBot.define do
 
     trait :unique_author do
       author { association(:user) }
+    end
+
+    trait :with_assignee do
+      assignees { [author] }
     end
 
     trait :with_coverage_reports do

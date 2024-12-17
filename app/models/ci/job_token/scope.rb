@@ -34,6 +34,14 @@ module Ci
         true
       end
 
+      def policies_allowed?(accessed_project, policies)
+        return true if self_referential?(accessed_project)
+        return true unless accessed_project.ci_inbound_job_token_scope_enabled?
+        return false unless inbound_accessible?(accessed_project)
+
+        policies_allowed_for_accessed_project?(accessed_project, policies)
+      end
+
       def outbound_projects
         outbound_allowlist.projects
       end
@@ -81,6 +89,19 @@ module Ci
           # if the setting is disabled any project is considered to be in scope.
           true
         end
+      end
+
+      def policies_allowed_for_accessed_project?(accessed_project, policies)
+        scope = nearest_scope(accessed_project)
+        return true if scope.default_permissions?
+        return false if policies.empty?
+
+        allowed_policies = scope.job_token_policies.map(&:to_sym)
+        (policies - allowed_policies).empty?
+      end
+
+      def nearest_scope(accessed_project)
+        inbound_accessible_projects(accessed_project).nearest_scope_for_target_project(current_project)
       end
 
       # We don't check the inbound allowlist here. That is because

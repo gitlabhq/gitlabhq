@@ -1,0 +1,3 @@
+# frozen_string_literal: true
+
+internal_users.add_comment_for_internal_users_changes

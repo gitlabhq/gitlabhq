@@ -25,12 +25,26 @@ RSpec.describe Ci::JobToken::Authorization, feature_category: :secrets_managemen
           accessed_project_id: accessed_project.id)
       end
 
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'authorize_job_token_with_disabled_scope' }
+        let(:project) { accessed_project }
+        let(:category) { described_class }
+        let(:label) { 'cross-project' }
+      end
+
       context 'when origin project is the same as the accessed project' do
         let(:accessed_project) { origin_project }
 
         it 'does not capture the authorization' do
           capture
           expect(described_class.captured_authorizations).to be_nil
+        end
+
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'authorize_job_token_with_disabled_scope' }
+          let(:project) { accessed_project }
+          let(:category) { described_class }
+          let(:label) { 'same-project' }
         end
       end
     end

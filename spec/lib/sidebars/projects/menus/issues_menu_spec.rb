@@ -55,65 +55,9 @@ RSpec.describe Sidebars::Projects::Menus::IssuesMenu, feature_category: :navigat
     end
   end
 
-  describe '#pill_count' do
-    before do
-      stub_feature_flags(async_sidebar_counts: false)
-    end
-
-    it 'returns zero when there are no open issues' do
-      expect(subject.pill_count).to eq '0'
-    end
-
-    it 'memoizes the query' do
-      subject.pill_count
-
-      control = ActiveRecord::QueryRecorder.new do
-        subject.pill_count
-      end
-
-      expect(control.count).to eq 0
-    end
-
-    context 'when there are open issues' do
-      it 'returns the number of open issues' do
-        create_list(:issue, 2, :opened, project: project)
-        build_stubbed(:issue, :closed, project: project)
-
-        expect(subject.pill_count).to eq '2'
-      end
-    end
-
-    describe 'formatting' do
-      it 'returns truncated digits for count value over 1000' do
-        allow(project).to receive(:open_issues_count).and_return 1001
-        expect(subject.pill_count).to eq('1k')
-      end
-    end
-
-    context 'when async_sidebar_counts feature flag is enabled' do
-      before do
-        stub_feature_flags(async_sidebar_counts: true)
-      end
-
-      it 'returns nil' do
-        expect(subject.pill_count).to be_nil
-      end
-    end
-  end
-
   describe '#pill_count_field' do
     it 'returns the correct GraphQL field name' do
       expect(subject.pill_count_field).to eq('openIssuesCount')
-    end
-
-    context 'when async_sidebar_counts feature flag is disabled' do
-      before do
-        stub_feature_flags(async_sidebar_counts: false)
-      end
-
-      it 'returns nil' do
-        expect(subject.pill_count_field).to be_nil
-      end
     end
   end
 

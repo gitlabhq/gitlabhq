@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-You can [approve, activate, ban, and block users](../administration/moderate_users.md) by using the REST API.
+Use this API to moderate user accounts. For more information, see [Moderate users](../administration/moderate_users.md).
 
 ## Approve a user
 

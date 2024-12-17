@@ -17,6 +17,8 @@ type: reference, howto
   - [GraphQL Schema](enabling_the_analyzer.md#graphql-schema)
   - [HTTP Archive (HAR)](enabling_the_analyzer.md#http-archive-har)
   - [Postman Collection v2.0 or v2.1](enabling_the_analyzer.md#postman-collection)
+
+  Each scan supports exactly one specification. To scan more than one specification, use multiple scans.
 - [GitLab Runner](../../../../ci/runners/index.md) available, with the
   [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html) on Linux/amd64.
 - Target application deployed. For more details, read [Deployment options](#application-deployment-options).

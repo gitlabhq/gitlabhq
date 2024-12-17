@@ -29,9 +29,8 @@ module VirtualRegistries
               file: file,
               size: file.size,
               file_sha1: file.sha1,
-              downloaded_at: now,
               content_type: content_type
-            }
+            }.compact_blank
             updates[:file_md5] = file.md5 unless Gitlab::FIPS.enabled?
 
             cr = ::VirtualRegistries::Packages::Maven::CachedResponse.create_or_update_by!(
@@ -42,6 +41,14 @@ module VirtualRegistries
             )
 
             ServiceResponse.success(payload: { cached_response: cr })
+          rescue StandardError => e
+            Gitlab::ErrorTracking.track_exception(
+              e,
+              upstream_id: upstream.id,
+              group_id: upstream.group_id,
+              class: self.class.name
+            )
+            ServiceResponse.error(message: e.message, reason: :persistence_error)
           end
 
           private

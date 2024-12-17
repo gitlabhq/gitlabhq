@@ -1,5 +1,5 @@
 <script>
-import { GlDisclosureDropdown, GlIcon, GlPopover, GlLink } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlIcon, GlPopover, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 import {
@@ -15,10 +15,28 @@ export default {
     GlPopover,
     GlLink,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   props: {
     actions: {
       type: Array,
       required: true,
+    },
+    tooltipText: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  data() {
+    return {
+      isDropdownVisible: false,
+    };
+  },
+  computed: {
+    buttonTooltipText() {
+      return this.isDropdownVisible ? '' : this.tooltipText;
     },
   },
   methods: {
@@ -49,16 +67,25 @@ export default {
       // which prevents the user from visiting the link
       if (target?.id === 'info-link') preventDefault();
     },
+    showDropdown() {
+      this.isDropdownVisible = true;
+    },
+    hideDropdown() {
+      this.isDropdownVisible = false;
+    },
   },
 };
 </script>
 
 <template>
   <gl-disclosure-dropdown
+    v-gl-tooltip="buttonTooltipText"
     :toggle-text="__('Add')"
     size="small"
     placement="bottom-end"
     :items="actions"
+    @shown="showDropdown"
+    @hidden="hideDropdown"
     @beforeClose="onBeforeClose"
   >
     <template #group-label="{ group }">

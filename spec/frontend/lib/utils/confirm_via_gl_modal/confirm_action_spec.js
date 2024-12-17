@@ -106,16 +106,16 @@ describe('confirmAction', () => {
 
   it('emits a tracking event when modal emit `confirmed` and event name is provided', async () => {
     const trackingEvent = {
-      name: 'test_event',
-      label: 'test_label',
+      name: 'unprotect_branch',
+      label: 'repository_settings',
     };
     await renderRootComponent('', { trackingEvent });
     const { trackEventSpy } = bindInternalEventDocument(modalWrapper.element);
 
     modal.vm.$emit('confirmed');
 
-    expect(trackEventSpy).toHaveBeenCalledWith('test_event', {
-      label: 'test_label',
+    expect(trackEventSpy).toHaveBeenCalledWith('unprotect_branch', {
+      label: 'repository_settings',
     });
   });
 });

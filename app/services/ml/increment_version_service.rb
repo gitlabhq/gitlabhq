@@ -7,7 +7,7 @@ module Ml
   class IncrementVersionService
     def initialize(version, increment_type = nil)
       @version = version
-      @increment_type = increment_type || :major
+      @increment_type = increment_type || :patch
       @parsed_version = Packages::SemVer.parse(@version.to_s)
 
       raise "Version must be in a valid SemVer format" unless @parsed_version || @version.nil?

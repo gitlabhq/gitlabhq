@@ -74,7 +74,7 @@ module RuboCop
         private
 
         def forbidden_tables?(node)
-          FORBIDDEN_TABLES.include?(node.to_sym) || large_tables.include?(node.to_sym)
+          FORBIDDEN_TABLES.include?(node.to_sym) || large_or_over_limit_tables.include?(node.to_sym)
         end
 
         def offense?(node)

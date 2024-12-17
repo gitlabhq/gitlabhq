@@ -6,7 +6,11 @@ import { defaultClient } from '~/graphql_shared/issuable_client';
 import MergeRequestsListApp from './components/merge_requests_list_app.vue';
 import MoreactionsDropdown from './components/more_actions_dropdown.vue';
 
-export async function mountMergeRequestListsApp() {
+export async function mountMergeRequestListsApp({
+  getMergeRequestsQuery,
+  getMergeRequestsCountsQuery,
+  isProject = true,
+} = {}) {
   const el = document.querySelector('.js-merge-request-list-root');
 
   if (!el) {
@@ -79,6 +83,9 @@ export async function mountMergeRequestListsApp() {
       quickActionsHelpPath,
       markdownHelpPath,
       resetPath,
+      getMergeRequestsQuery,
+      getMergeRequestsCountsQuery,
+      isProject,
     },
     render: (createComponent) => createComponent(MergeRequestsListApp),
   });

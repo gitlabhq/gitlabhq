@@ -7,7 +7,7 @@ import BoardForm from 'ee_else_ce/boards/components/board_form.vue';
 
 import { formType } from '~/boards/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { isMetaKey } from '~/lib/utils/common_utils';
+import { isModifierKey } from '~/lib/utils/common_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { s__, __ } from '~/locale';
@@ -241,7 +241,7 @@ export default {
       this.filterTerm = value;
     },
     async switchBoardKeyEvent(boardId, e) {
-      if (isMetaKey(e)) {
+      if (isModifierKey(e)) {
         e.stopPropagation();
         visitUrl(`${this.boardBaseUrl}/${boardId}`, true);
       }

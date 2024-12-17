@@ -40,6 +40,7 @@ Prerequisites:
 1. For **Default project creation protection**, select the desired roles:
    - No one.
    - Administrators.
+   - Owners.
    - Maintainers.
    - Developers and Maintainers.
 1. Select **Save changes**.

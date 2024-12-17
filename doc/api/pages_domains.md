@@ -26,9 +26,29 @@ Get a list of all Pages domains.
 GET /pages/domains
 ```
 
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute           | Type            | Description                              |
+| ------------------- | --------------- | ---------------------------------------- |
+| `domain`            | string          | The custom domain name for the GitLab Pages site. |
+| `url`               | string          | The full URL of the Pages site, including the protocol. |
+| `project_id`        | integer         | The ID of the GitLab project associated with this Pages domain. |
+| `verified`          | boolean         | Indicates whether the domain has been verified. |
+| `verification_code` | string          | A unique record used to verify domain ownership. |
+| `enabled_until`     | date            | The date until which the domain is enabled. This updates periodically as the domain is reverified.  |
+| `auto_ssl_enabled`  | boolean         | Indicates if [automatic generation](../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md) of SSL certificates using Let's Encrypt is enabled for this domain. |
+| `certificate_expiration` | object | Information about the SSL certificate expiration. |
+| `certificate_expiration.expired` | boolean | Indicates whether the SSL certificate has expired. |
+| `certificate_expiration.expiration` | date | The expiration date and time of the SSL certificate. |
+
+Example request:
+
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/pages/domains"
 ```
+
+Example response:
 
 ```json
 [
@@ -36,6 +56,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
     "domain": "ssl.domain.example",
     "url": "https://ssl.domain.example",
     "project_id": 1337,
+    "verified": true,
+    "verification_code": "1234567890abcdef",
+    "enabled_until": "2020-04-12T14:32:00.000Z",
     "auto_ssl_enabled": false,
     "certificate": {
       "expired": false,
@@ -53,23 +76,53 @@ Get a list of project Pages domains. The user must have permissions to view Page
 GET /projects/:id/pages/domains
 ```
 
+Supported attributes:
+
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute           | Type            | Description                              |
+| ------------------- | --------------- | ---------------------------------------- |
+| `domain`            | string          | The custom domain name for the GitLab Pages site. |
+| `url`               | string          | The full URL of the Pages site, including the protocol. |
+| `verified`          | boolean         | Indicates whether the domain has been verified. |
+| `verification_code` | string          | A unique record used to verify domain ownership. |
+| `enabled_until`     | date            | The date until which the domain is enabled. This updates periodically as the domain is reverified.  |
+| `auto_ssl_enabled`  | boolean         | Indicates if [automatic generation](../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md) of SSL certificates using Let's Encrypt is enabled for this domain. |
+| `certificate` | object | Information about the SSL certificate. |
+| `certificate.subject` | string | The subject of the SSL certificate, typically containing information about the domain. |
+| `certificate.expired` | date | Indicates whether the SSL certificate has expired (true) or is still valid (false). |
+| `certificate.certificate` | string | The full SSL certificate in PEM format. |
+| `certificate.certificate_text` | date | A human-readable text representation of the SSL certificate, including details such as issuer, validity period, subject, and other certificate information.  |
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/pages/domains"
 ```
 
+Example response:
+
 ```json
 [
   {
     "domain": "www.domain.example",
-    "url": "http://www.domain.example"
+    "url": "http://www.domain.example",
+    "verified": true,
+    "verification_code": "1234567890abcdef",
+    "enabled_until": "2020-04-12T14:32:00.000Z",
+    "auto_ssl_enabled": false,
   },
   {
     "domain": "ssl.domain.example",
     "url": "https://ssl.domain.example",
+    "verified": true,
+    "verification_code": "1234567890abcdef",
+    "enabled_until": "2020-04-12T14:32:00.000Z",
     "auto_ssl_enabled": false,
     "certificate": {
       "subject": "/O=Example, Inc./OU=Example Origin CA/CN=Example Origin Certificate",
@@ -89,30 +142,45 @@ Get a single project Pages domain. The user must have permissions to view Pages 
 GET /projects/:id/pages/domains/:domain
 ```
 
+Supported attributes:
+
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `domain`  | string         | yes      | The custom domain indicated by the user  |
 
-```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/pages/domains/www.domain.example"
-```
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
 
-```json
-{
-  "domain": "www.domain.example",
-  "url": "http://www.domain.example"
-}
-```
+| Attribute           | Type            | Description                              |
+| ------------------- | --------------- | ---------------------------------------- |
+| `domain`            | string          | The custom domain name for the GitLab Pages site. |
+| `url`               | string          | The full URL of the Pages site, including the protocol. |
+| `verified`          | boolean         | Indicates whether the domain has been verified. |
+| `verification_code` | string          | A unique record used to verify domain ownership. |
+| `enabled_until`     | date            | The date until which the domain is enabled. This updates periodically as the domain is reverified.  |
+| `auto_ssl_enabled`  | boolean         | Indicates if [automatic generation](../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md) of SSL certificates using Let's Encrypt is enabled for this domain. |
+| `certificate` | object | Information about the SSL certificate. |
+| `certificate.subject` | string | The subject of the SSL certificate, typically containing information about the domain. |
+| `certificate.expired` | date | Indicates whether the SSL certificate has expired (true) or is still valid (false). |
+| `certificate.certificate` | string | The full SSL certificate in PEM format. |
+| `certificate.certificate_text` | date | A human-readable text representation of the SSL certificate, including details such as issuer, validity period, subject, and other certificate information.  |
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
 ```
 
+Example response:
+
 ```json
 {
   "domain": "ssl.domain.example",
   "url": "https://ssl.domain.example",
+  "verified": true,
+  "verification_code": "1234567890abcdef",
+  "enabled_until": "2020-04-12T14:32:00.000Z",
   "auto_ssl_enabled": false,
   "certificate": {
     "subject": "/O=Example, Inc./OU=Example Origin CA/CN=Example Origin Certificate",
@@ -131,6 +199,8 @@ Creates a new Pages domain. The user must have permissions to create new Pages d
 POST /projects/:id/pages/domains
 ```
 
+Supported attributes:
+
 | Attribute          | Type           | Required | Description                              |
 | -------------------| -------------- | -------- | ---------------------------------------- |
 | `id`               | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
@@ -138,6 +208,25 @@ POST /projects/:id/pages/domains
 | `auto_ssl_enabled` | boolean        | no       | Enables [automatic generation](../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md) of SSL certificates issued by Let's Encrypt for custom domains. |
 | `certificate`      | file/string    | no       | The certificate in PEM format with intermediates following in most specific to least specific order.|
 | `key`              | file/string    | no       | The certificate key in PEM format.       |
+
+If successful, returns [`201`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute           | Type            | Description                              |
+| ------------------- | --------------- | ---------------------------------------- |
+| `domain`            | string          | The custom domain name for the GitLab Pages site. |
+| `url`               | string          | The full URL of the Pages site, including the protocol. |
+| `verified`          | boolean         | Indicates whether the domain has been verified. |
+| `verification_code` | string          | A unique record used to verify domain ownership. |
+| `enabled_until`     | date            | The date until which the domain is enabled. This updates periodically as the domain is reverified.  |
+| `auto_ssl_enabled`  | boolean         | Indicates if [automatic generation](../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md) of SSL certificates using Let's Encrypt is enabled for this domain. |
+| `certificate` | object | Information about the SSL certificate. |
+| `certificate.subject` | string | The subject of the SSL certificate, typically containing information about the domain. |
+| `certificate.expired` | date | Indicates whether the SSL certificate has expired (true) or is still valid (false). |
+| `certificate.certificate` | string | The full SSL certificate in PEM format. |
+| `certificate.certificate_text` | date | A human-readable text representation of the SSL certificate, including details such as issuer, validity period, subject, and other certificate information.  |
+
+Example requests:
 
 Create a new Pages domain with a certificate from a `.pem` file:
 
@@ -162,6 +251,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain
      --form "auto_ssl_enabled=true" "https://gitlab.example.com/api/v4/projects/5/pages/domains"
 ```
 
+Example response:
+
 ```json
 {
   "domain": "ssl.domain.example",
@@ -184,6 +275,8 @@ Updates an existing project Pages domain. The user must have permissions to chan
 PUT /projects/:id/pages/domains/:domain
 ```
 
+Supported attributes:
+
 | Attribute          | Type           | Required | Description                              |
 | ------------------ | -------------- | -------- | ---------------------------------------- |
 | `id`               | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
@@ -191,6 +284,23 @@ PUT /projects/:id/pages/domains/:domain
 | `auto_ssl_enabled` | boolean        | no       | Enables [automatic generation](../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md) of SSL certificates issued by Let's Encrypt for custom domains. |
 | `certificate`      | file/string    | no       | The certificate in PEM format with intermediates following in most specific to least specific order.|
 | `key`              | file/string    | no       | The certificate key in PEM format.       |
+
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute           | Type            | Description                              |
+| ------------------- | --------------- | ---------------------------------------- |
+| `domain`            | string          | The custom domain name for the GitLab Pages site. |
+| `url`               | string          | The full URL of the Pages site, including the protocol. |
+| `verified`          | boolean         | Indicates whether the domain has been verified. |
+| `verification_code` | string          | A unique record used to verify domain ownership. |
+| `enabled_until`     | date            | The date until which the domain is enabled. This updates periodically as the domain is reverified.  |
+| `auto_ssl_enabled`  | boolean         | Indicates if [automatic generation](../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md) of SSL certificates using Let's Encrypt is enabled for this domain. |
+| `certificate` | object | Information about the SSL certificate. |
+| `certificate.subject` | string | The subject of the SSL certificate, typically containing information about the domain. |
+| `certificate.expired` | date | Indicates whether the SSL certificate has expired (true) or is still valid (false). |
+| `certificate.certificate` | string | The full SSL certificate in PEM format. |
+| `certificate.certificate_text` | date | A human-readable text representation of the SSL certificate, including details such as issuer, validity period, subject, and other certificate information.  |
 
 ### Adding certificate
 
@@ -207,6 +317,8 @@ Add a certificate for a Pages domain by using a variable containing the certific
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=$CERT_PEM" \
      --form "key=$KEY_PEM" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
 ```
+
+Example response:
 
 ```json
 {
@@ -229,6 +341,8 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
      --form "auto_ssl_enabled=true" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
 ```
 
+Example response:
+
 ```json
 {
   "domain": "ssl.domain.example",
@@ -246,11 +360,68 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certifi
      --form "key=" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"
 ```
 
+Example response:
+
 ```json
 {
   "domain": "ssl.domain.example",
   "url": "https://ssl.domain.example",
   "auto_ssl_enabled": false
+}
+```
+
+## Verify Pages domain
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21261) in GitLab 17.7.
+
+Verifies an existing project Pages domain.
+The user must have permissions to update Pages domains.
+
+```plaintext
+PUT /projects/:id/pages/domains/:domain/verify
+```
+
+Supported attributes:
+
+| Attribute          | Type           | Required | Description                              |
+| ------------------ | -------------- | -------- | ---------------------------------------- |
+| `id` | integer/string | yes | The ID or URL-encoded path of the project |
+| `domain` | string | yes | The custom domain to verify |
+
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute           | Type            | Description                              |
+| ------------------- | --------------- | ---------------------------------------- |
+| `domain`            | string          | The custom domain name for the GitLab Pages site. |
+| `url`               | string          | The full URL of the Pages site, including the protocol. |
+| `verified`          | boolean         | Indicates whether the domain has been verified. |
+| `verification_code` | string          | A unique record used to verify domain ownership. |
+| `enabled_until`     | date            | The date until which the domain is enabled. This updates periodically as the domain is reverified.  |
+| `auto_ssl_enabled`  | boolean         | Indicates if [automatic generation](../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md) of SSL certificates using Let's Encrypt is enabled for this domain. |
+| `certificate` | object | Information about the SSL certificate. |
+| `certificate.subject` | string | The subject of the SSL certificate, typically containing information about the domain. |
+| `certificate.expired` | date | Indicates whether the SSL certificate has expired (true) or is still valid (false). |
+| `certificate.certificate` | string | The full SSL certificate in PEM format. |
+| `certificate.certificate_text` | date | A human-readable text representation of the SSL certificate, including details such as issuer, validity period, subject, and other certificate information.  |
+
+Example request:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example/verify"
+```
+
+Example response:
+
+```json
+{
+  "domain": "ssl.domain.example",
+  "url": "https://ssl.domain.example",
+  "auto_ssl_enabled": false,
+  "verified": true,
+  "verification_code": "1234567890abcdef",
+  "enabled_until": "2020-04-12T14:32:00.000Z"
 }
 ```
 
@@ -262,10 +433,16 @@ Deletes an existing project Pages domain.
 DELETE /projects/:id/pages/domains/:domain
 ```
 
+Supported attributes:
+
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `domain`  | string         | yes      | The custom domain indicated by the user  |
+
+If successful, a `204 No Content` HTTP response with an empty body is expected.
+
+Example request:
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example"

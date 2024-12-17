@@ -16,6 +16,8 @@ module Gitlab
       def self.build_definition(child_table_name, config)
         parent_table_name = config.fetch('table')
 
+        conditions = config['conditions']&.map { |hash| hash.transform_keys(&:to_sym) }
+
         ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(
           child_table_name,
           parent_table_name,
@@ -24,7 +26,8 @@ module Gitlab
             on_delete: config.fetch('on_delete').to_sym,
             gitlab_schema: GitlabSchema.table_schema!(child_table_name),
             target_column: config['target_column'],
-            target_value: config['target_value']
+            target_value: config['target_value'],
+            conditions: conditions
           }
         )
       end

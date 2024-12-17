@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.ci_users.ci_users_executing_deployment_job_monthly
 description: Monthly counts of times users have executed deployment jobs
 product_group: environments
+product_categories:
+- continuous_delivery
 value_type: number
 status: active
 milestone: "14.8"

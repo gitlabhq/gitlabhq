@@ -83,7 +83,7 @@ module Git
 
       return unless file_types.present?
 
-      ProjectCacheWorker.perform_async(project.id, file_types, [], false)
+      ProjectCacheWorker.perform_async(project.id, file_types.map(&:to_s), [], false)
     end
 
     def enqueue_notify_kas

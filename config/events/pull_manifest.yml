@@ -1,0 +1,15 @@
+---
+description: Tracks when a manifest is pulled from the package registry
+action: pull_manifest
+identifiers:
+- namespace
+- user
+product_group: container_registry
+milestone: '14.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167137
+distributions:
+- ce
+tiers:
+- free
+- premium
+- ultimate

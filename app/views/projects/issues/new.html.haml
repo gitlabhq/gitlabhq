@@ -8,7 +8,7 @@
 - page_title _("New Issue")
 - if Feature.disabled?(:work_items_view_preference, current_user) || !current_user&.user_preference&.use_work_items_view
   - add_to_breadcrumbs _("Issues"), project_issues_path(@project)
-  - breadcrumb_title _("New")
+  - breadcrumb_title _("New issue")
 
 - if Feature.enabled?(:work_items_view_preference, current_user) && current_user&.user_preference&.use_work_items_view
   #js-work-items{ data: work_items_show_data(@project, current_user) }

@@ -101,9 +101,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
     with_them do
       subject { merge_path_description(mr, with_arrow: with_arrow) }
 
-      it {
-        is_expected.to eq(result)
-      }
+      it { is_expected.to eq(result) }
     end
   end
 

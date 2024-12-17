@@ -37,7 +37,7 @@ RSpec.describe 'Group member autocomplete', :js, feature_category: :groups_and_p
         create(:group_group_link, shared_group: group, shared_with_group: private_group)
       end
 
-      it 'suggests member of private group as well', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444683' do # rubocop:disable Layout/LineLength -- We prefer to keep it on a single line, for simplicity sake
+      it 'suggests member of private group as well', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444683' do
         visit edit_group_milestone_path(group, noteable)
 
         fill_in 'Description', with: '@'

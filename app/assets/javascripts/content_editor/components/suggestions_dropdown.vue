@@ -92,6 +92,10 @@ export default {
       return this.isReference && this.nodeProps.referenceType === 'vulnerability';
     },
 
+    isIteration() {
+      return this.isReference && this.nodeProps.referenceType === 'iteration';
+    },
+
     isMergeRequest() {
       return this.isReference && this.nodeProps.referenceType === 'merge_request';
     },
@@ -153,6 +157,7 @@ export default {
         case 'vulnerability':
           return `[vulnerability:${item.id}]`;
         case 'wiki':
+        case 'iteration':
           return item.title;
         default:
           return '';
@@ -257,7 +262,7 @@ export default {
       return this.query
         ? String(escape(text)).replace(
             new RegExp(this.query, 'i'),
-            (match) => `<strong class="!gl-text-primary">${match}</strong>`,
+            (match) => `<strong class="!gl-text-default">${match}</strong>`,
           )
         : escape(text);
     },
@@ -297,33 +302,34 @@ export default {
                     <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.username)"></span>
                     <small
                       v-safe-html:[$options.safeHtmlConfig]="highlight(avatarSubLabel(item))"
-                      class="gl-text-gray-500"
+                      class="gl-text-subtle"
                     ></small>
                   </span>
                 </span>
                 <span v-if="isIssue || isMergeRequest">
                   <gl-icon
                     v-if="item.icon_name"
-                    class="gl-mr-2 gl-text-secondary"
+                    class="gl-mr-2"
+                    variant="subtle"
                     :name="item.icon_name"
                   />
                   <small
                     v-safe-html:[$options.safeHtmlConfig]="highlight(item.reference || item.iid)"
-                    class="gl-text-gray-500"
+                    class="gl-text-subtle"
                   ></small>
                   <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.title)"></span>
                 </span>
                 <span v-if="isVulnerability || isSnippet">
                   <small
                     v-safe-html:[$options.safeHtmlConfig]="highlight(item.id)"
-                    class="gl-text-gray-500"
+                    class="gl-text-subtle"
                   ></small>
                   <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.title)"></span>
                 </span>
-                <span v-if="isEpic">
+                <span v-if="isEpic || isIteration">
                   <small
                     v-safe-html:[$options.safeHtmlConfig]="highlight(item.reference)"
-                    class="gl-text-gray-500"
+                    class="gl-text-subtle"
                   ></small>
                   <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.title)"></span>
                 </span>
@@ -337,7 +343,7 @@ export default {
                   <small
                     v-if="item.title.toLowerCase() !== item.slug.toLowerCase()"
                     v-safe-html:[$options.safeHtmlConfig]="highlight(`(${item.slug})`)"
-                    class="gl-text-gray-500"
+                    class="gl-text-subtle"
                   ></small>
                 </span>
                 <span v-if="isLabel" class="gl-flex">
@@ -351,11 +357,11 @@ export default {
                 <div v-if="isCommand">
                   <div class="gl-mb-1">
                     /<span v-safe-html:[$options.safeHtmlConfig]="highlight(item.name)"></span>
-                    <span class="gl-text-sm gl-text-gray-500">{{ item.params[0] }}</span>
+                    <span class="gl-text-sm gl-text-subtle">{{ item.params[0] }}</span>
                   </div>
                   <em
                     v-safe-html:[$options.safeHtmlConfig]="highlight(item.description)"
-                    class="gl-text-sm gl-text-gray-500"
+                    class="gl-text-sm gl-text-subtle"
                   ></em>
                 </div>
                 <div v-if="isEmoji" class="gl-flex gl-items-center">

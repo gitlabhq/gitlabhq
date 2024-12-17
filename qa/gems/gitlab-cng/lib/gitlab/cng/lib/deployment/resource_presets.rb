@@ -57,7 +57,7 @@ module Gitlab
                   }
                 },
                 registry: {
-                  resources: resources("40m", "20Mi"),
+                  resources: resources("50m", "100Mi"),
                   hpa: {
                     minReplicas: 1,
                     **cpu_utilization
@@ -97,7 +97,7 @@ module Gitlab
                   }
                 },
                 registry: {
-                  resources: resources("50m", "32Mi"),
+                  resources: resources("100m", "200Mi"),
                   hpa: {
                     minReplicas: 1,
                     **cpu_utilization

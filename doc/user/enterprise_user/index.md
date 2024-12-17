@@ -107,7 +107,8 @@ For more information on group-level domain verification, see [epic 5299](https:/
 
 The custom domain must match the email domain exactly. For example, if your email is `username@example.com`, verify the `example.com` domain.
 
-1. On the left sidebar, select **Search or go to** and find your top-level group.
+1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
 1. Select **Settings > Domain Verification**.
 1. In the upper-right corner, select **Add Domain**.
 1. In **Domain**, enter the domain name.
@@ -153,7 +154,8 @@ For GitLab instances with domain verification enabled, if the domain cannot be v
 
 To view all configured domains in your group:
 
-1. On the left sidebar, select **Search or go to** and find your top-level group.
+1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
 1. Select **Settings > Domain Verification**.
 
 You then see:
@@ -166,7 +168,8 @@ You then see:
 
 To edit or remove a domain:
 
-1. On the left sidebar, select **Search or go to** and find your top-level group.
+1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
 1. Select **Settings > Domain Verification**.
 1. When viewing **Domain Verification**, select the project listed next to the relevant domain.
 1. Edit or remove a domain following the relevant [GitLab Pages custom domains](../project/pages/custom_domains_ssl_tls_certification/index.md) instructions.
@@ -194,8 +197,12 @@ To disable 2FA:
 
 ### Enable the extension marketplace for the Web IDE and workspaces
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161819) as a [beta](../../policy/experiment-beta-support.md#beta) in GitLab 17.0 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
-> - Feature flag `web_ide_oauth` [enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) and feature flag `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
+DETAILS:
+**Status:** Beta
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161819) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 17.0 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
+> - Feature flag `web_ide_oauth` [enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) in GitLab 17.4.
+> - Feature flag `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
 > - Feature flag `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.
 
 FLAG:
@@ -247,6 +254,10 @@ Changing an enterprise user's primary email to an email from a non-verified doma
 ### Disable password authentication for enterprise users
 
 A top-level group Owner can [disable password authentication for enterprise users](../group/saml_sso/index.md#disable-password-authentication-for-enterprise-users).
+
+## Related topics
+
+- [Group enterprise users API](../../api/group_enterprise_users.md)
 
 ## Troubleshooting
 

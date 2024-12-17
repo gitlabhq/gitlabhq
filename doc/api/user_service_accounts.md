@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-Create and list [service account](../user/profile/service_accounts.md) users by using the REST API.
+Use this API to interact with service accounts. For more information, see [Service accounts](../user/profile/service_accounts.md).
 
 ## Create a service account user
 

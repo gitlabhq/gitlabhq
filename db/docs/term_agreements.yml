@@ -8,3 +8,4 @@ description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/82eeb72c8c03727540b902d40e7e657d0a5ecb4c
 milestone: '10.8'
 gitlab_schema: gitlab_main_clusterwide
+table_size: small

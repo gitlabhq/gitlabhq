@@ -65,7 +65,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'are not downloaded when dependencies array is set to empty', :blocking,
+      it 'are not downloaded when dependencies array is set to empty',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/424958' do
         # If this job fails, the 'failed' status of pipeline is no longer helpful
         # We should exit the test case here

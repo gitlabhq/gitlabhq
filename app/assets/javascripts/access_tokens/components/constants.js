@@ -14,6 +14,14 @@ const BASE_FIELDS = [
     sortable: true,
   },
   {
+    formatter(description) {
+      return description ?? '-';
+    },
+    key: 'description',
+    label: __('Description'),
+    sortable: true,
+  },
+  {
     formatter(scopes) {
       return scopes?.length ? scopes.join(', ') : __('no scopes selected');
     },

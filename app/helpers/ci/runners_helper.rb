@@ -29,7 +29,7 @@ module Ci
           end
 
         icon = 'status-waiting'
-        span_class = 'gl-text-gray-500'
+        span_class = 'gl-text-subtle'
       when :stale
         # runner may have contacted (or not) and be stale: consider both cases.
         title = contacted_at ? s_("Runners|Runner is stale; last contact was %{runner_contact} ago") % { runner_contact: time_ago_in_words(contacted_at) } : s_("Runners|Runner is stale; it has never contacted this instance")

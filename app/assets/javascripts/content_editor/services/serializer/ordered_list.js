@@ -7,7 +7,7 @@ export function renderOrderedList(state, node) {
   let delimiter;
 
   if (sourceMarkdown) {
-    const match = /^(\d+)(\)|\.)/.exec(sourceMarkdown);
+    const match = /^(\d+)(\)|\.)/.exec(sourceMarkdown.trim());
     start = parseInt(match[1], 10) || 1;
     [, , delimiter] = match;
   } else {

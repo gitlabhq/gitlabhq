@@ -269,6 +269,95 @@ RSpec.describe API::Helpers, feature_category: :shared do
           end
         end
       end
+
+      context 'user is authenticated with a job token from another project and fine grained policies are enabled' do
+        let_it_be(:runner_project) { create(:project) }
+        let_it_be(:job) { create(:ci_build, project: runner_project) }
+        let_it_be(:allowed_job_token_policy) { ::Ci::JobToken::Policies.all_policies.pick(:value) }
+        let_it_be(:job_token_policy) { allowed_job_token_policy }
+
+        before do
+          create(:ci_job_token_project_scope_link,
+            source_project: project,
+            target_project: runner_project,
+            direction: :inbound,
+            job_token_policies: [allowed_job_token_policy],
+            default_permissions: false
+          )
+
+          allow(helper).to receive(:route_authentication_setting).and_return({})
+          allow(helper).to receive(:route_setting).with(:authorization).and_return(job_token_policies: job_token_policy)
+          allow(user).to receive(:ci_job_token_scope).and_return(user.set_ci_job_token_scope!(job))
+        end
+
+        subject(:find_project!) { helper.find_project!(project.id) }
+
+        it { is_expected.to eq project }
+
+        context 'when the given policy is not allowed' do
+          let_it_be(:job_token_policy) { :not_allowed_policy }
+
+          it 'returns forbidden' do
+            expect(helper)
+              .to receive(:forbidden!)
+              .with("Insufficient permissions to access this resource in project #{project.path}. " \
+                'The following token permission is required: not_allowed_policy.')
+
+            find_project!
+          end
+
+          context 'when multiple policies are required' do
+            let_it_be(:job_token_policy) { [:policy_1, :policy_2] }
+
+            it 'returns forbidden' do
+              expect(helper)
+                .to receive(:forbidden!)
+                .with("Insufficient permissions to access this resource in project #{project.path}. " \
+                  'The following token permissions are required: policy_1 and policy_2.')
+
+              find_project!
+            end
+          end
+
+          context 'when the `enforce_job_token_policies` feature flag is disabled' do
+            before do
+              stub_feature_flags(enforce_job_token_policies: false)
+            end
+
+            it { is_expected.to eq project }
+          end
+        end
+
+        context 'when no policy is given' do
+          let_it_be(:job_token_policy) { nil }
+
+          it 'returns forbidden' do
+            expect(helper).to receive(:forbidden!).with('This action is unauthorized for CI/CD job tokens.')
+
+            find_project!
+          end
+
+          context 'when the `enforce_job_token_policies` feature flag is disabled' do
+            before do
+              stub_feature_flags(enforce_job_token_policies: false)
+            end
+
+            it { is_expected.to eq project }
+          end
+        end
+
+        context "when route settings don't exist" do
+          before do
+            allow(helper).to receive(:respond_to?).with(:route_setting).and_return(false)
+          end
+
+          it 'returns forbidden' do
+            expect(helper).to receive(:forbidden!).with('This action is unauthorized for CI/CD job tokens.')
+
+            find_project!
+          end
+        end
+      end
     end
 
     context 'when user is not authenticated' do
@@ -779,6 +868,13 @@ RSpec.describe API::Helpers, feature_category: :shared do
       let(:non_existing_id) { non_existing_record_id }
 
       it_behaves_like 'namespace finder'
+
+      it 'find the namespace from up-to-date replica or primary DB' do
+        allow(Namespace.sticking).to receive(:find_caught_up_replica).and_call_original
+
+        expect(Namespace.sticking).to receive(:find_caught_up_replica).with(:namespace, existing_id)
+        expect(helper.find_namespace(existing_id)).to eq(namespace)
+      end
     end
 
     context 'when PATH is used as an argument' do
@@ -1232,8 +1328,9 @@ RSpec.describe API::Helpers, feature_category: :shared do
     let(:dummy_instance) { dummy_class.include(described_class).new }
     let(:path) { '/tmp/file.txt' }
     let(:filename) { 'file.txt' }
+    let(:extra_response_headers) { {} }
 
-    subject { dummy_instance.present_disk_file!(path, filename) }
+    subject { dummy_instance.present_disk_file!(path, filename, extra_response_headers: extra_response_headers) }
 
     before do
       expect(dummy_instance).to receive(:content_type).with('application/octet-stream')
@@ -1260,20 +1357,41 @@ RSpec.describe API::Helpers, feature_category: :shared do
         subject
       end
     end
+
+    context 'with extra response headers' do
+      let(:extra_response_headers) { { 'x-custom-header' => 'test' } }
+
+      it 'sets them' do
+        expect(dummy_instance).to receive(:sendfile).with(path)
+
+        subject
+
+        expect(dummy_instance.headers['x-custom-header']).to eq('test')
+      end
+    end
   end
 
   describe '#present_carrierwave_file!' do
     let(:supports_direct_download) { false }
     let(:content_type) { nil }
     let(:content_disposition) { nil }
+    let(:extra_response_headers) { {} }
 
-    subject { helper.present_carrierwave_file!(artifact.file, supports_direct_download: supports_direct_download, content_disposition: content_disposition, content_type: content_type) }
+    subject do
+      helper.present_carrierwave_file!(
+        artifact.file,
+        supports_direct_download: supports_direct_download,
+        content_disposition: content_disposition,
+        content_type: content_type,
+        extra_response_headers: extra_response_headers
+      )
+    end
 
     context 'with file storage' do
       let_it_be(:artifact) { create(:ci_job_artifact, :zip) }
 
       it 'calls present_disk_file!' do
-        expect(helper).to receive(:present_disk_file!).with(artifact.file.path, artifact.filename, 'application/octet-stream')
+        expect(helper).to receive(:present_disk_file!).with(artifact.file.path, artifact.filename, content_type: nil, extra_response_headers: extra_response_headers)
 
         subject
       end
@@ -1282,7 +1400,18 @@ RSpec.describe API::Helpers, feature_category: :shared do
         let(:content_type) { 'application/zip' }
 
         it 'calls present_disk_file! with the correct content type' do
-          expect(helper).to receive(:present_disk_file!).with(artifact.file.path, artifact.filename, content_type)
+          expect(helper).to receive(:present_disk_file!).with(artifact.file.path, artifact.filename, content_type: content_type, extra_response_headers: extra_response_headers)
+
+          subject
+        end
+      end
+
+      context 'with extra response headers' do
+        let(:extra_response_headers) { { 'x-custom-header' => 'test' } }
+
+        it 'calls present_disk_file! with the correct extra response headers' do
+          expect(helper).to receive(:present_disk_file!)
+            .with(artifact.file.path, artifact.filename, content_type: content_type, extra_response_headers: extra_response_headers)
 
           subject
         end
@@ -1336,7 +1465,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
           let(:content_type) { 'application/zip' }
           let(:content_disposition) { :inline }
 
-          it 'sends a redirect with the correct content type' do
+          it 'sends a workhorse header with the correct content type' do
             expect(helper).to receive(:status).with(:ok)
             expect(helper).to receive(:body).with('')
             expect(helper).to receive(:header) do |name, value|
@@ -1346,6 +1475,25 @@ RSpec.describe API::Helpers, feature_category: :shared do
 
               expect(command).to eq('send-url')
               expect(params.dig('ResponseHeaders', 'Content-Type')).to eq([content_type])
+            end
+
+            subject
+          end
+        end
+
+        context 'with extra response headers' do
+          let(:extra_response_headers) { { 'x-custom-header' => 'test' } }
+
+          it 'sends a workhorse header with the response headers' do
+            expect(helper).to receive(:status).with(:ok)
+            expect(helper).to receive(:body).with('')
+            expect(helper).to receive(:header) do |name, value|
+              expect(name).to eq(Gitlab::Workhorse::SEND_DATA_HEADER)
+              command, encoded_params = value.split(":")
+              params = Gitlab::Json.parse(Base64.urlsafe_decode64(encoded_params))
+
+              expect(command).to eq('send-url')
+              expect(params.dig('ResponseHeaders', 'x-custom-header')).to eq(['test'])
             end
 
             subject

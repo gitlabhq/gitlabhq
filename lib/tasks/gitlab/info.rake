@@ -27,22 +27,22 @@ namespace :gitlab do
 
       puts ""
       puts Rainbow("System information").yellow
-      puts "System:\t\t#{os_name || Rainbow("unknown").red}"
+      puts "System:\t\t#{os_name || Rainbow('unknown').red}"
 
       if Gitlab.ee?
-        puts "Proxy:\t\t#{proxies.present? ? Rainbow(proxies).green : "no"}"
+        puts "Proxy:\t\t#{proxies.present? ? Rainbow(proxies).green : 'no'}"
       end
 
       puts "Current User:\t#{run_command(%w[whoami])}"
-      puts "Using RVM:\t#{rvm_version.present? ? Rainbow("yes").green : "no"}"
+      puts "Using RVM:\t#{rvm_version.present? ? Rainbow('yes').green : 'no'}"
       puts "RVM Version:\t#{rvm_version}" if rvm_version.present?
-      puts "Ruby Version:\t#{ruby_version || Rainbow("unknown").red}"
-      puts "Gem Version:\t#{gem_version || Rainbow("unknown").red}"
-      puts "Bundler Version:#{bunder_version || Rainbow("unknown").red}"
-      puts "Rake Version:\t#{rake_version || Rainbow("unknown").red}"
-      puts "Redis Version:\t#{redis_version[1] || Rainbow("unknown").red}"
+      puts "Ruby Version:\t#{ruby_version || Rainbow('unknown').red}"
+      puts "Gem Version:\t#{gem_version || Rainbow('unknown').red}"
+      puts "Bundler Version:#{bunder_version || Rainbow('unknown').red}"
+      puts "Rake Version:\t#{rake_version || Rainbow('unknown').red}"
+      puts "Redis Version:\t#{redis_version[1] || Rainbow('unknown').red}"
       puts "Sidekiq Version:#{Sidekiq::VERSION}"
-      puts "Go Version:\t#{go_version[1] || Rainbow("unknown").red}"
+      puts "Go Version:\t#{go_version[1] || Rainbow('unknown').red}"
 
       project = Group.new(path: "some-group").projects.build(path: "some-project")
       # construct clone URLs
@@ -72,19 +72,19 @@ namespace :gitlab do
       puts "SSH Clone URL:\t#{ssh_clone_url}"
 
       if Gitlab.ee?
-        puts "Elasticsearch:\t#{Gitlab::CurrentSettings.current_application_settings.elasticsearch_indexing? ? Rainbow("yes").green : "no"}"
-        puts "Geo:\t\t#{Gitlab::Geo.enabled? ? Rainbow("yes").green : "no"}"
+        puts "Elasticsearch:\t#{Gitlab::CurrentSettings.current_application_settings.elasticsearch_indexing? ? Rainbow('yes').green : 'no'}"
+        puts "Geo:\t\t#{Gitlab::Geo.enabled? ? Rainbow('yes').green : 'no'}"
         puts "Geo node:\t#{geo_node_type}" if Gitlab::Geo.enabled?
       end
 
-      puts "Using LDAP:\t#{Gitlab.config.ldap.enabled ? Rainbow("yes").green : "no"}"
-      puts "Using Omniauth:\t#{Gitlab::Auth.omniauth_enabled? ? Rainbow("yes").green : "no"}"
+      puts "Using LDAP:\t#{Gitlab.config.ldap.enabled ? Rainbow('yes').green : 'no'}"
+      puts "Using Omniauth:\t#{Gitlab::Auth.omniauth_enabled? ? Rainbow('yes').green : 'no'}"
       puts "Omniauth Providers: #{omniauth_providers.join(', ')}" if Gitlab::Auth.omniauth_enabled?
 
       # check Gitlab Shell version
       puts ""
       puts Rainbow("GitLab Shell").yellow
-      puts "Version:\t#{Gitlab::Shell.version || Rainbow("unknown").red}"
+      puts "Version:\t#{Gitlab::Shell.version || Rainbow('unknown').red}"
       puts "Repository storages:"
       Gitlab.config.repositories.storages.each do |name, repository_storage|
         puts "- #{name}: \t#{repository_storage.gitaly_address}"

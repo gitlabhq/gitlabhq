@@ -45,6 +45,10 @@ export default {
 
       urlParams.search = this.searchTerm.length > 0 ? this.searchTerm : null;
 
+      if (urlParams.search) {
+        urlParams.state = 'all';
+      }
+
       const newUrl = mergeUrlParams(urlParams, this.projectBranchesFilteredPath);
       visitUrl(newUrl);
     },

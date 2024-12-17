@@ -60,7 +60,7 @@ module QA
         end
 
         context(
-          'when using HTTP endpoint integration', :blocking,
+          'when using HTTP endpoint integration',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/389993'
         ) do
           before do
@@ -71,7 +71,7 @@ module QA
         end
 
         context(
-          'when using Prometheus integration', :blocking,
+          'when using Prometheus integration',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/389994'
         ) do
           before do
@@ -88,7 +88,7 @@ module QA
         end
 
         context(
-          'when using HTTP endpoint integration', :blocking,
+          'when using HTTP endpoint integration',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/390145'
         ) do
           before do
@@ -99,7 +99,7 @@ module QA
         end
 
         context(
-          'when using Prometheus integration', :blocking,
+          'when using Prometheus integration',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/390144'
         ) do
           before do

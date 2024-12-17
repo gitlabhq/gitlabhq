@@ -4,7 +4,8 @@
 # that `MergeRequestsFinder` can handle, so you may need to use aliasing.
 module ResolvesMergeRequests
   extend ActiveSupport::Concern
-  include LooksAhead
+  include ::Gitlab::Utils::StrongMemoize
+  prepend ::MergeRequests::LookAheadPreloads
 
   NON_STABLE_CURSOR_SORTS = %i[priority_asc priority_desc
     popularity_asc popularity_desc
@@ -21,11 +22,14 @@ module ResolvesMergeRequests
       args[:include_subgroups] = true
     end
 
-    args.delete(:subscribed) if Feature.disabled?(:filter_subscriptions, current_user)
+    args.delete(:blob_path) if Feature.disabled?(:filter_blob_path, current_user)
+
+    validate_blob_path!(args)
+
     rewrite_param_name(args, :reviewer_wildcard_id, :reviewer_id)
     rewrite_param_name(args, :assignee_wildcard_id, :assignee_id)
 
-    mr_finder = MergeRequestsFinder.new(current_user, args.compact)
+    mr_finder = MergeRequestsFinder.new(current_user, prepare_finder_params(args.compact))
     finder = Gitlab::Graphql::Loaders::IssuableLoader.new(mr_parent, mr_finder)
 
     merge_requests = select_result(finder.batching_find_all { |query| apply_lookahead(query) })
@@ -51,48 +55,52 @@ module ResolvesMergeRequests
 
   private
 
-  def mr_parent
-    project
+  def prepare_finder_params(args)
+    args
   end
 
-  def unconditional_includes
-    [:target_project, :author]
+  def mr_parent
+    project
   end
 
   def rewrite_param_name(params, old_name, new_name)
     params[new_name] = params.delete(old_name) if params && params[old_name].present?
   end
 
-  def preloads
-    {
-      assignees: [:assignees],
-      award_emoji: { award_emoji: [:awardable] },
-      reviewers: [:reviewers],
-      participants: MergeRequest.participant_includes,
-      author: [:author],
-      merged_at: [:metrics],
-      closed_at: [:metrics],
-      commit_count: [:metrics],
-      diff_stats_summary: [:metrics],
-      approved_by: [:approved_by_users],
-      merge_after: [:merge_schedule],
-      mergeable: [:merge_schedule],
-      detailed_merge_status: [:merge_schedule],
-      milestone: [:milestone],
-      security_auto_fix: [:author],
-      head_pipeline: [:merge_request_diff, { head_pipeline: [:merge_request, :project] }],
-      timelogs: [:timelogs],
-      pipelines: [:merge_request_diffs], # used by `recent_diff_head_shas` to load pipelines
-      committers: [merge_request_diff: [:merge_request_diff_commits]],
-      suggested_reviewers: [:predictions],
-      diff_stats: [latest_merge_request_diff: [:merge_request_diff_commits]],
-      source_branch_exists: [:source_project, { source_project: [:route] }]
+  def validate_blob_path!(args)
+    return if args[:blob_path].blank?
+
+    required_fields = {
+      target_branch: 'targetBranches',
+      state: 'state',
+      created_after: 'createdAfter'
     }
+
+    required_fields.each do |key, field_name|
+      if args[key].blank?
+        raise Gitlab::Graphql::Errors::ArgumentError, "#{field_name} field must be specified to filter by blobPath"
+      end
+    end
+
+    # It's limited for performance reasons
+    created_after = args[:created_after].to_datetime
+    return if created_after.after?(30.days.ago)
+
+    raise Gitlab::Graphql::Errors::ArgumentError,
+      'createdAfter must be within the last 30 days to filter by blobPath'
   end
 
   def non_stable_cursor_sort?(sort)
     NON_STABLE_CURSOR_SORTS.include?(sort)
   end
+
+  def resource_parent
+    # The project could have been loaded in batch by `BatchLoader`.
+    # At this point we need the `id` of the project to query for issues, so
+    # make sure it's loaded and not `nil` before continuing.
+    object.respond_to?(:sync) ? object.sync : object
+  end
+  strong_memoize_attr :resource_parent
 end
 
 ResolvesMergeRequests.prepend_mod

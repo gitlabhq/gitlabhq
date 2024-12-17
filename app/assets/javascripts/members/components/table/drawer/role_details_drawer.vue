@@ -173,7 +173,7 @@ export default {
               <span data-testid="permission-name">
                 {{ permission.name }}
               </span>
-              <p class="gl-mt-2 gl-text-secondary" data-testid="permission-description">
+              <p class="gl-mt-2 gl-text-subtle" data-testid="permission-description">
                 {{ permission.description }}
               </p>
             </div>

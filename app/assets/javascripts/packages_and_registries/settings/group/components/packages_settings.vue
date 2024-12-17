@@ -1,5 +1,6 @@
 <script>
 import { GlTableLite, GlToggle } from '@gitlab/ui';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   GENERIC_PACKAGE_FORMAT,
   MAVEN_PACKAGE_FORMAT,
@@ -48,6 +49,7 @@ export default {
     GlToggle,
     ExceptionsInput,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: ['groupPath'],
   props: {
     packageSettings: {
@@ -158,6 +160,13 @@ export default {
         this.$emit('error');
       }
     },
+    allowDuplicateExceptions(item) {
+      if (item.format === NUGET_PACKAGE_FORMAT) return item.duplicatesAllowed;
+
+      // We're also enabling the duplicate exceptions input when duplicates are allowed
+      // But the change is behind the packagesAllowDuplicateExceptions feature flag
+      return !this.glFeatures.packagesAllowDuplicateExceptions && item.duplicatesAllowed;
+    },
     update(type, value) {
       this.updateSettings({ [type]: value });
     },
@@ -195,7 +204,7 @@ export default {
         <template #cell(exceptions)="{ item }">
           <exceptions-input
             :id="item.id"
-            :duplicates-allowed="item.duplicatesAllowed"
+            :duplicates-allowed="allowDuplicateExceptions(item)"
             :duplicate-exception-regex="item.duplicateExceptionRegex"
             :duplicate-exception-regex-error="item.duplicateExceptionRegexError"
             :name="item.modelNames.exception"

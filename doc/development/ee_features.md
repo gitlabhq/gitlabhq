@@ -1550,6 +1550,33 @@ describe('ComponentUnderTest', () => {
 
 ```
 
+### Running EE vs CE tests
+
+Whenever you create tests for both CE and EE environments, you need to take some steps to ensure that both tests pass locally and on the pipeline when run.
+
+- By default, tests run in the EE environment, executing both EE and CE tests.
+- If you want to test only the CE file in the FOSS environment, you need to run the following command:
+
+```shell
+FOSS_ONLY=1 yarn jest path/to/spec/file.spec.js
+```
+
+As for CE tests we only add CE features, it may fail in the EE environment if EE-specific mock data is missing. To ensure CE tests work in both environments:
+
+- Use the `ee_else_ce_jest` alias when importing mock data. For example:
+
+```javascript
+import { sidebarDataCountResponse } from 'ee_else_ce_jest/super_sidebar/mock_data';
+```
+
+- Make sure that you have a CE and an EE `mock_data` file with an object (in the example above, `sidebarDataCountResponse`) with the corresponding data. One with only CE features data for the CE file and another with both CE and EE features data.
+
+- In the CE file `expect` blocks, if you need to compare an object, use `toMatchObject` instead of `toEqual`, so it doesn't expect that EE data to exist in the CE data. For example:
+
+```javascript
+expect(findPinnedSection().props('asyncCount')).toMatchObject(asyncCountData);
+```
+
 #### SCSS code in `assets/stylesheets`
 
 If a component you're adding styles for is limited to EE, it is better to have a

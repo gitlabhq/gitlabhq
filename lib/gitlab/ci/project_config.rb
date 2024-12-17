@@ -11,17 +11,14 @@ module Gitlab
       #   it would evaluate the project's YAML file instead.
       # - ProjectSetting takes care of CI config coming defined in a project.
       #   This can be the project itself, remote or external.
-      # - EE uses PipelineExecutionPolicyForced and it must come before AutoDevops because
-      #   it handles the empty CI config case.
-      #   We want to run Pipeline Execution Policies instead of AutoDevops (if they are present).
       # - AutoDevops is used as default option if nothing else is found and if AutoDevops is enabled.
       # - EE uses SecurityPolicyDefault and it should come last. It is only necessary if no other source is available.
+      #   Based on the policy configuration different source can be used.
       SOURCES = [
         ProjectConfig::Compliance,
         ProjectConfig::Parameter,
         ProjectConfig::Bridge,
         ProjectConfig::ProjectSetting,
-        ProjectConfig::PipelineExecutionPolicyForced,
         ProjectConfig::AutoDevops,
         ProjectConfig::SecurityPolicyDefault
       ].freeze

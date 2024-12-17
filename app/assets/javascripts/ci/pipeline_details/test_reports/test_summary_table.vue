@@ -78,7 +78,7 @@ export default {
           <div role="rowheader" class="table-mobile-header gl-font-bold">
             {{ __('Suite') }}
           </div>
-          <div class="table-mobile-content underline gl-pl-5 gl-text-gray-900">
+          <div class="table-mobile-content underline gl-pl-5 gl-text-default">
             {{ testSuite.name }}
             <gl-icon
               v-if="testSuite.suite_error"

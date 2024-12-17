@@ -12,7 +12,6 @@ class Projects::ApplicationController < ApplicationController
 
   before_action do
     push_namespace_setting(:math_rendering_limits_enabled, @project&.parent)
-    push_frontend_feature_flag(:async_sidebar_counts, @project&.root_ancestor)
   end
 
   helper_method :repository, :can_collaborate_with_project?, :user_access

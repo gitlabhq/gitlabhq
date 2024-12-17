@@ -23,7 +23,6 @@ Capybara/VisibilityMatcher:
     - 'spec/features/merge_request/user_resolves_outdated_diff_discussions_spec.rb'
     - 'spec/features/merge_request/user_sees_diff_spec.rb'
     - 'spec/features/merge_request/user_sees_merge_widget_spec.rb'
-    - 'spec/features/merge_request/user_views_diffs_commit_spec.rb'
     - 'spec/features/merge_request/user_views_diffs_spec.rb'
     - 'spec/features/projects/blobs/blob_show_spec.rb'
     - 'spec/features/projects/ci/lint_spec.rb'

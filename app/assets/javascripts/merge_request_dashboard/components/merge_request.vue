@@ -72,7 +72,7 @@ export default {
     <td class="gl-px-3 gl-py-4 gl-align-top">
       <gl-link
         :href="mergeRequest.webUrl"
-        class="gl-font-bold gl-text-primary hover:gl-text-gray-900"
+        class="gl-font-bold gl-text-default hover:gl-text-default"
       >
         {{ mergeRequest.title }}
       </gl-link>

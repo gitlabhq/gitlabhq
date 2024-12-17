@@ -10,15 +10,14 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Usernames and group names fall under a special category called
-[namespaces](../user/namespace/index.md).
+Use this API to interact with namespaces, a special resource category used to organize users and groups. For more information, see [Namespaces](../user/namespace/index.md).
+
+This API uses [Pagination](rest/index.md#pagination) to filter results.
 
 You might also want to view documentation for:
 
 - [Users](users.md)
 - [Groups](groups.md)
-
-[Pagination](rest/index.md#pagination) is used.
 
 ## List namespaces
 

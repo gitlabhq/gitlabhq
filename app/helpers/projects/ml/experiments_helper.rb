@@ -9,7 +9,14 @@ module Projects
         data = {
           name: experiment.name,
           metadata: experiment.metadata,
-          path: link_to_experiment(project, experiment)
+          path: link_to_experiment(project, experiment),
+          model_id: experiment.model&.id,
+          created_at: experiment.created_at,
+          user: {
+            id: experiment.user.id,
+            name: experiment.user.name,
+            path: user_path(experiment.user)
+          }
         }
 
         Gitlab::Json.generate(data)

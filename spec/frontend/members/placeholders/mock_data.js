@@ -24,14 +24,15 @@ const createMockReassignUser = (index) => {
 
 const createMockSourceUser = (
   index,
-  { status, placeholderUser = true, reassignToUser = false } = {},
+  { status, placeholderUser = true, reassignToUser = false, sourceUserExists = true } = {},
 ) => {
   return {
     __typename: 'ImportSourceUser',
     id: `gid://gitlab/Import::SourceUser/${index}`,
     sourceHostname: 'https://gitlab.com',
-    sourceName: `Old User ${index}`,
-    sourceUsername: `old_user_${index}`,
+    sourceName: sourceUserExists ? `Old User ${index}` : null,
+    sourceUsername: sourceUserExists ? `old_user_${index}` : null,
+    sourceUserIdentifier: index,
     status,
     reassignmentError: null,
     placeholderUser: placeholderUser ? createMockPlaceholderUser(index) : null,
@@ -65,6 +66,7 @@ export const mockSourceUsers = [
     status: 'COMPLETED',
     placeholderUser: false,
     reassignToUser: true,
+    sourceUserExists: false,
   }),
 ];
 

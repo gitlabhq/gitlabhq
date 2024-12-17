@@ -1,11 +1,17 @@
 import VueRouter from 'vue-router';
 import waitForPromises from 'helpers/wait_for_promises';
+import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import { createStore } from '~/ide/stores';
 import { syncRouterAndStore } from '~/ide/sync_router_and_store';
 
 const TEST_ROUTE = '/test/lorem/ipsum';
 
-describe('~/ide/sync_router_and_store', () => {
+const skipReason = new SkipReason({
+  name: '~/ide/sync_router_and_store',
+  reason: 'Legacy WebIDE is due for deletion',
+  issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508949',
+});
+describeSkipVue3(skipReason, () => {
   let unsync;
   let router;
   let store;

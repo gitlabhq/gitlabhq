@@ -18,7 +18,6 @@ module Users
     def execute
       build_user
       build_identity
-      build_user_detail
 
       user
     end
@@ -73,7 +72,17 @@ module Users
     def init_user
       assign_common_user_params
 
-      @user = User.new(user_params)
+      # We'll declaratively initialize the user_detail here due to possibility of assignment to user_detail
+      # in a delegation or otherwise in the assignment of attributes.
+      # This will allow our after_initialize call at the model layer to not wipe those values out and will
+      # also allow use to remove the model layer `user_detail` override eventually.
+      # Any future calls outside of this class on User.new can still wipe out set user_detail values, but
+      # once we remove the model layer override, it will be caught during test and that area, if not using
+      # this class will have to build_user_detail as well.
+      @user = User.new.tap do |base_user|
+        base_user.build_user_detail
+        base_user.assign_attributes(user_params)
+      end
     end
 
     def organization_access_level
@@ -163,11 +172,6 @@ module Users
       return if identity_params.empty?
 
       user.identities.build(identity_params)
-    end
-
-    def build_user_detail
-      # This will ensure we either load an existing record or create it.
-      user.user_detail
     end
 
     # Allowed params for creating a user (admins only)

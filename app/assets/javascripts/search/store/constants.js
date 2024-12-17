@@ -8,6 +8,8 @@ import {
   SOURCE_BRANCH_PARAM,
   NOT_SOURCE_BRANCH_PARAM,
   STATE_FILTER_PARAM,
+  AUTHOR_PARAM,
+  NOT_AUTHOR_PARAM,
 } from '~/search/sidebar/constants';
 
 export const MAX_FREQUENT_ITEMS = 5;
@@ -27,6 +29,8 @@ export const SIDEBAR_PARAMS = [
   INCLUDE_FORKED_FILTER_PARAM,
   SOURCE_BRANCH_PARAM,
   NOT_SOURCE_BRANCH_PARAM,
+  AUTHOR_PARAM,
+  NOT_AUTHOR_PARAM,
 ];
 
 export const REGEX_PARAM = 'regex';
@@ -35,7 +39,7 @@ export const NUMBER_FORMATING_OPTIONS = { notation: 'compact', compactDisplay: '
 
 export const ICON_MAP = {
   blobs: 'code',
-  issues: 'issues',
+  issues: window.gon?.features?.workItemScopeFrontend ? 'work' : 'issues',
   epics: 'epic',
   merge_requests: 'merge-request',
   commits: 'commit',
@@ -47,9 +51,18 @@ export const ICON_MAP = {
   snippet_titles: 'snippet',
 };
 
+export const SUBITEMS_FILTER = {
+  issue: { order: 2, icon: 'issue-type-issue' },
+  task: { order: 3, icon: 'issue-type-task' },
+  objective: { order: 4, icon: 'issue-type-objective' },
+  key_result: { order: 1, icon: 'issue-type-keyresult' },
+};
+
 export const SCOPE_NAVIGATION_MAP = {
   blobs: s__(`GlobalSearch|Code`),
-  issues: s__(`GlobalSearch|Issues`),
+  issues: window.gon?.features?.workItemScopeFrontend
+    ? s__(`GlobalSearch|Work items`)
+    : s__(`GlobalSearch|Issues`),
   epics: s__(`GlobalSearch|'Epics`),
   merge_requests: s__(`GlobalSearch|Merge request`),
   commits: s__(`GlobalSearch|Commits`),

@@ -4,6 +4,8 @@ module Gitlab
   module GithubImport
     module Importer
       class ProtectedBranchImporter
+        include Gitlab::GithubImport::PushPlaceholderReferences
+
         attr_reader :project
 
         # By default on GitHub, both developers and maintainers can merge
@@ -19,21 +21,37 @@ module Gitlab
           @project = project
           @client = client
           @user_finder = GithubImport::UserFinder.new(project, client)
+          @mapper = Gitlab::GithubImport::ContributionsMapper.new(project)
+          @gitlab_user_id_to_github_user_id = {}
         end
 
         def execute
           # The creator of the project is always allowed to create protected
           # branches, so we skip the authorization check in this service class.
-          ProtectedBranches::CreateService
+          imported_protected_branch = ProtectedBranches::CreateService
             .new(project, project.creator, params)
             .execute(skip_authorization: true)
 
           update_project_settings if default_branch?
+
+          # ProtectedBranches::CreateService can return the unpersisted ProtectedBranch.
+          # Call `#validate!` to pass any validation errors to the error handling in ImportProtectedBranchWorker.
+          imported_protected_branch.validate!
+
+          return unless mapper.user_mapping_enabled?
+
+          imported_protected_branch.push_access_levels.each do |push_access_level|
+            next unless push_access_level.user_id
+
+            source_user_identifier = gitlab_user_id_to_github_user_id[push_access_level.user_id]
+
+            push_with_record(push_access_level, :user_id, source_user_identifier, mapper.user_mapper)
+          end
         end
 
         private
 
-        attr_reader :protected_branch, :user_finder
+        attr_reader :gitlab_user_id_to_github_user_id, :protected_branch, :mapper, :user_finder
 
         def params
           {
@@ -41,7 +59,8 @@ module Gitlab
             push_access_levels_attributes: push_access_levels_attributes,
             merge_access_levels_attributes: merge_access_levels_attributes,
             allow_force_push: allow_force_push?,
-            code_owner_approval_required: code_owner_approval_required?
+            code_owner_approval_required: code_owner_approval_required?,
+            importing: true
           }
         end
 
@@ -96,7 +115,7 @@ module Gitlab
 
         def push_access_levels_attributes
           if allowed_to_push_gitlab_user_ids.present?
-            @allowed_to_push_gitlab_user_ids.map { |user_id| { user_id: user_id } }
+            @allowed_to_push_gitlab_user_ids.map { |user_id| { user_id: user_id, importing: true } }
           elsif protected_branch.required_pull_request_reviews
             [{ access_level: Gitlab::Access::NO_ACCESS }]
           else
@@ -119,7 +138,10 @@ module Gitlab
             next unless gitlab_user_id
 
             @allowed_to_push_gitlab_user_ids << gitlab_user_id
+            gitlab_user_id_to_github_user_id[gitlab_user_id] = github_user_data.id
           end
+
+          return @allowed_to_push_gitlab_user_ids if mapper.user_mapping_enabled?
 
           @allowed_to_push_gitlab_user_ids &= project_member_ids
         end

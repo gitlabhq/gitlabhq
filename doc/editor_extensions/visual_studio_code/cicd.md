@@ -15,12 +15,12 @@ shows the status of its most recent pipeline, or shows **No pipeline** if a pipe
 
 Possible statuses include:
 
-- **Pipeline canceled**
-- **Pipeline failed**
-- **Pipeline passed**
-- **Pipeline pending**
-- **Pipeline running**
-- **Pipeline skipped**
+- Pipeline canceled
+- Pipeline failed
+- Pipeline passed
+- Pipeline pending
+- Pipeline running
+- Pipeline skipped
 
 ## View pipeline information
 
@@ -91,7 +91,15 @@ VS Code opens a new tab (`.gitlab-ci (Merged).yml`) with full information.
 
 ### CI/CD variable autocompletion
 
-Quickly find the CI/CD variable you are looking for with the CI/CD variable autocompletion:
+Quickly find the CI/CD variable you are looking for with the CI/CD variable autocompletion.
+
+Prerequisites:
+
+- Your file is named either:
+  - `.gitlab-ci.yml`.
+  - Beginning with `.gitlab-ci` and ending with `.yml` or `.yaml`, like `.gitlab-ci.production.yml`.
+
+To autocomplete a variable:
 
 1. In VS Code, open your `.gitlab-ci.yml` file, and ensure the file's tab is in focus.
 1. Begin entering the name of a variable to display auto-complete options.

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Phorge < BaseIssueTracker
+  class Phorge < Integration
+    include Base::IssueTracker
     include HasIssueTrackerFields
     include HasAvatar
 

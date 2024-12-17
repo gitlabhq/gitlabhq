@@ -12,6 +12,9 @@ DETAILS:
 
 ## Transfer a project to another namespace
 
+> - Support for transferring projects with container images within the same top-level namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) on GitLab.com in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `transfer_project_with_tags`. Disabled by default.
+> - Support for transferring projects with container images within the same top-level namespace [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) in GitLab 17.7. Feature flag removed.
+
 When you transfer a project to another namespace, you move the project to a different group.
 All of the project's components (such as issues, merge requests, pipelines, and dashboards)
 move with the transferred project.
@@ -27,7 +30,9 @@ Prerequisites:
 - You must have at least the Maintainer role for the [group](../../group/index.md#create-a-group) you are transferring to.
 - You must be the Owner of the project you transfer.
 - The group must allow creation of new projects.
-- The project must not contain any [container images](../../packages/container_registry/index.md#move-or-rename-container-registry-repositories).
+- For projects where the container registry is enabled:
+  - On GitLab.com: You can only transfer projects within the same top-level namespace.
+  - On GitLab self-managed: The project must not contain [container images](../../packages/container_registry/index.md#move-or-rename-container-registry-repositories).
 - The project must not have a security policy.
   If a security policy is assigned to the project, it is automatically unassigned during the transfer.
 - If the root namespace changes, you must remove npm packages that follow the [naming convention](../../../user/packages/npm_registry/index.md#naming-convention) from the project.

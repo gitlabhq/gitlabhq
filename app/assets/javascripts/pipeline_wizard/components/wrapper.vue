@@ -171,7 +171,7 @@ export default {
   <div class="row gl-mt-8">
     <main class="col-md-6 gl-pr-8">
       <header class="gl-mb-5">
-        <h3 class="text-secondary gl-mt-0" data-testid="step-count">
+        <h3 class="gl-mt-0 gl-text-subtle" data-testid="step-count">
           {{ sprintf($options.i18n.stepNofN, { currentStep, stepCount }) }}
         </h3>
         <gl-progress-bar :value="progress" />
@@ -205,8 +205,8 @@ export default {
       </section>
     </main>
     <aside class="col-md-6 gl-pt-3">
-      <div class="gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-gray-10">
-        <h6 class="text-secondary gl-p-2 gl-px-4" data-testid="editor-header">
+      <div class="gl-rounded-base gl-border-1 gl-border-solid gl-border-default gl-bg-gray-10">
+        <h6 class="gl-p-2 gl-px-4 gl-text-subtle" data-testid="editor-header">
           {{ sprintf($options.i18n.draft, { filename }) }}
         </h6>
         <div class="gl-relative gl-overflow-hidden">

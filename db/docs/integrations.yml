@@ -6,13 +6,6 @@ classes:
 - Integrations::Asana
 - Integrations::Assembla
 - Integrations::Bamboo
-- Integrations::BaseChatNotification
-- Integrations::BaseCi
-- Integrations::BaseIssueTracker
-- Integrations::BaseMonitoring
-- Integrations::BaseSlackNotification
-- Integrations::BaseSlashCommands
-- Integrations::BaseThirdPartyWiki
 - Integrations::BeyondIdentity
 - Integrations::Bugzilla
 - Integrations::Buildkite
@@ -39,9 +32,9 @@ classes:
 - Integrations::Jenkins
 - Integrations::Jira
 - Integrations::JiraCloudApp
+- Integrations::Matrix
 - Integrations::Mattermost
 - Integrations::MattermostSlashCommands
-- Integrations::Matrix
 - Integrations::MicrosoftTeams
 - Integrations::MockCi
 - Integrations::MockMonitoring
@@ -70,3 +63,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64562
 milestone: '9.4'
 gitlab_schema: gitlab_main_cell
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463856
+table_size: small

@@ -47,6 +47,7 @@ RSpec.describe 'ActionCable', feature_category: :redis do
 
   describe 'config' do
     before do
+      stub_env('ACTION_CABLE_DISABLE_REQUEST_FORGERY_PROTECTION', disable_request_forgery_protection.to_s)
       stub_rails_env(rails_env) if rails_env
       stub_config_setting(relative_url_root: '/gitlab/root', url: 'example.com', https: true)
 
@@ -62,6 +63,7 @@ RSpec.describe 'ActionCable', feature_category: :redis do
     end
 
     let(:rails_env) { nil }
+    let(:disable_request_forgery_protection) { false }
 
     subject(:config) { Rails.application.config.action_cable }
 
@@ -96,6 +98,29 @@ RSpec.describe 'ActionCable', feature_category: :redis do
         let(:rails_env) { 'development' }
 
         it { is_expected.to eq(['example.com']) }
+      end
+
+      context 'when in production' do
+        let(:rails_env) { 'production' }
+
+        it { is_expected.to eq(nil) }
+      end
+    end
+
+    describe 'disable_request_forgery_protection' do
+      subject { config.disable_request_forgery_protection }
+
+      context 'when in test' do
+        let(:rails_env) { 'test' }
+
+        it { is_expected.to eq(false) }
+      end
+
+      context 'when in development' do
+        let(:rails_env) { 'development' }
+        let(:disable_request_forgery_protection) { true }
+
+        it { is_expected.to eq(true) }
       end
 
       context 'when in production' do

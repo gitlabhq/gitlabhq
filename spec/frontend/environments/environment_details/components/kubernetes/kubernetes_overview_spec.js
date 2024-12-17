@@ -162,7 +162,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
         namespace: kubernetesNamespace,
         resourceType: k8sResourceType.k8sPods,
         fluxApiError: '',
-        fluxResourceStatus: [],
+        fluxResourceStatus: { conditions: [] },
       });
     });
 
@@ -240,7 +240,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
         });
 
         it('provides empty `fluxResourceStatus` to KubernetesStatusBar', () => {
-          expect(findKubernetesStatusBar().props('fluxResourceStatus')).toEqual([]);
+          expect(findKubernetesStatusBar().props('fluxResourceStatus')).toEqual({ conditions: [] });
         });
 
         it('provides empty `fluxKustomization` to KubernetesTabs', () => {
@@ -305,9 +305,9 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
             await waitForPromises();
           });
           it('provides correct `fluxResourceStatus` to KubernetesStatusBar', () => {
-            expect(findKubernetesStatusBar().props('fluxResourceStatus')).toEqual(
-              fluxResourceStatus,
-            );
+            expect(findKubernetesStatusBar().props('fluxResourceStatus')).toEqual({
+              conditions: fluxResourceStatus,
+            });
           });
 
           it('provides correct `fluxNamespace` to KubernetesStatusBar', () => {
@@ -354,7 +354,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
       it('toggles the details drawer when receives select-item event from the tabs', () => {
         findKubernetesTabs().vm.$emit('select-item', mockPodsTableItems[0]);
 
-        expect(toggleDetailsDrawerSpy).toHaveBeenCalledWith(mockPodsTableItems[0]);
+        expect(toggleDetailsDrawerSpy).toHaveBeenCalledWith(mockPodsTableItems[0], undefined);
       });
 
       describe('when receives show-flux-resource-details event from the status bar', () => {
@@ -366,7 +366,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
           });
           await waitForPromises();
 
-          findKubernetesStatusBar().vm.$emit('show-flux-resource-details', fluxKustomization);
+          findKubernetesStatusBar().vm.$emit('show-flux-resource-details', 'actions');
         });
 
         it('toggles the details drawer', () => {
@@ -382,7 +382,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
             actions: [FLUX_RECONCILE_ACTION, FLUX_SUSPEND_ACTION],
           };
 
-          expect(toggleDetailsDrawerSpy).toHaveBeenCalledWith(selectedItem);
+          expect(toggleDetailsDrawerSpy).toHaveBeenCalledWith(selectedItem, 'actions');
         });
       });
     });

@@ -11,7 +11,7 @@ class AddPersonalNamespaceIdToEventsSelfManaged < Gitlab::Database::Migration[2.
     return if column_exists?(:events, :personal_namespace_id)
 
     with_lock_retries(raise_on_exhaustion: true) do
-      add_column :events, :personal_namespace_id, :bigint
+      add_column :events, :personal_namespace_id, :bigint # rubocop:disable Migration/PreventAddingColumns -- Legacy migration
     end
   end
 

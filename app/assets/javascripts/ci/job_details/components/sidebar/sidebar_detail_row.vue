@@ -1,11 +1,12 @@
 <script>
-import { GlIcon, GlLink } from '@gitlab/ui';
+import { GlLink } from '@gitlab/ui';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 
 export default {
   name: 'SidebarDetailRow',
   components: {
-    GlIcon,
     GlLink,
+    HelpIcon,
   },
   props: {
     title: {
@@ -52,7 +53,7 @@ export default {
         target="_blank"
         data-testid="job-sidebar-help-link"
       >
-        <gl-icon class="gl-ml-2" name="question-o" variant="info" />
+        <help-icon class="gl-ml-2" />
       </gl-link>
     </span>
   </p>

@@ -1283,6 +1283,7 @@ production: &base
   cell:
     # id: 1
     # name: cell-1
+    # skip_sequence_alteration: false
 
   gitlab_kas:
     # enabled: true
@@ -1666,6 +1667,9 @@ test:
   prometheus:
     enabled: true
     server_address: 'localhost:9090'
+
+  registry:
+    enabled: false
 
 staging:
   <<: *base

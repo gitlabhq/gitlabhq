@@ -94,7 +94,7 @@ module Projects
 
       verify_if_container_registry_tags_can_be_handled(project)
 
-      if !new_namespace_has_same_root?(project) && project.has_namespaced_npm_packages?
+      if !new_namespace_has_same_root?(project) && project_has_namespaced_npm_packages?
         raise TransferError, s_("TransferProject|Root namespace can't be updated if the project has NPM packages scoped to the current root level namespace.")
       end
 
@@ -105,13 +105,13 @@ module Projects
     def verify_if_container_registry_tags_can_be_handled(project)
       return unless project.has_container_registry_tags?
 
-      raise_error_due_to_tags_if_transfer_is_not_allowed(project)
+      raise_error_due_to_tags_if_transfer_is_not_allowed
       raise_error_due_to_tags_if_not_in_same_root(project)
       raise_error_due_to_tags_if_transfer_dry_run_fails(project)
     end
 
-    def raise_error_due_to_tags_if_transfer_is_not_allowed(project)
-      return if Feature.enabled?(:transfer_project_with_tags, project) && ContainerRegistry::GitlabApiClient.supports_gitlab_api? # rubocop disable Style/IfUnlessModifier
+    def raise_error_due_to_tags_if_transfer_is_not_allowed
+      return if ContainerRegistry::GitlabApiClient.supports_gitlab_api?
 
       raise TransferError, s_('TransferProject|Project cannot be transferred, because image tags are present in its container registry')
     end
@@ -330,6 +330,13 @@ module Projects
       })
 
       Gitlab::EventStore.publish(event)
+    end
+
+    def project_has_namespaced_npm_packages?
+      ::Packages::Npm::Package.for_projects(project)
+                              .with_npm_scope(project.root_namespace.path)
+                              .not_pending_destruction
+                              .exists?
     end
   end
 end

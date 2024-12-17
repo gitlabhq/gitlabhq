@@ -31,6 +31,7 @@ Event type                                   | Trigger
 [Release event](#release-events)             | A release is created, edited, or deleted.
 [Emoji event](#emoji-events)                 | An emoji reaction is added or removed.
 [Project or group access token event](#project-and-group-access-token-events) | A project or group access token will expire in seven days.
+[Vulnerability event](#vulnerability-events) | A vulnerability is updated.
 
 **Footnotes:**
 
@@ -864,6 +865,10 @@ Merge request events are triggered when:
 - An individual user adds or removes their approval to an existing merge request.
 - A commit is added in the source branch.
 - All threads are resolved on the merge request.
+
+Merge request events can be triggered even if the `changes` field is empty.
+Webhook receivers should always inspect the content of the `changes` field for the
+actual changes in a merge request.
 
 The available values for `object_attributes.action` in the payload are:
 
@@ -2075,13 +2080,6 @@ Payload example:
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/417288) in GitLab 16.4.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/417288) in GitLab 17.5. Feature flag `emoji_webhooks` removed.
 
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can
-[disable the feature flag](../../../administration/feature_flags.md) named `emoji_webhooks`. On GitLab.com, this feature is available. On GitLab Dedicated, this feature is available.
-
-NOTE:
-To have the `emoji_webhooks` flag enabled on GitLab.com, see [issue 417288](https://gitlab.com/gitlab-org/gitlab/-/issues/417288).
-
 An emoji event is triggered when an [emoji reaction](../../emoji_reactions.md) is added or removed on:
 
 - Issues
@@ -2235,7 +2233,7 @@ The available values for `event_name` in the payload are:
 Request header:
 
 ```plaintext
-X-Gitlab-Event:  Resource Access Token Hook
+X-Gitlab-Event: Resource Access Token Hook
 ```
 
 Payload example for project:
@@ -2291,5 +2289,71 @@ Payload example for group:
     "expires_at": "2024-01-26"
   },
   "event_name": "expiring_access_token"
+}
+```
+
+## Vulnerability events
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169701) in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `vulnerabilities_as_webhook_events`. Disabled by default.
+
+A Vulnerability event is triggered when the [status is changed](../../application_security/vulnerabilities/index.md#vulnerability-status-values).
+
+Request header:
+
+```plaintext
+X-Gitlab-Event: Vulnerability Hook
+```
+
+Payload example:
+
+```json
+{
+  "object_kind": "vulnerability",
+  "object_attributes": {
+    "url": "https://example.com/flightjs/Flight/-/security/vulnerabilities/1",
+    "title": "REXML DoS vulnerability",
+    "state": "confirmed",
+    "project_id": 50,
+    "location": {
+      "file": "Gemfile.lock",
+      "dependency": {
+        "package": {
+          "name": "rexml"
+        },
+        "version": "3.3.1"
+      }
+    },
+    "cvss": [
+      {
+        "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+        "vendor": "NVD"
+      }
+    ],
+    "severity": "high",
+    "severity_overridden": false,
+    "identifiers": [
+      {
+        "name": "Gemnasium-29dce398-220a-4315-8c84-16cd8b6d9b05",
+        "external_id": "29dce398-220a-4315-8c84-16cd8b6d9b05",
+        "external_type": "gemnasium",
+        "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/master/gem/rexml/CVE-2024-41123.yml"
+      },
+      {
+        "name": "CVE-2024-41123",
+        "external_id": "CVE-2024-41123",
+        "external_type": "cve",
+        "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-41123"
+      }
+    ],
+    "report_type": "dependency_scanning",
+    "confidence": "unknown",
+    "confirmed_at": "2024-12-04 05:35:05 UTC",
+    "confirmed_by_id": 50,
+    "dismissed_at": null,
+    "dismissed_by_id": null,
+    "resolved_on_default_branch": false,
+    "created_at": "2024-11-26 07:10:16 UTC",
+    "updated_at": "2024-12-04 05:35:05 UTC"
+  }
 }
 ```

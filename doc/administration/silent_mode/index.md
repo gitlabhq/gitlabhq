@@ -10,9 +10,9 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9826) in GitLab 15.11. This feature was an [experiment](../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9826) in GitLab 15.11. This feature was an [experiment](../../policy/development_stages_support.md#experiment).
 > - Enabling and disabling Silent Mode through the web UI was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131090) in GitLab 16.4.
-> - Silent Mode was updated to [generally available (GA)](../../policy/experiment-beta-support.md#generally-available-ga) in GitLab 16.6.
+> - Silent Mode was updated to [generally available (GA)](../../policy/development_stages_support.md#generally-available-ga) in GitLab 16.6.
 
 Silent Mode allows you to silence outbound communication, such as emails, from GitLab. Silent Mode is not intended to be used on environments which are in-use. Two use-cases are:
 

@@ -8,7 +8,6 @@ description: Stores topics per project relationship
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67574
 milestone: '14.3'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   project_id: projects
+table_size: small

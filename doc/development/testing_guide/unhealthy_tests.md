@@ -166,6 +166,24 @@ usually a good idea.
 - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/issues/363214): The runner is under heavy load at this time.
 - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/issues/360559): The runner is having networking issues, making a job failing early
 
+#### Improper Synchronization
+
+**Label:** `flaky-test::improper synchronization`
+
+**Description:** A flaky test issue arising from timing-related factors, such as delays, eventual consistency, asynchronous operations, or race conditions.
+These issues may stem from shortcomings in the test logic, the system under test, or their interaction.
+While tests can sometimes address these issues through improved synchronization, they may also reveal underlying system bugs that require resolution.
+
+**Difficulty to reproduce:** Moderate. It can be reproduced, for example, in feature tests by attempting to reference an
+element on a page that is not yet rendered, or in unit tests by failing to wait for an asynchronous operation to complete.
+
+**Resolution:** In the end-to-end test suite, using [an eventually matcher](end_to_end/best_practices/index.md#use-eventually_-matchers-for-expectations-that-require-waiting).
+
+**Examples:**
+
+- [Example 1](https://gitlab.com/gitlab-org/gitlab/-/issues/502844): Text was not appearing on a page in time.
+- [Example 2](https://gitlab.com/gitlab-org/gitlab/-/issues/496393): Text was not appearing on a page in time.
+
 ### How to reproduce a flaky test locally?
 
 1. Reproduce the failure locally
@@ -441,6 +459,15 @@ Reproducing a job failure in CI always helps with troubleshooting why and how a 
 1. Skip the tests in `spec/tooling/lib/tooling/parallel_rspec_runner_spec.rb` so it doesn't cause your pipeline to fail early.
 1. Since we want to force the pipeline to run against a specific version, we do not want to run a merged results pipeline. We can introduce a merge conflict into the MR to achieve this.
 1. To preserve spec ordering, update the `spec/support/rspec_order.rb` file by hard coding `Kernel.srand` with the value shown in the originally failing job, as done [here](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128428/diffs#32f6fa4961481518204e227252552dba7483c3b0_62_62). You can fine the srand value in the job log by searching `Randomized with seed` which is followed by this value.
+
+### Metrics & Tracking
+
+- [(Snowflake) Flaky tests Dashboard](https://app.snowflake.com/ys68254/gitlab/#/flaky-tests-dcwtdvVO6) (internal)
+- [(Snowflake) Unhealthy tests Dashboard](https://app.snowflake.com/ys68254/gitlab/#/dx-unhealthy-tests-d9MEFZz14) (internal)
+- [(GitLab) GitLab.org Group Flaky Test Issue Board](https://gitlab.com/groups/gitlab-org/-/boards/1487067?label_name%5B%5D=failure::flaky-test)
+- [(GitLab) "Most flaky tests" Issue Board](https://gitlab.com/groups/gitlab-org/-/boards/7518854?label_name%5B%5D=flakiness::1)
+- [(Grafana) End-to-end test flakiness Dashboard](https://dashboards.quality.gitlab.net/d/tR_SmBDVk/main-runs?orgId=1) (internal)
+- [(Tableau) Flaky test issues](https://10az.online.tableau.com/#/site/gitlab/workbooks/2283052/views) (internal)
 
 ### Resources
 

@@ -1,0 +1,16 @@
+type FlowMetricsCommits {
+  unit: String!
+  value: Int!
+  identifier: String!
+  links: [String]
+  title: String!
+}
+
+extend type Query {
+  flowMetricsCommits(
+    fullPath: ID!
+    startDate: Time!
+    endDate: Time!
+    labelNames: [String!]
+  ): FlowMetricsCommits
+}

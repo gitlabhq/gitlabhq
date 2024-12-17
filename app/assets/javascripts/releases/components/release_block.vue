@@ -15,6 +15,7 @@ import ReleaseBlockAssets from './release_block_assets.vue';
 import ReleaseBlockFooter from './release_block_footer.vue';
 import ReleaseBlockTitle from './release_block_title.vue';
 import ReleaseBlockMilestoneInfo from './release_block_milestone_info.vue';
+import ReleaseBlockDeployments from './release_block_deployments.vue';
 
 export default {
   name: 'ReleaseBlock',
@@ -26,6 +27,7 @@ export default {
     ReleaseBlockFooter,
     ReleaseBlockTitle,
     ReleaseBlockMilestoneInfo,
+    ReleaseBlockDeployments,
   },
   directives: {
     SafeHtml,
@@ -41,6 +43,11 @@ export default {
       type: String,
       required: false,
       default: CREATED_ASC,
+    },
+    deployments: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
   },
   data() {
@@ -84,6 +91,12 @@ export default {
 
       return undefined;
     },
+    shouldApplyDeploymentsBlockCss() {
+      return Boolean(this.shouldRenderAssets || this.hasEvidence || this.release.descriptionHtml);
+    },
+    shouldApplyAssetsBlockCss() {
+      return Boolean(this.hasEvidence || this.release.descriptionHtml);
+    },
   },
 
   mounted() {
@@ -108,6 +121,7 @@ export default {
   i18n: {
     editButton: __('Edit release'),
   },
+  commonCssClasses: 'gl-border-b-1 gl-pb-5 gl-border-b-solid',
 };
 </script>
 <template>
@@ -136,10 +150,10 @@ export default {
       </gl-button>
     </template>
 
-    <div class="gl-flex gl-flex-col gl-gap-5">
+    <div class="gl-mx-5 gl-my-4 gl-flex gl-flex-col gl-gap-5">
       <div
         v-if="shouldRenderMilestoneInfo"
-        class="gl-border-b-1 gl-border-gray-100 gl-border-b-solid"
+        class="gl-border-b-1 gl-border-default gl-border-b-solid"
       >
         <!-- TODO: Switch open* links to opened* once fields have been updated in GraphQL -->
         <release-block-milestone-info
@@ -152,12 +166,20 @@ export default {
         />
       </div>
 
+      <release-block-deployments
+        v-if="deployments.length"
+        :class="{
+          [`${$options.commonCssClasses} gl-border-gray-100`]: shouldApplyDeploymentsBlockCss,
+        }"
+        :deployments="deployments"
+      />
+
       <release-block-assets
         v-if="shouldRenderAssets"
         :assets="assets"
+        :expanded="!deployments.length"
         :class="{
-          'gl-border-b-1 gl-border-gray-100 gl-pb-5 gl-border-b-solid':
-            hasEvidence || release.descriptionHtml,
+          [`${$options.commonCssClasses} gl-border-default`]: shouldApplyAssetsBlockCss,
         }"
       />
       <evidence-block v-if="hasEvidence" :release="release" />

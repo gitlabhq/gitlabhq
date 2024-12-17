@@ -3,6 +3,8 @@ data_category: operational
 key_path: instance_auto_devops_enabled
 description: Whether auto DevOps is enabled
 product_group: environments
+product_categories:
+- auto_devops
 value_type: boolean
 status: active
 time_frame: none

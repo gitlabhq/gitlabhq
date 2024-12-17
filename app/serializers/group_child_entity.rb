@@ -42,6 +42,8 @@ class GroupChildEntity < Grape::Entity
 
   expose :subgroup_count, if: ->(group) { access_group_counts?(group) }
 
+  expose :has_subgroups?, as: :has_subgroups, unless: ->(_instance) { project? }
+
   expose :project_count, if: ->(group) { access_group_counts?(group) }
 
   expose :leave_path, unless: ->(_instance, _options) { project? } do |instance|

@@ -29,6 +29,8 @@ describe('Signup Form', () => {
 
   const findForm = () => wrapper.findByTestId('form');
   const findInputCsrf = () => findForm().find('[name="authenticity_token"]');
+  const findUserCapAutoApprovalInput = () =>
+    findForm().find('[name="application_setting[auto_approve_pending_users]"]');
   const findFormSubmitButton = () => findForm().findComponent(GlButton);
 
   const findDenyListRawRadio = () => queryByLabelText('Enter denylist manually');
@@ -204,12 +206,36 @@ describe('Signup Form', () => {
         await findFormSubmitButton().trigger('click');
       });
 
-      it('submits the form after clicking approve users button', async () => {
-        formSubmitSpy = jest.spyOn(HTMLFormElement.prototype, 'submit').mockImplementation();
+      describe('clicking approve users button', () => {
+        beforeEach(() => {
+          formSubmitSpy = jest.spyOn(HTMLFormElement.prototype, 'submit').mockImplementation();
 
-        await findModal().vm.$emit('primary');
+          findModal().vm.$emit('primary');
+        });
 
-        expect(formSubmitSpy).toHaveBeenCalled();
+        it('submits the form after', () => {
+          expect(formSubmitSpy).toHaveBeenCalled();
+        });
+
+        it('submits the form with the correct value', () => {
+          expect(findUserCapAutoApprovalInput().attributes('value')).toBe('true');
+        });
+      });
+
+      describe('clicking proceed without approve button', () => {
+        beforeEach(() => {
+          formSubmitSpy = jest.spyOn(HTMLFormElement.prototype, 'submit').mockImplementation();
+
+          findModal().vm.$emit('secondary');
+        });
+
+        it('submits the form after', () => {
+          expect(formSubmitSpy).toHaveBeenCalled();
+        });
+
+        it('submits the form with the correct value', () => {
+          expect(findUserCapAutoApprovalInput().attributes('value')).toBe('false');
+        });
       });
     });
   });

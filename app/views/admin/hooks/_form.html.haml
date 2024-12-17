@@ -16,7 +16,7 @@
   %p.form-text.gl-text-subtle= _('Use this token to validate received payloads.')
 .form-group
   = form.label :url, _('Trigger'), class: 'label-bold gl-mb-0'
-  .form-text.text-secondary.gl-mb-5= _('System hooks are triggered on sets of events like creating a project or adding an SSH key. You can also enable extra triggers, such as push events.')
+  .form-text.gl-text-subtle.gl-mb-5= _('System hooks are triggered on sets of events like creating a project or adding an SSH key. You can also enable extra triggers, such as push events.')
   %fieldset.form-group
     = form.gitlab_ui_checkbox_component :repository_update_events, _('Repository update events'),
     help_text: _('URL is triggered when repository is updated')

@@ -50,9 +50,9 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
       stub_member_access_level(project, owner: user)
 
       is_expected.to eq({
+        'indexModelsPath' => "/#{project.full_path}/-/ml/models",
         'projectPath' => project.full_path,
         'canWriteModelRegistry' => true,
-        'maxAllowedFileSize' => 10737418240,
         'markdownPreviewPath' => "/#{project.full_path}/-/preview_markdown"
       })
     end
@@ -157,6 +157,7 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
       stub_member_access_level(project, owner: user)
 
       is_expected.to eq({
+        'modelPath' => "/#{project.full_path}/-/ml/models/#{model.id}",
         "projectPath" => project.full_path,
         "canWriteModelRegistry" => true,
         'maxAllowedFileSize' => 10737418240,

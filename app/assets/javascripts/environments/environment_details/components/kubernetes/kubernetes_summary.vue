@@ -72,7 +72,7 @@ export default {
     fluxKustomizationStatus() {
       if (!this.fluxKustomization.conditions?.length) return '';
 
-      return fluxSyncStatus(this.fluxKustomization.conditions).status;
+      return fluxSyncStatus({ conditions: this.fluxKustomization.conditions }).status;
     },
     fluxInventory() {
       return (
@@ -109,7 +109,7 @@ export default {
 </script>
 <template>
   <gl-tab :title="$options.i18n.summaryTitle">
-    <p class="gl-mt-3 gl-text-secondary">{{ $options.i18n.treeView }}</p>
+    <p class="gl-mt-3 gl-text-subtle">{{ $options.i18n.treeView }}</p>
     <gl-alert v-if="errorMessage" :dismissible="false" variant="danger" class="gl-mb-4">{{
       errorMessage
     }}</gl-alert>
@@ -131,7 +131,7 @@ export default {
           class="gl-relative"
         >
           <div
-            class="connector gl-absolute gl-right-1/2 gl-top-1/2 gl-z-0 gl-border-1 gl-border-gray-200 gl-border-t-solid"
+            class="connector gl-absolute gl-right-1/2 gl-top-1/2 gl-z-0 gl-border-1 gl-border-strong gl-border-t-solid"
             :class="{
               'gl-border-l-solid': !isLast(index),
             }"

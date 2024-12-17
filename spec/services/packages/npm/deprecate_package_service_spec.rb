@@ -86,17 +86,6 @@ RSpec.describe Packages::Npm::DeprecatePackageService, feature_category: :packag
       it_behaves_like 'enqueues metadata cache worker'
     end
 
-    context 'when passing async: true to execute' do
-      let(:params) { build_params([package_1.version]) }
-
-      it 'calls the worker and return' do
-        expect(::Packages::Npm::DeprecatePackageWorker).to receive(:perform_async).with(project.id, params)
-        expect(service).not_to receive(:packages)
-
-        service.execute(async: true)
-      end
-    end
-
     context 'when a package does not have a metadatum' do
       let(:params) { build_params([package_3.version]) }
 

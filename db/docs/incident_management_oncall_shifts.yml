@@ -9,8 +9,6 @@ description: Tracks past and present on-call shifts
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49423
 milestone: '13.8'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 desired_sharding_key:
   project_id:
     references: projects
@@ -21,3 +19,4 @@ desired_sharding_key:
         sharding_key: project_id
         belongs_to: rotation
     awaiting_backfill_on_parent: true
+table_size: small

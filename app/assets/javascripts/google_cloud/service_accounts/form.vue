@@ -32,7 +32,7 @@ export default {
 
 <template>
   <div>
-    <header class="gl-my-5 gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid">
+    <header class="gl-my-5 gl-border-b-1 gl-border-b-default gl-border-b-solid">
       <h2 class="gl-text-size-h1">{{ $options.i18n.title }}</h2>
     </header>
     <gl-form-group

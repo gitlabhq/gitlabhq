@@ -6,6 +6,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
   include GraphqlHelpers
 
   let(:user) { create(:user) }
+  let(:fallback_organization) { create(:organization) }
   let(:credentials) { { url: 'http://gitlab.example', access_token: 'token' } }
   let(:destination_group) { create(:group, path: 'destination1') }
   let(:migrate_projects) { true }
@@ -44,7 +45,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
   let(:source_entity_identifier) { ERB::Util.url_encode(params[0][:source_full_path]) }
   let(:source_entity_type) { BulkImports::CreateService::ENTITY_TYPES_MAPPING.fetch(params[0][:source_type]) }
 
-  subject { described_class.new(user, params, credentials) }
+  subject { described_class.new(user, params, credentials, fallback_organization:) }
 
   describe '#execute' do
     context 'when gitlab version is 15.5 or higher' do
@@ -245,6 +246,44 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
             user: user,
             extra: { user_role: 'Owner', import_type: 'bulk_import_group' }
           )
+        end
+
+        context 'when a destination_namespace is provided' do
+          it 'uses the organization of the provided namespace for the bulk import entites' do
+            expect { subject.execute }.to change { BulkImports::Entity.count }
+
+            last_bulk_import = BulkImports::Entity.last
+
+            expect(last_bulk_import.organization).to eq(parent_group.organization)
+          end
+        end
+
+        context 'when no destination_namespace is provided' do
+          let(:params) do
+            [
+              {
+                source_type: 'group_entity',
+                source_full_path: 'full/path/to/group1',
+                destination_slug: 'destination-group-1',
+                destination_namespace: '',
+                migrate_projects: migrate_projects
+              }
+            ]
+          end
+
+          it 'uses the fallback_organization for the bulk import entites' do
+            expect { subject.execute }.to change { BulkImports::Entity.count }
+
+            last_bulk_import = BulkImports::Entity.last
+
+            expect(last_bulk_import.organization).to eq(fallback_organization)
+          end
+
+          it 'does not look up the empty namespace' do
+            expect(Group).not_to receive(:find_by_full_path).with('')
+
+            subject.execute
+          end
         end
 
         context 'on the same instance' do

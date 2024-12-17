@@ -3,6 +3,8 @@ data_category: optional
 key_path: object_store.uploads.object_store.provider
 description: What Object Storage provider has been configured for Uploads
 product_group: cloud_connector
+product_categories:
+- build
 value_type: string
 status: active
 time_frame: none

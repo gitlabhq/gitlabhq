@@ -15,7 +15,11 @@ class Import::GitlabProjectsController < Import::BaseController
 
   def create
     unless file_is_valid?(project_params[:file])
-      return redirect_back_or_default(options: { alert: _("You need to upload a GitLab project export archive (ending in .gz).") })
+      return redirect_back_or_default(
+        options: {
+          alert: _("You need to upload a GitLab project export archive (ending in .gz).")
+        }
+      )
     end
 
     @project = ::Projects::GitlabProjectsImportService.new(current_user, project_params).execute
@@ -26,7 +30,11 @@ class Import::GitlabProjectsController < Import::BaseController
         notice: _("Project '%{project_name}' is being imported.") % { project_name: @project.name }
       )
     else
-      redirect_back_or_default(options: { alert: "Project could not be imported: #{@project.errors.full_messages.join(', ')}" })
+      redirect_back_or_default(
+        options: {
+          alert: "Project could not be imported: #{@project.errors.full_messages.join(', ')}"
+        }
+      )
     end
   end
 

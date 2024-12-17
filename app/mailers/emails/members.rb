@@ -121,9 +121,7 @@ module Emails
 
     def member_exists?
       if member.blank?
-        Gitlab::AppLogger.info(
-          "Tried to send an email invitation for a deleted group. Member id: #{@member_id}"
-        )
+        Gitlab::AppLogger.info("Tried to send an email invitation for a deleted group. Member id: #{@member_id}")
       end
 
       member.present?

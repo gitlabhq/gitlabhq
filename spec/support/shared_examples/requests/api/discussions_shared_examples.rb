@@ -37,6 +37,11 @@ RSpec.shared_examples 'with cross-reference system notes' do
   it 'avoids Git calls and N+1 SQL queries', :request_store do
     expect_any_instance_of(Repository).not_to receive(:find_commit).with(commit.id)
 
+    # Ensure last_used_at doesn't get updated later to skew the results
+    get api(url, user, personal_access_token: pat)
+    # Clear cached permission checks so the control doesn't have skewed results
+    RequestStore.clear!
+
     control = ActiveRecord::QueryRecorder.new do
       get api(url, user, personal_access_token: pat)
     end
@@ -104,6 +109,26 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['notes'].first['body']).to eq('hi!')
       expect(json_response['notes'].first['author']['username']).to eq(user.username)
+    end
+
+    it "creates a quick action" do
+      next unless %w[issues merge_requests].include?(noteable_type)
+
+      post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user), params: { body: '/spend 1d' }
+
+      expect(response).to have_gitlab_http_status(:accepted)
+      expect(json_response['commands_changes']).to be_present
+      expect(json_response['commands_changes']).to include('spend_time')
+      expect(json_response['summary']).to eq(['Added 1d spent time.'])
+    end
+
+    it "returns a 400 bad request error if quick action is invalid" do
+      next unless %w[issues merge_requests].include?(noteable_type)
+
+      post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/discussions", user), params: { body: '/spend something' }
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['message']).to eq('400 Bad request - Failed to apply commands.')
     end
 
     it "returns a 400 bad request error if body not given" do
@@ -186,6 +211,18 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
       expect(json_response['type']).to eq('DiscussionNote')
     end
 
+    it 'adds a quick-action only note to the discussion' do
+      next unless %w[issues merge_requests].include?(noteable_type)
+
+      post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
+               "discussions/#{note.discussion_id}/notes", user), params: { body: '/spend 1d' }
+
+      expect(response).to have_gitlab_http_status(:accepted)
+      expect(json_response['commands_changes']).to be_present
+      expect(json_response['commands_changes']).to include('spend_time')
+      expect(json_response['summary']).to eq(['Added 1d spent time.'])
+    end
+
     it 'returns a 400 bad request error if body not given' do
       post api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
                "discussions/#{note.discussion_id}/notes", user)
@@ -229,6 +266,18 @@ RSpec.shared_examples 'discussions API' do |parent_type, noteable_type, id_name,
               "discussions/#{note.discussion_id}/notes/#{non_existing_record_id}", user), params: { body: 'Hello!' }
 
       expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it 'returns a 202 if note is modified with only quick actions' do
+      next unless %w[issues merge_requests].include?(noteable_type)
+
+      put api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/"\
+              "discussions/#{note.discussion_id}/notes/#{note.id}", user), params: { body: '/spend 1d' }
+
+      expect(response).to have_gitlab_http_status(:accepted)
+      expect(json_response['commands_changes']).to be_present
+      expect(json_response['commands_changes']).to include('spend_time')
+      expect(json_response['summary']).to eq(['Added 1d spent time.'])
     end
 
     it 'returns a 400 bad request error if body not given' do

@@ -23,6 +23,10 @@
       - else
         = s_("AccessTokens|For example, the application using the token or the purpose of the token.")
 
+  .form-group
+    = f.label :description, s_('AccessTokens|Token description'), class: 'label-bold', data: { testid: 'access-token-description-field' }
+    = f.text_area :description, class: 'form-control gl-form-input', maxlength: 255, rows: 4
+
   .js-access-tokens-expires-at{ data: expires_at_field_data }
     = f.text_field :expires_at, class: 'form-control gl-form-input', placeholder: 'YYYY-MM-DD', autocomplete: 'off', data: { js_name: 'expiresAt' }
 
@@ -31,12 +35,12 @@
       = label_tag :access_level, s_("AccessTokens|Select a role"), class: "label-bold"
       .select-wrapper.gl-form-input-md
         = select_tag :"#{prefix}[access_level]", options_for_select(access_levels, default_access_level), class: "form-control select-control"
-        = sprite_icon('chevron-down', css_class: "gl-icon gl-absolute gl-top-3 gl-right-3 gl-text-gray-200")
+        = sprite_icon('chevron-down', css_class: "gl-icon gl-absolute gl-top-3 gl-right-3")
 
   .form-group
     %b{ :'aria-describedby' => 'select_scope_help_text' }
       = s_('AccessTokens|Select scopes')
-    %p.text-secondary#select_scope_help_text
+    %p.gl-text-subtle#select_scope_help_text
       = s_('AccessTokens|Scopes set the permission levels granted to the token.')
       = link_to _("Learn more."), help_path, target: '_blank', rel: 'noopener noreferrer'
     = render 'shared/tokens/scopes_form', prefix: prefix, description_prefix: description_prefix, token: token, scopes: scopes, f: f

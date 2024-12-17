@@ -9,7 +9,6 @@ description: Contains notes about groups that are visible to server administrato
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47825
 milestone: '13.11'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   namespace_id: namespaces
+table_size: small

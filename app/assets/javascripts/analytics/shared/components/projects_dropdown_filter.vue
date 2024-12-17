@@ -282,7 +282,7 @@ export default {
         />
         <div>
           <div data-testid="project-name">{{ item.name }}</div>
-          <div class="gl-text-gray-500" data-testid="project-full-path">
+          <div class="gl-text-subtle" data-testid="project-full-path">
             {{ item.fullPath }}
           </div>
         </div>

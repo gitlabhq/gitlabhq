@@ -31,21 +31,9 @@ module Sidebars
           true
         end
 
-        override :pill_count
-        def pill_count
-          return if Feature.enabled?(:async_sidebar_counts, context.group.root_ancestor)
-
-          strong_memoize(:pill_count) do
-            count_service = ::Groups::MergeRequestsCountService
-            count = count_service.new(context.group, context.current_user).count
-
-            format_cached_count(count_service::CACHED_COUNT_THRESHOLD, count)
-          end
-        end
-
         override :pill_count_field
         def pill_count_field
-          'openMergeRequestsCount' if Feature.enabled?(:async_sidebar_counts, context.group.root_ancestor)
+          'openMergeRequestsCount'
         end
 
         override :pill_html_options

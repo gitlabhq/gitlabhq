@@ -6,19 +6,21 @@ info: >-
   this page, see
   https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
-# Google Cloud Integration API
+# Google Cloud integration API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com
 **Status:** Experiment
 
+Use this API to interact with the Google Cloud integration. For more information, see [GitLab and Google Cloud integration](../ci/gitlab_google_cloud_integration/index.md).
+
 ## Project-level Google Cloud integration scripts
 
 DETAILS:
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141870) in GitLab 16.10. This feature is an [experiment](../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141870) in GitLab 16.10. This feature is an [experiment](../policy/development_stages_support.md).
 
 ### Workload identity federation creation script
 

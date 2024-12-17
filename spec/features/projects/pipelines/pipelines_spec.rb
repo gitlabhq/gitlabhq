@@ -353,8 +353,8 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
             wait_for_all_requests
           end
 
-          it 'enqueues manual action job', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/409984' do
-            expect(page).to have_selector('[data-testid="pipelines-manual-actions-dropdown"] .gl-dropdown-toggle:disabled')
+          it 'enqueues manual action job' do
+            expect(manual.reload).to be_pending
           end
         end
       end
@@ -414,14 +414,15 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
               click_button 'delayed job 1'
             end
 
-            # Wait for UI to transition to ensure a request has been made
+            # Click on the manual action dropdown and check if a request has been made
+            find(manual_action_selector).click
             within(manual_action_dropdown) { find('.gl-spinner') }
             within(manual_action_dropdown) { find_by_testid('play-icon') }
 
             wait_for_requests
           end
 
-          it 'enqueues the delayed job', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410129' do
+          it 'enqueues the delayed job', :js do
             expect(delayed_job.reload).to be_pending
           end
         end
@@ -776,7 +777,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
 
           subject(:run_pipeline) do
-            find_by_testid('run-pipeline-button', text: 'Run pipeline').click
+            find_by_testid('run-pipeline-button', text: 'New pipeline').click
 
             wait_for_requests
           end
@@ -788,6 +789,10 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
 
           context 'when variables are specified' do
+            before do
+              project.update!(ci_pipeline_variables_minimum_override_role: :developer)
+            end
+
             it 'creates a new pipeline with variables' do
               within_testid('ci-variable-row-container') do
                 find_by_testid('pipeline-form-ci-variable-key-field').set('key_name')
@@ -795,7 +800,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
               end
 
               expect do
-                find_by_testid('run-pipeline-button', text: 'Run pipeline').click
+                find_by_testid('run-pipeline-button', text: 'New pipeline').click
                 wait_for_requests
               end
                 .to change { Ci::Pipeline.count }.by(1)
@@ -808,7 +813,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
         context 'without gitlab-ci.yml' do
           before do
-            find_by_testid('run-pipeline-button', text: 'Run pipeline').click
+            find_by_testid('run-pipeline-button', text: 'New pipeline').click
             wait_for_requests
           end
 
@@ -818,7 +823,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
             stub_ci_pipeline_to_return_yaml_file
 
             expect do
-              find_by_testid('run-pipeline-button', text: 'Run pipeline').click
+              find_by_testid('run-pipeline-button', text: 'New pipeline').click
               wait_for_requests
             end
               .to change { Ci::Pipeline.count }.by(1)

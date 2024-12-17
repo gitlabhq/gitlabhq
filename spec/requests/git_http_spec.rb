@@ -639,40 +639,42 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
               context "when an oauth token is provided" do
                 let_it_be(:organization) { create(:organization) }
 
-                context "when oauth token has ai_workflows scope" do
-                  let(:path) { "#{project.full_path}.git" }
-                  let(:env) { { user: 'oauth2', password: @token.token } }
+                let!(:token) do
+                  Doorkeeper::AccessToken.create!(
+                    application_id: application.id,
+                    resource_owner_id: user.id,
+                    scopes: scopes,
+                    organization_id: organization.id)
+                  .plaintext_token
+                end
 
-                  before do
-                    application = Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user)
-                    @token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: "ai_workflows", organization_id: organization.id)
-                  end
+                let(:application) do
+                  Doorkeeper::Application.create!(
+                    name: "MyApp",
+                    redirect_uri: "https://app.com",
+                    owner: user)
+                end
+
+                let(:scopes) { 'api' }
+                let(:path) { "#{project.full_path}.git" }
+                let(:env) { { user: 'oauth2', password: token } }
+
+                context "when oauth token has ai_workflows scope" do
+                  let(:scopes) { 'ai_workflows' }
 
                   it_behaves_like 'pulls are allowed'
                   it_behaves_like 'pushes are allowed'
                 end
 
                 context "when oauth token has api scope" do
-                  let(:path) { "#{project.full_path}.git" }
-                  let(:env) { { user: 'oauth2', password: @token.token } }
-
-                  before do
-                    application = Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user)
-                    @token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: "api", organization_id: organization.id)
-                  end
+                  let(:scopes) { 'api' }
 
                   it_behaves_like 'pulls are allowed'
                   it_behaves_like 'pushes are allowed'
                 end
 
                 context "when oauth token has write_repository scope" do
-                  let(:path) { "#{project.full_path}.git" }
-                  let(:env) { { user: 'oauth2', password: @token.token } }
-
-                  before do
-                    application = Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user)
-                    @token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: "write_repository", organization_id: organization.id)
-                  end
+                  let(:scopes) { 'write_repository' }
 
                   it_behaves_like 'pulls are allowed'
                   it_behaves_like 'pushes are allowed'
@@ -1316,13 +1318,24 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
               end
 
               context "when an oauth token is provided" do
-                before do
-                  application = Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user)
-                  @token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: "api")
+                let!(:token) do
+                  Doorkeeper::AccessToken.create!(
+                    application_id: application.id,
+                    resource_owner_id: user.id,
+                    scopes: 'api',
+                    organization_id: project.organization_id)
+                  .plaintext_token
+                end
+
+                let(:application) do
+                  Doorkeeper::Application.create!(
+                    name: "MyApp",
+                    redirect_uri: "https://app.com",
+                    owner: user)
                 end
 
                 let(:path) { "#{project.full_path}.git" }
-                let(:env) { { user: 'oauth2', password: @token.token } }
+                let(:env) { { user: 'oauth2', password: token } }
 
                 it_behaves_like 'pulls are allowed'
                 it_behaves_like 'pushes are allowed'

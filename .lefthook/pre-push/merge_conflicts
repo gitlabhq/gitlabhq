@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Adjusted from https://gitlab.com/fdegier/pre-push-hooks with hardcoded values for speed
 ORIGIN=origin

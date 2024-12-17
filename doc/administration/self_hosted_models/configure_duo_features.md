@@ -31,6 +31,10 @@ Prerequisites:
 
 To configure your GitLab instance to access the AI gateway:
 
+::Tabs
+
+:::TabTitle Linux package
+
 1. Where your GitLab instance is installed, update the `/etc/gitlab/gitlab.rb` file:
 
    ```shell
@@ -50,6 +54,29 @@ To configure your GitLab instance to access the AI gateway:
    ```shell
    sudo gitlab-ctl reconfigure
    ```
+
+:::TabTitle Helm Chart (Kubernetes)
+
+1. Add the following values to your Helm chart:
+
+   ```yaml
+   gitlab:
+     webservice:
+       extraEnv:
+         AI_GATEWAY_URL: '<path_to_your_ai_gateway>:<port>'
+     sidekiq:
+       extraEnv:
+         AI_GATEWAY_URL: '<path_to_your_ai_gateway>:<port>'
+     toolbox:
+       extraEnv:
+         AI_GATEWAY_URL: '<path_to_your_ai_gateway>:<port>'
+   ```
+
+   - The `AI_GATEWAY_URL` parameter for `webservice` must be externally accessible because it is given to editor extensions
+   for direct connection to the AI gateway.
+   - The `AI_GATEWAY_URL` parameters for `sidekiq` and `toolbox` can be either externally accessible or Kubernetes internal addresses (for example, `ai-gateway.gitlab.svc.cluster.local`). It might be more time and resource efficient to use Kubernetes internal addresses, so the requests do not have to go through the external load balancer and the Ingress controller to re-enter the cluster.
+
+::EndTabs
 
 ## Configure the self-hosted model
 

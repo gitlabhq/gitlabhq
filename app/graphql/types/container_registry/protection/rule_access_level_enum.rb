@@ -4,7 +4,7 @@ module Types
   module ContainerRegistry
     module Protection
       class RuleAccessLevelEnum < BaseEnum
-        graphql_name 'ContainerRegistryProtectionRuleAccessLevel'
+        graphql_name 'ContainerProtectionRepositoryRuleAccessLevel'
         description 'Access level of a container registry protection rule resource'
 
         ::ContainerRegistry::Protection::Rule.minimum_access_level_for_pushes.each_key do |access_level_key|

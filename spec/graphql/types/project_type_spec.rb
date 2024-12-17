@@ -36,7 +36,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       incident_management_timeline_event incident_management_timeline_events
       container_expiration_policy service_desk_enabled service_desk_address
       issue_status_counts terraform_states alert_management_integrations
-      container_repositories container_repositories_count max_access_level
+      container_protection_repository_rules container_repositories container_repositories_count max_access_level
       pipeline_analytics squash_read_only sast_ci_configuration
       cluster_agent cluster_agents agent_configurations ci_access_authorized_agents user_access_authorized_agents
       ci_template timelogs merge_commit_template squash_commit_template work_item_types
@@ -464,6 +464,13 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     it { is_expected.to have_graphql_type(Types::ContainerExpirationPolicyType) }
   end
 
+  describe 'container protection repository rules' do
+    subject { described_class.fields['containerProtectionRepositoryRules'] }
+
+    it { is_expected.to have_graphql_type(Types::ContainerRegistry::Protection::RuleType.connection_type) }
+    it { is_expected.to have_graphql_resolver(Resolvers::ProjectContainerRegistryProtectionRulesResolver) }
+  end
+
   describe 'packages cleanup policy field' do
     subject { described_class.fields['packagesCleanupPolicy'] }
 
@@ -534,7 +541,11 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     subject { described_class.fields['jobs'] }
 
     it { is_expected.to have_graphql_type(Types::Ci::JobType.connection_type) }
-    it { is_expected.to have_graphql_arguments(:statuses, :with_artifacts, :name, :after, :before, :first, :last) }
+
+    it do
+      is_expected.to have_graphql_arguments(:statuses, :with_artifacts, :name, :sources,
+        :after, :before, :first, :last)
+    end
   end
 
   describe 'ci_template field' do

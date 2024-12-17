@@ -27,7 +27,7 @@ module Gitlab
             return if @command.yaml_processor_result.workflow_name.blank?
 
             name = @command.yaml_processor_result.workflow_name
-            name = ExpandVariables.expand(name, -> { global_context.variables.sort_and_expand_all })
+            name = ExpandVariables.expand(name, -> { global_context.variables_sorted_and_expanded })
 
             return if name.blank?
 

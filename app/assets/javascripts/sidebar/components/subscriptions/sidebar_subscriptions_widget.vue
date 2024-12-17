@@ -242,7 +242,7 @@ export default {
       category="secondary"
       data-testid="subscribe-button"
       :title="notificationTooltip"
-      class="sidebar-collapsed-icon sidebar-collapsed-container !gl-rounded-none !gl-shadow-none"
+      class="sidebar-collapsed-icon sidebar-collapsed-container !gl-rounded-none !gl-border-0"
       @click="toggleSubscribed"
     >
       <gl-animated-notification-icon

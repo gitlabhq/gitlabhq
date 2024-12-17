@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.user_container_registry.i_container_registry_create_repository_user_monthly
 description: A monthly count of users that have created a repository from the registry
 product_group: container_registry
+product_categories:
+- container_registry
 value_type: number
 status: active
 milestone: '15.9'

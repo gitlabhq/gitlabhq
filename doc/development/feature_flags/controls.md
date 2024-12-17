@@ -68,19 +68,17 @@ there for any exceptions while testing your feature after enabling the feature f
 For these pre-production environments, it's strongly encouraged to run the command in
 `#staging`, `#production`, or `#chatops-ops-test`, for improved visibility.
 
-#### Enabling the feature flag with percentage of time
+#### Enabling the feature flag for a given percentage of actors
 
-To enable a feature for 25% of the time, run the following in Slack:
+To enable a feature 25% of the time for any given actor, run the following in Slack:
 
 ```shell
-/chatops run feature set new_navigation_bar 25 --random --dev
-/chatops run feature set new_navigation_bar 25 --random --staging
+/chatops run feature set new_navigation_bar 25 --actors --dev
+/chatops run feature set new_navigation_bar 25 --actors --staging
 ```
 
-NOTE:
-Percentage of time feature flags are deprecated in favor of [percentage of actors](#percentage-based-actor-selection).
-If you understand the consequences of using percentage of time feature flags, you can force it using
-`--ignore-random-deprecation-check`.
+See [percentage of actors](#percentage-based-actor-selection) for your choices of actors
+for which you would like to randomize the rollout.
 
 ### Enabling a feature for GitLab.com
 
@@ -202,33 +200,9 @@ Before enabling a feature flag, verify that you are not violating any [Productio
 The following `/chatops` commands must be performed in the Slack
 `#production` channel.
 
-##### Percentage of time roll out
-
-To enable a feature for 25% of the time, run the following in Slack:
-
-```shell
-/chatops run feature set new_navigation_bar 25 --random
-```
-
-NOTE:
-Percentage of time feature flags are deprecated in favor of [percentage of actors](#percentage-based-actor-selection).
-If you understand the consequences of using percentage of time feature flags, you can force it using
-`--ignore-random-deprecation-check`.
-
-This sets a feature flag to `true` based on the following formula:
-
-```ruby
-feature_flag_state = rand < (25 / 100.0)
-```
-
-This will enable the feature for GitLab.com, with `new_navigation_bar` being the
-name of the feature.
-This command does *not* enable the feature for 25% of the total users.
-Instead, when the feature is checked with `enabled?`, it will return `true` 25% of the time.
-
 ##### Percentage of actors roll out
 
-To enable a feature for 25% of actors such as users, projects, or groups,
+To enable a feature for 25% of actors such as users, projects, groups or the current request or job,
 run the following in Slack:
 
 ```shell
@@ -360,14 +334,28 @@ When the `default_enabled` attribute in the YAML definition is switched to
 /chatops run feature delete some_feature
 ```
 
-##### Percentage of actors vs percentage of time rollouts
+##### Percentage of time roll out (deprecated)
 
-If you want to make sure a feature is always on or off for users, use a **Percentage of actors**
-rollout. Avoid using percentage of _time_ rollouts in this case.
+Previously, to enable a feature 25% of the time, we would run the following in Slack:
 
-A percentage of _time_ rollout can introduce inconsistent behavior when `Feature.enabled?`
-is used multiple times in the code because the feature flag value is randomized each time
-`Feature.enabled?` is called on your code path.
+```shell
+/chatops run feature set new_navigation_bar 25 --random
+```
+
+This command enables the `new_navigation_bar` feature for GitLab.com. However, this command does *not* enable the feature for 25% of the total users.
+Instead, when the feature is checked with `enabled?`, it returns `true` 25% of the time.
+
+Percentage of time feature flags are now deprecated in favor of [percentage of actors](#percentage-based-actor-selection)
+using the `Feature.current_request` actor. The problem with not using an actor is that the randomized
+choice evaluates for each call into `Feature.enabled?` rather than once per request or job execution,
+which can lead to flip-flopping between states. For example:
+
+```ruby
+feature_flag_state = rand < (25 / 100.0)
+```
+
+For the time being, we continue to allow use of percentage of time feature flags.
+During rollout, you can force it using the `--ignore-random-deprecation-check` switch in ChatOps.
 
 ##### Disabling feature flags
 

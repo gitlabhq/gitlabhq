@@ -70,20 +70,16 @@ workflow:
     NAMESPACE: gitlab
     KUBECONFIG: /root/.kube/config
     BUNDLE_WITHOUT: development
-    GITLAB_USERNAME: root
-    GITLAB_PASSWORD: 5iveL!fe
-    GITLAB_ADMIN_USERNAME: root
-    GITLAB_ADMIN_PASSWORD: 5iveL!fe
-    GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
     RSPEC_LAST_RUN_RESULTS_FILE: "$CI_PROJECT_DIR/qa/tmp/examples.txt"
+    CNG_FORCE_COLOR: "true"
     QA_DOCKER_NETWORK: host
     QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
     QA_ALLOW_LOCAL_REQUESTS: "true"
     QA_SUITE_STATUS_ENV_FILE: $CI_PROJECT_DIR/suite_status.env
-    CNG_FORCE_COLOR: "true"
-    QA_RUN_IN_PARALLEL: "false" # TODO: consider re-enabling after https://gitlab.com/groups/gitlab-org/quality/quality-engineering/-/epics/99 is completed
-    QA_PARALLEL_PROCESSES: 4
+    QA_RUN_IN_PARALLEL: "true"
+    QA_PARALLEL_PROCESSES: 5
+    GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
   before_script:
     - echo "SUITE_RAN=true" > "$QA_SUITE_STATUS_ENV_FILE"
     # save extra values to be available for after_script if created dynamically
@@ -95,9 +91,8 @@ workflow:
       bundle exec cng create deployment "${DEPLOYMENT_TYPE}" \
         --gitlab-domain "${GITLAB_DOMAIN}" \
         --timeout 5m \
-        --admin-password "${GITLAB_ADMIN_PASSWORD}" \
-        --admin-token "${GITLAB_QA_ADMIN_ACCESS_TOKEN}" \
         --chart-sha "${GITLAB_HELM_CHART_REF}" \
+        --admin-token "${GITLAB_QA_ADMIN_ACCESS_TOKEN}" \
         --retry 1 \
         --ci \
         ${EXTRA_DEPLOY_VALUES}
@@ -132,6 +127,12 @@ workflow:
     - build-cng
     - download-knapsack-report
   parallel: 10
+
+.cng-test-no-parallel:
+  extends: .cng-test
+  needs:
+    - build-cng
+    - download-knapsack-report
 
 # ==========================================
 # Pre stage
@@ -175,6 +176,13 @@ cng-instance:
       when: never
     - !reference [.rules:full, rules]
 
+cng-registry:
+  extends: .cng-test-no-parallel
+  variables:
+    DEPLOYMENT_TYPE: kind
+    EXTRA_DEPLOY_VALUES: --env COVERBAND_ENABLED=${COVERBAND_ENABLED}
+    QA_SCENARIO: Test::Integration::Registry
+
 cng-instance-selective-parallel:
   extends: .cng-test-parallel
   variables:
@@ -207,7 +215,7 @@ cng-qa-min-redis-version:
       export EXTRA_DEPLOY_VALUES="--set redis.image.tag=${redis_version%.*}"
     - !reference [.cng-test, before_script]
   rules:
-    - *mr-code-patterns # run validation for minimal supported redis version only on application code changes
+    - *mr-code-patterns  # run validation for minimal supported redis version only on application code changes
 
 # ==========================================
 # Post test stage

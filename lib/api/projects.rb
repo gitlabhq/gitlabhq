@@ -563,6 +563,7 @@ module API
         attrs = declared_params(include_missing: false)
         authorize! :rename_project, user_project if attrs[:name].present?
         authorize! :change_visibility_level, user_project if user_project.visibility_attribute_present?(attrs)
+        authorize! :destroy_pipeline, user_project if attrs.key?(:ci_delete_pipelines_in_seconds)
 
         attrs = translate_params_for_compatibility(attrs)
         attrs = add_import_params(attrs)
@@ -767,6 +768,7 @@ module API
         requires :group_id, type: Integer, desc: 'The ID of a group', documentation: { example: 1 }
         requires :group_access, type: Integer, values: Gitlab::Access.all_values, as: :link_group_access, desc: 'The group access level'
         optional :expires_at, type: Date, desc: 'Share expiration date'
+        use :share_project_params_ee
       end
       post ":id/share", feature_category: :groups_and_projects, urgency: :low do
         authorize! :admin_project, user_project

@@ -67,7 +67,9 @@ are very appreciative of the work done by translators and proofreaders!
 - Hungarian
   - Proofreaders needed.
 - Indonesian
-  - Rahayu Rafika - [GitLab](https://gitlab.com/Vkfikaa), [Crowdin](https://crowdin.com/profile/rahayurafika_12) 
+  - Rahayu Rafika - [GitLab](https://gitlab.com/Vkfikaa), [Crowdin](https://crowdin.com/profile/rahayurafika_12)
+- Irish
+  - Aindriú Mac Giolla Eoin -  [GitLab](https://gitlab.com/aindriu80), [Crowdin](https://crowdin.com/profile/aindriu80)
 - Italian
   - Proofreaders needed.
 - Japanese

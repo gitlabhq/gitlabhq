@@ -105,7 +105,7 @@ export default {
         if (data.workItemDelete.errors?.length) {
           throw new Error(data.workItemDelete.errors[0]);
         }
-        this.$emit('workItemDeleted');
+        this.$emit('workItemDeleted', { id: workItemId });
       } catch (error) {
         this.$emit('deleteWorkItemError');
         Sentry.captureException(error);
@@ -119,6 +119,7 @@ export default {
       e.preventDefault();
       const shouldRouterNav =
         !this.preventRouterNav &&
+        this.$router &&
         canRouterNav({
           fullPath: this.fullPath,
           webUrl: workItem.webUrl,
@@ -189,11 +190,15 @@ export default {
     '[id^="insert-comment-template-modal"]',
     '.pika-single',
     '.atwho-container',
+    '.item-title',
     '.tippy-content .gl-new-dropdown-panel',
     '#blocked-by-issues-modal',
     '#open-children-warning-modal',
     '#create-work-item-modal',
     '#work-item-confirm-delete',
+    '.work-item-link-child',
+    '.modal-content',
+    '#create-merge-request-modal',
   ],
 };
 </script>
@@ -202,6 +207,7 @@ export default {
   <gl-drawer
     v-gl-outside="handleClickOutside"
     :open="open"
+    :z-index="200"
     data-testid="work-item-drawer"
     header-sticky
     header-height="calc(var(--top-bar-height) + var(--performance-bar-height))"
@@ -224,7 +230,7 @@ export default {
           data-testid="work-item-drawer-copy-button"
           :title="copyTooltipText"
           category="tertiary"
-          class="gl-text-secondary"
+          class="gl-text-subtle"
           icon="link"
           size="small"
           :aria-label="$options.i18n.copyTooltipText"
@@ -237,7 +243,7 @@ export default {
           :href="activeItem.webUrl"
           :title="$options.i18n.openTooltipText"
           category="tertiary"
-          class="gl-text-secondary"
+          class="gl-text-subtle"
           icon="maximize"
           size="small"
           :aria-label="$options.i18n.openTooltipText"

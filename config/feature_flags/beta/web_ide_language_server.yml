@@ -1,0 +1,9 @@
+---
+name: web_ide_language_server
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/14203
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173495
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/505717
+milestone: '17.7'
+group: group::remote development
+type: beta
+default_enabled: false

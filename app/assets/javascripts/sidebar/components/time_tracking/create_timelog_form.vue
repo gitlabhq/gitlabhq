@@ -87,6 +87,11 @@ export default {
     timeTrackingDocsPath() {
       return joinPaths(gon.relative_url_root || '', '/help/user/project/time_tracking.md');
     },
+    createTimelogModalId() {
+      return this.workItemId
+        ? `${CREATE_TIMELOG_MODAL_ID}-${this.workItemId}`
+        : CREATE_TIMELOG_MODAL_ID;
+    },
   },
   methods: {
     resetModal() {
@@ -182,7 +187,6 @@ export default {
       return convertToGraphQLId(this.getGraphQLEntityType(), this.issuableId);
     },
   },
-  CREATE_TIMELOG_MODAL_ID,
 };
 </script>
 
@@ -190,7 +194,7 @@ export default {
   <gl-modal
     ref="modal"
     :title="s__('CreateTimelogForm|Add time entry')"
-    :modal-id="$options.CREATE_TIMELOG_MODAL_ID"
+    :modal-id="createTimelogModalId"
     size="sm"
     data-testid="create-timelog-modal"
     :action-primary="primaryProps"

@@ -6,7 +6,6 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { stubComponent } from 'helpers/stub_component';
 import WorkItemLoading from '~/work_items/components/work_item_loading.vue';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
@@ -17,10 +16,10 @@ import WorkItemAttributesWrapper from '~/work_items/components/work_item_attribu
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import WorkItemRelationships from '~/work_items/components/work_item_relationships/work_item_relationships.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
-import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import WorkItemStickyHeader from '~/work_items/components/work_item_sticky_header.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemAbuseModal from '~/work_items/components/work_item_abuse_modal.vue';
+import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import TodosToggle from '~/work_items/components/shared/todos_toggle.vue';
 import DesignWidget from '~/work_items/components/design_management/design_management_widget.vue';
 import DesignUploadButton from '~/work_items/components//design_management/upload_button.vue';
@@ -41,7 +40,6 @@ import {
   workItemLinkedItemsResponse,
   objectiveType,
   epicType,
-  mockWorkItemCommentNote,
   mockBlockingLinkedItem,
   allowedChildrenTypesResponse,
   mockProjectPermissionsQueryResponse,
@@ -76,7 +74,6 @@ describe('WorkItemDetail component', () => {
   const successHandlerWithNoPermissions = jest
     .fn()
     .mockResolvedValue(workItemQueryResponseWithNoPermissions);
-  const showModalHandler = jest.fn();
   const { id } = workItemByIidQueryResponse.data.workspace.workItem;
   const workItemUpdatedSubscriptionHandler = jest
     .fn()
@@ -117,7 +114,6 @@ describe('WorkItemDetail component', () => {
   const findHierarchyTree = () => wrapper.findComponent(WorkItemTree);
   const findWorkItemRelationships = () => wrapper.findComponent(WorkItemRelationships);
   const findNotesWidget = () => wrapper.findComponent(WorkItemNotes);
-  const findModal = () => wrapper.findComponent(WorkItemDetailModal);
   const findWorkItemAbuseModal = () => wrapper.findComponent(WorkItemAbuseModal);
   const findTodosToggle = () => wrapper.findComponent(TodosToggle);
   const findStickyHeader = () => wrapper.findComponent(WorkItemStickyHeader);
@@ -127,6 +123,7 @@ describe('WorkItemDetail component', () => {
   const findWorkItemDesigns = () => wrapper.findComponent(DesignWidget);
   const findDesignUploadButton = () => wrapper.findComponent(DesignUploadButton);
   const findDetailWrapper = () => wrapper.findByTestId('detail-wrapper');
+  const findDrawer = () => wrapper.findComponent(WorkItemDrawer);
 
   const createComponent = ({
     isModal = false,
@@ -188,11 +185,6 @@ describe('WorkItemDetail component', () => {
         WorkItemWeight: true,
         WorkItemIteration: true,
         WorkItemHealthStatus: true,
-        WorkItemDetailModal: stubComponent(WorkItemDetailModal, {
-          methods: {
-            show: showModalHandler,
-          },
-        }),
       },
       mocks: {
         $router: router,
@@ -564,17 +556,6 @@ describe('WorkItemDetail component', () => {
     expect(successHandler).not.toHaveBeenCalled();
   });
 
-  it('shows work item modal if "show" query param set', async () => {
-    const workItemId = workItemQueryResponse.data.workItem.id;
-    setWindowLocation(`?show=${workItemId}`);
-
-    createComponent();
-    await waitForPromises();
-
-    expect(findModal().exists()).toBe(true);
-    expect(findModal().props('workItemId')).toBe(workItemId);
-  });
-
   it('skips calling the work item query when there is no workItemIid and no workItemId', async () => {
     createComponent({ workItemIid: null, workItemId: null });
     await waitForPromises();
@@ -637,31 +618,22 @@ describe('WorkItemDetail component', () => {
         },
       );
 
-      it('renders a modal', async () => {
-        createComponent({ handler: objectiveHandler });
-        await waitForPromises();
-
-        expect(findModal().exists()).toBe(true);
-      });
-
-      it('opens the modal with the child when `show-modal` is emitted', async () => {
+      it('opens the drawer with the child when `show-modal` is emitted', async () => {
         createComponent({ handler: objectiveHandler, workItemsAlphaEnabled: true });
         await waitForPromises();
 
         const event = {
           preventDefault: jest.fn(),
         };
+        const modalWorkItem = { id: 'childWorkItemId' };
 
         findHierarchyTree().vm.$emit('show-modal', {
           event,
-          modalWorkItem: { id: 'childWorkItemId' },
+          modalWorkItem,
         });
         await waitForPromises();
 
-        expect(wrapper.findComponent(WorkItemDetailModal).props().workItemId).toBe(
-          'childWorkItemId',
-        );
-        expect(showModalHandler).toHaveBeenCalled();
+        expect(findDrawer().props('activeItem')).toEqual(modalWorkItem);
       });
 
       describe('work item is rendered in a modal and has children', () => {
@@ -673,10 +645,6 @@ describe('WorkItemDetail component', () => {
           });
 
           await waitForPromises();
-        });
-
-        it('does not render a new modal', () => {
-          expect(findModal().exists()).toBe(false);
         });
 
         it('emits `update-modal` when `show-modal` is emitted', async () => {
@@ -746,15 +714,15 @@ describe('WorkItemDetail component', () => {
         const event = {
           preventDefault: jest.fn(),
         };
+        const modalWorkItem = { id: 'childWorkItemId' };
 
         findWorkItemRelationships().vm.$emit('showModal', {
           event,
-          modalWorkItem: { id: 'childWorkItemId' },
+          modalWorkItem,
         });
         await waitForPromises();
 
-        expect(findModal().props().workItemId).toBe('childWorkItemId');
-        expect(showModalHandler).toHaveBeenCalled();
+        expect(findDrawer().props('activeItem')).toEqual(modalWorkItem);
       });
 
       describe('linked work item is rendered in a modal and has linked items', () => {
@@ -766,10 +734,6 @@ describe('WorkItemDetail component', () => {
           });
 
           await waitForPromises();
-        });
-
-        it('does not render a new modal', () => {
-          expect(findModal().exists()).toBe(false);
         });
 
         it('emits `update-modal` when `show-modal` is emitted', async () => {
@@ -819,20 +783,6 @@ describe('WorkItemDetail component', () => {
       expect(findWorkItemAbuseModal().exists()).toBe(false);
     });
 
-    it('should be visible when the work item modal emits `openReportAbuse` event', async () => {
-      findModal().vm.$emit('openReportAbuse', mockWorkItemCommentNote);
-
-      await nextTick();
-
-      expect(findWorkItemAbuseModal().exists()).toBe(true);
-
-      findWorkItemAbuseModal().vm.$emit('close-modal');
-
-      await nextTick();
-
-      expect(findWorkItemAbuseModal().exists()).toBe(false);
-    });
-
     it('should be visible when the work item actions button emits `toggleReportAbuseModal` event', async () => {
       findWorkItemActions().vm.$emit('toggleReportAbuseModal', true);
       await nextTick();
@@ -843,6 +793,20 @@ describe('WorkItemDetail component', () => {
       await nextTick();
 
       expect(findWorkItemAbuseModal().exists()).toBe(false);
+    });
+  });
+
+  describe('work item change type', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('should call work item query on type change', async () => {
+      findWorkItemActions().vm.$emit('workItemTypeChanged');
+      await nextTick();
+
+      expect(successHandler).toHaveBeenCalled();
     });
   });
 

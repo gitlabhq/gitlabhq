@@ -3,6 +3,8 @@ data_category: operational
 key_path: counts.merge_requests
 description: Count of the number of merge requests
 product_group: code_review
+product_categories:
+- code_review_workflow
 value_type: number
 status: active
 time_frame: all

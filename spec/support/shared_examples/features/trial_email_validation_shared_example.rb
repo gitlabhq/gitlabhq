@@ -5,7 +5,7 @@ RSpec.shared_examples 'user email validation' do
   let(:email_error_message) { _('Please provide a valid email address.') }
 
   let(:email_warning_message) do
-    _('This email address does not look right, are you sure you typed it correctly?')
+    _('Email address without top-level domain. Make sure that you have entered the correct email address.')
   end
 
   it 'shows an error message until a correct email is entered' do

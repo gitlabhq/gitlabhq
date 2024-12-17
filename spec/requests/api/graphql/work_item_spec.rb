@@ -1102,6 +1102,9 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
     end
 
     describe 'development widget' do
+      let_it_be_with_reload(:merge_request1) { create(:merge_request, source_project: project) }
+      let_it_be_with_reload(:merge_request2) { create(:merge_request, source_project: project, target_branch: 'feat2') }
+
       context 'when fetching related merge requests' do
         let(:work_item_fields) do
           <<~GRAPHQL
@@ -1113,6 +1116,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                   nodes {
                     id
                     iid
+                    author { id username }
                   }
                 }
               }
@@ -1120,34 +1124,60 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           GRAPHQL
         end
 
-        before do
-          post_graphql(query, current_user: current_user)
+        before_all do
+          update_params = { description: "References #{work_item.to_reference}" }
+
+          [merge_request1, merge_request2].each do |merge_request|
+            ::MergeRequests::UpdateService
+              .new(project: merge_request.project, current_user: developer, params: update_params)
+              .execute(merge_request)
+          end
         end
 
         context 'when user is developer' do
           let(:current_user) { developer }
 
-          # Adding as empty list first to make the field available in next release
-          # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/503834
           it 'returns related merge requests in the response' do
+            post_graphql(query, current_user: current_user)
+
             expect(work_item_data).to include(
               'id' => work_item.to_global_id.to_s,
               'widgets' => array_including(
                 hash_including(
                   'type' => 'DEVELOPMENT',
                   'relatedMergeRequests' => {
-                    'nodes' => []
+                    'nodes' => [
+                      hash_including('id' => merge_request2.to_gid.to_s, 'iid' => merge_request2.iid.to_s),
+                      hash_including('id' => merge_request1.to_gid.to_s, 'iid' => merge_request1.iid.to_s)
+                    ]
                   }
                 )
               )
             )
           end
+
+          it 'prevents N+1 queries' do
+            post_graphql(query, current_user: current_user) # warm up
+
+            control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+              post_graphql(query, current_user: current_user)
+            end
+
+            merge_request3 = create(:merge_request, source_project: project, target_branch: 'feat3')
+            ::MergeRequests::UpdateService.new(
+              project: merge_request3.project,
+              current_user: developer,
+              params: { description: "References #{work_item.to_reference}" }
+            ).execute(merge_request3)
+
+            expect do
+              post_graphql(query, current_user: current_user)
+            end.not_to exceed_all_query_limit(control)
+          end
         end
       end
 
       context 'when fetching closing merge requests' do
-        let_it_be(:merge_request1) { create(:merge_request, source_project: project) }
-        let_it_be(:merge_request2) { create(:merge_request, source_project: project, target_branch: 'feature2') }
         let_it_be(:private_project) { create(:project, :repository, :private) }
         let_it_be(:private_merge_request) { create(:merge_request, source_project: private_project) }
         let(:work_item_fields) do

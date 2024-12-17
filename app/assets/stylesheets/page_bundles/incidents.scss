@@ -83,7 +83,7 @@
     &::after {
       content: '';
       position: absolute;
-      @apply gl-border-gray-50;
+      @apply gl-border-subtle;
       @apply gl-border-1;
       @apply gl-border-b-solid;
       // Border spans the whole container minus icon width and grid gap

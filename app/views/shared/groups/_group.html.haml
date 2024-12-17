@@ -15,7 +15,7 @@
       .description
         = markdown_field(group, :description)
 
-  .stats.gl-text-gray-500.gl-shrink-0
+  .stats.gl-text-subtle.gl-shrink-0
     %span.gl-ml-5.has-tooltip{ title: _('Projects') }
       = sprite_icon('project', css_class: 'gl-align-text-bottom')
       = number_with_delimiter(group.non_archived_projects.size)

@@ -60,17 +60,18 @@ export default {
 <template>
   <li
     :class="{ '!gl-rounded-b-base gl-text-subtle': collapsed }"
-    class="toggle-replies-widget gl-border-r gl-border-l !gl-flex gl-flex-wrap gl-items-center gl-border-l-section gl-border-r-section gl-bg-subtle gl-px-5 gl-py-3"
+    class="toggle-replies-widget gl-border-r gl-border-l !gl-flex gl-flex-wrap gl-items-center gl-border-l-section gl-border-r-section gl-bg-subtle gl-px-5 gl-py-2"
     :aria-expanded="ariaState"
   >
     <gl-button
       ref="toggle"
-      class="gl-my-2 gl-mr-3 !gl-p-0"
+      class="gl-my-2 -gl-ml-3 gl-mr-2 !gl-p-0"
       :class="{ '!gl-text-link': !collapsed }"
       category="tertiary"
       :icon="buttonIcon"
       :aria-label="buttonLabel"
       data-testid="replies-toggle"
+      size="small"
       @click="toggle"
     />
     <template v-if="collapsed">

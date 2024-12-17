@@ -15,7 +15,7 @@ module QA
       Runtime::API::Client.new(
         source_gitlab_address,
         # source instance is using same omnibus installation so it should have the same admin token as target
-        personal_access_token: Runtime::UserStore.admin_api_client.personal_access_token
+        personal_access_token: Runtime::User::Store.admin_api_client.personal_access_token
       )
     end
 
@@ -27,7 +27,7 @@ module QA
       create(:user,
         :set_public_email,
         api_client: source_admin_api_client,
-        username: Runtime::Env.admin_username || 'root')
+        username: Runtime::User::Store.admin_user.username)
     end
 
     let!(:source_group) do
@@ -38,21 +38,15 @@ module QA
     end
 
     # target instance objects
-    let!(:admin_api_client) { Runtime::UserStore.admin_api_client }
+    let!(:admin_user) { Runtime::User::Store.admin_user }
+    let!(:admin_api_client) { admin_user.api_client }
 
     let!(:target_bulk_import_enabled) do
-      Runtime::ApplicationSettings.get_application_settings(api_client: admin_api_client)[:bulk_import_enabled]
+      Runtime::ApplicationSettings.get_application_settings[:bulk_import_enabled]
     end
 
-    let!(:admin_user) do
-      create(:user,
-        :set_public_email,
-        api_client: admin_api_client,
-        username: Runtime::Env.admin_username || 'root')
-    end
-
-    let!(:user) { create(:user, api_client: admin_api_client, username: "target-user-#{SecureRandom.hex(6)}") }
-    let!(:api_client) { Runtime::API::Client.new(user: user) }
+    let!(:user) { create(:user, :with_personal_access_token, username: "target-user-#{SecureRandom.hex(6)}") }
+    let!(:api_client) { user.api_client }
     let!(:target_sandbox) { create(:sandbox, api_client: admin_api_client) }
 
     let(:destination_group_path) { source_group.path }

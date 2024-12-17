@@ -57,7 +57,7 @@ export default {
         :display="appButtonText"
         :link="deploymentExternalUrl"
         size="small"
-        css-class="deploy-link js-deploy-url gl-inline"
+        css-class="deploy-link js-deploy-url"
       />
       <gl-collapsible-listbox
         :items="filteredChanges"
@@ -70,7 +70,7 @@ export default {
           <gl-link :href="item.value" target="_blank" rel="noopener noreferrer nofollow">
             <div>
               <strong class="gl-mb-0 gl-block gl-truncate">{{ item.text }}</strong>
-              <p class="gl-mb-0 gl-block gl-truncate gl-text-secondary">
+              <p class="gl-mb-0 gl-block gl-truncate gl-text-subtle">
                 {{ item.value }}
               </p>
             </div>
@@ -83,7 +83,7 @@ export default {
       :display="appButtonText"
       :link="deploymentExternalUrl"
       size="small"
-      css-class="deploy-link js-deploy-url gl-inline"
+      css-class="deploy-link js-deploy-url"
     />
   </span>
 </template>

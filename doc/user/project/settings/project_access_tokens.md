@@ -30,7 +30,7 @@ You can use project access tokens:
 
 - On GitLab SaaS: If you have the Premium or Ultimate license tier, only one project access token is available with a [trial license](https://about.gitlab.com/free-trial/).
 - On self-managed instances of GitLab: With any license tier. If you have the Free tier,
-  consider [disabling project access tokens](#enable-or-disable-project-access-token-creation) to lower potential abuse.
+  consider [restricting the creation of project access tokens](#restrict-the-creation-of-project-access-tokens) to lower potential abuse.
 
 You cannot use project access tokens to create other group, project, or personal access tokens.
 
@@ -43,6 +43,7 @@ configured for personal access tokens.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days and default role of Guest is populated in the UI.
 > - Ability to create non-expiring project access tokens [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
 > - Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a flag](../../../administration/feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+> - Project access token description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443819) in GitLab 17.7.
 
 FLAG:
 The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
@@ -56,8 +57,9 @@ To create a project access token:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Access tokens**.
 1. Select **Add new token**.
-1. Enter a name. The token name is visible to any user with permissions to view the project.
-1. Enter an expiry date for the token.
+1. In **Token name**, enter a name. The token name is visible to any user with permissions to view the project.
+1. Optional. In **Token description**, enter a description for the token.
+1. In **Expiration date**, enter an expiry date for the token.
    - The token expires on that date at midnight UTC. A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
    - If you do not enter an expiry date, the expiry date is automatically set to 30 days later than the current date.
    - By default, this date can be a maximum of 365 days later than the current date. In GitLab 17.6 or later, you can [extend this limit to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901).
@@ -76,6 +78,9 @@ all projects that have visibility level set to [Internal](../../public_access.md
 ## Revoke a project access token
 
 > - Ability to view revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
+
+FLAG:
+The availability of being able to view revoked tokens is controlled by a feature flag. For more information, see the history.
 
 To revoke a project access token:
 
@@ -121,16 +126,15 @@ See the warning in [create a project access token](#create-a-project-access-toke
 | `ai_features`      | Grants permission to perform API actions for GitLab Duo. This scope is designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see scope requirements.                                                                                                          |
 | `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in the project.                                                                                                                                                                                         |
 
-## Enable or disable project access token creation
+## Restrict the creation of project access tokens
 
-To enable or disable project access token creation for all projects in a top-level group:
+To limit potential abuse, you can restrict users from creating tokens for a group hierarchy. This setting is only configurable for a top-level group and applies to every downstream project and subgroup. Any existing project access tokens remain valid until their expiration date or until manually revoked.
 
 1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. In **Permissions**, select or clear the **Users can create project access tokens and group access tokens in this group** checkbox.
-
-Even when creation is disabled, you can still use and revoke existing project access tokens.
+1. In **Permissions**, clear the **Users can create project access tokens and group access tokens in this group** checkbox.
 
 ## Access token expiration
 
@@ -169,14 +173,19 @@ automatically applied:
 ### Project access token expiry emails
 
 > - Sixty and thirty day expiry notification emails [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464040) in GitLab 17.6 [with a flag](../../../administration/feature_flags.md) named `expiring_pats_30d_60d_notifications`. Disabled by default.
+> - Sixty and thirty day notification emails [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173792) in GitLab 17.7. Feature flag `expiring_pats_30d_60d_notifications` removed.
+> - Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
 
 FLAG:
 The availability of the sixty and thirty day expiry notification emails is controlled by a feature flag. For more information, see the history.
 
-GitLab runs a check every day at 1:00 AM UTC to identify project access tokens that are expiring in the near future. Direct members of the project with at least the Maintainer role are notified by email when these tokens expire in a certain number of days. The number of days differs depending on the version of GitLab:
+GitLab runs a check every day at 1:00 AM UTC to identify project access tokens that are expiring in the near future. Members of the project with at least the Maintainer role are notified by email when these tokens expire in a certain number of days. The number of days differs depending on the version of GitLab:
 
 - In GitLab 17.6 and later, project maintainers and owners are notified by email when the check identifies their project access tokens as expiring in the next sixty days. An additional email is sent when the check identifies their project access tokens as expiring in the next thirty days.
 - Project maintainers and owners are notified by email when the check identifies their project access tokens as expiring in the next seven days.
+- In GitLab 17.7 and later, project members who have inherited the Owner or Maintainer role due to the project belonging to a group can also receive notification emails. You can enable this by changing:
+  - The [group setting](../../group/manage.md#expiry-emails-for-group-and-project-access-tokens) in any of the parent groups of the project.
+  - On GitLab self-managed, the [instance setting](../../../administration/settings/email.md#group-and-project-access-token-expiry-emails-to-inherited-members).
 
 ## Bot users for projects
 

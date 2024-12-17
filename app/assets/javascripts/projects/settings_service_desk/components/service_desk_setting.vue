@@ -325,7 +325,7 @@ export default {
             </gl-sprintf>
           </template>
           <template v-else #description>
-            <span class="gl-text-gray-900">
+            <span class="gl-text-default">
               <gl-sprintf
                 :message="
                   __(

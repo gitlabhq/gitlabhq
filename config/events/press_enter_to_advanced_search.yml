@@ -5,6 +5,9 @@ action: press_enter_to_advanced_search
 identifiers:
 - namespace
 - user
+additional_properties:
+  label:
+    description: Hardcoded value command_palette
 product_group: global_search
 milestone: '17.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151681

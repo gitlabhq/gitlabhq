@@ -8,7 +8,7 @@ module QA
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
 
-      let!(:personal_access_token) { Runtime::UserStore.test_user.current_personal_access_token }
+      let!(:personal_access_token) { Runtime::User::Store.test_user.current_personal_access_token }
       let!(:group) { create(:group) }
       let!(:registry_scope) { group.sandbox.name }
       let!(:project) { create(:project, :private, name: 'npm-project-level', group: group) }

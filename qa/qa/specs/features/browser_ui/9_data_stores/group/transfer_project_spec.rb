@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Data Stores' do
-    describe 'Project transfer', :blocking, product_group: :tenant_scale do
+    describe 'Project transfer', product_group: :tenant_scale do
       let(:project) { create(:project, name: 'transfer-project', group: source_group) }
       let(:source_group) { create(:group, path: "source-group-#{SecureRandom.hex(8)}") }
       let!(:target_group) { create(:group, path: "target-group-for-transfer_#{SecureRandom.hex(8)}") }

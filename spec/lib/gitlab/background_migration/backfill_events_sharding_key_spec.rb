@@ -6,8 +6,16 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillEventsShardingKey, :migratio
   let(:connection) { ApplicationRecord.connection }
 
   describe '#perform' do
-    let!(:namespace) { table(:namespaces).create!(name: 'name', path: 'path') }
-    let!(:project) { table(:projects).create!(namespace_id: namespace.id, project_namespace_id: namespace.id) }
+    let!(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
+    let!(:namespace) { table(:namespaces).create!(name: 'name', path: 'path', organization_id: organization.id) }
+    let!(:project) do
+      table(:projects).create!(
+        namespace_id: namespace.id,
+        project_namespace_id: namespace.id,
+        organization_id: organization.id
+      )
+    end
+
     let!(:user) { table(:users).create!(username: 'john_doe', email: 'johndoe@gitlab.com', projects_limit: 1) }
     let!(:note) { table(:notes).create!(noteable_type: 'Issue', project_id: project.id) }
     let!(:mr) do
@@ -18,17 +26,22 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillEventsShardingKey, :migratio
       table(:design_management_designs).create!(project_id: project.id, filename: 'final_v2.jpg', iid: 42)
     end
 
-    let!(:issue) { table(:issues).create!(project_id: project.id, namespace_id: namespace.id, work_item_type_id: 1) }
     let!(:milestone) { table(:milestones).create!(title: 'Backlog', project_id: project.id) }
     let!(:wpm_project) { table(:wiki_page_meta).create!(title: 'Backlog', project_id: project.id) }
     let!(:wpm_group) { table(:wiki_page_meta).create!(title: 'Backlog', namespace_id: namespace.id) }
+    let(:issue_type) { table(:work_item_types).find_by(name: 'Issue') }
+    let!(:issue) do
+      table(:issues).create!(project_id: project.id, namespace_id: namespace.id, work_item_type_id: issue_type.id)
+    end
+
     let!(:epic) do
       table(:epics).create!(title: "epic", title_html: "epic", iid: 1, author_id: user.id, group_id: namespace.id,
         issue_id: issue.id)
     end
 
     let!(:personal_namespace) do
-      table(:namespaces).create!(name: 'personal', path: 'personal', owner_id: user.id, type: 'User')
+      table(:namespaces).create!(name: 'personal', path: 'personal', owner_id: user.id, type: 'User',
+        organization_id: organization.id)
     end
 
     let!(:deleted_user) { table(:users).create!(username: 'deleted', email: 'deleted@gitlab.com', projects_limit: 1) }

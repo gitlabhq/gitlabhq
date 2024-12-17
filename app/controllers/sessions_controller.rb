@@ -277,9 +277,12 @@ class SessionsController < Devise::SessionsController
   end
 
   def log_audit_event(user, resource, options = {})
-    Gitlab::AppLogger.info("Successful Login: username=#{resource.username} ip=#{request.remote_ip} method=#{options[:with]} admin=#{resource.admin?}")
+    Gitlab::AppLogger.info(
+      "Successful Login: username=#{resource.username} ip=#{request.remote_ip} " \
+        "method=#{options[:with]} admin=#{resource.admin?}"
+    )
     AuditEventService.new(user, user, options)
-      .for_authentication.security_event
+                     .for_authentication.security_event
   end
 
   def log_user_activity(user)

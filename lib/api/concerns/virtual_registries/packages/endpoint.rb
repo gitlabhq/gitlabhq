@@ -26,10 +26,13 @@ module API
                 when :workhorse_upload_url
                   workhorse_upload_url(**action_params.slice(:url, :upstream))
                 when :download_file
+                  extra_response_headers = download_file_extra_response_headers(action_params: action_params)
                   present_carrierwave_file!(
                     action_params[:file],
+                    supports_direct_download: extra_response_headers.blank?,
                     content_type: action_params[:content_type],
-                    content_disposition: 'inline'
+                    content_disposition: 'inline',
+                    extra_response_headers: extra_response_headers
                   )
                 when :download_digest
                   content_type 'text/plain'

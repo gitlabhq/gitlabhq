@@ -12,7 +12,7 @@ module WebHooks
 
     def initialize(hook:, log_data:, response_category:)
       @hook = hook
-      @log_data = log_data.transform_keys(&:to_sym)
+      @log_data = log_data.as_json
       @response_category = response_category
     end
 
@@ -26,19 +26,19 @@ module WebHooks
     def log_execution
       mask_response_headers
 
-      log_data[:request_headers]['X-Gitlab-Token'] = _('[REDACTED]') if hook.token?
+      log_data['request_headers']['X-Gitlab-Token'] = _('[REDACTED]') if hook.token?
 
       WebHookLog.create!(web_hook: hook, **log_data)
     end
 
     def mask_response_headers
       return unless hook.url_variables?
-      return unless log_data.key?(:response_headers)
+      return unless log_data.key?('response_headers')
 
       variables_map = hook.url_variables.invert.transform_values { "{#{_1}}" }
       regex = Regexp.union(variables_map.keys)
 
-      log_data[:response_headers].transform_values! do |value|
+      log_data['response_headers'].transform_values! do |value|
         regex === value ? value.gsub(regex, variables_map) : value
       end
     end

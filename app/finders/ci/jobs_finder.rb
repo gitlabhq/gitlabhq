@@ -15,7 +15,10 @@ module Ci
     end
 
     def execute
-      builds = init_collection.order_id_desc
+      # params[:skip_ordering] needed when using in conjunction with Ci::BuildSourceFinder
+      # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170899
+      builds = params[:skip_ordering] ? init_collection : init_collection.order_id_desc
+
       filter_builds(builds)
     rescue Gitlab::Access::AccessDeniedError
       type.none

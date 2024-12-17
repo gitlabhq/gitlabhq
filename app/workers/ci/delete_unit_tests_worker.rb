@@ -4,7 +4,7 @@ module Ci
   class DeleteUnitTestsWorker
     include ApplicationWorker
 
-    data_consistency :always
+    data_consistency :sticky
     # rubocop:disable Scalability/CronWorkerContext
     # This worker does not perform work scoped to a context
     include CronjobQueue

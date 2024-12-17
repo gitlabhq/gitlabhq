@@ -2,6 +2,8 @@
 key_path: counts.projects_squash_tm_active
 description: Count of projects with active integrations for Squash TM
 product_group: import_and_integrate
+product_categories:
+- integrations
 value_type: number
 status: active
 milestone: "15.10"

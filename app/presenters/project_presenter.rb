@@ -23,7 +23,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   MAX_TOPICS_TO_SHOW = 3
 
   def statistic_default_class_list
-    'icon gl-mr-3 gl-text-gray-500'
+    'icon gl-mr-3 gl-text-subtle'
   end
 
   def statistic_icon(icon_name = 'plus', class_list = statistic_default_class_list)
@@ -231,7 +231,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
         title: s_('Terraform|Support for periods (`.`) in Terraform state names might break existing states.'),
         class: 'gl-ml-2',
         data: { toggle: 'tooltip' }
-      ) { sprite_icon('error', css_class: 'gl-text-subtle') }
+      ) { sprite_icon('error', css_class: 'gl-fill-icon-subtle') }
 
       AnchorData.new(
         true,
@@ -266,6 +266,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
           'target_branch' => default_branch_or_main,
           'original_branch' => default_branch_or_main,
           'can_push_code' => 'true',
+          'can_push_to_branch' => 'true',
           'path' => project_create_blob_path(project, default_branch_or_main),
           'project_path' => project.full_path
         }
@@ -277,13 +278,13 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     if can_current_user_push_to_default_branch?
       new_file_path = empty_repo? ? ide_edit_path(project, default_branch_or_main) : project_new_blob_path(project, default_branch_or_main)
 
-      AnchorData.new(false, statistic_icon('plus', '!gl-text-blue-500 gl-mr-3') + _('New file'), new_file_path)
+      AnchorData.new(false, statistic_icon('plus', 'gl-mr-3') + _('New file'), new_file_path)
     end
   end
 
   def readme_anchor_data
     if can_current_user_push_to_default_branch? && readme_path.nil?
-      icon = statistic_icon('plus', '!gl-text-blue-500 gl-mr-3')
+      icon = statistic_icon('plus', 'gl-mr-3')
       label = icon + _('Add README')
       AnchorData.new(false, label, empty_repo? ? add_readme_ide_path : add_readme_path)
     elsif readme_path
@@ -329,7 +330,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
         'license'
       )
     elsif can_current_user_push_to_default_branch?
-      icon = statistic_icon('plus', '!gl-text-blue-500 gl-mr-3')
+      icon = statistic_icon('plus', 'gl-mr-3')
       label = icon + _('Add LICENSE')
       AnchorData.new(
         false,
@@ -341,7 +342,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def contribution_guide_anchor_data
     if can_current_user_push_to_default_branch? && repository.contribution_guide.blank?
-      icon = statistic_icon('plus', '!gl-text-blue-500 gl-mr-3')
+      icon = statistic_icon('plus', 'gl-mr-3')
       label = icon + _('Add CONTRIBUTING')
       AnchorData.new(
         false,

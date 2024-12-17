@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'set' # -- Ruby 3.1 and earlier needs this. Drop this line after Ruby 3.2+ is only supported.
 require 'yaml'
 require 'digest/sha2'
 require 'did_you_mean'

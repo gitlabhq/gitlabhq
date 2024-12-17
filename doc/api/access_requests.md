@@ -10,6 +10,8 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+Use this API to interact with access requests for group and projects.
+
 ## Valid access levels
 
 The access levels are defined in the `Gitlab::Access` module, and the
@@ -18,6 +20,7 @@ following levels are recognized:
 - No access (`0`)
 - Minimal access (`5`)
 - Guest (`10`)
+- Planner (`15`)
 - Reporter (`20`)
 - Developer (`30`)
 - Maintainer (`40`)

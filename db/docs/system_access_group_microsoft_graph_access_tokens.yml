@@ -1,0 +1,13 @@
+---
+table_name: system_access_group_microsoft_graph_access_tokens
+classes:
+- SystemAccess::GroupMicrosoftGraphAccessToken
+feature_categories:
+- system_access
+description: Access tokens for the Microsoft Graph API in SaaS
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172497
+milestone: '17.7'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  group_id: namespaces
+table_size: small

@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon } from '@gitlab/ui';
 import {
   getTimeRemainingInWords,
   isInFuture,
@@ -9,15 +9,13 @@ import {
   newDate,
 } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
+import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
 
 export default {
   name: 'IssuableMilestone',
   components: {
-    GlLink,
+    WorkItemAttribute,
     GlIcon,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
   },
   props: {
     milestone: {
@@ -66,15 +64,20 @@ export default {
 </script>
 
 <template>
-  <span class="issuable-milestone gl-mr-3" data-testid="issuable-milestone">
-    <gl-link
-      v-gl-tooltip
+  <span>
+    <work-item-attribute
+      anchor-id="issuable-milestone"
+      :title="milestone.title"
+      wrapper-component-class="gl-text-sm !gl-text-subtle"
+      :tooltip-text="milestoneDate"
+      tooltip-placement="top"
+      class="issuable-milestone gl-mr-3"
+      is-link
       :href="milestoneLink"
-      :title="milestoneDate"
-      class="gl-text-sm !gl-text-subtle"
-      @click.stop
     >
-      <gl-icon name="milestone" :size="12" class="gl-mr-2" />{{ milestone.title }}
-    </gl-link>
+      <template #icon>
+        <gl-icon name="milestone" :size="12" />
+      </template>
+    </work-item-attribute>
   </span>
 </template>

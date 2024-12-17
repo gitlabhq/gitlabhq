@@ -433,7 +433,7 @@ export default {
       this.syncUrl();
     },
     syncUrl() {
-      const searchParams = new URLSearchParams();
+      const searchParams = new URLSearchParams(window.location.search);
 
       FILTERS.forEach(({ apiParam, urlParam, toUrlValueResolver }) => {
         if (this.filters[apiParam].length) {
@@ -441,10 +441,14 @@ export default {
             ? toUrlValueResolver(this.filters[apiParam][0])
             : this.filters[apiParam][0];
           searchParams.set(urlParam, urlValue);
+        } else {
+          searchParams.delete(urlParam);
         }
       });
 
-      if (!this.isDefaultSortOrder) {
+      if (this.isDefaultSortOrder) {
+        searchParams.delete('sort');
+      } else {
         searchParams.set('sort', this.isAscending ? `${this.sortBy}_ASC` : `${this.sortBy}_DESC`);
       }
 
@@ -464,7 +468,7 @@ export default {
     >
       {{ $options.i18n.fullTextSearchWarning }}
     </gl-alert>
-    <div class="gl-border-b gl-flex gl-flex-col gl-gap-3 gl-bg-gray-10 gl-p-5 sm:gl-flex-row">
+    <div class="gl-border-b gl-flex gl-flex-col gl-gap-3 gl-bg-subtle gl-p-5 sm:gl-flex-row">
       <gl-filtered-search
         v-model="filterTokens"
         class="gl-min-w-0 gl-flex-grow"
@@ -476,6 +480,10 @@ export default {
         @clear="onFiltersCleared"
       />
       <gl-sorting
+        data-testid="todos-sorting"
+        class="gl-flex"
+        dropdown-class="gl-w-full"
+        block
         :sort-options="$options.SORT_OPTIONS"
         :sort-by="sortBy"
         :is-ascending="isAscending"

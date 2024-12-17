@@ -24,7 +24,7 @@ For more information about creating and managing your groups, see [Manage groups
 
 ## Group hierarchy
 
-Groups are organized in a tree structure: 
+Groups are organized in a tree structure:
 
 - A **top-level group** is a group created at the "root" of the organization. An organization can have one or more top-level groups. A top-level group can contain one or more subgroups.
 - A **parent group** is a group that contains one or more subgroups.
@@ -174,7 +174,6 @@ To create a group:
 1. In the **Group URL** text box, enter the path for the group used for the [namespace](../namespace/index.md).
 1. Select the [**Visibility level**](../public_access.md) of the group.
 1. Optional. To personalize your GitLab experience:
-   - From the **Role** dropdown list, select your role.
    - For **Who will be using this group?**, select an option.
    - From the **What will you use this group for?** dropdown list, select an option.
 1. Optional. To invite members to the group, in the **Email 1** text box, enter the email address of the user you want to invite. To invite more users, select **Invite another member** and enter the user's email address.

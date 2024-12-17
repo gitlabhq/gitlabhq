@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe "Manage", :blocking, product_group: :import_and_integrate do
+  RSpec.describe "Manage", product_group: :import_and_integrate do
     include_context "with gitlab group migration"
 
     describe "Gitlab migration" do

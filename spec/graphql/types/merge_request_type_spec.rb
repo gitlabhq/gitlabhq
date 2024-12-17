@@ -22,6 +22,7 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
       project project_id source_project_id target_project_id source_branch
       target_branch target_branch_path draft merge_when_pipeline_succeeds diff_head_sha
       merge_commit_sha user_notes_count user_discussions_count should_remove_source_branch
+      resolvable_discussions_count resolved_discussions_count
       diff_refs diff_stats diff_stats_summary
       force_remove_source_branch
       merge_status merge_status_enum
@@ -164,8 +165,8 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
       end
     end
 
-    context 'when MR is set to merge when pipeline succeeds' do
-      let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds, target_project: project, source_project: project) }
+    context 'when MR is set to auto merge' do
+      let(:merge_request) { create(:merge_request, :merge_when_checks_pass, target_project: project, source_project: project) }
 
       it 'is not nil' do
         value = resolve_field(:merge_user, merge_request)
@@ -244,6 +245,72 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
       def create_additional_resources
         create(:merge_request, source_project: project, source_branch: 'improve/awesome')
         create(:merge_request, source_project: project, source_branch: 'spooky-stuff')
+      end
+    end
+  end
+
+  describe '#resolvable_discussions_count' do
+    let_it_be(:project) { create(:project, :public, :repository) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+    let_it_be(:note) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            mergeRequests {
+              nodes {
+                resolvableDiscussionsCount
+              }
+            }
+          }
+        }
+      )
+    end
+
+    it 'returns resolvable discussions count' do
+      result = GitlabSchema.execute(query, context: { current_user: create(:user) })
+
+      expect(result.dig('data', 'project', 'mergeRequests', 'nodes', 0, 'resolvableDiscussionsCount')).to eq(1)
+    end
+
+    it_behaves_like 'avoids N+1 queries' do
+      def create_additional_resources
+        noteable = create(:merge_request, source_project: project, source_branch: 'improve/awesome')
+        create(:discussion_note_on_merge_request, noteable: noteable, project: project)
+      end
+    end
+  end
+
+  describe '#resolved_discussions_count' do
+    let_it_be(:project) { create(:project, :public, :repository) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+    let_it_be(:note) { create(:discussion_note_on_merge_request, :resolved, noteable: merge_request, project: project) }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            mergeRequests {
+              nodes {
+                resolvedDiscussionsCount
+              }
+            }
+          }
+        }
+      )
+    end
+
+    it 'returns resolved discussions count' do
+      result = GitlabSchema.execute(query, context: { current_user: create(:user) })
+
+      expect(result.dig('data', 'project', 'mergeRequests', 'nodes', 0, 'resolvedDiscussionsCount')).to eq(1)
+    end
+
+    it_behaves_like 'avoids N+1 queries' do
+      def create_additional_resources
+        noteable = create(:merge_request, source_project: project, source_branch: 'improve/awesome')
+        create(:discussion_note_on_merge_request, :resolved, noteable: noteable, project: project)
       end
     end
   end

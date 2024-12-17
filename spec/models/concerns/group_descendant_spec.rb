@@ -82,10 +82,23 @@ RSpec.describe GroupDescendant do
         expect(described_class.build_hierarchy(groups)).to eq(expected_hierarchy)
       end
 
-      it 'tracks the exception when a parent was not preloaded' do
-        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).and_call_original
+      context 'when parent is not preloaded' do
+        it 'tracks the exception' do
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).and_call_original
 
-        expect { described_class.build_hierarchy([subsub_group]) }.to raise_error(ArgumentError)
+          expect { described_class.build_hierarchy([subsub_group]) }.to raise_error(ArgumentError)
+        end
+
+        it 'includes the backtrace' do
+          allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
+          described_class.build_hierarchy([subsub_group])
+
+          expect(Gitlab::ErrorTracking).to have_received(:track_and_raise_for_dev_exception)
+                                             .at_least(:once) do |exception, _|
+            expect(exception.backtrace).to be_present
+          end
+        end
       end
 
       it 'recovers if a parent was not reloaded by querying for the parent' do

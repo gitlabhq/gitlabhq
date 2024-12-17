@@ -878,6 +878,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   describe '#show_lfs_misconfiguration_banner?' do
     before do
       allow(project).to receive(:lfs_enabled?).and_return(true)
+      allow(project.repository).to receive(:has_gitattributes?).and_return(true)
     end
 
     subject { helper.show_lfs_misconfiguration_banner?(project) }
@@ -885,37 +886,60 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     it { is_expected.to be_falsey }
 
     context 'when the project contains an lfs_object' do
-      before do
-        create(:lfs_objects_project, project: project)
+      context 'which belongs to the project repository' do
+        before do
+          create(:lfs_objects_project, :project_repository_type, project: project)
+        end
+
+        it { is_expected.to be_falsey }
+
+        context 'when it does not have a .gitattributes file' do
+          before do
+            allow(project.repository).to receive(:has_gitattributes?).and_return(false)
+          end
+
+          it { is_expected.to be_truthy }
+
+          context 'when lfs is not enabled' do
+            before do
+              allow(project).to receive(:lfs_enabled?).and_return(false)
+            end
+
+            it { is_expected.to be_falsey }
+          end
+
+          context 'when lfs_misconfiguration_banner feature flag is disabled' do
+            before do
+              stub_feature_flags(lfs_misconfiguration_banner: false)
+            end
+
+            it { is_expected.to be_falsey }
+          end
+        end
       end
 
-      context 'when it does not have a .gitattributes file' do
+      context 'which belongs to the wiki repository' do
         before do
           allow(project.repository).to receive(:has_gitattributes?).and_return(false)
+          create(:lfs_objects_project, :wiki_repository_type, project: project)
         end
 
-        it { is_expected.to be_truthy }
-
-        context 'when lfs is not enabled' do
-          before do
-            allow(project).to receive(:lfs_enabled?).and_return(false)
-          end
-
-          it { is_expected.to be_falsey }
-        end
-
-        context 'when lfs_misconfiguration_banner feature flag is disabled' do
-          before do
-            stub_feature_flags(lfs_misconfiguration_banner: false)
-          end
-
-          it { is_expected.to be_falsey }
-        end
+        it { is_expected.to be_falsey }
       end
 
-      context 'when it does have a .gitattributes file' do
+      context 'which belongs to the design repository' do
         before do
-          allow(project.repository).to receive(:has_gitattributes?).and_return(true)
+          allow(project.repository).to receive(:has_gitattributes?).and_return(false)
+          create(:lfs_objects_project, :design_repository_type, project: project)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'which does not have a repository_type' do
+        before do
+          allow(project.repository).to receive(:has_gitattributes?).and_return(false)
+          create(:lfs_objects_project, :null_repository_type, project: project)
         end
 
         it { is_expected.to be_falsey }
@@ -1108,7 +1132,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       forks_count: 4,
       project_full_path: project_path,
       project_forks_url: project_forks_path,
-      can_create_fork: "true",
       can_fork_project: "true",
       can_read_code: "true",
       new_fork_url: project_new_fork_path
@@ -1119,14 +1142,12 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     subject { helper.fork_button_data_attributes(project) }
 
-    # The stubs for the forkable namespaces seem not to make sense (they're just numbers),
-    # but they're set up that way because we don't really care about what the array contains, only about its length
-    where(:has_user, :project_already_forked, :forkable_namespaces, :expected) do
-      false | false | []     | nil
-      true  | false | [0]    | data_attributes_without_user_fork_url
-      true  | false | [0, 1] | data_attributes_without_user_fork_url
-      true  | true  | [0]    | data_attributes_with_user_fork_url
-      true  | true  | [0, 1] | data_attributes_without_user_fork_url
+    where(:has_user, :project_already_forked, :has_forkable_groups, :expected) do
+      false | false | false | nil
+      true  | false | false | data_attributes_without_user_fork_url
+      true  | false | true  | data_attributes_without_user_fork_url
+      true  | true  | false | data_attributes_with_user_fork_url
+      true  | true  | true  | data_attributes_without_user_fork_url
     end
 
     with_them do
@@ -1136,10 +1157,9 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         allow(helper).to receive(:current_user).and_return(current_user)
         allow(user).to receive(:can?).and_call_original
         allow(user).to receive(:can?).with(:fork_project, project).and_return(true)
-        allow(user).to receive(:can?).with(:create_fork).and_return(true)
         allow(user).to receive(:can?).with(:create_projects, anything).and_return(true)
         allow(user).to receive(:already_forked?).with(project).and_return(project_already_forked)
-        allow(user).to receive(:forkable_namespaces).and_return(forkable_namespaces)
+        allow(user).to receive(:has_forkable_groups?).and_return(has_forkable_groups)
 
         allow(project).to receive(:forks_count).and_return(4)
         allow(project).to receive(:full_path).and_return(project_path)
@@ -1997,6 +2017,30 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       it 'returns the correct boolean response' do
         expect(helper.show_dashboard_projects_welcome_page?).to eq(result)
       end
+    end
+  end
+
+  describe '#delete_immediately_message' do
+    subject { helper.delete_immediately_message(project) }
+
+    it 'returns correct message' do
+      expect(subject).to eq "This action deletes <code>#{project.path_with_namespace}</code> and everything this project contains. <strong>There is no going back.</strong>"
+    end
+  end
+
+  describe '#project_delete_immediately_button_data' do
+    subject { helper.project_delete_immediately_button_data(project) }
+
+    it 'returns expected hash' do
+      expect(subject).to match({
+        form_path: project_path(project, permanently_delete: true),
+        confirm_phrase: project.path_with_namespace,
+        is_fork: 'false',
+        issues_count: '0',
+        merge_requests_count: '0',
+        forks_count: '0',
+        stars_count: '0'
+      })
     end
   end
 end

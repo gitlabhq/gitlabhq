@@ -3,6 +3,7 @@
 - :aggregate_failures
 - :allow_forgery_protection
 - :allow_unrouted_sidekiq_calls
+- :allowed_to_be_slow
 - :api
 - :assume_throttled
 - :aws_s3
@@ -37,6 +38,7 @@
 - :disable_rate_limiter
 - :do_not_mock_admin_mode
 - :do_not_mock_admin_mode_setting
+- :do_not_stub_ci_job_token_signing_key
 - :do_not_stub_snowplow_by_default
 - :dynamic_analysis
 - :eager_load
@@ -162,7 +164,6 @@
 - :with_clean_rails_cache
 - :with_cloud_connector
 - :with_current_organization
-- :with_default_organization
 - :with_license
 - :with_sidekiq_context
 - :without_license

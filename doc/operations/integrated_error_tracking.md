@@ -130,8 +130,7 @@ For more information, see the [Sentry SDK documentation](https://docs.sentry.io/
 ## Rotate generated DSN
 
 WARNING:
-The Sentry DSN, also known as a client key, is a secret.
-Don't expose it to the public. If it is leaked or exposed, rotate the Sentry DSN.
+According to Sentry [it is safe to keep a DSN public](https://docs.sentry.io/concepts/key-terms/dsn-explainer/#dsn-utilization), but this opens up the possibility of junk events being sent to Sentry by malicious users. Therefore if possible you should keep the DSN secret. This doesn't apply to client-side applications where the DSN will be loaded and therefore stored on the user's device.
 
 Prerequisites:
 

@@ -3,7 +3,6 @@ import {
   GlAlert,
   GlButton,
   GlDisclosureDropdown,
-  GlIcon,
   GlLoadingIcon,
   GlLink,
   GlTooltip,
@@ -14,6 +13,7 @@ import {
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { pipelineEditorTrackingOptions } from '../../constants';
 import ValidatePipelinePopover from '../popovers/validate_pipeline_popover.vue';
 import CiLintResults from '../lint/ci_lint_results.vue';
@@ -60,13 +60,13 @@ export default {
     GlAlert,
     GlButton,
     GlDisclosureDropdown,
-    GlIcon,
     GlLoadingIcon,
     GlLink,
     GlSprintf,
     GlTooltip,
     GlEmptyState,
     ValidatePipelinePopover,
+    HelpIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -205,14 +205,7 @@ export default {
           disabled
         />
         <validate-pipeline-popover />
-        <gl-icon
-          id="validate-pipeline-help"
-          name="question-o"
-          class="gl-ml-1 gl-fill-blue-500"
-          category="secondary"
-          variant="link"
-          :aria-label="$options.i18n.help"
-        />
+        <help-icon id="validate-pipeline-help" class="gl-ml-1" :aria-label="$options.i18n.help" />
       </div>
       <div v-if="canResimulatePipeline">
         <span class="gl-text-gray-400" data-testid="content-status">

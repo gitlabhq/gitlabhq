@@ -8,6 +8,8 @@ identifiers:
 - user
 - namespace
 product_group: remote_development
+product_categories:
+- web_ide
 milestone: "15.7"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104947
 distributions:

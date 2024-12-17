@@ -6,29 +6,19 @@ import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CustomizableDashboard from '~/vue_shared/components/customizable_dashboard/customizable_dashboard.vue';
 import GridstackWrapper from '~/vue_shared/components/customizable_dashboard/gridstack_wrapper.vue';
-import AnonUsersFilter from '~/vue_shared/components/customizable_dashboard/filters/anon_users_filter.vue';
-import DateRangeFilter from '~/vue_shared/components/customizable_dashboard/filters/date_range_filter.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import AvailableVisualizationsDrawer from '~/vue_shared/components/customizable_dashboard/dashboard_editor/available_visualizations_drawer.vue';
 import {
-  filtersToQueryParams,
-  buildDefaultDashboardFilters,
-} from '~/vue_shared/components/customizable_dashboard/utils';
-import UrlSync, { HISTORY_REPLACE_UPDATE_METHOD } from '~/vue_shared/components/url_sync.vue';
-import {
-  CUSTOM_VALUE_STREAM_DASHBOARD,
   EVENT_LABEL_VIEWED_DASHBOARD_DESIGNER,
-  EVENT_LABEL_EXCLUDE_ANONYMISED_USERS,
   DASHBOARD_SCHEMA_VERSION,
 } from '~/vue_shared/components/customizable_dashboard/constants';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { stubComponent } from 'helpers/stub_component';
+import { trimText } from 'helpers/text_helper';
 import {
   dashboard,
-  builtinDashboard,
   betaDashboard,
-  mockDateRangeFilterChangePayload,
-  TEST_VISUALIZATION,
+  createVisualization,
   TEST_EMPTY_DASHBOARD_SVG_PATH,
 } from './mock_data';
 
@@ -61,16 +51,13 @@ describe('CustomizableDashboard', () => {
   };
 
   const panelSlotSpy = jest.fn();
-  const scopedSlots = {
+  const defaultSlots = {
     panel: panelSlotSpy,
   };
 
   const createWrapper = (
     props = {},
-    loadedDashboard = dashboard,
-    provide = {},
-    routeParams = {},
-    // eslint-disable-next-line max-params
+    { loadedDashboard = dashboard, provide = {}, routeParams = {}, scopedSlots = {} } = {},
   ) => {
     const loadDashboard = { ...loadedDashboard };
 
@@ -85,10 +72,8 @@ describe('CustomizableDashboard', () => {
         ...props,
       },
       stubs: {
-        AnonUsersFilter,
         RouterLink: RouterLinkStub,
         GlSprintf,
-        DateRangeFilter,
         GridstackWrapper: stubComponent(GridstackWrapper, {
           props: ['value', 'editing'],
           template: `<div data-testid="gridstack-wrapper">
@@ -104,7 +89,10 @@ describe('CustomizableDashboard', () => {
           params: routeParams,
         },
       },
-      scopedSlots,
+      scopedSlots: {
+        ...defaultSlots,
+        ...scopedSlots,
+      },
       provide: {
         dashboardEmptyStateIllustrationPath: TEST_EMPTY_DASHBOARD_SVG_PATH,
         ...provide,
@@ -122,9 +110,6 @@ describe('CustomizableDashboard', () => {
   const findSaveButton = () => wrapper.findByTestId('dashboard-save-btn');
   const findCancelButton = () => wrapper.findByTestId('dashboard-cancel-edit-btn');
   const findFilters = () => wrapper.findByTestId('dashboard-filters');
-  const findAnonUsersFilter = () => wrapper.findComponent(AnonUsersFilter);
-  const findDateRangeFilter = () => wrapper.findComponent(DateRangeFilter);
-  const findUrlSync = () => wrapper.findComponent(UrlSync);
   const findVisualizationDrawer = () => wrapper.findComponent(AvailableVisualizationsDrawer);
   const findDashboardDescription = () => wrapper.findByTestId('dashboard-description');
   const findGridstackWrapper = () => wrapper.findComponent(GridstackWrapper);
@@ -183,7 +168,7 @@ describe('CustomizableDashboard', () => {
 
   describe('default behaviour', () => {
     beforeEach(() => {
-      createWrapper({}, dashboard);
+      createWrapper();
     });
 
     it('shows the gridstack wrapper', () => {
@@ -221,10 +206,6 @@ describe('CustomizableDashboard', () => {
       expect(findFilters().exists()).toBe(false);
     });
 
-    it('does not sync filters with the URL', () => {
-      expect(findUrlSync().exists()).toBe(false);
-    });
-
     it('does not show a dashboard documentation link', () => {
       expect(findDashboardDescription().findComponent(GlLink).exists()).toBe(false);
     });
@@ -236,7 +217,7 @@ describe('CustomizableDashboard', () => {
 
   describe('when a dashboard has no description', () => {
     beforeEach(() => {
-      createWrapper({}, { ...dashboard, description: undefined });
+      createWrapper({}, { loadedDashboard: { ...dashboard, description: undefined } });
     });
 
     it('does not show the dashboard description', () => {
@@ -244,85 +225,48 @@ describe('CustomizableDashboard', () => {
     });
   });
 
-  describe('when the slug is "value_stream_dashboard"', () => {
+  describe('when a dashboard has an after-description slot', () => {
     beforeEach(() => {
-      createWrapper({}, { ...builtinDashboard, slug: 'value_streams_dashboard' });
-    });
-
-    it('shows a "Learn more" link to the VSD user docs', () => {
-      const link = findDashboardDescription().findComponent(GlLink);
-
-      expect(link.text()).toBe('Learn more');
-      expect(link.attributes('href')).toBe('/help/user/analytics/value_streams_dashboard');
-    });
-  });
-
-  describe('when the slug is "ai_impact"', () => {
-    beforeEach(() => {
-      createWrapper({}, { ...builtinDashboard, slug: 'ai_impact' });
-    });
-
-    it('shows an alternative dashboard description', () => {
-      expect(findDashboardDescription().text()).toBe(
-        'Visualize the relation between AI usage and SDLC trends. Learn more about AI Impact analytics and GitLab Duo Pro seats usage.',
+      createWrapper(
+        {},
+        {
+          scopedSlots: {
+            'after-description': `<p>After description</p>`,
+          },
+        },
       );
     });
 
-    it('shows a link to the docs page', () => {
-      const link = findDashboardDescription().findAllComponents(GlLink).at(0);
-
-      expect(link.text()).toBe('AI Impact analytics');
-      expect(link.attributes('href')).toBe('/help/user/analytics/ai_impact_analytics');
-    });
-
-    it('shows a link to the Duo Pro subscription add-ons page', () => {
-      const link = findDashboardDescription().findAllComponents(GlLink).at(1);
-
-      expect(link.text()).toBe('GitLab Duo Pro seats usage');
-      expect(link.attributes('href')).toBe(
-        '/help/subscriptions/subscription-add-ons#assign-gitlab-duo-seats',
+    it('does render after-description slot after the description', () => {
+      expect(trimText(findDashboardDescription().text())).toEqual(
+        'This is a dashboard After description',
       );
     });
   });
 
-  describe('when a dashboard is custom', () => {
-    beforeEach(() => {
-      createWrapper({}, dashboard);
-    });
+  describe('editingEnabled', () => {
+    it('shows the edit button if editingEnabled', () => {
+      createWrapper({ editingEnabled: true });
 
-    it('shows the "edit" button', () => {
       expect(findEditButton().exists()).toBe(true);
     });
-  });
 
-  describe('when a dashboard is built-in', () => {
-    beforeEach(() => {
-      createWrapper({}, builtinDashboard);
-    });
+    it('does not show the edit button if not editingEnabled', () => {
+      createWrapper({ editingEnabled: false });
 
-    it('does not show the "edit" button', () => {
-      expect(findEditButton().exists()).toBe(false);
-    });
-  });
-
-  describe('when a dashboard is a custom VSD', () => {
-    const customVsd = { ...dashboard, slug: CUSTOM_VALUE_STREAM_DASHBOARD };
-
-    it('does not show the "edit" button when `enable_vsd_visual_editor` is disabled', () => {
-      createWrapper({}, customVsd);
       expect(findEditButton().exists()).toBe(false);
     });
 
-    it('shows the "edit" button when `enable_vsd_visual_editor` is enabled', () => {
-      const provide = { glFeatures: { enableVsdVisualEditor: true } };
-      createWrapper({}, customVsd, provide);
+    it('shows the edit button by default', () => {
+      createWrapper();
+
       expect(findEditButton().exists()).toBe(true);
     });
   });
 
   describe('when a dashboard is in beta', () => {
     beforeEach(() => {
-      createWrapper({}, betaDashboard);
+      createWrapper({}, { loadedDashboard: betaDashboard });
     });
 
     it('renders the `Beta` badge', () => {
@@ -332,7 +276,7 @@ describe('CustomizableDashboard', () => {
 
   describe('when mounted with the $route.editing param', () => {
     beforeEach(() => {
-      createWrapper({}, dashboard, {}, { editing: true });
+      createWrapper({}, { routeParams: { editing: true } });
     });
 
     it('render the visualization drawer in edit mode', () => {
@@ -348,7 +292,7 @@ describe('CustomizableDashboard', () => {
       beforeUnloadEvent = new Event('beforeunload');
       windowDialogSpy = jest.spyOn(beforeUnloadEvent, 'returnValue', 'set');
 
-      createWrapper({}, dashboard);
+      createWrapper();
 
       await waitForPromises();
 
@@ -491,10 +435,6 @@ describe('CustomizableDashboard', () => {
       });
     });
 
-    it('does not show the "edit" button', () => {
-      expect(findEditButton().exists()).toBe(false);
-    });
-
     describe('with the visualization drawer', () => {
       it('renders the closed visualization drawer', () => {
         expect(findVisualizationDrawer().props()).toMatchObject({
@@ -533,7 +473,7 @@ describe('CustomizableDashboard', () => {
       describe('and the drawer emits a selected event', () => {
         beforeEach(async () => {
           await findAddVisualizationButton().trigger('click');
-          await findVisualizationDrawer().vm.$emit('select', [TEST_VISUALIZATION()]);
+          await findVisualizationDrawer().vm.$emit('select', [createVisualization()]);
         });
 
         it('closes the drawer', () => {
@@ -583,133 +523,37 @@ describe('CustomizableDashboard', () => {
   });
 
   describe('dashboard filters', () => {
-    const defaultFilters = buildDefaultDashboardFilters('');
-
-    describe('when showDateRangeFilter is false', () => {
+    describe('default behavior', () => {
       beforeEach(() => {
-        createWrapper({
-          showDateRangeFilter: false,
-          syncUrlFilters: true,
-          defaultFilters,
-          dateRangeLimit: 0,
-        });
+        createWrapper(
+          {},
+          { scopedSlots: { filters: '<p data-testid="test-filters">Filters here</p>' } },
+        );
       });
 
-      it('does not show the filters', () => {
-        expect(findDateRangeFilter().exists()).toBe(false);
-        expect(findAnonUsersFilter().exists()).toBe(false);
+      it('renders the filters slot', () => {
+        expect(findFilters().exists()).toBe(true);
+        expect(wrapper.findByTestId('test-filters').exists()).toBe(true);
+      });
+
+      it('does not render the filters slot when in editing mode', async () => {
+        findEditButton().vm.$emit('click');
+
+        await waitForPromises();
+
+        expect(findFilters().exists()).toBe(false);
       });
     });
 
-    describe('when the date range filter is enabled and configured', () => {
-      describe('by default', () => {
-        beforeEach(() => {
-          createWrapper({ showDateRangeFilter: true, syncUrlFilters: true, defaultFilters });
-        });
+    it('does not render the filters slot if isNewDashboard=true', () => {
+      createWrapper(
+        { isNewDashboard: true },
+        { scopedSlots: { filters: '<p data-testid="test-filters">Filters here</p>' } },
+      );
 
-        it('does not show the anon users filter', () => {
-          expect(findAnonUsersFilter().exists()).toBe(false);
-        });
-
-        it('shows the date range filter and passes the default options and filters', () => {
-          expect(findDateRangeFilter().props()).toMatchObject({
-            startDate: defaultFilters.startDate,
-            endDate: defaultFilters.endDate,
-            defaultOption: defaultFilters.dateRangeOption,
-            dateRangeLimit: 0,
-          });
-        });
-
-        it('synchronizes the filters with the URL', () => {
-          expect(findUrlSync().props()).toMatchObject({
-            historyUpdateMethod: HISTORY_REPLACE_UPDATE_METHOD,
-            query: filtersToQueryParams(defaultFilters),
-          });
-        });
-
-        it('sets the panel filters to the default date range', () => {
-          expect(panelSlotSpy).toHaveBeenCalledWith(
-            expect.objectContaining({ filters: expect.objectContaining(defaultFilters) }),
-          );
-        });
-
-        it('updates the panel filters when the date range is changed', async () => {
-          await findDateRangeFilter().vm.$emit('change', mockDateRangeFilterChangePayload);
-
-          expect(panelSlotSpy).toHaveBeenCalledWith(
-            expect.objectContaining({
-              filters: expect.objectContaining(mockDateRangeFilterChangePayload),
-            }),
-          );
-        });
-      });
-
-      describe.each([0, 12, 31])('when given a date range limit of %d', (dateRangeLimit) => {
-        beforeEach(() => {
-          createWrapper({
-            showDateRangeFilter: true,
-            syncUrlFilters: true,
-            defaultFilters,
-            dateRangeLimit,
-          });
-        });
-
-        it('passes the date range limit to the date range filter', () => {
-          expect(findDateRangeFilter().props()).toMatchObject({
-            dateRangeLimit,
-          });
-        });
-      });
-    });
-
-    describe('filtering anonymous users', () => {
-      beforeEach(() => {
-        createWrapper({
-          showAnonUsersFilter: true,
-          syncUrlFilters: true,
-          defaultFilters,
-          dateRangeLimit: 0,
-        });
-      });
-
-      it('does not show the date range filter', () => {
-        expect(findDateRangeFilter().exists()).toBe(false);
-      });
-
-      it('sets the default filter on the anon users filter component', () => {
-        expect(findAnonUsersFilter().props('value')).toBe(defaultFilters.filterAnonUsers);
-      });
-
-      it('updates the panel filters when anon users are filtered out', async () => {
-        expect(panelSlotSpy).toHaveBeenCalledWith(
-          expect.objectContaining({ filters: expect.objectContaining({ filterAnonUsers: false }) }),
-        );
-
-        await findAnonUsersFilter().vm.$emit('change', true);
-
-        expect(panelSlotSpy).toHaveBeenCalledWith(
-          expect.objectContaining({ filters: expect.objectContaining({ filterAnonUsers: true }) }),
-        );
-      });
-
-      it(`tracks the "${EVENT_LABEL_EXCLUDE_ANONYMISED_USERS}" event when excluding anon users`, async () => {
-        await findAnonUsersFilter().vm.$emit('change', true);
-
-        expect(trackingSpy).toHaveBeenCalledWith(
-          undefined,
-          EVENT_LABEL_EXCLUDE_ANONYMISED_USERS,
-          expect.any(Object),
-        );
-      });
-
-      it(`does not track "${EVENT_LABEL_EXCLUDE_ANONYMISED_USERS}" event including anon users`, async () => {
-        await findAnonUsersFilter().vm.$emit('change', false);
-
-        expect(trackingSpy).not.toHaveBeenCalled();
-      });
+      expect(findFilters().exists()).toBe(false);
     });
   });
-
   describe('when a dashboard is new and the editing feature flag is enabled', () => {
     const newDashboard = NEW_DASHBOARD();
     const newPanels = [dashboard.panels[0]];
@@ -719,7 +563,7 @@ describe('CustomizableDashboard', () => {
         {
           isNewDashboard: true,
         },
-        newDashboard,
+        { loadedDashboard: newDashboard },
       );
     });
 
@@ -788,11 +632,6 @@ describe('CustomizableDashboard', () => {
 
     it('shows the "Add visualization" button', () => {
       expect(findAddVisualizationButton().text()).toBe('Add visualization');
-    });
-
-    it('does not show the filters', () => {
-      expect(findDateRangeFilter().exists()).toBe(false);
-      expect(findAnonUsersFilter().exists()).toBe(false);
     });
 
     describe('when saving', () => {
@@ -931,7 +770,7 @@ describe('CustomizableDashboard', () => {
 
   describe('when saving while editing and the editor is enabled', () => {
     beforeEach(() => {
-      createWrapper({ isSaving: true }, dashboard);
+      createWrapper({ isSaving: true });
 
       findEditButton().vm.$emit('click');
     });
@@ -951,7 +790,7 @@ describe('CustomizableDashboard', () => {
     `(
       'when editing="$editing" and changesSaved="$changesSaved" the new editing state is "$newState',
       async ({ editing, changesSaved, newState }) => {
-        createWrapper({ changesSaved, isNewDashboard: editing }, dashboard);
+        createWrapper({ changesSaved, isNewDashboard: editing });
 
         await nextTick();
 
@@ -967,7 +806,7 @@ describe('CustomizableDashboard', () => {
     };
 
     beforeEach(() => {
-      createWrapper({}, dashboardWithoutPanels);
+      createWrapper({}, { loadedDashboard: dashboardWithoutPanels });
 
       return findEditButton().vm.$emit('click');
     });
@@ -1005,7 +844,7 @@ describe('CustomizableDashboard', () => {
       'when isSaving=$isSaving and changesMade=$changesMade',
       ({ isSaving, changesMade, expected }) => {
         beforeEach(async () => {
-          createWrapper({ isSaving }, dashboard);
+          createWrapper({ isSaving });
 
           await findEditButton().vm.$emit('click');
 

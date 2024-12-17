@@ -8,13 +8,16 @@ description: "Connect and use GitLab Duo in Neovim."
 # Neovim troubleshooting
 
 When troubleshooting the GitLab plugin for Neovim, you should confirm if an issue still occurs
-in isolation from other Neovim plugins and settings. Run the Neovim [testing steps](#test-your-neovim-configuration),
-then the [troubleshooting steps](#troubleshooting-code-suggestions) for GitLab Duo Code Suggestions.
+in isolation from other Neovim plugins and settings. First, run the Neovim [testing steps](#test-your-neovim-configuration),
+then the [GitLab Duo Code Suggestions troubleshooting steps](../../user/project/repository/code_suggestions/troubleshooting.md).
 
 If the steps on this page don't solve your problem, check the
 [list of open issues](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/issues/?sort=created_date&state=opened&first_page_size=100)
 in the Neovim plugin's project. If an issue matches your problem, update the issue.
 If no issues match your problem, [create a new issue](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/issues/new).
+
+For troubleshooting the extension for GitLab Duo Code Suggestions,
+see [Troubleshooting Code Suggestions](../../user/project/repository/code_suggestions/troubleshooting.md#neovim-troubleshooting).
 
 ## Test your Neovim configuration
 
@@ -88,29 +91,6 @@ a problem with Code Suggestions:
 
    ```plaintext
    echo ~/.local/state/nvim/lsp.log
-   ```
-
-## Troubleshooting Code Suggestions
-
-If code completions fail:
-
-1. Confirm `omnifunc` is set in Neovim:
-
-   ```lua
-   :verbose set omnifunc?
-   ```
-
-1. Confirm the Language Server is active by running this command in Neovim:
-
-   ```lua
-   :lua =vim.lsp.get_active_clients()
-   ```
-
-1. Check the logs for the Language Server in `~/.local/state/nvim/lsp.log`.
-1. Inspect the `vim.lsp` log path for errors by running this command in Neovim:
-
-   ```lua
-   :lua =vim.cmd('view ' .. vim.lsp.get_log_path())
    ```
 
 ### Error: `GCS:unavailable`

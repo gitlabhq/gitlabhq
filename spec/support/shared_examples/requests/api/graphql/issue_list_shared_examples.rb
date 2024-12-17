@@ -226,18 +226,6 @@ RSpec.shared_examples 'graphql issue list request spec' do
           expect(issue_ids).to match_array(to_gid_list(unsubscribed_issues))
         end
       end
-
-      context 'with feature flag disabled' do
-        let(:issue_filter_params) { { subscribed: :EXPLICITLY_SUBSCRIBED } }
-
-        it 'does not filter out subscribed issues' do
-          stub_feature_flags(filter_subscriptions: false)
-
-          post_query
-
-          expect(issue_ids).to match_array(to_gid_list(issues))
-        end
-      end
     end
 
     context 'when filtering by confidentiality' do
@@ -275,6 +263,29 @@ RSpec.shared_examples 'graphql issue list request spec' do
             expect(issue_ids).to match_array(to_gid_list(public_non_confidential_issues))
           end
         end
+      end
+    end
+
+    # Querying Service Desk issues uses `support-bot` `author_username`.
+    # This is a workaround that selects both legacy Service Desk issues and ticket work items
+    # until we migrated Service Desk issues to work items of type ticket.
+    # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/505024
+    context 'when filtering by Service Desk issues/tickets' do
+      # Use items only for this context because it's temporary. This way we don't need to modify other examples.
+      let_it_be(:service_desk_issue) { create(:issue, project: project, author: ::Users::Internal.support_bot) }
+      # don't use support bot because this isn't a req for ticket WIT
+      let_it_be(:ticket) { create(:work_item, :ticket, project: project, author: current_user) }
+      # Get work item as issue because this query only returns issues.
+      let_it_be(:service_desk_items) { [service_desk_issue, Issue.find(ticket.id)] }
+
+      let_it_be(:base_params) { { iids: service_desk_items.map { |issue| issue.iid.to_s } } }
+
+      let(:issue_filter_params) { { author_username: 'support-bot' } }
+
+      it 'returns Service Desk issue and ticket work item' do
+        post_query
+
+        expect(issue_ids).to match_array(to_gid_list(service_desk_items))
       end
     end
   end

@@ -229,6 +229,21 @@ RSpec.shared_examples 'handling validation error for package' do
       expect(json_response['message']).to include('Validation failed')
     end
   end
+
+  context 'with ActiveRecord::RecordInvalid error' do
+    before do
+      allow_next_instance_of(::Packages::Conan::CreatePackageFileService) do |service|
+        allow(service).to receive(:execute).and_raise(ActiveRecord::RecordInvalid)
+      end
+    end
+
+    it 'returns 400' do
+      subject
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['message']).to include('Record invalid')
+    end
+  end
 end
 
 RSpec.shared_examples 'handling empty values for username and channel' do
@@ -370,9 +385,9 @@ RSpec.shared_examples 'package download_urls' do
 
   it 'returns the download_urls for the package files' do
     expected_response = {
-      'conaninfo.txt' => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/123456789/0/conaninfo.txt",
-      'conanmanifest.txt' => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/123456789/0/conanmanifest.txt",
-      'conan_package.tgz' => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/123456789/0/conan_package.tgz"
+      'conaninfo.txt' => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{conan_package_reference}/0/conaninfo.txt",
+      'conanmanifest.txt' => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{conan_package_reference}/0/conanmanifest.txt",
+      'conan_package.tgz' => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{conan_package_reference}/0/conan_package.tgz"
     }
 
     subject

@@ -26,7 +26,7 @@ module MergeRequests
 
         logger.commit
 
-        return ServiceResponse.success(payload: { results: results }) if all_results_success?
+        return ServiceResponse.success(payload: { results: results }) if no_result_unsuccessful?
 
         ServiceResponse.error(
           message: 'Checks were not successful',
@@ -53,18 +53,18 @@ module MergeRequests
       end
 
       def cached_results
-        strong_memoize(:cached_results) do
-          Gitlab::MergeRequests::Mergeability::ResultsStore.new(merge_request: merge_request)
-        end
+        Gitlab::MergeRequests::Mergeability::ResultsStore.new(merge_request: merge_request)
       end
+      strong_memoize_attr :cached_results
 
       def logger
-        strong_memoize(:logger) do
-          MergeRequests::Mergeability::Logger.new(merge_request: merge_request)
-        end
+        MergeRequests::Mergeability::Logger.new(merge_request: merge_request)
       end
+      strong_memoize_attr :logger
 
-      def all_results_success?
+      # This name may seem like a double-negative, but it is meaningful because
+      # #success? is _not_ the inverse of #unsuccessful?
+      def no_result_unsuccessful?
         results.none?(&:unsuccessful?)
       end
 

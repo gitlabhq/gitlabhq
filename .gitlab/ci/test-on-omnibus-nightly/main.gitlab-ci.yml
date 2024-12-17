@@ -197,6 +197,18 @@ git-sha256-repositories:
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
 
+# ========== Update From Previous with AI components ===========
+update-minor-ee-ai-components:
+  extends:
+    - .qa
+    - .update-with-ai-components-script
+  variables:
+    UPDATE_TYPE: minor
+    UPDATE_FROM_EDITION: ee
+    QA_RSPEC_TAGS: --tag ai_gateway
+    CLOUD_CONNECTOR_BASE_URL: 'https://cloud.staging.gitlab.com'
+    CUSTOMER_PORTAL_URL: 'https://customers.staging.gitlab.com'
+
 # ==========================================
 # Post test stage
 # ==========================================

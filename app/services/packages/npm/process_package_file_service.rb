@@ -35,7 +35,7 @@ module Packages
       attr_reader :package_file
 
       def valid_package_file?
-        package_file && !package_file.file.empty_size? && package&.npm? && package&.processing?
+        package_file && !package_file.file.empty_size? && package&.processing?
       end
 
       def with_package_json_entry

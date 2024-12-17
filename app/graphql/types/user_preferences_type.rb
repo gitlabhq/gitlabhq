@@ -38,6 +38,12 @@ module Types
       experiment: { milestone: '17.2' }
     # rubocop:enable GraphQL/ExtractType
 
+    field :timezone,
+      GraphQL::Types::String,
+      null: true,
+      description: 'Timezone of the user.',
+      experiment: { milestone: '17.7' }
+
     def issues_sort
       user_preference.issues_sort&.to_sym
     end

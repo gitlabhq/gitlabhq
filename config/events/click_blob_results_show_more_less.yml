@@ -7,7 +7,7 @@ identifiers:
 - namespace
 - user
 additional_properties:
-  value:
+  label:
     description: Position of the result.
   property:
     description: Set to 'open' if show more is activated and 'close' if it is closed again.

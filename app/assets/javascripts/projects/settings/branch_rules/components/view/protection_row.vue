@@ -86,7 +86,7 @@ export default {
 
 <template>
   <div
-    class="gl-mb-4 gl-flex gl-items-center gl-gap-7 gl-border-t-1 gl-border-gray-100"
+    class="gl-mb-4 gl-flex gl-items-center gl-gap-7 gl-border-t-1 gl-border-default"
     :class="{ 'gl-pt-4 gl-border-t-solid': showDivider }"
   >
     <div class="gl-flex gl-w-full gl-items-center">

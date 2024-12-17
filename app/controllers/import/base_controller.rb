@@ -3,7 +3,13 @@
 class Import::BaseController < ApplicationController
   include ActionView::Helpers::SanitizeHelper
 
-  before_action -> { check_rate_limit!(:project_import, scope: [current_user, :project_import], redirect_back: true) }, only: [:create]
+  before_action -> {
+    check_rate_limit!(
+      :project_import,
+      scope: [current_user, :project_import],
+      redirect_back: true
+    )
+  }, only: [:create]
   feature_category :importers
   urgency :low
 
@@ -65,11 +71,23 @@ class Import::BaseController < ApplicationController
   end
 
   def serialized_provider_repos
-    Import::ProviderRepoSerializer.new(current_user: current_user).represent(importable_repos, provider: provider_name, provider_url: provider_url, **extra_representation_opts)
+    Import::ProviderRepoSerializer.new(current_user: current_user)
+                                  .represent(
+                                    importable_repos,
+                                    provider: provider_name,
+                                    provider_url: provider_url,
+                                    **extra_representation_opts
+                                  )
   end
 
   def serialized_incompatible_repos
-    Import::ProviderRepoSerializer.new(current_user: current_user).represent(incompatible_repos, provider: provider_name, provider_url: provider_url, **extra_representation_opts)
+    Import::ProviderRepoSerializer.new(current_user: current_user)
+                                  .represent(
+                                    incompatible_repos,
+                                    provider: provider_name,
+                                    provider_url: provider_url,
+                                    **extra_representation_opts
+                                  )
   end
 
   def serialized_imported_projects
@@ -92,7 +110,11 @@ class Import::BaseController < ApplicationController
 
     return current_user.namespace if names == owner
 
-    group = Groups::NestedCreateService.new(current_user, organization_id: Current.organization_id, group_path: names).execute
+    group = Groups::NestedCreateService.new(
+      current_user,
+      organization_id: Current.organization_id,
+      group_path: names
+    ).execute
 
     group.errors.any? ? current_user.namespace : group
   rescue StandardError => e

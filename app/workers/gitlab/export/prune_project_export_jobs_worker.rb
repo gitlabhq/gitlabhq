@@ -12,7 +12,7 @@ module Gitlab
       # rubocop:enable Scalability/CronWorkerContext
 
       feature_category :importers
-      data_consistency :always
+      data_consistency :sticky
       idempotent!
 
       def perform

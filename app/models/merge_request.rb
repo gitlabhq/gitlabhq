@@ -491,6 +491,11 @@ class MergeRequest < ApplicationRecord
     .merge(ResourceStateEvent.merged_with_no_event_source)
   }
 
+  scope :by_blob_path, ->(path) do
+    joins(latest_merge_request_diff: :merge_request_diff_files)
+      .where(merge_request_diff_files: { old_path: path })
+  end
+
   def self.total_time_to_merge
     join_metrics
       .where(
@@ -707,7 +712,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def self.use_locked_set?
-    Feature.enabled?(:unstick_locked_merge_requests_redis) # rubocop: disable Gitlab/FeatureFlagWithoutActor -- no actor needed
+    Feature.enabled?(:unstick_locked_merge_requests_redis)
   end
 
   def committers(with_merge_commits: false, lazy: false, include_author_when_signed: false)
@@ -1414,11 +1419,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def default_auto_merge_strategy
-    if Feature.enabled?(:merge_when_checks_pass, project)
-      AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS
-    else
-      AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS
-    end
+    AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS
   end
 
   def auto_merge_strategy=(strategy)
@@ -1700,17 +1701,6 @@ class MergeRequest < ApplicationRecord
 
   def has_ci_enabled?
     has_ci? || project.has_ci?
-  end
-
-  def mergeable_ci_state?
-    # When using MWCP auto merge strategy, the ci must be mergeable, regardless of the project setting
-    return true unless only_allow_merge_if_pipeline_succeeds? || (auto_merge_strategy == ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS && has_ci_enabled?)
-    return false unless diff_head_pipeline
-    return false if pipeline_creating?
-
-    return true if project.allow_merge_on_skipped_pipeline?(inherit_group_setting: true) && diff_head_pipeline.skipped?
-
-    diff_head_pipeline.success?
   end
 
   def environments_in_head_pipeline(deployment_status: nil)
@@ -2435,10 +2425,6 @@ class MergeRequest < ApplicationRecord
       params: params,
       execute_all: execute_all
     )
-  end
-
-  def pipeline_creating?
-    Ci::PipelineCreation::Requests.pipeline_creating_for_merge_request?(self)
   end
 
   def merge_base_pipelines

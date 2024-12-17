@@ -15,6 +15,7 @@ describe('~/access_tokens/components/inactive_access_token_table_app', () => {
   const defaultInactiveAccessTokens = [
     {
       name: 'a',
+      description: 'Test description',
       scopes: ['api'],
       created_at: '2023-05-01T00:00:00.000Z',
       last_used_at: null,
@@ -25,6 +26,7 @@ describe('~/access_tokens/components/inactive_access_token_table_app', () => {
     },
     {
       name: 'b',
+      description: 'Test description',
       scopes: ['api', 'sudo'],
       created_at: '2024-04-21T00:00:00.000Z',
       last_used_at: '2024-04-21T00:00:00.000Z',
@@ -81,6 +83,7 @@ describe('~/access_tokens/components/inactive_access_token_table_app', () => {
       const headers = findHeaders();
       expect(headers.wrappers.map((header) => header.text())).toStrictEqual([
         'Token name',
+        'Description',
         'Scopes',
         'Created',
         'Last Used',
@@ -94,7 +97,7 @@ describe('~/access_tokens/components/inactive_access_token_table_app', () => {
     createComponent();
 
     const headers = wrapper.findAll('th');
-    const lastUsed = headers.at(3);
+    const lastUsed = headers.at(4);
     const anchor = lastUsed.find('a');
     const assistiveElement = lastUsed.find('.gl-sr-only');
     expect(anchor.exists()).toBe(true);
@@ -111,7 +114,7 @@ describe('~/access_tokens/components/inactive_access_token_table_app', () => {
 
     // First and second rows
     expect(cells.at(0).text()).toBe('a');
-    expect(cells.at(6).text()).toBe('b');
+    expect(cells.at(7).text()).toBe('b');
 
     const headers = findHeaders();
     await headers.at(0).trigger('click');
@@ -119,7 +122,7 @@ describe('~/access_tokens/components/inactive_access_token_table_app', () => {
 
     // First and second rows have swapped
     expect(cells.at(0).text()).toBe('b');
-    expect(cells.at(6).text()).toBe('a');
+    expect(cells.at(7).text()).toBe('a');
   });
 
   it('sorts rows by last used date', async () => {
@@ -129,14 +132,14 @@ describe('~/access_tokens/components/inactive_access_token_table_app', () => {
 
     // First and second rows
     expect(cells.at(0).text()).toBe('a');
-    expect(cells.at(6).text()).toBe('b');
+    expect(cells.at(7).text()).toBe('b');
 
     const headers = findHeaders();
-    await headers.at(3).trigger('click');
+    await headers.at(4).trigger('click');
 
     // First and second rows have swapped
     expect(cells.at(0).text()).toBe('b');
-    expect(cells.at(6).text()).toBe('a');
+    expect(cells.at(7).text()).toBe('a');
   });
 
   it('sorts rows by expiry date', async () => {
@@ -144,11 +147,11 @@ describe('~/access_tokens/components/inactive_access_token_table_app', () => {
 
     const cells = findCells();
     const headers = findHeaders();
-    await headers.at(4).trigger('click');
+    await headers.at(5).trigger('click');
 
     // First and second rows have swapped
     expect(cells.at(0).text()).toBe('b');
-    expect(cells.at(6).text()).toBe('a');
+    expect(cells.at(7).text()).toBe('a');
   });
 
   it('shows Revoked in expiry column when revoked', () => {
@@ -157,8 +160,8 @@ describe('~/access_tokens/components/inactive_access_token_table_app', () => {
     const cells = findCells();
 
     // First and second rows
-    expect(cells.at(4).text()).toBe('Revoked');
-    expect(cells.at(10).text()).toBe('Expired just now');
+    expect(cells.at(5).text()).toBe('Revoked');
+    expect(cells.at(12).text()).toBe('Expired just now');
   });
 
   describe('pagination', () => {

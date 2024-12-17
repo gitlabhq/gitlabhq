@@ -10,6 +10,7 @@ module Types
     end
 
     value 'GUEST', value: Gitlab::Access::GUEST, description: descriptions[Gitlab::Access::GUEST]
+    value 'PLANNER', value: Gitlab::Access::PLANNER, description: descriptions[Gitlab::Access::PLANNER]
     value 'REPORTER', value: Gitlab::Access::REPORTER, description: descriptions[Gitlab::Access::REPORTER]
     value 'DEVELOPER', value: Gitlab::Access::DEVELOPER, description: descriptions[Gitlab::Access::DEVELOPER]
     value 'MAINTAINER', value: Gitlab::Access::MAINTAINER, description: descriptions[Gitlab::Access::MAINTAINER]

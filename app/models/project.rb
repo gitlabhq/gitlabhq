@@ -427,6 +427,7 @@ class Project < ApplicationRecord
   has_many :alert_management_http_integrations, class_name: 'AlertManagement::HttpIntegration', inverse_of: :project
 
   has_many :container_registry_protection_rules, class_name: 'ContainerRegistry::Protection::Rule', inverse_of: :project
+  has_many :container_registry_protection_tag_rules, class_name: 'ContainerRegistry::Protection::TagRule', inverse_of: :project
   # Container repositories need to remove data from the container registry,
   # which is not managed by the DB. Hence we're still using dependent: :destroy
   # here.
@@ -538,7 +539,7 @@ class Project < ApplicationRecord
   with_options to: :team do
     delegate :members, prefix: true
     delegate :add_member, :add_members, :member?
-    delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_owner, :add_role
+    delegate :add_guest, :add_planner, :add_reporter, :add_developer, :add_maintainer, :add_owner, :add_role
     delegate :has_user?
   end
 
@@ -564,6 +565,7 @@ class Project < ApplicationRecord
       delegate :allow_fork_pipelines_to_run_in_parent_project, :allow_fork_pipelines_to_run_in_parent_project=
       delegate :separated_caches, :separated_caches=
       delegate :id_token_sub_claim_components, :id_token_sub_claim_components=
+      delegate :delete_pipelines_in_seconds, :delete_pipelines_in_seconds=
     end
   end
 
@@ -1840,7 +1842,7 @@ class Project < ApplicationRecord
       .available_integration_names(include_instance_specific: false)
       .difference(disabled_integrations)
       .map { find_or_initialize_integration(_1) }
-      .sort_by(&:title)
+      .sort_by { |int| int.title.downcase }
   end
 
   # Returns a list of integration names that should be disabled at the project-level.
@@ -2140,7 +2142,7 @@ class Project < ApplicationRecord
 
   override :after_repository_change_head
   def after_repository_change_head
-    ProjectCacheWorker.perform_async(self.id, [], [:commit_count])
+    ProjectCacheWorker.perform_async(self.id, [], %w[commit_count])
 
     super
   end
@@ -2163,8 +2165,13 @@ class Project < ApplicationRecord
     create_repository(force: true) unless repository_exists?
   end
 
+  # Overridden in EE
   def allowed_to_share_with_group?
-    !namespace.share_with_group_lock
+    share_with_group_enabled?
+  end
+
+  def share_with_group_enabled?
+    !parent.share_with_group_lock?
   end
 
   def latest_successful_pipeline_for_default_branch
@@ -2361,7 +2368,7 @@ class Project < ApplicationRecord
     wiki.repository.expire_content_cache
 
     DetectRepositoryLanguagesWorker.perform_async(id)
-    ProjectCacheWorker.perform_async(self.id, [], [:repository_size, :wiki_size])
+    ProjectCacheWorker.perform_async(self.id, [], %w[repository_size wiki_size])
     AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(id)
 
     enqueue_record_project_target_platforms
@@ -2573,7 +2580,7 @@ class Project < ApplicationRecord
       break unless pages_enabled?
 
       variables.append(key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host)
-      variables.append(key: 'CI_PAGES_URL', value: pages_url)
+      variables.append(key: 'CI_PAGES_URL', value: pages_url) if Feature.disabled?(:fix_pages_ci_variables, self)
     end
   end
 
@@ -3105,12 +3112,6 @@ class Project < ApplicationRecord
       ).exists?
   end
 
-  def has_namespaced_npm_packages?
-    packages.with_npm_scope(root_namespace.path)
-            .not_pending_destruction
-            .exists?
-  end
-
   def default_branch_or_main
     return default_branch if default_branch
 
@@ -3315,7 +3316,7 @@ class Project < ApplicationRecord
   end
 
   def group_group_links
-    group&.shared_with_group_links&.of_ancestors_and_self || GroupGroupLink.none
+    group&.shared_with_group_links_of_ancestors_and_self || GroupGroupLink.none
   end
 
   def security_training_available?
@@ -3334,6 +3335,10 @@ class Project < ApplicationRecord
     return true if Gitlab::CurrentSettings.max_pages_custom_domains_per_project == 0
 
     pages_domains.count < Gitlab::CurrentSettings.max_pages_custom_domains_per_project
+  end
+
+  def pages_domain_present?(domain_url)
+    pages_url == domain_url || pages_domains.exists?(domain: domain_url)
   end
 
   # overridden in EE
@@ -3424,8 +3429,12 @@ class Project < ApplicationRecord
     )
   end
 
-  def pages_url
-    Gitlab::Pages::UrlBuilder.new(self).pages_url
+  def pages_url(options = nil)
+    Gitlab::Pages::UrlBuilder.new(self, options).pages_url
+  end
+
+  def uploads_sharding_key
+    { namespace_id: namespace_id }
   end
 
   private

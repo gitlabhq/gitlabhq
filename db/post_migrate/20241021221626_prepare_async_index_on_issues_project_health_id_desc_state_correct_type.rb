@@ -9,7 +9,9 @@ class PrepareAsyncIndexOnIssuesProjectHealthIdDescStateCorrectType < Gitlab::Dat
   def up
     # Temporary index to be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/500165
     # TODO: Index to be created synchronously in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170005
-    prepare_async_index :issues, # rubocop:disable Migration/PreventIndexCreation -- Tmp index needed to fix work item type ids
+    # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
+    prepare_async_index :issues, # -- Tmp index needed to fix work item type ids
+      # rubocop:enable Migration/PreventIndexCreation
       [:project_id, :health_status, :id, :state_id, :correct_work_item_type_id],
       order: { health_status: 'DESC NULLS LAST', id: :desc },
       name: INDEX_NAME

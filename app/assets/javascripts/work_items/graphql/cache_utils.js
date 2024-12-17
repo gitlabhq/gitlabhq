@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 import VueApollo from 'vue-apollo';
-import { isEmpty, map, pick, isEqual } from 'lodash';
+import { map, isEqual } from 'lodash';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { issuesListClient } from '~/issues/list';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
@@ -34,6 +34,7 @@ import {
   NEW_WORK_ITEM_IID,
   WIDGET_TYPE_CURRENT_USER_TODOS,
   WIDGET_TYPE_LINKED_ITEMS,
+  STATE_CLOSED,
 } from '../constants';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
 import getWorkItemTreeQuery from './work_item_tree.query.graphql';
@@ -191,7 +192,7 @@ export const addHierarchyChild = ({ cache, id, workItem, atIndex = null }) => {
   });
 };
 
-export const addHierarchyChildren = ({ cache, id, workItem, newItemsToAddCount }) => {
+export const addHierarchyChildren = ({ cache, id, workItem, childrenIds }) => {
   const queryArgs = {
     query: getWorkItemTreeQuery,
     variables: {
@@ -211,10 +212,14 @@ export const addHierarchyChildren = ({ cache, id, workItem, newItemsToAddCount }
 
       const existingChildren = findHierarchyWidgetChildren(draftState?.workItem);
 
-      const childrenToAdd = newChildren.slice(0, newItemsToAddCount);
+      const childrenToAdd = newChildren.filter((item) => {
+        return childrenIds.includes(item.id);
+      });
 
       for (const item of childrenToAdd) {
-        if (item) {
+        if (item.state === STATE_CLOSED) {
+          existingChildren.push(item);
+        } else {
           existingChildren.unshift(item);
         }
       }
@@ -511,20 +516,21 @@ export const setNewWorkItemCache = async (
   const draftData = JSON.parse(getDraft(autosaveKey));
 
   // get the widgets stored in draft data
-  const draftDataWidgets = map(draftData?.workspace?.workItem?.widgets, pick('type')) || [];
+  const draftDataWidgetTypes = map(draftData?.workspace?.workItem?.widgets, 'type') || [];
+  const freshWidgetTypes = map(widgets, 'type') || [];
 
   // this is to fix errors when we are introducing a new widget and the cache always updates from the old widgets
   // Like if we we introduce a new widget , the user might always see the cached data until hits cancel
   const draftWidgetsAreSameAsCacheDigits = isEqual(
-    draftDataWidgets.sort(),
-    availableWidgets.sort(),
+    draftDataWidgetTypes.sort(),
+    freshWidgetTypes.sort(),
   );
 
   const isValidDraftData =
     draftData?.workspace?.workItem &&
     getStorageDraftString &&
     draftData?.workspace?.workItem &&
-    isEmpty(draftWidgetsAreSameAsCacheDigits);
+    draftWidgetsAreSameAsCacheDigits;
 
   /** check in case of someone plays with the localstorage, we need to be sure */
   if (!isValidDraftData) {
@@ -556,6 +562,7 @@ export const setNewWorkItemCache = async (
               webUrl: `${baseURL}/groups/gitlab-org/-/work_items/new`,
               reference: '',
               createNoteEmail: null,
+              project: null,
               namespace: {
                 id: newWorkItemPath,
                 fullPath,
@@ -584,6 +591,7 @@ export const setNewWorkItemCache = async (
                 setWorkItemMetadata: true,
                 createNote: true,
                 adminWorkItemLink: true,
+                markNoteAsInternal: true,
                 __typename: 'WorkItemPermissions',
               },
               widgets,
@@ -602,5 +610,6 @@ export const optimisticUserPermissions = {
   setWorkItemMetadata: false,
   createNote: false,
   adminWorkItemLink: false,
+  markNoteAsInternal: false,
   __typename: 'WorkItemPermissions',
 };

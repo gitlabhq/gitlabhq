@@ -1,68 +1,28 @@
 <script>
-import {
-  GlModal,
-  GlForm,
-  GlFormGroup,
-  GlFormInput,
-  GlFormTextarea,
-  GlButton,
-  GlAlert,
-  GlFormCheckbox,
-} from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
+import { logError } from '~/lib/logger';
 import { contentTypeMultipartFormData } from '~/lib/utils/headers';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
-import {
-  SECONDARY_OPTIONS_TEXT,
-  COMMIT_LABEL,
-  TARGET_BRANCH_LABEL,
-  TOGGLE_CREATE_MR_LABEL,
-} from '../constants';
-
-const PRIMARY_OPTIONS_TEXT = __('Upload file');
-const MODAL_TITLE = __('Upload new file');
-const REMOVE_FILE_TEXT = __('Remove file');
-const NEW_BRANCH_IN_FORK = __(
-  'GitLab will create a branch in your fork and start a merge request.',
-);
-const ERROR_MESSAGE = __('Error uploading file. Please try again.');
+import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
 
 export default {
   components: {
-    GlModal,
-    GlForm,
-    GlFormGroup,
-    GlFormInput,
-    GlFormTextarea,
     GlButton,
     UploadDropzone,
-    GlAlert,
     FileIcon,
-    GlFormCheckbox,
+    CommitChangesModal,
   },
   i18n: {
-    COMMIT_LABEL,
-    TARGET_BRANCH_LABEL,
-    TOGGLE_CREATE_MR_LABEL,
-    REMOVE_FILE_TEXT,
-    NEW_BRANCH_IN_FORK,
+    REMOVE_FILE_TEXT: __('Remove file'),
+    ERROR_MESSAGE: __('Error uploading file. Please try again.'),
   },
   props: {
-    modalTitle: {
-      type: String,
-      default: MODAL_TITLE,
-      required: false,
-    },
-    primaryBtnText: {
-      type: String,
-      default: PRIMARY_OPTIONS_TEXT,
-      required: false,
-    },
     modalId: {
       type: String,
       required: true,
@@ -83,6 +43,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    canPushToBranch: {
+      type: Boolean,
+      required: true,
+    },
     path: {
       type: String,
       required: true,
@@ -92,45 +56,25 @@ export default {
       default: null,
       required: false,
     },
+    emptyRepo: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
-      commit: this.commitMessage,
-      target: this.targetBranch,
-      createNewMr: true,
       file: null,
       filePreviewURL: null,
-      fileBinary: null,
       loading: false,
     };
   },
   computed: {
-    primaryOptions() {
-      return {
-        text: this.primaryBtnText,
-        attributes: {
-          variant: 'confirm',
-          loading: this.loading,
-          disabled: !this.formCompleted || this.loading,
-        },
-      };
-    },
-    cancelOptions() {
-      return {
-        text: SECONDARY_OPTIONS_TEXT,
-        attributes: {
-          disabled: this.loading,
-        },
-      };
-    },
     formattedFileSize() {
       return numberToHumanSize(this.file.size);
     },
-    showCreateNewMrToggle() {
-      return this.canPushCode && this.target !== this.originalBranch;
-    },
-    formCompleted() {
-      return this.file && this.commit && this.target;
+    isValid() {
+      return Boolean(this.file);
     },
   },
   methods: {
@@ -152,14 +96,18 @@ export default {
       this.file = null;
       this.filePreviewURL = null;
     },
-    submitForm() {
-      return this.replacePath ? this.replaceFile() : this.uploadFile();
+    submitForm(formData) {
+      return this.replacePath ? this.replaceFile(formData) : this.uploadFile(formData);
     },
-    submitRequest(method, url) {
+    submitRequest(method, url, formData) {
+      this.loading = true;
+
+      formData.append('file', this.file);
+
       return axios({
         method,
         url,
-        data: this.formData(),
+        data: formData,
         headers: {
           ...contentTypeMultipartFormData,
         },
@@ -167,30 +115,23 @@ export default {
         .then((response) => {
           visitUrl(response.data.filePath);
         })
-        .catch(() => {
+        .catch((e) => {
+          logError(
+            `Failed to ${this.replacePath ? 'replace' : 'upload'} file. See exception details for more information.`,
+            e,
+          );
+          createAlert({ message: this.$options.i18n.ERROR_MESSAGE });
+        })
+        .finally(() => {
           this.loading = false;
-          createAlert({ message: ERROR_MESSAGE });
         });
     },
-    formData() {
-      const formData = new FormData();
-      formData.append('branch_name', this.target);
-      formData.append('create_merge_request', this.createNewMr);
-      formData.append('commit_message', this.commit);
-      formData.append('file', this.file);
-
-      return formData;
-    },
-    replaceFile() {
-      this.loading = true;
-
-      // The PUT path can be geneated from $route (similar to "uploadFile") once router is connected
+    replaceFile(formData) {
+      // The PUT path can be generated from $route (similar to "uploadFile") once router is connected
       // Follow-up issue: https://gitlab.com/gitlab-org/gitlab/-/issues/332736
-      return this.submitRequest('put', this.replacePath);
+      return this.submitRequest('put', this.replacePath, formData);
     },
-    uploadFile() {
-      this.loading = true;
-
+    uploadFile(formData) {
       const {
         $route: {
           params: { path },
@@ -198,22 +139,28 @@ export default {
       } = this;
       const uploadPath = joinPaths(this.path, path);
 
-      return this.submitRequest('post', uploadPath);
+      return this.submitRequest('post', uploadPath, formData);
     },
   },
   validFileMimetypes: [],
 };
 </script>
 <template>
-  <gl-form>
-    <gl-modal
-      :ref="modalId"
-      :modal-id="modalId"
-      :title="modalTitle"
-      :action-primary="primaryOptions"
-      :action-cancel="cancelOptions"
-      @primary.prevent="submitForm"
-    >
+  <commit-changes-modal
+    :ref="modalId"
+    :modal-id="modalId"
+    :commit-message="commitMessage"
+    :target-branch="targetBranch"
+    :original-branch="originalBranch"
+    :can-push-code="canPushCode"
+    :can-push-to-branch="canPushToBranch"
+    :valid="isValid"
+    :loading="loading"
+    :empty-repo="emptyRepo"
+    data-testid="upload-blob-modal"
+    @submit-form="submitForm"
+  >
+    <template #body>
       <upload-dropzone
         class="gl-mb-6 gl-h-26"
         single-file-selection
@@ -240,22 +187,6 @@ export default {
           >
         </div>
       </upload-dropzone>
-      <gl-form-group :label="$options.i18n.COMMIT_LABEL" label-for="commit_message">
-        <gl-form-textarea v-model="commit" name="commit_message" :disabled="loading" no-resize />
-      </gl-form-group>
-      <gl-form-group
-        v-if="canPushCode"
-        :label="$options.i18n.TARGET_BRANCH_LABEL"
-        label-for="branch_name"
-      >
-        <gl-form-input v-model="target" :disabled="loading" name="branch_name" />
-      </gl-form-group>
-      <gl-form-checkbox v-if="showCreateNewMrToggle" v-model="createNewMr" :disabled="loading">
-        {{ $options.i18n.TOGGLE_CREATE_MR_LABEL }}
-      </gl-form-checkbox>
-      <gl-alert v-if="!canPushCode" variant="info" :dismissible="false" class="gl-mt-3">
-        {{ $options.i18n.NEW_BRANCH_IN_FORK }}
-      </gl-alert>
-    </gl-modal>
-  </gl-form>
+    </template>
+  </commit-changes-modal>
 </template>

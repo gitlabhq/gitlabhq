@@ -63,7 +63,13 @@ module Gitlab
 
           def variables_hash_expanded
             strong_memoize(:variables_hash_expanded) do
-              variables.sort_and_expand_all.to_hash
+              variables_sorted_and_expanded.to_hash
+            end
+          end
+
+          def variables_sorted_and_expanded
+            strong_memoize(:variables_sorted_and_expanded) do
+              variables.sort_and_expand_all
             end
           end
 

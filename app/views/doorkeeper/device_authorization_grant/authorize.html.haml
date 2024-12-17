@@ -2,14 +2,14 @@
   .gl-justify-start.gl-items-center
     .gl-heading-1
       = s_('DeviceAuth|Authorize device to access to your GitLab account.')
-    .gl-text-secondary
+    .gl-text-subtle
       = s_('DeviceAuth|Please make sure that you intended to authorize this device.')
     .gl-flex.gl-items-center.gl-gap-2.gl-py-5
       = render Pajamas::AvatarComponent.new(current_user, size: 24, avatar_options: { data: { testid: 'user_avatar_content' }, title: current_user.username })
       .gl-pl-1
         %strong= current_user.name
       &middot;
-      .gl-text-secondary
+      .gl-text-subtle
         %span= current_user.to_reference
     - if current_user.admin?
       = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5'}) do |c|

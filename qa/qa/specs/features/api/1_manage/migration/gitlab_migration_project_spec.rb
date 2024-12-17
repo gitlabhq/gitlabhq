@@ -119,7 +119,7 @@ module QA
         end
 
         it(
-          'successfully imports project wiki', :blocking,
+          'successfully imports project wiki',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347567'
         ) do
           expect_project_import_finished_successfully

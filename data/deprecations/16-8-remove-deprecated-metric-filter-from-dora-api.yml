@@ -6,4 +6,4 @@
   stage: plan  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/393172  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    Multiple DORA metrics can now be queried simultaneously using a new metrics field. The `metric` filter and `value` field for Graphql DORA API will be removed in GitLab 17.0.
+    Multiple DORA metrics can now be queried simultaneously using a new metrics field. The `metric` filter and `value` field for GraphQL DORA API will be removed in GitLab 17.0.

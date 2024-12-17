@@ -131,19 +131,11 @@ Use [`$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH`](../../ci/variables/predefined_va
 instead of a hardcoded `main` branch, and never use `master`:
 
 ```yaml
-job1:
+job:
   rules:
     if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script:
-    echo "example job 1"
-
-job2:
-  only:
-    variables:
-      - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  script:
-    echo "example job 2"
-
+    echo "example job"
 ```
 
 #### Use `rules` instead of `only` or `except`

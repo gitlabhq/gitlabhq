@@ -3,17 +3,19 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillDeployTokensShardingKey, feature_category: :continuous_delivery do
-  let!(:group1) { table(:namespaces).create!(name: 'group1', path: 'group1') }
-  let!(:group2) { table(:namespaces).create!(name: 'group2', path: 'group2') }
+  let!(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
+
+  let!(:group1) { table(:namespaces).create!(name: 'group1', path: 'group1', organization_id: organization.id) }
+  let!(:group2) { table(:namespaces).create!(name: 'group2', path: 'group2', organization_id: organization.id) }
 
   let!(:project1) do
     table(:projects).create!(name: 'project1', path: 'project1', namespace_id: group1.id,
-      project_namespace_id: group1.id)
+      project_namespace_id: group1.id, organization_id: organization.id)
   end
 
   let!(:project2) do
     table(:projects).create!(name: 'project2', path: 'project2', namespace_id: group2.id,
-      project_namespace_id: group2.id)
+      project_namespace_id: group2.id, organization_id: organization.id)
   end
 
   let!(:deploy_token1) do

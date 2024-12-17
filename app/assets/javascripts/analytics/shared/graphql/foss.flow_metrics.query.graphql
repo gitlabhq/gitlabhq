@@ -1,0 +1,20 @@
+#import "./flow_metric_item.fragment.graphql"
+
+query fossFlowMetricsQuery(
+  $fullPath: ID!
+  $startDate: Time!
+  $endDate: Time!
+  $labelNames: [String!]
+) {
+  project(fullPath: $fullPath) {
+    id
+    flowMetrics {
+      issues: issueCount(from: $startDate, to: $endDate, labelNames: $labelNames) {
+        ...FlowMetricItem
+      }
+      deploys: deploymentCount(from: $startDate, to: $endDate) {
+        ...FlowMetricItem
+      }
+    }
+  }
+}

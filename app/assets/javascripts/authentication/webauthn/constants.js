@@ -15,9 +15,6 @@ export const I18N_ERROR_HTTP = __(
 export const I18N_ERROR_UNSUPPORTED_BROWSER = __(
   "Your browser doesn't support WebAuthn. Please use a supported browser, e.g. Chrome (67+) or Firefox (60+).",
 );
-export const I18N_INFO_TEXT = __(
-  'Your device needs to be set up. Plug it in (if needed) and click the button on the left.',
-);
 export const I18N_NOTICE = __(
   'You must save your recovery codes after you first register a two-factor authenticator, so you do not lose access to your account. %{linkStart}See the documentation on managing your WebAuthn device for more information.%{linkEnd}',
 );

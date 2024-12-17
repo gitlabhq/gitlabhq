@@ -4,6 +4,10 @@ FactoryBot.define do
   factory :bulk_import_entity, class: 'BulkImports::Entity' do
     bulk_import
 
+    organization do |entity|
+      association(:organization) unless [entity.group, entity.project, entity.project_id, entity.namespace_id].any?
+    end
+
     source_type { :group_entity }
     sequence(:source_full_path) { |n| "source-path-#{n}" }
 

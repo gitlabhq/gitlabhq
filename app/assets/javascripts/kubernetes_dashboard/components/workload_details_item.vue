@@ -17,10 +17,15 @@ export default {
       required: false,
       default: false,
     },
+    isExpanded: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
-      isVisible: false,
+      isVisible: this.isExpanded,
     };
   },
   computed: {
@@ -44,7 +49,7 @@ export default {
 </script>
 
 <template>
-  <li class="gl-border-b-2 gl-border-b-gray-100 gl-py-3 gl-leading-20 gl-border-b-solid">
+  <li class="gl-border-b-2 gl-border-b-default gl-py-3 gl-leading-20 gl-border-b-solid">
     <div
       :class="{
         'gl-flex gl-flex-wrap gl-items-center gl-justify-between': collapsible,
@@ -71,7 +76,7 @@ export default {
       </div>
     </gl-collapse>
 
-    <div v-else class="gl-mb-0 gl-mt-2 gl-text-gray-500">
+    <div v-else class="gl-mb-0 gl-mt-2 gl-text-subtle">
       <slot></slot>
     </div>
   </li>

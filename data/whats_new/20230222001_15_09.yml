@@ -30,7 +30,7 @@
   release: 15.9
 - name: New License Compliance scanner
   description: |  # Do not modify this line, instead modify the lines below.
-    GitLab now supports a new method of detecting licenses that is capable of parsing and identifying over 500 different types of licenses and can extract license information from packages that are dual-licensed or have multiple different licenses that apply. In GitLab's development testing, this has empirically resulted in dramatically improved accuracy and completeness of results. Fewer CI pipeline minutes are consumed because the License Compliance job is no longer required. Additionally the new method has support for the same languages and versions as GitLab Dependency Scanning.
+    GitLab now supports a new method of detecting licenses that is capable of parsing and identifying over 500 different types of licenses and can extract license information from packages that are dual-licensed or have multiple different licenses that apply. In GitLab development testing, this has empirically resulted in dramatically improved accuracy and completeness of results. Fewer CI pipeline minutes are consumed because the License Compliance job is no longer required. Additionally the new method has support for the same languages and versions as GitLab Dependency Scanning.
 
     To use this new scanner, remove the inclusion of the `Jobs/License-Scanning.yml` template in your CI configuration and instead include the `Jobs/Dependency-Scanning.yml` template. After GitLab 16.0, the old method of scanning with the `Jobs/License-Scanning.yml` template will no longer be supported.
 

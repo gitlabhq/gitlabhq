@@ -184,9 +184,8 @@ generate and sign provenance for your npm packages in a GitLab CI/CD pipeline.
 Example content to be added to `.gitlab-ci.yml` file:
 
 ```yaml
-image: node:latest
-
 build:
+  image: node:latest
   id_tokens:
     SIGSTORE_ID_TOKEN:
       aud: sigstore

@@ -11,3 +11,4 @@ gitlab_schema: gitlab_main_cell
 exempt_from_sharding: true
 notes: Exempted because data is specific to each cell's Elasticsearch cluster, no
   customer data
+table_size: small

@@ -14,7 +14,8 @@ RSpec.describe WorkItems::ParentLinks::ReorderService, feature_category: :portfo
     let(:parent_link_class) { WorkItems::ParentLink }
     let(:user) { guest }
     let(:params) { { target_issuable: work_item } }
-    let(:relative_range) { [top_adjacent, last_adjacent].map(&:parent_link).map(&:relative_position) }
+    # be_between only works when the lower value is the first in the array
+    let(:relative_range) { [top_adjacent, last_adjacent].map(&:parent_link).map(&:relative_position).sort }
 
     subject(:reorder) { described_class.new(parent, user, params).execute }
 

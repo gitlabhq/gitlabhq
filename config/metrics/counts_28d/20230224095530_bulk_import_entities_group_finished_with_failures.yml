@@ -3,6 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage_monthly.manage.group_imports.gitlab_migration_finished_with_failures
 description: Count of group entities with finished status and failures in GitLab Migration
 product_group: import_and_integrate
+product_categories:
+- importers
 value_type: number
 status: active
 time_frame: 28d

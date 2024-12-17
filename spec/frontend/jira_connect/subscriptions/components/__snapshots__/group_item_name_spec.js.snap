@@ -24,7 +24,7 @@ exports[`GroupItemName template matches the snapshot 1`] = `
   </div>
   <div>
     <span
-      class="!gl-text-gray-900 gl-font-bold gl-mr-3"
+      class="!gl-text-default gl-font-bold gl-mr-3"
     >
       Gitlab Org
     </span>

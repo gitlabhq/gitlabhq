@@ -98,6 +98,30 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
       end
     end
 
+    context 'when composite identity is being used' do
+      context 'when a member has composite identity' do
+        before do
+          allow(member).to receive(:has_composite_identity?).and_return(true)
+        end
+
+        it 'successfuly adds a project member' do
+          expect(execute_service[:status]).to eq(:success)
+          expect(source.users).to include member
+        end
+      end
+
+      context 'when the user has composite identity' do
+        before do
+          allow(user).to receive(:has_composite_identity?).and_return(true)
+        end
+
+        it 'returns unauthorized error' do
+          expect(execute_service[:status]).to eq(:error)
+          expect(execute_service[:http_status]).to eq(:unauthorized)
+        end
+      end
+    end
+
     context 'when executing on a group' do
       let_it_be(:source) { create(:group) }
 

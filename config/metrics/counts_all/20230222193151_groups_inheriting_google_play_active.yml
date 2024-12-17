@@ -2,6 +2,8 @@
 key_path: counts.groups_inheriting_google_play_active
 description: Count of active groups inheriting integrations for Google Play
 product_group: import_and_integrate
+product_categories:
+- integrations
 value_type: number
 status: active
 milestone: "15.10"

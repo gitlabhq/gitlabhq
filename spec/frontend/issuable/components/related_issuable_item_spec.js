@@ -80,7 +80,7 @@ describe('RelatedIssuableItem', () => {
   it('does not render token state', () => {
     mountComponent();
 
-    expect(wrapper.find('.text-secondary svg').exists()).toBe(false);
+    expect(wrapper.find('.gl-text-subtle svg').exists()).toBe(false);
   });
 
   it('does not render remove button', () => {

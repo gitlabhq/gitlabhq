@@ -255,8 +255,8 @@ the application setting `asciidoc_max_includes` with the
 [application settings API](../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
 
 NOTE:
-The current maximum allowed value for`asciidoc_max_includes` is 64. If the value is
-too high might cause performance issues in some situations.
+The current maximum allowed value for `asciidoc_max_includes` is 64. If the value is
+too high, it might cause performance issues in some situations.
 
 To use includes from separate pages or external URLs, enable the `allow-uri-read`
 in [application settings](../administration/wikis/index.md#allow-uri-includes-for-asciidoc).

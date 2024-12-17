@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Maven::FindOrCreatePackageService, :clean_gitlab_redis_shared_state, feature_category: :package_registry do
+RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :package_registry do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
@@ -14,10 +14,7 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, :clean_gitlab_redis_
   let(:params) { { path: param_path, file_name: file_name } }
   let(:service) { described_class.new(project, user, params) }
 
-  it { expect(described_class).to include_module(::Gitlab::ExclusiveLeaseHelpers) }
-
   describe '#execute' do
-    include ExclusiveLeaseHelpers
     using RSpec::Parameterized::TableSyntax
 
     subject(:execute_service) { service.execute }
@@ -56,6 +53,14 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, :clean_gitlab_redis_
       it_behaves_like 'returning an error service response', message: with_message do
         it { expect(subject.payload).to be_empty }
       end
+    end
+
+    shared_examples 'reuse existing package when packages_allow_duplicate_exceptions is disabled' do
+      before do
+        stub_feature_flags(packages_allow_duplicate_exceptions: false)
+      end
+
+      it_behaves_like 'reuse existing package'
     end
 
     context 'with path including version' do
@@ -207,6 +212,62 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, :clean_gitlab_redis_
       end
     end
 
+    context 'when package duplicates are allowed' do
+      let_it_be_with_refind(:package_settings) do
+        create(:namespace_package_setting, :group, maven_duplicates_allowed: true)
+      end
+
+      let_it_be_with_refind(:group) { package_settings.namespace }
+      let_it_be_with_refind(:project) { create(:project, group: group) }
+
+      let!(:existing_package) { create(:maven_package, name: path, version: version, project: project) }
+
+      let(:existing_file_name) { file_name }
+      let(:jar_file) { existing_package.package_files.with_file_name_like('%.jar').first }
+
+      before do
+        jar_file.update_column(:file_name, existing_file_name)
+      end
+
+      it_behaves_like 'reuse existing package'
+
+      context 'when the package name matches the exception regex' do
+        before do
+          package_settings.update!(maven_duplicate_exception_regex: existing_package.name)
+        end
+
+        it_behaves_like 'returning an error', with_message: 'Duplicate package is not allowed'
+
+        it_behaves_like 'reuse existing package when packages_allow_duplicate_exceptions is disabled'
+      end
+
+      context 'when the package version matches the exception regex' do
+        before do
+          package_settings.update!(maven_duplicate_exception_regex: existing_package.version)
+        end
+
+        it_behaves_like 'returning an error', with_message: 'Duplicate package is not allowed'
+
+        it_behaves_like 'reuse existing package when packages_allow_duplicate_exceptions is disabled'
+      end
+
+      context 'when the exception regex is blank' do
+        before do
+          package_settings.update!(maven_duplicate_exception_regex: '')
+        end
+
+        it_behaves_like 'reuse existing package'
+      end
+
+      context 'when both the package name and version does not match the exception regex' do
+        before do
+          package_settings.update!(maven_duplicate_exception_regex: 'asdf42')
+        end
+
+        it_behaves_like 'reuse existing package'
+      end
+    end
+
     context 'with a very large file name' do
       let(:params) { super().merge(file_name: 'a' * (described_class::MAX_FILE_NAME_LENGTH + 1)) }
 
@@ -222,45 +283,33 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, :clean_gitlab_redis_
                       "Maven metadatum app name is invalid, Name can't be blank, Name is invalid"
     end
 
-    context 'with exlusive lease guard' do
-      let(:lease_key) { service.send(:lease_key) }
-
-      it 'obtains a lease to find or create a new package' do
-        expect_to_obtain_exclusive_lease(lease_key)
-
-        execute_service
-      end
-
-      context 'when the lease is already taken' do
-        before do
-          stub_exclusive_lease_taken(lease_key)
-        end
-
-        it { is_expected.to be_error.and have_attributes(message: 'Failed to obtain a lock') }
-      end
-
-      context 'when use_exclusive_lease_in_mvn_find_or_create_package feature flag is disabled' do
-        before do
-          stub_feature_flags(use_exclusive_lease_in_mvn_find_or_create_package: false)
-        end
-
-        it 'does not obtain a lease' do
-          expect(stub_exclusive_lease).not_to receive(:try_obtain)
-
-          execute_service
-        end
-      end
-    end
-
     context 'with parallel execution' do
       it 'only creates one package' do
         expect do
-          with_threads do
-            ::Gitlab::ExclusiveLease.skipping_transaction_check do
-              described_class.new(project, user, params).execute
+          with_threads { described_class.new(project, user, params).execute }
+        end.to change { Packages::Package.maven.count }.by(1)
+      end
+
+      context 'when CreatePackageService responds with a name_taken error' do
+        before do
+          retries = 0
+          allow_next_instance_of(::Packages::Maven::CreatePackageService) do |service|
+            allow(service).to receive(:execute) do
+              if (retries += 1) == 1
+                ServiceResponse.error(message: 'Name has already been taken', reason: :name_taken)
+              else
+                ServiceResponse.success(payload: { package: create(:maven_package) })
+              end
             end
           end
-        end.to change { Packages::Package.maven.count }.by(1)
+          allow(::Packages::Maven::PackageFinder).to receive(:new).and_call_original
+        end
+
+        it 'retries and calls the finder twice' do
+          execute_service
+
+          expect(::Packages::Maven::PackageFinder).to have_received(:new).twice
+        end
       end
     end
   end

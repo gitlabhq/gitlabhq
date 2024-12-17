@@ -257,8 +257,6 @@ end
 #
 Gitlab.ee do
   Settings['elasticsearch'] ||= {}
-  Settings.elasticsearch['enabled'] = false if Settings.elasticsearch['enabled'].nil?
-  Settings.elasticsearch['url'] = ENV['ELASTIC_URL'] || "http://localhost:9200"
   Settings.elasticsearch['indexer_path'] ||= Gitlab::Utils.which('gitlab-elasticsearch-indexer')
 end
 
@@ -736,6 +734,9 @@ Settings.cron_jobs['database_monitor_locked_tables_cron_worker']['job_class'] = 
 Settings.cron_jobs['merge_requests_process_scheduled_merge'] ||= {}
 Settings.cron_jobs['merge_requests_process_scheduled_merge']['cron'] ||= '*/1 * * * *'
 Settings.cron_jobs['merge_requests_process_scheduled_merge']['job_class'] = 'MergeRequests::ProcessScheduledMergeWorker'
+Settings.cron_jobs['ci_schedule_old_pipelines_removal_cron_worker'] ||= {}
+Settings.cron_jobs['ci_schedule_old_pipelines_removal_cron_worker']['cron'] ||= '*/11 * * * *'
+Settings.cron_jobs['ci_schedule_old_pipelines_removal_cron_worker']['job_class'] = 'Ci::ScheduleOldPipelinesRemovalCronWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}
@@ -813,6 +814,9 @@ Gitlab.ee do
   Settings.cron_jobs['elastic_index_bulk_cron_worker'] ||= {}
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['job_class'] ||= 'ElasticIndexBulkCronWorker'
+  Settings.cron_jobs['elastic_indexing_control_worker'] ||= {}
+  Settings.cron_jobs['elastic_indexing_control_worker']['cron'] ||= '*/1 * * * *'
+  Settings.cron_jobs['elastic_indexing_control_worker']['job_class'] ||= 'ElasticIndexingControlWorker'
   Settings.cron_jobs['elastic_index_embedding_bulk_cron_worker'] ||= {}
   Settings.cron_jobs['elastic_index_embedding_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['elastic_index_embedding_bulk_cron_worker']['job_class'] ||= 'Search::ElasticIndexEmbeddingBulkCronWorker'
@@ -975,6 +979,20 @@ Gitlab.ee do
     Settings.cron_jobs['click_house_audit_events_sync_worker'] ||= {}
     Settings.cron_jobs['click_house_audit_events_sync_worker']['cron'] ||= "*/3 * * * *"
     Settings.cron_jobs['click_house_audit_events_sync_worker']['job_class'] = 'ClickHouse::AuditEventsSyncWorker'
+    Settings.cron_jobs['gitlab_subscriptions_offline_cloud_license_provision_worker']['status'] = 'disabled'
+    Settings.cron_jobs['send_recurring_notifications_worker'] ||= {}
+    Settings.cron_jobs['send_recurring_notifications_worker']['cron'] ||= '0 7 * * *'
+    Settings.cron_jobs['send_recurring_notifications_worker']['job_class'] =
+      'ComplianceManagement::Pipl::SendRecurringNotificationsWorker'
+
+    Settings.cron_jobs['block_pipl_users_worker'] ||= {}
+    Settings.cron_jobs['block_pipl_users_worker']['cron'] ||= '0 8 * * *'
+    Settings.cron_jobs['block_pipl_users_worker']['job_class'] =
+      'ComplianceManagement::Pipl::BlockPiplUsersWorker'
+  end
+
+  Gitlab.jh do
+    Settings.cron_jobs['gitlab_subscriptions_offline_cloud_license_provision_worker']['status'] = 'disabled'
   end
 end
 
@@ -1027,6 +1045,7 @@ Settings.topology_service['private_key_file'] ||= '/home/git/gitlab/config/topol
 Settings['cell'] ||= {}
 Settings.cell['id'] ||= 1
 Settings.cell['name'] ||= 'cell-1'
+Settings.cell['skip_sequence_alteration'] ||= false
 
 #
 # GitLab KAS
@@ -1069,7 +1088,13 @@ Gitlab.ee do
   # Default to proxy via Cloud Connector
   unless Settings.duo_workflow['service_url'].present?
     cloud_connector_uri = URI.parse(Settings.cloud_connector.base_url)
-    Settings.duo_workflow['service_url'] = "#{cloud_connector_uri.host}:#{cloud_connector_uri.port}"
+
+    # Cloudflare has been disabled untill
+    # gets resolved https://gitlab.com/gitlab-org/gitlab/-/issues/509586
+    # Settings.duo_workflow['service_url'] = "#{cloud_connector_uri.host}:#{cloud_connector_uri.port}"
+
+    service_url = "duo-workflow#{cloud_connector_uri.host.include?('staging') ? '.staging' : ''}.runway.gitlab.net:#{cloud_connector_uri.port}"
+    Settings.duo_workflow['service_url'] = service_url
     Settings.duo_workflow['secure'] = cloud_connector_uri.scheme == 'https'
   end
 end

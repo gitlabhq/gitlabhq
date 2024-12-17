@@ -3,6 +3,8 @@ data_category: optional
 key_path: container_registry_server.version
 description: Identifies the version of the external registry being used
 product_group: container_registry
+product_categories:
+- container_registry
 value_type: number
 status: active
 milestone: "<13.9"

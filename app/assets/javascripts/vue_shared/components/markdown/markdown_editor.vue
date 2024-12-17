@@ -5,6 +5,7 @@ import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
 import { setUrlParams, joinPaths } from '~/lib/utils/url_utility';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import {
   EDITING_MODE_KEY,
   EDITING_MODE_MARKDOWN_FIELD,
@@ -34,6 +35,7 @@ export default {
   components: {
     GlAlert,
     MarkdownField,
+    LocalStorageSync,
     ContentEditor: () =>
       import(
         /* webpackChunkName: 'content_editor' */ '~/content_editor/components/content_editor.vue'
@@ -124,10 +126,19 @@ export default {
     },
   },
   data() {
-    const editingMode =
-      window.gon?.text_editor === 'rich_text_editor'
-        ? EDITING_MODE_CONTENT_EDITOR
-        : EDITING_MODE_MARKDOWN_FIELD;
+    let editingMode;
+    switch (window.gon?.text_editor) {
+      case 'rich_text_editor':
+        editingMode = EDITING_MODE_CONTENT_EDITOR;
+        break;
+      case 'plain_text_editor':
+        editingMode = EDITING_MODE_MARKDOWN_FIELD;
+        break;
+      default:
+        editingMode =
+          localStorage.getItem(this.$options.EDITING_MODE_KEY) || EDITING_MODE_MARKDOWN_FIELD;
+    }
+
     return {
       alert: null,
       markdown: this.value || (this.autosaveKey ? getDraft(this.autosaveKey) : '') || '',
@@ -147,6 +158,9 @@ export default {
       const restrictAttachments = this.disableAttachments ? ['attach-file'] : [];
 
       return [...this.restrictedToolBarItems, ...restrictAttachments];
+    },
+    isDefaultEditorEnabled() {
+      return ['plain_text_editor', 'rich_text_editor'].includes(window.gon?.text_editor);
     },
   },
   watch: {
@@ -242,6 +256,17 @@ export default {
       this.editingMode = editingMode;
       this.notifyEditingModeChange(editingMode);
     },
+    onEditingModeRestored(editingMode) {
+      if (!this.isDefaultEditorEnabled) return;
+      if (editingMode === EDITING_MODE_CONTENT_EDITOR && !this.enableContentEditor) {
+        this.editingMode = EDITING_MODE_MARKDOWN_FIELD;
+        return;
+      }
+
+      this.editingMode = editingMode;
+      this.$emit(editingMode);
+      this.notifyEditingModeChange(editingMode);
+    },
     async notifyEditingModeChange(editingMode) {
       this.$emit(editingMode);
 
@@ -310,7 +335,14 @@ export default {
 };
 </script>
 <template>
-  <div class="!gl-px-0">
+  <div class="md-area-wrapper gl-rounded-lg !gl-px-0">
+    <local-storage-sync
+      v-if="!isDefaultEditorEnabled"
+      :value="editingMode"
+      as-string
+      :storage-key="$options.EDITING_MODE_KEY"
+      @input="onEditingModeRestored"
+    />
     <gl-alert
       v-if="alert"
       class="gl-mb-4"
@@ -347,6 +379,8 @@ export default {
       @enableContentEditor="onEditingModeChange('contentEditor')"
       @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
     >
+      <template #header-buttons><slot name="header-buttons"></slot></template>
+      <template #toolbar><slot name="toolbar"></slot></template>
       <template #textarea>
         <textarea
           v-bind="formFieldProps"
@@ -383,7 +417,10 @@ export default {
         @change="updateMarkdownFromContentEditor"
         @keydown="onKeydown"
         @enableMarkdownEditor="onEditingModeChange('markdownField')"
-      />
+      >
+        <template #header-buttons><slot name="header-buttons"></slot></template>
+        <template #toolbar><slot name="toolbar"></slot></template>
+      </content-editor>
       <input v-bind="formFieldProps" :value="markdown" type="hidden" />
     </div>
   </div>

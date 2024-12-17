@@ -8,6 +8,5 @@ description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3126
 milestone: '10.2'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442042
+table_size: small

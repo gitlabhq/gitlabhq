@@ -123,7 +123,10 @@ module Groups
     def group_with_namespaced_npm_packages?
       return false unless group.packages_feature_enabled?
 
-      npm_packages = ::Packages::GroupPackagesFinder.new(current_user, group, package_type: :npm, preload_pipelines: false).execute
+      npm_packages = ::Packages::GroupPackagesFinder
+                       .new(current_user, group, packages_class: ::Packages::Npm::Package, preload_pipelines: false)
+                       .execute
+
       npm_packages = npm_packages.with_npm_scope(group.root_ancestor.path)
 
       different_root_ancestor? && npm_packages.exists?

@@ -127,6 +127,7 @@ export default {
       error: '',
       textInputAttrs: {
         class: '!gl-min-w-fit',
+        'aria-label': I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER,
       },
     };
   },
@@ -262,7 +263,7 @@ export default {
         <div class="gl-flex">
           <div
             v-safe-html="formatResults(dropdownItem.iid)"
-            class="gl-mr-4 gl-text-sm gl-text-secondary"
+            class="gl-mr-4 gl-text-sm gl-text-subtle"
           ></div>
           <div v-safe-html="formatResults(dropdownItem.title)" class="gl-truncate"></div>
         </div>

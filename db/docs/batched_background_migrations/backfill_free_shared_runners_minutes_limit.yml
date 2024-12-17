@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillFreeSharedRunnersMinutesLimit
+description: Backfills namespace shared_runners_minutes_limit values for free tier namespaces
+feature_category: consumables_cost_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161485
+milestone: '17.7'
+queued_migration_version: 20241211042515
+finalize_after: '2025-01-01'
+finalized_by: # version of the migration that finalized this BBM

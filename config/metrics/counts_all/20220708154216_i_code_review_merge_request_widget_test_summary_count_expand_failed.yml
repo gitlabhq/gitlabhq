@@ -2,6 +2,8 @@
 key_path: counts.i_code_review_merge_request_widget_test_summary_count_expand_failed
 description: Total number of times the Test Summary widget extension was expanded (while in its Failed state)
 product_group: code_review
+product_categories:
+- code_review_workflow
 value_type: number
 status: active
 milestone: "15.2"

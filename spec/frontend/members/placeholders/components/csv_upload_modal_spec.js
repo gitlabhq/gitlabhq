@@ -1,25 +1,30 @@
 import { nextTick } from 'vue';
+import MockAdapter from 'axios-mock-adapter';
 import { GlModal } from '@gitlab/ui';
+import axios from '~/lib/utils/axios_utils';
+import { createAlert } from '~/alert';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CsvUploadModal from '~/members/placeholders/components/csv_upload_modal.vue';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 
-const csrfToken = 'mock-csrf-token';
-jest.mock('~/lib/utils/csrf', () => ({ token: csrfToken }));
+jest.mock('~/alert');
+
+const MOCK_REASSIGNMENT_CSV_PATH = 'group_members/bulk_reassignment_file';
 
 describe('CsvUploadModal', () => {
   let wrapper;
+  let mockAxios;
 
   const defaultInjectedAttributes = {
-    reassignmentCsvPath: 'foo/bar',
+    reassignmentCsvPath: MOCK_REASSIGNMENT_CSV_PATH,
   };
 
   const findDownloadLink = () => wrapper.findByTestId('csv-download-button');
   const findUploadDropzone = () => wrapper.findComponent(UploadDropzone);
   const findUploadErrorAlert = () => wrapper.findByTestId('upload-error');
   const findGlModal = () => wrapper.findComponent(GlModal);
-  const findForm = () => wrapper.find('form');
 
   function createComponent() {
     return shallowMountExtended(CsvUploadModal, {
@@ -33,7 +38,12 @@ describe('CsvUploadModal', () => {
   }
 
   beforeEach(() => {
+    mockAxios = new MockAdapter(axios);
     wrapper = createComponent();
+  });
+
+  afterEach(() => {
+    mockAxios.restore();
   });
 
   it('has the CSV download button with the required attributes', () => {
@@ -59,7 +69,7 @@ describe('CsvUploadModal', () => {
 
       expect(findUploadErrorAlert().exists()).toBe(true);
       expect(findUploadErrorAlert().text()).toBe(
-        'Unable to upload the file. Check that the file follows the CSV template and try again.',
+        'Could not upload the file. Check that the file follows the CSV template and try again.',
       );
     });
 
@@ -75,35 +85,42 @@ describe('CsvUploadModal', () => {
       expect(isFileValid({ name: `upload${extension}` })).toBe(false);
     });
 
-    describe('form', () => {
-      it('has the correct action', () => {
-        const form = findForm();
-
-        expect(form.attributes('action')).toBe(defaultInjectedAttributes.reassignmentCsvPath);
+    describe('submitting the data', () => {
+      beforeEach(() => {
+        jest.spyOn(axios, 'post');
       });
 
-      it('has the correct form data', async () => {
+      it('calls the endpoint with the correct data', async () => {
         const uploadDropzone = findUploadDropzone();
-        const form = findForm();
         const file = new File(['test'], 'file.csv');
 
         uploadDropzone.vm.$emit('change', file);
         await waitForPromises();
 
-        expect(FileReader.prototype.readAsText).toHaveBeenCalledWith(file);
-
-        await waitForPromises();
-        expect(form.find('input[name="authenticity_token"]').attributes('value')).toBe(csrfToken);
-        expect(form.find('input[name="file"]').attributes('value')).toBe('test');
-      });
-
-      it('submits the form when the primary button is clicked', async () => {
-        const submitSpy = jest.spyOn(findForm().element, 'submit');
-
         findGlModal().vm.$emit('primary');
         await waitForPromises();
 
-        expect(submitSpy).toHaveBeenCalled();
+        const expectedFormData = new FormData();
+        expectedFormData.append('file', file);
+
+        expect(axios.post).toHaveBeenCalledWith(MOCK_REASSIGNMENT_CSV_PATH, expectedFormData);
+      });
+
+      describe('when the request fails', () => {
+        beforeEach(() => {
+          mockAxios
+            .onPost(MOCK_REASSIGNMENT_CSV_PATH)
+            .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, { error: new Error('error uploading CSV') });
+        });
+
+        it('display an alert error message', async () => {
+          findGlModal().vm.$emit('primary');
+          await waitForPromises();
+
+          expect(createAlert).toHaveBeenCalledWith({
+            message: 'Something went wrong while uploading the CSV file.',
+          });
+        });
       });
     });
   });

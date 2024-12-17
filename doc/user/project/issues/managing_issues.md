@@ -14,11 +14,13 @@ After you create an issue, you can start working with it.
 
 ## Edit an issue
 
+> - Minimum role to edit an issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
 You can edit an issue's title and description.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project, be the author of the issue, or be assigned to the issue.
+- You must have at least the Planner role for the project, be the author of the issue, or be assigned to the issue.
 
 To edit an issue:
 
@@ -34,8 +36,9 @@ DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com
 **Status:** Experiment
+**LLM:** Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10762) in GitLab 16.3 as an [experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10762) in GitLab 16.3 as an [experiment](../../../policy/development_stages_support.md#experiment).
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 Generate a detailed description for an issue based on a short summary you provide.
@@ -60,15 +63,17 @@ The issue description is replaced with AI-generated text.
 Provide feedback on this experimental feature in [issue 409844](https://gitlab.com/gitlab-org/gitlab/-/issues/409844).
 
 **Data usage**: When you use this feature, the text you enter is sent to
-the [large language model listed on the GitLab Duo page](../../gitlab_duo/index.md#issue-description-generation).
+the large language model.
 
 ## Bulk edit issues from a project
+
+> - Minimum role to bulk edit issues from a project [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
 You can edit multiple issues at a time when you're in a project.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To edit multiple issues at the same time:
 
@@ -97,11 +102,13 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+> - Minimum role to bulk edit issues from a group [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
 You can edit multiple issues across multiple projects when you're in a group.
 
 Prerequisites:
 
-- You must have at least the Reporter role for a group.
+- You must have at least the Planner role for a group.
 
 To edit multiple issues at the same time:
 
@@ -122,6 +129,8 @@ When bulk editing issues in a group, you can edit the following attributes:
 
 ## Move an issue
 
+> - Minimum role to move an issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
 When you move an issue, it's closed and copied to the target project.
 The original issue is not deleted. A [system note](../system_notes.md), which indicates
 where it came from and went to, is added to both issues.
@@ -130,7 +139,7 @@ Be careful when moving an issue to a project with different access rules. Before
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To move an issue:
 
@@ -159,6 +168,8 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
+> - Minimum role to bulk move issues [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
 #### From the Issues page
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15991) in GitLab 15.6.
@@ -168,7 +179,7 @@ You can't move tasks or test cases.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To move multiple issues at the same time:
 
@@ -240,12 +251,13 @@ Any nested task list items are moved up a nested level.
 ### Reorder list items in the issue description
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15260) in GitLab 15.0.
+> - Minimum role to reorder list items in the issue description [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
 When you view an issue that has a list in the description, you can also reorder the list items.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project, be the author of the issue, or be
+- You must have at least the Planner role for the project, be the author of the issue, or be
   assigned to the issue.
 - The issue's description must have an [ordered, unordered](../../markdown.md#lists), or
   [task](../../markdown.md#task-lists) list.
@@ -259,12 +271,14 @@ To reorder list items, when viewing an issue:
 
 ## Close an issue
 
+> - Minimum role to close an issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
 When you decide that an issue is resolved or no longer needed, you can close it.
 The issue is marked as closed but is not deleted.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project, be the author of the issue, or be assigned to the issue.
+- You must have at least the Planner role for the project, be the author of the issue, or be assigned to the issue.
 
 To close an issue, you can either:
 
@@ -278,9 +292,11 @@ You can also use the `/close` [quick action](../quick_actions.md) in a comment o
 
 ### Reopen a closed issue
 
+> - Minimum role to reopen a closed issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
 Prerequisites:
 
-- You must have at least the Reporter role for the project, be the author of the issue, or be assigned to the issue.
+- You must have at least the Planner role for the project, be the author of the issue, or be assigned to the issue.
 
 To reopen a closed issue, in the upper-right corner, select **Issue actions** (**{ellipsis_v}**) and then **Reopen issue**.
 A reopened issue is no different from any other open issue.
@@ -414,9 +430,11 @@ of your installation.
 
 ## Change the issue type
 
+> - Minimum role to change the issue type [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
 Prerequisites:
 
-- You must be the issue author or have at least the Reporter role for the project, be the author of the issue, or be assigned to the issue.
+- You must be the issue author or have at least the Planner role for the project, be the author of the issue, or be assigned to the issue.
 
 To change issue type:
 
@@ -432,9 +450,11 @@ To change issue type:
 
 ## Delete an issue
 
+> - Required role to delete an issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Owner to Owner or Planner in GitLab 17.7.
+
 Prerequisites:
 
-- You must have the Owner role for a project.
+- You must have the Planner or Owner role for a project.
 
 To delete an issue:
 
@@ -455,6 +475,8 @@ Alternatively:
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+> - Minimum role to promote an issue to an epic [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
 You can promote an issue to an [epic](../../group/epics/index.md) in the immediate parent group.
 
@@ -478,9 +500,9 @@ The following issue metadata is copied to the epic:
 Prerequisites:
 
 - The project to which the issue belongs must be in a group.
-- You must have at least the Reporter role the project's immediate parent group.
+- You must have at least the Planner role the project's immediate parent group.
 - You must either:
-  - Have at least the Reporter role for the project.
+  - Have at least the Planner role for the project.
   - Be the author of the issue.
   - Be assigned to the issue.
 
@@ -683,9 +705,11 @@ themselves or another project member assigns them.
 
 ### Change assignee on an issue
 
+> - Minimum role to change assignee [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To change the assignee on an issue:
 
@@ -722,9 +746,11 @@ Incorporate a review of issue health status into your daily stand-up, project st
 
 ### Change health status of an issue
 
+> - Minimum role to change health status [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To edit health status of an issue:
 

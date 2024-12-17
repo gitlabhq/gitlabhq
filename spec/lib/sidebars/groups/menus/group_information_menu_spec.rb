@@ -22,13 +22,13 @@ RSpec.describe Sidebars::Groups::Menus::GroupInformationMenu, feature_category: 
     subject { described_class.new(context).title }
 
     context 'when group is a root group' do
-      specify { is_expected.to eq 'Group information' }
+      it { is_expected.to eq 'Group information' }
     end
 
     context 'when group is a child group' do
       let(:group) { build(:group, parent: root_group) }
 
-      specify { is_expected.to eq 'Subgroup information' }
+      it { is_expected.to eq 'Subgroup information' }
     end
   end
 
@@ -36,13 +36,13 @@ RSpec.describe Sidebars::Groups::Menus::GroupInformationMenu, feature_category: 
     subject { described_class.new(context).sprite_icon }
 
     context 'when group is a root group' do
-      specify { is_expected.to eq 'group' }
+      it { is_expected.to eq 'group' }
     end
 
     context 'when group is a child group' do
       let(:group) { build(:group, parent: root_group) }
 
-      specify { is_expected.to eq 'subgroup' }
+      it { is_expected.to eq 'subgroup' }
     end
   end
 
@@ -50,19 +50,19 @@ RSpec.describe Sidebars::Groups::Menus::GroupInformationMenu, feature_category: 
     subject { described_class.new(context).renderable_items.index { |e| e.item_id == item_id } }
 
     shared_examples 'menu access rights' do
-      specify { is_expected.not_to be_nil }
+      it { is_expected.not_to be_nil }
 
       describe 'when the user does not have access' do
         let(:user) { nil }
 
-        specify { is_expected.to be_nil }
+        it { is_expected.to be_nil }
       end
     end
 
     describe 'Activity' do
       let(:item_id) { :activity }
 
-      specify { is_expected.not_to be_nil }
+      it { is_expected.not_to be_nil }
 
       it_behaves_like 'menu access rights'
     end

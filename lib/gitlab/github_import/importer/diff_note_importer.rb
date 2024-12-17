@@ -74,7 +74,8 @@ module Gitlab
             line_code: note.line_code,
             created_at: note.created_at,
             updated_at: note.updated_at,
-            st_diff: note.diff_hash.to_yaml
+            st_diff: note.diff_hash.to_yaml,
+            imported_from: ::Import::HasImportSource::IMPORT_SOURCES[:github]
           }
 
           diff_note = LegacyDiffNote.new(attributes.merge(importing: true))
@@ -84,7 +85,7 @@ module Gitlab
 
           return unless mapper.user_mapping_enabled?
 
-          push_refs_with_ids(ids, LegacyDiffNote, mapper.user_mapper)
+          push_refs_with_ids(ids, LegacyDiffNote, note[:author]&.id, mapper.user_mapper)
         end
         # rubocop:enabled Gitlab/BulkInsert
 
@@ -102,14 +103,15 @@ module Gitlab
             commit_id: note.original_commit_id,
             created_at: note.created_at,
             updated_at: note.updated_at,
-            position: note.diff_position
-          }).execute
+            position: note.diff_position,
+            imported_from: ::Import::SOURCE_GITHUB
+          }).execute(importing: true)
 
           raise DiffNoteCreationError, record unless record.persisted?
 
           return unless mapper.user_mapping_enabled?
 
-          push_with_record(record, :author_id, note.author.id, mapper.user_mapper)
+          push_with_record(record, :author_id, note.author&.id, mapper.user_mapper)
         end
 
         def note_body

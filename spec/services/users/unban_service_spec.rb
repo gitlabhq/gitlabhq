@@ -38,6 +38,8 @@ RSpec.describe Users::UnbanService, feature_category: :user_management do
       end
 
       it 'logs unban in application logs' do
+        allow(Gitlab::AppLogger).to receive(:info)
+
         expect(Gitlab::AppLogger).to receive(:info).with(
           message: "User unban",
           username: user.username.to_s,

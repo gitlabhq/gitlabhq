@@ -97,7 +97,12 @@ class GitlabSchema < GraphQL::Schema
       elsif gid.model_class.respond_to?(:lazy_find)
         gid.model_class.lazy_find(gid.model_id)
       else
-        gid.find
+        begin
+          gid.find
+        # other if conditions return nil when the record is not found
+        rescue ActiveRecord::RecordNotFound
+          nil
+        end
       end
     end
 

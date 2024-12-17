@@ -42,8 +42,9 @@ export default {
     <span v-else class="dropdown-toggle-text"> {{ toggleText }} </span>
     <gl-icon
       v-show="!isLoading"
-      class="gl-absolute gl-right-3 gl-top-3 gl-text-gray-500"
+      class="gl-absolute gl-right-3 gl-top-3"
       name="chevron-down"
+      variant="subtle"
     />
   </button>
 </template>

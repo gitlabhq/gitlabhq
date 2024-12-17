@@ -66,10 +66,14 @@ class Import::BulkImportsController < ApplicationController
         entry.delete(:destination_name)
       end
 
-      ::BulkImports::CreateService.new(current_user, entry, credentials).execute
+      ::BulkImports::CreateService.new(
+        current_user, entry, credentials, fallback_organization: Current.organization
+      ).execute
     end
 
-    render json: responses.map { |response| { success: response.success?, id: response.payload[:id], message: response.message } }
+    render json: responses.map { |response|
+      { success: response.success?, id: response.payload[:id], message: response.message }
+    }
   end
 
   def realtime_changes
@@ -177,7 +181,8 @@ class Import::BulkImportsController < ApplicationController
   rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
     clear_session_data
 
-    redirect_to new_group_path(anchor: 'import-group-pane'), alert: _('Specified URL cannot be used: "%{reason}"') % { reason: e.message }
+    redirect_to new_group_path(anchor: 'import-group-pane'),
+      alert: _('Specified URL cannot be used: "%{reason}"') % { reason: e.message }
   end
 
   def allow_local_requests?

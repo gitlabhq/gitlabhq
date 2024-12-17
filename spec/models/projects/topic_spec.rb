@@ -132,4 +132,13 @@ RSpec.describe Projects::Topic do
       expect(topic.title_or_name).to eq('topic')
     end
   end
+
+  describe '#uploads_sharding_key' do
+    it 'returns organization_id' do
+      organization = build_stubbed(:organization)
+      topic = build_stubbed(:topic, organization: organization)
+
+      expect(topic.uploads_sharding_key).to eq(organization_id: organization.id)
+    end
+  end
 end

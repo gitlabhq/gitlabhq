@@ -3,6 +3,8 @@ data_category: optional
 key_path: dependency_proxy_enabled
 description: A count of projects where the dependency proxy is enabled
 product_group: container_registry
+product_categories:
+- container_registry
 value_type: boolean
 status: active
 time_frame: none

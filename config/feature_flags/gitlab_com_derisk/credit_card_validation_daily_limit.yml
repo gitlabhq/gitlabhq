@@ -1,9 +1,0 @@
----
-name: credit_card_validation_daily_limit
-feature_issue_url: https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/742
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159151
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/472122
-milestone: '17.3'
-group: group::anti-abuse
-type: gitlab_com_derisk
-default_enabled: false

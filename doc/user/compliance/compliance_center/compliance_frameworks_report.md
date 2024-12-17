@@ -1,5 +1,5 @@
 ---
-stage: Govern
+stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -23,10 +23,6 @@ With the compliance frameworks report, you can see all the compliance frameworks
 The default framework for the group has a **default** badge.
 
 ## View the compliance frameworks report
-
-Prerequisites:
-
-- You must be an administrator or have the Owner role for the project or group.
 
 To view the compliance frameworks report:
 

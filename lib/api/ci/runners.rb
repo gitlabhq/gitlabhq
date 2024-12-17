@@ -100,7 +100,7 @@ module API
           jobs.preload( # rubocop: disable CodeReuse/ActiveRecord -- this preload is tightly related to the endpoint
             :user,
             { pipeline: { project: [:route, { namespace: :route }] } },
-            { project: [:route, { namespace: :route }] }
+            { project: [:route, { namespace: :route }, :ci_cd_settings] }
           )
         end
       end

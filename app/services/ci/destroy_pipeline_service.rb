@@ -5,6 +5,10 @@ module Ci
     def execute(pipeline)
       raise Gitlab::Access::AccessDeniedError unless can?(current_user, :destroy_pipeline, pipeline)
 
+      unsafe_execute(pipeline)
+    end
+
+    def unsafe_execute(pipeline)
       Ci::ExpirePipelineCacheService.new.execute(pipeline, delete: true)
 
       # ensure cancellation happens sync so we accumulate compute minutes successfully

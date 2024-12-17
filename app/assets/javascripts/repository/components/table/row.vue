@@ -212,7 +212,6 @@ export default {
         :is="linkComponent"
         ref="link"
         v-gl-hover-load="handlePreload"
-        v-gl-tooltip="{ placement: 'left', boundary: 'viewport' }"
         :title="fullPath"
         :to="routerLinkTo"
         :href="url"

@@ -57,12 +57,12 @@ export default {
       >
         {{ n__('%d comment', '%d comments', discussions.length) }}
       </gl-button>
-      <span class="gl-text-secondary">
+      <span class="gl-text-subtle">
         <gl-sprintf :message="__('Last comment by %{author} %{timeago}')">
           <template #author>
             <gl-link
               :href="lastNote.author.path"
-              class="author-link js-user-link gl-text-primary"
+              class="author-link js-user-link gl-text-default"
               :data-user-id="lastNote.author.id"
               :data-username="lastNote.author.username"
             >

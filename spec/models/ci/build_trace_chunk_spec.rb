@@ -999,4 +999,19 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_git
       end
     end
   end
+
+  describe '#set_project_id' do
+    it 'sets the project_id before validation' do
+      build_trace_chunk = create(:ci_build_trace_chunk)
+
+      expect(build_trace_chunk.project_id).to eq(build_trace_chunk.build.project_id)
+    end
+
+    it 'does not override the project_id if set' do
+      existing_project = create(:project)
+      build_trace_chunk = create(:ci_build_trace_chunk, project_id: existing_project.id)
+
+      expect(build_trace_chunk.project_id).to eq(existing_project.id)
+    end
+  end
 end

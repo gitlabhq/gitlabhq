@@ -123,7 +123,6 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
     end
 
     describe '.by_user' do
-      # This implicitly creates default organization
       let_it_be(:user) { create(:user) }
       let_it_be(:another_user) { create(:user) }
       let_it_be(:organization_1) { create(:organization, users: [user]) }
@@ -134,7 +133,7 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
 
       it 'returns the records for the user' do
         expect(scope_by_user.map(&:organization)).to contain_exactly(
-          Organizations::Organization.default_organization, organization_1, organization_2
+          organization_1, organization_2
         )
       end
     end
@@ -143,7 +142,6 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
   it_behaves_like 'having unique enum values'
 
   describe '.create_default_organization_record_for' do
-    let_it_be(:default_organization) { create(:organization, :default) }
     let_it_be(:user) { create(:user, :without_default_org) }
     let(:user_is_admin) { false }
     let(:user_id) { user.id }
@@ -152,47 +150,57 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
       described_class.create_default_organization_record_for(user_id, user_is_admin: user_is_admin)
     end
 
-    context 'when creating as as default user' do
-      it 'creates record with correct attributes' do
-        expect { create_entry }.to change { described_class.count }.by(1)
-        expect(default_organization.user?(user)).to be(true)
-      end
-    end
-
-    context 'when creating as an owner' do
-      let(:user_is_admin) { true }
-
-      it 'creates record with correct attributes' do
-        expect { create_entry }.to change { described_class.count }.by(1)
-        expect(default_organization.owner?(user)).to be(true)
-      end
-    end
-
-    context 'when entry already exists' do
-      let_it_be(:organization_user) { create(:organization_user, user: user, organization: default_organization) }
-
-      it 'does not create or update existing record' do
+    context 'when default organization does not exist' do
+      it 'does not create a recored' do
         expect { create_entry }.not_to change { described_class.count }
       end
+    end
 
-      context 'when access_level changes' do
+    context 'when default organization exist' do
+      let_it_be(:default_organization) { create(:organization, :default) }
+
+      context 'when creating as as default user' do
+        it 'creates record with correct attributes' do
+          expect { create_entry }.to change { described_class.count }.by(1)
+          expect(default_organization.user?(user)).to be(true)
+        end
+      end
+
+      context 'when creating as an owner' do
         let(:user_is_admin) { true }
 
-        it 'changes access_level on the existing record' do
-          expect(default_organization.owner?(user)).to be(false)
-
-          expect { create_entry }.not_to change { described_class.count }
-
+        it 'creates record with correct attributes' do
+          expect { create_entry }.to change { described_class.count }.by(1)
           expect(default_organization.owner?(user)).to be(true)
         end
       end
-    end
 
-    context 'when creating with invalid user_id' do
-      let(:user_id) { nil }
+      context 'when entry already exists' do
+        let_it_be(:organization_user) { create(:organization_user, user: user, organization: default_organization) }
 
-      it 'raises and error' do
-        expect { create_entry }.to raise_error(ActiveRecord::NotNullViolation)
+        it 'does not create or update existing record' do
+          expect { create_entry }.not_to change { described_class.count }
+        end
+
+        context 'when access_level changes' do
+          let(:user_is_admin) { true }
+
+          it 'changes access_level on the existing record' do
+            expect(default_organization.owner?(user)).to be(false)
+
+            expect { create_entry }.not_to change { described_class.count }
+
+            expect(default_organization.owner?(user)).to be(true)
+          end
+        end
+      end
+
+      context 'when creating with invalid user_id' do
+        let(:user_id) { nil }
+
+        it 'raises and error' do
+          expect { create_entry }.to raise_error(ActiveRecord::NotNullViolation)
+        end
       end
     end
   end

@@ -17,7 +17,7 @@ export const isGid = (id) => {
   return false;
 };
 
-const parseGid = (gid) => {
+export const parseGid = (gid) => {
   const [type, id] = `${gid}`.replace(/gid:\/\/gitlab\//g, '').split('/');
   return { type, id };
 };

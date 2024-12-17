@@ -9,6 +9,7 @@ RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integra
 
   before do
     stub_ci_pipeline_to_return_yaml_file
+    project.update!(ci_pipeline_variables_minimum_override_role: :developer)
   end
 
   describe '#execute' do
@@ -78,6 +79,7 @@ RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integra
             expect(result[:pipeline].user).to eq(trigger.owner)
             expect(result[:pipeline].trigger_requests.to_a)
               .to eq(result[:pipeline].builds.map(&:trigger_request).uniq)
+            expect(result[:pipeline].trigger).to eq(trigger)
             expect(result[:status]).to eq(:success)
           end
 

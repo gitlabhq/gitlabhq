@@ -7,7 +7,7 @@ RSpec.describe GitlabSchema.types['AccessLevelDeployKey'], feature_category: :so
 
   let(:fields) { %i[id title expires_at user] }
 
-  specify { is_expected.to require_graphql_authorizations(:read_deploy_key) }
+  it { is_expected.to require_graphql_authorizations(:read_deploy_key) }
 
-  specify { is_expected.to have_graphql_fields(fields).at_least }
+  it { is_expected.to have_graphql_fields(fields).at_least }
 end

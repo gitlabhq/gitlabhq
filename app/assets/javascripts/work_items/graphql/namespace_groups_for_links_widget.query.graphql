@@ -1,0 +1,18 @@
+query namespaceGroupsForLinksWidget($fullPath: ID!, $groupSearch: String) {
+  group(fullPath: $fullPath) {
+    id
+    name
+    avatarUrl
+    path
+    fullPath
+    descendantGroups(search: $groupSearch, includeParentDescendants: true) {
+      nodes {
+        id
+        name
+        avatarUrl
+        path
+        fullPath
+      }
+    }
+  }
+}

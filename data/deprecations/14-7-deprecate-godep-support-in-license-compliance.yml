@@ -2,7 +2,7 @@
   announcement_milestone: "14.7"  # The milestone when this feature was first announced as deprecated.
   removal_milestone: "15.0"  # The milestone when this feature is planned to be removed
   body: |  # Do not modify this line, instead modify the lines below.
-    The Godep dependency manager for Golang was deprecated in 2020 by Go and
+    The Godep dependency manager for Go was deprecated in 2020 by Go and
     has been replaced with Go modules.
     To reduce our maintenance cost we are deprecating License Compliance for Godep projects as of 14.7
     and will remove it in GitLab 15.0

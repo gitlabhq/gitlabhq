@@ -285,7 +285,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External, feature_category
       it_behaves_like 'successful external authorization'
     end
 
-    context 'when validation returns 500 Internal Server Error' do
+    context 'when validation returns an HTTP 500 Error' do
       before do
         stub_request(:post, validation_service_url).to_return(status: 500, body: "{}")
       end

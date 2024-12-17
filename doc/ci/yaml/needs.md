@@ -50,7 +50,7 @@ which could be much faster.
 
 If desired, `c` and `d` jobs can be left to run in stage sequence.
 
-The `needs` keyword also works with the [parallel](../yaml/index.md#parallel) keyword,
+The `needs` keyword also works with the [`parallel`](../yaml/index.md#parallel) keyword,
 giving you powerful options for parallelization in your pipeline.
 
 ## Use cases

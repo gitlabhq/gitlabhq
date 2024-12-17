@@ -33,17 +33,5 @@ RSpec.shared_examples 'process auto merge from event worker' do
           .not_to raise_exception
       end
     end
-
-    context 'when feature flag "merge_when_checks_pass" is disabled' do
-      before do
-        stub_feature_flags(merge_when_checks_pass: false)
-      end
-
-      it "doesn't call AutoMergeService" do
-        expect(AutoMergeService).not_to receive(:new)
-
-        consume_event(subscriber: described_class, event: event)
-      end
-    end
   end
 end

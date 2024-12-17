@@ -119,6 +119,38 @@ RSpec.describe Compare, feature_category: :source_code_management do
     end
   end
 
+  describe '#changed_paths' do
+    subject(:changed_paths) { compare.changed_paths }
+
+    context 'changes are present' do
+      let(:raw_compare) do
+        Gitlab::Git::Compare.new(
+          project.repository.raw_repository, 'before-create-delete-modify-move', 'after-create-delete-modify-move'
+        )
+      end
+
+      it 'returns affected file paths' do
+        is_expected.to all(be_a(Gitlab::Git::ChangedPath))
+
+        expect(changed_paths.map { |a| [a.old_path, a.path, a.status] }).to match_array(
+          [
+            ['foo/for_move.txt', 'foo/bar/for_move.txt', :RENAMED],
+            ['foo/for_create.txt', 'foo/for_create.txt', :ADDED],
+            ['foo/for_delete.txt', 'foo/for_delete.txt', :DELETED],
+            ['foo/for_edit.txt', 'foo/for_edit.txt', :MODIFIED]
+          ]
+        )
+      end
+    end
+
+    context 'changes are absent' do
+      let(:start_commit) { sample_commit }
+      let(:head_commit) { sample_commit }
+
+      it { is_expected.to eq([]) }
+    end
+  end
+
   describe '#modified_paths' do
     context 'changes are present' do
       let(:raw_compare) do

@@ -13,6 +13,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   condition(:has_access) { access_level != GroupMember::NO_ACCESS }
 
   condition(:guest) { access_level >= GroupMember::GUEST }
+  # This is not a linear condition (some policies available for planner might not be available for higher access levels)
+  condition(:planner) { access_level == GroupMember::PLANNER }
   condition(:developer) { access_level >= GroupMember::DEVELOPER }
   condition(:owner) { access_level >= GroupMember::OWNER }
   condition(:maintainer) { access_level >= GroupMember::MAINTAINER }
@@ -63,7 +65,15 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     Gitlab::VisibilityLevel.allowed_levels_for_user(@user, @subject).empty?
   end
 
-  condition(:developer_maintainer_access, scope: :subject) do
+  condition(:owner_project_creation_level, scope: :subject) do
+    @subject.project_creation_level == ::Gitlab::Access::OWNER_PROJECT_ACCESS
+  end
+
+  condition(:maintainer_project_creation_level, scope: :subject) do
+    @subject.project_creation_level == ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS
+  end
+
+  condition(:developer_project_creation_level, scope: :subject) do
     @subject.project_creation_level == ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
   end
 
@@ -135,12 +145,28 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :award_emoji
   end
 
+  rule { planner }.policy do
+    enable :planner_access
+    enable :guest_access
+    enable :admin_label
+    enable :admin_milestone
+    enable :admin_issue_board
+    enable :admin_issue_board_list
+    enable :admin_issue
+    enable :update_issue
+    enable :destroy_issue
+    enable :read_confidential_issues
+    enable :read_crm_organization
+    enable :read_crm_contact
+  end
+
   rule { admin | organization_owner }.policy do
     enable :read_group
   end
 
   rule { admin }.policy do
     enable :update_max_artifacts_size
+    enable :create_projects
   end
 
   rule { can?(:read_all_resources) }.policy do
@@ -228,7 +254,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { maintainer }.policy do
     enable :destroy_package
-    enable :create_projects
     enable :import_projects
     enable :admin_pipeline
     enable :admin_build
@@ -310,7 +335,9 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     owner & (~share_with_group_locked | ~has_parent | ~parent_share_with_group_locked | can_change_parent_share_with_group_lock)
   end.enable :change_share_with_group_lock
 
-  rule { developer & developer_maintainer_access }.enable :create_projects
+  rule { owner & owner_project_creation_level }.enable :create_projects
+  rule { maintainer & maintainer_project_creation_level }.enable :create_projects
+  rule { developer & developer_project_creation_level }.enable :create_projects
   rule { create_projects_disabled }.policy do
     prevent :create_projects
     prevent :import_projects
@@ -403,7 +430,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { can?(:admin_group) | can?(:admin_runner) }.enable :admin_group_or_admin_runner
 
   # Should be matched with ProjectPolicy#read_internal_note
-  rule { admin | reporter }.enable :read_internal_note
+  rule { admin | reporter | planner }.enable :read_internal_note
 
   rule { can?(:remove_group) }.enable :view_edit_page
 

@@ -12,7 +12,7 @@ module API
         end
 
         namespace 'packages/conan/v1' do
-          include ::API::Concerns::Packages::ConanEndpoints
+          include ::API::Concerns::Packages::Conan::V1Endpoints
         end
       end
     end

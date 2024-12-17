@@ -28,17 +28,17 @@ module Banzai
           Filter::AttributesFilter,
           Filter::VideoLinkFilter,
           Filter::AudioLinkFilter,
-          Filter::ImageLazyLoadFilter,
-          Filter::ImageLinkFilter,
           Filter::TableOfContentsLegacyFilter,
           Filter::TableOfContentsTagLegacyFilter,
           Filter::TableOfContentsTagFilter,
           Filter::AutolinkFilter,
-          Filter::ExternalLinkFilter,
           Filter::SuggestionFilter,
           Filter::FootnoteFilter,
           Filter::InlineDiffFilter,
           *reference_filters,
+          Filter::ImageLazyLoadFilter, # keep after reference filters
+          Filter::ImageLinkFilter, # keep after reference filters
+          Filter::ExternalLinkFilter, # keep after ImageLinkFilter
           Filter::EmojiFilter,
           Filter::CustomEmojiFilter,
           Filter::TaskListFilter,

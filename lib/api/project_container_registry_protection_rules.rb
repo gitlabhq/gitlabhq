@@ -17,7 +17,7 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      resource ':id/registry/protection/rules' do
+      resource ':id/registry/protection/repository/rules' do
         desc 'Get list of container registry protection rules for a project' do
           success Entities::Projects::ContainerRegistry::Protection::Rule
           failure [

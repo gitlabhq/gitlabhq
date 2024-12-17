@@ -1,0 +1,9 @@
+---
+name: change_data_consistency_for_permissions_workers
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/462611
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173210
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/505413
+milestone: '17.7'
+group: group::authorization
+type: worker
+default_enabled: false

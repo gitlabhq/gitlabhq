@@ -165,7 +165,7 @@ module Gitlab
     def current_organization
       return unless ::Current.organization_assigned
 
-      ::Current.organization
+      Organizations::FallbackOrganizationTracker.without_tracking { ::Current.organization }
     end
     # rubocop:enable Gitlab/AvoidCurrentOrganization
   end

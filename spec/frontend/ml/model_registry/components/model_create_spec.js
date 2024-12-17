@@ -40,11 +40,12 @@ describe('ModelCreate', () => {
     wrapper = shallowMountExtended(ModelCreate, {
       propsData: {
         createModelVisible,
+        indexModelsPath: 'some/project/models',
+        projectPath: 'some/project',
+        markdownPreviewPath: '/markdown-preview',
       },
       provide: {
-        projectPath: 'some/project',
         maxAllowedFileSize: 99999,
-        markdownPreviewPath: '/markdown-preview',
       },
       apolloProvider,
     });
@@ -156,15 +157,14 @@ describe('ModelCreate', () => {
       );
     });
 
-    it('clicking on secondary button clears the form', async () => {
+    it('clicking on secondary button goes to model index page', async () => {
       createWrapper();
 
       await findNameInput().vm.$emit('input', 'my_model');
 
       await findSecondaryButton().vm.$emit('click');
 
-      expect(findNameInput().element.value).toBe(undefined);
-      expect(findDescriptionInput().element.value).toBe(undefined);
+      expect(visitUrl).toHaveBeenCalledWith('some/project/models');
     });
   });
 

@@ -21,8 +21,6 @@ Graphql/ResourceNotAvailableError:
     - 'app/graphql/resolvers/kas/agent_configurations_resolver.rb'
     - 'app/graphql/resolvers/kas/agent_connections_resolver.rb'
     - 'app/graphql/resolvers/projects/snippets_resolver.rb'
-    - 'app/graphql/types/container_repository_details_type.rb'
-    - 'app/graphql/types/container_repository_type.rb'
     - 'ee/app/graphql/mutations/ai/action.rb'
     - 'ee/app/graphql/mutations/audit_events/instance_external_audit_event_destinations/base.rb'
     - 'ee/app/graphql/mutations/issues/set_escalation_policy.rb'

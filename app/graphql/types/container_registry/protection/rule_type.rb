@@ -4,8 +4,8 @@ module Types
   module ContainerRegistry
     module Protection
       class RuleType < ::Types::BaseObject
-        graphql_name 'ContainerRegistryProtectionRule'
-        description 'A container registry protection rule designed to prevent users with a certain ' \
+        graphql_name 'ContainerProtectionRepositoryRule'
+        description 'A container repository protection rule designed to prevent users with a certain ' \
           'access level or lower from altering the container registry.'
 
         authorize :admin_container_image
@@ -14,7 +14,7 @@ module Types
           ::Types::GlobalIDType[::ContainerRegistry::Protection::Rule],
           null: false,
           experiment: { milestone: '16.6' },
-          description: 'ID of the container registry protection rule.'
+          description: 'ID of the container repository protection rule.'
 
         field :repository_path_pattern,
           GraphQL::Types::String,
@@ -29,20 +29,20 @@ module Types
           null: true,
           experiment: { milestone: '16.6' },
           description:
-            'Minimum GitLab access level to allow to delete container images from the container registry. ' \
+            'Minimum GitLab access level required to delete container images from the container repository. ' \
             'For example, `MAINTAINER`, `OWNER`, or `ADMIN`. ' \
-            'If the value is `nil`, the minimum access level for delete is ignored. ' \
-            'Users with at least the Developer role are allowed to delete container images.'
+            'If the value is `nil`, the minimum access level is ignored. ' \
+            'Users with at least the Developer role can delete container images.'
 
         field :minimum_access_level_for_push,
           Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
           null: true,
           experiment: { milestone: '16.6' },
           description:
-            'Minimum GitLab access level to allow to push container images to the container registry. ' \
+            'Minimum GitLab access level required to push container images to the container repository. ' \
             'For example, `MAINTAINER`, `OWNER`, or `ADMIN`. ' \
-            'If the value is `nil`, the minimum access level for push is ignored. ' \
-            'Users with at least the Developer role are allowed to push container images.'
+            'If the value is `nil`, the minimum access level is ignored. ' \
+            'Users with at least the Developer role can push container images.'
       end
     end
   end

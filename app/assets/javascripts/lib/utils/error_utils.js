@@ -1,22 +1,6 @@
 import { isEmpty, isString, isObject } from 'lodash';
 import { sprintf, __ } from '~/locale';
 
-export class ActiveModelError extends Error {
-  constructor(errorAttributeMap = {}, ...params) {
-    // Pass remaining arguments (including vendor specific ones) to parent constructor
-    super(...params);
-
-    // Maintains proper stack trace for where our error was thrown (only available on V8)
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, ActiveModelError);
-    }
-
-    this.name = 'ActiveModelError';
-    // Custom debugging information
-    this.errorAttributeMap = errorAttributeMap;
-  }
-}
-
 const DEFAULT_ERROR = {
   message: __('Something went wrong. Please try again.'),
   links: {},
@@ -94,8 +78,7 @@ function getMessageFromErrorString(errorString, errorDictionary = {}) {
 }
 
 /**
- * Receives an Error and attempts to extract the `errorAttributeMap` in
- * case it is an `ActiveModelError` and returns the message if it exists.
+ * Receives an Error and attempts to extract the `errorAttributeMap`
  * If a match is not found it will attempt to map a message from the
  * Error.message to be returned.
  * Otherwise, it will return a general error message.

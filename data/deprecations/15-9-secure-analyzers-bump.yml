@@ -8,7 +8,7 @@
   reporter: gonzoyumo  # (required) GitLab username of the person reporting the change
   stage: secure  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/390912  # (required) Link to the deprecation issue in GitLab
-  body: | # Do not modify this line, instead modify the lines below.
+  body: |  # Do not modify this line, instead modify the lines below.
     The Secure stage will be bumping the major versions of its analyzers in tandem with the GitLab 16.0 release. This bump will enable a clear delineation for analyzers, between:
 
     - Those released prior to May 22, 2023

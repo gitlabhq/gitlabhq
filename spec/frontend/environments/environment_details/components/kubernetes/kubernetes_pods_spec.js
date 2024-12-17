@@ -1,7 +1,7 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { shallowMount } from '@vue/test-utils';
-import { GlLoadingIcon, GlTab } from '@gitlab/ui';
+import { GlLoadingIcon, GlTab, GlSearchBoxByType, GlSprintf } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import KubernetesPods from '~/environments/environment_details/components/kubernetes/kubernetes_pods.vue';
@@ -32,6 +32,8 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_po
   const findTab = () => wrapper.findComponent(GlTab);
   const findWorkloadStats = () => wrapper.findComponent(WorkloadStats);
   const findWorkloadTable = () => wrapper.findComponent(WorkloadTable);
+  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
+  const findFilteredMessage = () => wrapper.findByTestId('pods-filtered-message');
 
   const createApolloProvider = () => {
     const mockResolvers = {
@@ -44,11 +46,12 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_po
   };
 
   const createWrapper = (apolloProvider = createApolloProvider()) => {
-    wrapper = shallowMount(KubernetesPods, {
+    wrapper = shallowMountExtended(KubernetesPods, {
       propsData: { namespace, configuration },
       apolloProvider,
       stubs: {
         GlTab,
+        GlSprintf,
       },
     });
   };
@@ -161,6 +164,74 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_po
 
       const filteredPods = mockPodsTableItems.filter((pod) => pod.status === status);
       expect(findWorkloadTable().props('items')).toMatchObject(filteredPods);
+    });
+
+    describe('searching pods', () => {
+      beforeEach(async () => {
+        createWrapper();
+        await waitForPromises();
+      });
+
+      it('filters pods when receives a search', async () => {
+        const searchTerm = 'pod-2';
+
+        findSearchBox().vm.$emit('input', searchTerm);
+        await nextTick();
+
+        const filteredPods = [
+          {
+            name: 'pod-2',
+            namespace: 'new-namespace',
+            status: 'Pending',
+            age: '1d',
+            labels: { key: 'value' },
+            annotations: { annotation: 'text', another: 'text' },
+            kind: 'Pod',
+            spec: {},
+          },
+        ];
+        expect(findWorkloadTable().props('items')).toMatchObject(filteredPods);
+      });
+
+      describe('when a status is selected', () => {
+        const searchTerm = 'pod';
+        const status = 'Pending';
+
+        beforeEach(async () => {
+          findWorkloadStats().vm.$emit('select', status);
+          await nextTick();
+        });
+
+        it('filter search results for the selected status', async () => {
+          findSearchBox().vm.$emit('input', searchTerm);
+          await nextTick();
+
+          const filteredPods = [
+            {
+              name: 'pod-2',
+              namespace: 'new-namespace',
+              status: 'Pending',
+              age: '1d',
+              labels: { key: 'value' },
+              annotations: { annotation: 'text', another: 'text' },
+              kind: 'Pod',
+              spec: {},
+            },
+          ];
+          expect(findWorkloadTable().props('items')).toMatchObject(filteredPods);
+        });
+
+        it('shows a message', async () => {
+          expect(findFilteredMessage().exists()).toBe(false);
+
+          findSearchBox().vm.$emit('input', searchTerm);
+          await nextTick();
+
+          expect(findFilteredMessage().text()).toBe(
+            `Showing search results with the status ${status}.`,
+          );
+        });
+      });
     });
   });
 

@@ -35,7 +35,10 @@ these definitions yet.
 | Promoting              | Changing the role of a site from secondary to primary.                                                                                                                                    | Geo-specific |                                                 |
 | Demoting               | Changing the role of a site from primary to secondary.                                                                                                                                    | Geo-specific |                                                 |
 | Failover               | The entire process that shifts users from a primary Site to a secondary site. This includes promoting a secondary, but contains other parts as well. For example, scheduling maintenance. | Geo-specific |                                                 |
-| Replication            | Also called "synchronization". The uni-directional process that updates a resource on a secondary site to match the resource on the primary site.                                         | Geo-specific |                                                 |
+| Replication            | Also called "synchronization". The uni-directional process that updates a resource on a secondary site to match the resource on the primary site. | Geo-specific | |
+| Verification           | The process of comparing the data that exist on a primary site to the data replicated to a secondary site. Used to ensure integrity of replicated data. | Geo-specific | |
+| Unified URL            | A single external URL used for all Geo sites. Allows requests to be routed to either the primary Geo site or any secondary Geo sites. | Geo-specific | |
+| Geo proxying           | A mechanism where secondary Geo sites transparently forward operations to the primary site, except for certain operations that can be handled locally by the secondary sites. | Geo-specific | |
 
 ## Examples
 

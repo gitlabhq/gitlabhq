@@ -9,8 +9,6 @@ description: An action required or notification of action taken for a user on a 
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/3d52e139b13ad077286f2f9f46b7e98f43ad9564
 milestone: '8.5'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   project_id: projects
   group_id: namespaces

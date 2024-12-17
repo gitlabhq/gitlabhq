@@ -123,12 +123,12 @@ export default {
           />
         </gl-avatar-link>
         <div class="gl-flex gl-flex-col gl-items-start gl-justify-center">
-          <div class="gl-text-sm gl-text-secondary">
+          <div class="gl-text-sm gl-text-subtle">
             {{ webPath }}
           </div>
           <span class="gl-flex gl-items-center gl-gap-3">
             <gl-link
-              class="gl-text-lg gl-font-bold gl-text-gray-900 hover:gl-text-gray-900"
+              class="gl-text-lg gl-font-bold gl-text-default hover:gl-text-default"
               :href="resource.webPath"
             >
               {{ resource.name }}

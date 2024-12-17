@@ -9,12 +9,7 @@ import Audio from '~/content_editor/extensions/audio';
 import DrawioDiagram from '~/content_editor/extensions/drawio_diagram';
 import Image from '~/content_editor/extensions/image';
 import Video from '~/content_editor/extensions/video';
-import {
-  createTestEditor,
-  emitEditorEvent,
-  mockChainedCommands,
-  createTransactionWithMeta,
-} from '../../test_utils';
+import { createTestEditor, emitEditorEvent, createTransactionWithMeta } from '../../test_utils';
 import {
   PROJECT_WIKI_ATTACHMENT_IMAGE_HTML,
   PROJECT_WIKI_ATTACHMENT_AUDIO_HTML,
@@ -81,14 +76,6 @@ describe.each`
       buildWrapper();
 
       return showMenu();
-    };
-
-    const selectFile = async (file) => {
-      const input = wrapper.findComponent({ ref: 'fileSelector' });
-
-      // override the property definition because `input.files` isn't directly modifyable
-      Object.defineProperty(input.element, 'files', { value: [file], writable: true });
-      await input.trigger('change');
     };
 
     const expectLinkButtonsToExist = (exist = true) => {
@@ -175,44 +162,6 @@ describe.each`
         expect(mediaSrcInput.value).toBe('');
         expect(mediaAltInput.value).toBe('');
       });
-    });
-
-    describe(`replace ${mediaType} button`, () => {
-      beforeEach(buildWrapperAndDisplayMenu);
-
-      if (mediaType !== 'drawioDiagram') {
-        it('uploads and replaces the selected image when file input changes', async () => {
-          const commands = mockChainedCommands(tiptapEditor, [
-            'focus',
-            'deleteSelection',
-            'uploadAttachment',
-            'run',
-          ]);
-          const file = new File(['foo'], 'foo.png', { type: 'image/png' });
-
-          await wrapper.findByTestId('replace-media').vm.$emit('click');
-          await selectFile(file);
-
-          expect(commands.focus).toHaveBeenCalled();
-          expect(commands.deleteSelection).toHaveBeenCalled();
-          expect(commands.uploadAttachment).toHaveBeenCalledWith({ file });
-          expect(commands.run).toHaveBeenCalled();
-        });
-      } else {
-        // draw.io diagrams are replaced using the edit diagram button
-        it('invokes editDiagram command', async () => {
-          const commands = mockChainedCommands(tiptapEditor, [
-            'focus',
-            'createOrEditDiagram',
-            'run',
-          ]);
-          await wrapper.findByTestId('edit-diagram').vm.$emit('click');
-
-          expect(commands.focus).toHaveBeenCalled();
-          expect(commands.createOrEditDiagram).toHaveBeenCalled();
-          expect(commands.run).toHaveBeenCalled();
-        });
-      }
     });
 
     describe('edit button', () => {

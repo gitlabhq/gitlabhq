@@ -3,12 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_access do
+  include ::TokenAuthenticatableMatchers
+
   let(:field) { 'token' }
   let(:digest_field) { "#{field}_digest" }
   let(:expires_at_field) { "#{field}_expires_at" }
-  let(:options) { { unique: false } }
+  let(:options) { { unique: false, format_with_prefix: :token_prefix } }
   let(:test_class) do
-    Struct.new(:name, :token_prefix, field, digest_field, expires_at_field) do
+    Struct.new(:token_prefix, field, digest_field, expires_at_field) do
       alias_method :read_attribute, :[]
     end
   end
@@ -32,12 +34,6 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
   let(:token_owner_record) { test_class.new }
 
   subject(:strategy) { concrete_strategy.new(test_class, field, options) }
-
-  describe '.random_bytes' do
-    it 'generates 16 random bytes' do
-      expect(described_class.random_bytes.size).to eq(16)
-    end
-  end
 
   describe '.fabricate' do
     context 'when digest strategy is specified' do
@@ -127,13 +123,13 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
   describe '#ensure_token' do
     let(:token_prefix) { nil }
     let(:token_generator) { nil }
-    let(:token_owner_record) { test_class.new(name: 'foo', token_prefix: token_prefix) }
-    let(:random_bytes) { 'random-bytes' }
+    let(:token_owner_record) { test_class.new(token_prefix: token_prefix) }
+    let(:devise_token) { 'devise-token' }
 
     subject(:token) { strategy.ensure_token(token_owner_record) }
 
     before do
-      allow(described_class).to receive(:random_bytes).and_return(random_bytes)
+      allow(Devise).to receive(:friendly_token).and_return(devise_token)
     end
 
     describe ':format_with_prefix option' do
@@ -145,12 +141,9 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
 
       context 'when set to a Symbol' do
         let(:token_prefix) { 'prefix-' }
-        let(:options) { super().merge(format_with_prefix: :token_prefix) }
 
         it 'generates a random token' do
-          expect(Devise).to receive(:friendly_token).and_return('devise_token')
-
-          expect(token).to eq("#{token_prefix}devise_token")
+          expect(token).to eq("#{token_prefix}#{devise_token}")
         end
       end
 
@@ -174,55 +167,73 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
     end
 
     describe ':routable_token option' do
+      let(:random_bytes) { 'a' * described_class::RANDOM_BYTES_LENGTH }
       let(:cell_setting) { {} }
-      let(:options) do
-        super().merge(
-          routable_token: { n: ->(token_owner_record) { token_owner_record.name } },
-          format_with_prefix: :token_prefix
-        )
-      end
+      let(:routable_token_payload) { { payload: { o: ->(_) { 'foo' } } } }
 
-      before do
-        allow(Settings).to receive(:cell).and_return(cell_setting)
-      end
+      shared_examples 'a routable token' do
+        it 'delegates to RoutableTokenGenerator#generate_token' do
+          generator = instance_double(TokenAuthenticatableStrategies::RoutableTokenGenerator)
+          expect(TokenAuthenticatableStrategies::RoutableTokenGenerator)
+            .to receive(:new).with(
+              token_owner_record,
+              routing_payload: routable_token_payload[:payload],
+              prefix: token_prefix
+            ).and_return(generator)
+          expect(generator).to receive(:generate_token)
 
-      context 'when token_owner_record does not respond to #user' do
-        it 'generates a non routable token' do
-          expect(Devise).to receive(:friendly_token).and_return('devise_token')
-
-          expect(token).to eq('devise_token')
+          token
         end
       end
 
-      context 'when token_owner_record responds to #user' do
-        let(:user) { build(:user) }
+      context 'with a { payload: } hash' do
+        let(:options) { super().merge(routable_token: routable_token_payload) }
 
-        before do
-          stub_feature_flags(routable_token: user)
-          allow(token_owner_record).to receive(:user).and_return(user)
+        it_behaves_like 'a routable token'
+      end
+
+      context 'with a { if:, payload: } hash when if: evaluates to true' do
+        let(:options) do
+          super().merge(
+            routable_token: {
+              if: ->(token_owner_record) { token_owner_record.respond_to?(:token_prefix) },
+              **routable_token_payload
+            }
+          )
         end
 
-        context 'when Settings.cells.id is not present' do
-          it 'generates a routable token' do
-            expect(Base64.urlsafe_decode64(token)).to eq("n:foo\nr:#{random_bytes}")
-          end
+        it_behaves_like 'a routable token'
+      end
+
+      context 'with a { if:, payload: } hash when if: evaluates to false' do
+        let(:options) do
+          super().merge(
+            routable_token: {
+              if: ->(token_owner_record) { token_owner_record.respond_to?(:no_method) },
+              **routable_token_payload
+            }
+          )
         end
 
-        context 'when Settings.cells.id is present' do
-          let(:cell_setting) { { id: 100 } }
-
-          it 'generates a routable token' do
-            expect(Base64.urlsafe_decode64(token)).to eq("c:#{cell_setting[:id].to_s(36)}\nn:foo\nr:#{random_bytes}")
-          end
+        it 'generates a random token' do
+          expect(token).to eq("#{token_prefix}#{devise_token}")
         end
+      end
+    end
 
-        context 'with a prefix set' do
-          let(:token_prefix) { 'prefix-' }
+    describe ':unique option' do
+      let(:token_prefix) { 'prefix-' }
+      let(:options) { super().merge(unique: true, format_with_prefix: :token_prefix) }
 
-          it 'generates a routable token' do
-            expect(token).to start_with(token_prefix)
-            expect(Base64.urlsafe_decode64(token.delete_prefix(token_prefix))).to eq("n:foo\nr:#{random_bytes}")
-          end
+      context 'when generated token is already in DB' do
+        it 'generates a different token' do
+          expect(strategy).to receive(:generate_token).and_return('prefix-token1')
+          expect(strategy).to receive(:find_token_authenticatable).with('prefix-token1', true).and_return(true)
+
+          expect(strategy).to receive(:generate_token).and_return('prefix-token2')
+          expect(strategy).to receive(:find_token_authenticatable).with('prefix-token2', true).and_return(false)
+
+          expect(token).to eq('prefix-token2')
         end
       end
     end

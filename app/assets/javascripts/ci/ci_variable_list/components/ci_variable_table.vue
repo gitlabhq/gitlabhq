@@ -284,7 +284,7 @@ export default {
                 :aria-label="__('Copy to clipboard')"
               />
             </div>
-            <div v-if="item.description" class="gl-mt-2 gl-text-sm gl-text-secondary">
+            <div v-if="item.description" class="gl-mt-2 gl-text-sm gl-text-subtle">
               {{ item.description }}
             </div>
             <div data-testid="ci-variable-table-row-attributes" class="gl-mt-2">
@@ -387,7 +387,7 @@ export default {
           </div>
         </template>
         <template #empty>
-          <p class="gl-mb-0 gl-py-1 gl-text-center gl-text-secondary">
+          <p class="gl-mb-0 gl-py-1 gl-text-center gl-text-subtle">
             {{ __('There are no variables yet.') }}
           </p>
         </template>

@@ -4,6 +4,8 @@ import { sprintf, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { findWidget } from '~/issues/list/utils';
+import { getParameterByName } from '~/lib/utils/url_utility';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
   FORM_TYPES,
   WORK_ITEMS_TREE_TEXT,
@@ -18,6 +20,7 @@ import {
   WORK_ITEM_TYPE_VALUE_EPIC,
   WIDGET_TYPE_HIERARCHY,
   INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
+  DETAIL_VIEW_QUERY_PARAM_NAME,
 } from '../../constants';
 import {
   findHierarchyWidgets,
@@ -156,6 +159,7 @@ export default {
         if (this.hasNextPage && this.children.length === 0) {
           this.fetchNextPage();
         }
+        this.checkDrawerParams();
       },
     },
     workItemTypes: {
@@ -328,6 +332,21 @@ export default {
         }
       }
     },
+    checkDrawerParams() {
+      const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
+
+      if (!queryParam) {
+        return;
+      }
+
+      const params = JSON.parse(atob(queryParam));
+      if (params.id) {
+        const modalWorkItem = this.children.find((i) => getIdFromGraphQLId(i.id) === params.id);
+        if (modalWorkItem) {
+          this.$emit('show-modal', { modalWorkItem });
+        }
+      }
+    },
   },
   i18n: {
     noChildItemsOpen: s__('WorkItem|No child items are currently open.'),
@@ -400,6 +419,7 @@ export default {
         :children-type="childType"
         :children-ids="childrenIds"
         :parent-confidential="confidential"
+        @error="error = $event"
         @success="hideAddForm"
         @cancel="hideAddForm"
         @addChild="$emit('addChild')"

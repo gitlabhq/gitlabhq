@@ -6,61 +6,106 @@
   "properties": {
     "base_sha": {
       "oneOf": [
-        { "type": "null" },
-        { "type": "string", "maxLength": 40 }
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "maxLength": 64
+        }
       ]
     },
     "start_sha": {
       "oneOf": [
-        { "type": "null" },
-        { "type": "string", "maxLength": 40 }
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "maxLength": 64
+        }
       ]
     },
     "head_sha": {
       "oneOf": [
-        { "type": "null" },
-        { "type": "string", "maxLength": 40 }
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "maxLength": 64
+        }
       ]
     },
     "file_identifier_hash": {
       "oneOf": [
-        { "type": "null" },
-        { "type": "string", "maxLength": 40 }
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "maxLength": 40
+        }
       ]
     },
     "old_path": {
       "oneOf": [
-        { "type": "null" },
-        { "type": "string", "maxLength": 1000 }
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "maxLength": 1000
+        }
       ]
     },
     "new_path": {
       "oneOf": [
-        { "type": "null" },
-        { "type": "string", "maxLength": 1000 }
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "maxLength": 1000
+        }
       ]
     },
     "position_type": {
       "oneOf": [
-        { "type": "null" },
-        { "type": "string", "maxLength": 10 }
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "maxLength": 10
+        }
       ]
     },
     "old_line": {
       "oneOf": [
-        { "type": "null" },
-        { "type": "integer" }
+        {
+          "type": "null"
+        },
+        {
+          "type": "integer"
+        }
       ]
     },
     "new_line": {
       "oneOf": [
-        { "type": "null" },
-        { "type": "integer" }
+        {
+          "type": "null"
+        },
+        {
+          "type": "integer"
+        }
       ]
     },
     "line_range": {
       "oneOf": [
-        { "type": "null" },
+        {
+          "type": "null"
+        },
         {
           "type": "object",
           "additionalProperties": false,
@@ -69,23 +114,39 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "line_code": { "type": "string", "maxLength": 100 },
+                "line_code": {
+                  "type": "string",
+                  "maxLength": 100
+                },
                 "type": {
                   "oneOf": [
-                    { "type": "null" },
-                    { "type": "string", "maxLength": 100 }
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "string",
+                      "maxLength": 100
+                    }
                   ]
                 },
                 "old_line": {
                   "oneOf": [
-                    { "type": "null" },
-                    { "type": "integer" }
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "integer"
+                    }
                   ]
                 },
                 "new_line": {
                   "oneOf": [
-                    { "type": "null" },
-                    { "type": "integer" }
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "integer"
+                    }
                   ]
                 }
               }
@@ -94,23 +155,39 @@
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "line_code": { "type": "string", "maxLength": 100 },
+                "line_code": {
+                  "type": "string",
+                  "maxLength": 100
+                },
                 "type": {
                   "oneOf": [
-                    { "type": "null" },
-                    { "type": "string", "maxLength": 100 }
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "string",
+                      "maxLength": 100
+                    }
                   ]
                 },
                 "old_line": {
                   "oneOf": [
-                    { "type": "null" },
-                    { "type": "integer" }
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "integer"
+                    }
                   ]
                 },
                 "new_line": {
                   "oneOf": [
-                    { "type": "null" },
-                    { "type": "integer" }
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "integer"
+                    }
                   ]
                 }
               }
@@ -121,36 +198,68 @@
     },
     "width": {
       "oneOf": [
-        { "type": "null" },
-        { "type": "integer" },
-        { "type": "string", "maxLength": 10 }
+        {
+          "type": "null"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string",
+          "maxLength": 10
+        }
       ]
     },
     "height": {
       "oneOf": [
-        { "type": "null" },
-        { "type": "integer" },
-        { "type": "string", "maxLength": 10 }
+        {
+          "type": "null"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string",
+          "maxLength": 10
+        }
       ]
     },
     "x": {
       "oneOf": [
-        { "type": "null" },
-        { "type": "integer" },
-        { "type": "string", "maxLength": 10 }
+        {
+          "type": "null"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string",
+          "maxLength": 10
+        }
       ]
     },
     "y": {
       "oneOf": [
-        { "type": "null" },
-        { "type": "integer" },
-        { "type": "string", "maxLength": 10 }
+        {
+          "type": "null"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string",
+          "maxLength": 10
+        }
       ]
     },
     "ignore_whitespace_change": {
       "oneOf": [
-        { "type": "null" },
-        { "type": "boolean" }
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        }
       ]
     }
   }

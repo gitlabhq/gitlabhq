@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.user_container_registry.i_container_registry_delete_repository_user_weekly
 description: A weekly count of users that have deleted a repository from the registry
 product_group: container_registry
+product_categories:
+- container_registry
 value_type: number
 status: active
 milestone: '15.9'

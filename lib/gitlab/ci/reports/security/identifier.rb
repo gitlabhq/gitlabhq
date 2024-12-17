@@ -57,6 +57,28 @@ module Gitlab
             external_type.to_s.casecmp?('wasc')
           end
 
+          def vendor
+            # https://gitlab.com/gitlab-org/security-products/analyzers/report/-/blob/902c7dcb5f3a0e551223167931ebf39588a0193a/identifier.go#L46
+            case external_type.downcase
+            when 'cve'
+              'NVD'
+            when 'elsa'
+              'Oracle'
+            when 'ghsa'
+              'GitHub'
+            when 'hackerone'
+              'HackerOne'
+            when 'osvdb'
+              'OSVDB'
+            when 'rhsa'
+              'RedHat'
+            when 'usn'
+              'Ubuntu'
+            else
+              'Unknown'
+            end
+          end
+
           private
 
           def generate_fingerprint

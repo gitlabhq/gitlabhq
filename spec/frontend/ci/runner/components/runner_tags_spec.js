@@ -32,6 +32,6 @@ describe('RunnerTags', () => {
       props: { tagList: null },
     });
 
-    expect(wrapper.html()).toEqual('');
+    expect(wrapper.text()).toEqual('');
   });
 });

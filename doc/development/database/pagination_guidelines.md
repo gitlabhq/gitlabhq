@@ -150,7 +150,7 @@ By making the `id` column part of the index, the previous query reads maximum 20
 NOTE:
 Here we're leveraging the ordered property of the b-tree database index. Values in the index are sorted so reading 20 rows does not require further sorting.
 
-#### Limitations
+#### Known issues
 
 ##### `COUNT(*)` on a large dataset
 
@@ -262,7 +262,7 @@ Looking at the query execution plan, we can see that this query read only 5 rows
 (5 rows)
 ```
 
-#### Limitations
+#### Known issues
 
 ##### No page numbers
 

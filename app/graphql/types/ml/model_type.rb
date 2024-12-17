@@ -43,6 +43,10 @@ module Types
       field :candidates, ::Types::Ml::CandidateType.connection_type, null: true,
         description: 'Version candidates of the model.'
 
+      field :default_experiment_path, ::GraphQL::Types::String,
+        null: true,
+        description: 'Path to default experiment page for the model.'
+
       field :version, ::Types::Ml::ModelVersionType, null: true,
         description: 'Version of the model.',
         resolver: ::Resolvers::Ml::FindModelVersionResolver

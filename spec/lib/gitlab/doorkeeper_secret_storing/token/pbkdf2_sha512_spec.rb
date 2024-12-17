@@ -8,7 +8,7 @@ RSpec.describe Gitlab::DoorkeeperSecretStoring::Token::Pbkdf2Sha512 do
 
     it 'generates a PBKDF2+SHA512 hashed value in the correct format' do
       expect(described_class.transform_secret(plaintext_token))
-        .to eq("$pbkdf2-sha512$20000$$.c0G5XJVEew1TyeJk5TrkvB0VyOaTmDzPrsdNRED9vVeZlSyuG3G90F0ow23zUCiWKAVwmNnR/ceh.nJG3MdpQ") # rubocop:disable Layout/LineLength
+        .to eq("$pbkdf2-sha512$20000$$.c0G5XJVEew1TyeJk5TrkvB0VyOaTmDzPrsdNRED9vVeZlSyuG3G90F0ow23zUCiWKAVwmNnR/ceh.nJG3MdpQ")
     end
   end
 

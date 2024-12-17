@@ -136,7 +136,7 @@ export default {
         </div>
         <div
           v-if="item.memberRoleId && item.description"
-          class="gl-line-clamp-2 gl-whitespace-normal gl-pt-1 gl-text-sm gl-text-gray-700"
+          class="gl-line-clamp-2 gl-whitespace-normal gl-pt-1 gl-text-sm gl-text-subtle"
         >
           {{ item.description }}
         </div>

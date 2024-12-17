@@ -150,7 +150,10 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
         file: ".gitmodules",
         old_line: 4,
         new_line: 4,
-        diff_refs: merge_request_diff3.compare_with(merge_request_diff1.head_commit_sha).diff_refs
+        diff_refs: ::MergeRequests::MergeRequestDiffComparison
+                    .new(merge_request_diff3)
+                    .compare_with(merge_request_diff1.head_commit_sha)
+                    .diff_refs
       )
       outdated_diff_note = create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: position)
       outdated_diff_note.position = outdated_diff_note.original_position

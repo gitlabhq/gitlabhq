@@ -308,7 +308,7 @@ RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
       end
 
       [Gitlab::Import::SourceUserMapper::FailedToObtainLockError,
-        Gitlab::Import::SourceUserMapper::DuplicatedSourceUserError].each do |exception_class|
+        Gitlab::Import::SourceUserMapper::DuplicatedUserError].each do |exception_class|
         context "when #{exception_class} is raised" do
           it 'raises the exception BulkImports::RetryPipelineError' do
             allow_next_instance_of(BulkImports::Extractor) do |extractor|

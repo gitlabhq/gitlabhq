@@ -2,7 +2,9 @@
 data_category: operational
 key_path: usage_activity_by_stage_monthly.verify.ci_pipeline_config_repository
 description: Monthly count of unique users creating pipelines from CI files in the repository
-product_group: pipeline_execution
+product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
 value_type: number
 status: active
 time_frame: 28d

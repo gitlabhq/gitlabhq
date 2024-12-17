@@ -126,11 +126,9 @@
     overflow: visible;
   }
 
-  .diff-file {
-    &.diff-file-is-active,
-    &:has(*:not(textarea):focus-visible) {
-      box-shadow: 0 0 0 2px var(--gl-border-color-strong);
-    }
+  .diff-file-is-active {
+    outline: 1px solid var(--gl-focus-ring-outer-color);
+    outline-offset: 2px;
   }
 }
 
@@ -316,7 +314,7 @@
 
   .coverage {
     font-size: 12px;
-    color: var(--gray-500, $gray-500);
+    @apply gl-text-subtle;
     line-height: initial;
   }
 }
@@ -645,8 +643,7 @@
 }
 
 .mr-widget-extension {
-  border-top: 1px solid var(--gl-border-color-default);
-  background-color: var(--gray-10, $gray-10);
+  @apply gl-bg-subtle gl-border-t gl-border-t-section;
   container-name: mr-widget-extension;
   container-type: inline-size;
   // Adds a fix for the view app dropdown not showing up
@@ -655,7 +652,7 @@
   z-index: 1;
 
   &.clickable:hover {
-    background-color: var(--gray-50, $gray-50);
+    @apply gl-bg-strong;
     cursor: pointer;
   }
 }
@@ -784,7 +781,7 @@
 
 .submit-review-dropdown-form {
   width: calc(100vw - 20px);
-  max-width: 680px;
+  max-width: 756px;
 }
 
 .submit-review-dropdown-animated {
@@ -833,7 +830,7 @@
 }
 
 .merge-request-sticky-header {
-  z-index: $top-bar-z-index;
+  z-index: calc($top-bar-z-index - 1);
   height: $mr-sticky-header-height;
 }
 
@@ -847,6 +844,29 @@
   .gl-toggle-label {
     font-weight: $gl-font-weight-normal;
   }
+}
+
+.mr-widget-status-icon-neutral,
+.mr-widget-status-icon-notice {
+  color: var(--gl-status-neutral-icon-color);
+}
+
+.mr-widget-status-icon-warning {
+  color: var(--gl-status-warning-icon-color);
+}
+
+.mr-widget-status-icon-failed,
+.mr-widget-status-icon-error {
+  color: var(--gl-status-danger-icon-color);
+}
+
+.mr-widget-status-icon-success {
+  color: var(--gl-status-success-icon-color);
+}
+
+.mr-widget-status-icon-info,
+.mr-widget-status-icon-scheduled {
+  color: var(--gl-status-info-icon-color);
 }
 
 .mr-widget-status-icon-level-1::before {

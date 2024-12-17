@@ -1,12 +1,13 @@
 <script>
-import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import query from '../queries/issues.query.graphql';
 import TitleSuggestionsItem from './title_suggestions_item.vue';
 
 export default {
   components: {
-    GlIcon,
+    HelpIcon,
     TitleSuggestionsItem,
   },
   directives: {
@@ -69,13 +70,7 @@ export default {
   <div v-show="showSuggestions" class="form-group">
     <div v-once class="gl-pb-3">
       {{ __('Similar issues') }}
-      <gl-icon
-        v-gl-tooltip.bottom
-        :title="$options.helpText"
-        :aria-label="$options.helpText"
-        name="question-o"
-        class="text-secondary gl-cursor-help"
-      />
+      <help-icon v-gl-tooltip.bottom :title="$options.helpText" :aria-label="$options.helpText" />
     </div>
     <ul class="gl-m-0 gl-list-none gl-p-0">
       <li

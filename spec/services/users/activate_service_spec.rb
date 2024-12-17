@@ -22,6 +22,8 @@ RSpec.describe Users::ActivateService, feature_category: :user_management do
       end
 
       it 'creates a log entry' do
+        allow(Gitlab::AppLogger).to receive(:info)
+
         expect(Gitlab::AppLogger).to receive(:info).with(
           message: "User activated",
           username: user.username,

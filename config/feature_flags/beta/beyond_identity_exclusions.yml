@@ -1,9 +1,0 @@
----
-name: beyond_identity_exclusions
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/454372
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150664
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/457893
-milestone: '17.0'
-group: group::source code
-type: beta
-default_enabled: true

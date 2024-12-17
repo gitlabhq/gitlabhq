@@ -140,9 +140,7 @@ it('correctly renders a table with checkboxes', () => {
     `
 <table>
 <tr>
-<th>
-
-</th>
+<th></th>
 <th>Item</th>
 <th>Description</th>
 </tr>
@@ -382,6 +380,38 @@ it('correctly renders content after a markdown table', () => {
 | cell |
 
 # this is a heading
+    `.trim(),
+  );
+});
+
+it('correctly renders a table with a wiki link (with a pipe) in one of the cells', () => {
+  expect(
+    serialize(
+      table(
+        tableRow(tableHeader(paragraph('Header')), tableHeader(paragraph('Content'))),
+        tableRow(
+          tableCell(paragraph('Wiki Link')),
+          tableCell(
+            paragraph(
+              link(
+                {
+                  isGollumLink: true,
+                  isWikiPage: true,
+                  href: '/gitlab-org/gitlab-test/-/wikis/link/to/some/wiki/page',
+                  canonicalSrc: 'docs/changelog',
+                },
+                'Changelog',
+              ),
+            ),
+          ),
+        ),
+      ),
+    ).trim(),
+  ).toBe(
+    `
+| Header | Content |
+|--------|---------|
+| Wiki Link | [[Changelog\\|docs/changelog]] |
     `.trim(),
   );
 });

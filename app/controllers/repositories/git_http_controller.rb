@@ -13,7 +13,10 @@ module Repositories
     rescue_from Gitlab::GitAccessProject::CreationError, with: :render_422_with_exception
     rescue_from Gitlab::GitAccess::TimeoutError, with: :render_503_with_exception
     rescue_from GRPC::Unavailable do |e|
-      render_503_with_exception(e, message: 'The git server, Gitaly, is not available at this time. Please contact your administrator.')
+      render_503_with_exception(
+        e,
+        message: 'The git server, Gitaly, is not available at this time. Please contact your administrator.'
+      )
     end
 
     # GET /foo/bar.git/info/refs?service=git-upload-pack (git pull)

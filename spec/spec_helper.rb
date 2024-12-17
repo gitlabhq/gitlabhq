@@ -90,10 +90,6 @@ RSpec.configure do |config|
 
   config.infer_spec_type_from_file_location!
 
-  config.define_derived_metadata(file_path: %r{(ee)?/spec/presenters/(ee)?}) do |metadata|
-    metadata[:type] = :presenter
-  end
-
   # Add :full_backtrace tag to an example if full_backtrace output is desired
   config.before(:each, :full_backtrace) do |example|
     config.full_backtrace = true
@@ -339,14 +335,6 @@ RSpec.configure do |config|
       # Disable suspending ClickHouse data ingestion workers
       stub_feature_flags(suspend_click_house_data_ingestion: false)
 
-      # Disable license requirement for duo chat, which is subject to change.
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/457090
-      stub_feature_flags(duo_chat_requires_licensed_seat: false)
-
-      # Disable license requirement for duo chat (self managed), which is subject to change.
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/457283
-      stub_feature_flags(duo_chat_requires_licensed_seat_sm: false)
-
       # Experimental merge request dashboard
       stub_feature_flags(merge_request_dashboard: false)
 
@@ -357,9 +345,8 @@ RSpec.configure do |config|
       # This feature flag allows enabling self-hosted features on Staging Ref: https://gitlab.com/gitlab-org/gitlab/-/issues/497784
       stub_feature_flags(allow_self_hosted_features_for_com: false)
 
-      # Our test suite is setup to test plain text editor by default with separate tests just
-      # for the rich text editor. Switch the flag off to continue testing the same way as before
-      stub_feature_flags(rich_text_editor_as_default: false)
+      # we need the `cleanup_data_source_work_item_data` disabled by default to prevent deletion of some data
+      stub_feature_flags(cleanup_data_source_work_item_data: false)
     else
       unstub_all_feature_flags
     end
@@ -613,6 +600,16 @@ module UsersInternalAllowExclusiveLease
       else
         super
       end
+    end
+
+    # TODO: Until https://gitlab.com/gitlab-org/gitlab/-/issues/442780 is resolved we're creating internal users in the
+    # first organization as a temporary workaround. Many specs lack an organization in the database, causing foreign key
+    # constraint violations when creating internal users. We're not seeding organizations before all specs for
+    # performance.
+    def create_unique_internal(scope, username, email_pattern, &creation_block)
+      Organizations::Organization.first || FactoryBot.create(:organization)
+
+      super
     end
   end
 end

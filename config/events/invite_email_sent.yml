@@ -2,7 +2,7 @@
 description: Tracks when an invite email is sent
 action: invite_email_sent
 identifiers:
-product_group: tenant_scale
+product_group: organizations
 milestone: '14.2'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169895
 distributions:

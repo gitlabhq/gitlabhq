@@ -176,6 +176,19 @@ track_event(
 )
 ```
 
+#### Batching
+
+When multiple events are emitted at once, use `with_batched_redis_writes` to batch all of them
+in a single Redis call.
+
+```ruby
+Gitlab::InternalEvents.with_batched_redis_writes do
+  incr.times { Gitlab::InternalEvents.track_event(event) }
+end
+```
+
+Notice that only updates to total counters are batched. If `n` unique metrics and `m` total counter metrics are defined, it will result in `incr * n + m` Redis writes.
+
 ### Backend testing
 
 When testing code that simply triggers an internal event and make sure it increments all the related metrics,
@@ -610,5 +623,5 @@ See the [Usage Data API documentation](../../../api/usage_data.md#events-trackin
 
 Apart from the GitLab codebase, we are using Internal Events for the systems listed below.
 
-1. [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/internal_events.md?ref_type=heads)
+1. [AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/internal_events.md?ref_type=heads)
 1. [Switchboard](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/switchboard/-/blob/main/docs/internal_events.md)

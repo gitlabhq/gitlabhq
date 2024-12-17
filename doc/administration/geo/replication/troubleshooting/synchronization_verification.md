@@ -20,7 +20,7 @@ If you notice replication or verification failures in `Admin > Geo > Sites` or t
 
 A Geo data type is a specific class of data that is required by one or more GitLab features to store relevant information and is replicated by Geo to secondary sites.
 
-The following Geo data types exist:
+### Geo data type classes
 
 - **Blob types:**
   - `Ci::JobArtifact`
@@ -66,25 +66,27 @@ console. The following sections describe how to use internal application
 commands in the Rails console to cause replication or verification for
 individual records synchronously or asynchronously.
 
+### Geo registry table models
+
 In the context of GitLab Geo, a **registry record** refers to registry tables in
 the Geo tracking database. Each record tracks a single replicable in the main
 GitLab database, such as an LFS file, or a project Git repository. The Rails
 models that correspond to Geo registry tables that can be queried are:
 
-- `CiSecureFileRegistry`
-- `ContainerRepositoryRegistry`
-- `DependencyProxyBlobRegistry`
-- `DependencyProxyManifestRegistry`
-- `JobArtifactRegistry`
-- `LfsObjectRegistry`
-- `MergeRequestDiffRegistry`
-- `PackageFileRegistry`
-- `PagesDeploymentRegistry`
-- `PipelineArtifactRegistry`
-- `ProjectWikiRepositoryRegistry`
-- `SnippetRepositoryRegistry`
-- `TerraformStateVersionRegistry`
-- `UploadRegistry`
+- `Geo::CiSecureFileRegistry`
+- `Geo::ContainerRepositoryRegistry`
+- `Geo::DependencyProxyBlobRegistry`
+- `Geo::DependencyProxyManifestRegistry`
+- `Geo::JobArtifactRegistry`
+- `Geo::LfsObjectRegistry`
+- `Geo::MergeRequestDiffRegistry`
+- `Geo::PackageFileRegistry`
+- `Geo::PagesDeploymentRegistry`
+- `Geo::PipelineArtifactRegistry`
+- `Geo::ProjectWikiRepositoryRegistry`
+- `Geo::SnippetRepositoryRegistry`
+- `Geo::TerraformStateVersionRegistry`
+- `Geo::UploadRegistry`
 
 You can use Rails to perform basic troubleshooting. Troubleshooting steps vary
 depending on the object type.
@@ -193,7 +195,9 @@ to cause bulk replication or verification.
 
 #### Reverify all components (or any SSF data type which supports verification)
 
-For GitLab 16.4 and earlier:
+You can reverify any [data type](#geo-data-type-classes) that supports verification from the Rails console.
+
+For example, to reverify the `Upload` class:
 
 1. SSH into a GitLab Rails node in the primary Geo site.
 1. Open the [Rails console](../../../../administration/operations/rails_console.md#starting-a-rails-console-session).
@@ -239,7 +243,7 @@ status
 
 ### Failed verification of Uploads on the primary Geo site
 
-If verification of some uploads is failing on the primary Geo site with `verification_checksum = nil` and with the ``verification_failure = Error during verification: undefined method `underscore' for NilClass:Class``, this can be due to orphaned Uploads. The parent record owning the Upload (the upload's model) has somehow been deleted, but the Upload record still exists. These verification failures are false.
+If verification of some uploads is failing on the primary Geo site with `verification_checksum = nil` and with `verification_failure` containing ``Error during verification: undefined method `underscore' for NilClass:Class`` or ``The model which owns this Upload is missing.``, this is due to orphaned Uploads. The parent record owning the Upload (the upload's "model") has somehow been deleted, but the Upload record still exists. This is usually due to a bug in the application, introduced by implementing bulk delete of the "model" while forgetting to bulk delete its associated Upload records. These verification failures are therefore not failures to verify, rather, the errors are a result of bad data in Postgres.
 
 You can find these errors in the `geo.log` file on the primary Geo site.
 
@@ -252,27 +256,89 @@ sudo gitlab-rake gitlab:uploads:check
 You can delete these Upload records on the primary Geo site to get rid of these failures by running the following script from the [Rails console](../../../operations/rails_console.md):
 
 ```ruby
-# Look for uploads with the verification error
-# or edit with your own affected IDs
-uploads = Geo::UploadState.where(
-  verification_checksum: nil,
-  verification_state: 3,
-  verification_failure: "Error during verification: undefined method  `underscore' for NilClass:Class"
-).pluck(:upload_id)
+def delete_orphaned_uploads(dry_run: true)
+  if dry_run
+    p "This is a dry run. Upload rows will only be printed."
+  else
+    p "This is NOT A DRY RUN! Upload rows will be deleted from the DB!"
+  end
 
-uploads_deleted = 0
-begin
+  subquery = Geo::UploadState.where("(verification_failure LIKE 'Error during verification: The model which owns this Upload is missing.%' OR verification_failure = 'Error during verification: undefined method `underscore'' for NilClass:Class') AND verification_checksum IS NULL")
+  uploads = Upload.where(upload_state: subquery)
+  p "Found #{uploads.count} uploads with a model that does not exist"
+
+  uploads_deleted = 0
+  begin
     uploads.each do |upload|
-    u = Upload.find upload
-    rescue => e
-        puts "checking upload #{u.id} failed with #{e.message}"
+
+      if dry_run
+        p upload
       else
         uploads_deleted=uploads_deleted + 1
-        p u                            ### allow verification before destroy
-        # p u.destroy!                 ### uncomment to actually destroy
+        p upload.destroy!
+      end
+    rescue => e
+      puts "checking upload #{upload.id} failed with #{e.message}"
+    end
   end
+
+  p "#{uploads_deleted} remote objects were destroyed." unless dry_run
 end
-p "#{uploads_deleted} remote objects were destroyed."
+```
+
+The above script defines a method named `delete_orphaned_uploads` which you can call like this to do a dry run:
+
+```ruby
+delete_orphaned_uploads(dry_run: true)
+```
+
+And to actually delete the orphaned upload rows:
+
+```ruby
+delete_orphaned_uploads(dry_run: false)
+```
+
+### Message: `"Error during verification","error":"File is not checksummable"`
+
+If you encounter these errors in your primary site `geo.log`, they're also reflected in the UI under **Admin > Geo > Sites**. To remove those errors, you can identify the particular blob that generates the message so that you can inspect it.
+
+1. In a Puma or Sidekiq node in the primary site, [open a Rails console](../../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Run the following snippet to find the affected artifacts containing the `File is not checksummable` message:
+
+NOTE:
+The example provided below uses `JobArtifact` blob type; however, the same solution applies to any blob type that Geo uses.
+
+```ruby
+
+artifacts = Ci::JobArtifact.verification_failed.where("verification_failure like '%File is not checksummable%'");1
+puts "Found #{artifacts.count} artifacts that failed verification with 'File is not checksummable'. The first one:"
+pp artifacts.first
+```
+
+If you determine that the affected files need to be recovered then you can explore these options (non-exhaustive) to recover the missing files:
+
+- Check if the secondary site has the object and manually copy them to the primary.
+- Look through old backups and manually copy the object back into the primary site.
+- Spot check some to try to determine that it's probably fine to destroy the records, for example, if they are all very old artifacts, then maybe they are not critical data.
+
+Often, these kinds of errors happen when a file is checksummed by Geo, and then goes missing from the primary site. After you identify the affected files, you should check the projects that the files belong to from the UI to decide if it's acceptable to delete the file reference. If so, you can destroy the references with the following irreversible snippet:
+
+```ruby
+def destroy_artifacts_not_checksummable
+  artifacts = Ci::JobArtifact.verification_failed.where("verification_failure like '%File is not checksummable%'");1
+  puts "Found #{artifacts.count} artifacts that failed verification with 'File is not checksummable'."
+  puts "Enter 'y' to continue: "
+  prompt = STDIN.gets.chomp
+  if prompt != 'y'
+    puts "Exiting without action..."
+    return
+  end
+
+  puts "Destroying all..."
+  artifacts.destroy_all
+end
+
+destroy_artifacts_not_checksummable
 ```
 
 ### Error: `Error syncing repository: 13:fatal: could not read Username`

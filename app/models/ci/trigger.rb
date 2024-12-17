@@ -14,6 +14,7 @@ module Ci
     belongs_to :owner, class_name: "User"
 
     has_many :trigger_requests
+    has_many :pipelines, class_name: 'Ci::Pipeline'
 
     validates :token, presence: true, uniqueness: true
     validates :owner, presence: true

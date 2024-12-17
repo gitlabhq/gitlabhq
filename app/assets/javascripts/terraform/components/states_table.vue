@@ -46,7 +46,7 @@ export default {
   },
   computed: {
     fields() {
-      const columns = [
+      return [
         {
           key: 'name',
           label: this.$options.i18n.name,
@@ -59,18 +59,13 @@ export default {
           key: 'updated',
           label: this.$options.i18n.details,
         },
-      ];
-
-      if (this.terraformAdmin) {
-        columns.push({
+        {
           key: 'actions',
           label: this.$options.i18n.actions,
           thClass: 'gl-w-12',
           tdClass: 'gl-text-right',
-        });
-      }
-
-      return columns;
+        },
+      ];
     },
   },
   i18n: {
@@ -141,7 +136,7 @@ export default {
         data-testid="terraform-states-table-name"
         class="gl-align-center gl-flex gl-justify-end gl-gap-3 md:gl-justify-start"
       >
-        <p class="gl-m-0 gl-text-gray-900">
+        <p class="gl-m-0 gl-text-default">
           {{ item.name }}
         </p>
 
@@ -222,8 +217,8 @@ export default {
       </p>
     </template>
 
-    <template v-if="terraformAdmin" #cell(actions)="{ item }">
-      <state-actions :state="item" />
+    <template #cell(actions)="{ item }">
+      <state-actions :state="item" :terraform-admin="terraformAdmin" />
     </template>
 
     <template #row-details="row">

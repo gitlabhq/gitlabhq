@@ -55,6 +55,11 @@ export default {
       required: false,
       default: null,
     },
+    isDragging: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -121,6 +126,11 @@ export default {
       this.wasInView = true;
       this.imageLoading = true;
     },
+    onTileClick(event) {
+      if (this.isDragging) {
+        event.preventDefault();
+      }
+    },
   },
   ROUTES,
 };
@@ -137,6 +147,7 @@ export default {
   >
     <div
       class="card-body gl-relative gl-flex gl-items-center gl-justify-center gl-overflow-hidden gl-rounded-t-base gl-p-0"
+      @click="onTileClick"
     >
       <div
         v-if="icon.name"
@@ -160,12 +171,7 @@ export default {
         @appear="onAppear"
       >
         <gl-loading-icon v-if="showLoadingSpinner" size="lg" />
-        <gl-icon
-          v-else-if="showImageErrorIcon"
-          name="media-broken"
-          class="text-secondary"
-          :size="32"
-        />
+        <gl-icon v-else-if="showImageErrorIcon" name="media-broken" :size="32" variant="subtle" />
         <img
           v-show="showImage"
           :src="imageLink"
@@ -190,7 +196,7 @@ export default {
           {{ __('Updated') }} <timeago :time="updatedAt" tooltip-placement="bottom" />
         </span>
       </div>
-      <div v-if="notesCount" class="gl-ml-auto gl-flex gl-items-center gl-text-gray-500">
+      <div v-if="notesCount" class="gl-ml-auto gl-flex gl-items-center gl-text-subtle">
         <gl-icon name="comments" class="gl-ml-2" />
         <span :aria-label="notesLabel" class="gl-ml-2 gl-text-sm">
           {{ notesCount }}

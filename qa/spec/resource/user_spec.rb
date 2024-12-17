@@ -66,20 +66,10 @@ RSpec.describe QA::Resource::User do
   end
 
   describe '#commit_email' do
-    it 'defaults to QA::Runtime::User.default_email' do
-      expect(subject.commit_email).to eq(QA::Runtime::User.default_email)
-    end
-
     it 'retrieves the commit_email from the api_resource if present' do
       subject.__send__(:api_resource=, api_resource)
 
       expect(subject.commit_email).to eq(api_resource[:commit_email])
-    end
-
-    it 'defaults to QA::Runtime::User.default_email if the commit_email from the api_resource is blank' do
-      subject.__send__(:api_resource=, api_resource.merge(commit_email: ''))
-
-      expect(subject.commit_email).to eq(QA::Runtime::User.default_email)
     end
   end
 
@@ -141,29 +131,6 @@ RSpec.describe QA::Resource::User do
         expect(index_mock).to receive(:has_username?).with(username).and_return(found)
 
         expect(subject.has_user?(subject)).to eq(found)
-      end
-    end
-  end
-
-  describe '#fabricate_or_use' do
-    # Signup disabled, personal access tokens disabled, method used, method that is not used
-    [
-      [true,  false, :fabricate_via_api!, :fabricate!],
-      [false, false, :fabricate!, :fabricate_via_api!],
-      [false, true,  :fabricate!, :fabricate_via_api!],
-      [true,  true,  :fabricate!, :fabricate_via_api!]
-    ].each do |signup_disabled, personal_access_tokens_disabled, method_used, method_not_used|
-      it "when signup_disabled is #{signup_disabled}, " \
-        "personal_access_tokens_disabled is #{personal_access_tokens_disabled}, " \
-        "calls #{method_used}, does not call #{method_not_used}" do
-        allow(QA::Runtime::Env).to receive(:signup_disabled?).and_return(signup_disabled)
-        allow(QA::Runtime::Env).to receive(:personal_access_tokens_disabled?)
-          .and_return(personal_access_tokens_disabled)
-
-        expect(described_class).to receive(method_used)
-        expect(described_class).not_to receive(method_not_used)
-
-        described_class.fabricate_or_use
       end
     end
   end

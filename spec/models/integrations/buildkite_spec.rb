@@ -18,7 +18,7 @@ RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching, f
     )
   end
 
-  it_behaves_like Integrations::BaseCi
+  it_behaves_like Integrations::Base::Ci
 
   it_behaves_like Integrations::ResetSecretFields
 

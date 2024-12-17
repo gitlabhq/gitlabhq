@@ -56,7 +56,7 @@ export default {
         <div
           v-safe-html:[$options.safeHtmlConfig]="organization.descriptionHtml"
           data-testid="organization-description-html"
-          class="md gl-text-sm gl-text-secondary"
+          class="md gl-text-sm gl-text-subtle"
         ></div>
       </gl-truncate-text>
     </gl-avatar-labeled>

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::ExternalWiki do
+RSpec.describe Integrations::ExternalWiki, feature_category: :integrations do
   describe 'Validations' do
     context 'when integration is active' do
       before do

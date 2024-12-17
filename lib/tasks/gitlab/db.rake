@@ -19,6 +19,11 @@ namespace :gitlab do
       mark_migration_complete(args[:version])
     end
 
+    desc 'Gitlab | DB | Troubleshoot issues with the database'
+    task sos: :environment do
+      Gitlab::Database::Sos.run
+    end
+
     namespace :mark_migration_complete do
       each_database(databases) do |database_name|
         desc "Gitlab | DB | Manually insert schema migration version on #{database_name} database"
@@ -144,7 +149,9 @@ namespace :gitlab do
     end
 
     def alter_cell_sequences_range
-      return unless Gitlab.config.topology_service_enabled? && Gitlab.config.has_configured_cell?
+      return unless Gitlab.config.topology_service_enabled?
+
+      return puts "Skipping altering cell sequences range" if Gitlab.config.skip_sequence_alteration?
 
       sequence_range = Gitlab::TopologyServiceClient::CellService.new.cell_sequence_range
 
@@ -587,7 +594,8 @@ namespace :gitlab do
               'feature_categories' => [],
               'description' => nil,
               'introduced_by_url' => nil,
-              'milestone' => milestone
+              'milestone' => milestone,
+              'table_size' => 'small'
             }
 
             if File.exist?(file)

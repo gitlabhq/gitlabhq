@@ -2,10 +2,9 @@
 
 exports[`Design item component when item appears in view after image is loaded renders media broken icon when image onerror triggered 1`] = `
 <gl-icon-stub
-  class="text-secondary"
   name="media-broken"
   size="32"
-  variant="current"
+  variant="subtle"
 />
 `;
 
@@ -55,7 +54,7 @@ exports[`Design item component with notes renders item with multiple comments 1`
       </span>
     </div>
     <div
-      class="gl-flex gl-items-center gl-ml-auto gl-text-gray-500"
+      class="gl-flex gl-items-center gl-ml-auto gl-text-subtle"
     >
       <gl-icon-stub
         class="gl-ml-2"
@@ -120,7 +119,7 @@ exports[`Design item component with notes renders item with single comment 1`] =
       </span>
     </div>
     <div
-      class="gl-flex gl-items-center gl-ml-auto gl-text-gray-500"
+      class="gl-flex gl-items-center gl-ml-auto gl-text-subtle"
     >
       <gl-icon-stub
         class="gl-ml-2"

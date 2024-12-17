@@ -1,13 +1,13 @@
 <script>
-import { GlLink, GlIcon } from '@gitlab/ui';
-import { sprintf } from '~/locale';
-import { HELP_LINK_ARIA_LABEL } from '~/usage_quotas/storage/constants';
+import { GlLink } from '@gitlab/ui';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
+import { sprintf, s__ } from '~/locale';
 
 export default {
   name: 'StorageTypeHelpLink',
   components: {
     GlLink,
-    GlIcon,
+    HelpIcon,
   },
   props: {
     storageType: {
@@ -21,7 +21,7 @@ export default {
   },
   computed: {
     ariaLabel() {
-      return sprintf(HELP_LINK_ARIA_LABEL, {
+      return sprintf(s__('UsageQuota|%{linkTitle} help link'), {
         linkTitle: this.storageType,
       });
     },
@@ -31,6 +31,6 @@ export default {
 
 <template>
   <gl-link :href="helpLinks[storageType]" target="_blank" :aria-label="ariaLabel" class="gl-ml-3">
-    <gl-icon name="question-o" :size="16" />
+    <help-icon />
   </gl-link>
 </template>

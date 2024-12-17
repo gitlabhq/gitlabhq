@@ -42,6 +42,7 @@ RSpec.describe Ci::CreatePipelineService, :aggregate_failures,
   before do
     stub_ci_pipeline_yaml_file(config)
     allow(Ci::Pipeline).to receive(:current_partition_value) { current_partition_id }
+    project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
   end
 
   it 'assigns partition_id to pipeline' do

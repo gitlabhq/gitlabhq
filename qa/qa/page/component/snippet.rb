@@ -33,7 +33,7 @@ module QA
             element 'blob-viewer-file-content'
           end
 
-          base.view 'app/assets/javascripts/vue_shared/components/code_dropdown/snippet_code_dropdown.vue' do
+          base.view 'app/assets/javascripts/vue_shared/components/code_dropdown/clone_code_dropdown.vue' do
             element 'copy-http-url'
             element 'copy-ssh-url'
           end

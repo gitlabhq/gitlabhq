@@ -295,6 +295,16 @@ module Gitlab
       def being_watched_cache_key
         "gitlab:ci:trace:#{job.id}:watched"
       end
+
+      # Like `set` it writes the whole trace but doesn't hide secrets!
+      # This is solely used in spec factories to avoid calling unstubbed
+      # ApplicationSetting(ci_job_token_signing_key) attribute outside
+      # spec examples (like in `let_it_be`).
+      def unsafe_set(data)
+        write('w+b') do |stream|
+          stream.set(data.dup)
+        end
+      end
     end
   end
 end

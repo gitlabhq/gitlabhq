@@ -197,6 +197,15 @@ export const config = {
       MergeRequestApprovalState: {
         merge: true,
       },
+      WorkItemType: {
+        fields: {
+          widgetDefinitions: {
+            merge(existing = [], incoming) {
+              return [...existing, ...incoming];
+            },
+          },
+        },
+      },
     },
   },
 };

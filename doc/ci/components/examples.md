@@ -217,7 +217,8 @@ CI/CD templates for programming languages may provide multiple jobs in a single 
 As a practice, the following Go CI/CD template should be migrated.
 
 ```yaml
-image: golang:latest
+default:
+  image: golang:latest
 
 stages:
   - test

@@ -17,7 +17,7 @@ module Ci
 
       @trigger_variables ||=
         if pipeline.variables.any?
-          pipeline.variables.map(&:to_runner_variable)
+          pipeline.variables.map(&:to_hash_variable)
         else
           trigger_request.user_variables
         end

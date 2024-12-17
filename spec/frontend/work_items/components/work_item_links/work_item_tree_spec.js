@@ -5,6 +5,7 @@ import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_item
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { createAlert } from '~/alert';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
@@ -435,5 +436,25 @@ describe('WorkItemTree', () => {
     expect(wrapper.findByTestId('work-item-no-child-items-open').text()).toBe(
       'No child items are currently open.',
     );
+  });
+
+  describe('when there is show URL parameter', () => {
+    it('emits `show-modal` event when child work item id is encoded in the URL', async () => {
+      const encodedWorkItemId = btoa(JSON.stringify({ id: 31 }));
+      setWindowLocation(`?show=${encodedWorkItemId}`);
+      await createComponent();
+
+      expect(wrapper.emitted('show-modal')).toEqual([
+        [{ modalWorkItem: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
+      ]);
+    });
+
+    it('does not emit `show-modal` event when child work item id is not encoded in the URL', async () => {
+      const encodedWorkItemId = btoa(JSON.stringify({ id: 1 }));
+      setWindowLocation(`?show=${encodedWorkItemId}`);
+      await createComponent();
+
+      expect(wrapper.emitted('show-modal')).toBeUndefined();
+    });
   });
 });

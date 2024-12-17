@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis_shared_state, feature_category: :importers do
+  include Import::GiteaHelper
+
   let_it_be(:project) do
     create(:project, :with_import_url, :import_user_mapping_enabled, import_type: ::Import::SOURCE_GITEA)
   end
@@ -124,6 +126,16 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis
       end
     end
 
+    context 'when the comment body has @username mentions' do
+      let(:original_body) { "I said to @sam_allen.greg the code should follow @bob's advice. @.ali-ce/group#9?" }
+      let(:expected_body) { "I said to `@sam_allen.greg` the code should follow `@bob`'s advice. `@.ali-ce/group#9`?" }
+      let(:raw) { base.merge(body: original_body) }
+
+      it 'places backtick around @username mentions' do
+        expect(comment.attributes[:note]).to eq(expected_body)
+      end
+    end
+
     context 'when importing a GitHub project' do
       let_it_be(:project) do
         create(:project, :with_import_url, :import_user_mapping_enabled, import_type: ::Import::SOURCE_GITHUB)
@@ -181,7 +193,7 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis
       let(:raw) { base.merge(user: octocat) }
 
       before do
-        allow(project).to receive_message_chain(:import_data, :user_mapping_enabled?).and_return(false)
+        stub_user_mapping_chain(project, false)
       end
 
       context 'when author is a GitLab user' do
@@ -267,7 +279,7 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis
 
     context 'when user contribution mapping is disabled' do
       before do
-        allow(project).to receive_message_chain(:import_data, :user_mapping_enabled?).and_return(false)
+        stub_user_mapping_chain(project, false)
       end
 
       it 'does not push any placeholder references' do

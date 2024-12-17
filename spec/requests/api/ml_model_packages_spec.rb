@@ -22,7 +22,7 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
     { user: user, project: project, namespace: project.namespace, property: 'i_package_ml_model_user' }
   end
 
-  let_it_be(:tokens) do
+  let(:tokens) do
     {
       personal_access_token: personal_access_token.token,
       deploy_token: deploy_token.token,

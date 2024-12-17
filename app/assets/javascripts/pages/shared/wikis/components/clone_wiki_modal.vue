@@ -11,16 +11,12 @@ import {
 } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { getHTTPProtocol } from '~/lib/utils/url_utility';
-import { __, s__, sprintf } from '~/locale';
+import { __, sprintf } from '~/locale';
 
 export default {
   i18n: {
     steps: {
-      step1: s__('WikiClone|Step 1: Clone repository'),
-      step2: s__('WikiClone|Step 2: Install and start Gollum'),
-      step2Directory: s__('WikiClone|Go to directory'),
-      step2Install: s__('WikiClone|Install Gollum'),
-      step2Start: s__('WikiClone|Start Gollum and edit locally'),
+      step1: __('Clone repository'),
     },
     cloneWithSsh: __('Clone with SSH'),
     copyToClipboard: __('Copy to clipboard'),
@@ -61,15 +57,6 @@ export default {
     },
     cloneHttpUrlDisplay() {
       return `git clone ${this.cloneHttpUrl}`; // eslint-disable-line @gitlab/require-i18n-strings
-    },
-    directoryCommand() {
-      return `cd ${this.wikiPath}`; // eslint-disable-line @gitlab/require-i18n-strings
-    },
-    installCommand() {
-      return 'gem install gollum'; // eslint-disable-line @gitlab/require-i18n-strings
-    },
-    gollumCommand() {
-      return 'gollum';
     },
     listItem() {
       return {
@@ -132,7 +119,6 @@ export default {
               <clipboard-button
                 :text="cloneSshUrlDisplay"
                 :title="$options.i18n.copyToClipboard"
-                data-clipboard-text
                 data-clipboard-target="#clone-ssh-url"
               />
             </template>
@@ -151,70 +137,7 @@ export default {
               <clipboard-button
                 :text="cloneHttpUrlDisplay"
                 :title="$options.i18n.copyToClipboard"
-                data-clipboard-text
                 data-clipboard-target="#clone-http-url"
-              />
-            </template>
-          </gl-form-input-group>
-        </gl-form-group>
-      </div>
-      <div class="gl-mt-6">
-        <h3 class="gl-heading-4">
-          {{ $options.i18n.steps.step2 }}
-        </h3>
-        <gl-form-group :label="$options.i18n.steps.step2Directory" label-for="go-to-directory">
-          <gl-form-input-group
-            id="go-to-directory"
-            :value="directoryCommand"
-            :label="$options.i18n.steps.step2Directory"
-            input-class="!gl-font-monospace"
-            readonly
-            select-on-click
-          >
-            <template #append>
-              <clipboard-button
-                :text="directoryCommand"
-                :title="$options.i18n.copyToClipboard"
-                data-clipboard-text
-                data-clipboard-target="#go-to-directory"
-              />
-            </template>
-          </gl-form-input-group>
-        </gl-form-group>
-        <gl-form-group :label="$options.i18n.steps.step2Install" label-for="install-gollum">
-          <gl-form-input-group
-            id="install-gollum"
-            :value="installCommand"
-            :label="$options.i18n.steps.step2Install"
-            input-class="!gl-font-monospace"
-            readonly
-            select-on-click
-          >
-            <template #append>
-              <clipboard-button
-                :text="installCommand"
-                :title="$options.i18n.copyToClipboard"
-                data-clipboard-text
-                data-clipboard-target="#install-gollum"
-              />
-            </template>
-          </gl-form-input-group>
-        </gl-form-group>
-        <gl-form-group :label="$options.i18n.steps.step2Start" label-for="run-gollum">
-          <gl-form-input-group
-            id="run-gollum"
-            :value="gollumCommand"
-            :label="$options.i18n.steps.step2Start"
-            input-class="!gl-font-monospace"
-            readonly
-            select-on-click
-          >
-            <template #append>
-              <clipboard-button
-                :text="gollumCommand"
-                :title="$options.i18n.copyToClipboard"
-                data-clipboard-text
-                data-clipboard-target="#run-gollum"
               />
             </template>
           </gl-form-input-group>

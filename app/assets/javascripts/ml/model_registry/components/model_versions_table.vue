@@ -95,9 +95,10 @@ export default {
     </template>
     <template #cell(author)="{ item: { author } }">
       <gl-avatar-link
+        v-if="author"
         :href="author.webUrl"
         :title="author.name"
-        class="js-user-link !gl-text-gray-500"
+        class="js-user-link !gl-text-subtle"
       >
         <gl-avatar :src="author.avatarUrl" :size="16" :entity-name="author.name" class="mr-2" />
         {{ author.name }}

@@ -1285,6 +1285,32 @@ RSpec.describe TodoService, feature_category: :notifications do
         should_not_create_todo(user: guest, target: mentioned_mr, action: Todo::MENTIONED)
       end
     end
+
+    describe '#new_review' do
+      it 'marks related pending todos to the target MR for the user as done' do
+        first_todo = create(:todo, :pending, :assigned, user: john_doe, project: project, target: mentioned_mr, author: author)
+        second_todo = create(:todo, :pending, :review_requested, user: john_doe, project: project, target: mentioned_mr, author: author)
+        third_todo = create(:todo, :pending, :mentioned, user: john_doe, project: project, target: mentioned_mr, author: author)
+
+        review = Review.new(merge_request: mentioned_mr)
+        service.new_review(review, john_doe)
+
+        expect(first_todo.reload).to be_done
+        expect(second_todo.reload).to be_done
+        expect(third_todo.reload).to be_done
+      end
+
+      it 'marks related pending todo to the target MR for the user as done when the multiple_todos feature is off' do
+        stub_feature_flags(multiple_todos: false)
+
+        only_todo = create(:todo, :pending, :assigned, user: john_doe, project: project, target: mentioned_mr, author: author)
+
+        review = Review.new(merge_request: mentioned_mr)
+        service.new_review(review, john_doe)
+
+        expect(only_todo.reload).to be_done
+      end
+    end
   end
 
   describe 'Designs' do

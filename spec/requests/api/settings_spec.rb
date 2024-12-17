@@ -1174,5 +1174,31 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['security_txt_content']).to eq(content)
       end
     end
+
+    context 'with resource usage limits' do
+      let(:hash) do
+        {
+          'rules' => [
+            {
+              'name' => 'test',
+              'rules' => [{ 'interval' => 1, 'threshold' => 10, 'selector' => '*' }],
+              'resource_key' => 'key',
+              'metadata' => {},
+              'scopes' => ['worker_name']
+            }
+          ]
+        }
+      end
+
+      it 'updates the settings' do
+        put(
+          api("/application/settings", admin),
+          params: { resource_usage_limits: Gitlab::Json.dump(hash) }
+        )
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['resource_usage_limits']).to eq(hash)
+      end
+    end
   end
 end

@@ -58,7 +58,7 @@ export default {
     </template>
     <template #footer>
       <div
-        class="gl-flex gl-justify-center gl-border-t-1 gl-border-t-gray-100 gl-p-3 gl-border-t-solid"
+        class="gl-flex gl-justify-center gl-border-t-1 gl-border-t-default gl-p-3 gl-border-t-solid"
         data-testid="footer"
       >
         <gl-link :href="$options.HELP_TRANSLATE_HREF">{{ $options.HELP_TRANSLATE_MSG }}</gl-link>

@@ -94,7 +94,7 @@ curl --header "Authorization:<personal_access_token>" "https://gitlab.example.co
 This endpoint returns a marshalled array of hashes for all versions of the requested gems. Since the
 response is marshalled, you can store it in a file. If Ruby is installed, you can use the following
 Ruby command to read the response. For this to work, you must
-[set your credentials in `~/.gem/credentials`](../../user/packages/rubygems_registry/index.md#authenticate-with-a-personal-access-token-or-deploy-token):
+[set your credentials in `~/.gem/credentials`](../../user/packages/rubygems_registry/index.md#authenticate-to-the-package-registry):
 
 ```shell
 $ ruby -ropen-uri -rpp -e \

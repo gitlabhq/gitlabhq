@@ -297,9 +297,24 @@ module BlobHelper
       project_path: project.full_path,
       resource_id: project.to_global_id,
       user_id: current_user.present? ? current_user.to_global_id : '',
-      target_branch: project.empty_repo? ? ref : @ref,
-      original_branch: @ref,
+      target_branch: selected_branch,
+      original_branch: ref,
       can_download_code: can?(current_user, :download_code, project).to_s
+    }
+  end
+
+  def vue_blob_header_app_data(project, blob, ref)
+    {
+      blob_path: blob.path,
+      breadcrumbs: breadcrumb_data_attributes,
+      escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref),
+      history_link: project_commits_path(project, ref),
+      project_id: project.id,
+      project_root_path: project_path(project),
+      project_path: project.full_path,
+      project_short_path: project.path,
+      ref_type: @ref_type.to_s,
+      ref: ref
     }
   end
 end

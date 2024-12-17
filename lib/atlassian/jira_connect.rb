@@ -14,6 +14,10 @@ module Atlassian
         "gitlab-jira-connect-#{gitlab_host}"[..63]
       end
 
+      def display_name
+        gitlab_host == 'gitlab.com' ? 'GitLab' : "GitLab (#{gitlab_host})"
+      end
+
       private
 
       def gitlab_host

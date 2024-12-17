@@ -11,11 +11,12 @@ export const i18n = {
   copyFailedSpecs: s__('Reports|Copy failed tests'),
   copyFailedSpecsTooltip: s__('Reports|Copy failed test names to run locally'),
   label: s__('Reports|Test summary'),
-  loading: s__('Reports|Test summary results are loading'),
+  loading: s__('Reports|Test summary results are being parsed'),
   error: s__('Reports|Test summary failed to load results'),
   newHeader: s__('Reports|New'),
   fixedHeader: s__('Reports|Fixed'),
   fullReport: s__('Reports|Full report'),
+  partialReport: s__('Reports|View partial report'),
 
   noChanges: (bold) => sprintf(s__('Reports|%{no} changed test results'), { no: noText(bold) }),
   resultsString: (combinedString, resolvedString) =>

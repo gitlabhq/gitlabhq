@@ -393,6 +393,7 @@ The following table describes the rate limits for GitLab.com:
 | GitLab Pages TLS connections for a GitLab Pages domain           | 400 requests per 10 seconds   |
 | Pipeline creation requests for a project, user, or commit        | 25 requests per minute        |
 | Alert integration endpoint requests for a project                | 3,600 requests per hour       |
+| GitLab Duo `aiAction`  requests                                  | 160 requests per 8 hours      |
 | [Pull mirroring](../project/repository/mirror/pull.md) intervals | 5 minutes                     |
 | API requests from a user to `/api/v4/users/:id`                  | 300 requests per 10 minutes   |
 | GitLab package cloud requests for an IP address ([introduced](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/24083) in GitLab 16.11) | 3,000 requests per minute |

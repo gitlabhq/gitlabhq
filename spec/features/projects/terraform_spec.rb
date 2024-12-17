@@ -105,13 +105,21 @@ RSpec.describe 'Terraform', :js, feature_category: :package_registry do
     end
 
     context 'when user visits the index page' do
-      it 'displays a table without an action dropdown', :aggregate_failures do
+      it 'displays a table with an action dropdown' do
         expect(page).to have_selector(
           "[data-testid='terraform-states-table-name']",
           count: project.terraform_states.size
         )
+      end
 
-        expect(page).not_to have_selector("[data-testid*='terraform-state-actions']")
+      it 'displays a correct set of actions in the action dropdown' do
+        find_by_testid("terraform-state-actions-#{terraform_state.name}").click
+
+        expect(page).to have_selector("[data-testid='terraform-state-copy-init-command']")
+        expect(page).to have_selector("[data-testid='terraform-state-download']")
+        expect(page).not_to have_selector("[data-testid='terraform-state-lock']")
+        expect(page).not_to have_selector("[data-testid='terraform-state-unlock']")
+        expect(page).not_to have_selector("[data-testid='terraform-state-remove']")
       end
     end
   end

@@ -12,6 +12,7 @@ RSpec.describe Ci::PipelineSchedules::CreateService, feature_category: :continuo
 
   describe "execute" do
     before_all do
+      project.update!(ci_pipeline_variables_minimum_override_role: :developer)
       repository.add_branch(project.creator, 'patch-x', 'master')
       repository.add_branch(project.creator, 'ambiguous', 'master')
       repository.add_branch(project.creator, '1/nested/branch-name', 'master')

@@ -1,5 +1,6 @@
 <script>
-import { GlBadge, GlButton, GlLoadingIcon, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlBadge, GlButton, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import ApplySuggestion from './apply_suggestion.vue';
@@ -9,7 +10,7 @@ const APPLY_SUGGESTION_ERROR_MESSAGE = __(
 );
 
 export default {
-  components: { GlBadge, GlIcon, GlButton, GlLoadingIcon, ApplySuggestion },
+  components: { GlBadge, GlButton, GlLoadingIcon, ApplySuggestion, HelpIcon },
   directives: { GlTooltip: GlTooltipDirective },
   props: {
     batchSuggestionsCount: {
@@ -143,7 +144,7 @@ export default {
     <div class="js-suggestion-diff-header gl-font-bold">
       {{ __('Suggested change') }}
       <a v-if="helpPagePath" :href="helpPagePath" :aria-label="__('Help')" class="js-help-btn">
-        <gl-icon name="question-o" />
+        <help-icon />
       </a>
     </div>
     <gl-badge v-if="isApplied" variant="success" data-testid="applied-badge">
@@ -151,7 +152,7 @@ export default {
     </gl-badge>
     <div
       v-else-if="isApplying"
-      class="text-secondary gl-flex gl-items-center"
+      class="gl-flex gl-items-center gl-text-subtle"
       data-testid="applying-badge"
     >
       <gl-loading-icon size="sm" class="gl-mr-3 gl-items-center gl-justify-center" />

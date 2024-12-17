@@ -78,7 +78,7 @@ export default {
 </script>
 <template>
   <div
-    class="gl-border-b gl-flex gl-w-full gl-flex-wrap gl-items-center gl-gap-y-2 gl-rounded-t-base gl-border-gray-100 gl-px-3 gl-py-3"
+    class="gl-border-b gl-flex gl-w-full gl-flex-wrap gl-items-center gl-gap-y-2 gl-rounded-t-base gl-border-default gl-px-3 gl-py-3"
     data-testid="formatting-toolbar"
   >
     <div class="gl-flex">
@@ -214,5 +214,6 @@ export default {
       <header-divider />
       <summarize-code-changes />
     </div>
+    <slot name="header-buttons"></slot>
   </div>
 </template>

@@ -116,12 +116,12 @@ export default {
             </div>
           </div>
         </template>
-        <div class="gl-pb-3 gl-text-secondary">
-          <gl-icon v-if="item.icon" :name="item.icon" />
+        <div class="gl-pb-3 gl-text-subtle">
+          <gl-icon v-if="item.icon" :name="item.icon" variant="subtle" />
           {{ item.reference }}
         </div>
         <work-item-state-badge v-if="item.state" :work-item-state="item.state" />
-        <span class="gl-align-middle gl-text-secondary">
+        <span class="gl-align-middle gl-text-subtle">
           <gl-sprintf v-if="item.createdAt" :message="__('Created %{timeAgo}')">
             <template #timeAgo>
               <time-ago-tooltip :time="item.createdAt" />

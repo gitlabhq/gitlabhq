@@ -19,6 +19,5 @@
     with the latest advisory database, and operating system packages until GitLab 19.0, at which
     point the analyzer will stop working.
 
-    To continue to use Grype past 19.0, see the [Security scanner integration
-    documentation](https://docs.gitlab.com/ee/development/integrations/secure.html) to learn how to
-    create your own integration with GitLab.
+    To continue to use Grype past 19.0, see the [Security scanner integration documentation](https://docs.gitlab.com/ee/development/integrations/secure.html)
+    to learn how to create your own integration with GitLab.

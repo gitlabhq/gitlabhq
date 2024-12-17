@@ -68,6 +68,46 @@ RSpec.describe DiffNote do
       expect(note.errors[:noteable]).to include("doesn't support new-style diff notes")
     end
 
+    context 'when diff note is set on SHA256 repository' do
+      let(:feature_branch) { 'feature' }
+      let(:target_branch) { 'master' }
+      let(:project) do
+        create(
+          :project,
+          :custom_repo,
+          object_format: Repository::FORMAT_SHA256,
+          files: { 'README.md' => 'Test' }
+        ).tap do |p|
+          p.repository.create_file(p.creator, 'foo', 'bar', message: 'Add foo', branch_name: feature_branch)
+        end
+      end
+
+      let(:merge_request) do
+        create(
+          :merge_request,
+          source_project: project,
+          source_branch: feature_branch,
+          target_branch: target_branch
+        )
+      end
+
+      let(:position) do
+        Gitlab::Diff::Position.new(
+          old_path: 'foo',
+          new_path: 'foo',
+          old_line: nil,
+          new_line: 1,
+          diff_refs: merge_request.diff_refs
+        )
+      end
+
+      it 'creates a note without an error' do
+        note = build(:diff_note_on_merge_request, project: project, position: position, noteable: merge_request)
+
+        expect(note).to be_valid
+      end
+    end
+
     context 'when importing' do
       it "does not check if it's supported" do
         note = build(:diff_note_on_merge_request, project: project, noteable: nil)
@@ -591,6 +631,32 @@ RSpec.describe DiffNote do
             new_position.head_sha
           ])
       end
+    end
+  end
+
+  describe '#latest_diff_file_path' do
+    let(:diff_note) { create(:diff_note_on_merge_request, noteable: merge_request, project: project) }
+
+    it 'returns the file_path of latest_diff_file' do
+      expect(diff_note.latest_diff_file_path).to eq(diff_note.latest_diff_file.file_path)
+    end
+  end
+
+  describe '#raw_truncated_diff_lines' do
+    let(:diff_note) { build_stubbed(:diff_note_on_merge_request, noteable: merge_request, project: project) }
+
+    before do
+      allow(diff_note)
+        .to receive_message_chain(:discussion, :truncated_diff_lines)
+        .and_return([
+          instance_double(Gitlab::Diff::Line, text: "+line 1"),
+          instance_double(Gitlab::Diff::Line, text: "+line 2"),
+          instance_double(Gitlab::Diff::Line, text: "-line 3")
+        ])
+    end
+
+    it 'returns raw truncated diff lines' do
+      expect(diff_note.raw_truncated_diff_lines).to eq("+line 1\n+line 2\n-line 3")
     end
   end
 end

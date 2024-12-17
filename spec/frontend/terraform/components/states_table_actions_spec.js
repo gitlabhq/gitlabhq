@@ -29,6 +29,7 @@ describe('StatesTableActions', () => {
       latestVersion: { downloadPath: '/path' },
       lockedAt: '2020-10-13T00:00:00Z',
     },
+    terraformAdmin: true,
   };
 
   const createMockApolloProvider = () => {
@@ -103,6 +104,7 @@ describe('StatesTableActions', () => {
     describe('when lock/unlock is processing', () => {
       beforeEach(() => {
         return createComponent({
+          ...defaultProps,
           state: {
             ...defaultProps.state,
             loadingLock: true,
@@ -118,6 +120,7 @@ describe('StatesTableActions', () => {
     describe('when remove is processing', () => {
       beforeEach(() => {
         return createComponent({
+          ...defaultProps,
           state: {
             ...defaultProps.state,
             loadingRemove: true,
@@ -158,6 +161,7 @@ describe('StatesTableActions', () => {
     describe('when state does not have a latestVersion', () => {
       beforeEach(() => {
         return createComponent({
+          ...defaultProps,
           state: {
             id: 'gid/1',
             name: 'state-1',
@@ -195,6 +199,7 @@ describe('StatesTableActions', () => {
 
   describe('lock button', () => {
     const unlockedProps = {
+      ...defaultProps,
       state: {
         id: 'gid/2',
         name: 'state-2',
@@ -350,6 +355,32 @@ describe('StatesTableActions', () => {
           });
         });
       });
+    });
+  });
+
+  describe('when the user has an administrator role', () => {
+    beforeEach(() => {
+      return createComponent();
+    });
+
+    it('displays all available action buttons', () => {
+      expect(findCopyBtn().exists()).toBe(true);
+      expect(findDownloadBtn().exists()).toBe(true);
+      expect(findUnlockBtn().exists()).toBe(true);
+      expect(findRemoveBtn().exists()).toBe(true);
+    });
+  });
+
+  describe('when the user does not have an administrator role', () => {
+    beforeEach(() => {
+      return createComponent({ ...defaultProps, terraformAdmin: false });
+    });
+
+    it('displays "copy init command" and "download" action buttons', () => {
+      expect(findCopyBtn().exists()).toBe(true);
+      expect(findDownloadBtn().exists()).toBe(true);
+      expect(findUnlockBtn().exists()).toBe(false);
+      expect(findRemoveBtn().exists()).toBe(false);
     });
   });
 });

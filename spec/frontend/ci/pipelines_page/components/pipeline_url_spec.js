@@ -30,7 +30,7 @@ describe('Pipeline Url Component', () => {
     wrapper.findByTestId('pipeline-identifier-container');
   const findCommitTitle = (commitWrapper) => commitWrapper.find('[data-testid="commit-title"]');
 
-  const defaultProps = { ...mockPipeline(projectPath), refClass: 'gl-text-black' };
+  const defaultProps = { ...mockPipeline(projectPath), refClass: 'gl-text-strong' };
 
   const createComponent = (props) => {
     wrapper = shallowMountExtended(PipelineUrlComponent, {

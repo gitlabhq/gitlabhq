@@ -122,13 +122,10 @@ module API
 
           note = create_note(noteable, opts)
 
-          if note.persisted?
+          process_note_creation_result(note) do
             present note.discussion, with: Entities::Discussion
-          else
-            bad_request!("Note #{note.errors.messages}")
           end
         end
-
         desc "Get comments in a single #{notable_name} discussion" do
           success Entities::Discussion
         end
@@ -175,10 +172,8 @@ module API
           }
           note = create_note(noteable, opts)
 
-          if note.persisted?
+          process_note_creation_result(note) do
             present note, with: Entities::Note
-          else
-            bad_request!("Note #{note.errors.messages}")
           end
         end
 

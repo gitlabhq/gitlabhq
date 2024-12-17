@@ -175,9 +175,6 @@ export default {
       },
     },
   },
-  errorCaptured(error) {
-    this.reportToSentry(error);
-  },
   methods: {
     webUrl(runner) {
       return this.runners.urlsById[runner.id]?.web;

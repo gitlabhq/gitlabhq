@@ -17,7 +17,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
-import SnippetCodeDropdown from '~/vue_shared/components/code_dropdown/snippet_code_dropdown.vue';
+import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_dropdown.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { createAlert, VARIANT_DANGER, VARIANT_SUCCESS } from '~/alert';
 import { VISIBILITY_LEVEL_PUBLIC_STRING } from '~/visibility_level/constants';
@@ -38,7 +38,7 @@ export const i18n = {
 
 export default {
   components: {
-    SnippetCodeDropdown,
+    CloneCodeDropdown,
     GlIcon,
     GlSprintf,
     GlModal,
@@ -283,17 +283,17 @@ export default {
           :href="editItem.href"
           :title="editItem.title"
           :disabled="editItem.disabled"
-          class="gl-hidden sm:gl-inline-block"
+          class="gl-hidden sm:gl-inline-flex"
           data-testid="snippet-action-button"
           :data-qa-action="editItem.text"
         >
           {{ editItem.text }}
         </gl-button>
 
-        <snippet-code-dropdown
+        <clone-code-dropdown
           v-if="canBeClonedOrEmbedded"
-          :ssh-link="snippet.sshUrlToRepo"
-          :http-link="snippet.httpUrlToRepo"
+          :ssh-url="snippet.sshUrlToRepo"
+          :http-url="snippet.httpUrlToRepo"
           :url="snippet.webUrl"
           :embeddable="embeddable"
           data-testid="code-button"

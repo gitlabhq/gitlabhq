@@ -10,3 +10,4 @@ milestone: '15.4'
 gitlab_schema: gitlab_ci
 exempt_from_sharding: true
 notes: Exempted because to be leveraged via Org Mover
+table_size: small

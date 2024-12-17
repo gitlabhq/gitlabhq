@@ -204,7 +204,7 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
         find_by_testid('reveal-hide-values-button').click
 
         aggregate_failures 'shows truncated token, no clipboard button and no edit link' do
-          expect(page.find('.triggers-list')).to have_content(project.triggers.first.token[0..3])
+          expect(page.find('.triggers-list')).to have_content(project.triggers.first.short_token)
           expect(page.find('.triggers-list')).not_to have_selector('[data-testid="clipboard-btn"]')
           expect(page.find('.triggers-list .trigger-owner')).not_to have_content user.name
           expect(page.find('.triggers-list')).not_to have_selector('a[title="Edit"]')

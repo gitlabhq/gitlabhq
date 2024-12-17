@@ -1,13 +1,12 @@
 <script>
-import { GlTooltip, GlIcon } from '@gitlab/ui';
 import { localeDateFormat, newDate, timeFor } from '~/lib/utils/datetime_utility';
 import { __, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
 
 export default {
   components: {
-    GlIcon,
-    GlTooltip,
+    WorkItemAttribute,
   },
   mixins: [timeagoMixin],
   props: {
@@ -72,10 +71,16 @@ export default {
 };
 </script>
 <template>
-  <div ref="milestoneDetails" class="issue-milestone-details gl-flex gl-max-w-15 gl-gap-2">
-    <gl-icon :size="16" class="flex-shrink-0" name="milestone" />
-    <span class="milestone-title gl-inline-block gl-truncate">{{ milestone.title }}</span>
-    <gl-tooltip :target="() => $refs.milestoneDetails" placement="bottom" class="js-item-milestone">
+  <work-item-attribute
+    anchor-id="board-card-milestone"
+    wrapper-component="div"
+    wrapper-component-class="issue-milestone-details gl-flex gl-max-w-15 gl-gap-2 gl-items-center"
+    icon-name="milestone"
+    icon-class="flex-shrink-0"
+    :title="milestone.title"
+    title-component-class="milestone-title gl-inline-block gl-truncate"
+  >
+    <template #tooltip-text>
       <span class="gl-font-bold">{{ __('Milestone') }}</span> <br />
       <span>{{ milestone.title }}</span> <br />
       <span
@@ -87,6 +92,6 @@ export default {
         ><span>{{ milestoneDatesHuman }}</span
         ><br /><span>{{ milestoneDatesAbsolute }}</span>
       </span>
-    </gl-tooltip>
-  </div>
+    </template>
+  </work-item-attribute>
 </template>

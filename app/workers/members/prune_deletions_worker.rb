@@ -73,6 +73,7 @@ module Members
 
     def log_monitoring_data(user_id, namespace_id, destroyed_count)
       Gitlab::AppLogger.info(
+        message: 'Processed scheduled member deletion',
         user_id: user_id,
         namespace_id: namespace_id,
         destroyed_count: destroyed_count

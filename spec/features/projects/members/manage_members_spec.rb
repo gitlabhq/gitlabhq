@@ -112,7 +112,7 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
       it 'shows Owner in the dropdown' do
         within_modal do
           toggle_listbox
-          expect_listbox_items(%w[Guest Reporter Developer Maintainer Owner])
+          expect_listbox_items(%w[Guest Planner Reporter Developer Maintainer Owner])
         end
       end
     end
@@ -123,7 +123,7 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
       it 'does not show the Owner option' do
         within_modal do
           toggle_listbox
-          expect_listbox_items(%w[Guest Reporter Developer Maintainer])
+          expect_listbox_items(%w[Guest Planner Reporter Developer Maintainer])
         end
       end
     end
@@ -292,6 +292,28 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
       visit_members_page
 
       expect(find_member_row(user_with_2fa)).to have_content('2FA')
+    end
+  end
+
+  context 'planner role banner' do
+    before do
+      sign_in(user1)
+
+      visit_members_page
+    end
+
+    it 'shows the planner role annoucement and persists dismissal' do
+      expect(page).to have_content('New Planner role')
+
+      within_testid('planner-role-banner') do
+        find_by_testid('close-icon').click
+      end
+
+      expect(page).not_to have_content('New Planner role')
+
+      page.refresh
+
+      expect(page).not_to have_content('New Planner role')
     end
   end
 

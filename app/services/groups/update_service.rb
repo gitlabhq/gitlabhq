@@ -6,8 +6,6 @@ module Groups
 
     SETTINGS_PARAMS = [
       :allow_mfa_for_subgroups,
-      :remove_dormant_members,
-      :remove_dormant_members_period,
       :early_access_program_participant
     ].freeze
 
@@ -80,7 +78,8 @@ module Groups
 
       # we have a path change on a root group:
       # check that we don't have any npm package with a scope set to the group path
-      npm_packages = ::Packages::GroupPackagesFinder.new(current_user, group, package_type: :npm, preload_pipelines: false)
+      npm_packages = ::Packages::GroupPackagesFinder
+                       .new(current_user, group, packages_class: ::Packages::Npm::Package, preload_pipelines: false)
                        .execute
                        .with_npm_scope(group.path)
 

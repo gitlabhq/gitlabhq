@@ -45,33 +45,34 @@ module BulkImports
 
         return unless object
 
-        if object.new_record?
-          saver = Gitlab::ImportExport::Base::RelationObjectSaver.new(
-            relation_object: object,
-            relation_key: relation,
-            relation_definition: relation_definition,
-            importable: portable
-          )
+        begin
+          if object.new_record?
+            saver = Gitlab::ImportExport::Base::RelationObjectSaver.new(
+              relation_object: object,
+              relation_key: relation,
+              relation_definition: relation_definition,
+              importable: portable
+            )
 
-          saver.execute
+            saver.execute
 
-          capture_invalid_subrelations(saver.invalid_subrelations)
-        else
-          if object.invalid?
-            Gitlab::Import::Errors.merge_nested_errors(object)
+            capture_invalid_subrelations(saver.invalid_subrelations)
+          else
+            if object.invalid?
+              Gitlab::Import::Errors.merge_nested_errors(object)
 
-            raise(ActiveRecord::RecordInvalid, object)
+              raise(ActiveRecord::RecordInvalid, object)
+            end
+
+            object.save!
           end
 
-          object.save!
+        ensure
+          push_placeholder_references(original_users_map) if context.importer_user_mapping_enabled?
         end
-
-        push_placeholder_references(original_users_map) if context.importer_user_mapping_enabled?
       end
 
       def deep_transform_relation!(relation_hash, relation_key, relation_definition, &block)
-        relation_key = relation_key_override(relation_key)
-
         relation_definition.each do |sub_relation_key, sub_relation_definition|
           sub_relation = relation_hash[sub_relation_key]
 

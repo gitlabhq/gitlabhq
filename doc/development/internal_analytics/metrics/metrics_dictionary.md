@@ -7,7 +7,11 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 # Metrics Dictionary Guide
 
 [Service Ping](../service_ping/index.md) metrics are defined in individual YAML files definitions from which the
-[Metrics Dictionary](https://metrics.gitlab.com/) is built. Currently, the metrics dictionary is built automatically once a day. When a change to a metric is made in a YAML file, you can see the change in the dictionary within 24 hours.
+[Metrics Dictionary](https://metrics.gitlab.com/) is built. Currently, the metrics dictionary is built automatically once an hour.
+
+- When a change to a metric is made in a YAML file, you can see the change in the dictionary within 1 hour of the change getting deployed to production.
+- When a change to an event is made in a YAML file, you can see the change in the dictionary within 1 hour of the change getting merged to the master branch.
+
 This guide describes the dictionary and how it's implemented.
 
 ## Metrics Definition and validation
@@ -29,7 +33,7 @@ All metrics are stored in YAML files:
 WARNING:
 Only metrics with a metric definition YAML and whose status is not `removed` are added to the Service Ping JSON payload.
 
-Each metric is defined in a separate YAML file consisting of a number of fields:
+Each metric is defined in a YAML file consisting of a number of fields:
 
 | Field                        | Required | Additional information |
 |------------------------------|----------|------------------------|
@@ -38,11 +42,10 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `product_group`              | yes      | The [group](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) that owns the metric. |
 | `value_type`                 | yes      | `string`; one of [`string`, `number`, `boolean`, `object`](https://json-schema.org/understanding-json-schema/reference/type). |
 | `status`                     | yes      | `string`; [status](#metric-statuses) of the metric, may be set to `active`, `removed`, `broken`. |
-| `time_frame`                 | yes      | `string`; may be set to a value like `7d`, `28d`, `all`, `none`. |
+| `time_frame`                 | yes      | `string` or `array`; may be set to `7d`, `28d`, `all`, `none` or an array including any of these values except for `none`. |
 | `data_source`                | yes      | `string`; may be set to a value like `database`, `redis`, `redis_hll`, `prometheus`, `system`, `license`, `internal_events`. |
 | `data_category`              | yes      | `string`; [categories](#data-category) of the metric, may be set to `operational`, `optional`, `subscription`, `standard`. The default value is `optional`. |
 | `instrumentation_class`      | no       | `string`; used for metrics with `data_source` other than `internal_events`. See [the class that implements the metric](metrics_instrumentation.md). |
-| `distribution`               | yes      | `array`; may be set to one of `ce, ee` or `ee`. The [distribution](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/#definitions) where the tracked feature is available. |
 | `performance_indicator_type` | no       | `array`; may be set to one of [`gmau`, `smau`, `paid_gmau`, `umau`, `customer_health_score` or `devops_report`](https://handbook.gitlab.com/handbook/business-technology/data-team/data-catalog/). |
 | `tier`                       | yes      | `array`; may contain one or a combination of `free`, `premium` or `ultimate`. The [tier](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/#definitions) where the tracked feature is available. This should be verbose and contain all tiers where a metric is available. |
 | `tiers`                       | no      | `array`; may contain one or a combination of `free`, `premium` or `ultimate`. The [tiers](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/#definitions) where the tracked feature is available. This should be verbose and contain all tiers where a metric is available. |
@@ -59,12 +62,15 @@ The `key_path` of the metric is the location in the JSON Service Ping payload.
 
 The `key_path` could be composed from multiple parts separated by `.` and it must be unique.
 
-We recommend to add the metric in one of the top-level keys:
+If a metric definition has an array `time_frame`, the `key_path` defined in the YAML file will have a suffix automatically added for each of the included time frames:
 
-- `settings`: for settings related metrics.
-- `counts_weekly`: for counters that have data for the most recent 7 days.
-- `counts_monthly`: for counters that have data for the most recent 28 days.
-- `counts`: for counters that have data for all time.
+| time_frame | `key_path` suffix|
+|------------|------------------|
+| `all`      | no suffix |
+| `7d`       | `_weekly` |
+| `28d`      | `_monthly` |
+
+The `key_path`s shown in the [Metrics Dictionary](https://metrics.gitlab.com/) include those suffixes.
 
 ### Metric statuses
 
@@ -88,7 +94,7 @@ Metric definitions can have one of the following values for `value_type`:
 
 ### Metric `time_frame`
 
-A metric's time frame is calculated based on the `time_frame` field and the `data_source` of the metric.
+A metric's time frame is calculated based on the `time_frame` field and the `data_source` of the metric. When `time_frame` is an array, the metric's values are calculated for each of the included time frames.
 
 | data_source            | time_frame | Description                                     |
 |------------------------|------------|-------------------------------------------------|
@@ -126,9 +132,6 @@ instrumentation_class: UuidMetric
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1521
 time_frame: none
 data_source: database
-distribution:
-- ce
-- ee
 tier:
 - free
 - premium

@@ -267,7 +267,7 @@ export default {
           :loading="isLoadingChildren && !fetchNextPageInProgress"
           class="!gl-px-0 !gl-py-3"
           data-testid="expand-child"
-          @click="toggleItem"
+          @click.stop="toggleItem"
         />
       </div>
       <div

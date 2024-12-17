@@ -4,7 +4,7 @@
   breaking_change: true
   reporter: sam.white
   body: |  # Do not modify this line, instead modify the lines below.
-    All functionality related to GitLab's Container Network Security and
+    All functionality related to GitLab Container Network Security and
     Container Host Security categories is deprecated in GitLab 14.8 and
     scheduled for removal in GitLab 15.0. Users who need a replacement for this
     functionality are encouraged to evaluate the following open source projects

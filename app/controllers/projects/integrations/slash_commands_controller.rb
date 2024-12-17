@@ -41,7 +41,10 @@ module Projects
       end
 
       def cache_key
-        @cache_key ||= Kernel.format(::Integrations::BaseSlashCommands::CACHE_KEY, secret: request_params[:command_id])
+        @cache_key ||= Kernel.format(
+          ::Integrations::Base::SlashCommands::CACHE_KEY,
+          secret: request_params[:command_id]
+        )
       end
 
       def integration

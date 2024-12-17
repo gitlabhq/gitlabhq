@@ -65,10 +65,10 @@ export default {
       <gl-link
         data-testid="snippet-url"
         :href="snippet.webUrl"
-        class="gl-mb-2 gl-font-bold gl-text-gray-900"
+        class="gl-mb-2 gl-font-bold gl-text-default"
         >{{ snippet.title }}</gl-link
       >
-      <span class="gl-text-gray-500">
+      <span class="gl-text-subtle">
         <gl-sprintf :message="$options.i18n.snippetInfo">
           <template #id>
             <span data-testid="snippet-id">{{ formattedId }}</span>
@@ -77,7 +77,7 @@ export default {
             <time-ago data-testid="snippet-created-at" :time="snippet.createdAt" />
           </template>
           <template #author>
-            <gl-link data-testid="snippet-author" :href="profilePath" class="gl-text-gray-900">{{
+            <gl-link data-testid="snippet-author" :href="profilePath" class="gl-text-default">{{
               userInfo.name
             }}</gl-link>
           </template>
@@ -99,7 +99,7 @@ export default {
         <gl-link
           data-testid="snippet-comments"
           :href="`${snippet.webUrl}#notes`"
-          class="gl-mr-4 gl-text-gray-900"
+          class="gl-mr-4 gl-text-default"
           :class="{ 'gl-opacity-5': commentsCount === 0 }"
         >
           <gl-icon name="comments" />
@@ -107,7 +107,7 @@ export default {
         </gl-link>
         <gl-icon data-testid="snippet-visibility" :name="visibilityIcon" />
       </div>
-      <span class="gl-text-gray-500">
+      <span class="gl-text-subtle">
         <gl-sprintf :message="$options.i18n.updatedInfo">
           <template #updated>
             <time-ago data-testid="snippet-updated-at" :time="snippet.updatedAt" />

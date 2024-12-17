@@ -44,7 +44,7 @@ module Ci
 
     def refspecs
       specs = []
-      specs << refspec_for_persistent_ref if persistent_ref_exist?
+      specs << refspec_for_persistent_ref
 
       if git_depth > 0
         specs << refspec_for_branch(ref) if branch? || legacy_detached_merge_request_pipeline?
@@ -135,17 +135,6 @@ module Ci
 
     def refspec_for_persistent_ref
       "+#{pipeline.persistent_ref.path}:#{pipeline.persistent_ref.path}"
-    end
-
-    def persistent_ref_exist?
-      ##
-      # Persistent refs for pipelines definitely exist from GitLab 12.4,
-      # hence, we don't need to check the ref existence before passing it to runners.
-      # Checking refs pressurizes gitaly node and should be avoided.
-      # Issue: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/2143
-      return true if Feature.enabled?(:ci_skip_persistent_ref_existence_check)
-
-      pipeline.persistent_ref.exist?
     end
 
     def git_depth_variable

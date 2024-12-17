@@ -47,7 +47,7 @@ export default {
       return this.manifest?.status === MANIFEST_PENDING_DESTRUCTION_STATUS;
     },
     disabledRowStyle() {
-      return this.isErrorStatus ? 'gl-font-normal gl-text-gray-500' : '';
+      return this.isErrorStatus ? 'gl-font-normal gl-text-subtle' : '';
     },
     shortDigest() {
       // digest is in the format `sha256:995efde2e81b21d1ea7066aa77a59298a62a9e9fbb4b77f36c189774ec9b1089`

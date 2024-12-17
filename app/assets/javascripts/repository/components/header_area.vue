@@ -7,25 +7,33 @@ import { keysFor, START_SEARCH_PROJECT_FILE } from '~/behaviors/shortcuts/keybin
 import { sanitize } from '~/lib/dompurify';
 import { InternalEvents } from '~/tracking';
 import { FIND_FILE_BUTTON_CLICK } from '~/tracking/constants';
-import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
-import { generateHistoryUrl } from '~/repository/utils/url_utility';
+import { visitUrl, joinPaths, webIDEUrl } from '~/lib/utils/url_utility';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import Breadcrumbs from '~/repository/components/header_area/breadcrumbs.vue';
 import BlobControls from '~/repository/components/header_area/blob_controls.vue';
+import CodeDropdown from '~/vue_shared/components/code_dropdown/code_dropdown.vue';
+import SourceCodeDownloadDropdown from '~/vue_shared/components/download_dropdown/download_dropdown.vue';
+import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_dropdown.vue';
 
 export default {
   name: 'HeaderArea',
   i18n: {
     compare: __('Compare'),
     findFile: __('Find file'),
-    history: __('History'),
   },
   components: {
     GlButton,
     RefSelector,
     Breadcrumbs,
     BlobControls,
+    CodeDropdown,
+    SourceCodeDownloadDropdown,
+    CloneCodeDropdown,
+    WebIdeLink: () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
+    LockDirectoryButton: () =>
+      import('ee_component/repository/components/lock_directory_button.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -34,6 +42,7 @@ export default {
     'canCollaborate',
     'canEditTree',
     'canPushCode',
+    'canPushToBranch',
     'originalBranch',
     'selectedBranch',
     'newBranchPath',
@@ -47,6 +56,26 @@ export default {
     'projectRootPath',
     'comparePath',
     'isReadmeView',
+    'isFork',
+    'needsToFork',
+    'gitpodEnabled',
+    'isBlob',
+    'showEditButton',
+    'showWebIdeButton',
+    'showGitpodButton',
+    'showPipelineEditorUrl',
+    'webIdeUrl',
+    'editUrl',
+    'pipelineEditorUrl',
+    'gitpodUrl',
+    'userPreferencesGitpodPath',
+    'userProfileEnableGitpodPath',
+    'httpUrl',
+    'xcodeUrl',
+    'sshUrl',
+    'kerberosUrl',
+    'downloadLinks',
+    'downloadArtifacts',
   ],
   props: {
     projectPath: {
@@ -63,10 +92,6 @@ export default {
       required: false,
       default: null,
     },
-    historyLink: {
-      type: String,
-      required: true,
-    },
     projectId: {
       type: String,
       required: true,
@@ -76,14 +101,8 @@ export default {
     isTreeView() {
       return this.$route.name !== 'blobPathDecoded';
     },
-    historyPath() {
-      const url = generateHistoryUrl(
-        this.historyLink,
-        this.$route.params.path,
-        this.$route.meta.refType || this.$route.query.ref_type,
-      );
-
-      return url.href;
+    isRoot() {
+      return !this.currentPath || this.currentPath === '/';
     },
     getRefType() {
       return this.$route.query.ref_type;
@@ -98,6 +117,24 @@ export default {
     },
     refSelectorValue() {
       return this.refType ? joinPaths('refs', this.refType, this.currentRef) : this.currentRef;
+    },
+    webIDEUrl() {
+      return this.isBlob
+        ? this.webIdeUrl
+        : webIDEUrl(
+            joinPaths(
+              '/',
+              this.projectPath,
+              'edit',
+              this.currentRef,
+              '-',
+              this.$route?.params.path || '',
+              '/',
+            ),
+          );
+    },
+    projectIdAsNumber() {
+      return getIdFromGraphQLId(this.projectId);
     },
     findFileTooltip() {
       const { description } = START_SEARCH_PROJECT_FILE;
@@ -123,7 +160,7 @@ export default {
 </script>
 
 <template>
-  <section class="nav-block gl-flex gl-flex-col gl-items-stretch sm:gl-flex-row">
+  <section class="nav-block gl-flex gl-flex-col gl-items-stretch sm:gl-flex-row sm:gl-items-center">
     <div class="tree-ref-container mb-2 mb-md-0 gl-flex gl-flex-wrap gl-gap-2">
       <ref-selector
         v-if="!isReadmeView"
@@ -143,6 +180,7 @@ export default {
         :can-collaborate="canCollaborate"
         :can-edit-tree="canEditTree"
         :can-push-code="canPushCode"
+        :can-push-to-branch="canPushToBranch"
         :original-branch="originalBranch"
         :selected-branch="selectedBranch"
         :new-branch-path="newBranchPath"
@@ -159,6 +197,7 @@ export default {
     <!-- Tree controls -->
     <div v-if="isTreeView" class="tree-controls gl-mb-3 gl-flex gl-flex-wrap gl-gap-3 sm:gl-mb-0">
       <!-- EE: = render_if_exists 'projects/tree/lock_link' -->
+      <lock-directory-button v-if="!isRoot" :project-path="projectPath" :path="currentPath" />
       <gl-button
         v-if="comparePath"
         data-testid="tree-compare-control"
@@ -166,20 +205,62 @@ export default {
         class="shortcuts-compare"
         >{{ $options.i18n.compare }}</gl-button
       >
-      <gl-button v-if="!isReadmeView" :href="historyPath" data-testid="tree-history-control">{{
-        $options.i18n.history
-      }}</gl-button>
       <gl-button
         v-gl-tooltip.html="findFileTooltip"
         :aria-keyshortcuts="findFileShortcutKey"
         data-testid="tree-find-file-control"
-        class="gl-mt-3 gl-w-full sm:gl-mt-0 sm:gl-w-auto"
+        class="gl-w-full sm:gl-w-auto"
         @click="handleFindFile"
       >
         {{ $options.i18n.findFile }}
       </gl-button>
       <!-- web ide -->
+      <web-ide-link
+        class="gl-w-full sm:!gl-ml-0 sm:gl-w-auto"
+        data-testid="js-tree-web-ide-link"
+        :project-id="projectIdAsNumber"
+        :project-path="projectPath"
+        :is-fork="isFork"
+        :needs-to-fork="needsToFork"
+        :gitpod-enabled="gitpodEnabled"
+        :is-blob="isBlob"
+        :show-edit-button="showEditButton"
+        :show-web-ide-button="showWebIdeButton"
+        :show-gitpod-button="showGitpodButton"
+        :show-pipeline-editor-url="showPipelineEditorUrl"
+        :web-ide-url="webIDEUrl"
+        :edit-url="editUrl"
+        :pipeline-editor-url="pipelineEditorUrl"
+        :gitpod-url="gitpodUrl"
+        :user-preferences-gitpod-path="userPreferencesGitpodPath"
+        :user-profile-enable-gitpod-path="userProfileEnableGitpodPath"
+        disable-fork-modal
+        v-on="$listeners"
+      />
       <!-- code + mobile panel -->
+      <div v-if="!isReadmeView" class="project-code-holder gl-w-full sm:gl-w-auto">
+        <code-dropdown
+          class="git-clone-holder js-git-clone-holder gl-hidden sm:gl-inline-block"
+          :ssh-url="sshUrl"
+          :http-url="httpUrl"
+          :kerberos-url="kerberosUrl"
+          :xcode-url="xcodeUrl"
+          :current-path="currentPath"
+          :directory-download-links="downloadLinks"
+        />
+        <div class="gl-flex gl-items-stretch gl-gap-3 sm:gl-hidden">
+          <source-code-download-dropdown
+            :download-links="downloadLinks"
+            :download-artifacts="downloadArtifacts"
+          />
+          <clone-code-dropdown
+            class="git-clone-holder js-git-clone-holder !gl-w-full"
+            :ssh-url="sshUrl"
+            :http-url="httpUrl"
+            :kerberos-url="kerberosUrl"
+          />
+        </div>
+      </div>
     </div>
 
     <!-- Blob controls -->

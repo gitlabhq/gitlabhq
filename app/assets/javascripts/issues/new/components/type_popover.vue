@@ -1,6 +1,7 @@
 <script>
-import { GlIcon, GlPopover } from '@gitlab/ui';
+import { GlPopover } from '@gitlab/ui';
 import { __ } from '~/locale';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 
 export default {
   i18n: {
@@ -11,7 +12,7 @@ export default {
     incidentHelpText: __('For investigating IT service disruptions or outages'),
   },
   components: {
-    GlIcon,
+    HelpIcon,
     GlPopover,
   },
 };
@@ -19,7 +20,7 @@ export default {
 
 <template>
   <span id="popovercontainer" class="gl-ml-2">
-    <gl-icon id="issue-type-info" name="question-o" variant="info" />
+    <help-icon id="issue-type-info" />
 
     <gl-popover
       target="issue-type-info"

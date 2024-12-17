@@ -180,7 +180,7 @@ push_frontend_feature_flag(:my_wip_flag, project)
 
 ### `beta` type
 
-We might [not be confident we'll be able to scale, support, and maintain a feature](../../policy/experiment-beta-support.md) in its current form for every designed use case ([example](https://gitlab.com/gitlab-org/gitlab/-/issues/336070#note_1523983444)).
+We might [not be confident we'll be able to scale, support, and maintain a feature](../../policy/development_stages_support.md) in its current form for every designed use case ([example](https://gitlab.com/gitlab-org/gitlab/-/issues/336070#note_1523983444)).
 There are also scenarios where a feature is not complete enough to be considered an MVC.
 Providing a flag in this case allows engineers and customers to disable the new feature until it's performant enough.
 

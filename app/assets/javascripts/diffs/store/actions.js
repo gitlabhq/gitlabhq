@@ -20,7 +20,12 @@ import notesEventHub from '~/notes/event_hub';
 import { generateTreeList } from '~/diffs/utils/tree_worker_utils';
 import { sortTree } from '~/ide/stores/utils';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
-import { isCollapsed } from '~/diffs/utils/diff_file';
+import {
+  isCollapsed,
+  countLinesInBetween,
+  findClosestMatchLine,
+  lineExists,
+} from '~/diffs/utils/diff_file';
 import {
   INLINE_DIFF_VIEW_TYPE,
   DIFF_VIEW_COOKIE_NAME,
@@ -1065,15 +1070,17 @@ export const toggleFileCommentForm = ({ state, commit }, filePath) => {
 export const addDraftToFile = ({ commit }, { filePath, draft }) =>
   commit(types.ADD_DRAFT_TO_FILE, { filePath, draft });
 
-export const fetchLinkedFile = ({ state, commit }, linkedFileUrl) => {
-  const isNoteLink = isUrlHashNoteLink(window?.location?.hash);
+export const fetchLinkedFile = ({ state, commit, dispatch }, linkedFileUrl) => {
+  const isNoteLink = isUrlHashNoteLink(window.location.hash);
+  const [, fragmentFileHash, oldNumber, newNumber] =
+    window.location.hash.substring(1).match(/^([0-9a-f]{40})_([0-9]+)_([0-9]+)$/) || [];
 
   commit(types.SET_BATCH_LOADING_STATE, 'loading');
   commit(types.SET_RETRIEVING_BATCHES, true);
 
   return axios
     .get(linkedFileUrl)
-    .then(({ data: diffData }) => {
+    .then(async ({ data: diffData }) => {
       const [{ file_hash }] = diffData.diff_files;
 
       // we must store linked file in the `diffs`, otherwise collapsing and commenting on a file won't work
@@ -1084,6 +1091,14 @@ export const fetchLinkedFile = ({ state, commit }, linkedFileUrl) => {
 
       if (!isNoteLink && !state.currentDiffFileId) {
         commit(types.SET_CURRENT_DIFF_FILE, file_hash);
+      }
+
+      if (fragmentFileHash && oldNumber && newNumber) {
+        await dispatch('fetchLinkedExpandedLine', {
+          fileHash: fragmentFileHash,
+          oldLine: parseInt(oldNumber, 10),
+          newLine: parseInt(newNumber, 10),
+        });
       }
 
       commit(types.SET_BATCH_LOADING_STATE, 'loaded');
@@ -1101,6 +1116,83 @@ export const fetchLinkedFile = ({ state, commit }, linkedFileUrl) => {
     .finally(() => {
       commit(types.SET_RETRIEVING_BATCHES, false);
     });
+};
+
+export const fetchLinkedExpandedLine = ({ getters, dispatch }, { fileHash, oldLine, newLine }) => {
+  const file = getters.linkedFile;
+  if (!file || file.file_hash !== fileHash) return Promise.resolve();
+
+  const lines = file[INLINE_DIFF_LINES_KEY];
+  if (lineExists(lines, oldLine, newLine)) return Promise.resolve();
+
+  const matchLine = findClosestMatchLine(lines, newLine);
+  const { new_pos: matchNewPosition, old_pos: matchOldPosition } = matchLine.meta_data;
+  const matchLineIndex = lines.indexOf(matchLine);
+  const linesInBetween = countLinesInBetween(lines, matchLineIndex);
+  const isExpandBoth = linesInBetween !== -1 && linesInBetween < 20;
+  const previousLine = lines[matchLineIndex - 1];
+  const previousLineNumber = previousLine?.new_line;
+  const isLastMatchLine = matchLineIndex === lines.length - 1;
+  const isExpandDown =
+    isLastMatchLine ||
+    (previousLine && !isExpandBoth && newLine - previousLineNumber < matchNewPosition - newLine);
+  const loadLines = (params, rest) =>
+    dispatch('loadMoreLines', {
+      endpoint: file.context_lines_path,
+      fileHash: file.file_hash,
+      params: {
+        offset: matchNewPosition - matchOldPosition,
+        ...params,
+      },
+      isExpandDown: false,
+      lineNumbers: {
+        oldLineNumber: matchOldPosition,
+        newLineNumber: matchNewPosition,
+      },
+      ...rest,
+    });
+
+  if (isExpandBoth) {
+    return loadLines({
+      unfold: false,
+      since: previousLine.new_line + 1,
+      to: matchNewPosition - 1,
+      bottom: false,
+    });
+  }
+
+  if (!isExpandDown) {
+    return loadLines({
+      unfold: true,
+      since: newLine,
+      to: matchNewPosition - 1,
+      bottom: isLastMatchLine,
+    });
+  }
+
+  const rest = {};
+  if (!isLastMatchLine) {
+    Object.assign(rest, {
+      isExpandDown: true,
+      lineNumbers: {
+        oldLineNumber: previousLine.old_line,
+        newLineNumber: previousLine.new_line,
+      },
+      nextLineNumbers: {
+        old_line: matchOldPosition,
+        new_line: matchNewPosition,
+      },
+    });
+  }
+  return loadLines(
+    {
+      unfold: true,
+      since: previousLine.new_line + 1,
+      to: newLine,
+      bottom: true,
+    },
+    rest,
+  );
 };
 
 export const unlinkFile = ({ getters, commit }) => {

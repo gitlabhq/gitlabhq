@@ -6,6 +6,21 @@ module Gitlab
       operation_name :update_issues_correct_work_item_type_id
       feature_category :team_planning
 
+      COLUMNS_CONVERT_TO_BIGINT = %w[
+        author_id_convert_to_bigint
+        closed_by_id_convert_to_bigint
+        duplicated_to_id_convert_to_bigint
+        id_convert_to_bigint
+        last_edited_by_id_convert_to_bigint
+        milestone_id_convert_to_bigint
+        moved_to_id_convert_to_bigint
+        project_id_convert_to_bigint
+        promoted_to_epic_id_convert_to_bigint
+        updated_by_id_convert_to_bigint
+      ].freeze
+
+      delegate :quote_column_name, :quote_table_name, to: :connection
+
       def perform
         each_sub_batch do |sub_batch|
           first, last = sub_batch.pick(Arel.sql('min(id), max(id)'))
@@ -15,17 +30,8 @@ module Gitlab
               UPDATE
                 "issues"
               SET
-                "correct_work_item_type_id" = "work_item_types"."correct_id",
-                "author_id_convert_to_bigint" = "issues"."author_id",
-                "closed_by_id_convert_to_bigint" = "issues"."closed_by_id",
-                "duplicated_to_id_convert_to_bigint" = "issues"."duplicated_to_id",
-                "id_convert_to_bigint" = "issues"."id",
-                "last_edited_by_id_convert_to_bigint" = "issues"."last_edited_by_id",
-                "milestone_id_convert_to_bigint" = "issues"."milestone_id",
-                "moved_to_id_convert_to_bigint" = "issues"."moved_to_id",
-                "project_id_convert_to_bigint" = "issues"."project_id",
-                "promoted_to_epic_id_convert_to_bigint" = "issues"."promoted_to_epic_id",
-                "updated_by_id_convert_to_bigint" = "issues"."updated_by_id"
+                "correct_work_item_type_id" = "work_item_types"."correct_id"
+                #{bigint_assignments}
               FROM
                 "work_item_types"
               WHERE
@@ -35,6 +41,23 @@ module Gitlab
             SQL
           )
         end
+      end
+
+      private
+
+      def bigint_assignments
+        @bigint_assignments ||=
+          COLUMNS_CONVERT_TO_BIGINT.filter_map do |bigint_column|
+            next unless all_column_names.include?(bigint_column)
+
+            source_column = bigint_column.sub('_convert_to_bigint', '')
+
+            ",\n#{quote_column_name(bigint_column)} = #{quote_table_name(:issues)}.#{quote_column_name(source_column)}"
+          end.join('')
+      end
+
+      def all_column_names
+        @all_column_names ||= connection.columns(:issues).map(&:name)
       end
     end
   end

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Bamboo < BaseCi
+  class Bamboo < Integration
+    include Base::Ci
     include ReactivelyCached
     prepend EnableSslVerification
 

@@ -55,7 +55,7 @@ module Keeps
 
       def fetch_groups
         @groups_json ||= begin
-          response = Gitlab::HTTP_V2.get(GROUPS_JSON_URL)
+          response = Gitlab::HTTP_V2.get(GROUPS_JSON_URL) # rubocop:disable Gitlab/HttpV2 -- Not running inside rails application
 
           unless (200..299).cover?(response.code)
             raise Error,

@@ -274,7 +274,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
               step: 'some reference',
               script: 'echo'
             }]
-          } | 'job run value at /0 should use only one of: step, script'
+          } | 'job run object property at `/0/script` is a disallowed additional property'
 
           'when a required subkey is missing' | {
             stage: 'build',
@@ -954,8 +954,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
               run: [
                 {
                   name: 'step1',
-                  script: 'echo $MY_INPUT',
-                  inputs: { MY_INPUT: 'some value' }
+                  script: 'echo ${{env.MY_ENV}}',
+                  env: { MY_ENV: 'some value' }
                 }
               ]
             }

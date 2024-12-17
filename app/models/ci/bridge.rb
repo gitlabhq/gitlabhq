@@ -59,6 +59,18 @@ module Ci
       event :finish_cancel do
         transition CANCELABLE_STATUSES.map(&:to_sym) + [:manual, :canceling] => :canceled
       end
+
+      event :inherit_success do
+        transition all => :success
+      end
+
+      event :inherit_finish_cancel do
+        transition all => :canceled
+      end
+
+      event :inherit_failed do
+        transition all => :failed
+      end
     end
 
     def retryable?
@@ -86,11 +98,11 @@ module Ci
     def inherit_status_from_downstream!(pipeline)
       case pipeline.status
       when 'success'
-        success!
+        inherit_success!
       when 'canceled'
-        finish_cancel!
+        inherit_finish_cancel!
       when 'failed', 'skipped'
-        drop!
+        inherit_failed!
       else
         false
       end
@@ -122,7 +134,7 @@ module Ci
         project = options&.dig(:trigger, :project)
         next unless project
 
-        scoped_variables.to_runner_variables.then do |all_variables|
+        scoped_variables.to_hash_variables.then do |all_variables|
           ::ExpandVariables.expand(project, all_variables)
         end
       end
@@ -223,7 +235,7 @@ module Ci
       branch = options&.dig(:trigger, :branch)
       return unless branch
 
-      scoped_variables.to_runner_variables.then do |all_variables|
+      scoped_variables.to_hash_variables.then do |all_variables|
         ::ExpandVariables.expand(branch, all_variables)
       end
     end

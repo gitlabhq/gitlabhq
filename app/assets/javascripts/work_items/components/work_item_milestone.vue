@@ -241,7 +241,7 @@ export default {
       <div v-if="item.title">{{ item.title }}</div>
     </template>
     <template #readonly>
-      <gl-link class="!gl-text-gray-900" :href="localMilestone.webPath">
+      <gl-link class="!gl-text-default" :href="localMilestone.webPath">
         {{ localMilestone.title }}{{ expired }}
       </gl-link>
     </template>

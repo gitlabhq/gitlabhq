@@ -139,7 +139,7 @@ module Gitlab
           output = ''
 
           if redact
-            output = "`/#{matched_text[:cmd]}#{" " + matched_text[:arg] if matched_text[:arg]}`"
+            output = "`/#{matched_text[:cmd]}#{' ' + matched_text[:arg] if matched_text[:arg]}`"
             output += "\n" if matched_text[0].include?("\n")
           elsif keep_actions
             # put the command in a new paragraph, but without introducing newlines

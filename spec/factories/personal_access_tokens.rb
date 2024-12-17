@@ -5,12 +5,11 @@ FactoryBot.define do
     user
     organization
     sequence(:name) { |n| "PAT #{n}" }
+    description { "Token description" }
     revoked { false }
     expires_at { 30.days.from_now }
     scopes { ['api'] }
     impersonation { false }
-
-    after(:build) { |personal_access_token| personal_access_token.ensure_token }
 
     trait :impersonation do
       impersonation { true }

@@ -16,7 +16,7 @@ module Gitlab
         @start_at = Gitlab::JiraImport.get_issues_next_start_at(project.id)
         @imported_items_cache_key = JiraImport.already_imported_cache_key(:issues, project.id)
         @job_waiter = JobWaiter.new
-        @issue_type_id = ::WorkItems::Type.default_issue_type.id
+        @issue_type = ::WorkItems::Type.default_issue_type
       end
 
       def execute
@@ -63,7 +63,7 @@ module Gitlab
               project,
               jira_issue,
               running_import.user_id,
-              @issue_type_id,
+              @issue_type,
               { iid: next_iid }
             ).execute
 

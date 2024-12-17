@@ -8,6 +8,8 @@
 #   EventCreateService.new.new_issue(issue, current_user)
 #
 class EventCreateService
+  include Gitlab::InternalEventsTracking
+
   IllegalActionError = Class.new(StandardError)
 
   DEGIGN_EVENT_LABEL = 'usage_activity_by_stage_monthly.create.action_monthly_active_users_design_management'
@@ -176,8 +178,13 @@ class EventCreateService
   def wiki_event(wiki_page_meta, author, action, fingerprint)
     raise IllegalActionError, action unless Event::WIKI_ACTIONS.include?(action)
 
-    Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:wiki_action, values: author.id)
     Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:git_write_action, values: author.id)
+
+    track_internal_event("performed_wiki_action",
+      project: wiki_page_meta.project,
+      user: author,
+      additional_properties: { label: action.to_s }
+    )
 
     duplicate = Event.for_wiki_meta(wiki_page_meta).for_fingerprint(fingerprint).first
     return duplicate if duplicate.present?

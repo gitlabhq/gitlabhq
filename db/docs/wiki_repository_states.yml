@@ -8,8 +8,6 @@ description: Separate table for project wikis containing Geo verification metada
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109033
 milestone: '15.9'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 desired_sharding_key:
   project_id:
     references: projects
@@ -20,3 +18,4 @@ desired_sharding_key:
         sharding_key: project_id
         belongs_to: project_wiki_repository
 desired_sharding_key_migration_job_name: BackfillWikiRepositoryStatesProjectId
+table_size: small

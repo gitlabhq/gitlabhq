@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.groups_inheriting_webex_teams_active
 description: Count of active groups inheriting integrations for Webex Teams
 product_group: import_and_integrate
+product_categories:
+- integrations
 value_type: number
 status: active
 time_frame: all

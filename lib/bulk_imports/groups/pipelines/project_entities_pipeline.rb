@@ -22,7 +22,7 @@ module BulkImports
         end
 
         def load(context, data)
-          context.bulk_import.entities.create!(data)
+          context.bulk_import.entities.create!(data.merge(organization_id: context.entity.group.organization_id))
         end
       end
     end

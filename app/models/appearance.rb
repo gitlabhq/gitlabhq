@@ -102,6 +102,10 @@ class Appearance < ApplicationRecord
     footer_message.present?
   end
 
+  def uploads_sharding_key
+    {}
+  end
+
   private
 
   def logo_system_path(logo, mount_type)

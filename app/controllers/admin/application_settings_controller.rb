@@ -56,7 +56,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
     @integrations = Integration.find_or_initialize_all_non_project_specific(
       Integration.for_instance, include_instance_specific: true
-    ).sort_by(&:title)
+    ).sort_by { |int| int.title.downcase }
   end
 
   def update
@@ -191,7 +191,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
           allowed_to_push: [:access_level]
         }
       ] },
-      :can_create_organization,
       :lets_encrypt_notification_email,
       :lets_encrypt_terms_of_service_accepted,
       :domain_denylist_file,

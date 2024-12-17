@@ -20,6 +20,10 @@ module Gitlab
         bitbucket_server_notes_separate_worker_enabled =
           Feature.enabled?(:bitbucket_server_notes_separate_worker, current_user)
 
+        user_contribution_mapping_enabled =
+          Feature.enabled?(:importer_user_mapping, current_user) &&
+          Feature.enabled?(:bitbucket_server_user_mapping, current_user)
+
         ::Projects::CreateService.new(
           current_user,
           name: name,
@@ -37,7 +41,8 @@ module Gitlab
               project_key: project_key,
               repo_slug: repo_slug,
               timeout_strategy: timeout_strategy,
-              bitbucket_server_notes_separate_worker: bitbucket_server_notes_separate_worker_enabled
+              bitbucket_server_notes_separate_worker: bitbucket_server_notes_separate_worker_enabled,
+              user_contribution_mapping_enabled: user_contribution_mapping_enabled
             }
           },
           skip_wiki: true

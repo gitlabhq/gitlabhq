@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import Item from '~/ide/components/merge_requests/item.vue';
 import { createRouter } from '~/ide/ide_router';
 import { createStore } from '~/ide/stores';
@@ -12,7 +13,12 @@ const TEST_ITEM = {
   title: 'Merge request title',
 };
 
-describe('IDE merge request item', () => {
+const skipReason = new SkipReason({
+  name: 'IDE merge request item',
+  reason: 'Legacy WebIDE is due for deletion',
+  issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508949',
+});
+describeSkipVue3(skipReason, () => {
   Vue.use(Vuex);
 
   let wrapper;

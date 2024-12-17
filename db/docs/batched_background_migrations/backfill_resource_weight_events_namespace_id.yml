@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillResourceWeightEventsNamespaceId
+description: Backfills sharding key `resource_weight_events.namespace_id` from `issues`.
+feature_category: team_planning
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174405
+milestone: '17.7'
+queued_migration_version: 20241202142254
+finalized_by: # version of the migration that finalized this BBM

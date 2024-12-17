@@ -324,7 +324,7 @@ export default {
               {{ user.username }} ({{ user.name }})
             </gl-dropdown-item>
 
-            <gl-dropdown-text v-show="shouldShowNoMatchesFoundText" class="text-secondary">
+            <gl-dropdown-text v-show="shouldShowNoMatchesFoundText" class="gl-text-subtle">
               {{ __('No matches found') }}
             </gl-dropdown-text>
           </gl-dropdown>

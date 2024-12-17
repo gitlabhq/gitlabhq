@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.package_events_i_package_delete_package_by_deploy_token
 description: A count of packages that have been deleted using a Deploy Token
 product_group: package_registry
+product_categories:
+- package_registry
 value_type: number
 status: active
 time_frame: all

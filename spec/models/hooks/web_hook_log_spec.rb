@@ -233,7 +233,6 @@ RSpec.describe WebHookLog, feature_category: :webhooks do
   end
 
   describe '#request_headers' do
-    let(:hook) { build(:project_hook, :token) }
     let(:web_hook_log) { build(:web_hook_log, request_headers: request_headers) }
     let(:expected_headers) { { 'X-Gitlab-Token' => _('[REDACTED]') } }
 
@@ -244,9 +243,15 @@ RSpec.describe WebHookLog, feature_category: :webhooks do
     end
 
     context 'with exposed headers token' do
-      let(:request_headers) { { 'X-Gitlab-Token' => hook.token } }
+      let(:request_headers) { { 'X-Gitlab-Token' => 'secret_token' } }
 
       it { expect(web_hook_log.request_headers).to eq(expected_headers) }
+    end
+
+    context 'with no token headers' do
+      let(:request_headers) { {} }
+
+      it { expect(web_hook_log.request_headers['X-Gitlab-Token']).to be_nil }
     end
   end
 

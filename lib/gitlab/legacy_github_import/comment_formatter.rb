@@ -3,6 +3,8 @@
 module Gitlab
   module LegacyGithubImport
     class CommentFormatter < BaseFormatter
+      include Import::UsernameMentionRewriter
+
       attr_writer :author_id
 
       attr_accessor :gitlab_issuable
@@ -46,7 +48,7 @@ module Gitlab
       end
 
       def body
-        raw_data[:body] || ""
+        wrap_mentions_in_backticks(raw_data[:body]) || ""
       end
 
       def line_code

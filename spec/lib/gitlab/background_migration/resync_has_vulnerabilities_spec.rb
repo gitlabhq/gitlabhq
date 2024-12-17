@@ -9,6 +9,7 @@ RSpec.describe Gitlab::BackgroundMigration::ResyncHasVulnerabilities, feature_ca
   let(:identifiers) { table(:vulnerability_identifiers) }
   let(:scanners) { table(:vulnerability_scanners) }
   let!(:user) { table(:users).create!(email: 'author@example.com', username: 'author', projects_limit: 10) }
+  let(:organizations) { table(:organizations) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
 
@@ -73,13 +74,15 @@ RSpec.describe Gitlab::BackgroundMigration::ResyncHasVulnerabilities, feature_ca
     actually_has_vulnerabilities:,
     present_on_default_branch: true
   )
-    group_namespace = namespaces.create!(name: name, path: name)
-    project_namespace = namespaces.create!(name: name, path: name)
+    organization = organizations.create!(name: "#{name}-organization", path: "#{name}-organization")
+    group_namespace = namespaces.create!(name: name, path: name, organization_id: organization.id)
+    project_namespace = namespaces.create!(name: name, path: name, organization_id: organization.id)
     project = projects.create!(
       name: name,
       path: name,
       namespace_id: group_namespace.id,
-      project_namespace_id: project_namespace.id
+      project_namespace_id: project_namespace.id,
+      organization_id: organization.id
     )
     create_vulnerability(project, present_on_default_branch) if actually_has_vulnerabilities
     project_settings.create!(project_id: project.id, has_vulnerabilities: has_vulnerabilities_setting)

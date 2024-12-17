@@ -173,7 +173,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
       expect(created_object.target_project).to equal(project)
     end
 
-    it 'has MWPS set to false' do
+    it 'has auto merge set to false' do
       expect(created_object.merge_when_pipeline_succeeds).to eq(false)
     end
 

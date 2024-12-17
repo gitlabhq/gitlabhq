@@ -70,7 +70,7 @@ export default {
     ready: s__('Deployment|Ready to be deployed.'),
     deploy: s__('Deployment|Deploy'),
     genericError: s__(
-      'Deloyment|Something went wrong starting the deployment. Please try again later.',
+      'Deployment|Something went wrong starting the deployment. Please try again later.',
     ),
   },
 };

@@ -3,6 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage_monthly.create.merge_requests
 description: Count distinct authors of merge requests
 product_group: code_review
+product_categories:
+- code_review_workflow
 value_type: number
 status: removed
 milestone_removed: '14.10'

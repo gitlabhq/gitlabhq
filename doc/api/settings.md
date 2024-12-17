@@ -10,14 +10,17 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-These API calls allow you to read and modify GitLab instance
+Use this API to interact with the
 [application settings](#list-of-settings-that-can-be-accessed-via-api-calls)
-as they appear in `/admin/application_settings/general`. You must be an
-administrator to perform this action.
+for your GitLab instance.
 
-Application settings are subject to caching and may not immediately take effect.
+Changes to your application settings are subject to caching and might not immediately take effect.
 By default, GitLab caches application settings for 60 seconds.
 For information on how to control the application settings cache for an instance, see [Application cache interval](../administration/application_settings_cache.md).
+
+Prerequisites:
+
+- You must have administrator access to the instance.
 
 ## Get current application settings
 
@@ -142,6 +145,7 @@ Example response:
   "jira_connect_application_key": null,
   "jira_connect_public_key_storage_enabled": false,
   "jira_connect_proxy_url": null,
+  "jira_connect_additional_audience_url": null,
   "silent_mode_enabled": false,
   "package_registry_allow_anyone_to_pull_option": true,
   "bulk_import_max_download_file_size": 5120,
@@ -443,7 +447,7 @@ listed in the descriptions of the relevant settings.
 | `default_ci_config_path`                 | string           | no                                   | Default CI/CD configuration file and path for new projects (`.gitlab-ci.yml` if not set). |
 | `default_group_visibility`               | string           | no                                   | What visibility level new groups receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131203) in GitLab 16.4: cannot be set to any levels in `restricted_visibility_levels`.|
 | `default_preferred_language`             | string           | no                                   | Default preferred language for users who are not logged in. |
-| `default_project_creation`               | integer          | no                                   | Default project creation protection. Can take: `0` _(No one)_, `1` _(Maintainers)_, `2` _(Developers + Maintainers)_, or `3` _(Administrators)_.|
+| `default_project_creation`               | integer          | no                                   | Default project creation protection. Can take: `0` _(No one)_, `1` _(Maintainers)_, `2` _(Developers + Maintainers)_, `3` _(Administrators)_ or `4` _(Owners)_. |
 | `default_project_visibility`             | string           | no                                   | What visibility level new projects receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131203) in GitLab 16.4: cannot be set to any levels in `restricted_visibility_levels`.|
 | `default_projects_limit`                 | integer          | no                                   | Project limit per user. Default is `100000`. |
 | `default_snippet_visibility`             | string           | no                                   | What visibility level new snippets receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
@@ -632,6 +636,7 @@ listed in the descriptions of the relevant settings.
 | `require_admin_approval_after_user_signup` | boolean        | no                                   | When enabled, any user that signs up for an account using the registration form is placed under a **Pending approval** state and has to be explicitly [approved](../administration/moderate_users.md) by an administrator. |
 | `require_personal_access_token_expiry`   | boolean          | no                                   | When enabled, users must set an expiration date when creating a group or project access token, or a personal access token owned by a non-service account. |
 | `require_two_factor_authentication`      | boolean          | no                                   | (**If enabled, requires:** `two_factor_grace_period`) Require all users to set up two-factor authentication. |
+| `resource_usage_limits`                | hash             | no                                   | Definition for resource usage limits enforced in Sidekiq workers. This setting is available for GitLab.com only.  |
 | `restricted_visibility_levels`           | array of strings | no                                   | Selected levels cannot be used by non-Administrator users for groups, projects or snippets. Can take `private`, `internal` and `public` as a parameter. Default is `null` which means there is no restriction.[Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131203) in GitLab 16.4: cannot select levels that are set as `default_project_visibility` and `default_group_visibility`. |
 | `rsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded RSA key. Default is `0` (no restriction). `-1` disables RSA keys. |
 | `session_expire_delay`                   | integer          | no                                   | Session duration in minutes. GitLab restart is required to apply changes. |

@@ -1,4 +1,4 @@
-import { GlBadge, GlButton } from '@gitlab/ui';
+import { GlBadge } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -51,10 +51,11 @@ describe('PipelineFailedJobsWidget component', () => {
     });
   };
 
-  const findFailedJobsButton = () => wrapper.findComponent(GlButton);
+  const findFailedJobsButton = () => wrapper.findByTestId('toggle-button');
   const findFailedJobsList = () => wrapper.findComponent(FailedJobsList);
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
   const findCount = () => wrapper.findComponent(GlBadge);
+  const findFeedbackButton = () => wrapper.findByTestId('feedback-button');
 
   describe('when there are failed jobs', () => {
     beforeEach(async () => {
@@ -93,6 +94,10 @@ describe('PipelineFailedJobsWidget component', () => {
     it('the failed jobs button has the correct "aria-expanded" attribute value', () => {
       expect(findFailedJobsButton().attributes('aria-expanded')).toBe('true');
     });
+
+    it('displays feedback button', () => {
+      expect(findFeedbackButton().exists()).toBe(true);
+    });
   });
 
   describe('when the job details are not expanded', () => {
@@ -106,6 +111,10 @@ describe('PipelineFailedJobsWidget component', () => {
 
     it('the failed jobs button has the correct "aria-expanded" attribute value', () => {
       expect(findFailedJobsButton().attributes('aria-expanded')).toBe('false');
+    });
+
+    it('does not display feedback button', () => {
+      expect(findFeedbackButton().exists()).toBe(false);
     });
   });
 

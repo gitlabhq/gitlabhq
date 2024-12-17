@@ -11,7 +11,7 @@ module Packages
 
       package.mark_package_files_for_destruction
       package.sync_maven_metadata(current_user)
-      package.sync_npm_metadata_cache
+      package.sync_npm_metadata_cache if package.npm?
 
       service_response_success('Package was successfully marked as pending destruction')
     rescue StandardError => e

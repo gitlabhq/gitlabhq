@@ -498,6 +498,10 @@ stop_review_app:
       when: manual
 ```
 
+The [`environment:action`](../yaml/index.md#environmentaction) keyword can be used to reset the time
+that an environment is scheduled to stop. For more information, see
+[Access an environment for preparation or verification purposes](#access-an-environment-for-preparation-or-verification-purposes).
+
 #### View an environment's scheduled stop date and time
 
 When a environment has been [scheduled to stop after a specified time period](#stop-an-environment-after-a-certain-time-period),
@@ -520,7 +524,7 @@ To override an environment's expiration in the UI:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
-1. Select the deployment name.
+1. Select the environment name.
 1. in the upper-right corner, select the thumbtack (**{thumbtack}**).
 
 To override an environment's expiration in the `.gitlab-ci.yml`:
@@ -686,6 +690,8 @@ To delete an environment:
 
 ## Access an environment for preparation or verification purposes
 
+> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/437133) to reset `auto_stop_in` for `prepare` and `access` actions in GitLab 17.7.
+
 You can define a job that accesses an environment for various purposes, such as verification or preparation. This
 effectively bypasses deployment creation, so that you can adjust your CD workflow more accurately.
 
@@ -704,6 +710,14 @@ build:
 
 This gives you access to environment-scoped variables, and can be used to protect builds from unauthorized access. Also,
 it's effective to avoid the [prevent outdated deployment jobs](deployment_safety.md#prevent-outdated-deployment-jobs) feature.
+
+If an environment is configured to stop after a certain time period, jobs with the `access` or `prepare`
+action will reset the scheduled stop time. The [`environment:auto_stop_in`](../yaml/index.md#environmentauto_stop_in)
+from the most recent successful deployment job to the environment is used when resetting the scheduled time.
+For example, if the most recent deployment used `auto_stop_in: 1 week` and is later accessed by a job with
+`action: access`, the environment will be rescheduled to stop one week from the completion of the accessing job.
+
+To access an environment without changing the scheduled stop time, use the `verify` action.
 
 ## Environment incident management
 

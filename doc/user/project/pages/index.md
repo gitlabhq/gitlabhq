@@ -187,7 +187,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162826) in GitLab 17.4.
 
 You can configure your Pages deployments to be automatically deleted after
-a period of time has passed by specifying a duration at `pages.expire_in`:
+a period of time has passed by specifying a duration at [`pages.expire_in`](../../../ci/yaml/index.md#pagespagesexpire_in):
 
 ```yaml
 deploy-pages:
@@ -202,15 +202,16 @@ deploy-pages:
 ```
 
 By default, [parallel deployments](#parallel-deployments) expire
-automatically after 24 hours. To disable this behavior, set `pages.expire_in` to `never`.
+automatically after 24 hours.
+To disable this behavior, set `pages.expire_in` to `never`.
 
 Expired deployments are stopped by a cron job that runs every 10 minutes.
 Stopped deployments are subsequently deleted by another cron job that also
 runs every 10 minutes. To recover it, follow the steps described in
 [Recover a stopped deployment](#recover-a-stopped-deployment).
 
-A stopped or deleted deployment is no longer available on the web. Users will
-see a 404 Not found error page at its URL, until another deployment is created
+A stopped or deleted deployment is no longer available on the web.
+Users see a `404 Not found` error page at its URL, until another deployment is created
 with the same URL configuration.
 
 The previous YAML example uses [user-defined job names](#user-defined-job-names).
@@ -237,9 +238,10 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [experiment](../../../policy/experiment-beta-support.md) [with a flag](../../feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [experiment](../../../policy/development_stages_support.md) [with a flag](../../feature_flags.md) named `pages_multiple_versions_setting`. Disabled by default.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/480195) from "multiple deployments" to "parallel deployments" in GitLab 17.4.
 > - [Enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/422145) in GitLab 17.4.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/502219) to remove the project setting.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -272,14 +274,6 @@ branch named `username/testing_feature`, this parallel Pages deployment would be
 
 - When using a [unique domain](#unique-domains): `https://project-namespace-123456.gitlab.io/username-testing-feature`.
 - When not using a unique domain: `https://namespace.gitlab.io/project/username-testing-feature`.
-
-### Enable parallel deployments
-
-To enable parallel GitLab Pages deployments:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Deploy > Pages**.
-1. Select **Enable parallel deployments**.
 
 ### Limits
 

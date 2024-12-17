@@ -11,6 +11,24 @@ module Integrations
 
       ignore_column :type, remove_with: '17.7', remove_after: '2024-12-02'
 
+      has_one :issue_tracker_data,
+        autosave: true,
+        inverse_of: :instance_integration,
+        foreign_key: :instance_integration_id,
+        class_name: 'Integrations::IssueTrackerData'
+
+      has_one :jira_tracker_data,
+        autosave: true,
+        inverse_of: :instance_integration,
+        foreign_key: :instance_integration_id,
+        class_name: 'Integrations::JiraTrackerData'
+
+      has_one :zentao_tracker_data,
+        autosave: true,
+        inverse_of: :instance_integration,
+        foreign_key: :instance_integration_id,
+        class_name: 'Integrations::ZentaoTrackerData'
+
       def instance_level?
         true
       end

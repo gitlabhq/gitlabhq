@@ -16,7 +16,7 @@ module Packages
       def execute
         return ::Packages::Package.none unless params[:package_name].present?
 
-        packages = base.npm.installable
+        packages = base.installable
         packages = filter_by_exact_package_name(packages)
         filter_by_package_version(packages)
       end
@@ -31,16 +31,16 @@ module Packages
         elsif namespace
           packages_for_namespace
         else
-          ::Packages::Package.none
+          ::Packages::Npm::Package.none
         end
       end
 
       def packages_for_project
-        project.packages
+        ::Packages::Npm::Package.for_projects(project)
       end
 
       def packages_for_namespace
-        ::Packages::Package.for_projects(namespace.all_projects)
+        ::Packages::Npm::Package.for_projects(namespace.all_projects)
       end
     end
   end

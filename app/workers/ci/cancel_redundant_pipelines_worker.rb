@@ -8,7 +8,7 @@ module Ci
     feature_category :continuous_integration
     idempotent!
     deduplicate :until_executed
-    urgency :high
+    urgency :low
 
     def perform(pipeline_id, options = {})
       relation = Ci::Pipeline.all

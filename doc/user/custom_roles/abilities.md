@@ -14,7 +14,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
   edit `tooling/custom_roles/docs/templates/custom_abilities.md.erb`.
 -->
 
-# Available custom permissions
+# Custom permissions
 
 The following permissions are available. You can add these permissions in any combination
 to a base role to create a custom role.

@@ -8,3 +8,4 @@ description: Stores users' preferences
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7816
 milestone: '11.5'
 gitlab_schema: gitlab_main_clusterwide
+table_size: small

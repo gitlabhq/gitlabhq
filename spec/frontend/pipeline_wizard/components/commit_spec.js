@@ -66,7 +66,7 @@ describe('Pipeline Wizard - Commit Page', () => {
   };
 
   function getButtonWithLabel(label) {
-    return wrapper.findAllComponents(GlButton).filter((n) => n.text().match(label));
+    return wrapper.findAllComponents(GlButton).wrappers.find((n) => n.text().match(label));
   }
 
   describe('ui setup', () => {
@@ -93,7 +93,7 @@ describe('Pipeline Wizard - Commit Page', () => {
     });
 
     it('does not show a next button', () => {
-      expect(getButtonWithLabel('Next').exists()).toBe(false);
+      expect(getButtonWithLabel('Next')).toBeUndefined();
     });
   });
 

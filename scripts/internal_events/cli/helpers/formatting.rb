@@ -107,19 +107,25 @@ module InternalEventsCli
         "-" * window_size
       end
 
-      def progress_bar(step, total, titles = [])
-        breadcrumbs = [
-          titles[0..(step - 1)],
-          format_selection(titles[step]),
-          titles[(step + 1)..]
-        ]
+      # Prints a progress bar on the screen at the current location
+      # @param current_title [String] title to highlight
+      # @param titles [Array<String>] progression to follow;
+      #     -> first element is expected to be a title for the entire flow
+      def progress_bar(current_title, titles = [])
+        step = titles.index(current_title)
+        total = titles.length - 1
 
-        status = " Step #{step} / #{total} : #{breadcrumbs.flatten.join(' > ')}"
+        raise ArgumentError, "Invalid selection #{current_title} in progress bar" unless step
+
+        status = " Step #{step} / #{total} : #{titles.join(' > ')}"
+        status.gsub!(current_title, format_selection(current_title))
+
         total_length = window_size - 4
         step_length = step / total.to_f * total_length
 
         incomplete = '-' * [(total_length - step_length - 1), 0].max
         complete = '=' * [(step_length - 1), 0].max
+
         "#{status}\n|==#{complete}>#{incomplete}|\n"
       end
 

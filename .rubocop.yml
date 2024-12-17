@@ -28,7 +28,7 @@ inherit_mode:
 
 AllCops:
   # The oldest supported Ruby version.
-  TargetRubyVersion: 3.1
+  TargetRubyVersion: 3.2
   TargetRailsVersion: 7.0
   Exclude:
     - 'gems/**/*'
@@ -66,6 +66,13 @@ Rails/Date:
   Exclude:
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/502580
     - danger/database/Dangerfile
+
+Rails/Pluck:
+  Exclude:
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/502580
+    - 'tooling/danger/**/*'
+  # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94047#note_1179689274
+  AutoCorrect: false
 
 RSpec:
   Language:
@@ -363,9 +370,6 @@ Rails/MailerName:
     # See for the context on why it's excluded https://gitlab.com/gitlab-org/gitlab/-/issues/239356#note_956419227
     - 'app/mailers/notify.rb'
 
-Rails/Pluck:
-  # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94047#note_1179689274
-  AutoCorrect: false
 
 Rails/RakeEnvironment:
   # Context on why it's disabled: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93419#note_1048223982
@@ -719,6 +723,12 @@ API/GrapeArrayMissingCoerce:
     - 'lib/**/api/**/*.rb'
     - 'ee/**/api/**/*.rb'
 
+API/ClassLevelAllowAccessWithScope:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/lib/**/api/**/*.rb'
+
 Cop/SidekiqOptionsQueue:
   Enabled: true
   Exclude:
@@ -996,6 +1006,7 @@ Cop/UserAdmin:
     - 'lib/gitlab/auth/current_user_mode.rb'
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
+    - 'qa/**/*.rb'
 
 Style/InlineDisableAnnotation:
   Enabled: true

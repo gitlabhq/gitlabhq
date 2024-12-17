@@ -10,7 +10,7 @@ module Ci
 
     private
 
-    def uncached_runner_variable
+    def uncached_hash_variable
       super.merge(raw: raw?)
     end
   end

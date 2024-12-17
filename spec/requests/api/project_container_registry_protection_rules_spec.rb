@@ -14,7 +14,7 @@ RSpec.describe API::ProjectContainerRegistryProtectionRules, :aggregate_failures
   let_it_be(:invalid_token) { 'invalid-token123' }
   let_it_be(:headers_with_invalid_token) { { Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER => invalid_token } }
 
-  let(:path) { 'registry/protection/rules' }
+  let(:path) { 'registry/protection/repository/rules' }
   let(:url) { "/projects/#{project.id}/#{path}" }
 
   let(:params) do
@@ -35,7 +35,7 @@ RSpec.describe API::ProjectContainerRegistryProtectionRules, :aggregate_failures
     it_behaves_like 'rejecting protection rules request when invalid project'
   end
 
-  describe 'GET /projects/:id/registry/protection/rules' do
+  describe 'GET /projects/:id/registry/protection/repository/rules' do
     subject(:get_container_registry_rules) { get(api(url, api_user)) }
 
     it_behaves_like 'rejecting project protection rules request when not enough permissions'
@@ -81,7 +81,7 @@ RSpec.describe API::ProjectContainerRegistryProtectionRules, :aggregate_failures
     end
   end
 
-  describe 'POST /projects/:id/registry/protection/rules' do
+  describe 'POST /projects/:id/registry/protection/repository/rules' do
     subject(:post_container_registry_rule) { post(api(url, api_user), params: params) }
 
     it_behaves_like 'rejecting project protection rules request when not enough permissions'
@@ -171,8 +171,8 @@ RSpec.describe API::ProjectContainerRegistryProtectionRules, :aggregate_failures
     end
   end
 
-  describe 'PATCH /projects/:id/registry/protection/rules/:protection_rule_id' do
-    let(:path) { "registry/protection/rules/#{protection_rule_id}" }
+  describe 'PATCH /projects/:id/registry/protection/repository/rules/:protection_rule_id' do
+    let(:path) { "registry/protection/repository/rules/#{protection_rule_id}" }
 
     subject(:patch_container_registry_protection_rule) { patch(api(url, api_user), params: params) }
 
@@ -293,8 +293,8 @@ RSpec.describe API::ProjectContainerRegistryProtectionRules, :aggregate_failures
     end
   end
 
-  describe 'DELETE /projects/:id/registry/protection/rules/:protection_rule_id' do
-    let(:path) { "registry/protection/rules/#{protection_rule_id}" }
+  describe 'DELETE /projects/:id/registry/protection/repository/rules/:protection_rule_id' do
+    let(:path) { "registry/protection/repository/rules/#{protection_rule_id}" }
 
     subject(:delete_protection_rule) { delete(api(url, api_user)) }
 

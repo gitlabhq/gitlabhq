@@ -68,6 +68,11 @@ module Pages
     end
     strong_memoize_attr :root_directory
 
+    def default_domain_redirect
+      project&.project_setting&.pages_default_domain_redirect
+    end
+    strong_memoize_attr :default_domain_redirect
+
     private
 
     attr_reader :project, :deployment, :trim_prefix, :domain
@@ -78,7 +83,7 @@ module Pages
     strong_memoize_attr :url_builder
 
     def prefix_value
-      return deployment.path_prefix if url_builder.namespace_pages?
+      return deployment.path_prefix if url_builder.is_namespace_homepage?
 
       [project.full_path.delete_prefix(trim_prefix), deployment.path_prefix].compact.join('/')
     end

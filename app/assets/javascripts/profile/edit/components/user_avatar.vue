@@ -70,7 +70,7 @@ export default {
       <h4 class="gl-my-0">
         {{ $options.i18n.publicAvatar }}
       </h4>
-      <p class="gl-text-secondary">
+      <p class="gl-text-subtle">
         <gl-sprintf :message="avatarHelpText">
           <template #gravatar_link>
             <gl-link :href="gravatarLink.url" target="__blank">
@@ -109,7 +109,7 @@ export default {
             name="user[avatar]"
           />
         </div>
-        <p class="gl-mb-0 gl-text-gray-500">
+        <p class="gl-mb-0 gl-text-subtle">
           {{ $options.i18n.imageDimensions }}
           {{ $options.i18n.maximumFileSize }}
         </p>

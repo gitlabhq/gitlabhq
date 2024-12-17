@@ -56,5 +56,16 @@ RSpec.describe 'Deleting a BranchRule', feature_category: :source_code_managemen
         expect { mutation_request }.not_to change { ProtectedBranch.count }
       end
     end
+
+    context 'when a branch rule is missing' do
+      let(:protected_branch) { build(:protected_branch, id: non_existing_record_id) }
+
+      it_behaves_like 'a mutation that returns top-level errors',
+        errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
+
+      it 'does not destroy the BranchRule' do
+        expect { mutation_request }.not_to change { ProtectedBranch.count }
+      end
+    end
   end
 end

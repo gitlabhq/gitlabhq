@@ -176,7 +176,6 @@ class Namespace < ApplicationRecord
     to: :namespace_settings
   delegate :emails_enabled, :emails_enabled=,
     to: :namespace_settings, allow_nil: true
-  delegate :token_expiry_notify_inherited, :token_expiry_notify_inherited=, to: :namespace_settings
   delegate :allow_runner_registration_token,
     :allow_runner_registration_token=,
     to: :namespace_settings
@@ -193,6 +192,15 @@ class Namespace < ApplicationRecord
     to: :namespace_settings
   delegate :add_creator, :pending_delete, :pending_delete=, :deleted_at, :deleted_at=,
     to: :namespace_details
+  delegate :resource_access_token_notify_inherited,
+    :resource_access_token_notify_inherited=,
+    :lock_resource_access_token_notify_inherited,
+    :lock_resource_access_token_notify_inherited=,
+    :resource_access_token_notify_inherited?,
+    :resource_access_token_notify_inherited_locked?,
+    :resource_access_token_notify_inherited_locked_by_ancestor?,
+    :resource_access_token_notify_inherited_locked_by_application_setting?,
+    to: :namespace_settings
 
   before_create :sync_share_with_group_lock_with_parent
   before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
@@ -213,6 +221,7 @@ class Namespace < ApplicationRecord
   scope :without_deleted, -> { joins(:namespace_details).where(namespace_details: { deleted_at: nil }) }
   scope :user_namespaces, -> { where(type: Namespaces::UserNamespace.sti_name) }
   scope :group_namespaces, -> { where(type: Group.sti_name) }
+  scope :project_namespaces, -> { where(type: Namespaces::ProjectNamespace.sti_name) }
   scope :without_project_namespaces, -> { where(Namespace.arel_table[:type].not_eq(Namespaces::ProjectNamespace.sti_name)) }
   scope :sort_by_type, -> { order(arel_table[:type].asc.nulls_first) }
   scope :include_route, -> { includes(:route) }
@@ -235,8 +244,8 @@ class Namespace < ApplicationRecord
       .where(project_statistics[:namespace_id].eq(arel_table[:id]))
       .lateral(subquery.name)
 
-    select(arel_table[Arel.star], subquery[Arel.star])
-      .from([arel.as('namespaces'), statistics])
+    model.select(arel_table[Arel.star], subquery[Arel.star])
+         .from([arel.as(arel_table.name), statistics])
   end
 
   scope :with_jira_installation, ->(installation_id) do
@@ -623,14 +632,6 @@ class Namespace < ApplicationRecord
       .try(name)
   end
 
-  def can_modify_token_expiry_notify_inherited?
-    ancestors.all?(&:token_expiry_notify_inherited)
-  end
-
-  def token_expiry_notify_inherited?
-    self_and_ancestors.all?(&:token_expiry_notify_inherited)
-  end
-
   def actual_plan
     Plan.default
   end
@@ -754,6 +755,18 @@ class Namespace < ApplicationRecord
     !!deleted_at
   end
 
+  def uploads_sharding_key
+    { organization_id: organization_id }
+  end
+
+  def pipeline_variables_default_role
+    return namespace_settings.pipeline_variables_default_role if namespace_settings.present?
+
+    # We could have old namespaces that don't have an associated `namespace_settings` record.
+    # To avoid returning `nil` we return the database-level default.
+    NamespaceSetting.column_defaults['pipeline_variables_default_role']
+  end
+
   private
 
   def require_organization?
@@ -827,22 +840,18 @@ class Namespace < ApplicationRecord
   end
 
   def refresh_access_of_projects_invited_groups
-    if Feature.enabled?(:specialized_worker_for_group_lock_update_auth_recalculation, self)
-      Project
-        .where(namespace_id: id)
-        .joins(:project_group_links)
-        .distinct
-        .find_each do |project|
-        AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(project.id)
-      end
-
-      # Until we compare the inconsistency rates of the new specialized worker and
-      # the old approach, we still run AuthorizedProjectsWorker
-      # but with some delay and lower urgency as a safety net.
-      enqueue_jobs_for_groups_requiring_authorizations_refresh(priority: UserProjectAccessChangedService::LOW_PRIORITY)
-    else
-      enqueue_jobs_for_groups_requiring_authorizations_refresh(priority: UserProjectAccessChangedService::HIGH_PRIORITY)
+    Project
+      .where(namespace_id: id)
+      .joins(:project_group_links)
+      .distinct
+      .find_each do |project|
+      AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(project.id)
     end
+
+    # Until we compare the inconsistency rates of the new specialized worker and
+    # the old approach, we still run AuthorizedProjectsWorker
+    # but with some delay and lower urgency as a safety net.
+    enqueue_jobs_for_groups_requiring_authorizations_refresh(priority: UserProjectAccessChangedService::LOW_PRIORITY)
   end
 
   def enqueue_jobs_for_groups_requiring_authorizations_refresh(priority:)

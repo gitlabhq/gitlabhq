@@ -10,23 +10,26 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphansApprovalMergeRequestRul
     let(:pause_ms) { 0 }
     let(:connection) { ApplicationRecord.connection }
 
+    let(:organizations) { table(:organizations) }
     let(:namespaces) { table(:namespaces) }
     let(:projects) { table(:projects) }
     let(:approval_project_rules) { table(:approval_project_rules) }
     let(:approval_merge_request_rules) { table(:approval_merge_request_rules) }
     let(:approval_merge_request_rule_sources) { table(:approval_merge_request_rule_sources) }
     let(:security_orchestration_policy_configurations) { table(:security_orchestration_policy_configurations) }
-    let(:namespace) { namespaces.create!(name: 'name', path: 'path') }
+
+    let(:organization) { organizations.create!(name: 'organization', path: 'organization') }
+    let(:namespace) { namespaces.create!(name: 'name', path: 'path', organization_id: organization.id) }
     let(:project) do
-      projects
-        .create!(name: "project", path: "project", namespace_id: namespace.id, project_namespace_id: namespace.id)
+      projects.create!(name: "project", path: "project", namespace_id: namespace.id,
+        project_namespace_id: namespace.id, organization_id: organization.id)
     end
 
-    let(:namespace_2) { namespaces.create!(name: 'name_2', path: 'path_2') }
+    let(:namespace_2) { namespaces.create!(name: 'name_2', path: 'path_2', organization_id: organization.id) }
     let(:security_project) do
       projects
         .create!(name: "security_project", path: "security_project", namespace_id: namespace_2.id,
-          project_namespace_id: namespace_2.id)
+          project_namespace_id: namespace_2.id, organization_id: organization.id)
     end
 
     let!(:security_orchestration_policy_configuration) do

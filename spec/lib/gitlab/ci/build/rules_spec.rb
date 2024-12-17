@@ -187,14 +187,14 @@ RSpec.describe Gitlab::Ci::Build::Rules, feature_category: :pipeline_composition
           [{ if: '$VAR == null', needs: [{ name: 'test', artifacts: true, optional: false }] }]
         end
 
-        it {
+        it do
           is_expected.to eq(described_class::Result.new(
             when: 'on_success',
             needs: [{ name: 'test',
                       artifacts: true,
                       optional: false }]
           ))
-        }
+        end
       end
 
       context 'when multiple needs are specified' do
@@ -204,7 +204,7 @@ RSpec.describe Gitlab::Ci::Build::Rules, feature_category: :pipeline_composition
                { name: 'rspec', artifacts: true, optional: false }] }]
         end
 
-        it {
+        it do
           is_expected.to eq(described_class::Result.new(
             when: 'on_success',
             needs: [{ name: 'test',
@@ -213,15 +213,15 @@ RSpec.describe Gitlab::Ci::Build::Rules, feature_category: :pipeline_composition
               { name: 'rspec',
                 artifacts: true,
                 optional: false }]))
-        }
+        end
       end
 
       context 'when there are no needs specified' do
         let(:rule_list) { [{ if: '$VAR == null' }] }
 
-        it {
+        it do
           is_expected.to eq(described_class::Result.new(when: 'on_success'))
-        }
+        end
       end
 
       context 'when need is specified with additional attibutes' do
@@ -234,7 +234,7 @@ RSpec.describe Gitlab::Ci::Build::Rules, feature_category: :pipeline_composition
           }] }]
         end
 
-        it {
+        it do
           is_expected.to eq(
             described_class::Result.new(
               when: 'on_success',
@@ -242,7 +242,7 @@ RSpec.describe Gitlab::Ci::Build::Rules, feature_category: :pipeline_composition
                         name: 'test',
                         optional: true,
                         when: 'never' }]))
-        }
+        end
       end
     end
 

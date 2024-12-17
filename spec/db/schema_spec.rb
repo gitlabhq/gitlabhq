@@ -96,6 +96,8 @@ RSpec.describe 'Database schema',
         auto_canceled_by_partition_id execution_config_id upstream_pipeline_partition_id],
       ci_builds_metadata: %w[partition_id project_id build_id],
       ci_build_needs: %w[project_id],
+      ci_build_pending_states: %w[project_id],
+      ci_build_trace_chunks: %w[project_id],
       ci_builds_runner_session: %w[project_id],
       ci_daily_build_group_report_results: %w[partition_id],
       ci_deleted_objects: %w[project_id],
@@ -108,11 +110,11 @@ RSpec.describe 'Database schema',
       ci_pipeline_schedule_variables: %w[project_id],
       ci_pipeline_variables: %w[partition_id pipeline_id project_id],
       ci_pipelines_config: %w[partition_id project_id],
-      ci_pipelines: %w[partition_id auto_canceled_by_partition_id project_id user_id merge_request_id], # LFKs are defined on the routing table
+      ci_pipelines: %w[partition_id auto_canceled_by_partition_id project_id user_id merge_request_id trigger_id], # LFKs are defined on the routing table
       ci_secure_file_states: %w[project_id],
       ci_unit_test_failures: %w[project_id],
       ci_resources: %w[project_id],
-      p_ci_pipelines: %w[partition_id auto_canceled_by_partition_id auto_canceled_by_id],
+      p_ci_pipelines: %w[partition_id auto_canceled_by_partition_id auto_canceled_by_id trigger_id],
       p_ci_runner_machine_builds: %w[project_id],
       ci_runner_taggings: %w[runner_id sharding_key_id], # The sharding_key_id value is meant to populate the partitioned table, no other usage. The runner_id FK exists at the partition level
       ci_runner_taggings_instance_type: %w[sharding_key_id], # This field is always NULL in this partition
@@ -122,10 +124,10 @@ RSpec.describe 'Database schema',
       group_type_ci_runners_e59bb2812d: %w[creator_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners_e59bb2812d routing table.
       project_type_ci_runners_e59bb2812d: %w[creator_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners_e59bb2812d routing table.
       ci_runner_machines: %w[sharding_key_id], # This value is meant to populate the partitioned table, no other usage
-      ci_runner_machines_687967fa8a: %w[runner_id sharding_key_id], # This field is only used in the partitions, and has the appropriate FKs. runner_id temporarily ignored due to incident 18792
-      instance_type_ci_runner_machines_687967fa8a: %w[runner_id sharding_key_id], # This field is always NULL in this partition. runner_id temporarily ignored due to incident 18792
-      group_type_ci_runner_machines_687967fa8a: %w[runner_id sharding_key_id], # No need for LFK, rows will be deleted by the FK to ci_runners. runner_id temporarily ignored due to incident 18792
-      project_type_ci_runner_machines_687967fa8a: %w[runner_id sharding_key_id], # No need for LFK, rows will be deleted by the FK to ci_runners. runner_id temporarily ignored due to incident 18792
+      ci_runner_machines_687967fa8a: %w[runner_id sharding_key_id], # The sharding_key_id field is only used in the partitions, and has the appropriate FKs. The runner_id field will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/503749.
+      instance_type_ci_runner_machines_687967fa8a: %w[sharding_key_id], # This field is always NULL in this partition.
+      group_type_ci_runner_machines_687967fa8a: %w[sharding_key_id], # No need for LFK, rows will be deleted by the FK to ci_runners.
+      project_type_ci_runner_machines_687967fa8a: %w[sharding_key_id], # No need for LFK, rows will be deleted by the FK to ci_runners.
       ci_runner_projects: %w[runner_id],
       ci_sources_pipelines: %w[partition_id source_partition_id source_job_id],
       ci_sources_projects: %w[partition_id],
@@ -186,6 +188,7 @@ RSpec.describe 'Database schema',
       p_ci_builds: %w[erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id execution_config_id
         upstream_pipeline_partition_id],
       p_ci_builds_metadata: %w[project_id build_id partition_id],
+      p_ci_build_trace_metadata: %w[project_id],
       p_batched_git_ref_updates_deletions: %w[project_id partition_id],
       p_catalog_resource_sync_events: %w[catalog_resource_id project_id partition_id],
       p_catalog_resource_component_usages: %w[used_by_project_id], # No FK constraint because we want to preserve historical usage data
@@ -216,7 +219,7 @@ RSpec.describe 'Database schema',
       taggings: %w[tag_id taggable_id tagger_id],
       timelogs: %w[user_id],
       todos: %w[target_id commit_id],
-      uploads: %w[model_id],
+      uploads: %w[model_id organization_id namespace_id project_id],
       user_agent_details: %w[subject_id],
       users: %w[color_mode_id color_scheme_id created_by_id theme_id managing_group_id],
       users_star_projects: %w[user_id],
@@ -250,6 +253,8 @@ RSpec.describe 'Database schema',
       instance_integrations: %w[project_id group_id inherit_from_id], # these columns are not used in instance integrations
       group_scim_identities: %w[temp_source_id], # temporary column that is not a foreign key
       group_scim_auth_access_tokens: %w[temp_source_id], # temporary column that is not a foreign key
+      system_access_group_microsoft_graph_access_tokens: %w[temp_source_id], # temporary column that is not a foreign key
+      system_access_group_microsoft_applications: %w[temp_source_id], # temporary column that is not a foreign key
       subscription_user_add_on_assignment_versions: %w[item_id user_id purchase_id] # Managed by paper_trail gem, no need for FK on the historical data
     }.with_indifferent_access.freeze
   end
@@ -409,6 +414,7 @@ RSpec.describe 'Database schema',
     # These pre-existing columns does not use a schema validation yet
     let(:ignored_jsonb_columns_map) do
       {
+        "Ai::Conversation::Message" => %w[extras error_details],
         "ApplicationSetting" => %w[repository_storages_weighted],
         "AlertManagement::Alert" => %w[payload],
         "Ci::BuildMetadata" => %w[config_options config_variables],
@@ -430,7 +436,7 @@ RSpec.describe 'Database schema',
       }.freeze
     end
 
-    it 'uses json schema validator', :eager_load do
+    it 'uses json schema validator', :eager_load, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/500903' do
       columns_name_with_jsonb.each do |hash|
         next if models_by_table_name[hash["table_name"]].nil?
 

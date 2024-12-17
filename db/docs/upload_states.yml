@@ -10,3 +10,4 @@ milestone: '14.6'
 gitlab_schema: gitlab_main_cell
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/464440
 notes: Issue 464440 blocked on sharding the uploads table
+table_size: small

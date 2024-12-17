@@ -23,6 +23,7 @@ export default {
       required: true,
     },
   },
+  emits: ['jobActionExecuted'],
   computed: {
     hasJobAction() {
       return Boolean(this.status?.action?.id);
@@ -64,6 +65,7 @@ export default {
           :job-id="job.id"
           :job-action="status.action"
           :job-name="job.name"
+          @jobActionExecuted="$emit('jobActionExecuted')"
         />
       </div>
     </template>

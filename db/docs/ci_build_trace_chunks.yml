@@ -18,3 +18,5 @@ desired_sharding_key:
         sharding_key: project_id
         belongs_to: build
         foreign_key_name: fk_89e29fa5ee_p
+desired_sharding_key_migration_job_name: BackfillCiBuildTraceChunksProjectId
+table_size: small

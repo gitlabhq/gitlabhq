@@ -45,6 +45,7 @@ To set up infrastructure for workspaces:
 > - **Git reference** and **Devfile location** [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/392382) in GitLab 16.10.
 > - **Time before automatic termination** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/392382) to **Workspace automatically terminates after** in GitLab 16.10.
 > - **Variables** [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463514) in GitLab 17.1.
+> - **Workspace automatically terminates after** [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166065) in GitLab 17.6.
 
 Prerequisites:
 
@@ -65,8 +66,6 @@ To create a workspace:
    GitLab uses to create the workspace.
 1. In **Devfile location**, enter the path to the devfile you use to configure the workspace.
    If your devfile is not in the root directory of your project, specify a relative path.
-1. In **Workspace automatically terminates after**, enter the number of hours until the workspace automatically terminates.
-   This timeout is a safety measure to prevent a workspace from consuming excessive resources or running indefinitely.
 1. In **Variables**, enter the keys and values of the environment variables you want to inject into the workspace.
    To add a new variable, select **Add variable**.
 1. Select **Create workspace**.
@@ -82,7 +81,9 @@ You also have access to the terminal and can install any necessary dependencies.
 To use images from private container registries:
 
 1. Create an [image pull secret in Kubernetes](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/).
-1. Add the `name` and `namespace` of this secret to the [GitLab agent configuration](gitlab_agent_configuration.md#image_pull_secrets).
+1. Add the `name` and `namespace` of this secret to the [GitLab agent configuration](gitlab_agent_configuration.md).
+
+For more information, see [`image_pull_secrets`](gitlab_agent_configuration.md#image_pull_secrets).
 
 ## Configure sudo access for a workspace
 

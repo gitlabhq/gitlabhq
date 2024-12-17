@@ -169,7 +169,7 @@ module ContainerRegistry
       return unless project
 
       Rails.cache.delete(project.root_ancestor.container_repositories_size_cache_key)
-      ProjectCacheWorker.perform_async(project.id, [], [:container_registry_size])
+      ProjectCacheWorker.perform_async(project.id, [], %w[container_registry_size])
     end
   end
 end

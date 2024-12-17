@@ -1,0 +1,19 @@
+# NOTE: Commits can only be queried for project namespaces
+query flowMetricsCommitsQuery(
+  $fullPath: ID!
+  $startDate: Time!
+  $endDate: Time!
+  $labelNames: [String!]
+) {
+  flowMetricsCommits(
+    fullPath: $fullPath
+    startDate: $startDate
+    endDate: $endDate
+    labelNames: $labelNames
+  ) @client {
+    value
+    identifier
+    links
+    title
+  }
+}

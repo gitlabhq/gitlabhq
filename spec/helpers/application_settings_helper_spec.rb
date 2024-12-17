@@ -50,12 +50,20 @@ RSpec.describe ApplicationSettingsHelper do
       expect(helper.visible_attributes).to include(*%i[snowplow_collector_hostname snowplow_cookie_domain snowplow_enabled snowplow_app_id])
     end
 
+    it 'contains :resource_usage_limits' do
+      expect(helper.visible_attributes).to include(:resource_usage_limits)
+    end
+
     it 'contains :deactivate_dormant_users' do
       expect(helper.visible_attributes).to include(:deactivate_dormant_users)
     end
 
     it 'contains :deactivate_dormant_users_period' do
       expect(helper.visible_attributes).to include(:deactivate_dormant_users_period)
+    end
+
+    it 'contains :can_create_organization' do
+      expect(helper.visible_attributes).to include(:can_create_organization)
     end
 
     it 'contains rate limit parameters' do

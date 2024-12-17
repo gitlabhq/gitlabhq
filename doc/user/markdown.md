@@ -73,11 +73,13 @@ functionality is extended with additional features, without affecting the standa
 The following features are not found in standard Markdown:
 
 - [Color chips written in `HEX`, `RGB` or `HSL`](#colors)
+- [Description lists](#description-lists)
 - [Diagrams and flowcharts](#diagrams-and-flowcharts)
 - [Emoji](#emoji)
 - [Footnotes](#footnotes)
 - [Front matter](#front-matter)
 - [GitLab-specific references](#gitlab-specific-references)
+- [Includes](#includes)
 - [Inline diffs](#inline-diff)
 - [Math equations and symbols written in LaTeX](#math)
 - [Strikethrough](#emphasis)
@@ -699,6 +701,37 @@ For example:
 
 CommonMark ignores the blank line and renders this as one list with paragraph spacing.
 
+### Description lists
+
+> - Description lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26314) in GitLab 17.7.
+
+A description list is a list of terms with corresponding descriptions.
+Each term can have multiple descriptions.
+In HTML this is represented with `<dl>`, `<dt>`, and `<dd>` tags.
+
+To create a description list, place the term on one line, with the description on the next line beginning with a colon.
+
+```markdown
+Fruits
+: apple
+: orange
+
+Vegetables
+: broccoli
+: kale
+: spinach
+```
+
+You can also have a blank line between the term and description.
+
+```markdown
+Fruits
+
+: apple
+
+: orange
+```
+
 ### Task lists
 
 > - Inapplicable checkboxes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85982) in GitLab 15.3.
@@ -795,8 +828,8 @@ To achieve a similar effect for a larger code example, you can:
 
 - Fence an entire block of code with triple backticks (```` ``` ````).
   - You can use more than three backticks, as long as both the opening and closing set have the same number.
-    Use multiple backticks for example when you want to include [suggestions](project/merge_requests/reviews/suggestions.md#nest-code-blocks-in-suggestions)
-    in your code blocks, or the other way around.
+    When you create a [multi-line suggestion](project/merge_requests/reviews/suggestions.md)
+    containing a code block, the number of backticks automatically increases.
 - Fence an entire block of code with triple tildes (`~~~`).
 - Indent it four or more spaces.
 
@@ -1004,6 +1037,9 @@ This syntax also works in AsciiDoc wikis and files using `:stem: latexmath`. For
 the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
 
 To prevent malicious activity, GitLab renders only the first 50 inline math instances.
+You can disable this limit [for a group](../api/graphql/reference/index.md#mutationgroupupdate)
+or for the entire [self-managed instance](../administration/instance_limits.md#math-rendering-limits).
+
 The number of math blocks is also limited based on render time. If the limit is exceeded,
 GitLab renders the excess math instances as text. Wiki and repository files do not have
 these limits.
@@ -1431,8 +1467,8 @@ If you're new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-f
 You can join the emoji <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/family.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":family:" alt=":family:">.
 Just look up one of the supported codes.
 
-Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) for a list
-of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/thumbsup.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":thumbsup:" alt=":thumbsup:">
+Consult the [TanukiEmoji reference](https://gitlab-org.gitlab.io/ruby/gems/tanuki_emoji/) for a list
+of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/4/thumbsup.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":thumbsup:" alt=":thumbsup:">
 
 The above paragraphs in raw Markdown:
 
@@ -1531,6 +1567,65 @@ $example = array(
   'language' => "php",
 );
 ---
+```
+
+## Includes
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/195798) in GitLab 17.7.
+
+Use includes, or include directives, to add the content of a document inside another document.
+
+For example, a book could be split into multiple chapters, and then each chapter could be included in
+the main book document:
+
+```markdown
+::include{file=chapter1.md}
+
+::include{file=chapter2.md}
+```
+
+In GitLab, include directives are used only in Markdown files and wiki pages, not the other
+places where Markdown formatting is supported.
+
+Use an include directive in a Markdown file:
+
+```markdown
+::include{file=example_file.md}
+```
+
+Use an include directive in a wiki page:
+
+```markdown
+::include{file=example_page.md}
+```
+
+Each `::include` must start at the beginning of a line, and specifies a file or URL for `file=`.
+The content of the specified file (or URL) is included at the position of the `::include` and
+processed with the remaining Markdown.
+
+Include directives inside the included file are ignored.
+For example, if `file1` includes `file2`, and `file2` includes `file3`, when `file1` is processed,
+it doesn't have the contents of `file3`.
+
+### Limits
+
+To guarantee good system performance and prevent malicious documents from causing problems, GitLab
+enforces a maximum limit on the number of include directives processed in a document.
+By default, a document can have up to 32 include directives.
+
+To customize the number of processed include directives, administrators can change the
+`asciidoc_max_includes` application setting with the
+[application settings API](../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
+
+### Use includes from external URLs
+
+To use includes from separate wiki pages or external URLs, administrators can enable the
+`wiki_asciidoc_allow_uri_includes`
+[application setting](../administration/wikis/index.md#allow-uri-includes-for-asciidoc).
+
+```markdown
+<!-- define application setting wiki_asciidoc_allow_uri_includes to true to allow content to be read from URI -->
+::include{file=https://example.org/installation.md}
 ```
 
 ## Escape characters

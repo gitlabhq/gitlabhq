@@ -105,12 +105,12 @@ export default {
             <template #version>{{ firstVersion }}</template>
           </gl-sprintf>
         </div>
-        <div v-if="runner.description" class="gl-mx-2 gl-text-secondary" aria-hidden="true">·</div>
+        <div v-if="runner.description" class="gl-mx-2 gl-text-subtle" aria-hidden="true">·</div>
       </template>
       <tooltip-on-truncate
         v-if="runner.description"
         class="gl-block gl-truncate"
-        :class="{ 'gl-text-secondary': !runner.description }"
+        :class="{ 'gl-text-subtle': !runner.description }"
         :title="runner.description"
       >
         {{ runner.description }}

@@ -46,7 +46,7 @@ Encryption for data in motion (moving over a network) is performed with TLS usin
 In GitLab Dedicated, you can use KMS keys in two ways:
 
 - One KMS key for all services
-- Per-service KMS keys (Backup, EBS, RDS, S3)
+- Per-service KMS keys (Backup, EBS, RDS, S3, Advanced Search)
   - Keys do not need to be unique to each service.
   - All services must be encrypted at rest.
   - Selective enablement of this feature is not supported.

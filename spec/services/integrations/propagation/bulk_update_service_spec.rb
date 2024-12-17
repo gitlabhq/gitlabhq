@@ -275,18 +275,5 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
         authorized_scope_names: group_slack_integration.authorized_scope_names
       )
     end
-
-    context 'when flag is disabled' do
-      before do
-        stub_feature_flags(gitlab_for_slack_app_instance_and_group_level: false)
-      end
-
-      it 'does not update associated SlackIntegration record or scopes' do
-        expect { execute_service }.not_to change { integration.reload.slack_integration.attributes }
-        expect(integration.slack_integration.authorized_scope_names).to eq(
-          %w[project_scope]
-        )
-      end
-    end
   end
 end

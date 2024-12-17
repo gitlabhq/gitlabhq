@@ -2,8 +2,8 @@
 
 module QA
   RSpec.describe 'Create', product_group: :source_code do
-    describe 'Adding comments on snippets', :blocking do
-      let(:comment_author) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1) }
+    describe 'Adding comments on snippets' do
+      let(:comment_author) { Runtime::User::Store.additional_test_user }
       let(:comment_content) { 'Comment 123' }
       let(:edited_comment_content) { 'Nice snippet!' }
 

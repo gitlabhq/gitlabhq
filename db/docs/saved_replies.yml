@@ -8,3 +8,4 @@ description: Text templates used to populate comments using a quick action
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80807
 milestone: '14.9'
 gitlab_schema: gitlab_main_clusterwide
+table_size: small

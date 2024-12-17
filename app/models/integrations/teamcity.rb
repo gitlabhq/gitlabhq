@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module Integrations
-  class Teamcity < BaseCi
+  class Teamcity < Integration
+    include Base::Ci
     include PushDataValidations
     include ReactivelyCached
     include HasAvatar

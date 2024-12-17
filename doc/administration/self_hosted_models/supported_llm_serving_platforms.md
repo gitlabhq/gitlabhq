@@ -25,6 +25,21 @@ There are multiple platforms available to host your self-hosted Large Language M
    - [vLLM Installation Guide](https://docs.vllm.ai/en/latest/getting_started/installation.html)
    - [vLLM Supported Models](https://docs.vllm.ai/en/latest/models/supported_models.html)
 
+   For information on available options when using vLLM to run a model, see the [vLLM documentation on engine arguments](https://docs.vllm.ai/en/stable/models/engine_args.html).
+
+   For example, to set up and run the Mistral model, run the following command:
+
+   ```shell
+   HF_TOKEN=HUGGING_FACE_TOKEN python -m vllm.entrypoints.openai.api_server \
+      --model mistralai/Mistral-7B-Instruct-v0.3 \
+      --served-model-name Mistral-7B-Instruct-v0.3 \
+      --tensor-parallel-size 8 \
+      --tokenizer_mode mistral \
+      --load_format mistral \
+      --config_format mistral \
+      --tokenizer mistralai/Mistral-7B-Instruct-v0.3
+   ```
+
 ## For cloud-hosted model deployments
 
 1. [AWS Bedrock](https://aws.amazon.com/bedrock/).

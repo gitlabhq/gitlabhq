@@ -15,8 +15,8 @@ Hosted runners on macOS provide an on-demand macOS environment, fully integrated
 You can use these runners to build, test, and deploy apps for the Apple ecosystem (macOS, iOS, watchOS, tvOS).
 Our [Mobile DevOps section](../../../ci/jobs/mobile_devops.md#ios-build-environments) provides features, documentation, and guidance on building and deploying mobile applications for iOS.
 
-Hosted runners on macOS are in [beta](../../../policy/experiment-beta-support.md#beta) and available for open source programs and customers in Premium and Ultimate plans.
-[General availability](../../../policy/experiment-beta-support.md#generally-available-ga) of Hosted runners on macOS is proposed in [epic 8267](https://gitlab.com/groups/gitlab-org/-/epics/8267).
+Hosted runners on macOS are in [beta](../../../policy/development_stages_support.md#beta) and available for open source programs and customers in Premium and Ultimate plans.
+[General availability](../../../policy/development_stages_support.md#generally-available-ga) of Hosted runners on macOS is proposed in [epic 8267](https://gitlab.com/groups/gitlab-org/-/epics/8267).
 
 ## Machine types available for macOS
 

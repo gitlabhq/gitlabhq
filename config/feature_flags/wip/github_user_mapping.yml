@@ -1,9 +1,0 @@
----
-name: github_user_mapping
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/466355
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169726
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/499993
-milestone: '17.6'
-group: group::import and integrate
-type: wip
-default_enabled: false

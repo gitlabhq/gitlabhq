@@ -23,7 +23,9 @@ module Gitlab
           format(_("Promotes item to %{type}."), type: type_name)
         end
         types WorkItem
-        params 'issue | objective'
+        params do
+          promote_to_map[current_type.base_type].join(' | ')
+        end
         condition { supports_promotion? }
         command :promote_to do |type_name|
           @execution_message[:promote_to] = update_type(type_name, :promote_to)
@@ -82,18 +84,13 @@ module Gitlab
 
       private
 
-      # rubocop:disable Gitlab/ModuleWithInstanceVariables
       def update_type(type_name, command)
         new_type = ::WorkItems::Type.find_by_name(type_name.titleize)
         error_message = command == :type ? validate_type(new_type) : validate_promote_to(new_type)
         return error_message if error_message.present?
 
-        @updates[:issue_type] = new_type.base_type
-        @updates[:work_item_type] = new_type
-
-        success_msg[command]
+        apply_type_commands(new_type, command)
       end
-      # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
       def validate_type(type)
         return error_msg(:not_found) unless type.present?
@@ -137,11 +134,11 @@ module Gitlab
       end
 
       def supports_promote_to?(type_name)
-        type_name == promote_to_map[current_type.base_type]
+        promote_to_map[current_type.base_type].include?(type_name)
       end
 
       def promote_to_map
-        { issue: 'Incident', task: 'Issue' }.with_indifferent_access
+        { issue: ['Incident'], task: ['Issue'] }.with_indifferent_access
       end
 
       def error_msg(reason, action: 'convert')
@@ -184,6 +181,16 @@ module Gitlab
       def can_admin_link?
         current_user.can?(:admin_issue_link, quick_action_target)
       end
+
+      # rubocop:disable Gitlab/ModuleWithInstanceVariables -- @updates is already defined and part of
+      # Gitlab::QuickActions::Dsl implementation
+      def apply_type_commands(new_type, command)
+        @updates[:issue_type] = new_type.base_type
+        @updates[:work_item_type] = new_type
+
+        success_msg[command]
+      end
+      # rubocop:enable Gitlab/ModuleWithInstanceVariables
     end
   end
 end

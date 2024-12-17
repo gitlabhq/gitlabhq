@@ -14,7 +14,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
   end
 
   describe 'validations' do
-    %i[group file file_sha1 relative_path content_type size].each do |attr|
+    %i[group file file_sha1 relative_path size].each do |attr|
       it { is_expected.to validate_presence_of(attr) }
     end
 
@@ -74,7 +74,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
   end
 
   describe 'associations' do
-    it do
+    it 'belongs to an upstream' do
       is_expected.to belong_to(:upstream)
         .class_name('VirtualRegistries::Packages::Maven::Upstream')
         .inverse_of(:cached_responses)
@@ -180,16 +180,15 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
 
     subject(:create_or_update) do
       with_threads do
-        file = Tempfile.new('test.txt').tap { |f| f.write('test') }
-        described_class.create_or_update_by!(
-          upstream: upstream,
-          group_id: upstream.group_id,
-          relative_path: '/test',
-          updates: { file: file, size: size, file_sha1: 'test' }
-        )
-      ensure
-        file.close
-        file.unlink
+        Tempfile.create('test.txt') do |file|
+          file.write('test')
+          described_class.create_or_update_by!(
+            upstream: upstream,
+            group_id: upstream.group_id,
+            relative_path: '/test',
+            updates: { file: file, size: size, file_sha1: 'test' }
+          )
+        end
       end
     end
 
@@ -275,26 +274,6 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
     end
   end
 
-  describe '#bump_statistics', :freeze_time do
-    let_it_be_with_reload(:cached_response) { create(:virtual_registries_packages_maven_cached_response) }
-
-    subject(:bump) { cached_response.bump_statistics }
-
-    it 'updates the correct statistics' do
-      expect { bump }.to change { cached_response.downloaded_at }.to(Time.zone.now)
-    end
-
-    context 'with include_upstream_checked_at' do
-      subject(:bump) { cached_response.bump_statistics(include_upstream_checked_at: true) }
-
-      it 'updates the correct statistics' do
-        expect { bump }
-          .to change { cached_response.reload.downloaded_at }.to(Time.zone.now)
-          .and change { cached_response.upstream_checked_at }.to(Time.zone.now)
-      end
-    end
-  end
-
   context 'with loose foreign key on virtual_registries_packages_maven_cached_responses.upstream_id' do
     it_behaves_like 'update by a loose foreign key' do
       let_it_be(:parent) { create(:virtual_registries_packages_maven_upstream) }
@@ -315,12 +294,12 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
     # create a race condition - structure from https://blog.arkency.com/2015/09/testing-race-conditions/
     wait_for_it = true
 
-    threads = Array.new(count) do |i|
+    threads = Array.new(count) do
       Thread.new do
         # A loop to make threads busy until we `join` them
         true while wait_for_it
 
-        yield(i)
+        yield
       end
     end
 

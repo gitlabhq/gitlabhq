@@ -4,22 +4,30 @@ require 'spec_helper'
 
 RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_category: :fleet_visibility do
   describe '/api/v4/runners' do
+    let(:params) { nil }
+
+    subject(:perform_request) do
+      post api('/runners'), params: params
+    end
+
     describe 'POST /api/v4/runners' do
       it_behaves_like 'runner migrations backoff' do
-        let(:request) { post api('/runners') }
+        let(:request) { perform_request }
       end
 
       context 'when no token is provided' do
         it 'returns 400 error' do
-          post api('/runners')
+          perform_request
 
           expect(response).to have_gitlab_http_status(:bad_request)
         end
       end
 
       context 'when invalid token is provided' do
+        let(:params) { { token: 'invalid' } }
+
         it 'returns 403 error' do
-          post api('/runners'), params: { token: 'invalid' }
+          perform_request
 
           expect(response).to have_gitlab_http_status(:forbidden)
           expect(json_response['message']).to eq('403 Forbidden - invalid token supplied')
@@ -27,8 +35,9 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
       end
 
       context 'when valid parameters are provided' do
-        def request
-          post api('/runners'), params: {
+        let(:new_runner) { build_stubbed(:ci_runner) }
+        let(:params) do
+          {
             token: 'valid token',
             description: 'server.hostname',
             maintenance_note: 'Some maintainer notes',
@@ -40,8 +49,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             maximum_timeout: 9000
           }
         end
-
-        let_it_be(:new_runner) { create(:ci_runner) }
 
         before do
           expected_params = {
@@ -68,48 +75,47 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
         context 'when token_expires_at is nil' do
           it 'creates runner' do
-            request
+            perform_request
 
             expect(response).to have_gitlab_http_status(:created)
-            expect(json_response).to eq({ 'id' => new_runner.id, 'token' => new_runner.token, 'token_expires_at' => nil })
+            expect(json_response).to eq('id' => new_runner.id, 'token' => new_runner.token, 'token_expires_at' => nil)
           end
         end
 
         context 'when token_expires_at is a valid date' do
           before do
-            new_runner.token_expires_at = DateTime.new(2022, 1, 11, 14, 39, 24)
+            new_runner.token_expires_at = Time.utc(2022, 1, 11, 14, 39, 24)
           end
 
           it 'creates runner' do
-            request
+            perform_request
 
             expect(response).to have_gitlab_http_status(:created)
-            expect(json_response).to eq({ 'id' => new_runner.id, 'token' => new_runner.token, 'token_expires_at' => '2022-01-11T14:39:24.000Z' })
+            expect(json_response).to eq(
+              'id' => new_runner.id, 'token' => new_runner.token, 'token_expires_at' => '2022-01-11T14:39:24.000Z'
+            )
           end
         end
 
         it_behaves_like 'storing arguments in the application context for the API' do
-          subject { request }
-
           let(:expected_params) { { client_id: "runner/#{new_runner.id}" } }
         end
 
         it_behaves_like 'not executing any extra queries for the application context' do
-          let(:subject_proc) { proc { request } }
+          let(:subject_proc) { proc { perform_request } }
         end
       end
 
       context 'when deprecated maintainer_note field is provided' do
         RSpec::Matchers.define_negated_matcher :excluding, :include
 
-        def request
-          post api('/runners'), params: {
+        let(:new_runner) { create(:ci_runner) }
+        let(:params) do
+          {
             token: 'valid token',
             maintainer_note: 'Some maintainer notes'
           }
         end
-
-        let(:new_runner) { create(:ci_runner) }
 
         it 'converts to maintenance_note param' do
           allow_next_instance_of(
@@ -123,21 +129,21 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               .and_return(ServiceResponse.success(payload: { runner: new_runner }))
           end
 
-          request
+          perform_request
 
           expect(response).to have_gitlab_http_status(:created)
         end
       end
 
       context 'when deprecated active parameter is provided' do
-        def request
-          post api('/runners'), params: {
+        let_it_be(:new_runner) { build(:ci_runner) }
+
+        let(:params) do
+          {
             token: 'valid token',
             active: false
           }
         end
-
-        let_it_be(:new_runner) { build(:ci_runner) }
 
         it 'uses active value in registration' do
           expect_next_instance_of(
@@ -150,7 +156,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               .and_return(ServiceResponse.success(payload: { runner: new_runner }))
           end
 
-          request
+          perform_request
 
           expect(response).to have_gitlab_http_status(:created)
         end
@@ -168,8 +174,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         end
 
         context 'when tags parameter is provided' do
-          def request
-            post api('/runners'), params: {
+          let(:params) do
+            {
               token: registration_token,
               tag_list: tag_list
             }
@@ -189,7 +195,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                   .and_call_original
               end
 
-              request
+              perform_request
 
               expect(response).to have_gitlab_http_status(:bad_request)
               expect(json_response.dig('message', 'tags_list')).to contain_exactly("Too many tags specified. Please limit the number of tags to #{::Ci::Runner::TAG_LIST_MAX_LENGTH}")
@@ -210,7 +216,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                   .and_call_original
               end
 
-              request
+              perform_request
 
               expect(response).to have_gitlab_http_status(:created)
             end

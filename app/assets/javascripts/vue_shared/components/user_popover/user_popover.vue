@@ -15,6 +15,7 @@ import { createAlert } from '~/alert';
 import { followUser, unfollowUser } from '~/rest_api';
 import { isUserBusy } from '~/set_status_modal/utils';
 import Tracking from '~/tracking';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import {
   I18N_ERROR_FOLLOW,
   I18N_ERROR_UNFOLLOW,
@@ -44,6 +45,7 @@ export default {
     GlSprintf,
     GlButton,
     GlAvatarLabeled,
+    HelpIcon,
   },
   directives: {
     SafeHtml,
@@ -245,7 +247,7 @@ export default {
         <template #meta>
           <span
             v-if="hasPronouns"
-            class="gl-p-1 gl-text-sm gl-font-normal gl-text-gray-500"
+            class="gl-p-1 gl-text-sm gl-font-normal gl-text-subtle"
             data-testid="user-popover-pronouns"
             >({{ user.pronouns }})</span
           >
@@ -266,7 +268,7 @@ export default {
       </template>
       <template v-else>
         <template v-if="!isBlocked">
-          <div class="gl-text-gray-500">
+          <div class="gl-text-subtle">
             <div v-if="user.email" class="gl-mb-2 gl-flex">
               <gl-icon name="mail" class="gl-shrink-0" />
               <span ref="email" class="gl-ml-2">{{ user.email }}</span>
@@ -296,7 +298,7 @@ export default {
             <span v-safe-html:[$options.safeHtmlConfig]="statusHtml"></span>
           </div>
           <div v-if="user.bot && user.websiteUrl" class="gl-text-blue-500">
-            <gl-icon name="question-o" />
+            <help-icon />
             <gl-link data-testid="user-popover-bot-docs-link" :href="user.websiteUrl">
               <gl-sprintf :message="$options.I18N_USER_LEARN">
                 <template #name>{{ user.name }}</template>

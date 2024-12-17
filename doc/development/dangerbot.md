@@ -177,9 +177,9 @@ at GitLab so far:
 - [Reviewer roulette](code_review.md#reviewer-roulette)
 - Single codebase effort
 
-## Limitations
+## Known issues
 
-If working on a personal fork, Danger is run but it's output is not added to a
+When you work on a personal fork, Danger is run but its output is not added to a
 merge request comment and labels are not applied.
 This happens because the secret variable from the canonical project is not shared
 to forks.

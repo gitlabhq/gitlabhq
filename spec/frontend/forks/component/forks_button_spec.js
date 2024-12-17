@@ -15,7 +15,6 @@ describe('ForksButton', () => {
         userForkUrl: '/user/fork',
         newForkUrl: '/new/fork',
         canReadCode: true,
-        canCreateFork: true,
         canForkProject: true,
         ...injections,
       },
@@ -49,21 +48,19 @@ describe('ForksButton', () => {
 
     const goToYourForkTitle = 'Go to your fork';
     const createNewForkTitle = 'Create new fork';
-    const reachedLimitTitle = 'You have reached your project limit';
     const noPermissionsTitle = "You don't have permission to fork this project";
 
     it.each`
-      userForkUrl        | canReadCode | canCreateFork | canForkProject | isDisabled | title                 | href
-      ${userForkUrlPath} | ${true}     | ${true}       | ${true}        | ${false}   | ${goToYourForkTitle}  | ${userForkUrlPath}
-      ${userForkUrlPath} | ${false}    | ${true}       | ${true}        | ${true}    | ${createNewForkTitle} | ${userForkUrlPath}
-      ${null}            | ${true}     | ${true}       | ${true}        | ${false}   | ${createNewForkTitle} | ${newForkPath}
-      ${null}            | ${false}    | ${true}       | ${true}        | ${true}    | ${createNewForkTitle} | ${newForkPath}
-      ${null}            | ${true}     | ${false}      | ${true}        | ${true}    | ${reachedLimitTitle}  | ${newForkPath}
-      ${null}            | ${true}     | ${true}       | ${false}       | ${true}    | ${noPermissionsTitle} | ${newForkPath}
+      userForkUrl        | canReadCode | canForkProject | isDisabled | title                 | href
+      ${userForkUrlPath} | ${true}     | ${true}        | ${false}   | ${goToYourForkTitle}  | ${userForkUrlPath}
+      ${userForkUrlPath} | ${false}    | ${true}        | ${true}    | ${createNewForkTitle} | ${userForkUrlPath}
+      ${null}            | ${true}     | ${true}        | ${false}   | ${createNewForkTitle} | ${newForkPath}
+      ${null}            | ${false}    | ${true}        | ${true}    | ${createNewForkTitle} | ${newForkPath}
+      ${null}            | ${true}     | ${false}       | ${true}    | ${noPermissionsTitle} | ${newForkPath}
     `(
       'has the right enabled state, title, and link',
-      ({ userForkUrl, canReadCode, canCreateFork, canForkProject, isDisabled, title, href }) => {
-        mountComponent({ injections: { userForkUrl, canReadCode, canCreateFork, canForkProject } });
+      ({ userForkUrl, canReadCode, canForkProject, isDisabled, title, href }) => {
+        mountComponent({ injections: { userForkUrl, canReadCode, canForkProject } });
 
         expect(findForkButton().props('disabled')).toBe(isDisabled);
         expect(findForkButton().attributes('title')).toBe(title);

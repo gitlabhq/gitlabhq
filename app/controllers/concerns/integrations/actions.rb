@@ -90,6 +90,8 @@ module Integrations::Actions
   end
 
   def integration_test_response
+    integration.assign_attributes(integration_params[:integration])
+
     result = if integration.project_level?
                ::Integrations::Test::ProjectService.new(integration, current_user, params[:event]).execute
              elsif integration.group_level?

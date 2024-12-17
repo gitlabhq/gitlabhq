@@ -1,4 +1,5 @@
 <script>
+import { nextTick } from 'vue';
 import {
   GlButton,
   GlFormGroup,
@@ -86,6 +87,7 @@ export default {
         supportedSyntaxLinkUrl: this.supportedSyntaxLinkUrl,
         emailRestrictions: this.emailRestrictions,
         afterSignUpText: this.afterSignUpText,
+        shouldProceedWithAutoApproval: true,
       },
     };
   },
@@ -149,24 +151,30 @@ export default {
       return {
         id: 'signup-settings-modal',
         text: n__(
-          'ApplicationSettings|By making this change, you will automatically approve %d user who is pending approval.',
-          'ApplicationSettings|By making this change, you will automatically approve %d users who are pending approval.',
+          'ApplicationSettings|By changing this setting, you can also automatically approve %d user who is pending approval.',
+          'ApplicationSettings|By changing this setting, you can also automatically approve %d users who are pending approval.',
           pendingUserCount,
         ),
         actionPrimary: {
           text: n__(
-            'ApplicationSettings|Approve %d user',
-            'ApplicationSettings|Approve %d users',
+            'ApplicationSettings|Proceed and approve %d user',
+            'ApplicationSettings|Proceed and approve %d users',
             pendingUserCount,
           ),
           attributes: {
             variant: 'confirm',
           },
         },
+        actionSecondary: {
+          text: s__('ApplicationSettings|Proceed without auto-approval'),
+          attributes: {
+            category: 'secondary',
+            variant: 'confirm',
+          },
+        },
         actionCancel: {
           text: __('Cancel'),
         },
-        title: s__('ApplicationSettings|Approve users who are pending approval?'),
       };
     },
   },
@@ -197,6 +205,11 @@ export default {
     },
     submitForm() {
       this.$refs.form.submit();
+    },
+    async submitFormWithoutAutoApproval() {
+      this.form.shouldProceedWithAutoApproval = false;
+      await nextTick();
+      this.submitForm();
     },
     modalHideHandler() {
       this.showModal = false;
@@ -313,6 +326,11 @@ export default {
       <seat-controls-section @form-value-change="setFormValue" />
 
       <gl-form-group :label="$options.i18n.userCapLabel" data-testid="user-cap-group">
+        <input
+          type="hidden"
+          name="application_setting[auto_approve_pending_users]"
+          :value="form.shouldProceedWithAutoApproval"
+        />
         <gl-form-input
           v-model="form.userCap"
           type="text"
@@ -491,8 +509,10 @@ export default {
       :modal-id="approveUsersModal.id"
       :action-cancel="approveUsersModal.actionCancel"
       :action-primary="approveUsersModal.actionPrimary"
-      :title="approveUsersModal.title"
+      :action-secondary="approveUsersModal.actionSecondary"
+      :title="s__('ApplicationSettings|Change setting and approve pending users?')"
       @primary="submitForm"
+      @secondary="submitFormWithoutAutoApproval"
       @hide="modalHideHandler"
     >
       {{ approveUsersModal.text }}

@@ -76,6 +76,23 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
     expect(page).to have_selector('.draft-note', text: 'Testing update')
   end
 
+  context 'draft merge request' do
+    let(:merge_request) do
+      create(:merge_request_with_diffs, :draft_merge_request, source_project: project, target_project: project, source_branch: 'merge-test')
+    end
+
+    it 'shows /ready command explanation' do
+      text = <<~TEXT
+        Example comment
+
+        /ready
+      TEXT
+      write_diff_comment(text: text)
+
+      expect(page).to have_text("Marks this merge request as ready.")
+    end
+  end
+
   context 'multiple times on the same diff line' do
     it 'shows both drafts at once' do
       write_diff_comment

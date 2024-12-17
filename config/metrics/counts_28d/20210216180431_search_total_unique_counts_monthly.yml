@@ -6,6 +6,8 @@ description: Total unique users for i_search_total, i_search_advanced, i_search_
   paid and paid will be a subset of total. i_search_total is more appropriate if you
   just want the total
 product_group: global_search
+product_categories:
+- global_search
 value_type: number
 status: active
 time_frame: 28d

@@ -1,0 +1,48 @@
+# ----- DELETE EVERYTHING ABOVE THIS LINE -----
+
+- title: "Increased default security for use of pipeline variables"
+  # The milestones for the deprecation announcement, and the removal.
+  removal_milestone: "18.0"
+  announcement_milestone: "17.7"
+  # Change breaking_change to false if needed.
+  breaking_change: true
+  window: 3
+  # The stage and GitLab username of the person reporting the change,
+  # and a link to the deprecation issue
+  reporter: jreporter
+  stage: verify
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/502382
+  impact: medium  # Can be one of: [critical, high, medium, low]
+  scope: project  # Can be one or a combination of: [instance, group, project]
+  resolution_role: Maintainer  # Can be one of: [Admin, Owner, Maintainer, Developer]
+  manual_task: false  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
+  body: |  # (required) Don't change this line.
+    GitLab believes in secure-by-default practices. To honor this, we are making some changes to support least privilege principles relating to the use of CI/CD variables.
+    Today, users with the Developer role or higher are able to use [pipeline variables](https://docs.gitlab.com/ee/ci/variables/#use-pipeline-variables) by default, without any verification or opt-in.
+    In 18.0, GitLab is updating the [pipeline variable restrictions](https://docs.gitlab.com/ee/ci/variables/#restrict-pipeline-variables) to default enabled.
+    As a result of this change, the ability to use pipeline CI/CD variables will be restricted for all users by default.
+    If necessary, you can manually update this setting with a minimum role that is allowed to use pipeline variables, though it's recommended to keep this as restricted as possible.
+
+    You can already start using a more secure-by-default experience for pipeline variables by enabling the current setting with the Project settings API, to increase the allowed role to Maintainers and above.
+    You can also raise the minimum role to the recommended [Owner only, or no one](https://docs.gitlab.com/ee/ci/variables/#set-a-minimum-role-for-pipeline-variables).
+    Starting in 17.7, this will be the default for all new projects in new namespaces on GitLab.com.
+    We also plan to make this easier to manage by adding an option to control this from the project settings UI.
+
+# ==============================
+# OPTIONAL END-OF-SUPPORT FIELDS
+# ==============================
+#
+# If an End of Support period applies:
+# 1) Share this announcement in the `#spt_managers` Support channel in Slack
+# 2) Mention `@gitlab-com/support` in this merge request.
+#
+  # When support for this feature ends, in XX.YY milestone format.
+  end_of_support_milestone:
+  # Array of tiers the feature is currently available to,
+  # like [Free, Silver, Gold, Core, Premium, Ultimate]
+  tiers:
+  # Links to documentation and thumbnail image
+  documentation_url:
+  image_url:
+  # Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  video_url:

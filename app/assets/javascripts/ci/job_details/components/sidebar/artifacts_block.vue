@@ -1,9 +1,10 @@
 <script>
-import { GlButton, GlButtonGroup, GlIcon, GlLink, GlPopover } from '@gitlab/ui';
+import { GlButton, GlButtonGroup, GlLink, GlPopover } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 
 export default {
   i18n: {
@@ -24,10 +25,10 @@ export default {
   components: {
     GlButton,
     GlButtonGroup,
-    GlIcon,
     GlLink,
     GlPopover,
     TimeagoTooltip,
+    HelpIcon,
   },
   mixins: [timeagoMixin],
   props: {
@@ -59,7 +60,7 @@ export default {
     <div class="title gl-font-bold">
       <span class="gl-mr-2">{{ $options.i18n.jobArtifacts }}</span>
       <gl-link :href="$options.artifactsHelpPath" data-testid="artifacts-help-link">
-        <gl-icon id="artifacts-help" name="question-o" />
+        <help-icon id="artifacts-help" />
       </gl-link>
       <gl-popover
         target="artifacts-help"
@@ -85,7 +86,7 @@ export default {
         rel="noopener noreferrer nofollow"
         data-testid="artifact-expired-help-link"
       >
-        <gl-icon name="question-o" />
+        <help-icon />
       </gl-link>
     </p>
     <p v-else-if="isLocked" class="build-detail-row">

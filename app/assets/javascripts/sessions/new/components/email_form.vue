@@ -84,7 +84,7 @@ export default {
         autofocus
         :state="inputValidation.state"
       />
-      <p v-if="formInfo" class="gl-mt-3 gl-text-secondary">{{ formInfo }}</p>
+      <p v-if="formInfo" class="gl-mt-3 gl-text-subtle">{{ formInfo }}</p>
     </gl-form-group>
     <section class="gl-mt-5">
       <gl-button block variant="confirm" type="submit" :disabled="!inputValidation.state">{{

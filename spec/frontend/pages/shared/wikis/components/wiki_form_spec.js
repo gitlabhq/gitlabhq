@@ -108,6 +108,7 @@ describe('WikiForm', () => {
             ...pageInfo,
           },
           wikiUrl: '',
+          templatesUrl: '',
           pageHeading: '',
           csrfToken: '',
           pagePersisted: false,
@@ -242,10 +243,10 @@ describe('WikiForm', () => {
       expect(findTemplatesDropdown().exists()).toBe(true);
     });
 
-    it('does not show templates dropdown if no templates to show', () => {
+    it('shows templates dropdown even if no templates to show', () => {
       createWrapper({ mountFn: mount });
 
-      expect(findTemplatesDropdown().exists()).toBe(false);
+      expect(findTemplatesDropdown().exists()).toBe(true);
     });
 
     it.each`

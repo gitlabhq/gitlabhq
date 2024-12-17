@@ -40,6 +40,7 @@ module Types
     mount_mutation Mutations::Boards::Lists::Update
     mount_mutation Mutations::Boards::Lists::Destroy
     mount_mutation Mutations::Branches::Create, calls_gitaly: true
+    mount_mutation Mutations::Branches::Delete, calls_gitaly: true
     mount_mutation Mutations::Clusters::Agents::Create
     mount_mutation Mutations::Clusters::Agents::Delete
     mount_mutation Mutations::Clusters::AgentTokens::Create
@@ -176,6 +177,7 @@ module Types
     mount_mutation Mutations::Ci::JobTokenScope::RemoveProject
     mount_mutation Mutations::Ci::JobTokenScope::UpdateJobTokenPolicies, experiment: { milestone: '17.6' }
     mount_mutation Mutations::Ci::Pipeline::Cancel
+    mount_mutation Mutations::Ci::Pipeline::Create
     mount_mutation Mutations::Ci::Pipeline::Destroy
     mount_mutation Mutations::Ci::Pipeline::Retry
     mount_mutation Mutations::Ci::PipelineSchedule::Create
@@ -192,7 +194,10 @@ module Types
     mount_mutation Mutations::Ci::Runner::Create, experiment: { milestone: '15.10' }
     mount_mutation Mutations::Ci::Runner::Delete
     mount_mutation Mutations::Ci::Runner::Update
-    mount_mutation Mutations::Ci::RunnersRegistrationToken::Reset
+    mount_mutation Mutations::Ci::RunnersRegistrationToken::Reset, deprecated: {
+      reason: 'Underlying feature was deprecated in 15.6 and will be removed in 18.0',
+      milestone: '17.7'
+    }
     mount_mutation Mutations::Namespace::PackageSettings::Update
     mount_mutation Mutations::Groups::Update
     mount_mutation Mutations::UserCallouts::Create

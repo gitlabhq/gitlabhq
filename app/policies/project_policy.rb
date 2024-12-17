@@ -15,6 +15,10 @@ class ProjectPolicy < BasePolicy
   desc "User has guest access"
   condition(:guest) { team_member? }
 
+  # This is not a linear condition (some policies available for planner might not be available for higher access levels)
+  desc "User has planner access"
+  condition(:planner) { team_access_level == Gitlab::Access::PLANNER }
+
   desc "User has reporter access"
   condition(:reporter) { team_access_level >= Gitlab::Access::REPORTER }
 
@@ -311,6 +315,11 @@ class ProjectPolicy < BasePolicy
     Feature.enabled?(:hide_projects_of_banned_users) && @subject.created_and_owned_by_banned_user?
   end
 
+  desc "User has either planner or reporter access"
+  condition(:planner_or_reporter_access) do
+    can?(:reporter_access) || can?(:planner_access)
+  end
+
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
   # not.
   rule { guest | admin | organization_owner }.enable :read_project_for_iids
@@ -320,6 +329,7 @@ class ProjectPolicy < BasePolicy
   rule { can?(:read_all_resources) }.enable :read_confidential_issues
 
   rule { guest }.enable :guest_access
+  rule { planner }.enable :planner_access
   rule { reporter }.enable :reporter_access
   rule { developer }.enable :developer_access
   rule { maintainer }.enable :maintainer_access
@@ -329,6 +339,7 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:owner_access) }.policy do
     enable :guest_access
+    enable :planner_access
     enable :reporter_access
     enable :developer_access
     enable :maintainer_access
@@ -353,6 +364,8 @@ class ProjectPolicy < BasePolicy
     enable :manage_owners
 
     enable :add_catalog_resource
+
+    enable :destroy_pipeline
   end
 
   rule { can?(:guest_access) }.policy do
@@ -377,6 +390,29 @@ class ProjectPolicy < BasePolicy
     enable :read_analytics
     enable :read_insights
     enable :read_upload
+  end
+
+  rule { can?(:planner_access) }.policy do
+    enable :guest_access
+    enable :admin_issue_board
+    enable :admin_issue_board_list
+    enable :update_issue
+    enable :reopen_issue
+    enable :admin_issue
+    enable :destroy_issue
+    enable :read_confidential_issues
+    enable :create_design
+    enable :update_design
+    enable :move_design
+    enable :destroy_design
+    enable :admin_label
+    enable :admin_milestone
+    enable :download_wiki_code
+    enable :create_wiki
+    enable :admin_wiki
+    enable :read_merge_request
+    enable :download_code
+    enable :export_work_items
   end
 
   rule { can?(:reporter_access) & can?(:create_issue) }.enable :create_incident
@@ -503,8 +539,8 @@ class ProjectPolicy < BasePolicy
   rule { owner | admin | organization_owner | guest | group_member | group_requester }.prevent :request_access
   rule { ~request_access_enabled }.prevent :request_access
 
-  rule { can?(:developer_access) & can?(:create_issue) }.enable :import_issues
-  rule { can?(:reporter_access) & can?(:create_work_item) }.enable :import_work_items
+  rule { (can?(:planner_access) | can?(:developer_access)) & can?(:create_issue) }.enable :import_issues
+  rule { planner_or_reporter_access & can?(:create_work_item) }.enable :import_work_items
 
   rule { can?(:developer_access) }.policy do
     enable :create_package
@@ -747,6 +783,7 @@ class ProjectPolicy < BasePolicy
   # If this project is public or internal we want to prevent all aside from a few public policies
   rule { public_or_internal & ~project_allowed_for_job_token_by_scope }.policy do
     prevent :guest_access
+    prevent :planner_access
     prevent :public_access
     prevent :reporter_access
     prevent :developer_access
@@ -854,6 +891,7 @@ class ProjectPolicy < BasePolicy
     # `:read_project_for_iids` is not prevented by this condition, as it is
     # used for cross-project reference checks.
     prevent :guest_access
+    prevent :planner_access
     prevent :public_access
     prevent :public_user_access
     prevent :reporter_access
@@ -1013,7 +1051,7 @@ class ProjectPolicy < BasePolicy
   end
 
   # Should be matched with GroupPolicy#read_internal_note
-  rule { admin | can?(:reporter_access) }.enable :read_internal_note
+  rule { admin | planner_or_reporter_access }.enable :read_internal_note
 
   rule { can?(:developer_access) & namespace_catalog_available }.policy do
     enable :read_namespace_catalog
@@ -1117,7 +1155,7 @@ class ProjectPolicy < BasePolicy
     return -1 if @user.nil?
     return -1 unless user_is_user?
 
-    lookup_access_level!
+    @team_access_level ||= lookup_access_level!
   end
 
   def lookup_access_level!

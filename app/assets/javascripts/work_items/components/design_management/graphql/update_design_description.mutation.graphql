@@ -1,0 +1,11 @@
+mutation updateWorkItemDesignDescriptionMutation($input: DesignManagementUpdateInput!) {
+  designManagementUpdate(input: $input) {
+    errors
+    design {
+      id
+      image
+      description
+      descriptionHtml
+    }
+  }
+}

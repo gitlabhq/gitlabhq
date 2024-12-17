@@ -118,7 +118,7 @@ module Groups
       event = Groups::GroupDeletedEvent.new(
         data: {
           group_id: group.id,
-          root_namespace_id: group.root_ancestor.id
+          root_namespace_id: group.root_ancestor&.id.to_i # remove safe navigation and `.to_i` with https://gitlab.com/gitlab-org/gitlab/-/issues/508611
         }
       )
 

@@ -20,11 +20,9 @@ RSpec.describe Packages::Nuget::ExtractMetadataContentService, feature_category:
           dependencies = subject[:package_dependencies]
 
           expect(dependencies).to include(name: 'Moqi', version: '2.5.6')
-          expect(dependencies).to include(name: 'Castle.Core')
-          expect(dependencies).to include(name: 'Test.Dependency', version: '2.3.7',
-            target_framework: '.NETStandard2.0')
-          expect(dependencies).to include(name: 'Newtonsoft.Json', version: '12.0.3',
-            target_framework: '.NETStandard2.0')
+            .and include(name: 'Castle.Core')
+            .and include(name: 'Test.Dependency', version: '2.3.7', target_framework: '.NETStandard2.0')
+            .and include(name: 'Newtonsoft.Json', version: '12.0.3', target_framework: '.NETStandard2.0')
         end
       end
 

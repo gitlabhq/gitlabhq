@@ -113,7 +113,7 @@ export default {
         />
         <gl-link
           :href="item.download_path"
-          class="gl-text-secondary"
+          class="gl-text-subtle"
           data-testid="download-link"
           @click="$emit('download-file')"
         >
@@ -130,7 +130,7 @@ export default {
         <gl-link
           v-if="item.pipeline && item.pipeline.project"
           :href="item.pipeline.project.commit_url"
-          class="gl-text-secondary"
+          class="gl-text-subtle"
           data-testid="commit-link"
           >{{ item.pipeline.git_commit_message }}</gl-link
         >

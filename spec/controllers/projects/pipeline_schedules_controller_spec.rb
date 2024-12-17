@@ -10,6 +10,10 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
   let_it_be_with_reload(:project) { create(:project, :public, :repository, developers: user) }
   let_it_be_with_reload(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
 
+  before do
+    project.update!(ci_pipeline_variables_minimum_override_role: :developer)
+  end
+
   shared_examples 'access update schedule' do
     describe 'security' do
       it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
@@ -178,7 +182,8 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
 
         context 'when the user is not allowed to create a pipeline schedule with variables' do
           before do
-            project.update!(restrict_user_defined_variables: true)
+            project.update!(restrict_user_defined_variables: true,
+              ci_pipeline_variables_minimum_override_role: :maintainer)
           end
 
           it 'does not create a new schedule' do
@@ -272,7 +277,8 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
 
           context 'when the user is not allowed to update pipeline schedule variables' do
             before do
-              project.update!(restrict_user_defined_variables: true)
+              project.update!(restrict_user_defined_variables: true,
+                ci_pipeline_variables_minimum_override_role: :maintainer)
             end
 
             it 'does not update the schedule' do

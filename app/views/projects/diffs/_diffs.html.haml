@@ -15,11 +15,11 @@
         = link_button_to _('Expand all'), url_for(safe_params.merge(expanded: 1, format: nil))
       - if show_whitespace_toggle
         - if current_controller?(:commit)
-          = commit_diff_whitespace_link(diffs.project, @commit, class: 'gl-hidden sm:gl-inline-block')
+          = commit_diff_whitespace_link(diffs.project, @commit, class: 'gl-hidden sm:gl-inline-flex')
         - elsif current_controller?(:compare)
-          = diff_compare_whitespace_link(diffs.project, params[:from], params[:to], class: 'gl-hidden sm:gl-inline-block')
+          = diff_compare_whitespace_link(diffs.project, params[:from], params[:to], class: 'gl-hidden sm:gl-inline-flex')
         - elsif current_controller?(:wikis)
-          = toggle_whitespace_link(url_for(params_with_whitespace), class: 'gl-hidden sm:gl-inline-block')
+          = toggle_whitespace_link(url_for(params_with_whitespace), class: 'gl-hidden sm:gl-inline-flex')
       .btn-group.gl-ml-3
         = inline_diff_btn
         = parallel_diff_btn

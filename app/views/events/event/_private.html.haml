@@ -2,7 +2,7 @@
   .event-item-timestamp.gl-text-sm
     = time_ago_with_tooltip(event.created_at)
 
-  .system-note-image.gl-rounded-full.gl-bg-gray-50.gl-leading-0= sprite_icon('eye-slash', size: 14, css_class: 'icon')
+  .system-note-image.gl-rounded-full.gl-bg-strong.gl-leading-0= sprite_icon('eye-slash', size: 14, css_class: 'icon')
 
   = event_user_info(event)
 

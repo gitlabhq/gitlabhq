@@ -40,6 +40,11 @@ as helpful as **Get started with runners**.
 
 ## Add a navigation entry
 
+The global nav is stored in the `gitlab-org/gitlab-docs` project, in the file
+`content/_data/navigation.yaml`. The `gitlab-docs` project contains code that assembles documentation
+content from several projects (including `charts`, `gitlab`, `gitlab-runner`, and `omnibus-gitlab`)
+and then builds the `docs.gitlab.com` website from that content.
+
 **Do not** add items to the global nav without
 the consent of one of the technical writers.
 

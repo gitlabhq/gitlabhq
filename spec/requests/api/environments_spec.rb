@@ -122,6 +122,12 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    it_behaves_like 'enforcing job token policies', :read_environments do
+      let(:request) do
+        get api("/projects/#{project.id}/environments"), params: { job_token: job.token }
+      end
+    end
   end
 
   describe 'POST /projects/:id/environments' do

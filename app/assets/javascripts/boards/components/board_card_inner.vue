@@ -269,7 +269,7 @@ export default {
             'js-no-trigger': !workItemDrawerEnabled,
             'js-no-trigger-title': workItemDrawerEnabled,
           }"
-          class="gl-text-primary hover:gl-text-gray-900"
+          class="gl-text-default hover:gl-text-default"
           data-testid="board-card-title-link"
           @mousemove.stop
           >{{ item.title }}</a
@@ -299,7 +299,7 @@ export default {
           <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-5" />
           <span
             v-if="showBoardCardNumber"
-            class="board-card-number gl-mr-3 gl-mt-3 gl-gap-2 gl-overflow-hidden gl-text-sm gl-text-secondary"
+            class="board-card-number gl-mr-3 gl-mt-3 gl-gap-2 gl-overflow-hidden gl-text-sm gl-text-subtle"
             :class="{ 'gl-text-base': isEpicBoard }"
           >
             <work-item-type-icon
@@ -334,7 +334,7 @@ export default {
               v-if="item.milestone"
               data-testid="issue-milestone"
               :milestone="item.milestone"
-              class="gl-mr-3 gl-inline-flex gl-max-w-15 gl-cursor-help gl-items-center gl-align-bottom gl-text-sm gl-text-gray-500"
+              class="gl-mr-3 gl-inline-flex gl-max-w-15 gl-cursor-help gl-items-center gl-align-bottom gl-text-sm gl-text-subtle"
             />
             <issue-iteration
               v-if="item.iteration"
@@ -366,14 +366,14 @@ export default {
           <span class="js-assignee-tooltip">
             <span class="gl-block gl-font-bold">{{ __('Assignee') }}</span>
             {{ assignee.name }}
-            <span class="text-white-50">@{{ assignee.username }}</span>
+            <span>@{{ assignee.username }}</span>
           </span>
         </user-avatar-link>
         <span
           v-if="shouldRenderCounter"
           v-gl-tooltip
           :title="assigneeCounterTooltip"
-          class="avatar-counter -gl-ml-3 gl-cursor-help gl-border-0 gl-bg-gray-100 gl-font-bold gl-leading-24 gl-text-gray-900"
+          class="avatar-counter -gl-ml-3 gl-cursor-help gl-border-0 gl-bg-gray-100 gl-font-bold gl-leading-24 gl-text-default"
           data-placement="bottom"
           >{{ assigneeCounterLabel }}</span
         >

@@ -208,7 +208,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalabili
 
         it 'uses the lazy evaluated schema and tables returned by the block' do
           expect(Gitlab::Database::HealthStatus::Context).to receive(:new)
-            .with(anything, anything, [:ci_pipelines], :gitlab_ci).and_call_original
+            .with(anything, anything, [:ci_pipelines]).and_call_original
 
           expect { |b| subject.call(TestWorker.new, job, queue, &b) }.to yield_control
         end

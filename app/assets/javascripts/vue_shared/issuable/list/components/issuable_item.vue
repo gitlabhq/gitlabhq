@@ -166,6 +166,9 @@ export default {
     isClosed() {
       return [STATUS_CLOSED, STATE_CLOSED].includes(this.issuable.state);
     },
+    statusTooltip() {
+      return this.issuable.mergedAt ? this.tooltipTitle(this.issuable.mergedAt) : '';
+    },
     timestamp() {
       return this.isClosed && this.issuable.closedAt
         ? this.issuable.closedAt
@@ -344,6 +347,7 @@ export default {
   >
     <gl-form-checkbox
       v-if="showCheckbox"
+      class="gl-pr-3 gl-pt-2"
       :checked="checked"
       :data-id="issuableId"
       :data-iid="issuableIid"
@@ -494,12 +498,16 @@ export default {
       <ul v-if="showIssuableMeta" class="controls gl-gap-3">
         <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
         <li v-if="$slots.status" data-testid="issuable-status" class="!gl-mr-0">
-          <gl-badge v-if="!isOpen" :variant="statusBadgeVariant">
+          <gl-badge
+            v-if="!isOpen"
+            v-gl-tooltip.top
+            :variant="statusBadgeVariant"
+            :title="statusTooltip"
+          >
             <slot name="status"></slot>
           </gl-badge>
           <slot v-else name="status"></slot>
         </li>
-        <slot name="approval-status"></slot>
         <slot name="pipeline-status"></slot>
         <li v-if="assignees.length" class="!gl-mr-0">
           <issuable-assignees
@@ -510,20 +518,23 @@ export default {
           />
         </li>
         <slot name="reviewers"></slot>
-        <li
-          v-if="showDiscussions && notesCount"
-          class="!gl-mr-0 gl-hidden sm:gl-block"
-          data-testid="issuable-comments"
-        >
-          <div
-            v-gl-tooltip.top
-            :title="__('Comments')"
-            class="gl-flex gl-items-center !gl-text-inherit"
+        <slot name="approval-status"></slot>
+        <slot name="discussions">
+          <li
+            v-if="showDiscussions && notesCount"
+            class="!gl-mr-0 gl-hidden sm:gl-inline-flex"
+            data-testid="issuable-comments"
           >
-            <gl-icon name="comments" class="gl-mr-2" />
-            {{ notesCount }}
-          </div>
-        </li>
+            <div
+              v-gl-tooltip.top
+              :title="__('Comments')"
+              class="gl-flex gl-items-center !gl-text-inherit"
+            >
+              <gl-icon name="comments" class="gl-mr-2" />
+              {{ notesCount }}
+            </div>
+          </li>
+        </slot>
         <slot name="statistics"></slot>
         <work-item-relationship-icons
           v-if="isOpen && filteredLinkedItems.length > 0"

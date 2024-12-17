@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Data Stores' do
-    describe 'User', :requires_admin, :blocking, product_group: :tenant_scale do
+    describe 'User', :requires_admin, product_group: :tenant_scale do
       let(:admin_api_client) { Runtime::API::Client.as_admin }
 
       let!(:user) { create(:user, api_client: admin_api_client) }

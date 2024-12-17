@@ -29,7 +29,7 @@ module BulkImports
 
           raise(GroupCreationError, group.errors.full_messages.to_sentence) if response.error?
 
-          context.entity.update!(group: group)
+          context.entity.update!(group: group, organization: nil)
 
           group
         end

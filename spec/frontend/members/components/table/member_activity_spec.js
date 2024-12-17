@@ -18,6 +18,8 @@ describe('MemberActivity', () => {
     });
   };
 
+  const findAccessGrantedDate = () => wrapper.findByTestId('access-granted-date');
+
   describe('with a member that has all fields', () => {
     beforeEach(() => {
       createComponent();
@@ -27,15 +29,33 @@ describe('MemberActivity', () => {
       expect(wrapper.element).toMatchSnapshot();
     });
 
-    describe('and "requestAcceptedAt" field in the member entity is not null', () => {
+    describe('when "inviteAcceptedAt" field is null and "requestAcceptedAt" field is not null', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('uses the "requestAcceptedAt" field to display an access granted date', () => {
+        const element = findAccessGrantedDate();
+
+        expect(element.exists()).toBe(true);
+        expect(element.text()).toBe('Jul 27, 2020');
+      });
+    });
+
+    describe('when "inviteAcceptedAt" field is not null', () => {
       beforeEach(() => {
         createComponent({
-          propsData: { member: { ...memberMock, requestAcceptedAt: '2020-07-27T16:22:46.923Z' } },
+          propsData: {
+            member: { ...memberMock, inviteAcceptedAt: '2021-08-01T16:22:46.923Z' },
+          },
         });
       });
 
-      it('should use this field to display an access granted date', () => {
-        expect(wrapper.element).toMatchSnapshot();
+      it('uses the "inviteAcceptedAt" field to display an access granted date', () => {
+        const element = findAccessGrantedDate();
+
+        expect(element.exists()).toBe(true);
+        expect(element.text()).toBe('Aug 01, 2021');
       });
     });
   });

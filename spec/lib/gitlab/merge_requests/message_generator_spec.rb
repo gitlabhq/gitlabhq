@@ -260,7 +260,7 @@ RSpec.describe Gitlab::MergeRequests::MessageGenerator, feature_category: :code_
 
     context 'when project has template with CRLF newlines' do
       let(message_template_name) do
-        "Merge branch '%{source_branch}' into '%{target_branch}'\r\n\r\n%{title}\r\n\r\n%{description}\r\n\r\nSee merge request %{reference}" # rubocop: disable Layout/LineLength
+        "Merge branch '%{source_branch}' into '%{target_branch}'\r\n\r\n%{title}\r\n\r\n%{description}\r\n\r\nSee merge request %{reference}"
       end
 
       it 'converts it to LF newlines' do

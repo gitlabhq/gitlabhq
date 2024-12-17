@@ -68,7 +68,7 @@ export default {
       :sub-label-link="subLabel.link"
     >
       <template #meta>
-        <div v-if="user.note" class="gl-p-1 gl-text-gray-500">
+        <div v-if="user.note" class="gl-p-1 gl-text-subtle">
           <gl-icon v-gl-tooltip="userNoteShort" name="document" />
         </div>
         <div

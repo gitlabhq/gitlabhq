@@ -106,7 +106,7 @@ describe('WorkItemLinkChild', () => {
   describe('when clicking on expand button', () => {
     it('fetches and displays children of item when clicking on expand button', async () => {
       createComponent();
-      await findExpandButton().vm.$emit('click');
+      await findExpandButton().vm.$emit('click', { stopPropagation: jest.fn() });
 
       expect(findExpandButton().props('loading')).toBe(true);
       await waitForPromises();
@@ -117,7 +117,7 @@ describe('WorkItemLinkChild', () => {
 
     it('does not render border on `WorkItemLinkChildContents` container', async () => {
       createComponent();
-      await findExpandButton().vm.$emit('click');
+      await findExpandButton().vm.$emit('click', { stopPropagation: jest.fn() });
 
       expect(findWorkItemLinkChildContentsContainer().classes()).not.toContain('!gl-border-b-1');
     });
@@ -134,8 +134,8 @@ describe('WorkItemLinkChild', () => {
       const childrenNodes = getChildrenNodes();
       expect(findTreeChildren().props('children')).toEqual(childrenNodes);
 
-      await findExpandButton().vm.$emit('click'); // Collapse
-      findExpandButton().vm.$emit('click'); // Expand again
+      await findExpandButton().vm.$emit('click', { stopPropagation: jest.fn() }); // Collapse
+      await findExpandButton().vm.$emit('click', { stopPropagation: jest.fn() }); // Expand again
       await waitForPromises();
 
       expect(getWorkItemTreeQueryHandler).toHaveBeenCalledTimes(1); // ensure children were fetched only once.
@@ -190,7 +190,7 @@ describe('WorkItemLinkChild', () => {
         workItemTreeQueryHandler: getWorkItemTreeQueryFailureHandler,
       });
 
-      findExpandButton().vm.$emit('click');
+      await findExpandButton().vm.$emit('click', { stopPropagation: jest.fn() });
       await waitForPromises();
 
       expect(createAlert).toHaveBeenCalledWith({
@@ -258,7 +258,7 @@ describe('WorkItemLinkChild', () => {
         workItemType: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
         isExpanded: true,
       });
-      await findExpandButton().vm.$emit('click');
+      await findExpandButton().vm.$emit('click', { stopPropagation: jest.fn() });
 
       await waitForPromises();
 

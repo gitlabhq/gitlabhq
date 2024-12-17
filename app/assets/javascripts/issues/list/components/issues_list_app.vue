@@ -1023,7 +1023,7 @@ export default {
           <gl-button
             v-if="canBulkUpdate"
             :disabled="isBulkEditButtonDisabled"
-            class="gl-grow"
+            class="gl-shrink-0 gl-grow"
             @click="handleBulkUpdateClick"
           >
             {{ __('Bulk edit') }}

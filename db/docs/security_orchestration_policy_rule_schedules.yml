@@ -8,8 +8,6 @@ description: Security policies scheduled to run based on cadence defined in the 
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59842
 milestone: '13.12'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 desired_sharding_key:
   project_id:
     references: projects
@@ -30,3 +28,4 @@ desired_sharding_key:
 desired_sharding_key_migration_job_name:
 - BackfillSecurityOrchestrationPolicyRuleSchedulesProjectId
 - BackfillSecurityOrchestrationPolicyRuleSchedulesNamespaceId
+table_size: small

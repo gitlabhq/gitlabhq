@@ -357,6 +357,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'MergeRequests::CleanupRefWorker' => 3,
         'MergeRequests::CreatePipelineWorker' => 3,
         'MergeRequests::DeleteSourceBranchWorker' => 3,
+        'MergeRequests::DuoCodeReviewChatWorker' => 3,
         'MergeRequests::FetchSuggestedReviewersWorker' => 3,
         'MergeRequests::HandleAssigneesChangeWorker' => 3,
         'MergeRequests::MergeabilityCheckBatchWorker' => 3,
@@ -477,12 +478,12 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'WorkItems::ImportWorkItemsCsvWorker' => 3,
         'X509CertificateRevokeWorker' => 3,
         'ComplianceManagement::MergeRequests::ComplianceViolationsWorker' => 3,
-        'Zoekt::IndexerWorker' => 2,
         'Issuable::RelatedLinksCreateWorker' => 3,
         'BulkImports::RelationBatchExportWorker' => 6,
         'BulkImports::RelationExportWorker' => 6,
         'Ci::Runners::ExportUsageCsvWorker' => 3,
-        'AppSec::ContainerScanning::ScanImageWorker' => 3
+        'AppSec::ContainerScanning::ScanImageWorker' => 3,
+        'Ci::DestroyOldPipelinesWorker' => 0
       }.merge(extra_retry_exceptions)
     end
 

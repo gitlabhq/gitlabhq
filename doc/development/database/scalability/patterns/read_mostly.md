@@ -91,15 +91,15 @@ avg by (relname, fqdn) (
 This yields a good impression of which tables are much more often read than written (on the database
 primary):
 
-![Read Write Ratio TOP20](img/read_mostly_readwriteratio_v14_2.png)
+![An example list of the top 20 read-mostly tables.](img/read_mostly_readwriteratio_v14_2.png)
 
 From here, we can [zoom](https://bit.ly/2VmloX1) into for example `gitlab_subscriptions` and realize that index reads peak at above 10k tuples per second overall (there are no seq scans):
 
-![Subscriptions: reads](img/read_mostly_subscriptions_reads_v14_2.png)
+![A graph showing the range of index reads of GitLab subscription table.](img/read_mostly_subscriptions_reads_v14_2.png)
 
 We very rarely write to the table (there are no seq scans):
 
-![Subscriptions: writes](img/read_mostly_subscriptions_writes_v14_2.png)
+![A graph showing the range of index writes of GitLab subscription table.](img/read_mostly_subscriptions_writes_v14_2.png)
 
 Additionally, the table is only 400 MB in size - so this may be another candidate we may want to
 consider in this pattern (see [#327483](https://gitlab.com/gitlab-org/gitlab/-/issues/327483)).

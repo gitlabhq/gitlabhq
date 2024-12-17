@@ -1,0 +1,9 @@
+---
+name: ci_job_token_jwt
+feature_issue_url: https://gitlab.com/gitlab-org/govern/authorization/team-tasks/-/issues/65
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167938
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/497392
+milestone: "17.7"
+group: group::authorization
+type: beta
+default_enabled: false

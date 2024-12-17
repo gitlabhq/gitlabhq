@@ -165,7 +165,10 @@ export default {
             <slot name="avatar-badge"></slot>
           </template>
         </component>
-        <discussion-notes-replies-wrapper :is-diff-discussion="discussion.diff_discussion">
+        <discussion-notes-replies-wrapper
+          v-if="hasReplies || userCanReply"
+          :is-diff-discussion="discussion.diff_discussion"
+        >
           <toggle-replies-widget
             v-if="hasReplies"
             :collapsed="!isExpanded"

@@ -115,7 +115,6 @@ If you need to copy a group to a different GitLab instance,
 When transferring groups, note:
 
 - Changing a group's parent can have unintended side effects. See [what happens when a repository path changes](../project/repository/index.md#repository-path-changes).
-- You must have the Owner role for the source and target group.
 - You must update your local repositories to point to the new location.
 - If the immediate parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects change to match the new parent group's visibility.
 - Only explicit group membership is transferred, not inherited membership. If the group's Owners have only inherited membership, this leaves the group without an Owner. In this case, the user transferring the group becomes the group's Owner.
@@ -124,6 +123,10 @@ When transferring groups, note:
 - Existing packages that use a group-level endpoint (Maven, NuGet, PyPI, Composer, and Debian) need to be updated per the package's steps for setting up the group-level endpoint.
 - Existing package names need to be updated if the package uses an instance-level endpoint ([Maven](../packages/maven_repository/index.md#naming-convention), [npm](../packages/npm_registry/index.md#naming-convention), [Conan](../packages/conan_repository/index.md#package-recipe-naming-convention-for-instance-remotes)) and the group was moved to another top-level group.
 - Top-level groups that have a subscription on GitLab.com cannot be transferred. To make the transfer possible, the top-level group's subscription must be removed first. Then the top-level group can be transferred as a subgroup to another top-level group.
+
+Prerequisites:
+
+- You must have the Owner role for the source and target group.
 
 To transfer a group:
 
@@ -147,12 +150,8 @@ To disable email notifications:
 
 ### Disable diff previews in email notifications
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24733) in GitLab 15.6 [with the flag](../../administration/feature_flags.md) named `diff_preview_in_email`. Disabled by default.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/382055) the flag `diff_preview_in_email` on GitLab.com, self-managed, and GitLab Dedicated in GitLab 17.1.
-
-FLAG:
-A feature flag controls the availability of this feature.
-For more information, see the history.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24733) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `diff_preview_in_email`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/382055) in GitLab 17.1. Feature flag `diff_preview_in_email` removed.
 
 When you comment on code in a merge request, GitLab
 includes a few lines of the diff in the email notification to participants.
@@ -168,9 +167,39 @@ To disable diff previews for all projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
-1. Expand the **Permissions and group features** section.
+1. Expand **Permissions and group features**.
 1. Clear **Include diff previews**.
 1. Select **Save changes**.
+
+## Expiry emails for group and project access tokens
+
+> - Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
+
+FLAG:
+The availability of emails to inherited project and group members is controlled by a feature flag. For more information, see the history.
+
+The following group and project members receive notification emails about access tokens that are expiring soon:
+
+- For group access tokens:
+  - Members with the Owner role.
+  - In GitLab 17.7 and later, members who inherit the Owner role for the group, if that group or its parent group has the appropriate setting configured.
+- For project access tokens:
+  - Members of the project with at least the Maintainer role.
+  - In GitLab 17.7 and later, project members who have inherited the Owner or Maintainer role due to the project belonging to a group, if that group or its parent group has the appropriate setting configured.
+
+You can enable notifications to inherited members of a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > General**.
+1. Expand **Permissions and group features**.
+1. Under **Expiry notification emails about group and project access tokens within this group should be sent to:**, select **All direct and inherited members of the group or project**.
+1. Optional. Check the **Enforce for all subgroups** checkbox.
+1. Select **Save changes**.
+
+For more information, see:
+
+- For groups, the [group access tokens documentation](settings/group_access_tokens.md#group-access-token-expiry-emails).
+- For projects, the [project access tokens documentation](../project/settings/project_access_tokens.md#project-access-token-expiry-emails).
 
 ## Disable group mentions
 
@@ -206,6 +235,51 @@ You can export a list of members in a group or subgroup as a CSV.
 The output lists direct members and members inherited from the ancestor groups.
 For members with `Minimal Access` in the selected group, their `Max Role` and `Source` are derived from their membership in subgroups.
 [Issue 390358](https://gitlab.com/gitlab-org/gitlab/-/issues/390358) tracks the discussion about the group members CSV export list not matching the UI members list.
+
+## Turn on restricted access
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com
+**Status:** Beta
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442718) in GitLab 17.5.
+
+Use restricted access to prevent overage fees.
+Overage fees occur when you exceed the number of seats in your subscription,
+and must be paid at the next [quarterly reconciliation](../../subscriptions/quarterly_reconciliation.md).
+
+When you turn on restricted access, groups cannot add new billable users when there are no seats
+left in the subscription.
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+- The group or one of its subgroups or projects must not be shared externally.
+
+To turn on restricted access:
+
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Permissions and group features**.
+1. Under **Seat controls**, select **Restricted access**.
+
+### Known issues
+
+When you turn on restricted access, the following known issues might occur and result in overages:
+
+- The number of seats can still be exceeded if:
+  - You use SAML or SCIM to add new members, and have exceeded the number of seats in the subscription.
+  - Multiple users with the Owner role add members simultaneously.
+  - New billable members delay accepting an invitation.
+  - You change from using the user cap to restricted access, and have members pending approval
+    from before you changed to restricted access. In this case, those members remain in a pending state. If
+    pending members are approved while using restricted access, you might exceed the number of seats in your subscription.
+- If you renew your subscription through the GitLab Sales Team for less users than your current
+subscription, you will incur an overage fee. To avoid this fee, remove additional users before your
+renewal starts. For example:
+  - You have 20 users.
+  - You renew your subscription for 15 users.
+  - You will be charged overages for the five additional users.
 
 ## User cap for groups
 

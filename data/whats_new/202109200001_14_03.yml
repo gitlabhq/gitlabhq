@@ -11,9 +11,9 @@
   release: 14.3
 - name: Next Generation SAST to reduce Ruby false positives
   description: |
-     GitLab SAST historically has been powered by [over a dozen open-source static analysis security analyzers](https://docs.gitlab.com/ee/user/application_security/sast/#supported-languages-and-frameworks). These analyzers have proactively identified millions of vulnerabilities for developers using GitLab every month. These tools use a variety of different approaches for identifying vulnerabilities from basic regex pattern matching to abstract syntax tree parsing which can lead to issues with false positives. GitLab's Secure tools already offer vulnerability fingerprinting allowing you to dismiss these false positives persistently, however, we want to go a step further and not require this manual triaging.
+     GitLab SAST historically has been powered by [over a dozen open-source static analysis security analyzers](https://docs.gitlab.com/ee/user/application_security/sast/#supported-languages-and-frameworks). These analyzers have proactively identified millions of vulnerabilities for developers using GitLab every month. These tools use a variety of different approaches for identifying vulnerabilities from basic regex pattern matching to abstract syntax tree parsing which can lead to issues with false positives. GitLab Secure tools already offer vulnerability fingerprinting allowing you to dismiss these false positives persistently, however, we want to go a step further and not require this manual triaging.
 
-     Today we're releasing the first version of our proprietary static application security testing engine built in-house and maintained by GitLab's Static Analysis and Vulnerability Research groups. Initially, this tool is focused on Ruby and Rails to help reduce false positives.
+     Today we're releasing the first version of our proprietary static application security testing engine built in-house and maintained by GitLab Static Analysis and Vulnerability Research groups. Initially, this tool is focused on Ruby and Rails to help reduce false positives.
   stage: Secure
   self-managed: true
   gitlab-com: true

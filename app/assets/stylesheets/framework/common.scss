@@ -130,8 +130,7 @@ pre {
 }
 
 hr {
-  margin: 1.5rem 0;
-  border-top: 1px solid $gray-50;
+  @apply gl-my-6 gl-mx-0 gl-border-t gl-border-subtle;
 }
 
 .str-truncated {
@@ -177,7 +176,7 @@ table {
 .loading {
   margin: 20px auto;
   height: 40px;
-  color: $gray-700;
+  @apply gl-text-subtle;
   font-size: 32px;
   text-align: center;
 }
@@ -273,7 +272,7 @@ li.note {
   margin-bottom: $gl-padding;
 
   hr {
-    border-color: $gray-50;
+    @apply gl-border-subtle;
   }
 }
 

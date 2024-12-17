@@ -75,7 +75,7 @@ Some of the benefits and tradeoffs of keyset pagination are
 - It's the best way to do infinite scrolling.
 
 - It's more difficult to program and maintain. Easy for `updated_at` and
-  `sort_order`, complicated (or impossible) for [complex sorting scenarios](#limitations-of-query-complexity).
+  `sort_order`, complicated (or impossible) for [complex sorting scenarios](#query-complexity).
 
 ## Implementation
 
@@ -137,7 +137,7 @@ Based on whether the main attribute field being sorted on is `NULL` in the curso
 condition is built. The last ordering field is considered to be unique (a primary key), meaning the
 column never contains `NULL` values.
 
-#### Limitations of query complexity
+#### Query complexity
 
 We only support two ordering fields, and one of those fields needs to be the primary key.
 
@@ -245,7 +245,7 @@ incorrect sort order.
 
 ### Offset pagination
 
-There are times when the [complexity of sorting](#limitations-of-query-complexity)
+There are times when the [complexity of sorting](#query-complexity)
 is more than our keyset pagination can handle.
 
 For example, in [`ProjectIssuesResolver`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/project_issues_resolver.rb),

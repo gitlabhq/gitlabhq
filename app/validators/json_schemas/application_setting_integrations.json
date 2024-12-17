@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Application settings for integrations",
+  "type": "object",
+  "properties": {
+    "allow_all_integrations": {
+      "type": "boolean"
+    },
+    "allowed_integrations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "jira_connect_additional_audience_url": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

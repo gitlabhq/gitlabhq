@@ -4,15 +4,14 @@ import { GlAlert, GlButton, GlTooltipDirective, GlEmptyState } from '@gitlab/ui'
 import noAccessSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
-import { getParameterByName, updateHistory, setUrlParams } from '~/lib/utils/url_utility';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_GROUP, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import {
   i18n,
-  DETAIL_VIEW_QUERY_PARAM_NAME,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_NOTIFICATIONS,
   WIDGET_TYPE_CURRENT_USER_TODOS,
@@ -28,6 +27,7 @@ import {
   WORK_ITEM_TYPE_VALUE_TASK,
   WORK_ITEM_TYPE_VALUE_EPIC,
   WIDGET_TYPE_WEIGHT,
+  WIDGET_TYPE_DEVELOPMENT,
 } from '../constants';
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
@@ -48,6 +48,7 @@ import {
   MAXIMUM_FILE_UPLOAD_LIMIT_REACHED,
   designUploadSkippedWarning,
   UPLOAD_DESIGN_ERROR_MESSAGE,
+  ALERT_VARIANTS,
 } from './design_management/constants';
 
 import WorkItemTree from './work_item_links/work_item_tree.vue';
@@ -58,7 +59,6 @@ import WorkItemAttributesWrapper from './work_item_attributes_wrapper.vue';
 import WorkItemCreatedUpdated from './work_item_created_updated.vue';
 import WorkItemDescription from './work_item_description.vue';
 import WorkItemNotes from './work_item_notes.vue';
-import WorkItemDetailModal from './work_item_detail_modal.vue';
 import WorkItemAwardEmoji from './work_item_award_emoji.vue';
 import WorkItemRelationships from './work_item_relationships/work_item_relationships.vue';
 import WorkItemStickyHeader from './work_item_sticky_header.vue';
@@ -66,8 +66,11 @@ import WorkItemAncestors from './work_item_ancestors/work_item_ancestors.vue';
 import WorkItemTitle from './work_item_title.vue';
 import WorkItemLoading from './work_item_loading.vue';
 import WorkItemAbuseModal from './work_item_abuse_modal.vue';
+import WorkItemDrawer from './work_item_drawer.vue';
 import DesignWidget from './design_management/design_management_widget.vue';
 import DesignUploadButton from './design_management/upload_button.vue';
+import WorkItemDevelopment from './work_item_development/work_item_development.vue';
+import WorkItemCreateBranchMergeRequestSplitButton from './work_item_development/work_item_create_branch_merge_request_split_button.vue';
 
 const defaultWorkspacePermissions = {
   createDesign: false,
@@ -95,13 +98,15 @@ export default {
     WorkItemAttributesWrapper,
     WorkItemTree,
     WorkItemNotes,
-    WorkItemDetailModal,
     WorkItemRelationships,
     WorkItemStickyHeader,
     WorkItemAncestors,
     WorkItemTitle,
     WorkItemLoading,
     WorkItemAbuseModal,
+    WorkItemDrawer,
+    WorkItemDevelopment,
+    WorkItemCreateBranchMergeRequestSplitButton,
   },
   mixins: [glFeatureFlagMixin()],
   inject: [
@@ -144,18 +149,11 @@ export default {
     },
   },
   data() {
-    let modalWorkItemId = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
-
-    if (modalWorkItemId) {
-      modalWorkItemId = convertToGraphQLId(TYPENAME_WORK_ITEM, modalWorkItemId);
-    }
-
     return {
       error: undefined,
       updateError: undefined,
       workItem: {},
       updateInProgress: false,
-      modalWorkItemId,
       modalWorkItemIid: getParameterByName('work_item_iid'),
       modalWorkItemNamespaceFullPath: '',
       isReportModalOpen: false,
@@ -168,7 +166,9 @@ export default {
       filesToBeSaved: [],
       allowedChildTypes: [],
       designUploadError: null,
+      designUploadErrorVariant: ALERT_VARIANTS.danger,
       workspacePermissions: defaultWorkspacePermissions,
+      activeChildItem: null,
     };
   },
   apollo: {
@@ -207,6 +207,7 @@ export default {
         if (!res.data) {
           return;
         }
+        this.activeChildItem = null;
         this.$emit('work-item-updated', this.workItem);
         if (isEmpty(this.workItem)) {
           this.setEmptyState();
@@ -264,6 +265,9 @@ export default {
     workItemFullPath() {
       return this.modalWorkItemFullPath || this.fullPath;
     },
+    workItemProjectId() {
+      return this.workItem?.project?.id;
+    },
     workItemLoading() {
       return isEmpty(this.workItem) && this.$apollo.queries.workItem.loading;
     },
@@ -310,7 +314,7 @@ export default {
       const { workItemType, parentWorkItem, hasSubepicsFeature } = this;
 
       if (workItemType === WORK_ITEM_TYPE_VALUE_EPIC) {
-        return hasSubepicsFeature && parentWorkItem;
+        return Boolean(hasSubepicsFeature && parentWorkItem);
       }
 
       return Boolean(parentWorkItem);
@@ -331,6 +335,9 @@ export default {
     },
     parentWorkItemConfidentiality() {
       return this.parentWorkItem?.confidential;
+    },
+    parentWorkItemType() {
+      return this.parentWorkItem?.workItemType?.name;
     },
     workItemIconName() {
       return this.workItem.workItemType?.iconName;
@@ -370,6 +377,9 @@ export default {
     },
     workItemWeight() {
       return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
+    },
+    workItemDevelopment() {
+      return this.isWidgetPresent(WIDGET_TYPE_DEVELOPMENT);
     },
     workItemBodyClass() {
       return {
@@ -429,14 +439,15 @@ export default {
     iid() {
       return this.workItemIid || this.workItem.iid;
     },
-  },
-  mounted() {
-    if (this.modalWorkItemId) {
-      this.openInModal({
-        event: undefined,
-        modalWorkItem: { id: this.modalWorkItemId },
-      });
-    }
+    widgets() {
+      return this.workItem.widgets;
+    },
+    isItemSelected() {
+      return !isEmpty(this.activeChildItem);
+    },
+    activeChildItemType() {
+      return this.activeChildItem?.workItemType?.name;
+    },
   },
   methods: {
     handleWorkItemCreated() {
@@ -446,7 +457,7 @@ export default {
       this.editMode = true;
     },
     isWidgetPresent(type) {
-      return this.workItem.widgets?.find((widget) => widget.type === type);
+      return this.widgets?.find((widget) => widget.type === type);
     },
     toggleConfidentiality(confidentialStatus) {
       this.updateInProgress = true;
@@ -487,23 +498,13 @@ export default {
       this.error = this.$options.i18n.fetchError;
       document.title = s__('404|Not found');
     },
-    updateUrl(modalWorkItem) {
-      updateHistory({
-        url: setUrlParams({
-          [DETAIL_VIEW_QUERY_PARAM_NAME]: getIdFromGraphQLId(modalWorkItem?.id),
-        }),
-        replace: true,
-      });
-    },
-    openInModal({ event, modalWorkItem, context }) {
+    openContextualView({ event, modalWorkItem, context }) {
       if (!this.workItemsAlphaEnabled || context === LINKED_ITEMS_ANCHOR || this.isDrawer) {
         return;
       }
 
       if (event) {
         event.preventDefault();
-
-        this.updateUrl(modalWorkItem);
       }
 
       if (this.isModal) {
@@ -511,13 +512,7 @@ export default {
         return;
       }
 
-      this.modalWorkItemId = modalWorkItem.id;
-      this.modalWorkItemIid = modalWorkItem.iid;
-      this.modalWorkItemNamespaceFullPath = modalWorkItem?.reference?.replace(
-        `#${modalWorkItem.iid}`,
-        '',
-      );
-      this.$refs.modal.show();
+      this.activeChildItem = modalWorkItem;
     },
     openReportAbuseModal(reply) {
       if (this.isModal) {
@@ -617,6 +612,7 @@ export default {
         update: this.afterUploadDesign,
       };
 
+      this.designUploadErrorVariant = ALERT_VARIANTS.danger;
       return this.$apollo
         .mutate(mutationPayload)
         .then((res) => this.onUploadDesignDone(res))
@@ -634,6 +630,7 @@ export default {
       const skippedWarningMessage = designUploadSkippedWarning(this.filesToBeSaved, skippedFiles);
       if (skippedWarningMessage) {
         this.designUploadError = skippedWarningMessage;
+        this.designUploadErrorVariant = ALERT_VARIANTS.info;
       }
 
       // reset state
@@ -650,6 +647,22 @@ export default {
         fullPath: this.workItemFullPath,
         iid: this.iid,
       });
+    },
+    async deleteChildItem({ id }) {
+      this.activeChildItem = null;
+      await this.$nextTick();
+
+      const { cache } = this.$apollo.provider.clients.defaultClient;
+      cache.evict({
+        id: cache.identify({
+          __typename: 'WorkItem',
+          id,
+        }),
+      });
+      cache.gc();
+    },
+    workItemTypeChanged() {
+      this.$apollo.queries.workItem.refetch();
     },
   },
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
@@ -672,12 +685,15 @@ export default {
       :is-sticky-header-showing="isStickyHeaderShowing"
       :work-item-notifications-subscribed="workItemNotificationsSubscribed"
       :work-item-author-id="workItemAuthorId"
+      :is-group="isGroupWorkItem"
+      :allowed-child-types="allowedChildTypes"
       @hideStickyHeader="hideStickyHeader"
       @showStickyHeader="showStickyHeader"
       @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
       @toggleWorkItemConfidentiality="toggleConfidentiality"
       @error="updateError = $event"
       @promotedToObjective="$emit('promotedToObjective', iid)"
+      @workItemTypeChanged="workItemTypeChanged"
       @toggleEditMode="enableEditMode"
       @workItemStateUpdated="$emit('workItemStateUpdated')"
       @toggleReportAbuseModal="toggleReportAbuseModal"
@@ -765,15 +781,21 @@ export default {
                 :work-item-reference="workItem.reference"
                 :work-item-create-note-email="workItem.createNoteEmail"
                 :is-modal="isModal"
+                :is-drawer="isDrawer"
                 :work-item-state="workItem.state"
                 :has-children="hasChildren"
+                :has-parent="shouldShowAncestors"
                 :work-item-author-id="workItemAuthorId"
                 :can-create-related-item="workItemLinkedItems !== undefined"
+                :is-group="isGroupWorkItem"
+                :widgets="widgets"
+                :allowed-child-types="allowedChildTypes"
                 @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
                 @toggleWorkItemConfidentiality="toggleConfidentiality"
                 @error="updateError = $event"
                 @promotedToObjective="$emit('promotedToObjective', iid)"
                 @workItemStateUpdated="$emit('workItemStateUpdated')"
+                @workItemTypeChanged="workItemTypeChanged"
                 @toggleReportAbuseModal="toggleReportAbuseModal"
                 @workItemCreated="handleWorkItemCreated"
               />
@@ -821,7 +843,7 @@ export default {
                 @cancelEditing="cancelEditing"
                 @error="updateError = $event"
               />
-              <div class="gl-flex gl-flex-col gl-flex-wrap sm:gl-flex-row sm:gl-gap-5">
+              <div class="gl-flex gl-flex-wrap gl-justify-between">
                 <work-item-award-emoji
                   v-if="workItemAwardEmoji"
                   :work-item-id="workItem.id"
@@ -831,12 +853,24 @@ export default {
                   @error="updateError = $event"
                   @emoji-updated="$emit('work-item-emoji-updated', $event)"
                 />
-                <design-upload-button
-                  v-if="showUploadDesign"
-                  :is-saving="isSaving"
-                  data-testid="design-upload-button"
-                  @upload="onUploadDesign"
-                />
+                <div class="gl-flex gl-gap-3">
+                  <design-upload-button
+                    v-if="showUploadDesign"
+                    :is-saving="isSaving"
+                    data-testid="design-upload-button"
+                    @upload="onUploadDesign"
+                    @error="onUploadDesignError"
+                  />
+                  <work-item-create-branch-merge-request-split-button
+                    v-if="workItemsAlphaEnabled && workItemDevelopment"
+                    :work-item-id="workItem.id"
+                    :work-item-iid="iid"
+                    :work-item-full-path="workItemFullPath"
+                    :work-item-type="workItem.workItemType.name"
+                    :is-confidential-work-item="workItem.confidential"
+                    :project-id="workItemProjectId"
+                  />
+                </div>
               </div>
             </section>
             <aside
@@ -861,6 +895,9 @@ export default {
               :work-item-id="workItem.id"
               :work-item-iid="iid"
               :upload-error="designUploadError"
+              :upload-error-variant="designUploadErrorVariant"
+              :is-saving="isSaving"
+              @upload="onUploadDesign"
               @dismissError="designUploadError = null"
             />
 
@@ -877,7 +914,7 @@ export default {
               :confidential="workItem.confidential"
               :allowed-child-types="allowedChildTypes"
               :is-drawer="isDrawer"
-              @show-modal="openInModal"
+              @show-modal="openContextualView"
               @addChild="$emit('addChild')"
               @childrenLoaded="hasChildren = $event"
             />
@@ -889,7 +926,16 @@ export default {
               :work-item-full-path="workItemFullPath"
               :work-item-type="workItem.workItemType.name"
               :can-admin-work-item-link="canAdminWorkItemLink"
-              @showModal="openInModal"
+              @showModal="openContextualView"
+            />
+
+            <work-item-development
+              v-if="workItemDevelopment"
+              :is-modal="isModal"
+              :work-item-id="workItem.id"
+              :work-item-iid="iid"
+              :work-item-full-path="workItemFullPath"
+              :work-item-type="workItem.workItemType.name"
             />
             <work-item-notes
               v-if="workItemNotes"
@@ -912,16 +958,14 @@ export default {
         </div>
       </section>
     </section>
-    <work-item-detail-modal
-      v-if="!isModal && !isDrawer"
-      ref="modal"
-      :parent-id="workItem.id"
-      :work-item-id="modalWorkItemId"
-      :work-item-iid="modalWorkItemIid"
-      :work-item-full-path="modalWorkItemNamespaceFullPath"
-      :show="true"
-      @close="updateUrl"
-      @openReportAbuse="toggleReportAbuseModal(true, $event)"
+    <work-item-drawer
+      v-if="workItemsAlphaEnabled && !isDrawer"
+      :active-item="activeChildItem"
+      :open="isItemSelected"
+      :issuable-type="activeChildItemType"
+      click-outside-exclude-selector=".issuable-list"
+      @close="activeChildItem = null"
+      @workItemDeleted="deleteChildItem"
     />
     <work-item-abuse-modal
       v-if="isReportModalOpen"

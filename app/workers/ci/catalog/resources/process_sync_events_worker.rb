@@ -20,7 +20,7 @@ module Ci
 
         feature_category :pipeline_composition
 
-        data_consistency :always
+        data_consistency :sticky
         urgency :high
 
         idempotent!

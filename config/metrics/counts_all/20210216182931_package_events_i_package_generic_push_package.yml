@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.package_events_i_package_generic_push_package
 description: A count of generic packages that have been published
 product_group: package_registry
+product_categories:
+- package_registry
 value_type: number
 status: active
 time_frame: all

@@ -347,6 +347,7 @@ module Ci
         context 'allow group runners' do
           before do
             project.update!(group_runners_enabled: true)
+            pending_job.reload.create_queuing_entry!
           end
 
           context 'for multiple builds' do

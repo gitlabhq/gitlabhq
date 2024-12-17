@@ -2,10 +2,10 @@
 <script>
 import {
   GlButton,
-  GlIcon,
   GlDisclosureDropdown,
   GlSearchBoxByType,
   GlTooltipDirective,
+  GlAnimatedSmileIcon,
 } from '@gitlab/ui';
 import { findLastIndex } from 'lodash';
 import VirtualList from 'vue-virtual-scroll-list';
@@ -19,9 +19,9 @@ import { addToFrequentlyUsed, getEmojiCategories, hasFrequentlyUsedEmojis } from
 export default {
   components: {
     GlButton,
-    GlIcon,
     GlDisclosureDropdown,
     GlSearchBoxByType,
+    GlAnimatedSmileIcon,
     VirtualList,
     Category,
     EmojiList,
@@ -54,6 +54,8 @@ export default {
   data() {
     return {
       isVisible: false,
+      isHovered: false,
+      isFocused: false,
       currentCategory: 0,
       searchValue: '',
     };
@@ -80,6 +82,9 @@ export default {
           'data-testid': 'create-new-emoji',
         },
       };
+    },
+    smileIcon() {
+      return this.isHovered || this.isFocused || this.isVisible;
     },
   },
   methods: {
@@ -121,6 +126,18 @@ export default {
       this.searchValue = '';
       this.$emit('hidden');
     },
+    onButtonHovered() {
+      this.isHovered = true;
+    },
+    onButtonHoverLeave() {
+      this.isHovered = false;
+    },
+    onButtonFocused() {
+      this.isFocused = true;
+    },
+    onButtonFocusLeave() {
+      this.isFocused = false;
+    },
   },
   i18n: {
     addReaction: __('Add reaction'),
@@ -145,23 +162,13 @@ export default {
           :class="[toggleClass, { 'is-active': isVisible }]"
           class="add-reaction-button btn-icon gl-relative gl-h-full"
           data-testid="add-reaction-button"
+          @mouseover="onButtonHovered"
+          @mouseleave="onButtonHoverLeave"
+          @focusin="onButtonFocused"
+          @focusout="onButtonFocusLeave"
         >
           <slot name="button-content">
-            <span class="reaction-control-icon reaction-control-icon-neutral">
-              <gl-icon class="award-control-icon-neutral gl-button-icon" name="slight-smile" />
-            </span>
-            <span class="reaction-control-icon reaction-control-icon-positive">
-              <gl-icon
-                class="award-control-icon-positive gl-button-icon !gl-left-3"
-                name="smiley"
-              />
-            </span>
-            <span class="reaction-control-icon reaction-control-icon-super-positive">
-              <gl-icon
-                class="award-control-icon-super-positive gl-button-icon !gl-left-3"
-                name="smile"
-              />
-            </span>
+            <gl-animated-smile-icon :is-on="smileIcon" />
           </slot>
         </gl-button>
       </template>
@@ -182,14 +189,14 @@ export default {
       <div
         v-if="isVisible"
         v-show="!searchValue"
-        class="award-list gl-flex gl-border-b-1 gl-border-gray-100 gl-border-b-solid"
+        class="gl-flex gl-border-b-1 gl-border-default gl-border-b-solid"
       >
         <gl-button
           v-for="(category, index) in categoryNames"
           :key="category.name"
           category="tertiary"
           :class="{ 'emoji-picker-category-active': index === currentCategory }"
-          class="emoji-picker-category-tab gl-grow !gl-rounded-none !gl-border-b-2 !gl-px-3 !gl-border-b-solid"
+          class="emoji-picker-category-tab gl-grow !gl-rounded-none !gl-border-b-2 !gl-px-3 !gl-border-b-solid focus:!gl-shadow-none focus:!gl-outline focus:!gl-outline-2 focus:-gl-outline-offset-2 focus:!gl-outline-focus"
           :icon="category.icon"
           :aria-label="category.name"
           @click="scrollToCategory(category.name)"

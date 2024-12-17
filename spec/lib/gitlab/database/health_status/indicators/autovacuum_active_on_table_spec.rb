@@ -27,8 +27,7 @@ RSpec.describe Gitlab::Database::HealthStatus::Indicators::AutovacuumActiveOnTab
       Gitlab::Database::HealthStatus::Context.new(
         described_class,
         connection,
-        tables,
-        :gitlab_main
+        tables
       )
     end
 

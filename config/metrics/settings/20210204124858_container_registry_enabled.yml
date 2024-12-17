@@ -3,6 +3,8 @@ data_category: operational
 key_path: container_registry_enabled
 description: A count of projects where the container registry is enabled
 product_group: container_registry
+product_categories:
+- container_registry
 value_type: boolean
 status: active
 time_frame: none

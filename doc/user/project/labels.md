@@ -105,9 +105,11 @@ the group's projects.
 
 ## Create a label
 
+> - Minimum role to create a label [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
 Prerequisites:
 
-- You must have at least the Reporter role for the project or group.
+- You must have at least the Planner role for the project or group.
 
 ### Create a project label
 
@@ -126,12 +128,14 @@ To create a project label:
 
 ### Create a project label from an issue or merge request
 
+> - Minimum role to create a label [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
 You can also create a new project label from an issue or merge request.
 Labels you create this way belong to the same project as the issue or merge request.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To do so:
 
@@ -164,12 +168,14 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+> - Minimum role to create a group label [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
 You can also create a new group label from an epic.
 Labels you create this way belong to the same group as the epic.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have at least the Planner role for the group.
 
 To do so:
 
@@ -183,9 +189,11 @@ To do so:
 
 ## Edit a label
 
+> - Minimum role to edit a label [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
 Prerequisites:
 
-- You must have at least the Reporter role for the project or group.
+- You must have at least the Planner role for the project or group.
 
 ### Edit a project label
 
@@ -207,13 +215,15 @@ To edit a **group** label:
 
 ## Delete a label
 
+> - Minimum role to delete a label [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
 WARNING:
 If you delete a label, it is permanently deleted. All references to the label are removed from the
 system and you cannot undo the deletion.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 ### Delete a project label
 
@@ -238,6 +248,8 @@ To delete a **group** label:
 
 ## Promote a project label to a group label
 
+> - Minimum role to promote a label [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
 You might want to make a project label available for other
 projects in the same group. Then, you can promote the label to a group label.
 
@@ -250,8 +262,8 @@ Promoting a label is a permanent action and cannot be reversed.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
-- You must have at least the Reporter role for the project's parent group.
+- You must have at least the Planner role for the project.
+- You must have at least the Planner role for the project's parent group.
 
 To promote a project label to a group label:
 
@@ -267,6 +279,8 @@ The new group label has the same ID as the previous project label.
 
 ## Promote a subgroup label to the parent group
 
+> - Minimum role to promote a label [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
 It's not possible to directly promote a group label to the parent group.
 To achieve this, use the following workaround.
 
@@ -274,7 +288,7 @@ Prerequisites:
 
 - There must be a group that contains subgroups ("parent group").
 - There must be a subgroup in the parent group, that has a label you want to promote.
-- You must have at least the Reporter role for both groups.
+- You must have at least the Planner role for both groups.
 
 To "promote" the label to the parent group:
 
@@ -296,12 +310,14 @@ to the same issues, MRs, and epics.
 
 ## Generate default project labels
 
+> - Minimum role to generate default labels [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
 If a project or its parent group has no labels, you can generate a default set of project
 labels from the label list page.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 - The project must have no labels present.
 
 To add the default labels to the project:
@@ -435,6 +451,8 @@ To subscribe to a label:
 
 ## Set label priority
 
+> - Minimum role to set label priority [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
 Labels can have relative priorities, which are used when you sort issue and merge request lists
 by [label priority](issues/sorting_issue_lists.md#sorting-by-label-priority) and [priority](issues/sorting_issue_lists.md#sorting-by-priority).
 
@@ -447,7 +465,7 @@ Priority sorting is based on the highest priority label only.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Planner role for the project.
 
 To prioritize a label:
 
@@ -472,7 +490,8 @@ DETAILS:
 **Offering:** Self-managed
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408676) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `enforce_locked_labels_on_merge`. This feature is [beta](../../policy/experiment-beta-support.md). Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408676) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `enforce_locked_labels_on_merge`. This feature is [beta](../../policy/development_stages_support.md). Disabled by default.
+> - Minimum role to lock labels [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -486,7 +505,7 @@ When you add locked labels to issues or epics, they behave like regular labels.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project or group.
+- You must have at least the Planner role for the project or group.
 
 WARNING:
 After you set a label as locked, nobody can undo it or delete the label.

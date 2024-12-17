@@ -136,7 +136,7 @@ module BulkImports
           },
           finisher: {
             pipeline: BulkImports::Common::Pipelines::EntityFinisher,
-            stage: 6
+            stage: 7
           }
         }
 

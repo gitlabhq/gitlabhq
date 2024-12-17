@@ -26,6 +26,7 @@ module Quality
         elastic
         elastic_integration
         experiments
+        facades
         factories
         finders
         frontend

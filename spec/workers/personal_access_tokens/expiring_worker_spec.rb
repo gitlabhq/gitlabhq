@@ -172,22 +172,6 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
         expect(expiring_token.thirty_days_notification_sent_at).to eq(Time.current)
         expect(expiring_token.sixty_days_notification_sent_at).to be_nil
       end
-
-      context 'when expiring_pats_30d_60d_notifications feature flag is disabled' do
-        before do
-          stub_feature_flags(expiring_pats_30d_60d_notifications: false)
-        end
-
-        it 'does not call notification services' do
-          expect(worker).not_to receive(:notification_service)
-
-          worker.perform
-        end
-
-        it 'does not change the notification delivered of the token' do
-          expect { worker.perform }.not_to change { expiring_token.reload.thirty_days_notification_sent_at }
-        end
-      end
     end
 
     context 'when tokens expire within 60 days' do
@@ -217,22 +201,6 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
         expect(expiring_token.seven_days_notification_sent_at).to be_nil
         expect(expiring_token.thirty_days_notification_sent_at).to be_nil
         expect(expiring_token.sixty_days_notification_sent_at).to eq(Time.current)
-      end
-
-      context 'when expiring_pats_30d_60d_notifications feature flag is disabled' do
-        before do
-          stub_feature_flags(expiring_pats_30d_60d_notifications: false)
-        end
-
-        it 'does not call notification services' do
-          expect(worker).not_to receive(:notification_service)
-
-          worker.perform
-        end
-
-        it 'does not change the notification delivered of the token' do
-          expect { worker.perform }.not_to change { expiring_token.reload.sixty_days_notification_sent_at }
-        end
       end
     end
 
@@ -267,6 +235,7 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
     context 'when a token is owned by a project bot' do
       let_it_be(:project_bot) { create(:user, :project_bot) }
       let_it_be(:project) { create(:project) }
+      let_it_be(:namespace_settings) { create(:namespace_settings, namespace: project.namespace) }
       let(:fake_wh_service) { double }
 
       before_all do
@@ -297,18 +266,6 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
           worker.perform
         end
 
-        it 'avoids N+1 queries', :use_sql_query_cache do
-          control = ActiveRecord::QueryRecorder.new(skip_cached: false) { worker.perform }
-
-          user1 = create(:user, :project_bot, developer_of: project)
-          create(:personal_access_token, user: user1, expires_at: 5.days.from_now)
-
-          user2 = create(:user, :project_bot, developer_of: project)
-          create(:personal_access_token, user: user2, expires_at: 5.days.from_now)
-
-          expect { worker.perform }.not_to exceed_all_query_limit(control)
-        end
-
         context 'with multiple batches of tokens' do
           let_it_be(:expiring_tokens) { create_list(:resource_access_token, 4, expires_at: 6.days.from_now) }
 
@@ -332,6 +289,7 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
 
             it 'updates all tokens in accessible batches' do
               expect(described_class).to receive(:perform_in).with(described_class::REQUEUE_DELAY)
+              expect(worker).not_to receive(:log_exception)
 
               perform
 

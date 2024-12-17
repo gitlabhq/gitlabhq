@@ -168,7 +168,8 @@ export default {
           <gl-icon
             name="chevron-lg-right"
             :class="{ 'gl-rotate-90': showDetail }"
-            class="reduce-motion:gl-transition-none gl-text-secondary gl-transition-transform"
+            class="reduce-motion:gl-transition-none gl-transition-transform"
+            variant="subtle"
           />
         </div>
         <div data-testid="deployment-type" class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap">
@@ -197,7 +198,7 @@ export default {
             >
               {{ deployment.url }}
             </a>
-            <span v-else class="gl-w-full gl-truncate gl-text-secondary">
+            <span v-else class="gl-w-full gl-truncate gl-text-subtle">
               {{ deployment.url }}
             </span>
           </div>
@@ -209,7 +210,7 @@ export default {
             class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap"
             data-testid="deployment-created-at"
           >
-            <div class="gl-text-sm gl-text-secondary">{{ $options.i18n.createdLabel }}</div>
+            <div class="gl-text-sm gl-text-subtle">{{ $options.i18n.createdLabel }}</div>
             <div>
               <gl-icon name="play" class="mr-1" variant="subtle" />
               <user-date
@@ -228,7 +229,7 @@ export default {
       class="gl-flex gl-flex-col gl-gap-4 gl-overflow-hidden gl-transition-all motion-reduce:gl-transition-none md:gl-flex-row md:gl-gap-7"
     >
       <div class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap" data-testid="deployment-ci-build-id">
-        <div class="gl-text-sm gl-text-secondary">{{ $options.i18n.deployJobLabel }}</div>
+        <div class="gl-text-sm gl-text-subtle">{{ $options.i18n.deployJobLabel }}</div>
         <div>
           <gl-icon name="deployments" class="mr-1" variant="subtle" />
           <a :href="ciBuildUrl" @click.stop>
@@ -240,28 +241,28 @@ export default {
         class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap"
         data-testid="deployment-root-directory"
       >
-        <div class="gl-text-sm gl-text-secondary">{{ $options.i18n.rootDirLabel }}</div>
+        <div class="gl-text-sm gl-text-subtle">{{ $options.i18n.rootDirLabel }}</div>
         <div>
           <gl-icon name="folder" class="mr-1" variant="subtle" />
           /{{ deployment.rootDirectory || 'public' }}
         </div>
       </div>
       <div class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap" data-testid="deployment-file-count">
-        <div class="gl-text-sm gl-text-secondary">{{ $options.i18n.filesLabel }}</div>
+        <div class="gl-text-sm gl-text-subtle">{{ $options.i18n.filesLabel }}</div>
         <div>
           <gl-icon name="documents" class="mr-1" variant="subtle" />
           {{ deployment.fileCount }}
         </div>
       </div>
       <div class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap" data-testid="deployment-size">
-        <div class="gl-text-sm gl-text-secondary">{{ $options.i18n.sizeLabel }}</div>
+        <div class="gl-text-sm gl-text-subtle">{{ $options.i18n.sizeLabel }}</div>
         <div>
           <gl-icon name="disk" class="mr-1" variant="subtle" />
           <number-to-human-size :value="deployment.size" />
         </div>
       </div>
       <div class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap" data-testid="deployment-updated-at">
-        <div class="gl-text-sm gl-text-secondary">{{ $options.i18n.lastUpdatedLabel }}</div>
+        <div class="gl-text-sm gl-text-subtle">{{ $options.i18n.lastUpdatedLabel }}</div>
         <div>
           <gl-icon name="clear-all" class="mr-1" variant="subtle" />
           <user-date
@@ -275,7 +276,7 @@ export default {
         class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap"
         data-testid="deployment-expires-at"
       >
-        <div class="gl-text-sm gl-text-secondary">
+        <div class="gl-text-sm gl-text-subtle">
           {{ $options.i18n.expiresAtLabel }}
         </div>
         <div>
@@ -287,7 +288,7 @@ export default {
         </div>
       </div>
       <div v-if="!deployment.active" class="gl-flex gl-flex-col gl-gap-2 gl-text-nowrap">
-        <div class="gl-text-sm gl-text-secondary">
+        <div class="gl-text-sm gl-text-subtle">
           {{ $options.i18n.deleteScheduledAtLabel }}
         </div>
         <div>

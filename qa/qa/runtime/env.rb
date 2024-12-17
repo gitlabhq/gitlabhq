@@ -9,8 +9,7 @@ module QA
     module Env
       extend self
 
-      # TODO: remove all mutation from generic environment variable accessor module
-      attr_writer :personal_access_token, :admin_personal_access_token, :gitlab_url
+      attr_writer :gitlab_url
       attr_accessor :dry_run
 
       ENV_VARIABLES = Gitlab::QA::Runtime::Env::ENV_VARIABLES
@@ -154,7 +153,7 @@ module QA
       end
 
       def running_on_release?
-        gitlab_host.include?('release.gitlab.net')
+        gitlab_host.include?('release.gitlab.net') || gitlab_host.include?('release.gke.gitlab.net')
       end
 
       def running_on_dev?
@@ -181,23 +180,6 @@ module QA
       # PATs are disabled for FedRamp
       def personal_access_tokens_disabled?
         enabled?(ENV['PERSONAL_ACCESS_TOKENS_DISABLED'], default: false)
-      end
-
-      def admin_password
-        ENV['GITLAB_ADMIN_PASSWORD']
-      end
-
-      def admin_username
-        ENV['GITLAB_ADMIN_USERNAME']
-      end
-
-      def admin_personal_access_token
-        @admin_personal_access_token ||= ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN']
-      end
-
-      # specifies token that can be used for the api
-      def personal_access_token
-        @personal_access_token ||= ENV['GITLAB_QA_ACCESS_TOKEN']
       end
 
       def remote_grid
@@ -295,88 +277,12 @@ module QA
         selenoid_browser_version || (raise ArgumentError, "QA_SELENOID_BROWSER_VERSION is required! See docs: #{docs_link}")
       end
 
-      def user_username
-        ENV['GITLAB_USERNAME']
-      end
-
-      def user_password
-        ENV['GITLAB_PASSWORD']
-      end
-
-      def initial_root_password
-        ENV['GITLAB_INITIAL_ROOT_PASSWORD']
-      end
-
       def github_username
         ENV['QA_GITHUB_USERNAME']
       end
 
       def github_password
         ENV['QA_GITHUB_PASSWORD']
-      end
-
-      def forker?
-        !!(forker_username && forker_password)
-      end
-
-      def forker_username
-        ENV['GITLAB_FORKER_USERNAME']
-      end
-
-      def forker_password
-        ENV['GITLAB_FORKER_PASSWORD']
-      end
-
-      def gitlab_qa_username_1
-        ENV['GITLAB_QA_USERNAME_1'] || 'gitlab-qa-user1'
-      end
-
-      def gitlab_qa_password_1
-        ENV['GITLAB_QA_PASSWORD_1']
-      end
-
-      def gitlab_qa_access_token_1
-        ENV['GITLAB_QA_ACCESS_TOKEN_1']
-      end
-
-      def gitlab_qa_username_2
-        ENV['GITLAB_QA_USERNAME_2'] || 'gitlab-qa-user2'
-      end
-
-      def gitlab_qa_password_2
-        ENV['GITLAB_QA_PASSWORD_2']
-      end
-
-      def gitlab_qa_username_3
-        ENV['GITLAB_QA_USERNAME_3'] || 'gitlab-qa-user3'
-      end
-
-      def gitlab_qa_password_3
-        ENV['GITLAB_QA_PASSWORD_3']
-      end
-
-      def gitlab_qa_username_4
-        ENV['GITLAB_QA_USERNAME_4'] || 'gitlab-qa-user4'
-      end
-
-      def gitlab_qa_password_4
-        ENV['GITLAB_QA_PASSWORD_4']
-      end
-
-      def gitlab_qa_username_5
-        ENV['GITLAB_QA_USERNAME_5'] || 'gitlab-qa-user5'
-      end
-
-      def gitlab_qa_password_5
-        ENV['GITLAB_QA_PASSWORD_5']
-      end
-
-      def gitlab_qa_username_6
-        ENV['GITLAB_QA_USERNAME_6'] || 'gitlab-qa-user6'
-      end
-
-      def gitlab_qa_password_6
-        ENV['GITLAB_QA_PASSWORD_6']
       end
 
       def jira_admin_username
@@ -421,19 +327,6 @@ module QA
 
       def knapsack?
         ENV['CI_NODE_TOTAL'].to_i > 1 && ENV['NO_KNAPSACK'] != "true"
-      end
-
-      def ldap_username
-        @ldap_username ||= ENV['GITLAB_LDAP_USERNAME']
-      end
-
-      def ldap_username=(ldap_username)
-        @ldap_username = ldap_username # rubocop:disable Gitlab/ModuleWithInstanceVariables
-        ENV['GITLAB_LDAP_USERNAME'] = ldap_username
-      end
-
-      def ldap_password
-        @ldap_password ||= ENV['GITLAB_LDAP_PASSWORD']
       end
 
       def sandbox_name
@@ -527,10 +420,6 @@ module QA
         return unless github_access_token.empty?
 
         raise ArgumentError, "Please provide QA_GITHUB_ACCESS_TOKEN"
-      end
-
-      def require_admin_access_token!
-        admin_personal_access_token || (raise ArgumentError, "GITLAB_QA_ADMIN_ACCESS_TOKEN is required!")
       end
 
       # Returns true if there is an environment variable that indicates that

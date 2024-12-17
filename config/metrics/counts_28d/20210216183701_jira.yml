@@ -3,6 +3,8 @@ data_category: operational
 key_path: usage_activity_by_stage_monthly.manage.issue_imports.jira
 description: Count of imports from Jira
 product_group: import_and_integrate
+product_categories:
+- importers
 value_type: number
 status: active
 time_frame: 28d

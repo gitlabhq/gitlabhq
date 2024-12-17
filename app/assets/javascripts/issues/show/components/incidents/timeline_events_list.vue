@@ -138,7 +138,7 @@ export default {
       class="timeline-group"
     >
       <h2
-        class="gl-my-0 gl-border-1 gl-border-gray-50 gl-py-5 gl-text-size-h2 gl-border-b-solid"
+        class="gl-my-0 gl-border-1 gl-border-subtle gl-py-5 gl-text-size-h2 gl-border-b-solid"
         data-testid="event-date"
       >
         {{ eventDate }}

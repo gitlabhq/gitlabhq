@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.code_review.i_code_review_user_gitlab_cli_api_request_weekly
 description: Count of unique users per week who use the GitLab CLI
 product_group: code_review
+product_categories:
+- editor_extensions
 value_type: number
 status: active
 milestone: "14.10"

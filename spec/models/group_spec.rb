@@ -8,10 +8,12 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   include AdminModeHelper
   using RSpec::Parameterized::TableSyntax
 
+  let_it_be(:organization) { create(:organization) }
   let!(:group) { create(:group) }
 
   let(:developer_access) { Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS }
   let(:maintainer_access) { Gitlab::Access::MAINTAINER_PROJECT_ACCESS }
+  let(:owner_access) { Gitlab::Access::OWNER_PROJECT_ACCESS }
   let(:admin_access) { Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS }
   let(:no_one_access) { Gitlab::Access::NO_ONE_PROJECT_ACCESS }
 
@@ -295,7 +297,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
         it 'does not allow a subgroup to have the same name as an existing subgroup' do
           sub_group1 = create(:group, parent: group, name: "SG", path: 'api')
-          sub_group2 = described_class.new(parent: group, name: "SG", path: 'api2', organization: sub_group1.organization)
+          sub_group2 = described_class.new(parent: group, name: "SG", path: 'api2', organization: organization)
 
           expect(sub_group1).to be_valid
           expect(sub_group2).not_to be_valid
@@ -1200,7 +1202,8 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       let_it_be(:group_1) { create(:group, project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS) }
       let_it_be(:group_2) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
       let_it_be(:group_3) { create(:group, project_creation_level: Gitlab::Access::MAINTAINER_PROJECT_ACCESS) }
-      let_it_be(:group_4) { create(:group, project_creation_level: nil) }
+      let_it_be(:group_4) { create(:group, project_creation_level: Gitlab::Access::OWNER_PROJECT_ACCESS) }
+      let_it_be(:group_5) { create(:group, project_creation_level: nil) }
 
       it 'returns groups with the specified project creation levels' do
         result = described_class.with_project_creation_levels([
@@ -1209,7 +1212,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         ])
 
         expect(result).to include(group_1, group_3)
-        expect(result).not_to include(group_2, group_4)
+        expect(result).not_to include(group_2, group_4, group_5)
       end
     end
 
@@ -1255,23 +1258,27 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       let_it_be(:group_1) { create(:group, project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS) }
       let_it_be(:group_2) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
       let_it_be(:group_3) { create(:group, project_creation_level: Gitlab::Access::MAINTAINER_PROJECT_ACCESS) }
-      let_it_be(:group_4) { create(:group, project_creation_level: Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS) }
-      let_it_be(:group_5) { create(:group, project_creation_level: nil) } # `nil` inherits `default_project_creation`
-      let_it_be(:all_groups) { described_class.id_in([group_1, group_2, group_3, group_4, group_5]) }
+      let_it_be(:group_4) { create(:group, project_creation_level: Gitlab::Access::OWNER_PROJECT_ACCESS) }
+      let_it_be(:group_5) { create(:group, project_creation_level: Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS) }
+      let_it_be(:group_6) { create(:group, project_creation_level: nil) } # `nil` inherits `default_project_creation`
+      let_it_be(:all_groups) { described_class.id_in([group_1, group_2, group_3, group_4, group_5, group_6]) }
 
       where(:admin_user?, :admin_mode, :default_project_creation, :expected_groups) do
-        false | false | Gitlab::Access::NO_ONE_PROJECT_ACCESS               | lazy { [group_2, group_3] }
-        false | false | Gitlab::Access::MAINTAINER_PROJECT_ACCESS           | lazy { [group_2, group_3, group_5] }
-        false | false | Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS | lazy { [group_2, group_3, group_5] }
-        false | false | Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS        | lazy { [group_2, group_3] }
-        true  | false | Gitlab::Access::NO_ONE_PROJECT_ACCESS               | lazy { [group_2, group_3] }
-        true  | false | Gitlab::Access::MAINTAINER_PROJECT_ACCESS           | lazy { [group_2, group_3, group_5] }
-        true  | false | Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS | lazy { [group_2, group_3, group_5] }
-        true  | false | Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS        | lazy { [group_2, group_3] }
-        true  | true  | Gitlab::Access::NO_ONE_PROJECT_ACCESS               | lazy { [group_2, group_3, group_4] }
-        true  | true  | Gitlab::Access::MAINTAINER_PROJECT_ACCESS           | lazy { [group_2, group_3, group_4, group_5] }
-        true  | true  | Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS | lazy { [group_2, group_3, group_4, group_5] }
-        true  | true  | Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS        | lazy { [group_2, group_3, group_4, group_5] }
+        false | false | Gitlab::Access::NO_ONE_PROJECT_ACCESS               | lazy { [group_2, group_3, group_4] }
+        false | false | Gitlab::Access::OWNER_PROJECT_ACCESS                | lazy { [group_2, group_3, group_4, group_6] }
+        false | false | Gitlab::Access::MAINTAINER_PROJECT_ACCESS           | lazy { [group_2, group_3, group_4, group_6] }
+        false | false | Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS | lazy { [group_2, group_3, group_4, group_6] }
+        false | false | Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS        | lazy { [group_2, group_3, group_4] }
+        true  | false | Gitlab::Access::NO_ONE_PROJECT_ACCESS               | lazy { [group_2, group_3, group_4] }
+        true  | false | Gitlab::Access::OWNER_PROJECT_ACCESS                | lazy { [group_2, group_3, group_4, group_6] }
+        true  | false | Gitlab::Access::MAINTAINER_PROJECT_ACCESS           | lazy { [group_2, group_3, group_4, group_6] }
+        true  | false | Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS | lazy { [group_2, group_3, group_4, group_6] }
+        true  | false | Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS        | lazy { [group_2, group_3, group_4] }
+        true  | true  | Gitlab::Access::NO_ONE_PROJECT_ACCESS               | lazy { [group_2, group_3, group_4, group_5] }
+        true  | true  | Gitlab::Access::OWNER_PROJECT_ACCESS                | lazy { [group_2, group_3, group_4, group_5, group_6] }
+        true  | true  | Gitlab::Access::MAINTAINER_PROJECT_ACCESS           | lazy { [group_2, group_3, group_4, group_5, group_6] }
+        true  | true  | Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS | lazy { [group_2, group_3, group_4, group_5, group_6] }
+        true  | true  | Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS        | lazy { [group_2, group_3, group_4, group_5, group_6] }
       end
 
       with_them do
@@ -1394,14 +1401,15 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     describe '.in_organization' do
-      let_it_be(:organization) { create(:organization) }
-      let_it_be(:groups) { create_pair(:group, organization: organization) }
+      let_it_be(:org1) { create(:organization) }
+      let_it_be(:org2) { create(:organization) }
+      let_it_be(:groups) { create_pair(:group, organization: org1) }
 
       before do
-        create(:group)
+        create(:group, organization: org2)
       end
 
-      subject { described_class.in_organization(organization) }
+      subject { described_class.in_organization(org1) }
 
       it { is_expected.to match_array(groups) }
     end
@@ -1466,18 +1474,21 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
   describe '.project_creation_levels_for_user' do
     where(:admin_user?, :admin_mode, :default_project_creation, :expected_levels) do
-      false | false | no_one_access     | lazy { [developer_access, maintainer_access] }
-      false | false | admin_access      | lazy { [developer_access, maintainer_access] }
-      false | false | maintainer_access | lazy { [developer_access, maintainer_access, nil] }
-      false | false | developer_access  | lazy { [developer_access, maintainer_access, nil] }
-      true  | false | no_one_access     | lazy { [developer_access, maintainer_access] }
-      true  | false | admin_access      | lazy { [developer_access, maintainer_access] }
-      true  | false | maintainer_access | lazy { [developer_access, maintainer_access, nil] }
-      true  | false | developer_access  | lazy { [developer_access, maintainer_access, nil] }
-      true  | true  | no_one_access     | lazy { [developer_access, maintainer_access, admin_access] }
-      true  | true  | admin_access      | lazy { [developer_access, maintainer_access, admin_access, nil] }
-      true  | true  | maintainer_access | lazy { [developer_access, maintainer_access, admin_access, nil] }
-      true  | true  | developer_access  | lazy { [developer_access, maintainer_access, admin_access, nil] }
+      false | false | no_one_access     | lazy { [developer_access, maintainer_access, owner_access] }
+      false | false | admin_access      | lazy { [developer_access, maintainer_access, owner_access] }
+      false | false | maintainer_access | lazy { [developer_access, maintainer_access, owner_access, nil] }
+      false | false | owner_access      | lazy { [developer_access, maintainer_access, owner_access, nil] }
+      false | false | developer_access  | lazy { [developer_access, maintainer_access, owner_access, nil] }
+      true  | false | no_one_access     | lazy { [developer_access, maintainer_access, owner_access] }
+      true  | false | admin_access      | lazy { [developer_access, maintainer_access, owner_access] }
+      true  | false | maintainer_access | lazy { [developer_access, maintainer_access, owner_access, nil] }
+      true  | false | owner_access      | lazy { [developer_access, maintainer_access, owner_access, nil] }
+      true  | false | developer_access  | lazy { [developer_access, maintainer_access, owner_access, nil] }
+      true  | true  | no_one_access     | lazy { [developer_access, maintainer_access, owner_access, admin_access] }
+      true  | true  | admin_access      | lazy { [developer_access, maintainer_access, owner_access, admin_access, nil] }
+      true  | true  | maintainer_access | lazy { [developer_access, maintainer_access, owner_access, admin_access, nil] }
+      true  | true  | owner_access      | lazy { [developer_access, maintainer_access, owner_access, admin_access, nil] }
+      true  | true  | developer_access  | lazy { [developer_access, maintainer_access, owner_access, admin_access, nil] }
     end
 
     with_them do
@@ -1498,14 +1509,17 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     where(:admin_user?, :admin_mode, :project_creation_setting, :expected_result) do
       false | false | lazy { no_one_access }     | true
       false | false | lazy { admin_access }      | true
+      false | false | lazy { owner_access }      | false
       false | false | lazy { maintainer_access } | false
       false | false | lazy { developer_access }  | false
       true  | false | lazy { no_one_access }     | true
       true  | false | lazy { admin_access }      | true
+      true  | false | lazy { owner_access }      | false
       true  | false | lazy { maintainer_access } | false
       true  | false | lazy { developer_access }  | false
       true  | true  | lazy { no_one_access }     | true
       true  | true  | lazy { admin_access }      | false
+      true  | true  | lazy { owner_access }      | false
       true  | true  | lazy { maintainer_access } | false
       true  | true  | lazy { developer_access }  | false
     end
@@ -1538,6 +1552,13 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
   describe '#human_name' do
     it { expect(group.human_name).to eq(group.name) }
+  end
+
+  describe '#to_human_reference' do
+    let_it_be(:new_group) { create(:group) }
+
+    it { expect(group.to_human_reference).to be_nil }
+    it { expect(group.to_human_reference(new_group)).to eq(group.full_name) }
   end
 
   describe '#add_user' do
@@ -2094,8 +2115,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     context 'when organization owner' do
-      let_it_be(:organization) { create(:organization) }
-      let_it_be(:group) { create(:group, organization: organization) }
+      let_it_be(:group) { create(:group) }
       let_it_be(:org_owner) do
         create(:organization_owner, organization: organization).user
       end
@@ -3219,6 +3239,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       expect(group.access_level_roles).to eq(
         {
           'Guest' => 10,
+          'Planner' => 15,
           'Reporter' => 20,
           'Developer' => 30,
           'Maintainer' => 40,
@@ -3968,7 +3989,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       sub_sub_group.shared_with_groups << shared_group_3
     end
 
-    describe '#shared_with_group_links.of_ancestors' do
+    describe '#shared_with_groups_of_ancestors' do
       where(:subject_group, :result) do
         ref(:group)         | []
         ref(:sub_group)     | lazy { [shared_group_1].map(&:id) }
@@ -3977,12 +3998,12 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
       with_them do
         it 'returns correct group shares' do
-          expect(subject_group.shared_with_group_links.of_ancestors.map(&:shared_with_group_id)).to match_array(result)
+          expect(subject_group.shared_with_groups_of_ancestors.ids).to match_array(result)
         end
       end
     end
 
-    describe '#shared_with_group_links.of_ancestors_and_self' do
+    describe '#shared_with_groups_of_ancestors_and_self' do
       where(:subject_group, :result) do
         ref(:group)         | lazy { [shared_group_1].map(&:id) }
         ref(:sub_group)     | lazy { [shared_group_1, shared_group_2].map(&:id) }
@@ -3991,7 +4012,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
       with_them do
         it 'returns correct group shares' do
-          expect(subject_group.shared_with_group_links.of_ancestors_and_self.map(&:shared_with_group_id)).to match_array(result)
+          expect(subject_group.shared_with_groups_of_ancestors_and_self.ids).to match_array(result)
         end
       end
     end

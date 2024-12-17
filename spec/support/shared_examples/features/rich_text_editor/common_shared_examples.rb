@@ -15,7 +15,6 @@ RSpec.shared_examples 'rich text editor - common' do
     wait_until_hidden_field_is_updated(/Typing text in the content editor/)
 
     begin
-      stub_feature_flags(rich_text_editor_as_default: true)
       refresh
     rescue Selenium::WebDriver::Error::UnexpectedAlertOpenError
     end
@@ -37,6 +36,29 @@ RSpec.shared_examples 'rich text editor - common' do
   end
 
   describe 'rendering with initial content' do
+    it 'serializes basic markdown content properly' do
+      find('textarea').set('')
+
+      switch_to_content_editor
+
+      expect(page).to have_css(content_editor_testid)
+
+      type_in_content_editor "hello world"
+      type_in_content_editor :enter
+      type_in_content_editor "* list item 1"
+      type_in_content_editor :enter
+      type_in_content_editor "list item 2"
+
+      wait_until_hidden_field_is_updated(/list item/)
+
+      switch_to_markdown_editor
+
+      expect(page.find('textarea').value).to include('hello world
+
+* list item 1
+* list item 2')
+    end
+
     it 'renders correctly with table as initial content' do
       textarea = find 'textarea'
       textarea.send_keys "\n\n"
@@ -97,17 +119,11 @@ supported in Markdown and will be converted to HTML."
 <th>header</th>
 </tr>
 <tr>
-<td>
-
-</td>
-<td>
-
-</td>
+<td></td>
+<td></td>
 </tr>
 <tr>
-<td>
-
-</td>
+<td></td>
 <td>
 
 * list item

@@ -96,10 +96,6 @@ module API
             params
           ]
         end
-
-        def rescue_not_found?
-          Feature.disabled?(:handle_structured_gitaly_errors)
-        end
       end
 
       desc 'Get a project repository tree' do
@@ -128,7 +124,7 @@ module API
         end
       end
       get ':id/repository/tree', urgency: :low do
-        tree_finder = ::Repositories::TreeFinder.new(user_project, declared_params(include_missing: false).merge(rescue_not_found: rescue_not_found?))
+        tree_finder = ::Repositories::TreeFinder.new(user_project, declared_params(include_missing: false).merge(rescue_not_found: false))
 
         not_found!("Tree") unless tree_finder.commit_exists?
 
@@ -290,6 +286,7 @@ module API
           documentation: { example: '.gitlab/changelog_config.yml' },
           desc: "The file path to the configuration file as stored in the project's Git repository. Defaults to '.gitlab/changelog_config.yml'"
       end
+      route_setting :authentication, job_token_allowed: true
       get ':id/repository/changelog' do
         check_rate_limit!(:project_repositories_changelog, scope: [current_user, user_project]) do
           render_api_error!({ error: 'This changelog has been requested too many times. Try again later.' }, 429)

@@ -1,7 +1,8 @@
-import { GlIcon, GlLink } from '@gitlab/ui';
+import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { useFakeDate } from 'helpers/fake_date';
 import IssuableMilestone from '~/vue_shared/issuable/list/components/issuable_milestone.vue';
+import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
 
 describe('IssuableMilestone component', () => {
   useFakeDate(2020, 11, 11); // 2020 Dec 11
@@ -15,20 +16,18 @@ describe('IssuableMilestone component', () => {
     webPath: '/milestone/webPath',
   });
 
-  const findMilestone = () => wrapper.find('[data-testid="issuable-milestone"]');
-  const findMilestoneTitle = () => findMilestone().findComponent(GlLink).attributes('title');
+  const findWorkItemAttribute = () => wrapper.findComponent(WorkItemAttribute);
 
   const mountComponent = ({ milestone = milestoneObject() } = {}) =>
-    shallowMount(IssuableMilestone, { propsData: { milestone } });
+    shallowMount(IssuableMilestone, { propsData: { milestone }, stubs: { WorkItemAttribute } });
 
   it('renders milestone link', () => {
     wrapper = mountComponent();
+    const milestoneEl = wrapper.find('[data-testid="issuable-milestone"]');
 
-    const milestone = findMilestone();
-
-    expect(milestone.text()).toBe('My milestone');
-    expect(milestone.findComponent(GlIcon).props('name')).toBe('milestone');
-    expect(milestone.findComponent(GlLink).attributes('href')).toBe('/milestone/webPath');
+    expect(findWorkItemAttribute().props('title')).toBe('My milestone');
+    expect(milestoneEl.findComponent(GlIcon).props('name')).toBe('milestone');
+    expect(findWorkItemAttribute().props('href')).toBe('/milestone/webPath');
   });
 
   describe.each`
@@ -43,7 +42,7 @@ describe('IssuableMilestone component', () => {
         milestone: milestoneObject({ milestoneDueDate, milestoneStartDate }),
       });
 
-      expect(findMilestoneTitle()).toBe(expected);
+      expect(findWorkItemAttribute().props('tooltipText')).toBe(expected);
     });
   });
 });

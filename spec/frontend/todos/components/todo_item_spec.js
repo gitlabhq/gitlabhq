@@ -1,10 +1,12 @@
 import { shallowMount } from '@vue/test-utils';
 import TodoItem from '~/todos/components/todo_item.vue';
 import TodoItemTitle from '~/todos/components/todo_item_title.vue';
+import TodoItemTitleHiddenBySaml from '~/todos/components/todo_item_title_hidden_by_saml.vue';
 import TodoItemBody from '~/todos/components/todo_item_body.vue';
 import TodoItemTimestamp from '~/todos/components/todo_item_timestamp.vue';
 import TodoItemActions from '~/todos/components/todo_item_actions.vue';
 import { TODO_STATE_DONE, TODO_STATE_PENDING } from '~/todos/constants';
+import { SAML_HIDDEN_TODO, MR_REVIEW_REQUEST_TODO } from '../mock_data';
 
 describe('TodoItem', () => {
   let wrapper;
@@ -14,12 +16,12 @@ describe('TodoItem', () => {
       propsData: {
         currentUserId: '1',
         todo: {
-          id: '1',
-          state: TODO_STATE_PENDING,
-          targetType: 'Issue',
-          targetUrl: '/project/issue/1',
+          ...MR_REVIEW_REQUEST_TODO,
         },
         ...props,
+      },
+      provide: {
+        currentTab: 0,
       },
     });
   };
@@ -29,9 +31,14 @@ describe('TodoItem', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it('renders TodoItemTitle component', () => {
+  it('renders TodoItemTitle component for normal todos', () => {
     createComponent();
     expect(wrapper.findComponent(TodoItemTitle).exists()).toBe(true);
+  });
+
+  it('renders TodoItemTitleHiddenBySaml component for hidden todos', () => {
+    createComponent({ todo: SAML_HIDDEN_TODO });
+    expect(wrapper.findComponent(TodoItemTitleHiddenBySaml).exists()).toBe(true);
   });
 
   it('renders TodoItemBody component', () => {
@@ -49,15 +56,22 @@ describe('TodoItem', () => {
     expect(wrapper.findComponent(TodoItemActions).exists()).toBe(true);
   });
 
+  describe('state based style', () => {
+    it('applies background when todo is done', () => {
+      createComponent({ todo: { state: TODO_STATE_DONE } });
+      expect(wrapper.attributes('class')).toContain('gl-bg-subtle');
+    });
+
+    it('applies no background when todo is pending', () => {
+      createComponent({ todo: { state: TODO_STATE_PENDING } });
+      expect(wrapper.attributes('class')).not.toContain('gl-bg-subtle');
+    });
+  });
+
   describe('computed properties', () => {
     it('isDone returns true when todo state is done', () => {
       createComponent({ todo: { state: TODO_STATE_DONE } });
       expect(wrapper.vm.isDone).toBe(true);
-    });
-
-    it('isPending returns true when todo state is pending', () => {
-      createComponent({ todo: { state: TODO_STATE_PENDING } });
-      expect(wrapper.vm.isPending).toBe(true);
     });
   });
 

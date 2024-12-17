@@ -7,6 +7,7 @@ import TestCaseDetails from '~/ci/pipeline_details/test_reports/test_case_detail
 import MrWidget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import MrWidgetRow from '~/vue_merge_request_widget/components/widget/widget_content_row.vue';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { EXTENSION_ICONS } from '../../constants';
 import {
   summaryTextBuilder,
@@ -29,6 +30,7 @@ export default {
     DynamicScrollerItem,
     TestCaseDetails,
   },
+  mixins: [glFeatureFlagMixin()],
   i18n,
   props: {
     mr: {
@@ -44,6 +46,15 @@ export default {
     };
   },
   computed: {
+    // show in-progress test report immediately when `mr_show_reports_immediately`
+    // feature flag is enabled and the current pipeline is active.
+    shouldShowLoading() {
+      if (this.mr.isPipelineActive && this.glFeatures.mrShowReportsImmediately) {
+        return 'collapsed';
+      }
+
+      return undefined;
+    },
     failedTestNames() {
       const { data: { suites = [] } = {} } = this.collapsedData;
 
@@ -102,7 +113,9 @@ export default {
       }
 
       actionButtons.push({
-        text: this.$options.i18n.fullReport,
+        text: this.shouldShowLoading
+          ? this.$options.i18n.partialReport
+          : this.$options.i18n.fullReport,
         href: `${this.mr.pipeline.path}/test_report`,
         target: '_blank',
         trackFullReportClicked: true,
@@ -239,6 +252,7 @@ export default {
     <mr-widget
       :error-text="$options.i18n.error"
       :status-icon-name="statusIcon"
+      :loading-state="shouldShowLoading"
       :loading-text="$options.i18n.loading"
       :action-buttons="tertiaryButtons"
       :help-popover="$options.helpPopover"
@@ -262,7 +276,7 @@ export default {
               <div
                 v-for="(subtext, i) in suite.subtext"
                 :key="`${suite.id}-subtext-${i}`"
-                class="gl-text-sm gl-text-gray-700"
+                class="gl-text-sm gl-text-subtle"
               >
                 {{ subtext }}
               </div>

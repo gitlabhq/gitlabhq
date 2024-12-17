@@ -6,7 +6,7 @@ module WorkItems
       delegate :linked_work_items, to: :work_item
 
       def self.quick_action_commands
-        [:blocks, :blocked_by]
+        %i[blocks blocked_by relate]
       end
     end
   end

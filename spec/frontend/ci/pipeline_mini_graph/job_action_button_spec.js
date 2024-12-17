@@ -118,6 +118,7 @@ describe('JobActionButton', () => {
           await clickActionButton();
 
           expect(handler).toHaveBeenCalledWith({ id: defaultProps.jobId });
+          expect(wrapper.emitted('jobActionExecuted')).toHaveLength(1);
         });
 
         it('displays the appropriate error message if mutation is not successful', async () => {
@@ -129,6 +130,23 @@ describe('JobActionButton', () => {
 
           expect(createAlert).toHaveBeenCalledWith({ message: errorMessage });
         });
+      });
+    });
+
+    it('passes correct props', () => {
+      expect(findActionButton().props()).toStrictEqual({
+        block: false,
+        buttonTextClasses: '',
+        category: 'primary',
+        disabled: false,
+        icon: '',
+        isUnsafeLink: false,
+        label: false,
+        loading: false,
+        selected: false,
+        size: 'small',
+        target: null,
+        variant: 'default',
       });
     });
   });

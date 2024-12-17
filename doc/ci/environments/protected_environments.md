@@ -171,7 +171,11 @@ Maintainers can:
 - Unprotect a protected environment by selecting the **Unprotect** button for that environment.
 
 After an environment is unprotected, all access entries are deleted and must
-be re-entered if the environment is re-protected.
+be re-entered if the environment is re-protected. 
+
+After an approval rule is deleted, previously approved deployments do not show who approved the deployment. 
+Information on who approved a deployment is still available in the [project audit events](../../user/compliance/audit_events.md#project-audit-events).
+If a new rule is added, previous deployments show the new rules without the option to approve the deployment. [Issue 506687](https://gitlab.com/gitlab-org/gitlab/-/issues/506687) proposes to show the full approval history of deployments, even if an approval rule is deleted.
 
 For more information, see [Deployment safety](deployment_safety.md).
 

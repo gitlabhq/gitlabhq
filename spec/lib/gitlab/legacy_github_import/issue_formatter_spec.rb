@@ -3,14 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_shared_state, feature_category: :importers do
+  include Import::GiteaHelper
+
   let_it_be(:project) do
     create(
       :project,
       :with_import_url,
       :import_user_mapping_enabled,
-      import_type: ::Import::SOURCE_GITEA,
-      namespace: create(:namespace, path: 'octocat')
-    )
+      :in_group,
+      import_type: ::Import::SOURCE_GITEA)
   end
 
   let_it_be(:source_user_mapper) do
@@ -105,6 +106,16 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
       end
     end
 
+    context 'when the issue body has @username mentions' do
+      let(:original_body) { "I said to @sam_allen.greg the code should follow @bob's advice. @.ali-ce/group#9?" }
+      let(:expected_body) { "I said to `@sam_allen.greg` the code should follow `@bob`'s advice. `@.ali-ce/group#9`?" }
+      let(:raw_data) { base_data.merge(body: original_body) }
+
+      it 'places backtick around @username mentions' do
+        expect(issue.attributes[:description]).to eq(expected_body)
+      end
+    end
+
     context 'when it is assigned to a user' do
       context 'and the assigned user has a placeholder user in gitlab' do
         let(:raw_data) { base_data.merge(assignee: octocat) }
@@ -138,7 +149,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
         let(:raw_data) { base_data.merge(assignee: octocat) }
 
         before do
-          allow(project).to receive_message_chain(:import_data, :user_mapping_enabled?).and_return(false)
+          stub_user_mapping_chain(project, false)
         end
 
         it 'returns nil as assignee_id when is not a GitLab user' do
@@ -206,7 +217,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
         let(:raw_data) { base_data.merge(user: octocat) }
 
         before do
-          allow(project).to receive_message_chain(:import_data, :user_mapping_enabled?).and_return(false)
+          stub_user_mapping_chain(project, false)
         end
 
         it 'returns project creator_id as author_id when is not a GitLab user' do
@@ -246,10 +257,9 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
       create(
         :project,
         :with_import_url,
+        :in_group,
         :import_user_mapping_enabled,
-        import_type: ::Import::SOURCE_GITHUB,
-        namespace: create(:namespace, path: 'octocat-github')
-      )
+        import_type: ::Import::SOURCE_GITHUB)
     end
 
     let_it_be(:source_user_mapper) do
@@ -397,7 +407,7 @@ RSpec.describe Gitlab::LegacyGithubImport::IssueFormatter, :clean_gitlab_redis_s
 
     context 'when user contribution mapping is disabled' do
       before do
-        allow(project).to receive_message_chain(:import_data, :user_mapping_enabled?).and_return(false)
+        stub_user_mapping_chain(project, false)
       end
 
       it 'does not push any placeholder references' do

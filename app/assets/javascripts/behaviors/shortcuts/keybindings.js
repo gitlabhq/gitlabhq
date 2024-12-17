@@ -104,7 +104,7 @@ export const GO_TO_YOUR_REVIEW_REQUESTS = {
 
 export const GO_TO_YOUR_TODO_LIST = {
   id: 'globalShortcuts.goToYourTodoList',
-  description: __('Go to your To-Do list'),
+  description: __('Go to your To-Do List'),
   defaultKeys: ['shift+t'],
 };
 

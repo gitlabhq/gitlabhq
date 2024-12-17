@@ -25,13 +25,13 @@ RSpec.describe ::Ci::Runners::BulkDeleteRunnersService, '#execute', feature_cate
       it 'destroys runners', :aggregate_failures do
         expect { execute }.to change { Ci::Runner.count }.by(-expected_deleted_ids.count)
 
-        is_expected.to be_success
+        expect(execute).to be_success
         expect(execute.payload).to eq(
-          {
-            deleted_count: expected_deleted_ids.count,
-            deleted_ids: expected_deleted_ids,
-            errors: []
-          })
+          deleted_count: expected_deleted_ids.count,
+          deleted_ids: expected_deleted_ids,
+          deleted_models: expected_deleted_runners,
+          errors: []
+        )
         expect { project_runner.runner_projects.first.reload }.to raise_error(ActiveRecord::RecordNotFound)
         expected_deleted_runners.each do |deleted_runner|
           expect(deleted_runner[:errors]).to be_nil
@@ -47,13 +47,16 @@ RSpec.describe ::Ci::Runners::BulkDeleteRunnersService, '#execute', feature_cate
         it 'deletes only first RUNNER_LIMIT runners', :aggregate_failures do
           expect { execute }.to change { Ci::Runner.count }.by(-1)
 
-          is_expected.to be_success
-          expect(execute.payload).to eq(
+          expect(execute).to be_success
+          expect(execute.payload).to match(
             {
               deleted_count: 1,
-              deleted_ids: expected_deleted_ids.take(1),
+              deleted_ids: a_collection_containing_exactly(an_instance_of(Integer)),
+              deleted_models: a_collection_containing_exactly(an_instance_of(::Ci::Runner)),
               errors: ["Can only delete up to 1 runners per call. Ignored the remaining runner(s)."]
             })
+          expect(expected_deleted_ids).to include(execute.payload[:deleted_ids].first)
+          expect(expected_deleted_runners).to include(execute.payload[:deleted_models].first)
         end
       end
     end
@@ -160,13 +163,13 @@ RSpec.describe ::Ci::Runners::BulkDeleteRunnersService, '#execute', feature_cate
 
             expect { execute }.to change { Ci::Runner.count }.by(-2)
 
-            is_expected.to be_success
+            expect(execute).to be_success
             expect(execute.payload).to eq(
-              {
-                deleted_count: 2,
-                deleted_ids: [group_runner.id, project_runner.id],
-                errors: ["User does not have permission to delete runner(s) ##{instance_runner.id}"]
-              })
+              deleted_count: 2,
+              deleted_ids: [group_runner.id, project_runner.id],
+              deleted_models: [group_runner, project_runner],
+              errors: ["User does not have permission to delete runner(s) ##{instance_runner.id}"]
+            )
           end
         end
       end
@@ -177,8 +180,8 @@ RSpec.describe ::Ci::Runners::BulkDeleteRunnersService, '#execute', feature_cate
       let(:user) { owner_user }
 
       it 'returns 0 deleted runners' do
-        is_expected.to be_success
-        expect(execute.payload).to eq({ deleted_count: 0, deleted_ids: [], errors: [] })
+        expect(execute).to be_success
+        expect(execute.payload).to eq(deleted_count: 0, deleted_ids: [], deleted_models: [], errors: [])
       end
     end
   end

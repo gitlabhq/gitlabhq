@@ -10,6 +10,12 @@ module Gitlab
     ImpersonationDisabled = Class.new(AuthenticationError)
     UnauthorizedError = Class.new(AuthenticationError)
 
+    class DpopValidationError < AuthenticationError
+      def initialize(msg)
+        super("DPoP validation error: #{msg}")
+      end
+    end
+
     class InsufficientScopeError < AuthenticationError
       attr_reader :scopes
 
@@ -23,7 +29,6 @@ module Gitlab
       include ActionController::HttpAuthentication::Basic
       include ActionController::HttpAuthentication::Token
 
-      API_TOKEN_ENV = 'gitlab.api.token'
       PRIVATE_TOKEN_HEADER = 'HTTP_PRIVATE_TOKEN'
       PRIVATE_TOKEN_PARAM = :private_token
       JOB_TOKEN_HEADER = 'HTTP_JOB_TOKEN'
@@ -71,8 +76,7 @@ module Gitlab
       end
 
       def find_user_from_bearer_token
-        find_user_from_job_bearer_token ||
-          find_user_from_access_token
+        find_user_from_job_bearer_token || find_user_from_access_token
       end
 
       def find_user_from_job_token
@@ -183,7 +187,7 @@ module Gitlab
         ::Ci::Runner.find_by_token(token.to_s) || raise(UnauthorizedError)
       end
 
-      def validate_and_save_access_token!(scopes: [], save_auth_context: true, reset_token: false)
+      def validate_and_save_access_token!(scopes: [], save_auth_context: true)
         # return early if we've already authenticated via a job token
         return if @current_authenticated_job.present? # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
@@ -192,22 +196,20 @@ module Gitlab
 
         return unless access_token
 
-        access_token.reset if reset_token
-
         case AccessTokenValidationService.new(access_token, request: request).validate(scopes: scopes)
         when AccessTokenValidationService::INSUFFICIENT_SCOPE
-          save_auth_failure_in_application_context(access_token, :insufficient_scope) if save_auth_context
+          save_auth_failure_in_application_context(access_token, :insufficient_scope, scopes) if save_auth_context
           raise InsufficientScopeError, scopes
         when AccessTokenValidationService::EXPIRED
-          save_auth_failure_in_application_context(access_token, :token_expired) if save_auth_context
+          save_auth_failure_in_application_context(access_token, :token_expired, scopes) if save_auth_context
           raise ExpiredError
         when AccessTokenValidationService::REVOKED
-          save_auth_failure_in_application_context(access_token, :token_revoked) if save_auth_context
+          save_auth_failure_in_application_context(access_token, :token_revoked, scopes) if save_auth_context
           revoke_token_family(access_token)
 
           raise RevokedError
         when AccessTokenValidationService::IMPERSONATION_DISABLED
-          save_auth_failure_in_application_context(access_token, :impersonation_disabled) if save_auth_context
+          save_auth_failure_in_application_context(access_token, :impersonation_disabled, scopes) if save_auth_context
           raise ImpersonationDisabled
         end
 
@@ -223,13 +225,19 @@ module Gitlab
       private
 
       def save_current_token_in_env
-        request.env[API_TOKEN_ENV] = { token_id: access_token.id, token_type: access_token.class.to_s }
+        ::Current.token_info = {
+          token_id: access_token.id,
+          token_type: access_token.class.to_s,
+          token_scopes: access_token.scopes.map(&:to_sym)
+        }
       end
 
-      def save_auth_failure_in_application_context(access_token, cause)
+      def save_auth_failure_in_application_context(access_token, cause, requested_scopes)
         Gitlab::ApplicationContext.push(
           auth_fail_reason: cause.to_s,
-          auth_fail_token_id: "#{access_token.class}/#{access_token.id}")
+          auth_fail_token_id: "#{access_token.class}/#{access_token.id}",
+          auth_fail_requested_scopes: requested_scopes.join(' ')
+        )
       end
 
       def find_user_from_job_bearer_token
@@ -262,6 +270,15 @@ module Gitlab
 
           if try(:namespace_inheritable, :authentication)
             access_token_from_namespace_inheritable
+          elsif Feature.enabled?(:auth_finder_no_token_length_detection, :current_request)
+            # The token can be a PAT or an OAuth (doorkeeper) token
+            begin
+              find_oauth_access_token
+            rescue UnauthorizedError
+              # It is also possible that a PAT is encapsulated in a `Bearer` OAuth token
+              # (e.g. NPM client registry auth). In that case, we rescue UnauthorizedError
+              # and try to find a personal access token.
+            end || find_personal_access_token
           else
             # The token can be a PAT or an OAuth (doorkeeper) token
             # It is also possible that a PAT is encapsulated in a `Bearer` OAuth token
@@ -288,13 +305,19 @@ module Gitlab
         return unless token
 
         # PATs with OAuth headers are not handled by OauthAccessToken
-        return if matches_personal_access_token_length?(token)
+        return if Feature.disabled?(:auth_finder_no_token_length_detection, :current_request) &&
+          matches_personal_access_token_length?(token)
 
         # Expiration, revocation and scopes are verified in `validate_access_token!`
         oauth_token = OauthAccessToken.by_token(token)
         raise UnauthorizedError unless oauth_token
 
         oauth_token.revoke_previous_refresh_token!
+
+        ::Gitlab::Auth::Identity.link_from_oauth_token(oauth_token).tap do |identity|
+          raise UnauthorizedError if identity && !identity.valid?
+        end
+
         oauth_token
       end
 

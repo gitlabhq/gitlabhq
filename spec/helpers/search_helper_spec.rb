@@ -1247,7 +1247,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
           expected[:count] = dummy_count if current_scope
           expected[:count_link] = "test count link" unless current_scope
 
-          expect(search_filter_link_json(scope, label, data, search)).to eq(expected)
+          expect(search_filter_link_json(scope, label, data, search, nil)).to eq(expected)
         end
       end
     end
@@ -1298,6 +1298,162 @@ RSpec.describe SearchHelper, feature_category: :global_search do
       it 'returns "0"' do
         @scope = 'projects'
         expect(formatted_count(@scope)).to eq("0")
+      end
+    end
+  end
+
+  describe '#parse_navigation' do
+    let(:navigation) do
+      {
+        projects: {
+          sort: 1,
+          label: "Projects",
+          data: { testid: "projects-tab" },
+          condition: true
+        },
+        blobs: {
+          sort: 2,
+          label: "Code",
+          data: { testid: "code-tab" },
+          condition: true
+        },
+        epics: {
+          sort: 3,
+          label: "Epics",
+          condition: true
+        },
+        issues: {
+          sort: 4, label: "Work items", condition: true, sub_items: {
+            issue: {
+              scope: "issues",
+              label: "Issue",
+              type: :issue,
+              condition: true
+            },
+            incident: {
+              scope: "issues",
+              label: "Incident",
+              type: :incident,
+              condition: true
+            },
+            test_case: {
+              scope: "issues",
+              label: "Test Case",
+              type: :test_case,
+              condition: true
+            },
+            requirement: {
+              scope: "issues",
+              label: "Requirement",
+              type: :requirement,
+              condition: true
+            },
+            task: {
+              scope: "issues",
+              label: "Task",
+              type: :task,
+              condition: true
+            },
+            objective: {
+              scope: "issues",
+              label: "Objective",
+              type: :objective,
+              condition: true
+            },
+            key_result: {
+              scope: "issues",
+              label: "Key Result",
+              type: :key_result,
+              condition: true
+            },
+            epic: {
+              scope: "issues",
+              label: "Epic",
+              type: :epic,
+              condition: true
+            },
+            ticket: {
+              scope: "issues",
+              label: "Ticket",
+              type: :ticket,
+              condition: true
+            }
+          }
+        },
+        merge_requests: {
+          sort: 5,
+          label: "Merge requests",
+          condition: true
+        },
+        wiki_blobs: {
+          sort: 6,
+          label: "Wiki",
+          condition: true
+        },
+        commits: {
+          sort: 7,
+          label: "Commits",
+          condition: true
+        },
+        notes: {
+          sort: 8,
+          label: "Comments",
+          condition: true
+        },
+        milestones: {
+          sort: 9,
+          label: "Milestones",
+          condition: true
+        },
+        users: {
+          sort: 10,
+          label: "Users",
+          condition: true
+        },
+        snippet_titles: {
+          sort: 11,
+          label: "Snippets",
+          condition: false
+        }
+      }
+    end
+
+    context 'with positive conditions' do
+      subject { parse_navigation(navigation) }
+
+      it 'includes items where condition is true' do
+        expect(subject.keys).to include(:projects, :blobs, :epics, :issues, :merge_requests, :wiki_blobs, :commits, :notes, :milestones, :users)
+      end
+
+      it 'excludes items where condition is false' do
+        expect(subject.keys).not_to include(:snippet_titles)
+      end
+
+      it 'includes correct data for a navigation item' do
+        expect(subject[:projects]).to eq(
+          scope: "projects",
+          label: "Projects",
+          data: { testid: "projects-tab" },
+          active: false,
+          count_link: "/search/count?scope=projects",
+          link: "/search?scope=projects"
+        )
+      end
+
+      it 'recursively includes sub_items with positive conditions' do
+        expect(subject[:issues][:sub_items].keys).to include(:issue, :incident, :test_case, :requirement, :task, :objective, :key_result, :epic, :ticket)
+      end
+    end
+
+    context 'with negative conditions' do
+      before do
+        navigation[:issues][:sub_items][:issue][:condition] = false
+      end
+
+      subject { parse_navigation(navigation) }
+
+      it 'excludes sub_items where condition is false' do
+        expect(subject[:issues][:sub_items].keys).not_to include(:issue)
       end
     end
   end

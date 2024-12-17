@@ -3,9 +3,9 @@
 module QA
   RSpec.describe 'Create', :orchestrated, :repository_storage, :requires_admin, product_group: :source_code do
     describe 'Gitaly repository storage' do
-      let(:user) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1) }
+      let(:user) { create(:user, :with_personal_access_token) }
       let(:parent_project) { create(:project, :with_readme, name: 'parent-project') }
-      let(:fork_project) { create(:fork, user: user, upstream: parent_project).project }
+      let(:fork_project) { create(:fork, user: user, upstream: parent_project) }
 
       before do
         parent_project.add_member(user)
@@ -23,7 +23,10 @@ module QA
 
         parent_project.change_repository_storage(QA::Runtime::Env.additional_repository_storage)
 
-        second_fork_project = create(:fork, name: "second-fork-of-#{parent_project.name}", user: user, upstream: parent_project).project
+        second_fork_project = create(:fork,
+          name: "second-fork-of-#{parent_project.name}",
+          user: user,
+          upstream: parent_project)
 
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = second_fork_project

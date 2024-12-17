@@ -20,9 +20,9 @@ module Projects
 
       def new_ml_model_data(project, user)
         data = {
+          index_models_path: project_ml_models_path(project),
           projectPath: project.full_path,
           can_write_model_registry: can_write_model_registry?(user, project),
-          max_allowed_file_size: max_allowed_file_size(project),
           markdown_preview_path: preview_markdown_path(project)
         }
 
@@ -69,6 +69,7 @@ module Projects
         project = model.project
 
         data = {
+          model_path: project_ml_model_path(project, model),
           projectPath: project.full_path,
           can_write_model_registry: can_write_model_registry?(user, project),
           max_allowed_file_size: max_allowed_file_size(project),
@@ -136,14 +137,6 @@ module Projects
 
       def to_json(data)
         Gitlab::Json.generate(data.deep_transform_keys { |k| k.to_s.camelize(:lower) })
-      end
-
-      def mlflow_tracking_url(project)
-        path = api_v4_projects_ml_mlflow_api_2_0_mlflow_registered_models_create_path(id: project.id)
-
-        path = path.delete_suffix('api/2.0/mlflow/registered-models/create')
-
-        expose_url(path)
       end
     end
   end

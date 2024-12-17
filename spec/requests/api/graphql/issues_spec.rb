@@ -162,6 +162,7 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
   it_behaves_like 'graphql issue list request spec' do
     let_it_be(:external_user) { create(:user) }
     let_it_be(:another_user) { reporter }
+    let_it_be(:project) { project_a } # Used for Service Desk issues creation in shared example
 
     let(:public_projects) { [project_a, project_c] }
 

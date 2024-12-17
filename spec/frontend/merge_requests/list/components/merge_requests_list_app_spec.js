@@ -40,8 +40,8 @@ import { mergeRequestListTabs } from '~/vue_shared/issuable/list/constants';
 import { getSortOptions } from '~/issues/list/utils';
 import MergeRequestsListApp from '~/merge_requests/list/components/merge_requests_list_app.vue';
 import { BRANCH_LIST_REFRESH_INTERVAL } from '~/merge_requests/list/constants';
-import getMergeRequestsQuery from 'ee_else_ce/merge_requests/list/queries/get_merge_requests.query.graphql';
-import getMergeRequestsCountQuery from 'ee_else_ce/merge_requests/list/queries/get_merge_requests_counts.query.graphql';
+import getMergeRequestsQuery from 'ee_else_ce/merge_requests/list/queries/project/get_merge_requests.query.graphql';
+import getMergeRequestsCountsQuery from 'ee_else_ce/merge_requests/list/queries/project/get_merge_requests_counts.query.graphql';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import MergeRequestReviewers from '~/issuable/components/merge_request_reviewers.vue';
 import issuableEventHub from '~/issues/list/eventhub';
@@ -66,7 +66,7 @@ function createComponent({
   getQueryResponseMock = jest.fn().mockResolvedValue(response);
   getCountsQueryResponseMock = jest.fn().mockResolvedValue(getCountsQueryResponse);
   const apolloProvider = createMockApollo([
-    [getMergeRequestsCountQuery, getCountsQueryResponseMock],
+    [getMergeRequestsCountsQuery, getCountsQueryResponseMock],
     [getMergeRequestsQuery, getQueryResponseMock],
   ]);
   router = new VueRouter({ mode: 'history' });
@@ -91,6 +91,8 @@ function createComponent({
       canBulkUpdate: true,
       environmentNamesPath: '',
       defaultBranch: 'main',
+      getMergeRequestsCountsQuery,
+      getMergeRequestsQuery,
       ...provide,
     },
     apolloProvider,
@@ -123,7 +125,8 @@ describe('Merge requests list app', () => {
       recentSearchesStorageKey: 'merge_requests',
       sortOptions: getSortOptions({ hasManualSort: false }),
       initialSortBy: 'CREATED_DESC',
-      issuables: getQueryResponse.data.project.mergeRequests.nodes,
+      issuableSymbol: '!',
+      issuables: getQueryResponse.data.namespace.mergeRequests.nodes,
       tabs: mergeRequestListTabs,
       currentTab: 'opened',
       tabCounts: {
@@ -161,7 +164,7 @@ describe('Merge requests list app', () => {
     describe('with no projectId', () => {
       it('uses the generic "all branches" endpoint', async () => {
         const queryResponse = getQueryResponse;
-        queryResponse.data.project.id = null;
+        queryResponse.data.namespace.id = null;
 
         createComponent({ response: queryResponse });
 
@@ -182,7 +185,7 @@ describe('Merge requests list app', () => {
         'selects the correct path ($branchPath) given the arguments $fetchArgs',
         async ({ branchPath, fetchArgs }) => {
           const queryResponse = getQueryResponse;
-          queryResponse.data.project.id = projectId;
+          queryResponse.data.namespace.id = projectId;
 
           createComponent({ response: queryResponse });
           await waitForPromises();
@@ -197,7 +200,7 @@ describe('Merge requests list app', () => {
     describe('cache expiration', () => {
       const queryResponse = getQueryResponse;
 
-      queryResponse.data.project.id = projectId;
+      queryResponse.data.namespace.id = projectId;
 
       beforeEach(() => {
         axiosMock.resetHistory();
@@ -509,7 +512,7 @@ describe('Merge requests list app', () => {
       '$existsText cannot merge badge when state is $state and mergeRequest has $cannotMergeProperties',
       async ({ state, cannotMergeProperties, exists }) => {
         const response = JSON.parse(JSON.stringify(getQueryResponse));
-        Object.assign(response.data.project.mergeRequests.nodes[0], {
+        Object.assign(response.data.namespace.mergeRequests.nodes[0], {
           state,
           ...cannotMergeProperties,
         });
@@ -530,7 +533,7 @@ describe('Merge requests list app', () => {
 
     expect(wrapper.findComponent(ApprovalCount).exists()).toBe(true);
     expect(wrapper.findComponent(ApprovalCount).props('mergeRequest')).toEqual(
-      getQueryResponse.data.project.mergeRequests.nodes[0],
+      getQueryResponse.data.namespace.mergeRequests.nodes[0],
     );
   });
 
@@ -543,7 +546,7 @@ describe('Merge requests list app', () => {
 
     expect(reviewersEl.exists()).toBe(true);
     expect(reviewersEl.props()).toMatchObject({
-      reviewers: getQueryResponse.data.project.mergeRequests.nodes[0].reviewers.nodes,
+      reviewers: getQueryResponse.data.namespace.mergeRequests.nodes[0].reviewers.nodes,
       iconSize: 16,
       maxVisible: 4,
     });
@@ -629,7 +632,7 @@ describe('Merge requests list app', () => {
       '$existsText target branch link when default branch: $defaultBranch and targetBranch: $targetBranch',
       async ({ defaultBranch, targetBranch, exists }) => {
         const response = JSON.parse(JSON.stringify(getQueryResponse));
-        Object.assign(response.data.project.mergeRequests.nodes[0], {
+        Object.assign(response.data.namespace.mergeRequests.nodes[0], {
           targetBranch,
         });
 
@@ -640,5 +643,21 @@ describe('Merge requests list app', () => {
         expect(wrapper.findByTestId('target-branch').exists()).toBe(exists);
       },
     );
+  });
+
+  describe('route watcher', () => {
+    it('refetches query when route changes', async () => {
+      createComponent();
+
+      router.replace('?assignee_username[]=test-username');
+
+      await waitForPromises();
+
+      expect(getQueryResponseMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          assigneeUsernames: 'test-username',
+        }),
+      );
+    });
   });
 });

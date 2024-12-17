@@ -8,3 +8,4 @@ description: VSCode Settings
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131900
 milestone: '16.5'
 gitlab_schema: gitlab_main_clusterwide
+table_size: small

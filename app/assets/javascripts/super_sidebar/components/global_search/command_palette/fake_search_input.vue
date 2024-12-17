@@ -28,7 +28,7 @@ export default {
     <span
       v-if="!userInput"
       data-testid="search-scope-placeholder"
-      class="gl-pointer-events-none gl-text-gray-500"
+      class="gl-pointer-events-none gl-text-subtle"
       >{{ placeholder }}</span
     >
   </div>

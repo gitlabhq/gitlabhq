@@ -9,8 +9,6 @@ description: Relates epics to epic boards by position, unique to each combinatio
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48120
 milestone: '13.7'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 desired_sharding_key:
   group_id:
     references: namespaces
@@ -21,3 +19,4 @@ desired_sharding_key:
         sharding_key: group_id
         belongs_to: epic_board
 desired_sharding_key_migration_job_name: BackfillBoardsEpicBoardPositionsGroupId
+table_size: small

@@ -20,7 +20,7 @@
 .gl-responsive-table-row {
   margin-top: 10px;
   border: 1px solid $border-color;
-  color: $gray-500;
+  @apply gl-text-subtle;
 
   &.gl-responsive-table-row-clickable {
     &:hover {

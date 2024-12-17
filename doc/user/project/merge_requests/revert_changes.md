@@ -111,6 +111,17 @@ Permanently delete sensitive or confidential information that was accidentally c
 it's no longer accessible in your repository's history.
 Replaces a list of strings with `***REMOVED***`.
 
+WARNING:
+**This action is irreversible.**
+After rewriting history and running housekeeping, the changes are permanent.
+Be aware of the following impacts when redacting text from your repository:
+
+- Open merge requests might fail to merge and require manual rebasing.
+- Existing local clones are incompatible with the updated repository and must be re-cloned.
+- Pipelines referencing old commit SHAs might break and require reconfiguration.
+- Historical tags and branches based on the old commit history might not function correctly.
+- Commit signatures are dropped during the rewrite process.
+
 Alternatively, to completely delete specific files from a repository, see
 [Remove blobs](../../../user/project/repository/repository_size.md#remove-files).
 

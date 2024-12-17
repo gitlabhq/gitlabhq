@@ -181,6 +181,14 @@ exports[`AutocompleteHelper for reference type "issue", searches for "q" correct
 ]
 `;
 
+exports[`AutocompleteHelper for reference type "iteration", searches for "27" correctly 1`] = `
+[
+  "Optio quod at quia ad pariatur dolores. Nov 26, 2024 - Dec 9, 2024",
+  "Itaque repellat possimus dolor quia nesciunt hic aut iure animi vel. Nov 13, 2024 - Dec 10, 2024",
+  "Magni eos minus vero facilis in consequuntur deserunt omnis consectetur natus. Nov 27, 2024 - Dec 10, 2024",
+]
+`;
+
 exports[`AutocompleteHelper for reference type "label", searches for "c" correctly 1`] = `
 [
   "Contour",

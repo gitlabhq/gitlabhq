@@ -183,6 +183,31 @@ RSpec.describe Member, feature_category: :groups_and_projects do
         end
       end
     end
+
+    context 'when access_level is nil' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:member) { create(:group_member, source: group, user: user) }
+
+      shared_examples 'returns the correct validation error' do
+        specify do
+          member.access_level = nil
+
+          member.validate
+
+          expect(member.errors.messages[:access_level]).to include("is not included in the list")
+        end
+      end
+
+      it_behaves_like 'returns the correct validation error'
+
+      context 'for a subgroup member' do
+        let_it_be(:subgroup) { create(:group, parent: group) }
+        let_it_be(:member) { create(:group_member, source: subgroup, user: user) }
+
+        it_behaves_like 'returns the correct validation error'
+      end
+    end
   end
 
   describe 'Scopes & finders' do
@@ -545,6 +570,15 @@ RSpec.describe Member, feature_category: :groups_and_projects do
         it { is_expected.not_to include @accepted_requested_member }
         it { is_expected.not_to include @blocked_maintainer }
         it { is_expected.not_to include @blocked_developer }
+      end
+    end
+
+    describe '.with_at_least_access_level' do
+      it 'filters members with the at least the specified access level' do
+        results = described_class.with_at_least_access_level(::Gitlab::Access::MAINTAINER)
+
+        expect(results).to include(@owner, @maintainer)
+        expect(results).not_to include(@developer)
       end
     end
 
@@ -979,6 +1013,16 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     subject { described_class.with_static_role }
 
     it { is_expected.to contain_exactly(membership_without_custom_role) }
+  end
+
+  describe '.coerce_to_no_access' do
+    let_it_be(:member) { create(:group_member) }
+
+    it 'returns NO_ACCESS for the member' do
+      members = described_class.id_in(member.id).coerce_to_no_access.to_a
+
+      expect(members.first.access_level).to eq(Gitlab::Access::NO_ACCESS)
+    end
   end
 
   describe '.with_group_group_sharing_access' do

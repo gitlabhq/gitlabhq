@@ -7,6 +7,10 @@ require 'spec_helper'
 RSpec.describe 'Dashboard Todos (Haml version)', :js, feature_category: :notifications do
   include DesignManagementTestHelpers
 
+  before do
+    stub_feature_flags(todos_vue_application: false)
+  end
+
   let_it_be(:user) { create(:user, username: 'john') }
   let_it_be(:user2) { create(:user, username: 'diane') }
   let_it_be(:user3) { create(:user) }
@@ -544,32 +548,81 @@ RSpec.describe 'Dashboard Todos (Vue version)', :js, feature_category: :notifica
   let_it_be(:user2) { create(:user, name: 'Michael Scott') }
   let_it_be(:project) { create(:project, :public, developers: user) }
   let_it_be(:issue) { create(:issue, project: project, due_date: Date.today, title: "Fix bug") }
+  let_it_be(:issue2) { create(:issue, project: project, due_date: Date.today, title: "Update gems") }
+  let_it_be(:issue3) { create(:issue, project: project, due_date: Date.today, title: "Deploy feature") }
 
-  # FIXME: The shared example below will work as soon as we drop the /vue part of the URL
-  # See https://gitlab.com/gitlab-org/gitlab/-/issues/501269
-  # it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :vue_dashboard_todos_path, :todos
+  before do
+    sign_in user
+  end
 
-  context 'when user has no pending todos' do
-    before do
-      sign_in(user)
-      visit vue_dashboard_todos_path
+  it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :dashboard_todos_path, :todos
+
+  describe 'empty states' do
+    context 'when user has no todos at all (neither pending nor done)' do
+      before do
+        visit dashboard_todos_path
+      end
+
+      it 'shows empty state for new users' do
+        within('.gl-empty-state') do
+          expect(page).to have_content 'Your To-Do List shows what to work on next'
+        end
+      end
     end
 
-    it 'shows empty state' do
-      within('.gl-empty-state') do
-        expect(page).to have_content 'Your To-Do List shows what to work on next'
+    context 'when user has no pending todos (but some done todos)' do
+      before do
+        create_todo(state: :done)
+        visit dashboard_todos_path
+      end
+
+      it 'shows a "well done" message on the "Pending" tab' do
+        expect(page).to have_content 'Not sure where to go next?'
+        expect_tab_nav
+      end
+    end
+
+    context 'when user has pending todos but applied filters with no matches' do
+      before do
+        create_todo(state: :pending)
+        visit dashboard_todos_path(author_id: user.id)
+      end
+
+      it 'shows a "no matches" message' do
+        expect(page).to have_content 'Sorry, your filter produced no results'
+        expect_tab_nav
+      end
+    end
+
+    context 'when user has no done tasks' do
+      before do
+        create_todo(state: :pending)
+      end
+
+      context 'with filters applied' do
+        it 'shows a "no matches" message' do
+          visit dashboard_todos_path(author_id: user.id, state: :done)
+          expect(page).to have_content 'Sorry, your filter produced no results'
+          expect_tab_nav
+        end
+      end
+
+      context 'with no filters applied' do
+        it 'shows a "no done todos" message on the "Done" tab' do
+          visit dashboard_todos_path(state: :done)
+          expect(page).to have_content 'There are no done to-do items yet'
+          expect_tab_nav
+        end
       end
     end
   end
 
   context 'when user has pending todos' do
-    let!(:todo_assigned) { create(:todo, :assigned, :pending, user: user, project: project, target: issue, author: user2) }
-    let!(:todo_marked) { create(:todo, :marked, :pending, user: user, project: project, target: issue, author: user) }
+    let_it_be(:todo_assigned) { create(:todo, :assigned, :pending, user: user, project: project, target: issue, author: user2) }
+    let_it_be(:todo_marked) { create(:todo, :marked, :pending, user: user, project: project, target: issue, author: user) }
 
     before do
-      sign_in(user)
-      visit vue_dashboard_todos_path
-      wait_for_requests
+      visit dashboard_todos_path
     end
 
     it 'allows to mark a pending todo as done and find it in the Done tab' do
@@ -586,5 +639,159 @@ RSpec.describe 'Dashboard Todos (Vue version)', :js, feature_category: :notifica
       click_on 'To Do 1'
       expect(page).not_to have_content 'Michael Scott assigned you.'
     end
+  end
+
+  describe 'sorting' do
+    let_it_be(:oldest_but_most_recently_updated) { create_todo(created_at: 3.days.ago, updated_at: 3.minutes.ago, target: issue) }
+    let_it_be(:middle_old_and_middle_updated) { create_todo(created_at: 2.days.ago, updated_at: 2.hours.ago, target: issue2) }
+    let_it_be(:newest_but_never_updated) { create_todo(created_at: 1.day.ago, updated_at: 1.day.ago, target: issue3) }
+
+    before do
+      visit dashboard_todos_path
+    end
+
+    it 'allows to change sort order and direction' do
+      # default sort is by `created_at` (desc)
+      expect(page).to have_content(
+        /#{newest_but_never_updated.target.title}.*#{middle_old_and_middle_updated.target.title}.*#{oldest_but_most_recently_updated.target.title}/
+      )
+
+      # change direction
+      find('.sorting-direction-button').click
+      expect(page).to have_content(
+        /#{oldest_but_most_recently_updated.target.title}.*#{middle_old_and_middle_updated.target.title}.*#{newest_but_never_updated.target.title}/
+      )
+
+      # change order
+      click_on 'Created' # to open order dropdown
+      find('li', text: 'Updated').click # to change to `updated_at`
+      expect(page).to have_content(
+        /#{newest_but_never_updated.target.title}.*#{middle_old_and_middle_updated.target.title}.*#{oldest_but_most_recently_updated.target.title}/
+      )
+    end
+  end
+
+  describe 'filtering' do
+    let_it_be(:self_assigned) { create_todo(author: user, target: issue) }
+    let_it_be(:self_marked) { create_todo(author: user, target: issue2, action: :marked) }
+    let_it_be(:other_assigned) { create_todo(author: user2, target: issue3) }
+
+    before do
+      visit dashboard_todos_path
+    end
+
+    it 'allows to filter by auther, action etc' do
+      find_by_testid('filtered-search-term').click
+      find('li', text: 'Author').click
+      find('li', text: user.username).click
+      find_by_testid('search-button').click
+
+      expect(page).to have_content(self_assigned.target.title)
+      expect(page).to have_content(self_marked.target.title)
+      expect(page).not_to have_content(other_assigned.target.title)
+
+      find_by_testid('filtered-search-term').click
+      find('li', text: 'Reason').click
+      find('li', text: 'Marked').click
+      find_by_testid('search-button').click
+
+      expect(page).not_to have_content(self_assigned.target.title)
+      expect(page).to have_content(self_marked.target.title)
+      expect(page).not_to have_content(other_assigned.target.title)
+
+      click_on 'Clear'
+
+      expect(page).to have_content(self_assigned.target.title)
+      expect(page).to have_content(self_marked.target.title)
+      expect(page).to have_content(other_assigned.target.title)
+    end
+  end
+
+  describe 'reloading' do
+    let_it_be(:todo1) { create_todo(author: user, target: issue) }
+
+    before do
+      visit dashboard_todos_path
+    end
+
+    context 'when user clicks the Refresh button' do
+      it 'updates the list of todos' do
+        todo2 = create_todo(author: user, target: issue2)
+        expect(page).not_to have_content todo2.target.title
+        click_on 'Refresh'
+        expect(page).to have_content todo2.target.title
+      end
+    end
+
+    context 'when user stops interacting with the list' do
+      it 'automatically updates the list of todos' do
+        click_on 'Mark as done'
+        sleep 1 # Auto-reload needs 1sec of user inactivity
+        expect(page).to have_content todo1.target.title # Resolved todo is still visible
+        find_by_testid('filtered-search-term-input').click # Move focus away from the list
+        expect(page).to have_content 'Not sure where to go next?' # Shows empty state
+        expect(page).not_to have_content todo1.target.title
+      end
+    end
+  end
+
+  describe '"Mark all as done" button' do
+    context 'with no pending todos' do
+      it 'does not show' do
+        visit dashboard_todos_path
+        expect(page).not_to have_content 'Mark all as done'
+      end
+    end
+
+    context 'with pending todos' do
+      let_it_be(:self_assigned) { create_todo(author: user, target: issue) }
+      let_it_be(:self_marked) { create_todo(author: user, target: issue2, action: :marked) }
+      let_it_be(:other_assigned) { create_todo(author: user2, target: issue3) }
+
+      context 'with no filters applied' do
+        it 'marks all pending todos as done' do
+          visit dashboard_todos_path
+          click_on 'Mark all as done'
+
+          expect(page).to have_content 'Not sure where to go next?'
+          within('.gl-toast') do
+            expect(page).to have_content 'Marked 3 to-dos as done'
+            find('a.gl-toast-action', text: 'Undo').click
+          end
+          expect(page).to have_content 'Restored 3 to-dos'
+          expect(page).to have_selector('ul[data-testid=todo-item-list-container] li', count: 3)
+        end
+      end
+
+      context 'with filters applied' do
+        it 'only marks the filtered todos as done' do
+          visit dashboard_todos_path(author_id: user.id)
+          click_on 'Mark all as done'
+
+          expect(page).to have_content 'Sorry, your filter produced no results'
+          click_on 'Clear'
+          expect(page).to have_selector('ul[data-testid=todo-item-list-container] li', count: 1)
+          expect(page).to have_content(other_assigned.author.name)
+        end
+      end
+    end
+  end
+
+  def create_todo(action: :assigned, state: :pending, created_at: nil, updated_at: nil, target: issue, author: user2)
+    create(
+      :todo,
+      action,
+      state: state,
+      user: user,
+      created_at: created_at,
+      updated_at: updated_at,
+      project: project,
+      target: target,
+      author: author
+    )
+  end
+
+  def expect_tab_nav
+    expect(page).to have_content(/To Do \d+ Done All/)
   end
 end

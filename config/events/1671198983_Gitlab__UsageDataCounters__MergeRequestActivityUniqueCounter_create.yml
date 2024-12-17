@@ -8,6 +8,8 @@ identifiers:
 - user
 - namespace
 product_group: code_review
+product_categories:
+- code_review_workflow
 milestone: "15.7"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106869
 distributions:

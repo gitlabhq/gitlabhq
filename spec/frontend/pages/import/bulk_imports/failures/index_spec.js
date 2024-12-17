@@ -1,15 +1,19 @@
-import Vue from 'vue';
-import { initBulkImportDetails } from '~/pages/import/bulk_imports/failures/index';
+import { createWrapper } from '@vue/test-utils';
+import { initBulkImportDetails } from '~/pages/import/bulk_imports/failures';
+import BulkImportDetailsApp from '~/import/details/components/bulk_import_details_app.vue';
 
 jest.mock('~/import/details/components/bulk_import_details_app.vue');
 
 describe('initBulkImportDetails', () => {
   let appRoot;
+  let wrapper;
 
   const createAppRoot = () => {
     appRoot = document.createElement('div');
     appRoot.setAttribute('class', 'js-bulk-import-details');
     document.body.appendChild(appRoot);
+
+    wrapper = createWrapper(initBulkImportDetails());
   };
 
   afterEach(() => {
@@ -18,6 +22,8 @@ describe('initBulkImportDetails', () => {
       appRoot = null;
     }
   });
+
+  const findBulkImportDetailsApp = () => wrapper.findComponent(BulkImportDetailsApp);
 
   describe('when there is no app root', () => {
     it('returns null', () => {
@@ -30,8 +36,8 @@ describe('initBulkImportDetails', () => {
       createAppRoot();
     });
 
-    it('returns a Vue instance', () => {
-      expect(initBulkImportDetails()).toBeInstanceOf(Vue);
+    it('renders the app', () => {
+      expect(findBulkImportDetailsApp().exists()).toBe(true);
     });
   });
 });

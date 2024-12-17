@@ -13,7 +13,10 @@ module VirtualRegistries
           class_name: 'VirtualRegistries::Packages::Maven::CachedResponse',
           inverse_of: :upstream
 
-        attr_encrypted :credentials,
+        ignore_column :encrypted_credentials, remove_with: '17.9', remove_after: '2025-01-23'
+        ignore_column :encrypted_credentials_iv, remove_with: '17.9', remove_after: '2025-01-23'
+
+        attr_encrypted_options.merge!(
           mode: :per_attribute_iv,
           key: Settings.attr_encrypted_db_key_base_32,
           algorithm: 'aes-256-gcm',
@@ -21,8 +24,10 @@ module VirtualRegistries
           marshaler: ::Gitlab::Json,
           encode: false,
           encode_iv: false
-        attribute :username, :string, default: nil
-        attribute :password, :string, default: nil
+        )
+
+        attr_encrypted :username
+        attr_encrypted :password
 
         validates :group, top_level_group: true, presence: true
         validates :url, addressable_url: { allow_localhost: false, allow_local_network: false }, presence: true
@@ -30,10 +35,10 @@ module VirtualRegistries
         validates :password, presence: true, if: :username?
         validates :url, :username, :password, length: { maximum: 255 }
         validates :cache_validity_hours, numericality: { greater_than_or_equal_to: 0, only_integer: true }
+        validates :encrypted_username_iv, :encrypted_password_iv, uniqueness: true, allow_nil: true
 
-        after_initialize :read_credentials
+        before_validation :set_cache_validity_hours_for_maven_central, if: :url?, on: :create
         after_validation :reset_credentials, if: -> { persisted? && url_changed? }
-        before_save :write_credentials
 
         prevent_from_serialization(:username, :password) if respond_to?(:prevent_from_serialization)
 
@@ -52,27 +57,17 @@ module VirtualRegistries
 
         private
 
-        def read_credentials
-          self.credentials ||= {}
-
-          # if credentials are blank we might have a username + password from initializer. Don't reset them.
-          return if credentials.blank?
-
-          self.username, self.password = (credentials || {}).values_at('username', 'password')
-          clear_username_change
-          clear_password_change
-        end
-
-        def write_credentials
-          self.credentials = (credentials || {}).merge('username' => username, 'password' => password)
-        end
-
         def reset_credentials
           return if username_changed? && password_changed?
 
           self.username = nil
           self.password = nil
-          self.credentials = {}
+        end
+
+        def set_cache_validity_hours_for_maven_central
+          return unless url.start_with?('https://repo1.maven.org/maven2')
+
+          self.cache_validity_hours = 0
         end
       end
     end

@@ -3,6 +3,8 @@ data_category: operational
 key_path: counts.projects_with_terraform_states
 description: Count of projects with GitLab Managed Terraform State
 product_group: environments
+product_categories:
+- infrastructure_as_code
 value_type: number
 status: active
 time_frame: all

@@ -3,6 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage.create.suggestions
 description: Count of unique users who create suggestions in merge request comments
 product_group: code_review
+product_categories:
+- code_review_workflow
 value_type: number
 status: removed
 time_frame: all

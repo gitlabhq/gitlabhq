@@ -122,7 +122,7 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
 
       expect(page).to have_selector('.ref-selector')
 
-      select_search_scope('Issues')
+      select_search_scope('Issue')
 
       expect(find(:css, '.results')).to have_link(issue.title)
       expect(page).not_to have_selector('.ref-selector')

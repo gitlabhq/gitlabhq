@@ -20,12 +20,12 @@ module Ci
         columns = Array.new(columns_count) { |i| "(traversal_ids[#{i + 1}])" }
         pairs = traversal_ids_group.map do |ids|
           ids = ids.map { |id| Arel::Nodes.build_quoted(id).to_sql }
-          "(#{ids.join(",")})"
+          "(#{ids.join(',')})"
         end
 
         # Create condition in format:
         # ((traversal_ids[1]),(traversal_ids[2])) IN ((1,2),(2,3))
-        mirrors << Ci::NamespaceMirror.where("(#{columns.join(",")}) IN (#{pairs.join(",")})") # rubocop:disable GitlabSecurity/SqlInjection
+        mirrors << Ci::NamespaceMirror.where("(#{columns.join(',')}) IN (#{pairs.join(',')})") # rubocop:disable GitlabSecurity/SqlInjection
       end
 
       self.from_union(mirrors)

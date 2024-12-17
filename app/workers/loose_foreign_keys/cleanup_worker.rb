@@ -51,7 +51,7 @@ module LooseForeignKeys
     end
 
     def turbo_mode?(connection_name)
-      %w[main ci].include?(connection_name) &&
+      %w[main ci sec].include?(connection_name) &&
         Feature.enabled?(:"loose_foreign_keys_turbo_mode_#{connection_name}", type: :ops)
     end
   end

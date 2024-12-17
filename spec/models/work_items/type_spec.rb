@@ -3,6 +3,26 @@
 require 'spec_helper'
 
 RSpec.describe WorkItems::Type, feature_category: :team_planning do
+  shared_examples 'a model that uses correct_id/id as global id' do
+    it 'uses the correct_id column for global ids' do
+      expect(
+        GlobalID.new(type.public_send(gid_method).to_s).model_id.to_i
+      ).to eq(type.attributes['correct_id'])
+    end
+
+    context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
+      before do
+        stub_feature_flags(issues_set_correct_work_item_type_id: false)
+      end
+
+      it 'uses the id column for global ids' do
+        expect(
+          GlobalID.new(type.public_send(gid_method).to_s).model_id.to_i
+        ).to eq(type.attributes['id'])
+      end
+    end
+  end
+
   describe 'modules' do
     it { is_expected.to include_module(CacheMarkdownField) }
   end
@@ -95,6 +115,107 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
   end
 
   describe 'scopes' do
+    describe 'with_correct_id_and_fallback' do
+      let_it_be(:type1) do
+        create(:work_item_type, :non_default).tap { |type| type.update!(old_id: type.id * 10, id: -type.id) }
+      end
+
+      let_it_be(:type2) do
+        create(:work_item_type, :non_default).tap { |type| type.update!(old_id: type.id * 10, id: -type.id) }
+      end
+
+      let_it_be(:type3) do
+        create(:work_item_type, :non_default).tap { |type| type.update!(old_id: type2.correct_id, id: -type.id) }
+      end
+
+      subject { described_class.with_correct_id_and_fallback(ids_for_scope) }
+
+      context 'when ids are null' do
+        let(:ids_for_scope) { nil }
+
+        it { is_expected.to be_empty }
+
+        context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
+          before do
+            stub_feature_flags(issues_set_correct_work_item_type_id: false)
+          end
+
+          it { is_expected.to be_empty }
+        end
+      end
+
+      context 'when ids are empty array' do
+        let(:ids_for_scope) { [] }
+
+        it { is_expected.to be_empty }
+
+        context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
+          before do
+            stub_feature_flags(issues_set_correct_work_item_type_id: false)
+          end
+
+          it { is_expected.to be_empty }
+        end
+      end
+
+      context 'when using old ids' do
+        let(:ids_for_scope) { [type1, type2].map(&:old_id) }
+
+        it { is_expected.to contain_exactly(type1, type2) }
+
+        context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
+          before do
+            stub_feature_flags(issues_set_correct_work_item_type_id: false)
+          end
+
+          it { is_expected.to be_empty }
+        end
+      end
+
+      context 'when using correct ids' do
+        let(:ids_for_scope) { [type1, type2].map(&:correct_id) }
+
+        # type3 only gets matched because it's old_id matches type2.correct_id
+        it { is_expected.to contain_exactly(type1, type2, type3) }
+
+        context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
+          before do
+            stub_feature_flags(issues_set_correct_work_item_type_id: false)
+          end
+
+          it { is_expected.to be_empty }
+        end
+      end
+
+      context 'when using correct ids but another type has the same old_id value' do
+        let(:ids_for_scope) { [type2].map(&:correct_id) }
+
+        it { is_expected.to contain_exactly(type2, type3) }
+
+        context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
+          before do
+            stub_feature_flags(issues_set_correct_work_item_type_id: false)
+          end
+
+          it { is_expected.to be_empty }
+        end
+      end
+
+      context 'when using ids' do
+        let(:ids_for_scope) { [type1, type2].map(&:id) }
+
+        it { is_expected.to be_empty }
+
+        context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
+          before do
+            stub_feature_flags(issues_set_correct_work_item_type_id: false)
+          end
+
+          it { is_expected.to contain_exactly(type1, type2) }
+        end
+      end
+    end
+
     describe 'order_by_name_asc' do
       subject { described_class.order_by_name_asc.pluck(:name) }
 
@@ -140,6 +261,40 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
     end
 
     it { is_expected.not_to allow_value('s' * 256).for(:icon_name) }
+  end
+
+  describe '.find_by_correct_id_with_fallback' do
+    let_it_be(:type1) do
+      create(:work_item_type, :non_default).tap { |type| type.update!(old_id: type.id * 10, id: -type.id) }
+    end
+
+    let_it_be(:type2) do
+      create(:work_item_type, :non_default).tap { |type| type.update!(old_id: type.id * 10, id: -type.id) }
+    end
+
+    let_it_be(:type3) do
+      create(:work_item_type, :non_default).tap { |type| type.update!(old_id: type2.correct_id, id: -type.id) }
+    end
+
+    subject { described_class.find_by_correct_id_with_fallback(id_input) }
+
+    context 'when fetching by correct_id' do
+      let(:id_input) { type1.correct_id }
+
+      it { is_expected.to eq(type1) }
+    end
+
+    context 'when fetching by old_id' do
+      let(:id_input) { type1.old_id }
+
+      it { is_expected.to eq(type1) }
+    end
+
+    context 'when fetching by correct_id but an old_id matches the value' do
+      let(:id_input) { type3.old_id }
+
+      it { is_expected.to eq(type2) }
+    end
   end
 
   describe '.default_by_type' do
@@ -190,6 +345,20 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
           end.not_to raise_error
         end
       end
+    end
+  end
+
+  describe '#to_global_id' do
+    it_behaves_like 'a model that uses correct_id/id as global id' do
+      let(:type) { described_class.first }
+      let(:gid_method) { :to_global_id }
+    end
+  end
+
+  describe '#to_gid' do
+    it_behaves_like 'a model that uses correct_id/id as global id' do
+      let(:type) { described_class.first }
+      let(:gid_method) { :to_gid }
     end
   end
 

@@ -8,7 +8,6 @@ description: Group-level settings for dependency proxy cleanup policies
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68809
 milestone: '14.3'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   group_id: namespaces
+table_size: small

@@ -20,6 +20,8 @@ the concurrency of the jobs for optimizing your continuous deployments workflow 
 
 ## Add a resource group
 
+You can add only one resource to a resource group.
+
 Provided that you have the following pipeline configuration (`.gitlab-ci.yml` file in your repository):
 
 ```yaml
@@ -61,10 +63,6 @@ can still run `build` jobs concurrently for maximizing the pipeline efficiency.
 - The basic knowledge of the [GitLab CI/CD pipelines](../pipelines/index.md)
 - The basic knowledge of the [GitLab Environments and Deployments](../environments/index.md)
 - At least the Developer role for the project to configure CI/CD pipelines.
-
-### Limitations
-
-Only one resource can be attached to a resource group.
 
 ## Process modes
 

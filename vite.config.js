@@ -13,14 +13,8 @@ import {
   GITLAB_WEB_IDE_PUBLIC_PATH,
   copyFilesPatterns,
 } from './config/webpack.constants';
-import {
-  PDF_JS_WORKER_V3_PUBLIC_PATH,
-  PDF_JS_WORKER_V4_PUBLIC_PATH,
-  PDF_JS_CMAPS_V3_PUBLIC_PATH,
-  PDF_JS_CMAPS_V4_PUBLIC_PATH,
-} from './config/pdfjs.constants';
+import { PDF_JS_WORKER_PUBLIC_PATH, PDF_JS_CMAPS_PUBLIC_PATH } from './config/pdfjs.constants';
 
-/* eslint-disable import/extensions */
 import { viteTailwindCompilerPlugin } from './scripts/frontend/tailwindcss.mjs';
 import { CopyPlugin } from './config/helpers/vite_plugin_copy.mjs';
 import { AutoStopPlugin } from './config/helpers/vite_plugin_auto_stop.mjs';
@@ -29,7 +23,6 @@ import { FixedRubyPlugin } from './config/helpers/vite_plugin_ruby_fixed.mjs';
 import { StylePlugin } from './config/helpers/vite_plugin_style.mjs';
 import { IconsPlugin } from './config/helpers/vite_plugin_icons.mjs';
 import { ImagesPlugin } from './config/helpers/vite_plugin_images.mjs';
-/* eslint-enable import/extensions */
 
 let viteGDKConfig;
 try {
@@ -139,10 +132,8 @@ export default defineConfig({
         ? `${process.env.VITE_HMR_HTTP_URL}/vite-dev/`
         : `http://${viteGDKConfig.host}:${viteGDKConfig.port}/vite-dev/`,
     ),
-    'process.env.PDF_JS_WORKER_V3_PUBLIC_PATH': JSON.stringify(PDF_JS_WORKER_V3_PUBLIC_PATH),
-    'process.env.PDF_JS_WORKER_V4_PUBLIC_PATH': JSON.stringify(PDF_JS_WORKER_V4_PUBLIC_PATH),
-    'process.env.PDF_JS_CMAPS_V3_PUBLIC_PATH': JSON.stringify(PDF_JS_CMAPS_V3_PUBLIC_PATH),
-    'process.env.PDF_JS_CMAPS_V4_PUBLIC_PATH': JSON.stringify(PDF_JS_CMAPS_V4_PUBLIC_PATH),
+    'process.env.PDF_JS_WORKER_PUBLIC_PATH': JSON.stringify(PDF_JS_WORKER_PUBLIC_PATH),
+    'process.env.PDF_JS_CMAPS_UBLIC_PATH': JSON.stringify(PDF_JS_CMAPS_PUBLIC_PATH),
   },
   server: {
     warmup: {

@@ -73,14 +73,20 @@ module Gitlab
           @variables.size
         end
 
+        # This method should only be called via runner_variables->to_runner_variables
+        # because this is an expensive operation by initializing new objects in `to_runner_variable`.
         def to_runner_variables
           self.map(&:to_runner_variable)
         end
 
+        def to_hash_variables
+          self.map(&:to_hash_variable)
+        end
+
         def to_hash
-          self.to_runner_variables
-            .to_h { |env| [env.fetch(:key), env.fetch(:value)] }
-            .with_indifferent_access
+          self.each_with_object(ActiveSupport::HashWithIndifferentAccess.new) do |variable, result|
+            result[variable.key] = variable.value
+          end
         end
 
         def reject(&block)

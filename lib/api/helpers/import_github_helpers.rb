@@ -4,7 +4,8 @@ module API
   module Helpers
     module ImportGithubHelpers
       def client
-        @client ||= Gitlab::GithubImport::Client.new(params[:personal_access_token], host: params[:github_hostname])
+        @client ||= Gitlab::GithubImport::Client.new(params[:personal_access_token], host: params[:github_hostname],
+          per_page: params[:pagination_limit])
       end
 
       def access_params

@@ -4,6 +4,8 @@ key_path: redis_hll_counters.ci_templates.p_ci_templates_aws_deploy_ecs_weekly
 description: Count of projects using `AWS/Deploy-ECS.gitlab-ci.yml` template in last
   7 days.
 product_group: environments
+product_categories:
+- continuous_delivery
 value_type: number
 status: active
 time_frame: 7d

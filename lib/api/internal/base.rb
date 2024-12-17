@@ -15,6 +15,7 @@ module API
         if actor.user
           load_balancer_stick_request(::User, :user, actor.user.id)
           set_current_organization(user: actor.user)
+          link_scoped_user(params)
         end
 
         Gitlab::ApplicationContext.push(
@@ -37,6 +38,35 @@ module API
           # This is a separate method so that EE can alter its behaviour more
           # easily.
           container.lfs_http_url_to_repo
+        end
+
+        def gitaly_context(params)
+          return unless params[:gitaly_client_context_bin].present?
+
+          raw_context = Base64.decode64(params[:gitaly_client_context_bin])
+          context = Gitlab::Json.parse(raw_context)
+
+          raise bad_request!('gitaly_client_context_bin is not a Hash') unless context.is_a?(Hash)
+
+          context
+        rescue JSON::ParserError => e
+          Gitlab::ErrorTracking.log_exception(e, gitaly_context: params[:gitaly_client_context_bin])
+          bad_request!('malformed gitaly_client_context_bin')
+        end
+
+        def link_scoped_user(params)
+          context = gitaly_context(params)
+
+          return unless context
+
+          scoped_user_id = context['scoped-user-id']
+
+          return unless scoped_user_id.present?
+
+          scoped_user_id = scoped_user_id.to_i
+          identity = ::Gitlab::Auth::Identity.link_from_scoped_user_id(actor.user, scoped_user_id)
+
+          not_found!("User ID #{scoped_user_id} not found") unless identity
         end
 
         # rubocop: disable Metrics/AbcSize

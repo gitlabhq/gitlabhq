@@ -8,6 +8,8 @@ identifiers:
 - user
 - namespace
 product_group: package_registry
+product_categories:
+- package_registry
 milestone: "15.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111372
 distributions:

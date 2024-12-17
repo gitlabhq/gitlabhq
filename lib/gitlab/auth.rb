@@ -25,6 +25,8 @@ module Gitlab
     AI_FEATURES_SCOPES = [AI_FEATURES].freeze
     AI_WORKFLOW = :ai_workflows
     AI_WORKFLOW_SCOPES = [AI_WORKFLOW].freeze
+    DYNAMIC_USER = :"user:*"
+    DYNAMIC_SCOPES = [DYNAMIC_USER].freeze
 
     PROFILE_SCOPE = :profile
     EMAIL_SCOPE = :email
@@ -57,6 +59,8 @@ module Gitlab
     SUDO_SCOPE = :sudo
     ADMIN_MODE_SCOPE = :admin_mode
     ADMIN_SCOPES = [SUDO_SCOPE, ADMIN_MODE_SCOPE, READ_SERVICE_PING_SCOPE].freeze
+
+    Q_SCOPES = [API_SCOPE, REPOSITORY_SCOPES].flatten.freeze
 
     # Default scopes for OAuth applications that don't define their own
     DEFAULT_SCOPES = [API_SCOPE].freeze
@@ -226,9 +230,12 @@ module Gitlab
 
       def oauth_access_token_check(password)
         if password.present?
-          token = Doorkeeper::AccessToken.by_token(password)
+          token = OauthAccessToken.by_token(password)
 
           if valid_oauth_token?(token)
+            identity = ::Gitlab::Auth::Identity.link_from_oauth_token(token)
+            return if identity && !identity.valid?
+
             user = User.id_in(token.resource_owner_id).first
             return unless user && user.can_log_in_with_non_expired_password?
 
@@ -419,7 +426,7 @@ module Gitlab
 
       # Other available scopes
       def optional_scopes
-        all_available_scopes + OPENID_SCOPES + PROFILE_SCOPES - DEFAULT_SCOPES + AI_WORKFLOW_SCOPES
+        all_available_scopes + OPENID_SCOPES + PROFILE_SCOPES + AI_WORKFLOW_SCOPES + DYNAMIC_SCOPES - DEFAULT_SCOPES
       end
 
       def registry_scopes

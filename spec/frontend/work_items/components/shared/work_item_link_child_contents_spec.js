@@ -137,6 +137,7 @@ describe('WorkItemLinkChildContents', () => {
     it('emits click event with correct parameters on clicking title', () => {
       const eventObj = {
         preventDefault: jest.fn(),
+        stopPropagation: jest.fn(),
       };
       findTitleEl().vm.$emit('click', eventObj);
 
@@ -152,7 +153,7 @@ describe('WorkItemLinkChildContents', () => {
           workItemFullPath: 'gitlab-org/gitlab-test',
         });
 
-        findTitleEl().vm.$emit('click', { preventDefault });
+        findTitleEl().vm.$emit('click', { preventDefault, stopPropagation: jest.fn() });
       });
 
       it('pushes a new router state', () => {
@@ -218,7 +219,7 @@ describe('WorkItemLinkChildContents', () => {
     });
 
     it('removeChild event on menu triggers `click-remove-child` event', () => {
-      findRemoveButton().vm.$emit('click');
+      findRemoveButton().vm.$emit('click', { stopPropagation: jest.fn() });
 
       expect(wrapper.emitted('removeChild')).toEqual([[workItemTask]]);
     });

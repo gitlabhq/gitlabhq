@@ -2,8 +2,14 @@ import produce from 'immer';
 import { differenceBy } from 'lodash';
 import { createAlert } from '~/alert';
 import { findDesignWidget } from '~/work_items/utils';
-import { designWidgetOf } from './utils';
-import { designArchiveError } from './constants';
+import { designWidgetOf, extractCurrentDiscussion } from './utils';
+import {
+  designArchiveError,
+  ADD_IMAGE_DIFF_NOTE_ERROR,
+  TYPENAME_DISCUSSION,
+  TYPENAME_USER,
+  UPDATE_IMAGE_DIFF_NOTE_ERROR,
+} from './constants';
 
 export const hasErrors = ({ errors = [] }) => errors?.length;
 
@@ -93,6 +99,21 @@ export const updateStoreAfterUploadDesign = (store, data, query) => {
   }
 };
 
+const moveDesignInStore = (store, designManagementMove, query) => {
+  const sourceData = store.readQuery(query);
+
+  const data = produce(sourceData, (draftData) => {
+    const designWidget = findDesignWidget(draftData.workItem.widgets);
+    designWidget.designCollection.designs.nodes =
+      designManagementMove.designCollection.designs.nodes;
+  });
+
+  store.writeQuery({
+    ...query,
+    data,
+  });
+};
+
 const deleteDesignsFromStore = (store, query, selectedDesigns) => {
   const sourceData = store.readQuery(query);
 
@@ -109,6 +130,58 @@ const deleteDesignsFromStore = (store, query, selectedDesigns) => {
 
   store.writeQuery({
     ...query,
+    data,
+  });
+};
+
+// eslint-disable-next-line max-params
+const addImageDiffNoteToStore = (store, createImageDiffNote, query, variables) => {
+  const sourceData = store.readQuery({
+    query,
+    variables,
+  });
+
+  if (!sourceData) {
+    return;
+  }
+
+  const newDiscussion = {
+    __typename: TYPENAME_DISCUSSION,
+    id: createImageDiffNote.note.discussion.id,
+    replyId: createImageDiffNote.note.discussion.replyId,
+    resolvable: true,
+    resolved: false,
+    resolvedAt: null,
+    resolvedBy: null,
+    notes: {
+      __typename: 'NoteConnection',
+      nodes: [createImageDiffNote.note],
+    },
+  };
+
+  const data = produce(sourceData, (draftData) => {
+    const currentDesign = draftData.localDesign;
+    currentDesign.notesCount += 1;
+    currentDesign.discussions.nodes = [...currentDesign.discussions.nodes, newDiscussion];
+
+    if (
+      !currentDesign.issue.participants.nodes.some(
+        (participant) => participant.username === createImageDiffNote.note.author.username,
+      )
+    ) {
+      currentDesign.issue.participants.nodes = [
+        ...currentDesign.issue.participants.nodes,
+        {
+          __typename: TYPENAME_USER,
+          ...createImageDiffNote.note.author,
+        },
+      ];
+    }
+  });
+
+  store.writeQuery({
+    query,
+    variables,
     data,
   });
 };
@@ -135,4 +208,57 @@ export const updateWorkItemDesignCurrentTodosWidget = ({ store, todos, query }) 
   });
 
   store.writeQuery({ ...query, data: newData });
+};
+
+// eslint-disable-next-line max-params
+const updateImageDiffNoteInStore = (store, repositionImageDiffNote, query, variables) => {
+  const sourceData = store.readQuery({
+    query,
+    variables,
+  });
+
+  const data = produce(sourceData, (draftData) => {
+    const currentDesign = draftData.localDesign;
+    const discussion = extractCurrentDiscussion(
+      currentDesign.discussions,
+      repositionImageDiffNote.note.discussion.id,
+    );
+
+    discussion.notes = {
+      ...discussion.notes,
+      nodes: [repositionImageDiffNote.note, ...discussion.notes.nodes.slice(1)],
+    };
+  });
+
+  store.writeQuery({
+    query,
+    variables,
+    data,
+  });
+};
+
+// eslint-disable-next-line max-params
+export const updateStoreAfterAddImageDiffNote = (store, data, query, variables) => {
+  if (hasErrors(data)) {
+    onError(data, ADD_IMAGE_DIFF_NOTE_ERROR);
+  } else {
+    addImageDiffNoteToStore(store, data, query, variables);
+  }
+};
+
+// eslint-disable-next-line max-params
+export const updateStoreAfterRepositionImageDiffNote = (store, data, query, queryVariables) => {
+  if (hasErrors(data)) {
+    onError(data, UPDATE_IMAGE_DIFF_NOTE_ERROR);
+  } else {
+    updateImageDiffNoteInStore(store, data, query, queryVariables);
+  }
+};
+
+export const updateDesignsOnStoreAfterReorder = (store, data, query) => {
+  if (hasErrors(data)) {
+    createAlert({ message: data.errors[0] });
+  } else {
+    moveDesignInStore(store, data, query);
+  }
 };

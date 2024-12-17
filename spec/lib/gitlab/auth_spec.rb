@@ -105,6 +105,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         read_service_ping
         read_user
         sudo
+        user:*
         write_observability
         write_registry
         write_repository
@@ -486,16 +487,28 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       end
     end
 
-    context 'while using OAuth tokens as passwords' do
+    describe 'using OAuth tokens as passwords' do
       let_it_be(:organization) { create(:organization) }
+
       let(:user) { create(:user, organizations: [organization]) }
       let(:application) { Doorkeeper::Application.create!(name: 'MyApp', redirect_uri: 'https://app.com', owner: user) }
+      let(:scopes) { 'api' }
+
+      let(:token) do
+        Doorkeeper::AccessToken.create!(
+          application_id: application.id,
+          resource_owner_id: user.id,
+          scopes: scopes,
+          organization_id: organization.id).plaintext_token
+      end
+
+      def authenticate(username:, password:)
+        gl_auth.find_for_git_client(username, password, project: nil, request: request)
+      end
 
       shared_examples 'an oauth failure' do
         it 'fails' do
-          access_token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: 'api', organization_id: organization.id)
-
-          expect(gl_auth.find_for_git_client("oauth2", access_token.token, project: nil, request: request))
+          expect(authenticate(username: "oauth2", password: token))
             .to have_attributes(auth_failure)
         end
       end
@@ -521,27 +534,28 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
         with_them do
           it 'authenticates with correct abilities' do
-            access_token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: scopes, organization_id: organization.id)
-
-            expect(gl_auth.find_for_git_client("oauth2", access_token.token, project: nil, request: request))
+            expect(authenticate(username: 'oauth2', password: token))
               .to have_attributes(actor: user, project: nil, type: :oauth, authentication_abilities: abilities)
           end
 
           it 'authenticates with correct abilities without special username' do
-            access_token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: scopes, organization_id: organization.id)
+            expect(authenticate(username: user.username, password: token))
+              .to have_attributes(actor: user, project: nil, type: :oauth, authentication_abilities: abilities)
+          end
 
-            expect(gl_auth.find_for_git_client(user.username, access_token.token, project: nil, request: request))
+          it 'tracks any composite identity' do
+            expect(::Gitlab::Auth::Identity).to receive(:link_from_oauth_token).and_call_original
+
+            expect(authenticate(username: "oauth2", password: token))
               .to have_attributes(actor: user, project: nil, type: :oauth, authentication_abilities: abilities)
           end
         end
       end
 
       it 'does not try password auth before oauth' do
-        access_token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: 'api', organization_id: organization.id)
-
         expect(gl_auth).not_to receive(:find_with_user_password)
 
-        gl_auth.find_for_git_client("oauth2", access_token.token, project: nil, request: request)
+        authenticate(username: "oauth2", password: token)
       end
 
       context 'blocked user' do
@@ -1053,7 +1067,9 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
   end
 
   describe '#build_access_token_check' do
-    subject { gl_auth.find_for_git_client('gitlab-ci-token', build.token, project: build.project, request: request) }
+    subject(:result) do
+      gl_auth.find_for_git_client('gitlab-ci-token', build.token, project: build.project, request: request)
+    end
 
     let_it_be(:user) { create(:user) }
 
@@ -1061,16 +1077,35 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       let!(:build) { create(:ci_build, :running, user: user) }
 
       it 'executes query using primary database' do
-        expect(Ci::Build).to receive(:find_by_token).with(build.token).and_wrap_original do |m, *args|
+        expect(::Ci::JobToken::Jwt).to receive(:decode).with(build.token).and_wrap_original do |m, *args|
           expect(::Gitlab::Database::LoadBalancing::SessionMap.current(Ci::Build.load_balancer).use_primary?)
-            .to eq(true)
+            .to be(true)
           m.call(*args)
         end
 
-        expect(subject).to be_a(Gitlab::Auth::Result)
-        expect(subject.actor).to eq(user)
-        expect(subject.project).to eq(build.project)
-        expect(subject.type).to eq(:build)
+        expect(result).to be_a(Gitlab::Auth::Result)
+        expect(result.actor).to eq(user)
+        expect(result.project).to eq(build.project)
+        expect(result.type).to eq(:build)
+      end
+
+      context 'with a database token' do
+        before do
+          stub_feature_flags(ci_job_token_jwt: false)
+        end
+
+        it 'executes query using primary database' do
+          expect(Ci::Build).to receive(:find_by_token).with(build.token).and_wrap_original do |m, *args|
+            expect(::Gitlab::Database::LoadBalancing::SessionMap.current(Ci::Build.load_balancer).use_primary?)
+              .to be(true)
+            m.call(*args)
+          end
+
+          expect(result).to be_a(Gitlab::Auth::Result)
+          expect(result.actor).to eq(user)
+          expect(result.project).to eq(build.project)
+          expect(result.type).to eq(:build)
+        end
       end
     end
   end

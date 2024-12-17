@@ -4,12 +4,14 @@ module Projects
   class UpdateService < BaseService
     include UpdateVisibilityLevel
     include ValidatesClassificationLabel
+    include ::Ci::JobToken::InternalEventsTracking
 
     ValidationError = Class.new(StandardError)
     ApiError = Class.new(StandardError)
 
     def execute
       build_topics
+      ensure_ci_cd_settings
       remove_unallowed_params
       add_pages_unique_domain
 
@@ -27,7 +29,7 @@ module Projects
 
       yield if block_given?
 
-      validate_classification_label(project, :external_authorization_classification_label)
+      validate_classification_label_param!(project, :external_authorization_classification_label)
 
       # If the block added errors, don't try to save the project
       return update_failed! if project.errors.any?
@@ -53,6 +55,12 @@ module Projects
 
     private
 
+    def ensure_ci_cd_settings
+      # It's possible that before the fix in https://gitlab.com/gitlab-org/gitlab/-/issues/421050,
+      # there were projects created that has no ci_cd_settings, so we backfill it here.
+      project.build_ci_cd_settings unless project.ci_cd_settings
+    end
+
     def add_pages_unique_domain
       return unless params.dig(:project_setting_attributes, :pages_unique_domain_enabled)
 
@@ -67,6 +75,7 @@ module Projects
       validate_default_branch_change
       validate_renaming_project_with_tags
       validate_restrict_user_defined_variables_change
+      validate_pages_default_domain_redirect
     end
 
     def validate_restrict_user_defined_variables_change
@@ -128,6 +137,15 @@ module Projects
       )
     end
 
+    def validate_pages_default_domain_redirect
+      default_domain_redirect = params.dig(:project_setting_attributes, :pages_default_domain_redirect)
+
+      return unless default_domain_redirect.presence
+      return if project.pages_domain_present?(default_domain_redirect)
+
+      raise_validation_error(s_("UpdateProject|The `pages_default_domain_redirect` attribute is missing from the domain list in the Pages project configuration. Assign `pages_default_domain_redirect` to the Pages project or reset it."))
+    end
+
     def ambiguous_head_documentation_link
       url = Rails.application.routes.url_helpers.help_page_path('user/project/repository/branches/index.md', anchor: 'error-ambiguous-head-branch-exists')
 
@@ -154,6 +172,8 @@ module Projects
     end
 
     def after_update
+      track_job_token_scope_setting_changes(project.ci_cd_settings, current_user)
+
       todos_features_changes = %w[
         issues_access_level
         merge_requests_access_level

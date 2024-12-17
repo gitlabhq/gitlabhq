@@ -8,7 +8,6 @@ import {
 } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { sprintf } from '~/locale';
-import { reportToSentry } from '~/ci/utils';
 import { JOB_DROPDOWN, SINGLE_JOB } from '../constants';
 import JobItem from './job_item.vue';
 
@@ -78,9 +77,6 @@ export default {
     moreActionsTooltip() {
       return !this.showTooltip ? this.jobStatusText : '';
     },
-  },
-  errorCaptured(err, _vm, info) {
-    reportToSentry('job_group_dropdown', `error: ${err}, info: ${info}`);
   },
   methods: {
     pipelineActionRequestComplete() {

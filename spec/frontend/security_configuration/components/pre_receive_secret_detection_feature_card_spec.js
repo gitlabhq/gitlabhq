@@ -27,9 +27,6 @@ const defaultProvide = {
   userIsProjectAdmin: true,
   projectFullPath: 'flightjs/flight',
   secretDetectionConfigurationPath: 'flightjs/Flight/-/security/configuration/secret_detection',
-  glFeatures: {
-    secretDetectionProjectLevelExclusions: true,
-  },
 };
 
 describe('PreReceiveSecretDetectionFeatureCard component', () => {
@@ -163,32 +160,6 @@ describe('PreReceiveSecretDetectionFeatureCard component', () => {
       });
     });
 
-    describe('FF `pre_receive_secret_detection_push_check` is disabled', () => {
-      beforeEach(() => {
-        createComponent({
-          provide: {
-            userIsProjectAdmin: false,
-          },
-        });
-      });
-
-      it('should disable toggle when feature is not configured', () => {
-        expect(findToggle().props('disabled')).toBe(true);
-      });
-
-      it('renders lock icon', () => {
-        expect(findLockIcon().exists()).toBe(true);
-        expect(findLockIcon().props('name')).toBe('lock');
-      });
-
-      it('shows correct tootlip', () => {
-        expect(findPopover().exists()).toBe(true);
-        expect(findPopover().text()).toBe(
-          'Only a project maintainer or owner can toggle this feature.',
-        );
-      });
-    });
-
     describe('when feature is not available with current license', () => {
       beforeEach(() => {
         createComponent({
@@ -211,21 +182,6 @@ describe('PreReceiveSecretDetectionFeatureCard component', () => {
       it('should not render lock icon', () => {
         expect(findLockIcon().exists()).toBe(false);
       });
-    });
-  });
-
-  describe('when FF `secretDetectionProjectLevelExclusions` is disabled', () => {
-    it('do not show the settings button', () => {
-      createComponent({
-        provide: {
-          glFeatures: {
-            secretDetectionProjectLevelExclusions: false,
-          },
-        },
-      });
-
-      const button = findSettingsButton();
-      expect(button.exists()).toBe(false);
     });
   });
 });

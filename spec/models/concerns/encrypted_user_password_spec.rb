@@ -17,7 +17,10 @@ RSpec.describe User do
     end
 
     context 'when password is stored in PBKDF2 format' do
-      let(:encrypted_password) { '$pbkdf2-sha512$20000$rKbYsScsDdk$iwWBewXmrkD2fFfaG1SDcMIvl9gvEo3fBWUAfiqyVceTlw/DYgKBByHzf45pF5Qn59R4R.NQHsFpvZB4qlsYmw' } # rubocop:disable Layout/LineLength
+      let(:encrypted_password) do
+        '$pbkdf2-sha512$20000$rKbYsScsDdk$iwWBewXmrkD2fFfaG1SDcMIvl9gvEo3fBWUAfiqyVceTlw/DYgKBByHzf45pF5Qn59R4R.NQHs' \
+          'FpvZB4qlsYmw'
+      end
 
       it 'uses the decoded password salt' do
         expect(authenticatable_salt).to eq('aca6d8b1272c0dd9')

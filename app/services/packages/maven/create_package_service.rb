@@ -18,7 +18,9 @@ module Packages
 
         ServiceResponse.success(payload: { package: package })
       rescue ActiveRecord::RecordInvalid => e
-        ServiceResponse.error(message: e.message, reason: :invalid_parameter)
+        reason = e.record&.errors&.of_kind?(:name, :taken) ? :name_taken : :invalid_parameter
+
+        ServiceResponse.error(message: e.message, reason: reason)
       end
     end
   end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :aggregate_failures, feature_category: :virtual_registry do
+RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :aggregate_failures, :clean_gitlab_redis_shared_state, feature_category: :virtual_registry do
   let_it_be(:registry) { create(:virtual_registries_packages_maven_registry, :with_upstream) }
   let_it_be(:project) { create(:project, namespace: registry.group) }
   let_it_be(:user) { create(:user, owner_of: project) }
@@ -22,6 +22,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
       end
 
       it 'returns a success service response' do
+        expect(service).to receive(:can?).and_call_original
         expect(execute).to be_success
 
         expect(execute.payload[:action]).to eq(action)
@@ -32,6 +33,8 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
           action_params = execute.payload[:action_params]
           expect(action_params[:file]).to be_instance_of(VirtualRegistries::CachedResponseUploader)
           expect(action_params[:content_type]).to eq(cached_response.content_type)
+          expect(action_params[:file_sha1]).to be_instance_of(String)
+          expect(action_params[:file_md5]).to be_instance_of(String)
         when :download_digest
           expect(execute.payload[:action_params]).to eq(digest: expected_digest)
         else
@@ -82,12 +85,6 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
 
         it_behaves_like 'returning a service response success response', action: :download_file
 
-        it 'bumps the statistics', :freeze_time do
-          stub_external_registry_request(etag: etag_returned_by_upstream)
-
-          expect { execute }.to change { cached_response.reload.downloaded_at }.to(Time.zone.now)
-        end
-
         context 'and is too old' do
           before do
             cached_response.update!(upstream_checked_at: 1.year.ago)
@@ -101,9 +98,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
             it 'bumps the statistics', :freeze_time do
               stub_external_registry_request(etag: etag_returned_by_upstream)
 
-              expect { execute }
-                .to change { cached_response.reload.downloaded_at }.to(Time.zone.now)
-                .and change { cached_response.upstream_checked_at }.to(Time.zone.now)
+              expect { execute }.to change { cached_response.reload.upstream_checked_at }.to(Time.zone.now)
             end
           end
 
@@ -158,6 +153,19 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
           end
 
           it_behaves_like 'returning a service response success response', action: :download_file
+        end
+
+        context 'with a cached permissions evaluation' do
+          before do
+            Rails.cache.fetch(service.send(:permissions_cache_key)) do
+              can?(user, :read_virtual_registry, registry)
+            end
+          end
+
+          it 'does not call the permissions evaluation again' do
+            expect(service).not_to receive(:can).and_call_original
+            expect(execute).to be_success
+          end
         end
       end
     end

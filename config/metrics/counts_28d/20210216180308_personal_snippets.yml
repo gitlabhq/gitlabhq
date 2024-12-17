@@ -2,7 +2,9 @@
 data_category: optional
 key_path: counts_monthly.personal_snippets
 description: Monthly count of personal Snippets
-product_group: remote_development
+product_group: source_code
+product_categories:
+- source_code_management
 value_type: number
 status: active
 time_frame: 28d

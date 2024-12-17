@@ -4,13 +4,13 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Advanced SAST analyzer
+# GitLab Advanced SAST
 
 DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - Introduced in GitLab 17.1 as an [experiment](../../../policy/experiment-beta-support.md) for Python.
+> - Introduced in GitLab 17.1 as an [experiment](../../../policy/development_stages_support.md) for Python.
 > - Support for Go and Java added in 17.2.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461859) to beta in GitLab 17.2.
 > - Support for JavaScript, TypeScript and C# added in 17.3.
@@ -26,34 +26,30 @@ using the GitLab Advanced SAST predefined ruleset.
 The Semgrep analyzer will not scan these files.
 
 All vulnerabilities identified by the GitLab Advanced SAST analyzer will be reported,
-including vulnerabilities previously reported by the Semgrep analyzer.
-An automated transition process is proposed for the future,
-in which the Vulnerability Management system will automatically de-duplicate findings
-that were identified by both the GitLab Advanced SAST analyzer and the Semgrep analyzer.
-It's proposed that the capability will be based on the advanced tracking algorithm
-and will keep the original record of the vulnerability
-(if it was first identified by Semgrep, then the Semgrep finding).
-
-NOTE:
-In case a duplicated vulnerability was already introduced (in the interim time until the deduplication is available),the deduplication capability will not deduplicate it. The capability will be relevant only for validating new vulnerabilities that are not already duplicated.
-
-By following the paths user inputs take, the analyzer identifies potential points
-where untrusted data can influence the execution of your application in unsafe ways,
-ensuring that injection vulnerabilities, such as SQL injection and cross-site scripting (XSS),
-are detected even when they span multiple functions and files.
-
-GitLab Advanced SAST includes the following features:
-
-- Source detection: Usually user input that can be tweaked by a malicious entity.
-- Sink detection: Sensitive function calls, whose arguments should not be controlled by the user.
-- Cross-function analysis: Tracks data flow through different functions to detect vulnerabilities that span multiple functions.
-- Cross-file analysis: Tracks data flow across different files, discovering vulnerabilities at a deeper level.
-- Sanitizer detection: Avoid false positive results in case the user input is properly sanitized.
+including vulnerabilities previously reported by the Semgrep-based analyzer.
+An automated transition automatically de-duplicates findings
+when Advanced SAST locates the same type of vulnerability in the same location as the Semgrep-based analyzer.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview of GitLab Advanced SAST and how it works, see [GitLab Advanced SAST: Accelerating Vulnerability Resolution](https://youtu.be/xDa1MHOcyn8).
 
 For a product tour, see the [GitLab Advanced SAST product tour](https://gitlab.navattic.com/advanced-sast).
+
+## When vulnerabilities are reported
+
+GitLab Advanced SAST uses cross-file, cross-function scanning with taint analysis to trace the flow of user input into the program.
+By following the paths user inputs take, the analyzer identifies potential points
+where untrusted data can influence the execution of your application in unsafe ways,
+ensuring that injection vulnerabilities, such as SQL injection and cross-site scripting (XSS),
+are detected even when they span multiple functions and files.
+
+To minimize noise, Advanced SAST only reports taint-based vulnerabilities when there is a verifiable flow that brings untrusted user input source to a sensitive sink.
+Other products may report vulnerabilities with less validation.
+
+Advanced SAST is tuned to emphasize input that crosses trust boundaries, like values that are sourced from HTTP requests.
+The set of untrusted input sources does not include command-line arguments, environment variables, or other inputs that are typically provided by the user operating the program.
+
+For details of which types of vulnerabilities Advanced SAST detects, see [Advanced SAST CWE coverage](advanced_sast_coverage.md).
 
 ## Supported languages
 
@@ -142,29 +138,46 @@ Pipelines now include an Advanced SAST job.
 
 ## Vulnerability code flow
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458062) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `vulnerability_code_flow`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/465776) in GitLab 17.4.
-
 FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
+The availability of this feature is controlled by feature flags. For more information, see [Code flow feature availability](#code-flow-feature-availability).
 
-For some vulnerabilities detected by Advanced SAST, a **Code flow** tab is available in the [Vulnerability Page](../vulnerabilities/index.md).
-A vulnerability's code flow is the path the data takes from the user input (source) to the vulnerable line of code (sink),
-through all assignments, manipulation, and sanitization. This information helps you understand and evaluate the
-vulnerability's context, impact, and risk.
+For specific types of vulnerabilities, GitLab Advanced SAST provides code flow information.
+A vulnerability's code flow is the path the data takes from the user input (source) to the vulnerable line of code (sink), through all assignments, manipulation, and sanitization.
+This information helps you understand and evaluate the vulnerability's context, impact, and risk.
+Code flow information is available for vulnerabilities that are detected by tracing input from a source to a sink, including:
 
-The **Code flow** tab shows:
+- SQL injection
+- Command injection
+- Cross-site scripting (XSS)
+- Path traversal
+
+The code flow information is shown the **Code flow** tab and includes:
 
 - The steps from source to sink.
 - The relevant files, including code snippets.
 
-![Vulnerability Code Flow](../vulnerabilities/img/example_code_flow_of_python_applications_v17_3.png)
+![A code flow of a Python application across two files](../vulnerabilities/img/code_flow_view_v17_7.png)
+
+### Code flow feature availability
+
+The code flow view is integrated into each view where vulnerability details are shown.
+On GitLab self-managed, you can activate the view by [enabling the required feature flags](../../../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) starting in the minimum version shown.
+
+| Location                                                          | Availability on GitLab.com        | Availability on GitLab self-managed                                   | Feature flags required                                                |
+|-------------------------------------------------------------------|-----------------------------------|-----------------------------------------------------------------------|-----------------------------------------------------------------------|
+| [Vulnerability Report](../vulnerability_report/index.md)          | Enabled by default in GitLab 17.3 | Enabled by default in GitLab 17.6. Available in GitLab 17.3 or later. | `vulnerability_code_flow`                                             |
+| [Merge request widget](index.md#merge-request-widget)             | Enabled by default in GitLab 17.6 | Enabled by default in GitLab 17.6. Available in GitLab 17.5 or later. | Both `vulnerability_code_flow` and `pipeline_vulnerability_code_flow` |
+| [Pipeline security report](../vulnerability_report/pipeline.md)   | Enabled by default in GitLab 17.6 | Enabled by default in GitLab 17.6. Available in GitLab 17.5 or later. | Both `vulnerability_code_flow` and `pipeline_vulnerability_code_flow` |
+| [Merge request changes view](index.md#merge-request-changes-view) | Enabled by default in GitLab 17.7 | Enabled by default in GitLab 17.7. Available in GitLab 17.7 or later. | Both `vulnerability_code_flow` and `mr_vulnerability_code_flow`       |
 
 ## Troubleshooting
 
 If you encounter issues while using GitLab Advanced SAST, refer to the [troubleshooting guide](troubleshooting.md).
+
+## Customize Advanced SAST
+
+You can disable Advanced SAST rules or edit their metadata, just as you can other analyzers.
+For details, see [Customize rulesets](customize_rulesets.md#disable-predefined-advanced-sast-rules).
 
 ## Feedback
 

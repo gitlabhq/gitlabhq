@@ -31,7 +31,7 @@ exports[`packages_list_app renders 1`] = `
           You have no Terraform modules in your project
         </h1>
         <p
-          class="gl-mb-0 gl-mt-4"
+          class="gl-mb-0 gl-mt-4 gl-text-subtle"
         >
           Learn how to
           <b-link-stub

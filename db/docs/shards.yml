@@ -7,4 +7,6 @@ feature_categories:
 description: Holds name of a shard where a bunch of repositories are stored.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/f760c1cd17881c8aef3a33a3b43db54673db8111
 milestone: '10.5'
-gitlab_schema: gitlab_main_clusterwide
+gitlab_schema: gitlab_main_cell
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/498991
+table_size: small

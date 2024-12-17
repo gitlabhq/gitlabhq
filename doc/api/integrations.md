@@ -400,6 +400,8 @@ GET /projects/:id/integrations/clickup
 > - `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `integration_api_inheritance`. Disabled by default.
 > - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
+Use a Confluence Cloud Workspace as your project wiki.
+
 ### Set up Confluence Workspace
 
 Set up the Confluence Workspace integration for a project.
@@ -487,6 +489,7 @@ Parameters:
 | Parameter              | Type    | Required | Description                                                                                                                                                                            |
 |------------------------|---------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `api_key`              | string  | yes     | [API key](https://docs.datadoghq.com/account_management/api-app-keys/) used for authentication with Datadog. |
+| `datadog_ci_visibility`| boolean | yes     | Enables collection of pipeline and job events in Datadog to display pipeline execution traces. |
 | `api_url`              | string  | no    | Full URL of your Datadog site. |
 | `datadog_env`          | string  | no    | For self-managed deployments, `env%` tag for all the data sent to Datadog. |
 | `datadog_service`      | string  | no    | GitLab instance to tag all data from in Datadog. Can be used when managing several self-managed deployments. |
@@ -772,15 +775,12 @@ GET /projects/:id/integrations/external-wiki
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435706) in GitLab 16.9 [with a flag](../administration/feature_flags.md) named `git_guardian_integration`. Enabled by default. Disabled on GitLab.com.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/438695#note_2226917025) in GitLab 17.7.
 > - `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `integration_api_inheritance`. Disabled by default.
 > - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `git_guardian_integration`.
-On GitLab.com, this feature is not available. On GitLab Dedicated, this feature is available.
 
 [GitGuardian](https://www.gitguardian.com/) is a cybersecurity service that detects sensitive data such as API keys
 and passwords in source code repositories.
@@ -873,8 +873,6 @@ GET /projects/:id/integrations/github
 ```
 
 ## GitLab for Jira Cloud app
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460663) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `enable_jira_connect_configuration`. Disabled by default.
 
 The GitLab for Jira Cloud app integration is enabled or disabled automatically through [group linking and unlinking in Jira](../integration/jira/connect-app.md#configure-the-gitlab-for-jira-cloud-app). You cannot enable or disable the integration with the GitLab integrations form or the API.
 
@@ -1029,12 +1027,12 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425066) in GitLab 16.9 as a [beta](../policy/experiment-beta-support.md) feature [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425066) in GitLab 16.9 as a [beta](../policy/development_stages_support.md) feature [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
 > - `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `integration_api_inheritance`. Disabled by default.
 > - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
-This feature is in [beta](../policy/experiment-beta-support.md).
+This feature is in [beta](../policy/development_stages_support.md).
 
 ### Set up Google Artifact Management
 
@@ -1076,12 +1074,12 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439200) in GitLab 16.10 as a [beta](../policy/experiment-beta-support.md) feature [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439200) in GitLab 16.10 as a [beta](../policy/development_stages_support.md) feature [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
 > - `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `integration_api_inheritance`. Disabled by default.
 > - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
-This feature is in [beta](../policy/experiment-beta-support.md).
+This feature is in [beta](../policy/development_stages_support.md).
 
 ### Set up Google Cloud Identity and Access Management
 
@@ -1212,10 +1210,10 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `recipients` | string | yes | Recipients or channels separated by whitespaces. |
-| `default_irc_uri` | string | no | `irc://irc.network.net:6697/`. |
-| `server_host` | string | no | localhost. |
-| `server_port` | integer | no | 6659. |
+| `recipients` | string | yes | Comma-separated list of channels or email addresses. |
+| `default_irc_uri` | string | no | URI to add before each recipient. The default value is `irc://irc.network.net:6697/`. |
+| `server_host` | string | no | irker daemon hostname. The default value is `localhost`. |
+| `server_port` | integer | no | irker daemon port. The default value is `6659`. |
 | `colorize_messages` | boolean | no | Colorize messages. |
 | `use_inherited_settings` | boolean | no | Indicates whether to inherit the default settings. Defaults to `false`. |
 
@@ -1624,9 +1622,9 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `username` | string | yes | The username of a Packagist account. |
-| `token` | string | yes | API token to the Packagist server. |
-| `server` | boolean | no | URL of the Packagist server. Leave blank for the default `<https://packagist.org>`. |
+| `username` | string | yes | Username of a Packagist account. |
+| `token` | string | yes | API token of the Packagist server. |
+| `server` | boolean | no | URL of the Packagist server. The default value is `https://packagist.org`. |
 | `push_events` | boolean | no | Enable notifications for push events. |
 | `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
 | `tag_push_events` | boolean | no | Enable notifications for tag push events. |

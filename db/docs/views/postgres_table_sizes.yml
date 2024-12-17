@@ -1,0 +1,10 @@
+---
+view_name: postgres_table_sizes
+classes:
+  - Gitlab::Database::PostgresTableSize
+feature_categories:
+  - database
+description: SQL view to get information about postgres table sizes
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173113
+milestone: '17.7'
+gitlab_schema: gitlab_shared

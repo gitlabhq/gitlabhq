@@ -27,15 +27,9 @@ exports[`Confidential merge request project form group component renders empty s
         href="/help"
         target="_blank"
       >
-        <span
-          class="sr-only"
-        >
-          Read more
-        </span>
-        <gl-icon-stub
-          name="question-o"
-          size="16"
-          variant="current"
+        <help-icon-stub
+          aria-label="Read more"
+          size="default"
         />
       </gl-link-stub>
     </p>
@@ -64,15 +58,9 @@ exports[`Confidential merge request project form group component renders fork dr
         href="/help"
         target="_blank"
       >
-        <span
-          class="sr-only"
-        >
-          Read more
-        </span>
-        <gl-icon-stub
-          name="question-o"
-          size="16"
-          variant="current"
+        <help-icon-stub
+          aria-label="Read more"
+          size="default"
         />
       </gl-link-stub>
     </p>

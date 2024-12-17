@@ -95,8 +95,7 @@ module Gitlab
           ::Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance.deferred_log(job)
 
           concurrency_service.add_to_queue!(
-            job['class'],
-            job['args'],
+            job,
             current_context
           )
         end

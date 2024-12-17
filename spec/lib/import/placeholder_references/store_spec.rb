@@ -72,6 +72,14 @@ RSpec.describe Import::PlaceholderReferences::Store, :clean_gitlab_redis_shared_
     end
   end
 
+  describe '#clear!' do
+    it 'removes the values from the cache' do
+      store.add('foo')
+
+      expect { store.clear! }.to change { store.count }.from(1).to(0)
+    end
+  end
+
   def cache
     Gitlab::Cache::Import::Caching
   end

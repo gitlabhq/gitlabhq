@@ -22,6 +22,7 @@ module Sidebars
             :vulnerability_report,
             :dependency_list,
             :audit_events,
+            :compliance,
             :scan_policies,
             :on_demand_scans,
             :configuration

@@ -2,12 +2,13 @@ import { GlAnimatedUploadIcon, GlSprintf } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
+import { VALID_DESIGN_FILE_MIMETYPE } from '~/work_items/components/design_management/constants';
 
 describe('Upload dropzone component', () => {
   let wrapper;
 
-  const mockDragEvent = ({ types = ['Files'], files = [] }) => {
-    return { dataTransfer: { types, files } };
+  const mockDragEvent = ({ types = ['Files'], files = [], items = [] }) => {
+    return { dataTransfer: { types, files, items } };
   };
 
   const findDropzoneCard = () => wrapper.find('.upload-dropzone-card');
@@ -94,6 +95,66 @@ describe('Upload dropzone component', () => {
 
       await nextTick();
       expect(wrapper.element).toMatchSnapshot();
+    });
+  });
+
+  describe('when dragging with design upload overlay enabled', () => {
+    const findDesignUploadOverlay = () => wrapper.findByTestId('design-upload-overlay');
+    const triggerDragEvents = async (dragEvent) => {
+      wrapper.trigger('dragenter', dragEvent);
+      await nextTick();
+
+      wrapper.trigger('dragover', dragEvent);
+      await nextTick();
+    };
+
+    beforeEach(() => {
+      createComponent({
+        props: {
+          showUploadDesignOverlay: true,
+          validateDesignUploadOnDragover: true,
+          uploadDesignOverlayText: 'Drop your images to start the upload.',
+          acceptDesignFormats: VALID_DESIGN_FILE_MIMETYPE.mimetype,
+        },
+      });
+    });
+
+    it('renders component with requires classes when design upload overlay is true', async () => {
+      const dragEvent = mockDragEvent({
+        types: ['Files', 'image'],
+        items: [{ type: 'image/png' }],
+      });
+
+      await triggerDragEvents(dragEvent);
+
+      expect(wrapper.element).toMatchSnapshot();
+    });
+
+    it('renders design upload overlay with text on drag of valid design', async () => {
+      const dragEvent = mockDragEvent({
+        types: ['Files', 'image'],
+        items: [{ type: 'image/png' }],
+      });
+
+      await triggerDragEvents(dragEvent);
+
+      const designUploadOverlay = findDesignUploadOverlay();
+      expect(designUploadOverlay.exists()).toBe(true);
+      expect(designUploadOverlay.isVisible()).toBe(true);
+      expect(designUploadOverlay.findComponent(GlAnimatedUploadIcon).exists()).toBe(true);
+      expect(designUploadOverlay.text()).toBe('Drop your images to start the upload.');
+    });
+
+    it('does not render design upload overlay on drag of invalid design', async () => {
+      const dragEvent = mockDragEvent({
+        types: ['Files', 'video'],
+        items: [{ type: 'video/quicktime' }],
+      });
+
+      await triggerDragEvents(dragEvent);
+
+      const designUploadOverlay = findDesignUploadOverlay();
+      expect(designUploadOverlay.exists()).toBe(false);
     });
   });
 

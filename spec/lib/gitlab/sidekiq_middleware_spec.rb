@@ -73,6 +73,7 @@ RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
         ::Gitlab::SidekiqMiddleware::WorkerContext::Server,
         ::ClickHouse::MigrationSupport::SidekiqMiddleware,
         ::Gitlab::SidekiqMiddleware::DuplicateJobs::Server,
+        ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server,
         ::Gitlab::Database::LoadBalancing::SidekiqServerMiddleware,
         ::Gitlab::SidekiqMiddleware::SkipJobs
       ]
@@ -132,6 +133,41 @@ RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
 
       it_behaves_like "a middleware chain"
       it_behaves_like "a middleware chain for mailer"
+    end
+
+    context 'when a job is concurrency limited' do
+      let(:disabled_sidekiq_middlewares) do
+        [
+          ::Gitlab::Database::LoadBalancing::SidekiqServerMiddleware,
+          ::Gitlab::SidekiqMiddleware::SkipJobs
+        ]
+      end
+
+      before do
+        configurator.call(chain)
+        stub_feature_flags("drop_sidekiq_jobs_#{worker_class.name}": false) # not dropping the job
+
+        # Apply concurrency limiting
+        allow(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap).to receive(:over_the_limit?).and_return(true)
+        allow(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+          .to receive(:has_jobs_in_queue?).and_return(true)
+        allow(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+          .to receive(:add_to_queue!)
+      end
+
+      it "passes through the right middlewares and clears idempotency key", :aggregate_failures do
+        expect_next_instance_of(Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob) do |dj|
+          expect(dj).to receive(:delete!).and_call_original
+        end
+
+        enabled_sidekiq_middlewares.each do |middleware|
+          expect_next_instances_of(middleware, 1, true) do |middleware_instance|
+            expect(middleware_instance).to receive(:call).with(*middleware_expected_args).once.and_call_original
+          end
+        end
+
+        chain.invoke(*worker_args)
+      end
     end
   end
 

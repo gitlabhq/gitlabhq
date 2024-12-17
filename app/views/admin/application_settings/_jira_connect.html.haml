@@ -21,6 +21,9 @@
         = f.label :jira_connect_proxy_url, s_('JiraConnect|Jira Connect Proxy URL'), class: 'label-bold'
         = f.text_field :jira_connect_proxy_url, class: 'form-control gl-form-input'
       .gl-form-group
+        = f.label :jira_connect_additional_audience_url, s_('JiraConnect|Jira Connect Additional Audience URL'), class: 'label-bold'
+        = f.text_field :jira_connect_additional_audience_url, class: 'form-control gl-form-input'
+      .gl-form-group
         = f.gitlab_ui_checkbox_component :jira_connect_public_key_storage_enabled, s_('JiraConnect|Enable public key storage')
 
       = f.submit _('Save changes'), pajamas_button: true

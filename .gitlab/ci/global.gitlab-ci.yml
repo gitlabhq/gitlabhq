@@ -9,8 +9,8 @@
       - stuck_or_timeout_failure
       - unknown_failure
     exit_codes:
-      - 111 # low free disk space https://gitlab.com/gitlab-org/gitlab/-/issues/498142
-      - 112 # Known flaky tests
+      - 110  # known infrastructure error https://gitlab.com/gitlab-org/gitlab/-/issues/501325
+      - 111  # low free disk space https://gitlab.com/gitlab-org/gitlab/-/issues/498142
 
 .default-utils-before_script:
   before_script:
@@ -19,7 +19,7 @@
     - export GOPATH=$CI_PROJECT_DIR/.go
     - mkdir -p $GOPATH
     - source scripts/utils.sh
-    - log_disk_usage "true" # https://gitlab.com/gitlab-org/gitlab/-/issues/478880
+    - log_disk_usage "true"  # https://gitlab.com/gitlab-org/gitlab/-/issues/478880
 
 .default-before_script:
   before_script:
@@ -33,7 +33,7 @@
     # If the job extending this also defines `needs`, make sure to update
     # its `needs` to include `clone-gitlab-repo` because it'll be overridden.
     - job: clone-gitlab-repo
-      optional: true # Optional so easier to switch in between
+      optional: true  # Optional so easier to switch in between
 
 .production:
   variables:
@@ -319,7 +319,7 @@
     AIGW_FASTAPI__OPENAPI_URL: "/openapi.json"
     AIGW_FASTAPI__API_PORT: 5052
     ANTHROPIC_API_KEY: $ANTHROPIC_API_KEY_FOR_SERVICE
-    # CI_DEBUG_SERVICES: "true" # Enable this variable when you debug ai-gateway boot failure.
+    # CI_DEBUG_SERVICES: "true"  # Enable this variable when you debug ai-gateway boot failure.
 
 .ai-gateway-services:
   services:

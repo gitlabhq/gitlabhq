@@ -4,13 +4,13 @@ module Gitlab
   module Metrics
     module Middleware
       class PathTraversalCheck
-        DURATION_APDEX_NAME = :path_traversal_check_request_duration_s
-        DURATION_APDEX_FEATURE_CATEGORY = { feature_category: :shared }.freeze
+        DURATION_APDEX_NAME = :path_traversal_check_request
+        DURATION_APDEX_FEATURE_CATEGORY = { feature_category: :not_owned }.freeze
         DURATION_APDEX_SLI_DEFINITION = [
           DURATION_APDEX_NAME,
           [
-            DURATION_APDEX_FEATURE_CATEGORY.merge(path_traversal_attempt_rejected: true),
-            DURATION_APDEX_FEATURE_CATEGORY.merge(path_traversal_attempt_rejected: false)
+            DURATION_APDEX_FEATURE_CATEGORY.merge(request_rejected: true),
+            DURATION_APDEX_FEATURE_CATEGORY.merge(request_rejected: false)
           ]
         ].freeze
         DURATION_APDEX_THRESHOLD = 0.001.seconds

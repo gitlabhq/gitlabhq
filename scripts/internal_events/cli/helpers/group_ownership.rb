@@ -5,6 +5,7 @@ module InternalEventsCli
   module Helpers
     module GroupOwnership
       STAGES_YML = 'https://gitlab.com/gitlab-com/www-gitlab-com/-/raw/master/data/stages.yml'
+      KNOWN_CATEGORIES = YAML.load_file('config/feature_categories.yml')
 
       def prompt_for_group_ownership(message, defaults = {})
         if available_groups.any?
@@ -14,12 +15,30 @@ module InternalEventsCli
         end
       end
 
+      def prompt_for_feature_categories(message, groups, default = nil)
+        categories = cli.multi_select(
+          message,
+          category_choices(groups),
+          **multiselect_opts,
+          **filter_opts(header_size: 10)
+        ) do |menu|
+          menu.default(*default) if default
+          format_disabled_options_as_dividers(menu)
+        end
+
+        categories.sort if categories.any?
+      end
+
       def find_stage(group)
         available_groups[group]&.fetch(:stage)
       end
 
       def find_section(group)
         available_groups[group]&.fetch(:section)
+      end
+
+      def find_categories(group)
+        available_groups[group]&.fetch(:categories)
       end
 
       private
@@ -58,6 +77,28 @@ module InternalEventsCli
         end
       end
 
+      # Returns the list of product category options for use in
+      # select menu. Prioritizes categories from related groups.
+      def category_choices(groups)
+        options = []
+
+        # List likeliest categories for group as the first options
+        Array(groups).compact.uniq.flat_map do |group|
+          divider = select_option_divider("Categories for #{group}")
+          categories = (find_categories(group) || []) & KNOWN_CATEGORIES
+
+          options.push(divider, *categories.sort) if categories.any?
+        end
+
+        divider = select_option_divider("All categories")
+        none_option = { name: "N/A (this definition does not correspond to any product categories)", value: nil }
+
+        options.push(divider) if options.any?
+        options.concat(KNOWN_CATEGORIES)
+        options.push(none_option)
+        options.uniq
+      end
+
       # Output looks like:
       #   {
       #     "import_and_integrate" => { stage: "manage", section: "dev", group: "import_and_integrate" },
@@ -72,13 +113,14 @@ module InternalEventsCli
         data = YAML.safe_load(response)
 
         @available_groups = data['stages'].flat_map do |stage_name, stage_data|
-          stage_data['groups'].map do |group_name, _|
+          stage_data['groups'].map do |group_name, group_data|
             [
               group_name,
               {
                 group: group_name,
                 stage: stage_name,
-                section: stage_data['section']
+                section: stage_data['section'],
+                categories: group_data['categories']
               }
             ]
           end

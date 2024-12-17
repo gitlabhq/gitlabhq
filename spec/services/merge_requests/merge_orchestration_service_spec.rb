@@ -119,16 +119,6 @@ RSpec.describe MergeRequests::MergeOrchestrationService, feature_category: :code
       it 'fetches preferred auto merge strategy' do
         is_expected.to eq(AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS)
       end
-
-      context 'when merge_when_checks_pass feature is off' do
-        before do
-          stub_feature_flags(merge_when_checks_pass: false)
-        end
-
-        it 'fetches preferred auto merge strategy' do
-          is_expected.to eq(AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
-        end
-      end
     end
 
     context 'when merge request cannot be merged automatically' do

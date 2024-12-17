@@ -115,7 +115,7 @@ export const I18N_WORK_ITEM_SEARCH_ERROR = s__(
 );
 export const I18N_WORK_ITEM_NO_MATCHES_FOUND = s__('WorkItem|No matches found');
 export const I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL = s__(
-  'WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least Reporter access',
+  'WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least the Planner role',
 );
 export const I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP = s__(
   'WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}.',
@@ -141,6 +141,18 @@ export const I18N_MAX_WORK_ITEMS_ERROR_MESSAGE = sprintf(
 export const I18N_MAX_WORK_ITEMS_NOTE_LABEL = sprintf(
   s__('WorkItem|Add up to %{MAX_WORK_ITEMS} items at a time.'),
   { MAX_WORK_ITEMS },
+);
+
+export const I18N_WORK_ITEM_CHANGE_TYPE_PARENT_ERROR = s__(
+  'WorkItem|Parent item type %{parentWorkItemType} is not supported on %{workItemType}. Remove the parent item to change type.',
+);
+
+export const I18N_WORK_ITEM_CHANGE_TYPE_CHILD_ERROR = s__(
+  'WorkItem|%{workItemType} does not support the %{childItemType} child item types. Remove child items to change type.',
+);
+
+export const I18N_WORK_ITEM_CHANGE_TYPE_MISSING_FIELDS_ERROR = s__(
+  'WorkItem|Some fields are not present in %{workItemType}. If you change type now, this information will be lost.',
 );
 
 export const sprintfWorkItem = (msg, workItemTypeArg, parentWorkItemType = '') => {
@@ -268,6 +280,7 @@ export const TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION = 'confidentiality-toggle-act
 export const TEST_ID_NOTIFICATIONS_TOGGLE_FORM = 'notifications-toggle-form';
 export const TEST_ID_DELETE_ACTION = 'delete-action';
 export const TEST_ID_PROMOTE_ACTION = 'promote-action';
+export const TEST_ID_CHANGE_TYPE_ACTION = 'change-type-action';
 export const TEST_ID_LOCK_ACTION = 'lock-action';
 export const TEST_ID_COPY_REFERENCE_ACTION = 'copy-reference-action';
 export const TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION = 'copy-create-note-email-action';
@@ -320,6 +333,7 @@ export const LINK_ITEM_FORM_HEADER_LABEL = {
 export const LINKED_ITEMS_ANCHOR = 'linkeditems';
 export const CHILD_ITEMS_ANCHOR = 'childitems';
 export const TASKS_ANCHOR = 'tasks';
+export const DEVELOPMENT_ITEMS_ANCHOR = 'developmentitems';
 
 export const ISSUABLE_EPIC = 'issue-type-epic';
 
@@ -344,6 +358,7 @@ export const DEFAULT_EPIC_COLORS = '#1068bf';
 
 export const MAX_FREQUENT_PROJECTS = 3;
 export const CREATE_NEW_WORK_ITEM_MODAL = 'create_new_work_item_modal';
+export const RELATED_ITEM_ID_URL_QUERY_PARAM = 'related_item_id';
 
 export const WORK_ITEM_REFERENCE_CHAR = '#';
 
@@ -381,3 +396,38 @@ export const WORKITEM_RELATIONSHIPS_SHOWCLOSED_LOCALSTORAGEKEY = 'workItemRelati
 export const INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION = Symbol(
   'injection:prevent-router-navigation',
 );
+
+export const WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_SOURCE = 'source';
+export const WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_BRANCH = 'branch';
+
+export const WORK_ITEM_ALLOWED_CHANGE_TYPE_MAP = [
+  WORK_ITEM_TYPE_ENUM_KEY_RESULT,
+  WORK_ITEM_TYPE_ENUM_OBJECTIVE,
+  WORK_ITEM_TYPE_ENUM_TASK,
+  WORK_ITEM_TYPE_ENUM_ISSUE,
+];
+
+export const WORK_ITEM_WIDGETS_NAME_MAP = {
+  [WIDGET_TYPE_ASSIGNEES]: s__('WorkItem|Assignees'),
+  [WIDGET_TYPE_DESCRIPTION]: s__('WorkItem|Description'),
+  [WIDGET_TYPE_AWARD_EMOJI]: s__('WorkItem|Emoji reactions'),
+  [WIDGET_TYPE_NOTIFICATIONS]: s__('WorkItem|Notifications'),
+  [WIDGET_TYPE_CURRENT_USER_TODOS]: s__('WorkItem|To-do item'),
+  [WIDGET_TYPE_LABELS]: s__('WorkItem|Labels'),
+  [WIDGET_TYPE_START_AND_DUE_DATE]: s__('WorkItem|Dates'),
+  [WIDGET_TYPE_TIME_TRACKING]: s__('WorkItem|Time tracking'),
+  [WIDGET_TYPE_WEIGHT]: s__('WorkItem|Weight'),
+  [WIDGET_TYPE_PARTICIPANTS]: s__('WorkItem|Participants'),
+  [WIDGET_TYPE_EMAIL_PARTICIPANTS]: s__('WorkItem|Email participants'),
+  [WIDGET_TYPE_PROGRESS]: s__('WorkItem|Progress'),
+  [WIDGET_TYPE_HIERARCHY]: s__('WorkItem|Child items'),
+  [WIDGET_TYPE_MILESTONE]: s__('WorkItem|Milestone'),
+  [WIDGET_TYPE_ITERATION]: s__('WorkItem|Iteration'),
+  [WIDGET_TYPE_NOTES]: s__('WorkItem|Comments and threads'),
+  [WIDGET_TYPE_HEALTH_STATUS]: s__('WorkItem|Health status'),
+  [WIDGET_TYPE_LINKED_ITEMS]: s__('WorkItem|Linked items'),
+  [WIDGET_TYPE_COLOR]: s__('WorkItem|Color'),
+  [WIDGET_TYPE_DESIGNS]: s__('WorkItem|Designs'),
+  [WIDGET_TYPE_DEVELOPMENT]: s__('WorkItem|Development'),
+  [WIDGET_TYPE_CRM_CONTACTS]: s__('WorkItem|Contacts'),
+};

@@ -21,7 +21,7 @@ bundle exec rspec <path/to/spec.rb>
 NOTE:
 
 - If you want to run tests requiring SSH against GDK, you will need to [modify your GDK setup](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/run_qa_against_gdk.md).
-- If this is your first time running GDK, you can use the password pre-set for `root`. [See supported GitLab environment variables](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables). If you have changed your `root` password, export the password as `GITLAB_INITIAL_ROOT_PASSWORD`.
+- You may be able to use the password pre-set for `root` in your GDK installation [See GDK help](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/14bd8b6eb875d72eb1b482e0ec00cbf8fc3ebf99/HELP#L62). If you have changed your `root` password from the default, export the password as `GITLAB_ADMIN_PASSWORD`.
 - By default the tests will run in a headless browser. If you'd like to watch the test execution, you can export `WEBDRIVER_HEADLESS=false`.
 - Tests that are tagged `:orchestrated` require special setup (e.g., custom GitLab configuration, or additional services such as LDAP). All [orchestrated tests can be run via `gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md). There are also [setup instructions](running_tests_that_require_special_setup.md) for running some of those tests against GDK or another local GitLab instance.
 
@@ -44,12 +44,6 @@ QA_LOG_LEVEL=DEBUG \
 QA_GITLAB_URL="http://{GDK IP ADDRESS}:{GDK PORT}" \
 bundle exec rspec <path/to/spec.rb>
 ```
-
-NOTE:
-Passing `GITLAB_USERNAME` or `GITLAB_PASSWORD` does not work as expected.
-Stick with the default values until
-[this issue](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/3113)
-is resolved.
 
 For an explanation of the variables see the [additional examples below](#overriding-gitlab-address) and the [list of supported environment variables](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables).
 
@@ -81,7 +75,7 @@ See the section above for situations that might require adjustment to the comman
    ```shell
    bundle install
    export WEBDRIVER_HEADLESS=false
-   export GITLAB_INITIAL_ROOT_PASSWORD=5iveL\!fe
+   export GITLAB_ADMIN_PASSWORD=5iveL\!fe
    export QA_GITLAB_URL="http://127.0.0.1"
    ```
 
@@ -114,7 +108,7 @@ See the section above for situations that might require adjustment to the comman
    ```shell
    bundle install
    set WEBDRIVER_HEADLESS=false
-   set GITLAB_INITIAL_ROOT_PASSWORD=5iveL\!fe
+   set GITLAB_ADMIN_PASSWORD=5iveL\!fe
    set QA_GITLAB_URL=http://127.0.0.1
    ```
 
@@ -206,26 +200,14 @@ QA_GITLAB_URL=https://gdk.test:3000 bundle exec rspec
 
 ### Overriding the authenticated user
 
-Unless told otherwise, the QA tests will run as the default `root` user seeded by the GDK.
+By default `root` user seeded by the GDK is used by all tests to create new unique test user for each test.
 
-If you need to authenticate as a different user, you can provide the `GITLAB_USERNAME` and `GITLAB_PASSWORD` environment variables:
+Tests will also use seeded administrator user's personal access token.
 
-```shell
-GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password bundle exec rspec
-```
-
-Some QA tests require logging in as an administrator. By default, the QA tests will use the same `root` user seeded by the GDK.
-
-If you need to authenticate with different admin credentials, you can provide the `GITLAB_ADMIN_USERNAME` and `GITLAB_ADMIN_PASSWORD` environment variables:
+If you need to authenticate with different admin credentials, you can provide the `GITLAB_ADMIN_USERNAME`, `GITLAB_ADMIN_PASSWORD` environment variables and if administrator user has a token created, additionally `GITLAB_QA_ADMIN_ACCESS_TOKEN` can be set as well:
 
 ```shell
-GITLAB_ADMIN_USERNAME=admin GITLAB_ADMIN_PASSWORD=myadminpassword GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password bundle exec rspec
-```
-
-If your user doesn't have permission to default sandbox group `gitlab-qa-sandbox`, you could also use another sandbox group by giving `GITLAB_SANDBOX_NAME`:
-
-```shell
-GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password GITLAB_SANDBOX_NAME=jsmith-qa-sandbox bundle exec rspec
+GITLAB_ADMIN_USERNAME=admin GITLAB_ADMIN_PASSWORD=myadminpassword GITLAB_QA_ADMIN_ACCESS_TOKEN=token bundle exec rspec
 ```
 
 All [supported environment variables are here](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-environment-variables).

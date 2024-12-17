@@ -8,7 +8,6 @@ description: Adds the ability to track a user callout being dismissed by project
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94144
 milestone: '15.3'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   project_id: projects
+table_size: small

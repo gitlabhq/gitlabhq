@@ -43,26 +43,41 @@ end
 RSpec.shared_examples 'process rubygems upload' do |user_type, status, add_member = true|
   RSpec.shared_examples 'creates rubygems package files' do
     it 'creates package files', :aggregate_failures do
-      expect(::Packages::Rubygems::ExtractionWorker).to receive(:perform_async).once
+      expect(::Packages::Rubygems::ExtractionWorker).to receive(:perform_async).with(an_instance_of(Integer)).once
 
       expect { subject }
           .to change { project.packages.count }.by(1)
           .and change { Packages::PackageFile.count }.by(1)
-      expect(response).to have_gitlab_http_status(status)
 
-      package_file = project.packages.last.package_files.reload.last
+      package = project.packages.last
+      expect(package).not_to be_nil
+
+      package_file = package.package_files.reload.last
+      expect(package_file).not_to be_nil
+
       expect(package_file.file_name).to eq('package.gem')
+
+      expect(response).to have_gitlab_http_status(status)
     end
 
     it 'returns bad request if package creation fails' do
-      file_service = double('file_service', execute: nil)
+      error_response = ServiceResponse.error(message: 'Package creation failed', reason: :bad_request)
+      package_file_service_double = instance_double(::Packages::Rubygems::CreatePackageFileService, execute: error_response)
 
-      expect(::Packages::CreatePackageFileService).to receive(:new).and_return(file_service)
-      expect(::Packages::Rubygems::ExtractionWorker).not_to receive(:perform_async)
+      expect(::Packages::Rubygems::CreatePackageFileService).to receive(:new).and_return(package_file_service_double)
 
       subject
 
       expect(response).to have_gitlab_http_status(:bad_request)
+    end
+
+    it 'does not enqueue a background job if the transaction is rolled back' do
+      expect(::Packages::Rubygems::CreatePackageFileService).to receive(:new).and_raise(ActiveRecord::RecordNotFound)
+      expect(::Packages::Rubygems::ExtractionWorker).not_to receive(:perform_async)
+
+      subject
+
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 

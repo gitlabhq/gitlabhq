@@ -16,7 +16,7 @@ When working with Code Quality, you might encounter the following issues.
 
 You are probably using a private runner with the Docker-in-Docker socket-binding configuration.
 You should configure Code Quality checks to run on your worker as documented in
-[Improve Code Quality performance with private runners](../../ci/testing/code_quality.md#improve-code-quality-performance-with-private-runners).
+[Use private runners](../../ci/testing/code_quality_codeclimate_scanning.md#use-private-runners).
 
 ## Changing the default configuration has no effect
 
@@ -45,7 +45,7 @@ Verify the presence of report on the base commit by obtaining the `base_sha` usi
 
 ## Only a single Code Quality report is displayed, but more are defined
 
-Code Quality automatically [combines multiple reports](../../ci/testing/code_quality.md#integrate-multiple-tools).
+Code Quality automatically [combines multiple reports](../../ci/testing/code_quality.md#scan-code-for-quality-violations).
 
 In GitLab 15.6 and earlier, Code Quality used only the artifact from the latest created job (with the largest job ID). Code Quality artifacts from earlier jobs were ignored.
 
@@ -106,15 +106,10 @@ code_quality:
     TIMEOUT_SECONDS: 3600
 ```
 
-## Using Code Quality with Kubernetes CI executor
+## Using Code Quality with a Kubernetes or OpenShift runner
 
-Code Quality requires a Docker in Docker setup to work. The Kubernetes executor already [has support for this](https://docs.gitlab.com/runner/executors/kubernetes/index.html#using-dockerdind).
-
-To ensure Code Quality jobs can run on a Kubernetes executor:
-
-- If you're using TLS to communicate with the Docker daemon, the executor [must be running in privileged mode](https://docs.gitlab.com/runner/executors/kubernetes/index.html#other-configtoml-settings). Additionally, the certificate directory must be [specified as a volume mount](../docker/using_docker_build.md#docker-in-docker-with-tls-enabled-in-kubernetes).
-- It is possible that the DinD service doesn't start up fully before the Code Quality job starts. This is a limitation documented in
-[Troubleshooting the Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/troubleshooting.html#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running).
+CodeClimate-based scanning has special requirements.
+You may need to [Configure Kubernetes or OpenShift runners for CodeClimate-based scanning](code_quality_codeclimate_scanning.md#configure-kubernetes-or-openshift-runners) before scans work properly.
 
 ## Error: `x509: certificate signed by unknown authority`
 
@@ -227,3 +222,5 @@ To resolve this issue, either:
 
 - Use the [documented Runner configuration for Docker-in-Docker](../docker/using_docker_build.md#use-docker-in-docker), which uses privileged mode instead of Docker socket binding.
 - Apply the [community workaround in issue 32027](https://gitlab.com/gitlab-org/gitlab/-/issues/32027#note_1318822628) if you wish to continue using Docker socket binding.
+
+For more details, see [Change Runner configuration](code_quality_codeclimate_scanning.md#change-runner-configuration).

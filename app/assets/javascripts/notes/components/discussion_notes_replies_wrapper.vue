@@ -21,7 +21,7 @@ export default {
         'li',
         {
           class:
-            'discussion-collapsible gl-border-solid gl-border-gray-100 gl-border-1 gl-rounded-base gl-border-t-0',
+            'discussion-collapsible gl-border-solid gl-border-default gl-border-1 gl-rounded-base gl-border-t-0',
         },
         [h('ul', { class: 'notes' }, children)],
       );

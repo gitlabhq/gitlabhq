@@ -92,6 +92,7 @@ describe('ProjectsStore', () => {
 
       expect(Object.keys(updatedGroupItem).indexOf('fullName')).toBeGreaterThan(-1);
       expect(updatedGroupItem.childrenCount).toBe(mockRawChildren[0].children_count);
+      expect(updatedGroupItem.hasChildren).toBe(true);
       expect(updatedGroupItem.isChildrenLoading).toBe(false);
       expect(updatedGroupItem.isBeingRemoved).toBe(false);
       expect(updatedGroupItem.microdata).toEqual({});
@@ -103,6 +104,7 @@ describe('ProjectsStore', () => {
 
       expect(Object.keys(updatedGroupItem).indexOf('fullName')).toBeGreaterThan(-1);
       expect(updatedGroupItem.childrenCount).toBe(mockRawChildren[0].subgroup_count);
+      expect(updatedGroupItem.hasChildren).toBe(true);
       expect(updatedGroupItem.microdata).toEqual({});
     });
 
@@ -111,6 +113,30 @@ describe('ProjectsStore', () => {
       const updatedGroupItem = store.formatGroupItem(mockRawChildren[0]);
 
       expect(updatedGroupItem.microdata).toEqual(getGroupItemMicrodata(mockRawChildren[0]));
+    });
+
+    describe('when hideProjects is false and children_count is 0', () => {
+      it('sets hasChildren as false', () => {
+        const store = new GroupsStore();
+        const updatedGroupItem = store.formatGroupItem({
+          ...mockRawChildren[0],
+          children_count: 0,
+        });
+
+        expect(updatedGroupItem.hasChildren).toBe(false);
+      });
+    });
+
+    describe('when hideProjects is true and has_subgroups is false', () => {
+      it('sets hasChildren as false', () => {
+        const store = new GroupsStore({ hideProjects: true });
+        const updatedGroupItem = store.formatGroupItem({
+          ...mockRawChildren[0],
+          has_subgroups: false,
+        });
+
+        expect(updatedGroupItem.hasChildren).toBe(false);
+      });
     });
   });
 

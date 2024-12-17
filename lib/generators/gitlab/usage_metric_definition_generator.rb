@@ -68,10 +68,6 @@ module Gitlab
       directory&.value_type
     end
 
-    def distribution
-      (ee? ? ['- ee'] : ['- ce', '- ee']).join("\n")
-    end
-
     def tier
       (ee? ? ['#- premium', '- ultimate'] : ['- free', '- premium', '- ultimate']).join("\n")
     end
@@ -113,7 +109,7 @@ module Gitlab
     #
     # 20210201124931_g_project_management_issue_title_changed_weekly.yml
     def file_name(key_path)
-      "#{Time.now.utc.strftime("%Y%m%d%H%M%S")}_#{metric_name(key_path)}"
+      "#{Time.now.utc.strftime('%Y%m%d%H%M%S')}_#{metric_name(key_path)}"
     end
 
     def directory

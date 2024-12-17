@@ -2,9 +2,10 @@
 
 FactoryBot.define do
   factory :work_item_type, class: 'WorkItems::Type' do
-    name      { generate(:work_item_type_name) }
-    base_type { WorkItems::Type.base_types[:issue] }
-    icon_name { 'issue-type-issue' }
+    # Use Issue as the default type to mirror app code where unless specified, the type is Issue
+    name { ::WorkItems::Type::BASE_TYPES[:issue][:name] }
+    base_type { ::WorkItems::Type::BASE_TYPES[:issue][:enum_value] }
+    icon_name { ::WorkItems::Type::BASE_TYPES[:issue][:icon_name] }
 
     transient do
       default { true }
@@ -13,7 +14,7 @@ FactoryBot.define do
     initialize_with do
       next WorkItems::Type.new(attributes) unless default
 
-      type_base_attributes = attributes.with_indifferent_access.slice(:base_type)
+      type_base_attributes = attributes.with_indifferent_access.slice(:base_type, :name)
 
       # Expect base_types to exist on the DB
       WorkItems::Type.find_or_initialize_by(type_base_attributes)
@@ -25,31 +26,16 @@ FactoryBot.define do
       default { false }
       sequence(:id, 100) { |n| n }
       sequence(:correct_id, 100) { |n| n }
+      icon_name { 'issue-type-non-default' }
+      sequence(:name) { |n| "Work item type #{n}" }
     end
 
-    trait :issue do
-      base_type { WorkItems::Type.base_types[:issue] }
-      icon_name { 'issue-type-issue' }
-    end
-
-    trait :incident do
-      base_type { WorkItems::Type.base_types[:incident] }
-      icon_name { 'issue-type-incident' }
-    end
-
-    trait :test_case do
-      base_type { WorkItems::Type.base_types[:test_case] }
-      icon_name { 'issue-type-test-case' }
-    end
-
-    trait :requirement do
-      base_type { WorkItems::Type.base_types[:requirement] }
-      icon_name { 'issue-type-requirements' }
-    end
-
-    trait :task do
-      base_type { WorkItems::Type.base_types[:task] }
-      icon_name { 'issue-type-task' }
+    # Define a trait for each default work item type with the same attributes as the seed file
+    ::WorkItems::Type::BASE_TYPES.each do |type_name, attributes|
+      trait type_name do
+        base_type { attributes[:enum_value] }
+        name { attributes[:name] }
+      end
     end
   end
 end

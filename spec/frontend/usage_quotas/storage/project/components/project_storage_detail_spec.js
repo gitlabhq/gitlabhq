@@ -1,5 +1,5 @@
 import { GlTableLite } from '@gitlab/ui';
-import { mount, Wrapper } from '@vue/test-utils'; // eslint-disable-line no-unused-vars
+import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import ProjectStorageDetail from '~/usage_quotas/storage/project/components/project_storage_detail.vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';

@@ -3,8 +3,6 @@
 module QA
   RSpec.describe 'Data Stores' do
     describe 'User', :requires_admin, product_group: :tenant_scale do
-      let(:admin_api_client) { Runtime::API::Client.as_admin }
-
       let!(:parent_group) { create(:group, path: "parent-group-to-test-user-access-#{SecureRandom.hex(8)}") }
 
       let!(:sub_group) do
@@ -14,11 +12,8 @@ module QA
       context 'when added to parent group' do
         include QA::Support::Helpers::Project
 
-        let!(:parent_group_user) { create(:user, api_client: admin_api_client) }
-
-        let!(:parent_group_user_api_client) do
-          Runtime::API::Client.new(:gitlab, user: parent_group_user)
-        end
+        let!(:parent_group_user) { create(:user, :with_personal_access_token) }
+        let!(:parent_group_user_api_client) { parent_group_user.api_client }
 
         let!(:sub_group_project) do
           create(:project, :with_readme, name: 'sub-groupd-project-to-test-user-access', group: sub_group)
@@ -32,7 +27,6 @@ module QA
 
         it(
           'is allowed to push code to sub-group project via the CLI',
-          :blocking,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363345'
         ) do
           expect do
@@ -49,7 +43,6 @@ module QA
 
         it(
           'is allowed to create a file in sub-group project via the API',
-          :blocking,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363348'
         ) do
           # Retry is needed due to delays with project authorization updates
@@ -66,7 +59,7 @@ module QA
         end
 
         it(
-          'is allowed to commit to sub-group project via the API', :blocking,
+          'is allowed to commit to sub-group project via the API',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363349'
         ) do
           # Retry is needed due to delays with project authorization updates
@@ -95,11 +88,8 @@ module QA
           create(:project, :with_readme, name: 'parent-group-project-to-test-user-access', group: parent_group)
         end
 
-        let!(:sub_group_user) { create(:user, api_client: admin_api_client) }
-
-        let!(:sub_group_user_api_client) do
-          Runtime::API::Client.new(:gitlab, user: sub_group_user)
-        end
+        let!(:sub_group_user) { create(:user, :with_personal_access_token) }
+        let!(:sub_group_user_api_client) { sub_group_user.api_client }
 
         before do
           sub_group.add_member(sub_group_user)
@@ -107,7 +97,6 @@ module QA
 
         it(
           'is not allowed to push code to parent group project via the CLI',
-          :blocking,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363344'
         ) do
           expect do
@@ -124,7 +113,6 @@ module QA
 
         it(
           'is not allowed to create a file in parent group project via the API',
-          :blocking,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363343'
         ) do
           expect do
@@ -137,7 +125,6 @@ module QA
 
         it(
           'is not allowed to commit to parent group project via the API',
-          :blocking,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363342'
         ) do
           expect do

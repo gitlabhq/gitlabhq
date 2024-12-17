@@ -197,7 +197,7 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
           project = create(:project, group: group)
           create(:event, project: project)
         end
-        subgroup = create(:group, parent: group)
+        subgroup = create(:group, parent: group, organization: group.organization)
         project = create(:project, group: subgroup)
         create(:event, project: project)
 
@@ -502,16 +502,6 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
 
           expect(response).to have_gitlab_http_status(:found)
         end
-      end
-    end
-
-    context 'when creating a group with the `role` attribute present' do
-      it 'changes the users role' do
-        sign_in(user)
-
-        expect do
-          post :create, params: { group: { name: 'new_group', path: 'new_group' }, user: { role: 'devops_engineer' } }
-        end.to change { user.reload.role }.to('devops_engineer')
       end
     end
 

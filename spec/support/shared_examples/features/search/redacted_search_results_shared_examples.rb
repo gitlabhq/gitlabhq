@@ -172,7 +172,7 @@ RSpec.shared_examples 'a redacted search results' do
     context 'with :with_api_entity_associations' do
       let(:unredacted_results) { ar_relation(MergeRequest.with_api_entity_associations, readable, unreadable) }
 
-      it_behaves_like "redaction limits N+1 queries", limit: 8
+      it_behaves_like "redaction limits N+1 queries", limit: 10
     end
   end
 

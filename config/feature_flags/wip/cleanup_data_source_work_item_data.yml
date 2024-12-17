@@ -1,0 +1,9 @@
+---
+name: cleanup_data_source_work_item_data
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/15470
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174258
+rollout_issue_url:
+milestone: '17.7'
+group: group::project management
+type: wip
+default_enabled: false

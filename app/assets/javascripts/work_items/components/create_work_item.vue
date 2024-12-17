@@ -40,7 +40,7 @@ import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
-
+import { isMetaEnterKeyPair } from '../../lib/utils/common_utils';
 import WorkItemProjectsListbox from './work_item_links/work_item_projects_listbox.vue';
 import WorkItemTitle from './work_item_title.vue';
 import WorkItemDescription from './work_item_description.vue';
@@ -110,6 +110,11 @@ export default {
       type: String,
       required: false,
       default: null,
+    },
+    stickyFormSubmit: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     relatedItem: {
       type: Object,
@@ -273,7 +278,7 @@ export default {
     makeConfidentialText() {
       return sprintfWorkItem(
         s__(
-          'WorkItem|This %{workItemType} is confidential and should only be visible to users having at least Reporter access.',
+          'WorkItem|This %{workItemType} is confidential and should only be visible to users having at least the Planner role.',
         ),
         this.selectedWorkItemTypeName,
       );
@@ -355,7 +360,21 @@ export default {
       );
     },
   },
+  mounted() {
+    // We need this event listener in the document because when
+    // updating widgets, the form may no be in focus and triggering
+    // a keyboard event in the form won't get caught
+    document.addEventListener('keydown', this.handleKeydown);
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.handleKeydown);
+  },
   methods: {
+    handleKeydown(e) {
+      if (isMetaEnterKeyPair(e)) {
+        this.createWorkItem();
+      }
+    },
     isWidgetSupported(widgetType) {
       const widgetDefinitions =
         this.selectedWorkItemType?.widgetDefinitions?.flatMap((i) => i.type) || [];
@@ -567,7 +586,6 @@ export default {
           :is-valid="isTitleValid"
           :title="workItemTitle"
           @updateDraft="updateDraftData('title', $event)"
-          @updateWorkItem="createWorkItem"
         />
         <div data-testid="work-item-overview" class="work-item-overview">
           <section>
@@ -708,7 +726,11 @@ export default {
               @error="$emit('error', $event)"
             />
           </aside>
-          <div class="gl-col-start-1 gl-flex gl-gap-3 gl-py-3">
+          <div
+            v-if="!stickyFormSubmit"
+            class="gl-col-start-1 gl-flex gl-gap-3 gl-py-3"
+            data-testid="form-buttons"
+          >
             <gl-button
               variant="confirm"
               :loading="loading"
@@ -721,6 +743,25 @@ export default {
               {{ __('Cancel') }}
             </gl-button>
           </div>
+        </div>
+        <!-- stick to bottom and put the Confim button on the right -->
+        <!-- bg-overlap to match modal bg -->
+        <div
+          v-if="stickyFormSubmit"
+          class="gl-border-t gl-sticky gl-bottom-0 gl-z-1 -gl-mx-5 gl-flex gl-justify-end gl-gap-3 gl-bg-overlap gl-px-5 gl-py-3"
+          data-testid="form-buttons"
+        >
+          <gl-button type="button" data-testid="cancel-button" @click="handleCancelClick">
+            {{ __('Cancel') }}
+          </gl-button>
+          <gl-button
+            variant="confirm"
+            :loading="loading"
+            data-testid="create-button"
+            @click="createWorkItem"
+          >
+            {{ createWorkItemText }}
+          </gl-button>
         </div>
       </div>
     </template>

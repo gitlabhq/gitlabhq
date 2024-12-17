@@ -3,7 +3,7 @@
 module Ci
   module Runners
     class BulkDeleteRunnersService
-      attr_reader :runners
+      attr_reader :current_user, :runners
 
       RUNNER_LIMIT = 50
 
@@ -15,40 +15,45 @@ module Ci
       end
 
       def execute
-        if @runners
+        if runners
           # Delete a few runners immediately
           return delete_runners
         end
 
-        ServiceResponse.success(payload: { deleted_count: 0, deleted_ids: [], errors: [] })
+        ServiceResponse.success(payload: { deleted_count: 0, deleted_ids: [], deleted_models: [], errors: [] })
       end
 
       private
 
       def delete_runners
-        runner_count = @runners.limit(RUNNER_LIMIT + 1).count
+        runner_count = runners.limit(RUNNER_LIMIT + 1).count
         authorized_runners_ids, unauthorized_runners_ids = compute_authorized_runners
         # rubocop:disable CodeReuse/ActiveRecord
         runners_to_be_deleted =
           Ci::Runner
-            .where(id: authorized_runners_ids)
+            .id_in(authorized_runners_ids)
             .preload([:taggings, :runner_namespaces, :runner_projects])
         # rubocop:enable CodeReuse/ActiveRecord
-        deleted_ids = runners_to_be_deleted.destroy_all.map(&:id) # rubocop:disable Cop/DestroyAll
+        # rubocop:disable Cop/DestroyAll -- loading objects into memory to run callbacks and return objects
+        deleted_models = runners_to_be_deleted.destroy_all
+        # rubocop:enable Cop/DestroyAll
+        deleted_ids = deleted_models.map(&:id)
 
         ServiceResponse.success(
           payload: {
             deleted_count: deleted_ids.count,
+            deleted_models: deleted_models,
             deleted_ids: deleted_ids,
             errors: error_messages(runner_count, authorized_runners_ids, unauthorized_runners_ids)
           })
       end
 
       def compute_authorized_runners
-        @current_user.ci_owned_runners.load # preload the owned runners to avoid an N+1
+        current_user.ci_owned_runners.load # preload the owned runners to avoid an N+1
+
         authorized_runners, unauthorized_runners =
-          @runners.limit(RUNNER_LIMIT)
-                  .partition { |runner| Ability.allowed?(@current_user, :delete_runner, runner) }
+          runners.limit(RUNNER_LIMIT)
+            .partition { |runner| Ability.allowed?(current_user, :delete_runner, runner) }
         [authorized_runners.map(&:id), unauthorized_runners.map(&:id)]
       end
 
@@ -71,3 +76,5 @@ module Ci
     end
   end
 end
+
+Ci::Runners::BulkDeleteRunnersService.prepend_mod

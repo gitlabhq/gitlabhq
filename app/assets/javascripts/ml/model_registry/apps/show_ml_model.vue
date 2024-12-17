@@ -1,7 +1,7 @@
 <script>
 import { GlAvatar, GlBadge, GlButton, GlTab, GlTabs, GlSprintf, GlIcon, GlLink } from '@gitlab/ui';
 import VueRouter from 'vue-router';
-import { n__, s__, sprintf } from '~/locale';
+import { __, n__, s__, sprintf } from '~/locale';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { MODEL_ENTITIES } from '~/ml/model_registry/constants';
 import ModelVersionList from '~/ml/model_registry/components/model_version_list.vue';
@@ -13,12 +13,14 @@ import getModelQuery from '~/ml/model_registry/graphql/queries/get_model.query.g
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import CandidateList from '~/ml/model_registry/components/candidate_list.vue';
 import DeleteModelDisclosureDropdownItem from '../components/delete_model_disclosure_dropdown_item.vue';
 import LoadOrErrorOrShow from '../components/load_or_error_or_show.vue';
 import DeleteModel from '../components/functional/delete_model.vue';
 
 const ROUTE_DETAILS = 'details';
 const ROUTE_VERSIONS = 'versions';
+const ROUTE_CANDIDATES = 'candidates';
 
 const deletionSuccessfulAlert = {
   id: 'ml-model-deleted-successfully',
@@ -36,6 +38,11 @@ const routes = [
     path: '/versions',
     name: ROUTE_VERSIONS,
     component: ModelVersionList,
+  },
+  {
+    path: '/candidates',
+    name: ROUTE_CANDIDATES,
+    component: CandidateList,
   },
   { path: '*', redirect: { name: ROUTE_DETAILS } },
 ];
@@ -149,6 +156,9 @@ export default {
     versionCount() {
       return this.model?.versionCount || 0;
     },
+    candidateCount() {
+      return this.model?.candidateCount || 0;
+    },
     tabIndex() {
       return routes.findIndex(({ name }) => name === this.$route.name);
     },
@@ -209,10 +219,12 @@ export default {
     versionCountTitle: s__('MlModelRegistry|Total versions'),
     latestVersionTitle: s__('MlModelRegistry|Latest version'),
     authorTitle: s__('MlModelRegistry|Publisher'),
+    noneText: __('None'),
   },
   modelVersionEntity: MODEL_ENTITIES.modelVersion,
   ROUTE_DETAILS,
   ROUTE_VERSIONS,
+  ROUTE_CANDIDATES,
 };
 </script>
 
@@ -234,7 +246,7 @@ export default {
                 </template>
                 <template #author>
                   <gl-link
-                    class="js-user-link gl-font-bold !gl-text-gray-500"
+                    class="js-user-link gl-font-bold !gl-text-subtle"
                     :href="model.author.webUrl"
                     :data-user-id="authorId"
                   >
@@ -275,14 +287,21 @@ export default {
             <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
               <gl-tabs class="gl-mt-4" :value="tabIndex">
                 <gl-tab
-                  v-if="latestVersion"
                   :title="$options.i18n.tabModelCardTitle"
                   @click="goTo($options.ROUTE_DETAILS)"
                 />
-                <gl-tab v-if="latestVersion" @click="goTo($options.ROUTE_VERSIONS)">
+                <gl-tab @click="goTo($options.ROUTE_VERSIONS)">
                   <template #title>
                     {{ $options.i18n.tabVersionsTitle }}
-                    <gl-badge class="gl-tab-counter-badge">{{ versionCount }}</gl-badge>
+                    <gl-badge v-if="versionCount" class="gl-tab-counter-badge">{{
+                      versionCount
+                    }}</gl-badge>
+                  </template>
+                </gl-tab>
+                <gl-tab @click="goTo($options.ROUTE_CANDIDATES)">
+                  <template #title>
+                    {{ s__('MlModelRegistry|Version candidates') }}
+                    <gl-badge class="gl-tab-counter-badge">{{ candidateCount }}</gl-badge>
                   </template>
                 </gl-tab>
 
@@ -294,34 +313,39 @@ export default {
           <div class="gl-pt-6 md:gl-col-span-1">
             <div>
               <div class="gl-text-lg gl-font-bold">{{ $options.i18n.authorTitle }}</div>
-              <div v-if="showModelAuthor" class="gl-pt-2 gl-text-gray-500">
+              <div class="gl-pt-2 gl-text-subtle" data-testid="sidebar-author">
                 <gl-link
+                  v-if="showModelAuthor"
                   data-testid="sidebar-author-link"
-                  class="js-user-link gl-font-bold !gl-text-gray-500"
+                  class="js-user-link gl-font-bold !gl-text-subtle"
                   :href="model.author.webUrl"
                 >
                   <gl-avatar :label="model.author.name" :src="model.author.avatarUrl" :size="24" />
                   {{ model.author.name }}
                 </gl-link>
+                <span v-else>{{ $options.i18n.noneText }}</span>
               </div>
             </div>
-            <div v-if="showModelLatestVersion" class="gl-mt-5" data-testid="latest-version-label">
+            <div class="gl-mt-5">
               <div class="gl-text-lg gl-font-bold">{{ $options.i18n.latestVersionTitle }}</div>
-              <div class="gl-pt-2 gl-text-gray-500">
+              <div class="gl-pt-2 gl-text-subtle" data-testid="sidebar-latest-version">
                 <gl-link
+                  v-if="showModelLatestVersion"
                   data-testid="sidebar-latest-version-link"
                   :href="model.latestVersion._links.showPath"
                 >
                   {{ model.latestVersion.version }}
                 </gl-link>
+                <span v-else>{{ $options.i18n.noneText }}</span>
               </div>
             </div>
             <div class="gl-mt-5">
               <div class="gl-text-lg gl-font-bold">{{ $options.i18n.versionCountTitle }}</div>
-              <div v-if="showCreatedDetail" class="gl-pt-2 gl-text-gray-500">
-                <span data-testid="sidebar-version-count">
+              <div class="gl-pt-2 gl-text-subtle" data-testid="sidebar-version-count">
+                <span v-if="versionCount">
                   {{ versionCount }}
                 </span>
+                <span v-else>{{ $options.i18n.noneText }}</span>
               </div>
             </div>
           </div>

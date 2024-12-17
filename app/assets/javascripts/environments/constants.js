@@ -124,6 +124,12 @@ export const SYNC_STATUS_BADGES = {
     text: s__('Environment|Reconciling'),
     popoverText: s__('Deployment|Flux sync reconciling'),
   },
+  suspended: {
+    variant: 'warning',
+    icon: 'status-paused',
+    text: __('Paused'),
+    popoverText: s__('Deployment|Flux sync is suspended'),
+  },
   stalled: {
     variant: 'warning',
     icon: 'status-paused',
@@ -200,8 +206,8 @@ export const TREE_ITEM_KIND_ICONS = {
 };
 
 const RUNNING_STATUS_ICON = { icon: 'status-running', class: 'gl-text-blue-500' };
-const SUCCESS_STATUS_ICON = { icon: 'status-success', class: 'gl-text-green-500' };
-const WAITING_STATUS_ICON = { icon: 'status-waiting', class: 'gl-text-gray-500' };
+const SUCCESS_STATUS_ICON = { icon: 'status-success', class: 'gl-text-success' };
+const WAITING_STATUS_ICON = { icon: 'status-waiting', class: 'gl-text-subtle' };
 const FAILED_STATUS_ICON = { icon: 'status-failed', class: 'gl-text-red-500' };
 const PAUSED_STATUS_ICON = { icon: 'status-paused', class: 'gl-text-orange-500' };
 

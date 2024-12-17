@@ -31,6 +31,8 @@ module Gitlab
       # The base cache key to store whether an email has been fetched for a project
       EMAIL_FETCHED_FOR_PROJECT_CACHE_KEY = 'github-import/user-finder/%{project}/email-fetched/%{username}'
 
+      SOURCE_NAME_CACHE_KEY = 'github-import/user-finder/%{project}/source-name/%{username}'
+
       EMAIL_API_CALL_LOGGING_MESSAGE = {
         true => 'Fetching email from GitHub with ETAG header',
         false => 'Fetching email from GitHub'
@@ -94,8 +96,12 @@ module Gitlab
 
       # Returns the GitLab user ID from placeholder or reassigned_to user.
       def source_user(user)
+        source_user = mapper.user_mapper.find_source_user(user[:id])
+
+        return source_user if source_user
+
         mapper.user_mapper.find_or_create_source_user(
-          source_name: user[:login],
+          source_name: fetch_source_name_from_github(user[:login]),
           source_username: user[:login],
           source_user_identifier: user[:id]
         )
@@ -106,6 +112,30 @@ module Gitlab
         return true unless mapper.user_mapping_enabled?
 
         source_user(user).accepted_status?
+      end
+
+      # Retrieves the name of the user associated with a specified GitHub username.
+      #
+      # To prevent multiple concurrent requests for the same user, a exclusive lock is used.
+      # The name is cached to avoid multiple calls to GitHub.
+      #
+      # @param [String] username GitHub username
+      # @return [String] name of the user
+      def fetch_source_name_from_github(username)
+        in_lock(lease_key(username), sleep_sec: 0.2.seconds, retries: 30) do |retried|
+          if retried
+            source_name = read_source_name_from_cache(username)
+
+            next source_name if source_name.present?
+          end
+
+          user = client.user(username)
+          source_name = user.fetch(:name, username)
+
+          cache_source_name(username, source_name)
+
+          source_name
+        end
       end
 
       # Returns the GitLab ID for the given GitHub ID or username.
@@ -252,6 +282,22 @@ module Gitlab
         "gitlab:github_import:user_finder:#{username}"
       end
 
+      # Reads source name from internal cache for the given username
+      #
+      # @param [String] username The username of the GitHub user.
+      # @return [String|nil] Return the cached source name or nil
+      def read_source_name_from_cache(username)
+        Gitlab::Cache::Import::Caching.read(source_name_cache_key(username))
+      end
+
+      # Caches the source name associated to the username
+      #
+      # @param [String] username The username of the GitHub user.
+      # @param [String] source_name The source_name to value to be cached.
+      def cache_source_name(username, source_name)
+        Gitlab::Cache::Import::Caching.write(source_name_cache_key(username), source_name)
+      end
+
       # Retrieves the email associated with the given username from the cache.
       #
       # The return value can be an email, an empty string, or nil.
@@ -313,6 +359,10 @@ module Gitlab
 
       def etag_cache_key(username)
         USERNAME_ETAG_CACHE_KEY % username
+      end
+
+      def source_name_cache_key(username)
+        format(SOURCE_NAME_CACHE_KEY, project: project.id, username: username)
       end
 
       def email_fetched_for_project_cache_key(username)

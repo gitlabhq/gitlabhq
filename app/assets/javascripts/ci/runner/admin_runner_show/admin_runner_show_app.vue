@@ -58,9 +58,6 @@ export default {
       return this.runner.userPermissions?.deleteRunner;
     },
   },
-  errorCaptured(error) {
-    this.reportToSentry(error);
-  },
   methods: {
     reportToSentry(error) {
       captureException({ error, component: this.$options.name });

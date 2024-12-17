@@ -10,31 +10,30 @@ module Gitlab
       include Gitlab::Tracking::Helpers
       include Gitlab::Utils::StrongMemoize
       include Gitlab::UsageDataCounters::RedisCounter
+      include Gitlab::UsageDataCounters::RedisSum
 
-      def track_event(
-        event_name, category: nil, send_snowplow_event: true,
-        additional_properties: {}, **kwargs)
-
+      def track_event(event_name, category: nil, additional_properties: {}, **kwargs)
         Gitlab::Tracking::EventValidator.new(event_name, additional_properties, kwargs).validate!
 
-        extra = custom_additional_properties(additional_properties)
-        base_additional_properties = additional_properties.slice(*base_additional_properties_keys)
+        event_definition = Gitlab::Tracking::EventDefinition.find(event_name)
+        send_snowplow_event = kwargs.fetch(:send_snowplow_event, true)
 
-        project = kwargs[:project]
-        kwargs[:namespace] ||= project.namespace if project
+        track_analytics_event(event_name, send_snowplow_event, category: category,
+          additional_properties: additional_properties, **kwargs)
 
-        update_redis_values(event_name, additional_properties, kwargs)
-        trigger_snowplow_event(event_name, category, base_additional_properties, extra, kwargs) if send_snowplow_event
-        send_application_instrumentation_event(event_name, base_additional_properties, kwargs) if send_snowplow_event
+        return if Feature.disabled?(:move_ai_tracking_to_instrumentation_layer, kwargs[:user])
 
-        if Feature.enabled?(:early_access_program, kwargs[:user], type: :wip)
-          create_early_access_program_event(event_name, category, additional_properties[:label], kwargs)
+        kwargs[:additional_properties] = additional_properties
+        event_definition.extra_tracking_classes.each do |tracking_class|
+          tracking_class.track_event(event_name, **kwargs)
         end
+
       rescue StandardError => e
         extra = {}
         kwargs.each_key do |k|
           extra[k] = kwargs[k].is_a?(::ApplicationRecord) ? kwargs[k].try(:id) : kwargs[k]
         end
+
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
           e,
           event_name: event_name,
@@ -45,6 +44,22 @@ module Gitlab
       end
 
       private
+
+      def track_analytics_event(event_name, send_snowplow_event, category: nil, additional_properties: {}, **kwargs)
+        extra = custom_additional_properties(additional_properties)
+        base_additional_properties = additional_properties.slice(*base_additional_properties_keys)
+
+        project = kwargs[:project]
+        kwargs[:namespace] ||= project.namespace if project
+
+        update_redis_values(event_name, additional_properties, kwargs)
+        trigger_snowplow_event(event_name, category, base_additional_properties, extra, kwargs) if send_snowplow_event
+        send_application_instrumentation_event(event_name, base_additional_properties, kwargs) if send_snowplow_event
+
+        return unless Feature.enabled?(:early_access_program, kwargs[:user], type: :wip)
+
+        create_early_access_program_event(event_name, category, additional_properties[:label], kwargs)
+      end
 
       def update_redis_values(event_name, additional_properties, kwargs)
         event_definition = Gitlab::Tracking::EventDefinition.find(event_name)
@@ -58,6 +73,8 @@ module Gitlab
 
           if event_selection_rule.total_counter?
             update_total_counter(event_selection_rule)
+          elsif event_selection_rule.sum?
+            update_sums(event_selection_rule, **kwargs, **additional_properties)
           else
             update_unique_counter(event_selection_rule, **kwargs, **additional_properties)
           end
@@ -73,6 +90,16 @@ module Gitlab
 
         # Overrides for legacy keys of total counters are handled in `increment`
         increment(event_selection_rule.redis_key_for_date, expiry: expiry)
+      end
+
+      def update_sums(event_selection_rule, properties)
+        # Hardcoded to only look at 'value' since that all the schema allows.
+        # Should be dynamic based on the event selection rule
+        return unless properties.has_key?(:value)
+
+        expiry = event_selection_rule.time_framed? ? KEY_EXPIRY_LENGTH : nil
+
+        increment_sum_by(event_selection_rule.redis_key_for_date, properties[:value], expiry: expiry)
       end
 
       def update_unique_counter(event_selection_rule, properties)

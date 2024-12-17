@@ -71,6 +71,15 @@ export default {
       required: false,
       default: 0,
     },
+    isGroup: {
+      type: Boolean,
+      required: true,
+    },
+    allowedChildTypes: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   computed: {
     canUpdate() {
@@ -96,6 +105,9 @@ export default {
     },
     newTodoAndNotificationsEnabled() {
       return this.glFeatures.notificationsTodosButtons;
+    },
+    widgets() {
+      return this.workItem.widgets;
     },
   },
   WORKSPACE_PROJECT,
@@ -126,7 +138,7 @@ export default {
           />
           <locked-badge v-if="isDiscussionLocked" :issuable-type="workItemType" />
           <gl-link
-            class="gl-mr-auto gl-block gl-truncate gl-pr-3 gl-font-bold gl-text-black"
+            class="gl-mr-auto gl-block gl-truncate gl-pr-3 gl-font-bold gl-text-strong"
             href="#top"
             :title="workItem.title"
           >
@@ -175,12 +187,16 @@ export default {
             :work-item-state="workItem.state"
             :is-modal="isModal"
             :work-item-author-id="workItemAuthorId"
+            :is-group="isGroup"
+            :widgets="widgets"
+            :allowed-child-types="allowedChildTypes"
             @deleteWorkItem="$emit('deleteWorkItem')"
             @toggleWorkItemConfidentiality="
               $emit('toggleWorkItemConfidentiality', !workItem.confidential)
             "
             @error="$emit('error')"
             @promotedToObjective="$emit('promotedToObjective')"
+            @workItemTypeChanged="$emit('workItemTypeChanged')"
             @workItemStateUpdated="$emit('workItemStateUpdated')"
             @toggleReportAbuseModal="$emit('toggleReportAbuseModal', true)"
           />

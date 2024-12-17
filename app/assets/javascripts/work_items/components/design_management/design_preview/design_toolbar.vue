@@ -85,7 +85,7 @@ export default {
       <div class="gl-mr-3 gl-flex gl-overflow-hidden">
         <gl-skeleton-loader v-if="isLoading" :lines="1" />
         <h2 v-else class="gl-m-0 gl-flex gl-items-center gl-overflow-hidden gl-text-base">
-          <span class="gl-truncate gl-text-gray-900 gl-no-underline">
+          <span class="gl-truncate gl-text-heading gl-no-underline">
             {{ workItemTitle }}
           </span>
           <gl-icon name="chevron-right" class="gl-shrink-0" variant="disabled" />

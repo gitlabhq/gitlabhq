@@ -6,7 +6,7 @@ module API
       include PaginationParams
 
       before { authenticate! }
-      before { authorize! :admin_build, user_project }
+      before { authorize! :admin_cicd_variables, user_project }
 
       feature_category :secrets_management
 

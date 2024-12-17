@@ -70,9 +70,6 @@ export default {
       }
     },
   },
-  errorCaptured(err, _vm, info) {
-    reportToSentry('action_component', `error: ${err}, info: ${info}`);
-  },
   methods: {
     /**
      * The request should not be handled here.

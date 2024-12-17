@@ -18,7 +18,7 @@ module Import
     validate :validate_numeric_or_composite_key_present
     validate :validate_model_is_not_member
 
-    attribute :composite_key, :ind_jsonb
+    attribute :composite_key, ::Gitlab::Database::Type::IndifferentJsonb.new
 
     scope :model_groups_for_source_user, ->(source_user) do
       where(source_user: source_user)

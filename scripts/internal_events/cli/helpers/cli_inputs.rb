@@ -75,7 +75,12 @@ module InternalEventsCli
 
       # Provide to cli#multiselect as kwargs for consistent style/ux
       def multiselect_opts
-        { **select_opts, prefix: format_prompt('Select multiple: '), min: 1 }
+        {
+          **select_opts,
+          prefix: format_prompt('Select multiple: '),
+          min: 1,
+          help: "(Space to select, Enter to submit, ↑/↓/←/→ to move, Ctrl+A|R to select all|none, letters to filter)"
+        }
       end
 
       # Accepts a number of lines occupied by text, so remaining
@@ -85,6 +90,20 @@ module InternalEventsCli
           filter: true,
           per_page: header_size ? [(window_height - header_size), 10].max : 30
         }
+      end
+
+      # Creates divider to be passed to a select or multiselect
+      # as a menu item. Use with #format_disabled_options_as_dividers
+      # for best formatting.
+      def select_option_divider(text)
+        { name: "-- #{text} --", value: nil, disabled: '' }
+      end
+
+      # Styling all disabled options in a menu without indication
+      # of being a selectable option
+      # @param select_menu [TTY::Prompt]
+      def format_disabled_options_as_dividers(select_menu)
+        select_menu.symbols(cross: '')
       end
 
       # For use when menu options are disabled by being grayed out

@@ -175,7 +175,7 @@ export default {
         v-if="node.attrs.showPreview"
         :contenteditable="false"
         data-testid="sandbox-preview"
-        class="!-gl-ml-4 !-gl-mr-4 !-gl-mt-3 gl-mb-3 gl-border-b-1 gl-border-b-gray-100 !gl-bg-white gl-p-4 gl-border-b-solid"
+        class="!-gl-ml-4 !-gl-mr-4 !-gl-mt-3 gl-mb-3 gl-border-b-1 gl-border-b-default !gl-bg-white gl-p-4 gl-border-b-solid"
       >
         <sandboxed-mermaid v-if="node.attrs.language === 'mermaid'" :source="diagramSource" />
         <img v-else ref="diagramContainer" :src="diagramUrl" />
@@ -290,8 +290,11 @@ export default {
       <node-view-content
         ref="nodeViewContent"
         as="code"
-        class="line_content new code gl-relative gl-z-1 !gl-break-words gl-text-sm"
-        :class="themeClass"
+        class="gl-relative gl-z-1 !gl-break-words"
+        :class="{
+          'line_content new code': isCodeSuggestion,
+          themeClass: isCodeSuggestion,
+        }"
         spellcheck="false"
         data-testid="suggestion-field"
       />

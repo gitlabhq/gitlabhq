@@ -45,6 +45,8 @@ FactoryBot already reflects the change.
 
 ### Without GDK
 
+Requires Git v2.26.0 or later.
+
 1. Start a containerized GitLab instance
 
    ```shell
@@ -120,6 +122,8 @@ Where `:file` is the file path. (This path reflects relative `.rb`, `.yml`, or `
 WARNING:
 While it is possible to use the Data Seeder with an Linux package installation, **use caution** if you do this when the instance is being used in a production setting.
 
+Requires Git v2.26.0 or later.
+
 1. Change the working directory to the GitLab installation:
 
    ```shell
@@ -179,7 +183,7 @@ The `DataSeeder` class contains the following instance variables defined upon se
 - `@seed_file` - The `File` object.
 - `@owner` - The owner of the seed data.
 - `@name` - The name of the seed. This is the seed file name without the extension.
-- `@group` - The root group that all seeded data is created under.
+- `@group` - The top-level group that all seeded data is created under.
 - `@logger` - The logger object to log output. Logging output may be found in `log/data_seeder.log`.
 
 ```ruby

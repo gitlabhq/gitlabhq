@@ -1088,6 +1088,12 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
           end
 
           context 'when uploaded file remote_id matches a pending direct upload entry' do
+            let(:uploader_class) do
+              Class.new(GitlabUploader) do
+                include ObjectStorage::Concern
+              end
+            end
+
             let(:object) { build_stubbed(:ci_job_artifact) }
             let(:final_path) { '@final/test/123123' }
             let(:fog_config) { Gitlab.config.uploads.object_store }

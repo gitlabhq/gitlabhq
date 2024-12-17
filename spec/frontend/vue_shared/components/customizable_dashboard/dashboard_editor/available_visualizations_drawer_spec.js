@@ -6,7 +6,7 @@ import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_help
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { stubComponent } from 'helpers/stub_component';
-import { TEST_VISUALIZATIONS_GRAPHQL_SUCCESS_RESPONSE } from '../mock_data';
+import { createVisualization } from '../mock_data';
 
 jest.mock('~/lib/utils/dom_utils', () => ({
   getContentWrapperHeight: () => '123px',
@@ -19,10 +19,7 @@ describe('AvailableVisualizationsDrawer', () => {
   const allTypes = ['SingleStat', 'LineChart', 'DataTable', 'BarChart'];
 
   const createVisualizations = (types = ['SingleStat']) => {
-    const visualization = {
-      ...TEST_VISUALIZATIONS_GRAPHQL_SUCCESS_RESPONSE.data.project
-        .customizableDashboardVisualizations.nodes[0],
-    };
+    const visualization = createVisualization();
 
     return types.map((type, index) => ({
       ...visualization,

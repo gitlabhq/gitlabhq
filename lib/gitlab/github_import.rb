@@ -8,10 +8,12 @@ module Gitlab
 
     def self.new_client_for(project, token: nil, host: nil, parallel: true)
       token_to_use = token || project.import_data&.credentials&.fetch(:user)
+      pagination_limit = project.import_data&.data&.dig('pagination_limit') || Gitlab::GithubImport::Client::DEFAULT_PER_PAGE
+
       Client.new(
         token_to_use,
         host: host.presence || self.formatted_import_url(project),
-        per_page: self.per_page(project),
+        per_page: pagination_limit,
         parallel: parallel
       )
     end
@@ -32,14 +34,6 @@ module Gitlab
         url.password = nil
         url.path = "/api/v3"
         url.to_s
-      end
-    end
-
-    def self.per_page(project)
-      if project.group.present? && Feature.enabled?(:github_importer_lower_per_page_limit, project.group, type: :ops)
-        Gitlab::GithubImport::Client::LOWER_PER_PAGE
-      else
-        Gitlab::GithubImport::Client::DEFAULT_PER_PAGE
       end
     end
   end

@@ -108,9 +108,7 @@ module API
 
         pages_domain_params = declared(params, include_parent_namespaces: false)
 
-        pages_domain = ::PagesDomains::CreateService
-          .new(user_project, current_user, pages_domain_params)
-          .execute
+        pages_domain = ::Pages::Domains::CreateService.new(user_project, current_user, pages_domain_params).execute
 
         if pages_domain.persisted?
           present pages_domain, with: Entities::PagesDomain
@@ -140,12 +138,31 @@ module API
           pages_domain_params.delete(:user_provided_key)
         end
 
-        service = ::PagesDomains::UpdateService.new(user_project, current_user, pages_domain_params)
+        service = ::Pages::Domains::UpdateService.new(user_project, current_user, pages_domain_params)
 
         if service.execute(pages_domain)
           present pages_domain, with: Entities::PagesDomain
         else
           render_validation_error!(pages_domain)
+        end
+      end
+
+      desc 'Verify a pages domain' do
+        success Entities::PagesDomain
+      end
+      params do
+        requires :domain, type: String, desc: 'The domain to verify'
+      end
+      put ":id/pages/domains/:domain/verify", requirements: PAGES_DOMAINS_ENDPOINT_REQUIREMENTS do
+        authorize! :update_pages, user_project
+
+        pages_domain = find_pages_domain!
+        result = ::VerifyPagesDomainService.new(pages_domain).execute
+
+        if result[:status] == :success
+          present pages_domain, with: Entities::PagesDomain
+        else
+          render_api_error!(result[:message], result[:http_status])
         end
       end
 
@@ -156,9 +173,7 @@ module API
       delete ":id/pages/domains/:domain", requirements: PAGES_DOMAINS_ENDPOINT_REQUIREMENTS do
         authorize! :update_pages, user_project
 
-        ::PagesDomains::DeleteService
-          .new(user_project, current_user)
-          .execute(pages_domain)
+        ::Pages::Domains::DeleteService.new(user_project, current_user).execute(pages_domain)
 
         no_content!
       end

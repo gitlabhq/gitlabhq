@@ -3,13 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe PersonalAccessToken, feature_category: :system_access do
-  subject { described_class }
+  include ::TokenAuthenticatableMatchers
 
   describe 'default values' do
     subject(:personal_access_token) { described_class.new }
 
     it { expect(personal_access_token.organization_id).to eq(Organizations::Organization::DEFAULT_ORGANIZATION_ID) }
     it { expect(personal_access_token.organization).to eq(Organizations::Organization.default_organization) }
+    it { expect(personal_access_token.description).to be_nil }
   end
 
   describe '.build' do
@@ -322,6 +323,13 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
       it "rejects creating a token with unavailable scopes" do
         personal_access_token.scopes = [:openid, :api]
+
+        expect(personal_access_token).not_to be_valid
+        expect(personal_access_token.errors[:scopes].first).to eq "can only contain available scopes"
+      end
+
+      it "rejects creating a token with dynamic scopes" do
+        personal_access_token.scopes = [:"user:123"]
 
         expect(personal_access_token).not_to be_valid
         expect(personal_access_token.errors[:scopes].first).to eq "can only contain available scopes"
@@ -653,25 +661,82 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
   end
 
-  describe 'token format' do
-    let(:personal_access_token) { described_class.new }
+  it_behaves_like 'TokenAuthenticatable' do
+    let(:token_field) { :token }
+  end
 
-    it 'generates a token' do
-      expect { personal_access_token.ensure_token }
-        .to change { personal_access_token.token }.from(nil).to(a_string_starting_with(described_class.token_prefix))
+  describe '#token' do
+    let(:random_bytes) { 'a' * TokenAuthenticatableStrategies::RoutableTokenGenerator::RANDOM_BYTES_LENGTH }
+    let(:devise_token) { 'devise-token' }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:organization) { create(:organization) }
+    let(:token_digest) { nil }
+    let(:token_owner_record) do
+      create(:personal_access_token,
+        organization: organization,
+        user: user,
+        scopes: [:api],
+        token_digest: token_digest)
     end
 
-    context 'when there is an existing token' do
-      let(:token) { 'an_existing_secret_token' }
+    subject(:token) { token_owner_record.token }
 
+    before do
+      allow(TokenAuthenticatableStrategies::RoutableTokenGenerator)
+        .to receive(:random_bytes).with(TokenAuthenticatableStrategies::RoutableTokenGenerator::RANDOM_BYTES_LENGTH)
+        .and_return(random_bytes)
+      allow(Devise).to receive(:friendly_token).and_return(devise_token)
+      allow(Settings).to receive(:cell).and_return({ id: 1 })
+    end
+
+    context 'when :routable_pat feature flag is disabled' do
       before do
-        personal_access_token.set_token(token)
+        stub_feature_flags(routable_pat: false)
       end
 
-      it 'does not change the existing token' do
-        expect { personal_access_token.ensure_token }
-          .not_to change { personal_access_token.token }.from(token)
+      it_behaves_like 'a digested token' do
+        let(:expected_token) { token }
+        let(:expected_token_payload) { devise_token }
+        let(:expected_token_prefix) { described_class.token_prefix }
+        let(:expected_token_digest) { token_owner_record.token_digest }
       end
+    end
+
+    shared_examples 'a routable token' do
+      context 'when token_digest is not set yet' do
+        it_behaves_like 'a digested routable token' do
+          let(:expected_token) { token }
+          let(:expected_routing_payload) { "c:1\no:#{organization.id.to_s(36)}\nu:#{user.id.to_s(36)}" }
+          let(:expected_random_bytes) { random_bytes }
+          let(:expected_token_prefix) { described_class.token_prefix }
+          let(:expected_token_digest) { token_owner_record.token_digest }
+        end
+      end
+
+      context 'with token_digest already generated' do
+        let(:token_digest) { 's3cr3t' }
+
+        it 'does not change the token' do
+          expect(token).to be_nil
+          expect(token_owner_record.token_digest).to eq(token_digest)
+        end
+      end
+    end
+
+    context 'when :routable_pat feature flag is enabled for the user' do
+      before do
+        stub_feature_flags(routable_pat: token_owner_record.user)
+      end
+
+      it_behaves_like 'a routable token'
+    end
+
+    context 'when :routable_pat feature flag is enabled globally' do
+      before do
+        stub_feature_flags(routable_pat: true)
+      end
+
+      it_behaves_like 'a routable token'
     end
   end
 end

@@ -4,6 +4,8 @@ key_path: object_store.external_diffs.object_store.background_upload
 description: Whether Background Upload for Object Storage is enabled for External
   Diffs
 product_group: cloud_connector
+product_categories:
+- build
 value_type: boolean
 status: broken
 repair_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/382900

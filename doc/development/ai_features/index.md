@@ -8,21 +8,21 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 ## Instructions for setting up GitLab Duo features in the local development environment
 
-### Required: Install AI Gateway
+### Required: Install AI gateway
 
-**Why:** All Duo features route LLM requests through the AI Gateway.
+**Why:** All Duo features route LLM requests through the AI gateway.
 
 **How:**
 Follow [these instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md#install)
-to install the AI Gateway with GDK. We recommend this route for most users.
+to install the AI gateway with GDK. We recommend this route for most users.
 
-You can also install AI Gateway by:
+You can also install AI gateway by:
 
 1. [Cloning the repository directly](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist).
 1. [Running the server locally](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally).
 
 We only recommend this for users who have a specific reason for *not* running
-the AI Gateway through GDK.
+the AI gateway through GDK.
 
 ### Required: Setup Licenses in GitLab-Rails
 
@@ -138,7 +138,7 @@ GitLab Duo is actually working.
 **How:**
 
 After the setup is complete, you can test clients in GitLab-Rails to see if it can
-correctly reach to AI Gateway:
+correctly reach to AI gateway:
 
 1. Run `gdk start`.
 1. Login to Rails console with `gdk rails console`.
@@ -158,9 +158,9 @@ correctly reach to AI Gateway:
 NOTE:
 See [this doc](../cloud_connector/index.md) for registering unit primitives in Cloud Connector.
 
-### Optional: Enable authentication and authorization in AI Gateway
+### Optional: Enable authentication and authorization in AI gateway
 
-**Why:** The AI Gateway has [authentication and authorization](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/auth.md)
+**Why:** The AI gateway has [authentication and authorization](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/auth.md)
 flow to verify if clients have permission to access the features. Auth is
 enforced in any live environments hosted by GitLab infra team. You may want to
 test this flow in your local development environment.
@@ -170,14 +170,14 @@ In development environments (for example: GDK), this process is disabled by defa
 
 To enable authorization checks, set `AIGW_AUTH__BYPASS_EXTERNAL` to `false` in the
 [application setting file](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/application_settings.md)
-(`<GDK-root>/gitlab-ai-gateway/.env`) in AI Gateway.
+(`<GDK-root>/gitlab-ai-gateway/.env`) in AI gateway.
 
 #### Option 1: Use your GitLab instance as a provider
 
 **Why:** this is the simplest method of testing authentication and reflects our setup on GitLab.com.
 
 **How:**
-Assuming that you are running the [AI Gateway with GDK](#required-install-ai-gateway),
+Assuming that you are running the [AI gateway with GDK](#required-install-ai-gateway),
 apply the following configuration to GDK:
 
 ```shell
@@ -186,7 +186,7 @@ apply the following configuration to GDK:
 export GITLAB_SIMULATE_SAAS=1
 ```
 
-Update the [application settings file](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/application_settings.md) in AI Gateway:
+Update the [application settings file](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/application_settings.md) in AI gateway:
 
 ```shell
 # <GDK-root>/gitlab-ai-gateway/.env
@@ -241,17 +241,17 @@ Apply the following feature flags to any AI feature work:
 
 See the [feature flag tracker epic](https://gitlab.com/groups/gitlab-org/-/epics/10524) for the list of all feature flags and how to use them.
 
-### Push feature flags to AI Gateway
+### Push feature flags to AI gateway
 
-You can push [feature flags](../feature_flags/index.md) to AI Gateway. This is helpful to gradually rollout user-facing changes even if the feature resides in AI Gateway.
+You can push [feature flags](../feature_flags/index.md) to AI gateway. This is helpful to gradually rollout user-facing changes even if the feature resides in AI gateway.
 See the following example:
 
 ```ruby
-# Push a feature flag state to AI Gateway.
+# Push a feature flag state to AI gateway.
 Gitlab::AiGateway.push_feature_flag(:new_prompt_template, user)
 ```
 
-Later, you can use the feature flag state in AI Gateway in the following way:
+Later, you can use the feature flag state in AI gateway in the following way:
 
 ```python
 from ai_gateway.feature_flags import is_feature_enabled
@@ -263,17 +263,17 @@ else:
   # Build a prompt from the old prompt template
 ```
 
-**IMPORTANT:** At the [cleaning up](../feature_flags/controls.md#cleaning-up) step, remove the feature flag in AI Gateway repository **before** removing the flag in GitLab-Rails repository.
-If you clean up the flag in GitLab-Rails repository at first, the feature flag in AI Gateway will be disabled immediately as it's the default state, hence you might encounter a surprising behavior.
+**IMPORTANT:** At the [cleaning up](../feature_flags/controls.md#cleaning-up) step, remove the feature flag in AI gateway repository **before** removing the flag in GitLab-Rails repository.
+If you clean up the flag in GitLab-Rails repository at first, the feature flag in AI gateway will be disabled immediately as it's the default state, hence you might encounter a surprising behavior.
 
-**IMPORTANT:** Cleaning up the feature flag in AI Gateway will immediately distribute the change to all GitLab instances, including GitLab.com, Self-managed GitLab, and Dedicated.
+**IMPORTANT:** Cleaning up the feature flag in AI gateway will immediately distribute the change to all GitLab instances, including GitLab.com, Self-managed GitLab, and Dedicated.
 
 **Technical details:**
 
 - When `push_feature_flag` runs on an enabled feature flag, the name of the flag is cached in the current context,
-  which is later attached to the `x-gitlab-enabled-feature-flags` HTTP header when `GitLab-Sidekiq/Rails` sends requests to AI Gateway.
+  which is later attached to the `x-gitlab-enabled-feature-flags` HTTP header when `GitLab-Sidekiq/Rails` sends requests to AI gateway.
 - When frontend clients (for example, VS Code Extension or LSP) request a [User JWT](../cloud_connector/architecture.md#ai-gateway) (UJWT)
-  for direct AI Gateway communication, GitLab returns:
+  for direct AI gateway communication, GitLab returns:
 
   - Public headers (including `x-gitlab-enabled-feature-flags`).
   - The generated UJWT (1-hour expiration).
@@ -429,9 +429,9 @@ services:
 
 For more information, see [Cloud Connector: Configuration](../cloud_connector/configuration.md).
 
-### 2. Create a prompt definition in the AI Gateway
+### 2. Create a prompt definition in the AI gateway
 
-In [the AI Gateway project](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), create a
+In [the AI gateway project](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), create a
 new prompt definition under `ai_gateway/prompts/definitions`. Create a new subfolder corresponding to the name of your
 AI action, and a new YAML file for your prompt. Specify the model and provider you wish to use, and the prompts that
 will be fed to the model. You can specify inputs to be plugged into the prompt by using `{}`.
@@ -482,7 +482,7 @@ model:
 ### 3. Create a Completion class
 
 1. Create a new completion under `ee/lib/gitlab/llm/ai_gateway/completions/` and inherit it from the `Base`
-AI Gateway Completion.
+AI gateway Completion.
 
 ```ruby
 # ee/lib/gitlab/llm/ai_gateway/completions/rewrite_description.rb
@@ -564,11 +564,11 @@ Here are the rules of thumbs:
 
 An [example](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/713) of this case is that we can apply Claude specific CoT optimization to the other models such as Mixtral as long as it doesn't cause a quality degredation.
 
-## How to migrate an existing action to the AI Gateway
+## How to migrate an existing action to the AI gateway
 
 AI actions were initially implemented inside the GitLab monolith. As part of our
-[AI Gateway as the Sole Access Point for Monolith to Access Models Epic](https://gitlab.com/groups/gitlab-org/-/epics/13024)
-we're migrating prompts, model selection and model parameters into the AI Gateway. This will increase the speed at which
+[AI gateway as the Sole Access Point for Monolith to Access Models Epic](https://gitlab.com/groups/gitlab-org/-/epics/13024)
+we're migrating prompts, model selection and model parameters into the AI gateway. This will increase the speed at which
 we can deliver improvements to self-managed users, by decoupling prompt and model changes from monolith releases. To
 migrate an existing action:
 
@@ -602,7 +602,7 @@ the `service_class` with the new `AiGateway::Completions` class to make it the p
 For a complete example of the changes needed to migrate an AI action, see the following MRs:
 
 - [Changes to the GitLab Rails monolith](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152429)
-- [Changes to the AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/921)
+- [Changes to the AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/921)
 
 ### Authorization in GitLab-Rails
 
@@ -620,7 +620,7 @@ What needs to be included in the code:
    - [Example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/issue_policy.rb#L25-25) of policy connected to the particular resource.
 
 NOTE:
-For more information, see [the GitLab AI Gateway documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md#optional-enable-authentication-and-authorization-in-ai-gateway) about authentication and authorization in AI Gateway.
+For more information, see [the GitLab AI gateway documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md#optional-enable-authentication-and-authorization-in-ai-gateway) about authentication and authorization in AI gateway.
 
 ### Pairing requests with responses
 
@@ -758,8 +758,8 @@ Gitlab::Llm::Anthropic::Client.new(user, unit_primitive: 'your_feature')
 
 - Error ratio and response latency apdex for each Ai action can be found on [Sidekiq Service dashboard](https://dashboards.gitlab.net/d/sidekiq-main/sidekiq-overview?orgId=1) under **SLI Detail: `llm_completion`**.
 - Spent tokens, usage of each Ai feature and other statistics can be found on [periscope dashboard](https://app.periscopedata.com/app/gitlab/1137231/Ai-Features).
-- [AI Gateway logs](https://log.gprd.gitlab.net/app/r/s/zKEel).
-- [AI Gateway metrics](https://dashboards.gitlab.net/d/ai-gateway-main/ai-gateway3a-overview?orgId=1).
+- [AI gateway logs](https://log.gprd.gitlab.net/app/r/s/zKEel).
+- [AI gateway metrics](https://dashboards.gitlab.net/d/ai-gateway-main/ai-gateway3a-overview?orgId=1).
 - [Feature usage dashboard via proxy](https://log.gprd.gitlab.net/app/r/s/egybF).
 
 ## Logs
@@ -883,7 +883,7 @@ Before starting a model migration:
 
 - Verify the new model is supported in our current AI-Gateway API specification by:
   
-  - Check model definitions in AI Gateway:
+  - Check model definitions in AI gateway:
     - For LiteLLM models: `ai_gateway/models/v2/container.py`
     - For Anthropic models: `ai_gateway/models/anthropic.py`
     - For new providers: Create a new model definition file in `ai_gateway/models/`
@@ -893,11 +893,11 @@ Before starting a model migration:
     - Timeout settings
     - Completion type (text or chat)
     - Max token limits
-  - Testing the model locally in AI Gateway:
-    - Set up the [AI Gateway development environment](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally)
+  - Testing the model locally in AI gateway:
+    - Set up the [AI gateway development environment](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally)
     - Configure the necessary API keys in your `.env` file
     - Test the model using the Swagger UI at `http://localhost:5052/docs`
-  - If the model isn't supported, create an issue in the [AI Gateway repository](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist) to add support
+  - If the model isn't supported, create an issue in the [AI gateway repository](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist) to add support
   - Review the provider's API documentation for any breaking changes:
     - [Anthropic API Documentation](https://docs.anthropic.com/claude/reference/versions)
     - [Google Vertex AI Documentation](https://cloud.google.com/vertex-ai/docs/reference)
@@ -915,8 +915,8 @@ Documentation of model changes is crucial for tracking the impact of migrations 
 - **Optional** - Investigate if the new model is supported within our current AI-Gateway API specification. This step can usually be skipped. However, sometimes to support a newer model, we may need to accommodate a new API format.
 - Add the new model to our [available models list](https://gitlab.com/gitlab-org/gitlab/-/blob/32fa9eaa3c8589ee7f448ae683710ec7bd82f36c/ee/lib/gitlab/llm/concerns/available_models.rb#L5-10).
 - Change the default model in our [AI-Gateway client](https://gitlab.com/gitlab-org/gitlab/-/blob/41361629b302f2c55e35701d2c0a73cff32f9013/ee/lib/gitlab/llm/chain/requests/ai_gateway.rb#L63-67). Please place the change around a feature flag. We may need to quickly rollback the change.
-- Update the model definitions in AI Gateway following the [prompt definition guidelines](#2-create-a-prompt-definition-in-the-ai-gateway)
-Note: While we're moving toward AI Gateway holding the prompts, feature flag implementation still requires a GitLab release.
+- Update the model definitions in AI gateway following the [prompt definition guidelines](#2-create-a-prompt-definition-in-the-ai-gateway)
+Note: While we're moving toward AI gateway holding the prompts, feature flag implementation still requires a GitLab release.
 
 #### Migration Tasks for Vertex Models
 
@@ -929,14 +929,14 @@ Note: While we're moving toward AI Gateway holding the prompts, feature flag imp
 For implementing feature flags, refer to our [Feature Flags Development Guidelines](../feature_flags/index.md).
 
 NOTE:
-Feature flag implementations will affect self-hosted cloud-connected customers. These customers won't receive the model upgrade until the feature flag is removed from the AI Gateway codebase, as they won't have access to the new GitLab release.
+Feature flag implementations will affect self-hosted cloud-connected customers. These customers won't receive the model upgrade until the feature flag is removed from the AI gateway codebase, as they won't have access to the new GitLab release.
 
 #### Model Selection Implementation
 
 The model selection logic should be implemented in:
 
-- AI Gateway client (`ee/lib/gitlab/llm/chain/requests/ai_gateway.rb`)
-- Model definitions in AI Gateway
+- AI gateway client (`ee/lib/gitlab/llm/chain/requests/ai_gateway.rb`)
+- Model definitions in AI gateway
 - Any custom implementations in specific features that override the default model
 
 #### Rollout Strategy
@@ -944,8 +944,8 @@ The model selection logic should be implemented in:
 - Enable the feature flag for a small percentage of users/groups initially
 - Monitor performance metrics and error rates using:
   - [Sidekiq Service dashboard](https://dashboards.gitlab.net/d/sidekiq-main/sidekiq-overview) for error ratios and response latency
-  - [AI Gateway metrics dashboard](https://dashboards.gitlab.net/d/ai-gateway-main/ai-gateway3a-overview?orgId=1) for gateway-specific metrics
-  - [AI Gateway logs](https://log.gprd.gitlab.net/app/r/s/zKEel) for detailed error investigation
+  - [AI gateway metrics dashboard](https://dashboards.gitlab.net/d/ai-gateway-main/ai-gateway3a-overview?orgId=1) for gateway-specific metrics
+  - [AI gateway logs](https://log.gprd.gitlab.net/app/r/s/zKEel) for detailed error investigation
   - [Feature usage dashboard](https://log.gprd.gitlab.net/app/r/s/egybF) for adoption metrics
   - [Periscope dashboard](https://app.periscopedata.com/app/gitlab/1137231/Ai-Features) for token usage and feature statistics
 - Gradually increase the rollout percentage
@@ -983,8 +983,35 @@ The `ai-model-validation` team created the following library to evaluate the per
 
 For evaluation in merge request pipelines, we use:
 
-- One click [Duo Chat evaluation](https://gitlab.com/gitlab-org/gitlab/-/issues/497305)
+- One click [Duo Chat evaluation](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner)
 - Automated evaluation in [merge request pipelines](https://gitlab.com/gitlab-org/gitlab/-/issues/495410)
+
+#### Seed project and group resources for testing and evaluation
+
+To seed project and group resources for testing and evaluation, run the following command:
+
+```shell
+FILTER=gitlab_duo bundle exec rake db:seed_fu
+```
+
+This command executes the [development seed file](../development_seed_files.md) for GitLab Duo, which creates `gitlab-duo` group in your GDK.
+
+This command is responsible for seeding group and project resources for testing GitLab Duo features.
+It's mainly used by the following scenarios:
+
+- Developers or UX designers have a local GDK but don't know how to set up the group and project resources to test a feature in UI.
+- Evaluators (e.g. CEF) have input dataset that refers to a group or project resource e.g. (`Summarize issue #123` requires a corresponding issue record in PosstgreSQL)
+
+Currently, the input dataset of evaluators and this development seed file are managed seaprately.
+To ensure that the integration keeps working, this seeder has to create the **same** group/project resources every time.
+For example, ID and IID of the inserted PostgreSQL records must be the same every time we run this seeding process.
+
+These fixtures are depended by the following projects:
+
+- [Central Evaluation Framework](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library)
+- [Evaluation Runner](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner)
+
+See [this architecture doc](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner/-/blob/main/docs/architecture.md) for more information.
 
 #### Local Development
 
@@ -999,6 +1026,6 @@ Monitor the following during migration:
 - **Performance Metrics:**
   - Error ratio and response latency apdex for each AI action on [Sidekiq Service dashboard](https://dashboards.gitlab.net/d/sidekiq-main/sidekiq-overview)
   - Spent tokens, usage of each AI feature and other statistics on [periscope dashboard](https://app.periscopedata.com/app/gitlab/1137231/Ai-Features)
-  - [AI Gateway logs](https://log.gprd.gitlab.net/app/r/s/zKEel)
-  - [AI Gateway metrics](https://dashboards.gitlab.net/d/ai-gateway-main/ai-gateway3a-overview?orgId=1)
+  - [AI gateway logs](https://log.gprd.gitlab.net/app/r/s/zKEel)
+  - [AI gateway metrics](https://dashboards.gitlab.net/d/ai-gateway-main/ai-gateway3a-overview?orgId=1)
   - [Feature usage dashboard via proxy](https://log.gprd.gitlab.net/app/r/s/egybF)

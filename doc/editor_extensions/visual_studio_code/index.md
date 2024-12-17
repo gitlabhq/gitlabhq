@@ -12,23 +12,26 @@ for Visual Studio Code integrates GitLab Duo and other GitLab features directly 
 GitLab Workflow panel to the VS Code sidebar. You can view your issues, merge requests, and pipelines,
 and extend your view with [custom queries](custom_queries.md).
 
+[Install and configure the extension](setup.md).
+
+## Features
+
 This extension brings the GitLab features you use every day directly into your VS Code environment:
 
-- [View issues](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#browse-issues-review-mrs) and merge requests.
-- Run [common commands](settings.md#command-palette-commands) from the Visual Studio Code Command Palette.
-- Create and [review](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#merge-request-reviews)
-  merge requests.
+- [View issues and merge requests](#view-issues-and-merge-requests).
+- [Run common commands](settings.md#command-palette-commands) from the Visual Studio Code Command Palette.
+- Create and [review](#review-a-merge-request) merge requests.
 - [Test your GitLab CI/CD configuration](cicd.md#test-gitlab-cicd-configuration).
-- View [pipeline status](cicd.md) and [job outputs](cicd.md#view-cicd-job-output).
+- [View pipeline status](cicd.md) and [job outputs](cicd.md#view-cicd-job-output).
 - [Create](#create-a-snippet) and manage snippets.
 - [Browse repositories](remote_urls.md#browse-a-repository-in-read-only-mode) without cloning them.
-- [View security findings](https://marketplace.visualstudio.com/items?itemName=gitlab.gitlab-workflow#security-findings).
+- [View security findings](#view-security-findings).
 
 The GitLab Workflow extension also streamlines your VS Code workflow with AI-assisted features:
 
-- [**GitLab Duo Chat**](../../user/gitlab_duo_chat/index.md#use-gitlab-duo-chat-in-vs-code):
+- [GitLab Duo Chat](../../user/gitlab_duo_chat/index.md#use-gitlab-duo-chat-in-vs-code):
   Interact with an AI assistant directly in VS Code.
-- [**GitLab Duo Code Suggestions**](../../user/project/repository/code_suggestions/index.md):
+- [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/index.md#use-code-suggestions):
   Suggest completions to your current line of code, or write natural-language code comments to get
   more substantive suggestions.
 
@@ -38,47 +41,6 @@ When you view a GitLab project in VS Code, the extension shows you information a
 - A link to the merge request for this branch.
 - If the merge request includes an [issue closing pattern](../../user/project/issues/managing_issues.md#closing-issues-automatically),
   a link to the issue.
-
-## Set up the GitLab Workflow extension
-
-This extension requires you to create a GitLab personal access token, and assign it to the extension:
-
-1. [Install the extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
-   from the Visual Studio Marketplace and enable it. If you use an unofficial version of VS Code, install the
-   extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow).
-1. To sign in to your GitLab instance, run the command **GitLab: Authenticate** in VS Code.
-   1. Open the Command Palette:
-      - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-      - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   1. In the Command Palette, search for **GitLab: Authenticate** and press <kbd>Enter</kbd>.
-   1. Select your GitLab instance URL from the offered options, or enter one manually.
-      - When manually adding an instance to **URL to GitLab instance**, paste the full URL to your
-        GitLab instance, including the `http://` or `https://`. Press <kbd>Enter</kbd> to confirm.
-   1. For `GitLab.com`, you can use the OAuth authentication method.
-   1. If you don't use OAuth, use a personal access token to sign in.
-      - If you have an existing personal access token with `api` scope, select **Enter an existing token** to enter it.
-      - If you don't, select **Create a token first**, and the extension opens the token settings page for you.
-        If this method fails, follow the instructions to [create a personal access token](../../user/profile/personal_access_tokens.md#create-a-personal-access-token).
-   1. Copy the token. _For security reasons, this value is never displayed again, so you must copy this value now._
-   1. Paste in your GitLab personal access token and press <kbd>Enter</kbd>. The token is not displayed, nor is it accessible to others.
-
-The extension matches your Git repository remote URL with the GitLab instance URL you specified
-for your token. If you have multiple accounts or projects, you can choose the one you want to use.
-For more details, see [Account management](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#account-management).
-
-The extension shows information in the VS Code status bar if both:
-
-- Your project has a pipeline for the last commit.
-- Your current branch is associated with a merge request.
-
-## Configure extension settings
-
-After you install GitLab Workflow, go to **Settings > Extensions > GitLab Workflow** in VS Code to configure its settings:
-
-- [GitLab Duo Chat](../../user/gitlab_duo_chat/index.md#use-gitlab-duo-chat-in-vs-code).
-- [Features to display or hide](https://gitlab.com/gitlab-org/gitlab-vscode-extension#extension-settings).
-- [Self-signed certificate](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#self-signed-certificates) information.
-- [Code Suggestions](../../user/project/repository/code_suggestions/index.md).
 
 ### Customize keyboard shortcuts
 
@@ -90,6 +52,41 @@ or **Accept Next Line Of Inline Suggestion**:
 1. Assign your preferred shortcuts to **Accept Inline Suggestion**, **Accept Next Word Of Inline Suggestion**,
    or **Accept Next Line Of Inline Suggestion**.
 1. Press <kbd>Enter</kbd> to save your changes.
+
+## Switch GitLab accounts in VS Code
+
+If you use multiple GitLab accounts (such as personal and work), the extension uses your `git remote` URL
+to determine which account to use. In some cases, the extension can't determine which account to use, and
+must ask you to select which project and account to use. This can happen:
+
+- If you have a single remote URL `git@gitlab.com:gitlab-org/gitlab-vscode-extension.git`, but two accounts for
+  `gitlab.com` (like `@sidney` and `@sidney_work`).
+- If you have a single GitLab account (for example `@sidney`), but you have multiple remotes, like:
+  - `origin`: `git@gitlab.com:gitlab-org/gitlab-vscode-extension.git`
+  - `personal-fork`: `git@gitlab.com:myusername/gitlab-vscode-extension.git`
+
+In these cases, the extension adds a **(multiple projects)** label to show you must choose an account.
+To select an account:
+
+1. On the vertical menu bar, select **GitLab Workflow** (**{tanuki}**) to display the extension sidebar.
+1. Expand **Issues and Merge Requests**.
+1. Select the line containing **(multiple projects)** to expand the list of accounts.
+1. Select the option you want to use:
+   ![select project-account combination](../img/select-project-account_v17_7.png)
+
+The **Issues and Merge requests** list updates with your information.
+
+### Change your selection
+
+To change your account selection for a project:
+
+1. On the vertical menu bar, select **GitLab Workflow** (**{tanuki}**) to display the extension sidebar.
+1. Expand **Issues and Merge Requests** to show the project list.
+1. Right-click the project's name, and select  **Clear selected project**.
+
+## Use slash commands
+
+Issues and merge requests support [GitLab slash commands](../../user/project/integrations/gitlab_slack_application.md#slash-commands) to perform actions directly in VS Code.
 
 ## Create a snippet
 
@@ -163,18 +160,62 @@ To view issues and merge requests for a specific project:
    - All project merge requests
    - Your [custom queries](custom_queries.md)
 
-1. Select an issue or merge request to open it in a new VS Code tab.
-1. Optional. If you select a merge request, its sidebar entry expands to show all files changed
-   in the merge request. Deleted files are marked in red. For example:
+Select an issue or merge request to open it in a new VS Code tab.
+
+## Review a merge request
+
+Use this extension to review, comment on, and approve merge requests without leaving VS Code:
+
+1. While viewing [issues and merge requests](#view-issues-and-merge-requests) in VS Code, select the
+   merge request you want to review. Its sidebar entry expands with more information.
+1. Under the merge request's number and title, select **Description** to read more about the merge request.
+1. To review the proposed changes to a file, select the file from the list to show it in a VS Code tab.
+   Diff comments are shown inline in the tab. In the list, deleted files are marked in red:
 
    ![An alphabetical list of files changed in this merge request, including the type of changes.](../img/vscode_view_changed_file_v17_6.png)
 
-   1. Select a file to view its diff in a VS Code tab.
+Use the diff to:
+
+- Review and create discussions.
+- Resolve and unresolve these discussions.
+- Delete and edit individual comments.
+
+### Compare with default branch
+
+<!-- vale gitlab_base.InclusiveLanguage = NO -->
+
+To compare your branch with your project's default branch, without creating a merge request:
+
+1. Open the Command Palette:
+   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In the Command Palette, search for **GitLab: Compare current branch with master** and press <kbd>Enter</kbd>.
+
+The extension opens a new browser tab. It shows a diff between the most recent commit on your branch, and
+the most recent commit on your project's default branch.
+
+<!-- vale gitlab_base.InclusiveLanguage = YES -->
+
+### Open current file in GitLab UI
+
+To open a file from your current GitLab project in the GitLab UI, with specific lines highlighted:
+
+1. Open your desired file in VS Code.
+1. Select the lines you want to highlight.
+1. Open the Command Palette:
+   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In the Command Palette, search for **GitLab: Open active file on GitLab** and press <kbd>Enter</kbd>.
 
 ## View security findings
 
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 Prerequisites:
 
+- You're using GitLab Workflow version 3.74.0 or later.
 - Your project includes [Security Risk Management](https://about.gitlab.com/features/?stage=secure) features, such as
   Static Application Security Testing (SAST), Dynamic Application Security Testing (DAST),
   Container Scanning, or Dependency Scanning.
@@ -182,7 +223,7 @@ Prerequisites:
 
 To view security findings:
 
-1. On the left vertical menu bar, select **GitLab Workflow** (**{tanuki}**) to display the extension sidebar.
+1. On the vertical menu bar, select **GitLab Workflow** (**{tanuki}**) to display the extension sidebar.
 1. On the sidebar, expand **Security scanning**.
 1. Select either **New findings** or **Fixed findings**.
 1. Select a desired severity level.
@@ -199,7 +240,7 @@ Prerequisites:
 
 - You're a member of a GitLab project.
 - You've installed the [GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
-- You've signed in to your GitLab instance, as described in [Setup](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/tree/main/#setup).
+- You've signed in to your GitLab instance, as described in [Authenticate with GitLab](setup.md#authenticate-with-gitlab).
 
 To search the titles and description fields in your project:
 

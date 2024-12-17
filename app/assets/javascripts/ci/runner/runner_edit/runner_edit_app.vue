@@ -50,9 +50,6 @@ export default {
       return this.$apollo.queries.runner.loading;
     },
   },
-  errorCaptured(error) {
-    this.reportToSentry(error);
-  },
   methods: {
     reportToSentry(error) {
       captureException({ error, component: this.$options.name });

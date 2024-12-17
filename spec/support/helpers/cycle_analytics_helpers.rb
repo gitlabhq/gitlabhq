@@ -48,18 +48,18 @@ module CycleAnalyticsHelpers
     end
   end
 
-  def click_add_stage_button(on_settings_page = false)
-    click_button(on_settings_page ? s_('CreateValueStreamForm|Add a stage') : s_('CreateValueStreamForm|Add another stage'))
+  def click_add_stage_button
+    click_button(s_('CreateValueStreamForm|Add a stage'))
   end
 
-  def add_custom_stage_to_form(on_settings_page)
-    click_add_stage_button(on_settings_page)
+  def add_custom_stage_to_form
+    click_add_stage_button
 
     fill_in_custom_stage_fields
   end
 
-  def add_custom_label_stage_to_form(on_settings_page)
-    click_add_stage_button(on_settings_page)
+  def add_custom_label_stage_to_form
+    click_add_stage_button
 
     fill_in_custom_label_stage_fields
   end
@@ -75,11 +75,11 @@ module CycleAnalyticsHelpers
     click_button(_('Save value stream'))
   end
 
-  def create_custom_value_stream(custom_value_stream_name, on_settings_page)
+  def create_custom_value_stream(custom_value_stream_name)
     toggle_value_stream_dropdown
     find_by_testid('create-value-stream-option').click
 
-    add_custom_stage_to_form(on_settings_page)
+    add_custom_stage_to_form
     save_value_stream(custom_value_stream_name)
   end
 
@@ -250,5 +250,13 @@ module CycleAnalyticsHelpers
 
     # this is needed for the DORA API so we have aggregated data
     ::Dora::DailyMetrics::RefreshWorker.new.perform(environment.id, Time.current.to_date.to_s) if Gitlab.ee?
+  end
+
+  def vsa_metrics_values
+    page.find("[data-testid='vsa-metrics']").all("[data-testid='displayValue']").collect(&:text)
+  end
+
+  def vsa_metrics_titles
+    page.find("[data-testid='vsa-metrics']").all("[data-testid='title-text']").collect(&:text)
   end
 end

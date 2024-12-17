@@ -15,7 +15,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecut
         allow(fake_duplicate_job).to receive(:latest_wal_locations).and_return( {} )
         allow(fake_duplicate_job).to receive(:scheduled?) { false }
         allow(fake_duplicate_job).to receive(:options) { {} }
-        allow(fake_duplicate_job).to receive(:should_reschedule?) { false }
         allow(fake_duplicate_job).to receive(:idempotency_key).and_return('abc123')
         allow(fake_duplicate_job).to receive(:reschedulable?).and_return(false)
       end

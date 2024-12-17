@@ -664,7 +664,7 @@ module Gitlab
       end
 
       def find_changed_paths_request(objects, merge_commit_diff_mode, find_renames)
-        diff_mode = MERGE_COMMIT_DIFF_MODES[merge_commit_diff_mode] if Feature.enabled?(:merge_commit_diff_modes)
+        diff_mode = MERGE_COMMIT_DIFF_MODES[merge_commit_diff_mode]
 
         requests = objects.filter_map do |object|
           case object

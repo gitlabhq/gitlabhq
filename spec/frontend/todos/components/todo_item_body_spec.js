@@ -18,6 +18,7 @@ import {
   TODO_ACTION_TYPE_SSH_KEY_EXPIRED,
   TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON,
 } from '~/todos/constants';
+import { SAML_HIDDEN_TODO } from '../mock_data';
 
 describe('TodoItemBody', () => {
   let wrapper;
@@ -39,6 +40,7 @@ describe('TodoItemBody', () => {
           },
           ...todoExtras,
         },
+        isHiddenBySaml: false,
         ...otherProps,
       },
     });
@@ -81,6 +83,20 @@ describe('TodoItemBody', () => {
       expect(wrapper.text().includes('John Doe')).toBe(showsAuthor);
     });
     // FIXME: The TODO_ACTION_TYPE_OKR_CHECKIN_REQUESTED action raises an error. Seems to be broken.
+  });
+
+  describe('when todo is hidden by SAML', () => {
+    it('hides the author as "Someone" with a link to the todo', () => {
+      createComponent({}, { todo: SAML_HIDDEN_TODO, isHiddenBySaml: true });
+      const authorLink = wrapper.findComponent(GlLink);
+      expect(authorLink.text()).toBe('Someone');
+      expect(authorLink.attributes('href')).toBe(SAML_HIDDEN_TODO.targetUrl);
+
+      expect(wrapper.findComponent(GlAvatarLink).attributes('href')).toBe(
+        SAML_HIDDEN_TODO.targetUrl,
+      );
+      expect(wrapper.findComponent(GlAvatar).props('src')).toBe(gon.default_avatar_url);
+    });
   });
 
   describe('when todo has a note', () => {

@@ -213,7 +213,7 @@ export default {
             class="gl-whitespace-nowrap gl-font-bold"
             data-testid="item-title"
           ></span>
-          <span class="gl-text-sm gl-text-gray-700" data-testid="item-namespace">
+          <span class="gl-text-sm gl-text-subtle" data-testid="item-namespace">
             {{ truncatedNamespace(item) }}</span
           >
         </div>

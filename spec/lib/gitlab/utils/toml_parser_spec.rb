@@ -37,5 +37,34 @@ RSpec.describe Gitlab::Utils::TomlParser, feature_category: :source_code_managem
         expect { result }.to raise_error(Gitlab::Utils::TomlParser::ParseError, 'timeout while parsing TOML')
       end
     end
+
+    context 'with error raised by TomlRB' do
+      context 'with TomlRB::ValueOverwriteError' do
+        let(:content) do
+          <<~TOML
+            rust.unused_must_use = "deny"
+            rust.rust_2018_idioms = { level = "deny", priority = -1 }
+          TOML
+        end
+
+        it 'raises a ParserError with the error message' do
+          error_message = 'error parsing TOML: Key "rust" is defined more than once'
+          expect { result }.to raise_error(Gitlab::Utils::TomlParser::ParseError, error_message)
+        end
+      end
+
+      context 'with unexpected TomlRB errors' do
+        let(:future_error) { Class.new(TomlRB::Error) }
+
+        before do
+          allow(TomlRB).to receive(:parse).and_raise(future_error.new("Unexpected error"))
+        end
+
+        it 'raises a ParserError with the error message' do
+          error_message = 'error parsing TOML: Unexpected error'
+          expect { result }.to raise_error(Gitlab::Utils::TomlParser::ParseError, error_message)
+        end
+      end
+    end
   end
 end

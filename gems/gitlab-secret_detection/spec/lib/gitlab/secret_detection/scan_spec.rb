@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detection do
   subject(:scan) { described_class.new }
 
-  def new_blob(id:, data:)
-    Struct.new(:id, :data).new(id, data)
+  def new_payload(id:, data:, offset:)
+    { id:, data:, offset: }
   end
 
   let(:exclusion) do
@@ -70,10 +70,10 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
       allow(scan).to receive(:parse_ruleset).and_return(ruleset)
     end
 
-    context 'when the blob does not contain a secret' do
-      let(:blobs) do
+    context 'when the payload does not contain a secret' do
+      let(:payloads) do
         [
-          new_blob(id: 1234, data: "no secrets")
+          new_payload(id: 1234, data: "no secrets", offset: 1)
         ]
       end
 
@@ -84,37 +84,37 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
           empty_applied_exclusions
         )
 
-        expect(scan.secrets_scan(blobs)).to eq(expected_response)
+        expect(scan.secrets_scan(payloads)).to eq(expected_response)
       end
 
-      it "attempts to keyword match returning no blobs for further scan" do
+      it "attempts to keyword match returning no payloads for further scan" do
         expect(scan).to receive(:filter_by_keywords)
-          .with(blobs)
+          .with(payloads)
           .and_return([])
 
-        scan.secrets_scan(blobs)
+        scan.secrets_scan(payloads)
       end
 
       it "does not attempt to regex match" do
         expect(scan).not_to receive(:match_rules_bulk)
 
-        scan.secrets_scan(blobs)
+        scan.secrets_scan(payloads)
       end
     end
 
-    context "when multiple blobs contains secrets" do
-      let(:blobs) do
+    context "when multiple payloads contains secrets" do
+      let(:payloads) do
         [
-          new_blob(id: 111, data: "glpat-12312312312312312312"), # gitleaks:allow
-          new_blob(id: 222, data: "\n\nglptt-1231231231231231231212312312312312312312"), # gitleaks:allow
-          new_blob(id: 333, data: "data with no secret"),
-          new_blob(id: 444,
-            data: "GR134894112312312312312312312\nglft-12312312312312312312"), # gitleaks:allow
-          new_blob(id: 555, data: "data with no secret"),
-          new_blob(id: 666, data: "data with no secret"),
-          new_blob(id: 777, data: "\nglptt-1231231231231231231212312312312312312312"), # gitleaks:allow
-          new_blob(id: 888,
-            data: "glpat-12312312312312312312;GR134894112312312312312312312") # gitleaks:allow
+          new_payload(id: 111, data: "glpat-12312312312312312312", offset: 1), # gitleaks:allow
+          new_payload(id: 222, data: "\n\nglptt-1231231231231231231212312312312312312312", offset: 1), # gitleaks:allow
+          new_payload(id: 333, data: "data with no secret", offset: 1),
+          new_payload(id: 444,
+            data: "GR134894112312312312312312312\nglft-12312312312312312312", offset: 1), # gitleaks:allow
+          new_payload(id: 555, data: "data with no secret", offset: 1),
+          new_payload(id: 666, data: "data with no secret", offset: 1),
+          new_payload(id: 777, data: "\nglptt-1231231231231231231212312312312312312312", offset: 1), # gitleaks:allow
+          new_payload(id: 888,
+            data: "glpat-12312312312312312312;GR134894112312312312312312312", offset: 1) # gitleaks:allow
         ]
       end
 
@@ -123,49 +123,49 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
           Gitlab::SecretDetection::Status::FOUND,
           [
             Gitlab::SecretDetection::Finding.new(
-              blobs[0].id,
+              payloads[0][:id],
               Gitlab::SecretDetection::Status::FOUND,
               1,
               ruleset['rules'][0]['id'],
               ruleset['rules'][0]['description']
             ),
             Gitlab::SecretDetection::Finding.new(
-              blobs[1].id,
+              payloads[1][:id],
               Gitlab::SecretDetection::Status::FOUND,
               3,
               ruleset['rules'][1]['id'],
               ruleset['rules'][1]['description']
             ),
             Gitlab::SecretDetection::Finding.new(
-              blobs[3].id,
+              payloads[3][:id],
               Gitlab::SecretDetection::Status::FOUND,
               1,
               ruleset['rules'][2]['id'],
               ruleset['rules'][2]['description']
             ),
             Gitlab::SecretDetection::Finding.new(
-              blobs[3].id,
+              payloads[3][:id],
               Gitlab::SecretDetection::Status::FOUND,
               2,
               ruleset['rules'][3]['id'],
               ruleset['rules'][3]['description']
             ),
             Gitlab::SecretDetection::Finding.new(
-              blobs[6].id,
+              payloads[6][:id],
               Gitlab::SecretDetection::Status::FOUND,
               2,
               ruleset['rules'][1]['id'],
               ruleset['rules'][1]['description']
             ),
             Gitlab::SecretDetection::Finding.new(
-              blobs[7].id,
+              payloads[7][:id],
               Gitlab::SecretDetection::Status::FOUND,
               1,
               ruleset['rules'][0]['id'],
               ruleset['rules'][0]['description']
             ),
             Gitlab::SecretDetection::Finding.new(
-              blobs[7].id,
+              payloads[7][:id],
               Gitlab::SecretDetection::Status::FOUND,
               1,
               ruleset['rules'][2]['id'],
@@ -176,18 +176,18 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
         )
       end
 
-      it "attempts to keyword match returning only filtered blobs for further scan" do
-        expected = blobs.filter { |b| b.data != "data with no secret" }
+      it "attempts to keyword match returning only filtered payloads for further scan" do
+        expected = payloads.filter { |b| b[:data] != "data with no secret" }
 
         expect(scan).to receive(:filter_by_keywords)
-                          .with(blobs)
+                          .with(payloads)
                           .and_return(expected)
 
-        scan.secrets_scan(blobs)
+        scan.secrets_scan(payloads)
       end
 
       it "matches multiple rules when running in main process" do
-        expect(scan.secrets_scan(blobs, subprocess: false)).to eq(expected_response)
+        expect(scan.secrets_scan(payloads, subprocess: false)).to eq(expected_response)
       end
 
       context "in subprocess" do
@@ -195,27 +195,38 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
           10_000
         end
 
-        let(:large_blobs) do
+        let(:large_payloads) do
           dummy_data = "\nrandom data" * dummy_lines
           [
-            new_blob(id: 111, data: "glpat-12312312312312312312#{dummy_data}"), # gitleaks:allow
-            new_blob(id: 222, data: "\n\nglptt-1231231231231231231212312312312312312312#{dummy_data}"), # gitleaks:allow
-            new_blob(id: 333, data: "data with no secret#{dummy_data}"),
-            new_blob(id: 444,
-              data: "GR134894112312312312312312312\nglft-12312312312312312312#{dummy_data}"), # gitleaks:allow
-            new_blob(id: 555, data: "data with no secret#{dummy_data}"),
-            new_blob(id: 666, data: "data with no secret#{dummy_data}"),
-            new_blob(id: 777, data: "#{dummy_data}\nglptt-1231231231231231231212312312312312312312") # gitleaks:allow
+            new_payload(id: 111, data: "glpat-12312312312312312312#{dummy_data}", offset: 1), # gitleaks:allow
+            new_payload(
+              id: 222,
+              data: "\n\nglptt-1231231231231231231212312312312312312312#{dummy_data}", # gitleaks:allow
+              offset: 1
+            ),
+            new_payload(id: 333, data: "data with no secret#{dummy_data}", offset: 1),
+            new_payload(
+              id: 444,
+              data: "GR134894112312312312312312312\nglft-12312312312312312312#{dummy_data}", # gitleaks:allow
+              offset: 1
+            ),
+            new_payload(id: 555, data: "data with no secret#{dummy_data}", offset: 1),
+            new_payload(id: 666, data: "data with no secret#{dummy_data}", offset: 1),
+            new_payload(
+              id: 777,
+              data: "#{dummy_data}\nglptt-1231231231231231231212312312312312312312", # gitleaks:allow
+              offset: 1
+            )
           ]
         end
 
         it "matches multiple rules" do
-          expect(scan.secrets_scan(blobs, subprocess: true)).to eq(expected_response)
+          expect(scan.secrets_scan(payloads, subprocess: true)).to eq(expected_response)
         end
 
         it "allocates less memory than when running in main process" do
-          forked_stats = Benchmark::Malloc.new.run { scan.secrets_scan(large_blobs, subprocess: true) }
-          non_forked_stats = Benchmark::Malloc.new.run { scan.secrets_scan(large_blobs, subprocess: false) }
+          forked_stats = Benchmark::Malloc.new.run { scan.secrets_scan(large_payloads, subprocess: true) }
+          non_forked_stats = Benchmark::Malloc.new.run { scan.secrets_scan(large_payloads, subprocess: false) }
 
           max_processes = Gitlab::SecretDetection::Scan::MAX_PROCS_PER_REQUEST
 
@@ -231,30 +242,30 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
     end
 
     context "when configured with time out" do
-      let(:each_blob_timeout_secs) { 0.000_001 } # 1 micro-sec to intentionally timeout large blob
+      let(:each_payload_timeout_secs) { 0.000_001 } # 1 micro-sec to intentionally timeout large payload
 
       let(:large_data) do
         ("large data with a secret glpat-12312312312312312312\n" * 10_000_000).freeze # gitleaks:allow
       end
 
-      let(:blobs) do
+      let(:payloads) do
         [
-          new_blob(id: 111, data: "GR134894112312312312312312312"), # gitleaks:allow
-          new_blob(id: 333, data: "data with no secret"),
-          new_blob(id: 333, data: large_data)
+          new_payload(id: 111, data: "GR134894112312312312312312312", offset: 1), # gitleaks:allow
+          new_payload(id: 333, data: "data with no secret", offset: 1),
+          new_payload(id: 333, data: large_data, offset: 1)
         ]
       end
 
-      let(:all_large_blobs) do
+      let(:all_large_payloads) do
         [
-          new_blob(id: 111, data: large_data),
-          new_blob(id: 222, data: large_data),
-          new_blob(id: 333, data: large_data)
+          new_payload(id: 111, data: large_data, offset: 1),
+          new_payload(id: 222, data: large_data, offset: 1),
+          new_payload(id: 333, data: large_data, offset: 1)
         ]
       end
 
       it "whole secret detection scan operation times out" do
-        scan_timeout_secs = 0.000_001 # 1 micro-sec to intentionally timeout large blob
+        scan_timeout_secs = 0.000_001 # 1 micro-sec to intentionally timeout large payload
 
         expected_response = Gitlab::SecretDetection::Response.new(
           Gitlab::SecretDetection::Status::SCAN_TIMEOUT,
@@ -263,7 +274,7 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
         )
 
         begin
-          response = scan.secrets_scan(blobs, timeout: scan_timeout_secs)
+          response = scan.secrets_scan(payloads, timeout: scan_timeout_secs)
           expect(response).to eq(expected_response)
         rescue ArgumentError
           # When RSpec's main process terminates and attempts to clean up child processes upon completion, it terminates
@@ -279,65 +290,68 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
         end
       end
 
-      it "one of the blobs times out while others continue to get scanned" do
+      it "one of the payloads times out while others continue to get scanned" do
         expected_response = Gitlab::SecretDetection::Response.new(
           Gitlab::SecretDetection::Status::FOUND_WITH_ERRORS,
           [
             Gitlab::SecretDetection::Finding.new(
-              blobs[0].id,
+              payloads[0][:id],
               Gitlab::SecretDetection::Status::FOUND,
               1,
               ruleset['rules'][2]['id'],
               ruleset['rules'][2]['description']
             ),
             Gitlab::SecretDetection::Finding.new(
-              blobs[2].id,
+              payloads[2][:id],
               Gitlab::SecretDetection::Status::PAYLOAD_TIMEOUT
             )
           ],
           empty_applied_exclusions
         )
 
-        expect(scan.secrets_scan(blobs, blob_timeout: each_blob_timeout_secs)).to eq(expected_response)
+        expect(scan.secrets_scan(payloads, payload_timeout: each_payload_timeout_secs)).to eq(expected_response)
       end
 
-      it "all the blobs time out" do
-        # scan status changes to SCAN_TIMEOUT when *all* the blobs time out
+      it "all the payloads time out" do
+        # scan status changes to SCAN_TIMEOUT when *all* the payloads time out
         expected_scan_status = Gitlab::SecretDetection::Status::SCAN_TIMEOUT
 
         expected_response = Gitlab::SecretDetection::Response.new(
           expected_scan_status,
           [
             Gitlab::SecretDetection::Finding.new(
-              all_large_blobs[0].id,
+              all_large_payloads[0][:id],
               Gitlab::SecretDetection::Status::PAYLOAD_TIMEOUT
             ),
             Gitlab::SecretDetection::Finding.new(
-              all_large_blobs[1].id,
+              all_large_payloads[1][:id],
               Gitlab::SecretDetection::Status::PAYLOAD_TIMEOUT
             ),
             Gitlab::SecretDetection::Finding.new(
-              all_large_blobs[2].id,
+              all_large_payloads[2][:id],
               Gitlab::SecretDetection::Status::PAYLOAD_TIMEOUT
             )
           ],
           empty_applied_exclusions
         )
 
-        expect(scan.secrets_scan(all_large_blobs, blob_timeout: each_blob_timeout_secs)).to eq(expected_response)
+        expect(scan.secrets_scan(all_large_payloads,
+          payload_timeout: each_payload_timeout_secs)).to eq(expected_response)
       end
     end
 
     context "when using exclusions" do
-      let(:blobs) do
+      let(:payloads) do
         [
-          new_blob(id: 111, data: "data with no secret"),
-          new_blob(id: 222, data: "GR134894145645645645645645645"), # gitleaks:allow
-          new_blob(id: 333, data: "GR134894145645645645645645789"), # gitleaks:allow
-          new_blob(id: 444, data: "GR134894112312312312312312312"), # gitleaks:allow
-          new_blob(id: 555, data: "glpat-12312312312312312312"), # gitleaks:allow,
-          new_blob(
-            id: 666, data: "test data\nglptt-1231231231231231231212312312312312312312\nline contd" # gitleaks:allow
+          new_payload(id: 111, data: "data with no secret", offset: 1),
+          new_payload(id: 222, data: "GR134894145645645645645645645", offset: 1), # gitleaks:allow
+          new_payload(id: 333, data: "GR134894145645645645645645789", offset: 1), # gitleaks:allow
+          new_payload(id: 444, data: "GR134894112312312312312312312", offset: 1), # gitleaks:allow
+          new_payload(id: 555, data: "glpat-12312312312312312312", offset: 1), # gitleaks:allow,
+          new_payload(
+            id: 666,
+            data: "test data\nglptt-1231231231231231231212312312312312312312\nline contd", # gitleaks:allow
+            offset: 1
           )
         ]
       end
@@ -354,9 +368,9 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
 
         let(:valid_lines) do
           [
-            blobs[1].data,
-            blobs[2].data,
-            *blobs[5].data.lines
+            payloads[1].data,
+            payloads[2].data,
+            *payloads[5].data.lines
           ]
         end
 
@@ -367,21 +381,21 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
             expected_scan_status,
             [
               Gitlab::SecretDetection::Finding.new(
-                blobs[1].id,
+                payloads[1][:id],
                 expected_scan_status,
                 1,
                 ruleset['rules'][2]['id'],
                 ruleset['rules'][2]['description']
               ),
               Gitlab::SecretDetection::Finding.new(
-                blobs[2].id,
+                payloads[2][:id],
                 expected_scan_status,
                 1,
                 ruleset['rules'][2]['id'],
                 ruleset['rules'][2]['description']
               ),
               Gitlab::SecretDetection::Finding.new(
-                blobs[5].id,
+                payloads[5][:id],
                 expected_scan_status,
                 2,
                 ruleset['rules'][1]['id'],
@@ -391,7 +405,7 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
             exclusions[:raw_value]
           )
 
-          expect(scan.secrets_scan(blobs, exclusions:)).to eq(expected_response)
+          expect(scan.secrets_scan(payloads, exclusions:)).to eq(expected_response)
         end
       end
 
@@ -412,7 +426,7 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
             expected_scan_status,
             [
               Gitlab::SecretDetection::Finding.new(
-                blobs[5].id,
+                payloads[5][:id],
                 expected_scan_status,
                 2,
                 ruleset['rules'][1]['id'],
@@ -427,7 +441,7 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
             ]
           )
 
-          expect(scan.secrets_scan(blobs, exclusions:)).to eq(expected_response)
+          expect(scan.secrets_scan(payloads, exclusions:)).to eq(expected_response)
         end
       end
     end

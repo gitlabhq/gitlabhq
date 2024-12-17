@@ -171,7 +171,7 @@ export default {
         data-testid="catalog-resource-toggle"
         @change="onToggleCatalogResource"
       />
-      <div class="gl-text-secondary">
+      <div class="gl-text-subtle">
         {{ $options.i18n.readMeHelpText }}
       </div>
       <gl-modal

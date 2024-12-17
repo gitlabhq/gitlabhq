@@ -4,10 +4,12 @@ import { GlLoadingIcon, GlTabs } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import TodosApp from '~/todos/components/todos_app.vue';
 import TodoItem from '~/todos/components/todo_item.vue';
 import TodosFilterBar from '~/todos/components/todos_filter_bar.vue';
 import TodosMarkAllDoneButton from '~/todos/components/todos_mark_all_done_button.vue';
+import TodosPagination, { CURSOR_CHANGED_EVENT } from '~/todos/components/todos_pagination.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
 import { INSTRUMENT_TAB_LABELS, STATUS_BY_TAB } from '~/todos/constants';
 import { mockTracking, unmockTracking } from 'jest/__helpers__/tracking_helper';
@@ -41,6 +43,8 @@ describe('TodosApp', () => {
   const findMarkAllDoneButton = () => wrapper.findComponent(TodosMarkAllDoneButton);
   const findRefreshButton = () => wrapper.findByTestId('refresh-todos');
   const findPendingTodosCount = () => wrapper.findByTestId('pending-todos-count');
+  const findTodoItemListContainer = () => wrapper.findByTestId('todo-item-list-container');
+  const findPagination = () => wrapper.findComponent(TodosPagination);
 
   it('should have a tracking event for each tab', () => {
     expect(STATUS_BY_TAB.length).toBe(INSTRUMENT_TAB_LABELS.length);
@@ -59,6 +63,28 @@ describe('TodosApp', () => {
 
     expect(findTodoItems().length).toBe(todosResponse.data.currentUser.todos.nodes.length);
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
+  });
+
+  it('shows pagination for the todos', async () => {
+    createComponent();
+    await waitForPromises();
+
+    expect(findPagination().exists()).toBe(true);
+  });
+
+  it('fetches the todos when pagination changes', async () => {
+    createComponent();
+    await waitForPromises();
+
+    const newCursor = { first: 50, after: 'cursor-1' };
+    findPagination().vm.$emit(CURSOR_CHANGED_EVENT, newCursor);
+    await waitForPromises();
+
+    expect(todosQuerySuccessHandler).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        ...newCursor,
+      }),
+    );
   });
 
   it('fetches the todos and counts when filters change', async () => {
@@ -145,6 +171,61 @@ describe('TodosApp', () => {
     expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(2);
   });
 
+  it('refetches todos one second after the cursor leaves the list of todos', async () => {
+    jest.useFakeTimers();
+    createComponent();
+
+    // Wait and account for initial query
+    await waitForPromises();
+    expect(todosQuerySuccessHandler).toHaveBeenCalledTimes(1);
+    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(1);
+
+    // Simulate interacting with a todo item then mousing out of the list zone
+    wrapper.vm.handleItemChanged(1, true);
+    const list = findTodoItemListContainer();
+    list.trigger('mouseleave');
+
+    // Should refresh the count, but not the list
+    await waitForPromises();
+    expect(todosQuerySuccessHandler).toHaveBeenCalledTimes(1);
+    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(2);
+
+    // Run out the clock
+    jest.advanceTimersByTime(1000 + 50); // 1s + some jitter
+
+    // Refreshes the count and the list
+    await waitForPromises();
+    expect(todosQuerySuccessHandler).toHaveBeenCalledTimes(2);
+    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(3);
+  });
+
+  it('does not refresh todos after the cursor leaves the list of todos if nothing changed', async () => {
+    jest.useFakeTimers();
+    createComponent();
+
+    // Wait and account for initial query
+    await waitForPromises();
+    expect(todosQuerySuccessHandler).toHaveBeenCalledTimes(1);
+    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(1);
+
+    // Simulate NOT interacting with a todo item then mousing out of the list zone
+    const list = findTodoItemListContainer();
+    list.trigger('mouseleave');
+
+    // Should not update anything
+    await waitForPromises();
+    expect(todosQuerySuccessHandler).toHaveBeenCalledTimes(1);
+    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(1);
+
+    // Run out the clock
+    jest.advanceTimersByTime(1000 + 50); // 1s + some jitter
+
+    // Should not update anything
+    await waitForPromises();
+    expect(todosQuerySuccessHandler).toHaveBeenCalledTimes(1);
+    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(1);
+  });
+
   it('passes the default status to the filter bar', () => {
     createComponent();
 
@@ -171,5 +252,31 @@ describe('TodosApp', () => {
     });
     expect(findFilterBar().props('todosStatus')).toEqual(status);
     unmockTracking();
+  });
+
+  it('syncs tab change to URL while leaving other params unchanged', () => {
+    setWindowLocation('?group_id=123');
+    createComponent();
+    expect(window.location.search).toBe('?group_id=123');
+
+    findGlTabs().vm.$emit('input', 1);
+    expect(window.location.search).toBe('?group_id=123&state=done');
+
+    findGlTabs().vm.$emit('input', 2);
+    expect(window.location.search).toBe('?group_id=123&state=all');
+
+    findGlTabs().vm.$emit('input', 0);
+    expect(window.location.search).toBe('?group_id=123');
+  });
+
+  describe('reading `state` param from URL', () => {
+    beforeEach(() => {
+      setWindowLocation('?state=done');
+    });
+
+    it('activates correct tab', () => {
+      createComponent();
+      expect(findGlTabs().props('value')).toBe(1);
+    });
   });
 });

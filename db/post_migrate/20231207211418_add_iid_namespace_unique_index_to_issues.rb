@@ -7,11 +7,11 @@ class AddIidNamespaceUniqueIndexToIssues < Gitlab::Database::Migration[2.2]
 
   milestone '16.8'
 
-  # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
     add_concurrent_index :issues, [:namespace_id, :iid], name: INDEX_NAME, unique: true
+    # rubocop:enable Migration/PreventIndexCreation
   end
-  # rubocop:enable Migration/PreventIndexCreation
 
   def down
     remove_concurrent_index_by_name :issues, INDEX_NAME

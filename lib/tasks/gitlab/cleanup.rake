@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 namespace :gitlab do
-  require 'set' # -- Ruby 3.1 and earlier needs this. Drop this line after Ruby 3.2+ is only supported.
-
   namespace :cleanup do
     desc "GitLab | Cleanup | Block users that have been removed in LDAP"
     task block_removed_ldap_users: :gitlab_environment do

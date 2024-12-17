@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Users::UpdateService, feature_category: :user_profile do
+  include AdminModeHelper
+
   let(:password) { User.random_password }
   let(:user) { create(:user, password: password, password_confirmation: password) }
 
@@ -168,6 +170,122 @@ RSpec.describe Users::UpdateService, feature_category: :user_profile do
       expect do
         update_user(build(:user), job_title: 'supreme leader of the universe')
       end.not_to raise_error
+    end
+
+    context 'when updating organization user data' do
+      let_it_be(:organization) do
+        create(:organization, organization_users: create_list(:organization_owner, 3))
+      end
+
+      let_it_be_with_reload(:organization_user) { organization.organization_users.first }
+
+      shared_examples 'organization user update fails' do |error_message|
+        subject(:execute) do
+          described_class.new(current_user, {
+            user: target_user,
+            username: 'foo',
+            organization_users_attributes: organization_users_attributes
+          }).execute
+        end
+
+        it 'adds not found error message to user object' do
+          execute
+
+          expect(target_user.errors.full_messages).to include(error_message)
+        end
+
+        it 'returns not found error message', :aggregate_failures do
+          result = execute
+
+          expect(result[:status]).to eq(:error)
+          expect(result[:message]).to eq(error_message)
+        end
+
+        it 'does not persist other user updates' do
+          expect { execute }.not_to change { current_user.reload.username }
+        end
+      end
+
+      context 'when user is admin', :enable_admin_mode do
+        let_it_be(:current_user) { create(:admin) }
+
+        let_it_be_with_reload(:target_user) { organization_user.user }
+        let_it_be_with_reload(:other_organization_user) { organization.organization_users.last }
+
+        Organizations::OrganizationUser.access_levels.each_key do |organization_access_level|
+          context "when organization_access_level param is #{organization_access_level}" do
+            subject(:execute) do
+              described_class.new(current_user, {
+                user: target_user,
+                organization_users_attributes: [{
+                  id: organization_user.id,
+                  organization_id: organization.id,
+                  access_level: organization_access_level
+                }]
+              }).execute
+            end
+
+            it "updates organization access level to #{organization_access_level}", :aggregate_failures do
+              result = execute
+
+              expect(result[:status]).to eq(:success), result[:message]
+              expect(organization_user.reload.access_level).to eq(organization_access_level)
+            end
+
+            it 'does not modify organization record on organizations not in params' do
+              expect { execute }.not_to change { other_organization_user.reload.access_level }
+            end
+          end
+        end
+
+        context 'when target user does not belong to the organization' do
+          let_it_be(:target_user) { create(:user) }
+
+          it 'adds user to the organization', :aggregate_failures do
+            result = described_class.new(
+              current_user,
+              { user: target_user, organization_users_attributes: [{ organization_id: organization.id }] }
+            ).execute
+
+            expect(result[:status]).to eq(:success)
+            expect(organization.user?(target_user)).to eq(true)
+          end
+        end
+
+        context 'when organization does not exists' do
+          let_it_be(:organization_users_attributes) { [{ organization_id: non_existing_record_id }] }
+
+          it_behaves_like 'organization user update fails', _('Organization users organization must exist')
+        end
+
+        context 'when organization_id is blank' do
+          let_it_be(:organization_users_attributes) { [{ id: organization_user.id }] }
+
+          it_behaves_like 'organization user update fails', _('Organization ID cannot be nil')
+        end
+
+        context 'when organization_users param count exceeds limit' do
+          let_it_be(:organization_users_attributes) do
+            create_list(:organization_user, described_class::ORGANIZATION_USERS_LIMIT + 1, user: current_user)
+              .map { |o| o.slice(:id) }
+          end
+
+          it_behaves_like 'organization user update fails', format(
+            _('Cannot update more than %{limit} organization data at once'),
+            limit: described_class::ORGANIZATION_USERS_LIMIT
+          )
+        end
+      end
+
+      context 'when user is non-admin' do
+        let_it_be(:current_user) { organization_user.user }
+        let_it_be(:target_user) { organization_user.user }
+        let_it_be(:organization_users_attributes) do
+          [{ id: organization_user.id, organization_id: organization.id }]
+        end
+
+        it_behaves_like 'organization user update fails', _('Insufficient permission to modify user organizations')
+      end
     end
 
     describe 'updates the enabled_following' do

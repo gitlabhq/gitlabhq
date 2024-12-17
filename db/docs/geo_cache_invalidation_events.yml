@@ -11,3 +11,4 @@ milestone: '11.4'
 gitlab_schema: gitlab_main_cell
 exempt_from_sharding: true
 notes: Exempted because Not org-specific
+table_size: small

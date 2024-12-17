@@ -8,7 +8,6 @@ description: Represents container protection rules for the container registry.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133297
 milestone: '16.5'
 gitlab_schema: gitlab_main_cell
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
 sharding_key:
   project_id: projects
+table_size: small

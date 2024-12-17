@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.templates_slack_active
 description: Count of active service templates for Slack
 product_group: import_and_integrate
+product_categories:
+- integrations
 value_type: number
 status: removed
 milestone_removed: '14.4'

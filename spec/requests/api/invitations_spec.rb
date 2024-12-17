@@ -418,19 +418,20 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
     end
 
     it 'does not exceed expected queries count with secondary emails', :request_store, :use_sql_query_cache do
-      create(:email, :confirmed, email: email, user: create(:user))
+      organization = project.organization
+      create(:email, :confirmed, email: email, user: create(:user, organizations: [organization]))
 
       post invitations_url(project, maintainer), params: { email: email, access_level: Member::DEVELOPER }
 
-      create(:email, :confirmed, email: email2, user: create(:user))
+      create(:email, :confirmed, email: email2, user: create(:user, organizations: [organization]))
 
       control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         post invitations_url(project, maintainer), params: { email: email2, access_level: Member::DEVELOPER }
       end
 
-      create(:email, :confirmed, email: 'email4@example.com', user: create(:user))
-      create(:email, :confirmed, email: 'email6@example.com', user: create(:user))
-      create(:email, :confirmed, email: 'email8@example.com', user: create(:user))
+      create(:email, :confirmed, email: 'email4@example.com', user: create(:user, organizations: [organization]))
+      create(:email, :confirmed, email: 'email6@example.com', user: create(:user, organizations: [organization]))
+      create(:email, :confirmed, email: 'email8@example.com', user: create(:user, organizations: [organization]))
 
       emails = 'email3@example.com,email4@example.com,email5@example.com,email6@example.com,email7@example.com,' \
         'EMAIL8@EXamPle.com'

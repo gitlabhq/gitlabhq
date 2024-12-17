@@ -132,7 +132,7 @@ export default {
 
 <template>
   <div>
-    <p class="gl-mt-3 gl-whitespace-nowrap gl-text-gray-900">
+    <p class="gl-mt-3 gl-whitespace-nowrap gl-text-default">
       {{ s__('ImportProjects|Select the repositories you want to import') }}
     </p>
     <template v-if="hasIncompatibleRepos">

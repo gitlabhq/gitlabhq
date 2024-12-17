@@ -236,6 +236,12 @@ module Types
       description: 'IDE settings.',
       method: :itself
 
+    field :type,
+      type: Types::Users::TypeEnum,
+      null: false,
+      description: 'Type of the user.',
+      method: :user_type
+
     definition_methods do
       def resolve_type(object, context)
         # in the absence of other information, we cannot tell - just default to

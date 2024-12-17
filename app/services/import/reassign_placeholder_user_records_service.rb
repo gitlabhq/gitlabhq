@@ -6,25 +6,53 @@ module Import
     MEMBER_DELETE_BATCH_SIZE = 1_000
     GROUP_FINDER_MEMBER_RELATIONS = %i[direct inherited shared_from_groups].freeze
     PROJECT_FINDER_MEMBER_RELATIONS = %i[direct inherited invited_groups shared_into_ancestors].freeze
-    RELATION_BATCH_SLEEP = 5
+    RELATION_BATCH_SLEEP = 5 # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/504995
+    DATABASE_TABLE_HEALTH_INDICATORS = [Gitlab::Database::HealthStatus::Indicators::AutovacuumActiveOnTable].freeze
+    GLOBAL_DATABASE_HEALTH_INDICATORS = [
+      Gitlab::Database::HealthStatus::Indicators::WriteAheadLog,
+      Gitlab::Database::HealthStatus::Indicators::PatroniApdex,
+      Gitlab::Database::HealthStatus::Indicators::WalReceiverSaturation
+    ].freeze
+
+    DatabaseHealthStatusChecker = Struct.new(:id, :job_class_name)
+    DatabaseHealthError = Class.new(StandardError)
 
     def initialize(import_source_user)
       @import_source_user = import_source_user
-      @reassigned_by_user = User.find_by_id(import_source_user.reassigned_by_user_id)
+      @reassigned_by_user = import_source_user.reassigned_by_user
+      @project_membership_created = false
     end
 
     def execute
       return unless import_source_user.reassignment_in_progress?
 
       warn_about_any_risky_reassignments
-      reassign_placeholder_references
 
       log_warn('Reassigned by user was not found, this may affect membership checks') unless reassigned_by_user
 
-      create_memberships
-      delete_placeholder_memberships
+      begin
+        reassign_placeholder_references
+
+        if placeholder_memberships.any?
+          db_table_health_check!(Member) if Feature.enabled?(:reassignment_throttling, reassigned_by_user)
+
+          create_memberships
+          delete_placeholder_memberships
+        end
+      rescue DatabaseHealthError => error
+        log_warn("#{error.message}. Rescheduling reassignment")
+
+        return reschedule_reassignment_response
+      end
+
+      UserProjectAccessChangedService.new(import_source_user.reassign_to_user_id).execute if project_membership_created?
 
       import_source_user.complete!
+
+      ServiceResponse.success(
+        message: s_('Import|Placeholder user record reassignment complete'),
+        payload: import_source_user
+      )
     end
 
     private
@@ -70,10 +98,15 @@ module Import
           user_reference_column: reference_group.user_reference_column,
           alias_version: reference_group.alias_version
         ) do |model_relation, placeholder_references|
+          if Feature.enabled?(:reassignment_throttling, reassigned_by_user)
+            db_table_health_check!(model_relation)
+            db_health_check!
+          end
+
           reassign_placeholder_records_batch(model_relation, placeholder_references)
 
-          # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/493977
-          Kernel.sleep RELATION_BATCH_SLEEP
+          # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/504995
+          Kernel.sleep RELATION_BATCH_SLEEP unless Feature.enabled?(:reassignment_throttling, reassigned_by_user)
         end
       rescue Import::PlaceholderReferences::AliasResolver::MissingAlias => e
         ::Import::Framework::Logger.error(
@@ -153,6 +186,8 @@ module Import
       )
 
       member.save!
+
+      @project_membership_created = true if memberable.is_a?(Project)
     rescue ActiveRecord::ActiveRecordError => exception
       Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
         exception,
@@ -191,6 +226,49 @@ module Import
 
     def placeholder_memberships
       Import::Placeholders::Membership.by_source_user(import_source_user)
+    end
+
+    def project_membership_created?
+      @project_membership_created == true
+    end
+
+    def db_table_health_check!(model)
+      health_context = Gitlab::Database::HealthStatus::Context.new(
+        DatabaseHealthStatusChecker.new(import_source_user.id, self.class.name),
+        nil,
+        [model.table_name]
+      )
+
+      stop_signal = Gitlab::Database::HealthStatus
+        .evaluate(health_context, DATABASE_TABLE_HEALTH_INDICATORS).any?(&:stop?)
+
+      raise DatabaseHealthError, "#{model.table_name} table unhealthy" if stop_signal
+    end
+
+    def db_health_check!
+      stop_signal = Rails.cache.fetch("reassign_placeholder_user_records_service_db_check", expires_in: 30.seconds) do
+        gitlab_schema = :gitlab_main
+
+        health_context = Gitlab::Database::HealthStatus::Context.new(
+          DatabaseHealthStatusChecker.new(import_source_user.id, self.class.name),
+          Gitlab::Database.schemas_to_base_models[gitlab_schema].first,
+          nil
+        )
+
+        Gitlab::Database::HealthStatus
+          .evaluate(health_context, GLOBAL_DATABASE_HEALTH_INDICATORS).any?(&:stop?)
+      end
+
+      raise DatabaseHealthError, "Database unhealthy" if stop_signal
+    end
+
+    def reschedule_reassignment_response
+      ServiceResponse.new(
+        status: :ok,
+        message: s_('Import|Rescheduling placeholder user records reassignment: database health'),
+        payload: import_source_user,
+        reason: :db_health_check_failed
+      )
     end
 
     def log_create_membership_skipped(message, placeholder_membership, existing_membership)

@@ -1,5 +1,11 @@
 - ref = local_assigns.fetch(:ref) { current_ref }
 - project = local_assigns.fetch(:project) { @project }
+- web_ide_button_data = web_ide_button_data({ blob: nil })
+- fork_options = fork_modal_options(@project, nil)
+- archive_prefix = ref ? "#{project.path}-#{ref.tr('/', '-')}" : ''
+- download_links = !project.empty_repo? ?  download_links(project, ref, archive_prefix).to_json : ''
+- pipeline = local_assigns.fetch(:pipeline, nil)
+- download_artifacts = pipeline && previous_artifacts(project, ref, pipeline.latest_builds_with_artifacts).to_json || []
 - add_page_startup_api_call logs_file_project_ref_path(@project, ref, @path, format: "json", offset: 0, ref_type: @ref_type)
 - if readme_path = @project.repository.readme_path
   - add_page_startup_api_call project_blob_path(@project, tree_join(@ref, readme_path), viewer: "rich", format: "json")
@@ -10,7 +16,24 @@
 
 #tree-holder.tree-holder.clearfix.js-per-page.gl-mt-5{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
   - if params[:common_repository_blob_header_app] == 'true'
-    #js-repository-blob-header-app{ data: { project_id: @project.id, ref: ref, ref_type: @ref_type.to_s, history_link: project_commits_path(@project, @ref), breadcrumbs: breadcrumb_data_attributes, project_root_path: project_path(@project), project_path: project.full_path, compare_path: compare_path, escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref) } }
+    #js-repository-blob-header-app{ data: {
+      project_id: @project.id,
+      ref: ref,
+      ref_type: @ref_type.to_s,
+      breadcrumbs: breadcrumb_data_attributes,
+      project_root_path: project_path(@project),
+      project_path: project.full_path,
+      compare_path: compare_path,
+      web_ide_button_options: web_ide_button_data.merge(fork_options).to_json,
+      web_ide_button_default_branch: @project.default_branch_or_main,
+      ssh_url: ssh_enabled? ? ssh_clone_url_to_repo(@project) : '',
+      http_url: http_enabled? ? http_clone_url_to_repo(@project) : '',
+      xcode_url: show_xcode_link?(@project) ? xcode_uri_to_repo(@project) : '',
+      kerberos_url: alternative_kerberos_url? ? project.kerberos_url_to_repo : '',
+      download_links: download_links,
+      download_artifacts: download_artifacts,
+      escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref)
+    } }
 
   - else
     .nav-block.gl-flex.gl-flex-col.sm:gl-flex-row.gl-items-stretch
@@ -19,10 +42,10 @@
   - if project.forked?
     #js-fork-info{ data: vue_fork_divergence_data(project, ref) }
 
-  .info-well.gl-hidden.sm:gl-flex.project-last-commit.gl-flex-col.gl-mt-5
-    #js-last-commit.gl-m-auto{ data: {ref_type: @ref_type.to_s} }
+  .info-well.project-last-commit.gl-flex-col.gl-mt-5
+    #js-last-commit.gl-flex.gl-items-center.gl-justify-center.gl-m-auto.gl-min-h-9{ class: 'lg:gl-min-h-[4.5rem]', data: {ref_type: @ref_type.to_s, history_link: project_commits_path(@project, @ref)} }
       = gl_loading_icon(size: 'md')
     - if project.licensed_feature_available?(:code_owners)
-      #js-code-owners{ data: { branch: @ref, can_view_branch_rules: can_view_branch_rules?, branch_rules_path: branch_rules_path } }
+      #js-code-owners.gl-hidden.sm:gl-flex{ data: { branch: @ref, can_view_branch_rules: can_view_branch_rules?, branch_rules_path: branch_rules_path } }
 
   #js-tree-list{ data: vue_file_list_data(project, ref) }

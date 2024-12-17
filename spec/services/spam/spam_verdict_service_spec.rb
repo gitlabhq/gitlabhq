@@ -39,10 +39,6 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
     described_class.new(user: user, target: target, options: {})
   end
 
-  before do
-    stub_feature_flags(spamcheck_runway_migration: false)
-  end
-
   shared_examples 'execute spam verdict service' do
     subject(:execute) { service.execute }
 

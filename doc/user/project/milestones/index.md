@@ -123,12 +123,13 @@ The sidebar on the milestone view shows the following:
 ## Create a milestone
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 You can create a milestone either in a project or a group.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project or group the milestone belongs to.
+- You must have at least the Planner role for the project or group the milestone belongs to.
 
 To create a milestone:
 
@@ -144,10 +145,11 @@ To create a milestone:
 ## Edit a milestone
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project or group the milestone belongs to.
+- You must have at least the Planner role for the project or group the milestone belongs to.
 
 To edit a milestone:
 
@@ -161,10 +163,11 @@ To edit a milestone:
 ## Close a milestone
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project or group the milestone belongs to.
+- You must have at least the Planner role for the project or group the milestone belongs to.
 
 To close a milestone:
 
@@ -177,10 +180,11 @@ To close a milestone:
 ## Delete a milestone
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project or group the milestone belongs to.
+- You must have at least the Planner role for the project or group the milestone belongs to.
 
 To delete a milestone:
 
@@ -192,6 +196,8 @@ To delete a milestone:
 1. Select **Delete milestone**.
 
 ## Promote a project milestone to a group milestone
+
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 If you are expanding the number of projects in a group, you might want to share the same milestones
 among this group's projects.
@@ -208,7 +214,7 @@ This action cannot be reversed and the changes are permanent.
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have at least the Planner role for the group.
 
 To promote a project milestone:
 
@@ -266,6 +272,19 @@ When filtering by milestone, in addition to choosing a specific project mileston
 - **Any**: Show issues or merge requests that have an assigned milestone.
 - **Upcoming**: Show issues or merge requests that have been assigned the open milestone and has the nearest due date in the future.
 - **Started**: Show issues or merge requests that have an open assigned milestone with a start date that is before today.
+
+<!--- When Upcoming and Started milestones change in GitLab 18.0, integrate the contents
+of the below topic into "Special milestone filters" -->
+
+#### "Upcoming" and "Started" filters (deprecated)
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/501294) in GitLab 17.7
+and is [planned for change](https://gitlab.com/gitlab-org/gitlab/-/issues/429728) in 18.0.
+
+The behavior of "Upcoming" and "Started" special filters is planned to change in upcoming GitLab major release 18.0.
+The new behavior of both the filters is outlined in
+[issue 429728](https://gitlab.com/gitlab-org/gitlab/-/issues/429728#proposed-issue-filter-logic-for-upcoming-and-started-milestones).
 
 <!-- ## Troubleshooting
 

@@ -18,3 +18,4 @@ desired_sharding_key:
         sharding_key: project_id
         belongs_to: ci_secure_file
 desired_sharding_key_migration_job_name: BackfillCiSecureFileStatesProjectId
+table_size: small

@@ -1,7 +1,8 @@
 <script>
-import { visitUrl } from '~/lib/utils/url_utility';
+import { visitUrl, getParameterByName, updateHistory, removeParams } from '~/lib/utils/url_utility';
 import CreateWorkItem from '../components/create_work_item.vue';
-import { ROUTES } from '../constants';
+import { ROUTES, RELATED_ITEM_ID_URL_QUERY_PARAM } from '../constants';
+import workItemRelatedItemQuery from '../graphql/work_item_related_item.query.graphql';
 
 export default {
   name: 'CreateWorkItemPage',
@@ -14,6 +15,36 @@ export default {
       type: String,
       required: false,
       default: null,
+    },
+  },
+  data() {
+    return {
+      relatedItem: null,
+      relatedItemId: getParameterByName(RELATED_ITEM_ID_URL_QUERY_PARAM),
+    };
+  },
+  apollo: {
+    relatedItem: {
+      query: workItemRelatedItemQuery,
+      variables() {
+        return {
+          id: this.relatedItemId,
+        };
+      },
+      skip() {
+        return !this.relatedItemId;
+      },
+      update(data) {
+        return {
+          id: this.relatedItemId,
+          reference: data.workItem.reference,
+          type: data.workItem.workItemType.name,
+        };
+      },
+      error() {
+        // if we cannot find an item with the given id, ignore it and remove it from the url.
+        updateHistory({ url: removeParams([RELATED_ITEM_ID_URL_QUERY_PARAM]), replace: true });
+      },
     },
   },
   methods: {
@@ -35,6 +66,7 @@ export default {
   <create-work-item
     :work-item-type-name="workItemTypeName"
     :is-group="isGroup"
+    :related-item="relatedItem"
     @workItemCreated="workItemCreated"
   />
 </template>

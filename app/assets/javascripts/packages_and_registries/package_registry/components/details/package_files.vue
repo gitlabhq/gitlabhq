@@ -437,7 +437,7 @@ export default {
           />
           <gl-link
             :href="item.downloadPath"
-            class="gl-text-secondary"
+            class="gl-text-subtle"
             data-testid="download-link"
             @click="track($options.trackingActions.DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION)"
           >

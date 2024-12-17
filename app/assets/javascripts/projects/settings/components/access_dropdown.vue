@@ -182,7 +182,7 @@ export default {
     },
     dropdownToggleClass() {
       return {
-        '!gl-text-gray-500': this.toggleLabel === this.label,
+        '!gl-text-subtle': this.toggleLabel === this.label,
         [this.toggleClass]: true,
       };
     },
@@ -557,7 +557,7 @@ export default {
         @click.capture.native.stop="onItemClick(key)"
       >
         <div class="gl-truncate gl-font-bold">{{ key.title }}</div>
-        <div class="gl-truncate gl-text-gray-700">
+        <div class="gl-truncate gl-text-subtle">
           <gl-sprintf :message="$options.i18n.ownedBy">
             <template #image_tag>
               <gl-avatar :src="key.avatar_url" :size="24" />

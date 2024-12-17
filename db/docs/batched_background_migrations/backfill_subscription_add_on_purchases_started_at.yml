@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillSubscriptionAddOnPurchasesStartedAt
+description: Backfills nil `started_at` values from `subscription_add_on_purchases` table
+feature_category: subscription_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174626
+milestone: '17.7'
+queued_migration_version: 20241203172717
+finalized_by: 20241203172717

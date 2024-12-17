@@ -20,7 +20,12 @@ import ActionsDropdown from '~/ml/model_registry/components/actions_dropdown.vue
 import DeleteModelDisclosureDropdownItem from '~/ml/model_registry/components/delete_model_disclosure_dropdown_item.vue';
 import DeleteModel from '~/ml/model_registry/components/functional/delete_model.vue';
 import LoadOrErrorOrShow from '~/ml/model_registry/components/load_or_error_or_show.vue';
-import { destroyModelResponses, model, modelDetailQuery } from '../graphql_mock_data';
+import {
+  destroyModelResponses,
+  model,
+  modelDetailQuery,
+  modelWithNoVersionDetailQuery,
+} from '../graphql_mock_data';
 
 // Vue Test Utils `stubs` option does not stub components mounted
 // in <router-view>. Use mocking instead:
@@ -117,6 +122,8 @@ describe('ml/model_registry/apps/show_ml_model', () => {
   const findLoadOrErrorOrShow = () => wrapper.findComponent(LoadOrErrorOrShow);
   const findModelEditButton = () => wrapper.findByTestId('edit-model-button');
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
+  const findCandidateTab = () => wrapper.findAllComponents(GlTab).at(2);
+  const findCandidatesCountBadge = () => findCandidateTab().findComponent(GlBadge);
 
   describe('Title', () => {
     beforeEach(() => createWrapper());
@@ -203,7 +210,28 @@ describe('ml/model_registry/apps/show_ml_model', () => {
     });
 
     it('shows the number of versions in the tab', () => {
-      expect(findVersionsCountBadge().text()).toBe(model.versionCount.toString());
+      expect(findVersionsCountBadge().text()).toBe('1');
+    });
+  });
+
+  describe('Tabs for model no version', () => {
+    beforeEach(() =>
+      createWrapper({
+        modelDetailsResolver: jest.fn().mockResolvedValue(modelWithNoVersionDetailQuery),
+        latestVersion: null,
+      }),
+    );
+
+    it('does not show badge', () => {
+      expect(findVersionsCountBadge().exists()).toBe(false);
+    });
+
+    it('shows model card', () => {
+      expect(findDetailTab().exists()).toBe(true);
+    });
+
+    it('shows the number of candidates in the tab', () => {
+      expect(findCandidatesCountBadge().text()).toBe(model.candidateCount.toString());
     });
   });
 
@@ -238,10 +266,10 @@ describe('ml/model_registry/apps/show_ml_model', () => {
       expect(findCandidateList().exists()).toBe(false);
     });
 
-    it('shows model version list when location hash is `#/versions`', async () => {
+    it('shows model version list when clicks versions tabs', async () => {
       await createWrapper({ mountFn: mountExtended });
 
-      await wrapper.vm.$router.push({ path: '/versions' });
+      await findVersionsTab().vm.$emit('click');
 
       expect(findTabs().props('value')).toBe(1);
       expect(findModelDetail().exists()).toBe(false);
@@ -249,12 +277,28 @@ describe('ml/model_registry/apps/show_ml_model', () => {
       expect(findCandidateList().exists()).toBe(false);
     });
 
+    it('shows candidate list when user clicks candidates tab', async () => {
+      await createWrapper({ mountFn: mountExtended });
+
+      await findCandidateTab().vm.$emit('click');
+
+      expect(findTabs().props('value')).toBe(2);
+      expect(findModelDetail().exists()).toBe(false);
+      expect(findModelVersionList().exists()).toBe(false);
+      expect(findCandidateList().props('modelId')).toBe(model.id);
+    });
+
     describe.each`
-      location        | tab                | navigatedTo
-      ${'#/'}         | ${findDetailTab}   | ${0}
-      ${'#/'}         | ${findVersionsTab} | ${1}
-      ${'#/versions'} | ${findDetailTab}   | ${0}
-      ${'#/versions'} | ${findVersionsTab} | ${1}
+      location          | tab                 | navigatedTo
+      ${'#/'}           | ${findDetailTab}    | ${0}
+      ${'#/'}           | ${findVersionsTab}  | ${1}
+      ${'#/'}           | ${findCandidateTab} | ${2}
+      ${'#/versions'}   | ${findDetailTab}    | ${0}
+      ${'#/versions'}   | ${findVersionsTab}  | ${1}
+      ${'#/versions'}   | ${findCandidateTab} | ${2}
+      ${'#/candidates'} | ${findDetailTab}    | ${0}
+      ${'#/candidates'} | ${findVersionsTab}  | ${1}
+      ${'#/candidates'} | ${findCandidateTab} | ${2}
     `('When at $location', ({ location, tab, navigatedTo }) => {
       beforeEach(async () => {
         setWindowLocation(location);
@@ -336,7 +380,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
       it('does not display sidebar latest version link when model does not have a latest version', () => {
         createWrapper({ latestVersion: null });
         expect(findLatestVersionLink().exists()).toBe(false);
-        expect(wrapper.findByTestId('latest-version-label').exists()).toBe(false);
+        expect(wrapper.findByTestId('sidebar-latest-version').text()).toBe('None');
       });
     });
 
@@ -357,7 +401,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
       });
 
       it('does not display sidebar version count', () => {
-        expect(findVersionCount().exists()).toBe(false);
+        expect(findVersionCount().text()).toBe('None');
       });
     });
   });

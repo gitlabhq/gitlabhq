@@ -1,4 +1,5 @@
-import { GlLoadingIcon, GlPopover, GlSprintf } from '@gitlab/ui';
+import { nextTick } from 'vue';
+import { GlLoadingIcon, GlPopover, GlSprintf, GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import KubernetesStatusBar from '~/environments/environment_details/components/kubernetes/kubernetes_status_bar.vue';
 import KubernetesConnectionStatus from '~/environments/environment_details/components/kubernetes/kubernetes_connection_status.vue';
@@ -14,6 +15,7 @@ import {
   k8sResourceType,
 } from '~/environments/graphql/resolvers/kubernetes/constants';
 import { stubComponent } from 'helpers/stub_component';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mockKasTunnelUrl } from '../../../mock_data';
 import { kubernetesNamespace } from '../../../graphql/mock_data';
 
@@ -35,6 +37,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findHealthBadge = () => wrapper.findByTestId('health-badge');
   const findSyncBadge = () => wrapper.findByTestId('sync-badge');
+  const findFluxPopoverText = () => wrapper.findByTestId('flux-popover-text');
   const findPopover = () => wrapper.findComponent(GlPopover);
   const findDashboardConnectionStatus = () => wrapper.findByTestId('dashboard-status-badge');
   const findFluxConnectionStatusBadge = () => wrapper.findByTestId('flux-status-badge');
@@ -43,7 +46,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
   const createWrapper = ({
     clusterHealthStatus = '',
     fluxResourcePath = '',
-    fluxResourceStatus = [],
+    fluxResourceStatus = { conditions: [] },
     fluxApiError = '',
     namespace = kubernetesNamespace,
     resourceType = k8sResourceType.k8sPods,
@@ -66,6 +69,10 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
         KubernetesConnectionStatus: stubComponent(KubernetesConnectionStatus, {
           template: `<div><slot  :connection-props="{ connectionStatus: '${connectionStatusValue}', reconnect: '' }"></slot></div>`,
         }),
+      },
+
+      directives: {
+        GlResizeObserver: createMockDirective('gl-resize-observer'),
       },
     });
   };
@@ -166,7 +173,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
       });
 
       it('renders sync status as Unavailable', () => {
-        expect(findSyncBadge().text()).toBe('Unavailable');
+        expect(findSyncBadge().text()).toContain('Unavailable');
       });
 
       it('renders a non-clickable badge', () => {
@@ -189,24 +196,26 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
         'renders sync status as $statusText when status is $status, type is $type, and reason is $reason',
         ({ status, type, reason, statusText, statusPopover }) => {
           createWrapper({
-            fluxResourceStatus: [
-              {
-                status,
-                type,
-                reason,
-                message,
-              },
-            ],
+            fluxResourceStatus: {
+              conditions: [
+                {
+                  status,
+                  type,
+                  reason,
+                  message,
+                },
+              ],
+            },
           });
 
-          expect(findSyncBadge().text()).toBe(statusText);
+          expect(findSyncBadge().text()).toContain(statusText);
           expect(findPopover().text()).toBe(statusPopover);
         },
       );
 
       it('renders a clickable badge', () => {
         createWrapper({
-          fluxResourceStatus: [{ status: 'True', type: 'Ready' }],
+          fluxResourceStatus: { conditions: [{ status: 'True', type: 'Ready' }] },
         });
 
         expect(findSyncBadge().attributes('href')).toBe('#');
@@ -214,11 +223,51 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
 
       it('emits `show-flux-resource-details` event when badge is clicked', () => {
         createWrapper({
-          fluxResourceStatus: [{ status: 'True', type: 'Ready' }],
+          fluxResourceStatus: { conditions: [{ status: 'True', type: 'Ready' }] },
         });
 
         findSyncBadge().trigger('click');
         expect(wrapper.emitted('show-flux-resource-details')).toBeDefined();
+      });
+
+      describe('when the status message is too long', () => {
+        const setDimensions = ({ scrollHeight, offsetHeight }) => {
+          const content = findFluxPopoverText().element;
+
+          jest.spyOn(content, 'scrollHeight', 'get').mockReturnValue(scrollHeight);
+          jest.spyOn(content, 'offsetHeight', 'get').mockReturnValue(offsetHeight);
+
+          // Mock trigger resize
+          getBinding(content, 'gl-resize-observer').value({ target: content });
+        };
+
+        const viewMoreButton = () => findPopover().findComponent(GlButton);
+
+        beforeEach(async () => {
+          createWrapper({
+            fluxResourceStatus: {
+              conditions: [
+                {
+                  status: 'False',
+                  type: 'Ready',
+                  message: 'This is a long error message',
+                },
+              ],
+            },
+          });
+
+          setDimensions({ scrollHeight: 20, offsetHeight: 10 });
+          await nextTick();
+        });
+
+        it('renders an error details button in the popover', () => {
+          expect(viewMoreButton().text()).toBe('View details.');
+        });
+
+        it('emits `show-flux-resource-details` event with the status section specified when popover link is clicked', () => {
+          viewMoreButton().vm.$emit('click');
+          expect(wrapper.emitted('show-flux-resource-details')).toEqual([['status']]);
+        });
       });
     });
 
@@ -232,7 +281,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
       it('renders sync badge as unavailable', () => {
         const badge = SYNC_STATUS_BADGES.unavailable;
 
-        expect(findSyncBadge().text()).toBe(badge.text);
+        expect(findSyncBadge().text()).toContain(badge.text);
         expect(findSyncBadge().props()).toMatchObject({
           icon: badge.icon,
           variant: badge.variant,

@@ -6,7 +6,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::MergedByImporter, :
   include Import::UserMappingHelper
 
   let_it_be(:project) do
-    create(:project, :with_import_url, :import_user_mapping_enabled, import_type: ::Import::SOURCE_GITHUB)
+    create(:project, :with_import_url, :import_user_mapping_enabled, import_type: Import::SOURCE_GITHUB)
   end
 
   let_it_be(:merge_request) { create(:merged_merge_request, project: project) }
@@ -15,7 +15,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::MergedByImporter, :
       :import_source_user,
       source_user_identifier: 999,
       source_hostname: project.import_url,
-      import_type: ::Import::SOURCE_GITHUB,
+      import_type: Import::SOURCE_GITHUB,
       namespace: project.root_ancestor
     )
   end
@@ -57,7 +57,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::MergedByImporter, :
     it 'pushes placeholder references to the store' do
       subject.execute
 
-      user_references = placeholder_user_references(::Import::SOURCE_GITHUB, project.import_state.id)
+      user_references = placeholder_user_references(Import::SOURCE_GITHUB, project.import_state.id)
       metrics = merge_request.metrics.reload
 
       expect(user_references).to match_array([

@@ -20,7 +20,7 @@ RSpec.shared_examples 'organization user creation and validation in service' do
 
     it 'adds invalid organization user error', :aggregate_failures do
       expect(user.valid?).to be(false)
-      expect(user.errors.full_messages).to include('Organization users is invalid')
+      expect(user.errors.full_messages).to include(_('Organization users organization must exist'))
     end
   end
 end
@@ -103,11 +103,11 @@ RSpec.shared_examples_for 'current user not admin build items' do
   context 'with allowed params' do
     let(:params) do
       {
-        email: 1,
-        name: 1,
+        email: '_email_',
+        name: '_name_',
         password: 1,
-        password_automatically_set: 1,
-        username: 1,
+        password_automatically_set: true,
+        username: '_username_',
         user_type: 'project_bot',
         organization_id: organization.id
       }
@@ -116,9 +116,7 @@ RSpec.shared_examples_for 'current user not admin build items' do
     let(:user_params) { params.except(:organization_id) }
 
     it 'sets all allowed attributes' do
-      expect(User).to receive(:new).with(hash_including(user_params)).and_call_original
-
-      user
+      expect(user).to have_attributes(user_params)
     end
   end
 end

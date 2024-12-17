@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.code_review.i_code_review_merge_request_widget_license_compliance_expand_failed_monthly
 description: The count of unique users (monthly) who expanded the License Compliance widget extension while it is in its Failed state.
 product_group: code_review
+product_categories:
+- code_review_workflow
 value_type: number
 status: removed
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152166
