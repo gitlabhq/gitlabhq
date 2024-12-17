@@ -1457,4 +1457,10 @@ RSpec.describe SearchHelper, feature_category: :global_search do
       end
     end
   end
+
+  describe '#blob_data_oversize_message' do
+    it 'returns the correct message for empty files' do
+      expect(helper.blob_data_oversize_message).to eq('The file could not be displayed because it is empty.')
+    end
+  end
 end

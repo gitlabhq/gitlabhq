@@ -1274,6 +1274,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="querytopicsorganizationid"></a>`organizationId` **{warning-solid}** | [`OrganizationsOrganizationID`](#organizationsorganizationid) | **Introduced** in GitLab 17.7. **Status**: Experiment. Global ID of the organization. |
 | <a id="querytopicssearch"></a>`search` | [`String`](#string) | Search query for topic name. |
 
 ### `Query.usageTrendsMeasurements`
@@ -40389,6 +40390,7 @@ Values for sorting package.
 | Value | Description |
 | ----- | ----------- |
 | <a id="packagestatusdefault"></a>`DEFAULT` | Packages with a default status. |
+| <a id="packagestatusdeprecated"></a>`DEPRECATED` | Packages with a deprecated status. |
 | <a id="packagestatuserror"></a>`ERROR` | Packages with a error status. |
 | <a id="packagestatushidden"></a>`HIDDEN` | Packages with a hidden status. |
 | <a id="packagestatuspending_destruction"></a>`PENDING_DESTRUCTION` | Packages with a pending_destruction status. |

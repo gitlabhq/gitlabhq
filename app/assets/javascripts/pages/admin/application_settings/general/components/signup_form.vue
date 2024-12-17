@@ -1,5 +1,4 @@
 <script>
-import { nextTick } from 'vue';
 import {
   GlButton,
   GlFormGroup,
@@ -208,7 +207,8 @@ export default {
     },
     async submitFormWithoutAutoApproval() {
       this.form.shouldProceedWithAutoApproval = false;
-      await nextTick();
+      // the nextTick is to ensure the form is updated before we submit it
+      await this.$nextTick();
       this.submitForm();
     },
     modalHideHandler() {

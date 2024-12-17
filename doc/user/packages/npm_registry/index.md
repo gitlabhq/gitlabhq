@@ -455,6 +455,8 @@ npm deprecate @scope/package@1.0.1 "Only version 1.0.1 is deprecated"
 npm deprecate @scope/package@"< 1.0.5" "All package versions less than 1.0.5 are deprecated"
 ```
 
+When a package is deprecated, its status will be updated to `deprecated`.
+
 ### Remove deprecation warning
 
 To remove a package's deprecation warning, specify `""` (an empty string) for the message. For example:
@@ -462,6 +464,8 @@ To remove a package's deprecation warning, specify `""` (an empty string) for th
 ```shell
 npm deprecate @scope/package ""
 ```
+
+When a package's deprecation warning is removed, its status will be updated to `default`.
 
 ## Helpful hints
 

@@ -302,22 +302,38 @@ RSpec.describe 'package details', feature_category: :package_registry do
     end
 
     context 'web_path' do
-      before do
-        subject
-      end
-
-      it 'returns web_path correctly' do
-        expect(graphql_data_at(:package, :_links, :web_path)).to eq("/#{project.full_path}/-/packages/#{composer_package.id}")
-      end
-
-      context 'with terraform module' do
-        let_it_be(:terraform_package) { create(:terraform_module_package, project: project) }
-
-        let(:package_global_id) { global_id_of(terraform_package) }
-
+      shared_examples 'return web_path correctly' do
         it 'returns web_path correctly' do
-          expect(graphql_data_at(:package, :_links, :web_path)).to eq("/#{project.full_path}/-/terraform_module_registry/#{terraform_package.id}")
+          expect(graphql_data_at(:package, :_links, :web_path)).to eq("/#{project.full_path}/-/packages/#{composer_package.id}")
         end
+      end
+
+      context 'with status default' do
+        before do
+          subject
+        end
+
+        it_behaves_like 'return web_path correctly'
+
+        context 'with terraform module' do
+          let_it_be(:terraform_package) { create(:terraform_module_package, project: project) }
+
+          let(:package_global_id) { global_id_of(terraform_package) }
+
+          it 'returns web_path correctly' do
+            expect(graphql_data_at(:package, :_links, :web_path)).to eq("/#{project.full_path}/-/terraform_module_registry/#{terraform_package.id}")
+          end
+        end
+      end
+
+      context 'with status deprecated' do
+        before do
+          composer_package.deprecated!
+
+          subject
+        end
+
+        it_behaves_like 'return web_path correctly'
       end
     end
 

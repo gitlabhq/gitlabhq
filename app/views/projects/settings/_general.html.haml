@@ -36,7 +36,7 @@
 
     .row
       .form-group.col-md-9
-        .js-topics-selector{ data: { hidden_input_id: hidden_topics_field_id } }
+        .js-topics-selector{ data: { hidden_input_id: hidden_topics_field_id, organization_id: @project.organization.id } }
         = f.hidden_field :topics, value: @project.topic_list.join(', '), id: hidden_topics_field_id
 
   = f.submit _('Save changes'), pajamas_button: true, data: { testid: 'save-naming-topics-avatar-button' }

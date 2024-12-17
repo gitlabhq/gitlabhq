@@ -22,5 +22,13 @@ RSpec.describe Resolvers::PackageDetailsResolver do
 
       it { is_expected.to be_nil }
     end
+
+    context 'when package has status deprecated' do
+      before do
+        package.deprecated!
+      end
+
+      it { is_expected.to eq(package) }
+    end
   end
 end

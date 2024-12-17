@@ -194,8 +194,8 @@ job:
 
 ## View all job artifacts in a project
 
-> - [Improved look](https://gitlab.com/gitlab-org/gitlab/-/issues/33418) in GitLab 15.6.
-> - [Improved performance](https://gitlab.com/gitlab-org/gitlab/-/issues/387765) in GitLab 15.9.
+> - Interface improvements [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33418) in GitLab 15.6.
+> - Performance improvements [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387765) in GitLab 15.9.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/407475) in GitLab 16.0. Feature flag `artifacts_management_page` removed.
 
 You can view all artifacts stored in a project from the **Build > Artifacts** page.

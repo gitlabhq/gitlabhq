@@ -193,7 +193,7 @@ describe('Signup Form', () => {
       beforeEach(async () => {
         const INITIAL_USER_CAP = 5;
 
-        await mountComponent({
+        mountComponent({
           injectedProps: {
             newUserSignupsCap: INITIAL_USER_CAP,
             pendingUserCount: 5,

@@ -265,6 +265,10 @@ module SearchHelper
     false
   end
 
+  def blob_data_oversize_message
+    _('The file could not be displayed because it is empty.')
+  end
+
   private
 
   def formatted_count(scope)

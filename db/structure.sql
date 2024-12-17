@@ -32009,6 +32009,8 @@ CREATE UNIQUE INDEX index_packages_npm_metadata_caches_on_object_storage_key ON 
 
 CREATE INDEX index_packages_npm_metadata_caches_on_project_id_status ON packages_npm_metadata_caches USING btree (project_id, status);
 
+CREATE INDEX index_packages_npm_metadata_on_package_json_deprecate_exist ON packages_npm_metadata USING btree (package_id) WHERE (package_json ? 'deprecated'::text);
+
 CREATE INDEX index_packages_npm_metadata_on_project_id ON packages_npm_metadata USING btree (project_id);
 
 CREATE INDEX index_packages_nuget_dl_metadata_on_dependency_link_id ON packages_nuget_dependency_link_metadata USING btree (dependency_link_id);

@@ -234,6 +234,32 @@ This is one small step towards moving away from CI/CD templates in preference of
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Amazon S3 Signature Version 2
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.8</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/container-registry/-/issues/1449).
+
+</div>
+
+Using Signature Version 2 to authenticate requests to Amazon S3 buckets in the container registry is deprecated.
+
+To ensure continued compatibility and security, migrate to Signature Version 4. This change requires updating your S3 bucket configuration settings and ensuring that your GitLab container registry settings are compatible with Signature Version 4.
+
+To migrate:
+
+1. Check your S3 storage backend configuration in the GitLab container registry settings.
+1. Remove the `v4auth: false` option if it's set.
+1. Verify your existing credentials work with v4 authentication.
+
+If you encounter any issues after making these changes, try regenerating your AWS credentials.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Behavior change for Upcoming and Started milestone filters
 
 <div class="deprecation-notes">

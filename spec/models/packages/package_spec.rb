@@ -344,12 +344,14 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       let_it_be(:hidden_package) { create(:maven_package, :hidden) }
       let_it_be(:processing_package) { create(:maven_package, :processing) }
       let_it_be(:error_package) { create(:maven_package, :error) }
+      let_it_be(:deprecated_package) { create(:maven_package, :deprecated) }
 
       describe '.displayable' do
         subject { described_class.displayable }
 
         it 'does not include non-displayable packages', :aggregate_failures do
           is_expected.to include(error_package)
+          is_expected.to include(deprecated_package)
           is_expected.not_to include(hidden_package)
           is_expected.not_to include(processing_package)
         end
@@ -738,6 +740,25 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
           end
         end
       end
+    end
+  end
+
+  describe '#detailed_info?' do
+    subject { package.detailed_info? }
+
+    where(:status, :result) do
+      :default             | true
+      :deprecated          | true
+      :hidden              | false
+      :processing          | false
+      :error               | false
+      :pending_destruction | false
+    end
+
+    with_them do
+      let(:package) { build(:maven_package, status: status) }
+
+      it { is_expected.to eq(result) }
     end
   end
 end

@@ -24,6 +24,7 @@ iac-sast:
   variables:
     SEARCH_MAX_DEPTH: 4
   allow_failure: true
+  cache: []
   script:
     - /analyzer run
 

@@ -58,7 +58,7 @@ export default {
     <div class="issue-details issuable-details">
       <div
         v-if="modelVersion.descriptionHtml"
-        class="detail-page-description js-detail-page-description content-block gl-pt-4"
+        class="detail-page-description js-detail-page-description gl-pt-4"
       >
         <issuable-description
           data-testid="description"

@@ -392,6 +392,7 @@ export const model = {
     avatarUrl: 'path/to/avatar',
     webUrl: 'path/to/user',
   },
+  defaultExperimentPath: 'path/to/experiment',
   description: 'A model description',
   descriptionHtml: 'A model description',
   name: 'gitlab_amazing_model',
@@ -408,6 +409,7 @@ export const modelWithNoVersion = {
   createdAt: '2023-12-06T12:41:48Z',
   description: 'A model description',
   descriptionHtml: 'A model description',
+  defaultExperimentPath: 'path/to/experiment',
   author: {
     id: 'gid://gitlab/User/1',
     name: 'name',

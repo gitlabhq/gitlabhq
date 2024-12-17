@@ -1,0 +1,24 @@
+- title: "Amazon S3 Signature Version 2"
+  announcement_milestone: "17.8"
+  removal_milestone: "18.0"
+  breaking_change: true
+  reporter: trizzi
+  stage: Package
+  issue_url: https://gitlab.com/gitlab-org/container-registry/-/issues/1449
+  impact: low
+  scope: project
+  resolution_role: maintainer
+  manual_task: true
+  window: "3"
+  body: |
+    Using Signature Version 2 to authenticate requests to Amazon S3 buckets in the container registry is deprecated.
+
+    To ensure continued compatibility and security, migrate to Signature Version 4. This change requires updating your S3 bucket configuration settings and ensuring that your GitLab container registry settings are compatible with Signature Version 4.
+
+    To migrate:
+
+    1. Check your S3 storage backend configuration in the GitLab container registry settings.
+    1. Remove the `v4auth: false` option if it's set.
+    1. Verify your existing credentials work with v4 authentication.
+
+    If you encounter any issues after making these changes, try regenerating your AWS credentials.

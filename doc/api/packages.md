@@ -20,7 +20,7 @@ The API documentation of [GitLab Packages](../administration/packages/index.md).
 
 Get a list of project packages. All package types are included in results. When
 accessed without authentication, only packages of public projects are returned.
-By default, packages with `default` and `error` status are returned. Use the `status` parameter to view other
+By default, packages with `default`, `deprecated`, and `error` status are returned. Use the `status` parameter to view other
 packages.
 
 ```plaintext
@@ -89,7 +89,7 @@ can result in malformed data or broken packages.
 
 Get a list of project packages at the group level.
 When accessed without authentication, only packages of public projects are returned.
-By default, packages with `default` and `error` status are returned. Use the `status` parameter to view other
+By default, packages with `default`, `deprecated`, and `error` status are returned. Use the `status` parameter to view other
 packages.
 
 ```plaintext
@@ -187,7 +187,7 @@ can result in malformed data or broken packages.
 
 ## Get a project package
 
-Get a single project package. Only packages with status `default` are returned.
+Get a single project package. Only packages with status `default` or `deprecated` are returned.
 
 ```plaintext
 GET /projects/:id/packages/:package_id
@@ -262,7 +262,7 @@ Example response:
 
 The `_links` object contains the following properties:
 
-- `web_path`: The path which you can visit in GitLab and see the details of the package. Only available if the package has status `default`.
+- `web_path`: The path which you can visit in GitLab and see the details of the package. Only available if the package has status `default` or `deprecated`.
 - `delete_api_path`: The API path to delete the package. Only available if the request user has permission to do so.
 
 ## List package files

@@ -14,5 +14,4 @@
         .file-content.code
           .nothing-here-block
             .gl-text-subtle.gl-text-sm
-              - max_file_size_indexed = Gitlab::CurrentSettings.elasticsearch_indexed_file_size_limit_kb.kilobytes
-              = _('The file could not be displayed because it is empty or larger than the maximum file size indexed (%{size}).') % { size: number_to_human_size(max_file_size_indexed) }
+              = blob_data_oversize_message

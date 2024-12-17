@@ -394,7 +394,9 @@ policies:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Policies**.
 
-![Policies List Page](img/policies_list_v15_1.png)
+![Policies List Page](img/policies_list_v17_7.png)
+
+A green checkmark in the first column indicates that the policy is enabled and enforced on all groups and projects within its scope. A gray checkmark indicates that the policy is currently not enabled.
 
 ## Policy editor
 
