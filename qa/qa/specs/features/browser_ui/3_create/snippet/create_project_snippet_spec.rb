@@ -17,7 +17,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'user creates a project snippet', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347798' do
+      it 'user creates a project snippet', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347798' do
         snippet
 
         Page::Dashboard::Snippet::Show.perform do |snippet|

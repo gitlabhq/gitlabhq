@@ -14,7 +14,7 @@ module QA
       end
 
       it(
-        'push successful when the file size is under the limit', :blocking,
+        'push successful when the file size is under the limit',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347758'
       ) do
         set_file_size_limit(5)
@@ -27,7 +27,7 @@ module QA
       end
 
       it(
-        'push fails when the file size is above the limit', :blocking,
+        'push fails when the file size is above the limit',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347759'
       ) do
         set_file_size_limit(2)

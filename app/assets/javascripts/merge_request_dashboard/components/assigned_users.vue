@@ -9,19 +9,23 @@ const MAX_VISIBLE_USERS = 3;
 const REVIEW_STATE_ICONS = {
   APPROVED: {
     name: 'check-circle',
-    class: 'gl-bg-green-100 gl-text-green-500',
+    backgroundClass: 'gl-bg-status-success',
+    foregroundClass: 'gl-fill-status-success',
   },
   REQUESTED_CHANGES: {
     name: 'error',
-    class: 'gl-bg-red-100 gl-text-red-500',
+    backgroundClass: 'gl-bg-status-danger',
+    foregroundClass: 'gl-fill-status-danger',
   },
   REVIEWED: {
     name: 'comment-lines',
-    class: 'gl-bg-blue-100 gl-text-blue-500',
+    backgroundClass: 'gl-bg-status-info',
+    foregroundClass: 'gl-fill-status-info',
   },
   REVIEW_STARTED: {
     name: 'comment-dots',
-    class: 'gl-bg-gray-100 gl-text-subtle',
+    backgroundClass: 'gl-bg-status-neutral',
+    foregroundClass: 'gl-fill-status-neutral',
   },
 };
 const USER_TOOLTIP_TITLES = {
@@ -147,10 +151,15 @@ export default {
           <span
             v-if="reviewStateIcon(user)"
             class="gl-absolute -gl-bottom-2 -gl-right-2 gl-flex gl-h-5 gl-w-5 gl-items-center gl-justify-center gl-rounded-full gl-p-1"
-            :class="reviewStateIcon(user).class"
+            :class="reviewStateIcon(user).backgroundClass"
             data-testid="review-state-icon"
           >
-            <gl-icon :name="reviewStateIcon(user).name" class="gl-block" :size="12" />
+            <gl-icon
+              :name="reviewStateIcon(user).name"
+              class="gl-block"
+              :class="reviewStateIcon(user).foregroundClass"
+              :size="12"
+            />
           </span>
         </gl-avatar-link>
       </template>

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Verify' do
-    describe 'Include local config file paths with wildcard', :blocking, product_group: :pipeline_authoring do
+    describe 'Include local config file paths with wildcard', product_group: :pipeline_authoring do
       let(:project) { create(:project, name: 'project-with-pipeline') }
 
       before do

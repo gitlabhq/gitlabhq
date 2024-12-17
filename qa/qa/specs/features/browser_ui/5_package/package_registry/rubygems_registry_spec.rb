@@ -30,7 +30,7 @@ module QA
         Runtime::Feature.disable(:rubygem_packages, project: project)
       end
 
-      it 'publishes a Ruby gem', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347649',
+      it 'publishes a Ruby gem', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347649',
         quarantine: {
           issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/366099',
           type: :flaky

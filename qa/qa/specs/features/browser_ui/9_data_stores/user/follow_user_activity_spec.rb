@@ -38,7 +38,7 @@ module QA
           api_client: followed_user_api_client)
       end
 
-      it 'can be followed and their activity seen', :blocking,
+      it 'can be followed and their activity seen',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347678' do
         Flow::Login.sign_in(as: following_user)
         page.visit Runtime::Scenario.gitlab_address + "/#{followed_user.username}"

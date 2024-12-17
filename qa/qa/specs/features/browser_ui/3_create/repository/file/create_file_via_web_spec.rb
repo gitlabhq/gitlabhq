@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :blocking, product_group: :source_code do
+  RSpec.describe 'Create', product_group: :source_code do
     describe 'File management' do
       file_name = 'QA Test - File name'
       file_content = 'QA Test - File content'

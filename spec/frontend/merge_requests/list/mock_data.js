@@ -21,6 +21,7 @@ export const getQueryResponse = {
             state: 'opened',
             title: 'Merge request title',
             updatedAt: '2021-05-22T04:08:01Z',
+            mergedAt: '2021-05-22T04:08:01Z',
             upvotes: 3,
             resolvedDiscussionsCount: 4,
             resolvableDiscussionsCount: 4,

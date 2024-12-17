@@ -16,7 +16,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'by manipulating content on the page', :blocking,
+      it 'by manipulating content on the page',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347810' do
         wiki.visit!
 

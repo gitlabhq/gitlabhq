@@ -72,7 +72,7 @@ module QA
           end
         end
 
-        it 'pushes and pulls a maven package via gradle', :blocking, testcase: params[:testcase] do
+        it 'pushes and pulls a maven package via gradle', testcase: params[:testcase] do
           gradle_publish_install_yaml = ERB.new(read_fixture('package_managers/maven/gradle',
             'gradle_upload_install_package.yaml.erb')).result(binding)
           build_gradle = ERB.new(read_fixture('package_managers/maven/gradle', 'build.gradle.erb')).result(binding)

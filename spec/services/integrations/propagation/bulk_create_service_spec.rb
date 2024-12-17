@@ -100,18 +100,6 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
         expect(created_integration.reload.slack_integration).to be_nil
       end
     end
-
-    context 'when flag is disabled' do
-      before do
-        stub_feature_flags(gitlab_for_slack_app_instance_and_group_level: false)
-      end
-
-      it 'does not create associated SlackIntegration record' do
-        execute_service
-
-        expect(created_integration.reload.slack_integration).to be_nil
-      end
-    end
   end
 
   context 'with an instance-level integration' do

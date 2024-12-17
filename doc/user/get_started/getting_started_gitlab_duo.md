@@ -32,7 +32,7 @@ For more information, see:
 - [Features included in Duo Pro and Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
 - [List of GitLab Duo features and their language models](../gitlab_duo/index.md).
 - [Self-hosted models](../../administration/self_hosted_models/index.md).
-- [Health check details](../gitlab_duo/turn_on_off.md#run-a-health-check-for-gitlab-duo).
+- [Health check details](../gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo).
 
 ## Step 2: Try Duo Chat in the UI
 

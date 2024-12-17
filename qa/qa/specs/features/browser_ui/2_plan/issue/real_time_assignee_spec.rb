@@ -14,7 +14,7 @@ module QA
         project.add_member(user2)
       end
 
-      it 'update without refresh', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347941' do
+      it 'update without refresh', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347941' do
         issue = create(:issue, project: project, assignee_ids: [user1.id])
         issue.visit!
 

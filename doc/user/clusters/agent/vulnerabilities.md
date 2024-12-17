@@ -131,9 +131,11 @@ By default the scanner pod's default resource requirements are:
 requests:
   cpu: 100m
   memory: 100Mi
+  ephemeral_storage: 1Gi
 limits:
   cpu: 500m
   memory: 500Mi
+  ephemeral_storage: 3Gi
 ```
 
 You can customize it with a `resource_requirements` field.
@@ -144,15 +146,19 @@ container_scanning:
     requests:
       cpu: '0.2'
       memory: 200Mi
+      ephemeral_storage: 2Gi
     limits:
       cpu: '0.7'
       memory: 700Mi
+      ephemeral_storage: 4Gi
 ```
 
 When using a fractional value for CPU, format the value as a string.
 
 NOTE:
-Resource requirements can only be set up using the agent configuration. If you enabled `Operational Container Scanning` through `scan execution policies`, you would need to define the resource requirements within the agent configuration file.
+
+- Resource requirements can only be set by using the agent configuration. If you enabled Operational Container Scanning through scan execution policies and need to configure resource requirements, you should do so via the agent configuration file.
+- When using Google Kubernetes Engine (GKE) for Kubernetes orchestration, [the ephemeral storage limit value will always be set to equal the request value](https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits). This is enforced by GKE.
 
 ## Custom repository for Trivy K8s Wrapper
 
@@ -236,6 +242,14 @@ In GitLab agent 16.9 and later, operational container scanning:
 OCS might fail with an OOM error if there are too many resources to be scanned or if the images being scanned are large.
 
 To resolve this, [configure the resource requirement](#configure-scanner-resource-requirements) to increase the amount of memory available.
+
+### `Pod ephemeral local storage usage exceeds the total limit of containers`
+
+OCS scans could fail for Kubernetes clusters that have low default ephemeral storage. For example, [GKE autopilot](https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#defaults) sets the default ephemeral storage to 1GB. This is an issue for OCS when scanning namespaces with large images, as there may not be enough space to store all data necessary for OCS.
+
+To resolve this, [configure the resource requirement](#configure-scanner-resource-requirements) to increase the amount of ephemeral storage available.
+
+Another message indicative of this issue may be: `OCS Scanning pod evicted due to low resources. Please configure higher resource limits.`
 
 ### `Error running Trivy scan due to context timeout`
 

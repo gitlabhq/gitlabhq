@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :requires_admin, :blocking, product_group: :pipeline_execution do
+  RSpec.describe 'Verify', :requires_admin, product_group: :pipeline_execution do
     describe 'When user is blocked' do
       let(:user) { create(:user).tap(&:create_personal_access_token!) }
       let(:admin_user) { Runtime::User::Store.admin_user }

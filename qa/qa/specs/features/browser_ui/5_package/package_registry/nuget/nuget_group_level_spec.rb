@@ -96,7 +96,7 @@ module QA
           end
         end
 
-        it 'publishes a nuget package at the project endpoint and installs it from the group endpoint', :blocking,
+        it 'publishes a nuget package at the project endpoint and installs it from the group endpoint',
           testcase: params[:testcase] do
           nuget_upload_yaml = ERB.new(read_fixture('package_managers/nuget',
             'nuget_upload_package.yaml.erb')).result(binding)

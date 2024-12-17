@@ -25,7 +25,7 @@ module QA
         end
       end
 
-      it 'generates a todo item for the group owner', :blocking,
+      it 'generates a todo item for the group owner',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370132' do
         Page::Dashboard::Todos.perform do |todos|
           expect(todos).to have_latest_todo_with_author(
@@ -49,7 +49,7 @@ module QA
             end
           end
 
-          it 'adds user to the group', :blocking,
+          it 'adds user to the group',
             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386792' do
             found_member = group.reload!.find_member(user.username)
 
@@ -66,7 +66,7 @@ module QA
             end
           end
 
-          it 'does not add user to the group', :blocking,
+          it 'does not add user to the group',
             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386793' do
             found_member = group.reload!.find_member(user.username)
 

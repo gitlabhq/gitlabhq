@@ -279,8 +279,7 @@ module Gitlab
           @health_context ||= Gitlab::Database::HealthStatus::Context.new(
             self,
             connection,
-            [table_name],
-            gitlab_schema.to_sym
+            [table_name]
           )
         end
 

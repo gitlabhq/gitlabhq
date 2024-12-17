@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Push mirror a repository over HTTP', :blocking, product_group: :source_code do
+    describe 'Push mirror a repository over HTTP', product_group: :source_code do
       let(:user) { Runtime::User::Store.test_user }
 
       it('configures and syncs a (push) mirrored repository',

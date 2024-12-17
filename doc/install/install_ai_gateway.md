@@ -188,3 +188,13 @@ Ensure that:
 If access issues persist, check that authentication is correctly configured, and that the health check passes.
 
 In case of persistent issues, the error message may suggest bypassing authentication with `AIGW_AUTH__BYPASS_EXTERNAL=true`, but only do this for troubleshooting.
+
+You can also run a [health check](../user/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo) by going to **Admin > GitLab Duo**.
+
+These tests are performed for offline environments:
+
+| Test | Description |
+|-----------------|-------------|
+| Network | Tests whether: <br>- The environment variable `AI_GATEWAY_URL` has been set to a valid URL.<br> - Your instance can connect to the URL specified by `AI_GATEWAY_URL`.<br><br>If your instance cannot connect to the URL, ensure that your firewall or proxy server settings [allow connection](../user/gitlab_duo/setup.md). |
+| License | Tests whether your license has the ability to access Code Suggestions feature. |
+| System exchange | Tests whether Code Suggestions can be used in your instance. If the system exchange assessment fails, users might not be able to use GitLab Duo features. |

@@ -13,7 +13,7 @@ module QA
       # this file path deliberately includes a subdirectory which matches the file name to verify file/dir matching logic
       let(:file_path) { CGI.escape("føo/#{file_name}/føo/#{file_name}") }
 
-      it 'user creates a project with a file and deletes them afterwards', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347745' do
+      it 'user creates a project with a file and deletes them afterwards', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347745' do
         create_project_request = Runtime::API::Request.new(api_client, '/projects')
         response = Support::API.post(create_project_request.url, path: project_name, name: project_name)
         response_body = parse_body(response)
@@ -94,7 +94,7 @@ module QA
           SVG
         end
 
-        it 'sets no-cache headers as expected', :blocking,
+        it 'sets no-cache headers as expected',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347746' do
           create_project_request = Runtime::API::Request.new(api_client, '/projects')
           response = Support::API.post(create_project_request.url, path: project_name, name: project_name)

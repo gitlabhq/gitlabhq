@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Commit data', :blocking, product_group: :source_code do
+    describe 'Commit data', product_group: :source_code do
       let(:user) { Runtime::User::Store.test_user }
       let(:project) { create(:project, :with_readme) }
       let(:commit_message) { 'Add second file' }

@@ -24,7 +24,7 @@ module QA
       end
 
       it(
-        'spans r/w postgres web sidekiq git api', :blocking,
+        'spans r/w postgres web sidekiq git api',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360837'
       ) do
         # create a CI variable via UI

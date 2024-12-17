@@ -74,7 +74,7 @@ module QA
       end
 
       it(
-        'can read file variable content with cat', :blocking,
+        'can read file variable content with cat',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386409'
       ) do
         job = create(:job, project: project, id: project.job_by_name('job_cat')[:id])

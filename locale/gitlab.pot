@@ -5230,6 +5230,9 @@ msgstr ""
 msgid "AiPowered|Features are not available. However, any group, subgroup, or project can turn them on."
 msgstr ""
 
+msgid "AiPowered|GitLab Duo seat assignment is now located in GitLab Duo settings."
+msgstr ""
+
 msgid "AiPowered|GitLab Duo settings have moved"
 msgstr ""
 
@@ -5258,6 +5261,9 @@ msgid "AiPowered|Participate in the Early Access Program and help make GitLab be
 msgstr ""
 
 msgid "AiPowered|Purchase seats"
+msgstr ""
+
+msgid "AiPowered|Seat assignment for GitLab Duo has moved"
 msgstr ""
 
 msgid "AiPowered|Self-hosted AI models"
@@ -22932,10 +22938,19 @@ msgstr ""
 msgid "ExperimentTracking|Candidate"
 msgstr ""
 
+msgid "ExperimentTracking|Create candidate using MLflow"
+msgstr ""
+
 msgid "ExperimentTracking|Metric value"
 msgstr ""
 
+msgid "ExperimentTracking|No candidates"
+msgstr ""
+
 msgid "ExperimentTracking|Performance"
+msgstr ""
+
+msgid "ExperimentTracking|Performance graph will be shown when candidates with logged metrics are available"
 msgstr ""
 
 msgid "Experiments"
@@ -56466,9 +56481,6 @@ msgstr ""
 msgid "There was a problem fetching latest labels."
 msgstr ""
 
-msgid "There was a problem fetching linked pipelines."
-msgstr ""
-
 msgid "There was a problem fetching milestones."
 msgstr ""
 
@@ -56502,9 +56514,6 @@ msgstr ""
 msgid "There was a problem fetching the keep latest artifacts setting."
 msgstr ""
 
-msgid "There was a problem fetching the latest pipeline status."
-msgstr ""
-
 msgid "There was a problem fetching the merge pipeline."
 msgstr ""
 
@@ -56517,16 +56526,10 @@ msgstr ""
 msgid "There was a problem fetching the pipeline stage jobs."
 msgstr ""
 
-msgid "There was a problem fetching the pipeline stages."
-msgstr ""
-
 msgid "There was a problem fetching the projects"
 msgstr ""
 
 msgid "There was a problem fetching users."
-msgstr ""
-
-msgid "There was a problem handling the pipeline data."
 msgstr ""
 
 msgid "There was a problem loading this project's readme content."

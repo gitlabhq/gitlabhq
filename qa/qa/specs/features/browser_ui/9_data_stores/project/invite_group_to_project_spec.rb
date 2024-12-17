@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Data Stores' do
-    describe 'Invite group', :blocking, product_group: :tenant_scale, quarantine: {
+    describe 'Invite group', product_group: :tenant_scale, quarantine: {
       type: :bug,
       issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/436950",
       only: { pipeline: %i[canary production] }

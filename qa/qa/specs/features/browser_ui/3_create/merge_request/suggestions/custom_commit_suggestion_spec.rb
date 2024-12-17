@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Merge request suggestions', :blocking, product_group: :code_review do
+    describe 'Merge request suggestions', product_group: :code_review do
       let(:commit_message) { 'Applying suggested change for testing purposes.' }
       let(:project) { create(:project, name: 'mr-suggestions-project') }
       let(:merge_request) do

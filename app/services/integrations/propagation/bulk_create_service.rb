@@ -17,8 +17,7 @@ module Integrations
 
           bulk_insert_data_fields(inserted_ids) if integration.data_fields_present?
 
-          if integration.is_a?(GitlabSlackApplication) && integration.active? &&
-              Feature.enabled?(:gitlab_for_slack_app_instance_and_group_level, type: :beta)
+          if integration.is_a?(GitlabSlackApplication) && integration.active?
             inserted_slack_ids = bulk_insert_slack_integrations(inserted_ids)
             bulk_insert_slack_integration_scopes(inserted_slack_ids)
           end

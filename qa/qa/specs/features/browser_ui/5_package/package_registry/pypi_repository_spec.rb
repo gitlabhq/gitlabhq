@@ -53,7 +53,7 @@ module QA
       end
 
       context 'when at the project level' do
-        it 'publishes and installs a pypi package', :blocking,
+        it 'publishes and installs a pypi package',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348015' do
           project.visit_job('run')
           Page::Project::Job::Show.perform do |job|

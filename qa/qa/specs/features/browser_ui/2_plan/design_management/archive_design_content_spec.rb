@@ -24,7 +24,7 @@ module QA
       end
 
       it(
-        'user archives a design', :blocking,
+        'user archives a design',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347713'
       ) do
         third_design.issue.visit!

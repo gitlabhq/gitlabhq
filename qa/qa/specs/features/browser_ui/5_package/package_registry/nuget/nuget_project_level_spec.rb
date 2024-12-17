@@ -83,7 +83,7 @@ module QA
           end
         end
 
-        it 'publishes a nuget package and installs', :blocking, testcase: params[:testcase] do
+        it 'publishes a nuget package and installs', testcase: params[:testcase] do
           create(:commit, project: project, actions: [
             {
               action: 'update',

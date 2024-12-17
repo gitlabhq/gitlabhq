@@ -11,8 +11,7 @@ RSpec.shared_examples 'Prometheus Alert based health indicator' do
   end
 
   describe '#evaluate' do
-    let(:context) { Gitlab::Database::HealthStatus::Context.new(described_class, connection, ['users'], gitlab_schema) }
-    let(:gitlab_schema) { "gitlab_#{schema}" }
+    let(:context) { Gitlab::Database::HealthStatus::Context.new(described_class, connection, ['users']) }
     let(:client_ready) { true }
     let(:indicator_name) { described_class.name.demodulize }
     let(:indicator) { described_class.new(context) }

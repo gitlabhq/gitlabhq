@@ -10,8 +10,7 @@ RSpec.describe Gitlab::Database::HealthStatus::Indicators::PrometheusAlertIndica
     Gitlab::Database::HealthStatus::Context.new(
       described_class,
       connection,
-      ['users'],
-      :gitlab_main
+      ['users']
     )
   end
 

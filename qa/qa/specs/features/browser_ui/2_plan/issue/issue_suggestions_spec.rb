@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', :blocking, product_group: :project_management do
+  RSpec.describe 'Plan', product_group: :project_management do
     describe 'issue suggestions' do
       let(:issue_title) { 'Issue Lists are awesome' }
 

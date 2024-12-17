@@ -236,8 +236,7 @@ module Import
       health_context = Gitlab::Database::HealthStatus::Context.new(
         DatabaseHealthStatusChecker.new(import_source_user.id, self.class.name),
         nil,
-        [model.table_name],
-        nil
+        [model.table_name]
       )
 
       stop_signal = Gitlab::Database::HealthStatus
@@ -253,8 +252,7 @@ module Import
         health_context = Gitlab::Database::HealthStatus::Context.new(
           DatabaseHealthStatusChecker.new(import_source_user.id, self.class.name),
           Gitlab::Database.schemas_to_base_models[gitlab_schema].first,
-          nil,
-          gitlab_schema
+          nil
         )
 
         Gitlab::Database::HealthStatus

@@ -86,7 +86,7 @@ module QA
           end
         end
 
-        it "pulls an image using the dependency proxy", :blocking, testcase: params[:testcase] do
+        it "pulls an image using the dependency proxy", testcase: params[:testcase] do
           Page::Group::Menu.perform(&:go_to_package_settings)
           Page::Group::Settings::PackageRegistries.perform do |index|
             expect(index).to have_dependency_proxy_enabled

@@ -1,10 +1,12 @@
 <script>
 import { GlLineChart } from '@gitlab/ui/dist/charts';
+import { GlEmptyState } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { CREATE_EXPERIMENT_HELP_PATH } from '~/ml/experiment_tracking/routes/experiments/index/constants';
 
 export default {
   name: 'PerformanceGraph',
-  components: { GlLineChart },
+  components: { GlLineChart, GlEmptyState },
   props: {
     candidates: {
       type: Array,
@@ -13,6 +15,11 @@ export default {
     metricNames: {
       type: Array,
       required: true,
+    },
+    emptyStateSvgPath: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -24,6 +31,11 @@ export default {
   i18n: {
     xAxisLabel: s__('ExperimentTracking|Candidate'),
     yAxisLabel: s__('ExperimentTracking|Metric value'),
+    createNewCandidateLabel: s__('ExperimentTracking|Create candidate using MLflow'),
+    emptyStateLabel: s__('ExperimentTracking|No candidates'),
+    emptyStateDescriptionLabel: s__(
+      'ExperimentTracking|Performance graph will be shown when candidates with logged metrics are available',
+    ),
   },
   computed: {
     graphData() {
@@ -55,6 +67,12 @@ export default {
         toolbox: { show: true },
       };
     },
+    showGraph() {
+      return this.candidates.length > 0 && this.metricNames.length > 0;
+    },
+  },
+  constants: {
+    CREATE_EXPERIMENT_HELP_PATH,
   },
   methods: {
     formatTooltipText(params) {
@@ -70,6 +88,7 @@ export default {
 
 <template>
   <gl-line-chart
+    v-if="showGraph"
     :data="graphData"
     :option="graphOptions"
     show-legend
@@ -87,4 +106,14 @@ export default {
       </div>
     </template>
   </gl-line-chart>
+  <gl-empty-state
+    v-else
+    :title="$options.i18n.emptyStateLabel"
+    :secondary-button-text="$options.i18n.createNewCandidateLabel"
+    :secondary-button-link="$options.constants.CREATE_EXPERIMENT_HELP_PATH"
+    :svg-path="emptyStateSvgPath"
+    :svg-height="null"
+    :description="$options.i18n.emptyStateDescriptionLabel"
+    class="gl-py-8"
+  />
 </template>

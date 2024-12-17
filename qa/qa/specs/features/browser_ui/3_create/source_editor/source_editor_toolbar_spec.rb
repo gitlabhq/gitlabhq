@@ -10,7 +10,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'can preview markdown side-by-side while editing', :blocking,
+      it 'can preview markdown side-by-side while editing',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/367749',
         quarantine: {
           only: { job: 'gdk' },

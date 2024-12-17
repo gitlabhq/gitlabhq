@@ -16,7 +16,7 @@ module QA
         sub_group_for_transfer.visit!
       end
 
-      it 'transfers a subgroup to another group', :blocking,
+      it 'transfers a subgroup to another group',
         quarantine: {
           issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/471699',
           type: :investigating

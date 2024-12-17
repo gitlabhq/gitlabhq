@@ -11,7 +11,7 @@ module QA
       end
 
       context 'when file name starts with a dash and contains hash, semicolon, colon, and question mark' do
-        it 'renders repository file tree correctly', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347714' do
+        it 'renders repository file tree correctly', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347714' do
           create(:file,
             project: project,
             name: "test-folder/#{file_name}",

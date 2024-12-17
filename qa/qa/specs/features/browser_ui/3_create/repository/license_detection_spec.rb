@@ -23,7 +23,7 @@ module QA
         end
       end
 
-      context 'on a project with a commonly used LICENSE', :blocking,
+      context 'on a project with a commonly used LICENSE',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366842' do
         it_behaves_like 'project license detection' do
           let(:license_file_name) { 'bsd-3-clause' }
@@ -31,7 +31,7 @@ module QA
         end
       end
 
-      context 'on a project with an unrecognized LICENSE', :blocking,
+      context 'on a project with an unrecognized LICENSE',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366843' do
         it_behaves_like 'project license detection' do
           let(:license_file_name) { 'other' }

@@ -26,7 +26,7 @@ module QA
       end
 
       it(
-        'runs the pipeline with composed config', :blocking,
+        'runs the pipeline with composed config',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/396374'
       ) do
         Page::Project::Pipeline::Show.perform do |pipeline|

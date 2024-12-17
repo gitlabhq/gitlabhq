@@ -1358,14 +1358,6 @@ RSpec.describe Integration, feature_category: :integrations do
         end
 
         it { is_expected.to include('gitlab_slack_application') }
-
-        context 'when feature flag is disabled' do
-          before do
-            stub_feature_flags(gitlab_for_slack_app_instance_and_group_level: false)
-          end
-
-          it { is_expected.not_to include('gitlab_slack_application') }
-        end
       end
     end
   end
@@ -1374,40 +1366,6 @@ RSpec.describe Integration, feature_category: :integrations do
     subject { described_class.project_specific_integration_names }
 
     it { is_expected.to include(*described_class::PROJECT_LEVEL_ONLY_INTEGRATION_NAMES) }
-    it { is_expected.not_to include('gitlab_slack_application') }
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(gitlab_for_slack_app_instance_and_group_level: false)
-      end
-
-      it { is_expected.to include('gitlab_slack_application') }
-
-      context 'when Rails.env is not test' do
-        before do
-          allow(Rails.env).to receive(:test?).and_return(false)
-        end
-
-        it { is_expected.not_to include('gitlab_slack_application') }
-
-        context 'when `slack_app_enabled` setting is enabled' do
-          before do
-            stub_application_setting(slack_app_enabled: true)
-          end
-
-          it { is_expected.to include('gitlab_slack_application') }
-        end
-      end
-    end
-
-    context 'when Rails.env is not test and `slack_app_enabled` setting is enabled' do
-      before do
-        allow(Rails.env).to receive(:test?).and_return(false)
-        stub_application_setting(slack_app_enabled: true)
-      end
-
-      it { is_expected.not_to include('gitlab_slack_application') }
-    end
   end
 
   describe '.all_integration_names' do

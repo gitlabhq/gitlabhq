@@ -40,7 +40,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'uploads a generic package and downloads it', :blocking,
+      it 'uploads a generic package and downloads it',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348017' do
         project.visit_job('upload')
         Page::Project::Job::Show.perform do |job|

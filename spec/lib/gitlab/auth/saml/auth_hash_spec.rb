@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Auth::Saml::AuthHash do
+RSpec.describe Gitlab::Auth::Saml::AuthHash, feature_category: :system_access do
   include LoginHelpers
 
   let(:raw_info_attr) { { 'groups' => %w[Developers Freelancers] } }

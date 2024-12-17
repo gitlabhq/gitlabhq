@@ -38,7 +38,7 @@ module QA
       end
 
       it(
-        'publishes a composer package and deletes it', :blocking,
+        'publishes a composer package and deletes it',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348016'
       ) do
         project.visit_job('publish')

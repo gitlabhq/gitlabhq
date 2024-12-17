@@ -5,7 +5,7 @@ module QA
     describe 'Push mirror a repository over HTTP' do
       let(:user) { Runtime::User::Store.test_user }
 
-      it 'configures and syncs LFS objects for a (push) mirrored repository', :blocking, :aggregate_failures,
+      it 'configures and syncs LFS objects for a (push) mirrored repository', :aggregate_failures,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347847',
         quarantine: {
           only: { condition: -> { ENV['QA_RUN_TYPE'] == 'e2e-test-on-omnibus-ce' } },

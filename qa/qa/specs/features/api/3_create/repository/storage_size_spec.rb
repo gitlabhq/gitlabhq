@@ -16,7 +16,7 @@ module QA
       #
       # There are unit tests to verify the accuracy of GitLab's determination of repo size, so for this test we
       # attempt to detect large differences that could indicate a regression to previous behavior.
-      it 'matches cloned repo usage to reported usage', :blocking,
+      it 'matches cloned repo usage to reported usage',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/365196' do
         shared_data = SecureRandom.random_bytes(500000)
 

@@ -19,7 +19,7 @@ module QA
           sandbox.remove_member(user)
         end
 
-        it 'is not allowed to push code via the CLI', :blocking,
+        it 'is not allowed to push code via the CLI',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347863' do
           QA::Support::Retrier.retry_on_exception(max_attempts: 5, sleep_interval: 2) do
             expect do
@@ -36,7 +36,7 @@ module QA
           end
         end
 
-        it 'is not allowed to create a file via the API', :blocking,
+        it 'is not allowed to create a file via the API',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347864' do
           QA::Support::Retrier.retry_on_exception(max_attempts: 5, sleep_interval: 2) do
             expect do
@@ -48,7 +48,7 @@ module QA
           end
         end
 
-        it 'is not allowed to commit via the API', :blocking,
+        it 'is not allowed to commit via the API',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347865' do
           QA::Support::Retrier.retry_on_exception(max_attempts: 5, sleep_interval: 2) do
             expect do

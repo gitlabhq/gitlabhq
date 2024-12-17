@@ -228,8 +228,7 @@ module Integrations
         def integration_names
           names = INTEGRATION_NAMES.dup
 
-          unless Feature.enabled?(:gitlab_for_slack_app_instance_and_group_level, type: :beta) && # rubocop:disable Gitlab/FeatureFlagWithoutActor -- existing code moved as is
-              (Gitlab::CurrentSettings.slack_app_enabled || Gitlab.dev_or_test_env?)
+          unless Gitlab::CurrentSettings.slack_app_enabled || Gitlab.dev_or_test_env?
             names.delete('gitlab_slack_application')
           end
 
@@ -251,14 +250,7 @@ module Integrations
         end
 
         def project_specific_integration_names
-          names = PROJECT_LEVEL_ONLY_INTEGRATION_NAMES.dup
-
-          if Feature.disabled?(:gitlab_for_slack_app_instance_and_group_level, type: :beta) && # rubocop:disable Gitlab/FeatureFlagWithoutActor -- existing code moved as is
-              (Gitlab::CurrentSettings.slack_app_enabled || Gitlab.dev_or_test_env?)
-            names << 'gitlab_slack_application'
-          end
-
-          names
+          PROJECT_LEVEL_ONLY_INTEGRATION_NAMES.dup
         end
 
         def project_and_group_specific_integration_names

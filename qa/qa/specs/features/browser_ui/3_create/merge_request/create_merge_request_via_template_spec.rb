@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :blocking, product_group: :code_review do
+  RSpec.describe 'Create', product_group: :code_review do
     describe 'Merge request custom templates' do
       let(:template_name) { 'custom_merge_request_template' }
       let(:template_content) { 'This is a custom merge request template test' }

@@ -36,7 +36,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'publishes, installs, and deletes a Conan package', :blocking,
+      it 'publishes, installs, and deletes a Conan package',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348014' do
         conan_yaml = ERB.new(read_fixture('package_managers/conan',
           'conan_upload_install_package.yaml.erb')).result(binding)

@@ -29,7 +29,7 @@ module QA
         ssh_key&.remove_via_api!
       end
 
-      it 'clones, pushes, and pulls a project snippet over HTTP, edits via UI', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347797' do
+      it 'clones, pushes, and pulls a project snippet over HTTP, edits via UI', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347797' do
         Resource::Repository::Push.fabricate! do |push|
           push.repository_http_uri = repository_uri_http
           push.file_name = new_file
@@ -60,7 +60,7 @@ module QA
         snippet.remove_via_api!
       end
 
-      it 'clones, pushes, and pulls a project snippet over SSH, deletes via UI', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347796' do
+      it 'clones, pushes, and pulls a project snippet over SSH, deletes via UI', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347796' do
         Resource::Repository::Push.fabricate! do |push|
           push.repository_ssh_uri = repository_uri_ssh
           push.ssh_key = ssh_key

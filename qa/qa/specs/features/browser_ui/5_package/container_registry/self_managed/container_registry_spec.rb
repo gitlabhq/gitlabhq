@@ -87,7 +87,7 @@ module QA
             end
           end
 
-          it "pushes image and deletes tag", :blocking, :registry, testcase: params[:testcase] do
+          it "pushes image and deletes tag", :registry, testcase: params[:testcase] do
             create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
               {
                 action: 'create',

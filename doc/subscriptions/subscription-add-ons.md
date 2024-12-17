@@ -41,8 +41,8 @@ Prerequisites:
 - You must have the Owner role.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Usage Quotas**.
-1. Select the **GitLab Duo** tab.
+1. Select **Settings > GitLab Duo**.
+1. By **Seat utilization**, select **Assign seats**.
 1. Select **Add seats**.
 1. In the Customers Portal, in the **Add additional seats** field, enter the number of seats. The amount
    cannot be higher than the number of seats in the subscription associated with your group namespace.
@@ -85,7 +85,7 @@ To use GitLab Duo features in any project or group, you must assign the user to 
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > GitLab Duo**.
-1. Select **Assign seats** on the **Seat utilization** card.
+1. By **Seat utilization**, select **Assign seats**.
 1. To the right of the user, turn on the toggle to assign a GitLab Duo seat.
 
 The user is sent a confirmation email.
@@ -103,7 +103,7 @@ Prerequisites:
      1. On the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
         synchronize subscription (**{retry}**).
-1. Select **Assign seats** on the **Seat utilization** card.
+1. By **Seat utilization**, select **Assign seats**.
 1. To the right of the user, turn on the toggle to assign a GitLab Duo seat.
 
 The user is sent a confirmation email.
@@ -167,7 +167,7 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > GitLab Duo**.
-1. Select **Assign seats** on the **Seat utilization** card.
+1. By **Seat utilization**, select **Assign seats**.
 1. From the filter bar, select **Assigned seat** and **Yes**.
 1. User list is filtered to only users assigned a GitLab Duo seat.
 
@@ -185,7 +185,7 @@ Prerequisites:
      1. On the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
         synchronize subscription (**{retry}**).
-1. Select **Assign seats** on the **Seat utilization** card.
+1. By **Seat utilization**, select **Assign seats**.
 1. To filter by users assigned to a GitLab Duo seat, in the **Filter users** bar, select **Assigned seat**, then select **Yes**.
 1. User list is filtered to only users assigned a GitLab Duo seat.
 

@@ -13,7 +13,7 @@ module Gitlab
           }.freeze
 
           def initialize(context)
-            @gitlab_schema = context.gitlab_schema.to_sym
+            @connection = context.connection
           end
 
           def evaluate
@@ -34,7 +34,7 @@ module Gitlab
 
           private
 
-          attr_reader :gitlab_schema
+          attr_reader :connection
 
           def indicator_name
             self.class.name.demodulize
@@ -107,7 +107,7 @@ module Gitlab
               gitlab_main_cell: prometheus_alert_db_indicators_settings[sli_query_key][:main_cell],
               gitlab_ci: prometheus_alert_db_indicators_settings[sli_query_key][:ci],
               gitlab_sec: gitlab_sec_query
-            }.fetch(gitlab_schema)
+            }.fetch(:"gitlab_#{connection.load_balancer.name}", nil)
           end
           strong_memoize_attr :sli_query
 
@@ -121,7 +121,7 @@ module Gitlab
               gitlab_main_cell: prometheus_alert_db_indicators_settings[slo_key][:main_cell],
               gitlab_ci: prometheus_alert_db_indicators_settings[slo_key][:ci],
               gitlab_sec: gitlab_sec_query
-            }.fetch(gitlab_schema)
+            }.fetch(:"gitlab_#{connection.load_balancer.name}", nil)
           end
           strong_memoize_attr :slo
 

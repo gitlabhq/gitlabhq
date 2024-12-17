@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Push over HTTP using Git protocol version 2', :requires_git_protocol_v2, product_group: :source_code do
-      it 'user pushes to the repository', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347760' do
+      it 'user pushes to the repository', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347760' do
         Flow::Login.sign_in
 
         # Create a project to push to

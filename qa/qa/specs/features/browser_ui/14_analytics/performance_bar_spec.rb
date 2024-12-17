@@ -21,7 +21,7 @@ module QA
         end
 
         it(
-          'shows results for the original request and AJAX requests', :blocking,
+          'shows results for the original request and AJAX requests',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348030'
         ) do
           # Issue pages always make AJAX requests

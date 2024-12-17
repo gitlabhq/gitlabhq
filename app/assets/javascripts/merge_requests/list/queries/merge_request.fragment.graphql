@@ -9,6 +9,7 @@ fragment MergeRequestFragment on MergeRequest {
   state
   title
   updatedAt
+  mergedAt
   upvotes
   resolvedDiscussionsCount @include(if: $isSignedIn)
   resolvableDiscussionsCount @include(if: $isSignedIn)

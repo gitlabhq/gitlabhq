@@ -197,7 +197,7 @@ To remove a merge request from a merge train:
 ## Skip the merge train and merge immediately
 
 If you have a high-priority merge request, like a critical patch that must
-be merged urgently, you can select **Merge Immediately**.
+be merged urgently, you can select **Merge immediately**.
 
 When you merge a merge request immediately:
 

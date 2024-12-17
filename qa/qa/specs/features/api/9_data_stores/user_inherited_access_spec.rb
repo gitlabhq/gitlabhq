@@ -27,7 +27,6 @@ module QA
 
         it(
           'is allowed to push code to sub-group project via the CLI',
-          :blocking,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363345'
         ) do
           expect do
@@ -44,7 +43,6 @@ module QA
 
         it(
           'is allowed to create a file in sub-group project via the API',
-          :blocking,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363348'
         ) do
           # Retry is needed due to delays with project authorization updates
@@ -61,7 +59,7 @@ module QA
         end
 
         it(
-          'is allowed to commit to sub-group project via the API', :blocking,
+          'is allowed to commit to sub-group project via the API',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363349'
         ) do
           # Retry is needed due to delays with project authorization updates
@@ -99,7 +97,6 @@ module QA
 
         it(
           'is not allowed to push code to parent group project via the CLI',
-          :blocking,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363344'
         ) do
           expect do
@@ -116,7 +113,6 @@ module QA
 
         it(
           'is not allowed to create a file in parent group project via the API',
-          :blocking,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363343'
         ) do
           expect do
@@ -129,7 +125,6 @@ module QA
 
         it(
           'is not allowed to commit to parent group project via the API',
-          :blocking,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363342'
         ) do
           expect do

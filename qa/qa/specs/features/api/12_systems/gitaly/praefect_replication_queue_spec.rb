@@ -22,7 +22,7 @@ module QA
         praefect_manager.clear_replication_queue
       end
 
-      it 'allows replication of different repository after interruption', :blocking,
+      it 'allows replication of different repository after interruption',
         quarantine: {
           issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/489130',
           type: :investigating

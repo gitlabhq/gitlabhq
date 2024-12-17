@@ -37,7 +37,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'exposes variable on protected branch', :blocking,
+      it 'exposes variable on protected branch',
         quarantine: {
           issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/419506',
           type: :investigating

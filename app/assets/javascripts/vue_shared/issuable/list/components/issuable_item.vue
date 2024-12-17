@@ -166,6 +166,9 @@ export default {
     isClosed() {
       return [STATUS_CLOSED, STATE_CLOSED].includes(this.issuable.state);
     },
+    statusTooltip() {
+      return this.issuable.mergedAt ? this.tooltipTitle(this.issuable.mergedAt) : '';
+    },
     timestamp() {
       return this.isClosed && this.issuable.closedAt
         ? this.issuable.closedAt
@@ -495,7 +498,12 @@ export default {
       <ul v-if="showIssuableMeta" class="controls gl-gap-3">
         <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
         <li v-if="$slots.status" data-testid="issuable-status" class="!gl-mr-0">
-          <gl-badge v-if="!isOpen" :variant="statusBadgeVariant">
+          <gl-badge
+            v-if="!isOpen"
+            v-gl-tooltip.top
+            :variant="statusBadgeVariant"
+            :title="statusTooltip"
+          >
             <slot name="status"></slot>
           </gl-badge>
           <slot v-else name="status"></slot>

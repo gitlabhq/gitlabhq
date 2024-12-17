@@ -11,7 +11,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'can merge source branch from fork into upstream repository', :blocking,
+      it 'can merge source branch from fork into upstream repository',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347818' do
         merge_request.visit!
 
