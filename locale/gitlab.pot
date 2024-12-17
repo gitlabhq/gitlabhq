@@ -18689,7 +18689,7 @@ msgstr ""
 msgid "Dependencies|Component name"
 msgstr ""
 
-msgid "Dependencies|Dependency path"
+msgid "Dependencies|Direct dependents"
 msgstr ""
 
 msgid "Dependencies|Error exporting the dependency list. Please reload the page."
@@ -18704,16 +18704,16 @@ msgstr ""
 msgid "Dependencies|Filtering unavailable"
 msgstr ""
 
-msgid "Dependencies|Learn more about dependency paths"
+msgid "Dependencies|Learn more about direct dependents"
 msgstr ""
 
 msgid "Dependencies|License"
 msgstr ""
 
-msgid "Dependencies|Location"
+msgid "Dependencies|List of direct dependents"
 msgstr ""
 
-msgid "Dependencies|Location and dependency path"
+msgid "Dependencies|Location"
 msgstr ""
 
 msgid "Dependencies|Packager"
@@ -18734,10 +18734,7 @@ msgstr ""
 msgid "Dependencies|Software Bill of Materials (SBOM) based on the latest successful scan of each project."
 msgstr ""
 
-msgid "Dependencies|The component dependency path is based on the lock file. There may be several paths. In these cases, the longest path is displayed."
-msgstr ""
-
-msgid "Dependencies|There may be multiple paths"
+msgid "Dependencies|The location includes the lock file. For transitive dependencies a list of its direct dependents is shown."
 msgstr ""
 
 msgid "Dependencies|There was a problem fetching the licenses for this group."

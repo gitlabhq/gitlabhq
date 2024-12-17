@@ -15,6 +15,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `ai_custom_model`. Disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+> - Feature flag `ai_custom_model` removed in GitLab 17.8
 
 The following table shows the supported models along with their specific features and hardware requirements to help you select the model that best fits your infrastructure needs for optimal performance.
 
