@@ -47,16 +47,20 @@ jest.mock('~/api/projects_api');
 describe('ProjectsListItem', () => {
   let wrapper;
 
-  const [{ permissions, ...project }] = convertObjectPropsToCamelCase(projects, { deep: true });
+  const [{ permissions, ...mockProject }] = convertObjectPropsToCamelCase(projects, { deep: true });
+
+  const project = {
+    ...mockProject,
+    accessLevel: {
+      integerValue: permissions.projectAccess.accessLevel,
+    },
+    avatarUrl: 'avatar.jpg',
+    avatarLabel: mockProject.nameWithNamespace,
+    isForked: false,
+  };
 
   const defaultPropsData = {
-    project: {
-      ...project,
-      accessLevel: {
-        integerValue: permissions.projectAccess.accessLevel,
-      },
-      avatarUrl: 'avatar.jpg',
-    },
+    project,
   };
 
   const createComponent = ({ propsData = {} } = {}) => {
@@ -69,9 +73,9 @@ describe('ProjectsListItem', () => {
   };
 
   const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
-  const findMergeRequestsLink = () => wrapper.findByTestId('mrs-btn');
-  const findIssuesLink = () => wrapper.findByTestId('issues-btn');
-  const findForksLink = () => wrapper.findByTestId('forks-btn');
+  const findMergeRequestsStat = () => wrapper.findByTestId('mrs-btn');
+  const findIssuesStat = () => wrapper.findByTestId('issues-btn');
+  const findForksStat = () => wrapper.findByTestId('forks-btn');
   const findProjectTopics = () => wrapper.findByTestId('project-topics');
   const findPopover = () => findProjectTopics().findComponent(GlPopover);
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
@@ -97,13 +101,13 @@ describe('ProjectsListItem', () => {
     const avatarLabeled = findAvatarLabeled();
 
     expect(avatarLabeled.props()).toMatchObject({
-      label: project.name,
+      label: project.nameWithNamespace,
       labelLink: project.webUrl,
     });
 
     expect(avatarLabeled.attributes()).toMatchObject({
       'entity-id': project.id.toString(),
-      'entity-name': project.name,
+      'entity-name': project.nameWithNamespace,
       src: defaultPropsData.project.avatarUrl,
       shape: 'rect',
     });
@@ -143,7 +147,7 @@ describe('ProjectsListItem', () => {
   describe('when access level is not available', () => {
     beforeEach(() => {
       createComponent({
-        propsData: { project },
+        propsData: { project: { ...project, accessLevel: null } },
       });
     });
 
@@ -175,13 +179,12 @@ describe('ProjectsListItem', () => {
   it('renders stars count', () => {
     createComponent();
 
-    const starsLink = wrapper.findByTestId('stars-btn');
-    const tooltip = getBinding(starsLink.element, 'gl-tooltip');
-
-    expect(tooltip.value).toBe(ProjectsListItem.i18n.stars);
-    expect(starsLink.attributes('href')).toBe(`${project.webUrl}/-/starrers`);
-    expect(starsLink.text()).toBe(project.starCount.toString());
-    expect(starsLink.findComponent(GlIcon).props('name')).toBe('star-o');
+    expect(wrapper.findByTestId('stars-btn').props()).toEqual({
+      href: `${project.webUrl}/-/starrers`,
+      tooltipText: 'Stars',
+      iconName: 'star-o',
+      stat: project.starCount.toString(),
+    });
   });
 
   describe.each`
@@ -233,13 +236,12 @@ describe('ProjectsListItem', () => {
         },
       });
 
-      const mergeRequestsLink = findMergeRequestsLink();
-      const tooltip = getBinding(mergeRequestsLink.element, 'gl-tooltip');
-
-      expect(tooltip.value).toBe(ProjectsListItem.i18n.mergeRequests);
-      expect(mergeRequestsLink.attributes('href')).toBe(`${project.webUrl}/-/merge_requests`);
-      expect(mergeRequestsLink.text()).toBe('5');
-      expect(mergeRequestsLink.findComponent(GlIcon).props('name')).toBe('merge-request');
+      expect(findMergeRequestsStat().props()).toEqual({
+        href: `${project.webUrl}/-/merge_requests`,
+        tooltipText: 'Merge requests',
+        iconName: 'merge-request',
+        stat: '5',
+      });
     });
   });
 
@@ -254,7 +256,7 @@ describe('ProjectsListItem', () => {
         },
       });
 
-      expect(findMergeRequestsLink().exists()).toBe(false);
+      expect(findMergeRequestsStat().exists()).toBe(false);
     });
   });
 
@@ -262,13 +264,12 @@ describe('ProjectsListItem', () => {
     it('renders issues count', () => {
       createComponent();
 
-      const issuesLink = findIssuesLink();
-      const tooltip = getBinding(issuesLink.element, 'gl-tooltip');
-
-      expect(tooltip.value).toBe(ProjectsListItem.i18n.issues);
-      expect(issuesLink.attributes('href')).toBe(`${project.webUrl}/-/issues`);
-      expect(issuesLink.text()).toBe(project.openIssuesCount.toString());
-      expect(issuesLink.findComponent(GlIcon).props('name')).toBe('issues');
+      expect(findIssuesStat().props()).toEqual({
+        href: `${project.webUrl}/-/issues`,
+        tooltipText: 'Issues',
+        iconName: 'issues',
+        stat: project.openIssuesCount.toString(),
+      });
     });
   });
 
@@ -283,7 +284,7 @@ describe('ProjectsListItem', () => {
         },
       });
 
-      expect(findIssuesLink().exists()).toBe(false);
+      expect(findIssuesStat().exists()).toBe(false);
     });
   });
 
@@ -291,13 +292,12 @@ describe('ProjectsListItem', () => {
     it('renders forks count', () => {
       createComponent();
 
-      const forksLink = findForksLink();
-      const tooltip = getBinding(forksLink.element, 'gl-tooltip');
-
-      expect(tooltip.value).toBe(ProjectsListItem.i18n.forks);
-      expect(forksLink.attributes('href')).toBe(`${project.webUrl}/-/forks`);
-      expect(forksLink.text()).toBe(project.openIssuesCount.toString());
-      expect(forksLink.findComponent(GlIcon).props('name')).toBe('fork');
+      expect(findForksStat().props()).toEqual({
+        href: `${project.webUrl}/-/forks`,
+        tooltipText: 'Forks',
+        iconName: 'fork',
+        stat: project.forksCount.toString(),
+      });
     });
   });
 
@@ -320,7 +320,7 @@ describe('ProjectsListItem', () => {
         },
       });
 
-      expect(findForksLink().exists()).toBe(false);
+      expect(findForksStat().exists()).toBe(false);
     });
   });
 

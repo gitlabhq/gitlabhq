@@ -418,7 +418,8 @@ If the last tag is `v0.9.0` and the default branch is `main`, the range of commi
 included in this example is `v0.9.0..main`:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: token" \
+curl --request POST \
+  --header "PRIVATE-TOKEN: token" \
   --data "version=1.0.0" \
   --url "https://gitlab.com/api/v4/projects/42/repository/changelog"
 ```
@@ -427,7 +428,8 @@ To generate the data on a different branch, specify the `branch` parameter. This
 command generates data from the `foo` branch:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: token" \
+curl --request POST \
+  --header "PRIVATE-TOKEN: token" \
   --data "version=1.0.0&branch=foo" \
   --url "https://gitlab.com/api/v4/projects/42/repository/changelog"
 ```
@@ -443,7 +445,8 @@ curl --request POST --header "PRIVATE-TOKEN: token" \
 To store the results in a different file, use the `file` parameter:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: token" \
+curl --request POST \
+  --header "PRIVATE-TOKEN: token" \
   --data "version=1.0.0&file=NEWS" \
   --url "https://gitlab.com/api/v4/projects/42/repository/changelog"
 ```

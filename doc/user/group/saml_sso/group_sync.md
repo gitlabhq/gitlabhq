@@ -264,7 +264,8 @@ When global group memberships lock is enabled:
   - Share a project with other groups.
 
     NOTE:
-    This limits the use of groups in other product features such as [adding a group as a Code Owner](../../project/codeowners/index.md#add-a-group-as-a-code-owner).
+    You cannot set groups or subgroups as [Code Owners](../../project/codeowners/index.md).
+    The Code Owners feature requires direct group memberships, which are not possible when this lock is enabled.
 
   - Invite members to a project created in a group.
 

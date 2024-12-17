@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-**Valid access levels**
+## Valid access levels
 
 These access levels are recognized:
 

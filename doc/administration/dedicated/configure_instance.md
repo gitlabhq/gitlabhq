@@ -543,7 +543,10 @@ Logs stored in the S3 bucket are retained indefinitely, until the one year reten
 To gain read only access to the S3 bucket with your application logs:
 
 1. Open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) with the title `Customer Log Access`.
-1. In the body of the ticket, include a list of IAM Principal Amazon Resource Names (users or roles) that require access to the logs from the S3 bucket.
+1. In the body of the ticket, include a list of IAM Principal Amazon Resource Names (ARNs) that require access to the logs from the S3 bucket. The ARNs can be for users or roles.
+   
+   NOTE:
+   Specify the full ARN path without wildcards (`*`). Wildcard characters are not supported. GitLab team members can read more about the proposed feature to add wildcard support in this confidential issue: [7010](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/issues/7010).
 
 GitLab provides the name of the S3 bucket. Your authorized users or roles can then access all objects in the bucket. To verify access, you can use the [AWS CLI](https://aws.amazon.com/cli/).
 

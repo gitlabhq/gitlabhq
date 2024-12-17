@@ -1,6 +1,7 @@
 import { GlAvatarLabeled, GlIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ListItem from '~/vue_shared/components/resource_lists/list_item.vue';
+import ListItemDescription from '~/vue_shared/components/resource_lists/list_item_description.vue';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
@@ -27,20 +28,21 @@ describe('ListItem', () => {
     resource,
   };
 
-  const createComponent = ({ propsData = {}, stubs = {} } = {}) => {
+  const createComponent = ({ propsData = {}, stubs = {}, scopedSlots = {} } = {}) => {
     wrapper = shallowMountExtended(ListItem, {
       propsData: { ...defaultPropsData, ...propsData },
       scopedSlots: {
         'avatar-meta': '<div data-testid="avatar-meta"></div>',
         stats: '<div data-testid="stats"></div>',
         footer: '<div data-testid="footer"></div>',
+        ...scopedSlots,
       },
       stubs,
     });
   };
 
   const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
-  const findGroupDescription = () => wrapper.findByTestId('description');
+  const findDescription = () => wrapper.findComponent(ListItemDescription);
   const findListActions = () => wrapper.findComponent(ListActions);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
 
@@ -80,35 +82,47 @@ describe('ListItem', () => {
     expect(wrapper.findByTestId('footer').exists()).toBe(true);
   });
 
-  describe('when resource has a description', () => {
-    it('renders description', () => {
-      const descriptionHtml = '<p>Foo bar</p>';
-
+  describe('when avatar-default slot is provided', () => {
+    beforeEach(() => {
       createComponent({
-        propsData: {
-          resource: {
-            ...resource,
-            descriptionHtml,
-          },
-        },
+        scopedSlots: { 'avatar-default': '<div data-testid="avatar-default"></div>' },
       });
+    });
 
-      expect(findGroupDescription().element.innerHTML).toBe(descriptionHtml);
+    it('renders slot instead of description', () => {
+      expect(wrapper.findByTestId('avatar-default').exists()).toBe(true);
+      expect(findDescription().exists()).toBe(false);
     });
   });
 
-  describe('when resource does not have a description', () => {
-    it('does not render description', () => {
-      createComponent({
-        propsData: {
-          resource: {
-            ...resource,
-            descriptionHtml: null,
-          },
-        },
+  describe('when avatar-default slot is not provided', () => {
+    describe('when resource has a description', () => {
+      beforeEach(() => {
+        createComponent();
       });
 
-      expect(findGroupDescription().exists()).toBe(false);
+      it('renders description', () => {
+        expect(findDescription().props('descriptionHtml')).toBe(
+          defaultPropsData.resource.descriptionHtml,
+        );
+      });
+    });
+
+    describe('when resource does not have a description', () => {
+      beforeEach(() => {
+        createComponent({
+          propsData: {
+            resource: {
+              ...resource,
+              descriptionHtml: null,
+            },
+          },
+        });
+      });
+
+      it('does not render description', () => {
+        expect(findDescription().exists()).toBe(false);
+      });
     });
   });
 
@@ -130,17 +144,37 @@ describe('ListItem', () => {
     });
   });
 
-  describe('when resource has available actions', () => {
-    it('displays actions dropdown', () => {
-      createComponent({
-        propsData: {
+  describe('when actions prop is passed', () => {
+    describe('when resource has available actions', () => {
+      it('displays actions dropdown', () => {
+        createComponent({
+          propsData: {
+            actions,
+          },
+        });
+
+        expect(findListActions().props()).toMatchObject({
           actions,
-        },
+          availableActions: resource.availableActions,
+        });
+      });
+    });
+
+    describe('when resource does not have available actions', () => {
+      beforeEach(() => {
+        createComponent({
+          propsData: {
+            actions,
+            resource: {
+              ...resource,
+              availableActions: [],
+            },
+          },
+        });
       });
 
-      expect(findListActions().props()).toMatchObject({
-        actions,
-        availableActions: resource.availableActions,
+      it('does not display actions dropdown', () => {
+        expect(findListActions().exists()).toBe(false);
       });
     });
   });
@@ -155,12 +189,20 @@ describe('ListItem', () => {
     });
   });
 
-  describe('when resource does not have available actions', () => {
+  describe('when actions slot is provided', () => {
     beforeEach(() => {
-      createComponent();
+      createComponent({
+        propsData: {
+          actions,
+        },
+        scopedSlots: {
+          actions: '<div data-testid="actions"></div>',
+        },
+      });
     });
 
-    it('does not display actions dropdown', () => {
+    it('renders slot instead of list actions component', () => {
+      expect(wrapper.findByTestId('actions').exists()).toBe(true);
       expect(findListActions().exists()).toBe(false);
     });
   });

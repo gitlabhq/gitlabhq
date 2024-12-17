@@ -6088,6 +6088,12 @@ msgstr ""
 msgid "An error occured fetching failed jobs count"
 msgstr ""
 
+msgid "An error occured when subscribing to the comment temperature updates. Please try again."
+msgstr ""
+
+msgid "An error occured while parsing comment temperature. Please try again."
+msgstr ""
+
 msgid "An error occurred creating the new branch."
 msgstr ""
 
@@ -13781,6 +13787,9 @@ msgid "Comment Templates"
 msgstr ""
 
 msgid "Comment added to the timeline."
+msgstr ""
+
+msgid "Comment anyway"
 msgstr ""
 
 msgid "Comment could not be submitted. Please check your network connection and try again."
@@ -23375,6 +23384,9 @@ msgid "Failed to make repository read-only: %{reason}"
 msgstr ""
 
 msgid "Failed to mark this issue as a duplicate because referenced issue was not found."
+msgstr ""
+
+msgid "Failed to measure the comment temperature. Please try again."
 msgstr ""
 
 msgid "Failed to move this issue because label was not found."
@@ -42327,6 +42339,9 @@ msgstr ""
 msgid "Proceed"
 msgstr ""
 
+msgid "Proceed with caution."
+msgstr ""
+
 msgid "Product Analytics"
 msgstr ""
 
@@ -59857,6 +59872,9 @@ msgstr ""
 msgid "Updated date"
 msgstr ""
 
+msgid "Updated. Check again"
+msgstr ""
+
 msgid "Updating"
 msgstr ""
 
@@ -62293,6 +62311,9 @@ msgstr ""
 msgid "We found your token in a public project and have automatically revoked it to protect your account."
 msgstr ""
 
+msgid "We have detected that your message might be composed against %{linkStart}our guidelines%{linkEnd}. Please review our findings below:"
+msgstr ""
+
 msgid "We heard back from your device. You have been authenticated."
 msgstr ""
 
@@ -63274,6 +63295,9 @@ msgstr ""
 msgid "WorkItem|Add"
 msgstr ""
 
+msgid "WorkItem|Add %{linkStart}description templates%{linkEnd} to help your contributors communicate effectively!"
+msgstr ""
+
 msgid "WorkItem|Add %{workItemType}"
 msgstr ""
 
@@ -63299,6 +63323,12 @@ msgid "WorkItem|Ancestor"
 msgstr ""
 
 msgid "WorkItem|Ancestor not available"
+msgstr ""
+
+msgid "WorkItem|Apply template"
+msgstr ""
+
+msgid "WorkItem|Applying a template will replace the existing description. Any changes you have made will be lost."
 msgstr ""
 
 msgid "WorkItem|Apricot"
@@ -63350,6 +63380,9 @@ msgid "WorkItem|Child removal reverted"
 msgstr ""
 
 msgid "WorkItem|Child removed"
+msgstr ""
+
+msgid "WorkItem|Choose a template"
 msgstr ""
 
 msgid "WorkItem|Clear"
@@ -63679,6 +63712,9 @@ msgstr ""
 msgid "WorkItem|Select parent"
 msgstr ""
 
+msgid "WorkItem|Select template"
+msgstr ""
+
 msgid "WorkItem|Select type"
 msgstr ""
 
@@ -63854,6 +63890,9 @@ msgid "WorkItem|Type"
 msgstr ""
 
 msgid "WorkItem|Type changed."
+msgstr ""
+
+msgid "WorkItem|Unable to find selected template."
 msgstr ""
 
 msgid "WorkItem|Undo"

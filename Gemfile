@@ -242,6 +242,9 @@ gem 'faraday_middleware-aws-sigv4', '~> 1.0.1', feature_category: :global_search
 # Used with Elasticsearch to support http keep-alive connections
 gem 'typhoeus', '~> 1.4.0', feature_category: :global_search
 
+gem 'gitlab-active-context', path: 'gems/gitlab-active-context', require: 'active_context',
+  feature_category: :global_search
+
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 2.14.3', feature_category: :markdown
 gem 'deckar01-task_list', '2.3.4', feature_category: :markdown

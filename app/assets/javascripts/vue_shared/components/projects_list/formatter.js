@@ -17,6 +17,7 @@ export const formatGraphQLProjects = (projects) =>
       ...project,
       id: getIdFromGraphQLId(id),
       name: nameWithNamespace,
+      avatarLabel: nameWithNamespace,
       mergeRequestsAccessLevel: mergeRequestsAccessLevel.stringValue,
       issuesAccessLevel: issuesAccessLevel.stringValue,
       forkingAccessLevel: forkingAccessLevel.stringValue,

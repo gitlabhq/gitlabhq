@@ -48,19 +48,6 @@ RSpec.describe AutocompleteSources::ExpiresIn, feature_category: :global_search 
         expect(response.headers['Cache-Control']).to eq(expected_cache_control)
       end
     end
-
-    context "when action is #{action} with feature flag disabled" do
-      before do
-        stub_feature_flags("cache_autocomplete_sources_#{action}" => false)
-      end
-
-      it 'does not set cache-control' do
-        get action
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.headers['Cache-Control']).to be_nil
-      end
-    end
   end
 
   context 'when action is not in AUTOCOMPLETE_CACHED_ACTIONS' do

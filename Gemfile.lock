@@ -24,6 +24,12 @@ PATH
       typhoeus (~> 1.0, >= 1.0.1)
 
 PATH
+  remote: gems/gitlab-active-context
+  specs:
+    gitlab-active-context (0.0.1)
+      zeitwerk
+
+PATH
   remote: gems/gitlab-backup-cli
   specs:
     gitlab-backup-cli (0.0.1)
@@ -2066,6 +2072,7 @@ DEPENDENCIES
   gettext (~> 3.4, >= 3.4.9)
   gettext_i18n_rails (~> 1.13.0)
   gitaly (~> 17.5.0.pre.rc1)
+  gitlab-active-context!
   gitlab-backup-cli!
   gitlab-chronic (~> 0.10.5)
   gitlab-cloud-connector (~> 0.2.5)

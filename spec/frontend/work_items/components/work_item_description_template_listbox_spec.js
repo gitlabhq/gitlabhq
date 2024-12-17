@@ -1,0 +1,163 @@
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import { GlCollapsibleListbox, GlSkeletonLoader, GlLink } from '@gitlab/ui';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import WorkItemDescriptionTemplateListbox from '~/work_items/components/work_item_description_template_listbox.vue';
+import descriptionTemplatesListQuery from '~/work_items/graphql/work_item_description_templates_list.query.graphql';
+
+Vue.use(VueApollo);
+
+const mockTemplatesList = [
+  { name: 'template 1', __typename: 'WorkItemDescriptionTemplate' },
+  { name: 'template 2', __typename: 'WorkItemDescriptionTemplate' },
+  { name: 'template 3', __typename: 'WorkItemDescriptionTemplate' },
+  { name: 'template 4', __typename: 'WorkItemDescriptionTemplate' },
+];
+
+const mockDescriptionTemplatesResult = {
+  data: {
+    namespace: {
+      __typename: 'Namespace',
+      id: 'gid://gitlab/Project/1',
+      workItemDescriptionTemplates: {
+        __typename: 'WorkItemDescriptionTemplateConnection',
+        nodes: mockTemplatesList,
+      },
+    },
+  },
+};
+
+const mockEmptyDescriptionTemplatesResult = {
+  data: {
+    namespace: {
+      __typename: 'Namespace',
+      id: 'gid://gitlab/Project/1',
+      workItemDescriptionTemplates: {
+        __typename: 'WorkItemDescriptionTemplateConnection',
+        nodes: [],
+      },
+    },
+  },
+};
+
+describe('WorkItemDescriptionTemplateListbox', () => {
+  let wrapper;
+  let handler;
+
+  const createComponent = ({ template, templatesResult = mockDescriptionTemplatesResult } = {}) => {
+    handler = jest.fn().mockResolvedValue(templatesResult);
+    wrapper = mountExtended(WorkItemDescriptionTemplateListbox, {
+      apolloProvider: createMockApollo([[descriptionTemplatesListQuery, handler]]),
+      propsData: {
+        fullPath: 'gitlab-org/gitlab',
+        template,
+      },
+    });
+  };
+
+  const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
+  const findTemplateMessage = () => wrapper.findByTestId('template-message');
+  const findTemplateMessageLink = () => wrapper.findComponent(GlLink);
+
+  it('displays a skeleton loader', () => {
+    createComponent();
+    expect(findSkeletonLoader().exists()).toBe(true);
+  });
+
+  describe('when the templates have been fetched', () => {
+    it('does not display a skeleton loader', async () => {
+      createComponent();
+      await waitForPromises();
+      expect(findSkeletonLoader().exists()).toBe(false);
+    });
+    describe('and there are templates to display', () => {
+      describe('and there is no template already selected', () => {
+        beforeEach(async () => {
+          createComponent();
+          await waitForPromises();
+        });
+
+        it('renders a collapsible-listbox component', () => {
+          expect(findListbox().exists()).toBe(true);
+        });
+
+        it('displays "Choose a template" by default', () => {
+          expect(findListbox().text()).toContain('Choose a template');
+        });
+
+        it('displays a header in the listbox that says "Select template"', () => {
+          expect(findListbox().text()).toContain('Select template');
+        });
+      });
+
+      describe('when there is already a template selected', () => {
+        beforeEach(async () => {
+          createComponent({
+            template: mockTemplatesList[0].name,
+          });
+          await waitForPromises();
+        });
+
+        it('displays the template name in the listbox', () => {
+          expect(findListbox().text()).toContain(mockTemplatesList[0].name);
+        });
+      });
+
+      describe('when the listbox is opened', () => {
+        beforeEach(async () => {
+          createComponent();
+          await waitForPromises();
+          findListbox().vm.$emit('shown');
+          await nextTick();
+        });
+
+        it('displays a list of templates', () => {
+          const text = findListbox().text();
+          for (const template of mockTemplatesList) {
+            expect(text).toContain(template.name);
+          }
+        });
+
+        it('allows searching to narrow down results', async () => {
+          // only matches 'template 4'
+          findListbox().vm.$emit('search', '4');
+          await nextTick();
+          expect(findListbox().props('items')).toHaveLength(1);
+        });
+      });
+
+      describe('when a template is selected from the list', () => {
+        beforeEach(async () => {
+          createComponent();
+          await waitForPromises();
+          findListbox().vm.$emit('shown');
+          findListbox().vm.$emit('select', mockTemplatesList[0]);
+        });
+
+        it('emits the selected template', () => {
+          expect(wrapper.emitted('selectTemplate')).toEqual([[mockTemplatesList[0]]]);
+        });
+      });
+    });
+
+    describe('but there are no templates to display', () => {
+      beforeEach(async () => {
+        createComponent({ templatesResult: mockEmptyDescriptionTemplatesResult });
+        await waitForPromises();
+      });
+      it('displays a message about adding description templates', () => {
+        expect(findTemplateMessage().text()).toMatchInterpolatedText(
+          'Add description templates to help your contributors communicate effectively!',
+        );
+      });
+      it('displays a link to the docs', () => {
+        expect(findTemplateMessageLink().attributes('href')).toBe(
+          '/help/user/project/description_templates',
+        );
+      });
+    });
+  });
+});

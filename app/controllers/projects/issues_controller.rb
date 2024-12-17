@@ -50,6 +50,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:issues_list_drawer, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_force_frontend_feature_flag(:glql_integration, project&.glql_integration_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_items_alpha, project&.work_items_alpha_feature_flag_enabled?)
   end
 
   before_action only: [:index, :show] do
@@ -63,7 +64,6 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action only: :show do
     push_frontend_feature_flag(:work_items_beta, project&.group)
     push_force_frontend_feature_flag(:work_items_beta, project&.work_items_beta_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_alpha, project&.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
     push_frontend_feature_flag(:namespace_level_work_items, project&.group)
     push_frontend_feature_flag(:work_items_view_preference, current_user)

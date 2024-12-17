@@ -198,11 +198,13 @@ RSpec.describe TodosFinder, feature_category: :notifications do
           let!(:todo2) { create(:todo, user: user, group: group, target: issue, state: :done, author: banned_user) }
           let!(:todo3) { create(:todo, user: user, group: group, target: issue, state: :pending) }
           let!(:todo4) { create(:todo, user: user, group: group, target: issue, state: :pending, author: banned_user) }
+          let!(:todo5) { create(:todo, user: user, group: group, target: issue, state: :pending, snoozed_until: 1.hour.from_now) }
+          let!(:todo6) { create(:todo, user: user, group: group, target: issue, state: :pending, snoozed_until: 1.hour.ago) }
 
           it 'returns the expected items when no state is provided' do
             todos = finder.new(user, {}).execute
 
-            expect(todos).to match_array([todo3])
+            expect(todos).to match_array([todo3, todo6])
           end
 
           it 'returns the expected items when a state is provided' do
@@ -214,7 +216,31 @@ RSpec.describe TodosFinder, feature_category: :notifications do
           it 'returns the expected items when multiple states are provided' do
             todos = finder.new(user, { state: [:pending, :done] }).execute
 
-            expect(todos).to match_array([todo1, todo2, todo3])
+            expect(todos).to match_array([todo1, todo2, todo3, todo5, todo6])
+          end
+        end
+
+        context 'by snoozed state' do
+          let_it_be(:todo1) { create(:todo, user: user, group: group, target: issue, state: :pending) }
+          let_it_be(:todo2) { create(:todo, user: user, group: group, target: issue, state: :pending, snoozed_until: 1.hour.from_now) }
+          let_it_be(:todo3) { create(:todo, user: user, group: group, target: issue, state: :pending, snoozed_until: 1.hour.ago) }
+
+          it 'returns the snoozed todos only' do
+            todos = finder.new(user, { is_snoozed: true }).execute
+
+            expect(todos).to match_array([todo2])
+          end
+
+          context 'when todos_snoozing feature flag is disabled' do
+            before do
+              stub_feature_flags(todos_snoozing: false)
+            end
+
+            it 'returns all pending todos' do
+              todos = finder.new(user, { is_snoozed: true }).execute
+
+              expect(todos).to match_array([todo1, todo2, todo3])
+            end
           end
         end
 

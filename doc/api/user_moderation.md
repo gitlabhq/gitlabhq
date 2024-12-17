@@ -12,23 +12,23 @@ DETAILS:
 
 Use this API to moderate user accounts. For more information, see [Moderate users](../administration/moderate_users.md).
 
-## Approve a user
+## Approve access to a user
 
-Approves the specified user.
+Approves access to a given user account that is pending approval.
 
 Prerequisites:
 
-- You must be an administrator.
+- You must have administrator access to the instance.
 
 ```plaintext
 POST /users/:id/approve
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute  | Type    | Required | Description          |
-|------------|---------|----------|----------------------|
-| `id`       | integer | yes      | ID of specified user |
+| Attribute  | Type    | Required | Description        |
+|------------|---------|----------|--------------------|
+| `id`       | integer | yes      | ID of user account |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/approve"
@@ -55,22 +55,23 @@ Example Responses:
 { "message": "The user you are trying to approve is not pending approval" }
 ```
 
-## Reject a user
+## Reject access to a user
 
-Reject the specified user that is
-[pending approval](../administration/moderate_users.md#users-pending-approval).
+Rejects access to a given user account that is pending approval.
 
 Prerequisites:
 
-- You must be an administrator.
+- You must have administrator access to the instance.
 
 ```plaintext
 POST /users/:id/reject
 ```
 
-Parameters:
+Supported attributes:
 
-- `id` (required) - ID of specified user
+| Attribute  | Type    | Required | Description        |
+|------------|---------|----------|--------------------|
+| `id`       | integer | yes      | ID of user account |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/reject"
@@ -97,47 +98,23 @@ Example Responses:
 { "message": "User does not have a pending request" }
 ```
 
-## Activate a user
-
-Activate the specified user.
-
-Prerequisites:
-
-- You must be an administrator.
-
-```plaintext
-POST /users/:id/activate
-```
-
-Parameters:
-
-| Attribute  | Type    | Required | Description          |
-|------------|---------|----------|----------------------|
-| `id`       | integer | yes      | ID of specified user |
-
-Returns:
-
-- `201 OK` on success.
-- `404 User Not Found` if the user cannot be found.
-- `403 Forbidden` if the user cannot be activated because they are blocked by an administrator or by LDAP synchronization.
-
 ## Deactivate a user
 
-Deactivate the specified user.
+Deactivates a given user account. For more information on banned users, see [Activate and deactivate users](../administration/moderate_users.md#deactivate-and-reactivate-users).
 
 Prerequisites:
 
-- You must be an administrator.
+- You must have administrator access to the instance.
 
 ```plaintext
 POST /users/:id/deactivate
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute  | Type    | Required | Description          |
-|------------|---------|----------|----------------------|
-| `id`       | integer | yes      | ID of specified user |
+| Attribute  | Type    | Required | Description        |
+|------------|---------|----------|--------------------|
+| `id`       | integer | yes      | ID of user account |
 
 Returns:
 
@@ -148,23 +125,47 @@ Returns:
   - Not [dormant](../administration/moderate_users.md#automatically-deactivate-dormant-users).
   - Internal.
 
-## Block a user
+## Reactivate a user
 
-Block the specified user.
+Reactivates a given user account that was previously deactivated.
 
 Prerequisites:
 
-- You must be an administrator.
+- You must have administrator access to the instance.
+
+```plaintext
+POST /users/:id/activate
+```
+
+Supported attributes:
+
+| Attribute  | Type    | Required | Description        |
+|------------|---------|----------|--------------------|
+| `id`       | integer | yes      | ID of user account |
+
+Returns:
+
+- `201 OK` on success.
+- `404 User Not Found` if the user cannot be found.
+- `403 Forbidden` if the user cannot be activated because they are blocked by an administrator or by LDAP synchronization.
+
+## Block access to a user
+
+Blocks a given user account. For more information on banned users, see [Block and unblock users](../administration/moderate_users.md#block-and-unblock-users).
+
+Prerequisites:
+
+- You must have administrator access to the instance.
 
 ```plaintext
 POST /users/:id/block
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute  | Type    | Required | Description          |
-|------------|---------|----------|----------------------|
-| `id`       | integer | yes      | ID of specified user |
+| Attribute  | Type    | Required | Description        |
+|------------|---------|----------|--------------------|
+| `id`       | integer | yes      | ID of user account |
 
 Returns:
 
@@ -174,42 +175,47 @@ Returns:
   - A user that is blocked through LDAP.
   - An internal user.
 
-## Unblock a user
+## Unblock access to a user
 
-Unblock the specified user.
+Unblocks a given user account that was previously blocked.
 
 Prerequisites:
 
-- You must be an administrator.
+- You must have administrator access to the instance.
 
 ```plaintext
 POST /users/:id/unblock
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute  | Type    | Required | Description          |
-|------------|---------|----------|----------------------|
-| `id`       | integer | yes      | ID of specified user |
+| Attribute  | Type    | Required | Description        |
+|------------|---------|----------|--------------------|
+| `id`       | integer | yes      | ID of user account |
 
-Returns `201 OK` on success, `404 User Not Found` is user cannot be found or
-`403 Forbidden` when trying to unblock a user blocked by LDAP synchronization.
+Returns:
+
+- `201 OK` on success.
+- `404 User Not Found` if user cannot be found.
+- `403 Forbidden` when trying to unblock a user blocked by LDAP synchronization.
 
 ## Ban a user
 
-Ban the specified user.
+Bans a given user account. For more information on banned users, see [Ban and unban users](../administration/moderate_users.md#ban-and-unban-users).
 
 Prerequisites:
 
-- You must be an administrator.
+- You must have administrator access to the instance.
 
 ```plaintext
 POST /users/:id/ban
 ```
 
-Parameters:
+Supported attributes:
 
-- `id` (required) - ID of specified user
+| Attribute  | Type    | Required | Description        |
+|------------|---------|----------|--------------------|
+| `id`       | integer | yes      | ID of user account |
 
 Returns:
 
@@ -219,15 +225,21 @@ Returns:
 
 ## Unban a user
 
-Unban the specified user. Available only for administrator.
+Unbans a given user account that was previously banned.
+
+Prerequisites:
+
+- You must have administrator access to the instance.
 
 ```plaintext
 POST /users/:id/unban
 ```
 
-Parameters:
+Supported attributes:
 
-- `id` (required) - ID of specified user
+| Attribute  | Type    | Required | Description        |
+|------------|---------|----------|--------------------|
+| `id`       | integer | yes      | ID of user account |
 
 Returns:
 

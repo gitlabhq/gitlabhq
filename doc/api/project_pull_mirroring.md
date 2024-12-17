@@ -32,7 +32,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"
 ```
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
@@ -94,7 +96,8 @@ Supported attributes:
 Example request to add pull mirroring:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request PUT \
+ --header "PRIVATE-TOKEN: <your_access_token>" \
  --header "Content-Type: application/json" \
  --data '{
   "enabled": true,
@@ -108,7 +111,8 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 Example request to remove pull mirroring:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request PUT \
+ --header "PRIVATE-TOKEN: <your_access_token>" \
  --url "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"  \
  --data "enabled=false"
 ```
@@ -146,7 +150,8 @@ Supported attributes:
 Example creating a project with pull mirroring:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request POST \
+ --header "PRIVATE-TOKEN: <your_access_token>" \
  --header "Content-Type: application/json" \
  --data '{
   "name": "new_project",
@@ -160,7 +165,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 Example adding pull mirroring:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request PUT \
+ --header "PRIVATE-TOKEN: <your_access_token>" \
  --url "https://gitlab.example.com/api/v4/projects/:id" \
  --data "mirror=true&import_url=https://username:token@gitlab.example.com/group/project.git"
 ```
@@ -168,7 +174,8 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 Example removing pull mirroring:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request PUT \
+ --header "PRIVATE-TOKEN: <your_access_token>" \
  --url "https://gitlab.example.com/api/v4/projects/:id"  \
  --data "mirror=false"
 ```
@@ -190,5 +197,7 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"
 ```

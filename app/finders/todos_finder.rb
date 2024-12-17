@@ -12,6 +12,7 @@
 #     project_id; integer
 #     target_id; integer
 #     state: 'pending' (default) or 'done'
+#     is_snoozed: boolean
 #     type: 'Issue' or 'MergeRequest' or ['Issue', 'MergeRequest']
 #
 
@@ -51,6 +52,7 @@ class TodosFinder
     items = by_action(items)
     items = by_author(items)
     items = by_state(items)
+    items = by_snoozed_status(items) if Feature.enabled?(:todos_snoozing, current_user)
     items = by_target_id(items)
     items = by_types(items)
     items = by_group(items)
@@ -101,6 +103,10 @@ class TodosFinder
 
   def action
     params[:action]
+  end
+
+  def snoozed?
+    params[:is_snoozed]
   end
 
   def author?
@@ -210,6 +216,13 @@ class TodosFinder
   def by_state(items)
     return items.pending if filter_pending_only?
     return items.done if filter_done_only?
+
+    items
+  end
+
+  def by_snoozed_status(items)
+    return items.snoozed if snoozed?
+    return items.not_snoozed if filter_pending_only?
 
     items
   end

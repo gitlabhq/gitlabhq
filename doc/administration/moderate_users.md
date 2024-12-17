@@ -43,7 +43,7 @@ sign in.
 
 ### View user sign ups pending approval
 
-> - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
+> - Filter users by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
 
 To view user sign ups pending approval:
 
@@ -53,7 +53,7 @@ To view user sign ups pending approval:
 
 ### Approve or reject a user sign up
 
-> - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
+> - Filter users by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
 
 A user sign up pending approval can be approved or rejected from the **Admin** area.
 
@@ -120,7 +120,7 @@ To report abuse from other users, see [report abuse](../user/report_abuse.md). F
 
 ### Unblock a user
 
-> - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
+> - Filter users by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
 
 A blocked user can be unblocked from the **Admin** area. To do this:
 
@@ -133,7 +133,7 @@ The user's state is set to active and they consume a
 [seat](../subscriptions/self_managed/index.md#billable-users).
 
 NOTE:
-Users can also be unblocked using the [GitLab API](../api/user_moderation.md#unblock-a-user).
+Users can also be unblocked using the [GitLab API](../api/user_moderation.md#unblock-access-to-a-user).
 
 The unblock option may be unavailable for LDAP users. To enable the unblock option,
 the LDAP identity first needs to be deleted:
@@ -145,15 +145,15 @@ the LDAP identity first needs to be deleted:
 1. Select the **Identities** tab.
 1. Find the LDAP provider and select **Delete**.
 
-## Activate and deactivate users
+## Deactivate and reactivate users
 
-GitLab administrators can deactivate and activate users.
-You should deactivate a user if they have no recent activity, and you don't want them to occupy a seat on the instance.
+GitLab administrators can deactivate and reactivate users.
+You should deactivate a user if they have no recent activity, and you do not want them to occupy a seat on the instance.
 
 A deactivated user:
 
 - Can sign in to GitLab.
-  - If a deactivated user signs in, they are automatically activated.
+  - If a deactivated user signs in, they are automatically reactivated.
 - Cannot access repositories or the API.
 - Cannot use slash commands. For more information, see [slash commands](../user/project/integrations/gitlab_slack_application.md#slash-commands).
 - Does not occupy a seat. For more information, see [billable users](../subscriptions/self_managed/index.md#billable-users).
@@ -200,7 +200,7 @@ To do this:
 1. Under **Days of inactivity before deactivation**, enter the number of days before deactivation. Minimum value is 90 days.
 1. Select **Save changes**.
 
-When this feature is enabled, GitLab runs a job once a day to deactivate the dormant users.
+When this feature is enabled, GitLab runs a daily job to deactivate the dormant users.
 
 A maximum of 100,000 users can be deactivated per day.
 
@@ -239,25 +239,25 @@ This job only runs when the `email_confirmation_setting` is set to `soft` or `ha
 
 A maximum of 240,000 users can be deleted per day.
 
-### Activate a user
+### Reactivate a user
 
-> - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
+> - Filter users by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
 
-A deactivated user can be activated from the **Admin** area.
+You can reactivate a deactivated user from the **Admin** area.
 
 To do this:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
 1. In the search box, filter by **State=Deactivated** and press <kbd>Enter</kbd>.
-1. For the user you want to activate, select the vertical ellipsis (**{ellipsis_v}**), then **Activate**.
+1. For the user you want to reactivate, select the vertical ellipsis (**{ellipsis_v}**), then **Activate**.
 
 The user's state is set to active and they consume a
 [seat](../subscriptions/self_managed/index.md#billable-users).
 
 NOTE:
-A deactivated user can also activate their account themselves by logging back in through the UI.
-Users can also be activated using the [GitLab API](../api/user_moderation.md#activate-a-user).
+A deactivated user can also reactivate their account themselves by logging back in through the UI.
+Users can also be reactivated using the [GitLab API](../api/user_moderation.md#reactivate-a-user).
 
 ## Ban and unban users
 
@@ -288,7 +288,7 @@ To ban a user:
 
 ### Unban a user
 
-> - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
+> - Filter users by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
 
 To unban a user:
 
@@ -328,7 +328,7 @@ Before 15.1, additionally groups of which deleted user were the only owner among
 ## Trust and untrust users
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132402) in GitLab 16.5.
-> - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
+> - Filter users by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
 
 You can trust and untrust users from the **Admin** area.
 

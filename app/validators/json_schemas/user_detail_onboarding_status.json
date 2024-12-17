@@ -32,6 +32,19 @@
       "description": "Setting to understand if a user is joining a project or not during onboarding",
       "type": "boolean"
     },
+    "registration_objective": {
+      "description": "Goal of registration collected during onboarding",
+      "type": "integer",
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
     "role": {
       "description": "User persona collected during onboarding",
       "type": "integer",

@@ -10,7 +10,7 @@
 module Todos
   class SnoozingService
     def snooze_todo(todo, snooze_until)
-      if !todo.snoozed_until.nil? || todo.update(snoozed_until: snooze_until)
+      if todo.update(snoozed_until: snooze_until)
         ServiceResponse.success(payload: { todo: todo })
       else
         ServiceResponse.error(message: todo.errors.full_messages)

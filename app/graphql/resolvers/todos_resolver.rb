@@ -26,6 +26,10 @@ module Resolvers
       required: false,
       description: 'State of the todo.'
 
+    argument :is_snoozed, GraphQL::Types::Boolean,
+      required: false,
+      description: 'Whether the to-do item is snoozed.'
+
     argument :type, [Types::TodoTargetEnum],
       required: false,
       description: 'Type of the todo.'
@@ -53,6 +57,7 @@ module Resolvers
     def todo_finder_params(args)
       {
         state: args[:state],
+        is_snoozed: args[:is_snoozed],
         type: args[:type],
         group_id: args[:group_id],
         author_id: args[:author_id],

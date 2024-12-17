@@ -143,9 +143,21 @@ file.md @group-x @group-x/subgroup-y
 ```
 
 NOTE:
-You cannot set a member of a group or subgroup as a Code Owner if [Global SAML group memberships lock](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock) is enabled.
+When [Global SAML group memberships lock](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock) is enabled, you cannot set a group or subgroup as a Code Owner. For more information, see [Incompatibility with Global SAML group memberships lock](#incompatibility-with-global-saml-group-memberships-lock).
 
 If you encounter issues, refer to [User not shown as possible approver](troubleshooting.md#user-not-shown-as-possible-approver).
+
+#### Incompatibility with Global SAML group memberships lock
+
+The Code Owners feature requires direct group memberships to projects.
+When the [Global SAML group memberships lock](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock) is enabled,
+it prevents groups from being invited as direct members to projects. This creates an incompatibility between the two features.
+
+If you enabled Global SAML group memberships lock, you can't use groups or subgroups as Code Owners.
+In this case, you have the following options:
+
+- Use individual users as Code Owners instead of groups.
+- If using group-based Code Owners is a higher priority, disable the Global SAML group memberships lock.
 
 #### Group inheritance and eligibility
 

@@ -41,7 +41,8 @@ GET /projects/:id/protected_branches
 In the following example, the project ID is `5`.
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/protected_branches"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/protected_branches"
 ```
 
 The following example response includes:
@@ -167,7 +168,8 @@ GET /projects/:id/protected_branches/:name
 In the following example, the project ID is `5` and branch name is `main`:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/protected_branches/main"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/protected_branches/main"
 ```
 
 Example response:
@@ -254,7 +256,9 @@ POST /projects/:id/protected_branches
 In the following example, the project ID is `5` and branch name is `*-stable`.
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/protected_branches?name=*-stable&push_access_level=30&merge_access_level=30&unprotect_access_level=40"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/protected_branches?name=*-stable&push_access_level=30&merge_access_level=30&unprotect_access_level=40"
 ```
 
 The example response includes:
@@ -356,7 +360,9 @@ The following example request creates a protected branch with user push access a
 The `user_id` is `2` and the `group_id` is `3`.
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/protected_branches?name=*-stable&allowed_to_push%5B%5D%5Buser_id%5D=2&allowed_to_merge%5B%5D%5Bgroup_id%5D=3"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/protected_branches?name=*-stable&allowed_to_push%5B%5D%5Buser_id%5D=2&allowed_to_merge%5B%5D%5Bgroup_id%5D=3"
 ```
 
 The following example response includes:
@@ -416,7 +422,9 @@ The deploy key must be enabled for your project and it must have write access to
 For other requirements, see [Allow deploy keys to push to a protected branch](../user/project/repository/branches/protected.md#allow-deploy-keys-to-push-to-a-protected-branch).
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/protected_branches?name=*-stable&allowed_to_push[][deploy_key_id]=1"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/protected_branches?name=*-stable&allowed_to_push[][deploy_key_id]=1"
 ```
 
 The following example response includes:
@@ -475,19 +483,19 @@ Example request:
 
 ```shell
 curl --request POST \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     --header "Content-Type: application/json" \
-     --data '{
-      "name": "main",
-      "allowed_to_push": [
-        {"access_level": 30}
-      ],
-      "allowed_to_merge": [
-        {"access_level": 30},
-        {"access_level": 40}
-      ]
-    }'
-    "https://gitlab.example.com/api/v4/projects/5/protected_branches"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "name": "main",
+    "allowed_to_push": [
+      {"access_level": 30}
+    ],
+    "allowed_to_merge": [
+      {"access_level": 30},
+      {"access_level": 40}
+    ]
+  }'
+  --url "https://gitlab.example.com/api/v4/projects/5/protected_branches"
 ```
 
 The following example response includes:
@@ -556,7 +564,9 @@ DELETE /projects/:id/protected_branches/:name
 In the following example, the project ID is `5` and branch name is `*-stable`.
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/protected_branches/*-stable"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/protected_branches/*-stable"
 ```
 
 ## Update a protected branch
@@ -583,7 +593,9 @@ PATCH /projects/:id/protected_branches/:name
 In the following example, the project ID is `5` and branch name is `feature-branch`.
 
 ```shell
-curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/protected_branches/feature-branch?allow_force_push=true&code_owner_approval_required=true"
+curl --request PATCH \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/protected_branches/feature-branch?allow_force_push=true&code_owner_approval_required=true"
 ```
 
 Elements in the `allowed_to_push`, `allowed_to_merge` and `allowed_to_unprotect` arrays should be one of `user_id`, `group_id` or
@@ -608,9 +620,9 @@ To delete:
 
 ```shell
 curl --header 'Content-Type: application/json' --request PATCH \
-     --data '{"allowed_to_push": [{"access_level": 40}]}' \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/projects/22034114/protected_branches/main"
+  --data '{"allowed_to_push": [{"access_level": 40}]}' \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/22034114/protected_branches/main"
 ```
 
 Example response:
@@ -634,8 +646,9 @@ Example response:
 
 ```shell
 curl --header 'Content-Type: application/json' --request PATCH \
-     --data '{"allowed_to_push": [{"id": 12, "access_level": 0}]}' \
-     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/22034114/protected_branches/main"
+  --data '{"allowed_to_push": [{"id": 12, "access_level": 0}]}' \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/22034114/protected_branches/main"
 ```
 
 Example response:
@@ -659,8 +672,9 @@ Example response:
 
 ```shell
 curl --header 'Content-Type: application/json' --request PATCH \
-     --data '{"allowed_to_push": [{"id": 12, "_destroy": true}]}' \
-     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/22034114/protected_branches/main"
+  --data '{"allowed_to_push": [{"id": 12, "_destroy": true}]}' \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/22034114/protected_branches/main"
 ```
 
 Example response:

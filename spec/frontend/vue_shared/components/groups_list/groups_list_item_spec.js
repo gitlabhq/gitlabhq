@@ -76,7 +76,7 @@ describe('GroupsListItem', () => {
   it('renders subgroup count', () => {
     createComponent();
 
-    expect(wrapper.findByTestId('subgroups-count').props()).toEqual({
+    expect(wrapper.findByTestId('subgroups-count').props()).toMatchObject({
       tooltipText: 'Subgroups',
       iconName: 'subgroup',
       stat: group.descendantGroupsCount.toString(),
@@ -86,7 +86,7 @@ describe('GroupsListItem', () => {
   it('renders projects count', () => {
     createComponent();
 
-    expect(wrapper.findByTestId('projects-count').props()).toEqual({
+    expect(wrapper.findByTestId('projects-count').props()).toMatchObject({
       tooltipText: 'Projects',
       iconName: 'project',
       stat: group.projectsCount.toString(),
@@ -96,7 +96,7 @@ describe('GroupsListItem', () => {
   it('renders members count', () => {
     createComponent();
 
-    expect(wrapper.findByTestId('members-count').props()).toEqual({
+    expect(wrapper.findByTestId('members-count').props()).toMatchObject({
       tooltipText: 'Direct members',
       iconName: 'users',
       stat: group.groupMembersCount.toString(),
