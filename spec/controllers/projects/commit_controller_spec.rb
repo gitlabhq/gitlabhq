@@ -471,23 +471,41 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
       expect(assigns(:environment)).to be_nil
     end
 
-    it 'preloads highlights' do
-      allow(Process).to receive(:clock_gettime).and_call_original
-      allow(Process).to receive(:clock_gettime).with(Process::CLOCK_MONOTONIC, :second).and_return(0, 4, 8, 12, 16, 20)
-
-      diff_highlight = instance_double(Gitlab::Diff::Highlight, highlight: [])
-      allow(Gitlab::Diff::Highlight).to receive(:new).and_return(diff_highlight)
-
-      send_request
-
-      assigns(:diffs).diff_files.each do |diff_file|
-        expect(diff_file.instance_variable_get(:@highlighted_diff_lines)).not_to be_nil
+    context 'with expanded parameter' do
+      before do
+        params[:expanded] = 1
       end
 
-      expect(Gitlab::Diff::Highlight)
-        .to have_received(:new).with(anything, hash_including(plain: false)).twice.times
-      expect(Gitlab::Diff::Highlight)
-        .to have_received(:new).with(anything, hash_including(plain: true)).exactly(4).times
+      it 'preloads highlights' do
+        allow(Process).to receive(:clock_gettime).and_call_original
+        allow(Process).to receive(:clock_gettime).with(Process::CLOCK_MONOTONIC, :second).and_return(0, 4, 8, 12, 16, 20)
+
+        diff_highlight = instance_double(Gitlab::Diff::Highlight, highlight: [])
+        allow(Gitlab::Diff::Highlight).to receive(:new).and_return(diff_highlight)
+
+        send_request
+
+        assigns(:diffs).diff_files.each do |diff_file|
+          expect(diff_file.instance_variable_get(:@highlighted_diff_lines)).not_to be_nil
+        end
+
+        expect(Gitlab::Diff::Highlight)
+          .to have_received(:new).with(anything, hash_including(plain: false)).twice.times
+        expect(Gitlab::Diff::Highlight)
+          .to have_received(:new).with(anything, hash_including(plain: true)).exactly(4).times
+      end
+    end
+
+    context 'without expanded parameter' do
+      it 'does not preload the highlights' do
+        expect(assigns(:diffs)).not_to receive(:with_highlights_preloaded)
+
+        send_request
+
+        assigns(:diffs).diff_files.each do |diff_file|
+          expect(diff_file.instance_variable_get(:@highlighted_diff_lines)).to be_nil
+        end
+      end
     end
 
     context 'when format is not html' do
