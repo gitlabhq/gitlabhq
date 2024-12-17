@@ -99,9 +99,8 @@ export default {
       this.isReplying = value;
       if (!this.isReplying) clearDraft(this.autosaveKey);
     },
-    updateNote({ notes: { nodes } }) {
+    updateNote() {
       this.placeholderNote = {};
-      this.replies = [...this.replies, nodes[nodes.length - 1]];
       this.toggleReplying(false);
     },
     getUserPermissions(note) {
@@ -126,6 +125,7 @@ export default {
           <div v-for="reply in replies" :key="reply.id">
             <wiki-note
               reply-note
+              data-testid="wiki-reply-note"
               :noteable-id="noteableId"
               :user-permissions="getUserPermissions(reply)"
               :note="reply"

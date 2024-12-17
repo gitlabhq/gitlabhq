@@ -14,6 +14,7 @@ import {
   MOCK_ISSUES,
   MOCK_LABELS,
   MOCK_MILESTONES,
+  MOCK_ITERATIONS,
   MOCK_SNIPPETS,
   MOCK_VULNERABILITIES,
   MOCK_MERGE_REQUESTS,
@@ -144,6 +145,7 @@ describe('AutocompleteHelper', () => {
       labels: '/labels',
       epics: '/epics',
       milestones: '/milestones',
+      iterations: '/iterations',
       mergeRequests: '/mergeRequests',
       vulnerabilities: '/vulnerabilities',
       commands: '/commands',
@@ -156,6 +158,7 @@ describe('AutocompleteHelper', () => {
     mock.onGet('/labels').reply(HTTP_STATUS_OK, MOCK_LABELS);
     mock.onGet('/epics').reply(HTTP_STATUS_OK, MOCK_EPICS);
     mock.onGet('/milestones').reply(HTTP_STATUS_OK, MOCK_MILESTONES);
+    mock.onGet('/iterations').reply(HTTP_STATUS_OK, MOCK_ITERATIONS);
     mock.onGet('/mergeRequests').reply(HTTP_STATUS_OK, MOCK_MERGE_REQUESTS);
     mock.onGet('/vulnerabilities').reply(HTTP_STATUS_OK, MOCK_VULNERABILITIES);
     mock.onGet('/commands').reply(HTTP_STATUS_OK, MOCK_COMMANDS);
@@ -196,6 +199,7 @@ describe('AutocompleteHelper', () => {
     ${'label'}         | ${'c'}
     ${'epic'}          | ${'n'}
     ${'milestone'}     | ${'16'}
+    ${'iteration'}     | ${'27'}
     ${'merge_request'} | ${'n'}
     ${'vulnerability'} | ${'cross'}
     ${'command'}       | ${'re'}
@@ -295,6 +299,7 @@ describe('AutocompleteHelper', () => {
       labels: '/new/labels',
       epics: '/new/epics',
       milestones: '/new/milestones',
+      iterations: '/new/iterations',
       mergeRequests: '/new/mergeRequests',
       vulnerabilities: '/new/vulnerabilities',
       commands: '/new/commands',

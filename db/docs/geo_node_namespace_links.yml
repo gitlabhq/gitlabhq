@@ -8,6 +8,5 @@ description: Passthrough table for geo_nodes many-to-many namespaces relation.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/14c6128530579ca92fa79342d4119d25bcff1f2d
 milestone: '9.5'
 gitlab_schema: gitlab_main_cell
-sharding_key:
-  namespace_id: namespaces
+exempt_from_sharding: true
 table_size: small

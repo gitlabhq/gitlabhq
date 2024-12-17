@@ -64,9 +64,6 @@ module QA
         end
 
         def sign_in_using_credentials(user: nil, skip_page_validation: false, raise_on_invalid_login: true)
-          # Don't try to log-in if we're already logged-in
-          return if Page::Main::Menu.perform(&:signed_in?)
-
           using_wait_time 0 do
             set_initial_password_if_present
 

@@ -176,6 +176,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
         createWrapper({ resolver: jest.fn().mockRejectedValue(new Error('Failure!')) });
         await waitForPromises();
         expect(findSidebarAuthorLink().exists()).toBe(false);
+        expect(wrapper.findByTestId('sidebar-author').text()).toBe('None');
       });
     });
   });

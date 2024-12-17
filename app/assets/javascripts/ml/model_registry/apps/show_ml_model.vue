@@ -1,7 +1,7 @@
 <script>
 import { GlAvatar, GlBadge, GlButton, GlTab, GlTabs, GlSprintf, GlIcon, GlLink } from '@gitlab/ui';
 import VueRouter from 'vue-router';
-import { n__, s__, sprintf } from '~/locale';
+import { __, n__, s__, sprintf } from '~/locale';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { MODEL_ENTITIES } from '~/ml/model_registry/constants';
 import ModelVersionList from '~/ml/model_registry/components/model_version_list.vue';
@@ -219,6 +219,7 @@ export default {
     versionCountTitle: s__('MlModelRegistry|Total versions'),
     latestVersionTitle: s__('MlModelRegistry|Latest version'),
     authorTitle: s__('MlModelRegistry|Publisher'),
+    noneText: __('None'),
   },
   modelVersionEntity: MODEL_ENTITIES.modelVersion,
   ROUTE_DETAILS,
@@ -312,8 +313,9 @@ export default {
           <div class="gl-pt-6 md:gl-col-span-1">
             <div>
               <div class="gl-text-lg gl-font-bold">{{ $options.i18n.authorTitle }}</div>
-              <div v-if="showModelAuthor" class="gl-pt-2 gl-text-subtle">
+              <div class="gl-pt-2 gl-text-subtle" data-testid="sidebar-author">
                 <gl-link
+                  v-if="showModelAuthor"
                   data-testid="sidebar-author-link"
                   class="js-user-link gl-font-bold !gl-text-subtle"
                   :href="model.author.webUrl"
@@ -321,25 +323,29 @@ export default {
                   <gl-avatar :label="model.author.name" :src="model.author.avatarUrl" :size="24" />
                   {{ model.author.name }}
                 </gl-link>
+                <span v-else>{{ $options.i18n.noneText }}</span>
               </div>
             </div>
-            <div v-if="showModelLatestVersion" class="gl-mt-5" data-testid="latest-version-label">
+            <div class="gl-mt-5">
               <div class="gl-text-lg gl-font-bold">{{ $options.i18n.latestVersionTitle }}</div>
-              <div class="gl-pt-2 gl-text-subtle">
+              <div class="gl-pt-2 gl-text-subtle" data-testid="sidebar-latest-version">
                 <gl-link
+                  v-if="showModelLatestVersion"
                   data-testid="sidebar-latest-version-link"
                   :href="model.latestVersion._links.showPath"
                 >
                   {{ model.latestVersion.version }}
                 </gl-link>
+                <span v-else>{{ $options.i18n.noneText }}</span>
               </div>
             </div>
             <div class="gl-mt-5">
               <div class="gl-text-lg gl-font-bold">{{ $options.i18n.versionCountTitle }}</div>
-              <div v-if="showCreatedDetail" class="gl-pt-2 gl-text-subtle">
-                <span data-testid="sidebar-version-count">
+              <div class="gl-pt-2 gl-text-subtle" data-testid="sidebar-version-count">
+                <span v-if="versionCount">
                   {{ versionCount }}
                 </span>
+                <span v-else>{{ $options.i18n.noneText }}</span>
               </div>
             </div>
           </div>

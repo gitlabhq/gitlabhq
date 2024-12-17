@@ -9,8 +9,8 @@
 
   // Show active state.
   .gl-button.selected {
-    background-color: var(--blue-50) !important;
-    border-color: var(--blue-500) !important;
+    @apply gl-bg-blue-50 #{!important};
+    @apply gl-border-blue-500 #{!important};
   }
 }
 

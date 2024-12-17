@@ -193,7 +193,7 @@ describe('WikiDiscussion', () => {
       expect(placeholderNote.exists()).toBe(false);
     });
 
-    it('should remove placeholer and add new reply to replies list when creating-note:success event is fired', async () => {
+    it('should remove placeholer when creating-note:success event is fired', async () => {
       const newReply = {
         ...note,
         id: 'gid://gitlab/DiscussionNote/1525',
@@ -202,11 +202,8 @@ describe('WikiDiscussion', () => {
       replyForm.$emit('creating-note:success', { notes: { nodes: [newReply] } });
       await nextTick();
 
-      const reply = noteFooter().findComponent(WikiNote);
-      const placeholderNote = noteFooter().findComponent(PlaceholderNote);
-
+      const placeholderNote = wrapper.findComponent(PlaceholderNote);
       expect(placeholderNote.exists()).toBe(false);
-      expect(reply.exists()).toBe(true);
     });
   });
 });

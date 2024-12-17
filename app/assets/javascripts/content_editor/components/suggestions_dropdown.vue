@@ -92,6 +92,10 @@ export default {
       return this.isReference && this.nodeProps.referenceType === 'vulnerability';
     },
 
+    isIteration() {
+      return this.isReference && this.nodeProps.referenceType === 'iteration';
+    },
+
     isMergeRequest() {
       return this.isReference && this.nodeProps.referenceType === 'merge_request';
     },
@@ -153,6 +157,7 @@ export default {
         case 'vulnerability':
           return `[vulnerability:${item.id}]`;
         case 'wiki':
+        case 'iteration':
           return item.title;
         default:
           return '';
@@ -321,7 +326,7 @@ export default {
                   ></small>
                   <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.title)"></span>
                 </span>
-                <span v-if="isEpic">
+                <span v-if="isEpic || isIteration">
                   <small
                     v-safe-html:[$options.safeHtmlConfig]="highlight(item.reference)"
                     class="gl-text-subtle"

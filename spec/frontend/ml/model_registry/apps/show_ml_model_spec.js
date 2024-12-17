@@ -380,7 +380,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
       it('does not display sidebar latest version link when model does not have a latest version', () => {
         createWrapper({ latestVersion: null });
         expect(findLatestVersionLink().exists()).toBe(false);
-        expect(wrapper.findByTestId('latest-version-label').exists()).toBe(false);
+        expect(wrapper.findByTestId('sidebar-latest-version').text()).toBe('None');
       });
     });
 
@@ -401,7 +401,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
       });
 
       it('does not display sidebar version count', () => {
-        expect(findVersionCount().exists()).toBe(false);
+        expect(findVersionCount().text()).toBe('None');
       });
     });
   });

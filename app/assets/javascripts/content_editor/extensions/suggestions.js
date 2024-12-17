@@ -166,6 +166,7 @@ export default Node.create({
       createPlugin('&', 'reference', 'epic'),
       createPlugin('!', 'reference', 'merge_request'),
       createPlugin('[vulnerability:', 'reference', 'vulnerability', { filterOnBackend: true }),
+      createPlugin('*iteration:', 'reference', 'iteration'),
       createPlugin('%', 'reference', 'milestone'),
       createPlugin(':', 'emoji', 'emoji'),
       createPlugin('[[', 'link', 'wiki'),

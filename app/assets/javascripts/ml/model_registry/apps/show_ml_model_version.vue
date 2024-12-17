@@ -239,6 +239,7 @@ export default {
       artifacts: s__('MlModelRegistry|Artifacts'),
       performance: s__('MlModelRegistry|Performance'),
     },
+    noneText: __('None'),
   },
   ROUTE_DETAILS,
   ROUTE_ARTIFACTS,
@@ -321,8 +322,9 @@ export default {
 
       <div class="gl-pt-6 md:gl-col-span-1">
         <div class="gl-text-lg gl-font-bold">{{ $options.i18n.authorTitle }}</div>
-        <div v-if="showAuthor" class="gl-mt-3 gl-text-subtle">
+        <div class="gl-mt-3 gl-text-subtle" data-testid="sidebar-author">
           <gl-link
+            v-if="showAuthor"
             data-testid="sidebar-author-link"
             class="js-user-link gl-font-bold !gl-text-subtle"
             :href="author.webUrl"
@@ -330,6 +332,7 @@ export default {
             <gl-avatar :label="author.name" :src="author.avatarUrl" :size="24" />
             {{ author.name }}
           </gl-link>
+          <span v-else>{{ $options.i18n.noneText }}</span>
         </div>
       </div>
     </div>
