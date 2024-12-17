@@ -5448,7 +5448,7 @@ export const createWorkItemQueryResponse = {
           },
           {
             type: 'HEALTH_STATUS',
-            healthStatus: 'needsAttention',
+            healthStatus: null,
             rolledUpHealthStatus: [],
             __typename: 'WorkItemWidgetHealthStatus',
           },
@@ -5493,7 +5493,7 @@ export const createWorkItemQueryResponse = {
           },
           {
             type: 'COLOR',
-            color: '#b7a0fd',
+            color: '#1068bf', // default color in production
             textColor: '#1F1E24',
             __typename: 'WorkItemWidgetColor',
           },

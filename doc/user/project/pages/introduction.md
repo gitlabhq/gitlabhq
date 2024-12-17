@@ -298,6 +298,26 @@ as artifacts, and GitLab doesn't know which one you want to deploy.
 
 The previous YAML example uses [user-defined job names](index.md#user-defined-job-names).
 
+## Regenerate unique domain for GitLab Pages
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481746) in GitLab 17.7.
+
+You can regenerate the unique domain for your GitLab Pages site.
+
+After the domain is regenerated, the previous URL is no longer active.
+If anyone tries to access the old URL, they'll receive a `404` error.
+
+Prerequisites
+
+- You must have at least the Maintainer role for the project.
+- The **Use unique domain** setting [must be enabled](index.md#unique-domains) in your project's Pages settings.
+
+To regenerate a unique domain for your GitLab Pages site:
+
+1. On the left sidebar, select  **Deploy > Pages**.
+1. Next to **Access pages**, press **Regenerate unique domain**.
+1. GitLab generates a new unique domain for your Pages site.
+
 ## Known issues
 
 For a list of known issues, see the GitLab [public issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name[]=Category%3APages).

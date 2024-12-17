@@ -6,8 +6,16 @@
     icon: 'doc-text',
     count: @project.pages_domains.size + (pages_url ? 1 : 0),
     options: { class: 'gl-mt-5', data: { testid: 'access-page-container' } },
-    footer_options: { class: 'gl-bg-red-50' }) do |c|
-    - c.with_body do
+    footer_options: { class: 'gl-bg-red-50' }) do |content|
+    - if @project.project_setting.pages_unique_domain_enabled?
+      - content.with_actions do
+        = render Pajamas::ButtonComponent.new(href: regenerate_unique_domain_project_pages_path(@project),
+          method: :post,
+          size: :small,
+          button_options: { data: { confirm: s_('GitLabPages|Are you sure you want to regenerate the unique domain? The previous URL will stop working.'), 'confirm-btn-variant': 'danger' },
+          "aria-label": s_('GitLabPages|Regenerate unique domain') }) do
+          = s_('GitLabPages|Regenerate unique domain')
+    - content.with_body do
       %ul.content-list
         %li
           = external_link(pages_url_text, pages_url)
@@ -17,7 +25,7 @@
             = external_link(domain.url, domain.url)
 
     - unless @project.public_pages?
-      - c.with_footer do
+      - content.with_footer do
         - help_page = help_page_path('user/project/pages/pages_access_control.md')
         - link_start = '<a href="%{url}" target="_blank" class="gl-alert-link" rel="noopener noreferrer">'.html_safe % { url: help_page }
         - link_end = '</a>'.html_safe

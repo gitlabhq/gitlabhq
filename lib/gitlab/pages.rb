@@ -57,11 +57,12 @@ module Gitlab
           project.licensed_feature_available?(:pages_multiple_versions)
       end
 
-      private
-
       def generate_unique_domain(project)
         10.times do
           pages_unique_domain = Gitlab::Pages::RandomDomain.generate(project_path: project.path)
+
+          return false if pages_unique_domain.blank?
+
           return pages_unique_domain unless
             ProjectSetting.unique_domain_exists?(pages_unique_domain) ||
               Namespace.top_level.by_path(pages_unique_domain).present?

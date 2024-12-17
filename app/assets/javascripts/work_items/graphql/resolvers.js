@@ -127,7 +127,10 @@ export const updateNewWorkItemCache = (input, cache) => {
 
       updateDatesWidget(draftData, rolledUpDates);
 
-      if (title) draftData.workspace.workItem.title = title;
+      // We want to allow users to delete a title for an in-progress work item draft
+      // as we check for the title being valid when submitting the form
+      if (title !== undefined) draftData.workspace.workItem.title = title;
+
       if (confidential !== undefined) draftData.workspace.workItem.confidential = confidential;
     }),
   );

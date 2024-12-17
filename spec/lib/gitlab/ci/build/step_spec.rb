@@ -81,8 +81,30 @@ RSpec.describe Gitlab::Ci::Build::Step, feature_category: :continuous_integratio
       let(:pipeline) { create(:ci_pipeline, project: project) }
       let(:job) { create(:ci_build, :release_options, pipeline: pipeline) }
 
-      it 'returns the release-cli command line with --catalog-publish' do
-        expect(subject.script).to eq(["release-cli create --name \"Release $CI_COMMIT_SHA\" --description \"Created using the release-cli $EXTRA_DESCRIPTION\" --tag-name \"release-$CI_COMMIT_SHA\" --ref \"$CI_COMMIT_SHA\" --assets-link \"{\\\"name\\\":\\\"asset1\\\",\\\"url\\\":\\\"https://example.com/assets/1\\\"}\" --catalog-publish"])
+      it 'returns glab scripts' do
+        expect(subject.script).to eq([
+          "if ! command -v glab &> /dev/null; then\n  echo \"Error: glab command not found. Please use release-cli image 0.20.0 or higher, or install glab 1.50.0 or higher.\"\n  exit 1\nfi\n",
+          "if [ \"$(printf \"%s\n%s\" \"1.50.0\" \"$(glab --version | grep -oE '[0-9]+.[0-9]+.[0-9]+')\" | sort -V | head -n1)\" = \"1.50.0\" ]; then\n  echo \"Validating glab version. OK\"\nelse\n  echo \"Error: Please use release-cli image 0.20.0 or higher, or install glab 1.50.0 or higher.\"\n  exit 1\nfi\n",
+          'glab auth login --job-token $CI_JOB_TOKEN --hostname $CI_SERVER_FQDN --api-protocol $CI_SERVER_PROTOCOL',
+          'GITLAB_HOST=$CI_SERVER_URL glab -R $CI_PROJECT_PATH release create "release-$CI_COMMIT_SHA" ' \
+            '--assets-links "[{\"name\":\"asset1\",\"url\":\"https://example.com/assets/1\"}]" ' \
+            '--name "Release $CI_COMMIT_SHA" --notes "Created using the release-cli $EXTRA_DESCRIPTION" ' \
+            '--ref "$CI_COMMIT_SHA" --publish-to-catalog'
+        ])
+      end
+
+      context 'when the FF ci_release_cli_catalog_publish_option is disabled' do
+        before do
+          stub_feature_flags(ci_release_cli_catalog_publish_option: false)
+        end
+
+        it 'returns the release-cli script' do
+          expect(subject.script).to eq([
+            "release-cli create --name \"Release $CI_COMMIT_SHA\" --description \"Created using the release-cli $EXTRA_DESCRIPTION\" " \
+              "--tag-name \"release-$CI_COMMIT_SHA\" --ref \"$CI_COMMIT_SHA\" " \
+              '--assets-link "{\"name\":\"asset1\",\"url\":\"https://example.com/assets/1\"}"'
+          ])
+        end
       end
     end
   end

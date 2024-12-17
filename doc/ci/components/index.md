@@ -548,7 +548,7 @@ DETAILS:
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/432045) to [beta](../../policy/development_stages_support.md#beta) in GitLab 16.7.
 > - [Made Generally Available](https://gitlab.com/gitlab-org/gitlab/-/issues/454306) in GitLab 17.0.
 
-The CI/CD Catalog is a list of projects with published CI/CD components you can use
+The [CI/CD Catalog](https://gitlab.com/explore/catalog) is a list of projects with published CI/CD components you can use
 to extend your CI/CD workflow.
 
 Anyone can [create a component project](#create-a-component-project) and add it to

@@ -54,9 +54,8 @@ To set up SSO with Azure as your identity provider:
    | **Certificate fingerprint**              | **Thumbprint**                                 |
 
 1. You should set the following attributes:
-   - **Unique User Identifier (Name identifier)** to `user.objectID`.
-   - **nameid-format** to `persistent`. For more information, see how to [manage user SAML identity](#manage-user-saml-identity).
-   - **email** to `user.mail` or similar.
+   - **Unique User Identifier (Name ID)** to `user.objectID`.
+      - **Name identifier format** to `persistent`. For more information, see how to [manage user SAML identity](#manage-user-saml-identity).
    - **Additional claims** to [supported attributes](#configure-assertions).
 
 1. Make sure the identity provider is set to have provider-initiated calls

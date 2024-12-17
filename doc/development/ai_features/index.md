@@ -991,7 +991,7 @@ For evaluation in merge request pipelines, we use:
 To seed project and group resources for testing and evaluation, run the following command:
 
 ```shell
-FILTER=gitlab_duo bundle exec rake db:seed_fu
+SEED_GITLAB_DUO=1 FILTER=gitlab_duo bundle exec rake db:seed_fu
 ```
 
 This command executes the [development seed file](../development_seed_files.md) for GitLab Duo, which creates `gitlab-duo` group in your GDK.

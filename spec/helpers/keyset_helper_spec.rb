@@ -26,10 +26,7 @@ RSpec.describe KeysetHelper, type: :controller do
       it 'does not render pagination links' do
         get :index
 
-        expect(response.body).not_to include(s_('Pagination|First'))
-        expect(response.body).not_to include(s_('Pagination|Prev'))
-        expect(response.body).not_to include(s_('Pagination|Next'))
-        expect(response.body).not_to include(s_('Pagination|Last'))
+        expect(response.body).not_to have_css('.gl-pagination')
       end
     end
 
@@ -41,10 +38,7 @@ RSpec.describe KeysetHelper, type: :controller do
       it 'does not render pagination links' do
         get :index
 
-        expect(response.body).not_to include(s_('Pagination|First'))
-        expect(response.body).not_to include(s_('Pagination|Prev'))
-        expect(response.body).not_to include(s_('Pagination|Next'))
-        expect(response.body).not_to include(s_('Pagination|Last'))
+        expect(response.body).not_to have_css('.gl-pagination')
       end
     end
 
@@ -54,26 +48,27 @@ RSpec.describe KeysetHelper, type: :controller do
       let(:paginator) { User.where(admin: false).order(id: :desc).keyset_paginate(per_page: 2) }
 
       context 'when on the first page' do
-        it 'renders the next and last links' do
+        it 'disables the First and Prev buttons' do
           get :index
 
-          expect(response.body).not_to include(s_('Pagination|First'))
-          expect(response.body).not_to include(s_('Pagination|Prev'))
-          expect(response.body).to include(s_('Pagination|Next'))
-          expect(response.body).to include(s_('Pagination|Last'))
+          expect(response.body).to have_css('.gl-pagination')
+          expect(response.body).to have_css('a.disabled', text: 'First')
+          expect(response.body).to have_css('a.disabled', text: 'Prev')
+          expect(response.body).to have_css('a:not(disabled)', text: 'Next')
+          expect(response.body).to have_css('a:not(disabled)', text: 'Last')
         end
       end
 
       context 'when at the last page' do
-        it 'renders the prev and first links' do
+        it 'disables the Next and Last buttons' do
           cursor = paginator.cursor_for_last_page
 
           get :index, params: { cursor: cursor }
 
-          expect(response.body).to include(s_('Pagination|First'))
-          expect(response.body).to include(s_('Pagination|Prev'))
-          expect(response.body).not_to include(s_('Pagination|Next'))
-          expect(response.body).not_to include(s_('Pagination|Last'))
+          expect(response.body).to have_css('a:not(disabled)', text: 'First')
+          expect(response.body).to have_css('a:not(disabled)', text: 'Prev')
+          expect(response.body).to have_css('a.disabled', text: 'Next')
+          expect(response.body).to have_css('a.disabled', text: 'Last')
         end
       end
 
@@ -83,10 +78,10 @@ RSpec.describe KeysetHelper, type: :controller do
 
           get :index, params: { cursor: cursor }
 
-          expect(response.body).to include(s_('Pagination|First'))
-          expect(response.body).to include(s_('Pagination|Prev'))
-          expect(response.body).to include(s_('Pagination|Next'))
-          expect(response.body).to include(s_('Pagination|Last'))
+          expect(response.body).to have_css('a:not(disabled)', text: 'First')
+          expect(response.body).to have_css('a:not(disabled)', text: 'Prev')
+          expect(response.body).to have_css('a:not(disabled)', text: 'Next')
+          expect(response.body).to have_css('a:not(disabled)', text: 'Last')
         end
       end
     end

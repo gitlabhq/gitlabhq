@@ -210,3 +210,15 @@ If you are not an administrator for the instance or group a service account is a
 - [Project access tokens - bot users](../project/settings/project_access_tokens.md#bot-users-for-projects)
 - [Group access tokens - bot users](../group/settings/group_access_tokens.md#bot-users-for-groups)
 - [Internal users](../../administration/internal_users.md#internal-users)
+
+## Troubleshooting
+
+### "You are about to incur additional charges" warning when adding a service account
+
+When you add a service account, you might see a warning message stating that this action will incur additional charges due to exceeding the subscription seat count.
+This behavior is being tracked in [issue 433141](https://gitlab.com/gitlab-org/gitlab/-/issues/433141).
+
+Adding a service account does not:
+
+- Incur additional charges.
+- Increase your seat usage count after you've added the account.

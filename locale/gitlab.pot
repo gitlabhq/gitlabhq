@@ -23395,6 +23395,9 @@ msgstr ""
 msgid "Failed to publish issue on status page."
 msgstr ""
 
+msgid "Failed to regenerate unique domain"
+msgstr ""
+
 msgid "Failed to remove a Zoom meeting"
 msgstr ""
 
@@ -25268,6 +25271,9 @@ msgstr ""
 msgid "GitLabPages|Access pages"
 msgstr ""
 
+msgid "GitLabPages|Are you sure you want to regenerate the unique domain? The previous URL will stop working."
+msgstr ""
+
 msgid "GitLabPages|Are you sure?"
 msgstr ""
 
@@ -25305,6 +25311,9 @@ msgid "GitLabPages|Only project maintainers can remove pages"
 msgstr ""
 
 msgid "GitLabPages|Pages"
+msgstr ""
+
+msgid "GitLabPages|Regenerate unique domain"
 msgstr ""
 
 msgid "GitLabPages|Remove certificate"
@@ -45561,6 +45570,9 @@ msgstr ""
 msgid "PushoverService|Total commits count: %{total_commits_count}"
 msgstr ""
 
+msgid "Q got your message!"
+msgstr ""
+
 msgid "QualitySummary|Project quality"
 msgstr ""
 
@@ -54601,6 +54613,9 @@ msgstr ""
 msgid "Successfully linked ID(s): %{item_ids}."
 msgstr ""
 
+msgid "Successfully regenerated unique domain"
+msgstr ""
+
 msgid "Successfully removed email."
 msgstr ""
 
@@ -58374,6 +58389,9 @@ msgstr ""
 msgid "Todos|requested an OKR update for %{what}"
 msgstr ""
 
+msgid "Todos|requested an OKR update for %{which}"
+msgstr ""
+
 msgid "Todos|reviewed your merge request"
 msgstr ""
 
@@ -60278,6 +60296,9 @@ msgid "Use %{code_start}::%{code_end} to create a %{link_start}scoped label set%
 msgstr ""
 
 msgid "Use .gitlab-ci.yml"
+msgstr ""
+
+msgid "Use Amazon Q to streamline development workflow and project upgrades (Beta)"
 msgstr ""
 
 msgid "Use CRON syntax. %{linkStart}Learn more.%{linkEnd}"
@@ -63140,6 +63161,9 @@ msgstr ""
 msgid "Work Item type with id %{id} was not found"
 msgstr ""
 
+msgid "Work Item|Epic"
+msgstr ""
+
 msgid "Work in progress (open and unassigned)"
 msgstr ""
 
@@ -63283,6 +63307,9 @@ msgstr ""
 msgid "WorkItem|Aqua"
 msgstr ""
 
+msgid "WorkItem|Are you sure you want to cancel creating this %{workItemType}?"
+msgstr ""
+
 msgid "WorkItem|Are you sure you want to cancel editing?"
 msgstr ""
 
@@ -63365,6 +63392,9 @@ msgid "WorkItem|Configure work items such as epics, issues, and tasks to represe
 msgstr ""
 
 msgid "WorkItem|Contacts"
+msgstr ""
+
+msgid "WorkItem|Continue editing"
 msgstr ""
 
 msgid "WorkItem|Convert to child item"

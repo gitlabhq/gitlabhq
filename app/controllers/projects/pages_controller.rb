@@ -53,6 +53,23 @@ class Projects::PagesController < Projects::ApplicationController
     end
   end
 
+  def regenerate_unique_domain
+    return render_403 unless can?(current_user, :update_pages, @project)
+    return render_403 unless @project.project_setting.pages_unique_domain_enabled?
+
+    result = Gitlab::Pages.generate_unique_domain(@project)
+
+    respond_to do |format|
+      format.html do
+        if result && @project.project_setting.update(pages_unique_domain: result)
+          redirect_to project_pages_path(@project), notice: _('Successfully regenerated unique domain')
+        else
+          redirect_to project_pages_path(@project), alert: _('Failed to regenerate unique domain')
+        end
+      end
+    end
+  end
+
   private
 
   def project_params

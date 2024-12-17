@@ -21,7 +21,7 @@ to prove their identity:
 they would need both factors.
 
 NOTE:
-If you are [using and enforcing SSO](../user/group/saml_sso/index.md#sso-enforcement), you might already be enforcing 2FA on the identity provider (IDP) side. Enforcing 2FA on GitLab as well might be unnecessary.
+If you are [using and enforcing SSO](../user/group/saml_sso/index.md#sso-enforcement), you might already be enforcing 2FA on the identity provider (IdP) side. Enforcing 2FA on GitLab as well might be unnecessary.
 
 ## Enforce 2FA for all users
 
@@ -84,11 +84,16 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+You can enforce 2FA for all users in a group or subgroup.
+
+NOTE:
+2FA enforcement applies to both [direct and inherited members](../user/project/members/index.md#membership-types) group members. If 2FA is enforced on a subgroup, members of the parent group must also enroll an authentication factor.
+
 Prerequisites:
 
 - You must have the Maintainer or Owner role for the group.
 
-To enforce 2FA only for certain groups:
+To enforce 2FA for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
@@ -100,8 +105,6 @@ To enforce 2FA only for certain groups:
    and projects, the shortest grace period is used.
 1. Select **Save changes**.
 
-Enforcement affects all [direct and inherited members](../user/project/members/index.md#membership-types) in the group.
-
 Access tokens are not required to provide a second factor for authentication because
 they are API-based. Tokens generated before 2FA is enforced remain valid.
 
@@ -109,17 +112,13 @@ The GitLab [incoming email](../administration/incoming_email.md) feature does no
 
 ### 2FA in subgroups
 
-You can enable and enforce 2FA for individual subgroups in the same way as a top
-level group.
+By default, each subgroup can configure 2FA requirements that might differ from the parent group.
 
-You can prevent subgroups from setting up their own 2FA requirements:
+To prevent subgroups from setting individual 2FA requirements:
 
 1. Go to the top-level group's **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Clear the **Allow subgroups to set up their own two-factor authentication rule** checkbox.
-
-This action causes all subgroups with 2FA requirements to stop requiring 2FA from
-their members.
 
 ### 2FA in projects
 
@@ -145,7 +144,7 @@ DETAILS:
 
 You can disable 2FA for a single user or all users.
 
-This is a permanent and irreversible action. Users must reactivate 2FA to use it again.
+This action is permanent and irreversible. Users must reactivate 2FA to use it again.
 
 WARNING:
 Disabling 2FA for users does not disable the [enforce 2FA for all users](#enforce-2fa-for-all-users)

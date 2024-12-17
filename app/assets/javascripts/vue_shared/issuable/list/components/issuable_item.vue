@@ -546,12 +546,17 @@ export default {
         />
       </ul>
       <div
-        v-gl-tooltip.bottom
-        class="gl-hidden gl-text-subtle sm:gl-inline-block"
-        :title="tooltipTitle(timestamp)"
-        data-testid="issuable-timestamp"
+        class="gl-hidden sm:gl-flex sm:gl-flex-col sm:gl-items-end md:gl-flex-row md:gl-items-center"
       >
-        {{ formattedTimestamp }}
+        <slot name="health-status"></slot>
+        <div
+          v-gl-tooltip.bottom
+          class="gl-text-subtle sm:gl-inline-block"
+          :title="tooltipTitle(timestamp)"
+          data-testid="issuable-timestamp"
+        >
+          {{ formattedTimestamp }}
+        </div>
       </div>
     </div>
   </li>

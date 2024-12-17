@@ -15,7 +15,7 @@ module API
       end
 
       def authorize_destroy_protected_branch!(protected_branch)
-        authorize!(:read_protected_branch, protected_branch)
+        authorize!(:destroy_protected_branch, protected_branch)
       end
 
       params :optional_params_ee do

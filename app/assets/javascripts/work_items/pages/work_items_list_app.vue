@@ -4,6 +4,7 @@ import { isEmpty } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
+import WorkItemHealthStatus from '~/work_items/components/work_item_health_status.vue';
 import {
   convertToApiParams,
   convertToSearchQuery,
@@ -100,6 +101,7 @@ export default {
     IssueCardStatistics,
     IssueCardTimeInfo,
     WorkItemDrawer,
+    WorkItemHealthStatus,
   },
   mixins: [glFeatureFlagMixin()],
   inject: [
@@ -662,7 +664,7 @@ export default {
       </template>
 
       <template #timeframe="{ issuable = {} }">
-        <issue-card-time-info :issue="issuable" />
+        <issue-card-time-info :issue="issuable" :is-work-item-list="true" />
       </template>
 
       <template #status="{ issuable }">
@@ -687,6 +689,10 @@ export default {
 
       <template #sidebar-items="{ checkedIssuables }">
         <slot name="sidebar-items" :checked-issuables="checkedIssuables"></slot>
+      </template>
+
+      <template #health-status="{ issuable = {} }">
+        <work-item-health-status :issue="issuable" />
       </template>
     </issuable-list>
   </div>

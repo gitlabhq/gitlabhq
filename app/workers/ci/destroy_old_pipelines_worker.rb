@@ -18,7 +18,8 @@ module Ci
         with_context(project: project) do
           timestamp = project.ci_delete_pipelines_in_seconds.seconds.ago
           pipelines = Ci::Pipeline.for_project(project.id).created_before(timestamp).limit(LIMIT).to_a
-          pipelines.each { |pipeline| Ci::DestroyPipelineService.new(project, nil).unsafe_execute(pipeline) }
+
+          Ci::DestroyPipelineService.new(project, nil).unsafe_execute(pipelines)
         end
       end
     end

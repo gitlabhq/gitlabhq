@@ -165,11 +165,4 @@ export default defineConfig({
   worker: {
     format: 'es',
   },
-  css: {
-    preprocessorOptions: {
-      sass: {
-        api: 'modern',
-      },
-    },
-  },
 });

@@ -219,4 +219,87 @@ RSpec.describe Projects::PagesController, feature_category: :pages do
       end
     end
   end
+
+  describe 'POST regenerate_unique_domain' do
+    before do
+      project.project_setting.update!(
+        pages_unique_domain_enabled: true,
+        pages_unique_domain: 'pages-abcde'
+      )
+    end
+
+    context 'when update is successful' do
+      it 'redirects with success message' do
+        original_domain = project.project_setting.pages_unique_domain
+
+        post :regenerate_unique_domain, params: { namespace_id: project.namespace, project_id: project }
+
+        expect(response).to redirect_to(project_pages_path(project))
+        expect(flash[:notice]).to eq('Successfully regenerated unique domain')
+        project.reload
+        expect(project.project_setting.pages_unique_domain).not_to eq(original_domain)
+        expect(project.project_setting.pages_unique_domain).to be_present
+      end
+    end
+
+    context 'when update fails' do
+      before do
+        allow(Gitlab::Pages::RandomDomain).to receive(:generate).and_return(false)
+      end
+
+      it 'redirects with error message when domain regeneration fails' do
+        post :regenerate_unique_domain, params: { namespace_id: project.namespace, project_id: project }
+
+        expect(response).to redirect_to(project_pages_path(project))
+        expect(flash[:alert]).to eq('Failed to regenerate unique domain')
+      end
+
+      it 'redirects with error message when project setting update fails' do
+        allow_next_instance_of(ProjectSetting) do |instance|
+          allow(instance).to receive(:update).and_return(false)
+        end
+
+        post :regenerate_unique_domain, params: { namespace_id: project.namespace, project_id: project }
+
+        expect(response).to redirect_to(project_pages_path(project))
+        expect(flash[:alert]).to eq('Failed to regenerate unique domain')
+      end
+    end
+
+    context 'when user does not have permission' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'returns 404' do
+        post :regenerate_unique_domain, params: { namespace_id: project.namespace, project_id: project }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when unique domains is not enabled' do
+      before do
+        project.project_setting.update!(pages_unique_domain_enabled: false)
+      end
+
+      it 'returns 403' do
+        post :regenerate_unique_domain, params: { namespace_id: project.namespace, project_id: project }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when pages is disabled' do
+      before do
+        allow(Gitlab.config.pages).to receive(:enabled).and_return(false)
+      end
+
+      it 'returns 404 status' do
+        post :regenerate_unique_domain, params: { namespace_id: project.namespace, project_id: project }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
 end

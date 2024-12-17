@@ -177,6 +177,78 @@ RSpec.describe Gitlab::Pages, feature_category: :pages do
     end
   end
 
+  describe '.generate_unique_domain' do
+    let(:project) { create(:project, path: 'test-project') }
+
+    context 'when a unique domain can be generated' do
+      before do
+        allow(Gitlab::Pages::RandomDomain).to receive(:generate)
+          .with(project_path: project.path)
+          .and_return('unique-domain-123')
+
+        allow(ProjectSetting).to receive(:unique_domain_exists?)
+          .with('unique-domain-123')
+          .and_return(false)
+      end
+
+      it 'returns the generated unique domain' do
+        expect(described_class.generate_unique_domain(project)).to eq('unique-domain-123')
+      end
+
+      it 'attempts generation only once when first attempt succeeds' do
+        expect(Gitlab::Pages::RandomDomain).to receive(:generate).once
+
+        described_class.generate_unique_domain(project)
+      end
+    end
+
+    context 'when first attempts fail but later succeeds' do
+      before do
+        # First two attempts generate existing domains
+        allow(Gitlab::Pages::RandomDomain).to receive(:generate)
+          .with(project_path: project.path)
+          .and_return('existing-domain-1', 'existing-domain-2', 'unique-domain-123')
+
+        allow(ProjectSetting).to receive(:unique_domain_exists?)
+          .with('existing-domain-1').and_return(true)
+        allow(ProjectSetting).to receive(:unique_domain_exists?)
+          .with('existing-domain-2').and_return(true)
+        allow(ProjectSetting).to receive(:unique_domain_exists?)
+          .with('unique-domain-123').and_return(false)
+      end
+
+      it 'returns the first unique domain generated' do
+        expect(described_class.generate_unique_domain(project)).to eq('unique-domain-123')
+      end
+    end
+
+    context 'when unique domain generation fails after all attempts' do
+      before do
+        allow(Gitlab::Pages::RandomDomain).to receive(:generate)
+          .with(project_path: project.path)
+          .and_return('existing-domain')
+
+        allow(ProjectSetting).to receive(:unique_domain_exists?)
+          .with('existing-domain')
+          .and_return(true)
+      end
+
+      it 'raises UniqueDomainGenerationFailure after 10 attempts' do
+        expect(Gitlab::Pages::RandomDomain).to receive(:generate).exactly(10).times
+
+        expect { described_class.generate_unique_domain(project) }
+          .to raise_error(Gitlab::Pages::UniqueDomainGenerationFailure)
+      end
+    end
+
+    context 'when project is nil' do
+      it 'raises NoMethodError' do
+        expect { described_class.generate_unique_domain(nil) }
+          .to raise_error(NoMethodError)
+      end
+    end
+  end
+
   describe '#update_default_domain_redirect' do
     let(:project) { build(:project) }
 

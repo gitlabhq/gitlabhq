@@ -130,9 +130,7 @@ export default {
       if (this.todo.action === TODO_ACTION_TYPE_MEMBER_ACCESS_REQUESTED) {
         name = sprintf(s__('Todos|has requested access to %{what} %{which}'), {
           what: this.todo.memberAccessType,
-          // This one doesn't seem to be available via GraphQL.
-          // We probably want to move this logic to the backend anyhow...
-          which: this.todo.access_request_target_name,
+          which: this.todo.targetEntity.name,
         });
       }
 
@@ -141,8 +139,8 @@ export default {
       }
 
       if (this.todo.action === TODO_ACTION_TYPE_OKR_CHECKIN_REQUESTED) {
-        name = sprintf(s__('Todos|requested an OKR update for %{what}'), {
-          what: this.todo.targetEntity.title,
+        name = sprintf(s__('Todos|requested an OKR update for %{which}'), {
+          which: this.todo.targetEntity.name,
         });
       }
 

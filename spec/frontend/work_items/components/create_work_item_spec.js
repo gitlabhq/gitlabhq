@@ -176,9 +176,17 @@ describe('Create work item component', () => {
       expect(findAlert().exists()).toBe(false);
     });
 
-    it('emits event on Cancel button click', () => {
+    it('emits "confirmCancel" event on Cancel button click if form is filled', async () => {
+      await updateWorkItemTitle();
+
       findCancelButton().vm.$emit('click');
-      expect(wrapper.emitted('cancel')).toEqual([[]]);
+      expect(wrapper.emitted('confirmCancel')).toEqual([[]]);
+    });
+
+    it('emits "discardDraft" event on Cancel button click if form is filled', () => {
+      findCancelButton().vm.$emit('click');
+
+      expect(wrapper.emitted('discardDraft')).toEqual([[]]);
     });
   });
 
@@ -392,6 +400,22 @@ describe('Create work item component', () => {
       await updateWorkItemTitle();
 
       expect(findCreateButton().props('disabled')).toBe(false);
+    });
+
+    it('when title input text is deleted after typed, title is not valid anymore to submit', async () => {
+      await initialiseComponentAndSelectWorkItem();
+      await updateWorkItemTitle();
+
+      expect(findTitleInput().props('title')).toBe('Test title');
+
+      await updateWorkItemTitle('');
+
+      wrapper.find('form').trigger('submit');
+      await waitForPromises();
+
+      expect(findTitleInput().props('title')).toBe('');
+      expect(findTitleInput().props('isValid')).toBe(false);
+      expect(wrapper.emitted('workItemCreated')).toEqual(undefined);
     });
 
     it('shows an alert on mutation error', async () => {
