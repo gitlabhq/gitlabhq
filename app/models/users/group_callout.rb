@@ -28,8 +28,8 @@ module Users
       unlimited_members_during_trial_alert: 18, # EE-only
       # 19 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121920
       project_repository_limit_alert_warning_threshold: 20, # EE-only
-      project_repository_limit_alert_alert_threshold: 21, # EE-only
-      project_repository_limit_alert_error_threshold: 22, # EE-only
+      # 21 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122494
+      # 22 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122494
       namespace_over_storage_users_combined_alert: 23, # EE-only
       all_seats_used_alert: 24, # EE-only
       compliance_framework_settings_moved_callout: 25, # EE-only

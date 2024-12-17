@@ -612,6 +612,7 @@ To update the `default` plan of one of these limits on a self-managed installati
 ### Maximum file size per type of artifact
 
 > - `ci_max_artifact_size_annotations` limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+> - `ci_max_artifact_size_lsif` limit [increased](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175684) in GitLab 17.8.
 
 Job artifacts defined with [`artifacts:reports`](../ci/yaml/index.md#artifactsreports)
 that are uploaded by the runner are rejected if the file size exceeds the maximum
@@ -644,7 +645,7 @@ setting is used:
 | `ci_max_artifact_size_license_management`   | 0             |
 | `ci_max_artifact_size_license_scanning`     | 0             |
 | `ci_max_artifact_size_load_performance`     | 0             |
-| `ci_max_artifact_size_lsif`                 | 100 MB        |
+| `ci_max_artifact_size_lsif`                 | 200 MB        |
 | `ci_max_artifact_size_metadata`             | 0             |
 | `ci_max_artifact_size_metrics_referee`      | 0             |
 | `ci_max_artifact_size_metrics`              | 0             |
@@ -1193,7 +1194,7 @@ ci_pipeline_schedules: 10,
 offset_pagination_limit: 50000,
 ci_instance_level_variables: "[FILTERED]",
 storage_size_limit: 0,
-ci_max_artifact_size_lsif: 100,
+ci_max_artifact_size_lsif: 200,
 ci_max_artifact_size_archive: 0,
 ci_max_artifact_size_metadata: 0,
 ci_max_artifact_size_trace: "[FILTERED]",

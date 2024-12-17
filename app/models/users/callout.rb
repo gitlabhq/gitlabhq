@@ -68,8 +68,8 @@ module Users
       # 66 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135470/
       # 67 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121920
       project_repository_limit_alert_warning_threshold: 68, # EE-only
-      project_repository_limit_alert_alert_threshold: 69, # EE-only
-      project_repository_limit_alert_error_threshold: 70, # EE-only
+      # 69 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122494
+      # 70 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122494
       # 71 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134432
       # 72 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129022
       namespace_over_storage_users_combined_alert: 73, # EE-only
