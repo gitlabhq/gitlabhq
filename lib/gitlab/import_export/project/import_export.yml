@@ -550,7 +550,6 @@ included_attributes:
     - :name
     - :options
     - :allow_failure
-    - :stage
     - :stage_idx
     - :tag
     - :ref

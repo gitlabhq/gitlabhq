@@ -1452,89 +1452,55 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe 'pipeline stages' do
     let(:pipeline) { build(:ci_empty_pipeline, :created) }
 
-    describe 'legacy stages' do
-      before do
-        create(
-          :commit_status,
-          pipeline: pipeline,
-          stage: 'build',
-          name: 'linux',
-          stage_idx: 0,
-          status: 'success'
-        )
+    before do
+      create(:ci_stage, name: 'test', pipeline: pipeline, position: 1)
+      create(:ci_stage, name: 'build', pipeline: pipeline, position: 0)
+      create(:ci_stage, name: 'deploy', pipeline: pipeline, position: 2)
+    end
 
-        create(
-          :commit_status,
-          pipeline: pipeline,
-          stage: 'build',
-          name: 'mac',
-          stage_idx: 0,
-          status: 'failed'
-        )
-
-        create(
-          :commit_status,
-          pipeline: pipeline,
-          stage: 'deploy',
-          name: 'staging',
-          stage_idx: 2,
-          status: 'running'
-        )
-
-        create(
-          :commit_status,
-          pipeline: pipeline,
-          stage: 'test',
-          name: 'rspec',
-          stage_idx: 1,
-          status: 'success'
-        )
-      end
-
-      describe '#stages_count' do
-        it 'returns a valid number of stages' do
-          expect(pipeline.stages_count).to eq(3)
-        end
-      end
-
-      describe '#stages_names' do
-        it 'returns a valid names of stages' do
-          expect(pipeline.stages_names).to eq(%w[build test deploy])
-        end
+    describe '#stages_count' do
+      it 'returns a valid number of stages' do
+        expect(pipeline.stages_count).to eq(3)
       end
     end
 
-    describe '#stages' do
-      let(:pipeline) { build(:ci_empty_pipeline, :created) }
+    describe '#stages_names' do
+      it 'returns a valid names of stages' do
+        expect(pipeline.stages_names).to eq(%w[build test deploy])
+      end
+    end
+  end
 
+  describe '#stages' do
+    let(:pipeline) { build(:ci_empty_pipeline, :created) }
+
+    before do
+      create(:ci_stage, project: project, pipeline: pipeline, position: 4, name: 'deploy')
+      create(:ci_build, project: project, pipeline: pipeline, stage: 'test', stage_idx: 3, name: 'test')
+      create(:ci_build, project: project, pipeline: pipeline, stage: 'build', stage_idx: 2, name: 'build')
+      create(:ci_stage, project: project, pipeline: pipeline, position: 1, name: 'sanity')
+      create(:ci_stage, project: project, pipeline: pipeline, position: 5, name: 'cleanup')
+    end
+
+    subject { pipeline.stages }
+
+    context 'when pipelines is not complete' do
+      it 'returns stages in valid order' do
+        expect(subject).to all(be_a Ci::Stage)
+        expect(subject.map(&:name))
+          .to eq %w[sanity build test deploy cleanup]
+      end
+    end
+
+    context 'when pipeline is complete' do
       before do
-        create(:ci_stage, project: project, pipeline: pipeline, position: 4, name: 'deploy')
-        create(:ci_build, project: project, pipeline: pipeline, stage: 'test', stage_idx: 3, name: 'test')
-        create(:ci_build, project: project, pipeline: pipeline, stage: 'build', stage_idx: 2, name: 'build')
-        create(:ci_stage, project: project, pipeline: pipeline, position: 1, name: 'sanity')
-        create(:ci_stage, project: project, pipeline: pipeline, position: 5, name: 'cleanup')
+        pipeline.succeed!
       end
 
-      subject { pipeline.stages }
-
-      context 'when pipelines is not complete' do
-        it 'returns stages in valid order' do
-          expect(subject).to all(be_a Ci::Stage)
-          expect(subject.map(&:name))
-            .to eq %w[sanity build test deploy cleanup]
-        end
-      end
-
-      context 'when pipeline is complete' do
-        before do
-          pipeline.succeed!
-        end
-
-        it 'returns stages in valid order' do
-          expect(subject).to all(be_a Ci::Stage)
-          expect(subject.map(&:name))
-            .to eq %w[sanity build test deploy cleanup]
-        end
+      it 'returns stages in valid order' do
+        expect(subject).to all(be_a Ci::Stage)
+        expect(subject.map(&:name))
+          .to eq %w[sanity build test deploy cleanup]
       end
     end
   end

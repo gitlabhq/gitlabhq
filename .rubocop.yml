@@ -450,7 +450,7 @@ Gitlab/EventStoreSubscriber:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
-Gitlab/DocUrl:
+Gitlab/DocumentationLinks/HardcodedUrl:
   Enabled: true
   Exclude:
     - danger/**/*

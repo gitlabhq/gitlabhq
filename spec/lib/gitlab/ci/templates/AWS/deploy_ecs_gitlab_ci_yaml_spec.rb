@@ -10,7 +10,7 @@ RSpec.describe 'Deploy-ECS.gitlab-ci.yml' do
     let(:pipeline_branch) { default_branch }
     let(:project) { create(:project, :auto_devops, :custom_repo, files: { 'README.md' => '' }) }
     let(:user) { project.first_owner }
-    let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_branch ) }
+    let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_branch) }
     let(:pipeline) { service.execute(:push).payload }
     let(:build_names) { pipeline.builds.pluck(:name) }
     let(:platform_target) { 'ECS' }

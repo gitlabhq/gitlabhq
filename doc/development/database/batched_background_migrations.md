@@ -283,7 +283,7 @@ We recommend that batched background migrations are finalized after all of the
 following conditions are met:
 
 - The batched background migration is completed on GitLab.com
-- The batched background migration was added in or before the last [required stop](required_stops.md)
+- The batched background migration was added in or before the last [required stop](required_stops.md). For example if 17.8 is a required stop and the migration was added in 17.7, the finalizing migration can be added in 17.9.
 
 The `ensure_batched_background_migration_is_finished` call must exactly match
 the migration that was used to enqueue it. Pay careful attention to:

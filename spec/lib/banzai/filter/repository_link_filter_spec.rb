@@ -61,7 +61,7 @@ RSpec.describe Banzai::Filter::RepositoryLinkFilter, feature_category: :markdown
 
     allow_gitaly_n_plus_1 do
       30.times do |i|
-        create_file_in_repo(project, ref, ref, "new_file_#{i}", "x" )
+        create_file_in_repo(project, ref, ref, "new_file_#{i}", "x")
         raw_doc += link("new_file_#{i}")
       end
     end
@@ -142,7 +142,7 @@ RSpec.describe Banzai::Filter::RepositoryLinkFilter, feature_category: :markdown
   end
 
   it 'ignores ref if commit is passed' do
-    doc = filter(link('non/existent.file'), commit: project.commit('empty-branch') )
+    doc = filter(link('non/existent.file'), commit: project.commit('empty-branch'))
     expect(doc.at_css('a')['href'])
       .to eq "/#{project_path}/-/blob/#{ref}/non/existent.file"
   end

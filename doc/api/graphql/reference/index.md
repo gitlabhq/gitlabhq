@@ -13269,6 +13269,29 @@ The edge type for [`ContainerProtectionRepositoryRule`](#containerprotectionrepo
 | <a id="containerprotectionrepositoryruleedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="containerprotectionrepositoryruleedgenode"></a>`node` | [`ContainerProtectionRepositoryRule`](#containerprotectionrepositoryrule) | The item at the end of the edge. |
 
+#### `ContainerProtectionTagRuleConnection`
+
+The connection type for [`ContainerProtectionTagRule`](#containerprotectiontagrule).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerprotectiontagruleconnectionedges"></a>`edges` | [`[ContainerProtectionTagRuleEdge]`](#containerprotectiontagruleedge) | A list of edges. |
+| <a id="containerprotectiontagruleconnectionnodes"></a>`nodes` | [`[ContainerProtectionTagRule]`](#containerprotectiontagrule) | A list of nodes. |
+| <a id="containerprotectiontagruleconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ContainerProtectionTagRuleEdge`
+
+The edge type for [`ContainerProtectionTagRule`](#containerprotectiontagrule).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerprotectiontagruleedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="containerprotectiontagruleedgenode"></a>`node` | [`ContainerProtectionTagRule`](#containerprotectiontagrule) | The item at the end of the edge. |
+
 #### `ContainerRepositoryConnection`
 
 The connection type for [`ContainerRepository`](#containerrepository).
@@ -21503,6 +21526,19 @@ A container repository protection rule designed to prevent users with a certain 
 | <a id="containerprotectionrepositoryruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` **{warning-solid}** | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | **Introduced** in GitLab 16.6. **Status**: Experiment. Minimum GitLab access level required to delete container images from the container repository. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level is ignored. Users with at least the Developer role can delete container images. |
 | <a id="containerprotectionrepositoryruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | **Introduced** in GitLab 16.6. **Status**: Experiment. Minimum GitLab access level required to push container images to the container repository. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level is ignored. Users with at least the Developer role can push container images. |
 | <a id="containerprotectionrepositoryrulerepositorypathpattern"></a>`repositoryPathPattern` **{warning-solid}** | [`String!`](#string) | **Introduced** in GitLab 16.6. **Status**: Experiment. Container repository path pattern protected by the protection rule. For example, `my-project/my-container-*`. Wildcard character `*` allowed. |
+
+### `ContainerProtectionTagRule`
+
+A container repository tag protection rule designed to prevent users with a certain access level or lower from altering the container registry.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerprotectiontagruleid"></a>`id` **{warning-solid}** | [`ContainerRegistryProtectionTagRuleID!`](#containerregistryprotectiontagruleid) | **Introduced** in GitLab 17.8. **Status**: Experiment. ID of the container repository tag protection rule. |
+| <a id="containerprotectiontagruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` **{warning-solid}** | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to delete container image tags from the container repository. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level is ignored. Users with at least the Developer role can delete container image tags. |
+| <a id="containerprotectiontagruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to push container image tags to the container repository. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level is ignored. Users with at least the Developer role can push container image tags. |
+| <a id="containerprotectiontagruletagnamepattern"></a>`tagNamePattern` **{warning-solid}** | [`String!`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Container repository tag name pattern protected by the protection rule. For example, `v1.*`. Wildcard character `*` allowed. |
 
 ### `ContainerRepository`
 
@@ -31462,6 +31498,7 @@ Project-level settings for product analytics provider.
 | <a id="projectcomponentusages"></a>`componentUsages` | [`CiCatalogResourceComponentUsageConnection`](#cicatalogresourcecomponentusageconnection) | Component(s) used by the project. (see [Connections](#connections)) |
 | <a id="projectcontainerexpirationpolicy"></a>`containerExpirationPolicy` **{warning-solid}** | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | **Deprecated** in GitLab 17.5. Use `container_tags_expiration_policy`. |
 | <a id="projectcontainerprotectionrepositoryrules"></a>`containerProtectionRepositoryRules` **{warning-solid}** | [`ContainerProtectionRepositoryRuleConnection`](#containerprotectionrepositoryruleconnection) | **Introduced** in GitLab 16.10. **Status**: Experiment. Container protection rules for the project. |
+| <a id="projectcontainerprotectiontagrules"></a>`containerProtectionTagRules` **{warning-solid}** | [`ContainerProtectionTagRuleConnection`](#containerprotectiontagruleconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. Container repository tag protection rules for the project. Returns an empty array if the `container_registry_protected_tags` feature flag is disabled. |
 | <a id="projectcontainerregistryenabled"></a>`containerRegistryEnabled` | [`Boolean`](#boolean) | Indicates if Container Registry is enabled for the current user. |
 | <a id="projectcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the project. |
 | <a id="projectcontainertagsexpirationpolicy"></a>`containerTagsExpirationPolicy` | [`ContainerTagsExpirationPolicy`](#containertagsexpirationpolicy) | Container tags expiration policy of the project. |
@@ -38833,6 +38870,16 @@ Access level of a container registry protection rule resource.
 | <a id="containerprotectionrepositoryruleaccesslevelmaintainer"></a>`MAINTAINER` **{warning-solid}** | **Introduced** in GitLab 16.6. **Status**: Experiment. Maintainer access. |
 | <a id="containerprotectionrepositoryruleaccesslevelowner"></a>`OWNER` **{warning-solid}** | **Introduced** in GitLab 16.6. **Status**: Experiment. Owner access. |
 
+### `ContainerProtectionTagRuleAccessLevel`
+
+Access level of a container registry tag protection rule resource.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="containerprotectiontagruleaccessleveladmin"></a>`ADMIN` **{warning-solid}** | **Introduced** in GitLab 17.8. **Status**: Experiment. Admin access. |
+| <a id="containerprotectiontagruleaccesslevelmaintainer"></a>`MAINTAINER` **{warning-solid}** | **Introduced** in GitLab 17.8. **Status**: Experiment. Maintainer access. |
+| <a id="containerprotectiontagruleaccesslevelowner"></a>`OWNER` **{warning-solid}** | **Introduced** in GitLab 17.8. **Status**: Experiment. Owner access. |
+
 ### `ContainerRepositoryCleanupStatus`
 
 Status of the tags cleanup of a container repository.
@@ -41919,6 +41966,12 @@ An example `ComplianceManagementFrameworkID` is: `"gid://gitlab/ComplianceManage
 A `ContainerRegistryProtectionRuleID` is a global ID. It is encoded as a string.
 
 An example `ContainerRegistryProtectionRuleID` is: `"gid://gitlab/ContainerRegistry::Protection::Rule/1"`.
+
+### `ContainerRegistryProtectionTagRuleID`
+
+A `ContainerRegistryProtectionTagRuleID` is a global ID. It is encoded as a string.
+
+An example `ContainerRegistryProtectionTagRuleID` is: `"gid://gitlab/ContainerRegistry::Protection::TagRule/1"`.
 
 ### `ContainerRepositoryID`
 

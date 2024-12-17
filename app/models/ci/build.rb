@@ -165,7 +165,7 @@ module Ci
     scope :eager_load_for_archiving_trace, -> { preload(:project, :pending_state) }
     scope :eager_load_for_api, -> do
       preload(
-        :job_artifacts_archive, :job_artifacts, :runner, :tags, :runner_manager, :metadata,
+        :job_artifacts_archive, :ci_stage, :job_artifacts, :runner, :tags, :runner_manager, :metadata,
         pipeline: :project,
         user: [:user_preference, :user_detail, :followees]
       )
@@ -263,7 +263,7 @@ module Ci
 
       def clone_accessors
         %i[pipeline project ref tag options name
-          allow_failure stage stage_idx trigger_request
+          allow_failure stage_idx trigger_request
           yaml_variables when environment coverage_regex
           description tag_list protected needs_attributes
           job_variables_attributes resource_group scheduling_type

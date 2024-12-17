@@ -55,7 +55,7 @@ Gitlab/BoundedContexts:
   Enabled: false
 
 # This cop doesn't make sense in the context of gems
-Gitlab/DocUrl:
+Gitlab/DocumentationLinks/HardcodedUrl:
   Enabled: false
 
 # This cop doesn't make sense in the context of gems

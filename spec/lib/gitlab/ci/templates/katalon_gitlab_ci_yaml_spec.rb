@@ -26,7 +26,7 @@ RSpec.describe 'Katalon.gitlab-ci.yml' do
     let(:project) { create(:project, :custom_repo, files: { 'README.md' => '' }) }
     let(:user) { project.first_owner }
 
-    let(:service) { Ci::CreatePipelineService.new(project, user, ref: 'master' ) }
+    let(:service) { Ci::CreatePipelineService.new(project, user, ref: 'master') }
     let(:pipeline) { service.execute(:push).payload }
     let(:build_names) { pipeline.builds.pluck(:name) }
 

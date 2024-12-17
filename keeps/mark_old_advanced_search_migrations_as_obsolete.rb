@@ -112,7 +112,7 @@ module Keeps
       change.assignees = assignee
       change.changelog_ee = true
 
-      # rubocop:disable Gitlab/DocUrl -- Not running inside rails application
+      # rubocop:disable Gitlab/DocumentationLinks/HardcodedUrl -- Not running inside rails application
       change.description = <<~MARKDOWN
         This migration marks the #{version} #{migration_name} Advanced search migration as obsolete.
 
@@ -130,7 +130,7 @@ module Keeps
         to process the migration. Therefore we mark any Advanced search migrations added before the
         last required stop as obsolete.
       MARKDOWN
-      # rubocop:enable Gitlab/DocUrl
+      # rubocop:enable Gitlab/DocumentationLinks/HardcodedUrl
 
       change.changed_files = []
       add_obsolete_to_yaml(migration_data[:yaml_filename], migration_data[:yaml_content])

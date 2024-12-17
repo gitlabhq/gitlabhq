@@ -15,7 +15,7 @@ RSpec.describe 'npm.gitlab-ci.yml', feature_category: :continuous_integration do
     let(:pipeline_branch) { project.default_branch }
     let(:pipeline_tag) { 'v1.2.1' }
     let(:pipeline_ref) { pipeline_branch }
-    let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_ref ) }
+    let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_ref) }
     let(:pipeline) { service.execute(:push).payload }
     let(:build_names) { pipeline.builds.pluck(:name) }
 

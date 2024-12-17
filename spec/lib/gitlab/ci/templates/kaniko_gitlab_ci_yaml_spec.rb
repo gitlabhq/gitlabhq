@@ -9,7 +9,7 @@ RSpec.describe 'Kaniko.gitlab-ci.yml' do
     let(:pipeline_branch) { 'master' }
     let(:project) { create(:project, :custom_repo, files: { 'Dockerfile' => 'FROM alpine:latest' }) }
     let(:user) { project.first_owner }
-    let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_branch ) }
+    let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_branch) }
     let(:pipeline) { service.execute(:push).payload }
     let(:build_names) { pipeline.builds.pluck(:name) }
 

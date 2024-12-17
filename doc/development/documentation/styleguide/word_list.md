@@ -394,6 +394,19 @@ Use **cannot** instead of **can not**.
 
 See also [contractions](index.md#contractions).
 
+## card
+
+Although the UI term might be **card**, do not use it in the documentation.
+Avoid the descriptor if you can.
+
+Use:
+
+- By **Seat utilization**, select **Assign seats**.
+
+Instead of:
+
+- On the **Seat utilization** card, select **Assign seats**.
+
 ## Chat, GitLab Duo Chat
 
 Use **Chat** with a capital `c` for **Chat** or **GitLab Duo Chat**.

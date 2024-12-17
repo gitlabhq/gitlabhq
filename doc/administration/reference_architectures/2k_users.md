@@ -885,7 +885,10 @@ On each node perform the following:
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
    the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
-
+1. Copy the SSH host keys (all in the name format `/etc/ssh/ssh_host_*_key*`) from the first Rails node you configured and
+   add or replace the files of the same name on this server. This ensures host mismatch errors aren't thrown
+   for your users as they hit the load balanced Rails nodes. If this is the first Linux package node you are configuring,
+   then you can skip this step.
 1. To ensure database migrations are only run during reconfigure and not automatically on upgrade, run:
 
    ```shell

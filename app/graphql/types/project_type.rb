@@ -529,6 +529,13 @@ module Types
       experiment: { milestone: '16.10' },
       resolver: Resolvers::ProjectContainerRegistryProtectionRulesResolver
 
+    field :container_protection_tag_rules,
+      Types::ContainerRegistry::Protection::TagRuleType.connection_type,
+      null: true,
+      experiment: { milestone: '17.8' },
+      description: 'Container repository tag protection rules for the project. ' \
+        'Returns an empty array if the `container_registry_protected_tags` feature flag is disabled.'
+
     field :container_repositories, Types::ContainerRegistry::ContainerRepositoryType.connection_type,
       null: true,
       description: 'Container repositories of the project.',
@@ -937,6 +944,12 @@ module Types
         id: project.to_param,
         namespace_id: project.namespace.to_param
       )
+    end
+
+    def container_protection_tag_rules
+      return [] unless Feature.enabled?(:container_registry_protected_tags, object)
+
+      object.container_registry_protection_tag_rules
     end
 
     private

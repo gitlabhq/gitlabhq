@@ -633,8 +633,8 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   end
 
   describe '.with_creator_id' do
-    let_it_be(:admin) { create(:admin, username: 'root') }
-    let_it_be(:user2) { create(:user, username: 'user2') }
+    let_it_be(:admin) { create(:admin) }
+    let_it_be(:user2) { create(:user) }
 
     let_it_be(:user_runner1) { create(:ci_runner, creator: user2) }
     let_it_be(:admin_runner1) { create(:ci_runner, creator: admin) }

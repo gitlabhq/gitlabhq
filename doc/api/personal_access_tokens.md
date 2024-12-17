@@ -213,7 +213,7 @@ Example response:
 
 ## Rotate a personal access token
 
-Rotate a personal access token. Revokes the previous token and creates a new token that expires in one week
+Rotate a personal access token. Revokes the previous token and creates a new token that expires in one week.
 
 You can either:
 
@@ -224,7 +224,7 @@ You can either:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403042) in GitLab 16.0
 
-In GitLab 16.6 and later, you can use the `expires_at` parameter to set a different expiry date. This non-default expiry date can be up to a maximum of one year from the rotation date.
+In GitLab 16.6 and later, you can use the `expires_at` parameter to set a different expiry date. This non-default expiry date is subject to the [maximum allowable lifetime limits](../user/profile/personal_access_tokens.md#access-token-expiration).
 
 ```plaintext
 POST /personal_access_tokens/:id/rotate
@@ -233,7 +233,7 @@ POST /personal_access_tokens/:id/rotate
 | Attribute | Type      | Required | Description         |
 |-----------|-----------|----------|---------------------|
 | `id` | integer/string | yes      | ID of personal access token |
-| `expires_at` | date   | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416795) in GitLab 16.6. |
+| `expires_at` | date   | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416795) in GitLab 16.6. If undefined, the token expires after one week. |
 
 NOTE:
 Non-administrators can rotate their own tokens. Administrators can rotate tokens of any user.
@@ -277,7 +277,7 @@ Requires:
 
 - `api` scope.
 
-You can use the `expires_at` parameter to set a different expiry date. This non-default expiry date can be up to a maximum of one year from the rotation date.
+In GitLab 16.6 and later, you can use the `expires_at` parameter to set a different expiry date. This non-default expiry date is subject to the [maximum allowable lifetime limits](../user/profile/personal_access_tokens.md#access-token-expiration).
 
 ```plaintext
 POST /personal_access_tokens/self/rotate

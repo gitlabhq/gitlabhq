@@ -17,7 +17,7 @@ RSpec.shared_examples 'a badge template' do |badge_type|
 
       context 'when its size is larger than the max allowed value' do
         before do
-          allow(badge).to receive(:customization).and_return({ key_text: 't' * (::Gitlab::Ci::Badge::Template::MAX_KEY_TEXT_SIZE + 1) } )
+          allow(badge).to receive(:customization).and_return({ key_text: 't' * (::Gitlab::Ci::Badge::Template::MAX_KEY_TEXT_SIZE + 1) })
         end
 
         it 'returns default value' do

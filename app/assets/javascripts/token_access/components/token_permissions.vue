@@ -1,8 +1,9 @@
 <script>
-import { GlButton, GlFormCheckbox, GlIcon, GlLink, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlFormCheckbox, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import updateCiJobTokenPermissionsMutation from '../graphql/mutations/update_ci_job_token_permissions.mutation.graphql';
 import getCiJobTokenPermissionsQuery from '../graphql/queries/get_ci_job_token_permissions.query.graphql';
@@ -12,10 +13,10 @@ export default {
   components: {
     GlButton,
     GlFormCheckbox,
-    GlIcon,
     GlLink,
     GlLoadingIcon,
     CrudComponent,
+    HelpIcon,
   },
   inject: ['fullPath'],
   apollo: {
@@ -112,7 +113,7 @@ export default {
               'CICD|CI/CD job token can be used to authenticate a Git push to this repository, using the permissions of the user that started the job.',
             )
           }}<gl-link :href="$options.docsLink" target="_blank">
-            <gl-icon name="question-o" class="gl-ml-2" variant="info" />
+            <help-icon class="gl-ml-2" />
           </gl-link>
         </p>
       </gl-form-checkbox>

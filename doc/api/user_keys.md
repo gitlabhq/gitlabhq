@@ -158,7 +158,7 @@ Supported attributes:
 |:-------------|:-------|:---------|:------------|
 | `title`      | string | yes      | Title for key |
 | `key`        | string | yes      | Public key value |
-| `expires_at` | string | no       | Expiration date of the key in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`) |
+| `expires_at` | string | no       | Expiration date of the key in ISO format (`YYYY-MM-DD`). |
 | `usage_type` | string | no       | Usage scope for the key. Possible values: `auth`, `signing` or `auth_and_signing`. Default value: `auth_and_signing` |
 
 Returns either:
@@ -214,7 +214,7 @@ Supported attributes:
 | `id`         | integer | yes      | ID of user account |
 | `title`      | string  | yes      | Title for key |
 | `key`        | string  | yes      | Public key value  |
-| `expires_at` | string  | no       | Expiration date of the key in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`) |
+| `expires_at` | string  | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). |
 | `usage_type` | string  | no       | Usage scope for the key. Possible values: `auth`, `signing` or `auth_and_signing`. Default value: `auth_and_signing` |
 
 Returns either:

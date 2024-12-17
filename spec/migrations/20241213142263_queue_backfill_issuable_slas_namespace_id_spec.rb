@@ -3,8 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillPCiPipelinesTriggerId,
-  migration: :gitlab_ci, feature_category: :continuous_integration do
+RSpec.describe QueueBackfillIssuableSlasNamespaceId, feature_category: :incident_management do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do
@@ -15,10 +14,18 @@ RSpec.describe QueueBackfillPCiPipelinesTriggerId,
 
       migration.after -> {
         expect(batched_migration).to have_scheduled_batched_migration(
-          gitlab_schema: :gitlab_ci,
-          table_name: :ci_trigger_requests,
+          table_name: :issuable_slas,
           column_name: :id,
-          interval: described_class::DELAY_INTERVAL
+          interval: described_class::DELAY_INTERVAL,
+          batch_size: described_class::BATCH_SIZE,
+          sub_batch_size: described_class::SUB_BATCH_SIZE,
+          gitlab_schema: :gitlab_main_cell,
+          job_arguments: [
+            :namespace_id,
+            :issues,
+            :namespace_id,
+            :issue_id
+          ]
         )
       }
     end

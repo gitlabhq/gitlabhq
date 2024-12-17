@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillBulkImportExportUploadsGroupId
+description: Backfills sharding key `bulk_import_export_uploads.group_id` from `bulk_import_exports`.
+feature_category: importers
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175723
+milestone: '17.8'
+queued_migration_version: 20241213150054
+finalized_by: # version of the migration that finalized this BBM

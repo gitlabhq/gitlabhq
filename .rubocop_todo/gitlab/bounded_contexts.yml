@@ -154,7 +154,6 @@ Gitlab/BoundedContexts:
     - 'app/graphql/mutations/branch_rules/create.rb'
     - 'app/graphql/mutations/branch_rules/delete.rb'
     - 'app/graphql/mutations/branch_rules/update.rb'
-    - 'app/graphql/mutations/branches/create.rb'
     - 'app/graphql/mutations/commits/create.rb'
     - 'app/graphql/mutations/concerns/mutations/assignable.rb'
     - 'app/graphql/mutations/concerns/mutations/finds_namespace.rb'

@@ -249,7 +249,6 @@ spec/frontend/pages/shared/wikis/components/delete_wiki_modal_spec.js
 spec/frontend/pages/shared/wikis/components/wiki_more_dropdown_spec.js
 spec/frontend/performance_bar/index_spec.js
 spec/frontend/pipeline_wizard/components/step_spec.js
-spec/frontend/profile/preferences/components/integration_view_spec.js
 spec/frontend/profile/preferences/components/profile_preferences_spec.js
 spec/frontend/projects/commit/components/form_modal_spec.js
 spec/frontend/projects/commits/components/author_select_spec.js

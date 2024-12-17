@@ -9,6 +9,8 @@ class CommitStatus < Ci::ApplicationRecord
   include BulkInsertableAssociations
   include TaggableQueries
 
+  ignore_columns :stage, remove_with: '17.10', remove_after: '2025-03-14'
+
   self.table_name = :p_ci_builds
   self.sequence_name = :ci_builds_id_seq
   self.primary_key = :id
@@ -343,6 +345,9 @@ class CommitStatus < Ci::ApplicationRecord
   def stage_name
     ci_stage&.name
   end
+
+  # TODO: Temporary technical debt so we can ignore `stage`: https://gitlab.com/gitlab-org/gitlab/-/issues/507579
+  alias_method :stage, :stage_name
 
   # Handled only by ci_build
   def exit_code=(value); end

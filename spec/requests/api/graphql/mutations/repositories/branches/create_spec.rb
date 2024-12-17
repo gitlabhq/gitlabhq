@@ -36,7 +36,7 @@ RSpec.describe 'Creation of a new branch', feature_category: :source_code_manage
 
     context 'when user is a direct project member' do
       context 'and user is a developer' do
-        before do
+        before_all do
           project.add_developer(current_user)
         end
 
@@ -57,7 +57,7 @@ RSpec.describe 'Creation of a new branch', feature_category: :source_code_manage
         let_it_be(:project) { create(:project, :public, :empty_repo, :repository_private, group: group) }
 
         context 'and user is a guest' do
-          before do
+          before_all do
             group.add_guest(current_user)
           end
 
@@ -65,7 +65,7 @@ RSpec.describe 'Creation of a new branch', feature_category: :source_code_manage
         end
 
         context 'and user is a developer' do
-          before do
+          before_all do
             group.add_developer(current_user)
           end
 
@@ -80,7 +80,7 @@ RSpec.describe 'Creation of a new branch', feature_category: :source_code_manage
 
     context 'when user is an inherited member from the group' do
       context 'and user is a guest' do
-        before do
+        before_all do
           group.add_guest(current_user)
         end
 
@@ -88,7 +88,7 @@ RSpec.describe 'Creation of a new branch', feature_category: :source_code_manage
       end
 
       context 'and user is a developer' do
-        before do
+        before_all do
           group.add_developer(current_user)
         end
 

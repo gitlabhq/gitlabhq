@@ -16,7 +16,7 @@ RSpec.describe 'Terraform.latest.gitlab-ci.yml', feature_category: :continuous_i
     let(:pipeline_branch) { default_branch }
     let_it_be(:project) { create(:project, :repository, create_branch: 'patch-1') }
     let_it_be(:user) { project.first_owner }
-    let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_branch ) }
+    let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_branch) }
     let(:pipeline) { service.execute(:push).payload }
     let(:build_names) { pipeline.builds.pluck(:name) }
 
@@ -55,10 +55,10 @@ RSpec.describe 'Terraform.latest.gitlab-ci.yml', feature_category: :continuous_i
     context 'on merge request' do
       let(:pipeline_branch) { 'patch-1' }
       let(:mr_service) { MergeRequests::CreatePipelineService.new(project: project, current_user: user) }
-      let(:merge_request) { create(:merge_request, :simple, source_project: project, source_branch: pipeline_branch ) }
+      let(:merge_request) { create(:merge_request, :simple, source_project: project, source_branch: pipeline_branch) }
       let(:mr_pipeline) { mr_service.execute(merge_request).payload }
       let(:mr_build_names) { mr_pipeline.builds.pluck(:name) }
-      let(:branch_service) { Ci::CreatePipelineService.new(project, user, ref: merge_request.source_branch ) }
+      let(:branch_service) { Ci::CreatePipelineService.new(project, user, ref: merge_request.source_branch) }
       let(:branch_pipeline) { branch_service.execute(:push).payload }
       let(:branch_build_names) { branch_pipeline.builds.pluck(:name) }
 

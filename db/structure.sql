@@ -1111,6 +1111,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_0d96daa4d734() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."group_id" IS NULL THEN
+  SELECT "group_id"
+  INTO NEW."group_id"
+  FROM "bulk_import_exports"
+  WHERE "bulk_import_exports"."id" = NEW."export_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_0da002390fdc() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -1794,6 +1810,22 @@ IF NEW."protected_environment_group_id" IS NULL THEN
   INTO NEW."protected_environment_group_id"
   FROM "protected_environments"
   WHERE "protected_environments"."id" = NEW."protected_environment_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_4cc5c3ac4d7f() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "bulk_import_exports"
+  WHERE "bulk_import_exports"."id" = NEW."export_id";
 END IF;
 
 RETURN NEW;
@@ -2831,6 +2863,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "releases"
   WHERE "releases"."id" = NEW."release_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_cd50823537a3() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "issues"
+  WHERE "issues"."id" = NEW."issue_id";
 END IF;
 
 RETURN NEW;
@@ -8725,6 +8773,8 @@ CREATE TABLE bulk_import_export_uploads (
     updated_at timestamp with time zone NOT NULL,
     export_file text,
     batch_id bigint,
+    project_id bigint,
+    group_id bigint,
     CONSTRAINT check_5add76239d CHECK ((char_length(export_file) <= 255))
 );
 
@@ -13902,7 +13952,8 @@ CREATE TABLE issuable_slas (
     issue_id bigint NOT NULL,
     due_at timestamp with time zone NOT NULL,
     label_applied boolean DEFAULT false NOT NULL,
-    issuable_closed boolean DEFAULT false NOT NULL
+    issuable_closed boolean DEFAULT false NOT NULL,
+    namespace_id bigint
 );
 
 CREATE SEQUENCE issuable_slas_id_seq
@@ -29644,6 +29695,10 @@ CREATE INDEX index_bulk_import_entities_on_project_id ON bulk_import_entities US
 
 CREATE INDEX index_bulk_import_export_uploads_on_export_id ON bulk_import_export_uploads USING btree (export_id);
 
+CREATE INDEX index_bulk_import_export_uploads_on_group_id ON bulk_import_export_uploads USING btree (group_id);
+
+CREATE INDEX index_bulk_import_export_uploads_on_project_id ON bulk_import_export_uploads USING btree (project_id);
+
 CREATE INDEX index_bulk_import_exports_on_group_id ON bulk_import_exports USING btree (group_id);
 
 CREATE INDEX index_bulk_import_exports_on_project_id ON bulk_import_exports USING btree (project_id);
@@ -31059,6 +31114,8 @@ CREATE INDEX index_issuable_severities_on_namespace_id ON issuable_severities US
 CREATE INDEX index_issuable_slas_on_due_at_id_label_applied_issuable_closed ON issuable_slas USING btree (due_at, id) WHERE ((label_applied = false) AND (issuable_closed = false));
 
 CREATE UNIQUE INDEX index_issuable_slas_on_issue_id ON issuable_slas USING btree (issue_id);
+
+CREATE INDEX index_issuable_slas_on_namespace_id ON issuable_slas USING btree (namespace_id);
 
 CREATE INDEX index_issue_assignees_on_user_id_and_issue_id ON issue_assignees USING btree (user_id, issue_id);
 
@@ -35710,6 +35767,8 @@ CREATE TRIGGER trigger_0aea02e5a699 BEFORE INSERT OR UPDATE ON protected_branch_
 
 CREATE TRIGGER trigger_0c326daf67cf BEFORE INSERT OR UPDATE ON analytics_cycle_analytics_value_stream_settings FOR EACH ROW EXECUTE FUNCTION trigger_0c326daf67cf();
 
+CREATE TRIGGER trigger_0d96daa4d734 BEFORE INSERT OR UPDATE ON bulk_import_export_uploads FOR EACH ROW EXECUTE FUNCTION trigger_0d96daa4d734();
+
 CREATE TRIGGER trigger_0da002390fdc BEFORE INSERT OR UPDATE ON operations_feature_flags_issues FOR EACH ROW EXECUTE FUNCTION trigger_0da002390fdc();
 
 CREATE TRIGGER trigger_0e13f214e504 BEFORE INSERT OR UPDATE ON merge_request_assignment_events FOR EACH ROW EXECUTE FUNCTION trigger_0e13f214e504();
@@ -35793,6 +35852,8 @@ CREATE TRIGGER trigger_49e070da6320 BEFORE INSERT OR UPDATE ON packages_dependen
 CREATE TRIGGER trigger_4ad9a52a6614 BEFORE INSERT OR UPDATE ON sbom_occurrences_vulnerabilities FOR EACH ROW EXECUTE FUNCTION trigger_4ad9a52a6614();
 
 CREATE TRIGGER trigger_4b43790d717f BEFORE INSERT OR UPDATE ON protected_environment_approval_rules FOR EACH ROW EXECUTE FUNCTION trigger_4b43790d717f();
+
+CREATE TRIGGER trigger_4cc5c3ac4d7f BEFORE INSERT OR UPDATE ON bulk_import_export_uploads FOR EACH ROW EXECUTE FUNCTION trigger_4cc5c3ac4d7f();
 
 CREATE TRIGGER trigger_54707c384ad7 BEFORE INSERT OR UPDATE ON security_orchestration_policy_rule_schedules FOR EACH ROW EXECUTE FUNCTION trigger_54707c384ad7();
 
@@ -35923,6 +35984,8 @@ CREATE TRIGGER trigger_c9090feed334 BEFORE INSERT OR UPDATE ON boards_epic_lists
 CREATE TRIGGER trigger_cac7c0698291 BEFORE INSERT OR UPDATE ON evidences FOR EACH ROW EXECUTE FUNCTION trigger_cac7c0698291();
 
 CREATE TRIGGER trigger_catalog_resource_sync_event_on_project_update AFTER UPDATE ON projects FOR EACH ROW WHEN ((((old.name)::text IS DISTINCT FROM (new.name)::text) OR (old.description IS DISTINCT FROM new.description) OR (old.visibility_level IS DISTINCT FROM new.visibility_level))) EXECUTE FUNCTION insert_catalog_resource_sync_event();
+
+CREATE TRIGGER trigger_cd50823537a3 BEFORE INSERT OR UPDATE ON issuable_slas FOR EACH ROW EXECUTE FUNCTION trigger_cd50823537a3();
 
 CREATE TRIGGER trigger_cf646a118cbb BEFORE INSERT OR UPDATE ON milestone_releases FOR EACH ROW EXECUTE FUNCTION trigger_cf646a118cbb();
 
@@ -36279,6 +36342,9 @@ ALTER TABLE ONLY alert_management_alerts
 ALTER TABLE ONLY design_management_designs
     ADD CONSTRAINT fk_239cd63678 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY bulk_import_export_uploads
+    ADD CONSTRAINT fk_23e0e92313 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY audit_events_streaming_http_instance_namespace_filters
     ADD CONSTRAINT fk_23f3ab7df0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -36305,6 +36371,9 @@ ALTER TABLE ONLY user_namespace_callouts
 
 ALTER TABLE ONLY user_details
     ADD CONSTRAINT fk_27ac767d6a FOREIGN KEY (bot_namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY issuable_slas
+    ADD CONSTRAINT fk_282ef683a5 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY work_item_dates_sources
     ADD CONSTRAINT fk_283fb4ad36 FOREIGN KEY (start_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
@@ -36863,6 +36932,9 @@ ALTER TABLE ONLY sent_notifications
 
 ALTER TABLE ONLY labels
     ADD CONSTRAINT fk_7de4989a69 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY bulk_import_export_uploads
+    ADD CONSTRAINT fk_7e03e410b4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_7e85395a64 FOREIGN KEY (sprint_id) REFERENCES sprints(id) ON DELETE SET NULL;

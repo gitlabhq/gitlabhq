@@ -40,7 +40,8 @@ module Mutations
       def resolve(project_path:, replacements:)
         project = authorized_find!(project_path)
 
-        result = Repositories::RewriteHistoryService.new(project, current_user).async_execute(redactions: replacements)
+        result = ::Repositories::RewriteHistoryService.new(project, current_user)
+                   .async_execute(redactions: replacements)
 
         return { errors: result.errors } if result.error?
 

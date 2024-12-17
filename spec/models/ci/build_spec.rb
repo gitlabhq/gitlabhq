@@ -558,6 +558,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       it { expect(eager_load_for_api.last.association(:job_artifacts)).to be_loaded }
       it { expect(eager_load_for_api.last.association(:runner)).to be_loaded }
       it { expect(eager_load_for_api.last.association(:tags)).to be_loaded }
+      it { expect(eager_load_for_api.last.association(:ci_stage)).to be_loaded }
       it { expect(eager_load_for_api.last.association(:pipeline)).to be_loaded }
       it { expect(eager_load_for_api.last.pipeline.association(:project)).to be_loaded }
     end

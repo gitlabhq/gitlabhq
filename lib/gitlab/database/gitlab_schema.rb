@@ -77,13 +77,13 @@ module Gitlab
       end
 
       def self.table_schema!(name)
-        # rubocop:disable Gitlab/DocUrl
+        # rubocop:disable Gitlab/DocumentationLinks/HardcodedUrl
         self.table_schema(name) || raise(
           UnknownSchemaError,
           "Could not find gitlab schema for table #{name}: Any new or deleted tables must be added to the database dictionary " \
           "See https://docs.gitlab.com/ee/development/database/database_dictionary.html"
         )
-        # rubocop:enable Gitlab/DocUrl
+        # rubocop:enable Gitlab/DocumentationLinks/HardcodedUrl
       end
 
       def self.require_sharding_key?(schema)

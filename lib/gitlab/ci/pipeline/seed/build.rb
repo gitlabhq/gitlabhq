@@ -73,6 +73,7 @@ module Gitlab
               .deep_merge(runner_tags)
               .deep_merge(build_execution_config_attribute)
               .deep_merge(scoped_user_id_attribute)
+              .except(:stage)
           end
 
           def bridge?

@@ -5,7 +5,7 @@ require_relative 'suggestion'
 module Tooling
   module Danger
     class RubocopNewTodo < Suggestion
-      # For example: `Gitlab/DocUrl:`.
+      # For example: `Gitlab/DocumentationLinks/HardcodedUrl:`.
       MATCH = %r{^\+\w+/.*:}
       REPLACEMENT = nil
 

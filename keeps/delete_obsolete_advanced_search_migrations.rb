@@ -85,7 +85,7 @@ module Keeps
       change.assignees = groups_helper.pick_reviewer(group_data, change.identifiers)
       change.changelog_ee = true
 
-      # rubocop:disable Gitlab/DocUrl -- Not running inside rails application
+      # rubocop:disable Gitlab/DocumentationLinks/HardcodedUrl -- Not running inside rails application
       change.description = <<~MARKDOWN
         This migration removes all but the latest obsolete Advanced search migration files from the project.
 
@@ -102,7 +102,7 @@ module Keeps
         - [ ] Update the archive of migrations in https://gitlab.com/gitlab-org/search-team/migration-graveyard
         - [ ] Remove references to affected migration or spec files from Rubocop TODOs
       MARKDOWN
-      # rubocop:enable Gitlab/DocUrl
+      # rubocop:enable Gitlab/DocumentationLinks/HardcodedUrl
 
       change.changed_files = []
       # always leave one migration

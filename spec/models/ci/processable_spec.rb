@@ -52,7 +52,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
         create(
           :ci_build, :failed, :picked, :expired, :erased, :queued, :coverage, :tags,
           :allowed_to_fail, :on_tag, :triggered, :teardown_environment, :resource_group,
-          description: 'my-job', stage: 'test', stage_id: stage.id,
+          description: 'my-job', stage_id: stage.id,
           pipeline: pipeline, auto_canceled_by: another_pipeline,
           scheduled_at: 10.seconds.since
         )
@@ -61,7 +61,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
       let_it_be(:internal_job_variable) { create(:ci_job_variable, job: processable) }
 
       let(:clone_accessors) do
-        %i[pipeline project ref tag options name allow_failure stage stage_idx trigger_request yaml_variables
+        %i[pipeline project ref tag options name allow_failure stage_idx trigger_request yaml_variables
            when environment coverage_regex description tag_list protected needs_attributes job_variables_attributes
            resource_group scheduling_type ci_stage partition_id id_tokens interruptible]
       end
@@ -121,7 +121,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
 
     shared_examples_for 'clones the processable' do
       before_all do
-        processable.assign_attributes(stage: 'test', stage_id: stage.id, interruptible: true)
+        processable.assign_attributes(stage_id: stage.id, interruptible: true)
         processable.save!
 
         create(:ci_build_need, build: processable)

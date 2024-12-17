@@ -18,7 +18,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Reports, feature_category: :pipeline_c
       shared_examples 'a valid entry' do |keyword, file|
         describe '#value' do
           it 'returns artifacts configuration' do
-            expect(entry.value).to eq({ "#{keyword}": [file] } )
+            expect(entry.value).to eq({ "#{keyword}": [file] })
           end
         end
 

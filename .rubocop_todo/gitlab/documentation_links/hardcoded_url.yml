@@ -1,5 +1,5 @@
 ---
-Gitlab/DocUrl:
+Gitlab/DocumentationLinks/HardcodedUrl:
   Exclude:
     - 'app/controllers/jira_connect/app_descriptor_controller.rb'
     - 'app/graphql/types/merge_request_type.rb'

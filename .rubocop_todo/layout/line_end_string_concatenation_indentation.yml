@@ -425,7 +425,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'rubocop/cop/database/avoid_using_pluck_without_limit.rb'
     - 'rubocop/cop/gitlab/avoid_current_organization.rb'
     - 'rubocop/cop/gitlab/avoid_gitlab_instance_checks.rb'
-    - 'rubocop/cop/gitlab/doc_url.rb'
     - 'rubocop/cop/gitlab/license_available_usage.rb'
     - 'rubocop/cop/gitlab/rails/safe_format.rb'
     - 'rubocop/cop/gitlab/rspec/avoid_setup.rb'

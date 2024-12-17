@@ -141,7 +141,7 @@ Parameters:
 | `user_id` | integer | yes      | The ID of a service account user.                            |
 | `name`    | string  | yes      | The name of the personal access token. |
 | `scopes`  | array   | yes      | Array of scopes of the personal access token. See [personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes) for possible values. |
-| `expires_at` | date | no      | The personal access token expiry date. When left blank, the token follows the [standard rule of expiry for personal access tokens](../user/profile/personal_access_tokens.md#access-token-expiration). To specify no expiration date, omit this key. |
+| `expires_at` | date | no      | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
 
 Example request:
 

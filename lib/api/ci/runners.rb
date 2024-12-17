@@ -98,6 +98,7 @@ module API
 
         def preload_job_associations(jobs)
           jobs.preload( # rubocop: disable CodeReuse/ActiveRecord -- this preload is tightly related to the endpoint
+            :ci_stage,
             :user,
             { pipeline: { project: [:route, { namespace: :route }] } },
             { project: [:route, { namespace: :route }, :ci_cd_settings] }

@@ -89,6 +89,7 @@ DETAILS:
 > - Introduced in GitLab 17.6 [for Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/467084) [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `gitea_user_mapping`, and [for GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/466355) with flags named `importer_user_mapping` and `github_user_mapping`. Disabled by default.
 > - Introduced in GitLab 17.7 [for Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/466356) [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `bitbucket_server_user_mapping`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/472735) for direct transfer in GitLab 17.7.
+> - Enabled on GitLab.com for [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/499993), [Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/509897), and [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/498390) in GitLab 17.7.
 
 FLAG:
 The availability of this feature is controlled by feature flags.
@@ -98,7 +99,7 @@ NOTE:
 To leave feedback about this feature, add a comment to [issue 502565](https://gitlab.com/gitlab-org/gitlab/-/issues/502565).
 
 This method of user contribution and membership mapping is available for
-[direct transfer migrations](../../group/import/index.md) on:
+[direct transfer migrations](../../group/import/index.md), [GitHub importer](github.md), [Bitbucket Server importer](bitbucket_server.md), and [Gitea importer](gitea.md) on:
 
 - GitLab.com
 - GitLab self-managed when two feature flags are enabled

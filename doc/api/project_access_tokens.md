@@ -123,7 +123,7 @@ POST projects/:id/access_tokens
 | `name` | string | yes | Name of the project access token                                                                                                               |
 | `scopes` | `Array[String]` | yes | [List of scopes](../user/project/settings/project_access_tokens.md#scopes-for-a-project-access-token)                               |
 | `access_level` | integer | no | Access level. Valid values are `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), and `50` (Owner). Defaults to `40`. |
-| `expires_at` | date    | yes | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date cannot be set later than the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| `expires_at` | date    | yes | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -170,7 +170,7 @@ POST /projects/:id/access_tokens/:token_id/rotate
 |-----------|------------|----------|---------------------|
 | `id` | integer or string  | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 | `token_id` | integer | yes | ID of the project access token |
-| `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416795) in GitLab 16.6. |
+| `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416795) in GitLab 16.6. If undefined, the token expires after one week. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens/<token_id>/rotate"

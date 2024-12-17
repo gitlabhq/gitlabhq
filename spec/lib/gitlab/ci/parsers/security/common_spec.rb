@@ -368,9 +368,9 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
 
             expect(all_evidences.size).to eq(7)
             expect(evidences.size).to eq(2)
-            expect(evidences).to all( be_a(::Gitlab::Ci::Reports::Security::Evidence) )
-            expect(data).to all( have_values )
-            expect(summaries).to all( match(/The Origin header was changed/) )
+            expect(evidences).to all(be_a(::Gitlab::Ci::Reports::Security::Evidence))
+            expect(data).to all(have_values)
+            expect(summaries).to all(match(/The Origin header was changed/))
           end
         end
 

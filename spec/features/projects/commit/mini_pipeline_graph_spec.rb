@@ -16,7 +16,8 @@ RSpec.describe 'Mini Pipeline Graph in Commit View', :js, feature_category: :sou
       )
     end
 
-    let(:build) { create(:ci_build, pipeline: pipeline, status: :running) }
+    let(:ci_stage) { create(:ci_stage, pipeline: pipeline, name: 'test') }
+    let(:build) { create(:ci_build, pipeline: pipeline, status: :running, ci_stage: ci_stage) }
 
     before do
       build.run

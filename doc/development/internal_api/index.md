@@ -332,7 +332,7 @@ personal access token.
 |:----------|:-------|:---------|:------------|
 | `name` | string | yes | The name of the new token |
 | `scopes` | string array | yes | The authorization scopes for the new token, these must be valid token scopes |
-| `expires_at` | string | no | The expiry date for the new token |
+| `expires_at` | string | no | Expiration date of the access token in ISO format (`YYYY-MM-DD`). |
 | `key_id`  | integer | no | The ID of the SSH key used as found in the authorized-keys file or through the `/authorized_keys` check |
 | `user_id` | integer | no | User ID for which to generate the new token |
 

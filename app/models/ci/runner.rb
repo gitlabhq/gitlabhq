@@ -109,11 +109,8 @@ module Ci
     scope :stale, -> do
       stale_timestamp = stale_deadline
 
-      created_before_stale_deadline = arel_table[:created_at].lteq(stale_timestamp)
-      contacted_before_stale_deadline = arel_table[:contacted_at].lteq(stale_timestamp)
-      never_contacted = arel_table[:contacted_at].eq(nil)
-
-      where(created_before_stale_deadline).where(never_contacted.or(contacted_before_stale_deadline))
+      where(created_at: ..stale_timestamp)
+        .and(never_contacted.or(where(contacted_at: ..stale_timestamp)))
     end
     scope :ordered, -> { order(id: :desc) }
 

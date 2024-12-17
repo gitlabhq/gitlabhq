@@ -163,7 +163,7 @@ module API
             .new(current_user: current_user, pipeline: pipeline, params: params)
             .execute
 
-          builds = builds.with_preloads.preload(:metadata, :runner_manager) # rubocop:disable CodeReuse/ActiveRecord -- preload job.archived?
+          builds = builds.with_preloads.preload(:metadata, :runner_manager, :ci_stage) # rubocop:disable CodeReuse/ActiveRecord -- preload job.archived?
 
           present paginate(builds), with: Entities::Ci::Job
         end
@@ -191,7 +191,9 @@ module API
           bridges = ::Ci::JobsFinder
             .new(current_user: current_user, pipeline: pipeline, params: params, type: ::Ci::Bridge)
             .execute
-          bridges = bridges.with_preloads
+          # rubocop:disable CodeReuse/ActiveRecord -- Preload is only related to this endpoint
+          bridges = bridges.with_preloads.preload(:ci_stage)
+          # rubocop:enable CodeReuse/ActiveRecord
 
           present paginate(bridges), with: Entities::Ci::Bridge
         end
