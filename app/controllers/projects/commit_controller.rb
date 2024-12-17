@@ -56,7 +56,10 @@ class Projects::CommitController < Projects::ApplicationController
       format.html do
         render template: 'projects/commit/diff_files',
           layout: false,
-          locals: { diffs: @diffs.with_highlights_preloaded, environment: @environment }
+          locals: {
+            diffs: diffs_expanded? ? @diffs.with_highlights_preloaded : @diffs,
+            environment: @environment
+          }
       end
     end
   end
