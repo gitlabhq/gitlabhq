@@ -429,6 +429,6 @@ section to complete the migration:
 1. [Release the component](index.md#publish-a-new-release) and verify it in the CI/CD catalog.
 1. Add the CI/CD component into your staging/production environment.
 
-The [GitLab-maintained Go component](https://gitlab.com/components/golang) provides an example
+The [GitLab-maintained Go component](https://gitlab.com/components/go) provides an example
 for a successful migration from a Go CI/CD template, enhanced with inputs and component best practices.
 You can inspect the Git history to learn more.

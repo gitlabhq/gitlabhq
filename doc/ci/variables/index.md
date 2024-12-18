@@ -651,7 +651,7 @@ To also reference the variable in other stages, write the variable to both the `
 build-job:
   stage: build
   script:
-    - echo "ARCH=$(arch)" | tee >> $GITLAB_ENV build.env
+    - echo "ARCH=$(arch)" | tee -a $GITLAB_ENV >> build.env
     - touch some-file-$(arch)
   artifacts:
     paths:

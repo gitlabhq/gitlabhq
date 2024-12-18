@@ -16,10 +16,6 @@ DETAILS:
 
 Import your projects from Gitea to GitLab.
 
-WARNING:
-Importing from Gitea to GitLab.com is [unavailable](https://status.gitlab.com).
-For more information, contact [GitLab Support](https://about.gitlab.com/support/).
-
 The Gitea importer can import:
 
 - Repository description
@@ -95,9 +91,17 @@ You also can:
 
 ## User contribution mapping
 
-User contributions are assigned to the project creator (usually the user who started the import process) by default.
-This method of user contribution mapping is available for GitLab self-managed without enabled feature flags.
+> - [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [User contribution and membership mapping](../import/index.md#user-contribution-and-membership-mapping) in 17.8.
 
-For information on the other method available for GitLab self-managed
-with enabled feature flags and for GitLab.com,
-see [user contribution and membership mapping](../../project/import/index.md#user-contribution-and-membership-mapping).
+The Gitea importer uses [an improved method](../import/index.md#user-contribution-and-membership-mapping)
+of mapping user contributions for:
+
+- GitLab.com
+- GitLab self-managed 17.6 or later when the `importer_user_mapping` and `gitea_user_mapping` feature flags are enabled.
+
+### Old method of user contribution mapping
+
+You can use the old user contribution mapping method for imports to GitLab self-managed and GitLab Dedicated instances. For imports to GitLab.com, you must
+use [the improved method](../import/index.md#user-contribution-and-membership-mapping) instead.
+
+Using the old method, user contributions are assigned to the project creator (usually the user who started the import process) by default.

@@ -178,6 +178,13 @@ As documented in the [Docker Official Images](https://github.com/docker-library/
 it is strongly encouraged that version number tags be given aliases which allows the user to easily refer to the "most recent" release of a particular series.
 See also [Docker Tagging: Best practices for tagging and versioning Docker images](https://learn.microsoft.com/en-us/archive/blogs/stevelasker/docker-tagging-best-practices-for-tagging-and-versioning-docker-images).
 
+### Permissions
+
+To run a Docker container with non-root privileges the following user and group must be present in the container:
+
+- User `gitlab` with user ID `1000`
+- Group `gitlab` with group ID `1000`
+
 ## Command line
 
 A scanner is a command-line tool that takes environment variables as inputs,
