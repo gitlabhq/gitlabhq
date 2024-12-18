@@ -32,7 +32,7 @@ import {
 import deleteBranchRuleMutation from '../../mutations/branch_rule_delete.mutation.graphql';
 import BranchRuleModal from '../../../components/branch_rule_modal.vue';
 import Protection from './protection.vue';
-import RuleDrawer from './rule_drawer.vue';
+import AccessLevelsDrawer from './access_levels_drawer.vue';
 import ProtectionToggle from './protection_toggle.vue';
 import {
   I18N,
@@ -68,7 +68,7 @@ export default {
     GlModal,
     GlButton,
     BranchRuleModal,
-    RuleDrawer,
+    AccessLevelsDrawer,
     PageHeading,
     CrudComponent,
     SettingsSection,
@@ -470,7 +470,7 @@ export default {
           @edit="openAllowedToPushAndMergeDrawer"
         />
 
-        <rule-drawer
+        <access-levels-drawer
           :is-open="isAllowedToMergeDrawerOpen || isAllowedToPushAndMergeDrawerOpen"
           :roles="accessLevelsDrawerData.roles"
           :users="accessLevelsDrawerData.users"

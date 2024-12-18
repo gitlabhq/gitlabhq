@@ -153,6 +153,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_issue_board
     enable :admin_issue_board_list
     enable :admin_issue
+    enable :admin_work_item
     enable :update_issue
     enable :destroy_issue
     enable :read_confidential_issues
@@ -244,6 +245,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_milestone
     enable :admin_issue_board_list
     enable :admin_issue
+    enable :admin_work_item
     enable :update_issue
     enable :read_prometheus
     enable :read_package

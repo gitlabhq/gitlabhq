@@ -9,6 +9,15 @@ export const ORGANIZATION_ROOT_ROUTE_NAME = 'root';
 export const ACCESS_LEVEL_DEFAULT = 'default';
 export const ACCESS_LEVEL_OWNER = 'owner';
 
+// Matches `app/graphql/types/organizations/organization_user_access_level_enum.rb
+export const ACCESS_LEVEL_DEFAULT_STRING = 'DEFAULT';
+export const ACCESS_LEVEL_OWNER_STRING = 'OWNER';
+
+export const ACCESS_LEVEL_LABEL = {
+  [ACCESS_LEVEL_DEFAULT_STRING]: __('User'),
+  [ACCESS_LEVEL_OWNER_STRING]: __('Owner'),
+};
+
 export const FORM_FIELD_NAME = 'name';
 export const FORM_FIELD_ID = 'id';
 export const FORM_FIELD_PATH = 'path';

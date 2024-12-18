@@ -42,7 +42,6 @@ RSpec/ExampleWithoutDescription:
     - 'ee/spec/helpers/ee/projects/security/sast_configuration_helper_spec.rb'
     - 'ee/spec/helpers/ee/users/callouts_helper_spec.rb'
     - 'ee/spec/helpers/projects_helper_spec.rb'
-    - 'ee/spec/helpers/search_helper_spec.rb'
     - 'ee/spec/helpers/users_helper_spec.rb'
     - 'ee/spec/lib/api/entities/clusters/receptive_agent_spec.rb'
     - 'ee/spec/lib/ee/api/entities/experiment_spec.rb'

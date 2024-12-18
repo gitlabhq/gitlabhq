@@ -29,6 +29,8 @@ export const BULK_IMPORT_STATIC_ITEMS = {
   push_rule: __('Push rule'),
   repository: __('Repository'),
   service_desk_setting: __('Service Desk'),
+  vulnerabilities: __('Vulnerabilities'),
+  commit_notes: __('Commit notes'),
 };
 
 const STATISTIC_ITEMS = {

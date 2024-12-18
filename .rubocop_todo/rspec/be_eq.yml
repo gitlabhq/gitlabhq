@@ -669,7 +669,6 @@ RSpec/BeEq:
     - 'spec/helpers/projects/terraform_helper_spec.rb'
     - 'spec/helpers/projects_helper_spec.rb'
     - 'spec/helpers/recaptcha_helper_spec.rb'
-    - 'spec/helpers/search_helper_spec.rb'
     - 'spec/helpers/stat_anchors_helper_spec.rb'
     - 'spec/helpers/time_zone_helper_spec.rb'
     - 'spec/helpers/todos_helper_spec.rb'

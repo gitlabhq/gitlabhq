@@ -1332,7 +1332,6 @@ RSpec/ContextWording:
     - 'spec/helpers/projects_helper_spec.rb'
     - 'spec/helpers/releases_helper_spec.rb'
     - 'spec/helpers/routing/pseudonymization_helper_spec.rb'
-    - 'spec/helpers/search_helper_spec.rb'
     - 'spec/helpers/submodule_helper_spec.rb'
     - 'spec/helpers/timeboxes_helper_spec.rb'
     - 'spec/helpers/todos_helper_spec.rb'

@@ -1,7 +1,8 @@
 <script>
-import { GlDisclosureDropdown, GlIcon, GlPopover, GlLink, GlTooltipDirective } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlPopover, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import {
   WORK_ITEM_TYPE_VALUE_EPIC,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
@@ -11,9 +12,9 @@ import {
 export default {
   components: {
     GlDisclosureDropdown,
-    GlIcon,
     GlPopover,
     GlLink,
+    HelpIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -104,7 +105,7 @@ export default {
           :aria-label="__(`Help`)"
           class="gl-leading-1"
         >
-          <gl-icon name="question-o" class="gl-cursor-help" variant="info" />
+          <help-icon />
         </span>
       </span>
     </template>

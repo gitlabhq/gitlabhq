@@ -1,9 +1,0 @@
----
-name: ml_experiment_tracking
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95689
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/371669
-milestone: '15.6'
-type: development
-group: group::mlops
-default_enabled: true
-log_state_changes: true

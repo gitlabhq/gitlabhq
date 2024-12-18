@@ -11,6 +11,11 @@ export const MOCK_EXPERIMENT = {
   name: 'experiment',
   metadata: [],
   path: '/path/to/experiment',
+  created_at: '2022-11-07T10:42:21.480Z',
+  user: {
+    name: 'root',
+    path: '/root',
+  },
 };
 
 export const MOCK_EXPERIMENT_METADATA = [

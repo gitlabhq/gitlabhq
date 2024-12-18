@@ -1,21 +1,19 @@
 <script>
-import {
-  GlLoadingIcon,
-  GlKeysetPagination,
-  GlCollapsibleListbox,
-  GlTooltipDirective,
-} from '@gitlab/ui';
-import { createAlert } from '~/alert';
+import { GlButton, GlLoadingIcon, GlKeysetPagination, GlTooltipDirective } from '@gitlab/ui';
 import UsersTable from '~/vue_shared/components/users_table/users_table.vue';
+import UserDetailsDrawer from '~/organizations/users/components/user_details_drawer.vue';
 import {
   FIELD_NAME,
   FIELD_ORGANIZATION_ROLE,
   FIELD_CREATED_AT,
   FIELD_LAST_ACTIVITY_ON,
 } from '~/vue_shared/components/users_table/constants';
-import { ACCESS_LEVEL_DEFAULT, ACCESS_LEVEL_OWNER } from '~/organizations/shared/constants';
+import {
+  ACCESS_LEVEL_DEFAULT,
+  ACCESS_LEVEL_OWNER,
+  ACCESS_LEVEL_LABEL,
+} from '~/organizations/shared/constants';
 import { __, s__ } from '~/locale';
-import organizationUserUpdateMutation from '../graphql/mutations/organization_user_update.mutation.graphql';
 
 export default {
   name: 'UsersView',
@@ -30,10 +28,11 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
+    GlButton,
     GlLoadingIcon,
     GlKeysetPagination,
-    GlCollapsibleListbox,
     UsersTable,
+    UserDetailsDrawer,
   },
   inject: ['paths'],
   roleListboxItems: [
@@ -70,52 +69,22 @@ export default {
   },
   data() {
     return {
-      roleListboxLoadingStates: [],
+      userDetailsDrawerActiveUser: null,
+      userDetailsDrawerLoading: false,
     };
   },
   methods: {
-    async onRoleSelect(accessLevel, user) {
-      this.roleListboxLoadingStates.push(user.gid);
-
-      try {
-        const {
-          data: {
-            organizationUserUpdate: { errors },
-          },
-        } = await this.$apollo.mutate({
-          mutation: organizationUserUpdateMutation,
-          variables: {
-            input: {
-              id: user.gid,
-              accessLevel,
-            },
-          },
-        });
-
-        if (errors.length) {
-          createAlert({ message: errors[0] });
-
-          return;
-        }
-
-        this.$toast.show(this.$options.i18n.successMessage);
-        this.$emit('role-change');
-      } catch (error) {
-        createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
-      } finally {
-        this.roleListboxLoadingStates.splice(this.roleListboxLoadingStates.indexOf(user.gid), 1);
-      }
+    setUserDetailsDrawerActiveUser(user) {
+      this.userDetailsDrawerActiveUser = user;
     },
-    roleListboxItemText(accessLevel) {
-      return this.$options.roleListboxItems.find((item) => item.value === accessLevel).text;
+    setUserDetailsDrawerLoading(loading) {
+      this.userDetailsDrawerLoading = loading;
     },
-    isRoleListboxDisabled(user) {
-      return user.isLastOwner;
+    onRoleChange() {
+      this.$emit('role-change');
     },
-    roleListboxTooltip(user) {
-      return this.isRoleListboxDisabled(user)
-        ? this.$options.i18n.disabledRoleListboxTooltipText
-        : null;
+    userAccessLevelLabel(user) {
+      return ACCESS_LEVEL_LABEL[user.accessLevel.stringValue];
     },
   },
 };
@@ -132,26 +101,25 @@ export default {
         :column-widths="$options.usersTable.columnWidths"
       >
         <template #organization-role="{ user }">
-          <div
-            v-gl-tooltip="{ disabled: !roleListboxTooltip(user), title: roleListboxTooltip(user) }"
-            class="gl-rounded-base focus:gl-focus"
-            :tabindex="isRoleListboxDisabled(user) && 0"
+          <gl-button
+            class="gl-block"
+            variant="link"
+            :disabled="userDetailsDrawerLoading"
+            @click="setUserDetailsDrawerActiveUser(user)"
           >
-            <gl-collapsible-listbox
-              :disabled="isRoleListboxDisabled(user)"
-              :selected="user.accessLevel.stringValue"
-              block
-              toggle-class="gl-form-input-xl"
-              :items="$options.roleListboxItems"
-              :loading="roleListboxLoadingStates.includes(user.gid)"
-              @select="onRoleSelect($event, user)"
-            />
-          </div>
+            {{ userAccessLevelLabel(user) }}
+          </gl-button>
         </template>
       </users-table>
       <div class="gl-flex gl-justify-center">
         <gl-keyset-pagination v-bind="pageInfo" @prev="$emit('prev')" @next="$emit('next')" />
       </div>
     </template>
+    <user-details-drawer
+      :user="userDetailsDrawerActiveUser"
+      @loading="setUserDetailsDrawerLoading"
+      @close="setUserDetailsDrawerActiveUser(null)"
+      @role-change="onRoleChange"
+    />
   </div>
 </template>

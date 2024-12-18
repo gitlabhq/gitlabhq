@@ -3,7 +3,7 @@ import { GlDrawer, GlFormCheckbox } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
-import RuleDrawer from '~/projects/settings/branch_rules/components/view/rule_drawer.vue';
+import AccessLevelsDrawer from '~/projects/settings/branch_rules/components/view/access_levels_drawer.vue';
 import {
   allowedToMergeDrawerProps,
   editRuleData,
@@ -15,7 +15,7 @@ jest.mock('~/lib/utils/dom_utils', () => ({ getContentWrapperHeight: jest.fn() }
 
 const TEST_HEADER_HEIGHT = '123px';
 
-describe('Edit Rule Drawer', () => {
+describe('Edit Access Levels Drawer', () => {
   let wrapper;
 
   const findDrawer = () => wrapper.findComponent(GlDrawer);
@@ -30,7 +30,7 @@ describe('Edit Rule Drawer', () => {
   const findNoOneCheckbox = () => wrapper.findByTestId('no-one-role-checkbox');
 
   const createComponent = (props = allowedToMergeDrawerProps) => {
-    wrapper = shallowMountExtended(RuleDrawer, {
+    wrapper = shallowMountExtended(AccessLevelsDrawer, {
       propsData: {
         ...props,
       },

@@ -80,7 +80,6 @@ Lint/UnusedMethodArgument:
     - 'app/helpers/routing/projects/members_helper.rb'
     - 'app/helpers/routing/projects_helper.rb'
     - 'app/helpers/routing/snippets_helper.rb'
-    - 'app/helpers/search_helper.rb'
     - 'app/helpers/timeboxes_helper.rb'
     - 'app/mailers/emails/merge_requests.rb'
     - 'app/mailers/emails/releases.rb'

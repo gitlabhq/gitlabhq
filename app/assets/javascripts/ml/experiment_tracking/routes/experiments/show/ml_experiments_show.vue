@@ -1,13 +1,13 @@
 <script>
 import { isEmpty } from 'lodash';
-import { GlTableLite, GlLink, GlEmptyState, GlButton } from '@gitlab/ui';
-import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
+import { GlTableLite, GlLink, GlEmptyState, GlButton, GlSprintf, GlIcon } from '@gitlab/ui';
+import TitleArea from '~/vue_shared/components/registry/title_area.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import { FEATURE_NAME, FEATURE_FEEDBACK_ISSUE } from '~/ml/experiment_tracking/constants';
 import { queryToObject, setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
-import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
 import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
 import KeysetPagination from '~/ml/experiment_tracking/components/pagination.vue';
 import PerformanceGraph from '~/ml/experiment_tracking/components/performance_graph.vue';
@@ -20,14 +20,16 @@ import * as translations from './translations';
 export default {
   name: 'MlExperimentsShow',
   components: {
+    TimeAgoTooltip,
+    TitleArea,
+    GlSprintf,
     GlTableLite,
     GlLink,
+    GlIcon,
     GlEmptyState,
     GlButton,
-    TimeAgo,
     RegistrySearch,
     KeysetPagination,
-    ModelExperimentsHeader,
     DeleteButton,
     PerformanceGraph,
   },
@@ -157,6 +159,9 @@ export default {
     showGraph() {
       return this.hasItems && this.metricNames.length > 0;
     },
+    createdMessage() {
+      return s__('MlExperimentTracking|Experiment created %{timeAgo} by %{author}');
+    },
   },
   methods: {
     submitFilters() {
@@ -193,12 +198,33 @@ export default {
 
 <template>
   <div>
-    <model-experiments-header :page-title="experiment.name">
-      <gl-button class="gl-mr-3" @click="downloadCsv">{{
-        $options.i18n.DOWNLOAD_AS_CSV_LABEL
-      }}</gl-button>
-      <delete-button v-bind="deleteButtonInfo" />
-    </model-experiments-header>
+    <title-area :title="experiment.name">
+      <template #metadata-versions-count>
+        <div class="detail-page-header-body gl-flex-wrap gl-gap-x-2" data-testid="metadata">
+          <gl-icon name="issue-type-test-case" />
+          <gl-sprintf :message="createdMessage">
+            <template #timeAgo>
+              <time-ago-tooltip :time="experiment.created_at" />
+            </template>
+            <template #author>
+              <gl-link
+                class="js-user-link gl-font-bold !gl-text-subtle"
+                :href="experiment.user.path"
+                :data-user-id="experiment.user.id"
+              >
+                <span>{{ experiment.user.name }}</span>
+              </gl-link>
+            </template>
+          </gl-sprintf>
+        </div>
+      </template>
+      <template #right-actions>
+        <gl-button class="gl-mr-3" @click="downloadCsv">{{
+          $options.i18n.DOWNLOAD_AS_CSV_LABEL
+        }}</gl-button>
+        <delete-button v-bind="deleteButtonInfo" />
+      </template>
+    </title-area>
     <section>
       <registry-search
         :filters="filters"
@@ -239,7 +265,7 @@ export default {
           </template>
 
           <template #cell(created_at)="data">
-            <time-ago :time="data.value" />
+            <time-ago-tooltip :time="data.value" />
           </template>
 
           <template #cell(user)="data">

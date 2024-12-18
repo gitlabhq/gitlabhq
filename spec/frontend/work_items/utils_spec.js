@@ -48,6 +48,8 @@ describe('autocompleteDataSources', () => {
       epics: '/foobar/project/group/-/autocomplete_sources/epics?type=WorkItem&work_item_type_id=2',
       milestones:
         '/foobar/project/group/-/autocomplete_sources/milestones?type=WorkItem&work_item_type_id=2',
+      iterations:
+        '/foobar/project/group/-/autocomplete_sources/iterations?type=WorkItem&work_item_type_id=2',
     });
   });
 
@@ -61,6 +63,7 @@ describe('autocompleteDataSources', () => {
         '/foobar/project/group/-/autocomplete_sources/merge_requests?type=WorkItem&type_id=2',
       epics: '/foobar/project/group/-/autocomplete_sources/epics?type=WorkItem&type_id=2',
       milestones: '/foobar/project/group/-/autocomplete_sources/milestones?type=WorkItem&type_id=2',
+      iterations: '/foobar/project/group/-/autocomplete_sources/iterations?type=WorkItem&type_id=2',
     });
   });
 
@@ -86,6 +89,8 @@ describe('autocompleteDataSources', () => {
       epics: '/foobar/groups/group/-/autocomplete_sources/epics?type=WorkItem&work_item_type_id=2',
       milestones:
         '/foobar/groups/group/-/autocomplete_sources/milestones?type=WorkItem&work_item_type_id=2',
+      iterations:
+        '/foobar/groups/group/-/autocomplete_sources/iterations?type=WorkItem&work_item_type_id=2',
     });
   });
 
@@ -105,6 +110,7 @@ describe('autocompleteDataSources', () => {
         '/foobar/groups/group/-/autocomplete_sources/merge_requests?type=WorkItem&type_id=2',
       epics: '/foobar/groups/group/-/autocomplete_sources/epics?type=WorkItem&type_id=2',
       milestones: '/foobar/groups/group/-/autocomplete_sources/milestones?type=WorkItem&type_id=2',
+      iterations: '/foobar/groups/group/-/autocomplete_sources/iterations?type=WorkItem&type_id=2',
     });
   });
 });

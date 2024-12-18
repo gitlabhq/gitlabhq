@@ -15,7 +15,6 @@ RSpec.describe 'Project navbar', :with_license, :js, feature_category: :groups_a
     sign_in(user)
 
     stub_config(registry: { enabled: false })
-    stub_feature_flags(ml_experiment_tracking: false)
     insert_package_nav
     insert_infrastructure_registry_nav(s_('Terraform|Terraform states'))
     insert_infrastructure_google_cloud_nav
@@ -73,22 +72,6 @@ RSpec.describe 'Project navbar', :with_license, :js, feature_category: :groups_a
 
     before do
       insert_harbor_registry_nav
-
-      visit project_path(project)
-    end
-
-    it_behaves_like 'verified navigation bar'
-  end
-
-  context 'when models experiments is available' do
-    before do
-      stub_feature_flags(ml_experiment_tracking: true)
-
-      if Gitlab.ee? # rubocop: disable RSpec/AvoidConditionalStatements
-        insert_model_experiments_nav(_('Merge request analytics'))
-      else
-        insert_model_experiments_nav(_('Repository analytics'))
-      end
 
       visit project_path(project)
     end

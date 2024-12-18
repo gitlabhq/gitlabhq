@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlAlert, GlButton, GlFormSelect, GlFormGroup, GlIcon, GlLink, GlToken } from '@gitlab/ui';
+import { GlAlert, GlButton, GlFormSelect, GlFormGroup, GlLink, GlToken } from '@gitlab/ui';
 import { isNumber } from 'lodash';
 import { s__, __ } from '~/locale';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
@@ -19,7 +19,6 @@ export default {
     GlButton,
     GlFormGroup,
     GlFormSelect,
-    GlIcon,
     GlLink,
     GlToken,
     NewEnvironmentsDropdown,
@@ -203,7 +202,7 @@ export default {
         {{ $options.i18n.environmentsSelectDescription }}
       </span>
       <gl-link :href="environmentsScopeDocsPath" target="_blank">
-        <gl-icon name="question-o" />
+        <help-icon />
       </gl-link>
     </div>
   </div>

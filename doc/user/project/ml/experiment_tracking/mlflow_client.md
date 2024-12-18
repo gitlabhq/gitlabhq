@@ -9,13 +9,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-**Status:** Experiment
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8560) in GitLab 15.11 as an [experiment](../../../../policy/development_stages_support.md#experiment) release [with a flag](../../../../administration/feature_flags.md) named `ml_experiment_tracking`. Disabled by default.
-
-NOTE:
-Model experiment tracking is an [experiment](../../../../policy/development_stages_support.md).
-Provide feedback [for model experiment tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/381660). Provide feedback for [model registry](https://gitlab.com/gitlab-org/gitlab/-/epics/9423).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8560) in GitLab 15.11.
+> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/9341) in GitLab 17.8.
 
 [MLflow](https://mlflow.org/) is a popular open source tool for Machine Learning experiment tracking.
 GitLab [Model experiment tracking](index.md) and GitLab

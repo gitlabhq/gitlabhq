@@ -9,9 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 GitLab Duo uses generative AI to help increase your velocity and make you more productive. Each AI-powered feature operates independently and is not required for other features to function.
 
-GitLab uses best-in-class large language models (LLMs) for specific tasks. These LLMs are
-[Google Vertex AI Models](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/overview#genai-models)
-and [Anthropic Claude](https://www.anthropic.com/product).
+GitLab uses the right large language models (LLMs) for specific tasks. These LLMs are [Anthropic Claude](https://www.anthropic.com/product), [Fireworks AI-hosted Qwen2.5](https://fireworks.ai/models/fireworks/qwen2p5-coder-7b), and [Google Vertex AI Models](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/overview#genai-models).
 
 ## Progressive enhancement
 
@@ -29,7 +27,7 @@ GitLab Duo AI-powered features are powered by a generative AI model. The process
 
 The below reflects the current retention periods of GitLab AI model [Sub-Processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors):
 
-GitLab has arranged zero-day data retention with Anthropic and Google for GitLab Duo requests. Anthropic and Google discard model input and output data immediately after the output is provided; input and output data is not stored for abuse monitoring. Model input and output is not used to train models.
+GitLab has arranged zero-day data retention with Anthropic, Fireworks AI, and Google for GitLab Duo requests. Anthropic, Fireworks AI, and Google discard model input and output data immediately after the output is provided; input and output data is not stored for abuse monitoring. Model input and output is not used to train models.
 
 All of these AI providers are under data protection agreements with GitLab that prohibit the use of Customer Content for their own purposes, except to perform their independent legal obligations.
 

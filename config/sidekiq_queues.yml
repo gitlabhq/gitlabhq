@@ -31,8 +31,6 @@
   - 1
 - - ai_repository_xray_scan_dependencies
   - 1
-- - ai_store_repository_xray
-  - 1
 - - analytics_code_review_metrics
   - 1
 - - analytics_devops_adoption_create_snapshot
@@ -788,6 +786,8 @@
 - - search_zoekt_namespace_indexer
   - 1
 - - search_zoekt_namespace_initial_indexing
+  - 1
+- - search_zoekt_node_with_negative_unclaimed_storage_event
   - 1
 - - search_zoekt_orphaned_index_event
   - 1

@@ -308,6 +308,7 @@ Audit event types belong to the following product categories.
 
 | Name | Description | Saved to database | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| [`ci_runner_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173885) | Triggered when a runner is created | **{check-circle}** Yes | GitLab [17.8](https://gitlab.com/gitlab-org/gitlab/-/issues/503315) | Instance, Group, Project |
 | [`ci_runner_usage_export`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139578) | A runner usage report is generated | **{check-circle}** Yes | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/426560) | Instance |
 | [`ci_runners_bulk_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173886) | Triggered when runners are deleted in bulk | **{check-circle}** Yes | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/503315) | User |
 

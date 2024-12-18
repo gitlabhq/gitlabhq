@@ -1,12 +1,14 @@
-import { GlTableLite, GlLink, GlEmptyState, GlButton } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { GlTableLite, GlLink, GlEmptyState, GlButton, GlIcon, GlSprintf } from '@gitlab/ui';
 import MlExperimentsShow from '~/ml/experiment_tracking/routes/experiments/show/ml_experiments_show.vue';
 import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
 import Pagination from '~/ml/experiment_tracking/components/pagination.vue';
+import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import PerformanceGraph from '~/ml/experiment_tracking/components/performance_graph.vue';
-import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
+
 import * as urlHelpers from '~/lib/utils/url_utility';
 import {
   MOCK_START_CURSOR,
@@ -26,10 +28,11 @@ describe('MlExperimentsShow', () => {
     pageInfo = MOCK_PAGE_INFO,
     experiment = MOCK_EXPERIMENT,
     emptyStateSvgPath = 'path',
+    mountFn = mountExtended,
     mlflowTrackingUrl = 'mlflow/tracking/url',
     // eslint-disable-next-line max-params
   ) => {
-    wrapper = mount(MlExperimentsShow, {
+    wrapper = mountFn(MlExperimentsShow, {
       propsData: {
         experiment,
         candidates,
@@ -39,6 +42,7 @@ describe('MlExperimentsShow', () => {
         emptyStateSvgPath,
         mlflowTrackingUrl,
       },
+      stubs: { GlSprintf, TimeAgoTooltip },
     });
   };
 
@@ -65,7 +69,8 @@ describe('MlExperimentsShow', () => {
   const findTableRows = () => findTable().findAll('tbody > tr');
   const findNthTableRow = (idx) => findTableRows().at(idx);
   const findColumnInRow = (row, col) => findNthTableRow(row).findAll('td').at(col);
-  const findExperimentHeader = () => wrapper.findComponent(ModelExperimentsHeader);
+  const findExperimentHeader = () => wrapper.findComponent(TitleArea);
+  const findExperimentMetadata = () => wrapper.findByTestId('metadata');
   const findDeleteButton = () => wrapper.findComponent(DeleteButton);
   const findDownloadButton = () => findExperimentHeader().findComponent(GlButton);
   const findMetadataTableRow = (idx) => wrapper.findAll('.experiment-metadata tbody > tr').at(idx);
@@ -73,6 +78,7 @@ describe('MlExperimentsShow', () => {
   const findMetadataHeader = () => wrapper.find('.experiment-metadata h3');
   const findMetadataEmptyState = () => wrapper.find('.experiment-metadata .gl-text-subtle');
   const findPerformanceGraph = () => wrapper.findComponent(PerformanceGraph);
+  const findTimeAgoTooltip = () => findExperimentHeader().findComponent(TimeAgoTooltip);
 
   const hrefInRowAndColumn = (row, col) =>
     findColumnInRow(row, col).findComponent(GlLink).attributes().href;
@@ -96,8 +102,20 @@ describe('MlExperimentsShow', () => {
       expect(findExperimentHeader().exists()).toBe(true);
     });
 
+    it('sets model metadata correctly', () => {
+      expect(findExperimentMetadata().findComponent(GlIcon).props('name')).toBe(
+        'issue-type-test-case',
+      );
+      expect(findExperimentMetadata().text()).toBe('Experiment created in 2 years by root');
+
+      expect(findTimeAgoTooltip().props('time')).toBe(MOCK_EXPERIMENT.created_at);
+
+      expect(findExperimentMetadata().findComponent(GlLink).attributes('href')).toBe('/root');
+      expect(findExperimentMetadata().findComponent(GlLink).text()).toBe('root');
+    });
+
     it('passes the correct title to experiment header', () => {
-      expect(findExperimentHeader().props('pageTitle')).toBe(MOCK_EXPERIMENT.name);
+      expect(findExperimentHeader().props('title')).toBe(MOCK_EXPERIMENT.name);
     });
 
     it('does not show table', () => {
