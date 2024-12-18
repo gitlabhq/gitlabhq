@@ -41,7 +41,7 @@ gem 'factory_bot', '~> 6.5.0'
 
 group :development do
   gem 'pry-byebug', '~> 3.10.1', platform: :mri
-  gem "ruby-debug-ide", "~> 0.7.3"
+  gem "ruby-debug-ide", "~> 0.7.4"
 end
 
 group :ci do

@@ -571,6 +571,8 @@ upload-knapsack-report:
   extends:
     - .upload-knapsack-report
     - .rules:report:upload-knapsack-report
+  variables:
+    QA_JSON_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/gitlab-qa-run-*/gitlab-*-qa-*/rspec-*.json
 
 export-test-metrics:
   extends:

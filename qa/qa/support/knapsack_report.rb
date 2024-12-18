@@ -12,7 +12,13 @@ module QA
       DEFAULT_TEST_PATTERN = "qa/specs/features/**/*_spec.rb"
 
       class << self
-        delegate :configure!, :move_regenerated_report, :download_report, :upload_report, :merged_report, to: :new
+        delegate :configure!,
+          :move_regenerated_report,
+          :download_report,
+          :upload_report,
+          :upload_custom_report,
+          :merged_report,
+          to: :new
       end
 
       def initialize(report_name = nil)
@@ -106,17 +112,59 @@ module QA
         end
       end
 
+      # Create and upload custom report based on data from JsonFormatter report files
+      #
+      # @param glob [String]
+      # @return [void]
+      def upload_custom_report(glob)
+        raise "QA_RUN_TYPE must be set for custom report" unless run_type
+
+        reports = Pathname.glob(glob).select { |file| file.extname == ".json" }
+        return logger.error("Glob '#{glob}' did not contain any valid report files!") if reports.empty?
+
+        logger.info("Processing '#{reports.size}' report files")
+        runtimes = reports
+          .flat_map { |report| JSON.load_file(report, symbolize_names: true) }
+          .each_with_object(Hash.new { |hsh, key| hsh[key] = { ids: [], run_time: 0 } }) do |json, runtimes|
+            json[:examples]
+              .select { |ex| ex[:status] == "passed" }
+              .each do |ex|
+                path = ex[:file_path].gsub("./", "")
+                # do not sum runtime if specific id has been already recorded
+                # this can happen if same test is executed within multiple jobs using different gitlab configurations
+                next if runtimes[path][:ids].include?(ex[:id])
+
+                runtimes[path][:run_time] += ex[:run_time]
+                runtimes[path][:ids] << ex[:id]
+              end
+          end
+
+        report = runtimes
+          .transform_values { |val| val[:run_time] }
+          .sort_by { |_k, v| v } # sort report by execution time
+          .to_h
+
+        file = "#{run_type}.json"
+        logger.info("Uploading combined runtime report '#{file}'")
+        client.put_object(BUCKET, file, JSON.pretty_generate(report))
+      end
+
       # Single merged knapsack report
       #
       # @return [Hash]
       def merged_report
         logger.info("Fetching all knapsack reports from GCS '#{BUCKET}' bucket")
         client.list_objects(BUCKET).items.each_with_object({}) do |report, hash|
-          hash.merge!(JSON.parse(client.get_object(BUCKET, report.name)[:body]))
+          json = JSON.parse(client.get_object(BUCKET, report.name)[:body])
+
+          # merge report and keep only the longest runtime
+          json.each { |spec, runtime| hash[spec] = runtime unless (hash[spec] || 0) > runtime }
         end
       end
 
       private
+
+      delegate :run_type, to: QA::Runtime::Env
 
       # Setup knapsack logger
       #

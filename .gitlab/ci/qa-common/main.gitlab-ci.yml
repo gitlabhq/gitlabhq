@@ -123,6 +123,11 @@ stages:
     - .ruby-image
   stage: report
   when: always
+  variables:
+    QA_JSON_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/rspec-*.json
+  script:
+    - !reference [.generate-knapsack-report-base, script]
+    - bundle exec rake "knapsack:upload_custom_report[$QA_JSON_REPORT_FILE_PATTERN]"
 
 .export-test-metrics:
   extends:

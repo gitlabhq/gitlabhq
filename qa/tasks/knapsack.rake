@@ -65,6 +65,11 @@ namespace :knapsack do
     QA::Support::KnapsackReport.upload_report(args[:glob])
   end
 
+  desc "Create and upload custom report for all tests in pipeline"
+  task :upload_custom_report, [:glob] do |_task, args|
+    QA::Support::KnapsackReport.upload_custom_report(args[:glob])
+  end
+
   desc "Report long running spec files"
   task :notify_long_running_specs do
     QA::Tools::LongRunningSpecReporter.execute

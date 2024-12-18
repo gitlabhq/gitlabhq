@@ -2651,21 +2651,6 @@
     - <<: *if-default-refs
       changes: *docs-patterns
 
-.reports:rules:code_quality_cache:
-  rules:
-    - <<: *if-default-branch-refs
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - if: '$CODE_QUALITY_DISABLED'
-      when: never
-    - <<: *if-default-refs
-      changes: *code-backstage-qa-patterns
-      when: never
-      # Use the cached report in docs-only pipelines only, never in pipelines for code changes.
-    - <<: *if-default-refs
-      changes: *docs-patterns
-
 .reports:rules:semgrep-sast:
   rules:
     - <<: *if-merge-request-labels-pipeline-expedite

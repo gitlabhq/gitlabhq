@@ -239,22 +239,6 @@
     - *node-modules-cache  # We don't push this cache as it's already rebuilt by `update-assets-compile-*-cache`
     - *storybook-node-modules-cache-push
 
-.code-quality-cache: &code-quality-cache
-  paths:
-    - gl-code-quality-report.json
-
-.code-quality-cache-push:
-  cache:
-    - key: $CI_COMMIT_BRANCH-code-quality-cache
-      <<: *code-quality-cache
-      policy: push
-
-.code-quality-cache-master-pull:
-  cache:
-    - key: master-code-quality-cache
-      <<: *code-quality-cache
-      policy: pull  # Docs pipelines can save time by pulling a copy of the code quality report from the latest master pipeline.
-
 .redis-services:
   services:
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12

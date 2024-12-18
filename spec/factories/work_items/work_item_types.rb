@@ -9,6 +9,7 @@ FactoryBot.define do
 
     transient do
       default { true }
+      widgets { [] }
     end
 
     initialize_with do
@@ -35,6 +36,36 @@ FactoryBot.define do
       trait type_name do
         base_type { attributes[:enum_value] }
         name { attributes[:name] }
+      end
+    end
+
+    # Pass widgets you want to create for non-default types like
+    #
+    # create(:work_item_type, :non_default, widgets: [:time_tracking, :weight])
+    #
+    # or
+    #
+    # create(:work_item_type, :non_default, widgets: [
+    #   { widget_type: :crm_contacts, name: 'CrmContacts' },
+    #   { widget_type: :weight, name: 'Weight', widget_options: { rollup: false, editable: true }}
+    # ])
+    #
+    after(:create) do |work_item_type, evaluator|
+      next unless evaluator.widgets.any?
+
+      evaluator.widgets.each do |item|
+        if item.is_a?(Symbol)
+          args = {
+            widget_type: item,
+            name: item.to_s.tr('_', ' ').camelize
+          }
+        elsif item.is_a?(Hash)
+          args = item
+        else
+          next
+        end
+
+        work_item_type.widget_definitions.create!(args)
       end
     end
   end

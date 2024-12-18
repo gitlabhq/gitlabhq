@@ -659,6 +659,13 @@ module QA
         enabled?(ENV["QA_NO_ADMIN_ENV"], default: false) || gitlab_host == "gitlab.com"
       end
 
+      # Test run type
+      #
+      # @return [String]
+      def run_type
+        ENV["QA_RUN_TYPE"].presence
+      end
+
       private
 
       # Gitlab host tests are running against
