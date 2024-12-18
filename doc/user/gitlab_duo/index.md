@@ -30,7 +30,7 @@ To improve your workflow across the entire software development lifecycle, try t
 
 - [GitLab Duo Chat](../gitlab_duo_chat/index.md): Write and understand code, get up to speed on the status of projects,
   and learn about GitLab by asking your questions in a chat window.
-  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=ZQBAuf-CTAY&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
+  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=ZQBAuf-CTAY)
 - [Self-Hosted Models](../../administration/self_hosted_models/index.md): Host the language models that power AI features in GitLab.
   Code Suggestions and Duo Chat are supported. Use GitLab model vendors or self-host a supported language model.
 - [GitLab Duo Workflow](../duo_workflow/index.md): Automate tasks and help increase productivity in your development workflow.
@@ -41,8 +41,11 @@ To improve your workflow across the entire software development lifecycle, try t
 To improve your workflow while planning work, try these features:
 
 - [Issue Description Generation](../project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation): Generate a more in-depth issue description based on a short summary.
+  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=-BWBQat7p5M)
+  <!-- Video published on 2024-12-18 -->
 - [Discussion Summary](../discussions/index.md#summarize-issue-discussions-with-duo-chat): Summarize lengthy conversations in an issue.
   <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=IcdxLfTIUgc)
+  <!-- Video published on 2024-03-28 -->
 
 ## Authoring code
 
@@ -56,11 +59,11 @@ To improve your workflow while authoring code, try these features:
   - [A file](../../user/project/repository/code_explain.md).
   - [A merge request](../../user/project/merge_requests/changes.md#explain-code-in-a-merge-request).
 - [Test Generation](../gitlab_duo_chat/examples.md#write-tests-in-the-ide): Test your code by generating tests.
-  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
+  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU)
 - [Refactor Code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide): Improve or refactor the selected code.
-  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
+  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU)
 - [Fix Code](../gitlab_duo_chat/examples.md#fix-code-in-the-ide): Fix quality problems, like bugs or typos, in the selected code.
-  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
+  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU)
 - [GitLab Duo for the CLI](../../editor_extensions/gitlab_cli/index.md#gitlab-duo-for-the-cli): Discover or recall `git` commands.
 
 ## Reviewing code
@@ -71,7 +74,7 @@ To improve your workflow while reviewing code in merge requests, try these featu
   <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=CKjkVsfyFd8&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 - [Code Review](../project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code): Review proposed code changes.
 - [Code Review Summary](../project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review): Summarize all the comments in a review.
-  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=Bx6Zajyuy9k&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
+  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=Bx6Zajyuy9k)
 - [Merge Commit Message Generation](../project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message): Generate commit messages.
 
 ## Testing and deploying code

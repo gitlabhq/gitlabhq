@@ -4,7 +4,6 @@ module QA
   RSpec.describe 'Plan',
     :gitlab_pages,
     :orchestrated,
-    except: { job: 'review-qa-*' },
     quarantine: {
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/383215',
       type: :broken

@@ -55,7 +55,6 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'ee/app/models/ee/namespace.rb'
     - 'ee/app/models/ee/plan.rb'
     - 'ee/app/models/ee/preloaders/group_policy_preloader.rb'
-    - 'ee/app/models/ee/preloaders/single_hierarchy_project_group_plans_preloader.rb'
     - 'ee/app/models/ee/project.rb'
     - 'ee/app/models/ee/project_statistics.rb'
     - 'ee/app/models/ee/user.rb'

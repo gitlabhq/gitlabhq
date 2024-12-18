@@ -115,6 +115,7 @@ export default {
   <gl-disclosure-dropdown
     data-testid="pipeline-mini-graph-dropdown"
     :aria-label="stageAriaLabel(stage.name)"
+    fluid-width
     @hidden="onHideDropdown"
     @shown="onShowDropdown"
   >
@@ -145,7 +146,7 @@ export default {
     </div>
     <ul
       v-else
-      class="gl-m-0 gl-overflow-y-auto gl-p-0"
+      class="gl-m-0 gl-w-34 gl-overflow-y-auto gl-p-0"
       data-testid="pipeline-mini-graph-dropdown-menu-list"
       @click.stop
     >

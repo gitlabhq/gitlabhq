@@ -287,7 +287,7 @@ Allow enough time for downtime while step two is being executed.
 
    Edit your `/etc/gitlab/gitlab.rb` and add the `maintenance` section to the `registry['storage']`
    configuration. For example, for a `gcs` backed registry using a `gs://my-company-container-registry`
-   bucket , the configuration could be:
+   bucket, the configuration could be:
 
    ```ruby
    ## Object Storage - Container Registry

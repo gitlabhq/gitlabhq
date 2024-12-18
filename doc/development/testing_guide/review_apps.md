@@ -21,27 +21,7 @@ For any of the following scenarios, the `start-review-app-pipeline` job would be
 - for scheduled pipelines
 - the MR has the `pipeline:run-review-app` label set
 
-## E2E test runs on review apps
-
-On every pipeline in the `qa` stage (which comes after the `review` stage), the `review-qa-smoke` and `review-qa-blocking` jobs are automatically started.
-
-`qa` stage consists of following jobs:
-
-- `review-qa-smoke`: small and fast subset of tests to validate core functionality of GitLab.
-- `review-qa-blocking`: subset of tests that block the merge request. These tests are
-  considered stable and are not allowed to fail.
-- `review-qa-non-blocking`: rest of the e2e tests that can be triggered manually.
-
-`review-qa-*` jobs ensure that end-to-end tests for the changes in the merge request pass in a live environment. This shifts the identification of e2e failures from an environment
-on the path to production to the merge request to prevent breaking features on GitLab.com or costly GitLab.com deployment blockers. If needed, `review-qa-*` failures should be
-investigated with an SET (software engineer in test) counterpart to help determine the root cause of the error.
-
-After the end-to-end test runs have finished, [Allure reports](https://github.com/allure-framework/allure2) are generated and published by
-the `e2e-test-report` job. A comment with links to the reports is added to the merge request.
-
-Errors can be found in the `gitlab-review-apps` Sentry project and [filterable by review app URL](https://sentry.gitlab.net/gitlab/gitlab-review-apps/?query=url%3A%22https%3A%2F%2Fgitlab-review-require-ve-u92nn2.gitlab-review.app%2F%22) or [commit SHA](https://sentry.gitlab.net/gitlab/gitlab-review-apps/releases/6095b501da7/all-events/).
-
-### Bypass failed review app deployment to merge a broken `master` fix
+## Bypass failed review app deployment to merge a broken `master` fix
 
 Maintainers can elect to use the [process for merging during broken `master`](https://handbook.gitlab.com/handbook/engineering/workflow/#instructions-for-the-maintainer) if a customer-critical merge request is blocked by pipelines failing due to review app deployment failures.
 
@@ -138,14 +118,12 @@ graph TD
   B[review-build-cng];
   C["review-deploy<br><br>Helm deploys the review app using the Cloud<br/>Native images built by the CNG-mirror pipeline.<br><br>Cloud Native images are deployed to the `review-apps`<br>Kubernetes (GKE) cluster, in the GCP `gitlab-review-apps` project."];
   D[CNG-mirror];
-  E[review-qa-smoke, review-qa-blocking, review-qa-non-blocking<br><br>gitlab-qa runs the e2e tests against the review app.];
 
   A --> B1
   B1 --> B
   B -.->|triggers a CNG-mirror pipeline| D
   D -.->|depends on the multi-project pipeline| B
   B --> C
-  C --> E
 
 subgraph "1. gitlab-org/gitlab parent pipeline"
   A
@@ -155,7 +133,6 @@ subgraph "1. gitlab-org/gitlab parent pipeline"
 subgraph "2. gitlab-org/gitlab child pipeline"
   B
   C
-  E
   end
 
 subgraph "CNG-mirror pipeline"
@@ -207,13 +184,6 @@ subgraph "CNG-mirror pipeline"
   issue with a link to your merge request. The deployment failure can
   reveal an actual problem introduced in your merge request (that is, this isn't
   necessarily a transient failure)!
-- If the `review-qa-smoke` job keeps failing (we already retry them once),
-  check the job's logs: you could discover an actual problem introduced in
-  your merge request. You can also download the artifacts to see screenshots of
-  the page at the time the failures occurred. If you don't find the cause of the
-  failure or if it seems unrelated to your change, post a message in the
-  `#test-platform` channel and/or create a ~Quality ~"type::bug" issue with a link to your
-  merge request.
 - The manual `review-stop` can be used to
   stop a review app manually, and is also started by GitLab once a merge
   request's branch is deleted after being merged.

@@ -20634,10 +20634,13 @@ msgstr ""
 msgid "DuoCodeReview|Hey :wave: I'm starting to review your merge request and I will let you know when I'm finished."
 msgstr ""
 
+msgid "DuoCodeReview|I encountered some problems while responding to your query. Please try again later."
+msgstr ""
+
 msgid "DuoCodeReview|I finished my review and found nothing to comment on. Nice work! :tada:"
 msgstr ""
 
-msgid "DuoCodeReview|I have encountered some issues while I was reviewing. Please try again later."
+msgid "DuoCodeReview|I have encountered some problems while I was reviewing. Please try again later."
 msgstr ""
 
 msgid "DuoEnterpriseDiscover|AI Impact Dashboard measures the ROI of AI"
@@ -31533,6 +31536,51 @@ msgid "JobAssistant|second(s)"
 msgstr ""
 
 msgid "JobAssistant|week(s)"
+msgstr ""
+
+msgid "JobToken|Apply permissions that grant access to individual resources."
+msgstr ""
+
+msgid "JobToken|Containers"
+msgstr ""
+
+msgid "JobToken|Default permissions"
+msgstr ""
+
+msgid "JobToken|Deployments"
+msgstr ""
+
+msgid "JobToken|Environments"
+msgstr ""
+
+msgid "JobToken|Fine-grained permissions"
+msgstr ""
+
+msgid "JobToken|Jobs"
+msgstr ""
+
+msgid "JobToken|Packages"
+msgstr ""
+
+msgid "JobToken|Read"
+msgstr ""
+
+msgid "JobToken|Read and write"
+msgstr ""
+
+msgid "JobToken|Releases"
+msgstr ""
+
+msgid "JobToken|Resource"
+msgstr ""
+
+msgid "JobToken|Secure files"
+msgstr ""
+
+msgid "JobToken|Terraform state"
+msgstr ""
+
+msgid "JobToken|Use the standard permissions model based on user membership and roles."
 msgstr ""
 
 msgid "Jobs"

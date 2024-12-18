@@ -614,6 +614,22 @@ AtlErSqafbECNDSwS5BX8yDpu5yRBJ4xegO/rNlmb8ICRYkuJapD1xXicFOsmfUK
     end
   end
 
+  describe '#duo_add_on_groups' do
+    it 'returns empty array when not set' do
+      expect(config.duo_add_on_groups).to be_empty
+    end
+
+    context 'when the config is set' do
+      before do
+        stub_ldap_config(options: { duo_add_on_groups: %w[duo_group_1 duo_group_2] })
+      end
+
+      it 'returns configured duo_add_on_groups array' do
+        expect(config.duo_add_on_groups).to match_array(%w[duo_group_1 duo_group_2])
+      end
+    end
+  end
+
   describe 'sign_in_enabled?' do
     using RSpec::Parameterized::TableSyntax
 

@@ -51,10 +51,9 @@ export default {
 <template>
   <gl-disclosure-dropdown-item :item="item" class="ci-job-component" data-testid="job-item">
     <template #list-item>
-      <div class="-gl-my-2 gl-flex gl-h-6">
+      <div class="-gl-my-2 gl-flex gl-items-center gl-justify-between">
         <job-name-component
           v-gl-tooltip.viewport.left
-          class="-gl-my-2 gl-min-w-0"
           :title="tooltipText"
           :name="job.name"
           :status="status"
@@ -62,6 +61,7 @@ export default {
         />
         <job-action-button
           v-if="hasJobAction"
+          class="gl-ml-6"
           :job-id="job.id"
           :job-action="status.action"
           :job-name="job.name"

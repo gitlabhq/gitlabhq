@@ -925,6 +925,12 @@ production: &base
         #
         admin_group: ''
 
+        # LDAP group of users who should have Duo Add-on seats assigned in GitLab
+        #
+        #   Ex. ['DuoGroup1', 'DuoGroup2']
+        #
+        duo_add_on_groups: []
+
         # LDAP group of users who should be marked as external users in GitLab
         #
         #   Ex. ['Contractors', 'Interns']

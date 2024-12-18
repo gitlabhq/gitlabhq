@@ -97,7 +97,6 @@ Lint/AssignmentInCondition:
     - 'ee/app/graphql/mutations/incident_management/escalation_policy/base.rb'
     - 'ee/app/models/ee/ci/build.rb'
     - 'ee/app/models/ee/merge_request.rb'
-    - 'ee/app/models/ee/preloaders/single_hierarchy_project_group_plans_preloader.rb'
     - 'ee/app/models/productivity_analytics.rb'
     - 'ee/app/presenters/ee/ci/pipeline_presenter.rb'
     - 'ee/app/services/app_sec/dast/profiles/create_associations_service.rb'

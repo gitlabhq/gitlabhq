@@ -2512,6 +2512,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_96298f7da5d3() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."protected_branch_project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."protected_branch_project_id"
+  FROM "protected_branches"
+  WHERE "protected_branches"."id" = NEW."protected_branch_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_9699ea03bb37() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -3193,6 +3209,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "alert_management_alerts"
   WHERE "alert_management_alerts"."id" = NEW."alert_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_ed554313ca66() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."protected_branch_namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."protected_branch_namespace_id"
+  FROM "protected_branches"
+  WHERE "protected_branches"."id" = NEW."protected_branch_id";
 END IF;
 
 RETURN NEW;
@@ -18947,7 +18979,9 @@ CREATE TABLE protected_branch_unprotect_access_levels (
     protected_branch_id bigint NOT NULL,
     access_level integer DEFAULT 40,
     user_id bigint,
-    group_id bigint
+    group_id bigint,
+    protected_branch_project_id bigint,
+    protected_branch_namespace_id bigint
 );
 
 CREATE SEQUENCE protected_branch_unprotect_access_levels_id_seq
@@ -28947,6 +28981,10 @@ CREATE UNIQUE INDEX i_pm_package_versions_on_package_id_and_version ON pm_packag
 
 CREATE UNIQUE INDEX i_pm_packages_purl_type_and_name ON pm_packages USING btree (purl_type, name);
 
+CREATE INDEX i_protected_branch_unprotect_access_levels_protected_branch_nam ON protected_branch_unprotect_access_levels USING btree (protected_branch_namespace_id);
+
+CREATE INDEX i_protected_branch_unprotect_access_levels_protected_branch_pro ON protected_branch_unprotect_access_levels USING btree (protected_branch_project_id);
+
 CREATE UNIQUE INDEX i_sbom_occurrences_vulnerabilities_on_occ_id_and_vuln_id ON sbom_occurrences_vulnerabilities USING btree (sbom_occurrence_id, vulnerability_id);
 
 CREATE INDEX i_software_license_policies_on_custom_software_license_id ON software_license_policies USING btree (custom_software_license_id);
@@ -36019,6 +36057,8 @@ CREATE TRIGGER trigger_9259aae92378 BEFORE INSERT OR UPDATE ON packages_build_in
 
 CREATE TRIGGER trigger_94514aeadc50 BEFORE INSERT OR UPDATE ON deployment_approvals FOR EACH ROW EXECUTE FUNCTION trigger_94514aeadc50();
 
+CREATE TRIGGER trigger_96298f7da5d3 BEFORE INSERT OR UPDATE ON protected_branch_unprotect_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_96298f7da5d3();
+
 CREATE TRIGGER trigger_9699ea03bb37 BEFORE INSERT OR UPDATE ON related_epic_links FOR EACH ROW EXECUTE FUNCTION trigger_9699ea03bb37();
 
 CREATE TRIGGER trigger_96a76ee9f147 BEFORE INSERT OR UPDATE ON design_management_versions FOR EACH ROW EXECUTE FUNCTION trigger_96a76ee9f147();
@@ -36106,6 +36146,8 @@ CREATE TRIGGER trigger_e815625b59fa BEFORE INSERT OR UPDATE ON resource_link_eve
 CREATE TRIGGER trigger_ebab34f83f1d BEFORE INSERT OR UPDATE ON packages_debian_publications FOR EACH ROW EXECUTE FUNCTION trigger_ebab34f83f1d();
 
 CREATE TRIGGER trigger_ec1934755627 BEFORE INSERT OR UPDATE ON alert_management_alert_metric_images FOR EACH ROW EXECUTE FUNCTION trigger_ec1934755627();
+
+CREATE TRIGGER trigger_ed554313ca66 BEFORE INSERT OR UPDATE ON protected_branch_unprotect_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_ed554313ca66();
 
 CREATE TRIGGER trigger_efb9d354f05a BEFORE INSERT OR UPDATE ON incident_management_issuable_escalation_statuses FOR EACH ROW EXECUTE FUNCTION trigger_efb9d354f05a();
 
@@ -36536,6 +36578,9 @@ ALTER TABLE ONLY approvals
 ALTER TABLE ONLY namespaces
     ADD CONSTRAINT fk_319256d87a FOREIGN KEY (file_template_project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY protected_branch_unprotect_access_levels
+    ADD CONSTRAINT fk_325cad614b FOREIGN KEY (protected_branch_project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY bulk_import_entities
     ADD CONSTRAINT fk_32782a175e FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
@@ -36754,6 +36799,9 @@ ALTER TABLE ONLY status_check_responses
 
 ALTER TABLE ONLY merge_request_metrics
     ADD CONSTRAINT fk_56067dcb44 FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY protected_branch_unprotect_access_levels
+    ADD CONSTRAINT fk_5632201009 FOREIGN KEY (protected_branch_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_request_diffs
     ADD CONSTRAINT fk_56ac6fc9c0 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

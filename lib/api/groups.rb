@@ -114,11 +114,10 @@ module API
         paginate(projects)
       end
 
-      def present_projects(params, projects, single_hierarchy: false)
+      def present_projects(params, projects)
         options = {
           with: params[:simple] ? Entities::BasicProjectDetails : Entities::Project,
-          current_user: current_user,
-          single_hierarchy: single_hierarchy
+          current_user: current_user
         }
 
         projects, options = with_custom_attributes(projects, options)
@@ -437,7 +436,7 @@ module API
 
         projects = find_group_projects(params, finder_options)
 
-        present_projects(params, projects, single_hierarchy: true)
+        present_projects(params, projects)
       end
 
       desc 'Get a list of shared projects in this group' do

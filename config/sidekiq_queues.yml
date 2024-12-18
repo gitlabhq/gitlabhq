@@ -385,6 +385,8 @@
   - 1
 - - gitlab_subscriptions_add_on_purchases_email_on_duo_bulk_user_assignments
   - 1
+- - gitlab_subscriptions_add_on_purchases_ldap_add_on_seat_sync
+  - 1
 - - gitlab_subscriptions_add_on_purchases_refresh_user_assignments
   - 1
 - - gitlab_subscriptions_member_management_apply_pending_member_approvals

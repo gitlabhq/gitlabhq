@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request < User sees mini pipeline graph', :js, feature_category: :continuous_integration do
+RSpec.describe 'Merge request < User sees pipeline mini graph', :js, feature_category: :continuous_integration do
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
   let(:merge_request) { create(:merge_request, source_project: project, head_pipeline: pipeline) }
@@ -23,7 +23,7 @@ RSpec.describe 'Merge request < User sees mini pipeline graph', :js, feature_cat
     visit project_merge_request_path(project, merge_request, format: format, serializer: serializer)
   end
 
-  it 'displays a mini pipeline graph' do
+  it 'displays a pipeline mini graph' do
     expect(page).to have_selector('[data-testid="pipeline-mini-graph"]')
   end
 
@@ -52,7 +52,7 @@ RSpec.describe 'Merge request < User sees mini pipeline graph', :js, feature_cat
     end
   end
 
-  describe 'build list toggle' do
+  describe 'stage dropdown toggle' do
     let(:toggle) do
       find(dropdown_selector)
       first(dropdown_selector)
@@ -69,7 +69,7 @@ RSpec.describe 'Merge request < User sees mini pipeline graph', :js, feature_cat
     end
   end
 
-  describe 'builds list menu' do
+  describe 'stage dropdown' do
     let(:toggle) do
       find(dropdown_selector)
       first(dropdown_selector)
@@ -96,21 +96,20 @@ RSpec.describe 'Merge request < User sees mini pipeline graph', :js, feature_cat
       expect(toggle.find(:xpath, '..')).not_to have_selector('[data-testid="pipeline-mini-graph-dropdown-menu"]')
     end
 
-    describe 'build list build item' do
-      let(:build_item) do
-        find('.ci-job-component')
-        first('.ci-job-component')
+    describe 'job list job item' do
+      let(:job_item) do
+        first('[data-testid="job-name"]')
       end
 
-      it 'visits the build page when clicked' do
-        build_item.click
+      it 'visits the job page when clicked' do
+        job_item.click
         find('.build-page')
 
         expect(page).to have_current_path(project_job_path(project, build), ignore_query: true)
       end
 
       it 'shows tooltip when hovered' do
-        build_item.hover
+        job_item.hover
 
         expect(page).to have_selector('.tooltip')
       end

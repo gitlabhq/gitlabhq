@@ -1,14 +1,19 @@
 <script>
 import { GlFormGroup, GlButton, GlFormInput } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import addNamespaceMutation from '../graphql/mutations/inbound_add_group_or_project_ci_job_token_scope.mutation.graphql';
+import PoliciesSelector from './policies_selector.vue';
 
 export default {
-  components: { GlFormGroup, GlButton, GlFormInput },
+  components: { GlFormGroup, GlButton, GlFormInput, PoliciesSelector },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['fullPath'],
   data() {
     return {
-      namespacePath: '',
+      targetPath: '',
+      defaultPermissions: true,
+      jobTokenPolicies: [],
       errorMessage: '',
       isSaving: false,
     };
@@ -19,10 +24,14 @@ export default {
         this.isSaving = true;
         this.errorMessage = '';
 
-        const response = await this.$apollo.mutate({
-          mutation: addNamespaceMutation,
-          variables: { projectPath: this.fullPath, targetPath: this.namespacePath },
-        });
+        const variables = { projectPath: this.fullPath, targetPath: this.targetPath };
+
+        if (this.glFeatures.addPoliciesToCiJobToken) {
+          variables.defaultPermissions = this.defaultPermissions;
+          variables.jobTokenPolicies = this.defaultPermissions ? [] : this.jobTokenPolicies;
+        }
+
+        const response = await this.$apollo.mutate({ mutation: addNamespaceMutation, variables });
 
         const error = response.data.ciJobTokenScopeAddGroupOrProject.errors[0];
         if (error) {
@@ -57,7 +66,7 @@ export default {
     >
       <gl-form-input
         id="namespace-input"
-        v-model.trim="namespacePath"
+        v-model.trim="targetPath"
         autofocus
         :state="!errorMessage"
         :placeholder="fullPath"
@@ -66,9 +75,19 @@ export default {
       />
     </gl-form-group>
 
+    <policies-selector
+      v-if="glFeatures.addPoliciesToCiJobToken"
+      :is-default-permissions-selected="defaultPermissions"
+      :job-token-policies="jobTokenPolicies"
+      :disabled="isSaving"
+      class="gl-mb-6"
+      @update:isDefaultPermissionsSelected="defaultPermissions = $event"
+      @update:jobTokenPolicies="jobTokenPolicies = $event"
+    />
+
     <gl-button
       variant="confirm"
-      :disabled="!namespacePath"
+      :disabled="!targetPath"
       :loading="isSaving"
       data-testid="add-button"
       @click="saveNamespace"

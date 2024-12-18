@@ -9,13 +9,13 @@ export default {
     {
       key: 'fullPath',
       label: s__('CICD|Group or project'),
-      tdClass: 'gl-w-3/4',
+      tdClass: 'gl-w-full',
     },
     {
       key: 'actions',
       label: __('Actions'),
-      class: 'gl-text-right',
-      tdClass: '!gl-py-0 !gl-pl-0 gl-w-0 !gl-align-middle',
+      class: 'gl-text-right !gl-pl-0',
+      tdClass: '!gl-py-0 !gl-align-middle',
     },
   ],
   components: {

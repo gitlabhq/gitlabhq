@@ -389,9 +389,9 @@ gem 'gitlab-license', '~> 2.6', feature_category: :shared
 gem 'rack-attack', '~> 6.7.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Sentry integration
-gem 'sentry-ruby', '~> 5.21.0', feature_category: :observability
-gem 'sentry-rails', '~> 5.21.0', feature_category: :observability
-gem 'sentry-sidekiq', '~> 5.21.0', feature_category: :observability
+gem 'sentry-ruby', '~> 5.22.0', feature_category: :observability
+gem 'sentry-rails', '~> 5.22.0', feature_category: :observability
+gem 'sentry-sidekiq', '~> 5.22.0', feature_category: :observability
 
 # PostgreSQL query parsing
 #

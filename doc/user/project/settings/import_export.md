@@ -198,6 +198,7 @@ For a quick overview, items that are exported include:
 - Some merge request approval rules:
   - [Approvals for protected branches](../merge_requests/approvals/rules.md#approvals-for-protected-branches)
   - [Eligible approvers](../merge_requests/approvals/rules.md#eligible-approvers)
+- Vulnerability report ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/501466) in GitLab 17.7)
 
 #### Project items that are not exported
 
