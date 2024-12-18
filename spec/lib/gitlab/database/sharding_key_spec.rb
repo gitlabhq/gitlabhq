@@ -14,7 +14,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'merge_request_diff_files_99208b8fac', # has a desired sharding key instead
       'ml_model_metadata', # has a desired sharding key instead.
       'p_ci_pipeline_variables', # has a desired sharding key instead
-      'sbom_occurrences_vulnerabilities' # has desired sharding key instead
+      'sbom_occurrences_vulnerabilities', # has desired sharding key instead
+      'web_hook_logs_daily' # temporary copy of web_hook_logs
     ]
   end
 

@@ -106,4 +106,16 @@ Gitlab::Database::Partitioning.register_tables(
   ]
 )
 
+# Enable partition management for the backfill table during web_hook_logs partitioning.
+# This way new partitions will be created as the trigger syncs new rows across to this table.
+Gitlab::Database::Partitioning.register_tables(
+  [
+    {
+      limit_connection_names: %i[main],
+      table_name: 'web_hook_logs_daily',
+      partitioned_column: :created_at, strategy: :daily, retain_for: 14.days
+    }
+  ]
+)
+
 Gitlab::Database::Partitioning.sync_partitions_ignore_db_error

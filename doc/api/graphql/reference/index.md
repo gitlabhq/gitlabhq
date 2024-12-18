@@ -25898,11 +25898,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.savedReplies`
 
-Saved replies available to the group. Available only when feature flag `group_saved_replies_flag` is enabled. This field can only be resolved for one group in any single request.
-
-DETAILS:
-**Introduced** in GitLab 16.10.
-**Status**: Experiment.
+Saved replies available to the group. This field can only be resolved for one group in any single request.
 
 Returns [`GroupSavedReplyConnection`](#groupsavedreplyconnection).
 
@@ -25918,11 +25914,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.savedReply`
 
-Saved reply in the group. Available only when feature flag `group_saved_replies_flag` is enabled. This field can only be resolved for one group in any single request.
-
-DETAILS:
-**Introduced** in GitLab 16.10.
-**Status**: Experiment.
+Saved reply in the group. This field can only be resolved for one group in any single request.
 
 Returns [`GroupSavedReply`](#groupsavedreply).
 

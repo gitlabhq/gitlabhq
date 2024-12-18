@@ -13,7 +13,7 @@ RSpec.describe QA::Specs::Runner do
   end
 
   before do
-    stub_const('DEFAULT_SKIPPED_TAGS', %w[--tag ~orchestrated --tag ~transient].freeze)
+    stub_const('DEFAULT_SKIPPED_TAGS', %w[--tag ~orchestrated].freeze)
   end
 
   describe '#perform' do
@@ -57,7 +57,7 @@ RSpec.describe QA::Specs::Runner do
 
       it 'sets the `--dry-run` flag and minimal arguments' do
         expect_rspec_runner_arguments(
-          ['--dry-run', '--tag', '~orchestrated', '--tag', '~transient', '--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS],
+          ['--dry-run', '--tag', '~orchestrated', '--tag', '~geo', *described_class::DEFAULT_TEST_PATH_ARGS],
           [err, out]
         )
 
@@ -136,7 +136,7 @@ RSpec.describe QA::Specs::Runner do
 
       it 'passes the given tests path and excludes the default skipped, and geo tags' do
         expect_rspec_runner_arguments(
-          ['--tag', '~orchestrated', '--tag', '~transient', '--tag', '~geo',
+          ['--tag', '~orchestrated', '--tag', '~geo',
            'qa/specs/features/foo',
            '--format', 'documentation', '--format', 'QA::Support::JsonFormatter',
            '--out', "tmp/rspec-#{ENV['CI_JOB_ID'] || 'local'}-retried-false.json",
@@ -150,7 +150,7 @@ RSpec.describe QA::Specs::Runner do
     context 'when "--tag smoke" and "qa/specs/features/foo" are set as options' do
       subject { described_class.new.tap { |runner| runner.options = %w[--tag smoke qa/specs/features/foo] } }
 
-      it 'focuses on the given tag and includes the path without excluding the orchestrated or transient tags' do
+      it 'focuses on the given tag and includes the path without excluding the orchestrated tag' do
         expect_rspec_runner_arguments(
           ['--tag', '~geo', '--tag', 'smoke',
            'qa/specs/features/foo',

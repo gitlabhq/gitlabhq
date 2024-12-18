@@ -60,7 +60,6 @@
   "qa/specs/features/browser_ui/2_plan/project_wiki/project_based_list_spec.rb": 36.73259511800006,
   "qa/specs/features/browser_ui/2_plan/project_wiki/project_based_page_deletion_spec.rb": 44.374364992999745,
   "qa/specs/features/browser_ui/2_plan/related_issues/related_issues_spec.rb": 21.243798665999975,
-  "qa/specs/features/browser_ui/2_plan/transient/comment_on_discussion_spec.rb": 170.97194661700007,
   "qa/specs/features/browser_ui/3_create/merge_request/cherry_pick/cherry_pick_a_merge_spec.rb": 30.132673152000052,
   "qa/specs/features/browser_ui/3_create/merge_request/cherry_pick/cherry_pick_commit_spec.rb": 17.00821341599999,
   "qa/specs/features/browser_ui/3_create/merge_request/create_merge_request_spec.rb": 60.26460518700014,

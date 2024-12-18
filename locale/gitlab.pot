@@ -46690,6 +46690,9 @@ msgstr ""
 msgid "Reports|New"
 msgstr ""
 
+msgid "Reports|See test results while the pipeline is running"
+msgstr ""
+
 msgid "Reports|Test summary"
 msgstr ""
 

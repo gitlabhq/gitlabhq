@@ -113,7 +113,7 @@ module API
         desc 'Validate authentication credentials' do
           summary "Verify authentication for a registered runner"
           success Entities::Ci::RunnerRegistrationDetails
-          http_codes [[200, 'Credentials are valid'], [403, 'Forbidden']]
+          http_codes [[200, 'Credentials are valid'], [403, 'Forbidden'], [422, 'Runner is orphaned']]
         end
         params do
           requires :token, type: String, desc: "The runner's authentication token"
@@ -128,6 +128,8 @@ module API
           status 200
 
           present current_runner, with: Entities::Ci::RunnerRegistrationDetails
+        rescue ::API::Ci::Helpers::Runner::UnknownRunnerOwnerError
+          unprocessable_entity!('Runner is orphaned')
         end
 
         desc 'Reset runner authentication token with current token' do
@@ -153,7 +155,8 @@ module API
           http_codes [[201, 'Job was scheduled'],
                       [204, 'No job for Runner'],
                       [403, 'Forbidden'],
-                      [409, 'Conflict']]
+                      [409, 'Conflict'],
+                      [422, 'Runner is orphaned']]
         end
         params do
           requires :token, type: String, desc: "Runner's authentication token"
@@ -225,6 +228,8 @@ module API
             Gitlab::Metrics.add_event(:build_invalid)
             conflict!
           end
+        rescue ::API::Ci::Helpers::Runner::UnknownRunnerOwnerError
+          unprocessable_entity!('Runner is orphaned')
         end
 
         desc 'Update a job' do

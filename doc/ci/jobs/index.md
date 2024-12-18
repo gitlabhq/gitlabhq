@@ -219,12 +219,12 @@ You can use hidden jobs that start with `.` as templates for reusable configurat
 - The [`extends` keyword](../yaml/index.md#extends).
 - [YAML anchors](../yaml/yaml_optimization.md#anchors).
 
-## Control the inheritance of default keywords and global variables
+## Control the inheritance of default keywords and variables
 
 You can control the inheritance of:
 
 - [default keywords](../yaml/index.md#default) with [`inherit:default`](../yaml/index.md#inheritdefault).
-- [global variables](../yaml/index.md#default) with [`inherit:variables`](../yaml/index.md#inheritvariables).
+- [default variables](../yaml/index.md#default) with [`inherit:variables`](../yaml/index.md#inheritvariables).
 
 For example:
 

@@ -752,6 +752,64 @@ $$;
 
 COMMENT ON FUNCTION table_sync_function_0992e728d3() IS 'Partitioning migration: table sync for merge_request_diff_commits table';
 
+CREATE FUNCTION table_sync_function_29bc99d6db() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF (TG_OP = 'DELETE') THEN
+  DELETE FROM web_hook_logs_daily where "id" = OLD."id" AND "created_at" = OLD."created_at";
+ELSIF (TG_OP = 'UPDATE') THEN
+  UPDATE web_hook_logs_daily
+  SET "web_hook_id" = NEW."web_hook_id",
+    "trigger" = NEW."trigger",
+    "url" = NEW."url",
+    "request_headers" = NEW."request_headers",
+    "request_data" = NEW."request_data",
+    "response_headers" = NEW."response_headers",
+    "response_body" = NEW."response_body",
+    "response_status" = NEW."response_status",
+    "execution_duration" = NEW."execution_duration",
+    "internal_error_message" = NEW."internal_error_message",
+    "updated_at" = NEW."updated_at",
+    "url_hash" = NEW."url_hash"
+  WHERE web_hook_logs_daily."id" = NEW."id" AND web_hook_logs_daily."created_at" = NEW."created_at";
+ELSIF (TG_OP = 'INSERT') THEN
+  INSERT INTO web_hook_logs_daily ("id",
+    "web_hook_id",
+    "trigger",
+    "url",
+    "request_headers",
+    "request_data",
+    "response_headers",
+    "response_body",
+    "response_status",
+    "execution_duration",
+    "internal_error_message",
+    "updated_at",
+    "created_at",
+    "url_hash")
+  VALUES (NEW."id",
+    NEW."web_hook_id",
+    NEW."trigger",
+    NEW."url",
+    NEW."request_headers",
+    NEW."request_data",
+    NEW."response_headers",
+    NEW."response_body",
+    NEW."response_status",
+    NEW."execution_duration",
+    NEW."internal_error_message",
+    NEW."updated_at",
+    NEW."created_at",
+    NEW."url_hash");
+END IF;
+RETURN NULL;
+
+END
+$$;
+
+COMMENT ON FUNCTION table_sync_function_29bc99d6db() IS 'Partitioning migration: table sync for web_hook_logs table';
+
 CREATE FUNCTION table_sync_function_3f39f64fc3() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -3988,6 +4046,34 @@ CREATE TABLE web_hook_logs (
     updated_at timestamp without time zone NOT NULL,
     created_at timestamp without time zone NOT NULL,
     url_hash text
+)
+PARTITION BY RANGE (created_at);
+
+CREATE SEQUENCE web_hook_logs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE web_hook_logs_id_seq OWNED BY web_hook_logs.id;
+
+CREATE TABLE web_hook_logs_daily (
+    id bigint DEFAULT nextval('web_hook_logs_id_seq'::regclass) NOT NULL,
+    web_hook_id bigint NOT NULL,
+    trigger character varying,
+    url character varying,
+    request_headers text,
+    request_data text,
+    response_headers text,
+    response_body text,
+    response_status character varying,
+    execution_duration double precision,
+    internal_error_message character varying,
+    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    url_hash text,
+    CONSTRAINT check_df72cb58f5 CHECK ((char_length(url_hash) <= 44))
 )
 PARTITION BY RANGE (created_at);
 
@@ -22217,15 +22303,6 @@ CREATE SEQUENCE vulnerability_user_mentions_id_seq
 
 ALTER SEQUENCE vulnerability_user_mentions_id_seq OWNED BY vulnerability_user_mentions.id;
 
-CREATE SEQUENCE web_hook_logs_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE web_hook_logs_id_seq OWNED BY web_hook_logs.id;
-
 CREATE TABLE web_hooks (
     id bigint NOT NULL,
     project_id bigint,
@@ -27436,6 +27513,9 @@ ALTER TABLE ONLY vulnerability_statistics
 ALTER TABLE ONLY vulnerability_user_mentions
     ADD CONSTRAINT vulnerability_user_mentions_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY web_hook_logs_daily
+    ADD CONSTRAINT web_hook_logs_daily_pkey PRIMARY KEY (id, created_at);
+
 ALTER TABLE ONLY web_hook_logs
     ADD CONSTRAINT web_hook_logs_pkey PRIMARY KEY (id, created_at);
 
@@ -29039,7 +29119,7 @@ CREATE INDEX idx_namespace_hostname_import_type_id_source_name_and_username ON i
 
 CREATE UNIQUE INDEX idx_namespace_settings_on_default_compliance_framework_id ON namespace_settings USING btree (default_compliance_framework_id);
 
-CREATE INDEX idx_namespace_settings_on_last_dormant_member_review_at ON namespace_settings USING btree (last_dormant_member_review_at) WHERE (remove_dormant_members IS TRUE);
+CREATE INDEX idx_namespace_settings_on_remove_dormant_members_review_at ON namespace_settings USING btree (last_dormant_member_review_at, remove_dormant_members) WHERE (remove_dormant_members IS TRUE);
 
 CREATE UNIQUE INDEX idx_o11y_log_issue_conn_on_issue_id_logs_search_metadata ON observability_logs_issues_connections USING btree (issue_id, service_name, severity_number, log_timestamp, log_fingerprint, trace_identifier);
 
@@ -35744,6 +35824,8 @@ CREATE TRIGGER push_rules_loose_fk_trigger AFTER DELETE ON push_rules REFERENCIN
 CREATE TRIGGER table_sync_trigger_57c8465cd7 AFTER INSERT OR DELETE OR UPDATE ON merge_request_diff_commits FOR EACH ROW EXECUTE FUNCTION table_sync_function_0992e728d3();
 
 CREATE TRIGGER table_sync_trigger_61879721b5 AFTER INSERT OR DELETE OR UPDATE ON ci_runners FOR EACH ROW EXECUTE FUNCTION table_sync_function_686d6c7993();
+
+CREATE TRIGGER table_sync_trigger_b99eb6998c AFTER INSERT OR DELETE OR UPDATE ON web_hook_logs FOR EACH ROW EXECUTE FUNCTION table_sync_function_29bc99d6db();
 
 CREATE TRIGGER table_sync_trigger_bc3e7b56bd AFTER INSERT OR DELETE OR UPDATE ON ci_runner_machines FOR EACH ROW EXECUTE FUNCTION table_sync_function_e438f29263();
 

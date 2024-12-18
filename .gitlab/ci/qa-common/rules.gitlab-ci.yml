@@ -183,7 +183,7 @@ include:
         QA_RSPEC_TAGS: "--tag smoke --tag ~orchestrated --tag ~skip_live_env"
     - if: '$CI_PROJECT_NAME == "omnibus-gitlab" && $PIPELINE_TYPE =~ /TRIGGERED_(CE|EE)_PIPELINE/ && $QA_OMNIBUS_MR_TESTS == "except-smoke"'
       variables:
-        QA_RSPEC_TAGS: "--tag ~smoke --tag ~orchestrated --tag ~skip_live_env --tag ~transient"
+        QA_RSPEC_TAGS: "--tag ~smoke --tag ~orchestrated --tag ~skip_live_env"
 
 # ------------------------------------------
 # Report

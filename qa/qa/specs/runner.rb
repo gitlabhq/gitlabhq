@@ -17,7 +17,7 @@ module QA
         GitlabEdition.jh? ? File.expand_path('../../.././jh/qa/qa/specs/features', __dir__) : nil
       ].compact.freeze
       DEFAULT_STD_ARGS = [$stderr, $stdout].freeze
-      DEFAULT_SKIPPED_TAGS = %w[orchestrated transient].freeze
+      DEFAULT_SKIPPED_TAGS = %w[orchestrated].freeze
 
       def initialize
         @tty = false

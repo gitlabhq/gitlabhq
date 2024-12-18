@@ -2427,7 +2427,6 @@ Layout/LineLength:
     - 'qa/qa/specs/features/browser_ui/2_plan/issue/issue_suggestions_spec.rb'
     - 'qa/qa/specs/features/browser_ui/2_plan/issue/real_time_assignee_spec.rb'
     - 'qa/qa/specs/features/browser_ui/2_plan/related_issues/related_issues_spec.rb'
-    - 'qa/qa/specs/features/browser_ui/2_plan/transient/comment_on_discussion_spec.rb'
     - 'qa/qa/specs/features/browser_ui/3_create/merge_request/create_merge_request_via_template_spec.rb'
     - 'qa/qa/specs/features/browser_ui/3_create/merge_request/rebase_merge_request_spec.rb'
     - 'qa/qa/specs/features/browser_ui/3_create/merge_request/squash_merge_request_spec.rb'

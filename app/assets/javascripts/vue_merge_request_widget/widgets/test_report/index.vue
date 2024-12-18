@@ -120,6 +120,7 @@ export default {
         target: '_blank',
         trackFullReportClicked: true,
         testId: 'full-report-link',
+        tooltipText: this.shouldShowLoading ? this.$options.i18n.partialReportTooltipText : '',
       });
 
       return actionButtons;

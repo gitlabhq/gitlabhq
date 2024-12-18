@@ -59,23 +59,18 @@ the repository, and should store only non-sensitive project configuration. For e
 the URL of a database saved in a `DATABASE_URL` variable. Sensitive variables containing values
 like secrets or keys should be [added in the UI](#define-a-cicd-variable-in-the-ui).
 
-You can define `variables` in a job or at the top level of the `.gitlab-ci.yml` file.
-If the variable is defined:
+You can define `variables` in:
 
-- In a job, only that job can use it. You can use the variable in the job's `script`, `before_script`, or `after_script` sections,
-  and also with some [job keywords](../yaml/index.md#job-keywords), but not [global keywords](../yaml/index.md#global-keywords).
-- In a global (top-level) `variables` section, it acts as a default variable for all jobs.
-  Each global variable is made available to every job in the pipeline, except when the job already has a variable
-  defined with the same name. The variable defined in the job [takes precedence](../variables/index.md#cicd-variable-precedence),
-  so you cannot use the value of the global variable with the same name in the job.
+- A job: The variable is only available in that job's `script`, `before_script`, or `after_script` sections, and with some [job keywords](../yaml/index.md#job-keywords).
+- The top-level of the `.gitlab-ci.yml` file: The variable is available as a default for all jobs in a pipeline, unless a job defines a variable with the same name. The job's variable takes precedence.
 
-  Like job variables, you cannot use global variables as values for other global keywords.
+In both cases, you cannot use these variables with [global keywords](../yaml/index.md#global-keywords).
 
 For example:
 
 ```yaml
 variables:
-  ALL_JOBS_VAR: "A global variable"
+  ALL_JOBS_VAR: "A default variable"
 
 job1:
   variables:
@@ -85,7 +80,7 @@ job1:
 
 job2:
   variables:
-    ALL_JOBS_VAR: "Different value than global"
+    ALL_JOBS_VAR: "Different value than default"
     JOB2_VAR: "Job 2 variable"
   script:
     - echo "Variables are '$ALL_JOBS_VAR', '$JOB2_VAR', and '$JOB1_VAR'"
@@ -93,21 +88,21 @@ job2:
 
 In this example:
 
-- `job1` outputs: `Variables are 'A global variable' and 'Job 1 variable'`
-- `job2` outputs: `Variables are 'Different value than global', 'Job 2 variable', and ''`
+- `job1` outputs: `Variables are 'A default variable' and 'Job 1 variable'`
+- `job2` outputs: `Variables are 'Different value than default', 'Job 2 variable', and ''`
 
 Use the [`value` and `description`](../yaml/index.md#variablesdescription) keywords
 to define [variables that are prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
 for [manually-triggered pipelines](../pipelines/index.md#run-a-pipeline-manually).
 
-### Skip global variables in a single job
+### Skip default variables in a single job
 
-If you don't want globally defined variables to be available in a job, set `variables`
+If you don't want default variables to be available in a job, set `variables`
 to `{}`:
 
 ```yaml
 variables:
-  GLOBAL_VAR: "A global variable"
+  DEFAULT_VAR: "A default variable"
 
 job1:
   variables: {}
@@ -776,8 +771,8 @@ The order of precedence for variables is (from highest to lowest):
    `Subgroup 2` takes precedence.
 1. Instance [variables](#for-an-instance).
 1. [Variables from `dotenv` reports](#pass-an-environment-variable-to-another-job).
-1. Variables defined in jobs in the `.gitlab-ci.yml` file.
-1. Variables defined outside of jobs (globally) in the `.gitlab-ci.yml` file.
+1. Job variables, defined in jobs in the `.gitlab-ci.yml` file.
+1. Default variables for all jobs, defined at the top-level of the `.gitlab-ci.yml` file.
 1. [Deployment variables](predefined_variables.md#deployment-variables).
 1. [Predefined variables](predefined_variables.md).
 
@@ -795,7 +790,7 @@ job1:
 ```
 
 In this example, `job1` outputs `The variable is 'secure'` because variables defined in jobs in the `.gitlab-ci.yml` file
-have higher precedence than variables defined globally in the `.gitlab-ci.yml` file.
+have higher precedence than default variables.
 
 ## Use pipeline variables
 
@@ -1109,12 +1104,12 @@ As a workaround you can either:
 - If a single large variable is larger than `ARG_MAX`, try using [Secure Files](../secure_files/index.md), or
   bring the file to the job through some other mechanism.
 
-### Global variable doesn't expand in job variable of the same name
+### Default variable doesn't expand in job variable of the same name
 
-You cannot use a global variable's value in a job variable of the same name. A global variable
+You cannot use a default variable's value in a job variable of the same name. A default variable
 is only made available to a job when the job does not have a variable defined with the same name.
 If the job has a variable with the same name, the job's variable takes precedence
-and the global variable is not available in the job.
+and the default variable is not available in the job.
 
 For example, these two samples are equivalent:
 
@@ -1127,12 +1122,12 @@ For example, these two samples are equivalent:
     script: echo "Value is '$MY_VAR'"
   ```
 
-- In this sample, `$MY_VAR` has no value because the global variable with the same name
+- In this sample, `$MY_VAR` has no value because the default variable with the same name
   is not available in the job:
 
   ```yaml
   variables:
-    MY_VAR: "Global value"
+    MY_VAR: "Default value"
 
   Job-with-same-name-variable:
     variables:
@@ -1142,16 +1137,16 @@ For example, these two samples are equivalent:
 
 In both cases, the echo command outputs `Value is '$MY_VAR'`.
 
-In general, you should use the global variable directly in a job rather than reassigning its value to a new variable.
+In general, you should use the default variable directly in a job rather than reassigning its value to a new variable.
 If you need to do this, use variables with different names instead. For example:
 
 ```yaml
 variables:
-  MY_VAR1: "Global value1"
-  MY_VAR2: "Global value2"
+  MY_VAR1: "Default value1"
+  MY_VAR2: "Default value2"
 
 overwrite-same-name:
   variables:
-    MY_VAR2_FROM_GLOBALS: $MY_VAR2
-  script: echo "Values are '$MY_VAR1' and '$MY_VAR2_FROM_GLOBALS'"
+    MY_VAR2_FROM_DEFAULTS: $MY_VAR2
+  script: echo "Values are '$MY_VAR1' and '$MY_VAR2_FROM_DEFAULTS'"
 ```
