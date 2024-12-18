@@ -13,6 +13,7 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
     {
       project_path: project.full_path,
       target_path: target_path,
+      default_permissions: true,
       job_token_policies: policies
     }
   end
@@ -33,6 +34,7 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
               fullPath
             }
           }
+          defaultPermissions
           jobTokenPolicies
         }
       QL
@@ -74,6 +76,7 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
             :ci_job_token_project_scope_link,
             source_project: project,
             target_project: target_project,
+            default_permissions: false,
             job_token_policies: %w[read_containers],
             direction: :inbound
           )
@@ -88,6 +91,7 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
             'fullPath')).to eq(project.full_path)
           expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry', 'target',
             'fullPath')).to eq(target_project.full_path)
+          expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry', 'defaultPermissions')).to be(true)
           expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry', 'jobTokenPolicies')).to eq(policies)
         end
 
@@ -152,6 +156,7 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
             :ci_job_token_group_scope_link,
             source_project: project,
             target_group: target_group,
+            default_permissions: false,
             job_token_policies: %w[read_containers]
           )
         end
@@ -165,6 +170,7 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
             'fullPath')).to eq(project.full_path)
           expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry', 'target',
             'fullPath')).to eq(target_group.full_path)
+          expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry', 'defaultPermissions')).to be(true)
           expect(mutation_response.dig('ciJobTokenScopeAllowlistEntry', 'jobTokenPolicies')).to eq(policies)
         end
 

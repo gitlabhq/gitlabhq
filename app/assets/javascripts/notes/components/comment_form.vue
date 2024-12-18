@@ -382,6 +382,7 @@ export default {
                 :autosave-key="autosaveKey"
                 :disabled="isSubmitting"
                 :autocomplete-data-sources="autocompleteDataSources"
+                :noteable-type="noteableType"
                 supports-quick-actions
                 @keydown.up="editCurrentUserLastNote()"
                 @keydown.shift.meta.enter="handleSave()"

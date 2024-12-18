@@ -11,7 +11,9 @@ RSpec.describe Ci::JobTokenScope::AddGroupOrProjectService, feature_category: :c
 
   let(:response_success) { ServiceResponse.success }
 
-  subject(:service_execute) { described_class.new(source_project, current_user).execute(target, policies: policies) }
+  subject(:service_execute) do
+    described_class.new(source_project, current_user).execute(target, default_permissions: false, policies: policies)
+  end
 
   describe '#execute' do
     context 'when group is a target to add' do
@@ -26,7 +28,7 @@ RSpec.describe Ci::JobTokenScope::AddGroupOrProjectService, feature_category: :c
 
       it 'calls AddGroupService to add a target' do
         expect(add_group_service_double)
-          .to receive(:execute).with(target, policies: policies)
+          .to receive(:execute).with(target, default_permissions: false, policies: policies)
           .and_return(response_success)
 
         expect(service_execute).to eq(response_success)
@@ -46,7 +48,7 @@ RSpec.describe Ci::JobTokenScope::AddGroupOrProjectService, feature_category: :c
 
       it 'calls AddProjectService to add a target' do
         expect(add_project_service_double)
-          .to receive(:execute).with(target, policies: policies)
+          .to receive(:execute).with(target, default_permissions: false, policies: policies)
           .and_return(response_success)
 
         expect(service_execute).to eq(response_success)

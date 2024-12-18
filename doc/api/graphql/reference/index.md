@@ -3134,6 +3134,7 @@ Input type: `CiJobTokenScopeAddGroupOrProjectInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscopeaddgrouporprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcijobtokenscopeaddgrouporprojectdefaultpermissions"></a>`defaultPermissions` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.8. |
 | <a id="mutationcijobtokenscopeaddgrouporprojectjobtokenpolicies"></a>`jobTokenPolicies` **{warning-solid}** | [`[CiJobTokenScopePolicies!]`](#cijobtokenscopepolicies) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.5. |
 | <a id="mutationcijobtokenscopeaddgrouporprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | Project that the CI job token scope belongs to. |
 | <a id="mutationcijobtokenscopeaddgrouporprojecttargetpath"></a>`targetPath` | [`ID!`](#id) | Group or project to be added to the CI job token scope. |
@@ -3225,6 +3226,7 @@ Input type: `CiJobTokenScopeUpdatePoliciesInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscopeupdatepoliciesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcijobtokenscopeupdatepoliciesdefaultpermissions"></a>`defaultPermissions` | [`Boolean!`](#boolean) | Indicates whether default permissions are enabled (true) or fine-grained permissions are enabled (false). |
 | <a id="mutationcijobtokenscopeupdatepoliciesjobtokenpolicies"></a>`jobTokenPolicies` | [`[CiJobTokenScopePolicies!]!`](#cijobtokenscopepolicies) | List of policies added to the CI job token scope. |
 | <a id="mutationcijobtokenscopeupdatepoliciesprojectpath"></a>`projectPath` | [`ID!`](#id) | Project that the CI job token scope belongs to. |
 | <a id="mutationcijobtokenscopeupdatepoliciestargetpath"></a>`targetPath` | [`ID!`](#id) | Group or project that the CI job token targets. |
@@ -20496,6 +20498,7 @@ Represents an allowlist entry for the CI_JOB_TOKEN.
 | ---- | ---- | ----------- |
 | <a id="cijobtokenscopeallowlistentryaddedby"></a>`addedBy` | [`UserCore`](#usercore) | User that added the entry. |
 | <a id="cijobtokenscopeallowlistentrycreatedat"></a>`createdAt` | [`Time!`](#time) | When the entry was created. |
+| <a id="cijobtokenscopeallowlistentrydefaultpermissions"></a>`defaultPermissions` | [`Boolean`](#boolean) | Indicates whether default permissions are enabled (true) or fine-grained permissions are enabled (false). |
 | <a id="cijobtokenscopeallowlistentrydirection"></a>`direction` | [`String`](#string) | Direction of access. Defaults to INBOUND. |
 | <a id="cijobtokenscopeallowlistentryjobtokenpolicies"></a>`jobTokenPolicies` **{warning-solid}** | [`[CiJobTokenScopePolicies!]`](#cijobtokenscopepolicies) | **Introduced** in GitLab 17.5. **Status**: Experiment. List of policies for the entry. |
 | <a id="cijobtokenscopeallowlistentrysourceproject"></a>`sourceProject` | [`Project!`](#project) | Project that owns the allowlist entry. |

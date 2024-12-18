@@ -348,10 +348,13 @@ describe('issue_comment_form component', () => {
           expect(findMarkdownEditor().find('textarea').attributes('disabled')).toBeDefined();
         });
 
-        it('should support quick actions', () => {
+        it('should support quick actions and other props', () => {
           mountComponent({ mountFunction: mountExtended });
 
-          expect(findMarkdownEditor().props('supportsQuickActions')).toBe(true);
+          expect(findMarkdownEditor().props()).toMatchObject({
+            supportsQuickActions: true,
+            noteableType: noteableDataMock.noteableType,
+          });
         });
 
         it('should link to markdown docs', () => {

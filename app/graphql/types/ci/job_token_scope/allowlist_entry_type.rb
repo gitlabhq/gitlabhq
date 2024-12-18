@@ -25,6 +25,11 @@ module Types
           null: true,
           description: 'Direction of access. Defaults to INBOUND.'
 
+        field :default_permissions,
+          GraphQL::Types::Boolean,
+          description: 'Indicates whether default permissions are enabled (true) or fine-grained permissions are ' \
+            'enabled (false).'
+
         field :job_token_policies,
           [Types::Ci::JobTokenScope::PoliciesEnum],
           null: true,
@@ -61,6 +66,10 @@ module Types
           when ::Ci::JobToken::GroupScopeLink
             'inbound'
           end
+        end
+
+        def default_permissions
+          Feature.enabled?(:add_policies_to_ci_job_token, object.source_project) ? object.default_permissions : true
         end
 
         def job_token_policies

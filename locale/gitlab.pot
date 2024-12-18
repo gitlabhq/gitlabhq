@@ -5920,6 +5920,9 @@ msgstr ""
 msgid "Amazon Q"
 msgstr ""
 
+msgid "AmazonQ|:hourglass_flowing_sand: I'm creating unit tests for the selected lines of code. I'll update this comment when I'm done."
+msgstr ""
+
 msgid "AmazonQ|Active cloud connector token not found."
 msgstr ""
 
@@ -5939,6 +5942,9 @@ msgid "AmazonQ|Amazon Q will be turned off for all groups, subgroups, and projec
 msgstr ""
 
 msgid "AmazonQ|An unexpected error occurred while submitting the form. Please see the browser console log for more details."
+msgstr ""
+
+msgid "AmazonQ|Apply changes to this merge request based on the comments (Beta)"
 msgstr ""
 
 msgid "AmazonQ|Audience"
@@ -5962,7 +5968,16 @@ msgstr ""
 msgid "AmazonQ|Copy to clipboard"
 msgstr ""
 
+msgid "AmazonQ|Create a merge request to incorporate Amazon Q suggestions (Beta)"
+msgstr ""
+
 msgid "AmazonQ|Create an identity provider for this GitLab instance within AWS using the following values. %{helpStart}Learn more%{helpEnd}."
+msgstr ""
+
+msgid "AmazonQ|Create fixes for review findings (Beta)"
+msgstr ""
+
+msgid "AmazonQ|Create unit tests for selected lines of code in Java or Python files (Beta)"
 msgstr ""
 
 msgid "AmazonQ|Enter the IAM role's ARN."
@@ -5989,6 +6004,21 @@ msgstr ""
 msgid "AmazonQ|I understand that by selecting Save changes, GitLab creates a service account for Amazon Q and sends its credentials to AWS. Use of the Amazon Q Developer capabilities as part of GitLab Duo with Amazon Q is governed by the %{helpStart}AWS Customer Agreement%{helpEnd} or other written agreement between you and AWS governing your use of AWS services."
 msgstr ""
 
+msgid "AmazonQ|I'm generating a fix for this review finding. I'll update this comment when I'm done."
+msgstr ""
+
+msgid "AmazonQ|I'm generating code for this issue. I'll update this comment and open a merge request when I'm done."
+msgstr ""
+
+msgid "AmazonQ|I'm reviewing this merge request for security vulnerabilities, quality issues, and deficiencies. I'll provide an update when I'm done."
+msgstr ""
+
+msgid "AmazonQ|I'm revising this merge request based on your feedback. I'll update this comment and this merge request when I'm done."
+msgstr ""
+
+msgid "AmazonQ|I'm upgrading your code to Java 17. I'll update this comment and open a merge request when I'm done."
+msgstr ""
+
 msgid "AmazonQ|IAM role's ARN"
 msgstr ""
 
@@ -6007,6 +6037,9 @@ msgstr ""
 msgid "AmazonQ|Provider type"
 msgstr ""
 
+msgid "AmazonQ|Review merge request for code quality and security issues (Beta)"
+msgstr ""
+
 msgid "AmazonQ|Save changes"
 msgstr ""
 
@@ -6019,7 +6052,13 @@ msgstr ""
 msgid "AmazonQ|Something went wrong saving Amazon Q settings."
 msgstr ""
 
+msgid "AmazonQ|Sorry, I'm not able to complete the request at this moment. Please try again later."
+msgstr ""
+
 msgid "AmazonQ|Status"
+msgstr ""
+
+msgid "AmazonQ|Upgrade Java Maven application to Java 17 (Beta)"
 msgstr ""
 
 msgid "AmazonQ|Use Amazon Q to automate workflows, create a merge request from an issue, upgrade Java, and improve your code with AI-powered reviews."
@@ -6035,6 +6074,21 @@ msgid "AmazonQ|View configuration setup"
 msgstr ""
 
 msgid "AmazonQ|Within your AWS account, create an IAM role for Amazon Q and the relevant identity provider. %{helpStart}Learn how to create an IAM role%{helpEnd}."
+msgstr ""
+
+msgid "AmazonQ|dev"
+msgstr ""
+
+msgid "AmazonQ|fix"
+msgstr ""
+
+msgid "AmazonQ|review"
+msgstr ""
+
+msgid "AmazonQ|test"
+msgstr ""
+
+msgid "AmazonQ|transform"
 msgstr ""
 
 msgid "AmbiguousRef|There is a branch and a tag with the same name of %{ref}."

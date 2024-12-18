@@ -119,6 +119,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    noteableType: {
+      type: String,
+      required: false,
+      default: '',
+    },
     restrictedToolBarItems: {
       type: Array,
       required: false,
@@ -388,6 +393,8 @@ export default {
           :value="markdown"
           class="note-textarea js-gfm-input markdown-area"
           dir="auto"
+          :data-can-suggest="codeSuggestionsConfig.canSuggest"
+          :data-noteable-type="noteableType"
           :data-supports-quick-actions="supportsQuickActions"
           :data-testid="formFieldProps['data-testid'] || 'markdown-editor-form-field'"
           :disabled="disabled"

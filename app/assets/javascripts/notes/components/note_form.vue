@@ -153,6 +153,9 @@ export default {
       }
       return '#';
     },
+    noteableType() {
+      return this.getNoteableData.noteableType;
+    },
     diffParams() {
       if (this.diffFile) {
         return {
@@ -305,7 +308,7 @@ export default {
 
       trackSavedUsingEditor(
         this.$refs.markdownEditor.isContentEditorActive,
-        `${this.getNoteableData.noteableType}_note`,
+        `${this.noteableType}_note`,
       );
 
       this.$emit(
@@ -373,6 +376,7 @@ export default {
           :add-spacing-classes="false"
           :help-page-path="helpPagePath"
           :note="discussionNote"
+          :noteable-type="noteableType"
           :form-field-props="formFieldProps"
           :autosave-key="autosaveKey"
           :autocomplete-data-sources="autocompleteDataSources"

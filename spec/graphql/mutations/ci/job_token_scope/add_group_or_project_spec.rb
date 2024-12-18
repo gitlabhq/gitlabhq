@@ -39,7 +39,12 @@ RSpec.describe Mutations::Ci::JobTokenScope::AddGroupOrProject, feature_category
       let(:policies) { %w[read_containers read_packages] }
 
       let(:mutation_args) do
-        { project_path: project.full_path, target_path: target_project_path, job_token_policies: policies }
+        {
+          project_path: project.full_path,
+          target_path: target_project_path,
+          default_permissions: false,
+          job_token_policies: policies
+        }
       end
 
       it_behaves_like 'when user is not logged in'
@@ -64,6 +69,7 @@ RSpec.describe Mutations::Ci::JobTokenScope::AddGroupOrProject, feature_category
             expect(project_link.source_project).to eq(project)
             expect(project_link.target_project).to eq(target_project)
             expect(project_link.added_by).to eq(current_user)
+            expect(project_link.default_permissions).to be(false)
             expect(project_link.job_token_policies).to eq(policies)
           end
 
@@ -99,7 +105,12 @@ RSpec.describe Mutations::Ci::JobTokenScope::AddGroupOrProject, feature_category
       let(:policies) { %w[read_containers read_packages] }
 
       let(:mutation_args) do
-        { project_path: project.full_path, target_path: target_group_path, job_token_policies: policies }
+        {
+          project_path: project.full_path,
+          target_path: target_group_path,
+          default_permissions: false,
+          job_token_policies: policies
+        }
       end
 
       it_behaves_like 'when user is not logged in'
@@ -124,6 +135,7 @@ RSpec.describe Mutations::Ci::JobTokenScope::AddGroupOrProject, feature_category
             expect(group_link.source_project).to eq(project)
             expect(group_link.target_group).to eq(target_group)
             expect(group_link.added_by).to eq(current_user)
+            expect(group_link.default_permissions).to be(false)
             expect(group_link.job_token_policies).to eq(policies)
           end
 

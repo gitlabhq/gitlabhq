@@ -20,6 +20,7 @@ RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuo
       expect(project_link.source_project).to eq(project)
       expect(project_link.target_project).to eq(target_project)
       expect(project_link.added_by).to eq(current_user)
+      expect(project_link.default_permissions).to eq(default_permissions)
       expect(project_link.job_token_policies).to eq(policies)
     end
 
@@ -38,13 +39,16 @@ RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuo
         expect(project_link.source_project).to eq(project)
         expect(project_link.target_project).to eq(target_project)
         expect(project_link.added_by).to eq(current_user)
+        expect(project_link.default_permissions).to be(true)
         expect(project_link.job_token_policies).to eq([])
       end
     end
   end
 
   describe '#execute' do
-    subject(:result) { service.execute(target_project, policies: policies) }
+    subject(:result) { service.execute(target_project, default_permissions: default_permissions, policies: policies) }
+
+    let(:default_permissions) { false }
 
     it_behaves_like 'editable job token scope' do
       context 'when user has permissions on source and target projects' do
@@ -56,6 +60,12 @@ RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuo
         end
 
         it_behaves_like 'adds project'
+
+        context 'when default_permissions is set to true' do
+          let(:default_permissions) { true }
+
+          it_behaves_like 'adds project'
+        end
 
         context 'when token scope is disabled' do
           before do

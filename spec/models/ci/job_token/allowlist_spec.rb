@@ -68,8 +68,23 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
     let_it_be(:added_project) { create(:project) }
     let_it_be(:user) { create(:user) }
     let_it_be(:policies) { %w[read_containers read_packages] }
+    let_it_be(:default_permissions) { false }
 
-    subject(:add_project) { allowlist.add!(added_project, policies: policies, user: user) }
+    subject(:add_project) do
+      allowlist.add!(added_project, default_permissions: default_permissions, policies: policies, user: user)
+    end
+
+    [true, false].each do |d|
+      context "with default permissions #{d}" do
+        let_it_be(:default_permissions) { d }
+
+        it "sets default permissions to #{d}" do
+          project_link = add_project
+
+          expect(project_link.default_permissions).to eq(default_permissions)
+        end
+      end
+    end
 
     [:inbound, :outbound].each do |d|
       context "with #{d}" do
@@ -97,6 +112,7 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
             expect(project_link.added_by_id).to eq(user.id)
             expect(project_link.source_project_id).to eq(source_project.id)
             expect(project_link.target_project_id).to eq(added_project.id)
+            expect(project_link.default_permissions).to be(true)
             expect(project_link.job_token_policies).to eq([])
           end
         end
@@ -108,8 +124,23 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
     let_it_be(:added_group) { create(:group) }
     let_it_be(:user) { create(:user) }
     let_it_be(:policies) { %w[read_containers read_packages] }
+    let_it_be(:default_permissions) { false }
 
-    subject(:add_group) { allowlist.add_group!(added_group, policies: policies, user: user) }
+    subject(:add_group) do
+      allowlist.add_group!(added_group, default_permissions: default_permissions, policies: policies, user: user)
+    end
+
+    [true, false].each do |d|
+      context "with default permissions #{d}" do
+        let_it_be(:default_permissions) { d }
+
+        it "sets default permissions to #{d}" do
+          group_link = add_group
+
+          expect(group_link.default_permissions).to eq(default_permissions)
+        end
+      end
+    end
 
     it 'adds the group scope link' do
       group_link = add_group
@@ -133,6 +164,7 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
         expect(group_link.added_by_id).to eq(user.id)
         expect(group_link.source_project_id).to eq(source_project.id)
         expect(group_link.target_group_id).to eq(added_group.id)
+        expect(group_link.default_permissions).to be(true)
         expect(group_link.job_token_policies).to eq([])
       end
     end

@@ -224,6 +224,49 @@ After the above steps have been completed, the automatic release process execute
    - Else, this job automatically creates a new release and Git tag using the [releases API](../../api/releases/index.md#create-a-release). The version and message is obtained from the most recent entry in the `CHANGELOG.md` file for the project.
 1. A pipeline is automatically triggered for the new Git tag. This pipeline releases the `latest`, `major`, `minor` and `patch` Docker images of the analyzer.
 
+### Service account used in the automatic release process
+
+| Key                                    | Value                                                                                                                             |
+|----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
+| Account name                           | [@gl-service-dev-secure-analyzers-automation](https://gitlab.com/gl-service-dev-secure-analyzers-automation)                      |
+| Purpose                                | Used for creating releases/tags                                                                                                   |
+| Member of                              | [`gitlab-org/security-products`](https://gitlab.com/groups/gitlab-org/security-products/-/group_members?search=gl-service-dev-secure-analyzers-automation) |
+| Maximum role                           | `Developer`                                                                                                                       |
+| Scope of the associated `GITLAB_TOKEN` | `api`                                                                                                                             |
+| Expiry date of `GITLAB_TOKEN`          | `December 3, 2025`                                                                                                              |
+
+### Token rotation for service account
+
+The `GITLAB_TOKEN` for the [@gl-service-dev-secure-analyzers-automation](https://gitlab.com/gl-service-dev-secure-analyzers-automation) service account **must** be rotated before the `Expiry Date` listed [above](#service-account-used-in-the-automatic-release-process) by doing the following:
+
+1. Log in as the `gl-service-dev-secure-analyzers-automation` user.
+
+   The list of administrators who have credentials for this account can be found in the [service account access request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/29538#admin-users).
+
+   Administrators can find the login credentials in the shared GitLab `1password` vault.
+
+1. Create a new [Personal Access Token](../../user/profile/personal_access_tokens.md) with `api` scope for the `gl-service-dev-secure-analyzers-automation` service account.
+1. Update the `password` field of the `GitLab API Token - gl-service-dev-secure-analyzers-automation` account in the shared GitLab `1password` vault to the new Personal Access Token created in step 2 (above), and set the `Expires at` field to indicate when the token expires.
+1. Update the expiry date of the `GITLAB_TOKEN` field in the [Service account used in the automatic release process](#service-account-used-in-the-automatic-release-process) table.
+1. Set the following variables to the new Personal Access Token created in step 2 above:
+
+   NOTE:
+   It's crucial to [mask and hide](../../ci/variables/index.md#hide-a-cicd-variable) the following variables.
+
+   1. `GITLAB_TOKEN` CI/CD variable for the [`gitlab-org/security-products/analyzers`](https://gitlab.com/groups/gitlab-org/security-products/analyzers/-/settings/ci_cd#js-cicd-variables-settings) group.
+
+      This allows all projects under the `gitlab-org/security-products/analyzers` namespace to inherit this `GITLAB_TOKEN` value.
+
+   1. `GITLAB_TOKEN` CI/CD variable for the [`gitlab-org/security-products/ci-templates`](https://gitlab.com/gitlab-org/security-products/ci-templates/-/settings/ci_cd#js-cicd-variables-settings) project.
+
+      This must be explicitly configured because the `ci-templates` project is not nested under the `gitlab-org/security-products/analyzers` namespace, and therefore _does not inherit_ the `GITLAB_TOKEN` value.
+
+      The `ci-templates` project requires the `GITLAB_TOKEN` to allow certain scripts to execute API calls. This step can be removed after [allow JOB-TOKEN access to CI/lint endpoint](https://gitlab.com/gitlab-org/gitlab/-/issues/438781) has been completed.
+
+   1. `SEC_REGISTRY_PASSWORD` CI/CD variable for [`gitlab-advanced-sast`](https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-advanced-sast/-/settings/ci_cd#js-cicd-variables-settings).
+
+      This allows our [tagging script](https://gitlab.com/gitlab-org/security-products/ci-templates/blob/cfe285a/scripts/tag_image.sh) to pull from the private container registry in the development project `registry.gitlab.com/gitlab-org/security-products/analyzers/<analyzer-name>/tmp`, and push to the publicly accessible container registry `registry.gitlab.com/security-products/<analyzer-name>`.
+
 ### Steps to perform after releasing an analyzer
 
 1. After a new version of the analyzer Docker image has been tagged and deployed, test it with the corresponding test project.
@@ -449,14 +492,6 @@ This issue will guide you through the whole release process. In general, you hav
 
   If needed, go to the pipeline corresponding to the last Git tag,
   and trigger the manual job that controls the build of this image.
-
-- Current bot accounts used in the pipeline
-  - Account name: [`@group_2452873_bot`](https://gitlab.com/group_2452873_bot)
-    - Use: Used for creating releases/tags
-    - Member of: Group [`gitlab-org/security-products`](https://gitlab.com/groups/gitlab-org/security-products/-/group_members?search=group_2452873_bot)
-    - Max role: `Developer`
-    - Scope of the associated `GITLAB_TOKEN`:
-    - Expiry Date of the associated `GITLAB_TOKEN`:
 
 #### Dependency updates
 

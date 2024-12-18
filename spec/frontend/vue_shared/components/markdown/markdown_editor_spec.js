@@ -363,11 +363,25 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
         name: formFieldName,
         placeholder: formFieldPlaceholder,
         'aria-label': formFieldAriaLabel,
+        'data-noteable-type': '',
         'data-supports-quick-actions': 'true',
       }),
     );
+    expect(findTextarea().attributes('data-can-suggest')).toBeUndefined();
 
     expect(findTextarea().element.value).toBe(value);
+  });
+
+  it('renders data on textarea for noteable type', () => {
+    buildWrapper({ propsData: { noteableType: 'MergeRequest' } });
+
+    expect(findTextarea().attributes('data-noteable-type')).toBe('MergeRequest');
+  });
+
+  it('renders data on textarea for can suggest', () => {
+    buildWrapper({ propsData: { codeSuggestionsConfig: { canSuggest: true } } });
+
+    expect(findTextarea().attributes('data-can-suggest')).toBe('true');
   });
 
   it(`emits ${EDITING_MODE_CONTENT_EDITOR} event when enableContentEditor emitted from markdown editor`, async () => {

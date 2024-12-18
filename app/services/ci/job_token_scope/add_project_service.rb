@@ -5,11 +5,11 @@ module Ci
     class AddProjectService < ::BaseService
       include EditScopeValidations
 
-      def execute(target_project, policies: [], direction: :inbound)
+      def execute(target_project, default_permissions: true, policies: [], direction: :inbound)
         validate_source_project_and_target_project_access!(project, target_project, current_user)
 
         link = allowlist(direction)
-          .add!(target_project, policies: policies, user: current_user)
+          .add!(target_project, default_permissions: default_permissions, policies: policies, user: current_user)
 
         ServiceResponse.success(payload: { project_link: link })
 

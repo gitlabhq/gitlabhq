@@ -30,25 +30,29 @@ module Ci
         ::Group.id_in(group_links.pluck(:target_group_id))
       end
 
-      def add!(target_project, user:, policies: [])
+      def add!(target_project, user:, default_permissions: true, policies: [])
         job_token_policies = add_policies_to_ci_job_token_enabled ? policies : []
+        default_permissions = add_policies_to_ci_job_token_enabled ? default_permissions : true
 
         Ci::JobToken::ProjectScopeLink.create!(
           source_project: @source_project,
           direction: @direction,
           target_project: target_project,
           added_by: user,
+          default_permissions: default_permissions,
           job_token_policies: job_token_policies
         )
       end
 
-      def add_group!(target_group, user:, policies: [])
+      def add_group!(target_group, user:, default_permissions: true, policies: [])
         job_token_policies = add_policies_to_ci_job_token_enabled ? policies : []
+        default_permissions = add_policies_to_ci_job_token_enabled ? default_permissions : true
 
         Ci::JobToken::GroupScopeLink.create!(
           source_project: @source_project,
           target_group: target_group,
           added_by: user,
+          default_permissions: default_permissions,
           job_token_policies: job_token_policies
         )
       end

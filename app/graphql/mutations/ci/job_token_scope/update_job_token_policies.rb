@@ -18,6 +18,11 @@ module Mutations
           required: true,
           description: 'Group or project that the CI job token targets.'
 
+        argument :default_permissions, GraphQL::Types::Boolean,
+          required: true,
+          description: 'Indicates whether default permissions are enabled (true) or fine-grained permissions are ' \
+            'enabled (false).'
+
         argument :job_token_policies, [Types::Ci::JobTokenScope::PoliciesEnum],
           required: true,
           description: 'List of policies added to the CI job token scope.'
@@ -28,7 +33,7 @@ module Mutations
           experiment: { milestone: '17.6' },
           description: "Allowlist entry for the CI job token's access scope."
 
-        def resolve(project_path:, target_path:, job_token_policies:)
+        def resolve(project_path:, target_path:, default_permissions:, job_token_policies:)
           project = authorized_find!(project_path)
           target = find_target_using_path(target_path)
 
@@ -38,7 +43,7 @@ module Mutations
 
           result = ::Ci::JobTokenScope::UpdatePoliciesService
             .new(project, current_user)
-            .execute(target, job_token_policies)
+            .execute(target, default_permissions, job_token_policies)
 
           if result.success?
             {

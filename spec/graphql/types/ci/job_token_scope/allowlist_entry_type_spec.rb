@@ -10,6 +10,7 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeAllowlistEntry'], feature_cate
       source_project
       target
       direction
+      default_permissions
       job_token_policies
       added_by
       created_at
