@@ -95,4 +95,5 @@ export const COMMANDS = {
   UNASSIGN: '/unassign',
   UNASSIGN_REVIEWER: '/unassign_reviewer',
   UNLABEL: '/unlabel',
+  ITERATION: '/iteration',
 };

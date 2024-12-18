@@ -201,7 +201,7 @@ CREATE TABLE namespaces (
     shared_runners_enabled boolean DEFAULT true NOT NULL,
     allow_descendants_override_disabled_shared_runners boolean DEFAULT false NOT NULL,
     traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
-    organization_id bigint DEFAULT 1,
+    organization_id bigint,
     CONSTRAINT check_2eae3bdf93 CHECK ((organization_id IS NOT NULL))
 );
 
@@ -29205,7 +29205,7 @@ CREATE INDEX idx_pkgs_npm_metadata_caches_on_id_and_project_id_and_status ON pac
 
 CREATE INDEX idx_pkgs_nuget_symbols_on_lowercase_signature_and_file_name ON packages_nuget_symbols USING btree (lower(signature), lower(file));
 
-CREATE UNIQUE INDEX idx_pkgs_nuget_symbols_on_signature_and_file_path_with_pkg_id ON packages_nuget_symbols USING btree (signature, file_path) WHERE (package_id IS NOT NULL);
+CREATE INDEX idx_pkgs_nuget_symbols_on_lowercase_signature_and_file_path ON packages_nuget_symbols USING btree (lower(signature), lower(file_path));
 
 CREATE INDEX idx_pkgs_on_project_id_name_version_on_installable_terraform ON packages_packages USING btree (project_id, name, version, id) WHERE ((package_type = 12) AND (status = ANY (ARRAY[0, 1])));
 

@@ -16,7 +16,6 @@ RSpec.describe Gitlab::Usage::Metric do
       time_frame: "all",
       data_source: "database",
       instrumentation_class: "CountIssuesMetric",
-      distribution: %w[ce ee],
       tier: %w[free premium ultimate]
     }
   end

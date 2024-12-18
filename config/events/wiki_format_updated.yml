@@ -4,9 +4,6 @@ action: wiki_format_updated
 product_group: knowledge
 milestone: '14.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74079
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

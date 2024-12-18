@@ -1744,7 +1744,7 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
-    semver_dialects (3.4.4)
+    semver_dialects (3.4.5)
       deb_version (~> 1.0.1)
       pastel (~> 0.8.0)
       thor (~> 1.3)

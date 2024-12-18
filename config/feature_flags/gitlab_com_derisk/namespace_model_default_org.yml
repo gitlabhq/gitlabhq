@@ -1,9 +1,0 @@
----
-name: namespace_model_default_org
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/466141
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168228
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/492445
-milestone: '17.6'
-group: group::tenant scale
-type: gitlab_com_derisk
-default_enabled: false

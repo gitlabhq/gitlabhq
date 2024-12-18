@@ -35,7 +35,7 @@ export default {
 
 <template>
   <div>
-    <model-experiments-header :page-title="$options.i18n.TITLE_LABEL">
+    <model-experiments-header :page-title="$options.i18n.TITLE_LABEL" hide-mlflow-usage>
       <delete-button
         :delete-path="info.path"
         :delete-confirmation-text="$options.i18n.DELETE_CANDIDATE_CONFIRMATION_MESSAGE"

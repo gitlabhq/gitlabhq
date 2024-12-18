@@ -6559,14 +6559,6 @@ RSpec.describe User, feature_category: :user_profile do
       it 'returns the personal namespace' do
         expect(personal_namespace).to eq(user.namespace)
       end
-
-      context 'when organization is nil' do
-        it 'builds a new namespace using default organization' do
-          user.assign_personal_namespace(nil)
-
-          expect(user.namespace.organization).to eq(Organizations::Organization.default_organization)
-        end
-      end
     end
   end
 

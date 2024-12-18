@@ -14,9 +14,6 @@ additional_properties:
 product_group: package_registry
 milestone: '17.3'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153159
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

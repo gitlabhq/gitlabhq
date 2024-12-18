@@ -1,5 +1,7 @@
 import organizationGroupsGraphQlResponse from 'test_fixtures/graphql/organizations/groups.query.graphql.json';
-import { formatGroups, timestampType } from '~/organizations/shared/utils';
+import organizationProjectsGraphQlResponse from 'test_fixtures/graphql/organizations/projects.query.graphql.json';
+import { formatGroups, formatProjects, timestampType } from '~/organizations/shared/utils';
+import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
 import { SORT_CREATED_AT, SORT_UPDATED_AT, SORT_NAME } from '~/organizations/shared/constants';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -17,6 +19,14 @@ const {
     },
   },
 } = organizationGroupsGraphQlResponse;
+
+const {
+  data: {
+    organization: {
+      projects: { nodes: organizationProjects },
+    },
+  },
+} = organizationProjectsGraphQlResponse;
 
 describe('formatGroups', () => {
   it('correctly formats the groups with edit and delete permissions', () => {
@@ -62,6 +72,17 @@ describe('formatGroups', () => {
     });
 
     expect(formattedGroups.length).toBe(organizationGroups.length);
+  });
+});
+
+describe('formatProjects', () => {
+  it('returns result from formatGraphQLProjects and adds editPath', () => {
+    expect(formatProjects(organizationProjects)).toEqual(
+      formatGraphQLProjects(organizationProjects).map((project) => ({
+        ...project,
+        editPath: project.organizationEditPath,
+      })),
+    );
   });
 });
 

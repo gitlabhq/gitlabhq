@@ -4,9 +4,6 @@ action: pipelines_display_options
 product_group: pipeline_execution
 milestone: '16.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134685
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

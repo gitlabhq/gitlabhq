@@ -19,6 +19,7 @@ class Namespace < ApplicationRecord
   include Referable
   include CrossDatabaseIgnoredTables
   include UseSqlFunctionForPrimaryKeyLookups
+  include SafelyChangeColumnDefault
   include Todoable
 
   ignore_column :unlock_membership_to_ldap, remove_with: '16.7', remove_after: '2023-11-16'
@@ -26,6 +27,8 @@ class Namespace < ApplicationRecord
   cross_database_ignore_tables %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424277'
 
   ignore_column :emails_disabled, remove_with: '17.0', remove_after: '2024-04-24'
+
+  columns_changing_default :organization_id
 
   # Tells ActiveRecord not to store the full class name, in order to save some space
   # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69794
@@ -161,9 +164,9 @@ class Namespace < ApplicationRecord
   validate :parent_organization_match, if: :require_organization?
 
   attribute :organization_id, :integer, default: -> do
-    return 1 if Feature.enabled?(:namespace_model_default_org, Feature.current_request)
+    return if Feature.enabled?(:require_organization, Feature.current_request)
 
-    columns_hash['organization_id'].default
+    Organizations::Organization::DEFAULT_ORGANIZATION_ID
   end
 
   delegate :name, to: :owner, allow_nil: true, prefix: true

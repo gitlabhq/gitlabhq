@@ -13,9 +13,6 @@ additional_properties:
 product_group: code_review
 milestone: '17.2'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156609
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

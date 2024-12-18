@@ -170,6 +170,7 @@ RSpec.shared_examples 'work items assignees' do
     click_button 'assign yourself'
 
     expect(page).to have_link(user.name)
+    wait_for_requests
     using_session :other_session do
       expect(page).to have_link(user.name)
     end
@@ -216,6 +217,7 @@ RSpec.shared_examples 'work items labels' do |namespace_type|
     end
 
     expect(page).to have_css '.gl-label', text: label2.title
+    wait_for_requests
     using_session :other_session do
       expect(page).to have_css '.gl-label', text: label2.title
     end

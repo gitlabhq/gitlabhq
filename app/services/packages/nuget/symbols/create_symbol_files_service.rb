@@ -46,8 +46,7 @@ module Packages
           signature, checksum = extract_signature_and_checksum(file)
           return if signature.blank? || checksum.blank?
 
-          ::Packages::Nuget::Symbol.create!(
-            package: package,
+          package.nuget_symbols.create(
             file: { tempfile: file, filename: path.downcase, content_type: CONTENT_TYPE },
             file_path: path,
             signature: signature,

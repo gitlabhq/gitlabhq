@@ -8,9 +8,9 @@ import membershipProjectsGraphQlResponse from 'test_fixtures/graphql/projects/yo
 import contributedProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/contributed_projects.query.graphql.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TabView from '~/projects/your_work/components/tab_view.vue';
+import { formatProjects } from '~/projects/your_work/utils';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
 import ProjectsListEmptyState from '~/vue_shared/components/projects_list/projects_list_empty_state.vue';
-import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { createAlert } from '~/alert';
 import {
@@ -105,9 +105,7 @@ describe('TabView', () => {
         });
 
         it('passes projects to `ProjectsList` component', () => {
-          expect(findProjectsList().props('projects')).toEqual(
-            formatGraphQLProjects(expectedProjects),
-          );
+          expect(findProjectsList().props('projects')).toEqual(formatProjects(expectedProjects));
         });
 
         describe('when list emits refetch', () => {

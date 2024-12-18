@@ -1,5 +1,9 @@
+import { map } from 'lodash';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { workItemDevelopmentFragmentResponse } from 'jest/work_items/mock_data';
+import {
+  workItemDevelopmentFragmentResponse,
+  workItemDevelopmentMRNodes,
+} from 'jest/work_items/mock_data';
 import WorkItemDevelopmentRelationshipList from '~/work_items/components/work_item_development/work_item_development_relationship_list.vue';
 
 describe('WorkItemDevelopmentRelationshipList', () => {
@@ -20,5 +24,21 @@ describe('WorkItemDevelopmentRelationshipList', () => {
       createComponent();
       expect(findDevList().exists()).toBe(true);
     });
+  });
+
+  it('deduplicates the closingMRs and relatedMRs on frontend', () => {
+    createComponent({
+      workItemDevWidget: workItemDevelopmentFragmentResponse({
+        mrNodes: workItemDevelopmentMRNodes,
+        willAutoCloseByMergeRequest: false,
+        relatedMergeRequests: map(workItemDevelopmentMRNodes, 'mergeRequest'),
+        branchNodes: [],
+        featureFlagNodes: [],
+      }),
+    });
+
+    expect(Number(findDevList().attributes('data-list-length'))).toEqual(
+      workItemDevelopmentMRNodes.length,
+    );
   });
 });

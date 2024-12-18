@@ -1,4 +1,4 @@
-import { GlEmptyState, GlLink, GlTableLite, GlButton } from '@gitlab/ui';
+import { GlEmptyState, GlLink, GlTableLite } from '@gitlab/ui';
 import MlExperimentsIndexApp from '~/ml/experiment_tracking/routes/experiments/index';
 import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -33,8 +33,7 @@ const findColumnInRow = (row, col) => findNthTableRow(row).findAll('td').at(col)
 const hrefInRowAndColumn = (row, col) =>
   findColumnInRow(row, col).findComponent(GlLink).attributes().href;
 const findTitleHeader = () => wrapper.findComponent(ModelExperimentsHeader);
-
-const findDocsButton = () => wrapper.findAllComponents(GlButton).at(0);
+const findDocsButton = () => wrapper.findByTestId('empty-create-using-button');
 
 describe('MlExperimentsIndex', () => {
   describe('empty state', () => {

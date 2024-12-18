@@ -286,43 +286,31 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
   describe 'default values' do
     context 'organzation_id' do
-      context 'when feature flag namespace_model_default_org is enabled' do
-        context 'and database has a default value' do
-          before do
-            described_class.connection.execute("ALTER TABLE namespaces ALTER COLUMN organization_id SET DEFAULT 100")
-            described_class.reset_column_information
-          end
+      context 'when FF require_organization is enabled' do
+        context 'and organization is set' do
+          let(:created_namespace) { build(:group) }
 
-          after do
-            described_class.connection.execute("ALTER TABLE namespaces ALTER COLUMN organization_id SET DEFAULT 1")
-            described_class.reset_column_information
-          end
-
-          it 'uses value from model' do
-            expect(described_class.new.organization_id).to eq(1)
+          it 'is valid' do
+            expect(created_namespace).to be_valid
           end
         end
 
-        context 'and database has no default value' do
+        context 'and organization is not set' do
+          let(:created_namespace) { build(:group) }
+
           before do
-            described_class.connection.execute("ALTER TABLE namespaces ALTER COLUMN organization_id DROP DEFAULT")
-            described_class.reset_column_information
+            created_namespace.organization_id = nil
           end
 
-          after do
-            described_class.connection.execute("ALTER TABLE namespaces ALTER COLUMN organization_id SET DEFAULT 1")
-            described_class.reset_column_information
-          end
-
-          it 'uses value from model' do
-            expect(described_class.new.organization_id).to eq(1)
+          it 'is invalid' do
+            expect(created_namespace).to be_invalid
           end
         end
       end
 
-      context 'when feature flag namespace_model_default_org is disabled' do
+      context 'when FF require_organization is disabled' do
         before do
-          stub_feature_flags(namespace_model_default_org: false)
+          stub_feature_flags(require_organization: false)
         end
 
         context 'and database has a default value' do
@@ -331,19 +319,13 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
             described_class.reset_column_information
           end
 
-          it 'uses database value' do
-            expect(described_class.new.organization_id).to eq(100)
-          end
-        end
-
-        context 'and database has no default value' do
-          before do
-            described_class.connection.execute("ALTER TABLE namespaces ALTER COLUMN organization_id DROP DEFAULT")
+          after do
+            described_class.connection.execute("ALTER TABLE namespaces ALTER COLUMN organization_id SET DEFAULT 1")
             described_class.reset_column_information
           end
 
-          it 'is nil' do
-            expect(described_class.new.organization_id).to be_nil
+          it 'uses value from model' do
+            expect(described_class.new.organization_id).to eq(Organizations::Organization::DEFAULT_ORGANIZATION_ID)
           end
         end
       end

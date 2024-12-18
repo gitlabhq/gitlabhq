@@ -1,3 +1,4 @@
+import { map } from 'lodash';
 import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 import { WIDGET_TYPE_LINKED_ITEMS, NEW_WORK_ITEM_IID, STATE_CLOSED } from '~/work_items/constants';
 
@@ -938,6 +939,7 @@ export const workItemBlockedByLinkedItemsResponse = {
 
 export const workItemDevelopmentMRNodes = [
   {
+    id: 'gid://gitlab/MergeRequestsClosingIssues/61',
     fromMrDescription: true,
     mergeRequest: {
       iid: '13',
@@ -977,6 +979,7 @@ export const workItemDevelopmentMRNodes = [
     __typename: 'WorkItemClosingMergeRequest',
   },
   {
+    id: 'gid://gitlab/MergeRequestsClosingIssues/62',
     fromMrDescription: true,
     mergeRequest: {
       iid: '15',
@@ -1006,6 +1009,7 @@ export const workItemDevelopmentMRNodes = [
     __typename: 'WorkItemClosingMergeRequest',
   },
   {
+    id: 'gid://gitlab/MergeRequestsClosingIssues/63',
     fromMrDescription: true,
     mergeRequest: {
       iid: '14',
@@ -1035,6 +1039,7 @@ export const workItemDevelopmentMRNodes = [
     __typename: 'WorkItemClosingMergeRequest',
   },
   {
+    id: 'gid://gitlab/MergeRequestsClosingIssues/64',
     fromMrDescription: true,
     mergeRequest: {
       iid: '12',
@@ -1074,6 +1079,7 @@ export const workItemDevelopmentMRNodes = [
     __typename: 'WorkItemClosingMergeRequest',
   },
   {
+    id: 'gid://gitlab/MergeRequestsClosingIssues/65',
     fromMrDescription: true,
     mergeRequest: {
       iid: '11',
@@ -1186,10 +1192,15 @@ export const workItemDevelopmentFragmentResponse = ({
   willAutoCloseByMergeRequest = false,
   featureFlagNodes = workItemDevelopmentFeatureFlagNodes,
   branchNodes = workItemRelatedBranchNodes,
+  relatedMergeRequests = map(workItemDevelopmentMRNodes, 'mergeRequest'),
 } = {}) => {
   return {
     type: 'DEVELOPMENT',
     willAutoCloseByMergeRequest,
+    relatedMergeRequests: {
+      nodes: relatedMergeRequests,
+      __typename: 'MergeRequestConnection',
+    },
     featureFlags: {
       nodes: featureFlagNodes,
       __typename: 'FeatureFlagConnection',
@@ -1205,6 +1216,53 @@ export const workItemDevelopmentFragmentResponse = ({
     __typename: 'WorkItemWidgetDevelopment',
   };
 };
+
+export const workItemDevelopmentResponse = ({
+  iid = '1',
+  id = 'gid://gitlab/WorkItem/1',
+  developmentItems,
+} = {}) => ({
+  data: {
+    workItem: {
+      __typename: 'WorkItem',
+      id,
+      iid,
+      namespace: {
+        __typename: 'Project',
+        id: '1',
+      },
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetIteration',
+        },
+        {
+          __typename: 'WorkItemWidgetWeight',
+        },
+        {
+          __typename: 'WorkItemWidgetAssignees',
+        },
+        {
+          __typename: 'WorkItemWidgetLabels',
+        },
+        {
+          __typename: 'WorkItemWidgetDescription',
+        },
+        {
+          __typename: 'WorkItemWidgetHierarchy',
+        },
+        {
+          __typename: 'WorkItemWidgetStartAndDueDate',
+        },
+        {
+          __typename: 'WorkItemWidgetMilestone',
+        },
+        {
+          ...developmentItems,
+        },
+      ],
+    },
+  },
+});
 
 export const workItemResponseFactory = ({
   iid = '1',
@@ -1231,7 +1289,6 @@ export const workItemResponseFactory = ({
   healthStatusWidgetPresent = true,
   notesWidgetPresent = true,
   designWidgetPresent = true,
-  developmentWidgetPresent = true,
   confidential = false,
   discussionLocked = false,
   canInviteMembers = false,
@@ -1256,7 +1313,6 @@ export const workItemResponseFactory = ({
   awardEmoji = mockAwardsWidget,
   state = 'OPEN',
   linkedItems = mockEmptyLinkedItems,
-  developmentItems = workItemDevelopmentFragmentResponse(),
   color = '#1068bf',
   editableWeightWidget = true,
   hasParent = false,
@@ -1570,13 +1626,6 @@ export const workItemResponseFactory = ({
               type: 'DESIGNS',
             }
           : { type: 'MOCK TYPE' },
-        developmentWidgetPresent
-          ? {
-              ...developmentItems,
-            }
-          : {
-              type: 'MOCK TYPE',
-            },
         crmContactsWidgetPresent
           ? {
               __typename: 'WorkItemWidgetCrmContacts',

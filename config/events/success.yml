@@ -4,9 +4,6 @@ action: success
 product_group: subscription_management
 milestone: '17.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149817
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

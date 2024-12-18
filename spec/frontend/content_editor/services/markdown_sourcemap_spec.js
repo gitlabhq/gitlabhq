@@ -29,9 +29,9 @@ const bulletListDoc = () =>
         sourceAttrs('li', '2:1-3:24', '+ list item 2\n  - embedded list item 3'),
         paragraph('list item 2'),
         bulletList(
-          { bullet: '-', ...sourceAttrs('ul', '3:3-3:24', '  - embedded list item 3') },
+          { bullet: '-', ...sourceAttrs('ul', '3:3-3:24', '- embedded list item 3') },
           listItem(
-            sourceAttrs('li', '3:3-3:24', '  - embedded list item 3'),
+            sourceAttrs('li', '3:3-3:24', '- embedded list item 3'),
             paragraph('embedded list item 3'),
           ),
         ),
@@ -49,9 +49,9 @@ const bulletListDocWithMalformedSourcepos = () =>
         sourceAttrs('li', '5:1-5:24'),
         paragraph('list item 2'),
         bulletList(
-          { bullet: '-', ...sourceAttrs('ul', '3:3-3:24', '  - embedded list item 3') },
+          { bullet: '-', ...sourceAttrs('ul', '3:3-3:24', '- embedded list item 3') },
           listItem(
-            sourceAttrs('li', '3:3-3:24', '  - embedded list item 3'),
+            sourceAttrs('li', '3:3-3:24', '- embedded list item 3'),
             paragraph('embedded list item 3'),
           ),
         ),
@@ -80,16 +80,16 @@ const bulletTaskListDoc = () =>
             ...sourceAttrs(
               'ul',
               '3:3-4:36',
-              '  + [ ] embedded list item 1\n  - [x] checked embedded list item 2',
+              '+ [ ] embedded list item 1\n  - [x] checked embedded list item 2',
             ),
           },
           taskItem(
-            sourceAttrs('li', '3:3-3:28', '  + [ ] embedded list item 1'),
+            sourceAttrs('li', '3:3-3:28', '+ [ ] embedded list item 1'),
             paragraph('embedded list item 1'),
           ),
           taskItem(
             {
-              ...sourceAttrs('li', '4:3-4:36', '  - [x] checked embedded list item 2'),
+              ...sourceAttrs('li', '4:3-4:36', '- [x] checked embedded list item 2'),
               checked: true,
             },
             paragraph('checked embedded list item 2'),

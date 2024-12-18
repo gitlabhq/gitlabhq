@@ -31,6 +31,11 @@ export default {
     DeleteButton,
     PerformanceGraph,
   },
+  provide() {
+    return {
+      mlflowTrackingUrl: this.mlflowTrackingUrl,
+    };
+  },
   props: {
     experiment: {
       type: Object,
@@ -55,6 +60,11 @@ export default {
     emptyStateSvgPath: {
       type: String,
       required: true,
+    },
+    mlflowTrackingUrl: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {

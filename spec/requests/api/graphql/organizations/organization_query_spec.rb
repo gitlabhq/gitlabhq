@@ -133,7 +133,7 @@ RSpec.describe 'getting organization information', feature_category: :cell do
         create(:group, :private, name: 'no-access', organization: organization)
         private_group.add_developer(user)
         public_group.add_developer(user)
-        create(:group) { |g| g.add_developer(user) } # outside organization
+        create(:group, organization: create(:organization)) { |g| g.add_developer(user) } # outside organization
       end
 
       it 'returns ancestors of authorized groups' do
@@ -215,7 +215,8 @@ RSpec.describe 'getting organization information', feature_category: :cell do
       end
 
       before_all do
-        create(:project) { |p| p.add_developer(user) } # some other project that shouldn't show up in our results
+        # some other project that shouldn't show up in our results
+        create(:project, organization: create(:organization)) { |p| p.add_developer(user) }
       end
 
       before do

@@ -109,6 +109,14 @@ workflow:
       variables:
         <<: [*next-ruby-variables, *default-merge-request-variables]
         BUNDLE_GEMFILE: Gemfile.next
+    # This variable can be specified in manual or scheduled pipelines to run CI with the next Rails version.
+    # Specifying BUNDLE_GEMFILE: Gemfile.next wouldn't work because QA jobs require
+    # BUNDLE_GEMFILE to be Gemfile even with the next Rails version pipelines.
+    - if: '$RUN_WITH_NEXT_RAILS_VERSION'
+      variables:
+        <<: *next-ruby-variables
+        BUNDLE_GEMFILE: Gemfile.next
+        PIPELINE_NAME: 'Rails next version (Gemfile.next)'
     # For (detached) merge request pipelines.
     - if: '$CI_MERGE_REQUEST_IID'
       variables:

@@ -34,6 +34,7 @@ export const TYPENAME_TODO = 'Todo';
 export const TYPENAME_USER = 'User';
 export const TYPENAME_VULNERABILITY = 'Vulnerability';
 export const TYPENAME_WORK_ITEM = 'WorkItem';
+export const TYPENAME_WORK_ITEM_RELATED_BRANCH = 'WorkItemRelatedBranch';
 export const TYPE_ORGANIZATION = 'Organizations::Organization';
 export const TYPE_USERS_SAVED_REPLY = 'Users::SavedReply';
 export const TYPE_WORKSPACE = 'RemoteDevelopment::Workspace';

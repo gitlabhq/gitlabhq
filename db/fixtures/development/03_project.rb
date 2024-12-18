@@ -56,6 +56,12 @@ class Gitlab::Seeder::Projects
 
   BATCH_SIZE = 100_000
 
+  attr_reader :organization
+
+  def initialize(organization:)
+    @organization = organization
+   end
+
   def seed!
     Sidekiq::Testing.inline! do
       create_real_projects!
@@ -106,7 +112,7 @@ class Gitlab::Seeder::Projects
     SQL
   end
 
-  def self.create_real_project!(url: nil, force_latest_storage: false, project_path: nil, group_path: nil)
+  def self.create_real_project!(organization:, url: nil, force_latest_storage: false, project_path: nil, group_path: nil)
     if url
       group_path, project_path = url.split('/')[-2..-1]
     end
@@ -116,7 +122,8 @@ class Gitlab::Seeder::Projects
     unless group
       group = Group.new(
         name: group_path.titleize,
-        path: group_path
+        path: group_path,
+        organization: organization
       )
       group.description = FFaker::Lorem.sentence
       group.save!
@@ -135,7 +142,7 @@ class Gitlab::Seeder::Projects
 
     params = {
       import_url: url,
-      organization_id: Organizations::Organization.default_organization.id,
+      organization_id: organization.id,
       namespace_id: group.id,
       name: project_path.titleize,
       description: FFaker::Lorem.sentence,
@@ -179,7 +186,7 @@ class Gitlab::Seeder::Projects
     size = ENV['SIZE'].present? ? ENV['SIZE'].to_i : 8
 
     PROJECT_URLS.first(size).each_with_index do |url, i|
-      self.class.create_real_project!(url: url, force_latest_storage: i.even?)
+      self.class.create_real_project!(url: url, force_latest_storage: i.even?, organization: organization)
     end
   end
 
@@ -187,7 +194,7 @@ class Gitlab::Seeder::Projects
     return unless ENV['LARGE_PROJECTS'].present?
 
     LARGE_PROJECT_URLS.each do |url|
-      self.class.create_real_project!(url: url)
+      self.class.create_real_project!(url: url, organization: organization)
     end
 
     if ENV['FORK'].present?
@@ -244,6 +251,6 @@ class Gitlab::Seeder::Projects
 end
 
 Gitlab::Seeder.quiet do
-  projects = Gitlab::Seeder::Projects.new
+  projects = Gitlab::Seeder::Projects.new(organization: Organizations::Organization.default_organization)
   projects.seed!
 end

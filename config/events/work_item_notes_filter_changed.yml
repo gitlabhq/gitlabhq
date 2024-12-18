@@ -3,9 +3,6 @@ action: work_item_notes_filter_changed
 product_group: project_management
 milestone: '15.10'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114240
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

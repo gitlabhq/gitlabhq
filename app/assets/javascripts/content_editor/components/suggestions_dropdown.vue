@@ -201,6 +201,12 @@ export default {
         });
       }
 
+      if (this.isIteration) {
+        Object.assign(props, {
+          originalText: item.reference,
+        });
+      }
+
       Object.assign(props, this.nodeProps);
 
       return props;

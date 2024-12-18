@@ -4,9 +4,6 @@ action: updated_iteration
 product_group: project_management
 milestone: '15.5'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97343
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

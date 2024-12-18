@@ -93,57 +93,6 @@ fragment WorkItemWidgets on WorkItemWidget {
       }
     }
   }
-  ... on WorkItemWidgetDevelopment {
-    type
-    willAutoCloseByMergeRequest
-    relatedBranches {
-      nodes {
-        name
-        comparePath
-      }
-    }
-    closingMergeRequests {
-      nodes {
-        fromMrDescription
-        mergeRequest {
-          iid
-          id
-          title
-          webUrl
-          state
-          sourceBranch
-          reference
-          headPipeline {
-            detailedStatus {
-              id
-              icon
-              text
-              detailsPath
-            }
-          }
-          milestone {
-            ...MilestoneFragment
-          }
-          project {
-            id
-            name
-            namespace {
-              path
-            }
-          }
-          assignees {
-            nodes {
-              webUrl
-              id
-              name
-              webPath
-              avatarUrl
-            }
-          }
-        }
-      }
-    }
-  }
   ... on WorkItemWidgetCrmContacts {
     contacts {
       nodes {

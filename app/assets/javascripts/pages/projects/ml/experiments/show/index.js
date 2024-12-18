@@ -8,7 +8,15 @@ const initShowExperiment = () => {
     return undefined;
   }
 
-  const { experiment, candidates, metrics, params, pageInfo, emptyStateSvgPath } = element.dataset;
+  const {
+    experiment,
+    candidates,
+    metrics,
+    params,
+    pageInfo,
+    emptyStateSvgPath,
+    mlflowTrackingUrl,
+  } = element.dataset;
 
   const props = {
     experiment: JSON.parse(experiment),
@@ -17,6 +25,7 @@ const initShowExperiment = () => {
     paramNames: JSON.parse(params),
     pageInfo: convertObjectPropsToCamelCase(JSON.parse(pageInfo)),
     emptyStateSvgPath,
+    mlflowTrackingUrl,
   };
 
   return new Vue({

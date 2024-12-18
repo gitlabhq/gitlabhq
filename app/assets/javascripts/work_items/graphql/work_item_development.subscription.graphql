@@ -1,0 +1,16 @@
+#import "ee_else_ce/work_items/graphql/work_item_development.fragment.graphql"
+
+subscription workItemDevelopmentUpdated($id: WorkItemID!) {
+  workItemUpdated(workItemId: $id) {
+    id
+    iid
+    namespace {
+      id
+    }
+    widgets {
+      ... on WorkItemWidgetDevelopment {
+        ...WorkItemDevelopmentFragment
+      }
+    }
+  }
+}

@@ -3,10 +3,9 @@ import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import projectsEmptyStateSvgPath from '@gitlab/svgs/dist/illustrations/empty-state/empty-projects-md.svg?url';
 import { s__ } from '~/locale';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
-import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { createAlert } from '~/alert';
-import { timestampType } from '~/organizations/shared/utils';
+import { timestampType, formatProjects } from '~/organizations/shared/utils';
 import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
 import projectsQuery from '../graphql/queries/projects.query.graphql';
 import NewProjectButton from './new_project_button.vue';
@@ -102,7 +101,7 @@ export default {
         },
       }) {
         return {
-          nodes: formatGraphQLProjects(nodes),
+          nodes: formatProjects(nodes),
           pageInfo,
         };
       },

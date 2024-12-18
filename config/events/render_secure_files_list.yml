@@ -4,9 +4,6 @@ action: render_secure_files_list
 product_group: mobile_devops
 milestone: '15.2'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90449
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

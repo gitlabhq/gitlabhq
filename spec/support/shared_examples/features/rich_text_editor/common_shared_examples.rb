@@ -71,6 +71,30 @@ RSpec.shared_examples 'rich text editor - common' do
 
       expect(page).not_to have_text('An error occurred')
     end
+
+    it 'renders correctly with checklist as initial content' do
+      textarea = find 'textarea'
+      textarea.send_keys "\n\n"
+      textarea.send_keys "- [ ] checklist\n"
+      # remove auto inserted `- [ ] `
+      textarea.send_keys [:backspace] * 6
+      textarea.send_keys "  - [ ] nested checklist\n"
+      textarea.send_keys "nested checklist 2"
+
+      switch_to_content_editor
+
+      # check the checkbox titled `nested checklist`
+      within content_editor_testid do
+        all("[type=checkbox]")[1].click
+      end
+      wait_until_hidden_field_is_updated(/\[x\]/)
+
+      switch_to_markdown_editor
+
+      expect(page.find('textarea').value).to include('- [ ] checklist
+  - [x] nested checklist
+  - [ ] nested checklist 2')
+    end
   end
 
   describe 'automatically resolving references' do

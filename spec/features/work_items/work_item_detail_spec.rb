@@ -106,6 +106,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   context 'for user not signed in' do
     before do
       visit work_items_path
+      wait_for_all_requests
     end
 
     it 'todos action is not displayed' do

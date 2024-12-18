@@ -9,13 +9,16 @@ import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_help
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import workItemDevelopmentQuery from '~/work_items/graphql/work_item_development.query.graphql';
+import workItemDevelopmentUpdatedSubscription from '~/work_items/graphql/work_item_development.subscription.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
 import { STATE_CLOSED, STATE_OPEN } from '~/work_items/constants';
 
 import {
-  workItemResponseFactory,
+  workItemByIidResponseFactory,
   workItemDevelopmentFragmentResponse,
   workItemDevelopmentMRNodes,
+  workItemDevelopmentResponse,
 } from 'jest/work_items/mock_data';
 
 import WorkItemDevelopment from '~/work_items/components/work_item_development/work_item_development.vue';
@@ -30,100 +33,50 @@ describe('WorkItemDevelopment CE', () => {
   let wrapper;
   let mockApollo;
 
-  const workItem = workItemResponseFactory({ developmentWidgetPresent: true, canUpdate: true });
-  const workItemWithOneMR = workItemResponseFactory({
-    developmentWidgetPresent: true,
+  const workItemSucessQueryHandler = ({ state = STATE_OPEN } = {}) => {
+    return jest.fn().mockResolvedValue(workItemByIidResponseFactory({ canUpdate: true, state }));
+  };
+
+  const devWidgetWithOneMR = workItemDevelopmentResponse({
     developmentItems: workItemDevelopmentFragmentResponse({
       mrNodes: [workItemDevelopmentMRNodes[0]],
       willAutoCloseByMergeRequest: true,
       featureFlagNodes: null,
       branchNodes: [],
+      relatedMergeRequests: [],
     }),
   });
-  const workItemWithMRList = workItemResponseFactory({
-    developmentWidgetPresent: true,
+
+  const devWidgetWithMoreThanOneMR = workItemDevelopmentResponse({
     developmentItems: workItemDevelopmentFragmentResponse({
       mrNodes: workItemDevelopmentMRNodes,
       willAutoCloseByMergeRequest: true,
       featureFlagNodes: null,
       branchNodes: [],
+      relatedMergeRequests: [],
     }),
   });
 
-  const projectWorkItemResponseWithMRList = {
-    data: {
-      workspace: {
-        __typename: 'Project',
-        id: 'gid://gitlab/Project/1',
-        workItem: workItem.data.workItem,
-      },
-    },
-  };
-
-  const closedWorkItemWithAutoCloseFlagEnabled = {
-    data: {
-      workspace: {
-        __typename: 'Project',
-        id: 'gid://gitlab/Project/1',
-        workItem: {
-          ...workItemWithMRList.data.workItem,
-          state: STATE_CLOSED,
-        },
-      },
-    },
-  };
-
-  const openWorkItemWithAutoCloseFlagEnabledAndOneMR = {
-    data: {
-      workspace: {
-        __typename: 'Project',
-        id: 'gid://gitlab/Project/1',
-        workItem: workItemWithOneMR.data.workItem,
-      },
-    },
-  };
-
-  const openWorkItemWithAutoCloseFlagEnabledAndMRList = {
-    data: {
-      workspace: {
-        __typename: 'Project',
-        id: 'gid://gitlab/Project/1',
-        workItem: workItemWithMRList.data.workItem,
-      },
-    },
-  };
-
-  const successQueryHandler = jest.fn().mockResolvedValue(projectWorkItemResponseWithMRList);
-
-  const workItemWithAutoCloseFlagEnabled = workItemResponseFactory({
-    developmentWidgetPresent: true,
+  const devWidgetWithAutoCloseDisabled = workItemDevelopmentResponse({
     developmentItems: workItemDevelopmentFragmentResponse({
       mrNodes: workItemDevelopmentMRNodes,
-      willAutoCloseByMergeRequest: true,
+      willAutoCloseByMergeRequest: false,
       featureFlagNodes: null,
       branchNodes: [],
+      relatedMergeRequests: [],
     }),
   });
 
-  const successQueryHandlerWorkItemWithAutoCloseFlagEnabled = jest.fn().mockResolvedValue({
-    data: {
-      workspace: {
-        __typename: 'Project',
-        id: 'gid://gitlab/Project/1',
-        workItem: workItemWithAutoCloseFlagEnabled.data.workItem,
-      },
-    },
-  });
-
-  const successQueryHandlerWithOneMR = jest
+  const devWidgetSuccessHandlerWithAutoCloseDisabled = jest
     .fn()
-    .mockResolvedValue(openWorkItemWithAutoCloseFlagEnabledAndOneMR);
-  const successQueryHandlerWithMRList = jest
+    .mockResolvedValue(devWidgetWithAutoCloseDisabled);
+  const devWidgetSuccessQueryHandlerWithOneMR = jest.fn().mockResolvedValue(devWidgetWithOneMR);
+  const devWidgeSuccessQueryHandlerWithMRList = jest
     .fn()
-    .mockResolvedValue(openWorkItemWithAutoCloseFlagEnabledAndMRList);
-  const successQueryHandlerWithClosedWorkItem = jest
+    .mockResolvedValue(devWidgetWithMoreThanOneMR);
+  const workItemDevelopmentUpdatedSubscriptionHandler = jest
     .fn()
-    .mockResolvedValue(closedWorkItemWithAutoCloseFlagEnabled);
+    .mockResolvedValue({ data: { workItemUpdated: null } });
 
   const createComponent = ({
     mountFn = shallowMountExtended,
@@ -131,10 +84,15 @@ describe('WorkItemDevelopment CE', () => {
     workItemIid = '1',
     workItemFullPath = 'full-path',
     workItemType = 'Issue',
-    workItemQueryHandler = successQueryHandler,
+    workItemQueryHandler = workItemSucessQueryHandler(),
     workItemsAlphaEnabled = true,
+    workItemDevelopmentQueryHandler = devWidgetSuccessQueryHandlerWithOneMR,
   } = {}) => {
-    mockApollo = createMockApollo([[workItemByIidQuery, workItemQueryHandler]]);
+    mockApollo = createMockApollo([
+      [workItemByIidQuery, workItemQueryHandler],
+      [workItemDevelopmentQuery, workItemDevelopmentQueryHandler],
+      [workItemDevelopmentUpdatedSubscription, workItemDevelopmentUpdatedSubscriptionHandler],
+    ]);
 
     wrapper = mountFn(WorkItemDevelopment, {
       apolloProvider: mockApollo,
@@ -171,6 +129,8 @@ describe('WorkItemDevelopment CE', () => {
     wrapper.findComponent(WorkItemCreateBranchMergeRequestModal);
   const findDropdownGroups = () =>
     findCreateOptionsDropdown().findAllComponents(GlDisclosureDropdownGroup);
+  const findWorkItemCreateMergeRequestModal = () =>
+    wrapper.findComponent(WorkItemCreateBranchMergeRequestModal);
 
   describe('Default', () => {
     it('should show the widget label', async () => {
@@ -185,6 +145,19 @@ describe('WorkItemDevelopment CE', () => {
       await waitForPromises();
 
       expect(findAddButton().exists()).toBe(true);
+    });
+
+    it('does not render the modal when the queries are still loading', () => {
+      createComponent({ workItemsAlphaEnabled: true, mountFn: mountExtended });
+
+      expect(findWorkItemCreateMergeRequestModal().exists()).toBe(false);
+    });
+
+    it('renders the modal when the queries are have loaded', async () => {
+      createComponent({ workItemsAlphaEnabled: true, mountFn: mountExtended });
+      await waitForPromises();
+
+      expect(findWorkItemCreateMergeRequestModal().exists()).toBe(true);
     });
   });
 
@@ -201,7 +174,9 @@ describe('WorkItemDevelopment CE', () => {
     });
 
     it('when auto close flag is disabled, should not show the "i" indicator', async () => {
-      createComponent();
+      createComponent({
+        workItemDevelopmentQueryHandler: devWidgetSuccessHandlerWithAutoCloseDisabled,
+      });
       await waitForPromises();
 
       expect(findMoreInformation().exists()).toBe(false);
@@ -209,7 +184,7 @@ describe('WorkItemDevelopment CE', () => {
 
     it('when auto close flag is enabled, should show the "i" indicator', async () => {
       createComponent({
-        workItemQueryHandler: successQueryHandlerWorkItemWithAutoCloseFlagEnabled,
+        workItemDevelopmentQueryHandler: devWidgetSuccessQueryHandlerWithOneMR,
       });
 
       await waitForPromises();
@@ -218,15 +193,16 @@ describe('WorkItemDevelopment CE', () => {
     });
 
     it.each`
-      queryHandler                             | message                                                            | workItemState   | linkedMRsNumber
-      ${successQueryHandlerWithOneMR}          | ${'This task will be closed when the following is merged.'}        | ${STATE_OPEN}   | ${1}
-      ${successQueryHandlerWithMRList}         | ${'This task will be closed when any of the following is merged.'} | ${STATE_OPEN}   | ${workItemDevelopmentMRNodes.length}
-      ${successQueryHandlerWithClosedWorkItem} | ${'The task was closed automatically when a branch was merged.'}   | ${STATE_CLOSED} | ${workItemDevelopmentMRNodes.length}
+      developmentWidgetQueryHandler            | message                                                            | workItemState   | linkedMRsNumber
+      ${devWidgetSuccessQueryHandlerWithOneMR} | ${'This task will be closed when the following is merged.'}        | ${STATE_OPEN}   | ${1}
+      ${devWidgeSuccessQueryHandlerWithMRList} | ${'This task will be closed when any of the following is merged.'} | ${STATE_OPEN}   | ${workItemDevelopmentMRNodes.length}
+      ${devWidgeSuccessQueryHandlerWithMRList} | ${'The task was closed automatically when a branch was merged.'}   | ${STATE_CLOSED} | ${workItemDevelopmentMRNodes.length}
     `(
       'when the workItemState is `$workItemState` and number of linked MRs is `$linkedMRsNumber` shows message `$message`',
-      async ({ queryHandler, message }) => {
+      async ({ developmentWidgetQueryHandler, message, workItemState }) => {
         createComponent({
-          workItemQueryHandler: queryHandler,
+          workItemQueryHandler: workItemSucessQueryHandler({ state: workItemState }),
+          workItemDevelopmentQueryHandler: developmentWidgetQueryHandler,
         });
 
         await waitForPromises();

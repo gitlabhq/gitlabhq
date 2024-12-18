@@ -6,7 +6,6 @@ import * as translations from '~/ml/experiment_tracking/routes/experiments/index
 import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
 import Pagination from '~/ml/experiment_tracking/components/pagination.vue';
 import { MLFLOW_USAGE_MODAL_ID } from '../constants';
-import MlflowModal from './mlflow_usage_modal.vue';
 
 export default {
   name: 'MlExperimentsIndexApp',
@@ -17,7 +16,6 @@ export default {
     GlEmptyState,
     GlLink,
     GlButton,
-    MlflowModal,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -93,12 +91,14 @@ export default {
       class="gl-py-8"
     >
       <template #actions>
-        <gl-button v-gl-modal="$options.mlflowModalId" class="gl-mx-2 gl-mb-3 gl-mr-3">
+        <gl-button
+          v-gl-modal="$options.mlflowModalId"
+          data-testid="empty-create-using-button"
+          class="gl-mx-2 gl-mb-3 gl-mr-3"
+        >
           {{ $options.i18n.CREATE_USING_MLFLOW_LABEL }}
         </gl-button>
       </template>
     </gl-empty-state>
-
-    <mlflow-modal />
   </div>
 </template>

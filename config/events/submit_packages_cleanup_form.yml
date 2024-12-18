@@ -4,9 +4,6 @@ action: submit_packages_cleanup_form
 product_group: package_registry
 milestone: '15.2'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90783
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

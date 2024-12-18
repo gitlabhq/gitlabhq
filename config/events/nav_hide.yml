@@ -4,9 +4,6 @@ action: nav_hide
 product_group: personal_productivity
 milestone: '16.2'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124194
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

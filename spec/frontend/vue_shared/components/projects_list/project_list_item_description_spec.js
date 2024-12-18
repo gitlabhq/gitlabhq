@@ -1,6 +1,7 @@
 import { GlTruncateText } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ProjectListItemDescription from '~/vue_shared/components/projects_list/project_list_item_description.vue';
+import ListItemDescription from '~/vue_shared/components/resource_lists/list_item_description.vue';
 
 describe('ProjectListItemDescriptionCE', () => {
   let wrapper;
@@ -18,6 +19,8 @@ describe('ProjectListItemDescriptionCE', () => {
     });
   };
 
+  const findListItemDescription = () => wrapper.findComponent(ListItemDescription);
+
   describe('when project has a description but is archived', () => {
     it('does not render description', () => {
       createComponent({
@@ -30,7 +33,7 @@ describe('ProjectListItemDescriptionCE', () => {
         },
       });
 
-      expect(wrapper.text()).toBe('');
+      expect(findListItemDescription().exists()).toBe(false);
     });
   });
 
@@ -45,7 +48,7 @@ describe('ProjectListItemDescriptionCE', () => {
         },
       });
 
-      expect(wrapper.html()).toContain(descriptionHtml);
+      expect(findListItemDescription().props('descriptionHtml')).toBe(descriptionHtml);
     });
   });
 
@@ -53,7 +56,7 @@ describe('ProjectListItemDescriptionCE', () => {
     it('does not render description', () => {
       createComponent();
 
-      expect(wrapper.text()).toBe('');
+      expect(findListItemDescription().exists()).toBe(false);
     });
   });
 });

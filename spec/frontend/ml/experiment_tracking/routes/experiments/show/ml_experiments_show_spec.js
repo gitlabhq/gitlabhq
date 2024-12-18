@@ -26,10 +26,19 @@ describe('MlExperimentsShow', () => {
     pageInfo = MOCK_PAGE_INFO,
     experiment = MOCK_EXPERIMENT,
     emptyStateSvgPath = 'path',
+    mlflowTrackingUrl = 'mlflow/tracking/url',
     // eslint-disable-next-line max-params
   ) => {
     wrapper = mount(MlExperimentsShow, {
-      propsData: { experiment, candidates, metricNames, paramNames, pageInfo, emptyStateSvgPath },
+      propsData: {
+        experiment,
+        candidates,
+        metricNames,
+        paramNames,
+        pageInfo,
+        emptyStateSvgPath,
+        mlflowTrackingUrl,
+      },
     });
   };
 

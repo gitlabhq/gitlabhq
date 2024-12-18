@@ -19,7 +19,7 @@ DETAILS:
 
 To configure your GitLab instance to access the available self-hosted models in your infrastructure:
 
-1. Use a [locally hosted or GitLab.com AI gateway](index.md#choose-a-configuration-type).
+1. [Confirm that a fully self-hosted model configuration is appropriate for your use case](index.md#decide-on-your-configuration-type).
 1. Configure your GitLab instance.
 1. Configure the self-hosted model.
 1. Configure the GitLab Duo features to use your self-hosted model.

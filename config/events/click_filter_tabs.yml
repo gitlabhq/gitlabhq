@@ -4,9 +4,6 @@ action: click_filter_tabs
 product_group: pipeline_execution
 milestone: '15.5'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98352
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

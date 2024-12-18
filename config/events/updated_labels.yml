@@ -4,9 +4,6 @@ action: updated_labels
 product_group: project_management
 milestone: '16.10'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141371
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

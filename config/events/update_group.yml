@@ -4,9 +4,6 @@ action: update_group
 product_group: acquisition
 milestone: '14.8'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74828
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

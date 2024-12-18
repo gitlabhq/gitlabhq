@@ -4,9 +4,6 @@ action: click_register_from_sign_in_page
 product_group: acquisition
 milestone: '17.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149060
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

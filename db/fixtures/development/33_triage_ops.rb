@@ -92,6 +92,12 @@ class Gitlab::Seeder::TriageOps
     pipeline:update-cache
   LABELS
 
+  attr_reader :organization
+
+  def initialize(organization:)
+    @organization = organization
+  end
+
   def seed!
     puts "Updating settings to allow web hooks to localhost"
     ApplicationSetting.current_without_cache.update!(allow_local_requests_from_web_hooks_and_services: true)
@@ -213,7 +219,8 @@ class Gitlab::Seeder::TriageOps
     group = Group.new(
       name: group_path.titleize,
       path: group_path,
-      parent: parent
+      parent: parent,
+      organization_id: organization.id
     )
     group.description = FFaker::Lorem.sentence
     group.save!
@@ -253,7 +260,8 @@ end
 
 if ENV['SEED_TRIAGE_OPS']
   Gitlab::Seeder.quiet do
-    Gitlab::Seeder::TriageOps.new.seed!
+    seeder = Gitlab::Seeder::TriageOps.new(organization: Organizations::Organization.default_organization)
+    seeder.seed!
   end
 else
   puts "Skipped. Use the `SEED_TRIAGE_OPS` environment variable to enable seeding data for triage ops project."

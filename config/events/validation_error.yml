@@ -4,9 +4,6 @@ action: validation_error
 product_group: pipeline_security
 milestone: '16.4'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129684
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium
