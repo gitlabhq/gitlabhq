@@ -1649,13 +1649,10 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
-    - <<: *if-ruby-branch
-      allow_failure: true
-    - <<: *if-merge-request-labels-run-all-e2e
-      allow_failure: true
+    - *if-ruby-branch
+    - *if-merge-request-labels-run-all-e2e
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
-      allow_failure: true
     # Run tests automatically for MRs that touch Ruby version files
     - <<: *if-merge-request
       changes: *ruby-version-patterns
@@ -1667,26 +1664,18 @@
       changes: *gdk-component-patterns
     - <<: *if-merge-request
       changes: *code-backstage-qa-patterns
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-schedule
-      allow_failure: true
-    - <<: *if-default-branch-schedule-nightly
-      allow_failure: true
+    - *if-dot-com-gitlab-org-schedule
+    - *if-default-branch-schedule-nightly
     # Rules to support e2e test execution
     - <<: *if-merge-request
       changes: *dependency-patterns
-      allow_failure: true
     - <<: *if-merge-request
       changes: *feature-flag-development-config-patterns
-      allow_failure: true
     - <<: *if-merge-request
       changes: *nodejs-patterns
-      allow_failure: true
     - <<: *if-merge-request
       changes: *ci-qa-patterns
-      allow_failure: true
-    - <<: *if-force-ci
-      allow_failure: true
+    - *if-force-ci
 
 .qa:rules:e2e-test-never-run:
   rules:

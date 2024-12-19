@@ -23,18 +23,13 @@ module RapidDiffs
     end
 
     def viewer_component
-      # return Viewers::CollapsedComponent if collapsed?
-      # return Viewers::NotDiffableComponent unless diffable?
+      return Viewers::NoPreviewComponent if @diff_file.collapsed? || !@diff_file.modified_file?
 
-      is_text = @diff_file.text_diff?
-      return Viewers::Text::ParallelViewComponent if is_text && @parallel_view
-      return Viewers::Text::InlineViewComponent if is_text
-      return Viewers::NoPreviewComponent if @diff_file.content_changed?
+      if @diff_file.diffable_text?
+        return Viewers::Text::ParallelViewComponent if @parallel_view
 
-      # return Viewers::AddedComponent if new_file?
-      # return Viewers::DeletedComponent if deleted_file?
-      # return Viewers::RenamedComponent if renamed_file?
-      # return Viewers::ModeChangedComponent if mode_changed?
+        return Viewers::Text::InlineViewComponent
+      end
 
       Viewers::NoPreviewComponent
     end

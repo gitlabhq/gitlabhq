@@ -10,13 +10,16 @@ module Users
     end
 
     def execute
-      user = build_class.new(current_user, params).execute
       reset_token = user.generate_reset_token if user.recently_sent_password_reset?
 
       create_user(user, reset_token)
     end
 
     private
+
+    def user
+      @user ||= build_class.new(current_user, params).execute
+    end
 
     def after_create_hook(user, reset_token)
       notify_new_user(user, reset_token)
@@ -28,6 +31,8 @@ module Users
     end
 
     def create_user(user, reset_token)
+      return error(user.errors.full_messages.to_sentence, { user: user }) if user.errors.any?
+
       if user.save
         after_create_hook(user, reset_token)
         success({ user: user })

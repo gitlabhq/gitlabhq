@@ -12,6 +12,7 @@ module QA
         #
         # @return [void]
         def configure!
+          return if Env.dry_run
           return unless Env.generate_allure_report?
 
           configure_allure

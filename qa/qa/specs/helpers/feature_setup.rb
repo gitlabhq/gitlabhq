@@ -9,6 +9,8 @@ module QA
           #
           # @return [void]
           def configure!
+            return if Runtime::Env.dry_run
+
             configure_rspec
           end
 

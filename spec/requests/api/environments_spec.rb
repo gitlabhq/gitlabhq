@@ -8,7 +8,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
   let_it_be(:non_member) { create(:user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:project) { create(:project, :private, :repository, namespace: user.namespace, maintainers: user, developers: developer, reporters: reporter) }
-  let_it_be_with_reload(:environment) { create(:environment, project: project, description: 'description') }
+  let_it_be_with_reload(:environment) { create(:environment, :auto_stop_always, project: project, description: 'description') }
 
   describe 'GET /projects/:id/environments', :aggregate_failures do
     context 'as member of the project' do
@@ -26,6 +26,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         expect(json_response.first['external_url']).to eq(environment.external_url)
         expect(json_response.first['project']).to match_schema('public_api/v4/project')
         expect(json_response.first).not_to have_key('last_deployment')
+        expect(json_response.first['auto_stop_setting']).to eq('always')
       end
 
       it 'returns 200 HTTP status when using JOB-TOKEN auth' do
@@ -142,6 +143,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         expect(json_response['slug']).to eq('mepmep')
         expect(json_response['tier']).to eq('staging')
         expect(json_response['external']).to be nil
+        expect(json_response['auto_stop_setting']).to eq('with_action')
       end
 
       context 'when associating a cluster agent' do
@@ -349,6 +351,16 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         params: { tier: 'production', job_token: job.token }
 
       expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'returns 200 HTTP status when auto_stop_setting is changed' do
+      job = create(:ci_build, :running, project: project, user: user)
+
+      put api("/projects/#{project.id}/environments/#{environment.id}"),
+        params: { auto_stop_setting: 'with_action', job_token: job.token }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['auto_stop_setting']).to eq('with_action')
     end
 
     context 'when associating a cluster agent' do
@@ -591,7 +603,8 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
           environment.update!(
             cluster_agent: create(:cluster_agent, project: project),
             kubernetes_namespace: 'flux-system',
-            flux_resource_path: 'HelmRelease/flux-system'
+            flux_resource_path: 'HelmRelease/flux-system',
+            auto_stop_setting: 'always'
           )
 
           get api("/projects/#{project.id}/environments/#{environment.id}", user)
@@ -602,6 +615,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
           expect(json_response['cluster_agent']).to be_present
           expect(json_response['kubernetes_namespace']).to eq('flux-system')
           expect(json_response['flux_resource_path']).to eq('HelmRelease/flux-system')
+          expect(json_response['auto_stop_setting']).to eq('always')
         end
       end
 

@@ -71,7 +71,7 @@ namespace :ci do
     end
 
     # always check all test suites in case a suite is defined but doesn't have any runnable specs
-    suites = QA::Tools::Ci::NonEmptySuites.new(tests).fetch
+    suites = QA::Tools::Ci::RunnableSpecs.fetch(tests&.split(" ")).keys.join(",")
     append_to_file(env_file, <<~TXT)
       QA_SUITES='#{suites}'
       QA_TESTS='#{tests}'

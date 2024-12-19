@@ -1314,20 +1314,6 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         end
       end
     end
-
-    context 'with write_to_ci_runner_taggings disabled' do
-      before do
-        stub_feature_flags(write_to_ci_runner_taggings: false)
-      end
-
-      it 'does not save tag_links' do
-        runner.save!
-
-        expect(runner.tags.count).to eq(1)
-        expect(runner.tags.first.name).to eq('tag')
-        expect(runner.tag_links).to be_empty
-      end
-    end
   end
 
   describe '#has_tags?' do

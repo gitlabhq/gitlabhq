@@ -8,6 +8,7 @@ module QA
 
         class << self
           def configure!
+            return if Runtime::Env.dry_run
             return unless ENV["CI"]
             return if ENV["FAST_QUARANTINE"] == "false"
             return if ENV["CI_MERGE_REQUEST_LABELS"]&.include?("pipeline:run-flaky-tests")

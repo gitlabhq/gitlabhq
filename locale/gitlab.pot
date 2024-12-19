@@ -23861,7 +23861,19 @@ msgstr ""
 msgid "File added"
 msgstr ""
 
+msgid "File added."
+msgstr ""
+
+msgid "File changed and moved."
+msgstr ""
+
+msgid "File changed."
+msgstr ""
+
 msgid "File deleted"
+msgstr ""
+
+msgid "File deleted."
 msgstr ""
 
 msgid "File hooks are similar to system hooks but are executed as files instead of sending data to a URL."
@@ -23873,7 +23885,13 @@ msgstr ""
 msgid "File mode changed from %{a_mode} to %{b_mode}"
 msgstr ""
 
+msgid "File mode changed from %{from} to %{to}."
+msgstr ""
+
 msgid "File moved"
+msgstr ""
+
+msgid "File moved."
 msgstr ""
 
 msgid "File name"
@@ -23886,6 +23904,9 @@ msgid "File permissions"
 msgstr ""
 
 msgid "File renamed with no changes."
+msgstr ""
+
+msgid "File size exceeds preview limit."
 msgstr ""
 
 msgid "File suppressed by a .gitattributes entry or the file's encoding is unsupported."
@@ -36891,6 +36912,9 @@ msgstr ""
 msgid "No description"
 msgstr ""
 
+msgid "No diff preview for this file type."
+msgstr ""
+
 msgid "No email participants were added. Either none were provided, or they already exist."
 msgstr ""
 
@@ -42414,6 +42438,12 @@ msgstr ""
 msgid "Preview payload"
 msgstr ""
 
+msgid "Preview size limit exceeded, changes collapsed."
+msgstr ""
+
+msgid "Preview suppressed by a .gitattributes entry or the file's encoding is unsupported."
+msgstr ""
+
 msgid "Preview the new issues experience, with real time updates and refreshed design. Some features are not yet supported, see feedback issue for details."
 msgstr ""
 
@@ -46366,7 +46396,7 @@ msgstr ""
 msgid "Remove link"
 msgstr ""
 
-msgid "Remove link with another issue"
+msgid "Remove linked item"
 msgstr ""
 
 msgid "Remove list"
@@ -46462,7 +46492,7 @@ msgstr ""
 msgid "Removed an issue from an epic."
 msgstr ""
 
-msgid "Removed link with %{issue_ref}."
+msgid "Removed linked item %{issue_ref}."
 msgstr ""
 
 msgid "Removed members no longer have access to this top-level group, its sub-groups, and their projects."
@@ -46521,7 +46551,7 @@ msgstr ""
 msgid "Removes email participants."
 msgstr ""
 
-msgid "Removes link with %{issue_ref}."
+msgid "Removes linked item %{issue_ref}."
 msgstr ""
 
 msgid "Removes parent epic %{epic_ref}."
@@ -56562,6 +56592,9 @@ msgstr ""
 msgid "There are no matching files"
 msgstr ""
 
+msgid "There are no more seats left in your subscription. New users cannot be added to this instance."
+msgstr ""
+
 msgid "There are no open epics"
 msgstr ""
 
@@ -61707,6 +61740,9 @@ msgstr ""
 msgid "View card matches"
 msgstr ""
 
+msgid "View changed file"
+msgstr ""
+
 msgid "View dependency details for your project"
 msgstr ""
 
@@ -61729,6 +61765,9 @@ msgid "View exposed artifact"
 msgid_plural "View %d exposed artifacts"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "View file"
+msgstr ""
 
 msgid "View file @ "
 msgstr ""
@@ -61791,6 +61830,9 @@ msgid "View open merge request"
 msgstr ""
 
 msgid "View options"
+msgstr ""
+
+msgid "View original file"
 msgstr ""
 
 msgid "View page @ "

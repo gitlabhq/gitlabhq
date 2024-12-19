@@ -30,4 +30,8 @@
   border: 1px solid var(--gl-border-color-default);
   border-top: 0;
   border-radius: 0 0 var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius);
+
+  > :only-child {
+    border-radius: inherit;
+  }
 }

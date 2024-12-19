@@ -2489,7 +2489,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
         it 'executes command successfully' do
           expect { unlink_issues }.to change { IssueLink.count }.by(-1)
-          expect(unlink_issues[2]).to eq("Removed link with #{other_issue.to_reference(issue)}.")
+          expect(unlink_issues[2]).to eq("Removed linked item #{other_issue.to_reference(issue)}.")
           expect(issue.notes.last.note).to eq("removed the relation with #{other_issue.to_reference}")
           expect(other_issue.notes.last.note).to eq("removed the relation with #{issue.to_reference}")
         end
@@ -3710,7 +3710,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
         it '/unlink command is available' do
           _, explanations = service.explain(unlink_content, issue)
-          translated_string = _("Removes link with %{issue}.")
+          translated_string = _("Removes linked item %{issue}.")
           formatted_message = format(translated_string, issue: other_issue.to_s)
 
           expect(explanations).to eq([formatted_message])

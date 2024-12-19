@@ -34,7 +34,7 @@ module QA
                 next
               when :count_examples_only, :test_metadata_only
                 parser.on(opt.arg, opt.desc) do |value|
-                  QA::Runtime::Env.dry_run = true
+                  ENV["QA_RSPEC_DRY_RUN"] = "true"
                   Runtime::Scenario.define(opt.name, value)
                 end
 

@@ -199,6 +199,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :notes_create_limit,
       :pipeline_limit_per_project_user_sha,
       :default_branch_name,
+      :auto_approve_pending_users,
       { disabled_oauth_sign_in_sources: [],
         import_sources: [],
         package_metadata_purl_types: [],

@@ -77,6 +77,24 @@ When working on settings, we need to make sure that:
 - Updating settings is taken into consideration.
 - If we want to move from project to project namespace, we follow a similar database process to the one described in Phase 1.
 
+## Organizations & cells
+
+For the [Cells](../cells) project, GitLab will rely on organizations. A cell will host one or more organizations. When a request is made, the [HTTP Router Service](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/http_routing_service/) will route it to the correct cell.
+
+### Mapping a request to an organization
+
+The application needs to know how to map incoming requests to an organization. The mapping logic is encapsulated in [`Gitlab::Current::Organization`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/current/organization.rb). The outcome of this mapping is stored in a [`ActiveSupport::CurrentAttributes`](https://api.rubyonrails.org/classes/ActiveSupport/CurrentAttributes.html) instance called `Current`. You can then access the current organization using the `Current.organization` method.
+
+Since this mapping depends on HTTP requests, `Current.organization` is only available in the request layer (Rails controllers, Grape API, and GraphQL). It cannot be used in cron jobs or Sidekiq workers. This is enforced by a RuboCop rule.
+
+### The default organization
+
+Do not rely on a default organization. Only one cell can access the default organization, and other cells cannot access it.
+
+Default organizations were initially used to assign existing data when introducing the Organization data structure. However, the application no longer depends on default organizations. Do not create or assign default organization objects.
+
+The default organization remains available on GitLab.com only until all data is assigned to new organizations. Hard-coded dependencies on the default organization do not work in cells. All cells should be treated the same.
+
 ## Related topics
 
 - [Consolidating groups and projects](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/consolidating_groups_and_projects/)

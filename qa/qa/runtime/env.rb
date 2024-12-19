@@ -10,7 +10,6 @@ module QA
       extend self
 
       attr_writer :gitlab_url
-      attr_accessor :dry_run
 
       ENV_VARIABLES = Gitlab::QA::Runtime::Env::ENV_VARIABLES
 
@@ -660,6 +659,13 @@ module QA
       # @return [String]
       def run_type
         ENV["QA_RUN_TYPE"].presence
+      end
+
+      # Execution performed with --dry-run flag
+      #
+      # @return [Boolean]
+      def dry_run
+        enabled?(ENV["QA_RSPEC_DRY_RUN"], default: false)
       end
 
       private

@@ -7,7 +7,7 @@ require_relative '../../qa'
 
 QA::Specs::QaDeprecationToolkitEnv.configure!
 
-Knapsack::Adapters::RSpecAdapter.bind if QA::Runtime::Env.knapsack?
+Knapsack::Adapters::RSpecAdapter.bind if QA::Runtime::Env.knapsack? && !QA::Runtime::Env.dry_run
 
 # TODO: move all classes that perform rspec configuration under spec/helpers
 QA::Support::GitlabAddress.define_gitlab_address_attribute!
@@ -36,8 +36,11 @@ RSpec.configure do |config|
   config.add_formatter QA::Support::Formatters::ContextFormatter
   config.add_formatter QA::Support::Formatters::QuarantineFormatter
   config.add_formatter QA::Support::Formatters::FeatureFlagFormatter
-  config.add_formatter QA::Support::Formatters::TestMetricsFormatter if QA::Runtime::Env.running_in_ci?
-  config.add_formatter QA::Support::Formatters::CoverbandFormatter if QA::Runtime::Env.coverband_enabled?
+
+  unless QA::Runtime::Env.dry_run
+    config.add_formatter QA::Support::Formatters::TestMetricsFormatter if QA::Runtime::Env.running_in_ci?
+    config.add_formatter QA::Support::Formatters::CoverbandFormatter if QA::Runtime::Env.coverband_enabled?
+  end
 
   config.example_status_persistence_file_path = ENV.fetch('RSPEC_LAST_RUN_RESULTS_FILE', 'tmp/examples.txt')
 

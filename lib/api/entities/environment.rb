@@ -14,6 +14,7 @@ module API
       expose :kubernetes_namespace, if: ->(_, _) { can_read_cluster_agent? }
       expose :flux_resource_path, if: ->(_, _) { can_read_cluster_agent? }
       expose :description, documentation: { type: 'string', example: 'description' }
+      expose :auto_stop_setting, documentation: { type: 'string', example: 'always' }
 
       private
 

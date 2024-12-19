@@ -1273,21 +1273,49 @@ RSpec.describe Gitlab::Diff::File do
     end
   end
 
-  describe '#text_diff' do
-    subject(:text_diff) { diff_file.text_diff? }
+  describe '#diffable_text?' do
+    subject(:diffable_text?) { diff_file.diffable_text? }
 
     it 'returns true for text diffs' do
-      expect(text_diff).to eq(true)
-    end
-
-    it 'returns false for unchanged files' do
-      allow(diff_file).to receive(:modified_file?).and_return(false)
-      expect(text_diff).to eq(false)
+      expect(diffable_text?).to eq(true)
     end
 
     it 'returns false for non text files' do
       allow(diff_file).to receive(:text?).and_return(false)
-      expect(text_diff).to eq(false)
+      expect(diffable_text?).to eq(false)
+    end
+
+    it 'returns false for non diffable files' do
+      allow(diff_file).to receive(:diffable?).and_return(false)
+      expect(diffable_text?).to eq(false)
+    end
+
+    it 'returns false for too large' do
+      allow(diff_file).to receive(:too_large?).and_return(true)
+      expect(diffable_text?).to eq(false)
+    end
+  end
+
+  describe '#modified_file?' do
+    subject(:modified_file?) { diff_file.modified_file? }
+
+    before do
+      allow(diff_file).to receive_messages(new_file?: false, deleted_file?: false, content_changed?: false)
+    end
+
+    it 'returns true for new file' do
+      allow(diff_file).to receive(:new_file?).and_return(true)
+      expect(modified_file?).to eq(true)
+    end
+
+    it 'returns true for deleted file' do
+      allow(diff_file).to receive(:deleted_file?).and_return(true)
+      expect(modified_file?).to eq(true)
+    end
+
+    it 'returns true for changed file' do
+      allow(diff_file).to receive(:content_changed?).and_return(true)
+      expect(modified_file?).to eq(true)
     end
   end
 

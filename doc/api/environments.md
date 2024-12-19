@@ -10,6 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+> Parameter `auto_stop_setting` [added](https://gitlab.com/gitlab-org/gitlab/-/issues/428625) in GitLab 17.8.
 > Support for [GitLab CI/CD job token](../ci/jobs/ci_job_token.md) authentication [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414549) in GitLab 16.2.
 
 ## List environments
@@ -49,7 +50,8 @@ Example response:
     "logs_api_path": "/project/-/logs/k8s.json?environment_name=review%2Ffix-foo",
     "auto_stop_at": "2019-06-03T18:55:13.252Z",
     "kubernetes_namespace": "flux-system",
-    "flux_resource_path": "HelmRelease/flux-system"
+    "flux_resource_path": "HelmRelease/flux-system",
+    "auto_stop_setting": "always"
   }
 ]
 ```
@@ -184,7 +186,8 @@ Example of response
     "created_by_user_id": 42
   },
   "kubernetes_namespace": "flux-system",
-  "flux_resource_path": "HelmRelease/flux-system"
+  "flux_resource_path": "HelmRelease/flux-system",
+  "auto_stop_setting": "always"
 }
 ```
 
@@ -208,6 +211,7 @@ POST /projects/:id/environments
 | `cluster_agent_id`     | integer        | no       | The cluster agent to associate with this environment.                                                               |
 | `kubernetes_namespace` | string         | no       | The Kubernetes namespace to associate with this environment.                                                        |
 | `flux_resource_path`   | string         | no       | The Flux resource path to associate with this environment. This must be the full resource path. For example, `helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent`.  |
+| `auto_stop_setting`    | string         | no       | The auto stop setting for the environment. Allowed values are `always` or `with_action`. |
 
 ```shell
 curl --data "name=deploy&external_url=https://deploy.gitlab.example.com" \
@@ -228,7 +232,8 @@ Example response:
   "created_at": "2019-05-25T18:55:13.252Z",
   "updated_at": "2019-05-27T18:55:13.252Z",
   "kubernetes_namespace": "flux-system",
-  "flux_resource_path": "HelmRelease/flux-system"
+  "flux_resource_path": "HelmRelease/flux-system",
+  "auto_stop_setting": "always"
 }
 ```
 
@@ -254,6 +259,7 @@ PUT /projects/:id/environments/:environments_id
 | `cluster_agent_id`     | integer or null | no       | The cluster agent to associate with this environment or `null` to remove it.                                        |
 | `kubernetes_namespace` | string or null  | no       | The Kubernetes namespace to associate with this environment or `null` to remove it.                                 |
 | `flux_resource_path`   | string or null  | no       | The Flux resource path to associate with this environment or `null` to remove it.                                   |
+| `auto_stop_setting`    | string or null  | no       | The auto stop setting for the environment. Allowed values are `always` or `with_action`. |
 
 ```shell
 curl --request PUT --data "external_url=https://staging.gitlab.example.com" \
@@ -274,7 +280,8 @@ Example response:
   "created_at": "2019-05-25T18:55:13.252Z",
   "updated_at": "2019-05-27T18:55:13.252Z",
   "kubernetes_namespace": "flux-system",
-  "flux_resource_path": "HelmRelease/flux-system"
+  "flux_resource_path": "HelmRelease/flux-system",
+  "auto_stop_setting": "always"
 }
 ```
 
@@ -370,7 +377,8 @@ Example response:
   "created_at": "2019-05-25T18:55:13.252Z",
   "updated_at": "2019-05-27T18:55:13.252Z",
   "kubernetes_namespace": "flux-system",
-  "flux_resource_path": "HelmRelease/flux-system"
+  "flux_resource_path": "HelmRelease/flux-system",
+  "auto_stop_setting": "always"
 }
 ```
 

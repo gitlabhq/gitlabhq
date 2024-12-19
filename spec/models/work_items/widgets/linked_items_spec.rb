@@ -16,7 +16,7 @@ RSpec.describe WorkItems::Widgets::LinkedItems, feature_category: :portfolio_man
   describe '.quick_action_commands' do
     specify do
       expect(described_class.quick_action_commands)
-        .to contain_exactly(:blocks, :blocked_by, :relate)
+        .to contain_exactly(:blocks, :blocked_by, :relate, :unlink)
     end
   end
 

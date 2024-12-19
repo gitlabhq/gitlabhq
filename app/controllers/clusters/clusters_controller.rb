@@ -31,7 +31,7 @@ class Clusters::ClustersController < ::Clusters::BaseController
     end
   end
 
-  # Overridding ActionController::Metal#status is NOT a good idea
+  # Overriding ActionController::Metal#status is NOT a good idea
   def cluster_status
     respond_to do |format|
       format.json do

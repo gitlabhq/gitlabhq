@@ -1057,7 +1057,7 @@ do not say:
 
 - This feature has reached general availability.
 
-You can use **GA** to indicate general availability if you spell it out on first use.
+Do not use **GA** to abbreviate general availability.
 
 ## GitLab
 
@@ -1463,6 +1463,19 @@ Do not use:
 Use [sign in](#sign-in-sign-in) instead.
 
 However, if the user interface has **Log in**, you should match the UI.
+
+## limited availability
+
+Use lowercase for **limited availability**. For example:
+
+- This feature has limited availability.
+- Hosted runners are in limited availability.
+
+Do not use:
+
+- This feature has reached limited availability.
+
+Do not use **LA** to abbreviate limited availability.
 
 ## logged-in user, logged in user
 

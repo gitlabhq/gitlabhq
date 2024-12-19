@@ -120,7 +120,7 @@ module QA
         raise "QA_RUN_TYPE must be set for custom report" unless run_type
 
         reports = Pathname.glob(glob).select { |file| file.extname == ".json" }
-        return logger.error("Glob '#{glob}' did not contain any valid report files!") if reports.empty?
+        raise "Glob '#{glob}' did not contain any valid report files!" if reports.empty?
 
         logger.info("Processing '#{reports.size}' report files")
         runtimes = reports

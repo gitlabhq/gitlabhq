@@ -107,28 +107,29 @@
     @include str-highlighted;
   }
 
+  // Fixed headings are default for markdown
   h1 {
-    @apply gl-heading-1 gl-mt-7 gl-pb-2 gl-border-b;
+    @apply gl-heading-1-fixed gl-mt-7 gl-pb-2 gl-border-b;
   }
 
   h2 {
-    @apply gl-heading-2 gl-mt-6 gl-pb-2 gl-border-b;
+    @apply gl-heading-2-fixed gl-mt-6 gl-pb-2 gl-border-b;
   }
 
   h3 {
-    @apply gl-heading-3 gl-mt-6;
+    @apply gl-heading-3-fixed gl-mt-6;
   }
 
   h4 {
-    @apply gl-heading-4 gl-mt-5;
+    @apply gl-heading-4-fixed gl-mt-5;
   }
 
   h5 {
-    @apply gl-heading-5 gl-mt-5;
+    @apply gl-heading-5-fixed gl-mt-5;
   }
 
   h6 {
-    @apply gl-heading-6 gl-mt-5;
+    @apply gl-heading-6-fixed gl-mt-5;
   }
 
   blockquote,
