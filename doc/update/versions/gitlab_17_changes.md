@@ -259,6 +259,21 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
 - When you upgrade to GitLab 17.4, an OAuth application is generated for the Web IDE.
   If your GitLab server's external URL configuration in the `GitLab.rb` file contains uppercase letters, the Web IDE might fail to load.
   To resolve this issue, see [update the OAuth callback URL](../../user/project/web_ide/index.md#update-the-oauth-callback-url).
+- In accordance with [RFC 7540](https://datatracker.ietf.org/doc/html/rfc7540#section-3.3),
+  Gitaly and Praefect now reject TLS connections that do not support ALPN.
+  If you use an HTTP/2 or gRPC load balancer in front of Praefect with
+  TLS enabled, you may encounter `FAIL: 14:connections to all backends failing` errors
+  if ALPN is not used. You can temporarily disable this enforcement
+  by setting `GRPC_ENFORCE_ALPN_ENABLED=false` in the
+  Praefect environment, but we strongly advise [using a TCP load balancer instead](../../administration/gitaly/praefect.md#load-balancer). With the Linux package, edit
+  `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    praefect['env'] = { 'GRPC_ENFORCE_ALPN_ENABLED' => 'false' }
+    ```
+
+  Then run `gitlab-ctl reconfigure`. Note that this setting will
+  be removed in the future.
 
 ## 17.3.0
 

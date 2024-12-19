@@ -242,6 +242,7 @@ DETAILS:
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/480195) from "multiple deployments" to "parallel deployments" in GitLab 17.4.
 > - [Enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/422145) in GitLab 17.4.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/502219) to remove the project setting.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/507423) to allow periods in `path_prefix` in GitLab 17.8.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -258,8 +259,8 @@ The value of `pages.path_prefix` is:
 
 - Converted to lowercase.
 - Shortened to 63 bytes.
-- Any character except numbers (`0-9`) and letter (`a-z`) is replaced with a hyphen (`-`).
-- Leading and trailing hyphens (`-`) are removed.
+- Any character except numbers (`0-9`), letters (`a-z`) and periods (`.`) is replaced with a hyphen (`-`).
+- Leading and trailing hyphens (`-`) and period (`.`) are removed.
 
 ### Example configuration
 

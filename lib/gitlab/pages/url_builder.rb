@@ -67,7 +67,7 @@ module Gitlab
       def path_prefix
         return unless @options[:path_prefix].present?
 
-        ::Gitlab::Utils.slugify(@options[:path_prefix]).presence
+        ::Gitlab::Utils.slugify(@options[:path_prefix], allow_dots: true).presence
       end
 
       private

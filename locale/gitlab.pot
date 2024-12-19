@@ -7115,6 +7115,9 @@ msgstr[1] ""
 msgid "ApplicationSettings|By making this change, you will automatically approve all users who are pending approval."
 msgstr ""
 
+msgid "ApplicationSettings|By setting a user cap, any user who is added or requests access in excess of the user cap must be approved by an admin"
+msgstr ""
+
 msgid "ApplicationSettings|Change setting and approve pending users?"
 msgstr ""
 
@@ -7151,6 +7154,12 @@ msgstr ""
 msgid "ApplicationSettings|Hard"
 msgstr ""
 
+msgid "ApplicationSettings|Invitations above seat count are blocked"
+msgstr ""
+
+msgid "ApplicationSettings|Invitations do not require administrator approval"
+msgstr ""
+
 msgid "ApplicationSettings|Minimum password length (number of characters)"
 msgstr ""
 
@@ -7161,6 +7170,9 @@ msgid "ApplicationSettings|Off"
 msgstr ""
 
 msgid "ApplicationSettings|Only users with e-mail addresses that match these domain(s) can sign up. Wildcards allowed. Enter multiple entries on separate lines. Example: domain.com, *.domain.com"
+msgstr ""
+
+msgid "ApplicationSettings|Open access"
 msgstr ""
 
 msgid "ApplicationSettings|Proceed and approve %d user"
@@ -7189,7 +7201,13 @@ msgstr ""
 msgid "ApplicationSettings|Require uppercase letters"
 msgstr ""
 
+msgid "ApplicationSettings|Restricted access"
+msgstr ""
+
 msgid "ApplicationSettings|Restricts sign-ups for email addresses that match the given regex. %{linkStart}What is the supported syntax?%{linkEnd}"
+msgstr ""
+
+msgid "ApplicationSettings|Role Promotions"
 msgstr ""
 
 msgid "ApplicationSettings|Save changes"
@@ -7205,6 +7223,9 @@ msgid "ApplicationSettings|Send a confirmation email during sign up. New users c
 msgstr ""
 
 msgid "ApplicationSettings|Send a confirmation email during sign up. New users must confirm their email address before they can log in."
+msgstr ""
+
+msgid "ApplicationSettings|Set user cap"
 msgstr ""
 
 msgid "ApplicationSettings|Setting locked. Resolve all %{linkStart}pending approvals%{linkEnd} to unlock."

@@ -3500,6 +3500,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [experiment](../../policy/development_stages_support.md) [with a flag](../../user/feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
 > - [Enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/422145) in GitLab 17.4.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/507423) to allow periods in GitLab 17.8.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -3510,7 +3511,15 @@ Use `pages.path_prefix` to configure a path prefix for [parallel deployments](..
 
 **Keyword type**: Job keyword. You can use it only as part of a `pages` job.
 
-**Supported values**: A string, a [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file), or a combination of both. The given value is converted to lowercase, shortened to 63 bytes, and everything except alphanumeric characters is replaced with a hyphen. Leading and trailing hyphens are not permitted.
+**Supported values**:
+
+- A string
+- [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
+- A combination of both
+
+The given value is converted to lowercase and shortened to 63 bytes.
+Everything except alphanumeric characters or periods is replaced with a hyphen.
+Leading and trailing hyphens or periods are not permitted.
 
 **Example of `pages.path_prefix`**:
 

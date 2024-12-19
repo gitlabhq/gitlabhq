@@ -53,6 +53,32 @@ RSpec.describe RuboCop::Cop::Migration::EnsureFactoryForTable, feature_category:
           end
           RUBY
         end
+
+        context 'with rubocop:disable comment' do
+          let(:source) do
+            <<~RUBY
+              create_table :users do |t| # rubocop:disable Migration/EnsureFactoryForTable  -- Some reason
+                t.string :name
+                t.timestamps
+              end
+            RUBY
+          end
+
+          it 'adds a disabled offense for Migration/EnsureFactoryForTable to avoid Lint/RedundantCopDisableDirective' do
+            # rubocop:disable InternalAffairs/DeprecateCopHelper -- Can't use methods from RuboCop::RSpec::ExpectOffense
+            # here as they remove the disabled offenses.
+            processed_source = parse_source(source)
+            # rubocop:enable InternalAffairs/DeprecateCopHelper
+
+            team = RuboCop::Cop::Team.new([cop], configuration, raise_error: true)
+
+            offenses = team.investigate(processed_source).offenses
+            offense = offenses.first
+            expect(offenses.size).to eq(1)
+            expect(offense.cop_name).to eq(cop.name)
+            expect(offense.status).to eq(:disabled)
+          end
+        end
       end
     end
 

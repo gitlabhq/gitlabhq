@@ -1,17 +1,14 @@
-import { GlButton, GlModal, GlSprintf } from '@gitlab/ui';
 import { within } from '@testing-library/dom';
 import { shallowMount, mount, createWrapper } from '@vue/test-utils';
-import { stubComponent } from 'helpers/stub_component';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mockData } from 'jest/admin/signup_restrictions/mock_data';
 import SignupForm from '~/pages/admin/application_settings/general/components/signup_form.vue';
-import { mockData } from '../mock_data';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
 describe('Signup Form', () => {
   /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
-  let formSubmitSpy;
 
   const mountComponent = ({ injectedProps = {}, mountFn = shallowMount, stubs = {} } = {}) => {
     wrapper = extendedWrapper(
@@ -29,22 +26,12 @@ describe('Signup Form', () => {
 
   const findForm = () => wrapper.findByTestId('form');
   const findInputCsrf = () => findForm().find('[name="authenticity_token"]');
-  const findUserCapAutoApprovalInput = () =>
-    findForm().find('[name="application_setting[auto_approve_pending_users]"]');
-  const findFormSubmitButton = () => findForm().findComponent(GlButton);
 
   const findDenyListRawRadio = () => queryByLabelText('Enter denylist manually');
   const findDenyListFileRadio = () => queryByLabelText('Upload denylist file');
 
   const findDenyListRawInputGroup = () => wrapper.findByTestId('domain-denylist-raw-input-group');
   const findDenyListFileInputGroup = () => wrapper.findByTestId('domain-denylist-file-input-group');
-  const findUserCapGroup = () => wrapper.findByTestId('user-cap-group');
-  const findUserCapInput = () => wrapper.findByTestId('user-cap-input');
-  const findModal = () => wrapper.findComponent(GlModal);
-
-  afterEach(() => {
-    formSubmitSpy = null;
-  });
 
   describe('form data', () => {
     beforeEach(() => {
@@ -55,7 +42,6 @@ describe('Signup Form', () => {
       prop                                     | propValue                                       | elementSelector                                                             | formElementPassedDataType | formElementKey | expected
       ${'signupEnabled'}                       | ${mockData.signupEnabled}                       | ${'[name="application_setting[signup_enabled]"]'}                           | ${'prop'}                 | ${'value'}     | ${mockData.signupEnabled}
       ${'requireAdminApprovalAfterUserSignup'} | ${mockData.requireAdminApprovalAfterUserSignup} | ${'[name="application_setting[require_admin_approval_after_user_signup]"]'} | ${'prop'}                 | ${'value'}     | ${mockData.requireAdminApprovalAfterUserSignup}
-      ${'newUserSignupsCap'}                   | ${mockData.newUserSignupsCap}                   | ${'[name="application_setting[new_user_signups_cap]"]'}                     | ${'attribute'}            | ${'value'}     | ${mockData.newUserSignupsCap}
       ${'minimumPasswordLength'}               | ${mockData.minimumPasswordLength}               | ${'[name="application_setting[minimum_password_length]"]'}                  | ${'attribute'}            | ${'value'}     | ${mockData.minimumPasswordLength}
       ${'minimumPasswordLengthMin'}            | ${mockData.minimumPasswordLengthMin}            | ${'[name="application_setting[minimum_password_length]"]'}                  | ${'attribute'}            | ${'min'}       | ${mockData.minimumPasswordLengthMin}
       ${'minimumPasswordLengthMax'}            | ${mockData.minimumPasswordLengthMax}            | ${'[name="application_setting[minimum_password_length]"]'}                  | ${'attribute'}            | ${'max'}       | ${mockData.minimumPasswordLengthMax}
@@ -184,81 +170,6 @@ describe('Signup Form', () => {
         it('file input is not displayed', () => {
           expect(findDenyListFileInputGroup().exists()).toBe(false);
         });
-      });
-    });
-  });
-
-  describe('form submit button confirmation modal for side-effect of adding possibly unwanted new users', () => {
-    describe('modal actions', () => {
-      beforeEach(async () => {
-        const INITIAL_USER_CAP = 5;
-
-        mountComponent({
-          injectedProps: {
-            newUserSignupsCap: INITIAL_USER_CAP,
-            pendingUserCount: 5,
-          },
-          stubs: { GlButton, GlModal: stubComponent(GlModal) },
-        });
-
-        await findUserCapInput().vm.$emit('input', INITIAL_USER_CAP + 1);
-
-        await findFormSubmitButton().trigger('click');
-      });
-
-      describe('clicking approve users button', () => {
-        beforeEach(() => {
-          formSubmitSpy = jest.spyOn(HTMLFormElement.prototype, 'submit').mockImplementation();
-
-          findModal().vm.$emit('primary');
-        });
-
-        it('submits the form after', () => {
-          expect(formSubmitSpy).toHaveBeenCalled();
-        });
-
-        it('submits the form with the correct value', () => {
-          expect(findUserCapAutoApprovalInput().attributes('value')).toBe('true');
-        });
-      });
-
-      describe('clicking proceed without approve button', () => {
-        beforeEach(() => {
-          formSubmitSpy = jest.spyOn(HTMLFormElement.prototype, 'submit').mockImplementation();
-
-          findModal().vm.$emit('secondary');
-        });
-
-        it('submits the form after', () => {
-          expect(formSubmitSpy).toHaveBeenCalled();
-        });
-
-        it('submits the form with the correct value', () => {
-          expect(findUserCapAutoApprovalInput().attributes('value')).toBe('false');
-        });
-      });
-    });
-  });
-
-  describe('user cap help text', () => {
-    it('displays the default message', () => {
-      mountComponent();
-
-      expect(findUserCapGroup().text()).toBe(
-        'Users added beyond this limit require administrator approval. Leave blank for unlimited.',
-      );
-    });
-
-    describe('with a license', () => {
-      it('displays a message related to true up', () => {
-        mountComponent({
-          injectedProps: { licensedUserCount: 10 },
-          stubs: { GlSprintf },
-        });
-
-        expect(findUserCapGroup().text()).toContain(
-          'A user cap that exceeds the current licensed user count (10) might result in seat overages.',
-        );
       });
     });
   });

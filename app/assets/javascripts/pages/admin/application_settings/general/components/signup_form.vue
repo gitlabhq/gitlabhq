@@ -10,10 +10,8 @@ import {
   GlModal,
 } from '@gitlab/ui';
 import { toSafeInteger } from 'lodash';
-import SeatControlsSection from 'ee_component/pages/admin/application_settings/general/components/seat_controls_section.vue';
 import csrf from '~/lib/utils/csrf';
 import { __, n__, s__, sprintf } from '~/locale';
-import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import SignupCheckbox from './signup_checkbox.vue';
 
@@ -34,8 +32,10 @@ export default {
     GlLink,
     SignupCheckbox,
     GlModal,
-    HelpPageLink,
-    SeatControlsSection,
+    SeatControlsSection: () =>
+      import(
+        'ee_component/pages/admin/application_settings/general/components/seat_controls_section.vue'
+      ),
     PasswordComplexityCheckboxGroup: () =>
       import(
         'ee_component/pages/admin/application_settings/general/components/password_complexity_checkbox_group.vue'
@@ -62,7 +62,7 @@ export default {
     'emailRestrictions',
     'afterSignUpText',
     'pendingUserCount',
-    'licensedUserCount',
+    'seatControl',
   ],
   data() {
     return {
@@ -86,7 +86,8 @@ export default {
         supportedSyntaxLinkUrl: this.supportedSyntaxLinkUrl,
         emailRestrictions: this.emailRestrictions,
         afterSignUpText: this.afterSignUpText,
-        shouldProceedWithAutoApproval: true,
+        seatControl: this.seatControl,
+        shouldProceedWithAutoApproval: false,
       },
     };
   },
@@ -122,18 +123,19 @@ export default {
 
       return (this.hasUserCapBeenIncreased || hasUserCapBeenToggledOff) && currentlyPendingUsers;
     },
+    shouldShowSeatControlSection() {
+      return this.seatControl !== '';
+    },
     signupEnabledHelpText() {
-      const text = sprintf(
+      return sprintf(
         s__('ApplicationSettings|Any user that visits %{host} can create an account.'),
         {
           host: this.host,
         },
       );
-
-      return text;
     },
     requireAdminApprovalHelpText() {
-      const text = sprintf(
+      return sprintf(
         s__(
           'ApplicationSettings|Any user that visits %{host} and creates an account must be explicitly approved by an administrator before they can sign in. Only effective if sign-ups are enabled.',
         ),
@@ -141,8 +143,6 @@ export default {
           host: this.host,
         },
       );
-
-      return text;
     },
     approveUsersModal() {
       const { pendingUserCount } = this;
@@ -202,13 +202,17 @@ export default {
         [name]: value,
       };
     },
-    submitForm() {
-      this.$refs.form.submit();
-    },
-    async submitFormWithoutAutoApproval() {
-      this.form.shouldProceedWithAutoApproval = false;
+    async submitForm() {
       // the nextTick is to ensure the form is updated before we submit it
       await this.$nextTick();
+      this.$refs.form.submit();
+    },
+    submitFormWithAutoApproval() {
+      this.form.shouldProceedWithAutoApproval = true;
+      this.submitForm();
+    },
+    submitFormWithoutAutoApproval() {
+      this.form.shouldProceedWithAutoApproval = false;
       this.submitForm();
     },
     modalHideHandler() {
@@ -323,45 +327,12 @@ export default {
         </gl-form-radio-group>
       </gl-form-group>
 
-      <seat-controls-section @form-value-change="setFormValue" />
-
-      <gl-form-group :label="$options.i18n.userCapLabel" data-testid="user-cap-group">
-        <input
-          type="hidden"
-          name="application_setting[auto_approve_pending_users]"
-          :value="form.shouldProceedWithAutoApproval"
-        />
-        <gl-form-input
-          v-model="form.userCap"
-          type="text"
-          name="application_setting[new_user_signups_cap]"
-          data-testid="user-cap-input"
-        />
-        <small class="form-text text-muted"
-          >{{
-            s__(
-              'ApplicationSettings|Users added beyond this limit require administrator approval. Leave blank for unlimited.',
-            )
-          }}
-          <gl-sprintf
-            v-if="licensedUserCount"
-            :message="
-              s__(
-                'ApplicationSettings|A user cap that exceeds the current licensed user count (%{licensedUserCount}) might result in %{linkStart}seat overages%{linkEnd}.',
-              )
-            "
-          >
-            <template #licensedUserCount>{{ licensedUserCount }}</template>
-            <template #link="{ content }">
-              <help-page-link
-                href="subscriptions/quarterly_reconciliation"
-                anchor="quarterly-reconciliation-versus-annual-true-ups"
-                >{{ content }}</help-page-link
-              >
-            </template>
-          </gl-sprintf>
-        </small>
-      </gl-form-group>
+      <input
+        type="hidden"
+        name="application_setting[auto_approve_pending_users]"
+        :value="form.shouldProceedWithAutoApproval"
+      />
+      <seat-controls-section v-if="shouldShowSeatControlSection" v-model="form" />
 
       <gl-form-group :label="$options.i18n.minimumPasswordLengthLabel">
         <gl-form-input
@@ -511,7 +482,7 @@ export default {
       :action-primary="approveUsersModal.actionPrimary"
       :action-secondary="approveUsersModal.actionSecondary"
       :title="s__('ApplicationSettings|Change setting and approve pending users?')"
-      @primary="submitForm"
+      @primary="submitFormWithAutoApproval"
       @secondary="submitFormWithoutAutoApproval"
       @hide="modalHideHandler"
     >

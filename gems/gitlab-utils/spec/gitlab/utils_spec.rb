@@ -47,15 +47,22 @@ RSpec.describe Gitlab::Utils, feature_category: :shared do
   end
 
   describe '.slugify' do
-    {
-      'TEST' => 'test',
-      'project_with_underscores' => 'project-with-underscores',
-      'namespace/project' => 'namespace-project',
-      'a' * 70 => 'a' * 63,
-      'test_trailing_' => 'test-trailing'
-    }.each do |original, expected|
-      it "slugifies #{original} to #{expected}" do
-        expect(slugify(original)).to eq(expected)
+    where(:original, :allow_dots, :expected) do
+      'TEST'                     | false | 'test'
+      'project_with_underscores' | false | 'project-with-underscores'
+      'namespace/project'        | false | 'namespace-project'
+      ('a' * 70)                 | false | ('a' * 63)
+      'test_trailing_'           | false | 'test-trailing'
+      '17.9'                     | false | '17-9'
+      '..17.9..'                 | true  | '17.9'
+      '-.-.17.9-.-.'             | true  | '17.9'
+      '17..9'                    | true  | '17..9'
+      '17.9'                     | nil   | '17-9'
+    end
+
+    with_them do
+      it "slugifies path according to settings" do
+        expect(slugify(original, allow_dots: allow_dots)).to eq(expected)
       end
     end
   end

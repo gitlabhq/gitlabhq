@@ -1207,13 +1207,18 @@ of choice already. Some examples include [HAProxy](https://www.haproxy.org/)
 Big-IP LTM, and Citrix Net Scaler. This documentation outlines what ports
 and protocols you need configure.
 
-NOTE:
 You should use the equivalent of HAProxy `leastconn` load-balancing strategy because long-running operations (for
 example, clones) keep some connections open for extended periods.
 
 | LB Port | Backend Port | Protocol |
 |:--------|:-------------|:---------|
 | 2305    | 2305         | TCP      |
+
+You must use a TCP load balancer. Using an HTTP/2 or gRPC load balancer
+with Praefect is not supported. If TLS is enabled, Praefect requires
+that the Application-Layer Protocol Negotiation (ALPN) extension is used per [RFC 7540](https://datatracker.ietf.org/doc/html/rfc7540#section-3.3).
+TCP load balancers pass ALPN directly without additional configuration. With a HTTP/2 or gRPC load balancer, ensuring that the ALPN is used
+[can be difficult](https://github.com/grpc/grpc-go/issues/7922).
 
 ### GitLab
 

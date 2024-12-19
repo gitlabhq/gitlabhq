@@ -7,7 +7,8 @@ module RuboCop
     module Migration
       # Checks for `create_table` calls without a corresponding factory.
       #
-      # This check is skipped when `ee/` directory is not present.
+      # This check runs when `ee/` directory is present or when explicitly disabled to avoid false positives for
+      # `Lint/RedundantCopDisableDirective`.
       #
       # @example
       #
@@ -34,6 +35,8 @@ module RuboCop
         MSG = 'No factory found for the table `%{name}`.'
 
         RESTRICT_ON_SEND = %i[create_table].to_set.freeze
+        COP_DISABLE = '#\s*rubocop\s*:\s*(?:disable|todo)\s+.*Migration\s*/\s*EnsureFactoryForTable'
+        COP_DISABLE_LINE = /\A(?<line>#{COP_DISABLE}.*)\Z/
 
         def_node_matcher :table_definition, <<~PATTERN
           (send nil? RESTRICT_ON_SEND ${(sym $_) (str $_)} ...)
@@ -41,7 +44,7 @@ module RuboCop
 
         def on_send(node)
           # Migrations for EE models don't have factories in CE.
-          return unless ee?
+          return if !ee? && disabled_comment_absent?
 
           table_definition(node) do |table_name_node, table_name|
             unless factory?(table_name.to_s)
@@ -61,6 +64,10 @@ module RuboCop
 
         def self.factories
           @factories ||= Dir.glob("{,ee/,jh/}spec/factories/**/*.rb")
+        end
+
+        def disabled_comment_absent?
+          processed_source.comments.none? { |comment| COP_DISABLE_LINE.match?(comment.text) }
         end
       end
     end

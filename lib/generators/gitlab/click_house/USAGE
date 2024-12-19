@@ -1,0 +1,8 @@
+Description:
+    Generates a migration that creates a table for receiving replicated data (using Siphon) from a matching PG table.
+
+Example:
+    rails generate gitlab:click_house:siphon PG_TABLE_NAME
+
+    This will create:
+        db/click_house/migrate/main/20241213135809_create_siphon_PG_TABLE_NAME.rb

@@ -58,12 +58,14 @@ module Gitlab
     #
     #   * Lowercased
     #   * Anything not matching [a-z0-9-] is replaced with a -
+    #   * Conditionally allows dots [a-z0-9-.]
     #   * Maximum length is 63 bytes
-    #   * First/Last Character is not a hyphen
-    def slugify(str)
+    #   * First/Last Character is not a hyphen or a dot
+    def slugify(str, allow_dots: false)
+      pattern = allow_dots ? /[^a-z0-9.]/ : /[^a-z0-9]/
       str.downcase
-        .gsub(/[^a-z0-9]/, '-')[0..62]
-        .gsub(/(\A-+|-+\z)/, '')
+        .gsub(pattern, '-')[0..62]
+        .gsub(/(\A[-.]+|[-.]+\z)/, '')
     end
 
     # Converts newlines into HTML line break elements

@@ -1755,7 +1755,7 @@
       "default": false
     },
     "inputs": {
-      "markdownDescription": "Used to pass input values to included templates or components. [Learn More](https://docs.gitlab.com/ee/ci/yaml/includes.html#set-input-parameter-values-with-includeinputs).",
+      "markdownDescription": "Used to pass input values to included templates or components. [Learn More](https://docs.gitlab.com/ee/ci/yaml/inputs.html#set-input-values-when-using-include).",
       "type": "object"
     },
     "job": {
@@ -2230,8 +2230,14 @@
                                 "type": "string",
                                 "format": "uri-reference",
                                 "pattern": "\\.ya?ml$"
+                              },
+                              "inputs": {
+                                "$ref": "#/definitions/inputs"
                               }
-                            }
+                            },
+                            "required": [
+                              "local"
+                            ]
                           },
                           {
                             "type": "object",
@@ -2242,8 +2248,14 @@
                                 "type": "string",
                                 "format": "uri-reference",
                                 "pattern": "\\.ya?ml$"
+                              },
+                              "inputs": {
+                                "$ref": "#/definitions/inputs"
                               }
-                            }
+                            },
+                            "required": [
+                              "template"
+                            ]
                           },
                           {
                             "type": "object",
@@ -2258,6 +2270,9 @@
                               "job": {
                                 "description": "Job name which generates the artifact",
                                 "type": "string"
+                              },
+                              "inputs": {
+                                "$ref": "#/definitions/inputs"
                               }
                             },
                             "required": [
@@ -2284,11 +2299,49 @@
                                 "type": "string",
                                 "format": "uri-reference",
                                 "pattern": "\\.ya?ml$"
+                              },
+                              "inputs": {
+                                "$ref": "#/definitions/inputs"
                               }
                             },
                             "required": [
                               "project",
                               "file"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "component": {
+                                "description": "Local path to component directory or full path to external component directory.",
+                                "type": "string",
+                                "format": "uri-reference"
+                              },
+                              "inputs": {
+                                "$ref": "#/definitions/inputs"
+                              }
+                            },
+                            "required": [
+                              "component"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "remote": {
+                                "description": "URL to a `yaml`/`yml` template file using HTTP/HTTPS.",
+                                "type": "string",
+                                "format": "uri-reference",
+                                "pattern": "^https?://.+\\.ya?ml$"
+                              },
+                              "inputs": {
+                                "$ref": "#/definitions/inputs"
+                              }
+                            },
+                            "required": [
+                              "remote"
                             ]
                           }
                         ]
