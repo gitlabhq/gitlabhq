@@ -164,4 +164,84 @@ RSpec.describe 'getting container repositories in a group', feature_category: :s
 
     expect(container_repositories_count_response).to eq(container_repositories.size)
   end
+
+  describe 'protectionRuleExists' do
+    let_it_be(:container_registry_protection_rule) do
+      create(:container_registry_protection_rule, project: project, repository_path_pattern: container_repository.path)
+    end
+
+    let_it_be(:project_2) { create(:project, :private, group: group) }
+    let_it_be(:container_repository_2) { create(:container_repository, project: project_2) }
+    let_it_be(:container_registry_protection_rule_2) do
+      create(:container_registry_protection_rule, project: project_2, repository_path_pattern: container_repository_2.path)
+    end
+
+    let_it_be(:project_3) { create(:project, :private, group: group) }
+    let_it_be(:container_repository_3) { create(:container_repository, project: project_3) }
+    let_it_be(:container_registry_protection_rule_3) do
+      create(:container_registry_protection_rule, project: project_3, repository_path_pattern: container_repository_3.path)
+    end
+
+    before do
+      stub_container_registry_tags(repository: container_repository_2.path, tags: %w[tag1 tag2 tag3], with_manifest: false)
+      stub_container_registry_tags(repository: container_repository_3.path, tags: %w[tag1 tag2 tag3], with_manifest: false)
+    end
+
+    it 'returns true for protected container respositories' do
+      subject
+
+      expect(container_repositories_response.count).to eq 7
+
+      expect(find_container_repositories_response(container_repository.path).dig('node', 'protectionRuleExists')).to be true
+      expect(find_container_repositories_response(container_repository_2.path).dig('node', 'protectionRuleExists')).to be true
+      expect(find_container_repositories_response(container_repository_3.path).dig('node', 'protectionRuleExists')).to be true
+      [*container_repositories_delete_scheduled, *container_repositories_delete_failed].each do |repository|
+        expect(find_container_repositories_response(repository.path).dig('node', 'protectionRuleExists')).to be false
+      end
+    end
+
+    it 'executes only one database queries for all projects' do
+      expect { subject }.to match_query_count(1).for_model(::ContainerRegistry::Protection::Rule)
+    end
+
+    context 'when feature flag :container_registry_protected_containers disabled' do
+      before do
+        stub_feature_flags(container_registry_protected_containers: false)
+      end
+
+      it 'returns false even for protected container respositories' do
+        subject
+
+        expect(container_repositories_response.count).to eq 7
+        expect(container_repositories_response).to all(include('node' => include('protectionRuleExists' => false)))
+      end
+    end
+
+    context 'when 25 container repositories belong to group' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:projects) { create_list(:project, 5, :private, group: group) }
+
+      before_all do
+        projects.each do |project|
+          container_repositories = create_list(:container_repository, 5, project: project)
+          create(:container_registry_protection_rule, project: project,
+            repository_path_pattern: container_repositories.first.path)
+        end
+      end
+
+      before do
+        group.container_repositories.each do |container_repository|
+          stub_container_registry_tags(repository: container_repository.path, tags: %w[tag1 tag2 tag3], with_manifest: false)
+        end
+      end
+
+      it 'executes only two database queries to check the protection rules for container repositories in batches of 20' do
+        expect { subject }.to match_query_count(2).for_model(::ContainerRegistry::Protection::Rule)
+      end
+    end
+
+    def find_container_repositories_response(container_repository_path)
+      container_repositories_response.find { |res| res.dig('node', 'path') == container_repository_path }
+    end
+  end
 end

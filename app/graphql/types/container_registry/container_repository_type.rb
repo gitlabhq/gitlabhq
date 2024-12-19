@@ -7,6 +7,8 @@ module Types
 
       include Gitlab::Graphql::Authorize::AuthorizeResource
 
+      PROTECTION_RULE_EXISTS_BATCH_SIZE = 20
+
       description 'A container repository'
 
       authorize :read_container_image
@@ -71,10 +73,12 @@ module Types
       def protection_rule_exists
         return false if Feature.disabled?(:container_registry_protected_containers, object.project.root_ancestor)
 
-        BatchLoader::GraphQL.for(object.path).batch do |repository_paths, loader|
-          ::ContainerRegistry::Protection::Rule
-            .for_push_exists_for_multiple_containers(repository_paths: repository_paths, project_id: object.project_id)
-            .each { |row| loader.call(row['repository_path'], row['protected']) }
+        BatchLoader::GraphQL.for([object.project_id, object.path]).batch do |tuples, loader|
+          tuples.each_slice(PROTECTION_RULE_EXISTS_BATCH_SIZE) do |projects_and_repository_paths|
+            ::ContainerRegistry::Protection::Rule
+              .for_push_exists_for_projects_and_repository_paths(projects_and_repository_paths)
+              .each { |row| loader.call([row['project_id'], row['repository_path']], row['protected']) }
+          end
         end
       end
     end

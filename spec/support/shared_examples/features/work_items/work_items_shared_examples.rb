@@ -980,3 +980,20 @@ RSpec.shared_examples 'work items linked items' do |is_group = false|
     end
   end
 end
+
+RSpec.shared_examples 'work items change type' do |selected_type, expected_selector|
+  it 'change work item type to selected type', :aggregate_failures do
+    click_button _('More actions'), match: :first
+    click_button s_('WorkItem|Change type')
+
+    expect(find('#work-item-change-type')).to have_content(s_('WorkItem|Change type'))
+
+    find_by_testid('work-item-change-type-select').select(selected_type)
+
+    click_button s_('WorkItem|Change type')
+
+    wait_for_requests
+
+    expect(page).to have_selector(expected_selector)
+  end
+end

@@ -21,6 +21,10 @@ query fetchDeployment($fullPath: ID!, $iid: ID!) {
         ...DeploymentJob
         canPlayJob
         manualJob
+        pipeline {
+          id
+          path
+        }
       }
       commit {
         id

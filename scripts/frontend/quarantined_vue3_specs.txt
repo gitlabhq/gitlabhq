@@ -131,9 +131,6 @@ spec/frontend/branches/components/delete_branch_modal_spec.js
 spec/frontend/cascading_settings/components/cascading_lock_icon_spec.js
 spec/frontend/cascading_settings/components/lock_tooltip_spec.js
 spec/frontend/ci/artifacts/components/artifacts_bulk_delete_spec.js
-spec/frontend/ci/catalog/components/ci_catalog_home_spec.js
-spec/frontend/ci/catalog/components/list/ci_resources_list_item_spec.js
-spec/frontend/ci/catalog/components/pages/ci_resource_details_page_spec.js
 spec/frontend/ci/catalog/index_spec.js
 spec/frontend/ci/job_details/components/log/line_header_spec.js
 spec/frontend/ci/job_details/components/log/line_spec.js

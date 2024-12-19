@@ -42,27 +42,56 @@ module ContainerRegistry
           .exists?
       end
 
-      def self.for_push_exists_for_multiple_containers(repository_paths:, project_id:)
-        return none if repository_paths.blank? || project_id.blank?
+      ##
+      # Accepts a list of projects and repository paths and returns a result set
+      # indicating whether the repository path is protected.
+      #
+      # @param [Array<Array>] projects_repository_paths an array of arrays where each sub-array contains a project id
+      # and a repository path.
+      # @return [ActiveRecord::Result] a result set indicating whether each project and repository path is protected.
+      #
+      # Example:
+      #   ContainerRegistry::Protection::Rule.for_push_exists_for_projects_and_repository_paths([
+      #     [1, '/my_group/my_project_1/image_1'],
+      #     [1, '/my_group/my_project_1/image_2'],
+      #     [2, '/my_group/my_project_2/image_1'],
+      #     ...
+      #   ])
+      #
+      #   [
+      #     {'project_id' => 1, 'repository_path_pattern' => '/my_group/my_project_1/image_1', 'protected' => true},
+      #     {'project_id' => 1, 'repository_path_pattern' => '/my_group/my_project_1/image_2', 'protected' => false},
+      #     {'project_id' => 2, 'repository_path_pattern' => '/my_group/my_project_2/image_1', 'protected' => true},
+      #     ...
+      #   ]
+      #
+      def self.for_push_exists_for_projects_and_repository_paths(projects_repository_paths)
+        return none if projects_repository_paths.blank?
+
+        project_ids, repository_paths = projects_repository_paths.transpose
 
         cte_query =
           select('*').from(
             sanitize_sql_array([
-              "unnest(ARRAY[:repository_paths]) AS x(repository_path)", { repository_paths: repository_paths }
+              'unnest(ARRAY[:project_ids]::bigint[], ARRAY[:repository_paths]::text[]) ' \
+                'AS projects_repository_paths(project_id, repository_path)',
+              { project_ids: project_ids, repository_paths: repository_paths }
             ])
           )
 
-        cte_name = :container_names_and_types_cte
+        cte_name = :projects_repository_paths_cte
         cte = Gitlab::SQL::CTE.new(cte_name, cte_query)
 
+        rules_cte_project_id = "#{cte_name}.#{connection.quote_column_name('project_id')}"
         rules_cte_repository_path = "#{cte_name}.#{connection.quote_column_name('repository_path')}"
 
         protection_rule_exsits_subquery =
           select(1)
-            .where(project_id: project_id)
+            .where("#{rules_cte_project_id} = project_id")
             .where("#{rules_cte_repository_path} ILIKE #{::Gitlab::SQL::Glob.to_like('repository_path_pattern')}")
 
         query = select(
+          rules_cte_project_id,
           rules_cte_repository_path,
           sanitize_sql_array(['EXISTS(?) AS protected', protection_rule_exsits_subquery])
         ).from(Arel.sql(cte_name.to_s))

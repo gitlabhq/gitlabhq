@@ -334,45 +334,79 @@ RSpec.describe ContainerRegistry::Protection::Rule, type: :model, feature_catego
     end
   end
 
-  describe '.for_push_exists_for_multiple_containers' do
-    let_it_be(:project) { create(:project) }
+  describe '.for_push_exists_for_projects_and_repository_paths' do
+    let_it_be(:project1) { create(:project) }
+    let_it_be(:project1_crpr) { create(:container_registry_protection_rule, project: project1) }
 
-    let_it_be(:ppr_for_maintainer) do
-      create(:container_registry_protection_rule,
-        repository_path_pattern: "#{project.full_path}/my-container-prod*",
-        project: project
-      )
-    end
+    let_it_be(:project2) { create(:project) }
+    let_it_be(:project2_crpr) { create(:container_registry_protection_rule, project: project2) }
 
-    let(:repository_paths) {
+    let_it_be(:unprotected_project) { create(:project) }
+
+    let(:single_project_input) do
       [
-        "#{project.full_path}/my-container-prod-1",
-        "#{project.full_path}/unmatched-container-name"
+        [project1.id, project1_crpr.repository_path_pattern],
+        [project1.id, "#{project1_crpr.repository_path_pattern}/unprotected"]
       ]
-    }
-
-    subject do
-      described_class
-        .for_push_exists_for_multiple_containers(project_id: project.id, repository_paths: repository_paths)
-        .to_a
     end
 
-    it do
-      is_expected.to eq([
-        { "repository_path" => repository_paths.first, "protected" => true },
-        { "repository_path" => repository_paths.second, "protected" => false }
-      ])
+    let(:single_project_expected_result) do
+      [
+        { "project_id" => project1.id, "repository_path" => project1_crpr.repository_path_pattern,
+          "protected" => true },
+        { "project_id" => project1.id, "repository_path" => "#{project1_crpr.repository_path_pattern}/unprotected",
+          "protected" => false }
+      ]
     end
 
-    context 'when edge cases' do
-      where(:repository_paths, :expected_result) do
-        nil                             | []
-        []                              | []
-      end
+    let(:multi_projects_input) do
+      [
+        *single_project_input,
+        [project2.id, project2_crpr.repository_path_pattern],
+        [project2.id, "#{project2_crpr.repository_path_pattern}/unprotected"]
+      ]
+    end
 
-      with_them do
-        it { is_expected.to eq(expected_result) }
-      end
+    let(:multi_projects_expected_result) do
+      [
+        *single_project_expected_result,
+        { "project_id" => project2.id, "repository_path" => project2_crpr.repository_path_pattern,
+          "protected" => true },
+        { "project_id" => project2.id, "repository_path" => "#{project2_crpr.repository_path_pattern}/unprotected",
+          "protected" => false }
+      ]
+    end
+
+    let(:unprotected_projects_input) do
+      [
+        *multi_projects_input,
+        [unprotected_project.id, "#{unprotected_project.full_path}/unprotected1"],
+        [unprotected_project.id, "#{unprotected_project.full_path}/unprotected2"]
+      ]
+    end
+
+    let(:unprotected_projects_expected_result) do
+      [
+        *multi_projects_expected_result,
+        { "project_id" => unprotected_project.id, "repository_path" => "#{unprotected_project.full_path}/unprotected1",
+          "protected" => false },
+        { "project_id" => unprotected_project.id, "repository_path" => "#{unprotected_project.full_path}/unprotected2",
+          "protected" => false }
+      ]
+    end
+
+    subject { described_class.for_push_exists_for_projects_and_repository_paths(projects_and_repository_paths).to_a }
+
+    where(:projects_and_repository_paths, :expected_result) do
+      ref(:single_project_input)       | ref(:single_project_expected_result)
+      ref(:multi_projects_input)       | ref(:multi_projects_expected_result)
+      ref(:unprotected_projects_input) | ref(:unprotected_projects_expected_result)
+      nil                              | []
+      []                               | []
+    end
+
+    with_them do
+      it { is_expected.to match_array expected_result }
     end
   end
 end

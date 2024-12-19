@@ -7077,7 +7077,7 @@ msgstr ""
 msgid "ApplicationSettings|A Metrics Dashboard menu item appears in the Monitoring section of the Admin area."
 msgstr ""
 
-msgid "ApplicationSettings|A user cap that exceeds the current licensed user count (%{licensedUserCount}) might result in %{linkStart}seat overages%{linkEnd}."
+msgid "ApplicationSettings|A user cap that exceeds the current licensed user count (%{licensedUserCount}) may result in a %{linkStart}true-up%{linkEnd}."
 msgstr ""
 
 msgid "ApplicationSettings|Add a link to Grafana"
@@ -19448,6 +19448,9 @@ msgid "Deployment|Needs Approval"
 msgstr ""
 
 msgid "Deployment|Open URL"
+msgstr ""
+
+msgid "Deployment|Pipeline"
 msgstr ""
 
 msgid "Deployment|Ready to be deployed."

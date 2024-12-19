@@ -10,8 +10,8 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Dedicated
 
-You can run your CI/CD jobs on GitLab.com and GitLab Dedicated using GitLab-hosted runners to seamlessly build, test and deploy
-your application on different environments.
+Use GitLab-hosted runners to run your CI/CD jobs on GitLab.com and GitLab Dedicated to build, test, and deploy
+applications on different environments.
 
 ## Hosted runners for GitLab.com
 
@@ -49,7 +49,7 @@ Hosted runners for GitLab.com are configured as such:
 - Inbound communication from the public internet to the ephemeral VM is not allowed.
 - Firewall rules do not permit communication between VMs.
 - The only internal communication allowed to the ephemeral VMs is from the runner manager.
-- Ephemeral runner VMs will only serve a single job and will be deleted right after the job execution.
+- Ephemeral runner VMs serve a single job and are deleted right after the job execution.
 
 #### Architecture diagram of hosted runners for GitLab.com
 
@@ -71,9 +71,11 @@ The build job ran on `runner-ns46nmmj-project-43717858`, test job on `f131a6a2ru
 GitLab sends the command to remove the ephemeral runner VM to the Google Compute API immediately after the CI job completes. The [Google Compute Engine hypervisor](https://cloud.google.com/blog/products/gcp/7-ways-we-harden-our-kvm-hypervisor-at-google-cloud-security-in-plaintext)
 takes over the task of securely deleting the virtual machine and associated data.
 
-For more information about the security of hosted runners for GitLab.com, see
-[Google Cloud Infrastructure Security Design Overview whitepaper](https://cloud.google.com/docs/security/infrastructure/design/resources/google_infrastructure_whitepaper_fa.pdf),
-[GitLab Trust Center](https://about.gitlab.com/security/), or [GitLab Security Compliance Controls](https://handbook.gitlab.com/handbook/security/security-assurance/security-compliance/sec-controls/).
+For more information about the security of hosted runners for GitLab.com, see:
+
+- [Google Cloud Infrastructure Security Design Overview whitepaper](https://cloud.google.com/docs/security/infrastructure/design/resources/google_infrastructure_whitepaper_fa.pdf)
+- [GitLab Trust Center](https://about.gitlab.com/security/)
+- [GitLab Security Compliance Controls](https://handbook.gitlab.com/handbook/security/security-assurance/security-compliance/sec-controls/)
 
 ### Caching on hosted runners for GitLab.com
 
@@ -103,7 +105,7 @@ You can find all GitLab Runner breaking changes under [Deprecations and removals
 DETAILS:
 **Offering:** GitLab.com
 
-If you want to [contribute to GitLab](https://about.gitlab.com/community/contribute/), jobs will be picked up by the
+If you want to [contribute to GitLab](https://about.gitlab.com/community/contribute/), jobs are picked up by the
 `gitlab-shared-runners-manager-X.gitlab.com` fleet of runners, dedicated for GitLab projects and related community forks.
 
 These runners are backed by the same machine type as our `small` Linux x86-64 runners.

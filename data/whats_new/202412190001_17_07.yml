@@ -1,0 +1,71 @@
+- name: New Planner user role
+  description: |
+    We've introduced the new Planner role to give you tailored access to Agile planning tools like epics, roadmaps, and Kanban boards without over-provisioning permissions. This change helps you collaborate more effectively while keeping your workflows secure and aligned with the principle of least privilege.
+  stage: plan
+  self-managed: true
+  gitlab-com: true
+  available_in: ["Free", "Premium", "Ultimate"]
+  documentation_link: https://docs.gitlab.com/ee/user/permissions.html
+  image_url: https://about.gitlab.com/images/17_7/new_planner_user_role.png
+  published_at: 2024-12-19
+  release: 17.7
+
+- name: Instance administrators can control which integrations can be enabled
+  description: |
+    Instance administrators can now configure an allowlist to control which integrations can be enabled on a GitLab instance. If an empty allowlist is configured, no integrations are allowed on the instance. After an allowlist is configured, new GitLab integrations are not on the allowlist by default.  Previously enabled integrations that are later blocked by the allowlist settings are disabled. If these integrations are allowed again, they are re-enabled with their existing configuration.
+  stage: foundations
+  self-managed: true
+  gitlab-com: true
+  available_in: ["Ultimate"]
+  documentation_link: https://docs.gitlab.com/ee/administration/settings/project_integration_management.html#integration-allowlist
+  image_url: https://about.gitlab.com/images/17_7/integrations_allowlist.png
+  published_at: 2024-12-19
+  release: 17.7
+
+- name: New user contribution and membership mapping available in direct transfer
+  description: |
+    Reassign memberships and contributions to existing users on the destination instance after the import has completed. Any memberships and contributions you import are first mapped to placeholder users. All contributions appear associated with placeholders until you reassign them on the destination instance.
+  stage: foundations
+  self-managed: true
+  gitlab-com: true
+  available_in: ["Free", "Premium", "Ultimate"]
+  documentation_link: https://docs.gitlab.com/ee/user/project/import/#user-contribution-and-membership-mapping
+  image_url: https://about.gitlab.com/images/17_7/user_contributions_mapping.png
+  published_at: 2024-12-19
+  release: 17.7
+
+- name: Auto-resolve vulnerabilities when not found in subsequent scans
+  description: |
+    We are introducing a new policy type _Vulnerability Management policy_ for users who want vulnerabilities automatically set to Resolved when no longer detected by automated scanning. Simply configure a new policy with the new Auto-resolve option and apply it to the appropriate project(s). You can even configure the policy to only Auto-resolve vulnerabilities of a certain severity or from specific security scanners. Once in place, the next time the project's default branch is scanned, any existing vulnerabilities that are no longer found will be marked as Resolved. The action updates the vulnerability record with an activity note, timestamp when the action occurred, and the pipeline the vulnerability was determined to be removed in.
+  stage: security_risk_management
+  self-managed: true
+  gitlab-com: true
+  available_in: ["Ultimate"]
+  documentation_link: https://docs.gitlab.com/ee/user/application_security/policies/vulnerability_management_policy.html
+  image_url: https://about.gitlab.com/images/17_7/auto-resolve-when-not-found-in-subsequent-scan.png
+  published_at: 2024-12-19
+  release: 17.7
+
+- name: Rotate personal, project, and group access tokens in the UI
+  description: |
+    You can now use the UI to rotate personal, project, and group access tokens. Previously, you had to use the API to do this.
+  stage: software_supply_chain_security
+  self-managed: true
+  gitlab-com: true
+  available_in: ["Free", "Premium", "Ultimate"]
+  documentation_link: https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#revoke-or-rotate-a-personal-access-token
+  image_url: https://img.youtube.com/vi/YqK2CF655OE/hqdefault.jpg
+  published_at: 2024-12-19
+  release: 17.7
+
+- name: Track CI/CD component usage across projects
+  description: |
+    We've added a new GraphQL query that enables DevOps teams to view a list of projects where a component is used across their organization's pipelines. This capability empowers DevOps teams to enhance productivity and make better decisions by providing crucial insights.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: ["Premium", "Ultimate"]
+  documentation_link: https://docs.gitlab.com/ee/api/graphql/reference/index.html#queryprojectsusingcomponents
+  image_url: https://about.gitlab.com/images/17_7/catalog.png
+  published_at: 2024-12-19
+  release: 17.7

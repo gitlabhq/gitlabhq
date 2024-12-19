@@ -1,10 +1,10 @@
 ---
 api_type:
-attr: elasticsearch_pause_indexing
+attr: elasticsearch
 clusterwide: false
-column: elasticsearch_pause_indexing
-db_type: boolean
-default: 'false'
+column: elasticsearch
+db_type: jsonb
+default: "'{}'::jsonb"
 description:
 encrypted: false
 gitlab_com_different_than_default: false

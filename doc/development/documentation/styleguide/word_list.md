@@ -414,6 +414,8 @@ Use **Chat** with a capital `c` for **Chat** or **GitLab Duo Chat**.
 On first use on a page, use **GitLab Duo Chat**.
 Thereafter, use **Chat** by itself.
 
+Do not use **Duo Chat**.
+
 ## checkbox
 
 Use one word for **checkbox**. Do not use **check box**.

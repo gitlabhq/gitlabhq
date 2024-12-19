@@ -616,7 +616,7 @@ module ApplicationSettingsHelper
 
   def signup_form_data
     {
-      host: new_user_session_url(host: Gitlab.config.gitlab.host),
+      host: new_user_registration_url(host: Gitlab.config.gitlab.host),
       settings_path: general_admin_application_settings_path(anchor: 'js-signup-settings'),
       signup_enabled: @application_setting[:signup_enabled].to_s,
       require_admin_approval_after_user_signup: @application_setting[:require_admin_approval_after_user_signup].to_s,
