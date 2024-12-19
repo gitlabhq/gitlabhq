@@ -1,20 +1,17 @@
 <script>
 import {
-  GlBadge,
   GlDisclosureDropdown,
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
   GlModalDirective,
 } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
-import { helpPagePath } from '~/helpers/help_page_helper';
+import { s__ } from '~/locale';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { MLFLOW_USAGE_MODAL_ID } from '../routes/experiments/index/constants';
 import MlflowModal from '../routes/experiments/index/components/mlflow_usage_modal.vue';
 
 export default {
   components: {
-    GlBadge,
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
@@ -43,11 +40,9 @@ export default {
     },
   },
   i18n: {
-    experimentBadgeLabel: __('Experiment'),
     createTitle: s__('MlModelRegistry|Create'),
     importMlflow: s__('MlModelRegistry|Create experiments using MLflow'),
   },
-  experimentDocHref: helpPagePath('user/project/ml/experiment_tracking/index.md'),
   mlflowModalId: MLFLOW_USAGE_MODAL_ID,
 };
 </script>
@@ -58,9 +53,6 @@ export default {
       <div class="gl-flex gl-grow gl-items-center">
         <span class="gl-inline-flex gl-items-center gl-gap-3" data-testid="page-heading">
           {{ pageTitle }}
-          <gl-badge variant="info" :href="$options.experimentDocHref">
-            {{ $options.i18n.experimentBadgeLabel }}
-          </gl-badge>
           <slot></slot>
         </span>
       </div>

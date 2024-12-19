@@ -1967,7 +1967,7 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yajl-ruby (1.4.3)
-    yard (0.9.26)
+    yard (0.9.37)
     zeitwerk (2.6.7)
 
 PLATFORMS

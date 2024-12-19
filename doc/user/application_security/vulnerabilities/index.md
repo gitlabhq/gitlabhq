@@ -27,11 +27,6 @@ including:
 If the scanner determined the vulnerability to be a false positive, an alert message is included at
 the top of the vulnerability's page.
 
-When a vulnerability is no longer detected in a project's default branch, you should
-change its status to **Resolved**. This ensures that if it is accidentally reintroduced in a future
-merge, it is reported again as a new record. To change the status of multiple vulnerabilities, use
-the Vulnerability Report's [Activity filter](../vulnerability_report/index.md#activity-filter).
-
 ## Explaining a vulnerability
 
 DETAILS:
@@ -310,6 +305,17 @@ stateDiagram
     Resolved --> Needs_triage: If reintroduced and detected again
     Resolved --> [*]
 ```
+
+## Vulnerability is no longer detected
+
+A vulnerability may be no longer detected because of changes made deliberately to remediate it or
+as a side effect of other changes. When a security scan runs and a vulnerability is no longer
+detected in the default branch, the scanner adds **No longer detected** to the record's activity log
+but the record's status does not change. Instead you should check and confirm the
+vulnerability has been resolved and if so,
+[manually change its status to **Resolved**](#change-the-status-of-a-vulnerability). You can also
+use a [vulnerability management policy](../policies/vulnerability_management_policy.md) to
+automatically change the status of vulnerabilities matching specific criteria to **Resolved**.
 
 ## Vulnerability dismissal reasons
 

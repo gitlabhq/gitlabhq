@@ -144,7 +144,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
       end
 
       it 'can add comment to review' do
-        write_comment(selector: '.js-main-target-form', field: 'note-body', text: 'Its a draft comment', button_text: 'Add comment to review')
+        write_comment(selector: '.js-main-target-form', field: 'note-body', text: 'Its a draft comment', button_text: 'Add to review')
 
         expect(page).to have_selector('.draft-note', text: 'Its a draft comment')
 

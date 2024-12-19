@@ -173,6 +173,11 @@ export default {
     isEpic() {
       return constants.NOTEABLE_TYPE_MAPPING[this.noteableType] === constants.EPIC_NOTEABLE_TYPE;
     },
+    isMergeRequest() {
+      return (
+        constants.NOTEABLE_TYPE_MAPPING[this.noteableType] === constants.MERGE_REQUEST_NOTEABLE_TYPE
+      );
+    },
     trackingLabel() {
       return slugifyWithUnderscore(`${this.commentButtonTitle} button`);
     },
@@ -186,11 +191,6 @@ export default {
       }
 
       return null;
-    },
-    commentNowButtonTitle() {
-      return this.noteType === constants.COMMENT
-        ? this.$options.i18n.addCommentNow
-        : this.$options.i18n.addThreadNow;
     },
   },
   watch: {
@@ -238,7 +238,7 @@ export default {
           isDraft,
         };
 
-        if (this.noteType === constants.DISCUSSION) {
+        if (this.noteType === constants.DISCUSSION || isDraft) {
           noteData.data.note.type = constants.DISCUSSION_NOTE;
         }
 
@@ -406,24 +406,23 @@ export default {
                 />
               </gl-form-checkbox>
               <template v-if="hasDrafts">
-                <comment-type-dropdown
-                  v-model="noteType"
-                  class="gl-mr-3"
-                  data-testid="add-to-review-dropdown"
+                <gl-button
                   :disabled="disableSubmitButton"
-                  :tracking-label="trackingLabel"
-                  is-review-dropdown
-                  :noteable-display-name="noteableDisplayName"
-                  :discussions-require-resolution="discussionsRequireResolution"
+                  data-testid="add-to-review-button"
+                  category="primary"
+                  variant="confirm"
+                  class="gl-mr-3"
                   @click="handleSaveDraft()"
-                />
+                >
+                  {{ $options.i18n.addToReview }}
+                </gl-button>
                 <gl-button
                   :disabled="disableSubmitButton"
                   data-testid="add-comment-now-button"
                   category="secondary"
                   class="gl-mr-3"
                   @click.prevent="handleSave()"
-                  >{{ commentNowButtonTitle }}</gl-button
+                  >{{ $options.i18n.addCommentNow }}</gl-button
                 >
               </template>
               <template v-else>
@@ -438,6 +437,18 @@ export default {
                   :discussions-require-resolution="discussionsRequireResolution"
                   @click="handleSave"
                 />
+                <template v-if="isMergeRequest">
+                  <gl-button
+                    :disabled="disableSubmitButton"
+                    data-testid="start-review-button"
+                    category="secondary"
+                    variant="confirm"
+                    class="gl-mr-3"
+                    @click="handleSaveDraft()"
+                  >
+                    {{ $options.i18n.startReview }}
+                  </gl-button>
+                </template>
               </template>
               <gl-button
                 v-if="canToggleIssueState"

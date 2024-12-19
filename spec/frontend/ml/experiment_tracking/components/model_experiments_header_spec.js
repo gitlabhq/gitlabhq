@@ -1,4 +1,3 @@
-import { GlBadge } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
@@ -17,7 +16,6 @@ describe('ml/experiment_tracking/components/model_experiments_header.vue', () =>
 
   beforeEach(createWrapper);
 
-  const findBadge = () => wrapper.findComponent(GlBadge);
   const findTitle = () => wrapper.findByTestId('page-heading');
   const findTitleArea = () => wrapper.findComponent(TitleArea);
   const findDropdown = () => wrapper.findByTestId('create-dropdown');
@@ -50,12 +48,6 @@ describe('ml/experiment_tracking/components/model_experiments_header.vue', () =>
         text: 'Create experiments using MLflow',
       },
     });
-  });
-
-  it('link points to documentation', () => {
-    expect(findBadge().attributes().href).toBe(
-      '/help/user/project/ml/experiment_tracking/index.md',
-    );
   });
 
   it('renders slots', () => {

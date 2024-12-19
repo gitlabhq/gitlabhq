@@ -62,9 +62,7 @@ export default {
       skip() {
         return !this.isDropdownOpen;
       },
-      pollInterval() {
-        return this.pollInterval;
-      },
+      pollInterval: PIPELINE_POLL_INTERVAL_DEFAULT,
       update(data) {
         return data?.ciPipelineStage?.jobs?.nodes || [];
       },
@@ -87,9 +85,6 @@ export default {
     isLoading() {
       return this.$apollo.queries.stageJobs.loading;
     },
-    pollInterval() {
-      return this.isDropdownOpen ? PIPELINE_POLL_INTERVAL_DEFAULT : 0;
-    },
   },
   mounted() {
     toggleQueryPollingByVisibility(this.$apollo.queries.stageJobs);
@@ -97,9 +92,11 @@ export default {
   methods: {
     onHideDropdown() {
       this.isDropdownOpen = false;
+      this.$apollo.queries.stageJobs.stopPolling();
     },
     onShowDropdown() {
       this.isDropdownOpen = true;
+      this.$apollo.queries.stageJobs.startPolling(PIPELINE_POLL_INTERVAL_DEFAULT);
 
       // used for tracking in the pipeline table
       this.$emit('miniGraphStageClick');

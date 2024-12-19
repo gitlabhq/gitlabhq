@@ -600,86 +600,140 @@ RSpec.describe WebHook, feature_category: :webhooks do
 
   describe '#backoff!' do
     context 'when we have not backed off before' do
-      it 'increments the recent_failures count' do
-        expect { hook.backoff! }.to change(hook, :recent_failures).by(1)
+      it 'increments the recent_failures count but does not disable the hook yet' do
+        expect { hook.backoff! }.to change(hook, :recent_failures).to(1)
+        expect(hook.class.executable).to include(hook)
       end
     end
 
-    context 'when the recent failure value is the max value of a smallint' do
+    context 'when hook is at the failure threshold' do
       before do
-        hook.update!(recent_failures: 32767, disabled_until: 1.hour.ago)
+        WebHooks::AutoDisabling::FAILURE_THRESHOLD.times { hook.backoff! }
       end
 
-      it 'reduces to MAX_FAILURES' do
-        expect { hook.backoff! }.to change(hook, :recent_failures).to(WebHooks::AutoDisabling::MAX_FAILURES)
-      end
-    end
-
-    context 'when the recent failure value is MAX_FAILURES' do
-      before do
-        hook.update!(recent_failures: WebHooks::AutoDisabling::MAX_FAILURES, disabled_until: 1.hour.ago)
-      end
-
-      it 'does not change recent_failures' do
-        expect { hook.backoff! }.not_to change(hook, :recent_failures)
-      end
-    end
-
-    context 'when we have exhausted the grace period' do
-      before do
-        hook.update!(recent_failures: WebHooks::AutoDisabling::FAILURE_THRESHOLD)
+      it 'is not yet disabled' do
+        expect(hook.class.executable).to include(hook)
+        expect(hook).to have_attributes(
+          recent_failures: WebHooks::AutoDisabling::FAILURE_THRESHOLD,
+          backoff_count: 0,
+          disabled_until: nil
+        )
       end
 
-      it 'sets disabled_until to the next backoff' do
-        expect { hook.backoff! }.to change(hook, :disabled_until).to(hook.next_backoff.from_now)
-      end
-
-      it 'increments the backoff count' do
-        expect { hook.backoff! }.to change(hook, :backoff_count).by(1)
-      end
-
-      context 'when we have backed off MAX_FAILURES times' do
+      context 'when hook is next told to backoff' do
         before do
-          stub_const("WebHooks::AutoDisabling::MAX_FAILURES", 5)
-          (WebHooks::AutoDisabling::FAILURE_THRESHOLD + 5).times { hook.backoff! }
+          hook.backoff!
         end
 
-        it 'does not let the backoff count exceed the maximum failure count' do
-          expect { hook.backoff! }.not_to change(hook, :backoff_count)
+        it 'causes the hook to become disabled for initial backoff period' do
+          expect(hook.class.executable).not_to include(hook)
+          expect(hook).to have_attributes(
+            recent_failures: (WebHooks::AutoDisabling::FAILURE_THRESHOLD + 1),
+            backoff_count: 1,
+            disabled_until: 1.minute.from_now
+          )
         end
 
-        it 'does not change disabled_until', :skip_freeze_time do
-          travel_to(hook.disabled_until - 1.minute) do
-            expect { hook.backoff! }.not_to change(hook, :disabled_until)
+        context 'when the backoff time has elapsed', :skip_freeze_time do
+          it 'is no longer disabled' do
+            travel_to(hook.disabled_until + 1.minute) do
+              expect(hook.class.executable).to include(hook)
+            end
+          end
+
+          context 'when the hook is next told to backoff' do
+            it 'disables the hook again, increasing the backoff time exponentially' do
+              travel_to(hook.disabled_until + 1.minute) do
+                hook.backoff!
+
+                expect(hook.class.executable).not_to include(hook)
+                expect(hook).to have_attributes(
+                  recent_failures: (WebHooks::AutoDisabling::FAILURE_THRESHOLD + 2),
+                  backoff_count: 2,
+                  disabled_until: 2.minutes.from_now
+                )
+              end
+            end
           end
         end
+      end
+    end
 
-        it 'changes disabled_until when it has elapsed', :skip_freeze_time do
-          travel_to(hook.disabled_until + 1.minute) do
-            expect { hook.backoff! }.to change { hook.disabled_until }
-            expect(hook.backoff_count).to eq(WebHooks::AutoDisabling::MAX_FAILURES)
-          end
-        end
+    it 'does not do anything if the hook is currently temporarily disabled' do
+      allow(hook).to receive(:temporarily_disabled?).and_return(true)
+
+      sql_count = ActiveRecord::QueryRecorder.new { hook.backoff! }.count
+
+      expect(sql_count).to eq(0)
+    end
+
+    it 'does not do anything if the hook is currently permanently disabled' do
+      allow(hook).to receive(:permanently_disabled?).and_return(true)
+
+      sql_count = ActiveRecord::QueryRecorder.new { hook.backoff! }.count
+
+      expect(sql_count).to eq(0)
+    end
+
+    context 'when the counter are above MAX_FAILURES' do
+      let(:max_failures) { WebHooks::AutoDisabling::MAX_FAILURES }
+
+      before do
+        hook.update!(
+          recent_failures: (max_failures + 1),
+          backoff_count: (max_failures + 1),
+          disabled_until: 1.hour.ago
+        )
+      end
+
+      it 'reduces the counter to MAX_FAILURES' do
+        hook.backoff!
+
+        expect(hook).to have_attributes(
+          recent_failures: max_failures,
+          backoff_count: max_failures
+        )
       end
     end
   end
 
   describe '#failed!' do
-    it 'increments the failure count' do
-      expect { hook.failed! }.to change(hook, :recent_failures).by(1)
+    it 'increments the recent_failures count but does not disable the hook yet' do
+      expect { hook.failed! }.to change(hook, :recent_failures).to(1)
+      expect(hook.class.executable).to include(hook)
     end
 
-    context 'when the recent failure value is the max value of a smallint' do
+    context 'when hook is at the failure threshold' do
       before do
-        hook.update!(recent_failures: 32767)
+        WebHooks::AutoDisabling::FAILURE_THRESHOLD.times { hook.failed! }
       end
 
-      it 'does not change recent_failures' do
-        expect { hook.failed! }.not_to change(hook, :recent_failures)
+      it 'is not yet disabled' do
+        expect(hook.class.executable).to include(hook)
+        expect(hook).to have_attributes(
+          recent_failures: WebHooks::AutoDisabling::FAILURE_THRESHOLD,
+          backoff_count: 0,
+          disabled_until: nil
+        )
+      end
+
+      context 'when hook is next failed' do
+        before do
+          hook.failed!
+        end
+
+        it 'causes the hook to become disabled' do
+          expect(hook.class.executable).not_to include(hook)
+          expect(hook).to have_attributes(
+            recent_failures: (WebHooks::AutoDisabling::FAILURE_THRESHOLD + 1),
+            backoff_count: 0,
+            disabled_until: nil
+          )
+        end
       end
     end
 
-    it 'does not update the hook if the the failure count exceeds the maximum value' do
+    it 'does not do anything if recent_failures is at MAX_FAILURES' do
       hook.recent_failures = WebHooks::AutoDisabling::MAX_FAILURES
 
       sql_count = ActiveRecord::QueryRecorder.new { hook.failed! }.count

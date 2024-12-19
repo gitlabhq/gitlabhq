@@ -54,7 +54,6 @@ RSpec.describe "Converts a work item to a new type", feature_category: :team_pla
       expect(response).to have_gitlab_http_status(:success)
       expect(work_item.reload.work_item_type.base_type).to eq('incident')
       expect(mutation_response['workItem']).to include('id' => work_item.to_global_id.to_s)
-      expect(work_item.reload.milestone).to be_nil
       expect(GlobalID.new(mutation_response.dig('workItem', 'workItemType', 'id')).model_id.to_i).to eq(
         new_type.correct_id
       )

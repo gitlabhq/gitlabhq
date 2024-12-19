@@ -51,6 +51,8 @@ export const COMMENT_FORM = {
     saveThread: __('Add thread to review'),
     saveComment: __('Add comment to review'),
   },
+  addToReview: __('Add to review'),
+  startReview: __('Start review'),
   addCommentNow: __('Add comment now'),
   addThreadNow: __('Add thread now'),
 };

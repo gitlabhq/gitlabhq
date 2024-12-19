@@ -84,13 +84,7 @@ function rspec_simple_job() {
   local rspec_cmd="bin/rspec $(rspec_args "${1}" "${2}" "${3}")"
   echoinfo "Running RSpec command: ${rspec_cmd}"
 
-  eval "${rspec_cmd}" || exit_code=$?
-
-  if [[ "$AUTO_RETRY_INFRA_ERROR" == "true" ]]; then
-    change_exit_code_if_known_infra_error $exit_code || exit_code=$?
-  fi
-
-  exit $exit_code
+  eval "${rspec_cmd}"
 }
 
 function rspec_simple_job_with_retry () {
@@ -163,35 +157,35 @@ function debug_rspec_variables() {
 
 function handle_retry_rspec_in_new_process() {
   local rspec_run_status="${1}"
+  local new_exit_code="${1}"
   local rspec_retry_status=0
-  local known_flaky_tests_exit_code=1
 
   if [[ $rspec_run_status -eq 3 ]]; then
     echoerr "Not retrying failing examples since we failed early on purpose!"
-    change_exit_code_if_known_flaky_tests || known_flaky_tests_exit_code=$?
-    exit "${known_flaky_tests_exit_code}"
+    change_exit_code_if_applicable $rspec_run_status || new_exit_code=$?
+    exit "${new_exit_code}"
   fi
 
   if [[ $rspec_run_status -eq 2 ]]; then
     echoerr "Not retrying failing examples since there were errors happening outside of the RSpec examples!"
-    change_exit_code_if_known_flaky_tests || known_flaky_tests_exit_code=$?
-    exit "${known_flaky_tests_exit_code}"
+    change_exit_code_if_applicable $rspec_run_status || new_exit_code=$?
+    exit "${new_exit_code}"
   fi
 
-  if [[ $rspec_run_status -eq 1 ]]; then
+  if [[ $rspec_run_status -ne 0 ]]; then
     if is_rspec_last_run_results_file_missing; then
-      change_exit_code_if_known_flaky_tests || known_flaky_tests_exit_code=$?
-      exit "${known_flaky_tests_exit_code}"
+      change_exit_code_if_applicable $rspec_run_status || new_exit_code=$?
+      exit "${new_exit_code}"
     fi
 
     local failed_examples_count=$(grep -c " failed" "${RSPEC_LAST_RUN_RESULTS_FILE}")
     if [[ "${failed_examples_count}" -eq "${RSPEC_FAIL_FAST_THRESHOLD}" ]]; then
       echoerr "Not retrying failing examples since we reached the maximum number of allowed test failures!"
-      change_exit_code_if_known_flaky_tests || known_flaky_tests_exit_code=$?
-      exit "${known_flaky_tests_exit_code}"
+      change_exit_code_if_applicable $rspec_run_status || new_exit_code=$?
+      exit "${new_exit_code}"
     fi
 
-    retry_failed_rspec_examples || rspec_retry_status=$?
+    retry_failed_rspec_examples $rspec_run_status || rspec_retry_status=$?
   else
     echosuccess "No examples to retry, congrats!"
     exit "${rspec_run_status}"
@@ -204,15 +198,41 @@ function handle_retry_rspec_in_new_process() {
 
   # At this stage, we know the CI/CD job will fail.
   #
-  # We'll change the exit code of the CI job if the failure was due to a known flaky test.
-  change_exit_code_if_known_flaky_tests || known_flaky_tests_exit_code=$?
-  exit "${known_flaky_tests_exit_code}"
+  # We'll change the exit code of the CI job.
+  change_exit_code_if_applicable $rspec_retry_status || new_exit_code=$?
+  exit $new_exit_code
+}
+
+function change_exit_code_if_applicable() {
+  local previous_exit_status=$1
+  local found_known_flaky_test=$previous_exit_status
+  local found_infra_error=$previous_exit_status
+  local new_exit_code=$previous_exit_status
+
+  change_exit_code_if_known_flaky_tests $previous_exit_status || found_known_flaky_test=$?
+  change_exit_code_if_known_infra_error $previous_exit_status || found_infra_error=$?
+
+  # Update new_exit_code if either of the checks changed the values
+  # Ensure infra error exit code takes precedence because we want to retry it if possible
+  echo
+  echo "found_known_flaky_test: $found_known_flaky_test"
+  echo "found_infra_error: $found_infra_error"
+
+  if [[ $found_infra_error -ne $previous_exit_status ]]; then
+    new_exit_code=$found_infra_error
+    alert_job_in_slack $new_exit_code "Known infra error caused this job to fail"
+  elif [[ $found_known_flaky_test -ne $previous_exit_status ]]; then
+    new_exit_code=$found_known_flaky_test
+    alert_job_in_slack $new_exit_code "A Known flaky test caused this job to fail"
+  fi
+
+  echo "New exit code: $new_exit_code"
+  return $new_exit_code
 }
 
 function change_exit_code_if_known_flaky_tests() {
-  # Default exit status
-  new_exit_code=1
-
+  new_exit_code=$1
+  echo
   echo "*******************************************************"
   echo "Checking whether known flaky tests failed the job"
   echo "*******************************************************"
@@ -237,21 +257,24 @@ function change_exit_code_if_known_flaky_tests() {
 function change_exit_code_if_known_infra_error() {
   exit_code=$1
 
-  if [[ $exit_code -ne 0 ]]; then
+  if [[ "${DETECT_INFRA_ERRORS}" != "true" ]]; then
+    echoinfo "Auto-retrying infrastructure errors is disabled. Exiting with exit code ${exit_code}".
+  elif [[ $exit_code -ne 0 ]]; then
+    echo
     echo "*******************************************************"
-    echo "Checking whether there was a known infrastructure error"
+    echo "Checking whether known infra error failed the job"
     echo "*******************************************************"
 
-    found_infrastructure_error || found_infrastructure_error_status=$?
+    found_infrastructure_error_status=0
+    found_known_flaky_tests_output=$(found_infrastructure_error) || found_infrastructure_error_status=$?
 
     if [[ $found_infrastructure_error_status -eq 0 ]]; then
+      echo
       echo "Changing the CI/CD job exit code to 110."
 
       exit_code=110
-
-      alert_job_in_slack $exit_code "Auto-retried due to infrastructure error."
-
     else
+      echo
       echo "Not changing the CI/CD job exit code."
     fi
   fi
@@ -416,15 +439,16 @@ function retry_failed_e2e_rspec_examples() {
 }
 
 function retry_failed_rspec_examples() {
+  local previous_exit_status=$1
   local rspec_run_status=0
 
   if [[ "${RETRY_FAILED_TESTS_IN_NEW_PROCESS}" != "true" ]]; then
     echoerr "Not retrying failing examples since \$RETRY_FAILED_TESTS_IN_NEW_PROCESS != 'true'!"
-    exit 1
+    exit $previous_exit_status
   fi
 
   if is_rspec_last_run_results_file_missing; then
-    exit 1
+    exit $previous_exit_status
   fi
 
   # Job metrics for influxDB/Grafana

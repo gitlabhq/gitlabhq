@@ -171,7 +171,7 @@ Two outbound private links exist by default for all runners in the GitLab-manage
 
 These links are pre-configured and cannot be modified. The tenant's Prometheus instance is managed by GitLab and is not accessible to users.
 
-To use an outbound private link with other VPC services, manual configuration is required. For more information, see [Outbound private link](../../administration/dedicated/configure_instance.md#outbound-private-link).
+To use an outbound private link with other VPC services, manual configuration is required. For more information, see [Outbound private link](configure_instance/network_security.md#outbound-private-link).
 
 ## IP ranges
 

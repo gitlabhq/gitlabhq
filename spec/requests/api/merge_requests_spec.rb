@@ -2662,11 +2662,11 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     end
 
     context 'when user is using a composite identity', :request_store, :sidekiq_inline do
-      let(:user) { create(:user, username: 'gitlab-duo') }
+      let(:user) { create(:user, username: 'user-with-composite-identity') }
 
       before do
-        allow_any_instance_of(::User).to receive(:has_composite_identity?) do |user|
-          user.username == 'gitlab-duo'
+        allow_any_instance_of(::User).to receive(:composite_identity_enforced) do |user|
+          user.username == 'user-with-composite-identity'
         end
       end
 

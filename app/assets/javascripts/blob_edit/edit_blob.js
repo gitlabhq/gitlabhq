@@ -216,4 +216,8 @@ export default class EditBlob {
     this.$toggleButton.toggleClass('soft-wrap-active', this.isSoftWrapped);
     this.editor.updateOptions({ wordWrap: this.isSoftWrapped ? 'on' : 'off' });
   }
+
+  getFileContent() {
+    return this.editor?.getValue();
+  }
 }

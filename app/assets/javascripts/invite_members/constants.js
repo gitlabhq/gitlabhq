@@ -43,7 +43,7 @@ export const MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT = s__(
 );
 export const MEMBERS_SEARCH_FIELD = s__('InviteMembersModal|Username, name or email address');
 export const MEMBERS_PLACEHOLDER = s__(
-  'InviteMembersModal|Select from existing GitLab usernames or enter email addresses',
+  'InviteMembersModal|Select from GitLab usernames or enter email addresses',
 );
 
 export const GROUP_MODAL_DEFAULT_TITLE = s__('InviteMembersModal|Invite a group');
@@ -76,7 +76,7 @@ export const GROUP_MODAL_TO_PROJECT_ALERT_LINK = helpPagePath(
 export const GROUP_SEARCH_FIELD = s__('InviteMembersModal|Select a group to invite');
 export const GROUP_PLACEHOLDER = s__('InviteMembersModal|Search for a group to invite');
 
-export const ACCESS_LEVEL = s__('InviteMembersModal|Select a role');
+export const ACCESS_LEVEL = s__('InviteMembersModal|Select maximum role');
 export const ACCESS_EXPIRE_DATE = s__('InviteMembersModal|Access expiration date (optional)');
 export const TOAST_MESSAGE_SUCCESSFUL = s__('InviteMembersModal|Members were successfully added.');
 export const QUEUED_MESSAGE_SUCCESSFUL = s__(
@@ -84,7 +84,7 @@ export const QUEUED_MESSAGE_SUCCESSFUL = s__(
 );
 export const INVALID_FEEDBACK_MESSAGE_DEFAULT = s__('InviteMembersModal|Something went wrong');
 export const READ_MORE_TEXT = s__(
-  `InviteMembersModal|%{linkStart}Read more%{linkEnd} about role permissions. You can change this later.`,
+  `InviteMembersModal|%{linkStart}Read more%{linkEnd} about role permissions. You can change this later. Invited members are limited to this role or their current group role, whichever is lower.`,
 );
 export const READ_MORE_ACCESS_EXPIRATION_TEXT = s__(
   `InviteMembersModal|%{linkStart}Read more%{linkEnd} about access expiration`,

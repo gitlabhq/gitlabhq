@@ -36,8 +36,9 @@ module QA
 
           Page::File::Show.perform(&:click_edit)
 
-          Page::File::Form.perform do |file_form|
-            expect(file_form).to have_element('data-testid': 'commit-button')
+          Page::File::Edit.perform do |file|
+            file.click_commit_changes_in_header
+            expect(file).to have_modal_commit_button
           end
         end
       end

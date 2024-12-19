@@ -14,7 +14,7 @@ This page contains possible solutions for problems you might encounter when usin
 
 - [SAML SSO for GitLab.com groups](index.md).
 - The self-managed instance-level [SAML OmniAuth Provider](../../../integration/saml.md).
-- [Switchboard](../../../administration/dedicated/configure_instance.md#activate-saml-with-switchboard) to configure SAML for GitLab Dedicated instances.
+- [Switchboard](../../../administration/dedicated/configure_instance/saml.md#activate-saml-with-switchboard) to configure SAML for GitLab Dedicated instances.
 
 ## SAML debugging tools
 

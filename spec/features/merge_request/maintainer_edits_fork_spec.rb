@@ -40,6 +40,8 @@ RSpec.describe 'a maintainer edits files on a source-branch of an MR from a fork
   end
 
   it 'mentions commits will go to the source branch' do
+    click_button 'Commit changes'
+
     expect(page).to have_content('Your changes can be committed to fix because a merge request is open.')
   end
 
@@ -48,6 +50,11 @@ RSpec.describe 'a maintainer edits files on a source-branch of an MR from a fork
     editor_set_value(content)
 
     click_button 'Commit changes'
+
+    within_testid('commit-change-modal') do
+      click_button 'Commit changes'
+    end
+
     wait_for_requests
 
     expect(page).to have_content('Your changes have been committed successfully')

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::SidekiqMiddleware::Identity::Restore, :request_store, feature_category: :system_access do
-  let_it_be(:primary_user) { create(:user, username: 'gitlab-duo') }
+  let_it_be(:primary_user) { create(:user) }
   let_it_be(:scoped_user) { create(:user) }
 
   let(:job) { { 'jid' => 123 } }
@@ -56,9 +56,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::Identity::Restore, :request_store, fea
 
   describe 'composite identity restoration end-to-end' do
     before do
-      allow_any_instance_of(::User).to receive(:has_composite_identity?) do |user| # rubocop:disable RSpec/AnyInstanceOf -- works more reliably
-        user.username == 'gitlab-duo'
-      end
+      allow_any_instance_of(::User).to receive(:composite_identity_enforced).and_return(true) # rubocop:disable RSpec/AnyInstanceOf -- works more reliably
 
       ::Gitlab::Auth::Identity.new(primary_user).link!(scoped_user)
     end

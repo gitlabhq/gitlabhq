@@ -30118,7 +30118,7 @@ msgstr ""
 msgid "InviteMembersModal|%{linkStart}Read more%{linkEnd} about access expiration"
 msgstr ""
 
-msgid "InviteMembersModal|%{linkStart}Read more%{linkEnd} about role permissions. You can change this later."
+msgid "InviteMembersModal|%{linkStart}Read more%{linkEnd} about role permissions. You can change this later. Invited members are limited to this role or their current group role, whichever is lower."
 msgstr ""
 
 msgid "InviteMembersModal|Access expiration date (optional)"
@@ -30184,10 +30184,10 @@ msgstr ""
 msgid "InviteMembersModal|Select a group to invite"
 msgstr ""
 
-msgid "InviteMembersModal|Select a role"
+msgid "InviteMembersModal|Select from GitLab usernames or enter email addresses"
 msgstr ""
 
-msgid "InviteMembersModal|Select from existing GitLab usernames or enter email addresses"
+msgid "InviteMembersModal|Select maximum role"
 msgstr ""
 
 msgid "InviteMembersModal|Show less"
@@ -54092,6 +54092,9 @@ msgid "Start merge train"
 msgstr ""
 
 msgid "Start merge train..."
+msgstr ""
+
+msgid "Start review"
 msgstr ""
 
 msgid "Start search"

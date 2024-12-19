@@ -118,7 +118,7 @@ export default {
 <template>
   <div>
     <gl-button
-      v-gl-tooltip.viewport.right
+      v-gl-tooltip.viewport.left
       :title="jobAction.title"
       :aria-label="jobAction.title"
       :disabled="isLoading"

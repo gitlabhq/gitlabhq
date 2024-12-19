@@ -64,10 +64,14 @@ module Gitlab
             :development,
             :email_participants,
             :hierarchy,
+            :iteration,
+            :labels,
             :linked_items,
+            :milestone,
             :notes,
             :notifications,
             :participants,
+            :start_and_due_date,
             :time_tracking
           ],
           test_case: [

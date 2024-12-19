@@ -153,6 +153,7 @@ export default {
           variant: 'confirm',
           loading: this.loading,
           disabled: this.loading || !this.form.state || !this.valid,
+          'data-testid': 'commit-change-modal-commit-button',
         },
       };
 
@@ -229,6 +230,7 @@ export default {
       this.$refs.message?.$el.focus();
     },
     async handlePrimaryAction(e) {
+      window.onbeforeunload = null;
       e.preventDefault(); // Prevent modal from closing
 
       if (this.showLfsWarning) {
@@ -264,6 +266,7 @@ export default {
     v-bind="$attrs"
     :modal-id="modalId"
     :title="title"
+    data-testid="commit-change-modal"
     :action-primary="primaryOptions"
     :action-cancel="cancelOptions"
     @primary="handlePrimaryAction"
@@ -346,16 +349,18 @@ export default {
                 </gl-form-radio>
               </gl-form-radio-group>
               <div v-if="createNewBranch" class="gl-ml-6">
-                <gl-form-input
-                  v-model="form.fields['branch_name'].value"
-                  v-validation:[form.showValidation]
-                  :state="form.fields['branch_name'].state"
-                  :disabled="loading"
-                  name="branch_name"
-                  required
-                  :placeholder="__('example-branch-name')"
-                  class="gl-mt-2"
-                />
+                <gl-form-group :invalid-feedback="form.fields['branch_name'].feedback">
+                  <gl-form-input
+                    v-model="form.fields['branch_name'].value"
+                    v-validation:[form.showValidation]
+                    :state="form.fields['branch_name'].state"
+                    :disabled="loading"
+                    name="branch_name"
+                    :placeholder="__('example-branch-name')"
+                    required
+                    class="gl-mt-2"
+                  />
+                </gl-form-group>
                 <gl-form-checkbox v-if="createNewBranch" v-model="createNewMr" class="gl-mt-4">
                   <span>
                     {{ $options.i18n.CREATE_MR_LABEL }}
@@ -367,17 +372,20 @@ export default {
               <label for="branchNameInput">
                 {{ $options.i18n.NEW_BRANCH_LABEl }}
               </label>
-              <gl-form-input
-                id="branchNameInput"
-                v-model="form.fields['branch_name'].value"
-                v-validation:[form.showValidation]
-                :state="form.fields['branch_name'].state"
-                :disabled="loading"
-                name="branch_name"
-                required
-                :placeholder="__('example-branch-name')"
-                class="gl-mt-2"
-              />
+              <gl-form-group :invalid-feedback="form.fields['branch_name'].feedback">
+                <gl-form-input
+                  id="branchNameInput"
+                  v-model="form.fields['branch_name'].value"
+                  v-validation:[form.showValidation]
+                  :state="form.fields['branch_name'].state"
+                  :disabled="loading"
+                  name="branch_name"
+                  required
+                  :placeholder="__('example-branch-name')"
+                  class="gl-mt-2"
+                />
+              </gl-form-group>
+
               <gl-form-checkbox v-model="createNewMr" class="gl-mt-4">
                 <span>
                   {{ $options.i18n.CREATE_MR_LABEL }}

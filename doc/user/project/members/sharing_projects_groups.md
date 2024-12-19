@@ -120,7 +120,7 @@ To invite a group to a project:
 1. Select **Manage > Members**.
 1. Select **Invite a group**.
 1. In the **Select a group to invite** list, select the group you want to invite.
-1. Select the highest [role](../../permissions.md) for users in the group.
+1. From the **Select maximum role** list, select the highest [role](../../permissions.md) the invited group's members can have in the project. Group members with a higher role are limited to this role, while members with a lower role keep their existing role.
 1. Optional. Select an **Access expiration date**.
    From that date onward, the invited group can no longer access the project.
 1. Select **Invite**.
@@ -139,6 +139,35 @@ The **Members** tab shows:
 - Inherited members of the group [namespace](../../namespace/index.md) that the project was added to.
 
 The members of the invited group are not displayed on the **Members** tab unless the `webui_members_inherited_users` feature flag is enabled.
+
+#### Examples
+
+A project with the name `project-01` has the following direct members:
+
+- User A, Owner
+- User B, Maintainer
+
+A group with the name `group-01` has the following direct members:
+
+- User C, Owner
+- User D, Maintainer
+- User E, Reporter
+
+When `group-01` is invited to `project-01` with `Developer` permissions, users have the following roles:
+
+- User A, Owner
+- User B, Maintainer
+- User C, Developer
+- User D, Developer
+- User E, Reporter
+
+When `group-01` is invited to `project-01` with `Owner` permissions, users have the following roles:
+
+- User A, Owner
+- User B, Maintainer
+- User C, Owner
+- User D, Maintainer
+- User E, Reporter
 
 ### View a group's shared projects
 

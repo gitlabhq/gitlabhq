@@ -49,12 +49,14 @@ describe('Blob Editing', () => {
   const filePath = 'path/to/file.js';
   const useMock = jest.fn(() => markdownExtensions);
   const unuseMock = jest.fn();
+  const valueMock = 'test value';
+  const getValueMock = jest.fn().mockReturnValue('test value');
   const emitter = new Emitter();
   const mockInstance = {
     use: useMock,
     unuse: unuseMock,
     setValue: jest.fn(),
-    getValue: jest.fn().mockReturnValue('test value'),
+    getValue: getValueMock,
     focus: jest.fn(),
     onDidChangeModelLanguage: emitter.event,
     updateModelLanguage: jest.fn(),
@@ -113,6 +115,11 @@ describe('Blob Editing', () => {
           blobContent: 'raw content',
         }),
       );
+    });
+
+    it('returns content from the editor', () => {
+      expect(blobInstance.getFileContent()).toBe(valueMock);
+      expect(getValueMock).toHaveBeenCalled();
     });
   });
 

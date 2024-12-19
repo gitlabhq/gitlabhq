@@ -49,7 +49,7 @@ DETAILS:
 
 GitLab Dedicated for Government supports instance-level [SAML OmniAuth](../../integration/saml.md). Your GitLab Dedicated instance acts as the service provider, and you must provide the necessary [configuration](../../integration/saml.md#configure-saml-support-in-gitlab) for GitLab to communicate with your IdP.
 
-SAML [request signing](../../integration/saml.md#sign-saml-authentication-requests-optional), [group sync](../../user/group/saml_sso/group_sync.md#configure-saml-group-sync), and [SAML groups](../../integration/saml.md#configure-users-based-on-saml-group-membership) are supported. For more information on how to configure SAML for your instance, see [SAML](../../administration/dedicated/configure_instance.md#saml).
+SAML [request signing](../../integration/saml.md#sign-saml-authentication-requests-optional), [group sync](../../user/group/saml_sso/group_sync.md#configure-saml-group-sync), and [SAML groups](../../integration/saml.md#configure-users-based-on-saml-group-membership) are supported. For more information on how to configure SAML for your instance, see [SAML](../../administration/dedicated/configure_instance/saml.md).
 
 #### Encryption
 
@@ -62,7 +62,7 @@ DETAILS:
 
 Email sent from GitLab Dedicated uses [Amazon Simple Email Service (Amazon SES)](https://aws.amazon.com/ses/). The connection to Amazon SES is encrypted.
 
-To send application email using an SMTP server instead of Amazon SES, you can [configure your own email service](../../administration/dedicated/configure_instance.md#smtp-email-service).
+To send application email using an SMTP server instead of Amazon SES, you can [configure your own email service](../../administration/dedicated/configure_instance/users_notifications.md#smtp-email-service).
 
 #### Isolation
 

@@ -38,16 +38,16 @@ GitLab Dedicated provides the following security features to protect your data a
 
 You can configure [SAML single sign-on (SSO)](../../integration/saml.md) using any number of SAML providers for authentication. Your instance acts as the service provider, and you provide the necessary configuration for GitLab to communicate with your Identity Providers (IdPs). SAML request signing, group sync, and SAML groups are supported.
 
-For more information, see how to configure [SAML](../../administration/dedicated/configure_instance.md#saml) for your instance.
+For more information, see how to configure [SAML](../../administration/dedicated/configure_instance/saml.md) for your instance.
 
 #### Secure networking
 
 Two connectivity options are available:
 
-- Public connectivity with IP allowlists: By default, your instance is publicly accessible. You can [configure an IP allowlist](../../administration/dedicated/configure_instance.md#ip-allowlist) to restrict access to specified IP addresses.
-- Private connectivity with AWS PrivateLink: You can configure [AWS PrivateLink](https://aws.amazon.com/privatelink/) for [inbound](../../administration/dedicated/configure_instance.md#inbound-private-link) and [outbound](../../administration/dedicated/configure_instance.md#outbound-private-link) connections.
+- Public connectivity with IP allowlists: By default, your instance is publicly accessible. You can [configure an IP allowlist](../../administration/dedicated/configure_instance/network_security.md#ip-allowlist) to restrict access to specified IP addresses.
+- Private connectivity with AWS PrivateLink: You can configure [AWS PrivateLink](https://aws.amazon.com/privatelink/) for [inbound](../../administration/dedicated/configure_instance/network_security.md#inbound-private-link) and [outbound](../../administration/dedicated/configure_instance/network_security.md#outbound-private-link) connections.
 
-For private connections to internal resources using non-public certificates, you can also [specify trusted certificates](../../administration/dedicated/configure_instance.md#custom-certificates).
+For private connections to internal resources using non-public certificates, you can also [specify trusted certificates](../../administration/dedicated/configure_instance/network_security.md#custom-certificates).
 
 #### Data encryption
 
@@ -59,7 +59,7 @@ For more information, see [Encrypted data at rest (BYOK)](../../administration/d
 
 #### Email service
 
-By default, [Amazon Simple Email Service (Amazon SES)](https://aws.amazon.com/ses/) is used to send emails securely. As an alternative, you can [configure your own email service](../../administration/dedicated/configure_instance.md#smtp-email-service) using SMTP.
+By default, [Amazon Simple Email Service (Amazon SES)](https://aws.amazon.com/ses/) is used to send emails securely. As an alternative, you can [configure your own email service](../../administration/dedicated/configure_instance/users_notifications.md#smtp-email-service) using SMTP.
 
 ### Compliance
 
@@ -96,7 +96,7 @@ In tenant accounts, GitLab Dedicated uses:
 
 #### Audit and observability
 
-You can access [application logs](../../administration/dedicated/configure_instance.md#application-logs) for auditing and observability purposes. These logs provide insights into system activities and user actions, helping you monitor your instance and maintain compliance requirements.
+You can access [application logs](../../administration/dedicated/monitor.md) for auditing and observability purposes. These logs provide insights into system activities and user actions, helping you monitor your instance and maintain compliance requirements.
 
 ### Bring your own domain
 
@@ -135,7 +135,7 @@ Custom domains for GitLab Pages are not supported. For example, if you added a c
 You can control access to your Pages website with:
 
 - [GitLab Pages access control](../../user/project/pages/pages_access_control.md).
-- [IP allowlists](../../administration/dedicated/configure_instance.md#ip-allowlist). Any existing IP allowlists for your GitLab Dedicated instances are applied.
+- [IP allowlists](../../administration/dedicated/configure_instance/network_security.md#ip-allowlist). Any existing IP allowlists for your GitLab Dedicated instances are applied.
 
 GitLab Pages for Dedicated:
 
@@ -168,8 +168,8 @@ You can use [SCIM for user management](../../api/scim.md) or [GitLab as an OpenI
 
 To use these features with IP allowlists:
 
-- [Enable SCIM provisioning for your IP allowlist](../../administration/dedicated/configure_instance.md#enable-scim-provisioning-for-your-ip-allowlist)
-- [Enable OpenID Connect for your IP allowlist](../../administration/dedicated/configure_instance.md#enable-openid-connect-for-your-ip-allowlist)
+- [Enable SCIM provisioning for your IP allowlist](../../administration/dedicated/configure_instance/network_security.md#enable-scim-provisioning-for-your-ip-allowlist)
+- [Enable OpenID Connect for your IP allowlist](../../administration/dedicated/configure_instance/network_security.md#enable-openid-connect-for-your-ip-allowlist)
 
 ### Pre-production environments
 

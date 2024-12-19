@@ -54,8 +54,9 @@ describe('PipelineStage', () => {
   const findJobList = () => wrapper.findByTestId('pipeline-mini-graph-dropdown-menu-list');
   const findMergeTrainMessage = () => wrapper.findByTestId('merge-train-message');
 
-  const openStageDropdown = async () => {
+  const clickStageDropdown = async () => {
     await findDropdownButton().trigger('click');
+    await waitForPromises;
   };
 
   beforeEach(() => {
@@ -98,19 +99,19 @@ describe('PipelineStage', () => {
     });
 
     it('has the correct header title', async () => {
-      await openStageDropdown();
+      await clickStageDropdown();
 
       expect(findDropdownHeader().text()).toBe('Stage: build');
     });
 
     it('emits miniGraphStageClick', async () => {
-      await openStageDropdown();
+      await clickStageDropdown();
 
       expect(wrapper.emitted('miniGraphStageClick')).toHaveLength(1);
     });
 
     it('has fired the stage query', async () => {
-      await openStageDropdown();
+      await clickStageDropdown();
       const { stage } = defaultProps;
 
       expect(pipelineStageResponse).toHaveBeenCalledWith({ id: stage.id });
@@ -119,7 +120,7 @@ describe('PipelineStage', () => {
     describe('and query is loading', () => {
       it('renders a loading icon and no list', async () => {
         createComponent();
-        await openStageDropdown();
+        await clickStageDropdown();
 
         expect(findLoadingIcon().exists()).toBe(true);
         expect(findJobList().exists()).toBe(false);
@@ -128,8 +129,7 @@ describe('PipelineStage', () => {
 
     describe('and query is successful', () => {
       beforeEach(async () => {
-        await openStageDropdown();
-        await waitForPromises();
+        await clickStageDropdown();
       });
 
       it('renders a list and no loading icon', () => {
@@ -153,7 +153,7 @@ describe('PipelineStage', () => {
 
       it('throws an error for the pipeline query', async () => {
         await createComponent({ pipelineStageHandler: failedHandler });
-        await openStageDropdown();
+        await clickStageDropdown();
         await waitForPromises();
 
         expect(createAlert).toHaveBeenCalledWith({ message: pipelineStageJobsFetchError });
@@ -161,18 +161,55 @@ describe('PipelineStage', () => {
     });
   });
 
+  describe('polling', () => {
+    beforeEach(async () => {
+      pipelineStageResponse.mockResolvedValue(mockPipelineStageJobs);
+      await createComponent();
+    });
+
+    it('starts polling when dropdown is open', async () => {
+      await clickStageDropdown();
+      await waitForPromises();
+
+      expect(pipelineStageResponse).toHaveBeenCalledTimes(1);
+
+      jest.advanceTimersByTime(8000);
+
+      expect(pipelineStageResponse).toHaveBeenCalledTimes(2);
+    });
+
+    it('stops polling when dropdown is closed', async () => {
+      await clickStageDropdown();
+      await waitForPromises();
+
+      expect(pipelineStageResponse).toHaveBeenCalledTimes(1);
+
+      jest.advanceTimersByTime(8000);
+
+      expect(pipelineStageResponse).toHaveBeenCalledTimes(2);
+
+      await clickStageDropdown();
+      await waitForPromises();
+
+      jest.advanceTimersByTime(8000);
+
+      expect(pipelineStageResponse).toHaveBeenCalledTimes(2);
+    });
+  });
+
   describe('merge train message', () => {
     it('does not display a message if the pipeline is not part of a merge train', async () => {
       await createComponent();
-      await openStageDropdown();
+      await clickStageDropdown();
 
       expect(findMergeTrainMessage().exists()).toBe(false);
     });
+
     it('displays a message if the pipeline is part of a merge train', async () => {
       await createComponent({
         props: { isMergeTrain: true },
       });
-      await openStageDropdown();
+      await clickStageDropdown();
       await waitForPromises();
 
       expect(findMergeTrainMessage().exists()).toBe(true);

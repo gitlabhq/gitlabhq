@@ -48,7 +48,7 @@ RSpec.describe 'Projects > Files > User replaces files', :js, feature_category: 
       click_on('Replace')
       find(".upload-dropzone-card").drop(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
 
-      within_testid('upload-blob-modal') do
+      page.within('#modal-replace-blob') do
         fill_in(:commit_message, with: 'Replacement file commit message')
         click_button('Commit changes')
       end

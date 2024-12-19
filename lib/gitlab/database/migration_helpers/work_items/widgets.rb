@@ -12,11 +12,21 @@ module Gitlab
           #
           # Define the following constants in the migration class
           # WORK_ITEM_TYPE_ENUM_VALUE = 8
+          # Use only one array item to add a single widget
           # WIDGETS = [
           #   {
           #     name: 'Designs',
           #     widget_type: 22
-          #   }
+          #   },
+          #   {
+          #     name: 'Weight',
+          #     widget_type: 8,
+          #     # widget_options is optional
+          #     widget_options: {
+          #       editable: true,
+          #       rollup: false
+          #     }
+          #   },
           # ]
           #
           # Then define the #up and down methods like this:
@@ -42,7 +52,9 @@ module Gitlab
             # if inconsistent data is present.
             return say(type_missing_message(type_enum_value)) unless work_item_type
 
-            widget_definitions = widgets.map { |w| w.merge(work_item_type_id: work_item_type.id) }
+            widget_definitions = widgets.map do |w|
+              { work_item_type_id: work_item_type.id, widget_options: nil }.merge(w)
+            end
 
             migration_widget_definition.upsert_all(
               widget_definitions,

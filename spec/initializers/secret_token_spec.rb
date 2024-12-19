@@ -27,7 +27,8 @@ RSpec.describe SecretsInitializer do
   describe 'ensure acknowledged secrets in any installations' do
     let(:acknowledged_secrets) do
       %w[secret_key_base otp_key_base db_key_base openid_connect_signing_key encrypted_settings_key_base
-        rotated_encrypted_settings_key_base]
+        rotated_encrypted_settings_key_base active_record_encryption_primary_key
+        active_record_encryption_deterministic_key active_record_encryption_key_derivation_salt]
     end
 
     it 'does not allow to add a new secret without a proper handling' do
@@ -84,11 +85,15 @@ RSpec.describe SecretsInitializer do
         db_key_base
         otp_key_base
         openid_connect_signing_key
+        active_record_encryption_primary_key
+        active_record_encryption_deterministic_key
+        active_record_encryption_key_derivation_salt
       ]
     end
 
-    let(:hex_key) { /\h{128}/ }
-    let(:rsa_key) { /\A-----BEGIN RSA PRIVATE KEY-----\n.+\n-----END RSA PRIVATE KEY-----\n\Z/m }
+    let(:hex_key) { /\A\h{128}\z/ }
+    let(:rsa_key) { /\A-----BEGIN RSA PRIVATE KEY-----\n.+\n-----END RSA PRIVATE KEY-----\n\z/m }
+    let(:alphanumeric_key) { /\A[A-Za-z0-9]{32}\z/m }
 
     around do |example|
       # We store Rails.application.credentials as a hash so that we can revert to the original
@@ -134,9 +139,17 @@ RSpec.describe SecretsInitializer do
         expect(keys).to all(match(rsa_key))
       end
 
+      it 'generates alphanumeric keys for active_record_encryption items' do
+        initializer.execute!
+
+        expect(Rails.application.credentials.active_record_encryption_primary_key).to all(match(alphanumeric_key))
+        expect(Rails.application.credentials.active_record_encryption_deterministic_key).to all(match(alphanumeric_key))
+        expect(Rails.application.credentials.active_record_encryption_key_derivation_salt).to match(alphanumeric_key)
+      end
+
       it 'warns about the secrets to add to secrets.yml' do
         allowed_keys.each do |key|
-          expect(initializer).to receive(:warn_missing_secret).with(key)
+          expect(initializer).to receive(:warn_missing_secret).with(key.to_sym)
         end
 
         initializer.execute!
@@ -166,7 +179,7 @@ RSpec.describe SecretsInitializer do
         end
 
         it 'writes the encrypted_settings_key_base secret' do
-          expect(initializer).to receive(:warn_missing_secret).with('encrypted_settings_key_base')
+          expect(initializer).to receive(:warn_missing_secret).with(:encrypted_settings_key_base)
           expect(File).to receive(:write).with(fake_secret_file.path, any_args) do |_filename, contents, _options|
             new_secrets = YAML.safe_load(contents)[rails_env_name]
 
@@ -240,7 +253,16 @@ RSpec.describe SecretsInitializer do
 
     context 'with some secrets missing, some in ENV, some in Rails.application.credentials, some in secrets.yml' do
       let(:rails_env_name) { 'foo' }
-      let(:secrets_hash) { { rails_env_name => { 'otp_key_base' => 'otp_key_base' } } }
+      let(:secrets_hash) do
+        {
+          rails_env_name => {
+            'otp_key_base' => 'otp_key_base',
+            'active_record_encryption_primary_key' => ['primary_key'],
+            'active_record_encryption_deterministic_key' => ['deterministic_key'],
+            'active_record_encryption_key_derivation_salt' => 'key_derivation_salt'
+          }
+        }
+      end
 
       before do
         stub_env('SECRET_KEY_BASE', 'env_key')
