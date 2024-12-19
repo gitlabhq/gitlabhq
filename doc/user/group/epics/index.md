@@ -103,7 +103,7 @@ of the child epics from the epic.
 
 ![Child epics roadmap](img/epic_view_roadmap_v12_9.png)
 
-<!-- When epics as work items are GA, the steps below should be the only ones here. -->
+<!-- When epics as work items are generally available, the steps below should be the only ones here. -->
 
 If your administrator [enabled the new look for epics](epic_work_items.md):
 

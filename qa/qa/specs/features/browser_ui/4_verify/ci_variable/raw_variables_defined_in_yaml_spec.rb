@@ -59,14 +59,13 @@ module QA
       before do
         Flow::Login.sign_in
         project.visit!
-        Flow::Pipeline.visit_latest_pipeline(status: 'Passed')
-        Page::Project::Pipeline::Show.perform do |show|
-          show.click_job(pipeline_job_name)
-        end
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+        Flow::Pipeline.wait_for_latest_pipeline_to_have_status(project: project, status: 'success')
+        project.visit_job(pipeline_job_name)
       end
 
       after do
-        runner&.remove_via_api!
+        runner.remove_via_api!
       end
 
       it(

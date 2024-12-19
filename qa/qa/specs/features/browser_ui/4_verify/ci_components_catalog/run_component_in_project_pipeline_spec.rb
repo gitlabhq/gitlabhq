@@ -49,22 +49,19 @@ module QA
         YAML
       end
 
-      let(:pipeline) do
-        create(:pipeline, project: test_project, id: test_project.latest_pipeline[:id])
-      end
-
       before do
         Flow::Login.sign_in
-
         Flow::Project.enable_catalog_resource_feature(component_project)
+
         add_ci_file(component_project, 'templates/new-component.yml', component_content)
         component_project.create_release(tag)
-
         QA::Runtime::Logger.info("Waiting for #{component_project.name}'s release #{tag} to be available")
         Support::Waiter.wait_until { component_project.has_release?(tag) }
 
         test_project.visit!
         add_ci_file(test_project, '.gitlab-ci.yml', ci_yml_content)
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: test_project)
+        Flow::Pipeline.wait_for_latest_pipeline_to_have_status(project: test_project, status: 'success')
       end
 
       after do
@@ -73,19 +70,14 @@ module QA
 
       it 'runs in project pipeline with correct inputs', :aggregate_failures,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/451582' do
-        Flow::Pipeline.visit_latest_pipeline
-
+        test_project.visit_latest_pipeline
         Page::Project::Pipeline::Show.perform do |show|
-          Support::Waiter.wait_until { show.has_passed? }
-
           expect(show).to have_stage(test_stage), "Expected pipeline to have stage #{test_stage} but not found."
         end
 
-        Flow::Pipeline.visit_pipeline_job_page(job_name: 'my-component', pipeline: pipeline)
-
+        test_project.visit_job('my-component')
         Page::Project::Job::Show.perform do |show|
-          expect(show.output).to have_content(test_phrase),
-            "Component job failed to use custom phrase #{test_phrase}."
+          expect(show.output).to have_content(test_phrase), "Component job failed to use custom phrase #{test_phrase}."
         end
       end
 

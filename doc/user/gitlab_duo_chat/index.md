@@ -15,7 +15,7 @@ DETAILS:
 > - Changed to [beta](../../policy/development_stages_support.md#beta) for SaaS in GitLab 16.6.
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11251) as a [beta](../../policy/development_stages_support.md#beta) for self-managed in GitLab 16.8.
 > - Changed from Ultimate to [Premium](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142808) tier in GitLab 16.9 while in [beta](../../policy/development_stages_support.md#beta).
-> - Changed to [generally available](../../policy/development_stages_support.md#generally-available-ga) in GitLab 16.11.
+> - [Generally available](../../policy/development_stages_support.md#generally-available) in GitLab 16.11.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 GitLab Duo Chat is your personal AI-powered assistant for boosting productivity.

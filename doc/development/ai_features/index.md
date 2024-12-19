@@ -685,7 +685,7 @@ arrays there that differentiate between experimental and beta features.
 
 This way we are ready for the following different cases:
 
-- If the feature is not in any array, the check will return `true`. For example, the feature was moved to GA.
+- If the feature is not in any array, the check will return `true`. For example, the feature is generally available.
 
 To move the feature from the experimental phase to the beta phase, move the name of the feature from the `EXPERIMENTAL_FEATURES` array to the `BETA_FEATURES` array.
 

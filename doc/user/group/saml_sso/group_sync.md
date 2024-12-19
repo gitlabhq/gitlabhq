@@ -54,7 +54,28 @@ To link the SAML groups:
 1. Select **Save**.
 1. Repeat to add additional group links if required.
 
-![SAML Group Links](img/saml_group_links_v13_9.png)
+![SAML Group Links](img/saml_group_links_v17_8.png)
+
+### GitLab Duo seat assignment
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/480766) for GitLab.com in GitLab 17.8 [with a flag](../../../administration/feature_flags.md) named `saml_groups_duo_pro_add_on_assignment`. Disabled by default.
+
+Prerequisites:
+
+- An active [GitLab Duo add-on subscription](../../../subscriptions/subscription-add-ons.md)
+
+SAML Group Sync can manage GitLab Duo seat assignment and removal based on IdP group membership. Seats are only assigned when there are seats remaining in the subscription.  
+
+1. When [configuring a SAML Group Link](#configure-saml-group-links), select the **Assign GitLab Duo seats to users in this group** checkbox.
+1. Select **Save**.
+1. Repeat to add additional group links for all SAML users that should be assigned a GitLab Duo Pro or GitLab Duo Enterprise seat.
+   GitLab Duo seats are unassigned for users whose identity provider group memberships do not match a group link with this setting enabled.
+
+The checkbox does not appear for groups without an active GitLab Duo add-on subscription.
 
 ### Self-managed GitLab with multiple SAML IdPs
 

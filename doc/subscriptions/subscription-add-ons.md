@@ -119,6 +119,10 @@ you must [enable network connectivity](../user/ai_features_enable.md).
 
 You can assign or remove seats in bulk for multiple users.
 
+### SAML Group Sync
+
+GitLab.com groups can use SAML Group Sync to [manage GitLab Duo seat assignments](../user/group/saml_sso/group_sync.md#gitlab-duo-seat-assignment).
+
 ### For GitLab.com
 
 1. On the left sidebar, select **Search or go to** and find your group.

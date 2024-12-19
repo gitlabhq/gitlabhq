@@ -31,7 +31,7 @@ WARNING:
 This project is still in the experimental stage and could result in corruption or loss of production data.
 If you would like to enable this feature with no consequences, you are strongly advised to do so in a test environment.
 
-<!-- When epics as work items are made GA, incorporate this content into epics/index.md and redirect
+<!-- When epics as work items are generally available, incorporate this content into epics/index.md and redirect
 this page there -->
 
 We're working on changing how epics look by migrating them to a unified framework for work items to better

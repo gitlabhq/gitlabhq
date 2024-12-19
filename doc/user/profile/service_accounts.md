@@ -67,7 +67,7 @@ Prerequisites:
 
    This service account is associated only with your top-level group.
 
-1. [List all service account users](../../api/group_service_accounts.md#list-service-account-users).
+1. [List all service account users](../../api/group_service_accounts.md#list-all-service-account-users).
 
 1. [Create a personal access token](../../api/group_service_accounts.md#create-a-personal-access-token-for-a-service-account-user)
    for the service account user.

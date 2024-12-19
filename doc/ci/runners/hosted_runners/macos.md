@@ -16,7 +16,7 @@ You can use these runners to build, test, and deploy apps for the Apple ecosyste
 Our [Mobile DevOps section](../../../ci/jobs/mobile_devops.md#ios-build-environments) provides features, documentation, and guidance on building and deploying mobile applications for iOS.
 
 Hosted runners on macOS are in [beta](../../../policy/development_stages_support.md#beta) and available for open source programs and customers in Premium and Ultimate plans.
-[General availability](../../../policy/development_stages_support.md#generally-available-ga) of Hosted runners on macOS is proposed in [epic 8267](https://gitlab.com/groups/gitlab-org/-/epics/8267).
+[General availability](../../../policy/development_stages_support.md#generally-available) of Hosted runners on macOS is proposed in [epic 8267](https://gitlab.com/groups/gitlab-org/-/epics/8267).
 
 ## Machine types available for macOS
 
@@ -48,10 +48,10 @@ The images and installed components are updated with each GitLab release, to kee
 
 Major and minor releases of macOS and Xcode are made available in the milestone subsequent to the Apple release.
 
-A new major release image is initially made available as beta, and becomes generally available (GA) with the release of the first minor release.
-Because only two GA images are supported at a time, the oldest image becomes deprecated and will be removed after three months according to the [supported image lifecycle](../index.md#supported-image-lifecycle).
+A new major release image is initially made available as beta, and becomes generally available with the release of the first minor release.
+Because only two generally available images are supported at a time, the oldest image becomes deprecated and will be removed after three months according to the [supported image lifecycle](../index.md#supported-image-lifecycle).
 
-When a new major release is GA, it becomes the default image for all macOS jobs.
+When a new major release is generally available, it becomes the default image for all macOS jobs.
 
 ## Example `.gitlab-ci.yml` file
 

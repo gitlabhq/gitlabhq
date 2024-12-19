@@ -105,29 +105,6 @@ The following procedure uses these sample project names:
 
 See this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/18383) for details.
 
-## `unauthorized: authentication required` when pushing large images
-
-When pushing large images, you may see an authentication error like the following:
-
-```shell
-docker push gitlab.example.com/myproject/docs:latest
-The push refers to a repository [gitlab.example.com/myproject/docs]
-630816f32edb: Preparing
-530d5553aec8: Preparing
-...
-4b0bab9ff599: Waiting
-d1c800db26c7: Waiting
-42755cf4ee95: Waiting
-unauthorized: authentication required
-```
-
-This error happens when your authentication token expires before the image push is complete. By default, tokens for
-the container registry on self-managed GitLab instances expire every five minutes. On GitLab.com, the token expiration
-time is set to 15 minutes.
-
-If you are using self-managed GitLab, an administrator can
-[increase the token duration](../../../administration/packages/container_registry.md#increase-token-duration).
-
 ## `Failed to pull image` messages
 
 You might receive a [`Failed to pull image'](../../../ci/debugging.md#failed-to-pull-image-messages)
@@ -142,27 +119,6 @@ This is typically a result of [a performance issue with `kaniko` and HTTP/2](htt
 The current workaround is to use HTTP/1.1 when pushing with `kaniko`.
 
 To use HTTP/1.1, set the `GODEBUG` environment variable to `"http2client=0"`.
-
-## `docker login` command fails with `access forbidden`
-
-The container registry [returns the GitLab API URL to the Docker client](../../../administration/packages/container_registry.md#architecture-of-gitlab-container-registry)
-to validate credentials. The Docker client uses basic auth, so the request contains
-the `Authorization` header. If the `Authorization` header is missing in the request to the
-`/jwt/auth` endpoint configured in the `token_realm` for the registry configuration,
-you receive an `access forbidden` error message.
-
-For example:
-
-```plaintext
-> docker login gitlab.example.com:4567
-
-Username: user
-Password:
-Error response from daemon: Get "https://gitlab.company.com:4567/v2/": denied: access forbidden
-```
-
-To avoid this error, ensure the `Authorization` header is not stripped from the request.
-For example, a proxy in front of GitLab might be redirecting to the `/jwt/auth` endpoint.
 
 ## `OCI manifest found, but accept header does not support OCI manifests` error
 
