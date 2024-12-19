@@ -117,7 +117,21 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       let(:current_user) { planner }
       let(:project) { private_project }
 
+      it { expect_disallowed(*(mr_permissions - [:read_merge_request])) }
+    end
+
+    context "for a reporter in a private project" do
+      let(:current_user) { reporter }
+      let(:project) { private_project }
+
       it { expect_disallowed(*(mr_permissions - [:read_merge_request, :create_merge_request_in])) }
+    end
+
+    context "for a developer in a private project" do
+      let(:current_user) { developer }
+      let(:project) { private_project }
+
+      it { expect_allowed(*mr_permissions) }
     end
   end
 
@@ -175,7 +189,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   context 'creating_merge_request_in' do
-    context 'when the current_user can download_code' do
+    context 'when the current_user can download code' do
       before do
         expect(subject).to receive(:allowed?).with(:download_code).and_return(true)
         allow(subject).to receive(:allowed?).with(any_args).and_call_original
@@ -217,7 +231,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         context 'when the current_user is planner' do
           let(:current_user) { planner }
 
-          it { is_expected.to be_allowed(:create_merge_request_in) }
+          it { is_expected.not_to be_allowed(:create_merge_request_in) }
         end
 
         context 'when the current_user is reporter or above' do
@@ -3470,7 +3484,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           :maintainer | true
           :developer  | true
           :reporter   | true
-          :planner    | true
+          :planner    | false
           :guest      | false
         end
 

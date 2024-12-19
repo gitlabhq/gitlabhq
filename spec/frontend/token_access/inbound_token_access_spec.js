@@ -12,6 +12,7 @@ import inboundRemoveProjectCIJobTokenScopeMutation from '~/token_access/graphql/
 import inboundUpdateCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_update_ci_job_token_scope.mutation.graphql';
 import inboundGetCIJobTokenScopeQuery from '~/token_access/graphql/queries/inbound_get_ci_job_token_scope.query.graphql';
 import inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery from '~/token_access/graphql/queries/inbound_get_groups_and_projects_with_ci_job_token_scope.query.graphql';
+import getCiJobTokenScopeAllowlistQuery from '~/token_access/graphql/queries/get_ci_job_token_scope_allowlist.query.graphql';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ConfirmActionModal from '~/vue_shared/components/confirm_action_modal.vue';
 import {
@@ -72,6 +73,7 @@ describe('TokenAccess component', () => {
       provide: {
         fullPath: projectPath,
         enforceAllowlist: false,
+        glFeatures: { addPoliciesToCiJobToken: false },
         ...provide,
       },
       apolloProvider: createMockApollo(requestHandlers),
@@ -488,4 +490,35 @@ describe('TokenAccess component', () => {
       });
     });
   });
+
+  describe.each`
+    addPoliciesToCiJobToken | oldQueryCallCount | newQueryCallCount
+    ${true}                 | ${0}              | ${1}
+    ${false}                | ${1}              | ${0}
+  `(
+    'when addPoliciestoCiJobToken is $addPoliciesToCiJobToken',
+    ({ addPoliciesToCiJobToken, oldQueryCallCount, newQueryCallCount }) => {
+      const oldQueryHandler = jest.fn();
+      const newQueryHandler = jest.fn();
+
+      beforeEach(() => {
+        createComponent(
+          [
+            [inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery, oldQueryHandler],
+            [getCiJobTokenScopeAllowlistQuery, newQueryHandler],
+          ],
+          mountExtended,
+          { glFeatures: { addPoliciesToCiJobToken } },
+        );
+      });
+
+      it(`calls the old query ${oldQueryCallCount} times`, () => {
+        expect(oldQueryHandler).toHaveBeenCalledTimes(oldQueryCallCount);
+      });
+
+      it(`calls the new query ${newQueryCallCount} times`, () => {
+        expect(newQueryHandler).toHaveBeenCalledTimes(newQueryCallCount);
+      });
+    },
+  );
 });

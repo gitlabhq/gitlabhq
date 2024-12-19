@@ -205,7 +205,10 @@ RSpec.shared_examples 'project policies as planner' do
 
   let(:disallowed_reporter_permissions) do
     disallowed_reporter_public_permissions +
-      %i[fork_project read_commit_status read_container_image read_deployment read_environment]
+      %i[
+        fork_project read_commit_status read_container_image read_deployment
+        read_environment create_merge_request_in download_code
+      ]
   end
 
   context 'as a direct project member' do

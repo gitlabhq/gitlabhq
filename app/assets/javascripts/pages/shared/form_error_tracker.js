@@ -49,21 +49,24 @@ export default class FormErrorTracker {
       !inputDomElement.checked && FormErrorTracker.isRadio(inputDomElement.type);
 
     if (inputDomElement.value === '' || uncheckedRadio) {
-      const message = FormErrorTracker.inputErrorMessage(inputDomElement);
-
       Tracking.event(undefined, FormErrorTracker.action(inputDomElement), {
-        label: FormErrorTracker.label(inputDomElement, message),
+        label: FormErrorTracker.label(inputDomElement, 'is_required'),
       });
     }
   }
 
   static errorMessage(element) {
-    if (element.id.includes('email')) {
-      return 'invalid_email_address';
-    }
+    const inputsWithTranslation = [
+      'first_name',
+      'last_name',
+      'username',
+      'email',
+      'password',
+      'company_name',
+    ];
 
-    if (element.id.includes('password')) {
-      return 'password_is_too_short';
+    if (inputsWithTranslation.some((input) => element.id.includes(input))) {
+      return 'is_invalid';
     }
 
     return FormErrorTracker.inputErrorMessage(element);
@@ -79,8 +82,12 @@ export default class FormErrorTracker {
 
   static label(element, message) {
     if (FormErrorTracker.isRadio(element.type)) {
-      const labelText = element.closest('.form-group').querySelector('label').textContent;
-      return `missing_${convertToSnakeCase(labelText)}`;
+      const forAttribute = element
+        .closest('.form-group')
+        .querySelector('label')
+        .getAttribute('for');
+
+      return `missing_${convertToSnakeCase(forAttribute)}`;
     }
 
     return `${element.id}_${message}`;

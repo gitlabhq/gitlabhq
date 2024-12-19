@@ -228,6 +228,9 @@ export default {
     showSquashSetting() {
       return this.glFeatures.branchRuleSquashSettings && !this.branch?.includes('*'); // Squash settings are not available for wildcards
     },
+    squashOption() {
+      return this.branchRule?.squashOption;
+    },
   },
   methods: {
     ...mapActions(['setRulesFilter', 'fetchRules']),
@@ -563,6 +566,12 @@ export default {
                 </gl-link>
               </template>
             </gl-sprintf>
+          </template>
+          <template v-if="squashOption && squashOption.option" #content>
+            <div>
+              <span>{{ squashOption.option }}</span>
+              <p class="gl-text-subtle">{{ squashOption.helpText }}</p>
+            </div>
           </template>
         </protection>
       </settings-section>

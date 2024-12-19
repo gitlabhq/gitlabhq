@@ -989,6 +989,11 @@ Gitlab.ee do
     Settings.cron_jobs['block_pipl_users_worker']['cron'] ||= '0 8 * * *'
     Settings.cron_jobs['block_pipl_users_worker']['job_class'] =
       'ComplianceManagement::Pipl::BlockPiplUsersWorker'
+
+    Settings.cron_jobs['delete_pipl_users_worker'] ||= {}
+    Settings.cron_jobs['delete_pipl_users_worker']['cron'] ||= '0 8 * * *'
+    Settings.cron_jobs['delete_pipl_users_worker']['job_class'] =
+      'ComplianceManagement::Pipl::DeletePiplUsersWorker'
   end
 
   Gitlab.jh do

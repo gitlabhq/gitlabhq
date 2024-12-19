@@ -5,6 +5,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 import ContainerExpirationPolicy from '~/packages_and_registries/settings/project/components/container_expiration_policy.vue';
 import ContainerProtectionRules from '~/packages_and_registries/settings/project/components/container_protection_rules.vue';
+import ContainerProtectionTagRules from '~/packages_and_registries/settings/project/components/container_protection_tag_rules.vue';
 
 export default {
   components: {
@@ -12,10 +13,14 @@ export default {
     GlSprintf,
     ContainerExpirationPolicy,
     ContainerProtectionRules,
+    ContainerProtectionTagRules,
     SettingsBlock,
   },
   mixins: [glFeatureFlagsMixin()],
   computed: {
+    showContainerProtectedTagsSettings() {
+      return this.glFeatures.containerRegistryProtectedTags;
+    },
     showProtectedContainersSettings() {
       return this.glFeatures.containerRegistryProtectedContainers;
     },
@@ -45,6 +50,7 @@ export default {
     <template #default>
       <div class="gl-flex gl-flex-col gl-gap-5">
         <container-protection-rules v-if="showProtectedContainersSettings" />
+        <container-protection-tag-rules v-if="showContainerProtectedTagsSettings" />
         <container-expiration-policy />
       </div>
     </template>

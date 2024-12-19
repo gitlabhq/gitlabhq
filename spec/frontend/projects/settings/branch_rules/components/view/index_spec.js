@@ -168,14 +168,30 @@ describe('View branch rules', () => {
       expect(findSquashSettingSection().exists()).toBe(true);
     });
 
-    it('renders squash heading and content', () => {
+    it('renders squash heading and content with an empty state', async () => {
+      const branchRulesQueryHandler = jest.fn().mockResolvedValue({
+        data: {
+          project: {
+            branchRules: {
+              nodes: [
+                {
+                  ...branchProtectionsMockResponse.data.project.branchRules.nodes[0],
+                  squashOption: null,
+                },
+              ],
+            },
+          },
+        },
+      });
+
+      await createComponent({ branchRulesQueryHandler });
       const content = findSquashSettingSection().text();
 
       expect(content).toContain('Squash commits when merging');
       expect(content).toContain(
         'Set the default behavior of this option in merge requests. Changes to this are also applied to existing merge requests.',
       );
-      expect(content).toContain('No squash settings defined');
+      expect(content).toContain('No default set until defined by user');
     });
 
     it('does not render squash settings for wildcard branch rules', async () => {

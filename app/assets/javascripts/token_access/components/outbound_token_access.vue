@@ -277,7 +277,11 @@ export default {
             <gl-button size="small" disabled>{{ $options.i18n.addProject }}</gl-button>
           </template>
 
-          <token-access-table :items="projects" @removeItem="projectToRemove = $event" />
+          <token-access-table
+            :items="projects"
+            :show-policies="false"
+            @removeItem="projectToRemove = $event"
+          />
           <confirm-action-modal
             v-if="projectToRemove"
             modal-id="outbound-token-access-remove-confirm-modal"

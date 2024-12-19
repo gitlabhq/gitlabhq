@@ -1587,7 +1587,7 @@ another RHEL-compatible operating system.
 
 </div>
 
-Long term support (LTS) for [OpenSSL version 1.1.1 ended in September 2023](https://endoflife.date/openssl). Therefore, OpenSSL 3 will be the default in GitLab 17.7.
+Long term support (LTS) for [OpenSSL version 1.1.1 ended in September 2023](https://endoflife.date/openssl). Therefore, OpenSSL 3 will be the default in GitLab 17.7. GitLab bundles OpenSSL 3, so you are not required to make any changes to your operating system.
 
 With the upgrade to OpenSSL 3:
 

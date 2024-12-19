@@ -5,6 +5,7 @@ import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 import ContainerRegistrySection from '~/packages_and_registries/settings/project/components/container_registry_section.vue';
 import ContainerExpirationPolicy from '~/packages_and_registries/settings/project/components/container_expiration_policy.vue';
 import ContainerProtectionRules from '~/packages_and_registries/settings/project/components/container_protection_rules.vue';
+import ContainerProtectionTagRules from '~/packages_and_registries/settings/project/components/container_protection_tag_rules.vue';
 
 describe('Container registry project settings section', () => {
   let wrapper;
@@ -13,10 +14,12 @@ describe('Container registry project settings section', () => {
   const findLink = () => findSettingsBlock().findComponent(GlLink);
   const findContainerExpirationPolicy = () => wrapper.findComponent(ContainerExpirationPolicy);
   const findContainerProtectionRules = () => wrapper.findComponent(ContainerProtectionRules);
+  const findContainerProtectionTagRules = () => wrapper.findComponent(ContainerProtectionTagRules);
 
   const defaultProvide = {
     glFeatures: {
       containerRegistryProtectedContainers: true,
+      containerRegistryProtectedTags: true,
     },
   };
 
@@ -51,11 +54,12 @@ describe('Container registry project settings section', () => {
       expect(link.attributes('href')).toBe(docsPath);
     });
 
-    it('renders container expiration policy & protection rules', () => {
+    it('renders container registry settings components', () => {
       mountComponent();
 
       expect(findContainerExpirationPolicy().exists()).toBe(true);
       expect(findContainerProtectionRules().exists()).toBe(true);
+      expect(findContainerProtectionTagRules().exists()).toBe(true);
     });
 
     describe('when feature flag "containerRegistryProtectedContainers" is disabled', () => {
@@ -67,6 +71,19 @@ describe('Container registry project settings section', () => {
 
         expect(findContainerProtectionRules().exists()).toBe(false);
         expect(findContainerExpirationPolicy().exists()).toBe(true);
+      });
+    });
+
+    describe('when feature flag "containerRegistryProtectedTags" is disabled', () => {
+      it('container protection tag rules settings is hidden', () => {
+        mountComponent({
+          ...defaultProvide,
+          glFeatures: { containerRegistryProtectedTags: false },
+        });
+
+        expect(findContainerExpirationPolicy().exists()).toBe(true);
+        expect(findContainerProtectionRules().exists()).toBe(false);
+        expect(findContainerProtectionTagRules().exists()).toBe(false);
       });
     });
   });

@@ -183,6 +183,9 @@ class User < ApplicationRecord
   has_one :user_synced_attributes_metadata, autosave: true
   has_one :aws_role, class_name: 'Aws::Role'
 
+  # Ghost User Migration
+  has_one :ghost_user_migration, class_name: 'Users::GhostUserMigration'
+
   # Followers
   has_many :followed_users, foreign_key: :follower_id, class_name: 'Users::UserFollowUser'
   has_many :followees, -> { active }, through: :followed_users

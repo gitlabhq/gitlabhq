@@ -33881,6 +33881,8 @@ CREATE INDEX tmp_idx_orphaned_approval_project_rules ON approval_project_rules U
 
 CREATE UNIQUE INDEX tmp_idx_packages_dependencies_on_name_version_pattern ON packages_dependencies USING btree (name, version_pattern) WHERE (project_id IS NULL);
 
+CREATE INDEX tmp_idx_packages_on_project_id_when_mvn_not_pending_destruction ON packages_packages USING btree (project_id) WHERE ((package_type = 1) AND (status <> 4));
+
 CREATE INDEX tmp_index_ci_job_artifacts_on_expire_at_where_locked_unknown ON ci_job_artifacts USING btree (expire_at, job_id) WHERE ((locked = 2) AND (expire_at IS NOT NULL));
 
 CREATE INDEX tmp_index_for_null_member_namespace_id ON members USING btree (member_namespace_id) WHERE (member_namespace_id IS NULL);

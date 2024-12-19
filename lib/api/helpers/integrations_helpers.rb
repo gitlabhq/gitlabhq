@@ -220,32 +220,6 @@ module API
             }
           ],
           'pivotaltracker' => ::Integrations::Pivotaltracker.api_arguments,
-          'prometheus' => [
-            {
-              required: false,
-              name: :manual_configuration,
-              type: ::Grape::API::Boolean,
-              desc: 'When enabled, the default settings will be overridden with your custom configuration'
-            },
-            {
-              required: true,
-              name: :api_url,
-              type: String,
-              desc: 'Prometheus API Base URL, like http://prometheus.example.com/'
-            },
-            {
-              required: true,
-              name: :google_iap_audience_client_id,
-              type: String,
-              desc: 'Client ID of the IAP-secured resource (looks like IAP_CLIENT_ID.apps.googleusercontent.com)'
-            },
-            {
-              required: true,
-              name: :google_iap_service_account_json,
-              type: String,
-              desc: 'Contents of the credentials.json file of your service account, like: { "type": "service_account", "project_id": ... }'
-            }
-          ],
           'pumble' => [
             {
               required: true,
@@ -399,7 +373,6 @@ module API
           ::Integrations::Phorge,
           ::Integrations::PipelinesEmail,
           ::Integrations::Pivotaltracker,
-          ::Integrations::Prometheus,
           ::Integrations::Pumble,
           ::Integrations::Pushover,
           ::Integrations::Redmine,

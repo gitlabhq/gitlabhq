@@ -10057,6 +10057,9 @@ msgstr ""
 msgid "BranchRules|No data to display"
 msgstr ""
 
+msgid "BranchRules|No default set until defined by user"
+msgstr ""
+
 msgid "BranchRules|No matching results"
 msgstr ""
 
@@ -10067,9 +10070,6 @@ msgid "BranchRules|No one is allowed to merge changes."
 msgstr ""
 
 msgid "BranchRules|No one is allowed to push and merge changes."
-msgstr ""
-
-msgid "BranchRules|No squash settings defined"
 msgstr ""
 
 msgid "BranchRules|No status checks have been added."
@@ -10863,6 +10863,9 @@ msgstr ""
 msgid "CICDAnalytics|What is instance runner duration?"
 msgstr ""
 
+msgid "CICD|%{policy} to %{resource}"
+msgstr ""
+
 msgid "CICD|Access unrestricted, so users with sufficient permissions in this project can authenticate with a job token generated in any other project."
 msgstr ""
 
@@ -10923,6 +10926,9 @@ msgstr ""
 msgid "CICD|Continuous deployment to production using timed incremental rollout"
 msgstr ""
 
+msgid "CICD|Default (user membership and role)"
+msgstr ""
+
 msgid "CICD|Default to Auto DevOps pipeline"
 msgstr ""
 
@@ -10953,6 +10959,9 @@ msgstr ""
 msgid "CICD|Group or project"
 msgstr ""
 
+msgid "CICD|Job token permissions"
+msgstr ""
+
 msgid "CICD|Jobs"
 msgstr ""
 
@@ -10966,6 +10975,9 @@ msgid "CICD|Maintainer"
 msgstr ""
 
 msgid "CICD|No authentication events in the last 30 days."
+msgstr ""
+
+msgid "CICD|No resources selected (minimal access only)"
 msgstr ""
 
 msgid "CICD|Only this project and any groups and projects in the allowlist"
@@ -15442,6 +15454,9 @@ msgstr ""
 msgid "ContainerRegistry|Protected container repositories"
 msgstr ""
 
+msgid "ContainerRegistry|Protected container tags"
+msgstr ""
+
 msgid "ContainerRegistry|Published %{timeInfo}"
 msgstr ""
 
@@ -15616,6 +15631,9 @@ msgid "ContainerRegistry|We are having trouble connecting to the Container Regis
 msgstr ""
 
 msgid "ContainerRegistry|When a container repository is protected, only certain user roles can push the protected container image, which helps to avoid tampering with the container image."
+msgstr ""
+
+msgid "ContainerRegistry|When a container tag is protected, only certain user roles can update and delete the protected tag, which helps to prevent tampering with the tag. A maximum of 5 protection rules can be added per project."
 msgstr ""
 
 msgid "ContainerRegistry|While the rename is in progress, new uploads to the container registry are blocked. Ongoing uploads may fail and need to be retried."

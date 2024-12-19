@@ -128,4 +128,11 @@ RSpec.describe X509Certificate do
       expect(build(:x509_certificate, x509_issuer: issuer, serial_number: "sgsgfsdgdsfg")).to be_invalid
     end
   end
+
+  describe '#all_emails' do
+    it 'creates a new certificate if it was not found' do
+      cert = build(:x509_certificate, email: 'user@example.com', emails: ['gitlab@test.com', 'test@test.com', 'user@example.com', nil])
+      expect(cert.all_emails).to contain_exactly('user@example.com', 'gitlab@test.com', 'test@test.com')
+    end
+  end
 end
