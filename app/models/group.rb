@@ -502,12 +502,6 @@ class Group < Namespace
     full_name
   end
 
-  def to_human_reference(from = nil)
-    return unless cross_namespace_reference?(from)
-
-    human_name
-  end
-
   def visibility_level_allowed_by_parent?(level = self.visibility_level)
     return true unless parent_id && parent_id.nonzero?
 

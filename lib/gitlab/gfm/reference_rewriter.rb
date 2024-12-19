@@ -72,7 +72,6 @@ module Gitlab
       end
 
       def unfold_reference(reference, match, target_parent)
-        format = match[:format].to_s
         before = @text[0...match.begin(0)]
         after = @text[match.end(0)..]
 
@@ -86,26 +85,22 @@ module Gitlab
           raise RewriteError, "Unspecified reference detected for #{referable.class.name}"
         end
 
-        cross_reference += format
         new_text = before + cross_reference + after
         substitution_valid?(new_text) ? cross_reference : reference
       end
 
       def find_referable(reference)
-        extractor = Gitlab::ReferenceExtractor.new(source_parent_param[:project], @current_user)
-        extractor.analyze(reference, **source_parent_param)
+        extractor = Gitlab::ReferenceExtractor.new(@source_parent, @current_user)
+        extractor.analyze(reference)
         extractor.all.first
       end
 
       def build_cross_reference(referable, target_parent)
-        class_name = referable.class.base_class.name
-
-        return referable.to_reference(target_parent) unless %w[Label Milestone].include?(class_name)
-        return referable.to_reference(@source_parent, target_container: target_parent) if referable.is_a?(GroupLabel)
-        return referable.to_reference(target_parent, full: true, absolute_path: true) if referable.is_a?(Milestone)
-
-        full = @source_parent.is_a?(Group) ? true : false
-        referable.to_reference(target_parent, full: full)
+        if referable.respond_to?(:project)
+          referable.to_reference(target_parent)
+        else
+          referable.to_reference(@source_parent, target_container: target_parent)
+        end
       end
 
       def substitution_valid?(substituted)
@@ -113,20 +108,8 @@ module Gitlab
       end
 
       def markdown(text)
-        Banzai.render(text, **source_parent_param, no_original_data: true, no_sourcepos: true, link_text: 'placeholder')
+        Banzai.render(text, project: @source_parent, no_original_data: true, no_sourcepos: true)
       end
-
-      def source_parent_param
-        case @source_parent
-        when Project
-          { project: @source_parent }
-        when Group
-          { group: @source_parent, project: nil }
-        when Namespaces::ProjectNamespace
-          { project: @source_parent.project }
-        end
-      end
-      strong_memoize_attr :source_parent_param
     end
   end
 end

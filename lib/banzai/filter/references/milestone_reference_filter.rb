@@ -158,15 +158,6 @@ module Banzai
         def requires_unescaping?
           true
         end
-
-        def data_attributes_for(text, parent, object, link_content: false, link_reference: false)
-          object_parent = object.resource_parent
-
-          return super unless object_parent.is_a?(Group)
-          return super if object_parent.id == parent.id
-
-          super.merge({ group: object_parent.id, namespace: object_parent.id, project: nil })
-        end
       end
     end
   end

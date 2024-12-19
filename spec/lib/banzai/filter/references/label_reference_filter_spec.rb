@@ -793,38 +793,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
       let_it_be(:context) { { project: nil, group: another_group } }
 
       it 'can not find the label' do
-        reference = "#{another_group.full_path}~#{group_label.name}"
-        result = reference_filter("See #{reference}", context)
-
-        expect(result.to_html).to include "See #{reference}"
-      end
-
-      it 'finds the label with relative reference' do
-        label_name = group_label.name
-        reference = "#{group.full_path}~#{label_name}"
-        result = reference_filter("See #{reference}", context)
-
-        if context[:label_url_method] == :group_url
-          expect(result.css('a').first.attr('href')).to eq(urls.group_url(group, label_name: label_name))
-        else
-          expect(result.css('a').first.attr('href')).to eq(urls.issues_group_url(group, label_name: label_name))
-        end
-      end
-
-      it 'finds label in ancestors' do
-        label_name = parent_group_label.name
-        reference = "#{group.full_path}~#{label_name}"
-        result = reference_filter("See #{reference}", context)
-
-        if context[:label_url_method] == :group_url
-          expect(result.css('a').first.attr('href')).to eq(urls.group_url(group, label_name: label_name))
-        else
-          expect(result.css('a').first.attr('href')).to eq(urls.issues_group_url(group, label_name: label_name))
-        end
-      end
-
-      it 'does not find label in ancestors' do
-        reference = "/#{group.full_path}~#{parent_group_label.name}"
+        reference = "#{group.full_path}~#{group_label.name}"
         result = reference_filter("See #{reference}", context)
 
         expect(result.to_html).to include "See #{reference}"
@@ -832,6 +801,13 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
 
       it_behaves_like 'absolute group reference' do
         let_it_be(:reference) { "#{group.full_path}~#{group_label.name}" }
+      end
+
+      it 'does not find label in ancestors' do
+        reference = "/#{group.full_path}~#{parent_group_label.name}"
+        result = reference_filter("See #{reference}", context)
+
+        expect(result.to_html).to include "See #{reference}"
       end
     end
   end

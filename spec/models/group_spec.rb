@@ -1554,13 +1554,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it { expect(group.human_name).to eq(group.name) }
   end
 
-  describe '#to_human_reference' do
-    let_it_be(:new_group) { create(:group) }
-
-    it { expect(group.to_human_reference).to be_nil }
-    it { expect(group.to_human_reference(new_group)).to eq(group.full_name) }
-  end
-
   describe '#add_user' do
     let(:user) { create(:user) }
 
