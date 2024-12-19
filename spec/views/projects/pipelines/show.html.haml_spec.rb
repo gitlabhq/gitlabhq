@@ -4,21 +4,21 @@ require 'spec_helper'
 
 RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_composition do
   include Devise::Test::ControllerHelpers
+
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
-
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:presented_pipeline) { pipeline.present(current_user: user) }
 
   before do
+    allow(view).to receive(:current_user) { user }
     assign(:project, project)
     assign(:pipeline, presented_pipeline)
-    allow(view).to receive(:current_user) { user }
   end
 
   context 'when pipeline has errors' do
     before do
-      allow(pipeline).to receive(:yaml_errors).and_return('some errors')
+      create(:ci_pipeline_message, pipeline: pipeline, content: 'some errors', severity: :error)
     end
 
     it 'shows errors' do
@@ -51,7 +51,7 @@ RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_compositio
     end
   end
 
-  context 'when pipeline is valid' do
+  context 'when pipeline does not have errors' do
     it 'does not show errors' do
       render
 

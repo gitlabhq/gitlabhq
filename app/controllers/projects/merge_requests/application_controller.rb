@@ -97,6 +97,18 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
     @commit ||= @project.commit(commit_id)
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def build_merge_request
+    params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
+    new_params = merge_request_params.merge(diff_options: diff_options)
+
+    # Gitaly N+1 issue: https://gitlab.com/gitlab-org/gitlab-foss/issues/58096
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      @merge_request = ::MergeRequests::BuildService
+        .new(project: project, current_user: current_user, params: new_params)
+        .execute
+    end
+  end
 end
 
 Projects::MergeRequests::ApplicationController.prepend_mod_with('Projects::MergeRequests::ApplicationController')

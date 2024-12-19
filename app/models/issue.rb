@@ -211,25 +211,14 @@ class Issue < ApplicationRecord
   scope :with_issue_type, ->(types) {
     types = Array(types)
 
-    if Feature.enabled?(:issues_use_correct_work_item_type_id, :instance)
-      # Using != 1 since we also want the guard clause to handle empty arrays
-      return joins(:correct_work_item_type).where(work_item_types: { base_type: types }) if types.size != 1
+    # Using != 1 since we also want the guard clause to handle empty arrays
+    return joins(:correct_work_item_type).where(work_item_types: { base_type: types }) if types.size != 1
 
-      # This optimization helps the planer use the correct indexes when filtering by a single type
-      where(
-        '"issues"."correct_work_item_type_id" = (?)',
-        WorkItems::Type.by_type(types.first).select(:correct_id).limit(1)
-      )
-    else
-      # Using != 1 since we also want the guard clause to handle empty arrays
-      return joins(:work_item_type).where(work_item_types: { base_type: types }) if types.size != 1
-
-      # This optimization helps the planer use the correct indexes when filtering by a single type
-      where(
-        '"issues"."work_item_type_id" = (?)',
-        WorkItems::Type.by_type(types.first).select(:id).limit(1)
-      )
-    end
+    # This optimization helps the planer use the correct indexes when filtering by a single type
+    where(
+      '"issues"."correct_work_item_type_id" = (?)',
+      WorkItems::Type.by_type(types.first).select(:correct_id).limit(1)
+    )
   }
   scope :without_issue_type, ->(types) {
     joins(::Gitlab::Issues::TypeAssociationGetter.call).where.not(work_item_types: { base_type: types })
@@ -366,9 +355,7 @@ class Issue < ApplicationRecord
 
   # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/499911
   def work_item_type
-    return correct_work_item_type if Feature.enabled?(:issues_use_correct_work_item_type_id, :instance)
-
-    super
+    correct_work_item_type
   end
 
   def work_item_type_id=(input_work_item_type_id)

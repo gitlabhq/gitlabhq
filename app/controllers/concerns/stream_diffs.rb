@@ -47,6 +47,8 @@ module StreamDiffs
   end
 
   def stream_diff_files(options)
+    return unless resource
+
     resource.diffs_for_streaming(options).diff_files.each do |diff_file|
       response.stream.write(render_diff_file(diff_file))
     end

@@ -56,13 +56,12 @@ module WorkItems
       private
 
       def counts_by_state(work_item_type)
-        type_id_column = Feature.enabled?(:issues_use_correct_work_item_type_id, :instance) ? 'correct_id' : 'id'
         open_count = counts_by_type_and_state.fetch(
-          [work_item_type.attributes[type_id_column], WorkItem.available_states[:opened]],
+          [work_item_type.attributes['correct_id'], WorkItem.available_states[:opened]],
           0
         )
         closed_count = counts_by_type_and_state.fetch(
-          [work_item_type.attributes[type_id_column], WorkItem.available_states[:closed]],
+          [work_item_type.attributes['correct_id'], WorkItem.available_states[:closed]],
           0
         )
 

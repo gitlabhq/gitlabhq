@@ -250,7 +250,7 @@ li.note {
 
 .gitlab-promo {
   a {
-    color: $gray-300;
+    @apply gl-text-disabled;
     margin-right: 30px;
   }
 }

@@ -14,6 +14,8 @@ GraphQL is a versionless API, unlike the REST API.
 Occasionally, items have to be updated or removed from the GraphQL API.
 According to our [process for removing items](index.md#deprecation-and-removal-process), here are the items that have been removed.
 
+For deprecations, see the [Deprecations by version page](../../update/deprecations.md).
+
 ## GitLab 17.0
 
 Fields removed in GitLab 17.0.

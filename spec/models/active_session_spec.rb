@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
+RSpec.describe ActiveSession, :clean_gitlab_redis_sessions, feature_category: :system_access do
   let(:lookup_key) { described_class.lookup_key_name(user.id) }
   let(:user) do
     create(:user).tap do |user|
@@ -79,6 +79,10 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
       )
     end
 
+    it 'returns an empty array if the user does not have any active session' do
+      expect(described_class.list(user)).to be_empty
+    end
+
     shared_examples 'ignoring obsolete entries' do
       let(:session_id) { '6919a6f1bb119dd7396fadc38fd18d0d' }
       let(:session) { described_class.new(session_id: 'a') }
@@ -116,10 +120,34 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
       let(:serialized_session) { session.dump }
 
       it_behaves_like 'ignoring obsolete entries'
-    end
 
-    it 'returns an empty array if the user does not have any active session' do
-      expect(described_class.list(user)).to be_empty
+      context 'when the current session contains unknown attributes' do
+        let(:session_id) { '8f62cc7383c' }
+        let(:session_key) { described_class.key_name(user.id, session_id) }
+        let(:serialized_session) do
+          "v2:{\"ip_address\": \"127.0.0.1\", \"browser\": \"Firefox\", \"os\": \"Debian\", " \
+            "\"device_type\": \"desktop\", \"session_id\": \"#{session_id}\", " \
+            "\"new_attribute\": \"unknown attribute\"}"
+        end
+
+        it 'loads known attributes only' do
+          Gitlab::Redis::Sessions.with do |redis|
+            redis.set(session_key, serialized_session)
+            redis.sadd(lookup_key, [session_id])
+          end
+
+          expect(described_class.list(user)).to contain_exactly(
+            have_attributes(
+              ip_address: "127.0.0.1",
+              browser: "Firefox",
+              os: "Debian",
+              device_type: "desktop",
+              session_id: session_id.to_s
+            )
+          )
+          expect(described_class.list(user).first).not_to respond_to :new_attribute
+        end
+      end
     end
   end
 

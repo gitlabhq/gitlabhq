@@ -93,8 +93,6 @@ export default {
           toggle-text="Import options"
           text-sr-only
           :disabled="isInvalid"
-          icon="chevron-down"
-          no-caret
           variant="confirm"
           category="secondary"
         >

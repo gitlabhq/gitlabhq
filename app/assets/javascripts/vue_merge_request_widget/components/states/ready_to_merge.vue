@@ -712,13 +712,10 @@ export default {
                   v-gl-tooltip.hover.focus="__('Select merge moment')"
                   :disabled="isMergeButtonDisabled"
                   variant="confirm"
-                  class="gl-mr-0"
                   data-testid="merge-immediately-dropdown"
-                  icon="chevron-down"
                   toggle-class="btn-icon js-merge-moment"
                   :toggle-text="__('Select a merge moment')"
                   text-sr-only
-                  no-caret
                 >
                   <gl-disclosure-dropdown-item
                     v-if="

@@ -39,18 +39,6 @@ RSpec.shared_examples 'graphql work item type list request spec' do |context_nam
       expect(ids_from_response).to match_array(WorkItems::Type.pluck(:correct_id))
     end
 
-    context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
-      before do
-        stub_feature_flags(issues_set_correct_work_item_type_id: false)
-      end
-
-      it 'exposes id in the API through the id field' do
-        post_graphql(query, current_user: current_user)
-
-        expect(ids_from_response).to match_array(WorkItems::Type.pluck(:id))
-      end
-    end
-
     it 'prevents N+1 queries' do
       # Destroy 2 existing types
       WorkItems::Type.by_type([:issue, :task]).delete_all

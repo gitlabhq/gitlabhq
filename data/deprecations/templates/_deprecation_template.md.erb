@@ -17,9 +17,7 @@ The following GitLab features are deprecated and no longer recommended for use.
 For advanced searching and filtering of this deprecation information, try
 [a tool built by our Customer Success team](https://gitlab-com.gitlab.io/cs-tools/gitlab-cs-tools/what-is-new-since/?tab=deprecations).
 
-[REST API deprecations](https://docs.gitlab.com/ee/api/rest/deprecations.html)
-and [GraphQL deprecations](https://docs.gitlab.com/ee/api/graphql/removed_items.html)
-are documented separately.
+[REST API deprecations](https://docs.gitlab.com/ee/api/rest/deprecations.html) are documented separately.
 
 **{rss}** **To be notified of upcoming breaking changes**,
 add this URL to your RSS feed reader: `https://about.gitlab.com/breaking-changes.xml`

@@ -15,7 +15,7 @@ module Gitlab
       end
 
       def execute
-        attributes = {
+        {
           iid: params[:iid],
           project_id: project.id,
           namespace_id: project.project_namespace_id,
@@ -26,16 +26,9 @@ module Gitlab
           created_at: jira_issue.created,
           author_id: reporter,
           assignee_ids: assignees,
-          label_ids: label_ids
+          label_ids: label_ids,
+          correct_work_item_type_id: @work_item_type.correct_id
         }
-
-        if Feature.enabled?(:issues_set_correct_work_item_type_id, :instance)
-          attributes[:correct_work_item_type_id] = @work_item_type.correct_id
-        else
-          attributes[:work_item_type_id] = @work_item_type.id
-        end
-
-        attributes
       end
 
       private

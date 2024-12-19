@@ -113,18 +113,6 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
       .execute(include_routes: false, include_fork_networks: true, search: params[:search]).limit(20)
   end
 
-  def build_merge_request
-    params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
-    new_params = merge_request_params.merge(diff_options: diff_options)
-
-    # Gitaly N+1 issue: https://gitlab.com/gitlab-org/gitlab-foss/issues/58096
-    Gitlab::GitalyClient.allow_n_plus_1_calls do
-      @merge_request = ::MergeRequests::BuildService
-        .new(project: project, current_user: current_user, params: new_params)
-        .execute
-    end
-  end
-
   def define_new_vars
     @noteable = @merge_request
     @target_project = @merge_request.target_project

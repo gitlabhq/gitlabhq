@@ -137,37 +137,6 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker, feature_category: :importe
             expect(issue.correct_work_item_type_id).to eq(issue_type.correct_id)
             expect(issue.work_item_type_id).to eq(issue_type.id)
           end
-
-          context 'when the issues_set_correct_work_item_type_id feature flag is disabled' do
-            let(:delay_exec) { true }
-
-            before do
-              stub_feature_flags(issues_set_correct_work_item_type_id: false)
-            end
-
-            it 'record a failed to import issue, old_id does not exist in the work_item_types.id column' do
-              perform_inline
-
-              expect(
-                Gitlab::Cache::Import::Caching.read(Gitlab::JiraImport.failed_issues_counter_cache_key(project.id)).to_i
-              ).to eq(1)
-            end
-
-            context 'when a correct work_item_types_id is used' do
-              let(:work_item_type_id) { issue_type.id }
-
-              it 'creates an issue with the correct type' do
-                expect(::WorkItems::Type).not_to receive(:find_by_correct_id_with_fallback)
-
-                perform_inline
-
-                issue = Issue.last
-
-                expect(issue.correct_work_item_type_id).to eq(issue_type.correct_id)
-                expect(issue.work_item_type_id).to eq(issue_type.id)
-              end
-            end
-          end
         end
 
         context 'when assignee_ids is nil' do

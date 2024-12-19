@@ -9,18 +9,6 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
         GlobalID.new(type.public_send(gid_method).to_s).model_id.to_i
       ).to eq(type.attributes['correct_id'])
     end
-
-    context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
-      before do
-        stub_feature_flags(issues_set_correct_work_item_type_id: false)
-      end
-
-      it 'uses the id column for global ids' do
-        expect(
-          GlobalID.new(type.public_send(gid_method).to_s).model_id.to_i
-        ).to eq(type.attributes['id'])
-      end
-    end
   end
 
   describe 'modules' do
@@ -134,42 +122,18 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
         let(:ids_for_scope) { nil }
 
         it { is_expected.to be_empty }
-
-        context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
-          before do
-            stub_feature_flags(issues_set_correct_work_item_type_id: false)
-          end
-
-          it { is_expected.to be_empty }
-        end
       end
 
       context 'when ids are empty array' do
         let(:ids_for_scope) { [] }
 
         it { is_expected.to be_empty }
-
-        context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
-          before do
-            stub_feature_flags(issues_set_correct_work_item_type_id: false)
-          end
-
-          it { is_expected.to be_empty }
-        end
       end
 
       context 'when using old ids' do
         let(:ids_for_scope) { [type1, type2].map(&:old_id) }
 
         it { is_expected.to contain_exactly(type1, type2) }
-
-        context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
-          before do
-            stub_feature_flags(issues_set_correct_work_item_type_id: false)
-          end
-
-          it { is_expected.to be_empty }
-        end
       end
 
       context 'when using correct ids' do
@@ -177,42 +141,18 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
 
         # type3 only gets matched because it's old_id matches type2.correct_id
         it { is_expected.to contain_exactly(type1, type2, type3) }
-
-        context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
-          before do
-            stub_feature_flags(issues_set_correct_work_item_type_id: false)
-          end
-
-          it { is_expected.to be_empty }
-        end
       end
 
       context 'when using correct ids but another type has the same old_id value' do
         let(:ids_for_scope) { [type2].map(&:correct_id) }
 
         it { is_expected.to contain_exactly(type2, type3) }
-
-        context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
-          before do
-            stub_feature_flags(issues_set_correct_work_item_type_id: false)
-          end
-
-          it { is_expected.to be_empty }
-        end
       end
 
       context 'when using ids' do
         let(:ids_for_scope) { [type1, type2].map(&:id) }
 
         it { is_expected.to be_empty }
-
-        context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
-          before do
-            stub_feature_flags(issues_set_correct_work_item_type_id: false)
-          end
-
-          it { is_expected.to contain_exactly(type1, type2) }
-        end
       end
     end
 

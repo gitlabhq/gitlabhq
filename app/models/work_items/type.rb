@@ -87,8 +87,6 @@ module WorkItems
     scope :order_by_name_asc, -> { order(arel_table[:name].lower.asc) }
     scope :by_type, ->(base_type) { where(base_type: base_type) }
     scope :with_correct_id_and_fallback, ->(correct_ids) {
-      return id_in(correct_ids) if Feature.disabled?(:issues_set_correct_work_item_type_id, :instance)
-
       # This shouldn't work for nil ids as we expect newer instances to have NULL values in old_id
       correct_ids = Array(correct_ids).compact
       return none if correct_ids.blank?
@@ -137,8 +135,6 @@ module WorkItems
     end
 
     def to_global_id
-      return super if Feature.disabled?(:issues_set_correct_work_item_type_id, :instance)
-
       ::Gitlab::GlobalId.build(self, id: correct_id)
     end
     # Alias necessary here as the Gem uses `alias` to define the `gid` method

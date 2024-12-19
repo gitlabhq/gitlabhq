@@ -2,7 +2,7 @@
 - add_to_breadcrumbs _('Pipelines'), project_pipelines_path(@project)
 - breadcrumb_title "##{@pipeline.id}"
 - page_title _('Pipeline')
-- pipeline_has_errors = @pipeline.builds.empty? && @pipeline.yaml_errors.present?
+- pipeline_has_errors = @pipeline.builds.empty? && @pipeline.error_messages.any?
 - add_page_specific_style 'page_bundles/pipeline'
 - add_page_specific_style 'page_bundles/reports'
 - add_page_specific_style 'page_bundles/ci_status'
@@ -19,7 +19,7 @@
       alert_options: { class: 'gl-mb-5' }) do |c|
       - c.with_body do
         %ul
-          - @pipeline.yaml_errors.split("\n").each do |error|
+          - @pipeline.error_messages.pluck(:content).each do |error| # rubocop:disable CodeReuse/ActiveRecord -- done temporarily to drop yaml_errors
             %li= error
         - if can_view_pipeline_editor?(@project)
           = render Pajamas::ButtonComponent.new(href: project_ci_pipeline_editor_path(@project, branch_name: @pipeline.source_ref), variant: :confirm) do

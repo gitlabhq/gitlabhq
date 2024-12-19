@@ -327,8 +327,9 @@ If a report uses a `PATCH` version that doesn't match any vendored schema versio
 the latest vendored `PATCH` version. For example, if a report version is 15.0.23 and the latest vendored
 version is 15.0.6, the report is validated against version 15.0.6.
 
-GitLab uses the [`gitlab-security_report_schemas`](https://rubygems.org/gems/gitlab-security_report_schemas)
-gem to perform validation. You can see which schema versions are supported in your GitLab version
+GitLab validates reports against security report JSON schemas
+it reads from the [`gitlab-security_report_schemas`](https://rubygems.org/gems/gitlab-security_report_schemas)
+gem. You can see which schema versions are supported in your GitLab version
 by looking at the version of the gem in your GitLab installation. For example,
 [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/blob/93a2a651a48bd03d9d84847e1cade19962ab4292/Gemfile#L431)
 uses version `0.1.2.min15.0.0.max15.2.0`, which means it has versions in the range `15.0.0` and `15.2.0`.
