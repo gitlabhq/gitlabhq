@@ -114,8 +114,8 @@ describe('ValueStreamMetrics', () => {
 
   const expectDoraMetricsRequests = ({
     fullPath = requestPath,
-    startDate = mockStartDate,
-    endDate = mockEndDate,
+    startDate = '2018-12-15',
+    endDate = '2019-01-14',
   } = {}) =>
     expect(doraMetricsRequestHandler).toHaveBeenCalledWith({
       fullPath,
@@ -126,9 +126,9 @@ describe('ValueStreamMetrics', () => {
 
   const expectFlowMetricsRequests = ({
     fullPath = requestPath,
+    startDate = '2018-12-15',
+    endDate = '2019-01-14',
     labelNames,
-    startDate = mockStartDate,
-    endDate = mockEndDate,
   } = {}) =>
     expect(flowMetricsRequestHandler).toHaveBeenCalledWith({
       fullPath,
@@ -375,8 +375,8 @@ describe('ValueStreamMetrics', () => {
       it('fetches FOSS flow metrics data', () => {
         expect(fossFlowMetricsRequestHandler).toHaveBeenCalledWith({
           fullPath: requestPath,
-          startDate: mockStartDate,
-          endDate: mockEndDate,
+          startDate: '2018-12-15',
+          endDate: '2019-01-14',
         });
       });
 

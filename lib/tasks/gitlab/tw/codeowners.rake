@@ -27,7 +27,7 @@ namespace :tw do
       # CodeOwnerRule.new('Analytics Instrumentation', ''),
       # CodeOwnerRule.new('Anti-Abuse', ''),
       CodeOwnerRule.new('Authentication', '@jglassman1'),
-      # CodeOwnerRule.new('Authorization', ''),
+      CodeOwnerRule.new('Authorization', '@rlehmann1'),
       CodeOwnerRule.new('Cloud Connector', '@jglassman1'),
       CodeOwnerRule.new('Code Creation', '@jglassman1'),
       CodeOwnerRule.new('Code Review', '@aqualls'),
@@ -76,13 +76,13 @@ namespace :tw do
       # CodeOwnerRule.new('Security Infrastructure', ''),
       CodeOwnerRule.new('Security Policies', '@rlehmann1'),
       CodeOwnerRule.new('Secret Detection', '@phillipwells'),
+      CodeOwnerRule.new('Security Insights', '@rlehmann1'),
       CodeOwnerRule.new('Solutions Architecture', '@jfullam @brianwald @Darwinjs'),
       CodeOwnerRule.new('Source Code', '@brendan777'),
       CodeOwnerRule.new('Static Analysis', '@rdickenson'),
       # CodeOwnerRule.new('Subscription Management', ''),
       CodeOwnerRule.new('Tenant Scale', '@emily.sahlani'),
       CodeOwnerRule.new('Testing', '@eread'),
-      CodeOwnerRule.new('Threat Insights', '@rdickenson'),
       CodeOwnerRule.new('Tutorials', '@kpaizee'),
       # CodeOwnerRule.new('US Public Sector Services', ''),
       CodeOwnerRule.new('Utilization', '@lciutacu')
@@ -96,7 +96,7 @@ namespace :tw do
         '@gitlab-org/analytics-section/product-analytics/engineers/frontend ' \
         '@gitlab-org/analytics-section/analytics-instrumentation/engineers'),
       CodeOwnerRule.new('Authentication', '@gitlab-org/govern/authentication/approvers'),
-      CodeOwnerRule.new('Authorization', '@rlehmann1'),
+      CodeOwnerRule.new('Authorization', '@gitlab-org/govern/authorization/approvers'),
       CodeOwnerRule.new('Compliance',
         '@gitlab-org/govern/security-policies-frontend @gitlab-org/govern/threat-insights-frontend-team ' \
         '@gitlab-org/govern/threat-insights-backend-team'),

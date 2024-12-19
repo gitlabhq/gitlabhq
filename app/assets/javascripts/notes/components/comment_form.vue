@@ -18,6 +18,7 @@ import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
+import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 
 import * as constants from '../constants';
@@ -45,11 +46,12 @@ export default {
     CommentFieldLayout,
     CommentTypeDropdown,
     GlFormCheckbox,
+    CommentTemperature: () => import('ee_component/ai/components/comment_temperature.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [issuableStateMixin, InternalEvents.mixin()],
+  mixins: [issuableStateMixin, InternalEvents.mixin(), glAbilitiesMixin()],
   props: {
     noteableType: {
       type: String,
@@ -63,6 +65,7 @@ export default {
       errors: [],
       noteIsInternal: false,
       isSubmitting: false,
+      isMeasuringCommentTemperature: false,
       formFieldProps: {
         'aria-label': this.$options.i18n.comment,
         placeholder: this.$options.i18n.bodyPlaceholder,
@@ -192,6 +195,9 @@ export default {
 
       return null;
     },
+    shouldDisableField() {
+      return this.isSubmitting && !this.isMeasuringCommentTemperature;
+    },
   },
   watch: {
     noteIsInternal(val) {
@@ -220,7 +226,11 @@ export default {
     handleSaveDraft() {
       this.handleSave({ isDraft: true });
     },
-    async handleSave({ withIssueAction = false, isDraft = false } = {}) {
+    async handleSave({
+      withIssueAction = false,
+      isDraft = false,
+      shouldMeasureTemperature = true,
+    } = {}) {
       this.errors = [];
 
       if (this.note.length) {
@@ -247,10 +257,19 @@ export default {
           return;
         }
 
-        this.note = ''; // Empty textarea while being requested. Repopulate in catch
-
         this.isSubmitting = true;
 
+        if (this.glAbilities.measureCommentTemperature && shouldMeasureTemperature) {
+          this.isMeasuringCommentTemperature = true;
+          this.$refs.commentTemperature.measureCommentTemperature();
+          return;
+        }
+
+        if (!this.shouldMeasureTemperature) {
+          this.isMeasuringCommentTemperature = false;
+        }
+
+        this.note = ''; // Empty textarea while being requested. Repopulate in catch
         if (isDraft) {
           eventHub.$emit('noteFormAddToReview', { name: 'noteFormAddToReview' });
         }
@@ -380,7 +399,7 @@ export default {
                 :add-spacing-classes="false"
                 :form-field-props="formFieldProps"
                 :autosave-key="autosaveKey"
-                :disabled="isSubmitting"
+                :disabled="shouldDisableField"
                 :autocomplete-data-sources="autocompleteDataSources"
                 :noteable-type="noteableType"
                 supports-quick-actions
@@ -392,6 +411,15 @@ export default {
                 @input="onInput"
               />
             </comment-field-layout>
+            <comment-temperature
+              v-if="glAbilities.measureCommentTemperature"
+              ref="commentTemperature"
+              v-model="note"
+              :item-id="getNoteableData.id"
+              :item-type="noteableType"
+              :user-id="getUserData.id"
+              @save="handleSave({ shouldMeasureTemperature: false })"
+            />
             <div class="note-form-actions gl-font-size-0">
               <gl-form-checkbox
                 v-if="canSetInternalNote"

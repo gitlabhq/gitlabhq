@@ -6,6 +6,7 @@ RSpec.describe Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter, :cle
   let(:user) { build(:user, id: 1) }
   let(:note) { build(:note, author: user) }
   let(:args) { nil }
+  let(:project) { build(:project) }
 
   shared_examples_for 'a tracked quick action unique event' do
     specify do
@@ -25,14 +26,9 @@ RSpec.describe Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter, :cle
     it_behaves_like 'internal event tracking' do
       let(:event) { action }
     end
-
-    it 'tracks the internal event' do
-      expect(Gitlab::InternalEvents).to receive(:track_event).with(action, user: user).once
-      subject
-    end
   end
 
-  subject { described_class.track_unique_action(quickaction_name, args: args, user: user) }
+  subject { described_class.track_unique_action(quickaction_name, args: args, user: user, project: project) }
 
   describe '.track_unique_action' do
     let(:quickaction_name) { 'approve' }

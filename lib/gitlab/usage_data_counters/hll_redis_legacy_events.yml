@@ -249,6 +249,7 @@
 - i_quickactions_copy_metadata_issue
 - i_quickactions_copy_metadata_merge_request
 - i_quickactions_create_merge_request
+- i_quickactions_q
 - i_quickactions_done
 - i_quickactions_draft
 - i_quickactions_due

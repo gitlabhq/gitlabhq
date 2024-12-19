@@ -2292,15 +2292,15 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
       expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
         .to receive(:track_unique_action)
-        .with('shrug', args: 'test', user: developer)
+        .with('shrug', args: 'test', user: developer, project: project)
 
       expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
         .to receive(:track_unique_action)
-        .with('assign', args: 'me', user: developer)
+        .with('assign', args: 'me', user: developer, project: project)
 
       expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
         .to receive(:track_unique_action)
-        .with('milestone', args: '%4', user: developer)
+        .with('milestone', args: '%4', user: developer, project: project)
 
       service.execute(content, issue)
     end

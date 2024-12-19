@@ -12,18 +12,24 @@ module Gitlab
           convert_to_ticket
           remove_email_multiple
           remove_email_single
+          q
         ].freeze
 
         # Tracks the quick action with name `name`.
         # `args` is expected to be a single string, will be split internally when necessary.
-        def track_unique_action(name, args:, user:)
+        def track_unique_action(name, args:, user:, project:)
           return unless user
 
           args ||= ''
           name = prepare_name(name, args)
 
           if INTERNAL_EVENTS.include?(name)
-            Gitlab::InternalEvents.track_event("i_quickactions_#{name}", user: user)
+            Gitlab::InternalEvents.track_event(
+              "i_quickactions_#{name}",
+              user: user,
+              project: project,
+              additional_properties: prepare_additional_properties(name, args)
+            )
           else
             # Legacy event implementation. Migrate existing events to internal events.
             # See implementation of `convert_to_ticket` quickaction and
@@ -58,6 +64,15 @@ module Gitlab
             "remove_email#{event_name_quantifier(args.split)}"
           else
             name
+          end
+        end
+
+        def prepare_additional_properties(name, args)
+          case name
+          when 'q'
+            { label: args.split.first }
+          else
+            {}
           end
         end
 

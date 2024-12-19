@@ -715,6 +715,7 @@ lib/gitlab/checks/**
 /doc/api/container_repository_protection_rules.md @lyspin
 /doc/api/custom_attributes.md @msedlakjakubowski
 /doc/api/dependencies.md @rdickenson
+/doc/api/dependency_list_export.md @rlehmann1
 /doc/api/dependency_proxy.md @lyspin
 /doc/api/deploy_keys.md @phillipwells
 /doc/api/deploy_tokens.md @phillipwells
@@ -838,6 +839,7 @@ lib/gitlab/checks/**
 /doc/api/project_starring.md @emily.sahlani
 /doc/api/project_statistics.md @brendan777
 /doc/api/project_templates.md @brendan777
+/doc/api/project_vulnerabilities.md @rlehmann1
 /doc/api/project_webhooks.md @ashrafkhamis
 /doc/api/projects.md @emily.sahlani
 /doc/api/protected_branches.md @brendan777
@@ -884,6 +886,9 @@ lib/gitlab/checks/**
 /doc/api/user_tokens.md @jglassman1
 /doc/api/users.md @jglassman1
 /doc/api/version.md @phillipwells
+/doc/api/vulnerabilities.md @rlehmann1
+/doc/api/vulnerability_exports.md @rlehmann1
+/doc/api/vulnerability_findings.md @rlehmann1
 /doc/api/web_commits.md @brendan777
 /doc/api/wikis.md @msedlakjakubowski
 /doc/ci/caching/ @marcel.amirault
@@ -965,8 +970,8 @@ lib/gitlab/checks/**
 /doc/development/observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/omnibus.md @gitlab-org/distribution
 /doc/development/organization/ @abdwdd @alexpooley @manojmj
-/doc/development/permissions.md @rlehmann1
-/doc/development/permissions/ @rlehmann1
+/doc/development/permissions.md @gitlab-org/govern/authorization/approvers
+/doc/development/permissions/ @gitlab-org/govern/authorization/approvers
 /doc/development/pipelines/ @gl-dx/eng-prod
 /doc/development/policies.md @gitlab-org/govern/authentication/approvers
 /doc/development/prometheus_metrics.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
@@ -1052,15 +1057,23 @@ lib/gitlab/checks/**
 /doc/user/application_security/api_security/ @phillipwells
 /doc/user/application_security/api_security_testing/ @phillipwells
 /doc/user/application_security/coverage_fuzzing/ @phillipwells
+/doc/user/application_security/cve_id_request.md @rlehmann1
 /doc/user/application_security/dast/ @phillipwells
+/doc/user/application_security/dependency_list/ @rlehmann1
 /doc/user/application_security/policies/ @rlehmann1
 /doc/user/application_security/secret_detection/ @phillipwells
+/doc/user/application_security/security_dashboard/ @rlehmann1
+/doc/user/application_security/vulnerabilities/ @rlehmann1
+/doc/user/application_security/vulnerabilities/risk_assessment_data.md @rdickenson
+/doc/user/application_security/vulnerability_report/ @rlehmann1
 /doc/user/asciidoc.md @brendan777
 /doc/user/clusters/ @phillipwells
 /doc/user/compliance/ @eread
 /doc/user/compliance/license_approval_policies.md @rlehmann1
 /doc/user/compliance/license_scanning_of_cyclonedx_files/ @rdickenson
 /doc/user/crm/ @msedlakjakubowski
+/doc/user/custom_roles.md @rlehmann1
+/doc/user/custom_roles/ @rlehmann1
 /doc/user/discussions/ @aqualls
 /doc/user/duo_amazon_q/ @sselhorn
 /doc/user/duo_workflow/ @sselhorn
@@ -1110,6 +1123,7 @@ lib/gitlab/checks/**
 /doc/user/packages/container_registry/ @lyspin
 /doc/user/packages/dependency_proxy/ @lyspin
 /doc/user/packages/harbor_container_registry/ @lyspin
+/doc/user/permissions.md @rlehmann1
 /doc/user/profile/account/ @jglassman1
 /doc/user/profile/account/create_accounts.md @lciutacu
 /doc/user/profile/achievements.md @emily.sahlani

@@ -6067,10 +6067,16 @@ msgstr ""
 msgid "AmazonQ|Use GitLab Duo with Amazon Q to create and review merge requests and upgrade Java. %{link_start}Learn more%{link_end}."
 msgstr ""
 
+msgid "AmazonQ|Use GitLab Duo with Amazon Q to create and review merge requests and upgrade Java. GitLab Duo with Amazon Q is separate from GitLab Duo Pro and Enterprise. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "AmazonQ|Use GitLab Duo with Amazon Q to create and review merge requests and upgrade Java.%{br}GitLab Duo with Amazon Q is separate from GitLab Duo Pro and Enterprise. %{help_link_start}Learn more%{help_link_end}."
 msgstr ""
 
 msgid "AmazonQ|View configuration setup"
+msgstr ""
+
+msgid "AmazonQ|When you save, Amazon Q will be turned off for all subgroups, and projects, even if they have previously enabled it.%{br}This will also remove the Amazon Q service account from these groups and projects."
 msgstr ""
 
 msgid "AmazonQ|Within your AWS account, create an IAM role for Amazon Q and the relevant identity provider. %{helpStart}Learn how to create an IAM role%{helpEnd}."
@@ -6518,6 +6524,9 @@ msgid "An error occurred while updating the configuration."
 msgstr ""
 
 msgid "An error occurred while updating the notification settings. Please try again."
+msgstr ""
+
+msgid "An error occurred while updating your settings."
 msgstr ""
 
 msgid "An error occurred while uploading the file. Please try again."
