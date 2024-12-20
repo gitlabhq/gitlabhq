@@ -7,7 +7,7 @@ exports[`Repository last commit component renders commit widget 1`] = `
     commit="[object Object]"
   >
     <div
-      class="commit-actions gl-flex gl-gap-3 gl-items-center"
+      class="commit-actions gl-flex gl-gap-3 gl-items-start"
     >
       <div
         class="gl-flex gl-h-7 gl-items-center gl-ml-5"

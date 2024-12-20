@@ -140,21 +140,21 @@ describe('WorkItemDevelopment CE', () => {
       expect(findCrudComponent().props('title')).toBe('Development');
     });
 
-    it('should render the add button when `canUpdate` is true and `workItemsAlpha` is on', async () => {
-      createComponent({ workItemsAlphaEnabled: true, mountFn: mountExtended });
+    it('should render the add button when `canUpdate` is true', async () => {
+      createComponent({ mountFn: mountExtended });
       await waitForPromises();
 
       expect(findAddButton().exists()).toBe(true);
     });
 
     it('does not render the modal when the queries are still loading', () => {
-      createComponent({ workItemsAlphaEnabled: true, mountFn: mountExtended });
+      createComponent({ mountFn: mountExtended });
 
       expect(findWorkItemCreateMergeRequestModal().exists()).toBe(false);
     });
 
     it('renders the modal when the queries are have loaded', async () => {
-      createComponent({ workItemsAlphaEnabled: true, mountFn: mountExtended });
+      createComponent({ mountFn: mountExtended });
       await waitForPromises();
 
       expect(findWorkItemCreateMergeRequestModal().exists()).toBe(true);

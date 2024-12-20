@@ -862,7 +862,7 @@ export default {
                     @error="onUploadDesignError"
                   />
                   <work-item-create-branch-merge-request-split-button
-                    v-if="workItemsAlphaEnabled && workItemDevelopment"
+                    v-if="workItemDevelopment"
                     :work-item-id="workItem.id"
                     :work-item-iid="iid"
                     :work-item-full-path="workItemFullPath"

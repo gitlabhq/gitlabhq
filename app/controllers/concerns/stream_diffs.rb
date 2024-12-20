@@ -49,8 +49,13 @@ module StreamDiffs
   def stream_diff_files(options)
     return unless resource
 
-    resource.diffs_for_streaming(options).diff_files.each do |diff_file|
-      response.stream.write(render_diff_file(diff_file))
+    # NOTE: This is a temporary flag to test out the new diff_blobs
+    if !!ActiveModel::Type::Boolean.new.cast(params.permit(:diff_blobs)[:diff_blobs])
+      stream_diff_blobs(options)
+    else
+      resource.diffs_for_streaming(options).diff_files.each do |diff_file|
+        response.stream.write(render_diff_file(diff_file))
+      end
     end
   end
 
@@ -59,6 +64,14 @@ module StreamDiffs
       ::RapidDiffs::DiffFileComponent.new(diff_file: diff_file, parallel_view: view == :parallel),
       layout: false
     )
+  end
+
+  def stream_diff_blobs(options)
+    resource.diffs_for_streaming(options) do |diff_files_batch|
+      diff_files_batch.each do |diff_file|
+        response.stream.write(render_diff_file(diff_file))
+      end
+    end
   end
 
   class Request < SimpleDelegator

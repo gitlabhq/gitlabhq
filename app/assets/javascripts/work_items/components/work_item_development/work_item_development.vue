@@ -153,7 +153,7 @@ export default {
       return this.glFeatures.workItemsAlpha;
     },
     showAddButton() {
-      return this.workItemsAlphaEnabled && this.canUpdate && this.showCreateOptions;
+      return this.canUpdate && this.showCreateOptions;
     },
     isConfidentialWorkItem() {
       return this.workItem?.confidential;

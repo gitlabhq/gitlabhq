@@ -1323,6 +1323,7 @@ export const workItemResponseFactory = ({
   rolledUpCompletedWeight = 0,
   descriptionText = 'some **great** text',
   descriptionHtml = '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
+  developmentWidgetPresent = false,
 } = {}) => ({
   data: {
     workItem: {
@@ -1642,6 +1643,12 @@ export const workItemResponseFactory = ({
           ? {
               __typename: 'WorkItemWidgetEmailParticipants',
               type: 'EMAIL_PARTICIPANTS',
+            }
+          : { type: 'MOCK TYPE' },
+        developmentWidgetPresent
+          ? {
+              type: 'DEVELOPMENT',
+              __typename: 'WorkItemWidgetDevelopment',
             }
           : { type: 'MOCK TYPE' },
       ],

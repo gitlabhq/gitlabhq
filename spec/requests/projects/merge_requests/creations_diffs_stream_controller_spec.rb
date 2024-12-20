@@ -26,7 +26,7 @@ RSpec.describe 'Merge Request Creations diffs stream', feature_category: :code_r
   end
 
   describe 'GET diffs_stream' do
-    def send_request(**extra_params)
+    def go(**extra_params)
       params = {
         namespace_id: project.namespace,
         project_id: project,
@@ -41,7 +41,7 @@ RSpec.describe 'Merge Request Creations diffs stream', feature_category: :code_r
     end
 
     it 'includes all diffs' do
-      send_request
+      go
 
       streamed_content = response.body
 
@@ -56,7 +56,7 @@ RSpec.describe 'Merge Request Creations diffs stream', feature_category: :code_r
       let(:user) { create(:user) }
 
       it 'returns a 404 status' do
-        send_request
+        go
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -70,7 +70,7 @@ RSpec.describe 'Merge Request Creations diffs stream', feature_category: :code_r
       end
 
       it 'no diffs are streamed' do
-        send_request
+        go
 
         expect(response.body).to be_empty
       end

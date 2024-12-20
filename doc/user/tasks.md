@@ -200,7 +200,7 @@ To convert a task into another item type:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
-1. In the issue list, find your task and select it.
+1. In the issue list, find your task.
 1. Optional. If the task has a parent issue assigned, remove it.
    Add a comment to the task with the `/remove_parent` quick action.
 1. In the upper-right corner, select **More actions** (**{ellipsis_v}**), then select **Change type**.
@@ -682,7 +682,7 @@ Prerequisites:
    - If your task is in a different project, with a task open, copy the URL from the browser or
      copy the task's reference by selecting the vertical ellipsis (**{ellipsis_v}**) in the upper-right corner, then **Copy Reference**.
 
-The merge requests are now visible on the right sidebar, in the **Development** section.
+The merge requests are now visible in the main body, in the **Development** section.
 
 You must use the exact closing pattern to add the merge request to the task. Other text will not work.
 
@@ -690,3 +690,7 @@ If [automatic issue closing](project/issues/managing_issues.md#disable-automatic
 
 - The added merge request is merged.
 - A commit referencing a task with the closing pattern is committed to your project's default branch.
+
+## Related topics
+
+- [Create a merge request from a task](project/merge_requests/creating_merge_requests.md#from-a-task)

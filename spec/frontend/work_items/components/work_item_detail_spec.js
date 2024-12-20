@@ -23,6 +23,7 @@ import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import TodosToggle from '~/work_items/components/shared/todos_toggle.vue';
 import DesignWidget from '~/work_items/components/design_management/design_management_widget.vue';
 import DesignUploadButton from '~/work_items/components//design_management/upload_button.vue';
+import WorkItemCreateBranchMergeRequestSplitButton from '~/work_items/components/work_item_development/work_item_create_branch_merge_request_split_button.vue';
 import uploadDesignMutation from '~/work_items/components/design_management/graphql/upload_design.mutation.graphql';
 import { i18n } from '~/work_items/constants';
 import workItemByIdQuery from '~/work_items/graphql/work_item_by_id.query.graphql';
@@ -124,6 +125,8 @@ describe('WorkItemDetail component', () => {
   const findDesignUploadButton = () => wrapper.findComponent(DesignUploadButton);
   const findDetailWrapper = () => wrapper.findByTestId('detail-wrapper');
   const findDrawer = () => wrapper.findComponent(WorkItemDrawer);
+  const findCreateMergeRequestSplitButton = () =>
+    wrapper.findComponent(WorkItemCreateBranchMergeRequestSplitButton);
 
   const createComponent = ({
     isModal = false,
@@ -906,6 +909,30 @@ describe('WorkItemDetail component', () => {
       findWorkItemDesigns().vm.$emit('dismissError');
       await nextTick();
       expect(findWorkItemDesigns().props('uploadError')).toBe(null);
+    });
+  });
+
+  describe('work item dev widget create split button', () => {
+    it('should not show the button by default', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findCreateMergeRequestSplitButton().exists()).toBe(false);
+    });
+
+    it('should show the button when the widget is applicable', async () => {
+      createComponent({
+        handler: jest.fn().mockResolvedValue(
+          workItemByIidResponseFactory({
+            canUpdate: true,
+            canDelete: true,
+            developmentWidgetPresent: true,
+          }),
+        ),
+      });
+      await waitForPromises();
+
+      expect(findCreateMergeRequestSplitButton().exists()).toBe(true);
     });
   });
 

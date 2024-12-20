@@ -1094,4 +1094,36 @@ EOS
       expect(first_diffs_slice.count).to eq(limit)
     end
   end
+
+  describe '#diffs_for_streaming' do
+    let(:repository) { commit.repository }
+
+    it 'returns a diff file collection commit' do
+      expect(commit.diffs_for_streaming).to be_a_kind_of(Gitlab::Diff::FileCollection::Commit)
+    end
+
+    context 'when block is given' do
+      let(:expected_block) { proc {} }
+
+      it 'calls diffs_by_changed_paths with given offset' do
+        expect(repository).to receive(:diffs_by_changed_paths).with(commit.diff_refs, 0) do |_, &block|
+          expect(block).to be(expected_block)
+        end
+
+        commit.diffs_for_streaming(&expected_block)
+      end
+
+      context 'when offset_index is given' do
+        let(:offset) { 5 }
+
+        it 'calls diffs_by_changed_paths with given offset' do
+          expect(repository).to receive(:diffs_by_changed_paths).with(commit.diff_refs, offset) do |_, &block|
+            expect(block).to be(expected_block)
+          end
+
+          commit.diffs_for_streaming({ offset_index: offset }, &expected_block)
+        end
+      end
+    end
+  end
 end

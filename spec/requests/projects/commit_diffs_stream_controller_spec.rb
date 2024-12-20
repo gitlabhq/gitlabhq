@@ -14,7 +14,7 @@ RSpec.describe 'Commit diffs stream', feature_category: :source_code_management 
   end
 
   describe 'GET diffs_stream' do
-    def send_request(**extra_params)
+    def go(**extra_params)
       params = {
         namespace_id: project.namespace,
         project_id: project,
@@ -26,7 +26,7 @@ RSpec.describe 'Commit diffs stream', feature_category: :source_code_management 
     end
 
     it 'includes all diffs' do
-      send_request
+      go
 
       streamed_content = response.body
 
@@ -36,5 +36,7 @@ RSpec.describe 'Commit diffs stream', feature_category: :source_code_management 
     end
 
     include_examples 'diffs stream tests'
+
+    include_examples 'with diffs_blobs param'
   end
 end

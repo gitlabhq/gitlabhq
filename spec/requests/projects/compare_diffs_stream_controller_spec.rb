@@ -36,12 +36,12 @@ RSpec.describe 'Compare diffs stream', feature_category: :source_code_management
   let(:diff_files) { compare.diffs.diff_files }
 
   describe 'GET diffs_stream' do
-    def send_request(**extra_params)
+    def go(**extra_params)
       get diffs_stream_namespace_project_compare_index_path(request_params.merge(extra_params))
     end
 
     it 'includes all diffs' do
-      send_request
+      go
 
       streamed_content = response.body
 
