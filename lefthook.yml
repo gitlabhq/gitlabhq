@@ -68,7 +68,8 @@ pre-push:
       tags: backend frontend view haml
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD | while read file;do git diff --unified=1 $(git merge-base origin/master HEAD)..HEAD $file | grep -Fqe '_(' && echo $file;done; true
       glob: '*.{haml,rb,js,vue}'
-      run: tooling/bin/gettext_extractor /dev/stdout --silent | diff - locale/gitlab.pot || ( echo "\nPO files need to be updated. Try running tooling/bin/gettext_extractor locale/gitlab.pot" && exit 1 )
+      run: tooling/bin/gettext_extractor /dev/stdout --silent | diff - locale/gitlab.pot
+      fail_text: PO files need to be updated. Try running tooling/bin/gettext_extractor locale/gitlab.pot
     docs-metadata: # See https://docs.gitlab.com/ee/development/documentation/metadata.html
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD

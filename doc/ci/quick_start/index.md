@@ -44,7 +44,7 @@ In GitLab, runners are agents that run your CI/CD jobs.
 
 To view available runners:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
 

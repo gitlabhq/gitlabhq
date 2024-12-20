@@ -173,10 +173,22 @@ Gitaly and GitLab use two shared secrets for authentication:
 
    - Method 2:
 
-     Edit `/etc/gitlab/gitlab.rb`:
+     On all nodes running GitLab Rails, edit `/etc/gitlab/gitlab.rb`:
 
      ```ruby
      gitlab_shell['secret_token'] = 'shellsecret'
+     ```
+
+    On all nodes running Gitaly, edit `/etc/gitlab/gitlab.rb`:
+
+     ```ruby
+     gitaly['gitlab_secret'] = 'shellsecret'
+     ```
+
+     After those changes, reconfigure GitLab:
+
+     ```shell
+     sudo gitlab-ctl reconfigure
      ```
 
 :::TabTitle Self-compiled (source)
