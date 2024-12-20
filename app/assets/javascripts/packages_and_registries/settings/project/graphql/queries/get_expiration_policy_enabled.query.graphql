@@ -1,0 +1,9 @@
+query getProjectExpirationPolicyEnabled($projectPath: ID!) {
+  project(fullPath: $projectPath) {
+    id
+    containerTagsExpirationPolicy {
+      enabled
+      nextRunAt
+    }
+  }
+}

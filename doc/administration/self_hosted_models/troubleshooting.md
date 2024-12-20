@@ -274,14 +274,7 @@ If you are experiencing issues accessing Code Suggestions after setup, try the f
 1. Check if the necessary features are enabled and available:
 
    ```shell
-   Feature.enabled?(:self_hosted_models_beta_ended) # Should be false
    ::Ai::FeatureSetting.code_suggestions_self_hosted? # Should be true
-   ```
-
-1. If any feature is enabled and does not need to be, disable it:
-
-   ```ruby
-   Feature.disable(:self_hosted_models_beta_ended)
    ```
 
 ## Verify GitLab setup

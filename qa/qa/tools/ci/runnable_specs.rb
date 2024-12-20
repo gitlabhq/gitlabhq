@@ -10,9 +10,9 @@ module QA
 
         # @return [Array] scenarios that never run in test-on-omnibus pipeline
         IGNORED_SCENARIOS = [
-          QA::EE::Scenario::Test::Geo,
-          QA::Scenario::Test::Instance::Airgapped,
-          QA::Scenario::Test::Sanity::Selectors
+          "QA::EE::Scenario::Test::Geo",
+          "QA::Scenario::Test::Instance::Airgapped",
+          "QA::Scenario::Test::Sanity::Selectors"
         ].freeze
 
         def self.fetch(qa_tests = nil)
@@ -25,7 +25,7 @@ module QA
         # @return [Hash<Class, Array<String>>]
         def fetch(qa_tests = nil)
           logger.info("Checking for runnable suites")
-          (scenarios - IGNORED_SCENARIOS).each_with_object({}) do |scenario, runnable_scenarios|
+          (scenarios - ignored_scenarios).each_with_object({}) do |scenario, runnable_scenarios|
             specs = fetch_specs(scenario, qa_tests)
 
             logger.info(" found #{specs.size} spec files to run")
@@ -34,6 +34,15 @@ module QA
         end
 
         private
+
+        # Ignored scenarios classes
+        #
+        # @return [Array<Class>]
+        def ignored_scenarios
+          return IGNORED_SCENARIOS.map(&:constantize) if QA.const_defined?("QA::EE")
+
+          IGNORED_SCENARIOS.reject { |scenario| scenario.include?("EE") }.map(&:constantize)
+        end
 
         # Get all defined scenarios
         #

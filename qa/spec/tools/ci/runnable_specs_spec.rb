@@ -13,7 +13,7 @@ RSpec.describe QA::Tools::Ci::RunnableSpecs do
   end
 
   context "with rspec returning runnable specs" do
-    let(:rspec_json) do
+    let(:examples) do
       [
         {
           file_path: "./qa/specs/features/ee/test_spec.rb"
@@ -22,8 +22,12 @@ RSpec.describe QA::Tools::Ci::RunnableSpecs do
     end
 
     it "returns runnable spec list" do
-      expect(runnable_specs.all? { |_k, v| v == ["qa/specs/features/ee/test_spec.rb"] }).to(
+      expect(runnable_specs).not_to be_empty
+      expect(runnable_specs.values.all?(["qa/specs/features/ee/test_spec.rb"])).to(
         be(true), "Expected all scenarios to have runnable specs"
+      )
+      expect(runnable_specs.keys.all?(Class)).to(
+        be(true), "Expected all scenarios to be classes"
       )
       expect(QA::Support::ExampleData).to have_received(:fetch).with(
         kind_of(Array),
@@ -31,13 +35,15 @@ RSpec.describe QA::Tools::Ci::RunnableSpecs do
         logger: kind_of(Logger)
       ).at_least(:twice)
     end
+
+    it "removes ignored scenario" do
+      expect(runnable_specs.keys).not_to include(QA::Scenario::Test::Sanity::Selectors)
+    end
   end
 
   context "with rspec returning no runnable specs" do
     it "returns empty spec list" do
-      expect(runnable_specs.all? { |_k, v| v == [] }).to(
-        be(true), "Expected all scenarios to have no runnable specs"
-      )
+      expect(runnable_specs).to be_empty
     end
   end
 

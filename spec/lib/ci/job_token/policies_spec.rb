@@ -6,9 +6,9 @@ RSpec.describe ::Ci::JobToken::Policies, feature_category: :secrets_management d
   describe '.all_policies' do
     it 'contains exactly the valid policies' do
       schema = 'app/validators/json_schemas/ci_job_token_policies.json'
-      valid_policies = Gitlab::Json.parse(File.read(schema)).dig('items', 'enum').map(&:to_sym)
+      valid_policies = Gitlab::Json.parse(File.read(schema)).dig('items', 'enum')
 
-      expect(valid_policies).to match_array(described_class.all_policies.pluck(:value))
+      expect(valid_policies).to match_array(described_class.all_values)
     end
   end
 end

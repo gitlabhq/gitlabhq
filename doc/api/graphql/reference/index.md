@@ -727,16 +727,6 @@ Returns [`Iteration`](#iteration).
 | ---- | ---- | ----------- |
 | <a id="queryiterationid"></a>`id` | [`IterationID!`](#iterationid) | Find an iteration by its ID. |
 
-### `Query.jobTokenPoliciesByCategory`
-
-List of job token policies for use with fine-grained permissions on CI/CD job allowlist.
-
-DETAILS:
-**Introduced** in GitLab 17.7.
-**Status**: Experiment.
-
-Returns [`[JobTokenPolicyCategory!]`](#jobtokenpolicycategory).
-
 ### `Query.jobs`
 
 All jobs on this GitLab instance. Returns an empty result for users without administrator access.
@@ -27286,32 +27276,6 @@ Represents the Geo replication and verification state of a job_artifact.
 | <a id="jobpermissionsreadjobartifacts"></a>`readJobArtifacts` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_job_artifacts` on this resource. |
 | <a id="jobpermissionsupdatebuild"></a>`updateBuild` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_build` on this resource. |
 
-### `JobTokenPolicy`
-
-Job token policy.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="jobtokenpolicydescription"></a>`description` | [`String`](#string) | Description of the job token policy. |
-| <a id="jobtokenpolicytext"></a>`text` | [`String`](#string) | Display text of the job token policy. |
-| <a id="jobtokenpolicytype"></a>`type` | [`CiJobTokenScopePolicyTypes`](#cijobtokenscopepolicytypes) | Job token policy type. |
-| <a id="jobtokenpolicyvalue"></a>`value` | [`CiJobTokenScopePolicies`](#cijobtokenscopepolicies) | Value of the job token policy. |
-
-### `JobTokenPolicyCategory`
-
-Job token policy category type.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="jobtokenpolicycategorydescription"></a>`description` | [`String`](#string) | Description of the category. |
-| <a id="jobtokenpolicycategorypolicies"></a>`policies` | [`[JobTokenPolicy!]`](#jobtokenpolicy) | Policies of the category. |
-| <a id="jobtokenpolicycategorytext"></a>`text` | [`String`](#string) | Display text of the category. |
-| <a id="jobtokenpolicycategoryvalue"></a>`value` | [`CiJobTokenScopePolicyCategoriesTypes`](#cijobtokenscopepolicycategoriestypes) | Value of the category. |
-
 ### `Kas`
 
 #### Fields
@@ -38526,46 +38490,22 @@ CI_JOB_TOKEN policy.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="cijobtokenscopepoliciesadmin_containers"></a>`ADMIN_CONTAINERS` | Admin container images in a project. |
-| <a id="cijobtokenscopepoliciesadmin_deployments"></a>`ADMIN_DEPLOYMENTS` | Admin deployments in a project. |
-| <a id="cijobtokenscopepoliciesadmin_environments"></a>`ADMIN_ENVIRONMENTS` | Admin + Stop environments in a project. |
-| <a id="cijobtokenscopepoliciesadmin_jobs"></a>`ADMIN_JOBS` | Read job metadata, upload artifacts and update the pipeline status. |
-| <a id="cijobtokenscopepoliciesadmin_packages"></a>`ADMIN_PACKAGES` | Admin packages. |
-| <a id="cijobtokenscopepoliciesadmin_releases"></a>`ADMIN_RELEASES` | Admin releases in a project. |
-| <a id="cijobtokenscopepoliciesadmin_secure_files"></a>`ADMIN_SECURE_FILES` | Admin secure files in a project. |
-| <a id="cijobtokenscopepoliciesadmin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Admin terraform state files/versions. |
-| <a id="cijobtokenscopepoliciesread_containers"></a>`READ_CONTAINERS` | Read container images in a project. |
-| <a id="cijobtokenscopepoliciesread_deployments"></a>`READ_DEPLOYMENTS` | Read deployments in a project. |
-| <a id="cijobtokenscopepoliciesread_environments"></a>`READ_ENVIRONMENTS` | Read environments in a project. |
-| <a id="cijobtokenscopepoliciesread_jobs"></a>`READ_JOBS` | Read job metadata and artifacts. |
-| <a id="cijobtokenscopepoliciesread_packages"></a>`READ_PACKAGES` | Read packages. |
-| <a id="cijobtokenscopepoliciesread_releases"></a>`READ_RELEASES` | Read releases in a project. |
-| <a id="cijobtokenscopepoliciesread_secure_files"></a>`READ_SECURE_FILES` | Read secure files in a project. |
-| <a id="cijobtokenscopepoliciesread_terraform_state"></a>`READ_TERRAFORM_STATE` | Read terraform state files/version. |
-
-### `CiJobTokenScopePolicyCategoriesTypes`
-
-CI_JOB_TOKEN policy category type.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="cijobtokenscopepolicycategoriestypescontainers"></a>`CONTAINERS` | Containers category. |
-| <a id="cijobtokenscopepolicycategoriestypesdeployments"></a>`DEPLOYMENTS` | Deployments category. |
-| <a id="cijobtokenscopepolicycategoriestypesenvironments"></a>`ENVIRONMENTS` | Environments category. |
-| <a id="cijobtokenscopepolicycategoriestypesjobs"></a>`JOBS` | Jobs category. |
-| <a id="cijobtokenscopepolicycategoriestypespackages"></a>`PACKAGES` | Packages category. |
-| <a id="cijobtokenscopepolicycategoriestypesreleases"></a>`RELEASES` | Releases category. |
-| <a id="cijobtokenscopepolicycategoriestypessecure_files"></a>`SECURE_FILES` | Secure files category. |
-| <a id="cijobtokenscopepolicycategoriestypesterraform_state"></a>`TERRAFORM_STATE` | Terraform state category. |
-
-### `CiJobTokenScopePolicyTypes`
-
-CI_JOB_TOKEN policy type.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="cijobtokenscopepolicytypesadmin"></a>`ADMIN` | Admin access to the resource. |
-| <a id="cijobtokenscopepolicytypesread"></a>`READ` | Read-only access to the resource. |
+| <a id="cijobtokenscopepoliciesadmin_containers"></a>`ADMIN_CONTAINERS` | Admin Containers. |
+| <a id="cijobtokenscopepoliciesadmin_deployments"></a>`ADMIN_DEPLOYMENTS` | Admin Deployments. |
+| <a id="cijobtokenscopepoliciesadmin_environments"></a>`ADMIN_ENVIRONMENTS` | Admin Environments. |
+| <a id="cijobtokenscopepoliciesadmin_jobs"></a>`ADMIN_JOBS` | Admin Jobs. |
+| <a id="cijobtokenscopepoliciesadmin_packages"></a>`ADMIN_PACKAGES` | Admin Packages. |
+| <a id="cijobtokenscopepoliciesadmin_releases"></a>`ADMIN_RELEASES` | Admin Releases. |
+| <a id="cijobtokenscopepoliciesadmin_secure_files"></a>`ADMIN_SECURE_FILES` | Admin Secure Files. |
+| <a id="cijobtokenscopepoliciesadmin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Admin Terraform State. |
+| <a id="cijobtokenscopepoliciesread_containers"></a>`READ_CONTAINERS` | Read Containers. |
+| <a id="cijobtokenscopepoliciesread_deployments"></a>`READ_DEPLOYMENTS` | Read Deployments. |
+| <a id="cijobtokenscopepoliciesread_environments"></a>`READ_ENVIRONMENTS` | Read Environments. |
+| <a id="cijobtokenscopepoliciesread_jobs"></a>`READ_JOBS` | Read Jobs. |
+| <a id="cijobtokenscopepoliciesread_packages"></a>`READ_PACKAGES` | Read Packages. |
+| <a id="cijobtokenscopepoliciesread_releases"></a>`READ_RELEASES` | Read Releases. |
+| <a id="cijobtokenscopepoliciesread_secure_files"></a>`READ_SECURE_FILES` | Read Secure Files. |
+| <a id="cijobtokenscopepoliciesread_terraform_state"></a>`READ_TERRAFORM_STATE` | Read Terraform State. |
 
 ### `CiRunnerAccessLevel`
 

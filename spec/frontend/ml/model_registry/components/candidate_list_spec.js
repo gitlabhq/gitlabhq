@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { GlEmptyState, GlButton } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { mount } from '@vue/test-utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -22,6 +23,7 @@ describe('ml/model_registry/components/candidate_list.vue', () => {
   let apolloProvider;
 
   const findSearchableTable = () => wrapper.findComponent(SearchableTable);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 
   const mountComponent = ({
     props = {},
@@ -54,7 +56,13 @@ describe('ml/model_registry/components/candidate_list.vue', () => {
     });
 
     it('shows empty state', () => {
-      expect(wrapper.text()).toContain('This model has no candidates');
+      expect(findEmptyState().props('description')).toBe(
+        'Use candidates to track performance, parameters, and metadata',
+      );
+      expect(findEmptyState().props('title')).toBe('No candidates associated with this model');
+      expect(findEmptyState().findComponent(GlButton).attributes('href')).toBe(
+        '/help/user/project/ml/experiment_tracking/mlflow_client.md#logging-candidates-to-a-model',
+      );
     });
   });
 
@@ -81,6 +89,10 @@ describe('ml/model_registry/components/candidate_list.vue', () => {
     beforeEach(async () => {
       mountComponent();
       await waitForPromises();
+    });
+
+    it('does not show emptystate', () => {
+      expect(findEmptyState().exists()).toBe(false);
     });
 
     it('Passes items to list', () => {

@@ -5,6 +5,7 @@ import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { __ } from '~/locale';
 import { getQueryHeaders } from '~/ci/pipeline_details/graph/utils';
 import { graphqlEtagPipelinePath } from '~/ci/pipeline_details/utils';
+import { toggleQueryPollingByVisibility } from '~/graphql_shared/utils';
 import getPipelineFailedJobsCount from '../../graphql/queries/get_pipeline_failed_jobs_count.query.graphql';
 import FailedJobsList from './failed_jobs_list.vue';
 import { POLL_INTERVAL } from './constants';
@@ -83,6 +84,9 @@ export default {
     isMaximumJobLimitReached() {
       return this.failedJobsCount > 100;
     },
+  },
+  mounted() {
+    toggleQueryPollingByVisibility(this.$apollo.queries.failedJobsCount, POLL_INTERVAL);
   },
   methods: {
     toggleWidget() {

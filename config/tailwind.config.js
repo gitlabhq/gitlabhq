@@ -11,6 +11,7 @@ module.exports = {
     './{ee,jh,}/app/components/**/*.{haml,rb}',
     './{ee,jh,}/app/views/**/*.haml',
     './node_modules/@gitlab/ui/dist/**/*.{vue,js}',
+    './node_modules/@gitlab/duo-ui/dist/**/*.{vue,js}',
   ],
   blocklist: [
     // Prevents an irrelevant util from being generated.

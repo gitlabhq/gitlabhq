@@ -1,23 +1,35 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.shared_context 'advanced search active' do
+  # This context checks if advanced search is enabled and functioning,
+  # and enables it via the API if the test isn't running on Staging.
+  #
+  # In orchestrated tests (test environments using self-managed instances
+  # that aren't shared) , we can enable elasticsearch if it's not already enabled.
+  #
+  # However, on Staging we shouldn't try to enable elasticsearch if it appears
+  # to be disabled. We could end up changing the settings inappropriately.
+  # See https://gitlab.com/gitlab-com/gl-infra/production/-/issues/19015
+  RSpec.shared_context 'advanced search active', :requires_admin do
+    let(:admin_api_client) { Runtime::User::Store.admin_api_client }
     let!(:advanced_search_on) { check_advanced_search_status }
 
     before do
       QA::EE::Resource::Settings::Elasticsearch.fabricate_via_api! unless advanced_search_on
     end
 
-    # TODO: convert check_advanced_search_status method to use the API instead of the UI once the functionality exists
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/382849 and then we can resume turning off advanced search after the
-    # tests as in the `after` block here. For now the advanced search tests will have the side effect of turning on
-    # advanced search if it wasn't enabled before the tests run.
-
-    # after do
-    #   Runtime::Search.disable_elasticsearch(api_client) if !advanced_search_on && !api_client.nil?
-    # end
-
     def check_advanced_search_status
+      return false unless Runtime::Search.elasticsearch_on?(admin_api_client)
+      return true if advanced_search_enabled_in_ui?
+
+      return false unless QA::Specs::Helpers::ContextSelector.context_matches?({ subdomain: %i[staging
+        staging-canary] })
+
+      raise Runtime::Search::ElasticSearchServerError,
+        "Advanced search does not appear to be enabled. Please confirm that Elasticsearch is configured correctly"
+    end
+
+    def advanced_search_enabled_in_ui?
       Flow::Login.sign_in
       QA::Support::Retrier.retry_on_exception(
         max_attempts: Runtime::Search::RETRY_MAX_ITERATION,

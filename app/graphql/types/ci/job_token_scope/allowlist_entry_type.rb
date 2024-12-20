@@ -75,7 +75,7 @@ module Types
         def job_token_policies
           return unless Feature.enabled?(:add_policies_to_ci_job_token, object.source_project)
 
-          object.job_token_policies&.map(&:to_sym)
+          object.job_token_policies
         end
       end
       # rubocop: enable Graphql/AuthorizeTypes

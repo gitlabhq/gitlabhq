@@ -5,6 +5,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { toggleQueryPollingByVisibility } from '~/graphql_shared/utils';
 import PipelineFailedJobsWidget from '~/ci/pipelines_page/components/failure_widget/pipeline_failed_jobs_widget.vue';
 import FailedJobsList from '~/ci/pipelines_page/components/failure_widget/failed_jobs_list.vue';
 import getPipelineFailedJobsCount from '~/ci/pipelines_page/graphql/queries/get_pipeline_failed_jobs_count.query.graphql';
@@ -12,6 +13,7 @@ import { failedJobsCountMock } from './mock';
 
 Vue.use(VueApollo);
 jest.mock('~/alert');
+jest.mock('~/graphql_shared/utils');
 
 describe('PipelineFailedJobsWidget component', () => {
   let wrapper;
@@ -156,6 +158,14 @@ describe('PipelineFailedJobsWidget component', () => {
       await waitForPromises();
 
       expect(defaultHandler).toHaveBeenCalledTimes(2);
+    });
+
+    it('should set up toggle visibility on mount', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(toggleQueryPollingByVisibility).toHaveBeenCalled();
     });
   });
 

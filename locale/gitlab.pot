@@ -15256,6 +15256,9 @@ msgid_plural "ContainerRegistry|%{count} tags"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "ContainerRegistry|%{strongStart}Next cleanup on%{strongEnd} %{cleanupTime}"
+msgstr ""
+
 msgid "ContainerRegistry|%{title} was successfully scheduled for deletion"
 msgstr ""
 
@@ -15401,6 +15404,9 @@ msgid "ContainerRegistry|Edit cleanup rules"
 msgstr ""
 
 msgid "ContainerRegistry|Enable cleanup policy"
+msgstr ""
+
+msgid "ContainerRegistry|Enabled"
 msgstr ""
 
 msgid "ContainerRegistry|Enabled - tags that match the rules on this page are automatically scheduled for deletion."
@@ -35712,6 +35718,9 @@ msgstr ""
 msgid "MlModelRegistry|New version"
 msgstr ""
 
+msgid "MlModelRegistry|No candidates associated with this model"
+msgstr ""
+
 msgid "MlModelRegistry|No description available. To add a description, click \"Edit model version\" above."
 msgstr ""
 
@@ -35773,6 +35782,9 @@ msgid "MlModelRegistry|Total versions"
 msgstr ""
 
 msgid "MlModelRegistry|Triggered by"
+msgstr ""
+
+msgid "MlModelRegistry|Use candidates to track performance, parameters, and metadata"
 msgstr ""
 
 msgid "MlModelRegistry|Use versions to track performance, parameters, and metadata"

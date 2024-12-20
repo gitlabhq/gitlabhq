@@ -1,4 +1,4 @@
-import { GlAlert, GlSprintf, GlLink, GlCard } from '@gitlab/ui';
+import { GlAlert, GlSprintf, GlLink, GlCard, GlSkeletonLoader } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -15,11 +15,13 @@ import {
   UNAVAILABLE_FEATURE_INTRO_TEXT,
   UNAVAILABLE_USER_FEATURE_TEXT,
 } from '~/packages_and_registries/settings/project/constants';
-import expirationPolicyQuery from '~/packages_and_registries/settings/project/graphql/queries/get_expiration_policy.query.graphql';
+import expirationPolicyEnabledQuery from '~/packages_and_registries/settings/project/graphql/queries/get_expiration_policy_enabled.query.graphql';
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
+import ContainerExpirationPolicyEnabledText from '~/packages_and_registries/settings/project/components/container_expiration_policy_enabled_text.vue';
 
 import {
-  expirationPolicyPayload,
+  containerTagsExpirationPolicyData,
+  expirationPolicyEnabledPayload,
   emptyExpirationPolicyPayload,
   nullExpirationPolicyPayload,
 } from '../mock_data';
@@ -47,6 +49,8 @@ describe('Container expiration policy project settings', () => {
   const findButton = () => wrapper.findByTestId('rules-button');
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findSettingsBlock = () => wrapper.findComponent(SettingsSection);
+  const findEnabledText = () => wrapper.findComponent(ContainerExpirationPolicyEnabledText);
+  const findLoader = () => wrapper.findComponent(GlSkeletonLoader);
 
   const mountComponent = (provide = defaultProvidedValues, config) => {
     wrapper = shallowMountExtended(component, {
@@ -61,7 +65,7 @@ describe('Container expiration policy project settings', () => {
   const mountComponentWithApollo = ({ provide = defaultProvidedValues, resolver } = {}) => {
     Vue.use(VueApollo);
 
-    const requestHandlers = [[expirationPolicyQuery, resolver]];
+    const requestHandlers = [[expirationPolicyEnabledQuery, resolver]];
 
     fakeApollo = createMockApollo(requestHandlers);
     mountComponent(provide, {
@@ -71,7 +75,7 @@ describe('Container expiration policy project settings', () => {
 
   it('renders the setting form', async () => {
     mountComponentWithApollo({
-      resolver: jest.fn().mockResolvedValue(expirationPolicyPayload()),
+      resolver: jest.fn().mockResolvedValue(expirationPolicyEnabledPayload),
     });
     await waitForPromises();
 
@@ -183,7 +187,7 @@ describe('Container expiration policy project settings', () => {
 
     it('renders the setting form', async () => {
       mountComponentWithApollo({
-        resolver: jest.fn().mockResolvedValue(expirationPolicyPayload()),
+        resolver: jest.fn().mockResolvedValue(expirationPolicyEnabledPayload),
       });
       await waitForPromises();
 
@@ -193,6 +197,10 @@ describe('Container expiration policy project settings', () => {
       );
       expect(findButton().text()).toMatchInterpolatedText(CONTAINER_CLEANUP_POLICY_EDIT_RULES);
       expect(findButton().attributes('href')).toBe(defaultProvidedValues.cleanupSettingsPath);
+      expect(findLoader().exists()).toBe(false);
+      expect(findEnabledText().props('nextRunAt')).toBe(
+        containerTagsExpirationPolicyData().nextRunAt,
+      );
     });
 
     it('when loading does not render alert components', () => {
@@ -201,6 +209,7 @@ describe('Container expiration policy project settings', () => {
       });
 
       expect(findCard().exists()).toBe(true);
+      expect(findLoader().exists()).toBe(true);
       expect(findAlert().exists()).toBe(false);
       expect(findButton().exists()).toBe(false);
     });

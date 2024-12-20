@@ -234,7 +234,7 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
 
     let(:scope) { described_class.new(target_project) }
     let_it_be(:target_project) { create(:project) }
-    let_it_be(:allowed_policy) { ::Ci::JobToken::Policies.all_policies.pick(:value) }
+    let_it_be(:allowed_policy) { ::Ci::JobToken::Policies::POLICIES.first }
     let(:accessed_project) { create_inbound_accessible_project_for_policies(target_project, [allowed_policy]) }
 
     context 'when no policies are given' do
