@@ -97,8 +97,6 @@ export function dropdowni18nText(issuableAttribute, issuableType) {
   };
 }
 
-export const HOW_TO_TRACK_TIME = __('How to track time');
-
 export const statusDropdownOptions = [
   {
     text: __('Open'),

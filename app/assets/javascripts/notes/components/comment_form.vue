@@ -46,7 +46,10 @@ export default {
     CommentFieldLayout,
     CommentTypeDropdown,
     GlFormCheckbox,
-    CommentTemperature: () => import('ee_component/ai/components/comment_temperature.vue'),
+    CommentTemperature: () =>
+      import(
+        /* webpackChunkName: 'comment_temperature' */ 'ee_component/ai/components/comment_temperature.vue'
+      ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

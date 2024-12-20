@@ -6,6 +6,7 @@ import {
   TYPENAME_MERGE_REQUEST,
   TYPENAME_WORK_ITEM_RELATED_BRANCH,
 } from '~/graphql_shared/constants';
+import { STATUS_OPEN, STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 
 import WorkItemDevelopmentMrItem from './work_item_development_mr_item.vue';
 import WorkItemDevelopmentBranchItem from './work_item_development_branch_item.vue';
@@ -32,7 +33,13 @@ export default {
   },
   computed: {
     list() {
-      return [...this.sortedFeatureFlags, ...this.mergeRequests, ...this.relatedBranches];
+      return [
+        ...this.sortedFeatureFlags,
+        ...this.mergedMergeRequests,
+        ...this.openMergeRequests,
+        ...this.closedMergeRequests,
+        ...this.relatedBranches,
+      ];
     },
     mergeRequests() {
       return unionBy(
@@ -40,6 +47,15 @@ export default {
         this.relatedMergeRequests,
         'id',
       );
+    },
+    mergedMergeRequests() {
+      return this.mergeRequests.filter(({ state }) => state === STATUS_MERGED);
+    },
+    openMergeRequests() {
+      return this.mergeRequests.filter(({ state }) => state === STATUS_OPEN);
+    },
+    closedMergeRequests() {
+      return this.mergeRequests.filter(({ state }) => state === STATUS_CLOSED);
     },
     relatedBranches() {
       return this.workItemDevWidget.relatedBranches?.nodes || [];

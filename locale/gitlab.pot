@@ -3649,6 +3649,9 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|Disabled"
 msgstr ""
 
+msgid "AdminAIPoweredFeatures|GitLab AI Vendor"
+msgstr ""
+
 msgid "AdminAIPoweredFeatures|Main feature"
 msgstr ""
 
@@ -4279,10 +4282,10 @@ msgstr ""
 msgid "AdminSettings|Maximum number of pipeline subscriptions to and from a project"
 msgstr ""
 
-msgid "AdminSettings|Maximum number of runners registered per group"
+msgid "AdminSettings|Maximum number of runners created or active in a group during the past seven days"
 msgstr ""
 
-msgid "AdminSettings|Maximum number of runners registered per project"
+msgid "AdminSettings|Maximum number of runners created or active in a project during the past seven days"
 msgstr ""
 
 msgid "AdminSettings|Maximum number of variables in a dotenv artifact"
@@ -6259,6 +6262,9 @@ msgstr ""
 msgid "An error occurred while disabling Service Desk."
 msgstr ""
 
+msgid "An error occurred while discarding your review. Please try again."
+msgstr ""
+
 msgid "An error occurred while dismissing the alert. Refresh the page and try again."
 msgstr ""
 
@@ -7760,6 +7766,9 @@ msgid "Are you sure you want to discard this comment?"
 msgstr ""
 
 msgid "Are you sure you want to discard your changes?"
+msgstr ""
+
+msgid "Are you sure you want to discard your pending review comments? This action cannot be undone."
 msgstr ""
 
 msgid "Are you sure you want to import %d repository?"
@@ -20287,6 +20296,12 @@ msgstr ""
 msgid "Discard draft"
 msgstr ""
 
+msgid "Discard pending review?"
+msgstr ""
+
+msgid "Discard review"
+msgstr ""
+
 msgid "Discord webhook (for example, `https://discord.com/api/webhooks/…`)."
 msgstr ""
 
@@ -28172,9 +28187,6 @@ msgstr ""
 msgid "How the job limiter handles jobs exceeding the thresholds specified below. The 'track' mode only logs the jobs. The 'compress' mode compresses the jobs and raises an exception if the compressed size exceeds the limit."
 msgstr ""
 
-msgid "How to track time"
-msgstr ""
-
 msgid "HttpDestinationValidator validates only http external audit event destinations."
 msgstr ""
 
@@ -31992,6 +32004,9 @@ msgid "Keep artifacts from most recent successful jobs"
 msgstr ""
 
 msgid "Keep divergent refs"
+msgstr ""
+
+msgid "Keep review"
 msgstr ""
 
 msgid "Keep sidebar visible"
@@ -47445,6 +47460,9 @@ msgid "Review App|View latest app"
 msgstr ""
 
 msgid "Review changes"
+msgstr ""
+
+msgid "Review discarded"
 msgstr ""
 
 msgid "Review requested"
@@ -64972,6 +64990,9 @@ msgid "You don't have any recent searches"
 msgstr ""
 
 msgid "You don't have permission to approve this deployment. Contact the project or group owner for help."
+msgstr ""
+
+msgid "You don't have permission to commit to %{branchName}. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "You don't have permission to manage email participants."

@@ -66,7 +66,11 @@ module Gitlab
           .store[COMPOSITE_IDENTITY_USERS_KEY]
           .to_a.first
 
-        yield new(user) if user.present?
+        return unless user.present?
+
+        identity = new(user)
+
+        block_given? ? yield(identity) : identity
       end
 
       def self.fabricate(user)

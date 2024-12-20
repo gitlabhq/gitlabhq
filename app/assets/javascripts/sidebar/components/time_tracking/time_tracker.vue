@@ -11,7 +11,6 @@ import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { s__, __ } from '~/locale';
 
-import { HOW_TO_TRACK_TIME } from '../../constants';
 import { timeTrackingQueries } from '../../queries/constants';
 import eventHub from '../../event_hub';
 import TimeTrackingCollapsedState from './collapsed_state.vue';
@@ -103,7 +102,6 @@ export default {
   },
   data() {
     return {
-      showHelp: false,
       timeTracking: {
         ...this.initialTimeTracking,
       },
@@ -178,17 +176,8 @@ export default {
     showNoTimeTrackingState() {
       return !this.hasTimeEstimate && !this.hasTotalTimeSpent;
     },
-    showHelpState() {
-      return Boolean(this.showHelp);
-    },
     isTimeReportSupported() {
       return [TYPE_ISSUE, TYPE_MERGE_REQUEST].includes(this.issuableType) && this.issuableId;
-    },
-    timeTrackingIconTitle() {
-      return this.showHelpState ? '' : HOW_TO_TRACK_TIME;
-    },
-    timeTrackingIconName() {
-      return this.showHelpState ? 'close' : 'question-o';
     },
     timeEstimateTooltip() {
       return this.hasTimeEstimate
@@ -227,7 +216,6 @@ export default {
       v-if="showCollapsed"
       :show-comparison-state="showComparisonState"
       :show-no-time-tracking-state="showNoTimeTrackingState"
-      :show-help-state="showHelpState"
       :show-spent-only-state="showSpentOnlyState"
       :show-estimate-only-state="showEstimateOnlyState"
       :time-spent-human-readable="humanTotalTimeSpent"

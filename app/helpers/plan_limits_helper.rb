@@ -16,9 +16,9 @@ module PlanLimitsHelper
     when :ci_needs_size_limit
       s_('AdminSettings|Maximum number of needs dependencies that a job can have')
     when :ci_registered_group_runners
-      s_('AdminSettings|Maximum number of runners registered per group')
+      s_('AdminSettings|Maximum number of runners created or active in a group during the past seven days')
     when :ci_registered_project_runners
-      s_('AdminSettings|Maximum number of runners registered per project')
+      s_('AdminSettings|Maximum number of runners created or active in a project during the past seven days')
     when :dotenv_size
       s_('AdminSettings|Maximum size of a dotenv artifact in bytes')
     when :dotenv_variables

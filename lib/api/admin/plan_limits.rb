@@ -59,8 +59,10 @@ module API
           desc: 'Maximum number of pipeline subscriptions to and from a project'
         optional :ci_pipeline_schedules, type: Integer, desc: 'Maximum number of pipeline schedules'
         optional :ci_needs_size_limit, type: Integer, desc: 'Maximum number of needs dependencies that a job can have'
-        optional :ci_registered_group_runners, type: Integer, desc: 'Maximum number of runners registered per group'
-        optional :ci_registered_project_runners, type: Integer, desc: 'Maximum number of runners registered per project'
+        optional :ci_registered_group_runners, type: Integer,
+          desc: 'Maximum number of runners created or active in a group during the past seven days'
+        optional :ci_registered_project_runners, type: Integer,
+          desc: 'Maximum number of runners created or active in a project during the past seven days'
         optional :conan_max_file_size, type: Integer, desc: 'Maximum Conan package file size in bytes'
         optional :dotenv_size, type: Integer, desc: 'Maximum size of a dotenv artifact in bytes'
         optional :dotenv_variables, type: Integer, desc: 'Maximum number of variables in a dotenv artifact'

@@ -45,9 +45,9 @@ class Projects::Ci::DailyBuildGroupReportResultsController < Projects::Applicati
     {
       project: project,
       coverage: true,
-      start_date: params[:start_date],
-      end_date: params[:end_date],
-      ref_path: params[:ref_path],
+      start_date: safe_params[:start_date],
+      end_date: safe_params[:end_date],
+      ref_path: safe_params[:ref_path],
       sort: true
     }
   end
@@ -58,5 +58,9 @@ class Projects::Ci::DailyBuildGroupReportResultsController < Projects::Applicati
 
   def param_type
     params.require(:param_type)
+  end
+
+  def safe_params
+    params.permit(:start_date, :end_date, :ref_path, :param_type)
   end
 end

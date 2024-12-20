@@ -329,8 +329,8 @@ from the **Admin** area:
    - **Maximum number of pipeline subscriptions to and from a project**
    - **Maximum number of pipeline schedules**
    - **Maximum number of needs dependencies that a job can have**
-   - **Maximum number of runners registered per group**
-   - **Maximum number of runners registered per project**
+   - **Maximum number of runners created or active in a group during the past seven days**
+   - **Maximum number of runners created or active in a project during the past seven days**
    - **Maximum number of downstream pipelines in a pipeline's hierarchy tree**
    - **Maximum number of instance-level CI/CD variables**
 <!-- vale gitlab_base.CurrentStatus = YES -->

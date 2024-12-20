@@ -278,7 +278,6 @@ RSpec/BeEq:
     - 'ee/spec/models/namespaces/free_user_cap/enforcement_without_storage_spec.rb'
     - 'ee/spec/models/namespaces/free_user_cap/root_size_spec.rb'
     - 'ee/spec/models/namespaces/storage/enforcement_spec.rb'
-    - 'ee/spec/models/namespaces/storage/root_excess_size_spec.rb'
     - 'ee/spec/models/namespaces/storage/root_size_spec.rb'
     - 'ee/spec/models/onboarding/completion_spec.rb'
     - 'ee/spec/models/onboarding/progress_spec.rb'

@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe 'Resolve an open thread in a merge request by creating an issue', :js, feature_category: :team_planning do
+  # Ensure support bot user is created so creation doesn't count towards query limit
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
+  let_it_be(:support_bot) { Users::Internal.support_bot }
+
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, only_allow_merge_if_all_discussions_are_resolved: true) }
   let(:merge_request) { create(:merge_request, source_project: project) }

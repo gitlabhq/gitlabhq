@@ -448,6 +448,9 @@ export default {
     activeChildItemType() {
       return this.activeChildItem?.workItemType?.name;
     },
+    activeChildItemId() {
+      return this.activeChildItem?.id;
+    },
   },
   methods: {
     handleWorkItemCreated() {
@@ -909,6 +912,7 @@ export default {
               :parent-work-item-type="workItem.workItemType.name"
               :work-item-id="workItem.id"
               :work-item-iid="iid"
+              :active-child-item-id="activeChildItemId"
               :can-update="canUpdate"
               :can-update-children="canUpdateChildren"
               :confidential="workItem.confidential"

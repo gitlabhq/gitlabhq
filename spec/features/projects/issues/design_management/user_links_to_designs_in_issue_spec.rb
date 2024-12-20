@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe 'viewing issues with design references', feature_category: :design_management do
   include DesignManagementTestHelpers
 
+  # Ensure support bot user is created so creation doesn't count towards query limit
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
+  let_it_be(:support_bot) { Users::Internal.support_bot }
+
   let_it_be(:public_project) { create(:project_empty_repo, :public) }
   let_it_be(:private_project) { create(:project_empty_repo) }
 

@@ -114,6 +114,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     return render_404 unless ::Feature.enabled?(:rapid_diffs, current_user, type: :wip)
 
     streaming_offset = 5
+    @reload_stream_url = diffs_stream_url(@merge_request)
     @stream_url = diffs_stream_url(@merge_request, streaming_offset, diff_view)
     @diffs_slice = @merge_request.first_diffs_slice(streaming_offset)
 

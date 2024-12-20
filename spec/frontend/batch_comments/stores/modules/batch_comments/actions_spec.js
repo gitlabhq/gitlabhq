@@ -357,4 +357,36 @@ describe('Batch comments store actions', () => {
       return testAction(actions.clearDrafts, null, null, [{ type: 'CLEAR_DRAFTS' }], []);
     });
   });
+
+  describe('discardDrafts', () => {
+    let commit;
+    let getters;
+
+    beforeEach(() => {
+      commit = jest.fn();
+      getters = {
+        getNotesData: { draftsDiscardPath: TEST_HOST },
+      };
+    });
+
+    it('dispatches actions & commits', async () => {
+      mock.onAny().reply(HTTP_STATUS_OK);
+
+      await actions.discardDrafts({ commit, getters });
+
+      expect(commit.mock.calls[0]).toEqual(['CLEAR_DRAFTS']);
+    });
+
+    it('calls createAlert when server returns an error', async () => {
+      mock.onAny().reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+
+      await actions.discardDrafts({ commit, getters });
+
+      expect(createAlert).toHaveBeenCalledWith({
+        error: expect.anything(),
+        captureError: true,
+        message: 'An error occurred while discarding your review. Please try again.',
+      });
+    });
+  });
 });

@@ -123,8 +123,6 @@ Rails/StrongParams:
     - 'app/controllers/projects/branches_controller.rb'
     - 'app/controllers/projects/build_artifacts_controller.rb'
     - 'app/controllers/projects/builds_controller.rb'
-    - 'app/controllers/projects/ci/daily_build_group_report_results_controller.rb'
-    - 'app/controllers/projects/ci/lints_controller.rb'
     - 'app/controllers/projects/cluster_agents_controller.rb'
     - 'app/controllers/projects/clusters_controller.rb'
     - 'app/controllers/projects/commit_controller.rb'

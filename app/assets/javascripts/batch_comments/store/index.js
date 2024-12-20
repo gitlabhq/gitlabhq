@@ -16,6 +16,7 @@ export const useBatchComments = defineStore('batchComments', {
     addDraftToDiscussion() {},
     createNewDraft() {},
     clearDrafts() {},
+    discardDrafts() {},
   },
   getters: {
     hasDrafts() {},

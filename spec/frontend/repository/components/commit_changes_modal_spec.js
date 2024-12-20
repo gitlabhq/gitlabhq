@@ -66,7 +66,8 @@ describe('CommitChangesModal', () => {
   const findCurrentBranchRadioOption = () => findRadioGroup().at(0);
   const findNewBranchRadioOption = () => findRadioGroup().at(1);
   const findCreateMrCheckbox = () => findForm().findComponent(GlFormCheckbox);
-  const findTargetInput = () => findForm().findComponent(GlFormInput);
+  const findBranchNameInput = () => findForm().findComponent(GlFormInput);
+  const findBranchNameLabel = () => findForm().find(`label[for=branchNameInput]`);
   const findCommitHint = () => wrapper.find('[data-testid="hint"]');
   const findBranchInForkMessage = () =>
     wrapper.findByText('GitLab will create a branch in your fork and start a merge request.');
@@ -74,7 +75,7 @@ describe('CommitChangesModal', () => {
   const fillForm = async (inputValue = {}) => {
     const { targetText, commitText } = inputValue;
 
-    await findTargetInput().vm.$emit('input', targetText);
+    await findBranchNameInput().vm.$emit('input', targetText);
     await findCommitTextarea().vm.$emit('input', commitText);
   };
 
@@ -187,12 +188,12 @@ describe('CommitChangesModal', () => {
 
     it('shows the correct form fields when commit to new branch', async () => {
       createComponent();
-      expect(findTargetInput().exists()).toBe(false);
+      expect(findBranchNameInput().exists()).toBe(false);
 
       findFormRadioGroup().vm.$emit('input', true);
       await nextTick();
 
-      expect(findTargetInput().exists()).toBe(true);
+      expect(findBranchNameInput().exists()).toBe(true);
       expect(findCreateMrCheckbox().text()).toBe('Create a merge request for this change');
     });
 
@@ -201,7 +202,10 @@ describe('CommitChangesModal', () => {
       expect(wrapper.vm.$data.form.fields.branch_name.value).toBe('some-target-branch');
       expect(findCommitTextarea().exists()).toBe(true);
       expect(findRadioGroup().exists()).toBe(false);
-      expect(findTargetInput().exists()).toBe(true);
+      expect(findBranchNameInput().exists()).toBe(true);
+      expect(findBranchNameLabel().text()).toBe(
+        "You don't have permission to commit to main. Learn more.",
+      );
       expect(findCreateMrCheckbox().text()).toBe('Create a merge request for this change');
     });
 

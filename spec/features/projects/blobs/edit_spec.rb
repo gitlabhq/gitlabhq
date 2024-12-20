@@ -226,7 +226,7 @@ RSpec.describe 'Editing file blob', :js, feature_category: :source_code_manageme
 
             epoch = Time.zone.now.strftime('%s%L').last(5)
             expect(page).to have_checked_field _('Create a merge request for this change')
-            expect(find_field(_('Commit to a new branch')).value).to eq "#{user.username}-protected-branch-patch-#{epoch}"
+            expect(find_field('branch_name').value).to eq "#{user.username}-protected-branch-patch-#{epoch}"
           end
         end
       end

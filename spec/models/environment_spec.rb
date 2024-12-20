@@ -798,7 +798,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     end
   end
 
-  describe '#stop_with_actions!' do
+  describe '#stop_with_actions!', :request_store do
     let(:user) { create(:user) }
 
     subject { environment.stop_with_actions! }
@@ -989,6 +989,73 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
           expect(actions.count).to eq(close_actions.count)
           expect(actions.pluck(:id)).to match_array(close_actions.pluck(:id))
           expect(actions.pluck(:user)).to match_array(close_actions.pluck(:user))
+        end
+
+        context 'when stop actions are associated to users requiring composite identity' do
+          let(:user) { create(:user, :service_account, composite_identity_enforced: true) }
+          let(:scoped_user) { create(:user) }
+          let(:user_a) { user }
+          let(:user_b) { user }
+
+          before do
+            project.add_maintainer(user_a)
+            project.add_maintainer(user_b)
+            project.add_maintainer(scoped_user)
+
+            job = close_actions.first
+            job.update!(user: user_a, options: job.options.merge(scoped_user_id: scoped_user.id))
+            job = close_actions.last
+            job.update!(user: user_b, options: job.options.merge(scoped_user_id: scoped_user.id))
+          end
+
+          it 'ensures composite identity is present when checking permissions to run the actions' do
+            expect(::Gitlab::Auth::Identity).to receive(:link_from_job).twice.and_call_original
+
+            actions = subject
+
+            expect(actions.count).to eq(close_actions.count)
+            expect(actions.pluck(:id)).to match_array(close_actions.pluck(:id))
+            expect(actions.pluck(:user)).to match_array(close_actions.pluck(:user))
+          end
+
+          context 'when request has composite identity is already linked under different users' do
+            let(:another_scoped_user) { create(:user) }
+
+            before do
+              ::Gitlab::Auth::Identity.new(user).link!(another_scoped_user)
+            end
+
+            it 'denies access' do
+              expect { subject }.to raise_error(::Gitlab::Access::AccessDeniedError)
+            end
+          end
+
+          context 'when stop actions have different users' do
+            context 'when stop actions have different human users' do
+              let(:user_a) { create(:user) }
+              let(:user_b) { create(:user) }
+
+              it 'process the jobs' do
+                expect(subject.count).to eq(close_actions.count)
+              end
+            end
+
+            context 'when stop actions have composite identity user and human user' do
+              let(:user_b) { create(:user) }
+
+              it 'process the jobs' do
+                expect(subject.count).to eq(close_actions.count)
+              end
+            end
+
+            context 'when stop actions have different composite identity users' do
+              let(:user_b) { create(:user, :service_account, composite_identity_enforced: true) }
+
+              it 'raises an error' do
+                expect { subject }.to raise_error(Gitlab::Auth::Identity::TooManyIdentitiesLinkedError)
+              end
+            end
+          end
         end
 
         context 'when there are failed builds' do

@@ -11,13 +11,17 @@ class Projects::Ci::LintsController < Projects::ApplicationController
   def show; end
 
   def create
-    content = params[:content]
-    dry_run = params[:dry_run]
+    content = safe_params[:content]
+    dry_run = safe_params[:dry_run]
 
     result = Gitlab::Ci::Lint
       .new(project: @project, current_user: current_user)
       .validate(content, dry_run: dry_run)
 
     render json: ::Ci::Lint::ResultSerializer.new.represent(result)
+  end
+
+  def safe_params
+    params.permit(:content, :dry_run)
   end
 end

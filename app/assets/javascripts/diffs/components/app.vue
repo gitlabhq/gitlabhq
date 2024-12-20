@@ -463,6 +463,8 @@ export default {
       'toggleTreeList',
       'expandAllFiles',
       'collapseAllFiles',
+      'setDiffViewType',
+      'setShowWhitespace',
     ]),
     ...mapActions('findingsDrawer', ['setDrawer']),
     closeDrawer() {
@@ -747,6 +749,12 @@ export default {
     isDiffViewActive(item) {
       return this.virtualScrollCurrentIndex >= 0 && this.currentDiffFileId === item.file_hash;
     },
+    toggleFileByFile() {
+      this.setFileByFile({ fileByFile: !this.viewDiffsFileByFile });
+    },
+    toggleWhitespace(updatedSetting) {
+      this.setShowWhitespace({ showWhitespace: updatedSetting });
+    },
   },
   howToMergeDocsPath: helpPagePath('user/project/merge_requests/merge_request_troubleshooting.md', {
     anchor: 'check-out-merge-requests-locally-through-the-head-ref',
@@ -767,8 +775,14 @@ export default {
           :diffs-count="numTotalFiles"
           :added-lines="addedLines"
           :removed-lines="removedLines"
+          :show-whitespace="showWhitespace"
+          :view-diffs-file-by-file="viewDiffsFileByFile"
+          :diff-view-type="diffViewType"
           @expandAllFiles="expandAllFiles"
           @collapseAllFiles="collapseAllFiles"
+          @updateDiffViewType="setDiffViewType"
+          @toggleWhitespace="toggleWhitespace"
+          @toggleFileByFile="toggleFileByFile"
         />
       </div>
 

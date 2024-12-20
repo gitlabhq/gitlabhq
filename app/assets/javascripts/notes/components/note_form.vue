@@ -4,6 +4,7 @@ import { GlButton, GlSprintf, GlLink, GlFormCheckbox } from '@gitlab/ui';
 import { mapGetters, mapActions, mapState } from 'vuex';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
+import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import eventHub from '../event_hub';
@@ -22,8 +23,12 @@ export default {
     GlSprintf,
     GlLink,
     GlFormCheckbox,
+    CommentTemperature: () =>
+      import(
+        /* webpackChunkName: 'comment_temperature' */ 'ee_component/ai/components/comment_temperature.vue'
+      ),
   },
-  mixins: [issuableStateMixin, resolvable],
+  mixins: [issuableStateMixin, resolvable, glAbilitiesMixin()],
   props: {
     noteBody: {
       type: String,
@@ -106,8 +111,10 @@ export default {
       updatedNoteBody: this.noteBody,
       conflictWhileEditing: false,
       isSubmitting: false,
+      isMeasuringCommentTemperature: false,
       isResolving: this.resolveDiscussion,
       isUnresolving: !this.resolveDiscussion,
+      onSaveHandler: null,
       resolveAsThread: true,
       isSubmittingWithKeydown: false,
       formFieldProps: {
@@ -235,6 +242,9 @@ export default {
         diffFile: this.diffFile,
       };
     },
+    shouldDisableField() {
+      return this.isSubmitting && !this.isMeasuringCommentTemperature;
+    },
   },
   watch: {
     noteBody() {
@@ -302,9 +312,20 @@ export default {
       }
       this.updatedNoteBody = '';
     },
-    handleUpdate() {
+    runCommentTemperatureMeasurement(onSaveHandler) {
+      this.isMeasuringCommentTemperature = true;
+      this.$refs.commentTemperature.measureCommentTemperature();
+      this.onSaveHandler = this[onSaveHandler].bind(this, { shouldMeasureTemperature: false });
+    },
+    handleUpdate({ shouldMeasureTemperature = true } = {}) {
       const beforeSubmitDiscussionState = this.discussionResolved;
       this.isSubmitting = true;
+      if (shouldMeasureTemperature && this.glAbilities.measureCommentTemperature) {
+        this.runCommentTemperatureMeasurement('handleUpdate');
+        return;
+      }
+
+      this.isMeasuringCommentTemperature = false;
 
       trackSavedUsingEditor(
         this.$refs.markdownEditor.isContentEditorActive,
@@ -325,13 +346,19 @@ export default {
         this.discussionResolved ? !this.isUnresolving : this.isResolving,
       );
     },
-    handleAddToReview() {
+    handleAddToReview({ shouldMeasureTemperature = true } = {}) {
       const clickType = this.hasDrafts ? 'noteFormAddToReview' : 'noteFormStartReview';
       // check if draft should resolve thread
       const shouldResolve =
         (this.discussionResolved && !this.isUnresolving) ||
         (!this.discussionResolved && this.isResolving);
       this.isSubmitting = true;
+      if (shouldMeasureTemperature && this.glAbilities.measureCommentTemperature) {
+        this.runCommentTemperatureMeasurement('handleAddToReview');
+        return;
+      }
+
+      this.isMeasuringCommentTemperature = false;
 
       eventHub.$emit(clickType, { name: clickType });
       this.$emit(
@@ -380,7 +407,7 @@ export default {
           :form-field-props="formFieldProps"
           :autosave-key="autosaveKey"
           :autocomplete-data-sources="autocompleteDataSources"
-          :disabled="isSubmitting"
+          :disabled="shouldDisableField"
           supports-quick-actions
           :autofocus="autofocus"
           @keydown.shift.meta.enter="handleKeySubmit((forceUpdate = true))"
@@ -393,6 +420,15 @@ export default {
           @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
         />
       </comment-field-layout>
+      <comment-temperature
+        v-if="glAbilities.measureCommentTemperature"
+        ref="commentTemperature"
+        v-model="updatedNoteBody"
+        :item-id="getNoteableData.id"
+        :item-type="getNoteableData.noteableType"
+        :user-id="currentUserId"
+        @save="onSaveHandler()"
+      />
       <div class="note-form-actions gl-font-size-0">
         <template v-if="showResolveDiscussionToggle">
           <label>

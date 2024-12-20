@@ -399,7 +399,11 @@ class Projects::IssuesController < Projects::ApplicationController
   private
 
   def show_work_item?
-    Feature.enabled?(:work_items_view_preference, current_user) && current_user&.user_preference&.use_work_items_view
+    # Service Desk issues and incidents should not use the work item view
+    !issue.from_service_desk? &&
+      !issue.work_item_type&.incident? &&
+      Feature.enabled?(:work_items_view_preference, current_user) &&
+      current_user&.user_preference&.use_work_items_view
   end
 
   def work_item_redirect_except_actions

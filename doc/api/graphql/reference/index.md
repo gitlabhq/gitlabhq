@@ -937,6 +937,26 @@ Returns [`Project`](#project).
 | ---- | ---- | ----------- |
 | <a id="queryprojectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. For example, `gitlab-org/gitlab-foss`. |
 
+### `Query.projectSecrets`
+
+List project secrets.
+
+DETAILS:
+**Introduced** in GitLab 17.8.
+**Status**: Experiment.
+
+Returns [`ProjectSecretConnection`](#projectsecretconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryprojectsecretsprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the secrets belong to. |
+
 ### `Query.projectSecretsManager`
 
 Find a project secrets manager.
@@ -16437,6 +16457,29 @@ The edge type for [`ProjectSavedReply`](#projectsavedreply).
 | ---- | ---- | ----------- |
 | <a id="projectsavedreplyedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="projectsavedreplyedgenode"></a>`node` | [`ProjectSavedReply`](#projectsavedreply) | The item at the end of the edge. |
+
+#### `ProjectSecretConnection`
+
+The connection type for [`ProjectSecret`](#projectsecret).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecretconnectionedges"></a>`edges` | [`[ProjectSecretEdge]`](#projectsecretedge) | A list of edges. |
+| <a id="projectsecretconnectionnodes"></a>`nodes` | [`[ProjectSecret]`](#projectsecret) | A list of nodes. |
+| <a id="projectsecretconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ProjectSecretEdge`
+
+The edge type for [`ProjectSecret`](#projectsecret).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecretedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="projectsecretedgenode"></a>`node` | [`ProjectSecret`](#projectsecret) | The item at the end of the edge. |
 
 #### `ProjectSecurityExclusionConnection`
 
@@ -33748,7 +33791,7 @@ Representation of a project secret.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectsecretbranch"></a>`branch` | [`String!`](#string) | Branches that can access the secret. |
-| <a id="projectsecretdescription"></a>`description` | [`String!`](#string) | Description of the project secret. |
+| <a id="projectsecretdescription"></a>`description` | [`String`](#string) | Description of the project secret. |
 | <a id="projectsecretenvironment"></a>`environment` | [`String!`](#string) | Environments that can access the secret. |
 | <a id="projectsecretname"></a>`name` | [`String!`](#string) | Name of the project secret. |
 | <a id="projectsecretproject"></a>`project` | [`Project!`](#project) | Project the secret belong to. |

@@ -122,7 +122,7 @@ RSpec.describe 'Projects > Files > User replaces files', :js, feature_category: 
       click_on('Replace')
 
       epoch = Time.zone.now.strftime('%s%L').last(5)
-      expect(find_field(_('Commit to a new branch')).value).to eq "#{user.username}-protected-branch-patch-#{epoch}"
+      expect(find_field('branch_name').value).to eq "#{user.username}-protected-branch-patch-#{epoch}"
       find(".upload-dropzone-card").drop(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
       page.within('#modal-replace-blob') do
         fill_in(:commit_message, with: 'Replacement file commit message')

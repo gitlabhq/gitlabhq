@@ -163,3 +163,18 @@ export const toggleResolveDiscussion = ({ commit }, draftId) => {
 };
 
 export const clearDrafts = ({ commit }) => commit(types.CLEAR_DRAFTS);
+
+export const discardDrafts = ({ getters, commit }) => {
+  return service
+    .discard(getters.getNotesData.draftsDiscardPath)
+    .then(() => {
+      commit(types.CLEAR_DRAFTS);
+    })
+    .catch((error) =>
+      createAlert({
+        captureError: true,
+        error,
+        message: __('An error occurred while discarding your review. Please try again.'),
+      }),
+    );
+};

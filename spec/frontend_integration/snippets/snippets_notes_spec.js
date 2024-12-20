@@ -36,26 +36,26 @@ describe('Integration Snippets notes', () => {
     it.each([
       [
         ':heart',
-        ['heart', 'heart decoration', 'heart with arrow', 'heart with ribbon', 'heart_exclamation'],
+        [
+          'heart',
+          'heart decoration',
+          'heart exclamation',
+          'heart hands',
+          'heart hands: dark skin tone',
+        ],
       ],
-      [':red', ['red apple', 'red_car', 'red_circle', 'red_exclamation_mark', 'red_heart']],
+      [':red', ['red apple', 'red circle', 'red envelope', 'red exclamation mark', 'red hair']],
       [
         ':circle',
         // TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/347549
         // These autocompleted results aren't very good. The autocompletion should be improved.
-        [
-          'circled ideograph accept',
-          'circled ideograph advantage',
-          'circled ideograph congratulation',
-          'circled ideograph secret',
-          'circled latin capital letter m',
-        ],
+        ['circled M', 'red circle', 'blue circle', 'black circle', 'brown circle'],
       ],
       [':', ['grinning', 'smiley', 'smile', 'grin', 'laughing']],
       // We do not want the search to start with space https://gitlab.com/gitlab-org/gitlab/-/issues/322548
       [': ', []],
       // We want to preserve that we can have space INSIDE the search
-      [':red ci', ['large red circle']],
+      [':red ci', ['red circle', 'hollow red circle']],
     ])('shows a correct list of matching emojis when user enters %s', async (input, expected) => {
       fillNoteTextarea(input);
 

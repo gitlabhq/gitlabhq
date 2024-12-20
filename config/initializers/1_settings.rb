@@ -1049,7 +1049,7 @@ Settings.topology_service['private_key_file'] ||= '/home/git/gitlab/config/topol
 #
 Settings['cell'] ||= {}
 Settings.cell['id'] ||= 1
-Settings.cell['name'] ||= 'cell-1'
+Settings.cell['name'] ||= "cell-#{Settings.cell['id']}"
 Settings.cell['skip_sequence_alteration'] ||= false
 
 #
