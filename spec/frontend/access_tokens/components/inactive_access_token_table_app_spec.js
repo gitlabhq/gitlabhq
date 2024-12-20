@@ -1,16 +1,18 @@
 import { GlPagination, GlTable } from '@gitlab/ui';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import InactiveAccessTokenTableApp from '~/access_tokens/components/inactive_access_token_table_app.vue';
-import { PAGE_SIZE } from '~/access_tokens/components/constants';
-import { sprintf } from '~/locale';
+import { HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 
 describe('~/access_tokens/components/inactive_access_token_table_app', () => {
   let wrapper;
+  let axiosMock;
 
-  const accessTokenType = 'access token';
-  const accessTokenTypePlural = 'access tokens';
-  const information = undefined;
   const noInactiveTokensMessage = 'This resource has no inactive access tokens.';
+  const paginationUrl =
+    'https://gitlab.example.com/groups/mygroup/-/settings/access_tokens/inactive.json';
 
   const defaultInactiveAccessTokens = [
     {
@@ -37,14 +39,28 @@ describe('~/access_tokens/components/inactive_access_token_table_app', () => {
     },
   ];
 
+  const paginationHeaders = ({ page = 1, perPage = 20, total = 60 } = {}) => ({
+    'X-Page': page,
+    'X-Per-Page': perPage,
+    'X-Total': total,
+  });
+
+  beforeEach(() => {
+    axiosMock = new MockAdapter(axios);
+    axiosMock
+      .onGet(`${paginationUrl}?page=1`)
+      .replyOnce(HTTP_STATUS_OK, defaultInactiveAccessTokens, paginationHeaders());
+  });
+
+  afterEach(() => {
+    axiosMock.restore();
+  });
+
   const createComponent = (props = {}) => {
     wrapper = mountExtended(InactiveAccessTokenTableApp, {
       provide: {
-        accessTokenType,
-        accessTokenTypePlural,
-        information,
-        initialInactiveAccessTokens: defaultInactiveAccessTokens,
         noInactiveTokensMessage,
+        paginationUrl,
         ...props,
       },
     });
@@ -54,26 +70,23 @@ describe('~/access_tokens/components/inactive_access_token_table_app', () => {
   const findHeaders = () => findTable().findAll('th > div > span');
   const findCells = () => findTable().findAll('td');
   const findPagination = () => wrapper.findComponent(GlPagination);
+  const findPageOne = () => findPagination().find('ul > li');
 
-  it('should render an empty table with a default message', () => {
-    createComponent({ initialInactiveAccessTokens: [] });
-
-    const cells = findCells();
-    expect(cells).toHaveLength(1);
-    expect(cells.at(0).text()).toBe(
-      sprintf('This resource has no inactive %{accessTokenTypePlural}.', {
-        accessTokenTypePlural,
-      }),
-    );
-  });
-
-  it('should render an empty table with a custom message', () => {
-    const noTokensMessage = 'This group has no inactive access tokens.';
-    createComponent({ initialInactiveAccessTokens: [], noInactiveTokensMessage: noTokensMessage });
+  it('should render an empty table with a message', async () => {
+    axiosMock.resetHandlers();
+    axiosMock
+      .onGet(`${paginationUrl}?page=1`)
+      .replyOnce(HTTP_STATUS_OK, [], paginationHeaders({ total: 0 }));
+    createComponent();
 
     const cells = findCells();
     expect(cells).toHaveLength(1);
-    expect(cells.at(0).text()).toBe(noTokensMessage);
+    expect(cells.at(0).text()).toBe('');
+    expect(findTable().attributes('aria-busy')).toBe('true');
+
+    await axios.waitForAll();
+    expect(cells.at(0).text()).toBe(noInactiveTokensMessage);
+    expect(findTable().attributes('aria-busy')).toBe('false');
   });
 
   describe('table headers', () => {
@@ -107,8 +120,9 @@ describe('~/access_tokens/components/inactive_access_token_table_app', () => {
     expect(assistiveElement.text()).toBe('The last time a token was used');
   });
 
-  it('sorts rows alphabetically', async () => {
+  it('does not sort rows', async () => {
     createComponent();
+    await axios.waitForAll();
 
     const cells = findCells();
 
@@ -121,41 +135,13 @@ describe('~/access_tokens/components/inactive_access_token_table_app', () => {
     await headers.at(0).trigger('click');
 
     // First and second rows have swapped
-    expect(cells.at(0).text()).toBe('b');
-    expect(cells.at(7).text()).toBe('a');
-  });
-
-  it('sorts rows by last used date', async () => {
-    createComponent();
-
-    const cells = findCells();
-
-    // First and second rows
     expect(cells.at(0).text()).toBe('a');
     expect(cells.at(7).text()).toBe('b');
-
-    const headers = findHeaders();
-    await headers.at(4).trigger('click');
-
-    // First and second rows have swapped
-    expect(cells.at(0).text()).toBe('b');
-    expect(cells.at(7).text()).toBe('a');
   });
 
-  it('sorts rows by expiry date', async () => {
+  it('shows Revoked in expiry column when revoked', async () => {
     createComponent();
-
-    const cells = findCells();
-    const headers = findHeaders();
-    await headers.at(5).trigger('click');
-
-    // First and second rows have swapped
-    expect(cells.at(0).text()).toBe('b');
-    expect(cells.at(7).text()).toBe('a');
-  });
-
-  it('shows Revoked in expiry column when revoked', () => {
-    createComponent();
+    await axios.waitForAll();
 
     const cells = findCells();
 
@@ -165,19 +151,56 @@ describe('~/access_tokens/components/inactive_access_token_table_app', () => {
   });
 
   describe('pagination', () => {
-    it('does not show pagination component', () => {
-      createComponent({
-        initialInactiveAccessTokens: Array(PAGE_SIZE).fill(defaultInactiveAccessTokens[0]),
-      });
+    it('does not show pagination component', async () => {
+      axiosMock.resetHandlers();
+      axiosMock
+        .onGet()
+        .replyOnce(HTTP_STATUS_OK, defaultInactiveAccessTokens, paginationHeaders({ total: 2 }));
+      createComponent();
+      await axios.waitForAll();
 
       expect(findPagination().exists()).toBe(false);
     });
 
-    it('shows the pagination component', () => {
-      createComponent({
-        initialInactiveAccessTokens: Array(PAGE_SIZE + 1).fill(defaultInactiveAccessTokens[0]),
-      });
+    it('shows the pagination component', async () => {
+      createComponent();
+      await axios.waitForAll();
+
       expect(findPagination().exists()).toBe(true);
+    });
+
+    it('moves to the next page', async () => {
+      createComponent();
+      await axios.waitForAll();
+
+      axiosMock
+        .onGet(`${paginationUrl}?page=2`)
+        .replyOnce(HTTP_STATUS_OK, [], paginationHeaders({ total: 0 }));
+      findPagination().vm.$emit('input', 2);
+      await nextTick();
+      expect(findTable().attributes('aria-busy')).toBe('true');
+      expect(findPageOne().classes('disabled')).toBe(true);
+
+      await axios.waitForAll();
+      expect(findTable().attributes('aria-busy')).toBe('false');
+      expect(findCells().at(0).text()).toBe(noInactiveTokensMessage);
+    });
+
+    it('shows an error if it fails to fetch tokens', async () => {
+      createComponent();
+      await axios.waitForAll();
+
+      axiosMock
+        .onGet(`${paginationUrl}?page=2`)
+        .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR, defaultInactiveAccessTokens);
+      findPagination().vm.$emit('input', 2);
+      await nextTick();
+      expect(findTable().attributes('aria-busy')).toBe('true');
+      expect(findPageOne().classes('disabled')).toBe(true);
+
+      await axios.waitForAll();
+      expect(findTable().attributes('aria-busy')).toBe('false');
+      expect(findCells().at(0).text()).toBe('An error occurred while fetching the tokens.');
     });
   });
 });

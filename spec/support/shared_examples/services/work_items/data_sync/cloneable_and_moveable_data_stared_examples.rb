@@ -94,6 +94,10 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     work_item.reload.customer_relations_contacts
   end
 
+  def work_item_labels(work_item)
+    work_item.reload.labels.pluck(:title)
+  end
+
   let_it_be(:users) { create_list(:user, 3) }
   let_it_be(:thumbs_ups) { create_list(:award_emoji, 2, name: 'thumbsup', awardable: original_work_item) }
   let_it_be(:thumbs_downs) { create_list(:award_emoji, 2, name: 'thumbsdown', awardable: original_work_item) }
@@ -173,6 +177,20 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     timelogs.pluck(:user_id, :time_spent)
   end
 
+  let_it_be(:labels) do
+    labels = []
+    if original_work_item.namespace.is_a?(Group)
+      labels = create_list(:group_label, 2, group: original_work_item.namespace)
+      create(:group_label, group: target_namespace, title: labels.first.name)
+    else
+      labels = create_list(:label, 2, project: original_work_item.project)
+      create(:label, project: target_namespace.project, title: labels.first.name)
+    end
+
+    original_work_item.update!(labels: labels)
+    [labels.first.title]
+  end
+
   let_it_be(:move) { WorkItems::DataSync::MoveService }
   let_it_be(:clone) { WorkItems::DataSync::CloneService }
 
@@ -186,7 +204,8 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
       { widget_name: :subscriptions,               eval_value: :work_item_subscriptions,      expected_data: subscriptions, operations: [move] },
       { widget_name: :sent_notifications,          eval_value: :work_item_sent_notifications, expected_data: notifications, operations: [move] },
       { widget_name: :timelogs,                    eval_value: :work_item_timelogs,           expected_data: timelogs,      operations: [move] },
-      { widget_name: :customer_relations_contacts, eval_value: :work_item_crm_contacts,       expected_data: crm_contacts,  operations: [move, clone] }
+      { widget_name: :customer_relations_contacts, eval_value: :work_item_crm_contacts,       expected_data: crm_contacts,  operations: [move, clone] },
+      { widget_name: :labels,                      eval_value: :work_item_labels,             expected_data: labels,        operations: [move, clone] }
     ]
   end
   # rubocop: enable Layout/LineLength

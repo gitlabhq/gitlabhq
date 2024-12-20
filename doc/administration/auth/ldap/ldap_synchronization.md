@@ -559,6 +559,104 @@ task.
 
 ::EndTabs
 
+### GitLab Duo add-on for groups
+
+The `duo_add_on_groups` setting automatically [manages Duo add-on seats](../../../administration/duo_add_on_seat_management_with_ldap.md) for users who authenticate through LDAP. This feature helps organizations to streamline their **GitLab Duo** seat allocation process based on LDAP group memberships.
+
+To enable add-on seat management for groups, you must configure the `duo_add_on_groups` setting in your GitLab instance:
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['ldap_servers'] = {
+     'main' => {
+       'duo_add_on_groups' => ['duo_group_1', 'duo_group_2'],
+       }
+   }
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   global:
+     appConfig:
+       ldap:
+         servers:
+           main:
+           duo_add_on_groups: => ['duo_group_1', 'duo_group_2'],
+   ```
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+:::TabTitle Docker
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           gitlab_rails['ldap_servers'] = {
+             'main' => {
+                 'duo_add_on_groups' => ['duo_group_1', 'duo_group_2'],
+             }
+           }
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     ldap:
+       servers:
+         main:
+           duo_add_on_groups: ['duo_group_1', 'duo_group_2']
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs
+
 ### Group sync technical details
 
 This section outlines what LDAP queries are executed and what behavior you

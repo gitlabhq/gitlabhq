@@ -103,7 +103,6 @@ ee/spec/frontend/usage_quotas/code_suggestions/components/add_on_eligible_user_l
 ee/spec/frontend/users/identity_verification/components/international_phone_input_spec.js
 ee/spec/frontend/users/identity_verification/components/verify_phone_verification_code_spec.js
 ee/spec/frontend/vue_merge_request_widget/components/mr_widget_pipeline_container_spec.js
-ee/spec/frontend/vue_merge_request_widget/components/states/mr_widget_ready_to_merge_spec.js
 ee/spec/frontend/vue_shared/components/groups_list/groups_list_item_spec.js
 ee/spec/frontend/vue_shared/components/projects_list/projects_list_item_spec.js
 ee/spec/frontend/vulnerabilities/generic_report/types/list_graphql_spec.js
@@ -169,7 +168,6 @@ spec/frontend/design_management/pages/index_spec.js
 spec/frontend/design_management/router_spec.js
 spec/frontend/diffs/components/diff_line_note_form_spec.js
 spec/frontend/diffs/components/image_diff_overlay_spec.js
-spec/frontend/diffs/components/tree_list_spec.js
 spec/frontend/editor/components/source_editor_toolbar_spec.js
 spec/frontend/editor/extensions/source_editor_toolbar_ext_spec.js
 spec/frontend/error_tracking/components/error_details_spec.js
@@ -186,7 +184,6 @@ spec/frontend/glql/core/presenter_spec.js
 spec/frontend/groups/components/group_name_and_path_spec.js
 spec/frontend/groups/components/transfer_group_form_spec.js
 spec/frontend/helpers/init_simple_app_helper_spec.js
-spec/frontend/integrations/edit/components/sections/connection_spec.js
 spec/frontend/invite_members/components/members_token_select_spec.js
 spec/frontend/issuable/components/issuable_by_email_spec.js
 spec/frontend/issuable/related_issues/components/related_issues_root_spec.js

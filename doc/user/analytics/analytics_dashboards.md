@@ -19,28 +19,18 @@ You can use built-in dashboards by GitLab or create your own dashboards with cus
 
 ## Data sources
 
+> - Product analytics and custom visualization data sources [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/497577) in GitLab 17.7.
+
 A data source is a connection to a database or collection of data which can be used by your dashboard
 filters and visualizations to query and retrieve results.
 
-Analytics dashboards use the following data sources:
-
-- [Product analytics](../../operations/product_analytics/index.md)
-- [Value Stream Management](../analytics/value_streams_dashboard.md)
-
-You can also add [custom visualization data sources](../../development/fe_guide/customizable_dashboards.md#adding-a-new-visualization-data-source).
+Analytics dashboards use [Value Stream Management](../analytics/value_streams_dashboard.md) as a data source.
 
 ## Built-in dashboards
 
 To help you get started with analytics, GitLab provides built-in dashboards with predefined visualizations.
 These dashboards are labeled **By GitLab**.
 You cannot edit the built-in dashboards, but you can create custom dashboards with a similar style.
-
-### Product analytics dashboards
-
-When product analytics is enabled and onboarded, two built-in dashboards are available:
-
-- **Audience** displays metrics related to traffic, such as the number of users and sessions.
-- **Behavior** displays metrics related to user activity, such as the number of page views and events.
 
 ### Value Stream Management dashboard
 
@@ -72,20 +62,23 @@ You can use the dashboard designer to:
   - Add and remove visualizations.
   - Resize or move panels.
 
-## Data explorer
+<!--- start_remove The following content will be removed on remove_date: '2025-03-20' -->
+
+## Data explorer (deprecated)
 
 > - Introduced in GitLab 16.4 [with a flag](../../administration/feature_flags.md) named `combined_analytics_visualization_editor`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/425048) in GitLab 16.7. Feature flag `combined_analytics_visualization_editor` removed.
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/470875) in GitLab 17.6 from "Visualization designer" to "Data explorer"
+> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/470875) from "Visualization designer" to "Data explorer" in GitLab 17.6.
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/497577) in GitLab 17.7.
 
 NOTE:
 This feature is only compatible with the product analytics data source.
 
-You can use the data explorer to:
+You can use the data explorer to explore available data.
 
-- [Create custom visualizations](#create-a-custom-visualization).
-- [Generate custom visualizations with GitLab Duo](#generate-a-custom-visualization-with-gitlab-duo).
-- Explore available data.
+<!--- end_remove -->
 
 ## View project dashboards
 
@@ -253,7 +246,12 @@ To edit an existing custom dashboard:
 1. Optional. In the dashboard, select a panel and drag or resize it how you prefer.
 1. Select **Save**.
 
-## Create a custom visualization
+<!--- start_remove The following content will be removed on remove_date: '2025-03-20' -->
+
+## Create a custom visualization (deprecated)
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/497577) in GitLab 17.7.
 
 To create a custom visualization:
 
@@ -321,6 +319,8 @@ You can filter by custom event names with select measures:
 NOTE:
 When you change or remove a measure then dependent dimensions may also be removed.
 
+<!--- end_remove -->
+
 ## Troubleshooting
 
 ### `Something went wrong while loading the dashboard.`
@@ -329,7 +329,6 @@ If the dashboard displays a global error message that data could not be loaded, 
 If the error persists:
 
 - Check that your configurations match the [dashboard JSON schema](#define-a-dashboard) defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
-- For product analytics, make sure your [admin and project settings](../../operations/product_analytics/index.md#project-level-settings) are set up correctly.
 
 ### `Invalid dashboard configuration`
 
@@ -345,14 +344,4 @@ defined in `ee/app/validators/json_schemas/analytics_visualization.json`.
 
 If a dashboard panel displays an error message:
 
-- Make sure your [Cube query](../../operations/product_analytics/index.md#product-analytics-dashboards) and
-  [visualization](../analytics/analytics_dashboards.md#define-a-chart-visualization) configurations are set up correctly.
-- For product analytics, also check that your visualization's Cube query is valid.
-
-### Generate visualization with GitLab Duo returns unexpected results
-
-If GitLab Duo doesn't return the expected or a useful result, try editing your query to:
-
-- Specify a date range. For example: _number of unique users in 2023 to 2024, grouped monthly_.
-- Use the same names for metrics and dimensions as shown in the data explorer.
-  For example: _returning users_ instead of _existing customers_.
+- Make sure your [visualization](../analytics/analytics_dashboards.md#define-a-chart-visualization) configuration is set up correctly.

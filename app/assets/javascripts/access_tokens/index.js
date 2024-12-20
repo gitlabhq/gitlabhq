@@ -60,30 +60,14 @@ export const initInactiveAccessTokenTableApp = () => {
     return null;
   }
 
-  const {
-    accessTokenType,
-    accessTokenTypePlural,
-    initialInactiveAccessTokens: initialInactiveAccessTokensJson,
-    noInactiveTokensMessage: noTokensMessage,
-  } = el.dataset;
-
-  // Default values
-  const noInactiveTokensMessage =
-    noTokensMessage ||
-    sprintf(__('This resource has no inactive %{accessTokenTypePlural}.'), {
-      accessTokenTypePlural,
-    });
-
-  const initialInactiveAccessTokens = JSON.parse(initialInactiveAccessTokensJson);
+  const { noInactiveTokensMessage, paginationUrl } = el.dataset;
 
   return new Vue({
     el,
     name: 'InactiveAccessTokenTableRoot',
     provide: {
-      accessTokenType,
-      accessTokenTypePlural,
-      initialInactiveAccessTokens,
       noInactiveTokensMessage,
+      paginationUrl,
     },
     render(h) {
       return h(InactiveAccessTokenTableApp);

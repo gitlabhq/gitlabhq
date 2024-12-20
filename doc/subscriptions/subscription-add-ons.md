@@ -155,6 +155,18 @@ Prerequisites:
 
 Administrators of self-managed instances can also use a [Rake task](../raketasks/user_management.md#bulk-assign-users-to-gitlab-duo-pro) to assign or remove seats in bulk.
 
+#### Managing GitLab Duo seats with LDAP configuration
+
+You can automatically assign and remove GitLab Duo seats for LDAP-enabled users based on LDAP group membership.
+
+To enable this functionality, you must [configure the `duo_add_on_groups` property](../administration/auth/ldap/ldap_synchronization.md#gitlab-duo-add-on-for-groups) in your LDAP settings.
+
+When `duo_add_on_groups` is configured, it becomes the single source of truth for Duo seat management among LDAP-enabled users.
+For more information, see [seat assignment workflow](../administration/duo_add_on_seat_management_with_ldap.md#seat-management-workflow).
+
+This automated process ensures that Duo seats are efficiently allocated based on your organization's LDAP group structure.
+For more information, see [GitLab Duo add-on seat management with LDAP](../administration/duo_add_on_seat_management_with_ldap.md).
+
 ## View assigned GitLab Duo users
 
 Prerequisites:

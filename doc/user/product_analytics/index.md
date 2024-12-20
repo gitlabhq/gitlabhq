@@ -1,11 +1,11 @@
 ---
-redirect_to: '../../operations/product_analytics/index.md'
+redirect_to: '../../development/internal_analytics/product_analytics.md'
 remove_date: '2025-01-04'
 ---
 
 <!-- markdownlint-disable -->
 
-This document was moved to [another location](../../operations/product_analytics/index.md).
+This document was moved to [another location](../../development/internal_analytics/product_analytics.md).
 
 <!-- This redirect file can be deleted after <2025-01-04>. -->
 <!-- Redirects that point to other docs in the same project expire in three months. -->

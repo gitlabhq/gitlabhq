@@ -33,8 +33,11 @@ RSpec.describe MigrationsHelpers, feature_category: :database do
         skip_if_multiple_databases_are_setup(:ci)
       end
 
-      it 'returns the main base model' do
-        expect(helper.active_record_base(database: :ci)).to eq(ActiveRecord::Base)
+      it 'returns the CI base model with a connection to the main model' do
+        model = helper.active_record_base(database: :ci)
+
+        expect(model).to eq(Ci::ApplicationRecord)
+        expect(model.connection_specification_name).to eq('ActiveRecord::Base')
       end
     end
 

@@ -2855,6 +2855,9 @@ msgstr ""
 msgid "AccessTokens|Add a %{type}"
 msgstr ""
 
+msgid "AccessTokens|An error occurred while fetching the tokens."
+msgstr ""
+
 msgid "AccessTokens|Are you sure you want to revoke the %{accessTokenType} \"%{tokenName}\"? This action cannot be undone. Any tools that rely on this access token will stop working."
 msgstr ""
 
@@ -27523,7 +27526,7 @@ msgstr ""
 msgid "GroupsNew|Connect instance"
 msgstr ""
 
-msgid "GroupsNew|Create a token with %{code_start}api%{code_end} and %{code_start}read_repository%{code_end} scopes in the %{pat_link_start}user settings%{pat_link_end} of the source GitLab instance. For %{short_living_link_start}security reasons%{short_living_link_end}, set a short expiration date for the token. Keep in mind that large migrations take more time."
+msgid "GroupsNew|Create a token in the %{pat_link_start}user settings%{pat_link_end} of the source GitLab instance with the %{code_start}api%{code_end} scope. For source instances on GitLab 15.0 or earlier, the token must additionally have the %{code_start}read_repository%{code_end} scope. For %{short_living_link_start}security reasons%{short_living_link_end}, set a short expiration date for the token. Keep in mind that large migrations take more time."
 msgstr ""
 
 msgid "GroupsNew|Create group"
@@ -57684,9 +57687,6 @@ msgid "This repository was last checked %{last_check_timestamp}. The check passe
 msgstr ""
 
 msgid "This resource has no comments to summarize"
-msgstr ""
-
-msgid "This resource has no inactive %{accessTokenTypePlural}."
 msgstr ""
 
 msgid "This setting can be overridden in each project."
