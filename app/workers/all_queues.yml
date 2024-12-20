@@ -3918,6 +3918,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: projects_import_export_import_completion_notification
+  :worker_name: Projects::ImportExport::ImportCompletionNotificationWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: projects_import_export_parallel_project_export
   :worker_name: Projects::ImportExport::ParallelProjectExportWorker
   :feature_category: :importers

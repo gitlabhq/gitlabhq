@@ -7,7 +7,7 @@ class CreatePackagesConanPackageReferences < Gitlab::Database::Migration[2.2]
   CONSTRAINT_NAME = 'chk_conan_references_info_length'
 
   def up
-    create_table :packages_conan_package_references do |t| # rubocop:disable Migration/EnsureFactoryForTable -- https://gitlab.com/gitlab-org/gitlab/-/issues/468630
+    create_table :packages_conan_package_references do |t|
       t.bigint :package_id, null: false
       t.bigint :project_id, null: false
       t.bigint :recipe_revision_id

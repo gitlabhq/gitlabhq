@@ -694,7 +694,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
   describe '#publish_creation_event' do
     let_it_be(:project) { create(:project) }
 
-    let(:package) { build_stubbed(:generic_package) }
+    let(:package) { build_stubbed(:ml_model_package) }
 
     it 'publishes an event' do
       expect { package.publish_creation_event }

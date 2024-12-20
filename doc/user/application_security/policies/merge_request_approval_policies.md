@@ -205,6 +205,8 @@ This rule enforces the defined actions for any merge request based on the commit
 This action sets an approval rule to be required when conditions are met for at least one rule in
 the defined policy.
 
+> - [Added](https://gitlab.com/groups/gitlab-org/-/epics/12319) support for up to five separate `require_approval` actions in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `multiple_approval_actions`. Disabled by default.
+
 | Field | Type | Required | Possible values | Description |
 |-------|------|----------|-----------------|-------------|
 | `type` | `string` | true | `require_approval` | The action's type. |
@@ -451,9 +453,9 @@ When using license approval policies, the combination of project, component (dep
 
 - A license approval policy is created to block merge requests with newly detected licenses matching `AGPL-1.0`. A change is made in project `demo` for component `osframework` that violates the policy. If approved and merged, future merge requests to `osframework` in project `demo` with the license `AGPL-1.0` don't require approval.
 
-### Multiple approvals
+### Additional approvals
 
-There are several situations where the merge request approval policy requires an additional approval step. For example:
+Merge request approval policies require an additional approval step in some situations. For example:
 
 - The number of security jobs is reduced in the working branch and no longer matches the number of
   security jobs in the target branch. Users can't skip the Scanning Result Policies by removing

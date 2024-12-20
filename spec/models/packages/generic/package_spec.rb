@@ -40,24 +40,4 @@ RSpec.describe Packages::Generic::Package, type: :model, feature_category: :pack
       it { is_expected.not_to allow_value(nil).for(:version) }
     end
   end
-
-  describe '#publish_creation_event' do
-    let_it_be(:project) { create(:project) }
-
-    let(:version) { '-' }
-
-    subject(:create_package) { described_class.create!(project: project, name: 'incoming', version: version) }
-
-    it 'publishes an event' do
-      expect { create_package }
-        .to publish_event(::Packages::PackageCreatedEvent)
-              .with({
-                project_id: project.id,
-                id: kind_of(Numeric),
-                name: 'incoming',
-                version: '-',
-                package_type: 'generic'
-              })
-    end
-  end
 end

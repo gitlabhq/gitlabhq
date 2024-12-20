@@ -1569,8 +1569,15 @@ class Project < ApplicationRecord
     import_url.present?
   end
 
-  def safe_import_url
-    Gitlab::UrlSanitizer.new(import_url).masked_url
+  def notify_project_import_complete?
+    return false if import_type.nil? || mirror? || forked?
+
+    gitea_import? || github_import? || bitbucket_import? || bitbucket_server_import?
+  end
+
+  def safe_import_url(masked: true)
+    url = Gitlab::UrlSanitizer.new(import_url)
+    masked ? url.masked_url : url.sanitized_url
   end
 
   def jira_import?
@@ -1591,6 +1598,14 @@ class Project < ApplicationRecord
 
   def github_import?
     import_type == 'github'
+  end
+
+  def bitbucket_import?
+    import_type == 'bitbucket'
+  end
+
+  def bitbucket_server_import?
+    import_type == 'bitbucket_server'
   end
 
   def github_enterprise_import?

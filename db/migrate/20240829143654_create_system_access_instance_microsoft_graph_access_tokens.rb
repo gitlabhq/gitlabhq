@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Migration/EnsureFactoryForTable -- False positive
 class CreateSystemAccessInstanceMicrosoftGraphAccessTokens < Gitlab::Database::Migration[2.2]
   milestone '17.5'
 
@@ -16,5 +15,3 @@ class CreateSystemAccessInstanceMicrosoftGraphAccessTokens < Gitlab::Database::M
     end
   end
 end
-
-# rubocop:enable Migration/EnsureFactoryForTable

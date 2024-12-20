@@ -1,6 +1,5 @@
 <script>
 import { GlModal } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __ } from '~/locale';
 import {
@@ -107,7 +106,6 @@ export default {
       sortOrder: ASC,
       noteToDelete: null,
       discussionFilter: WORK_ITEM_NOTES_FILTER_ALL_NOTES,
-      addNoteKey: uniqueId(`work-item-add-note-${this.workItemId}`),
       workItemNamespace: null,
       previewNote: null,
     };
@@ -349,9 +347,6 @@ export default {
     filterDiscussions(filterValue) {
       this.discussionFilter = filterValue;
     },
-    updateKey() {
-      this.addNoteKey = uniqueId(`work-item-add-note-${this.workItemId}`);
-    },
     reportAbuse(isOpen, reply = {}) {
       this.$emit('openReportAbuse', reply);
     },
@@ -440,12 +435,7 @@ export default {
     <div v-if="someNotesLoaded" class="issuable-discussion gl-mb-5 !gl-clearfix">
       <div v-if="formAtTop && !commentsDisabled" class="js-comment-form">
         <ul class="notes notes-form timeline">
-          <work-item-add-note
-            v-bind="workItemCommentFormProps"
-            :key="addNoteKey"
-            @cancelEditing="updateKey"
-            @error="$emit('error', $event)"
-          />
+          <work-item-add-note v-bind="workItemCommentFormProps" @error="$emit('error', $event)" />
         </ul>
       </div>
       <work-item-notes-loading v-if="formAtTop && isLoadingMore" />
@@ -487,12 +477,7 @@ export default {
       <work-item-notes-loading v-if="!formAtTop && isLoadingMore" />
       <div v-if="!formAtTop && !commentsDisabled" class="js-comment-form">
         <ul class="notes notes-form timeline">
-          <work-item-add-note
-            v-bind="workItemCommentFormProps"
-            :key="addNoteKey"
-            @cancelEditing="updateKey"
-            @error="$emit('error', $event)"
-          />
+          <work-item-add-note v-bind="workItemCommentFormProps" @error="$emit('error', $event)" />
         </ul>
       </div>
     </div>

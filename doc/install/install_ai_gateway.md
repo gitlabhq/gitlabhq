@@ -198,3 +198,69 @@ These tests are performed for offline environments:
 | Network | Tests whether: <br>- The environment variable `AI_GATEWAY_URL` has been set to a valid URL.<br> - Your instance can connect to the URL specified by `AI_GATEWAY_URL`.<br><br>If your instance cannot connect to the URL, ensure that your firewall or proxy server settings [allow connection](../user/gitlab_duo/setup.md). |
 | License | Tests whether your license has the ability to access Code Suggestions feature. |
 | System exchange | Tests whether Code Suggestions can be used in your instance. If the system exchange assessment fails, users might not be able to use GitLab Duo features. |
+
+## Does the AIGW need to autoscale?
+
+Autoscaling is not mandatory but is recommended for environments with variable workloads, high concurrency requirements, or unpredictable usage patterns. In GitLab’s production environment:
+
+- Baseline Setup: A single AI Gateway instance with 2 CPU cores and 8 GB RAM can handle approximately 40 concurrent requests.
+- Scaling Guidelines: For larger setups, such as an AWS t3.2xlarge instance (8 vCPUs, 32 GB RAM), the gateway can handle up to 160 concurrent requests, equivalent to 4x the baseline setup.
+- Request Throughput: GitLab.com’s observed usage suggests that 7 RPS (requests per second) per 1000 active users is a reasonable metric for planning.
+- Autoscaling Options: Use Kubernetes Horizontal Pod Autoscalers (HPA) or similar mechanisms to dynamically adjust the number of instances based on metrics like CPU, memory utilization, or request latency thresholds.
+
+## Configuration Examples by Deployment Size
+
+- Small Deployment:
+  - Single instance with 2 vCPUs and 8 GB RAM.
+  - Handles up to 40 concurrent requests.
+  - Teams or organizations with up to 50 users and predictable workloads.
+  - Fixed instances may suffice; autoscaling can be disabled for cost efficiency.
+- Medium Deployment:
+  - Single AWS t3.2xlarge instance with 8 vCPUs and 32 GB RAM.
+  - Handles up to 160 concurrent requests.
+  - Organizations with 50-200 users and moderate concurrency requirements.
+  - Implement Kubernetes HPA with thresholds for 50% CPU utilization or request latency above 500ms.
+- Large Deployment:
+  - Cluster of multiple AWS t3.2xlarge instances or equivalent.
+  - Each instance handles 160 concurrent requests, scaling to thousands of users with multiple instances.
+  - Enterprises with over 200 users and variable, high-concurrency workloads.
+  - Use HPA to scale pods based on real-time demand, combined with node autoscaling for cluster-wide resource adjustments.
+
+## What specs does the AIGW container have access to, and how does resource allocation affect performance?
+
+The AI Gateway operates effectively under the following resource allocations:
+
+- 2 CPU cores and 8 GB of RAM per container.
+- Containers typically utilize about 7.39% CPU and proportionate memory in GitLab’s production environment, leaving room for growth or handling burst activity.
+
+## Mitigation Strategies for Resource Contention
+
+- Use Kubernetes resource requests and limits to ensure AIGW containers receive guaranteed CPU and memory allocations. For example:
+
+```yaml
+resources:
+  requests:
+    memory: "16Gi"
+    cpu: "4"
+  limits:
+    memory: "32Gi"
+    cpu: "8"
+```
+
+- Implement tools like Prometheus and Grafana to track resource utilization (CPU, memory, latency) and detect bottlenecks early.
+- Dedicate nodes or instances exclusively to the AI Gateway to prevent resource competition with other services.
+
+## Scaling Strategies
+  
+- Use Kubernetes HPA to scale pods based on real-time metrics like:
+  - Average CPU utilization exceeding 50%.
+  - Request latency consistently above 500ms.
+  - Enable node autoscaling to scale infrastructure resources dynamically as pods increase.
+
+## Scaling Recommendations
+
+| Deployment Size | Instance Type      | Resources             | Capacity (Concurrent Requests) | Scaling Recommendations                     |
+|------------------|--------------------|------------------------|---------------------------------|---------------------------------------------|
+| Small            | 2 vCPUs, 8 GB RAM | Single instance        | 40                              | Fixed deployment; no autoscaling.           |
+| Medium           | AWS t3.2xlarge    | Single instance     | 160                             | HPA based on CPU or latency thresholds.     |
+| Large            | Multiple t3.2xlarge | Clustered instances   | 160 per instance               | HPA + node autoscaling for high demand.     |

@@ -4207,10 +4207,14 @@ export const mockMoreWorkItemNotesResponse = {
   },
 };
 
-export const createWorkItemNoteResponse = {
+export const createWorkItemNoteResponse = ({
+  errors = [],
+  errorMessages = null,
+  messages = null,
+} = {}) => ({
   data: {
     createNote: {
-      errors: [],
+      errors,
       note: {
         id: 'gid://gitlab/Note/569',
         discussion: {
@@ -4272,10 +4276,14 @@ export const createWorkItemNoteResponse = {
         bodyHtml: '<p data-sourcepos="1:1-1:9" dir="auto">Latest 22</p>',
         __typename: 'Note',
       },
+      quickActionsStatus: {
+        errorMessages,
+        messages,
+      },
       __typename: 'CreateNotePayload',
     },
   },
-};
+});
 
 export const mockWorkItemCommentNote = {
   id: 'gid://gitlab/Note/158',

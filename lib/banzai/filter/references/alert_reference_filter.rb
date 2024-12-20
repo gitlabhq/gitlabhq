@@ -12,6 +12,8 @@ module Banzai
         end
 
         def parent_records(parent, ids)
+          return AlertManagement::Alert.none unless parent.is_a?(Project)
+
           parent.alert_management_alerts.where(iid: ids.to_a)
         end
 

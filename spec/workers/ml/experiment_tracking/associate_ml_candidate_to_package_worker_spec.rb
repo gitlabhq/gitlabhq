@@ -7,7 +7,7 @@ RSpec.describe Ml::ExperimentTracking::AssociateMlCandidateToPackageWorker, feat
     let_it_be(:candidate) { create(:ml_candidates) }
     let_it_be(:package) do
       create(
-        :generic_package,
+        :ml_model_package,
         project: candidate.project,
         name: candidate.package_name,
         version: candidate.package_version
@@ -91,11 +91,12 @@ RSpec.describe Ml::ExperimentTracking::AssociateMlCandidateToPackageWorker, feat
     subject { described_class.handles_event?(event) }
 
     where(:package_name, :package_type, :handles_event) do
-      'ml_experiment_1234' | 'generic' | true
-      'ml_experiment_1234' | 'maven' | false
-      '1234' | 'generic' | false
-      'ml_experiment_' | 'generic' | false
-      'blah' | 'generic' | false
+      'ml_experiment_1234' | 'ml_model' | true
+      'ml_experiment_1234' | 'generic'  | false
+      'ml_experiment_1234' | 'maven'    | false
+      '1234'               | 'ml_model'  | false
+      'ml_experiment_'     | 'ml_model'  | false
+      'blah'               | 'ml_model'  | false
     end
 
     with_them do

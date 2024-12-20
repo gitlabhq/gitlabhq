@@ -2141,4 +2141,26 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       [step1_index, step2_index]
     end
   end
+
+  describe '#execute_async' do
+    it 'queues a worker for pipeline creation' do
+      allow(SecureRandom).to receive(:uuid).and_return('test-id')
+
+      expect(CreatePipelineWorker).to receive(:perform_async).with(
+        project.id, user.id, project.default_branch, 'web', { 'save_on_errors' => false },
+        {
+          'pipeline_creation_request' => {
+            'key' => Ci::PipelineCreation::Requests.request_key(project, 'test-id'),
+            'id' => 'test-id'
+          }
+        }
+      )
+
+      service = described_class.new(project, user, ref: project.default_branch)
+      response = service.execute_async('web', { save_on_errors: false })
+
+      expect(response).to be_success
+      expect(response.payload).to eq('test-id')
+    end
+  end
 end

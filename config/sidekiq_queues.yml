@@ -671,6 +671,8 @@
   - 1
 - - projects_import_export_create_relation_exports
   - 1
+- - projects_import_export_import_completion_notification
+  - 1
 - - projects_import_export_parallel_project_export
   - 1
 - - projects_import_export_relation_export

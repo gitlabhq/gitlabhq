@@ -1,0 +1,20 @@
+<%= s_('Import|Import completed') %>
+
+<% if @is_project_creator %>
+<%= safe_format(s_('Import|The import you started on %{start_date} from %{strong_open}%{hostname}%{strong_close} has completed.'), strong_open: '', strong_close: '', hostname: @hostname, start_date: l(@project.created_at.to_date, format: :long)) -%>
+<% else %>
+<%= safe_format(s_('Import|The import %{project_creator_name} started on %{start_date} from %{strong_open}%{hostname}%{strong_close} has completed.'), strong_open: '', strong_close: '', hostname: @hostname, project_creator_name: sanitize_name(@project.creator.name), start_date: l(@project.created_at.to_date, format: :long)) -%>
+<% end %>
+<% if !@user_mapping_available %>
+ <%= s_('Import|You can now review your import results.') %>
+<% elsif @is_group_owner %>
+ <%= s_('Import|You can reassign contributions on the "Members" page of the group.') %>
+<% else %>
+ <%= s_('Import|Users with the Owner role for the group can reassign contributions on the "Members" page.') %>
+<% end %>
+
+<% if @user_mapping_available && @is_group_owner %>
+<%= s_('Import|Reassign contributions') %>: <%= group_group_members_url(@namespace, tab: 'placeholders') %>
+<% else %>
+<%= s_('Import|View import results') %>: <%= import_history_index_url %>
+<% end %>

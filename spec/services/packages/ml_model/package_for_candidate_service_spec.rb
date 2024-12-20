@@ -64,16 +64,20 @@ RSpec.describe Packages::MlModel::PackageForCandidateService, feature_category: 
       it { is_expected.to be_nil }
     end
 
-    context 'when candidate is belongs to a model version' do
+    context 'when candidate belongs to a model version' do
       let(:candidate) { model_version_candidate }
 
-      it { is_expected.to be_nil }
+      it 'creates a package' do
+        expect { execute_service }.to change { candidate.package }.from(nil)
+      end
     end
 
     context 'when candidate does not belong to a model' do
       let(:candidate) { not_model_candidate }
 
-      it { is_expected.to be_nil }
+      it 'creates a package' do
+        expect { execute_service }.to change { candidate.package }.from(nil)
+      end
     end
   end
 end

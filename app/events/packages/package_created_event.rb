@@ -16,8 +16,8 @@ module Packages
       }
     end
 
-    def generic?
-      data[:package_type] == 'generic'
+    def ml_model?
+      data[:package_type] == 'ml_model'
     end
   end
 end

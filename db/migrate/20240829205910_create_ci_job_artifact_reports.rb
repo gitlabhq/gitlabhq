@@ -5,7 +5,7 @@ class CreateCiJobArtifactReports < Gitlab::Database::Migration[2.2]
   disable_ddl_transaction!
 
   def up
-    create_table(:p_ci_job_artifact_reports, # rubocop:disable Migration/EnsureFactoryForTable -- Factory exists
+    create_table(:p_ci_job_artifact_reports,
       primary_key: [:job_artifact_id, :partition_id],
       options: 'PARTITION BY LIST (partition_id)', if_not_exists: true) do |t|
       t.bigint :job_artifact_id, null: false

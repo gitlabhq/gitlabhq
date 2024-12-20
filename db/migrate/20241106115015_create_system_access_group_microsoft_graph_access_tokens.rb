@@ -5,7 +5,7 @@ class CreateSystemAccessGroupMicrosoftGraphAccessTokens < Gitlab::Database::Migr
   milestone '17.7'
 
   def change
-    create_table :system_access_group_microsoft_graph_access_tokens do |t| # rubocop:disable Migration/EnsureFactoryForTable -- False positive, factory name is prefixed with system_access
+    create_table :system_access_group_microsoft_graph_access_tokens do |t|
       t.timestamps_with_timezone null: false
       t.references :system_access_group_microsoft_application,
         index: { name: 'unique_index_group_ms_access_tokens_on_ms_app_id', unique: true }

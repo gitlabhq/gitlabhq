@@ -48,11 +48,11 @@ For more information, see:
 
 ## Step 3: Try other GitLab Duo features
 
-GitLab Duo is available at different points in your workflow. From troubleshooting
-CI/CD pipelines to writing test cases and reviewing code, GitLab Duo can help you
+GitLab Duo is available in all stages of your workflow. From troubleshooting
+CI/CD pipelines to writing test cases and resolving security threats, GitLab Duo can help you
 in a variety of ways.
 
-If you want to test a feature, you can go to a failed CI/CD job and at the bottom
+If you want to test a feature, you can go to one of your failed CI/CD jobs and at the bottom
 of the page, select **Troubleshoot**.
 
 Or, in an issue that has a lot of comments, in the **Activity** section, select **View summary**.
@@ -65,12 +65,14 @@ For more information, see:
 
 ## Step 4: Prepare to use GitLab Duo in your IDE
 
-To use GitLab Duo, including Code Suggestions, in your IDE, you must:
+To use GitLab Duo, including Code Suggestions, in your IDE:
 
-- Install an extension in your IDE.
+- Install an extension in your local IDE.
 - Authenticate with GitLab from the IDE. You can use either OAuth or a personal access token.
 
 Then you can confirm that GitLab Duo is available in your IDE and test some of the features.
+
+Alternately, you can use the Web IDE, which is included in the GitLab UI and already fully configured.
 
 For more information, see:
 
@@ -78,6 +80,7 @@ For more information, see:
 - [Set up the extension for JetBrains](../../editor_extensions/jetbrains_ide/setup.md).
 - [Set up the extension for Visual Studio](../../editor_extensions/visual_studio/setup.md).
 - [Set up the extension for Neovim](../../editor_extensions/neovim/setup.md).
+- [Use the WebIDE](../project/web_ide/index.md).
 
 ## Step 5: Confirm that Code Suggestions is on in your IDE
 
@@ -95,3 +98,7 @@ For more information, see:
 
 - [Supported extensions and languages](../project/repository/code_suggestions/supported_extensions.md).
 - [Turn on Code Suggestions](../project/repository/code_suggestions/set_up.md#turn-on-code-suggestions).
+- [Troubleshoot GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/troubleshooting.md).
+- [Troubleshoot GitLab plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/jetbrains_troubleshooting.md).
+- [Troubleshoot GitLab extension for Visual Studio](../../editor_extensions/visual_studio/visual_studio_troubleshooting.md).
+- [Troubleshoot GitLab plugin for Neovim](../../editor_extensions/neovim/neovim_troubleshooting.md).

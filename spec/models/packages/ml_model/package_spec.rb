@@ -82,4 +82,24 @@ RSpec.describe Packages::MlModel::Package, feature_category: :mlops do
   describe '.installable' do
     it_behaves_like 'installable packages', :ml_model_package
   end
+
+  describe '#publish_creation_event' do
+    let_it_be(:project) { create(:project) }
+
+    let(:version) { 'candidate_42' }
+
+    subject(:create_package) { described_class.create!(project: project, name: 'incoming', version: version) }
+
+    it 'publishes an event' do
+      expect { create_package }
+        .to publish_event(::Packages::PackageCreatedEvent)
+              .with({
+                project_id: project.id,
+                id: kind_of(Numeric),
+                name: 'incoming',
+                version: 'candidate_42',
+                package_type: 'ml_model'
+              })
+    end
+  end
 end

@@ -12,6 +12,8 @@ module Banzai
         end
 
         def parent_records(parent, ids)
+          return Operations::FeatureFlag.none unless parent.is_a?(Project)
+
           parent.operations_feature_flags.where(iid: ids.to_a)
         end
 

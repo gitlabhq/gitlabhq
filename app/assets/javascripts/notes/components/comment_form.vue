@@ -239,6 +239,7 @@ export default {
       if (this.note.length) {
         const noteData = {
           endpoint: isDraft ? this.draftEndpoint : this.endpoint,
+          flashContainer: this.$el,
           data: {
             note: {
               noteable_type: this.noteableType,
@@ -371,6 +372,7 @@ export default {
     <discussion-locked-widget v-else-if="!canCreateNote" :issuable-type="noteableDisplayName" />
     <ul v-else-if="canCreateNote" class="notes notes-form timeline">
       <timeline-entry-item class="note-form">
+        <div class="flash-container gl-mb-2"></div>
         <gl-alert
           v-for="(error, index) in errors"
           :key="index"

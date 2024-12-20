@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe LabelNote do
+RSpec.describe LabelNote, feature_category: :team_planning do
   include Gitlab::Routing.url_helpers
 
   let_it_be(:project) { create(:project, :repository) }

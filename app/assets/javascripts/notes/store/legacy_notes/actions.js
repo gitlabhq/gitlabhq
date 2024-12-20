@@ -486,7 +486,6 @@ export function saveNote(noteData) {
     methodToDispatch = replyId ? this.replyToDiscussion : this.createNewNote;
   }
 
-  $('.notes-form .flash-container').hide(); // hide previous flash notification
   this[types.REMOVE_PLACEHOLDER_NOTES](); // remove previous placeholders
 
   if (hasQuickActions) {

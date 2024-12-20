@@ -47,7 +47,8 @@ module RuboCop
           return if !ee? && disabled_comment_absent?
 
           table_definition(node) do |table_name_node, table_name|
-            unless factory?(table_name.to_s)
+            # Partioned tables are prefix with `p_`.
+            unless factory?(table_name.to_s.delete_prefix('p_'))
               msg = format(MSG, name: table_name)
               add_offense(table_name_node, message: msg)
             end
@@ -57,13 +58,13 @@ module RuboCop
         private
 
         def factory?(table_name)
-          end_with = "/#{table_name}.rb"
-
-          self.class.factories.any? { |path| path.end_with?(end_with) }
+          self.class.factories.any? { |name| name.end_with?(table_name) }
         end
 
         def self.factories
-          @factories ||= Dir.glob("{,ee/,jh/}spec/factories/**/*.rb")
+          @factories ||= Dir.glob("{,ee/,jh/}spec/factories/**/*.rb").map do |factory|
+            factory.gsub(%r{^(ee/|jh/|)spec/factories/}, '').delete_suffix('.rb').tr('/', '_')
+          end
         end
 
         def disabled_comment_absent?

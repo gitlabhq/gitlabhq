@@ -22,7 +22,7 @@ describe('getFrequentlyUsedEmojis', () => {
       frequently_used: {
         emojis: [[EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN]],
         top: 0,
-        height: 71,
+        height: 73,
       },
     });
   });
@@ -36,7 +36,7 @@ describe('getFrequentlyUsedEmojis', () => {
       frequently_used: {
         emojis: [[EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN]],
         top: 0,
-        height: 71,
+        height: 73,
       },
     });
   });

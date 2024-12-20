@@ -3,6 +3,7 @@
 class IdeController < ApplicationController
   include Gitlab::Utils::StrongMemoize
   include WebIdeCSP
+  include RoutableActions
   include StaticObjectExternalStorageCSP
   include ProductAnalyticsTracking
 
@@ -40,7 +41,15 @@ class IdeController < ApplicationController
   private
 
   def authorize_read_project!
-    render_404 unless can?(current_user, :read_project, project)
+    return @project if @project
+
+    path = params[:project_id]
+
+    @project = find_routable!(Project, path, request.fullpath, extra_authorization_proc: auth_proc)
+  end
+
+  def auth_proc
+    ->(project) { !project.pending_delete? }
   end
 
   def ensure_web_ide_oauth_application!

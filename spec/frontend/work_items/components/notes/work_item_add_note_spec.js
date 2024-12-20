@@ -25,46 +25,46 @@ jest.mock('~/lib/utils/autosave');
 const workItemId = workItemQueryResponse.data.workItem.id;
 
 describe('Work item add note', () => {
+  /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
 
   Vue.use(VueApollo);
 
-  const mutationSuccessHandler = jest.fn().mockResolvedValue(createWorkItemNoteResponse);
+  const mutationSuccessHandler = jest.fn().mockResolvedValue(createWorkItemNoteResponse());
   let workItemResponseHandler;
 
   const findCommentForm = () => wrapper.findComponent(WorkItemCommentForm);
+  const findErrorAlert = () => wrapper.findByTestId('error-alert');
   const findReplyPlaceholder = () => wrapper.findComponent(DiscussionReplyPlaceholder);
+  const findSuccessAlert = () => wrapper.findByTestId('success-alert');
   const findWorkItemLockedComponent = () => wrapper.findComponent(WorkItemCommentLocked);
   const findResolveDiscussionButton = () => wrapper.findComponent(ResolveDiscussionButton);
 
   const createComponent = async ({
     mutationHandler = mutationSuccessHandler,
-    canUpdate = true,
     canCreateNote = true,
     emailParticipantsWidgetPresent = true,
     workItemIid = '1',
-    workItemResponse = workItemByIidResponseFactory({
-      canUpdate,
-      canCreateNote,
-      emailParticipantsWidgetPresent,
-    }),
     signedIn = true,
     isEditing = true,
-    workItemType = 'Task',
     isInternalThread = false,
     isNewDiscussion = false,
     isDiscussionResolved = false,
     isDiscussionResolvable = false,
     isResolving = false,
-    hasReplies = false,
+    isWorkItemConfidential = false,
   } = {}) => {
+    const workItemResponse = workItemByIidResponseFactory({
+      canCreateNote,
+      emailParticipantsWidgetPresent,
+    });
     workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse);
+
     if (signedIn) {
       window.gon.current_user_id = '1';
       window.gon.current_user_avatar_url = 'avatar.png';
     }
 
-    const { id } = workItemQueryResponse.data.workItem;
     wrapper = shallowMountExtended(WorkItemAddNote, {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, workItemResponseHandler],
@@ -72,9 +72,9 @@ describe('Work item add note', () => {
       ]),
       propsData: {
         fullPath: 'test-project-path',
-        workItemId: id,
+        workItemId: workItemResponse.data.workspace.workItem.id,
         workItemIid,
-        workItemType,
+        workItemType: 'Task',
         markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
         autocompleteDataSources: {},
         isInternalThread,
@@ -82,10 +82,7 @@ describe('Work item add note', () => {
         isDiscussionResolved,
         isDiscussionResolvable,
         isResolving,
-        hasReplies,
-      },
-      stubs: {
-        WorkItemCommentLocked,
+        isWorkItemConfidential,
       },
     });
 
@@ -104,17 +101,12 @@ describe('Work item add note', () => {
     `('when internal comment is $isInternalComment', ({ isInternalComment }) => {
       it('calls update widgets mutation', async () => {
         const noteText = 'updated desc';
-
-        await createComponent({
-          isEditing: true,
-          signedIn: true,
-        });
+        await createComponent({ isEditing: true, signedIn: true });
 
         findCommentForm().vm.$emit('submitForm', {
           commentText: noteText,
           isNoteInternal: isInternalComment,
         });
-
         await waitForPromises();
 
         expect(mutationSuccessHandler).toHaveBeenCalledWith({
@@ -135,7 +127,6 @@ describe('Work item add note', () => {
           commentText: 'test',
           isNoteInternal: isInternalComment,
         });
-
         await waitForPromises();
 
         expect(trackingSpy).toHaveBeenCalledWith(TRACKING_CATEGORY_SHOW, 'add_work_item_comment', {
@@ -174,36 +165,17 @@ describe('Work item add note', () => {
 
       it('emits error when mutation returns error', async () => {
         const error = 'eror';
-
         await createComponent({
           isEditing: true,
-          mutationHandler: jest.fn().mockResolvedValue({
-            data: {
-              createNote: {
-                note: {
-                  id: 'gid://gitlab/Discussion/c872ba2d7d3eb780d2255138d67ca8b04f65b122',
-                  discussion: {
-                    id: 'gid://gitlab/Discussion/c872ba2d7d3eb780d2255138d67ca8b04f65b122',
-                    notes: {
-                      nodes: [],
-                      __typename: 'NoteConnection',
-                    },
-                    __typename: 'Discussion',
-                  },
-                  __typename: 'Note',
-                },
-                __typename: 'CreateNotePayload',
-                errors: [error],
-              },
-            },
-          }),
+          mutationHandler: jest
+            .fn()
+            .mockResolvedValue(createWorkItemNoteResponse({ errors: [error] })),
         });
 
         findCommentForm().vm.$emit('submitForm', {
           commentText: 'updated desc',
           isNoteInternal: isInternalComment,
         });
-
         await waitForPromises();
 
         expect(wrapper.emitted('error')).toEqual([[error]]);
@@ -221,7 +193,6 @@ describe('Work item add note', () => {
           commentText: 'updated desc',
           isNoteInternal: isInternalComment,
         });
-
         await waitForPromises();
 
         expect(wrapper.emitted('error')).toEqual([[error]]);
@@ -230,64 +201,69 @@ describe('Work item add note', () => {
       it('ignores errors when mutation returns additional information as errors for quick actions', async () => {
         await createComponent({
           isEditing: true,
-          mutationHandler: jest.fn().mockResolvedValue({
-            data: {
-              createNote: {
-                note: {
-                  id: 'gid://gitlab/Discussion/c872ba2d7d3eb780d2255138d67ca8b04f65b122',
-                  discussion: {
-                    id: 'gid://gitlab/Discussion/c872ba2d7d3eb780d2255138d67ca8b04f65b122',
-                    notes: {
-                      nodes: [],
-                      __typename: 'NoteConnection',
-                    },
-                    __typename: 'Discussion',
-                  },
-                  __typename: 'Note',
-                },
-                __typename: 'CreateNotePayload',
-                errors: ['Commands only Removed assignee @foobar.', 'Command names ["unassign"]'],
-              },
-            },
-          }),
+          mutationHandler: jest.fn().mockResolvedValue(
+            createWorkItemNoteResponse({
+              errors: ['Commands only Removed assignee @foobar.', 'Command names ["unassign"]'],
+            }),
+          ),
         });
 
         findCommentForm().vm.$emit('submitForm', {
           commentText: 'updated desc',
           isNoteInternal: isInternalComment,
         });
-
         await waitForPromises();
 
         expect(clearDraft).toHaveBeenCalledWith('gid://gitlab/WorkItem/1-comment');
       });
 
+      it('renders success alert on successful quick action', async () => {
+        await createComponent({
+          isEditing: true,
+          mutationHandler: jest
+            .fn()
+            .mockResolvedValue(createWorkItemNoteResponse({ messages: ['Added ~"Label" label.'] })),
+        });
+
+        findCommentForm().vm.$emit('submitForm', {
+          commentText: '/label ~Label',
+          isNoteInternal: isInternalComment,
+        });
+        await waitForPromises();
+
+        expect(findSuccessAlert().text()).toBe('Added ~"Label" label.');
+        expect(findSuccessAlert().props('variant')).toBe('info');
+      });
+
+      it('renders error alert on unsuccessful quick action', async () => {
+        await createComponent({
+          isEditing: true,
+          mutationHandler: jest
+            .fn()
+            .mockResolvedValue(
+              createWorkItemNoteResponse({ errorMessages: ['Failed to apply commands.'] }),
+            ),
+        });
+
+        findCommentForm().vm.$emit('submitForm', {
+          commentText: '/label doesnotexist',
+          isNoteInternal: isInternalComment,
+        });
+        await waitForPromises();
+
+        expect(findErrorAlert().text()).toBe('Failed to apply commands.');
+        expect(findErrorAlert().props('variant')).toBe('danger');
+      });
+
       it('refetches widgets when work item type is updated', async () => {
         await createComponent({
           isEditing: true,
-          mutationHandler: jest.fn().mockResolvedValue({
-            data: {
-              createNote: {
-                note: {
-                  id: 'gid://gitlab/Discussion/c872ba2d7d3eb780d2255138d67ca8b04f65b122',
-                  discussion: {
-                    id: 'gid://gitlab/Discussion/c872ba2d7d3eb780d2255138d67ca8b04f65b122',
-                    notes: {
-                      nodes: [],
-                      __typename: 'NoteConnection',
-                    },
-                    __typename: 'Discussion',
-                  },
-                  __typename: 'Note',
-                },
-                __typename: 'CreateNotePayload',
-                errors: ['Commands only Type changed successfully.', 'Command names ["type"]'],
-              },
-            },
-          }),
+          mutationHandler: jest.fn().mockResolvedValue(
+            createWorkItemNoteResponse({
+              errors: ['Commands only Type changed successfully.', 'Command names ["type"]'],
+            }),
+          ),
         });
-
-        await waitForPromises();
 
         expect(workItemResponseHandler).toHaveBeenCalled();
       });
@@ -295,21 +271,16 @@ describe('Work item add note', () => {
       it('emits error to parent when the comment form emits error', async () => {
         await createComponent({ isEditing: true, signedIn: true });
         const error = 'error';
+
         findCommentForm().vm.$emit('error', error);
 
         expect(wrapper.emitted('error')).toEqual([[error]]);
       });
 
       it('sends confidential prop to work item comment form', async () => {
-        await createComponent({ isEditing: true, signedIn: true });
+        await createComponent({ isWorkItemConfidential: true });
 
-        const {
-          data: {
-            workspace: { workItem },
-          },
-        } = workItemByIidResponseFactory({ canUpdate: true, canCreateNote: true });
-
-        expect(findCommentForm().props('isWorkItemConfidential')).toBe(workItem.confidential);
+        expect(findCommentForm().props('isWorkItemConfidential')).toBe(true);
       });
     });
   });
@@ -332,7 +303,7 @@ describe('Work item add note', () => {
     expect(wrapper.attributes('class')).toContain('internal-note');
   });
 
-  describe('when work item`createNote` permission false', () => {
+  describe('when work item `createNote` permission is false', () => {
     it('cannot add comment', async () => {
       await createComponent({ isEditing: false, canCreateNote: false });
 
@@ -345,33 +316,27 @@ describe('Work item add note', () => {
     it('sets `hasEmailParticipantsWidget` prop to `true` for comment form by default', async () => {
       await createComponent();
 
-      expect(findCommentForm().props('hasEmailParticipantsWidget')).toEqual(true);
+      expect(findCommentForm().props('hasEmailParticipantsWidget')).toBe(true);
     });
 
     describe('when email participants widget is not available', () => {
       it('sets `hasEmailParticipantsWidget` prop to `false` for comment form', async () => {
         await createComponent({ emailParticipantsWidgetPresent: false });
 
-        expect(findCommentForm().props('hasEmailParticipantsWidget')).toEqual(false);
+        expect(findCommentForm().props('hasEmailParticipantsWidget')).toBe(false);
       });
     });
   });
 
   describe('Resolve Discussion button', () => {
     it('renders resolve discussion button when discussion is resolvable', async () => {
-      await createComponent({
-        isDiscussionResolvable: true,
-        isEditing: false,
-      });
+      await createComponent({ isDiscussionResolvable: true, isEditing: false });
 
       expect(findResolveDiscussionButton().exists()).toBe(true);
     });
 
     it('does not render resolve discussion button when discussion is not resolvable', async () => {
-      await createComponent({
-        isDiscussionResolvable: false,
-        isEditing: false,
-      });
+      await createComponent({ isDiscussionResolvable: false, isEditing: false });
 
       expect(findResolveDiscussionButton().exists()).toBe(false);
     });
@@ -387,10 +352,7 @@ describe('Work item add note', () => {
     });
 
     it('emits `resolve` event when resolve discussion button is clicked', async () => {
-      await createComponent({
-        isDiscussionResolvable: true,
-        isEditing: false,
-      });
+      await createComponent({ isDiscussionResolvable: true, isEditing: false });
 
       findResolveDiscussionButton().vm.$emit('onClick');
 
@@ -405,9 +367,10 @@ describe('Work item add note', () => {
         isEditing: false,
       });
 
-      const resolveButton = findResolveDiscussionButton();
-      expect(resolveButton.props('isResolving')).toBe(true);
-      expect(resolveButton.props('buttonTitle')).toBe('Resolve thread');
+      expect(findResolveDiscussionButton().props()).toMatchObject({
+        isResolving: true,
+        buttonTitle: 'Resolve thread',
+      });
     });
   });
 });

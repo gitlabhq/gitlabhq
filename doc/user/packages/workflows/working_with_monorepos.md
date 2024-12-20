@@ -10,59 +10,73 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-One project or Git repository can contain multiple different subprojects or submodules that are all
-packaged and published individually.
+Use a monorepo project as a package registry to publish packages to multiple projects.
 
-## Publishing different packages to the parent project
+## Publish packages to a project and its child projects
 
-The number and name of packages you can publish to one project is not limited.
-You can accomplish this by setting up different configuration files for each
-package. See the documentation for the package manager of your choice since
-each has its own specific files and instructions to follow to publish
-a given package.
+To publish packages to a project and its child projects, you must add configuration files for each package. To learn how to configure packages for a specific package manager, see [Supported package managers](../../packages/package_registry/supported_package_managers.md).
 
-The example here uses [NPM](../npm_registry/index.md).
-In this example, `MyProject` is the parent project. It contains a sub-project `Foo` in the
+The following example shows you how to publish packages for a project and its child project with [npm](../npm_registry/index.md).
+
+Prerequisites:
+
+- A [personal access token](../../../user/profile/personal_access_tokens.md)
+  with the scope set to `api`.
+- A test project.
+
+In this example, `MyProject` is the parent project. It contains a child project called `ChildProject` in the
 `components` directory:
 
 ```plaintext
 MyProject/
   |- src/
   |   |- components/
-  |       |- Foo/
+  |       |- ChildProject/
   |- package.json
 ```
 
-The goal is to publish the packages for `MyProject` and `Foo`. Following the instructions in the
-[GitLab NPM registry documentation](../npm_registry/index.md),
-you can publish `MyProject` by modifying the `package.json` file with a `publishConfig` section,
-and by doing one of the following:
+To publish a package for `MyProject`:
 
-- Modify your local NPM configuration with CLI commands like `npm config set`.
-- Save a `.npmrc` file in the root of the project specifying these configuration settings.
+1. Go to the `MyProject` directory.
+1. Initialize the project by running `npm init`. Make sure the package name follows the [naming convention](../npm_registry/index.md#naming-convention).
+1. Create a `.npmrc` file. Include the registry URL and the project endpoint. For example:
 
-If you follow the instructions, you can publish `MyProject` by running `npm publish` from the root
-directory.
+   ```yaml
+   //gitlab.example.com/api/v4/projects/<project_id>/packages/npm/:_authToken="${NPM_TOKEN}"
+   @scope:registry=https://gitlab.example.com/api/v4/projects/<project_id>/packages/npm/
+   ```
 
-Publishing `Foo` is almost exactly the same. Follow the same steps while in the `Foo`
-directory. `Foo` needs its own `package.json` file, which you can add manually by using `npm init`.
-`Foo` also needs its own configuration settings. Since you are publishing to the same place, if you
-used `npm config set` to set the registry for the parent project, then no additional setup is
-necessary. If you used an `.npmrc` file, you need an additional `.npmrc` file in the `Foo` directory.
-Be sure to add `.npmrc` files to the `.gitignore` file or use environment variables in place of your
-access tokens to prevent your tokens from being exposed. This `.npmrc` file can be identical to the
-one you used in `MyProject`. You can now run `npm publish` from the `Foo` directory and you can
-publish `Foo` separately from `MyProject`.
+1. Publish your package from the command line. Replace `<token>` with your personal access token:
 
-You could follow a similar process for Conan packages. However, instead of `.npmrc` and
-`package.json`, you have `conanfile.py` in multiple locations within the project.
+   ```shell
+   NPM_TOKEN=<token> npm publish
+   ```
 
-## Publishing to other projects
+WARNING:
+Never hardcode GitLab tokens (or any tokens) directly in `.npmrc` files or any other files that can
+be committed to a repository.
 
-A package is associated with a project on GitLab, but the package does not need to be associated
-with the code in that project. When configuring NPM or Maven, you only use the `Project ID` to set
-the registry URL that the package uploads to. If you set this to any project that you have access to
-and update any other configuration similarly depending on the package type, your packages are
-published to that project. This means you can publish multiple packages to one project, even if
-their code does not exist in the same place. See the [project registry workflow documentation](project_registry.md)
-for more information.
+You should see the package for `MyProject` published in your project's package registry.
+
+To publish a package in `ChildProject`, follow the same steps. The contents of the `.npmrc` file can be identical to the one you added in `MyProject`.
+
+After you publish the package for `ChildProject`, you should see the package in your project's package registry.
+
+## Publishing packages to other projects
+
+A package is associated with a project on GitLab. But, a package is not associated
+with the code in that project.
+
+For example, when configuring a package for npm or Maven, the `project_id` sets the registry URL that the package publishes to:
+
+```yaml
+# npm
+https://gitlab.example.com/api/v4/projects/<project_id>/packages/npm/
+
+# maven
+https://gitlab.example.com/api/v4/projects/<project_id>/packages/maven/
+```
+
+If you change the `project_id` in the registry URL to another project, your package publishes to that project.
+
+By changing the `project_id`, you can publish multiple packages to one project separately from the code. For more information, see [Store all of your packages in one GitLab project](project_registry.md).

@@ -4,7 +4,7 @@ class CreateDuoWorkflowsTables < Gitlab::Database::Migration[2.2]
   milestone '17.2'
 
   def change
-    create_table :duo_workflows_workflows do |t| # rubocop:disable Migration/EnsureFactoryForTable -- https://gitlab.com/gitlab-org/gitlab/-/issues/468630
+    create_table :duo_workflows_workflows do |t| # rubocop:disable Migration/EnsureFactoryForTable, Lint/RedundantCopDisableDirective -- https://gitlab.com/gitlab-org/gitlab/-/issues/468630
       t.bigint :user_id, null: false, index: true
       t.bigint :project_id, null: false, index: true
 

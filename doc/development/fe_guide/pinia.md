@@ -81,6 +81,29 @@ Try to split all your migrations into two steps:
 1. Refactor just the Vuex API: Don't change the store structure, make sure it works in Pinia ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149489)).
 1. Refactor the structure: Split your store into multiple smaller, single purpose stores.
 
+### Migration plan
+
+If your store can't be migrated in a single merge request then follow these steps for a smooth migration from Vuex to Pinia:
+
+1. Identify the stores you are going to migrate. Include all the stores that depend on your store and all the stores that you depend on.
+1. Create a migration issue, assign a migration DRI(s) and list all the stores you're going to migrate.
+   Track your migration progress in that issue. If necessary, split the migration into multiple issues.
+1. Create a new CODEOWNERS (`.gitlab/CODEOWNERS`) rule for the store files you're migrating, include all the Vuex module dependencies and store specs.
+
+   If you are migrating only a single store then you would need to include only `state.js` (or your `index.js`),
+   `actions.js`, `mutations.js` and `getters.js` and their respective spec files.
+
+   Assign at least two individuals responsible for reviewing changes made to the Vuex store.
+   Always sync your changes from Vuex store to Pinia. This is very important so you don't introduce regressions with the Pinia store.
+1. Copy existing store as-is to a new location (you can call it `stores/legacy_store` for example). Keep the file structure intact.
+1. Create a store definition (`defineStore`) and only define your state in there.
+1. Use code mods from the next section to migrate the store files. Import and use the migrated code in store's definition.
+1. Migrate the store specs manually.
+1. Refactor components to use the new store.
+1. Remove the Vuex store.
+1. Remove CODEOWNERS rule.
+1. Close the migration issue.
+
 ### Automated migration using codemods
 
 You can use [ast-grep](https://ast-grep.github.io/) codemods to simplify migration from Vuex to Pinia.
