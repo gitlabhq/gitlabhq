@@ -2,7 +2,6 @@
 Migration/BatchedMigrationBaseClass:
   Exclude:
     - 'lib/gitlab/background_migration/backfill_draft_status_on_merge_requests.rb'
-    - 'lib/gitlab/background_migration/backfill_integrations_enable_ssl_verification.rb'
     - 'lib/gitlab/background_migration/backfill_issue_search_data.rb'
     - 'lib/gitlab/background_migration/backfill_iteration_cadence_id_for_boards.rb'
     - 'lib/gitlab/background_migration/backfill_member_namespace_for_group_members.rb'

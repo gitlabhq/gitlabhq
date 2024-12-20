@@ -221,7 +221,9 @@ CTAs
 CTEs
 CUnit
 customappsso
+CVE
 CVEs
+CVSS
 CWEs
 cybersecurity
 CycloneDX
@@ -331,6 +333,7 @@ Entra
 enum
 enums
 Enviroments
+EPSS
 ESLint
 ESXi
 ETag
@@ -511,6 +514,7 @@ Karma
 Kata
 KCachegrind
 Kerberos
+KEV
 Keycloak
 keyless
 keyset

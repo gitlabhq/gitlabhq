@@ -1,4 +1,5 @@
-import { GlTabs, GlTab } from '@gitlab/ui';
+import { nextTick } from 'vue';
+import { GlTabs, GlTab, GlAlert, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import ClustersMainView from '~/clusters_list/components/clusters_main_view.vue';
@@ -9,8 +10,6 @@ import {
   AGENT_TAB,
   CLUSTERS_TABS,
   CERTIFICATE_TAB,
-  MAX_CLUSTERS_LIST,
-  MAX_LIST_COUNT,
   EVENT_LABEL_TABS,
   EVENT_ACTIONS_CHANGE,
 } from '~/clusters_list/constants';
@@ -37,6 +36,7 @@ describe('ClustersMainViewComponent', () => {
         ...defaultProvide,
         ...extendedProvide,
       },
+      stubs: { GlSprintf },
     });
   };
 
@@ -45,6 +45,8 @@ describe('ClustersMainViewComponent', () => {
   const findGlTabAtIndex = (index) => findAllTabs().at(index);
   const findComponent = () => wrapper.findByTestId('clusters-tab-component');
   const findModal = () => wrapper.findComponent(InstallAgentModal);
+  const findAlert = () => wrapper.findComponent(GlAlert);
+
   describe('when the certificate based clusters are enabled', () => {
     describe('when on project level', () => {
       beforeEach(() => {
@@ -94,10 +96,10 @@ describe('ClustersMainViewComponent', () => {
       );
 
       describe.each`
-        tab  | tabName              | maxAgents
-        ${1} | ${AGENT}             | ${MAX_LIST_COUNT}
-        ${2} | ${CERTIFICATE_BASED} | ${MAX_CLUSTERS_LIST}
-      `('when the active tab is $tabName', ({ tab, tabName, maxAgents }) => {
+        tab  | tabName
+        ${1} | ${AGENT}
+        ${2} | ${CERTIFICATE_BASED}
+      `('when the active tab is $tabName', ({ tab, tabName }) => {
         beforeEach(() => {
           findTabs().vm.$emit('input', tab);
         });
@@ -106,8 +108,11 @@ describe('ClustersMainViewComponent', () => {
           expect(findComponent().props('defaultBranchName')).toBe(defaultBranchName);
         });
 
-        it(`sets max-agents param to ${maxAgents} and passes it to the modal`, () => {
-          expect(findModal().props('maxAgents')).toBe(maxAgents);
+        it(`passes kasDisabled param if received from the component to the modal`, async () => {
+          findComponent().vm.$emit('kasDisabled', true);
+          await nextTick();
+
+          expect(findModal().props('kasDisabled')).toBe(true);
         });
 
         it(`sends the correct tracking event with the property '${tabName}'`, () => {
@@ -116,6 +121,37 @@ describe('ClustersMainViewComponent', () => {
             property: tabName,
           });
         });
+      });
+    });
+
+    describe('when a new agent got registered', () => {
+      const newAgentName = 'my-new-agent';
+
+      beforeEach(async () => {
+        createWrapper();
+        findModal().vm.$emit('clusterAgentCreated', newAgentName);
+        await nextTick();
+      });
+
+      it('should render a success alert', () => {
+        expect(findAlert().attributes('variant')).toBe('success');
+      });
+
+      it("should provide agent's name to the alert title", () => {
+        expect(findAlert().props('title')).toBe(`${newAgentName} successfully created`);
+      });
+
+      it('should provide message about agent configuration', () => {
+        expect(findAlert().text()).toBe(
+          `Optionally, for additional configuration settings, a configuration file can be created in the repository. You can do so within the default branch by creating the file at: .gitlab/agents/${newAgentName}/config.yaml`,
+        );
+      });
+
+      it('should hide alert on dismiss', async () => {
+        findAlert().vm.$emit('dismiss');
+        await nextTick();
+
+        expect(findAlert().exists()).toBe(false);
       });
     });
 

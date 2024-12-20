@@ -1,5 +1,5 @@
 import { GlCard, GlLoadingIcon, GlSprintf, GlBadge } from '@gitlab/ui';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -108,6 +108,13 @@ describe('ClustersViewAllComponent', () => {
 
     it('should pass the default-branch-name prop', () => {
       expect(findAgentsComponent().props('defaultBranchName')).toBe(defaultBranchName);
+    });
+
+    it('should emit `kasDisabled` event when received from Agents component', async () => {
+      findAgentsComponent().vm.$emit('kasDisabled', true);
+      await nextTick();
+
+      expect(wrapper.emitted('kasDisabled')).toEqual([[true]]);
     });
 
     describe('when there are no agents', () => {

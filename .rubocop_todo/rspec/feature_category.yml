@@ -2059,7 +2059,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/auth/user_access_denied_reason_spec.rb'
     - 'spec/lib/gitlab/authorized_keys_spec.rb'
     - 'spec/lib/gitlab/avatar_cache_spec.rb'
-    - 'spec/lib/gitlab/background_migration/backfill_integrations_enable_ssl_verification_spec.rb'
     - 'spec/lib/gitlab/background_migration/backfill_namespace_id_of_vulnerability_reads_spec.rb'
     - 'spec/lib/gitlab/background_migration/backfill_project_feature_package_registry_access_level_spec.rb'
     - 'spec/lib/gitlab/background_migration/backfill_topics_title_spec.rb'

@@ -26,20 +26,20 @@ export const featureAccessLevelDescriptions = {
   [featureAccessLevel.EVERYONE]: __('Everyone With Access'),
 };
 
-export const featureAccessLevelNone = [
-  featureAccessLevel.NOT_ENABLED,
-  featureAccessLevelDescriptions[featureAccessLevel.NOT_ENABLED],
-];
+export const featureAccessLevelNone = {
+  value: featureAccessLevel.NOT_ENABLED,
+  label: featureAccessLevelDescriptions[featureAccessLevel.NOT_ENABLED],
+};
 
-export const featureAccessLevelMembers = [
-  featureAccessLevel.PROJECT_MEMBERS,
-  featureAccessLevelDescriptions[featureAccessLevel.PROJECT_MEMBERS],
-];
+export const featureAccessLevelMembers = {
+  value: featureAccessLevel.PROJECT_MEMBERS,
+  label: featureAccessLevelDescriptions[featureAccessLevel.PROJECT_MEMBERS],
+};
 
-export const featureAccessLevelEveryone = [
-  featureAccessLevel.EVERYONE,
-  featureAccessLevelDescriptions[featureAccessLevel.EVERYONE],
-];
+export const featureAccessLevelEveryone = {
+  value: featureAccessLevel.EVERYONE,
+  label: featureAccessLevelDescriptions[featureAccessLevel.EVERYONE],
+};
 
 export const CVE_ID_REQUEST_BUTTON_I18N = {
   cve_request_toggle_label: s__('CVE|Enable CVE ID requests in the issue sidebar'),

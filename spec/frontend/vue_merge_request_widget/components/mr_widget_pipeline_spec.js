@@ -17,7 +17,6 @@ import {
 } from '~/lib/utils/http_status';
 import MRWidgetPipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
 import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
-import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import {
   SUCCESS,
@@ -72,7 +71,6 @@ describe('MRWidgetPipeline', () => {
   const findPipelineCoverageDeltaTooltipText = () =>
     wrapper.findByTestId('pipeline-coverage-delta-tooltip').text();
   const findLegacyPipelineMiniGraph = () => wrapper.findComponent(LegacyPipelineMiniGraph);
-  const findPipelineMiniGraph = () => wrapper.findComponent(PipelineMiniGraph);
   const findMonitoringPipelineMessage = () => wrapper.findByTestId('monitoring-pipeline-message');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findRetargetedMessage = () => wrapper.findByTestId('retargeted-message');
@@ -81,11 +79,7 @@ describe('MRWidgetPipeline', () => {
 
   const mockArtifactsRequest = () => new MockAdapter(axios).onGet().reply(HTTP_STATUS_OK, []);
 
-  const createWrapper = (
-    props = {},
-    mountFn = shallowMount,
-    ciGraphqlPipelineMiniGraph = false,
-  ) => {
+  const createWrapper = (props = {}, mountFn = shallowMount) => {
     const apolloProvider = createMockApollo([
       [mergeRequestEventTypeQuery, mergeRequestEventTypeQueryMock],
     ]);
@@ -95,11 +89,6 @@ describe('MRWidgetPipeline', () => {
         propsData: {
           ...defaultProps,
           ...props,
-        },
-        provide: {
-          glFeatures: {
-            ciGraphqlPipelineMiniGraph,
-          },
         },
         apolloProvider,
       }),
@@ -216,25 +205,6 @@ describe('MRWidgetPipeline', () => {
           });
         },
       );
-    });
-
-    describe('feature flag behavior', () => {
-      beforeEach(() => {
-        createWrapper({}, shallowMount, true);
-      });
-
-      it('should render the correct pipeline mini graph component', () => {
-        expect(findLegacyPipelineMiniGraph().exists()).toBe(false);
-        expect(findPipelineMiniGraph().exists()).toBe(true);
-      });
-
-      it('sends the correct props', () => {
-        expect(findPipelineMiniGraph().props()).toMatchObject({
-          fullPath: defaultProps.pipelineMiniGraphVariables.fullPath,
-          iid: defaultProps.pipelineMiniGraphVariables.iid,
-          pipelineEtag: defaultProps.pipelineEtag,
-        });
-      });
     });
   });
 

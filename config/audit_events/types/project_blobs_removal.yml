@@ -1,7 +1,6 @@
 ---
 name: project_blobs_removal
-description: Triggered when removing blobs via the GraphQL API or project settings
-  UI
+description: Removing blobs by using the GraphQL API or project settings UI
 introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/450701
 introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152522
 feature_category: source_code_management

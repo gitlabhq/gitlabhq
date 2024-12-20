@@ -7,7 +7,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 import PipelineStatus, { i18n } from '~/ci/pipeline_editor/components/header/pipeline_status.vue';
 import getPipelineQuery from '~/ci/pipeline_editor/graphql/queries/pipeline.query.graphql';
 import getPipelineStatusQuery from '~/ci/pipeline_editor/graphql/queries/get_pipeline_status.query.graphql';
-import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
 import PipelineEditorMiniGraph from '~/ci/pipeline_editor/components/header/pipeline_editor_mini_graph.vue';
 import getPipelineEtag from '~/ci/pipeline_editor/graphql/queries/client/pipeline_etag.query.graphql';
 import { mockCommitSha, mockProjectPipeline, mockProjectFullPath } from '../../mock_data';
@@ -54,7 +53,6 @@ describe('Pipeline Status', () => {
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findPipelineEditorMiniGraph = () => wrapper.findComponent(PipelineEditorMiniGraph);
-  const findPipelineMiniGraph = () => wrapper.findComponent(PipelineMiniGraph);
 
   const findPipelineId = () => wrapper.find('[data-testid="pipeline-id"]');
   const findPipelineCommit = () => wrapper.find('[data-testid="pipeline-commit"]');
@@ -148,29 +146,5 @@ describe('Pipeline Status', () => {
         expect(findPipelineViewBtn().exists()).toBe(false);
       });
     });
-  });
-
-  describe('feature flag behavior', () => {
-    beforeEach(() => {
-      mockPipelineQuery.mockResolvedValue({
-        data: { project: mockProjectPipeline() },
-      });
-    });
-
-    it.each`
-      state    | showLegacyPipelineMiniGraph | showPipelineMiniGraph
-      ${true}  | ${false}                    | ${true}
-      ${false} | ${true}                     | ${false}
-    `(
-      'renders the correct component when the feature flag is set to $state',
-      async ({ state, showLegacyPipelineMiniGraph, showPipelineMiniGraph }) => {
-        createComponentWithApollo({ ciGraphqlPipelineMiniGraph: state });
-
-        await waitForPromises();
-
-        expect(findPipelineEditorMiniGraph().exists()).toBe(showLegacyPipelineMiniGraph);
-        expect(findPipelineMiniGraph().exists()).toBe(showPipelineMiniGraph);
-      },
-    );
   });
 });

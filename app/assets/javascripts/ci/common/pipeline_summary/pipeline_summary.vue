@@ -3,6 +3,7 @@ import { GlLink, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
+import { reportToSentry } from '~/ci/utils';
 import { getIncreasedPollInterval } from '~/ci/utils/polling_utils';
 import { NETWORK_STATUS_READY, PIPELINE_POLL_INTERVAL_DEFAULT } from '~/ci/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -10,13 +11,13 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { getQueryHeaders } from '~/ci/pipeline_details/graph/utils';
 import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
-import getPipelineMetadataQuery from './graphql/queries/get_pipeline_metadata.query.graphql';
+import getPipelineSummaryQuery from './graphql/queries/get_pipeline_summary.query.graphql';
 
 export default {
   name: 'PipelineSummary',
   i18n: {
     loadingText: s__('Pipeline|Checking pipeline status'),
-    pipelineMetadataFetchError: __('There was a problem fetching the pipeline metadata.'),
+    pipelineSummaryFetchError: __('There was a problem fetching the pipeline summary.'),
     pipelineStatusText: s__('Pipelines|Pipeline %{linkStart}#%{pipelineId}%{linkEnd} %{status}'),
   },
   components: {
@@ -43,25 +44,22 @@ export default {
   },
   data() {
     return {
-      pipelineInfo: {},
+      pipeline: {},
       pollInterval: PIPELINE_POLL_INTERVAL_DEFAULT,
     };
   },
   apollo: {
-    pipelineInfo: {
+    pipeline: {
       context() {
         return getQueryHeaders(this.pipelineEtag);
       },
-      query: getPipelineMetadataQuery,
+      query: getPipelineSummaryQuery,
       notifyOnNetworkStatusChange: true,
       pollInterval() {
         return this.pollInterval;
       },
       variables() {
-        return {
-          fullPath: this.fullPath,
-          iid: this.iid,
-        };
+        return this.queryVariables;
       },
       result({ networkStatus }) {
         // We need this for handling the reactive poll interval while also using frontend cache
@@ -72,29 +70,45 @@ export default {
       update({ project }) {
         return project?.pipeline || {};
       },
-      error() {
-        createAlert({ message: this.$options.i18n.pipelineMetadataFetchError });
+      error(error) {
+        createAlert({ message: this.$options.i18n.pipelineSummaryFetchError });
+        reportToSentry(this.$options.name, error);
       },
     },
   },
   computed: {
+    queryVariables() {
+      return {
+        fullPath: this.fullPath,
+        iid: this.iid,
+      };
+    },
+    downstream() {
+      return this.pipeline?.downstream?.nodes || [];
+    },
     finishedAt() {
-      return this.pipelineInfo?.finishedAt;
+      return this.pipeline?.finishedAt;
     },
     isLoading() {
-      return this.$apollo.queries.pipelineInfo.loading;
+      return this.$apollo.queries.pipeline.loading;
     },
     pipelineId() {
-      return getIdFromGraphQLId(this.pipelineInfo?.id);
+      return getIdFromGraphQLId(this.pipeline?.id);
     },
     pipelinePath() {
       return this.status?.detailsPath || '';
     },
+    stages() {
+      return this.pipeline?.stages?.nodes || [];
+    },
     status() {
-      return this.pipelineInfo?.detailedStatus || null;
+      return this.pipeline?.detailedStatus || null;
     },
     statusLabel() {
       return this.status?.label || '';
+    },
+    upstream() {
+      return this.pipeline?.upstream || {};
     },
   },
   mounted() {
@@ -141,7 +155,7 @@ export default {
             <gl-sprintf :message="$options.i18n.pipelineStatusText">
               <template #status>{{ statusLabel }}</template>
               <template #link="{ content }">
-                <gl-link :href="pipelinePath">
+                <gl-link data-testid="pipeline-path" :href="pipelinePath">
                   <gl-sprintf :message="content">
                     <template #pipelineId>{{ pipelineId }}</template>
                   </gl-sprintf>
@@ -149,18 +163,16 @@ export default {
               </template>
             </gl-sprintf>
           </span>
-          <time-ago-tooltip
-            v-if="finishedAt"
-            class="gl-line-height-0 gl-flex gl-text-sm gl-text-subtle"
-            :time="finishedAt"
-            tooltip-placement="bottom"
-          />
+          <span class="align-items-center gl-flex gl-text-sm gl-text-subtle">
+            <time-ago-tooltip v-if="finishedAt" :time="finishedAt" tooltip-placement="bottom" />
+          </span>
         </div>
         <pipeline-mini-graph
           data-testid="pipeline-summary-pipeline-mini-graph"
-          :full-path="fullPath"
-          :iid="iid"
-          :pipeline-etag="pipelineEtag"
+          :downstream="downstream"
+          :pipeline-path="pipelinePath"
+          :stages="stages"
+          :upstream="upstream"
           @jobActionExecuted="onJobActionExecuted"
         />
       </div>

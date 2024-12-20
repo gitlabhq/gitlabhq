@@ -1,3 +1,4 @@
+---
 name: self_hosted_model_created
 description: A new self-hosted model configuration was added
 introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/477999

@@ -38,6 +38,47 @@ To request an exception to these limitations:
 1. Provide detailed justification for why your case requires an exception
 1. Wait for review and approval from the Database team before proceeding
 
+## Techniques to reduce table size
+
+Before requesting an exception, consider these approaches to manage table size:
+
+### Archiving data
+
+- Move old, infrequently accessed data to archive tables
+- Implement archiving workers for automated data migration
+- Consider using partitioning by date to facilitate archiving, see [date range partitioning](partitioning/date_range.md)
+
+### Data retention
+
+- Implement retention policies to remove old data
+- Configure automated cleanup jobs for expired data, see [deleting old pipelines](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171142)
+
+### Table partitioning
+
+- [Partition large tables by date](scalability/patterns/time_decay.md#time-decay-data-strategies), ID ranges, or other criteria
+- Consider [range](partitioning/date_range.md) or [list](partitioning/list.md) partitioning based on access patterns
+
+### Column optimization
+
+- Use appropriate data types (for example, `smallint` instead of `integer` when possible)
+- Remove unused or redundant indexes
+- Consider using `NULL` instead of empty strings or zeros
+- Use `text` instead of `varchar` to [avoid storage overhead](ordering_table_columns.md)
+
+### Normalization
+
+- Split large tables into related smaller tables
+- Move rarely used columns to [separate tables](layout_and_access_patterns.md#data-model-trade-offs)
+- Use junction tables for many-to-many relationships
+- Consider vertical partitioning for [wide tables](layout_and_access_patterns.md#wide-tables)
+
+### External storage
+
+- Move large text or binary data to object storage
+- Store only metadata in the database
+- Use [Elasticsearch](../../user/search/advanced_search.md) for search-specific data
+- Consider using Redis for temporary or cached data
+
 ## Alternatives to table modifications
 
 Consider these alternatives when working with large tables:

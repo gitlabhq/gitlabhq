@@ -1,37 +1,62 @@
-import { GlTableLite, GlLink, GlEmptyState, GlButton, GlIcon, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlTabs, GlTab, GlBadge, GlSprintf, GlIcon, GlLink } from '@gitlab/ui';
+import VueRouter from 'vue-router';
+import Vue from 'vue';
 import MlExperimentsShow from '~/ml/experiment_tracking/routes/experiments/show/ml_experiments_show.vue';
-import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
-import Pagination from '~/ml/experiment_tracking/components/pagination.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
-import PerformanceGraph from '~/ml/experiment_tracking/components/performance_graph.vue';
-import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
+import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
-
 import * as urlHelpers from '~/lib/utils/url_utility';
-import {
-  MOCK_START_CURSOR,
-  MOCK_PAGE_INFO,
-  MOCK_CANDIDATES,
-  MOCK_EXPERIMENT,
-  MOCK_EXPERIMENT_METADATA,
-} from './mock_data';
+import CandidateList from '~/ml/experiment_tracking/components/candidate_list.vue';
+import ExperimentMetadata from '~/ml/experiment_tracking/components/experiment_metadata.vue';
+import PerformanceGraph from '~/ml/experiment_tracking/components/performance_graph.vue';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { MOCK_PAGE_INFO, MOCK_EXPERIMENT, MOCK_CANDIDATES } from './mock_data';
+
+jest.mock('~/ml/experiment_tracking/components/experiment_metadata.vue', () => {
+  const { props } = jest.requireActual(
+    '~/ml/experiment_tracking/components/experiment_metadata.vue',
+  ).default;
+  return {
+    props,
+    render() {},
+  };
+});
+
+jest.mock('~/ml/experiment_tracking/components/candidate_list.vue', () => {
+  const { props } = jest.requireActual(
+    '~/ml/experiment_tracking/components/candidate_list.vue',
+  ).default;
+  return {
+    props,
+    render() {},
+  };
+});
+
+jest.mock('~/ml/experiment_tracking/components/performance_graph.vue', () => {
+  const { props } = jest.requireActual(
+    '~/ml/experiment_tracking/components/performance_graph.vue',
+  ).default;
+  return {
+    props,
+    render() {},
+  };
+});
 
 describe('MlExperimentsShow', () => {
   let wrapper;
+  Vue.use(VueRouter);
 
-  const createWrapper = (
-    candidates = [],
-    metricNames = [],
-    paramNames = [],
+  const createWrapper = ({
+    candidates = MOCK_CANDIDATES,
+    metricNames = ['rmse', 'auc', 'mae'],
+    paramNames = ['l1_ratio'],
     pageInfo = MOCK_PAGE_INFO,
     experiment = MOCK_EXPERIMENT,
     emptyStateSvgPath = 'path',
-    mountFn = mountExtended,
+    mountFn = shallowMountExtended,
     mlflowTrackingUrl = 'mlflow/tracking/url',
-    // eslint-disable-next-line max-params
-  ) => {
+  } = {}) => {
     wrapper = mountFn(MlExperimentsShow, {
       propsData: {
         experiment,
@@ -42,60 +67,25 @@ describe('MlExperimentsShow', () => {
         emptyStateSvgPath,
         mlflowTrackingUrl,
       },
-      stubs: { GlSprintf, TimeAgoTooltip },
+      stubs: { GlTabs, GlBadge, CandidateList, GlSprintf, TimeAgoTooltip },
     });
   };
 
-  const createWrapperWithCandidates = (pageInfo = MOCK_PAGE_INFO) => {
-    createWrapper(MOCK_CANDIDATES, ['rmse', 'auc', 'mae'], ['l1_ratio'], pageInfo);
-  };
-
-  const createWrapperWithExperimentMetadata = () => {
-    createWrapper(
-      [],
-      [],
-      [],
-      MOCK_PAGE_INFO,
-      { ...MOCK_EXPERIMENT, metadata: MOCK_EXPERIMENT_METADATA },
-      'path',
-    );
-  };
-
-  const findPagination = () => wrapper.findComponent(Pagination);
-  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
-  const findRegistrySearch = () => wrapper.findComponent(RegistrySearch);
-  const findTable = () => wrapper.findComponent(GlTableLite);
-  const findTableHeaders = () => findTable().findAll('th');
-  const findTableRows = () => findTable().findAll('tbody > tr');
-  const findNthTableRow = (idx) => findTableRows().at(idx);
-  const findColumnInRow = (row, col) => findNthTableRow(row).findAll('td').at(col);
   const findExperimentHeader = () => wrapper.findComponent(TitleArea);
-  const findExperimentMetadata = () => wrapper.findByTestId('metadata');
   const findDeleteButton = () => wrapper.findComponent(DeleteButton);
   const findDownloadButton = () => findExperimentHeader().findComponent(GlButton);
-  const findMetadataTableRow = (idx) => wrapper.findAll('.experiment-metadata tbody > tr').at(idx);
-  const findMetadataTableColumn = (row, col) => findMetadataTableRow(row).findAll('td').at(col);
-  const findMetadataHeader = () => wrapper.find('.experiment-metadata h3');
-  const findMetadataEmptyState = () => wrapper.find('.experiment-metadata .gl-text-subtle');
-  const findPerformanceGraph = () => wrapper.findComponent(PerformanceGraph);
+  const findTabs = () => wrapper.findComponent(GlTabs);
+  const findMetadataTab = () => findTabs().findAllComponents(GlTab).at(0);
+  const findCandidatesTab = () => findTabs().findAllComponents(GlTab).at(1);
+  const findPerformanceTab = () => findTabs().findAllComponents(GlTab).at(2);
+  const findCandidatesCountBadge = () => findCandidatesTab().findComponent(GlBadge);
+  const findCandidatesList = () => wrapper.findComponent(CandidateList);
   const findTimeAgoTooltip = () => findExperimentHeader().findComponent(TimeAgoTooltip);
-
-  const hrefInRowAndColumn = (row, col) =>
-    findColumnInRow(row, col).findComponent(GlLink).attributes().href;
-  const linkTextInRowAndColumn = (row, col) =>
-    findColumnInRow(row, col).findComponent(GlLink).text();
+  const findExperimentMetadata = () => wrapper.findByTestId('metadata');
 
   describe('default inputs', () => {
     beforeEach(() => {
       createWrapper();
-    });
-
-    it('shows empty state', () => {
-      expect(findEmptyState().exists()).toBe(true);
-    });
-
-    it('does not show pagination', () => {
-      expect(findPagination().exists()).toBe(false);
     });
 
     it('shows experiment header', () => {
@@ -116,21 +106,6 @@ describe('MlExperimentsShow', () => {
 
     it('passes the correct title to experiment header', () => {
       expect(findExperimentHeader().props('title')).toBe(MOCK_EXPERIMENT.name);
-    });
-
-    it('does not show table', () => {
-      expect(findTable().exists()).toBe(false);
-    });
-
-    it('initializes sorting correctly', () => {
-      expect(findRegistrySearch().props('sorting')).toMatchObject({
-        orderBy: 'created_at',
-        sort: 'desc',
-      });
-    });
-
-    it('initializes filters correctly', () => {
-      expect(findRegistrySearch().props('filters')).toMatchObject([{ value: { data: '' } }]);
     });
   });
 
@@ -168,244 +143,74 @@ describe('MlExperimentsShow', () => {
     });
   });
 
-  describe('Search', () => {
-    it('shows search box', () => {
-      createWrapper();
-
-      expect(findRegistrySearch().exists()).toBe(true);
-    });
-
-    it('metrics are added as options for sorting', () => {
-      createWrapper([], ['bar']);
-
-      const labels = findRegistrySearch()
-        .props('sortableFields')
-        .map((e) => e.orderBy);
-      expect(labels).toContain('metric.bar');
-    });
-
-    it('sets the component filters based on the querystring', () => {
-      setWindowLocation('https://blah?name=A&orderBy=B&sort=C');
-
-      createWrapper();
-
-      expect(findRegistrySearch().props('filters')).toMatchObject([{ value: { data: 'A' } }]);
-    });
-
-    it('sets the component sort based on the querystring', () => {
-      setWindowLocation('https://blah?name=A&orderBy=B&sort=C');
-
-      createWrapper();
-
-      expect(findRegistrySearch().props('sorting')).toMatchObject({ orderBy: 'B', sort: 'c' });
-    });
-
-    it('sets the component sort based on the querystring, when order by is a metric', () => {
-      setWindowLocation('https://blah?name=A&orderBy=B&sort=C&orderByType=metric');
-
-      createWrapper();
-
-      expect(findRegistrySearch().props('sorting')).toMatchObject({
-        orderBy: 'metric.B',
-        sort: 'c',
-      });
-    });
-
-    describe('Search submit', () => {
-      beforeEach(() => {
-        setWindowLocation('https://blah.com/?name=query&orderBy=name&orderByType=column&sort=asc');
-        jest.spyOn(urlHelpers, 'visitUrl').mockImplementation(() => {});
-
-        createWrapper();
-      });
-
-      it('On submit, resets the cursor and reloads to correct page', () => {
-        findRegistrySearch().vm.$emit('filter:submit');
-
-        expect(urlHelpers.visitUrl).toHaveBeenCalledTimes(1);
-        expect(urlHelpers.visitUrl).toHaveBeenCalledWith(
-          'https://blah.com/?name=query&orderBy=name&orderByType=column&sort=asc',
-        );
-      });
-
-      it('On sorting changed, resets cursor and reloads to correct page', () => {
-        findRegistrySearch().vm.$emit('sorting:changed', { orderBy: 'created_at' });
-
-        expect(urlHelpers.visitUrl).toHaveBeenCalledTimes(1);
-        expect(urlHelpers.visitUrl).toHaveBeenCalledWith(
-          'https://blah.com/?name=query&orderBy=created_at&orderByType=column&sort=asc',
-        );
-      });
-
-      it('On sorting changed and is metric, resets cursor and reloads to correct page', () => {
-        findRegistrySearch().vm.$emit('sorting:changed', { orderBy: 'metric.auc' });
-
-        expect(urlHelpers.visitUrl).toHaveBeenCalledTimes(1);
-        expect(urlHelpers.visitUrl).toHaveBeenCalledWith(
-          'https://blah.com/?name=query&orderBy=auc&orderByType=metric&sort=asc',
-        );
-      });
-
-      it('On direction changed, reloads to correct page', () => {
-        findRegistrySearch().vm.$emit('sorting:changed', { sort: 'desc' });
-
-        expect(urlHelpers.visitUrl).toHaveBeenCalledTimes(1);
-        expect(urlHelpers.visitUrl).toHaveBeenCalledWith(
-          'https://blah.com/?name=query&orderBy=name&orderByType=column&sort=desc',
-        );
-      });
-    });
-  });
-
-  describe('Pagination behaviour', () => {
+  describe('Tabs', () => {
     beforeEach(() => {
-      createWrapperWithCandidates();
+      createWrapper();
     });
 
-    it('should show', () => {
-      expect(findPagination().exists()).toBe(true);
+    it('renders tabs component', () => {
+      expect(findTabs().exists()).toBe(true);
     });
 
-    it('Passes pagination to pagination component', () => {
-      createWrapperWithCandidates();
+    it('renders the correct tabs', () => {
+      expect(findTabs().findAllComponents(GlTab).length).toBe(3);
+    });
 
-      expect(findPagination().props('startCursor')).toBe(MOCK_START_CURSOR);
+    it('renders metadata tab', () => {
+      expect(findMetadataTab().attributes('title')).toBe('Overview');
+    });
+
+    it('renders candidates tab', () => {
+      expect(findCandidatesTab().text()).toContain('Candidates');
+    });
+
+    it('renders performance tab', () => {
+      expect(findPerformanceTab().attributes('title')).toBe('Performance');
+    });
+
+    it('shows the number of candidates in the tab', () => {
+      expect(findCandidatesCountBadge().text()).toBe(MOCK_CANDIDATES.length.toString());
+    });
+
+    it('sets the correct tab index based on route', async () => {
+      await wrapper.vm.$router.push({ name: 'candidates' });
+      expect(findTabs().props('value')).toBe(1);
+
+      await wrapper.vm.$router.push({ name: 'details' });
+      expect(findTabs().props('value')).toBe(0);
+
+      await wrapper.vm.$router.push({ name: 'performance' });
+      expect(findTabs().props('value')).toBe(2);
     });
   });
 
-  describe('Candidate table', () => {
-    const firstCandidateIndex = 0;
-    const secondCandidateIndex = 1;
-    const firstCandidate = MOCK_CANDIDATES[firstCandidateIndex];
-
+  describe('navigation', () => {
     beforeEach(() => {
-      createWrapperWithCandidates();
+      createWrapper({ mountFn: mountExtended });
+    });
+    it('navigates to the correct component when tab is clicked', async () => {
+      await findCandidatesTab().vm.$emit('click');
+      expect(findTabs().props('value')).toBe(1);
+      expect(findCandidatesList().exists()).toBe(true);
+      expect(wrapper.findComponent(ExperimentMetadata).exists()).toBe(false);
+
+      await findMetadataTab().vm.$emit('click');
+      expect(findTabs().props('value')).toBe(0);
+      expect(wrapper.findComponent(ExperimentMetadata).exists()).toBe(true);
+      expect(wrapper.findComponent(CandidateList).exists()).toBe(false);
+
+      await findPerformanceTab().vm.$emit('click');
+      expect(findTabs().props('value')).toBe(2);
+      expect(wrapper.findComponent(ExperimentMetadata).exists()).toBe(false);
+      expect(wrapper.findComponent(PerformanceGraph).exists()).toBe(true);
     });
 
-    it('renders all rows', () => {
-      expect(findTableRows()).toHaveLength(MOCK_CANDIDATES.length);
-    });
+    it('defaults to metadata on an incorrect route', async () => {
+      await findCandidatesTab().vm.$emit('click');
+      await wrapper.vm.$router.push({ path: '/invalid' });
 
-    it('sets the correct columns in the table', () => {
-      const expectedColumnNames = [
-        'Name',
-        'Created at',
-        'Author',
-        'L1 Ratio',
-        'Rmse',
-        'Auc',
-        'Mae',
-        'CI Job',
-        'Artifacts',
-      ];
-
-      expect(findTableHeaders().wrappers.map((h) => h.text())).toEqual(expectedColumnNames);
-    });
-
-    describe('Artifact column', () => {
-      const artifactColumnIndex = -1;
-
-      it('shows the a link to the artifact', () => {
-        expect(hrefInRowAndColumn(firstCandidateIndex, artifactColumnIndex)).toBe(
-          firstCandidate.artifact,
-        );
-      });
-
-      it('shows empty state when no artifact', () => {
-        expect(findColumnInRow(secondCandidateIndex, artifactColumnIndex).text()).toBe(
-          'No artifacts',
-        );
-      });
-    });
-
-    describe('CI Job column', () => {
-      const jobColumnIndex = -2;
-
-      it('has a link to the job', () => {
-        expect(hrefInRowAndColumn(firstCandidateIndex, jobColumnIndex)).toBe(
-          firstCandidate.ci_job.path,
-        );
-      });
-
-      it('shows the name of the job', () => {
-        expect(linkTextInRowAndColumn(firstCandidateIndex, jobColumnIndex)).toBe(
-          firstCandidate.ci_job.name,
-        );
-      });
-
-      it('shows empty state when there is no job', () => {
-        expect(findColumnInRow(secondCandidateIndex, jobColumnIndex).text()).toBe('-');
-      });
-    });
-
-    describe('User column', () => {
-      const userColumn = 2;
-
-      it('creates a link to the user', () => {
-        const column = findColumnInRow(firstCandidateIndex, userColumn).findComponent(GlLink);
-
-        expect(column.attributes().href).toBe(firstCandidate.user.path);
-        expect(column.text()).toBe(`@${firstCandidate.user.username}`);
-      });
-
-      it('when there is no user shows empty state', () => {
-        createWrapperWithCandidates();
-
-        expect(findColumnInRow(secondCandidateIndex, userColumn).text()).toBe('-');
-      });
-    });
-
-    describe('Candidate name column', () => {
-      const nameColumnIndex = 0;
-
-      it('Sets the name', () => {
-        expect(findColumnInRow(firstCandidateIndex, nameColumnIndex).text()).toBe(
-          firstCandidate.name,
-        );
-      });
-
-      it('when there is no user shows nothing', () => {
-        expect(findColumnInRow(secondCandidateIndex, nameColumnIndex).text()).toBe('No name');
-      });
-    });
-  });
-
-  describe('Experiments metadata', () => {
-    it('has correct header', () => {
-      createWrapper();
-
-      expect(findMetadataHeader().text()).toBe('Experiment metadata');
-    });
-
-    it('shows empty state if there is no metadata', () => {
-      createWrapper();
-
-      expect(findMetadataEmptyState().text()).toBe('No logged experiment metadata');
-    });
-
-    it('shows the metadata', () => {
-      createWrapperWithExperimentMetadata();
-
-      MOCK_EXPERIMENT_METADATA.forEach((metadata, idx) => {
-        expect(findMetadataTableColumn(idx, 0).text()).toContain(metadata.name);
-        expect(findMetadataTableColumn(idx, 1).text()).toContain(metadata.value);
-      });
-    });
-  });
-
-  describe('Performance graph', () => {
-    it('does not render the graph when candidates are missing', () => {
-      createWrapper();
-
-      expect(findPerformanceGraph().exists()).toBe(false);
-    });
-
-    it('renders the graph when candidates are present', () => {
-      createWrapperWithCandidates();
-
-      expect(findPerformanceGraph().exists()).toBe(true);
-      expect(findPerformanceGraph().props('candidates')).toMatchObject(MOCK_CANDIDATES);
-      expect(findPerformanceGraph().props('metricNames')).toMatchObject(['rmse', 'auc', 'mae']);
+      expect(findTabs().props('value')).toBe(0);
+      expect(findCandidatesList().exists()).toBe(false);
     });
   });
 });

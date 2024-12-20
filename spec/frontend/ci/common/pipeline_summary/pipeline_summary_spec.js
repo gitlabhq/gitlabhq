@@ -2,7 +2,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import Visibility from 'visibilityjs';
 import { GlLoadingIcon, GlLink } from '@gitlab/ui';
-import mockPipelineMetadataQueryResponse from 'test_fixtures/graphql/pipelines/get_pipeline_metadata.query.graphql.json';
+import mockPipelineSummaryQueryResponse from 'test_fixtures/graphql/pipelines/get_pipeline_summary.query.graphql.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -14,7 +14,7 @@ import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue'
 import PipelineSummary from '~/ci/common/pipeline_summary/pipeline_summary.vue';
 
 import { PIPELINE_POLL_INTERVAL_DEFAULT } from '~/ci/constants';
-import getPipelineMetadataQuery from '~/ci/common/pipeline_summary/graphql/queries/get_pipeline_metadata.query.graphql';
+import getPipelineSummaryQuery from '~/ci/common/pipeline_summary/graphql/queries/get_pipeline_summary.query.graphql';
 
 Vue.use(VueApollo);
 jest.mock('~/alert');
@@ -22,13 +22,13 @@ jest.mock('visibilityjs');
 
 describe('PipelineSummary', () => {
   let wrapper;
-  const pipelineMetadataHandler = jest.fn().mockResolvedValue(mockPipelineMetadataQueryResponse);
+  const pipelineSummaryHandler = jest.fn().mockResolvedValue(mockPipelineSummaryQueryResponse);
 
   const {
     data: {
       project: { pipeline },
     },
-  } = mockPipelineMetadataQueryResponse;
+  } = mockPipelineSummaryQueryResponse;
 
   const defaultProps = {
     fullPath: 'project/path',
@@ -37,7 +37,7 @@ describe('PipelineSummary', () => {
   };
 
   const createComponent = ({ props = {} } = {}) => {
-    const handlers = [[getPipelineMetadataQuery, pipelineMetadataHandler]];
+    const handlers = [[getPipelineSummaryQuery, pipelineSummaryHandler]];
     const mockApollo = createMockApollo(handlers);
 
     wrapper = mountExtended(PipelineSummary, {
@@ -57,7 +57,7 @@ describe('PipelineSummary', () => {
   const findStatusIcon = () => wrapper.findComponent(CiIcon);
   const findTimeAgo = () => wrapper.findComponent(TimeAgoTooltip);
 
-  const getPollInterval = () => wrapper.vm.$apollo.queries.pipelineInfo.pollInterval;
+  const getPollInterval = () => wrapper.vm.$apollo.queries.pipeline.pollInterval;
 
   describe('mounted', () => {
     beforeEach(() => {
@@ -96,9 +96,10 @@ describe('PipelineSummary', () => {
       expect(findPipelineMiniGraph().exists()).toBe(true);
 
       expect(findPipelineMiniGraph().props()).toMatchObject({
-        fullPath: defaultProps.fullPath,
-        iid: defaultProps.iid,
-        pipelineEtag: defaultProps.pipelineEtag,
+        downstream: expect.any(Array),
+        pipelinePath: pipeline.detailedStatus.detailsPath,
+        stages: pipeline.stages.nodes,
+        upstream: expect.any(Object),
       });
     });
 
@@ -110,12 +111,12 @@ describe('PipelineSummary', () => {
   describe('polling', () => {
     beforeEach(async () => {
       Visibility.hidden.mockReturnValue(true);
-      pipelineMetadataHandler.mockResolvedValue(mockPipelineMetadataQueryResponse);
+      pipelineSummaryHandler.mockResolvedValue(mockPipelineSummaryQueryResponse);
       await createComponent();
     });
 
     it('increases the poll interval after each query call', () => {
-      expect(pipelineMetadataHandler).toHaveBeenCalled();
+      expect(pipelineSummaryHandler).toHaveBeenCalled();
       expect(getPollInterval()).toBeGreaterThan(PIPELINE_POLL_INTERVAL_DEFAULT);
     });
 

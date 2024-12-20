@@ -1,3 +1,4 @@
+---
 name: self_hosted_model_feature_changed
 description: A self-hosted model feature had its configuration changed
 introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/463215

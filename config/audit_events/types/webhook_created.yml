@@ -1,6 +1,6 @@
 ---
 name: webhook_created
-description: Event triggered when a webhook is created.
+description: A webhook is created
 introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/8068
 introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154046
 feature_category: webhooks

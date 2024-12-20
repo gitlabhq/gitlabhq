@@ -117,27 +117,26 @@ export const I18N_AGENT_TOKEN = {
 export const HELM_VERSION_POLICY_URL = 'https://helm.sh/docs/topics/version_skew/';
 
 export const I18N_AGENT_MODAL = {
-  registerAgentButton: s__('ClusterAgents|Register'),
+  registerAgentButton: s__('ClusterAgents|Create and register'),
   close: __('Close'),
   cancel: __('Cancel'),
+  learMore: __('Learn more.'),
 
   modalTitle: s__('ClusterAgents|Connect a Kubernetes cluster'),
-  modalBody: s__(
-    'ClusterAgents|Add an agent configuration file to %{linkStart}this repository%{linkEnd} and select it, or create a new one to register with GitLab:',
-  ),
+  modalBody: s__('ClusterAgents|Create a new agent to register with GitLab.'),
   enableKasText: s__(
     "ClusterAgents|Your instance doesn't have the %{linkStart}GitLab Agent Server (KAS)%{linkEnd} set up. Ask a GitLab Administrator to install it.",
   ),
   altText: s__('ClusterAgents|GitLab agent for Kubernetes'),
-  learnMoreLink: s__('ClusterAgents|How do I register an agent?'),
+  registrationSuccess: s__('ClusterAgents|%{agentName} successfully created.'),
   registrationErrorTitle: s__('ClusterAgents|Failed to register an agent'),
   unknownError: s__('ClusterAgents|An unknown error occurred. Please try again.'),
   maxAgentsSupport: s__('ClusterAgents|We only support 100 agents on the UI.'),
   useTerraformText: s__(
     'ClusterAgents|To manage more agents, %{linkStart}use Terraform%{linkEnd}.',
   ),
-  registerWithUITitle: s__('ClusterAgents|Register agent with the UI'),
-  bootstrapWithFluxTitle: s__('ClusterAgents|Bootstrap the agent with Flux'),
+  registerWithUITitle: s__('ClusterAgents|Option 2: Create and register an agent with the UI'),
+  bootstrapWithFluxTitle: s__('ClusterAgents|Option 1: Bootstrap the agent with Flux'),
   bootstrapWithFluxDescription: s__(
     'ClusterAgents|If Flux is installed in the cluster, you can install and register the agent from the command line:',
   ),
@@ -147,16 +146,11 @@ export const I18N_AGENT_MODAL = {
   bootstrapWithFluxDocs: s__(
     "ClusterAgents|If you're %{linkStart}bootstrapping the agent with Flux%{linkEnd}, you can close this dialog.",
   ),
+  agentNamePlaceholder: s__('ClusterAgents|Name of new agent'),
+  requiredFieldFeedback: s__('ClusterAgents|This field is required.'),
 };
 
 export const KAS_DISABLED_ERROR = 'Gitlab::Kas::Client::ConfigurationError';
-
-export const I18N_AVAILABLE_AGENTS_DROPDOWN = {
-  selectAgent: s__('ClusterAgents|Select an agent or enter a name to create new'),
-  registeringAgent: s__('ClusterAgents|Registering agent'),
-  noResults: __('No matching results'),
-  createButton: s__('ClusterAgents|Create agent: %{searchTerm}'),
-};
 
 export const AGENT_STATUSES = {
   active: {
@@ -284,7 +278,6 @@ export const CERTIFICATE_BASED = 'certificate_based';
 export const EVENT_LABEL_MODAL = 'agent_registration_modal';
 export const EVENT_LABEL_TABS = 'kubernetes_section_tabs';
 export const EVENT_ACTIONS_OPEN = 'open_modal';
-export const EVENT_ACTIONS_SELECT = 'select_agent';
 export const EVENT_ACTIONS_CLICK = 'click_button';
 export const EVENT_ACTIONS_CHANGE = 'change_tab';
 

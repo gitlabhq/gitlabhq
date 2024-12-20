@@ -46,15 +46,15 @@ Audit event types belong to the following product categories.
 
 ### Ai framework
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`duo_features_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145509) | GitLab Duo Features enabled setting on group or project changed | **{check-circle}** Yes | GitLab [16.10](https://gitlab.com/gitlab-org/gitlab/-/issues/442485) | Group, Project |
 | [`q_onbarding_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175501) | Amazon Q instance settings changed | **{check-circle}** Yes | GitLab [17.8](https://gitlab.com/gitlab-org/gitlab/-/issues/508250) | Instance |
 
 ### Audit events
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`amazon_s3_configuration_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132443) | Amazon S3 configuration for audit events streaming is created | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/423229) | Group |
 | [`amazon_s3_configuration_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133695) | Amazon S3 configuration for audit events streaming is deleted | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/423229) | Group |
 | [`amazon_s3_configuration_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133691) | Amazon S3 configuration for audit events streaming is updated | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/423229) | Group |
@@ -95,26 +95,26 @@ Audit event types belong to the following product categories.
 
 ### Authorization
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
-| [`secure_ci_job_token_policies_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170930) | Event triggered when permissions are updated for a CI_JOB_TOKEN scope | **{check-circle}** Yes | GitLab [17.6](https://gitlab.com/gitlab-org/gitlab/-/issues/495144) | Project |
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`secure_ci_job_token_policies_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170930) | Permissions are updated for a CI_JOB_TOKEN scope | **{check-circle}** Yes | GitLab [17.6](https://gitlab.com/gitlab-org/gitlab/-/issues/495144) | Project |
 
 ### Build artifacts
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`job_artifact_downloaded`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129608) | A user downloads a job artifact from a project | **{dotted-circle}** No | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/250663) | Project |
 
 ### Code review
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`delete_merge_request`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96773) | A merge request is successfully deleted | **{dotted-circle}** No | GitLab [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/370487) | Project |
 
 ### Code review workflow
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`merge_request_approval_operation`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92983) | A merge request is approved | **{dotted-circle}** No | GitLab [15.3](https://gitlab.com/gitlab-org/gitlab/-/issues/10869) | Project |
 | [`merge_request_closed_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120927) | A merge request is closed using a project access token | **{check-circle}** Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 | [`merge_request_created_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120927) | A merge request is created using a project access token | **{check-circle}** Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
@@ -123,19 +123,19 @@ Audit event types belong to the following product categories.
 | [`merge_request_reopened_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120927) | A merge request is reopened using a project access token | **{check-circle}** Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 | [`project_merge_requests_template_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84624) | A merge request template for a project is updated | **{check-circle}** Yes | GitLab [15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) | Project |
 | [`project_remove_source_branch_after_merge_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83922) | A project has its setting to remove branches after merges updated | **{check-circle}** Yes | GitLab [14.10](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) | Project |
-| [`project_reset_approvals_on_push_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66234) | Triggered when a project has its setting on whether approvals are reset on a push is updated | **{check-circle}** Yes | GitLab [14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) | Project |
-| [`selective_code_owner_removals_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148743) | Event triggered when selective code owner removal is updated | **{check-circle}** Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/327562) | Project |
+| [`project_reset_approvals_on_push_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66234) | A project has its setting on whether approvals are reset on a push is updated | **{check-circle}** Yes | GitLab [14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) | Project |
+| [`selective_code_owner_removals_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148743) | Selective code owner removal is updated | **{check-circle}** Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/327562) | Project |
 
 ### Code suggestions
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`project_suggestion_commit_message_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83922) | A project has its suggested commit message updated | **{check-circle}** Yes | GitLab [14.10](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) | Project |
 
 ### Compliance management
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`add_gpg_key`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111744) | A GPG key is added | **{check-circle}** Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/373961) | User |
 | [`allow_author_approval_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102256) | Prevent approval by author setting is updated | **{check-circle}** Yes | GitLab [15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/373949) | Group |
 | [`allow_committer_approval_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102256) | Prevent approvals by users who add commits setting is updated | **{check-circle}** Yes | GitLab [15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/373949) | Group |
@@ -202,8 +202,8 @@ Audit event types belong to the following product categories.
 
 ### Container registry
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`container_repository_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156037) | A container repository is first pushed to the registry | **{check-circle}** Yes | GitLab [17.5](https://gitlab.com/gitlab-org/gitlab/-/issues/362290) | Project |
 | [`container_repository_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152967) | A project's container registry is deleted | **{check-circle}** Yes | GitLab [17.2](https://gitlab.com/gitlab-org/gitlab/-/issues/362290) | Project |
 | [`container_repository_deletion_marked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152967) | A project's container repository is marked for deletion | **{check-circle}** Yes | GitLab [17.2](https://gitlab.com/gitlab-org/gitlab/-/issues/362290) | Project |
@@ -211,14 +211,14 @@ Audit event types belong to the following product categories.
 
 ### Continuous-integration
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`multi_project_downstream_pipeline_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168626) | Multi project downstream pipeline is created | **{dotted-circle}** No | GitLab [17.6](https://gitlab.com/gitlab-org/gitlab/-/issues/481325) | Project |
 
 ### Continuous delivery
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`deploy_key_added`](https://gitlab.com/gitlab-org/gitlab/-/commit/08586a616909c7f9efe2210c2b74fd3422d4eb62) | A deploy key is added | **{check-circle}** Yes | GitLab [15.3](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Project |
 | [`deploy_key_removed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92219) | A deploy key is removed | **{check-circle}** Yes | GitLab [15.3](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Project |
 | [`deploy_token_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89391) | A deploy token is created | **{check-circle}** Yes | GitLab [15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Project |
@@ -235,8 +235,8 @@ Audit event types belong to the following product categories.
 
 ### Continuous integration
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`allow_merge_on_skipped_pipeline_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83922) | Skipped pipelines are considered successful setting is updated | **{check-circle}** Yes | GitLab [14.10](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) | Project |
 | [`ci_group_variable_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | A CI/CD variable is created for a group | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) | Group |
 | [`ci_group_variable_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | A CI/CD variable is deleted for a group | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) | Group |
@@ -251,8 +251,8 @@ Audit event types belong to the following product categories.
 
 ### Deployment management
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`cluster_agent_create_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159593) | A user attempts to create a cluster agent but it failed | **{check-circle}** Yes | GitLab [17.3](https://gitlab.com/gitlab-org/gitlab/-/issues/462749) | Project |
 | [`cluster_agent_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159593) | A user creates a cluster agent | **{check-circle}** Yes | GitLab [17.3](https://gitlab.com/gitlab-org/gitlab/-/issues/462749) | Project |
 | [`cluster_agent_delete_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159593) | A user attempts to delete a cluster agent but it failed | **{check-circle}** Yes | GitLab [17.3](https://gitlab.com/gitlab-org/gitlab/-/issues/462749) | Project |
@@ -262,14 +262,14 @@ Audit event types belong to the following product categories.
 
 ### Duo workflow
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`api_request_access_with_scope`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172548) | A susbset of API requests authenticated by a token with an audited scope | **{check-circle}** Yes | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/499461) | User |
 
 ### Dynamic application security testing
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`dast_profile_create`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62604) | A dynamic application security testing profile is created | **{check-circle}** Yes | GitLab [14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/217872) | Project |
 | [`dast_profile_destroy`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62604) | A dynamic application security profile is removed | **{check-circle}** Yes | GitLab [14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/217872) | Project |
 | [`dast_profile_schedule_create`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68046) | A dynamic application security testing profile schedule is created | **{check-circle}** Yes | GitLab [14.3](https://gitlab.com/gitlab-org/gitlab/-/issues/330308) | Project |
@@ -284,8 +284,8 @@ Audit event types belong to the following product categories.
 
 ### Environment management
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`environment_protected`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108247) | A protected environment is created | **{check-circle}** Yes | GitLab [15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/216164) | Group, Project |
 | [`environment_unprotected`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108247) | A protected environment is unprotected | **{check-circle}** Yes | GitLab [15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/216164) | Group, Project |
 | [`protected_environment_approval_rule_added`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131484) | An approval rule is added to a protected environment | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/415603) | Group, Project |
@@ -298,30 +298,30 @@ Audit event types belong to the following product categories.
 
 ### Feature flags
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
-| [`feature_flag_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113453) | Triggered when a feature flag is created. | **{check-circle}** Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/374109) | Project |
-| [`feature_flag_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113453) | Triggered when a feature flag is deleted. | **{check-circle}** Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/374109) | Project |
-| [`feature_flag_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113453) | Triggered when a feature flag is updated. | **{check-circle}** Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/374109) | Project |
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`feature_flag_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113453) | A feature flag is created | **{check-circle}** Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/374109) | Project |
+| [`feature_flag_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113453) | A feature flag is deleted | **{check-circle}** Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/374109) | Project |
+| [`feature_flag_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113453) | A feature flag is updated | **{check-circle}** Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/374109) | Project |
 
 ### Fleet visibility
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`ci_runner_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173885) | Triggered when a runner is created | **{check-circle}** Yes | GitLab [17.8](https://gitlab.com/gitlab-org/gitlab/-/issues/503315) | Instance, Group, Project |
 | [`ci_runner_usage_export`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139578) | A runner usage report is generated | **{check-circle}** Yes | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/426560) | Instance |
-| [`ci_runners_bulk_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173886) | Triggered when runners are deleted in bulk | **{check-circle}** Yes | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/503315) | User |
+| [`ci_runners_bulk_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173886) | Runners are deleted in bulk | **{check-circle}** Yes | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/503315) | User |
 
 ### Fuzz testing
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`coverage_fuzzing_corpus_create`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71992) | A corpus action is added | **{check-circle}** Yes | GitLab [14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/341485) | Project |
 
 ### Groups and projects
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`allow_mfa_for_subgroups_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting for Subgroups can set up their own two-factor authentication rules updated | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
 | [`allow_runner_registration_token_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164973) | Setting Allow members of projects and groups to create runners with runner registration tokens is updated | **{check-circle}** Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group, Project |
 | [`allowed_email_domain_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166105) | Group setting allowed email domain entry is updated | **{check-circle}** Yes | GitLab [17.5](https://gitlab.com/gitlab-org/gitlab/-/issues/486532) | Group |
@@ -408,23 +408,23 @@ Audit event types belong to the following product categories.
 
 ### Importers
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
-| [`group_export_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/TODO) | Triggered when a group file export is created | **{check-circle}** Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/294168) | Group |
-| [`project_export_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/TODO) | Triggered when a project file export is created | **{check-circle}** Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/294168) | Project |
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`group_export_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/TODO) | A group file export is created | **{check-circle}** Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/294168) | Group |
+| [`project_export_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/TODO) | A project file export is created | **{check-circle}** Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/294168) | Project |
 
 ### Incident management
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`incident_closed_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | An incident is closed using a project access token | **{check-circle}** Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 | [`incident_created_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | An incident is created using a project access token | **{check-circle}** Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 | [`incident_reopened_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | An incident is reopened using a project access token | **{check-circle}** Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 
 ### MLOps
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`project_feature_model_experiments_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121027) | A project's model experiments access level is updated | **{check-circle}** Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/412384) | Project |
 | [`ml_model_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165011) | ML model is created | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/463215) | Project |
 | [`ml_model_destroyed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165011) | ML model destroyed | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/463215) | Project |
@@ -434,22 +434,22 @@ Audit event types belong to the following product categories.
 
 ### Not categorized
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`experiment_features_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) | Enabling experiment AI features setting is toggled | **{check-circle}** Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/404856/) | Group |
 
 ### Permissions
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`member_role_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137087) | A custom role is created | **{check-circle}** Yes | GitLab [16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/388934) | Group, Instance |
 | [`member_role_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141630) | A custom role is deleted | **{check-circle}** Yes | GitLab [16.9](https://gitlab.com/gitlab-org/gitlab/-/issues/437672) | Group, Instance |
 | [`member_role_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141630) | A custom role is updated | **{check-circle}** Yes | GitLab [16.9](https://gitlab.com/gitlab-org/gitlab/-/issues/437672) | Group, Instance |
 
 ### Portfolio management
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`delete_epic`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96773) | An epic is successfully deleted | **{dotted-circle}** No | GitLab [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/370487) | Group |
 | [`epic_closed_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | An epic is closed by a group access token | **{check-circle}** Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Group |
 | [`epic_created_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | An epic is created by a group access token | **{check-circle}** Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Group |
@@ -457,14 +457,14 @@ Audit event types belong to the following product categories.
 
 ### Product analytics data management
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`product_analytics_settings_update`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154101) | Product analytics settings are changed | **{check-circle}** Yes | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/463318) | Project |
 
 ### Project
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`project_access_token_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | A project access token is created | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Project |
 | [`project_access_token_creation_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | Creating a project access token fails | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Project |
 | [`project_access_token_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | A project access token is deleted | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Project |
@@ -472,27 +472,27 @@ Audit event types belong to the following product categories.
 
 ### Quality management
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`test_case_closed_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | A test case is closed using a project access token | **{check-circle}** Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 | [`test_case_created_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | A test case is created using a project access token | **{check-circle}** Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 | [`test_case_reopened_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | A test case is reopened using a project access token | **{check-circle}** Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 
 ### Runner
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
-| [`ci_runner_assigned_to_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81508) | Triggered when a runner is assigned to a project | **{check-circle}** Yes | GitLab [14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/349542) | Project |
-| [`ci_runner_registered`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77109) | Triggered when an instance, group or project runner is registered | **{check-circle}** Yes | GitLab [14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/359958) | Instance, Group, Project |
-| [`ci_runner_token_reset`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85535) | Triggered when a runner's token is reset | **{check-circle}** Yes | GitLab [15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/355637) | Instance, Group, Project |
-| [`ci_runner_unassigned_from_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81540) | Triggered when a runner is unassigned from a project | **{check-circle}** Yes | GitLab [14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/349542) | Project |
-| [`ci_runner_unregistered`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79754) | Triggered when an instance, group or project runner is unregistered | **{check-circle}** Yes | GitLab [14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/349540) | Instance, Group, Project |
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`ci_runner_assigned_to_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81508) | A runner is assigned to a project | **{check-circle}** Yes | GitLab [14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/349542) | Project |
+| [`ci_runner_registered`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77109) | An instance, group, or project runner is registered | **{check-circle}** Yes | GitLab [14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/359958) | Instance, Group, Project |
+| [`ci_runner_token_reset`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85535) | A runner's token is reset | **{check-circle}** Yes | GitLab [15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/355637) | Instance, Group, Project |
+| [`ci_runner_unassigned_from_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81540) | A runner is unassigned from a project | **{check-circle}** Yes | GitLab [14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/349542) | Project |
+| [`ci_runner_unregistered`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79754) | An instance, group, or project runner is unregistered | **{check-circle}** Yes | GitLab [14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/349540) | Instance, Group, Project |
 | [`set_runner_associated_projects`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97666) | Associated projects are successfully assigned to a CI/CD runner | **{check-circle}** Yes | GitLab [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/359958) | Project |
 
 ### Secret detection
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`group_secret_push_protection_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174412) | Secret push protection is enabled or disabled for a group and its child groups and projects, except those projects specified as excluded | **{check-circle}** Yes | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/502829) | Group |
 | [`project_security_exclusion_applied`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166511) | A project security exclusion is applied in one of the security scanners | **{check-circle}** Yes | GitLab [17.6](https://gitlab.com/gitlab-org/gitlab/-/issues/492465) | Project |
 | [`project_security_exclusion_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166511) | A project security exclusion is created | **{check-circle}** Yes | GitLab [17.5](https://gitlab.com/gitlab-org/gitlab/-/issues/492464) | Project |
@@ -502,20 +502,20 @@ Audit event types belong to the following product categories.
 
 ### Secrets management
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`user_authenticated_using_job_token`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164546) | A user is authenticated using job token | **{dotted-circle}** No | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/481325) | Project |
 
 ### Security policy management
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`policy_project_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102154) | The security policy project is updated for a project | **{check-circle}** Yes | GitLab [15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) | Group, Project |
 
 ### Self-hosted models
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`self_hosted_model_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165303) | A new self-hosted model configuration was added | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/477999) | Instance |
 | [`self_hosted_model_destroyed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165321) | A new self-hosted model configuration was destroyed | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/477999) | Instance |
 | [`self_hosted_model_feature_changed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165489) | A self-hosted model feature had its configuration changed | **{check-circle}** Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/463215) | Instance |
@@ -524,8 +524,8 @@ Audit event types belong to the following product categories.
 
 ### Source code management
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`approval_rule_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89939) | A merge request approval rule is created | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363092) | Project |
 | [`approval_rule_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82297) | A merge request approval rule is deleted | **{check-circle}** Yes | GitLab [14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/329514) | Project |
 | [`group_push_rules_author_email_regex_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105791) | A group's push rules settings is changed for author email regex | **{check-circle}** Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369343) | Group |
@@ -551,14 +551,14 @@ Audit event types belong to the following product categories.
 | [`protected_branch_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107530) | The setting for protected branches is updated | **{check-circle}** Yes | GitLab [15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/369318) | Project |
 | [`repository_git_operation`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76719) | Authenticated users push, pull, or clone a project using SSH, HTTP(S), or the UI | **{dotted-circle}** No | GitLab [14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/373950) | Project |
 | [`require_reauthentication_to_approve_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150710) | The setting for requiring reauthentication for merge requqest approvals is updated | **{check-circle}** Yes | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/431346) | Group, Project |
-| [`manually_trigger_housekeeping`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112095) | Triggered when manually triggering housekeeping via API or admin UI | **{check-circle}** Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/390761) | Project |
-| [`project_blobs_removal`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152522) | Triggered when removing blobs via the GraphQL API or project settings UI | **{check-circle}** Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) | Project |
-| [`project_text_replacement`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152522) | Triggered when replacing text via the GraphQL API or project settings UI | **{check-circle}** Yes | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) | Project |
+| [`manually_trigger_housekeeping`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112095) | Manually triggering housekeeping via API or admin UI | **{check-circle}** Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/390761) | Project |
+| [`project_blobs_removal`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152522) | Removing blobs by using the GraphQL API or project settings UI | **{check-circle}** Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) | Project |
+| [`project_text_replacement`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152522) | Replacing text by using the GraphQL API or project settings UI | **{check-circle}** Yes | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) | Project |
 
 ### System access
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`application_setting_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124639) | An application setting is updated | **{check-circle}** Yes | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/282428) | Instance |
 | [`group_access_token_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | A group access token is created | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Group |
 | [`group_access_token_creation_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92225) | Creating a group access token failed | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363087) | Group |
@@ -576,8 +576,8 @@ Audit event types belong to the following product categories.
 
 ### Team planning
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`comment_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120927) | A comment is added to an issue or a merge request when using a project access token | **{dotted-circle}** No | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Project |
 | [`delete_issue`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96773) | An issue is successfully deleted | **{dotted-circle}** No | GitLab [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/370487) | Project |
 | [`delete_work_item`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96773) | A work item is successfully deleted | **{dotted-circle}** No | GitLab [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/370487) | Project |
@@ -590,8 +590,8 @@ Audit event types belong to the following product categories.
 
 ### User management
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`authenticated_with_group_saml`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28575) | Successfully signing in with SAML authentication | **{check-circle}** Yes | GitLab [12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/35710) | Group |
 | [`ban_user`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116103) | A user is banned, unbanned, blocked, or unblocked | **{check-circle}** Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/377620) | User |
 | [`change_membership_state`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87924) | A user's membership is updated | **{check-circle}** Yes | GitLab [15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/362200) | Group |
@@ -612,8 +612,8 @@ Audit event types belong to the following product categories.
 
 ### User profile
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`email_confirmation_sent`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129261) | Users add or change an email address and it must be confirmed | **{dotted-circle}** No | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/377625) | User |
 | [`remove_ssh_key`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65615) | A SSH key is removed | **{check-circle}** Yes | GitLab [14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/220127) | User |
 | [`user_admin_status_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65168) | A user is either made an administrator or removed as an administrator | **{check-circle}** Yes | GitLab [14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323905) | User |
@@ -625,8 +625,8 @@ Audit event types belong to the following product categories.
 
 ### Verify security
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
 | [`secure_ci_job_token_group_added`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159754) | Group added to CI_JOB_TOKEN scope | **{check-circle}** Yes | GitLab [17.3](https://gitlab.com/gitlab-org/gitlab/-/issues/467840) | Project |
 | [`secure_ci_job_token_group_removed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159754) | Group removed from CI_JOB_TOKEN scope | **{check-circle}** Yes | GitLab [17.3](https://gitlab.com/gitlab-org/gitlab/-/issues/467840) | Project |
 | [`secure_ci_job_token_inbound_disabled`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115350) | CI_JOB_TOKEN permissions disabled for inbound | **{check-circle}** Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338255) | Project |
@@ -636,7 +636,7 @@ Audit event types belong to the following product categories.
 
 ### Webhooks
 
-| Name | Description | Saved to database | Introduced in | Scope |
-|:------------|:------------|:------------------|:---------|:--------------|:--------------|
-| [`webhook_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154046) | Event triggered when a webhook is created. | **{check-circle}** Yes | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/8068) | Project, Group, Instance |
-| [`webhook_destroyed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102342) | Event triggered when a webhook is destroyed. | **{check-circle}** Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/458817) | Project, Group, Instance |
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`webhook_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154046) | A webhook is created | **{check-circle}** Yes | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/8068) | Project, Group, Instance |
+| [`webhook_destroyed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102342) | A webhook is destroyed | **{check-circle}** Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/458817) | Project, Group, Instance |

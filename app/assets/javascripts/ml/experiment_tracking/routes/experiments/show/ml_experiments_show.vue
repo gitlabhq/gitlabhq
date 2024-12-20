@@ -1,21 +1,40 @@
 <script>
-import { isEmpty } from 'lodash';
-import { GlTableLite, GlLink, GlEmptyState, GlButton, GlSprintf, GlIcon } from '@gitlab/ui';
+import VueRouter from 'vue-router';
+import { GlButton, GlTab, GlTabs, GlBadge, GlSprintf, GlIcon, GlLink } from '@gitlab/ui';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
-import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
-import { FEATURE_NAME, FEATURE_FEEDBACK_ISSUE } from '~/ml/experiment_tracking/constants';
-import { queryToObject, setUrlParams, visitUrl } from '~/lib/utils/url_utility';
-import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
-import KeysetPagination from '~/ml/experiment_tracking/components/pagination.vue';
-import PerformanceGraph from '~/ml/experiment_tracking/components/performance_graph.vue';
+import CandidateList from '~/ml/experiment_tracking/components/candidate_list.vue';
+import ExperimentMetadata from '~/ml/experiment_tracking/components/experiment_metadata.vue';
+import { visitUrl } from '~/lib/utils/url_utility';
+import {
+  ROUTE_DETAILS,
+  ROUTE_CANDIDATES,
+  ROUTE_PERFORMANCE,
+} from '~/ml/experiment_tracking/constants';
 import { s__ } from '~/locale';
+import PerformanceGraph from '~/ml/experiment_tracking/components/performance_graph.vue';
 
-import { CREATE_EXPERIMENT_HELP_PATH as CREATE_CANDIDATE_HELP_PATH } from '../index/constants';
-import { LIST_KEY_CREATED_AT, BASE_SORT_FIELDS, METRIC_KEY_PREFIX } from './constants';
 import * as translations from './translations';
+
+const routes = [
+  {
+    path: '/',
+    name: ROUTE_DETAILS,
+    component: ExperimentMetadata,
+  },
+  {
+    path: '/candidates',
+    name: ROUTE_CANDIDATES,
+    component: CandidateList,
+  },
+  {
+    path: '/performance',
+    name: ROUTE_PERFORMANCE,
+    component: PerformanceGraph,
+  },
+  { path: '*', redirect: { name: ROUTE_DETAILS } },
+];
 
 export default {
   name: 'MlExperimentsShow',
@@ -23,16 +42,17 @@ export default {
     TimeAgoTooltip,
     TitleArea,
     GlSprintf,
-    GlTableLite,
-    GlLink,
-    GlIcon,
-    GlEmptyState,
     GlButton,
-    RegistrySearch,
-    KeysetPagination,
     DeleteButton,
-    PerformanceGraph,
+    GlTabs,
+    GlTab,
+    GlBadge,
+    GlIcon,
+    GlLink,
   },
+  router: new VueRouter({
+    routes,
+  }),
   provide() {
     return {
       mlflowTrackingUrl: this.mlflowTrackingUrl,
@@ -69,85 +89,7 @@ export default {
       default: '',
     },
   },
-  data() {
-    const query = queryToObject(window.location.search);
-
-    const filter = query.name ? [{ value: { data: query.name }, type: FILTERED_SEARCH_TERM }] : [];
-
-    let orderBy = query.orderBy || LIST_KEY_CREATED_AT;
-
-    if (query.orderByType === 'metric') {
-      orderBy = `${METRIC_KEY_PREFIX}${orderBy}`;
-    }
-
-    return {
-      filters: filter,
-      sorting: {
-        orderBy,
-        sort: (query.sort || 'desc').toLowerCase(),
-      },
-    };
-  },
   computed: {
-    fields() {
-      if (this.candidates.length === 0) return [];
-
-      return [
-        { key: 'nameColumn', label: this.$options.i18n.NAME_LABEL },
-        { key: 'created_at', label: this.$options.i18n.CREATED_AT_LABEL },
-        { key: 'user', label: this.$options.i18n.USER_LABEL },
-        ...this.paramNames,
-        ...this.metricNames,
-        { key: 'ci_job', label: this.$options.i18n.CI_JOB_LABEL },
-        { key: 'artifact', label: this.$options.i18n.ARTIFACTS_LABEL },
-      ];
-    },
-    displayPagination() {
-      return this.candidates.length > 0;
-    },
-    sortableFields() {
-      return [
-        ...BASE_SORT_FIELDS,
-        ...this.metricNames.map((name) => ({
-          orderBy: `${METRIC_KEY_PREFIX}${name}`,
-          label: capitalizeFirstCharacter(name),
-        })),
-      ];
-    },
-    parsedQuery() {
-      const name = this.filters
-        .map((f) => f.value.data)
-        .join(' ')
-        .trim();
-
-      const filterByQuery = name === '' ? {} : { name };
-
-      let orderByType = 'column';
-      let { orderBy } = this.sorting;
-      const { sort } = this.sorting;
-
-      if (orderBy.startsWith(METRIC_KEY_PREFIX)) {
-        orderBy = this.sorting.orderBy.slice(METRIC_KEY_PREFIX.length);
-        orderByType = 'metric';
-      }
-
-      return { ...filterByQuery, orderBy, orderByType, sort };
-    },
-    tableItems() {
-      return this.candidates.map((candidate) => ({
-        ...candidate,
-        nameColumn: {
-          name: candidate.name,
-          details_path: candidate.details,
-        },
-      }));
-    },
-    hasItems() {
-      return this.candidates.length > 0;
-    },
-    hasMetadata() {
-      return !isEmpty(this.experiment.metadata);
-    },
     deleteButtonInfo() {
       return {
         deletePath: this.experiment.path,
@@ -156,43 +98,41 @@ export default {
         modalTitle: translations.DELETE_EXPERIMENT_MODAL_TITLE,
       };
     },
-    showGraph() {
-      return this.hasItems && this.metricNames.length > 0;
+    tabIndex() {
+      return routes.findIndex(({ name }) => name === this.$route.name);
+    },
+    candidatesCount() {
+      return this.candidates.length;
     },
     createdMessage() {
       return s__('MlExperimentTracking|Experiment created %{timeAgo} by %{author}');
     },
   },
   methods: {
-    submitFilters() {
-      return visitUrl(setUrlParams({ ...this.parsedQuery }));
-    },
-    updateFilters(newValue) {
-      this.filters = newValue;
-    },
-    updateSorting(newValue) {
-      this.sorting = { ...this.sorting, ...newValue };
-    },
-    updateSortingAndEmitUpdate(newValue) {
-      this.updateSorting(newValue);
-      this.submitFilters();
-    },
     downloadCsv() {
       const currentPath = window.location.pathname;
       const currentSearch = window.location.search;
 
       visitUrl(`${currentPath}.csv${currentSearch}`);
     },
+    goTo(name) {
+      if (name !== this.$route.name) {
+        this.$router.push({ name });
+      }
+    },
   },
   i18n: {
     ...translations,
     PERFORMANCE_LABEL: s__('ExperimentTracking|Performance'),
+    tabs: {
+      metadata: s__('MlExperimentTracking|Overview'),
+      candidates: s__('MlExperimentTracking|Candidates'),
+      performance: s__('MlExperimentTracking|Performance'),
+    },
   },
-  constants: {
-    FEATURE_NAME,
-    FEATURE_FEEDBACK_ISSUE,
-    CREATE_CANDIDATE_HELP_PATH,
-  },
+  ROUTE_DETAILS,
+  ROUTE_CANDIDATES,
+  ROUTE_PERFORMANCE,
 };
 </script>
 
@@ -225,99 +165,24 @@ export default {
         <delete-button v-bind="deleteButtonInfo" />
       </template>
     </title-area>
-    <section>
-      <registry-search
-        :filters="filters"
-        :sorting="sorting"
-        :sortable-fields="sortableFields"
-        @sorting:changed="updateSortingAndEmitUpdate"
-        @filter:changed="updateFilters"
-        @filter:submit="submitFilters"
-        @filter:clear="filters = []"
-      />
+    <gl-tabs :value="tabIndex">
+      <gl-tab :title="$options.i18n.tabs.metadata" @click="goTo($options.ROUTE_DETAILS)" />
+      <gl-tab @click="goTo($options.ROUTE_CANDIDATES)">
+        <template #title>
+          {{ $options.i18n.tabs.candidates }}
+          <gl-badge class="gl-tab-counter-badge">{{ candidatesCount }}</gl-badge>
+        </template>
+      </gl-tab>
+      <gl-tab :title="$options.i18n.PERFORMANCE_LABEL" @click="goTo($options.ROUTE_PERFORMANCE)" />
+    </gl-tabs>
 
-      <div v-if="hasItems" class="gl-overflow-x-auto">
-        <gl-table-lite
-          :fields="fields"
-          :items="tableItems"
-          show-empty
-          small
-          class="ml-candidate-table !gl-mt-0"
-        >
-          <template #cell()="data">
-            <div>{{ data.value }}</div>
-          </template>
-
-          <template #cell(nameColumn)="data">
-            <gl-link :href="data.value.details_path">
-              <span v-if="data.value.name"> {{ data.value.name }}</span>
-              <span v-else class="gl-italic">{{ $options.i18n.NO_CANDIDATE_NAME }}</span>
-            </gl-link>
-          </template>
-
-          <template #cell(artifact)="data">
-            <gl-link v-if="data.value" :href="data.value" target="_blank">{{
-              $options.i18n.ARTIFACTS_LABEL
-            }}</gl-link>
-            <div v-else class="gl-italic gl-text-subtle">
-              {{ $options.i18n.NO_ARTIFACT }}
-            </div>
-          </template>
-
-          <template #cell(created_at)="data">
-            <time-ago-tooltip :time="data.value" />
-          </template>
-
-          <template #cell(user)="data">
-            <gl-link v-if="data.value" :href="data.value.path">@{{ data.value.username }}</gl-link>
-            <div v-else>{{ $options.i18n.NO_DATA_CONTENT }}</div>
-          </template>
-
-          <template #cell(ci_job)="data">
-            <gl-link v-if="data.value" :href="data.value.path" target="_blank">{{
-              data.value.name
-            }}</gl-link>
-            <div v-else class="gl-italic gl-text-subtle">
-              {{ $options.i18n.NO_JOB }}
-            </div>
-          </template>
-        </gl-table-lite>
-      </div>
-
-      <gl-empty-state
-        v-else
-        :title="$options.i18n.EMPTY_STATE_TITLE_LABEL"
-        :primary-button-text="$options.i18n.CREATE_NEW_LABEL"
-        :primary-button-link="$options.constants.CREATE_CANDIDATE_HELP_PATH"
-        :svg-path="emptyStateSvgPath"
-        :svg-height="null"
-        :description="$options.i18n.EMPTY_STATE_DESCRIPTION_LABEL"
-        class="gl-py-8"
-      />
-
-      <keyset-pagination v-if="displayPagination" v-bind="pageInfo" />
-    </section>
-
-    <section>
-      <div class="experiment-metadata">
-        <h3 :class="$options.HEADER_CLASSES">{{ $options.i18n.METADATA_LABEL }}</h3>
-
-        <table v-if="hasMetadata">
-          <tbody>
-            <tr v-for="item in experiment.metadata" :key="item.name">
-              <td class="gl-font-bold">{{ item.name }}</td>
-              <td>{{ item.value }}</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div v-else class="gl-text-subtle">{{ $options.i18n.NO_METADATA_MESSAGE }}</div>
-      </div>
-    </section>
-
-    <section v-if="showGraph">
-      <h3 :class="$options.HEADER_CLASSES">{{ $options.i18n.PERFORMANCE_LABEL }}</h3>
-      <performance-graph v-bind="candidates" :candidates="candidates" :metric-names="metricNames" />
-    </section>
+    <router-view
+      :experiment="experiment"
+      :candidates="candidates"
+      :metric-names="metricNames"
+      :param-names="paramNames"
+      :page-info="pageInfo"
+      :empty-state-svg-path="emptyStateSvgPath"
+    />
   </div>
 </template>

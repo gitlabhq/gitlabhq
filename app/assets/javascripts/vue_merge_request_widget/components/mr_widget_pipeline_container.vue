@@ -1,13 +1,7 @@
 <script>
 import { sanitize } from '~/lib/dompurify';
-import { n__, __ } from '~/locale';
-import { createAlert } from '~/alert';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_CI_PIPELINE } from '~/graphql_shared/constants';
-import { getQueryHeaders } from '~/ci/pipeline_details/graph/utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { n__ } from '~/locale';
 import MergeRequestStore from '../stores/mr_widget_store';
-import getMergePipeline from '../queries/get_merge_pipeline.query.graphql';
 import ArtifactsApp from './artifacts_list_app.vue';
 import DeploymentList from './deployment/deployment_list.vue';
 import MrWidgetContainer from './mr_widget_container.vue';
@@ -31,7 +25,6 @@ export default {
     MergeTrainPositionIndicator: () =>
       import('ee_component/vue_merge_request_widget/components/merge_train_position_indicator.vue'),
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     mr: {
       type: Object,
@@ -43,38 +36,7 @@ export default {
       default: false,
     },
   },
-  data() {
-    return {
-      mergePipeline: {},
-    };
-  },
-  apollo: {
-    mergePipeline: {
-      context() {
-        return getQueryHeaders(this.mr.pipelineEtag);
-      },
-      query: getMergePipeline,
-      skip() {
-        return !this.useMergePipelineQuery;
-      },
-      variables() {
-        return {
-          fullPath: this.mr.targetProjectFullPath,
-          id: convertToGraphQLId(TYPENAME_CI_PIPELINE, this.mr.mergePipeline.id),
-        };
-      },
-      update({ project }) {
-        return project?.pipeline || {};
-      },
-      error() {
-        createAlert({ message: __('There was a problem fetching the merge pipeline.') });
-      },
-    },
-  },
   computed: {
-    useMergePipelineQuery() {
-      return this.isPostMerge && this.glFeatures?.ciGraphqlPipelineMiniGraph;
-    },
     branch() {
       return this.isPostMerge ? this.mr.targetBranch : this.mr.sourceBranch;
     },
@@ -92,17 +54,6 @@ export default {
     },
     pipeline() {
       return this.isPostMerge ? this.mr.mergePipeline : this.mr.pipeline;
-    },
-    pipelineMiniGraphVariables() {
-      return this.isPostMerge
-        ? {
-            fullPath: this.mergePipeline?.project?.fullPath,
-            iid: this.mergePipeline?.iid,
-          }
-        : {
-            fullPath: this.mr.pipelineProjectPath || '',
-            iid: this.mr.pipelineIid || '',
-          };
     },
     showCollapsedDeployments() {
       return this.deployments.length > 3;
@@ -129,7 +80,6 @@ export default {
       :pipeline="pipeline"
       :pipeline-coverage-delta="mr.pipelineCoverageDelta"
       :pipeline-etag="mr.pipelineEtag"
-      :pipeline-mini-graph-variables="pipelineMiniGraphVariables"
       :builds-with-coverage="mr.buildsWithCoverage"
       :ci-status="ciStatus"
       :has-ci="mr.hasCI"

@@ -1,3 +1,4 @@
+---
 name: self_hosted_model_updated
 description: A self-hosted model configuration was updated
 introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/483295

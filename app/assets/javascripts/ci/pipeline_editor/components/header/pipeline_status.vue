@@ -9,7 +9,6 @@ import getPipelineEtag from '~/ci/pipeline_editor/graphql/queries/client/pipelin
 import { getQueryHeaders, toggleQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
-import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
 import PipelineEditorMiniGraph from './pipeline_editor_mini_graph.vue';
 
 const POLL_INTERVAL = 10000;
@@ -33,7 +32,6 @@ export default {
     GlLoadingIcon,
     GlSprintf,
     PipelineEditorMiniGraph,
-    PipelineMiniGraph,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -169,13 +167,7 @@ export default {
         </span>
       </div>
       <div class="gl-flex-wrap-wrap gl-flex">
-        <pipeline-mini-graph
-          v-if="isUsingPipelineMiniGraphQueries"
-          :full-path="projectFullPath"
-          :iid="pipeline.iid"
-          :pipeline-etag="pipelineEtag"
-        />
-        <pipeline-editor-mini-graph v-else :pipeline="pipeline" v-on="$listeners" />
+        <pipeline-editor-mini-graph :pipeline="pipeline" v-on="$listeners" />
         <gl-button
           class="gl-ml-3 gl-self-center"
           size="small"

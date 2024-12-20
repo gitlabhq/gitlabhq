@@ -32,7 +32,7 @@ export default {
     xAxisLabel: s__('ExperimentTracking|Candidate'),
     yAxisLabel: s__('ExperimentTracking|Metric value'),
     createNewCandidateLabel: s__('ExperimentTracking|Create candidate using MLflow'),
-    emptyStateLabel: s__('ExperimentTracking|No candidates'),
+    emptyStateLabel: s__('ExperimentTracking|No candidates with logged metrics'),
     emptyStateDescriptionLabel: s__(
       'ExperimentTracking|Performance graph will be shown when candidates with logged metrics are available',
     ),

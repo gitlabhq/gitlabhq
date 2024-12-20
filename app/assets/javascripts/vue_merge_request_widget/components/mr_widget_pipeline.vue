@@ -13,10 +13,8 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, n__ } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsing_utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import PipelineArtifacts from '~/ci/pipelines_page/components/pipelines_artifacts.vue';
-import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
@@ -57,7 +55,6 @@ export default {
     GlButton,
     LegacyPipelineMiniGraph,
     PipelineArtifacts,
-    PipelineMiniGraph,
     TimeAgoTooltip,
     TooltipOnTruncate,
     HelpPopover,
@@ -67,7 +64,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
-  mixins: [runPipelineMixin, glFeatureFlagsMixin()],
+  mixins: [runPipelineMixin],
   props: {
     pipeline: {
       type: Object,
@@ -80,10 +77,6 @@ export default {
     pipelineEtag: {
       type: String,
       required: false,
-    },
-    pipelineMiniGraphVariables: {
-      type: Object,
-      required: true,
     },
     buildsWithCoverage: {
       type: Array,
@@ -166,9 +159,6 @@ export default {
     },
     hasCommitInfo() {
       return this.pipeline.commit && Object.keys(this.pipeline.commit).length > 0;
-    },
-    isGraphQLPipelineMiniGraph() {
-      return this.glFeatures.ciGraphqlPipelineMiniGraph;
     },
     isMergeRequestPipeline() {
       return Boolean(this.pipeline.flags && this.pipeline.flags.merge_request_pipeline);
@@ -299,15 +289,8 @@ export default {
               </p>
               <div class="gl-inline-flex gl-grow gl-items-center gl-justify-between">
                 <div>
-                  <pipeline-mini-graph
-                    v-if="isGraphQLPipelineMiniGraph && pipelineMiniGraphVariables.iid"
-                    :iid="pipelineMiniGraphVariables.iid"
-                    :full-path="pipelineMiniGraphVariables.fullPath"
-                    :is-merge-train="isMergeTrain"
-                    :pipeline-etag="pipelineEtag"
-                  />
                   <legacy-pipeline-mini-graph
-                    v-else-if="pipeline.details.stages"
+                    v-if="pipeline.details.stages"
                     :downstream-pipelines="downstreamPipelines"
                     :is-merge-train="isMergeTrain"
                     :pipeline-path="pipeline.path"

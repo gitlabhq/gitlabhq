@@ -28,12 +28,12 @@ import ProjectFeatureSetting from './project_feature_setting.vue';
 import ProjectSettingRow from './project_setting_row.vue';
 import CiCatalogSettings from './ci_catalog_settings.vue';
 
-const FEATURE_ACCESS_LEVEL_ANONYMOUS = [30, s__('ProjectSettings|Everyone')];
+const FEATURE_ACCESS_LEVEL_ANONYMOUS = { value: 30, label: s__('ProjectSettings|Everyone') };
 
 const PACKAGE_REGISTRY_ACCESS_LEVEL_DEFAULT_BY_PROJECT_VISIBILITY = {
   [VISIBILITY_LEVEL_PRIVATE_INTEGER]: featureAccessLevel.PROJECT_MEMBERS,
   [VISIBILITY_LEVEL_INTERNAL_INTEGER]: featureAccessLevel.EVERYONE,
-  [VISIBILITY_LEVEL_PUBLIC_INTEGER]: FEATURE_ACCESS_LEVEL_ANONYMOUS[0],
+  [VISIBILITY_LEVEL_PUBLIC_INTEGER]: FEATURE_ACCESS_LEVEL_ANONYMOUS.value,
 };
 
 export default {
@@ -346,22 +346,18 @@ export default {
 
     return { ...defaults, ...this.currentSettings };
   },
-
   computed: {
-    featureAccessLevelOptions() {
-      const options = [featureAccessLevelMembers];
-      if (this.visibilityLevel !== VISIBILITY_LEVEL_PRIVATE_INTEGER) {
-        options.push(featureAccessLevelEveryone);
-      }
-      return options;
+    isProjectPrivate() {
+      return this.visibilityLevel === VISIBILITY_LEVEL_PRIVATE_INTEGER;
     },
-
+    featureAccessLevelOptions() {
+      return [featureAccessLevelMembers, featureAccessLevelEveryone];
+    },
     repoFeatureAccessLevelOptions() {
       return this.featureAccessLevelOptions.filter(
-        ([value]) => value <= this.repositoryAccessLevel,
+        ({ value }) => value <= this.repositoryAccessLevel,
       );
     },
-
     pagesFeatureAccessLevelOptions() {
       const options = [featureAccessLevelMembers];
 
@@ -405,7 +401,7 @@ export default {
     },
 
     repositoryHelpText() {
-      if (this.visibilityLevel === VISIBILITY_LEVEL_PRIVATE_INTEGER) {
+      if (this.isProjectPrivate) {
         return s__('ProjectSettings|View and edit files in this project.');
       }
 
@@ -426,7 +422,7 @@ export default {
       return this.packageRegistryAccessLevel > featureAccessLevel.NOT_ENABLED;
     },
     packageRegistryApiForEveryoneEnabled() {
-      return this.packageRegistryAccessLevel === FEATURE_ACCESS_LEVEL_ANONYMOUS[0];
+      return this.packageRegistryAccessLevel === FEATURE_ACCESS_LEVEL_ANONYMOUS.value;
     },
     packageRegistryApiForEveryoneEnabledShown() {
       return (
@@ -435,7 +431,7 @@ export default {
       );
     },
     monitorOperationsFeatureAccessLevelOptions() {
-      return this.featureAccessLevelOptions.filter(([value]) => value <= this.monitorAccessLevel);
+      return this.featureAccessLevelOptions.filter(({ value }) => value <= this.monitorAccessLevel);
     },
     findDiffPreviewValue: {
       get() {
@@ -451,6 +447,9 @@ export default {
         this.cascadingSettingsData &&
         Object.keys(this.cascadingSettingsData).length
       );
+    },
+    wasProjectInitiallyPrivate() {
+      return this.currentSettings.visibilityLevel === VISIBILITY_LEVEL_PRIVATE_INTEGER;
     },
   },
   watch: {
@@ -571,11 +570,10 @@ export default {
         value === VISIBILITY_LEVEL_PUBLIC_INTEGER &&
         this.packageRegistryAccessLevel === featureAccessLevel.EVERYONE
       ) {
-        // eslint-disable-next-line prefer-destructuring
-        this.packageRegistryAccessLevel = FEATURE_ACCESS_LEVEL_ANONYMOUS[0];
+        this.packageRegistryAccessLevel = FEATURE_ACCESS_LEVEL_ANONYMOUS.value;
       } else if (
         value === VISIBILITY_LEVEL_INTERNAL_INTEGER &&
-        this.packageRegistryAccessLevel === FEATURE_ACCESS_LEVEL_ANONYMOUS[0]
+        this.packageRegistryAccessLevel === FEATURE_ACCESS_LEVEL_ANONYMOUS.value
       ) {
         this.packageRegistryAccessLevel = featureAccessLevel.EVERYONE;
       }
@@ -607,7 +605,7 @@ export default {
     },
     onPackageRegistryApiForEveryoneEnabledToggle(value) {
       this.packageRegistryAccessLevel = value
-        ? FEATURE_ACCESS_LEVEL_ANONYMOUS[0]
+        ? FEATURE_ACCESS_LEVEL_ANONYMOUS.value
         : this.packageRegistryAccessLevelDefault();
     },
     packageRegistryAccessLevelDefault() {
@@ -721,6 +719,7 @@ export default {
           v-model="issuesAccessLevel"
           :label="$options.i18n.issuesLabel"
           :options="featureAccessLevelOptions"
+          :disabled-select-input="isProjectPrivate"
           name="project[project_feature_attributes][issues_access_level]"
         />
         <project-setting-row
@@ -749,6 +748,7 @@ export default {
           v-model="repositoryAccessLevel"
           :label="$options.i18n.repositoryLabel"
           :options="featureAccessLevelOptions"
+          :disabled-select-input="isProjectPrivate"
           name="project[project_feature_attributes][repository_access_level]"
         />
       </project-setting-row>
@@ -763,6 +763,7 @@ export default {
             :label="$options.i18n.mergeRequestsLabel"
             :options="repoFeatureAccessLevelOptions"
             :disabled-input="!repositoryEnabled"
+            :disabled-select-input="isProjectPrivate"
             name="project[project_feature_attributes][merge_requests_access_level]"
           />
         </project-setting-row>
@@ -776,6 +777,7 @@ export default {
             :label="$options.i18n.forksLabel"
             :options="featureAccessLevelOptions"
             :disabled-input="!repositoryEnabled"
+            :disabled-select-input="isProjectPrivate"
             name="project[project_feature_attributes][forking_access_level]"
           />
         </project-setting-row>
@@ -828,6 +830,7 @@ export default {
             :label="$options.i18n.ciCdLabel"
             :options="repoFeatureAccessLevelOptions"
             :disabled-input="!repositoryEnabled"
+            :disabled-select-input="isProjectPrivate"
             name="project[project_feature_attributes][builds_access_level]"
           />
         </project-setting-row>
@@ -857,6 +860,7 @@ export default {
         <project-feature-setting
           v-model="containerRegistryAccessLevel"
           :options="featureAccessLevelOptions"
+          :disabled-select-input="isProjectPrivate"
           :label="$options.i18n.containerRegistryLabel"
           name="project[project_feature_attributes][container_registry_access_level]"
         />
@@ -870,6 +874,7 @@ export default {
           v-model="analyticsAccessLevel"
           :label="$options.i18n.analyticsLabel"
           :options="featureAccessLevelOptions"
+          :disabled-select-input="isProjectPrivate"
           name="project[project_feature_attributes][analytics_access_level]"
         />
       </project-setting-row>
@@ -883,6 +888,7 @@ export default {
           v-model="requirementsAccessLevel"
           :label="$options.i18n.requirementsLabel"
           :options="featureAccessLevelOptions"
+          :disabled-select-input="isProjectPrivate"
           name="project[project_feature_attributes][requirements_access_level]"
         />
       </project-setting-row>
@@ -894,6 +900,7 @@ export default {
           v-model="securityAndComplianceAccessLevel"
           :label="$options.i18n.securityAndComplianceLabel"
           :options="featureAccessLevelOptions"
+          :disabled-select-input="isProjectPrivate"
           name="project[project_feature_attributes][security_and_compliance_access_level]"
         />
       </project-setting-row>
@@ -906,6 +913,7 @@ export default {
           v-model="wikiAccessLevel"
           :label="$options.i18n.wikiLabel"
           :options="featureAccessLevelOptions"
+          :disabled-select-input="isProjectPrivate"
           name="project[project_feature_attributes][wiki_access_level]"
         />
       </project-setting-row>
@@ -918,6 +926,7 @@ export default {
           v-model="snippetsAccessLevel"
           :label="$options.i18n.snippetsLabel"
           :options="featureAccessLevelOptions"
+          :disabled-select-input="isProjectPrivate"
           name="project[project_feature_attributes][snippets_access_level]"
         />
       </project-setting-row>
@@ -971,6 +980,7 @@ export default {
           v-model="modelExperimentsAccessLevel"
           :label="$options.i18n.modelExperimentsLabel"
           :options="featureAccessLevelOptions"
+          :disabled-select-input="isProjectPrivate"
           name="project[project_feature_attributes][model_experiments_access_level]"
         />
       </project-setting-row>
@@ -984,6 +994,7 @@ export default {
           v-model="modelRegistryAccessLevel"
           :label="$options.i18n.modelRegistryLabel"
           :options="featureAccessLevelOptions"
+          :disabled-select-input="isProjectPrivate"
           name="project[project_feature_attributes][model_registry_access_level]"
         />
       </project-setting-row>
@@ -1016,6 +1027,7 @@ export default {
           v-model="monitorAccessLevel"
           :label="$options.i18n.monitorLabel"
           :options="featureAccessLevelOptions"
+          :disabled-select-input="isProjectPrivate"
           name="project[project_feature_attributes][monitor_access_level]"
         />
       </project-setting-row>
@@ -1029,6 +1041,7 @@ export default {
           v-model="environmentsAccessLevel"
           :label="$options.i18n.environmentsLabel"
           :options="featureAccessLevelOptions"
+          :disabled-select-input="isProjectPrivate"
           name="project[project_feature_attributes][environments_access_level]"
         />
       </project-setting-row>
@@ -1042,6 +1055,7 @@ export default {
           v-model="featureFlagsAccessLevel"
           :label="$options.i18n.featureFlagsLabel"
           :options="featureAccessLevelOptions"
+          :disabled-select-input="isProjectPrivate"
           name="project[project_feature_attributes][feature_flags_access_level]"
         />
       </project-setting-row>
@@ -1055,6 +1069,7 @@ export default {
           v-model="infrastructureAccessLevel"
           :label="$options.i18n.infrastructureLabel"
           :options="featureAccessLevelOptions"
+          :disabled-select-input="isProjectPrivate"
           name="project[project_feature_attributes][infrastructure_access_level]"
         />
       </project-setting-row>
@@ -1068,6 +1083,7 @@ export default {
           v-model="releasesAccessLevel"
           :label="$options.i18n.releasesLabel"
           :options="featureAccessLevelOptions"
+          :disabled-select-input="isProjectPrivate"
           name="project[project_feature_attributes][releases_access_level]"
         />
       </project-setting-row>

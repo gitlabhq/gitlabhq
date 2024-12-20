@@ -1,5 +1,6 @@
 <script>
 import { GlLink, GlPopover } from '@gitlab/ui';
+import PolicyApprovalSettingsIcon from 'ee_component/vue_merge_request_widget/components/approvals/policy_approval_settings_icon.vue';
 import { toNounSeriesText } from '~/lib/utils/grammar';
 import { n__, sprintf } from '~/locale';
 import {
@@ -16,6 +17,7 @@ export default {
     GlLink,
     GlPopover,
     UserAvatarList,
+    PolicyApprovalSettingsIcon,
   },
   props: {
     multipleApprovalRulesAvailable: {
@@ -124,6 +126,9 @@ export default {
     currentUserId() {
       return gon.current_user_id;
     },
+    policiesOverridingApprovalSettings() {
+      return this.approvalState.policiesOverridingApprovalSettings;
+    },
   },
   methods: {
     onUserAvatarListExpanded() {
@@ -154,6 +159,7 @@ export default {
         @collapsed="onUserAvatarListCollapsed"
       />
     </template>
+    <policy-approval-settings-icon :policies="policiesOverridingApprovalSettings" />
     <template v-if="disableCommittersApproval && currentUserHasCommitted">
       <gl-link id="cant-approve-popover" data-testid="commit-cant-approve" class="gl-cursor-help">{{
         __("Why can't I approve?")

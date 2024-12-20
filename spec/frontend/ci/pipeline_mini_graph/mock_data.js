@@ -1,4 +1,4 @@
-export const mockDownstreamPipelinesGraphql = () => ({
+export const mockDownstreamPipelinesGraphql = {
   nodes: [
     {
       id: 'gid://gitlab/Ci::Pipeline/612',
@@ -68,7 +68,7 @@ export const mockDownstreamPipelinesGraphql = () => ({
     },
   ],
   __typename: 'PipelineConnection',
-});
+};
 
 export const pipelineStage = {
   __typename: 'CiStage',
@@ -263,7 +263,7 @@ export const mockPipelineMiniGraphQueryResponse = {
       pipeline: {
         id: 'gid://gitlab/Ci::Pipeline/315',
         path: '/a/path',
-        downstream: mockDownstreamPipelinesGraphql(),
+        downstream: mockDownstreamPipelinesGraphql,
         upstream: singlePipeline,
         stages: {
           nodes: [pipelineStage],

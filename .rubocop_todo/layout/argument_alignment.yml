@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Layout/ArgumentAlignment:
   Exclude:
-    - 'ee/app/services/ee/projects/create_from_template_service.rb'
     - 'ee/app/services/ee/search/snippet_service.rb'
     - 'ee/app/services/ee/users/update_service.rb'
     - 'ee/app/services/elastic/process_bookkeeping_service.rb'
