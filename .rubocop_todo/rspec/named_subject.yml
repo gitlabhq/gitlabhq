@@ -839,8 +839,6 @@ RSpec/NamedSubject:
     - 'ee/spec/services/audit_events/streaming/event_type_filters/create_service_spec.rb'
     - 'ee/spec/services/audit_events/streaming/event_type_filters/destroy_service_spec.rb'
     - 'ee/spec/services/audit_events/streaming/headers/update_service_spec.rb'
-    - 'ee/spec/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service_spec.rb'
-    - 'ee/spec/services/auto_merge/merge_train_service_spec.rb'
     - 'ee/spec/services/boards/epics/list_service_spec.rb'
     - 'ee/spec/services/boards/epics/move_service_spec.rb'
     - 'ee/spec/services/boards/epics/position_create_service_spec.rb'

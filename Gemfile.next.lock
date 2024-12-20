@@ -2099,6 +2099,7 @@ DEPENDENCIES
   gdk-toogle (~> 0.9, >= 0.9.5)
   gettext (~> 3.4, >= 3.4.9)
   gettext_i18n_rails (~> 1.13.0)
+  git (~> 1.8)
   gitaly (~> 17.5.0.pre.rc1)
   gitlab-active-context!
   gitlab-backup-cli!

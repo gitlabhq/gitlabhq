@@ -20,9 +20,15 @@ including:
 - Linked issues
 - Actions log
 - Filename and line number of the vulnerability (if available)
-- Vulnerability risk data
-  - Severity - [Common Vulnerability Scoring System (CVSS)](severities.md)
-  - Likelihood of exploitation - [EPSS](risk_assessment_data.md#epss)
+- Severity
+
+For vulnerabilities in the [Common Vulnerabilities and Exposures (CVE)](https://www.cve.org/)
+catalog you can also retrieve the following by using the GraphQL API:
+
+- EPSS score
+- KEV status
+
+For details on how to retrieve this additional data, see [vulnerability risk assessment data](risk_assessment_data.md).
 
 If the scanner determined the vulnerability to be a false positive, an alert message is included at
 the top of the vulnerability's page.

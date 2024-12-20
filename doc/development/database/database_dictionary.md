@@ -11,7 +11,7 @@ locate the feature categories responsible for specific database tables.
 
 ## Location
 
-Database dictionary metadata files are stored in the `gitlab` project under `db/docs/` for the `main` and `ci` databases.
+Database dictionary metadata files are stored in the `gitlab` project under `db/docs/` for the `main`, `ci`, and `sec` databases.
 For the `embedding` database, the dictionary files are stored under `ee/db/embedding/docs/`.
 For the `geo` database, the dictionary files are stored under `ee/db/geo/docs/`.
 
@@ -54,6 +54,7 @@ When adding a table, you should:
 1. Create a new file for this table in the appropriate directory:
    - `gitlab_main` table: `db/docs/`
    - `gitlab_ci` table: `db/docs/`
+   - `gitlab_sec` table: `db/docs/`
    - `gitlab_shared` table: `db/docs/`
    - `gitlab_embedding` table: `ee/db/embedding/docs/`
    - `gitlab_geo` table: `ee/db/geo/docs/`
@@ -83,6 +84,7 @@ When dropping a table, you should:
 1. Move the dictionary file for this table to the `deleted_tables` directory:
    - `gitlab_main` table: `db/docs/deleted_tables/`
    - `gitlab_ci` table: `db/docs/deleted_tables/`
+   - `gitlab_sec` table: `db/docs/deleted_tables/`
    - `gitlab_shared` table: `db/docs/deleted_tables/`
    - `gitlab_embedding` table: `ee/db/embedding/docs/deleted_tables/`
    - `gitlab_geo` table: `ee/db/geo/docs/deleted_tables/`
@@ -110,6 +112,7 @@ When adding a new view, you should:
 1. Create a new file for this view in the appropriate directory:
    - `gitlab_main` view: `db/docs/views/`
    - `gitlab_ci` view: `db/docs/views/`
+   - `gitlab_sec` view: `db/docs/views/`
    - `gitlab_shared` view: `db/docs/views/`
    - `gitlab_embedding` view: `ee/db/embedding/docs/views/`
    - `gitlab_geo` view: `ee/db/geo/docs/views/`
@@ -139,6 +142,7 @@ When dropping a view, you should:
 1. Move the dictionary file for this table to the `deleted_views` directory:
    - `gitlab_main` view: `db/docs/deleted_views/`
    - `gitlab_ci` view: `db/docs/deleted_views/`
+   - `gitlab_sec` view: `db/docs/deleted_views/`
    - `gitlab_shared` view: `db/docs/deleted_views/`
    - `gitlab_embedding` view: `ee/db/embedding/docs/deleted_views/`
    - `gitlab_geo` view: `ee/db/geo/docs/deleted_views/`

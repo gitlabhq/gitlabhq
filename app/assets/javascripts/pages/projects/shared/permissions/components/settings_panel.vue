@@ -21,6 +21,7 @@ import {
   modelExperimentsHelpPath,
   modelRegistryHelpPath,
   duoHelpPath,
+  amazonQHelpPath,
   pipelineExecutionPoliciesHelpPath,
 } from '../constants';
 import { toggleHiddenClassBySelector } from '../external';
@@ -78,8 +79,6 @@ export default {
     releasesHelpText: s__(
       'ProjectSettings|Combine git tags with release notes, release evidence, and assets to create a release.',
     ),
-    duoLabel: s__('ProjectSettings|GitLab Duo'),
-    duoHelpText: s__('ProjectSettings|Use AI-powered features in this project.'),
     securityAndComplianceLabel: s__('ProjectSettings|Security and compliance'),
     snippetsLabel: s__('ProjectSettings|Snippets'),
     wikiLabel: s__('ProjectSettings|Wiki'),
@@ -106,7 +105,6 @@ export default {
   VISIBILITY_LEVEL_PUBLIC_INTEGER,
   modelExperimentsHelpPath,
   modelRegistryHelpPath,
-  duoHelpPath,
   pipelineExecutionPoliciesHelpPath,
   components: {
     CiCatalogSettings,
@@ -193,6 +191,11 @@ export default {
       default: false,
     },
     licensedAiFeaturesAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    amazonQAvailable: {
       type: Boolean,
       required: false,
       default: false,
@@ -450,6 +453,25 @@ export default {
     },
     wasProjectInitiallyPrivate() {
       return this.currentSettings.visibilityLevel === VISIBILITY_LEVEL_PRIVATE_INTEGER;
+    },
+    duoEnabledSetting() {
+      // TODO(Q): What if both Amazon Q and Duo are available??
+      if (this.amazonQAvailable) {
+        return {
+          label: s__('ProjectSettings|Amazon Q'),
+          helpText: s__('ProjectSettings|This project can use Amazon Q.'),
+          helpPath: amazonQHelpPath,
+        };
+      }
+      if (this.licensedAiFeaturesAvailable) {
+        return {
+          label: s__('ProjectSettings|GitLab Duo'),
+          helpText: s__('ProjectSettings|Use AI-powered features in this project.'),
+          helpPath: duoHelpPath,
+        };
+      }
+
+      return null;
     },
   },
   watch: {
@@ -1088,11 +1110,11 @@ export default {
         />
       </project-setting-row>
       <project-setting-row
-        v-if="licensedAiFeaturesAvailable"
+        v-if="duoEnabledSetting"
         data-testid="duo-settings"
-        :label="$options.i18n.duoLabel"
-        :help-text="$options.i18n.duoHelpText"
-        :help-path="$options.duoHelpPath"
+        :label="duoEnabledSetting.label"
+        :help-text="duoEnabledSetting.helpText"
+        :help-path="duoEnabledSetting.helpPath"
         :locked="duoFeaturesLocked"
       >
         <template #label-icon>
@@ -1109,7 +1131,7 @@ export default {
           v-model="duoFeaturesEnabled"
           class="gl-mb-4 gl-mt-2"
           :disabled="duoFeaturesLocked"
-          :label="$options.i18n.duoLabel"
+          :label="duoEnabledSetting.label"
           label-position="hidden"
           name="project[project_setting_attributes][duo_features_enabled]"
           data-testid="duo_features_enabled_toggle"

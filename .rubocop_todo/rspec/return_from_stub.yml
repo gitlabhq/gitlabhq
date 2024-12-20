@@ -17,8 +17,6 @@ RSpec/ReturnFromStub:
     - 'ee/spec/presenters/merge_request_presenter_spec.rb'
     - 'ee/spec/requests/admin/credentials_controller_spec.rb'
     - 'ee/spec/requests/groups/protected_environments_controller_spec.rb'
-    - 'ee/spec/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service_spec.rb'
-    - 'ee/spec/services/auto_merge/merge_train_service_spec.rb'
     - 'ee/spec/services/deployments/auto_rollback_service_spec.rb'
     - 'ee/spec/services/geo/framework_repository_sync_service_spec.rb'
     - 'ee/spec/services/groups/destroy_service_spec.rb'

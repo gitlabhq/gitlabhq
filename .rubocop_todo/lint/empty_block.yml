@@ -23,8 +23,6 @@ Lint/EmptyBlock:
     - 'ee/spec/requests/api/vulnerability_exports_spec.rb'
     - 'ee/spec/requests/groups/security/credentials_controller_spec.rb'
     - 'ee/spec/requests/lfs_http_spec.rb'
-    - 'ee/spec/services/auto_merge/add_to_merge_train_when_pipeline_succeeds_service_spec.rb'
-    - 'ee/spec/services/auto_merge/merge_train_service_spec.rb'
     - 'ee/spec/services/ci/runners/register_runner_service_spec.rb'
     - 'ee/spec/services/incident_management/escalation_policies/update_service_spec.rb'
     - 'lib/api/helpers/groups_helpers.rb'

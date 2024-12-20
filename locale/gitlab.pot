@@ -44103,6 +44103,9 @@ msgstr ""
 msgid "ProjectSettings|Always show thumbs-up and thumbs-down emoji buttons on issues, merge requests, and snippets."
 msgstr ""
 
+msgid "ProjectSettings|Amazon Q"
+msgstr ""
+
 msgid "ProjectSettings|Analytics"
 msgstr ""
 
@@ -44527,6 +44530,9 @@ msgid "ProjectSettings|This feature is an experiment. When you enable this, you 
 msgstr ""
 
 msgid "ProjectSettings|This project"
+msgstr ""
+
+msgid "ProjectSettings|This project can use Amazon Q."
 msgstr ""
 
 msgid "ProjectSettings|This setting is applied on the server level and can be overridden by an admin."

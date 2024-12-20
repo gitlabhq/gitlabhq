@@ -490,6 +490,11 @@ group :development do
   gem 'ruby-lsp-rspec', "~> 0.1.10", require: false, feature_category: :tooling
 
   gem 'gdk-toogle', '~> 0.9', '>= 0.9.5', require: 'toogle', feature_category: :tooling
+
+  # Used by
+  # * `lib/tasks/gitlab/security/update_banned_ssh_keys.rake`
+  # * `lib/tasks/gitlab/db/migration_squash.rake`
+  gem 'git', '~> 1.8', feature_category: :shared
 end
 
 group :development, :test do

@@ -881,7 +881,14 @@ describe('Settings Panel', () => {
   describe('Duo', () => {
     it('shows duo toggle', () => {
       wrapper = mountComponent({});
+
       expect(findDuoSettings().exists()).toBe(true);
+      expect(findDuoSettings().props()).toEqual({
+        helpPath: '/help/user/ai_features',
+        helpText: 'Use AI-powered features in this project.',
+        label: 'GitLab Duo',
+        locked: false,
+      });
     });
 
     describe('when areDuoSettingsLocked is false', () => {
@@ -942,6 +949,21 @@ describe('Settings Panel', () => {
       });
     });
   });
+
+  describe('Amazon Q', () => {
+    it('shows Amazon Q text for duo field when Amazon Q is enabled', () => {
+      wrapper = mountComponent({ amazonQAvailable: true });
+
+      expect(findDuoSettings().exists()).toBe(true);
+      expect(findDuoSettings().props()).toEqual({
+        helpPath: '/help/user/duo_amazon_q/index.md',
+        helpText: 'This project can use Amazon Q.',
+        label: 'Amazon Q',
+        locked: false,
+      });
+    });
+  });
+
   describe('Pipeline execution policies', () => {
     it('does not show the pipeline execution policy settings by default', () => {
       wrapper = mountComponent();

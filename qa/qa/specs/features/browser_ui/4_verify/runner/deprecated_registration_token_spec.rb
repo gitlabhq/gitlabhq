@@ -2,9 +2,13 @@
 
 module QA
   RSpec.describe 'Verify', :runner, product_group: :runner do
-    describe 'Group runner registration' do
+    describe 'Group runner with deprecated registration token' do
       let(:executor) { "qa-runner-#{SecureRandom.hex(6)}" }
-      let!(:runner) { create(:group_runner, name: executor) }
+      let!(:runner) do
+        create(:deprecated_group_runner,
+          name: executor,
+          tags: [SecureRandom.hex(6), SecureRandom.hex(6)])
+      end
 
       after do
         runner.remove_via_api!
@@ -12,7 +16,7 @@ module QA
 
       it(
         'user registers a new group runner',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/388740'
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/510298'
       ) do
         Flow::Login.sign_in
 
@@ -23,6 +27,7 @@ module QA
         Page::Group::Runners::Index.perform do |group_runners|
           Support::Retrier.retry_on_exception(sleep_interval: 2, message: "Retry failed to verify online runner") do
             expect(group_runners).to have_active_runner(runner)
+            expect(group_runners).to have_runner_with_expected_tags(runner)
           end
         end
       end

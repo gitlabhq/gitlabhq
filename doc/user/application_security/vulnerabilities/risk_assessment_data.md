@@ -8,14 +8,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Use vulnerability risk data to help assess the potential impact to your environment.
 
-Each [vulnerability's details page](index.md) contains risk data, including:
+- Severity: Each vulnerability is assigned a standardized GitLab severity value.
 
-- Severity - [Common Vulnerability Scoring System (CVSS)](severities.md)
-- Likelihood of exploitation - [EPSS](#epss)
+- For vulnerabilities in the [Common Vulnerabilities and Exposures (CVE)](https://www.cve.org/) catalog, the following data can be retrieved by using a GraphQL query:
+  - Likelihood of exploitation: [Exploit Prediction Scoring System (EPSS)](https://www.first.org/epss) score.
+  - Existence of known exploits: [Known Exploited Vulnerabilities (KEV)](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) status.
 
-With multiple data points you can better prioritize remediation and mitigation actions.
-For example, a vulnerability with medium severity and a high EPSS score may require mitigation
-sooner than a vulnerability with a high severity and a low EPSS score.
+Use this data to help prioritize remediation and mitigation actions. For example, a vulnerability
+with medium severity and a high EPSS score may require mitigation sooner than a vulnerability with a
+high severity and a low EPSS score.
 
 ## EPSS
 
@@ -26,29 +27,44 @@ FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 
-[Exploit Prediction Scoring System (EPSS)](https://www.first.org/epss) provides an estimate of the likelihood a vulnerability (namely [CVE](https://www.cve.org/)) will be exploited in the next 30 days. EPSS gives each CVE a score between 0 to 1 (equivalent to 0% to 100%).
+The EPSS score provides an estimate of the likelihood a vulnerability in the CVE catalog will be
+exploited in the next 30 days. EPSS assigns each CVE a score between 0 to 1 (equivalent to 0% to
+100%).
 
-### Querying EPSS
+## KEV
 
-You can query the EPSS score of vulnerabilities by using the [GraphQL API](../../../api/graphql/index.md). Scores are attached to CVEs and are rounded to the second decimal digit.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499407) in GitLab 17.7.
 
-The `cveEnrichment` field in the GitLab API model contains the CVE ID and an EPSS score for a given CVE. It is accessible through the `Vulnerability` type.
+The KEV catalog lists vulnerabilities that are known to have been exploited. You should prioritize
+the remediation of vulnerabilities in the KEV catalog above other vulnerabilities. Attacks using
+these vulnerabilities have occurred and the exploitation method is likely known to attackers.
 
-For example, the following GraphQL query returns all vulnerabilities in a given project and
-their EPSS scores. Run the query in the
-[GraphQL explorer](../../../api/graphql/index.md#interactive-graphql-explorer) or any other GraphQL client.
+## Query risk assessment data
+
+Use the GraphQL API to query the severity, EPSS, and KEV values of vulnerabilities in a project.
+
+The `Vulnerability` type in the GraphQL API has a `cveEnrichment` field, which is populated when the
+`identifiers` field contains a CVE identifier. The `cveEnrichment` field contains the CVE ID, EPSS
+score, and KEV status for the vulnerability. EPSS scores are rounded to the second decimal digit.
+
+For example, the following GraphQL API query returns all vulnerabilities in a given project and
+their CVE ID, EPSS score, and KEV status (`isKnownExploit`). Run the query in the
+[GraphQL explorer](../../../api/graphql/index.md#interactive-graphql-explorer) or any other GraphQL
+client.
 
 ```graphql
 {
   project(fullPath: "<full/path/to/project>") {
     vulnerabilities {
       nodes {
+        severity
         identifiers {
           externalId
           externalType
         }
         cveEnrichment {
           epssScore
+          isKnownExploit
           cve
         }
       }
@@ -57,7 +73,7 @@ their EPSS scores. Run the query in the
 }
 ```
 
-Sample output:
+Example output:
 
 ```json
 {
@@ -66,29 +82,33 @@ Sample output:
       "vulnerabilities": {
         "nodes": [
           {
+            "severity": "CRITICAL",
             "identifiers": [
               {
-                "externalId": "CVE-2024-37371",
+                "externalId": "CVE-2019-3859",
                 "externalType": "cve"
               }
             ],
             "cveEnrichment": {
-              "epssScore": 0,
-              "cve": "CVE-2024-37371"
+              "epssScore": 0.2,
+              "isKnownExploit": false,
+              "cve": "CVE-2019-3859"
             }
           },
           {
+            "severity": "CRITICAL",
             "identifiers": [
               {
-                "externalId": "CVE-2024-5171",
+                "externalId": "CVE-2016-8735",
                 "externalType": "cve"
               }
             ],
             "cveEnrichment": {
-              "epssScore": 0.02,
-              "cve": "CVE-2024-5171"
+              "epssScore": 0.94,
+              "isKnownExploit": true,
+              "cve": "CVE-2016-8735"
             }
-          }
+          },
         ]
       }
     }

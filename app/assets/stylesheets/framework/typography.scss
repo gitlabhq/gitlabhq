@@ -68,6 +68,10 @@
     > *:not(summary) {
       @apply gl-ml-5;
     }
+
+    &:not(:has(summary)):not([open]) {
+      @apply gl-font-bold;
+    }
   }
 
   details[open] summary {
@@ -77,6 +81,8 @@
   // Shift the anchor link for a heading inside a details summary to the left
   // to make room for the summary toggle
   details summary {
+    @apply gl-font-bold;
+    
     h1, h2, h3, h4, h5, h6 {
       a.anchor {
         @apply -gl-ml-7;

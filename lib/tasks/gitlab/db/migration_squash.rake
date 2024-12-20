@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# This a development rake task.
+return if Rails.env.production?
+
 namespace :gitlab do
   namespace :db do
     desc "GitLab | DB | squash | squash as of a version"
