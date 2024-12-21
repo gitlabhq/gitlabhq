@@ -30,7 +30,7 @@ Response body attributes:
 | `kas.enabled`             | boolean        | Indicates whether KAS is enabled.                                                                                             |
 | `kas.externalUrl`         | string or null | URL used by the agents to communicate with KAS. It's `null` if `kas.enabled` is `false`.                                      |
 | `kas.externalK8sProxyUrl` | string or null | URL used by the Kubernetes tooling to communicate with the KAS Kubernetes API proxy. It's `null` if `kas.enabled` is `false`. |
-| `kas.version`             | string or null | Version of KAS. It's `null` if `kas.enabled` is `false`.                                                                      |
+| `kas.version`             | string or null | Version of KAS. It's `null` if `kas.enabled` is `false` or when GitLab instance failed to fetch server info from KAS.         |
 | `enterprise`              | boolean        | Indicates whether GitLab instance is Enterprise Edition.                                                                      |
 
 Example request:
