@@ -5,29 +5,29 @@ exports[`Repository table row component renders a symlink table row 1`] = `
   class="tree-item"
 >
   <td
-    class="cursor-default position-relative tree-item-file-name"
+    class="gl-cursor-default gl-flex gl-gap-2 gl-relative tree-item-file-name"
   >
     <a
-      class="str-truncated tree-item-link"
+      class="gl-inline-flex gl-min-w-0 tree-item-link"
       data-testid="file-name-link"
       href="https://test.com"
       title="test"
     >
       <file-icon-stub
-        class="gl-mr-2 gl-relative gl-text-subtle"
-        cssclasses="position-relative file-icon"
+        class="gl-mr-2 gl-relative gl-text-secondary"
+        cssclasses="gl-relative file-icon"
         filemode="120000"
         filename="test"
         size="16"
       />
-      <span
-        class="gl-relative"
-      >
-        test
-      </span>
+      <gl-truncate-stub
+        class="gl-grow gl-min-w-0 hover:gl-underline"
+        position="end"
+        text="test"
+        withtooltip="true"
+      />
     </a>
     <gl-icon-stub
-      class="gl-ml-2"
       name="lock"
       size="12"
       title="Locked by Root"
@@ -62,29 +62,29 @@ exports[`Repository table row component renders table row 1`] = `
   class="tree-item"
 >
   <td
-    class="cursor-default position-relative tree-item-file-name"
+    class="gl-cursor-default gl-flex gl-gap-2 gl-relative tree-item-file-name"
   >
     <a
-      class="str-truncated tree-item-link"
+      class="gl-inline-flex gl-min-w-0 tree-item-link"
       data-testid="file-name-link"
       href="https://test.com"
       title="test"
     >
       <file-icon-stub
-        class="gl-mr-2 gl-relative gl-text-subtle"
-        cssclasses="position-relative file-icon"
+        class="gl-mr-2 gl-relative gl-text-secondary"
+        cssclasses="gl-relative file-icon"
         filemode=""
         filename="test"
         size="16"
       />
-      <span
-        class="gl-relative"
-      >
-        test
-      </span>
+      <gl-truncate-stub
+        class="gl-grow gl-min-w-0 hover:gl-underline"
+        position="end"
+        text="test"
+        withtooltip="true"
+      />
     </a>
     <gl-icon-stub
-      class="gl-ml-2"
       name="lock"
       size="12"
       title="Locked by Root"
@@ -119,29 +119,29 @@ exports[`Repository table row component renders table row for path with special 
   class="tree-item"
 >
   <td
-    class="cursor-default position-relative tree-item-file-name"
+    class="gl-cursor-default gl-flex gl-gap-2 gl-relative tree-item-file-name"
   >
     <a
-      class="str-truncated tree-item-link"
+      class="gl-inline-flex gl-min-w-0 tree-item-link"
       data-testid="file-name-link"
       href="https://test.com"
       title="test"
     >
       <file-icon-stub
-        class="gl-mr-2 gl-relative gl-text-subtle"
-        cssclasses="position-relative file-icon"
+        class="gl-mr-2 gl-relative gl-text-secondary"
+        cssclasses="gl-relative file-icon"
         filemode=""
         filename="test"
         size="16"
       />
-      <span
-        class="gl-relative"
-      >
-        test
-      </span>
+      <gl-truncate-stub
+        class="gl-grow gl-min-w-0 hover:gl-underline"
+        position="end"
+        text="test"
+        withtooltip="true"
+      />
     </a>
     <gl-icon-stub
-      class="gl-ml-2"
       name="lock"
       size="12"
       title="Locked by Root"

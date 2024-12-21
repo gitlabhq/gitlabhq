@@ -51458,9 +51458,6 @@ msgstr ""
 msgid "SecurityOrchestration|more than %{allowed}"
 msgstr ""
 
-msgid "SecurityOrchestration|or from:"
-msgstr ""
-
 msgid "SecurityOrchestration|projects with compliance frameworks"
 msgstr ""
 
