@@ -40,6 +40,7 @@ These requirements are documented in the `Required permission` column in the fol
 | Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
 |:-----|:------------|:------------------|:---------|:--------------|:---------|
 | [`admin_compliance_framework`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144183) |  | Create, read, update, and delete compliance frameworks. Users with this permission can also assign a compliance framework label to a project, and set the default framework of a group. | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/411502) |  |  |
+| [`read_compliance_dashboard`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175066) |  | Read compliance capabilities including adherence, violations, and frameworks for groups and projects. | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/465324) |  |  |
 
 ## Continuous delivery
 

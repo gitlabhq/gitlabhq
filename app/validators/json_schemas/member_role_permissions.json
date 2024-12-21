@@ -61,6 +61,9 @@
     "read_code": {
       "type": "boolean"
     },
+    "read_compliance_dashboard": {
+      "type": "boolean"
+    },
     "read_crm_contact": {
       "type": "boolean"
     },
