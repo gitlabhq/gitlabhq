@@ -52,6 +52,7 @@ module Ci
         .transform_values { |pipelines| pipelines.map(&:id) }
         .map { |partition_id, ids| ::Ci::Pipeline.in_partition(partition_id).id_in(ids) }
         .reduce(:or)
+        .to_a
     end
 
     # The pipeline, the builds, job and pipeline artifacts all get destroyed here.

@@ -39,7 +39,7 @@ module Ci
 
     def queued_entries_count
       with_redis do |redis|
-        redis.scard(QUEUE_KEY).to_i
+        redis.llen(QUEUE_KEY).to_i
       end
     end
 

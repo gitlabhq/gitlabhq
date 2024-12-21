@@ -30,7 +30,7 @@ module Ci
 
     def remaining_work_count(*)
       Gitlab::Redis::SharedState.with do |redis|
-        redis.scard(queue_key)
+        redis.llen(queue_key)
       end
     end
 

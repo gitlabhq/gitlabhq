@@ -165,5 +165,11 @@ RSpec.describe ::Ci::DestroyPipelineService, feature_category: :continuous_integ
 
       it_behaves_like 'pipeline destruction service'
     end
+
+    context 'with an empty array' do
+      subject(:response) { service.unsafe_execute([]) }
+
+      it { is_expected.to be_success }
+    end
   end
 end
