@@ -22,7 +22,7 @@ module DependencyProxyHelpers
     manifest_url = registry.manifest_url(image, tag)
 
     stub_full_request(manifest_url, method: :head)
-      .to_return(status: status, body: body, headers: headers )
+      .to_return(status: status, body: body, headers: headers)
   end
 
   def stub_blob_download(image, blob_sha, status = 200, body = '123456')

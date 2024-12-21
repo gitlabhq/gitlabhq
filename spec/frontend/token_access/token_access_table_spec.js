@@ -1,4 +1,4 @@
-import { GlButton, GlTable, GlLoadingIcon } from '@gitlab/ui';
+import { GlTable, GlLoadingIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import TokenAccessTable from '~/token_access/components/token_access_table.vue';
 import { mockGroups, mockProjects } from './mock_data';
@@ -14,7 +14,8 @@ describe('Token access table', () => {
   };
 
   const findTable = () => wrapper.findComponent(GlTable);
-  const findDeleteButton = () => wrapper.findComponent(GlButton);
+  const findEditButton = () => wrapper.findByTestId('token-access-table-edit-button');
+  const findRemoveButton = () => wrapper.findByTestId('token-access-table-remove-button');
   const findAllTableRows = () => findTable().findAll('tbody tr');
   const findIcon = () => wrapper.findByTestId('token-access-icon');
   const findProjectAvatar = () => wrapper.findByTestId('token-access-avatar');
@@ -38,8 +39,8 @@ describe('Token access table', () => {
       expect(findAllTableRows(type)).toHaveLength(items.length);
     });
 
-    it('delete button emits event with correct item to delete', async () => {
-      await findDeleteButton().trigger('click');
+    it('remove button emits event with correct item to remove', async () => {
+      await findRemoveButton().trigger('click');
 
       expect(wrapper.emitted('removeItem')).toEqual([[items[0]]]);
     });
@@ -52,6 +53,30 @@ describe('Token access table', () => {
     it(`displays link to the ${type}`, () => {
       expect(findName(type).text()).toBe(items[0].fullPath);
       expect(findName(type).attributes('href')).toBe(items[0].webUrl);
+    });
+
+    describe('edit button', () => {
+      it('shows button', () => {
+        expect(findEditButton().props('icon')).toBe('pencil');
+      });
+
+      it('emits editItem event when button is clicked', () => {
+        findEditButton().vm.$emit('click');
+
+        expect(wrapper.emitted('editItem')[0][0]).toBe(items[0]);
+      });
+    });
+  });
+
+  describe('when item is the current project', () => {
+    beforeEach(() => createComponent({ items: [mockProjects.at(-1)] }));
+
+    it('does not show edit button', () => {
+      expect(findEditButton().exists()).toBe(false);
+    });
+
+    it('does not show remove button', () => {
+      expect(findRemoveButton().exists()).toBe(false);
     });
   });
 
@@ -85,14 +110,18 @@ describe('Token access table', () => {
   });
 
   describe('when showPolicies prop is false', () => {
-    it('does not show policies column', () => {
-      createComponent({ showPolicies: false, items: [] });
+    beforeEach(() => createComponent({ showPolicies: false, items: mockGroups }));
 
+    it('does not show policies column', () => {
       const tableFieldKeys = findTable()
         .props('fields')
         .map(({ key }) => key);
 
       expect(tableFieldKeys).not.toContain('policies');
+    });
+
+    it('does not show edit button', () => {
+      expect(findEditButton().exists()).toBe(false);
     });
   });
 });

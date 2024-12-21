@@ -1,10 +1,10 @@
-mutation inboundAddGroupOrProjectCIJobTokenScope(
+mutation editNamespaceJobTokenScope(
   $projectPath: ID!
   $targetPath: ID!
-  $defaultPermissions: Boolean
-  $jobTokenPolicies: [CiJobTokenScopePolicies!]
+  $defaultPermissions: Boolean!
+  $jobTokenPolicies: [CiJobTokenScopePolicies!]!
 ) {
-  saveNamespace: ciJobTokenScopeAddGroupOrProject(
+  saveNamespace: ciJobTokenScopeUpdatePolicies(
     input: {
       projectPath: $projectPath
       targetPath: $targetPath

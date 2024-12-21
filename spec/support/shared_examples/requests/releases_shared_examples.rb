@@ -33,8 +33,8 @@ RSpec.shared_examples 'correct release milestone order' do
 
   context 'start_date' do
     before do
-      milestone_1.update!(due_date: 1.day.from_now, start_date: 1.day.ago, title: 'z' )
-      milestone_2.update!(due_date: 1.day.from_now, start_date: milestone_2_start_date, title: 'a' )
+      milestone_1.update!(due_date: 1.day.from_now, start_date: 1.day.ago, title: 'z')
+      milestone_2.update!(due_date: 1.day.from_now, start_date: milestone_2_start_date, title: 'a')
     end
 
     context 'when both milestones have a start_date' do
@@ -52,8 +52,8 @@ RSpec.shared_examples 'correct release milestone order' do
 
   context 'title' do
     before do
-      milestone_1.update!(due_date: 1.day.from_now, start_date: Time.zone.now, title: 'a' )
-      milestone_2.update!(due_date: 1.day.from_now, start_date: Time.zone.now, title: 'z' )
+      milestone_1.update!(due_date: 1.day.from_now, start_date: Time.zone.now, title: 'a')
+      milestone_2.update!(due_date: 1.day.from_now, start_date: Time.zone.now, title: 'z')
     end
 
     it_behaves_like 'correct sort order'

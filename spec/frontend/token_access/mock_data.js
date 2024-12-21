@@ -197,9 +197,9 @@ export const inboundGroupsAndProjectsWithScopeResponse = {
   },
 };
 
-export const getAddNamespaceHandler = (error) =>
+export const getSaveNamespaceHandler = (error) =>
   jest.fn().mockResolvedValue({
-    data: { ciJobTokenScopeAddGroupOrProject: { errors: error ? [error] : [] } },
+    data: { saveNamespace: { errors: error ? [error] : [] } },
   });
 
 export const inboundRemoveNamespaceSuccess = {

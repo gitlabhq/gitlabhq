@@ -154,7 +154,7 @@ module KubernetesHelpers
                                minor: min_version.to_s
                              })
 
-    WebMock.stub_request( :get, service.api_url + '/version')
+    WebMock.stub_request(:get, service.api_url + '/version')
       .with(
         headers: {
           'Accept' => '*/*',

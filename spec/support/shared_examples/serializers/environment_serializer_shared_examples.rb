@@ -34,11 +34,11 @@ RSpec.shared_examples 'avoid N+1 on environments serialization' do
     create_environment_with_associations(project)
 
     first_page_query = ActiveRecord::QueryRecorder.new do
-      serialize(grouping: false, query: { page: 1, per_page: 1 } )
+      serialize(grouping: false, query: { page: 1, per_page: 1 })
     end
 
     second_page_query = ActiveRecord::QueryRecorder.new do
-      serialize(grouping: false, query: { page: 2, per_page: 1 } )
+      serialize(grouping: false, query: { page: 2, per_page: 1 })
     end
 
     expect(second_page_query.count).to be < first_page_query.count

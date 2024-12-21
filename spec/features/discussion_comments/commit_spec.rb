@@ -24,8 +24,13 @@ RSpec.describe 'Thread Comments Commit', :js, feature_category: :source_code_man
     expect(page).to have_css('.js-note-emoji')
   end
 
-  it 'adds award to the correct note', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/207973' do
+  it 'adds award to the correct note' do
+    wait_for_requests
+
     find("#note_#{commit_discussion_note2.id} .js-note-emoji").click
+
+    wait_for_requests
+
     first('.emoji-menu .js-emoji-btn').click
 
     wait_for_requests

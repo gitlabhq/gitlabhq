@@ -130,6 +130,7 @@ export default {
       isUpdating: false,
       groupsAndProjectsWithAccess: { groups: [], projects: [] },
       projectName: '',
+      namespaceToEdit: null,
       namespaceToRemove: null,
     };
   },
@@ -234,6 +235,10 @@ export default {
     refetchGroupsAndProjects() {
       this.$apollo.queries.groupsAndProjectsWithAccess.refetch();
     },
+    showNamespaceForm(namespace, showFormFn) {
+      this.namespaceToEdit = namespace;
+      showFormFn();
+    },
   },
 };
 </script>
@@ -286,6 +291,7 @@ export default {
         :description="$options.i18n.cardHeaderDescription"
         :toggle-text="$options.i18n.addGroupOrProject"
         class="gl-mt-5"
+        @hideForm="namespaceToEdit = null"
       >
         <template #count>
           <gl-loading-icon v-if="isAllowlistLoading" data-testid="count-loading-icon" />
@@ -308,29 +314,37 @@ export default {
         </template>
 
         <template #form="{ hideForm }">
-          <namespace-form @saved="refetchGroupsAndProjects" @close="hideForm" />
+          <namespace-form
+            :namespace="namespaceToEdit"
+            @saved="refetchGroupsAndProjects"
+            @close="hideForm"
+          />
         </template>
 
-        <token-access-table
-          :items="allowlist"
-          :loading="isAllowlistLoading"
-          :show-policies="isJobTokenPoliciesEnabled"
-          @removeItem="namespaceToRemove = $event"
-        />
-        <confirm-action-modal
-          v-if="namespaceToRemove"
-          modal-id="inbound-token-access-remove-confirm-modal"
-          :title="removeNamespaceModalTitle"
-          :action-fn="removeItem"
-          :action-text="$options.i18n.removeNamespaceModalActionText"
-          @close="namespaceToRemove = null"
-        >
-          <gl-sprintf :message="$options.i18n.removeNamespaceModalText">
-            <template #namespace>
-              <code>{{ namespaceToRemove.fullPath }}</code>
-            </template>
-          </gl-sprintf>
-        </confirm-action-modal>
+        <template #default="{ showForm }">
+          <token-access-table
+            :items="allowlist"
+            :loading="isAllowlistLoading"
+            :show-policies="isJobTokenPoliciesEnabled"
+            @editItem="showNamespaceForm($event, showForm)"
+            @removeItem="namespaceToRemove = $event"
+          />
+
+          <confirm-action-modal
+            v-if="namespaceToRemove"
+            modal-id="inbound-token-access-remove-confirm-modal"
+            :title="removeNamespaceModalTitle"
+            :action-fn="removeItem"
+            :action-text="$options.i18n.removeNamespaceModalActionText"
+            @close="namespaceToRemove = null"
+          >
+            <gl-sprintf :message="$options.i18n.removeNamespaceModalText">
+              <template #namespace>
+                <code>{{ namespaceToRemove.fullPath }}</code>
+              </template>
+            </gl-sprintf>
+          </confirm-action-modal>
+        </template>
       </crud-component>
     </template>
   </div>

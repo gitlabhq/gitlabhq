@@ -64,6 +64,15 @@ export default {
     getPolicies(policyKeys) {
       return policyKeys?.map((key) => JOB_TOKEN_POLICIES[key]);
     },
+    hasJobTokenPolicies(item) {
+      return Boolean(item.jobTokenPolicies?.length);
+    },
+    isCurrentProject(item) {
+      return item.fullPath === this.fullPath;
+    },
+    shouldShowEditButton(item) {
+      return this.showPolicies && !this.isCurrentProject(item);
+    },
   },
 };
 </script>
@@ -99,7 +108,7 @@ export default {
       <span v-if="item.defaultPermissions">
         {{ s__('CICD|Default (user membership and role)') }}</span
       >
-      <span v-else-if="item.jobTokenPolicies && !item.jobTokenPolicies.length">
+      <span v-else-if="!hasJobTokenPolicies(item)">
         {{ s__('CICD|No resources selected (minimal access only)') }}</span
       >
       <ul v-else class="gl-m-0 gl-list-none gl-p-0 gl-leading-20">
@@ -113,12 +122,22 @@ export default {
     </template>
 
     <template #cell(actions)="{ item }">
-      <gl-button
-        v-if="item.fullPath !== fullPath"
-        icon="remove"
-        :aria-label="__('Remove access')"
-        @click="$emit('removeItem', item)"
-      />
+      <div class="gl-flex gl-gap-2">
+        <gl-button
+          v-if="shouldShowEditButton(item)"
+          icon="pencil"
+          :aria-label="__('Edit')"
+          data-testid="token-access-table-edit-button"
+          @click="$emit('editItem', item)"
+        />
+        <gl-button
+          v-if="!isCurrentProject(item)"
+          icon="remove"
+          :aria-label="__('Remove access')"
+          data-testid="token-access-table-remove-button"
+          @click="$emit('removeItem', item)"
+        />
+      </div>
     </template>
   </gl-table>
 </template>
