@@ -9181,4 +9181,62 @@ RSpec.describe User, feature_category: :user_profile do
       expect(user.uploads_sharding_key).to eq({})
     end
   end
+
+  describe 'support pin methods' do
+    let_it_be(:user_with_pin) { create(:user) }
+    let_it_be(:user_no_pin) { create(:user) }
+    let(:pin_data) { { pin: '123456', expires_at: 7.days.from_now } }
+    let(:retrieve_service) { instance_double(Users::SupportPin::RetrieveService) }
+
+    before do
+      allow(Users::SupportPin::RetrieveService).to receive(:new).and_return(retrieve_service)
+    end
+
+    describe '#support_pin' do
+      it 'returns the pin when it exists' do
+        allow(retrieve_service).to receive(:execute).and_return(pin_data)
+
+        expect(user_with_pin.support_pin).to eq('123456')
+      end
+
+      it 'returns nil when no pin exists' do
+        allow(retrieve_service).to receive(:execute).and_return(nil)
+
+        expect(user_no_pin.support_pin).to be_nil
+      end
+
+      it 'returns nil when pin key is missing' do
+        allow(retrieve_service).to receive(:execute).and_return({})
+
+        expect(user_no_pin.support_pin).to be_nil
+      end
+    end
+
+    describe '#support_pin_expires_at' do
+      it 'returns the expiration time when it exists' do
+        allow(retrieve_service).to receive(:execute).and_return(pin_data)
+
+        expect(user_with_pin.support_pin_expires_at).to be_within(1.second).of(pin_data[:expires_at])
+      end
+
+      it 'returns nil when no expiration time exists' do
+        allow(retrieve_service).to receive(:execute).and_return(nil)
+
+        expect(user_no_pin.support_pin_expires_at).to be_nil
+      end
+
+      it 'returns nil when expires_at key is missing' do
+        allow(retrieve_service).to receive(:execute).and_return({})
+
+        expect(user_no_pin.support_pin_expires_at).to be_nil
+      end
+    end
+
+    it 'only calls the retrieve service once for multiple method calls' do
+      expect(retrieve_service).to receive(:execute).once.and_return(pin_data)
+
+      user_with_pin.support_pin
+      user_with_pin.support_pin_expires_at
+    end
+  end
 end

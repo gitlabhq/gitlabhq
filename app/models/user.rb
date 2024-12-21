@@ -2562,6 +2562,22 @@ class User < ApplicationRecord
     self.note = "#{new_note}\n#{self.note}"
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
+  def support_pin_data
+    strong_memoize(:support_pin_data) do
+      Users::SupportPin::RetrieveService.new(self).execute
+    end
+  end
+  # rubocop: enable CodeReuse/ServiceClass
+
+  def support_pin
+    support_pin_data&.fetch(:pin, nil)
+  end
+
+  def support_pin_expires_at
+    support_pin_data&.fetch(:expires_at, nil)
+  end
+
   protected
 
   # override, from Devise::Validatable
