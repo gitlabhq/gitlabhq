@@ -33,10 +33,11 @@ Exceptions to these size limitations should only granted for the following cases
 
 To request an exception to these limitations:
 
-1. Create a new issue using the [Database Team Tasks template](https://gitlab.com/gitlab-org/database-team/team-tasks/-/issues/new)
+1. Create a new issue using the [Database Team Tasks template](https://gitlab.com/gitlab-org/database-team/team-tasks/-/issues/new?issuable_template=schema_change_exception)
 1. Select the `schema_change_exception` template
 1. Provide detailed justification for why your case requires an exception
 1. Wait for review and approval from the Database team before proceeding
+1. Link the approval issue when disabling the cop for your migration
 
 ## Techniques to reduce table size
 
