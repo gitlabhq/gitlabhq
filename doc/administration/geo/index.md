@@ -73,6 +73,8 @@ Benefits:
 
 You can use Geo to migrate to new infrastructure. If you move your GitLab instance to a new server or data center, use Geo to migrate your GitLab data to the new instance in the background while your old instance continues to serve your users. Any changes to your active GitLab data are copied to your new instance, so there's no data loss during the cutover.
 
+You cannot use Geo to migrate a PostgreSQL database from one operating system to another. See [Upgrading operating systems for PostgreSQL](../postgresql/upgrading_os.md).
+
 Benefits:
 
 - Significantly reduce downtime during migration compared to the backup and restore migration method. Copy data to the new instance in the background without stopping the active GitLab instance before the cutover downtime window.
