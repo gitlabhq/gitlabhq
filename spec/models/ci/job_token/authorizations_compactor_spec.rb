@@ -112,4 +112,18 @@ RSpec.describe Ci::JobToken::AuthorizationsCompactor, feature_category: :secrets
       end
     end
   end
+
+  describe '#origin_traversal_ids' do
+    it 'does not cause N+1 queries when loading projects' do
+      accessed_project_control = create(:project)
+      create(:ci_job_token_authorization, origin_project: pns1.project, accessed_project: accessed_project_control,
+        last_authorized_at: 1.day.ago)
+      compactor_control = described_class.new(accessed_project_control.id)
+      control = ActiveRecord::QueryRecorder.new do
+        compactor_control.origin_project_traversal_ids
+      end
+
+      expect { compactor.origin_project_traversal_ids }.not_to exceed_query_limit(control)
+    end
+  end
 end

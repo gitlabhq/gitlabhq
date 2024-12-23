@@ -6,6 +6,8 @@ module Gitlab
       PERCENT_REGEX = /(?:^|[^%])%(?!{\w*}|[a-z%])/
       ANGLE_BRACKET_REGEX = /[<>]/
       NAMESPACE_REGEX = /^((?u)\w+|\s)*\|/
+      SPACE_REGEX = /[\p{Separator}\u0009-\u000d\u001c-\u001f\u0085\u180e]/
+      MULTIPLE_CONSECUTIVE_SPACES_REGEX = /#{SPACE_REGEX}{2,}/o
 
       attr_reader :nplurals, :entry_data
 
@@ -20,6 +22,10 @@ module Gitlab
 
       def plural_id
         @plural_id ||= Array(entry_data[:msgid_plural]).join
+      end
+
+      def msgid_without_namespace
+        @msgid_without_namespace ||= msgid.sub(NAMESPACE_REGEX, '')
       end
 
       def has_plural?
@@ -75,6 +81,32 @@ module Gitlab
 
       def contains_namespace?(string)
         string =~ NAMESPACE_REGEX
+      end
+
+      def translations_contain_leading_space?
+        all_translations.any? { |translation| contains_leading_space?(translation) }
+      end
+
+      def contains_leading_space?(translation)
+        translation.match?(/\A,?#{SPACE_REGEX}/o) && !msgid_without_namespace.match?(/\A,?#{SPACE_REGEX}/o)
+      end
+
+      def translations_contain_trailing_space?
+        all_translations.any? { |translation| contains_trailing_space?(translation) }
+      end
+
+      def contains_trailing_space?(translation)
+        translation.match?(/#{SPACE_REGEX}\Z/o) && !msgid_without_namespace.match?(/#{SPACE_REGEX}\Z/o)
+      end
+
+      def translations_contain_multiple_spaces?
+        all_translations.any? { |translation| contains_multiple_spaces?(translation) }
+      end
+
+      def contains_multiple_spaces?(translation)
+        msgid_matches = msgid_without_namespace.scan(MULTIPLE_CONSECUTIVE_SPACES_REGEX)
+        translation_matches = translation.scan(MULTIPLE_CONSECUTIVE_SPACES_REGEX)
+        msgid_matches.sort != translation_matches.sort
       end
 
       def msgid_contains_unescaped_chars?
