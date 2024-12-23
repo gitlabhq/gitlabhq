@@ -265,7 +265,7 @@ export default {
           :href="item.path || item.webUrl || ''"
           :title="item.title"
           :class="{
-            '!gl-text-gray-400': isLoading,
+            '!gl-text-disabled': isLoading,
             'js-no-trigger': !workItemDrawerEnabled,
             'js-no-trigger-title': workItemDrawerEnabled,
           }"

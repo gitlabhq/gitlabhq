@@ -4,7 +4,7 @@
 = render "head"
 .gl-mt-5
   .project-network.gl-border-1.gl-border-solid.gl-border-gray-300
-    .controls.gl-bg-gray-50.gl-p-2.gl-text-base.gl-text-gray-400.gl-border-b-1.gl-border-b-solid.gl-border-b-gray-300
+    .controls.gl-bg-gray-50.gl-p-2.gl-text-base.gl-text-subtle.gl-border-b-1.gl-border-b-solid.gl-border-b-gray-300
       = form_tag network_path, method: :get, class: 'form-inline network-form' do |f|
         = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: _("Git revision"), class: 'search-input form-control gl-form-input input-mx-250 search-sha gl-mr-2'
         = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, icon: 'search')

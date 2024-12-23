@@ -55,7 +55,7 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
   let(:service_ping_errors_url) { File.join(described_class::STAGING_BASE_URL, described_class::ERROR_PATH) }
   let(:service_ping_metadata_url) { File.join(described_class::STAGING_BASE_URL, described_class::METADATA_PATH) }
   let!(:usage_data) { { uuid: 'uuid', recorded_at: Time.current } }
-  let!(:organization) { create(:organization, :default) }
+  let!(:organization) { create(:organization) }
 
   let(:subject) { described_class.new(payload: usage_data) }
 
@@ -252,12 +252,12 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
         expect(raw_usage_data.payload.to_json).to eq(usage_data.to_json)
       end
 
-      it 'links to the default organization' do
+      it 'links to the first found organization' do
         subject.execute
 
         raw_usage_data = RawUsageData.find_by(recorded_at: usage_data[:recorded_at])
 
-        expect(raw_usage_data.organization_id).to eq(Organizations::Organization::DEFAULT_ORGANIZATION_ID)
+        expect(raw_usage_data.organization_id).to eq(organization.id)
       end
     end
 

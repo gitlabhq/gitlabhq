@@ -85,11 +85,11 @@ export default {
       />
       <div class="compare-display-container gl-mt-2 gl-flex gl-justify-between">
         <div class="gl-float-left">
-          <span class="gl-text-gray-400">{{ s__('TimeTracking|Spent') }}</span>
+          <span class="gl-text-subtle">{{ s__('TimeTracking|Spent') }}</span>
           <span class="compare-value spent">{{ timeSpentHumanReadable }}</span>
         </div>
         <div class="estimated gl-float-right">
-          <span class="gl-text-gray-400">{{ s__('TimeTrackingEstimated|Est') }}</span>
+          <span class="gl-text-subtle">{{ s__('TimeTrackingEstimated|Est') }}</span>
           <span class="compare-value">{{ timeEstimateHumanReadable }}</span>
         </div>
       </div>

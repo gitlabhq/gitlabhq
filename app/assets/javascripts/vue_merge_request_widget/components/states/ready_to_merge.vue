@@ -733,7 +733,7 @@ export default {
                   >
                     <template #list-item>
                       <strong>{{ __(`Merge now and restart train`) }}</strong>
-                      <p class="gl-mb-0 gl-text-sm gl-text-gray-400">
+                      <p class="gl-mb-0 gl-text-sm gl-text-subtle">
                         {{ __('Restart merge train pipelines with the merged changes.') }}
                       </p>
                     </template>
@@ -745,7 +745,7 @@ export default {
                   >
                     <template #list-item>
                       <strong>{{ __(`Merge now and don't restart train`) }}</strong>
-                      <p class="gl-mb-0 gl-text-sm gl-text-gray-400">
+                      <p class="gl-mb-0 gl-text-sm gl-text-subtle">
                         {{ __('Merge train pipelines continue without the merged changes.') }}
                       </p>
                     </template>

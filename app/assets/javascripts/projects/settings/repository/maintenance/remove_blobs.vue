@@ -163,7 +163,7 @@ export default {
           autofocus
         />
 
-        <p class="gl-text-gray-400">{{ $options.i18n.helpText }}</p>
+        <p class="gl-text-subtle">{{ $options.i18n.helpText }}</p>
 
         <gl-button
           data-testid="remove-blobs"

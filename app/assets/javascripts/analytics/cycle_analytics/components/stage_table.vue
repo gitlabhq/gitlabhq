@@ -236,8 +236,8 @@ export default {
                 class="ref-name gl-text-default"
                 >{{ item.branch.name }}</gl-link
               >
-              <span class="icon-branch gl-text-gray-400">
-                <gl-icon name="commit" :size="14" />
+              <span class="icon-branch">
+                <gl-icon name="commit" :size="14" variant="subtle" />
               </span>
               <gl-link class="commit-sha" :href="item.commitUrl">{{ item.shortSha }}</gl-link>
             </p>

@@ -208,7 +208,7 @@ export default {
         <help-icon id="validate-pipeline-help" class="gl-ml-1" :aria-label="$options.i18n.help" />
       </div>
       <div v-if="canResimulatePipeline">
-        <span class="gl-text-gray-400" data-testid="content-status">
+        <span class="gl-text-subtle" data-testid="content-status">
           {{ $options.i18n.contentChange }}
         </span>
         <gl-button

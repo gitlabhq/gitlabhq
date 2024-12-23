@@ -81,7 +81,7 @@ export default {
       </template>
     </gl-empty-state>
     <div v-else data-testid="devops-score-app">
-      <div class="gl-my-4 gl-text-gray-400" data-testid="devops-score-note-text">
+      <div class="gl-my-4 gl-text-subtle" data-testid="devops-score-note-text">
         {{ titleHelperText }}
       </div>
       <gl-single-stat

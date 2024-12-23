@@ -12,7 +12,7 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state, featur
     end
 
     allow(subject).to receive(:sleep)
-    create(:organization, :default)
+    create(:organization)
   end
 
   it 'does not run for SaaS when triggered from cron', :saas do
