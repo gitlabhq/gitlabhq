@@ -25,7 +25,7 @@ class LabelLink < ApplicationRecord
   scope :by_target_for_exists_query, ->(target_type, arel_join_column, label_ids = nil) do
     relation = LabelLink
       .where(target_type: target_type)
-      .where(arel_table['target_id'].eq(arel_join_column)).select("1")
+      .where(arel_table['target_id'].eq(arel_join_column)).select("label_id")
 
     relation = relation.where(label_id: label_ids) if label_ids
     relation
