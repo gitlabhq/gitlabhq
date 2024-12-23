@@ -16,6 +16,11 @@ module API
       allow_access_with_scope(Gitlab::Auth.all_available_scopes)
 
       before { authenticate! }
+      before do
+        unless ::Current.token_info[:token_type] == 'PersonalAccessToken'
+          bad_request!("This endpoint requires token type to be a personal access token")
+        end
+      end
 
       helpers do
         def load_groups

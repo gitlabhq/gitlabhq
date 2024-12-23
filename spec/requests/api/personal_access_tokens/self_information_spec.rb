@@ -89,6 +89,19 @@ RSpec.describe API::PersonalAccessTokens::SelfInformation, feature_category: :sy
       end
     end
 
+    context 'when the token is not PAT' do
+      let(:token) { create(:oauth_access_token, scopes: ['api']) }
+
+      it 'returns 400' do
+        get api(path, oauth_access_token: token)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eql(
+          "400 Bad request - This endpoint requires token type to be a personal access token"
+        )
+      end
+    end
+
     context 'when token is expired' do
       it 'returns 401' do
         token = create(:personal_access_token, expires_at: 1.day.ago, user: current_user)
