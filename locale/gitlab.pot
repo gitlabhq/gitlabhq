@@ -17544,9 +17544,6 @@ msgstr ""
 msgid "DORA4Metrics|Deploys"
 msgstr ""
 
-msgid "DORA4Metrics|Failed to generate forecast. Try again later. If the problem persists, consider %{linkStart}creating an issue%{linkEnd}."
-msgstr ""
-
 msgid "DORA4Metrics|Failed to load DORA performance scores for Group: %{fullPath}"
 msgstr ""
 
@@ -17691,9 +17688,6 @@ msgid "DORA4Metrics|The chart displays the frequency of deployments to productio
 msgstr ""
 
 msgid "DORA4Metrics|The chart displays the median time between a merge request being merged and deployed to production environment(s) that are based on the %{linkStart}deployment_tier%{linkEnd} value."
-msgstr ""
-
-msgid "DORA4Metrics|The forecast might be inaccurate. To improve it, select a wider time frame or try again when more data is available"
 msgstr ""
 
 msgid "DORA4Metrics|This is a lower-bound approximation. Your group has too many issues and MRs to calculate in real time."
