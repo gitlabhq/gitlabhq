@@ -196,8 +196,9 @@ export default {
       fixed
     >
       <template #head(actions)>
-        <span class="gl-block lg:!gl-hidden">{{ s__('Pipeline|Actions') }}</span>
-        <slot name="table-header-actions"></slot>
+        <slot name="table-header-actions">
+          <span class="gl-block gl-text-right">{{ s__('Pipeline|Actions') }}</span>
+        </slot>
       </template>
 
       <template #table-colgroup="{ fields }">

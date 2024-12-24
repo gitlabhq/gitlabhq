@@ -27,6 +27,7 @@ Vue.use(VueApollo);
 describe('Pipelines Table', () => {
   let wrapper;
   let trackingSpy;
+  let slots;
 
   const defaultProvide = {
     fullPath: '/my-project/',
@@ -62,6 +63,7 @@ describe('Pipelines Table', () => {
         ...stubs,
       },
       apolloProvider: createMockApollo(),
+      slots,
     });
   };
 
@@ -328,6 +330,19 @@ describe('Pipelines Table', () => {
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_minigraph', {
         label: TRACKING_CATEGORIES.table,
       });
+    });
+  });
+
+  describe('table-header-actions slot', () => {
+    it('should replace actions column header by the slot content', () => {
+      const content = 'Actions slot content';
+      slots = {
+        'table-header-actions': `<div>${content}</div>`,
+      };
+
+      createComponent();
+
+      expect(findActionsTh().text()).toBe(content);
     });
   });
 });
