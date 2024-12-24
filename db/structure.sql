@@ -29137,7 +29137,7 @@ CREATE INDEX idx_namespace_hostname_import_type_id_source_name_and_username ON i
 
 CREATE UNIQUE INDEX idx_namespace_settings_on_default_compliance_framework_id ON namespace_settings USING btree (default_compliance_framework_id);
 
-CREATE INDEX idx_namespace_settings_on_remove_dormant_members_review_at ON namespace_settings USING btree (last_dormant_member_review_at, remove_dormant_members) WHERE (remove_dormant_members IS TRUE);
+CREATE INDEX idx_namespace_settings_on_last_dormant_members_review_at ON namespace_settings USING btree (last_dormant_member_review_at) WHERE (remove_dormant_members = true);
 
 CREATE UNIQUE INDEX idx_o11y_log_issue_conn_on_issue_id_logs_search_metadata ON observability_logs_issues_connections USING btree (issue_id, service_name, severity_number, log_timestamp, log_fingerprint, trace_identifier);
 
