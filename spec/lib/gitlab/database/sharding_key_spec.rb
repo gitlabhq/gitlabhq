@@ -175,13 +175,15 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       SELECT c.table_name,
         CASE WHEN c.column_default IS NOT NULL THEN 'has default' ELSE NULL END,
         CASE WHEN c.is_nullable::boolean THEN 'nullable / not null constraint missing' ELSE NULL END,
-        CASE WHEN fk.name IS NULL THEN 'no foreign key' ELSE NULL END
+        CASE WHEN fk.name IS NULL THEN 'no foreign key' ELSE
+          CASE WHEN fk.is_valid THEN NULL ELSE 'foreign key exist but it is not validated' END
+        END
       FROM information_schema.columns c
       LEFT JOIN postgres_foreign_keys fk
       ON fk.constrained_table_name = c.table_name AND fk.constrained_columns = '{organization_id}' and fk.referenced_columns = '{id}'
       WHERE c.column_name = 'organization_id'
         AND (fk.referenced_table_name = 'organizations' OR fk.referenced_table_name IS NULL)
-        AND (c.column_default IS NOT NULL OR c.is_nullable::boolean OR fk.name IS NULL)
+        AND (c.column_default IS NOT NULL OR c.is_nullable::boolean OR fk.name IS NULL OR NOT fk.is_valid)
       ORDER BY c.table_name;
     SQL
 
@@ -222,7 +224,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     end
 
     expect(messages).to be_empty, "Expected all organization_id columns to be not nullable, have no default, " \
-      "and have a foreign key, but the following tables do not meet this criteria:" \
+      "and have a validated foreign key, but the following tables do not meet this criteria:" \
       "\n#{messages.join("\n")}\n\n" \
       "If this is a work in progress, please create an issue under " \
       "https://gitlab.com/groups/gitlab-org/-/epics/11670, " \

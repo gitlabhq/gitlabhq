@@ -166,7 +166,14 @@ module SidebarsHelper
               context = Sidebars::Context.new(current_user: user, container: viewed_user, **context_adds)
               Sidebars::UserProfile::Panel.new(context)
             when 'explore'
-              Sidebars::Explore::Panel.new(Sidebars::Context.new(current_user: user, container: nil, **context_adds))
+              Sidebars::Explore::Panel.new(
+                Sidebars::Context.new(
+                  current_user: user,
+                  container: nil,
+                  current_organization: Current.organization,
+                  **context_adds
+                )
+              )
             when 'search'
               context = Sidebars::Context.new(current_user: user, container: nil, **context_adds)
               Sidebars::Search::Panel.new(context)
@@ -188,7 +195,14 @@ module SidebarsHelper
       context = your_work_sidebar_context(user, **context_adds)
       Sidebars::YourWork::Panel.new(context)
     else
-      Sidebars::Explore::Panel.new(Sidebars::Context.new(current_user: nil, container: nil, **context_adds))
+      Sidebars::Explore::Panel.new(
+        Sidebars::Context.new(
+          current_user: nil,
+          container: nil,
+          current_organization: Current.organization,
+          **context_adds
+        )
+      )
     end
   end
 

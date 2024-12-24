@@ -15,7 +15,8 @@ Use the Code Owners feature to define who has expertise for specific parts of yo
 Define the owners of files and directories in a repository to:
 
 - **Require owners to approve changes.** Combine protected branches with Code Owners to require
-  experts to approve merge requests before they merge into a protected branch.
+  experts to approve merge requests before they merge into a protected branch. For more information,
+  see [Code Owners and protected branches](#code-owners-and-protected-branches).
 - **Identify owners.** Code Owner names are displayed on the files and directories they own:
 
   ![Code Owners displayed in UI](../img/codeowners_in_UI_v15_10.png)
@@ -45,6 +46,31 @@ For example:
 <figure class="video-container">
   <iframe src="https://www.youtube-nocookie.com/embed/RoyBySTUSB0" frameborder="0" allowfullscreen> </iframe>
 </figure>
+
+## Code Owners and protected branches
+
+To ensure merge request changes are reviewed and approved by Code Owners, specified in the
+[`CODEOWNERS` file](#codeowners-file), the merge request's target branch must be
+[protected](../repository/branches/protected.md)
+and [Code Owner approval](../repository/branches/protected.md#require-code-owner-approval-on-a-protected-branch) must be enabled.
+
+The following features are available when you enable Code Owner approvals on protected branches:
+
+- [Require approvals from Code Owners](../repository/branches/protected.md#require-code-owner-approval-on-a-protected-branch).
+- [Require multiple approvals from Code Owners](#require-multiple-approvals-from-code-owners).
+- [Optional approvals from Code Owners](#make-a-code-owners-section-optional).
+
+### Practical example
+
+Your project contains sensitive and important information in a `config/` directory. You can:
+
+1. Assign ownership of the directory. To do this, set up a `CODEOWNERS` file.
+1. Create a protected branch for your default branch. For example, `main`.
+1. Enable **Required approval from code owners** on the protected branch.
+1. Optional. Edit the `CODEOWNERS` file to add a rule for multiple approvals.
+
+With this configuration, merge requests that change files in the `config/`directory and target the `main` branch
+require approval from the designated Code Owners before merging.
 
 ## View Code Owners of a file or directory
 
@@ -476,3 +502,4 @@ All changes from users _without_ the **Allowed to push** permission must be rout
 - [Syntax reference](reference.md)
 - [Development guidelines](../../../development/code_owners/index.md)
 - [Troubleshooting Code Owners](troubleshooting.md)
+- [Protected branches](../repository/branches/protected.md)

@@ -9,6 +9,24 @@ RSpec.shared_examples 'issues list service' do
     described_class.new(parent, user, params).execute
   end
 
+  it 'returns issues for anonymous users' do
+    params = { board_id: board.id, id: list1.id }
+
+    expect(described_class.new(parent, nil, params).execute).to be_kind_of(ActiveRecord::Relation)
+  end
+
+  context 'with work_items_beta feature flag disabled' do
+    before do
+      stub_feature_flags(work_items_beta: false)
+    end
+
+    it 'returns issues for anonymous users' do
+      params = { board_id: board.id, id: list1.id }
+
+      expect(described_class.new(parent, nil, params).execute).to be_kind_of(ActiveRecord::Relation)
+    end
+  end
+
   describe '#metadata' do
     it 'returns issues count for list' do
       params = { board_id: board.id, id: list1.id }
