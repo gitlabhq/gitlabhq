@@ -3997,13 +3997,22 @@ msgstr ""
 msgid "AdminSelfHostedModels|Select model"
 msgstr ""
 
+msgid "AdminSelfHostedModels|Self-hosted model was not provided"
+msgstr ""
+
 msgid "AdminSelfHostedModels|Self-hosted models"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Specify the URL endpoint where your self-hosted model is accessible"
 msgstr ""
 
+msgid "AdminSelfHostedModels|Successfully connected to the self-hosted model"
+msgstr ""
+
 msgid "AdminSelfHostedModels|Successfully updated %{mainFeature} / %{title}"
+msgstr ""
+
+msgid "AdminSelfHostedModels|Test connection"
 msgstr ""
 
 msgid "AdminSelfHostedModels|The self-hosted model was successfully %{action}."
@@ -21064,6 +21073,9 @@ msgid "Dynamic Application Security Testing (DAST)"
 msgstr ""
 
 msgid "E-mail:"
+msgstr ""
+
+msgid "ERROR: %{error}"
 msgstr ""
 
 msgid "Each project can also have an issue tracker and a wiki."
@@ -52207,12 +52219,6 @@ msgstr ""
 msgid "Self hosted AI Gateway URL is set to %{url}.To change it, in a rails console run: `Ai::Setting.instance.update!(ai_gateway_url: URL)`"
 msgstr ""
 
-msgid "Self-hosted model test request failed: %{error}"
-msgstr ""
-
-msgid "Self-hosted model was not provided"
-msgstr ""
-
 msgid "Send"
 msgstr ""
 
@@ -55856,9 +55862,6 @@ msgid "Test coverage: %d hit"
 msgid_plural "Test coverage: %d hits"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Test request to %{model_name} Self-hosted Model was successful"
-msgstr ""
 
 msgid "Test settings"
 msgstr ""

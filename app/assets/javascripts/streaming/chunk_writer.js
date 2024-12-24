@@ -71,8 +71,6 @@ export class ChunkWriter {
   }
 
   write(chunk) {
-    this.scheduleAccumulatorFlush.cancel();
-
     if (this.buffer) {
       this.buffer = concatUint8Arrays(this.buffer, chunk);
     } else {
@@ -85,6 +83,7 @@ export class ChunkWriter {
       return Promise.resolve();
     }
 
+    this.scheduleAccumulatorFlush.cancel();
     return this.balancedWrite();
   }
 

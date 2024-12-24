@@ -965,6 +965,9 @@ Gitlab.ee do
   Settings.cron_jobs['members_schedule_prune_deletions_worker'] ||= {}
   Settings.cron_jobs['members_schedule_prune_deletions_worker']['cron'] ||= "*/5 * * * *"
   Settings.cron_jobs['members_schedule_prune_deletions_worker']['job_class'] = 'Members::SchedulePruneDeletionsWorker'
+  Settings.cron_jobs['ai_conversation_cleanup_cron_worker'] ||= {}
+  Settings.cron_jobs['ai_conversation_cleanup_cron_worker']['cron'] ||= '30 2 * * * *'
+  Settings.cron_jobs['ai_conversation_cleanup_cron_worker']['job_class'] = 'Ai::Conversation::CleanupCronWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}
