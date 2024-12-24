@@ -1,0 +1,13 @@
+query getProjectContainerProtectionTagRules($projectPath: ID!, $first: Int) {
+  project(fullPath: $projectPath) {
+    id
+    containerProtectionTagRules(first: $first) {
+      nodes {
+        id
+        tagNamePattern
+        minimumAccessLevelForPush
+        minimumAccessLevelForDelete
+      }
+    }
+  }
+}

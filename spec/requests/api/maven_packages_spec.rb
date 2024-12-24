@@ -30,6 +30,9 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
   let(:headers_with_token) { headers.merge('Private-Token' => personal_access_token.token) }
   let(:group_deploy_token_headers) { { Gitlab::Auth::AuthFinders::DEPLOY_TOKEN_HEADER => deploy_token_for_group.token } }
 
+  let(:sha1_checksum_header) { ::API::Helpers::Packages::Maven::SHA1_CHECKSUM_HEADER }
+  let(:md5_checksum_header) { ::API::Helpers::Packages::Maven::MD5_CHECKSUM_HEADER }
+
   let(:headers_with_deploy_token) do
     headers.merge(
       Gitlab::Auth::AuthFinders::DEPLOY_TOKEN_HEADER => deploy_token.token
@@ -110,6 +113,10 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     before do
       allow_any_instance_of(::Packages::PackageFileUploader).to receive(:fog_credentials).and_return(object_storage_credentials)
       stub_package_file_object_storage(enabled: object_storage_enabled)
+
+      # this HEAD request processing will not get executed if this feature flag is on.
+      # Once we remove the feature flag, we can remove the HEAD request processing and remove this shared example too.
+      stub_feature_flags(packages_maven_remote_included_checksum: false)
     end
 
     context 'with object storage enabled' do
@@ -303,18 +310,39 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     it_behaves_like 'downloads with a job token'
   end
 
-  shared_examples 'successfully returning the file' do
+  shared_examples 'successfully returning the file' do |include_md5_checksum: true|
     it 'returns the file', :aggregate_failures do
       subject
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response.media_type).to eq('application/octet-stream')
+      expect(response.headers[sha1_checksum_header]).to be_an_instance_of(String)
+
+      if include_md5_checksum
+        expect(response.headers[md5_checksum_header]).to be_an_instance_of(String)
+      else
+        expect(response.headers[md5_checksum_header]).to be_nil
+      end
+    end
+
+    context 'with packages_maven_remote_included_checksum disabled' do
+      before do
+        stub_feature_flags(packages_maven_remote_included_checksum: false)
+      end
+
+      it 'does not return any checksum' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.headers[sha1_checksum_header]).to be_nil
+        expect(response.headers[md5_checksum_header]).to be_nil
+      end
     end
   end
 
   shared_examples 'file download in FIPS mode' do
     context 'in FIPS mode', :fips_mode do
-      it_behaves_like 'successfully returning the file'
+      it_behaves_like 'successfully returning the file', include_md5_checksum: false
 
       it 'rejects the request for an md5 file' do
         download_file(file_name: package_file.file_name + '.md5')

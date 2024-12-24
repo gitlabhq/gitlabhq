@@ -15269,6 +15269,9 @@ msgid_plural "ContainerRegistry|%{count} Image repositories"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "ContainerRegistry|%{count} of %{max}"
+msgstr ""
+
 msgid "ContainerRegistry|%{count} tag"
 msgid_plural "ContainerRegistry|%{count} tags"
 msgstr[0] ""
@@ -15484,10 +15487,19 @@ msgstr ""
 msgid "ContainerRegistry|Minimum access level for push"
 msgstr ""
 
+msgid "ContainerRegistry|Minimum access level to delete"
+msgstr ""
+
+msgid "ContainerRegistry|Minimum access level to push"
+msgstr ""
+
 msgid "ContainerRegistry|Missing or insufficient permission, delete button disabled"
 msgstr ""
 
 msgid "ContainerRegistry|Next cleanup scheduled to run on:"
+msgstr ""
+
+msgid "ContainerRegistry|No container image tags are protected."
 msgstr ""
 
 msgid "ContainerRegistry|No container repositories are protected yet."
@@ -15508,10 +15520,10 @@ msgstr ""
 msgid "ContainerRegistry|Please try different search criteria"
 msgstr ""
 
-msgid "ContainerRegistry|Protected container repositories"
+msgid "ContainerRegistry|Protected container image tags"
 msgstr ""
 
-msgid "ContainerRegistry|Protected container tags"
+msgid "ContainerRegistry|Protected container repositories"
 msgstr ""
 
 msgid "ContainerRegistry|Published %{timeInfo}"
@@ -15612,6 +15624,9 @@ msgstr ""
 msgid "ContainerRegistry|Sorry, your filter produced no results."
 msgstr ""
 
+msgid "ContainerRegistry|Tag pattern"
+msgstr ""
+
 msgid "ContainerRegistry|Tag successfully marked for deletion."
 msgstr ""
 
@@ -15687,10 +15702,10 @@ msgstr ""
 msgid "ContainerRegistry|We are having trouble connecting to the Container Registry. Please try refreshing the page. If this error persists, please review %{docLinkStart}the troubleshooting documentation%{docLinkEnd}."
 msgstr ""
 
-msgid "ContainerRegistry|When a container repository is protected, only certain user roles can push the protected container image, which helps to avoid tampering with the container image."
+msgid "ContainerRegistry|When a container image tag is protected, only certain user roles can create, update, and delete the protected tag, which helps to prevent unauthorized changes. You can add upto 5 protection rules per project."
 msgstr ""
 
-msgid "ContainerRegistry|When a container tag is protected, only certain user roles can update and delete the protected tag, which helps to prevent tampering with the tag. A maximum of 5 protection rules can be added per project."
+msgid "ContainerRegistry|When a container repository is protected, only certain user roles can push the protected container image, which helps to avoid tampering with the container image."
 msgstr ""
 
 msgid "ContainerRegistry|While the rename is in progress, new uploads to the container registry are blocked. Ongoing uploads may fail and need to be retried."

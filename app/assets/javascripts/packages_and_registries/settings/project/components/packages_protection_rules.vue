@@ -299,6 +299,7 @@ export default {
         <gl-loading-icon v-if="showTopLevelLoadingIcon" size="sm" class="gl-my-5" />
         <gl-table
           v-else-if="containsTableItems"
+          class="gl-border-t-1 gl-border-t-gray-100 gl-border-t-solid"
           :items="tableItems"
           :fields="$options.fields"
           stacked="md"

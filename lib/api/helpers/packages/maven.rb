@@ -6,6 +6,9 @@ module API
       module Maven
         extend Grape::API::Helpers
 
+        SHA1_CHECKSUM_HEADER = 'x-checksum-sha1'
+        MD5_CHECKSUM_HEADER = 'x-checksum-md5'
+
         params :path_and_file_name do
           requires :path,
             type: String,
@@ -55,11 +58,22 @@ module API
           package_file.package.touch_last_downloaded_at
           file = package_file.file
 
-          if head_request_on_aws_file?(file, supports_direct_download) && !file.file_storage?
-            return redirect(signed_head_url(file))
-          end
+          if Feature.enabled?(:packages_maven_remote_included_checksum, package_file.project)
+            extra_response_headers = { SHA1_CHECKSUM_HEADER => package_file.file_sha1 }
+            extra_response_headers[MD5_CHECKSUM_HEADER] = package_file.file_md5 unless Gitlab::FIPS.enabled?
 
-          present_carrierwave_file!(file, supports_direct_download: supports_direct_download)
+            present_carrierwave_file!(
+              file,
+              supports_direct_download: false, # we can't support direct download if we have custom response headers
+              extra_response_headers: extra_response_headers
+            )
+          else
+            if head_request_on_aws_file?(file, supports_direct_download) && !file.file_storage?
+              return redirect(signed_head_url(file))
+            end
+
+            present_carrierwave_file!(file, supports_direct_download: supports_direct_download)
+          end
         end
 
         def signed_head_url(file)

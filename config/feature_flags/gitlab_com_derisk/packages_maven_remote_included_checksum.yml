@@ -1,0 +1,9 @@
+---
+name: packages_maven_remote_included_checksum
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/507768
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175378
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/507817
+milestone: '17.8'
+group: group::package registry
+type: gitlab_com_derisk
+default_enabled: false

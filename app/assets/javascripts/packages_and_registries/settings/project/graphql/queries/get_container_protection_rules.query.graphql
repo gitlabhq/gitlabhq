@@ -1,6 +1,6 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 
-query getProjectcontainerProtectionRepositoryRules(
+query getProjectContainerProtectionRepositoryRules(
   $projectPath: ID!
   $first: Int
   $last: Int
