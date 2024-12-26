@@ -24,3 +24,4 @@ Migration/EnsureFactoryForTable:
     - 'db/migrate/20240304184128_create_ci_build_names_table.rb'
     - 'db/migrate/20240306121653_create_relation_import_tracker.rb'
     - 'db/migrate/20240404192955_create_early_access_program_tracking_events.rb'
+    - 'db/migrate/20241216070908_create_compliance_requirements_controls.rb'

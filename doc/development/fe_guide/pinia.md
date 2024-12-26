@@ -137,3 +137,57 @@ In such cases prefer migrating nested modules first:
 1. **Do not use migrated modules yet.**
 1. Once all the nested modules are migrated you can migrate the root module and replace the placeholder store with the real one.
 1. Replace Vuex store with Pinia stores in components.
+
+### Syncing with Vuex
+
+When you can't migrate your Vue components with a single MR it's recommended that you use a `syncWithVuex` plugin located in `~/pinia`.
+This plugin syncs your state from Vuex to Pinia and vice versa.
+This allows you to migrate components separately from each other and have both stores in your app during migration.
+After you've migrated all the components this plugin should be safe to remove from your code.
+
+Usage example:
+
+```javascript
+// Pinia store
+import { defineStore } from 'pinia';
+import oldVuexStore from './store'
+
+export const useMigratedStore = defineStore('migratedStore', {
+  syncWith: oldVuexStore,
+  // the state here gets sync with Vuex, any changes to migratedStore also propagate to the Vuex store
+  state() {
+    // ...
+  },
+  // ...
+});
+```
+
+```javascript
+// Register plugin
+import Vue from 'vue';
+import { PiniaVuePlugin, createPinia } from 'pinia';
+import { syncWithVuex } from '~/pinia';
+import App from './App.vue';
+
+Vue.use(PiniaVuePlugin);
+const pinia = createPinia();
+pinia.use(syncWithVuex);
+
+new Vue({ pinia, render(h) { return h(App) } });
+```
+
+```diff
+<script>
+-  import { mapState } from 'vuex';
++  import { mapState } from 'pinia';
++  import { useMigratedStore } from './pinia_store';
+
+  // Replace Vuex with Pinia per component
+  export default {
+    computed: {
+-      ...mapState(['someState']),
++      ...mapState(useMigratedStore, ['someState']),
+    },
+  };
+</script>
+```

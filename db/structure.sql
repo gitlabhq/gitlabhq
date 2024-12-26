@@ -10822,6 +10822,27 @@ CREATE TABLE compliance_requirements (
     CONSTRAINT check_f1fb6fdd81 CHECK ((char_length(name) <= 255))
 );
 
+CREATE TABLE compliance_requirements_controls (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    compliance_requirement_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    name smallint NOT NULL,
+    control_type smallint NOT NULL,
+    expression text,
+    CONSTRAINT check_110c87ed8d CHECK ((char_length(expression) <= 255))
+);
+
+CREATE SEQUENCE compliance_requirements_controls_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE compliance_requirements_controls_id_seq OWNED BY compliance_requirements_controls.id;
+
 CREATE SEQUENCE compliance_requirements_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -23721,6 +23742,8 @@ ALTER TABLE ONLY compliance_management_frameworks ALTER COLUMN id SET DEFAULT ne
 
 ALTER TABLE ONLY compliance_requirements ALTER COLUMN id SET DEFAULT nextval('compliance_requirements_id_seq'::regclass);
 
+ALTER TABLE ONLY compliance_requirements_controls ALTER COLUMN id SET DEFAULT nextval('compliance_requirements_controls_id_seq'::regclass);
+
 ALTER TABLE ONLY container_registry_protection_rules ALTER COLUMN id SET DEFAULT nextval('container_registry_protection_rules_id_seq'::regclass);
 
 ALTER TABLE ONLY container_registry_protection_tag_rules ALTER COLUMN id SET DEFAULT nextval('container_registry_protection_tag_rules_id_seq'::regclass);
@@ -25843,6 +25866,9 @@ ALTER TABLE ONLY compliance_framework_security_policies
 
 ALTER TABLE ONLY compliance_management_frameworks
     ADD CONSTRAINT compliance_management_frameworks_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY compliance_requirements_controls
+    ADD CONSTRAINT compliance_requirements_controls_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY compliance_requirements
     ADD CONSTRAINT compliance_requirements_pkey PRIMARY KEY (id);
@@ -29016,6 +29042,8 @@ CREATE INDEX p_ci_pipelines_ci_ref_id_id_idx ON ONLY p_ci_pipelines USING btree 
 CREATE INDEX idx_ci_pipelines_artifacts_locked ON ci_pipelines USING btree (ci_ref_id, id) WHERE (locked = 1);
 
 CREATE INDEX idx_ci_running_builds_on_runner_type_and_owner_xid_and_id ON ci_running_builds USING btree (runner_type, runner_owner_namespace_xid, runner_id);
+
+CREATE INDEX idx_compliance_requirements_controls_on_namespace_id ON compliance_requirements_controls USING btree (namespace_id);
 
 CREATE INDEX idx_compliance_security_policies_on_policy_configuration_id ON compliance_framework_security_policies USING btree (policy_configuration_id);
 
@@ -33889,6 +33917,8 @@ CREATE UNIQUE INDEX uniq_audit_group_event_filters_destination_id_and_event_type
 
 CREATE UNIQUE INDEX uniq_audit_instance_event_filters_destination_id_and_event_type ON audit_events_instance_streaming_event_type_filters USING btree (external_streaming_destination_id, audit_event_type);
 
+CREATE UNIQUE INDEX uniq_compliance_requirements_controls_name_requirement_id ON compliance_requirements_controls USING btree (compliance_requirement_id, name);
+
 CREATE UNIQUE INDEX uniq_google_cloud_logging_configuration_namespace_id_and_name ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, name);
 
 CREATE UNIQUE INDEX uniq_idx_audit_events_aws_configs_stream_dests ON audit_events_amazon_s3_configurations USING btree (stream_destination_id) WHERE (stream_destination_id IS NOT NULL);
@@ -37949,6 +37979,9 @@ ALTER TABLE p_ci_stages
 ALTER TABLE ONLY agent_group_authorizations
     ADD CONSTRAINT fk_fb70782616 FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY compliance_requirements_controls
+    ADD CONSTRAINT fk_fbad5ced4f FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY system_note_metadata
     ADD CONSTRAINT fk_fbd87415c9 FOREIGN KEY (description_version_id) REFERENCES description_versions(id) ON DELETE SET NULL;
 
@@ -38290,6 +38323,9 @@ ALTER TABLE ONLY lfs_file_locks
 
 ALTER TABLE ONLY project_alerting_settings
     ADD CONSTRAINT fk_rails_27a84b407d FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY compliance_requirements_controls
+    ADD CONSTRAINT fk_rails_27dc3d2491 FOREIGN KEY (compliance_requirement_id) REFERENCES compliance_requirements(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_credit_card_validations
     ADD CONSTRAINT fk_rails_27ebc03cbf FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
