@@ -22,11 +22,16 @@ module QA
         delegate :parallel_processes, to: Runtime::Env
 
         def build_execution_args(rspec_args)
-          specs = rspec_args.select { |arg| arg.include?("qa/specs/features") }
-          options = (rspec_args - specs).reject { |arg| arg == "--" }
-          # if amount of specs is less than parallel processes, use the amount of specs as count
+          paths = rspec_args.select { |arg| arg.include?("qa/specs/features") }
+          spec_files = paths.select { |arg| arg.match?(/^.*_spec.rb$/) }
+          options = (rspec_args - paths).reject { |arg| arg == "--" }
+          # if amount of explicitly passed specs is less than parallel processes, use the amount of specs as count
           # to avoid starting empty runs with no tests
-          used_processes = !specs.empty? && specs.size < parallel_processes ? specs.size : parallel_processes
+          used_processes = if !spec_files.empty? && spec_files.size < parallel_processes
+                             spec_files.size
+                           else
+                             parallel_processes
+                           end
 
           cli_args = [
             "--type", "rspec",
@@ -36,7 +41,7 @@ module QA
             "--combine-stderr"
           ]
           cli_args.push("--", *options) unless options.empty?
-          cli_args.push("--", *specs) unless specs.empty? # specific specs need to be seperated by additional "--"
+          cli_args.push("--", *paths) unless paths.empty? # specific spec paths need to be separated by additional "--"
 
           cli_args
         end

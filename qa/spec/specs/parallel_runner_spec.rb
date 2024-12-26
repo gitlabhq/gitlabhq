@@ -55,6 +55,11 @@ RSpec.describe QA::Specs::ParallelRunner do
     input_args: ["qa/specs/features/api_spec.rb"],
     received_args: ["--", "qa/specs/features/api_spec.rb"]
   }
+  it_behaves_like "parallel cli runner", "builds correct arguments with specific spec folder", {
+    processes: 2,
+    input_args: ["qa/specs/features"],
+    received_args: ["--", "qa/specs/features"]
+  }
   it_behaves_like "parallel cli runner", "builds correct arguments with specific specs and rspec options", {
     processes: 2,
     input_args: [
