@@ -15,14 +15,6 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
 
       it_behaves_like 'returning response status', :unprocessable_entity
     end
-
-    context 'when the identification feature is disabled' do
-      before do
-        stub_feature_flags(admin_agnostic_token_finder: false)
-      end
-
-      it_behaves_like 'returning response status', :not_found
-    end
   end
 
   shared_examples 'rejecting requests with invalid or missing authorization' do

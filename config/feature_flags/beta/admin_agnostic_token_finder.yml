@@ -1,9 +1,0 @@
----
-name: admin_agnostic_token_finder
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/443597
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165157
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/490572
-milestone: '17.5'
-group: group::authentication
-type: beta
-default_enabled: true
