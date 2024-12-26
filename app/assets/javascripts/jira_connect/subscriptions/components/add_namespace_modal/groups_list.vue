@@ -96,6 +96,10 @@ export default {
       this.searchValue = newSearchValue;
       this.loadGroups();
     },
+    setPage(page) {
+      this.page = page;
+      this.loadGroups();
+    },
   },
   DEFAULT_GROUPS_PER_PAGE,
 };
@@ -149,11 +153,11 @@ export default {
     <div class="gl-mt-5 gl-flex gl-justify-center">
       <gl-pagination
         v-if="showPagination"
-        v-model="page"
+        :value="page"
         class="gl-mb-0"
         :per-page="$options.DEFAULT_GROUPS_PER_PAGE"
         :total-items="totalItems"
-        @input="loadGroups"
+        @input="setPage"
       />
     </div>
   </div>

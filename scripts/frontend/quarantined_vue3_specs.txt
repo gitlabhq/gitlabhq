@@ -196,7 +196,6 @@ spec/frontend/issues/show/components/incidents/create_timeline_events_form_spec.
 spec/frontend/issues/show/components/incidents/edit_timeline_event_spec.js
 spec/frontend/issues/show/components/incidents/timeline_events_form_spec.js
 spec/frontend/issues/show/components/incidents/timeline_events_tab_spec.js
-spec/frontend/jira_connect/subscriptions/components/add_namespace_modal/groups_list_spec.js
 spec/frontend/kubernetes_dashboard/components/workload_details_item_spec.js
 spec/frontend/lib/utils/breadcrumbs_spec.js
 spec/frontend/lib/utils/confirm_via_gl_modal/confirm_action_spec.js
