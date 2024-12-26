@@ -105,7 +105,6 @@ ee/spec/frontend/users/identity_verification/components/verify_phone_verificatio
 ee/spec/frontend/vue_merge_request_widget/components/mr_widget_pipeline_container_spec.js
 ee/spec/frontend/vue_shared/components/groups_list/groups_list_item_spec.js
 ee/spec/frontend/vue_shared/components/projects_list/projects_list_item_spec.js
-ee/spec/frontend/vulnerabilities/generic_report/types/list_graphql_spec.js
 ee/spec/frontend/vulnerabilities/related_issues_spec.js
 spec/frontend/__helpers__/vue_test_utils_helper_spec.js
 spec/frontend/access_tokens/index_spec.js

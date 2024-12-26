@@ -1,0 +1,9 @@
+---
+name: go_get_handle_relative_url
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/508593
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176097
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/510100
+milestone: '17.8'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

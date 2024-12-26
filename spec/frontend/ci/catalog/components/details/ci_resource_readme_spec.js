@@ -95,7 +95,11 @@ describe('CiResourceReadme', () => {
     it('calls `renderGFM` to ensure that all gitlab-flavoured markdown is rendered on the README', async () => {
       await nextTick();
 
-      expect(renderGFM).toHaveBeenCalledWith(expect.anything());
+      expect(renderGFM).toHaveBeenCalledWith(
+        expect.objectContaining({
+          innerHTML: expect.stringContaining(versionedReadmeHtml),
+        }),
+      );
     });
 
     it('does not render an error', () => {
