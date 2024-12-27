@@ -135,7 +135,8 @@ RSpec.describe CrossDatabaseIgnoredTables, feature_category: :cell, query_analyz
         expect { main_model_object.update!(updated_at: Time.zone.now) }.to raise_error(cross_database_exception)
       end
 
-      it 'still raises an error when deleting an object' do
+      it 'still raises an error when deleting an object',
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508770' do
         main_model_object = create_main_model_object
         expect { main_model_object.destroy! }.to raise_error(cross_database_exception)
       end

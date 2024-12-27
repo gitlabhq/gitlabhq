@@ -23695,6 +23695,9 @@ msgstr ""
 msgid "Failure"
 msgstr ""
 
+msgid "False"
+msgstr ""
+
 msgid "Fast timeout"
 msgstr ""
 
@@ -59508,6 +59511,9 @@ msgid "Trigger|Trigger description"
 msgstr ""
 
 msgid "Troubleshoot failed CI/CD jobs with Root Cause Analysis."
+msgstr ""
+
+msgid "True"
 msgstr ""
 
 msgid "Trust user"

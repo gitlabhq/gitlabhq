@@ -30,7 +30,6 @@ export const useDiffsList = defineStore('diffsList', {
         const container = document.querySelector('#js-stream-container');
         const { body } = await fetch(url, { signal });
         if (previousController) previousController.abort();
-        // TODO: support aborting
         await renderHtmlStreams([toPolyfillReadable(body)], container, { signal });
       });
     },

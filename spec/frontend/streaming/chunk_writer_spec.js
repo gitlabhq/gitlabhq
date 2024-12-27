@@ -247,4 +247,13 @@ describe('ChunkWriter', () => {
     expect(write.mock.calls).toMatchObject([[text.repeat(3)]]);
     expect(cancelTimer).not.toHaveBeenCalled();
   });
+
+  it('aborts on abort signal', () => {
+    const controller = new AbortController();
+    config = { signal: controller.signal };
+    createWriter().write(createChunk('1234567890'));
+    controller.abort();
+    expect(abort).toHaveBeenCalledTimes(1);
+    expect(write).not.toHaveBeenCalled();
+  });
 });

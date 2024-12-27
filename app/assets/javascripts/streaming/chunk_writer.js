@@ -47,10 +47,20 @@ export class ChunkWriter {
   constructor(htmlStream, config) {
     this.htmlStream = htmlStream;
 
-    const { balanceRate, minChunkSize, maxChunkSize, lowFrameTime, highFrameTime, timeout } = {
+    const {
+      balanceRate,
+      minChunkSize,
+      maxChunkSize,
+      lowFrameTime,
+      highFrameTime,
+      timeout,
+      signal,
+    } = {
       ...defaultConfig,
       ...config,
     };
+
+    this.registerSignal(signal);
 
     // ensure we still render chunks over time if the size criteria is not met
     this.scheduleAccumulatorFlush = throttle(this.flushAccumulator.bind(this), timeout);
@@ -67,6 +77,18 @@ export class ChunkWriter {
       increase: () => {
         this.size = Math.round(Math.min(this.size * balanceRate, maxChunkSize));
       },
+    });
+  }
+
+  registerSignal(signal) {
+    this.cancelAbort = () => {};
+    if (!signal) return;
+    const abort = this.abort.bind(this);
+    this.cancelAbort = () => {
+      signal.removeEventListener('abort', abort);
+    };
+    signal.addEventListener('abort', abort, {
+      once: true,
     });
   }
 
@@ -133,11 +155,13 @@ export class ChunkWriter {
       this.buffer = null;
     }
     this.htmlStream.close();
+    this.cancelAbort();
   }
 
   abort() {
     this.scheduleAccumulatorFlush.cancel();
     this.buffer = null;
     this.htmlStream.abort();
+    this.cancelAbort();
   }
 }

@@ -132,7 +132,7 @@ describe('FormUrlApp', () => {
 
           expect(findAllUrlMaskItems()).toHaveLength(3);
 
-          const lastItem = findAllUrlMaskItems().at(-1);
+          const lastItem = findAllUrlMaskItems().at(2);
           expect(lastItem.props()).toMatchObject({
             itemKey: null,
             itemValue: null,
