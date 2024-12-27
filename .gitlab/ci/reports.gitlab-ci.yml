@@ -17,7 +17,7 @@ include:
     expire_in: 1 week  # GitLab-specific
   variables:
     SAST_BRAKEMAN_LEVEL: 2  # GitLab-specific
-    SAST_EXCLUDED_PATHS: "qa, spec, doc, ee/spec, config/gitlab.yml.example, tmp"  # GitLab-specific
+    SAST_EXCLUDED_PATHS: "qa, spec, doc, ee/spec, config/gitlab.yml.example, tmp, storybook"  # GitLab-specific
     SAST_EXCLUDED_ANALYZERS: bandit, flawfinder, phpcs-security-audit, pmd-apex, security-code-scan, spotbugs, eslint, nodejs-scan, sobelow
 
 semgrep-sast:
@@ -44,7 +44,7 @@ secret_detection:
   stage: lint
   needs: []
   variables:
-    DS_EXCLUDED_PATHS: "qa/qa/ee/fixtures/secure_premade_reports, spec, ee/spec, tmp"  # GitLab-specific
+    DS_EXCLUDED_PATHS: "qa/qa/ee/fixtures/secure_premade_reports, spec, ee/spec, tmp, storybook"  # GitLab-specific
     DS_EXCLUDED_ANALYZERS: "gemnasium-maven"
   artifacts:
     paths:

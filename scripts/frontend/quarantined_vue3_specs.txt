@@ -291,7 +291,6 @@ spec/frontend/super_sidebar/components/user_menu_spec.js
 spec/frontend/tags/init_delete_tag_modal_spec.js
 spec/frontend/tooltips/components/tooltips_spec.js
 spec/frontend/tooltips/index_spec.js
-spec/frontend/usage_quotas/storage/components/container_registry_usage_spec.js
 spec/frontend/vue_alerts_spec.js
 spec/frontend/vue_merge_request_widget/components/mr_widget_pipeline_spec.js
 spec/frontend/vue_merge_request_widget/components/states/merge_failed_pipeline_confirmation_dialog_spec.js

@@ -1422,6 +1422,9 @@ msgid_plural "%{strong_start}%{terraform_states_count}%{strong_end} Terraform St
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{strong_start}Read %{help_link_start}these instructions%{help_link_end} to understand the implications of enabling this setting.%{strong_end} Removed members no longer have access to this top-level group, its subgroups, and their projects."
+msgstr ""
+
 msgid "%{tabname} changed"
 msgstr ""
 
@@ -46649,9 +46652,6 @@ msgid "Removed an issue from an epic."
 msgstr ""
 
 msgid "Removed linked item %{issue_ref}."
-msgstr ""
-
-msgid "Removed members no longer have access to this top-level group, its sub-groups, and their projects."
 msgstr ""
 
 msgid "Removed parent epic %{epic_ref}."
