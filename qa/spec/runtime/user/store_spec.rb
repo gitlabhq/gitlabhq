@@ -294,7 +294,7 @@ module QA
           stub_env("GITLAB_PASSWORD", password)
           stub_env("GITLAB_QA_ACCESS_TOKEN", api_token)
 
-          allow(Runtime::Env).to receive(:running_on_live_env?).and_return(true)
+          allow(Runtime::Env).to receive(:running_on_dot_com?).and_return(true)
         end
 
         context "with personal access tokens disabled" do
@@ -375,7 +375,7 @@ module QA
         let(:user) { Resource::User.init { |usr| usr.api_client = instance_double(Runtime::API::Client) } }
 
         before do
-          allow(Runtime::Env).to receive(:running_on_live_env?).and_return(false)
+          allow(Runtime::Env).to receive(:running_on_dot_com?).and_return(false)
 
           described_class.instance_variable_set(:@admin_api_client, admin_api_client)
           described_class.instance_variable_set(:@test_user, user)
@@ -399,7 +399,7 @@ module QA
           stub_env("GITLAB_PASSWORD", password)
           stub_env("GITLAB_QA_ACCESS_TOKEN", nil)
 
-          allow(Runtime::Env).to receive(:running_on_live_env?).and_return(true)
+          allow(Runtime::Env).to receive(:running_on_dot_com?).and_return(true)
         end
 
         context "when api client has not been initialized" do
@@ -502,7 +502,7 @@ module QA
         let(:user) { Resource::User.new }
 
         before do
-          allow(Runtime::Env).to receive(:running_on_live_env?).and_return(false)
+          allow(Runtime::Env).to receive(:running_on_dot_com?).and_return(false)
           allow(Resource::User).to receive(:fabricate!).and_yield(user).and_return(user)
 
           described_class.instance_variable_set(:@admin_api_client, admin_api_client)

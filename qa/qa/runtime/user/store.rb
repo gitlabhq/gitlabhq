@@ -151,7 +151,7 @@ module QA
           #
           # @return [Boolean]
           def create_unique_test_user?
-            !Env.running_on_live_env? && !Env.personal_access_tokens_disabled? && admin_api_client
+            !Env.running_on_dot_com? && !Env.personal_access_tokens_disabled? && admin_api_client
           end
 
           # Create api client with provided token with fallback to UI creation of token
