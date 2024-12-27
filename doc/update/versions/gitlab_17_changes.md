@@ -366,6 +366,70 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
   This is due to a bug.
   [Issue 468875](https://gitlab.com/gitlab-org/gitlab/-/issues/468875) has been fixed with GitLab 17.1.2.
 
+### Long-running pipeline messages data change
+
+GitLab 17.1 is a required stop for large GitLab instances with a lot of records in the `ci_pipeline_messages` table.
+
+A data change might take many hours to complete on larger GitLab instances, at a rate of 1.5-2 million records
+processed per hour. If your instance is affected:
+
+1. Upgrade to 17.1.
+1. [Make sure all batched migrations have completed successfully](../background_migrations.md#batched-background-migrations).
+1. Upgrade to 17.2 or 17.3.
+
+To check if you are affected:
+
+1. Start a [database console](../../administration/troubleshooting/postgresql.md#start-a-database-console)
+1. Run:
+
+   ```sql
+   SELECT relname as table,n_live_tup as rows FROM pg_stat_user_tables
+   WHERE relname='ci_pipeline_messages' and n_live_tup>1500000;
+   ```
+
+1. If the query returns output with a count for `ci_pipeline_messages` then your
+   instance meets the threshold for this required stop. Instances reporting `0 rows` can skip
+   the 17.1 upgrade stop.
+
+GitLab 17.1 introduced a [batched background migration](../background_migrations.md#batched-background-migrations)
+that ensures every record in the `ci_pipeline_messages` table has the [correct partitioning key](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153391).
+Partitioning CI tables is expected to provide performance improvements for instances with large amounts of CI data.
+
+The upgrade to GitLab 17.2 runs a `Finalize` migration which ensures the 17.1 background migration is completed,
+executing the 17.1 change synchronously during the upgrade if required.
+
+GitLab 17.2 also [adds foreign key database constraints](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158065)
+which require the partitioning key to be populated. The constraints [are validated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159571)
+as part of the upgrade to GitLab 17.3.
+
+If 17.1 is omitted from the upgrade path (or the 17.1 migration is not complete):
+
+- There is extended downtime for affected instances while the upgrade completes.
+- Fixing forward is safe.
+- To make the environment available sooner, a Rake task can be used to run the migration:
+
+  ```shell
+  sudo gitlab-rake gitlab:background_migrations:finalize[BackfillPartitionIdCiPipelineMessage,ci_pipeline_messages,id,'[]']
+  ```
+
+Until all database migrations are complete, GitLab is likely to be unusable, generating `500` errors, caused by incompatibility between the partly upgraded database schema and the running Sidekiq and Puma processes.
+
+The Linux package (Omnibus) or Docker upgrade is likely to fail
+with a time out after an hour:
+
+```plaintext
+FATAL: Mixlib::ShellOut::CommandTimeout: rails_migration[gitlab-rails]
+[..]
+Mixlib::ShellOut::CommandTimeout: Command timed out after 3600s:
+```
+
+To fix this:
+
+1. Run the Rake task above to complete the batched migration.
+1. [Complete the rest of the timed-out operation](../package/package_troubleshooting.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s). At the end of this process, Sidekiq and Puma are restarted to fix the `500` errors.
+
+Feedback about this conditional stop on the upgrade path can be provided [in the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/503891).
+
 ### Geo installations 17.1.0
 
 - In GitLab 16.11 through GitLab 17.2, a missing PostgreSQL index can cause high CPU usage, slow job artifact verification progress, and slow or timed out Geo metrics status updates. The index was added in GitLab 17.3. To manually add the index, see [Geo Troubleshooting - High CPU usage on primary during job artifact verification](../../administration/geo/replication/troubleshooting/common.md#high-cpu-usage-on-primary-during-object-verification).

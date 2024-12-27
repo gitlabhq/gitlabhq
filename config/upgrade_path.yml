@@ -78,6 +78,10 @@
   minor: 11
 
 - major: 17
+  minor: 1
+  comments: "[Conditional stop](https://docs.gitlab.com/ee/update/versions/gitlab_17_changes.html#long-running-pipeline-messages-data-change). Not required by all instances."
+
+- major: 17
   minor: 3
 
 - major: 17

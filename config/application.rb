@@ -662,6 +662,7 @@ module Gitlab
         # Used in app/services/web_hooks/log_execution_service.rb: log_execution
         ActiveSupport::TimeWithZone,
         ActiveSupport::TimeZone,
+        ActiveSupport::SafeBuffer,
         Gitlab::Color, # https://gitlab.com/gitlab-org/gitlab/-/issues/368844,
         Hashie::Array, # https://gitlab.com/gitlab-org/gitlab/-/issues/378089
         Hashie::Mash # https://gitlab.com/gitlab-org/gitlab/-/issues/440316

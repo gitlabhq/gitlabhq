@@ -643,7 +643,7 @@ module Issuable
     includes << :project unless notes.projects_loaded?
     includes << :system_note_metadata unless notes.system_note_metadata_loaded?
 
-    if includes.any?
+    if persisted? && includes.any?
       notes.includes(includes)
     else
       notes

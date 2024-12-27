@@ -128,7 +128,7 @@ RSpec.describe Note, feature_category: :team_planning do
       end
 
       context 'when creating a user note' do
-        subject { build(:note, project: noteable.project, noteable: noteable) }
+        subject { build(:note, project: noteable.project, noteable: noteable.reload) }
 
         it { is_expected.not_to be_valid }
       end

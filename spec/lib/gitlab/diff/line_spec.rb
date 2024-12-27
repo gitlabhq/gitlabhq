@@ -108,7 +108,7 @@ RSpec.describe Gitlab::Diff::Line do
 
     context 'when has plain text only' do
       before do
-        line.text = '+added'.html_safe
+        line.text = '+added'
       end
 
       it 'returns unprefixed plain text' do
