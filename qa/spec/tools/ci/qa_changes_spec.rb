@@ -110,11 +110,12 @@ RSpec.describe QA::Tools::Ci::QaChanges do
       before do
         stub_env('SELECTIVE_EXECUTION_IMPROVED', true)
         stub_env('QA_CODE_PATH_MAPPINGS_GCS_CREDENTIALS', gcs_creds)
-        allow(Fog::Storage::Google).to receive(:new)
-                                         .with(google_project: gcs_project_id,
-                                           google_json_key_string: gcs_creds)
-                                         .and_return(gcs_client)
+        stub_env('CI_MERGE_REQUEST_TARGET_BRANCH_NAME', "master")
+
         allow(QA::Tools::Ci::CodePathsMapping).to receive(:new).and_return(code_paths_mapping)
+        allow(Fog::Storage::Google).to receive(:new)
+          .with(google_project: gcs_project_id, google_json_key_string: gcs_creds)
+          .and_return(gcs_client)
       end
 
       describe '#qa_tests' do
