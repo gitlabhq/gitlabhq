@@ -307,6 +307,21 @@ export const nSecondsAfter = (date, numberOfSeconds) =>
 export const nSecondsBefore = (date, numberOfSeconds) => nSecondsAfter(date, -numberOfSeconds);
 
 /**
+ * Returns the date `n` hours after the date provided
+ *
+ * @param {Date} date the initial date
+ * @param {Number} numberOfHours number of hours after
+ * @return {Date} A `Date` object `n` hours after the provided `Date`
+ */
+export const nHoursAfter = (date, numberOfHours) => {
+  const clone = cloneDate(date);
+
+  clone.setHours(date.getHours() + numberOfHours);
+
+  return clone;
+};
+
+/**
  * Returns the date `n` days after the date provided
  *
  * @param {Date} date the initial date

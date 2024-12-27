@@ -49,7 +49,7 @@ describe('FrequentlyVisitedItems', () => {
     });
 
     it('renders the view all items link', () => {
-      const lastItem = findItems().at(-1);
+      const lastItem = findItems().at(1);
       expect(lastItem.props('item')).toMatchObject({
         text: mockProps.viewAllItemsText,
         href: mockProps.viewAllItemsPath,

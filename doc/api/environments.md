@@ -29,7 +29,8 @@ GET /projects/:id/environments
 | `states`  | string         | no       | List all environments that match a specific state. Accepted values: `available`, `stopping`, or `stopped`. If no state value given, returns all environments. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments?name=review%2Ffix-foo"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/environments?name=review%2Ffix-foo"
 ```
 
 Example response:
@@ -68,7 +69,8 @@ GET /projects/:id/environments/:environment_id
 | `environment_id` | integer        | yes      | The ID of the environment.                                                           |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/1"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/environments/1"
 ```
 
 Example of response
@@ -215,7 +217,8 @@ POST /projects/:id/environments
 
 ```shell
 curl --data "name=deploy&external_url=https://deploy.gitlab.example.com" \
-     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/environments"
 ```
 
 Example response:
@@ -262,8 +265,10 @@ PUT /projects/:id/environments/:environments_id
 | `auto_stop_setting`    | string or null  | no       | The auto stop setting for the environment. Allowed values are `always` or `with_action`. |
 
 ```shell
-curl --request PUT --data "external_url=https://staging.gitlab.example.com" \
-     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/1"
+curl --request PUT \
+  --data "external_url=https://staging.gitlab.example.com" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/environments/1"
 ```
 
 Example response:
@@ -299,7 +304,9 @@ DELETE /projects/:id/environments/:environment_id
 | `environment_id` | integer        | yes      | The ID of the environment.                                                           |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/1"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/environments/1"
 ```
 
 ## Delete multiple stopped review apps
@@ -322,7 +329,9 @@ DELETE /projects/:id/environments/review_apps
 | `dry_run` | boolean        | no       | Defaults to `true` for safety reasons. It performs a dry run where no actual deletion is performed. Set to `false` to actually delete the environment. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/review_apps"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/environments/review_apps"
 ```
 
 Example response:
@@ -362,7 +371,9 @@ POST /projects/:id/environments/:environment_id/stop
 | `force`          | boolean        | no       | Force environment to stop without executing `on_stop` actions.                       |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/1/stop"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/environments/1/stop"
 ```
 
 Example response:
@@ -396,7 +407,9 @@ POST /projects/:id/environments/stop_stale
 | `before`  | date           | yes      | Stop environments that have been modified or deployed to before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Valid inputs are between 10 years ago and 1 week ago |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/stop_stale?before=10%2F10%2F2021"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/environments/stop_stale?before=10%2F10%2F2021"
 ```
 
 Example response:

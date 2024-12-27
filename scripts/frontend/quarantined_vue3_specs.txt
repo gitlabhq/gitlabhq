@@ -6,7 +6,6 @@ ee/spec/frontend/admin/signup_restrictions/components/signup_form_spec.js
 ee/spec/frontend/admin/subscriptions/show/components/subscription_activation_form_spec.js
 ee/spec/frontend/admin/subscriptions/show/components/subscription_activation_modal_spec.js
 ee/spec/frontend/admin/subscriptions/show/components/subscription_breakdown_spec.js
-ee/spec/frontend/admin/subscriptions/show/components/subscription_details_history_spec.js
 ee/spec/frontend/ai/settings/components/duo_experiment_beta_features_form_spec.js
 ee/spec/frontend/analytics/analytics_dashboards/components/analytics_dashboard_panel_spec.js
 ee/spec/frontend/analytics/analytics_dashboards/components/analytics_dashboards_breadcrumbs_spec.js
@@ -39,7 +38,6 @@ ee/spec/frontend/ci/secrets/components/secrets_breadcrumbs_spec.js
 ee/spec/frontend/ci/secrets/router_spec.js
 ee/spec/frontend/clusters/components/environments_spec.js
 ee/spec/frontend/compliance_dashboard/components/frameworks_report/report_spec.js
-ee/spec/frontend/compliance_dashboard/components/standards_adherence_report/base_table_spec.js
 ee/spec/frontend/dependencies/components/app_spec.js
 ee/spec/frontend/dependencies/components/dependency_location_spec.js
 ee/spec/frontend/dependencies/components/dependency_path_viewer_spec.js
@@ -255,9 +253,7 @@ spec/frontend/projects/your_work/components/app_spec.js
 spec/frontend/ref/init_ambiguous_ref_modal_spec.js
 spec/frontend/releases/components/app_edit_new_spec.js
 spec/frontend/releases/components/asset_links_form_spec.js
-spec/frontend/releases/components/tag_create_spec.js
 spec/frontend/releases/components/tag_field_exsting_spec.js
-spec/frontend/releases/components/tag_search_spec.js
 spec/frontend/repository/components/header_area/blob_controls_spec.js
 spec/frontend/repository/components/table/index_spec.js
 spec/frontend/repository/components/table/row_spec.js
@@ -283,7 +279,6 @@ spec/frontend/sidebar/components/todo_toggle/sidebar_todo_widget_spec.js
 spec/frontend/silent_mode_settings/components/app_spec.js
 spec/frontend/snippets/components/snippet_header_spec.js
 spec/frontend/super_sidebar/components/flyout_menu_spec.js
-spec/frontend/super_sidebar/components/global_search/components/frequent_items_spec.js
 spec/frontend/super_sidebar/components/nav_item_router_link_spec.js
 spec/frontend/super_sidebar/components/organization_switcher_spec.js
 spec/frontend/super_sidebar/components/sidebar_portal_spec.js
