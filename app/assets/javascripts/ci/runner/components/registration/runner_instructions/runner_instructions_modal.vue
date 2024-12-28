@@ -15,7 +15,6 @@ import {
 } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { __, s__ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getRunnerPlatformsQuery from './graphql/get_runner_platforms.query.graphql';
 import {
   PLATFORM_DOCKER,
@@ -47,7 +46,6 @@ export default {
   directives: {
     GlResizeObserver: GlResizeObserverDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     modalId: {
       type: String,

@@ -3,7 +3,6 @@ import { GlButton, GlLink } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { fetchPolicies } from '~/lib/graphql';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { upgradeStatusTokenConfig } from 'ee_else_ce/ci/runner/components/search_tokens/upgrade_status_token_config';
 import {
   fromUrlQueryToSearch,
@@ -60,7 +59,6 @@ export default {
     RunnerDashboardLink: () =>
       import('ee_component/ci/runner/components/runner_dashboard_link.vue'),
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     newRunnerPath: {
       type: String,

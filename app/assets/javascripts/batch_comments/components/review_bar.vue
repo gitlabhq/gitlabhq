@@ -4,7 +4,6 @@ import { mapActions, mapGetters } from 'vuex';
 import { GlButton, GlTooltipDirective as GlTooltip, GlModal } from '@gitlab/ui';
 import { __ } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SET_REVIEW_BAR_RENDERED } from '~/batch_comments/stores/modules/batch_comments/mutation_types';
 import { REVIEW_BAR_VISIBLE_CLASS_NAME } from '../constants';
 import PreviewDropdown from './preview_dropdown.vue';
@@ -20,7 +19,6 @@ export default {
   directives: {
     GlTooltip,
   },
-  mixins: [glFeatureFlagMixin()],
   data() {
     return {
       discarding: false,

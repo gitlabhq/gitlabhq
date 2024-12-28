@@ -2,7 +2,6 @@
 import { GlButton, GlSprintf, GlLink, GlFormCheckbox, GlFormSelect, GlToggle } from '@gitlab/ui';
 import SecretManagerSettings from 'ee_component/pages/projects/shared/permissions/components/secret_manager_settings.vue';
 import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
 import { __, s__ } from '~/locale';
 import {
@@ -124,7 +123,7 @@ export default {
         'jh_component/pages/projects/shared/permissions/components/other_project_settings.vue'
       ),
   },
-  mixins: [settingsMixin, glFeatureFlagMixin()],
+  mixins: [settingsMixin],
   inject: ['cascadingSettingsData'],
   props: {
     requestCveAvailable: {

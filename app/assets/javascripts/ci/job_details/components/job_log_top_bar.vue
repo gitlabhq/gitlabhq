@@ -4,7 +4,6 @@ import { scrollToElement, backOff } from '~/lib/utils/common_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { s__, sprintf } from '~/locale';
 import { compactJobLog } from '~/ci/job_details/utils';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   i18n: {
@@ -28,7 +27,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     size: {
       type: Number,

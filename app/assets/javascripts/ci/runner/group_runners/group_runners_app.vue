@@ -10,7 +10,6 @@ import {
   fromSearchToVariables,
   isSearchFiltered,
 } from 'ee_else_ce/ci/runner/runner_search_utils';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import groupRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/group_runners_count.query.graphql';
 import groupRunnersQuery from 'ee_else_ce/ci/runner/graphql/list/group_runners.query.graphql';
 
@@ -60,7 +59,6 @@ export default {
     RunnerDashboardLink: () =>
       import('ee_component/ci/runner/components/runner_dashboard_link.vue'),
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     newRunnerPath: {
       type: String,

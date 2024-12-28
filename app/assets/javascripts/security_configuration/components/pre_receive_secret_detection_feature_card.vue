@@ -11,7 +11,6 @@ import {
 } from '@gitlab/ui';
 import ProjectSetPreReceiveSecretDetection from '~/security_configuration/graphql/set_pre_receive_secret_detection.graphql';
 import { __, s__ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'PreReceiveSecretDetectionFeatureCard',
@@ -27,7 +26,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: [
     'preReceiveSecretDetectionAvailable',
     'preReceiveSecretDetectionEnabled',

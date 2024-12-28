@@ -3,7 +3,6 @@ import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_NOTE } from '~/graphql_shared/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import noteQuery from '../graphql/note.query.graphql';
@@ -18,7 +17,7 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [timeagoMixin, glFeatureFlagMixin()],
+  mixins: [timeagoMixin],
   props: {
     noteId: {
       type: String,
