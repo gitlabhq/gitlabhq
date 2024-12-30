@@ -4,7 +4,8 @@ import emptyTodosAllDoneSvg from '@gitlab/svgs/dist/illustrations/empty-todos-al
 import emptyTodosSvg from '@gitlab/svgs/dist/illustrations/empty-todos-md.svg';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { TODO_EMPTY_TITLE_POOL, TAB_DONE } from '../constants';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { TODO_EMPTY_TITLE_POOL, getTabsIndices } from '../constants';
 
 export default {
   components: {
@@ -12,6 +13,7 @@ export default {
     GlLink,
     GlSprintf,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: {
     currentTab: {
       type: Number,
@@ -37,6 +39,9 @@ export default {
       if (this.isFiltered) {
         return s__('Todos|Sorry, your filter produced no results');
       }
+      if (this.isSnoozedTab) {
+        return s__('Todos|There are no snoozed to-do items yet.');
+      }
       if (this.isDoneTab) {
         return s__('Todos|There are no done to-do items yet.');
       }
@@ -49,7 +54,10 @@ export default {
       return this.$options.emptyTodosAllDoneSvg;
     },
     isDoneTab() {
-      return this.currentTab === TAB_DONE;
+      return this.currentTab === getTabsIndices().done;
+    },
+    isSnoozedTab() {
+      return this.glFeatures.todosSnoozing && this.currentTab === getTabsIndices().snoozed;
     },
   },
   methods: {
@@ -73,7 +81,10 @@ export default {
 
 <template>
   <gl-empty-state :title="title" :svg-path="illustration">
-    <template v-if="!isFiltered && !isDoneTab" #description>
+    <template v-if="!isFiltered && isSnoozedTab" #description>
+      <p>{{ s__('Todos|When to-do items are snoozed, they will appear here.') }}</p>
+    </template>
+    <template v-else-if="!isFiltered && !isDoneTab" #description>
       <p>
         <gl-sprintf :message="$options.i18n.whatNext">
           <template #assignedIssuesLink="{ content }">
@@ -85,7 +96,7 @@ export default {
         </gl-sprintf>
       </p>
       <p>
-        <a :href="$options.docsPath" target="_blank">
+        <a :href="$options.docsPath" target="_blank" data-testid="doc-link">
           {{ s__('Todos| What actions create to-do items?') }}
         </a>
       </p>

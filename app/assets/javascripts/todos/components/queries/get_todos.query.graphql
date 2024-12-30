@@ -7,6 +7,7 @@ query todos(
   $before: String
   $after: String
   $state: [TodoStateEnum!]
+  $isSnoozed: Boolean
   $projectId: [ID!]
   $groupId: [ID!]
   $authorId: [ID!]
@@ -22,6 +23,7 @@ query todos(
       after: $after
       before: $before
       state: $state
+      isSnoozed: $isSnoozed
       projectId: $projectId
       groupId: $groupId
       authorId: $authorId

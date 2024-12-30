@@ -58556,6 +58556,9 @@ msgstr ""
 msgid "Todos|Filter to-do items"
 msgstr ""
 
+msgid "Todos|First sent %{timeago}"
+msgstr ""
+
 msgid "Todos|Give yourself a pat on the back!"
 msgstr ""
 
@@ -58671,6 +58674,21 @@ msgstr ""
 msgid "Todos|Select this item to sign in with SAML and view it."
 msgstr ""
 
+msgid "Todos|Snoozed"
+msgstr ""
+
+msgid "Todos|Snoozed until %{date}"
+msgstr ""
+
+msgid "Todos|Snoozed until %{day}, %{time}"
+msgstr ""
+
+msgid "Todos|Snoozed until %{time}"
+msgstr ""
+
+msgid "Todos|Snoozed until tomorrow, %{time}"
+msgstr ""
+
 msgid "Todos|Someone"
 msgstr ""
 
@@ -58684,6 +58702,9 @@ msgid "Todos|The pipeline failed"
 msgstr ""
 
 msgid "Todos|There are no done to-do items yet."
+msgstr ""
+
+msgid "Todos|There are no snoozed to-do items yet."
 msgstr ""
 
 msgid "Todos|To Do"
@@ -58705,6 +58726,9 @@ msgid "Todos|When an issue or merge request is assigned to you, or when you rece
 msgstr ""
 
 msgid "Todos|When to-do items are done, they will appear here."
+msgstr ""
+
+msgid "Todos|When to-do items are snoozed, they will appear here."
 msgstr ""
 
 msgid "Todos|Work item"

@@ -11,7 +11,7 @@ import TodosFilterBar from '~/todos/components/todos_filter_bar.vue';
 import TodosMarkAllDoneButton from '~/todos/components/todos_mark_all_done_button.vue';
 import TodosPagination, { CURSOR_CHANGED_EVENT } from '~/todos/components/todos_pagination.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
-import { INSTRUMENT_TAB_LABELS, STATUS_BY_TAB } from '~/todos/constants';
+import { getInstrumentTabLabels, getStatusByTab } from '~/todos/constants';
 import { mockTracking, unmockTracking } from 'jest/__helpers__/tracking_helper';
 import getPendingTodosCount from '~/todos/components/queries/get_pending_todos_count.query.graphql';
 import { todosResponse, getPendingTodosCountResponse } from '../mock_data';
@@ -27,6 +27,7 @@ describe('TodosApp', () => {
   const createComponent = ({
     todosQueryHandler = todosQuerySuccessHandler,
     todosCountsQueryHandler = todosCountsQuerySuccessHandler,
+    glFeatures = { todosSnoozing: true },
   } = {}) => {
     const mockApollo = createMockApollo();
     mockApollo.defaultClient.setRequestHandler(getTodosQuery, todosQueryHandler);
@@ -34,6 +35,9 @@ describe('TodosApp', () => {
 
     wrapper = shallowMountExtended(TodosApp, {
       apolloProvider: mockApollo,
+      provide: {
+        glFeatures,
+      },
     });
   };
 
@@ -46,8 +50,12 @@ describe('TodosApp', () => {
   const findTodoItemListContainer = () => wrapper.findByTestId('todo-item-list-container');
   const findPagination = () => wrapper.findComponent(TodosPagination);
 
+  beforeEach(() => {
+    gon.features = { todosSnoozing: true };
+  });
+
   it('should have a tracking event for each tab', () => {
-    expect(STATUS_BY_TAB.length).toBe(INSTRUMENT_TAB_LABELS.length);
+    expect(getStatusByTab().length).toBe(getInstrumentTabLabels().length);
   });
 
   it('shows a loading state while fetching todos', () => {
@@ -235,24 +243,29 @@ describe('TodosApp', () => {
   it.each`
     tabIndex | status                 | label
     ${0}     | ${['pending']}         | ${'status_pending'}
-    ${1}     | ${['done']}            | ${'status_done'}
-    ${2}     | ${['pending', 'done']} | ${'status_all'}
-  `('updates the filter bar status when the tab changes', async ({ tabIndex, status, label }) => {
-    createComponent();
-    // Navigate to another tab that isn't the target
-    findGlTabs().vm.$emit('input', tabIndex === 0 ? 1 : tabIndex - 1);
-    await nextTick();
+    ${1}     | ${['pending']}         | ${'status_snoozed'}
+    ${2}     | ${['done']}            | ${'status_done'}
+    ${3}     | ${['pending', 'done']} | ${'status_all'}
+  `(
+    'sets the filter bar status to $status and tracks the event $label when the tab changes to index #$tabIndex',
+    async ({ tabIndex, status, label }) => {
+      createComponent();
 
-    const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
-    findGlTabs().vm.$emit('input', tabIndex);
-    await nextTick();
+      // Navigate to another tab that isn't the target
+      findGlTabs().vm.$emit('input', tabIndex === 0 ? 1 : tabIndex - 1);
+      await nextTick();
 
-    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'filter_todo_list', {
-      label,
-    });
-    expect(findFilterBar().props('todosStatus')).toEqual(status);
-    unmockTracking();
-  });
+      const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+      findGlTabs().vm.$emit('input', tabIndex);
+      await nextTick();
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'filter_todo_list', {
+        label,
+      });
+      expect(findFilterBar().props('todosStatus')).toEqual(status);
+      unmockTracking();
+    },
+  );
 
   it('syncs tab change to URL while leaving other params unchanged', () => {
     setWindowLocation('?group_id=123');
@@ -260,9 +273,12 @@ describe('TodosApp', () => {
     expect(window.location.search).toBe('?group_id=123');
 
     findGlTabs().vm.$emit('input', 1);
-    expect(window.location.search).toBe('?group_id=123&state=done');
+    expect(window.location.search).toBe('?group_id=123&state=snoozed');
 
     findGlTabs().vm.$emit('input', 2);
+    expect(window.location.search).toBe('?group_id=123&state=done');
+
+    findGlTabs().vm.$emit('input', 3);
     expect(window.location.search).toBe('?group_id=123&state=all');
 
     findGlTabs().vm.$emit('input', 0);
@@ -276,7 +292,7 @@ describe('TodosApp', () => {
 
     it('activates correct tab', () => {
       createComponent();
-      expect(findGlTabs().props('value')).toBe(1);
+      expect(findGlTabs().props('value')).toBe(2);
     });
   });
 });

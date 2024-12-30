@@ -13,15 +13,14 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   DEFAULT_PAGE_SIZE,
-  INSTRUMENT_TAB_LABELS,
+  getInstrumentTabLabels,
   INSTRUMENT_TODO_FILTER_CHANGE,
-  STATUS_BY_TAB,
-  TAB_PENDING,
+  getStatusByTab,
   TODO_WAIT_BEFORE_RELOAD,
-  TAB_DONE,
-  TAB_ALL,
+  getTabsIndices,
 } from '~/todos/constants';
 import getTodosQuery from './queries/get_todos.query.graphql';
 import getPendingTodosCount from './queries/get_pending_todos_count.query.graphql';
@@ -48,7 +47,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glFeatureFlagMixin()],
   provide() {
     return {
       currentTab: computed(() => this.currentTab),
@@ -67,7 +66,7 @@ export default {
       currentUserId: null,
       pageInfo: {},
       todos: [],
-      currentTab: TAB_PENDING,
+      currentTab: getTabsIndices().pending,
       pendingTodosCount: '-',
       queryFilterValues: {
         groupId: [],
@@ -86,8 +85,10 @@ export default {
       query: getTodosQuery,
       fetchPolicy: 'cache-and-network',
       variables() {
+        const state = this.isOnSnoozedTab ? ['pending'] : this.statusByTab;
         return {
-          state: this.statusByTab,
+          state,
+          ...(this.isOnSnoozedTab ? { isSnoozed: true } : {}),
           ...this.queryFilterValues,
           ...this.cursor,
         };
@@ -118,7 +119,7 @@ export default {
   },
   computed: {
     statusByTab() {
-      return STATUS_BY_TAB[this.currentTab];
+      return getStatusByTab()[this.currentTab];
     },
     isLoading() {
       return this.$apollo.queries.todos.loading;
@@ -128,22 +129,28 @@ export default {
       const { sort: _, ...filters } = this.queryFilterValues;
       return Object.values(filters).some((value) => value.length > 0);
     },
+    isOnSnoozedTab() {
+      return this.glFeatures.todosSnoozing && this.currentTab === getTabsIndices().snoozed;
+    },
     showEmptyState() {
       return !this.isLoading && this.todos.length === 0;
     },
     showMarkAllAsDone() {
-      return this.currentTab === TAB_PENDING && !this.showEmptyState;
+      return this.currentTab === getTabsIndices().pending && !this.showEmptyState;
     },
   },
   created() {
     const searchParams = new URLSearchParams(window.location.search);
     const stateFromUrl = searchParams.get('state');
     switch (stateFromUrl) {
+      case 'snoozed':
+        this.currentTab = getTabsIndices().snoozed;
+        break;
       case 'done':
-        this.currentTab = TAB_DONE;
+        this.currentTab = getTabsIndices().done;
         break;
       case 'all':
-        this.currentTab = TAB_ALL;
+        this.currentTab = getTabsIndices().all;
         break;
       default:
         break;
@@ -165,7 +172,7 @@ export default {
       }
 
       this.track(INSTRUMENT_TODO_FILTER_CHANGE, {
-        label: INSTRUMENT_TAB_LABELS[tabIndex],
+        label: getInstrumentTabLabels()[tabIndex],
       });
       this.currentTab = tabIndex;
 
@@ -180,11 +187,14 @@ export default {
     },
     syncActiveTabToUrl() {
       const tabIndexToUrlStateParam = {
-        [TAB_DONE]: 'done',
-        [TAB_ALL]: 'all',
+        [getTabsIndices().done]: 'done',
+        [getTabsIndices().all]: 'all',
       };
+      if (this.glFeatures.todosSnoozing) {
+        tabIndexToUrlStateParam[getTabsIndices().snoozed] = 'snoozed';
+      }
       const searchParams = new URLSearchParams(window.location.search);
-      if (this.currentTab === TAB_PENDING) {
+      if (this.currentTab === getTabsIndices().pending) {
         searchParams.delete('state');
       } else {
         searchParams.set('state', tabIndexToUrlStateParam[this.currentTab]);
@@ -261,6 +271,11 @@ export default {
             <gl-badge pill size="sm" class="gl-tab-counter-badge" data-testid="pending-todos-count">
               {{ pendingTodosCount }}
             </gl-badge>
+          </template>
+        </gl-tab>
+        <gl-tab v-if="glFeatures.todosSnoozing">
+          <template #title>
+            <span>{{ s__('Todos|Snoozed') }}</span>
           </template>
         </gl-tab>
         <gl-tab>

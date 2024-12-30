@@ -1,6 +1,7 @@
 fragment Todo on Todo {
   id
   state
+  snoozedUntil
   createdAt
   action
   targetType

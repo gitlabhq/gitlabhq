@@ -14,6 +14,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
 
   def index
     push_frontend_feature_flag(:todos_vue_application, current_user)
+    push_frontend_feature_flag(:todos_snoozing, current_user)
 
     # When removing the `todos_vue_application`, also drop the #vue method below
     if Feature.enabled?(:todos_vue_application, current_user)

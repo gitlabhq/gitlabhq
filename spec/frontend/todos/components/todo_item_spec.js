@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlIcon } from '@gitlab/ui';
 import TodoItem from '~/todos/components/todo_item.vue';
 import TodoItemTitle from '~/todos/components/todo_item_title.vue';
 import TodoItemTitleHiddenBySaml from '~/todos/components/todo_item_title_hidden_by_saml.vue';
@@ -6,12 +7,24 @@ import TodoItemBody from '~/todos/components/todo_item_body.vue';
 import TodoItemTimestamp from '~/todos/components/todo_item_timestamp.vue';
 import TodoItemActions from '~/todos/components/todo_item_actions.vue';
 import { TODO_STATE_DONE, TODO_STATE_PENDING } from '~/todos/constants';
+import { useFakeDate } from 'helpers/fake_date';
 import { SAML_HIDDEN_TODO, MR_REVIEW_REQUEST_TODO } from '../mock_data';
 
 describe('TodoItem', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
+  const mockCurrentTime = new Date('2024-12-18T13:24:00');
+  const mockForAnHour = new Date('2024-12-18T14:24:00');
+  const mockUntilLaterToday = new Date('2024-12-18T17:24:00');
+  const mockUntilTomorrow = new Date('2024-12-19T08:00:00');
+  const mockUntilNextWeek = new Date('2024-12-25T08:00:00');
+  const mockYesterday = new Date('2024-12-17T08:00:00');
+
+  useFakeDate(mockCurrentTime);
+
+  const findTodoItemTimestamp = () => wrapper.findComponent(TodoItemTimestamp);
+
+  const createComponent = (props = {}, todosSnoozingEnabled = true) => {
     wrapper = shallowMount(TodoItem, {
       propsData: {
         currentUserId: '1',
@@ -22,6 +35,7 @@ describe('TodoItem', () => {
       },
       provide: {
         currentTab: 0,
+        glFeatures: { todosSnoozing: todosSnoozingEnabled },
       },
     });
   };
@@ -48,7 +62,7 @@ describe('TodoItem', () => {
 
   it('renders TodoItemTimestamp component', () => {
     createComponent();
-    expect(wrapper.findComponent(TodoItemTimestamp).exists()).toBe(true);
+    expect(findTodoItemTimestamp().exists()).toBe(true);
   });
 
   it('renders TodoItemActions component', () => {
@@ -80,5 +94,74 @@ describe('TodoItem', () => {
     const todoItemActions = wrapper.findComponent(TodoItemActions);
     await todoItemActions.vm.$emit('change', '1', true);
     expect(wrapper.emitted('change')).toEqual([['1', true]]);
+  });
+
+  describe('snoozed to-do items', () => {
+    it.each`
+      snoozedUntil           | expectedLabel
+      ${mockForAnHour}       | ${`Snoozed until ${mockForAnHour.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
+      ${mockUntilLaterToday} | ${`Snoozed until ${mockUntilLaterToday.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
+      ${mockUntilTomorrow}   | ${`Snoozed until tomorrow, ${mockUntilTomorrow.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
+      ${mockUntilNextWeek}   | ${'Snoozed until Dec 25, 2024'}
+    `(
+      'renders "$expectedLabel" when the item is snoozed until a future date ($snoozedUntil)',
+      ({ snoozedUntil, expectedLabel }) => {
+        createComponent({
+          todo: {
+            ...MR_REVIEW_REQUEST_TODO,
+            snoozedUntil,
+          },
+        });
+
+        expect(findTodoItemTimestamp().exists()).toBe(false);
+        expect(wrapper.text()).toBe(expectedLabel);
+      },
+    );
+
+    it('renders the creation date when the item has reached its snooze time', () => {
+      createComponent({
+        todo: {
+          ...MR_REVIEW_REQUEST_TODO,
+          snoozedUntil: mockYesterday,
+        },
+      });
+
+      expect(findTodoItemTimestamp().exists()).toBe(false);
+      expect(wrapper.text()).toBe('First sent 4 months ago');
+
+      const icon = wrapper.findComponent(GlIcon);
+      expect(icon.exists()).toBe(true);
+      expect(icon.props('name')).toBe('clock');
+    });
+
+    it('renders the TodoItemTimestamp when the `todosSnoozing` feature flag is disabled and the item is snoozed', () => {
+      createComponent(
+        {
+          todo: {
+            ...MR_REVIEW_REQUEST_TODO,
+            snoozedUntil: mockForAnHour,
+          },
+        },
+        false,
+      );
+
+      expect(findTodoItemTimestamp().exists()).toBe(true);
+      expect(wrapper.text()).not.toContain('Snoozed until');
+    });
+
+    it('renders the TodoItemTimestamp when the `todosSnoozing` feature flag is disabled and the item was snoozed', () => {
+      createComponent(
+        {
+          todo: {
+            ...MR_REVIEW_REQUEST_TODO,
+            snoozedUntil: mockYesterday,
+          },
+        },
+        false,
+      );
+
+      expect(findTodoItemTimestamp().exists()).toBe(true);
+      expect(wrapper.text()).not.toContain('First sent 4 months ago');
+    });
   });
 });

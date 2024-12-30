@@ -4007,7 +4007,6 @@ CREATE TABLE security_findings (
     scan_id bigint NOT NULL,
     scanner_id bigint NOT NULL,
     severity smallint NOT NULL,
-    confidence smallint,
     project_fingerprint text,
     deduplicated boolean DEFAULT false NOT NULL,
     uuid uuid,
