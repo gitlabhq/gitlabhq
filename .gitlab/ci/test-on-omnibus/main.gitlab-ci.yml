@@ -150,6 +150,7 @@ gitaly-transactions:
   extends:
     - .parallel
     - .qa
+    - .with-ignored-runtime-data
   parallel: 2
   variables:
     QA_SCENARIO: Test::Integration::Praefect
@@ -196,6 +197,7 @@ gitaly-reftables-backend:
   extends:
     - .parallel
     - .qa
+    - .with-ignored-runtime-data
   parallel: 2
   variables:
     QA_SCENARIO: Test::Integration::Praefect
@@ -220,6 +222,7 @@ gitaly-reftables-enabled-backend-parallel:
   extends:
     - .qa
     - .parallel
+    - .with-ignored-runtime-data
   parallel: 2
   variables:
     QA_SCENARIO: Test::Integration::Praefect
@@ -239,6 +242,7 @@ git-sha256-repositories:
   extends:
     - .parallel
     - .qa
+    - .with-ignored-runtime-data
   parallel: 5
   variables:
     QA_SCENARIO: Test::Instance::Image
@@ -457,13 +461,9 @@ importers:
 
 # ========== ai-gateway ===========
 
-.ai-gateway-base:
-  extends:
-    - .qa
-
 ai-gateway:
   extends:
-    - .ai-gateway-base
+    - .qa
   variables:
     QA_SCENARIO: Test::Integration::AiGateway
   rules:
@@ -473,7 +473,7 @@ ai-gateway:
 
 ai-gateway-no-seat-assigned:
   extends:
-    - .ai-gateway-base
+    - .qa
   variables:
     QA_SCENARIO: Test::Integration::AiGatewayNoSeatAssigned
   rules:
@@ -483,12 +483,12 @@ ai-gateway-no-seat-assigned:
 
 ai-gateway-no-add-on:
   extends:
-    - .ai-gateway-base
+    - .qa
   variables:
     QA_SCENARIO: Test::Integration::AiGatewayNoAddOn
   before_script:
     - export QA_EE_ACTIVATION_CODE=$QA_EE_ACTIVATION_CODE_NO_ADD_ON
-    - !reference [.ai-gateway-base, before_script]
+    - !reference [.qa, before_script]
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoAddOn/
@@ -496,12 +496,12 @@ ai-gateway-no-add-on:
 
 ai-gateway-no-license:
   extends:
-    - .ai-gateway-base
+    - .qa
   variables:
     QA_SCENARIO: Test::Integration::AiGatewayNoLicense
   before_script:
     - unset QA_EE_LICENSE
-    - !reference [.ai-gateway-base, before_script]
+    - !reference [.qa, before_script]
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoLicense/

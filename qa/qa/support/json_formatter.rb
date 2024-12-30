@@ -45,7 +45,8 @@ module QA
           screenshot: example.metadata[:screenshot],
           product_group: example.metadata[:product_group],
           ci_job_url: QA::Runtime::Env.ci_job_url,
-          level: 'E2E'
+          level: 'E2E',
+          ignore_runtime_data: Runtime::Env.ignore_runtime_data?
         }
 
         e = example.exception

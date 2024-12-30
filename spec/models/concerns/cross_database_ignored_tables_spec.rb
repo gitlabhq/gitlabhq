@@ -147,7 +147,8 @@ RSpec.describe CrossDatabaseIgnoredTables, feature_category: :cell, query_analyz
         stub_const("MainModel", create_main_model(%w[_test_gitlab_ci_items], %I[update]))
       end
 
-      it 'raises an error when creating a new object' do
+      it 'raises an error when creating a new object',
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508771' do
         expect { MainModel.create! }.to raise_error(cross_database_exception)
       end
 

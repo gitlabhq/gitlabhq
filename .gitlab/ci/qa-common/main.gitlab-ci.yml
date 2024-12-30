@@ -29,6 +29,12 @@ stages:
 # ==========================================
 # Templates
 # ==========================================
+
+# add flag to ignore test runtime when creating example runtime data reports
+.with-ignored-runtime-data:
+  variables:
+    QA_IGNORE_RUNTIME_DATA: "true"
+
 .parallel:
   parallel: 5
   variables:
@@ -127,7 +133,7 @@ stages:
     QA_JSON_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/rspec-*.json
   script:
     - !reference [.generate-knapsack-report-base, script]
-    - bundle exec rake "knapsack:upload_custom_report[$QA_JSON_REPORT_FILE_PATTERN]"
+    - bundle exec rake "knapsack:upload_example_runtimes[$QA_JSON_REPORT_FILE_PATTERN]"
 
 .export-test-metrics:
   extends:

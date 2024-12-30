@@ -273,7 +273,8 @@ module QA
         remote_grid || (raise ArgumentError, "QA_REMOTE_GRID is required! See docs: #{docs_link}")
         video_recorder_image || (raise ArgumentError, "QA_VIDEO_RECORDER_IMAGE is required! See docs: #{docs_link}")
         selenoid_browser_image || (raise ArgumentError, "QA_SELENOID_BROWSER_IMAGE is required! See docs: #{docs_link}")
-        selenoid_browser_version || (raise ArgumentError, "QA_SELENOID_BROWSER_VERSION is required! See docs: #{docs_link}")
+        selenoid_browser_version || (raise ArgumentError,
+          "QA_SELENOID_BROWSER_VERSION is required! See docs: #{docs_link}")
       end
 
       def github_username
@@ -666,6 +667,13 @@ module QA
       # @return [Boolean]
       def dry_run
         enabled?(ENV["QA_RSPEC_DRY_RUN"], default: false)
+      end
+
+      # Ignore runtime data when generating knapsack reports
+      #
+      # @return [Boolean]
+      def ignore_runtime_data?
+        enabled?(ENV["QA_IGNORE_RUNTIME_DATA"], default: false)
       end
 
       private

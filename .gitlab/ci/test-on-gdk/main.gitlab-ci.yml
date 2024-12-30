@@ -67,6 +67,9 @@ include:
     - .docker-in-docker
     - .gitlab-qa-report
     - .qa-run-e2e-with-bundler
+    # ignore runtime data from gdk because it's significantly slower than cng and runtime data for
+    # optimizing parallel distribution should be geared towards test-on-cng
+    - .with-ignored-runtime-data
   stage: test
   services:
     - name: docker:${DOCKER_VERSION}-dind

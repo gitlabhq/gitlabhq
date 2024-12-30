@@ -32,6 +32,7 @@ airgapped:
   extends:
     - .qa
     - .parallel
+    - .with-ignored-runtime-data
   variables:
     QA_SCENARIO: "Test::Instance::Airgapped"
     QA_RSPEC_TAGS: "--tag '~github' --tag '~external_api_calls' --tag '~skip_live_env'"
@@ -40,6 +41,7 @@ instance-image-slow-network:
   extends:
     - .qa
     - .parallel
+    - .with-ignored-runtime-data
   variables:
     QA_SIMULATE_SLOW_CONNECTION: "true"
 
@@ -50,6 +52,7 @@ nplus1-instance-image:
   extends:
     - .qa
     - .parallel
+    - .with-ignored-runtime-data
   variables:
     CACHE_NAMESPACE_NAME: "false"
     GITLAB_QA_OPTS: "--enable-feature gitaly_enforce_requests_limits"
@@ -60,6 +63,7 @@ nplus1-instance-image:
 integration-elasticsearch-compatibility-version-7:
   extends:
     - .qa
+    - .with-ignored-runtime-data
   variables:
     ELASTIC_VERSION: "7.17.0"
     QA_SCENARIO: "Test::Integration::Elasticsearch"
@@ -67,6 +71,7 @@ integration-elasticsearch-compatibility-version-7:
 integration-elasticsearch-compatibility-version-8:
   extends:
     - .qa
+    - .with-ignored-runtime-data
   variables:
     ELASTIC_VERSION: "8.11.4"
     QA_SCENARIO: "Test::Integration::Elasticsearch"
@@ -95,8 +100,10 @@ relative-url:
   extends:
     - .qa
     - .parallel
+    - .with-ignored-runtime-data
   variables:
     QA_SCENARIO: Test::Instance::RelativeUrl
+    QA_IGNORE_RUNTIME_DATA: "true"
 
 # ------------------------------------------
 # Registry with CDN
@@ -160,6 +167,7 @@ decomposition-single-db:
   extends:
     - .qa
     - .parallel
+    - .with-ignored-runtime-data
   variables:
     QA_SCENARIO: Test::Instance::Image
     GITLAB_QA_OPTS: --omnibus-config decomposition_single_db
@@ -168,6 +176,7 @@ decomposition-multiple-db:
   extends:
     - .qa
     - .parallel
+    - .with-ignored-runtime-data
   variables:
     QA_SCENARIO: Test::Instance::Image
     GITLAB_ALLOW_SEPARATE_CI_DATABASE: "true"
@@ -189,6 +198,7 @@ git-sha256-repositories:
   extends:
     - .parallel
     - .qa
+    - .with-ignored-runtime-data
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_USE_SHA256_REPOSITORY_OBJECT_STORAGE: true
@@ -202,6 +212,7 @@ update-minor-ee-ai-components:
   extends:
     - .qa
     - .update-with-ai-components-script
+    - .with-ignored-runtime-data
   variables:
     UPDATE_TYPE: minor
     UPDATE_FROM_EDITION: ee

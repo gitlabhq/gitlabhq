@@ -10,13 +10,14 @@ module QA
       FALLBACK_REPORT = "knapsack/master_report.json"
       PATTERN_VAR_NAME = "KNAPSACK_TEST_FILE_PATTERN"
       DEFAULT_TEST_PATTERN = "qa/specs/features/**/*_spec.rb"
+      EXAMPLE_RUNTIMES_PATH = "example_runtimes"
 
       class << self
         delegate :configure!,
           :move_regenerated_report,
           :download_report,
           :upload_report,
-          :upload_custom_report,
+          :upload_example_runtimes,
           :merged_report,
           to: :new
       end
@@ -116,49 +117,46 @@ module QA
       #
       # @param glob [String]
       # @return [void]
-      def upload_custom_report(glob)
+      def upload_example_runtimes(glob)
         raise "QA_RUN_TYPE must be set for custom report" unless run_type
 
         reports = Pathname.glob(glob).select { |file| file.extname == ".json" }
         raise "Glob '#{glob}' did not contain any valid report files!" if reports.empty?
 
         logger.info("Processing '#{reports.size}' report files")
-        runtimes = reports
-          .flat_map { |report| JSON.load_file(report, symbolize_names: true) }
-          .each_with_object(Hash.new { |hsh, key| hsh[key] = { ids: [], run_time: 0 } }) do |json, runtimes|
-            json[:examples]
-              .select { |ex| ex[:status] == "passed" }
-              .each do |ex|
-                path = ex[:file_path].gsub("./", "")
-                # do not sum runtime if specific id has been already recorded
-                # this can happen if same test is executed within multiple jobs using different gitlab configurations
-                next if runtimes[path][:ids].include?(ex[:id])
+        report = example_runtimes(reports).sort.to_h
 
-                runtimes[path][:run_time] += ex[:run_time]
-                runtimes[path][:ids] << ex[:id]
-              end
-          end
-
-        report = runtimes
-          .transform_values { |val| val[:run_time] }
-          .sort_by { |_k, v| v } # sort report by execution time
-          .to_h
-
-        file = "#{run_type}.json"
-        logger.info("Uploading combined runtime report '#{file}'")
+        file = "#{EXAMPLE_RUNTIMES_PATH}/#{run_type}.json"
+        logger.info("Uploading example runtime report '#{file}'")
         client.put_object(BUCKET, file, JSON.pretty_generate(report))
       end
 
-      # Single merged knapsack report
+      # Merged example runtime data from all report files
       #
-      # @return [Hash]
-      def merged_report
-        logger.info("Fetching all knapsack reports from GCS '#{BUCKET}' bucket")
-        client.list_objects(BUCKET).items.each_with_object({}) do |report, hash|
-          json = JSON.parse(client.get_object(BUCKET, report.name)[:body])
+      # @return [Hash<String, Number>]
+      def merged_runtime_data
+        return @merged_runtime_data if @merged_runtime_data
 
-          # merge report and keep only the longest runtime
-          json.each { |spec, runtime| hash[spec] = runtime unless (hash[spec] || 0) > runtime }
+        logger.info("Fetching all example runtime data from GCS '#{BUCKET}' bucket")
+        items = client.list_objects(BUCKET, prefix: EXAMPLE_RUNTIMES_PATH).items
+        logger.info("Fetched example runtime files #{items.map(&:name)}, creating merged knapsack report")
+        @merged_runtime_data = client.list_objects(BUCKET, prefix: EXAMPLE_RUNTIMES_PATH).items
+          .each_with_object({}) do |report, runtimes|
+            json = JSON.parse(client.get_object(BUCKET, report.name)[:body])
+
+            # merge report and keep only the longest runtime
+            json.each { |id, runtime| runtimes[id] = runtime unless (runtimes[id] || 0) > runtime }
+          end
+      end
+
+      # Create merged knapsack report from example runtimes reports
+      #
+      # @return [Hash<String, Number>]
+      def merged_report
+        merged_runtime_data.each_with_object(Hash.new { |hsh, key| hsh[key] = 0 }) do |(id, runtime), spec_runtimes|
+          file_path = id.match(/(\S+)\[\S+\]/)[1].gsub("./", "")
+
+          spec_runtimes[file_path] += runtime
         end
       end
 
@@ -248,6 +246,23 @@ module QA
         file_name = File.basename(report_path, extension)
 
         File.join(directory, "#{file_name}-selective-parallel#{extension}")
+      end
+
+      # Get example runtimes from JsonFormatter report files
+      #
+      # @param reports [Array<Pathname>]
+      # @return [Hash<Number>]
+      def example_runtimes(reports)
+        reports
+          .flat_map { |report| JSON.load_file(report, symbolize_names: true) }
+          .each_with_object({}) do |json, runtimes|
+            json[:examples].each do |ex|
+              next if ex[:ignore_runtime_data] || ex[:status] != "passed"
+
+              # keep the longest running example
+              runtimes[ex[:id]] = ex[:run_time] unless (runtimes[:id] || 0) > ex[:run_time]
+            end
+          end
       end
     end
   end
