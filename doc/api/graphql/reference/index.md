@@ -27147,6 +27147,7 @@ Check permissions for the current user on a issue.
 | <a id="issuepermissionscreatedesign"></a>`createDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_design` on this resource. |
 | <a id="issuepermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
 | <a id="issuepermissionsdestroydesign"></a>`destroyDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_design` on this resource. |
+| <a id="issuepermissionsmovedesign"></a>`moveDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `move_design` on this resource. |
 | <a id="issuepermissionsreaddesign"></a>`readDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_design` on this resource. |
 | <a id="issuepermissionsreadissue"></a>`readIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_issue` on this resource. |
 | <a id="issuepermissionsreopenissue"></a>`reopenIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `reopen_issue` on this resource. |
@@ -33719,6 +33720,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="projectpermissionsdownloadcode"></a>`downloadCode` | [`Boolean!`](#boolean) | If `true`, the user can perform `download_code` on this resource. |
 | <a id="projectpermissionsdownloadwikicode"></a>`downloadWikiCode` | [`Boolean!`](#boolean) | If `true`, the user can perform `download_wiki_code` on this resource. |
 | <a id="projectpermissionsforkproject"></a>`forkProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `fork_project` on this resource. |
+| <a id="projectpermissionsmovedesign"></a>`moveDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `move_design` on this resource. |
 | <a id="projectpermissionspushcode"></a>`pushCode` | [`Boolean!`](#boolean) | If `true`, the user can perform `push_code` on this resource. |
 | <a id="projectpermissionspushtodeleteprotectedbranch"></a>`pushToDeleteProtectedBranch` | [`Boolean!`](#boolean) | If `true`, the user can perform `push_to_delete_protected_branch` on this resource. |
 | <a id="projectpermissionsreadcommitstatus"></a>`readCommitStatus` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_commit_status` on this resource. |

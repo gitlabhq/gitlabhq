@@ -950,6 +950,7 @@ export default {
       @deleteWorkItemError="issuesError = __('An error occurred while deleting an issuable.')"
       @workItemDeleted="deleteIssuable"
       @promotedToObjective="promoteToObjective"
+      @workItemTypeChanged="updateIssuablesCache($event)"
     />
     <issuable-list
       v-if="hasAnyIssues"

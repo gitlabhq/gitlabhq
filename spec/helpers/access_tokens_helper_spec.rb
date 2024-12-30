@@ -67,19 +67,29 @@ RSpec.describe AccessTokensHelper, feature_category: :system_access do
   end
 
   describe '#expires_at_field_data', :freeze_time do
+    before do
+      # Test the CE version of `expires_at_field_data` by satisfying the condition in the EE
+      # that calls the `super` method.
+      allow(helper).to receive(:personal_access_token_expiration_policy_enabled?).and_return(false)
+    end
+
     it 'returns expected hash' do
       expect(helper.expires_at_field_data).to eq({
-        min_date: 1.day.from_now.iso8601
+        min_date: 1.day.from_now.iso8601,
+        max_date: 400.days.from_now.iso8601
       })
     end
 
-    context 'when require_personal_access_token_expiry is true' do
+    context 'when require_personal_access_token_expiry is false' do
       before do
         stub_application_setting(require_personal_access_token_expiry: false)
       end
 
       it 'returns an empty hash' do
-        expect(helper.expires_at_field_data).to eq({})
+        expect(helper.expires_at_field_data).to eq({
+          min_date: 1.day.from_now.iso8601,
+          max_date: nil
+        })
       end
     end
   end

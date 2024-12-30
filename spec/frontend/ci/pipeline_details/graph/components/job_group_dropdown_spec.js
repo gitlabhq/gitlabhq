@@ -1,9 +1,9 @@
 import { shallowMount, mount } from '@vue/test-utils';
-import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdown } from '@gitlab/ui';
 
+import PipelineMiniGraphJobItem from '~/ci/pipeline_mini_graph/job_item.vue';
 import JobGroupDropdown from '~/ci/pipeline_details/graph/components/job_group_dropdown.vue';
 import JobItem from '~/ci/pipeline_details/graph/components/job_item.vue';
-import { SINGLE_JOB } from '~/ci/pipeline_details/graph/constants';
 
 describe('job group dropdown component', () => {
   const group = {
@@ -70,7 +70,7 @@ describe('job group dropdown component', () => {
   const findJobItem = () => wrapper.findComponent(JobItem);
   const findTriggerButton = () => wrapper.find('button');
   const findDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findDisclosureDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
+  const findPipelineMiniGraphJobItems = () => wrapper.findAllComponents(PipelineMiniGraphJobItem);
 
   const createComponent = ({ props, mountFn = shallowMount } = {}) => {
     wrapper = mountFn(JobGroupDropdown, {
@@ -80,14 +80,6 @@ describe('job group dropdown component', () => {
       },
     });
   };
-
-  it('renders dropdown with jobs', () => {
-    createComponent({ mountFn: mount });
-
-    expect(wrapper.findAll('[data-testid="disclosure-content"] > li').length).toBe(
-      group.jobs.length,
-    );
-  });
 
   it('renders dropdown', () => {
     createComponent();
@@ -125,31 +117,12 @@ describe('job group dropdown component', () => {
   it('renders parallel jobs in group', () => {
     createComponent({ mountFn: mount });
 
-    const [item1, item2] = findDisclosureDropdownItems().wrappers;
+    const [item1, item2] = findPipelineMiniGraphJobItems().wrappers;
 
-    expect(findDisclosureDropdownItems()).toHaveLength(2);
+    expect(findPipelineMiniGraphJobItems()).toHaveLength(2);
 
-    expect(item1.props('item')).toEqual({
-      text: group.jobs[0].name,
-      href: group.jobs[0].status.detailsPath,
-    });
-    expect(item1.findComponent(JobItem).props()).toMatchObject({
-      isLink: false,
-      job: group.jobs[0],
-      type: SINGLE_JOB,
-      cssClassJobName: 'gl-p-3',
-    });
-
-    expect(item2.props('item')).toEqual({
-      text: group.jobs[1].name,
-      href: group.jobs[1].status.detailsPath,
-    });
-    expect(item2.findComponent(JobItem).props()).toMatchObject({
-      isLink: false,
-      job: group.jobs[1],
-      type: SINGLE_JOB,
-      cssClassJobName: 'gl-p-3',
-    });
+    expect(item1.props('job')).toEqual(group.jobs[0]);
+    expect(item2.props('job')).toEqual(group.jobs[1]);
   });
 
   describe('tooltip', () => {

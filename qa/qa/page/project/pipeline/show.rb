@@ -120,17 +120,13 @@ module QA
 
           def has_skipped_job_in_group?
             within_element('disclosure-content') do
-              all_elements('ci-job-item', minimum: 1).all? do
-                has_selector?('.ci-status-icon-skipped')
-              end
+              has_selector?('[aria-label="Status: Skipped"]')
             end
           end
 
           def has_no_skipped_job_in_group?
             within_element('disclosure-content') do
-              all_elements('ci-job-item', minimum: 1).all? do
-                has_no_selector?('.ci-status-icon-skipped')
-              end
+              has_no_selector?('[aria-label="Status: Skipped"]')
             end
           end
 

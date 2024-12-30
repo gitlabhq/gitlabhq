@@ -6,17 +6,25 @@ import JobNameComponent from '~/ci/common/private/job_name_component.vue';
 
 import { mockPipelineJob } from './mock_data';
 
+const { detailedStatus, ...mockJobInfo } = mockPipelineJob;
+
+const mockJobDetailedStatus = {
+  ...mockJobInfo,
+  detailedStatus,
+};
+
+const mockJobStatus = {
+  ...mockJobInfo,
+  status: detailedStatus,
+};
+
 describe('JobItem', () => {
   let wrapper;
-
-  const defaultProps = {
-    job: mockPipelineJob,
-  };
 
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMount(JobItem, {
       propsData: {
-        ...defaultProps,
+        job: mockPipelineJob,
         ...props,
       },
     });
@@ -25,9 +33,12 @@ describe('JobItem', () => {
   const findJobNameComponent = () => wrapper.findComponent(JobNameComponent);
   const findJobActionButton = () => wrapper.findComponent(JobActionButton);
 
-  describe('when mounted', () => {
+  describe.each([
+    ['has detailedStatus', mockJobDetailedStatus],
+    ['has status', mockJobStatus],
+  ])('when job contains "%s"', (_, job) => {
     beforeEach(() => {
-      createComponent();
+      createComponent({ props: { job } });
     });
 
     describe('job name', () => {
@@ -37,13 +48,13 @@ describe('JobItem', () => {
 
       it('sends the necessary props to the job name component', () => {
         expect(findJobNameComponent().props()).toMatchObject({
-          name: mockPipelineJob.name,
-          status: mockPipelineJob.detailedStatus,
+          name: mockJobInfo.name,
+          status: detailedStatus,
         });
       });
 
       it('sets the correct tooltip for the job item', () => {
-        const tooltip = capitalizeFirstCharacter(mockPipelineJob.detailedStatus.tooltip);
+        const tooltip = capitalizeFirstCharacter(detailedStatus.tooltip);
 
         expect(findJobNameComponent().attributes('title')).toBe(tooltip);
       });
@@ -57,9 +68,9 @@ describe('JobItem', () => {
 
         it('sends the necessary props to the job action button', () => {
           expect(findJobActionButton().props()).toMatchObject({
-            jobId: mockPipelineJob.id,
-            jobAction: mockPipelineJob.detailedStatus.action,
-            jobName: mockPipelineJob.name,
+            jobId: mockJobInfo.id,
+            jobAction: detailedStatus.action,
+            jobName: mockJobInfo.name,
           });
         });
 

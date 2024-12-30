@@ -666,6 +666,7 @@ export default {
     },
     workItemTypeChanged() {
       this.$apollo.queries.workItem.refetch();
+      this.$emit('workItemTypeChanged', this.workItem);
     },
   },
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
@@ -784,7 +785,6 @@ export default {
                 :work-item-reference="workItem.reference"
                 :work-item-create-note-email="workItem.createNoteEmail"
                 :is-modal="isModal"
-                :is-drawer="isDrawer"
                 :work-item-state="workItem.state"
                 :has-children="hasChildren"
                 :has-parent="shouldShowAncestors"

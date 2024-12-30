@@ -1378,6 +1378,13 @@ Do not use:
 
 - GitLab Runner Kubernetes executor, because this can infringe on the Kubernetes trademark.
 
+## language model, large language model
+
+When referring to language models, be precise. Not all language models are large,
+and not all models are language models. When in doubt, ask a developer or PM for confirmation.
+
+You can use LLM to refer to a large language model if you spell it out on first use.
+
 ## later
 
 Use **later** when talking about version numbers.
@@ -1614,6 +1621,10 @@ Use:
 
 - The GitLab model registry supports A, B, and C.
 - You can publish a model to your project's model registry.
+
+## models
+
+For usage, see [language models](#language-model-large-language-model).
 
 ## n/a, N/A, not applicable
 

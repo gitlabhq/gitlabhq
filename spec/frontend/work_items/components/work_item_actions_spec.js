@@ -129,7 +129,6 @@ describe('WorkItemActions component', () => {
     hasChildren = false,
     canCreateRelatedItem = true,
     workItemsBeta = true,
-    isDrawer = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemActions, {
       isLoggedIn: isLoggedIn(),
@@ -160,7 +159,6 @@ describe('WorkItemActions component', () => {
         hideSubscribe,
         hasChildren,
         canCreateRelatedItem,
-        isDrawer,
       },
       mocks: {
         $toast,
@@ -620,12 +618,6 @@ describe('WorkItemActions component', () => {
 
     it('hides the action in case of Epic type', () => {
       createComponent({ workItemType: 'Epic' });
-
-      expect(findChangeTypeButton().exists()).toBe(false);
-    });
-
-    it('hides the action in case of drawer', () => {
-      createComponent({ isDrawer: true });
 
       expect(findChangeTypeButton().exists()).toBe(false);
     });

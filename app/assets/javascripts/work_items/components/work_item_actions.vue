@@ -175,11 +175,6 @@ export default {
       required: false,
       default: false,
     },
-    isDrawer: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     hideSubscribe: {
       type: Boolean,
       required: false,
@@ -313,7 +308,7 @@ export default {
         : this.$options.i18n.confidentialityEnabled;
     },
     showChangeType() {
-      return !(this.isEpic || this.isDrawer) && this.glFeatures.workItemsBeta;
+      return !this.isEpic && this.glFeatures.workItemsBeta;
     },
   },
   methods: {

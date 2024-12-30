@@ -260,6 +260,7 @@ export default {
         is-drawer
         class="work-item-drawer !gl-pt-0 xl:!gl-px-6"
         @deleteWorkItem="deleteWorkItem"
+        @workItemTypeChanged="$emit('workItemTypeChanged', $event)"
         v-on="$listeners"
       />
     </template>
