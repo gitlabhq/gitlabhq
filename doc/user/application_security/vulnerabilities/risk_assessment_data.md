@@ -116,3 +116,20 @@ Example output:
   "correlationId": "..."
 }
 ```
+
+## Vulnerability Prioritizer
+
+DETAILS:
+**Status:** Experiment
+
+Use the [Vulnerability Prioritizer CI/CD component](https://gitlab.com/explore/catalog/components/vulnerability-prioritizer) to help prioritize a project's vulnerabilities (namely CVEs). The component outputs a prioritization report in the `vulnerability-prioritizer` job's output.
+
+Vulnerabilities are listed in the following order:
+
+1. Vulnerabilities with known exploitation (KEV) are top priority.
+1. Higher EPSS scores (closer to 1) are prioritized.
+1. Severities are ordered from `Critical` to `Low`.
+
+Only vulnerabilities detected by [dependency scanning](../dependency_scanning/index.md) and [container scanning](../container_scanning/index.md) are included because the Vulnerability Prioritizer CI/CD component requires data only available in Common Vulnerabilities and Exposures (CVE) records.
+
+To add the Vulnerability Prioritizer CI/CD component to your project's CI/CD pipeline, see the [Vulnerability Prioritizer documentation](https://gitlab.com/components/vulnerability-prioritizer).

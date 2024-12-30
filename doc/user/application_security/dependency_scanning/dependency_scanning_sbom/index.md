@@ -275,3 +275,14 @@ merge cyclonedx sboms:
     paths:
       - gl-sbom-all.cdx.json
 ```
+
+## Troubleshooting
+
+When working with dependency scanning, you might encounter the following issues.
+
+### Warning: `grep: command not found`
+
+The analyzer image contains minimal dependencies to decrease the image's attack surface.
+As a result, utilities commonly found in other images, like `grep`, are missing from the image.
+This may result in a warning like `/usr/bin/bash: line 3: grep: command not found` to appear in
+the job log. This warning does not impact the results of the analyzer and can be ignored.
