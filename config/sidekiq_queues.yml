@@ -579,6 +579,8 @@
   - 1
 - - namespaces_process_sync_events
   - 1
+- - namespaces_remove_dormant_members
+  - 1
 - - namespaces_storage_usage_export
   - 1
 - - namespaces_sync_namespace_name
