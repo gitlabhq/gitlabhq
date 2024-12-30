@@ -237,9 +237,9 @@ module Types
       description: 'Selected auto merge strategy.'
     field :available_auto_merge_strategies, [GraphQL::Types::String], null: true, calls_gitaly: true,
       description: 'Array of available auto merge strategies.'
-    field :commits, Types::CommitType.connection_type, null: true,
+    field :commits, Types::Repositories::CommitType.connection_type, null: true,
       calls_gitaly: true, description: 'Merge request commits.'
-    field :commits_without_merge_commits, Types::CommitType.connection_type, null: true,
+    field :commits_without_merge_commits, Types::Repositories::CommitType.connection_type, null: true,
       calls_gitaly: true, description: 'Merge request commits excluding merge commits.'
     field :committers, Types::UserType.connection_type, null: true, complexity: 5,
       calls_gitaly: true, description: 'Users who have added commits to the merge request.'

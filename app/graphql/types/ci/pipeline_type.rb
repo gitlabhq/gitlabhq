@@ -139,7 +139,7 @@ module Types
       field :path, GraphQL::Types::String, null: true,
         description: "Relative path to the pipeline's page."
 
-      field :commit, Types::CommitType, null: true,
+      field :commit, Types::Repositories::CommitType, null: true,
         description: "Git commit of the pipeline.",
         calls_gitaly: true
 

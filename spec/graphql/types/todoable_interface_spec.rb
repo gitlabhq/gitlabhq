@@ -20,7 +20,7 @@ RSpec.describe Types::TodoableInterface, feature_category: :notifications do
       expect(described_class.resolve_type(build(:merge_request), {})).to eq(Types::MergeRequestType)
       expect(described_class.resolve_type(build(:design), {})).to eq(Types::DesignManagement::DesignType)
       expect(described_class.resolve_type(build(:alert_management_alert), {})).to eq(Types::AlertManagement::AlertType)
-      expect(described_class.resolve_type(build(:commit), {})).to eq(Types::CommitType)
+      expect(described_class.resolve_type(build(:commit), {})).to eq(Types::Repositories::CommitType)
       expect(described_class.resolve_type(build(:project), {})).to eq(Types::ProjectType)
       expect(described_class.resolve_type(build(:group), {})).to eq(Types::GroupType)
       expect(described_class.resolve_type(build(:key), {})).to eq(Types::KeyType)

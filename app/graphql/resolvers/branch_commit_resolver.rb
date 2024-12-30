@@ -2,7 +2,7 @@
 
 module Resolvers
   class BranchCommitResolver < BaseResolver
-    type Types::CommitType, null: true
+    type Types::Repositories::CommitType, null: true
 
     alias_method :branch, :object
 

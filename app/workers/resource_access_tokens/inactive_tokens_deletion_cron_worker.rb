@@ -54,7 +54,7 @@ module ResourceAccessTokens
               class: self.class.name,
               user_id: user.id,
               username: user.username,
-              message: "Blocekd the project_bot user because it has no active token assigned"
+              message: "Blocked the project_bot user because it has no active token assigned"
             )
           end
         end

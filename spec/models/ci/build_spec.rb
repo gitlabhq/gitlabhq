@@ -3113,6 +3113,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it { is_expected.to include(key: pipeline_schedule_variable.key, value: pipeline_schedule_variable.value, public: false, masked: false) }
+      it { is_expected.to include(key: 'CI_PIPELINE_SCHEDULE_DESCRIPTION', value: pipeline_schedule.description, public: true, masked: false) }
     end
 
     context 'when container registry is enabled' do

@@ -10,7 +10,7 @@ module Types
       null: false,
       description: 'Name of the branch.'
 
-    field :commit, Types::CommitType,
+    field :commit, Types::Repositories::CommitType,
       null: true, resolver: Resolvers::BranchCommitResolver,
       description: 'Commit for the branch.'
   end

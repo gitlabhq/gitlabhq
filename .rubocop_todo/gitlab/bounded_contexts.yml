@@ -422,7 +422,6 @@ Gitlab/BoundedContexts:
     - 'app/graphql/types/commit_signatures/ssh_signature_type.rb'
     - 'app/graphql/types/commit_signatures/verification_status_enum.rb'
     - 'app/graphql/types/commit_signatures/x509_signature_type.rb'
-    - 'app/graphql/types/commit_type.rb'
     - 'app/graphql/types/container_expiration_policy_cadence_enum.rb'
     - 'app/graphql/types/container_expiration_policy_keep_enum.rb'
     - 'app/graphql/types/container_expiration_policy_older_than_enum.rb'

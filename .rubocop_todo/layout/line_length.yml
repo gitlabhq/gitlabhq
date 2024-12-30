@@ -2919,7 +2919,6 @@ Layout/LineLength:
     - 'spec/graphql/types/admin/analytics/usage_trends/measurement_type_spec.rb'
     - 'spec/graphql/types/award_emojis/award_emoji_type_spec.rb'
     - 'spec/graphql/types/base_field_spec.rb'
-    - 'spec/graphql/types/commit_type_spec.rb'
     - 'spec/graphql/types/container_expiration_policy_type_spec.rb'
     - 'spec/graphql/types/environment_type_spec.rb'
     - 'spec/graphql/types/global_id_type_spec.rb'

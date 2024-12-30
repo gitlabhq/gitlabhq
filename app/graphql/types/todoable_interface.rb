@@ -29,7 +29,7 @@ module Types
       when ::AlertManagement::Alert
         Types::AlertManagement::AlertType
       when Commit
-        Types::CommitType
+        Types::Repositories::CommitType
       when Project
         Types::ProjectType
       when Group

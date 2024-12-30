@@ -87,7 +87,7 @@ pipelines, each of which may contain a security scan.
   when enforcing merge request approval policies.
 
 If a project uses [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md), you must use the [`latest` security templates](../../../development/cicd/templates.md) so that the security scanning jobs are present in the pipeline.
-For more information see [Use security scanning tools with merge request pipelines](../index.md#use-security-scanning-tools-with-merge-request-pipelines).
+For more information see [Use security scanning tools with merge request pipelines](../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).
 
 ## Merge request approval policy editor
 

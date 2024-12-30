@@ -86,7 +86,7 @@ pipeline secret detection can detect if a secret was added in one commit and rem
 - Merge request
 
   In a merge request, pipeline secret detection scans every commit made on the source branch. To use this
-  feature, you must use the [`latest` pipeline secret detection template](../../index.md#use-security-scanning-tools-with-merge-request-pipelines), as it supports
+  feature, you must use the [`latest` pipeline secret detection template](../../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines), as it supports
   [merge request pipelines](../../../../ci/pipelines/merge_request_pipelines.md). Pipeline secret detection's
   results are only available after the pipeline is completed.
 
@@ -266,7 +266,7 @@ To enable full history scan, set the variable `SECRET_DETECTION_HISTORIC_SCAN` t
 
 #### Run jobs in merge request pipelines
 
-See [Use security scanning tools with merge request pipelines](../../index.md#use-security-scanning-tools-with-merge-request-pipelines).
+See [Use security scanning tools with merge request pipelines](../../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).
 
 #### Override the analyzer jobs
 

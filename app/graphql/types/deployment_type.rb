@@ -52,7 +52,7 @@ module Types
       description: 'Status of the deployment.'
 
     field :commit,
-      Types::CommitType,
+      Types::Repositories::CommitType,
       description: 'Commit details of the deployment.',
       calls_gitaly: true
 
