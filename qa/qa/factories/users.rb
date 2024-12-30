@@ -5,7 +5,7 @@ module QA
     # https://docs.gitlab.com/ee/api/users.html
     factory :user, class: 'QA::Resource::User' do
       trait :admin do
-        admin { true }
+        is_admin { true }
       end
 
       trait :set_public_email do

@@ -4,7 +4,7 @@ module QA
   RSpec.describe 'Data Stores', product_group: :tenant_scale do
     shared_examples 'loads all images' do |admin|
       let(:api_client) { Runtime::API::Client.as_admin }
-      let(:user) { create(:user, admin: admin, api_client: api_client) }
+      let(:user) { create(:user, is_admin: admin, api_client: api_client) }
 
       it do
         Flow::Login.sign_in(as: user)
