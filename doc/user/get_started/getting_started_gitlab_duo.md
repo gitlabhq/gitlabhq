@@ -34,13 +34,13 @@ For more information, see:
 - [Self-hosted models](../../administration/self_hosted_models/index.md).
 - [Health check details](../gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo).
 
-## Step 2: Try Duo Chat in the UI
+## Step 2: Try GitLab Duo Chat in the UI
 
-Confirm that Duo Chat is available in the GitLab UI.
+Confirm that Chat is available in the GitLab UI.
 
 Go to a project and in the upper-right corner, a button named **Ask Duo Chat** should be displayed.
 If this button is available, it means everything is configured properly.
-Try asking Duo Chat a question or type `/` to see a list of slash commands.
+Try asking Chat a question or type `/` to see a list of slash commands.
 
 For more information, see:
 
@@ -87,12 +87,12 @@ For more information, see:
 Finally, go to the settings for the extension and confirm that Code Suggestions is enabled,
 as well as the languages you want suggestions for.
 
-You should also confirm that Duo Chat is enabled.
+You should also confirm that Chat is enabled.
 
-Then test Code Suggestions and Duo Chat in your IDE.
+Then test Code Suggestions and Chat in your IDE.
 
 - Code Suggestions recommends code as you type.
-- Duo Chat is available to ask questions about your code or anything else you need.
+- Chat is available to ask questions about your code or anything else you need.
 
 For more information, see:
 

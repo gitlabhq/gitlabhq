@@ -55,7 +55,7 @@ export default {
   },
   data() {
     return {
-      updatePid: null,
+      updateTimeoutId: null,
       needsRefresh: false,
       cursor: {
         first: DEFAULT_PAGE_SIZE,
@@ -227,19 +227,19 @@ export default {
 
       this.showSpinnerWhileLoading = true;
     },
-    markInteracting() {
-      clearTimeout(this.updatePid);
+    startedInteracting() {
+      clearTimeout(this.updateTimeoutId);
     },
     stoppedInteracting() {
       if (!this.needsRefresh) {
         return;
       }
 
-      if (this.updatePid) {
-        clearTimeout(this.updatePid);
+      if (this.updateTimeoutId) {
+        clearTimeout(this.updateTimeoutId);
       }
 
-      this.updatePid = setTimeout(() => {
+      this.updateTimeoutId = setTimeout(() => {
         /*
          We double-check needsRefresh or
          whether a query is already running
@@ -247,7 +247,7 @@ export default {
         if (this.needsRefresh && !this.$apollo.queries.todos.loading) {
           this.updateAllQueries(false);
         }
-        this.updatePid = null;
+        this.updateTimeoutId = null;
       }, TODO_WAIT_BEFORE_RELOAD);
     },
   },
@@ -319,7 +319,7 @@ export default {
           v-else
           data-testid="todo-item-list-container"
           class="gl-m-0 gl-border-collapse gl-list-none gl-p-0"
-          @mouseenter="markInteracting"
+          @mouseenter="startedInteracting"
           @mouseleave="stoppedInteracting"
         >
           <transition-group name="todos">

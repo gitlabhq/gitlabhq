@@ -189,7 +189,7 @@ DETAILS:
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 You can ask GitLab Duo Chat questions about code by pasting that code into
-the Duo Chat window. For example:
+the Chat window. For example:
 
 ```plaintext
 Provide a clear explanation of this Ruby code: def sum(a, b) a + b end.

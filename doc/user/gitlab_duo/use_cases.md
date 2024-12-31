@@ -319,7 +319,7 @@ fun main() {
 }
 ```
 
-1. Select the source code in the IDE, then right-click for Duo Chat explain the code.
+1. Select the source code in the IDE, then right-click for GitLab Duo Chat to explain the code.
 1. Refine the prompts to learn more about bugs, optimization tips, or vulnerabilities:
 
    ```markdown
@@ -340,7 +340,7 @@ fun main() {
    be achieved by introducing a boolean flag or a separate game state to track whether the brick has been found.
    ```
 
-1. Use the `/tests` command to ask Duo Chat to generate tests for the selected code:
+1. Use the `/tests` command to ask Chat to generate tests for the selected code:
 
    ```markdown
    /tests
@@ -374,7 +374,7 @@ fun main() {
      }
     ```
 
-After you ensure that everything is tested, ask Duo Chat to refactor the selected code:
+After you ensure that everything is tested, ask Chat to refactor the selected code:
 
 ```markdown
 /refactor fix bugs, improve UX
@@ -456,7 +456,7 @@ fun main() {
 NOTE:
 PowerShell support is [experimental](../project/repository/code_suggestions/supported_extensions.md#add-support-for-more-languages).
 
-1. Use Duo Chat to ask how to get started with a PowerShell script that prints the file size of the current directory.
+1. Use GitLab Duo Chat to ask how to get started with a PowerShell script that prints the file size of the current directory.
 
    ```markdown
    How to get started with a PowerShell script that prints the file size of the current directory?
@@ -552,7 +552,7 @@ introduces a security vulnerability with a [buffer overflow](https://en.wikipedi
 
 [SAST security scanners](../application_security/sast/analyzers.md) can detect and report the problem. Use [Vulnerability Explanation](../application_security/vulnerabilities/index.md#explaining-a-vulnerability) to understand the problem.
 Vulnerability Resolution helps to generate an MR.
-If the suggested changes do not fit requirements, or might lead to problems, you can use Code Suggestions and Duo Chat to refine. For example:
+If the suggested changes do not fit requirements, or might lead to problems, you can use Code Suggestions and Chat to refine. For example:
 
 1. Open VS Code or the Web IDE with GitLab Duo enabled, and add a comment with instructions:
 

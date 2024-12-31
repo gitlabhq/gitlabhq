@@ -24,7 +24,7 @@ When GitLab Duo is turned off for a group, project, or instance:
 
 - GitLab Duo features that access resources, like code, issues, and vulnerabilities, are not available.
 - Code Suggestions is not available.
-- Duo Chat is not available.
+- GitLab Duo Chat is not available.
 
 ### Turn off for a group
 

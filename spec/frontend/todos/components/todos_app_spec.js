@@ -11,7 +11,7 @@ import TodosFilterBar from '~/todos/components/todos_filter_bar.vue';
 import TodosMarkAllDoneButton from '~/todos/components/todos_mark_all_done_button.vue';
 import TodosPagination, { CURSOR_CHANGED_EVENT } from '~/todos/components/todos_pagination.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
-import { getInstrumentTabLabels, getStatusByTab } from '~/todos/constants';
+import { getInstrumentTabLabels, getStatusByTab, TODO_WAIT_BEFORE_RELOAD } from '~/todos/constants';
 import { mockTracking, unmockTracking } from 'jest/__helpers__/tracking_helper';
 import getPendingTodosCount from '~/todos/components/queries/get_pending_todos_count.query.graphql';
 import { todosResponse, getPendingTodosCountResponse } from '../mock_data';
@@ -42,6 +42,7 @@ describe('TodosApp', () => {
   };
 
   const findTodoItems = () => wrapper.findAllComponents(TodoItem);
+  const findFirstTodoItem = () => wrapper.findComponent(TodoItem);
   const findGlTabs = () => wrapper.findComponent(GlTabs);
   const findFilterBar = () => wrapper.findComponent(TodosFilterBar);
   const findMarkAllDoneButton = () => wrapper.findComponent(TodosMarkAllDoneButton);
@@ -180,7 +181,6 @@ describe('TodosApp', () => {
   });
 
   it('refetches todos one second after the cursor leaves the list of todos', async () => {
-    jest.useFakeTimers();
     createComponent();
 
     // Wait and account for initial query
@@ -189,7 +189,7 @@ describe('TodosApp', () => {
     expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(1);
 
     // Simulate interacting with a todo item then mousing out of the list zone
-    wrapper.vm.handleItemChanged(1, true);
+    findFirstTodoItem().vm.$emit('change');
     const list = findTodoItemListContainer();
     list.trigger('mouseleave');
 
@@ -199,7 +199,7 @@ describe('TodosApp', () => {
     expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(2);
 
     // Run out the clock
-    jest.advanceTimersByTime(1000 + 50); // 1s + some jitter
+    jest.advanceTimersByTime(TODO_WAIT_BEFORE_RELOAD + 50); // 1s + some jitter
 
     // Refreshes the count and the list
     await waitForPromises();
@@ -208,7 +208,6 @@ describe('TodosApp', () => {
   });
 
   it('does not refresh todos after the cursor leaves the list of todos if nothing changed', async () => {
-    jest.useFakeTimers();
     createComponent();
 
     // Wait and account for initial query
@@ -226,7 +225,7 @@ describe('TodosApp', () => {
     expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(1);
 
     // Run out the clock
-    jest.advanceTimersByTime(1000 + 50); // 1s + some jitter
+    jest.advanceTimersByTime(TODO_WAIT_BEFORE_RELOAD + 50); // 1s + some jitter
 
     // Should not update anything
     await waitForPromises();

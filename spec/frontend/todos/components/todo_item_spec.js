@@ -73,12 +73,12 @@ describe('TodoItem', () => {
   describe('state based style', () => {
     it('applies background when todo is done', () => {
       createComponent({ todo: { state: TODO_STATE_DONE } });
-      expect(wrapper.attributes('class')).toContain('gl-bg-subtle');
+      expect(wrapper.classes()).toContain('gl-bg-subtle');
     });
 
     it('applies no background when todo is pending', () => {
       createComponent({ todo: { state: TODO_STATE_PENDING } });
-      expect(wrapper.attributes('class')).not.toContain('gl-bg-subtle');
+      expect(wrapper.classes()).not.toContain('gl-bg-subtle');
     });
   });
 

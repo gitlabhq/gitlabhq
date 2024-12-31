@@ -73,4 +73,4 @@ export const getInstrumentTabLabels = () => {
 };
 
 export const DEFAULT_PAGE_SIZE = 20;
-export const TODO_WAIT_BEFORE_RELOAD = 1 * 1000; // 1 seconds
+export const TODO_WAIT_BEFORE_RELOAD = 1 * 1000; // 1 second

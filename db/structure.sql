@@ -29313,8 +29313,6 @@ CREATE INDEX idx_protected_branch_merge_access_levels_protected_branch_proje ON 
 
 CREATE INDEX idx_reminder_frequency_on_work_item_progresses ON work_item_progresses USING btree (reminder_frequency);
 
-CREATE INDEX idx_sbom_components_on_name_gin ON sbom_components USING gin (name gin_trgm_ops);
-
 CREATE UNIQUE INDEX idx_sbom_components_on_name_purl_type_component_type_and_org_id ON sbom_components USING btree (name, purl_type, component_type, organization_id);
 
 CREATE INDEX idx_sbom_occurr_on_project_component_version_input_file_path ON sbom_occurrences USING btree (project_id, component_version_id, input_file_path);
