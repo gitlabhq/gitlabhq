@@ -162,8 +162,13 @@ class Todo < ApplicationRecord
     #
     # Returns an `Array` containing the IDs of the updated todos.
     def batch_update(**new_attributes)
+      # We force a `WHERE todo.id IN ()` SQL clause to circumvent issues where resolving todos
+      # associated to a specific group would also resolve other todos due to limitations of the
+      # `update_all` which doesn't handle UNIONs well.
+      ids_to_update = select(:id)
+      todos_to_update = where(id: ids_to_update)
       # Only update those that have different state
-      base = where.not(state: new_attributes[:state]).except(:order)
+      base = todos_to_update.where.not(state: new_attributes[:state]).except(:order)
       ids = base.pluck(:id)
 
       base.update_all(new_attributes.merge(updated_at: Time.current))

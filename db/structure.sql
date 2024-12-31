@@ -17546,8 +17546,10 @@ CREATE TABLE pm_advisories (
     cvss_v3 text,
     urls text[] DEFAULT '{}'::text[],
     identifiers jsonb NOT NULL,
+    cve text,
     CONSTRAINT check_152def3868 CHECK ((char_length(cvss_v2) <= 128)),
     CONSTRAINT check_19cbd06439 CHECK ((char_length(advisory_xid) <= 36)),
+    CONSTRAINT check_b1c980b212 CHECK ((char_length(cve) <= 24)),
     CONSTRAINT check_bed97fa77a CHECK ((char_length(cvss_v3) <= 128)),
     CONSTRAINT check_e4bfd3ffbf CHECK ((char_length(title) <= 256)),
     CONSTRAINT check_fee880f7aa CHECK ((char_length(description) <= 8192)),
@@ -29388,6 +29390,10 @@ CREATE INDEX index_p_ci_builds_on_execution_config_id ON ONLY p_ci_builds USING 
 
 CREATE INDEX index_0928d9f200 ON ci_builds USING btree (execution_config_id) WHERE (execution_config_id IS NOT NULL);
 
+CREATE INDEX tmp_p_ci_builds_trigger_request_id_idx ON ONLY p_ci_builds USING btree (trigger_request_id) WHERE (trigger_request_id IS NOT NULL);
+
+CREATE INDEX index_437b1804fb ON ci_builds USING btree (trigger_request_id) WHERE (trigger_request_id IS NOT NULL);
+
 CREATE INDEX index_abuse_events_on_abuse_report_id ON abuse_events USING btree (abuse_report_id);
 
 CREATE INDEX index_abuse_events_on_category_and_source ON abuse_events USING btree (category, source);
@@ -32303,6 +32309,8 @@ CREATE UNIQUE INDEX index_plan_limits_on_plan_id ON plan_limits USING btree (pla
 CREATE UNIQUE INDEX index_plans_on_name ON plans USING btree (name);
 
 CREATE UNIQUE INDEX index_pm_advisories_on_advisory_xid_and_source_xid ON pm_advisories USING btree (advisory_xid, source_xid);
+
+CREATE INDEX index_pm_advisories_on_cve ON pm_advisories USING btree (cve);
 
 CREATE INDEX index_pm_affected_packages_on_pm_advisory_id ON pm_affected_packages USING btree (pm_advisory_id);
 
@@ -35579,6 +35587,8 @@ ALTER INDEX p_ci_job_artifacts_job_id_file_type_partition_id_idx ATTACH PARTITIO
 ALTER INDEX p_ci_pipelines_ci_ref_id_id_idx ATTACH PARTITION idx_ci_pipelines_artifacts_locked;
 
 ALTER INDEX index_p_ci_builds_on_execution_config_id ATTACH PARTITION index_0928d9f200;
+
+ALTER INDEX tmp_p_ci_builds_trigger_request_id_idx ATTACH PARTITION index_437b1804fb;
 
 ALTER INDEX p_ci_builds_metadata_build_id_idx ATTACH PARTITION index_ci_builds_metadata_on_build_id_and_has_exposed_artifacts;
 
