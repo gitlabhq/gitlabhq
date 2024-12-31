@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
+RSpec.describe Gitlab::GithubImport::Representation::IssueEvent, feature_category: :importers do
   shared_examples 'an IssueEvent' do
     it 'returns an instance of IssueEvent' do
       expect(issue_event).to be_an_instance_of(described_class)

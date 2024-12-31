@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Representation::User do
+RSpec.describe Gitlab::GithubImport::Representation::User, feature_category: :importers do
   shared_examples 'a User' do
     it 'returns an instance of User' do
       expect(user).to be_an_instance_of(described_class)

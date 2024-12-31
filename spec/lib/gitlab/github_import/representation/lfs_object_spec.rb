@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Representation::LfsObject do
+RSpec.describe Gitlab::GithubImport::Representation::LfsObject, feature_category: :importers do
   describe '#github_identifiers' do
     it 'returns a hash with needed identifiers' do
       github_identifiers = {

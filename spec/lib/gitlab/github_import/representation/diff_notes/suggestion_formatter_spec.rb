@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Representation::DiffNotes::SuggestionFormatter do
+RSpec.describe Gitlab::GithubImport::Representation::DiffNotes::SuggestionFormatter, feature_category: :importers do
   it 'does nothing when there is any text before the suggestion tag' do
     note = <<~BODY
     looks like```suggestion but it isn't

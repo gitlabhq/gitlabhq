@@ -15,32 +15,10 @@ Scan your repository's content and application's behavior for vulnerabilities:
 
 - Repository scanning can detect vulnerabilities in your project's repository. Coverage includes
   your application's source code, also the libraries and container images it's dependent on.
-- Testing the behavior of your application and its API can detect vulnerabilities that occur only at
+- Behavioral testing of your application and its API can detect vulnerabilities that occur only at
   runtime.
 
-### Repository scanning
-
-Your application's repository may contain its source code, dependency declarations, and
-Infrastructure as Code definitions. Repository scanning can detect vulnerabilities in each of these.
-
-Repository scanning tools include:
-
-- Static Application Security Testing: Analyze source code for vulnerabilities.
-- Infrastructure as Code (IaC) scanning: Detect vulnerabilities in your application's deployment
-  environment.
-- Secret detection: Detect and block secrets being committed to the repository.
-- Dependencies: Detect vulnerabilities in your application's dependencies and container images.
-
-### Behavioral testing
-
-Behavioral testing requires a deployable application to test for known vulnerabilities and
-unexpected behavior.
-
-Behavioral testing tools include:
-
-- Dynamic Application Security Testing: Test your application for known attack vectors.
-- API security: Test your application's API for known attacks and vulnerabilities to input.
-- Coverage-guided fuzz testing: Test your application for unexpected behavior.
+For more details, see [Security scanning](security_scanning.md).
 
 ## Lifecycle coverage
 
@@ -50,6 +28,6 @@ remediation.
 
 All GitLab application security scanning tools can be run in a CI/CD pipeline, triggered by code
 changes. Security scans can also be run on a schedule, outside the context of code changes, and some
-can be run manually. It's important to perform detection outside the CI/CD pipeline because risks
-can arise outside the context of code changes. For example, a newly-discovered vulnerability in a
-dependency might be a risk to any application using it.
+can be run manually. It's important to also perform detection outside the CI/CD pipeline because
+risks can arise outside the context of code changes. For example, a newly-discovered vulnerability
+in a dependency might be a risk to any application using it.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::Events::BaseImporter do
+RSpec.describe Gitlab::GithubImport::Importer::Events::BaseImporter, feature_category: :importers do
   let(:project) { instance_double('Project') }
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
   let(:issue_event) { instance_double('Gitlab::GithubImport::Representation::IssueEvent') }
