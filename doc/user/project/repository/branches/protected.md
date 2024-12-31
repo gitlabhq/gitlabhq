@@ -98,7 +98,7 @@ Prerequisites:
 - You must have at least the Maintainer role.
 - When granting a group **Allowed to merge** or **Allowed to push and merge** permissions
   on a protected branch, the project must be accessible and shared with the group.
-  For more information, see [Shared projects](../../members/share_project_with_groups.md).
+  For more information, see [Shared projects](../../members/sharing_projects_groups.md).
 
 To protect a branch:
 

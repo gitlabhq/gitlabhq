@@ -31,7 +31,7 @@ When the configuration syntax is fixed, no further failed pipelines should appea
 To find and fix the configuration problem, you can use:
 
 - The [pipeline editor](../pipeline_editor/index.md).
-- The [CI lint tool](../lint.md).
+- The [CI lint tool](../yaml/lint.md).
 
 ## The merge request's pipeline is marked as failed but the latest pipeline succeeded
 

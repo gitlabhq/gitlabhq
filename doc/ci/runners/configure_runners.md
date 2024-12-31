@@ -554,7 +554,7 @@ For this feature to work correctly, the submodules must be configured
 
 - the HTTP(S) URL of a publicly-accessible repository, or
 - a relative path to another repository on the same GitLab server. See the
-  [Git submodules](../git_submodules.md) documentation.
+  [Git submodules](git_submodules.md) documentation.
 
 You can provide additional flags to control advanced behavior using [`GIT_SUBMODULE_UPDATE_FLAGS`](#git-submodule-update-flags).
 

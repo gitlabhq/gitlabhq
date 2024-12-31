@@ -72,7 +72,7 @@ to AI that you think could benefit from being in this list, add it!
   [Code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library).
 - **Prompt Registry**: stored, versioned prompts used to interact with third-party
   AI Services. [Design document proposal MR (closed)](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135872).
-- **Prompt**: Natural language instructions sent to an LLM to perform certain tasks. [Prompt guidelines](prompts.md).
+- **Prompt**: Natural language instructions sent to an LLM to perform certain tasks. [Prompt guidelines](ai_feature_development_playbook.md).
 - **RAG (Retrieval Augmented Generation)**: RAG provide contextual data to an LLM as part of a query to personalise results. RAG is used to inject additional context into a prompt to decrease hallucinations and improve the quality of outputs.
 - **RAG Pipeline**: A mechanism used to take
   an input (such as a user question) into a system, retrieve any relevant data

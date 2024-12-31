@@ -89,8 +89,8 @@ then
 fi
 
 # Do not use dashes (-) in directory names, use underscores (_) instead.
-# Number of directories with dashes as of 2021-09-17
-DIR_NUMBER_DASHES=2
+# Number of directories with dashes as of 2024-12-28
+DIR_NUMBER_DASHES=0
 DIR_FIND_DASHES=$(find doc -type d -name "*-*" | wc -l)
 # shellcheck disable=2059
 printf "${COLOR_GREEN}INFO: Checking for directory names containing dashes...${COLOR_RESET}\n"
@@ -104,8 +104,8 @@ then
 fi
 
 # Do not use dashes (-) in filenames, use underscores (_) instead.
-# Number of filenames with dashes as of 2024-06-17
-FILE_NUMBER_DASHES=68
+# Number of filenames with dashes as of 2024-12-26
+FILE_NUMBER_DASHES=66
 FILE_FIND_DASHES=$(find doc -type f -name "*-*.md" | wc -l)
 # shellcheck disable=2059
 printf "${COLOR_GREEN}INFO: Checking for filenames containing dashes...${COLOR_RESET}\n"

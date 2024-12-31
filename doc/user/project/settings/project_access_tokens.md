@@ -71,7 +71,7 @@ To create a project access token:
 A project access token is displayed. Save the project access token somewhere safe. After you leave or refresh the page, you can't view it again.
 
 WARNING:
-Project access tokens are treated as [internal users](../../../development/internal_users.md).
+Project access tokens are treated as [internal users](../../../administration/internal_users.md).
 If an internal user creates a project access token, that token is able to access
 all projects that have visibility level set to [Internal](../../public_access.md).
 

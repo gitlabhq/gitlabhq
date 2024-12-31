@@ -21,7 +21,7 @@ This file is where you define the CI/CD jobs that make up your pipeline.
   [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
 
 When you are editing your `.gitlab-ci.yml` file, you can validate it with the
-[CI Lint](../lint.md) tool.
+[CI Lint](../yaml/lint.md) tool.
 
 If you are editing content on this page, follow the [instructions for documenting keywords](../../development/cicd/cicd_reference_documentation_guide.md).
 

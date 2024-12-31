@@ -102,7 +102,7 @@ To upload a file in the Web Editor:
 ## Delete a file
 
 NOTE:
-You cannot delete a file from a [protected branch](../protected_branches.md)
+You cannot delete a file from a [protected branch](branches/protected.md))
 without the necessary [permissions](../../permissions.md).
 
 To delete a file in the Web Editor:

@@ -42,7 +42,7 @@ job:
     - 'curl --request POST --header "Content-Type: application/json" "https://gitlab/api/v4/projects"'
 ```
 
-You can verify the syntax is valid with the [CI Lint](../lint.md) tool.
+You can verify the syntax is valid with the [CI Lint](../yaml/lint.md) tool.
 
 Be careful when using these characters as well:
 

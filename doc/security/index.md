@@ -59,7 +59,7 @@ You can find all those directories listed in the [Linux package configuration do
 
 ### Platform usage and settings
 
-- [Review GitLab token type and usages](token_overview.md).
+- [Review GitLab token type and usages](tokens/index.md).
 - [How to configure rate limits improve security and availability](rate_limits.md).
 - [How to filter outbound webhook requests](webhooks.md).
 - [How to configure import and export limits and timeouts](../administration/settings/import_and_export_settings.md).

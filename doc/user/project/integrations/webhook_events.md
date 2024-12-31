@@ -2223,7 +2223,7 @@ Payload example:
 
 Two access token expiration events are generated:
 
-- Seven days before a [project or group access token](../../../security/token_overview.md) expires.
+- Seven days before a [project or group access token](../../../security/tokens/index.md) expires.
 - One day before the token expires.
 
 The available values for `event_name` in the payload are:

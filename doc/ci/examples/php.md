@@ -244,7 +244,7 @@ default:
 ## Access private packages or dependencies
 
 If your test suite needs to access a private repository, you need to configure
-the [SSH keys](../ssh_keys/index.md) to be able to clone it.
+the [SSH keys](../jobs/ssh_keys.md) to be able to clone it.
 
 ## Use databases or other services
 

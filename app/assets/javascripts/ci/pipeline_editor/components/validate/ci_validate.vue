@@ -188,7 +188,7 @@ export default {
   },
   i18n,
   BASE_CLASSES,
-  lintHref: helpPagePath('ci/lint.md'),
+  lintHref: helpPagePath('ci/yaml/lint.md'),
 };
 </script>
 

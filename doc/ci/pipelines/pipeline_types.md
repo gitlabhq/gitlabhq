@@ -34,7 +34,7 @@ Branch pipelines:
 - Have access to [some predefined variables](../variables/predefined_variables.md).
 - Have access to [protected variables](../variables/index.md#protect-a-cicd-variable)
   and [protected runners](../runners/configure_runners.md#prevent-runners-from-revealing-sensitive-information)
-  when the branch is a [protected branch](../../user/project/protected_branches.md).
+  when the branch is a [protected branch](../../user/project/repository/branches/protected.md).
 
 ## Tag pipeline
 

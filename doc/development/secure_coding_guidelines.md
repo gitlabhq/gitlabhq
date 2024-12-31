@@ -1388,7 +1388,7 @@ Add the new prefix to:
 - The [GitLab Secret Detection gem](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-secret_detection)
 - GitLab [secrets SAST analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/secrets)
 - [Tokinator](https://gitlab.com/gitlab-com/gl-security/appsec/tokinator/-/blob/main/CONTRIBUTING.md?ref_type=heads) (internal tool / team members only)
-- [Token Overview](../security/token_overview.md) documentation
+- [Token Overview](../security/tokens/index.md) documentation
 
 ### Examples
 

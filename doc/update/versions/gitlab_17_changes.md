@@ -20,6 +20,8 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 ## Issues to be aware of when upgrading from 16.11
 
+- You must remove references to the [now deprecated bundled Grafana](../deprecations.md#bundled-grafana-deprecated-and-disabled) key from `gitlab.rb` before upgrading to GitLab 17.0 or later. After upgrading, any references to the key in `gitlab.rb` will cause `gitlab-ctl reconfigure` to fail.
+
 - You should [migrate to the new runner registration workflow](../../ci/runners/new_creation_workflow.md) before upgrading to GitLab 17.0.
 
   In GitLab 16.0, we introduced a new runner creation workflow that uses runner authentication tokens to register runners.

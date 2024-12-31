@@ -330,7 +330,7 @@ To create a ruleset configuration file:
 
 #### Modify rules from the default ruleset
 
-You can modify rules predefined in the [default ruleset](../pipeline/detected_secrets.md).
+You can modify rules predefined in the [default ruleset](../detected_secrets.md).
 
 Modifying rules can help you adapt pipeline secret detection to an existing workflow or tool. For example you may want to override the severity of a detected secret or disable a rule from being detected at all.
 
