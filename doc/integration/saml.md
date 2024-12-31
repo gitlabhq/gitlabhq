@@ -1530,7 +1530,7 @@ list.
    ```
 
 1. Edit your installation configuration to register the SAML authentication method
-   in the `upstream_two_factor_authn_contexts` list.
+   in the `upstream_two_factor_authn_contexts` list. You must enter the `AuthnContext` from your SAML response.
 
    ::Tabs
 

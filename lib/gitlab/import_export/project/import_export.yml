@@ -1227,6 +1227,7 @@ ee:
         - vulnerability_finding:
           - :scanner
           - :primary_identifier
+          - :identifiers
           - :initial_finding_pipeline
           - :latest_finding_pipeline
         - vulnerability_read:
@@ -1318,6 +1319,7 @@ ee:
       - :project_fingerprint
       - :project_id
       - :location_fingerprint
+      - :primary_identifier_fingerprint
       - :name
       - :report_type
       - :severity
@@ -1329,13 +1331,14 @@ ee:
       - :name
       - :vendor
       - :external_id
-    primary_identifier:
+    identifiers: &identifiers_definition
       - :project_id
       - :external_type
       - :external_id
       - :fingerprint
       - :name
       - :url
+    primary_identifier: *identifiers_definition
     vulnerability_finding:
       - :uuid
       - :project_fingerprint
