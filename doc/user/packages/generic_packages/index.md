@@ -292,7 +292,7 @@ curl --user "<username>:<access_token>" \
 With HTTP headers:
 
 ```shell
-curl --header "PROJECT-TOKEN: <project_access_token>" \
+curl --header "PRIVATE-TOKEN: <project_access_token>" \
      --location \
      "https://gitlab.example.com/api/v4/projects/1/packages/generic/my_package/0.0.1/file.txt" \
      --output file.txt
