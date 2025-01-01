@@ -376,6 +376,7 @@ export default {
           @workItemDeleted="onIssuableDeleted(activeIssuable)"
           @attributesUpdated="onAttributeUpdated"
           @workItemStateUpdated="onStateUpdated"
+          @workItemTypeChanged="updateBoardCard($event, activeIssuable)"
         />
       </template>
     </board-drawer-wrapper>
