@@ -37,6 +37,9 @@ export const newCandidate = () => ({
         avatar: '/img.png',
       },
     },
+    createdAt: '2024-01-01T00:00:00Z',
+    authorName: 'Test User',
+    authorWebUrl: '/test-user',
   },
 });
 

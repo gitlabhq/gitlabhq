@@ -53,7 +53,7 @@ export default {
           @click="copyMlflowId"
         />
       </p>
-      <candidate-detail :candidate="candidate" :show-info-section="false" />
+      <candidate-detail :candidate="candidate" />
     </div>
   </div>
 </template>

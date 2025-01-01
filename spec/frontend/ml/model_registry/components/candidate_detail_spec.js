@@ -16,14 +16,13 @@ describe('ml/model_registry/components/candidate_detail.vue', () => {
   const CANDIDATE = newCandidate();
   const USER_ROW = 1;
 
-  const INFO_SECTION = 0;
-  const CI_SECTION = 1;
-  const PARAMETER_SECTION = 2;
-  const METADATA_SECTION = 3;
+  const CI_SECTION = 0;
+  const PARAMETER_SECTION = 1;
+  const METADATA_SECTION = 2;
 
-  const createWrapper = (createCandidate = () => CANDIDATE, showInfoSection = true) => {
+  const createWrapper = (createCandidate = () => CANDIDATE) => {
     wrapper = shallowMountExtended(CandidateDetail, {
-      propsData: { candidate: createCandidate(), showInfoSection },
+      propsData: { candidate: createCandidate() },
       stubs: {
         GlTableLite: { ...stubComponent(GlTableLite), props: ['items', 'fields'] },
       },
@@ -47,11 +46,6 @@ describe('ml/model_registry/components/candidate_detail.vue', () => {
 
     const mrText = `!${CANDIDATE.info.ciJob.mergeRequest.iid} ${CANDIDATE.info.ciJob.mergeRequest.title}`;
     const expectedTable = [
-      [INFO_SECTION, 0, 'ID', CANDIDATE.info.iid],
-      [INFO_SECTION, 1, 'MLflow run ID', CANDIDATE.info.eid],
-      [INFO_SECTION, 2, 'Status', CANDIDATE.info.status],
-      [INFO_SECTION, 3, 'Experiment', CANDIDATE.info.experimentName],
-      [INFO_SECTION, 4, 'Artifacts', 'Artifacts'],
       [CI_SECTION, 0, 'Job', CANDIDATE.info.ciJob.name],
       [CI_SECTION, 1, 'Triggered by', 'CI User'],
       [CI_SECTION, 2, 'Merge request', mrText],
@@ -71,8 +65,6 @@ describe('ml/model_registry/components/candidate_detail.vue', () => {
 
     describe('Table links', () => {
       const linkRows = [
-        [INFO_SECTION, 3, CANDIDATE.info.pathToExperiment],
-        [INFO_SECTION, 4, CANDIDATE.info.pathToArtifact],
         [CI_SECTION, 0, CANDIDATE.info.ciJob.path],
         [CI_SECTION, 2, CANDIDATE.info.ciJob.mergeRequest.path],
       ];
@@ -179,14 +171,6 @@ describe('ml/model_registry/components/candidate_detail.vue', () => {
 
     it('does not render CI user info', () => {
       expect(findLabel('Triggered by').exists()).toBe(false);
-    });
-  });
-
-  describe('showInfoSection is set to false', () => {
-    beforeEach(() => createWrapper(() => CANDIDATE, false));
-
-    it('does not render the info section', () => {
-      expect(findLabel('MLflow run ID').exists()).toBe(false);
     });
   });
 });

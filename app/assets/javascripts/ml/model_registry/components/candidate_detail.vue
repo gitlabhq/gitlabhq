@@ -37,11 +37,6 @@ export default {
       type: Object,
       required: true,
     },
-    showInfoSection: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
   },
   i18n: {
     INFO_LABEL,
@@ -108,32 +103,6 @@ export default {
 
 <template>
   <div>
-    <section v-if="showInfoSection" class="gl-mb-6">
-      <table class="candidate-details">
-        <tbody>
-          <detail-row :label="$options.i18n.ID_LABEL">
-            {{ info.iid }}
-          </detail-row>
-
-          <detail-row :label="$options.i18n.MLFLOW_ID_LABEL">{{ info.eid }}</detail-row>
-
-          <detail-row :label="$options.i18n.STATUS_LABEL">{{ info.status }}</detail-row>
-
-          <detail-row :label="$options.i18n.EXPERIMENT_LABEL">
-            <gl-link :href="info.pathToExperiment">
-              {{ info.experimentName }}
-            </gl-link>
-          </detail-row>
-
-          <detail-row v-if="info.pathToArtifact" :label="$options.i18n.ARTIFACTS_LABEL">
-            <gl-link :href="info.pathToArtifact">
-              {{ $options.i18n.ARTIFACTS_LABEL }}
-            </gl-link>
-          </detail-row>
-        </tbody>
-      </table>
-    </section>
-
     <section class="gl-mb-6">
       <h3 :class="$options.HEADER_CLASSES">{{ $options.i18n.CI_SECTION_LABEL }}</h3>
 

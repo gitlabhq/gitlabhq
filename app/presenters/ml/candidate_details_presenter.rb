@@ -20,7 +20,10 @@ module Ml
             path_to_experiment: link_to_experiment,
             path: link_to_details,
             status: candidate.status,
-            ci_job: job_info
+            ci_job: job_info,
+            created_at: candidate.created_at,
+            authorWebUrl: candidate.user&.namespace&.web_url,
+            authorName: candidate.user&.name
           },
           params: candidate.params,
           metrics: candidate.metrics,

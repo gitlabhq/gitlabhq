@@ -48,7 +48,7 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
     subject { described_class.new(candidate, user).present }
 
     it 'presents the candidate correctly' do
-      is_expected.to eq(
+      is_expected.to match(
         {
           candidate: {
             info: {
@@ -73,7 +73,10 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
                   path: "/#{pipeline.user.username}",
                   username: pipeline.user.username
                 }
-              }
+              },
+              created_at: candidate.created_at,
+              authorWebUrl: nil,
+              authorName: candidate.user.name
             },
             params: params,
             metrics: metrics,

@@ -35429,6 +35429,9 @@ msgstr ""
 msgid "MlExperimentTracking|CI Job"
 msgstr ""
 
+msgid "MlExperimentTracking|Candidate %{id}"
+msgstr ""
+
 msgid "MlExperimentTracking|Candidate removed"
 msgstr ""
 
@@ -35510,9 +35513,6 @@ msgstr ""
 msgid "MlExperimentTracking|Machine learning experiment tracking"
 msgstr ""
 
-msgid "MlExperimentTracking|Model candidate details"
-msgstr ""
-
 msgid "MlExperimentTracking|Model experiments"
 msgstr ""
 
@@ -35553,6 +35553,9 @@ msgid "MlExperimentTracking|Value"
 msgstr ""
 
 msgid "MlExperimentTracking|Version"
+msgstr ""
+
+msgid "MlExperimentTracking|by %{author}"
 msgstr ""
 
 msgid "MlModelRegistry|%d model"
@@ -35661,6 +35664,9 @@ msgstr ""
 msgid "MlModelRegistry|Description"
 msgstr ""
 
+msgid "MlModelRegistry|Details & Metadata"
+msgstr ""
+
 msgid "MlModelRegistry|Drop or %{linkStart}select%{linkEnd} artifacts to attach"
 msgstr ""
 
@@ -35751,6 +35757,9 @@ msgstr ""
 msgid "MlModelRegistry|Metadata"
 msgstr ""
 
+msgid "MlModelRegistry|Metric"
+msgstr ""
+
 msgid "MlModelRegistry|Model card"
 msgstr ""
 
@@ -35761,9 +35770,6 @@ msgid "MlModelRegistry|Model deleted successfully"
 msgstr ""
 
 msgid "MlModelRegistry|Model name"
-msgstr ""
-
-msgid "MlModelRegistry|Model performance"
 msgstr ""
 
 msgid "MlModelRegistry|Model registry"
@@ -35800,6 +35806,9 @@ msgid "MlModelRegistry|No description available. To add a description, click \"E
 msgstr ""
 
 msgid "MlModelRegistry|No description provided"
+msgstr ""
+
+msgid "MlModelRegistry|No logged artifacts."
 msgstr ""
 
 msgid "MlModelRegistry|No logged metadata"
@@ -35839,6 +35848,9 @@ msgid "MlModelRegistry|Setting up the client"
 msgstr ""
 
 msgid "MlModelRegistry|Status"
+msgstr ""
+
+msgid "MlModelRegistry|Step %{step}"
 msgstr ""
 
 msgid "MlModelRegistry|Subfolder"
