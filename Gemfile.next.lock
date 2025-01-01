@@ -235,7 +235,8 @@ GEM
     CFPropertyList (3.0.5)
       rexml
     RedCloth (4.3.4)
-    acme-client (2.0.18)
+    acme-client (2.0.19)
+      base64 (~> 0.2.0)
       faraday (>= 1.0, < 3.0.0)
       faraday-retry (>= 1.0, < 3.0.0)
     actioncable (7.1.5.1)
@@ -2008,7 +2009,7 @@ PLATFORMS
 DEPENDENCIES
   CFPropertyList (~> 3.0.0)
   RedCloth (~> 4.3.3)
-  acme-client (~> 2.0.18)
+  acme-client (~> 2.0.19)
   activerecord-explain-analyze (~> 0.1)
   activerecord-gitlab!
   addressable (~> 2.8)
