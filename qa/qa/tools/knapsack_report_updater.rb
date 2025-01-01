@@ -24,6 +24,13 @@ module QA
 
       private
 
+      # Knapsack report generator
+      #
+      # @return [QA::Support::KnapsackReport]
+      def knapsack_reporter
+        @knapsack_reporter = Support::KnapsackReport.new(logger)
+      end
+
       # Gitlab access token
       #
       # @return [String]
@@ -69,14 +76,21 @@ module QA
       # @return [void]
       def create_commit
         logger.info("Creating master_report.json update commit")
+        runtime_report = knapsack_reporter.create_merged_runtime_report.sort.to_h
+
         api_request(:post, "repository/commits", {
           branch: UPDATE_BRANCH_NAME,
           commit_message: "Update master_report.json for E2E tests",
           actions: [
             {
               action: "update",
-              file_path: "qa/knapsack/master_report.json",
-              content: JSON.pretty_generate(Support::KnapsackReport.merged_report.sort.to_h)
+              file_path: File.join("qa", Support::KnapsackReport::RUNTIME_REPORT),
+              content: "#{JSON.pretty_generate(runtime_report)}\n"
+            },
+            {
+              action: "update",
+              file_path: File.join("qa", Support::KnapsackReport::FALLBACK_REPORT),
+              content: "#{JSON.pretty_generate(knapsack_reporter.create_knapsack_report(runtime_report).sort.to_h)}\n"
             }
           ]
         })

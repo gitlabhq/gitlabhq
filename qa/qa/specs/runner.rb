@@ -26,25 +26,29 @@ module QA
       end
 
       def rspec_tags
+        return @rspec_tags if @rspec_tags
+
         tags_for_rspec = []
 
-        return tags_for_rspec if Runtime::Scenario.attributes[:test_metadata_only] || Runtime::Env.rspec_retried?
+        if Runtime::Scenario.attributes[:test_metadata_only] || Runtime::Env.rspec_retried?
+          return @rspec_tags = tags_for_rspec
+        end
 
         if tags.any?
-          tags.each { |tag| tags_for_rspec.push(['--tag', tag.to_s]) }
+          tags.each { |tag| tags_for_rspec.push(tag.to_s) }
         else
-          tags_for_rspec.push(DEFAULT_SKIPPED_TAGS.map { |tag| %W[--tag ~#{tag}] }) unless (%w[-t --tag] & options).any?
+          tags_for_rspec.push(*DEFAULT_SKIPPED_TAGS.map { |tag| "~#{tag}" }) unless (%w[-t --tag] & options).any?
         end
 
-        tags_for_rspec.push(%w[--tag ~geo]) unless QA::Runtime::Env.geo_environment?
-        tags_for_rspec.push(%w[--tag ~skip_signup_disabled]) if QA::Runtime::Env.signup_disabled?
-        tags_for_rspec.push(%w[--tag ~skip_live_env]) if QA::Specs::Helpers::ContextSelector.dot_com?
+        tags_for_rspec.push("~geo") unless QA::Runtime::Env.geo_environment?
+        tags_for_rspec.push("~skip_signup_disabled") if QA::Runtime::Env.signup_disabled?
+        tags_for_rspec.push("~skip_live_env") if QA::Specs::Helpers::ContextSelector.dot_com?
 
         QA::Runtime::Env.supported_features.each_key do |key|
-          tags_for_rspec.push(%W[--tag ~requires_#{key}]) unless QA::Runtime::Env.can_test? key
+          tags_for_rspec.push("~requires_#{key}") unless QA::Runtime::Env.can_test? key
         end
 
-        tags_for_rspec
+        @rspec_tags = tags_for_rspec
       end
 
       def perform
@@ -63,7 +67,7 @@ module QA
       def build_initial_args
         [].tap do |args|
           args.push('--tty') if tty
-          args.push(rspec_tags)
+          args.push(rspec_tags.flat_map { |tag| ["--tag", tag] })
           args.push(options)
         end
       end
@@ -74,7 +78,9 @@ module QA
         elsif Runtime::Scenario.attributes[:test_metadata_only]
           test_metadata_only(args)
         elsif Runtime::Env.knapsack?
-          KnapsackRunner.run(args.flatten, parallel: run_in_parallel?) { |status| abort if status.nonzero? }
+          KnapsackRunner.run(args.flatten, example_data, parallel: run_in_parallel?) do |status|
+            abort if status.nonzero?
+          end
         elsif run_in_parallel?
           ParallelRunner.run(args.flatten)
         elsif Runtime::Scenario.attributes[:loop]
@@ -151,6 +157,15 @@ module QA
 
       def metadata_run?
         Runtime::Scenario.attributes[:count_examples_only] || Runtime::Scenario.attributes[:test_metadata_only]
+      end
+
+      # Example ids with their execution status
+      #
+      # @return [Hash<String, String>]
+      def example_data
+        Support::ExampleData.fetch(rspec_tags).each_with_object({}) do |example, ids|
+          ids[example[:id]] = example[:status]
+        end
       end
     end
   end

@@ -123,16 +123,10 @@ workflow:
 
 .cng-test-parallel:
   extends: .cng-test
-  needs:
-    - build-cng
-    - download-knapsack-report
   parallel: 10
 
 .cng-test-no-parallel:
   extends: .cng-test
-  needs:
-    - build-cng
-    - download-knapsack-report
 
 # ==========================================
 # Pre stage
@@ -148,18 +142,6 @@ build-cng:
   variables:
     # use larger runner for complex rails build jobs
     HIGH_CAPACITY_RUNNER_TAG: e2e
-
-download-knapsack-report:
-  extends:
-    - .download-knapsack-report
-    - .ruby-image
-    - .qa-cache
-    - .rules:download-knapsack
-  variables:
-    GIT_STRATEGY: clone
-  before_script:
-    - cd qa && bundle install
-  after_script: []
 
 # ==========================================
 # Test stage
@@ -247,9 +229,7 @@ notify-slack:
   variables:
     QA_RSPEC_XML_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/rspec-*.xml
 
-upload-knapsack-report:
+upload-test-runtime-data:
   extends:
-    - .upload-knapsack-report
-    - .rules:report:upload-knapsack-report
-  variables:
-    QA_KNAPSACK_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/knapsack/*/*.json
+    - .upload-test-runtime-data
+    - .rules:report:upload-test-runtime-data

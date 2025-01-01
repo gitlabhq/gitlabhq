@@ -118,23 +118,6 @@ include:
     WITH_LOAD_BALANCER: "true"
 
 # ==========================================
-# Pre stage
-# ==========================================
-# override .download-knapsack-report job to not depend on qa-image build
-download-knapsack-report:
-  extends:
-    - .download-knapsack-report
-    - .ruby-image
-    - .bundler-variables
-    - .qa-cache
-    - .rules:download-knapsack
-  variables:
-    GIT_STRATEGY: clone
-  before_script:
-    - cd qa && bundle install
-  after_script: []
-
-# ==========================================
 # Test stage
 # ==========================================
 
@@ -191,10 +174,10 @@ e2e-test-report:
   variables:
     ALLURE_REPORT_RESULTS_GLOB: "qa/tmp/allure-results"
 
-upload-knapsack-report:
+upload-test-runtime-data:
   extends:
-    - .upload-knapsack-report
-    - .rules:report:upload-knapsack-report
+    - .upload-test-runtime-data
+    - .rules:report:upload-test-runtime-data
   variables:
     QA_KNAPSACK_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/knapsack/*/*.json
 
@@ -202,8 +185,6 @@ export-test-metrics:
   extends:
     - .export-test-metrics
     - .rules:report:process-results
-  variables:
-    QA_METRICS_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/test-metrics-*.json
 
 export-code-paths-mapping:
   extends:

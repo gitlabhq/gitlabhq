@@ -16,11 +16,6 @@ check-release-set:
     - .rules:prepare
     - .check-release-set
 
-download-knapsack-report:
-  extends:
-    - .download-knapsack-report
-    - .rules:download-knapsack
-
 # ==========================================
 # Test stage
 # ==========================================
@@ -228,10 +223,10 @@ e2e-test-report:
   variables:
     ALLURE_RESULTS_GLOB: "gitlab-qa-run-*/**/allure-results"
 
-upload-knapsack-report:
+upload-test-runtime-data:
   extends:
-    - .upload-knapsack-report
-    - .rules:report:upload-knapsack-report
+    - .upload-test-runtime-data
+    - .rules:report:upload-test-runtime-data
   variables:
     QA_JSON_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/gitlab-qa-run-*/gitlab-*-qa-*/rspec-*.json
 

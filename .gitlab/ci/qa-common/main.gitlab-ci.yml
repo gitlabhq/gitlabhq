@@ -103,28 +103,8 @@ stages:
   # blocking merges due to flaky tests.
   allow_failure: true
 
-.download-knapsack-report:
+.upload-test-runtime-data:
   extends:
-    - .gitlab-qa-image
-  stage: .pre
-  variables:
-    KNAPSACK_DIR: ${CI_PROJECT_DIR}/qa/knapsack
-    GIT_STRATEGY: none
-  script:
-    - bundle exec rake "knapsack:download[test]"
-    - bundle exec rake "knapsack:create_reports_for_selective"
-  after_script:
-    # when using qa-image, code runs in /home/gitlab/qa folder
-    - mkdir -p "$KNAPSACK_DIR" && cp /home/gitlab/qa/knapsack/*.json "${KNAPSACK_DIR}/"
-  allow_failure: true
-  artifacts:
-    paths:
-      - qa/knapsack/*.json
-    expire_in: 1 day
-
-.upload-knapsack-report:
-  extends:
-    - .generate-knapsack-report-base
     - .qa-install
     - .ruby-image
   stage: report
@@ -132,7 +112,6 @@ stages:
   variables:
     QA_JSON_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/rspec-*.json
   script:
-    - !reference [.generate-knapsack-report-base, script]
     - bundle exec rake "knapsack:upload_example_runtimes[$QA_JSON_REPORT_FILE_PATTERN]"
 
 .export-test-metrics:

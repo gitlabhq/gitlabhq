@@ -99,10 +99,6 @@ RSpec.configure do |config|
     QA::Tools::TestResourceDataProcessor.write_to_file(suite.reporter.failed_examples.any?)
   end
 
-  config.append_after(:suite) do
-    QA::Support::KnapsackReport.move_regenerated_report if QA::Runtime::Env.knapsack?
-  end
-
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end

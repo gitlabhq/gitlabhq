@@ -200,9 +200,8 @@ include:
       when: never
     - *process-test-results
 
-.rules:report:upload-knapsack-report:
+.rules:report:upload-test-runtime-data:
   rules:
     - <<: *not-canonical-project
       when: never
-    - if: '$KNAPSACK_GENERATE_REPORT == "true"'
-      when: always
+    - *default-branch
