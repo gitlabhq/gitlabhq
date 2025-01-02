@@ -161,10 +161,10 @@ GitLab.com:
 - `default`: Any system-wide feature.
 - `free`: Namespaces and projects with a Free subscription.
 - `bronze`: Namespaces and projects with a Bronze subscription. This tier is no longer available for purchase.
-- `silver`: Namespaces and projects with a Premium subscription.
+- `silver`: Namespaces and projects with a Premium subscription. This tier is no longer available for purchase.
 - `premium`: Namespaces and projects with a Premium subscription.
 - `premium_trial`: Namespaces and projects with a Premium Trial subscription.
-- `gold`: Namespaces and projects with an Ultimate subscription.
+- `gold`: Namespaces and projects with an Ultimate subscription. This tier is no longer available for purchase.
 - `ultimate`: Namespaces and projects with an Ultimate subscription.
 - `ultimate_trial`: Namespaces and projects with an Ultimate Trial subscription.
 - `ultimate_trial_paid_customer`: Namespaces and projects on a Premium subscription that are trialling Ultimate for 30 days.

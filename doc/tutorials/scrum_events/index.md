@@ -174,7 +174,7 @@ Repeat these steps to create all the labels you'll need:
 - **Type:** You will use these labels to represent the different types of work typically pulled into a single iteration:
   - `type::story`
   - `type::bug`
-  - `type::mantainence`
+  - `type::maintenance`
 
 ### Create an iteration cadence
 

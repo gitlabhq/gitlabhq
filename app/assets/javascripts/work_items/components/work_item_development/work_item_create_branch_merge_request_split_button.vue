@@ -87,11 +87,6 @@ export default {
 
       return { items, name: __('Branch') };
     },
-    buttonText() {
-      return this.checkingBranchAvailibility
-        ? __('Checking branch availability...')
-        : this.createMergeRequestButtonText;
-    },
     createMergeRequestButtonText() {
       return this.isConfidentialWorkItem
         ? __('Create confidential merge request')
@@ -126,7 +121,7 @@ export default {
         size="medium"
         @click="openModal(false, true)"
       >
-        {{ buttonText }}
+        {{ createMergeRequestButtonText }}
       </gl-button>
       <gl-disclosure-dropdown placement="bottom-end" data-testid="create-options-dropdown">
         <gl-disclosure-dropdown-group :group="mergeRequestGroup" />

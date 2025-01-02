@@ -28,6 +28,7 @@ import {
   WORK_ITEM_TYPE_VALUE_EPIC,
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_DEVELOPMENT,
+  STATE_OPEN,
 } from '../constants';
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
@@ -451,6 +452,12 @@ export default {
     activeChildItemId() {
       return this.activeChildItem?.id;
     },
+    workItemIsOpen() {
+      return this.workItem?.state === STATE_OPEN;
+    },
+    showCreateBranchMergeRequestSplitButton() {
+      return this.workItemDevelopment && this.workItemIsOpen;
+    },
   },
   methods: {
     handleWorkItemCreated() {
@@ -865,7 +872,7 @@ export default {
                     @error="onUploadDesignError"
                   />
                   <work-item-create-branch-merge-request-split-button
-                    v-if="workItemDevelopment"
+                    v-if="showCreateBranchMergeRequestSplitButton"
                     :work-item-id="workItem.id"
                     :work-item-iid="iid"
                     :work-item-full-path="workItemFullPath"

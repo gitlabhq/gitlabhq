@@ -25,7 +25,7 @@ import DesignWidget from '~/work_items/components/design_management/design_manag
 import DesignUploadButton from '~/work_items/components//design_management/upload_button.vue';
 import WorkItemCreateBranchMergeRequestSplitButton from '~/work_items/components/work_item_development/work_item_create_branch_merge_request_split_button.vue';
 import uploadDesignMutation from '~/work_items/components/design_management/graphql/upload_design.mutation.graphql';
-import { i18n } from '~/work_items/constants';
+import { i18n, STATE_CLOSED } from '~/work_items/constants';
 import workItemByIdQuery from '~/work_items/graphql/work_item_by_id.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
@@ -933,6 +933,22 @@ describe('WorkItemDetail component', () => {
       await waitForPromises();
 
       expect(findCreateMergeRequestSplitButton().exists()).toBe(true);
+    });
+
+    it('should not show the button when the work item is closed', async () => {
+      createComponent({
+        handler: jest.fn().mockResolvedValue(
+          workItemByIidResponseFactory({
+            canUpdate: true,
+            canDelete: true,
+            developmentWidgetPresent: true,
+            state: STATE_CLOSED,
+          }),
+        ),
+      });
+      await waitForPromises();
+
+      expect(findCreateMergeRequestSplitButton().exists()).toBe(false);
     });
   });
 
