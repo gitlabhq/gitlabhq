@@ -1,6 +1,6 @@
 ---
-stage: plan
-group: knowledge
+stage: Plan
+group: Knowledge
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 description: "The Banzai pipeline and parsing."
 ---
@@ -9,28 +9,28 @@ description: "The Banzai pipeline and parsing."
 
 # The Banzai pipeline and parsing
 
-Parsing and rendering GLFM into HTML involves different components
+Parsing and rendering [GitLab Flavored Markdown](index.md) into HTML involves different components:
 
-- the Banzai pipeline and it's various filters
-- the Markdown parser
+- Banzai pipeline and it's various filters
+- Markdown parser
 
 The backend does all the processing for GLFM to HTML. This provides several benefits:
 
-1. Security: We run robust sanitization which removes unknown tags, classes and ids.
-1. References: Our reference syntax requires access to the database to resolve issues, etc, as well as redacting references in which the user has no access.
-1. Consistency: We want to provide users with a consistent experience, which includes full support of the GLFM syntax and styling. Having a single place where the processing is done allows us to provide that.
-1. Caching: We cache the HTML in our database when possible, such as for issue/MR descriptions, comments, etc.
-1. Quick actions: We use a specialized pipeline to process quick actions, so that we can better detect them in Markdown text.
+- Security: We run robust sanitization which removes unknown tags, classes and ids.
+- References: Our reference syntax requires access to the database to resolve issues, etc, as well as redacting references in which the user has no access.
+- Consistency: We want to provide users with a consistent experience, which includes full support of the GLFM syntax and styling. Having a single place where the processing is done allows us to provide that.
+- Caching: We cache the HTML in our database when possible, such as for issue or MR descriptions, or comments.
+- Quick actions: We use a specialized pipeline to process quick actions, so that we can better detect them in Markdown text.
 
 The frontend handles certain aspects when displaying:
 
-1. Math blocks
-1. Mermaid blocks
-1. Enforcing certain limits, such as excessive number of math or mermaid blocks, etc.
+- Math blocks
+- Mermaid blocks
+- Enforcing certain limits, such as excessive number of math or mermaid blocks.
 
 ## The Banzai pipeline
 
-Named after the [surf reef break](https://en.wikipedia.org/wiki/Banzai_Pipeline) in Hawaii, the Banzai pipeline consists of various filters ([lib/banzai/filters](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/banzai/filter)) where Markdown and HTML is transformed in each one, in a pipeline fashion. Various pipelines ([lib/banzai/pipeline](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/banzai/pipeline)) are defined, each with a different sequence of filters, such as `AsciiDocPipeline`, `EmailPipeline`, etc.
+Named after the [surf reef break](https://en.wikipedia.org/wiki/Banzai_Pipeline) in Hawaii, the Banzai pipeline consists of various filters ([lib/banzai/filters](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/banzai/filter)) where Markdown and HTML is transformed in each one, in a pipeline fashion. Various pipelines ([lib/banzai/pipeline](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/banzai/pipeline)) are defined, each with a different sequence of filters, such as `AsciiDocPipeline`, `EmailPipeline`.
 
 The [html-pipeline](https://github.com/gjtorikian/html-pipeline) gem implements the pipeline/filter mechanism.
 
@@ -50,18 +50,28 @@ Text is passed into this filter, and by calling the specified parser engine, gen
 
 ### `GfmPipeline`
 
-This pipeline contains all the filters that perform the additional transformations on raw HTML into what we consider rendered GLFM. A Nokogiri document gets passed into each of these filters, and they perform the various transformations. For example, `EmojiFitler`, `CommitTrailersFilter`, `SanitizationFilter`, etc. Anything that can't be handled by the initial Markdown parsing gets handled by these filters.
+This pipeline contains all the filters that perform the additional transformations on raw HTML into what we consider rendered GLFM.
+A Nokogiri document gets passed into each of these filters, and they perform the various transformations.
+For example, `EmojiFitler`, `CommitTrailersFilter`, or `SanitizationFilter`.
+Anything that can't be handled by the initial Markdown parsing gets handled by these filters.
 
 Of specific note is the `SanitizationFilter`. This is critical for providing safe HTML from possibly malicious input.
 
 ### Performance
 
-It's important to not only have the filters run as fast as possible, but to ensure that they don't take too long in general. For this we use a couple techniques.
+It's important to not only have the filters run as fast as possible, but to ensure that they don't take too long in general.
+For this we use several techniques:
 
-1. For certain filters that can take a long time, we use a Ruby timeout with `Gitlab::RenderTimeout.timeout` in [TimeoutFilterHandler](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/filter/concerns/timeout_filter_handler.rb). This allows us to interrupt the actual processing if it takes too long. It's **important** to note that in general using Ruby `timeout` is [not considered safe](https://jvns.ca/blog/2015/11/27/why-rubys-timeout-is-dangerous-and-thread-dot-raise-is-terrifying/). We therefore only use it when absolutely necessary, preferring to fix an actual performance problem rather then using a timeout.
-1. [PipelineTimingCheck](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/filter/concerns/pipeline_timing_check.rb) allows us to keep track of the cumulative amount of time the pipeline is taking. When we reach a maximum, we can then skip any remaining filters. For nearly all filters, it's generally ok to skip them in a case like this in order to show the user _something_, rather than nothing.
+- For certain filters that can take a long time, we use a Ruby timeout with `Gitlab::RenderTimeout.timeout` in [TimeoutFilterHandler](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/filter/concerns/timeout_filter_handler.rb).
+  This allows us to interrupt the actual processing if it takes too long.
+  It's **important** to note that in general using Ruby `timeout` is [not considered safe](https://jvns.ca/blog/2015/11/27/why-rubys-timeout-is-dangerous-and-thread-dot-raise-is-terrifying/).
+  We therefore only use it when absolutely necessary, preferring to fix an actual performance problem rather then using a timeout.
+- [PipelineTimingCheck](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/filter/concerns/pipeline_timing_check.rb) allows us to keep track of the cumulative amount of time the pipeline is taking. When we reach a maximum, we can then skip any remaining filters.
+  For nearly all filters, it's generally ok to skip them in a case like this in order to show the user _something_, rather than nothing.
 
-   However there are a couple instances where this is not advisable. For example in the `SanitizationFilter`, if that filter does not complete, then we can't show the HTML to the user since there could still be unsanitized HTML. In those cases, we have to show an error message.
+  However, there are a couple instances where this is not advisable.
+  For example in the `SanitizationFilter`, if that filter does not complete, then we can't show the HTML to the user since there could still be unsanitized HTML.
+  In those cases, we have to show an error message.
 
 There is also a `rake` task that can be used for benchmarking. See the [Performance Guidelines](../performance.md#banzai-pipelines-and-filters)
 

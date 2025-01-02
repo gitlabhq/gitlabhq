@@ -228,38 +228,7 @@ module API
               desc: 'The Pumble chat webhook. For example, https://api.pumble.com/workspaces/x/...'
             }
           ].flatten,
-          'pushover' => [
-            {
-              required: true,
-              name: :api_key,
-              type: String,
-              desc: 'The application key'
-            },
-            {
-              required: true,
-              name: :user_key,
-              type: String,
-              desc: 'The user key'
-            },
-            {
-              required: true,
-              name: :priority,
-              type: String,
-              desc: 'The priority'
-            },
-            {
-              required: true,
-              name: :device,
-              type: String,
-              desc: 'Leave blank for all active devices'
-            },
-            {
-              required: true,
-              name: :sound,
-              type: String,
-              desc: 'The sound of the notification'
-            }
-          ],
+          'pushover' => ::Integrations::Pushover.api_arguments,
           'redmine' => ::Integrations::Redmine.api_arguments,
           'ewm' => ::Integrations::Ewm.api_arguments,
           'youtrack' => ::Integrations::Youtrack.api_arguments,

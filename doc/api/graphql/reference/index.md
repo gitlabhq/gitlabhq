@@ -18889,7 +18889,7 @@ Usage data for events stored in the default PostgreSQL database. Data retained f
 
 ### `AiUserMetrics`
 
-Pre-aggregated per-user metrics for GitLab Code Suggestions and GitLab Duo Chat. Requires ClickHouse. Ultimate with GitLab Duo Pro or Enterprise only.
+Pre-aggregated per-user metrics for GitLab Code Suggestions and GitLab Duo Chat. Require ClickHouse to be enabled and GitLab Ultimate with the Duo Enterprise add-on.
 
 #### Fields
 

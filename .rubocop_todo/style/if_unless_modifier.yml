@@ -34,7 +34,6 @@ Style/IfUnlessModifier:
     - 'app/models/generic_commit_status.rb'
     - 'app/models/grafana_integration.rb'
     - 'app/models/integrations/datadog.rb'
-    - 'app/models/integrations/pushover.rb'
     - 'app/models/issue.rb'
     - 'app/models/issue_email_participant.rb'
     - 'app/models/label_note.rb'

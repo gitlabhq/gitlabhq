@@ -154,7 +154,6 @@ Layout/LineLength:
     - 'app/models/integrations/pipelines_email.rb'
     - 'app/models/integrations/pivotaltracker.rb'
     - 'app/models/integrations/prometheus.rb'
-    - 'app/models/integrations/pushover.rb'
     - 'app/models/integrations/teamcity.rb'
     - 'app/models/integrations/webex_teams.rb'
     - 'app/models/integrations/youtrack.rb'

@@ -72,7 +72,5 @@ Prerequisites:
 
 To retrieve AI impact metrics, you can also use the following GraphQL APIs:
 
-- [`AiUserMetrics`](../../api/graphql/reference/index.md#aiusermetrics)
-  - Requires ClickHouse
-  - Ultimate with GitLab Duo Pro or Enterprise
+- [`AiUserMetrics`](../../api/graphql/reference/index.md#aiusermetrics) - Requires ClickHouse
 - [`AiUsageData`](../../api/graphql/reference/index.md#aiusagedata) - Does not require ClickHouse

@@ -71,7 +71,6 @@ Style/FormatString:
     - 'app/models/integrations/emails_on_push.rb'
     - 'app/models/integrations/irker.rb'
     - 'app/models/integrations/pipelines_email.rb'
-    - 'app/models/integrations/pushover.rb'
     - 'app/models/integrations/zentao.rb'
     - 'app/models/merge_request_diff.rb'
     - 'app/models/milestone.rb'

@@ -5,7 +5,6 @@ Layout/LineBreakAfterFinalMixin:
     - 'app/graphql/resolvers/integrations/exclusions_resolver.rb'
     - 'app/graphql/resolvers/projects/deploy_key_resolver.rb'
     - 'app/models/alert_management/metric_image.rb'
-    - 'app/models/integrations/pushover.rb'
     - 'app/models/protected_branch/merge_access_level.rb'
     - 'app/models/protected_branch/push_access_level.rb'
     - 'app/policies/project_member_policy.rb'

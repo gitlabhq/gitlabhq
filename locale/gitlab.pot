@@ -45942,6 +45942,18 @@ msgstr ""
 msgid "PushoverService|See project %{project_full_name}"
 msgstr ""
 
+msgid "PushoverService|The application key."
+msgstr ""
+
+msgid "PushoverService|The priority."
+msgstr ""
+
+msgid "PushoverService|The sound of the notification."
+msgstr ""
+
+msgid "PushoverService|The user key."
+msgstr ""
+
 msgid "PushoverService|Total commits count: %{total_commits_count}"
 msgstr ""
 

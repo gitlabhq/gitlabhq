@@ -1826,8 +1826,8 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `api_key` | string | yes | Your application key. |
-| `user_key` | string | yes | Your user key. |
+| `api_key` | string | yes | The application key. |
+| `user_key` | string | yes | The user key. |
 | `priority` | string | yes | The priority. |
 | `device` | string | no | Leave blank for all active devices. |
 | `sound` | string | no | The sound of the notification. |
