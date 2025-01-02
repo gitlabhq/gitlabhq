@@ -14,6 +14,7 @@ import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemCrmContacts from '~/work_items/components/work_item_crm_contacts.vue';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemProjectsListbox from '~/work_items/components/work_item_links/work_item_projects_listbox.vue';
+import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
 import {
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_ENUM_ISSUE,
@@ -79,6 +80,7 @@ describe('Create work item component', () => {
   const findMilestoneWidget = () => wrapper.findComponent(WorkItemMilestone);
   const findProjectsSelector = () => wrapper.findComponent(WorkItemProjectsListbox);
   const findSelect = () => wrapper.findComponent(GlFormSelect);
+  const findTitleSuggestions = () => wrapper.findComponent(TitleSuggestions);
   const findConfidentialCheckbox = () => wrapper.find('[data-testid="confidential-checkbox"]');
   const findRelatesToCheckbox = () => wrapper.find('[data-testid="relates-to-checkbox"]');
   const findCreateWorkItemView = () => wrapper.find('[data-testid="create-work-item-view"]');
@@ -610,6 +612,19 @@ describe('Create work item component', () => {
       document.dispatchEvent(event);
 
       expect(createWorkItemSuccessHandler).toHaveBeenCalled();
+    });
+  });
+
+  it('renders work item title suggestions below work item title', async () => {
+    await initialiseComponentAndSelectWorkItem();
+
+    await updateWorkItemTitle();
+
+    expect(findTitleSuggestions().props()).toStrictEqual({
+      projectPath: 'full-path',
+      search: 'Test title',
+      helpText: 'These existing items have a similar title and may represent potential duplicates.',
+      title: 'Similar items',
     });
   });
 });

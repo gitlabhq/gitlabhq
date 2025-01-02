@@ -71,6 +71,19 @@ describe('Issue title suggestions component', () => {
     expect(wrapper.isVisible()).toBe(false);
   });
 
+  it('does not render when the path is not a valid project path', async () => {
+    const emptyProjectResponse = {
+      data: {
+        project: null,
+      },
+    };
+
+    createComponent({ queryResponse: jest.fn().mockResolvedValue(emptyProjectResponse) });
+    await waitForDebounce();
+
+    expect(wrapper.isVisible()).toBe(false);
+  });
+
   describe('with data', () => {
     beforeEach(async () => {
       createComponent();

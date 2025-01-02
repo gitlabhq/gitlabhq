@@ -43,7 +43,9 @@ The following video gives you an overview of GitLab merge request approval polic
 - You can assign a maximum of five rules to each policy.
 - You can assign a maximum of five merge request approval policies to each security policy project.
 - Policies created for a group or subgroup can take some time to apply to all the merge requests in
-  the group.
+  the group. The time it takes is determined by the number of projects and the number of merge requests
+  in those projects. Typically, the time taken is a matter of seconds. For groups with many thousands of projects
+  and merge requests, this could take several minutes, based on what we've previously observed.
 - Merge request approval policies do not check the integrity or authenticity of the scan results
   generated in the artifact reports.
 - A merge request approval policy is evaluated according to its rules. By default, if the rules are

@@ -14,6 +14,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import { addHierarchyChild, setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import { findWidget } from '~/issues/list/utils';
 import { newWorkItemFullPath, getNewWorkItemAutoSaveKey } from '~/work_items/utils';
+import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
 import { clearDraft } from '~/lib/utils/autosave';
 import {
   I18N_WORK_ITEM_CREATE_BUTTON_LABEL,
@@ -67,6 +68,7 @@ export default {
     WorkItemLoading,
     WorkItemCrmContacts,
     WorkItemProjectsListbox,
+    TitleSuggestions,
     WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
     WorkItemHealthStatus: () =>
       import('ee_component/work_items/components/work_item_health_status.vue'),
@@ -76,6 +78,12 @@ export default {
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
   },
   inject: ['fullPath'],
+  i18n: {
+    suggestionTitle: s__('WorkItem|Similar items'),
+    similarWorkItemHelpText: s__(
+      'WorkItem|These existing items have a similar title and may represent potential duplicates.',
+    ),
+  },
   props: {
     description: {
       type: String,
@@ -652,6 +660,12 @@ export default {
           :is-valid="isTitleValid"
           :title="workItemTitle"
           @updateDraft="updateDraftData('title', $event)"
+        />
+        <title-suggestions
+          :project-path="fullPath"
+          :search="workItemTitle"
+          :help-text="$options.i18n.similarWorkItemHelpText"
+          :title="$options.i18n.suggestionTitle"
         />
         <div data-testid="work-item-overview" class="work-item-overview">
           <section>
