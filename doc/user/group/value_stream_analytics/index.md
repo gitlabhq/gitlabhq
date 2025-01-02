@@ -528,8 +528,8 @@ DETAILS:
 After you create a value stream, you can customize it to suit your purposes. To edit a value stream:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Analyze > Value Stream analytics**.
-1. In the upper-right corner, select the dropdown list, then select a value stream.
+1. Select **Analyze > Value stream analytics**.
+1. From the value stream dropdown list, select the value stream you want to edit.
 1. Next to the value stream dropdown list, select **Edit**.
 1. Optional:
    - Rename the value stream.
@@ -549,11 +549,9 @@ DETAILS:
 To delete a custom value stream:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. In the upper-right corner, select the dropdown list, then select the value stream you would like to delete.
-1. Select **Delete (name of value stream)**.
+1. Select **Analyze > Value stream analytics**.
+1. From the value stream dropdown list, select the value stream you want to delete, then **Delete (name of value stream)**.
 1. To confirm, select **Delete**.
-
-![Delete value stream](img/delete_value_stream_v13_12.png "Deleting a custom value stream")
 
 ## View number of days for a cycle to complete
 

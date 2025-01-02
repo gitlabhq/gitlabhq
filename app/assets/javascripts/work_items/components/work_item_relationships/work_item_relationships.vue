@@ -1,10 +1,9 @@
 <script>
 import { produce } from 'immer';
-import { GlAlert, GlButton, GlLink, GlBadge } from '@gitlab/ui';
+import { GlAlert, GlButton, GlBadge } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
 
 import { s__, n__, sprintf } from '~/locale';
-import { helpPagePath } from '~/helpers/help_page_helper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 
 import workItemLinkedItemsQuery from '../../graphql/work_item_linked_items.query.graphql';
@@ -29,11 +28,9 @@ import WorkItemAddRelationshipForm from './work_item_add_relationship_form.vue';
 
 export default {
   linkedCategories: LINKED_CATEGORIES_MAP,
-  helpPath: helpPagePath('/user/okrs.md#linked-items-in-okrs'),
   components: {
     GlAlert,
     GlButton,
-    GlLink,
     GlBadge,
     CrudComponent,
     WorkItemRelationshipList,
@@ -356,9 +353,6 @@ export default {
 
     <template v-if="isEmptyRelatedWorkItems" #empty>
       {{ $options.i18n.emptyStateMessage }}
-      <gl-link :href="$options.helpPath" data-testid="help-link">
-        {{ __('Learn more.') }}
-      </gl-link>
     </template>
 
     <template #default>

@@ -51377,6 +51377,9 @@ msgstr ""
 msgid "SecurityOrchestration|YAML"
 msgstr ""
 
+msgid "SecurityOrchestration|Yaml"
+msgstr ""
+
 msgid "SecurityOrchestration|You already have the maximum %{maximumAllowed} %{policyType} %{instance}."
 msgstr ""
 

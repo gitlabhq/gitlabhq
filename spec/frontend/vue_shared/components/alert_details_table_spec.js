@@ -49,7 +49,8 @@ describe('AlertDetails', () => {
       .filter((row) => row.text().includes(fieldKey))
       .at(0)
       .find('td:nth-child(2)');
-  const findTableField = (fields, fieldName) => fields.filter((row) => row.text() === fieldName);
+  const findTableField = (fields, fieldName) =>
+    fields.wrappers.find((row) => row.text() === fieldName);
   const findTableLinks = () => wrapper.findAllComponents(GlLink);
 
   describe('Alert details', () => {
@@ -104,7 +105,7 @@ describe('AlertDetails', () => {
         it('should not show disallowed alert fields', () => {
           const fields = findTableKeys();
           ['Typename', 'Todos', 'Notes', 'Assignees'].forEach((field) => {
-            expect(findTableField(fields, field).exists()).toBe(false);
+            expect(findTableField(fields, field)).toBeUndefined();
           });
         });
 

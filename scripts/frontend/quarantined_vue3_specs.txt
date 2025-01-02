@@ -290,7 +290,6 @@ spec/frontend/vue_merge_request_widget/components/mr_widget_pipeline_spec.js
 spec/frontend/vue_merge_request_widget/components/states/merge_failed_pipeline_confirmation_dialog_spec.js
 spec/frontend/vue_merge_request_widget/components/states/mr_widget_ready_to_merge_spec.js
 spec/frontend/vue_popovers_spec.js
-spec/frontend/vue_shared/components/alert_details_table_spec.js
 spec/frontend/vue_shared/components/color_picker/color_picker_spec.js
 spec/frontend/vue_shared/components/color_select_dropdown/dropdown_contents_spec.js
 spec/frontend/vue_shared/components/confirm_modal_spec.js

@@ -85,7 +85,6 @@ describe('WorkItemRelationships', () => {
   const findErrorMessage = () => wrapper.findComponent(GlAlert);
   const findEmptyRelatedMessageContainer = () => wrapper.findByTestId('crud-empty');
   const findLinkedItemsCountBadge = () => wrapper.findByTestId('linked-items-count-bage');
-  const findLinkedItemsHelpLink = () => wrapper.findByTestId('help-link');
   const findAllWorkItemRelationshipListComponents = () =>
     wrapper.findAllComponents(WorkItemRelationshipList);
   const findAddButton = () => wrapper.findByTestId('link-item-add-button');
@@ -117,9 +116,6 @@ describe('WorkItemRelationships', () => {
     expect(findEmptyRelatedMessageContainer().exists()).toBe(true);
     expect(findAddButton().exists()).toBe(true);
     expect(findWorkItemRelationshipForm().exists()).toBe(false);
-    expect(findLinkedItemsHelpLink().attributes('href')).toBe(
-      '/help/user/okrs.md#linked-items-in-okrs',
-    );
   });
 
   it('renders blocking, blocked by and related to linked item lists with proper count', async () => {

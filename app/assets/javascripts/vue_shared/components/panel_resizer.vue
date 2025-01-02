@@ -24,6 +24,11 @@ export default {
       required: false,
       default: true,
     },
+    customClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -33,7 +38,13 @@ export default {
   },
   computed: {
     className() {
-      return [`position-${this.side}-0`, { 'is-dragging': this.isDragging }];
+      const baseClasses = [`position-${this.side}-0`, { 'is-dragging': this.isDragging }];
+
+      if (this.customClass) {
+        baseClasses.push(this.customClass);
+      }
+
+      return baseClasses;
     },
     cursorStyle() {
       if (this.enabled) {
@@ -54,6 +65,7 @@ export default {
 
       this.size = this.startSize;
       this.$emit('update:size', this.size);
+      this.$emit('reset-size');
 
       // End resizing on next tick so that listeners can react to DOM changes
       this.$nextTick(() => {
@@ -102,5 +114,7 @@ export default {
     class="position-absolute position-top-0 position-bottom-0 drag-handle"
     @mousedown="startDrag"
     @dblclick="resetSize"
-  ></div>
+  >
+    <slot name="thumbnail"></slot>
+  </div>
 </template>

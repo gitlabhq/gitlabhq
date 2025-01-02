@@ -122,6 +122,8 @@ Only labels that exactly match the specified filters are applied.
 
 The [DORA](dora_metrics.md) Performers score panel is a group-level bar chart that visualizes the status of the organization's DevOps performance levels across different projects for the last full calendar month.
 
+![A bar chart with DORA metrics for a group](img/vsd_dora_performers_score_v17_7.png)
+
 The chart is a breakdown of your project's DORA scores, [categorized](https://cloud.google.com/blog/products/devops-sre/dora-2022-accelerate-state-of-devops-report-now-out) as high, medium, or low.
 The chart aggregates all the child projects in the group.
 
@@ -170,6 +172,8 @@ The metrics are aggregated for the last full calendar month.
 
 You can sort the projects by metric values, helping you identify high, medium, and low-performing projects.
 For further investigation, you can select a project name to drill down into that project's page.
+
+![A table with DORA metrics for different projects](img/vsd_projects_dora_metrics_v17_7.png)
 
 ## Enable or disable overview background aggregation
 
