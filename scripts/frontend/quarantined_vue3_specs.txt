@@ -46,7 +46,6 @@ ee/spec/frontend/geo_sites/index_spec.js
 ee/spec/frontend/groups/components/invite_members_spec.js
 ee/spec/frontend/groups/settings/components/comma_separated_list_token_selector_spec.js
 ee/spec/frontend/insights/insights_router_spec.js
-ee/spec/frontend/integrations/edit/components/jira_issue_creation_vulnerabilities_spec.js
 ee/spec/frontend/issues_analytics/components/issues_analytics_table_spec.js
 ee/spec/frontend/iterations/components/iteration_form_spec.js
 ee/spec/frontend/iterations/components/iteration_report_issues_spec.js
@@ -192,7 +191,6 @@ spec/frontend/issues/show/components/incidents/create_timeline_events_form_spec.
 spec/frontend/issues/show/components/incidents/edit_timeline_event_spec.js
 spec/frontend/issues/show/components/incidents/timeline_events_form_spec.js
 spec/frontend/issues/show/components/incidents/timeline_events_tab_spec.js
-spec/frontend/kubernetes_dashboard/components/workload_details_item_spec.js
 spec/frontend/lib/utils/breadcrumbs_spec.js
 spec/frontend/lib/utils/confirm_via_gl_modal/confirm_action_spec.js
 spec/frontend/members/components/app_spec.js

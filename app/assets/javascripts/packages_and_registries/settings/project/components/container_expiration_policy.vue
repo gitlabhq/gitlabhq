@@ -4,7 +4,6 @@ import {
   CONTAINER_CLEANUP_POLICY_TITLE,
   CONTAINER_CLEANUP_POLICY_DESCRIPTION,
   CONTAINER_CLEANUP_POLICY_EDIT_RULES,
-  CONTAINER_CLEANUP_POLICY_RULES_DESCRIPTION,
   CONTAINER_CLEANUP_POLICY_SET_RULES,
   FETCH_SETTINGS_ERROR_MESSAGE,
   UNAVAILABLE_FEATURE_TITLE,
@@ -13,14 +12,11 @@ import {
   UNAVAILABLE_ADMIN_FEATURE_TEXT,
 } from '~/packages_and_registries/settings/project/constants';
 import expirationPolicyEnabledQuery from '~/packages_and_registries/settings/project/graphql/queries/get_expiration_policy_enabled.query.graphql';
-import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ContainerExpirationPolicyEnabledText from '~/packages_and_registries/settings/project/components/container_expiration_policy_enabled_text.vue';
 
 export default {
   components: {
     ContainerExpirationPolicyEnabledText,
-    SettingsSection,
     GlAlert,
     GlSprintf,
     GlLink,
@@ -28,7 +24,6 @@ export default {
     GlButton,
     GlSkeletonLoader,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: [
     'projectPath',
     'isAdmin',
@@ -41,7 +36,6 @@ export default {
     CONTAINER_CLEANUP_POLICY_TITLE,
     CONTAINER_CLEANUP_POLICY_DESCRIPTION,
     CONTAINER_CLEANUP_POLICY_EDIT_RULES,
-    CONTAINER_CLEANUP_POLICY_RULES_DESCRIPTION,
     CONTAINER_CLEANUP_POLICY_SET_RULES,
     UNAVAILABLE_FEATURE_TITLE,
     UNAVAILABLE_FEATURE_INTRO_TEXT,
@@ -71,9 +65,6 @@ export default {
     };
   },
   computed: {
-    featureFlagEnabled() {
-      return this.glFeatures.reorganizeProjectLevelRegistrySettings;
-    },
     isCleanupEnabled() {
       return this.containerTagsExpirationPolicy?.enabled ?? false;
     },
@@ -99,7 +90,7 @@ export default {
 </script>
 
 <template>
-  <gl-card v-if="featureFlagEnabled" data-testid="container-expiration-policy-project-settings">
+  <gl-card data-testid="container-expiration-policy-project-settings">
     <template #header>
       <header class="gl-flex gl-flex-wrap gl-justify-between">
         <h2
@@ -139,7 +130,7 @@ export default {
         <p v-else data-testid="empty-cleanup-policy" class="gl-mb-0 gl-text-subtle">
           {{
             s__(
-              'ContainerRegistry|Registry cleanup disabled. Either no cleanup policies enabled, or this project has no container images.',
+              'ContainerRegistry|Registry cleanup disabled. Either no cleanup policies are enabled, or this project has no container images.',
             )
           }}
         </p>
@@ -165,52 +156,4 @@ export default {
       </template>
     </template>
   </gl-card>
-  <settings-section
-    v-else
-    :heading="$options.i18n.CONTAINER_CLEANUP_POLICY_TITLE"
-    data-testid="container-expiration-policy-project-settings"
-  >
-    <template #description>
-      <span>
-        <gl-sprintf :message="$options.i18n.CONTAINER_CLEANUP_POLICY_DESCRIPTION">
-          <template #link="{ content }">
-            <gl-link :href="helpPagePath">{{ content }}</gl-link>
-          </template>
-        </gl-sprintf>
-      </span>
-    </template>
-
-    <gl-card v-if="isEnabled">
-      <p data-testid="description">
-        {{ $options.i18n.CONTAINER_CLEANUP_POLICY_RULES_DESCRIPTION }}
-      </p>
-      <gl-button
-        data-testid="rules-button"
-        :href="cleanupSettingsPath"
-        category="secondary"
-        variant="confirm"
-      >
-        {{ cleanupRulesButtonText }}
-      </gl-button>
-    </gl-card>
-    <template v-if="!$apollo.queries.containerTagsExpirationPolicy.loading">
-      <gl-alert
-        v-if="showDisabledFormMessage"
-        :dismissible="false"
-        :title="$options.i18n.UNAVAILABLE_FEATURE_TITLE"
-        variant="tip"
-      >
-        {{ $options.i18n.UNAVAILABLE_FEATURE_INTRO_TEXT }}
-
-        <gl-sprintf :message="unavailableFeatureMessage">
-          <template #link="{ content }">
-            <gl-link :href="adminSettingsPath">{{ content }}</gl-link>
-          </template>
-        </gl-sprintf>
-      </gl-alert>
-      <gl-alert v-else-if="fetchSettingsError" variant="warning" :dismissible="false">
-        <gl-sprintf :message="$options.i18n.FETCH_SETTINGS_ERROR_MESSAGE" />
-      </gl-alert>
-    </template>
-  </settings-section>
 </template>

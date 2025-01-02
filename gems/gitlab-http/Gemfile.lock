@@ -23,7 +23,7 @@ PATH
       concurrent-ruby (~> 1.2)
       httparty (~> 0.21.0)
       ipaddress (~> 0.8.3)
-      net-http (= 0.4.1)
+      net-http (= 0.6.0)
       railties (~> 7)
 
 GEM
@@ -91,7 +91,7 @@ GEM
     mini_portile2 (2.8.7)
     minitest (5.18.1)
     multi_xml (0.6.0)
-    net-http (0.4.1)
+    net-http (0.6.0)
       uri
     nokogiri (1.16.8)
       mini_portile2 (~> 2.8.2)

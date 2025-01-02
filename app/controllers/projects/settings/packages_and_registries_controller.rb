@@ -10,7 +10,6 @@ module Projects
       before_action :set_feature_flag_packages_protected_packages, only: :show
       before_action :set_feature_flag_container_registry_protected_containers, only: :show
       before_action :set_feature_flag_container_registry_protected_tags, only: :show
-      before_action :set_feature_flag_reorganise_settings, only: :show
 
       feature_category :package_registry
       urgency :low
@@ -41,10 +40,6 @@ module Projects
 
       def set_feature_flag_container_registry_protected_containers
         push_frontend_feature_flag(:container_registry_protected_containers, project.root_ancestor)
-      end
-
-      def set_feature_flag_reorganise_settings
-        push_frontend_feature_flag(:reorganize_project_level_registry_settings, project)
       end
 
       def set_feature_flag_container_registry_protected_tags

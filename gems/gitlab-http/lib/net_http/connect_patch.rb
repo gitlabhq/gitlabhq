@@ -59,7 +59,13 @@ module Net
       debug "opened"
       if use_ssl?
         if proxy?
-          plain_sock = BufferedIO.new(s, read_timeout: @read_timeout,
+          if @proxy_use_ssl
+            proxy_sock = OpenSSL::SSL::SSLSocket.new(s)
+            ssl_socket_connect(proxy_sock, @open_timeout)
+          else
+            proxy_sock = s
+          end
+          proxy_sock = BufferedIO.new(proxy_sock, read_timeout: @read_timeout,
                                       write_timeout: @write_timeout,
                                       continue_timeout: @continue_timeout,
                                       debug_output: @debug_output)
@@ -70,8 +76,8 @@ module Net
             buf << "Proxy-Authorization: Basic #{credential}\r\n"
           end
           buf << "\r\n"
-          plain_sock.write(buf)
-          HTTPResponse.read_new(plain_sock).value
+          proxy_sock.write(buf)
+          HTTPResponse.read_new(proxy_sock).value
           # assuming nothing left in buffers after successful CONNECT response
         end
 

@@ -13,11 +13,9 @@ import {
 } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import protectionRulesQuery from '~/packages_and_registries/settings/project/graphql/queries/get_container_protection_rules.query.graphql';
-import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 import ContainerProtectionRuleForm from '~/packages_and_registries/settings/project/components/container_protection_rule_form.vue';
 import deleteContainerProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_rule.mutation.graphql';
 import updateContainerRegistryProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_container_registry_protection_rule.mutation.graphql';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, __ } from '~/locale';
 
 const PAGINATION_DEFAULT_PER_PAGE = 10;
@@ -35,14 +33,12 @@ export default {
     GlLoadingIcon,
     GlModal,
     GlTable,
-    SettingsSection,
     GlSprintf,
   },
   directives: {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['projectPath'],
   i18n: {
     settingBlockTitle: s__('ContainerRegistry|Protected container repositories'),
@@ -102,9 +98,6 @@ export default {
           repositoryPathPattern: protectionRule.repositoryPathPattern,
         };
       });
-    },
-    featureFlagEnabled() {
-      return this.glFeatures.reorganizeProjectLevelRegistrySettings;
     },
     protectionRulesQueryPageInfo() {
       return this.protectionRulesQueryPayload.pageInfo;
@@ -268,10 +261,7 @@ export default {
 </script>
 
 <template>
-  <div
-    v-if="featureFlagEnabled"
-    data-testid="project-container-repository-protection-rules-settings"
-  >
+  <div data-testid="project-container-repository-protection-rules-settings">
     <crud-component
       ref="containerProtectionCrud"
       :title="$options.i18n.settingBlockTitle"
@@ -345,7 +335,7 @@ export default {
           </template>
         </gl-table>
         <p v-else class="gl-text-subtle">
-          {{ s__('ContainerRegistry|No container repositories are protected yet.') }}
+          {{ s__('ContainerRegistry|No container repositories are protected.') }}
         </p>
       </template>
 
@@ -378,104 +368,4 @@ export default {
       <p>{{ $options.i18n.protectionRuleDeletionConfirmModal.descriptionConsequence }}</p>
     </gl-modal>
   </div>
-  <settings-section
-    v-else
-    :heading="$options.i18n.settingBlockTitle"
-    :description="$options.i18n.settingBlockDescription"
-    data-testid="project-container-repository-protection-rules-settings"
-  >
-    <template #default>
-      <crud-component
-        ref="containerProtectionCrud"
-        :title="$options.i18n.settingBlockTitle"
-        :toggle-text="s__('ContainerRegistry|Add protection rule')"
-      >
-        <template #form>
-          <container-protection-rule-form
-            @cancel="hideProtectionRuleForm"
-            @submit="refetchProtectionRules"
-          />
-        </template>
-
-        <gl-alert
-          v-if="alertErrorMessage"
-          class="gl-mb-5"
-          variant="danger"
-          @dismiss="clearAlertMessage"
-        >
-          {{ alertErrorMessage }}
-        </gl-alert>
-
-        <gl-table
-          :items="tableItems"
-          :fields="$options.fields"
-          show-empty
-          stacked="md"
-          :aria-label="$options.i18n.settingBlockTitle"
-          :busy="isLoadingprotectionRules"
-        >
-          <template #table-busy>
-            <gl-loading-icon size="sm" class="gl-my-5" />
-          </template>
-
-          <template #cell(minimumAccessLevelForPush)="{ item }">
-            <gl-form-select
-              v-model="item.minimumAccessLevelForPush"
-              class="gl-max-w-34"
-              required
-              :aria-label="$options.i18n.minimumAccessLevelForPush"
-              :options="$options.minimumAccessLevelOptions"
-              :disabled="isProtectionRuleMinimumAccessLevelForPushFormSelectDisabled(item)"
-              data-testid="push-access-select"
-              @change="updateProtectionRuleMinimumAccessLevelForPush(item)"
-            />
-          </template>
-
-          <template #cell(rowActions)="{ item }">
-            <gl-button
-              v-gl-tooltip
-              v-gl-modal="$options.modal.id"
-              category="tertiary"
-              icon="remove"
-              :title="__('Delete')"
-              :aria-label="__('Delete')"
-              :disabled="isProtectionRuleDeleteButtonDisabled(item)"
-              data-testid="delete-btn"
-              @click="showProtectionRuleDeletionConfirmModal(item)"
-            />
-          </template>
-        </gl-table>
-
-        <template v-if="shouldShowPagination" #pagination>
-          <gl-keyset-pagination
-            v-bind="protectionRulesQueryPageInfo"
-            class="gl-mb-3"
-            @prev="onPrevPage"
-            @next="onNextPage"
-          />
-        </template>
-      </crud-component>
-
-      <gl-modal
-        v-if="protectionRuleMutationItem"
-        :modal-id="$options.modal.id"
-        size="sm"
-        :title="$options.i18n.protectionRuleDeletionConfirmModal.title"
-        :action-primary="$options.modalActionPrimary"
-        :action-cancel="$options.modalActionCancel"
-        @primary="deleteProtectionRule(protectionRuleMutationItem)"
-      >
-        <p>
-          <gl-sprintf
-            :message="$options.i18n.protectionRuleDeletionConfirmModal.descriptionWarning"
-          >
-            <template #repositoryPathPattern>
-              <strong>{{ protectionRuleMutationItem.repositoryPathPattern }}</strong>
-            </template>
-          </gl-sprintf>
-        </p>
-        <p>{{ $options.i18n.protectionRuleDeletionConfirmModal.descriptionConsequence }}</p>
-      </gl-modal>
-    </template>
-  </settings-section>
 </template>

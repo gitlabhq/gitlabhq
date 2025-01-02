@@ -260,6 +260,27 @@ RSpec.describe 'Database schema',
     }.with_indifferent_access.freeze
   end
 
+  let(:ignored_tables_with_too_many_indexes) do
+    {
+      approval_merge_request_rules: 17,
+      ci_builds: 27,
+      ci_pipelines: 23,
+      deployments: 18,
+      epics: 19,
+      issues: 41,
+      members: 21,
+      merge_requests: 33,
+      namespaces: 26,
+      p_ci_builds: 27,
+      p_ci_pipelines: 23,
+      packages_packages: 27,
+      projects: 55,
+      sbom_occurrences: 25,
+      users: 32,
+      vulnerability_reads: 23
+    }.with_indifferent_access.freeze
+  end
+
   context 'for table' do
     Gitlab::Database::EachDatabase.each_connection do |connection, _|
       schemas_for_connection = Gitlab::Database.gitlab_schemas_for_connection(connection)
@@ -521,7 +542,7 @@ RSpec.describe 'Database schema',
     end
   end
 
-  context 'with index names' do
+  context 'with indexes' do
     it 'disallows index names with a _ccnew[0-9]* suffix' do
       # During REINDEX operations, Postgres generates a temporary index with a _ccnew[0-9]* suffix
       # Since indexes are being considered temporary and subject to removal if they stick around for longer.
@@ -532,6 +553,38 @@ RSpec.describe 'Database schema',
         "#{Gitlab::Database::Reindexing::ReindexConcurrently::TEMPORARY_INDEX_PATTERN}$").all
 
       expect(problematic_indexes).to be_empty
+    end
+
+    context 'when exceeding the authorized limit' do
+      let(:max) { Gitlab::Database::MAX_INDEXES_ALLOWED_PER_TABLE }
+      let!(:known_offences) { ignored_tables_with_too_many_indexes }
+      let!(:corrected_offences) { known_offences.keys.to_set - actual_offences.keys.to_set }
+      let!(:new_offences) { actual_offences.keys.to_set - known_offences.keys.to_set }
+      let!(:actual_offences) do
+        Gitlab::Database::PostgresIndex
+          .where(schema: 'public')
+          .group(:tablename)
+          .having("COUNT(*) > #{max}")
+          .count
+      end
+
+      it 'checks for corrected_offences' do
+        expect(corrected_offences).to validate_index_limit(:corrected)
+      end
+
+      it 'checks for new_offences' do
+        expect(new_offences).to validate_index_limit(:new)
+      end
+
+      it 'checks for outdated_offences' do
+        outdated_offences = known_offences.filter_map do |table, expected|
+          actual = actual_offences[table]
+
+          "#{table} (expected #{expected}, actual #{actual})" if actual && expected != actual
+        end
+
+        expect(outdated_offences).to validate_index_limit(:outdated)
+      end
     end
   end
 

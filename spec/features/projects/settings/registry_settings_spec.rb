@@ -272,33 +272,6 @@ RSpec.describe 'Project > Settings > Packages and registries',
     end
   end
 
-  context 'with feature flag disabled', :js do
-    before do
-      stub_feature_flags(reorganize_project_level_registry_settings: false)
-    end
-
-    it 'passes axe automated accessibility testing' do
-      visit_page
-
-      wait_for_requests
-
-      expect(page).to have_selector 'h1.gl-sr-only', text: 'Packages and registries settings'
-      expect(page).to be_axe_clean.within('[data-testid="packages-and-registries-project-settings"]') # rubocop:todo Capybara/TestidFinders -- Doesn't cover use case, see https://gitlab.com/gitlab-org/gitlab/-/issues/442224
-    end
-
-    describe 'Package registry section' do
-      it_behaves_like 'package registry settings' do
-        let(:visit_method) { visit_page }
-      end
-    end
-
-    describe 'Container registry section' do
-      it_behaves_like 'container registry settings' do
-        let(:visit_method) { visit_page }
-      end
-    end
-  end
-
   context 'when registry is disabled' do
     let(:container_registry_enabled) { false }
 

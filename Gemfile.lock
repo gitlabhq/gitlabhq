@@ -68,7 +68,7 @@ PATH
       concurrent-ruby (~> 1.2)
       httparty (~> 0.21.0)
       ipaddress (~> 0.8.3)
-      net-http (= 0.4.1)
+      net-http (= 0.6.0)
       railties (~> 7)
 
 PATH
@@ -726,7 +726,7 @@ GEM
     git (1.18.0)
       addressable (~> 2.8)
       rchardet (~> 1.8)
-    gitaly (17.5.0.pre.rc42)
+    gitaly (17.7.0)
       grpc (~> 1.0)
     gitlab (4.19.0)
       httparty (~> 0.20)
@@ -1182,7 +1182,7 @@ GEM
     neighbor (0.3.2)
       activerecord (>= 6.1)
     nenv (0.3.0)
-    net-http (0.4.1)
+    net-http (0.6.0)
       uri
     net-http-persistent (4.0.1)
       connection_pool (~> 2.2)
@@ -2073,7 +2073,7 @@ DEPENDENCIES
   gettext (~> 3.4, >= 3.4.9)
   gettext_i18n_rails (~> 1.13.0)
   git (~> 1.8)
-  gitaly (~> 17.5.0.pre.rc1)
+  gitaly (~> 17.7.0)
   gitlab-active-context!
   gitlab-backup-cli!
   gitlab-chronic (~> 0.10.5)
@@ -2180,7 +2180,7 @@ DEPENDENCIES
   minitest (~> 5.11.0)
   multi_json (~> 1.14.1)
   neighbor (~> 0.3.2)
-  net-http (= 0.4.1)
+  net-http (= 0.6.0)
   net-ldap (~> 0.17.1)
   net-ntp
   net-protocol (~> 0.1.3)
@@ -2330,6 +2330,7 @@ DEPENDENCIES
   undercover (~> 0.5.0)
   unicode-emoji (~> 4.0)
   unleash (~> 3.2.2)
+  uri (= 0.13.0)
   valid_email (~> 0.1)
   validates_hostname (~> 1.0.13)
   version_sorter (~> 2.3)

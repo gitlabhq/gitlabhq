@@ -17,6 +17,13 @@ export default {
     SettingsBlock,
   },
   mixins: [glFeatureFlagsMixin()],
+  props: {
+    expanded: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
   computed: {
     showContainerProtectedTagsSettings() {
       return this.glFeatures.containerRegistryProtectedTags;
@@ -32,6 +39,7 @@ export default {
 <template>
   <settings-block
     id="container-registry-settings"
+    :default-expanded="expanded"
     :title="s__('ContainerRegistry|Container registry')"
   >
     <template #description>

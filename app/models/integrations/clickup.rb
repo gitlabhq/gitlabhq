@@ -9,7 +9,7 @@ module Integrations
     validates :project_url, :issues_url, presence: true, public_url: true, if: :activated?
 
     def reference_pattern(*)
-      @reference_pattern ||= /((#|CU-)(?<issue>[a-z0-9]+)|(?<issue>[A-Z0-9_]{2,10}-\d+))\b/
+      @reference_pattern ||= /(?:(?:#|CU-)(?<issue>[a-z0-9]+)|(?<issue>[A-Z0-9_]{2,10}-\d+))\b/
     end
 
     def self.title

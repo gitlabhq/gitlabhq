@@ -52,6 +52,8 @@ module Gitlab
     MODE_SINGLE_DATABASE_CI_CONNECTION = "single-database-ci-connection"
     MODE_MULTIPLE_DATABASES = "multiple-databases"
 
+    MAX_INDEXES_ALLOWED_PER_TABLE = 16
+
     def self.all_database_connection_files
       Dir.glob(Rails.root.join("db/database_connections/*.yaml"))
     end

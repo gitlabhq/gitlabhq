@@ -180,7 +180,8 @@ To create a cleanup policy in the UI:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Packages and registries**.
-1. In the **Container registry cleanup policies** section, select **Set cleanup rules**.
+1. Expand **Container registry**.
+1. Under **Container registry cleanup policies**, select **Set cleanup rules**.
 1. Complete the fields:
 
    | Field                      | Description |

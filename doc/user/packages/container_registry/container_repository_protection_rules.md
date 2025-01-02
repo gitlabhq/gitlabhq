@@ -58,6 +58,7 @@ To create a protection rule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Packages and registries**.
+1. Expand **Container registry**.
 1. Under **Protected container repositories**, select **Add protection rule**.
 1. Complete the fields:
    - **Repository path pattern** is a container repository path you want to protect.
@@ -80,6 +81,7 @@ To delete a protection rule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Packages and registries**.
+1. Expand **Container registry**.
 1. Under **Protected container repositories**, next to the protection rule you want to delete, select **Delete** (**{remove}**).
 1. On the confirmation dialog, select **Delete**.
 

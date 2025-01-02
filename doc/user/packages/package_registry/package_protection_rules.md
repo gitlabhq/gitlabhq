@@ -39,6 +39,7 @@ To protect a package:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Packages and registries**.
+1. Expand **Package registry**.
 1. Under **Protected packages**, select **Add protection rule**.
 1. Complete the fields:
    - **Name pattern** is a package name pattern you want to protect. The pattern can include a wildcard (`*`).
@@ -76,6 +77,7 @@ To unprotect a package:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Packages and registries**.
+1. Expand **Package registry**.
 1. Under **Protected packages**, next to the protection rule you want to delete, select **Delete** (**{remove}**).
 1. On the confirmation dialog, select **Delete**.
 

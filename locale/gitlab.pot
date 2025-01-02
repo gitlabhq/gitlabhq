@@ -15505,7 +15505,7 @@ msgstr ""
 msgid "ContainerRegistry|No container image tags are protected."
 msgstr ""
 
-msgid "ContainerRegistry|No container repositories are protected yet."
+msgid "ContainerRegistry|No container repositories are protected."
 msgstr ""
 
 msgid "ContainerRegistry|Not yet scheduled"
@@ -15538,7 +15538,7 @@ msgstr ""
 msgid "ContainerRegistry|Push an image"
 msgstr ""
 
-msgid "ContainerRegistry|Registry cleanup disabled. Either no cleanup policies enabled, or this project has no container images."
+msgid "ContainerRegistry|Registry cleanup disabled. Either no cleanup policies are enabled, or this project has no container images."
 msgstr ""
 
 msgid "ContainerRegistry|Regular expression without the \\A and \\z anchors."
@@ -15574,9 +15574,6 @@ msgid "ContainerRegistry|Save storage space by automatically deleting tags from 
 msgstr ""
 
 msgid "ContainerRegistry|Set cleanup rules"
-msgstr ""
-
-msgid "ContainerRegistry|Set rules to automatically remove unused image tags to save storage space."
 msgstr ""
 
 msgid "ContainerRegistry|Set up cleanup"
@@ -39932,7 +39929,7 @@ msgstr ""
 msgid "PackageRegistry|Name pattern"
 msgstr ""
 
-msgid "PackageRegistry|No packages are protected yet."
+msgid "PackageRegistry|No packages are protected."
 msgstr ""
 
 msgid "PackageRegistry|Npm"

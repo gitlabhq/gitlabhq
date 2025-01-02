@@ -23,9 +23,13 @@ describe('Container registry project settings section', () => {
     },
   };
 
-  const mountComponent = (provide = defaultProvide) => {
+  const mountComponent = ({ provide = defaultProvide, props = {} } = {}) => {
     wrapper = shallowMount(ContainerRegistrySection, {
       provide,
+      propsData: {
+        enabled: false,
+        ...props,
+      },
       stubs: {
         GlSprintf,
       },
@@ -39,6 +43,7 @@ describe('Container registry project settings section', () => {
 
     it('renders with title', () => {
       expect(findSettingsBlock().props('title')).toBe('Container registry');
+      expect(findSettingsBlock().props('defaultExpanded')).toBe(false);
     });
 
     it('renders with description', () => {
@@ -55,36 +60,48 @@ describe('Container registry project settings section', () => {
     });
 
     it('renders container registry settings components', () => {
-      mountComponent();
-
       expect(findContainerExpirationPolicy().exists()).toBe(true);
       expect(findContainerProtectionRules().exists()).toBe(true);
       expect(findContainerProtectionTagRules().exists()).toBe(true);
     });
+  });
 
-    describe('when feature flag "containerRegistryProtectedContainers" is disabled', () => {
-      it('container protection rules settings is hidden', () => {
-        mountComponent({
-          ...defaultProvide,
-          glFeatures: { containerRegistryProtectedContainers: false },
-        });
-
-        expect(findContainerProtectionRules().exists()).toBe(false);
-        expect(findContainerExpirationPolicy().exists()).toBe(true);
-      });
+  describe('with `expanded` prop set', () => {
+    beforeEach(() => {
+      mountComponent({ props: { expanded: true } });
     });
 
-    describe('when feature flag "containerRegistryProtectedTags" is disabled', () => {
-      it('container protection tag rules settings is hidden', () => {
-        mountComponent({
+    it('sets settings block `defaultExpanded` prop to true', () => {
+      expect(findSettingsBlock().props('defaultExpanded')).toBe(true);
+    });
+  });
+
+  describe('when feature flag "containerRegistryProtectedContainers" is disabled', () => {
+    it('container protection rules settings is hidden', () => {
+      mountComponent({
+        provide: {
+          ...defaultProvide,
+          glFeatures: { containerRegistryProtectedContainers: false },
+        },
+      });
+
+      expect(findContainerProtectionRules().exists()).toBe(false);
+      expect(findContainerExpirationPolicy().exists()).toBe(true);
+    });
+  });
+
+  describe('when feature flag "containerRegistryProtectedTags" is disabled', () => {
+    it('container protection tag rules settings is hidden', () => {
+      mountComponent({
+        provide: {
           ...defaultProvide,
           glFeatures: { containerRegistryProtectedTags: false },
-        });
-
-        expect(findContainerExpirationPolicy().exists()).toBe(true);
-        expect(findContainerProtectionRules().exists()).toBe(false);
-        expect(findContainerProtectionTagRules().exists()).toBe(false);
+        },
       });
+
+      expect(findContainerExpirationPolicy().exists()).toBe(true);
+      expect(findContainerProtectionRules().exists()).toBe(false);
+      expect(findContainerProtectionTagRules().exists()).toBe(false);
     });
   });
 });
