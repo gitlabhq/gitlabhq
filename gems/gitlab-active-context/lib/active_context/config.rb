@@ -2,27 +2,27 @@
 
 module ActiveContext
   class Config
-    CONFIG = Struct.new(:enabled, :databases, :logger)
+    Cfg = Struct.new(:enabled, :databases, :logger)
 
     class << self
       def configure(&block)
         @instance = new(block)
       end
 
-      def config
-        @instance&.config || {}
+      def current
+        @instance&.config || Cfg.new
       end
 
       def enabled?
-        config.enabled || false
+        current.enabled || false
       end
 
       def databases
-        config.databases || {}
+        current.databases || {}
       end
 
       def logger
-        config.logger || Logger.new($stdout)
+        current.logger || Logger.new($stdout)
       end
     end
 
@@ -31,7 +31,7 @@ module ActiveContext
     end
 
     def config
-      struct = CONFIG.new
+      struct = Cfg.new
       @config_block.call(struct)
       struct
     end

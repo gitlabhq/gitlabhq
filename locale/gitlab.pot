@@ -58502,6 +58502,9 @@ msgstr ""
 msgid "Todos| What actions create to-do items?"
 msgstr ""
 
+msgid "Todos|%{day}, %{time}"
+msgstr ""
+
 msgid "Todos|(removed)"
 msgstr ""
 
@@ -58571,6 +58574,9 @@ msgstr ""
 msgid "Todos|Failed adding todo. Try again later."
 msgstr ""
 
+msgid "Todos|Failed to snooze todo. Try again later."
+msgstr ""
+
 msgid "Todos|Filter by author"
 msgstr ""
 
@@ -58584,6 +58590,9 @@ msgid "Todos|Filter to-do items"
 msgstr ""
 
 msgid "Todos|First sent %{timeago}"
+msgstr ""
+
+msgid "Todos|For one hour"
 msgstr ""
 
 msgid "Todos|Give yourself a pat on the back!"
@@ -58701,6 +58710,9 @@ msgstr ""
 msgid "Todos|Select this item to sign in with SAML and view it."
 msgstr ""
 
+msgid "Todos|Snooze"
+msgstr ""
+
 msgid "Todos|Snoozed"
 msgstr ""
 
@@ -58744,6 +58756,12 @@ msgid "Todos|Undo mark all as done"
 msgstr ""
 
 msgid "Todos|Unmergeable"
+msgstr ""
+
+msgid "Todos|Until later today"
+msgstr ""
+
+msgid "Todos|Until tomorrow"
 msgstr ""
 
 msgid "Todos|Updated"

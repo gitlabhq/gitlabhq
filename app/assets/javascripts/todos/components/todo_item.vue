@@ -136,6 +136,7 @@ export default {
       <div class="sm:gl-order-3">
         <todo-item-actions
           :todo="todo"
+          :is-snoozed="isSnoozed"
           @change="(id, markedAsDone) => $emit('change', id, markedAsDone)"
         />
       </div>

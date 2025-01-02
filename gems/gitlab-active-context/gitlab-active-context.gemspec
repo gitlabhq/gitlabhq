@@ -19,6 +19,9 @@ Gem::Specification.new do |spec|
   spec.files = Dir['lib/**/*.rb']
   spec.require_paths = ["lib"]
 
+  spec.add_dependency 'activesupport'
+  spec.add_dependency 'connection_pool'
+  spec.add_dependency 'pg'
   spec.add_dependency 'zeitwerk'
 
   spec.add_development_dependency 'gitlab-styles'

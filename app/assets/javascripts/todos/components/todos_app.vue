@@ -51,6 +51,7 @@ export default {
   provide() {
     return {
       currentTab: computed(() => this.currentTab),
+      currentTime: computed(() => this.currentTime),
     };
   },
   data() {
@@ -78,6 +79,8 @@ export default {
       },
       alert: null,
       showSpinnerWhileLoading: true,
+      currentTime: new Date(),
+      currentTimeInterval: null,
     };
   },
   apollo: {
@@ -158,9 +161,13 @@ export default {
   },
   mounted() {
     document.addEventListener('visibilitychange', this.handleVisibilityChanged);
+    this.currentTimeInterval = setInterval(() => {
+      this.currentTime = new Date();
+    }, 60 * 1000);
   },
   beforeDestroy() {
     document.removeEventListener('visibilitychange', this.handleVisibilityChanged);
+    clearInterval(this.currentTimeInterval);
   },
   methods: {
     updateCursor(cursor) {

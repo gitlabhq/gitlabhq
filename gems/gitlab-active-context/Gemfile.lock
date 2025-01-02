@@ -2,6 +2,9 @@ PATH
   remote: .
   specs:
     gitlab-active-context (0.0.1)
+      activesupport
+      connection_pool
+      pg
       zeitwerk
 
 GEM
@@ -87,6 +90,7 @@ GEM
     parser (3.3.6.0)
       ast (~> 2.4.1)
       racc
+    pg (1.5.9)
     psych (5.2.1)
       date
       stringio

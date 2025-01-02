@@ -27,6 +27,9 @@ PATH
   remote: gems/gitlab-active-context
   specs:
     gitlab-active-context (0.0.1)
+      activesupport
+      connection_pool
+      pg
       zeitwerk
 
 PATH

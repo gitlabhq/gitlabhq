@@ -1,0 +1,9 @@
+mutation snoozeTodo($todoId: TodoID!, $snoozeUntil: Time!) {
+  todoSnooze(input: { id: $todoId, snoozeUntil: $snoozeUntil }) {
+    todo {
+      id
+      snoozedUntil
+    }
+    errors
+  }
+}

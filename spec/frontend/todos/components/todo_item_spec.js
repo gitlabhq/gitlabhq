@@ -164,4 +164,24 @@ describe('TodoItem', () => {
       expect(wrapper.text()).not.toContain('First sent 4 months ago');
     });
   });
+
+  describe('isSnoozed status', () => {
+    it('sets `isSnoozed` to `true` if the todo has a snoozed date set in the future', () => {
+      createComponent({ todo: { ...MR_REVIEW_REQUEST_TODO, snoozedUntil: mockUntilTomorrow } });
+
+      expect(wrapper.findComponent(TodoItemActions).props('isSnoozed')).toBe(true);
+    });
+
+    it('sets `isSnoozed` to `false` if the todo has no snoozed date', () => {
+      createComponent();
+
+      expect(wrapper.findComponent(TodoItemActions).props('isSnoozed')).toBe(false);
+    });
+
+    it('sets `isSnoozed` to `false` if the todo has a snoozed date set in the past', () => {
+      createComponent({ todo: { ...MR_REVIEW_REQUEST_TODO, snoozedUntil: mockYesterday } });
+
+      expect(wrapper.findComponent(TodoItemActions).props('isSnoozed')).toBe(false);
+    });
+  });
 });
