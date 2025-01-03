@@ -229,7 +229,8 @@ GEM
     CFPropertyList (3.0.5)
       rexml
     RedCloth (4.3.4)
-    acme-client (2.0.18)
+    acme-client (2.0.19)
+      base64 (~> 0.2.0)
       faraday (>= 1.0, < 3.0.0)
       faraday-retry (>= 1.0, < 3.0.0)
     actioncable (7.1.4.2)
@@ -1032,7 +1033,7 @@ GEM
     io-event (1.6.5)
     ipaddr (1.2.5)
     ipaddress (0.8.3)
-    irb (1.14.2)
+    irb (1.14.3)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     jaeger-client (1.1.0)
@@ -1473,7 +1474,7 @@ GEM
       pry (>= 0.13.0)
       tty-markdown
       tty-prompt
-    psych (5.2.1)
+    psych (5.2.2)
       date
       stringio
     public_suffix (6.0.1)
@@ -1557,7 +1558,7 @@ GEM
       msgpack (>= 0.4.3)
       optimist (>= 3.0.0)
     rchardet (1.8.0)
-    rdoc (6.8.1)
+    rdoc (6.10.0)
       psych (>= 4.0.0)
     re2 (2.7.0)
       mini_portile2 (~> 2.8.5)
@@ -1587,7 +1588,7 @@ GEM
       redis (>= 4, < 6)
     regexp_parser (2.6.0)
     regexp_property_values (1.0.0)
-    reline (0.5.12)
+    reline (0.6.0)
       io-console (~> 0.5)
     representable (3.2.0)
       declarative (< 0.1.0)
@@ -1861,7 +1862,7 @@ GEM
     thread_safe (0.3.6)
     thrift (0.16.0)
     tilt (2.0.11)
-    timeout (0.4.2)
+    timeout (0.4.3)
     timfel-krb5-auth (0.8.3)
     tins (1.31.1)
       sync
@@ -1998,7 +1999,7 @@ PLATFORMS
 DEPENDENCIES
   CFPropertyList (~> 3.0.0)
   RedCloth (~> 4.3.3)
-  acme-client (~> 2.0.18)
+  acme-client (~> 2.0.19)
   activerecord-explain-analyze (~> 0.1)
   activerecord-gitlab!
   addressable (~> 2.8)

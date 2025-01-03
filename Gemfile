@@ -130,10 +130,10 @@ gem 'rqrcode', '~> 2.2', feature_category: :system_access
 gem 'attr_encrypted', '~> 3.2.4', path: 'vendor/gems/attr_encrypted' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # GitLab Pages
-gem 'validates_hostname', '~> 1.0.13' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'rubyzip', '~> 2.3.2', require: 'zip' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'validates_hostname', '~> 1.0.13', feature_category: :pages
+gem 'rubyzip', '~> 2.3.2', require: 'zip', feature_category: :pages
 # GitLab Pages letsencrypt support
-gem 'acme-client', '~> 2.0.18' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'acme-client', '~> 2.0.19', feature_category: :pages
 
 # Browser detection
 gem 'browser', '~> 5.3.1' # rubocop:todo Gemfile/MissingFeatureCategory
