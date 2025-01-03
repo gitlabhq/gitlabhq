@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import MergeRequest from '~/merge_request_dashboard/components/merge_request.vue';
+import StatusBadge from '~/merge_request_dashboard/components/status_badge.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 
 Vue.use(VueApollo);
@@ -10,12 +11,16 @@ Vue.use(VueApollo);
 describe('Merge request dashboard merge request component', () => {
   let wrapper;
 
-  function createComponent(mergeRequest = {}) {
+  function createComponent(mergeRequest = {}, newListsEnabled = false) {
     const mockApollo = createMockApollo();
 
     wrapper = shallowMountExtended(MergeRequest, {
       apolloProvider: mockApollo,
+      provide: {
+        newListsEnabled,
+      },
       propsData: {
+        listId: 'returned_to_you',
         mergeRequest: {
           reference: '!123456',
           title: 'Merge request title',
@@ -97,6 +102,20 @@ describe('Merge request dashboard merge request component', () => {
       icon: 'status_success',
       text: 'Passed',
       detailsPath: '/',
+    });
+  });
+
+  describe('when newListsEnabled is true', () => {
+    it('renders template', () => {
+      createComponent({}, true);
+
+      expect(wrapper.element).toMatchSnapshot();
+    });
+
+    it('renders status badge component', () => {
+      createComponent({}, true);
+
+      expect(wrapper.findComponent(StatusBadge).exists()).toBe(true);
     });
   });
 });

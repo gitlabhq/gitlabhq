@@ -102,5 +102,3 @@ After the member has reached the days of inactivity and is removed from the grou
 - They still have access to GitLab.com.
 - They do not have access to the group.
 - Contributions made to the group are still assigned to the removed member.
-
-A dormant member is not automatically removed from a group if they are the last owner.

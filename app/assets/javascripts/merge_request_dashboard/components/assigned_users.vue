@@ -48,6 +48,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  inject: ['newListsEnabled'],
   props: {
     users: {
       type: Array,
@@ -86,7 +87,7 @@ export default {
   },
   methods: {
     isCurrentUser(user) {
-      return isCurrentUser(getIdFromGraphQLId(user.id));
+      return !this.newListsEnabled && isCurrentUser(getIdFromGraphQLId(user.id));
     },
     reviewStateIcon(user) {
       return REVIEW_STATE_ICONS[user.mergeRequestInteraction?.reviewState];

@@ -67,7 +67,7 @@ The goal for every web page should be to return in under 100 ms:
 
 Despite downsides to Redis caching, you should still feel free to make good use of the
 caching setup inside the GitLab application and on GitLab.com. Our
-[forecasting for cache utilization](https://gitlab-com.gitlab.io/gl-infra/tamland/saturation.html)
+[forecasting for cache utilization](https://gitlab-com.gitlab.io/gl-infra/tamland/forecasting/)
 indicates we have plenty of headroom.
 
 ## Workflow

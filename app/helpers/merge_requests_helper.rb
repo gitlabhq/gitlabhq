@@ -494,8 +494,8 @@ module MergeRequestsHelper
             ],
             [
               {
-                id: 'waiting_for_author',
-                title: _('Waiting for author'),
+                id: 'waiting_for_assignee',
+                title: _('Waiting for assignee'),
                 hideCount: true,
                 helpContent: _(
                   'Your assigned merge requests that are waiting for approvals, ' \
@@ -507,8 +507,8 @@ module MergeRequestsHelper
                 }
               },
               {
-                id: 'waiting_for_reviewer',
-                title: _('Waiting for reviewer'),
+                id: 'waiting_for_approvals',
+                title: _('Waiting for approvals'),
                 hideCount: true,
                 helpContent: _(
                   'Your assigned merge requests that are waiting for approvals, ' \

@@ -22,12 +22,19 @@ const createMockUsers = () => [
   },
 ];
 
-function createComponent({ users = createMockUsers(), type = 'ASSIGNEES' } = {}) {
+function createComponent({
+  users = createMockUsers(),
+  type = 'ASSIGNEES',
+  newListsEnabled = false,
+} = {}) {
   glTooltipDirectiveMock = jest.fn();
 
   wrapper = mountExtended(AssignedUsers, {
     directives: {
       GlTooltip: glTooltipDirectiveMock,
+    },
+    provide: {
+      newListsEnabled,
     },
     propsData: {
       type,
@@ -75,6 +82,14 @@ describe('Merge request dashboard assigned users component', () => {
       createComponent();
 
       expect(findAllUsers().at(1).find('[data-testid="current-user"]').exists()).toBe(true);
+    });
+
+    describe('when newListsEnabled is true', () => {
+      it('renders icon for current user', () => {
+        createComponent({ newListsEnabled: true });
+
+        expect(findCurrentUserIcon().exists()).toBe(false);
+      });
     });
   });
 

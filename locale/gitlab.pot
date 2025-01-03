@@ -159,6 +159,11 @@ msgid_plural "%d approvals"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d approval required"
+msgid_plural "%d approvals required"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d approver"
 msgid_plural "%d approvers"
 msgstr[0] ""
@@ -857,6 +862,9 @@ msgstr ""
 msgid "%{filePath} deleted"
 msgstr ""
 
+msgid "%{filesChanged}, %{fileAdditions}, %{fileDeletions}"
+msgstr ""
+
 msgid "%{firstLabel} +%{labelCount} more"
 msgstr ""
 
@@ -1170,6 +1178,9 @@ msgid "%{project_path} is a project that you can use to add a README to your Git
 msgstr ""
 
 msgid "%{redirect_link_start} Click here to redirect to %{redirect_uri_val} %{redirect_link_end}"
+msgstr ""
+
+msgid "%{reference} %{author} %{stats} %{milestone}"
 msgstr ""
 
 msgid "%{reference} %{divider} created %{createdAt} by %{author} %{milestone}"
@@ -11580,6 +11591,9 @@ msgstr ""
 msgid "Changes"
 msgstr ""
 
+msgid "Changes requested"
+msgstr ""
+
 msgid "Changes requested to the current merge request."
 msgstr ""
 
@@ -11737,6 +11751,9 @@ msgid "Checkout|Failed to load the payment form. Refresh the page and try again.
 msgstr ""
 
 msgid "Checkout|Your subscription will be applied to this group"
+msgstr ""
+
+msgid "Checks"
 msgstr ""
 
 msgid "Cherry-pick this commit"
@@ -47561,6 +47578,9 @@ msgstr ""
 msgid "Review requests"
 msgstr ""
 
+msgid "Review started"
+msgstr ""
+
 msgid "Review the changes locally."
 msgstr ""
 
@@ -47581,10 +47601,16 @@ msgid_plural "%d Reviewers"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Reviewer commented"
+msgstr ""
+
 msgid "Reviewers"
 msgstr ""
 
 msgid "Reviewers left feedback, or requested changes from you, on these merge requests."
+msgstr ""
+
+msgid "Reviewers needed"
 msgstr ""
 
 msgid "Reviewing"
@@ -62683,19 +62709,19 @@ msgstr ""
 msgid "Wait for the file to load to copy its contents"
 msgstr ""
 
+msgid "Waiting for approval"
+msgstr ""
+
 msgid "Waiting for approvals"
 msgstr ""
 
-msgid "Waiting for author"
+msgid "Waiting for assignee"
 msgstr ""
 
 msgid "Waiting for merge (open and assigned)"
 msgstr ""
 
 msgid "Waiting for others"
-msgstr ""
-
-msgid "Waiting for reviewer"
 msgstr ""
 
 msgid "Want to see the data? Please ask an administrator for access."
@@ -65052,6 +65078,9 @@ msgstr ""
 msgid "You can’t edit files directly in this project. Fork this project and submit a merge request with your changes."
 msgstr ""
 
+msgid "You commented"
+msgstr ""
+
 msgid "You currently have no custom domains."
 msgstr ""
 
@@ -65338,6 +65367,9 @@ msgid "You need to upload a GitLab project export archive (ending in .gz)."
 msgstr ""
 
 msgid "You need to verify your primary email first before enabling Two-Factor Authentication."
+msgstr ""
+
+msgid "You requested changes"
 msgstr ""
 
 msgid "You should run a new pipeline, because the target branch has changed for this merge request."

@@ -4,22 +4,18 @@ require 'rubocop'
 
 module Keeps
   # This is an implementation of a ::Gitlab::Housekeeper::Keep. This keep will not make any changes unless there are
-  # Advanced search migrations to be marked as obsolete. This keep will locate any old advanced search migrations that
-  # were added before CUTOFF_MILESTONE and add a prepend to the bottom of the migration file which marks
-  # the migration as obsolete in the code. It also updates the corresponding `ee/elastic/migrate/docs/` file with
-  # a `marked_obsolete_in_milestone`.
+  # Advanced search migrations to be marked as obsolete. This keep locates advanced search migrations that were added
+  # before the cutoff milestone and adds a prepend to the bottom of the migration file which marks the migration as
+  # obsolete in the code. It also updates the corresponding `ee/elastic/migrate/docs/` file with
+  # a `marked_obsolete_in_milestone`. The cutoff milestone is defined as one milestone before the last required stop.
+  # This is to prevent long running migrations from being marked as obsolete.
   #
-  # You can run it individually with:
+  # You can run it manually with:
   #
   # ```
-  # bundle exec gitlab-housekeeper -d \
-  #   -k Keeps::MarkOldAdvancedSearchMigrationsAsObsolete
+  # bundle exec gitlab-housekeeper -d -k Keeps::MarkOldAdvancedSearchMigrationsAsObsolete
   # ```
   class MarkOldAdvancedSearchMigrationsAsObsolete < ::Gitlab::Housekeeper::Keep
-    # Only obsolete migrations added before this
-    # milestones are stored in config/upgrade_path.yml
-    CUTOFF_MILESTONE = '17.3'
-
     MIGRATIONS_PATH = 'ee/elastic/migrate'
     MIGRATION_REGEXP = /\A([0-9]+)_([_a-z0-9]*)\.rb\z/
     MIGRATIONS_SPECS_PATH = 'ee/spec/elastic/migrate/'
@@ -33,7 +29,7 @@ module Keeps
 
       load_migrations_to_process
 
-      super(logger: logger)
+      super
     end
 
     def each_change
@@ -82,7 +78,7 @@ module Keeps
     end
 
     def before_cutoff_milestone?(milestone)
-      Gem::Version.new(milestone) < Gem::Version.new(CUTOFF_MILESTONE)
+      Gem::Version.new(milestone) < Gem::Version.new(cutoff_milestone)
     end
 
     def each_advanced_search_migration
@@ -194,6 +190,21 @@ module Keeps
 
     def group_data
       @group_data ||= groups_helper.group_for_group_label(GROUP_LABEL)
+    end
+
+    def cutoff_milestone
+      @cutoff_milestone ||= calculate_cutoff_milestone
+    end
+
+    def calculate_cutoff_milestone
+      # Only mark migrations added in the milestone before the last required stop as obsolete
+      last_required_stop = Gitlab::Database.min_schema_gitlab_version
+
+      if last_required_stop.minor > 0
+        Gitlab::VersionInfo.new(last_required_stop.major, last_required_stop.minor - 1, 0)
+      else
+        Gitlab::VersionInfo.new(last_required_stop.major - 1, 11, 0)
+      end
     end
   end
 end
