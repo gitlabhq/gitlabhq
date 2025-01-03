@@ -113,14 +113,14 @@ describe('RunnerInstructionsModal component', () => {
         MockResizeObserver.mockResize('xs');
         await nextTick();
 
-        expect(findPlatformButtonGroup().attributes('vertical')).toEqual('true');
+        expect(findPlatformButtonGroup().props('vertical')).toBe(true);
       });
 
       it('to a non-xs viewport', async () => {
         MockResizeObserver.mockResize('sm');
         await nextTick();
 
-        expect(findPlatformButtonGroup().props('vertical')).toBeUndefined();
+        expect(findPlatformButtonGroup().props('vertical')).toBe(false);
       });
     });
 

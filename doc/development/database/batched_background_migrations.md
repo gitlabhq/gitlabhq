@@ -307,7 +307,7 @@ See the below [Examples](#examples) for specific details on what the actual
 migration code should be.
 
 NOTE:
-If the migration is being finalized before one required stop since it was enqueued, and early finalization
+If the migration is being finalized before one required stop since it was enqueued, an early finalization
 error will be raised. If the migration requires to be finalized before one required stop,
 use `skip_early_finalization_validation: true` option to skip this check.
 

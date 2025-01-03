@@ -102,7 +102,7 @@ export default {
 </script>
 
 <template>
-  <gl-button-group :vertical="false">
+  <gl-button-group>
     <gl-button
       v-gl-tooltip
       class="star-btn"
