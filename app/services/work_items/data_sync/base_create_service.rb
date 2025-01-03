@@ -6,13 +6,14 @@ module WorkItems
     # and replaces the callbacks called by `WorkItem::CreateService` to setup data sync related callbacks which
     # are used to copy data from the original work item to the target work item.
     class BaseCreateService < ::WorkItems::CreateService
-      attr_reader :original_work_item, :operation
+      attr_reader :original_work_item, :operation, :sync_data_params
 
       def initialize(original_work_item:, operation:, **kwargs)
         super(**kwargs)
 
         @original_work_item = original_work_item
         @operation = operation
+        @sync_data_params = params.delete(:sync_data_params) || {}
       end
 
       def initialize_callbacks!(work_item)
@@ -20,11 +21,17 @@ module WorkItems
           sync_data_callback_class = widget.class.sync_data_callback_class
           next if sync_data_callback_class.nil?
 
+          callback_params = {}
+
+          if sync_data_callback_class.const_defined?(:ALLOWED_PARAMS)
+            callback_params = sync_data_params.slice(*sync_data_callback_class::ALLOWED_PARAMS)
+          end
+
           sync_data_callback_class.new(
             work_item: original_work_item,
             target_work_item: work_item,
             current_user: current_user,
-            params: { operation: operation }
+            params: callback_params.merge({ operation: operation })
           )
         end
       end

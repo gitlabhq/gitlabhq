@@ -19,6 +19,13 @@ Commands:
   cng version               # Print cng orchestrator version
 ```
 
+### Environment variables
+
+It is possible to configure certain options via environment variables. Following environment variables are supported:
+
+* `CNG_FORCE_COLOR` - force color output in case support is not detected properly (useful for CI executions)
+* `CNG_HELM_REPOSITORY_CACHE` - custom helm repository cache folder. Equivalent to global `--repository-cache` flag of `helm` command
+
 ## Add new deployments
 
 The main feature `cng` is to programmatically manage different deployment type configurations and setup. To implement new deployment configuration:

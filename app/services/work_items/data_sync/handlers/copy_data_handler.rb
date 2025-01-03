@@ -49,10 +49,10 @@ module WorkItems
           # create the new work item
           ::WorkItems::DataSync::BaseCreateService.new(
             original_work_item: work_item,
-            operation: params[:operation],
+            operation: params.delete(:operation),
             container: target_namespace,
             current_user: current_user,
-            params: create_params
+            params: create_params.merge(params)
           ).execute(skip_system_notes: true)
         end
 

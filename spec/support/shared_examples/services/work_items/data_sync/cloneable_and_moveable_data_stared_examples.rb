@@ -98,6 +98,10 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     work_item.reload.labels.pluck(:title)
   end
 
+  def work_item_children(work_item)
+    work_item.reload.work_item_children.pluck(:title)
+  end
+
   let_it_be(:users) { create_list(:user, 3) }
   let_it_be(:thumbs_ups) { create_list(:award_emoji, 2, name: 'thumbsup', awardable: original_work_item) }
   let_it_be(:thumbs_downs) { create_list(:award_emoji, 2, name: 'thumbsdown', awardable: original_work_item) }
@@ -191,6 +195,20 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     [labels.first.title]
   end
 
+  let_it_be(:child_items) do
+    child_item_type1 =  WorkItems::HierarchyRestriction.where(parent_type: original_work_item.work_item_type).order(
+      id: :asc).first.child_type.base_type
+    child_item_type2 =  WorkItems::HierarchyRestriction.where(parent_type: original_work_item.work_item_type).order(
+      id: :asc).last.child_type.base_type
+
+    child_item1 = create(:work_item, child_item_type1)
+    create(:parent_link, work_item: child_item1, work_item_parent: original_work_item)
+    child_item2 = create(:work_item, child_item_type2)
+    create(:parent_link, work_item: child_item2, work_item_parent: original_work_item)
+
+    [child_item1, child_item2].pluck(:title)
+  end
+
   let_it_be(:move) { WorkItems::DataSync::MoveService }
   let_it_be(:clone) { WorkItems::DataSync::CloneService }
 
@@ -205,7 +223,8 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
       { widget_name: :sent_notifications,          eval_value: :work_item_sent_notifications, expected_data: notifications, operations: [move] },
       { widget_name: :timelogs,                    eval_value: :work_item_timelogs,           expected_data: timelogs,      operations: [move] },
       { widget_name: :customer_relations_contacts, eval_value: :work_item_crm_contacts,       expected_data: crm_contacts,  operations: [move, clone] },
-      { widget_name: :labels,                      eval_value: :work_item_labels,             expected_data: labels,        operations: [move, clone] }
+      { widget_name: :labels,                      eval_value: :work_item_labels,             expected_data: labels,        operations: [move, clone] },
+      { widget_name: :work_item_children,          eval_value: :work_item_children,           expected_data: child_items,   operations: [move] }
     ]
   end
   # rubocop: enable Layout/LineLength
@@ -239,11 +258,15 @@ RSpec.shared_examples 'for clone and move services' do
         expect(widget_value).to be_blank
       end
 
+      non_cleanupable_widgets = [:sent_notifications, :work_item_children]
       cleanup_data = Feature.enabled?(:cleanup_data_source_work_item_data, original_work_item.resource_parent)
+
       if cleanup_data && described_class == move
         expect(original_work_item.reload.public_send(widget[:widget_name])).to be_blank
-      elsif widget[:widget_name] != :sent_notifications
-        # sent notifications are moved from original work item to new work item rather than deleted afterwards.
+      elsif non_cleanupable_widgets.exclude?(widget[:widget_name])
+        # sent notifications and child work items are re-linked to new work item during the `move`
+        # rather than deleted afterwards, so the original work item loses these items even before getting to the
+        # cleanup data step.
         expect(original_work_item.reload.public_send(widget[:widget_name])).not_to be_blank
       end
     end

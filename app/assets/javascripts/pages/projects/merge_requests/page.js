@@ -64,6 +64,7 @@ requestIdleCallback(() => {
       projectPath,
       title,
       tabs,
+      defaultBranchName,
       isFluidLayout,
       sourceProjectPath,
       blocksMerge,
@@ -81,6 +82,7 @@ requestIdleCallback(() => {
       provide: {
         query: getStateQuery,
         iid,
+        defaultBranchName,
         projectPath,
         title,
         isFluidLayout: parseBoolean(isFluidLayout),

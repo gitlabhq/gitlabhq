@@ -3,6 +3,7 @@
 module WorkItems
   class ParentLink < ApplicationRecord
     include RelativePositioning
+    include EachBatch
 
     self.table_name = 'work_item_parent_links'
 

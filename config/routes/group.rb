@@ -52,6 +52,10 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
           put :revoke
           put :rotate
         end
+
+        collection do
+          get :inactive, format: :json
+        end
       end
 
       resources :integrations, only: [:index, :edit, :update] do

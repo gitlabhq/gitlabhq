@@ -107,14 +107,14 @@ export default {
 
 <template>
   <div>
-    <gl-tabs class="mt-5">
+    <gl-tabs class="gl-mt-5">
       <gl-tab :title="$options.i18n.detailsLabel" class="gl-pt-3" data-testid="details">
         <section>
           <label class="gl-font-bold">{{ $options.i18n.mlflowIdLabel }}</label>
           <div
-            class="gl-m-0 gl-w-fit gl-border-2 gl-border-solid gl-border-default gl-px-2 gl-py-0"
+            class="gl-m-0 gl-w-fit gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-500"
           >
-            <span data-testid="mlflow-run-id">
+            <span class="gl-pl-4 gl-pr-1" data-testid="mlflow-run-id">
               {{ info.eid }}
             </span>
             <gl-button
@@ -131,7 +131,7 @@ export default {
           <div
             v-for="item in candidate.metadata"
             :key="item.name"
-            class="mt-3"
+            class="gl-mt-3"
             data-testid="metadata"
           >
             <h5 class="gl-font-bold">{{ item.name }}</h5>
@@ -152,14 +152,14 @@ export default {
         </section>
         <section data-testid="ci">
           <h4>{{ $options.i18n.ciSectionLabel }}</h4>
-          <div v-if="ciJob" class="pt-3">
+          <div v-if="ciJob" class="gl-pt-3">
             <div>
               <h5 class="gl-font-bold">{{ $options.i18n.jobLabel }}</h5>
               <gl-link :href="ciJob.path" data-testid="ci-job-path">
                 {{ ciJob.name }}
               </gl-link>
             </div>
-            <div v-if="ciJob.user" class="pt-3">
+            <div v-if="ciJob.user" class="gl-pt-3">
               <h5 class="gl-font-bold">{{ $options.i18n.ciUserLabel }}</h5>
               <gl-avatar-labeled label="" :size="24" :src="ciJob.user.avatar">
                 <gl-link :href="ciJob.user.path">
@@ -167,7 +167,7 @@ export default {
                 </gl-link>
               </gl-avatar-labeled>
             </div>
-            <div v-if="ciJob.mergeRequest" class="pt-3">
+            <div v-if="ciJob.mergeRequest" class="gl-pt-3">
               <h5 class="gl-font-bold">{{ $options.i18n.ciMrLabel }}</h5>
               <gl-link :href="ciJob.mergeRequest.path">
                 !{{ ciJob.mergeRequest.iid }} {{ ciJob.mergeRequest.title }}
@@ -177,7 +177,7 @@ export default {
           <div v-else class="gl-text-subtle">{{ $options.i18n.noCiMessage }}</div>
         </section>
       </gl-tab>
-      <gl-tab :title="$options.i18n.artifactsLabel" class="pt-3" data-testid="artifacts">
+      <gl-tab :title="$options.i18n.artifactsLabel" class="gl-pt-3" data-testid="artifacts">
         <gl-link
           v-if="info.pathToArtifact"
           :href="info.pathToArtifact"
@@ -187,7 +187,7 @@ export default {
         </gl-link>
         <div v-else class="gl-text-subtle">{{ $options.i18n.noArtifactsMessage }}</div>
       </gl-tab>
-      <gl-tab :title="$options.i18n.performanceLabel" class="pt-3" data-testid="metrics">
+      <gl-tab :title="$options.i18n.performanceLabel" class="gl-pt-3" data-testid="metrics">
         <div v-if="hasMetrics" class="gl-overflow-x-auto">
           <gl-table-lite
             :items="metricsTableItems"

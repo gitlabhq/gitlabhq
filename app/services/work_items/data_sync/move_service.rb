@@ -26,7 +26,7 @@ module WorkItems
           return error(error_message, :unprocessable_entity)
         end
 
-        unless work_item.supports_move_and_clone?
+        unless work_item.supports_move_and_clone? || move_any_work_item_type
           error_message = format(s_('MoveWorkItem|Cannot move work items of \'%{issue_type}\' type.'),
             { issue_type: work_item.work_item_type.name })
 
@@ -54,7 +54,7 @@ module WorkItems
           target_namespace: target_namespace,
           current_user: current_user,
           target_work_item_type: work_item.work_item_type,
-          params: params.merge(operation: :move),
+          params: params.merge(operation: :move, sync_data_params: { **@execution_arguments }),
           overwritten_params: {
             moved_issue: true
           }
@@ -62,14 +62,15 @@ module WorkItems
 
         return create_response unless create_response.success? && create_response[:work_item].present?
 
+        new_work_item = create_response[:work_item]
+        work_item.update(moved_to: new_work_item)
+
         # this service is based on Issues::CloseService#execute, which does not provide a clear return, so we'll skip
         # handling it for now. This will be moved to a cleanup service that would be more result oriented where we can
         # handle the service response status
         WorkItems::DataSync::Handlers::CleanupDataHandler.new(
           work_item: work_item, current_user: current_user, params: params
         ).execute
-
-        new_work_item = create_response[:work_item]
 
         # this may need to be moved inside `BaseCopyDataService` so that this would be the first system note after
         # move action started, followed by some other system notes related to which data is removed, replaced, changed
@@ -95,6 +96,10 @@ module WorkItems
           current_user,
           direction: :to
         )
+      end
+
+      def move_any_work_item_type
+        @execution_arguments.present? && !!@execution_arguments[:skip_work_item_type_check]
       end
     end
   end

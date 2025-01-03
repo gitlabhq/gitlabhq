@@ -3,6 +3,12 @@
 RSpec.shared_examples 'GET resource access tokens available' do
   let_it_be(:active_resource_access_token) { create(:personal_access_token, user: access_token_user) }
 
+  before_all do
+    create(:personal_access_token, :expired, user: access_token_user)
+    create(:personal_access_token, :revoked, user: access_token_user)
+    create(:personal_access_token, :revoked, user: access_token_user)
+  end
+
   it 'retrieves active access tokens' do
     get_access_tokens
 
@@ -17,10 +23,35 @@ RSpec.shared_examples 'GET resource access tokens available' do
     expect(assigns(:scopes)).to eq(Gitlab::Auth.available_scopes_for(resource))
   end
 
-  it 'returns for json response' do
+  it 'retrieves count of active access tokens' do
+    get_access_tokens
+
+    expect(assigns(:active_access_tokens_size)).to eq(assigns(:active_access_tokens).size)
+  end
+
+  it 'retrieves count of inactive access tokens' do
+    get_access_tokens
+
+    expect(assigns(:inactive_access_tokens_size)).to eq(3)
+  end
+
+  context 'when retain_resource_access_token_user_after_revoke FF is disabled' do
+    before do
+      stub_feature_flags(retain_resource_access_token_user_after_revoke: false)
+    end
+
+    it 'does not retrieve count of inactive access tokens' do
+      get_access_tokens
+
+      expect(assigns(:inactive_access_tokens_size)).to be_nil
+    end
+  end
+
+  it 'returns for json response list of active access tokens' do
     get_access_tokens_json
 
     expect(json_response.count).to eq(1)
+    expect(json_response.first['id']).to eq(active_resource_access_token.id)
   end
 end
 
@@ -83,30 +114,54 @@ RSpec.shared_examples 'GET access tokens are paginated and ordered' do
   end
 end
 
-RSpec.shared_examples 'GET access tokens includes inactive tokens' do
-  context "when inactive tokens returned are ordered" do
-    let(:one_day_ago) { 1.day.ago.to_date }
-    let(:two_days_ago) { 2.days.ago.to_date }
+RSpec.shared_examples 'GET inactive access tokens' do
+  let_it_be(:inactive_resource_access_token1) { create(:personal_access_token, :expired, user: access_token_user) }
+  let_it_be(:inactive_resource_access_token2) { create(:personal_access_token, :revoked, user: access_token_user) }
+  let_it_be(:inactive_resource_access_token3) { create(:personal_access_token, :revoked, user: access_token_user) }
 
-    before do
-      create(:personal_access_token, :revoked, user: access_token_user, name: "Token1").update!(updated_at: one_day_ago)
-      create(:personal_access_token, :expired, user: access_token_user,
-        name: "Token2").update!(updated_at: two_days_ago)
-    end
-
-    it "orders token list descending on updated_at" do
-      get_access_tokens
-
-      first_token = assigns(:inactive_access_tokens).first.as_json
-      expect(first_token['name']).to eq("Token1")
-    end
+  before_all do
+    create(:personal_access_token, user: access_token_user)
   end
 
-  context "when there are no inactive tokens" do
-    it "returns an empty array" do
-      get_access_tokens
-      expect(assigns(:inactive_access_tokens)).to eq([])
+  context 'when retain_resource_access_token_user_after_revoke FF is disabled' do
+    before do
+      stub_feature_flags(retain_resource_access_token_user_after_revoke: false)
     end
+
+    it { expect(subject).to have_gitlab_http_status(:not_found) }
+  end
+
+  it 'returns list of inactive access tokens' do
+    get_inactive_access_tokens
+
+    expect(json_response.count).to eq(3)
+  end
+
+  it 'returns list of inactive access tokens in descending order by updated_at', :aggregate_failures do
+    inactive_resource_access_token1.update!(updated_at: 4.days.ago)
+    inactive_resource_access_token2.update!(updated_at: 2.days.ago)
+    inactive_resource_access_token3.update!(updated_at: 3.days.ago)
+
+    get_inactive_access_tokens
+
+    expect(json_response.count).to eq(3)
+    expect(json_response.pluck('id')).to eq(
+      [
+        inactive_resource_access_token1,
+        inactive_resource_access_token2,
+        inactive_resource_access_token3
+      ].sort_by(&:updated_at).reverse.pluck(:id)
+    )
+  end
+
+  it "returns paginated response", :aggregate_failures do
+    get_inactive_access_tokens
+
+    expect(response).to include_pagination_headers
+    expect(response.headers['X-Per-Page']).to eq('20')
+    expect(response.headers['X-Page']).to eq('1')
+    expect(response.headers['X-Next-Page']).to eq('')
+    expect(response.headers['X-Total']).to eq('3')
   end
 end
 

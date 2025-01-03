@@ -196,21 +196,43 @@
     - *node-modules-cache
 
 .qa-bundler-variables: &qa-bundler-variables
-  variables:
-    BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
-    BUNDLE_SILENCE_ROOT_WARNING: "true"
-    BUNDLE_PATH: vendor
-    BUNDLE_WITHOUT: development
+  BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
+  BUNDLE_SILENCE_ROOT_WARNING: "true"
+  BUNDLE_PATH: vendor
+  BUNDLE_WITHOUT: development
+
+.cng-helm-cache: &cng-helm-cache
+  key: cng-helm-cache-${GITLAB_HELM_CHART_REF}
+  paths:
+    - $CNG_HELM_REPOSITORY_CACHE
+  policy: pull
 
 .qa-cache:
-  <<: *qa-bundler-variables
+  variables: *qa-bundler-variables
   cache:
     - *qa-ruby-gems-cache
 
 .qa-cache-push:
-  <<: *qa-bundler-variables
+  variables: *qa-bundler-variables
   cache:
     - <<: *qa-ruby-gems-cache
+      policy: pull-push
+
+.cng-qa-cache:
+  variables:
+    CNG_HELM_REPOSITORY_CACHE: $CI_PROJECT_DIR/qa/tmp/helm-cng
+    <<: *qa-bundler-variables
+  cache:
+    - *qa-ruby-gems-cache
+    - *cng-helm-cache
+
+.cng-qa-cache-push:
+  variables:
+    CNG_HELM_REPOSITORY_CACHE: $CI_PROJECT_DIR/qa/tmp/helm-cng
+    <<: *qa-bundler-variables
+  cache:
+    - *qa-ruby-gems-cache
+    - <<: *cng-helm-cache
       policy: pull-push
 
 .yarn-cache:

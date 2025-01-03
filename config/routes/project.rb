@@ -158,6 +158,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
               put :revoke
               put :rotate
             end
+
+            collection do
+              get :inactive, format: :json
+            end
           end
 
           resource :packages_and_registries, only: [:show] do

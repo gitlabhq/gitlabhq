@@ -55,7 +55,6 @@
       .gl-mt-5
         = render ::Layouts::CrudComponent.new(_('Inactive group access tokens'),
           icon: 'token',
-          count: @inactive_access_tokens.size,
-          count_options: { class: 'js-token-count' }) do |c|
+          count: @inactive_access_tokens_size) do |c|
           - c.with_body do
-            #js-inactive-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_inactive_access_tokens: @inactive_access_tokens.to_json, no_inactive_tokens_message: _('This group has no inactive access tokens.')} }
+            #js-inactive-access-token-table-app{ data: { no_inactive_tokens_message: _('This group has no inactive access tokens.'), pagination_url: inactive_group_settings_access_tokens_url(@group, format: :json) } }

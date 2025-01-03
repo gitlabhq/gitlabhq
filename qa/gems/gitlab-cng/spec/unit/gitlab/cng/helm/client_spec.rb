@@ -3,8 +3,14 @@
 RSpec.describe Gitlab::Cng::Helm::Client do
   subject(:client) { described_class.new }
 
+  let(:repository_cache) { nil }
+
   before do
-    allow(client).to receive(:execute_shell)
+    allow(client).to receive(:execute_shell).and_return("")
+  end
+
+  around do |example|
+    ClimateControl.modify({ "CNG_HELM_REPOSITORY_CACHE" => repository_cache }) { example.run }
   end
 
   describe "#add_gitlab_helm_chart" do
@@ -48,8 +54,11 @@ RSpec.describe Gitlab::Cng::Helm::Client do
     end
 
     context "with specific chart sha" do
+      let(:repository_cache) { tmpdir }
       let(:sha) { "1888fda881ab" }
       let(:chart_dir) { File.join(tmpdir, "gitlab-#{sha}") }
+      let(:chart_tgz) { File.join(chart_dir, "gitlab-#{sha}.tgz") }
+      let(:cached_chart_tgz) { File.join(repository_cache, "gitlab-#{sha}.tgz") }
 
       before do
         allow(Net::HTTP).to receive(:get_response).with(
@@ -57,19 +66,46 @@ RSpec.describe Gitlab::Cng::Helm::Client do
         ).and_return(instance_double(Net::HTTPSuccess, body: "archive", code: "200"))
 
         FileUtils.mkdir_p(chart_dir)
-        File.write(File.join(chart_dir, "gitlab-#{sha}.tgz"), "built chart")
+        FileUtils.touch(chart_tgz)
       end
 
       it "packages chart from specific sha" do
         expect do
-          expect(client.add_gitlab_helm_chart(sha)).to eq(File.join(chart_dir, "gitlab-#{sha}.tgz"))
+          expect(client.add_gitlab_helm_chart(sha)).to eq(chart_tgz)
         end.to output(/Packaging chart for git sha '#{sha}'/).to_stdout
 
         expect(client).to have_received(:execute_shell).with(
           %W[tar -xf #{File.join(tmpdir, "gitlab-#{sha}.tar")} -C #{tmpdir}]
         )
         expect(client).to have_received(:execute_shell).with(
-          %W[helm package --dependency-update --destination #{chart_dir} #{chart_dir}],
+          %W[helm package --dependency-update --destination #{chart_dir} #{chart_dir}
+            --repository-cache #{repository_cache}],
+          stdin_data: nil
+        )
+        expect(File.exist?(cached_chart_tgz)).to be(true), "Expected packaged chart to be copied to cache dir"
+      end
+
+      context "with packaged chart in cache" do
+        before do
+          FileUtils.touch(cached_chart_tgz)
+        end
+
+        it "uses cached chart archive" do
+          expect do
+            expect(client.add_gitlab_helm_chart(sha)).to eq(cached_chart_tgz)
+          end.to output(/Cached version of chart found at #{cached_chart_tgz}, skipping packaging/).to_stdout
+        end
+      end
+    end
+
+    context "with custom repository cache folder" do
+      let(:repository_cache) { tmpdir }
+
+      it "uses custom repository cache folder for helm commands" do
+        expect { client.add_gitlab_helm_chart }.to output.to_stdout
+
+        expect(client).to have_received(:execute_shell).with(
+          %W[helm repo add gitlab https://charts.gitlab.io --repository-cache #{repository_cache}],
           stdin_data: nil
         )
       end

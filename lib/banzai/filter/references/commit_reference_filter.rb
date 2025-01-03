@@ -73,6 +73,8 @@ module Banzai
         end
 
         def parent_records(parent, ids)
+          return [] unless parent.respond_to?(:commits_by)
+
           parent.commits_by(oids: ids.to_a)
         end
 

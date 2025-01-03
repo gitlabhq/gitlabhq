@@ -71,6 +71,7 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
+    defaultBranchName: { default: '' },
     projectPath: { default: null },
     sourceProjectPath: { default: null },
     title: { default: '' },
@@ -132,6 +133,9 @@ export default {
         ? description
         : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>b</kbd>`);
     },
+    shouldShowTargetCopyButton() {
+      return this.getNoteableData.target_branch !== this.defaultBranchName;
+    },
   },
   watch: {
     discussionTabCounter(val) {
@@ -177,7 +181,7 @@ export default {
             class="gl-my-0 gl-ml-1 gl-mr-2 gl-hidden gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap gl-font-bold gl-text-default lg:gl-block"
           ></a>
           <div class="gl-flex gl-items-center">
-            <gl-sprintf :message="__('%{source} %{copyButton} into %{target}')">
+            <gl-sprintf :message="__('%{source} %{copyButton} into %{target} %{targetCopyButton}')">
               <template #copyButton>
                 <clipboard-button
                   tooltip-placement="bottom"
@@ -205,6 +209,17 @@ export default {
                   </span>
                   {{ sourceBranch }}
                 </gl-link>
+              </template>
+              <template #targetCopyButton>
+                <clipboard-button
+                  v-if="shouldShowTargetCopyButton"
+                  tooltip-placement="bottom"
+                  :title="__('Copy branch name')"
+                  :text="getNoteableData.target_branch"
+                  size="small"
+                  category="tertiary"
+                  class="gl-mx-1"
+                />
               </template>
               <template #target>
                 <gl-link

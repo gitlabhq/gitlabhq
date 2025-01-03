@@ -612,7 +612,7 @@ msgstr ""
 msgid "%{author} has added you as an approver."
 msgstr ""
 
-msgid "%{author} requested to merge %{source_branch} %{copy_button} into %{target_branch} %{created_at}"
+msgid "%{author} requested to merge %{source_branch} %{copy_button} into %{target_branch} %{target_copy_button} %{created_at}"
 msgstr ""
 
 msgid "%{board_target} not found"
@@ -1297,7 +1297,7 @@ msgstr ""
 msgid "%{source_type} cannot block %{type_type}"
 msgstr ""
 
-msgid "%{source} %{copyButton} into %{target}"
+msgid "%{source} %{copyButton} into %{target} %{targetCopyButton}"
 msgstr ""
 
 msgid "%{spammable_titlecase} was submitted to Akismet successfully."

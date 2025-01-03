@@ -152,7 +152,6 @@ RSpec.shared_examples 'inactive resource access tokens' do |no_active_tokens_tex
   end
 
   it 'removes expired tokens from active section' do
-    pending('backend pagination implementation of inactive access tokens (https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173867)')
     resource_access_token.update!(expires_at: 5.days.ago)
     visit resource_settings_access_tokens_path
 
@@ -161,7 +160,6 @@ RSpec.shared_examples 'inactive resource access tokens' do |no_active_tokens_tex
   end
 
   it 'removes revoked tokens from active section' do
-    pending('backend pagination implementation of inactive access tokens (https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173867)')
     resource_access_token.revoke!
     visit resource_settings_access_tokens_path
 

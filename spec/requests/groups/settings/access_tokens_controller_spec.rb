@@ -40,7 +40,16 @@ RSpec.describe Groups::Settings::AccessTokensController, feature_category: :syst
     it_behaves_like 'feature unavailable'
     it_behaves_like 'GET resource access tokens available'
     it_behaves_like 'GET access tokens are paginated and ordered'
-    it_behaves_like 'GET access tokens includes inactive tokens'
+  end
+
+  describe 'GET /:namespace/-/settings/access_tokens/inactive.json' do
+    subject(:get_inactive_access_tokens) do
+      get inactive_group_settings_access_tokens_path(resource, format: :json)
+      response
+    end
+
+    it_behaves_like 'feature unavailable'
+    it_behaves_like 'GET inactive access tokens'
   end
 
   describe 'POST /:namespace/-/settings/access_tokens' do
