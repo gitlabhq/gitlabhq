@@ -23,6 +23,7 @@ export async function mountMergeRequestListsApp({
   const {
     autocompleteAwardEmojisPath,
     fullPath,
+    groupId,
     hasAnyMergeRequests,
     hasScopedLabelsFeature,
     initialSort,
@@ -45,6 +46,7 @@ export async function mountMergeRequestListsApp({
     quickActionsHelpPath,
     markdownHelpPath,
     resetPath,
+    showNewResourceDropdown,
   } = el.dataset;
 
   return new Vue({
@@ -86,6 +88,8 @@ export async function mountMergeRequestListsApp({
       getMergeRequestsQuery,
       getMergeRequestsCountsQuery,
       isProject,
+      groupId: groupId ? `${groupId}` : null,
+      showNewResourceDropdown: parseBoolean(showNewResourceDropdown),
     },
     render: (createComponent) => createComponent(MergeRequestsListApp),
   });

@@ -602,6 +602,10 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
     end
 
     context 'rendering views' do
+      before do
+        stub_feature_flags(vue_merge_request_list: false)
+      end
+
       render_views
 
       it 'displays MR counts in nav' do
@@ -629,6 +633,8 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
 
     context 'when an ActiveRecord::QueryCanceled is raised' do
       before do
+        stub_feature_flags(vue_merge_request_list: false)
+
         allow_next_instance_of(Gitlab::IssuableMetadata) do |instance|
           allow(instance).to receive(:data).and_raise(ActiveRecord::QueryCanceled)
         end

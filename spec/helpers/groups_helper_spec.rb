@@ -792,4 +792,21 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
       end
     end
   end
+
+  describe '#group_merge_requests' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, namespace: group) }
+    let_it_be(:merge_request) { create(:merge_request, :simple, source_project: project, target_project: project) }
+
+    before do
+      group.add_owner(user)
+
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    it 'returns group merge requests' do
+      expect(helper.group_merge_requests(group)).to contain_exactly(merge_request)
+    end
+  end
 end

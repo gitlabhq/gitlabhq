@@ -1,7 +1,7 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "../merge_request.fragment.graphql"
 
-query getProjectMergeRequests(
+query getGroupMergeRequests(
   $hideUsers: Boolean = false
   $isSignedIn: Boolean = false
   $fullPath: ID!
@@ -32,7 +32,7 @@ query getProjectMergeRequests(
   $firstPageSize: Int
   $lastPageSize: Int
 ) {
-  namespace: project(fullPath: $fullPath) {
+  namespace: group(fullPath: $fullPath) {
     id
     mergeRequests(
       sort: $sort
@@ -67,6 +67,7 @@ query getProjectMergeRequests(
       }
       nodes {
         ...MergeRequestFragment
+        reference(full: true)
       }
     }
   }

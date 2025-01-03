@@ -306,6 +306,10 @@ module GroupsHelper
     }.to_json
   end
 
+  def group_merge_requests(group)
+    MergeRequestsFinder.new(current_user, group_id: group.id, include_subgroups: true, non_archived: true).execute
+  end
+
   private
 
   def group_title_link(group, hidable: false, show_avatar: false)

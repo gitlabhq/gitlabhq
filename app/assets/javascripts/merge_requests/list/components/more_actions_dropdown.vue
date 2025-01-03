@@ -86,14 +86,17 @@ export default {
       </div>
     </template>
 
-    <csv-import-export-buttons
-      v-if="isSignedIn"
-      :issuable-count="issuableCount"
-      :export-csv-path="exportCsvPath"
-    />
+    <template v-if="exportCsvPath">
+      <csv-import-export-buttons
+        v-if="isSignedIn"
+        :issuable-count="issuableCount"
+        :export-csv-path="exportCsvPath"
+      />
 
-    <gl-disclosure-dropdown-group :bordered="isSignedIn">
-      <gl-disclosure-dropdown-item :item="subscribeToRSSItem" />
-    </gl-disclosure-dropdown-group>
+      <gl-disclosure-dropdown-group :bordered="isSignedIn">
+        <gl-disclosure-dropdown-item :item="subscribeToRSSItem" />
+      </gl-disclosure-dropdown-group>
+    </template>
+    <gl-disclosure-dropdown-item v-else :item="subscribeToRSSItem" />
   </gl-disclosure-dropdown>
 </template>

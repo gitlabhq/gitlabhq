@@ -1,4 +1,4 @@
-query getProjectMergeRequestsCount(
+query getGroupMergeRequestsCount(
   $fullPath: ID!
   $search: String
   $approvedBy: [String!]
@@ -21,7 +21,7 @@ query getProjectMergeRequestsCount(
   $environmentName: String
   $not: MergeRequestsResolverNegatedParams
 ) {
-  namespace: project(fullPath: $fullPath) {
+  namespace: group(fullPath: $fullPath) {
     id
     openedMergeRequests: mergeRequests(
       state: opened

@@ -253,35 +253,39 @@ module MergeRequestsHelper
     end
   end
 
-  def project_merge_requests_list_data(project, current_user)
-    merge_project = merge_request_source_project_for_project(project)
-
+  def common_merge_request_list_data(current_user)
     {
       autocomplete_award_emojis_path: autocomplete_award_emojis_path,
-      full_path: project.full_path,
-      has_any_merge_requests: project_merge_requests(project).exists?.to_s,
       initial_sort: default_merge_request_sort || current_user&.user_preference&.merge_requests_sort,
       is_public_visibility_restricted:
         Gitlab::CurrentSettings.restricted_visibility_levels&.include?(Gitlab::VisibilityLevel::PUBLIC).to_s,
       is_signed_in: current_user.present?.to_s,
-      new_merge_request_path: merge_project && project_new_merge_request_path(merge_project),
       show_export_button: "true",
       issuable_type: :merge_request,
       issuable_count: issuables_count_for_state(:merge_request, params[:state]),
       email: current_user.present? ? current_user.notification_email_or_default : nil,
-      export_csv_path: export_csv_project_merge_requests_path(project, request.query_parameters),
       rss_url: url_for(safe_params.merge(rss_url_options)),
+      emails_help_page_path: help_page_path('development/emails.md', anchor: 'email-namespace'),
+      quick_actions_help_path: help_page_path('user/project/quick_actions.md'),
+      markdown_help_path: help_page_path('user/markdown.md')
+    }
+  end
+
+  def project_merge_requests_list_data(project, current_user)
+    merge_project = merge_request_source_project_for_project(project)
+
+    common_merge_request_list_data(current_user).merge({
+      full_path: project.full_path,
+      has_any_merge_requests: project_merge_requests(project).exists?.to_s,
+      new_merge_request_path: merge_project && project_new_merge_request_path(merge_project),
+      export_csv_path: export_csv_project_merge_requests_path(project, request.query_parameters),
       releases_endpoint: project_releases_path(project, format: :json),
       can_bulk_update: can?(current_user, :admin_merge_request, project).to_s,
       environment_names_path: unfoldered_environment_names_project_path(project, :json),
       default_branch: project.default_branch,
       initial_email: can?(current_user, :create_merge_request_in, project) &&
-        project.new_issuable_address(current_user, 'merge_request'),
-      emails_help_page_path: help_page_path('development/emails.md', anchor: 'email-namespace'),
-      quick_actions_help_path: help_page_path('user/project/quick_actions.md'),
-      markdown_help_path: help_page_path('user/markdown.md'),
-      reset_path: new_issuable_address_project_path(project, issuable_type: 'merge_request')
-    }
+        project.new_issuable_address(current_user, 'merge_request')
+    })
   end
 
   def project_merge_requests_list_more_actions_data(project, current_user)
@@ -293,6 +297,19 @@ module MergeRequestsHelper
       export_csv_path: export_csv_project_merge_requests_path(project, request.query_parameters),
       rss_url: url_for(safe_params.merge(rss_url_options))
     }
+  end
+
+  def group_merge_requests_list_data(group, current_user)
+    common_merge_request_list_data(current_user).merge({
+      group_id: group.id,
+      full_path: group.full_path,
+      show_new_resource_dropdown: (current_user.presence && any_projects?(@projects)).to_s,
+      has_any_merge_requests: group_merge_requests(group).exists?.to_s,
+      releases_endpoint: group_releases_path(group, format: :json),
+      can_bulk_update: (can?(current_user, :admin_merge_request, group) &&
+        group.licensed_feature_available?(:group_bulk_edit)).to_s,
+      environment_names_path: unfoldered_environment_names_group_path(group, :json)
+    })
   end
 
   def identity_verification_alert_data(_)
