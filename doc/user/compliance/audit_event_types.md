@@ -608,6 +608,7 @@ Audit event types belong to the following product categories.
 | [`user_email_changed_and_user_signed_in`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106090) | User email changed and user signed in | **{check-circle}** Yes | GitLab [15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/369331) | User |
 | [`user_impersonation`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79340) | An instance administrator starts or stops impersonating a user | **{check-circle}** Yes | GitLab [14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/300961) | User, Group |
 | [`user_password_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106086) | A user password is updated | **{check-circle}** Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369330) | User |
+| [`user_provisioned_by_scim`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174040) | A user is provisioned by SCIM | **{check-circle}** Yes | GitLab [17.8](https://gitlab.com/gitlab-org/gitlab/-/issues/423322) | Group |
 | [`user_rejected`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113784) | A user registration is rejected | **{check-circle}** Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374107) | User |
 
 ### User profile

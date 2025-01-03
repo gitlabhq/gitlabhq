@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::RecordsFetcher, feature_category: :value_stream_management do
-  let_it_be(:default_organization) { create(:organization, :default) }
   let_it_be(:project, refind: true) { create(:project, :public) }
   let_it_be(:issue_1) { create(:issue, project: project) }
   let_it_be(:issue_2) { create(:issue, :confidential, project: project) }

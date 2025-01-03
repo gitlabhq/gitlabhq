@@ -6,21 +6,21 @@ import { getBinding } from 'helpers/vue_mock_directive';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
-import ContainerProtectionRuleForm from '~/packages_and_registries/settings/project/components/container_protection_rule_form.vue';
-import ContainerProtectionRules from '~/packages_and_registries/settings/project/components/container_protection_rules.vue';
-import ContainerProtectionRuleQuery from '~/packages_and_registries/settings/project/graphql/queries/get_container_protection_rules.query.graphql';
-import deleteContainerProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_rule.mutation.graphql';
-import updateContainerProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_container_registry_protection_rule.mutation.graphql';
+import ContainerProtectionRepositoryRuleForm from '~/packages_and_registries/settings/project/components/container_protection_repository_rule_form.vue';
+import ContainerProtectionRepositoryRules from '~/packages_and_registries/settings/project/components/container_protection_repository_rules.vue';
+import ContainerProtectionRepositoryRuleQuery from '~/packages_and_registries/settings/project/graphql/queries/get_container_protection_repository_rules.query.graphql';
+import deleteContainerProtectionRepositoryRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_repository_rule.mutation.graphql';
+import updateContainerProtectionRepositoryRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_container_protection_repository_rule.mutation.graphql';
 import {
-  containerProtectionRulesData,
-  containerProtectionRuleQueryPayload,
-  deleteContainerProtectionRuleMutationPayload,
-  updateContainerProtectionRuleMutationPayload,
+  containerProtectionRepositoryRulesData,
+  containerProtectionRepositoryRuleQueryPayload,
+  deleteContainerProtectionRepositoryRuleMutationPayload,
+  updateContainerProtectionRepositoryRuleMutationPayload,
 } from '../mock_data';
 
 Vue.use(VueApollo);
 
-describe('Container protection rules project settings', () => {
+describe('Container protection repository rules project settings', () => {
   let wrapper;
   let fakeApollo;
 
@@ -38,14 +38,15 @@ describe('Container protection rules project settings', () => {
   const findTableLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findTableRow = (i) => extendedWrapper(findTableBody().findAllByRole('row').at(i));
   const findTableRowButtonDelete = (i) => findTableRow(i).findByRole('button', { name: /delete/i });
-  const findAddProtectionRuleForm = () => wrapper.findComponent(ContainerProtectionRuleForm);
+  const findAddProtectionRuleForm = () =>
+    wrapper.findComponent(ContainerProtectionRepositoryRuleForm);
   const findAddProtectionRuleFormSubmitButton = () =>
     wrapper.findByRole('button', { name: /add protection rule/i });
   const findAlert = () => wrapper.findByRole('alert');
   const findModal = () => wrapper.findComponent(GlModal);
 
   const mountComponent = (mountFn = mountExtended, provide = defaultProvidedValues, config) => {
-    wrapper = mountFn(ContainerProtectionRules, {
+    wrapper = mountFn(ContainerProtectionRepositoryRules, {
       stubs: {
         GlModal: true,
       },
@@ -60,21 +61,27 @@ describe('Container protection rules project settings', () => {
   const createComponent = ({
     mountFn = mountExtended,
     provide = defaultProvidedValues,
-    containerProtectionRuleQueryResolver = jest
+    containerProtectionRepositoryRuleQueryResolver = jest
       .fn()
-      .mockResolvedValue(containerProtectionRuleQueryPayload()),
-    deleteContainerProtectionRuleMutationResolver = jest
+      .mockResolvedValue(containerProtectionRepositoryRuleQueryPayload()),
+    deleteContainerProtectionRepositoryRuleMutationResolver = jest
       .fn()
-      .mockResolvedValue(deleteContainerProtectionRuleMutationPayload()),
-    updateContainerProtectionRuleMutationResolver = jest
+      .mockResolvedValue(deleteContainerProtectionRepositoryRuleMutationPayload()),
+    updateContainerProtectionRepositoryRuleMutationResolver = jest
       .fn()
-      .mockResolvedValue(updateContainerProtectionRuleMutationPayload()),
+      .mockResolvedValue(updateContainerProtectionRepositoryRuleMutationPayload()),
     config = {},
   } = {}) => {
     const requestHandlers = [
-      [ContainerProtectionRuleQuery, containerProtectionRuleQueryResolver],
-      [deleteContainerProtectionRuleMutation, deleteContainerProtectionRuleMutationResolver],
-      [updateContainerProtectionRuleMutation, updateContainerProtectionRuleMutationResolver],
+      [ContainerProtectionRepositoryRuleQuery, containerProtectionRepositoryRuleQueryResolver],
+      [
+        deleteContainerProtectionRepositoryRuleMutation,
+        deleteContainerProtectionRepositoryRuleMutationResolver,
+      ],
+      [
+        updateContainerProtectionRepositoryRuleMutation,
+        updateContainerProtectionRepositoryRuleMutationResolver,
+      ],
     ];
 
     fakeApollo = createMockApollo(requestHandlers);
@@ -99,8 +106,8 @@ describe('Container protection rules project settings', () => {
 
   it('hides table when no protection rules exist', async () => {
     createComponent({
-      containerProtectionRuleQueryResolver: jest.fn().mockResolvedValue(
-        containerProtectionRuleQueryPayload({
+      containerProtectionRepositoryRuleQueryResolver: jest.fn().mockResolvedValue(
+        containerProtectionRepositoryRuleQueryPayload({
           nodes: [],
           pageInfo: {
             hasNextPage: false,
@@ -130,7 +137,7 @@ describe('Container protection rules project settings', () => {
 
       expect(findTable().exists()).toBe(true);
 
-      containerProtectionRuleQueryPayload().data.project.containerProtectionRepositoryRules.nodes.forEach(
+      containerProtectionRepositoryRuleQueryPayload().data.project.containerProtectionRepositoryRules.nodes.forEach(
         (protectionRule, i) => {
           expect(findTableRowCell(i, 0).text()).toBe(protectionRule.repositoryPathPattern);
           expect(findTableRowCellComboboxSelectedOption(i, 1).text).toBe('Maintainer');
@@ -146,22 +153,22 @@ describe('Container protection rules project settings', () => {
     });
 
     it('calls graphql api query', () => {
-      const containerProtectionRuleQueryResolver = jest
+      const containerProtectionRepositoryRuleQueryResolver = jest
         .fn()
-        .mockResolvedValue(containerProtectionRuleQueryPayload());
-      createComponent({ containerProtectionRuleQueryResolver });
+        .mockResolvedValue(containerProtectionRepositoryRuleQueryPayload());
+      createComponent({ containerProtectionRepositoryRuleQueryResolver });
 
-      expect(containerProtectionRuleQueryResolver).toHaveBeenCalledWith(
+      expect(containerProtectionRepositoryRuleQueryResolver).toHaveBeenCalledWith(
         expect.objectContaining({ projectPath: defaultProvidedValues.projectPath }),
       );
     });
 
     it('shows alert when graphql api query failed', async () => {
       const graphqlErrorMessage = 'Error when requesting graphql api';
-      const containerProtectionRuleQueryResolver = jest
+      const containerProtectionRepositoryRuleQueryResolver = jest
         .fn()
         .mockRejectedValue(new Error(graphqlErrorMessage));
-      createComponent({ containerProtectionRuleQueryResolver });
+      createComponent({ containerProtectionRepositoryRuleQueryResolver });
 
       await waitForPromises();
 
@@ -187,12 +194,12 @@ describe('Container protection rules project settings', () => {
       });
 
       it('calls initial graphql api query with pagination information', () => {
-        const containerProtectionRuleQueryResolver = jest
+        const containerProtectionRepositoryRuleQueryResolver = jest
           .fn()
-          .mockResolvedValue(containerProtectionRuleQueryPayload());
-        createComponent({ containerProtectionRuleQueryResolver });
+          .mockResolvedValue(containerProtectionRepositoryRuleQueryPayload());
+        createComponent({ containerProtectionRepositoryRuleQueryResolver });
 
-        expect(containerProtectionRuleQueryResolver).toHaveBeenCalledWith(
+        expect(containerProtectionRepositoryRuleQueryResolver).toHaveBeenCalledWith(
           expect.objectContaining({
             projectPath: defaultProvidedValues.projectPath,
             first: 10,
@@ -201,12 +208,12 @@ describe('Container protection rules project settings', () => {
       });
 
       it('show alert when grapqhl fails', () => {
-        const containerProtectionRuleQueryResolver = jest
+        const containerProtectionRepositoryRuleQueryResolver = jest
           .fn()
-          .mockResolvedValue(containerProtectionRuleQueryPayload());
-        createComponent({ containerProtectionRuleQueryResolver });
+          .mockResolvedValue(containerProtectionRepositoryRuleQueryPayload());
+        createComponent({ containerProtectionRepositoryRuleQueryResolver });
 
-        expect(containerProtectionRuleQueryResolver).toHaveBeenCalledWith(
+        expect(containerProtectionRepositoryRuleQueryResolver).toHaveBeenCalledWith(
           expect.objectContaining({
             projectPath: defaultProvidedValues.projectPath,
             first: 10,
@@ -215,11 +222,11 @@ describe('Container protection rules project settings', () => {
       });
 
       describe('when button "Previous" is clicked', () => {
-        const containerProtectionRuleQueryResolver = jest
+        const containerProtectionRepositoryRuleQueryResolver = jest
           .fn()
           .mockResolvedValueOnce(
-            containerProtectionRuleQueryPayload({
-              nodes: containerProtectionRulesData.slice(10),
+            containerProtectionRepositoryRuleQueryPayload({
+              nodes: containerProtectionRepositoryRulesData.slice(10),
               pageInfo: {
                 hasNextPage: false,
                 hasPreviousPage: true,
@@ -228,13 +235,13 @@ describe('Container protection rules project settings', () => {
               },
             }),
           )
-          .mockResolvedValueOnce(containerProtectionRuleQueryPayload());
+          .mockResolvedValueOnce(containerProtectionRepositoryRuleQueryPayload());
 
         const findPaginationButtonPrev = () =>
           extendedWrapper(findPagination()).findByRole('button', { name: /previous/i });
 
         beforeEach(async () => {
-          createComponent({ containerProtectionRuleQueryResolver });
+          createComponent({ containerProtectionRepositoryRuleQueryResolver });
 
           await waitForPromises();
 
@@ -242,8 +249,8 @@ describe('Container protection rules project settings', () => {
         });
 
         it('sends a second graphql api query with new pagination params', () => {
-          expect(containerProtectionRuleQueryResolver).toHaveBeenCalledTimes(2);
-          expect(containerProtectionRuleQueryResolver).toHaveBeenLastCalledWith(
+          expect(containerProtectionRepositoryRuleQueryResolver).toHaveBeenCalledTimes(2);
+          expect(containerProtectionRepositoryRuleQueryResolver).toHaveBeenLastCalledWith(
             expect.objectContaining({
               before: '10',
               last: 10,
@@ -254,13 +261,13 @@ describe('Container protection rules project settings', () => {
       });
 
       describe('when button "Next" is clicked', () => {
-        const containerProtectionRuleQueryResolver = jest
+        const containerProtectionRepositoryRuleQueryResolver = jest
           .fn()
-          .mockResolvedValue(containerProtectionRuleQueryPayload())
-          .mockResolvedValueOnce(containerProtectionRuleQueryPayload())
+          .mockResolvedValue(containerProtectionRepositoryRuleQueryPayload())
+          .mockResolvedValueOnce(containerProtectionRepositoryRuleQueryPayload())
           .mockResolvedValueOnce(
-            containerProtectionRuleQueryPayload({
-              nodes: containerProtectionRulesData.slice(10),
+            containerProtectionRepositoryRuleQueryPayload({
+              nodes: containerProtectionRepositoryRulesData.slice(10),
               pageInfo: {
                 hasNextPage: true,
                 hasPreviousPage: false,
@@ -274,7 +281,7 @@ describe('Container protection rules project settings', () => {
           extendedWrapper(findPagination()).findByRole('button', { name: /next/i });
 
         beforeEach(async () => {
-          createComponent({ containerProtectionRuleQueryResolver });
+          createComponent({ containerProtectionRepositoryRuleQueryResolver });
 
           await waitForPromises();
 
@@ -282,8 +289,8 @@ describe('Container protection rules project settings', () => {
         });
 
         it('sends a second graphql api query with new pagination params', () => {
-          expect(containerProtectionRuleQueryResolver).toHaveBeenCalledTimes(2);
-          expect(containerProtectionRuleQueryResolver).toHaveBeenLastCalledWith(
+          expect(containerProtectionRepositoryRuleQueryResolver).toHaveBeenCalledTimes(2);
+          expect(containerProtectionRepositoryRuleQueryResolver).toHaveBeenLastCalledWith(
             expect.objectContaining({
               after: '10',
               first: 10,
@@ -323,7 +330,7 @@ describe('Container protection rules project settings', () => {
           expect(findComboboxInTableRow(0).isVisible()).toBe(true);
           expect(findComboboxInTableRow(0).attributes('disabled')).toBeUndefined();
           expect(findComboboxInTableRow(0).element.value).toBe(
-            containerProtectionRulesData[0][minimumAccessLevelAttribute],
+            containerProtectionRepositoryRulesData[0][minimumAccessLevelAttribute],
           );
 
           const accessLevelOptions = findComboboxInTableRow(0)
@@ -352,20 +359,22 @@ describe('Container protection rules project settings', () => {
           });
 
           it('sends graphql mutation', async () => {
-            const updateContainerProtectionRuleMutationResolver = jest
+            const updateContainerProtectionRepositoryRuleMutationResolver = jest
               .fn()
-              .mockResolvedValue(updateContainerProtectionRuleMutationPayload());
+              .mockResolvedValue(updateContainerProtectionRepositoryRuleMutationPayload());
 
-            createComponent({ updateContainerProtectionRuleMutationResolver });
+            createComponent({ updateContainerProtectionRepositoryRuleMutationResolver });
 
             await waitForPromises();
 
             await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
 
-            expect(updateContainerProtectionRuleMutationResolver).toHaveBeenCalledTimes(1);
-            expect(updateContainerProtectionRuleMutationResolver).toHaveBeenCalledWith({
+            expect(updateContainerProtectionRepositoryRuleMutationResolver).toHaveBeenCalledTimes(
+              1,
+            );
+            expect(updateContainerProtectionRepositoryRuleMutationResolver).toHaveBeenCalledWith({
               input: {
-                id: containerProtectionRulesData[0].id,
+                id: containerProtectionRepositoryRulesData[0].id,
                 [minimumAccessLevelAttribute]: accessLevelValueOwner,
               },
             });
@@ -394,11 +403,11 @@ describe('Container protection rules project settings', () => {
           });
 
           it('handles erroneous graphql mutation', async () => {
-            const updateContainerProtectionRuleMutationResolver = jest
+            const updateContainerProtectionRepositoryRuleMutationResolver = jest
               .fn()
               .mockRejectedValue(new Error('error'));
 
-            createComponent({ updateContainerProtectionRuleMutationResolver });
+            createComponent({ updateContainerProtectionRepositoryRuleMutationResolver });
 
             await waitForPromises();
 
@@ -412,14 +421,16 @@ describe('Container protection rules project settings', () => {
 
           it('handles graphql mutation with error response', async () => {
             const serverErrorMessage = 'Server error message';
-            const updateContainerProtectionRuleMutationResolver = jest.fn().mockResolvedValue(
-              updateContainerProtectionRuleMutationPayload({
-                containerRegistryProtectionRule: null,
-                errors: [serverErrorMessage],
-              }),
-            );
+            const updateContainerProtectionRepositoryRuleMutationResolver = jest
+              .fn()
+              .mockResolvedValue(
+                updateContainerProtectionRepositoryRuleMutationPayload({
+                  containerRegistryProtectionRule: null,
+                  errors: [serverErrorMessage],
+                }),
+              );
 
-            createComponent({ updateContainerProtectionRuleMutationResolver });
+            createComponent({ updateContainerProtectionRepositoryRuleMutationResolver });
 
             await waitForPromises();
 
@@ -480,11 +491,11 @@ describe('Container protection rules project settings', () => {
   describe('modal "confirmation for delete action"', () => {
     const createComponentAndClickButtonDeleteInTableRow = async ({
       tableRowIndex = 0,
-      deleteContainerProtectionRuleMutationResolver = jest
+      deleteContainerProtectionRepositoryRuleMutationResolver = jest
         .fn()
-        .mockResolvedValue(deleteContainerProtectionRuleMutationPayload()),
+        .mockResolvedValue(deleteContainerProtectionRepositoryRuleMutationPayload()),
     } = {}) => {
-      createComponent({ deleteContainerProtectionRuleMutationResolver });
+      createComponent({ deleteContainerProtectionRepositoryRuleMutationResolver });
 
       await waitForPromises();
 
@@ -505,30 +516,30 @@ describe('Container protection rules project settings', () => {
       });
 
       it('sends graphql mutation', async () => {
-        const deleteContainerProtectionRuleMutationResolver = jest
+        const deleteContainerProtectionRepositoryRuleMutationResolver = jest
           .fn()
-          .mockResolvedValue(deleteContainerProtectionRuleMutationPayload());
+          .mockResolvedValue(deleteContainerProtectionRepositoryRuleMutationPayload());
 
         await createComponentAndClickButtonDeleteInTableRow({
-          deleteContainerProtectionRuleMutationResolver,
+          deleteContainerProtectionRepositoryRuleMutationResolver,
         });
 
         await clickOnModalPrimaryBtn();
 
-        expect(deleteContainerProtectionRuleMutationResolver).toHaveBeenCalledTimes(1);
-        expect(deleteContainerProtectionRuleMutationResolver).toHaveBeenCalledWith({
-          input: { id: containerProtectionRulesData[0].id },
+        expect(deleteContainerProtectionRepositoryRuleMutationResolver).toHaveBeenCalledTimes(1);
+        expect(deleteContainerProtectionRepositoryRuleMutationResolver).toHaveBeenCalledWith({
+          input: { id: containerProtectionRepositoryRulesData[0].id },
         });
       });
 
       it('handles erroneous graphql mutation', async () => {
         const alertErrorMessage = 'Client error message';
-        const deleteContainerProtectionRuleMutationResolver = jest
+        const deleteContainerProtectionRepositoryRuleMutationResolver = jest
           .fn()
           .mockRejectedValue(new Error(alertErrorMessage));
 
         await createComponentAndClickButtonDeleteInTableRow({
-          deleteContainerProtectionRuleMutationResolver,
+          deleteContainerProtectionRepositoryRuleMutationResolver,
         });
 
         await clickOnModalPrimaryBtn();
@@ -541,15 +552,15 @@ describe('Container protection rules project settings', () => {
 
       it('handles graphql mutation with error response', async () => {
         const alertErrorMessage = 'Server error message';
-        const deleteContainerProtectionRuleMutationResolver = jest.fn().mockResolvedValue(
-          deleteContainerProtectionRuleMutationPayload({
+        const deleteContainerProtectionRepositoryRuleMutationResolver = jest.fn().mockResolvedValue(
+          deleteContainerProtectionRepositoryRuleMutationPayload({
             containerRegistryProtectionRule: null,
             errors: [alertErrorMessage],
           }),
         );
 
         await createComponentAndClickButtonDeleteInTableRow({
-          deleteContainerProtectionRuleMutationResolver,
+          deleteContainerProtectionRepositoryRuleMutationResolver,
         });
 
         await clickOnModalPrimaryBtn();
@@ -561,22 +572,22 @@ describe('Container protection rules project settings', () => {
       });
 
       it('refetches package protection rules after successful graphql mutation', async () => {
-        const deleteContainerProtectionRuleMutationResolver = jest
+        const deleteContainerProtectionRepositoryRuleMutationResolver = jest
           .fn()
-          .mockResolvedValue(deleteContainerProtectionRuleMutationPayload());
+          .mockResolvedValue(deleteContainerProtectionRepositoryRuleMutationPayload());
 
-        const containerProtectionRuleQueryResolver = jest
+        const containerProtectionRepositoryRuleQueryResolver = jest
           .fn()
-          .mockResolvedValue(containerProtectionRuleQueryPayload());
+          .mockResolvedValue(containerProtectionRepositoryRuleQueryPayload());
 
         createComponent({
-          containerProtectionRuleQueryResolver,
-          deleteContainerProtectionRuleMutationResolver,
+          containerProtectionRepositoryRuleQueryResolver,
+          deleteContainerProtectionRepositoryRuleMutationResolver,
         });
 
         await waitForPromises();
 
-        expect(containerProtectionRuleQueryResolver).toHaveBeenCalledTimes(1);
+        expect(containerProtectionRepositoryRuleQueryResolver).toHaveBeenCalledTimes(1);
 
         await findTableRowButtonDelete(0).trigger('click');
 
@@ -584,7 +595,7 @@ describe('Container protection rules project settings', () => {
 
         await waitForPromises();
 
-        expect(containerProtectionRuleQueryResolver).toHaveBeenCalledTimes(2);
+        expect(containerProtectionRepositoryRuleQueryResolver).toHaveBeenCalledTimes(2);
       });
 
       it('shows a toast with success message', async () => {
@@ -637,14 +648,14 @@ describe('Container protection rules project settings', () => {
   });
 
   describe('form "add protection rule"', () => {
-    let containerProtectionRuleQueryResolver;
+    let containerProtectionRepositoryRuleQueryResolver;
 
     beforeEach(async () => {
-      containerProtectionRuleQueryResolver = jest
+      containerProtectionRepositoryRuleQueryResolver = jest
         .fn()
-        .mockResolvedValue(containerProtectionRuleQueryPayload());
+        .mockResolvedValue(containerProtectionRepositoryRuleQueryPayload());
 
-      createComponent({ containerProtectionRuleQueryResolver });
+      createComponent({ containerProtectionRepositoryRuleQueryResolver });
 
       await waitForPromises();
 
@@ -654,7 +665,7 @@ describe('Container protection rules project settings', () => {
     it('handles event "submit"', async () => {
       await findAddProtectionRuleForm().vm.$emit('submit');
 
-      expect(containerProtectionRuleQueryResolver).toHaveBeenCalledTimes(2);
+      expect(containerProtectionRepositoryRuleQueryResolver).toHaveBeenCalledTimes(2);
 
       expect(findAddProtectionRuleForm().exists()).toBe(false);
       expect(findAddProtectionRuleFormSubmitButton().attributes('disabled')).not.toBeDefined();
@@ -663,7 +674,7 @@ describe('Container protection rules project settings', () => {
     it('handles event "cancel"', async () => {
       await findAddProtectionRuleForm().vm.$emit('cancel');
 
-      expect(containerProtectionRuleQueryResolver).toHaveBeenCalledTimes(1);
+      expect(containerProtectionRepositoryRuleQueryResolver).toHaveBeenCalledTimes(1);
 
       expect(findAddProtectionRuleForm().exists()).toBe(false);
       expect(findAddProtectionRuleFormSubmitButton().attributes()).not.toHaveProperty('disabled');

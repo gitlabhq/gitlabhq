@@ -310,10 +310,6 @@ group_security_exclusions:
   - table: namespaces
     column: group_id
     on_delete: async_delete
-group_type_ci_runners_e59bb2812d:
-  - table: namespaces
-    column: sharding_key_id
-    on_delete: async_delete
 groups_visits:
   - table: namespaces
     column: entity_id
@@ -500,10 +496,6 @@ project_security_exclusions:
 project_security_statistics:
   - table: projects
     column: project_id
-    on_delete: async_delete
-project_type_ci_runners_e59bb2812d:
-  - table: projects
-    column: sharding_key_id
     on_delete: async_delete
 projects:
   - table: users

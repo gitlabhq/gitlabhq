@@ -3,10 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe RawUsageData do
-  before_all do
-    create(:organization, :default)
-  end
-
   context 'scopes' do
     describe '.for_current_reporting_cycle' do
       subject(:recent_service_ping_reports) { described_class.for_current_reporting_cycle }

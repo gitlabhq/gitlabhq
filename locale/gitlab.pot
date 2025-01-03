@@ -40971,7 +40971,7 @@ msgstr ""
 msgid "PipelineEditorTutorial|Select the pipeline ID to view the full details about your first pipeline run."
 msgstr ""
 
-msgid "PipelineEditorTutorial|The pipeline stages and jobs are defined in a %{codeStart}.gitlab-ci.yml%{codeEnd} file. You can edit, visualize and validate the syntax in this file by using the pipeline editor."
+msgid "PipelineEditorTutorial|The pipeline stages and jobs are defined in a %{codeStart}.gitlab-ci.yml%{codeEnd} file. You can edit, visualize and validate the syntax in this file by using the pipeline editor. Use the %{codeStart}rules%{codeEnd} keyword to %{linkStart}configure jobs to run in merge requests%{linkEnd}."
 msgstr ""
 
 msgid "PipelineEditorTutorial|The pipeline status is at the top of the page."

@@ -4,7 +4,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 import ContainerRegistrySection from '~/packages_and_registries/settings/project/components/container_registry_section.vue';
 import ContainerExpirationPolicy from '~/packages_and_registries/settings/project/components/container_expiration_policy.vue';
-import ContainerProtectionRules from '~/packages_and_registries/settings/project/components/container_protection_rules.vue';
+import ContainerProtectionRepositoryRules from '~/packages_and_registries/settings/project/components/container_protection_repository_rules.vue';
 import ContainerProtectionTagRules from '~/packages_and_registries/settings/project/components/container_protection_tag_rules.vue';
 
 describe('Container registry project settings section', () => {
@@ -13,7 +13,8 @@ describe('Container registry project settings section', () => {
   const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
   const findLink = () => findSettingsBlock().findComponent(GlLink);
   const findContainerExpirationPolicy = () => wrapper.findComponent(ContainerExpirationPolicy);
-  const findContainerProtectionRules = () => wrapper.findComponent(ContainerProtectionRules);
+  const findContainerProtectionRepositoryRules = () =>
+    wrapper.findComponent(ContainerProtectionRepositoryRules);
   const findContainerProtectionTagRules = () => wrapper.findComponent(ContainerProtectionTagRules);
 
   const defaultProvide = {
@@ -61,7 +62,7 @@ describe('Container registry project settings section', () => {
 
     it('renders container registry settings components', () => {
       expect(findContainerExpirationPolicy().exists()).toBe(true);
-      expect(findContainerProtectionRules().exists()).toBe(true);
+      expect(findContainerProtectionRepositoryRules().exists()).toBe(true);
       expect(findContainerProtectionTagRules().exists()).toBe(true);
     });
   });
@@ -77,7 +78,7 @@ describe('Container registry project settings section', () => {
   });
 
   describe('when feature flag "containerRegistryProtectedContainers" is disabled', () => {
-    it('container protection rules settings is hidden', () => {
+    it('container protection repository rules settings is hidden', () => {
       mountComponent({
         provide: {
           ...defaultProvide,
@@ -85,7 +86,7 @@ describe('Container registry project settings section', () => {
         },
       });
 
-      expect(findContainerProtectionRules().exists()).toBe(false);
+      expect(findContainerProtectionRepositoryRules().exists()).toBe(false);
       expect(findContainerExpirationPolicy().exists()).toBe(true);
     });
   });
@@ -100,7 +101,7 @@ describe('Container registry project settings section', () => {
       });
 
       expect(findContainerExpirationPolicy().exists()).toBe(true);
-      expect(findContainerProtectionRules().exists()).toBe(false);
+      expect(findContainerProtectionRepositoryRules().exists()).toBe(false);
       expect(findContainerProtectionTagRules().exists()).toBe(false);
     });
   });

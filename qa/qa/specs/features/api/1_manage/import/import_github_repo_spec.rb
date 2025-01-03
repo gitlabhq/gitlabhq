@@ -112,13 +112,13 @@ module QA
           expect(issues.length).to eq(1)
           expect(issue.api_resource).to include(
             title: 'Test issue',
-            description: "*Created by: gitlab-qa-github*\n\nTest issue description",
+            description: "Test issue description",
             labels: ['good first issue', 'help wanted', 'question']
           )
           expect(comments).to match_array(
             [
-              "*Created by: gitlab-qa-github*\n\nSome test comment",
-              "*Created by: gitlab-qa-github*\n\nAnother test comment"
+              "Some test comment",
+              "Another test comment"
             ]
           )
           expect(events).to match_array(
@@ -149,14 +149,14 @@ module QA
             target_branch: 'main',
             source_branch: 'gitlab-qa-github-patch-1',
             labels: %w[documentation],
-            description: "*Created by: gitlab-qa-github*\n\nTest pull request body"
+            description: "Test pull request body"
           )
           expect(comments).to match_array(
             [
-              "*Created by: gitlab-qa-github*\n\n**Review:** Commented\n\nGood but needs some improvement",
-              "*Created by: gitlab-qa-github*\n\n```suggestion:-0+0\nProject for GitHub import test to GitLab\r\n```",
-              "*Created by: gitlab-qa-github*\n\nSome test PR comment",
-              "*Created by: gitlab-qa*\n\n**Review:** Approved",
+              "**Review:** Commented\n\nGood but needs some improvement",
+              "```suggestion:-0+0\nProject for GitHub import test to GitLab\r\n```",
+              "Some test PR comment",
+              "approved this merge request",
               "assigned to `@gitlab-qa-github`",
               "requested review from `@gitlab-qa`"
             ]

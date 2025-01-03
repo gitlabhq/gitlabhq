@@ -13,6 +13,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
   let(:gitlab_main_cell_table_name) { :_test_gitlab_main_cell_table }
   let(:gitlab_ci_table_name) { :_test_gitlab_ci_table }
   let(:gitlab_pm_table_name) { :_test_gitlab_pm_table }
+  let(:gitlab_sec_table_name) { :_test_gitlab_sec_table }
   let(:gitlab_geo_table_name) { :_test_gitlab_geo_table }
   let(:gitlab_shared_table_name) { :_test_table }
 
@@ -32,6 +33,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
     drop_table_if_exists(gitlab_ci_table_name)
     drop_table_if_exists(gitlab_geo_table_name)
     drop_table_if_exists(gitlab_pm_table_name)
+    drop_table_if_exists(gitlab_sec_table_name)
     drop_table_if_exists(gitlab_shared_table_name)
     drop_table_if_exists(renamed_gitlab_main_table_name)
     drop_table_if_exists(renamed_gitlab_ci_table_name)
@@ -198,6 +200,17 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
 
         it_behaves_like 'does not lock writes on table', Gitlab::Database.database_base_models[:main]
         it_behaves_like 'locks writes on table', Gitlab::Database.database_base_models[:ci]
+      end
+
+      context 'for creating a gitlab_sec table' do
+        before do
+          skip_if_shared_database('sec')
+        end
+
+        let(:table_name) { gitlab_sec_table_name }
+
+        it_behaves_like 'does not lock writes on table', Gitlab::Database.database_base_models[:sec]
+        it_behaves_like 'locks writes on table', Gitlab::Database.database_base_models[:main]
       end
 
       context 'for creating a gitlab_ci table' do

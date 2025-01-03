@@ -195,7 +195,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
         let(:json_writer) do
           Class.new do
             def write_relation_array(_, _, enumerator)
-              enumerator.each { _1 }
+              enumerator.each(&:itself)
             end
           end.new
         end
@@ -318,7 +318,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
         let(:json_writer) do
           Class.new do
             def write_relation_array(_, _, enumerator)
-              enumerator.each { _1 }
+              enumerator.each(&:itself)
             end
           end.new
         end
@@ -513,7 +513,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
       let(:json_writer) do
         Class.new do
           def write_relation_array(_, _, enumerator)
-            enumerator.each { _1 }
+            enumerator.each(&:itself)
           end
         end.new
       end
@@ -534,7 +534,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
       let(:json_writer) do
         Class.new do
           def write_relation_array(_, _, enumerator)
-            enumerator.each { _1 }
+            enumerator.each(&:itself)
           end
         end.new
       end

@@ -9,7 +9,7 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
-import createProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/create_container_protection_rule.mutation.graphql';
+import createProtectionRepositoryRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/create_container_protection_repository_rule.mutation.graphql';
 import { s__, __ } from '~/locale';
 
 const GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER = 'MAINTAINER';
@@ -59,7 +59,7 @@ export default {
     isFieldDisabled() {
       return this.showLoadingIcon;
     },
-    createProtectionRuleMutationInput() {
+    createProtectionRepositoryRuleMutationInput() {
       return {
         projectPath: this.projectPath,
         repositoryPathPattern: this.protectionRuleFormData.repositoryPathPattern,
@@ -81,9 +81,9 @@ export default {
       this.updateInProgress = true;
       return this.$apollo
         .mutate({
-          mutation: createProtectionRuleMutation,
+          mutation: createProtectionRepositoryRuleMutation,
           variables: {
-            input: this.createProtectionRuleMutationInput,
+            input: this.createProtectionRepositoryRuleMutationInput,
           },
         })
         .then(({ data }) => {

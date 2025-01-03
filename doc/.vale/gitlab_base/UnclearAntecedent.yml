@@ -12,10 +12,10 @@ ignorecase: false
 tokens:
   - 'That is'
   - 'That was'
-  - 'These are'
-  - 'These were'
   - 'There are'
   - 'There were'
+  - 'These are'
+  - 'These were'
   - 'This is'
   - 'This was'
   - 'Those are'

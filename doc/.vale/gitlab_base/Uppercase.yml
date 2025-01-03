@@ -21,8 +21,8 @@ exceptions:
   - ANSI
   - APAC
   - API
-  - ARIA
   - APM
+  - ARIA
   - ARM
   - ARN
   - ASCII
@@ -59,13 +59,13 @@ exceptions:
   - DHCP
   - DML
   - DNS
-  - DSN
   - DOM
   - DORA
   - DSA
   - DSL
-  - DUOPRO
+  - DSN
   - DUOENT
+  - DUOPRO
   - DVCS
   - DVD
   - EBS
@@ -181,7 +181,6 @@ exceptions:
   - RBAC
   - RDP
   - RDS
-  - RDS
   - REST
   - RFC
   - RHEL
@@ -248,7 +247,6 @@ exceptions:
   - TTL
   - UBI
   - UDP
-  - UID
   - UID
   - UNIX
   - URI

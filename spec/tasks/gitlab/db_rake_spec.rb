@@ -34,6 +34,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
       before do
         skip_if_database_exists(:ci)
+        skip_if_database_exists(:sec)
       end
 
       it 'marks the migration complete on the given database' do
@@ -48,7 +49,12 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     context 'with multiple databases' do
       let(:main_model) { double(:model, connection: double(:connection)) }
       let(:ci_model) { double(:model, connection: double(:connection)) }
-      let(:base_models) { { 'main' => main_model, 'ci' => ci_model } }
+      let(:sec_model) { double(:model, connection: double(:connection)) }
+      let(:base_models) do
+        models = { 'main' => main_model, 'ci' => ci_model }
+        models['sec'] = sec_model if database_exists?('sec')
+        models
+      end
 
       before do
         skip_if_shared_database(:ci)
@@ -65,6 +71,12 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
         expect(ci_model.connection).to receive(:execute)
           .with("INSERT INTO schema_migrations (version) VALUES ('123')")
 
+        if database_exists?('sec')
+          expect(sec_model.connection).to receive(:quote).with('123').and_return("'123'")
+          expect(sec_model.connection).to receive(:execute)
+            .with("INSERT INTO schema_migrations (version) VALUES ('123')")
+        end
+
         run_rake_task('gitlab:db:mark_migration_complete', '[123]')
       end
 
@@ -76,6 +88,11 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
           expect(ci_model.connection).not_to receive(:quote)
           expect(ci_model.connection).not_to receive(:execute)
+
+          if database_exists?('sec')
+            expect(sec_model.connection).not_to receive(:quote)
+            expect(sec_model.connection).not_to receive(:execute)
+          end
 
           run_rake_task('gitlab:db:mark_migration_complete:main', '[123]')
         end
@@ -305,7 +322,12 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     context 'with multiple databases' do
       let(:main_model) { double(:model, connection: double(:connection)) }
       let(:ci_model) { double(:model, connection: double(:connection)) }
-      let(:base_models) { { 'main' => main_model, 'ci' => ci_model }.with_indifferent_access }
+      let(:sec_model) { double(:model, connection: double(:connection)) }
+      let(:base_models) do
+        models = { 'main' => main_model, 'ci' => ci_model }.with_indifferent_access
+        models['sec'] = sec_model if database_exists?('sec')
+        models
+      end
 
       let(:main_config) { double(:config, name: 'main') }
       let(:ci_config) { double(:config, name: 'ci') }
@@ -707,7 +729,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     let(:output) { StringIO.new }
 
     before do
-      structure_files = %w[structure.sql ci_structure.sql]
+      structure_files = %w[structure.sql ci_structure.sql sec_structure.sql]
 
       allow(File).to receive(:open).and_call_original
 

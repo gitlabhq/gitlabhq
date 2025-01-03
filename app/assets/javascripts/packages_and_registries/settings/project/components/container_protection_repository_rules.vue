@@ -12,10 +12,10 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
-import protectionRulesQuery from '~/packages_and_registries/settings/project/graphql/queries/get_container_protection_rules.query.graphql';
-import ContainerProtectionRuleForm from '~/packages_and_registries/settings/project/components/container_protection_rule_form.vue';
-import deleteContainerProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_rule.mutation.graphql';
-import updateContainerRegistryProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_container_registry_protection_rule.mutation.graphql';
+import getContainerPotectionRepositoryRulesQuery from '~/packages_and_registries/settings/project/graphql/queries/get_container_protection_repository_rules.query.graphql';
+import ContainerProtectionRepositoryRuleForm from '~/packages_and_registries/settings/project/components/container_protection_repository_rule_form.vue';
+import deleteContainerProtectionRepositoryRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_repository_rule.mutation.graphql';
+import updateContainerRegistryProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_container_protection_repository_rule.mutation.graphql';
 import { s__, __ } from '~/locale';
 
 const PAGINATION_DEFAULT_PER_PAGE = 10;
@@ -25,7 +25,7 @@ const I18N_MINIMUM_ACCESS_LEVEL_FOR_PUSH = s__('ContainerRegistry|Minimum access
 export default {
   components: {
     CrudComponent,
-    ContainerProtectionRuleForm,
+    ContainerProtectionRepositoryRuleForm,
     GlAlert,
     GlButton,
     GlFormSelect,
@@ -58,7 +58,7 @@ export default {
   },
   apollo: {
     protectionRulesQueryPayload: {
-      query: protectionRulesQuery,
+      query: getContainerPotectionRepositoryRulesQuery,
       context: {
         batchKey: 'ContainerRegistryProjectSettings',
       },
@@ -167,7 +167,7 @@ export default {
 
       return this.$apollo
         .mutate({
-          mutation: deleteContainerProtectionRuleMutation,
+          mutation: deleteContainerProtectionRepositoryRuleMutation,
           variables: { input: { id: protectionRule.id } },
         })
         .then(({ data }) => {
@@ -268,7 +268,7 @@ export default {
       :toggle-text="s__('ContainerRegistry|Add protection rule')"
     >
       <template #form>
-        <container-protection-rule-form
+        <container-protection-repository-rule-form
           @cancel="hideProtectionRuleForm"
           @submit="refetchProtectionRules"
         />

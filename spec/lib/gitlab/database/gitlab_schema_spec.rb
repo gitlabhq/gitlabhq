@@ -25,6 +25,7 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
       '_test_gitlab_main_clusterwide_table'          | :gitlab_main_clusterwide
       '_test_gitlab_main_cell_table'                 | :gitlab_main_cell
       '_test_gitlab_pm_table'                        | :gitlab_pm
+      '_test_gitlab_sec_table'                       | :gitlab_sec
       '_test_my_table'                               | :gitlab_shared
       'pg_attribute'                                 | :gitlab_internal
     end

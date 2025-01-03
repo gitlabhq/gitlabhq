@@ -4,12 +4,12 @@ import { GlForm } from '@gitlab/ui';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import ContainerProtectionRuleForm from '~/packages_and_registries/settings/project/components/container_protection_rule_form.vue';
-import createContainerProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/create_container_protection_rule.mutation.graphql';
+import ContainerProtectionRepositoryRuleForm from '~/packages_and_registries/settings/project/components/container_protection_repository_rule_form.vue';
+import createContainerProtectionRepositoryRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/create_container_protection_repository_rule.mutation.graphql';
 import {
-  createContainerProtectionRuleMutationPayload,
-  createContainerProtectionRuleMutationInput,
-  createContainerProtectionRuleMutationPayloadErrors,
+  createContainerProtectionRepositoryRuleMutationPayload,
+  createContainerProtectionRepositoryRuleMutationInput,
+  createContainerProtectionRepositoryRuleMutationPayloadErrors,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -30,14 +30,14 @@ describe('container Protection Rule Form', () => {
   const findSubmitButton = () => wrapper.findByTestId('add-rule-btn');
 
   const mountComponent = ({ config, provide = defaultProvidedValues } = {}) => {
-    wrapper = mountExtended(ContainerProtectionRuleForm, {
+    wrapper = mountExtended(ContainerProtectionRepositoryRuleForm, {
       provide,
       ...config,
     });
   };
 
   const mountComponentWithApollo = ({ provide = defaultProvidedValues, mutationResolver } = {}) => {
-    const requestHandlers = [[createContainerProtectionRuleMutation, mutationResolver]];
+    const requestHandlers = [[createContainerProtectionRepositoryRuleMutation, mutationResolver]];
 
     fakeApollo = createMockApollo(requestHandlers);
 
@@ -89,10 +89,10 @@ describe('container Protection Rule Form', () => {
   describe('form actions', () => {
     describe('button "Add rule"', () => {
       it.each`
-        repositoryPathPattern                                               | submitButtonDisabled
-        ${''}                                                               | ${true}
-        ${' '}                                                              | ${true}
-        ${createContainerProtectionRuleMutationInput.repositoryPathPattern} | ${false}
+        repositoryPathPattern                                                         | submitButtonDisabled
+        ${''}                                                                         | ${true}
+        ${' '}                                                                        | ${true}
+        ${createContainerProtectionRepositoryRuleMutationInput.repositoryPathPattern} | ${false}
       `(
         'when repositoryPathPattern is "$repositoryPathPattern" then the disabled state of the submit button is $submitButtonDisabled',
         async ({ repositoryPathPattern, submitButtonDisabled }) => {
@@ -112,7 +112,7 @@ describe('container Protection Rule Form', () => {
     describe('reset', () => {
       const mutationResolver = jest
         .fn()
-        .mockResolvedValue(createContainerProtectionRuleMutationPayload());
+        .mockResolvedValue(createContainerProtectionRepositoryRuleMutationPayload());
 
       beforeEach(() => {
         mountComponentWithApollo({ mutationResolver });
@@ -147,25 +147,25 @@ describe('container Protection Rule Form', () => {
       it('dispatches correct apollo mutation', async () => {
         const mutationResolver = jest
           .fn()
-          .mockResolvedValue(createContainerProtectionRuleMutationPayload());
+          .mockResolvedValue(createContainerProtectionRepositoryRuleMutationPayload());
 
         mountComponentWithApollo({ mutationResolver });
 
         await findRepositoryPathPatternInput().setValue(
-          createContainerProtectionRuleMutationInput.repositoryPathPattern,
+          createContainerProtectionRepositoryRuleMutationInput.repositoryPathPattern,
         );
 
         await submitForm();
 
         expect(mutationResolver).toHaveBeenCalledWith({
-          input: { projectPath: 'path', ...createContainerProtectionRuleMutationInput },
+          input: { projectPath: 'path', ...createContainerProtectionRepositoryRuleMutationInput },
         });
       });
 
       it('emits event "submit" when apollo mutation successful', async () => {
         const mutationResolver = jest
           .fn()
-          .mockResolvedValue(createContainerProtectionRuleMutationPayload());
+          .mockResolvedValue(createContainerProtectionRepositoryRuleMutationPayload());
 
         mountComponentWithApollo({ mutationResolver });
 
@@ -173,7 +173,7 @@ describe('container Protection Rule Form', () => {
 
         expect(wrapper.emitted('submit')).toBeDefined();
         const expectedEventSubmitPayload =
-          createContainerProtectionRuleMutationPayload().data
+          createContainerProtectionRepositoryRuleMutationPayload().data
             .createContainerProtectionRepositoryRule.containerProtectionRepositoryRule;
         expect(wrapper.emitted('submit')[0]).toEqual([expectedEventSubmitPayload]);
 
@@ -183,8 +183,8 @@ describe('container Protection Rule Form', () => {
       it('shows error alert with general message when apollo mutation request responds with errors', async () => {
         mountComponentWithApollo({
           mutationResolver: jest.fn().mockResolvedValue(
-            createContainerProtectionRuleMutationPayload({
-              errors: createContainerProtectionRuleMutationPayloadErrors,
+            createContainerProtectionRepositoryRuleMutationPayload({
+              errors: createContainerProtectionRepositoryRuleMutationPayloadErrors,
             }),
           ),
         });
@@ -194,10 +194,14 @@ describe('container Protection Rule Form', () => {
         expect(findAlert().isVisible()).toBe(true);
 
         expect(
-          findAlert().findByText(createContainerProtectionRuleMutationPayloadErrors[0]).exists(),
+          findAlert()
+            .findByText(createContainerProtectionRepositoryRuleMutationPayloadErrors[0])
+            .exists(),
         ).toBe(true);
         expect(
-          findAlert().findByText(createContainerProtectionRuleMutationPayloadErrors[1]).exists(),
+          findAlert()
+            .findByText(createContainerProtectionRepositoryRuleMutationPayloadErrors[1])
+            .exists(),
         ).toBe(true);
       });
 
