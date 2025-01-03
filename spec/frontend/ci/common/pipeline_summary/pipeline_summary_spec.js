@@ -1,7 +1,7 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import Visibility from 'visibilityjs';
-import { GlLoadingIcon, GlLink } from '@gitlab/ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 import mockPipelineSummaryQueryResponse from 'test_fixtures/graphql/pipelines/get_pipeline_summary.query.graphql.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -34,6 +34,7 @@ describe('PipelineSummary', () => {
     fullPath: 'project/path',
     iid: '12',
     pipelineEtag: '/etag',
+    includeCommitInfo: true,
   };
 
   const createComponent = ({ props = {} } = {}) => {
@@ -53,9 +54,11 @@ describe('PipelineSummary', () => {
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findPipelineMiniGraph = () => wrapper.findComponent(PipelineMiniGraph);
-  const findPipelineText = () => wrapper.findComponent(GlLink);
   const findStatusIcon = () => wrapper.findComponent(CiIcon);
   const findTimeAgo = () => wrapper.findComponent(TimeAgoTooltip);
+  const findPipelineText = () => wrapper.findByTestId('pipeline-path');
+  const findCommitInfo = () => wrapper.findByTestId('commit-info');
+  const findCommitPath = () => wrapper.findByTestId('commit-path');
 
   const getPollInterval = () => wrapper.vm.$apollo.queries.pipeline.pollInterval;
 
@@ -96,15 +99,46 @@ describe('PipelineSummary', () => {
       expect(findPipelineMiniGraph().exists()).toBe(true);
 
       expect(findPipelineMiniGraph().props()).toMatchObject({
-        downstream: expect.any(Array),
+        downstreamPipelines: pipeline.downstream.nodes,
         pipelinePath: pipeline.detailedStatus.detailsPath,
-        stages: pipeline.stages.nodes,
-        upstream: expect.any(Object),
+        pipelineStages: pipeline.stages.nodes,
+        upstreamPipeline: expect.any(Object),
       });
     });
 
     it('renders when the pipeline completed', () => {
       expect(findTimeAgo().exists()).toBe(true);
+    });
+  });
+
+  describe('commit info', () => {
+    describe('when commit info is included', () => {
+      beforeEach(async () => {
+        await createComponent();
+      });
+
+      it('renders the commit info', () => {
+        expect(findCommitInfo().exists()).toBe(true);
+      });
+
+      it('links to the correct commit path', () => {
+        expect(findCommitPath().exists()).toBe(true);
+        expect(findCommitPath().attributes().href).toBe(pipeline.commit.webPath);
+      });
+    });
+
+    describe('when commit info is not included', () => {
+      beforeEach(async () => {
+        await createComponent({ props: { includeCommitInfo: false } });
+      });
+
+      it('does not render the commit info', () => {
+        expect(findCommitInfo().exists()).toBe(false);
+      });
+
+      it('does not render the commit path', () => {
+        expect(findCommitPath().exists()).toBe(false);
+      });
     });
   });
 

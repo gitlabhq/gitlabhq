@@ -18,7 +18,7 @@ module QA
               element 'user-list-more-button'
             end
 
-            base.view 'app/assets/javascripts/sidebar/components/reviewers/reviewer_title.vue' do
+            base.view 'app/assets/javascripts/merge_requests/components/reviewers/reviewer_dropdown.vue' do
               element 'reviewers-edit-button'
             end
 

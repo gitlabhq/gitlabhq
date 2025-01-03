@@ -1,0 +1,9 @@
+query getPipelineIid($fullPath: ID!, $sha: String!) {
+  project(fullPath: $fullPath) {
+    id
+    pipeline(sha: $sha) {
+      id
+      iid
+    }
+  }
+}

@@ -73,6 +73,7 @@ Some group items are excluded from migration because they:
   - Webhooks
 - Are not supported:
   - Push rules
+  - Iteration cadence settings
 
 ## Migrated project items
 

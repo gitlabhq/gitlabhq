@@ -44,7 +44,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:ci_graphql_pipeline_mini_graph, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
-    push_frontend_feature_flag(:reviewer_assign_drawer, current_user)
     push_frontend_feature_flag(:vulnerability_code_flow, project)
     push_frontend_feature_flag(:pipeline_vulnerability_code_flow, project)
     push_frontend_feature_flag(:mr_vulnerability_code_flow, project)

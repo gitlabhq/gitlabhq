@@ -41529,6 +41529,9 @@ msgstr ""
 msgid "Pipelines|Pipeline %{linkStart}#%{pipelineId}%{linkEnd} %{status}"
 msgstr ""
 
+msgid "Pipelines|Pipeline %{status} for %{linkStart}%{commit}%{linkEnd} "
+msgstr ""
+
 msgid "Pipelines|Pipeline editor"
 msgstr ""
 
@@ -41599,6 +41602,9 @@ msgid "Pipelines|There are currently no pipelines."
 msgstr ""
 
 msgid "Pipelines|There are no merge trains for the %{branch} target branch in %{projectName}. Merge requests added to a merge train are displayed on this page. Go to a merge request to %{linkStart}start a merge train.%{linkEnd}"
+msgstr ""
+
+msgid "Pipelines|There was a problem fetching the pipeline iid."
 msgstr ""
 
 msgid "Pipelines|There was a problem with loading the pipeline data."

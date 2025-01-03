@@ -108,13 +108,13 @@ export default {
 
 <template>
   <div>
-    <template v-if="isLoading">
-      <gl-loading-icon size="sm" inline />
+    <div v-if="isLoading" class="gl-mx-2 gl-flex gl-items-center">
+      <gl-loading-icon class="gl-mr-4" />
       {{ $options.i18n.loading }}
-    </template>
+    </div>
     <span v-else data-testid="validation-segment">
-      <span class="gl-max-w-full">
-        <gl-icon :name="icon" class="gl-mr-2" />
+      <span class="gl-flex gl-max-w-full gl-items-center gl-gap-4">
+        <gl-icon :name="icon" class="gl-ml-1" />
         <gl-sprintf :message="message">
           <template v-if="hasLink" #link="{ content }">
             <gl-link :href="helpPath">{{ content }}</gl-link>

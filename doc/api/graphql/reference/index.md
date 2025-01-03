@@ -9703,6 +9703,28 @@ Input type: `StarProjectInput`
 | <a id="mutationstarprojectcount"></a>`count` | [`String!`](#string) | Number of stars for the project. |
 | <a id="mutationstarprojecterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.tagCreate`
+
+Input type: `TagCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationtagcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationtagcreatemessage"></a>`message` | [`String`](#string) | Tagging message. |
+| <a id="mutationtagcreatename"></a>`name` | [`String!`](#string) | Name of the tag. |
+| <a id="mutationtagcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project full path the branch is associated with. |
+| <a id="mutationtagcreateref"></a>`ref` | [`String!`](#string) | Tag name or commit SHA to create tag from. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationtagcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationtagcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationtagcreatetag"></a>`tag` | [`Tag`](#tag) | Tag after mutation. |
+
 ### `Mutation.terraformStateDelete`
 
 Input type: `TerraformStateDeleteInput`
@@ -35365,6 +35387,16 @@ Represents a Suggested Reviewers result set.
 | <a id="systemnotemetadataaction"></a>`action` | [`String`](#string) | System note metadata action. |
 | <a id="systemnotemetadatadescriptionversion"></a>`descriptionVersion` | [`DescriptionVersion`](#descriptionversion) | Version of the changed description. |
 | <a id="systemnotemetadataid"></a>`id` | [`SystemNoteMetadataID!`](#systemnotemetadataid) | Global ID of the specific system note metadata. |
+
+### `Tag`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="tagcommit"></a>`commit` | [`Commit`](#commit) | Commit for the tag. |
+| <a id="tagmessage"></a>`message` | [`String`](#string) | Tagging message. |
+| <a id="tagname"></a>`name` | [`String!`](#string) | Name of the tag. |
 
 ### `TaskCompletionStatus`
 

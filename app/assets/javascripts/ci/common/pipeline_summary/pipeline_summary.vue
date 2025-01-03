@@ -19,6 +19,7 @@ export default {
     loadingText: s__('Pipeline|Checking pipeline status'),
     pipelineSummaryFetchError: __('There was a problem fetching the pipeline summary.'),
     pipelineStatusText: s__('Pipelines|Pipeline %{linkStart}#%{pipelineId}%{linkEnd} %{status}'),
+    pipelineCommitText: s__('Pipelines|Pipeline %{status} for %{linkStart}%{commit}%{linkEnd} '),
   },
   components: {
     CiIcon,
@@ -36,6 +37,11 @@ export default {
     iid: {
       type: String,
       required: true,
+    },
+    includeCommitInfo: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     pipelineEtag: {
       type: String,
@@ -59,7 +65,11 @@ export default {
         return this.pollInterval;
       },
       variables() {
-        return this.queryVariables;
+        return {
+          fullPath: this.fullPath,
+          iid: this.iid,
+          includeCommitInfo: this.includeCommitInfo,
+        };
       },
       result({ networkStatus }) {
         // We need this for handling the reactive poll interval while also using frontend cache
@@ -77,13 +87,13 @@ export default {
     },
   },
   computed: {
-    queryVariables() {
-      return {
-        fullPath: this.fullPath,
-        iid: this.iid,
-      };
+    commitPath() {
+      return this.pipeline?.commit?.webPath;
     },
-    downstream() {
+    commitSha() {
+      return this.pipeline?.commit?.shortId;
+    },
+    downstreamPipelines() {
       return this.pipeline?.downstream?.nodes || [];
     },
     finishedAt() {
@@ -98,7 +108,7 @@ export default {
     pipelinePath() {
       return this.status?.detailsPath || '';
     },
-    stages() {
+    pipelineStages() {
       return this.pipeline?.stages?.nodes || [];
     },
     status() {
@@ -107,7 +117,7 @@ export default {
     statusLabel() {
       return this.status?.label || '';
     },
-    upstream() {
+    upstreamPipeline() {
       return this.pipeline?.upstream || {};
     },
   },
@@ -164,15 +174,29 @@ export default {
             </gl-sprintf>
           </span>
           <span class="align-items-center gl-flex gl-text-sm gl-text-subtle">
+            <span v-if="includeCommitInfo" data-testid="commit-info">
+              <gl-sprintf :message="$options.i18n.pipelineCommitText">
+                <template #status>{{ statusLabel }}</template>
+                <template #link>
+                  <gl-link
+                    data-testid="commit-path"
+                    :href="commitPath"
+                    class="commit-sha-container gl-mr-2"
+                  >
+                    {{ commitSha }}
+                  </gl-link>
+                </template>
+              </gl-sprintf>
+            </span>
             <time-ago-tooltip v-if="finishedAt" :time="finishedAt" tooltip-placement="bottom" />
           </span>
         </div>
         <pipeline-mini-graph
           data-testid="pipeline-summary-pipeline-mini-graph"
-          :downstream="downstream"
+          :downstream-pipelines="downstreamPipelines"
           :pipeline-path="pipelinePath"
-          :stages="stages"
-          :upstream="upstream"
+          :pipeline-stages="pipelineStages"
+          :upstream-pipeline="upstreamPipeline"
           @jobActionExecuted="onJobActionExecuted"
         />
       </div>

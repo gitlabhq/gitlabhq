@@ -16,11 +16,11 @@ describe('PipelineMiniGraph', () => {
   let wrapper;
 
   const defaultProps = {
+    downstreamPipelines: mockDownstreamPipelinesGraphql.nodes,
     isMergeTrain: true,
-    downstream: mockDownstreamPipelinesGraphql.nodes,
     pipelinePath: '/path/to/pipeline',
-    stages: [pipelineStage],
-    upstream: singlePipeline,
+    pipelineStages: [pipelineStage],
+    upstreamPipeline: singlePipeline,
   };
 
   const createComponent = ({ props = {} } = {}) => {
@@ -49,7 +49,7 @@ describe('PipelineMiniGraph', () => {
       it('sends the necessary props', () => {
         expect(findStages().props()).toMatchObject({
           isMergeTrain: defaultProps.isMergeTrain,
-          stages: defaultProps.stages,
+          stages: defaultProps.pipelineStages,
         });
       });
 
@@ -67,7 +67,7 @@ describe('PipelineMiniGraph', () => {
 
       it('does not render upstream if not available', () => {
         createComponent({
-          props: { upstream: {} },
+          props: { upstreamPipeline: {} },
         });
         expect(findUpstream().exists()).toBe(false);
       });
@@ -94,7 +94,7 @@ describe('PipelineMiniGraph', () => {
 
       it('does not render downstream if not available', () => {
         createComponent({
-          props: { downstream: [] },
+          props: { downstreamPipelines: [] },
         });
         expect(findDownstream().exists()).toBe(false);
       });

@@ -1,10 +1,15 @@
 #import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
 
-query getPipelineSummary($fullPath: ID!, $iid: ID!) {
+query getPipelineSummary($fullPath: ID!, $iid: ID!, $includeCommitInfo: Boolean!) {
   project(fullPath: $fullPath) {
     id
     pipeline(iid: $iid) {
       id
+      commit @include(if: $includeCommitInfo) {
+        id
+        shortId
+        webPath
+      }
       detailedStatus {
         label
         ...CiIcon

@@ -2500,7 +2500,6 @@ RSpec/ContextWording:
     - 'spec/services/packages/nuget/update_package_from_metadata_service_spec.rb'
     - 'spec/services/packages/rubygems/dependency_resolver_service_spec.rb'
     - 'spec/services/packages/rubygems/process_gem_service_spec.rb'
-    - 'spec/services/packages/terraform_module/create_package_service_spec.rb'
     - 'spec/services/personal_access_tokens/create_service_spec.rb'
     - 'spec/services/personal_access_tokens/revoke_service_spec.rb'
     - 'spec/services/post_receive_service_spec.rb'

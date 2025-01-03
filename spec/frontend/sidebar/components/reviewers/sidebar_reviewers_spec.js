@@ -39,6 +39,9 @@ describe('sidebar reviewers', () => {
         issuableIid: 1,
         multipleApprovalRulesAvailable: false,
       },
+      stubs: {
+        ApprovalSummary: true,
+      },
       // Attaching to document is required because this component emits something from the parent element :/
       attachTo: document.body,
     });

@@ -54,6 +54,7 @@ of a merge request. Each **Reviewer** shows the status to the right of the user'
 
 > - Enhanced reviewer drawer [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12878) in GitLab 17.5 [with a flag](../../../../administration/feature_flags.md) named `reviewer_assign_drawer`.
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/467205) on GitLab.com and self-managed in GitLab 17.5.
+> - [Feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/467205) `reviewer_assign_drawer` removed in GitLab 17.8.
 
 When you've finished preparing your changes, it's time to request a review. To assign a reviewer to your merge request,
 either use the `/assign_reviewer @user`

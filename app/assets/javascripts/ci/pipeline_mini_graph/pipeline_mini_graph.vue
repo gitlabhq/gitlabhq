@@ -24,7 +24,7 @@ export default {
     PipelineStages,
   },
   props: {
-    downstream: {
+    downstreamPipelines: {
       type: Array,
       required: false,
       default: () => [],
@@ -39,11 +39,11 @@ export default {
       required: false,
       default: '',
     },
-    stages: {
+    pipelineStages: {
       type: Array,
       required: true,
     },
-    upstream: {
+    upstreamPipeline: {
       type: Object,
       required: false,
       default: () => {},
@@ -51,20 +51,14 @@ export default {
   },
   emits: ['jobActionExecuted', 'miniGraphStageClick'],
   computed: {
-    downstreamPipelines() {
-      return keepLatestDownstreamPipelines(this.downstream);
+    latestDownstreamPipelines() {
+      return keepLatestDownstreamPipelines(this.downstreamPipelines);
     },
     hasDownstreamPipelines() {
-      return Boolean(this.downstreamPipelines.length);
+      return Boolean(this.latestDownstreamPipelines.length);
     },
     hasUpstreamPipeline() {
       return this.upstreamPipeline?.id;
-    },
-    pipelineStages() {
-      return this.stages || [];
-    },
-    upstreamPipeline() {
-      return this.upstream;
     },
     upstreamTooltipText() {
       return `${this.upstreamPipeline?.project?.name} - ${this.upstreamPipeline?.detailedStatus?.label}`;
@@ -107,7 +101,7 @@ export default {
     />
     <downstream-pipelines
       v-if="hasDownstreamPipelines"
-      :pipelines="downstreamPipelines"
+      :pipelines="latestDownstreamPipelines"
       :pipeline-path="pipelinePath"
       data-testid="pipeline-mini-graph-downstream"
     />

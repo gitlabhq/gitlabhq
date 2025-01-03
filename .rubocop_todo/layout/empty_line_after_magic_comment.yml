@@ -599,7 +599,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/services/packages/rubygems/create_gemspec_service_spec.rb'
     - 'spec/services/packages/rubygems/dependency_resolver_service_spec.rb'
     - 'spec/services/packages/rubygems/metadata_extraction_service_spec.rb'
-    - 'spec/services/packages/terraform_module/create_package_service_spec.rb'
     - 'spec/services/packages/update_package_file_service_spec.rb'
     - 'spec/services/packages/update_tags_service_spec.rb'
     - 'spec/services/projects/auto_devops/disable_service_spec.rb'

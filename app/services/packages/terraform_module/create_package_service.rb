@@ -55,17 +55,16 @@ module Packages
       end
 
       def current_package_exists_elsewhere?
-        ::Packages::Package
+        ::Packages::TerraformModule::Package
           .for_projects(project.root_namespace.all_projects.id_not_in(project.id))
-          .with_package_type(:terraform_module)
           .with_name(name)
           .not_pending_destruction
           .exists?
       end
 
       def current_package_version_exists?
-        project.packages
-          .with_package_type(:terraform_module)
+        ::Packages::TerraformModule::Package
+          .for_projects(project)
           .with_name(name)
           .with_version(params[:module_version])
           .not_pending_destruction

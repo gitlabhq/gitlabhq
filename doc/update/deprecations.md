@@ -209,6 +209,24 @@ The `Project.services` GraphQL field is deprecated. A `Project.integrations` fie
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
+### `scanResultPolicies` GraphQL field is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.8</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/439199).
+
+</div>
+
+In 16.10, scan result policies were renamed to merge request approval policies to more accurately reflect the change in scope and capability for the policy type.
+
+As a result, we updated the GraphQL endpoints. Use `approvalPolicies` instead of `scanResultPolicies`.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
 ### `sidekiq` delivery method for `incoming_email` and `service_desk_email` is deprecated
 
 <div class="deprecation-notes">

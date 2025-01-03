@@ -5,37 +5,27 @@ RSpec.describe QA::Tools::LongRunningSpecReporter do
 
   subject(:reporter) { described_class.execute }
 
-  let(:gcs_client) { double("Fog::Storage::GoogleJSON", list_objects: reports, get_object: report) }
-  let(:slack_notifier) { double("Slack::Notifier", post: nil) }
-  let(:reports) do
-    double("Google::Apis::StorageV1::Objects", items: [
-      double("Google::Apis::StorageV1::Object", name: "test"),
-      double("Google::Apis::StorageV1::Object", name: "test_2")
-    ])
-  end
+  let(:slack_notifier) { instance_double(Slack::Notifier, post: nil) }
 
   before do
-    stub_env("SLACK_WEBHOOK", "slack_url")
-    stub_env("QA_KNAPSACK_REPORT_GCS_CREDENTIALS", "gcs_json")
-
-    allow(Fog::Storage::Google).to receive(:new)
-      .with(google_project: "gitlab-qa-resources", google_json_key_string: "gcs_json")
-      .and_return(gcs_client)
+    allow(File).to receive(:read)
+      .with(QA::Support::KnapsackReport::FALLBACK_REPORT)
+      .and_return(report)
     allow(Slack::Notifier).to receive(:new)
       .with("slack_url", channel: "#quality-reports", username: "Spec Runtime Report")
       .and_return(slack_notifier)
+
+    stub_env("SLACK_WEBHOOK", "slack_url")
   end
 
   context "without specs exceeding runtime" do
     let(:report) do
-      {
-        body: <<~JSON
-          {
-            "spec.rb": 5,
-            "spec_2.rb": 10
-          }
-        JSON
-      }
+      <<~JSON
+        {
+          "spec.rb": 5,
+          "spec_2.rb": 10
+        }
+      JSON
     end
 
     it "returns all good message" do
@@ -45,14 +35,12 @@ RSpec.describe QA::Tools::LongRunningSpecReporter do
 
   context "with specs exceeding runtime" do
     let(:report) do
-      {
-        body: <<~JSON
-          {
-            "spec.rb": 5.0,
-            "spec_2.rb": 320.0
-          }
-        JSON
-      }
+      <<~JSON
+        {
+          "spec.rb": 5.0,
+          "spec_2.rb": 320.0
+        }
+      JSON
     end
 
     let(:spec) { "spec_2.rb: 5.33 minutes" }

@@ -90,3 +90,4 @@ export const pipelineEditorTrackingOptions = {
 export const VALIDATE_TAB_FEEDBACK_URL = 'https://gitlab.com/gitlab-org/gitlab/-/issues/346687';
 
 export const COMMIT_SHA_POLL_INTERVAL = 1000;
+export const PIPELINE_POLL_INTERVAL = 5000;
