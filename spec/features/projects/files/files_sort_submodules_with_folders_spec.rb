@@ -18,7 +18,7 @@ RSpec.describe 'Projects > Files > User views files page', feature_category: :so
     folders = tree.trees.map(&:name)
     files = tree.blobs.map(&:name)
     submodules = tree.submodules.map do |submodule|
-      "#{submodule.name}\n@\n#{submodule.id[0..7]}"
+      "#{submodule.name}\n@ #{submodule.id[0..7]}"
     end
 
     sorted_titles = (folders + submodules).sort + files

@@ -39,6 +39,10 @@
       = f.label :user_oauth_applications, _('User OAuth applications'), class: 'label-bold'
       = f.gitlab_ui_checkbox_component :user_oauth_applications, _('Allow users to register any application to use GitLab as an OAuth provider. This setting does not affect group-level OAuth applications.')
     .form-group
+      = f.label :ropc_without_client_credentials, _('OAuth authorizations'), class: 'label-bold'
+      = f.gitlab_ui_checkbox_component :ropc_without_client_credentials, _('Allow users to use resource owner password credentials flow without oauth client credentials')
+
+    .form-group
       = f.label :user_default_external, _('New users set to external'), class: 'label-bold'
       = f.gitlab_ui_checkbox_component :user_default_external, _('Newly-registered users are external by default')
       .gl-mt-3

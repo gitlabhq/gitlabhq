@@ -5,10 +5,10 @@ exports[`Repository table row component renders a symlink table row 1`] = `
   class="tree-item"
 >
   <td
-    class="gl-cursor-default gl-flex gl-gap-2 gl-relative tree-item-file-name"
+    class="gl-cursor-default gl-relative tree-item-file-name"
   >
     <a
-      class="gl-inline-flex gl-min-w-0 tree-item-link"
+      class="gl-inline-flex gl-max-w-full gl-min-w-0 tree-item-link"
       data-testid="file-name-link"
       href="https://test.com"
       title="test"
@@ -62,10 +62,10 @@ exports[`Repository table row component renders table row 1`] = `
   class="tree-item"
 >
   <td
-    class="gl-cursor-default gl-flex gl-gap-2 gl-relative tree-item-file-name"
+    class="gl-cursor-default gl-relative tree-item-file-name"
   >
     <a
-      class="gl-inline-flex gl-min-w-0 tree-item-link"
+      class="gl-inline-flex gl-max-w-full gl-min-w-0 tree-item-link"
       data-testid="file-name-link"
       href="https://test.com"
       title="test"
@@ -119,10 +119,10 @@ exports[`Repository table row component renders table row for path with special 
   class="tree-item"
 >
   <td
-    class="gl-cursor-default gl-flex gl-gap-2 gl-relative tree-item-file-name"
+    class="gl-cursor-default gl-relative tree-item-file-name"
   >
     <a
-      class="gl-inline-flex gl-min-w-0 tree-item-link"
+      class="gl-inline-flex gl-max-w-full gl-min-w-0 tree-item-link"
       data-testid="file-name-link"
       href="https://test.com"
       title="test"

@@ -543,7 +543,8 @@ module ApplicationSettingsHelper
       :code_suggestions_api_rate_limit,
       :require_personal_access_token_expiry,
       :observability_backend_ssl_verification_enabled,
-      :show_migrate_from_jenkins_banner
+      :show_migrate_from_jenkins_banner,
+      :ropc_without_client_credentials
     ].tap do |settings|
       unless Gitlab.com?
         settings << :resource_usage_limits

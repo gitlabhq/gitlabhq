@@ -7430,6 +7430,7 @@ CREATE TABLE application_settings (
     encrypted_ci_job_token_signing_key bytea,
     encrypted_ci_job_token_signing_key_iv bytea,
     elasticsearch jsonb DEFAULT '{}'::jsonb NOT NULL,
+    oauth_provider jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -7447,6 +7448,7 @@ CREATE TABLE application_settings (
     CONSTRAINT app_settings_registry_repair_worker_max_concurrency_positive CHECK ((container_registry_data_repair_detail_worker_max_concurrency >= 0)),
     CONSTRAINT app_settings_yaml_max_depth_positive CHECK ((max_yaml_depth > 0)),
     CONSTRAINT app_settings_yaml_max_size_positive CHECK ((max_yaml_size_bytes > 0)),
+    CONSTRAINT application_settings_oauth_provider_settings_hash CHECK ((jsonb_typeof(oauth_provider) = 'object'::text)),
     CONSTRAINT check_0542340619 CHECK ((char_length(diagramsnet_url) <= 2048)),
     CONSTRAINT check_12f01f1dcd CHECK ((char_length(vertex_ai_project) <= 255)),
     CONSTRAINT check_17d9558205 CHECK ((char_length((kroki_url)::text) <= 1024)),
@@ -36375,6 +36377,9 @@ ALTER TABLE ONLY subscription_user_add_on_assignments
 
 ALTER TABLE ONLY approval_project_rules_users
     ADD CONSTRAINT fk_0dfcd9e339 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_runner_projects
+    ADD CONSTRAINT fk_0e743433ff FOREIGN KEY (runner_id) REFERENCES ci_runners(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY security_policy_project_links
     ADD CONSTRAINT fk_0eba4d5d71 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

@@ -209,7 +209,7 @@ export default {
 
 <template>
   <tr class="tree-item">
-    <td class="tree-item-file-name gl-relative gl-flex gl-cursor-default gl-gap-2">
+    <td class="tree-item-file-name gl-relative gl-cursor-default">
       <component
         :is="linkComponent"
         ref="link"
@@ -220,7 +220,7 @@ export default {
         :class="{
           'is-submodule': isSubmodule,
         }"
-        class="tree-item-link gl-inline-flex gl-min-w-0"
+        class="tree-item-link gl-inline-flex gl-min-w-0 gl-max-w-full"
         data-testid="file-name-link"
       >
         <file-icon

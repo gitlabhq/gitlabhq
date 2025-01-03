@@ -695,6 +695,8 @@ class ApplicationSetting < ApplicationRecord
 
   jsonb_accessor :package_registry, nuget_skip_metadata_url_validation: [:boolean, { default: false }]
 
+  jsonb_accessor :oauth_provider, ropc_without_client_credentials: [:boolean, { default: true }]
+
   validates :package_registry, json_schema: { filename: 'application_setting_package_registry' }
 
   validates :search_rate_limit_allowlist,

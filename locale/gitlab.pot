@@ -5889,6 +5889,9 @@ msgstr ""
 msgid "Allow users to register any application to use GitLab as an OAuth provider. This setting does not affect group-level OAuth applications."
 msgstr ""
 
+msgid "Allow users to use resource owner password credentials flow without oauth client credentials"
+msgstr ""
+
 msgid "Allow users with up to Guest role to create groups and personal projects"
 msgstr ""
 
@@ -38173,6 +38176,9 @@ msgid "Number of shards for non-code indexing"
 msgstr ""
 
 msgid "Number of users for user cap"
+msgstr ""
+
+msgid "OAuth authorizations"
 msgstr ""
 
 msgid "OK"

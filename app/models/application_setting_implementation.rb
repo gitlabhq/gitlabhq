@@ -304,7 +304,8 @@ module ApplicationSettingImplementation
         pages_extra_deployments_default_expiry_seconds: 86400,
         scan_execution_policies_action_limit: 10,
         seat_control: 0,
-        show_migrate_from_jenkins_banner: true
+        show_migrate_from_jenkins_banner: true,
+        ropc_without_client_credentials: true
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

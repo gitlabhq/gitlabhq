@@ -16,6 +16,12 @@ module Resolvers
       default_value: false,
       description: 'Only include top-level groups.'
 
+    argument :owned_only, GraphQL::Types::Boolean,
+      as: :owned,
+      required: false,
+      default_value: false,
+      description: 'Only include groups where the current user has an owner role.'
+
     argument :search, GraphQL::Types::String,
       required: false,
       description: 'Search query for group name or group full path.'

@@ -52,6 +52,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.resource_usage_limits).to eq({}) }
     it { expect(setting.resource_access_token_notify_inherited).to eq(false) }
     it { expect(setting.lock_resource_access_token_notify_inherited).to eq(false) }
+    it { expect(setting.ropc_without_client_credentials).to eq(true) }
   end
 
   describe 'USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS' do

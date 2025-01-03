@@ -745,22 +745,23 @@ We also plan to make this easier to manage by adding an option to control this f
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
-### Limited `scan` actions in a scan execution policy
+### Limit number of scan execution policy actions allowed per policy
 
 <div class="deprecation-notes">
 
 - Announced in GitLab <span class="milestone">17.5</span>
 - Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/472213).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/510897).
 
 </div>
 
-Starting in GitLab 18.0, [scan execution policies](https://docs.gitlab.com/ee/user/application_security/policies/scan_execution_policies.html)
-are limited to 10 `scan` actions per policy. You can't create new policies that exceed the limit, and you
-can't update existing policies if they exceed the limit. For any existing policy that exceeds the limit,
-only the policy's first 10 `scan` actions are run.
+New limits have been added for maximum scan execution policy actions allowed per policy. This change was introduced in 17.4 behind feature flags `scan_execution_policy_action_limit` and `scan_execution_policy_action_limit_group`. When enabled, only the first 10 actions of a scan execution policy are processed.
 
-You can configure a custom limit on self-managed instances with the `scan_execution_policies_action_limit` application setting.
+By adding limits, we can ensure performance and scalability for security policies.
+
+If additional actions are needed, limit existing polices to no more than 10 actions. Then, create new scan execution policies with additional actions, within the limit of 5 scan execution policies per security policy project.
+
+For self-managed users, you can configure a custom limit on self-managed instances with the `scan_execution_policies_action_limit` application setting.
 
 </div>
 

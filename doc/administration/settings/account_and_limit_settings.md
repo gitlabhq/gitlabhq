@@ -363,16 +363,38 @@ DETAILS:
 
 Prerequisites:
 
-You must be an administrator.
+- You must be an administrator.
 
 The **User OAuth applications** setting controls whether users can register applications to use GitLab as an OAuth provider. This setting affects user-owned OAuth application, but does not affect group-level OAuth applications.
 
-To toggle on or off the **User OAuth applications** setting:
+To turn the **User OAuth applications** setting on or off:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Select or clear the **User OAuth applications** checkbox.
+1. Select **Save changes**.
+
+## OAuth authorizations
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323615) in GitLab 17.8.
+
+Prerequisites:
+
+- You must be an administrator.
+
+The **OAuth authorizations** setting controls whether users can use the OAuth resource owner password credentials flow to authorize themselves without client credentials.
+
+To turn this setting on or off:
+
+1. On the left sidebar, under **Settings**, select **Admin area**.
+1. Select **OAuth**.
+1. Select **OAuth authorizations**.
+1. Select or clear the **Allow user to use resource owner password credentials flow without OAuth client credentialss** checkbox.
 1. Select **Save changes**.
 
 ## Disable user profile name changes

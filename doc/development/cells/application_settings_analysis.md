@@ -7,12 +7,12 @@ info: Analysis of Application Settings for Cells 1.0.
 
 ## Statistics
 
-- Number of attributes: 490
+- Number of attributes: 491
 - Number of encrypted attributes: 45 (9.0%)
 - Number of attributes documented: 296 (60.0%)
 - Number of attributes on GitLab.com different from the defaults: 212 (43.0%)
-- Number of attributes with `clusterwide` set: 490 (100.0%)
-- Number of attributes with `clusterwide: true` set: 120 (24.0%)
+- Number of attributes with `clusterwide` set: 491 (100.0%)
+- Number of attributes with `clusterwide: true` set: 121 (25.0%)
 
 ## Individual columns
 
@@ -301,6 +301,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `notes_create_limit_allowlist` | `false` | `text[]` | `` | `true` | `'{}'::text[]` | `true` | `true`| `false` |
 | `notify_on_unknown_sign_in` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `npm_package_requests_forwarding` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
+| `oauth_provider` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `observability_backend_ssl_verification_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `openai_api_key` | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
 | `outbound_local_requests_whitelist` | `false` | `character` | `array of strings` | `true` | `'{}'::character` | `true` | `true`| `true` |
