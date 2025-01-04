@@ -5,14 +5,17 @@ require "etc"
 module QA
   module Specs
     class ParallelRunner
+      RUNTIME_LOG_FILE = "tmp/parallel_runtime_rspec.log"
+
       class << self
-        def run(rspec_args)
+        def run(rspec_args, knapsack_report)
           cli_args = build_execution_args(rspec_args)
 
           Runtime::Logger.debug("Using parallel runner to trigger tests with arguments: '#{cli_args}'")
 
           set_environment!
           perform_global_setup!
+          create_runtime_log!(knapsack_report)
 
           ParallelTests::CLI.new.run(cli_args)
         end
@@ -36,6 +39,7 @@ module QA
           cli_args = [
             "--type", "rspec",
             "-n", used_processes.to_s,
+            "--runtime-log", RUNTIME_LOG_FILE,
             "--serialize-stdout",
             '--first-is-1',
             "--combine-stderr"
@@ -58,6 +62,15 @@ module QA
 
           Support::GitlabAddress.define_gitlab_address_attribute!
           ENV.store("QA_GITLAB_URL", Support::GitlabAddress.address_with_port(with_default_port: false))
+        end
+
+        # Create test runtime log
+        #
+        # @param knapsack_report [Hash<String, Number>]
+        # @return [void]
+        def create_runtime_log!(knapsack_report)
+          Runtime::Logger.debug("Creating runtime log file for parallel runner")
+          File.write(RUNTIME_LOG_FILE, knapsack_report.map { |spec, runtime| "#{spec}:#{runtime}" }.join("\n"))
         end
       end
     end

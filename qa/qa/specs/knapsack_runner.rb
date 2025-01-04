@@ -7,7 +7,7 @@ module QA
         def run(args, example_data, parallel: false)
           knapsack_reporter = Support::KnapsackReport.new
           knapsack_reporter.configure!
-          knapsack_reporter.create_local_report!(example_data)
+          report = knapsack_reporter.create_local_report!(example_data)
 
           allocator = Knapsack::AllocatorBuilder.new(Knapsack::Adapters::RSpecAdapter).allocator
 
@@ -20,7 +20,7 @@ module QA
           if parallel
             rspec_args = args.reject { |arg| arg == "--" || arg.start_with?("qa/specs/features") }
             run_args = [*rspec_args, '--', *allocator.node_tests]
-            return ParallelRunner.run(run_args)
+            return ParallelRunner.run(run_args, report)
           end
 
           status = RSpec::Core::Runner.run([*args, '--', *allocator.node_tests])

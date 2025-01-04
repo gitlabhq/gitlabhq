@@ -9,11 +9,14 @@ RSpec.describe QA::Specs::ParallelRunner do
 
   let(:parallel_tests) { instance_double(ParallelTests::CLI, run: nil) }
   let(:parallel_processes) { 2 }
+  let(:runtime_log) { "tmp/parallel_runtime_rspec.log" }
+  let(:knapsack_report) { { "spec.rb" => 1 } }
 
   before do
     allow(ParallelTests::CLI).to receive(:new).and_return(parallel_tests)
     allow(Etc).to receive(:nprocessors).and_return(parallel_processes)
     allow(ENV).to receive(:store)
+    allow(File).to receive(:write).with(runtime_log, kind_of(String))
 
     allow(QA::Runtime::Browser).to receive(:configure!)
     allow(QA::Runtime::Release).to receive(:perform_before_hooks)
@@ -26,6 +29,7 @@ RSpec.describe QA::Specs::ParallelRunner do
     [
       "--type", "rspec",
       "-n", processes.to_s,
+      "--runtime-log", runtime_log,
       "--serialize-stdout",
       "--first-is-1",
       "--combine-stderr"
@@ -34,7 +38,7 @@ RSpec.describe QA::Specs::ParallelRunner do
 
   shared_examples "parallel cli runner" do |name, processes:, input_args:, received_args:|
     it name do
-      runner.run(input_args)
+      runner.run(input_args, knapsack_report)
 
       expect(parallel_tests).to have_received(:run).with([*parallel_cli_args(processes), *received_args])
     end
@@ -72,6 +76,12 @@ RSpec.describe QA::Specs::ParallelRunner do
     ]
   }
 
+  it "creates runtime log" do
+    runner.run([], knapsack_report)
+
+    expect(File).to have_received(:write).with(runtime_log, "spec.rb:1")
+  end
+
   context "with QA_GITLAB_URL not set" do
     before do
       stub_env("QA_GITLAB_URL", nil)
@@ -84,7 +94,7 @@ RSpec.describe QA::Specs::ParallelRunner do
     end
 
     it "sets QA_GITLAB_URL variable for subprocess" do
-      runner.run([])
+      runner.run([], knapsack_report)
 
       expect(ENV).to have_received(:store).with("QA_GITLAB_URL", "http://127.0.0.1:3000")
     end
@@ -99,7 +109,7 @@ RSpec.describe QA::Specs::ParallelRunner do
     it "sets number of processes to half of available processors" do
       allow(QA::Runtime::Env).to receive(:parallel_processes).and_call_original
 
-      runner.run([])
+      runner.run([], knapsack_report)
 
       expect(QA::Runtime::Env).to have_received(:parallel_processes)
       actual_processes = QA::Runtime::Env.parallel_processes

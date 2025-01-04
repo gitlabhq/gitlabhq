@@ -15,7 +15,7 @@ module QA
       RUNTIME_REPORT = "#{BASE_PATH}/#{EXAMPLE_RUNTIMES_PATH}/master_report.json".freeze
 
       class << self
-        delegate :configure!, :upload_example_runtimes, to: :new
+        delegate :configure!, :upload_example_runtimes, :knapsack_report, to: :new
       end
 
       def initialize(logger = QA::Runtime::Logger.logger)
@@ -41,9 +41,26 @@ module QA
       # for examples that will actually be skipped due to dynamic metadata which can cause uneven test distribution
       #
       # @param example_data [Hash<String, String>] example id list to be included in the report
-      # @return [void]
+      # @return [Hash<String, Number>]
       def create_local_report!(example_data)
         logger.info("Creating knapsack report from runtime data")
+        report_path = File.join(BASE_PATH, report_name)
+        knapsack_report = knapsack_report(example_data)
+        File.write(report_path, knapsack_report.to_json)
+        ENV["KNAPSACK_REPORT_PATH"] = report_path
+
+        knapsack_report
+      rescue StandardError => e
+        ENV["KNAPSACK_REPORT_PATH"] = FALLBACK_REPORT
+        logger.warn("Failed to create knapsack report: #{e}")
+        logger.warn("Falling back to '#{FALLBACK_REPORT}'")
+      end
+
+      # Knapsack report hash
+      #
+      # @param example_data [Hash<String, String>]
+      # @return [Hash<String, Number>]
+      def knapsack_report(example_data)
         runtime_report = JSON.load_file(RUNTIME_REPORT)
         report = example_data.each_with_object(Hash.new { |h, k| h[k] = 0 }) do |(id, status), report|
           next report[example_file_path(id)] += runtime_report[id] || 0.01 if status == "passed"
@@ -53,18 +70,11 @@ module QA
           # https://github.com/KnapsackPro/knapsack?tab=readme-ov-file#what-does-leftover-specs-mean
           report[example_file_path(id)] += 0.01
         end
-        normalized_report = report
+
+        report
           .transform_values { |v| v.round(3) }
           .sort
           .to_h
-
-        report_path = File.join(BASE_PATH, report_name)
-        File.write(report_path, normalized_report.to_json)
-        ENV["KNAPSACK_REPORT_PATH"] = report_path
-      rescue StandardError => e
-        ENV["KNAPSACK_REPORT_PATH"] = FALLBACK_REPORT
-        logger.warn("Failed to create knapsack report: #{e}")
-        logger.warn("Falling back to '#{FALLBACK_REPORT}'")
       end
 
       # Create and upload custom report based on data from JsonFormatter report files
