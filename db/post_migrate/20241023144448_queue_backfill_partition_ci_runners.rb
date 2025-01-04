@@ -11,10 +11,12 @@ class QueueBackfillPartitionCiRunners < Gitlab::Database::Migration[2.2]
   TABLE_NAME = 'ci_runners'
 
   def up
-    enqueue_partitioning_data_migration TABLE_NAME, MIGRATION
+    # no-op because we lost some group and project runners due to LFKs, which have been
+    # removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176804
   end
 
   def down
-    cleanup_partitioning_data_migration TABLE_NAME, MIGRATION
+    # no-op because we lost some group and project runners due to LFKs, which have been
+    # removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176804
   end
 end

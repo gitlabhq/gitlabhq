@@ -71,7 +71,12 @@ namespace :ci do
     end
 
     # always check all test suites in case a suite is defined but doesn't have any runnable specs
-    suites = QA::Tools::Ci::RunnableSpecs.fetch(tests&.split(" ")).keys.join(",")
+    suites = QA::Tools::Ci::ScenarioExamples.fetch(tests&.split(" "))
+      # filter out all examples that would not be executed (dry-run produces statuses passed or pending)
+      .reject { |_scenario, examples| examples.select { |example| example[:status] == "passed" }.empty? }
+      .keys
+      .join(" ")
+
     append_to_file(env_file, <<~TXT)
       QA_SUITES='#{suites}'
       QA_TESTS='#{tests}'

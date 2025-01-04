@@ -11,6 +11,8 @@ module QA
         class All < Template
           include Bootable
           include SharedAttributes
+
+          pipeline_mappings test_on_cng: ['cng-instance'], test_on_gdk: ["gdk-instance"]
         end
       end
     end

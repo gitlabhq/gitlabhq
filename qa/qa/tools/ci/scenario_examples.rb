@@ -5,7 +5,7 @@ module QA
     module Ci
       # Execute rspec dry run to get list of executable specs for each scenario class
       #
-      class RunnableSpecs
+      class ScenarioExamples
         include Helpers
 
         # @return [Array] scenarios that never run in test-on-omnibus pipeline
@@ -19,17 +19,18 @@ module QA
           new.fetch(qa_tests)
         end
 
-        # Return list of executable spec files for each scenario class
+        # Return list of executable examples for each scenario class
         #
         # @param qa_tests [Array<String>]
-        # @return [Hash<Class, Array<String>>]
+        # @return [Hash<Class, Array<Hash>>]
         def fetch(qa_tests = nil)
-          logger.info("Checking for runnable suites")
-          (scenarios - ignored_scenarios).each_with_object({}) do |scenario, runnable_scenarios|
-            specs = fetch_specs(scenario, qa_tests)
+          logger.info("Fetching executable examples for all scenario classes")
+          (all_scenario_classes - ignored_scenarios).each_with_object({}) do |scenario, scenarios|
+            examples = fetch_examples(scenario, qa_tests)
+            skipped_examples = examples.select { |example| example[:status] == "pending" }
 
-            logger.info(" found #{specs.size} spec files to run")
-            runnable_scenarios[scenario] = specs unless specs.empty?
+            logger.info(" detected examples, total: #{examples.size}, skipped: #{skipped_examples.size}")
+            scenarios[scenario] = examples
           end
         end
 
@@ -47,7 +48,7 @@ module QA
         # Get all defined scenarios
         #
         # @return [Array<String>]
-        def scenarios
+        def all_scenario_classes
           foss_scenarios = scenario_classes(QA::Scenario::Test)
           return foss_scenarios unless QA.const_defined?("QA::EE")
 
@@ -67,16 +68,16 @@ module QA
           end
         end
 
-        # Fetch list of executable spec files for scenario class
+        # Fetch list of executable examples for scenario class
         #
         # @param klass [Class]
         # @param qa_tests [Array<String>]
-        # @return [Array<String>]
-        def fetch_specs(klass, tests)
-          logger.info("Fetching runnable spec files for '#{klass}'")
-          Support::ExampleData.fetch(klass.focus, tests, logger: logger)
-            .map { |example| example[:file_path].gsub("./", "") }
-            .uniq
+        # @return [Array<Hash>]
+        def fetch_examples(klass, tests)
+          logger.info("Fetching examples for scenario '#{klass}'")
+          Support::ExampleData.fetch(klass.focus, tests, logger: logger).map do |example|
+            example.slice(:id, :status)
+          end
         end
       end
     end

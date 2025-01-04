@@ -105,7 +105,7 @@ module QA
       #
       # @param runtime_report [Hash<String, Number>]
       # @return [Hash<String, Number>]
-      def create_knapsack_report(runtime_report = create_merged_runtime_report)
+      def create_knapsack_report(runtime_report)
         runtime_report.each_with_object(Hash.new { |hsh, key| hsh[key] = 0 }) do |(id, runtime), spec_runtimes|
           spec_runtimes[example_file_path(id)] += runtime
         end

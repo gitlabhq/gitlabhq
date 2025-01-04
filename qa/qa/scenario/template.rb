@@ -18,6 +18,22 @@ module QA
         def focus
           @tags.to_a
         end
+
+        # Pipeline mapping for this scenario
+        #
+        # Defines pipeline mapping hash for this scenario
+        # Mapping must use one of the pipeline types defined in QA::Ci::Tools::PipelineCreator::SUPPORTED_PIPELINES
+        # and an array of jobs which must exist in that pipeline
+        #
+        # @example
+        # pipeline_mappings test_on_cng: ['cng-instance'], test_on_gdk: ['gdk-instance']
+        #
+        # @return [Hash<String, Array<String>>]
+        def pipeline_mappings(**kwargs)
+          @pipeline_mapping = kwargs
+        end
+
+        attr_reader :pipeline_mapping
       end
 
       def perform(options, *args)
