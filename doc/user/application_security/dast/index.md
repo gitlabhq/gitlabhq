@@ -56,8 +56,8 @@ target branches.
 
 ## View scan results
 
-Detected vulnerabilities appear in [merge requests](../index.md#merge-request), the [pipeline security tab](../index.md#pipeline-security-tab),
-and the [vulnerability report](../index.md#vulnerability-report).
+Detected vulnerabilities appear in [merge requests](../detect/security_scan_results.md#merge-request), the [pipeline security tab](../vulnerability_report/pipeline.md),
+and the [vulnerability report](../vulnerability_report/index.md).
 
 NOTE:
 A pipeline may consist of multiple jobs, including SAST and DAST scanning. If any job

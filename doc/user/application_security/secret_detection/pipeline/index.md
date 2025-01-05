@@ -18,7 +18,7 @@ You can run scans and view [pipeline secret detection JSON report artifacts](../
 
 With GitLab Ultimate, pipeline secret detection results are also processed so you can:
 
-- See them in the [merge request widget](../../index.md#merge-request), [pipeline security report](../../vulnerability_report/pipeline.md), and [vulnerability report](../../vulnerability_report/index.md) UIs.
+- See them in the [merge request widget](../../detect/security_scan_results.md#merge-request), [pipeline security report](../../vulnerability_report/pipeline.md), and [vulnerability report](../../vulnerability_report/index.md) UIs.
 - Use them in approval workflows.
 - Review them in the security dashboard.
 - [Automatically respond](../automatic_response.md) to leaks in public repositories.

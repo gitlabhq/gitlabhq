@@ -327,7 +327,7 @@ The [security-report-schema](https://gitlab.com/gitlab-org/security-products/sec
 
 #### Compatibility with report schema
 
-Security reports uploaded as [artifacts](../../user/application_security/index.md#all-tiers) to
+Security reports uploaded as artifacts to
 GitLab are [validated](../integrations/secure.md#report-validation) before being
 [ingested](security_report_ingestion_overview.md).
 

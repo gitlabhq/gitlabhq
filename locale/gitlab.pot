@@ -50732,6 +50732,9 @@ msgstr ""
 msgid "SecurityOrchestration|Compliance pipeline migration to pipeline execution policy"
 msgstr ""
 
+msgid "SecurityOrchestration|Configuration"
+msgstr ""
+
 msgid "SecurityOrchestration|Configure your conditions in the pipeline execution file. %{linkStart}What can pipeline execution do?%{linkEnd}"
 msgstr ""
 
@@ -50835,6 +50838,9 @@ msgid "SecurityOrchestration|Every time a pipeline runs for %{branches}%{branchE
 msgstr ""
 
 msgid "SecurityOrchestration|Except"
+msgstr ""
+
+msgid "SecurityOrchestration|Except for following users:"
 msgstr ""
 
 msgid "SecurityOrchestration|Exception branches"
@@ -51371,6 +51377,12 @@ msgid "SecurityOrchestration|Use a scan execution policy to create rules which e
 msgstr ""
 
 msgid "SecurityOrchestration|Use default mode for scoping"
+msgstr ""
+
+msgid "SecurityOrchestration|Users can skip pipelines"
+msgstr ""
+
+msgid "SecurityOrchestration|Users can't skip pipelines"
 msgstr ""
 
 msgid "SecurityOrchestration|Validating branch names, which might take a while."

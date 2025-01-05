@@ -30,8 +30,8 @@ You can disable predefined rules for any SAST analyzer.
 When you disable a rule:
 
 - Most analyzers still scan for the vulnerability. The results are removed as a processing step after the scan completes, and they don't appear in the [`gl-sast-report.json` artifact](index.md#download-a-sast-report).
-- Findings for the disabled rule no longer appear in the [pipeline security tab](../index.md#pipeline-security-tab).
-- Existing findings for the disabled rule on the default branch are marked as [`No longer detected`](../vulnerability_report/index.md#activity-filter) in the [vulnerability report](../index.md#vulnerability-report).
+- Findings for the disabled rule no longer appear in the [pipeline security tab](../vulnerability_report/pipeline.md).
+- Existing findings for the disabled rule on the default branch are marked as [`No longer detected`](../vulnerability_report/index.md#activity-filter) in the [vulnerability report](../vulnerability_report/index.md).
 
 The Semgrep-based analyzer handles disabled rules differently:
 

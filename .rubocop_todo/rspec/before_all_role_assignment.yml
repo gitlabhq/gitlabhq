@@ -479,7 +479,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/requests/groups/epics/epic_links_controller_spec.rb'
     - 'ee/spec/requests/groups/protected_branches_controller_spec.rb'
     - 'ee/spec/requests/groups/security/credentials_controller_spec.rb'
-    - 'ee/spec/requests/groups/service_accounts_controller_spec.rb'
     - 'ee/spec/requests/groups/settings/merge_requests_controller_spec.rb'
     - 'ee/spec/requests/groups/two_factor_auths_controller_spec.rb'
     - 'ee/spec/requests/jwt_controller_spec.rb'

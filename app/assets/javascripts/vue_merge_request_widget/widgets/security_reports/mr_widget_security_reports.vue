@@ -97,7 +97,7 @@ export default {
       text: s__(
         'ciReport|New vulnerabilities are vulnerabilities that the security scan detects in the merge request that are different to existing vulnerabilities in the default branch.',
       ),
-      learnMorePath: helpPagePath('user/application_security/index', {
+      learnMorePath: helpPagePath('user/application_security/detect/security_scan_results', {
         anchor: 'merge-request',
       }),
     },
