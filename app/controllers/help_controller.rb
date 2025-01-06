@@ -146,11 +146,13 @@ class HelpController < ApplicationController
       path = raw_path
     elsif raw_path.ends_with?('index.md')
       munged_path = raw_path.gsub('index.md', '_index.md')
-
       path = munged_path if File.exist?(munged_path)
     end
 
-    path ? get_markdown_without_frontmatter(path) : nil
+    return unless path
+
+    content = get_markdown_without_frontmatter(path)
+    Gitlab::Help::HugoTransformer.new.transform(content)
   end
 end
 

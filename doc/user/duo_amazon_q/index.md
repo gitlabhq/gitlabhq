@@ -28,7 +28,7 @@ so they can start to experiment right away.
 
 ## Set up GitLab Duo with Amazon Q
 
-To access GitLab Duo with Amazon Q, you must request [access to a lab environment](https://about.gitlab.com/aws).
+To access GitLab Duo with Amazon Q, you must request [access to a lab environment](https://about.gitlab.com/partners/technology-partners/aws/#interest).
 Alternately, you can [set up the GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab/-/blob/gitlab-duo-with-amazon-q-preview/README.md?ref_type=heads).
 
 ## Use GitLab Duo with Amazon Q in an issue

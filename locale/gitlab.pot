@@ -49446,10 +49446,25 @@ msgstr ""
 msgid "ScanResultPolicy|License status"
 msgstr ""
 
+msgid "ScanResultPolicy|License type"
+msgstr ""
+
 msgid "ScanResultPolicy|Make approval rules optional using scan execution policies"
 msgstr ""
 
 msgid "ScanResultPolicy|Matching"
+msgstr ""
+
+msgid "ScanResultPolicy|Maximum of one license status criteria allowed"
+msgstr ""
+
+msgid "ScanResultPolicy|Maximum of one license type criteria allowed"
+msgstr ""
+
+msgid "ScanResultPolicy|Maximum of two attribute criteria allowed"
+msgstr ""
+
+msgid "ScanResultPolicy|Maximum of two status criteria allowed"
 msgstr ""
 
 msgid "ScanResultPolicy|Merge request approval settings"
@@ -49471,15 +49486,6 @@ msgid "ScanResultPolicy|No settings available for this policy"
 msgstr ""
 
 msgid "ScanResultPolicy|Only 1 age criteria is allowed"
-msgstr ""
-
-msgid "ScanResultPolicy|Only 1 licence status criteria is allowed"
-msgstr ""
-
-msgid "ScanResultPolicy|Only 2 attribute criteria are allowed"
-msgstr ""
-
-msgid "ScanResultPolicy|Only 2 status criteria are allowed"
 msgstr ""
 
 msgid "ScanResultPolicy|Override project approval settings"
@@ -49602,7 +49608,10 @@ msgstr ""
 msgid "ScanResultPolicy|When this policy's criteria %{strongStart}cannot be met:%{strongEnd}"
 msgstr ""
 
-msgid "ScanResultPolicy|You can have only one of the two: deny list or allow list."
+msgid "ScanResultPolicy|You can specify either a denylist or an allowlist, not both."
+msgstr ""
+
+msgid "ScanResultPolicy|You can specify either a license state (allowlist or denylist) or a license type, not both."
 msgstr ""
 
 msgid "ScanResultPolicy|You have selected all protected branches in this policy's rules. To better protect your project, you should leave this setting enabled. %{linkStart}What are the risks of allowing pushing and force pushing?%{linkEnd}"
