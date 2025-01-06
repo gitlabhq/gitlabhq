@@ -83,7 +83,7 @@ RSpec.describe FeatureFlags::CreateService, feature_category: :feature_flags do
         end
       end
 
-      it 'creates audit event', :with_license do
+      it 'creates audit event', :with_license, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/509493' do
         expect { subject }.to change { AuditEvent.count }.by(1)
         expect(audit_event_message).to start_with('Created feature flag feature_flag with description "description".')
         expect(audit_event_message).to include('Created strategy "default" with scopes "*".')

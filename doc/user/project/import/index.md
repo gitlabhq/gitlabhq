@@ -90,7 +90,7 @@ DETAILS:
 > - Introduced in GitLab 17.7 [for Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/466356) [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `bitbucket_server_user_mapping`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/472735) for direct transfer in GitLab 17.7.
 > - Enabled on GitLab.com for [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/499993), [Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/509897), and [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/498390) in GitLab 17.7.
-> - Enabled on self-managed for [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/499993) in GitLab 17.8.
+> - Enabled on self-managed for [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/499993), [Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/509897) and [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/498390) in GitLab 17.8.
 
 FLAG:
 The availability of this feature is controlled by feature flags.

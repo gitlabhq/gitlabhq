@@ -235,38 +235,7 @@ module API
             ::Integrations::Mattermost.api_arguments,
             chat_notification_channels
           ].flatten,
-          'teamcity' => [
-            {
-              required: true,
-              name: :teamcity_url,
-              type: String,
-              desc: 'TeamCity root URL like https://teamcity.example.com'
-            },
-            {
-              required: false,
-              name: :enable_ssl_verification,
-              type: ::Grape::API::Boolean,
-              desc: 'Enable SSL verification'
-            },
-            {
-              required: true,
-              name: :build_type,
-              type: String,
-              desc: 'Build configuration ID'
-            },
-            {
-              required: true,
-              name: :username,
-              type: String,
-              desc: 'A user with permissions to trigger a manual build'
-            },
-            {
-              required: true,
-              name: :password,
-              type: String,
-              desc: 'The password of the user'
-            }
-          ],
+          'teamcity' => ::Integrations::Teamcity.api_arguments,
           'telegram' => ::Integrations::Telegram.api_arguments,
           'unify-circuit' => ::Integrations::UnifyCircuit.api_arguments,
           'webex-teams' => ::Integrations::WebexTeams.api_arguments,

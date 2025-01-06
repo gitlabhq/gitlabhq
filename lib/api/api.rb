@@ -242,6 +242,7 @@ module API
         mount ::API::ComposerPackages
         mount ::API::Conan::V1::InstancePackages
         mount ::API::Conan::V1::ProjectPackages
+        mount ::API::Conan::V2::ProjectPackages
         mount ::API::ContainerRegistryEvent
         mount ::API::ContainerRepositories
         mount ::API::DebianGroupPackages

@@ -310,7 +310,9 @@ export default {
         this.isSubmittingWithKeydown = true;
         this.handleUpdate();
       }
-      this.updatedNoteBody = '';
+      if (!this.isMeasuringCommentTemperature) {
+        this.updatedNoteBody = '';
+      }
     },
     runCommentTemperatureMeasurement(onSaveHandler) {
       this.isMeasuringCommentTemperature = true;

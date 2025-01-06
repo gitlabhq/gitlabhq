@@ -128,7 +128,7 @@ skips the merge request process, the protected branch features
 and Code Owner approvals built into merge requests are also skipped.
 
 This permission is often granted to accounts associated with
-automation ([internal users](../../../administration/internal_users.md)
+automation ([internal users](../../../administration/internal_users.md))
 and release tooling.
 
 All changes from users _without_ the **Allowed to push** permission must be routed through a merge request.

@@ -23,6 +23,14 @@ module Gitlab
         @conan_revision_regex ||= %r{\A0\z}
       end
 
+      def conan_revision_regex_v2
+        # The revision can be one of two types:
+        # - "hash" (default): the checksum hash of the recipe manifest: MD5 Hash 32 Characters
+        # - "scm" or "scm_folder": the commit ID for the repository system (Git or SVN): SHA-1 Hash 40 Characters
+        # according to https://docs.conan.io/2.10/reference/conanfile/attributes.html#revision-mode
+        @conan_revision_regex_v2 ||= %r/\A(?:\h{32}|\h{40})\z/
+      end
+
       def conan_recipe_user_channel_regex
         %r{\A(_|#{conan_name_regex})\z}
       end

@@ -1,19 +1,46 @@
-import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { GlButton } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import TodoItemActions from '~/todos/components/todo_item_actions.vue';
 import SnoozeTodoDropdown from '~/todos/components/snooze_todo_dropdown.vue';
-
 import { TODO_STATE_DONE, TODO_STATE_PENDING } from '~/todos/constants';
+import unSnoozeTodoMutation from '~/todos/components/mutations/un_snooze_todo.mutation.graphql';
+
+Vue.use(VueApollo);
 
 describe('TodoItemActions', () => {
   let wrapper;
+  const mockCurrentTime = new Date('2024-12-18T13:24:00');
   const mockTodo = {
     id: 'gid://gitlab/Todo/1',
     state: TODO_STATE_PENDING,
   };
+  const mockToastShow = jest.fn();
 
-  const createComponent = ({ props = {}, todosSnoozingEnabled = false } = {}) => {
-    wrapper = shallowMount(TodoItemActions, {
+  const unSnoozeTodoMutationSuccessHandler = jest.fn().mockResolvedValue({
+    data: {
+      todoUnSnooze: {
+        todo: { ...mockTodo, snoozedUntil: mockCurrentTime },
+        errors: [],
+      },
+    },
+  });
+
+  const createComponent = ({
+    props = {},
+    unSnoozeTodoMutationHandler = unSnoozeTodoMutationSuccessHandler,
+    todosSnoozingEnabled = false,
+  } = {}) => {
+    const mockApollo = createMockApollo();
+
+    mockApollo.defaultClient.setRequestHandler(unSnoozeTodoMutation, unSnoozeTodoMutationHandler);
+
+    wrapper = shallowMountExtended(TodoItemActions, {
+      apolloProvider: mockApollo,
       propsData: {
         todo: mockTodo,
         isSnoozed: false,
@@ -24,10 +51,19 @@ describe('TodoItemActions', () => {
           todosSnoozing: todosSnoozingEnabled,
         },
       },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
+      mocks: {
+        $toast: {
+          show: mockToastShow,
+        },
+      },
     });
   };
 
   const findSnoozeTodoDropdown = () => wrapper.findComponent(SnoozeTodoDropdown);
+  const findUnSnoozeButton = () => wrapper.findByTestId('un-snooze-button');
 
   it('sets correct icon for pending todo action button', () => {
     createComponent();
@@ -62,14 +98,6 @@ describe('TodoItemActions', () => {
   });
 
   describe('snoozing dropdown', () => {
-    describe('when the `todosSnoozing` feature flag is disabled', () => {
-      it('never renders the dropdown', () => {
-        createComponent({ todosSnoozingEnabled: false, props: { isSnoozed: false } });
-
-        expect(findSnoozeTodoDropdown().exists()).toBe(false);
-      });
-    });
-
     it('renders the dropdown if `isSnoozed` is `false` and the todo is pending', () => {
       createComponent({ todosSnoozingEnabled: true, props: { isSnoozed: false } });
 
@@ -89,6 +117,93 @@ describe('TodoItemActions', () => {
       });
 
       expect(findSnoozeTodoDropdown().exists()).toBe(false);
+    });
+  });
+
+  describe('un-snooze button', () => {
+    it('renders if the to-do item is snoozed', () => {
+      createComponent({ todosSnoozingEnabled: true, props: { isSnoozed: true } });
+
+      expect(findUnSnoozeButton().exists()).toBe(true);
+    });
+
+    it('has the correct attributes', () => {
+      createComponent({ todosSnoozingEnabled: true, props: { isSnoozed: true } });
+
+      expect(findUnSnoozeButton().attributes()).toMatchObject({
+        icon: 'time-out',
+        title: 'Remove snooze',
+        'aria-label': 'Remove snooze',
+      });
+    });
+
+    it('triggers the un-snooze mutation', () => {
+      createComponent({ todosSnoozingEnabled: true, props: { isSnoozed: true } });
+
+      findUnSnoozeButton().vm.$emit('click');
+
+      expect(unSnoozeTodoMutationSuccessHandler).toHaveBeenCalledWith({
+        todoId: mockTodo.id,
+      });
+    });
+
+    it('shows an error when the to un-snooze mutation returns some errors', async () => {
+      createComponent({
+        todosSnoozingEnabled: true,
+        props: { isSnoozed: true },
+        unSnoozeTodoMutationHandler: jest.fn().mockResolvedValue({
+          data: {
+            todoUnSnooze: {
+              todo: { ...mockTodo },
+              errors: ['Could not un-snooze todo-item.'],
+            },
+          },
+        }),
+      });
+
+      findUnSnoozeButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(mockToastShow).toHaveBeenCalledWith('Failed to un-snooze todo. Try again later.', {
+        variant: 'danger',
+      });
+    });
+
+    it('shows an error when it fails to un-snooze the to-do item', async () => {
+      createComponent({
+        todosSnoozingEnabled: true,
+        props: { isSnoozed: true },
+        unSnoozeTodoMutationHandler: jest.fn().mockRejectedValue(),
+      });
+
+      findUnSnoozeButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(mockToastShow).toHaveBeenCalledWith('Failed to un-snooze todo. Try again later.', {
+        variant: 'danger',
+      });
+    });
+
+    it('has a tooltip attached', () => {
+      createComponent({ todosSnoozingEnabled: true, props: { isSnoozed: true } });
+
+      const tooltip = getBinding(findUnSnoozeButton().element, 'gl-tooltip');
+
+      expect(tooltip).toBeDefined();
+    });
+  });
+
+  describe('when the `todosSnoozing` feature flag is disabled', () => {
+    it('never renders the dropdown', () => {
+      createComponent({ todosSnoozingEnabled: false, props: { isSnoozed: false } });
+
+      expect(findSnoozeTodoDropdown().exists()).toBe(false);
+    });
+
+    it('never renders the un-snooze button', () => {
+      createComponent({ todosSnoozingEnabled: false, props: { isSnoozed: true } });
+
+      expect(findUnSnoozeButton().exists()).toBe(false);
     });
   });
 });

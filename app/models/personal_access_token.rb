@@ -32,8 +32,6 @@ class PersonalAccessToken < ApplicationRecord
 
   attribute :organization_id, default: -> { Organizations::Organization::DEFAULT_ORGANIZATION_ID }
 
-  # PATs are 20 characters + optional configurable settings prefix (0..20)
-  TOKEN_LENGTH_RANGE = (20..40)
   MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS_BUFFERED = 400
   MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS = 365
 

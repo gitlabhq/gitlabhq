@@ -7,6 +7,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { INSTRUMENT_TODO_ITEM_CLICK, TODO_STATE_DONE, TODO_STATE_PENDING } from '../constants';
 import markAsDoneMutation from './mutations/mark_as_done.mutation.graphql';
 import markAsPendingMutation from './mutations/mark_as_pending.mutation.graphql';
+import unSnoozeTodoMutation from './mutations/un_snooze_todo.mutation.graphql';
 import SnoozeTodoDropdown from './snooze_todo_dropdown.vue';
 
 export default {
@@ -99,17 +100,62 @@ export default {
         showError();
       }
     },
+    async unSnooze() {
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: unSnoozeTodoMutation,
+          variables: {
+            todoId: this.todo.id,
+          },
+          optimisticResponse: {
+            todoUnSnooze: {
+              todo: {
+                id: this.todo.id,
+                snoozedUntil: null,
+                __typename: 'Todo',
+              },
+              errors: [],
+            },
+          },
+        });
+
+        if (data.errors?.length > 0) {
+          reportToSentry(this.$options.name, new Error(data.errors.join(', ')));
+          this.showUnSnoozedError();
+        } else {
+          this.$emit('change', this.todo.id, this.isDone);
+        }
+      } catch (failure) {
+        reportToSentry(this.$options.name, failure);
+        this.showUnSnoozedError();
+      }
+    },
+    showUnSnoozedError() {
+      this.$toast.show(s__('Todos|Failed to un-snooze todo. Try again later.'), {
+        variant: 'danger',
+      });
+    },
   },
   i18n: {
     markAsPending: s__('Todos|Undo'),
     markAsDone: s__('Todos|Mark as done'),
+    unSnooze: s__('Todos|Remove snooze'),
   },
 };
 </script>
 
 <template>
   <div @click.prevent>
-    <snooze-todo-dropdown v-if="showSnoozingDropdown" :todo="todo" />
+    <gl-button
+      v-if="glFeatures.todosSnoozing && isSnoozed"
+      v-gl-tooltip
+      icon="time-out"
+      :title="$options.i18n.unSnooze"
+      :aria-label="$options.i18n.unSnooze"
+      data-testid="un-snooze-button"
+      @click="unSnooze"
+    />
+    <snooze-todo-dropdown v-else-if="showSnoozingDropdown" :todo="todo" />
     <gl-button
       v-gl-tooltip.hover
       :icon="isDone ? 'redo' : 'check'"

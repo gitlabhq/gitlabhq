@@ -270,7 +270,7 @@ module Gitlab
 
           if try(:namespace_inheritable, :authentication)
             access_token_from_namespace_inheritable
-          elsif Feature.enabled?(:auth_finder_no_token_length_detection, :current_request)
+          else
             # The token can be a PAT or an OAuth (doorkeeper) token
             begin
               find_oauth_access_token
@@ -279,12 +279,6 @@ module Gitlab
               # (e.g. NPM client registry auth). In that case, we rescue UnauthorizedError
               # and try to find a personal access token.
             end || find_personal_access_token
-          else
-            # The token can be a PAT or an OAuth (doorkeeper) token
-            # It is also possible that a PAT is encapsulated in a `Bearer` OAuth token
-            # (e.g. NPM client registry auth), this case will be properly handled
-            # by find_personal_access_token
-            find_oauth_access_token || find_personal_access_token
           end
         end
       end
@@ -303,10 +297,6 @@ module Gitlab
       def find_oauth_access_token
         token = parsed_oauth_token
         return unless token
-
-        # PATs with OAuth headers are not handled by OauthAccessToken
-        return if Feature.disabled?(:auth_finder_no_token_length_detection, :current_request) &&
-          matches_personal_access_token_length?(token)
 
         # Expiration, revocation and scopes are verified in `validate_access_token!`
         oauth_token = OauthAccessToken.by_token(token)
@@ -391,10 +381,6 @@ module Gitlab
 
       def parsed_oauth_token
         Doorkeeper::OAuth::Token.from_request(current_request, *Doorkeeper.configuration.access_token_methods)
-      end
-
-      def matches_personal_access_token_length?(token)
-        PersonalAccessToken::TOKEN_LENGTH_RANGE.include?(token.length)
       end
 
       # Check if the request is GET/HEAD, or if CSRF token is valid.

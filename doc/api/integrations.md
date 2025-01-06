@@ -1299,7 +1299,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `teamcity_url` | string | yes | TeamCity root URL (for example, `https://teamcity.example.com`). |
 | `enable_ssl_verification` | boolean | no | Enable SSL verification. Defaults to `true` (enabled). |
-| `build_type` | string | yes | Build configuration ID. |
+| `build_type` | string | yes | The build configuration ID of the TeamCity project. |
 | `username` | string | yes | A user with permissions to trigger a manual build. |
 | `password` | string | yes | The password of the user. |
 | `push_events` | boolean | no | Enable notifications for push events. |

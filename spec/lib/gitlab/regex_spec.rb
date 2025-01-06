@@ -257,8 +257,19 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     subject { described_class.conan_revision_regex }
 
     it { is_expected.to match('0') }
+    it { is_expected.not_to match(nil) }
     it { is_expected.not_to match('foo') }
     it { is_expected.not_to match('!!()()') }
+  end
+
+  describe '.conan_revision_regex_v2' do
+    subject { described_class.conan_revision_regex_v2 }
+
+    it { is_expected.to match(OpenSSL::Digest.hexdigest('MD5', 'valid_MD5')) }
+    it { is_expected.to match(OpenSSL::Digest.hexdigest('SHA1', 'valid_SHA-1')) }
+    it { is_expected.not_to match('0') }
+    it { is_expected.not_to match('g' * 32) }
+    it { is_expected.not_to match('a' * 41) }
   end
 
   describe '.composer_dev_version_regex' do

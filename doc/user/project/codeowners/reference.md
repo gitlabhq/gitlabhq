@@ -20,7 +20,7 @@ The key elements are:
 - **Sections**: Optional groupings of rules, defined using `[Section name]`.
 
 NOTE:
-If an entry is duplicated in a section, [the last entry is used.](advanced.md#define-code-owners-for-specific-files-or-directories). Rules defined later in the file take precedence over earlier rules.
+If an entry is duplicated in a section, [the last entry is used](advanced.md#define-code-owners-for-specific-files-or-directories). Rules defined later in the file take precedence over earlier rules.
 
 Here are some examples:
 

@@ -48,8 +48,3 @@ $type-scale: (
 .gl-z-dropdown-menu\! {
   z-index: $zindex-dropdown-menu !important;
 }
-
-// stylelint-disable-next-line gitlab/no-gl-class
-.gl-last-of-type-border-b-0:last-of-type {
-  border-bottom-width: 0;
-}

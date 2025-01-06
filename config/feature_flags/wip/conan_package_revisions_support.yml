@@ -1,0 +1,9 @@
+---
+name: conan_package_revisions_support
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/333033
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165034
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/483634
+milestone: '17.8'
+group: group::package registry
+type: wip
+default_enabled: false

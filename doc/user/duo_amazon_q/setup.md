@@ -18,12 +18,10 @@ The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is a Preview/Beta and is available for testing, but not ready for production use.
 
-DISCLAIMER:
-**These instructions are for [users of the GDK only](https://gitlab.com/gitlab-org/gitlab/-/blob/gitlab-duo-with-amazon-q-preview/README.md?ref_type=heads).**
-Others should request [access to a lab environment](https://about.gitlab.com/aws).
+To use GitLab Duo with Amazon Q, you can [request access to a lab environment](https://about.gitlab.com/partners/technology-partners/aws/#interest).
 
-You can use GitLab Duo with Amazon Q to perform a variety of tasks,
-from creating merge requests and adding test coverage to reviewing changes for security and quality.
+If you'd prefer to set up GitLab Duo with Amazon Q on your self-managed GitLab installation,
+complete the following steps.
 
 ## Set up GitLab Duo with Amazon Q
 
@@ -38,6 +36,7 @@ To set up GitLab Duo with Amazon Q, you must:
 ### Prerequisites
 
 - You must have a self-managed GitLab instance:
+  - On GitLab 17.8 or later.
   - With an HTTPS URL that can be accessed by Amazon Q (the SSL certificate must not be self-signed).
     For more details about SSL, see [Configure SSL for a Linux package installation](https://docs.gitlab.com/omnibus/settings/ssl/).
   - With an Ultimate subscription that is synchronized with GitLab. (No trial access.)
