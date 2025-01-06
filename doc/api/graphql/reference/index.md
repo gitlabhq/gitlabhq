@@ -27607,6 +27607,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestavailableautomergestrategies"></a>`availableAutoMergeStrategies` | [`[String!]`](#string) | Array of available auto merge strategies. |
 | <a id="mergerequestawardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | List of emoji reactions associated with the merge request. (see [Connections](#connections)) |
 | <a id="mergerequestblockingmergerequests"></a>`blockingMergeRequests` **{warning-solid}** | [`BlockingMergeRequests`](#blockingmergerequests) | **Introduced** in GitLab 16.5. **Status**: Experiment. Merge requests that block another merge request from merging. |
+| <a id="mergerequestchangerequesters"></a>`changeRequesters` | [`UserCoreConnection`](#usercoreconnection) | Users that have requested changes to the merge request. (see [Connections](#connections)) |
 | <a id="mergerequestclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the merge request was closed, null if not closed. |
 | <a id="mergerequestcodequalityreportscomparer"></a>`codequalityReportsComparer` | [`CodequalityReportsComparer`](#codequalityreportscomparer) | Code quality reports comparison reported on the merge request. |
 | <a id="mergerequestcommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |

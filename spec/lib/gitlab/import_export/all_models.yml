@@ -275,6 +275,7 @@ merge_requests:
 - scan_result_policy_violations
 - applicable_post_merge_approval_rules
 - requested_changes
+- change_requesters
 - scan_result_policy_reads_through_violations
 - security_policies_through_violations
 - scan_result_policy_reads_through_approval_rules

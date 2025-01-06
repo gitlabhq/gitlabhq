@@ -36,7 +36,7 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
       it 'returns duplicate package error' do
         is_expected.to be_error.and have_attributes(
           reason: :forbidden,
-          message: 'A package with the same name already exists in the namespace'
+          message: 'A module with the same name already exists in the namespace.'
         )
       end
     end
@@ -170,7 +170,12 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
     context 'when version already exists' do
       let!(:existing_version) { create(:terraform_module_package, project: project, name: 'foo/bar', version: '1.0.1') }
 
-      it { is_expected.to be_error.and have_attributes(reason: :forbidden, message: 'Package version already exists.') }
+      it 'returns error' do
+        is_expected.to be_error.and have_attributes(
+          reason: :forbidden,
+          message: 'A module with the same name & version already exists in the project.'
+        )
+      end
 
       context 'when marked as pending_destruction' do
         before do
