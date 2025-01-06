@@ -325,6 +325,8 @@ To add seats to a subscription:
 
 You receive the payment receipt by email. You can also access the receipt in the Customers Portal under [**Invoices**](https://customers.gitlab.com/invoices).
 
+For multi-year subscriptions, the **Add seats** option is unavailable. To purchase additional seats, please contact the [sales team](https://about.gitlab.com/sales/).
+
 ## Remove users from subscription
 
 To remove a billable user from your GitLab.com subscription:

@@ -225,6 +225,8 @@ to your instance.
 
 If you purchased your subscription through an [authorized reseller](../customers_portal.md#customers-that-purchased-through-a-reseller) (including GCP and AWS marketplaces), contact the reseller to add more seats.
 
+For multi-year subscriptions, the **Add seats** option is unavailable. To purchase additional seats, please contact the [sales team](https://about.gitlab.com/sales/).
+
 ## Subscription data synchronization
 
 Prerequisites:
