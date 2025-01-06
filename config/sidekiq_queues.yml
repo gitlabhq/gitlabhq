@@ -203,8 +203,6 @@
   - 1
 - - ci_user_cancel_pipeline
   - 1
-- - click_house_audit_event_partition_sync
-  - 1
 - - click_house_buffer_sync
   - 1
 - - click_house_ci_finished_builds_sync

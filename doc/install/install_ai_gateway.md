@@ -71,7 +71,7 @@ This can be helpful for troubleshooting, but you should disable this after fixin
 Prerequisites:
 
 - You must have a:
-  - Domain you own, that you can add a DNS record to.
+  - Domain you own, to which you can add a DNS record.
   - Kubernetes cluster.
   - Working installation of `kubectl`.
   - Working installation of Helm, version v3.11.0 or later.

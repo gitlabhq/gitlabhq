@@ -982,9 +982,6 @@ Gitlab.ee do
     Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker'] ||= {}
     Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker']['cron'] ||= "0 */6 * * *"
     Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker']['job_class'] = 'GitlabSubscriptions::ScheduleRefreshSeatsWorker'
-    Settings.cron_jobs['click_house_audit_events_sync_worker'] ||= {}
-    Settings.cron_jobs['click_house_audit_events_sync_worker']['cron'] ||= "*/3 * * * *"
-    Settings.cron_jobs['click_house_audit_events_sync_worker']['job_class'] = 'ClickHouse::AuditEventsSyncWorker'
     Settings.cron_jobs['namespaces_schedule_dormant_member_removal_worker'] ||= {}
     Settings.cron_jobs['namespaces_schedule_dormant_member_removal_worker']['cron'] ||= "0 */6 * * *"
     Settings.cron_jobs['namespaces_schedule_dormant_member_removal_worker']['job_class'] = 'Namespaces::ScheduleDormantMemberRemoval'

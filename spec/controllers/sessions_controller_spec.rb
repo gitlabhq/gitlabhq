@@ -19,11 +19,11 @@ RSpec.describe SessionsController, feature_category: :system_access do
       end
 
       context 'and no auto_sign_in param is passed' do
-        it 'redirects to :omniauth_authorize_path' do
+        it 'redirects to :omniauth_authorize_path through an intermediate template' do
           get(:new)
 
-          expect(response).to have_gitlab_http_status(:found)
-          expect(response).to redirect_to('/saml')
+          expect(response).to render_template('devise/sessions/redirect_to_provider', layout: false)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
