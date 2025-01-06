@@ -137,6 +137,24 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
     end
   end
 
+  shared_examples_for 'pulls are disallowed' do
+    it 'rejects pulls with generic error message' do
+      download(path, **env) do |response|
+        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(response.body).to eq("HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped. See http://www.example.com/help/topics/git/troubleshooting_git.md#error-on-git-fetch-http-basic-access-denied")
+      end
+    end
+  end
+
+  shared_examples_for 'pushes are disallowed' do
+    it 'rejects pushes with generic error message' do
+      upload(path, **env) do |response|
+        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(response.body).to eq("HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped. See http://www.example.com/help/topics/git/troubleshooting_git.md#error-on-git-fetch-http-basic-access-denied")
+      end
+    end
+  end
+
   shared_examples_for 'project path without .git suffix' do
     context "GET info/refs" do
       let(:path) { "/#{repository_path}/info/refs" }
@@ -679,19 +697,8 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                 end
 
                 context 'when username and password are provided' do
-                  it 'rejects pulls with generic error message' do
-                    download(path, user: user.username, password: user.password) do |response|
-                      expect(response).to have_gitlab_http_status(:unauthorized)
-                      expect(response.body).to eq("HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped. See http://www.example.com/help/topics/git/troubleshooting_git.md#error-on-git-fetch-http-basic-access-denied")
-                    end
-                  end
-
-                  it 'rejects the push attempt with generic error message' do
-                    upload(path, user: user.username, password: user.password) do |response|
-                      expect(response).to have_gitlab_http_status(:unauthorized)
-                      expect(response.body).to eq("HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped. See http://www.example.com/help/topics/git/troubleshooting_git.md#error-on-git-fetch-http-basic-access-denied")
-                    end
-                  end
+                  it_behaves_like 'pulls are disallowed'
+                  it_behaves_like 'pushes are disallowed'
                 end
 
                 context 'when username and personal access token are provided' do
@@ -781,24 +788,23 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                 end
               end
 
-              context 'when internal auth is disabled' do
+              context 'when password authentication is disabled for Web, but enabled for Git' do
                 before do
-                  allow_any_instance_of(ApplicationSetting).to receive(:password_authentication_enabled_for_git?) { false }
+                  stub_application_setting(password_authentication_enabled_for_web: false)
+                  stub_application_setting(password_authentication_enabled_for_git: true)
                 end
 
-                it 'rejects pulls with generic error message' do
-                  download(path, user: 'foo', password: 'bar') do |response|
-                    expect(response).to have_gitlab_http_status(:unauthorized)
-                    expect(response.body).to eq("HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped. See http://www.example.com/help/topics/git/troubleshooting_git.md#error-on-git-fetch-http-basic-access-denied")
-                  end
+                it_behaves_like 'pulls are allowed'
+                it_behaves_like 'pushes are allowed'
+              end
+
+              context 'when password authentication is disabled for Git' do
+                before do
+                  stub_application_setting(password_authentication_enabled_for_git: false)
                 end
 
-                it 'rejects pushes with generic error message' do
-                  upload(path, user: 'foo', password: 'bar') do |response|
-                    expect(response).to have_gitlab_http_status(:unauthorized)
-                    expect(response.body).to eq("HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped. See http://www.example.com/help/topics/git/troubleshooting_git.md#error-on-git-fetch-http-basic-access-denied")
-                  end
-                end
+                it_behaves_like 'pulls are disallowed'
+                it_behaves_like 'pushes are disallowed'
 
                 context 'when LDAP is configured' do
                   before do
@@ -807,12 +813,26 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                       .to receive(:login).and_return(nil)
                   end
 
-                  it 'displays the generic error message' do
-                    upload(path, user: 'foo', password: 'bar') do |response|
-                      expect(response).to have_gitlab_http_status(:unauthorized)
-                      expect(response.body).to eq("HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped. See http://www.example.com/help/topics/git/troubleshooting_git.md#error-on-git-fetch-http-basic-access-denied")
-                    end
-                  end
+                  it_behaves_like 'pulls are disallowed'
+                  it_behaves_like 'pushes are disallowed'
+                end
+              end
+
+              context 'when password authentication is disabled for SSO users' do
+                before do
+                  stub_application_setting(disable_password_authentication_for_users_with_sso_identities: true)
+                end
+
+                context 'when the user has no SSO identity' do
+                  it_behaves_like 'pulls are allowed'
+                  it_behaves_like 'pushes are allowed'
+                end
+
+                context 'when the user has SSO identity' do
+                  let_it_be(:user) { create(:omniauth_user, password_automatically_set: false) }
+
+                  it_behaves_like 'pulls are disallowed'
+                  it_behaves_like 'pushes are disallowed'
                 end
               end
 
@@ -1326,20 +1346,8 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                 end
 
                 context 'when username and password are provided' do
-                  it 'rejects pulls with generic error message' do
-                    download(path, user: user.username, password: user.password) do |response|
-                      expect(response).to have_gitlab_http_status(:unauthorized)
-
-                      expect(response.body).to eq("HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped. See http://www.example.com/help/topics/git/troubleshooting_git.md#error-on-git-fetch-http-basic-access-denied")
-                    end
-                  end
-
-                  it 'rejects the push attempt with generic error message' do
-                    upload(path, user: user.username, password: user.password) do |response|
-                      expect(response).to have_gitlab_http_status(:unauthorized)
-                      expect(response.body).to eq("HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped. See http://www.example.com/help/topics/git/troubleshooting_git.md#error-on-git-fetch-http-basic-access-denied")
-                    end
-                  end
+                  it_behaves_like 'pulls are disallowed'
+                  it_behaves_like 'pushes are disallowed'
                 end
 
                 context 'when username and personal access token are provided' do
@@ -1403,24 +1411,13 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                 end
               end
 
-              context 'when internal auth is disabled' do
+              context 'when password authentication is disabled for Git' do
                 before do
-                  allow_any_instance_of(ApplicationSetting).to receive(:password_authentication_enabled_for_git?) { false }
+                  stub_application_setting(password_authentication_enabled_for_git: false)
                 end
 
-                it 'rejects pulls with generic error message' do
-                  download(path, user: 'foo', password: 'bar') do |response|
-                    expect(response).to have_gitlab_http_status(:unauthorized)
-                    expect(response.body).to eq("HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped. See http://www.example.com/help/topics/git/troubleshooting_git.md#error-on-git-fetch-http-basic-access-denied")
-                  end
-                end
-
-                it 'rejects pushes with generic error message' do
-                  upload(path, user: 'foo', password: 'bar') do |response|
-                    expect(response).to have_gitlab_http_status(:unauthorized)
-                    expect(response.body).to eq("HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped. See http://www.example.com/help/topics/git/troubleshooting_git.md#error-on-git-fetch-http-basic-access-denied")
-                  end
-                end
+                it_behaves_like 'pulls are disallowed'
+                it_behaves_like 'pushes are disallowed'
 
                 context 'when LDAP is configured' do
                   before do
@@ -1429,12 +1426,8 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                       .to receive(:login).and_return(nil)
                   end
 
-                  it 'returns a generic error message' do
-                    upload(path, user: 'foo', password: 'bar') do |response|
-                      expect(response).to have_gitlab_http_status(:unauthorized)
-                      expect(response.body).to eq("HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped. See http://www.example.com/help/topics/git/troubleshooting_git.md#error-on-git-fetch-http-basic-access-denied")
-                    end
-                  end
+                  it_behaves_like 'pulls are disallowed'
+                  it_behaves_like 'pushes are disallowed'
                 end
               end
 
