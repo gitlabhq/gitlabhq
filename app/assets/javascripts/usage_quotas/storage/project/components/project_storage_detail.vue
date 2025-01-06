@@ -67,7 +67,7 @@ export default {
               :aria-label="helpLinkAriaLabel(item.name)"
               :data-testid="`${item.id}-help-link`"
             >
-              <help-icon size="small" />
+              <help-icon />
             </gl-link>
           </p>
           <p class="gl-mb-0" :data-testid="`${item.id}-description`">

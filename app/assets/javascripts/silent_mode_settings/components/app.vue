@@ -31,7 +31,8 @@ export default {
     };
   },
   methods: {
-    updateSilentModeSettings() {
+    updateSilentModeSettings(value) {
+      this.silentModeEnabled = value;
       this.isLoading = true;
 
       updateApplicationSettings({
@@ -55,7 +56,7 @@ export default {
 </script>
 <template>
   <gl-toggle
-    v-model="silentModeEnabled"
+    :value="silentModeEnabled"
     label-id="silent-mode-toggle"
     :label="$options.i18n.toggleLabel"
     :is-loading="isLoading"

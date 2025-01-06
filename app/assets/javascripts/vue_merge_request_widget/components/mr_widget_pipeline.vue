@@ -338,7 +338,7 @@ export default {
               </p>
               <help-popover
                 v-if="showPipelineTypeHelpPopover"
-                class="gl-ml-3 gl-inline-flex"
+                class="gl-ml-2 gl-inline-flex"
                 :options="pipelineTypeHelpPopoverOptions"
               />
             </div>
@@ -355,7 +355,7 @@ export default {
               </span>
               {{ pipelineCoverageJobNumberText }}
               <span ref="pipelineCoverageQuestion">
-                <help-icon size="small" />
+                <help-icon />
               </span>
               <gl-tooltip
                 :target="() => $refs.pipelineCoverageQuestion"

@@ -273,7 +273,6 @@ spec/frontend/sidebar/components/lock/issuable_lock_form_spec.js
 spec/frontend/sidebar/components/milestone/milestone_dropdown_spec.js
 spec/frontend/sidebar/components/subscriptions/subscriptions_dropdown_spec.js
 spec/frontend/sidebar/components/todo_toggle/sidebar_todo_widget_spec.js
-spec/frontend/silent_mode_settings/components/app_spec.js
 spec/frontend/snippets/components/snippet_header_spec.js
 spec/frontend/super_sidebar/components/flyout_menu_spec.js
 spec/frontend/super_sidebar/components/nav_item_router_link_spec.js

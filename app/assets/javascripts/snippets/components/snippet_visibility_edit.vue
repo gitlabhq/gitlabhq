@@ -43,7 +43,7 @@ export default {
   <div class="form-group">
     <label>
       {{ __('Visibility level') }}
-      <gl-link v-if="helpLink" :href="helpLink" target="_blank"><help-icon size="small" /></gl-link>
+      <gl-link v-if="helpLink" :href="helpLink" target="_blank"><help-icon /></gl-link>
     </label>
     <gl-form-group id="visibility-level-setting" class="gl-mb-0">
       <gl-form-radio-group :checked="value" stacked v-bind="$attrs" v-on="$listeners">

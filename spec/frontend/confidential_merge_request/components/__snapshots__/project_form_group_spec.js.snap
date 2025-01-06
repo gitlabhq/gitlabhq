@@ -29,7 +29,6 @@ exports[`Confidential merge request project form group component renders empty s
       >
         <help-icon-stub
           aria-label="Read more"
-          size="default"
         />
       </gl-link-stub>
     </p>
@@ -60,7 +59,6 @@ exports[`Confidential merge request project form group component renders fork dr
       >
         <help-icon-stub
           aria-label="Read more"
-          size="default"
         />
       </gl-link-stub>
     </p>

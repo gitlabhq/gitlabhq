@@ -757,7 +757,7 @@ export default {
                   {{ autoMergeHelperText }}
                 </div>
                 <help-popover
-                  class="gl-ml-2"
+                  class="gl-ml-2 gl-inline-flex"
                   :options="autoMergeHelpPopoverOptions"
                   data-testid="auto-merge-helper-text-icon"
                 >

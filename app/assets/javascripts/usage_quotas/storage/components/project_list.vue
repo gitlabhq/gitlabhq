@@ -170,7 +170,7 @@ export default {
             href="user/storage_usage_quotas#view-project-fork-storage-usage"
             target="_blank"
           >
-            <help-icon size="small" />
+            <help-icon />
           </help-page-link>
         </div>
       </template>
