@@ -220,14 +220,7 @@ module API
             }
           ],
           'pivotaltracker' => ::Integrations::Pivotaltracker.api_arguments,
-          'pumble' => [
-            {
-              required: true,
-              name: :webhook,
-              type: String,
-              desc: 'The Pumble chat webhook. For example, https://api.pumble.com/workspaces/x/...'
-            }
-          ].flatten,
+          'pumble' => ::Integrations::Pumble.api_arguments,
           'pushover' => ::Integrations::Pushover.api_arguments,
           'redmine' => ::Integrations::Redmine.api_arguments,
           'ewm' => ::Integrations::Ewm.api_arguments,

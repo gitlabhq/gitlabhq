@@ -342,6 +342,21 @@ describe('WorkItemDescription', () => {
           await nextTick();
           expect(findDescriptionTemplateWarning().exists()).toBe(false);
         });
+
+        describe('resetting a template', () => {
+          it('sets the description back to the original template value when reset', async () => {
+            // apply a template
+            findDescriptionTemplateWarningButton('apply').vm.$emit('click');
+            // write something else
+            findMarkdownEditor().vm.$emit('input', 'some other value');
+            await nextTick();
+            // reset the template
+            findDescriptionTemplateListbox().vm.$emit('reset');
+            await nextTick();
+            // check we have reset correctly
+            expect(findMarkdownEditor().props('value')).toBe('A template');
+          });
+        });
       });
 
       describe('selecting a template unsuccessfully', () => {

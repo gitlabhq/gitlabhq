@@ -1,5 +1,5 @@
 <script>
-import { GlCollapsibleListbox, GlSkeletonLoader, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlSkeletonLoader, GlSprintf, GlLink, GlButton } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -12,6 +12,7 @@ export default {
     GlSkeletonLoader,
     GlSprintf,
     GlLink,
+    GlButton,
   },
   props: {
     fullPath: {
@@ -26,7 +27,6 @@ export default {
   },
   data() {
     return {
-      showListbox: false,
       descriptionTemplates: [],
       searchTerm: '',
     };
@@ -75,6 +75,10 @@ export default {
     handleSearch(searchTerm) {
       this.searchTerm = searchTerm;
     },
+    handleReset() {
+      this.$refs.listbox?.closeAndFocus();
+      this.$emit('reset');
+    },
   },
   templateDocsPath: helpPagePath('user/project/description_templates'),
 };
@@ -85,6 +89,7 @@ export default {
 
   <gl-collapsible-listbox
     v-else-if="hasTemplates"
+    ref="listbox"
     :items="items"
     :toggle-text="toggleText"
     :header-text="s__('WorkItem|Select template')"
@@ -92,11 +97,23 @@ export default {
     :selected="template"
     :loading="loading"
     searchable
-    @shown="showListbox = true"
-    @hidden="showListbox = false"
     @select="handleSelect"
     @search="handleSearch"
-  />
+  >
+    <template #footer>
+      <div class="gl-border-t gl-border-t-dropdown gl-p-2 gl-pt-0">
+        <gl-button
+          category="tertiary"
+          block
+          data-testid="reset-template"
+          class="gl-mt-2 !gl-justify-start"
+          @click="handleReset"
+        >
+          {{ s__('WorkItem|Reset template') }}
+        </gl-button>
+      </div>
+    </template>
+  </gl-collapsible-listbox>
 
   <p v-else data-testid="template-message">
     <gl-sprintf

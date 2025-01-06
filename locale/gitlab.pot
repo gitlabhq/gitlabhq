@@ -56188,6 +56188,9 @@ msgstr ""
 msgid "The Planner role is suitable for team members who need to manage projects and track work items but do not need to contribute code."
 msgstr ""
 
+msgid "The Pumble webhook (for example, `https://api.pumble.com/workspaces/x/...`)."
+msgstr ""
+
 msgid "The Slack notifications integration is deprecated and will be removed in a future release. To continue to receive notifications from Slack, use the GitLab for Slack app instead. %{learn_more_link_start}Learn more%{link_end}."
 msgstr ""
 
@@ -64180,6 +64183,9 @@ msgid "WorkItem|Reopening %{workItemType}"
 msgstr ""
 
 msgid "WorkItem|Requirements"
+msgstr ""
+
+msgid "WorkItem|Reset template"
 msgstr ""
 
 msgid "WorkItem|Rose"

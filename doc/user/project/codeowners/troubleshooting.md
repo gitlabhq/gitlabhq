@@ -13,8 +13,15 @@ DETAILS:
 
 When working with Code Owners, you might encounter the following issues.
 
-For more information about how the Code Owners feature handles errors, see the
-[Code Owners reference](reference.md).
+For more information about how the Code Owners feature handles errors, see [Error handling](advanced.md#error-handling).
+
+## Approvals do not show
+
+The [`CODEOWNERS` file](index.md#codeowners-file) must be present in the target branch before the
+merge request is created.
+
+Code Owner approval rules only update when the merge request is created.
+If you update the `CODEOWNERS` file, close the merge request and create a new one.
 
 ## Approvals shown as optional
 
@@ -22,18 +29,11 @@ A Code Owner approval rule is optional if any of these conditions are true:
 
 - The user or group is not a member of the project.
   Code Owners [cannot inherit members from parent groups](https://gitlab.com/gitlab-org/gitlab/-/issues/288851/).
-- The user or group is [malformed or inaccessible](reference.md#malformed-owners).
+- The user or group is [malformed or inaccessible](advanced.md#malformed-owners).
 - [Code Owner approval on a protected branch](../repository/branches/protected.md#require-code-owner-approval-on-a-protected-branch) has not been set up.
-- The section is [marked as optional](index.md#make-a-code-owners-section-optional).
+- The section is [marked as optional](reference.md#optional-sections).
 - No eligible code owners are available to approve the merge request due to conflicts
   with other [merge request approval settings](../merge_requests/approvals/settings.md).
-
-## Approvals do not show
-
-The [`CODEOWNERS` file](index.md#codeowners-file) must be present in the target branch before the merge request is created.
-
-Code Owner approval rules only update when the merge request is created.
-If you update the `CODEOWNERS` file, close the merge request and create a new one.
 
 ## User not shown as possible approver
 
@@ -44,8 +44,35 @@ if any of these conditions are true:
   Check the project [merge request approval](../merge_requests/approvals/settings.md#edit-merge-request-approval-settings) settings.
 - A Code Owner group has a visibility of **private**, and the current user is not a
   member of the Code Owner group.
-- The specific username is spelled incorrectly or [malformed in the `CODEOWNERS` file](reference.md#malformed-owners).
+- The specific username is spelled incorrectly or
+  [malformed in the `CODEOWNERS` file](advanced.md#malformed-owners).
 - Current user is an external user who does not have permission to the internal Code Owner group.
+
+## User or group not visible when viewing directory Code Owners
+
+Code Owners might not show the intended user or group based on your configured rules when viewing
+a directory, but correctly show the Code Owners for files beneath the directory.
+
+For example:
+
+```plaintext
+* @dev-team
+docs/ @tech-writer-team
+```
+
+All files beneath the `docs/` directory show `@tech-writer-team` as Code Owners, but the directory
+itself shows `@dev-team`.
+
+This behavior occurs when viewing a directory because the [syntax rule](reference.md#directory-paths)
+applies to all files beneath the directory, which does not include the directory itself.
+To resolve this, update the `CODEOWNERS` file to include the directory specifically along with all
+files beneath the directory. For example:
+
+```plaintext
+* @dev-team
+docs @tech-writer-team
+docs/ @tech-writer-team
+```
 
 ## Approval rule is invalid
 
@@ -60,26 +87,23 @@ This issue occurs when an approval rule uses a Code Owner that is not a direct m
 
 The workaround is to check that the group or user has been invited to the project.
 
-## User or group not shown when viewing Code Owners for a directory
+## `CODEOWNERS` not updated when user or group names change
 
-Code Owners might not show the intended user or group based on your configured rules when viewing a directory,
-but correctly show the Code Owners for files beneath the directory.
+When a user or group change their names, the `CODEOWNERS` isn't automatically updated with the new names.
+To enter the new names, you must edit the file.
 
-For example:
+Organizations using SAML SSO can [set usernames](../../../integration/saml.md#set-a-username) to
+prevent users from changing their usernames.
 
-```plaintext
-* @dev-team
-docs/ @tech-writer-team
-```
+## Incompatibility with Global SAML group memberships lock
 
-All files beneath the `docs/` directory show `@tech-writer-team` as Code Owners, but the directory itself shows `@dev-team`.
+The Code Owners feature requires direct group memberships to projects.
+When the [Global SAML group memberships lock](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock)
+is enabled, it prevents groups from being invited as direct members to projects.
+This creates an incompatibility between the two features.
 
-This behavior occurs when viewing a directory because the [syntax rule](../../project/codeowners/reference.md#directory-paths)
-applies to all files beneath the directory, which does not include the directory itself. To resolve this, update the `CODEOWNERS` file to include the
-directory specifically along with all files beneath the directory. For example:
+If you enabled Global SAML group memberships lock, you can't use groups or subgroups as Code Owners.
+In this case, you have the following options:
 
-```plaintext
-* @dev-team
-docs @tech-writer-team
-docs/ @tech-writer-team
-```
+- Use individual users as Code Owners instead of groups.
+- If using group-based Code Owners is a higher priority, disable the Global SAML group memberships lock.

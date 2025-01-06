@@ -260,6 +260,11 @@ export default {
     descriptionTemplateContent() {
       return this.descriptionTemplate?.content || '';
     },
+    canResetTemplate() {
+      const hasAppliedTemplate = this.appliedTemplate !== '';
+      const hasEditedTemplate = this.descriptionText !== this.appliedTemplate;
+      return hasAppliedTemplate && hasEditedTemplate;
+    },
   },
   watch: {
     updateInProgress(newValue) {
@@ -360,6 +365,12 @@ export default {
       this.descriptionTemplate = null;
       this.showTemplateApplyWarning = false;
     },
+    handleResetTemplate() {
+      if (this.canResetTemplate) {
+        this.setDescriptionText(this.appliedTemplate);
+        this.onInput();
+      }
+    },
   },
 };
 </script>
@@ -378,6 +389,7 @@ export default {
           :full-path="fullPath"
           :template="selectedTemplate"
           @selectTemplate="handleSelectTemplate"
+          @reset="handleResetTemplate"
         />
         <gl-alert
           v-if="showTemplateApplyWarning"

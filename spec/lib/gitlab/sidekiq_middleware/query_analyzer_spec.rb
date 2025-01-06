@@ -22,7 +22,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::QueryAnalyzer, query_analyzers: false 
           end
         end
 
-        it 'detects cross modifications and tracks exception' do
+        it 'detects cross modifications and tracks exception',
+          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/507880' do
           expect(::Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
 
           subject

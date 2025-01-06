@@ -115,7 +115,8 @@ RSpec.describe CrossDatabaseIgnoredTables, feature_category: :cell, query_analyz
       context 'when condition returns false' do
         let(:condition_value) { false }
 
-        it 'raises an error on creating a new object' do
+        it 'raises an error on creating a new object',
+          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508768' do
           expect { MainModel.create! }.to raise_error(cross_database_exception)
         end
       end

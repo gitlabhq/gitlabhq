@@ -46,13 +46,18 @@ describe('WorkItemDescriptionTemplateListbox', () => {
   let wrapper;
   let handler;
 
-  const createComponent = ({ template, templatesResult = mockDescriptionTemplatesResult } = {}) => {
+  const createComponent = ({
+    template,
+    templatesResult = mockDescriptionTemplatesResult,
+    canReset = true,
+  } = {}) => {
     handler = jest.fn().mockResolvedValue(templatesResult);
     wrapper = mountExtended(WorkItemDescriptionTemplateListbox, {
       apolloProvider: createMockApollo([[descriptionTemplatesListQuery, handler]]),
       propsData: {
         fullPath: 'gitlab-org/gitlab',
         template,
+        canReset,
       },
     });
   };
@@ -61,6 +66,7 @@ describe('WorkItemDescriptionTemplateListbox', () => {
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findTemplateMessage = () => wrapper.findByTestId('template-message');
   const findTemplateMessageLink = () => wrapper.findComponent(GlLink);
+  const findResetButton = () => wrapper.findByTestId('reset-template');
 
   it('displays a skeleton loader', () => {
     createComponent();
@@ -73,6 +79,7 @@ describe('WorkItemDescriptionTemplateListbox', () => {
       await waitForPromises();
       expect(findSkeletonLoader().exists()).toBe(false);
     });
+
     describe('and there are templates to display', () => {
       describe('and there is no template already selected', () => {
         beforeEach(async () => {
@@ -126,6 +133,18 @@ describe('WorkItemDescriptionTemplateListbox', () => {
           findListbox().vm.$emit('search', '4');
           await nextTick();
           expect(findListbox().props('items')).toHaveLength(1);
+        });
+
+        describe('resetting selected template', () => {
+          it('displays a "reset template" button', () => {
+            expect(findResetButton().text()).toBe('Reset template');
+          });
+
+          it('emits a "reset" event when the "reset template" button is clicked', async () => {
+            await findResetButton().vm.$emit('click');
+
+            expect(wrapper.emitted('reset')).toHaveLength(1);
+          });
         });
       });
 

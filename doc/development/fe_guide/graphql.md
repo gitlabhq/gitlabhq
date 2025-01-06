@@ -243,6 +243,120 @@ apollo: {
 }
 ```
 
+## Splitting queries in GraphQL
+
+Splitting queries in Apollo is often done to optimize data fetching by breaking down larger, monolithic queries into smaller, more manageable pieces.
+
+### Why split queries in GraphQL
+
+1. **Increased query complexity** We have [limits](../../api/graphql#limits) for GraphQL queries which should be adhered to.
+1. **Performance** Smaller, targeted queries often result in faster response times from the server, which directly benefits the frontend by getting data to the client sooner.
+1. **Better Component Decoupling and Maintainability** Each component can handle its own data needs, making it easier to reuse components across your app without requiring access to a large, shared query.
+
+### How to split queries
+
+1. Define multiple queries and use them independently in various parts of your component hierarchy. This way, each component fetches only the data it needs.
+
+If you look at [work item query architecture](../work_items_widgets.md#frontend-architecture) , we have [split the queries](../work_items_widgets.md#widget-responsibility-and-structure) for most of the widgets for the same reason of query complexity and splitting of concerned data.
+
+```javascript
+#import "ee_else_ce/work_items/graphql/work_item_development.fragment.graphql"
+
+query workItemDevelopment($id: WorkItemID!) {
+  workItem(id: $id) {
+    id
+    iid
+    namespace {
+      id
+    }
+    widgets {
+      ... on WorkItemWidgetDevelopment {
+        ...WorkItemDevelopmentFragment
+      }
+    }
+  }
+}
+```
+
+```javascript
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
+query workItemParticipants($fullPath: ID!, $iid: String!) {
+  workspace: namespace(fullPath: $fullPath) {
+    id
+    workItem(iid: $iid) {
+      id
+      widgets {
+        ... on WorkItemWidgetParticipants {
+          type
+          participants {
+            nodes {
+              ...User
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+1. Conditional Queries Using the `@include` and `@skip` Directives
+
+Apollo supports conditional queries using these directives, allowing you to split queries based on a component's state or other conditions
+
+```javascript
+query projectWorkItems(
+  $searchTerm: String
+  $fullPath: ID!
+  $types: [IssueType!]
+  $in: [IssuableSearchableField!]
+  $iid: String = null
+  $searchByIid: Boolean = false
+  $searchByText: Boolean = true
+) {
+  workspace: project(fullPath: $fullPath) {
+    id
+    workItems(search: $searchTerm, types: $types, in: $in) @include(if: $searchByText) {
+      nodes {
+        ...
+      }
+    }
+    workItemsByIid: workItems(iid: $iid, types: $types) @include(if: $searchByIid) {
+      nodes {
+        ...
+      }
+    }
+  }
+}
+```
+
+```javascript
+#import "../fragments/user.fragment.graphql"
+#import "~/graphql_shared/fragments/user_availability.fragment.graphql"
+
+query workspaceAutocompleteUsersSearch(
+  $search: String!
+  $fullPath: ID!
+  $isProject: Boolean = true
+) {
+  groupWorkspace: group(fullPath: $fullPath) @skip(if: $isProject) {
+    id
+    users: autocompleteUsers(search: $search) {
+      ...
+    }
+  }
+  workspace: project(fullPath: $fullPath) {
+    id
+    users: autocompleteUsers(search: $search) {
+      ...
+    }
+  }
+}
+```
+
+**CAUTION** We have to be careful to make sure that we do not invalidate the existing GraphQL queries when we split queries. We should ensure to check the inspector that the same quries are not called multiple times when we split queries.
+
 ## Immutability and cache updates
 
 From Apollo version 3.0.0 all the cache updates need to be immutable. It needs to be replaced entirely
