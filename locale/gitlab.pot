@@ -43616,6 +43616,9 @@ msgstr ""
 msgid "Project avatar"
 msgstr ""
 
+msgid "Project cannot be deleted because it is linked as Security Policy Project"
+msgstr ""
+
 msgid "Project cannot be shared with the group it is in or one of its ancestors."
 msgstr ""
 

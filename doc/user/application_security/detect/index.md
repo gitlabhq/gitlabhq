@@ -6,19 +6,42 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Detect
 
-Detect vulnerabilities throughout your application's development lifecycle. GitLab scans your
-application's code and tests its behavior for vulnerabilities.
+Detect vulnerabilities in your project's repository and your application's behavior. Enable GitLab
+security tools for your project's entire lifecycle, starting before the first commit.
 
 ## Detection coverage
 
-Scan your repository's content and application's behavior for vulnerabilities:
+Scan your project's repository and test your application's behavior for vulnerabilities:
 
 - Repository scanning can detect vulnerabilities in your project's repository. Coverage includes
   your application's source code, also the libraries and container images it's dependent on.
 - Behavioral testing of your application and its API can detect vulnerabilities that occur only at
   runtime.
 
-For more details, see [Security scanning](security_scanning.md).
+### Repository scanning
+
+Your project's repository may contain source code, dependency declarations, and infrastructure
+definitions. Repository scanning can detect vulnerabilities in each of these.
+
+Repository scanning tools include:
+
+- Static Application Security Testing (SAST): Analyze source code for vulnerabilities.
+- Infrastructure as Code (IaC) scanning: Detect vulnerabilities in your application's infrastructure
+  definitions.
+- Secret detection: Detect and block secrets from being committed to the repository.
+- Dependency scanning: Detect vulnerabilities in your application's dependencies and container
+  images.
+
+### Behavioral testing
+
+Behavioral testing requires a deployable application to test for known vulnerabilities and
+unexpected behavior.
+
+Behavioral testing tools include:
+
+- Dynamic Application Security Testing (DAST): Test your application for known attack vectors.
+- API security testing: Test your application's API for known attacks and vulnerabilities to input.
+- Coverage-guided fuzz testing: Test your application for unexpected behavior.
 
 ## Lifecycle coverage
 

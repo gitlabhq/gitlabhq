@@ -11403,6 +11403,7 @@ CREATE TABLE dast_site_profiles (
     scan_method smallint DEFAULT 0 NOT NULL,
     auth_submit_field text,
     scan_file_path text,
+    optional_variables jsonb DEFAULT '[]'::jsonb NOT NULL,
     CONSTRAINT check_5203110fee CHECK ((char_length(auth_username_field) <= 255)),
     CONSTRAINT check_6cfab17b48 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_8d2aa0f66d CHECK ((char_length(scan_file_path) <= 1024)),

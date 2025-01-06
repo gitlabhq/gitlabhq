@@ -156,7 +156,7 @@ When the feature becomes [generally available](../policy/development_stages_supp
 
 - [Remove](feature_flags/controls.md#cleaning-up) the feature flag.
 - Remove the [experiment or beta status](documentation/experiment_beta.md) from the [API documentation](../api/api_resources.md).
-- Add the [OpenAPI documentation](../api/openapi/openapi_interactive.md) to make the changes programatically discoverable.
+- Add the [OpenAPI documentation](../api/openapi/openapi_interactive.md) to make the changes programmatically discoverable.
 
 ## Declared parameters
 

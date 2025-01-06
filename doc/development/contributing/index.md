@@ -114,6 +114,9 @@ Follow [Configure GDK-in-a-box](first_contribution/configure-dev-env-gdk-in-a-bo
    Someone from GitLab will look at your request and let you know what the next steps are.
    For details, see the [merge request workflow](merge_request_workflow.md).
 
+   Have questions?
+   Use `@gitlab-bot help` to ping a GitLab Merge Request coach. For more information on MR coaches, visit [How GitLab Merge Request Coaches Can Help You](merge_request_coaches.md).
+
 ### How community merge requests are triaged
 
 When you create a merge request, a merge request coach will assign relevant reviewers or
@@ -164,6 +167,7 @@ Request an Enterprise Edition Developers License according to the [documented pr
 
 How to find help contributing to GitLab:
 
-- Type `@gitlab-bot help` in a comment on a merge request or issue.
+- Type `@gitlab-bot help` in a comment on a merge request or issue to tag a MR coach.
+  - See [How GitLab Merge Request Coaches Can Help You](merge_request_coaches.md) for more information.
 - Join the [GitLab Community Discord](https://discord.gg/gitlab) and ask for help in the `#contribute` channel.
 - Email the Contributor Success team at `contributors@gitlab.com`.

@@ -830,8 +830,11 @@ export default {
       </template>
 
       <template #statistics="{ issuable = {} }">
-        <li v-if="issuable.upvotes || issuable.downvotes" class="!gl-mr-0">
-          <merge-request-statistics :merge-request="issuable" />
+        <li
+          v-if="issuable.upvotes || issuable.downvotes"
+          class="!gl-mr-0 gl-hidden sm:gl-inline-flex"
+        >
+          <merge-request-statistics :merge-request="issuable" class="gl-flex" />
         </li>
       </template>
 

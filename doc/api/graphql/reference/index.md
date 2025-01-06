@@ -4402,6 +4402,7 @@ Input type: `DastSiteProfileCreateInput`
 | <a id="mutationdastsiteprofilecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdastsiteprofilecreateexcludedurls"></a>`excludedUrls` | [`[String!]`](#string) | URLs to skip during an authenticated scan. Defaults to `[]`. |
 | <a id="mutationdastsiteprofilecreatefullpath"></a>`fullPath` | [`ID!`](#id) | Project the site profile belongs to. |
+| <a id="mutationdastsiteprofilecreateoptionalvariables"></a>`optionalVariables` | [`[JSON!]`](#json) | Optional variables that can be configured for DAST scans. |
 | <a id="mutationdastsiteprofilecreateprofilename"></a>`profileName` | [`String!`](#string) | Name of the site profile. |
 | <a id="mutationdastsiteprofilecreaterequestheaders"></a>`requestHeaders` | [`String`](#string) | Comma-separated list of request header names and values to be added to every request made by DAST. |
 | <a id="mutationdastsiteprofilecreatescanfilepath"></a>`scanFilePath` | [`String`](#string) | File Path or URL used as input for the scan method. |
@@ -4450,6 +4451,7 @@ Input type: `DastSiteProfileUpdateInput`
 | <a id="mutationdastsiteprofileupdateexcludedurls"></a>`excludedUrls` | [`[String!]`](#string) | URLs to skip during an authenticated scan. |
 | <a id="mutationdastsiteprofileupdatefullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in GitLab 14.5. |
 | <a id="mutationdastsiteprofileupdateid"></a>`id` | [`DastSiteProfileID!`](#dastsiteprofileid) | ID of the site profile to be updated. |
+| <a id="mutationdastsiteprofileupdateoptionalvariables"></a>`optionalVariables` | [`[JSON!]`](#json) | Optional variables that can be configured for DAST scans. |
 | <a id="mutationdastsiteprofileupdateprofilename"></a>`profileName` | [`String!`](#string) | Name of the site profile. |
 | <a id="mutationdastsiteprofileupdaterequestheaders"></a>`requestHeaders` | [`String`](#string) | Comma-separated list of request header names and values to be added to every request made by DAST. |
 | <a id="mutationdastsiteprofileupdatescanfilepath"></a>`scanFilePath` | [`String`](#string) | File Path or URL used as input for the scan method. |
@@ -22629,6 +22631,7 @@ Represents a DAST Site Profile.
 | <a id="dastsiteprofileexcludedurls"></a>`excludedUrls` | [`[String!]`](#string) | URLs to skip during an authenticated scan. |
 | <a id="dastsiteprofileid"></a>`id` | [`DastSiteProfileID!`](#dastsiteprofileid) | ID of the site profile. |
 | <a id="dastsiteprofilenormalizedtargeturl"></a>`normalizedTargetUrl` | [`String`](#string) | Normalized URL of the target to be scanned. |
+| <a id="dastsiteprofileoptionalvariables"></a>`optionalVariables` | [`[JSON!]`](#json) | Optional variables that can be configured for DAST scans. |
 | <a id="dastsiteprofileprofilename"></a>`profileName` | [`String`](#string) | Name of the site profile. |
 | <a id="dastsiteprofilereferencedinsecuritypolicies"></a>`referencedInSecurityPolicies` | [`[String!]`](#string) | List of security policy names that are referencing given project. |
 | <a id="dastsiteprofilerequestheaders"></a>`requestHeaders` | [`String`](#string) | Comma-separated list of request header names and values to be added to every request made by DAST. |

@@ -75,18 +75,12 @@ Project access tokens are treated as [internal users](../../../administration/in
 If an internal user creates a project access token, that token is able to access
 all projects that have visibility level set to [Internal](../../public_access.md).
 
-## Revoke a project access token
+## Revoke or rotate a project access token
 
 > - Ability to view revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
 
 FLAG:
 The availability of being able to view revoked tokens is controlled by a feature flag. For more information, see the history.
-
-To revoke a project access token:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Access tokens**.
-1. Next to the project access token to revoke, select **Revoke** (**{remove}**).
 
 In GitLab 17.3 and later, if you enable the `retain_resource_access_token_user_after_revoke`
 feature flag, you can view both active and inactive revoked project access tokens
@@ -102,6 +96,15 @@ the active tokens. The inactive project access tokens table:
 - Does not contain:
   - Tokens that have already expired or been revoked.
   - Existing tokens that expire in the future or have not been revoked.
+
+### Use the UI
+
+To revoke or rotate a project access token:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Access tokens**.
+1. For the relevant token, select **Revoke** (**{remove}**) or **Rotate** (**{retry}**).
+1. On the confirmation dialog, select **Revoke** or **Rotate**.
 
 ## Scopes for a project access token
 
@@ -214,7 +217,7 @@ Bot users for projects:
 - Can have a maximum role of Owner for a project. For more information, see
   [Create a project access token](../../../api/project_access_tokens.md#create-a-project-access-token).
 
-When the project access token is [revoked](#revoke-a-project-access-token):
+When the project access token is [revoked](#revoke-or-rotate-a-project-access-token):
 
 - The bot user is deleted.
 - All records are moved to a system-wide user with the username [Ghost User](../../profile/account/delete_account.md#associated-records).

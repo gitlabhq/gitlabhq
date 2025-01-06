@@ -3,8 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttributesTransformer,
-  :with_current_organization, feature_category: :importers do
-  let_it_be(:default_organization) { create(:organization, :default) }
+  feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:bulk_import) { create(:bulk_import, :with_configuration, user: user) }
 

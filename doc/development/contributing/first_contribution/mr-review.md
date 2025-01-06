@@ -51,7 +51,8 @@ that runs tests, linting, security scans, and more.
 Your pipeline must be successful for your merge request to be merged.
 
 - To check the status of your pipeline, at the top of your merge request, select **Pipelines**.
-- If you need help understanding or fixing the pipeline, in a comment, use the `@gitlab-bot help` command.
+- If you need help understanding or fixing the pipeline, use the `@gitlab-bot help` command in a comment to tag an MR coach.
+  - For more on MR coaching, visit [How GitLab Merge Request Coaches Can Help You](../merge_request_coaches.md).
 
 ### Getting a review
 
