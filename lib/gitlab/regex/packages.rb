@@ -41,8 +41,8 @@ module Gitlab
         @composer_dev_version_regex ||= %r{(^dev-)|(-dev$)}
       end
 
-      def package_name_regex
-        @package_name_regex ||=
+      def package_name_regex(other_accepted_chars_package_name = nil)
+        strong_memoize_with(:package_name_regex, other_accepted_chars_package_name) do
           %r{
               \A\@?
               (?> # atomic group to prevent backtracking
@@ -50,10 +50,11 @@ module Gitlab
               )
               @?
               (?> # atomic group to prevent backtracking
-                (([\w\-\.\+]*)\/)*([\w\-\.]*)
+                (([\w\-\.\+]*)\/)*([\w\-\.#{other_accepted_chars_package_name}]*)
               )
               \z
             }x
+        end
       end
 
       def maven_file_name_regex

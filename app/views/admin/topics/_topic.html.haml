@@ -5,16 +5,17 @@
   = render Pajamas::AvatarComponent.new(topic, size: 32, alt: '')
 
   .gl-min-w-0.gl-grow.gl-ml-3
-    .title
+    .gl-font-bold
       = link_to title, topic_explore_projects_cleaned_path(topic_name: topic.name)
-    %div
-      = topic.name
+    - if topic.description
+      .gl-text-sm.md.gl-truncate{ class: '*:!gl-text-subtle *:!gl-m-0' }
+        = first_line_in_markdown(topic, :description, 200)
 
   .stats.gl-text-subtle.gl-shrink-0.gl-hidden.sm:gl-flex
     %span.gl-ml-5.has-tooltip{ title: n_('%d project', '%d projects', topic.total_projects_count) % topic.total_projects_count }
-      = sprite_icon('bookmark', css_class: 'gl-align-text-bottom')
+      = sprite_icon('chart', css_class: 'gl-align-text-bottom')
       = number_with_delimiter(topic.total_projects_count)
 
-  .controls.gl-shrink-0.gl-ml-5
+  .gl-shrink-0.gl-ml-5.gl-flex.gl-gap-3
     = link_button_to _('Edit'), edit_admin_topic_path(topic), id: "edit_#{dom_id(topic)}"
     = link_button_to _('Remove'), admin_topic_path(topic), aria: { label: _('Remove') }, data: { confirm: _("Are you sure you want to remove %{topic_name}?") % { topic_name: title }, confirm_btn_variant: 'danger' }, method: :delete, variant: :danger

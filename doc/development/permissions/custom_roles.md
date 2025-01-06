@@ -193,7 +193,11 @@ before in a separate merge request, before completing the below.
 
 - Run `bundle exec rails generate gitlab:custom_roles:code --ability <ABILITY_NAME>` which will update the permissions validation schema file and create an empty spec file.
 
-### Step 3: Update policies
+### Step 3: Create a feature flag (optional)
+
+- If you would like to toggle the custom ability using a [feature flag](../feature_flags/index.md), create a feature flag with name `custom_ability_<name>`. Such as, for ability `read_code`, the feature flag will be `custom_ability_read_code`. When this feature flag is disabled, the custom ability will be hidden when creating a new custom role, or when fetching custom abilities for a user. 
+
+### Step 4: Update policies
 
 - If the ability is checked on a group level, add rule(s) to GroupPolicy to enable the ability.
 - For example: if the ability we would like to add is `read_dependency`, then an update to `ee/app/policies/ee/group_policy.rb` would look like as follows:
@@ -211,7 +215,7 @@ rule { custom_role_enables_read_dependency }.enable(:read_dependency)
 
 - Not all abilities need to be enabled on both levels, for instance `admin_terraform_state` allows users to manage a project's terraform state. It only needs to be enabled on the project level and not the group level, and thus only needs to be configured in `ee/app/policies/ee/project_policy.rb`.
 
-### Step 4: Verify
+### Step 5: Verify
 
 - Ensure SaaS mode is enabled with `GITLAB_SIMULATE_SAAS=1`.
 - Go to any Group that you are an owner of, then go to `Settings -> Roles and permissions`.
@@ -219,7 +223,7 @@ rule { custom_role_enables_read_dependency }.enable(:read_dependency)
 - Go to the Group's `Manage -> Members` page and assign a member to this newly created custom role.
 - Next, sign in as that member and ensure that you are able to access the page that the custom ability is intended for.
 
-### Step 5: Add specs
+### Step 6: Add specs
 
 - Add the ability as a trait in the `MemberRoles` factory, `ee/spec/factories/member_roles.rb`.
 - Add tests to `ee/spec/requests/custom_roles/<ABILITY_NAME>/request_spec.rb` to ensure that once the user has been assigned the custom ability, they can successfully access the controllers, REST API endpoints and GraphQL API endpoints.

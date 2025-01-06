@@ -12,12 +12,19 @@ import { currentUserData, note, noteableId, noteableType } from '../mock_data';
 describe('WikiDiscussion', () => {
   let wrapper;
 
+  const $apollo = {
+    mutate: jest.fn(),
+  };
+
   const createWrapper = ({ props, provideData = { userData: currentUserData } } = {}) =>
     shallowMountExtended(WikiDiscussion, {
       propsData: {
         discussion: [note],
         noteableId,
         ...props,
+      },
+      mocks: {
+        $apollo,
       },
       provide: {
         noteableType,
@@ -86,6 +93,54 @@ describe('WikiDiscussion', () => {
         expect(placeholderNote.props('note')).toStrictEqual({
           body: 'another example note',
         });
+      });
+
+      describe('when note-deleted is emmitted from a note', () => {
+        beforeEach(() => {
+          wrapper = createWrapper({
+            props: {
+              discussion: [
+                note,
+                {
+                  ...note,
+                  id: 2,
+                  body: 'first note',
+                  bodyHtml: '<p data-sourcepos="1:1-1:29" dir="auto">first note</p>',
+                },
+                {
+                  ...note,
+                  id: 3,
+                  body: 'second note',
+                  bodyHtml: '<p data-sourcepos="1:1-1:29" dir="auto">second note</p>',
+                },
+                {
+                  ...note,
+                  id: 4,
+                  body: 'third note',
+                  bodyHtml: '<p data-sourcepos="1:1-1:29" dir="auto">third note</p>',
+                },
+              ],
+            },
+          });
+        });
+
+        it('should emit "note-deleted" with the first note id when emitted from the first note', async () => {
+          await wrapper.findComponent(WikiNote).vm.$emit('note-deleted');
+          expect(wrapper.emitted('note-deleted')).toEqual([[note.id]]);
+        });
+
+        it.each`
+          replyIndex | noteId
+          ${0}       | ${2}
+          ${1}       | ${3}
+          ${2}       | ${4}
+        `(
+          'should emit "note-deleted" with the correct id when emitted from a reply',
+          async ({ replyIndex, noteId }) => {
+            await noteFooter().findAllComponents(WikiNote).at(replyIndex).vm.$emit('note-deleted');
+            expect(wrapper.emitted('note-deleted')).toEqual([[noteId]]);
+          },
+        );
       });
     });
   });

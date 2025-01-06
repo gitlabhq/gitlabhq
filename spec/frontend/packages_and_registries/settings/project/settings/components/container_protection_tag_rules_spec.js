@@ -1,6 +1,9 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlAlert, GlBadge, GlLoadingIcon, GlSprintf, GlTableLite } from '@gitlab/ui';
+import containerProtectionTagRuleEmptyRulesQueryPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql.empty_rules.json';
+import containerProtectionTagRuleNullProjectQueryPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql.null_project.json';
+import containerProtectionTagRuleQueryPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import {
   mountExtended,
@@ -13,7 +16,6 @@ import ContainerProtectionTagRules, {
   MinimumAccessLevelOptions,
 } from '~/packages_and_registries/settings/project/components/container_protection_tag_rules.vue';
 import getContainerProtectionTagRulesQuery from '~/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql';
-import { containerProtectionTagRuleQueryPayload } from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -38,7 +40,7 @@ describe('ContainerProtectionTagRules', () => {
     provide = defaultProvidedValues,
     containerProtectionTagRuleQueryResolver = jest
       .fn()
-      .mockResolvedValue(containerProtectionTagRuleQueryPayload()),
+      .mockResolvedValue(containerProtectionTagRuleQueryPayload),
   } = {}) => {
     const requestHandlers = [
       [getContainerProtectionTagRulesQuery, containerProtectionTagRuleQueryResolver],
@@ -84,7 +86,7 @@ describe('ContainerProtectionTagRules', () => {
     it('calls graphql api query', () => {
       const containerProtectionTagRuleQueryResolver = jest
         .fn()
-        .mockResolvedValue(containerProtectionTagRuleQueryPayload());
+        .mockResolvedValue(containerProtectionTagRuleQueryPayload);
       createComponent({ containerProtectionTagRuleQueryResolver });
 
       expect(containerProtectionTagRuleQueryResolver).toHaveBeenCalledWith(
@@ -105,7 +107,7 @@ describe('ContainerProtectionTagRules', () => {
       });
 
       it('shows count badge', () => {
-        expect(findBadge().text()).toMatchInterpolatedText('5 of 5');
+        expect(findBadge().text()).toMatchInterpolatedText('1 of 5');
       });
 
       it('shows table', () => {
@@ -150,7 +152,7 @@ describe('ContainerProtectionTagRules', () => {
       });
 
       it('with container protection tag rules', () => {
-        containerProtectionTagRuleQueryPayload().data.project.containerProtectionTagRules.nodes.forEach(
+        containerProtectionTagRuleQueryPayload.data.project.containerProtectionTagRules.nodes.forEach(
           (protectionRule, i) => {
             expect(findTableRowCell(i, 0).text()).toBe(protectionRule.tagNamePattern);
             expect(findTableRowCell(i, 1).text()).toBe(
@@ -165,12 +167,13 @@ describe('ContainerProtectionTagRules', () => {
     });
   });
 
-  describe('when data is loaded & is empty', () => {
+  describe.each([
+    ['project does not contain any rules', containerProtectionTagRuleEmptyRulesQueryPayload],
+    ['project is null', containerProtectionTagRuleNullProjectQueryPayload],
+  ])('when data is loaded & %s', (_, payload) => {
     beforeEach(async () => {
       createComponent({
-        containerProtectionTagRuleQueryResolver: jest
-          .fn()
-          .mockResolvedValue(containerProtectionTagRuleQueryPayload({ nodes: [] })),
+        containerProtectionTagRuleQueryResolver: jest.fn().mockResolvedValue(payload),
       });
       await waitForPromises();
     });

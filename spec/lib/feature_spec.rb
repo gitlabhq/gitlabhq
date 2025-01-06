@@ -116,19 +116,19 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
     end
 
     it 'caches the feature names when request store is active',
-       :request_store, :use_clean_rails_memory_store_caching do
-      described_class.enable('foo')
+      :request_store, :use_clean_rails_memory_store_caching do
+        described_class.enable('foo')
 
-      expect(Gitlab::ProcessMemoryCache.cache_backend)
-        .to receive(:fetch)
-              .once
-              .with('flipper/v1/features', { expires_in: 1.minute })
-              .and_call_original
+        expect(Gitlab::ProcessMemoryCache.cache_backend)
+          .to receive(:fetch)
+            .once
+            .with('flipper/v1/features', { expires_in: 1.minute })
+            .and_call_original
 
-      2.times do
-        expect(described_class.persisted_names).to contain_exactly('foo')
+        2.times do
+          expect(described_class.persisted_names).to contain_exactly('foo')
+        end
       end
-    end
 
     it 'fetches all flags once in a single query', :request_store do
       described_class.enable('foo1')
@@ -296,26 +296,26 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
     it { expect(described_class.send(:l2_cache_backend)).to eq(Gitlab::Redis::FeatureFlag.cache_store) }
 
     it 'caches the status in L1 and L2 caches',
-       :request_store, :use_clean_rails_memory_store_caching do
-      described_class.enable(:disabled_feature_flag)
-      flipper_key = "flipper/v1/feature/disabled_feature_flag"
+      :request_store, :use_clean_rails_memory_store_caching do
+        described_class.enable(:disabled_feature_flag)
+        flipper_key = "flipper/v1/feature/disabled_feature_flag"
 
-      expect(described_class.send(:l2_cache_backend))
-        .to receive(:fetch)
-              .once
-              .with(flipper_key, { expires_in: 1.hour })
-              .and_call_original
+        expect(described_class.send(:l2_cache_backend))
+          .to receive(:fetch)
+            .once
+            .with(flipper_key, { expires_in: 1.hour })
+            .and_call_original
 
-      expect(described_class.send(:l1_cache_backend))
-        .to receive(:fetch)
-              .once
-              .with(flipper_key, { expires_in: 1.minute })
-              .and_call_original
+        expect(described_class.send(:l1_cache_backend))
+          .to receive(:fetch)
+            .once
+            .with(flipper_key, { expires_in: 1.minute })
+            .and_call_original
 
-      2.times do
-        expect(described_class.enabled?(:disabled_feature_flag)).to be_truthy
+        2.times do
+          expect(described_class.enabled?(:disabled_feature_flag)).to be_truthy
+        end
       end
-    end
 
     it 'returns the default value when the database does not exist' do
       fake_default = double('fake default')
@@ -518,11 +518,12 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
 
     context 'validates usage of feature flag with YAML definition' do
       let(:definition) do
-        Feature::Definition.new('development/my_feature_flag.yml',
-                                name: 'my_feature_flag',
-                                type: 'development',
-                                default_enabled: default_enabled
-                               ).tap(&:validate!)
+        Feature::Definition.new(
+          'development/my_feature_flag.yml',
+          name: 'my_feature_flag',
+          type: 'development',
+          default_enabled: default_enabled
+        ).tap(&:validate!)
       end
 
       let(:default_enabled) { false }
@@ -588,7 +589,8 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
               expect { described_class.enabled?(:non_existent_flag, type: optional_type) }
                 .to raise_error(
                   Feature::InvalidFeatureFlagError,
-                      "The feature flag YAML definition for 'non_existent_flag' does not exist")
+                  "The feature flag YAML definition for 'non_existent_flag' does not exist"
+                )
             end
           end
 
@@ -1028,10 +1030,12 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
       allow(described_class).to receive(:log_feature_flag_states?).with(:feature_flag_state_logs).and_call_original
       allow(described_class).to receive(:log_feature_flag_states?).with(:some_flag).and_call_original
 
-      stub_feature_flag_definition(flag_name,
-                                   type: flag_type,
-                                   milestone: milestone,
-                                   log_state_changes: log_state_changes)
+      stub_feature_flag_definition(
+        flag_name,
+        type: flag_type,
+        milestone: milestone,
+        log_state_changes: log_state_changes
+      )
     end
 
     subject { described_class.log_feature_flag_states?(flag_name) }

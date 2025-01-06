@@ -14,10 +14,12 @@ RSpec.describe Gitlab::CrossProjectAccess::ClassMethods do
   describe '#requires_cross_project_access' do
     it 'creates a correct check when a hash is passed' do
       expect(Gitlab::CrossProjectAccess)
-        .to receive(:add_check).with(dummy_class,
-                                     actions: { hello: true, world: false },
-                                     positive_condition: dummy_proc,
-                                     negative_condition: dummy_proc)
+        .to receive(:add_check).with(
+          dummy_class,
+          actions: { hello: true, world: false },
+          positive_condition: dummy_proc,
+          negative_condition: dummy_proc
+        )
 
       dummy_class.requires_cross_project_access(
         hello: true, world: false, if: dummy_proc, unless: dummy_proc
@@ -26,20 +28,24 @@ RSpec.describe Gitlab::CrossProjectAccess::ClassMethods do
 
     it 'creates a correct check when an array is passed' do
       expect(Gitlab::CrossProjectAccess)
-        .to receive(:add_check).with(dummy_class,
-                                     actions: { hello: true, world: true },
-                                     positive_condition: nil,
-                                     negative_condition: nil)
+        .to receive(:add_check).with(
+          dummy_class,
+          actions: { hello: true, world: true },
+          positive_condition: nil,
+          negative_condition: nil
+        )
 
       dummy_class.requires_cross_project_access(:hello, :world)
     end
 
     it 'creates a correct check when an array and a hash is passed' do
       expect(Gitlab::CrossProjectAccess)
-        .to receive(:add_check).with(dummy_class,
-                                     actions: { hello: true, world: true },
-                                     positive_condition: dummy_proc,
-                                     negative_condition: dummy_proc)
+        .to receive(:add_check).with(
+          dummy_class,
+          actions: { hello: true, world: true },
+          positive_condition: dummy_proc,
+          negative_condition: dummy_proc
+        )
 
       dummy_class.requires_cross_project_access(
         :hello, :world, if: dummy_proc, unless: dummy_proc

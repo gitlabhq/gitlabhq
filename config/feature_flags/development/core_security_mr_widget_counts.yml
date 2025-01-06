@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47656
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/284097
 milestone: '13.7'
 type: development
-group: group::static analysis
+group: group::security insights
 default_enabled: false

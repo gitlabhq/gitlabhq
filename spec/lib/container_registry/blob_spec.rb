@@ -7,9 +7,7 @@ RSpec.describe ContainerRegistry::Blob do
   let(:project) { create(:project, path: 'test', group: group) }
 
   let(:repository) do
-    create(:container_repository, name: 'image',
-                                  tags: %w[latest rc1],
-                                  project: project)
+    create(:container_repository, name: 'image', tags: %w[latest rc1], project: project)
   end
 
   let(:config) do
@@ -21,9 +19,7 @@ RSpec.describe ContainerRegistry::Blob do
   let(:blob) { described_class.new(repository, config) }
 
   before do
-    stub_container_registry_config(enabled: true,
-                                   api_url: 'http://registry.gitlab',
-                                   host_port: 'registry.gitlab')
+    stub_container_registry_config(enabled: true, api_url: 'http://registry.gitlab', host_port: 'registry.gitlab')
   end
 
   it { expect(blob).to respond_to(:repository) }

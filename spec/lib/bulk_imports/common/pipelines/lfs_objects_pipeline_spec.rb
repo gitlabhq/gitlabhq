@@ -194,12 +194,12 @@ RSpec.describe BulkImports::Common::Pipelines::LfsObjectsPipeline, feature_categ
           end
 
           expect_next_instance_of(BulkImports::Logger) do |logger|
-            expect(logger)
-              .to receive(:warn)
-              .with(project_id: portable.id,
-                    message: 'Failed to save lfs objects project',
-                    errors: '', **Gitlab::ApplicationContext.current)
-              .exactly(4).times
+            expect(logger).to receive(:warn).with(
+              project_id: portable.id,
+              message: 'Failed to save lfs objects project',
+              errors: '',
+              **Gitlab::ApplicationContext.current
+            ).exactly(4).times
           end
 
           pipeline.load(context, lfs_file_path)

@@ -41,31 +41,49 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
       it { is_expected.to validate_uniqueness_of(:package_name_pattern).scoped_to(:project_id, :package_type) }
       it { is_expected.to validate_length_of(:package_name_pattern).is_at_most(255) }
 
-      where(:package_name_pattern, :allowed) do
-        '@my-scope/my-package'                            | true
-        '@my-scope/*my-package-with-wildcard-inbetween'   | true
-        '@my-scope/*my-package-with-wildcard-start'       | true
-        '@my-scope/my-*package-*with-wildcard-multiple-*' | true
-        '@my-scope/my-package-with_____underscore'        | true
-        '@my-scope/my-package-with-regex-characters.+'    | true
-        '@my-scope/my-package-with-wildcard-end*'         | true
+      context 'for different package types' do
+        subject { build(:package_protection_rule, package_type: package_type) }
 
-        '@my-scope/my-package-with-percent-sign-%'        | false
-        '*@my-scope/my-package-with-wildcard-start'       | false
-        '@my-scope/my-package-with-backslash-\*'          | false
-      end
+        where(:package_type, :package_name_pattern, :allowed) do
+          :npm  | '@my-scope/my-package'                            | true
+          :npm  | '@my-scope/*my-package-with-wildcard-inbetween'   | true
+          :npm  | '@my-scope/*my-package-with-wildcard-start'       | true
+          :npm  | '@my-scope/my-*package-*with-wildcard-multiple-*' | true
+          :npm  | '@my-scope/my-package-with_____underscore'        | true
+          :npm  | '@my-scope/my-package-with-regex-characters.+'    | true
+          :npm  | '@my-scope/my-package-with-wildcard-end*'         | true
+          :npm  | '@my-scope/my-package-with-percent-sign-%'        | false
+          :npm  | '*@my-scope/my-package-with-wildcard-start'       | false
+          :npm  | '@my-scope/my-package-with-backslash-\*'          | false
 
-      with_them do
-        if params[:allowed]
-          it { is_expected.to allow_value(package_name_pattern).for(:package_name_pattern) }
-        else
-          it {
-            is_expected.not_to(
-              allow_value(package_name_pattern)
-              .for(:package_name_pattern)
-              .with_message(_('should be a valid NPM package name with optional wildcard characters.'))
-            )
-          }
+          :pypi | 'my-scope/my-package'                             | true
+          :pypi | 'my-scope/*my-package-with-wildcard-inbetween'    | true
+          :pypi | 'my-scope/*my-package-with-wildcard-start'        | true
+          :pypi | 'my-scope/my-*package-*with-wildcard-multiple-*'  | true
+          :pypi | 'my-scope/my-package-with_____underscore'         | true
+          :pypi | 'my-scope/my-package-with-wildcard-end*'          | true
+          :pypi | '*my-scope/my-package-with-wildcard-start'        | false
+          :pypi | 'my-scope/my-package-with-backslash-\*'           | false
+          :pypi | 'my-scope/my-package-with-percent-sign-%'         | false
+          :pypi | 'my-scope/my-package-with-regex-characters.+'     | false
+          :pypi | '$my-scope/my-package-with-dollar-sign'           | false
+          :pypi | '$my-scope/my-package-with space sign'            | false
+          :pypi | 'my-scope/my-package-with-@at@-sign'              | false
+          :pypi | 'my-scope/my-package-with-@at@-sign-and-widlcard' | false
+        end
+
+        with_them do
+          if params[:allowed]
+            it { is_expected.to allow_value(package_name_pattern).for(:package_name_pattern) }
+          else
+            it {
+              is_expected.not_to(
+                allow_value(package_name_pattern)
+                .for(:package_name_pattern)
+                .with_message(/should be a valid #{package_type} package name with optional wildcard characters./i)
+              )
+            }
+          end
         end
       end
     end

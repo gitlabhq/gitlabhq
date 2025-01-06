@@ -68123,6 +68123,9 @@ msgstr ""
 msgid "should be a valid NPM package name with optional wildcard characters."
 msgstr ""
 
+msgid "should be a valid PyPI package name with optional wildcard characters."
+msgstr ""
+
 msgid "should be a valid container repository path with optional wildcard characters."
 msgstr ""
 

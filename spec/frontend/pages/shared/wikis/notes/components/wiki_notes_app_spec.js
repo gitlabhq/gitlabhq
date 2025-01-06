@@ -143,6 +143,16 @@ describe('WikiNotesApp', () => {
             nodes: [
               { id: 1, notes: { nodes: [{ body: 'Discussion 1' }] } },
               { id: 2, notes: { nodes: [{ body: 'Discussion 2' }] } },
+              {
+                id: 3,
+                notes: {
+                  nodes: [
+                    { id: 31, body: 'Discussion 3 Note 1' },
+                    { id: 32, body: 'Discussion 3 Note 2' },
+                    { id: 33, body: 'Discussion 3 Note 3' },
+                  ],
+                },
+              },
             ],
           },
         },
@@ -158,7 +168,7 @@ describe('WikiNotesApp', () => {
     it('should render discussions correctly', () => {
       const wikiDiscussions = wrapper.findAllComponents(WikiDiscussion);
 
-      expect(wikiDiscussions.length).toBe(2);
+      expect(wikiDiscussions.length).toBe(3);
       expect(wikiDiscussions.at(0).props()).toMatchObject({
         discussion: [{ body: 'Discussion 1' }],
         noteableId: 'gid://gitlab/WikiPage/1',
@@ -172,6 +182,40 @@ describe('WikiNotesApp', () => {
     it('should not render error alert', () => {
       const errorAlert = wrapper.findComponent(GlAlert);
       expect(errorAlert.exists()).toBe(false);
+    });
+
+    it('should delete the note correctly when the WikiDiscussions emits "note-deleted" when there are replies', () => {
+      const wikiDiscussions = wrapper.findAllComponents(WikiDiscussion);
+
+      // delete first note
+      wikiDiscussions.at(2).vm.$emit('note-deleted', 31);
+      let notes = wrapper.vm.discussions[2].notes.nodes;
+      expect(notes).toHaveLength(2);
+      expect(notes).not.toContainEqual({
+        id: 31,
+        body: 'Discussion 3 Note 1',
+      });
+
+      // delete last note
+      wikiDiscussions.at(2).vm.$emit('note-deleted', 33);
+      notes = wrapper.vm.discussions[2].notes.nodes;
+      expect(notes).toHaveLength(1);
+      expect(notes).toMatchObject([
+        {
+          id: 32,
+          body: 'Discussion 3 Note 2',
+        },
+      ]);
+
+      // delete only note
+      wikiDiscussions.at(2).vm.$emit('note-deleted', 32);
+      const { discussions } = wrapper.vm;
+      expect(discussions).toHaveLength(2);
+      expect(discussions).not.toContainEqual(
+        expect.objectContaining({
+          id: 3,
+        }),
+      );
     });
   });
 

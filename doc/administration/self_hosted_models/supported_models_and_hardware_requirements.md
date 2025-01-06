@@ -61,3 +61,7 @@ For optimal performance, the following hardware specifications are recommended a
   - **Minimum**: 2x NVIDIA A100 or equivalent for optimal inference performance.
   - **Note**: For running Mixtral 8x22B and Mixtral 8x22B-it, it is recommended to use 8x NVIDIA A100 GPUs.
 - **Storage**: SSD with sufficient space for model weights and data.
+
+### AI Gateway Hardware Requirements
+
+For recommendations on AI gateway hardware, see the [AI gateway scaling recommendations](../../install/install_ai_gateway.md#scaling-recommendations).

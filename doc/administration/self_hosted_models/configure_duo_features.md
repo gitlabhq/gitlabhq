@@ -138,3 +138,16 @@ Configure the GitLab Duo feature to send queries to the configured self-hosted m
 1. Select **Self-hosted models**.
 1. Select the **AI-powered features** tab.
 1. For the feature you want to configure, from the dropdown list, choose the self-hosted model you want to use. For example, `Mistral`.
+
+### Configure the feature to use GitLab AI Vendor models
+
+Prerequisites:
+
+- You must use an [online license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#what-is-cloud-licensing).
+
+Configure the GitLab Duo feature to send queries to the Cloud Connector and use the GitLab AI Vendor model:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Self-hosted models**.
+1. Select the **AI-powered features** tab.
+1. For the feature you want to configure, from the dropdown list, select **GitLab AI Vendor**.

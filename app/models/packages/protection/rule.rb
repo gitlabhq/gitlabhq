@@ -18,6 +18,12 @@ module Packages
           message: ->(_object, _data) { _('should be a valid NPM package name with optional wildcard characters.') }
         },
         if: :npm?
+      validates :package_name_pattern,
+        format: {
+          with: Gitlab::Regex::Packages::Protection::Rules.protection_rules_pypi_package_name_pattern_regex,
+          message: ->(_object, _data) { _('should be a valid PyPI package name with optional wildcard characters.') }
+        },
+        if: :pypi?
       validates :package_type, presence: true
       validates :minimum_access_level_for_push, presence: true
 

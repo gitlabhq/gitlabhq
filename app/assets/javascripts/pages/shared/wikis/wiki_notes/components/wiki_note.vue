@@ -47,7 +47,6 @@ export default {
       isEditing: false,
       isUpdating: false,
       isDeleting: false,
-      isDeleted: false,
     };
   },
   computed: {
@@ -138,7 +137,7 @@ export default {
             variables: { input: { id: this.note.id } },
           });
 
-          this.isDeleted = true;
+          this.$emit('note-deleted');
         } catch (err) {
           createAlert({
             message: __('Something went wrong while deleting your note. Please try again.'),
@@ -152,7 +151,6 @@ export default {
 </script>
 <template>
   <timeline-entry-item
-    v-if="!isDeleted"
     :id="noteAnchorId"
     :class="dynamicClasses.timeLineEntryItem"
     :data-note-id="noteId"
