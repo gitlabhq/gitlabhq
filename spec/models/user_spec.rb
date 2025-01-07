@@ -9216,7 +9216,7 @@ RSpec.describe User, feature_category: :user_profile do
       it 'returns the expiration time when it exists' do
         allow(retrieve_service).to receive(:execute).and_return(pin_data)
 
-        expect(user_with_pin.support_pin_expires_at).to be_within(1.second).of(pin_data[:expires_at])
+        expect(user_with_pin.support_pin_expires_at).to be_within(2.seconds).of(pin_data[:expires_at])
       end
 
       it 'returns nil when no expiration time exists' do

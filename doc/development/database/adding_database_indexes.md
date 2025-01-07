@@ -96,6 +96,21 @@ INSERT/UPDATE/DELETE timings by 10 milliseconds. In this case, the new index may
 it. A new index is more valuable when SELECT timings are reduced and INSERT/UPDATE/DELETE
 timings are unaffected.
 
+### Index limitations
+
+GitLab enforces a limit of **16 indexes** per table. This limitation:
+
+- Helps maintain optimal database performance
+- Reduces maintenance overhead
+- Prevents excessive disk space usage
+
+NOTE:
+If you need to add an index to a table that already has 16 indexes, consider:
+
+- Removing unused indexes
+- Combining existing indexes
+- Using a composite index that can serve multiple query patterns
+
 ### Some tables should not have any more indexes
 
 We have RuboCop checks (`PreventIndexCreation`) against further new indexes on selected tables

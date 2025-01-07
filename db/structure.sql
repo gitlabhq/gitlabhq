@@ -29470,6 +29470,10 @@ CREATE INDEX index_abuse_reports_on_status_reporter_id_and_id ON abuse_reports U
 
 CREATE INDEX index_abuse_trust_scores_on_user_id_and_source_and_created_at ON abuse_trust_scores USING btree (user_id, source, created_at);
 
+CREATE INDEX p_ci_pipelines_trigger_id_idx ON ONLY p_ci_pipelines USING btree (trigger_id);
+
+CREATE INDEX index_ac3541b851 ON ci_pipelines USING btree (trigger_id);
+
 CREATE UNIQUE INDEX "index_achievements_on_namespace_id_LOWER_name" ON achievements USING btree (namespace_id, lower(name));
 
 CREATE UNIQUE INDEX index_activity_pub_releases_sub_on_project_id_inbox_url ON activity_pub_releases_subscriptions USING btree (project_id, lower(subscriber_inbox_url));
@@ -35615,6 +35619,8 @@ ALTER INDEX p_ci_pipelines_ci_ref_id_id_idx ATTACH PARTITION idx_ci_pipelines_ar
 ALTER INDEX index_p_ci_builds_on_execution_config_id ATTACH PARTITION index_0928d9f200;
 
 ALTER INDEX tmp_p_ci_builds_trigger_request_id_idx ATTACH PARTITION index_437b1804fb;
+
+ALTER INDEX p_ci_pipelines_trigger_id_idx ATTACH PARTITION index_ac3541b851;
 
 ALTER INDEX p_ci_builds_metadata_build_id_idx ATTACH PARTITION index_ci_builds_metadata_on_build_id_and_has_exposed_artifacts;
 

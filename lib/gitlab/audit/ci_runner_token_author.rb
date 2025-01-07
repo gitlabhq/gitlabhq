@@ -33,7 +33,7 @@ module Gitlab
 
         case @entity_type
         when 'Group'
-          url_helpers.group_runners(@entity_path)
+          url_helpers.group_runners_path(@entity_path)
         when 'Project'
           project = Project.find_by_full_path(@entity_path)
           url_helpers.project_settings_ci_cd_path(project, anchor: 'js-runners-settings') if project

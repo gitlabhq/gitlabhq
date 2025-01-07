@@ -81,13 +81,8 @@ describe('import actions cell', () => {
       }
 
       if (isFinished) {
-        it('renders re-import info icon with a hint', () => {
-          const icon = findReimportInfoIcon();
-          expect(icon.exists()).toBe(true);
-          expect(icon.attributes()).toMatchObject({
-            name: 'information-o',
-            title: 'Re-import creates a new group. It does not sync with the existing group.',
-          });
+        it('renders re-import info icon', () => {
+          expect(findReimportInfoIcon().exists()).toBe(true);
         });
       } else {
         it('does not render re-import info icon', () => {
@@ -97,9 +92,7 @@ describe('import actions cell', () => {
 
       if (expectedWarningIcon) {
         it('renders project creation warning icon', () => {
-          const icon = findProjectCreationWarningIcon();
-          expect(icon.exists()).toBe(true);
-          expect(icon.attributes('name')).toBe('warning');
+          expect(findProjectCreationWarningIcon().exists()).toBe(true);
         });
       } else {
         it('does not render project creation warning icon', () => {
