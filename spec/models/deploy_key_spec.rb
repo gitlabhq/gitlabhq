@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DeployKey, :mailer do
+RSpec.describe DeployKey, :mailer, feature_category: :continuous_delivery do
   describe "Associations" do
     it { is_expected.to have_many(:deploy_keys_projects) }
 
@@ -169,6 +169,59 @@ RSpec.describe DeployKey, :mailer do
   describe '#audit_details' do
     it "equals to the key's title" do
       expect(subject.audit_details).to eq(subject.title)
+    end
+  end
+
+  describe 'search' do
+    let!(:deploy_key1) { create(:deploy_key, title: 'Production key') }
+    let!(:deploy_key2) { create(:deploy_key, title: 'Staging key') }
+    let!(:deploy_key3) { create(:deploy_key, title: 'Development key') }
+
+    describe '.search_by_title' do
+      it 'returns deploy keys with matching titles' do
+        expect(described_class.search_by_title('production')).to contain_exactly(deploy_key1)
+        expect(described_class.search_by_title('key')).to contain_exactly(deploy_key1, deploy_key2, deploy_key3)
+      end
+
+      it 'is case-insensitive' do
+        expect(described_class.search_by_title('PRODUCTION')).to contain_exactly(deploy_key1)
+      end
+    end
+
+    describe '.search_by_key' do
+      it 'returns deploy keys with matching sha' do
+        key = deploy_key1.fingerprint_sha256
+        expect(described_class.search_by_key(key)).to contain_exactly(deploy_key1)
+      end
+    end
+
+    describe '.search' do
+      context 'when searching by title' do
+        it 'returns deploy keys with matching titles' do
+          expect(described_class.search('production', 'title')).to contain_exactly(deploy_key1)
+        end
+      end
+
+      context 'when searching by key' do
+        it 'returns deploy keys with matching sha' do
+          key = deploy_key2.fingerprint_sha256
+          expect(described_class.search(key, 'key')).to contain_exactly(deploy_key2)
+        end
+      end
+
+      context 'when searching without specifying a field' do
+        it 'returns deploy keys matching either title or sha' do
+          key = deploy_key3.fingerprint_sha256
+          expect(described_class.search('Development')).to contain_exactly(deploy_key3)
+          expect(described_class.search(key)).to contain_exactly(deploy_key3)
+        end
+      end
+
+      context 'when search term is blank' do
+        it 'returns all deploy keys' do
+          expect(described_class.search('')).to contain_exactly(deploy_key1, deploy_key2, deploy_key3)
+        end
+      end
     end
   end
 end

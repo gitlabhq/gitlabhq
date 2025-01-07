@@ -2,7 +2,7 @@ import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import { GlPagination } from '@gitlab/ui';
+import { GlPagination, GlFilteredSearch } from '@gitlab/ui';
 import enabledKeys from 'test_fixtures/deploy_keys/enabled_keys.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -12,6 +12,7 @@ import deployKeysQuery from '~/deploy_keys/graphql/queries/deploy_keys.query.gra
 import deployKeysApp from '~/deploy_keys/components/app.vue';
 import ConfirmModal from '~/deploy_keys/components/confirm_modal.vue';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
+import KeysPanel from '~/deploy_keys/components/keys_panel.vue';
 import axios from '~/lib/utils/axios_utils';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
@@ -79,6 +80,8 @@ describe('Deploy keys app component', () => {
   const findKeyPanels = () => wrapper.findAll('.deploy-keys .gl-tabs-nav li');
   const findModal = () => wrapper.findComponent(ConfirmModal);
   const findNavigationTabs = () => wrapper.findComponent(NavigationTabs);
+  const findFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
+  const findKeysPanel = () => wrapper.findComponent(KeysPanel);
 
   it('renders loading icon while waiting for request', async () => {
     currentScopeMock.mockResolvedValue('enabledKeys');
@@ -278,6 +281,76 @@ describe('Deploy keys app component', () => {
         expect.anything(),
         expect.anything(),
       );
+    });
+  });
+
+  describe('search functionality', () => {
+    beforeEach(async () => {
+      const deployKeys = enabledKeys.keys.map(mapDeployKey);
+      deployKeyMock.mockReturnValue({
+        data: {
+          project: { id: 1, deployKeys, __typename: 'Project' },
+        },
+      });
+
+      currentScopeMock.mockResolvedValue('enabledKeys');
+      currentPageMock.mockResolvedValue(1);
+
+      await mountComponent();
+    });
+
+    it('provides two token options by default', () => {
+      expect(findFilteredSearch().props('availableTokens')).toHaveLength(2);
+      expect(findFilteredSearch().props('availableTokens')[0].type).toBe('title');
+      expect(findFilteredSearch().props('availableTokens')[1].type).toBe('key');
+    });
+
+    it('updates available tokens to the type of search', async () => {
+      await findFilteredSearch().vm.$emit('input', [{ type: 'title', value: { data: 'test' } }]);
+      expect(findFilteredSearch().props('availableTokens')).toHaveLength(1);
+      expect(findFilteredSearch().props('availableTokens')[0].type).toBe('title');
+    });
+
+    it('removes available tokens on raw text type', async () => {
+      await findFilteredSearch().vm.$emit('input', [
+        { id: 'token-28', type: 'filtered-search-term', value: { data: 'test' } },
+      ]);
+      expect(findFilteredSearch().props('availableTokens')).toHaveLength(0);
+    });
+
+    it('handles search submission', async () => {
+      expect(deployKeyMock).toHaveBeenCalledTimes(1);
+
+      await findFilteredSearch().vm.$emit('submit', [{ type: 'key', value: { data: 'test' } }]);
+      expect(deployKeyMock).toHaveBeenCalledTimes(2);
+      expect(deployKeyMock).toHaveBeenNthCalledWith(2, {
+        page: 1,
+        projectPath: 'test/project',
+        scope: 'enabledKeys',
+        search: { in: 'key', search: 'test' },
+      });
+    });
+
+    it('renders as view-only when the query is loading', async () => {
+      await findFilteredSearch().vm.$emit('submit', [{ type: 'key', value: { data: 'test' } }]);
+      expect(findFilteredSearch().props('viewOnly')).toBe(true);
+
+      await waitForPromises();
+      expect(findFilteredSearch().props('viewOnly')).toBe(false);
+    });
+
+    it('clears search value when tab changes', async () => {
+      await findFilteredSearch().vm.$emit('submit', [{ type: 'title', value: { data: 'test' } }]);
+      await findNavigationTabs().vm.$emit('onChangeTab', 'enabled');
+      expect(findFilteredSearch().props('value')).toEqual([
+        { id: expect.anything(), type: 'filtered-search-term', value: { data: '' } },
+      ]);
+    });
+
+    it('passes hasSearch prop to KeysPanel', async () => {
+      await findFilteredSearch().vm.$emit('submit', [{ type: 'title', value: { data: 'test' } }]);
+      await waitForPromises();
+      expect(findKeysPanel().props('hasSearch')).toBe(true);
     });
   });
 });

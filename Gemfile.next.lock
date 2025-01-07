@@ -1863,7 +1863,7 @@ GEM
       unicode-display_width (>= 1.1.1, < 3)
     terser (1.0.2)
       execjs (>= 0.3.0, < 3)
-    test-prof (1.4.3)
+    test-prof (1.4.4)
     test_file_finder (0.3.1)
       faraday (>= 1.0, < 3.0, != 2.0.0)
     text (1.3.1)

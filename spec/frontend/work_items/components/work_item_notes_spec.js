@@ -55,7 +55,12 @@ const firstSystemNodeId = mockNotesWidgetResponse.discussions.nodes[0].notes.nod
 const mockDiscussions = mockWorkItemNotesWidgetResponseWithComments.discussions.nodes;
 
 const mockWorkItemNoteResponse = {
-  data: { note: mockDiscussions[0].notes.nodes[0] },
+  data: {
+    note: {
+      id: mockDiscussions[0].notes.nodes[0].id,
+      discussion: { id: mockDiscussions[0].id, notes: mockDiscussions[0].notes },
+    },
+  },
 };
 
 describe('WorkItemNotes component', () => {
@@ -190,9 +195,9 @@ describe('WorkItemNotes component', () => {
 
       await waitForPromises();
 
-      expect(findWorkItemCommentNoteAtIndex(0).props('discussion')).toEqual([
-        mockWorkItemNoteResponse.data.note,
-      ]);
+      expect(findWorkItemCommentNoteAtIndex(0).props('discussion')).toEqual(
+        mockWorkItemNoteResponse.data.note.discussion.notes.nodes,
+      );
     });
   });
 

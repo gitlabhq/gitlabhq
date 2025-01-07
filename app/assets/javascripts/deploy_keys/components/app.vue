@@ -1,10 +1,17 @@
 <script>
-import { GlIcon, GlLoadingIcon, GlPagination } from '@gitlab/ui';
+import {
+  GlIcon,
+  GlLoadingIcon,
+  GlPagination,
+  GlFilteredSearch,
+  GlFilteredSearchToken,
+} from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import pageInfoQuery from '~/graphql_shared/client/page_info.query.graphql';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
+import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import deployKeysQuery from '../graphql/queries/deploy_keys.query.graphql';
 import currentPageQuery from '../graphql/queries/current_page.query.graphql';
 import currentScopeQuery from '../graphql/queries/current_scope.query.graphql';
@@ -16,6 +23,21 @@ import disableKeyMutation from '../graphql/mutations/disable_key.mutation.graphq
 import ConfirmModal from './confirm_modal.vue';
 import KeysPanel from './keys_panel.vue';
 
+const titleToken = {
+  title: s__('DeployKeys|Name'),
+  type: 'title',
+  operators: OPERATORS_IS,
+  token: GlFilteredSearchToken,
+  unique: true,
+};
+const keyToken = {
+  title: s__('DeployKeys|SHA'),
+  type: 'key',
+  operators: OPERATORS_IS,
+  token: GlFilteredSearchToken,
+  unique: true,
+};
+
 export default {
   components: {
     ConfirmModal,
@@ -24,6 +46,7 @@ export default {
     GlIcon,
     GlLoadingIcon,
     GlPagination,
+    GlFilteredSearch,
   },
   props: {
     projectId: {
@@ -43,6 +66,7 @@ export default {
           projectPath: this.projectPath,
           scope: this.currentScope,
           page: this.currentPage,
+          search: this.searchObject,
         };
       },
       update(data) {
@@ -62,7 +86,9 @@ export default {
     pageInfo: {
       query: pageInfoQuery,
       variables() {
-        return { input: { page: this.currentPage, scope: this.currentScope } };
+        return {
+          input: { page: this.currentPage, scope: this.currentScope, search: this.searchObject },
+        };
       },
       update({ pageInfo }) {
         return pageInfo || {};
@@ -85,6 +111,9 @@ export default {
       currentPage: null,
       currentScope: null,
       deployKeyToRemove: null,
+      searchObject: null,
+      searchValue: [],
+      availableTokens: [titleToken, keyToken],
     };
   },
   scopes: {
@@ -108,9 +137,18 @@ export default {
     confirmModalVisible() {
       return Boolean(this.deployKeyToRemove);
     },
+    hasSearch() {
+      return Boolean(this.searchObject?.search);
+    },
+    loading() {
+      return this.$apollo.queries.deployKeys.loading;
+    },
   },
   methods: {
     onChangeTab(scope) {
+      this.searchObject = null;
+      this.searchValue = [];
+
       return this.$apollo
         .mutate({
           mutation: updateCurrentScopeMutation,
@@ -164,6 +202,43 @@ export default {
         variables: { id: null },
       });
     },
+    updateSearch(search = []) {
+      const currentSearch = search[0];
+      const defaultTokens = [titleToken, keyToken];
+
+      if (!currentSearch?.value?.data) {
+        this.availableTokens = defaultTokens;
+        return;
+      }
+
+      const tokenTypeMap = {
+        title: [titleToken],
+        key: [keyToken],
+      };
+      this.availableTokens = tokenTypeMap[currentSearch.type] || [];
+    },
+    handleSearch(search = []) {
+      if (!search.length) {
+        this.searchObject = null;
+        return;
+      }
+
+      const currentSearch = search[0];
+      this.searchObject = this.buildSearchObject(currentSearch);
+    },
+    buildSearchObject(searchItem) {
+      if (typeof searchItem === 'string') {
+        return {
+          search: searchItem,
+          in: '',
+        };
+      }
+
+      return {
+        search: searchItem.value?.data,
+        in: searchItem.type,
+      };
+    },
   },
 };
 </script>
@@ -188,16 +263,25 @@ export default {
         />
       </div>
     </div>
-    <gl-loading-icon
-      v-if="$apollo.queries.deployKeys.loading"
-      :label="$options.i18n.loading"
-      size="md"
-      class="gl-m-5"
-    />
+
+    <div class="gl-mt-4 gl-px-4">
+      <gl-filtered-search
+        v-model="searchValue"
+        :placeholder="__('Search deploy keys')"
+        :available-tokens="availableTokens"
+        :view-only="loading"
+        @clear="handleSearch"
+        @input="updateSearch"
+        @submit="handleSearch"
+      />
+    </div>
+    <gl-loading-icon v-if="loading" :label="$options.i18n.loading" size="md" class="gl-m-5" />
+
     <template v-else>
       <keys-panel
         :project-id="projectId"
         :keys="deployKeys"
+        :has-search="hasSearch"
         data-testid="project-deploy-keys-container"
       />
       <gl-pagination

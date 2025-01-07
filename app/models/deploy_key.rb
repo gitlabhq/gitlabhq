@@ -27,6 +27,16 @@ class DeployKey < Key
   scope :including_projects_with_readonly_access, -> { includes(:projects_with_readonly_access) }
   scope :not_in, ->(keys) { where.not(id: keys.select(:id)) }
 
+  scope :search_by_title, ->(term) {
+    sanitized_term = sanitize_sql_like(term.downcase)
+    where("title ILIKE :term", term: "%#{sanitized_term}%")
+  }
+
+  scope :search_by_key, ->(term) {
+    sanitized_term = sanitize_sql_like(term)
+    where("encode(fingerprint_sha256, 'base64') ILIKE :term", term: "%#{sanitized_term}%")
+  }
+
   accepts_nested_attributes_for :deploy_keys_projects, reject_if: :reject_deploy_keys_projects?
 
   def private?
@@ -85,5 +95,18 @@ class DeployKey < Key
 
   def reject_deploy_keys_projects?
     !self.valid?
+  end
+
+  def self.search(term, field = nil)
+    return all unless term.present?
+
+    case field&.to_s
+    when 'title'
+      search_by_title(term)
+    when 'key'
+      search_by_key(term)
+    else
+      search_by_title(term).or(search_by_key(term))
+    end
   end
 end

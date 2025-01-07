@@ -2287,7 +2287,7 @@ msgstr ""
 msgid "AIPoweredSM|Enable %{link_start}AI-powered features%{link_end} for this instance."
 msgstr ""
 
-msgid "AISummary|Generates a summary of all comments"
+msgid "AISummary|Generates a summary of this issue"
 msgstr ""
 
 msgid "AISummary|View summary"
@@ -9475,6 +9475,9 @@ msgid "Billing|Type %{username} to confirm"
 msgstr ""
 
 msgid "Billing|Unlimited members during your trial"
+msgstr ""
+
+msgid "Billing|User successfully scheduled for removal. This process might take some time. Refresh the page to see the changes."
 msgstr ""
 
 msgid "Billing|User was successfully removed"
@@ -17899,6 +17902,9 @@ msgstr ""
 msgid "DastProfiles|Choose a scan method"
 msgstr ""
 
+msgid "DastProfiles|Comma-separated list of check identifiers to use for the scan. For identifiers, see %{linkStart}vulnerability checks.%{linkEnd}"
+msgstr ""
+
 msgid "DastProfiles|Could not create the scanner profile. Please try again."
 msgstr ""
 
@@ -19198,7 +19204,13 @@ msgstr ""
 msgid "DeployKeys|Loading deploy keys"
 msgstr ""
 
+msgid "DeployKeys|Name"
+msgstr ""
+
 msgid "DeployKeys|No deploy keys found, start by adding a new one above."
+msgstr ""
+
+msgid "DeployKeys|No search results found."
 msgstr ""
 
 msgid "DeployKeys|Privately accessible deploy keys"
@@ -19211,6 +19223,9 @@ msgid "DeployKeys|Publicly accessible deploy keys"
 msgstr ""
 
 msgid "DeployKeys|Read access only"
+msgstr ""
+
+msgid "DeployKeys|SHA"
 msgstr ""
 
 msgid "DeployTokens|Active deploy tokens"
@@ -49774,6 +49789,9 @@ msgid "Search by name"
 msgstr ""
 
 msgid "Search comment templates"
+msgstr ""
+
+msgid "Search deploy keys"
 msgstr ""
 
 msgid "Search files"

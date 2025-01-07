@@ -1,0 +1,13 @@
+---
+table_name: non_sql_service_pings
+classes:
+- ServicePing::NonSqlServicePing
+feature_categories:
+- service_ping
+description: Service Ping payload including only its non-database metrics
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176659
+milestone: '17.8'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  organization_id: organizations
+table_size: small

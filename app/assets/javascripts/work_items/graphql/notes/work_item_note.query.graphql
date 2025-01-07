@@ -2,6 +2,14 @@
 
 query workItemNote($id: NoteID!) {
   note(id: $id) {
-    ...WorkItemNote
+    id
+    discussion {
+      id
+      notes {
+        nodes {
+          ...WorkItemNote
+        }
+      }
+    }
   }
 }

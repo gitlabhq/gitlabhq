@@ -449,6 +449,7 @@ RSpec.describe 'Database schema',
         "Organizations::OrganizationSetting" => %w[settings], # Custom validations
         "Packages::Composer::Metadatum" => %w[composer_json],
         "RawUsageData" => %w[payload], # Usage data payload changes often, we cannot use one schema
+        "ServicePing::NonSqlServicePing" => %w[payload], # Usage data payload changes often, we cannot use one schema
         "Releases::Evidence" => %w[summary],
         "Vulnerabilities::Finding::Evidence" => %w[data], # Validation work in progress
         "Ai::DuoWorkflows::Checkpoint" => %w[checkpoint metadata], # https://gitlab.com/gitlab-org/gitlab/-/issues/468632

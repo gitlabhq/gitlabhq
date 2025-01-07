@@ -50,7 +50,6 @@ module Gitlab
               end
             end
           end
-          strong_memoize_attr :predefined_pipeline_variables
 
           def predefined_commit_variables
             Gitlab::Ci::Variables::Collection.new.tap do |variables|

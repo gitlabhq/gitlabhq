@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Layout/ClassStructure:
   Exclude:
-    - 'app/finders/clusters/knative_services_finder.rb'
     - 'app/finders/group_members_finder.rb'
     - 'app/finders/groups/environment_scopes_finder.rb'
     - 'app/finders/issuable_finder.rb'

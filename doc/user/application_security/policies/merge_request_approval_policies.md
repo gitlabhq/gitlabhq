@@ -619,3 +619,14 @@ Search in the following files:
 Common failure reasons:
 
 - Scanner removed by MR: Merge request approval policy expects that the scanners defined in the policy are present and that they successfully produce an artifact for comparison.
+
+### Inconsistent approvals from merge request approval policies
+
+If you notice any inconsistencies in your merge request approval rules, you can take either of the following steps to resynchronize your policies:
+
+- Unassign and then reassign the security policy project to the affected group or project.
+- Alternatively, you can update a policy to trigger that policy to resynchronize for the affected group or project.
+
+These actions help ensure that your merge request approval policies are correctly applied and consistent across all merge requests.
+
+If you continue to experience issues with merge request approval policies after taking these steps, contact GitLab support for assistance.

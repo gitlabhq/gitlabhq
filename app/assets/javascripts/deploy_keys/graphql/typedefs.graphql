@@ -11,6 +11,16 @@ enum LocalDeployKeyActions {
   disable
 }
 
+enum DeployKeysInOption {
+  title
+  key
+}
+
+type DeployKeysSearch {
+  search: String
+  in: DeployKeysInOption
+}
+
 type LocalProject {
   id: ID!
   fullPath: String

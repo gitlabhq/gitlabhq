@@ -4,12 +4,15 @@ require 'spec_helper'
 
 RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state, feature_category: :service_ping do
   let(:payload) { { recorded_at: Time.current.rfc3339 } }
+  let(:non_sql_payload) { { recorded_at: Time.current.rfc3339, count: 123 } }
 
   before do
     allow_next_instance_of(ServicePing::SubmitService) { |service| allow(service).to receive(:execute) }
     allow_next_instance_of(ServicePing::BuildPayload) do |service|
       allow(service).to receive(:execute).and_return(payload)
     end
+    allow(Gitlab::Usage::ServicePingReport).to receive(:for)
+      .with(output: :non_sql_metrics_values).and_return(non_sql_payload)
 
     allow(subject).to receive(:sleep)
     create(:organization)
@@ -36,27 +39,58 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state, featur
   end
 
   context 'payload computation' do
-    it 'creates RawUsageData entry when there is NO entry with the same recorded_at timestamp' do
-      expect { subject.perform }.to change { RawUsageData.count }.by(1)
-    end
-
-    it 'updates RawUsageData entry when there is entry with the same recorded_at timestamp' do
-      record = create(:raw_usage_data, payload: { some_metric: 123 }, recorded_at: payload[:recorded_at])
-
-      expect { subject.perform }.to change { record.reload.payload }
-                                      .from("some_metric" => 123).to(payload.stringify_keys)
-    end
-
-    it 'reports errors and continue on execution' do
-      error = StandardError.new('some error')
-      allow(::ServicePing::BuildPayload).to receive(:new).and_raise(error)
-
-      expect(::Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(error)
-      expect_next_instance_of(::ServicePing::SubmitService, payload: nil) do |service|
-        expect(service).to receive(:execute)
+    describe "RawUsageData creation" do
+      it 'creates RawUsageData entry when there is NO entry with the same recorded_at timestamp' do
+        expect { subject.perform }.to change { RawUsageData.count }.by(1)
       end
 
-      subject.perform
+      it 'updates RawUsageData entry when there is entry with the same recorded_at timestamp' do
+        record = create(:raw_usage_data, payload: { some_metric: 123 }, recorded_at: payload[:recorded_at])
+
+        expect { subject.perform }.to change { record.reload.payload }
+                                        .from("some_metric" => 123).to(payload.stringify_keys)
+      end
+
+      it 'reports errors and continue on execution' do
+        error = StandardError.new('some error')
+        allow(::ServicePing::BuildPayload).to receive(:new).and_raise(error)
+
+        expect(::Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(error)
+        expect_next_instance_of(::ServicePing::SubmitService, payload: nil) do |service|
+          expect(service).to receive(:execute)
+        end
+
+        subject.perform
+      end
+    end
+
+    describe "NonSqlServicePing creation" do
+      it 'creates NonSqlServicePing entry when there is NO entry with the same recorded_at timestamp' do
+        expect { subject.perform }.to change { ServicePing::NonSqlServicePing.count }.by(1)
+      end
+
+      it 'updates NonSqlServicePing entry when there is entry with the same recorded_at timestamp' do
+        record = create(
+          :non_sql_service_ping,
+          payload: { some_metric: 123 },
+          recorded_at: non_sql_payload[:recorded_at]
+        )
+
+        expect { subject.perform }.to change { record.reload.payload }
+                                        .from("some_metric" => 123).to(non_sql_payload.stringify_keys)
+      end
+
+      it 'reports errors and continue on execution' do
+        error = StandardError.new('some error')
+        allow(::Gitlab::Usage::ServicePingReport).to receive(:for).and_raise(error)
+
+        expect(::Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(error)
+        expect_next_instance_of(::ServicePing::SubmitService, payload: payload) do |service|
+          expect(service).to receive(:execute)
+        end
+
+        subject.perform
+      end
     end
   end
 
@@ -64,6 +98,11 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state, featur
     expect(Gitlab::ExclusiveLeaseHelpers::SleepingLock)
       .to receive(:new)
       .with(described_class::LEASE_KEY, hash_including(timeout: described_class::LEASE_TIMEOUT))
+      .and_call_original
+
+    expect(Gitlab::ExclusiveLeaseHelpers::SleepingLock)
+      .to receive(:new)
+      .with(described_class::NON_SQL_LEASE_KEY, hash_including(timeout: described_class::LEASE_TIMEOUT))
       .and_call_original
 
     subject.perform

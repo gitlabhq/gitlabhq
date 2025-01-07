@@ -15,6 +15,11 @@ export default {
       required: false,
       default: null,
     },
+    hasSearch: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 };
 </script>
@@ -44,7 +49,10 @@ export default {
       />
     </template>
     <div v-else class="gl-bg-gray-10 gl-p-5 gl-text-subtle" data-testid="empty-state">
-      {{ s__('DeployKeys|No deploy keys found, start by adding a new one above.') }}
+      <span v-if="hasSearch">{{ s__('DeployKeys|No search results found.') }}</span>
+      <span v-else>{{
+        s__('DeployKeys|No deploy keys found, start by adding a new one above.')
+      }}</span>
     </div>
   </div>
 </template>

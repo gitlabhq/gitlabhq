@@ -74,6 +74,26 @@ describe('~/deploy_keys/graphql/resolvers', () => {
       ]);
     });
 
+    it('should request the given search', async () => {
+      const scope = 'enabledKeys';
+      const search = { search: 'my-key', in: 'title' };
+      const page = 1;
+
+      mock
+        .onGet(ENDPOINTS.enabledKeysEndpoint, { params: { ...search, page, per_page: 5 } })
+        .reply(HTTP_STATUS_OK, { keys: [key] });
+
+      const keys = await mockResolvers.Project.deployKeys(
+        null,
+        { scope, page, search },
+        { client },
+      );
+
+      expect(keys).toEqual([
+        { id: 1, title: 'hello', editPath: '/edit', __typename: 'LocalDeployKey' },
+      ]);
+    });
+
     it('should write pagination info to the cache', async () => {
       const scope = 'enabledKeys';
       const page = 1;

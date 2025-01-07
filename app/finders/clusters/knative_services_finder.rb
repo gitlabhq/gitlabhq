@@ -16,6 +16,13 @@ module Clusters
 
     attr_reader :cluster, :environment
 
+    def self.from_cache(cluster_id, environment_id)
+      cluster = Clusters::Cluster.find(cluster_id)
+      environment = Environment.find(environment_id)
+
+      new(cluster, environment)
+    end
+
     def initialize(cluster, environment)
       @cluster = cluster
       @environment = environment
@@ -29,13 +36,6 @@ module Clusters
 
     def clear_cache!
       clear_reactive_cache!(*cache_args)
-    end
-
-    def self.from_cache(cluster_id, environment_id)
-      cluster = Clusters::Cluster.find(cluster_id)
-      environment = Environment.find(environment_id)
-
-      new(cluster, environment)
     end
 
     def calculate_reactive_cache(*)

@@ -227,6 +227,18 @@ The Owner role and custom roles with the `manage_security_policy_link` permissio
 | Subgroup          | **{check-circle}** Yes                                        | **{check-circle}** Yes                                              | **{dotted-circle}** No                                            |
 | Project           | **{check-circle}** Yes                                        | **{check-circle}** Yes                                              | **{check-circle}** Yes                                            |
 
+#### Required permissions
+
+To create and manage security policies:
+
+- For policies enforced on groups: You must have at least the Maintainer role for the group.
+- For policies enforced on projects:
+  - You must be the project owner.
+  - You must be a group member with permissions to create projects in the group.
+
+NOTE:
+If you're not a group member, you may face limitations in adding or editing policies for your project. The ability to create and manage policies requires permissions to create projects in the group. Make sure you have the required permissions in the group, even when working with project-level policies.
+
 ## Policy implementation
 
 Implementation options for security policy projects differ slightly between GitLab.com, GitLab
@@ -453,5 +465,8 @@ When working with security policies, consider these troubleshooting tips:
 - When creating a merge request approval policy, neither the array `severity_levels` nor the array
   `vulnerability_states` in the [`scan_finding` rule](../policies/merge_request_approval_policies.md#scan_finding-rule-type)
   can be left empty. For a working rule, at least one entry must exist for each array.
+- The owner of a project can enforce policies for that project, provided they also have permissions to create projects in the group.
+  Project owners who are not group members may face limitations in adding or editing policies. If you're unable to manage policies for your project,
+  contact your group administrator to ensure you have the necessary permissions in the group.
 
 If you are still experiencing issues, you can [view recent reported bugs](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=popularity&state=opened&label_name%5B%5D=group%3A%3Asecurity%20policies&label_name%5B%5D=type%3A%3Abug&first_page_size=20) and raise new unreported issues.
