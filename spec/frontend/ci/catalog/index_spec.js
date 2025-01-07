@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { initCatalog } from '~/ci/catalog/';
 import * as Router from '~/ci/catalog/router';
 import CiResourcesPage from '~/ci/catalog/components/pages/ci_resources_page.vue';
@@ -30,7 +29,7 @@ describe('~/ci/catalog/index', () => {
       });
 
       it('returns a Vue Instance', () => {
-        expect(component).toBeInstanceOf(Vue);
+        expect(component.$options.name).toBe('GlobalCatalog');
       });
 
       it('creates a router with the received base path and component', () => {

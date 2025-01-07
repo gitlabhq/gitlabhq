@@ -42,6 +42,7 @@ export default {
   data() {
     return {
       dropdownOpen: false,
+      showCreateWorkItemModal: false,
     };
   },
   computed: {
@@ -93,15 +94,22 @@ export default {
           trigger-source="top_nav"
           :trigger-element="$options.TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN"
         />
-        <create-work-item-modal
+        <gl-disclosure-dropdown-item
           v-else-if="isCreateWorkItem(groupItem)"
           :key="`${groupItem.text}-modal-trigger`"
-          as-dropdown-item
-          is-group
-          :work-item-type-name="$options.WORK_ITEM_TYPE_ENUM_EPIC"
+          :item="groupItem"
+          @action="showCreateWorkItemModal = true"
         />
         <gl-disclosure-dropdown-item v-else :key="groupItem.text" :item="groupItem" />
       </template>
     </gl-disclosure-dropdown-group>
+    <create-work-item-modal
+      v-if="showCreateWorkItemModal"
+      visible
+      hide-button
+      is-group
+      :work-item-type-name="$options.WORK_ITEM_TYPE_ENUM_EPIC"
+      @hideModal="showCreateWorkItemModal = false"
+    />
   </gl-disclosure-dropdown>
 </template>

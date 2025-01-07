@@ -827,7 +827,7 @@ However, you should avoid putting too many links on any page. Too many links can
 To link to another documentation (`.md`) file in the same repository:
 
 - Use an inline link with a relative file path. For example, `[GitLab.com settings](../user/gitlab_com/index.md)`.
-- Put the entire link on a single line, even if the link is very long. ([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/MultiLineLinks.yml)).
+- Put the entire link on a single line, even if the link is very long. ([Vale](../testing/vale.md) rule: [`MultiLineLinks.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/MultiLineLinks.yml)).
 
 To link to a file outside of the documentation files, for example to link from development
 documentation to a specific code file, you can:

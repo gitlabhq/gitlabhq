@@ -169,7 +169,38 @@ GitLab Language Server process are invalid. To re-enable Code Suggestions:
 The following documentation is for Code Suggestions-specific troubleshooting for
 Microsoft Visual Studio.
 
-For non-Code Suggestions troubleshooting for Microsoft Visual Studio, see [Visual Studio troubleshooting](../../../../editor_extensions/visual_studio/visual_studio_troubleshooting.md).
+For non-Code Suggestions troubleshooting for Microsoft Visual Studio, see
+[Visual Studio troubleshooting](../../../../editor_extensions/visual_studio/visual_studio_troubleshooting.md).
+
+### IntelliCode is missing
+
+Code Suggestions requires the **IntelliCode** component of Visual Studio. If the component
+is missing, you might see an error like this when you start Visual Studio:
+
+```plaintext
+SetSite failed for package [VisualStudioPackage]Source: 'Microsoft.VisualStudio.Composition'
+Description: Expected 1 export(s) with contract name "Microsoft.VisualStudio.Language.Suggestions.SuggestionServiceBase"
+but found 0 after applying applicable constraints.
+
+Microsoft.VisualStudio.Composition.CompositionFailedException:
+Expected 1 export(s) with contract name "Microsoft.VisualStudio.Language.Suggestions.SuggestionServiceBase"
+but found 0 after applying applicable constraints.
+
+  at Microsoft.VisualStudio.Composition.ExportProvider.GetExports(ImportDefinition importDefinition)
+  at Microsoft.VisualStudio.Composition.ExportProvider.GetExports[T,TMetadataView](String contractName, ImportCardinality cardinality)
+  at Microsoft.VisualStudio.Composition.ExportProvider.GetExport[T,TMetadataView](String contractName)
+  at Microsoft.VisualStudio.Composition.ExportProvider.GetExportedValue[T]()
+  at Microsoft.VisualStudio.ComponentModelHost.ComponentModel.GetService[T]()
+[...]
+```
+
+To fix this problem, install the **IntelliCode** component:
+
+1. In the Windows start menu, search for the **Visual Studio Installer** and open it.
+1. Select your Visual Studio instance, then select **Modify**.
+1. In the **Individual components** tab, search for **IntelliCode**.
+1. Select the component's checkbox, then on the bottom right, select **Modify**.
+1. Wait for the Visual Studio Installer to finish the installation.
 
 ### Suggestions not displayed in Microsoft Visual Studio
 

@@ -312,6 +312,11 @@ Your subscription cost is based on the maximum number of seats you use during th
 - If restricted access is turned off, when there are no seats left in your subscription groups can continue to add billable
   users. GitLab [bills you for the overage](../quarterly_reconciliation.md).
 
+You cannot add seats to your subscription if either:
+
+- You purchased your subscription through an [authorized reseller](../customers_portal.md#customers-that-purchased-through-a-reseller) (including GCP and AWS marketplaces). Contact the reseller to add more seats.
+- You have a multi-year subscription. Contact the [sales team](https://about.gitlab.com/sales/) to add more seats.
+
 To add seats to a subscription:
 
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/).
@@ -324,8 +329,6 @@ To add seats to a subscription:
 1. Select **Purchase seats**.
 
 You receive the payment receipt by email. You can also access the receipt in the Customers Portal under [**Invoices**](https://customers.gitlab.com/invoices).
-
-For multi-year subscriptions, the **Add seats** option is unavailable. To purchase additional seats, please contact the [sales team](https://about.gitlab.com/sales/).
 
 ## Remove users from subscription
 

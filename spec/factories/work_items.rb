@@ -85,6 +85,15 @@ FactoryBot.define do
       end
     end
 
+    after(:build) do |work_item, _|
+      next if work_item.attributes['work_item_type_id'].blank?
+
+      # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/499911
+      work_item.write_attribute(:work_item_type_id, -work_item.attributes['work_item_type_id'])
+      # clearing attribute change to avoid update callbacks on initial save
+      work_item.clear_work_item_type_id_change
+    end
+
     # Service Desk Ticket
     factory :ticket do
       association :work_item_type, :ticket

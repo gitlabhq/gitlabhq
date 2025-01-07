@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import Line from '~/ci/job_details/components/log/line.vue';
 import LineNumber from '~/ci/job_details/components/log/line_number.vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -24,8 +24,8 @@ describe('Job Log Line', () => {
   let wrapper;
   let data;
 
-  const createComponent = (props) => {
-    wrapper = shallowMount(Line, {
+  const createComponent = (props, mountFn = shallowMount) => {
+    wrapper = mountFn(Line, {
       propsData: {
         path: '/',
         ...props,
@@ -215,14 +215,17 @@ describe('Job Log Line', () => {
       const time = '00:00:01Z';
       const text = 'text';
 
-      createComponent({
-        line: {
-          time,
-          content: [{ text }],
-          lineNumber,
+      createComponent(
+        {
+          line: {
+            time,
+            content: [{ text }],
+            lineNumber,
+          },
+          path: '/',
         },
-        path: '/',
-      });
+        mount,
+      );
 
       expect(wrapper.text()).toBe(`${lineNumber}${time}${text}`);
     });

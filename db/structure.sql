@@ -37474,9 +37474,6 @@ ALTER TABLE ONLY member_approvals
 ALTER TABLE ONLY related_epic_links
     ADD CONSTRAINT fk_b30520b698 FOREIGN KEY (issue_link_id) REFERENCES issue_links(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY issues
-    ADD CONSTRAINT fk_b37be69be6 FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(id);
-
 ALTER TABLE ONLY duo_workflows_checkpoints
     ADD CONSTRAINT fk_b3d9cea509 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 

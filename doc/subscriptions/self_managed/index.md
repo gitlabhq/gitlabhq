@@ -204,6 +204,11 @@ period is prorated from the date of purchase through to the end of the subscript
 period. You can continue to add users even if you reach the number of users in
 license count. GitLab [bills you for the overage](../quarterly_reconciliation.md).
 
+You cannot add seats to your subscription if either:
+
+- You purchased your subscription through an [authorized reseller](../customers_portal.md#customers-that-purchased-through-a-reseller) (including GCP and AWS marketplaces). Contact the reseller to add more seats.
+- You have a multi-year subscription. Contact the [sales team](https://about.gitlab.com/sales/) to add more seats.
+
 To add seats to a subscription:
 
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/).
@@ -222,10 +227,6 @@ If your subscription was activated with an activation code, the additional seats
 your instance immediately. If you're using a license file, you receive an updated file.
 To add the seats, [add the license file](../../administration/license_file.md)
 to your instance.
-
-If you purchased your subscription through an [authorized reseller](../customers_portal.md#customers-that-purchased-through-a-reseller) (including GCP and AWS marketplaces), contact the reseller to add more seats.
-
-For multi-year subscriptions, the **Add seats** option is unavailable. To purchase additional seats, please contact the [sales team](https://about.gitlab.com/sales/).
 
 ## Subscription data synchronization
 

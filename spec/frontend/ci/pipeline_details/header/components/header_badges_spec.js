@@ -7,7 +7,7 @@ import { pipelineHeaderSuccess, pipelineHeaderTrigger } from '../../mock_data';
 describe('Header badges', () => {
   let wrapper;
 
-  const findAllBadges = () => wrapper.findAllComponents(GlBadge);
+  const findAllBadges = () => wrapper.findAllComponents(GlBadge).wrappers;
   const findChildPipelineBadge = () =>
     findAllBadges().filter((badge) => {
       const sprintf = badge.findComponent(GlSprintf);
@@ -62,7 +62,7 @@ describe('Header badges', () => {
       });
 
       expect(findAllBadges()).toHaveLength(4);
-      expect(findChildPipelineBadge().exists()).toBe(true);
+      expect(findChildPipelineBadge()).toHaveLength(1);
     });
   });
 });

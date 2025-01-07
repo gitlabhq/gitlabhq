@@ -20,14 +20,14 @@ jest.mock('~/lib/utils/common_utils', () => ({
 describe('Job Log', () => {
   let wrapper;
   let actions;
-  let state;
+  let initialState;
   let store;
   let toggleCollapsibleLineMock;
 
   Vue.use(Vuex);
 
   const createComponent = (props) => {
-    store = new Vuex.Store({ actions, state });
+    store = new Vuex.Store({ actions, state: initialState });
 
     wrapper = mount(Log, {
       provide: {
@@ -49,7 +49,7 @@ describe('Job Log', () => {
 
     const { lines, sections } = logLinesParser(mockJobLog);
 
-    state = {
+    initialState = {
       jobLog: lines,
       jobLogSections: sections,
     };
@@ -102,7 +102,8 @@ describe('Job Log', () => {
       });
 
       it('hides duration', () => {
-        state.jobLogSections['resolve-secrets'].hideDuration = true;
+        initialState.jobLogSections['resolve-secrets'].hideDuration = true;
+
         createComponent();
 
         expect(findLineHeader().props('duration')).toBe('00:00');
@@ -112,7 +113,7 @@ describe('Job Log', () => {
 
     describe('when a section is collapsed', () => {
       beforeEach(() => {
-        state.jobLogSections['prepare-executor'].isClosed = true;
+        initialState.jobLogSections['prepare-executor'].isClosed = true;
 
         createComponent();
       });
@@ -153,20 +154,21 @@ describe('Job Log', () => {
 
       it('scrolls to line number', async () => {
         createComponent();
+        await waitForPromises();
 
-        state.jobLog = logLinesParser(mockJobLog, [], '#L6').lines;
+        wrapper.vm.$store.state.jobLog = logLinesParser(mockJobLog, [], '#L6').lines;
         await waitForPromises();
 
         expect(scrollToElement).toHaveBeenCalledTimes(1);
 
-        state.jobLog = logLinesParser(mockJobLog, [], '#L6').lines;
+        wrapper.vm.$store.state.jobLog = logLinesParser(mockJobLog, [], '#L6').lines;
         await waitForPromises();
 
         expect(scrollToElement).toHaveBeenCalledTimes(1);
       });
 
       it('line number within collapsed section is visible', () => {
-        state.jobLog = logLinesParser(mockJobLog, [], '#L6').lines;
+        initialState.jobLog = logLinesParser(mockJobLog, [], '#L6').lines;
 
         createComponent();
 

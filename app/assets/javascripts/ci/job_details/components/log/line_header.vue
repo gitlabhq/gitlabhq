@@ -5,6 +5,7 @@ import DurationBadge from './duration_badge.vue';
 import LineNumber from './line_number.vue';
 
 export default {
+  name: 'LineHeader',
   components: {
     GlIcon,
     LineNumber,

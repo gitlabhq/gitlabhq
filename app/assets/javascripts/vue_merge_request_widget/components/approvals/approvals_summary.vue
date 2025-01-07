@@ -146,7 +146,7 @@ export default {
     class="gl-flex gl-flex-wrap gl-items-center gl-gap-2"
     data-testid="approvals-summary-content"
   >
-    <span class="gl-font-bold">{{ approvalLeftMessage }}</span>
+    <span v-if="approvalLeftMessage" class="gl-font-bold">{{ approvalLeftMessage }}</span>
     <template v-if="hasApprovers">
       <span v-if="approvalLeftMessage">{{ message }}</span>
       <span v-else class="gl-font-bold">{{ message }}</span>

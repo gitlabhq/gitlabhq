@@ -50618,6 +50618,9 @@ msgstr ""
 msgid "SecurityOrchestration|Add regular branches"
 msgstr ""
 
+msgid "SecurityOrchestration|Additional configuration"
+msgstr ""
+
 msgid "SecurityOrchestration|After dismissing the alert, the information will never be shown again."
 msgstr ""
 
@@ -50649,6 +50652,9 @@ msgid "SecurityOrchestration|All types"
 msgstr ""
 
 msgid "SecurityOrchestration|Allow except on these packages"
+msgstr ""
+
+msgid "SecurityOrchestration|Allow users to skip pipelines"
 msgstr ""
 
 msgid "SecurityOrchestration|Allowed licenses"
@@ -50739,6 +50745,9 @@ msgid "SecurityOrchestration|Compliance pipeline migration to pipeline execution
 msgstr ""
 
 msgid "SecurityOrchestration|Configuration"
+msgstr ""
+
+msgid "SecurityOrchestration|Configure policies to allow individual users or service accounts to use %{linkStart}skip_ci%{linkEnd} to skip pipelines."
 msgstr ""
 
 msgid "SecurityOrchestration|Configure your conditions in the pipeline execution file. %{linkStart}What can pipeline execution do?%{linkEnd}"
@@ -51536,6 +51545,9 @@ msgid "SecurityOrchestration|compliance frameworks"
 msgstr ""
 
 msgid "SecurityOrchestration|default"
+msgstr ""
+
+msgid "SecurityOrchestration|except for:"
 msgstr ""
 
 msgid "SecurityOrchestration|except groups"

@@ -30,15 +30,19 @@ export default {
     if (window.location.hash) {
       const lineNumber = getLocationHash();
 
-      this.unwatchJobLog = this.$watch('jobLog', async () => {
-        if (this.jobLog.length) {
-          await this.$nextTick();
+      this.unwatchJobLog = this.$watch(
+        'jobLog',
+        async () => {
+          if (this.jobLog.length) {
+            await this.$nextTick();
 
-          const el = document.getElementById(lineNumber);
-          scrollToElement(el);
-          this.unwatchJobLog();
-        }
-      });
+            const el = document.getElementById(lineNumber);
+            scrollToElement(el);
+            this.unwatchJobLog();
+          }
+        },
+        { immediate: true },
+      );
     }
 
     this.setupFullScreenListeners();

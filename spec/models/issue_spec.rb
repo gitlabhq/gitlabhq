@@ -52,7 +52,7 @@ RSpec.describe Issue, feature_category: :team_planning do
         let(:type_attributes) { { work_item_type_id: type1.id, correct_work_item_type_id: type2.correct_id } }
 
         it 'does not overwrite any of the provided values' do
-          expect(issue.work_item_type_id).to eq(type1.id)
+          expect(issue.attributes['work_item_type_id']).to eq(type1.id)
           expect(issue.correct_work_item_type_id).to eq(type2.correct_id)
         end
       end
@@ -90,7 +90,7 @@ RSpec.describe Issue, feature_category: :team_planning do
           expect do
             issue.update_columns(work_item_type_id: type1.id, correct_work_item_type_id: type2.correct_id)
             issue.reload
-          end.to change { issue.work_item_type_id }.to(type1.id).and(
+          end.to change { issue.attributes['work_item_type_id'] }.to(type1.id).and(
             change { issue.correct_work_item_type_id }.to(type2.correct_id)
           )
         end
@@ -2596,6 +2596,20 @@ RSpec.describe Issue, feature_category: :team_planning do
       expect do
         issue.work_item_type
       end.to make_queries_matching(/FROM "work_item_types" WHERE "work_item_types"\."correct_id" =/)
+    end
+  end
+
+  describe '#work_item_type_id' do
+    let_it_be(:work_item_type) { create(:work_item_type, :non_default) }
+    let_it_be(:issue) { create(:issue, project: reusable_project) }
+
+    it 'returns the correct work_item_types.id value even if the value in the column is wrong' do
+      issue.update_columns(
+        work_item_type_id: non_existing_record_id,
+        correct_work_item_type_id: work_item_type.correct_id
+      )
+
+      expect(issue.work_item_type_id).to eq(work_item_type.id)
     end
   end
 
