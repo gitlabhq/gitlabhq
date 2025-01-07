@@ -41,8 +41,8 @@
         = helpers.gl_badge_tag(_('LFS'), variant: :neutral)
   .rd-diff-file-stats
     %span.rd-lines-added
-      %span +
+      %span>= "+"
       %span{ "data-testid" => "js-file-addition-line" }= @diff_file.added_lines
     %span.rd-lines-removed
-      %span −
+      %span>= "&#x2212;".html_safe
       %span{ "data-testid" => "js-file-deletion-line" }= @diff_file.removed_lines

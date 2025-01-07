@@ -166,7 +166,7 @@
 {"name":"faraday","version":"2.12.2","platform":"ruby","checksum":"157339c25c7b8bcb739f5cf1207cb0cefe8fa1c65027266bcbc34c90c84b9ad6"},
 {"name":"faraday-follow_redirects","version":"0.3.0","platform":"ruby","checksum":"d92d975635e2c7fe525dd494fcd4b9bb7f0a4a0ec0d5f4c15c729530fdb807f9"},
 {"name":"faraday-http-cache","version":"2.5.0","platform":"ruby","checksum":"64b7366d66e508e1c3dd855ebb20ce9da429330e412a23d9ebbc0a7a7b227463"},
-{"name":"faraday-multipart","version":"1.0.4","platform":"ruby","checksum":"9012021ab57790f7d712f590b48d5f948b19b43cfa11ca83e6459f06090b0725"},
+{"name":"faraday-multipart","version":"1.1.0","platform":"ruby","checksum":"856b0f1c7316a4d6c052dd2eef5c42f887d56d93a171fe8880da1af064ca0751"},
 {"name":"faraday-net_http","version":"3.1.0","platform":"ruby","checksum":"1627be414960d0131691190ff524506ba6607402a50fb6eccda9e64ca60f859f"},
 {"name":"faraday-net_http_persistent","version":"2.1.0","platform":"ruby","checksum":"b41720b13f56dae77114d9de54baef2d76d0b06ab40d695b2a98e254b56ade0b"},
 {"name":"faraday-retry","version":"2.2.1","platform":"ruby","checksum":"4146fed14549c0580bf14591fca419a40717de0dd24f267a8ec2d9a728677608"},

@@ -37,6 +37,8 @@ Three bar charts and a table illustrate the number of contributions made by each
 
 ![Contribution analytics bar graphs](img/contribution_analytics_push_v17_7.png)
 
+To retrieve metrics for user contributions, you can also use the [GraphQL API](../../../api/graphql/reference/index.md#groupcontributions).
+
 ### View a member's contributions
 
 You can view the number of events associated with a specific group member.
@@ -79,10 +81,6 @@ For more information, see:
 
 - [ClickHouse integration guidelines](../../../integration/clickhouse.md)
 - [ClickHouse usage at GitLab](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/clickhouse_usage/)
-
-## Contribution analytics GraphQL API
-
-To retrieve metrics for user contributions, use the [GraphQL](../../../api/graphql/reference/index.md#groupcontributions) API.
 
 <!-- ## Troubleshooting
 

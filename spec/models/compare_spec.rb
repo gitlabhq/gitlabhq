@@ -209,4 +209,15 @@ RSpec.describe Compare, feature_category: :source_code_management do
       end
     end
   end
+
+  describe '#diffs_for_streaming' do
+    it 'returns a diff file collection commit' do
+      expect(compare.diffs_for_streaming).to be_a_kind_of(Gitlab::Diff::FileCollection::Compare)
+    end
+
+    it_behaves_like 'diffs for streaming' do
+      let(:repository) { project.repository }
+      let(:resource) { compare }
+    end
+  end
 end

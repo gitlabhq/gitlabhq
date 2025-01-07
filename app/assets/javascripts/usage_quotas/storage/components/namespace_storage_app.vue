@@ -167,9 +167,9 @@ export default {
       :used-storage="usedStorage"
       :loading="$apollo.queries.namespace.loading"
     />
-    <h3 data-testid="breakdown-subtitle">
+    <h2 class="gl-heading-2 gl-mb-3 gl-mt-5" data-testid="breakdown-subtitle">
       {{ s__('UsageQuota|Storage usage breakdown') }}
-    </h3>
+    </h2>
     <dependency-proxy-usage
       v-if="!userNamespace"
       :dependency-proxy-total-size="dependencyProxyTotalSize"
@@ -182,7 +182,7 @@ export default {
     />
 
     <section class="gl-mt-5">
-      <div class="gl-flex gl-bg-gray-10 gl-p-5">
+      <div class="gl-flex gl-bg-subtle gl-p-5">
         <search-and-sort-bar
           :namespace="namespaceId"
           :search-input-placeholder="__('Search')"

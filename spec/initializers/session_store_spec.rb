@@ -18,7 +18,10 @@ RSpec.describe 'Session initializer for GitLab' do
       expect(subject).to receive(:session_store).with(
         Gitlab::Sessions::RedisStore,
         a_hash_including(
-          redis_server: Gitlab::Redis::Sessions.params.merge(namespace: Gitlab::Redis::Sessions::SESSION_NAMESPACE)
+          redis_server: Gitlab::Redis::Sessions.params.merge(
+            namespace: Gitlab::Redis::Sessions::SESSION_NAMESPACE,
+            serializer: Gitlab::Sessions::RedisStoreSerializer
+          )
         )
       )
 

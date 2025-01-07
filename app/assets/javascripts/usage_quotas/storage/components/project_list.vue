@@ -144,7 +144,7 @@ export default {
         :project-avatar-url="project.avatarUrl"
         :size="16"
         :alt="project.name"
-        class="gl-mr-2 gl-inline-block !gl-text-center"
+        class="gl-mr-2"
       />
 
       <gl-link
