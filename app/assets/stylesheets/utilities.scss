@@ -42,9 +42,3 @@ $type-scale: (
     max-width: $size;
   }
 }
-
-// This utility is used to force the z-index to match that of dropdown menu's
-// stylelint-disable-next-line gitlab/no-gl-class
-.gl-z-dropdown-menu\! {
-  z-index: $zindex-dropdown-menu !important;
-}

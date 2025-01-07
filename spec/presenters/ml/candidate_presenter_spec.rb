@@ -53,4 +53,20 @@ RSpec.describe Ml::CandidatePresenter, feature_category: :mlops do
       end
     end
   end
+
+  describe '#creator' do
+    subject { presenter.creator }
+
+    context 'when creator exists' do
+      it { is_expected.to eq(user) }
+    end
+
+    context 'when creator not exist' do
+      before do
+        allow(candidate).to receive(:user).and_return(nil)
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
 end

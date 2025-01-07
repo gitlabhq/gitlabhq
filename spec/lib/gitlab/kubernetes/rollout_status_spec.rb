@@ -265,7 +265,7 @@ RSpec.describe Gitlab::Kubernetes::RolloutStatus do
     end
   end
 
-  def create_pods(name:, count:, track: nil, status: 'Running' )
+  def create_pods(name:, count:, track: nil, status: 'Running')
     Array.new(count, kube_pod(name: name, status: status, track: track))
   end
 end

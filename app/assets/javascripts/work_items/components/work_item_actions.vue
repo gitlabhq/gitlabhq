@@ -190,6 +190,11 @@ export default {
       required: false,
       default: false,
     },
+    parentId: {
+      type: String,
+      required: false,
+      default: null,
+    },
     workItemAuthorId: {
       type: Number,
       required: false,
@@ -492,6 +497,7 @@ export default {
         :work-item-state="workItemState"
         :work-item-type="workItemType"
         :full-path="fullPath"
+        :parent-id="parentId"
         show-as-dropdown-item
         @error="emitStateToggleError"
         @workItemStateUpdated="$emit('workItemStateUpdated')"

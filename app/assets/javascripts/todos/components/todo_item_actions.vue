@@ -145,7 +145,7 @@ export default {
 </script>
 
 <template>
-  <div @click.prevent>
+  <div class="gl-flex gl-gap-2" @click.prevent>
     <gl-button
       v-if="glFeatures.todosSnoozing && isSnoozed"
       v-gl-tooltip

@@ -284,6 +284,14 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
       environment.stop
     end
 
+    it 'allows to start environment in stopping state' do
+      environment.update!(state: :stopping)
+
+      environment.start
+
+      expect(environment.state).to eq('available')
+    end
+
     context 'when environment has auto stop period' do
       let!(:environment) { create(:environment, :available, :auto_stoppable, project: project) }
 

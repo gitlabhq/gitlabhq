@@ -244,6 +244,11 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
   [AWS SDK v2 for Go](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/4987) instead of the MinIO client.
   You can enable the MinIO client again by setting the `FF_USE_LEGACY_S3_CACHE_ADAPTER`
   [GitLab Runner feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html) to `true`.
+- The token used by Gitaly to authenticate with GitLab is now [its own setting](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8688).
+  This means Gitaly doesn't need GitLab Rails and Shell recipes to run and populate the default secret file inside the shell directory,
+  and can have its own secret file. Some customized environments may need to
+  [update their authentication configuration](../../administration/gitaly/configure_gitaly.md#configure-authentication)
+  to avoid secrets mismatches.
 
 ## 17.4.0
 

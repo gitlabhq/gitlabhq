@@ -18,4 +18,23 @@ describe('StatePresenter', () => {
       expect(badge.text()).toBe(badgeLabel);
     },
   );
+
+  it.each`
+    mergeRequestState | badgeVariant | badgeLabel  | badgeIcon
+    ${'opened'}       | ${'success'} | ${'Open'}   | ${'merge-request-open'}
+    ${'closed'}       | ${'danger'}  | ${'Closed'} | ${'merge-request-close'}
+    ${'merged'}       | ${'info'}    | ${'Merged'} | ${'merge'}
+  `(
+    'for merge request state $mergeRequestState, it presents it as a badge with variant "$badgeVariant", label "$badgeLabel" and icon "$badgeIcon"',
+    ({ mergeRequestState, badgeVariant, badgeLabel, badgeIcon }) => {
+      const wrapper = shallowMountExtended(StatePresenter, {
+        propsData: { data: mergeRequestState, source: 'mergeRequests' },
+      });
+      const badge = wrapper.findComponent(GlBadge);
+
+      expect(badge.props('variant')).toBe(badgeVariant);
+      expect(badge.props('icon')).toBe(badgeIcon);
+      expect(badge.text()).toBe(badgeLabel);
+    },
+  );
 });

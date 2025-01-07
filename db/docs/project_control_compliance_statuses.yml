@@ -1,0 +1,13 @@
+---
+table_name: project_control_compliance_statuses
+classes:
+- ComplianceManagement::ComplianceFramework::ProjectControlComplianceStatus
+feature_categories:
+- compliance_management
+description: Stores the status of compliance requirement control for a project
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176581
+milestone: '17.8'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces
+table_size: small

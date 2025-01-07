@@ -76,7 +76,7 @@ RSpec.describe Gitlab::IssuablesCountForState do
     let(:states_count) { { opened: 1, closed: 1, all: 2 } }
     let(:params) { {} }
 
-    subject { described_class.new(finder, fast_fail: true, store_in_redis_cache: true ) }
+    subject { described_class.new(finder, fast_fail: true, store_in_redis_cache: true) }
 
     before do
       allow(finder).to receive(:count_by_state).and_return(states_count)

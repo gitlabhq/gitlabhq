@@ -10,13 +10,13 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Configure insights for your projects and groups to explore data such as:
+Insights are interactive bar charts that display the number of items (for example, bugs created) per month.
+
+Configure insights and create custom reports for your projects and groups to explore data such as:
 
 - Issues created and closed during a specified period.
 - Average time for merge requests to be merged.
 - Triage hygiene.
-
-You can also create custom Insights reports that are relevant for your group.
 
 ## View insights
 
@@ -29,27 +29,30 @@ To view insights for a project or group:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Insights**.
-1. To view a report, select the **Select report** dropdown list.
+1. To view a report, from the **Select report** dropdown list, select the report you want to view.
 
-### Access Insights reports with deep links
+### Access insights reports with deep links
 
-You can direct users to a specific report in Insights by using the deep-linked URL.
+You can direct users to a specific report in insights by using the deep-linked URL.
 
-To create a deep link, append the report key to the end of the Insights report URL.
+To create a deep link, append the report key to the end of the insights report URL.
 For example, a GitLab report with the key `bugsCharts` has the deep link URL `https://gitlab.com/gitlab-org/gitlab/insights/#/bugsCharts`.
 
-## Interact with Insights charts
+## Interact with insights charts
 
 You can interact with the insights charts to view details about your group's activity.
 
 ### Display different reports
 
-To display one of the available reports on the insights page, from the **Select report** dropdown list,
-select the report you want to display.
+To display one of the available reports on the insights page:
+
+- From the **Select report** dropdown list, select the report you want to display.
 
 ### View bar chart annotations
 
-To view annotations, hover over each bar in the chart.
+To view annotations:
+
+- Hover over each bar in the chart.
 
 ### Zoom in on chart
 
@@ -187,7 +190,7 @@ Use `type` to define the chart type.
 | Name  | Example: |
 | ----- | ------- |
 | `bar` | ![Insights example bar chart](img/insights_example_bar_chart_v11_10.png) |
-| `bar` (time series, that is when `group_by` is used) | ![Insights example bar time series chart](img/insights_example_bar_time_series_chart_v11_10.png) |
+| `bar` (time series with `group_by`) | ![Insights example bar time series chart](img/insights_example_bar_time_series_chart_v11_10.png) |
 | `line` | ![Insights example stacked bar chart](img/insights_example_line_chart_v11_10.png) |
 | `stacked-bar` | ![Insights example stacked bar chart](img/insights_example_stacked_bar_chart_v11_10.png) |
 

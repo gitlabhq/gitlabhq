@@ -7,71 +7,139 @@ module QA
     class ParallelRunner
       RUNTIME_LOG_FILE = "tmp/parallel_runtime_rspec.log"
 
-      class << self
-        def run(rspec_args, knapsack_report)
-          cli_args = build_execution_args(rspec_args)
+      def self.run(rspec_args, example_data)
+        new(rspec_args, example_data).run
+      end
 
-          Runtime::Logger.debug("Using parallel runner to trigger tests with arguments: '#{cli_args}'")
+      def initialize(rspec_args, example_data)
+        @rspec_args = rspec_args
+        @example_data = example_data
+      end
 
-          set_environment!
-          perform_global_setup!
-          create_runtime_log!(knapsack_report)
+      # Execute tests using parallel runner
+      #
+      # @return [void]
+      def run
+        Runtime::Logger.debug("Using parallel runner to trigger tests with arguments: '#{execution_args}'")
 
-          ParallelTests::CLI.new.run(cli_args)
-        end
+        set_environment!
+        perform_global_setup!
+        create_runtime_log!
 
-        private
+        ParallelTests::CLI.new.run(execution_args)
+      end
 
-        delegate :parallel_processes, to: Runtime::Env
+      private
 
-        def build_execution_args(rspec_args)
-          paths = rspec_args.select { |arg| arg.include?("qa/specs/features") }
-          spec_files = paths.select { |arg| arg.match?(/^.*_spec.rb$/) }
-          options = (rspec_args - paths).reject { |arg| arg == "--" }
-          # if amount of explicitly passed specs is less than parallel processes, use the amount of specs as count
-          # to avoid starting empty runs with no tests
-          used_processes = if !spec_files.empty? && spec_files.size < parallel_processes
-                             spec_files.size
-                           else
-                             parallel_processes
-                           end
+      # @return [Array<String>]
+      attr_reader :rspec_args
 
-          cli_args = [
-            "--type", "rspec",
-            "-n", used_processes.to_s,
-            "--runtime-log", RUNTIME_LOG_FILE,
-            "--serialize-stdout",
-            '--first-is-1',
-            "--combine-stderr"
-          ]
-          cli_args.push("--", *options) unless options.empty?
-          cli_args.push("--", *paths) unless paths.empty? # specific spec paths need to be separated by additional "--"
+      # @return [Hash<String, String>]
+      attr_reader :example_data
 
-          cli_args
-        end
+      # Specific spec paths are default paths containing all specs
+      #
+      # @return [Boolean]
+      def default_paths?
+        paths == Runner::DEFAULT_TEST_PATH_ARGS.reject { |arg| arg == "--" }
+      end
 
-        def perform_global_setup!
-          Runtime::Browser.configure!
-          Runtime::Release.perform_before_hooks
-        end
+      # Spec path arguments
+      #
+      # @return [Array<String>]
+      def paths
+        @paths ||= rspec_args.select { |arg| arg.include?("qa/specs/features") }
+      end
 
-        def set_environment!
-          ENV.store("NO_KNAPSACK", "true")
+      # RSpec options
+      #
+      # @return [Array]
+      def rspec_options
+        @options ||= (rspec_args - paths).reject { |arg| arg == "--" }
+      end
 
-          return if ENV["QA_GITLAB_URL"].present?
+      # Executable specs based on example data
+      #
+      # @return [Array<String>]
+      def executable_specs
+        @executable_specs ||= example_data.each_with_object([]) do |(id, status), paths|
+          paths << id.match(%r{\./(\S+)\[\S+\]})[1] if status == "passed"
+        end.uniq
+      end
 
-          Support::GitlabAddress.define_gitlab_address_attribute!
-          ENV.store("QA_GITLAB_URL", Support::GitlabAddress.address_with_port(with_default_port: false))
-        end
+      # Parallel processes
+      #
+      # If amount of explicitly passed spec files is smaller than configured processes, set it to spec files amount
+      #
+      # @return [Integer]
+      def parallel_processes
+        spec_files = path_options.select { |arg| arg.match?(/^.*_spec.rb$/) }
+        processes = Runtime::Env.parallel_processes
+        return spec_files.size if !spec_files.empty? && spec_files.size < processes
 
-        # Create test runtime log
-        #
-        # @param knapsack_report [Hash<String, Number>]
-        # @return [void]
-        def create_runtime_log!(knapsack_report)
-          Runtime::Logger.debug("Creating runtime log file for parallel runner")
-          File.write(RUNTIME_LOG_FILE, knapsack_report.map { |spec, runtime| "#{spec}:#{runtime}" }.join("\n"))
-        end
+        processes
+      end
+
+      # Rspec path options
+      #
+      # When default path is used, parallel runner will try to split tests based on the amount of spec files found
+      # within the path even though rspec tags would end up skipping most of these tests
+      # To avoid spawning processes that skip all tests, set spec paths based on example data which takes in to
+      # account which tags have been used
+      #
+      # @return [Array]
+      def path_options
+        @path_options ||= default_paths? ? executable_specs : paths
+      end
+
+      # Execution arguments for parallel runner
+      #
+      # @return [Array]
+      def execution_args
+        return @execution_args if @execution_args
+
+        @execution_args = [
+          "--type", "rspec",
+          "-n", parallel_processes.to_s,
+          "--runtime-log", RUNTIME_LOG_FILE,
+          "--serialize-stdout",
+          '--first-is-1',
+          "--combine-stderr"
+        ]
+        @execution_args.push("--", *rspec_options) unless rspec_options.empty?
+        # specific spec paths need to be separated by additional "--"
+        @execution_args.push("--", *path_options) unless path_options.empty?
+
+        @execution_args
+      end
+
+      # Perform global test setup once before starting parallel processes
+      #
+      # @return [void]
+      def perform_global_setup!
+        Runtime::Browser.configure!
+        Runtime::Release.perform_before_hooks
+      end
+
+      # Set necessary environment variables for parallel processes
+      #
+      # @return [void]
+      def set_environment!
+        ENV.store("NO_KNAPSACK", "true")
+
+        return if ENV["QA_GITLAB_URL"].present?
+
+        Support::GitlabAddress.define_gitlab_address_attribute!
+        ENV.store("QA_GITLAB_URL", Support::GitlabAddress.address_with_port(with_default_port: false))
+      end
+
+      # Create test runtime log
+      #
+      # @return [void]
+      def create_runtime_log!
+        Runtime::Logger.debug("Creating runtime log file for parallel runner")
+        knapsack_report = Support::KnapsackReport.knapsack_report(example_data)
+        File.write(RUNTIME_LOG_FILE, knapsack_report.map { |spec, runtime| "#{spec}:#{runtime}" }.join("\n"))
       end
     end
   end

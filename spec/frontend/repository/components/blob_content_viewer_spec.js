@@ -18,6 +18,8 @@ import { loadViewer } from '~/repository/components/blob_viewers';
 import DownloadViewer from '~/repository/components/blob_viewers/download_viewer.vue';
 import EmptyViewer from '~/repository/components/blob_viewers/empty_viewer.vue';
 import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer.vue';
+import TooLargeViewer from '~/repository/components/blob_viewers/too_large_viewer.vue';
+import LfsViewer from '~/repository/components/blob_viewers/lfs_viewer.vue';
 import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
 import projectInfoQuery from '~/repository/queries/project_info.query.graphql';
 import highlightMixin from '~/repository/mixins/highlight_mixin';
@@ -404,29 +406,47 @@ describe('Blob content viewer component', () => {
     });
 
     it.each`
-      viewer        | loadViewerReturnValue
-      ${'empty'}    | ${EmptyViewer}
-      ${'download'} | ${DownloadViewer}
-      ${'text'}     | ${SourceViewer}
-    `('renders viewer component for $viewer files', async ({ viewer, loadViewerReturnValue }) => {
-      loadViewer.mockReturnValue(loadViewerReturnValue);
+      viewer        | fileType      | storedExternally | tooLarge | renderError    | expectedTooLarge | loadViewerReturnValue
+      ${'empty'}    | ${'null'}     | ${false}         | ${false} | ${null}        | ${false}         | ${EmptyViewer}
+      ${'download'} | ${'download'} | ${false}         | ${false} | ${null}        | ${false}         | ${DownloadViewer}
+      ${'text'}     | ${'text'}     | ${false}         | ${false} | ${null}        | ${false}         | ${SourceViewer}
+      ${'unknown'}  | ${'unknown'}  | ${true}          | ${false} | ${null}        | ${false}         | ${LfsViewer}
+      ${'text'}     | ${'text'}     | ${false}         | ${true}  | ${null}        | ${true}          | ${TooLargeViewer}
+      ${'text'}     | ${'text'}     | ${true}          | ${true}  | ${null}        | ${true}          | ${TooLargeViewer}
+      ${'text'}     | ${'text'}     | ${false}         | ${false} | ${'collapsed'} | ${true}          | ${TooLargeViewer}
+    `(
+      'renders viewer component for $viewer files with storedExternally=$storedExternally, tooLarge=$tooLarge, and renderError=$renderError',
+      async ({
+        viewer,
+        fileType,
+        storedExternally,
+        tooLarge,
+        renderError,
+        expectedTooLarge,
+        loadViewerReturnValue,
+      }) => {
+        loadViewer.mockReturnValue(loadViewerReturnValue);
 
-      createComponent({
-        blob: {
-          ...simpleViewerMock,
-          fileType: 'null',
-          simpleViewer: {
-            ...simpleViewerMock.simpleViewer,
-            fileType: viewer,
+        await createComponent({
+          blob: {
+            ...simpleViewerMock,
+            fileType,
+            storedExternally,
+            simpleViewer: {
+              ...simpleViewerMock.simpleViewer,
+              fileType: viewer,
+              tooLarge,
+              renderError,
+            },
           },
-        },
-      });
+        });
 
-      await waitForPromises();
+        await waitForPromises();
 
-      expect(loadViewer).toHaveBeenCalledWith(viewer, false);
-      expect(wrapper.findComponent(loadViewerReturnValue).exists()).toBe(true);
-    });
+        expect(loadViewer).toHaveBeenCalledWith(viewer, storedExternally, expectedTooLarge);
+        expect(wrapper.findComponent(loadViewerReturnValue).exists()).toBe(true);
+      },
+    );
   });
 
   describe('BlobHeader action slot', () => {

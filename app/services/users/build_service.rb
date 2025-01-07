@@ -181,6 +181,7 @@ module Users
         :admin,
         :avatar,
         :bio,
+        :bot_namespace,
         :can_create_group,
         :color_mode_id,
         :color_scheme_id,

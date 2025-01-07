@@ -71,7 +71,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
         create_list(:issue, 3, project: exportable, relative_position: -5000) # ascending ids, same position negative
         create_list(:issue, 3, project: exportable, relative_position: 0) # ascending ids, duplicate positions
         create_list(:issue, 3, project: exportable, relative_position: nil, closed_by: closing_user) # no position, closed by a user
-        create_list(:issue, 3, :with_desc_relative_position, project: exportable ) # ascending ids, descending position
+        create_list(:issue, 3, :with_desc_relative_position, project: exportable) # ascending ids, descending position
       end
 
       it 'calls json_writer.write_relation_array with proper params and clears SafeRequestStore' do

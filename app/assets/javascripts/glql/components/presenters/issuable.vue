@@ -6,6 +6,7 @@ import { extractGroupOrProject } from '../../utils/common';
 const types = {
   Issue: 'issue',
   Epic: 'epic',
+  MergeRequest: 'merge_request',
 };
 
 export default {
@@ -56,6 +57,7 @@ export default {
       <span>{{ truncateText(data.title) }}</span>
       <span> ({{ data.reference }}</span>
       <span v-if="data.state === 'closed'"> - {{ __('closed') }}</span>
+      <span v-if="data.state === 'merged'"> - {{ __('merged') }}</span>
       <span>)</span>
     </gl-intersperse>
   </gl-link>

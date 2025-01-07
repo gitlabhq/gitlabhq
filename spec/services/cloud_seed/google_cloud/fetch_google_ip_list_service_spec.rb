@@ -33,7 +33,7 @@ RSpec.describe CloudSeed::GoogleCloud::FetchGoogleIpListService, :use_clean_rail
 
     context 'with rate limit in effect' do
       before do
-        10.times { described_class.new.execute }
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
       end
 
       it 'returns rate limit error' do

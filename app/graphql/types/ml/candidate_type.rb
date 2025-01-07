@@ -47,6 +47,10 @@ module Types
         null: true,
         description: 'CI information about the job that created the candidate.'
 
+      field :creator, ::Types::UserType,
+        null: true,
+        description: 'User that created the candidate.'
+
       field :_links, ::Types::Ml::CandidateLinksType, null: false, method: :itself,
         description: 'Map of links to perform actions on the candidate.'
 

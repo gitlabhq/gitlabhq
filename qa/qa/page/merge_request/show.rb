@@ -375,7 +375,7 @@ module QA
             # If the widget shows "Merge blocked: new changes were just added" we can refresh the page and check again
             next false if has_element?('head-mismatch-content', wait: 1)
 
-            QA::Runtime::Logger.debug("MR widget text: #{mr_widget_text}")
+            QA::Runtime::Logger.debug("MR widget text: \"#{mr_widget_text}\"")
 
             false
           end
@@ -503,6 +503,8 @@ module QA
 
         def mr_widget_text
           find_element('mr-widget-content').text
+        rescue Capybara::ElementNotFound
+          ""
         end
 
         def has_fork_icon?

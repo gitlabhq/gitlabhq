@@ -93,7 +93,7 @@ RSpec.describe Gitlab::ImportExport::AttributesPermitter, feature_category: :imp
 
     let(:attributes_permitter) { described_class.new }
 
-    where(:relation_name, :permitted_attributes_defined ) do
+    where(:relation_name, :permitted_attributes_defined) do
       :user                        | true
       :author                      | false
       :ci_cd_settings              | true

@@ -1264,6 +1264,54 @@ export const workItemDevelopmentResponse = ({
   },
 });
 
+export const mockRolledUpCountsByType = [
+  {
+    countsByState: {
+      opened: 0,
+      all: 3,
+      closed: 0,
+      __typename: 'WorkItemStateCountsType',
+    },
+    workItemType: {
+      id: 'gid://gitlab/WorkItems::Type/8',
+      name: 'Epic',
+      iconName: 'issue-type-epic',
+      __typename: 'WorkItemType',
+    },
+    __typename: 'WorkItemTypeCountsByState',
+  },
+  {
+    countsByState: {
+      opened: 0,
+      all: 5,
+      closed: 2,
+      __typename: 'WorkItemStateCountsType',
+    },
+    workItemType: {
+      id: 'gid://gitlab/WorkItems::Type/1',
+      name: 'Issue',
+      iconName: 'issue-type-issue',
+      __typename: 'WorkItemType',
+    },
+    __typename: 'WorkItemTypeCountsByState',
+  },
+  {
+    countsByState: {
+      opened: 0,
+      all: 2,
+      closed: 1,
+      __typename: 'WorkItemStateCountsType',
+    },
+    workItemType: {
+      id: 'gid://gitlab/WorkItems::Type/5',
+      name: 'Task',
+      iconName: 'issue-type-task',
+      __typename: 'WorkItemType',
+    },
+    __typename: 'WorkItemTypeCountsByState',
+  },
+];
+
 export const workItemResponseFactory = ({
   iid = '1',
   id = 'gid://gitlab/WorkItem/1',
@@ -1539,7 +1587,7 @@ export const workItemResponseFactory = ({
               __typename: 'WorkItemWidgetHierarchy',
               type: 'HIERARCHY',
               hasChildren: true,
-              rolledUpCountsByType: [],
+              rolledUpCountsByType: mockRolledUpCountsByType,
               hasParent,
               children: {
                 nodes: [
@@ -2499,54 +2547,6 @@ export const mockDepthLimitReachedByType = [
     },
     depthLimitReached: false,
     __typename: 'WorkItemTypeDepthLimitReachedByType',
-  },
-];
-
-export const mockRolledUpCountsByType = [
-  {
-    countsByState: {
-      opened: 0,
-      all: 3,
-      closed: 0,
-      __typename: 'WorkItemStateCountsType',
-    },
-    workItemType: {
-      id: 'gid://gitlab/WorkItems::Type/8',
-      name: 'Epic',
-      iconName: 'issue-type-epic',
-      __typename: 'WorkItemType',
-    },
-    __typename: 'WorkItemTypeCountsByState',
-  },
-  {
-    countsByState: {
-      opened: 0,
-      all: 5,
-      closed: 2,
-      __typename: 'WorkItemStateCountsType',
-    },
-    workItemType: {
-      id: 'gid://gitlab/WorkItems::Type/1',
-      name: 'Issue',
-      iconName: 'issue-type-issue',
-      __typename: 'WorkItemType',
-    },
-    __typename: 'WorkItemTypeCountsByState',
-  },
-  {
-    countsByState: {
-      opened: 0,
-      all: 2,
-      closed: 1,
-      __typename: 'WorkItemStateCountsType',
-    },
-    workItemType: {
-      id: 'gid://gitlab/WorkItems::Type/5',
-      name: 'Task',
-      iconName: 'issue-type-task',
-      __typename: 'WorkItemType',
-    },
-    __typename: 'WorkItemTypeCountsByState',
   },
 ];
 

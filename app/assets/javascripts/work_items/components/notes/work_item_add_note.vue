@@ -115,6 +115,11 @@ export default {
       required: false,
       default: false,
     },
+    parentId: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -352,6 +357,7 @@ export default {
             :has-replies="hasReplies"
             :work-item-iid="workItemIid"
             :has-email-participants-widget="hasEmailParticipantsWidget"
+            :parent-id="parentId"
             @toggleResolveDiscussion="$emit('resolve')"
             @submitForm="updateWorkItem"
             @cancelEditing="cancelEditing"

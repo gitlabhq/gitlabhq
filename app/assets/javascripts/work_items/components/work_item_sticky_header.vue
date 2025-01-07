@@ -51,6 +51,11 @@ export default {
       required: false,
       default: false,
     },
+    parentId: {
+      type: String,
+      required: false,
+      default: null,
+    },
     showWorkItemCurrentUserTodos: {
       type: Boolean,
       required: false,
@@ -190,6 +195,7 @@ export default {
             :is-group="isGroup"
             :widgets="widgets"
             :allowed-child-types="allowedChildTypes"
+            :parent-id="parentId"
             @deleteWorkItem="$emit('deleteWorkItem')"
             @toggleWorkItemConfidentiality="
               $emit('toggleWorkItemConfidentiality', !workItem.confidential)

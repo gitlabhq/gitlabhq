@@ -114,9 +114,21 @@ Before you can use GitLab Duo Workflow:
 GitLab Duo Workflow needs an execution platform like Docker where it can execute arbitrary code,
 read and write files, and make API calls to GitLab.
 
+If you are on macOS or Linux, you can either:
+
+- Use the [automated setup script](#automated-setup).
+- Follow the [manual setup](#manual-setup).
+
+If you are not on macOS or Linux, follow the manual setup.
+
 #### Automated setup
 
-The setup script installs Docker and Colima, pulls the Docker base image, and sets Docker socket path in VS Code settings.
+The automated setup script:
+
+- Installs [Docker](https://formulae.brew.sh/formula/docker) and [Colima](https://github.com/abiosoft/colima).
+- Pulls the Docker base image.
+- Sets Docker socket path in VS Code settings.
+
 You can run the script with the `--dry-run` flag to check the dependencies
 that get installed with the script.
 
@@ -130,9 +142,7 @@ that get installed with the script.
 
 #### Manual setup
 
-If you have [Docker Desktop](https://handbook.gitlab.com/handbook/tools-and-tips/mac/#docker-desktop)
-or a container manager other than Colima installed already:
-
+1. Install a Docker container engine, such as [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation/).
 1. Pull the base Docker image:
 
    ```shell
@@ -141,7 +151,7 @@ or a container manager other than Colima installed already:
 
 1. Set the Docker socket path in VS Code:
    1. Open VS Code, then open its settings:
-      - On Mac: <kbd>Cmd</kbd> + <kbd>,</kbd>
+      - On macOS: <kbd>Cmd</kbd> + <kbd>,</kbd>
       - On Windows and Linux: <kbd>Ctrl</kbd> + <kbd>,</kbd>
    1. In the upper-right corner, select the **Open Settings (JSON)** icon.
    1. Add the Docker socket path setting `gitlab.duoWorkflow.dockerSocket`, according to your container manager, and save your settings file.
@@ -167,7 +177,7 @@ To use GitLab Duo Workflow:
    - The GitLab namespace for the project must have an **Ultimate** subscription.
    - You must check out the branch for the code you would like to change.
 1. Open the command palette:
-   - On Mac: <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>
+   - On macOS: <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>
    - On Windows and Linux: <kbd>Ctrl</kbd> + <kbd>P</kbd>.
 1. Type `Duo Workflow` and select **GitLab: Show Duo Workflow**.
 
@@ -186,10 +196,7 @@ In addition, Duo Workflow has read-only access to:
 
 ## Current limitations
 
-Duo Workflow has the following limitations:
-
-- No support for VS Code themes.
-- Can only run workflows for the GitLab project that's open in VS Code.
+Duo Workflow can only run workflows for the GitLab project that's open in VS Code.
 
 ## Troubleshooting
 
@@ -212,7 +219,7 @@ If you encounter issues:
    1. To open the logs in VS Code, select **View** > **Output**. In the output panel at the bottom, in the top-right corner, select **GitLab Workflow** or **GitLab Language Server** from the list.
    1. Review for errors, warnings, connection issues, or authentication problems.
    1. For more output in the logs, open the settings:
-      - On Mac: <kbd>Cmd</kbd> + <kbd>,</kbd>
+      - On macOS: <kbd>Cmd</kbd> + <kbd>,</kbd>
       - On Windows and Linux: <kbd>Ctrl</kbd> + <kbd>,</kbd>
    1. Search for the setting **GitLab: Debug** and enable it.
 1. Examine the [Duo Workflow Service production LangSmith trace](https://smith.langchain.com/o/477de7ad-583e-47b6-a1c4-c4a0300e7aca/projects/p/5409132b-2cf3-4df8-9f14-70204f90ed9b?timeModel=%7B%22duration%22%3A%227d%22%7D&tab=0).

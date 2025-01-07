@@ -24,6 +24,8 @@ import {
   MOCK_MILESTONE,
   MOCK_USER,
   MOCK_ASSIGNEES,
+  MOCK_MR_ASSIGNEES,
+  MOCK_MR_REVIEWERS,
   MOCK_ITERATION,
 } from '../mock_data';
 
@@ -40,6 +42,8 @@ describe('componentForField', () => {
     ${'date'}      | ${'2021-01-01'}         | ${TimePresenter}       | ${'TimePresenter'}
     ${'user'}      | ${MOCK_USER}            | ${UserPresenter}       | ${'UserPresenter'}
     ${'users'}     | ${MOCK_ASSIGNEES}       | ${CollectionPresenter} | ${'CollectionPresenter'}
+    ${'users'}     | ${MOCK_MR_ASSIGNEES}    | ${CollectionPresenter} | ${'CollectionPresenter'}
+    ${'users'}     | ${MOCK_MR_REVIEWERS}    | ${CollectionPresenter} | ${'CollectionPresenter'}
     ${'label'}     | ${MOCK_LABELS.nodes[0]} | ${LabelPresenter}      | ${'LabelPresenter'}
     ${'labels'}    | ${MOCK_LABELS}          | ${CollectionPresenter} | ${'CollectionPresenter'}
     ${'milestone'} | ${MOCK_MILESTONE}       | ${MilestonePresenter}  | ${'MilestonePresenter'}

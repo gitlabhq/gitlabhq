@@ -103,6 +103,7 @@ describe('WorkItemNotes component', () => {
     isGroup = false,
     isModal = false,
     isWorkItemConfidential = false,
+    parentId = null,
   } = {}) => {
     wrapper = shallowMount(WorkItemNotes, {
       apolloProvider: createMockApollo([
@@ -124,6 +125,7 @@ describe('WorkItemNotes component', () => {
         reportAbusePath: '/report/abuse/path',
         isModal,
         isWorkItemConfidential,
+        parentId,
       },
       stubs: {
         GlModal: stubComponent(GlModal, { methods: { show: showModal } }),
@@ -504,5 +506,12 @@ describe('WorkItemNotes component', () => {
         }),
       );
     });
+  });
+
+  it('passes the `parentId` prop down to the `WorkItemAddNote` component', async () => {
+    createComponent({ parentId: 'example-id' });
+    await waitForPromises();
+
+    expect(findWorkItemAddNote().props('parentId')).toBe('example-id');
   });
 });

@@ -13,12 +13,15 @@ export const viewers = {
   notebook: () => import('./notebook_viewer.vue'),
   openapi: () => import('./openapi_viewer.vue'),
   geo_json: () => import('./geo_json/geo_json_viewer.vue'),
+  too_large: () => import('./too_large_viewer.vue'),
 };
 
-export const loadViewer = (type, isUsingLfs) => {
+export const loadViewer = (type, isUsingLfs, isTooLarge) => {
   let viewer = viewers[type];
 
-  if (!viewer && isUsingLfs) {
+  if (isTooLarge) {
+    viewer = viewers.too_large;
+  } else if (!viewer && isUsingLfs) {
     viewer = viewers.lfs;
   }
 

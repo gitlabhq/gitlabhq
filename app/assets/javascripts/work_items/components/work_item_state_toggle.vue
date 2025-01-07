@@ -14,6 +14,7 @@ import {
   i18n,
 } from '../constants';
 import { findHierarchyWidgets, findLinkedItemsWidget } from '../utils';
+import { updateCountsForParent } from '../graphql/cache_utils';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import workItemLinkedItemsQuery from '../graphql/work_item_linked_items.query.graphql';
@@ -58,6 +59,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    parentId: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -240,6 +246,13 @@ export default {
               stateEvent: this.isWorkItemOpen ? STATE_EVENT_CLOSE : STATE_EVENT_REOPEN,
             },
           },
+          update: (cache) =>
+            updateCountsForParent({
+              cache,
+              parentId: this.parentId,
+              workItemType: this.workItemType,
+              isClosing: this.isWorkItemOpen,
+            }),
         });
 
         const errors = data.workItemUpdate?.errors;

@@ -51,7 +51,6 @@ title
 webUrl
 reference
 state
-type
 }
 pageInfo {
 startCursor
@@ -105,7 +104,6 @@ title
 webUrl
 reference
 state
-type
 assignees {
 nodes {
 id
@@ -169,7 +167,6 @@ title
 webUrl
 reference
 state
-type
 assignees {
 nodes {
 id

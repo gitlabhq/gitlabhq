@@ -2,53 +2,18 @@
   %tr
     %td{ class: '!gl-p-5' }
       = s_('AdminArea|Users without a Group and Project')
-      = render_if_exists 'admin/dashboard/included_free_in_license_tooltip'
     %td.gl-text-right{ class: '!gl-p-5' }
       = @users_statistics&.without_groups_and_projects
-  = render_if_exists 'admin/dashboard/minimal_access_stats_row', users_statistics: @users_statistics
-  %tr
-    %td{ class: '!gl-p-5' }
-      = s_('AdminArea|Users with highest role')
-      %strong
-        = s_('AdminArea|Planner')
-    %td.gl-text-right{ class: '!gl-p-5' }
-      = @users_statistics&.with_highest_role_planner
-  %tr
-    %td{ class: '!gl-p-5' }
-      = s_('AdminArea|Users with highest role')
-      %strong
-        = s_('AdminArea|Reporter')
-    %td.gl-text-right{ class: '!gl-p-5' }
-      = @users_statistics&.with_highest_role_reporter
-  %tr
-    %td{ class: '!gl-p-5' }
-      = s_('AdminArea|Users with highest role')
-      %strong
-        = s_('AdminArea|Developer')
-    %td.gl-text-right{ class: '!gl-p-5' }
-      = @users_statistics&.with_highest_role_developer
-  %tr
-    %td{ class: '!gl-p-5' }
-      = s_('AdminArea|Users with highest role')
-      %strong
-        = s_('AdminArea|Maintainer')
-    %td.gl-text-right{ class: '!gl-p-5' }
-      = @users_statistics&.with_highest_role_maintainer
-  %tr
-    %td{ class: '!gl-p-5' }
-      = s_('AdminArea|Users with highest role')
-      %strong
-        = s_('AdminArea|Owner')
-    %td.gl-text-right{ class: '!gl-p-5' }
-      = @users_statistics&.with_highest_role_owner
-  %tr
-    %td{ class: '!gl-p-5' }
-      = s_('AdminArea|Users with highest role')
-      %strong
-        = s_('AdminArea|Guest')
-      = render_if_exists 'admin/dashboard/included_free_in_license_tooltip'
-    %td.gl-text-right{ class: '!gl-p-5' }
-      = @users_statistics&.with_highest_role_guest
+  - user_roles_mapping.map do |role_key, role_name|
+    %tr
+      %td{ class: '!gl-p-5' }
+        = s_('AdminArea|Users with highest role')
+        %strong
+          -# rubocop:disable Gettext/StaticIdentifier -- These roles are already translated in other places
+          = s_("AdminArea|#{role_name}")
+          -# rubocop:enable Gettext/StaticIdentifier
+      %td.gl-text-right{ class: '!gl-p-5' }
+        = @users_statistics&.public_send("with_highest_role_#{role_key}")
   %tr
     %td{ class: '!gl-p-5' }
       = s_('AdminArea|Bots')

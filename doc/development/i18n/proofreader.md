@@ -94,6 +94,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Romanian
   - Proofreaders needed.
 - Russian
+  - Alexey Butkeev - [GitLab](https://gitlab.com/abutkeev), [Crowdin](https://crowdin.com/profile/abutkeev)
   - Dmitry Fedoroff - [GitLab](https://gitlab.com/DmitryFedoroff), [Crowdin](https://crowdin.com/profile/DmitryFedoroff)
   - Mark Minakou - [GitLab](https://gitlab.com/sandzhaj), [Crowdin](https://crowdin.com/profile/sandzhaj)
   - Andrey Komarov - [GitLab](https://gitlab.com/elkamarado), [Crowdin](https://crowdin.com/profile/kamarado)

@@ -16,9 +16,12 @@ import TimePresenter from '../components/presenters/time.vue';
 import UserPresenter from '../components/presenters/user.vue';
 
 const presentersByObjectType = {
+  MergeRequest: IssuablePresenter,
   Issue: IssuablePresenter,
   Epic: IssuablePresenter,
   Milestone: MilestonePresenter,
+  MergeRequestReviewer: UserPresenter,
+  MergeRequestAssignee: UserPresenter,
   UserCore: UserPresenter,
   Label: LabelPresenter,
   Iteration: IterationPresenter,
@@ -64,17 +67,17 @@ export function componentForField(field, fieldName) {
 }
 
 export default class Presenter {
+  #config;
   #component;
 
-  // NOTE: This method will eventually start using `this.#config`
-  // eslint-disable-next-line class-methods-use-this
   forField(item, fieldName) {
     const field = fieldName === 'title' || !fieldName ? item : item[fieldName];
     const component = componentForField(field, fieldName);
+    const { source } = this.#config || {};
 
     return {
       render(h) {
-        return h(component, { props: { data: field } });
+        return h(component, { props: { data: field, source } });
       },
     };
   }
@@ -90,6 +93,7 @@ export default class Presenter {
     const component = presentersByDisplayType[display] || ListPresenter;
     const additionalProps = additionalPropsByDisplayType[display] || {};
 
+    this.#config = config;
     this.#component = {
       provide: {
         presenter: this,

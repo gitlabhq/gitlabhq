@@ -42,6 +42,17 @@ module DashboardHelper
   def user_groups_requiring_reauth
     []
   end
+
+  def user_roles_mapping
+    {
+      planner: 'Planner',
+      reporter: 'Reporter',
+      developer: 'Developer',
+      maintainer: 'Maintainer',
+      owner: 'Owner',
+      guest: 'Guest'
+    }
+  end
 end
 
 DashboardHelper.prepend_mod_with('DashboardHelper')

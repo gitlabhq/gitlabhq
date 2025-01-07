@@ -129,6 +129,7 @@ describe('WorkItemActions component', () => {
     hasChildren = false,
     canCreateRelatedItem = true,
     workItemsBeta = true,
+    parentId = null,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemActions, {
       isLoggedIn: isLoggedIn(),
@@ -159,6 +160,7 @@ describe('WorkItemActions component', () => {
         hideSubscribe,
         hasChildren,
         canCreateRelatedItem,
+        parentId,
       },
       mocks: {
         $toast,
@@ -621,5 +623,11 @@ describe('WorkItemActions component', () => {
 
       expect(findChangeTypeButton().exists()).toBe(false);
     });
+  });
+
+  it('passes the `parentId` prop down to the `WorkItemStateToggle` component', () => {
+    createComponent({ parentId: 'example-id' });
+
+    expect(findWorkItemToggleOption().props('parentId')).toBe('example-id');
   });
 });

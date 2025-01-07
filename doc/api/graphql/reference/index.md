@@ -840,6 +840,18 @@ Returns [`Milestone`](#milestone).
 | ---- | ---- | ----------- |
 | <a id="querymilestoneid"></a>`id` | [`MilestoneID!`](#milestoneid) | Find a milestone by its ID. |
 
+### `Query.mlExperiment`
+
+Find a machine learning experiment.
+
+Returns [`MlExperiment`](#mlexperiment).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querymlexperimentid"></a>`id` | [`MlExperimentID!`](#mlexperimentid) | ID of the experiment. |
+
 ### `Query.mlModel`
 
 Find machine learning models.
@@ -7284,6 +7296,26 @@ Input type: `MergeRequestCreateInput`
 | <a id="mutationmergerequestcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationmergerequestcreatemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
+
+### `Mutation.mergeRequestDestroyRequestedChanges`
+
+Input type: `MergeRequestDestroyRequestedChangesInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmergerequestdestroyrequestedchangesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmergerequestdestroyrequestedchangesiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestdestroyrequestedchangesprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmergerequestdestroyrequestedchangesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmergerequestdestroyrequestedchangeserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationmergerequestdestroyrequestedchangesmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestReviewerRereview`
 
@@ -15615,6 +15647,43 @@ The edge type for [`MlCandidateParam`](#mlcandidateparam).
 | ---- | ---- | ----------- |
 | <a id="mlcandidateparamedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="mlcandidateparamedgenode"></a>`node` | [`MlCandidateParam`](#mlcandidateparam) | The item at the end of the edge. |
+
+#### `MlExperimentConnection`
+
+The connection type for [`MlExperiment`](#mlexperiment).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlexperimentconnectionedges"></a>`edges` | [`[MlExperimentEdge]`](#mlexperimentedge) | A list of edges. |
+| <a id="mlexperimentconnectionnodes"></a>`nodes` | [`[MlExperiment]`](#mlexperiment) | A list of nodes. |
+| <a id="mlexperimentconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `MlExperimentConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlexperimentconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
+
+#### `MlExperimentEdge`
+
+The edge type for [`MlExperiment`](#mlexperiment).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlexperimentedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mlexperimentedgenode"></a>`node` | [`MlExperiment`](#mlexperiment) | The item at the end of the edge. |
 
 #### `MlModelConnection`
 
@@ -29696,6 +29765,7 @@ Candidate for a model version in the model registry.
 | <a id="mlcandidate_links"></a>`_links` | [`MLCandidateLinks!`](#mlcandidatelinks) | Map of links to perform actions on the candidate. |
 | <a id="mlcandidatecijob"></a>`ciJob` | [`CiJob`](#cijob) | CI information about the job that created the candidate. |
 | <a id="mlcandidatecreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="mlcandidatecreator"></a>`creator` | [`UserCore`](#usercore) | User that created the candidate. |
 | <a id="mlcandidateeid"></a>`eid` | [`String!`](#string) | MLflow uuid for the candidate. |
 | <a id="mlcandidateid"></a>`id` | [`MlCandidateID!`](#mlcandidateid) | ID of the candidate. |
 | <a id="mlcandidateiid"></a>`iid` | [`Int!`](#int) | IID of the candidate scoped to project. |
@@ -29741,6 +29811,23 @@ Parameter for a candidate in the model registry.
 | <a id="mlcandidateparamid"></a>`id` | [`MlCandidateParamID!`](#mlcandidateparamid) | ID of the parameter. |
 | <a id="mlcandidateparamname"></a>`name` | [`String`](#string) | Name of the parameter. |
 | <a id="mlcandidateparamvalue"></a>`value` | [`String!`](#string) | Value set for the parameter. |
+
+### `MlExperiment`
+
+Machine learning experiment in model experiments.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlexperimentcandidatecount"></a>`candidateCount` | [`Int!`](#int) | Number of candidates in the experiment. |
+| <a id="mlexperimentcandidates"></a>`candidates` | [`MlCandidateConnection`](#mlcandidateconnection) | Candidates of the experiment. (see [Connections](#connections)) |
+| <a id="mlexperimentcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the experiment was created. |
+| <a id="mlexperimentcreator"></a>`creator` | [`UserCore`](#usercore) | User who created the experiment. |
+| <a id="mlexperimentid"></a>`id` | [`MlExperimentID!`](#mlexperimentid) | ID of the experiment. |
+| <a id="mlexperimentmodelid"></a>`modelId` | [`MlModelID`](#mlmodelid) | ID of the model. |
+| <a id="mlexperimentname"></a>`name` | [`String!`](#string) | Name of the experiment. |
+| <a id="mlexperimentpath"></a>`path` | [`String!`](#string) | Web URL of the experiment. |
 
 ### `MlModel`
 
@@ -32777,6 +32864,24 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectmilestonesstate"></a>`state` | [`MilestoneStateEnum`](#milestonestateenum) | Filter milestones by state. |
 | <a id="projectmilestonestimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="projectmilestonestitle"></a>`title` | [`String`](#string) | Title of the milestone. |
+
+##### `Project.mlExperiments`
+
+Find machine learning experiments.
+
+Returns [`MlExperimentConnection`](#mlexperimentconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectmlexperimentsname"></a>`name` | [`String`](#string) | Search for names that include the string. |
+| <a id="projectmlexperimentsorderby"></a>`orderBy` | [`MlModelsOrderBy`](#mlmodelsorderby) | Ordering column. Default is created_at. |
+| <a id="projectmlexperimentssort"></a>`sort` | [`SortDirectionEnum`](#sortdirectionenum) | Ordering direction. Default is desc. |
 
 ##### `Project.mlModels`
 
@@ -42437,6 +42542,12 @@ An example `MlCandidateMetricID` is: `"gid://gitlab/Ml::CandidateMetric/1"`.
 A `MlCandidateParamID` is a global ID. It is encoded as a string.
 
 An example `MlCandidateParamID` is: `"gid://gitlab/Ml::CandidateParam/1"`.
+
+### `MlExperimentID`
+
+A `MlExperimentID` is a global ID. It is encoded as a string.
+
+An example `MlExperimentID` is: `"gid://gitlab/Ml::Experiment/1"`.
 
 ### `MlModelID`
 

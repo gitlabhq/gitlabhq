@@ -66,6 +66,7 @@ describe('WorkItemDescriptionTemplateListbox', () => {
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findTemplateMessage = () => wrapper.findByTestId('template-message');
   const findTemplateMessageLink = () => wrapper.findComponent(GlLink);
+  const findClearButton = () => wrapper.findByTestId('clear-template');
   const findResetButton = () => wrapper.findByTestId('reset-template');
 
   it('displays a skeleton loader', () => {
@@ -133,6 +134,18 @@ describe('WorkItemDescriptionTemplateListbox', () => {
           findListbox().vm.$emit('search', '4');
           await nextTick();
           expect(findListbox().props('items')).toHaveLength(1);
+        });
+
+        describe('clear selected template', () => {
+          it('displays a "no template" button', () => {
+            expect(findClearButton().text()).toBe('No template');
+          });
+
+          it('emits a "clear" event when the "no template" button is clicked', async () => {
+            await findClearButton().vm.$emit('click');
+
+            expect(wrapper.emitted('clear')).toHaveLength(1);
+          });
         });
 
         describe('resetting selected template', () => {

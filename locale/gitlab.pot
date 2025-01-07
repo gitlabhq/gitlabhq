@@ -9516,10 +9516,19 @@ msgstr ""
 msgid "BlobViewer|If you delete the file, it will be removed from the branch %{branch}."
 msgstr ""
 
+msgid "BlobViewer|The file could not be displayed because it is too large."
+msgstr ""
+
 msgid "BlobViewer|This file will still take up space in your LFS storage. %{linkStart}How do I remove tracked objects from Git LFS?%{linkEnd}"
 msgstr ""
 
 msgid "BlobViewer|View on %{environmentName}"
+msgstr ""
+
+msgid "BlobViewer|You can %{linkStart}download it%{linkEnd}."
+msgstr ""
+
+msgid "BlobViewer|You can either %{rawLinkStart}view the raw file%{rawLinkEnd} or %{downloadLinkStart}download it%{downloadLinkEnd}."
 msgstr ""
 
 msgid "Block"
@@ -41823,9 +41832,6 @@ msgstr ""
 msgid "Pipeline|Pipeline"
 msgstr ""
 
-msgid "Pipeline|Pipeline %{idStart}#%{idEnd} %{statusStart}%{statusEnd} for %{commitStart}%{commitEnd}"
-msgstr ""
-
 msgid "Pipeline|Pipeline cannot be run."
 msgstr ""
 
@@ -41929,15 +41935,6 @@ msgid "Pipeline|Variables"
 msgstr ""
 
 msgid "Pipeline|View all"
-msgstr ""
-
-msgid "Pipeline|View commit"
-msgstr ""
-
-msgid "Pipeline|View pipeline"
-msgstr ""
-
-msgid "Pipeline|We are currently unable to fetch pipeline data"
 msgstr ""
 
 msgid "Pipeline|What is a merge request pipeline?"
@@ -59890,9 +59887,6 @@ msgstr ""
 msgid "Unable to fetch projects. Reload the page to try again."
 msgstr ""
 
-msgid "Unable to fetch upstream and downstream pipelines."
-msgstr ""
-
 msgid "Unable to find Jira project to import data from."
 msgstr ""
 
@@ -60089,9 +60083,6 @@ msgid "Unknown"
 msgstr ""
 
 msgid "Unknown Error"
-msgstr ""
-
-msgid "Unknown data source: %{source}"
 msgstr ""
 
 msgid "Unknown format"
@@ -64146,6 +64137,9 @@ msgstr ""
 msgid "WorkItem|No milestone"
 msgstr ""
 
+msgid "WorkItem|No template"
+msgstr ""
+
 msgid "WorkItem|None"
 msgstr ""
 
@@ -67296,6 +67290,9 @@ msgid "merge request"
 msgid_plural "merge requests"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "merged"
+msgstr ""
 
 msgid "mergedCommitsAdded| (commits were squashed)"
 msgstr ""

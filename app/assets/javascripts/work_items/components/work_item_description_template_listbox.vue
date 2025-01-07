@@ -75,6 +75,10 @@ export default {
     handleSearch(searchTerm) {
       this.searchTerm = searchTerm;
     },
+    handleClear() {
+      this.$refs.listbox?.closeAndFocus();
+      this.$emit('clear');
+    },
     handleReset() {
       this.$refs.listbox?.closeAndFocus();
       this.$emit('reset');
@@ -102,6 +106,15 @@ export default {
   >
     <template #footer>
       <div class="gl-border-t gl-border-t-dropdown gl-p-2 gl-pt-0">
+        <gl-button
+          category="tertiary"
+          block
+          data-testid="clear-template"
+          class="gl-mt-2 !gl-justify-start"
+          @click="handleClear"
+        >
+          {{ s__('WorkItem|No template') }}
+        </gl-button>
         <gl-button
           category="tertiary"
           block

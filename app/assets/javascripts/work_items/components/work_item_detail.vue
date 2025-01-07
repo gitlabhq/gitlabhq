@@ -311,6 +311,9 @@ export default {
     parentWorkItem() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
     },
+    parentWorkItemId() {
+      return this.parentWorkItem?.id;
+    },
     hasParent() {
       const { workItemType, parentWorkItem, hasSubepicsFeature } = this;
 
@@ -698,6 +701,7 @@ export default {
       :work-item-author-id="workItemAuthorId"
       :is-group="isGroupWorkItem"
       :allowed-child-types="allowedChildTypes"
+      :parent-id="parentWorkItemId"
       @hideStickyHeader="hideStickyHeader"
       @showStickyHeader="showStickyHeader"
       @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
@@ -795,6 +799,7 @@ export default {
                 :work-item-state="workItem.state"
                 :has-children="hasChildren"
                 :has-parent="shouldShowAncestors"
+                :parent-id="parentWorkItemId"
                 :work-item-author-id="workItemAuthorId"
                 :can-create-related-item="workItemLinkedItems !== undefined"
                 :is-group="isGroupWorkItem"
@@ -962,6 +967,7 @@ export default {
               :is-work-item-confidential="workItem.confidential"
               class="gl-pt-5"
               :use-h2="!isModal"
+              :parent-id="parentWorkItemId"
               @error="updateError = $event"
               @openReportAbuse="openReportAbuseModal"
             />

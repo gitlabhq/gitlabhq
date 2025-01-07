@@ -44,7 +44,7 @@ module Keeps
         migration_name = truncate_migration_name("Finalize#{migration['migration_job_name']}")
         PostDeploymentMigration::PostDeploymentMigrationGenerator
           .source_root('generator_templates/post_deployment_migration/post_deployment_migration/')
-        generator = ::PostDeploymentMigration::PostDeploymentMigrationGenerator.new([migration_name])
+        generator = ::PostDeploymentMigration::PostDeploymentMigrationGenerator.new([migration_name], { skip: true })
         migration_file = generator.invoke_all.first
         change.changed_files = [migration_file]
 

@@ -48,3 +48,11 @@ export const updateNoteErrorMessage = (e) => {
 
   return UPDATE_COMMENT_FORM.defaultError;
 };
+
+export const isSlashCommand = (message) => {
+  const trimmedMessage = message
+    ?.split('\n')
+    .filter((line) => line.trim() !== '')
+    .join('\n');
+  return trimmedMessage?.startsWith('/') || false;
+};

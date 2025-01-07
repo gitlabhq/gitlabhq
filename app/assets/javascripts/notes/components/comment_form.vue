@@ -24,7 +24,7 @@ import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
 import { COMMENT_FORM } from '../i18n';
-import { createNoteErrorMessages } from '../utils';
+import { createNoteErrorMessages, isSlashCommand } from '../utils';
 
 import issuableStateMixin from '../mixins/issuable_state';
 import CommentFieldLayout from './comment_field_layout.vue';
@@ -201,6 +201,9 @@ export default {
     shouldDisableField() {
       return this.isSubmitting && !this.isMeasuringCommentTemperature;
     },
+    shouldMeasureNoteTemperature() {
+      return !isSlashCommand(this.note) && this.glAbilities.measureCommentTemperature;
+    },
   },
   watch: {
     noteIsInternal(val) {
@@ -263,7 +266,7 @@ export default {
 
         this.isSubmitting = true;
 
-        if (this.glAbilities.measureCommentTemperature && shouldMeasureTemperature) {
+        if (this.shouldMeasureNoteTemperature && shouldMeasureTemperature) {
           this.isMeasuringCommentTemperature = true;
           this.$refs.commentTemperature.measureCommentTemperature();
           return;

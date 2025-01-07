@@ -80,6 +80,7 @@ export default {
         const urlHash = getLocationHash(); // If there is a code line hash in the URL we render with the simple viewer
         const useSimpleViewer = usePlain || urlHash?.startsWith('L') || !this.hasRichViewer;
 
+        if (this.isTooLarge) return;
         this.initHighlightWorker(this.blobInfo, this.isUsingLfs);
         this.switchViewer(useSimpleViewer ? SIMPLE_BLOB_VIEWER : RICH_BLOB_VIEWER); // By default, if present, use the rich viewer to render
       },
@@ -149,9 +150,14 @@ export default {
     hasRenderError() {
       return Boolean(this.viewer.renderError);
     },
+    isTooLarge() {
+      const { tooLarge, renderError } = this.viewer || {};
+      return tooLarge || renderError === 'collapsed';
+    },
     blobViewer() {
       const { fileType } = this.viewer;
-      return this.shouldLoadLegacyViewer ? null : loadViewer(fileType, this.isUsingLfs);
+      const { isTooLarge } = this;
+      return this.shouldLoadLegacyViewer ? null : loadViewer(fileType, this.isUsingLfs, isTooLarge);
     },
     shouldLoadLegacyViewer() {
       return LEGACY_FILE_TYPES.includes(this.blobInfo.fileType) || this.useFallback;
@@ -205,6 +211,9 @@ export default {
     },
     isUsingLfs() {
       return this.blobInfo.storedExternally && this.blobInfo.externalStorage === LFS_STORAGE;
+    },
+    shouldRenderAiGenie() {
+      return this.explainCodeAvailable && this.activeViewerType === 'simple' && !this.isTooLarge;
     },
   },
   watch: {
@@ -402,7 +411,7 @@ export default {
       />
     </div>
     <ai-genie
-      v-if="explainCodeAvailable && activeViewerType === 'simple'"
+      v-if="shouldRenderAiGenie"
       container-selector=".file-content"
       :file-path="path"
       class="gl-ml-7"

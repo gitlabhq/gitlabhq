@@ -55,48 +55,40 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
     shared_examples 'allows creation of bot with valid params' do
       it { expect { subject }.to change { User.count }.by(1) }
 
-      it 'creates resource bot user' do
-        response = subject
+      shared_examples_for 'creates a user with the correct attributes' do
+        it 'creates a user' do
+          response = subject
+          access_token = response.payload[:access_token]
+          namespace = resource.is_a?(Group) ? resource : resource.project_namespace
+          access_token.user.reload
 
-        access_token = response.payload[:access_token]
-        namespace = resource.is_a?(Group) ? resource : resource.project_namespace
-
-        expect(access_token.user.reload.user_type).to eq("project_bot")
-        expect(access_token.user.created_by_id).to eq(user.id)
-        expect(access_token.user.namespace.organization.id).to eq(resource.organization.id)
-        expect(access_token.organization.id).to eq(resource.organization.id)
-        expect(access_token.user.bot_namespace).to eq(namespace)
+          expect(access_token.user.confirmed?).to eq(true)
+          expect(access_token.user.user_type).to eq("project_bot")
+          expect(access_token.user.created_by_id).to eq(user.id)
+          expect(access_token.user.namespace.organization.id).to eq(resource.organization.id)
+          expect(access_token.organization.id).to eq(resource.organization.id)
+          expect(access_token.user.bot_namespace).to eq(namespace)
+        end
       end
 
-      context 'email confirmation status' do
-        shared_examples_for 'creates a user that has their email confirmed' do
-          it 'creates a user that has their email confirmed' do
+      context 'when created by an admin' do
+        let(:user) { create(:admin) }
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it_behaves_like 'creates a user with the correct attributes'
+        end
+
+        context 'when admin mode is disabled' do
+          it 'returns error' do
             response = subject
-            access_token = response.payload[:access_token]
 
-            expect(access_token.user.reload.confirmed?).to eq(true)
+            expect(response.error?).to be true
           end
         end
+      end
 
-        context 'when created by an admin' do
-          let(:user) { create(:admin) }
-
-          context 'when admin mode is enabled', :enable_admin_mode do
-            it_behaves_like 'creates a user that has their email confirmed'
-          end
-
-          context 'when admin mode is disabled' do
-            it 'returns error' do
-              response = subject
-
-              expect(response.error?).to be true
-            end
-          end
-        end
-
-        context 'when created by a non-admin' do
-          it_behaves_like 'creates a user that has their email confirmed'
-        end
+      context 'when created by a non-admin' do
+        it_behaves_like 'creates a user with the correct attributes'
       end
 
       context 'bot name' do

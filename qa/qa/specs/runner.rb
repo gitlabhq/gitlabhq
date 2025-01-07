@@ -82,7 +82,7 @@ module QA
             abort if status.nonzero?
           end
         elsif run_in_parallel?
-          ParallelRunner.run(args.flatten, Support::KnapsackReport.knapsack_report(example_data))
+          ParallelRunner.run(args.flatten, example_data)
         elsif Runtime::Scenario.attributes[:loop]
           LoopRunner.run(args.flatten)
         else

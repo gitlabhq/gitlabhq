@@ -22,6 +22,7 @@ Additional compute minutes:
 - Are [carried over to the next month](#monthly-rollover-of-purchased-compute-minutes),
   if any remain at the end of the month.
 - Bought on a trial subscription are available after the trial ends or upgrading to a paid plan.
+- Remain available when you change subscription tiers, including changes between paid tiers or to the Free tier.
 
 ## Purchase compute minutes for a group
 

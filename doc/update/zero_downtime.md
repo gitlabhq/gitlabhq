@@ -43,7 +43,7 @@ The zero-downtime upgrade process has the following requirements:
     - Any of these components that are not deployed in a HA fashion will need to be upgraded separately with downtime.
 - **You can only upgrade one minor release at a time**. So from `16.1` to `16.2`, not to `16.3`. If you skip releases, database modifications may be run in the wrong sequence [and leave the database schema in a broken state](https://gitlab.com/gitlab-org/gitlab/-/issues/321542).
 - You have to use [post-deployment migrations](../development/database/post_deployment_migrations.md).
-- [Zero-downtime upgrades are not available with the GitLab Charts](https://docs.gitlab.com/charts/installation/upgrade.html). This in turn means this type of upgrade is not available for Cloud Native Hybrid environments.
+- [Zero-downtime upgrades are not available with the GitLab Charts](https://docs.gitlab.com/charts/installation/upgrade.html) but are with [GitLab Operator](https://docs.gitlab.com/operator/gitlab_upgrades.html).
 
 In addition to the above, please be aware of the following considerations:
 

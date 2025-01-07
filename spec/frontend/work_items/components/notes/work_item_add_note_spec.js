@@ -53,6 +53,7 @@ describe('Work item add note', () => {
     isDiscussionResolvable = false,
     isResolving = false,
     isWorkItemConfidential = false,
+    parentId = null,
   } = {}) => {
     const workItemResponse = workItemByIidResponseFactory({
       canCreateNote,
@@ -83,6 +84,7 @@ describe('Work item add note', () => {
         isDiscussionResolvable,
         isResolving,
         isWorkItemConfidential,
+        parentId,
       },
     });
 
@@ -372,5 +374,11 @@ describe('Work item add note', () => {
         buttonTitle: 'Resolve thread',
       });
     });
+  });
+
+  it('passes the `parentId` prop down to the `WorkItemCommentForm` component', async () => {
+    await createComponent({ parentId: 'example-id' });
+
+    expect(findCommentForm().props('parentId')).toBe('example-id');
   });
 });

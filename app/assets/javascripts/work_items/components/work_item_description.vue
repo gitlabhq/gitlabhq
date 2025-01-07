@@ -365,6 +365,14 @@ export default {
       this.descriptionTemplate = null;
       this.showTemplateApplyWarning = false;
     },
+    handleClearTemplate() {
+      if (this.appliedTemplate) {
+        this.setDescriptionText('');
+        this.selectedTemplate = '';
+        this.descriptionTemplate = null;
+        this.appliedTemplate = '';
+      }
+    },
     handleResetTemplate() {
       if (this.canResetTemplate) {
         this.setDescriptionText(this.appliedTemplate);
@@ -389,6 +397,7 @@ export default {
           :full-path="fullPath"
           :template="selectedTemplate"
           @selectTemplate="handleSelectTemplate"
+          @clear="handleClearTemplate"
           @reset="handleResetTemplate"
         />
         <gl-alert

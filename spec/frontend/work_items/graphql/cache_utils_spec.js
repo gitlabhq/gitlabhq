@@ -4,11 +4,17 @@ import {
   removeHierarchyChild,
   addHierarchyChildren,
   setNewWorkItemCache,
+  updateCountsForParent,
 } from '~/work_items/graphql/cache_utils';
+import { findHierarchyWidgets } from '~/work_items/utils';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
-import { workItemHierarchyResponse, childrenWorkItems } from '../mock_data';
+import {
+  workItemHierarchyResponse,
+  childrenWorkItems,
+  workItemResponseFactory,
+} from '../mock_data';
 
 describe('work items graphql cache utils', () => {
   const id = 'gid://gitlab/WorkItem/10';
@@ -443,6 +449,65 @@ describe('work items graphql cache utils', () => {
           data: draftData,
         }),
       );
+    });
+  });
+
+  describe('updateCountsForParent', () => {
+    const mockWorkItemData = workItemResponseFactory();
+    const mockCache = {
+      readQuery: () => mockWorkItemData.data,
+      writeQuery: jest.fn(),
+    };
+    const workItemType = 'Task';
+
+    const getCounts = (data) =>
+      findHierarchyWidgets(data.workItem.widgets).rolledUpCountsByType.find(
+        (i) => i.workItemType.name === workItemType,
+      );
+
+    it('updates the cache with new parent data', () => {
+      const updatedParent = updateCountsForParent({
+        cache: mockCache,
+        parentId: mockWorkItemData.data.workItem.id,
+        workItemType,
+        isClosing: true,
+      });
+
+      expect(mockCache.writeQuery).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: updatedParent,
+        }),
+      );
+    });
+
+    it('increases closed count and decreases opened count when closing', () => {
+      const updatedParent = updateCountsForParent({
+        cache: mockCache,
+        parentId: mockWorkItemData.data.workItem.id,
+        workItemType,
+        isClosing: true,
+      });
+
+      const oldCounts = getCounts(mockWorkItemData.data);
+      const newCounts = getCounts(updatedParent);
+
+      expect(newCounts.countsByState.opened).toBeLessThan(oldCounts.countsByState.opened);
+      expect(newCounts.countsByState.closed).toBeGreaterThan(oldCounts.countsByState.closed);
+    });
+
+    it('decreases closed count and increases opened count when reopening', () => {
+      const updatedParent = updateCountsForParent({
+        cache: mockCache,
+        parentId: mockWorkItemData.data.workItem.id,
+        workItemType,
+        isClosing: false,
+      });
+
+      const oldCounts = getCounts(mockWorkItemData.data);
+      const newCounts = getCounts(updatedParent);
+
+      expect(newCounts.countsByState.opened).toBeGreaterThan(oldCounts.countsByState.opened);
+      expect(newCounts.countsByState.closed).toBeLessThan(oldCounts.countsByState.closed);
     });
   });
 });

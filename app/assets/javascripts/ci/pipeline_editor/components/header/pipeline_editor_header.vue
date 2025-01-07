@@ -56,9 +56,7 @@ export default {
       context() {
         return getQueryHeaders(this.pipelineEtag);
       },
-      query() {
-        return getPipelineIidQuery;
-      },
+      query: getPipelineIidQuery,
       skip() {
         return !this.commitSha;
       },

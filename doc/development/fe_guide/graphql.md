@@ -1208,7 +1208,7 @@ query getPipelineEtag {
 ```
 
 ```javascript
-/* pipeline_editor/components/header/pipeline_status.vue */
+/* pipeline_editor/components/header/pipeline_editor_header.vue */
 
 import getPipelineEtag from '~/ci/pipeline_editor/graphql/queries/client/pipeline_etag.query.graphql';
 
@@ -1220,8 +1220,8 @@ apollo: {
     context() {
       return getQueryHeaders(this.pipelineEtag);
     },
-    query: getPipelineQuery,
-    pollInterval: POLL_INTERVAL,
+    query: getPipelineIidQuery,
+    pollInterval: PIPELINE_POLL_INTERVAL,
   },
 }
 

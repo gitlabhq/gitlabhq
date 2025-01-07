@@ -13,6 +13,7 @@ module VerifiesWithEmail
 
   def verify_with_email
     return unless user = find_user || find_verification_user
+    return unless user.active?
 
     if session[:verification_user_id] && token = verification_params[:verification_token].presence
       # The verification token is submitted, verify it
@@ -92,8 +93,6 @@ module VerifiesWithEmail
   end
 
   def send_verification_instructions_email(user, token, secondary_email)
-    return unless user.can?(:receive_notifications)
-
     email = secondary_email || verification_email(user)
     Notify.verification_instructions_email(email, token: token).deliver_later
 

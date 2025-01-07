@@ -99,6 +99,11 @@ export default {
       default: false,
       required: false,
     },
+    parentId: {
+      type: String,
+      default: null,
+      required: false,
+    },
   },
   data() {
     return {
@@ -160,6 +165,7 @@ export default {
         autocompleteDataSources: this.autocompleteDataSources,
         isDiscussionLocked: this.isDiscussionLocked,
         isWorkItemConfidential: this.isWorkItemConfidential,
+        parentId: this.parentId,
       };
     },
     notesArray() {

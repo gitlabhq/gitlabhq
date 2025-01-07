@@ -11,6 +11,7 @@ import eventHub from '../event_hub';
 import issuableStateMixin from '../mixins/issuable_state';
 import resolvable from '../mixins/resolvable';
 import { COMMENT_FORM } from '../i18n';
+import { isSlashCommand } from '../utils';
 import CommentFieldLayout from './comment_field_layout.vue';
 
 export default {
@@ -245,6 +246,9 @@ export default {
     shouldDisableField() {
       return this.isSubmitting && !this.isMeasuringCommentTemperature;
     },
+    shouldMeasureNoteTemperature() {
+      return !isSlashCommand(this.updatedNoteBody) && this.glAbilities.measureCommentTemperature;
+    },
   },
   watch: {
     noteBody() {
@@ -322,7 +326,7 @@ export default {
     handleUpdate({ shouldMeasureTemperature = true } = {}) {
       const beforeSubmitDiscussionState = this.discussionResolved;
       this.isSubmitting = true;
-      if (shouldMeasureTemperature && this.glAbilities.measureCommentTemperature) {
+      if (shouldMeasureTemperature && this.shouldMeasureNoteTemperature) {
         this.runCommentTemperatureMeasurement('handleUpdate');
         return;
       }
@@ -355,7 +359,7 @@ export default {
         (this.discussionResolved && !this.isUnresolving) ||
         (!this.discussionResolved && this.isResolving);
       this.isSubmitting = true;
-      if (shouldMeasureTemperature && this.glAbilities.measureCommentTemperature) {
+      if (shouldMeasureTemperature && this.shouldMeasureNoteTemperature) {
         this.runCommentTemperatureMeasurement('handleAddToReview');
         return;
       }

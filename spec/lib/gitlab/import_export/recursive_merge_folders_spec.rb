@@ -40,7 +40,7 @@ RSpec.describe Gitlab::ImportExport::RecursiveMergeFolders do
     it 'raises an error for source path outside temp dir' do
       Dir.mktmpdir do |tmpdir|
         expect do
-          described_class.merge('/', tmpdir )
+          described_class.merge('/', tmpdir)
         end.to raise_error(StandardError, 'path / is not allowed')
       end
     end

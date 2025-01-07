@@ -18266,6 +18266,26 @@ CREATE SEQUENCE project_compliance_standards_adherence_id_seq
 
 ALTER SEQUENCE project_compliance_standards_adherence_id_seq OWNED BY project_compliance_standards_adherence.id;
 
+CREATE TABLE project_control_compliance_statuses (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    compliance_requirements_control_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    compliance_requirement_id bigint NOT NULL,
+    status smallint NOT NULL
+);
+
+CREATE SEQUENCE project_control_compliance_statuses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE project_control_compliance_statuses_id_seq OWNED BY project_control_compliance_statuses.id;
+
 CREATE TABLE project_custom_attributes (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -24340,6 +24360,8 @@ ALTER TABLE ONLY project_compliance_framework_settings ALTER COLUMN id SET DEFAU
 
 ALTER TABLE ONLY project_compliance_standards_adherence ALTER COLUMN id SET DEFAULT nextval('project_compliance_standards_adherence_id_seq'::regclass);
 
+ALTER TABLE ONLY project_control_compliance_statuses ALTER COLUMN id SET DEFAULT nextval('project_control_compliance_statuses_id_seq'::regclass);
+
 ALTER TABLE ONLY project_custom_attributes ALTER COLUMN id SET DEFAULT nextval('project_custom_attributes_id_seq'::regclass);
 
 ALTER TABLE ONLY project_daily_statistics ALTER COLUMN id SET DEFAULT nextval('project_daily_statistics_id_seq'::regclass);
@@ -26974,6 +26996,9 @@ ALTER TABLE ONLY project_compliance_framework_settings
 ALTER TABLE ONLY project_compliance_standards_adherence
     ADD CONSTRAINT project_compliance_standards_adherence_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY project_control_compliance_statuses
+    ADD CONSTRAINT project_control_compliance_statuses_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY project_custom_attributes
     ADD CONSTRAINT project_custom_attributes_pkey PRIMARY KEY (id);
 
@@ -29295,6 +29320,12 @@ CREATE INDEX idx_project_audit_events_on_author_id_created_at_id ON ONLY project
 CREATE INDEX idx_project_audit_events_on_project_created_at_id ON ONLY project_audit_events USING btree (project_id, created_at, id);
 
 CREATE INDEX idx_project_audit_events_on_project_id_author_created_at_id ON ONLY project_audit_events USING btree (project_id, author_id, created_at, id DESC);
+
+CREATE INDEX idx_project_control_statuses_on_namespace_id ON project_control_compliance_statuses USING btree (namespace_id);
+
+CREATE INDEX idx_project_control_statuses_on_project_id ON project_control_compliance_statuses USING btree (project_id);
+
+CREATE INDEX idx_project_control_statuses_on_requirement_id ON project_control_compliance_statuses USING btree (compliance_requirement_id);
 
 CREATE INDEX idx_project_repository_check_partial ON projects USING btree (repository_storage, created_at) WHERE (last_repository_check_at IS NULL);
 
@@ -33954,6 +33985,8 @@ CREATE UNIQUE INDEX uniq_audit_instance_event_filters_destination_id_and_event_t
 
 CREATE UNIQUE INDEX uniq_compliance_requirements_controls_name_requirement_id ON compliance_requirements_controls USING btree (compliance_requirement_id, name);
 
+CREATE UNIQUE INDEX uniq_compliance_statuses_control_project_id ON project_control_compliance_statuses USING btree (compliance_requirements_control_id, project_id);
+
 CREATE UNIQUE INDEX uniq_google_cloud_logging_configuration_namespace_id_and_name ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, name);
 
 CREATE UNIQUE INDEX uniq_idx_audit_events_aws_configs_stream_dests ON audit_events_amazon_s3_configurations USING btree (stream_destination_id) WHERE (stream_destination_id IS NOT NULL);
@@ -36415,6 +36448,9 @@ ALTER TABLE ONLY cluster_agent_url_configurations
 ALTER TABLE ONLY member_approvals
     ADD CONSTRAINT fk_1383c72212 FOREIGN KEY (member_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY project_control_compliance_statuses
+    ADD CONSTRAINT fk_13fb61bcfa FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY audit_events_streaming_headers
     ADD CONSTRAINT fk_1413743b7d FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -37294,6 +37330,9 @@ ALTER TABLE ONLY agent_user_access_group_authorizations
 ALTER TABLE ONLY vulnerability_occurrences
     ADD CONSTRAINT fk_97ffe77653 FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY project_control_compliance_statuses
+    ADD CONSTRAINT fk_9826fbb4a6 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY protected_branch_merge_access_levels
     ADD CONSTRAINT fk_98f3d044fe FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -37815,6 +37854,9 @@ ALTER TABLE ONLY software_license_policies
 
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_dccd3f98fc FOREIGN KEY (assignee_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY project_control_compliance_statuses
+    ADD CONSTRAINT fk_de8f1f0f22 FOREIGN KEY (compliance_requirement_id) REFERENCES compliance_requirements(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY protected_branches
     ADD CONSTRAINT fk_de9216e774 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -39993,6 +40035,9 @@ ALTER TABLE ONLY abuse_report_assignees
 
 ALTER TABLE ONLY cluster_groups
     ADD CONSTRAINT fk_rails_fdb8648a96 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_control_compliance_statuses
+    ADD CONSTRAINT fk_rails_fe05913910 FOREIGN KEY (compliance_requirements_control_id) REFERENCES compliance_requirements_controls(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY resource_label_events
     ADD CONSTRAINT fk_rails_fe91ece594 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;

@@ -63,7 +63,7 @@ RSpec.describe Gitlab::ImportExport::Project::ExportTask, :silence_stdout, featu
     let(:file_path) { '/invalid_file_path/test_project_export.tar.gz' }
 
     it 'logs an error' do
-      expect { subject }.to output(/Invalid file path: #{file_path}. Please provide correct file path/ ).to_stdout
+      expect { subject }.to output(/Invalid file path: #{file_path}. Please provide correct file path/).to_stdout
     end
 
     it 'returns false' do

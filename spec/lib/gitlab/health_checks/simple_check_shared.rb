@@ -56,7 +56,7 @@ RSpec.shared_context 'simple_check' do |metrics_prefix, check_name, success_resu
 
     context 'Check is timeouting' do
       before do
-        allow(described_class).to receive(:check ).and_return Timeout::Error.new
+        allow(described_class).to receive(:check).and_return Timeout::Error.new
       end
 
       it { is_expected.to have_attributes(success: false, message: "#{described_class.human_name} check timed out") }
@@ -64,7 +64,7 @@ RSpec.shared_context 'simple_check' do |metrics_prefix, check_name, success_resu
 
     context 'Check is raising an unhandled exception' do
       before do
-        allow(described_class).to receive(:check ).and_raise "unexpected error"
+        allow(described_class).to receive(:check).and_raise "unexpected error"
       end
 
       it { is_expected.to have_attributes(success: false, message: "unexpected #{described_class.human_name} check result: unexpected error") }

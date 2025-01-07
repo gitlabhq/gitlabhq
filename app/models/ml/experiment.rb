@@ -4,6 +4,7 @@ module Ml
   class Experiment < ApplicationRecord
     include AtomicInternalId
     include Sortable
+    include Presentable
 
     PACKAGE_PREFIX = 'ml_experiment_'
 

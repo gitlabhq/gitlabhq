@@ -726,6 +726,11 @@ module Types
       description: 'Finds machine learning models',
       resolver: Resolvers::Ml::FindModelsResolver
 
+    field :ml_experiments, ::Types::Ml::ExperimentType.connection_type,
+      null: true,
+      description: 'Find machine learning experiments',
+      resolver: ::Resolvers::Ml::FindExperimentsResolver
+
     field :allows_multiple_merge_request_assignees,
       GraphQL::Types::Boolean,
       method: :allows_multiple_merge_request_assignees?,

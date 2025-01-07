@@ -343,6 +343,20 @@ describe('WorkItemDescription', () => {
           expect(findDescriptionTemplateWarning().exists()).toBe(false);
         });
 
+        describe('clearing a template', () => {
+          it('sets the description to be empty when cleared', async () => {
+            // apply a template
+            findDescriptionTemplateWarningButton('apply').vm.$emit('click');
+            await nextTick();
+            expect(findMarkdownEditor().props('value')).toBe('A template');
+            // clear the template
+            findDescriptionTemplateListbox().vm.$emit('clear');
+            await nextTick();
+            // check we have cleared correctly
+            expect(findMarkdownEditor().props('value')).toBe('');
+          });
+        });
+
         describe('resetting a template', () => {
           it('sets the description back to the original template value when reset', async () => {
             // apply a template

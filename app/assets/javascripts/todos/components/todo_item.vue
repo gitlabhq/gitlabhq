@@ -133,18 +133,23 @@ export default {
           :is-hidden-by-saml="isHiddenBySaml"
         />
       </div>
-      <div class="sm:gl-order-3">
-        <todo-item-actions
-          :todo="todo"
-          :is-snoozed="isSnoozed"
-          @change="(id, markedAsDone) => $emit('change', id, markedAsDone)"
-        />
-      </div>
+      <todo-item-actions
+        class="sm:gl-order-3"
+        :todo="todo"
+        :is-snoozed="isSnoozed"
+        @change="(id, markedAsDone) => $emit('change', id, markedAsDone)"
+      />
 
-      <span v-if="isSnoozed" class="gl-px-2 gl-text-sm gl-text-subtle">
+      <span
+        v-if="isSnoozed"
+        class="gl-w-full gl-text-nowrap gl-px-2 gl-text-sm gl-text-subtle sm:gl-w-auto"
+      >
         {{ formattedSnoozedUntil }}
       </span>
-      <span v-else-if="hasReachedSnoozeTimestamp" class="gl-px-2 gl-text-sm gl-text-subtle">
+      <span
+        v-else-if="hasReachedSnoozeTimestamp"
+        class="gl-w-full gl-text-nowrap gl-px-2 gl-text-sm gl-text-subtle sm:gl-w-auto"
+      >
         <gl-icon name="clock" class="gl-mr-2" />
         {{ formattedCreatedAt }}
       </span>

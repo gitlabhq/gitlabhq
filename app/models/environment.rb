@@ -208,7 +208,7 @@ class Environment < ApplicationRecord
 
   state_machine :state, initial: :available do
     event :start do
-      transition stopped: :available
+      transition %i[stopped stopping] => :available
     end
 
     event :stop do

@@ -227,6 +227,11 @@ module Types
       description: 'Find machine learning models.',
       resolver: Resolvers::Ml::ModelDetailResolver
 
+    field :ml_experiment, ::Types::Ml::ExperimentType,
+      null: true,
+      description: 'Find a machine learning experiment.',
+      resolver: Resolvers::Ml::ExperimentDetailResolver
+
     field :integration_exclusions, Types::Integrations::ExclusionType.connection_type,
       null: true,
       experiment: { milestone: '17.0' },

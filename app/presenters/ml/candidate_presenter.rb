@@ -29,5 +29,9 @@ module Ml
 
       candidate.ci_build
     end
+
+    def creator
+      candidate.user
+    end
   end
 end

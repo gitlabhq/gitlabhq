@@ -1,15 +1,10 @@
 # frozen_string_literal: true
 
 class Packages::Conan::FileMetadatum < ApplicationRecord
-  include IgnorableColumns
-
   belongs_to :package_file, inverse_of: :conan_file_metadatum
   belongs_to :recipe_revision, inverse_of: :file_metadata, class_name: 'Packages::Conan::RecipeRevision'
   belongs_to :package_revision, inverse_of: :file_metadata, class_name: 'Packages::Conan::PackageRevision'
   belongs_to :package_reference, inverse_of: :file_metadata, class_name: 'Packages::Conan::PackageReference'
-
-  ignore_columns %i[recipe_revision package_revision],
-    remove_with: '17.8', remove_after: '2025-01-16'
 
   DEFAULT_REVISION = '0'
 
