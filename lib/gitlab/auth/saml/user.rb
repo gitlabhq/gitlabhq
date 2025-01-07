@@ -18,9 +18,7 @@ module Gitlab
           user ||= find_or_build_ldap_user if auto_link_ldap_user?
           user ||= build_new_user if signup_enabled?
 
-          if user
-            user.external = !(auth_hash.groups & saml_config.external_groups).empty? if external_users_enabled?
-          end
+          user&.external = external_user?
 
           user
         end
@@ -56,6 +54,20 @@ module Gitlab
 
         def auth_hash=(auth_hash)
           @auth_hash = Gitlab::Auth::Saml::AuthHash.new(auth_hash)
+        end
+
+        private
+
+        def external_user?
+          if external_provider?
+            true
+          elsif external_users_enabled?
+            intersecting_external_groups?
+          end
+        end
+
+        def intersecting_external_groups?
+          !(auth_hash.groups & saml_config.external_groups).empty?
         end
       end
     end

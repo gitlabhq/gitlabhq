@@ -214,7 +214,7 @@ module Gitlab
     #       vulnerability:
     #       https://gitlab.com/gitlab-org/labkit/blob/master/mask/matchers.go
     config.filter_parameters += [
-      /token$/,
+      /token$/i,
       /password/,
       /secret/,
       /key$/,

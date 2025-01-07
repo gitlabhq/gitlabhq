@@ -34,7 +34,7 @@ module Gitlab
       def call(env)
         return @app.call(env) unless Feature.enabled?(:check_path_traversal_middleware, Feature.current_request)
 
-        request = ::Rack::Request.new(env.dup)
+        request = ::ActionDispatch::Request.new(env.dup)
         log_params = {}
 
         return @app.call(env) unless path_traversal_attempt?(request, log_params)
@@ -56,7 +56,7 @@ module Gitlab
 
       def path_traversal_attempt?(request, log_params)
         with_duration_metric do |metric_labels|
-          original_fullpath = request.fullpath
+          original_fullpath = request.filtered_path
           exclude_query_parameters(request)
 
           decoded_fullpath = CGI.unescape(request.fullpath)
