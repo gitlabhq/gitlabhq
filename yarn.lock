@@ -1408,7 +1408,7 @@
   resolved "https://registry.yarnpkg.com/@gitlab/fonts/-/fonts-1.3.0.tgz#df89c1bb6714e4a8a5d3272568aa4de7fb337267"
   integrity sha512-DoMUIN3DqjEn7wvcxBg/b7Ite5fTdF5EmuOZoBRo2j0UBGweDXmNBi+9HrTZs4cBU660dOxcf1hATFcG3npbPg==
 
-"@gitlab/noop@^1.0.0":
+"@gitlab/noop@^1.0.0", jackspeak@^2.3.5, "jackspeak@npm:@gitlab/noop@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.0.tgz#b1ecb8ae6b2abf9b2e28927e4fbb05b7a1b2704b"
   integrity sha512-nOltttik5o2BjBo8LnyeTFzHoLpMY/XcCVOC+lm9ZwU+ivEam8wafacMF0KTbRn1KVrIoHYdo70QnqS+vJiOVw==
@@ -2372,15 +2372,15 @@
   resolved "https://registry.yarnpkg.com/@radix-ui/rect/-/rect-1.1.0.tgz#f817d1d3265ac5415dadc67edab30ae196696438"
   integrity sha512-A9+lCBZoaMJlVKcRBz2YByCG+Cp2t6nAnMnNba+XiWxnj6r4JUFqfsgwocMBZU9LPtdxC6wB56ySYpc7LQIoJg==
 
-"@rails/actioncable@7.0.8-4":
-  version "7.0.8-4"
-  resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-7.0.8-4.tgz#49468becfb78c7bd743175119500c345572c1c8a"
-  integrity sha512-J4kHC0B31d2d+lGGo2hFrxXV9MC6QL3/cCxZ/h6i9S14ZZmCs2B8HSdI311paXPBTZPmRPAO4sDqCXTZGuqkkg==
+"@rails/actioncable@7.0.807":
+  version "7.0.807"
+  resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-7.0.807.tgz#4798b3edf421c417bfc75eb141590fa4fc44d83d"
+  integrity sha512-UffOlYh3naMDQg/cmWTcV7yEOQvDMMi4iVgx8hK2oYBFS/RQ4ogicA/B7Ive26OVsebrnSzps+CqpPauG2xDSw==
 
-"@rails/ujs@7.0.8-4":
-  version "7.0.8-4"
-  resolved "https://registry.yarnpkg.com/@rails/ujs/-/ujs-7.0.8-4.tgz#2b35c24084eeb4dcc6ea7840efb8c6c7696f1b38"
-  integrity sha512-7b1cngKDOTh2SEYtGTU9FPTveYLkWG6X54lZF0aLltjPPtOvK28/JbDN5df5nSkvFMVecSktrFSh8QvQiluzow==
+"@rails/ujs@7.0.807":
+  version "7.0.807"
+  resolved "https://registry.yarnpkg.com/@rails/ujs/-/ujs-7.0.807.tgz#2f9cf852c5da1d24a12b59fe170682b84cac7e49"
+  integrity sha512-6DW28OZWiSFeZnKlr2QQ5bAH2QjjVW08FrDrBz5JpGxJ/WFa4cYa6SH7tDWEdsSChlJVc3wvUrh4CGBM/R9x1Q==
 
 "@remirror/core-constants@3.0.0":
   version "3.0.0"
@@ -9271,11 +9271,6 @@ iterall@^1.2.1:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/iterall/-/iterall-1.3.0.tgz#afcb08492e2915cbd8a0884eb93a8c94d0d72fea"
   integrity sha512-QZ9qOMdF+QLHxy1QIpUHUU1D5pS2CG2P69LF6L6CPjPYA/XMOmKV3PZpawHoAjHNyB0swdVTRxdYT4tbBbxqwg==
-
-jackspeak@^2.3.5, "jackspeak@npm:@gitlab/noop@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.0.tgz#b1ecb8ae6b2abf9b2e28927e4fbb05b7a1b2704b"
-  integrity sha512-nOltttik5o2BjBo8LnyeTFzHoLpMY/XcCVOC+lm9ZwU+ivEam8wafacMF0KTbRn1KVrIoHYdo70QnqS+vJiOVw==
 
 jed@^1.1.1:
   version "1.1.1"

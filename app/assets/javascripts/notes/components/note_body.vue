@@ -53,6 +53,16 @@ export default {
       required: false,
       default: '',
     },
+    autosaveKey: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    restoreFromAutosave: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     ...mapGetters(['getDiscussion', 'suggestionsCount', 'getSuggestionsFilePaths']),
@@ -191,6 +201,8 @@ export default {
       :help-page-path="helpPagePath"
       :discussion="discussion"
       :resolve-discussion="note.resolve_discussion"
+      :autosave-key="autosaveKey"
+      :restore-from-autosave="restoreFromAutosave"
       @handleFormUpdate="handleFormUpdate"
       @cancelForm="formCancelHandler"
     />

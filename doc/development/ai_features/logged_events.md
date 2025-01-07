@@ -33,12 +33,12 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: worker_enqueued
   - Level: info
   - Arguments:
-    - user_id: message.user.id
-    - resource_id: message.resource&.id
-    - resource_class: message.resource&.class&.name
-    - request_id: message.request_id
-    - action_name: message.ai_action
-    - options: job_options
+    - `user_id: message.user.id`
+    - `resource_id: message.resource&.id`
+    - `resource_class: message.resource&.class&.name`
+    - `request_id: message.request_id`
+    - `action_name: message.ai_action`
+    - `options: job_options`
   - Part of the system: abstraction_layer
   - Expanded logging?: yes
   - Rails: yes
@@ -64,12 +64,12 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: completion_service_performed
   - Level: info
   - Arguments:
-    - user_id: prompt_message.user.to_gid
-    - resource_id: prompt_message.resource&.to_gid
-    - action_name: prompt_message.ai_action
-    - request_id: prompt_message.request_id
-    - client_subscription_id: prompt_message.client_subscription_id
-    - completion_service_name: completion_class_name
+    - `user_id: prompt_message.user.to_gid`
+    - `resource_id: prompt_message.resource&.to_gid`
+    - `action_name: prompt_message.ai_action`
+    - `request_id: prompt_message.request_id`
+    - `client_subscription_id: prompt_message.client_subscription_id`
+    - `completion_service_name: completion_class_name`
   - Part of the system: abstraction_layer
   - Expanded logging?: yes
   - Rails: no
@@ -82,7 +82,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: answer_received
   - Level: info
   - Arguments:
-    - llm_answer_content: content
+    - `llm_answer_content: content`
   - Part of the system: duo_chat
   - Expanded logging?: yes
   - Rails: no
@@ -95,7 +95,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: final_answer_received
   - Level: info
   - Arguments:
-    - llm_answer_content: content
+    - `llm_answer_content: content`
   - Part of the system: duo_chat
   - Expanded logging?: yes
   - Rails: no
@@ -108,7 +108,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: default_final_answer_received
   - Level: info
   - Arguments:
-    - error_code: "A6000"
+    - `error_code: "A6000"`
   - Part of the system: duo_chat
   - Expanded logging?: yes
   - Rails: no
@@ -121,9 +121,9 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: error_returned
   - Level: error
   - Arguments:
-    - error: content
-    - error_code: error_code
-    - source: source
+    - `error: content`
+    - `error_code: error_code`
+    - `source: source`
   - Part of the system: duo_chat
   - Expanded logging?: no
   - Rails: no
@@ -136,7 +136,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: response_received
   - Level: info
   - Arguments:
-    - response_from_llm: response_body
+    - `response_from_llm: response_body`
   - Part of the system: abstraction_layer
   - Expanded logging?: yes
   - Rails: no
@@ -149,9 +149,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: error_response_received
   - Level: error
   - Arguments:
-    - response_from_llm: parsed_response.dig('detail'
-    - 0
-    - 'msg')
+    - `response_from_llm: parsed_response.dig('detail', 0, 'msg')`
   - Part of the system: abstraction_layer
   - Expanded logging?: no
   - Rails: no
@@ -164,10 +162,10 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: performing_request
   - Level: info
   - Arguments:
-    - url: url
-    - body: body
-    - timeout: timeout
-    - stream: stream
+    - `url: url`
+    - `body: body`
+    - `timeout: timeout`
+    - `stream: stream`
   - Part of the system: abstraction_layer
   - Expanded logging?: yes
   - Rails: no
@@ -193,8 +191,8 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: response_received
   - Level: info
   - Arguments:
-    - ai_request_type: request_type
-    - unit_primitive: unit_primitive
+    - `ai_request_type: request_type`
+    - `unit_primitive: unit_primitive`
   - Part of the system: abstraction_layer
   - Expanded logging?: no
   - Rails: no
@@ -207,9 +205,9 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: response_received
   - Level: info
   - Arguments:
-    - ai_request_type: request_type
-    - unit_primitive: unit_primitive
-    - response_from_llm: response_body
+    - `ai_request_type: request_type`
+    - `unit_primitive: unit_primitive`
+    - `response_from_llm: response_body`
   - Part of the system: abstraction_layer
   - Expanded logging?: yes
   - Rails: no
@@ -222,9 +220,9 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: performing_request
   - Level: info
   - Arguments:
-    - options: options
-    - ai_request_type: request_type
-    - unit_primitive: unit_primitive
+    - `options: options`
+    - `ai_request_type: request_type`
+    - `unit_primitive: unit_primitive`
   - Part of the system: abstraction_layer
   - Expanded logging?: no
   - Rails: no
@@ -237,7 +235,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: performing_request
   - Level: info
   - Arguments:
-    - options: options
+    - `options: options`
   - Part of the system: duo_chat
   - Expanded logging?: no
   - Rails: no
@@ -250,7 +248,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: response_received
   - Level: info
   - Arguments:
-    - response_from_llm: response
+    - `response_from_llm: response`
   - Part of the system: duo_chat
   - Expanded logging?: yes
   - Rails: no
@@ -289,7 +287,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: error
   - Level: error
   - Arguments:
-    - error_type: response.dig('error', 'type')
+    - `error_type: response.dig('error', 'type')`
   - Part of the system: duo_chat
   - Expanded logging?: no
   - Rails: no
@@ -302,7 +300,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: picked_tool
   - Level: info
   - Arguments:
-    - duo_chat_tool: tool_class.to_s
+    - `duo_chat_tool: tool_class.to_s`
   - Part of the system: duo_chat
   - Expanded logging?: no
   - Rails: no
@@ -315,9 +313,9 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: response_received
   - Level: info
   - Arguments:
-    - prompt: prompt[:prompt]
-    - response_from_llm: response
-    - unit_primitive: unit_primitive
+    - `prompt: prompt[:prompt]`
+    - `response_from_llm: response`
+    - `unit_primitive: unit_primitive`
   - Part of the system: duo_chat
   - Expanded logging?: yes
   - Rails: no
@@ -330,7 +328,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: error_response_received
   - Level: error
   - Arguments:
-    - error: data&.dig("error")
+    - `error: data&.dig("error")`
   - Part of the system: abstraction_layer
   - Expanded logging?: no
   - Rails: no
@@ -343,8 +341,8 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: response_received
   - Level: info
   - Arguments:
-    - prompt: final_prompt[:prompt]
-    - response_from_llm: final_prompt_result
+    - `prompt: final_prompt[:prompt]`
+    - `response_from_llm: final_prompt_result`
   - Part of the system: duo_chat
   - Expanded logging?: yes
   - Rails: no
@@ -357,7 +355,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: error_response_received
   - Level: error
   - Arguments:
-    - error: error.message
+    - `error: error.message`
   - Part of the system: duo_chat
   - Expanded logging?: no
   - Rails: no
@@ -370,7 +368,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: incorrect_response_received
   - Level: info
   - Arguments:
-    - error_message: content
+    - `error_message: content`
   - Part of the system: duo_chat
   - Expanded logging?: yes
   - Rails: no
@@ -383,7 +381,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: incorrect_response_received
   - Level: info
   - Arguments:
-    - picked_tool: cls.class.to_s
+    - `picked_tool: cls.class.to_s`
   - Part of the system: duo_chat
   - Expanded logging?: no
   - Rails: no
@@ -409,7 +407,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: incorrect_response_received
   - Level: error
   - Arguments:
-    - error_message: authorizer.message
+    - `error_message: authorizer.message`
   - Part of the system: duo_chat
   - Expanded logging?: no
   - Rails: no
@@ -422,7 +420,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: response_received
   - Level: info
   - Arguments:
-    - response_from_llm: content
+    - `response_from_llm: content`
   - Part of the system: duo_chat
   - Expanded logging?: yes
   - Rails: no
@@ -448,7 +446,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: incorrect_response_received
   - Level: info
   - Arguments:
-    - error_message: content
+    - `error_message: content`
   - Part of the system: duo_chat
   - Expanded logging?: yes
   - Rails: no
@@ -461,7 +459,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: permission
   - Level: info
   - Arguments:
-    - allowed: ability
+    - `allowed: ability`
   - Part of the system: feature
   - Expanded logging?: yes
   - Rails: no
@@ -474,7 +472,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: permission
   - Level: info
   - Arguments:
-    - allowed: ability
+    - `allowed: ability`
   - Part of the system: feature
   - Expanded logging?: yes
   - Rails: no
@@ -487,7 +485,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: response_received
   - Level: info
   - Arguments:
-    - response_from_llm: content
+    - `response_from_llm: content`
   - Part of the system: feature
   - Expanded logging?: yes
   - Rails: no
@@ -500,7 +498,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: prompt_content
   - Level: info
   - Arguments:
-    - prompt: prompt_text
+    - `prompt: prompt_text`
   - Part of the system: duo_chat
   - Expanded logging?: yes
   - Rails: no
@@ -526,7 +524,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: permission_denied
   - Level: info
   - Arguments:
-    - error_code: "M3003"
+    - `error_code: "M3003"`
   - Part of the system: abstraction_layer
   - Expanded logging?: no
   - Rails: no
@@ -539,7 +537,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: permission_denied
   - Level: info
   - Arguments:
-    - error_code: "M3004"
+    - `error_code: "M3004"`
   - Part of the system: abstraction_layer
   - Expanded logging?: no
   - Rails: no
@@ -552,7 +550,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: permission_denied
   - Level: info
   - Arguments:
-    - error_code: "M3002"
+    - `error_code: "M3002"`
   - Part of the system: abstraction_layer
   - Expanded logging?: no
   - Rails: no
@@ -565,8 +563,8 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: performing_request
   - Level: info
   - Arguments:
-    - unit_primitive: unit_primitive
-    - options: config
+    - `unit_primitive: unit_primitive`
+    - `options: config`
   - Part of the system: abstraction_layer
   - Expanded logging?: no
   - Rails: no
@@ -579,8 +577,8 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: response_received
   - Level: info
   - Arguments:
-    - unit_primitive: unit_primitive
-    - response_from_llm: response.to_json
+    - `unit_primitive: unit_primitive`
+    - `response_from_llm: response.to_json`
   - Part of the system: abstraction_layer
   - Expanded logging?: yes
   - Rails: no
@@ -593,7 +591,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: response_received
   - Level: info
   - Arguments:
-    - unit_primitive: unit_primitive
+    - `unit_primitive: unit_primitive`
   - Part of the system: abstraction_layer
   - Expanded logging?: no
   - Rails: no
@@ -606,7 +604,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: empty_response_received
   - Level: error
   - Arguments:
-    - unit_primitive: unit_primitive
+    - `unit_primitive: unit_primitive`
   - Part of the system: abstraction_layer
   - Expanded logging?: no
   - Rails: no
@@ -632,7 +630,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: tool_not_find
   - Level: error
   - Arguments:
-    - tool_name: tool_name
+    - `tool_name: tool_name`
   - Part of the system: duo_chat
   - Expanded logging?: no
   - Rails: no
@@ -645,7 +643,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: event_received
   - Level: info
   - Arguments:
-    - event: event
+    - `event: event`
   - Part of the system: duo_chat
   - Expanded logging?: yes
   - Rails: no
@@ -671,7 +669,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: performing_request
   - Level: info
   - Arguments:
-    - params: params
+    - `params: params`
   - Part of the system: duo_chat
   - Expanded logging?: yes
   - Rails: no
@@ -697,7 +695,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: error_returned
   - Level: error
   - Arguments:
-    - status: response.code
+    - `status: response.code`
   - Part of the system: duo_chat
   - Expanded logging?: no
   - Rails: no
@@ -710,7 +708,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: parsing_error
   - Level: warn
   - Arguments:
-    - event_json_size: event_json.length
+    - `event_json_size: event_json.length`
   - Part of the system: duo_chat
   - Expanded logging?: no
   - Rails: no
@@ -723,7 +721,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
   - Ai_event_name: parsing_error
   - Level: error
   - Arguments:
-    - event_type: event['type']
+    - `event_type: event['type']`
   - Part of the system: duo_chat
   - Expanded logging?: no
   - Rails: no

@@ -41,27 +41,10 @@ _quarantine:
       - gitlab-qa-run-*/**/test-metrics-*.json
 
 # ------------------------------------------
-# FF changes
-# ------------------------------------------
-
-# Run specs with feature flags set to the opposite of the default state
-instance-ff-inverse:
-  extends:
-    - .qa
-    - .parallel
-  variables:
-    QA_SCENARIO: Test::Instance::Image
-    QA_KNAPSACK_REPORT_NAME: instance
-    QA_FEATURE_FLAGS: $FEATURE_FLAGS
-  rules:
-    - !reference [.rules:test:feature-flags-set, rules]
-
-# ------------------------------------------
-# Jobs with parallel variant
+# Test jobs
 # ------------------------------------------
 
 # ========== instance ===========
-
 instance:
   extends:
     - .parallel
@@ -72,72 +55,20 @@ instance:
     QA_PARALLEL_PROCESSES: 6
   rules:
     - !reference [.rules:test:smoke-for-omnibus-mr, rules]
-    - !reference [.rules:test:feature-flags-set, rules]  # always run instance to validate ff change
-    - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
-
-instance-selective:
-  extends: .qa
-  variables:
-    QA_SCENARIO: Test::Instance::Image
-  rules:
-    - !reference [.rules:test:qa-selective, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
-
-instance-selective-parallel:
-  extends:
-    - .parallel
-    - .qa
-  variables:
-    QA_SCENARIO: Test::Instance::Image
-  rules:
-    - !reference [.rules:test:qa-selective-parallel, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
-      variables:
-        QA_TESTS: ""
 
 # ========== praefect ===========
-
 praefect:
   extends:
     - .parallel
     - .qa
-  parallel: 2
   variables:
     QA_SCENARIO: Test::Integration::Praefect
     QA_CAN_TEST_PRAEFECT: "true"
     QA_GITALY_TRANSACTIONS_ENABLED: "false"
-    KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/3_create/**/*_spec.rb"
   rules:
     - !reference [.rules:test:smoke-for-omnibus-mr, rules]
-    - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
-
-praefect-selective:
-  extends: .qa
-  variables:
-    QA_SCENARIO: Test::Integration::Praefect
-    QA_CAN_TEST_PRAEFECT: "true"
-    QA_GITALY_TRANSACTIONS_ENABLED: "false"
-  rules:
-    - !reference [.rules:test:qa-selective, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
-
-praefect-selective-parallel:
-  extends:
-    - .qa
-    - .parallel
-  parallel: 2
-  variables:
-    QA_SCENARIO: Test::Integration::Praefect
-    QA_CAN_TEST_PRAEFECT: "true"
-    QA_GITALY_TRANSACTIONS_ENABLED: "false"
-    KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/3_create/**/*_spec.rb"
-  rules:
-    - !reference [.rules:test:qa-selective-parallel, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
-      variables:
-        QA_TESTS: ""
 
 # ========== gitaly transactions enabled ===========
 # https://docs.gitlab.com/ee/architecture/blueprints/gitaly_transaction_management/
@@ -146,43 +77,14 @@ gitaly-transactions:
     - .parallel
     - .qa
     - .with-ignored-runtime-data
-  parallel: 2
   variables:
     QA_SCENARIO: Test::Integration::Praefect
     QA_CAN_TEST_PRAEFECT: "true"
-    KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/3_create/**/*_spec.rb"
     QA_GITALY_TRANSACTIONS_ENABLED: "true"
     QA_RUN_IN_PARALLEL: true
     QA_PARALLEL_PROCESSES: 6
   rules:
-    - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
-
-gitaly-transactions-selective:
-  extends: .qa
-  variables:
-    QA_SCENARIO: Test::Integration::Praefect
-    QA_CAN_TEST_PRAEFECT: "true"
-    QA_GITALY_TRANSACTIONS_ENABLED: "true"
-  rules:
-    - !reference [.rules:test:qa-selective, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
-
-gitaly-transactions-selective-parallel:
-  extends:
-    - .qa
-    - .parallel
-  parallel: 2
-  variables:
-    QA_SCENARIO: Test::Integration::Praefect
-    QA_CAN_TEST_PRAEFECT: "true"
-    QA_GITALY_TRANSACTIONS_ENABLED: "true"
-    KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/3_create/**/*_spec.rb"
-  rules:
-    - !reference [.rules:test:qa-selective-parallel, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
-      variables:
-        QA_TESTS: ""
 
 # ========== gitaly reftables backend ===========
 # Verifies that E2E tests that interact with the gitaly backend work when the reftables backend is in use
@@ -193,43 +95,12 @@ gitaly-reftables-backend:
     - .parallel
     - .qa
     - .with-ignored-runtime-data
-  parallel: 2
-  variables:
-    QA_SCENARIO: Test::Integration::Praefect
-    QA_CAN_TEST_PRAEFECT: "true"
-    KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/3_create/**/*_spec.rb"
-    QA_FEATURE_FLAGS: "gitaly_new_repo_reftable_backend=enabled"
-  rules:
-    - !reference [.rules:test:qa-parallel, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
-
-gitaly-reftables-backend-selective:
-  extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::Praefect
     QA_CAN_TEST_PRAEFECT: "true"
     QA_FEATURE_FLAGS: "gitaly_new_repo_reftable_backend=enabled"
   rules:
-    - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
-
-gitaly-reftables-enabled-backend-parallel:
-  extends:
-    - .qa
-    - .parallel
-    - .with-ignored-runtime-data
-  parallel: 2
-  variables:
-    QA_SCENARIO: Test::Integration::Praefect
-    QA_CAN_TEST_PRAEFECT: "true"
-    QA_GIT_DEFAULT_REF_FORMAT: 'reftable'
-    KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/3_create/**/*_spec.rb"
-    QA_FEATURE_FLAGS: "gitaly_new_repo_reftable_backend=enabled"
-  rules:
-    - !reference [.rules:test:qa-selective-parallel, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
-      variables:
-        QA_TESTS: ""
 
 # ========== git sha256 enabled ===========
 git-sha256-repositories:
@@ -238,37 +109,26 @@ git-sha256-repositories:
     - .parallel
     - .qa
     - .with-ignored-runtime-data
-  parallel: 5
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_USE_SHA256_REPOSITORY_OBJECT_STORAGE: true
     GITLAB_QA_OPTS: "--enable-feature support_sha256_repositories"
   rules:
-    - !reference [.rules:test:feature-flags-set, rules]
-    - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
-# ------------------------------------------
-# Non parallel jobs
-# ------------------------------------------
 
 gitaly-cluster:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::GitalyCluster
   rules:
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::GitalyCluster/
-    - !reference [.rules:test:manual, rules]
 
 group-saml:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::GroupSAML
   rules:
-    - !reference [.rules:test:ee-only, rules]
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::GroupSAML/
-    - !reference [.rules:test:manual, rules]
 
 oauth:
   extends:
@@ -280,18 +140,14 @@ oauth:
     QA_RSPEC_TAGS: --tag oauth
     GITLAB_QA_OPTS: --omnibus-config github_oauth
   rules:
-    - !reference [.rules:test:qa-default-branch, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
-    - !reference [.rules:test:manual, rules]
+    - if: $QA_SUITES =~ /Test::Integration::OAuth/
 
 instance-saml:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::InstanceSAML
   rules:
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::InstanceSAML/
-    - !reference [.rules:test:manual, rules]
 
 jira:
   extends:
@@ -299,54 +155,42 @@ jira:
   variables:
     QA_SCENARIO: Test::Integration::Jira
   rules:
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::Jira/
-    - !reference [.rules:test:manual, rules]
 
 integrations:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::Integrations
   rules:
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::Integrations/
-    - !reference [.rules:test:manual, rules]
 
 ldap-no-server:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::LDAPNoServer
   rules:
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::LDAPNoServer/
-    - !reference [.rules:test:manual, rules]
 
 ldap-tls:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::LDAPTLS
   rules:
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::LDAPTLS/
-    - !reference [.rules:test:manual, rules]
 
 ldap-no-tls:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::LDAPNoTLS
   rules:
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::LDAPNoTLS/
-    - !reference [.rules:test:manual, rules]
 
 mtls:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::MTLS
   rules:
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::Mtls/
-    - !reference [.rules:test:manual, rules]
 
 mattermost:
   extends:
@@ -354,9 +198,7 @@ mattermost:
   variables:
     QA_SCENARIO: Test::Integration::Mattermost
   rules:
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::Mattermost/
-    - !reference [.rules:test:manual, rules]
 
 registry:
   extends:
@@ -364,10 +206,7 @@ registry:
   variables:
     QA_SCENARIO: Test::Integration::Registry
   rules:
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::Registry/
-    - !reference [.rules:test:manual, rules]
-
 
 repository-storage:
   extends:
@@ -375,9 +214,7 @@ repository-storage:
   variables:
     QA_SCENARIO: Test::Instance::RepositoryStorage
   rules:
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Instance::RepositoryStorage/
-    - !reference [.rules:test:manual, rules]
 
 service-ping-disabled:
   extends:
@@ -386,9 +223,7 @@ service-ping-disabled:
   variables:
     QA_SCENARIO: Test::Integration::ServicePingDisabled
   rules:
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::ServicePingDisabled/
-    - !reference [.rules:test:manual, rules]
 
 smtp:
   extends:
@@ -396,9 +231,7 @@ smtp:
   variables:
     QA_SCENARIO: Test::Integration::SMTP
   rules:
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::SMTP/
-    - !reference [.rules:test:manual, rules]
 
 cloud-activation:
   extends:
@@ -407,29 +240,14 @@ cloud-activation:
     QA_SCENARIO: Test::Instance::Image
     QA_RSPEC_TAGS: --tag cloud_activation
   rules:
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Instance::CloudActivation/
-    - !reference [.rules:test:manual, rules]
-
-large-setup:
-  extends:
-    - .qa
-  variables:
-    QA_SCENARIO: Test::Instance::Image
-    QA_RSPEC_TAGS: --tag can_use_large_setup
-  rules:
-    - !reference [.rules:test:qa, rules]
-    - if: $QA_SUITES =~ /Test::Instance::LargeSetup/
-    - !reference [.rules:test:manual, rules]
 
 metrics:
   extends: .qa
   variables:
     QA_SCENARIO: Test::Integration::Metrics
   rules:
-    - !reference [.rules:test:qa, rules]
-    - if: $QA_SUITES =~ /Test::Instance::Metrics/
-    - !reference [.rules:test:manual, rules]
+    - if: $QA_SUITES =~ /Test::Integration::Metrics/
 
 elasticsearch:
   extends: .qa
@@ -439,9 +257,7 @@ elasticsearch:
     - !reference [.qa, before_script]
   rules:
     - !reference [.rules:test:ee-only, rules]
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::Elasticsearch/
-    - !reference [.rules:test:manual, rules]
 
 importers:
   extends:
@@ -450,21 +266,16 @@ importers:
     QA_SCENARIO: Test::Integration::Import
     QA_MOCK_GITHUB: "true"
   rules:
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::Import/
-    - !reference [.rules:test:manual, rules]
 
 # ========== ai-gateway ===========
-
 ai-gateway:
   extends:
     - .qa
   variables:
     QA_SCENARIO: Test::Integration::AiGateway
   rules:
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::AiGateway/
-    - !reference [.rules:test:manual, rules]
 
 ai-gateway-no-seat-assigned:
   extends:
@@ -472,9 +283,7 @@ ai-gateway-no-seat-assigned:
   variables:
     QA_SCENARIO: Test::Integration::AiGatewayNoSeatAssigned
   rules:
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoSeatAssigned/
-    - !reference [.rules:test:manual, rules]
 
 ai-gateway-no-add-on:
   extends:
@@ -485,9 +294,7 @@ ai-gateway-no-add-on:
     - export QA_EE_ACTIVATION_CODE=$QA_EE_ACTIVATION_CODE_NO_ADD_ON
     - !reference [.qa, before_script]
   rules:
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoAddOn/
-    - !reference [.rules:test:manual, rules]
 
 ai-gateway-no-license:
   extends:
@@ -498,9 +305,7 @@ ai-gateway-no-license:
     - unset QA_EE_LICENSE
     - !reference [.qa, before_script]
   rules:
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoLicense/
-    - !reference [.rules:test:manual, rules]
 
 # ========== continuous-vulnerability-scanning ===========
 
@@ -512,9 +317,7 @@ continuous-vulnerabiity-scanning:
     QA_MOCK_GITHUB: "true"
   rules:
     - !reference [.rules:test:ee-only, rules]
-    - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::ContinuousVulnerabilityScanning/
-    - !reference [.rules:test:manual, rules]
 
 # ------------------------------------------
 # Update jobs
@@ -528,7 +331,6 @@ update-minor:
     QA_RSPEC_TAGS: --tag health_check
   rules:
     - !reference [.rules:test:update, rules]
-    - !reference [.rules:test:manual, rules]
 
 update-major:
   extends:
@@ -539,7 +341,6 @@ update-major:
     QA_RSPEC_TAGS: --tag health_check
   rules:
     - !reference [.rules:test:update, rules]
-    - !reference [.rules:test:manual, rules]
 
 update-ee-to-ce:
   extends:
@@ -552,7 +353,6 @@ update-ee-to-ce:
   rules:
     - !reference [.rules:test:ce-only, rules]
     - !reference [.rules:test:update, rules]
-    - !reference [.rules:test:manual, rules]
 
 # ==========================================
 # Post test stage

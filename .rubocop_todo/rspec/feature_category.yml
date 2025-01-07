@@ -3335,7 +3335,6 @@ RSpec/FeatureCategory:
     - 'spec/models/concerns/subquery_spec.rb'
     - 'spec/models/concerns/subscribable_spec.rb'
     - 'spec/models/concerns/taggable_queries_spec.rb'
-    - 'spec/models/concerns/token_authenticatable_strategies/encryption_helper_spec.rb'
     - 'spec/models/concerns/transactions_spec.rb'
     - 'spec/models/concerns/usage_statistics_spec.rb'
     - 'spec/models/concerns/vulnerability_finding_signature_helpers_spec.rb'

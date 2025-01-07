@@ -39,7 +39,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   before_action only: [:show, :diffs, :rapid_diffs, :reports] do
-    push_frontend_feature_flag(:core_security_mr_widget_counts, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:ci_graphql_pipeline_mini_graph, project)

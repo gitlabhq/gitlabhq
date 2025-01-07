@@ -7,13 +7,14 @@ module QA
 
     subject(:pipeline_creator) do
       described_class.new(
-        scenario_examples,
+        test_files,
         logger: instance_double(Logger, info: nil, debug: nil),
         pipeline_path: tmp_dir,
         env: env
       )
     end
 
+    let(:test_files) { [] }
     let(:env) { {} }
     let(:tmp_dir) { Dir.mktmpdir }
     let(:project_root) { File.expand_path("../", Runtime::Path.qa_root) }
@@ -29,7 +30,7 @@ module QA
       end
 
       it "creates a noop pipeline" do
-        pipeline_creator.create_noop
+        described_class.create_noop(logger: instance_double(Logger, info: nil, debug: nil), pipeline_path: tmp_dir)
 
         expect(FileUtils).to have_received(:cp).with(File.join(project_root, ".gitlab/ci/_skip.yml"), cng_pipeline_file)
       end
@@ -84,8 +85,7 @@ module QA
           "GITLAB_SEMVER_VERSION" => gitlab_version,
           "GITLAB_QA_CACHE_KEY" => "qa-e2e-ruby-#{ruby_version}-#{md5_sum.hexdigest}",
           "FEATURE_FLAGS" => env["QA_FEATURE_FLAGS"],
-          "QA_TESTS" => env["QA_TESTS"],
-          "KNAPSACK_TEST_FILE_PATTERN" => env["KNAPSACK_TEST_FILE_PATTERN"]
+          "QA_SUITES" => scenario_class.to_s
         }.compact
       end
 
@@ -93,6 +93,7 @@ module QA
         stub_env("RUBY_VERSION", ruby_version)
         stub_env("CI_PROJECT_NAMESPACE", "gitlab-org")
 
+        allow(Tools::Ci::ScenarioExamples).to receive(:fetch).with(test_files).and_return(scenario_examples)
         allow(File).to receive(:read).and_call_original
         allow(File).to receive(:read).with(File.join(project_root, "VERSION")).and_return(gitlab_version)
 
@@ -128,6 +129,81 @@ module QA
           pipeline_creator.create
 
           expect(generated_cng_yaml).to include("some-other-job" => cng_pipeline_definition["some-other-job"])
+        end
+
+        context "with specific test files" do
+          let(:test_files) { ["some_spec.rb", "some_other_spec.rb"] }
+
+          context "without parallel" do
+            it "adds QA_TESTS variable to job definition" do
+              pipeline_creator.create
+
+              expect(generated_cng_yaml).to include(cng_pipeline_definition.deep_merge({
+                "cng-instance" => {
+                  "parallel" => 1,
+                  "variables" => {
+                    "QA_TESTS" => test_files.join(" ")
+                  }
+                }
+              }))
+            end
+          end
+
+          context "with parallel job" do
+            let(:runtime) { (60 * 60).to_f }
+
+            let(:cng_pipeline_definition) do
+              {
+                "cng-instance" => {
+                  "stage" => "test",
+                  "variables" => {
+                    "SOME_VAR" => "test"
+                  },
+                  "script" => "echo 'test'"
+                },
+                "some-other-job" => {
+                  "stage" => "report"
+                }
+              }
+            end
+
+            it "adds knapsack pattern variable to job definition" do
+              pipeline_creator.create
+
+              expect(generated_cng_yaml).to include(cng_pipeline_definition.deep_merge({
+                "cng-instance" => {
+                  "parallel" => 3,
+                  "variables" => {
+                    "KNAPSACK_TEST_FILE_PATTERN" => "{#{test_files.join(',')}}"
+                  }
+                }
+              }))
+            end
+          end
+        end
+
+        context "with skipped job and existing rule" do
+          let(:scenario_examples) { { scenario_class => [{ id: example, status: "pending" }] } }
+
+          let(:cng_pipeline_definition) do
+            {
+              "cng-instance" => {
+                "stage" => "test",
+                "rules" => [{ "if" => "condition" }, { "when" => "always" }],
+                "script" => "echo 'test'"
+              }
+            }
+          end
+
+          it "replaces existing rule with rule: never" do
+            pipeline_creator.create
+
+            expect(generated_cng_yaml).to include(cng_pipeline_definition.deep_merge({
+              "cng-instance" => {
+                "rules" => [{ "when" => "never" }]
+              }
+            }))
+          end
         end
 
         context "with multiple mapped jobs" do
@@ -175,7 +251,7 @@ module QA
         end
 
         context "with pipeline type without custom coefficient" do
-          let(:runtime) { (13 * 60).to_f }
+          let(:runtime) { (21 * 60).to_f }
 
           let(:omnibus_pipeline_definition) do
             {
@@ -228,7 +304,7 @@ module QA
 
             expect(generated_cng_yaml).to include(cng_pipeline_definition.deep_merge({
               "cng-instance" => {
-                "parallel" => 2
+                "parallel" => 3
               }
             }))
           end
@@ -291,7 +367,6 @@ module QA
           let(:env) do
             {
               "QA_FEATURE_FLAGS" => "foo,bar",
-              "QA_TESTS" => "foo,bar",
               "KNAPSACK_TEST_FILE_PATTERN" => "file_pattern"
             }
           end
@@ -317,7 +392,7 @@ module QA
           it "raises an error" do
             expect { pipeline_creator.create }.to raise_error(
               RuntimeError,
-              "Job definition not found for job 'cng-instance'"
+              "Job definition not found for job 'cng-instance' in pipeline: test_on_cng"
             )
           end
         end

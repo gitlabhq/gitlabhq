@@ -6,54 +6,54 @@ const processDraft = (draft) => ({
 });
 
 export default {
-  [types.ADD_NEW_DRAFT](state, draft) {
-    state.drafts.push(processDraft(draft));
-    if (state.drafts.length === 1) {
-      state.shouldAnimateReviewButton = true;
+  [types.ADD_NEW_DRAFT](draft) {
+    this.drafts.push(processDraft(draft));
+    if (this.drafts.length === 1) {
+      this.shouldAnimateReviewButton = true;
     }
   },
 
-  [types.DELETE_DRAFT](state, draftId) {
-    state.drafts = state.drafts.filter((draft) => draft.id !== draftId);
+  [types.DELETE_DRAFT](draftId) {
+    this.drafts = this.drafts.filter((draft) => draft.id !== draftId);
   },
 
-  [types.SET_BATCH_COMMENTS_DRAFTS](state, drafts) {
-    state.drafts = drafts.map(processDraft);
+  [types.SET_BATCH_COMMENTS_DRAFTS](drafts) {
+    this.drafts = drafts.map(processDraft);
   },
 
-  [types.REQUEST_PUBLISH_DRAFT](state, draftId) {
-    state.currentlyPublishingDrafts.push(draftId);
+  [types.REQUEST_PUBLISH_DRAFT](draftId) {
+    this.currentlyPublishingDrafts.push(draftId);
   },
-  [types.RECEIVE_PUBLISH_DRAFT_SUCCESS](state, draftId) {
-    state.currentlyPublishingDrafts = state.currentlyPublishingDrafts.filter(
+  [types.RECEIVE_PUBLISH_DRAFT_SUCCESS](draftId) {
+    this.currentlyPublishingDrafts = this.currentlyPublishingDrafts.filter(
       (publishingDraftId) => publishingDraftId !== draftId,
     );
-    state.drafts = state.drafts.filter((d) => d.id !== draftId);
+    this.drafts = this.drafts.filter((d) => d.id !== draftId);
   },
-  [types.RECEIVE_PUBLISH_DRAFT_ERROR](state, draftId) {
-    state.currentlyPublishingDrafts = state.currentlyPublishingDrafts.filter(
+  [types.RECEIVE_PUBLISH_DRAFT_ERROR](draftId) {
+    this.currentlyPublishingDrafts = this.currentlyPublishingDrafts.filter(
       (publishingDraftId) => publishingDraftId !== draftId,
     );
   },
 
-  [types.REQUEST_PUBLISH_REVIEW](state) {
-    state.isPublishing = true;
+  [types.REQUEST_PUBLISH_REVIEW]() {
+    this.isPublishing = true;
   },
-  [types.RECEIVE_PUBLISH_REVIEW_SUCCESS](state) {
-    state.isPublishing = false;
+  [types.RECEIVE_PUBLISH_REVIEW_SUCCESS]() {
+    this.isPublishing = false;
   },
-  [types.RECEIVE_PUBLISH_REVIEW_ERROR](state) {
-    state.isPublishing = false;
+  [types.RECEIVE_PUBLISH_REVIEW_ERROR]() {
+    this.isPublishing = false;
   },
-  [types.RECEIVE_DRAFT_UPDATE_SUCCESS](state, data) {
-    const index = state.drafts.findIndex((draft) => draft.id === data.id);
+  [types.RECEIVE_DRAFT_UPDATE_SUCCESS](data) {
+    const index = this.drafts.findIndex((draft) => draft.id === data.id);
 
     if (index >= 0) {
-      state.drafts.splice(index, 1, processDraft(data));
+      this.drafts.splice(index, 1, processDraft(data));
     }
   },
-  [types.TOGGLE_RESOLVE_DISCUSSION](state, draftId) {
-    state.drafts = state.drafts.map((draft) => {
+  [types.TOGGLE_RESOLVE_DISCUSSION](draftId) {
+    this.drafts = this.drafts.map((draft) => {
       if (draft.id === draftId) {
         return {
           ...draft,
@@ -64,10 +64,15 @@ export default {
       return draft;
     });
   },
-  [types.CLEAR_DRAFTS](state) {
-    state.drafts = [];
+  [types.CLEAR_DRAFTS]() {
+    this.drafts = [];
   },
-  [types.SET_REVIEW_BAR_RENDERED](state) {
-    state.reviewBarRendered = true;
+  [types.SET_REVIEW_BAR_RENDERED]() {
+    this.reviewBarRendered = true;
+  },
+  [types.SET_DRAFT_EDITING](state, { draftId, isEditing }) {
+    const draftIndex = state.drafts.findIndex((draft) => draft.id === draftId);
+    const draft = state.drafts[draftIndex];
+    state.drafts.splice(draftIndex, 1, { ...draft, isEditing });
   },
 };

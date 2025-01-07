@@ -115,6 +115,42 @@ RSpec.describe SessionsController, feature_category: :system_access do
           end.to raise_error(NoMethodError)
           expect(@request.env['warden']).not_to be_authenticated
         end
+
+        context 'when parameter sanitization is applied' do
+          let(:password) { User.random_password }
+          let(:reset_password_token) { user.send_reset_password_instructions }
+
+          let(:malicious_user_hash) do
+            {
+              user: {
+                login: user.username,
+                password: password,
+                remember_me: '1',
+                reset_password_token: user.send_reset_password_instructions,
+                admin: true,
+                require_two_factor_authentication: false
+              }
+            }
+          end
+
+          let(:sanitized_params) { controller.send(:user_params) }
+
+          it 'returns a hash of only permitted scalar keys', :aggregate_failures do
+            put :create, params: malicious_user_hash
+
+            expect(sanitized_params.to_h).to include({
+              login: user.username,
+              password: password,
+              remember_me: '1'
+            })
+
+            expect(sanitized_params.to_h).not_to include({
+              reset_password_token: user.send_reset_password_instructions,
+              admin: true,
+              require_two_factor_authentication: false
+            })
+          end
+        end
       end
 
       context 'when user with LDAP identity' do

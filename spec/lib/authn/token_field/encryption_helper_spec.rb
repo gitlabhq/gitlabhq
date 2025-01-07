@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TokenAuthenticatableStrategies::EncryptionHelper do
+RSpec.describe Authn::TokenField::EncryptionHelper, feature_category: :system_access do
   let(:encrypted_token) { described_class.encrypt_token('my-value-my-value-my-value') }
 
   describe '.encrypt_token' do
@@ -13,7 +13,9 @@ RSpec.describe TokenAuthenticatableStrategies::EncryptionHelper do
     it 'adds nonce at the end' do
       nonce = encrypted_token.last(described_class::NONCE_SIZE)
 
-      expect(nonce).to eq(::Digest::SHA256.hexdigest('my-value-my-value-my-value').bytes.take(described_class::NONCE_SIZE).pack('c*'))
+      expect(nonce).to eq(
+        ::Digest::SHA256.hexdigest('my-value-my-value-my-value').bytes.take(described_class::NONCE_SIZE).pack('c*')
+      )
     end
 
     it 'encrypts token' do

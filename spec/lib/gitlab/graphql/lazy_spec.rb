@@ -78,7 +78,7 @@ RSpec.describe Gitlab::Graphql::Lazy do
     end
 
     context 'when the value is a GraphQL lazy' do
-      subject { described_class.force(GitlabSchema.after_lazy(load(3)) { |x| x + 1 } ) }
+      subject { described_class.force(GitlabSchema.after_lazy(load(3)) { |x| x + 1 }) }
 
       it 'forces the evaluation' do
         expect(subject).to be 10

@@ -102,10 +102,10 @@ RSpec.describe TokenAuthenticatable, feature_category: :shared do
   end
 
   describe 'dynamic methods' do
-    let(:strategy) { instance_double(TokenAuthenticatableStrategies::Base, sensitive_fields: []) }
+    let(:strategy) { instance_double(Authn::TokenField::Base, sensitive_fields: []) }
 
     before do
-      allow(TokenAuthenticatableStrategies::Base)
+      allow(Authn::TokenField::Base)
         .to receive(:fabricate).with(anything, field, options)
         .and_return(strategy)
     end

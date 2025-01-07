@@ -6,6 +6,8 @@ module QA
       module Instance
         class CloudActivation < All
           tags :cloud_activation
+
+          pipeline_mappings test_on_omnibus: %w[cloud-activation]
         end
       end
     end

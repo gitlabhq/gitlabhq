@@ -4,8 +4,10 @@ module QA
   module Scenario
     module Test
       module Instance
-        class Metrics < All
-          tags :metrics
+        class HealthCheck < All
+          tags :health_check
+
+          pipeline_mappings test_on_cng: ["cng-qa-min-redis-version"]
         end
       end
     end

@@ -36,19 +36,19 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 # Custom permissions
 
-The following permissions are available. You can add these permissions in any combination
-to a base role to create a custom role.
+You can create a [custom role](../custom_roles.md) by adding one or more custom permissions to a base role.
 
-Some permissions require having other permissions enabled first. For example, administration of vulnerabilities (`admin_vulnerability`) can only be enabled if reading vulnerabilities (`read_vulnerability`) is also enabled.
-
-These requirements are documented in the `Required permission` column in the following table.
+NOTE:
+Some permissions depend on other permissions.
+For example, the `admin_vulnerability` permission requires you to also include the `read_vulnerability` permission.
+Any dependencies are noted in the `Description` column for each permission.
 <% custom_abilities_by_feature_category.sort.each do |category, abilities| %>
 
 ## <%= "#{humanize(category)}" %>
 
-| Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
-|:-----|:------------|:------------------|:---------|:--------------|:---------|
+| Name | Description | Introduced | Feature flag | Enabled |
+|:-----|:------------|:-----------|:-------------|:--------|
 <% abilities.each do |name, ability| %>
-| <%= "[`#{name}`](#{ability[:introduced_by_mr]})" %> | <%= ability[:requirement] %> | <%= ability[:description] %> | GitLab <%= "[#{ability[:milestone]}](#{ability[:introduced_by_issue]})" %> | <%= feature_flag(ability) %> | <%= enabled_link(ability) %> |
+| <%= "[`#{name}`](#{ability[:introduced_by_mr]})" %> | <%= ability[:description] %> | GitLab <%= "[#{ability[:milestone]}](#{ability[:introduced_by_issue]})" %> | <%= feature_flag(ability) %> | <%= enabled_link(ability) %> |
 <% end %>
 <% end %>

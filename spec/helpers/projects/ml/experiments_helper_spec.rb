@@ -107,6 +107,7 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
 
     it do
       is_expected.to eq({
+        'id' => experiment.id,
         'name' => experiment.name,
         'metadata' => experiment.metadata,
         'path' => "/#{project.full_path}/-/ml/experiments/#{experiment.iid}",
@@ -128,6 +129,7 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
 
     it do
       is_expected.to include({
+        'id' => experiment.id,
         'name' => experiment.name,
         'metadata' => experiment.metadata,
         'path' => "/#{project.full_path}/-/ml/experiments/#{experiment.iid}",

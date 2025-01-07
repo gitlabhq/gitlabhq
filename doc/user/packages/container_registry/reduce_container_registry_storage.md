@@ -32,8 +32,7 @@ To view the storage usage for the container registry:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Usage Quotas**.
 
-You cannot view container registry usage for self-managed instances, but this is
-proposed in [epic 5521](https://gitlab.com/groups/gitlab-org/-/epics/5521).
+For self-managed instances, you must [upgrade your container registry to use a metadata database](../../../administration/packages/container_registry_metadata_database.md).
 
 ## How container registry usage is calculated
 

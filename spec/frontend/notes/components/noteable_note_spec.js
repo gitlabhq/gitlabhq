@@ -504,4 +504,30 @@ describe('issue_note', () => {
       expect(findNoteBody().props().file.testId).toBe('diffFileTest');
     });
   });
+
+  describe('editing', () => {
+    it('respects isEditing prop on the note', () => {
+      createWrapper({
+        note: { ...note, isEditing: true },
+      });
+      expect(findNoteBody().props('isEditing')).toBe(true);
+    });
+
+    it('passes down restoreFromAutosave', () => {
+      createWrapper({
+        note: { ...note },
+        restoreFromAutosave: true,
+      });
+      expect(findNoteBody().props('restoreFromAutosave')).toBe(true);
+    });
+
+    it('passes down autosaveKey', () => {
+      const autosaveKey = 'autosave';
+      createWrapper({
+        note: { ...note },
+        autosaveKey,
+      });
+      expect(findNoteBody().props('autosaveKey')).toBe(autosaveKey);
+    });
+  });
 });

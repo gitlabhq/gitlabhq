@@ -14,48 +14,7 @@ workflow:
   if: $MR_CODE_PATTERNS == "true"
 
 .default-branch: &default-branch
-  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-
-# list of specific tests is used when it is small enough to run without knapsack parallelization
-.tests-set: &tests-set
-  if: $QA_TESTS != ""
-
-# pattern is used in case when specific tests are selected but the amount of tests requires multiple jobs
-.parallel-pattern-set: &parallel-pattern-set
-  if: $KNAPSACK_TEST_FILE_PATTERN != ""
-
-.rules:selective:
-  rules:
-    # Skip selective jobs if mr contains app code patterns
-    - <<: *mr-code-patterns
-      when: never
-    - <<: *parallel-pattern-set
-      when: never
-    - <<: *tests-set
-
-.rules:selective-parallel:
-  rules:
-    # Skip selective jobs if mr contains app code patterns
-    - <<: *mr-code-patterns
-      when: never
-    - <<: *tests-set
-      when: never
-    - <<: *parallel-pattern-set
-
-.rules:full:
-  rules:
-    # Run full test suite for application code changes
-    # TODO: Remove once proper dynamic code mapping is in place - https://gitlab.com/groups/gitlab-org/quality/quality-engineering/-/epics/47
-    - if: $MR_CODE_PATTERNS == "true"
-      variables:
-        QA_TESTS: ""
-        KNAPSACK_TEST_FILE_PATTERN: ""
-    # Run full suite when both selective execution variables are unpopulated
-    - if: $QA_TESTS == "" && $KNAPSACK_TEST_FILE_PATTERN == ""
-    - <<: *tests-set
-      when: never
-    - <<: *parallel-pattern-set
-      when: never
+  if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 .cng-deploy-cmd:
   script:
@@ -92,6 +51,7 @@ workflow:
     BUNDLE_WITHOUT: development
     RSPEC_LAST_RUN_RESULTS_FILE: "$CI_PROJECT_DIR/qa/tmp/examples.txt"
     CNG_FORCE_COLOR: "true"
+    DEPLOYMENT_TYPE: kind
     QA_DOCKER_NETWORK: host
     QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
@@ -132,8 +92,9 @@ workflow:
   extends: .cng-test
   parallel: 10
 
-.cng-test-no-parallel:
-  extends: .cng-test
+.with-coverband-arg:
+  variables:
+    EXTRA_DEPLOY_VALUES: --env COVERBAND_ENABLED=${COVERBAND_ENABLED}
 
 # ==========================================
 # Pre stage
@@ -168,48 +129,22 @@ cng-helm-cache:
         - qa/gems/gitlab-cng/lib/gitlab/cng/lib/kind/cluster.rb
 
 cng-instance:
-  extends: .cng-test-parallel
-  variables:
-    DEPLOYMENT_TYPE: kind
-    EXTRA_DEPLOY_VALUES: --env COVERBAND_ENABLED=${COVERBAND_ENABLED}
-  rules:
-    - if: $QA_SUITES !~ /Test::Instance::All/
-      when: never
-    - !reference [.rules:full, rules]
+  extends:
+    - .cng-test-parallel
+    - .with-coverband-arg
 
 cng-registry:
-  extends: .cng-test-no-parallel
+  extends:
+    - .cng-test
+    - .with-coverband-arg
   variables:
-    DEPLOYMENT_TYPE: kind
-    EXTRA_DEPLOY_VALUES: --env COVERBAND_ENABLED=${COVERBAND_ENABLED}
     QA_SCENARIO: Test::Integration::Registry
-
-cng-instance-selective-parallel:
-  extends: .cng-test-parallel
-  variables:
-    DEPLOYMENT_TYPE: kind
-  parallel: 2
-  rules:
-    - if: $QA_SUITES !~ /Test::Instance::All/
-      when: never
-    - !reference [.rules:selective-parallel, rules]
-
-cng-instance-selective:
-  extends: .cng-test
-  variables:
-    DEPLOYMENT_TYPE: kind
-  rules:
-    - if: $QA_SUITES !~ /Test::Instance::All/
-      when: never
-    - !reference [.rules:selective, rules]
 
 # == minimal supported redis version ==
 cng-qa-min-redis-version:
   extends: .cng-test
   variables:
-    DEPLOYMENT_TYPE: kind
-    QA_RSPEC_TAGS: --tag health_check
-    QA_TESTS: ""
+    QA_SCENARIO: Test::Instance::HealthCheck
   before_script:
     - |
       redis_version=$(awk -F "=" "/MIN_REDIS_VERSION =/ {print \$2}" $CI_PROJECT_DIR/lib/system_check/app/redis_version_check.rb | sed "s/['\" ]//g")
@@ -217,6 +152,7 @@ cng-qa-min-redis-version:
     - !reference [.cng-test, before_script]
   rules:
     - *mr-code-patterns  # run validation for minimal supported redis version only on application code changes
+    - *default-branch
 
 # ==========================================
 # Post test stage

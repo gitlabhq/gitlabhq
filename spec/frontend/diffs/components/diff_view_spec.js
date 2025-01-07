@@ -4,6 +4,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { throttle } from 'lodash';
 import DiffView from '~/diffs/components/diff_view.vue';
+import DraftNote from '~/batch_comments/components/draft_note.vue';
 
 jest.mock('lodash/throttle', () => jest.fn((fn) => fn));
 const lodash = jest.requireActual('lodash');
@@ -12,7 +13,6 @@ describe('DiffView', () => {
   const DiffExpansionCell = { template: `<div/>` };
   const DiffRow = { template: `<div/>` };
   const DiffCommentCell = { template: `<div/>` };
-  const DraftNote = { template: `<div/>` };
   const showCommentForm = jest.fn();
   const setSelectedCommentPosition = jest.fn();
   const getDiffRow = (wrapper) => wrapper.findComponent(DiffRow).vm;
@@ -48,10 +48,11 @@ describe('DiffView', () => {
     const propsData = {
       diffFile: { file_hash: '123' },
       diffLines: [],
+      autosaveKey: 'autosave',
       ...props,
     };
 
-    const stubs = { DiffExpansionCell, DiffRow, DiffCommentCell, DraftNote };
+    const stubs = { DiffExpansionCell, DiffRow, DiffCommentCell };
     return shallowMount(DiffView, { propsData, store, stubs });
   };
 
@@ -89,6 +90,7 @@ describe('DiffView', () => {
       props: { diffLines: [{ renderCommentRow: true, left: { lineDrafts: [{ isDraft: true }] } }] },
     });
     expect(wrapper.findComponent(DraftNote).exists()).toBe(true);
+    expect(wrapper.findComponent(DraftNote).props('autosaveKey')).toBe('autosave');
   });
 
   describe('drag operations', () => {

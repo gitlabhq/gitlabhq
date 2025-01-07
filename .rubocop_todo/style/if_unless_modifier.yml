@@ -24,8 +24,6 @@ Style/IfUnlessModifier:
     - 'app/models/concerns/routable.rb'
     - 'app/models/concerns/sha_attribute.rb'
     - 'app/models/concerns/timebox.rb'
-    - 'app/models/concerns/token_authenticatable_strategies/base.rb'
-    - 'app/models/concerns/token_authenticatable_strategies/encrypted.rb'
     - 'app/models/container_registry/event.rb'
     - 'app/models/customer_relations/contact.rb'
     - 'app/models/diff_viewer/base.rb'

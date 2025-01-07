@@ -35,6 +35,7 @@ Vue.use(VueApollo);
 describe('TabView', () => {
   let wrapper;
   let mockApollo;
+  let apolloClient;
 
   const defaultPropsData = {
     sort: 'name_desc',
@@ -53,6 +54,9 @@ describe('TabView', () => {
       propsData: { ...defaultPropsData, ...propsData },
       provide: { programmingLanguages },
     });
+
+    apolloClient = mockApollo.defaultClient;
+    jest.spyOn(apolloClient, 'resetStore');
   };
 
   const findProjectsList = () => wrapper.findComponent(ProjectsList);
@@ -61,6 +65,7 @@ describe('TabView', () => {
 
   afterEach(() => {
     mockApollo = null;
+    apolloClient = null;
   });
 
   describe.each`
@@ -113,7 +118,8 @@ describe('TabView', () => {
             findProjectsList().vm.$emit('refetch');
           });
 
-          it('refetches list', () => {
+          it('resets store and refetches list', () => {
+            expect(apolloClient.resetStore).toHaveBeenCalled();
             expect(handler[1]).toHaveBeenCalledTimes(2);
           });
         });

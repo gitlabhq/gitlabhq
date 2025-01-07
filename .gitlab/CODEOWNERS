@@ -12,6 +12,9 @@
 ## Allows release tooling, KAS version maintainers and the delivery team to update the KAS version
 /GITLAB_KAS_VERSION @project_278964_bot_77e28085fcec07f14dfd31c689824b5b @gitlab-org/maintainers/kas-version-maintainers @gitlab-org/maintainers/rails-backend @gitlab-org/delivery
 
+## Allows automated updates to E2E test knapsack reports
+/qa/knapsack/**/*.json @project_278964_bot_f559eb4d5c7c39b8a5e0b3ca0fe68d9e @gl-dx
+
 ## Files that are excluded from required approval
 ## These rules override the * rule above, so that changes to docs and templates
 ## can be merged by any user who has maintainer rights, but is not included in
@@ -1289,7 +1292,7 @@ lib/gitlab/checks/**
 /app/models/concerns/mirror_authentication.rb
 /app/models/concerns/select_for_project_authorization.rb
 /app/models/concerns/token_authenticatable.rb
-/app/models/concerns/token_authenticatable_strategies/
+/lib/authn/token_field/
 /app/models/oauth_access_grant.rb
 /app/models/oauth_access_token.rb
 /app/models/personal_access_token.rb

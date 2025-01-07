@@ -55,6 +55,11 @@ export default {
       required: false,
       default: null,
     },
+    autosaveKey: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     ...mapState('diffs', ['projectPath']),
@@ -171,6 +176,7 @@ export default {
           :diff-lines="mappedLines"
           :help-page-path="helpPagePath"
           :inline="isInlineView"
+          :autosave-key="autosaveKey"
         />
         <gl-loading-icon v-if="diffFile.renderingLines" size="lg" class="mt-3" />
       </template>
@@ -230,6 +236,7 @@ export default {
           <diff-file-drafts
             :file-hash="diffFileHash"
             :position-type="$options.IMAGE_DIFF_POSITION_TYPE"
+            :autosave-key="autosaveKey"
             class="diff-file-discussions"
           />
           <note-form

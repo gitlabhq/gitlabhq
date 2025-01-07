@@ -267,6 +267,7 @@ export default {
         this.isSubmitting = true;
 
         if (this.shouldMeasureNoteTemperature && shouldMeasureTemperature) {
+          this.saveNoteParams = { isDraft, withIssueAction };
           this.isMeasuringCommentTemperature = true;
           this.$refs.commentTemperature.measureCommentTemperature();
           return;
@@ -426,7 +427,7 @@ export default {
               :item-id="getNoteableData.id"
               :item-type="noteableType"
               :user-id="getUserData.id"
-              @save="handleSave({ shouldMeasureTemperature: false })"
+              @save="handleSave({ ...saveNoteParams, shouldMeasureTemperature: false })"
             />
             <div class="note-form-actions gl-font-size-0">
               <gl-form-checkbox

@@ -140,6 +140,7 @@ GitLab calculates change failure rate as the number of incidents divided by the 
 - [GitLab incidents](../../operations/incident_management/incidents.md) are tracked.
 - All incidents are production incidents, regardless of the environment.
 - Change failure rate is used primarily as high-level stability tracking, which is why in a given day, all incidents and deployments are aggregated into a joined daily rate. Adding specific relations between deployments and incidents is proposed in [issue 444295](https://gitlab.com/gitlab-org/gitlab/-/issues/444295).
+- Change failure rate calculates duplicate incidents as separate entries, which results in double counting. [Issue 480920](https://gitlab.com/gitlab-org/gitlab/-/issues/480920) proposes a solution for a more accurate calculation.
 
 For example, if you have 10 deployments (considering one deployment per day) with two incidents on the first day and one incident on the last day, then your change failure rate is 0.3.
 

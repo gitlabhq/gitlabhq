@@ -137,9 +137,13 @@ export default {
         this.programmingLanguages.find(({ id }) => id === parseInt(programmingLanguageId, 10))?.name
       );
     },
+    apolloClient() {
+      return this.$apollo.provider.defaultClient;
+    },
   },
   methods: {
     onRefetch() {
+      this.apolloClient.resetStore();
       this.$apollo.queries.projects.refetch();
     },
     onNext(endCursor) {

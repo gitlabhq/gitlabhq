@@ -9,9 +9,9 @@ import DesignNotePin from '~/vue_shared/components/design_management/design_note
 Vue.use(Vuex);
 
 describe('Batch comments diff file drafts component', () => {
-  let vm;
+  let wrapper;
 
-  function factory() {
+  function factory(propsData = {}) {
     const store = new Vuex.Store({
       modules: {
         batchComments: {
@@ -26,27 +26,34 @@ describe('Batch comments diff file drafts component', () => {
       },
     });
 
-    vm = shallowMount(DiffFileDrafts, {
+    wrapper = shallowMount(DiffFileDrafts, {
       store,
-      propsData: { fileHash: 'filehash', positionType: 'file' },
+      propsData: { fileHash: 'filehash', positionType: 'file', ...propsData },
     });
   }
 
   it('renders list of draft notes', () => {
     factory();
 
-    expect(vm.findAllComponents(DraftNote).length).toEqual(2);
+    expect(wrapper.findAllComponents(DraftNote).length).toEqual(2);
   });
 
   it('renders index of draft note', () => {
     factory();
 
-    const elements = vm.findAllComponents(DesignNotePin);
+    const elements = wrapper.findAllComponents(DesignNotePin);
 
     expect(elements.length).toEqual(2);
 
     expect(elements.at(0).props('label')).toEqual(1);
 
     expect(elements.at(1).props('label')).toEqual(2);
+  });
+
+  it('passes down autosaveKey prop to draft note', () => {
+    const autosaveKey = 'autosave';
+    factory({ autosaveKey });
+
+    expect(wrapper.findComponent(DraftNote).props('autosaveKey')).toEqual(autosaveKey);
   });
 });

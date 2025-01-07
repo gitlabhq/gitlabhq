@@ -207,7 +207,8 @@ This rule enforces the defined actions for any merge request based on the commit
 This action sets an approval rule to be required when conditions are met for at least one rule in
 the defined policy.
 
-> - [Added](https://gitlab.com/groups/gitlab-org/-/epics/12319) support for up to five separate `require_approval` actions in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `multiple_approval_actions`. Disabled by default.
+> - [Added](https://gitlab.com/groups/gitlab-org/-/epics/12319) support for up to five separate `require_approval` actions in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `multiple_approval_actions`.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/505374) in GitLab 17.8. Feature flag `multiple_approval_actions` removed.
 
 | Field | Type | Required | Possible values | Description |
 |-------|------|----------|-----------------|-------------|

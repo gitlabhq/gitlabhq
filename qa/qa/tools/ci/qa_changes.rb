@@ -18,10 +18,9 @@ module QA
           /Dockerfile\.assets/
         )
 
-        def initialize(mr_diff, mr_labels, additional_group_spec_list)
+        def initialize(mr_diff, mr_labels)
           @mr_diff = mr_diff
           @mr_labels = mr_labels
-          @additional_group_spec_list = additional_group_spec_list
         end
 
         # Specific specs to run
@@ -30,28 +29,14 @@ module QA
         def qa_tests
           return if mr_diff.empty? || dependency_changes
           return if only_spec_changes? && mr_diff.all? { |change| change[:deleted_file] }
+          # re-enable with gitlab-org/quality/analytics/team#18
+          # return selective_tests_from_code_paths_mapping if coverage_based_mapping?
+          return unless only_spec_changes?
 
-          if only_spec_changes?
-            return mr_diff
-              .reject { |change| change[:deleted_file] }
-              .map { |change| change[:path].delete_prefix("qa/") } # make paths relative to qa directory
-              .join(" ")
-          end
-
-          fetch_list_of_specs_or_directories
-        end
-
-        # Fetches list of E2E specs from code paths mapping OR list of spec directories from stage labels
-        #
-        # @return [String]
-        def fetch_list_of_specs_or_directories
-          if QA::Runtime::Env.selective_execution_improved_enabled? && non_qa_changes? && !targeting_stable_branch?
-            tests = selective_tests_from_code_paths_mapping
-            logger.info("Selected tests from mapping: '#{tests}'")
-            tests.nil? || tests.empty? ? nil : tests.join(" ")
-          elsif non_qa_changes? && mr_labels.any?
-            qa_spec_directories_for_devops_stage&.join(" ")
-          end
+          mr_diff
+            .reject { |change| change[:deleted_file] }
+            .map { |change| change[:path].delete_prefix("qa/") } # make paths relative to qa directory
+            .join(" ")
         end
 
         # Qa framework changes
@@ -107,8 +92,12 @@ module QA
         # @return [Array]
         attr_reader :selected_e2e_tests
 
-        # @return [Hash<String, Array<String>>]
-        attr_reader :additional_group_spec_list
+        # Use coverage based test mapping
+        #
+        # @return [Boolean]
+        def coverage_based_mapping?
+          QA::Runtime::Env.selective_execution_improved_enabled? && non_qa_changes? && !targeting_stable_branch?
+        end
 
         # Are the changed files only qa specs?
         #
@@ -124,39 +113,6 @@ module QA
           changed_files.none? { |file_path| file_path =~ QA_PATTERN }
         end
 
-        # Extract devops stage from MR labels
-        #
-        # @return [String] a devops stage
-        def devops_stage_from_mr_labels
-          mr_labels.find { |label| label =~ /^devops::/ }&.delete_prefix('devops::')
-        end
-
-        # Extract group name from MR labels
-        #
-        # @return [String] a group name
-        def group_name_from_mr_labels
-          mr_labels.find { |label| label =~ /^group::/ }&.delete_prefix('group::')
-        end
-
-        # Get qa spec directories for devops stage
-        #
-        # @return [Array] qa spec directories
-        def qa_spec_directories_for_devops_stage
-          devops_stage = devops_stage_from_mr_labels
-          return unless devops_stage
-
-          spec_dirs = stage_specs(devops_stage)
-          return if spec_dirs.empty?
-
-          grp_name = group_name_from_mr_labels
-          return spec_dirs if grp_name.nil?
-
-          additional_grp_specs = additional_group_spec_list[grp_name]
-          return spec_dirs if additional_grp_specs.nil?
-
-          spec_dirs + stage_specs(*additional_grp_specs)
-        end
-
         # Changes to gitlab dependencies
         #
         # @return [Boolean]
@@ -168,18 +124,24 @@ module QA
         #
         # @return [Array<String>]
         def changed_files
-          @changed_files ||= mr_diff.map { |change| change[:path] }
+          @changed_files ||= mr_diff.pluck(:path)
         end
 
         # Selective E2E tests based on code paths mapping
         #
-        # @return [array]
+        # @return [Array]
         def selective_tests_from_code_paths_mapping
           clean_map = code_paths_map&.each_with_object({}) do |(test_filename, code_mappings), hsh|
             name = test_filename.gsub("./", "").split(":").first
             hsh[name] = hsh.key?(name) ? (code_mappings + hsh[name]).uniq : code_mappings
           end
-          clean_map&.select { |_test, mappings| changed_files.any? { |file| mappings.include?("./#{file}") } }&.keys
+
+          tests = clean_map
+            &.select { |_test, mappings| changed_files.any? { |file| mappings.include?("./#{file}") } }
+            &.keys
+
+          logger.info("Selected tests from mapping: '#{tests}'")
+          tests&.join(" ")
         end
 
         # Get the mapping hash from GCP storage
@@ -187,14 +149,6 @@ module QA
         # @return [Hash]
         def code_paths_map
           @code_paths_map ||= QA::Tools::Ci::CodePathsMapping.new.import("master", "e2e-test-on-gdk")
-        end
-
-        # Devops stage specs
-        #
-        # @param [Array<String>] devops_stages
-        # @return [Array]
-        def stage_specs(*devops_stages)
-          Dir.glob("qa/specs/features/**/*/").select { |dir| dir =~ %r{\d+_(#{devops_stages.join('|')})/$} }
         end
       end
     end

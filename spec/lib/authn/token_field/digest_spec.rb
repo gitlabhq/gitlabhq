@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TokenAuthenticatableStrategies::Digest, feature_category: :system_access do
+RSpec.describe Authn::TokenField::Digest, feature_category: :system_access do
   let(:field) { 'token' }
   let(:digest_field) { 'token_digest' }
   let(:options) { { digest: true } }

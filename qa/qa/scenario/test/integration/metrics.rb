@@ -6,6 +6,8 @@ module QA
       module Integration
         class Metrics < Test::Instance::All
           tags :metrics
+
+          pipeline_mappings test_on_omnibus: %w[metrics]
         end
       end
     end

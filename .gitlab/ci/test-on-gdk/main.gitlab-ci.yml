@@ -4,41 +4,9 @@ include:
   - local: .gitlab/ci/qa-common/rules.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/variables.gitlab-ci.yml
 
-# code pattern changes
-.code-pattern-changes-with-selective-disabled: &code-pattern-changes-with-selective-disabled
-  if: $MR_CODE_PATTERNS == "true" && $SELECTIVE_EXECUTION_IMPROVED != "true"
-
-# code pattern changes with selective execution enabled
-.code-pattern-with-selective-enabled-knapsack-set: &code-pattern-with-selective-enabled-knapsack-set
-  if: $MR_CODE_PATTERNS == "true" && $KNAPSACK_TEST_FILE_PATTERN != "" && $SELECTIVE_EXECUTION_IMPROVED == "true"
-
-.code-pattern-with-selective-enabled-knapsack-unset: &code-pattern-with-selective-enabled-knapsack-unset
-  if: $MR_CODE_PATTERNS == "true" && $QA_TESTS != "" && $KNAPSACK_TEST_FILE_PATTERN == "" && $SELECTIVE_EXECUTION_IMPROVED == "true"
-
-.rules:gdk:qa-selective:
+workflow:
   rules:
-    - <<: *code-pattern-changes-with-selective-disabled
-      when: never
-    - <<: *code-pattern-with-selective-enabled-knapsack-set
-      when: never
-    - <<: *code-pattern-with-selective-enabled-knapsack-unset
-    - !reference [.rules:test:qa-selective, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
-
-.rules:gdk:qa-parallel:
-  rules:
-    # To account for cases where a group label is set which may trigger selective execution
-    # But we want to execute full suite on gdk in case of code-pattern-changes
-    - <<: *code-pattern-changes-with-selective-disabled
-      variables:
-        QA_TESTS: ""
-        KNAPSACK_TEST_FILE_PATTERN: ""
-    - <<: *code-pattern-with-selective-enabled-knapsack-unset
-      when: never
-    - <<: *code-pattern-with-selective-enabled-knapsack-set
-    - !reference [.rules:test:qa-parallel, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
-    - !reference [.rules:test:manual, rules]
+    - when: always
 
 .rules:test:gdk-load-balancer-changes:
   rules:
@@ -110,13 +78,6 @@ include:
     expire_in: 7 days
     when: always
 
-# Take the existing GDK docker image and reconfigure it with Postgres load
-# balancing. Adding 5s lag to 1 of the replicas to validate robustness of
-# the load balancer.
-.gdk-with-load-balancer-setup:
-  variables:
-    WITH_LOAD_BALANCER: "true"
-
 # ==========================================
 # Test stage
 # ==========================================
@@ -125,10 +86,8 @@ gdk-instance:
   extends:
     - .gdk-qa-base
     - .with-parallel
-    - .rules:gdk:qa-parallel
   variables:
     QA_SCENARIO: Test::Instance::All
-    QA_RUN_TYPE: gdk-instance
 
 gdk-instance-ff-inverse:
   extends: gdk-instance
@@ -136,14 +95,6 @@ gdk-instance-ff-inverse:
     QA_FEATURE_FLAGS: $FEATURE_FLAGS
   rules:
     - !reference [.rules:test:feature-flags-set, rules]
-
-gdk-instance-selective:
-  extends:
-    - .gdk-qa-base
-    - .rules:gdk:qa-selective
-  variables:
-    QA_SCENARIO: Test::Instance::All
-    QA_RUN_TYPE: gdk-instance
 
 gdk-instance-gitaly-transactions:
   extends: gdk-instance
@@ -153,18 +104,16 @@ gdk-instance-gitaly-transactions:
     - !reference [.rules:test:never-schedule-pipeline, rules]
     - !reference [.rules:test:gdk-gitaly-version-change, rules]
 
+# Take the existing GDK docker image and reconfigure it with Postgres load
+# balancing. Adding 5s lag to 1 of the replicas to validate robustness of
+# the load balancer.
 gdk-instance-with-load-balancer:
-  extends:
-    - .gdk-qa-base
-    - .gdk-with-load-balancer-setup
-    - .with-parallel
+  extends: gdk-instance
   variables:
-    QA_SCENARIO: Test::Instance::All
-    QA_RUN_TYPE: gdk-instance
+    WITH_LOAD_BALANCER: "true"
   rules:
     - !reference [".rules:test:never-schedule-pipeline", rules]
     - !reference [".rules:test:gdk-load-balancer-changes", rules]
-
 
 # ==========================================
 # Post test stage

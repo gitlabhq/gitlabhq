@@ -106,6 +106,11 @@ export default {
       required: false,
       default: true,
     },
+    restoreFromAutosave: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -416,6 +421,7 @@ export default {
           :disabled="shouldDisableField"
           supports-quick-actions
           :autofocus="autofocus"
+          :restore-from-autosave="restoreFromAutosave"
           @keydown.shift.meta.enter="handleKeySubmit((forceUpdate = true))"
           @keydown.shift.ctrl.enter="handleKeySubmit((forceUpdate = true))"
           @keydown.meta.enter.exact="handleKeySubmit()"

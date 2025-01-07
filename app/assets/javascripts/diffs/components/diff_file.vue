@@ -570,6 +570,7 @@ export default {
                 :file-hash="file.file_hash"
                 :show-pin="false"
                 :position-type="$options.FILE_DIFF_POSITION_TYPE"
+                :autosave-key="autosaveKey"
                 class="diff-file-discussions"
               />
             </template>
@@ -636,6 +637,7 @@ export default {
             :sast-data="sastData"
             :diff-file="file"
             :help-page-path="helpPagePath"
+            :autosave-key="autosaveKey"
             @load-file="requestDiff"
           />
         </template>

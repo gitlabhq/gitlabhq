@@ -321,6 +321,15 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       expect(localStorage.setItem).not.toHaveBeenCalled();
     });
 
+    it('can restore note directly from autosave', () => {
+      localStorage.setItem('autosave/issue/1234', 'foo edited');
+      buildWrapper({
+        propsData: { autosaveKey: 'issue/1234', value: 'foo', restoreFromAutosave: true },
+      });
+
+      expect(findTextarea().element.value).toBe('foo edited');
+    });
+
     describe('clear local storage event handler', () => {
       it('does not clear the local storage if the autosave key is not defined', async () => {
         buildWrapper();

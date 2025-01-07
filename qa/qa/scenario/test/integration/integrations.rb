@@ -6,6 +6,8 @@ module QA
       module Integration
         class Integrations < Test::Instance::All
           tags :integrations
+
+          pipeline_mappings test_on_omnibus: %w[integrations]
         end
       end
     end

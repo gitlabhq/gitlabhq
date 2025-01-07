@@ -68036,6 +68036,9 @@ msgstr ""
 msgid "reached maximum depth"
 msgstr ""
 
+msgid "read-only"
+msgstr ""
+
 msgid "recent activity"
 msgstr ""
 

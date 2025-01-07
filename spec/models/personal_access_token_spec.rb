@@ -666,7 +666,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
   end
 
   describe '#token' do
-    let(:random_bytes) { 'a' * TokenAuthenticatableStrategies::RoutableTokenGenerator::RANDOM_BYTES_LENGTH }
+    let(:random_bytes) { 'a' * Authn::TokenField::Generator::RoutableToken::RANDOM_BYTES_LENGTH }
     let(:devise_token) { 'devise-token' }
     let_it_be(:user) { create(:user) }
     let_it_be(:organization) { create(:organization) }
@@ -682,8 +682,8 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     subject(:token) { token_owner_record.token }
 
     before do
-      allow(TokenAuthenticatableStrategies::RoutableTokenGenerator)
-        .to receive(:random_bytes).with(TokenAuthenticatableStrategies::RoutableTokenGenerator::RANDOM_BYTES_LENGTH)
+      allow(Authn::TokenField::Generator::RoutableToken)
+        .to receive(:random_bytes).with(Authn::TokenField::Generator::RoutableToken::RANDOM_BYTES_LENGTH)
         .and_return(random_bytes)
       allow(Devise).to receive(:friendly_token).and_return(devise_token)
       allow(Settings).to receive(:cell).and_return({ id: 1 })

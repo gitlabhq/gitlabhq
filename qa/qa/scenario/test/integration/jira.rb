@@ -6,6 +6,8 @@ module QA
       module Integration
         class Jira < Test::Instance::All
           tags :jira
+
+          pipeline_mappings test_on_omnibus: %w[jira]
         end
       end
     end

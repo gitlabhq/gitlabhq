@@ -386,7 +386,6 @@ Style/InlineDisableAnnotation:
     - 'app/models/concerns/taggable_queries.rb'
     - 'app/models/concerns/taskable.rb'
     - 'app/models/concerns/time_trackable.rb'
-    - 'app/models/concerns/token_authenticatable_strategies/base.rb'
     - 'app/models/concerns/triggerable_hooks.rb'
     - 'app/models/concerns/with_uploads.rb'
     - 'app/models/container_repository.rb'

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TokenAuthenticatableStrategies::Encrypted, feature_category: :system_access do
+RSpec.describe Authn::TokenField::Encrypted, feature_category: :system_access do
   let(:field) { 'token' }
   let(:encrypted_field) { 'token_encrypted' }
   let(:encrypted_option) { :required }
@@ -15,7 +15,7 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted, feature_category: :sys
 
   let(:original_token) { 'my-value' }
   let(:encrypted_token) do
-    TokenAuthenticatableStrategies::EncryptionHelper.encrypt_token(original_token)
+    Authn::TokenField::EncryptionHelper.encrypt_token(original_token)
   end
 
   let(:encrypted_token_with_static_iv) do

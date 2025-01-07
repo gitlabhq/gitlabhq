@@ -65,12 +65,19 @@ describe('issue_note_body component', () => {
   });
 
   describe('isEditing', () => {
+    const autosaveKey = 'autosave';
+
     beforeEach(() => {
-      wrapper = createComponent({ props: { isEditing: true } });
+      wrapper = createComponent({
+        props: { isEditing: true, autosaveKey, restoreFromAutosave: true },
+      });
     });
 
     it('renders edit form', () => {
       expect(wrapper.findComponent(NoteForm).exists()).toBe(true);
+      expect(wrapper.findComponent(NoteForm).props('autosaveKey')).toBe(autosaveKey);
+      expect(wrapper.findComponent(NoteForm).props('autosaveKey')).toBe(autosaveKey);
+      expect(wrapper.findComponent(NoteForm).props('restoreFromAutosave')).toBe(true);
     });
 
     it.each`

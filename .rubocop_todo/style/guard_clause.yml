@@ -69,8 +69,6 @@ Style/GuardClause:
     - 'app/models/concerns/packages/debian/distribution_key.rb'
     - 'app/models/concerns/time_trackable.rb'
     - 'app/models/concerns/timebox.rb'
-    - 'app/models/concerns/token_authenticatable_strategies/base.rb'
-    - 'app/models/concerns/token_authenticatable_strategies/encrypted.rb'
     - 'app/models/custom_emoji.rb'
     - 'app/models/description_version.rb'
     - 'app/models/design_management/design.rb'

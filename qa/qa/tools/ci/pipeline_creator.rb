@@ -15,30 +15,39 @@ module QA
         # Runtime target in seconds for test run within single job
         #
         # @return [Float]
-        TEST_RUNTIME_TARGET = (12 * 60).to_f
+        TEST_RUNTIME_TARGET = (20 * 60).to_f
 
         # Additional coefficient to apply for parallel jobs calculation for fine tuning job count in specific pipeline:
         #  * jobs use parallel_tests to parallelize tests
         #  * tests are running slower than other environments (the case with test-on-gdk)
-        #  * environment build is faster, so test jobs can be slower
+        #  * environment build is faster, so it's feasible to run less jobs that take slightly longer
         #  * pipeline does not run in merge requests, so less CI load with fewer slower jobs is acceptable
         # @return [Hash]
         RUNTIME_COEFFICIENT = {
-          test_on_cng: 0.4, # cng supports parallel_tests, so less jobs are needed to retain target runtime
-          test_on_gdk: 0.65, # gdk build is faster, so parallel test job count can be lower
+          test_on_cng: 0.7, # cng supports parallel_tests, so less jobs are needed to retain target runtime
+          test_on_gdk: 1.0,
           test_on_omnibus: 1.0,
           test_on_omnibus_nightly: 1.0
         }.freeze
 
         RULE_NEVER = "rules:\n  - when: never\n"
 
-        # @param scenario_examples [Hash<Class, Array<Hash>>] executable examples for each scenario class
+        # Generate noop pipeline file definitions for all supported pipelines
+        #
+        # @param pipeline_path [String]
+        # @param logger [Logger]
+        # @return [void]
+        def self.create_noop(pipeline_path: "tmp", logger: Runtime::Logger.logger)
+          new([], pipeline_path: pipeline_path, logger: logger).create_noop
+        end
+
+        # @param tests [Array] specific tests to run
         # @param pipeline_path [String] path for generated pipeline files
         # @param env [Hash] environment configuration for generated pipelines
         # @param logger [Logger] logger instance
         # @return [void]
-        def initialize(scenario_examples, pipeline_path: "tmp", env: {}, logger: Runtime::Logger.logger)
-          @scenario_examples = scenario_examples
+        def initialize(tests, pipeline_path: "tmp", env: {}, logger: Runtime::Logger.logger)
+          @tests = tests
           @pipeline_path = pipeline_path
           @env = env
           @logger = logger
@@ -48,9 +57,10 @@ module QA
         #
         # @return [void]
         def create
-          logger.info("Creating E2E test pipeline definitions")
           updated_pipeline_definitions.each do |type, yaml|
-            File.write(generated_yml_file_name(type), "#{yaml}\n#{variables_section}\n")
+            file_name = generated_yml_file_name(type)
+            File.write(file_name, "#{yaml}\n#{variables_section}\n")
+            logger.info("Pipeline definition file created: '#{file_name}'")
           end
         end
 
@@ -58,14 +68,14 @@ module QA
         #
         # @return [void]
         def create_noop
-          logger.info("Creating noop E2E test pipeline definitions")
           SUPPORTED_PIPELINES.each { |type| FileUtils.cp(noop_pipeline, generated_yml_file_name(type)) }
+          logger.info("Created noop pipeline definitions for all E2E test pipelines")
         end
 
         private
 
-        # @return [Hash<Class, Array<String>]
-        attr_reader :scenario_examples
+        # @return [Array]
+        attr_reader :tests
 
         # @return [String] path for generated pipeline definition files
         attr_reader :pipeline_path
@@ -125,6 +135,13 @@ module QA
           File.join(pipeline_path, "#{pipeline_type.to_s.tr('_', '-')}-pipeline.yml")
         end
 
+        # Specific examples to be executed
+        #
+        # @return [Hash<Class, Array<String>]
+        def scenario_examples
+          @scenario_examples ||= ScenarioExamples.fetch(tests)
+        end
+
         # Additional variables section for generated pipeline
         #
         # @return [String]
@@ -134,32 +151,44 @@ module QA
             ruby_version = File.read(File.join(project_root, ".ruby-version")).strip
             vars = {
               "GITLAB_SEMVER_VERSION" => File.read(File.join(project_root, "VERSION")),
+              "GITLAB_QA_CACHE_KEY" => "qa-e2e-ruby-#{ENV['RUBY_VERSION'] || ruby_version}-#{qa_cache_digest}",
               "FEATURE_FLAGS" => env["QA_FEATURE_FLAGS"],
-              "QA_TESTS" => env["QA_TESTS"],
-              "KNAPSACK_TEST_FILE_PATTERN" => env["KNAPSACK_TEST_FILE_PATTERN"],
-              "GITLAB_QA_CACHE_KEY" => "qa-e2e-ruby-#{ENV['RUBY_VERSION'] || ruby_version}-#{qa_cache_digest}"
+              # QA_SUITES is only used by test-on-omnibus due to pipeline being reusable in external projects
+              "QA_SUITES" => executable_qa_suites
             }.filter_map { |k, v| "  #{k}: \"#{v}\"" unless v.blank? }.join("\n")
 
             "#{variables}#{vars}"
           end
         end
 
+        # List of test suites that have executable tests
+        #
+        # @return [String]
+        def executable_qa_suites
+          @executable_qa_suites ||= scenario_runtimes
+            # shorten suite klass name if it matches pattern
+            # fallback to klass.to_s simplifies testing with anonymous classes
+            .filter_map { |klass, runtime| klass.to_s.match(/^QA::.*(Test\S+)$/)&.[](1) || klass.to_s if runtime > 0 }
+            .join(",")
+        end
+
         # Total runtime value for each scenario that has pipeline mapping defined
         #
         # @return [Hash<Class, Number>]
         def scenario_runtimes
-          scenario_examples.each_with_object(Hash.new { |hsh, key| hsh[key] = 0 }) do |(scenario, examples), runtimes|
-            next unless scenario.pipeline_mapping
+          @scenario_runtimes ||= scenario_examples
+            .each_with_object(Hash.new { |hsh, key| hsh[key] = 0 }) do |(scenario, examples), runtimes|
+              next unless scenario.pipeline_mapping
 
-            executable_examples = examples.reject { |example| example[:status] == "pending" }
-            # set runtime to 0 if particular scenario would skip all tests
-            next runtimes[scenario] = 0 if executable_examples.empty?
+              executable_examples = examples.reject { |example| example[:status] == "pending" }
+              # set runtime to 0 if particular scenario would skip all tests
+              next runtimes[scenario] = 0 if executable_examples.empty?
 
-            # Sum total runtime for all examples in scenario
-            # Default to small value if runtimes report has no value for particular example
-            # in order to not skip scenario entirely if report simply hasn't runtime data yet
-            executable_examples.each { |example| runtimes[scenario] += example_runtimes[example[:id]] || 0.01 }
-          end
+              # Sum total runtime for all examples in scenario
+              # Default to small value if runtimes report has no value for particular example
+              # in order to not skip scenario entirely if report simply hasn't runtime data yet
+              executable_examples.each { |example| runtimes[scenario] += example_runtimes[example[:id]] || 0.01 }
+            end
         end
 
         # Pipeline job runtimes
@@ -187,13 +216,17 @@ module QA
             logger.info("Processing pipeline '#{pipeline_type}'")
             definitions[pipeline_type] = jobs.reduce(pipeline_definitions[pipeline_type]) do |pipeline_yml, job|
               runtime_min = (job[:runtime] / 60).ceil
-              logger.info("  Updating job '#{job[:name]}' job based on total runtime of '#{runtime_min}' minutes")
+              logger.info("  Updating '#{job[:name]}' job based on total runtime of '#{runtime_min}' minutes")
               updated_job(job[:name], job[:runtime], pipeline_yml, pipeline_type)
             end
           end
         end
 
-        # Update job definition in pipeline yml with correct parallel jobs count and return updated pipeline definition
+        # Update job definition in pipeline yml
+        # Correctly set:
+        #   * job parallel count
+        #   * never rule if no tests are to be executed
+        #   * specific tests variables depending on job parallelization
         #
         # @param job_name [String]
         # @param job_runtime [Number]
@@ -202,14 +235,13 @@ module QA
         # @return [String]
         def updated_job(job_name, job_runtime, pipeline_yml, pipeline_type)
           job_definition = job_definition(job_name, pipeline_yml)
-          raise "Job definition not found for job '#{job_name}'" unless job_definition
+          raise "Job definition not found for job '#{job_name}' in pipeline: #{pipeline_type}" unless job_definition
+          return pipeline_yml.sub(job_definition, set_job_never_rule(job_definition)) if job_runtime == 0
 
-          if job_runtime == 0
-            logger.info("  skipping job due to 0 runtime")
-            return pipeline_yml.sub(job_definition, set_job_never_rule(job_definition))
-          end
+          parallel_count = calculate_parallel_jobs_count(job_runtime, pipeline_type)
+          definition_with_parallel = update_job_parallel_count(job_definition, parallel_count)
 
-          pipeline_yml.sub(job_definition, update_job_parallel_count(job_definition, job_runtime, pipeline_type))
+          pipeline_yml.sub(job_definition, update_job_variables(definition_with_parallel, parallel_count))
         end
 
         # Get job definition from pipeline yaml
@@ -227,7 +259,8 @@ module QA
         # @param rule [String]
         # @return [String]
         def set_job_never_rule(job_definition)
-          existing_rule = job_definition.match(/^\s+rules:\n(?:\s{2}.*\n)+/)&.[](0)
+          logger.info("   setting rule definition to 'never'")
+          existing_rule = job_definition.match(/rules:\n(?:\s+-.*\n)+/)&.[](0)
           return "#{job_definition}  #{RULE_NEVER}" unless existing_rule
 
           job_definition.sub(existing_rule, RULE_NEVER)
@@ -236,17 +269,39 @@ module QA
         # Update job parallel count
         #
         # @param job_definition [String]
-        # @param job_runtime [Number]
-        # @param pipeline_type [Symbol]
+        # @param parallel_count [Integer]
         # @return [String]
-        def update_job_parallel_count(job_definition, job_runtime, pipeline_type)
-          parallel_count = calculate_parallel_jobs_count(job_runtime, pipeline_type)
+        def update_job_parallel_count(job_definition, parallel_count)
           pattern = /^(\s*parallel:) \d+$/
 
-          logger.info("  setting job parallel count to '#{parallel_count}'")
+          logger.info("   setting parallel count to '#{parallel_count}'")
           return job_definition.sub(pattern, "\\1 #{parallel_count}") if job_definition.match?(pattern)
 
           "#{job_definition}  parallel: #{parallel_count}\n"
+        end
+
+        # Set correct variable depending on parallel count
+        # If specific tests are passed, these need to be converted to knapsack pattern to work correctly with knapsack
+        # Otherwise specific spec files override tests passed by knapsack test allocator
+        #
+        # @param job_definition [String]
+        # @param parallel_count [Integer]
+        # @return [String]
+        def update_job_variables(job_definition, parallel_count)
+          return job_definition if tests.empty?
+
+          job_var = if parallel_count == 1
+                      logger.info("   setting specific tests '#{tests}' via QA_TESTS variable")
+                      "QA_TESTS: \"#{tests.join(' ')}\""
+                    else
+                      logger.info("   setting specific tests '#{tests}' via knapsack pattern variable")
+                      "KNAPSACK_TEST_FILE_PATTERN: \"{#{tests.join(',')}}\""
+                    end
+
+          variables_section = job_definition.match?(/\s+variables:\n/)
+          return "#{job_definition}  variables:\n    #{job_var}\n" unless variables_section
+
+          job_definition.sub(/(variables:\n)(\s+)/, "\\1\\2#{job_var}\n\\2")
         end
 
         # Calculate needed parallel job count

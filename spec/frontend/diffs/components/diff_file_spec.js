@@ -13,6 +13,7 @@ import DiffContentComponent from 'jh_else_ce/diffs/components/diff_content.vue';
 import DiffFileComponent from '~/diffs/components/diff_file.vue';
 import DiffFileHeaderComponent from '~/diffs/components/diff_file_header.vue';
 import DiffFileDiscussionExpansion from '~/diffs/components/diff_file_discussion_expansion.vue';
+import DiffFileDrafts from '~/batch_comments/components/diff_file_drafts.vue';
 
 import {
   EVT_DISCUSSIONS_ASSIGNED,
@@ -735,6 +736,37 @@ describe('DiffFile', () => {
       expect(wrapper.findByTestId('diff-file-discussions').exists()).toEqual(false);
     });
 
+    it('shows diff file drafts', () => {
+      const file = {
+        ...getReadableFile(),
+        discussions: [{ id: 1, position: { position_type: 'file' }, expandedOnDiff: true }],
+      };
+
+      createComponent({
+        file,
+        options: {
+          data: () => ({
+            noteableData: {
+              id: '1',
+              noteable_type: 'file',
+              noteableType: 'file',
+              diff_head_sha: '123abc',
+            },
+          }),
+        },
+        getters: {
+          notes: {
+            isLoggedIn: () => true,
+          },
+        },
+      });
+
+      expect(wrapper.findComponent(DiffFileDrafts).exists()).toEqual(true);
+      expect(wrapper.findComponent(DiffFileDrafts).props('autosaveKey')).toEqual(
+        'Autosave|Note/File/1/123abc/file/',
+      );
+    });
+
     it('calls toggleFileDiscussion when toggle is emited on expansion component', () => {
       const file = {
         ...getReadableFile(),
@@ -910,6 +942,12 @@ describe('DiffFile', () => {
         await nextTick();
 
         expect(clearDraft).toHaveBeenCalledWith('Autosave|Note/File/1/123abc/file/file_id');
+      });
+
+      it('passes autosaveKey prop to diff content', () => {
+        expect(wrapper.findComponent(DiffContentComponent).props('autosaveKey')).toBe(
+          'Autosave|Note/File/1/123abc/file/file_id',
+        );
       });
     });
   });

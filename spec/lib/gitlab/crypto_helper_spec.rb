@@ -68,6 +68,6 @@ RSpec.describe Gitlab::CryptoHelper do
   end
 
   def create_nonce
-    ::Digest::SHA256.hexdigest('my-value').bytes.take(TokenAuthenticatableStrategies::EncryptionHelper::NONCE_SIZE).pack('c*')
+    ::Digest::SHA256.hexdigest('my-value').bytes.take(Authn::TokenField::EncryptionHelper::NONCE_SIZE).pack('c*')
   end
 end

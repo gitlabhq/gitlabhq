@@ -83,6 +83,10 @@ class PasswordsController < Devise::PasswordsController
   def context_user
     resource
   end
+
+  def resource_params
+    super.permit(:email, :reset_password_token, :password, :password_confirmation)
+  end
 end
 
 PasswordsController.prepend_mod_with('PasswordsController')

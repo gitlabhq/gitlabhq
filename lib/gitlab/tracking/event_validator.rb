@@ -48,7 +48,14 @@ module Gitlab
       end
 
       def validate_additional_properties!
+        event_definition_attributes = Gitlab::Tracking::EventDefinition.find(event_name).to_h
+        event_definition_additional_properties = event_definition_attributes.fetch(:additional_properties, {})
+
         additional_properties.each_key do |property|
+          unless event_definition_additional_properties.has_key?(property)
+            Gitlab::AppJsonLogger.warn("Tracking event: #{event_name}, undocumented property: #{property}")
+          end
+
           next unless BASE_ADDITIONAL_PROPERTIES.has_key?(property)
 
           allowed_classes = BASE_ADDITIONAL_PROPERTIES[property]
@@ -57,11 +64,10 @@ module Gitlab
 
         # skip base properties validation. To be done in a separate MR as we have some non-compliant definitions
         custom_properties = additional_properties.except(*BASE_ADDITIONAL_PROPERTIES.keys)
-        event_definition_attributes = Gitlab::Tracking::EventDefinition.find(event_name).to_h
         allowed_types = CUSTOM_PROPERTIES_CLASSES
 
         custom_properties.each_key do |key|
-          unless event_definition_attributes[:additional_properties]&.include?(key)
+          unless event_definition_additional_properties.include?(key)
             error = InvalidPropertyError.new("Unknown additional property: #{key} for event_name: #{event_name}")
             log_invalid_property(error)
           end

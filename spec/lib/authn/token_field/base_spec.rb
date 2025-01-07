@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_access do
+RSpec.describe Authn::TokenField::Base, feature_category: :system_access do
   include ::TokenAuthenticatableMatchers
 
   let(:field) { 'token' }
@@ -40,7 +40,7 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
       it 'fabricates digest strategy object' do
         strategy = described_class.fabricate(test_class, field, digest: true)
 
-        expect(strategy).to be_a TokenAuthenticatableStrategies::Digest
+        expect(strategy).to be_a Authn::TokenField::Digest
       end
     end
 
@@ -48,7 +48,7 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
       it 'fabricates encrypted strategy object' do
         strategy = described_class.fabricate(test_class, field, encrypted: :required)
 
-        expect(strategy).to be_a TokenAuthenticatableStrategies::Encrypted
+        expect(strategy).to be_a Authn::TokenField::Encrypted
       end
     end
 
@@ -56,7 +56,7 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
       it 'fabricates insecure strategy object' do
         strategy = described_class.fabricate(test_class, field, something: :required)
 
-        expect(strategy).to be_a TokenAuthenticatableStrategies::Insecure
+        expect(strategy).to be_a Authn::TokenField::Insecure
       end
     end
 
@@ -173,8 +173,8 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
 
       shared_examples 'a routable token' do
         it 'delegates to RoutableTokenGenerator#generate_token' do
-          generator = instance_double(TokenAuthenticatableStrategies::RoutableTokenGenerator)
-          expect(TokenAuthenticatableStrategies::RoutableTokenGenerator)
+          generator = instance_double(Authn::TokenField::Generator::RoutableToken)
+          expect(Authn::TokenField::Generator::RoutableToken)
             .to receive(:new).with(
               token_owner_record,
               routing_payload: routable_token_payload[:payload],

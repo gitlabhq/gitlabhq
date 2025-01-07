@@ -191,6 +191,7 @@ export default {
       </div>
       <project-list
         :projects="projectList"
+        :namespace="namespace"
         :is-loading="$apollo.queries.projects.loading"
         :help-links="helpLinks"
         :sort-by="initialSortBy"

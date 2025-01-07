@@ -2,10 +2,10 @@
 
 require 'fast_spec_helper'
 
-require_relative '../../../../app/models/concerns/token_authenticatable_strategies/routable_token_generator'
-require_relative '../../../support/matchers/token_authenticatable_matchers'
+require_relative '../../../../../lib/authn/token_field/generator/routable_token'
+require_relative '../../../../support/matchers/token_authenticatable_matchers'
 
-RSpec.describe TokenAuthenticatableStrategies::RoutableTokenGenerator, feature_category: :system_access do
+RSpec.describe Authn::TokenField::Generator::RoutableToken, feature_category: :system_access do
   include ::TokenAuthenticatableMatchers
 
   let(:test_class) { Struct.new(:id) }

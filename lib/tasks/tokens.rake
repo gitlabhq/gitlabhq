@@ -2,9 +2,9 @@
 
 namespace :tokens do
   require_relative '../../app/models/concerns/token_authenticatable'
-  require_relative '../../app/models/concerns/token_authenticatable_strategies/base'
-  require_relative '../../app/models/concerns/token_authenticatable_strategies/insecure'
-  require_relative '../../app/models/concerns/token_authenticatable_strategies/digest'
+  require_relative '../../lib/authn/token_field/base'
+  require_relative '../../lib/authn/token_field/insecure'
+  require_relative '../../lib/authn/token_field/digest'
 
   desc "Reset all GitLab incoming email tokens"
   task reset_all_email: :environment do

@@ -200,16 +200,14 @@ e2e-test-pipeline-generate:
     - .qa:rules:determine-e2e-tests
   stage: prepare
   variables:
-    ENV_FILE: $CI_PROJECT_DIR/qa_tests_vars.env
     COLORIZED_LOGS: "true"
+    GENERATED_PIPELINE_PATH: "${CI_PROJECT_DIR}/qa/tmp"
   script:
-    - bundle exec rake "ci:detect_changes[$ENV_FILE]"
-    - cd $CI_PROJECT_DIR && scripts/generate-e2e-pipeline
+    - bundle exec rake "ci:generate_e2e_pipelines[$GENERATED_PIPELINE_PATH]"
   artifacts:
     expire_in: 1 day
     paths:
-      - '*-pipeline.yml'
-      - "${CI_PROJECT_DIR}/qa_tests_vars.env"
+      - "${GENERATED_PIPELINE_PATH}/*-pipeline.yml"
 
 # This is the start of the chain of E2E jobs for CE
 # After playing this, it'll follow up with:

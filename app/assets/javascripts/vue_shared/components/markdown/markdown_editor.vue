@@ -129,6 +129,11 @@ export default {
       required: false,
       default: () => [],
     },
+    restoreFromAutosave: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     let editingMode;
@@ -144,9 +149,12 @@ export default {
           localStorage.getItem(this.$options.EDITING_MODE_KEY) || EDITING_MODE_MARKDOWN_FIELD;
     }
 
+    const autosaveValue = this.autosaveKey ? getDraft(this.autosaveKey) : '';
+    const initialValue = this.restoreFromAutosave ? autosaveValue : this.value;
+
     return {
       alert: null,
-      markdown: this.value || (this.autosaveKey ? getDraft(this.autosaveKey) : '') || '',
+      markdown: initialValue || autosaveValue || '',
       editingMode,
       autofocused: false,
     };

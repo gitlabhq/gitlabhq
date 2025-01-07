@@ -119,4 +119,14 @@ describe.skip('Batch comments mutations', () => {
       expect(state.drafts).toEqual([]);
     });
   });
+
+  describe(types.SET_DRAFT_EDITING, () => {
+    it('sets draft editing mode', () => {
+      state.drafts.push({ id: 1, isEditing: false });
+
+      mutations[types.SET_DRAFT_EDITING](state, { draftId: 1, isEditing: true });
+
+      expect(state.drafts[0].isEditing).toBe(true);
+    });
+  });
 });

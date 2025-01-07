@@ -7,6 +7,8 @@ module QA
       module Integration
         class LDAPNoTLS < Test::Instance::All
           tags :ldap_no_tls
+
+          pipeline_mappings test_on_omnibus: %w[ldap-no-tls]
         end
       end
     end
