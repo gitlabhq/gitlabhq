@@ -11,7 +11,7 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
   let(:middleware) { described_class.new(fake_app) }
 
   describe '#call' do
-    let(:fullpath) { ::Rack::Request.new(env).fullpath }
+    let(:fullpath) { ::ActionDispatch::Request.new(env).filtered_path }
     let(:decoded_fullpath) { CGI.unescape(fullpath) }
     let(:graphql_query) do
       <<~QUERY

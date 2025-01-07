@@ -69,6 +69,11 @@ export default {
       required: false,
       default: true,
     },
+    parentId: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -138,6 +143,16 @@ export default {
         findHierarchyWidgets(this.childItem.widgets).hasChildren ||
         this.hierarchyWidget?.hasChildren
       );
+    },
+    shouldExpandChildren() {
+      // In case the parent is the same as the child,
+      // it is creating a cycle and recursively expanding the tree
+      // Issue details: https://gitlab.com/gitlab-org/gitlab/-/issues/498106
+      if (this.parentId === this.childItem.id) {
+        return false;
+      }
+
+      return this.hasChildren;
     },
     pageInfo() {
       return this.hierarchyWidget.pageInfo || {};
@@ -231,7 +246,7 @@ export default {
     <div class="gl-flex gl-items-start">
       <div v-if="hasIndirectChildren" class="gl-mr-2 gl-h-7 gl-w-5">
         <gl-button
-          v-if="hasChildren"
+          v-if="shouldExpandChildren"
           v-gl-tooltip.hover
           :title="chevronTooltip"
           :aria-label="chevronTooltip"
@@ -249,7 +264,7 @@ export default {
         class="gl-w-full"
         :class="{
           '!gl-border-x-0 !gl-border-b-1 !gl-border-t-0 !gl-border-solid gl-border-default !gl-pb-2':
-            isExpanded && hasChildren && !isLoadingChildren,
+            isExpanded && shouldExpandChildren && !isLoadingChildren,
         }"
       >
         <work-item-link-child-contents
@@ -280,6 +295,7 @@ export default {
         :is-top-level="false"
         :show-task-weight="showTaskWeight"
         :has-indirect-children="hasIndirectChildren"
+        :parent-id="parentId"
         @removeChild="$emit('removeChild', childItem)"
         @error="$emit('error', $event)"
         @click="$emit('click', $event)"

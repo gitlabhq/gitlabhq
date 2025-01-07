@@ -47,6 +47,13 @@ module StubRequests
     url.to_s
   end
 
+  def request_for_url(input_url)
+    env = Rack::MockRequest.env_for(input_url)
+    env['action_dispatch.parameter_filter'] = Gitlab::Application.config.filter_parameters
+
+    ActionDispatch::Request.new(env)
+  end
+
   private
 
   def parse_url(url)
