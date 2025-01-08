@@ -36,6 +36,16 @@ require('gitlab').setup({
 })
 ```
 
+## Disable `Started Code Suggestions LSP Integration` messages
+
+To change the minimal message level, add this to your configuration:
+
+```lua
+require('gitlab').setup({
+  minimal_message_level = vim.log.levels.ERROR,
+})
+```
+
 ## Report issues with the extension
 
 Report any issues, bugs, or feature requests in the

@@ -21,7 +21,7 @@ module Pages
     private
 
     def update_pages_project_settings!
-      pages_project_settings = params.slice(:pages_unique_domain_enabled, :pages_default_domain_redirect)
+      pages_project_settings = params.slice(:pages_unique_domain_enabled, :pages_primary_domain)
       return if pages_project_settings.empty?
 
       project.project_setting.update!(pages_project_settings)

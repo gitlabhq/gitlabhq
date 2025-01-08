@@ -68,10 +68,10 @@ module Pages
     end
     strong_memoize_attr :root_directory
 
-    def default_domain_redirect
-      project&.project_setting&.pages_default_domain_redirect
+    def primary_domain
+      project&.project_setting&.pages_primary_domain
     end
-    strong_memoize_attr :default_domain_redirect
+    strong_memoize_attr :primary_domain
 
     private
 

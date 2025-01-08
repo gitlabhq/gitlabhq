@@ -111,7 +111,7 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                   },
                   'unique_host' => nil,
                   'root_directory' => deployment.root_directory,
-                  'default_domain_redirect' => nil
+                  'primary_domain' => nil
                 }
               ]
             )
@@ -181,7 +181,7 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                   },
                   'unique_host' => 'unique-domain.example.com',
                   'root_directory' => 'public',
-                  'default_domain_redirect' => nil
+                  'primary_domain' => nil
                 }
               ]
             )
@@ -189,7 +189,7 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
         end
       end
 
-      context 'when querying a default domain redirect' do
+      context 'when querying a primary domain' do
         let_it_be(:pages_domain) { create(:pages_domain, domain: 'pages.io', project: project) }
 
         context 'when there are pages deployed for the related project' do
@@ -197,7 +197,7 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
 
           before do
             project.project_setting.update!(
-              pages_default_domain_redirect: 'https://pages.io',
+              pages_primary_domain: 'https://pages.io',
               pages_unique_domain: 'unique-domain',
               pages_unique_domain_enabled: true
             )
@@ -226,7 +226,7 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                   },
                   'unique_host' => 'unique-domain.example.com',
                   'root_directory' => 'public',
-                  'default_domain_redirect' => 'https://pages.io'
+                  'primary_domain' => 'https://pages.io'
                 }
               ]
             )
@@ -277,7 +277,7 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                     },
                     'unique_host' => nil,
                     'root_directory' => 'public',
-                    'default_domain_redirect' => nil
+                    'primary_domain' => nil
                   }
                 ]
               )
@@ -326,7 +326,7 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                     },
                     'unique_host' => nil,
                     'root_directory' => 'public',
-                    'default_domain_redirect' => nil
+                    'primary_domain' => nil
                   }
                 ]
               )

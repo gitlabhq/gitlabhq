@@ -249,7 +249,7 @@ RSpec.describe Gitlab::Pages, feature_category: :pages do
     end
   end
 
-  describe '#update_default_domain_redirect' do
+  describe '#update_primary_domain' do
     let(:project) { build(:project) }
 
     context 'when pages is not enabled' do
@@ -257,10 +257,10 @@ RSpec.describe Gitlab::Pages, feature_category: :pages do
         stub_pages_setting(enabled: false)
       end
 
-      it 'does not set pages default domain redirect' do
+      it 'does not set pages primary domain' do
         expect do
-          described_class.update_default_domain_redirect(project, 'http://example.com')
-        end.not_to change { project.project_setting.pages_default_domain_redirect }
+          described_class.update_primary_domain(project, 'http://example.com')
+        end.not_to change { project.project_setting.pages_primary_domain }
       end
     end
 
@@ -269,23 +269,23 @@ RSpec.describe Gitlab::Pages, feature_category: :pages do
         stub_pages_setting(enabled: true)
       end
 
-      it 'sets pages default domain redirect' do
+      it 'sets pages primary domain' do
         expect do
-          described_class.update_default_domain_redirect(project, 'http://example.com')
-        end.to change { project.project_setting.pages_default_domain_redirect }.from(nil).to('http://example.com')
+          described_class.update_primary_domain(project, 'http://example.com')
+        end.to change { project.project_setting.pages_primary_domain }.from(nil).to('http://example.com')
       end
 
-      context 'when pages default domain redirect is updated with blank' do
+      context 'when pages primary domain is updated with blank' do
         before do
           stub_pages_setting(enabled: true)
         end
 
-        it 'sets pages default domain redirect as nil' do
-          project.project_setting.update!(pages_default_domain_redirect: 'http://example.com')
+        it 'sets pages primary domain as nil' do
+          project.project_setting.update!(pages_primary_domain: 'http://example.com')
 
           expect do
-            described_class.update_default_domain_redirect(project, '')
-          end.to change { project.project_setting.pages_default_domain_redirect }.from('http://example.com').to(nil)
+            described_class.update_primary_domain(project, '')
+          end.to change { project.project_setting.pages_primary_domain }.from('http://example.com').to(nil)
         end
       end
     end

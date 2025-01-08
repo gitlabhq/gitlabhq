@@ -495,13 +495,12 @@ introduces a FIPS pipeline for CNG images. Images tagged for FIPS have the `-fip
 the `webservice` container has the following tags:
 
 - `master`
-- `master-ubi8`
+- `master-ubi`
 - `master-fips`
 
 #### Base images for FIPS Builds
 
-- Current: [UBI 8.10 Minimal](https://gitlab.com/gitlab-org/build/CNG/-/blob/master/ci_files/variables.yml?ref_type=heads#L4)
-- Under Evaluation: [UBI 9](https://gitlab.com/gitlab-org/build/CNG/-/merge_requests/1460)
+- Current: [UBI 9.5 Micro](https://gitlab.com/gitlab-org/build/CNG/-/blob/master/ci_files/variables.yml?ref_type=heads#L4)
 
 ### Testing merge requests with a FIPS pipeline
 

@@ -137,7 +137,7 @@ export default {
         class="sm:gl-order-3"
         :todo="todo"
         :is-snoozed="isSnoozed"
-        @change="(id, markedAsDone) => $emit('change', id, markedAsDone)"
+        @change="$emit('change')"
       />
 
       <span

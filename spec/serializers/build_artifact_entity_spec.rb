@@ -19,6 +19,10 @@ RSpec.describe BuildArtifactEntity do
       expect(subject[:name]).to eq "test:codequality"
     end
 
+    it 'exposes information about the file type' do
+      expect(subject).to include(:file_type)
+    end
+
     it 'exposes information about expiration of artifacts' do
       expect(subject).to include(:expired, :expire_at)
     end

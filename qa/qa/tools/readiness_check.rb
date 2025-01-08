@@ -85,6 +85,8 @@ module QA
       # @param response [RestClient::Response]
       # @return [Boolean]
       def cloudflare_response?(response)
+        return false unless response
+
         response.headers[:server] == "cloudflare" || response.code == 403
       end
 
@@ -102,6 +104,7 @@ module QA
       # @param response [RestClient::Response]
       # @return [void]
       def validate_readiness_via_api!(response)
+        raise "Failed to obtain valid http response from #{sign_in_url}" unless response
         raise "Got unsucessfull response code from #{sign_in_url}: #{response.code}" unless ok_response?(response)
         raise "Sign in page missing required elements: '#{elements_css}'" unless required_elements_present?(response)
       end
@@ -111,6 +114,9 @@ module QA
       # @return [RestClient::Response]
       def fetch_sign_in_page
         get(sign_in_url)
+      rescue StandardError => e
+        debug("Error fetching sign-in page: #{e}")
+        nil
       end
 
       # Validate response code is 200

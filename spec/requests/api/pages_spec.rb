@@ -108,9 +108,9 @@ RSpec.describe API::Pages, feature_category: :pages do
         end
       end
 
-      context 'and updates pages default domain redirect' do
+      context 'and updates pages primary domain' do
         let(:domain) { 'my.domain.com' }
-        let(:params) { { pages_default_domain_redirect: domain } }
+        let(:params) { { pages_primary_domain: domain } }
 
         before do
           create(:pages_domain, project: project, domain: domain)
@@ -120,7 +120,7 @@ RSpec.describe API::Pages, feature_category: :pages do
           patch api(path, admin, admin_mode: true), params: params
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['pages_default_domain_redirect']).to eq(domain)
+          expect(json_response['pages_primary_domain']).to eq(domain)
         end
       end
 
@@ -183,8 +183,8 @@ RSpec.describe API::Pages, feature_category: :pages do
       end
     end
 
-    context 'when pages default domain redirect is invalid' do
-      let(:invalid_params) { { pages_default_domain_redirect: 'other.domain.com' } }
+    context 'when pages primary domain is invalid' do
+      let(:invalid_params) { { pages_primary_domain: 'other.domain.com' } }
 
       before do
         create(:pages_domain, project: project, domain: 'my.domain.com')
@@ -193,17 +193,17 @@ RSpec.describe API::Pages, feature_category: :pages do
       it 'returns a 400 bad request' do
         patch api(path, admin, admin_mode: true), params: invalid_params
 
-        expected_message = '400 Bad request - The `pages_default_domain_redirect` attribute is missing from ' \
+        expected_message = '400 Bad request - The `pages_primary_domain` attribute is missing from ' \
           'the domain list in the Pages project configuration. Assign ' \
-          '`pages_default_domain_redirect` to the Pages project or reset it.'
+          '`pages_primary_domain` to the Pages project or reset it.'
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']).to eq(expected_message)
       end
     end
 
-    context 'when `pages_default_domain_redirect` is nil' do
-      let(:params) { { pages_default_domain_redirect: nil } }
+    context 'when `pages_primary_domain` is nil' do
+      let(:params) { { pages_primary_domain: nil } }
 
       before do
         create(:pages_domain, project: project, domain: 'my.domain.com')
@@ -213,7 +213,7 @@ RSpec.describe API::Pages, feature_category: :pages do
         patch api(path, admin, admin_mode: true), params: params
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['pages_default_domain_redirect']).to eq(nil)
+        expect(json_response['pages_primary_domain']).to eq(nil)
       end
     end
   end

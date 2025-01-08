@@ -7,7 +7,7 @@ module Gitlab
         class Database < Task
           def self.id = 'db'
 
-          def human_name = _('database')
+          def human_name = _('databases')
 
           def destination_path = 'db'
 
@@ -16,7 +16,7 @@ module Gitlab
           private
 
           def target
-            ::Gitlab::Backup::Cli::Targets::Database.new
+            ::Gitlab::Backup::Cli::Targets::Database.new(context)
           end
         end
       end

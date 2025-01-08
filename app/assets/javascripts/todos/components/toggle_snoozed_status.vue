@@ -1,14 +1,16 @@
 <script>
-import { GlDisclosureDropdown, GlTooltip } from '@gitlab/ui';
+import { GlButton, GlDisclosureDropdown, GlTooltip } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import dateFormat from '~/lib/dateformat';
 import { s__, sprintf } from '~/locale';
 import { nHoursAfter } from '~/lib/utils/datetime_utility';
 import { reportToSentry } from '~/ci/utils';
 import snoozeTodoMutation from './mutations/snooze_todo.mutation.graphql';
+import unSnoozeTodoMutation from './mutations/un_snooze_todo.mutation.graphql';
 
 export default {
   components: {
+    GlButton,
     GlDisclosureDropdown,
     GlTooltip,
   },
@@ -16,6 +18,14 @@ export default {
   props: {
     todo: {
       type: Object,
+      required: true,
+    },
+    isSnoozed: {
+      type: Boolean,
+      required: true,
+    },
+    isPending: {
+      type: Boolean,
       required: true,
     },
   },
@@ -26,6 +36,9 @@ export default {
     };
   },
   computed: {
+    showSnoozingDropdown() {
+      return !this.isSnoozed && this.isPending;
+    },
     dropdownOptions() {
       const forAnHour = nHoursAfter(this.currentTime, 1);
       const untilLaterToday = nHoursAfter(this.currentTime, 4);
@@ -97,30 +110,75 @@ export default {
 
         if (data.errors?.length) {
           throw new Error(data.errors.join(', '));
+        } else {
+          this.$emit('snoozed');
         }
       } catch (error) {
         reportToSentry(this.$options.name, error);
-        this.showError();
+        this.showError(this.$options.i18n.snoozeError);
       }
     },
-    showError() {
-      this.$toast.show(s__('Todos|Failed to snooze todo. Try again later.'), {
+    async unSnooze() {
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: unSnoozeTodoMutation,
+          variables: {
+            todoId: this.todo.id,
+          },
+          optimisticResponse: {
+            todoUnSnooze: {
+              todo: {
+                id: this.todo.id,
+                snoozedUntil: null,
+                __typename: 'Todo',
+              },
+              errors: [],
+            },
+          },
+        });
+
+        if (data.errors?.length > 0) {
+          throw new Error(data.errors.join(', '));
+        } else {
+          this.$emit('un-snoozed');
+        }
+      } catch (failure) {
+        reportToSentry(this.$options.name, failure);
+        this.showError(this.$options.i18n.unSnoozeError);
+      }
+    },
+    showError(message) {
+      this.$toast.show(message, {
         variant: 'danger',
       });
     },
   },
   i18n: {
     snooze: s__('Todos|Snooze'),
+    snoozeError: s__('Todos|Failed to snooze todo. Try again later.'),
+    unSnooze: s__('Todos|Remove snooze'),
+    unSnoozeError: s__('Todos|Failed to un-snooze todo. Try again later.'),
   },
 };
 </script>
 
 <template>
   <span>
+    <gl-button
+      v-if="isSnoozed"
+      v-gl-tooltip
+      icon="time-out"
+      :title="$options.i18n.unSnooze"
+      :aria-label="$options.i18n.unSnooze"
+      data-testid="un-snooze-button"
+      @click="unSnooze"
+    />
     <gl-disclosure-dropdown
+      v-else-if="showSnoozingDropdown"
       :toggle-id="toggleId"
       :items="dropdownOptions"
       :toggle-text="$options.i18n.snooze"
+      data-testid="snooze-dropdown"
       icon="clock"
       placement="bottom-end"
       text-sr-only

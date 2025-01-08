@@ -11,6 +11,7 @@ class ProjectSetting < ApplicationRecord
   belongs_to :project, inverse_of: :project_setting
 
   ignore_column :pages_multiple_versions_enabled, remove_with: '17.9', remove_after: '2025-02-20'
+  ignore_column :pages_default_domain_redirect, remove_with: '17.9', remove_after: '2025-02-20'
 
   scope :for_projects, ->(projects) { where(project_id: projects) }
   scope :with_namespace, -> { joins(project: :namespace) }
@@ -76,7 +77,7 @@ class ProjectSetting < ApplicationRecord
   end
   strong_memoize_attr :emails_enabled?
 
-  def pages_default_domain_redirect=(value)
+  def pages_primary_domain=(value)
     super(value.presence) # Call the default setter to set the value
   end
 

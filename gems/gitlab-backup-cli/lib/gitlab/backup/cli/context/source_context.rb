@@ -103,6 +103,10 @@ module Gitlab
             absolute_path(path).join('uploads')
           end
 
+          def database_config_file_path
+            gitlab_basepath.join('config/database.yml')
+          end
+
           def config(object_type)
             gitlab_config[object_type]
           end
@@ -122,6 +126,14 @@ module Gitlab
 
           def gitaly_token
             gitlab_config.dig(env, 'gitaly', 'token')
+          end
+
+          # Return the GitLab base directory
+          # @return [Pathname]
+          def gitlab_basepath
+            return Pathname.new(GITLAB_PATH) if GITLAB_PATH
+
+            raise ::Gitlab::Backup::Cli::Error, 'GITLAB_PATH is missing'
           end
 
           private
@@ -144,14 +156,6 @@ module Gitlab
           def absolute_path(path)
             # Joins with gitlab_basepath when relative, otherwise return full path
             Pathname(File.expand_path(path, gitlab_basepath))
-          end
-
-          # Return the GitLab base directory
-          # @return [Pathname]
-          def gitlab_basepath
-            return Pathname.new(GITLAB_PATH) if GITLAB_PATH
-
-            raise ::Gitlab::Backup::Cli::Error, 'GITLAB_PATH is missing'
           end
 
           def gitlab_config

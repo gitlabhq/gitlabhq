@@ -11,7 +11,7 @@ RSpec.describe Pages::UpdateService, feature_category: :pages do
     {
       pages_unique_domain_enabled: false,
       pages_https_only: false,
-      pages_default_domain_redirect: domain
+      pages_primary_domain: domain
     }
   end
 
@@ -37,7 +37,7 @@ RSpec.describe Pages::UpdateService, feature_category: :pages do
           expect { service.execute }
             .to change { project.reload.pages_https_only }.from(true).to(false)
             .and change { project.project_setting.pages_unique_domain_enabled }.from(true).to(false)
-            .and change { project.project_setting.pages_default_domain_redirect }.from(nil).to(domain)
+            .and change { project.project_setting.pages_primary_domain }.from(nil).to(domain)
         end
 
         it 'returns a success response' do

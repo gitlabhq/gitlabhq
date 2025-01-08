@@ -36,6 +36,7 @@ PATH
   remote: gems/gitlab-backup-cli
   specs:
     gitlab-backup-cli (0.0.1)
+      activerecord (>= 7)
       activesupport (>= 7)
       addressable (~> 2.8)
       concurrent-ruby (~> 1.1)
@@ -49,6 +50,7 @@ PATH
       logger (~> 1.5.3)
       minitest (~> 5.11.0)
       parallel (~> 1.19)
+      pg (~> 1.5.6)
       rack (~> 2.2.9)
       rainbow (~> 3.0)
       rexml (~> 3.3.2)

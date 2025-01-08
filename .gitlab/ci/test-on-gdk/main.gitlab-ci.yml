@@ -127,13 +127,13 @@ upload-test-runtime-data:
   extends:
     - .upload-test-runtime-data
     - .rules:report:upload-test-runtime-data
-  variables:
-    QA_KNAPSACK_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/knapsack/*/*.json
 
 export-test-metrics:
   extends:
     - .export-test-metrics
     - .rules:report:process-results
+  variables:
+    QA_METRICS_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/test-metrics-*.json
 
 export-code-paths-mapping:
   extends:

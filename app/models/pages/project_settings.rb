@@ -14,7 +14,7 @@ module Pages
 
     def force_https? = project.pages_https_only?
 
-    def pages_default_domain_redirect = project.project_setting.pages_default_domain_redirect
+    def pages_primary_domain = project.project_setting.pages_primary_domain
 
     private
 

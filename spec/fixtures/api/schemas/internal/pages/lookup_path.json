@@ -64,7 +64,7 @@
     "root_directory": {
       "type": "string"
     },
-    "default_domain_redirect": {
+    "primary_domain": {
       "type": [
         "string",
         "null"

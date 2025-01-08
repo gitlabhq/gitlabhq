@@ -10,6 +10,7 @@ PATH
   remote: .
   specs:
     gitlab-backup-cli (0.0.1)
+      activerecord (>= 7)
       activesupport (>= 7)
       addressable (~> 2.8)
       concurrent-ruby (~> 1.1)
@@ -23,6 +24,7 @@ PATH
       logger (~> 1.5.3)
       minitest (~> 5.11.0)
       parallel (~> 1.19)
+      pg (~> 1.5.6)
       rack (~> 2.2.9)
       rainbow (~> 3.0)
       rexml (~> 3.3.2)
@@ -124,6 +126,7 @@ GEM
     parser (3.3.3.0)
       ast (~> 2.4.1)
       racc
+    pg (1.5.9)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)

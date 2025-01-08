@@ -10,9 +10,13 @@ module Gitlab
           def initialize(app_files_dir, backup_tarball)
             @storage_path = app_files_dir
             @backup_tarball = backup_tarball
+
+            super(build_message)
           end
 
-          def message
+          private
+
+          def build_message
             "Failed to create compressed file '#{backup_tarball}' " \
               "when trying to backup the following paths: '#{storage_path}' "
           end

@@ -92,8 +92,8 @@ describe('TodoItem', () => {
   it('emits change event when TodoItemActions emits change', async () => {
     createComponent();
     const todoItemActions = wrapper.findComponent(TodoItemActions);
-    await todoItemActions.vm.$emit('change', '1', true);
-    expect(wrapper.emitted('change')).toEqual([['1', true]]);
+    await todoItemActions.vm.$emit('change');
+    expect(wrapper.emitted('change')).toHaveLength(1);
   });
 
   describe('snoozed to-do items', () => {

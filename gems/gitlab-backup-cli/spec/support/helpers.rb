@@ -32,6 +32,10 @@ module GitlabBackupHelpers
       env: ActiveSupport::EnvironmentInquirer.new('test')
     )
   end
+
+  def build_test_context
+    TestContext.new
+  end
 end
 
 RSpec.configure do |config|
