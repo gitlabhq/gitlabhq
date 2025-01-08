@@ -284,54 +284,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
-  describe 'default values' do
-    context 'organzation_id' do
-      context 'when FF require_organization is enabled' do
-        context 'and organization is set' do
-          let(:created_namespace) { build(:group) }
-
-          it 'is valid' do
-            expect(created_namespace).to be_valid
-          end
-        end
-
-        context 'and organization is not set' do
-          let(:created_namespace) { build(:group) }
-
-          before do
-            created_namespace.organization_id = nil
-          end
-
-          it 'is invalid' do
-            expect(created_namespace).to be_invalid
-          end
-        end
-      end
-
-      context 'when FF require_organization is disabled' do
-        before do
-          stub_feature_flags(require_organization: false)
-        end
-
-        context 'and database has a default value' do
-          before do
-            described_class.connection.execute("ALTER TABLE namespaces ALTER COLUMN organization_id SET DEFAULT 100")
-            described_class.reset_column_information
-          end
-
-          after do
-            described_class.connection.execute("ALTER TABLE namespaces ALTER COLUMN organization_id SET DEFAULT 1")
-            described_class.reset_column_information
-          end
-
-          it 'uses value from model' do
-            expect(described_class.new.organization_id).to eq(Organizations::Organization::DEFAULT_ORGANIZATION_ID)
-          end
-        end
-      end
-    end
-  end
-
   describe "ReferencePatternValidation" do
     subject { described_class.reference_pattern }
 
@@ -801,26 +753,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to include_module(Namespaces::Traversal::Linear) }
     it { is_expected.to include_module(Namespaces::Traversal::RecursiveScopes) }
     it { is_expected.to include_module(Namespaces::Traversal::LinearScopes) }
-  end
-
-  context 'when feature flag require_organization is disabled', :request_store do
-    before do
-      stub_feature_flags(require_organization: false)
-    end
-
-    it 'does not require organization' do
-      namespace.organization = nil
-
-      expect(namespace.valid?).to eq(true)
-    end
-  end
-
-  context 'when feature flag require_organization is enabled', :request_store do
-    it 'does require organization' do
-      namespace.organization = nil
-
-      expect(namespace.valid?).to eq(false)
-    end
   end
 
   describe '#traversal_ids' do

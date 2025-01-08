@@ -62,6 +62,9 @@ In addition, in the IDEs, when you use any of the slash commands,
 like `/explain`, `/refactor`, `/fix`, or `/tests,` Duo Chat has access to the
 code you selected.
 
+NOTE:
+[Repository X-Ray](../project/repository/code_suggestions/repository_xray.md) automatically enriches code generation requests for [GitLab Duo Code Suggestions](../project/repository/code_suggestions/index.md). If your project has access to Code Suggestions, then the `/refactor`, `/fix`, and `/tests` slash commands also have access to the latest Repository X-Ray report, and include that report as context for Duo.
+
 Duo Chat always has access to:
 
 - GitLab documentation.

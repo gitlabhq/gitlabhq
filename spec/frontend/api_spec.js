@@ -2,7 +2,6 @@ import MockAdapter from 'axios-mock-adapter';
 import Api, { DEFAULT_PER_PAGE } from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import {
-  HTTP_STATUS_ACCEPTED,
   HTTP_STATUS_CREATED,
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
   HTTP_STATUS_NO_CONTENT,
@@ -1667,18 +1666,6 @@ describe('Api', () => {
       mock.onDelete(expectedUrl).reply(HTTP_STATUS_NO_CONTENT, '');
       const { data } = await Api.deleteProjectSecureFile(projectId, secureFileId);
       expect(data).toEqual('');
-    });
-  });
-
-  describe('dependency proxy cache', () => {
-    it('schedules the cache list for deletion', async () => {
-      const groupId = 1;
-      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/dependency_proxy/cache`;
-
-      mock.onDelete(expectedUrl).reply(HTTP_STATUS_ACCEPTED);
-      const { status } = await Api.deleteDependencyProxyCacheList(groupId, {});
-
-      expect(status).toBe(HTTP_STATUS_ACCEPTED);
     });
   });
 

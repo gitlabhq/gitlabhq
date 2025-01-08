@@ -120,7 +120,7 @@ class Namespace < ApplicationRecord
   has_many :bot_users, through: :bot_user_details, source: :user
 
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
-  validates :organization, presence: true, if: :require_organization?
+  validates :organization, presence: true
   validates :name,
     presence: true,
     length: { maximum: 255 }
@@ -161,13 +161,7 @@ class Namespace < ApplicationRecord
   validate :nesting_level_allowed, unless: -> { project_namespace? }
   validate :changing_shared_runners_enabled_is_allowed, unless: -> { project_namespace? }
   validate :changing_allow_descendants_override_disabled_shared_runners_is_allowed, unless: -> { project_namespace? }
-  validate :parent_organization_match, if: :require_organization?
-
-  attribute :organization_id, :integer, default: -> do
-    return if Feature.enabled?(:require_organization, Feature.current_request)
-
-    Organizations::Organization::DEFAULT_ORGANIZATION_ID
-  end
+  validate :parent_organization_match
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :avatar_url, to: :owner, allow_nil: true
@@ -771,12 +765,6 @@ class Namespace < ApplicationRecord
   end
 
   private
-
-  def require_organization?
-    return false unless Feature.enabled?(:require_organization, Feature.current_request)
-
-    Gitlab::SafeRequestStore.fetch(:require_organization) { true } # rubocop:disable Style/RedundantFetchBlock -- This fetch has a different interface
-  end
 
   def parent_organization_match
     return unless parent
