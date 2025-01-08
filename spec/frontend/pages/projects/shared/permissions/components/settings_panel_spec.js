@@ -168,6 +168,9 @@ describe('Settings Panel', () => {
   const findProjectFeatureInputByAttribute = (attributeName) =>
     wrapper.find(`[name="project[project_feature_attributes][${attributeName}]"]`);
 
+  const setProjectVisibilityLevel = (level) =>
+    findProjectVisibilityLevelInput().vm.$emit('input', level);
+
   describe('Project Visibility', () => {
     it('should set the project visibility help path', () => {
       wrapper = mountComponent();
@@ -215,7 +218,7 @@ describe('Settings Panel', () => {
     it('should set the visibility level description based upon the selected visibility level', () => {
       wrapper = mountComponent({ stubs: { GlSprintf } });
 
-      findProjectVisibilityLevelInput().vm.$emit('input', VISIBILITY_LEVEL_INTERNAL_INTEGER);
+      setProjectVisibilityLevel(VISIBILITY_LEVEL_INTERNAL_INTEGER);
 
       expect(findProjectVisibilitySettings().text()).toContain(
         visibilityLevelDescriptions[VISIBILITY_LEVEL_INTERNAL_INTEGER],
@@ -245,7 +248,7 @@ describe('Settings Panel', () => {
 
       expect(findConfirmDangerButton().exists()).toBe(false);
 
-      await findProjectVisibilityLevelInput().vm.$emit('input', VISIBILITY_LEVEL_PRIVATE_INTEGER);
+      await setProjectVisibilityLevel(VISIBILITY_LEVEL_PRIVATE_INTEGER);
 
       expect(findConfirmDangerButton().exists()).toBe(false);
     });
@@ -261,7 +264,7 @@ describe('Settings Panel', () => {
       it('will render the confirmation dialog if the visibility is reduced', async () => {
         expect(findConfirmDangerButton().exists()).toBe(false);
 
-        await findProjectVisibilityLevelInput().vm.$emit('input', VISIBILITY_LEVEL_PRIVATE_INTEGER);
+        await setProjectVisibilityLevel(VISIBILITY_LEVEL_PRIVATE_INTEGER);
 
         expect(findConfirmDangerButton().exists()).toBe(true);
       });
@@ -269,7 +272,7 @@ describe('Settings Panel', () => {
       it('emits the `confirm` event when the reduce visibility warning is confirmed', async () => {
         expect(wrapper.emitted('confirm')).toBeUndefined();
 
-        await findProjectVisibilityLevelInput().vm.$emit('input', VISIBILITY_LEVEL_PRIVATE_INTEGER);
+        await setProjectVisibilityLevel(VISIBILITY_LEVEL_PRIVATE_INTEGER);
         await findConfirmDangerButton().vm.$emit('confirm');
 
         expect(wrapper.emitted('confirm')).toHaveLength(1);
@@ -1020,7 +1023,7 @@ describe('Settings Panel', () => {
   });
 
   describe.each`
-    attributeName                             | value
+    attributeName                             | initialValue
     ${'issues_access_level'}                  | ${defaultProps.currentSettings.issuesAccessLevel}
     ${'repository_access_level'}              | ${defaultProps.currentSettings.repositoryAccessLevel}
     ${'merge_requests_access_level'}          | ${defaultProps.currentSettings.mergeRequestsAccessLevel}
@@ -1039,17 +1042,44 @@ describe('Settings Panel', () => {
     ${'feature_flags_access_level'}           | ${defaultProps.currentSettings.featureFlagsAccessLevel}
     ${'infrastructure_access_level'}          | ${defaultProps.currentSettings.infrastructureAccessLevel}
     ${'releases_access_level'}                | ${defaultProps.currentSettings.releasesAccessLevel}
-  `('ProjectFeatureSettings for $attributeName', ({ attributeName, value }) => {
+  `('$attributeName setting', ({ attributeName, initialValue }) => {
     const findProjectFeatureInput = () => findProjectFeatureInputByAttribute(attributeName);
 
     it('renders component with correct props', () => {
       wrapper = mountComponent({ registryAvailable: true, requirementsAvailable: true });
 
       expect(findProjectFeatureInput().props()).toMatchObject({
-        value,
+        value: initialValue,
         disabledSelectInput: false,
         options: [featureAccessLevelMembers, featureAccessLevelEveryone],
       });
     });
+
+    describe.each`
+      initialVisibility                    | newVisibility
+      ${VISIBILITY_LEVEL_PUBLIC_INTEGER}   | ${VISIBILITY_LEVEL_INTERNAL_INTEGER}
+      ${VISIBILITY_LEVEL_PUBLIC_INTEGER}   | ${VISIBILITY_LEVEL_PRIVATE_INTEGER}
+      ${VISIBILITY_LEVEL_PRIVATE_INTEGER}  | ${VISIBILITY_LEVEL_INTERNAL_INTEGER}
+      ${VISIBILITY_LEVEL_PRIVATE_INTEGER}  | ${VISIBILITY_LEVEL_PUBLIC_INTEGER}
+      ${VISIBILITY_LEVEL_INTERNAL_INTEGER} | ${VISIBILITY_LEVEL_PRIVATE_INTEGER}
+      ${VISIBILITY_LEVEL_INTERNAL_INTEGER} | ${VISIBILITY_LEVEL_PUBLIC_INTEGER}
+    `(
+      'when project visibility changed from $initialVisibility to $newVisibility',
+      ({ initialVisibility, newVisibility }) => {
+        beforeEach(() => {
+          wrapper = mountComponent({
+            visibilityLevel: initialVisibility,
+            registryAvailable: true,
+            requirementsAvailable: true,
+          });
+
+          setProjectVisibilityLevel(newVisibility);
+        });
+
+        it('does not change the feature access level', () => {
+          expect(findProjectFeatureInput().props('value')).toBe(initialValue);
+        });
+      },
+    );
   });
 });

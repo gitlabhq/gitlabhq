@@ -19,41 +19,42 @@ without any external dependencies:
 
 ```plantuml
 @startuml
-card "**Internal Load Balancer**" as ilb #9370DB
+!theme plain
+card "**Internal Load Balancer**" as ilb
 skinparam linetype ortho
 
 together {
-  collections "**GitLab Rails** x3" as gitlab #32CD32
-  collections "**Sidekiq** x4" as sidekiq #ff8dd1
+  collections "**GitLab Rails** x3" as gitlab
+  collections "**Sidekiq** x4" as sidekiq
 }
 
-collections "**Consul** x3" as consul #e76a9b
+collections "**Consul** x3" as consul
 
 card "Database" as database {
-  collections "**PGBouncer x3**\n//Consul//" as pgbouncer #4EA7FF
+  collections "**PGBouncer x3**\n//Consul//" as pgbouncer
 
-  card "**PostgreSQL** //Primary//\n//Patroni//\n//PgBouncer//\n//Consul//" as postgres_primary #4EA7FF
-  collections "**PostgreSQL** //Secondary// **x2**\n//Patroni//\n//PgBouncer//\n//Consul//" as postgres_secondary #4EA7FF
+  card "**PostgreSQL** //Primary//\n//Patroni//\n//PgBouncer//\n//Consul//" as postgres_primary
+  collections "**PostgreSQL** //Secondary// **x2**\n//Patroni//\n//PgBouncer//\n//Consul//" as postgres_secondary
 
-  pgbouncer -[#4EA7FF]-> postgres_primary
-  postgres_primary .[#4EA7FF]r-> postgres_secondary
+  pgbouncer --> postgres_primary
+  postgres_primary .r-> postgres_secondary
 }
 
-gitlab -[#32CD32]-> ilb
+gitlab --> ilb
 gitlab -[hidden]-> pgbouncer
-gitlab .[#32CD32,norank]-> postgres_primary
-gitlab .[#32CD32,norank]-> postgres_secondary
+gitlab .[norank]-> postgres_primary
+gitlab .[norank]-> postgres_secondary
 
-sidekiq -[#ff8dd1]-> ilb
+sidekiq --> ilb
 sidekiq -[hidden]-> pgbouncer
-sidekiq .[#ff8dd1,norank]-> postgres_primary
-sidekiq .[#ff8dd1,norank]-> postgres_secondary
+sidekiq .[norank]-> postgres_primary
+sidekiq .[norank]-> postgres_secondary
 
-ilb -[#9370DB]-> pgbouncer
+ilb --> pgbouncer
 
-consul -[#e76a9b]r-> pgbouncer
-consul .[#e76a9b,norank]r-> postgres_primary
-consul .[#e76a9b,norank]r-> postgres_secondary
+consul -r-> pgbouncer
+consul .[norank]r-> postgres_primary
+consul .[norank]r-> postgres_secondary
 @enduml
 ```
 

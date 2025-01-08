@@ -66,7 +66,7 @@ describe('Job table app', () => {
       provide: {
         fullPath: projectPath,
         glFeatures: {
-          populateAndUseBuildNamesTable: flagState,
+          feSearchBuildByName: flagState,
         },
       },
       apolloProvider: createMockApolloProvider(handler, countHandler),
@@ -317,7 +317,7 @@ describe('Job table app', () => {
       });
     });
 
-    describe('with feature flag populateAndUseBuildNamesTable enabled', () => {
+    describe('with feature flag feSearchBuildByName enabled', () => {
       beforeEach(() => {
         createComponent({ flagState: true });
       });

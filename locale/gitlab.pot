@@ -50574,6 +50574,9 @@ msgstr ""
 msgid "SecurityOrchestration|%{pageSize}+ projects which have compliance framework:"
 msgstr ""
 
+msgid "SecurityOrchestration|%{requireStart}Generates a bot comment%{requireEnd} and selected users as the security consultant that developers can reach out for help."
+msgstr ""
+
 msgid "SecurityOrchestration|%{scanners}"
 msgstr ""
 
@@ -50601,6 +50604,9 @@ msgid "SecurityOrchestration|.yaml preview"
 msgstr ""
 
 msgid "SecurityOrchestration|A compliance framework is a label to identify that your project has certain compliance requirements. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "SecurityOrchestration|A consultant will show up in the bot comment and developers should ask them for help if needed."
 msgstr ""
 
 msgid "SecurityOrchestration|Actions"
@@ -50667,9 +50673,6 @@ msgid "SecurityOrchestration|All types"
 msgstr ""
 
 msgid "SecurityOrchestration|Allow except on these packages"
-msgstr ""
-
-msgid "SecurityOrchestration|Allow users to skip pipelines"
 msgstr ""
 
 msgid "SecurityOrchestration|Allowed licenses"
@@ -50762,7 +50765,7 @@ msgstr ""
 msgid "SecurityOrchestration|Configuration"
 msgstr ""
 
-msgid "SecurityOrchestration|Configure policies to allow individual users or service accounts to use %{linkStart}skip_ci%{linkEnd} to skip pipelines."
+msgid "SecurityOrchestration|Configure policies to control whether individual users or service accounts can use %{linkStart}skip_ci%{linkEnd} to skip pipelines."
 msgstr ""
 
 msgid "SecurityOrchestration|Configure your conditions in the pipeline execution file. %{linkStart}What can pipeline execution do?%{linkEnd}"
@@ -51148,6 +51151,9 @@ msgstr ""
 msgid "SecurityOrchestration|Policy type"
 msgstr ""
 
+msgid "SecurityOrchestration|Prevent users from skipping pipelines"
+msgstr ""
+
 msgid "SecurityOrchestration|Require %{approvals} %{plural} from %{approvers}"
 msgstr ""
 
@@ -51442,6 +51448,9 @@ msgstr ""
 msgid "SecurityOrchestration|Vulnerability management policy"
 msgstr ""
 
+msgid "SecurityOrchestration|Warn in merge request"
+msgstr ""
+
 msgid "SecurityOrchestration|What does an example message look like?"
 msgstr ""
 
@@ -51455,6 +51464,9 @@ msgid "SecurityOrchestration|When license scanner finds any license except %{lic
 msgstr ""
 
 msgid "SecurityOrchestration|When license scanner finds any license matching %{licenses}%{detection} in an open merge request %{targeting}%{branches}%{branchExceptionsString}"
+msgstr ""
+
+msgid "SecurityOrchestration|Who is a consultant?"
 msgstr ""
 
 msgid "SecurityOrchestration|With the %{template} security job template"

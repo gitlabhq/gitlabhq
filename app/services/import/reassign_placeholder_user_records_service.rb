@@ -10,8 +10,7 @@ module Import
     DATABASE_TABLE_HEALTH_INDICATORS = [Gitlab::Database::HealthStatus::Indicators::AutovacuumActiveOnTable].freeze
     GLOBAL_DATABASE_HEALTH_INDICATORS = [
       Gitlab::Database::HealthStatus::Indicators::WriteAheadLog,
-      Gitlab::Database::HealthStatus::Indicators::PatroniApdex,
-      Gitlab::Database::HealthStatus::Indicators::WalReceiverSaturation
+      Gitlab::Database::HealthStatus::Indicators::PatroniApdex
     ].freeze
 
     DatabaseHealthStatusChecker = Struct.new(:id, :job_class_name)

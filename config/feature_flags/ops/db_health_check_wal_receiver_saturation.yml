@@ -1,9 +1,0 @@
-
----
-name: db_health_check_wal_receiver_saturation
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150544
-rollout_issue_url:
-milestone: '17.0'
-type: ops
-group: group::database
-default_enabled: false

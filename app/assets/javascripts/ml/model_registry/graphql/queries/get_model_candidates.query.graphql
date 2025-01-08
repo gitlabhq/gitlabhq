@@ -16,6 +16,12 @@ query getModelCandidates(
           id
           name
         }
+        creator {
+          id
+          name
+          avatarUrl
+          webUrl
+        }
         name
         status
         createdAt

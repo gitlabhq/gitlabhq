@@ -286,7 +286,7 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def push_filter_by_name
-    push_frontend_feature_flag(:populate_and_use_build_names_table, @project)
+    push_frontend_feature_flag(:fe_search_build_by_name, @project)
   end
 end
 

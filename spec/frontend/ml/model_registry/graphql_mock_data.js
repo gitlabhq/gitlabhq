@@ -155,6 +155,12 @@ export const graphqlCandidates = [
   {
     id: 'gid://gitlab/Ml::Candidate/1',
     eid: 'e9a71521-45c6-4b0a-b0c3-21f0b4528a5c',
+    creator: {
+      id: 'gid://gitlab/User/1',
+      webUrl: 'path/to/user',
+      avatarUrl: 'path/to/avatar',
+      name: 'Root',
+    },
     ciJob: {
       id: 'gid://gitlab/Ci::Build/1',
       name: 'build:linux',
@@ -169,6 +175,12 @@ export const graphqlCandidates = [
   {
     id: 'gid://gitlab/Ml::Candidate/2',
     eid: 'e9a71521-45c6-4b0a-b0c3-21f0b4528a4c',
+    creator: {
+      id: 'gid://gitlab/User/1',
+      webUrl: 'path/to/user',
+      avatarUrl: 'path/to/avatar',
+      name: 'Root',
+    },
     ciJob: {
       id: 'gid://gitlab/Ci::Build/2',
       name: 'build:linux',
@@ -224,6 +236,7 @@ export const emptyCandidateQuery = {
       candidates: {
         count: 0,
         nodes: [],
+        creator: {},
         pageInfo: {
           hasNextPage: false,
           hasPreviousPage: false,

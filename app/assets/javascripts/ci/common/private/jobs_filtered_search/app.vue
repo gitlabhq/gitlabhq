@@ -74,7 +74,7 @@ export default {
                 },
               ];
             case 'name':
-              if (!this.glFeatures.populateAndUseBuildNamesTable) {
+              if (!this.glFeatures.feSearchBuildByName) {
                 return acc;
               }
 
@@ -103,7 +103,7 @@ export default {
 
 <template>
   <gl-filtered-search
-    v-if="glFeatures.populateAndUseBuildNamesTable"
+    v-if="glFeatures.feSearchBuildByName"
     :placeholder="s__('Jobs|Search or filter jobs...')"
     :available-tokens="tokens"
     :value="filteredSearchValue"

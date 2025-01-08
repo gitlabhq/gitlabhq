@@ -159,7 +159,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'lib/gitlab/database/health_status/indicators/patroni_apdex.rb'
     - 'lib/gitlab/database/health_status/indicators/prometheus_alert_indicator.rb'
     - 'lib/gitlab/database/health_status/indicators/wal_rate.rb'
-    - 'lib/gitlab/database/health_status/indicators/wal_receiver_saturation.rb'
     - 'lib/gitlab/database/health_status/indicators/write_ahead_log.rb'
     - 'lib/gitlab/database/load_balancing/host.rb'
     - 'lib/gitlab/database/migration_helpers/automatic_lock_writes_on_tables.rb'

@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { GlTableLite, GlBadge, GlLink } from '@gitlab/ui';
+import { GlTableLite, GlBadge, GlLink, GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import CandidatesTable from '~/ml/model_registry/components/candidates_table.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { graphqlCandidates } from '../graphql_mock_data';
@@ -37,6 +37,7 @@ describe('CandidatesTable', () => {
       { key: 'eid', label: 'MLflow Run ID', thClass: 'gl-w-2/8' },
       { key: 'ciJob', label: 'CI Job', thClass: 'gl-w-1/8' },
       { key: 'createdAt', label: 'Created', thClass: 'gl-w-1/8' },
+      { key: 'creator', label: 'Created by', thClass: 'gl-w-2/8' },
       { key: 'status', label: 'Status', thClass: 'gl-w-1/8' },
     ]);
   });
@@ -65,8 +66,31 @@ describe('CandidatesTable', () => {
     );
   });
 
+  it('renders the author information correctly', () => {
+    const authorCell = findTableRows().at(0).findAll('td').at(3);
+    const avatarLink = authorCell.findComponent(GlAvatarLink);
+    expect(avatarLink.attributes('href')).toBe(graphqlCandidates[0].creator.webUrl);
+    expect(avatarLink.attributes('title')).toBe(graphqlCandidates[0].creator.name);
+
+    const avatar = avatarLink.findComponent(GlAvatar);
+    expect(avatar.props('src')).toBe(graphqlCandidates[0].creator.avatarUrl);
+    expect(avatar.props('size')).toBe(16);
+    expect(avatar.props('entityName')).toBe(graphqlCandidates[0].creator.name);
+
+    expect(authorCell.text()).toContain(graphqlCandidates[0].creator.name);
+  });
+
+  it('renders the author information correctly for items with no author', () => {
+    createWrapper({ items: [{ ...graphqlCandidates[0], creator: null }] });
+    const authorCell = findTableRows().at(0).findAll('td').at(3);
+    expect(authorCell.findComponent(GlAvatarLink).exists()).toBe(false);
+    expect(authorCell.findComponent(GlLink).exists()).toBe(false);
+    expect(authorCell.findComponent(GlAvatar).exists()).toBe(false);
+    expect(authorCell.text()).toBe('');
+  });
+
   it('renders the correct information in the status column', () => {
-    const statusCell = findTableRows().at(0).findAll('td').at(3);
+    const statusCell = findTableRows().at(0).findAll('td').at(4);
     expect(statusCell.text()).toContain(graphqlCandidates[0].status);
     expect(statusCell.findComponent(GlBadge).props('variant')).toBe('info');
   });

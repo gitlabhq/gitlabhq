@@ -1,0 +1,9 @@
+---
+name: tsquery_deduplicate_search_terms
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/512153
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177189
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/512140
+milestone: '17.8'
+group: group::database frameworks
+type: gitlab_com_derisk
+default_enabled: false

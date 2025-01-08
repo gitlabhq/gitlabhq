@@ -7,8 +7,7 @@ module Gitlab
         Indicators::AutovacuumActiveOnTable,
         Indicators::WriteAheadLog,
         Indicators::PatroniApdex,
-        Indicators::WalRate,
-        Indicators::WalReceiverSaturation
+        Indicators::WalRate
       ].freeze
 
       class << self

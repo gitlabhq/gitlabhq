@@ -131,7 +131,7 @@ export default {
   },
   methods: {
     resetRequestData() {
-      if (this.glFeatures.populateAndUseBuildNamesTable) {
+      if (this.glFeatures.feSearchBuildByName) {
         this.requestData = { statuses: null, name: null };
       } else {
         this.requestData = { statuses: null };
@@ -169,7 +169,7 @@ export default {
 
       filters.forEach((filter) => {
         if (!filter.type) {
-          if (this.glFeatures.populateAndUseBuildNamesTable) {
+          if (this.glFeatures.feSearchBuildByName) {
             this.requestData.name = filter;
           } else {
             createAlert({

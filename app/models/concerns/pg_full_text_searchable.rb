@@ -144,7 +144,7 @@ module PgFullTextSearchable
       end.compact.join
       prefix_search_suffix = ":*#{weights}"
 
-      tsquery = Gitlab::SQL::Pattern.split_query_to_search_terms(query).map do |search_term|
+      tsquery_terms = Gitlab::SQL::Pattern.split_query_to_search_terms(query).map do |search_term|
         case search_term
         when /\A\d+\z/ # Handles https://gitlab.com/gitlab-org/gitlab/-/issues/375337
           "(#{search_term + prefix_search_suffix} | -#{search_term + prefix_search_suffix})"
@@ -153,7 +153,11 @@ module PgFullTextSearchable
         else
           Arel::Nodes.build_quoted(search_term).to_sql + prefix_search_suffix
         end
-      end.join(' & ')
+      end
+
+      tsquery_terms = tsquery_terms.uniq if Feature.enabled?(:tsquery_deduplicate_search_terms, Feature.current_request)
+
+      tsquery = tsquery_terms.join(' & ')
 
       Arel::Nodes.build_quoted(tsquery)
     end

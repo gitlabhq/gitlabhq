@@ -476,23 +476,6 @@ export default {
   watch: {
     visibilityLevel(value, oldValue) {
       if (value === VISIBILITY_LEVEL_PRIVATE_INTEGER) {
-        // when private, features are restricted to "only team members"
-        this.issuesAccessLevel = Math.min(
-          featureAccessLevel.PROJECT_MEMBERS,
-          this.issuesAccessLevel,
-        );
-        this.repositoryAccessLevel = Math.min(
-          featureAccessLevel.PROJECT_MEMBERS,
-          this.repositoryAccessLevel,
-        );
-        this.mergeRequestsAccessLevel = Math.min(
-          featureAccessLevel.PROJECT_MEMBERS,
-          this.mergeRequestsAccessLevel,
-        );
-        this.buildsAccessLevel = Math.min(
-          featureAccessLevel.PROJECT_MEMBERS,
-          this.buildsAccessLevel,
-        );
         if (
           this.packageRegistryAccessLevel === featureAccessLevel.EVERYONE ||
           (this.packageRegistryAccessLevel > featureAccessLevel.EVERYONE &&
@@ -500,93 +483,18 @@ export default {
         ) {
           this.packageRegistryAccessLevel = featureAccessLevel.PROJECT_MEMBERS;
         }
-        this.modelExperimentsAccessLevel = Math.min(
-          featureAccessLevel.PROJECT_MEMBERS,
-          this.modelExperimentsAccessLevel,
-        );
-        this.modelRegistryAccessLevel = Math.min(
-          featureAccessLevel.PROJECT_MEMBERS,
-          this.modelRegistryAccessLevel,
-        );
-        this.wikiAccessLevel = Math.min(featureAccessLevel.PROJECT_MEMBERS, this.wikiAccessLevel);
-        this.snippetsAccessLevel = Math.min(
-          featureAccessLevel.PROJECT_MEMBERS,
-          this.snippetsAccessLevel,
-        );
-        this.analyticsAccessLevel = Math.min(
-          featureAccessLevel.PROJECT_MEMBERS,
-          this.analyticsAccessLevel,
-        );
-        this.requirementsAccessLevel = Math.min(
-          featureAccessLevel.PROJECT_MEMBERS,
-          this.requirementsAccessLevel,
-        );
-        this.securityAndComplianceAccessLevel = Math.min(
-          featureAccessLevel.PROJECT_MEMBERS,
-          this.securityAndComplianceAccessLevel,
-        );
-        this.environmentsAccessLevel = Math.min(
-          featureAccessLevel.PROJECT_MEMBERS,
-          this.environmentsAccessLevel,
-        );
-        this.featureFlagsAccessLevel = Math.min(
-          featureAccessLevel.PROJECT_MEMBERS,
-          this.featureFlagsAccessLevel,
-        );
-        this.infrastructureAccessLevel = Math.min(
-          featureAccessLevel.PROJECT_MEMBERS,
-          this.infrastructureAccessLevel,
-        );
-        this.releasesAccessLevel = Math.min(
-          featureAccessLevel.PROJECT_MEMBERS,
-          this.releasesAccessLevel,
-        );
-        this.monitorAccessLevel = Math.min(
-          featureAccessLevel.PROJECT_MEMBERS,
-          this.monitorAccessLevel,
-        );
-        this.containerRegistryAccessLevel = Math.min(
-          featureAccessLevel.PROJECT_MEMBERS,
-          this.containerRegistryAccessLevel,
-        );
         if (this.pagesAccessLevel === featureAccessLevel.EVERYONE) {
           // When from Internal->Private narrow access for only members
           this.pagesAccessLevel = featureAccessLevel.PROJECT_MEMBERS;
         }
       } else if (oldValue === VISIBILITY_LEVEL_PRIVATE_INTEGER) {
-        // if changing away from private, make enabled features more permissive
-        if (this.issuesAccessLevel > featureAccessLevel.NOT_ENABLED)
-          this.issuesAccessLevel = featureAccessLevel.EVERYONE;
-        if (this.repositoryAccessLevel > featureAccessLevel.NOT_ENABLED)
-          this.repositoryAccessLevel = featureAccessLevel.EVERYONE;
-        if (this.mergeRequestsAccessLevel > featureAccessLevel.NOT_ENABLED)
-          this.mergeRequestsAccessLevel = featureAccessLevel.EVERYONE;
         if (this.packageRegistryAccessLevel === featureAccessLevel.PROJECT_MEMBERS) {
           this.packageRegistryAccessLevel =
             PACKAGE_REGISTRY_ACCESS_LEVEL_DEFAULT_BY_PROJECT_VISIBILITY[value];
         }
-        if (this.buildsAccessLevel > featureAccessLevel.NOT_ENABLED)
-          this.buildsAccessLevel = featureAccessLevel.EVERYONE;
-        if (this.wikiAccessLevel > featureAccessLevel.NOT_ENABLED)
-          this.wikiAccessLevel = featureAccessLevel.EVERYONE;
-        if (this.modelExperimentsAccessLevel > featureAccessLevel.NOT_ENABLED)
-          this.modelExperimentsAccessLevel = featureAccessLevel.EVERYONE;
-        if (this.modelRegistryAccessLevel > featureAccessLevel.NOT_ENABLED)
-          this.modelRegistryAccessLevel = featureAccessLevel.EVERYONE;
-        if (this.snippetsAccessLevel > featureAccessLevel.NOT_ENABLED)
-          this.snippetsAccessLevel = featureAccessLevel.EVERYONE;
-        if (this.pagesAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
+        if (this.pagesAccessLevel === featureAccessLevel.PROJECT_MEMBERS) {
           this.pagesAccessLevel = featureAccessLevel.EVERYONE;
-        if (this.analyticsAccessLevel > featureAccessLevel.NOT_ENABLED)
-          this.analyticsAccessLevel = featureAccessLevel.EVERYONE;
-        if (this.requirementsAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
-          this.requirementsAccessLevel = featureAccessLevel.EVERYONE;
-        if (this.environmentsAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
-          this.environmentsAccessLevel = featureAccessLevel.EVERYONE;
-        if (this.monitorAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
-          this.monitorAccessLevel = featureAccessLevel.EVERYONE;
-        if (this.containerRegistryAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
-          this.containerRegistryAccessLevel = featureAccessLevel.EVERYONE;
+        }
       } else if (
         value === VISIBILITY_LEVEL_PUBLIC_INTEGER &&
         this.packageRegistryAccessLevel === featureAccessLevel.EVERYONE
