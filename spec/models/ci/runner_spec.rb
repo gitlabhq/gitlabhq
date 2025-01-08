@@ -646,6 +646,18 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     it { is_expected.to contain_exactly(admin_runner1, admin_runner2) }
   end
 
+  describe '.created_by_admins' do
+    let_it_be(:admin) { create(:admin, username: 'root', admin: true) }
+    let_it_be(:user2) { create(:user, username: 'user2', admin: false) }
+    let_it_be(:admin_runner) { create(:ci_runner, :instance, creator: admin) }
+    let_it_be(:other_runner) { create(:ci_runner, :instance, creator: user2) }
+    let_it_be(:project_runner) { create(:ci_runner, :project, :without_projects, creator: admin) }
+
+    subject { described_class.created_by_admins }
+
+    it { is_expected.to contain_exactly(admin_runner, project_runner) }
+  end
+
   describe '.with_version_prefix' do
     subject { described_class.with_version_prefix('15.11.') }
 

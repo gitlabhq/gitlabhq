@@ -126,6 +126,7 @@ If you have selected code in the editor, this selection is sent along with your 
 ### In the editor window
 
 > - Introduced as [generally available](https://gitlab.com/groups/gitlab-org/-/epics/15218) in the GitLab Workflow extension for VS Code 5.15.0.
+> - Insert Snippet [added](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/merge_requests/2150) in the GitLab Workflow extension for VS Code 5.25.0.
 
 To open GitLab Duo Chat in the editor window, use any of these methods:
 
@@ -143,6 +144,7 @@ After Quick Chat opens:
    - Enter `/` to display all available commands.
    - Enter `/re` to display `/refactor`.
 1. To send your question, select **Send**, or press <kbd>Command</kbd> + <kbd>Enter</kbd>.
+1. Use the **Copy Snippet** and **Insert Snippet** links above code blocks in the responses to interact with them.
 1. To exit chat, either select the chat icon in the gutter, or press **Escape** while focused on the chat.
 
 ## Use GitLab Duo Chat in Visual Studio for Windows

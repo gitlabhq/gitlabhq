@@ -278,7 +278,7 @@ module MergeRequestsHelper
       full_path: project.full_path,
       has_any_merge_requests: project_merge_requests(project).exists?.to_s,
       new_merge_request_path: merge_project && project_new_merge_request_path(merge_project),
-      export_csv_path: export_csv_project_merge_requests_path(project, request.query_parameters),
+      export_csv_path: export_csv_project_merge_requests_path(project),
       releases_endpoint: project_releases_path(project, format: :json),
       can_bulk_update: can?(current_user, :admin_merge_request, project).to_s,
       environment_names_path: unfoldered_environment_names_project_path(project, :json),
@@ -462,10 +462,10 @@ module MergeRequestsHelper
       copy_button_data[:target_copy_button] = target_copy_button.html_safe
     end
 
-    _(
+    safe_format(_(
       '%{author} requested to merge %{source_branch} %{copy_button} ' \
         'into %{target_branch} %{target_copy_button} %{created_at}'
-    ).html_safe % copy_button_data
+    ), copy_button_data)
   end
 
   def hidden_merge_request_icon(merge_request)

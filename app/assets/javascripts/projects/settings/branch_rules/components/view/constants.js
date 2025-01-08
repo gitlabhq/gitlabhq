@@ -111,3 +111,8 @@ export const accessLevelsConfig = {
     accessLevelLabel: s__('BranchRules|No one'),
   },
 };
+
+export const SQUASH_SETTING_DO_NOT_ALLOW = 'do_not_allow';
+export const SQUASH_SETTING_ALLOW = 'allow';
+export const SQUASH_SETTING_ENCOURAGE = 'encourage';
+export const SQUASH_SETTING_REQUIRE = 'require';

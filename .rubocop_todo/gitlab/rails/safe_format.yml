@@ -2,22 +2,9 @@
 # Cop supports --autocorrect.
 Gitlab/Rails/SafeFormat:
   Exclude:
-    - 'app/controllers/profiles/two_factor_auths_controller.rb'
     - 'app/graphql/types/project_type.rb'
     - 'app/helpers/emails_helper.rb'
     - 'app/helpers/groups/group_members_helper.rb'
-    - 'app/helpers/groups_helper.rb'
-    - 'app/helpers/import_helper.rb'
-    - 'app/helpers/members_helper.rb'
-    - 'app/helpers/merge_requests_helper.rb'
-    - 'app/helpers/profiles_helper.rb'
-    - 'app/helpers/projects_helper.rb'
     - 'app/helpers/search_helper.rb'
-    - 'app/helpers/whats_new_helper.rb'
     - 'app/models/integrations/beyond_identity.rb'
-    - 'app/services/jira/requests/base.rb'
     - 'app/services/security/ci_configuration/base_create_service.rb'
-    - 'ee/app/components/namespaces/free_user_cap/enforcement_alert_component.rb'
-    - 'ee/app/components/namespaces/free_user_cap/usage_quota_alert_component.rb'
-    - 'ee/app/components/namespaces/free_user_cap/usage_quota_trial_alert_component.rb'
-    - 'ee/app/helpers/ee/application_helper.rb'

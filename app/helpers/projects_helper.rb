@@ -826,7 +826,7 @@ module ProjectsHelper
           end
 
     link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_url }
-    s_(str).html_safe % { provider: provider, link_start: link_start, link_end: '</a>'.html_safe }
+    safe_format(s_(str), provider: provider, link_start: link_start, link_end: '</a>'.html_safe)
   end
 
   def project_lfs_status(project)

@@ -114,6 +114,7 @@ db:check-schema:
     - .rails:rules:db:check-schema
   script:
     - run_timed_command "bundle exec rake db:drop db:create db:migrate"
+    - run_timed_command "scripts/validate_migration_timestamps"
 
 db:check-schema-single-db:
   extends:

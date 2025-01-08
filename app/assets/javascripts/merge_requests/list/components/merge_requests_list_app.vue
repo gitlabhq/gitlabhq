@@ -475,6 +475,9 @@ export default {
     resourceDropdownQueryVariables() {
       return { fullPath: this.fullPath };
     },
+    currentTabCount() {
+      return this.tabCounts[this.state] || 0;
+    },
   },
   watch: {
     $route(newValue, oldValue) {
@@ -785,7 +788,7 @@ export default {
             with-local-storage
           />
 
-          <merge-request-more-actions-dropdown />
+          <merge-request-more-actions-dropdown :count="currentTabCount" />
         </div>
       </template>
 

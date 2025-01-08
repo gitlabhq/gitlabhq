@@ -126,6 +126,8 @@ export default {
       } else {
         this.descriptionText = this.design.description;
         this.showEditor = false;
+        await this.$nextTick();
+        this.enableCheckboxes();
       }
     },
     enableCheckboxes() {
@@ -173,6 +175,8 @@ export default {
         Sentry.captureException(error);
         this.errorMessage = UPDATE_DESCRIPTION_ERROR;
       } finally {
+        await this.$nextTick();
+        this.enableCheckboxes();
         this.isSubmitting = false;
       }
     },

@@ -25,10 +25,17 @@ export default {
   provide: {
     showExportButton: true,
   },
-  inject: ['isSignedIn', 'issuableType', 'issuableCount', 'email', 'exportCsvPath', 'rssUrl'],
+  inject: ['isSignedIn', 'issuableType', 'email', 'exportCsvPath', 'rssUrl'],
+  props: {
+    count: {
+      type: Number,
+      required: true,
+    },
+  },
   data() {
     return {
       isDropdownVisible: false,
+      exportCsvPathWithQuery: this.getExportCsvPathWithQuery(),
     };
   },
   computed: {
@@ -42,12 +49,20 @@ export default {
       };
     },
   },
+  watch: {
+    $route() {
+      this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
+    },
+  },
   methods: {
     showDropdown() {
       this.isDropdownVisible = true;
     },
     hideDropdown() {
       this.isDropdownVisible = false;
+    },
+    getExportCsvPathWithQuery() {
+      return `${this.exportCsvPath}${window.location.search}`;
     },
   },
   i18n: {
@@ -89,10 +104,9 @@ export default {
     <template v-if="exportCsvPath">
       <csv-import-export-buttons
         v-if="isSignedIn"
-        :issuable-count="issuableCount"
-        :export-csv-path="exportCsvPath"
+        :issuable-count="count"
+        :export-csv-path="exportCsvPathWithQuery"
       />
-
       <gl-disclosure-dropdown-group :bordered="isSignedIn">
         <gl-disclosure-dropdown-item :item="subscribeToRSSItem" />
       </gl-disclosure-dropdown-group>

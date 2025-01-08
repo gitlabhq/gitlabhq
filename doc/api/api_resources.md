@@ -111,6 +111,7 @@ The following API resources are available in the project context:
 | [Search](search.md)                                                            | `/projects/:id/search` (also available for groups and standalone) |
 | [Tags](tags.md)                                                                | `/projects/:id/repository/tags` |
 | [Terraform modules](packages/terraform-modules.md)                             | `/projects/:id/packages/terraform/modules` (also available standalone) |
+| [Validate `.gitlab-ci.yml` file](lint.md)                                      | `/projects/:id/ci/lint` |
 | [Vulnerabilities](vulnerabilities.md)                                          | `/vulnerabilities/:id` |
 | [Vulnerability exports](vulnerability_exports.md)                              | `/projects/:id/vulnerability_exports` |
 | [Vulnerability findings](vulnerability_findings.md)                            | `/projects/:id/vulnerability_findings` |
@@ -206,7 +207,6 @@ The following API resources are available outside of project and group contexts 
 | [Token information](admin/token.md)                                                          | `/admin/token` |
 | [Topics](topics.md)                                                                          | `/topics` |
 | [Users](users.md)                                                                            | `/users` |
-| [Validate `.gitlab-ci.yml` file](lint.md)                                                    | `/lint` |
 | [Web commits](web_commits.md)                                                                | `/web_commits/public_key` |
 | [Version](version.md)                                                                        | `/version` |
 

@@ -165,7 +165,7 @@ module GroupsHelper
   end
 
   def prevent_sharing_groups_outside_hierarchy_help_text(group)
-    s_("GroupSettings|Available only on the top-level group. Applies to all subgroups. Groups already shared with a group outside %{group} are still shared unless removed manually.").html_safe % { group: link_to_group(group) }
+    safe_format(s_("GroupSettings|Available only on the top-level group. Applies to all subgroups. Groups already shared with a group outside %{group} are still shared unless removed manually."), group: link_to_group(group))
   end
 
   def render_setting_to_allow_project_access_token_creation?(group)
@@ -357,15 +357,15 @@ module GroupsHelper
   end
 
   def ancestor_locked_but_you_can_override(group)
-    s_("GroupSettings|This setting is applied on %{ancestor_group}. You can override the setting or %{remove_ancestor_share_with_group_lock}.").html_safe % { ancestor_group: ancestor_group(group), remove_ancestor_share_with_group_lock: remove_the_share_with_group_lock_from_ancestor(group) }
+    safe_format(s_("GroupSettings|This setting is applied on %{ancestor_group}. You can override the setting or %{remove_ancestor_share_with_group_lock}."), ancestor_group: ancestor_group(group), remove_ancestor_share_with_group_lock: remove_the_share_with_group_lock_from_ancestor(group))
   end
 
   def ancestor_locked_so_ask_the_owner(group)
-    s_("GroupSettings|This setting is applied on %{ancestor_group}. To share projects in this group with another group, ask the owner to override the setting or %{remove_ancestor_share_with_group_lock}.").html_safe % { ancestor_group: ancestor_group(group), remove_ancestor_share_with_group_lock: remove_the_share_with_group_lock_from_ancestor(group) }
+    safe_format(s_("GroupSettings|This setting is applied on %{ancestor_group}. To share projects in this group with another group, ask the owner to override the setting or %{remove_ancestor_share_with_group_lock}."), ancestor_group: ancestor_group(group), remove_ancestor_share_with_group_lock: remove_the_share_with_group_lock_from_ancestor(group))
   end
 
   def ancestor_locked_and_has_been_overridden(group)
-    s_("GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup.").html_safe % { ancestor_group: ancestor_group(group) }
+    safe_format(s_("GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup."), ancestor_group: ancestor_group(group))
   end
 
   def group_url_error_message

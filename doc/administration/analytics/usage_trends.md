@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Usage trends give you an overview of how much data your instance contains, and how quickly this volume is changing over time.
 

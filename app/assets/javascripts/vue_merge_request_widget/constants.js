@@ -167,19 +167,58 @@ export const EXTENSION_ICON_NAMES = {
 };
 
 export const EXTENSION_ICON_CLASS = {
-  failed: 'mr-widget-status-icon-failed',
-  warning: 'mr-widget-status-icon-warning',
-  success: 'mr-widget-status-icon-success',
-  neutral: 'mr-widget-status-icon-neutral',
-  error: 'mr-widget-status-icon-error',
-  notice: 'mr-widget-status-icon-notice',
-  scheduled: 'mr-widget-status-icon-scheduled',
-  severityCritical: 'gl-text-red-800',
-  severityHigh: 'gl-text-red-600',
-  severityMedium: 'gl-text-orange-400',
-  severityLow: 'gl-text-orange-300',
-  severityInfo: 'gl-text-blue-400',
-  severityUnknown: 'gl-text-gray-400',
+  failed: {
+    backgroundClass: 'gl-bg-status-danger',
+    iconClass: 'gl-fill-status-danger',
+  },
+  warning: {
+    backgroundClass: 'gl-bg-status-warning',
+    iconClass: 'gl-fill-status-warning',
+  },
+  success: {
+    backgroundClass: 'gl-bg-status-success',
+    iconClass: 'gl-fill-status-success',
+  },
+  neutral: {
+    backgroundClass: 'gl-bg-status-neutral',
+    iconClass: 'gl-fill-status-neutral',
+  },
+  error: {
+    backgroundClass: 'gl-bg-status-danger',
+    iconClass: 'gl-fill-status-danger',
+  },
+  notice: {
+    backgroundClass: 'gl-bg-status-neutral',
+    iconClass: 'gl-fill-status-neutral',
+  },
+  scheduled: {
+    backgroundClass: 'gl-bg-status-info',
+    iconClass: 'gl-fill-status-info',
+  },
+  severityCritical: {
+    backgroundClass: 'gl-bg-red-100',
+    iconClass: 'gl-fill-red-800',
+  },
+  severityHigh: {
+    backgroundClass: 'gl-bg-red-100',
+    iconClass: 'gl-fill-red-600',
+  },
+  severityMedium: {
+    backgroundClass: 'gl-bg-orange-100',
+    iconClass: 'gl-fill-orange-400',
+  },
+  severityLow: {
+    backgroundClass: 'gl-bg-orange-100',
+    iconClass: 'gl-fill-orange-300',
+  },
+  severityInfo: {
+    backgroundClass: 'gl-bg-status-info',
+    iconClass: 'gl-fill-status-info',
+  },
+  severityUnknown: {
+    backgroundClass: 'gl-bg-status-neutral',
+    iconClass: 'gl-fill-status-neutral',
+  },
 };
 
 export const VIEW_MERGE_REQUEST_WIDGET = 'view_merge_request_widget';

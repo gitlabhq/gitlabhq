@@ -12,6 +12,8 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   feature_category :system_access
 
+  include SafeFormatHelper
+
   def show
     setup_show_page
   end
@@ -217,10 +219,10 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
         remote: false, method: :delete
     end.to_sentence
 
-    s_(
+    safe_format(s_(
       'The group settings for %{group_links} require you to enable Two-Factor Authentication for your account. ' \
         'You can %{leave_group_links}.'
-    ).html_safe % { group_links: group_links.html_safe, leave_group_links: leave_group_links.html_safe }
+    ), group_links: group_links.html_safe, leave_group_links: leave_group_links.html_safe)
   end
 
   def ensure_verified_primary_email

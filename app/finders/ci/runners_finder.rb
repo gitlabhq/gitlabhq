@@ -30,6 +30,7 @@ module Ci
       items = by_tag_list(items)
       items = by_creator_id(items)
       items = by_creator_username(items)
+      items = by_owner(items)
       items = by_version_prefix(items)
       items = request_tag_list(items)
 
@@ -147,6 +148,29 @@ module Ci
       return Ci::Runner.none unless creator_id
 
       items.with_creator_id(creator_id)
+    end
+
+    def by_owner(items)
+      owner_full_path = @params.dig(:owner, :full_path).presence
+      owner_wildcard = @params.dig(:owner, :wildcard).presence
+
+      if owner_wildcard == :administrators
+        items.instance_type.created_by_admins
+      elsif owner_full_path.present?
+        routable = Routable.find_by_full_path(owner_full_path)
+
+        case routable
+        when ::Project
+          items.belonging_to_project(routable)
+        when ::Group
+          items.belonging_to_group(routable)
+        else
+          Ci::Runner.none
+        end
+
+      else
+        items
+      end
     end
 
     def by_version_prefix(items)

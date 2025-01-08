@@ -220,6 +220,12 @@ describe('DesignDescription', () => {
         description: mockCheckboxDescription,
         descriptionHtml: mockCheckboxDescriptionHtml,
       });
+      const mockNoDescriptionChangeResponseHandler = jest.fn().mockResolvedValue(
+        mockUpdateDesignDescriptionResponse({
+          description: mockCheckboxDescription,
+          descriptionHtml: mockCheckboxDescriptionHtml,
+        }),
+      );
       const mockCheckedDescriptionUpdateResponseHandler = jest.fn().mockResolvedValue(
         mockUpdateDesignDescriptionResponse({
           description: '- [x] todo 1\n- [x] todo 2',
@@ -285,6 +291,38 @@ describe('DesignDescription', () => {
         findCheckboxAtIndex(1).setChecked();
 
         expect(findCheckboxAtIndex(1).attributes().disabled).toBeDefined();
+      });
+
+      it('re-enables the checkbox when the form is closed without making any changes', async () => {
+        createComponent({
+          design: checkboxDesignDescription,
+          descriptionText: mockCheckboxDescription,
+        });
+
+        await findEditDescriptionButton().vm.$emit('click');
+        await findCancelDescriptionButton().vm.$emit('click');
+        expect(findCheckboxAtIndex(0).attributes().disabled).toBeUndefined();
+      });
+
+      it('re-enables the checkbox when the form is submitted with no changes to the description', async () => {
+        createComponent({
+          design: checkboxDesignDescription,
+          descriptionText: mockCheckboxDescription,
+          designUpdateMutationHandler: mockNoDescriptionChangeResponseHandler,
+        });
+
+        await findEditDescriptionButton().vm.$emit('click');
+        findMarkdownEditor().vm.$emit('input', mockCheckboxDescription);
+        findSaveDescriptionButton().vm.$emit('click');
+        await nextTick();
+        expect(mockNoDescriptionChangeResponseHandler).toHaveBeenCalledWith({
+          input: {
+            description: mockCheckboxDescription,
+            id: 'gid:/gitlab/Design/1',
+          },
+        });
+        await waitForPromises();
+        expect(findCheckboxAtIndex(0).attributes().disabled).toBeUndefined();
       });
     });
   });

@@ -95,6 +95,11 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '{db/migrate/*.rb,db/post_migrate/*.rb,ee/elastic/migrate/*.rb}'
       run: scripts/validate_name_collisions_between_migrations
+    db-migration-timestamp:
+      tags: database
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: '{db/migrate/*.rb,db/post_migrate/*.rb}'
+      run: scripts/validate_migration_timestamps
     static-verification:
       skip: true # This is disabled by default. You can enable this check by adding skip: false in lefthook-local.yml https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md#skip
       tags: backend

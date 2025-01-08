@@ -1117,6 +1117,8 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryrunnersactive"></a>`active` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in GitLab 14.8. This was renamed. Use: `paused`. |
 | <a id="queryrunnerscreatorid"></a>`creatorId` | [`UserID`](#userid) | Filter runners by creator ID. |
 | <a id="queryrunnerscreatorusername"></a>`creatorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Filter runners by creator username. |
+| <a id="queryrunnersownerfullpath"></a>`ownerFullPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owning project or group. |
+| <a id="queryrunnersownerwildcard"></a>`ownerWildcard` **{warning-solid}** | [`CiRunnerOwnerWildcard`](#cirunnerownerwildcard) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owner wildcard. |
 | <a id="queryrunnerspaused"></a>`paused` | [`Boolean`](#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
 | <a id="queryrunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
 | <a id="queryrunnerssort"></a>`sort` | [`CiRunnerSort`](#cirunnersort) | Sort order of results. |
@@ -25992,6 +25994,10 @@ four standard [pagination arguments](#pagination-arguments):
 
 Cluster agents in the namespace with remote development capabilities.
 
+DETAILS:
+**Deprecated** in GitLab 17.8.
+Use `workspacesClusterAgents`.
+
 Returns [`ClusterAgentConnection`](#clusteragentconnection).
 
 This field returns a [connection](#connections). It accepts the
@@ -26039,6 +26045,8 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="grouprunnerscreatorid"></a>`creatorId` | [`UserID`](#userid) | Filter runners by creator ID. |
 | <a id="grouprunnerscreatorusername"></a>`creatorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Filter runners by creator username. |
 | <a id="grouprunnersmembership"></a>`membership` | [`CiRunnerMembershipFilter`](#cirunnermembershipfilter) | Control which runners to include in the results. |
+| <a id="grouprunnersownerfullpath"></a>`ownerFullPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owning project or group. |
+| <a id="grouprunnersownerwildcard"></a>`ownerWildcard` **{warning-solid}** | [`CiRunnerOwnerWildcard`](#cirunnerownerwildcard) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owner wildcard. |
 | <a id="grouprunnerspaused"></a>`paused` | [`Boolean`](#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
 | <a id="grouprunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
 | <a id="grouprunnerssort"></a>`sort` | [`CiRunnerSort`](#cirunnersort) | Sort order of results. |
@@ -26484,6 +26492,26 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupworkitemsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_alpha` is disabled. |
 | <a id="groupworkitemssubscribed"></a>`subscribed` | [`SubscriptionStatus`](#subscriptionstatus) | Work items the current user is subscribed to. |
 | <a id="groupworkitemstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
+
+##### `Group.workspacesClusterAgents`
+
+Cluster agents in the namespace with workspaces capabilities.
+
+DETAILS:
+**Introduced** in GitLab 17.8.
+**Status**: Experiment.
+
+Returns [`ClusterAgentConnection`](#clusteragentconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupworkspacesclusteragentsfilter"></a>`filter` | [`NamespaceClusterAgentFilter!`](#namespaceclusteragentfilter) | Filter the types of cluster agents to return. |
 
 ### `GroupAuditEventNamespaceFilter`
 
@@ -30191,6 +30219,10 @@ four standard [pagination arguments](#pagination-arguments):
 
 Cluster agents in the namespace with remote development capabilities.
 
+DETAILS:
+**Deprecated** in GitLab 17.8.
+Use `workspacesClusterAgents`.
+
 Returns [`ClusterAgentConnection`](#clusteragentconnection).
 
 This field returns a [connection](#connections). It accepts the
@@ -30319,6 +30351,26 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="namespaceworkitemtypesname"></a>`name` | [`IssueType`](#issuetype) | Filter work item types by the given name. |
+
+##### `Namespace.workspacesClusterAgents`
+
+Cluster agents in the namespace with workspaces capabilities.
+
+DETAILS:
+**Introduced** in GitLab 17.8.
+**Status**: Experiment.
+
+Returns [`ClusterAgentConnection`](#clusteragentconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespaceworkspacesclusteragentsfilter"></a>`filter` | [`NamespaceClusterAgentFilter!`](#namespaceclusteragentfilter) | Filter the types of cluster agents to return. |
 
 ### `NamespaceBan`
 
@@ -33325,6 +33377,8 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectrunnersactive"></a>`active` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in GitLab 14.8. This was renamed. Use: `paused`. |
 | <a id="projectrunnerscreatorid"></a>`creatorId` | [`UserID`](#userid) | Filter runners by creator ID. |
 | <a id="projectrunnerscreatorusername"></a>`creatorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Filter runners by creator username. |
+| <a id="projectrunnersownerfullpath"></a>`ownerFullPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owning project or group. |
+| <a id="projectrunnersownerwildcard"></a>`ownerWildcard` **{warning-solid}** | [`CiRunnerOwnerWildcard`](#cirunnerownerwildcard) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owner wildcard. |
 | <a id="projectrunnerspaused"></a>`paused` | [`Boolean`](#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
 | <a id="projectrunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
 | <a id="projectrunnerssort"></a>`sort` | [`CiRunnerSort`](#cirunnersort) | Sort order of results. |
@@ -38793,6 +38847,12 @@ Values for filtering runners in namespaces.
 | <a id="cirunnermembershipfilterall_available"></a>`ALL_AVAILABLE` **{warning-solid}** | **Introduced** in GitLab 15.5. **Status**: Experiment. Include all runners. This list includes runners for all projects in the group and subgroups, as well as for the parent groups and instance. |
 | <a id="cirunnermembershipfilterdescendants"></a>`DESCENDANTS` | Include runners that have either a direct or inherited relationship. These runners can be specific to a project or a group. |
 | <a id="cirunnermembershipfilterdirect"></a>`DIRECT` | Include runners that have a direct relationship. |
+
+### `CiRunnerOwnerWildcard`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cirunnerownerwildcardadministrators"></a>`ADMINISTRATORS` | Filter runners owned by an administrator. |
 
 ### `CiRunnerSort`
 
