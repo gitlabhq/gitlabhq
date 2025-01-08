@@ -79,6 +79,11 @@ export default {
       required: false,
       default: () => {},
     },
+    parentId: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -150,6 +155,12 @@ export default {
       );
     },
     shouldExpandChildren() {
+      // In case the parent is the same as the child,
+      // it is creating a cycle and recursively expanding the tree
+      // Issue details: https://gitlab.com/gitlab-org/gitlab/-/issues/498106
+      if (this.parentId === this.childItem.id) {
+        return false;
+      }
       const rolledUpCountsByType =
         findHierarchyWidgets(this.childItem.widgets)?.rolledUpCountsByType || [];
       const nrOpenChildren = rolledUpCountsByType
@@ -310,6 +321,7 @@ export default {
         :has-indirect-children="hasIndirectChildren"
         :dragged-item-type="draggedItemType"
         :allowed-children-by-type="allowedChildrenByType"
+        :parent-id="parentId"
         @drag="$emit('drag', $event)"
         @drop="$emit('drop')"
         @removeChild="$emit('removeChild', childItem)"

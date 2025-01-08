@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
+  let_it_be(:author) { create(:user) }
 
   let(:auto_close_issues) { true }
   let(:project) { create(:project, :public, :repository, autoclose_referenced_issues: auto_close_issues) }
@@ -84,15 +85,30 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
       context 'when commit is not a merge request merge commit' do
         context 'when commit has issue reference' do
           before do
-            allow(commit).to receive(:safe_message).and_return("Closes #{issue.to_reference}")
+            allow(commit).to receive_messages(
+              safe_message: "Closes #{issue.to_reference}",
+              author: author
+            )
           end
 
           it 'closes issues that should be closed per the commit message' do
             expect { perform }.to change { Issues::CloseWorker.jobs.size }.by(1)
           end
 
+          it 'passes both author and user_id to CloseWorker' do
+            expect { perform }.to change { Issues::CloseWorker.jobs.size }.by(1)
+
+            last_job = Issues::CloseWorker.jobs.last
+            expect(last_job['args']).to include(
+              project.id,
+              issue.id,
+              issue.class.to_s,
+              hash_including('closed_by' => commit.author.id, 'user_id' => user.id)
+            )
+          end
+
           it 'creates cross references' do
-            expect(commit).to receive(:create_cross_references!).with(user, [issue])
+            expect(commit).to receive(:create_cross_references!).with(author, [issue])
 
             perform
           end
@@ -150,8 +166,12 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
                 )
               end
 
-              it 'closes issues that should be closed per the commit message' do
-                expect { perform }.to change { Issues::CloseWorker.jobs.size }.by(1)
+              it 'closes issues that should be closed per the commit message', :sidekiq_inline do
+                expect_next_instance_of(Issues::CloseService) do |close_service|
+                  expect(close_service).to receive(:execute).with(issue, commit: commit)
+                end
+
+                perform
               end
             end
           end

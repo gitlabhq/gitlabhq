@@ -20,7 +20,10 @@ RSpec.describe Gitlab::Application, feature_category: :scalability do # rubocop:
         where(:input_url, :output_query) do
           '/'                                      | {}
           '/?safe=1'                               | { 'safe' => '1' }
+          '/?token=secret'                         | { 'token' => filtered }
+          '/?TOKEN=secret'                         | { 'TOKEN' => filtered }
           '/?private_token=secret'                 | { 'private_token' => filtered }
+          '/?PRIVATE_TOKEN=secret'                 | { 'PRIVATE_TOKEN' => filtered }
           '/?mixed=1&private_token=secret'         | { 'mixed' => '1', 'private_token' => filtered }
           '/?note=secret&noteable=1&prefix_note=2' | { 'note' => filtered, 'noteable' => '1', 'prefix_note' => '2' }
           '/?note[note]=secret&target_type=1'      | { 'note' => filtered, 'target_type' => '1' }

@@ -2,6 +2,20 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.6.3 (2025-01-08)
+
+### Fixed (2 changes)
+
+- [Backport bugfix for diff_files highlighting](https://gitlab.com/gitlab-org/security/gitlab/-/commit/827c6864e66e9aa4b97f488212f6bb01a3d62342)
+- [Fix ability to use password for Git when password for Web is disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ba71cf797b32dedfcf83b31af1a09939c12a796c)
+
+### Security (4 changes)
+
+- [Prevent cyclic reference in work item hierarchy widget from frontend](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3eeb33ecc4af1392f8df5ada5ff5447d177bc030) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4685))
+- [Allow external_provider config take precedence over external_groups](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e69bec763b1eac5995a0355fac8b6f7a6918cffc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4657))
+- [Filter out sensitive parameters on Auth logs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2a5927933b15993e61c45f31c86b2416dd16c0d1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4666))
+- [Don't allow unauthorized users to close issues automatically](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f5bb3a32dd675185c9072a27313e9fb03fb9fe14) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4675))
+
 ## 17.6.2 (2024-12-10)
 
 ### Fixed (2 changes)
