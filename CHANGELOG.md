@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.7.1 (2025-01-08)
+
+### Fixed (3 changes)
+
+- [Update acme-client to v2.0.19](https://gitlab.com/gitlab-org/security/gitlab/-/commit/17fb399704080e909a7ffd188dad4a0367a41cf6)
+- [Add a migration to regenerate CI job token signing key](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1a69b334e54530b37ca623b8e0d5da6ed2961fb1)
+- [Fix CI job token signing key not always generated](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6fd10c2117db61d7c894944462c29425038301c0)
+
+### Security (4 changes)
+
+- [Prevent cyclic reference in work item hierarchy widget from frontend](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a545d1f48720d3d9908880d2a77ff0e76bcaa9a5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4684))
+- [Allow external_provider config take precedence over external_groups](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c74b00da4e644dc5628f805587b2ec492e8bd044) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4680))
+- [Filter out sensitive parameters on Auth logs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e6f661b6f3ec52e0e9d37b89d171e5b949346804) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4686))
+- [Don't allow unauthorized users to close issues automatically](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b1ef837d0b61f997dacd3b299da17c96616ba275) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4674))
+
 ## 17.7.0 (2024-12-18)
 
 ### Added (178 changes)

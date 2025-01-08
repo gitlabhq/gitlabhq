@@ -2279,6 +2279,38 @@ export const workItemObjectiveWithChild = {
   __typename: 'WorkItem',
 };
 
+export const workItemWithParentAsChild = {
+  id: 'gid://gitlab/WorkItem/1',
+  iid: '1',
+  title: 'Cyclic parent 1',
+  description: 'Objective description',
+  state: 'OPEN',
+  confidential: false,
+  reference: 'test-project-path#12',
+  createdAt: '2022-08-03T12:41:54Z',
+  updatedAt: null,
+  closedAt: null,
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/2411',
+    name: 'Objective',
+    iconName: 'issue-type-objective',
+    __typename: 'WorkItemType',
+  },
+  widgets: [
+    {
+      type: 'HIERARCHY',
+      hasChildren: true,
+      parent: null,
+      rolledUpCountsByType: [],
+      children: {
+        nodes: [],
+      },
+      __typename: 'WorkItemWidgetHierarchy',
+    },
+  ],
+  __typename: 'WorkItem',
+};
+
 export const workItemObjectiveWithoutChild = {
   id: 'gid://gitlab/WorkItem/12',
   iid: '12',

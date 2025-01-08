@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_category: :system_access do
+  include StubRequests
+
   let_it_be(:project) { create(:project) }
 
   let(:auth_failure) { { actor: nil, project: nil, type: nil, authentication_abilities: nil } }
@@ -296,7 +298,10 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         end
 
         context 'when failure goes over threshold' do
-          let(:request) { instance_double(ActionDispatch::Request, fullpath: '/some/project.git/info/refs', request_method: 'GET', ip: 'ip', path: '/some_path/example') }
+          let(:token_prefix) { Gitlab::ApplicationSettingFetcher.current_application_settings.personal_access_token_prefix }
+          let(:token_string) { "#{token_prefix}PAT1234" }
+          let(:relative_url) { "/some/project.git/info/refs?private_token=#{token_string}" }
+          let(:request) { request_for_url(relative_url) }
 
           before do
             expect_next_instance_of(Gitlab::Auth::IpRateLimiter) do |rate_limiter|
@@ -304,13 +309,14 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
             end
           end
 
-          it 'logs a message' do
+          it 'logs a message with a filtered path' do
             expect(Gitlab::AuthLogger).to receive(:error).with(
-              message: include('IP has been temporarily banned from Git auth'),
+              message: "Rack_Attack: Git auth failures has exceeded the threshold. " \
+                "IP has been temporarily banned from Git auth.",
               env: :blocklist,
               remote_ip: request.ip,
               request_method: request.request_method,
-              path: request.fullpath,
+              path: request.filtered_path,
               login: user.username
             )
 
