@@ -26,6 +26,7 @@ import {
   workItemHierarchyTreeResponse,
   workItemHierarchyPaginatedTreeResponse,
   workItemHierarchyTreeFailureResponse,
+  workItemWithParentAsChild,
 } from '../../mock_data';
 
 jest.mock('~/alert');
@@ -60,6 +61,7 @@ describe('WorkItemLinkChild', () => {
     workItemTreeQueryHandler = getWorkItemTreeQueryHandler,
     isExpanded = false,
     showTaskWeight = false,
+    props = {},
   } = {}) => {
     const mockApollo = createMockApollo([[getWorkItemTreeQuery, workItemTreeQueryHandler]], {
       Mutation: {
@@ -85,6 +87,7 @@ describe('WorkItemLinkChild', () => {
         workItemType,
         workItemFullPath,
         showTaskWeight,
+        ...props,
       },
       stubs: {
         WorkItemChildrenWrapper,
@@ -284,6 +287,19 @@ describe('WorkItemLinkChild', () => {
           message: 'Something went wrong while fetching children.',
         });
       });
+    });
+  });
+
+  describe('when parent is same as the grand child', () => {
+    it('hide the expand to avoid cyclic calls', () => {
+      createComponent({
+        childItem: workItemWithParentAsChild,
+        props: {
+          parentId: 'gid://gitlab/WorkItem/1',
+        },
+      });
+
+      expect(findExpandButton().exists()).toBe(false);
     });
   });
 });

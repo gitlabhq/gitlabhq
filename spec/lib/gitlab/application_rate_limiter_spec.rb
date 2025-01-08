@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting do
+RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting, feature_category: :system_access do
+  include StubRequests
+
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
 
@@ -293,28 +295,27 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
   end
 
   describe '.log_request' do
-    let(:file_path) { 'master/README.md' }
-    let(:type) { :raw_blob_request_limit }
-    let(:fullpath) { "/#{project.full_path}/raw/#{file_path}" }
+    let(:token_prefix) { Gitlab::ApplicationSettingFetcher.current_application_settings.personal_access_token_prefix }
+    let(:token_string) { "#{token_prefix}PAT1234" }
+    let(:relative_url) { "/#{project.full_path}/raw/?private_token=#{token_string}" }
 
-    let(:request) do
-      double('request', ip: '127.0.0.1', request_method: 'GET', fullpath: fullpath)
-    end
+    let(:type) { :raw_blob_request_limit }
+    let(:request) { request_for_url(relative_url) }
 
     let(:base_attributes) do
       {
         message: 'Application_Rate_Limiter_Request',
         env: type,
-        remote_ip: '127.0.0.1',
+        remote_ip: request.ip,
         request_method: 'GET',
-        path: fullpath
+        path: request.filtered_path
       }
     end
 
     context 'without a current user' do
       let(:current_user) { nil }
 
-      it 'logs information to auth.log' do
+      it 'logs filtered information to auth.log' do
         expect(Gitlab::AuthLogger).to receive(:error).with(base_attributes).once
 
         subject.log_request(request, type, current_user)
@@ -331,7 +332,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
         })
       end
 
-      it 'logs information to auth.log' do
+      it 'logs filtered information to auth.log' do
         expect(Gitlab::AuthLogger).to receive(:error).with(attributes).once
 
         subject.log_request(request, type, current_user)

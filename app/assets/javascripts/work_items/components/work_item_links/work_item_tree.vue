@@ -357,6 +357,7 @@ export default {
           :allowed-child-types="allowedChildTypes"
           :show-task-weight="showTaskWeight"
           :has-indirect-children="hasIndirectChildren"
+          :parent-id="workItemId"
           @error="error = $event"
           @show-modal="showModal"
         />

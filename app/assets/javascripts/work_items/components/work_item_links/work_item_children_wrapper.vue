@@ -90,6 +90,11 @@ export default {
       required: false,
       default: true,
     },
+    parentId: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -527,6 +532,7 @@ export default {
       :allowed-child-types="allowedChildTypes"
       :is-top-level="isTopLevel"
       :data-child-title="child.title"
+      :parent-id="parentId"
       class="!gl-border-x-0 !gl-border-b-1 !gl-border-t-0 !gl-border-solid !gl-pb-2 last:!gl-border-b-0 last:!gl-pb-0"
       @mouseover="prefetchWorkItem(child)"
       @mouseout="clearPrefetching"

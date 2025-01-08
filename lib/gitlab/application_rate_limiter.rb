@@ -9,6 +9,7 @@ module Gitlab
     InvalidKeyError = Class.new(StandardError)
 
     class << self
+      include ::Gitlab::Utils::StrongMemoize
       # Application rate limits
       #
       # Threshold value can be either an Integer or a Proc
@@ -209,7 +210,7 @@ module Gitlab
           env: type,
           remote_ip: request.ip,
           request_method: request.request_method,
-          path: request.fullpath
+          path: request_path(request)
         }
 
         if current_user
@@ -274,6 +275,31 @@ module Gitlab
 
         scoped_user.username.downcase.in?(users_allowlist)
       end
+
+      def request_path(request)
+        # req is an ActionDispatch::Request
+        if request.respond_to?(:filtered_path)
+          request.filtered_path
+        else
+          # req is a Grape::Request < Rack::Request
+          other_filtered_path(request)
+        end
+      end
+
+      def other_filtered_path(request)
+        filtered_params = initialize_filtered_params.filter(request.GET)
+
+        if filtered_params.any?
+          "#{request.path}?#{filtered_params.to_query}"
+        else
+          request.fullpath
+        end
+      end
+
+      def initialize_filtered_params
+        ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
+      end
+      strong_memoize_attr :initialize_filtered_params
     end
   end
 end
