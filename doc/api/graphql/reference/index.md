@@ -24069,6 +24069,26 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="epicissueissuableresourcelinksincidentid"></a>`incidentId` | [`IssueID!`](#issueid) | ID of the incident. |
 
+##### `EpicIssue.linkedWorkItems`
+
+Work items linked to the issue.
+
+DETAILS:
+**Introduced** in GitLab 17.8.
+**Status**: Experiment.
+
+Returns [`WorkItemConnection`](#workitemconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="epicissuelinkedworkitemsfilter"></a>`filter` | [`WorkItemRelatedLinkType`](#workitemrelatedlinktype) | Filter by link type. Supported values: RELATED, BLOCKED_BY, and BLOCKS. Returns all types if omitted. |
+
 ##### `EpicIssue.notes`
 
 All notes on this noteable.
@@ -27200,6 +27220,26 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="issueissuableresourcelinksincidentid"></a>`incidentId` | [`IssueID!`](#issueid) | ID of the incident. |
+
+##### `Issue.linkedWorkItems`
+
+Work items linked to the issue.
+
+DETAILS:
+**Introduced** in GitLab 17.8.
+**Status**: Experiment.
+
+Returns [`WorkItemConnection`](#workitemconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="issuelinkedworkitemsfilter"></a>`filter` | [`WorkItemRelatedLinkType`](#workitemrelatedlinktype) | Filter by link type. Supported values: RELATED, BLOCKED_BY, and BLOCKS. Returns all types if omitted. |
 
 ##### `Issue.notes`
 
@@ -41294,6 +41334,9 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumbuy_pipeline_minutes_notification_dot"></a>`BUY_PIPELINE_MINUTES_NOTIFICATION_DOT` | Callout feature name for buy_pipeline_minutes_notification_dot. |
 | <a id="usercalloutfeaturenameenumcanary_deployment"></a>`CANARY_DEPLOYMENT` | Callout feature name for canary_deployment. |
 | <a id="usercalloutfeaturenameenumci_deprecation_warning_for_types_keyword"></a>`CI_DEPRECATION_WARNING_FOR_TYPES_KEYWORD` | Callout feature name for ci_deprecation_warning_for_types_keyword. |
+| <a id="usercalloutfeaturenameenumci_minutes_limit_alert_danger_stage"></a>`CI_MINUTES_LIMIT_ALERT_DANGER_STAGE` | Callout feature name for ci_minutes_limit_alert_danger_stage. |
+| <a id="usercalloutfeaturenameenumci_minutes_limit_alert_exceeded_stage"></a>`CI_MINUTES_LIMIT_ALERT_EXCEEDED_STAGE` | Callout feature name for ci_minutes_limit_alert_exceeded_stage. |
+| <a id="usercalloutfeaturenameenumci_minutes_limit_alert_warning_stage"></a>`CI_MINUTES_LIMIT_ALERT_WARNING_STAGE` | Callout feature name for ci_minutes_limit_alert_warning_stage. |
 | <a id="usercalloutfeaturenameenumcluster_security_warning"></a>`CLUSTER_SECURITY_WARNING` | Callout feature name for cluster_security_warning. |
 | <a id="usercalloutfeaturenameenumdeployment_approvals_empty_state"></a>`DEPLOYMENT_APPROVALS_EMPTY_STATE` | Callout feature name for deployment_approvals_empty_state. |
 | <a id="usercalloutfeaturenameenumdeployment_details_feedback"></a>`DEPLOYMENT_DETAILS_FEEDBACK` | Callout feature name for deployment_details_feedback. |

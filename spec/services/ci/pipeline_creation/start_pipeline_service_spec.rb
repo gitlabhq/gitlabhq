@@ -14,18 +14,6 @@ RSpec.describe Ci::PipelineCreation::StartPipelineService, feature_category: :co
       service.execute
     end
 
-    context 'when FF populate_and_use_build_names_table is disabled' do
-      before do
-        stub_feature_flags(populate_and_use_build_names_table: false)
-      end
-
-      it 'does not enqueue UpdateBuildNamesWorker' do
-        expect(Ci::UpdateBuildNamesWorker).not_to receive(:perform_async)
-
-        service.execute
-      end
-    end
-
     it 'calls the pipeline process service' do
       expect(Ci::ProcessPipelineService)
         .to receive(:new)

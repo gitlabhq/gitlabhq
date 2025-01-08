@@ -246,4 +246,40 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
       end
     end
   end
+
+  context 'when selecting `linked_work_items`' do
+    let_it_be(:related_work_item) do
+      create(:work_item, :task, project: project).tap { |wi| create(:work_item_link, source_id: issue.id, target: wi) }
+    end
+
+    let(:issue_fields) { ['linkedWorkItems { nodes { id } }'] }
+
+    before do
+      project.add_developer(current_user)
+
+      post_graphql(query, current_user: current_user)
+    end
+
+    it 'returns the related merge request' do
+      expect(issue_data['linkedWorkItems']['nodes']).to include a_hash_including({
+        'id' => related_work_item.to_global_id.to_s
+      })
+    end
+
+    it 'prevents N+1 queries' do
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post_graphql(query, current_user: current_user)
+      end
+
+      create_list(:work_item, 3, :task, project: project) do |wi|
+        create(:work_item_link, source_id: issue.id, target: wi)
+      end
+
+      expect do
+        post_graphql(query, current_user: current_user)
+      end.not_to exceed_all_query_limit(control)
+
+      expect(issue_data['linkedWorkItems']['nodes'].size).to eq(4)
+    end
+  end
 end

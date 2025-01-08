@@ -12,8 +12,9 @@ module Users
       invite_members_banner: 1,
       approaching_seat_count_threshold: 2, # EE-only
       namespace_storage_pre_enforcement_banner: 3, # EE-only
-      # 4,5,6 were unused and removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118330,
-      # they can be replaced.
+      ci_minutes_limit_alert_warning_stage: 4,
+      ci_minutes_limit_alert_danger_stage: 5,
+      ci_minutes_limit_alert_exceeded_stage: 6,
       preview_user_over_limit_free_plan_alert: 7, # EE-only
       user_reached_limit_free_plan_alert: 8, # EE-only
       free_group_limited_alert: 9, # EE-only
