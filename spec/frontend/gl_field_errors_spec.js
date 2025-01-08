@@ -28,7 +28,7 @@ describe('GL Style Field Errors', () => {
     expect(testContext.fieldErrors).toBeDefined();
     const { inputs } = testContext.fieldErrors.state;
 
-    expect(inputs.length).toBe(6);
+    expect(inputs.length).toBe(7);
   });
 
   it('should ignore elements with custom error handling', () => {
@@ -45,9 +45,9 @@ describe('GL Style Field Errors', () => {
   });
 
   it('should not show any errors before submit attempt', () => {
-    testContext.$form.find('.email').val('not-a-valid-email').keyup();
-    testContext.$form.find('.text-required').val('').keyup();
-    testContext.$form.find('.alphanumberic').val('?---*').keyup();
+    testContext.$form.find('.email').val('not-a-valid-email').trigger('input');
+    testContext.$form.find('.required-text').val('').trigger('input');
+    testContext.$form.find('.alphanumberic').val('?---*').trigger('input');
 
     const errorsShown = testContext.$form.find('.gl-field-error-outline');
 
@@ -55,15 +55,15 @@ describe('GL Style Field Errors', () => {
   });
 
   it('should show errors when input valid is submitted', () => {
-    testContext.$form.find('.email').val('not-a-valid-email').keyup();
-    testContext.$form.find('.text-required').val('').keyup();
-    testContext.$form.find('.alphanumberic').val('?---*').keyup();
+    testContext.$form.find('.email').val('not-a-valid-email').trigger('input');
+    testContext.$form.find('.required-text').val('').trigger('input');
+    testContext.$form.find('.alphanumberic').val('?---*').trigger('input');
 
     testContext.$form.submit();
 
     const errorsShown = testContext.$form.find('.gl-field-error-outline');
 
-    expect(errorsShown.length).toBe(4);
+    expect(errorsShown.length).toBe(5);
   });
 
   it('should properly track validity state on input after invalid submission attempt', () => {
@@ -79,37 +79,57 @@ describe('GL Style Field Errors', () => {
     expect(fieldState.valid).toBe(false);
 
     // Then invalid input
-    emailInputElement.val('not-a-valid-email').keyup();
+    emailInputElement.val('not-a-valid-email').trigger('input');
 
     expect(emailInputElement).toHaveClass('gl-field-error-outline');
     expect(fieldState.empty).toBe(false);
     expect(fieldState.valid).toBe(false);
 
     // Then valid input
-    emailInputElement.val('email@gitlab.com').keyup();
+    emailInputElement.val('email@gitlab.com').trigger('input');
 
     expect(emailInputElement).not.toHaveClass('gl-field-error-outline');
     expect(fieldState.empty).toBe(false);
     expect(fieldState.valid).toBe(true);
 
     // Then invalid input
-    emailInputElement.val('not-a-valid-email').keyup();
+    emailInputElement.val('not-a-valid-email').trigger('input');
 
     expect(emailInputElement).toHaveClass('gl-field-error-outline');
     expect(fieldState.empty).toBe(false);
     expect(fieldState.valid).toBe(false);
 
     // Then empty input
-    emailInputElement.val('').keyup();
+    emailInputElement.val('').trigger('input');
 
     expect(emailInputElement).toHaveClass('gl-field-error-outline');
     expect(fieldState.empty).toBe(true);
     expect(fieldState.valid).toBe(false);
 
     // Then valid input
-    emailInputElement.val('email@gitlab.com').keyup();
+    emailInputElement.val('email@gitlab.com').trigger('input');
 
     expect(emailInputElement).not.toHaveClass('gl-field-error-outline');
+    expect(fieldState.empty).toBe(false);
+    expect(fieldState.valid).toBe(true);
+  });
+
+  it('should properly track validity state on select input after invalid submission attempt', () => {
+    testContext.$form.submit();
+
+    const selectInputModel = testContext.fieldErrors.state.inputs[5];
+    const fieldState = selectInputModel.state;
+    const selectInputElement = selectInputModel.inputElement;
+
+    // No input
+    expect(selectInputElement).toHaveClass('gl-field-error-outline');
+    expect(fieldState.empty).toBe(true);
+    expect(fieldState.valid).toBe(false);
+
+    // Then valid input
+    selectInputElement.val('1').trigger('input');
+
+    expect(selectInputElement).not.toHaveClass('gl-field-error-outline');
     expect(fieldState.empty).toBe(false);
     expect(fieldState.valid).toBe(true);
   });
@@ -130,7 +150,7 @@ describe('GL Style Field Errors', () => {
     testContext.$form.submit();
 
     const trackedInputs = testContext.fieldErrors.state.inputs;
-    const xssInput = trackedInputs[5];
+    const xssInput = trackedInputs[6];
 
     const xssErrorElem = xssInput.inputElement.siblings('.gl-field-error');
 

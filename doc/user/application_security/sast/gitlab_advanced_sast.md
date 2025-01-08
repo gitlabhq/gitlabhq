@@ -163,12 +163,12 @@ The code flow information is shown the **Code flow** tab and includes:
 The code flow view is integrated into each view where vulnerability details are shown.
 On GitLab self-managed, you can activate the view by [enabling the required feature flags](../../../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) starting in the minimum version shown.
 
-| Location                                                          | Availability on GitLab.com        | Availability on GitLab self-managed                                   | Feature flags required                                                |
-|-------------------------------------------------------------------|-----------------------------------|-----------------------------------------------------------------------|-----------------------------------------------------------------------|
-| [Vulnerability Report](../vulnerability_report/index.md)          | Enabled by default in GitLab 17.3 | Enabled by default in GitLab 17.6. Available in GitLab 17.3 or later. | `vulnerability_code_flow`                                             |
-| [Merge request widget](index.md#merge-request-widget)             | Enabled by default in GitLab 17.6 | Enabled by default in GitLab 17.6. Available in GitLab 17.5 or later. | Both `vulnerability_code_flow` and `pipeline_vulnerability_code_flow` |
-| [Pipeline security report](../vulnerability_report/pipeline.md)   | Enabled by default in GitLab 17.6 | Enabled by default in GitLab 17.6. Available in GitLab 17.5 or later. | Both `vulnerability_code_flow` and `pipeline_vulnerability_code_flow` |
-| [Merge request changes view](index.md#merge-request-changes-view) | Enabled by default in GitLab 17.7 | Enabled by default in GitLab 17.7. Available in GitLab 17.7 or later. | Both `vulnerability_code_flow` and `mr_vulnerability_code_flow`       |
+| Location                                                          | Availability on GitLab.com        | Availability on GitLab self-managed                                   | Feature flags required                                              |
+|-------------------------------------------------------------------|-----------------------------------|-----------------------------------------------------------------------|---------------------------------------------------------------------|
+| [Vulnerability Report](../vulnerability_report/index.md)          | Enabled by default in GitLab 17.3 | Enabled by default in GitLab 17.6. Available in GitLab 17.3 or later. | `vulnerability_code_flow`                                           |
+| [Merge request widget](index.md#merge-request-widget)             | Enabled by default in GitLab 17.6 | Enabled by default in GitLab 17.6. Available in GitLab 17.5 or later. | `vulnerability_code_flow` |
+| [Pipeline security report](../vulnerability_report/pipeline.md)   | Enabled by default in GitLab 17.6 | Enabled by default in GitLab 17.6. Available in GitLab 17.5 or later. | `vulnerability_code_flow` |
+| [Merge request changes view](index.md#merge-request-changes-view) | Enabled by default in GitLab 17.7 | Enabled by default in GitLab 17.7. Available in GitLab 17.7 or later. | Both `vulnerability_code_flow` and `mr_vulnerability_code_flow`     |
 
 ## Troubleshooting
 

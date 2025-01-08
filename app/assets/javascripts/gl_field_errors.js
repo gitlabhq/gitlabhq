@@ -22,6 +22,7 @@ export default class GlFieldErrors {
       'input[type=url]',
       'input[type=number]',
       'textarea',
+      'select',
     ].join(',');
 
     this.state.inputs = this.form

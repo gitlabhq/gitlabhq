@@ -26287,6 +26287,22 @@ Returns [`[VulnerableProjectsByGrade!]`](#vulnerableprojectsbygrade).
 | <a id="groupvulnerabilitygradesincludesubgroups"></a>`includeSubgroups` | [`Boolean`](#boolean) | Include grades belonging to subgroups. |
 | <a id="groupvulnerabilitygradeslettergrade"></a>`letterGrade` | [`VulnerabilityGrade`](#vulnerabilitygrade) | Filter the response by given letter grade. |
 
+##### `Group.vulnerabilityIdentifierSearch`
+
+Search for vulnerabilities by identifier. Feature flag `vulnerability_filtering_by_identifier_group` has to be enabled for the group.
+
+DETAILS:
+**Introduced** in GitLab 17.8.
+**Status**: Experiment.
+
+Returns [`[String!]`](#string).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupvulnerabilityidentifiersearchname"></a>`name` | [`String!`](#string) | Search identifier by name. Substring or partial match search is supported and argument should be greater than 3 characters. |
+
 ##### `Group.vulnerabilityManagementPolicies`
 
 Vulnerability Management Policies of the project.

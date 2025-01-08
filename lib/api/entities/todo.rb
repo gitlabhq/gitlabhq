@@ -23,6 +23,8 @@ module API
       expose :updated_at
 
       def todo_target_class(target_type)
+        # Ensure the `Key` type properly maps to the `SSHKey` entity
+        target_type = "SSHKey" if target_type == "Key"
         # false as second argument prevents looking up in module hierarchy
         # see also https://gitlab.com/gitlab-org/gitlab-foss/issues/59719
         ::API::Entities.const_get(target_type, false)
