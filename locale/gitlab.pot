@@ -6863,7 +6863,7 @@ msgstr ""
 msgid "Analytics|Invalid visualization configuration"
 msgstr ""
 
-msgid "Analytics|Learn more about %{docsLinkStart}AI impact analytics%{docsLinkEnd} and %{subscriptionLinkStart}GitLab Duo Pro seat usage%{subscriptionLinkEnd}."
+msgid "Analytics|Learn more about %{docsLinkStart}AI impact analytics%{docsLinkEnd} and %{subscriptionLinkStart}GitLab Duo seats%{subscriptionLinkEnd}."
 msgstr ""
 
 msgid "Analytics|Line chart"

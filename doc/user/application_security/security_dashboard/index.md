@@ -112,7 +112,11 @@ To view group security dashboard:
 ## Security Center
 
 The Security Center is a configurable personal space where you can view vulnerabilities across all the
-projects you belong to. The Security Center includes:
+projects you belong to. You can add up to 1,000 projects to the Security Center, however the **Project** listing in
+the **Security Center** settings page displays a maximum of 100 projects. You can use the search filter to find projects not
+shown in the first 100 projects.
+
+The Security Center includes:
 
 - The group Security Dashboard
 - A [vulnerability report](../vulnerability_report/index.md)
@@ -128,9 +132,9 @@ To view the Security Center:
 
 The Security Center is blank by default. You must add a project which have been configured with at least one security scanner.
 
-### Adding Projects to the Security Center
+### Adding projects to the Security Center
 
-To add projects to the Security Center:
+To add projects:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **Your work**.
@@ -139,7 +143,20 @@ To add projects to the Security Center:
 1. Use the **Search your projects** text box to search for and select projects.
 1. Select **Add projects**.
 
-After you add projects, the security dashboard and vulnerability report show the vulnerabilities found in those projects' default branches. You can add a maximum of 1,000 projects, however the **Project** filter in the **Vulnerability Report** is limited to 100 projects.
+After you add projects, the security dashboard and vulnerability report show the vulnerabilities found in those projects' default branches.
+
+### Removing projects from the Security Center
+
+The Security Center displays a maximum of 100 projects, so you may need to use the search function to remove a project. To remove projects:
+
+1. On the left sidebar, select **Search or go to**.
+1. Select **Your work**.
+1. Expand **Security**.
+1. Select **Settings**.
+1. Use the **Search your projects** text box to search for the project.
+1. Select **Remove project from dashboard** (**{remove}**).
+
+After you remove projects, the security dashboard and vulnerability report no longer show the vulnerabilities found in those projects' default branches.
 
 ## Related topics
 

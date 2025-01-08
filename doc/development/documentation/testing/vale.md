@@ -191,31 +191,31 @@ Ignore statements do not work for Vale rules with the `raw` scope. For more info
 For more information on Vale scoping rules, see
 [Vale's documentation](https://vale.sh/docs/topics/scoping/).
 
-## Show Vale warnings on push
+## Show Vale warnings on commit or push
 
-By default, `lefthook` shows only Vale errors when pushing changes to a branch. The default branches
-have no Vale errors, so any errors listed here are introduced by commits to the branch.
+By default, the Vale check in Lefthook only shows error-level issues. The default branches
+have no Vale errors, so any errors listed here are introduced by the commit to the branch.
 
-To also see the Vale warnings when pushing to a branch, set a local environment variable: `VALE_WARNINGS=true`.
+To also see the Vale warnings, set a local environment variable: `VALE_WARNINGS=true`.
 
-Enable Vale warnings on push to improve the documentation suite by:
+Enable Vale warnings on commit or push to improve the documentation suite by:
 
 - Detecting warnings you might be introducing with your commits.
 - Identifying warnings that already exist in the page, which you can resolve to reduce technical debt.
 
 These warnings:
 
-- Don't stop the push from working.
+- Don't stop the commit from working.
 - Don't result in a broken pipeline.
 - Include all warnings for a file, not just warnings that are introduced by the commits.
 
-To enable Vale warnings on push:
+To enable Vale warnings with Lefthook:
 
 - Automatically, add `VALE_WARNINGS=true` to your shell configuration.
 - Manually, prepend `VALE_WARNINGS=true` to invocations of `lefthook`. For example:
 
   ```shell
-  VALE_WARNINGS=true bundle exec lefthook run pre-push
+  VALE_WARNINGS=true bundle exec lefthook run pre-commit
   ```
 
 You can also [configure your editor](#configure-vale-in-your-editor) to show Vale warnings.

@@ -399,7 +399,7 @@ pipeline_execution_policy:
 
 You can customize enforced jobs, based on the presence of a project variable. In this example,
 the value of `CS_IMAGE` is defined in the policy as `alpine:latest`. However, if the project
-also defines the value of `CS_IMAGE`, that value is used instead. The CI/CD variable must be a
+also defines the value of `PROJECT_CS_IMAGE`, that value is used instead. The CI/CD variable must be a
 predefined project variable, not defined in the project's `.gitlab-ci.yml` file.
 
 ```yaml
@@ -410,7 +410,7 @@ variables:
 policy::container-security:
   stage: .pipeline-policy-pre
   rules:
-    - if: $CS_IMAGE
+    - if: $PROJECT_CS_IMAGE
       variables:
         CS_IMAGE: $PROJECT_CS_IMAGE
     - when: always

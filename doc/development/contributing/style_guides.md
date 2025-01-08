@@ -15,7 +15,7 @@ If your editor or IDE does not automatically support `.editorconfig`, we suggest
 [see if a plugin exists](https://editorconfig.org/#download). For example, a
 [plugin for vim](https://github.com/editorconfig/editorconfig-vim).
 
-## Pre-push static analysis with Lefthook
+## Pre-commit and pre-push static analysis with Lefthook
 
 [Lefthook](https://github.com/evilmartians/lefthook) is a Git hooks manager that allows
 custom logic to be executed prior to Git committing or pushing. GitLab comes with
@@ -86,7 +86,7 @@ LEFTHOOK=0 git push ...
 
 ### Run Lefthook hooks manually
 
-To run the `pre-push` Git hook, run:
+You can run the `pre-commit`, `pre-push`, and `auto-fix` hooks manually. For example:
 
 ```shell
 bundle exec lefthook run pre-push

@@ -28,6 +28,16 @@ RSpec.describe BulkInsertSafe, feature_category: :database do
       end
 
       execute("ALTER TABLE _test_bulk_insert_items_with_composite_pk ADD PRIMARY KEY (instance_id,name);")
+
+      create_table :_test_bulk_insert_with_non_serial_pk, id: false, force: true do |t|
+        t.integer :project_id, null: false
+        t.string :name
+      end
+
+      execute("ALTER TABLE _test_bulk_insert_with_non_serial_pk ADD PRIMARY KEY (project_id);")
+      execute("ALTER TABLE _test_bulk_insert_with_non_serial_pk
+                ADD CONSTRAINT fk_test_bulk_insert_with_non_serial_pk_fk
+                FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;")
     end
   end
 
@@ -36,6 +46,7 @@ RSpec.describe BulkInsertSafe, feature_category: :database do
       drop_table :_test_bulk_insert_items, force: true
       drop_table :_test_bulk_insert_parent_items, force: true
       drop_table :_test_bulk_insert_items_with_composite_pk, force: true
+      drop_table :_test_bulk_insert_with_non_serial_pk, force: true
     end
   end
 
@@ -267,6 +278,25 @@ RSpec.describe BulkInsertSafe, feature_category: :database do
 
         expect { bulk_insert_items_with_composite_pk_class.bulk_insert!([new_object]) }.to(
           change(bulk_insert_items_with_composite_pk_class, :count).from(0).to(1)
+        )
+      end
+    end
+
+    context 'when the primary key is not serial' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:bulk_insert_item_class) do
+        Class.new(ActiveRecord::Base) do
+          self.table_name = '_test_bulk_insert_with_non_serial_pk'
+
+          include BulkInsertSafe
+        end
+      end
+
+      let(:new_object) { bulk_insert_item_class.new(project_id: project.id, name: 'one-to-one') }
+
+      it 'successfully inserts an item' do
+        expect { bulk_insert_item_class.bulk_insert!([new_object]) }.to(
+          change(bulk_insert_item_class, :count).from(0).to(1)
         )
       end
     end

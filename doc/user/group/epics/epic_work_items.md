@@ -19,7 +19,6 @@ DETAILS:
 FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-This feature is available for testing, but not ready for production use.
 
 <!-- When epics as work items are generally available and `work_item_epics` flag is removed,
 incorporate this content into epics/index.md and redirect this page there -->

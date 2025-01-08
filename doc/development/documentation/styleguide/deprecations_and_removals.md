@@ -17,6 +17,17 @@ REST API docs [have a separate deprecation style](../restful_api_styleguide.md#d
 The GraphQL API [has a separate deprecation process](../../../api/graphql/index.md#deprecation-and-removal-process),
 and [style for the deprecation reason](../../api_graphql_styleguide.md#deprecation-reason-style-guide).
 
+## Features not actively being developed
+
+When a feature is no longer actively developed, but not deprecated, add the following note under
+the topic title and version history:
+
+```markdown
+NOTE:
+This feature is not under active development, but
+[community contributions](https://about.gitlab.com/community/contribute/) are welcome.
+```
+
 ## Deprecate a page or topic
 
 To deprecate a page or topic:
