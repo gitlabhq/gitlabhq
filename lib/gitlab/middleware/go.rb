@@ -27,7 +27,7 @@ module Gitlab
           env: :blocklist,
           remote_ip: request.ip,
           request_method: request.request_method,
-          path: request.fullpath
+          path: request.filtered_path
         )
         Rack::Response.new(e.message, 403).finish
       rescue Gitlab::Auth::MissingPersonalAccessTokenError

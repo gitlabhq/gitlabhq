@@ -6,4 +6,5 @@
   page_info: formatted_page_info(@page_info),
   empty_state_svg_path: image_path('illustrations/status/status-new-md.svg'),
   mlflow_tracking_url: mlflow_tracking_url(@project),
+  count: Ml::Experiment.count_for_project(@project),
 } }

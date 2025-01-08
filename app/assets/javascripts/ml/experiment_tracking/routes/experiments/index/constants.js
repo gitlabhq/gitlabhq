@@ -1,4 +1,3 @@
-import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 export const CREATE_EXPERIMENT_HELP_PATH = helpPagePath(
@@ -7,13 +6,5 @@ export const CREATE_EXPERIMENT_HELP_PATH = helpPagePath(
     anchor: 'model-experiments',
   },
 );
-
-export const EXPERIMENTS_TABLE_FIELDS = Object.freeze([
-  { key: 'nameColumn', label: s__('MlExperimentTracking|Experiment') },
-  {
-    key: 'candidateCountColumn',
-    label: s__('MlExperimentTracking|Logged candidates for experiment'),
-  },
-]);
 
 export const MLFLOW_USAGE_MODAL_ID = 'experiment-tracking-mlflow-experiment-usage-model';

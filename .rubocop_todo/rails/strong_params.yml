@@ -151,7 +151,6 @@ Rails/StrongParams:
     - 'app/controllers/projects/merge_requests/conflicts_controller.rb'
     - 'app/controllers/projects/merge_requests/creations_controller.rb'
     - 'app/controllers/projects/merge_requests/diffs_controller.rb'
-    - 'app/controllers/projects/merge_requests/diffs_stream_controller.rb'
     - 'app/controllers/projects/merge_requests/drafts_controller.rb'
     - 'app/controllers/projects/merge_requests_controller.rb'
     - 'app/controllers/projects/milestones_controller.rb'

@@ -99,9 +99,9 @@ describe('TodoItem', () => {
   describe('snoozed to-do items', () => {
     it.each`
       snoozedUntil           | expectedLabel
-      ${mockForAnHour}       | ${`Snoozed until ${mockForAnHour.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
-      ${mockUntilLaterToday} | ${`Snoozed until ${mockUntilLaterToday.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
-      ${mockUntilTomorrow}   | ${`Snoozed until tomorrow, ${mockUntilTomorrow.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
+      ${mockForAnHour}       | ${'Snoozed until 2:24 PM'}
+      ${mockUntilLaterToday} | ${'Snoozed until 5:24 PM'}
+      ${mockUntilTomorrow}   | ${'Snoozed until tomorrow, 8:00 AM'}
       ${mockUntilNextWeek}   | ${'Snoozed until Dec 25, 2024'}
     `(
       'renders "$expectedLabel" when the item is snoozed until a future date ($snoozedUntil)',

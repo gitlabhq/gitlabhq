@@ -107,6 +107,9 @@ export default {
     createdMessage() {
       return s__('MlExperimentTracking|Experiment created %{timeAgo} by %{author}');
     },
+    showDeleteButton() {
+      return !this.experiment.model_id;
+    },
   },
   methods: {
     downloadCsv() {
@@ -162,7 +165,7 @@ export default {
         <gl-button class="gl-mr-3" @click="downloadCsv">{{
           $options.i18n.DOWNLOAD_AS_CSV_LABEL
         }}</gl-button>
-        <delete-button v-bind="deleteButtonInfo" />
+        <delete-button v-if="showDeleteButton" v-bind="deleteButtonInfo" />
       </template>
     </title-area>
     <gl-tabs :value="tabIndex">

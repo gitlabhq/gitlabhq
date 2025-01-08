@@ -25,6 +25,7 @@ import { deleteProject } from '~/rest_api';
 import { createAlert } from '~/alert';
 import ListItem from '~/vue_shared/components/resource_lists/list_item.vue';
 import ListItemStat from '~/vue_shared/components/resource_lists/list_item_stat.vue';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 
 const MAX_TOPICS_TO_SHOW = 3;
 const MAX_TOPIC_TITLE_LENGTH = 15;
@@ -55,6 +56,7 @@ export default {
     ProjectListItemDescription,
     ProjectListItemActions,
     ProjectListItemInactiveBadge,
+    CiIcon,
     ProjectListItemDelayedDeletionModalFooter: () =>
       import(
         'ee_component/vue_shared/components/projects_list/project_list_item_delayed_deletion_modal_footer.vue'
@@ -202,6 +204,9 @@ export default {
     hasActionDelete() {
       return this.project.availableActions?.includes(ACTION_DELETE);
     },
+    pipelineStatus() {
+      return this.project.pipeline?.detailedStatus;
+    },
   },
   methods: {
     topicPath(topic) {
@@ -303,6 +308,7 @@ export default {
     </template>
 
     <template #stats>
+      <ci-icon v-if="pipelineStatus" :status="pipelineStatus" />
       <project-list-item-inactive-badge :project="project" />
       <list-item-stat
         :href="starsHref"

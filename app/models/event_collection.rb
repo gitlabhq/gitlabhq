@@ -62,8 +62,10 @@ class EventCollection
   end
 
   def in_operator_optimized_relation(parent_column, parents, parent_model)
+    parent_id_column = parent_model.arel_table[:id]
+
     array_data = {
-      scope_ids: parents.pluck(:id),
+      scope_ids: parents.pluck(parent_id_column),
       scope_model: parent_model,
       mapping_column: parent_column
     }

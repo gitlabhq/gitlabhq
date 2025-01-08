@@ -134,7 +134,7 @@ A workaround exists for Ubuntu users who use versions of VS Code earlier than 1.
   1. Install VS Code from the [`.deb` package](https://code.visualstudio.com/Download).
   1. Go to Ubuntu's **Password & Keys**, find the `vscodegitlab.workflow/gitlab-tokens` entry, and remove it.
   1. In VS Code, run `Gitlab: Remove Your Account` to remove the account with missing credentials.
-  1. To add the account again, run either `Gitlab: Add Account to VS Code` or `GitLab: Authenticate to GitLab.com`.
+  1. To add the account again, run `GitLab: Authenticate`.
 
 If you use VS Code version 1.68.0 or later, re-installation might not be possible. However, you can still run
 the last three steps to re-authenticate.

@@ -3,6 +3,7 @@ import { GlLink, GlIcon } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import dateFormat from '~/lib/dateformat';
 import { formatDate, getDayDifference, fallsBefore } from '~/lib/utils/datetime_utility';
+import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { INSTRUMENT_TODO_ITEM_FOLLOW, TODO_STATE_DONE } from '../constants';
@@ -88,7 +89,7 @@ export default {
         });
       }
 
-      const time = snoozedUntil.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const time = localeDateFormat.asTime.format(snoozedUntil);
 
       if (difference === TODAY) {
         return sprintf(s__('Todos|Snoozed until %{time}'), { time });

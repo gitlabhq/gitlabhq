@@ -355,7 +355,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'lib/security/report_schema_version_matcher.rb'
     - 'lib/security/weak_passwords.rb'
     - 'lib/tasks/gitlab/password.rake'
-    - 'lib/tasks/gitlab/security/update_banned_ssh_keys.rake'
     - 'qa/qa/ee/runtime/saml.rb'
     - 'qa/qa/page/component/access_tokens.rb'
     - 'qa/qa/page/group/settings/package_registries.rb'

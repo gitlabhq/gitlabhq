@@ -158,7 +158,6 @@ Rails/Date:
     - 'spec/features/milestones/user_edits_milestone_spec.rb'
     - 'spec/features/projects/members/sorting_spec.rb'
     - 'spec/features/projects/milestones/milestone_editing_spec.rb'
-    - 'spec/finders/issues_finder_spec.rb'
     - 'spec/helpers/application_helper_spec.rb'
     - 'spec/helpers/timeboxes_helper_spec.rb'
     - 'spec/initializers/rails_yaml_safe_load_spec.rb'

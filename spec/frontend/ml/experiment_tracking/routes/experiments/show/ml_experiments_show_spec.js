@@ -11,7 +11,12 @@ import ExperimentMetadata from '~/ml/experiment_tracking/components/experiment_m
 import PerformanceGraph from '~/ml/experiment_tracking/components/performance_graph.vue';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import { MOCK_PAGE_INFO, MOCK_EXPERIMENT, MOCK_CANDIDATES } from './mock_data';
+import {
+  MOCK_PAGE_INFO,
+  MOCK_EXPERIMENT,
+  MOCK_MODEL_EXPERIMENT,
+  MOCK_CANDIDATES,
+} from './mock_data';
 
 jest.mock('~/ml/experiment_tracking/components/experiment_metadata.vue', () => {
   const { props } = jest.requireActual(
@@ -120,6 +125,16 @@ describe('MlExperimentsShow', () => {
 
     it('passes the right props', () => {
       expect(findDeleteButton().props('deletePath')).toBe(MOCK_EXPERIMENT.path);
+    });
+  });
+
+  describe('With model id', () => {
+    beforeEach(() => {
+      createWrapper({ experiment: MOCK_MODEL_EXPERIMENT });
+    });
+
+    it('does not show delete button', () => {
+      expect(findDeleteButton().exists()).toBe(false);
     });
   });
 

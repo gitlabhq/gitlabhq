@@ -262,7 +262,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div data-testid="todos-list-container">
     <div
       class="gl-flex gl-flex-wrap-reverse gl-justify-between gl-border-b-1 gl-border-default gl-border-b-solid"
     >

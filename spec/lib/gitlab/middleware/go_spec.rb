@@ -213,9 +213,23 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
                   end
 
                   context 'with a denylisted ip' do
-                    it 'returns forbidden' do
+                    let(:request) { ActionDispatch::Request.new(env) }
+                    let(:attributes) do
+                      {
+                        message: 'Rack_Attack',
+                        status: 403,
+                        env: :blocklist,
+                        remote_ip: env['REMOTE_ADDR'],
+                        request_method: request.request_method,
+                        path: request.filtered_path
+                      }
+                    end
+
+                    it 'returns forbidden', :aggregate_failures do
                       err = Gitlab::Auth::IpBlocked.new
                       expect(Gitlab::Auth).to receive(:find_for_git_client).and_raise(err)
+                      expect(Gitlab::AuthLogger).to receive(:error).with(attributes)
+
                       response = go
 
                       expect(response[0]).to eq(403)

@@ -23,6 +23,16 @@ To gain read only access to the S3 bucket with your application logs:
 
 GitLab provides the name of the S3 bucket. Your authorized users or roles can then access all objects in the bucket. To verify access, you can use the [AWS CLI](https://aws.amazon.com/cli/).
 
+## Find your S3 bucket name 
+
+To find your S3 bucket name:
+
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. At the top of the page, select **Configuration**.
+1. In the **Tenant details** section, locate the **AWS S3 bucket for tenant logs** field.
+
+For information about how to access S3 buckets after you have the name, see the [AWS documentation about accessing S3 buckets](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-bucket-intro.html).
+
 ## S3 bucket contents and structure
 
 The Amazon S3 bucket contains a combination of infrastructure logs and application logs from the GitLab [log system](../../administration/logs/index.md).

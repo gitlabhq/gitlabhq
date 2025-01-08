@@ -29,6 +29,7 @@ import {
   workItemHierarchyTreeFailureResponse,
   workItemHierarchyNoChildrenTreeResponse,
   workItemHierarchyTreeSingleClosedItemResponse,
+  workItemWithParentAsChild,
 } from '../../mock_data';
 
 jest.mock('~/alert');
@@ -315,6 +316,7 @@ describe('WorkItemLinkChild', () => {
       });
     });
   });
+
   describe('drag & drop', () => {
     const allowedChildrenByType = { Issue: ['Task'], Epic: ['Epic', 'Issue'] };
     const getWorkItemTreeNoChildrenQueryHandler = jest
@@ -387,6 +389,19 @@ describe('WorkItemLinkChild', () => {
       });
 
       expect(findWorkItemLinkChildContents().classes()).not.toContain('gl-bg-blue-50');
+    });
+  });
+
+  describe('when parent is same as the grand child', () => {
+    it('hide the expand to avoid cyclic calls', () => {
+      createComponent({
+        childItem: workItemWithParentAsChild,
+        props: {
+          parentId: 'gid://gitlab/WorkItem/1',
+        },
+      });
+
+      expect(findExpandButton().exists()).toBe(false);
     });
   });
 });

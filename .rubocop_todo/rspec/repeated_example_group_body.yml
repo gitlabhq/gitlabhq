@@ -46,7 +46,6 @@ RSpec/RepeatedExampleGroupBody:
     - 'spec/services/merge_requests/mergeability/check_base_service_spec.rb'
     - 'spec/services/packages/maven/metadata/sync_service_spec.rb'
     - 'spec/services/projects/group_links/destroy_service_spec.rb'
-    - 'spec/services/verify_pages_domain_service_spec.rb'
     - 'spec/support/shared_examples/requests/api/repository_storage_moves_shared_examples.rb'
     - 'spec/support/shared_examples/services/boards/lists_create_service_shared_examples.rb'
     - 'spec/support/shared_examples/services/container_registry_auth_service_shared_examples.rb'

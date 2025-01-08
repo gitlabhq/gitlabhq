@@ -457,6 +457,7 @@ export default {
           :allowed-children-by-type="allowedChildrenByType"
           :dragged-item-type="draggedItemType"
           :active-child-item-id="activeChildItemId"
+          :parent-id="workItemId"
           @drag="draggedItemType = $event"
           @drop="draggedItemType = null"
           @error="error = $event"

@@ -304,7 +304,7 @@ Before running the spec, make sure that:
 
 - GDK is installed.
 - GDK is running locally on port 3000.
-- No additional [RSpec metadata tags](../rspec_metadata_tests.md) have been applied.
+- No additional [RSpec metadata tags](../best_practices/rspec_metadata_tests.md) have been applied.
 - Your working directory is `qa/` within your GDK GitLab installation.
 - Your GitLab instance-level settings are default. If you changed the default settings, some tests might have unexpected results.
 - Because the GDK requires a password change on first login, you must include the GDK password for `root` user
@@ -329,7 +329,7 @@ Before submitting the test for code review, there are a few housecleaning tasks 
 1. Ensure that the test name follows the recommended [naming convention](../best_practices/index.md#test-naming).
 1. Ensure that the spec is [linked to a test case](../best_practices/index.md#link-a-test-to-its-test-case).
 1. Ensure that the spec has the correct `product_group` metadata. See [Product sections, stages, groups, and categories](https://handbook.gitlab.com/handbook/product/categories/) for the comprehensive list of groups.
-1. Ensure that the relevant [RSpec metadata](../rspec_metadata_tests.md) are added to the spec.
+1. Ensure that the relevant [RSpec metadata](../best_practices/rspec_metadata_tests.md) are added to the spec.
 1. Ensure the page object elements are named according to the [recommended naming convention](../style_guide.md#element-naming-convention).
 
 NOTE:

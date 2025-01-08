@@ -30,6 +30,7 @@ import {
 } from 'ee_else_ce/vue_shared/components/resource_lists/utils';
 import { deleteProject } from '~/api/projects_api';
 import { createAlert } from '~/alert';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 
 const MOCK_DELETE_PARAMS = {
   testParam: true,
@@ -526,6 +527,42 @@ describe('ProjectsListItem', () => {
         expect(findCiCatalogBadge().text()).toBe('CI/CD Catalog project');
         expect(findCiCatalogBadge().props('href')).toBe(`/catalog/${project.pathWithNamespace}`);
       });
+    });
+  });
+
+  describe('when project does not have a pipeline status', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('does not render CI icon component', () => {
+      expect(wrapper.findComponent(CiIcon).exists()).toBe(false);
+    });
+  });
+
+  describe('when project has pipeline status', () => {
+    const detailedStatus = {
+      detailsPath: '/foo/bar',
+      icon: 'status_warning',
+      id: '1',
+      text: 'Warning',
+    };
+
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          project: {
+            ...project,
+            pipeline: {
+              detailedStatus,
+            },
+          },
+        },
+      });
+    });
+
+    it('renders CI icon component', () => {
+      expect(wrapper.findComponent(CiIcon).props('status')).toBe(detailedStatus);
     });
   });
 });

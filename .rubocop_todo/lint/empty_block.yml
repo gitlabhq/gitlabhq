@@ -58,7 +58,6 @@ Lint/EmptyBlock:
     - 'spec/lib/bitbucket_server/connection_spec.rb'
     - 'spec/lib/feature_spec.rb'
     - 'spec/lib/gitlab/application_context_spec.rb'
-    - 'spec/lib/gitlab/audit/ci_runner_token_author_spec.rb'
     - 'spec/lib/gitlab/background_migration/batched_migration_job_spec.rb'
     - 'spec/lib/gitlab/chat_name_token_spec.rb'
     - 'spec/lib/gitlab/ci/build/rules/rule/clause/changes_spec.rb'

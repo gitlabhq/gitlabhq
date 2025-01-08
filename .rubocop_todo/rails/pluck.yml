@@ -99,7 +99,6 @@ Rails/Pluck:
     - 'lib/gitlab/ci/pipeline/chain/validate/external.rb'
     - 'lib/gitlab/ci/variables/collection/sort.rb'
     - 'lib/gitlab/cycle_analytics/updater.rb'
-    - 'lib/gitlab/database/migration_helpers.rb'
     - 'lib/gitlab/database/partitioning_migration_helpers/index_helpers.rb'
     - 'lib/gitlab/git_access.rb'
     - 'lib/gitlab/github_import/representation/issue.rb'

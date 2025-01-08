@@ -309,7 +309,6 @@ RSpec/ExpectChange:
     - 'spec/services/milestones/find_or_create_service_spec.rb'
     - 'spec/services/milestones/transfer_service_spec.rb'
     - 'spec/services/namespaces/statistics_refresher_service_spec.rb'
-    - 'spec/services/pages_domains/create_service_spec.rb'
     - 'spec/services/post_receive_service_spec.rb'
     - 'spec/services/projects/cleanup_service_spec.rb'
     - 'spec/services/projects/destroy_service_spec.rb'

@@ -642,7 +642,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'spec/uploaders/file_mover_spec.rb'
     - 'spec/views/layouts/_head.html.haml_spec.rb'
     - 'spec/views/profiles/preferences/show.html.haml_spec.rb'
-    - 'spec/views/projects/commit/_commit_box.html.haml_spec.rb'
     - 'spec/views/projects/issues/show.html.haml_spec.rb'
     - 'spec/views/projects/pages/show.html.haml_spec.rb'
     - 'spec/views/user_settings/profiles/show.html.haml_spec.rb'

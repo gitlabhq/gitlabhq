@@ -5,6 +5,7 @@ import dateFormat from '~/lib/dateformat';
 import { s__, sprintf } from '~/locale';
 import { nHoursAfter } from '~/lib/utils/datetime_utility';
 import { reportToSentry } from '~/ci/utils';
+import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import snoozeTodoMutation from './mutations/snooze_todo.mutation.graphql';
 import unSnoozeTodoMutation from './mutations/un_snooze_todo.mutation.graphql';
 
@@ -49,8 +50,7 @@ export default {
         8,
       );
 
-      const toTimeString = (date) =>
-        date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const toTimeString = (date) => localeDateFormat.asTime.format(date);
 
       return [
         {

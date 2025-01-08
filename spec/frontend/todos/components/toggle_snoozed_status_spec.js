@@ -20,9 +20,6 @@ describe('ToggleSnoozedStatus', () => {
     state: TODO_STATE_PENDING,
   };
   const mockCurrentTime = new Date('2024-12-18T13:24:00');
-  const mockForAnHour = new Date('2024-12-18T14:24:00');
-  const mockUntilLaterToday = new Date('2024-12-18T17:24:00');
-  const mockUntilTomorrow = new Date('2024-12-19T08:00:00');
   const mockToastShow = jest.fn();
 
   useFakeDate(mockCurrentTime);
@@ -52,8 +49,6 @@ describe('ToggleSnoozedStatus', () => {
   const getPredefinedSnoozingOption = (index) =>
     findSnoozeDropdown().props('items')[0].items[index];
   const findUnSnoozeButton = () => wrapper.findByTestId('un-snooze-button');
-  const toTimeString = (date) =>
-    date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   const createComponent = ({
     props = {},
@@ -114,15 +109,15 @@ describe('ToggleSnoozedStatus', () => {
       {
         items: [
           expect.objectContaining({
-            formattedDate: `Today, ${toTimeString(mockForAnHour)}`,
+            formattedDate: 'Today, 2:24 PM',
             text: 'For one hour',
           }),
           expect.objectContaining({
-            formattedDate: `Today, ${toTimeString(mockUntilLaterToday)}`,
+            formattedDate: 'Today, 5:24 PM',
             text: 'Until later today',
           }),
           expect.objectContaining({
-            formattedDate: `Tomorrow, ${toTimeString(mockUntilTomorrow)}`,
+            formattedDate: 'Tomorrow, 8:00 AM',
             text: 'Until tomorrow',
           }),
         ],

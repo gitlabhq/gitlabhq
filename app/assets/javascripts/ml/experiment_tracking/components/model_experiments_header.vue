@@ -3,9 +3,10 @@ import {
   GlDisclosureDropdown,
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
+  GlIcon,
   GlModalDirective,
 } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { n__, s__ } from '~/locale';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { MLFLOW_USAGE_MODAL_ID } from '../routes/experiments/index/constants';
 import MlflowModal from '../routes/experiments/index/components/mlflow_usage_modal.vue';
@@ -15,6 +16,7 @@ export default {
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
+    GlIcon,
     MlflowModal,
     TitleArea,
   },
@@ -31,12 +33,19 @@ export default {
       required: false,
       default: false,
     },
+    count: {
+      type: Number,
+      required: true,
+    },
   },
   computed: {
     mlflowUsageModalItem() {
       return {
         text: this.$options.i18n.importMlflow,
       };
+    },
+    modelsCountLabel() {
+      return n__('MlModelRegistry|%d experiment', 'MlModelRegistry|%d experiments', this.count);
     },
   },
   i18n: {
@@ -55,6 +64,12 @@ export default {
           {{ pageTitle }}
           <slot></slot>
         </span>
+      </div>
+    </template>
+    <template #metadata-models-count>
+      <div class="detail-page-header-body gl-flex-wrap gl-gap-x-2" data-testid="count">
+        <gl-icon name="issue-type-test-case" />
+        {{ modelsCountLabel }}
       </div>
     </template>
     <template #right-actions>

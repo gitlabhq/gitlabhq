@@ -459,7 +459,7 @@ export default {
 </script>
 
 <template>
-  <div class="todos-filters">
+  <div class="todos-filters" data-testid="todos-filtered-search-container">
     <gl-alert
       v-if="showFullTextSearchWarning"
       variant="warning"

@@ -54,7 +54,6 @@ Style/NumberedParameters:
     - 'spec/graphql/types/current_user_todos_type_spec.rb'
     - 'spec/lib/bulk_imports/groups/stage_spec.rb'
     - 'spec/lib/bulk_imports/projects/stage_spec.rb'
-    - 'spec/lib/gitlab/import_export/json/streaming_serializer_spec.rb'
     - 'spec/lib/gitlab/quick_actions/users_extractor_spec.rb'
     - 'spec/lib/gitlab/web_hooks/recursion_detection_spec.rb'
     - 'spec/lib/gitlab/zentao/client_spec.rb'

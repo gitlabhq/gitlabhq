@@ -80,7 +80,6 @@ RSpec/RepeatedExampleGroupDescription:
     - 'spec/routing/project_routing_spec.rb'
     - 'spec/services/ci/create_pipeline_service/parent_child_pipeline_spec.rb'
     - 'spec/services/merge_requests/refresh_service_spec.rb'
-    - 'spec/services/verify_pages_domain_service_spec.rb'
     - 'spec/support/shared_examples/models/application_setting_shared_examples.rb'
     - 'spec/support/shared_examples/models/concerns/limitable_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/composer_packages_shared_examples.rb'

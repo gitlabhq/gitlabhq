@@ -98,7 +98,6 @@ Rails/EnumSyntax:
     - 'app/models/project_auto_devops.rb'
     - 'app/models/project_ci_cd_setting.rb'
     - 'app/models/project_repository.rb'
-    - 'app/models/project_setting.rb'
     - 'app/models/projects/ci_feature_usage.rb'
     - 'app/models/push_event_payload.rb'
     - 'app/models/releases/link.rb'

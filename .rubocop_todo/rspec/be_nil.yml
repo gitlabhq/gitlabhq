@@ -151,7 +151,6 @@ RSpec/BeNil:
     - 'spec/serializers/issue_entity_spec.rb'
     - 'spec/serializers/member_user_entity_spec.rb'
     - 'spec/services/alert_management/alerts/todo/create_service_spec.rb'
-    - 'spec/services/ci/runners/create_runner_service_spec.rb'
     - 'spec/services/groups/transfer_service_spec.rb'
     - 'spec/services/merge_requests/merge_service_spec.rb'
     - 'spec/services/packages/maven/create_package_service_spec.rb'

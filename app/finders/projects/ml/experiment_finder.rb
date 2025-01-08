@@ -23,6 +23,7 @@ module Projects
         @experiments = ::Ml::Experiment
             .by_project(project)
             .including_project
+            .including_user
 
         with_candidate_count
         ordered

@@ -61,15 +61,28 @@ module Organizations
       DEFAULT_ACTIVITY_EVENT_LIMIT
     end
 
+    def projects
+      ProjectsFinder.new(params: { organization: organization }, current_user: current_user)
+        .execute
+        .limit(DEFAULT_RESOURCE_LIMIT)
+        .sorted_by_activity
+    end
+
+    def groups
+      Organizations::GroupsFinder.new(current_user, params: { organization: organization })
+        .execute
+        .limit(DEFAULT_RESOURCE_LIMIT)
+    end
+
     def load_events
       @events = EventCollection.new(
-        organization.projects.limit(DEFAULT_RESOURCE_LIMIT).sorted_by_activity,
+        projects,
         offset: params[:offset].to_i,
         filter: event_filter,
         # limit + 1 allows us to determine if we have another page.
         # This will be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/382473
         limit: activity_query_limit + 1,
-        groups: organization.groups.limit(DEFAULT_RESOURCE_LIMIT)
+        groups: groups
       ).to_a.map(&:present)
 
       Events::RenderService.new(current_user).execute(@events)

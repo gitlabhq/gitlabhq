@@ -49,8 +49,11 @@ export default {
     <template #cell(storageType)="{ item }">
       <div class="gl-flex gl-flex-row">
         <storage-type-icon :name="item.id" :data-testid="`${item.id}-icon`" />
-        <div>
-          <p class="gl-mb-0 gl-font-bold" :data-testid="`${item.id}-name`">
+        <div class="gl-flex gl-flex-col gl-gap-2">
+          <h3
+            class="gl-mb-0 gl-mt-2 gl-inline-flex gl-items-center gl-gap-2 gl-text-lg"
+            :data-testid="`${item.id}-name`"
+          >
             <gl-link
               v-if="item.detailsPath && item.value"
               :data-testid="`${item.id}-details-link`"
@@ -64,13 +67,14 @@ export default {
               v-if="item.helpPath"
               :href="item.helpPath"
               target="_blank"
+              class="gl-inline-flex"
               :aria-label="helpLinkAriaLabel(item.name)"
               :data-testid="`${item.id}-help-link`"
             >
               <help-icon />
             </gl-link>
-          </p>
-          <p class="gl-mb-0" :data-testid="`${item.id}-description`">
+          </h3>
+          <p class="gl-mb-0 gl-text-subtle" :data-testid="`${item.id}-description`">
             {{ item.description }}
           </p>
           <p v-if="item.warningMessage" class="gl-mb-0 gl-text-sm">

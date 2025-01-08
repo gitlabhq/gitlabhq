@@ -169,7 +169,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-items-start gl-px-2">
+  <div class="gl-flex gl-items-start gl-px-2" data-testid="todo-item-container">
     <div class="gl-mr-3 gl-hidden sm:gl-inline-block">
       <gl-avatar-link :href="author.webUrl">
         <gl-avatar :size="24" :src="author.avatarUrl" role="none" />
@@ -177,13 +177,17 @@ export default {
     </div>
     <div>
       <div v-if="showAuthorOnNote" class="gl-inline-flex gl-font-bold">
-        <gl-link v-if="author" :href="author.webUrl" class="!gl-text-default">{{
-          authorOnNote
-        }}</gl-link>
+        <gl-link
+          v-if="author"
+          :href="author.webUrl"
+          class="!gl-text-default"
+          data-testid="todo-author-name-content"
+          >{{ authorOnNote }}</gl-link
+        >
         <span v-else>{{ $options.i18n.removed }}</span>
         <span v-if="todo.note">:</span>
       </div>
-      <span v-if="actionName">
+      <span v-if="actionName" data-testid="todo-action-name-content">
         {{ actionName }}
       </span>
       <span v-if="noteText" v-safe-html="noteText"></span>

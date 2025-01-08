@@ -10,6 +10,7 @@ import {
   GlModal,
 } from '@gitlab/ui';
 import { toSafeInteger } from 'lodash';
+import { SEAT_CONTROL } from 'ee_else_ce/pages/admin/application_settings/general/constants';
 import csrf from '~/lib/utils/csrf';
 import { __, n__, s__, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -93,11 +94,11 @@ export default {
   },
   computed: {
     isOldUserCapUnlimited() {
-      // User cap is set to unlimited if no value is provided in the field
+      // The previous/initial value of User Cap is unlimited if it was empty
       return this.newUserSignupsCap === '';
     },
     isNewUserCapUnlimited() {
-      // User cap is set to unlimited if no value is provided in the field
+      // The current value of User Cap is unlimited if no value is provided in the field
       return this.form.userCap === '';
     },
     hasUserCapChangedFromUnlimitedToLimited() {
@@ -107,9 +108,7 @@ export default {
       return !this.isOldUserCapUnlimited && this.isNewUserCapUnlimited;
     },
     hasUserCapBeenIncreased() {
-      if (this.hasUserCapChangedFromUnlimitedToLimited) {
-        return false;
-      }
+      if (this.hasUserCapChangedFromUnlimitedToLimited) return false;
 
       const oldValueAsInteger = toSafeInteger(this.newUserSignupsCap);
       const newValueAsInteger = toSafeInteger(this.form.userCap);
@@ -117,11 +116,21 @@ export default {
       return this.hasUserCapChangedFromLimitedToUnlimited || newValueAsInteger > oldValueAsInteger;
     },
     canUsersBeAccidentallyApproved() {
-      const hasUserCapBeenToggledOff =
-        this.requireAdminApprovalAfterUserSignup && !this.form.requireAdminApproval;
-      const currentlyPendingUsers = this.pendingUserCount > 0;
+      if (!this.hasPendingUsers) return false;
+      // This should move to EE context. See https://gitlab.com/gitlab-org/gitlab/-/issues/512284
+      if (this.isBlockOveragesEnabled) return false;
+      if (this.hasSignupApprovalBeenToggledOff) return true;
 
-      return (this.hasUserCapBeenIncreased || hasUserCapBeenToggledOff) && currentlyPendingUsers;
+      return this.hasUserCapBeenIncreased;
+    },
+    hasPendingUsers() {
+      return this.pendingUserCount > 0;
+    },
+    isBlockOveragesEnabled() {
+      return this.seatControl === SEAT_CONTROL.BLOCK_OVERAGES;
+    },
+    hasSignupApprovalBeenToggledOff() {
+      return this.requireAdminApprovalAfterUserSignup && !this.form.requireAdminApproval;
     },
     shouldShowSeatControlSection() {
       return this.seatControl !== '';

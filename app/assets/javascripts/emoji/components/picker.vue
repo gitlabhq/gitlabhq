@@ -190,6 +190,7 @@ export default {
         v-if="isVisible"
         v-show="!searchValue"
         class="gl-flex gl-border-b-1 gl-border-default gl-border-b-solid"
+        data-testid="category-buttons"
       >
         <gl-button
           v-for="(category, index) in categoryNames"

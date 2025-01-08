@@ -118,7 +118,7 @@ export default {
         class="gl-mt-3 gl-shrink-0 gl-flex-col gl-items-end md:gl-mt-0 md:gl-flex md:gl-pl-0"
         :class="statsPadding"
       >
-        <div class="gl-flex gl-items-center gl-gap-x-3">
+        <div class="gl-flex gl-items-center gl-gap-x-3 md:gl-h-5">
           <slot name="stats"></slot>
         </div>
         <div
