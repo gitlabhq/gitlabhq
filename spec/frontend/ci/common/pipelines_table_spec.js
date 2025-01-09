@@ -6,7 +6,7 @@ import fixture from 'test_fixtures/pipelines/pipelines.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
+import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
 import PipelineFailedJobsWidget from '~/ci/pipelines_page/components/failure_widget/pipeline_failed_jobs_widget.vue';
 import PipelineOperations from '~/ci/pipelines_page/components/pipeline_operations.vue';
 import PipelineTriggerer from '~/ci/pipelines_page/components/pipeline_triggerer.vue';
@@ -72,7 +72,7 @@ describe('Pipelines Table', () => {
   const findCiIcon = () => wrapper.findComponent(CiIcon);
   const findPipelineInfo = () => wrapper.findComponent(PipelineUrl);
   const findTriggerer = () => wrapper.findComponent(PipelineTriggerer);
-  const findLegacyPipelineMiniGraph = () => wrapper.findComponent(LegacyPipelineMiniGraph);
+  const findPipelineMiniGraph = () => wrapper.findComponent(PipelineMiniGraph);
   const findTimeAgo = () => wrapper.findComponent(PipelinesTimeago);
   const findActions = () => wrapper.findComponent(PipelineOperations);
 
@@ -123,12 +123,12 @@ describe('Pipelines Table', () => {
 
     describe('stages cell', () => {
       it('should render pipeline mini graph', () => {
-        expect(findLegacyPipelineMiniGraph().exists()).toBe(true);
+        expect(findPipelineMiniGraph().exists()).toBe(true);
       });
 
       it('should render the right number of stages', () => {
         const stagesLength = firstPipeline.details.stages.length;
-        expect(findLegacyPipelineMiniGraph().props('stages')).toHaveLength(stagesLength);
+        expect(findPipelineMiniGraph().props('pipelineStages')).toHaveLength(stagesLength);
       });
 
       it('should render the latest downstream pipelines only', () => {
@@ -136,7 +136,7 @@ describe('Pipelines Table', () => {
         // because we retried the trigger job, so the mini pipeline graph will only
         // render the newly created downstream pipeline instead
         expect(firstPipeline.triggered).toHaveLength(2);
-        expect(findLegacyPipelineMiniGraph().props('downstreamPipelines')).toHaveLength(1);
+        expect(findPipelineMiniGraph().props('downstreamPipelines')).toHaveLength(1);
       });
 
       describe('when pipeline does not have stages', () => {
@@ -157,7 +157,7 @@ describe('Pipelines Table', () => {
         });
 
         it('stages are not rendered', () => {
-          expect(findLegacyPipelineMiniGraph().props('stages')).toHaveLength(0);
+          expect(findPipelineMiniGraph().props('pipelineStages')).toHaveLength(0);
         });
       });
     });
@@ -324,7 +324,7 @@ describe('Pipelines Table', () => {
     });
 
     it('tracks pipeline mini graph stage click', () => {
-      findLegacyPipelineMiniGraph().vm.$emit('miniGraphStageClick');
+      findPipelineMiniGraph().vm.$emit('miniGraphStageClick');
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_minigraph', {
         label: TRACKING_CATEGORIES.table,

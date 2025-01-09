@@ -229,6 +229,38 @@ Programming languages that require compiling the source code may throw cryptic e
 - `Why is "this" undefined in VueJS? Provide common error cases, and explain how to avoid them.`
 - `How to debug a Ruby on Rails stacktrace? Share common strategies and an example exception.`
 
+## Ask about specific files
+
+DETAILS:
+**Tier:** Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Editors:** VS Code, JetBrains IDEs
+**LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477258) in GitLab 17.7 [with flags] (../../administration/feature_flags.md) named `duo_additional_context` and `duo_include_context_file`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+GitLab.com customers must contact their Customer Success Manager to enable this feature.
+
+You can add files in your VS Code workspace to ask GitLab Duo Chat about.
+
+You cannot add local files that are not part of a repository.
+
+1. In your IDE, in GitLab Duo Chat, type `/include`.
+1. To add files, you can either:
+   - Select the files from the list.
+   - Enter the file path.
+
+For example, if you are developing an e-commerce app, you can add the `cart_service.py` and `checkout_flow.js` files to Chat's context and ask:
+
+- `How does checkout_flow.js interact with cart_service.py? Please generate a sequence diagram using Mermaid.`
+- `Thanks, that helps. I want to extend the checkout process by showing products related to the ones in the user's cart. I want to move the checkout logic to the backend before proceeding. Generate the Python backend code and change the frontend code to work with the new backend.`
+
+NOTE:
+You cannot use [Quick Chat](index.md#in-gitlab-duo-quick-chat-in-the-editor-view) to add files or ask questions about files added for Chat's context.
+
 ## Refactor code in the IDE
 
 DETAILS:
@@ -440,9 +472,10 @@ DETAILS:
 
 These commands work only when using Duo Chat in supported IDEs:
 
-| Command   | Purpose                                        |
-|-----------|------------------------------------------------|
-| /tests    | [Write tests](#write-tests-in-the-ide)         |
-| /explain  | [Explain code](#explain-selected-code)         |
-| /refactor | [Refactor the code](#refactor-code-in-the-ide) |
-| /fix      | [Fix the code](#fix-code-in-the-ide)           |
+| Command   | Purpose                                           |
+|-----------|---------------------------------------------------|
+| /tests    | [Write tests](#write-tests-in-the-ide)            |
+| /explain  | [Explain code](#explain-selected-code)            |
+| /refactor | [Refactor the code](#refactor-code-in-the-ide)    |
+| /fix      | [Fix the code](#fix-code-in-the-ide)              |
+| /include  | [Include file context](#ask-about-specific-files) |

@@ -1,18 +1,16 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import { __ } from '~/locale';
 import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsing_utils';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
+import { normalizeDownstreamPipelines, normalizeStages } from './utils/data_utils';
 import DownstreamPipelines from './downstream_pipelines.vue';
 import PipelineStages from './pipeline_stages.vue';
 /**
- * Renders the GraphQL instance of the pipeline mini graph.
+ * Renders the pipeline mini graph.
+ * All REST data passed in is formatted to GraphQL.
  */
 export default {
   name: 'PipelineMiniGraph',
-  i18n: {
-    pipelineMiniGraphFetchError: __('There was a problem fetching the pipeline mini graph.'),
-  },
   arrowStyles: ['arrow-icon gl-inline-block gl-mx-1 gl-text-subtle !gl-align-middle'],
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -51,8 +49,11 @@ export default {
   },
   emits: ['jobActionExecuted', 'miniGraphStageClick'],
   computed: {
-    latestDownstreamPipelines() {
-      return keepLatestDownstreamPipelines(this.downstreamPipelines);
+    formattedDownstreamPipelines() {
+      return normalizeDownstreamPipelines(this.downstreamPipelines);
+    },
+    formattedStages() {
+      return normalizeStages(this.pipelineStages);
     },
     hasDownstreamPipelines() {
       return Boolean(this.latestDownstreamPipelines.length);
@@ -60,8 +61,14 @@ export default {
     hasUpstreamPipeline() {
       return this.upstreamPipeline?.id;
     },
+    latestDownstreamPipelines() {
+      return keepLatestDownstreamPipelines(this.formattedDownstreamPipelines);
+    },
+    upstreamPipelineStatus() {
+      return this.upstreamPipeline?.detailedStatus || this.upstreamPipeline?.details?.status;
+    },
     upstreamTooltipText() {
-      return `${this.upstreamPipeline?.project?.name} - ${this.upstreamPipeline?.detailedStatus?.label}`;
+      return `${this.upstreamPipeline?.project?.name} - ${this.upstreamPipelineStatus?.label}`;
     },
   },
 };
@@ -74,7 +81,7 @@ export default {
       v-gl-tooltip.hover
       :title="upstreamTooltipText"
       :aria-label="upstreamTooltipText"
-      :status="upstreamPipeline.detailedStatus"
+      :status="upstreamPipelineStatus"
       :show-tooltip="false"
       class="gl-align-middle"
       data-testid="pipeline-mini-graph-upstream"
@@ -88,7 +95,7 @@ export default {
     />
     <pipeline-stages
       :is-merge-train="isMergeTrain"
-      :stages="pipelineStages"
+      :stages="formattedStages"
       @jobActionExecuted="$emit('jobActionExecuted')"
       @miniGraphStageClick="$emit('miniGraphStageClick')"
     />

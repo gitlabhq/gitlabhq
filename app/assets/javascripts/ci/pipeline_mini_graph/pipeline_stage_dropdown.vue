@@ -8,11 +8,11 @@ import { getQueryHeaders, toggleQueryPollingByVisibility } from '~/ci/pipeline_d
 import { graphqlEtagStagePath } from '~/ci/pipeline_details/utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { PIPELINE_POLL_INTERVAL_DEFAULT } from '~/ci/constants';
+import JobDropdownItem from '~/ci/common/private/job_dropdown_item.vue';
 import getPipelineStageJobsQuery from './graphql/queries/get_pipeline_stage_jobs.query.graphql';
-import JobItem from './job_item.vue';
 
 export default {
-  name: 'PipelineStage',
+  name: 'PipelineStageDropdown',
   i18n: {
     loadingText: __('Loading...'),
     mergeTrainMessage: s__('Pipeline|Merge train pipeline jobs can not be retried'),
@@ -21,11 +21,11 @@ export default {
     viewStageLabel: __('View Stage: %{title}'),
   },
   components: {
-    JobItem,
     CiIcon,
     GlButton,
     GlDisclosureDropdown,
     GlLoadingIcon,
+    JobDropdownItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -147,7 +147,7 @@ export default {
       data-testid="pipeline-mini-graph-dropdown-menu-list"
       @click.stop
     >
-      <job-item
+      <job-dropdown-item
         v-for="job in stageJobs"
         :key="job.id"
         :dropdown-length="stageJobs.length"

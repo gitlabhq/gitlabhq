@@ -46,7 +46,6 @@ RSpec.describe 'Mini Pipeline Graph in Commit View', :js, feature_category: :sou
     let(:build) { create(:ci_build, pipeline: pipeline, status: :running) }
 
     before do
-      stub_feature_flags(ci_graphql_pipeline_mini_graph: false)
       build.run
       visit project_commit_path(project, project.commit.id)
       wait_for_requests

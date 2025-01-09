@@ -20,6 +20,7 @@ const presentersByObjectType = {
   Issue: IssuablePresenter,
   Epic: IssuablePresenter,
   Milestone: MilestonePresenter,
+  MergeRequestAuthor: UserPresenter,
   MergeRequestReviewer: UserPresenter,
   MergeRequestAssignee: UserPresenter,
   UserCore: UserPresenter,

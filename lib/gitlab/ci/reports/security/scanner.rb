@@ -13,7 +13,8 @@ module Gitlab
             "gemnasium-python" => 3,
             "bandit" => 1,
             "spotbugs" => 1,
-            "semgrep" => 2
+            "semgrep" => 2,
+            "gitlab-sbom-vulnerability-scanner" => 4
           }.freeze
 
           attr_accessor :external_id, :name, :vendor, :version, :primary_identifiers

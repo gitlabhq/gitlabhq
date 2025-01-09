@@ -40,7 +40,7 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
   it 'has no duplicated actions in InternalEventTracking events', :aggregate_failures do
     definitions_by_action = described_class
                               .definitions
-                              .select { |d| d.attributes[:internal_events] }
+                              .select(&:internal_events?)
                               .group_by(&:action)
 
     definitions_by_action.each do |action, definitions|
@@ -52,10 +52,10 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
   it 'only has internal events without category', :aggregate_failures do
     internal_events = described_class
       .definitions
-      .select { |d| d.attributes[:internal_events] }
+      .select(&:internal_events?)
 
     internal_events.each do |event|
-      expect(event.attributes[:category]).to be_nil,
+      expect(event.category).to be_nil,
         "Event definition with internal_events: true should not have a category: #{event.path}"
     end
   end
@@ -68,7 +68,7 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
       .compact
       .uniq
 
-    event_names = Gitlab::Tracking::EventDefinition.definitions.map { |e| e.attributes[:action] }
+    event_names = described_class.definitions.map(&:action)
 
     from_metric_definitions.each do |event|
       expect(event_names).to include(event),

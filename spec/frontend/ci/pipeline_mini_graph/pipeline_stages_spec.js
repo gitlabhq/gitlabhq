@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import PipelineStages from '~/ci/pipeline_mini_graph/pipeline_stages.vue';
-import PipelineStage from '~/ci/pipeline_mini_graph/pipeline_stage.vue';
+import PipelineStageDropdown from '~/ci/pipeline_mini_graph/pipeline_stage_dropdown.vue';
 
 import { pipelineStage } from './mock_data';
 
@@ -21,7 +21,7 @@ describe('PipelineStages', () => {
     });
   };
 
-  const findStages = () => wrapper.findAllComponents(PipelineStage);
+  const findStages = () => wrapper.findAllComponents(PipelineStageDropdown);
 
   describe('when mounted', () => {
     beforeEach(() => {

@@ -63,6 +63,12 @@ RSpec.describe Gitlab::Git::ChangedPath, feature_category: :source_code_manageme
     end
   end
 
+  describe '#modified_file?' do
+    subject(:modified_file?) { changed_path.modified_file? }
+
+    it { is_expected.to be_truthy }
+  end
+
   describe '#submodule_change?' do
     subject(:submodule_change?) { changed_path.submodule_change? }
 

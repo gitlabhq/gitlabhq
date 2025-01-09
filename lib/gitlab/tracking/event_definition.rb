@@ -6,7 +6,6 @@ module Gitlab
 
     class EventDefinition
       attr_reader :path
-      attr_reader :attributes
 
       class << self
         include Gitlab::Utils::StrongMemoize
@@ -48,7 +47,7 @@ module Gitlab
 
         def internal_event_actions
           @internal_event_actions ||= definitions
-            .filter_map { |event| event.action if event.attributes[:internal_events] }
+            .filter_map { |event| event.action if event.internal_events? }
             .to_set
         end
       end
@@ -58,10 +57,17 @@ module Gitlab
         @attributes = opts
       end
 
-      def to_h
-        attributes
+      def additional_properties
+        @attributes.fetch(:additional_properties, {})
       end
-      alias_method :to_dictionary, :to_h
+
+      def internal_events?
+        @attributes[:internal_events]
+      end
+
+      def category
+        @attributes[:category]
+      end
 
       def yaml_path
         path.delete_prefix(Rails.root.to_s)
@@ -72,11 +78,15 @@ module Gitlab
       end
 
       def action
-        attributes[:action]
+        @attributes[:action]
       end
 
       def extra_tracking_classes
-        attributes[:extra_tracking_classes]&.map(&:constantize) || []
+        @attributes[:extra_tracking_classes]&.map(&:constantize) || []
+      end
+
+      def raw_attributes
+        @attributes
       end
 
       private

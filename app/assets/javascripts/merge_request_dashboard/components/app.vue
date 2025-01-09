@@ -195,7 +195,10 @@ export default {
       </template>
     </gl-tabs>
     <div class="gl-mt-6 gl-text-center">
-      <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/497573">
+      <gl-link v-if="newListsEnabled" href="https://gitlab.com/gitlab-org/gitlab/-/issues/512314">
+        {{ __('Leave feedback') }}
+      </gl-link>
+      <gl-link v-else href="https://gitlab.com/gitlab-org/gitlab/-/issues/497573">
         {{ __('Leave feedback') }}
       </gl-link>
     </div>

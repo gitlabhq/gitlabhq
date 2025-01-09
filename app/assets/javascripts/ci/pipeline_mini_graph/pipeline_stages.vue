@@ -1,12 +1,12 @@
 <script>
-import PipelineStage from './pipeline_stage.vue';
+import PipelineStageDropdown from './pipeline_stage_dropdown.vue';
 /**
  * Renders the pipeline stages portion of the pipeline mini graph.
  */
 export default {
   name: 'PipelineStages',
   components: {
-    PipelineStage,
+    PipelineStageDropdown,
   },
   props: {
     isMergeTrain: {
@@ -29,7 +29,7 @@ export default {
       :key="stage.id"
       class="pipeline-mini-graph-stage-container dropdown gl-mr-2 gl-inline-flex gl-align-middle"
     >
-      <pipeline-stage
+      <pipeline-stage-dropdown
         :stage="stage"
         :is-merge-train="isMergeTrain"
         @jobActionExecuted="$emit('jobActionExecuted')"

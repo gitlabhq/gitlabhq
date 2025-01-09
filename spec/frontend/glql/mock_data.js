@@ -98,6 +98,11 @@ export const MOCK_ASSIGNEES = {
   ],
 };
 
+export const MOCK_MR_AUTHOR = {
+  ...MOCK_USER,
+  __typename: 'MergeRequestAuthor',
+};
+
 export const MOCK_MR_ASSIGNEES = {
   nodes: MOCK_ASSIGNEES.nodes.map(({ __typename, ...assignee }) => ({
     __typename: 'MergeRequestAssignee',

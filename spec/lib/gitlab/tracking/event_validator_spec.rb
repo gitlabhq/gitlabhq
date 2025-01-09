@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Tracking::EventValidator, feature_category: :service_ping
   before do
     allow(Gitlab::Tracking::EventDefinition).to receive(:internal_event_exists?).and_return(true)
     allow(Gitlab::Tracking::EventDefinition).to receive(:find).and_return(event_definition)
-    allow(event_definition).to receive(:to_h).and_return({ additional_properties: { lang: { description: 'lang' } } })
+    allow(event_definition).to receive(:additional_properties).and_return({ lang: { description: 'Language' } })
   end
 
   describe '#validate!' do
@@ -84,7 +84,7 @@ RSpec.describe Gitlab::Tracking::EventValidator, feature_category: :service_ping
       let(:additional_properties) { { custom_property: 'value' } }
 
       before do
-        allow(event_definition).to receive(:to_h).and_return({})
+        allow(event_definition).to receive(:additional_properties).and_return({})
       end
 
       it 'raises an InvalidPropertyError for unknown properties' do

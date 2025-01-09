@@ -13,8 +13,8 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, n__ } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsing_utils';
-import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import PipelineArtifacts from '~/ci/pipelines_page/components/pipelines_artifacts.vue';
+import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
@@ -53,7 +53,7 @@ export default {
     GlSprintf,
     GlTooltip,
     GlButton,
-    LegacyPipelineMiniGraph,
+    PipelineMiniGraph,
     PipelineArtifacts,
     TimeAgoTooltip,
     TooltipOnTruncate,
@@ -289,12 +289,12 @@ export default {
               </p>
               <div class="gl-inline-flex gl-grow gl-items-center gl-justify-between">
                 <div>
-                  <legacy-pipeline-mini-graph
+                  <pipeline-mini-graph
                     v-if="pipeline.details.stages"
                     :downstream-pipelines="downstreamPipelines"
                     :is-merge-train="isMergeTrain"
                     :pipeline-path="pipeline.path"
-                    :stages="pipeline.details.stages"
+                    :pipeline-stages="pipeline.details.stages"
                     :upstream-pipeline="pipeline.triggered_by"
                   />
                 </div>

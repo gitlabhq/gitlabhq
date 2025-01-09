@@ -1,10 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
-import JobActionButton from '~/ci/pipeline_mini_graph/job_action_button.vue';
-import JobItem from '~/ci/pipeline_mini_graph/job_item.vue';
+import JobActionButton from '~/ci/common/private/job_action_button.vue';
+import JobDropdownItem from '~/ci/common/private/job_dropdown_item.vue';
 import JobNameComponent from '~/ci/common/private/job_name_component.vue';
 
-import { mockPipelineJob } from './mock_data';
+import { mockPipelineJob } from '../../pipeline_mini_graph/mock_data';
 
 const { detailedStatus, ...mockJobInfo } = mockPipelineJob;
 
@@ -18,11 +18,11 @@ const mockJobStatus = {
   status: detailedStatus,
 };
 
-describe('JobItem', () => {
+describe('JobDropdownItem', () => {
   let wrapper;
 
   const createComponent = ({ props = {} } = {}) => {
-    wrapper = shallowMount(JobItem, {
+    wrapper = shallowMount(JobDropdownItem, {
       propsData: {
         job: mockPipelineJob,
         ...props,

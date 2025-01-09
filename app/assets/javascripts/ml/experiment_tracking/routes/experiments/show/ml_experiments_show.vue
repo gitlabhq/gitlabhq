@@ -5,6 +5,7 @@ import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
 import CandidateList from '~/ml/experiment_tracking/components/candidate_list.vue';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import ExperimentMetadata from '~/ml/experiment_tracking/components/experiment_metadata.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
 import {
@@ -88,6 +89,11 @@ export default {
       required: false,
       default: '',
     },
+  },
+  data() {
+    return {
+      experimentGid: convertToGraphQLId('Ml::Experiment', this.experiment.id),
+    };
   },
   computed: {
     deleteButtonInfo() {
@@ -186,6 +192,7 @@ export default {
       :param-names="paramNames"
       :page-info="pageInfo"
       :empty-state-svg-path="emptyStateSvgPath"
+      :experiment-id="experimentGid"
     />
   </div>
 </template>

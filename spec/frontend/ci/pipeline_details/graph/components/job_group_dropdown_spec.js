@@ -1,7 +1,7 @@
 import { shallowMount, mount } from '@vue/test-utils';
 import { GlDisclosureDropdown } from '@gitlab/ui';
 
-import PipelineMiniGraphJobItem from '~/ci/pipeline_mini_graph/job_item.vue';
+import JobDropdownItem from '~/ci/common/private/job_dropdown_item.vue';
 import JobGroupDropdown from '~/ci/pipeline_details/graph/components/job_group_dropdown.vue';
 import JobItem from '~/ci/pipeline_details/graph/components/job_item.vue';
 
@@ -70,7 +70,7 @@ describe('job group dropdown component', () => {
   const findJobItem = () => wrapper.findComponent(JobItem);
   const findTriggerButton = () => wrapper.find('button');
   const findDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findPipelineMiniGraphJobItems = () => wrapper.findAllComponents(PipelineMiniGraphJobItem);
+  const findJobDropdownItems = () => wrapper.findAllComponents(JobDropdownItem);
 
   const createComponent = ({ props, mountFn = shallowMount } = {}) => {
     wrapper = mountFn(JobGroupDropdown, {
@@ -117,9 +117,9 @@ describe('job group dropdown component', () => {
   it('renders parallel jobs in group', () => {
     createComponent({ mountFn: mount });
 
-    const [item1, item2] = findPipelineMiniGraphJobItems().wrappers;
+    const [item1, item2] = findJobDropdownItems().wrappers;
 
-    expect(findPipelineMiniGraphJobItems()).toHaveLength(2);
+    expect(findJobDropdownItems()).toHaveLength(2);
 
     expect(item1.props('job')).toEqual(group.jobs[0]);
     expect(item2.props('job')).toEqual(group.jobs[1]);

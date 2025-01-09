@@ -6,7 +6,7 @@ import {
   GlResizeObserverDirective,
 } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
-import PipelineMiniGraphJobItem from '~/ci/pipeline_mini_graph/job_item.vue';
+import JobDropdownItem from '~/ci/common/private/job_dropdown_item.vue';
 import { JOB_DROPDOWN } from '../constants';
 import JobItem from './job_item.vue';
 
@@ -18,10 +18,10 @@ import JobItem from './job_item.vue';
  */
 export default {
   components: {
+    JobDropdownItem,
     JobItem,
     GlBadge,
     GlDisclosureDropdown,
-    PipelineMiniGraphJobItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -115,7 +115,7 @@ export default {
       </button>
     </template>
     <ul class="gl-m-0 gl-w-34 gl-overflow-y-auto gl-p-0" @click.stop>
-      <pipeline-mini-graph-job-item
+      <job-dropdown-item
         v-for="job in group.jobs"
         :key="job.id"
         :job="job"

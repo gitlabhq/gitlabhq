@@ -8,7 +8,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert } from '~/alert';
 import waitForPromises from 'helpers/wait_for_promises';
 
-import JobActionButton, { i18n } from '~/ci/pipeline_mini_graph/job_action_button.vue';
+import JobActionButton, { i18n } from '~/ci/common/private/job_action_button.vue';
 
 import cancelJobMutation from '~/ci/pipeline_mini_graph/graphql/mutations/job_cancel.mutation.graphql';
 import playJobMutation from '~/ci/pipeline_mini_graph/graphql/mutations/job_play.mutation.graphql';
@@ -20,7 +20,7 @@ import {
   mockJobPlayResponse,
   mockJobRetryResponse,
   mockJobUnscheduleResponse,
-} from './mock_data';
+} from '../../pipeline_mini_graph/mock_data';
 
 Vue.use(VueApollo);
 jest.mock('~/alert');

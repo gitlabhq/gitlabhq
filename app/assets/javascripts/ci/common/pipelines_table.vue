@@ -6,8 +6,8 @@ import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
 import { PIPELINE_ID_KEY, PIPELINE_IID_KEY, TRACKING_CATEGORIES } from '~/ci/constants';
 import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsing_utils';
-import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import PipelineFailedJobsWidget from '~/ci/pipelines_page/components/failure_widget/pipeline_failed_jobs_widget.vue';
+import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
 import PipelineOperations from '../pipelines_page/components/pipeline_operations.vue';
 import PipelineTriggerer from '../pipelines_page/components/pipeline_triggerer.vue';
 import PipelineUrl from '../pipelines_page/components/pipeline_url.vue';
@@ -38,8 +38,8 @@ export default {
   components: {
     GlSkeletonLoader,
     GlTableLite,
-    LegacyPipelineMiniGraph,
     PipelineFailedJobsWidget,
+    PipelineMiniGraph,
     PipelineOperations,
     PipelineStatusBadge,
     PipelineTriggerer,
@@ -251,11 +251,11 @@ export default {
             <rect height="20" rx="10" ry="10" :width="cellWidth('stages')" />
           </gl-skeleton-loader>
         </div>
-        <legacy-pipeline-mini-graph
+        <pipeline-mini-graph
           v-else
           :downstream-pipelines="getDownstreamPipelines(item)"
           :pipeline-path="item.path"
-          :stages="getStages(item)"
+          :pipeline-stages="getStages(item)"
           :upstream-pipeline="item.triggered_by"
           @miniGraphStageClick="trackPipelineMiniGraph"
         />

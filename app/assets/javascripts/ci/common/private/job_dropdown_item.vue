@@ -3,11 +3,11 @@ import { GlDisclosureDropdownItem, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import delayedJobMixin from '~/ci/mixins/delayed_job_mixin';
-import JobNameComponent from '~/ci/common/private/job_name_component.vue';
 import JobActionButton from './job_action_button.vue';
+import JobNameComponent from './job_name_component.vue';
 
 export default {
-  name: 'JobItem',
+  name: 'JobDropdownItem',
   components: {
     JobActionButton,
     JobNameComponent,

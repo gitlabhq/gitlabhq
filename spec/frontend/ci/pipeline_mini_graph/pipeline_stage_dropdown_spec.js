@@ -9,8 +9,8 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
-import JobItem from '~/ci/pipeline_mini_graph/job_item.vue';
-import PipelineStage from '~/ci/pipeline_mini_graph/pipeline_stage.vue';
+import JobDropdownItem from '~/ci/common/private/job_dropdown_item.vue';
+import PipelineStageDropdown from '~/ci/pipeline_mini_graph/pipeline_stage_dropdown.vue';
 
 import getPipelineStageJobsQuery from '~/ci/pipeline_mini_graph/graphql/queries/get_pipeline_stage_jobs.query.graphql';
 import { mockPipelineStageJobs, pipelineStage, pipelineStageJobsFetchError } from './mock_data';
@@ -18,7 +18,7 @@ import { mockPipelineStageJobs, pipelineStage, pipelineStageJobsFetchError } fro
 Vue.use(VueApollo);
 jest.mock('~/alert');
 
-describe('PipelineStage', () => {
+describe('PipelineStageDropdown', () => {
   let wrapper;
   let pipelineStageResponse;
 
@@ -30,7 +30,7 @@ describe('PipelineStage', () => {
     const handlers = [[getPipelineStageJobsQuery, pipelineStageHandler]];
     const mockApollo = createMockApollo(handlers);
 
-    wrapper = mountExtended(PipelineStage, {
+    wrapper = mountExtended(PipelineStageDropdown, {
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
@@ -46,7 +46,7 @@ describe('PipelineStage', () => {
 
   const findCiIcon = () => wrapper.findComponent(CiIcon);
   const findDropdownButton = () => wrapper.findComponent(GlButton);
-  const findJobItems = () => wrapper.findAllComponents(JobItem);
+  const findJobDropdownItems = () => wrapper.findAllComponents(JobDropdownItem);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findStageDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
 
@@ -138,12 +138,12 @@ describe('PipelineStage', () => {
       });
 
       it('should render 2 job items', () => {
-        expect(findJobItems().exists()).toBe(true);
-        expect(findJobItems()).toHaveLength(2);
+        expect(findJobDropdownItems().exists()).toBe(true);
+        expect(findJobDropdownItems()).toHaveLength(2);
       });
 
       it('emits jobActionExecuted', () => {
-        findJobItems().at(0).vm.$emit('jobActionExecuted');
+        findJobDropdownItems().at(0).vm.$emit('jobActionExecuted');
         expect(wrapper.emitted('jobActionExecuted')).toHaveLength(1);
       });
     });

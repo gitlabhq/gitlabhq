@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlModal, GlSprintf } from '@gitlab/ui';
-import JobActionModal from '~/ci/pipeline_mini_graph/job_action_modal.vue';
+import JobActionModal from '~/ci/common/private/job_action_modal.vue';
 
 describe('JobActionModal', () => {
   let wrapper;

@@ -41,22 +41,23 @@ Other times, you must be more specific with your request.
 
 In the GitLab UI, GitLab Duo Chat knows about these areas:
 
-| Area          | How to ask Chat                                                                                                  |
-|---------------|------------------------------------------------------------------------------------------------------------------|
-| Epics         | From the epic, ask about `this epic`, `this`, or the URL. From any UI area, ask about the URL.                   |
-| Issues        | From the issue, ask about `this issue`, `this`, or the URL. From any UI area, ask about the URL.                 |
-| Code files    | From the single file, ask about `this code` or `this file`. From any UI area, ask about the URL.                 |
+| Area           | How to ask Chat                                                                                                                                                                             |
+|----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Epics          | From the epic, ask about `this epic`, `this`, or the URL. From any UI area, ask about the URL.                                                                                              |
+| Issues         | From the issue, ask about `this issue`, `this`, or the URL. From any UI area, ask about the URL.                                                                                            |
+| Code files     | From the single file, ask about `this code` or `this file`. From any UI area, ask about the URL.                                                                                            |
 | Merge requests | From the merge request, ask about `this merge request`, `this`, or the URL. For more information, see [Ask about a specific merge request](examples.md#ask-about-a-specific-merge-request). |
-| Commits        | From the commit, ask about `this commit` or `this`. From any UI area, ask about the URL.                        |
-| Pipeline jobs  | From the pipeline job, ask about `this pipeline job` or `this`. From any UI area, ask about the URL.            |
+| Commits        | From the commit, ask about `this commit` or `this`. From any UI area, ask about the URL.                                                                                                    |
+| Pipeline jobs  | From the pipeline job, ask about `this pipeline job` or `this`. From any UI area, ask about the URL.                                                                                        |
 
 In the IDEs, GitLab Duo Chat knows about these areas:
 
-| Area    | How to ask Chat  |
-|---------|------------------|
-| Selected lines in the editor | With the lines selected, ask about `this code` or `this file`. Chat is not aware of the file; you must select the lines you want to ask about. |
-| Epics   | Ask about the URL. |
-| Issues  | Ask about the URL. |
+| Area                         | How to ask Chat                                                                                                                                                                                                                                                                                        |
+|------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Selected lines in the editor | With the lines selected, ask about `this code` or `this file`. Chat is not aware of the file; you must select the lines you want to ask about.                                                                                                                                                         |
+| Epics                        | Ask about the URL.                                                                                                                                                                                                                                                                                     |
+| Issues                       | Ask about the URL.                                                                                                                                                                                                                                                                                     |
+| Files                        | Use the `/include` command to search for project file(s) to add to Duo Chat's context. After you've added the files, you can ask Duo Chat questions about the file contents. Available for VS Code only. For more information see [Include Context in the IDE](examples.md#ask-about-specific-files) |
 
 In addition, in the IDEs, when you use any of the slash commands,
 like `/explain`, `/refactor`, `/fix`, or `/tests,` Duo Chat has access to the

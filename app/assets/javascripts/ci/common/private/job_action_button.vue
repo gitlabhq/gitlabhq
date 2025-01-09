@@ -3,10 +3,10 @@ import { GlButton, GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui'
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
-import cancelJobMutation from './graphql/mutations/job_cancel.mutation.graphql';
-import playJobMutation from './graphql/mutations/job_play.mutation.graphql';
-import retryJobMutation from './graphql/mutations/job_retry.mutation.graphql';
-import unscheduleJobMutation from './graphql/mutations/job_unschedule.mutation.graphql';
+import cancelJobMutation from '~/ci/pipeline_mini_graph/graphql/mutations/job_cancel.mutation.graphql';
+import playJobMutation from '~/ci/pipeline_mini_graph/graphql/mutations/job_play.mutation.graphql';
+import retryJobMutation from '~/ci/pipeline_mini_graph/graphql/mutations/job_retry.mutation.graphql';
+import unscheduleJobMutation from '~/ci/pipeline_mini_graph/graphql/mutations/job_unschedule.mutation.graphql';
 import JobActionModal from './job_action_modal.vue';
 
 export const i18n = {

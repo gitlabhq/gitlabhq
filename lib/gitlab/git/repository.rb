@@ -1270,7 +1270,7 @@ module Gitlab
         )
 
         changed_paths.drop(offset).each_slice(batch_size) do |batched_changed_paths|
-          blob_pairs = batched_changed_paths.map do |changed_path|
+          blob_pairs = batched_changed_paths.reject(&:submodule_change?).map do |changed_path|
             Gitaly::DiffBlobsRequest::BlobPair.new(
               left_blob: changed_path.old_blob_id,
               right_blob: changed_path.new_blob_id
@@ -1284,29 +1284,48 @@ module Gitlab
       private
 
       def diff_files_by_blob_pairs(blob_pairs, changed_paths, diff_refs)
+        non_submodule_paths = changed_paths.reject(&:submodule_change?)
         diff_blobs = diff_blobs(blob_pairs, patch_bytes_limit: Gitlab::Git::Diff.patch_hard_limit_bytes)
 
-        changed_diff_blobs = diff_blobs.zip(changed_paths)
+        changed_diff_blobs = diff_blobs.zip(non_submodule_paths)
+        diff_blob_lookup = changed_diff_blobs.to_h { |diff_blob, path| [path.path, diff_blob] }
 
-        changed_diff_blobs.map do |diff_blob, changed_path|
-          diff = Gitlab::Git::Diff.new({
-            diff: diff_blob.patch,
-            too_large: diff_blob.over_patch_bytes_limit,
-            new_path: changed_path.path,
-            old_path: changed_path.old_path,
-            a_mode: changed_path.old_mode,
-            b_mode: changed_path.new_mode,
-            new_file: changed_path.status == :ADDED,
-            renamed_file: changed_path.status == :RENAMED,
-            deleted_file: changed_path.status == :DELETED
-          })
-
-          Gitlab::Diff::File.new(
-            diff,
-            repository: container.repository,
-            diff_refs: diff_refs
-          )
+        changed_paths.map do |changed_path|
+          if changed_path.submodule_change?
+            create_diff(changed_path, diff_refs, diff: generate_submodule_diff(changed_path))
+          else
+            diff_blob = diff_blob_lookup[changed_path.path]
+            create_diff(changed_path, diff_refs, diff: diff_blob.patch, too_large: diff_blob.over_patch_bytes_limit)
+          end
         end
+      end
+
+      def create_diff(changed_path, diff_refs, options = {})
+        diff_options = {
+          new_path: changed_path.path,
+          old_path: changed_path.old_path,
+          a_mode: changed_path.old_mode,
+          b_mode: changed_path.new_mode,
+          new_file: changed_path.new_file?,
+          renamed_file: changed_path.renamed_file?,
+          deleted_file: changed_path.deleted_file?
+        }.merge(options)
+
+        diff = Gitlab::Git::Diff.new(diff_options)
+
+        Gitlab::Diff::File.new(
+          diff,
+          repository: container.repository,
+          diff_refs: diff_refs
+        )
+      end
+
+      def generate_submodule_diff(changed_path)
+        diff_lines = []
+        diff_lines << "- Subproject commit #{changed_path.old_blob_id}" if changed_path.deleted_file? || changed_path.modified_file?
+        diff_lines << "+ Subproject commit #{changed_path.new_blob_id}" if changed_path.new_file? || changed_path.modified_file?
+
+        diff_lines.join("\n")
       end
 
       def check_blobs_generated(base, head, changed_paths)

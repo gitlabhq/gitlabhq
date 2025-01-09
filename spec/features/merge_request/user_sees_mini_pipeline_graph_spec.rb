@@ -12,7 +12,6 @@ RSpec.describe 'Merge request < User sees pipeline mini graph', :js, feature_cat
   dropdown_selector = '[data-testid="pipeline-mini-graph-dropdown"]'
 
   before do
-    stub_feature_flags(ci_graphql_pipeline_mini_graph: false)
     build.run
     build.trace.set('hello')
     sign_in(user)

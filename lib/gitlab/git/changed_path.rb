@@ -27,6 +27,10 @@ module Gitlab
         status == :RENAMED
       end
 
+      def modified_file?
+        status == :MODIFIED
+      end
+
       def submodule_change?
         # The file mode 160000 represents a "Gitlink" or a git submodule.
         # The first two digits can be used to distinguish it from regular files.

@@ -178,6 +178,22 @@ The project maintainer can disable this feature on:
 
 For example URLs, see [GitLab Pages default domain names](getting_started_part_one.md#gitlab-pages-default-domain-names).
 
+## Primary domain
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481334) in GitLab 17.8.
+
+When you use GitLab Pages with custom domains, you can redirect all requests to GitLab Pages to a primary domain.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+- A [custom domain](custom_domains_ssl_tls_certification/index.md#set-up-a-custom-domain) must be set up.
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Deploy > Pages**.
+1. From the **Primary domain** dropdown list, select the domain to redirect to.
+1. Select **Save changes**.
+
 ## Expiring deployments
 
 DETAILS:

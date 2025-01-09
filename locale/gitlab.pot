@@ -9528,6 +9528,9 @@ msgstr ""
 msgid "BlobViewer|If you delete the file, it will be removed from the branch %{branch}."
 msgstr ""
 
+msgid "BlobViewer|Open raw"
+msgstr ""
+
 msgid "BlobViewer|The file could not be displayed because it is too large."
 msgstr ""
 
@@ -20762,6 +20765,12 @@ msgstr ""
 msgid "Due to inactivity, this project is scheduled to be deleted on %{deletion_date}. %{link_start}Why is this scheduled?%{link_end}"
 msgstr ""
 
+msgid "DuoChat|%{linkStart}Learn how%{linkEnd} to set up Code Suggestions and Chat in your IDE. You can also use Chat in GitLab. Ask questions about:"
+msgstr ""
+
+msgid "DuoChat|AI features are now available"
+msgstr ""
+
 msgid "DuoChat|An administrator has turned off GitLab Duo for this %{reason}"
 msgstr ""
 
@@ -20793,9 +20802,6 @@ msgid "DuoChat|The issue, epic, merge request, or code you're viewing"
 msgstr ""
 
 msgid "DuoChat|There was an error communicating with GitLab Duo Chat. Please try again later."
-msgstr ""
-
-msgid "DuoChat|Use AI to answer questions about things like:"
 msgstr ""
 
 msgid "DuoChat|What is a fork?"
@@ -35551,6 +35557,9 @@ msgstr ""
 msgid "MlExperimentTracking|Experiments keep track of comparable model candidates, and determine which parameters provides the best performance."
 msgstr ""
 
+msgid "MlExperimentTracking|Failed to load experiment candidates with error: %{message}"
+msgstr ""
+
 msgid "MlExperimentTracking|Filter candidates"
 msgstr ""
 
@@ -35581,6 +35590,9 @@ msgstr ""
 msgid "MlExperimentTracking|No candidates"
 msgstr ""
 
+msgid "MlExperimentTracking|No candidates associated with this experiment"
+msgstr ""
+
 msgid "MlExperimentTracking|No candidates logged for the query. Create new candidates using the MLflow client."
 msgstr ""
 
@@ -35600,6 +35612,9 @@ msgid "MlExperimentTracking|Performance"
 msgstr ""
 
 msgid "MlExperimentTracking|To learn more about MLflow client compatibility, see %{linkStart}the documentation%{linkEnd}."
+msgstr ""
+
+msgid "MlExperimentTracking|Use candidates to track performance, parameters, and metadata"
 msgstr ""
 
 msgid "MlExperimentTracking|Using the MLflow client"
@@ -57077,9 +57092,6 @@ msgid "There was a problem fetching the job token scope value"
 msgstr ""
 
 msgid "There was a problem fetching the keep latest artifacts setting."
-msgstr ""
-
-msgid "There was a problem fetching the pipeline mini graph."
 msgstr ""
 
 msgid "There was a problem fetching the pipeline stage jobs."
