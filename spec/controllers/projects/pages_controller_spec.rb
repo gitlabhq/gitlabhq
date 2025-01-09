@@ -218,6 +218,86 @@ RSpec.describe Projects::PagesController, feature_category: :pages do
         end
       end
     end
+
+    context 'when updating pages_primary_domain' do
+      let(:request_params) do
+        {
+          namespace_id: project.namespace,
+          project_id: project,
+          project: {
+            project_setting_attributes: {
+              pages_primary_domain: pages_primary_domain
+            }
+          }
+        }
+      end
+
+      before do
+        create(:project_setting, project: project)
+      end
+
+      context 'when pages_primary_domain is updated' do
+        let(:pages_primary_domain) { 'http://default.com' }
+
+        before do
+          allow_next_instance_of(Projects::UpdateService) do |service|
+            allow(service).to receive(:validate!)
+          end
+        end
+
+        it 'updates pages_primary_domain and redirects back to pages settings' do
+          expect { patch :update, params: request_params }
+            .to change { project.project_setting.reload.pages_primary_domain }
+                  .from(nil).to('http://default.com')
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(project_pages_path(project))
+        end
+      end
+
+      context 'when pages_primary_domain is reset' do
+        let(:pages_primary_domain) { '' }
+
+        before do
+          allow_next_instance_of(Projects::UpdateService) do |service|
+            allow(service)
+              .to receive(:validate_pages_default_domain_redirect)
+                    .and_return(true)
+          end
+        end
+
+        it 'resets pages_primary_domain to nil' do
+          project.project_setting.update!(pages_primary_domain: 'http://default.com')
+
+          expect { patch :update, params: request_params }
+            .to change { project.project_setting.reload.pages_primary_domain }
+                  .from('http://default.com').to(nil)
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(project_pages_path(project))
+        end
+      end
+
+      context 'when it fails to update' do
+        let(:pages_primary_domain) { 'http://default.com' }
+
+        before do
+          allow_next_instance_of(Projects::UpdateService) do |service|
+            allow(service)
+              .to receive(:execute)
+                    .and_return(status: :error, message: 'some error happened')
+          end
+        end
+
+        it 'adds an error message' do
+          expect { patch :update, params: request_params }
+            .not_to change { project.project_setting.reload.pages_primary_domain }
+
+          expect(response).to redirect_to(project_pages_path(project))
+          expect(flash[:alert]).to eq('some error happened')
+        end
+      end
+    end
   end
 
   describe 'POST regenerate_unique_domain' do

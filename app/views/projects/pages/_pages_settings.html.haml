@@ -20,5 +20,15 @@
       %p.gl-pl-6
         = s_("GitLabPages|When enabled, a unique domain is generated to access pages.").html_safe
 
+  - if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
+    - if @project.pages_domains.present?
+      .form-group
+        = f.fields_for :project_setting do |settings|
+          = f.label :pages_primary_domain, class: 'label-bold' do
+            = s_('GitLabPages|Primary domain')
+          = settings.select :pages_primary_domain, project_pages_domain_choices, {}, class: 'form-control'
+          .form-text.gl-text-subtle
+            = s_('GitLabPages|If selected, requests to your Pages site from any other domain (including the GitLab-provided domain) are redirected here. Use this to ensure all visitors and search engines see a single, consistent domain.')
+
   .gl-mt-3
     = f.submit s_('GitLabPages|Save changes'), pajamas_button: true

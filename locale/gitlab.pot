@@ -25567,6 +25567,9 @@ msgstr ""
 msgid "GitLabPages|Domains"
 msgstr ""
 
+msgid "GitLabPages|Don’t enforce a primary domain"
+msgstr ""
+
 msgid "GitLabPages|Edit"
 msgstr ""
 
@@ -25574,6 +25577,9 @@ msgid "GitLabPages|Expired"
 msgstr ""
 
 msgid "GitLabPages|Force HTTPS (requires valid certificates)"
+msgstr ""
+
+msgid "GitLabPages|If selected, requests to your Pages site from any other domain (including the GitLab-provided domain) are redirected here. Use this to ensure all visitors and search engines see a single, consistent domain."
 msgstr ""
 
 msgid "GitLabPages|Maximum size (MB)"
@@ -25586,6 +25592,9 @@ msgid "GitLabPages|Only project maintainers can remove pages"
 msgstr ""
 
 msgid "GitLabPages|Pages"
+msgstr ""
+
+msgid "GitLabPages|Primary domain"
 msgstr ""
 
 msgid "GitLabPages|Regenerate unique domain"

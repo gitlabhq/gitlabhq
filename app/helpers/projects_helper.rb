@@ -741,6 +741,18 @@ module ProjectsHelper
     })
   end
 
+  def project_pages_domain_choices
+    pages_url = build_pages_url(@project)
+    blank_option = [[s_('GitLabPages|Don’t enforce a primary domain'), '']]
+    gitlab_default_option = [[pages_url, pages_url]]
+
+    domain_options = @project.pages_domains.map { |domain| [domain.url, domain.url] } || []
+    options_for_select(
+      blank_option + domain_options + gitlab_default_option,
+      selected: @project.project_setting.pages_primary_domain
+    )
+  end
+
   private
 
   def delete_message_data(project)

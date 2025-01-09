@@ -2043,4 +2043,37 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       })
     end
   end
+
+  describe '#project_pages_domain_choices' do
+    subject { helper.project_pages_domain_choices }
+
+    let(:pages_url) { "http://pages.example.com" }
+    let(:blank_option) { [['Don’t enforce a primary domain', '']] }
+    let(:gitlab_default_option) { [[pages_url, pages_url]] }
+
+    before do
+      allow(helper).to receive(:build_pages_url).with(project).and_return(pages_url)
+    end
+
+    context 'when the project has no pages domains' do
+      it 'returns only the default options' do
+        expect(subject).to eq(options_for_select(blank_option + gitlab_default_option))
+      end
+    end
+
+    context 'when the project has pages domains' do
+      let!(:pages_domains) do
+        [
+          create(:pages_domain, project: project, domain: 'custom1.com'),
+          create(:pages_domain, project: project, domain: 'custom2.com')
+        ]
+      end
+
+      it 'returns default options and additional domain options' do
+        domain_options = pages_domains.map { |domain| [domain.url, domain.url] }
+
+        expect(subject).to eq(options_for_select(blank_option + domain_options + gitlab_default_option))
+      end
+    end
+  end
 end

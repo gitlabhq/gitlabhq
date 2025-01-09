@@ -85,7 +85,7 @@ class Projects::PagesController < Projects::ApplicationController
 
   # overridden in EE
   def project_setting_attributes
-    [:pages_unique_domain_enabled]
+    [:pages_unique_domain_enabled, :pages_primary_domain]
   end
 end
 

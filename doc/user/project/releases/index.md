@@ -61,8 +61,8 @@ switch between ascending or descending order, select **Sort order**.
 
 ### Permanent link to latest release
 
-Latest release page is accessible through a permanent URL.
-GitLab redirects to the latest release page URL when it is visited.
+You can access the latest release page through a permanent link.
+GitLab always redirects the permanent link URL to the address of the latest release page.
 
 The format of the URL is:
 
@@ -70,10 +70,19 @@ The format of the URL is:
 https://gitlab.example.com/namespace/project/-/releases/permalink/latest
 ```
 
-We also support, suffix path carry forward on the redirect to the latest release.
-Example if release `v14.8.0-ee` is the latest release and has a readable link `https://gitlab.example.com/namespace/project/-/releases/v14.8.0-ee#release` then it can be addressed as `https://gitlab.example.com/namespace/project/-/releases/permalink/latest#release`.
+You can also add a suffix to the permanent link URL. For example, if the latest release is `v17.7.0#release` in the `gitlab-org` namespace and `gitlab-runner` project, the readable link would be:
 
-Refer [permanent links to latest release assets](release_fields.md#permanent-links-to-latest-release-assets) section to understand more about the suffix path carry forward usage.
+```plaintext
+https://gitlab.com/gitlab-org/gitlab-runner/-/releases/v17.7.0#release
+```
+
+You can access the latest release URL with the following permanent link:
+
+```plaintext
+https://gitlab.com/gitlab-org/gitlab-runner/-/releases/permalink/latest#release
+```
+
+To learn about adding permanent links to release assets, see [Permanent links to latest release assets](../releases/release_fields.md#permanent-links-to-latest-release-assets).
 
 #### Sorting preferences
 
