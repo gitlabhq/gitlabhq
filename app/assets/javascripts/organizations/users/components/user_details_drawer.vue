@@ -1,5 +1,5 @@
 <script>
-import { GlCollapsibleListbox, GlDrawer, GlTooltipDirective } from '@gitlab/ui';
+import { GlAlert, GlButton, GlCollapsibleListbox, GlDrawer, GlTooltipDirective } from '@gitlab/ui';
 import UserAvatar from '~/vue_shared/components/users_table/user_avatar.vue';
 import {
   ACCESS_LEVEL_DEFAULT_STRING,
@@ -8,13 +8,15 @@ import {
 } from '~/organizations/shared/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import organizationUserUpdateMutation from '~/organizations/users/graphql/mutations/organization_user_update.mutation.graphql';
 import { createAlert } from '~/alert';
 
 export default {
   name: 'UserDetailsDrawer',
   components: {
+    GlAlert,
+    GlButton,
     GlCollapsibleListbox,
     GlDrawer,
     UserAvatar,
@@ -27,10 +29,15 @@ export default {
     title: s__('Organization|Organization user details'),
     roleListboxLabel: s__('Organization|Organization role'),
     disabledRoleListboxTooltipText: s__('Organization|Organizations must have at least one owner.'),
+    removeSelfAsOwnerWarning: s__(
+      'Organization|If you proceed with this change you will lose your owner permissions for this organization, including access to this page.',
+    ),
     errorMessage: s__(
       'Organization|An error occurred updating the organization role. Please try again.',
     ),
     successMessage: s__('Organization|Organization role was updated successfully.'),
+    save: __('Save'),
+    cancel: __('Cancel'),
   },
   roleListboxItems: [
     {
@@ -60,11 +67,20 @@ export default {
     drawerHeaderHeight() {
       return getContentWrapperHeight();
     },
+    isChangingRole() {
+      return this.initialAccessLevel !== this.selectedAccessLevel;
+    },
     roleListboxDisabled() {
       return this.user?.isLastOwner;
     },
     roleListboxTooltip() {
       return this.roleListboxDisabled ? this.$options.i18n.disabledRoleListboxTooltipText : null;
+    },
+    showRemoveSelfAsOwnerWarning() {
+      const isUserCurrentUser = this.user?.id === window.gon?.current_user_id;
+      const isOwnerRoleSelected = this.selectedAccessLevel === ACCESS_LEVEL_OWNER_STRING;
+
+      return isUserCurrentUser && !isOwnerRoleSelected && this.isChangingRole;
     },
   },
   watch: {
@@ -83,7 +99,7 @@ export default {
       this.$toast.show(this.$options.i18n.successMessage);
       this.$emit('role-change');
     },
-    async onRoleSelect() {
+    async save() {
       this.setLoading(true);
 
       try {
@@ -113,6 +129,9 @@ export default {
         this.setLoading(false);
       }
     },
+    cancel() {
+      this.selectedAccessLevel = this.initialAccessLevel;
+    },
     close() {
       this.$emit('close');
     },
@@ -135,9 +154,8 @@ export default {
     </template>
     <template #default>
       <div>
-        <user-avatar :user="user" :admin-user-path="paths.adminUser" />
-      </div>
-      <div>
+        <user-avatar class="gl-mt-3" :user="user" :admin-user-path="paths.adminUser" />
+        <hr />
         <h5>{{ $options.i18n.roleListboxLabel }}</h5>
         <div
           v-gl-tooltip="{ disabled: !roleListboxTooltip, title: roleListboxTooltip }"
@@ -151,8 +169,24 @@ export default {
             :disabled="roleListboxDisabled"
             :items="$options.roleListboxItems"
             :loading="loading"
-            @select="onRoleSelect"
           />
+        </div>
+      </div>
+    </template>
+    <template #footer>
+      <div
+        v-if="isChangingRole"
+        class="gl-flex gl-flex-col gl-gap-4"
+        data-testid="user-details-drawer-footer"
+      >
+        <gl-alert v-if="showRemoveSelfAsOwnerWarning" variant="warning" :dismissible="false">{{
+          $options.i18n.removeSelfAsOwnerWarning
+        }}</gl-alert>
+        <div class="gl-flex gl-gap-3">
+          <gl-button variant="confirm" :disabled="loading" @click="save">{{
+            $options.i18n.save
+          }}</gl-button>
+          <gl-button :disabled="loading" @click="cancel">{{ $options.i18n.cancel }}</gl-button>
         </div>
       </div>
     </template>

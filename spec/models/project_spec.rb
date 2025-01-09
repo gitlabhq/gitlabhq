@@ -3116,6 +3116,28 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#pages_unique_domain_enabled?' do
+    let(:project) { create(:project) }
+
+    subject { project.pages_unique_domain_enabled? }
+
+    context 'if unique domain is enabled' do
+      before do
+        project.project_setting.update!(pages_unique_domain_enabled: true, pages_unique_domain: 'foo123.example.com')
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'if unique domain is disabled' do
+      before do
+        project.project_setting.update!(pages_unique_domain_enabled: false)
+      end
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   describe '#default_branch_protected?' do
     let_it_be(:namespace) { create(:namespace) }
     let_it_be(:project) { create(:project, namespace: namespace) }
@@ -9838,6 +9860,34 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       project = build_stubbed(:project, namespace: namespace)
 
       expect(project.uploads_sharding_key).to eq(namespace_id: namespace.id)
+    end
+  end
+
+  describe '#pages_domain_present?' do
+    let_it_be(:project) { create(:project) }
+
+    before do
+      allow(project).to receive(:pages_url).and_return('https://example.com')
+    end
+
+    context 'when the domain matches pages_url' do
+      it 'returns true' do
+        expect(project.pages_domain_present?('https://example.com')).to be(true)
+      end
+    end
+
+    context 'when the domain exists in pages_domains' do
+      let!(:pages_domain) { create(:pages_domain, project: project, domain: 'custom.com') }
+
+      it 'returns true' do
+        expect(project.pages_domain_present?('https://custom.com')).to be(true)
+      end
+    end
+
+    context 'when the domain does not match pages_url or pages_domains' do
+      it 'returns false' do
+        expect(project.pages_domain_present?('https://unknown.com')).to be(false)
+      end
     end
   end
 end

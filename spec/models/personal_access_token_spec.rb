@@ -120,6 +120,25 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       end
     end
 
+    describe 'expires scopes', :time_freeze do
+      let!(:expires_last_month_token) { create(:personal_access_token, expires_at: 1.month.ago) }
+      let!(:expires_next_month_token) { create(:personal_access_token, expires_at: 1.month.from_now) }
+      let!(:expires_two_months_token) { create(:personal_access_token, expires_at: 2.months.from_now) }
+
+      describe '.expires_before' do
+        it 'finds tokens that expire before or on date' do
+          expect(described_class.expires_before(1.month.ago)).to contain_exactly(expires_last_month_token)
+        end
+      end
+
+      describe '.expires_after' do
+        it 'finds tokens that expires after or on date' do
+          expect(described_class.expires_after(1.month.from_now.beginning_of_hour))
+            .to contain_exactly(expires_next_month_token, expires_two_months_token)
+        end
+      end
+    end
+
     describe '.last_used_before' do
       context 'last_used_*' do
         let_it_be(:date) { DateTime.new(2022, 01, 01) }

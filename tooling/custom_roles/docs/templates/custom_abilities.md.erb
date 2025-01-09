@@ -18,6 +18,13 @@
 <%   return unless ability[:feature_flag] %>
 <%   "`#{ability[:feature_flag]}`" %>
 <% end %>
+<% def scope(ability) %>
+<%   scopes = [] %>
+<%   scopes << 'Instance' if ability[:admin_ability]%>
+<%   scopes << 'Group' if ability[:group_ability]%>
+<%   scopes << 'Project' if ability[:project_ability]%>
+<%   return scopes.join(',<br> ') %>
+<% end %>
 ---
 stage: Software Supply Chain Security
 group: Authorization
@@ -46,9 +53,9 @@ Any dependencies are noted in the `Description` column for each permission.
 
 ## <%= "#{humanize(category)}" %>
 
-| Name | Description | Introduced | Feature flag | Enabled |
-|:-----|:------------|:-----------|:-------------|:--------|
+| Permission | Description | API Attribute | Scope | Introduced |
+|:-----------|:------------|:--------------|:------|:-----------|
 <% abilities.each do |name, ability| %>
-| <%= "[`#{name}`](#{ability[:introduced_by_mr]})" %> | <%= ability[:description] %> | GitLab <%= "[#{ability[:milestone]}](#{ability[:introduced_by_issue]})" %> | <%= feature_flag(ability) %> | <%= enabled_link(ability) %> |
+| <%= ability[:title] %> | <%= ability[:description] %> | <%= "[`#{name}`](#{ability[:introduced_by_mr]})" %> | <%= scope(ability) %> | GitLab <%= "[#{ability[:milestone]}](#{ability[:introduced_by_issue]})" %> |
 <% end %>
 <% end %>

@@ -77,6 +77,7 @@ module Namespaces
 
     def by_feature_availability(items)
       items = items.with_issues_available_for_user(current_user) if params[:with_issues_enabled].present?
+      items = items.with_namespace_domain_pages if params[:with_namespace_domain_pages].present?
       if params[:with_merge_requests_enabled].present?
         items = items.with_merge_requests_available_for_user(current_user)
       end

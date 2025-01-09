@@ -156,7 +156,6 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
     before do
       allow(Settings).to receive(:topology_service_enabled?).and_return(topology_service_enabled)
-      allow(Settings).to receive(:has_configured_cell?).and_return(configured_cell)
       allow(Settings).to receive(:skip_sequence_alteration?).and_return(skip_sequence_alteration)
     end
 

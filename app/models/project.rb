@@ -817,6 +817,11 @@ class Project < ApplicationRecord
       .where(project_pages_metadata: { project_id: nil })
   end
 
+  scope :with_namespace_domain_pages, -> do
+    joins(:project_setting)
+      .where(project_setting: { pages_unique_domain_enabled: false })
+  end
+
   scope :with_api_commit_entity_associations, -> {
     preload(:project_feature, :route, namespace: [:route, :owner])
   }
@@ -2358,6 +2363,10 @@ class Project < ApplicationRecord
     !(pages_metadatum&.onboarding_complete || pages_deployed?)
   end
 
+  def pages_unique_domain_enabled?
+    project_setting.pages_unique_domain_enabled
+  end
+
   def remove_private_deploy_keys
     exclude_keys_linked_to_other_projects = <<-SQL
       NOT EXISTS (
@@ -3353,7 +3362,7 @@ class Project < ApplicationRecord
   end
 
   def pages_domain_present?(domain_url)
-    pages_url == domain_url || pages_domains.exists?(domain: domain_url)
+    pages_url == domain_url || pages_domains.any? { |domain| domain.url == domain_url }
   end
 
   # overridden in EE

@@ -110,7 +110,8 @@ RSpec.describe API::Pages, feature_category: :pages do
 
       context 'and updates pages primary domain' do
         let(:domain) { 'my.domain.com' }
-        let(:params) { { pages_primary_domain: domain } }
+        let(:pages_primary_domain_url) { 'https://my.domain.com' }
+        let(:params) { { pages_primary_domain: pages_primary_domain_url } }
 
         before do
           create(:pages_domain, project: project, domain: domain)
@@ -120,7 +121,7 @@ RSpec.describe API::Pages, feature_category: :pages do
           patch api(path, admin, admin_mode: true), params: params
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['pages_primary_domain']).to eq(domain)
+          expect(json_response['pages_primary_domain']).to eq(pages_primary_domain_url)
         end
       end
 

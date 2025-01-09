@@ -11728,11 +11728,12 @@ Input type: `WorkspaceCreateInput`
 | <a id="mutationworkspacecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkspacecreateclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID!`](#clustersagentid) | GlobalID of the cluster agent the created workspace will be associated with. |
 | <a id="mutationworkspacecreatedesiredstate"></a>`desiredState` | [`String!`](#string) | Desired state of the created workspace. |
-| <a id="mutationworkspacecreatedevfilepath"></a>`devfilePath` | [`String!`](#string) | Project repo git path containing the devfile used to configure the workspace. |
-| <a id="mutationworkspacecreatedevfileref"></a>`devfileRef` | [`String!`](#string) | Project repo git ref containing the devfile used to configure the workspace. |
+| <a id="mutationworkspacecreatedevfilepath"></a>`devfilePath` | [`String`](#string) | Project path containing the devfile used to configure the workspace. If not provided, the GitLab default devfile is used. |
+| <a id="mutationworkspacecreatedevfileref"></a>`devfileRef` **{warning-solid}** | [`String`](#string) | **Deprecated:** Argument is renamed to project_ref. Deprecated in GitLab 17.8. |
 | <a id="mutationworkspacecreateeditor"></a>`editor` **{warning-solid}** | [`String`](#string) | **Deprecated:** Argument is not used. Deprecated in GitLab 17.5. |
 | <a id="mutationworkspacecreatemaxhoursbeforetermination"></a>`maxHoursBeforeTermination` | [`Int!`](#int) | Maximum hours the workspace can exist before it is automatically terminated. |
 | <a id="mutationworkspacecreateprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | ID of the project that will provide the Devfile for the created workspace. |
+| <a id="mutationworkspacecreateprojectref"></a>`projectRef` | [`String`](#string) | Project repo git ref. |
 | <a id="mutationworkspacecreatevariables"></a>`variables` | [`[WorkspaceVariableInput!]`](#workspacevariableinput) | Variables to inject into the workspace. |
 
 #### Fields
@@ -23650,6 +23651,7 @@ A Duo Workflow.
 | <a id="duoworkflowprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | ID of the project. |
 | <a id="duoworkflowupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the workflow was last updated. |
 | <a id="duoworkflowuserid"></a>`userId` | [`UserID!`](#userid) | ID of the user. |
+| <a id="duoworkflowworkflowdefinition"></a>`workflowDefinition` | [`String`](#string) | Duo Workflow type based on its capabilities. |
 
 ### `DuoWorkflowEnablement`
 
@@ -23687,6 +23689,7 @@ Events that describe the history and progress of a Duo Workflow.
 | <a id="duoworkfloweventmetadata"></a>`metadata` | [`JsonString`](#jsonstring) | Metadata associated with the event. |
 | <a id="duoworkfloweventparenttimestamp"></a>`parentTimestamp` | [`Time`](#time) | Time of the parent event. |
 | <a id="duoworkfloweventtimestamp"></a>`timestamp` | [`Time`](#time) | Time of the event. |
+| <a id="duoworkfloweventworkflowdefinition"></a>`workflowDefinition` | [`String`](#string) | Duo Workflow type based on its capabilities. |
 | <a id="duoworkfloweventworkflowgoal"></a>`workflowGoal` | [`String`](#string) | Goal of the workflow. |
 | <a id="duoworkfloweventworkflowstatus"></a>`workflowStatus` | [`DuoWorkflowStatus`](#duoworkflowstatus) | Status of the workflow. |
 
@@ -26110,6 +26113,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupprojectssort"></a>`sort` | [`NamespaceProjectSort`](#namespaceprojectsort) | Sort projects by the criteria. |
 | <a id="groupprojectswithissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
 | <a id="groupprojectswithmergerequestsenabled"></a>`withMergeRequestsEnabled` | [`Boolean`](#boolean) | Return only projects with merge requests enabled. |
+| <a id="groupprojectswithnamespacedomainpages"></a>`withNamespaceDomainPages` | [`Boolean`](#boolean) | Return only projects that use the namespace domain for pages projects. |
 
 ##### `Group.releases`
 
@@ -30352,6 +30356,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespaceprojectssort"></a>`sort` | [`NamespaceProjectSort`](#namespaceprojectsort) | Sort projects by the criteria. |
 | <a id="namespaceprojectswithissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
 | <a id="namespaceprojectswithmergerequestsenabled"></a>`withMergeRequestsEnabled` | [`Boolean`](#boolean) | Return only projects with merge requests enabled. |
+| <a id="namespaceprojectswithnamespacedomainpages"></a>`withNamespaceDomainPages` | [`Boolean`](#boolean) | Return only projects that use the namespace domain for pages projects. |
 
 ##### `Namespace.remoteDevelopmentClusterAgents`
 
@@ -38361,9 +38366,9 @@ Represents a remote development workspace.
 | <a id="workspacedesiredstate"></a>`desiredState` | [`String!`](#string) | Desired state of the workspace. |
 | <a id="workspacedesiredstateupdatedat"></a>`desiredStateUpdatedAt` | [`Time!`](#time) | Timestamp of the last update to the desired state. |
 | <a id="workspacedevfile"></a>`devfile` | [`String!`](#string) | Source YAML of the devfile used to configure the workspace. |
-| <a id="workspacedevfilepath"></a>`devfilePath` | [`String!`](#string) | Path to the devfile used to configure the workspace. |
-| <a id="workspacedevfileref"></a>`devfileRef` | [`String!`](#string) | Git reference that contains the devfile used to configure the workspace. |
-| <a id="workspacedevfileweburl"></a>`devfileWebUrl` | [`String!`](#string) | Web URL of the devfile used to configure the workspace. |
+| <a id="workspacedevfilepath"></a>`devfilePath` | [`String`](#string) | Path to the devfile used to configure the workspace. |
+| <a id="workspacedevfileref"></a>`devfileRef` **{warning-solid}** | [`String!`](#string) | **Deprecated** in GitLab 17.8. Field is renamed to project_ref. |
+| <a id="workspacedevfileweburl"></a>`devfileWebUrl` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 17.8. Field is not used. |
 | <a id="workspaceeditor"></a>`editor` **{warning-solid}** | [`String!`](#string) | **Deprecated** in GitLab 17.5. Field is not used. |
 | <a id="workspaceforceincludeallresources"></a>`forceIncludeAllResources` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 17.6. **Status**: Experiment. Forces all resources to be included for the workspaceduring the next reconciliation with the agent. |
 | <a id="workspaceid"></a>`id` | [`RemoteDevelopmentWorkspaceID!`](#remotedevelopmentworkspaceid) | Global ID of the workspace. |
@@ -38372,6 +38377,7 @@ Represents a remote development workspace.
 | <a id="workspacenamespace"></a>`namespace` | [`String!`](#string) | Namespace of the workspace in Kubernetes. |
 | <a id="workspaceprocesseddevfile"></a>`processedDevfile` | [`String!`](#string) | Processed YAML of the devfile used to configure the workspace. |
 | <a id="workspaceprojectid"></a>`projectId` | [`ID!`](#id) | ID of the project that contains the devfile for the workspace. |
+| <a id="workspaceprojectref"></a>`projectRef` | [`String!`](#string) | Git reference that contains the devfile used to configure the workspace, and that will be cloned into the workspace. |
 | <a id="workspacerespondedtoagentat"></a>`respondedToAgentAt` | [`Time`](#time) | Timestamp of the last response sent to the GitLab agent for Kubernetes for the workspace. |
 | <a id="workspaceupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of the last update to any mutable workspace property. |
 | <a id="workspaceurl"></a>`url` | [`String!`](#string) | URL of the workspace. |

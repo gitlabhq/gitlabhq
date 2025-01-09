@@ -1,11 +1,11 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlCollapsibleListbox, GlDrawer } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlAlert, GlCollapsibleListbox, GlDrawer } from '@gitlab/ui';
 import organizationUserUpdateResponseWithErrors from 'test_fixtures/graphql/organizations/organization_user_update.mutation.graphql_with_errors.json';
 import organizationUserUpdateResponse from 'test_fixtures/graphql/organizations/organization_user_update.mutation.graphql.json';
 import organizationUserUpdateMutation from '~/organizations/users/graphql/mutations/organization_user_update.mutation.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import { pageInfoMultiplePages } from 'jest/organizations/mock_data';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import UserDetailsDrawer from '~/organizations/users/components/user_details_drawer.vue';
@@ -31,16 +31,24 @@ describe('UserDetailsDrawer', () => {
   const successfulResponseHandler = jest.fn().mockResolvedValue(organizationUserUpdateResponse);
   const mockToastShow = jest.fn();
 
+  const findGlAlert = () => wrapper.findComponent(GlAlert);
   const findGlDrawer = () => wrapper.findComponent(GlDrawer);
   const findGlCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findUserAvatar = () => wrapper.findComponent(UserAvatar);
+  const findFooter = () => wrapper.findByTestId('user-details-drawer-footer');
+  const findSaveButton = () => wrapper.findByRole('button', { name: 'Save' });
+  const findCancelButton = () => wrapper.findByRole('button', { name: 'Cancel' });
 
   const selectRole = (value) => findGlCollapsibleListbox().vm.$emit('select', value);
 
-  const createComponent = ({ props = {}, handler = successfulResponseHandler } = {}) => {
+  const createComponent = ({
+    mountFn = shallowMountExtended,
+    props = {},
+    handler = successfulResponseHandler,
+  } = {}) => {
     mockApollo = createMockApollo([[organizationUserUpdateMutation, handler]]);
 
-    wrapper = shallowMount(UserDetailsDrawer, {
+    wrapper = mountFn(UserDetailsDrawer, {
       propsData: {
         user: mockUser,
         pageInfo: pageInfoMultiplePages,
@@ -94,6 +102,12 @@ describe('UserDetailsDrawer', () => {
       });
     });
 
+    it('does not render footer and action buttons', () => {
+      expect(findFooter().exists()).toBe(false);
+      expect(findSaveButton().exists()).toBe(false);
+      expect(findCancelButton().exists()).toBe(false);
+    });
+
     it('renders role listbox label', () => {
       expect(findGlDrawer().text()).toContain('Organization role');
     });
@@ -141,89 +155,157 @@ describe('UserDetailsDrawer', () => {
     });
 
     describe('when selecting new role', () => {
+      const unselectedRole =
+        mockUser.accessLevel.stringValue === ACCESS_LEVEL_OWNER_STRING
+          ? ACCESS_LEVEL_DEFAULT_STRING
+          : ACCESS_LEVEL_OWNER_STRING;
+
       beforeEach(() => {
-        createComponent();
-        selectRole(ACCESS_LEVEL_DEFAULT_STRING);
+        createComponent({ mountFn: mountExtended });
+
+        selectRole(unselectedRole);
       });
 
-      it('calls GraphQL mutation with correct variables', () => {
-        expect(successfulResponseHandler).toHaveBeenCalledWith({
-          input: {
-            id: mockUser.gid,
-            accessLevel: ACCESS_LEVEL_DEFAULT_STRING,
-          },
+      it('renders footer and action buttons', () => {
+        expect(findFooter().exists()).toBe(true);
+        expect(findSaveButton().exists()).toBe(true);
+        expect(findCancelButton().exists()).toBe(true);
+      });
+
+      it('does not render remove self as owner warning', () => {
+        expect(findGlAlert().exists()).toBe(false);
+      });
+
+      describe('when active user is the current user', () => {
+        beforeEach(() => {
+          window.gon.current_user_id = mockUser.id;
+        });
+
+        describe('when removing self as owner', () => {
+          beforeEach(() => {
+            createComponent({
+              props: {
+                user: {
+                  ...mockUser,
+                  accessLevel: { ...mockUser.accessLevel, stringValue: ACCESS_LEVEL_OWNER_STRING },
+                },
+              },
+            });
+
+            selectRole(ACCESS_LEVEL_DEFAULT_STRING);
+          });
+
+          it('renders remove self as owner warning', () => {
+            expect(findGlAlert().text()).toBe(
+              'If you proceed with this change you will lose your owner permissions for this organization, including access to this page.',
+            );
+          });
         });
       });
 
-      it('sets listbox to loading', () => {
-        expect(findGlCollapsibleListbox().props('loading')).toBe(true);
-      });
-
-      it('emits loading start event', () => {
-        expect(wrapper.emitted('loading')[0]).toEqual([true]);
-      });
-
-      describe('when role update is successful', () => {
+      describe('when save button is clicked', () => {
         beforeEach(async () => {
-          await waitForPromises();
+          await findSaveButton().trigger('click');
+          await nextTick();
         });
 
-        it('shows toast when GraphQL mutation is successful', () => {
-          expect(mockToastShow).toHaveBeenCalledWith('Organization role was updated successfully.');
+        it('calls GraphQL mutation with correct variables', () => {
+          expect(successfulResponseHandler).toHaveBeenCalledWith({
+            input: {
+              id: mockUser.gid,
+              accessLevel: unselectedRole,
+            },
+          });
         });
 
-        it('emits role-change event', () => {
-          expect(wrapper.emitted('role-change')).toHaveLength(1);
+        it('sets listbox to loading', () => {
+          expect(findGlCollapsibleListbox().props('loading')).toBe(true);
         });
 
-        it('emits loading end event', () => {
-          expect(wrapper.emitted('loading')[1]).toEqual([false]);
+        it('emits loading start event', () => {
+          expect(wrapper.emitted('loading')[0]).toEqual([true]);
+        });
+
+        describe('when role update is successful', () => {
+          beforeEach(async () => {
+            await waitForPromises();
+          });
+
+          it('shows toast when GraphQL mutation is successful', () => {
+            expect(mockToastShow).toHaveBeenCalledWith(
+              'Organization role was updated successfully.',
+            );
+          });
+
+          it('emits role-change event', () => {
+            expect(wrapper.emitted('role-change')).toHaveLength(1);
+          });
+
+          it('emits loading end event', () => {
+            expect(wrapper.emitted('loading')[1]).toEqual([false]);
+          });
+        });
+
+        describe('when role update has a validation error', () => {
+          beforeEach(async () => {
+            const errorResponseHandler = jest
+              .fn()
+              .mockResolvedValue(organizationUserUpdateResponseWithErrors);
+
+            createComponent({
+              mountFn: mountExtended,
+              handler: errorResponseHandler,
+            });
+
+            selectRole(unselectedRole);
+            await nextTick();
+
+            await findSaveButton().trigger('click');
+            await waitForPromises();
+          });
+
+          it('creates an alert', () => {
+            expect(createAlert).toHaveBeenCalledWith({
+              message: 'You cannot change the access of the last owner from the organization',
+            });
+          });
+        });
+
+        describe('when role update has a network error', () => {
+          const error = new Error();
+
+          beforeEach(async () => {
+            const errorResponseHandler = jest.fn().mockRejectedValue(error);
+
+            createComponent({
+              mountFn: mountExtended,
+              handler: errorResponseHandler,
+            });
+
+            selectRole(unselectedRole);
+            await nextTick();
+
+            await findSaveButton().trigger('click');
+            await waitForPromises();
+          });
+
+          it('creates an alert', () => {
+            expect(createAlert).toHaveBeenCalledWith({
+              message: 'An error occurred updating the organization role. Please try again.',
+              error,
+              captureError: true,
+            });
+          });
         });
       });
 
-      describe('when role update has a validation error', () => {
-        beforeEach(async () => {
-          const errorResponseHandler = jest
-            .fn()
-            .mockResolvedValue(organizationUserUpdateResponseWithErrors);
+      describe('when cancel button is clicked', () => {
+        it('resets listbox to the initial user role', async () => {
+          await findCancelButton().trigger('click');
 
-          createComponent({
-            handler: errorResponseHandler,
-            props: { user: { ...mockUser, accessLevel: ACCESS_LEVEL_OWNER_STRING } },
-          });
-
-          selectRole(ACCESS_LEVEL_DEFAULT_STRING);
-          await waitForPromises();
-        });
-
-        it('creates an alert', () => {
-          expect(createAlert).toHaveBeenCalledWith({
-            message: 'You cannot change the access of the last owner from the organization',
-          });
-        });
-      });
-
-      describe('when role update has a network error', () => {
-        const error = new Error();
-
-        beforeEach(async () => {
-          const errorResponseHandler = jest.fn().mockRejectedValue(error);
-
-          createComponent({
-            handler: errorResponseHandler,
-            props: { user: { ...mockUser, accessLevel: ACCESS_LEVEL_OWNER_STRING } },
-          });
-
-          selectRole(ACCESS_LEVEL_DEFAULT_STRING);
-          await waitForPromises();
-        });
-
-        it('creates an alert', () => {
-          expect(createAlert).toHaveBeenCalledWith({
-            message: 'An error occurred updating the organization role. Please try again.',
-            error,
-            captureError: true,
-          });
+          expect(findGlCollapsibleListbox().props('selected')).toBe(
+            mockUser.accessLevel.stringValue,
+          );
         });
       });
     });

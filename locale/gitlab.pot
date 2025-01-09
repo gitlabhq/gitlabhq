@@ -39520,6 +39520,9 @@ msgstr ""
 msgid "Organization|Home organization"
 msgstr ""
 
+msgid "Organization|If you proceed with this change you will lose your owner permissions for this organization, including access to this page."
+msgstr ""
+
 msgid "Organization|Internal - The organization can be accessed by any signed in user except external users."
 msgstr ""
 

@@ -179,16 +179,13 @@ Settings = GitlabSettings.load(file, Rails.env) do
     [[Gitlab::SidekiqConfig::WorkerMatcher::WILDCARD_MATCH, 'default']]
   end
 
+  # This method dictates whether the GitLab instance is part of a cells cluster
   def topology_service_enabled?
     topology_service && topology_service.respond_to?(:enabled) && topology_service.enabled
   end
 
-  def has_configured_cell?
-    cell && cell.respond_to?(:name) && cell.name.present?
-  end
-
   def skip_sequence_alteration?
-    has_configured_cell? && cell.respond_to?(:skip_sequence_alteration) && cell.skip_sequence_alteration
+    cell.respond_to?(:skip_sequence_alteration) && cell.skip_sequence_alteration
   end
 
   private

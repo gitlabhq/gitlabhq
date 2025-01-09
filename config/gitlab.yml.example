@@ -1287,8 +1287,8 @@ production: &base
     # private_key_file: /home/git/gitlab/config/topology-service-key.pem
 
   cell:
-    # id: 1
-    # name: cell-1
+    # id: null
+    # name: null
     # skip_sequence_alteration: false
 
   gitlab_kas:

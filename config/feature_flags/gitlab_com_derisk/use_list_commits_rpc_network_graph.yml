@@ -1,9 +1,0 @@
----
-name: use_list_commits_rpc_network_graph
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/386449
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164081
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/484681
-milestone: '17.4'
-group: group::source code
-type: gitlab_com_derisk
-default_enabled: false

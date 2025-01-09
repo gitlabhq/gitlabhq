@@ -1054,8 +1054,8 @@ Settings.topology_service['private_key_file'] ||= '/home/git/gitlab/config/topol
 # Cells
 #
 Settings['cell'] ||= {}
-Settings.cell['id'] ||= 1
-Settings.cell['name'] ||= "cell-#{Settings.cell['id']}"
+Settings.cell['id'] ||= nil
+Settings.cell['name'] ||= nil
 Settings.cell['skip_sequence_alteration'] ||= false
 
 #

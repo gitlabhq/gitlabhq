@@ -671,3 +671,50 @@ Gitlab::HTTP.get(primary.internal_uri, allow_local_requests: true, limit: 10)
 
 Make sure that the value of `internal_uri` is correct in the output above.
 If the URL of the primary site is incorrect, double-check it in `/etc/gitlab/gitlab.rb`, and in **Admin > Geo > Sites**.
+
+### Excessive database IO from Geo metrics collection
+
+If you're experiencing high database load due to frequent Geo metrics collection, you can reduce the frequency of the `geo_metrics_update_worker` job. This adjustment can help alleviate database strain in large GitLab instances where metrics collection significantly impacts database performance.
+
+Increasing the interval means that your Geo metrics are updated less frequently. This results in metrics being out-of-date for longer periods of time, which may impact your ability to monitor Geo replication in real-time. If metrics are out-of-date for more than 10 minutes, the site is arbitrarily marked as "Unhealthy" in the Admin Area.
+
+The following example sets the job to run every 30 minutes. Adjust the cron schedule based on your needs.
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Add or modify the following setting in `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['geo_metrics_update_worker_cron'] = "*/30 * * * *"
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     ee_cron_jobs:
+       geo_metrics_update_worker:
+         cron: "*/30 * * * *"
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs

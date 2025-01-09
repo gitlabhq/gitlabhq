@@ -18,7 +18,8 @@ RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_a
       sort: nil,
       ids: nil,
       with_issues_enabled: nil,
-      with_merge_requests_enabled: nil
+      with_merge_requests_enabled: nil,
+      with_namespace_domain_pages: nil
     }
   end
 
@@ -120,6 +121,23 @@ RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_a
 
           it { is_expected.to contain_exactly(*group_namespaced_projects) }
         end
+      end
+
+      context 'with_namespace_domain_pages' do
+        before do
+          group_namespaced_projects[0...-1].each do |project|
+            project.project_setting.update!(pages_unique_domain_enabled: false)
+          end
+          group_namespaced_projects.last.project_setting.update!(
+            pages_unique_domain_enabled: true,
+            pages_unique_domain: 'foo123.example.com'
+          )
+        end
+
+        let(:args) { default_args.merge(with_namespace_domain_pages: true) }
+        let(:expected_projects) { group_namespaced_projects[0...-1] }
+
+        it { is_expected.to contain_exactly(*expected_projects) }
       end
     end
 
