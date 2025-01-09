@@ -40,7 +40,7 @@ module QA
       #
       # @return [QA::Support::KnapsackReport]
       def knapsack_reporter
-        @knapsack_reporter = Support::KnapsackReport.new(logger)
+        @knapsack_reporter = Support::KnapsackReport.new(logger: logger)
       end
 
       # Gitlab api url

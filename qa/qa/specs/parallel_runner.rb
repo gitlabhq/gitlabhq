@@ -7,13 +7,14 @@ module QA
     class ParallelRunner
       RUNTIME_LOG_FILE = "tmp/parallel_runtime_rspec.log"
 
-      def self.run(rspec_args, example_data)
-        new(rspec_args, example_data).run
+      def self.run(rspec_args, paths, example_data)
+        new(rspec_args, paths, example_data).run
       end
 
-      def initialize(rspec_args, example_data)
+      def initialize(rspec_args, paths, example_data)
         @rspec_args = rspec_args
         @example_data = example_data
+        @paths = paths
       end
 
       # Execute tests using parallel runner
@@ -34,6 +35,9 @@ module QA
       # @return [Array<String>]
       attr_reader :rspec_args
 
+      # @return [Array<String>]
+      attr_reader :paths
+
       # @return [Hash<String, String>]
       attr_reader :example_data
 
@@ -41,21 +45,7 @@ module QA
       #
       # @return [Boolean]
       def default_paths?
-        paths == Runner::DEFAULT_TEST_PATH_ARGS.reject { |arg| arg == "--" }
-      end
-
-      # Spec path arguments
-      #
-      # @return [Array<String>]
-      def paths
-        @paths ||= rspec_args.select { |arg| arg.include?("qa/specs/features") }
-      end
-
-      # RSpec options
-      #
-      # @return [Array]
-      def rspec_options
-        @options ||= (rspec_args - paths).reject { |arg| arg == "--" }
+        paths == Runner::DEFAULT_TEST_PATH_ARGS
       end
 
       # Executable specs based on example data
@@ -106,7 +96,7 @@ module QA
           '--first-is-1',
           "--combine-stderr"
         ]
-        @execution_args.push("--", *rspec_options) unless rspec_options.empty?
+        @execution_args.push("--", *rspec_args) unless rspec_args.empty?
         # specific spec paths need to be separated by additional "--"
         @execution_args.push("--", *path_options) unless path_options.empty?
 

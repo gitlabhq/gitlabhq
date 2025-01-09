@@ -8,18 +8,18 @@ module QA
       PROJECT = "gitlab-qa-resources"
       BUCKET = "knapsack-reports"
       BASE_PATH = "knapsack"
-      FALLBACK_REPORT = "#{BASE_PATH}/master_report.json".freeze
-      PATTERN_VAR_NAME = "KNAPSACK_TEST_FILE_PATTERN"
-      DEFAULT_TEST_PATTERN = "qa/specs/features/**/*_spec.rb"
       EXAMPLE_RUNTIMES_PATH = "example_runtimes"
+      FALLBACK_REPORT = "#{BASE_PATH}/master_report.json".freeze
+      DEFAULT_TEST_PATTERN = "#{Specs::Runner::DEFAULT_TEST_PATH}/**/*_spec.rb".freeze
       RUNTIME_REPORT = "#{BASE_PATH}/#{EXAMPLE_RUNTIMES_PATH}/master_report.json".freeze
 
       class << self
         delegate :configure!, :upload_example_runtimes, :knapsack_report, to: :new
       end
 
-      def initialize(logger = QA::Runtime::Logger.logger)
+      def initialize(logger: QA::Runtime::Logger.logger, test_pattern: DEFAULT_TEST_PATTERN)
         @logger = logger
+        @test_pattern = test_pattern
       end
 
       # Configure knapsack report
@@ -31,6 +31,7 @@ module QA
       def configure!
         return unless QA::Runtime::Env.knapsack?
 
+        logger.debug("Configuring knapsack execution")
         setup_logger!
         setup_environment!
       end
@@ -123,7 +124,7 @@ module QA
 
       private
 
-      attr_reader :logger
+      attr_reader :logger, :test_pattern
 
       delegate :run_type, to: QA::Runtime::Env
 
@@ -140,9 +141,16 @@ module QA
       def setup_environment!
         ENV["KNAPSACK_TEST_DIR"] = "qa/specs/features"
         ENV["KNAPSACK_REPORT_PATH"] = FALLBACK_REPORT
-        return unless ENV[PATTERN_VAR_NAME].blank?
 
-        ENV[PATTERN_VAR_NAME] = DEFAULT_TEST_PATTERN
+        if ENV["KNAPSACK_TEST_FILE_PATTERN"]
+          logger.warn(<<~MSG)
+            KNAPSACK_TEST_FILE_PATTERN variable is set and is overriding automatically generated test pattern '#{test_pattern}'!
+            To ensure correct test distribution, please remove KNAPSACK_TEST_FILE_PATTERN variable and pass specific test folders as command line arguments instead.
+          MSG
+        else
+          logger.debug("Setting knapsack test pattern to '#{test_pattern}'")
+          ENV["KNAPSACK_TEST_FILE_PATTERN"] = test_pattern
+        end
       end
 
       # GCS client

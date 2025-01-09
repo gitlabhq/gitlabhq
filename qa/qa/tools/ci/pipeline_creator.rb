@@ -154,7 +154,8 @@ module QA
               "GITLAB_QA_CACHE_KEY" => "qa-e2e-ruby-#{ENV['RUBY_VERSION'] || ruby_version}-#{qa_cache_digest}",
               "FEATURE_FLAGS" => env["QA_FEATURE_FLAGS"],
               # QA_SUITES is only used by test-on-omnibus due to pipeline being reusable in external projects
-              "QA_SUITES" => executable_qa_suites
+              "QA_SUITES" => executable_qa_suites,
+              "QA_TESTS" => tests.any? ? tests.join(" ") : nil
             }.filter_map { |k, v| "  #{k}: \"#{v}\"" unless v.blank? }.join("\n")
 
             "#{variables}#{vars}"
@@ -239,9 +240,7 @@ module QA
           return pipeline_yml.sub(job_definition, set_job_never_rule(job_definition)) if job_runtime == 0
 
           parallel_count = calculate_parallel_jobs_count(job_runtime, pipeline_type)
-          definition_with_parallel = update_job_parallel_count(job_definition, parallel_count)
-
-          pipeline_yml.sub(job_definition, update_job_variables(definition_with_parallel, parallel_count))
+          pipeline_yml.sub(job_definition, update_job_parallel_count(job_definition, parallel_count))
         end
 
         # Get job definition from pipeline yaml
@@ -278,30 +277,6 @@ module QA
           return job_definition.sub(pattern, "\\1 #{parallel_count}") if job_definition.match?(pattern)
 
           "#{job_definition}  parallel: #{parallel_count}\n"
-        end
-
-        # Set correct variable depending on parallel count
-        # If specific tests are passed, these need to be converted to knapsack pattern to work correctly with knapsack
-        # Otherwise specific spec files override tests passed by knapsack test allocator
-        #
-        # @param job_definition [String]
-        # @param parallel_count [Integer]
-        # @return [String]
-        def update_job_variables(job_definition, parallel_count)
-          return job_definition if tests.empty?
-
-          job_var = if parallel_count == 1
-                      logger.info("   setting specific tests '#{tests}' via QA_TESTS variable")
-                      "QA_TESTS: \"#{tests.join(' ')}\""
-                    else
-                      logger.info("   setting specific tests '#{tests}' via knapsack pattern variable")
-                      "KNAPSACK_TEST_FILE_PATTERN: \"{#{tests.join(',')}}\""
-                    end
-
-          variables_section = job_definition.match?(/\s+variables:\n/)
-          return "#{job_definition}  variables:\n    #{job_var}\n" unless variables_section
-
-          job_definition.sub(/(variables:\n)(\s+)/, "\\1\\2#{job_var}\n\\2")
         end
 
         # Calculate needed parallel job count

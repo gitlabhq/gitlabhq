@@ -21,13 +21,13 @@ module Types
           null: false,
           experiment: { milestone: '17.8' },
           description:
-            'Container repository tag name pattern protected by the protection rule. ' \
+            'The pattern that matches container image tags to protect. ' \
             'For example, `v1.*`. Wildcard character `*` allowed.'
 
         # rubocop:disable GraphQL/ExtractType -- These are stored as separate fields
         field :minimum_access_level_for_delete,
           Types::ContainerRegistry::Protection::TagRuleAccessLevelEnum,
-          null: true,
+          null: false,
           experiment: { milestone: '17.8' },
           description:
             'Minimum GitLab access level required to delete container image tags from the container repository. ' \
@@ -37,7 +37,7 @@ module Types
 
         field :minimum_access_level_for_push,
           Types::ContainerRegistry::Protection::TagRuleAccessLevelEnum,
-          null: true,
+          null: false,
           experiment: { milestone: '17.8' },
           description:
             'Minimum GitLab access level required to push container image tags to the container repository. ' \

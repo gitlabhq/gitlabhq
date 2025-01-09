@@ -24,7 +24,7 @@ module QA
               "--format", QA::Support::JsonFormatter.to_s, "--out", file.path,
               *tags.flat_map { |tag| ["--tag", tag.to_s] }
             ]
-            specs.blank? ? args.push(*Specs::Runner::DEFAULT_TEST_PATH_ARGS) : args.push("--", *specs)
+            args.push("--", *(specs.presence || Specs::Runner::DEFAULT_TEST_PATH_ARGS))
 
             logger.debug("Executing rspec in subprocess with args: #{args.join(' ')}")
             status, output = run_rspec_subprocess(args)

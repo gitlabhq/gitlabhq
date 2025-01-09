@@ -562,8 +562,8 @@ lib/gitlab/checks/**
 /doc/administration/application_settings_cache.md @jglassman1
 /doc/administration/audit_event_reports.md @eread
 /doc/administration/audit_event_streaming/ @eread
-/doc/administration/auditor_users.md @jglassman1
-/doc/administration/auth/ @jglassman1
+/doc/administration/auditor_users.md @idurham
+/doc/administration/auth/ @idurham
 /doc/administration/backup_restore/ @axil
 /doc/administration/broadcast_messages.md @sselhorn
 /doc/administration/cicd/ @lyspin
@@ -572,16 +572,17 @@ lib/gitlab/checks/**
 /doc/administration/compliance.md @eread
 /doc/administration/configure.md @axil
 /doc/administration/consul.md @axil
-/doc/administration/credentials_inventory.md @jglassman1
+/doc/administration/credentials_inventory.md @idurham
 /doc/administration/custom_html_header_tags.md @eread
 /doc/administration/custom_project_templates.md @brendan777
 /doc/administration/dedicated/ @emily.sahlani
 /doc/administration/dedicated/hosted_runners.md @rsarangadharan
 /doc/administration/diff_limits.md @brendan777
 /doc/administration/docs_self_host.md @axil
+/doc/administration/duo_add_on_seat_management_with_ldap.md @lciutacu
 /doc/administration/encrypted_configuration.md @axil
 /doc/administration/environment_variables.md @axil
-/doc/administration/external_users.md @jglassman1
+/doc/administration/external_users.md @idurham
 /doc/administration/feature_flags.md @axil
 /doc/administration/file_hooks.md @ashrafkhamis
 /doc/administration/geo/ @axil
@@ -589,7 +590,7 @@ lib/gitlab/checks/**
 /doc/administration/get_started.md @kpaizee
 /doc/administration/git_protocol.md @brendan777
 /doc/administration/gitaly/ @eread
-/doc/administration/guest_users.md @jglassman1
+/doc/administration/guest_users.md @idurham
 /doc/administration/housekeeping.md @eread
 /doc/administration/inactive_project_deletion.md @emily.sahlani
 /doc/administration/incoming_email.md @msedlakjakubowski
@@ -637,9 +638,9 @@ lib/gitlab/checks/**
 /doc/administration/polling.md @axil
 /doc/administration/postgresql/ @emily.sahlani
 /doc/administration/raketasks/ @axil
-/doc/administration/raketasks/ldap.md @jglassman1
+/doc/administration/raketasks/ldap.md @idurham
 /doc/administration/raketasks/praefect.md @eread
-/doc/administration/raketasks/tokens/ @jglassman1
+/doc/administration/raketasks/tokens/ @idurham
 /doc/administration/read_only_gitlab.md @axil
 /doc/administration/redis/ @axil
 /doc/administration/reference_architectures/ @axil
@@ -655,7 +656,7 @@ lib/gitlab/checks/**
 /doc/administration/settings/continuous_integration.md @lyspin
 /doc/administration/settings/deprecated_api_rate_limits.md @brendan777
 /doc/administration/settings/email.md @msedlakjakubowski
-/doc/administration/settings/external_authorization.md @jglassman1
+/doc/administration/settings/external_authorization.md @idurham
 /doc/administration/settings/files_api_rate_limits.md @brendan777
 /doc/administration/settings/git_http_rate_limits.md @brendan777
 /doc/administration/settings/git_lfs_rate_limits.md @brendan777
@@ -676,7 +677,7 @@ lib/gitlab/checks/**
 /doc/administration/settings/rate_limit_on_organizations_api.md @emily.sahlani
 /doc/administration/settings/rate_limit_on_pipelines_creation.md @lyspin
 /doc/administration/settings/rate_limit_on_projects_api.md @emily.sahlani
-/doc/administration/settings/rate_limit_on_users_api.md @jglassman1
+/doc/administration/settings/rate_limit_on_users_api.md @idurham
 /doc/administration/settings/rate_limits_on_git_ssh_operations.md @brendan777
 /doc/administration/settings/scim_setup.md @lciutacu
 /doc/administration/settings/security_and_compliance.md @rdickenson
@@ -696,17 +697,17 @@ lib/gitlab/checks/**
 /doc/administration/timezone.md @axil
 /doc/administration/troubleshooting/ @axil
 /doc/administration/uploads.md @axil
-/doc/administration/user_settings.md @jglassman1
+/doc/administration/user_settings.md @idurham
 /doc/administration/wikis/ @msedlakjakubowski
-/doc/api/access_requests.md @jglassman1
-/doc/api/admin/ @jglassman1
+/doc/api/access_requests.md @idurham
+/doc/api/admin/ @idurham
 /doc/api/admin_sidekiq_queues.md @axil
 /doc/api/alert_management_alerts.md @lciutacu
 /doc/api/api_resources.md @ashrafkhamis
-/doc/api/appearance.md @jglassman1
-/doc/api/applications.md @jglassman1
+/doc/api/appearance.md @idurham
+/doc/api/applications.md @idurham
 /doc/api/audit_events.md @eread
-/doc/api/avatar.md @jglassman1
+/doc/api/avatar.md @idurham
 /doc/api/boards.md @msedlakjakubowski
 /doc/api/branches.md @brendan777
 /doc/api/bulk_imports.md @ashrafkhamis
@@ -739,7 +740,7 @@ lib/gitlab/checks/**
 /doc/api/freeze_periods.md @phillipwells
 /doc/api/geo_nodes.md @axil
 /doc/api/geo_sites.md @axil
-/doc/api/google_cloud_integration.md @jglassman1
+/doc/api/google_cloud_integration.md @idurham
 /doc/api/graphql/assign_gitlab_duo_seats.md @lciutacu
 /doc/api/graphql/audit_event_streaming_groups.md @eread
 /doc/api/graphql/audit_event_streaming_instances.md @eread
@@ -753,13 +754,13 @@ lib/gitlab/checks/**
 /doc/api/graphql/reference/ @ashrafkhamis
 /doc/api/graphql/removed_items.md @ashrafkhamis
 /doc/api/graphql/sample_issue_boards.md @msedlakjakubowski
-/doc/api/graphql/users_example.md @jglassman1
-/doc/api/group_access_tokens.md @jglassman1
+/doc/api/graphql/users_example.md @idurham
+/doc/api/group_access_tokens.md @idurham
 /doc/api/group_activity_analytics.md @lciutacu
 /doc/api/group_badges.md @emily.sahlani
 /doc/api/group_boards.md @msedlakjakubowski
 /doc/api/group_clusters.md @phillipwells
-/doc/api/group_enterprise_users.md @jglassman1
+/doc/api/group_enterprise_users.md @idurham
 /doc/api/group_epic_boards.md @msedlakjakubowski
 /doc/api/group_import_export.md @ashrafkhamis
 /doc/api/group_iterations.md @msedlakjakubowski
@@ -775,7 +776,7 @@ lib/gitlab/checks/**
 /doc/api/group_releases.md @phillipwells
 /doc/api/group_repository_storage_moves.md @brendan777
 /doc/api/group_security_settings.md @phillipwells
-/doc/api/group_service_accounts.md @jglassman1
+/doc/api/group_service_accounts.md @idurham
 /doc/api/group_ssh_certificates.md @brendan777
 /doc/api/group_webhooks.md @ashrafkhamis
 /doc/api/group_wikis.md @msedlakjakubowski
@@ -798,8 +799,8 @@ lib/gitlab/checks/**
 /doc/api/linked_epics.md @msedlakjakubowski
 /doc/api/lint.md @marcel.amirault
 /doc/api/markdown.md @msedlakjakubowski
-/doc/api/member_roles.md @jglassman1
-/doc/api/members.md @jglassman1
+/doc/api/member_roles.md @idurham
+/doc/api/members.md @idurham
 /doc/api/merge_request_approval_settings.md @brendan777
 /doc/api/merge_request_approvals.md @aqualls
 /doc/api/merge_request_context_commits.md @aqualls
@@ -807,23 +808,23 @@ lib/gitlab/checks/**
 /doc/api/merge_trains.md @lyspin
 /doc/api/metadata.md @phillipwells
 /doc/api/milestones.md @msedlakjakubowski
-/doc/api/namespaces.md @jglassman1
+/doc/api/namespaces.md @idurham
 /doc/api/notes.md @msedlakjakubowski
 /doc/api/notification_settings.md @sselhorn
-/doc/api/oauth2.md @jglassman1
+/doc/api/oauth2.md @idurham
 /doc/api/openapi/ @ashrafkhamis
 /doc/api/organizations.md @emily.sahlani
 /doc/api/packages.md @phillipwells
 /doc/api/packages/ @phillipwells
 /doc/api/pages.md @msedlakjakubowski
 /doc/api/pages_domains.md @msedlakjakubowski
-/doc/api/personal_access_tokens.md @jglassman1
+/doc/api/personal_access_tokens.md @idurham
 /doc/api/pipeline_schedules.md @lyspin
 /doc/api/pipeline_triggers.md @lyspin
 /doc/api/pipelines.md @lyspin
-/doc/api/plan_limits.md @jglassman1
+/doc/api/plan_limits.md @idurham
 /doc/api/product_analytics.md @lciutacu
-/doc/api/project_access_tokens.md @jglassman1
+/doc/api/project_access_tokens.md @idurham
 /doc/api/project_aliases.md @brendan777
 /doc/api/project_badges.md @brendan777
 /doc/api/project_clusters.md @phillipwells
@@ -861,16 +862,16 @@ lib/gitlab/checks/**
 /doc/api/resource_weight_events.md @msedlakjakubowski
 /doc/api/rest/ @ashrafkhamis
 /doc/api/runners.md @rsarangadharan
-/doc/api/saml.md @jglassman1
-/doc/api/scim.md @jglassman1
+/doc/api/saml.md @idurham
+/doc/api/scim.md @idurham
 /doc/api/search.md @ashrafkhamis
 /doc/api/search_admin.md @ashrafkhamis
 /doc/api/secure_files.md @marcel.amirault
-/doc/api/settings.md @jglassman1
+/doc/api/settings.md @idurham
 /doc/api/sidekiq_metrics.md @axil
 /doc/api/snippet_repository_storage_moves.md @brendan777
 /doc/api/snippets.md @brendan777
-/doc/api/statistics.md @jglassman1
+/doc/api/statistics.md @idurham
 /doc/api/status_checks.md @rlehmann1
 /doc/api/suggestions.md @brendan777
 /doc/api/system_hooks.md @ashrafkhamis
@@ -881,13 +882,13 @@ lib/gitlab/checks/**
 /doc/api/templates/licenses.md @rdickenson
 /doc/api/todos.md @sselhorn
 /doc/api/topics.md @emily.sahlani
-/doc/api/user_email_addresses.md @jglassman1
-/doc/api/user_follow_unfollow.md @jglassman1
-/doc/api/user_keys.md @jglassman1
-/doc/api/user_moderation.md @jglassman1
-/doc/api/user_service_accounts.md @jglassman1
-/doc/api/user_tokens.md @jglassman1
-/doc/api/users.md @jglassman1
+/doc/api/user_email_addresses.md @idurham
+/doc/api/user_follow_unfollow.md @idurham
+/doc/api/user_keys.md @idurham
+/doc/api/user_moderation.md @idurham
+/doc/api/user_service_accounts.md @idurham
+/doc/api/user_tokens.md @idurham
+/doc/api/users.md @idurham
 /doc/api/version.md @phillipwells
 /doc/api/vulnerabilities.md @rlehmann1
 /doc/api/vulnerability_exports.md @rlehmann1
@@ -951,10 +952,10 @@ lib/gitlab/checks/**
 /doc/development/avoiding_required_stops.md @gitlab-org/distribution
 /doc/development/build_test_package.md @gitlab-org/distribution
 /doc/development/cascading_settings.md @gitlab-org/foundations/engineering
-/doc/development/cells/ @abdwdd @alexpooley @manojmj
+/doc/development/cells/ @OmarQunsulGitlab @bmarjanovic
 /doc/development/cicd/ @gitlab-org/maintainers/cicd-verify
 /doc/development/contributing/verify/ @gitlab-org/maintainers/cicd-verify
-/doc/development/database/ @abdwdd @alexpooley @manojmj
+/doc/development/database/ @OmarQunsulGitlab @bmarjanovic
 /doc/development/distributed_tracing.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/distribution/ @gitlab-org/distribution
 /doc/development/documentation/ @fneill
@@ -964,15 +965,16 @@ lib/gitlab/checks/**
 /doc/development/git_object_deduplication.md @proglottis @toon
 /doc/development/gitaly.md @proglottis @toon
 /doc/development/gitpod_internals.md @gl-dx/eng-prod
-/doc/development/image_scaling.md @abdwdd @alexpooley @manojmj
+/doc/development/image_scaling.md @abdwdd @alexpooley
 /doc/development/internal_analytics/ @gitlab-org/analytics-section/product-analytics/engineers/frontend @gitlab-org/analytics-section/analytics-instrumentation/engineers
+/doc/development/internal_analytics/product_analytics.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/logging.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/logs.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/metrics.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/navigation_sidebar.md @gitlab-org/foundations/engineering
 /doc/development/observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/omnibus.md @gitlab-org/distribution
-/doc/development/organization/ @abdwdd @alexpooley @manojmj
+/doc/development/organization/ @abdwdd @alexpooley
 /doc/development/permissions.md @gitlab-org/govern/authorization/approvers
 /doc/development/permissions/ @gitlab-org/govern/authorization/approvers
 /doc/development/pipelines/ @gl-dx/eng-prod
@@ -988,7 +990,7 @@ lib/gitlab/checks/**
 /doc/editor_extensions/ @aqualls
 /doc/install/ @axil
 /doc/install/install_ai_gateway.md @sselhorn
-/doc/integration/ @jglassman1
+/doc/integration/ @idurham
 /doc/integration/advanced_search/ @ashrafkhamis
 /doc/integration/datadog.md @rsarangadharan
 /doc/integration/diffblue_cover.md @lyspin
@@ -1011,7 +1013,7 @@ lib/gitlab/checks/**
 /doc/raketasks/ @axil
 /doc/raketasks/spdx.md @rdickenson
 /doc/raketasks/x509_signatures.md @brendan777
-/doc/security/ @jglassman1
+/doc/security/ @idurham
 /doc/solutions/ @jfullam @brianwald @Darwinjs
 /doc/solutions/integrations/index.md @jfullam @brianwald @Darwinjs
 /doc/solutions/integrations/servicenow.md @ashrafkhamis
@@ -1081,7 +1083,7 @@ lib/gitlab/checks/**
 /doc/user/duo_amazon_q/ @sselhorn
 /doc/user/duo_workflow/ @sselhorn
 /doc/user/emoji_reactions.md @msedlakjakubowski
-/doc/user/enterprise_user/ @jglassman1
+/doc/user/enterprise_user/ @idurham
 /doc/user/get_started/get_started_managing_code.md @brendan777
 /doc/user/get_started/get_started_managing_infrastructure.md @phillipwells
 /doc/user/get_started/get_started_monitoring.md @lciutacu
@@ -1096,7 +1098,7 @@ lib/gitlab/checks/**
 /doc/user/group/compliance_frameworks.md @eread
 /doc/user/group/compliance_pipelines.md @eread
 /doc/user/group/contribution_analytics/ @lciutacu
-/doc/user/group/credentials_inventory.md @jglassman1
+/doc/user/group/credentials_inventory.md @idurham
 /doc/user/group/custom_project_templates.md @brendan777
 /doc/user/group/devops_adoption/ @lciutacu
 /doc/user/group/epics/ @msedlakjakubowski
@@ -1107,9 +1109,9 @@ lib/gitlab/checks/**
 /doc/user/group/manage.md @emily.sahlani
 /doc/user/group/repositories_analytics/ @lyspin
 /doc/user/group/roadmap/ @msedlakjakubowski
-/doc/user/group/saml_sso/ @jglassman1
+/doc/user/group/saml_sso/ @idurham
 /doc/user/group/saml_sso/group_sync.md @lciutacu
-/doc/user/group/settings/ @jglassman1
+/doc/user/group/settings/ @idurham
 /doc/user/group/ssh_certificates.md @brendan777
 /doc/user/group/subgroups/ @emily.sahlani
 /doc/user/group/troubleshooting.md @emily.sahlani
@@ -1127,16 +1129,16 @@ lib/gitlab/checks/**
 /doc/user/packages/dependency_proxy/ @lyspin
 /doc/user/packages/harbor_container_registry/ @lyspin
 /doc/user/permissions.md @rlehmann1
-/doc/user/profile/account/ @jglassman1
+/doc/user/profile/account/ @idurham
 /doc/user/profile/account/create_accounts.md @lciutacu
 /doc/user/profile/achievements.md @emily.sahlani
 /doc/user/profile/comment_templates.md @aqualls
 /doc/user/profile/contributions_calendar.md @emily.sahlani
-/doc/user/profile/index.md @jglassman1
+/doc/user/profile/index.md @idurham
 /doc/user/profile/notifications.md @sselhorn
-/doc/user/profile/personal_access_tokens.md @jglassman1
-/doc/user/profile/service_accounts.md @jglassman1
-/doc/user/profile/user_passwords.md @jglassman1
+/doc/user/profile/personal_access_tokens.md @idurham
+/doc/user/profile/service_accounts.md @idurham
+/doc/user/profile/user_passwords.md @idurham
 /doc/user/project/autocomplete_characters.md @brendan777
 /doc/user/project/badges.md @emily.sahlani
 /doc/user/project/changelogs.md @brendan777
@@ -1193,7 +1195,7 @@ lib/gitlab/checks/**
 /doc/user/project/settings/import_export_troubleshooting.md @ashrafkhamis
 /doc/user/project/settings/index.md @emily.sahlani
 /doc/user/project/settings/migrate_projects.md @emily.sahlani
-/doc/user/project/settings/project_access_tokens.md @jglassman1
+/doc/user/project/settings/project_access_tokens.md @idurham
 /doc/user/project/system_notes.md @brendan777
 /doc/user/project/time_tracking.md @msedlakjakubowski
 /doc/user/project/troubleshooting.md @emily.sahlani
@@ -1208,8 +1210,8 @@ lib/gitlab/checks/**
 /doc/user/search/command_palette.md @sselhorn
 /doc/user/shortcuts.md @sselhorn
 /doc/user/snippets.md @brendan777
-/doc/user/ssh.md @jglassman1
-/doc/user/ssh_troubleshooting.md @jglassman1
+/doc/user/ssh.md @idurham
+/doc/user/ssh_troubleshooting.md @idurham
 /doc/user/storage_management_automation.md @lciutacu
 /doc/user/storage_usage_quotas.md @lciutacu
 /doc/user/tasks.md @msedlakjakubowski

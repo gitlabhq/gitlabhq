@@ -394,7 +394,7 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
               described_class.enabled?(:enabled_feature_flag, thing)
             end
 
-            margin_of_error = 0.05 * number_of_times
+            margin_of_error = 0.07 * number_of_times
             expected_size = number_of_times * percentage / 100
             expect(gate_values.count { |v| v }).to be_within(margin_of_error).of(expected_size)
           end

@@ -103,7 +103,7 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
 
     it_behaves_like 'an erroneous response'
 
-    it 'returns error from endpoint implementation (not from grapqhl framework)' do
+    it 'returns error from endpoint implementation (not from graphql framework)' do
       post_graphql_mutation_create_container_registry_protection_rule
 
       expect_graphql_errors_to_include([/repositoryPathPattern can't be blank/])
@@ -115,7 +115,7 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
 
     it_behaves_like 'an erroneous response'
 
-    it 'returns error from endpoint implementation (not from grapqhl framework)' do
+    it 'returns error from endpoint implementation (not from graphql framework)' do
       post_graphql_mutation_create_container_registry_protection_rule
 
       expect_graphql_errors_to_be_empty

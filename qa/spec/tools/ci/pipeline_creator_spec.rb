@@ -134,51 +134,12 @@ module QA
         context "with specific test files" do
           let(:test_files) { ["some_spec.rb", "some_other_spec.rb"] }
 
-          context "without parallel" do
-            it "adds QA_TESTS variable to job definition" do
-              pipeline_creator.create
+          it "adds QA_TESTS variable to job definition" do
+            pipeline_creator.create
 
-              expect(generated_cng_yaml).to include(cng_pipeline_definition.deep_merge({
-                "cng-instance" => {
-                  "parallel" => 1,
-                  "variables" => {
-                    "QA_TESTS" => test_files.join(" ")
-                  }
-                }
-              }))
-            end
-          end
-
-          context "with parallel job" do
-            let(:runtime) { (60 * 60).to_f }
-
-            let(:cng_pipeline_definition) do
-              {
-                "cng-instance" => {
-                  "stage" => "test",
-                  "variables" => {
-                    "SOME_VAR" => "test"
-                  },
-                  "script" => "echo 'test'"
-                },
-                "some-other-job" => {
-                  "stage" => "report"
-                }
-              }
-            end
-
-            it "adds knapsack pattern variable to job definition" do
-              pipeline_creator.create
-
-              expect(generated_cng_yaml).to include(cng_pipeline_definition.deep_merge({
-                "cng-instance" => {
-                  "parallel" => 3,
-                  "variables" => {
-                    "KNAPSACK_TEST_FILE_PATTERN" => "{#{test_files.join(',')}}"
-                  }
-                }
-              }))
-            end
+            expect(generated_cng_yaml).to include({
+              "variables" => variables.deep_merge({ "QA_TESTS" => test_files.join(" ") })
+            })
           end
         end
 

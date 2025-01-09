@@ -98,14 +98,14 @@ timings are unaffected.
 
 ### Index limitations
 
-GitLab enforces a limit of **16 indexes** per table. This limitation:
+GitLab enforces a limit of **15 indexes** per table. This limitation:
 
 - Helps maintain optimal database performance
 - Reduces maintenance overhead
 - Prevents excessive disk space usage
 
 NOTE:
-If you need to add an index to a table that already has 16 indexes, consider:
+If you need to add an index to a table that already has 15 indexes, consider:
 
 - Removing unused indexes
 - Combining existing indexes

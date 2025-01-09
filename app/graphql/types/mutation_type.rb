@@ -161,6 +161,9 @@ module Types
     mount_mutation Mutations::ContainerRegistry::Protection::Rule::Create, experiment: { milestone: '16.6' }
     mount_mutation Mutations::ContainerRegistry::Protection::Rule::Delete, experiment: { milestone: '16.7' }
     mount_mutation Mutations::ContainerRegistry::Protection::Rule::Update, experiment: { milestone: '16.7' }
+    mount_mutation Mutations::ContainerRegistry::Protection::TagRule::Create, experiment: { milestone: '17.8' }
+    mount_mutation Mutations::ContainerRegistry::Protection::TagRule::Delete, experiment: { milestone: '17.8' }
+    mount_mutation Mutations::ContainerRegistry::Protection::TagRule::Update, experiment: { milestone: '17.8' }
     mount_mutation Mutations::ContainerRepositories::Destroy
     mount_mutation Mutations::ContainerRepositories::DestroyTags
     mount_mutation Mutations::Ci::Catalog::Resources::Create, experiment: { milestone: '15.11' }

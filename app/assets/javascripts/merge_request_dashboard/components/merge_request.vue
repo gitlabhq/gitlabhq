@@ -149,11 +149,11 @@ export default {
                 <gl-icon name="doc-new" />
                 <span>{{ mergeRequest.diffStatsSummary.fileCount }}</span>
               </div>
-              <div class="gl-flex gl-items-center gl-text-green-400">
+              <div class="gl-flex gl-items-center gl-text-success">
                 <span>+</span>
                 <span>{{ mergeRequest.diffStatsSummary.additions }}</span>
               </div>
-              <div class="gl-flex gl-items-center gl-text-red-400">
+              <div class="gl-flex gl-items-center gl-text-danger">
                 <span>−</span>
                 <span>{{ mergeRequest.diffStatsSummary.deletions }}</span>
               </div>

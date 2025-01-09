@@ -11,11 +11,8 @@ module QA
 
       RegexMismatchError = Class.new(StandardError)
 
-      DEFAULT_TEST_PATH_ARGS = [
-        '--',
-        File.expand_path('./features', __dir__),
-        GitlabEdition.jh? ? File.expand_path('../../.././jh/qa/qa/specs/features', __dir__) : nil
-      ].compact.freeze
+      DEFAULT_TEST_PATH = "qa/specs/features"
+      DEFAULT_TEST_PATH_ARGS = [DEFAULT_TEST_PATH].freeze
       DEFAULT_STD_ARGS = [$stderr, $stdout].freeze
       DEFAULT_SKIPPED_TAGS = %w[orchestrated].freeze
 
@@ -24,6 +21,18 @@ module QA
         @tags = []
         @options = []
       end
+
+      def perform
+        args = build_initial_args
+        # use options from default .rspec file for metadata only runs
+        configure_default_formatters!(args) unless metadata_run?
+
+        run_rspec(args.flatten)
+      end
+
+      private
+
+      delegate :rspec_retried?, :parallel_run?, to: Runtime::Env
 
       def rspec_tags
         return @rspec_tags if @rspec_tags
@@ -51,42 +60,41 @@ module QA
         @rspec_tags = tags_for_rspec
       end
 
-      def perform
-        args = build_initial_args
-        # use options from default .rspec file for metadata only runs
-        configure_default_formatters!(args) unless metadata_run?
-        args.push(DEFAULT_TEST_PATH_ARGS) unless custom_test_paths?
-
-        run_rspec(args)
+      def custom_spec_paths
+        @spec_paths ||= options.select { |opt| opt.include?(DEFAULT_TEST_PATH) }
       end
 
-      private
-
-      delegate :rspec_retried?, :parallel_run?, to: Runtime::Env
+      def rspec_paths
+        @rspec_paths ||= custom_spec_paths.presence || DEFAULT_TEST_PATH_ARGS
+      end
 
       def build_initial_args
         [].tap do |args|
           args.push('--tty') if tty
           args.push(rspec_tags.flat_map { |tag| ["--tag", tag] })
-          args.push(options)
+          args.push(options - custom_spec_paths)
         end
       end
 
       def run_rspec(args)
+        full_arg_list = [*args, "--", *rspec_paths]
+
         if Runtime::Scenario.attributes[:count_examples_only]
-          count_examples_only(args)
+          count_examples_only(full_arg_list)
         elsif Runtime::Scenario.attributes[:test_metadata_only]
-          test_metadata_only(args)
+          test_metadata_only(full_arg_list)
         elsif Runtime::Env.knapsack?
-          KnapsackRunner.run(args.flatten, example_data, parallel: run_in_parallel?) do |status|
+          KnapsackRunner.run(args, rspec_paths, example_data, parallel: run_in_parallel?) do |status|
             abort if status.nonzero?
           end
         elsif run_in_parallel?
-          ParallelRunner.run(args.flatten, example_data)
+          ParallelRunner.run(args, rspec_paths, example_data)
         elsif Runtime::Scenario.attributes[:loop]
-          LoopRunner.run(args.flatten)
+          LoopRunner.run(full_arg_list)
         else
-          RSpec::Core::Runner.run(args.flatten, *DEFAULT_STD_ARGS).tap { |status| abort if status.nonzero? }
+          RSpec::Core::Runner.run(full_arg_list, *DEFAULT_STD_ARGS).tap do |status|
+            abort if status.nonzero?
+          end
         end
       end
 
@@ -149,10 +157,6 @@ module QA
 
           args.push("--format", formatter, "--out", "#{filename}.#{extension}")
         end
-      end
-
-      def custom_test_paths?
-        Runtime::Env.knapsack? || options.any? { |opt| opt.include?('features') }
       end
 
       def metadata_run?

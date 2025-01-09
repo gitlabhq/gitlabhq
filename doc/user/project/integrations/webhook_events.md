@@ -31,7 +31,7 @@ Event type                                   | Trigger
 [Release event](#release-events)             | A release is created, edited, or deleted.
 [Emoji event](#emoji-events)                 | An emoji reaction is added or removed.
 [Project or group access token event](#project-and-group-access-token-events) | A project or group access token will expire in seven days.
-[Vulnerability event](#vulnerability-events) | A vulnerability is updated.
+[Vulnerability event](#vulnerability-events) | A vulnerability is created or updated.
 
 **Footnotes:**
 
@@ -2345,15 +2345,24 @@ Payload example:
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-41123"
       }
     ],
+    "issues": [
+      {
+        "title": "REXML ReDoS vulnerability",
+        "url": "https://example.com/flightjs/Flight/-/issues/1",
+        "created_at": "2025-01-08T00:46:14.429Z",
+        "updated_at": "2025-01-08T00:46:14.429Z"
+      }
+    ],
     "report_type": "dependency_scanning",
     "confidence": "unknown",
-    "confirmed_at": "2024-12-04 05:35:05 UTC",
-    "confirmed_by_id": 50,
+    "confidence_overridden": false,
+    "confirmed_at": "2025-01-08T00:46:14.413Z",
+    "confirmed_by_id": 1,
     "dismissed_at": null,
     "dismissed_by_id": null,
     "resolved_on_default_branch": false,
-    "created_at": "2024-11-26 07:10:16 UTC",
-    "updated_at": "2024-12-04 05:35:05 UTC"
+    "created_at": "2025-01-08T00:46:14.413Z",
+    "updated_at": "2025-01-08T00:46:14.413Z"
   }
 }
 ```
