@@ -1,29 +1,68 @@
 #import "./flow_metric_item.fragment.graphql"
 
-query flowMetricsQuery($fullPath: ID!, $startDate: Time!, $endDate: Time!, $labelNames: [String!]) {
+query flowMetricsQuery(
+  $fullPath: ID!
+  $startDate: Time!
+  $endDate: Time!
+  $labelNames: [String!]
+  $projectIds: [ID!]
+  $authorUsername: String
+  $assigneeUsernames: [String!]
+  $milestoneTitle: String
+) {
   project(fullPath: $fullPath) {
     id
     flowMetrics {
-      issues: issueCount(from: $startDate, to: $endDate, labelNames: $labelNames) {
+      issues: issueCount(
+        from: $startDate
+        to: $endDate
+        labelNames: $labelNames
+        authorUsername: $authorUsername
+        assigneeUsernames: $assigneeUsernames
+        milestoneTitle: $milestoneTitle
+      ) {
         ...FlowMetricItem
       }
       issues_completed: issuesCompletedCount(
         from: $startDate
         to: $endDate
         labelNames: $labelNames
+        authorUsername: $authorUsername
+        assigneeUsernames: $assigneeUsernames
+        milestoneTitle: $milestoneTitle
       ) {
         ...FlowMetricItem
       }
-      cycle_time: cycleTime(from: $startDate, to: $endDate, labelNames: $labelNames) {
+      cycle_time: cycleTime(
+        from: $startDate
+        to: $endDate
+        labelNames: $labelNames
+        authorUsername: $authorUsername
+        assigneeUsernames: $assigneeUsernames
+        milestoneTitle: $milestoneTitle
+      ) {
         ...FlowMetricItem
       }
-      lead_time: leadTime(from: $startDate, to: $endDate, labelNames: $labelNames) {
+      lead_time: leadTime(
+        from: $startDate
+        to: $endDate
+        labelNames: $labelNames
+        authorUsername: $authorUsername
+        assigneeUsernames: $assigneeUsernames
+        milestoneTitle: $milestoneTitle
+      ) {
         ...FlowMetricItem
       }
       deploys: deploymentCount(from: $startDate, to: $endDate) {
         ...FlowMetricItem
       }
-      median_time_to_merge: timeToMerge(from: $startDate, to: $endDate) {
+      median_time_to_merge: timeToMerge(
+        from: $startDate
+        to: $endDate
+        authorUsername: $authorUsername
+        assigneeUsernames: $assigneeUsernames
+        milestoneTitle: $milestoneTitle
+      ) {
         ...FlowMetricItem
       }
     }
@@ -31,26 +70,62 @@ query flowMetricsQuery($fullPath: ID!, $startDate: Time!, $endDate: Time!, $labe
   group(fullPath: $fullPath) {
     id
     flowMetrics {
-      issues: issueCount(from: $startDate, to: $endDate, labelNames: $labelNames) {
+      issues: issueCount(
+        from: $startDate
+        to: $endDate
+        labelNames: $labelNames
+        projectIds: $projectIds
+        authorUsername: $authorUsername
+        assigneeUsernames: $assigneeUsernames
+        milestoneTitle: $milestoneTitle
+      ) {
         ...FlowMetricItem
       }
       issues_completed: issuesCompletedCount(
         from: $startDate
         to: $endDate
         labelNames: $labelNames
+        projectIds: $projectIds
+        authorUsername: $authorUsername
+        assigneeUsernames: $assigneeUsernames
+        milestoneTitle: $milestoneTitle
       ) {
         ...FlowMetricItem
       }
-      cycle_time: cycleTime(from: $startDate, to: $endDate, labelNames: $labelNames) {
+      cycle_time: cycleTime(
+        from: $startDate
+        to: $endDate
+        labelNames: $labelNames
+        projectIds: $projectIds
+        authorUsername: $authorUsername
+        assigneeUsernames: $assigneeUsernames
+        milestoneTitle: $milestoneTitle
+      ) {
         ...FlowMetricItem
       }
-      lead_time: leadTime(from: $startDate, to: $endDate, labelNames: $labelNames) {
+      lead_time: leadTime(
+        from: $startDate
+        to: $endDate
+        labelNames: $labelNames
+        projectIds: $projectIds
+        authorUsername: $authorUsername
+        assigneeUsernames: $assigneeUsernames
+        milestoneTitle: $milestoneTitle
+      ) {
         ...FlowMetricItem
       }
-      deploys: deploymentCount(from: $startDate, to: $endDate) {
+      deploys: deploymentCount(from: $startDate, to: $endDate, projectIds: $projectIds) {
         ...FlowMetricItem
       }
-      median_time_to_merge: timeToMerge(from: $startDate, to: $endDate) {
+      median_time_to_merge: timeToMerge(
+        from: $startDate
+        to: $endDate
+        labelNames: $labelNames
+        projectIds: $projectIds
+        authorUsername: $authorUsername
+        assigneeUsernames: $assigneeUsernames
+        milestoneTitle: $milestoneTitle
+      ) {
         ...FlowMetricItem
       }
     }

@@ -209,6 +209,7 @@ export default {
     :invalid-feedback-message="invalidFeedbackMessage"
     :is-loading="isLoading"
     :full-path="fullPath"
+    :is-project="isProject"
     is-group-invite
     @reset="resetFields"
     @submit="sendInvite"

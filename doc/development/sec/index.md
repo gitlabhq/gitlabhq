@@ -157,3 +157,9 @@ The corresponding Semgrep report must contain the `eslint_rule_id`:
 
 [Tracking of vulnerabilities](../integrations/secure.md#tracking-and-merging-vulnerabilities) relies on a combination of the two identifiers
 to remap DB records previously generated with the legacy analyzers to those generated with the new `semgrep` ones.
+
+## Development Setup: Package Metadata Database synchronization
+
+For security scanning and license compliance features that use the Package Metadata Database (PMDB), you need to set up PMDB synchronization in your development environment.
+
+See the [Package Metadata Synchronization guide](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/package_metadata_synchronization.md) in the GDK documentation for detailed setup instructions.

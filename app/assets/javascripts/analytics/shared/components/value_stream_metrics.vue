@@ -10,7 +10,7 @@ import {
   VALUE_STREAM_METRIC_TILE_METADATA,
 } from '../constants';
 import { rawMetricToMetricTile, extractQueryResponseFromNamespace, toYmd } from '../utils';
-import { BUCKETING_INTERVAL_ALL } from '../graphql/constants';
+import { BUCKETING_INTERVAL_ALL, FLOW_METRICS_QUERY_FILTERS } from '../graphql/constants';
 import FlowMetricsQuery from '../graphql/flow_metrics.query.graphql';
 import FOSSFlowMetricsQuery from '../graphql/foss.flow_metrics.query.graphql';
 import DoraMetricsQuery from '../graphql/dora_metrics.query.graphql';
@@ -99,8 +99,13 @@ export default {
       return { startDate: toYmd(startDate), endDate: toYmd(endDate) };
     },
     flowMetricsVariables() {
-      const { label_names: labelNames } = this.requestParams;
-      const additionalParams = labelNames?.length ? { labelNames } : {};
+      const additionalParams = Object.keys(FLOW_METRICS_QUERY_FILTERS).reduce((acc, key) => {
+        if (this.requestParams[key]) {
+          const graphqlField = FLOW_METRICS_QUERY_FILTERS[key];
+          return { ...acc, [graphqlField]: this.requestParams[key] };
+        }
+        return acc;
+      }, {});
       return { fullPath: this.requestPath, ...this.queryDateRange, ...additionalParams };
     },
     hasGroupedMetrics() {

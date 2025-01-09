@@ -41,7 +41,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_tr
       const iconData = TREE_ITEM_STATUS_ICONS.reconciled;
 
       expect(findStatusIcon().props('name')).toBe(iconData.icon);
-      expect(findStatusIcon().attributes('class')).toContain(iconData.class);
+      expect(findStatusIcon().props('variant')).toContain(iconData.variant);
       expect(findStatusIcon().attributes('title')).toBe(statusReconciled);
     });
 

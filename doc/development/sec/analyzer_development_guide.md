@@ -214,7 +214,10 @@ can't decide, then ask for other's input.
 The following must be performed before the automatic release process can be used:
 
 1. Configure `CREATE_GIT_TAG: true` as a [`CI/CD` environment variable](../../ci/variables/index.md).
-1. Check the `Variables` in the CI/CD project settings. Unless the project already inherits the `GITLAB_TOKEN` environment variable from the project group, create a [project access token](../../user/project/settings/project_access_tokens.md) with `complete read/write access to the API` and configure `GITLAB_TOKEN` as a [`CI/CD` environment variable](../../ci/variables/index.md) which refers to this token.
+1. Check the `Variables` in the CI/CD project settings:
+
+   - If the project is located under the `gitlab-org/security-products/analyzers` namespace, then it automatically inherits the `GITLAB_TOKEN` environment variable and nothing else needs to be done.
+   - If the project is _not_ located under the `gitlab-org/security-products/analyzers` namespace, then you'll need to create a new [masked and hidden](../../ci/variables/index.md#hide-a-cicd-variable) `GITLAB_TOKEN` [`CI/CD` environment variable](../../ci/variables/index.md) and set its value to the Personal Access Token for the [@gl-service-dev-secure-analyzers-automation](https://gitlab.com/gl-service-dev-secure-analyzers-automation) account described in the [Service account used in the automatic release process](#service-account-used-in-the-automatic-release-process) section below.
 
 After the above steps have been completed, the automatic release process executes as follows:
 
@@ -362,28 +365,110 @@ If you are unsure which path to follow, reach-out to the
 
 ### Location of Container Images
 
+Container images for secure analyzers are published in two places:
+
+- [Officially supported images](#officially-supported-images) in the `registry.gitlab.com/security-products` namespace, for example:
+
+  ```shell
+  registry.gitlab.com/security-products/semgrep:5
+  ```
+
+- [Temporary development images](#temporary-development-images) in the project namespace, for example:
+
+  ```shell
+  registry.gitlab.com/gitlab-org/security-products/analyzers/semgrep/tmp:d27d44a9b33cacff0c54870a40515ec5f2698475
+  ```
+
+#### Officially supported images
+
+The location of officially supported images, as referenced by our secure templates is:
+
+```shell
+registry.gitlab.com/security-products/<ANALYZER-NAME>:<TAG>
+```
+
+For example, the [`semgrep-sast`](https://gitlab.com/gitlab-org/gitlab/blob/v17.7.0-ee/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml#L172) job in the `SAST.gitlab-ci.yml` template references the container image `registry.gitlab.com/security-products/semgrep:5`.
+
+In order to push images to this location:
+
+1. Create a new project in `https://gitlab.com/security-products/<ANALYZER-NAME>`.
+
+   For example: `https://gitlab.com/security-products/semgrep`
+
+   Images for this project will be published to `registry.gitlab.com/security-products/<ANALYZER-NAME>:[TAG]`.
+
+   For example: `registry.gitlab.com/security-products/semgrep:5`
+
+1. Configure the project `https://gitlab.com/security-products/<ANALYZER-NAME>` as follows:
+
+   1. Add the following permissions:
+
+      - Maintainer: `@gitlab-org/secure/managers`, `@gitlab-org/govern/managers`
+      - Developer: [@gl-service-dev-secure-analyzers-automation](https://gitlab.com/gl-service-dev-secure-analyzers-automation)
+
+         This is necessary to allow the [service account used in the automatic release process](#service-account-used-in-the-automatic-release-process) to push images to `registry.gitlab.com/security-products/<ANALYZER-NAME>:<TAG>`.
+
+   1. Configure the following project settings:
+
+      - `Settings -> General -> Visibility, project features, permissions`
+         - `Project visibility`
+            - `Public`
+         - `Additional options`
+            - `Users can request access`
+               - `Disabled`
+         - `Issues`
+            - `Disabled`
+         - `Repository`
+            - `Only Project Members`
+            - `Merge Requests`
+               - `Disabled`
+            - `Forks`
+               - `Disabled`
+            - `Git Large File Storage (LFS)`
+               - `Disabled`
+            - `CI/CD`
+               - `Disabled`
+         - `Container Registry`
+            - `Everyone with access`
+         - `Analytics`, `Requirements`, `Security and compliance`, `Wiki`, `Snippets`, `Package registry`, `Model experiments`, `Model registry`, `Pages`, `Monitor`, `Environments`, `Feature flags`, `Infrastructure`, `Releases`, `GitLab Duo`
+            - `Disabled`
+
+1. Configure the following [`CI/CD` environment variables](../../ci/variables/index.md) for the _analyzer project_, located at `https://gitlab.com/gitlab-org/security-products/analyzers/<ANALYZER_NAME>`:
+
+   NOTE:
+   It's crucial to [mask and hide](../../ci/variables/index.md#hide-a-cicd-variable) the following variables.
+
+   | Key                     | Value                                                                       |
+   |-------------------------|-----------------------------------------------------------------------------|
+   | `SEC_REGISTRY_IMAGE`    | `registry.gitlab.com/security-products/$CI_PROJECT_NAME`                    |
+   | `SEC_REGISTRY_USER`     | `gl-service-dev-secure-analyzers-automation`                                |
+   | `SEC_REGISTRY_PASSWORD` | Personal Access Token for `gl-service-dev-secure-analyzers-automation` user. Request an [administrator](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/29538#admin-users) to configure this token value. |
+
+   The above variables are used by the [tag_image.sh](https://gitlab.com/gitlab-org/security-products/ci-templates/blob/a784f5d/scripts/tag_image.sh#L21-26) script in the `ci-templates` project to push the container image to `registry.gitlab.com/security-products/<ANALYZER-NAME>:<TAG>`.
+
+   See the [semgrep CI/CD Variables](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/settings/ci_cd#js-cicd-variables-settings) for an example.
+
+#### Temporary development images
+
+The location of temporary development images is:
+
+```shell
+registry.gitlab.com/gitlab-org/security-products/analyzers/<ANALYZER-NAME>/tmp:<TAG>
+```
+
+For example, one of the development images for the [`semgrep`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) analyzer is:
+
+```shell
+registry.gitlab.com/gitlab-org/security-products/analyzers/semgrep/tmp:7580d6b037d93646774de601be5f39c46707bf04
+```
+
 In order to
 [restrict the number of people who have write access to the container registry](https://gitlab.com/gitlab-org/gitlab/-/issues/297525),
-all images are to be published to the location below. The container registry in the development
-project must be [made private](https://gitlab.com/gitlab-org/gitlab/-/issues/470641).
+the container registry in the development project must be [made private](https://gitlab.com/gitlab-org/gitlab/-/issues/470641) by configuring the following [project features and permissions](../../user/project/settings/index.md) settings for the project located at `https://gitlab.com/gitlab-org/security-products/analyzers/<ANALYZER-NAME>`:
 
-- Group: [`https://gitlab.com/security-products/`](https://gitlab.com/security-products/)
-- Project path: `https://gitlab.com/security-products/<NAME>` ([example](https://gitlab.com/security-products/container-scanning))
-- Registry address: `registry.gitlab.com/security-products/<NAME>[/<IMAGE_NAME>]:[TAG]`
-- Permissions
-  - Top-level group
-    - Maintainer: `@gitlab-org/secure/managers`, `@gitlab-org/govern/managers`
-  - Project level
-    - A deploy token with `read_registry` and `write_registry` access is used to push images.
-    - The token will be entered by its creator as a [**protected** and **masked** variable](../../ci/variables/index.md#for-a-project) on the
-      originating project (i.e. the project under [`security-products` namespace](https://gitlab.com/gitlab-org/security-products/))
-- Project Settings
-  - Visibility, project features, permissions.
-    - Project visibility: Public. Uncheck "Users can request access".
-    - Issues: disable.
-    - Repository: set to "Only Project Members". Disable: Merge requests, Forks, Git LFS, Packages, CI/CD.
-    - Disable remaining items: Analytics, Requirements, Wiki, Snippets, Pages, Operations.
-  - Service Desk: disable
+- `Settings -> General -> Visibility, project features, permissions`
+  - `Container Registry`
+    - `Only Project Members`
 
 Each group in the Sec Section is responsible for:
 

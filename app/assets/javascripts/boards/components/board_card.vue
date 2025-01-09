@@ -233,7 +233,7 @@ export default {
       :data-row-index="rowIndex"
       :style="cardStyle"
       data-testid="board-card-button"
-      class="board-card-button btn-transparent gl-block gl-h-full gl-w-full gl-rounded-base gl-p-4 gl-text-left gl-outline-none focus:gl-focus"
+      class="board-card-button gl-block gl-h-full gl-w-full gl-rounded-base gl-border-0 gl-bg-transparent gl-p-4 gl-text-left gl-outline-none focus:gl-focus"
       @click="toggleIssue"
       @keydown.left.exact.prevent="focusLeft"
       @keydown.right.exact.prevent="focusRight"

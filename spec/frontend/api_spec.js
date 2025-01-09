@@ -498,6 +498,7 @@ describe('Api', () => {
         group_id: sharedGroupId,
         group_access: 10,
         expires_at: undefined,
+        member_role_id: 88,
       };
 
       jest.spyOn(axios, 'post');

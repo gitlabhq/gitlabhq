@@ -1515,6 +1515,9 @@ For information on automatically managing GitLab group membership, see [SAML Gro
 
 ## Bypass two-factor authentication
 
+> - Bypass 2FA enforcement [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122109) in GitLab 16.1 [with a flag](../administration/feature_flags.md) named `by_pass_two_factor_current_session`.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/416535) in GitLab 17.8.
+
 To configure a SAML authentication method to count as two-factor authentication
 (2FA) on a per session basis, register that method in the `upstream_two_factor_authn_contexts`
 list.
@@ -2911,7 +2914,7 @@ To implement signing:
                   security: {
                     authn_requests_signed: true,  # enable signature on AuthNRequest
                     want_assertions_signed: true,  # enable the requirement of signed assertion
-                    want_assertions_encrypted: false,  # enable the requirement of encrypted assertion 
+                    want_assertions_encrypted: false,  # enable the requirement of encrypted assertion
                     metadata_signed: false,  # enable signature on Metadata
                     signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
                     digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256',
@@ -2946,7 +2949,7 @@ To implement signing:
         security:
           authn_requests_signed: true  # enable signature on AuthNRequest
           want_assertions_signed: true  # enable the requirement of signed assertion
-          want_assertions_encrypted: false  # enable the requirement of encrypted assertion 
+          want_assertions_encrypted: false  # enable the requirement of encrypted assertion
           metadata_signed: false  # enable signature on Metadata
           signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
           digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256'
@@ -3004,7 +3007,7 @@ To implement signing:
                            security: {
                              authn_requests_signed: true,  # enable signature on AuthNRequest
                              want_assertions_signed: true,  # enable the requirement of signed assertion
-                             want_assertions_encrypted: false,  # enable the requirement of encrypted assertion 
+                             want_assertions_encrypted: false,  # enable the requirement of encrypted assertion
                              metadata_signed: false,  # enable signature on Metadata
                              signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
                              digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256',
@@ -3041,7 +3044,7 @@ To implement signing:
                         security: {
                           authn_requests_signed: true,  # enable signature on AuthNRequest
                           want_assertions_signed: true,  # enable the requirement of signed assertion
-                          want_assertions_encrypted: false,  # enable the requirement of encrypted assertion 
+                          want_assertions_encrypted: false,  # enable the requirement of encrypted assertion
                           metadata_signed: false,  # enable signature on Metadata
                           signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
                           digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256',

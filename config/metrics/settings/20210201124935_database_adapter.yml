@@ -5,6 +5,8 @@ description: This metric only returns a value of PostgreSQL in supported version
   of GitLab. It could be removed from the usage ping. Historically MySQL was also
   supported.
 product_group: distribution_deploy
+product_categories:
+- build
 value_type: string
 status: active
 time_frame: none

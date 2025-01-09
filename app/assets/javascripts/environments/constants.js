@@ -205,11 +205,11 @@ export const TREE_ITEM_KIND_ICONS = {
   [DEPLOYMENT_KIND]: 'deployments',
 };
 
-const RUNNING_STATUS_ICON = { icon: 'status-running', class: 'gl-text-blue-500' };
-const SUCCESS_STATUS_ICON = { icon: 'status-success', class: 'gl-text-success' };
-const WAITING_STATUS_ICON = { icon: 'status-waiting', class: 'gl-text-subtle' };
-const FAILED_STATUS_ICON = { icon: 'status-failed', class: 'gl-text-red-500' };
-const PAUSED_STATUS_ICON = { icon: 'status-paused', class: 'gl-text-orange-500' };
+const RUNNING_STATUS_ICON = { icon: 'status-running', variant: 'info' };
+const SUCCESS_STATUS_ICON = { icon: 'status-success', variant: 'success' };
+const WAITING_STATUS_ICON = { icon: 'status-waiting', variant: 'subtle' };
+const FAILED_STATUS_ICON = { icon: 'status-failed', variant: 'danger' };
+const PAUSED_STATUS_ICON = { icon: 'status-paused', variant: 'warning' };
 
 export const TREE_ITEM_STATUS_ICONS = {
   reconciled: SUCCESS_STATUS_ICON,

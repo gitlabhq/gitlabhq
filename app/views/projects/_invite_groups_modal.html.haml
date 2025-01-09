@@ -1,3 +1,3 @@
 - return unless can_invite_members_for_project?(project)
 
-.js-invite-groups-modal{ data: { reload_page_on_submit: local_assigns.fetch(:reload_page_on_submit, false).to_s }.merge(common_invite_group_modal_data(project, ProjectMember, 'true')) }
+.js-invite-groups-modal{ data: { reload_page_on_submit: local_assigns.fetch(:reload_page_on_submit, false).to_s }.merge(common_invite_group_modal_data(project, ProjectMember)) }

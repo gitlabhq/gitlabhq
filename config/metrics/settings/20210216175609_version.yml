@@ -3,6 +3,8 @@ data_category: optional
 key_path: database.version
 description: The version of the PostgreSQL database.
 product_group: distribution_deploy
+product_categories:
+- build
 value_type: string
 status: active
 time_frame: none
