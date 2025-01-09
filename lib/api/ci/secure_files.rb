@@ -65,7 +65,6 @@ module API
 
         resource do
           before do
-            check_read_only_feature_flag_enabled!
             authorize! :admin_secure_files, user_project
           end
 
@@ -115,10 +114,6 @@ module API
       helpers do
         def check_api_enabled!
           forbidden! unless Gitlab.config.ci_secure_files.enabled
-        end
-
-        def check_read_only_feature_flag_enabled!
-          service_unavailable! if Feature.enabled?(:ci_secure_files_read_only, user_project, type: :ops)
         end
       end
     end

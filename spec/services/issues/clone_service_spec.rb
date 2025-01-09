@@ -51,6 +51,27 @@ RSpec.describe Issues::CloneService, feature_category: :team_planning do
         end
       end
 
+      # We will use this service in order to clone WorkItem to a new project. As WorkItem inherits from Issue, there
+      # should not be any problem with passing a WorkItem instead of an Issue to this service.
+      # Adding a small test case to cover this.
+      context "when we pass a work_item" do
+        include_context 'user can clone issue'
+
+        subject(:clone) { clone_service.execute(original_work_item, new_project) }
+
+        context "work item is of issue type" do
+          let_it_be_with_reload(:original_work_item) { create(:work_item, :issue, project: old_project, author: author) }
+
+          it { expect { clone }.to change { new_project.issues.count }.by(1) }
+        end
+
+        context "work item is of task type" do
+          let_it_be_with_reload(:original_work_item) { create(:work_item, :task, project: old_project, author: author) }
+
+          it { expect { clone }.to raise_error(described_class::CloneError) }
+        end
+      end
+
       context 'generic issue' do
         let!(:new_issue) { clone_service.execute(old_issue, new_project, with_notes: with_notes) }
 

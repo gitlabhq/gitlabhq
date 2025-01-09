@@ -260,13 +260,6 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   });
 
   describe('autosize', () => {
-    it('autosizes the textarea when the value changes', async () => {
-      buildWrapper();
-      await findTextarea().setValue('Lots of newlines\n\n\n\n\n\n\nMore content\n\n\nand newlines');
-      await nextTick();
-      expect(Autosize.update).toHaveBeenCalled();
-    });
-
     it('autosizes the textarea when the value changes from outside the component', async () => {
       buildWrapper();
       wrapper.setProps({ value: 'Lots of newlines\n\n\n\n\n\n\nMore content\n\n\nand newlines' });

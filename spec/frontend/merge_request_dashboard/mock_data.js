@@ -5,6 +5,7 @@ export function createMockMergeRequest(mergeRequest = {}) {
     title: 'Title',
     webUrl: '/',
     draft: false,
+    state: 'opened',
     author: {
       id: 1,
       avatarUrl: '/',

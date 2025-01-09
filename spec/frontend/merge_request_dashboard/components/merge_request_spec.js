@@ -11,6 +11,8 @@ Vue.use(VueApollo);
 describe('Merge request dashboard merge request component', () => {
   let wrapper;
 
+  const findBrokenBadge = () => wrapper.findByTestId('mr-broken-badge');
+
   function createComponent(mergeRequest = {}, newListsEnabled = false) {
     const mockApollo = createMockApollo();
 
@@ -22,6 +24,7 @@ describe('Merge request dashboard merge request component', () => {
       propsData: {
         listId: 'returned_to_you',
         mergeRequest: {
+          state: 'opened',
           reference: '!123456',
           title: 'Merge request title',
           author: {
@@ -116,6 +119,17 @@ describe('Merge request dashboard merge request component', () => {
       createComponent({}, true);
 
       expect(wrapper.findComponent(StatusBadge).exists()).toBe(true);
+    });
+
+    it.each`
+      state       | exists   | test
+      ${'opened'} | ${true}  | ${'renders'}
+      ${'closed'} | ${false} | ${'does not render'}
+      ${'merged'} | ${false} | ${'does not render'}
+    `('$test broken badge when state is $state', ({ state, exists }) => {
+      createComponent({ state }, true);
+
+      expect(findBrokenBadge().exists()).toBe(exists);
     });
   });
 });

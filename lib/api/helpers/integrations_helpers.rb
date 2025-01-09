@@ -193,32 +193,7 @@ module API
           'slack-slash-commands' => ::Integrations::SlackSlashCommands.api_arguments,
           'packagist' => ::Integrations::Packagist.api_arguments,
           'phorge' => ::Integrations::Phorge.api_arguments,
-          'pipelines-email' => [
-            {
-              required: true,
-              name: :recipients,
-              type: String,
-              desc: 'Comma-separated list of recipient email addresses'
-            },
-            {
-              required: false,
-              name: :notify_only_broken_pipelines,
-              type: ::Grape::API::Boolean,
-              desc: 'Notify only broken pipelines'
-            },
-            {
-              required: false,
-              name: :notify_only_default_branch,
-              type: ::Grape::API::Boolean,
-              desc: 'Send notifications only for the default branch'
-            },
-            {
-              required: false,
-              name: :branches_to_be_notified,
-              type: String,
-              desc: 'Branches for which notifications are to be sent'
-            }
-          ],
+          'pipelines-email' => ::Integrations::PipelinesEmail.api_arguments,
           'pivotaltracker' => ::Integrations::Pivotaltracker.api_arguments,
           'pumble' => ::Integrations::Pumble.api_arguments,
           'pushover' => ::Integrations::Pushover.api_arguments,

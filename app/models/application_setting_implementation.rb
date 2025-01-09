@@ -93,6 +93,7 @@ module ApplicationSettingImplementation
         external_pipeline_validation_service_token: nil,
         external_pipeline_validation_service_url: nil,
         failed_login_attempts_unlock_period_in_minutes: nil,
+        fetch_observability_alerts_from_cloud: true,
         first_day_of_week: 0,
         floc_enabled: false,
         gitaly_timeout_default: 55,

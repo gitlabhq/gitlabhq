@@ -95,13 +95,13 @@ export default (elements, issuablePopoverMount = handleIssuablePopoverMount) => 
     const listenerAddedAttr = 'data-popover-listener-added';
 
     elements.forEach((el) => {
-      const { projectPath, groupPath, iid, referenceType, milestone, project } = el.dataset;
+      const { projectPath, groupPath, iid, referenceType, milestone } = el.dataset;
       let { namespacePath } = el.dataset;
       const title = el.dataset.mrTitle || el.title;
       const { innerText } = el;
       namespacePath = namespacePath || groupPath || projectPath;
       const isIssuable = Boolean(namespacePath && title && iid);
-      const isMilestone = Boolean(milestone && project);
+      const isMilestone = Boolean(milestone);
 
       if (!el.getAttribute(listenerAddedAttr) && referenceType && (isIssuable || isMilestone)) {
         el.addEventListener('mouseenter', ({ target }) => {

@@ -84,7 +84,7 @@ exports[`Merge request dashboard merge request component renders template 1`] = 
         </span>
       </div>
       <div
-        class="gl-flex gl-font-bold gl-items-center gl-text-green-600"
+        class="gl-flex gl-font-bold gl-items-center gl-text-success"
       >
         <span>
           +
@@ -94,7 +94,7 @@ exports[`Merge request dashboard merge request component renders template 1`] = 
         </span>
       </div>
       <div
-        class="gl-flex gl-font-bold gl-items-center gl-text-red-500"
+        class="gl-flex gl-font-bold gl-items-center gl-text-danger"
       >
         <span>
           −
@@ -167,6 +167,7 @@ exports[`Merge request dashboard merge request component when newListsEnabled is
     >
       <gl-icon-stub
         class="gl-mt-1"
+        data-testid="mr-broken-badge"
         name="warning-solid"
         size="16"
         title="Cannot be merged automatically"

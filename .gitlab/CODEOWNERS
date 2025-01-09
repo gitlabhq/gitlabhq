@@ -646,10 +646,13 @@ lib/gitlab/checks/**
 /doc/administration/reference_architectures/ @axil
 /doc/administration/reply_by_email.md @lciutacu
 /doc/administration/reply_by_email_postfix_setup.md @axil
-/doc/administration/reporting/ @axil
+/doc/administration/reporting/ @idurham
+/doc/administration/reporting/spamcheck.md @axil
 /doc/administration/repository_checks.md @eread
 /doc/administration/repository_storage_paths.md @eread
 /doc/administration/restart_gitlab.md @axil
+/doc/administration/review_abuse_reports.md @idurham
+/doc/administration/review_spam_logs.md @idurham
 /doc/administration/self_hosted_models/ @jglassman1
 /doc/administration/server_hooks.md @eread
 /doc/administration/settings/account_and_limit_settings.md @brendan777
@@ -965,6 +968,7 @@ lib/gitlab/checks/**
 /doc/development/git_object_deduplication.md @proglottis @toon
 /doc/development/gitaly.md @proglottis @toon
 /doc/development/gitpod_internals.md @gl-dx/eng-prod
+/doc/development/identity_verification.md @gitlab-org/software-supply-chain-security/authorization/approvers
 /doc/development/image_scaling.md @abdwdd @alexpooley
 /doc/development/internal_analytics/ @gitlab-org/analytics-section/product-analytics/engineers/frontend @gitlab-org/analytics-section/analytics-instrumentation/engineers
 /doc/development/internal_analytics/product_analytics.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
@@ -975,14 +979,15 @@ lib/gitlab/checks/**
 /doc/development/observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/omnibus.md @gitlab-org/distribution
 /doc/development/organization/ @abdwdd @alexpooley
-/doc/development/permissions.md @gitlab-org/govern/authorization/approvers
-/doc/development/permissions/ @gitlab-org/govern/authorization/approvers
+/doc/development/permissions.md @gitlab-org/software-supply-chain-security/authorization/approvers
+/doc/development/permissions/ @gitlab-org/software-supply-chain-security/authorization/approvers
 /doc/development/pipelines/ @gl-dx/eng-prod
-/doc/development/policies.md @gitlab-org/govern/authentication/approvers
+/doc/development/policies.md @gitlab-org/software-supply-chain-security/authentication/approvers
 /doc/development/prometheus_metrics.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/search/ @gitlab-org/search-team/migration-maintainers
 /doc/development/sec/ @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/static-analysis
 /doc/development/software_design.md @gl-dx/eng-prod
+/doc/development/spam_protection_and_captcha/ @gitlab-org/software-supply-chain-security/authorization/approvers
 /doc/development/stage_group_observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/tracing.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/downgrade_ee_to_ce/ @axil
@@ -1077,8 +1082,8 @@ lib/gitlab/checks/**
 /doc/user/compliance/license_approval_policies.md @rlehmann1
 /doc/user/compliance/license_scanning_of_cyclonedx_files/ @rdickenson
 /doc/user/crm/ @msedlakjakubowski
-/doc/user/custom_roles.md @rlehmann1
-/doc/user/custom_roles/ @rlehmann1
+/doc/user/custom_roles.md @idurham
+/doc/user/custom_roles/ @idurham
 /doc/user/discussions/ @aqualls
 /doc/user/duo_amazon_q/ @sselhorn
 /doc/user/duo_workflow/ @sselhorn
@@ -1107,6 +1112,8 @@ lib/gitlab/checks/**
 /doc/user/group/issues_analytics/ @lciutacu
 /doc/user/group/iterations/ @msedlakjakubowski
 /doc/user/group/manage.md @emily.sahlani
+/doc/user/group/moderate_users.md @idurham
+/doc/user/group/reporting/ @idurham
 /doc/user/group/repositories_analytics/ @lyspin
 /doc/user/group/roadmap/ @msedlakjakubowski
 /doc/user/group/saml_sso/ @idurham
@@ -1128,7 +1135,7 @@ lib/gitlab/checks/**
 /doc/user/packages/container_registry/ @lyspin
 /doc/user/packages/dependency_proxy/ @lyspin
 /doc/user/packages/harbor_container_registry/ @lyspin
-/doc/user/permissions.md @rlehmann1
+/doc/user/permissions.md @idurham
 /doc/user/profile/account/ @idurham
 /doc/user/profile/account/create_accounts.md @lciutacu
 /doc/user/profile/achievements.md @emily.sahlani
@@ -1204,6 +1211,7 @@ lib/gitlab/checks/**
 /doc/user/project/wiki/ @msedlakjakubowski
 /doc/user/project/working_with_projects.md @emily.sahlani
 /doc/user/public_access.md @emily.sahlani
+/doc/user/report_abuse.md @idurham
 /doc/user/reserved_names.md @emily.sahlani
 /doc/user/rich_text_editor.md @msedlakjakubowski
 /doc/user/search/ @ashrafkhamis

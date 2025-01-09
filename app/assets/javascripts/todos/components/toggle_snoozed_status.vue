@@ -6,6 +6,8 @@ import { s__, sprintf } from '~/locale';
 import { nHoursAfter } from '~/lib/utils/datetime_utility';
 import { reportToSentry } from '~/ci/utils';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
+import Tracking from '~/tracking';
+import { INSTRUMENT_TODO_ITEM_CLICK } from '~/todos/constants';
 import snoozeTodoMutation from './mutations/snooze_todo.mutation.graphql';
 import unSnoozeTodoMutation from './mutations/un_snooze_todo.mutation.graphql';
 
@@ -15,6 +17,7 @@ export default {
     GlDisclosureDropdown,
     GlTooltip,
   },
+  mixins: [Tracking.mixin()],
   inject: ['currentTime'],
   props: {
     todo: {
@@ -62,7 +65,12 @@ export default {
                 day: dateFormat(forAnHour, 'DDDD'),
                 time: toTimeString(forAnHour),
               }),
-              action: () => this.snooze(forAnHour),
+              action: () => {
+                this.track(INSTRUMENT_TODO_ITEM_CLICK, {
+                  label: 'snooze_for_one_hour',
+                });
+                this.snooze(forAnHour);
+              },
             },
             {
               text: s__('Todos|Until later today'),
@@ -70,7 +78,12 @@ export default {
                 day: dateFormat(untilLaterToday, 'DDDD'),
                 time: toTimeString(untilLaterToday),
               }),
-              action: () => this.snooze(untilLaterToday),
+              action: () => {
+                this.track(INSTRUMENT_TODO_ITEM_CLICK, {
+                  label: 'snooze_until_later_today',
+                });
+                this.snooze(untilLaterToday);
+              },
             },
             {
               text: s__('Todos|Until tomorrow'),
@@ -79,6 +92,10 @@ export default {
                 time: toTimeString(untilTomorrow),
               }),
               action: () => {
+                this.track(INSTRUMENT_TODO_ITEM_CLICK, {
+                  label: 'snooze_until_tomorrow',
+                });
+
                 this.snooze(untilTomorrow);
               },
             },
@@ -119,6 +136,9 @@ export default {
       }
     },
     async unSnooze() {
+      this.track(INSTRUMENT_TODO_ITEM_CLICK, {
+        label: 'remove_snooze',
+      });
       try {
         const { data } = await this.$apollo.mutate({
           mutation: unSnoozeTodoMutation,

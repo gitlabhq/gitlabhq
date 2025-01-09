@@ -1,0 +1,7 @@
+Source host,Import type,Source user identifier,Source user name,Source username,GitLab username,GitLab public email
+example.com,github,alice_1,Alice Alison,alice,alice-gl,alice@example.com
+example.com,github,bob_1,Bob Bobson,bob,,bob@example.com
+example.com,github,carl_1,Carl Calson,carl,carl-gl,
+example.com,github,denise_1,Denise Denison,denise,denise-gl,denise@example.com
+example.com,github,eric_1,Eric Ericson,eric,eric-gl,eric@example.com
+example.com,github,frank_1,Secretive Frank,frank,,frank-secret@example.com

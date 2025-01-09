@@ -9,6 +9,7 @@ fragment MergeRequestDashboardFragment on MergeRequest {
   title
   webUrl
   draft
+  state
   author {
     ...User
   }

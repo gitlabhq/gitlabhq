@@ -30,7 +30,7 @@ module Groups::GroupMembersHelper
       can_approve_access_requests: true, # true for CE, overridden in EE
       placeholder: placeholder_users,
       available_roles: available_group_roles(group),
-      reassignment_csv_path: bulk_reassignment_file_group_group_members_path(group)
+      reassignment_csv_path: group_bulk_reassignment_file_path(group)
     }
   end
   # rubocop:enable Metrics/ParameterLists

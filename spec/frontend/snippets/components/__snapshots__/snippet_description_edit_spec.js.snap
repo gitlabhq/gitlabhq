@@ -40,7 +40,7 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
             id="reference-0"
             placeholder="Describe what your snippet does or how to use it…"
             rows="3"
-            style="overflow-x: hidden; word-wrap: break-word; overflow-y: hidden;"
+            style="overflow-x: hidden; word-wrap: break-word;"
           />
           <div
             class="div-dropzone-hover"

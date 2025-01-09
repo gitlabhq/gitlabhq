@@ -14,6 +14,8 @@ module Gitlab
         notifications: Gitlab::Agent::Notifications::Rpc::Notifications::Stub
       }.freeze
 
+      AUTOFLOW_CI_VARIABLE_ENV_SCOPE = 'autoflow/internal-use'
+
       ConfigurationError = Class.new(StandardError)
 
       def initialize
@@ -72,6 +74,9 @@ module Gitlab
         # We only want to send events if AutoFlow is enabled and no-op otherwise
         return unless Feature.enabled?(:autoflow_enabled, project)
 
+        # retrieve all AutoFlow-relevant variables
+        variables = project.variables.by_environment_scope(AUTOFLOW_CI_VARIABLE_ENV_SCOPE)
+
         project_proto = Gitlab::Agent::Event::Project.new(
           id: project.id,
           full_path: project.full_path
@@ -89,7 +94,8 @@ module Gitlab
             },
             text_data: data.to_json
           ),
-          flow_project: project_proto
+          flow_project: project_proto,
+          variables: variables.to_h { |v| [v.key, v.value] }
         )
 
         stub_for(:autoflow)

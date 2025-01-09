@@ -17,6 +17,18 @@ RSpec.describe ::Search::EmptySearchResults, feature_category: :global_search do
     end
   end
 
+  describe '#blobs_count' do
+    it 'returns a zero' do
+      expect(results.blobs_count).to eq(0)
+    end
+  end
+
+  describe '#file_count' do
+    it 'returns a zero' do
+      expect(results.file_count).to eq(0)
+    end
+  end
+
   describe '#highlight_map' do
     it 'returns an empty hash' do
       expect(results.highlight_map).to eq({})

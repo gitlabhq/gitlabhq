@@ -13926,7 +13926,7 @@ msgstr ""
 msgid "Comma-separated list of branches to be automatically inspected. Leave blank to include all branches."
 msgstr ""
 
-msgid "Comma-separated list of email addresses."
+msgid "Comma-separated list of recipient email addresses."
 msgstr ""
 
 msgid "Command"
@@ -17857,16 +17857,28 @@ msgstr ""
 msgid "DastProfiles|/graphql"
 msgstr ""
 
+msgid "DastProfiles|A URL that is compared to the URL in the browser to determine if authentication has succeeded after the login form is submitted."
+msgstr ""
+
 msgid "DastProfiles|A comma-separated list of actions to be run after login but before login verification. Currently supports `click` actions."
 msgstr ""
 
 msgid "DastProfiles|A comma-separated list of selectors representing elements to click on prior to entering the DAST_AUTH_USERNAME and DAST_AUTH_PASSWORD into the login form."
 msgstr ""
 
+msgid "DastProfiles|A cookie name and value to be added to every request."
+msgstr ""
+
 msgid "DastProfiles|A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities."
 msgstr ""
 
 msgid "DastProfiles|A scanner profile defines the configuration details of a security scanner. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "DastProfiles|A selector describing an element whose presence is used to determine if authentication has succeeded after the login form is submitted."
+msgstr ""
+
+msgid "DastProfiles|A selector describing the element that is clicked on to submit the username form of a multi-page login process."
 msgstr ""
 
 msgid "DastProfiles|A site profile defines the attributes and configuration details of your deployed application, website, or API. %{linkStart}Learn more%{linkEnd}."
@@ -17899,7 +17911,13 @@ msgstr ""
 msgid "DastProfiles|Additional variables"
 msgstr ""
 
+msgid "DastProfiles|Advertise scan"
+msgstr ""
+
 msgid "DastProfiles|After-login actions"
+msgstr ""
+
+msgid "DastProfiles|Allowed hosts"
 msgstr ""
 
 msgid "DastProfiles|Are you sure you want to delete this profile?"
@@ -17912,6 +17930,12 @@ msgid "DastProfiles|Authentication"
 msgstr ""
 
 msgid "DastProfiles|Authentication URL"
+msgstr ""
+
+msgid "DastProfiles|Authentication delegation servers"
+msgstr ""
+
+msgid "DastProfiles|Authentication type"
 msgstr ""
 
 msgid "DastProfiles|Before-login actions"
@@ -17929,7 +17953,10 @@ msgstr ""
 msgid "DastProfiles|Clear input fields"
 msgstr ""
 
-msgid "DastProfiles|Comma-separated list of check identifiers to use for the scan. For identifiers, see %{linkStart}vulnerability checks.%{linkEnd}"
+msgid "DastProfiles|Comma-separated list of selectors that are ignored when scanning."
+msgstr ""
+
+msgid "DastProfiles|Cookie names"
 msgstr ""
 
 msgid "DastProfiles|Could not create the scanner profile. Please try again."
@@ -17968,7 +17995,16 @@ msgstr ""
 msgid "DastProfiles|DAST profile library"
 msgstr ""
 
+msgid "DastProfiles|DOM ready timeout"
+msgstr ""
+
+msgid "DastProfiles|DOM stable timeout"
+msgstr ""
+
 msgid "DastProfiles|Debug messages"
+msgstr ""
+
+msgid "DastProfiles|Define how long to wait for updates to the DOM before checking a page is stable. Defaults to `500ms`."
 msgstr ""
 
 msgid "DastProfiles|Delete"
@@ -17992,10 +18028,19 @@ msgstr ""
 msgid "DastProfiles|Edit site profile"
 msgstr ""
 
+msgid "DastProfiles|Element search timeout"
+msgstr ""
+
 msgid "DastProfiles|Enable Authentication"
 msgstr ""
 
 msgid "DastProfiles|Enable Basic Authentication"
+msgstr ""
+
+msgid "DastProfiles|Ensures that the provided paths are always scanned. Set to a comma-separated list of URL paths relative to `DAST_TARGET_URL`."
+msgstr ""
+
+msgid "DastProfiles|Ensures that the provided paths are always scanned. Set to a file path containing a list of URL paths relative to `DAST_TARGET_URL`. The file must be plain text with one path per line."
 msgstr ""
 
 msgid "DastProfiles|Enter URLs in a comma-separated list."
@@ -18013,7 +18058,10 @@ msgstr ""
 msgid "DastProfiles|Excluded URLs (optional)"
 msgstr ""
 
-msgid "DastProfiles|Excluded checks"
+msgid "DastProfiles|Excluded elements"
+msgstr ""
+
+msgid "DastProfiles|Excluded hosts"
 msgstr ""
 
 msgid "DastProfiles|Excluded paths"
@@ -18022,19 +18070,49 @@ msgstr ""
 msgid "DastProfiles|Excluded paths (optional)"
 msgstr ""
 
+msgid "DastProfiles|Extract element timeout"
+msgstr ""
+
 msgid "DastProfiles|Field must not be blank"
+msgstr ""
+
+msgid "DastProfiles|First submit field"
 msgstr ""
 
 msgid "DastProfiles|Hide debug messages"
 msgstr ""
 
+msgid "DastProfiles|Hostnames included in this variable are accessed, not attacked, and not reported against."
+msgstr ""
+
+msgid "DastProfiles|Hostnames included in this variable are considered excluded and connections are forcibly dropped."
+msgstr ""
+
+msgid "DastProfiles|Hostnames included in this variable are considered in scope when crawled. By default the `DAST_TARGET_URL` hostname is included in the allowed hosts list. Headers set using `DAST_REQUEST_HEADERS` are added to every request made to these hostnames."
+msgstr ""
+
+msgid "DastProfiles|Ignored hosts"
+msgstr ""
+
 msgid "DastProfiles|Include debug messages in the DAST console output."
+msgstr ""
+
+msgid "DastProfiles|Loading element"
 msgstr ""
 
 msgid "DastProfiles|Manage %{profileType} profiles"
 msgstr ""
 
 msgid "DastProfiles|Manage profiles"
+msgstr ""
+
+msgid "DastProfiles|Maximum action count"
+msgstr ""
+
+msgid "DastProfiles|Maximum action depth"
+msgstr ""
+
+msgid "DastProfiles|Maximum response size (MB)"
 msgstr ""
 
 msgid "DastProfiles|Minimum = 0 (no timeout enabled), Maximum = 2880 minutes"
@@ -18076,7 +18154,28 @@ msgstr ""
 msgid "DastProfiles|Not Validated"
 msgstr ""
 
+msgid "DastProfiles|Number of workers that passive scan in parallel. Defaults to the number of available CPUs."
+msgstr ""
+
+msgid "DastProfiles|PKCS12 certificate"
+msgstr ""
+
+msgid "DastProfiles|PKCS12 password"
+msgstr ""
+
+msgid "DastProfiles|Page ready timeout"
+msgstr ""
+
+msgid "DastProfiles|Page ready timeout (after action)"
+msgstr ""
+
+msgid "DastProfiles|Page ready timeout (after navigation)"
+msgstr ""
+
 msgid "DastProfiles|Passive"
+msgstr ""
+
+msgid "DastProfiles|Passive scan worker count"
 msgstr ""
 
 msgid "DastProfiles|Password"
@@ -18092,6 +18191,12 @@ msgid "DastProfiles|Profile is being used by this on-demand scan"
 msgstr ""
 
 msgid "DastProfiles|Profile name"
+msgstr ""
+
+msgid "DastProfiles|Ready element"
+msgstr ""
+
+msgid "DastProfiles|Request cookies"
 msgstr ""
 
 msgid "DastProfiles|Request headers"
@@ -18145,6 +18250,24 @@ msgstr ""
 msgid "DastProfiles|Select site profile"
 msgstr ""
 
+msgid "DastProfiles|Selector that when detected as visible on the page, indicates to the analyzer that the page has finished loading and the scan can continue. Cannot be used with `DAST_PAGE_IS_LOADING_ELEMENT`."
+msgstr ""
+
+msgid "DastProfiles|Selector that, when no longer visible on the page, indicates to the analyzer that the page has finished loading and the scan can continue. Cannot be used with `DAST_PAGE_IS_READY_ELEMENT`."
+msgstr ""
+
+msgid "DastProfiles|Set to `false` to disable caching. Default: `true`. **Note:** Disabling cache can cause OOM events or DAST job timeouts."
+msgstr ""
+
+msgid "DastProfiles|Set to `true` to add a `Via` header to every request sent, advertising that the request was sent as part of a GitLab DAST scan. Default: `false`."
+msgstr ""
+
+msgid "DastProfiles|Set to `true` to prevent DAST from checking that the target is available before scanning. Default: `false`."
+msgstr ""
+
+msgid "DastProfiles|Set to a comma-separated list of cookie names to specify which cookies are used for authentication."
+msgstr ""
+
 msgid "DastProfiles|Show debug messages"
 msgstr ""
 
@@ -18160,19 +18283,76 @@ msgstr ""
 msgid "DastProfiles|Site type"
 msgstr ""
 
+msgid "DastProfiles|Skip target check"
+msgstr ""
+
 msgid "DastProfiles|Submit button"
 msgstr ""
 
 msgid "DastProfiles|Submit button (optional)"
 msgstr ""
 
+msgid "DastProfiles|Success URL"
+msgstr ""
+
+msgid "DastProfiles|Success element"
+msgstr ""
+
+msgid "DastProfiles|Success without login form"
+msgstr ""
+
 msgid "DastProfiles|Target URL"
+msgstr ""
+
+msgid "DastProfiles|Target check timeout"
+msgstr ""
+
+msgid "DastProfiles|Target paths"
+msgstr ""
+
+msgid "DastProfiles|Target paths file"
 msgstr ""
 
 msgid "DastProfiles|Target timeout"
 msgstr ""
 
+msgid "DastProfiles|The PKCS12 certificate used for sites that require Mutual TLS. Must be encoded as base64 text."
+msgstr ""
+
+msgid "DastProfiles|The authentication type to use."
+msgstr ""
+
+msgid "DastProfiles|The maximum amount of time to allow the browser to extract newly found elements or navigations. Defaults to `5s`."
+msgstr ""
+
+msgid "DastProfiles|The maximum amount of time to allow the browser to search for new elements or user actions. Defaults to `3s`."
+msgstr ""
+
+msgid "DastProfiles|The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis after a navigation completes. Defaults to `6s`."
+msgstr ""
+
+msgid "DastProfiles|The maximum amount of time to wait for a browser to consider a page loaded and ready for analysis. Defaults to `7s`."
+msgstr ""
+
+msgid "DastProfiles|The maximum amount of time to wait for a browser to navigate from one page to another. Defaults to `15s`."
+msgstr ""
+
+msgid "DastProfiles|The maximum amount of time to wait for an element before determining it is ready for analysis. Defaults to `300ms`."
+msgstr ""
+
 msgid "DastProfiles|The maximum amount of time to wait for the active scan phase of the scan to complete. Defaults to 3h."
+msgstr ""
+
+msgid "DastProfiles|The maximum amount of time to wait for the crawl phase of the scan to complete. Defaults to `24h`."
+msgstr ""
+
+msgid "DastProfiles|The maximum number of actions that the crawler performs. Example actions include selecting a link, or filling out a form. Defaults to `10000`."
+msgstr ""
+
+msgid "DastProfiles|The maximum number of chained actions that the crawler takes. For example, `Click, Form Fill, Click` is a depth of three. Defaults to `10`."
+msgstr ""
+
+msgid "DastProfiles|The maximum number of concurrent browser instances to use. For instance runners on GitLab.com, we recommended a maximum of three. Private runners with more resources may benefit from a higher number, but are likely to produce little benefit after five to seven instances. The default value is dynamic, equal to the number of usable logical CPUs."
 msgstr ""
 
 msgid "DastProfiles|The maximum number of minutes allowed for the crawler to traverse the site."
@@ -18181,7 +18361,13 @@ msgstr ""
 msgid "DastProfiles|The maximum number of seconds allowed for the site under test to respond to a request."
 msgstr ""
 
+msgid "DastProfiles|The maximum size of a HTTP response body. Responses with bodies larger than this are blocked by the browser. Defaults to `10` MB."
+msgstr ""
+
 msgid "DastProfiles|The number of active checks to run in parallel. Defaults to 3."
+msgstr ""
+
+msgid "DastProfiles|The password of the certificate used in `DAST_PKCS12_CERTIFICATE_BASE64`. Create sensitive %{linkStart}custom CI/CI variables%{linkEnd} using the GitLab UI."
 msgstr ""
 
 msgid "DastProfiles|This profile is currently being used in a policy."
@@ -18193,6 +18379,12 @@ msgstr ""
 msgid "DastProfiles|This site profile is currently being used by a policy. To make edits you must remove it from the active policy."
 msgstr ""
 
+msgid "DastProfiles|Time limit in seconds to wait for target availability. Default: `60s`."
+msgstr ""
+
+msgid "DastProfiles|Timeout"
+msgstr ""
+
 msgid "DastProfiles|URL"
 msgstr ""
 
@@ -18200,6 +18392,9 @@ msgid "DastProfiles|URLs to skip during the authenticated scan."
 msgstr ""
 
 msgid "DastProfiles|Update variable"
+msgstr ""
+
+msgid "DastProfiles|Use cache"
 msgstr ""
 
 msgid "DastProfiles|Username"
@@ -18226,10 +18421,19 @@ msgstr ""
 msgid "DastProfiles|Variable"
 msgstr ""
 
+msgid "DastProfiles|Verifies successful authentication by checking for the absence of a login form after the login form has been submitted. This success check is enabled by default."
+msgstr ""
+
 msgid "DastProfiles|Website"
 msgstr ""
 
 msgid "DastProfiles|What does each method do?"
+msgstr ""
+
+msgid "DastProfiles|Which servers should be allowed for integrated authentication and delegation."
+msgstr ""
+
+msgid "DastProfiles|Worker count"
 msgstr ""
 
 msgid "DastProfiles|You can either choose a passive scan or validate the target site from the site profile management page. %{docsLinkStart}Learn more about site validation.%{docsLinkEnd}"
@@ -20353,6 +20557,9 @@ msgid "Disable Two-factor Authentication"
 msgstr ""
 
 msgid "Disable What's new"
+msgstr ""
+
+msgid "Disable fetching cloud alerts if this GitLab instance is isolated from the public internet, or does not use observe.gitlab.com for Observability features."
 msgstr ""
 
 msgid "Disable for this project"
@@ -24032,6 +24239,9 @@ msgid "February"
 msgstr ""
 
 msgid "Fetch and check out this merge request's feature branch:"
+msgstr ""
+
+msgid "Fetch cloud observability alerts"
 msgstr ""
 
 msgid "Fetching incoming email"
@@ -52459,6 +52669,9 @@ msgstr ""
 msgid "Send notifications for broken pipelines."
 msgstr ""
 
+msgid "Send notifications for the default branch."
+msgstr ""
+
 msgid "Send report"
 msgstr ""
 
@@ -61517,6 +61730,9 @@ msgstr ""
 msgid "UserMapping|Source name"
 msgstr ""
 
+msgid "UserMapping|The file is being processed and you will receive an email when completed."
+msgstr ""
+
 msgid "UserMapping|The invitation could not be accepted."
 msgstr ""
 
@@ -61545,6 +61761,9 @@ msgid "UserMapping|You have rejected the reassignment of contributions from %{st
 msgstr ""
 
 msgid "UserMapping|You might have already accepted or rejected the reassignment, or the assignment might have been canceled."
+msgstr ""
+
+msgid "UserMapping|You must upload a CSV file with a .csv file extension."
 msgstr ""
 
 msgid "UserProfile|%{count} %{file}"
@@ -66407,7 +66626,7 @@ msgstr ""
 msgid "cannot assign a linked work item as a parent"
 msgstr ""
 
-msgid "cannot assign a non-confidential work item to a confidential parent. Make the work item confidential and try again."
+msgid "cannot assign a non-confidential %{work_item_type} to a confidential parent. Make the %{work_item_type} confidential and try again."
 msgstr ""
 
 msgid "cannot be a date in the past"

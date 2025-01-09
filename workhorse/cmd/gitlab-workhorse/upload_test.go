@@ -189,6 +189,7 @@ func TestAcceleratedUpload(t *testing.T) {
 		{"POST", "/api/v4/projects/2412/packages/helm/api/stable/charts", true},
 		{"POST", "/api/v4/projects/group%2Fproject/packages/helm/api/stable/charts", true},
 		{"POST", "/api/v4/projects/group%2Fsubgroup%2Fproject/packages/helm/api/stable/charts", true},
+		{"POST", "/groups/my-group/-/group_members/bulk_reassignment_file", true},
 	}
 
 	allowedHashFunctions := map[string][]string{

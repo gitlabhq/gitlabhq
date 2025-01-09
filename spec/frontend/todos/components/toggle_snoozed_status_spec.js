@@ -10,6 +10,7 @@ import unSnoozeTodoMutation from '~/todos/components/mutations/un_snooze_todo.mu
 import waitForPromises from 'helpers/wait_for_promises';
 import { useFakeDate } from 'helpers/fake_date';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { mockTracking, unmockTracking } from 'jest/__helpers__/tracking_helper';
 
 Vue.use(VueApollo);
 
@@ -140,21 +141,26 @@ describe('ToggleSnoozedStatus', () => {
   });
 
   it.each`
-    index | expectedDate
-    ${0}  | ${'2024-12-18T14:24:00.000Z'}
-    ${1}  | ${'2024-12-18T17:24:00.000Z'}
-    ${2}  | ${'2024-12-19T08:00:00.000Z'}
+    index | expectedDate                  | expectedTrackingLabel
+    ${0}  | ${'2024-12-18T14:24:00.000Z'} | ${'snooze_for_one_hour'}
+    ${1}  | ${'2024-12-18T17:24:00.000Z'} | ${'snooze_until_later_today'}
+    ${2}  | ${'2024-12-19T08:00:00.000Z'} | ${'snooze_until_tomorrow'}
   `(
     'triggers the snooze action with snoozeUntil = $expectedDate when clicking option #$index',
-    ({ index, expectedDate }) => {
+    ({ index, expectedDate, expectedTrackingLabel }) => {
       createComponent({ props: { isSnoozed: false, isPending: true } });
-
+      const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
       getPredefinedSnoozingOption(index).action();
 
       expect(snoozeTodoMutationSuccessHandler).toHaveBeenCalledWith({
         snoozeUntil: new Date(expectedDate),
         todoId: mockTodo.id,
       });
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_todo_item_action', {
+        label: expectedTrackingLabel,
+      });
+
+      unmockTracking();
     },
   );
 
@@ -265,13 +271,18 @@ describe('ToggleSnoozedStatus', () => {
         props: { isSnoozed: true, isPending: true },
         unSnoozeTodoMutationHandler: jest.fn().mockRejectedValue(),
       });
-
+      const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
       findUnSnoozeButton().vm.$emit('click');
       await waitForPromises();
 
       expect(mockToastShow).toHaveBeenCalledWith('Failed to un-snooze todo. Try again later.', {
         variant: 'danger',
       });
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_todo_item_action', {
+        label: 'remove_snooze',
+      });
+
+      unmockTracking();
     });
 
     it('has a tooltip attached', () => {

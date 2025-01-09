@@ -64,16 +64,6 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
               it 'returns the full project path' do
                 expect_response_with_path(go, enabled_protocol, project.full_path, url_based: true)
               end
-
-              context 'when feature flag is disabled' do
-                before do
-                  stub_feature_flags(go_get_handle_relative_url: false)
-                end
-
-                it 'returns the full project path' do
-                  expect_response_with_path(go, enabled_protocol, project.full_path, url_based: false)
-                end
-              end
             end
 
             context 'when the project is private' do

@@ -72,6 +72,7 @@ describe('Merge requests app component', () => {
             lists: lists || [
               [
                 {
+                  id: 'assigned',
                   title: 'Assigned merge requests',
                   query: 'assignedMergeRequests',
                   variables: { state: 'opened' },
@@ -120,6 +121,7 @@ describe('Merge requests app component', () => {
         [
           [
             {
+              id: 'assigned',
               title: 'Assigned merge requests',
               query: 'assignedMergeRequests',
               variables: { state: 'opened' },
@@ -140,6 +142,7 @@ describe('Merge requests app component', () => {
         [
           [
             {
+              id: 'assigned',
               title: 'Assigned merge requests',
               query: 'assignedMergeRequests',
               variables: { state: 'opened' },
@@ -147,6 +150,7 @@ describe('Merge requests app component', () => {
           ],
           [
             {
+              id: 'reviewer',
               title: 'Assigned merge requests',
               query: 'assignedMergeRequests',
               variables: { state: 'opened' },

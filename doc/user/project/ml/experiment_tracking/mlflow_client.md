@@ -23,7 +23,7 @@ GitLab plays the role of a MLflow server. Running `mlflow server` is not necessa
 
 Prerequisites:
 
-- A [personal](../../../../user/profile/personal_access_tokens.md), [project](../../../../user/project/settings/project_access_tokens.md), or [group](../../../../user/group/settings/group_access_tokens.md) access token with at least the Developer role and the `api` permission.
+- A [personal](../../../../user/profile/personal_access_tokens.md), [project](../../../../user/project/settings/project_access_tokens.md), or [group](../../../../user/group/settings/group_access_tokens.md) access token with at least the Developer role and the `api` scope.
 - The project ID. To find the project ID:
   1. On the left sidebar, select **Search or go to** and find your project.
   1. Select **Settings > General**.
@@ -46,19 +46,19 @@ by selecting the vertical ellipsis (**{ellipsis_v}**).
 ## Model experiments
 
 When running the training code, MLflow client can be used to create experiments, runs,
-models, model versions, log parameters, metrics, metadata and artifacts on GitLab.
+models, model versions, log parameters, metrics, metadata, and artifacts on GitLab.
 
 After experiments are logged, they are listed under `/<your project>/-/ml/experiments`.
 
-Runs are registered as candidates, which can be explored by selecting an experiment, model, or model version.
+Runs are registered and can be explored by selecting an experiment, model, or model version.
 
-### Associating a candidate to a CI/CD job
+### Associating a run to a CI/CD job
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119454) in GitLab 16.1.
 > - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/9423) to beta in GitLab 17.1.
 
 If your training code is being run from a CI/CD job, GitLab can use that information to enhance
-candidate metadata. To associate a candidate to a CI/CD job:
+run metadata. To associate a run to a CI/CD job:
 
 1. In the [Project CI variables](../../../../ci/variables/index.md), include the following variables:
    - `MLFLOW_TRACKING_URI`: `"<your gitlab endpoint>/api/v4/projects/<your project id>/ml/mlflow"`
@@ -70,7 +70,7 @@ candidate metadata. To associate a candidate to a CI/CD job:
    import os
    import mlflow
 
-   with mlflow.start_run(run_name=f"Candidate {index}"):
+   with mlflow.start_run(run_name=f"Run {index}"):
      # Your training code
 
      # Start of snippet to be included
@@ -137,7 +137,7 @@ client.delete_registered_model(model_name)
 ### Logging candidates to a model
 
 Every model has an associated experiment with the same name prefixed by `[model]`.
-To log a candidate/run to the model, use the experiment passing the correct name:
+To log a run to the model, use the experiment passing the correct name:
 
 ```python
 from mlflow import MlflowClient
@@ -177,7 +177,7 @@ client.create_model_version(model_name, version, description=description, tags=t
 
 **Notes**
 
-- Argument `run_id` is ignored. Every model version behaves as a Candidate/Run. Creating a mode version from a run is not yet supported.
+- Argument `run_id` is ignored. Every model version behaves as a run. Creating a mode version from a run is not yet supported.
 - Argument `source` is ignored. GitLab will create a package location for the model version files.
 - Argument `run_link` is ignored.
 - Argument `await_creation_for` is ignored.
@@ -240,7 +240,7 @@ model = mlflow.pyfunc.load_model(f"models:/{model_name}/latest")
 
 #### Logging metrics and parameters to a model version
 
-Every model version is also a candidate/run, allowing users to log parameters
+Every model version is also a run, allowing users to log parameters
 and metrics. The run ID can either be found at the Model version page in GitLab,
 or by using the MLflow client:
 
@@ -285,7 +285,7 @@ Artifacts will then be available under `https/<your project>/-/ml/models/<model_
 
 #### Linking a model version to a CI/CD job
 
-Similar to candidates, it is also possible to link a model version to a CI/CD job:
+Similar to runs, it is also possible to link a model version to a CI/CD job:
 
 ```python
 import os
@@ -318,7 +318,7 @@ of the methods below are also supported with the same caveats.
 | `set_experiment`         | Yes             | 15.11         |                                                                                              |
 | `get_run`                | Yes             | 15.11         |                                                                                              |
 | `delete_run`             | Yes             | 17.5          |                                                                                              |
-| `start_run`              | Yes             | 15.11         | (16.3) If a name is not provided, the candidate receives a random nickname.                  |
+| `start_run`              | Yes             | 15.11         | (16.3) If a name is not provided, the run receives a random nickname.                        |
 | `search_runs`            | Yes             | 15.11         | (16.4) `experiment_ids` supports only a single experiment ID with order by column or metric. |
 | `log_artifact`           | Yes with caveat | 15.11         | (15.11) `artifact_path` must be empty. Does not support directories.                         |
 | `log_artifacts`          | Yes with caveat | 15.11         | (15.11) `artifact_path` must be empty. Does not support directories.                         |

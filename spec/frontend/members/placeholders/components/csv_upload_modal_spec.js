@@ -3,7 +3,11 @@ import MockAdapter from 'axios-mock-adapter';
 import { GlModal } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_OK,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_UNPROCESSABLE_ENTITY,
+} from '~/lib/utils/http_status';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CsvUploadModal from '~/members/placeholders/components/csv_upload_modal.vue';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
@@ -106,14 +110,45 @@ describe('CsvUploadModal', () => {
         expect(axios.post).toHaveBeenCalledWith(MOCK_REASSIGNMENT_CSV_PATH, expectedFormData);
       });
 
-      describe('when the request fails', () => {
-        beforeEach(() => {
+      describe('when the request succeeds', () => {
+        it('displays the message from the response', async () => {
+          const mockMessage = 'file is being processed';
+
           mockAxios
             .onPost(MOCK_REASSIGNMENT_CSV_PATH)
-            .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, { error: new Error('error uploading CSV') });
+            .reply(HTTP_STATUS_OK, { message: mockMessage });
+
+          findGlModal().vm.$emit('primary');
+          await waitForPromises();
+
+          expect(createAlert).toHaveBeenCalledWith({
+            message: mockMessage,
+            variant: 'success',
+          });
+        });
+      });
+
+      describe('when the request fails', () => {
+        it('displays the message from the response if present', async () => {
+          const mockMessage = 'file too large';
+
+          mockAxios
+            .onPost(MOCK_REASSIGNMENT_CSV_PATH)
+            .reply(HTTP_STATUS_UNPROCESSABLE_ENTITY, { message: mockMessage });
+
+          findGlModal().vm.$emit('primary');
+          await waitForPromises();
+
+          expect(createAlert).toHaveBeenCalledWith({
+            message: mockMessage,
+          });
         });
 
         it('display an alert error message', async () => {
+          mockAxios
+            .onPost(MOCK_REASSIGNMENT_CSV_PATH)
+            .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR, { error: new Error('error uploading CSV') });
+
           findGlModal().vm.$emit('primary');
           await waitForPromises();
 

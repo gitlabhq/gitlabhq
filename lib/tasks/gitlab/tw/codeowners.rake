@@ -25,9 +25,8 @@ namespace :tw do
       CodeOwnerRule.new('AI Framework', '@sselhorn'),
       # CodeOwnerRule.new('AI Model Validation', ''),
       # CodeOwnerRule.new('Analytics Instrumentation', ''),
-      # CodeOwnerRule.new('Anti-Abuse', ''),
       CodeOwnerRule.new('Authentication', '@idurham'),
-      CodeOwnerRule.new('Authorization', '@rlehmann1'),
+      CodeOwnerRule.new('Authorization', '@idurham'),
       CodeOwnerRule.new('Cloud Connector', '@jglassman1'),
       CodeOwnerRule.new('Code Creation', '@jglassman1'),
       CodeOwnerRule.new('Code Review', '@aqualls'),
@@ -96,8 +95,8 @@ namespace :tw do
       CodeOwnerRule.new('Analytics Instrumentation',
         '@gitlab-org/analytics-section/product-analytics/engineers/frontend ' \
         '@gitlab-org/analytics-section/analytics-instrumentation/engineers'),
-      CodeOwnerRule.new('Authentication', '@gitlab-org/govern/authentication/approvers'),
-      CodeOwnerRule.new('Authorization', '@gitlab-org/govern/authorization/approvers'),
+      CodeOwnerRule.new('Authentication', '@gitlab-org/software-supply-chain-security/authentication/approvers'),
+      CodeOwnerRule.new('Authorization', '@gitlab-org/software-supply-chain-security/authorization/approvers'),
       CodeOwnerRule.new('Compliance',
         '@gitlab-org/govern/security-policies-frontend @gitlab-org/govern/threat-insights-frontend-team ' \
         '@gitlab-org/govern/threat-insights-backend-team'),

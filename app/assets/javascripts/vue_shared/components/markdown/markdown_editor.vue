@@ -251,7 +251,6 @@ export default {
       this.$emit('input', target.value);
 
       this.saveDraft();
-      this.autosizeTextarea();
     },
     renderMarkdown(markdown) {
       const url = setUrlParams(

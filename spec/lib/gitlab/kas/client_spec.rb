@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Kas::Client do
+RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:agent) { create(:cluster_agent, project: project) }
 
@@ -146,6 +146,9 @@ RSpec.describe Gitlab::Kas::Client do
       end
 
       context 'when autoflow_enabled FF is enabled' do
+        let_it_be(:autoflow_var1) { create(:ci_variable, project: project, key: 'test_key_1', value: 'test-value-1', environment_scope: 'autoflow/internal-use') }
+        let_it_be(:autoflow_var2) { create(:ci_variable, project: project, key: 'test_key_2', value: 'test-value-2', environment_scope: 'autoflow/internal-use') }
+        let_it_be(:other_var) { create(:ci_variable, project: project, key: 'test_key_3', value: 'test-value-3') }
         let(:stub) { instance_double(Gitlab::Agent::AutoFlow::Rpc::AutoFlow::Stub) }
         let(:request) { instance_double(Gitlab::Agent::AutoFlow::Rpc::CloudEventRequest) }
         let(:event_param) { instance_double(Gitlab::Agent::Event::CloudEvent) }
@@ -175,7 +178,14 @@ RSpec.describe Gitlab::Kas::Client do
             .and_return(event_param)
 
           expect(Gitlab::Agent::AutoFlow::Rpc::CloudEventRequest).to receive(:new)
-            .with(event: event_param, flow_project: project_param)
+            .with(
+              event: event_param,
+              flow_project: project_param,
+              variables: {
+                "test_key_1" => "test-value-1",
+                "test_key_2" => "test-value-2"
+              }
+            )
             .and_return(request)
 
           expect(stub).to receive(:cloud_event)

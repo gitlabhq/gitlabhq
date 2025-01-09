@@ -32488,10 +32488,6 @@ Returns [`ProjectDataTransfer`](#projectdatatransfer).
 
 Software dependencies used by the project.
 
-DETAILS:
-**Introduced** in GitLab 15.9.
-**Status**: Experiment.
-
 Returns [`DependencyConnection`](#dependencyconnection).
 
 This field returns a [connection](#connections). It accepts the
@@ -35198,6 +35194,7 @@ JSON structure of a file with matches.
 | <a id="searchblobfiletypeblameurl"></a>`blameUrl` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Blame URL of the file. |
 | <a id="searchblobfiletypechunks"></a>`chunks` **{warning-solid}** | [`[SearchBlobChunk!]`](#searchblobchunk) | **Introduced** in GitLab 17.2. **Status**: Experiment. Maximum matches per file. |
 | <a id="searchblobfiletypefileurl"></a>`fileUrl` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. URL of the file. |
+| <a id="searchblobfiletypelanguage"></a>`language` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Language of the file. |
 | <a id="searchblobfiletypematchcount"></a>`matchCount` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Matches per file up to a max of 50 chunks. Default is 3. |
 | <a id="searchblobfiletypematchcounttotal"></a>`matchCountTotal` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Total number of matches per file. |
 | <a id="searchblobfiletypepath"></a>`path` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Path of the file. |
@@ -35211,6 +35208,7 @@ JSON structure of each line in a matched chunk.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="searchbloblinehighlights"></a>`highlights` **{warning-solid}** | [`[[Int!]!]`](#int) | **Introduced** in GitLab 17.8. **Status**: Experiment. Column numbers of the first and last highlighted characters on a line. |
 | <a id="searchbloblinelinenumber"></a>`lineNumber` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Line number of the blob. |
 | <a id="searchbloblinerichtext"></a>`richText` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Rich text of the blob. |
 | <a id="searchbloblinetext"></a>`text` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Text content of the blob. |

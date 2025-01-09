@@ -66,14 +66,14 @@ export default {
         <span class="gl-font-bold gl-text-subtle">{{ diffsCount }} {{ filesText }}</span>
       </div>
       <div
-        class="diff-stats-group gl-flex gl-items-center gl-text-green-600"
+        class="diff-stats-group gl-flex gl-items-center gl-text-success"
         :class="{ 'gl-font-bold': isCompareVersionsHeader }"
       >
         <span>+</span>
         <span data-testid="js-file-addition-line">{{ addedLines }}</span>
       </div>
       <div
-        class="diff-stats-group gl-flex gl-items-center gl-text-red-500"
+        class="diff-stats-group gl-flex gl-items-center gl-text-danger"
         :class="{ 'gl-font-bold': isCompareVersionsHeader }"
       >
         <span>−</span>

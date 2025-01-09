@@ -48,9 +48,9 @@
       pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS,
       required: true,
       title: _('Please create a username with only alphanumeric characters.')
-    %p.validation-error.gl-text-red-500.gl-field-error-ignore.gl-mt-2.field-validation.hide
+    %p.validation-error.gl-text-danger.gl-field-error-ignore.gl-mt-2.field-validation.hide
       = _('Username is already taken.')
-    %p.validation-success.gl-text-green-600.gl-field-error-ignore.gl-mt-2.field-validation.hide
+    %p.validation-success.gl-text-success.gl-field-error-ignore.gl-mt-2.field-validation.hide
       = _('Username is available.')
     %p.validation-pending.gl-field-error-ignore.gl-mt-2.field-validation.hide
       = _('Checking username availability...')

@@ -72,10 +72,11 @@ export default {
     },
     isMergeRequestBroken() {
       return (
-        this.mergeRequest.commitCount === 0 ||
-        !this.mergeRequest.sourceBranchExists ||
-        !this.mergeRequest.targetBranchExists ||
-        this.mergeRequest.conflicts
+        this.mergeRequest.state === 'opened' &&
+        (this.mergeRequest.commitCount === 0 ||
+          !this.mergeRequest.sourceBranchExists ||
+          !this.mergeRequest.targetBranchExists ||
+          this.mergeRequest.conflicts)
       );
     },
   },
@@ -177,6 +178,7 @@ export default {
           name="warning-solid"
           variant="subtle"
           class="gl-mt-1"
+          data-testid="mr-broken-badge"
         />
         <discussions-badge
           v-if="mergeRequest.resolvableDiscussionsCount"
@@ -204,11 +206,11 @@ export default {
           <gl-icon name="doc-code" />
           <span>{{ mergeRequest.diffStatsSummary.fileCount }}</span>
         </div>
-        <div class="gl-flex gl-items-center gl-font-bold gl-text-green-600">
+        <div class="gl-flex gl-items-center gl-font-bold gl-text-success">
           <span>+</span>
           <span>{{ mergeRequest.diffStatsSummary.additions }}</span>
         </div>
-        <div class="gl-flex gl-items-center gl-font-bold gl-text-red-500">
+        <div class="gl-flex gl-items-center gl-font-bold gl-text-danger">
           <span>−</span>
           <span>{{ mergeRequest.diffStatsSummary.deletions }}</span>
         </div>

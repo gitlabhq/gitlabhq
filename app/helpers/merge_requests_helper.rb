@@ -262,7 +262,6 @@ module MergeRequestsHelper
       is_signed_in: current_user.present?.to_s,
       show_export_button: "true",
       issuable_type: :merge_request,
-      issuable_count: issuables_count_for_state(:merge_request, params[:state]),
       email: current_user.present? ? current_user.notification_email_or_default : nil,
       rss_url: url_for(safe_params.merge(rss_url_options)),
       emails_help_page_path: help_page_path('development/emails.md', anchor: 'email-namespace'),
