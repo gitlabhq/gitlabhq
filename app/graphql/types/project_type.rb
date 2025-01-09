@@ -779,6 +779,10 @@ module Types
       connection: true,
       description: "List of the project's Pages Deployments."
 
+    field :allowed_custom_statuses, Types::WorkItems::Widgets::CustomStatusType.connection_type,
+      null: true, description: 'Allowed custom statuses for the project.',
+      experiment: { milestone: '17.8' }, resolver: Resolvers::WorkItems::Widgets::CustomStatusResolver
+
     def protectable_branches
       ProtectableDropdown.new(project, :branches).protectable_ref_names
     end

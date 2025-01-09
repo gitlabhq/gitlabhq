@@ -30,6 +30,7 @@ RSpec.describe Types::WorkItems::WidgetInterface, feature_category: :team_planni
     WorkItems::Widgets::Designs           | Types::WorkItems::Widgets::DesignsType
     WorkItems::Widgets::CrmContacts       | Types::WorkItems::Widgets::CrmContactsType
     WorkItems::Widgets::EmailParticipants | Types::WorkItems::Widgets::EmailParticipantsType
+    WorkItems::Widgets::CustomStatus      | Types::WorkItems::Widgets::CustomStatusType
   end
 
   with_them do

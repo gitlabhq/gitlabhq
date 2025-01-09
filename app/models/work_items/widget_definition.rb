@@ -41,7 +41,8 @@ module WorkItems
       designs: 22,
       development: 23,
       crm_contacts: 24,
-      email_participants: 25
+      email_participants: 25,
+      custom_status: 26
     }
 
     attribute :widget_options, ::Gitlab::Database::Type::IndifferentJsonb.new

@@ -18240,6 +18240,29 @@ The edge type for [`WorkItemType`](#workitemtype).
 | <a id="workitemtypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="workitemtypeedgenode"></a>`node` | [`WorkItemType`](#workitemtype) | The item at the end of the edge. |
 
+#### `WorkItemWidgetCustomStatusConnection`
+
+The connection type for [`WorkItemWidgetCustomStatus`](#workitemwidgetcustomstatus).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetcustomstatusconnectionedges"></a>`edges` | [`[WorkItemWidgetCustomStatusEdge]`](#workitemwidgetcustomstatusedge) | A list of edges. |
+| <a id="workitemwidgetcustomstatusconnectionnodes"></a>`nodes` | [`[WorkItemWidgetCustomStatus]`](#workitemwidgetcustomstatus) | A list of nodes. |
+| <a id="workitemwidgetcustomstatusconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `WorkItemWidgetCustomStatusEdge`
+
+The edge type for [`WorkItemWidgetCustomStatus`](#workitemwidgetcustomstatus).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetcustomstatusedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="workitemwidgetcustomstatusedgenode"></a>`node` | [`WorkItemWidgetCustomStatus`](#workitemwidgetcustomstatus) | The item at the end of the edge. |
+
 #### `WorkspaceConnection`
 
 The connection type for [`Workspace`](#workspace).
@@ -24958,6 +24981,7 @@ GPG signature for a signed commit.
 | <a id="groupadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
 | <a id="groupaiusagedata"></a>`aiUsageData` **{warning-solid}** | [`AiUsageData`](#aiusagedata) | **Introduced** in GitLab 17.5. **Status**: Experiment. AI-related data. |
 | <a id="groupallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean!`](#boolean) | Indicates whether to regularly prune stale group runners. Defaults to false. |
+| <a id="groupallowedcustomstatuses"></a>`allowedCustomStatuses` **{warning-solid}** | [`WorkItemWidgetCustomStatusConnection`](#workitemwidgetcustomstatusconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. Allowed custom statuses for the group. |
 | <a id="groupamazons3configurations"></a>`amazonS3Configurations` | [`AmazonS3ConfigurationTypeConnection`](#amazons3configurationtypeconnection) | Amazon S3 configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
 | <a id="groupautodevopsenabled"></a>`autoDevopsEnabled` | [`Boolean`](#boolean) | Indicates whether Auto DevOps is enabled for all projects within this group. |
 | <a id="groupavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
@@ -30120,6 +30144,7 @@ Product analytics events for a specific month and year.
 | <a id="namespaceactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for repositories in the namespace in bytes. This limit only applies to namespaces under Project limit enforcement. |
 | <a id="namespaceactualsizelimit"></a>`actualSizeLimit` | [`Float`](#float) | The actual storage size limit (in bytes) based on the enforcement type of either repository or namespace. This limit is agnostic of enforcement type. |
 | <a id="namespaceadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
+| <a id="namespaceallowedcustomstatuses"></a>`allowedCustomStatuses` **{warning-solid}** | [`WorkItemWidgetCustomStatusConnection`](#workitemwidgetcustomstatusconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. Allowed custom statuses for the namespace. |
 | <a id="namespacecontainslockedprojects"></a>`containsLockedProjects` | [`Boolean`](#boolean) | Includes at least one project where the repository size exceeds the limit. This only applies to namespaces under Project limit enforcement. |
 | <a id="namespacecrossprojectpipelineavailable"></a>`crossProjectPipelineAvailable` | [`Boolean!`](#boolean) | Indicates if the cross_project_pipeline feature is available for the namespace. |
 | <a id="namespacedescription"></a>`description` | [`String`](#string) | Description of the namespace. |
@@ -31843,6 +31868,7 @@ Project-level settings for product analytics provider.
 | <a id="projectaiagents"></a>`aiAgents` **{warning-solid}** | [`AiAgentConnection`](#aiagentconnection) | **Introduced** in GitLab 16.9. **Status**: Experiment. Ai Agents for the project. |
 | <a id="projectaiusagedata"></a>`aiUsageData` **{warning-solid}** | [`AiUsageData`](#aiusagedata) | **Introduced** in GitLab 17.5. **Status**: Experiment. AI-related data. |
 | <a id="projectallowmergeonskippedpipeline"></a>`allowMergeOnSkippedPipeline` | [`Boolean`](#boolean) | If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge requests of the project can also be merged with skipped jobs. |
+| <a id="projectallowedcustomstatuses"></a>`allowedCustomStatuses` **{warning-solid}** | [`WorkItemWidgetCustomStatusConnection`](#workitemwidgetcustomstatusconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. Allowed custom statuses for the project. |
 | <a id="projectallowsmultiplemergerequestassignees"></a>`allowsMultipleMergeRequestAssignees` | [`Boolean!`](#boolean) | Project allows assigning multiple users to a merge request. |
 | <a id="projectallowsmultiplemergerequestreviewers"></a>`allowsMultipleMergeRequestReviewers` | [`Boolean!`](#boolean) | Project allows assigning multiple reviewers to a merge request. |
 | <a id="projectapifuzzingciconfiguration"></a>`apiFuzzingCiConfiguration` | [`ApiFuzzingCiConfiguration`](#apifuzzingciconfiguration) | API fuzzing configuration for the project. |
@@ -37934,6 +37960,19 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetcurrentusertodoscurrentusertodosstate"></a>`state` | [`TodoStateEnum`](#todostateenum) | State of the to-do items. |
 
+### `WorkItemWidgetCustomStatus`
+
+Represents Custom Status widget.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetcustomstatusiconname"></a>`iconName` | [`String`](#string) | Icon name of the Custom Status. |
+| <a id="workitemwidgetcustomstatusid"></a>`id` | [`WorkItemsWidgetsCustomStatusID!`](#workitemswidgetscustomstatusid) | ID of the Custom Status. |
+| <a id="workitemwidgetcustomstatusname"></a>`name` | [`String`](#string) | Name of the Custom Status. |
+| <a id="workitemwidgetcustomstatustype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
 ### `WorkItemWidgetDefinitionAssignees`
 
 Represents an assignees widget definition.
@@ -37945,6 +37984,17 @@ Represents an assignees widget definition.
 | <a id="workitemwidgetdefinitionassigneesallowsmultipleassignees"></a>`allowsMultipleAssignees` | [`Boolean!`](#boolean) | Indicates whether multiple assignees are allowed. |
 | <a id="workitemwidgetdefinitionassigneescaninvitemembers"></a>`canInviteMembers` | [`Boolean!`](#boolean) | Indicates whether the current user can invite members to the work item's parent. |
 | <a id="workitemwidgetdefinitionassigneestype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
+
+### `WorkItemWidgetDefinitionCustomStatus`
+
+Represents an Custom Status widget definition.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetdefinitioncustomstatusallowedcustomstatuses"></a>`allowedCustomStatuses` **{warning-solid}** | [`WorkItemWidgetCustomStatusConnection`](#workitemwidgetcustomstatusconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. Allowed custom statuses for the work item type. |
+| <a id="workitemwidgetdefinitioncustomstatustype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetDefinitionGeneric`
 
@@ -41976,6 +42026,7 @@ Type of a work item widget.
 | <a id="workitemwidgettypecolor"></a>`COLOR` | Color widget. |
 | <a id="workitemwidgettypecrm_contacts"></a>`CRM_CONTACTS` | Crm Contacts widget. |
 | <a id="workitemwidgettypecurrent_user_todos"></a>`CURRENT_USER_TODOS` | Current User Todos widget. |
+| <a id="workitemwidgettypecustom_status"></a>`CUSTOM_STATUS` | Custom Status widget. |
 | <a id="workitemwidgettypedescription"></a>`DESCRIPTION` | Description widget. |
 | <a id="workitemwidgettypedesigns"></a>`DESIGNS` | Designs widget. |
 | <a id="workitemwidgettypedevelopment"></a>`DEVELOPMENT` | Development widget. |
@@ -43129,6 +43180,12 @@ An example `WorkItemsRelatedWorkItemLinkID` is: `"gid://gitlab/WorkItems::Relate
 A `WorkItemsTypeID` is a global ID. It is encoded as a string.
 
 An example `WorkItemsTypeID` is: `"gid://gitlab/WorkItems::Type/1"`.
+
+### `WorkItemsWidgetsCustomStatusID`
+
+A `WorkItemsWidgetsCustomStatusID` is a global ID. It is encoded as a string.
+
+An example `WorkItemsWidgetsCustomStatusID` is: `"gid://gitlab/WorkItems::Widgets::CustomStatus/1"`.
 
 ## Abstract types
 
@@ -44294,6 +44351,7 @@ Implementations:
 - [`WorkItemWidgetColor`](#workitemwidgetcolor)
 - [`WorkItemWidgetCrmContacts`](#workitemwidgetcrmcontacts)
 - [`WorkItemWidgetCurrentUserTodos`](#workitemwidgetcurrentusertodos)
+- [`WorkItemWidgetCustomStatus`](#workitemwidgetcustomstatus)
 - [`WorkItemWidgetDescription`](#workitemwidgetdescription)
 - [`WorkItemWidgetDesigns`](#workitemwidgetdesigns)
 - [`WorkItemWidgetDevelopment`](#workitemwidgetdevelopment)
@@ -44326,6 +44384,7 @@ Implementations:
 Implementations:
 
 - [`WorkItemWidgetDefinitionAssignees`](#workitemwidgetdefinitionassignees)
+- [`WorkItemWidgetDefinitionCustomStatus`](#workitemwidgetdefinitioncustomstatus)
 - [`WorkItemWidgetDefinitionGeneric`](#workitemwidgetdefinitiongeneric)
 - [`WorkItemWidgetDefinitionHierarchy`](#workitemwidgetdefinitionhierarchy)
 - [`WorkItemWidgetDefinitionLabels`](#workitemwidgetdefinitionlabels)

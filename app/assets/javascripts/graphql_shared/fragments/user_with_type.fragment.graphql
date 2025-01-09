@@ -1,0 +1,6 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
+fragment UserWithType on User {
+  ...User
+  type
+}

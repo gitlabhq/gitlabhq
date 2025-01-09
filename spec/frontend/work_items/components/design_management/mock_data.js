@@ -245,26 +245,16 @@ export const allDesignsArchivedResponse = () => ({
 
 export const getDesignResponse = {
   data: {
-    project: {
-      id: 'gid://gitlab/Project/1',
-      workItems: {
-        nodes: [
-          {
-            id: 'gid://gitlab/WorkItem/1',
-            title: 'Work item 1',
-            widgets: [
-              {
-                __typename: 'WorkItemWidgetDesigns',
-                type: 'DESIGNS',
-                designCollection: {
-                  designs: { nodes: [mockDesign] },
-                  versions: { nodes: mockAllVersions },
-                },
-              },
-            ],
-          },
-        ],
+    designManagement: {
+      designAtVersion: {
+        id: 'gid://gitlab/DesignManagement::DesignAtVersion/1',
+        event: 'NONE',
+        image: 'raw_image_1',
+        imageV432x230: 'resized_image_v432x230_1',
+        design: mockDesign,
+        version: mockAllVersions[0],
       },
+      __typename: 'DesignManagement',
     },
   },
 };
@@ -279,82 +269,6 @@ export const mockUpdateDesignDescriptionResponse = (options) => {
       __typename: 'DesignManagementUpdatePayload',
     },
   };
-};
-
-export const getLocalDesignResponse = {
-  data: {
-    localDesign: {
-      id: 'gid://gitlab/DesignManagement::Design/33',
-      event: 'NONE',
-      filename: 'Screenshot_from_2024-03-28_10-24-43.png',
-      notesCount: 0,
-      description: 'Description test',
-      descriptionHtml: '<p>Description test</p>',
-      image: 'raw_image_1',
-      imageV432x230: 'resized_image_v432x230_1',
-      fullPath: 'designs/issue-2/Screenshot_from_2024-03-28_10-24-43.png',
-      currentUserTodos: {
-        nodes: [],
-        __typename: 'TodoConnection',
-      },
-      discussions: {
-        nodes: [
-          {
-            id: 'discussion-id',
-            replyId: 'discussion-reply-id',
-            resolved: false,
-            notes: {
-              nodes: [],
-              __typename: 'NoteConnection',
-            },
-          },
-          {
-            id: 'discussion-resolved',
-            replyId: 'discussion-reply-resolved',
-            resolved: true,
-            notes: {
-              nodes: [],
-              __typename: 'NoteConnection',
-            },
-          },
-        ],
-        __typename: 'DiscussionConnection',
-      },
-      diffRefs: {
-        baseSha: 'f63ae53ed82d8765477c191383e1e6a000c10375',
-        startSha: 'f63ae53ed82d8765477c191383e1e6a000c10375',
-        headSha: 'f348c652f1a737151fc79047895e695fbe81464c',
-        __typename: 'DiffRefs',
-      },
-      issue: {
-        id: 'gid:/gitlab/Issue/1',
-        title: 'My precious issue',
-        webPath: 'full-issue-path',
-        webUrl: 'full-issue-url',
-        participants: {
-          nodes: [
-            {
-              name: 'Administrator',
-              id: 'gid://gitlab/User/1"',
-              username: 'root',
-              webUrl: 'link-to-author',
-              webPath: '/root',
-              avatarUrl: 'link-to-avatar',
-              __typename: 'UserCore',
-            },
-          ],
-          __typename: 'UserCoreConnection',
-        },
-        userPermissions: {
-          createDesign: true,
-          updateDesign: true,
-          __typename: 'IssuePermissions',
-        },
-        __typename: 'Issue',
-      },
-      __typename: 'Design',
-    },
-  },
 };
 
 export const mockNoteSubmitSuccessMutationResponse = {

@@ -1408,6 +1408,37 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       end
     end
 
+    describe 'custom status widget' do
+      let_it_be(:task_work_item) { create(:work_item, :task, project: project) }
+      let_it_be(:global_id) { task_work_item.to_global_id }
+      let(:work_item_fields) do
+        <<~GRAPHQL
+          id
+          widgets {
+            type
+            ... on WorkItemWidgetCustomStatus {
+              id
+              name
+              iconName
+            }
+          }
+        GRAPHQL
+      end
+
+      it 'returns mock custom status data' do
+        expect(work_item_data).to include(
+          'widgets' => array_including(
+            hash_including(
+              'type' => 'CUSTOM_STATUS',
+              'id' => 'gid://gitlab/WorkItems::Widgets::CustomStatus/10',
+              'name' => 'Custom Status',
+              'iconName' => 'custom_status icon'
+            )
+          )
+        )
+      end
+    end
+
     context 'when an Issue Global ID is provided' do
       let(:global_id) { Issue.find(work_item.id).to_gid.to_s }
 

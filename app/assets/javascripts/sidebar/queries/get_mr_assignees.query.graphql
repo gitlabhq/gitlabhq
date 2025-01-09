@@ -1,4 +1,4 @@
-#import "~/graphql_shared/fragments/user.fragment.graphql"
+#import "~/graphql_shared/fragments/user_with_type.fragment.graphql"
 #import "~/graphql_shared/fragments/user_availability.fragment.graphql"
 
 query getMrAssignees($fullPath: ID!, $iid: String!) {
@@ -7,7 +7,7 @@ query getMrAssignees($fullPath: ID!, $iid: String!) {
     issuable: mergeRequest(iid: $iid) {
       id
       author {
-        ...User
+        ...UserWithType
         ...UserAvailability
         mergeRequestInteraction {
           canMerge
@@ -15,7 +15,7 @@ query getMrAssignees($fullPath: ID!, $iid: String!) {
       }
       assignees {
         nodes {
-          ...User
+          ...UserWithType
           ...UserAvailability
           mergeRequestInteraction {
             canMerge

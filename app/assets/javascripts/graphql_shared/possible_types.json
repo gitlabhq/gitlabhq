@@ -257,6 +257,7 @@
     "WorkItemWidgetColor",
     "WorkItemWidgetCrmContacts",
     "WorkItemWidgetCurrentUserTodos",
+    "WorkItemWidgetCustomStatus",
     "WorkItemWidgetDescription",
     "WorkItemWidgetDesigns",
     "WorkItemWidgetDevelopment",
@@ -280,6 +281,7 @@
   ],
   "WorkItemWidgetDefinition": [
     "WorkItemWidgetDefinitionAssignees",
+    "WorkItemWidgetDefinitionCustomStatus",
     "WorkItemWidgetDefinitionGeneric",
     "WorkItemWidgetDefinitionHierarchy",
     "WorkItemWidgetDefinitionLabels",

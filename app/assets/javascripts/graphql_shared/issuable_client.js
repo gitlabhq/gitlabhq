@@ -45,6 +45,11 @@ export const config = {
             toReference({ __typename: 'LocalWorkItemChildIsExpanded', id: variables.id }),
         },
       },
+      DesignManagement: {
+        merge(existing = {}, incoming) {
+          return { ...existing, ...incoming };
+        },
+      },
       WorkItemDescriptionTemplateConnection: {
         fields: {
           nodes: {

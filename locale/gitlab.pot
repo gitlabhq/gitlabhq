@@ -17881,6 +17881,12 @@ msgstr ""
 msgid "DastProfiles|Active"
 msgstr ""
 
+msgid "DastProfiles|Active scan timeout"
+msgstr ""
+
+msgid "DastProfiles|Active scan worker count"
+msgstr ""
+
 msgid "DastProfiles|Add DAST variable"
 msgstr ""
 
@@ -17891,6 +17897,9 @@ msgid "DastProfiles|Additional request headers (optional)"
 msgstr ""
 
 msgid "DastProfiles|Additional variables"
+msgstr ""
+
+msgid "DastProfiles|After-login actions"
 msgstr ""
 
 msgid "DastProfiles|Are you sure you want to delete this profile?"
@@ -17905,6 +17914,9 @@ msgstr ""
 msgid "DastProfiles|Authentication URL"
 msgstr ""
 
+msgid "DastProfiles|Before-login actions"
+msgstr ""
+
 msgid "DastProfiles|Change scanner profile"
 msgstr ""
 
@@ -17912,6 +17924,9 @@ msgid "DastProfiles|Change site profile"
 msgstr ""
 
 msgid "DastProfiles|Choose a scan method"
+msgstr ""
+
+msgid "DastProfiles|Clear input fields"
 msgstr ""
 
 msgid "DastProfiles|Comma-separated list of check identifiers to use for the scan. For identifiers, see %{linkStart}vulnerability checks.%{linkEnd}"
@@ -17956,10 +17971,16 @@ msgstr ""
 msgid "DastProfiles|Debug messages"
 msgstr ""
 
+msgid "DastProfiles|Delete"
+msgstr ""
+
 msgid "DastProfiles|Delete profile"
 msgstr ""
 
 msgid "DastProfiles|Disables clearing of username and password fields before attempting manual login. Set to false by default."
+msgstr ""
+
+msgid "DastProfiles|Edit DAST variable"
 msgstr ""
 
 msgid "DastProfiles|Edit profile"
@@ -17990,6 +18011,9 @@ msgid "DastProfiles|Excluded URLs"
 msgstr ""
 
 msgid "DastProfiles|Excluded URLs (optional)"
+msgstr ""
+
+msgid "DastProfiles|Excluded checks"
 msgstr ""
 
 msgid "DastProfiles|Excluded paths"
@@ -18173,6 +18197,9 @@ msgid "DastProfiles|URL"
 msgstr ""
 
 msgid "DastProfiles|URLs to skip during the authenticated scan."
+msgstr ""
+
+msgid "DastProfiles|Update variable"
 msgstr ""
 
 msgid "DastProfiles|Username"
@@ -36450,6 +36477,11 @@ msgstr ""
 msgid "NamespaceLimits|You must select a namespace and add a reason for excluding it"
 msgstr ""
 
+msgid "NamespaceStorageSize|%{namespace_name} has %{readonly_project_count} read-only project"
+msgid_plural "NamespaceStorageSize|%{namespace_name} has %{readonly_project_count} read-only projects"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "NamespaceStorageSize|%{namespace_name} is now read-only. Your ability to write new data to this namespace is restricted. %{read_only_link_start}Which actions are restricted?%{link_end}"
 msgstr ""
 
@@ -36460,6 +36492,9 @@ msgid "NamespaceStorageSize|If %{namespace_name} exceeds the storage quota, your
 msgstr ""
 
 msgid "NamespaceStorageSize|If a project reaches 100%% of the storage quota (%{free_size_limit}) the project will be in a read-only state, and you won't be able to push to your repository or add large files."
+msgstr ""
+
+msgid "NamespaceStorageSize|To manage your usage and prevent your projects from being placed in a read-only state, you should immediately %{manage_storage_link_start}reduce storage%{link_end}, or %{support_link_start}contact support%{link_end} to help you manage your usage."
 msgstr ""
 
 msgid "NamespaceStorageSize|To prevent your projects from being in a read-only state %{manage_storage_link_start}manage your storage usage%{link_end}, or %{purchase_more_link_start}purchase more storage%{link_end}."
@@ -36483,6 +36518,9 @@ msgstr ""
 msgid "NamespaceStorageSize|To remove the read-only state, reduce git repository and git LFS storage, or contact a user with the %{group_member_link_start}owner role for this namespace%{link_end} and ask them to %{purchase_more_link_start}purchase more storage%{link_end}."
 msgstr ""
 
+msgid "NamespaceStorageSize|We've noticed an unusually high storage usage on %{namespace_name}"
+msgstr ""
+
 msgid "NamespaceStorageSize|You have consumed all available storage and you can't push or add large files to projects over the free tier limit (%{free_size_limit})."
 msgstr ""
 
@@ -36498,9 +36536,6 @@ msgid "NamespaceStorageSize|You have used %{usage_in_percent} of the purchased s
 msgstr ""
 
 msgid "NamespaceStorageSize|You have used %{usage_in_percent} of the storage quota for %{namespace_name} (%{used_storage} of %{storage_limit})"
-msgstr ""
-
-msgid "NamespaceStorageSize|You have used all available storage for %{namespace_name}"
 msgstr ""
 
 msgid "NamespaceStorage|%{name_with_link} is now read-only. Projects under this namespace are locked and actions are restricted."
@@ -51822,6 +51857,9 @@ msgstr ""
 msgid "SecurityReports|Download %{artifactName}"
 msgstr ""
 
+msgid "SecurityReports|Download %{artifactName} (%{fileType})"
+msgstr ""
+
 msgid "SecurityReports|Download results"
 msgstr ""
 
@@ -64664,6 +64702,9 @@ msgstr ""
 msgid "Workspaces|Creating"
 msgstr ""
 
+msgid "Workspaces|Defines the workspace's development environment."
+msgstr ""
+
 msgid "Workspaces|Devfile location"
 msgstr ""
 
@@ -64680,9 +64721,6 @@ msgid "Workspaces|Failed to create workspace"
 msgstr ""
 
 msgid "Workspaces|Failed to update workspace"
-msgstr ""
-
-msgid "Workspaces|Git reference"
 msgstr ""
 
 msgid "Workspaces|Group agents"
@@ -64724,6 +64762,12 @@ msgstr ""
 msgid "Workspaces|Project"
 msgstr ""
 
+msgid "Workspaces|Project reference"
+msgstr ""
+
+msgid "Workspaces|Provide a relative path if the devfile is not in the project's root directory."
+msgstr ""
+
 msgid "Workspaces|Restart"
 msgstr ""
 
@@ -64757,7 +64801,7 @@ msgstr ""
 msgid "Workspaces|Terminating"
 msgstr ""
 
-msgid "Workspaces|The branch, tag, or commit hash GitLab uses to create your workspace."
+msgid "Workspaces|The source branch, tag, or commit hash of your workspace."
 msgstr ""
 
 msgid "Workspaces|This agent is already allowed."

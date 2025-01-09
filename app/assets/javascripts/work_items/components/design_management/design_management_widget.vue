@@ -475,7 +475,7 @@ export default {
           </li>
         </vue-draggable>
       </design-dropzone>
-      <router-view :key="$route.fullPath" :all-designs="designs" />
+      <router-view :key="$route.fullPath" :all-designs="designs" :all-versions="allVersions" />
     </template>
   </crud-component>
 </template>

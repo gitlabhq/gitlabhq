@@ -7431,6 +7431,27 @@ CREATE TABLE application_settings (
     encrypted_ci_job_token_signing_key_iv bytea,
     elasticsearch jsonb DEFAULT '{}'::jsonb NOT NULL,
     oauth_provider jsonb DEFAULT '{}'::jsonb NOT NULL,
+    elasticsearch_aws boolean DEFAULT false NOT NULL,
+    elasticsearch_search boolean DEFAULT false NOT NULL,
+    elasticsearch_indexing boolean DEFAULT false NOT NULL,
+    elasticsearch_username text,
+    elasticsearch_aws_region character varying DEFAULT 'us-east-1'::character varying,
+    elasticsearch_aws_access_key character varying,
+    elasticsearch_limit_indexing boolean DEFAULT false NOT NULL,
+    elasticsearch_pause_indexing boolean DEFAULT false NOT NULL,
+    elasticsearch_requeue_workers boolean DEFAULT false NOT NULL,
+    elasticsearch_max_bulk_size_mb smallint DEFAULT 10 NOT NULL,
+    elasticsearch_retry_on_failure integer DEFAULT 0 NOT NULL,
+    elasticsearch_max_bulk_concurrency smallint DEFAULT 10 NOT NULL,
+    elasticsearch_client_request_timeout integer DEFAULT 0 NOT NULL,
+    elasticsearch_worker_number_of_shards integer DEFAULT 2 NOT NULL,
+    elasticsearch_analyzers_smartcn_search boolean DEFAULT false NOT NULL,
+    elasticsearch_analyzers_kuromoji_search boolean DEFAULT false NOT NULL,
+    elasticsearch_analyzers_smartcn_enabled boolean DEFAULT false NOT NULL,
+    elasticsearch_analyzers_kuromoji_enabled boolean DEFAULT false NOT NULL,
+    elasticsearch_indexed_field_length_limit integer DEFAULT 0 NOT NULL,
+    elasticsearch_indexed_file_size_limit_kb integer DEFAULT 1024 NOT NULL,
+    elasticsearch_max_code_indexing_concurrency integer DEFAULT 30 NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -7502,6 +7523,7 @@ CREATE TABLE application_settings (
     CONSTRAINT check_d820146492 CHECK ((char_length(spam_check_endpoint_url) <= 255)),
     CONSTRAINT check_e2692d7523 CHECK ((char_length(default_preferred_language) <= 32)),
     CONSTRAINT check_e2dd6e290a CHECK ((char_length(jira_connect_application_key) <= 255)),
+    CONSTRAINT check_e5024c8801 CHECK ((char_length(elasticsearch_username) <= 255)),
     CONSTRAINT check_e5aba18f02 CHECK ((char_length(container_registry_version) <= 255)),
     CONSTRAINT check_ef6176834f CHECK ((char_length(encrypted_cloud_license_auth_token_iv) <= 255)),
     CONSTRAINT check_identity_verification_settings_is_hash CHECK ((jsonb_typeof(identity_verification_settings) = 'object'::text))
@@ -22684,15 +22706,6 @@ CREATE TABLE work_item_types (
     CONSTRAINT check_104d2410f6 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_fecb3a98d1 CHECK ((char_length(icon_name) <= 255))
 );
-
-CREATE SEQUENCE work_item_types_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE work_item_types_id_seq OWNED BY work_item_types.id;
 
 CREATE TABLE work_item_weights_sources (
     work_item_id bigint NOT NULL,

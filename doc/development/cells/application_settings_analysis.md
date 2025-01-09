@@ -7,12 +7,12 @@ info: Analysis of Application Settings for Cells 1.0.
 
 ## Statistics
 
-- Number of attributes: 491
+- Number of attributes: 511
 - Number of encrypted attributes: 45 (9.0%)
-- Number of attributes documented: 296 (60.0%)
-- Number of attributes on GitLab.com different from the defaults: 212 (43.0%)
-- Number of attributes with `clusterwide` set: 491 (100.0%)
-- Number of attributes with `clusterwide: true` set: 121 (25.0%)
+- Number of attributes documented: 312 (61.0%)
+- Number of attributes on GitLab.com different from the defaults: 222 (44.0%)
+- Number of attributes with `clusterwide` set: 511 (100.0%)
+- Number of attributes with `clusterwide: true` set: 124 (24.0%)
 
 ## Individual columns
 
@@ -149,9 +149,30 @@ info: Analysis of Application Settings for Cells 1.0.
 | `eks_integration_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `true`| `true` |
 | `eks_secret_access_key` | `true` | `text` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `elasticsearch` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `false`| `false` |
+| `elasticsearch_analyzers_kuromoji_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `true`| `false` |
+| `elasticsearch_analyzers_kuromoji_search` | `false` | `boolean` | `` | `true` | `false` | `false` | `true`| `false` |
+| `elasticsearch_analyzers_smartcn_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `true`| `false` |
+| `elasticsearch_analyzers_smartcn_search` | `false` | `boolean` | `` | `true` | `false` | `false` | `true`| `false` |
+| `elasticsearch_aws` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
+| `elasticsearch_aws_access_key` | `false` | `character` | `string` | `false` | `null` | `true` | `false`| `true` |
+| `elasticsearch_aws_region` | `false` | `character` | `string` | `false` | `'us-east-1'::character` | `false` | `false`| `true` |
 | `elasticsearch_aws_secret_access_key` | `true` | `text` | `string` | `false` | `null` | `true` | `false`| `true` |
+| `elasticsearch_client_request_timeout` | `false` | `integer` | `` | `true` | `0` | `true` | `false`| `false` |
+| `elasticsearch_indexed_field_length_limit` | `false` | `integer` | `integer` | `true` | `0` | `true` | `false`| `true` |
+| `elasticsearch_indexed_file_size_limit_kb` | `false` | `integer` | `integer` | `true` | `1024` | `false` | `false`| `true` |
+| `elasticsearch_indexing` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `false`| `true` |
+| `elasticsearch_limit_indexing` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `false`| `true` |
+| `elasticsearch_max_bulk_concurrency` | `false` | `smallint` | `integer` | `true` | `10` | `false` | `false`| `true` |
+| `elasticsearch_max_bulk_size_mb` | `false` | `smallint` | `integer` | `true` | `10` | `false` | `false`| `true` |
+| `elasticsearch_max_code_indexing_concurrency` | `false` | `integer` | `integer` | `true` | `30` | `true` | `false`| `true` |
 | `elasticsearch_password` | `true` | `bytea` | `string` | `false` | `null` | `true` | `false`| `true` |
+| `elasticsearch_pause_indexing` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `elasticsearch_requeue_workers` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `false`| `true` |
+| `elasticsearch_retry_on_failure` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
+| `elasticsearch_search` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `false`| `true` |
 | `elasticsearch_url` | `false` | `character` | `string` | `false` | `'http://localhost:9200'::character` | `true` | `false`| `true` |
+| `elasticsearch_username` | `false` | `text` | `string` | `false` | `null` | `true` | `false`| `true` |
+| `elasticsearch_worker_number_of_shards` | `false` | `integer` | `integer` | `true` | `2` | `true` | `false`| `true` |
 | `email_additional_text` | `false` | `character` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `email_author_in_body` | `false` | `boolean` | `boolean` | `false` | `false` | `false` | `true`| `true` |
 | `email_confirmation_setting` | `false` | `smallint` | `string` | `false` | `0` | `true` | `true`| `true` |

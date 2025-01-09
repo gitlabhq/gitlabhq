@@ -7,7 +7,6 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import getDesignQuery from '~/work_items/components/design_management/graphql/design_details.query.graphql';
-import getLocalDesignQuery from '~/work_items/components/design_management/graphql/local_design.query.graphql';
 import archiveDesignMutation from '~/work_items/components/design_management/graphql/archive_design.mutation.graphql';
 import createImageDiffNoteMutation from '~/work_items/components/design_management/graphql/create_image_diff_note.mutation.graphql';
 import repositionImageDiffNoteMutation from '~/work_items/components/design_management/graphql/reposition_image_diff_note.mutation.graphql';
@@ -34,6 +33,7 @@ import {
   mockArchiveDesignMutationResponse,
   mockCreateImageNoteDiffResponse,
   mockRepositionImageNoteDiffResponse,
+  mockAllVersions,
 } from '../mock_data';
 
 jest.mock('~/alert');
@@ -47,7 +47,7 @@ const MOCK_ROUTE = {
   path: '/work_items/1/designs/Screenshot_from_2024-03-28_10-24-43.png',
   query: {},
   params: {
-    id: 'image_name.png',
+    id: 'Screenshot_from_2024-03-28_10-24-43.png',
   },
 };
 
@@ -108,6 +108,8 @@ describe('DesignDetails', () => {
       },
       propsData: {
         iid: workItemIid,
+        allDesigns: [mockDesign],
+        allVersions: mockAllVersions,
         ...props,
       },
       mocks: {
@@ -139,10 +141,7 @@ describe('DesignDetails', () => {
 
     it('calls get design query', () => {
       expect(getDesignQueryHandler).toHaveBeenCalledWith({
-        fullPath: 'gitlab-org/gitlab-shell',
-        iid: workItemIid,
-        filenames: ['image_name.png'],
-        atVersion: null,
+        id: 'gid://gitlab/DesignManagement::DesignAtVersion/33.1',
       });
     });
 
@@ -276,11 +275,8 @@ describe('DesignDetails', () => {
         store: expect.anything(),
         todos: [],
         query: {
-          query: getLocalDesignQuery,
-          variables: {
-            filenames: [MOCK_ROUTE.params.id],
-            atVersion: null,
-          },
+          query: getDesignQuery,
+          variables: { id: 'gid://gitlab/DesignManagement::DesignAtVersion/33.1' },
         },
       });
     });
@@ -296,10 +292,7 @@ describe('DesignDetails', () => {
 
     it('updates storeand closes the form when mutation is completed', async () => {
       const mockDesignVariables = {
-        fullPath: 'gitlab-org/gitlab-shell',
-        iid: '1',
-        filenames: ['image_name.png'],
-        atVersion: null,
+        id: 'gid://gitlab/DesignManagement::DesignAtVersion/33.1',
       };
 
       findDesignReplyForm().vm.$emit('note-submit-complete', {
@@ -311,7 +304,7 @@ describe('DesignDetails', () => {
       expect(updateStoreAfterAddImageDiffNote).toHaveBeenCalledWith(
         expect.anything(),
         mockCreateImageNoteDiffResponse.data.createImageDiffNote,
-        getLocalDesignQuery,
+        getDesignQuery,
         mockDesignVariables,
       );
 

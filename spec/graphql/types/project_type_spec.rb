@@ -45,7 +45,8 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       incident_management_timeline_event_tags visible_forks inherited_ci_variables autocomplete_users
       ci_cd_settings detailed_import_status value_streams ml_models
       allows_multiple_merge_request_assignees allows_multiple_merge_request_reviewers is_forked
-      protectable_branches available_deploy_keys explore_catalog_path container_protection_tag_rules
+      protectable_branches available_deploy_keys explore_catalog_path
+      container_protection_tag_rules allowed_custom_statuses
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

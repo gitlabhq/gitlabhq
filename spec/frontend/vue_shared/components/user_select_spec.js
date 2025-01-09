@@ -214,7 +214,6 @@ describe('User select dropdown', () => {
         },
       });
       await waitForPromises();
-
       expect(findUnselectedParticipantByIndex(0).props('user')).toMatchObject(mockUser2);
     });
 
@@ -230,8 +229,8 @@ describe('User select dropdown', () => {
       });
       await waitForPromises();
 
-      expect(findUnselectedParticipantByIndex(0).props('user')).toEqual(currentUser);
-      expect(findUnselectedParticipantByIndex(1).props('user')).toMatchObject(issuableAuthor);
+      expect(findUnselectedParticipantByIndex(0).props('user')).toEqual(mockUser2);
+      expect(findUnselectedParticipantByIndex(1).props('user')).toMatchObject(mockUser1);
     });
 
     it('displays author in a designated position if author is not assigned and not a project member', async () => {

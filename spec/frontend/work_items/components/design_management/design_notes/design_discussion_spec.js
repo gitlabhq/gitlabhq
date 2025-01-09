@@ -5,8 +5,8 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import mockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import getDesignQuery from '~/work_items/components/design_management/graphql/design_details.query.graphql';
 import DesignDiscussion from '~/work_items/components/design_management/design_notes/design_discussion.vue';
-import getLocalDesignQuery from '~/work_items/components/design_management/graphql/local_design.query.graphql';
 import DesignNote from '~/work_items/components/design_management/design_notes/design_note.vue';
 import DesignNoteSignedOut from '~/work_items/components/design_management/design_notes/design_note_signed_out.vue';
 import DesignReplyForm from '~/work_items/components/design_management/design_notes/design_reply_form.vue';
@@ -21,7 +21,7 @@ import {
 } from '~/work_items/components/design_management/constants';
 import { resolvers } from '~/graphql_shared/issuable_client';
 import activeDiscussionQuery from '~/work_items/components/design_management/graphql/client/active_design_discussion.query.graphql';
-import { mockResolveDiscussionMutationResponse, getLocalDesignResponse } from '../mock_data';
+import { mockResolveDiscussionMutationResponse, getDesignResponse } from '../mock_data';
 import notes, { DISCUSSION_1 } from './mock_notes';
 
 jest.mock('~/lib/utils/common_utils');
@@ -33,6 +33,10 @@ const defaultMockDiscussion = {
   resolved: false,
   resolvable: true,
   notes,
+};
+
+const designVariables = {
+  id: 'gid://gitlab/DesignManagement::DesignAtVersion/33.1',
 };
 
 describe('Design discussions component', () => {
@@ -86,12 +90,9 @@ describe('Design discussions component', () => {
       },
     });
     apolloProvider.clients.defaultClient.writeQuery({
-      query: getLocalDesignQuery,
-      variables: {
-        filenames: [1],
-        atVersion: null,
-      },
-      data: getLocalDesignResponse.data,
+      query: getDesignQuery,
+      variables: designVariables,
+      data: getDesignResponse.data,
     });
 
     wrapper = shallowMountExtended(DesignDiscussion, {
@@ -104,6 +105,7 @@ describe('Design discussions component', () => {
         noteableId: 'noteable-id',
         registerPath,
         signInPath,
+        designVariables,
         ...props,
       },
       data() {
@@ -122,7 +124,7 @@ describe('Design discussions component', () => {
             id: 1,
           },
           query: {
-            version: null,
+            version: 1,
           },
         },
       },

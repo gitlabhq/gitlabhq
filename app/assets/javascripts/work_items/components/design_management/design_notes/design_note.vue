@@ -23,7 +23,7 @@ import { TYPE_COMMENT } from '~/import/constants';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import updateNoteMutation from '../graphql/update_note.mutation.graphql';
 import designNoteAwardEmojiToggleMutation from '../graphql/design_note_award_emoji_toggle.mutation.graphql';
-import getLocalDesignQuery from '../graphql/local_design.query.graphql';
+import getDesignQuery from '../graphql/design_details.query.graphql';
 import { findNoteId } from '../utils';
 import { hasErrors } from '../cache_updates';
 import { AWARD_EMOJI_TO_NOTE_ERROR } from '../constants';
@@ -236,15 +236,16 @@ export default {
             },
           ) => {
             const query = {
-              query: getLocalDesignQuery,
+              query: getDesignQuery,
               variables: this.designVariables,
             };
             const sourceData = cache.readQuery(query);
 
             const newData = produce(sourceData, (draftState) => {
-              const { awardEmoji } = draftState.localDesign.discussions.nodes
-                .find((d) => d.id === this.note.discussion.id)
-                .notes.nodes.find((n) => n.id === this.note.id);
+              const { awardEmoji } =
+                draftState.designManagement.designAtVersion.design.discussions.nodes
+                  .find((d) => d.id === this.note.discussion.id)
+                  .notes.nodes.find((n) => n.id === this.note.id);
 
               awardEmoji.nodes = this.getAwardEmojiNodes(name, toggledOn);
             });

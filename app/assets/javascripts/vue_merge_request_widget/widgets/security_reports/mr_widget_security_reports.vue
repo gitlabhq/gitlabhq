@@ -51,6 +51,7 @@ export default {
                 name: reportType.name,
                 id: reportType.id,
                 path: artifact.downloadPath,
+                fileType: artifact.fileType,
               });
             }
           });
@@ -74,16 +75,27 @@ export default {
       return { title: this.$options.i18n.scansHaveRun };
     },
     listboxOptions() {
-      return this.artifacts.map(({ name, path }) => ({
-        text: sprintf(s__('SecurityReports|Download %{artifactName}'), {
-          artifactName: name,
-        }),
-        href: path,
-        extraAttrs: {
-          download: '',
-          rel: 'nofollow',
-        },
-      }));
+      return this.artifacts
+        .filter(({ name, path }) => name && path)
+        .map(({ name, path, fileType }) => {
+          const text = fileType
+            ? sprintf(s__('SecurityReports|Download %{artifactName} (%{fileType})'), {
+                artifactName: name,
+                fileType: fileType.toLowerCase(),
+              })
+            : sprintf(s__('SecurityReports|Download %{artifactName}'), {
+                artifactName: name,
+              });
+
+          return {
+            text,
+            href: path,
+            extraAttrs: {
+              download: '',
+              rel: 'nofollow',
+            },
+          };
+        });
     },
   },
   methods: {
@@ -124,6 +136,7 @@ export default {
         size="small"
         icon="download"
         :items="listboxOptions"
+        :fluid-width="true"
       />
     </template>
   </mr-widget>

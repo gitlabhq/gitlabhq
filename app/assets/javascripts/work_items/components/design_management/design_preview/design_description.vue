@@ -49,10 +49,6 @@ export default {
       type: Object,
       required: true,
     },
-    designVariables: {
-      type: Object,
-      required: true,
-    },
     markdownPreviewPath: {
       type: String,
       required: true,

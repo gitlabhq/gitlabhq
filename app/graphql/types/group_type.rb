@@ -342,6 +342,10 @@ module Types
       method: :linked_to_subscription?,
       description: 'Indicates if group is linked to a subscription.'
 
+    field :allowed_custom_statuses, Types::WorkItems::Widgets::CustomStatusType.connection_type,
+      null: true, description: 'Allowed custom statuses for the group.',
+      experiment: { milestone: '17.8' }, resolver: Resolvers::WorkItems::Widgets::CustomStatusResolver
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
         LabelsFinder

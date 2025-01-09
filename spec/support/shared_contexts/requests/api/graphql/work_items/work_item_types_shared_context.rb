@@ -19,6 +19,11 @@ RSpec.shared_context 'with work item types request context' do
             nodes { id name }
           }
         }
+        ... on WorkItemWidgetDefinitionCustomStatus {
+          allowedCustomStatuses {
+            nodes { id name iconName }
+          }
+        }
       }
     GRAPHQL
   end
@@ -51,6 +56,12 @@ RSpec.shared_context 'with work item types request context' do
     work_item_type.widget_classes(resource_parent).map do |widget|
       base_attributes = { 'type' => widget.type.to_s.upcase }
       next hierarchy_widget_attributes(work_item_type, base_attributes) if widget == WorkItems::Widgets::Hierarchy
+
+      if widget == WorkItems::Widgets::CustomStatus
+        next custom_status_widget_attributes(work_item_type,
+          base_attributes)
+      end
+
       next base_attributes unless widget_attributes[widget.type]
 
       base_attributes.merge(widget_attributes[widget.type])
@@ -67,5 +78,22 @@ RSpec.shared_context 'with work item types request context' do
 
     base_attributes.merge({ 'allowedChildTypes' => { 'nodes' => child_types },
 'allowedParentTypes' => { 'nodes' => parent_types } })
+  end
+
+  def custom_status_widget_attributes(_work_item_type, base_attributes)
+    statuses = [
+      {
+        'id' => 'gid://gitlab/WorkItems::Widgets::CustomStatus/10',
+        'name' => 'Custom Status',
+        'iconName' => 'custom_status icon'
+      },
+      {
+        'id' => 'gid://gitlab/WorkItems::Widgets::CustomStatus/10',
+        'name' => 'Custom Status',
+        'iconName' => 'custom_status icon'
+      }
+    ]
+
+    base_attributes.merge({ 'allowedCustomStatuses' => { 'nodes' => statuses } })
   end
 end

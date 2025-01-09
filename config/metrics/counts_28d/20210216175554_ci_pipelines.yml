@@ -16,7 +16,6 @@ tiers:
 - free
 - premium
 - ultimate
-- free
 performance_indicator_type:
 - smau
 - gmau
