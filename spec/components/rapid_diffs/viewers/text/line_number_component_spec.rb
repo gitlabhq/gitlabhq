@@ -44,6 +44,13 @@ RSpec.describe RapidDiffs::Viewers::Text::LineNumberComponent, type: :component,
   end
 
   def render_component(line:, position: nil)
-    render_inline(described_class.new(diff_file: diff_file, line: line, position: position))
+    render_inline(
+      described_class.new(
+        line: line,
+        position: position,
+        file_hash: diff_file.file_hash,
+        file_path: diff_file.file_path
+      )
+    )
   end
 end

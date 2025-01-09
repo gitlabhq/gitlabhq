@@ -4,9 +4,10 @@ module RapidDiffs
   module Viewers
     module Text
       class ParallelHunkComponent < ViewComponent::Base
-        def initialize(diff_hunk:, diff_file:)
+        def initialize(diff_hunk:, file_hash:, file_path:)
           @diff_hunk = diff_hunk
-          @diff_file = diff_file
+          @file_hash = file_hash
+          @file_path = file_path
         end
 
         def sides(line_pair)

@@ -3537,7 +3537,7 @@ pages:
 
 In this example, a different pages deployment is created for each branch.
 
-### `pages:pages.expire_in`
+#### `pages:pages.expire_in`
 
 DETAILS:
 **Tier:** Premium, Ultimate

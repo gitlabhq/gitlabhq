@@ -60578,6 +60578,9 @@ msgstr ""
 msgid "UsageQuota|Buy storage"
 msgstr ""
 
+msgid "UsageQuota|Cache for frequently-accessed Docker images and packages."
+msgstr ""
+
 msgid "UsageQuota|Code packages and container images."
 msgstr ""
 

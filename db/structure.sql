@@ -29964,6 +29964,8 @@ CREATE UNIQUE INDEX index_ci_build_needs_on_build_id_and_name ON ci_build_needs 
 
 CREATE INDEX index_ci_build_needs_on_partition_id_build_id ON ci_build_needs USING btree (partition_id, build_id);
 
+CREATE INDEX index_ci_build_needs_on_project_id ON ci_build_needs USING btree (project_id);
+
 CREATE UNIQUE INDEX index_ci_build_pending_states_on_build_id ON ci_build_pending_states USING btree (build_id);
 
 CREATE INDEX index_ci_build_pending_states_on_project_id ON ci_build_pending_states USING btree (project_id);

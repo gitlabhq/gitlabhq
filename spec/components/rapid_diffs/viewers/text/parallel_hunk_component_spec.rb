@@ -92,6 +92,12 @@ RSpec.describe RapidDiffs::Viewers::Text::ParallelHunkComponent, type: :componen
   end
 
   def render_component(diff_hunk = hunk)
-    render_inline(described_class.new(diff_file: diff_file, diff_hunk: diff_hunk))
+    render_inline(
+      described_class.new(
+        diff_hunk: diff_hunk,
+        file_hash: diff_file.file_hash,
+        file_path: diff_file.file_path
+      )
+    )
   end
 end
