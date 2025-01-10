@@ -203,21 +203,12 @@ func getClientInformation(ctx context.Context, opts *UploadOpts, fh *FileHandler
 		}
 		uploadDestination, err = objectstore.NewGoCloudObject(p)
 	case opts.UseWorkhorseClientEnabled() && opts.ObjectStorageConfig.IsAWS() && opts.ObjectStorageConfig.IsValid():
-		if opts.ObjectStorageConfig.S3Config.AwsSDK == "v1" {
-			clientMode = "s3_client"
-			uploadDestination, err = objectstore.NewS3Object(
-				opts.RemoteTempObjectID,
-				opts.ObjectStorageConfig.S3Credentials,
-				opts.ObjectStorageConfig.S3Config,
-			)
-		} else {
-			clientMode = "s3_client_v2"
-			uploadDestination, err = objectstore.NewS3v2Object(
-				opts.RemoteTempObjectID,
-				opts.ObjectStorageConfig.S3Credentials,
-				opts.ObjectStorageConfig.S3Config,
-			)
-		}
+		clientMode = "s3_client_v2"
+		uploadDestination, err = objectstore.NewS3v2Object(
+			opts.RemoteTempObjectID,
+			opts.ObjectStorageConfig.S3Credentials,
+			opts.ObjectStorageConfig.S3Config,
+		)
 	case opts.IsMultipart():
 		clientMode = "s3_multipart"
 		uploadDestination, err = objectstore.NewMultipart(

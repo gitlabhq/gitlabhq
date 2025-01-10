@@ -108,8 +108,6 @@ Prerequisites:
 
 The user is sent a confirmation email.
 
-To turn off these emails, an administrator can [disable the `duo_seat_assignment_email_for_sm` feature flag](../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags).
-
 #### Configure network and proxy settings
 
 For self-managed instances, to enable GitLab Duo features,

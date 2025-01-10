@@ -10,9 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws/awserr"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -25,22 +24,21 @@ type s3FailedReader struct {
 }
 
 func (r *s3FailedReader) Read(_ []byte) (int, error) {
-	origErr := fmt.Errorf("entity is too large")
-	return 0, awserr.New("Read", "read failed", origErr)
+	return 0, fmt.Errorf("entity is too large")
 }
 
 func TestS3v2ObjectUpload(t *testing.T) {
 	testCases := []struct {
-		encryption string
+		encryption types.ServerSideEncryption
 	}{
 		{encryption: ""},
-		{encryption: s3.ServerSideEncryptionAes256},
-		{encryption: s3.ServerSideEncryptionAwsKms},
+		{encryption: types.ServerSideEncryptionAes256},
+		{encryption: types.ServerSideEncryptionAwsKms},
 	}
 
 	for _, tc := range testCases {
-		t.Run(fmt.Sprintf("encryption=%v", tc.encryption), func(t *testing.T) {
-			creds, config, sess, ts := test.SetupS3(t, tc.encryption)
+		t.Run(fmt.Sprintf("encryption=%s", string(tc.encryption)), func(t *testing.T) {
+			creds, config, client, ts := test.SetupS3(t, string(tc.encryption))
 			defer ts.Close()
 
 			deadline := time.Now().Add(testTimeout)
@@ -48,6 +46,7 @@ func TestS3v2ObjectUpload(t *testing.T) {
 
 			objectName := filepath.Join(tmpDir, "s3-test-data")
 			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
 
 			object, err := NewS3v2Object(objectName, creds, config)
 			require.NoError(t, err)
@@ -57,24 +56,22 @@ func TestS3v2ObjectUpload(t *testing.T) {
 			require.NoError(t, err)
 			require.Equal(t, test.ObjectSize, n, "Uploaded file mismatch")
 
-			test.S3ObjectExists(t, sess, config, objectName, test.ObjectContent)
-			test.CheckS3Metadata(t, sess, config, objectName)
-
-			cancel()
+			test.S3ObjectExists(ctx, t, client, config, object.Name(), test.ObjectContent)
+			test.CheckS3Metadata(ctx, t, client, config, object.Name())
 
 			require.Eventually(t, func() bool {
-				return (test.S3ObjectDoesNotExist(t, sess, config, objectName))
+				return (test.S3ObjectDoesNotExist(ctx, t, client, config, objectName))
 			}, 5*time.Second, time.Millisecond, "file is still present")
 		})
 	}
 }
 
 func TestConcurrentS3v2ObjectUpload(t *testing.T) {
-	creds, uploadsConfig, uploadsSession, uploadServer := test.SetupS3WithBucket(t, "uploads", "")
+	creds, uploadsConfig, uploadsClient, uploadServer := test.SetupS3WithBucket(t, "uploads", "")
 	defer uploadServer.Close()
 
 	// This will return a separate S3 endpoint
-	_, artifactsConfig, artifactsSession, artifactsServer := test.SetupS3WithBucket(t, "artifacts", "")
+	_, artifactsConfig, artifactsClient, artifactsServer := test.SetupS3WithBucket(t, "artifacts", "")
 	defer artifactsServer.Close()
 
 	deadline := time.Now().Add(testTimeout)
@@ -86,14 +83,14 @@ func TestConcurrentS3v2ObjectUpload(t *testing.T) {
 		wg.Add(1)
 
 		go func(index int) {
-			var sess *session.Session
+			var client *s3.Client
 			var config config.S3Config
 
 			if index%2 == 0 {
-				sess = uploadsSession
+				client = uploadsClient
 				config = uploadsConfig
 			} else {
-				sess = artifactsSession
+				client = artifactsClient
 				config = artifactsConfig
 			}
 
@@ -110,7 +107,7 @@ func TestConcurrentS3v2ObjectUpload(t *testing.T) {
 			assert.NoError(t, err)
 			assert.Equal(t, test.ObjectSize, n, "Uploaded file mismatch")
 
-			test.S3ObjectExists(t, sess, config, objectName, test.ObjectContent)
+			test.S3ObjectExists(ctx, t, client, config, object.Name(), test.ObjectContent)
 			wg.Done()
 		}(i)
 	}

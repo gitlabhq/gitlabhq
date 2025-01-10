@@ -13,6 +13,7 @@ import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemCrmContacts from '~/work_items/components/work_item_crm_contacts.vue';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
+import WorkItemParent from '~/work_items/components/work_item_parent.vue';
 import WorkItemProjectsListbox from '~/work_items/components/work_item_links/work_item_projects_listbox.vue';
 import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
 import {
@@ -78,6 +79,7 @@ describe('Create work item component', () => {
   const findLabelsWidget = () => wrapper.findComponent(WorkItemLabels);
   const findCrmContactsWidget = () => wrapper.findComponent(WorkItemCrmContacts);
   const findMilestoneWidget = () => wrapper.findComponent(WorkItemMilestone);
+  const findParentWidget = () => wrapper.findComponent(WorkItemParent);
   const findProjectsSelector = () => wrapper.findComponent(WorkItemProjectsListbox);
   const findSelect = () => wrapper.findComponent(GlFormSelect);
   const findTitleSuggestions = () => wrapper.findComponent(TitleSuggestions);
@@ -123,6 +125,7 @@ describe('Create work item component', () => {
       },
       provide: {
         fullPath: 'full-path',
+        groupPath: 'group-path',
         hasIssuableHealthStatusFeature: false,
         hasIterationsFeature: true,
         hasIssueWeightsFeature: false,
@@ -508,6 +511,10 @@ describe('Create work item component', () => {
 
       it('renders the work item milestone widget', () => {
         expect(findMilestoneWidget().exists()).toBe(true);
+      });
+
+      it('renders the work item parent widget', () => {
+        expect(findParentWidget().exists()).toBe(true);
       });
     });
   });

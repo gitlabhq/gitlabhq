@@ -1,5 +1,6 @@
 <script>
 import Tracking from '~/tracking';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import setSelectedBoardItemsMutation from '~/boards/graphql/client/set_selected_board_items.mutation.graphql';
 import unsetSelectedBoardItemsMutation from '~/boards/graphql/client/unset_selected_board_items.mutation.graphql';
 import selectedBoardItemsQuery from '~/boards/graphql/client/selected_board_items.query.graphql';
@@ -13,7 +14,7 @@ export default {
     BoardCardInner,
   },
   mixins: [Tracking.mixin()],
-  inject: ['disabled', 'isIssueBoard'],
+  inject: ['disabled', 'isIssueBoard', 'isEpicBoard'],
   props: {
     list: {
       type: Object,
@@ -97,6 +98,16 @@ export default {
     },
     showFocusBackground() {
       return !this.isActive && !this.multiSelectVisible;
+    },
+    itemPrefix() {
+      return this.isEpicBoard ? '&' : '#';
+    },
+    itemReferencePath() {
+      const { referencePath } = this.item;
+      return referencePath.split(this.itemPrefix)[0];
+    },
+    boardItemUniqueId() {
+      return `listItem-${this.itemReferencePath}/${getIdFromGraphQLId(this.item.id)}`;
     },
   },
   methods: {
@@ -222,6 +233,7 @@ export default {
     class="board-card gl-border gl-relative gl-mb-3 gl-rounded-base gl-border-section gl-bg-section gl-leading-normal hover:gl-bg-subtle dark:hover:gl-bg-gray-200"
   >
     <button
+      :id="boardItemUniqueId"
       :class="[
         {
           'focus:gl-bg-subtle dark:focus:gl-bg-gray-200': showFocusBackground,

@@ -12,6 +12,10 @@ module QA
           def has_online_runner?
             has_element?('runner-status-icon', status: 'online')
           end
+
+          def has_offline_runner?
+            has_element?('runner-status-icon', status: 'offline')
+          end
         end
       end
     end

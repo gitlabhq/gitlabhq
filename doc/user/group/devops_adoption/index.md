@@ -36,6 +36,18 @@ DevOps adoption shows feature adoption for development, security, and operations
 A feature shows as **adopted** when a group or subgroup has used the feature in a project in the last full calendar month.
 For example, if an issue was created in a project in a group, the group has adopted issues in that time.
 
+![DevOps adoption report for a group](img/devops_adoption_v17_8.png)
+
+The **Overview** tab illustrates the:
+
+- Total number of features adopted.
+- Features adopted in each category.
+- Number of features adopted in each category by month in the **Adoption over time** bar chart.
+The chart shows only data from the date you enabled DevOps adoption for the group.
+- Number of features adopted in each category by subgroup in the **Adoption by subgroup** table.
+
+The **Dev**, **Sec**, and **Ops** tabs illustrate the features adopted in development, security, and operations by subgroup.
+
 The DevOps adoption report excludes:
 
 - Dormant projects. The number of projects that use a feature is not considered. Having many dormant projects doesn't lower the adoption.
@@ -61,16 +73,7 @@ To view DevOps adoption:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Analyze > DevOps adoption**.
-
-The **Overview** tab displays the:
-
-- Total number of features adopted.
-- Features adopted in each category.
-- Number of features adopted in each category by month in the **Adoption over time** chart.
-The chart shows only data from the date you enabled DevOps adoption for the group.
-- Number of features adopted in each category by subgroup in the **Adoption by subgroup** table.
-
-The **Dev**, **Sec**, and **Ops** tabs display the features adopted in development, security, and operations by subgroup.
+1. To view the features adopted by category in a month, hover over a bar.
 
 ## Add a subgroup to DevOps adoption
 

@@ -532,8 +532,7 @@
     - name: clickhouse/clickhouse-server:23.11.3.23-alpine
       alias: clickhouse
   variables:
-    CLICKHOUSE_USER: clickhouse
-    CLICKHOUSE_PASSWORD: clickhouse
+    CLICKHOUSE_USER: default
     CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
     CLICKHOUSE_DB: gitlab_clickhouse_test
 

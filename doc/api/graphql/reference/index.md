@@ -37740,12 +37740,15 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="workitemcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the work item was created. |
 | <a id="workitemdescription"></a>`description` | [`String`](#string) | Description of the work item. |
 | <a id="workitemdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
+| <a id="workitemduplicatedtoworkitemurl"></a>`duplicatedToWorkItemUrl` | [`String`](#string) | URL of the work item that the work item is marked as a duplicate of. |
 | <a id="workitemid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
 | <a id="workitemiid"></a>`iid` | [`String!`](#string) | Internal ID of the work item. |
 | <a id="workitemlockversion"></a>`lockVersion` | [`Int!`](#int) | Lock version of the work item. Incremented each time the work item is updated. |
+| <a id="workitemmovedtoworkitemurl"></a>`movedToWorkItemUrl` | [`String`](#string) | URL of the work item that the work item was moved to. |
 | <a id="workitemname"></a>`name` | [`String`](#string) | Name or title of this object. |
 | <a id="workitemnamespace"></a>`namespace` **{warning-solid}** | [`Namespace`](#namespace) | **Introduced** in GitLab 15.10. **Status**: Experiment. Namespace the work item belongs to. |
 | <a id="workitemproject"></a>`project` **{warning-solid}** | [`Project`](#project) | **Introduced** in GitLab 15.3. **Status**: Experiment. Project the work item belongs to. |
+| <a id="workitempromotedtoepicurl"></a>`promotedToEpicUrl` | [`String`](#string) | URL of the epic that the work item has been promoted to. |
 | <a id="workitemstate"></a>`state` | [`WorkItemState!`](#workitemstate) | State of the work item. |
 | <a id="workitemtitle"></a>`title` | [`String!`](#string) | Title of the work item. |
 | <a id="workitemtitlehtml"></a>`titleHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `title`. |

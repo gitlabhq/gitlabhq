@@ -7,6 +7,7 @@ import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_i
 import updateParentMutation from '~/work_items/graphql/update_parent.mutation.graphql';
 import { isValidURL } from '~/lib/utils/url_utility';
 
+import updateNewWorkItemMutation from '~/work_items/graphql/update_new_work_item.mutation.graphql';
 import { updateParent } from '../graphql/cache_utils';
 import groupWorkItemsQuery from '../graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '../graphql/project_work_items.query.graphql';
@@ -15,10 +16,11 @@ import workItemAllowedParentTypesQuery from '../graphql/work_item_allowed_parent
 import {
   I18N_WORK_ITEM_ERROR_UPDATING,
   sprintfWorkItem,
+  WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_VALUE_ISSUE,
   WORK_ITEM_TYPE_VALUE_MAP,
 } from '../constants';
-import { isReference, findHierarchyWidgetDefinition } from '../utils';
+import { isReference, findHierarchyWidgetDefinition, newWorkItemId } from '../utils';
 
 export default {
   name: 'WorkItemParent',
@@ -120,6 +122,9 @@ export default {
     isSearchingByReference() {
       return isReference(this.searchTerm) || isValidURL(this.searchTerm);
     },
+    allowedParentTypesForNewWorkItem() {
+      return this.workItemId === newWorkItemId(this.workItemType) ? [WORK_ITEM_TYPE_ENUM_EPIC] : [];
+    },
   },
   watch: {
     parent: {
@@ -139,7 +144,7 @@ export default {
         return {
           fullPath: this.isIssue ? this.groupPath : this.fullPath,
           searchTerm: this.searchTerm,
-          types: this.allowedParentTypes,
+          types: [...this.allowedParentTypes, ...this.allowedParentTypesForNewWorkItem],
           in: this.searchTerm ? 'TITLE' : undefined,
           iid: null,
           isNumber: false,
@@ -182,7 +187,7 @@ export default {
         };
       },
       skip() {
-        return !this.searchStarted && !this.workItemId;
+        return this.workItemId === newWorkItemId(this.workItemType);
       },
       update(data) {
         return (
@@ -202,6 +207,32 @@ export default {
       if (this.parent?.id === this.localSelectedItem) return;
 
       this.updateInProgress = true;
+
+      if (this.workItemId === newWorkItemId(this.workItemType)) {
+        this.$apollo
+          .mutate({
+            mutation: updateNewWorkItemMutation,
+            variables: {
+              input: {
+                fullPath: this.fullPath,
+                parent: {
+                  ...this.availableWorkItems?.find(({ id }) => id === this.localSelectedItem),
+                  webUrl: this.parentWebUrl ?? null,
+                },
+                workItemType: this.workItemType,
+              },
+            },
+          })
+          .catch((error) => {
+            Sentry.captureException(error);
+          })
+          .finally(() => {
+            this.searchStarted = false;
+            this.updateInProgress = false;
+          });
+        return;
+      }
+
       try {
         const {
           data: {

@@ -52,6 +52,14 @@ module QA
           shell("docker exec #{@name} sh -c '#{prove_airgap}'") if network == 'airgapped'
         end
 
+        def run_unregister_command!
+          cmd = <<~CMD.tr("\n", ' ')
+            docker exec --detach #{@name} sh -c "#{unregister_command}"
+          CMD
+
+          shell(cmd, mask_secrets: [runner_auth_token])
+        end
+
         def tags=(tags)
           @tags = tags
           @run_untagged = false
@@ -103,6 +111,15 @@ module QA
               #{args.join(' ')} &&
             gitlab-runner run
           CMD
+        end
+
+        def runner_auth_token
+          runner_list = shell("docker exec #{@name} sh -c 'gitlab-runner list'")
+          runner_list.match(/Token\e\[0;m=([a-zA-Z0-9_-]+)/i)&.[](1)
+        end
+
+        def unregister_command
+          "gitlab-runner unregister --url #{@address} --token #{runner_auth_token}"
         end
 
         # Ping Cloudflare DNS, should fail

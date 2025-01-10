@@ -272,6 +272,10 @@ export default {
 
       return __('This issue is hidden because its author has been banned.');
     },
+    listItemUniqueId() {
+      const availableFullPath = this.workItemFullPath || this.fullPath;
+      return `listItem-${availableFullPath}/${getIdFromGraphQLId(this.issuable.id)}`;
+    },
   },
   methods: {
     hasSlotContents(slotName) {
@@ -409,6 +413,7 @@ export default {
         >
           <template #default="{ prefetchWorkItem, clearPrefetching }">
             <gl-link
+              :id="listItemUniqueId"
               class="issue-title-text gl-text-base"
               dir="auto"
               :href="issuableLinkHref"
@@ -425,6 +430,7 @@ export default {
         </work-item-prefetch>
         <gl-link
           v-else
+          :id="listItemUniqueId"
           class="issue-title-text gl-text-base"
           dir="auto"
           :href="issuableLinkHref"

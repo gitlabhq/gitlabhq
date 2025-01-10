@@ -65,6 +65,10 @@ module QA
         end
       end
 
+      def unregister!
+        unregister_runner
+      end
+
       def remove_via_api!
         super
       ensure
@@ -122,6 +126,12 @@ module QA
       rescue StandardError => e
         @docker_container&.remove!
         raise(e)
+      end
+
+      def unregister_runner
+        raise "Cannot unregister runner: Docker container not initialized for runner '#{name}'" unless @docker_container
+
+        @docker_container.run_unregister_command!
       end
 
       def populate_initial_id

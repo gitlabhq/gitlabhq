@@ -29,7 +29,7 @@ RSpec.describe 'Projects > Files > User creates a directory', :js, feature_categ
 
     it 'creates the directory in the default branch' do
       fill_in(:dir_name, with: 'new_directory')
-      click_button('Create directory')
+      click_button('Commit changes')
 
       expect(page).to have_content('master')
       expect(page).to have_content('The directory has been successfully created')
@@ -39,7 +39,7 @@ RSpec.describe 'Projects > Files > User creates a directory', :js, feature_categ
     it 'does not create a directory with a name of already existed directory' do
       fill_in(:dir_name, with: 'files')
       fill_in(:commit_message, with: 'New commit message', visible: true)
-      click_button('Create directory')
+      click_button('Commit changes')
 
       expect(page).to have_content('A directory with this name already exists')
       expect(page).to have_current_path(project_tree_path(project, 'master'), ignore_query: true)
@@ -58,7 +58,7 @@ RSpec.describe 'Projects > Files > User creates a directory', :js, feature_categ
       click_button('New directory')
 
       fill_in(:dir_name, with: 'new_directory')
-      click_button('Create directory')
+      click_button('Commit changes')
 
       expect(page).to have_content('files')
       expect(page).to have_content('new_directory')
@@ -70,18 +70,34 @@ RSpec.describe 'Projects > Files > User creates a directory', :js, feature_categ
       first('.add-to-tree').click
       click_button('New directory')
       fill_in(:dir_name, with: 'new_directory')
+      choose('Commit to a new branch', option: true)
       fill_in(:branch_name, with: 'new-feature')
-      click_button('Create directory')
     end
 
-    it 'creates the directory in the new branch and redirect to the merge request' do
-      expect(page).to have_content('new-feature')
-      expect(page).to have_content('The directory has been successfully created')
-      expect(page).to have_content('New merge request')
-      expect(page).to have_content('From new-feature into master')
-      expect(page).to have_content('Add new directory')
+    context 'when create a merge request for changes is selected' do
+      it 'creates the directory in the new branch and redirect to the merge request' do
+        click_button('Commit changes')
 
-      expect(page).to have_current_path(project_new_merge_request_path(project), ignore_query: true)
+        expect(page).to have_content('new-feature')
+        expect(page).to have_content('The directory has been successfully created')
+        expect(page).to have_content('New merge request')
+        expect(page).to have_content('From new-feature into master')
+        expect(page).to have_content('Add new directory')
+
+        expect(page).to have_current_path(project_new_merge_request_path(project), ignore_query: true)
+      end
+    end
+
+    context 'when create a merge request for changes is not selected' do
+      it 'creates the directory in the new branch and redirect to that directory' do
+        uncheck('Create a merge request for this change')
+        click_button('Commit changes')
+
+        expect(page).to have_content('The directory has been successfully created')
+        expect(page).to have_content('new_directory')
+        expect(page).to have_current_path(project_tree_path(project, File.join('new-feature', 'new_directory')),
+          ignore_query: true)
+      end
     end
   end
 
@@ -102,7 +118,7 @@ RSpec.describe 'Projects > Files > User creates a directory', :js, feature_categ
       click_button('New directory')
       fill_in(:dir_name, with: 'new_directory')
       fill_in(:commit_message, with: 'New commit message', visible: true)
-      click_button('Create directory')
+      click_button('Commit changes')
 
       fork = user.fork_of(project2.reload)
       wait_for_requests

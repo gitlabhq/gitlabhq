@@ -343,8 +343,8 @@ export default {
     <new-directory-modal
       v-if="showNewDirectoryModal"
       :can-push-code="canPushCode"
+      :can-push-to-branch="canPushToBranch"
       :modal-id="$options.newDirectoryModalId"
-      :commit-message="__('Add new directory')"
       :target-branch="selectedBranch"
       :original-branch="originalBranch"
       :path="newDirectoryPath"

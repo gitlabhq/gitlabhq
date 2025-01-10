@@ -23748,6 +23748,9 @@ msgstr ""
 msgid "Failed to create a branch for this issue. Please try again."
 msgstr ""
 
+msgid "Failed to create a new directory. See exception details for more information."
+msgstr ""
+
 msgid "Failed to create a to-do item for the design."
 msgstr ""
 
@@ -40612,10 +40615,13 @@ msgstr ""
 msgid "PagesDomain|Certificate Key is too long. (Max %d bytes)"
 msgstr ""
 
+msgid "PagesUsageQuota|Active parallel deployments"
+msgstr ""
+
 msgid "PagesUsageQuota|Learn about limits for Pages deployments"
 msgstr ""
 
-msgid "PagesUsageQuota|Parallel deployments"
+msgid "PagesUsageQuota|Remaining deployments"
 msgstr ""
 
 msgid "Pages|+ %{n} more deployments"
@@ -40661,9 +40667,6 @@ msgid "Pages|Last updated"
 msgstr ""
 
 msgid "Pages|No deployments yet"
-msgstr ""
-
-msgid "Pages|Pages deployments"
 msgstr ""
 
 msgid "Pages|Parallel deployments"

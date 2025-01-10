@@ -4,6 +4,7 @@ import { useFakeDate } from 'helpers/fake_date';
 import { TEST_HOST } from 'helpers/test_constants';
 import { shallowMountExtended as shallowMount } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
@@ -23,6 +24,7 @@ const createComponent = ({
   showWorkItemTypeIcon = false,
   isActive = false,
   preventRedirect = false,
+  fullPath = 'gitlab-org/issuable-project-path',
 } = {}) =>
   shallowMount(IssuableItem, {
     propsData: {
@@ -34,6 +36,7 @@ const createComponent = ({
       showWorkItemTypeIcon,
       isActive,
       preventRedirect,
+      fullPath,
     },
     slots,
     stubs: {
@@ -71,6 +74,7 @@ describe('IssuableItem', () => {
   const findIssuablePrefetchTrigger = () => wrapper.findByTestId('issuable-prefetch-trigger');
   const findStatusEl = () => wrapper.findByTestId('issuable-status');
   const findRelationshipIcons = () => wrapper.findComponent(WorkItemRelationshipIcons);
+  const findIssuableTitleLink = () => wrapper.findByTestId('issuable-title-link');
 
   describe('computed', () => {
     describe('author', () => {
@@ -691,6 +695,24 @@ describe('IssuableItem', () => {
           expect(wrapper.findAllComponents(GlLabel).at(labelPosition).props('scoped')).toBe(scoped);
         });
       });
+    });
+
+    it('renders link with unique id for issuable', () => {
+      wrapper = createComponent({ issuable: { ...mockIssuable, namespace: { fullPath: '' } } });
+
+      expect(findIssuableTitleLink().attributes().id).toBe(
+        `listItem-${'gitlab-org/issuable-project-path'}/${getIdFromGraphQLId(mockIssuable.id)}`,
+      );
+    });
+
+    it('renders link with unique id for work item', () => {
+      wrapper = createComponent({
+        issuable: { ...mockIssuable, namespace: { fullPath: 'gitlab-org/test-project-path' } },
+      });
+
+      expect(findIssuableTitleLink().attributes().id).toBe(
+        `listItem-${'gitlab-org/test-project-path'}/${getIdFromGraphQLId(mockIssuable.id)}`,
+      );
     });
   });
 

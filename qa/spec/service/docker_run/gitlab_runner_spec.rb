@@ -200,6 +200,31 @@ module QA
       end
     end
 
+    describe '#unregister!' do
+      let(:run_unregister_command) { subject.send(:run_unregister_command!) }
+
+      before do
+        allow(subject).to receive(:shell)
+
+        subject.instance_eval do
+          def runner_auth_token
+            token
+          end
+        end
+
+        run_unregister_command
+      end
+
+      it 'sets url' do
+        expect(subject).to have_received_masked_shell_command(/ --url #{subject.address} /)
+      end
+
+      it 'sets masked token' do
+        auth_token = subject.runner_auth_token
+        expect(subject).to have_received_masked_shell_command(/ --token #{auth_token}/)
+      end
+    end
+
     RSpec::Matchers.define "have_received_masked_shell_command" do |cmd|
       match do |actual|
         expect(actual).to have_received(:shell).with(cmd, mask_secrets: anything)

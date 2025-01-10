@@ -35,9 +35,11 @@ RSpec.describe GitlabSchema.types['WorkItem'], feature_category: :team_planning 
       reference
       archived
       name
+      duplicatedToWorkItemUrl
+      movedToWorkItemUrl
     ]
 
-    expect(described_class).to have_graphql_fields(*fields)
+    expect(described_class).to have_graphql_fields(*fields).at_least
   end
 
   describe 'pagination and count' do

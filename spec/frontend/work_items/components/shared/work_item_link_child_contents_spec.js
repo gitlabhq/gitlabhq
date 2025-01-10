@@ -1,6 +1,7 @@
 import { GlLabel, GlLink, GlButton, GlAvatarsInline } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/shared/work_item_link_child_metadata.vue';
@@ -112,6 +113,14 @@ describe('WorkItemLinkChildContents', () => {
       badgeTooltipProp: 'name',
       badgeSrOnlyText: '',
     });
+  });
+
+  it('renders link with unique id', () => {
+    createComponent();
+
+    expect(findTitleEl().attributes().id).toBe(
+      `listItem-${workItemTask.namespace.fullPath}/${getIdFromGraphQLId(workItemTask.id)}`,
+    );
   });
 
   describe('item title', () => {

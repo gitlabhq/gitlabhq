@@ -51,6 +51,10 @@ module QA
               runner.tags.all? { |tag| has_content?(tag) }
             end
           end
+
+          def has_no_runner?(runner)
+            has_no_element?("runner-row-#{runner.id}")
+          end
         end
       end
     end

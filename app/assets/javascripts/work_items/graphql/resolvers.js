@@ -16,6 +16,7 @@ import {
   WIDGET_TYPE_START_AND_DUE_DATE,
   NEW_WORK_ITEM_IID,
   WIDGET_TYPE_MILESTONE,
+  WIDGET_TYPE_HIERARCHY,
 } from '../constants';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
 
@@ -63,6 +64,7 @@ export const updateNewWorkItemCache = (input, cache) => {
     iteration,
     weight,
     milestone,
+    parent,
   } = input;
 
   const query = workItemByIidQuery;
@@ -118,6 +120,11 @@ export const updateNewWorkItemCache = (input, cache) => {
           widgetType: WIDGET_TYPE_MILESTONE,
           newData: milestone,
           nodePath: 'milestone',
+        },
+        {
+          widgetType: WIDGET_TYPE_HIERARCHY,
+          newData: parent,
+          nodePath: 'parent',
         },
       ];
 

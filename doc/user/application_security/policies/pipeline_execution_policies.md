@@ -169,8 +169,10 @@ Prerequisites:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173480) in GitLab 17.7.
 
-Use the `skip_ci` keyword to specify whether users are allowed to apply the `skip-ci` directive to skip the pipelines.
-When the keyword is not specified, the `skip-ci` directive is ignored, preventing all users
+Pipeline execution policies offer control over who can use the `[skip ci]` directive. You can specify certain users or service accounts that are allowed to use `[skip ci]` while still ensuring critical security and compliance checks are performed.
+
+Use the `skip_ci` keyword to specify whether users are allowed to apply the `skip_ci` directive to skip the pipelines.
+When the keyword is not specified, the `skip_ci` directive is ignored, preventing all users
 from bypassing the pipeline execution policies.
 
 | Field                   | Type     | Possible values          | Description |
@@ -351,7 +353,9 @@ You can [define project or group variables in the UI](../../../ci/variables/inde
 
 ## Behavior with `[skip ci]`
 
-To prevent a regular pipeline from triggering, users can push a commit to a protected branch with `[skip ci]` in the commit message. However, jobs defined with a pipeline execution policy are always triggered, as the policy ignores the `[skip ci]` directive. This prevents developers from skipping the execution of jobs defined in the policy, which ensures that critical security and compliance checks are always performed.
+By default, to prevent a regular pipeline from triggering, users can push a commit to a protected branch with `[skip ci]` in the commit message. However, jobs defined with a pipeline execution policy are always triggered, as the policy ignores the `[skip ci]` directive. This prevents developers from skipping the execution of jobs defined in the policy, which ensures that critical security and compliance checks are always performed.
+
+For more flexible control over `[skip ci]` behavior, see the [`skip_ci` type](#skip_ci-type) section.
 
 ## Interaction with scan execution policies
 

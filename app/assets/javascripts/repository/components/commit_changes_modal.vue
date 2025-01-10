@@ -16,12 +16,7 @@ import csrf from '~/lib/utils/csrf';
 import { __, s__ } from '~/locale';
 import validation, { initFormField } from '~/vue_shared/directives/validation';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import {
-  SECONDARY_OPTIONS_TEXT,
-  COMMIT_LABEL,
-  COMMIT_MESSAGE_SUBJECT_MAX_LENGTH,
-  COMMIT_MESSAGE_BODY_MAX_LENGTH,
-} from '../constants';
+import { COMMIT_MESSAGE_SUBJECT_MAX_LENGTH, COMMIT_MESSAGE_BODY_MAX_LENGTH } from '../constants';
 
 export default {
   csrf,
@@ -51,7 +46,7 @@ export default {
     COMMIT_IN_DEFAULT_BRANCH: __(
       'GitLab will create a default branch, %{branchName}, and commit your changes.',
     ),
-    COMMIT_LABEL,
+    COMMIT_LABEL: __('Commit message'),
     COMMIT_MESSAGE_HINT: __(
       'Try to keep the first line under 52 characters and the others under 72.',
     ),
@@ -70,7 +65,7 @@ export default {
     NO_PERMISSION_TO_COMMIT_MESSAGE: __(
       "You don't have permission to commit to %{branchName}. %{linkStart}Learn more.%{linkEnd}",
     ),
-    SECONDARY_OPTIONS_TEXT,
+    SECONDARY_OPTIONS_TEXT: __('Cancel'),
   },
   directives: {
     validation: validation(),

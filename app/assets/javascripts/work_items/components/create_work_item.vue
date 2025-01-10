@@ -37,6 +37,7 @@ import {
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_MILESTONE,
   DEFAULT_EPIC_COLORS,
+  WIDGET_TYPE_HIERARCHY,
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
@@ -49,6 +50,7 @@ import WorkItemDescription from './work_item_description.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemLabels from './work_item_labels.vue';
 import WorkItemMilestone from './work_item_milestone.vue';
+import WorkItemParent from './work_item_parent.vue';
 import WorkItemLoading from './work_item_loading.vue';
 import WorkItemCrmContacts from './work_item_crm_contacts.vue';
 
@@ -69,6 +71,7 @@ export default {
     WorkItemCrmContacts,
     WorkItemProjectsListbox,
     TitleSuggestions,
+    WorkItemParent,
     WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
     WorkItemHealthStatus: () =>
       import('ee_component/work_items/components/work_item_health_status.vue'),
@@ -77,7 +80,7 @@ export default {
       import('ee_component/work_items/components/work_item_rolledup_dates.vue'),
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
   },
-  inject: ['fullPath'],
+  inject: ['fullPath', 'groupPath'],
   i18n: {
     suggestionTitle: s__('WorkItem|Similar items'),
     similarWorkItemHelpText: s__(
@@ -266,6 +269,9 @@ export default {
     workItemColor() {
       return findWidget(WIDGET_TYPE_COLOR, this.workItem);
     },
+    workItemHierarchy() {
+      return findWidget(WIDGET_TYPE_HIERARCHY, this.workItem);
+    },
     workItemCrmContacts() {
       return findWidget(WIDGET_TYPE_CRM_CONTACTS, this.workItem);
     },
@@ -335,6 +341,9 @@ export default {
     },
     workItemCrmContactIds() {
       return this.workItemCrmContacts?.contacts?.nodes?.map((item) => item.id) || [];
+    },
+    workItemParent() {
+      return this.workItemHierarchy?.parent || null;
     },
     workItemColorValue() {
       const colorWidget = findWidget(WIDGET_TYPE_COLOR, this.workItem);
@@ -551,9 +560,12 @@ export default {
         };
       }
 
-      if (this.parentId) {
+      if (
+        this.parentId ||
+        (this.isWidgetSupported(WIDGET_TYPE_HIERARCHY) && this.workItemParent?.id)
+      ) {
         workItemCreateInput.hierarchyWidget = {
-          parentId: this.parentId,
+          parentId: this.workItemParent?.id ?? this.parentId,
         };
       }
 
@@ -568,8 +580,15 @@ export default {
           update: (store, { data: { workItemCreate } }) => {
             const { workItem } = workItemCreate;
 
-            if (this.parentId) {
-              addHierarchyChild({ cache: store, id: this.parentId, workItem });
+            if (
+              this.parentId ||
+              (this.isWidgetSupported(WIDGET_TYPE_HIERARCHY) && this.workItemParent?.id)
+            ) {
+              addHierarchyChild({
+                cache: store,
+                id: this.workItemParent?.id ?? this.parentId,
+                workItem,
+              });
             }
           },
         });
@@ -794,6 +813,18 @@ export default {
               :work-item="workItem"
               :full-path="fullPath"
               :can-update="canUpdate"
+              @error="$emit('error', $event)"
+            />
+            <work-item-parent
+              v-if="workItemHierarchy"
+              class="work-item-attributes-item"
+              :can-update="canUpdate"
+              :work-item-id="workItemId"
+              :work-item-type="selectedWorkItemTypeName"
+              :group-path="groupPath"
+              :full-path="fullPath"
+              :parent="workItemParent"
+              :is-group="isGroup"
               @error="$emit('error', $event)"
             />
             <work-item-crm-contacts

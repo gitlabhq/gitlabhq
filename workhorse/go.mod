@@ -9,7 +9,6 @@ require (
 	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.4.1
 	github.com/BurntSushi/toml v1.4.0
 	github.com/alecthomas/chroma/v2 v2.14.0
-	github.com/aws/aws-sdk-go v1.55.5
 	github.com/aws/aws-sdk-go-v2 v1.32.3
 	github.com/aws/aws-sdk-go-v2/config v1.28.1
 	github.com/aws/aws-sdk-go-v2/credentials v1.17.42
@@ -59,6 +58,7 @@ require (
 	github.com/DataDog/datadog-go v4.4.0+incompatible // indirect
 	github.com/DataDog/sketches-go v1.0.0 // indirect
 	github.com/Microsoft/go-winio v0.6.1 // indirect
+	github.com/aws/aws-sdk-go v1.55.5 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.6.6 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.16.18 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.22 // indirect

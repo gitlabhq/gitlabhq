@@ -30358,6 +30358,8 @@ CREATE UNIQUE INDEX index_ci_runner_machines_on_runner_id_and_system_xid ON ci_r
 
 CREATE INDEX index_ci_runner_machines_on_runner_type ON ci_runner_machines USING btree (runner_type);
 
+CREATE INDEX index_ci_runner_machines_on_sharding_key_id_when_not_null ON ci_runner_machines USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
+
 CREATE INDEX index_ci_runner_machines_on_version ON ci_runner_machines USING btree (version);
 
 CREATE INDEX index_ci_runner_namespaces_on_namespace_id ON ci_runner_namespaces USING btree (namespace_id);
@@ -30389,6 +30391,8 @@ CREATE INDEX index_ci_runners_on_description_trigram ON ci_runners USING gin (de
 CREATE INDEX index_ci_runners_on_locked ON ci_runners USING btree (locked);
 
 CREATE INDEX index_ci_runners_on_runner_type_and_id ON ci_runners USING btree (runner_type, id);
+
+CREATE INDEX index_ci_runners_on_sharding_key_id_when_not_null ON ci_runners USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
 
 CREATE INDEX index_ci_runners_on_token_expires_at_and_id_desc ON ci_runners USING btree (token_expires_at, id DESC);
 

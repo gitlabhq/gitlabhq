@@ -137,16 +137,6 @@ RSpec.describe ObjectStorage::DirectUpload, feature_category: :shared do
         end
       end
 
-      context 'when workhorse_use_aws_sdk_v2 is set to false' do
-        before do
-          stub_feature_flags(workhorse_use_aws_sdk_v2: false)
-        end
-
-        it 'sets AwsSDK to v1' do
-          expect(subject[:ObjectStorage][:S3Config][:AwsSDK]).to eq("v1")
-        end
-      end
-
       context 'when V2 signatures are used' do
         before do
           credentials[:aws_signature_version] = 2

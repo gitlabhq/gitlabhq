@@ -13,6 +13,7 @@ import {
 import { __, s__, sprintf } from '~/locale';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/shared/work_item_link_child_metadata.vue';
 import RichTimestampTooltip from '../rich_timestamp_tooltip.vue';
 import WorkItemTypeIcon from '../work_item_type_icon.vue';
@@ -154,6 +155,9 @@ export default {
         gon.current_user_use_work_items_view
       );
     },
+    childItemUniqueId() {
+      return `listItem-${this.childItemFullPath}/${getIdFromGraphQLId(this.childItem.id)}`;
+    },
   },
   methods: {
     showScopedLabel(label) {
@@ -217,6 +221,7 @@ export default {
             />
           </span>
           <gl-link
+            :id="childItemUniqueId"
             :href="childItemWebUrl"
             :class="{ '!gl-text-subtle': !isChildItemOpen }"
             class="gl-hyphens-auto gl-break-words gl-font-semibold"

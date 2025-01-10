@@ -49,6 +49,7 @@ Most of the tooling and APIs are considered unstable.
 
    ```sql
    create database gitlab_clickhouse_development;
+   create database gitlab_clickhouse_test;
    ```
 
 ### Validate your setup

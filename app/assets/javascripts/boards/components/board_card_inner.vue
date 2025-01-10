@@ -125,7 +125,6 @@ export default {
     itemPrefix() {
       return this.isEpicBoard ? '&' : '#';
     },
-
     itemId() {
       if (this.item.iid) {
         return `${this.itemPrefix}${this.item.iid}`;

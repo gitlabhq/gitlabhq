@@ -9,6 +9,8 @@ module Types
 
     authorize :read_work_item
 
+    present_using WorkItemPresenter
+
     field :author, Types::UserType, null: true,
       description: 'User that created the work item.',
       experiment: { milestone: '15.9' }
@@ -63,6 +65,11 @@ module Types
       description: 'Whether the work item belongs to an archived project. Always false for group level work items.',
       experiment: { milestone: '16.5' }
 
+    field :duplicated_to_work_item_url, GraphQL::Types::String, null: true,
+      description: 'URL of the work item that the work item is marked as a duplicate of.'
+    field :moved_to_work_item_url, GraphQL::Types::String, null: true,
+      description: 'URL of the work item that the work item was moved to.'
+
     markdown_field :title_html, null: true
     markdown_field :description_html, null: true
 
@@ -72,10 +79,6 @@ module Types
       context.scoped_set!(:resource_parent, object.resource_parent)
 
       object.work_item_type
-    end
-
-    def web_url
-      Gitlab::UrlBuilder.build(object)
     end
 
     def create_note_email
@@ -89,3 +92,5 @@ module Types
     end
   end
 end
+
+Types::WorkItemType.prepend_mod_with('Types::WorkItemType')

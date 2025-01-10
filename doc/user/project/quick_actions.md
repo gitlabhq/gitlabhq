@@ -185,6 +185,7 @@ To auto-format this table, use the VS Code Markdown Table formatter: `https://do
 | `/unassign`                                                   | **{dotted-circle}** No | **{check-circle}** Yes | **{check-circle}** Yes | Remove all assignees. |
 | `/unlabel ~label1 ~label2` or `/remove_label ~label1 ~label2` | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Remove specified labels. |
 | `/unlabel` or `/remove_label`                                 | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Remove all labels. |
+| `/unlink`                                                     | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Remove link to the provided work item. The `<work item>` value should be in the format of `#work_item`, `group/project#work_item`, or the full work item URL. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481851) in GitLab 17.8. |
 | `/unsubscribe`                                                  | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Unsubscribe to notifications. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420796) in GitLab 16.4 |
 | `/weight <value>`                                             | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Set weight. Valid options for `<value>` include `0`, `1`, and `2`. |
 

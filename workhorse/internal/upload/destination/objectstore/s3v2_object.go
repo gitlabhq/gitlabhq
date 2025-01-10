@@ -84,7 +84,7 @@ func (s *S3v2Object) Upload(ctx context.Context, r io.Reader) error {
 
 	input := &s3.PutObjectInput{
 		Bucket: aws.String(s.config.Bucket),
-		Key:    aws.String(normalizeKey(s.objectName)),
+		Key:    aws.String(s.Name()),
 		Body:   r,
 	}
 
@@ -125,7 +125,7 @@ func (s *S3v2Object) Delete() {
 
 	input := &s3.DeleteObjectInput{
 		Bucket: aws.String(s.config.Bucket),
-		Key:    aws.String(normalizeKey(s.objectName)),
+		Key:    aws.String(s.Name()),
 	}
 
 	// We can't use the request context because in a successful
@@ -137,4 +137,9 @@ func (s *S3v2Object) Delete() {
 	if err != nil {
 		log.WithError(err).Error("error deleting S3 object", err)
 	}
+}
+
+// Name returns the object name without a leading slash.
+func (s *S3v2Object) Name() string {
+	return normalizeKey(s.objectName)
 }
