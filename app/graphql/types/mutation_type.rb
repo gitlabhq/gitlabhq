@@ -158,9 +158,9 @@ module Types
     mount_mutation Mutations::DesignManagement::Move
     mount_mutation Mutations::DesignManagement::Update
     mount_mutation Mutations::ContainerExpirationPolicies::Update
-    mount_mutation Mutations::ContainerRegistry::Protection::Rule::Create, experiment: { milestone: '16.6' }
-    mount_mutation Mutations::ContainerRegistry::Protection::Rule::Delete, experiment: { milestone: '16.7' }
-    mount_mutation Mutations::ContainerRegistry::Protection::Rule::Update, experiment: { milestone: '16.7' }
+    mount_mutation Mutations::ContainerRegistry::Protection::Rule::Create
+    mount_mutation Mutations::ContainerRegistry::Protection::Rule::Delete
+    mount_mutation Mutations::ContainerRegistry::Protection::Rule::Update
     mount_mutation Mutations::ContainerRegistry::Protection::TagRule::Create, experiment: { milestone: '17.8' }
     mount_mutation Mutations::ContainerRegistry::Protection::TagRule::Delete, experiment: { milestone: '17.8' }
     mount_mutation Mutations::ContainerRegistry::Protection::TagRule::Update, experiment: { milestone: '17.8' }

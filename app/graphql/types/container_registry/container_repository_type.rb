@@ -40,10 +40,8 @@ module Types
       field :project, Types::ProjectType, null: false, description: 'Project of the container registry.'
       field :protection_rule_exists, GraphQL::Types::Boolean,
         null: false,
-        experiment: { milestone: '17.2' },
         description:
-          'Whether any matching container protection rule exists for the container repository. ' \
-          'Available only when feature flag `container_registry_protected_containers` is enabled.'
+          'Whether any matching container protection rule exists for the container repository.'
       field :status, Types::ContainerRegistry::ContainerRepositoryStatusEnum, null: true,
         description: 'Status of the container repository.'
       field :tags_count, GraphQL::Types::Int, null: false, description: 'Number of tags associated with the image.'
@@ -71,8 +69,6 @@ module Types
       end
 
       def protection_rule_exists
-        return false if Feature.disabled?(:container_registry_protected_containers, object.project.root_ancestor)
-
         BatchLoader::GraphQL.for([object.project_id, object.path]).batch do |tuples, loader|
           tuples.each_slice(PROTECTION_RULE_EXISTS_BATCH_SIZE) do |projects_and_repository_paths|
             ::ContainerRegistry::Protection::Rule

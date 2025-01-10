@@ -230,18 +230,6 @@ RSpec.describe 'getting container repositories in a project', feature_category: 
         end
     end
 
-    context "when feature flag ':container_registry_protected_containers' disabled" do
-      before do
-        stub_feature_flags(container_registry_protected_containers: false)
-      end
-
-      it 'returns false for the field "protectionRuleExists" for each container repository' do
-        subject
-
-        expect(container_repositories_response).to all include 'node' => include('protectionRuleExists' => false)
-      end
-    end
-
     # In order to trigger the N+1 query, we need to create project with different container repository counts.
     # In this case, project1 has 4 container repositories and project2 has 10 container repositories.
     describe "efficient database queries" do

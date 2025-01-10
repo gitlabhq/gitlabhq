@@ -6,7 +6,6 @@ import { __, sprintf } from '~/locale';
 import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
 import { getParameterByName, visitUrl } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
-import { BLOB_EDIT_ERROR } from '~/blob_edit/constants';
 import getRefMixin from '../mixins/get_ref';
 
 export default {
@@ -16,6 +15,7 @@ export default {
   },
   mixins: [getRefMixin],
   inject: [
+    'action',
     'editor',
     'updatePath',
     'cancelPath',
@@ -39,11 +39,24 @@ export default {
     updateModalId() {
       return uniqueId('update-modal');
     },
+    isEditBlob() {
+      return this.action === 'update';
+    },
     updateModalCommitMessage() {
-      return sprintf(__('Edit %{name}'), { name: this.blobName });
+      return this.isEditBlob
+        ? sprintf(__('Edit %{name}'), { name: this.blobName })
+        : __('Add new file');
     },
     fromMergeRequestIid() {
       return getParameterByName('from_merge_request_iid') || '';
+    },
+    headerText() {
+      return this.isEditBlob ? __('Edit file') : __('New file');
+    },
+    errorMessage() {
+      return this.isEditBlob
+        ? __('An error occurred editing the blob')
+        : __('An error occurred creating the blob');
     },
   },
   methods: {
@@ -55,11 +68,16 @@ export default {
       this.filePath = this.editor.filepathFormMediator?.$filenameInput?.val();
       this.$refs[this.updateModalId].show();
     },
-    handleBlobEdit(formData) {
-      formData.append('file', this.fileContent);
-      formData.append('file_path', this.filePath);
-      formData.append('last_commit_sha', this.lastCommitSha);
-      formData.append('from_merge_request_iid', this.fromMergeRequestIid);
+    handleFormSubmit(formData) {
+      if (this.isEditBlob) {
+        formData.append('file', this.fileContent);
+        formData.append('file_path', this.filePath);
+        formData.append('last_commit_sha', this.lastCommitSha);
+        formData.append('from_merge_request_iid', this.fromMergeRequestIid);
+      } else {
+        formData.append('file_name', this.filePath);
+        formData.append('content', this.fileContent);
+      }
 
       // Object.fromEntries is used here to handle potential line ending mutations in `FormData`.
       // `FormData` uses the "multipart/form-data" format (RFC 2388), which follows MIME data stream rules (RFC 2046).
@@ -68,7 +86,7 @@ export default {
       const data = Object.fromEntries(formData);
 
       return axios({
-        method: 'put',
+        method: this.isEditBlob ? 'put' : 'post',
         url: this.updatePath,
         data,
       })
@@ -77,16 +95,15 @@ export default {
             visitUrl(response.data.filePath);
           } else {
             this.$ref.commitChangesModal.hide();
-            createAlert({ message: BLOB_EDIT_ERROR, captureError: true });
+            createAlert({ message: this.errorMessage, captureError: true });
           }
         })
         .catch(() => {
-          createAlert({ message: BLOB_EDIT_ERROR, captureError: true });
+          createAlert({ message: this.errorMessage, captureError: true });
         });
     },
   },
   i18n: {
-    headerText: __('Edit file'),
     cancelButtonText: __('Cancel'),
     commitButtonText: __('Commit changes'),
     confirmationMessage: __('Leave edit mode? All unsaved changes will be lost.'),
@@ -97,7 +114,7 @@ export default {
 <template>
   <div class="gl-mb-4 gl-mt-5 gl-items-center gl-justify-between md:gl-flex lg:gl-my-5">
     <h1 class="gl-heading-1 gl-inline-block md:!gl-mb-0">
-      {{ $options.i18n.headerText }}
+      {{ headerText }}
     </h1>
     <div class="gl-flex gl-gap-3">
       <gl-button
@@ -122,7 +139,7 @@ export default {
       :empty-repo="emptyRepo"
       :can-push-to-branch="canPushToBranch"
       :branch-allows-collaboration="branchAllowsCollaboration"
-      @submit-form="handleBlobEdit"
+      @submit-form="handleFormSubmit"
     />
   </div>
 </template>

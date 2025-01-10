@@ -10,6 +10,7 @@ export default function initBlobEditHeader(editor) {
   }
 
   const {
+    action,
     updatePath,
     cancelPath,
     originalBranch,
@@ -25,6 +26,7 @@ export default function initBlobEditHeader(editor) {
   return new Vue({
     el,
     provide: {
+      action,
       editor,
       updatePath,
       cancelPath,

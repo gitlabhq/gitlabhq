@@ -1,8 +1,0 @@
----
-name: container_registry_protected_containers
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133527
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/429074
-milestone: '16.6'
-type: development
-group: group::container registry
-default_enabled: false

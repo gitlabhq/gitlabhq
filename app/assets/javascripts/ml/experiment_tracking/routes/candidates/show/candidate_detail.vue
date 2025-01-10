@@ -98,7 +98,7 @@ export default {
     noParametersMessage: s__('MlModelRegistry|No logged parameters'),
     noMetricsMessage: s__('MlModelRegistry|No logged metrics'),
     noMetadataMessage: s__('MlModelRegistry|No logged metadata'),
-    noCiMessage: s__('MlModelRegistry|Candidate not linked to a CI build'),
+    noCiMessage: s__('MlModelRegistry|Run not linked to a CI build'),
     noArtifactsMessage: s__('MlModelRegistry|No logged artifacts.'),
     copyMessage: __('Copy MLflow run ID'),
   },

@@ -27,9 +27,10 @@ describe('BlobEditHeader', () => {
     filepathFormMediator: { $filenameInput: { val: jest.fn().mockReturnValue('.gitignore') } },
   };
 
-  const createWrapper = () => {
+  const createWrapper = ({ action = 'update' } = {}) => {
     return shallowMountExtended(BlobEditHeader, {
       provide: {
+        action,
         editor: mockEditor,
         updatePath: '/update',
         cancelPath: '/cancel',
@@ -75,68 +76,131 @@ describe('BlobEditHeader', () => {
     await axios.waitForAll();
   };
 
-  it('renders title with two buttons', () => {
-    expect(findTitle().text()).toBe('Edit file');
-    const buttons = findButtons();
-    expect(buttons).toHaveLength(2);
-    expect(buttons.at(0).text()).toBe('Cancel');
-    expect(buttons.at(1).text()).toBe('Commit changes');
-  });
+  describe('for edit blob', () => {
+    it('renders title with two buttons', () => {
+      expect(findTitle().text()).toBe('Edit file');
+      const buttons = findButtons();
+      expect(buttons).toHaveLength(2);
+      expect(buttons.at(0).text()).toBe('Cancel');
+      expect(buttons.at(1).text()).toBe('Commit changes');
+    });
 
-  it('opens commit changes modal with correct props', async () => {
-    findCommitChangesButton().vm.$emit('click');
-    await nextTick();
-    expect(mockEditor.getFileContent).toHaveBeenCalled();
-    expect(findCommitChangesModal().props()).toEqual({
-      modalId: 'update-modal1',
-      canPushCode: true,
-      canPushToBranch: true,
-      commitMessage: 'Edit test.js',
-      originalBranch: 'main',
-      targetBranch: 'feature',
-      isUsingLfs: false,
-      loading: false,
-      emptyRepo: false,
-      branchAllowsCollaboration: false,
-      valid: true,
+    it('opens commit changes modal with correct props', async () => {
+      findCommitChangesButton().vm.$emit('click');
+      await nextTick();
+      expect(mockEditor.getFileContent).toHaveBeenCalled();
+      expect(findCommitChangesModal().props()).toEqual({
+        modalId: 'update-modal1',
+        canPushCode: true,
+        canPushToBranch: true,
+        commitMessage: 'Edit test.js',
+        emptyRepo: false,
+        isUsingLfs: false,
+        originalBranch: 'main',
+        targetBranch: 'feature',
+        loading: false,
+        branchAllowsCollaboration: false,
+        valid: true,
+      });
+    });
+
+    it('shows confirmation message on cancel button', () => {
+      expect(findCancelButton().attributes('data-confirm')).toBe(
+        'Leave edit mode? All unsaved changes will be lost.',
+      );
+    });
+
+    it('on submit, redirects to the updated file', async () => {
+      findCommitChangesButton().vm.$emit('click');
+
+      mock.onPut('/update').replyOnce(HTTP_STATUS_OK, { filePath: '/update/path' });
+      await submitForm();
+
+      expect(mock.history.put).toHaveLength(1);
+      const putData = JSON.parse(mock.history.put[0].data);
+      expect(putData.file).toBe(content);
+      expect(visitUrlSpy).toHaveBeenCalledWith('/update/path');
+    });
+
+    it('creates alert when there is no filePath in response', async () => {
+      mock.onPut('/update').reply(HTTP_STATUS_OK);
+      await submitForm();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        captureError: true,
+        message: 'An error occurred editing the blob',
+      });
+    });
+
+    it('on error, creates an alert error', async () => {
+      mock.onPut('/update').timeout();
+      await submitForm();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        captureError: true,
+        message: 'An error occurred editing the blob',
+      });
     });
   });
 
-  it('shows confirmation message on cancel button', () => {
-    expect(findCancelButton().attributes('data-confirm')).toBe(
-      'Leave edit mode? All unsaved changes will be lost.',
-    );
-  });
-
-  it('on submit, redirects to the updated file', async () => {
-    findCommitChangesButton().vm.$emit('click');
-
-    mock.onPut('/update').replyOnce(HTTP_STATUS_OK, { filePath: '/update/path' });
-    await submitForm();
-
-    expect(mock.history.put).toHaveLength(1);
-    const putData = JSON.parse(mock.history.put[0].data);
-    expect(putData.file).toBe(content);
-    expect(visitUrlSpy).toHaveBeenCalledWith('/update/path');
-  });
-
-  it('creates alert when there is no filePath in response', async () => {
-    mock.onPut('/update').reply(HTTP_STATUS_OK);
-    await submitForm();
-
-    expect(createAlert).toHaveBeenCalledWith({
-      captureError: true,
-      message: 'An error occurred editing the blob',
+  describe('for create blob', () => {
+    beforeEach(() => {
+      wrapper = createWrapper({ action: 'create' });
     });
-  });
 
-  it('on error, creates an alert error', async () => {
-    mock.onPut('/update').timeout();
-    await submitForm();
+    it('renders title with two buttons', () => {
+      expect(findTitle().text()).toBe('New file');
+      const buttons = findButtons();
+      expect(buttons).toHaveLength(2);
+      expect(buttons.at(0).text()).toBe('Cancel');
+      expect(buttons.at(1).text()).toBe('Commit changes');
+    });
 
-    expect(createAlert).toHaveBeenCalledWith({
-      captureError: true,
-      message: 'An error occurred editing the blob',
+    it('opens commit changes modal with correct props', async () => {
+      findCommitChangesButton().vm.$emit('click');
+      await nextTick();
+      expect(mockEditor.getFileContent).toHaveBeenCalled();
+      expect(findCommitChangesModal().props()).toEqual({
+        modalId: 'update-modal1',
+        canPushCode: true,
+        canPushToBranch: true,
+        commitMessage: 'Add new file',
+        originalBranch: 'main',
+        targetBranch: 'feature',
+        isUsingLfs: false,
+        emptyRepo: false,
+        branchAllowsCollaboration: false,
+        loading: false,
+        valid: true,
+      });
+    });
+
+    it('shows confirmation message on cancel button', () => {
+      expect(findCancelButton().attributes('data-confirm')).toBe(
+        'Leave edit mode? All unsaved changes will be lost.',
+      );
+    });
+
+    it('on submit, redirects to the new file', async () => {
+      findCommitChangesButton().vm.$emit('click');
+
+      mock.onPost('/update').reply(HTTP_STATUS_OK, { filePath: '/new/file' });
+      await submitForm();
+
+      expect(mock.history.post).toHaveLength(1);
+      const putData = JSON.parse(mock.history.post[0].data);
+      expect(putData.content).toBe(content);
+      expect(visitUrlSpy).toHaveBeenCalledWith('/new/file');
+    });
+
+    it('on error, creates an alert error', async () => {
+      mock.onPost('/update').timeout();
+      await submitForm();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        captureError: true,
+        message: 'An error occurred creating the blob',
+      });
     });
   });
 });

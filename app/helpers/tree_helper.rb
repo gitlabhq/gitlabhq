@@ -72,19 +72,6 @@ module TreeHelper
     edit_in_new_fork_notice + (_(" Try to %{action} this file again.") % { action: action })
   end
 
-  def commit_in_fork_help
-    _("GitLab will create a branch in your fork and start a merge request.")
-  end
-
-  def commit_in_single_accessible_branch
-    branch_name = ERB::Util.html_escape(selected_branch)
-
-    message = _("Your changes can be committed to %{branch_name} because a merge "\
-                "request is open.") % { branch_name: "<strong>#{branch_name}</strong>" }
-
-    message.html_safe
-  end
-
   def path_breadcrumbs(max_links = 6)
     if @path.present?
       part_path = ""

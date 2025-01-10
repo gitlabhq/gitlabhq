@@ -51,7 +51,6 @@ RSpec.describe Projects::Settings::PackagesAndRegistriesController, feature_cate
 
       it_behaves_like 'pushed feature flag', :packages_protected_packages_pypi
       it_behaves_like 'pushed feature flag', :packages_protected_packages_conan
-      it_behaves_like 'pushed feature flag', :container_registry_protected_containers
       it_behaves_like 'pushed feature flag', :container_registry_protected_tags
     end
   end

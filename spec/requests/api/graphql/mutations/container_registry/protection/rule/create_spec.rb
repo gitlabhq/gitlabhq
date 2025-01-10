@@ -188,20 +188,4 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
       it { subject.tap { expect_graphql_errors_to_include(/you don't have permission to perform this action/) } }
     end
   end
-
-  context "when feature flag ':container_registry_protected_containers' disabled" do
-    before do
-      stub_feature_flags(container_registry_protected_containers: false)
-    end
-
-    it_behaves_like 'an erroneous response'
-
-    it { subject.tap { expect(::ContainerRegistry::Protection::Rule.where(project: project)).not_to exist } }
-
-    it 'returns error of disabled feature flag' do
-      subject.tap do
-        expect_graphql_errors_to_include(/'container_registry_protected_containers' feature flag is disabled/)
-      end
-    end
-  end
 end

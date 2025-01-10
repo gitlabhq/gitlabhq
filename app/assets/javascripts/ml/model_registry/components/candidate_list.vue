@@ -74,9 +74,9 @@ export default {
   i18n: {
     NO_CANDIDATES_LABEL,
     learnMore: __('Learn more'),
-    emptyStateLabel: s__('MlModelRegistry|No candidates associated with this model'),
+    emptyStateLabel: s__('MlModelRegistry|No runs associated with this model'),
     emptyStateDescription: s__(
-      'MlModelRegistry|Use candidates to track performance, parameters, and metadata',
+      'MlModelRegistry|Use runs to track performance, parameters, and metadata',
     ),
   },
   emptySvgPath: emptySvgUrl,

@@ -175,15 +175,15 @@ describe('MlExperimentsShow', () => {
       expect(findMetadataTab().attributes('title')).toBe('Overview');
     });
 
-    it('renders candidates tab', () => {
-      expect(findCandidatesTab().text()).toContain('Candidates');
+    it('renders runs tab', () => {
+      expect(findCandidatesTab().text()).toContain('Runs');
     });
 
     it('renders performance tab', () => {
       expect(findPerformanceTab().attributes('title')).toBe('Performance');
     });
 
-    it('shows the number of candidates in the tab', () => {
+    it('shows the number of runs in the tab', () => {
       expect(findCandidatesCountBadge().text()).toBe(MOCK_CANDIDATES.length.toString());
     });
 

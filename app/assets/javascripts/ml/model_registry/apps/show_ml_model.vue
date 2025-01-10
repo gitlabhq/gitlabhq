@@ -305,7 +305,7 @@ export default {
                 </gl-tab>
                 <gl-tab @click="goTo($options.ROUTE_CANDIDATES)">
                   <template #title>
-                    {{ s__('MlModelRegistry|Version candidates') }}
+                    {{ s__('MlModelRegistry|Runs') }}
                     <gl-badge class="gl-tab-counter-badge">{{ candidateCount }}</gl-badge>
                   </template>
                 </gl-tab>

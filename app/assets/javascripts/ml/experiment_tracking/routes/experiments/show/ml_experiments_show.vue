@@ -135,7 +135,7 @@ export default {
     PERFORMANCE_LABEL: s__('ExperimentTracking|Performance'),
     tabs: {
       metadata: s__('MlExperimentTracking|Overview'),
-      candidates: s__('MlExperimentTracking|Candidates'),
+      candidates: s__('MlExperimentTracking|Runs'),
       performance: s__('MlExperimentTracking|Performance'),
     },
   },

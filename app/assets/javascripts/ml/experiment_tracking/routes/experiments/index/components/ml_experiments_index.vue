@@ -76,14 +76,14 @@ export default {
     emptyStateTitleLabel: s__('MlExperimentTracking|Get started with model experiments!'),
     titleLabel: s__('MlExperimentTracking|Model experiments'),
     emptyStateDescriptionLabel: s__(
-      'MlExperimentTracking|Experiments keep track of comparable model candidates, and determine which parameters provides the best performance.',
+      'MlExperimentTracking|Experiments keep track of comparable model runs, and determine which parameters provides the best performance.',
     ),
   },
   tableFields: [
     { key: 'nameColumn', label: s__('MlExperimentTracking|Name') },
     {
       key: 'candidateCountColumn',
-      label: s__('MlExperimentTracking|Number of candidates'),
+      label: s__('MlExperimentTracking|Number of runs'),
     },
     { key: 'creatorColumn', label: s__('MlExperimentTracking|Creator') },
     { key: 'lastActivityColumn', label: s__('MlExperimentTracking|Last activity') },

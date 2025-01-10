@@ -144,7 +144,7 @@ export default {
         <gl-sprintf :message="$options.i18n.packageNamePatternInputHelpText">
           <template #link="{ content }">
             <help-page-link
-              href="user/packages/container_registry/container_protection_rules.md"
+              href="user/packages/container_registry/container_repository_protection_rules.md"
               target="_blank"
               >{{ content }}</help-page-link
             >

@@ -33,13 +33,6 @@ export default {
       showAlert: false,
     };
   },
-  computed: {
-    showProtectedContainersSettings() {
-      return (
-        this.glFeatures.containerRegistryProtectedContainers && this.showContainerRegistrySettings
-      );
-    },
-  },
   created() {
     this.checkAlert();
   },

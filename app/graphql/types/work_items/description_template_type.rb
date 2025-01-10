@@ -2,15 +2,15 @@
 
 module Types
   module WorkItems
+    # rubocop: disable Graphql/AuthorizeTypes -- Authorization is done in the parent type
     class DescriptionTemplateType < BaseObject
       graphql_name 'WorkItemDescriptionTemplate'
 
-      authorize :read_work_item
-
       field :content, GraphQL::Types::String,
-        description: 'Content of Description Template.', null: false
+        description: 'Content of Description Template.', null: false, calls_gitaly: true
       field :name, GraphQL::Types::String,
-        description: 'Name of Description Template.', null: false
+        description: 'Name of Description Template.', null: false, calls_gitaly: true
     end
+    # rubocop: enable Graphql/AuthorizeTypes
   end
 end

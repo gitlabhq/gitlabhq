@@ -83,18 +83,4 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
       it { is_expected.tap { expect_graphql_errors_to_include(/you don't have permission to perform this action/) } }
     end
   end
-
-  context "when feature flag ':container_registry_protected_containers' disabled" do
-    before do
-      stub_feature_flags(container_registry_protected_containers: false)
-    end
-
-    it_behaves_like 'an erroneous response'
-
-    it do
-      post_graphql_mutation_delete_container_registry_protection_rule
-
-      expect_graphql_errors_to_include(/'container_registry_protected_containers' feature flag is disabled/)
-    end
-  end
 end

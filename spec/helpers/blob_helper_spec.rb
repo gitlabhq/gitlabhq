@@ -445,36 +445,56 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
       allow(helper).to receive(:selected_branch).and_return(ref)
     end
 
-    it 'returns data related to blob editing' do
-      project_presenter = instance_double(ProjectPresenter)
+    context 'when editing a blob' do
+      before do
+        project_presenter = instance_double(ProjectPresenter)
 
-      allow(helper).to receive(:can?).with(user, :push_code, project).and_return(true)
-      allow(project).to receive(:present).and_return(project_presenter)
-      allow(project_presenter).to receive(:can_current_user_push_to_branch?).with(ref).and_return(true)
-      allow(project).to receive(:empty_repo?).and_return(false)
-      allow(blob).to receive(:stored_externally?).and_return(false)
-      allow(project).to receive(:branch_allows_collaboration?).with(user, ref).and_return(false)
-      assign(:last_commit_sha, '782426692977b2cedb4452ee6501a404410f9b00')
+        allow(helper).to receive(:can?).with(user, :push_code, project).and_return(true)
+        allow(project).to receive(:present).and_return(project_presenter)
+        allow(project_presenter).to receive(:can_current_user_push_to_branch?).with(ref).and_return(true)
+        allow(project).to receive(:empty_repo?).and_return(false)
+      end
 
-      expect(helper.edit_blob_app_data(project, id, blob, ref)).to include({
-        update_path: project_update_blob_path(project, id),
-        cancel_path: project_blob_path(project, id),
-        original_branch: ref,
-        target_branch: ref,
-        can_push_code: 'true',
-        can_push_to_branch: 'true',
-        empty_repo: 'false',
-        blob_name: blob.name,
-        branch_allows_collaboration: 'false',
-        last_commit_sha: '782426692977b2cedb4452ee6501a404410f9b00'
-      })
+      it 'returns data related to update action' do
+        allow(blob).to receive(:stored_externally?).and_return(false)
+        allow(project).to receive(:branch_allows_collaboration?).with(user, ref).and_return(false)
+        assign(:last_commit_sha, '782426692977b2cedb4452ee6501a404410f9b00')
+
+        expect(helper.edit_blob_app_data(project, id, blob, ref, "update")).to include({
+          action: 'update',
+          update_path: project_update_blob_path(project, id),
+          cancel_path: project_blob_path(project, id),
+          original_branch: ref,
+          target_branch: ref,
+          can_push_code: 'true',
+          can_push_to_branch: 'true',
+          empty_repo: 'false',
+          blob_name: blob.name,
+          branch_allows_collaboration: 'false',
+          last_commit_sha: '782426692977b2cedb4452ee6501a404410f9b00'
+        })
+      end
+
+      it 'returns data related to create action' do
+        expect(helper.edit_blob_app_data(project, id, blob, ref, "create")).to include({
+          action: 'create',
+          update_path: project_create_blob_path(project, id),
+          cancel_path: project_tree_path(project, id),
+          original_branch: ref,
+          target_branch: ref,
+          can_push_code: 'true',
+          can_push_to_branch: 'true',
+          empty_repo: 'false',
+          blob_name: nil
+        })
+      end
     end
 
     context 'when user cannot push code' do
       it 'returns false for push permissions' do
         allow(helper).to receive(:can?).with(user, :push_code, project).and_return(false)
 
-        expect(helper.edit_blob_app_data(project, id, blob, ref)).to include(
+        expect(helper.edit_blob_app_data(project, id, blob, ref, "update")).to include(
           can_push_code: 'false'
         )
       end
@@ -487,7 +507,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
         allow(project).to receive(:present).and_return(project_presenter)
         allow(project_presenter).to receive(:can_current_user_push_to_branch?).with(ref).and_return(false)
 
-        expect(helper.edit_blob_app_data(project, id, blob, ref)).to include(
+        expect(helper.edit_blob_app_data(project, id, blob, ref, "update")).to include(
           can_push_to_branch: 'false'
         )
       end
@@ -497,7 +517,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
       it 'returns true for empty_repo' do
         allow(project).to receive(:empty_repo?).and_return(true)
 
-        expect(helper.edit_blob_app_data(project, id, blob, ref)).to include(
+        expect(helper.edit_blob_app_data(project, id, blob, ref, "update")).to include(
           empty_repo: 'true'
         )
       end
@@ -507,7 +527,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
       it 'returns true when branch allows collaboration' do
         allow(project).to receive(:branch_allows_collaboration?).with(user, ref).and_return(true)
 
-        expect(helper.edit_blob_app_data(project, id, blob, ref)).to include(
+        expect(helper.edit_blob_app_data(project, id, blob, ref, "update")).to include(
           branch_allows_collaboration: 'true'
         )
       end

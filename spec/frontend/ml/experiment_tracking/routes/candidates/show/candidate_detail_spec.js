@@ -105,7 +105,7 @@ describe('ml/experiment_tracking/routes/candidates/show/candidate_detail.vue', (
           info: { ...defaultProps.candidate.info, ciJob: null },
         },
       });
-      expect(findCiSection().text()).toContain('Candidate not linked to a CI build');
+      expect(findCiSection().text()).toContain('Run not linked to a CI build');
     });
   });
 

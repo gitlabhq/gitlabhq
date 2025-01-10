@@ -17,7 +17,7 @@ module Projects
 
         redirect_to project_ml_experiment_path(@project, @experiment.iid),
           status: :found,
-          notice: s_("MlExperimentTracking|Candidate removed")
+          notice: s_("MlExperimentTracking|Run removed")
       end
 
       private

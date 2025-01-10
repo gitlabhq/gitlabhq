@@ -318,16 +318,31 @@ module BlobHelper
     }
   end
 
-  def edit_blob_app_data(project, id, blob, ref)
+  def edit_blob_app_data(project, id, blob, ref, action)
+    is_update = action == 'update'
+    is_create = action == 'create'
+    update_path = if is_update
+                    project_update_blob_path(project, id)
+                  elsif is_create
+                    project_create_blob_path(project, id)
+                  end
+
+    cancel_path = if is_update
+                    project_blob_path(project, id)
+                  elsif is_create
+                    project_tree_path(project, id)
+                  end
+
     {
-      update_path: project_update_blob_path(project, id),
-      cancel_path: project_blob_path(project, id),
+      action: action.to_s,
+      update_path: update_path,
+      cancel_path: cancel_path,
       original_branch: ref,
       target_branch: selected_branch,
       can_push_code: can?(current_user, :push_code, project).to_s,
       can_push_to_branch: project.present(current_user: current_user).can_current_user_push_to_branch?(ref).to_s,
       empty_repo: project.empty_repo?.to_s,
-      blob_name: blob.name,
+      blob_name: is_update ? blob.name : nil,
       branch_allows_collaboration: project.branch_allows_collaboration?(current_user, ref).to_s,
       last_commit_sha: @last_commit_sha
     }

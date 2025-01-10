@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     title() {
-      return sprintf(s__('MlExperimentTracking|Candidate %{id}'), { id: this.info.iid });
+      return sprintf(s__('MlExperimentTracking|Run %{id}'), { id: this.info.iid });
     },
     authorInfo() {
       return sprintf(s__('MlExperimentTracking|by %{author}'), { author: this.info.authorName });
@@ -36,10 +36,10 @@ export default {
   },
   i18n: {
     deleteCandidateConfirmationMessage: s__(
-      'MlExperimentTracking|Deleting this candidate will delete the associated parameters, metrics, and metadata.',
+      'MlExperimentTracking|Deleting this run will delete the associated parameters, metrics, and metadata.',
     ),
-    deleteCandidatePrimaryActionLabel: s__('MlExperimentTracking|Delete candidate'),
-    deleteCandidateModalTitle: s__('MlExperimentTracking|Delete candidate?'),
+    deleteCandidatePrimaryActionLabel: s__('MlExperimentTracking|Delete run'),
+    deleteCandidateModalTitle: s__('MlExperimentTracking|Delete run?'),
   },
   statusVariants: {
     running: 'success',

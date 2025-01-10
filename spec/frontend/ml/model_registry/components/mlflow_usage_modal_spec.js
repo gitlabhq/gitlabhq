@@ -33,7 +33,7 @@ describe('ml/model_registry/components/mlflow_usage_modal.vue', () => {
   it('renders the text', () => {
     const text = findModal().text();
     const expectedLines = [
-      'Creating models, model versions and candidates is also possible using the MLflow client',
+      'Creating models, model versions and runs is also possible using the MLflow client',
       'Setting up the client',
       'import os',
       'from mlflow import MlflowClient',

@@ -28,9 +28,6 @@ export default {
     showContainerProtectedTagsSettings() {
       return this.glFeatures.containerRegistryProtectedTags;
     },
-    showProtectedContainersSettings() {
-      return this.glFeatures.containerRegistryProtectedContainers;
-    },
   },
   containerRegistryHelpPath: helpPagePath('user/packages/container_registry/index.md'),
 };
@@ -57,7 +54,7 @@ export default {
     </template>
     <template #default>
       <div class="gl-flex gl-flex-col gl-gap-5">
-        <container-protection-repository-rules v-if="showProtectedContainersSettings" />
+        <container-protection-repository-rules />
         <container-protection-tag-rules v-if="showContainerProtectedTagsSettings" />
         <container-expiration-policy />
       </div>

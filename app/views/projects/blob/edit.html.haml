@@ -20,7 +20,7 @@
         = _('Someone edited the file the same time you did. Please check out %{link_start}the file %{icon}%{link_end} and make sure your changes will not unintentionally remove theirs.').html_safe % { link_start: blob_link_start % { url: blob_url }, link_end: link_end , icon: external_link_icon }
 
 
-.js-blob-edit-header{ data: edit_blob_app_data(@project, @id, @blob, @ref) }
+.js-blob-edit-header{ data: edit_blob_app_data(@project, @id, @blob, @ref, 'update') }
   .gl-mb-4.gl-mt-5.gl-items-center.gl-justify-between.md:gl-flex.lg:gl-my-5
     %h1{ class: 'md:!gl-mb-0 gl-heading-1 gl-inline-block' }
       = _('Edit file')

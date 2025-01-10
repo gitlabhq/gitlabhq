@@ -6,9 +6,7 @@ module Mutations
       module Rule
         class Create < ::Mutations::BaseMutation
           graphql_name 'CreateContainerProtectionRepositoryRule'
-          description 'Creates a protection rule to restrict access to a project\'s container registry. ' \
-            'Available only when feature flag `container_registry_protected_containers` is enabled.'
-
+          description 'Creates a repository protection rule to restrict access to a project\'s container registry.'
           include FindsProject
 
           authorize :admin_container_image
@@ -46,15 +44,10 @@ module Mutations
           field :container_protection_repository_rule,
             Types::ContainerRegistry::Protection::RuleType,
             null: true,
-            experiment: { milestone: '16.6' },
-            description: 'Container registry protection rule after mutation.'
+            description: 'Container repository protection rule after mutation.'
 
           def resolve(project_path:, **kwargs)
             project = authorized_find!(project_path)
-
-            if Feature.disabled?(:container_registry_protected_containers, project.root_ancestor)
-              raise_resource_not_available_error!("'container_registry_protected_containers' feature flag is disabled")
-            end
 
             response = ::ContainerRegistry::Protection::CreateRuleService.new(project, current_user, kwargs).execute
 

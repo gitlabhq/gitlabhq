@@ -21,7 +21,7 @@ export const METADATA_LABEL = s__('MlModelRegistry|Metadata');
 export const NO_PARAMETERS_MESSAGE = s__('MlModelRegistry|No logged parameters');
 export const NO_METRICS_MESSAGE = s__('MlModelRegistry|No logged metrics');
 export const NO_METADATA_MESSAGE = s__('MlModelRegistry|No logged metadata');
-export const NO_CI_MESSAGE = s__('MlModelRegistry|Candidate not linked to a CI build');
+export const NO_CI_MESSAGE = s__('MlModelRegistry|Run not linked to a CI build');
 export const CI_SECTION_LABEL = s__('MlModelRegistry|CI Info');
 export const JOB_LABEL = __('Job');
 export const CI_USER_LABEL = s__('MlModelRegistry|Triggered by');
@@ -46,9 +46,9 @@ export const makeLoadModelErrorMessage = (message) =>
     message,
   });
 
-export const NO_CANDIDATES_LABEL = s__('MlModelRegistry|This model has no candidates');
+export const NO_CANDIDATES_LABEL = s__('MlModelRegistry|This model has no runs');
 export const makeLoadCandidatesErrorMessage = (message) =>
-  sprintf(s__('MlModelRegistry|Failed to load model candidates with error: %{message}'), {
+  sprintf(s__('MlModelRegistry|Failed to load model runs with error: %{message}'), {
     message,
   });
 

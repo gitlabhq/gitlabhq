@@ -36,7 +36,7 @@ describe('ml/experiment_tracking/routes/candidates/show/candidate_header.vue', (
     });
 
     it('renders the page heading with correct title', () => {
-      expect(findPageHeading().text()).toContain('Candidate candidate_iid');
+      expect(findPageHeading().text()).toContain('Run candidate_iid');
     });
 
     it('renders the experiment name with link', () => {
@@ -120,9 +120,9 @@ describe('ml/experiment_tracking/routes/candidates/show/candidate_header.vue', (
       expect(deleteButton.props()).toMatchObject({
         deletePath: 'path_to_candidate',
         deleteConfirmationText:
-          'Deleting this candidate will delete the associated parameters, metrics, and metadata.',
-        actionPrimaryText: 'Delete candidate',
-        modalTitle: 'Delete candidate?',
+          'Deleting this run will delete the associated parameters, metrics, and metadata.',
+        actionPrimaryText: 'Delete run',
+        modalTitle: 'Delete run?',
       });
     });
   });

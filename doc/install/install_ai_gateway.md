@@ -30,11 +30,11 @@ Find the GitLab official Docker image at:
 - [Release process for self-hosted AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/release.md).
 
 Use the image tag that corresponds to your GitLab version. For example, if the
-GitLab version is `v17.5.0`, use `self-hosted-v17.5.0-ee` tag.
+GitLab version is `v17.6.0`, use `self-hosted-v17.6.0-ee` tag.
 
 ### Start a container from the image
 
-1. For Docker images with version `self-hosted-17.4.0-ee` and later, run the following:
+1. For Docker images with version `self-hosted-17.6.0-ee` and later, run the following:
 
    ```shell
    docker run -p 5052:5052 \
@@ -113,7 +113,7 @@ https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/p
 
    helm upgrade --install ai-gateway \
      ai-gateway/ai-gateway \
-     --version 0.1.1 \
+     --version 0.2.0 \
      --namespace=ai-gateway \
      --set="image.tag=<ai-gateway-image>" \
      --set="gitlab.url=https://<your_gitlab_domain>" \

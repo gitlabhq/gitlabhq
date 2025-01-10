@@ -57,9 +57,9 @@ describe('ml/model_registry/components/candidate_list.vue', () => {
 
     it('shows empty state', () => {
       expect(findEmptyState().props('description')).toBe(
-        'Use candidates to track performance, parameters, and metadata',
+        'Use runs to track performance, parameters, and metadata',
       );
-      expect(findEmptyState().props('title')).toBe('No candidates associated with this model');
+      expect(findEmptyState().props('title')).toBe('No runs associated with this model');
       expect(findEmptyState().findComponent(GlButton).attributes('href')).toBe(
         '/help/user/project/ml/experiment_tracking/mlflow_client.md#logging-runs-to-a-model',
       );
@@ -76,7 +76,7 @@ describe('ml/model_registry/components/candidate_list.vue', () => {
 
     it('is displayed', () => {
       expect(findSearchableTable().props('errorMessage')).toBe(
-        'Failed to load model candidates with error: Failure!',
+        'Failed to load model runs with error: Failure!',
       );
     });
 

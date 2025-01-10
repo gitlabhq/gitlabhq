@@ -204,19 +204,6 @@ RSpec.describe 'getting container repositories in a group', feature_category: :s
       expect { subject }.to match_query_count(1).for_model(::ContainerRegistry::Protection::Rule)
     end
 
-    context 'when feature flag :container_registry_protected_containers disabled' do
-      before do
-        stub_feature_flags(container_registry_protected_containers: false)
-      end
-
-      it 'returns false even for protected container respositories' do
-        subject
-
-        expect(container_repositories_response.count).to eq 7
-        expect(container_repositories_response).to all(include('node' => include('protectionRuleExists' => false)))
-      end
-    end
-
     context 'when 25 container repositories belong to group' do
       let_it_be(:group) { create(:group) }
       let_it_be(:projects) { create_list(:project, 5, :private, group: group) }

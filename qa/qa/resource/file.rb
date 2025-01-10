@@ -38,8 +38,9 @@ module QA
         Page::File::Form.perform do |form|
           form.add_name(@name)
           form.add_content(@content)
+          form.click_commit_changes_in_header
           form.add_commit_message(@commit_message)
-          form.commit_changes
+          form.commit_changes_through_modal
         end
       end
 

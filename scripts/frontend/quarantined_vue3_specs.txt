@@ -144,7 +144,6 @@ spec/frontend/content_editor/components/wrappers/image_spec.js
 spec/frontend/content_editor/components/wrappers/paragraph_spec.js
 spec/frontend/content_editor/components/wrappers/playable_spec.js
 spec/frontend/content_editor/components/wrappers/table_cell_base_spec.js
-spec/frontend/crm/crm_form_spec.js
 spec/frontend/custom_emoji/components/list_spec.js
 spec/frontend/design_management/components/design_notes/design_reply_form_spec.js
 spec/frontend/design_management/components/design_overlay_spec.js

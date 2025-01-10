@@ -1,6 +1,0 @@
-- unless can?(current_user, :push_code, @project)
-  .gl-inline-block.gl-ml-3
-    - if @project.branch_allows_collaboration?(current_user, selected_branch)
-      = commit_in_single_accessible_branch
-    - else
-      = commit_in_fork_help

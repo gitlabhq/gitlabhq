@@ -19,7 +19,6 @@ describe('Container registry project settings section', () => {
 
   const defaultProvide = {
     glFeatures: {
-      containerRegistryProtectedContainers: true,
       containerRegistryProtectedTags: true,
     },
   };
@@ -77,20 +76,6 @@ describe('Container registry project settings section', () => {
     });
   });
 
-  describe('when feature flag "containerRegistryProtectedContainers" is disabled', () => {
-    it('container protection repository rules settings is hidden', () => {
-      mountComponent({
-        provide: {
-          ...defaultProvide,
-          glFeatures: { containerRegistryProtectedContainers: false },
-        },
-      });
-
-      expect(findContainerProtectionRepositoryRules().exists()).toBe(false);
-      expect(findContainerExpirationPolicy().exists()).toBe(true);
-    });
-  });
-
   describe('when feature flag "containerRegistryProtectedTags" is disabled', () => {
     it('container protection tag rules settings is hidden', () => {
       mountComponent({
@@ -101,7 +86,7 @@ describe('Container registry project settings section', () => {
       });
 
       expect(findContainerExpirationPolicy().exists()).toBe(true);
-      expect(findContainerProtectionRepositoryRules().exists()).toBe(false);
+      expect(findContainerProtectionRepositoryRules().exists()).toBe(true);
       expect(findContainerProtectionTagRules().exists()).toBe(false);
     });
   });

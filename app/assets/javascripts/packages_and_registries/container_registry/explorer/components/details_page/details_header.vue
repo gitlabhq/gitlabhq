@@ -12,7 +12,6 @@ import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   CREATED_AT,
   LAST_PUBLISHED_AT,
@@ -49,7 +48,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [timeagoMixin, glFeatureFlagsMixin()],
+  mixins: [timeagoMixin],
   inject: ['config'],
   props: {
     image: {
@@ -139,10 +138,7 @@ export default {
       return size ? numberToHumanSize(Number(size)) : null;
     },
     showBadgeProtected() {
-      return (
-        Boolean(this.glFeatures.containerRegistryProtectedContainers) &&
-        Boolean(this.image?.protectionRuleExists)
-      );
+      return Boolean(this.image?.protectionRuleExists);
     },
   },
   methods: {

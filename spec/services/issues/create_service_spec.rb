@@ -775,6 +775,17 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
           expect(issue.description).to eq('Custom issue description')
           expect(issue.title).to eq('My new issue')
         end
+
+        context 'when merge request is passed as an object' do
+          let(:opts) { { discussion_to_resolve: discussion.id, merge_request_to_resolve_discussions_object: merge_request } }
+
+          it 'resolves the discussion' do
+            described_class.new(container: project, current_user: user, params: opts).execute
+            discussion.first_note.reload
+
+            expect(discussion.resolved?).to be(true)
+          end
+        end
       end
 
       describe 'for a merge request' do
@@ -823,6 +834,17 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
           expect(issue).to be_persisted
           expect(issue.description).to eq('Custom issue description')
           expect(issue.title).to eq('My new issue')
+        end
+
+        context 'when merge request is passed as an object' do
+          let(:opts) { { merge_request_to_resolve_discussions_object: merge_request } }
+
+          it 'resolves the discussion' do
+            described_class.new(container: project, current_user: user, params: opts).execute
+            discussion.first_note.reload
+
+            expect(discussion.resolved?).to be(true)
+          end
         end
       end
     end

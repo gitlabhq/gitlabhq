@@ -85,7 +85,7 @@ RSpec.describe Projects::Ml::CandidatesController, feature_category: :mlops do
 
     it 'deletes the experiment', :aggregate_failures do
       expect(response).to have_gitlab_http_status(:found)
-      expect(flash[:notice]).to eq('Candidate removed')
+      expect(flash[:notice]).to eq('Run removed')
       expect(response).to redirect_to("/#{project.full_path}/-/ml/experiments/#{experiment.iid}")
       expect { Ml::Candidate.find(id: candidate_for_deletion.id) }.to raise_error(ActiveRecord::RecordNotFound)
     end

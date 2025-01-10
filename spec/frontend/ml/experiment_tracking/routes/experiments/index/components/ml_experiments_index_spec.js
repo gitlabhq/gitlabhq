@@ -84,7 +84,7 @@ describe('MlExperimentsIndex', () => {
     });
 
     it('sets headers correctly', () => {
-      const expectedColumnNames = ['Name', 'Number of candidates', 'Creator', 'Last activity'];
+      const expectedColumnNames = ['Name', 'Number of runs', 'Creator', 'Last activity'];
 
       expect(findTableHeaders().wrappers.map((h) => h.text())).toEqual(expectedColumnNames);
     });
@@ -132,8 +132,8 @@ describe('MlExperimentsIndex', () => {
       });
     });
 
-    describe('candidate count column', () => {
-      it('shows the candidate count', () => {
+    describe('run count column', () => {
+      it('shows the run count', () => {
         expect(findColumnInRow(firstRow, candidateCountColumn).text()).toBe(
           `${firstExperiment.candidate_count}`,
         );

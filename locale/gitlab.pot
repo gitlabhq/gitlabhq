@@ -3376,6 +3376,9 @@ msgstr ""
 msgid "Add new emoji"
 msgstr ""
 
+msgid "Add new file"
+msgstr ""
+
 msgid "Add new key"
 msgstr ""
 
@@ -3930,6 +3933,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|Add self-hosted model"
 msgstr ""
 
+msgid "AdminSelfHostedModels|Amazon Bedrock"
+msgstr ""
+
 msgid "AdminSelfHostedModels|An error occurred while deleting your self-hosted model. Please try again."
 msgstr ""
 
@@ -3966,9 +3972,6 @@ msgstr ""
 msgid "AdminSelfHostedModels|Get started with self-hosted models"
 msgstr ""
 
-msgid "AdminSelfHostedModels|If necessary, provide the model identifier in the form of provider/model-name"
-msgstr ""
-
 msgid "AdminSelfHostedModels|If required, provide the API token that grants access to your self-hosted model deployment."
 msgstr ""
 
@@ -3987,6 +3990,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|Model identifier must be less than 255 characters."
 msgstr ""
 
+msgid "AdminSelfHostedModels|Model identifier must start with \"bedrock/\""
+msgstr ""
+
 msgid "AdminSelfHostedModels|Model uses an API token"
 msgstr ""
 
@@ -3996,10 +4002,16 @@ msgstr ""
 msgid "AdminSelfHostedModels|Once the model is no longer in use, you can return here to delete it."
 msgstr ""
 
+msgid "AdminSelfHostedModels|Platform"
+msgstr ""
+
 msgid "AdminSelfHostedModels|Please add a valid endpoint."
 msgstr ""
 
 msgid "AdminSelfHostedModels|Please enter a deployment name."
+msgstr ""
+
+msgid "AdminSelfHostedModels|Please enter a model identifier."
 msgstr ""
 
 msgid "AdminSelfHostedModels|Please enter a unique deployment name."
@@ -4009,6 +4021,9 @@ msgid "AdminSelfHostedModels|Please enter an endpoint."
 msgstr ""
 
 msgid "AdminSelfHostedModels|Please select a model."
+msgstr ""
+
+msgid "AdminSelfHostedModels|Provide the model identifier in the form of provider/model-name"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Select an appropriate model family from the list of approved GitLab models."
@@ -4044,6 +4059,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|This self-hosted model cannot be deleted"
 msgstr ""
 
+msgid "AdminSelfHostedModels|To fully set up AWS credentials for this model please refer to the %{linkStart}AWS Bedrock Configuration Guide%{linkEnd}"
+msgstr ""
+
 msgid "AdminSelfHostedModels|To remove %{boldStart}%{modelName}%{boldEnd}, you must first remove it from the following AI Feature(s):"
 msgstr ""
 
@@ -4054,6 +4072,9 @@ msgid "AdminSelfHostedModels|You do not currently have any self-hosted models. %
 msgstr ""
 
 msgid "AdminSelfHostedModels|Your self-hosted model was successfully deleted."
+msgstr ""
+
+msgid "AdminSelfHostedModels|bedrock/"
 msgstr ""
 
 msgid "AdminSettings|%{generate_manually_link_start}Generate%{generate_manually_link_end} Service Ping to preview and download service usage data payload."
@@ -6220,6 +6241,9 @@ msgid "An error occured when subscribing to the comment temperature updates. Ple
 msgstr ""
 
 msgid "An error occured while parsing comment temperature. Please try again."
+msgstr ""
+
+msgid "An error occurred creating the blob"
 msgstr ""
 
 msgid "An error occurred creating the new branch."
@@ -20837,9 +20861,6 @@ msgstr ""
 msgid "Don't have an account yet?"
 msgstr ""
 
-msgid "Don't include description in commit message"
-msgstr ""
-
 msgid "Don't paste the private part of the GPG key. Paste the public part which begins with '-----BEGIN PGP PUBLIC KEY BLOCK-----'."
 msgstr ""
 
@@ -23423,22 +23444,22 @@ msgstr ""
 msgid "Experiment features' settings not allowed."
 msgstr ""
 
-msgid "ExperimentTracking|Candidate"
-msgstr ""
-
-msgid "ExperimentTracking|Create candidate using MLflow"
+msgid "ExperimentTracking|Create run using MLflow"
 msgstr ""
 
 msgid "ExperimentTracking|Metric value"
 msgstr ""
 
-msgid "ExperimentTracking|No candidates with logged metrics"
+msgid "ExperimentTracking|No runs with logged metrics"
 msgstr ""
 
 msgid "ExperimentTracking|Performance"
 msgstr ""
 
-msgid "ExperimentTracking|Performance graph will be shown when candidates with logged metrics are available"
+msgid "ExperimentTracking|Performance graph will be shown when runs with logged metrics are available"
+msgstr ""
+
+msgid "ExperimentTracking|Run"
 msgstr ""
 
 msgid "Experiments"
@@ -29814,9 +29835,6 @@ msgstr ""
 msgid "Include author name in notification email body"
 msgstr ""
 
-msgid "Include description in commit message"
-msgstr ""
-
 msgid "Include new features from all tiers."
 msgstr ""
 
@@ -33681,9 +33699,6 @@ msgstr ""
 msgid "MLExperimentTracking|Delete experiment?"
 msgstr ""
 
-msgid "MLOps|Something went wrong while trying to delete the model version. Please try again later."
-msgstr ""
-
 msgid "MRApprovals|Approvals"
 msgstr ""
 
@@ -35728,19 +35743,10 @@ msgstr ""
 msgid "MlExperimentTracking|CI Job"
 msgstr ""
 
-msgid "MlExperimentTracking|Candidate %{id}"
-msgstr ""
-
-msgid "MlExperimentTracking|Candidate removed"
-msgstr ""
-
-msgid "MlExperimentTracking|Candidates"
-msgstr ""
-
 msgid "MlExperimentTracking|Create an experiment using MLflow"
 msgstr ""
 
-msgid "MlExperimentTracking|Create new candidates"
+msgid "MlExperimentTracking|Create new runs"
 msgstr ""
 
 msgid "MlExperimentTracking|Created"
@@ -35758,22 +35764,22 @@ msgstr ""
 msgid "MlExperimentTracking|Creator"
 msgstr ""
 
-msgid "MlExperimentTracking|Delete candidate"
-msgstr ""
-
-msgid "MlExperimentTracking|Delete candidate?"
-msgstr ""
-
 msgid "MlExperimentTracking|Delete experiment"
 msgstr ""
 
-msgid "MlExperimentTracking|Deleting this candidate will delete the associated parameters, metrics, and metadata."
+msgid "MlExperimentTracking|Delete run"
 msgstr ""
 
-msgid "MlExperimentTracking|Deleting this experiment will also delete its candidates and their associated metadata."
+msgid "MlExperimentTracking|Delete run?"
+msgstr ""
+
+msgid "MlExperimentTracking|Deleting this experiment will also delete its runs and their associated metadata."
 msgstr ""
 
 msgid "MlExperimentTracking|Deleting this model also deletes all its versions, including any imported or uploaded artifacts, and their associated settings."
+msgstr ""
+
+msgid "MlExperimentTracking|Deleting this run will delete the associated parameters, metrics, and metadata."
 msgstr ""
 
 msgid "MlExperimentTracking|Details"
@@ -35791,13 +35797,13 @@ msgstr ""
 msgid "MlExperimentTracking|Experiment removed"
 msgstr ""
 
-msgid "MlExperimentTracking|Experiments keep track of comparable model candidates, and determine which parameters provides the best performance."
+msgid "MlExperimentTracking|Experiments keep track of comparable model runs, and determine which parameters provides the best performance."
 msgstr ""
 
 msgid "MlExperimentTracking|Failed to load experiment candidates with error: %{message}"
 msgstr ""
 
-msgid "MlExperimentTracking|Filter candidates"
+msgid "MlExperimentTracking|Filter runs"
 msgstr ""
 
 msgid "MlExperimentTracking|Get started with model experiments!"
@@ -35824,13 +35830,7 @@ msgstr ""
 msgid "MlExperimentTracking|No artifacts"
 msgstr ""
 
-msgid "MlExperimentTracking|No candidates"
-msgstr ""
-
 msgid "MlExperimentTracking|No candidates associated with this experiment"
-msgstr ""
-
-msgid "MlExperimentTracking|No candidates logged for the query. Create new candidates using the MLflow client."
 msgstr ""
 
 msgid "MlExperimentTracking|No logged experiment metadata"
@@ -35839,13 +35839,28 @@ msgstr ""
 msgid "MlExperimentTracking|No name"
 msgstr ""
 
-msgid "MlExperimentTracking|Number of candidates"
+msgid "MlExperimentTracking|No runs"
+msgstr ""
+
+msgid "MlExperimentTracking|No runs logged for the query. Create new runs using the MLflow client."
+msgstr ""
+
+msgid "MlExperimentTracking|Number of runs"
 msgstr ""
 
 msgid "MlExperimentTracking|Overview"
 msgstr ""
 
 msgid "MlExperimentTracking|Performance"
+msgstr ""
+
+msgid "MlExperimentTracking|Run %{id}"
+msgstr ""
+
+msgid "MlExperimentTracking|Run removed"
+msgstr ""
+
+msgid "MlExperimentTracking|Runs"
 msgstr ""
 
 msgid "MlExperimentTracking|To learn more about MLflow client compatibility, see %{linkStart}the documentation%{linkEnd}."
@@ -35911,9 +35926,6 @@ msgstr ""
 msgid "MlModelRegistry|CI Info"
 msgstr ""
 
-msgid "MlModelRegistry|Candidate not linked to a CI build"
-msgstr ""
-
 msgid "MlModelRegistry|Create"
 msgstr ""
 
@@ -35953,7 +35965,7 @@ msgstr ""
 msgid "MlModelRegistry|Creating models is also possible through the MLflow client. %{linkStart}Follow the documentation to learn more.%{linkEnd}"
 msgstr ""
 
-msgid "MlModelRegistry|Creating models, model versions and candidates is also possible using the MLflow client:"
+msgid "MlModelRegistry|Creating models, model versions and runs is also possible using the MLflow client:"
 msgstr ""
 
 msgid "MlModelRegistry|Default experiment"
@@ -36022,7 +36034,7 @@ msgstr ""
 msgid "MlModelRegistry|Failed to delete model with error: %{message}"
 msgstr ""
 
-msgid "MlModelRegistry|Failed to load model candidates with error: %{message}"
+msgid "MlModelRegistry|Failed to load model runs with error: %{message}"
 msgstr ""
 
 msgid "MlModelRegistry|Failed to load model versions with error: %{message}"
@@ -36109,9 +36121,6 @@ msgstr ""
 msgid "MlModelRegistry|New version"
 msgstr ""
 
-msgid "MlModelRegistry|No candidates associated with this model"
-msgstr ""
-
 msgid "MlModelRegistry|No description available. To add a description, click \"Edit model version\" above."
 msgstr ""
 
@@ -36136,6 +36145,9 @@ msgstr ""
 msgid "MlModelRegistry|No registered versions"
 msgstr ""
 
+msgid "MlModelRegistry|No runs associated with this model"
+msgstr ""
+
 msgid "MlModelRegistry|Package creation failed"
 msgstr ""
 
@@ -36154,10 +36166,19 @@ msgstr ""
 msgid "MlModelRegistry|Publisher"
 msgstr ""
 
+msgid "MlModelRegistry|Run not linked to a CI build"
+msgstr ""
+
+msgid "MlModelRegistry|Runs"
+msgstr ""
+
 msgid "MlModelRegistry|Save changes"
 msgstr ""
 
 msgid "MlModelRegistry|Setting up the client"
+msgstr ""
+
+msgid "MlModelRegistry|Something went wrong while trying to delete the model version. Please try again later."
 msgstr ""
 
 msgid "MlModelRegistry|Status"
@@ -36172,7 +36193,7 @@ msgstr ""
 msgid "MlModelRegistry|Subfolder cannot contain spaces"
 msgstr ""
 
-msgid "MlModelRegistry|This model has no candidates"
+msgid "MlModelRegistry|This model has no runs"
 msgstr ""
 
 msgid "MlModelRegistry|Total versions"
@@ -36181,7 +36202,7 @@ msgstr ""
 msgid "MlModelRegistry|Triggered by"
 msgstr ""
 
-msgid "MlModelRegistry|Use candidates to track performance, parameters, and metadata"
+msgid "MlModelRegistry|Use runs to track performance, parameters, and metadata"
 msgstr ""
 
 msgid "MlModelRegistry|Use versions to track performance, parameters, and metadata"
@@ -36194,9 +36215,6 @@ msgid "MlModelRegistry|Using the MLflow client"
 msgstr ""
 
 msgid "MlModelRegistry|Version"
-msgstr ""
-
-msgid "MlModelRegistry|Version candidates"
 msgstr ""
 
 msgid "MlModelRegistry|Version card"
@@ -39245,6 +39263,9 @@ msgstr ""
 msgid "Only Issue ID or merge request ID is required"
 msgstr ""
 
+msgid "Only Merge Requests are allowed as a noteable to resolve discussions of at the moment."
+msgstr ""
+
 msgid "Only Project Members"
 msgstr ""
 
@@ -39276,6 +39297,9 @@ msgid "Only one source is required but both were provided"
 msgstr ""
 
 msgid "Only policy:"
+msgstr ""
+
+msgid "Only project level work items can be created to resolve noteable discussions"
 msgstr ""
 
 msgid "Only project members can comment."
@@ -66123,9 +66147,6 @@ msgid "Your browser doesn't support WebAuthn. Please use a supported browser, e.
 msgstr ""
 
 msgid "Your changes can be committed to %{branchName} because a merge request is open."
-msgstr ""
-
-msgid "Your changes can be committed to %{branch_name} because a merge request is open."
 msgstr ""
 
 msgid "Your changes have been committed. Commit %{commitId} %{commitStats}"

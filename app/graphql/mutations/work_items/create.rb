@@ -26,6 +26,11 @@ module Mutations
         required: false,
         description: copy_field_description(Types::WorkItemType, :description),
         deprecated: { milestone: '16.9', reason: 'use description widget instead' }
+      argument :discussions_to_resolve,
+        ::Types::WorkItems::ResolveDiscussionsInputType,
+        required: false,
+        description: 'Information required to resolve discussions in a noteable, when the work item is created.',
+        prepare: ->(attributes, _ctx) { attributes.to_h }
       argument :hierarchy_widget,
         ::Types::WorkItems::Widgets::HierarchyCreateInputType,
         required: false,
@@ -80,10 +85,11 @@ module Mutations
         container_path = project_path || namespace_path
         container = authorized_find!(container_path)
         params = params_with_work_item_type(attributes).merge(author_id: current_user.id)
+        params = params_with_resolve_discussion_params(params)
         type = params[:work_item_type]
         raise_resource_not_available_error! unless type
 
-        check_feature_available!(container, type)
+        check_feature_available!(container, type, params)
         widget_params = extract_widget_params!(type, params, container)
 
         create_result = ::WorkItems::CreateService.new(
@@ -103,11 +109,34 @@ module Mutations
 
       private
 
-      def check_feature_available!(container, type)
+      def check_feature_available!(container, type, params)
         return unless container.is_a?(::Group)
+
+        if params[:merge_request_to_resolve_discussions_object]
+          raise Gitlab::Graphql::Errors::ArgumentError,
+            _('Only project level work items can be created to resolve noteable discussions')
+        end
+
         return if ::WorkItems::Type.allowed_group_level_types(container).include?(type.base_type)
 
         raise_feature_not_available_error!(type)
+      end
+
+      def params_with_resolve_discussion_params(attributes)
+        discussion_attributes = attributes.delete(:discussions_to_resolve)
+        return attributes if discussion_attributes.blank?
+
+        noteable = discussion_attributes[:noteable_id].find
+        unless noteable.is_a?(::MergeRequest)
+          raise Gitlab::Graphql::Errors::ArgumentError,
+            _('Only Merge Requests are allowed as a noteable to resolve discussions of at the moment.')
+        end
+
+        raise_resource_not_available_error! unless current_user.can?(:resolve_note, noteable)
+
+        attributes[:discussion_to_resolve] = discussion_attributes[:discussion_id]
+        attributes[:merge_request_to_resolve_discussions_object] = noteable
+        attributes
       end
 
       def params_with_work_item_type(attributes)

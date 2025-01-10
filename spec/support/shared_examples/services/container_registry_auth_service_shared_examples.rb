@@ -1496,34 +1496,6 @@ RSpec.shared_examples 'a container registry auth service' do
         it_behaves_like params[:shared_examples_name]
       end
     end
-
-    context 'when feature flag :container_registry_protected_containers is disabled' do
-      let_it_be(:current_user) { current_project.owner }
-
-      before do
-        stub_feature_flags(container_registry_protected_containers: false)
-      end
-
-      context 'with matching package protection rule for all roles' do
-        where(:repository_path_pattern, :minimum_access_level_for_push, :shared_examples_name) do
-          ref(:container_repository_path)                  | :maintainer | 'a pushable'
-          ref(:container_repository_path)                  | :admin      | 'a pushable'
-          ref(:container_repository_path_pattern_no_match) | :maintainer | 'a pushable'
-          ref(:container_repository_path_pattern_no_match) | :admin      | 'a pushable'
-        end
-
-        with_them do
-          before do
-            container_registry_protection_rule.update!(
-              repository_path_pattern: repository_path_pattern,
-              minimum_access_level_for_push: minimum_access_level_for_push
-            )
-          end
-
-          it_behaves_like params[:shared_examples_name]
-        end
-      end
-    end
   end
 
   context 'with protected tags' do

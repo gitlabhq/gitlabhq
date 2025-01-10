@@ -9,16 +9,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed
-**Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463669) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `containers_protected_containers`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-To selectively enable this feature for certain projects or groups, you need to use the root namespace of the project or group.
-It is not possible to enable this feature for projects individually.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/429074) in GitLab 17.8.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/480385) in GitLab 17.8. Feature flag `container_registry_protected_containers` removed.
 
 By default, any user with at least the Developer role can push and delete
 container images to or from container repositories. Protect a container repository to restrict
