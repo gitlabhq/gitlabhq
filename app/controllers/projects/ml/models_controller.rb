@@ -37,7 +37,7 @@ module Projects
       end
 
       def set_model
-        @model = ::Ml::Model.by_project_id_and_id(@project, params[:model_id])
+        @model = ::Ml::Model.by_project_id_and_id(@project, params.permit(:model_id)[:model_id])
 
         render_404 unless @model
       end

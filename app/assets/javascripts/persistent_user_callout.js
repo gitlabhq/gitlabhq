@@ -8,12 +8,11 @@ const DEFERRED_LINK_CLASS = '.deferred-link';
 
 export default class PersistentUserCallout {
   constructor(container, options = container.dataset) {
-    const { dismissEndpoint, featureId, groupId, namespaceId, projectId, deferLinks } = options;
+    const { dismissEndpoint, featureId, groupId, projectId, deferLinks } = options;
     this.container = container;
     this.dismissEndpoint = dismissEndpoint;
     this.featureId = featureId;
     this.groupId = groupId;
-    this.namespaceId = namespaceId;
     this.projectId = projectId;
     this.deferLinks = parseBoolean(deferLinks);
     this.closeButtons = this.container.querySelectorAll('.js-close');
@@ -59,7 +58,6 @@ export default class PersistentUserCallout {
       .post(this.dismissEndpoint, {
         feature_name: this.featureId,
         group_id: this.groupId,
-        namespace_id: this.namespaceId,
         project_id: this.projectId,
       })
       .then(() => {

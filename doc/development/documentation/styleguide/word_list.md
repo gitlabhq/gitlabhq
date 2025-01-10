@@ -1181,9 +1181,30 @@ See also:
 
 Try to avoid **GitLab SaaS** and instead, refer to the [specific offering](#offerings) instead.
 
-## GitLab self-managed
+## GitLab Self-Managed
 
-Use **GitLab self-managed** to refer to the product offering. It refers to a GitLab instance managed by customers themselves.
+Use **GitLab Self-Managed** to refer to an installation of GitLab that customers manage.
+
+Use the descriptor of **instance** as needed. Do not use **installation**.
+
+Use:
+
+- GitLab Self-Managed
+- a GitLab Self-Managed instance
+
+Instead of:
+
+- A GitLab Self-Managed installation
+- A Self-Managed GitLab installation
+- A self-managed GitLab installation
+- A GitLab instance that is GitLab Self-Managed
+
+You can use **instance** on its own to describe GitLab Self-Managed. For example:
+
+- On your instance, ensure the port is open.
+- Verify that the instance is publicly accessible.
+
+See also [self-managed](#self-managed).
 
 ## GitLab.com
 
@@ -1714,7 +1735,7 @@ Instead of:
 The current product offerings are:
 
 - [GitLab.com](#gitlabcom)
-- [GitLab self-managed](#gitlab-self-managed)
+- [GitLab Self-Managed](#self-managed)
 - [GitLab Dedicated](#gitlab-dedicated)
 
 The [availability details](availability_details.md) reflect these offerings.
@@ -2155,7 +2176,7 @@ When referring to the subscription billing model:
 
 - For GitLab.com, use **seats**. Customers purchase seats. Users occupy seats when they are invited
   to a group, with some [exceptions](../../../subscriptions/gitlab_com/index.md#how-seat-usage-is-determined).
-- For GitLab self-managed, use **users**. Customers purchase subscriptions for a specified number of **users**.
+- For GitLab Self-Managed, use **users**. Customers purchase subscriptions for a specified number of **users**.
 
 ## section
 
@@ -2198,7 +2219,11 @@ If you're writing about [self-hosted models](#self-hosted-model), no need to use
 
 ## self-managed
 
-Use **self-managed** to refer to a customer's installation of GitLab. Do not use **self-hosted**.
+Use **GitLab Self-Managed** to refer to a customer's installation of GitLab.
+
+- Do not use **self-hosted**.
+
+See [GitLab Self-Managed](#gitlab-self-managed).
 
 ## Service Desk
 

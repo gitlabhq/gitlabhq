@@ -1,4 +1,4 @@
-- bulk_imports_enabled = Gitlab::CurrentSettings.bulk_import_enabled? || Feature.enabled?(:override_bulk_import_disabled, current_user, type: :ops)
+- bulk_imports_enabled = Gitlab::CurrentSettings.bulk_import_enabled?
 
 = gitlab_ui_form_with url: configure_import_bulk_imports_path(namespace_id: params[:parent_id]), class: 'gl-show-field-errors' do |f|
   .gl-border-l-solid.gl-border-r-solid.gl-border-t-solid.gl-border-default.gl-border-1.gl-p-5.gl-mt-4

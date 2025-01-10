@@ -5,7 +5,9 @@ require 'spec_helper'
 RSpec.describe WorkItems::CreateFromTaskService, feature_category: :team_planning do
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
-  let_it_be(:list_work_item, refind: true) { create(:work_item, project: project, description: "- [ ] Item to be converted\n    second line\n    third line") }
+  let_it_be(:list_work_item, refind: true) do
+    create(:work_item, project: project, description: "- [ ] Item to be converted\n    second line\n    third line")
+  end
 
   let(:work_item_to_update) { list_work_item }
   let(:link_params) { {} }
@@ -21,6 +23,13 @@ RSpec.describe WorkItems::CreateFromTaskService, feature_category: :team_plannin
     }.merge(type_params)
   end
 
+  before_all do
+    # Ensure support bot user is created so creation doesn't count towards query limit
+    # and we don't try to obtain an exclusive lease within a transaction.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
+    Users::Internal.support_bot_id
+  end
+
   shared_examples 'CreateFromTask service with invalid params' do
     it { is_expected.to be_error }
 
@@ -34,7 +43,9 @@ RSpec.describe WorkItems::CreateFromTaskService, feature_category: :team_plannin
   end
 
   describe '#execute' do
-    subject(:service_result) { described_class.new(work_item: work_item_to_update, current_user: current_user, work_item_params: params).execute }
+    subject(:service_result) do
+      described_class.new(work_item: work_item_to_update, current_user: current_user, work_item_params: params).execute
+    end
 
     context 'when work item params are valid' do
       it { is_expected.to be_success }

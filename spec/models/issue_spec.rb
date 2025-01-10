@@ -10,6 +10,13 @@ RSpec.describe Issue, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:reusable_project) { create(:project) }
 
+  before_all do
+    # Ensure support bot user is created so creation doesn't count towards query limit
+    # and we don't try to obtain an exclusive lease within a transaction.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
+    Users::Internal.support_bot_id
+  end
+
   # TODO: Remove when issues.work_item_type_id cleanup is complete
   # https://gitlab.com/gitlab-org/gitlab/-/issues/499911
   describe 'database triggers' do

@@ -50,7 +50,7 @@ module Ci
     def localized_names
       {
         merge_train: s_('Pipeline|Merge train pipeline'),
-        merged_result: s_('Pipeline|Merged result pipeline'),
+        merged_result: s_('Pipeline|Merged results pipeline'),
         detached: s_('Pipeline|Merge request pipeline')
       }.freeze
     end

@@ -42109,10 +42109,10 @@ msgstr ""
 msgid "Pipeline|Merge train pipeline runs on the contents of the merge request combined with the contents of all other merge requests queued for merging into the target branch."
 msgstr ""
 
-msgid "Pipeline|Merged result pipeline"
+msgid "Pipeline|Merged results pipeline"
 msgstr ""
 
-msgid "Pipeline|Merged result pipeline runs on the contents of the merge request combined with the contents of the target branch."
+msgid "Pipeline|Merged results pipeline runs on the contents of the merge request combined with the contents of the target branch."
 msgstr ""
 
 msgid "Pipeline|New pipeline"
@@ -42241,7 +42241,7 @@ msgstr ""
 msgid "Pipeline|What is a merge train pipeline?"
 msgstr ""
 
-msgid "Pipeline|What is a merged result pipeline?"
+msgid "Pipeline|What is a merged results pipeline?"
 msgstr ""
 
 msgid "Pipeline|You're about to stop pipeline #%{pipelineId}."

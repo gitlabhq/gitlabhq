@@ -99,10 +99,10 @@ RSpec.describe Ci::PipelinePresenter do
       it { is_expected.to eq('Merge request pipeline') }
     end
 
-    context 'for a merged result pipeline' do
+    context 'for a merged results pipeline' do
       let(:event_type) { :merged_result }
 
-      it { is_expected.to eq('Merged result pipeline') }
+      it { is_expected.to eq('Merged results pipeline') }
     end
 
     context 'for a merge train pipeline' do

@@ -43,6 +43,7 @@ RSpec.describe 'find work items by reference', feature_category: :portfolio_mana
       control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         post_graphql(query, current_user: current_user)
       end
+
       expect(graphql_data_at('workItemsByReference', 'nodes').size).to eq(1)
 
       extra_work_items = create_list(:work_item, 2, :task, project: project2)

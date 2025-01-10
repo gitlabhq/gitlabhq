@@ -514,7 +514,6 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
     context 'when importing groups and projects by direct transfer is disabled' do
       before do
         stub_application_setting(bulk_import_enabled: false)
-        stub_feature_flags(override_bulk_import_disabled: false)
 
         allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
           allow(instance).to receive(:validate_instance_version!).and_return(true)
@@ -537,31 +536,6 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
           get :status
 
           expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-
-      context 'when the override_bulk_import_disabled feature flag is enabled' do
-        before do
-          stub_feature_flags(override_bulk_import_disabled: true)
-        end
-
-        context 'POST configure' do
-          it 'does not return 404' do
-            post :configure, params: {
-              bulk_import_gitlab_access_token: 'token', bulk_import_gitlab_url: 'https://gitlab.example'
-            }
-
-            expect(response).to have_gitlab_http_status(:found)
-            expect(response).to redirect_to(status_import_bulk_imports_url)
-          end
-        end
-
-        context 'GET status' do
-          it 'does not return 404' do
-            get :status
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
         end
       end
     end

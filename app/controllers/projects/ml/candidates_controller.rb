@@ -23,7 +23,7 @@ module Projects
       private
 
       def set_candidate
-        @candidate = ::Ml::Candidate.with_project_id_and_iid(@project.id, params['iid'])
+        @candidate = ::Ml::Candidate.with_project_id_and_iid(@project.id, params.permit(:iid)[:iid])
 
         render_404 unless @candidate.present?
       end

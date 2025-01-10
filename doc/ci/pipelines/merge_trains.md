@@ -283,7 +283,7 @@ See [issue 12267](https://gitlab.com/gitlab-org/gitlab/-/issues/12267) for more 
 
 ### Cannot retry merge train pipeline
 
-When a merge train pipeline fails, the merge request is dropped from the train so the pipeline can't be retried after it fails.
+When a merge train pipeline fails, the merge request is dropped from the train and the pipeline can't be retried after it fails.
 Merge train pipelines run on the merged result of the changes in the merge request and
 changes from other merge requests already on the train. If the merge request is dropped from the train,
 the merged result is out of date and the pipeline can't be retried.
@@ -295,7 +295,7 @@ You can:
 - Add the [`retry`](../yaml/index.md#retry) keyword to the job if it fails intermittently.
   If it succeeds after a retry, the merge request is not removed from the merge train.
 
-### Unable to add to the merge train
+### Cannot add a merge request to the merge train
 
 When [**Pipelines must succeed**](../../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge)
 is enabled, but the latest pipeline failed:

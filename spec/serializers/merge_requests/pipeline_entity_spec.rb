@@ -37,7 +37,7 @@ RSpec.describe MergeRequests::PipelineEntity do
       expect(subject[:details][:status]).to include(:icon, :favicon, :text, :label, :tooltip)
       expect(subject[:flags]).to include(:merge_request_pipeline, :merged_result_pipeline, :merge_train_pipeline)
 
-      expect(subject[:details][:event_type_name]).to eq('Merged result pipeline')
+      expect(subject[:details][:event_type_name]).to eq('Merged results pipeline')
     end
 
     it 'returns presented coverage' do

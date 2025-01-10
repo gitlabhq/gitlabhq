@@ -13,7 +13,7 @@ module Projects
       def edit; end
 
       def new
-        @model = ::Ml::Model.by_project_id_and_id(@project, params[:model_model_id])
+        @model = ::Ml::Model.by_project_id_and_id(@project, safe_params[:model_model_id])
 
         render_404 unless @model
       end
@@ -29,11 +29,15 @@ module Projects
       end
 
       def set_model_version
-        @model_version = ::Ml::ModelVersion.by_project_id_and_id(@project, params[:model_version_id])
+        @model_version = ::Ml::ModelVersion.by_project_id_and_id(@project, safe_params[:model_version_id])
 
         return render_404 unless @model_version
 
         @model = @model_version.model
+      end
+
+      def safe_params
+        params.permit(:model_model_id, :model_version_id)
       end
     end
   end

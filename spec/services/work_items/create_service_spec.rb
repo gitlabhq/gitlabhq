@@ -5,6 +5,13 @@ require 'spec_helper'
 RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
   include AfterNextHelpers
 
+  before_all do
+    # Ensure support bot user is created so creation doesn't count towards query limit
+    # and we don't try to obtain an exclusive lease within a transaction.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
+    Users::Internal.support_bot_id
+  end
+
   RSpec.shared_examples 'creates work item in container' do |container_type|
     include_context 'with container for work items service', container_type
 

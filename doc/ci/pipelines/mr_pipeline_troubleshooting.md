@@ -84,7 +84,7 @@ This message is shown if the merge request pipeline, [merged results pipeline](m
 or [merge train pipeline](merge_trains.md) has failed or been canceled.
 This does not happen when a branch pipeline fails.
 
-If a merge request pipeline or merged result pipeline was canceled or failed, you can:
+If a merge request pipeline or a merged results pipeline was canceled or failed, you can:
 
 - Re-run the entire pipeline by selecting **Run pipeline** in the pipeline tab in the merge request.
 - [Retry only the jobs that failed](index.md#view-pipelines). If you re-run the entire pipeline, this is not necessary.

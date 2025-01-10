@@ -588,8 +588,8 @@ pass `CI_MERGE_REQUEST_REF_PATH` to the downstream pipeline using [variable inhe
          artifacts: true
    ```
 
-You can use this method to fetch artifacts from upstream merge request pipeline,
-but not from [merge results pipelines](merged_results_pipelines.md).
+You can use this method to fetch artifacts from upstream merge request pipelines,
+but not from [merged results pipelines](merged_results_pipelines.md).
 
 ## Pass CI/CD variables to a downstream pipeline
 

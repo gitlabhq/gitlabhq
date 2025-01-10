@@ -3,6 +3,7 @@
 module Users
   class Internal
     class << self
+      include Gitlab::Utils::StrongMemoize
       # rubocop:disable CodeReuse/ActiveRecord
 
       # Return (create if necessary) the ghost user. The ghost user
@@ -63,6 +64,18 @@ module Users
           u.private_profile = true
         end
       end
+
+      # Checks against this bot are now included in every issue and work item
+      # detail and list page rendering and in GraphQL queries (especially for determining
+      # the web_url of an issue/work item).
+      # Because the bot never changes once created, we can memoize it for
+      # the lifetime of the application process. It also doesn't matter that
+      # different nodes may have different object instances of the bot.
+      # We only memoize the id because this is the information we check against.
+      def support_bot_id
+        support_bot.id
+      end
+      strong_memoize_attr :support_bot_id
 
       def automation_bot
         email_pattern = "automation%s@#{Settings.gitlab.host}"

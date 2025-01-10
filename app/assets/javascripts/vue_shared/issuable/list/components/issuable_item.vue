@@ -19,13 +19,20 @@ import timeagoMixin from '~/vue_shared/mixins/timeago';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import WorkItemPrefetch from '~/work_items/components/work_item_prefetch.vue';
-import { STATE_OPEN, STATE_CLOSED, LINKED_CATEGORIES_MAP } from '~/work_items/constants';
+import {
+  STATE_OPEN,
+  STATE_CLOSED,
+  LINKED_CATEGORIES_MAP,
+  WORK_ITEM_TYPE_VALUE_INCIDENT,
+  WORK_ITEM_TYPE_VALUE_ISSUE,
+} from '~/work_items/constants';
 import {
   isAssigneesWidget,
   isLabelsWidget,
   findLinkedItemsWidget,
   canRouterNav,
 } from '~/work_items/utils';
+import { SUPPORT_BOT_USERNAME } from '~/issues/show/utils/issuable_data';
 
 export default {
   components: {
@@ -109,6 +116,15 @@ export default {
     workItemFullPath() {
       return (
         this.issuable.namespace?.fullPath || this.issuable.reference?.split(this.issuableSymbol)[0]
+      );
+    },
+    isIncident() {
+      return this.issuable.workItemType?.name === WORK_ITEM_TYPE_VALUE_INCIDENT;
+    },
+    isServiceDeskIssue() {
+      return (
+        this.issuable.workItemType?.name === WORK_ITEM_TYPE_VALUE_ISSUE &&
+        this.issuable?.author?.username === SUPPORT_BOT_USERNAME
       );
     },
     author() {
@@ -241,6 +257,10 @@ export default {
     issueAsWorkItem() {
       return (
         !this.isGroup &&
+        // Use legacy view for unsupported work item types
+        // incidents and Service Desk issues
+        !this.isIncident &&
+        !this.isServiceDeskIssue &&
         this.glFeatures.workItemsViewPreference &&
         gon.current_user_use_work_items_view
       );
@@ -287,7 +307,9 @@ export default {
         return;
       }
       e.preventDefault();
-      if (!this.preventRedirect) {
+      // Unsupported types incidents and Service Desk issues
+      // should not open in drawer
+      if (this.isIncident || this.isServiceDeskIssue || !this.preventRedirect) {
         this.navigateToIssuable();
         return;
       }

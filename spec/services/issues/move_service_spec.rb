@@ -32,6 +32,13 @@ RSpec.describe Issues::MoveService, feature_category: :team_planning do
     described_class.new(container: old_project, current_user: user)
   end
 
+  before_all do
+    # Ensure support bot user is created so creation doesn't count towards query limit
+    # and we don't try to obtain an exclusive lease within a transaction.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
+    Users::Internal.support_bot_id
+  end
+
   shared_context 'user can move issue' do
     before do
       old_project.add_reporter(user)

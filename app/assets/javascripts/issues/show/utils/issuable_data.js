@@ -1,6 +1,7 @@
 const WORK_ITEM_TYPE_INCIDENT = 'incident';
 const WORK_ITEM_TYPE_ISSUE = 'issue';
-const SUPPORT_BOT_USERNAME = 'support-bot';
+
+export const SUPPORT_BOT_USERNAME = 'support-bot';
 
 export const issuableInitialDataById = (id) => {
   try {

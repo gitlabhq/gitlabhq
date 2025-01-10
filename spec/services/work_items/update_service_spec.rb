@@ -13,6 +13,13 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
   let(:opts) { {} }
   let(:current_user) { developer }
 
+  before_all do
+    # Ensure support bot user is created so creation doesn't count towards query limit
+    # and we don't try to obtain an exclusive lease within a transaction.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
+    Users::Internal.support_bot_id
+  end
+
   describe '#execute' do
     let(:service) do
       described_class.new(

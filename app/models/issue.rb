@@ -694,7 +694,7 @@ class Issue < ApplicationRecord
   end
 
   def from_service_desk?
-    author.id == Users::Internal.support_bot.id
+    author_id == Users::Internal.support_bot_id
   end
 
   def issue_link_type

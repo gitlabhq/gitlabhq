@@ -255,7 +255,7 @@ export const MT_RESTART_TRAIN = 'restart';
 // Pipeline event type names
 
 export const PIPELINE_EVENT_TYPE_MERGE_TRAIN = 'Merge train pipeline';
-export const PIPELINE_EVENT_TYPE_MERGED_RESULT = 'Merged result pipeline';
+export const PIPELINE_EVENT_TYPE_MERGED_RESULT = 'Merged results pipeline';
 export const PIPELINE_EVENT_TYPE_MERGE_REQUEST = 'Merge request pipeline';
 
 export const PIPELINE_EVENT_TYPE_MAP = {
@@ -266,9 +266,9 @@ export const PIPELINE_EVENT_TYPE_MAP = {
     ),
   },
   [PIPELINE_EVENT_TYPE_MERGED_RESULT]: {
-    title: s__('Pipeline|What is a merged result pipeline?'),
+    title: s__('Pipeline|What is a merged results pipeline?'),
     content: s__(
-      'Pipeline|Merged result pipeline runs on the contents of the merge request combined with the contents of the target branch.',
+      'Pipeline|Merged results pipeline runs on the contents of the merge request combined with the contents of the target branch.',
     ),
   },
   [PIPELINE_EVENT_TYPE_MERGE_REQUEST]: {

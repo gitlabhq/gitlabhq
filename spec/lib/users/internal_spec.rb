@@ -109,4 +109,17 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
     it { is_expected.to be_admin }
     it { is_expected.to be_confirmed }
   end
+
+  describe '.support_bot_id' do
+    before do
+      # Ensure support bot user is created and memoization uses the same id
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
+      described_class.clear_memoization(:support_bot_id)
+      described_class.support_bot_id
+    end
+
+    subject { described_class.support_bot_id }
+
+    it { is_expected.to eq(described_class.support_bot.id) }
+  end
 end

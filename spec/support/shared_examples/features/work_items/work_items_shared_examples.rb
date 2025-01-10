@@ -870,6 +870,13 @@ RSpec.shared_examples 'work items hierarchy' do |testid, type|
 end
 
 RSpec.shared_examples 'work items linked items' do |is_group = false|
+  before_all do
+    # Ensure support bot user is created so creation doesn't count towards query limit
+    # and we don't try to obtain an exclusive lease within a transaction.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
+    Users::Internal.support_bot_id
+  end
+
   it 'are not displayed when issue does not have work item links', :aggregate_failures do
     within_testid('work-item-relationships') do
       expect(page).to have_selector('[data-testid="link-item-add-button"]')

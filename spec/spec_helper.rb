@@ -533,6 +533,13 @@ RSpec.configure do |config|
       self.class.use_transactional_tests = true
     end
   end
+
+  config.before(:context) do
+    # Clear support bot user memoization because it's created
+    # a lot of times in our test suite and ids mighht not match any more.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
+    Users::Internal.clear_memoization(:support_bot_id)
+  end
 end
 
 # Disabled because it's causing N+1 queries.
