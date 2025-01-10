@@ -46,6 +46,20 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
     :mark_note_as_internal         | true
   end
 
+  # :policy, :is_allowed
+  def permission_table_for_planner(public_merge_request: false)
+    :read_merge_request            | true
+    :create_todo                   | true
+    :create_note                   | true
+    :update_subscription           | true
+    :create_merge_request_in       | public_merge_request
+    :create_merge_request_from     | false
+    :approve_merge_request         | false
+    :update_merge_request          | false
+    :reset_merge_request_approvals | false
+    :mark_note_as_internal         | true
+  end
+
   mr_perms = %i[create_merge_request_in
                 create_merge_request_from
                 read_merge_request
@@ -173,7 +187,7 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
         end
 
         describe 'a planner' do
-          let(:permission_table) { permission_table_for_reporter } # same as reporter because MR is public
+          let(:permission_table) { permission_table_for_planner(public_merge_request: true) }
 
           subject { permissions(planner, merge_request) }
 
@@ -191,7 +205,7 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
         end
 
         describe 'a planner' do
-          let(:permission_table) { permission_table_for_reporter }
+          let(:permission_table) { permission_table_for_planner }
 
           subject { permissions(planner, merge_request) }
 
@@ -383,7 +397,7 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
       end
 
       describe 'a planner' do
-        let(:permission_table) { permission_table_for_reporter }
+        let(:permission_table) { permission_table_for_reporter } # same as reporter because MR is public
 
         subject { permissions(planner, merge_request) }
 
@@ -450,7 +464,7 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
       end
 
       describe 'a planner' do
-        let(:permission_table) { permission_table_for_reporter }
+        let(:permission_table) { permission_table_for_planner }
 
         subject { permissions(planner, merge_request) }
 
