@@ -42,14 +42,18 @@ RSpec.describe 'issuable templates', :js, feature_category: :team_planning do
       select_template 'bug'
       wait_for_requests
       assert_template(page_part: issue_form_location)
+      expect(page).to have_current_path(/issuable_template=bug/)
       save_changes
     end
 
     it 'user selects "bug" template and then "no template"' do
       select_template 'bug'
       wait_for_requests
+      expect(page).to have_current_path(/issuable_template=bug/)
       select_option 'No template'
+      wait_for_requests
       assert_template(expected_content: '', page_part: issue_form_location)
+      expect(page).not_to have_current_path(/issuable_template=bug/)
       save_changes('')
     end
 

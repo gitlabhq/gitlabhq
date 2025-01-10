@@ -167,6 +167,9 @@ HTML page to create issues with certain fields prefilled.
 | Confidential         | `issue[confidential]` | If `true`, the issue is marked as confidential.                                                                                 |
 | Relate to…           | `add_related_issue`   | A numeric issue ID. If present, the issue form shows a [**Relate to** checkbox](#from-another-issue-or-incident) to optionally link the new issue to the specified existing issue. |
 
+In [GitLab 17.8 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177215),
+when you select an issue template, the URL changes to show the template used.
+
 Adapt these examples to form your new issue URL with prefilled fields.
 To create an issue in the GitLab project:
 

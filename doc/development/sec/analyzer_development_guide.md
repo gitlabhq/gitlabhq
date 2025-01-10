@@ -395,7 +395,7 @@ In order to push images to this location:
 
    For example: `https://gitlab.com/security-products/semgrep`
 
-   Images for this project will be published to `registry.gitlab.com/security-products/<ANALYZER-NAME>:[TAG]`.
+   Images for this project will be published to `registry.gitlab.com/security-products/<ANALYZER-NAME>:<TAG>`.
 
    For example: `registry.gitlab.com/security-products/semgrep:5`
 
@@ -436,7 +436,7 @@ In order to push images to this location:
 1. Configure the following [`CI/CD` environment variables](../../ci/variables/index.md) for the _analyzer project_, located at `https://gitlab.com/gitlab-org/security-products/analyzers/<ANALYZER_NAME>`:
 
    NOTE:
-   It's crucial to [mask and hide](../../ci/variables/index.md#hide-a-cicd-variable) the following variables.
+   It's crucial to [mask and hide](../../ci/variables/index.md#hide-a-cicd-variable) the `SEC_REGISTRY_PASSWORD` variable.
 
    | Key                     | Value                                                                       |
    |-------------------------|-----------------------------------------------------------------------------|

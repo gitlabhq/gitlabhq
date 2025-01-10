@@ -32,7 +32,7 @@ GET /projects/:id/security_settings
 | `id`          | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).                                                            |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/7/security_settings"
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/7/security_settings"
 ```
 
 Example response:
@@ -68,7 +68,7 @@ Prerequisites:
 | `pre_receive_secret_detection_enabled`        | boolean | yes        | The value to update `pre_receive_secret_detection_enabled` to  |
 
 ```shell
-curl --header POST "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/7/security_settings?pre_receive_secret_detection_enabled=false"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/7/security_settings?pre_receive_secret_detection_enabled=false"
 ```
 
 Example response:

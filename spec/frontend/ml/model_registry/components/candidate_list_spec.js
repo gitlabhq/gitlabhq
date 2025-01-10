@@ -61,7 +61,7 @@ describe('ml/model_registry/components/candidate_list.vue', () => {
       );
       expect(findEmptyState().props('title')).toBe('No candidates associated with this model');
       expect(findEmptyState().findComponent(GlButton).attributes('href')).toBe(
-        '/help/user/project/ml/experiment_tracking/mlflow_client.md#logging-candidates-to-a-model',
+        '/help/user/project/ml/experiment_tracking/mlflow_client.md#logging-runs-to-a-model',
       );
     });
   });

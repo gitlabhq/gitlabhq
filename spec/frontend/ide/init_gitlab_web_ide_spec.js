@@ -36,6 +36,7 @@ const TEST_EXTENSIONS_GALLERY_SETTINGS = {
     service_url: 'https://gitlab.test/vscode/marketplace/service/url',
   },
 };
+const TEST_SETTINGS_CONTEXT_HASH = '1234';
 const TEST_EDITOR_FONT_SRC_URL = 'http://gitlab.test/assets/gitlab-mono/GitLabMono.woff2';
 const TEST_EDITOR_FONT_FORMAT = 'woff2';
 const TEST_EDITOR_FONT_FAMILY = 'GitLab Mono';
@@ -280,12 +281,12 @@ describe('ide/init_gitlab_web_ide', () => {
     it.each(['opt_in_unset', 'opt_in_disabled'])(
       'calls start with element and crossOriginExtensionHost flag if extensionsGallerySettings reason is $reason',
       (reason) => {
-        const TEST_EXTENSIONS_GALLERY_SETTINGS_WITH_REASON = {
-          ...TEST_EXTENSIONS_GALLERY_SETTINGS,
+        const mockExtensionsGalleryDisabledSettings = {
           enabled: false,
           reason,
         };
-        setMockExtensionGallerySettingsDataset(TEST_EXTENSIONS_GALLERY_SETTINGS_WITH_REASON);
+
+        setMockExtensionGallerySettingsDataset(mockExtensionsGalleryDisabledSettings);
 
         expect(start).toHaveBeenCalledTimes(1);
         expect(start).toHaveBeenCalledWith(
@@ -299,5 +300,55 @@ describe('ide/init_gitlab_web_ide', () => {
         );
       },
     );
+
+    describe('for settingsContextHash', () => {
+      it('does not include settingsContextHash if webIdeSettingsContextHash feature flag is not enabled', () => {
+        gon.features = { webIdeSettingsContextHash: false };
+        findRootElement().dataset.settingsContextHash = TEST_SETTINGS_CONTEXT_HASH;
+        setMockExtensionGallerySettingsDataset();
+
+        expect(start).toHaveBeenCalledTimes(1);
+        expect(start).toHaveBeenCalledWith(
+          findRootElement(),
+          expect.not.objectContaining({
+            settingsContextHash: TEST_SETTINGS_CONTEXT_HASH,
+          }),
+        );
+      });
+
+      describe('with webIdeSettingsContextHash feature flag enabled', () => {
+        beforeEach(() => {
+          gon.features = { webIdeSettingsContextHash: true };
+        });
+
+        it('includes settingsContextHash if extensionsGallerySettings is enabled', () => {
+          findRootElement().dataset.settingsContextHash = TEST_SETTINGS_CONTEXT_HASH;
+          setMockExtensionGallerySettingsDataset();
+
+          expect(start).toHaveBeenCalledTimes(1);
+          expect(start).toHaveBeenCalledWith(
+            findRootElement(),
+            expect.objectContaining({
+              settingsContextHash: TEST_SETTINGS_CONTEXT_HASH,
+            }),
+          );
+        });
+
+        it('does not include settingsContextHash if extensionsGallerySettings is disabled', () => {
+          const mockExtensionsGalleryDisabledSettings = {
+            enabled: false,
+          };
+          setMockExtensionGallerySettingsDataset(mockExtensionsGalleryDisabledSettings);
+
+          expect(start).toHaveBeenCalledTimes(1);
+          expect(start).toHaveBeenCalledWith(
+            findRootElement(),
+            expect.objectContaining({
+              settingsContextHash: undefined,
+            }),
+          );
+        });
+      });
+    });
   });
 });

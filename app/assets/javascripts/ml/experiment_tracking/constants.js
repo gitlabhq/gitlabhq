@@ -10,5 +10,5 @@ export const ROUTE_PERFORMANCE = 'performance';
 export const GRAPHQL_PAGE_SIZE = 30;
 export const CANDIDATES_DOCS_PATH = helpPagePath(
   'user/project/ml/experiment_tracking/mlflow_client.md',
-  { anchor: 'logging-candidates-to-a-model' },
+  { anchor: 'logging-runs-to-a-model' },
 );

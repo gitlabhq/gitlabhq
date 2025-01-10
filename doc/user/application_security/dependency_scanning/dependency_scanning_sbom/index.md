@@ -114,6 +114,35 @@ repository, you need to provide one.
 The examples below show how to create a file that is supported by the GitLab analyzer for popular
 languages and package managers.
 
+#### Go
+
+The following example `.gitlab-ci.yml` demonstrates how to enable the CI/CD
+component with [dependency path](../../dependency_list/index.md#dependency-paths)
+support on a Go project. The dependency graph is output as a job artifact in the `build`
+stage, before dependency scanning runs.
+
+```yaml
+stages:
+  - build
+  - test
+
+include:
+  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
+
+go:build:
+  stage: build
+  image: "golang:latest"
+  script:
+    - "go mod tidy"
+    - "go build ./..."
+    - "go mod graph >go.graph"
+  artifacts:
+    when: on_success
+    access: developer
+    paths: ["**/go.graph"]
+
+```
+
 #### Gradle
 
 To enable the CI/CD component on a Gradle project:

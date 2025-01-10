@@ -134,7 +134,7 @@ model_name = '<your_model_name>'
 client.delete_registered_model(model_name)
 ```
 
-### Logging candidates to a model
+### Logging runs to a model
 
 Every model has an associated experiment with the same name prefixed by `[model]`.
 To log a run to the model, use the experiment passing the correct name:
