@@ -553,7 +553,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
           .to receive(:new).with(issue).and_return(builder)
       end
 
-      it 'delegates to Gitlab::DataBuilder::Issuable#build' do
+      it 'delegates to Gitlab::DataBuilder::Issuable#build', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/450843' do
         expect(builder).to receive(:build).with(
           user: user,
           action: 'update',

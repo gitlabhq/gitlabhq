@@ -16,11 +16,12 @@ module Gitlab
       # Data types table
       # Postgresql OID reference - https://jdbc.postgresql.org/documentation/publicapi/org/postgresql/core/Oid.html
       PG_TYPE_MAP = {
-        16 => 'Boolean',
+        16 => 'Bool',
         20 => 'Int64',
         21 => 'Int8',
         23 => 'Int64',
         25 => 'String',
+        1016 => 'Array(Int64)',
         1043 => 'String',
         1082 => 'Date32',
         1184 => "DateTime64(6, 'UTC')",
@@ -35,6 +36,9 @@ module Gitlab
         /^ARRAY\[.*\]::.*$/ => ->(default) {
           warn "Array defaults like (#{default}) are not supported in ClickHouse."
           nil
+        },
+        /'\{\}'::\w+\[\]/ => ->(_) {
+          '[]' # For arrays with empty as default
         },
         'now()' => ->(_) {
           'now()'
@@ -79,7 +83,7 @@ CREATE TABLE IF NOT EXISTS #{clickhouse_table_name}
       (
       #{table_fields},
         _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now(),
-        _siphon_deleted Boolean DEFAULT FALSE
+        _siphon_deleted Bool DEFAULT FALSE
       )
       ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
       PRIMARY KEY id

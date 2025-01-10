@@ -50,17 +50,17 @@ RSpec.describe Gitlab::ClickHouse::SiphonGenerator, feature_category: :code_sugg
     context 'with known PostgreSQL type' do
       it 'maps to correct ClickHouse type' do
         field = { 'field_type_id' => 16, 'nullable' => 'NO' }
-        expect(generator.send(:ch_type_for, field)).to eq('Boolean')
+        expect(generator.send(:ch_type_for, field)).to eq('Bool')
       end
 
       it 'handles nullable fields' do
         field = { 'field_type_id' => 16, 'nullable' => 'YES' }
-        expect(generator.send(:ch_type_for, field)).to eq('Nullable(Boolean)')
+        expect(generator.send(:ch_type_for, field)).to eq('Nullable(Bool)')
       end
 
       it 'adds default value when present' do
         field = { 'field_type_id' => 16, 'nullable' => 'NO', 'default' => 'true' }
-        expect(generator.send(:ch_type_for, field)).to eq('Boolean DEFAULT true')
+        expect(generator.send(:ch_type_for, field)).to eq('Bool DEFAULT true')
       end
     end
 
@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS siphon_test_table
         id Int64,
         name Nullable(String),
         _siphon_replicated_at DateTime64(6, 'UTC') DEFAULT now(),
-        _siphon_deleted Boolean DEFAULT FALSE
+        _siphon_deleted Bool DEFAULT FALSE
       )
       ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
       PRIMARY KEY id

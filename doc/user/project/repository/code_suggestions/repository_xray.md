@@ -14,13 +14,16 @@ DETAILS:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12060) in GitLab 16.7.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
-Repository X-Ray automatically enriches code generation requests for [GitLab Duo Code Suggestions](index.md) by providing additional context about a project's dependencies to improve the accuracy and relevance of code recommendations.
+Repository X-Ray automatically enriches:
 
-Repository X-Ray gives the code assistant more insight into the project's codebase and dependencies by:
+- Code generation requests for [GitLab Duo Code Suggestions](index.md) by providing additional context about a project's dependencies to improve the accuracy and relevance of code recommendations.
+- Requests to [refactor code](../../../../user/gitlab_duo_chat/examples.md#refactor-code-in-the-ide), [fix code](../../../../user/gitlab_duo_chat/examples.md#fix-code-in-the-ide), and [write tests](../../../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide).
+
+To do this, Repository X-Ray gives the code assistant more insight into the project's codebase and dependencies by:
 
 - Searching for dependency manager configuration files (for example, `Gemfile.lock`, `package.json`, `go.mod`).
 - Extracting a list of libraries from their content.
-- Providing the extracted list as additional context to be used by GitLab Duo Code Suggestions in code generation requests.
+- Providing the extracted list as additional context to be used by GitLab Duo Code Suggestions in code generation, refactor code, fix code, and write test requests.
 
 By understanding the libraries and other dependencies in use, Repository X-Ray helps the code assistant tailor suggestions to match the coding patterns, styles and technologies used in the project. This results in code suggestions that integrate more seamlessly and follow best practices for the given stack.
 
