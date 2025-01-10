@@ -184,8 +184,11 @@ before in a separate merge request, before completing the below.
 | `introduced_by_issue` | yes | Issue URL that proposed the addition of this custom ability. |
 | `introduced_by_mr` | yes | MR URL that added this custom ability. |
 | `milestone` | yes | Milestone in which this custom ability was added. |
+| `admin_ability` | no | Boolean value to indicate whether this ability is checked at the admin level. |
 | `group_ability` | yes | Boolean value to indicate whether this ability is checked on group level. |
+| `enabled_for_group_access_levels` | if `group_ability = true` | The array of access levels that already have access to this custom ability in a group. See the section on [understanding logic for individual abilities](#understanding-logic-for-individual-abilities) for help on determining the base access level for an ability. This is for information only and has no impact on how custom roles operate.  |
 | `project_ability` | yes | Boolean value to whether this ability is checked on project level. |
+| `enabled_for_project_access_levels` | if `project_ability = true` | The array of access levels that already have access to this custom ability in a project. See the section on [understanding logic for individual abilities](#understanding-logic-for-individual-abilities) for help on determining the base access level for an ability. This is for information only and has no impact on how custom roles operate.  |
 | `requirements` | no | The list of custom permissions this ability is dependent on. For instance `admin_vulnerability` is dependent on `read_vulnerability`. If none, then enter `[]`  |
 | `available_from_access_level` | no | The access level of the predefined role from which this ability is available, if applicable. See the section on [understanding logic for individual abilities](#understanding-logic-for-individual-abilities) for help on determining the base access level for an ability. This is for information only and has no impact on how custom roles operate. |
 
@@ -195,7 +198,7 @@ before in a separate merge request, before completing the below.
 
 ### Step 3: Create a feature flag (optional)
 
-- If you would like to toggle the custom ability using a [feature flag](../feature_flags/index.md), create a feature flag with name `custom_ability_<name>`. Such as, for ability `read_code`, the feature flag will be `custom_ability_read_code`. When this feature flag is disabled, the custom ability will be hidden when creating a new custom role, or when fetching custom abilities for a user. 
+- If you would like to toggle the custom ability using a [feature flag](../feature_flags/index.md), create a feature flag with name `custom_ability_<name>`. Such as, for ability `read_code`, the feature flag will be `custom_ability_read_code`. When this feature flag is disabled, the custom ability will be hidden when creating a new custom role, or when fetching custom abilities for a user.
 
 ### Step 4: Update policies
 

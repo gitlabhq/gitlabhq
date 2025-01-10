@@ -44,6 +44,8 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 | [Rename 'setPreReceiveSecretDetection' GraphQL mutation to 'setSecretPushProtection'](https://gitlab.com/gitlab-org/gitlab/-/issues/462504) | Low | Application_security_testing | Project |
 | [Deprecation of `STORAGE` enum in `NamespaceProjectSortEnum` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/396284) | Low | Fulfillment | Group |
 | [Workspaces `editor` GraphQL field is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/508155) | Low | Create | Project |
+| [Enforce keyset pagination on audit event API](https://gitlab.com/gitlab-org/gitlab/-/issues/382338) |  | Software supply chain security |  |
+| [Fix typo in user profile visibility updated audit event type](https://gitlab.com/gitlab-org/gitlab/-/issues/382338) |  | Software supply chain security |  |
 
 ## Window 2
 
@@ -53,6 +55,7 @@ This window takes place on April 28 - 30, 2025 from 09:00 UTC to 22:00 UTC.
 |-------------|--------|-------|-------|
 | [Replace GraphQL field `take_ownership_pipeline_schedule` with `admin_pipeline_schedule` in PipelineSchedulePermissions](https://gitlab.com/gitlab-org/gitlab/-/issues/391941) | Low | Verify | Project |
 | [`GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN` is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/453949) | Medium | Verify | Instance |
+| [Compliance pipelines](https://gitlab.com/groups/gitlab-org/-/epics/11275) |  | Govern |  |
 | [The `heroku/builder:22` image is deprecated](https://gitlab.com/gitlab-org/cluster-integration/auto-build-image/-/issues/79) | Medium | Deploy | Project |
 | [`ciUsedMinutes` GraphQL field renamed to `ciDuration`](https://gitlab.com/gitlab-org/gitlab/-/issues/497364) | Medium | Verify | Instance |
 | [`mergeTrainIndex` and `mergeTrainsCount` GraphQL fields deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/473759) | Low | Verify | Project |
@@ -71,6 +74,7 @@ This window takes place on May 5 - 7, 2025 from 09:00 UTC to 22:00 UTC.
 | [The `ci_job_token_scope_enabled` projects API attribute is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/423091) | Low | Govern | Project |
 | [Deprecate license metadata format V1](https://gitlab.com/gitlab-org/gitlab/-/issues/438477) |  | Secure |  |
 | [The `direction` GraphQL argument for `ciJobTokenScopeRemoveProject` is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/383084) | Low | Govern | Project |
+| [`require_password_to_approve` field](https://gitlab.com/gitlab-org/gitlab/-/issues/431346) |  | Govern |  |
 | [Replace `threshold` with `maxretries` for container registry notifications](https://gitlab.com/gitlab-org/container-registry/-/issues/1243) | Low | Package | Project |
 | [`ciJobTokenScopeAddProject` GraphQL mutation is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/474175) | Low | Govern | Project |
 | [Guest users can pull packages from private projects on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/336622) | High | Package | Project |

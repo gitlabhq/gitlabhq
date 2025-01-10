@@ -595,6 +595,40 @@ To prepare for this change, we recommend reviewing and updating your GraphQL que
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Enforce keyset pagination on audit event API
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.8</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382338).
+
+</div>
+
+The Audit Event APIs for instances, groups, and projects currently support optional keyset pagination. In GitLab 18.0
+we will enforce keyset pagination on these APIs.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### Fix typo in user profile visibility updated audit event type
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.8</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382338).
+
+</div>
+
+To fix a typo in an audit event type, in GitLab 18.0 we'll rename the `user_profile_visiblity_updated` event type to
+`user_profile_visibility_updated`.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### GitLab Runner platforms and setup instructions in GraphQL API
 
 <div class="deprecation-notes">

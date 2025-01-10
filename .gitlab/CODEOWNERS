@@ -1684,7 +1684,7 @@ ee/lib/gitlab/llm/chain/agents/single_action_executor.rb
 ee/lib/gitlab/llm/chain/streamed_zero_shot_answer.rb
 ee/lib/gitlab/llm/completions/chat.rb
 
-[Code Suggestions] @jprovaznik @ck3g @acook.gitlab @partiaga @lma-git @missy-gitlab @tgao3701908 @emeraldjayde @squadri
+[Category:Code Suggestions] @jprovaznik @ck3g @acook.gitlab @partiaga @lma-git @missy-gitlab @tgao3701908 @emeraldjayde @squadri
 ee/lib/api/code_suggestions.rb
 ee/lib/ai/additional_context.rb
 ee/lib/code_suggestions/

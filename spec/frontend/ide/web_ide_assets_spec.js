@@ -18,6 +18,15 @@ describe('asset patching in @gitlab/web-ide', () => {
     expect(content).toContain('const parentOrigin = window.origin;');
   });
 
+  it('contains vscode/node_modules', async () => {
+    // Yarn was doing weird stuff when trying to include a directory called `node_modules`
+    // We think we've worked around this, but let's add a test just in case.
+    // https://gitlab.com/gitlab-org/gitlab-web-ide/-/merge_requests/400
+    const stat = await nodeFs.stat(`${PATH_PUBLIC_VSCODE}/node_modules`);
+
+    expect(stat.isDirectory()).toBe(true);
+  });
+
   it('doesnt have extraneous html files', async () => {
     const allChildren = await nodeFs.readdir(PATH_PUBLIC_VSCODE, {
       encoding: 'utf-8',

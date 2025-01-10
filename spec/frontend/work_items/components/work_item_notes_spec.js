@@ -178,6 +178,30 @@ describe('WorkItemNotes component', () => {
       expect(workItemNoteQueryHandler).not.toHaveBeenCalled();
     });
 
+    it('skips preview note if modal is open', async () => {
+      setWindowLocation('?show=true#note_174');
+
+      const mockPreviewNote = {
+        id: 'gid://gitlab/Note/174',
+        discussion: { id: 'discussion-1' },
+      };
+
+      createComponent({
+        propsData: {
+          previewNote: mockPreviewNote,
+        },
+      });
+
+      await waitForPromises();
+
+      // Preview note should not be rendered when modal is open
+      const discussions = wrapper.findAllComponents(WorkItemDiscussion);
+      expect(discussions.length).toBe(0);
+
+      // Should still show loading state
+      expect(findNotesLoading().exists()).toBe(true);
+    });
+
     it('makes query for target note if note_id in URL', () => {
       setWindowLocation('#note_174');
 
