@@ -5,6 +5,7 @@ module Import
     module Pusher
       def push_reference(project, record, attribute, source_user_identifier)
         return unless user_mapping_enabled?(project)
+        return if source_user_identifier.nil?
 
         source_user = source_user_mapper(project).find_source_user(source_user_identifier)
 

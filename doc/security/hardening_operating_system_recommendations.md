@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 General hardening guidelines are outlined in the [main hardening documentation](hardening.md).
 
 You can configure the underlying operating system to increase overall security. In a
-controlled environment such as a self-managed GitLab instance it requires additional
+controlled environment such as GitLab Self-Managed it requires additional
 steps, and in fact is often required for certain deployments. FedRAMP is an example of
 such a deployment.
 

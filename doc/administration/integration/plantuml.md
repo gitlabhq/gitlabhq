@@ -2,7 +2,7 @@
 stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Configure PlantUML integration with your self-managed GitLab instance."
+description: "Configure PlantUML integration with GitLab Self-Managed."
 ---
 
 # PlantUML

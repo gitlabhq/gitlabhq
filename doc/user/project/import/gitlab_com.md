@@ -6,7 +6,7 @@ remove_date: '2025-01-25'
 redirect_to: '../../group/import/index.md'
 ---
 
-# Import a project from GitLab.com to your self-managed GitLab instance (removed)
+# Import a project from GitLab.com to GitLab Self-Managed (removed)
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

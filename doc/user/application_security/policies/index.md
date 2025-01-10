@@ -450,14 +450,6 @@ Use the policy editor to create, edit, and delete policies:
    If you are a project owner and a security policy project is not associated with this project,
    a security policy project is created and linked to this project when the merge request is created.
 
-## Managing projects in bulk by using a script
-
-You can use the [Vulnerability-Check Migration](https://gitlab.com/gitlab-org/gitlab/-/snippets/2328089)
-script to bulk create policies or associate security policy projects with development projects. For
-instructions and a demonstration of how to use the Vulnerability-Check Migration script, see
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>[Migration from Vulnerability-Check rules to Scan Result Policies with automated script](https://youtu.be/biU1N26DfBc).
-<!-- Video published on 2022-05-20 -->
-
 ## Troubleshooting
 
 When working with security policies, consider these troubleshooting tips:

@@ -226,7 +226,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-If you are using a self-managed GitLab instance, you need to configure
+If you are using GitLab Self-Managed, you need to configure
 Amazon credentials. GitLab uses these credentials to assume an Amazon IAM role to create your cluster.
 
 Create an IAM user and ensure it has permissions to assume the roles that

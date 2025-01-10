@@ -19,7 +19,7 @@ If you have a Duo Pro or Duo Enterprise add-on, this feature is not available.
 
 To use GitLab Duo with Amazon Q, you can [request access to a lab environment](https://about.gitlab.com/partners/technology-partners/aws/#interest).
 
-If you'd prefer to set up GitLab Duo with Amazon Q on your self-managed GitLab installation,
+If you'd prefer to set up GitLab Duo with Amazon Q on GitLab Self-Managed,
 complete the following steps.
 
 ## Set up GitLab Duo with Amazon Q
@@ -34,7 +34,7 @@ To set up GitLab Duo with Amazon Q, you must:
 
 ### Prerequisites
 
-- You must have a self-managed GitLab instance:
+- You must have GitLab Self-Managed:
   - On GitLab 17.8 or later.
   - With an HTTPS URL that can be accessed by Amazon Q (the SSL certificate must not be self-signed).
     For more details about SSL, see [Configure SSL for a Linux package installation](https://docs.gitlab.com/omnibus/settings/ssl/).

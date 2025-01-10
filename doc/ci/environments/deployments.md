@@ -156,7 +156,7 @@ When you work with deployments, you might encounter the following issues.
 GitLab [deletes old deployment refs](#archive-old-deployments)
 to keep your Git repository performant.
 
-If you have to restore archived Git-refs, ask an administrator of your self-managed GitLab instance
+If you have to restore archived Git-refs on GitLab Self-Managed, ask an administrator
 to execute the following command on Rails console:
 
 ```ruby

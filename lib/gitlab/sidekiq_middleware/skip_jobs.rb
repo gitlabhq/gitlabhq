@@ -113,7 +113,12 @@ module Gitlab
 
       def drop_job!(job, worker)
         job['dropped'] = true
-        @metrics.fetch(COUNTER).increment({ worker: worker.class.name, action: "dropped" })
+        @metrics.fetch(COUNTER).increment({
+          worker: worker.class.name,
+          action: "dropped",
+          reason: "feature_flag",
+          feature_category: worker.class.get_feature_category.to_s
+        })
       end
 
       def defer_job!(job, worker)
@@ -124,7 +129,12 @@ module Gitlab
         job['deferred_count'] += 1
 
         worker.class.deferred(job['deferred_count'], @deferred_by).perform_in(@delay, *job['args'])
-        @metrics.fetch(COUNTER).increment({ worker: worker.class.name, action: "deferred" })
+        @metrics.fetch(COUNTER).increment({
+          worker: worker.class.name,
+          action: "deferred",
+          reason: @deferred_by.to_s,
+          feature_category: worker.class.get_feature_category.to_s
+        })
       end
 
       def init_metrics

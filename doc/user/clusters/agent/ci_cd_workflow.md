@@ -402,7 +402,7 @@ image you use in your `.gitlab-ci.yml` file, ensure this directory is writable.
 
 ### Enable TLS
 
-If you are on a self-managed GitLab instance, ensure your instance is configured with Transport Layer Security (TLS).
+If you are on GitLab Self-Managed, ensure your instance is configured with Transport Layer Security (TLS).
 
 If you attempt to use `kubectl` without TLS, you might get an error like:
 

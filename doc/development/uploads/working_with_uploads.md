@@ -45,7 +45,7 @@ adding new buckets for the following reasons:
 
 - Using a new bucket adds to development time because you need to make downstream changes in [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit), [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab) and [CNG](https://gitlab.com/gitlab-org/build/CNG).
 - Using a new bucket requires GitLab.com Infrastructure changes, which slows down the roll-out of your new feature
-- Using a new bucket slows down adoption of your new feature for self-managed GitLab installation: people cannot start using your new feature until their local GitLab administrator has configured the new bucket.
+- Using a new bucket slows down adoption of your new feature for GitLab Self-Managed: people cannot start using your new feature until their local GitLab administrator has configured the new bucket.
 
 By using an existing bucket you avoid all this extra work
 and friction. The `Gitlab.config.uploads` storage location, which is what

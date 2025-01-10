@@ -2,7 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Configure rate limits on Git HTTP requests to your self-managed GitLab instance."
+description: "Configure rate limits on Git HTTP requests to GitLab Self-Managed."
 ---
 
 # Rate limits on Git HTTP

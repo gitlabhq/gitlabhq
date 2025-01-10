@@ -32,7 +32,7 @@ To solve this problem, the user must [link SAML to their existing GitLab.com acc
 
 ### Self-managed GitLab
 
-For a self-managed GitLab instance, administrators of that instance can instead [add the user identity themselves](../../../administration/admin_area.md#user-identities). This might save time if administrators need to re-add multiple identities.
+For GitLab Self-Managed, administrators of that instance can instead [add the user identity themselves](../../../administration/admin_area.md#user-identities). This might save time if administrators need to re-add multiple identities.
 
 ## User cannot sign in
 

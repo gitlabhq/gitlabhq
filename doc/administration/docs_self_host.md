@@ -17,7 +17,7 @@ NOTE:
 The local help of your instance does not include all the docs (for example, it
 doesn't include docs for GitLab Runner or GitLab Operator), and it's not
 searchable or browsable. It's intended to only support direct links to specific
-pages from within a self-managed GitLab instance.
+pages from within your instance.
 
 ## Documentation self-hosting options
 

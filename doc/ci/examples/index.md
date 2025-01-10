@@ -108,7 +108,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-You can add custom examples and templates to your self-managed GitLab instance.
+You can add custom examples and templates to your instance.
 Your GitLab administrator can [designate an instance template repository](../../administration/settings/instance_template_repository.md)
 that contains examples and templates specific to your organization.
 

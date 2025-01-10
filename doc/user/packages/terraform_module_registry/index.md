@@ -212,7 +212,7 @@ credentials "gitlab.com" {
 }
 ```
 
-Where `gitlab.com` can be replaced with the hostname of your self-managed GitLab instance.
+Where `gitlab.com` can be replaced with the hostname of GitLab Self-Managed.
 
 You can then refer to your Terraform module from a downstream Terraform project:
 
@@ -236,7 +236,7 @@ login <USERNAME>
 password <TOKEN>
 ```
 
-Where `gitlab.com` can be replaced with the hostname of your self-managed GitLab instance, and `<USERNAME>` is your token username.
+Where `gitlab.com` can be replaced with the hostname of GitLab Self-Managed, and `<USERNAME>` is your token username.
 
 You can refer to your Terraform module from a downstream Terraform project:
 

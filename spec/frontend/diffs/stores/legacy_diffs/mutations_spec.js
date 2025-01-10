@@ -936,6 +936,22 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
+  describe('SET_FOLDER_OPEN', () => {
+    it('toggles entry opened prop', () => {
+      store.$patch({
+        treeEntries: {
+          path: {
+            opened: false,
+          },
+        },
+      });
+
+      store[types.SET_FOLDER_OPEN]({ path: 'path', opened: true });
+
+      expect(store.treeEntries.path.opened).toBe(true);
+    });
+  });
+
   describe('TREE_ENTRY_DIFF_LOADING', () => {
     it('sets the entry loading state to true by default', () => {
       store.$patch({

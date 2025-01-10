@@ -11,7 +11,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-Administer and manage users in your self-managed GitLab installation.
+Administer and manage users in GitLab Self-Managed.
 
 ## User accounts
 

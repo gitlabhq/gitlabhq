@@ -104,7 +104,7 @@ For example:
 DETAILS:
 **Offering:** Self-managed, GitLab Dedicated
 
-Before you can migrate projects on a self-managed GitLab instance using file exports, GitLab administrators must:
+Before you can migrate projects on GitLab Self-Managed using file exports, GitLab administrators must:
 
 1. [Enable file exports](../../../administration/settings/import_and_export_settings.md#enable-project-export) on the source
    instance.

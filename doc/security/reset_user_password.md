@@ -15,7 +15,7 @@ You can reset user passwords by using the UI, a Rake task, a Rails console, or t
 
 ## Prerequisites
 
-- You must be an administrator of a self-managed GitLab instance.
+- You must be an administrator of GitLab Self-Managed.
 - The new password must meet all [password requirements](../user/profile/user_passwords.md#password-requirements).
 
 ## Use the UI

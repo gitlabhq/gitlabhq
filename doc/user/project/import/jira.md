@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Using GitLab Jira importer, you can import your Jira issues to GitLab.com or to
-your self-managed GitLab instance.
+GitLab Self-Managed.
 
 Jira issues import is an MVC, project-level feature, meaning that issues from multiple
 Jira projects can be imported into a GitLab project. MVC version imports issue title and description

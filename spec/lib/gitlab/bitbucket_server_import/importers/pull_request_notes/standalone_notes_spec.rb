@@ -5,7 +5,10 @@ require 'spec_helper'
 RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::StandaloneNotes, feature_category: :importers do
   include Import::UserMappingHelper
 
-  let_it_be(:project) { create(:project, :repository, :bitbucket_server_import, :import_user_mapping_enabled) }
+  let_it_be_with_reload(:project) do
+    create(:project, :repository, :bitbucket_server_import, :import_user_mapping_enabled)
+  end
+
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let_it_be(:now) { Time.now.utc.change(usec: 0) }
   let_it_be(:author_details) do
@@ -29,6 +32,8 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Stand
 
   let_it_be(:source_user) { generate_source_user(project, pr_comment[:author_username]) }
 
+  let(:cached_references) { placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id) }
+
   def expect_log(stage:, message:, iid:, comment_id:)
     allow(Gitlab::BitbucketServerImport::Logger).to receive(:info).and_call_original
     expect(Gitlab::BitbucketServerImport::Logger)
@@ -41,7 +46,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Stand
     it 'pushes placeholder reference' do
       importer.execute(pr_comment)
 
-      cached_references = placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id)
       expect(cached_references).to contain_exactly(
         ['Note', instance_of(Integer), 'author_id', source_user.id]
       )
@@ -103,6 +107,27 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Stand
           updated_at: pr_comment_extra[:created_at],
           imported_from: 'bitbucket_server'
         )
+      end
+
+      context 'when one of the comments has no associated author' do
+        let(:pr_comment) { super().merge(author_username: nil) }
+
+        it 'creates the comment without an author' do
+          expect { importer.execute(pr_comment) }.to change { Note.count }.by(2)
+
+          start_note, reply_note = merge_request.notes.order(:id).to_a
+
+          expect(start_note.author_id).to eq(project.creator_id)
+          expect(reply_note.author_id).to eq(source_user.mapped_user_id)
+        end
+
+        it 'does not push placeholder references for that comment' do
+          importer.execute(pr_comment)
+
+          expect(cached_references).to contain_exactly(
+            ['Note', instance_of(Integer), 'author_id', source_user.id]
+          )
+        end
       end
     end
 
@@ -208,7 +233,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Stand
       it 'does not push placeholder references' do
         importer.execute(pr_comment)
 
-        cached_references = placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id)
         expect(cached_references).to be_empty
       end
 

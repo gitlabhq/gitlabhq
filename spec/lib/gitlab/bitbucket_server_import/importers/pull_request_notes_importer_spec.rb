@@ -359,6 +359,25 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
           )
         end
 
+        context 'when comment has no associated author' do
+          before do
+            allow(pr_inline_note).to receive(:author_username).and_return(nil)
+            allow(reply).to receive(:author_username).and_return(nil)
+          end
+
+          it 'attributes the comments to the project creator' do
+            importer.execute
+
+            expect(merge_request.notes.collect(&:author_id)).to match_array([project.creator_id, project.creator_id])
+          end
+
+          it 'does not push placeholder references' do
+            importer.execute
+
+            expect(cached_references).to be_empty
+          end
+        end
+
         context 'when a diff note is invalid' do
           let(:pr_inline_note) do
             instance_double(
@@ -438,6 +457,26 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
             ["MergeRequest::Metrics", instance_of(Integer), "merged_by_id", author_source_user.id]
           )
         end
+
+        context 'when merge event has no associated user' do
+          before do
+            allow(merge_event).to receive(:committer_username).and_return(nil)
+          end
+
+          it 'associates the merge event with project creator' do
+            importer.execute
+
+            merge_request.reload
+
+            expect(merge_request.metrics.merged_by_id).to eq(project.creator_id)
+          end
+
+          it 'does not push placeholder references' do
+            importer.execute
+
+            expect(cached_references).to be_empty
+          end
+        end
       end
 
       context 'when PR has an approved event' do
@@ -486,6 +525,21 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
 
           it 'does not create the reviewer record' do
             expect { importer.execute }.not_to change { merge_request.reviewers.count }
+          end
+        end
+
+        context 'when approved event has no associated approver' do
+          before do
+            allow(approved_event).to receive(:approver_username).and_return(nil)
+          end
+
+          it 'does not set an approver' do
+            expect { importer.execute }
+              .to not_change { merge_request.approvals.count }
+              .and not_change { merge_request.notes.count }
+              .and not_change { merge_request.reviewers.count }
+
+            expect(merge_request.approvals).to be_empty
           end
         end
       end

@@ -11,7 +11,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-Customize and configure your self-managed GitLab installation.
+Customize and configure GitLab Self-Managed.
 
 - [Authentication](auth/index.md)
 - [CI/CD](../administration/cicd/index.md)

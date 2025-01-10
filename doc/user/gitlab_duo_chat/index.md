@@ -39,6 +39,17 @@ If you have self-managed GitLab: GitLab Duo requires GitLab 17.2 and later for t
 GitLab Duo Chat is sometimes aware of the context you're working in.
 Other times, you must be more specific with your request.
 
+The context Chat is aware of also depends on your subscription tier:
+
+- In the GitLab UI:
+  - Chat is aware of code files if you have either Premium with GitLab Duo Pro, or
+    Ultimate with GitLab Duo Pro or Enterprise.
+  - For all other areas, you must have Ultimate with GitLab Duo Enterprise.
+- In the IDEs:
+  - Chat is aware of selected lines in the editor if you have either Premium with
+    GitLab Duo Pro, or Ultimate with GitLab Duo Pro or Enterprise.
+  - For all other areas, you must have Ultimate with GitLab Duo Enterprise.
+
 In the GitLab UI, GitLab Duo Chat knows about these areas:
 
 | Area           | How to ask Chat                                                                                                                                                                             |

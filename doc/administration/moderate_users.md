@@ -166,7 +166,7 @@ Prerequisites:
 
 - The user has had no activity in the last 90 days.
 
-To deactivate a user from a self-managed GitLab instance:
+To deactivate a user:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.

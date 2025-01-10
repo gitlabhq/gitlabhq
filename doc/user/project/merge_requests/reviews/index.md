@@ -187,6 +187,26 @@ When this happens, the merge request reports area shows the message
 **The change requests must be completed or resolved.** To unblock the merge request,
 the reviewer who requested changes should [re-review and approve](#re-request-a-review) the merge request.
 
+### Remove a change request
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/480412) in GitLab 17.8.
+
+If you previously requested changes, you can remove your change request. You might need to do this
+if both of the following are true:
+
+- You can no longer approve the merge request.
+- You want to cancel your change request, but don't want to submit a new review.
+
+To remove your change request without submitting a new review:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
+1. Select the title of the merge request to view it.
+1. On the merge request **Overview**, scroll to the merge request reports area.
+1. Next to **The change requests must be completed or resolved**, select **Remove**:
+
+   ![A merge request that is blocked because a user requested changes](img/remove_v17_8.png)
+
 ### Bypass a request for changes
 
 If the user who requested changes is unavailable to re-review or approve,

@@ -13,7 +13,7 @@ DETAILS:
 > - Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.
 
 Using the importer, you can import your FogBugz project to GitLab.com
-or to your self-managed GitLab instance.
+or to GitLab Self-Managed.
 
 The importer imports all of your cases and comments with the original
 case numbers and timestamps. You can also map FogBugz users to GitLab

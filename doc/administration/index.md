@@ -7,7 +7,7 @@ description: 'Learn how to install, configure, update, and maintain your GitLab 
 
 # Administer GitLab
 
-Learn how to administer a self-managed GitLab instance.
+Learn how to administer GitLab Self-Managed.
 
 | | | |
 |--|--|--|

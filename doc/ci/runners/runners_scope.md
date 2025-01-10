@@ -241,7 +241,7 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 
-You can create a group runner for your self-managed GitLab instance or for GitLab.com.
+You can create a group runner for GitLab Self-Managed or for GitLab.com.
 When you create a runner, it is assigned a runner authentication token that you use to register it.
 The runner uses the token to authenticate with GitLab when it picks up jobs from the job queue.
 
@@ -306,7 +306,7 @@ Prerequisites:
 - You must have the Maintainer or Owner role for the group.
 
 You can view all runners for a group and its subgroups and projects.
-You can do this for your self-managed GitLab instance or for GitLab.com.
+You can do this for GitLab Self-Managed or for GitLab.com.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Build > Runners**.
@@ -444,7 +444,7 @@ Prerequisites:
 
 - You must have the Maintainer role for the project.
 
-You can create a project runner for your self-managed GitLab instance or for GitLab.com. When you create a runner,
+You can create a project runner for GitLab Self-Managed or for GitLab.com. When you create a runner,
 it is assigned a runner authentication token that you use to register to the runner. The runner uses the token to
 authenticate with GitLab when it picks up jobs from the job queue.
 

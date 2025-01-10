@@ -81,11 +81,11 @@ Benefits:
 
 #### Migration to GitLab Dedicated
 
-You can also use Geo to migrate your self-managed GitLab instance to [GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md). A migration to GitLab Dedicated is similar to an infrastructure migration.
+You can also use Geo to migrate GitLab Self-Managed to [GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md). A migration to GitLab Dedicated is similar to an infrastructure migration.
 
 Benefits:
 
-- Smoother onboarding experience with significantly lower downtime. Your team can continue to use your self-managed GitLab instance while the data migration takes place in the background.
+- Smoother onboarding experience with significantly lower downtime. Your team can continue to use GitLab Self-Managed while the data migration takes place in the background.
 
 ## What Geo is not designed to address
 

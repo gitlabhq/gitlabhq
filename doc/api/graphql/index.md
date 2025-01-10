@@ -33,7 +33,7 @@ The GitLab GraphQL API endpoint is located at `/api/graphql`.
 Explore the GraphQL API using the interactive GraphQL explorer, either:
 
 - [On GitLab.com](https://gitlab.com/-/graphql-explorer).
-- On your self-managed GitLab instance on `https://<your-gitlab-site.com>/-/graphql-explorer`.
+- On GitLab Self-Managed on `https://<your-gitlab-site.com>/-/graphql-explorer`.
 
 For more information, see [GraphiQL](getting_started.md#graphiql).
 

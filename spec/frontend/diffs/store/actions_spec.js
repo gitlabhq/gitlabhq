@@ -1290,6 +1290,18 @@ describe('DiffsStoreActions', () => {
     });
   });
 
+  describe('setTreeOpen', () => {
+    it('commits SET_FOLDER_OPEN', () => {
+      return testAction(
+        diffActions.setTreeOpen,
+        { path: 'path', opened: true },
+        {},
+        [{ type: types.SET_FOLDER_OPEN, payload: { path: 'path', opened: true } }],
+        [],
+      );
+    });
+  });
+
   describe('goToFile', () => {
     const getters = {};
     const file = { path: 'path' };

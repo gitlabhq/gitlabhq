@@ -948,6 +948,22 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
+  describe('SET_FOLDER_OPEN', () => {
+    it('toggles entry opened prop', () => {
+      const state = {
+        treeEntries: {
+          path: {
+            opened: false,
+          },
+        },
+      };
+
+      mutations[types.SET_FOLDER_OPEN](state, { path: 'path', opened: true });
+
+      expect(state.treeEntries.path.opened).toBe(true);
+    });
+  });
+
   describe('TREE_ENTRY_DIFF_LOADING', () => {
     it('sets the entry loading state to true by default', () => {
       const state = {

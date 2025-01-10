@@ -25,6 +25,8 @@ module Gitlab
         # We want this to only match either placeholder or email
         # depending on the flag state. There should be no fall-through.
         if user_mapping_enabled?(project)
+          return unless object[:username]
+
           source_user_for_author(object).mapped_user_id
         else
           find_user_id(by: :email, value: object.is_a?(Hash) ? object[:author_email] : object.author_email)

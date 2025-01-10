@@ -345,11 +345,43 @@ compliance_job:
 Pipeline execution jobs are executed in isolation. Variables defined in another policy or in the project's `.gitlab-ci.yml` file are not available in the pipeline execution policy
 and cannot be overwritten from the outside.
 
-Variables can be shared with pipeline execution policies using group or project settings. If a variable is not defined in a pipeline execution policy, the value from group or project settings is applied.
-If the variable is defined in the pipeline execution policy, the group or project setting is overwritten.
-This behavior is independent from the pipeline execution policy strategy.
+Variables can be shared with pipeline execution policies using group or project settings, which follow the standard [CI/CD variable precedence](../../../ci/variables/index.md#cicd-variable-precedence) rules. However, the precedence rules are more complex when using a pipeline execution policy as they can vary depending on the pipeline execution policy strategy:
+
+- `inject_ci` strategy: If the variable is defined in the pipeline execution policy, the job always uses this value. If a variable is not defined in a pipeline execution policy, the job applies the value from the group or project settings.
+- `override_project_ci` strategy: All jobs in the resulting pipeline are treated as policy jobs. Variables defined in the policy (including those in included files) take precedence over project and group variables. This means that variables from jobs in the CI/CD configuration of the included project take precedence over the variables defined in the project and group settings.
+
+For more details on variable in pipeline execution policies, see [precedence of variable in pipeline execution policies](#precedence-of-variables-in-pipeline-execution-policies).
 
 You can [define project or group variables in the UI](../../../ci/variables/index.md#define-a-cicd-variable-in-the-ui).
+
+### Precedence of variables in pipeline execution policies
+
+When using pipeline execution policies, especially with the `override_project_ci` strategy, the precedence of variable values defined in multiple places can differ from standard GitLab CI/CD pipelines. These are some important points to understand:
+
+- When using `override_project_ci`, all jobs in the resulting pipeline are considered policy jobs, including those from the CI/CD configurations of included projects.
+- Variables defined in a policy pipeline (for the entire instance or for a job) take precedence over variables defined in the project or group settings.
+- This behavior applies to all jobs, including those included from the project's CI/CD configuration file (`.gitlab-ci.yml`).
+
+### Example
+
+If a variable in a project's CI/CD configuration and a job variable defined in an included `.gitlab-ci.yml` file have the same name, the job variable takes precedence when using `override_project_ci`.
+
+In the project's CI/CD settings, a `MY_VAR` variable is defined:
+
+- Key: `MY_VAR`
+- Value: `Project configuration variable value`
+
+In `.gitlab-ci.yml` of the included project, the same variable is defined:
+
+```yaml
+project-job:
+  variables:
+    MY_VAR: "Project job variable value"
+  script:
+    - echo $MY_VAR  # This will output "Project job variable value"
+```
+
+In this case, the job variable value `Project job variable value` takes precedence. 
 
 ## Behavior with `[skip ci]`
 

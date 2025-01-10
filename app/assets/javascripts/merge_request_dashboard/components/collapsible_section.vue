@@ -12,6 +12,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  inject: ['newListsEnabled'],
   props: {
     title: {
       type: String,
@@ -68,7 +69,7 @@ export default {
     is-collapsible
     :collapsed="!open"
     :toggle-aria-label="toggleButtonLabel"
-    :body-class="{ '!gl-mx-0 gl-mb-0': hasMergeRequests }"
+    :body-class="{ '!gl-mx-0 gl-mb-0': hasMergeRequests || newListsEnabled }"
   >
     <template #title>
       {{ title }}

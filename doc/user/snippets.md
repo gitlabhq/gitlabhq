@@ -283,4 +283,4 @@ creating a new snippet, use this workaround:
 
 ## Related topics
 
-- [Configure snippet settings](../administration/snippets/index.md) on a self-managed GitLab instance
+- [Configure snippet settings](../administration/snippets/index.md) on GitLab Self-Managed

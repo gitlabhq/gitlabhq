@@ -2,7 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Set and configure Git protocol v2 for your self-managed GitLab instance."
+description: "Set and configure Git protocol v2 for GitLab Self-Managed."
 ---
 
 # Configuring Git Protocol v2

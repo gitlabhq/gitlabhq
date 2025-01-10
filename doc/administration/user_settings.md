@@ -14,7 +14,7 @@ You can modify settings for every user in your GitLab instance.
 
 ## Prerequisites
 
-- You must be an administrator of a self-managed GitLab instance.
+- You must be an administrator of GitLab Self-Managed.
 
 ## Prevent users from creating top-level groups
 

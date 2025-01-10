@@ -34,7 +34,7 @@ For most people, using GraphiQL will be the easiest way to explore the GitLab Gr
 You can either use GraphiQL:
 
 - [On GitLab.com](https://gitlab.com/-/graphql-explorer).
-- On your self-managed GitLab instance on `https://<your-gitlab-site.com>/-/graphql-explorer`.
+- On GitLab Self-Managed on `https://<your-gitlab-site.com>/-/graphql-explorer`.
 
 Sign in to GitLab first to authenticate the requests with your GitLab account.
 

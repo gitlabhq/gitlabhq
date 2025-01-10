@@ -39,7 +39,7 @@ Administrators can unlock accounts immediately by using the following tasks:
 
 Prerequisites
 
-- You must be an administrator of a self-managed GitLab instance.
+- You must be an administrator of GitLab Self-Managed.
 
 To unlock an account from the Admin area:
 
@@ -54,7 +54,7 @@ The user can now sign in.
 
 Prerequisites
 
-- You must be an administrator of a self-managed GitLab instance.
+- You must be an administrator of GitLab Self-Managed.
 
 To unlock an account from the command line:
 

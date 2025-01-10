@@ -2,7 +2,7 @@
 stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Configure limits on the number of single push events your self-managed GitLab instance will allow."
+description: "Configure limits on the number of single push events your instance will allow."
 ---
 
 # Push event activities limit and bulk push events

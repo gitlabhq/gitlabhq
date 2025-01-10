@@ -12051,6 +12051,29 @@ The edge type for [`AiUserMetrics`](#aiusermetrics).
 | <a id="aiusermetricsedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="aiusermetricsedgenode"></a>`node` | [`AiUserMetrics`](#aiusermetrics) | The item at the end of the edge. |
 
+#### `AiXrayReportConnection`
+
+The connection type for [`AiXrayReport`](#aixrayreport).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aixrayreportconnectionedges"></a>`edges` | [`[AiXrayReportEdge]`](#aixrayreportedge) | A list of edges. |
+| <a id="aixrayreportconnectionnodes"></a>`nodes` | [`[AiXrayReport]`](#aixrayreport) | A list of nodes. |
+| <a id="aixrayreportconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AiXrayReportEdge`
+
+The edge type for [`AiXrayReport`](#aixrayreport).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aixrayreportedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="aixrayreportedgenode"></a>`node` | [`AiXrayReport`](#aixrayreport) | The item at the end of the edge. |
+
 #### `AlertManagementAlertConnection`
 
 The connection type for [`AlertManagementAlert`](#alertmanagementalert).
@@ -19115,6 +19138,14 @@ Pre-aggregated per-user metrics for GitLab Code Suggestions and GitLab Duo Chat.
 | <a id="aiusermetricscodesuggestionsacceptedcount"></a>`codeSuggestionsAcceptedCount` | [`Int`](#int) | Total count of code suggestions accepted by the user. |
 | <a id="aiusermetricsduochatinteractionscount"></a>`duoChatInteractionsCount` | [`Int`](#int) | Number of user interactions with GitLab Duo Chat. |
 | <a id="aiusermetricsuser"></a>`user` | [`UserCore!`](#usercore) | User metrics. |
+
+### `AiXrayReport`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aixrayreportlanguage"></a>`language` | [`String!`](#string) | Language of the x-ray report. |
 
 ### `AlertManagementAlert`
 
@@ -31888,6 +31919,7 @@ Project-level settings for product analytics provider.
 | <a id="projectagentconfigurations"></a>`agentConfigurations` | [`AgentConfigurationConnection`](#agentconfigurationconnection) | Agent configurations defined by the project. (see [Connections](#connections)) |
 | <a id="projectaiagents"></a>`aiAgents` **{warning-solid}** | [`AiAgentConnection`](#aiagentconnection) | **Introduced** in GitLab 16.9. **Status**: Experiment. Ai Agents for the project. |
 | <a id="projectaiusagedata"></a>`aiUsageData` **{warning-solid}** | [`AiUsageData`](#aiusagedata) | **Introduced** in GitLab 17.5. **Status**: Experiment. AI-related data. |
+| <a id="projectaixrayreports"></a>`aiXrayReports` **{warning-solid}** | [`AiXrayReportConnection!`](#aixrayreportconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. X-ray reports of the project. |
 | <a id="projectallowmergeonskippedpipeline"></a>`allowMergeOnSkippedPipeline` | [`Boolean`](#boolean) | If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge requests of the project can also be merged with skipped jobs. |
 | <a id="projectallowedcustomstatuses"></a>`allowedCustomStatuses` **{warning-solid}** | [`WorkItemWidgetCustomStatusConnection`](#workitemwidgetcustomstatusconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. Allowed custom statuses for the project. |
 | <a id="projectallowsmultiplemergerequestassignees"></a>`allowsMultipleMergeRequestAssignees` | [`Boolean!`](#boolean) | Project allows assigning multiple users to a merge request. |

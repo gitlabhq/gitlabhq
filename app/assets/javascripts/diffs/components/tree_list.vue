@@ -144,16 +144,28 @@ export default {
     currentDiffFileId(hash) {
       if (hash) {
         this.scrollVirtualScrollerToFileHash(hash);
+        this.openFileTree(hash);
       }
     },
   },
   methods: {
-    ...mapActions('diffs', ['toggleTreeOpen', 'goToFile', 'setRenderTreeList']),
+    ...mapActions('diffs', ['toggleTreeOpen', 'goToFile', 'setRenderTreeList', 'setTreeOpen']),
 
     scrollVirtualScrollerToFileHash(hash) {
       const index = this.treeList.findIndex((f) => f.fileHash === hash);
       if (index !== -1) {
-        this.$refs.scroller.scrollToItem(index);
+        this.$refs.scroller.scrollToItem?.(index);
+      }
+    },
+    openFileTree(hash) {
+      const file = this.flatFilteredTreeList.find((f) => f.fileHash === hash);
+
+      if (file) {
+        file.path
+          .split('/')
+          .slice(0, -1)
+          .reduce((acc, part) => [...acc, acc.length ? `${acc.at(-1)}/${part}` : part], [])
+          .forEach((path) => this.setTreeOpen({ path, opened: true }));
       }
     },
   },

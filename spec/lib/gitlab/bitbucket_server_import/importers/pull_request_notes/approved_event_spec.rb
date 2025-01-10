@@ -88,6 +88,26 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Appro
       importer.execute(approved_event)
     end
 
+    context 'when approved event has no associated approver' do
+      let(:approved_event) { super().merge(approver_username: nil) }
+
+      it 'does not set an approver' do
+        expect_log(
+          stage: 'import_approved_event',
+          message: 'skipped due to missing user',
+          iid: merge_request.iid,
+          event_id: 4
+        )
+
+        expect { importer.execute(approved_event) }
+          .to not_change { merge_request.approvals.count }
+          .and not_change { merge_request.notes.count }
+          .and not_change { merge_request.reviewers.count }
+
+        expect(merge_request.approvals).to be_empty
+      end
+    end
+
     context 'when user contribution mapping is disabled' do
       let_it_be(:pull_request_author) do
         create(:user, username: 'pull_request_author', email: 'pull_request_author@example.org')

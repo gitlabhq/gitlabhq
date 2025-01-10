@@ -34,7 +34,7 @@ After you install the extension, connect it to your GitLab account.
 
 ### Create a personal access token
 
-If you are on a self-managed GitLab instance, create a personal access token.
+If you are on GitLab Self-Managed, create a personal access token.
 
 1. In GitLab, on the left sidebar, select your avatar.
 1. Select **Edit profile**.

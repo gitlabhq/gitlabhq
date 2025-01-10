@@ -111,7 +111,7 @@ There is a [known issue](index.md#known-issues) affecting the mapping of shared 
 To ensure GitLab maps users and their contributions correctly between the source and destination instances:
 
 1. Create the required users on the destination GitLab instance. You can create users with the API only on self-managed instances because it requires
-   administrator access. When migrating to GitLab.com or a self-managed GitLab instance you can:
+   administrator access. When migrating to GitLab.com or GitLab Self-Managed you can:
    - Create users manually.
    - Set up or use your existing [SAML SSO provider](../saml_sso/index.md) and leverage user synchronization of SAML SSO groups supported through
      [SCIM](../../group/saml_sso/scim_setup.md). You can

@@ -58,7 +58,7 @@ AWS Services that are supported directly by a CodeStar Connection in an AWS acco
 Documentation and References:
 
 - [Creating a GitLab CodeStar Connection to a GitLab.com Project](https://docs.aws.amazon.com/codepipeline/latest/userguide/connections-gitlab-managed.html)
-- [Creating a AWS CodeStar Connection for a Self-Managed GitLab Instance or GitLab Dedicated Instance](https://docs.aws.amazon.com/codepipeline/latest/userguide/connections-gitlab-managed.html) (must allow Internet Ingress from AWS or use a VPC connection)
+- [Creating a AWS CodeStar Connection for GitLab Self-Managed or GitLab Dedicated](https://docs.aws.amazon.com/codepipeline/latest/userguide/connections-gitlab-managed.html) (must allow Internet Ingress from AWS or use a VPC connection)
 
 #### AWS CodePipeline Integrations
 
@@ -71,7 +71,7 @@ AWS Services that are supported by an AWS CodePipeline integration:
 Documentation and References:
 
 - [Creating a GitLab CodePipeline Integration to a GitLab.com Project](https://docs.aws.amazon.com/codepipeline/latest/userguide/connections-gitlab-managed.html)
-- [Creating a AWS CodePipeline Integration for a Self-Managed GitLab Instance or GitLab Dedicated Instance](https://docs.aws.amazon.com/codepipeline/latest/userguide/connections-gitlab-managed.html) (must allow Internet Ingress from AWS or use a VPC connection)
+- [Creating a AWS CodePipeline Integration for GitLab Self-Managed or GitLab Dedicated](https://docs.aws.amazon.com/codepipeline/latest/userguide/connections-gitlab-managed.html) (must allow Internet Ingress from AWS or use a VPC connection)
 
 #### CodeStar Connections enabled AWS services that are not yet supported for GitLab
 

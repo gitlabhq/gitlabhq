@@ -2,7 +2,7 @@
 stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Configure a Diagrams.net integration for your self-managed GitLab instance."
+description: "Configure a Diagrams.net integration for GitLab Self-Managed."
 ---
 
 # Diagrams.net
@@ -34,7 +34,7 @@ After completing the integration, the diagrams.net editor opens with the URL you
 
 You can set up your own diagrams.net server to generate the diagrams.
 
-It's a required step for users on an offline environment self-managed GitLab installations.
+It's a required step for users on an offline installation of GitLab Self-Managed.
 
 For example, to run a diagrams.net container in Docker, run the following command:
 
