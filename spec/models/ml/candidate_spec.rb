@@ -256,6 +256,29 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
     end
   end
 
+  describe '#with_project_id_and_id' do
+    let(:project_id) { candidate.experiment.project_id }
+    let(:id) { candidate.id }
+
+    subject { described_class.with_project_id_and_id(project_id, id) }
+
+    context 'when internal_id exists', 'and belongs to project' do
+      it { is_expected.to eq(candidate) }
+    end
+
+    context 'when id exists and does not belong to project' do
+      let(:project_id) { non_existing_record_id }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when id does not exist' do
+      let(:id) { non_existing_record_id }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe "#latest_metrics" do
     let_it_be(:candidate3) { create(:ml_candidates, experiment: candidate.experiment) }
     let_it_be(:metric1) { create(:ml_candidate_metrics, candidate: candidate3) }

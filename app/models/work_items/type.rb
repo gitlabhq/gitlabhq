@@ -54,6 +54,8 @@ module WorkItems
     # where it's possible to switch between issue and incident.
     CHANGEABLE_BASE_TYPES = %w[issue incident test_case].freeze
 
+    EE_BASE_TYPES = %w[objective epic key_result requirement].freeze
+
     columns_changing_default :id
 
     cache_markdown_field :description, pipeline: :single_line
@@ -168,6 +170,11 @@ module WorkItems
       }
     end
 
+    def supported_conversion_types(resource_parent)
+      type_names = supported_conversion_base_types(resource_parent) - [base_type]
+      WorkItems::Type.by_type(type_names).order_by_name_asc
+    end
+
     def allowed_child_types(cache: false)
       cached_data = cache ? with_reactive_cache { |query_data| query_data[:allowed_child_types_by_name] } : nil
 
@@ -203,6 +210,11 @@ module WorkItems
 
     def strip_whitespace
       name&.strip!
+    end
+
+    # resource_parent is used in EE
+    def supported_conversion_base_types(_resource_parent)
+      WorkItems::Type.base_types.keys.excluding(*EE_BASE_TYPES)
     end
   end
 end

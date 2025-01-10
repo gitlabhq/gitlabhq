@@ -19,7 +19,8 @@ RSpec.describe Mutations::MergeRequests::Create, feature_category: :api do
         source_branch: source_branch,
         target_branch: target_branch,
         description: description,
-        labels: labels
+        labels: labels,
+        merge_after: merge_after
       )
     end
 
@@ -28,6 +29,7 @@ RSpec.describe Mutations::MergeRequests::Create, feature_category: :api do
     let(:target_branch) { 'master' }
     let(:description) { nil }
     let(:labels) { nil }
+    let(:merge_after) { nil }
 
     let(:mutated_merge_request) { subject[:merge_request] }
 
@@ -82,6 +84,15 @@ RSpec.describe Mutations::MergeRequests::Create, feature_category: :api do
 
           it 'returns a new merge request with labels' do
             expect(mutated_merge_request.labels.map(&:title)).to eq(labels)
+            expect(subject[:errors]).to be_empty
+          end
+        end
+
+        context 'when optional merge_after field is set' do
+          let(:merge_after) { '2025-01-09T20:47:00+0100' }
+
+          it 'returns a new merge request with merge_after' do
+            expect(mutated_merge_request.merge_schedule.merge_after).to eq('2025-01-09T19:47:00.000Z')
             expect(subject[:errors]).to be_empty
           end
         end

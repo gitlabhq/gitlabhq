@@ -93,6 +93,12 @@ module Ml
 
         find_by(project_id: project_id, internal_id: iid)
       end
+
+      def with_project_id_and_id(project_id, id)
+        return unless project_id.present? && id.present?
+
+        find_by(project_id: project_id, id: id)
+      end
     end
 
     private

@@ -5,11 +5,13 @@ module Projects
     class CandidatesController < ApplicationController
       before_action :set_candidate
       before_action :check_read, only: [:show]
-      before_action :check_write, only: [:destroy]
+      before_action :check_write, only: [:destroy, :promote]
 
       feature_category :mlops
 
       def show; end
+
+      def promote; end
 
       def destroy
         @experiment = @candidate.experiment

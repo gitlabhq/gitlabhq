@@ -66,6 +66,7 @@ module API
         title
         state_event
         discussion_locked
+        merge_after
       ]
     end
 
@@ -279,6 +280,7 @@ module API
           optional :allow_collaboration, type: Boolean, desc: 'Allow commits from members who can merge to the target branch.'
           optional :allow_maintainer_to_push, type: Boolean, as: :allow_collaboration, desc: '[deprecated] See allow_collaboration'
           optional :squash, type: Grape::API::Boolean, desc: 'Squash commits into a single commit when merging.'
+          optional :merge_after, type: String, desc: 'Date after which the merge request can be merged.'
 
           use :optional_params_ee
         end

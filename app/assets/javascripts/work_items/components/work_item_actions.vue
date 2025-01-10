@@ -20,6 +20,7 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 
 import {
   sprintfWorkItem,
+  BASE_ALLOWED_CREATE_TYPES,
   I18N_WORK_ITEM_DELETE,
   I18N_WORK_ITEM_ARE_YOU_SURE_DELETE,
   I18N_WORK_ITEM_ARE_YOU_SURE_DELETE_HIERARCHY,
@@ -41,8 +42,9 @@ import {
   TEST_ID_LOCK_ACTION,
   TEST_ID_REPORT_ABUSE,
   TEST_ID_NEW_RELATED_WORK_ITEM,
-  WORK_ITEM_TYPE_VALUE_EPIC,
   WORK_ITEM_TYPE_ENUM_EPIC,
+  WORK_ITEM_TYPE_VALUE_EPIC,
+  WORK_ITEM_TYPE_VALUE_MAP,
 } from '../constants';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateWorkItemNotificationsMutation from '../graphql/update_work_item_notifications.mutation.graphql';
@@ -100,6 +102,7 @@ export default {
   stateToggleTestId: TEST_ID_TOGGLE_ACTION,
   reportAbuseActionTestId: TEST_ID_REPORT_ABUSE,
   newRelatedItemTestId: TEST_ID_NEW_RELATED_WORK_ITEM,
+  inject: ['hasOkrsFeature'],
   props: {
     fullPath: {
       type: String,
@@ -165,6 +168,11 @@ export default {
       required: false,
       default: null,
     },
+    workItemWebUrl: {
+      type: String,
+      required: false,
+      default: null,
+    },
     workItemCreateNoteEmail: {
       type: String,
       required: false,
@@ -225,10 +233,10 @@ export default {
       isLockDiscussionUpdating: false,
       isDropdownVisible: false,
       isCreateWorkItemModalVisible: false,
+      workItemTypes: [],
     };
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     workItemTypes: {
       query: namespaceWorkItemTypesQuery,
       variables() {
@@ -258,8 +266,12 @@ export default {
           I18N_WORK_ITEM_ERROR_COPY_EMAIL,
           this.workItemType,
         ),
-        newRelatedItemLabel: sprintfWorkItem(I18N_WORK_ITEM_NEW_RELATED_ITEM, this.workItemType),
       };
+    },
+    newRelatedItemLabel() {
+      return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC
+        ? sprintfWorkItem(I18N_WORK_ITEM_NEW_RELATED_ITEM, this.workItemType)
+        : s__('WorkItem|New related item');
     },
     areYouSureDeleteMessage() {
       return this.hasChildren
@@ -300,8 +312,9 @@ export default {
     relatedItemData() {
       return {
         id: this.workItemId,
-        type: this.workItemType,
         reference: this.workItemReference,
+        type: this.workItemType,
+        webUrl: this.workItemWebUrl,
       };
     },
     isEpic() {
@@ -314,6 +327,23 @@ export default {
     },
     showChangeType() {
       return !this.isEpic && this.glFeatures.workItemsBeta;
+    },
+    allowedWorkItemTypes() {
+      if (this.isGroup) {
+        return [];
+      }
+
+      if (this.glFeatures.okrsMvc && this.hasOkrsFeature) {
+        return BASE_ALLOWED_CREATE_TYPES.concat(
+          WORK_ITEM_TYPE_VALUE_KEY_RESULT,
+          WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+        );
+      }
+
+      return BASE_ALLOWED_CREATE_TYPES;
+    },
+    workItemTypeNameEnum() {
+      return WORK_ITEM_TYPE_VALUE_MAP[this.workItemType];
     },
   },
   methods: {
@@ -508,7 +538,7 @@ export default {
         :data-testid="$options.newRelatedItemTestId"
         @action="isCreateWorkItemModalVisible = true"
       >
-        <template #list-item>{{ i18n.newRelatedItemLabel }}</template>
+        <template #list-item>{{ newRelatedItemLabel }}</template>
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
@@ -599,9 +629,11 @@ export default {
     </gl-modal>
 
     <create-work-item-modal
+      :allowed-work-item-types="allowedWorkItemTypes"
+      :always-show-work-item-type-select="!isGroup"
       :visible="isCreateWorkItemModalVisible"
       :related-item="relatedItemData"
-      :work-item-type-name="workItemType.toUpperCase()"
+      :work-item-type-name="workItemTypeNameEnum"
       :show-project-selector="!isEpic"
       :is-group="isGroup"
       hide-button

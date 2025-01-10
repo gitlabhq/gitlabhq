@@ -30,10 +30,33 @@ When GitLab Duo is turned off for a group, project, or instance:
 
 ::Tabs
 
-:::TabTitle In 17.7 and later
+:::TabTitle In 17.8 and later
 
-In GitLab 17.7 and later, follow these instructions to turn off GitLab Duo
-for a group and its subgroups and projects.
+In GitLab 17.8 and later, follow these instructions to turn off GitLab Duo
+for a group, including its subgroups and projects.
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To turn off GitLab Duo for a group:
+
+1. On the left sidebar, select **Search or go to** and find your subgroup.
+1. Go to the settings:
+   - For GitLab.com, select **Settings > General** and expand **GitLab Duo features**.
+   - For GitLab Self-Managed, select **Settings > GitLab Duo** and select **Change configuration**.
+1. Choose an option:
+   - To turn off GitLab Duo for the group, but let other groups or projects turn it on, select **Off by default**.
+   - To turn off GitLab Duo for the group, and to prevent other groups or projects from turning it on, select **Always off**.
+1. Select **Save changes**.
+
+:::TabTitle In 17.7
+
+In GitLab 17.7, follow these instructions to turn off GitLab Duo
+for a group, including its subgroups and projects.
+
+NOTE:
+In GitLab 17.7, you cannot turn off GitLab Duo for subgroups or for GitLab Self-Managed.
 
 Prerequisites:
 
@@ -45,8 +68,8 @@ To turn off GitLab Duo for a group:
 1. Select **Settings > GitLab Duo**.
 1. Select **Change configuration**.
 1. Choose an option:
-   - To turn off GitLab Duo for the group, but let other groups or projects turn it on, select **Off by default**.
-   - To turn off GitLab Duo for the group, and to prevent other groups or projects from turning it on, select **Always off**.
+   - To turn off GitLab Duo for the group, but let other projects turn it on, select **Off by default**.
+   - To turn off GitLab Duo for the group, and to prevent projects from turning it on, select **Always off**.
 1. Select **Save changes**.
 
 :::TabTitle In 17.4 to 17.6
@@ -72,6 +95,10 @@ To turn off GitLab Duo for a group:
 
 In GitLab 17.3 and earlier, follow these instructions to turn off GitLab Duo for a group
 and its subgroups and projects.
+
+Prerequisites:
+
+- You must have the Owner role for the group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.

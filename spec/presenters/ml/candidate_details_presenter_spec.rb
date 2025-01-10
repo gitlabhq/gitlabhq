@@ -54,6 +54,7 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
             info: {
               iid: candidate.iid,
               eid: candidate.eid,
+              gid: candidate.to_global_id.to_s,
               path_to_artifact: "/#{project.full_path}/-/packages/#{candidate.artifact.id}",
               experiment_name: candidate.experiment.name,
               path_to_experiment: "/#{project.full_path}/-/ml/experiments/#{experiment.iid}",
@@ -75,12 +76,19 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
                 }
               },
               created_at: candidate.created_at,
-              authorWebUrl: nil,
-              authorName: candidate.user.name
+              author_web_url: nil,
+              author_name: candidate.user.name,
+              promote_path: "/#{project.full_path}/-/ml/candidates/#{candidate.iid}/promote",
+              can_promote: false
             },
             params: params,
             metrics: metrics,
-            metadata: []
+            metadata: [],
+            projectPath: project.full_path,
+            can_write_model_registry: false,
+            markdown_preview_path: "/#{project.full_path}/-/preview_markdown",
+            model_gid: '',
+            latest_version: nil
           }
         }
       )

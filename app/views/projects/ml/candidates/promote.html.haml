@@ -1,0 +1,8 @@
+- experiment = @candidate.experiment
+- add_to_breadcrumbs _("Experiments"), project_ml_experiments_path(@project)
+- add_to_breadcrumbs experiment.name, project_ml_experiment_path(@project, experiment.iid)
+- add_to_breadcrumbs "Run #{@candidate.iid}", project_ml_candidate_path(@project, @candidate.iid)
+- breadcrumb_title "Promote to model version"
+- presenter = ::Ml::CandidateDetailsPresenter.new(@candidate, current_user)
+
+#js-promote-ml-candidate{ data: { view_model: presenter.present_as_json } }

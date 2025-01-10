@@ -39,11 +39,12 @@ export default {
       skip() {
         return !this.relatedItemId;
       },
-      update(data) {
+      update({ workItem }) {
         return {
           id: this.relatedItemId,
-          reference: data.workItem.reference,
-          type: data.workItem.workItemType.name,
+          reference: workItem.reference,
+          type: workItem.workItemType.name,
+          webUrl: workItem.webUrl,
         };
       },
       error() {

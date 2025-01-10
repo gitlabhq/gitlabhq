@@ -111,7 +111,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-gap-2 gl-self-start" @click.prevent>
+  <div class="gl-flex gl-gap-2 gl-self-start sm:gl-self-center" @click.prevent>
     <toggle-snoozed-status
       v-if="glFeatures.todosSnoozing"
       :todo="todo"

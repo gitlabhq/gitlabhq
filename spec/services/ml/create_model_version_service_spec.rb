@@ -51,6 +51,67 @@ RSpec.describe ::Ml::CreateModelVersionService, feature_category: :mlops do
       end
     end
 
+    context 'when a proper candidate_id without a package is given for promotion' do
+      let_it_be(:candidate) do
+        create(:ml_candidates, experiment: model.default_experiment, project: model.project)
+      end
+
+      let(:params) { { user: user, candidate_id: candidate.to_global_id } }
+
+      it 'creates a model version' do
+        expect { service }.to change { Ml::ModelVersion.count }.by(1)
+                                                               .and not_change { Ml::Candidate.count }
+                                                               .and change { Packages::MlModel::Package.count }.by(1)
+
+        expect(model.reload.latest_version.version).to eq('1.0.1')
+        expect(service).to be_success
+
+        expect(model.latest_version.package.version).to eq('1.0.1')
+        expect(model.latest_version.package.name).to eq(model.name)
+
+        expect(Gitlab::InternalEvents).to have_received(:track_event).with(
+          'model_registry_ml_model_version_created',
+          { project: model.project, user: user }
+        )
+        expect(Gitlab::Audit::Auditor).to have_received(:audit).with(audit_context)
+      end
+    end
+
+    context 'when a proper candidate_id with a package is given for promotion' do
+      let_it_be(:candidate) do
+        create(:ml_candidates, experiment: model.default_experiment, project: model.project, package: package)
+      end
+
+      let_it_be(:package) do
+        create(:ml_model_package, name: candidate.package_name, version: candidate.package_version,
+          project: model.project)
+      end
+
+      let(:params) { { user: user, candidate_id: candidate.to_global_id } }
+
+      before do
+        candidate.update!(package: package)
+      end
+
+      it 'creates a model version' do
+        expect { service }.to change { Ml::ModelVersion.count }.by(1)
+                                                               .and not_change { Ml::Candidate.count }
+                                                               .and not_change { Packages::MlModel::Package.count }
+
+        expect(model.reload.latest_version.version).to eq('1.0.2')
+        expect(service).to be_success
+
+        expect(model.latest_version.package.version).to eq('1.0.2')
+        expect(model.latest_version.package.name).to eq(model.name)
+
+        expect(Gitlab::InternalEvents).to have_received(:track_event).with(
+          'model_registry_ml_model_version_created',
+          { project: model.project, user: user }
+        )
+        expect(Gitlab::Audit::Auditor).to have_received(:audit).with(audit_context)
+      end
+    end
+
     context 'when a version exist and no value is passed for version' do
       before do
         create(:ml_model_versions, model: model, version: '1.2.3')

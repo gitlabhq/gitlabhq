@@ -1,9 +1,0 @@
----
-name: override_bitbucket_server_disabled
-feature_issue_url:
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155796
-rollout_issue_url: # This is an `ops` flag and will have no rollout
-milestone: '17.1'
-group: group::import and integrate
-type: ops
-default_enabled: false

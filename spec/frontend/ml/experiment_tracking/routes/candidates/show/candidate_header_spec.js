@@ -1,4 +1,4 @@
-import { GlBadge, GlIcon } from '@gitlab/ui';
+import { GlBadge, GlButton, GlIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CandidateHeader from '~/ml/experiment_tracking/routes/candidates/show/candidate_header.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -24,6 +24,7 @@ describe('ml/experiment_tracking/routes/candidates/show/candidate_header.vue', (
 
   const findPageHeading = () => wrapper.findComponent(PageHeading);
   const findDeleteButton = () => wrapper.findComponent(DeleteButton);
+  const findPromoteButton = () => wrapper.findComponent(GlButton);
   const findTimeAgo = () => wrapper.findComponent(TimeAgoTooltip);
   const findBadge = () => wrapper.findComponent(GlBadge);
   const findAuthorLink = () => wrapper.findByTestId('author-link');
@@ -110,7 +111,7 @@ describe('ml/experiment_tracking/routes/candidates/show/candidate_header.vue', (
     });
   });
 
-  describe('delete button configuration', () => {
+  describe('Delete button configuration', () => {
     beforeEach(() => {
       wrapper = createWrapper();
     });
@@ -123,6 +124,19 @@ describe('ml/experiment_tracking/routes/candidates/show/candidate_header.vue', (
           'Deleting this run will delete the associated parameters, metrics, and metadata.',
         actionPrimaryText: 'Delete run',
         modalTitle: 'Delete run?',
+      });
+    });
+  });
+
+  describe('Promote button', () => {
+    beforeEach(() => {
+      wrapper = createWrapper();
+    });
+
+    it('passes correct props to promote button', () => {
+      expect(findPromoteButton().text()).toBe('Promote run');
+      expect(findPromoteButton().attributes()).toMatchObject({
+        href: 'promote/path',
       });
     });
   });

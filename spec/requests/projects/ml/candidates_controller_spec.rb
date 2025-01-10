@@ -72,6 +72,25 @@ RSpec.describe Projects::Ml::CandidatesController, feature_category: :mlops do
     it_behaves_like 'requires read_model_experiments'
   end
 
+  describe 'GET promote' do
+    before do
+      promote_candidate
+    end
+
+    it 'renders the template' do
+      expect(response).to render_template('projects/ml/candidates/promote')
+    end
+
+    it_behaves_like '404 if candidate does not exist'
+    describe 'requires write_model_experiments' do
+      let(:write_model_experiments) { false }
+
+      it 'is 404' do
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'DELETE #destroy' do
     let_it_be(:candidate_for_deletion) do
       create(:ml_candidates, project: project, experiment: experiment, user: user)
@@ -105,6 +124,10 @@ RSpec.describe Projects::Ml::CandidatesController, feature_category: :mlops do
 
   def show_candidate
     get project_ml_candidate_path(project, iid: candidate_iid)
+  end
+
+  def promote_candidate
+    get promote_project_ml_candidate_path(project, iid: candidate_iid)
   end
 
   def destroy_candidate

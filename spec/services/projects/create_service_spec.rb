@@ -1069,7 +1069,6 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
   context 'when github import source is disabled' do
     before do
       stub_application_setting(import_sources: [])
-      stub_feature_flags(override_github_disabled: false)
       opts[:import_type] = 'github'
     end
 
@@ -1079,25 +1078,11 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
       expect(project.errors[:import_source_disabled]).to include('github import source is disabled')
       expect(project).not_to be_persisted
     end
-
-    context 'when override_github_disabled ops flag is enabled for the user' do
-      before do
-        stub_feature_flags(override_github_disabled: user)
-      end
-
-      it 'creates the project' do
-        project = create_project(user, opts)
-
-        expect(project.errors).to be_blank
-        expect(project).to be_persisted
-      end
-    end
   end
 
   context 'when bitbucket server import source is disabled' do
     before do
       stub_application_setting(import_sources: [])
-      stub_feature_flags(override_bitbucket_server_disabled: false)
       opts[:import_type] = 'bitbucket_server'
     end
 
@@ -1106,19 +1091,6 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
 
       expect(project.errors[:import_source_disabled]).to include('bitbucket_server import source is disabled')
       expect(project).not_to be_persisted
-    end
-
-    context 'when override_bitbucket_server_disabled ops flag is enabled for the user' do
-      before do
-        stub_feature_flags(override_bitbucket_server_disabled: user)
-      end
-
-      it 'creates the project' do
-        project = create_project(user, opts)
-
-        expect(project.errors).to be_blank
-        expect(project).to be_persisted
-      end
     end
   end
 

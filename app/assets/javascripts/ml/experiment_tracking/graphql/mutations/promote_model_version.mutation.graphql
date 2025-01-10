@@ -1,0 +1,26 @@
+mutation promoteModelVersion(
+  $projectPath: ID!
+  $modelId: MlModelID!
+  $version: String!
+  $description: String
+  $candidateId: MlCandidateID!
+) {
+  mlModelVersionCreate(
+    input: {
+      projectPath: $projectPath
+      modelId: $modelId
+      version: $version
+      description: $description
+      candidateId: $candidateId
+    }
+  ) {
+    modelVersion {
+      id
+      _links {
+        showPath
+        importPath
+      }
+    }
+    errors
+  }
+}

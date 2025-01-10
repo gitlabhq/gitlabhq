@@ -1,0 +1,7 @@
+mutation projectsUserPreferencesUpdate($input: UserPreferencesUpdateInput!) {
+  userPreferencesUpdate(input: $input) {
+    userPreferences {
+      projectsSort
+    }
+  }
+}

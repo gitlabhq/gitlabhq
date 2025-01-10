@@ -25,6 +25,10 @@ RSpec.shared_context 'with work item types request context' do
           }
         }
       }
+      supportedConversionTypes {
+        id
+        name
+      }
     GRAPHQL
   end
 
@@ -47,7 +51,13 @@ RSpec.shared_context 'with work item types request context' do
         'id' => type.to_global_id.to_s,
         'name' => type.name,
         'iconName' => type.icon_name,
-        'widgetDefinitions' => match_array(widgets_for(type, resource_parent))
+        'widgetDefinitions' => match_array(widgets_for(type, resource_parent)),
+        'supportedConversionTypes' => type.supported_conversion_types(resource_parent).map do |conversion_type|
+          {
+            'id' => conversion_type.to_global_id.to_s,
+            'name' => conversion_type.name
+          }
+        end
       )
     end
   end

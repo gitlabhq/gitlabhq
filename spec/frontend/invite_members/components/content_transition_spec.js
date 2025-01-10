@@ -28,6 +28,9 @@ describe('~/vue_shared/components/content_transition.vue', () => {
         dne: '<p>DOES NOT EXIST</p>',
         ...slots,
       },
+      stubs: {
+        transition: true,
+      },
     });
   };
 

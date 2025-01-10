@@ -37,59 +37,18 @@ RSpec.describe API::ImportBitbucketServer, :with_current_organization, feature_c
         Grape::Endpoint.before_each nil
       end
 
-      context 'when Bitbucket Server Importer is disabled' do
-        before do
-          stub_application_setting(import_sources: nil)
-          stub_feature_flags(override_bitbucket_server_disabled: false)
-        end
+      it 'rejects requests when Bitbucket Server Importer is disabled' do
+        stub_application_setting(import_sources: nil)
 
-        it 'rejects requests' do
-          post api("/import/bitbucket_server", user), params: {
-            bitbucket_server_url: base_uri,
-            bitbucket_server_username: user.username,
-            personal_access_token: token,
-            bitbucket_server_project: project_key,
-            bitbucket_server_repo: repo_slug
-          }
+        post api("/import/bitbucket_server", user), params: {
+          bitbucket_server_url: base_uri,
+          bitbucket_server_username: user.username,
+          personal_access_token: token,
+          bitbucket_server_project: project_key,
+          bitbucket_server_repo: repo_slug
+        }
 
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end
-
-        context 'when override_bitbucket_server_disabled ops flag is enabled for the user' do
-          before do
-            stub_feature_flags(override_bitbucket_server_disabled: user)
-          end
-
-          it 'accepts requests' do
-            post api("/import/bitbucket_server", user), params: {
-              bitbucket_server_url: base_uri,
-              bitbucket_server_username: user.username,
-              personal_access_token: token,
-              bitbucket_server_project: project_key,
-              bitbucket_server_repo: repo_slug
-            }
-
-            expect(response).to have_gitlab_http_status(:created)
-          end
-        end
-
-        context 'when override_bitbucket_server_disabled ops flag is enabled for another user' do
-          before do
-            stub_feature_flags(override_bitbucket_server_disabled: create(:user))
-          end
-
-          it 'rejects requests' do
-            post api("/import/bitbucket_server", user), params: {
-              bitbucket_server_url: base_uri,
-              bitbucket_server_username: user.username,
-              personal_access_token: token,
-              bitbucket_server_project: project_key,
-              bitbucket_server_repo: repo_slug
-            }
-
-            expect(response).to have_gitlab_http_status(:forbidden)
-          end
-        end
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
 
       it 'returns 201 response when the project is imported successfully' do

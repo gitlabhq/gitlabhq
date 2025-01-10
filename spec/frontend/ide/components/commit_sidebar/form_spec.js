@@ -2,6 +2,7 @@ import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { stubComponent } from 'helpers/stub_component';
+import { stubTransition } from 'helpers/stub_transition';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
 import { projectData } from 'jest/ide/mock_data';
@@ -35,6 +36,7 @@ describe('IDE commit form', () => {
             show: showModalSpy,
           },
         }),
+        transition: stubTransition(),
       },
     });
   };

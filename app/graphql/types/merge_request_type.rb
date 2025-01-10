@@ -105,8 +105,7 @@ module Types
 
     field :merge_after, ::Types::TimeType,
       null: true,
-      description: 'Date after which the merge request can be merged.',
-      experiment: { milestone: '17.5' }
+      description: 'Date after which the merge request can be merged.'
 
     field :detailed_merge_status, ::Types::MergeRequests::DetailedMergeStatusEnum, null: true,
       calls_gitaly: true,

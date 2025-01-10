@@ -364,6 +364,9 @@ To link a group, subgroup, or project to a security policy project:
 
 To unlink a security policy project, follow the same steps but instead select the trash can icon in
 the dialog.
+You can link to a security policy project from a different subgroup in the same top-level group, or from an entirely different top-level group.
+However, when you enforce a
+[pipeline execution policy](../policies/pipeline_execution_policies.md#pipeline-execution-policy-schema), users must have at least read-only access to the project that contains the CI/CD configuration referenced in the policy to trigger the pipeline.
 
 ### Viewing the linked security policy project
 

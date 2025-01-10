@@ -2,6 +2,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlLoadingIcon, GlTabs } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { ignoreConsoleMessages } from 'helpers/console_watcher';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -50,6 +51,8 @@ describe('TodosApp', () => {
   const findPendingTodosCount = () => wrapper.findByTestId('pending-todos-count');
   const findTodoItemListContainer = () => wrapper.findByTestId('todo-item-list-container');
   const findPagination = () => wrapper.findComponent(TodosPagination);
+
+  ignoreConsoleMessages([/\[Vue warn\]: \(deprecation TRANSITION_GROUP_ROOT\)/]);
 
   beforeEach(() => {
     gon.features = { todosSnoozing: true };

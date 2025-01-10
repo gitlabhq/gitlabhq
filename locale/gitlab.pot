@@ -7898,6 +7898,9 @@ msgstr ""
 msgid "Are you sure you want to remove this nickname?"
 msgstr ""
 
+msgid "Are you sure you want to remove your change request?"
+msgstr ""
+
 msgid "Are you sure you want to reset the error tracking access token?"
 msgstr ""
 
@@ -23459,6 +23462,9 @@ msgstr ""
 msgid "ExperimentTracking|Performance graph will be shown when runs with logged metrics are available"
 msgstr ""
 
+msgid "ExperimentTracking|Promote run"
+msgstr ""
+
 msgid "ExperimentTracking|Run"
 msgstr ""
 
@@ -35929,6 +35935,9 @@ msgstr ""
 msgid "MlModelRegistry|CI Info"
 msgstr ""
 
+msgid "MlModelRegistry|Complete the form below to promote run to a model version."
+msgstr ""
+
 msgid "MlModelRegistry|Create"
 msgstr ""
 
@@ -36158,6 +36167,12 @@ msgid "MlModelRegistry|Parameters"
 msgstr ""
 
 msgid "MlModelRegistry|Performance"
+msgstr ""
+
+msgid "MlModelRegistry|Promote"
+msgstr ""
+
+msgid "MlModelRegistry|Promote run"
 msgstr ""
 
 msgid "MlModelRegistry|Provide a subfolder name to organize your artifacts. Entering an existing subfolder's name will place artifacts in the existing folder"
@@ -46867,6 +46882,9 @@ msgstr ""
 msgid "Remove card"
 msgstr ""
 
+msgid "Remove change request"
+msgstr ""
+
 msgid "Remove child"
 msgstr ""
 
@@ -48040,6 +48058,9 @@ msgstr ""
 msgid "Run container scanning job whenever a container image with the latest tag is pushed."
 msgstr ""
 
+msgid "Run has already a model version"
+msgstr ""
+
 msgid "Run housekeeping"
 msgstr ""
 
@@ -48050,6 +48071,9 @@ msgid "Run job"
 msgstr ""
 
 msgid "Run manual or delayed jobs"
+msgstr ""
+
+msgid "Run not found"
 msgstr ""
 
 msgid "Run pipeline"
@@ -48065,6 +48089,9 @@ msgid "Run this job again in order to create the necessary resources."
 msgstr ""
 
 msgid "Run untagged jobs"
+msgstr ""
+
+msgid "Run's experiment does not belong to this model"
 msgstr ""
 
 msgid "Runner"
@@ -64210,6 +64237,9 @@ msgstr ""
 msgid "WorkItem|Add up to %{MAX_WORK_ITEMS} items at a time."
 msgstr ""
 
+msgid "WorkItem|Adds this %{workItemType} as related to the %{relatedWorkItemType} it was created from"
+msgstr ""
+
 msgid "WorkItem|All activity"
 msgstr ""
 
@@ -64493,6 +64523,9 @@ msgid "WorkItem|New %{workItemType}"
 msgstr ""
 
 msgid "WorkItem|New related %{workItemType}"
+msgstr ""
+
+msgid "WorkItem|New related item"
 msgstr ""
 
 msgid "WorkItem|New task"

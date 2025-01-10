@@ -13,6 +13,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
     {
       'extensionsMarketplaceOptInStatus' => 'ENABLED',
       'issuesSort' => sort_value,
+      'projects_sort' => 'NAME_DESC',
       'organizationGroupsProjectsDisplay' => 'GROUPS',
       'organizationGroupsProjectsSort' => 'NAME_DESC',
       'visibilityPipelineIdType' => 'IID',
@@ -30,6 +31,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(response).to have_gitlab_http_status(:success)
       expect(mutation_response['userPreferences']['extensionsMarketplaceOptInStatus']).to eq('ENABLED')
       expect(mutation_response['userPreferences']['issuesSort']).to eq(sort_value)
+      expect(mutation_response['userPreferences']['projectsSort']).to eq('NAME_DESC')
       expect(mutation_response['userPreferences']['organizationGroupsProjectsDisplay']).to eq('GROUPS')
       expect(mutation_response['userPreferences']['organizationGroupsProjectsSort']).to eq('NAME_DESC')
       expect(mutation_response['userPreferences']['visibilityPipelineIdType']).to eq('IID')
@@ -48,6 +50,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       {
         extensions_marketplace_opt_in_status: 'enabled',
         issues_sort: Types::IssueSortEnum.values['TITLE_DESC'].value,
+        projects_sort: 'CREATED_DESC',
         organization_groups_projects_display: Types::Organizations::GroupsProjectsDisplayEnum.values['GROUPS'].value,
         organization_groups_projects_sort: 'NAME_DESC',
         visibility_pipeline_id_type: 'id',
@@ -66,6 +69,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
 
       expect(response).to have_gitlab_http_status(:success)
       expect(mutation_response['userPreferences']['issuesSort']).to eq(sort_value)
+      expect(mutation_response['userPreferences']['projectsSort']).to eq('NAME_DESC')
       expect(mutation_response['userPreferences']['organizationGroupsProjectsDisplay']).to eq('GROUPS')
       expect(mutation_response['userPreferences']['organizationGroupsProjectsSort']).to eq('NAME_DESC')
       expect(mutation_response['userPreferences']['visibilityPipelineIdType']).to eq('IID')
@@ -80,6 +84,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
         {
           'extensionsMarketplaceOptInStatus' => nil,
           'issuesSort' => nil,
+          'projectsSort' => nil,
           'organizationGroupsProjectsDisplay' => nil,
           'organizationGroupsProjectsSort' => nil,
           'visibilityPipelineIdType' => nil,
@@ -97,6 +102,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
         expect(current_user.user_preference).to have_attributes({
           # These are nullable and are expected to change
           issues_sort: nil,
+          projects_sort: nil,
           organization_groups_projects_sort: nil,
           # These should not have changed
           organization_groups_projects_display: init_user_preference[:organization_groups_projects_display],

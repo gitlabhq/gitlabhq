@@ -179,11 +179,22 @@ artifacts:
     - "*.txt"
 ```
 
-## Prevent a job from fetching artifacts
+## Fetching artifacts
 
-Jobs download all artifacts from the completed jobs in previous stages by default.
-To prevent a job from downloading any artifacts, set [`dependencies`](../yaml/index.md#dependencies)
-to an empty array (`[]`):
+By default, jobs fetch all artifacts from jobs defined in previous stages. These artifacts are downloaded into the job's working directory.
+
+You can control which artifacts to download by using these keywords:
+
+- [`dependencies`](../yaml/index.md#dependencies): Specify which jobs to download artifacts from.
+- [`needs`](../yaml/index.md#needs): Define relationships between jobs and specify which artifacts to download.
+
+When you use these keywords, the default behavior changes and artifacts are fetched from only the jobs you specify.
+
+### Prevent a job from fetching artifacts
+
+To prevent a job from downloading any artifacts, set
+[`dependencies`](../yaml/index.md#dependencies) to an empty array
+(`[]`):
 
 ```yaml
 job:

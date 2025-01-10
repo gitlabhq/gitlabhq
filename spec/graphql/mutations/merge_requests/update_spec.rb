@@ -94,6 +94,15 @@ RSpec.describe Mutations::MergeRequests::Update, feature_category: :team_plannin
         end
       end
 
+      context 'when optional merge_after field is set' do
+        let(:attributes) { { merge_after: '2025-01-09T20:47:00+0100' } }
+
+        it 'returns a new merge request with merge_after' do
+          expect(mutated_merge_request.merge_schedule.merge_after).to eq('2025-01-09T19:47:00.000Z')
+          expect(subject[:errors]).to be_empty
+        end
+      end
+
       context 'the merge request is invalid' do
         before do
           merge_request.allow_broken = true

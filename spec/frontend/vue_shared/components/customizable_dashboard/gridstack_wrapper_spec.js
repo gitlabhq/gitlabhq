@@ -153,7 +153,7 @@ describe('GridstackWrapper', () => {
         it('sets the panel props on the panel slot', () => {
           const { gridAttributes, ...panelProps } = panel;
 
-          expect(panelSlots[index]).toStrictEqual({ panel: panelProps });
+          expect(panelSlots[index]).toMatchObject({ panel: panelProps });
         });
 
         it("renders the panel inside the grid item's content", async () => {

@@ -19877,6 +19877,7 @@ CREATE TABLE scan_result_policies (
     policy_tuning jsonb DEFAULT '{}'::jsonb NOT NULL,
     action_idx smallint DEFAULT 0 NOT NULL,
     custom_roles bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    licenses jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT age_value_null_or_positive CHECK (((age_value IS NULL) OR (age_value >= 0))),
     CONSTRAINT check_scan_result_policies_rule_idx_positive CHECK (((rule_idx IS NULL) OR (rule_idx >= 0))),
     CONSTRAINT custom_roles_array_check CHECK ((array_position(custom_roles, NULL::bigint) IS NULL))

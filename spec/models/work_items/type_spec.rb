@@ -482,4 +482,60 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
       it { is_expected.to be_empty }
     end
   end
+
+  describe '#supported_conversion_types' do
+    let_it_be(:resource_parent) { create(:project) }
+    let_it_be(:issue_type) { create(:work_item_type, :issue) }
+    let_it_be(:incident_type) { create(:work_item_type, :incident) }
+    let_it_be(:task_type) { create(:work_item_type, :task) }
+    let_it_be(:ticket_type) { create(:work_item_type, :ticket) }
+
+    subject { work_item_type.supported_conversion_types(resource_parent) }
+
+    context 'when work item type is issue' do
+      let(:work_item_type) { issue_type }
+
+      it 'returns all supported types except itself' do
+        expect(subject).to include(incident_type, task_type, ticket_type)
+        expect(subject).not_to include(issue_type)
+      end
+    end
+
+    context 'when work item type is incident' do
+      let(:work_item_type) { incident_type }
+
+      it 'returns all supported types except itself' do
+        expect(subject).to include(issue_type, task_type, ticket_type)
+        expect(subject).not_to include(incident_type)
+      end
+    end
+
+    context 'when work item type is epic' do
+      let(:work_item_type) { create(:work_item_type, :epic) }
+
+      it 'does not include epic as it is excluded from supported conversion types' do
+        expect(subject).not_to include(work_item_type)
+      end
+    end
+
+    context 'when work item type is objective' do
+      let(:work_item_type) { create(:work_item_type, :objective) }
+
+      it 'returns empty array as objective is excluded from supported conversion types' do
+        expect(subject).not_to include(work_item_type)
+      end
+    end
+
+    context 'when resource_parent is provided' do
+      let(:work_item_type) { issue_type }
+
+      it 'passes resource_parent to supported_conversion_base_types' do
+        expect(work_item_type).to receive(:supported_conversion_base_types)
+          .with(resource_parent)
+          .and_call_original
+
+        subject
+      end
+    end
+  end
 end

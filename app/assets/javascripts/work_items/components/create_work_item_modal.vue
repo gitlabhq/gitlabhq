@@ -1,10 +1,14 @@
 <script>
 import { GlButton, GlModal, GlDisclosureDropdownItem, GlTooltipDirective } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { __, s__, sprintf } from '~/locale';
+import { __ } from '~/locale';
 import { setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import { isMetaClick } from '~/lib/utils/common_utils';
-import { isWorkItemItemValidEnum, newWorkItemPath } from '~/work_items/utils';
+import {
+  convertTypeEnumToName,
+  isWorkItemItemValidEnum,
+  newWorkItemPath,
+} from '~/work_items/utils';
 import {
   I18N_NEW_WORK_ITEM_BUTTON_LABEL,
   I18N_WORK_ITEM_CREATED,
@@ -30,6 +34,16 @@ export default {
   },
   inject: ['fullPath'],
   props: {
+    allowedWorkItemTypes: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    alwaysShowWorkItemTypeSelect: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     description: {
       type: String,
       required: false,
@@ -78,7 +92,7 @@ export default {
     relatedItem: {
       type: Object,
       required: false,
-      validator: (i) => i.id && i.type && i.reference,
+      validator: (i) => i.id && i.type && i.reference && i.webUrl,
       default: null,
     },
   },
@@ -86,6 +100,7 @@ export default {
     return {
       isCreateModalVisible: false,
       isConfirmationModalVisible: false,
+      selectedWorkItemTypeName: this.workItemTypeName,
       shouldDiscardDraft: false,
       workItemTypes: [],
     };
@@ -142,19 +157,14 @@ export default {
         query: this.relatedItem ? `?${RELATED_ITEM_ID_URL_QUERY_PARAM}=${this.relatedItem.id}` : '',
       });
     },
+    selectedWorkItemTypeLowercase() {
+      return convertTypeEnumToName(this.selectedWorkItemTypeName)?.toLocaleLowerCase();
+    },
     newWorkItemText() {
-      return sprintfWorkItem(I18N_NEW_WORK_ITEM_BUTTON_LABEL, this.workItemTypeName);
+      return sprintfWorkItem(I18N_NEW_WORK_ITEM_BUTTON_LABEL, this.selectedWorkItemTypeLowercase);
     },
     workItemCreatedText() {
-      return sprintfWorkItem(I18N_WORK_ITEM_CREATED, this.workItemTypeName);
-    },
-    cancelConfirmationText() {
-      return sprintf(
-        s__('WorkItem|Are you sure you want to cancel creating this %{workItemType}?'),
-        {
-          workItemType: this.workItemTypeName.toLocaleLowerCase(),
-        },
-      );
+      return sprintfWorkItem(I18N_WORK_ITEM_CREATED, this.selectedWorkItemTypeLowercase);
     },
   },
   watch: {
@@ -201,6 +211,8 @@ export default {
       this.hideConfirmationModal();
     },
     handleDiscardDraft(modal) {
+      this.selectedWorkItemTypeName = this.workItemTypeName;
+
       if (modal === 'createModal') {
         // This is triggered on the create modal when the user didn't update the form,
         // so we just hide the create modal as there's no draft to discard
@@ -254,7 +266,10 @@ export default {
       if (this.useVueRouter) {
         this.$router.push({
           name: ROUTES.new,
-          query: { [RELATED_ITEM_ID_URL_QUERY_PARAM]: this.relatedItem?.id },
+          query: {
+            [RELATED_ITEM_ID_URL_QUERY_PARAM]: this.relatedItem?.id,
+            type: this.selectedWorkItemTypeName,
+          },
         });
       } else {
         visitUrl(this.newWorkItemPath);
@@ -313,6 +328,8 @@ export default {
         </div>
       </template>
       <create-work-item
+        :allowed-work-item-types="allowedWorkItemTypes"
+        :always-show-work-item-type-select="alwaysShowWorkItemTypeSelect"
         :description="description"
         hide-form-title
         sticky-form-submit
@@ -323,6 +340,7 @@ export default {
         :work-item-type-name="workItemTypeName"
         :related-item="relatedItem"
         :should-discard-draft="shouldDiscardDraft"
+        @changeType="selectedWorkItemTypeName = $event"
         @confirmCancel="handleConfirmCancellation"
         @discardDraft="handleDiscardDraft('createModal')"
         @workItemCreated="handleCreated"
@@ -330,7 +348,7 @@ export default {
     </gl-modal>
     <create-work-item-cancel-confirmation-modal
       :is-visible="isConfirmationModalVisible"
-      :work-item-type-name="workItemTypeName"
+      :work-item-type-name="selectedWorkItemTypeLowercase"
       @continueEditing="handleContinueEditing"
       @discardDraft="handleDiscardDraft('confirmModal')"
     />

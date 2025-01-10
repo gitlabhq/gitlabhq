@@ -32,6 +32,7 @@ import {
   NEW_WORK_ITEM_GID,
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
   STATE_CLOSED,
+  WORK_ITEM_TYPE_VALUE_MAP,
 } from './constants';
 
 export const isAssigneesWidget = (widget) => widget.type === WIDGET_TYPE_ASSIGNEES;
@@ -68,6 +69,11 @@ export const findHierarchyWidgetAncestors = (workItem) =>
 
 export const findDesignWidget = (widgets) =>
   widgets?.find((widget) => widget.type === WIDGET_TYPE_DESIGNS);
+
+export const convertTypeEnumToName = (workItemTypeEnum) =>
+  Object.keys(WORK_ITEM_TYPE_VALUE_MAP).find(
+    (value) => WORK_ITEM_TYPE_VALUE_MAP[value] === workItemTypeEnum,
+  );
 
 export const getWorkItemIcon = (icon) => {
   if (icon === ISSUABLE_EPIC) return WORK_ITEMS_TYPE_MAP[WORK_ITEM_TYPE_ENUM_EPIC].icon;

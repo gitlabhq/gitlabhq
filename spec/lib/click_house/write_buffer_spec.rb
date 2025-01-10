@@ -40,4 +40,8 @@ RSpec.describe ClickHouse::WriteBuffer, :clean_gitlab_redis_shared_state, featur
       expect(described_class.pop(table_name, limit)).to eq([])
     end
   end
+
+  it_behaves_like 'using redis backwards compatible methods' do
+    let(:buffer_key) { 'clickhouse_write_buffer_test_model' }
+  end
 end

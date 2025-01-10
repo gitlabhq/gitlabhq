@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlIcon, GlLink } from '@gitlab/ui';
+import { GlBadge, GlButton, GlIcon, GlLink } from '@gitlab/ui';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
@@ -11,6 +11,7 @@ export default {
   components: {
     DeleteButton,
     GlBadge,
+    GlButton,
     GlIcon,
     GlLink,
     PageHeading,
@@ -40,6 +41,7 @@ export default {
     ),
     deleteCandidatePrimaryActionLabel: s__('MlExperimentTracking|Delete run'),
     deleteCandidateModalTitle: s__('MlExperimentTracking|Delete run?'),
+    promoteText: s__('ExperimentTracking|Promote run'),
   },
   statusVariants: {
     running: 'success',
@@ -80,12 +82,16 @@ export default {
         </div>
       </template>
     </page-heading>
-
-    <delete-button
-      :delete-path="info.path"
-      :delete-confirmation-text="$options.i18n.deleteCandidateConfirmationMessage"
-      :action-primary-text="$options.i18n.deleteCandidatePrimaryActionLabel"
-      :modal-title="$options.i18n.deleteCandidateModalTitle"
-    />
+    <div class="gl-flex">
+      <gl-button v-if="info.canPromote" :href="info.promotePath" variant="confirm" class="gl-mr-3">
+        {{ $options.i18n.promoteText }}
+      </gl-button>
+      <delete-button
+        :delete-path="info.path"
+        :delete-confirmation-text="$options.i18n.deleteCandidateConfirmationMessage"
+        :action-primary-text="$options.i18n.deleteCandidatePrimaryActionLabel"
+        :modal-title="$options.i18n.deleteCandidateModalTitle"
+      />
+    </div>
   </div>
 </template>

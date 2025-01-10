@@ -11,6 +11,7 @@ RSpec.describe Types::UserPreferencesType, feature_category: :user_profile do
       use_work_items_view
       visibility_pipeline_id_type
       extensions_marketplace_opt_in_status
+      projects_sort
       organization_groups_projects_sort
       organization_groups_projects_display
       timezone

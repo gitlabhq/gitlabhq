@@ -2,6 +2,8 @@
 
 module ClickHouse
   module WriteBuffer
+    include Gitlab::Redis::BackwardsCompatibility
+
     BUFFER_KEY_PREFIX = 'clickhouse_write_buffer_'
 
     class << self
@@ -12,10 +14,8 @@ module ClickHouse
       end
 
       def pop(table_name, limit)
-        Gitlab::Redis::SharedState.with do |redis|
-          Array.wrap(redis.lpop(buffer_key(table_name), limit)).map do |hash|
-            Gitlab::Json.parse(hash, symbolize_names: true)
-          end
+        Array.wrap(lpop_with_limit(buffer_key(table_name), limit)).map do |hash|
+          Gitlab::Json.parse(hash, symbolize_names: true)
         end
       end
 

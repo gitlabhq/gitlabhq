@@ -540,7 +540,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       let(:user) { create(:user, :two_factor) }
 
       it 'does not mention two factor authentication' do
-        expect( Notify.unknown_sign_in_email(user, ip, current_time) )
+        expect(Notify.unknown_sign_in_email(user, ip, current_time))
           .not_to have_body_text(/two-factor authentication/)
       end
     end

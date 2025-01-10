@@ -2870,6 +2870,17 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       end
     end
 
+    context 'accepts merge_after' do
+      let(:params) { { merge_after: '2025-01-09T20:47+0100' } }
+
+      it 'sets merge_after on the MR' do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['merge_after']).to eq('2025-01-09T19:47:00.000Z')
+      end
+    end
+
     context 'with oauth token that has ai_workflows scope' do
       let(:token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
 

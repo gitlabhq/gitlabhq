@@ -3258,9 +3258,8 @@ class Project < ApplicationRecord
   end
 
   def enforced_runner_token_expiration_interval
-    all_parent_groups = Gitlab::ObjectHierarchy.new(Group.where(id: group)).base_and_ancestors
-    all_group_settings = NamespaceSetting.where(namespace_id: all_parent_groups)
-    group_interval = all_group_settings.where.not(project_runner_token_expiration_interval: nil).minimum(:project_runner_token_expiration_interval)&.seconds
+    group_settings = NamespaceSetting.where(namespace_id: parent_groups)
+    group_interval = group_settings.where.not(project_runner_token_expiration_interval: nil).minimum(:project_runner_token_expiration_interval)&.seconds
 
     [
       Gitlab::CurrentSettings.project_runner_token_expiration_interval&.seconds,

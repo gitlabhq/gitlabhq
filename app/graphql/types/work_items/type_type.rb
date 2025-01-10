@@ -22,8 +22,17 @@ module Types
         method: :widgets,
         experiment: { milestone: '16.7' }
 
+      field :supported_conversion_types, [Types::WorkItems::TypeType],
+        null: true,
+        description: 'Supported conversion types for the work item type.',
+        experiment: { milestone: '17.8' }
+
       def widget_definitions
         object.widgets(context[:resource_parent])
+      end
+
+      def supported_conversion_types
+        object.supported_conversion_types(context[:resource_parent])
       end
     end
   end

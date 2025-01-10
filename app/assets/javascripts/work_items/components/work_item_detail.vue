@@ -794,6 +794,7 @@ export default {
                 :is-discussion-locked="isDiscussionLocked"
                 :is-parent-confidential="parentWorkItemConfidentiality"
                 :work-item-reference="workItem.reference"
+                :work-item-web-url="workItem.webUrl"
                 :work-item-create-note-email="workItem.createNoteEmail"
                 :is-modal="isModal"
                 :work-item-state="workItem.state"

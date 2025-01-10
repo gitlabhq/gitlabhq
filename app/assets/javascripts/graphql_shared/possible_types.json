@@ -267,6 +267,7 @@
     "WorkItemWidgetIteration",
     "WorkItemWidgetLabels",
     "WorkItemWidgetLinkedItems",
+    "WorkItemWidgetLinkedResources",
     "WorkItemWidgetMilestone",
     "WorkItemWidgetNotes",
     "WorkItemWidgetNotifications",

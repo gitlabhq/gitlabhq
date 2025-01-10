@@ -28,6 +28,10 @@ module Mutations
         required: false,
         description: 'Determines whether the pipeline list shows ID or IID.'
 
+      argument :projects_sort, Types::Projects::ProjectSortEnum,
+        required: false,
+        description: 'Sort order for projects.'
+
       argument :organization_groups_projects_sort, Types::Organizations::GroupsProjectsSortEnum,
         required: false,
         description: 'Sort order for organization groups and projects.',

@@ -8,7 +8,11 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import CreateWorkItem from '~/work_items/components/create_work_item.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
-import { WORK_ITEMS_TYPE_MAP, WORK_ITEM_TYPE_ROUTE_WORK_ITEM } from '~/work_items/constants';
+import {
+  WORK_ITEMS_TYPE_MAP,
+  WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
+  WORK_ITEM_TYPE_ENUM_KEY_RESULT,
+} from '~/work_items/constants';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import CreateWorkItemCancelConfirmationModal from '~/work_items/components/create_work_item_cancel_confirmation_modal.vue';
 
@@ -230,6 +234,22 @@ describe('CreateWorkItemModal', () => {
       expect(findOpenInFullPageButton().attributes('href')).toBe(
         '/full-path/-/epics/new?related_item_id=gid://gitlab/WorkItem/843',
       );
+    });
+  });
+
+  describe('when "changeType" event is emitted', () => {
+    it('updates the selected type', async () => {
+      createComponent();
+
+      expect(wrapper.find('h2').text()).toBe('New epic');
+
+      findForm().vm.$emit('changeType', WORK_ITEM_TYPE_ENUM_KEY_RESULT);
+      await nextTick();
+      findForm().vm.$emit('workItemCreated', { webUrl: '/' });
+
+      expect(wrapper.find('h2').text()).toBe('New key result');
+      expect(findTrigger().text()).toBe('New key result');
+      expect(showToast).toHaveBeenCalledWith('Key result created', expect.any(Object));
     });
   });
 

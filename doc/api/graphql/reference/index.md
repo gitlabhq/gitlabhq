@@ -7331,6 +7331,7 @@ Input type: `MergeRequestCreateInput`
 | <a id="mutationmergerequestcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestcreatedescription"></a>`description` | [`String`](#string) | Description of the merge request (Markdown rendered as HTML for caching). |
 | <a id="mutationmergerequestcreatelabels"></a>`labels` | [`[String!]`](#string) | Labels of the merge request. |
+| <a id="mutationmergerequestcreatemergeafter"></a>`mergeAfter` | [`Time`](#time) | Date after which the merge request can be merged. |
 | <a id="mutationmergerequestcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project full path the merge request is associated with. |
 | <a id="mutationmergerequestcreatesourcebranch"></a>`sourceBranch` | [`String!`](#string) | Source branch of the merge request. |
 | <a id="mutationmergerequestcreatetargetbranch"></a>`targetBranch` | [`String!`](#string) | Target branch of the merge request. |
@@ -7548,6 +7549,7 @@ Input type: `MergeRequestUpdateInput`
 | <a id="mutationmergerequestupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestupdatedescription"></a>`description` | [`String`](#string) | Description of the merge request (Markdown rendered as HTML for caching). |
 | <a id="mutationmergerequestupdateiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestupdatemergeafter"></a>`mergeAfter` | [`Time`](#time) | Date after which the merge request can be merged. |
 | <a id="mutationmergerequestupdateoverriderequestedchanges"></a>`overrideRequestedChanges` | [`Boolean`](#boolean) | Override all requested changes. Can only be set by users who have permissionto merge this merge request. |
 | <a id="mutationmergerequestupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
 | <a id="mutationmergerequestupdatestate"></a>`state` | [`MergeRequestNewState`](#mergerequestnewstate) | Action to perform to change the state. |
@@ -7723,6 +7725,7 @@ Input type: `MlModelVersionCreateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationmlmodelversioncreatecandidateid"></a>`candidateId` | [`MlCandidateID`](#mlcandidateid) | Global ID of a candidate to promote optionally. |
 | <a id="mutationmlmodelversioncreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmlmodelversioncreatedescription"></a>`description` | [`String`](#string) | Description of the model version. |
 | <a id="mutationmlmodelversioncreatemodelid"></a>`modelId` | [`MlModelID!`](#mlmodelid) | Global ID of the model the version belongs to. |
@@ -10988,6 +10991,7 @@ Input type: `UserPreferencesUpdateInput`
 | <a id="mutationuserpreferencesupdatemergerequestssort"></a>`mergeRequestsSort` | [`MergeRequestSort`](#mergerequestsort) | Sort order for issue lists. |
 | <a id="mutationuserpreferencesupdateorganizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` **{warning-solid}** | [`OrganizationGroupProjectDisplay`](#organizationgroupprojectdisplay) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.2. |
 | <a id="mutationuserpreferencesupdateorganizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` **{warning-solid}** | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.2. |
+| <a id="mutationuserpreferencesupdateprojectssort"></a>`projectsSort` | [`ProjectSort`](#projectsort) | Sort order for projects. |
 | <a id="mutationuserpreferencesupdateuseworkitemsview"></a>`useWorkItemsView` | [`Boolean`](#boolean) | Use work item view instead of legacy issue view. |
 | <a id="mutationuserpreferencesupdatevisibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
 
@@ -18158,6 +18162,29 @@ The edge type for [`WorkItem`](#workitem).
 | ---- | ---- | ----------- |
 | <a id="workitemedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="workitemedgenode"></a>`node` | [`WorkItem`](#workitem) | The item at the end of the edge. |
+
+#### `WorkItemLinkedResourceConnection`
+
+The connection type for [`WorkItemLinkedResource`](#workitemlinkedresource).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemlinkedresourceconnectionedges"></a>`edges` | [`[WorkItemLinkedResourceEdge]`](#workitemlinkedresourceedge) | A list of edges. |
+| <a id="workitemlinkedresourceconnectionnodes"></a>`nodes` | [`[WorkItemLinkedResource]`](#workitemlinkedresource) | A list of nodes. |
+| <a id="workitemlinkedresourceconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `WorkItemLinkedResourceEdge`
+
+The edge type for [`WorkItemLinkedResource`](#workitemlinkedresource).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemlinkedresourceedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="workitemlinkedresourceedgenode"></a>`node` | [`WorkItemLinkedResource`](#workitemlinkedresource) | The item at the end of the edge. |
 
 #### `WorkItemRelatedBranchConnection`
 
@@ -27927,7 +27954,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestiid"></a>`iid` | [`String!`](#string) | Internal ID of the merge request. |
 | <a id="mergerequestinprogressmergecommitsha"></a>`inProgressMergeCommitSha` | [`String`](#string) | Commit SHA of the merge request if merge is in progress. |
 | <a id="mergerequestlabels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels of the merge request. (see [Connections](#connections)) |
-| <a id="mergerequestmergeafter"></a>`mergeAfter` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 17.5. **Status**: Experiment. Date after which the merge request can be merged. |
+| <a id="mergerequestmergeafter"></a>`mergeAfter` | [`Time`](#time) | Date after which the merge request can be merged. |
 | <a id="mergerequestmergecommitsha"></a>`mergeCommitSha` | [`String`](#string) | SHA of the merge request commit (set once merged). |
 | <a id="mergerequestmergeerror"></a>`mergeError` | [`String`](#string) | Error message due to a merge error. |
 | <a id="mergerequestmergeongoing"></a>`mergeOngoing` | [`Boolean!`](#boolean) | Indicates if a merge is currently occurring. |
@@ -36748,6 +36775,7 @@ fields relate to interactions between the two entities.
 | <a id="userpreferencesissuessort"></a>`issuesSort` | [`IssueSort`](#issuesort) | Sort order for issue lists. |
 | <a id="userpreferencesorganizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` **{warning-solid}** | [`OrganizationGroupProjectDisplay!`](#organizationgroupprojectdisplay) | **Introduced** in GitLab 17.2. **Status**: Experiment. Default list view for organization groups and projects. |
 | <a id="userpreferencesorganizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` **{warning-solid}** | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | **Introduced** in GitLab 17.2. **Status**: Experiment. Sort order for organization groups and projects. |
+| <a id="userpreferencesprojectssort"></a>`projectsSort` | [`ProjectSort`](#projectsort) | Sort order for projects. |
 | <a id="userpreferencestimezone"></a>`timezone` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Timezone of the user. |
 | <a id="userpreferencesuseworkitemsview"></a>`useWorkItemsView` | [`Boolean`](#boolean) | Use work item view instead of legacy issue view. |
 | <a id="userpreferencesvisibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
@@ -37791,6 +37819,14 @@ Returns [`String!`](#string).
 | <a id="workitemdescriptiontemplatecontent"></a>`content` | [`String!`](#string) | Content of Description Template. |
 | <a id="workitemdescriptiontemplatename"></a>`name` | [`String!`](#string) | Name of Description Template. |
 
+### `WorkItemLinkedResource`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemlinkedresourceurl"></a>`url` | [`String!`](#string) | URL of resource. |
+
 ### `WorkItemPermissions`
 
 Check permissions for the current user on a work item.
@@ -37854,6 +37890,7 @@ Represents total number of work items for the represented states.
 | <a id="workitemtypeiconname"></a>`iconName` | [`String`](#string) | Icon name of the work item type. |
 | <a id="workitemtypeid"></a>`id` | [`WorkItemsTypeID!`](#workitemstypeid) | Global ID of the work item type. |
 | <a id="workitemtypename"></a>`name` | [`String!`](#string) | Name of the work item type. |
+| <a id="workitemtypesupportedconversiontypes"></a>`supportedConversionTypes` **{warning-solid}** | [`[WorkItemType!]`](#workitemtype) | **Introduced** in GitLab 17.8. **Status**: Experiment. Supported conversion types for the work item type. |
 | <a id="workitemtypewidgetdefinitions"></a>`widgetDefinitions` **{warning-solid}** | [`[WorkItemWidgetDefinition!]`](#workitemwidgetdefinition) | **Introduced** in GitLab 16.7. **Status**: Experiment. Available widgets for the work item type. |
 
 ### `WorkItemTypeCountsByState`
@@ -38186,6 +38223,17 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetlinkeditemslinkeditemsfilter"></a>`filter` | [`WorkItemRelatedLinkType`](#workitemrelatedlinktype) | Filter by link type. Supported values: RELATED, BLOCKED_BY, and BLOCKS. Returns all types if omitted. |
+
+### `WorkItemWidgetLinkedResources`
+
+Represents the linked resources widget.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetlinkedresourceslinkedresources"></a>`linkedResources` | [`WorkItemLinkedResourceConnection`](#workitemlinkedresourceconnection) | Resources for the work item. (see [Connections](#connections)) |
+| <a id="workitemwidgetlinkedresourcestype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetMilestone`
 
@@ -42032,6 +42080,7 @@ Type of a work item widget.
 | <a id="workitemwidgettypeiteration"></a>`ITERATION` | Iteration widget. |
 | <a id="workitemwidgettypelabels"></a>`LABELS` | Labels widget. |
 | <a id="workitemwidgettypelinked_items"></a>`LINKED_ITEMS` | Linked Items widget. |
+| <a id="workitemwidgettypelinked_resources"></a>`LINKED_RESOURCES` | Linked Resources widget. |
 | <a id="workitemwidgettypemilestone"></a>`MILESTONE` | Milestone widget. |
 | <a id="workitemwidgettypenotes"></a>`NOTES` | Notes widget. |
 | <a id="workitemwidgettypenotifications"></a>`NOTIFICATIONS` | Notifications widget. |
@@ -44357,6 +44406,7 @@ Implementations:
 - [`WorkItemWidgetIteration`](#workitemwidgetiteration)
 - [`WorkItemWidgetLabels`](#workitemwidgetlabels)
 - [`WorkItemWidgetLinkedItems`](#workitemwidgetlinkeditems)
+- [`WorkItemWidgetLinkedResources`](#workitemwidgetlinkedresources)
 - [`WorkItemWidgetMilestone`](#workitemwidgetmilestone)
 - [`WorkItemWidgetNotes`](#workitemwidgetnotes)
 - [`WorkItemWidgetNotifications`](#workitemwidgetnotifications)

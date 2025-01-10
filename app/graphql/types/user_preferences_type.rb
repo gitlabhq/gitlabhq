@@ -25,6 +25,11 @@ module Types
       description: 'Use work item view instead of legacy issue view.',
       null: true
 
+    field :projects_sort,
+      Types::Projects::ProjectSortEnum,
+      description: 'Sort order for projects.',
+      null: true
+
     field :organization_groups_projects_sort,
       Types::Organizations::GroupsProjectsSortEnum,
       description: 'Sort order for organization groups and projects.',
@@ -46,6 +51,10 @@ module Types
 
     def issues_sort
       user_preference.issues_sort&.to_sym
+    end
+
+    def projects_sort
+      user_preference.projects_sort&.to_sym
     end
 
     def organization_groups_projects_sort

@@ -50,5 +50,6 @@ Information suitable for storage in a variable should be data that can be expose
 Sensitive data should be stored in a secrets management solution. If there is low
 sensitivity data that you want to store in a CI/CD variable, be sure to always:
 
-- [Mask the variables](../variables/index.md#mask-a-cicd-variable).
+- [Mask the variables](../variables/index.md#mask-a-cicd-variable)
+  or [Mask and hide the variable](../variables/index.md#hide-a-cicd-variable).
 - [Protect the variables](../variables/index.md#protect-a-cicd-variable) when possible.
