@@ -56,6 +56,22 @@ module QA
             find_element('input[type="file"]', visible: false).send_keys(file)
           end
 
+          def search_command_palette(text)
+            mod = page.driver.browser.capabilities.platform_name.include?("mac") ? :command : :control
+            send_keys([mod, :shift, 'p'])
+            within_vscode_editor do
+              enter_text_for_input(text)
+            end
+          end
+
+          def has_opened_file?(file_name)
+            within_vscode_editor do
+              within_element('.monaco-scrollable-element > .tabs-container') do
+                has_element?("div[data-resource-name='#{file_name}'][aria-selected='true']")
+              end
+            end
+          end
+
           def has_commit_pending_tab?(wait: Capybara.default_max_wait_time)
             has_element?('.scm-viewlet-label', wait: wait)
           end

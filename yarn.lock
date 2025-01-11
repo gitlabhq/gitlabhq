@@ -1410,6 +1410,7 @@
   integrity sha512-DoMUIN3DqjEn7wvcxBg/b7Ite5fTdF5EmuOZoBRo2j0UBGweDXmNBi+9HrTZs4cBU660dOxcf1hATFcG3npbPg==
 
 "@gitlab/noop@^1.0.0", jackspeak@^2.3.5, "jackspeak@npm:@gitlab/noop@1.0.0":
+  name jackspeak
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.0.tgz#b1ecb8ae6b2abf9b2e28927e4fbb05b7a1b2704b"
   integrity sha512-nOltttik5o2BjBo8LnyeTFzHoLpMY/XcCVOC+lm9ZwU+ivEam8wafacMF0KTbRn1KVrIoHYdo70QnqS+vJiOVw==
@@ -1459,10 +1460,10 @@
   resolved "https://registry.yarnpkg.com/vuex/-/vuex-4.0.0.tgz#ac877aa76a9c45368c979471e461b520d38e6cf5"
   integrity sha512-56VPujlHscP5q/e7Jlpqc40sja4vOhC4uJD1llBCWolVI8ND4+VzisDVkUMl+z5y0MpIImW6HjhNc+ZvuizgOw==
 
-"@gitlab/web-ide@^0.0.1-dev-20250109203134":
-  version "0.0.1-dev-20250109203134"
-  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20250109203134.tgz#277e7f9d259a2c0b42d584edb0852c5848e9dd36"
-  integrity sha512-kJHDMs/qgxq/1ooJj/fyUOH4yMRMVEHNgP/vA1QVq1gaxuaqednNPKvneRo8FRwatnA87FVdz4/58bl68LPuwQ==
+"@gitlab/web-ide@^0.0.1-dev-20250109231656":
+  version "0.0.1-dev-20250109231656"
+  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20250109231656.tgz#dd8afb853ae04dae09e53b37710869975092bea7"
+  integrity sha512-AO6uo8fKkmlavWfqHgYNgzMz6U+ppl1uK23uiWEy3aU16xL1/MIGda4LVxzmWLVnxz3BGg0xdqA/Ipsd4VcxVw==
 
 "@graphiql/react@^0.26.2":
   version "0.26.2"

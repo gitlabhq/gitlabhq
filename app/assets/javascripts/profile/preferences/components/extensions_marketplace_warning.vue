@@ -85,6 +85,11 @@ export default {
   },
   actionPrimary: {
     text: s__('PreferencesIntegrations|I understand'),
+    attributes: {
+      variant: 'confirm',
+      category: 'primary',
+      'data-testid': 'confirm-marketplace-acknowledgement',
+    },
   },
   TITLE: s__('PreferencesIntegrations|Third-Party Extensions Acknowledgement'),
   WARNING_PARAGRAPH_1,
