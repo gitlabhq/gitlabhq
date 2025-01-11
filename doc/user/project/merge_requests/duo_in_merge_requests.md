@@ -85,7 +85,7 @@ When you've completed your review of a merge request and are ready to [submit yo
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find the merge request you want to review.
 1. When you are ready to submit your review, select **Finish review**.
-1. Select **Summarize my pending comments**.
+1. Select **Add Summary**.
 
 The summary is displayed in the comment box. You can edit and refine the summary prior to submitting your review.
 

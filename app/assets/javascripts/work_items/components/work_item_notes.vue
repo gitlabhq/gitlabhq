@@ -436,7 +436,12 @@ export default {
     <div v-if="someNotesLoaded" class="issuable-discussion gl-mb-5 !gl-clearfix">
       <div v-if="formAtTop && !commentsDisabled" class="js-comment-form">
         <ul class="notes notes-form timeline">
-          <work-item-add-note v-bind="workItemCommentFormProps" @error="$emit('error', $event)" />
+          <work-item-add-note
+            v-bind="workItemCommentFormProps"
+            @startEditing="$emit('startEditing')"
+            @stopEditing="$emit('stopEditing')"
+            @error="$emit('error', $event)"
+          />
         </ul>
       </div>
       <work-item-notes-loading v-if="formAtTop && isLoadingMore" />
@@ -466,6 +471,8 @@ export default {
               @deleteNote="showDeleteNoteModal($event, discussion)"
               @reportAbuse="reportAbuse(true, $event)"
               @error="$emit('error', $event)"
+              @startEditing="$emit('startEditing')"
+              @cancelEditing="$emit('stopEditing')"
             />
           </template>
         </template>
@@ -478,7 +485,12 @@ export default {
       <work-item-notes-loading v-if="!formAtTop && isLoadingMore" />
       <div v-if="!formAtTop && !commentsDisabled" class="js-comment-form">
         <ul class="notes notes-form timeline">
-          <work-item-add-note v-bind="workItemCommentFormProps" @error="$emit('error', $event)" />
+          <work-item-add-note
+            v-bind="workItemCommentFormProps"
+            @startEditing="$emit('startEditing')"
+            @stopEditing="$emit('stopEditing')"
+            @error="$emit('error', $event)"
+          />
         </ul>
       </div>
     </div>

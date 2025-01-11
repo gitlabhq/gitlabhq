@@ -81,6 +81,11 @@ export default {
       required: false,
       default: '',
     },
+    hideUploadTextOnDragging: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -212,8 +217,15 @@ export default {
           class="gl-flex gl-items-center gl-justify-center gl-text-center"
           data-testid="dropzone-area"
         >
-          <gl-animated-upload-icon :is-on="animateUploadIcon" :class="iconStyles.class" />
-          <p class="gl-mb-0" data-testid="upload-text">
+          <gl-animated-upload-icon
+            :is-on="animateUploadIcon || hideUploadTextOnDragging"
+            :class="iconStyles.class"
+          />
+          <p
+            v-if="!hideUploadTextOnDragging || !dragging"
+            class="gl-mb-0"
+            data-testid="upload-text"
+          >
             <slot name="upload-text" :open-file-upload="openFileUpload">
               <gl-sprintf
                 :message="singleFileSelection ? uploadSingleMessage : uploadMultipleMessage"
@@ -224,6 +236,9 @@ export default {
               </gl-sprintf>
             </slot>
           </p>
+          <span v-if="hideUploadTextOnDragging && dragging">
+            {{ s__('DesignManagement|Drop your images to start the upload.') }}
+          </span>
         </div>
       </button>
 
@@ -250,7 +265,7 @@ export default {
         <!-- Design Upload Overlay Style for Work Items -->
         <template v-if="showUploadDesignOverlay">
           <div
-            v-if="isDragDataValid"
+            v-if="isDragDataValid && !hideUploadTextOnDragging"
             class="gl-absolute gl-bottom-6 gl-flex gl-items-center gl-rounded-base gl-bg-blue-950 gl-px-3 gl-py-2 gl-text-white"
             data-testid="design-upload-overlay"
           >

@@ -59,3 +59,12 @@ To configure settings, go to **Settings > Extensions > GitLab Workflow**.
 
 By default, Code Suggestions and GitLab Duo Chat are turned on, so if you have
 the GitLab Duo add-on and a seat assigned, you should have access.
+
+### Code security
+
+To configure the code security settings, go to **Settings > Extensions > GitLab Workflow > Code
+Security**.
+
+- To enable SAST scanning of the active file, select the **Enable Real-time SAST scan** checkbox.
+- Optional. To enable SAST scanning of the active file when you save it, select the
+  **Enable scanning on file save** checkbox.

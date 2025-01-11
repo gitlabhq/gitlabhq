@@ -271,6 +271,11 @@ export default {
       if (!this.isSubmitting) {
         this.commentText = newText;
         updateDraft(this.autosaveKey, this.commentText);
+        if (this.commentText) {
+          this.$emit('startEditing');
+        } else {
+          this.$emit('stopEditing');
+        }
       }
     },
     async cancelEditing() {

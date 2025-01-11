@@ -26,6 +26,7 @@ This extension brings the GitLab features you use every day directly into your V
 - [Create](#create-a-snippet) and manage snippets.
 - [Browse repositories](remote_urls.md#browse-a-repository-in-read-only-mode) without cloning them.
 - [View security findings](#view-security-findings).
+- [Perform SAST scanning](#perform-sast-scanning).
 
 The GitLab Workflow extension also streamlines your VS Code workflow with AI-assisted features:
 
@@ -228,6 +229,49 @@ To view security findings:
 1. Select either **New findings** or **Fixed findings**.
 1. Select a desired severity level.
 1. Select a finding to open it in a VS Code tab.
+
+## Perform SAST scanning
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1675) in VS Code extension version 5.31.
+
+Static application security testing (SAST) in VS Code detects vulnerabilities in the active file.
+With early detection, you can remediate vulnerabilities before your changes are merged into the
+default branch.
+
+When you trigger a SAST scan, the content of the active file is passed to GitLab and checked against
+SAST vulnerability rules. Scan results are shown in the primary side bar.
+
+Prerequisites:
+
+- You're using GitLab Workflow version 5.31.0 or later.
+- You've [authenticated with GitLab](setup.md#authenticate-with-gitlab).
+- You've selected the [**Enable Real-time SAST scan checkbox**](setup.md#code-security).
+
+To perform SAST scanning of a file in VS Code:
+
+1. Open the file.
+1. Trigger the SAST scan by either:
+   - Saving the file (if you have [selected the **Enable scanning on file save** option](setup.md#code-security)).
+   - Using the Command Palette:
+     1. Open the Command Palette:
+        - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+        - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+     1. Search for **GitLab: Run Remote Scan (SAST)** and press
+        <kbd>Enter</kbd>.
+1. View the results of the SAST scan.
+   1. View the **Primary Side Bar**.
+   1. Select GitLab Workflow ({tanuki}) to display the extension sidebar.
+<!-- markdownlint-disable MD044 -->
+   1. Expand the **GITLAB REMOTE SCAN (SAST)** section.
+
+   The results of the SAST scan are listed in descending order by severity. To see details of a
+   finding, select it in the **GITLAB REMOTE SCAN (SAST)** section of the extension sidebar.
+<!-- markdownlint-enable MD044 -->
 
 ## Search issues and merge requests
 

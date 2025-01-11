@@ -20,10 +20,13 @@ module WebIde
     end
 
     # This value is used when the end-user is accepting the third-party extension marketplace integration.
+    #
+    # @return [String] URL of the VSCode Extension Marketplace home
     def self.marketplace_home_url
       "https://open-vsx.org"
     end
 
+    # @return [String] URL of the help page for the user preferences for Extensions Marketplace opt-in
     def self.help_preferences_url
       ::Gitlab::Routing.url_helpers.help_page_url('user/profile/preferences.md',
         anchor: 'integrate-with-the-extension-marketplace')
@@ -34,54 +37,20 @@ module WebIde
     #
     # - https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/51f9e91f890752596e7a3ef51f436fea07885eff/packages/web-ide-types/src/config.ts#L109
     #
+    # @param [User] user The current user
     # @return [Hash]
     def self.webide_extensions_gallery_settings(user:)
-      # TODO: Add instance-level setting for extensions gallery settings.
-      #       See https://gitlab.com/gitlab-org/gitlab/-/issues/451871
-
-      settings = Settings.get(
-        [:vscode_extensions_gallery, :vscode_extensions_gallery_metadata],
+      Settings.get(
+        [:vscode_extensions_gallery_view_model],
         user: user,
         vscode_extensions_marketplace_feature_flag_enabled: feature_enabled?(user: user)
-      )
-
-      settings => {
-        vscode_extensions_gallery: Hash => vscode_settings,
-        vscode_extensions_gallery_metadata: Hash => metadata
-      }
-
-      # TODO: Introduce a Service layer and standard ServiceResponse interface,
-      #       and move the following logic either down into the Settings::Main ROP chain
-      #       or up into the Service layer.
-      #       See https://gitlab.com/gitlab-org/gitlab/-/issues/471300
-
-      return { enabled: true, vscode_settings: vscode_settings } if metadata.fetch(:enabled)
-
-      disabled_reason = metadata.fetch(:disabled_reason)
-
-      result = { enabled: false, reason: disabled_reason, help_url: help_url }
-
-      result.merge(gallery_disabled_extra_attributes(disabled_reason: disabled_reason, user: user))
+      ).fetch(:vscode_extensions_gallery_view_model)
     end
 
-    # rubocop:disable Lint/UnusedMethodArgument -- `user:` param is used in EE
-    def self.gallery_disabled_extra_attributes(disabled_reason:, user:)
-      return { user_preferences_url: user_preferences_url } if disabled_reason == :opt_in_unset
-      return { user_preferences_url: user_preferences_url } if disabled_reason == :opt_in_disabled
-
-      {}
-    end
-    # rubocop:enable Lint/UnusedMethodArgument
-
-    def self.help_url
-      ::Gitlab::Routing.url_helpers.help_page_url('user/project/web_ide/index.md', anchor: 'extension-marketplace')
-    end
-
-    def self.user_preferences_url
-      # noinspection RubyResolve -- Rubymine is not correctly recognizing indirectly referenced route helper
-      ::Gitlab::Routing.url_helpers.profile_preferences_url(anchor: 'integrations')
-    end
-
+    # Returns true if the given flag is enabled for any actor
+    #
+    # @param [Symbol] flag
+    # @return [Boolean]
     def self.feature_flag_enabled_for_any_actor?(flag)
       # Short circuit if we're globally enabled
       return true if Feature.enabled?(flag, nil)
@@ -92,7 +61,7 @@ module WebIde
       feature && !feature.off?
     end
 
-    private_class_method :help_url, :user_preferences_url, :feature_flag_enabled_for_any_actor?
+    private_class_method :feature_flag_enabled_for_any_actor?
   end
 end
 

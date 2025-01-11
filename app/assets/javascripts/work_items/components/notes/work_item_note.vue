@@ -232,8 +232,10 @@ export default {
   methods: {
     showReplyForm() {
       this.$emit('startReplying');
+      this.$emit('startEditing');
     },
     startEditing() {
+      this.$emit('startEditing');
       this.isEditing = true;
       updateDraft(this.autosaveKey, this.note.body);
     },
@@ -326,6 +328,10 @@ export default {
         Sentry.captureException(error);
       }
     },
+    cancelEditing() {
+      this.isEditing = false;
+      this.$emit('cancelEditing');
+    },
   },
 };
 </script>
@@ -413,7 +419,7 @@ export default {
             :has-replies="hasReplies"
             :full-path="fullPath"
             class="gl-mt-3"
-            @cancelEditing="isEditing = false"
+            @cancelEditing="cancelEditing"
             @toggleResolveDiscussion="$emit('resolve')"
             @submitForm="updateNote"
           />

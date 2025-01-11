@@ -1,7 +1,14 @@
 <script>
 import { isEmpty } from 'lodash';
-import { GlAlert, GlButton, GlTooltipDirective, GlEmptyState } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlButton,
+  GlTooltipDirective,
+  GlEmptyState,
+  GlIntersectionObserver,
+} from '@gitlab/ui';
 import noAccessSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg';
+import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import { getParameterByName } from '~/lib/utils/url_utility';
@@ -50,6 +57,7 @@ import {
   designUploadSkippedWarning,
   UPLOAD_DESIGN_ERROR_MESSAGE,
   ALERT_VARIANTS,
+  VALID_DESIGN_FILE_MIMETYPE,
 } from './design_management/constants';
 
 import WorkItemTree from './work_item_links/work_item_tree.vue';
@@ -84,12 +92,15 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   isLoggedIn: isLoggedIn(),
+  VALID_DESIGN_FILE_MIMETYPE,
   components: {
+    DesignDropzone,
     DesignWidget,
     DesignUploadButton,
     GlAlert,
     GlButton,
     GlEmptyState,
+    GlIntersectionObserver,
     WorkItemActions,
     TodosToggle,
     WorkItemNotificationsWidget,
@@ -170,6 +181,11 @@ export default {
       designUploadErrorVariant: ALERT_VARIANTS.danger,
       workspacePermissions: defaultWorkspacePermissions,
       activeChildItem: null,
+      isEmptyStateVisible: false,
+      dragCounter: 0,
+      isDesignUploadButtonInViewport: false,
+      isDragDataValid: false,
+      isAddingNotes: false,
     };
   },
   apollo: {
@@ -678,6 +694,42 @@ export default {
       this.$apollo.queries.workItem.refetch();
       this.$emit('workItemTypeChanged', this.workItem);
     },
+    isValidDragDataType({ dataTransfer }) {
+      this.isDragDataValid = Array.from(dataTransfer.items).some((item) =>
+        this.$options.VALID_DESIGN_FILE_MIMETYPE.mimetype.includes(item.type),
+      );
+    },
+    onDragEnter(event) {
+      this.dragCounter += 1;
+      this.isValidDragDataType(event);
+    },
+    onDragOver(event) {
+      this.isValidDragDataType(event);
+      if (this.isDesignUploadButtonInViewport) this.isEmptyStateVisible = true;
+    },
+    onDragLeave(event) {
+      const emptyStateDesignDropzone =
+        this.$refs.emptyStateDesignDropzone?.$el || this.$refs.emptyStateDesignDropzone;
+      if (!emptyStateDesignDropzone.contains(event.relatedTarget)) {
+        this.dragCounter -= 1;
+      }
+
+      if (this.dragCounter === 0) {
+        this.isEmptyStateVisible = false; // Hide dropzone
+      }
+    },
+    onDragLeaveMain(event) {
+      // Check if the drag is leaving the main container entirely
+      const mainContainerRef = this.$refs.workItemDetail;
+      if (!mainContainerRef.contains(event.relatedTarget)) {
+        this.dragCounter = 0;
+        this.isEmptyStateVisible = false; // Hide dropzone
+      }
+    },
+    onDrop() {
+      this.dragCounter = 0; // Reset drag state
+      this.isEmptyStateVisible = false; // Hide dropzone after drop
+    },
   },
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WORKSPACE_PROJECT,
@@ -686,7 +738,15 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div
+    ref="workItemDetail"
+    @dragstart.prevent.stop
+    @dragend.prevent.stop
+    @dragenter.prevent.stop="onDragEnter"
+    @dragover.prevent.stop="onDragOver"
+    @dragleave.prevent.stop="onDragLeaveMain"
+    @drop.prevent.stop="onDrop"
+  >
     <work-item-sticky-header
       v-if="showIntersectionObserver"
       :current-user-todos="currentUserTodos"
@@ -870,13 +930,19 @@ export default {
                   @emoji-updated="$emit('work-item-emoji-updated', $event)"
                 />
                 <div class="gl-flex gl-gap-3">
-                  <design-upload-button
+                  <gl-intersection-observer
                     v-if="showUploadDesign"
-                    :is-saving="isSaving"
-                    data-testid="design-upload-button"
-                    @upload="onUploadDesign"
-                    @error="onUploadDesignError"
-                  />
+                    @appear="isDesignUploadButtonInViewport = true"
+                    @disappear="isDesignUploadButtonInViewport = false"
+                  >
+                    <design-upload-button
+                      v-if="showUploadDesign"
+                      :is-saving="isSaving"
+                      data-testid="design-upload-button"
+                      @upload="onUploadDesign"
+                      @error="onUploadDesignError"
+                    />
+                  </gl-intersection-observer>
                   <work-item-create-branch-merge-request-split-button
                     v-if="showCreateBranchMergeRequestSplitButton"
                     :work-item-id="workItem.id"
@@ -915,7 +981,24 @@ export default {
               :is-saving="isSaving"
               @upload="onUploadDesign"
               @dismissError="designUploadError = null"
-            />
+            >
+              <template #empty-state>
+                <design-dropzone
+                  v-if="isEmptyStateVisible && !isSaving && isDragDataValid && !isAddingNotes"
+                  ref="emptyStateDesignDropzone"
+                  class="gl-relative gl-mt-5"
+                  show-upload-design-overlay
+                  validate-design-upload-on-dragover
+                  hide-upload-text-on-dragging
+                  :accept-design-formats="$options.VALID_DESIGN_FILE_MIMETYPE.mimetype"
+                  @change="onUploadDesign"
+                >
+                  <template #upload-text>
+                    {{ $options.i18n.addDesignEmptyState }}
+                  </template>
+                </design-dropzone>
+              </template>
+            </design-widget>
 
             <work-item-tree
               v-if="showWorkItemTree"
@@ -971,6 +1054,8 @@ export default {
               :parent-id="parentWorkItemId"
               @error="updateError = $event"
               @openReportAbuse="openReportAbuseModal"
+              @startEditing="isAddingNotes = true"
+              @stopEditing="isAddingNotes = false"
             />
           </div>
         </div>

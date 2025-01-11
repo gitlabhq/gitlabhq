@@ -362,6 +362,8 @@ export default {
             @submitForm="updateWorkItem"
             @cancelEditing="cancelEditing"
             @error="$emit('error', $event)"
+            @startEditing="$emit('startEditing')"
+            @stopEditing="$emit('stopEditing')"
           />
           <discussion-reply-placeholder
             v-else

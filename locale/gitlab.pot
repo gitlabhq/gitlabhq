@@ -20074,6 +20074,9 @@ msgstr ""
 msgid "DesignManagement|Download design"
 msgstr ""
 
+msgid "DesignManagement|Drag images here to add designs."
+msgstr ""
+
 msgid "DesignManagement|Drop your images to start the upload."
 msgstr ""
 

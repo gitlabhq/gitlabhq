@@ -12,17 +12,19 @@ module WebIde
       def self.get_settings(context)
         initial_result = Gitlab::Fp::Result.ok(context)
 
-        # The order of the chain determines the precedence of settings. I.e., defaults are
-        # overridden by subsequent steps, and any env vars override previous steps.
+        # TODO: Add instance-level setting for extensions gallery settings.
+        #       See https://gitlab.com/gitlab-org/gitlab/-/issues/451871
         result =
           initial_result
             .map(SettingsInitializer.method(:init))
             .map(ExtensionsGalleryMetadataGenerator.method(:generate))
-            # NOTE: EnvVarOverrideProcessor is kept as last settings processing step, so it can always be used
-            #       to easily overrideany settings for local or temporary testing, but still before all validators.
+            # NOTE: EnvVarOverrideProcessor is inserted here to easily override settings for local or temporary testing
+            #       it should happen **before** validators.
             .and_then(Gitlab::Fp::Settings::EnvVarOverrideProcessor.method(:process))
             .and_then(ExtensionsGalleryValidator.method(:validate))
             .and_then(ExtensionsGalleryMetadataValidator.method(:validate))
+            # NOTE: ViewModel generator happens near the end since it depends on other settings.
+            .map(ExtensionsGalleryViewModelGenerator.method(:generate))
             .map(
               # As the final step, return the settings in a SettingsGetSuccessful message
               ->(context) do

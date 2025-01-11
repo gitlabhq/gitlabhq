@@ -60,6 +60,7 @@ export const i18n = {
     "WorkItem|This work item is not available. It either doesn't exist or you don't have permission to view it.",
   ),
   updateError: s__('WorkItem|Something went wrong while updating the work item. Please try again.'),
+  addDesignEmptyState: s__('DesignManagement|Drag images here to add designs.'),
 };
 
 export const I18N_WORK_ITEM_ERROR_FETCHING_LABELS = s__(
