@@ -24,12 +24,12 @@ export const setSelectedValueStream = ({ commit, dispatch }, valueStream) => {
 
 export const fetchValueStreamStages = ({ commit, state }) => {
   const {
-    namespace: { fullPath },
+    namespace: { restApiRequestPath },
     selectedValueStream: { id },
   } = state;
   commit(types.REQUEST_VALUE_STREAM_STAGES);
 
-  return getProjectValueStreamStages(fullPath, id)
+  return getProjectValueStreamStages(restApiRequestPath, id)
     .then(({ data }) => commit(types.RECEIVE_VALUE_STREAM_STAGES_SUCCESS, data))
     .catch(({ response: { status } }) => {
       commit(types.RECEIVE_VALUE_STREAM_STAGES_ERROR, status);
@@ -47,11 +47,11 @@ export const receiveValueStreamsSuccess = ({ commit, dispatch }, data = []) => {
 
 export const fetchValueStreams = ({ commit, dispatch, state }) => {
   const {
-    namespace: { fullPath },
+    namespace: { restApiRequestPath },
   } = state;
   commit(types.REQUEST_VALUE_STREAMS);
 
-  return getProjectValueStreams(fullPath)
+  return getProjectValueStreams(restApiRequestPath)
     .then(({ data }) => dispatch('receiveValueStreamsSuccess', data))
     .catch(({ response: { status } }) => {
       commit(types.RECEIVE_VALUE_STREAMS_ERROR, status);
@@ -203,7 +203,7 @@ export const initializeVsa = async ({ commit, dispatch }, initialData = {}) => {
     labelsEndpoint: constructPathWithNamespace(namespace, LABELS_ENDPOINT),
     milestonesEndpoint: constructPathWithNamespace(namespace, MILESTONES_ENDPOINT),
     groupEndpoint: groupPath,
-    projectEndpoint: namespace.fullPath,
+    projectEndpoint: namespace.restApiRequestPath,
   });
 
   dispatch('filters/initialize', {

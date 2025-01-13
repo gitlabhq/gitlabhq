@@ -14798,6 +14798,9 @@ msgstr ""
 msgid "ComplianceReport|View the framework details"
 msgstr ""
 
+msgid "ComplianceReport|and %{count} more"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence| Standards adherence export"
 msgstr ""
 

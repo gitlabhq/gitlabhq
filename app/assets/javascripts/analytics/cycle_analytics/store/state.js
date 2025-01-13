@@ -9,7 +9,7 @@ export default () => ({
   groupPath: {},
   namespace: {
     name: null,
-    fullPath: null,
+    restApiRequestPath: null,
   },
   createdAfter: null,
   createdBefore: null,

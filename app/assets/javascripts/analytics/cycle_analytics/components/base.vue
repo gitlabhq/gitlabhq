@@ -105,7 +105,7 @@ export default {
     },
     dashboardsPath() {
       return this.showLinkToDashboard
-        ? generateValueStreamsDashboardLink(this.namespace.fullPath)
+        ? generateValueStreamsDashboardLink(this.namespace.restApiRequestPath, true)
         : null;
     },
     query() {
@@ -119,7 +119,7 @@ export default {
       };
     },
     filterBarNamespacePath() {
-      return this.groupPath || this.namespace.fullPath;
+      return this.groupPath || this.namespace.restApiRequestPath;
     },
   },
   methods: {
@@ -183,7 +183,7 @@ export default {
       />
     </div>
     <value-stream-metrics
-      :request-path="namespace.fullPath"
+      :request-path="namespace.restApiRequestPath"
       :request-params="filterParams"
       :group-by="$options.VSA_METRICS_GROUPS"
       :dashboards-path="dashboardsPath"

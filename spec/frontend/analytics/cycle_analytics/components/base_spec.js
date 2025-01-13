@@ -26,7 +26,7 @@ const selectedStageEvents = issueEvents.events;
 const noDataSvgPath = 'path/to/no/data';
 const noAccessSvgPath = 'path/to/no/access';
 const selectedStageCount = stageCounts[selectedStage.id];
-const fullPath = 'full/path/to/foo';
+const namespaceRestApiRequestPath = 'full/path/to/foo';
 
 Vue.use(Vuex);
 
@@ -40,7 +40,7 @@ const defaultState = {
   createdAfter,
   stageCounts,
   groupPath,
-  namespace: { fullPath },
+  namespace: { restApiRequestPath: namespaceRestApiRequestPath },
 };
 
 function createStore({ initialState = {}, initialGetters = {} }) {

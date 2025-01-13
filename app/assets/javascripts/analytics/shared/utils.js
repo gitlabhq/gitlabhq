@@ -196,19 +196,24 @@ export const rawMetricToMetricTile = (metric) => {
 };
 
 /**
- * Generates a URL link to the VSD dashboard based on the group
- * and project paths passed into the method.
+ * Generates a URL link to the VSD dashboard based on the
+ * namespace path passed into the method.
  *
- * @param {String} groupPath - Path of the specified group
- * @returns a URL or blank string if there is no groupPath set
+ * @param {String} namespacePath - Path of the specified namespace
+ * @param {Boolean} isProjectNamespace
+ * @returns a URL or blank string if there is no namespacePath set
  */
-export const generateValueStreamsDashboardLink = (namespacePath) => {
-  if (namespacePath.length) {
-    const dashboardsSlug = '/-/analytics/dashboards/value_streams_dashboard';
-    const segments = [gon.relative_url_root || '', '/', namespacePath, dashboardsSlug];
-    return joinPaths(...segments);
-  }
-  return '';
+export const generateValueStreamsDashboardLink = (
+  namespacePath = null,
+  isProjectNamespace = false,
+) => {
+  if (!namespacePath) return '';
+
+  const dashboardsSlug = '/-/analytics/dashboards/value_streams_dashboard';
+  const formattedNamespacePath = isProjectNamespace ? namespacePath : `groups/${namespacePath}`;
+  const segments = [gon.relative_url_root || '', '/', formattedNamespacePath, dashboardsSlug];
+
+  return joinPaths(...segments);
 };
 
 /**

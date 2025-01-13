@@ -2295,8 +2295,13 @@ Payload example for group:
 ## Vulnerability events
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169701) in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `vulnerabilities_as_webhook_events`. Disabled by default.
+> - Creating an event when a vulnerability is created or when an issue is linked to a vulnerability [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176064) in GitLab 17.8.
 
-A Vulnerability event is triggered when the [status is changed](../../application_security/vulnerabilities/index.md#vulnerability-status-values).
+A vulnerability event is triggered when:
+
+- A vulnerability is created.
+- A vulnerability's [status is changed](../../application_security/vulnerabilities/index.md#vulnerability-status-values).
+- An issue is linked to a vulnerability.
 
 Request header:
 
