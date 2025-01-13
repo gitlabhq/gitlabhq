@@ -65,6 +65,14 @@
   - 1
 - - auth_saml_group_sync
   - 1
+- - authn_sync_group_scim_identity_record
+  - 1
+- - authn_sync_group_scim_token_record
+  - 1
+- - authn_sync_scim_identity_record
+  - 1
+- - authn_sync_scim_token_record
+  - 1
 - - authorized_keys
   - 2
 - - authorized_project_update:authorized_project_update_project_recalculate

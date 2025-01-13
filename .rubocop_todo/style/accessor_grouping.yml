@@ -56,7 +56,6 @@ Style/AccessorGrouping:
     - 'lib/gitlab/search/abuse_detection.rb'
     - 'lib/gitlab/sidekiq_middleware/duplicate_jobs/duplicate_job.rb'
     - 'lib/gitlab/suggestions/file_suggestion.rb'
-    - 'lib/gitlab/tracking/event_definition.rb'
     - 'lib/gitlab/usage/metrics/instrumentations/base_metric.rb'
     - 'lib/gitlab/usage/service_ping/instrumented_payload.rb'
     - 'lib/json_web_token/token.rb'

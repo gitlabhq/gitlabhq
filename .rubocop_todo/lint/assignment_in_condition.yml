@@ -29,7 +29,6 @@ Lint/AssignmentInCondition:
     - 'app/models/clusters/platforms/kubernetes.rb'
     - 'app/models/concerns/after_commit_queue.rb'
     - 'app/models/concerns/atomic_internal_id.rb'
-    - 'app/models/concerns/bulk_insert_safe.rb'
     - 'app/models/concerns/subscribable.rb'
     - 'app/models/design_management/design_collection.rb'
     - 'app/models/diff_note.rb'

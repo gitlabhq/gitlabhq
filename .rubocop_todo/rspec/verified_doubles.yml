@@ -311,7 +311,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitaly/server_spec.rb'
     - 'spec/lib/gitlab/api_authentication/token_locator_spec.rb'
     - 'spec/lib/gitlab/application_context_spec.rb'
-    - 'spec/lib/gitlab/application_rate_limiter_spec.rb'
     - 'spec/lib/gitlab/asciidoc/include_processor_spec.rb'
     - 'spec/lib/gitlab/auth/auth_finders_spec.rb'
     - 'spec/lib/gitlab/auth/blocked_user_tracker_spec.rb'

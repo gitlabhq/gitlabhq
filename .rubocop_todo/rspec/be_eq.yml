@@ -1545,7 +1545,6 @@ RSpec/BeEq:
     - 'spec/workers/group_import_worker_spec.rb'
     - 'spec/workers/integrations/slack_event_worker_spec.rb'
     - 'spec/workers/issuable_export_csv_worker_spec.rb'
-    - 'spec/workers/issues/close_worker_spec.rb'
     - 'spec/workers/namespaces/process_outdated_namespace_descendants_cron_worker_spec.rb'
     - 'spec/workers/pages_domain_removal_cron_worker_spec.rb'
     - 'spec/workers/projects/import_export/create_relation_exports_worker_spec.rb'

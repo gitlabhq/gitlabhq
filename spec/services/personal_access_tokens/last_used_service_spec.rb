@@ -6,13 +6,158 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
   include ExclusiveLeaseHelpers
 
   describe '#execute' do
-    subject { described_class.new(personal_access_token).execute }
+    subject(:service_execution) { described_class.new(personal_access_token).execute }
 
     context 'when the personal access token was used 10 minutes ago', :freeze_time do
       let(:personal_access_token) { create(:personal_access_token, last_used_at: 10.minutes.ago) }
 
       it 'updates the last_used_at timestamp' do
-        expect { subject }.to change { personal_access_token.last_used_at }
+        expect { service_execution }.to change { personal_access_token.last_used_at }
+      end
+
+      context 'when client is using ipv4' do
+        let(:current_ip_address) { '127.0.0.1' }
+
+        it "does update the personal access token's last used ips" do
+          allow(Gitlab::IpAddressState).to receive(:current).and_return(current_ip_address)
+
+          expect { service_execution }.to change { personal_access_token.last_used_ips.count }
+          expect(
+            Authn::PersonalAccessTokenLastUsedIp
+              .where(personal_access_token_id: personal_access_token.id, ip_address: Gitlab::IpAddressState.current)
+              .exists?
+          ).to be_truthy
+        end
+      end
+
+      context 'when client is using ipv6' do
+        let(:current_ip_address) { '::1' }
+
+        it "does update the personal access token's last used ips" do
+          allow(Gitlab::IpAddressState).to receive(:current).and_return(current_ip_address)
+
+          expect { service_execution }.to change { personal_access_token.last_used_ips.count }
+          expect(
+            Authn::PersonalAccessTokenLastUsedIp
+              .where(personal_access_token_id: personal_access_token.id, ip_address: Gitlab::IpAddressState.current)
+              .exists?
+          ).to be_truthy
+        end
+      end
+
+      context 'when PAT IP feature flag is disabled' do
+        let(:current_ip_address) { '127.0.0.1' }
+
+        before do
+          stub_feature_flags(pat_ip: false)
+        end
+
+        it "does not update the personal access token's last used ips" do
+          allow(Gitlab::IpAddressState).to receive(:current).and_return(current_ip_address)
+
+          expect { service_execution }.not_to change { personal_access_token.last_used_ips.count }
+          expect(
+            Authn::PersonalAccessTokenLastUsedIp
+              .where(personal_access_token_id: personal_access_token.id, ip_address: Gitlab::IpAddressState.current)
+              .exists?
+          ).to be_falsy
+        end
+      end
+
+      context 'when the personal access token was used more than 1 minute ago', :freeze_time do
+        let(:current_ip_address) { '::1' }
+        let(:personal_access_token) { create(:personal_access_token, last_used_at: 2.minutes.ago) }
+
+        it "updates the personal access token's last used ips" do
+          allow(Gitlab::IpAddressState).to receive(:current).and_return(current_ip_address)
+
+          expect { service_execution }.to change { personal_access_token.last_used_ips.count }
+          expect(
+            Authn::PersonalAccessTokenLastUsedIp
+              .where(personal_access_token_id: personal_access_token.id, ip_address: Gitlab::IpAddressState.current)
+              .exists?
+          ).to be_truthy
+        end
+      end
+
+      context 'when the personal access token was used less than 1 minute ago', :freeze_time do
+        let(:current_ip_address) { '::1' }
+        let(:personal_access_token) { create(:personal_access_token, last_used_at: 30.seconds.ago) }
+
+        it "does not update the personal access token's last used ips" do
+          allow(Gitlab::IpAddressState).to receive(:current).and_return(current_ip_address)
+
+          expect { service_execution }.not_to change { personal_access_token.last_used_ips.count }
+          expect(
+            Authn::PersonalAccessTokenLastUsedIp
+              .where(personal_access_token_id: personal_access_token.id, ip_address: Gitlab::IpAddressState.current)
+              .exists?
+          ).to be_falsy
+        end
+      end
+
+      context "when the current ip address is already saved" do
+        let(:current_ip_address) { '::1' }
+
+        before do
+          personal_access_token.last_used_ips << Authn::PersonalAccessTokenLastUsedIp.new(
+            organization: personal_access_token.organization,
+            ip_address: current_ip_address)
+        end
+
+        context "when the timestamp does not need an update" do
+          it "does not update the database" do
+            expect(Authn::PersonalAccessTokenLastUsedIp).not_to receive(:new)
+
+            service_execution
+          end
+        end
+
+        context "when timestamp needs an update", :freeze_time do
+          let(:personal_access_token) { create(:personal_access_token, last_used_at: 11.minutes.ago) }
+
+          it "does update the timestamp, but does not update the ip" do
+            allow(Gitlab::IpAddressState).to receive(:current).and_return(current_ip_address)
+
+            expect(personal_access_token.last_used_ips.count).to eq(1)
+            expect { service_execution }.to change { personal_access_token.last_used_at }
+            expect(personal_access_token.last_used_ips.count).to eq(1)
+          end
+        end
+      end
+
+      context "when the count of personal access token's last used ips are above the limit" do
+        let(:current_ip_address) { '123.12.123.1' }
+
+        before do
+          1.upto(5) do |i|
+            personal_access_token.last_used_ips << Authn::PersonalAccessTokenLastUsedIp.new(
+              organization: personal_access_token.organization,
+              ip_address: "127.0.0.#{i}", created_at: i.days.ago)
+          end
+        end
+
+        it "keeps no. of ips at 5" do
+          allow(Gitlab::IpAddressState).to receive(:current).and_return(current_ip_address)
+
+          expect(
+            Authn::PersonalAccessTokenLastUsedIp
+              .where(personal_access_token_id: personal_access_token.id, ip_address: "127.0.0.5")
+              .exists?
+          ).to be_truthy
+          expect { service_execution }.not_to change { personal_access_token.last_used_ips.count }
+        end
+
+        it "removes the oldest PAT ip" do
+          allow(Gitlab::IpAddressState).to receive(:current).and_return(current_ip_address)
+
+          expect { service_execution }.to(
+            change do
+              Authn::PersonalAccessTokenLastUsedIp
+                .where(personal_access_token_id: personal_access_token.id, ip_address: "127.0.0.5")
+                .exists?
+            end.from(true).to(false))
+        end
       end
 
       it 'obtains an exclusive lease before updating' do
@@ -25,13 +170,13 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
           ).and_call_original
         end
 
-        expect { subject }.to change { personal_access_token.last_used_at }
+        expect { service_execution }.to change { personal_access_token.last_used_at }
       end
 
       it 'does not run on read-only GitLab instances' do
         allow(::Gitlab::Database).to receive(:read_only?).and_return(true)
 
-        expect { subject }.not_to change { personal_access_token.last_used_at }
+        expect { service_execution }.not_to change { personal_access_token.last_used_at }
       end
 
       context 'when lease is already acquired by another process' do
@@ -42,7 +187,7 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
         end
 
         it 'does not update last_used_at' do
-          expect { subject }.not_to change { personal_access_token.last_used_at }
+          expect { service_execution }.not_to change { personal_access_token.last_used_at }
         end
       end
 
@@ -65,7 +210,7 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
       let(:personal_access_token) { create(:personal_access_token, last_used_at: (10.minutes - 1.second).ago) }
 
       it 'does not update the last_used_at timestamp' do
-        expect { subject }.not_to change { personal_access_token.last_used_at }
+        expect { service_execution }.not_to change { personal_access_token.last_used_at }
       end
     end
 
@@ -73,7 +218,7 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
       let_it_be(:personal_access_token) { create(:personal_access_token, last_used_at: nil) }
 
       it 'updates the last_used_at timestamp' do
-        expect { subject }.to change { personal_access_token.last_used_at }
+        expect { service_execution }.to change { personal_access_token.last_used_at }
       end
     end
 
@@ -81,7 +226,7 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
       let_it_be(:personal_access_token) { create(:oauth_access_token) }
 
       it 'does not execute' do
-        expect(subject).to be_nil
+        expect(service_execution).to be_nil
       end
     end
   end

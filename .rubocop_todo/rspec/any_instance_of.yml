@@ -210,7 +210,6 @@ RSpec/AnyInstanceOf:
     - 'spec/requests/api/graphql/project/error_tracking/sentry_detailed_error_request_spec.rb'
     - 'spec/requests/api/helpers_spec.rb'
     - 'spec/requests/api/internal/base_spec.rb'
-    - 'spec/requests/api/maven_packages_spec.rb'
     - 'spec/requests/api/merge_requests_spec.rb'
     - 'spec/requests/api/project_export_spec.rb'
     - 'spec/requests/api/project_import_spec.rb'

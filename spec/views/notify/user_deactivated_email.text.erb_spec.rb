@@ -4,9 +4,11 @@ require 'spec_helper'
 
 RSpec.describe 'notify/user_deactivated_email.text.erb', feature_category: :user_management do
   let(:name) { 'John Smith' }
+  let(:host) { 'gitlab.example.com' }
 
   before do
     assign(:name, name)
+    assign(:host, host)
   end
 
   it_behaves_like 'renders plain text email correctly'
@@ -15,6 +17,12 @@ RSpec.describe 'notify/user_deactivated_email.text.erb', feature_category: :user
     render
 
     expect(rendered).to have_content(/^Hello John Smith,/)
+  end
+
+  it 'includes the GitLab host' do
+    render
+
+    expect(rendered).to have_content(/Your account has been deactivated for #{host}\./)
   end
 
   context 'when additional text setting is set' do

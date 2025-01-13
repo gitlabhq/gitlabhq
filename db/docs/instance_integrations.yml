@@ -2,6 +2,7 @@
 table_name: instance_integrations
 classes:
 - Integrations::Instance::Integration
+- Integrations::Instance::Asana
 - Integrations::Instance::Assembla
 feature_categories:
 - integrations

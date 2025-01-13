@@ -714,7 +714,7 @@ module Ci
     end
 
     def cancelable?
-      cancelable_statuses.any?
+      cancelable_statuses.any? && internal_pipeline?
     end
 
     def auto_canceled?

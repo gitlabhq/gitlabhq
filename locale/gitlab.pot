@@ -2959,6 +2959,9 @@ msgstr ""
 msgid "AccessTokens|Static object token"
 msgstr ""
 
+msgid "AccessTokens|The last five distinct IP addresses from where the token was used"
+msgstr ""
+
 msgid "AccessTokens|The last time a token was used"
 msgstr ""
 
@@ -32884,6 +32887,9 @@ msgstr ""
 msgid "Last Used"
 msgstr ""
 
+msgid "Last Used IPs"
+msgstr ""
+
 msgid "Last accessed on"
 msgstr ""
 
@@ -33618,13 +33624,13 @@ msgstr ""
 msgid "Lock %{issuableType}"
 msgstr ""
 
-msgid "Lock File?"
-msgstr ""
-
 msgid "Lock directory?"
 msgstr ""
 
 msgid "Lock discussion"
+msgstr ""
+
+msgid "Lock file?"
 msgstr ""
 
 msgid "Lock label after a merge request is merged"
@@ -60556,6 +60562,9 @@ msgstr ""
 msgid "Unlock discussion"
 msgstr ""
 
+msgid "Unlock file?"
+msgstr ""
+
 msgid "Unlock more features with GitLab Ultimate"
 msgstr ""
 
@@ -66161,7 +66170,10 @@ msgstr ""
 msgid "Your account has been deactivated by your administrator. Please log back in to reactivate your account."
 msgstr ""
 
-msgid "Your account has been deactivated. You will not be able to: "
+msgid "Your account has been deactivated for %{gitlab_host_link}. You will not be able to: "
+msgstr ""
+
+msgid "Your account has been deactivated for %{host}. You will not be able to: "
 msgstr ""
 
 msgid "Your account is authenticated with SSO or SAML. To push and pull over %{protocol} with Git using this account, you must %{set_password_link_start}set a password%{link_end} or %{set_up_pat_link_start}set up a personal access token%{link_end} to use instead of a password."

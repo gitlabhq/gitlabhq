@@ -34,6 +34,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
     it { is_expected.to belong_to(:previous_personal_access_token).class_name('PersonalAccessToken') }
     it { is_expected.to belong_to(:organization).class_name('Organizations::Organization') }
+    it { is_expected.to have_many(:last_used_ips) }
   end
 
   describe 'scopes' do

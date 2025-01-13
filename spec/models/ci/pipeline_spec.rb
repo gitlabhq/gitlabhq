@@ -3302,6 +3302,14 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     %i[failed success skipped canceled].each do |status|
       it_behaves_like 'not containing the pipeline', status
     end
+
+    context 'external pipelines' do
+      let(:pipeline) { build(:ci_pipeline, source: :external) }
+
+      it 'is not cancelable' do
+        expect(pipeline.cancelable?).to be_falsey
+      end
+    end
   end
 
   describe '#retry_failed' do

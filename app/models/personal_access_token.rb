@@ -41,6 +41,8 @@ class PersonalAccessToken < ApplicationRecord
   belongs_to :organization, class_name: 'Organizations::Organization'
   belongs_to :previous_personal_access_token, class_name: 'PersonalAccessToken'
 
+  has_many :last_used_ips, class_name: 'Authn::PersonalAccessTokenLastUsedIp'
+
   after_initialize :set_default_scopes, if: :persisted?
   before_save :ensure_token
 

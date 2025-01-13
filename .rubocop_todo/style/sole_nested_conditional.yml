@@ -30,7 +30,6 @@ Style/SoleNestedConditional:
     - 'lib/banzai/filter/ascii_doc_sanitization_filter.rb'
     - 'lib/banzai/filter/base_sanitization_filter.rb'
     - 'lib/gitlab/auth.rb'
-    - 'lib/gitlab/auth/saml/user.rb'
     - 'lib/gitlab/ci/pipeline/chain/skip.rb'
     - 'lib/gitlab/config/entry/configurable.rb'
     - 'lib/gitlab/config/entry/validators.rb'

@@ -49,7 +49,7 @@ module API
 
       desc 'Get single personal access token' do
         detail 'Get a personal access token by using the ID of the personal access token.'
-        success Entities::PersonalAccessToken
+        success Entities::PersonalAccessTokenWithLastUsedIps
         failure [
           { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
@@ -61,7 +61,7 @@ module API
         allowed = Ability.allowed?(current_user, :read_user_personal_access_tokens, token&.user)
 
         if allowed
-          present token, with: Entities::PersonalAccessToken
+          present token, with: Entities::PersonalAccessTokenWithLastUsedIps
         else
           # Only admins should be informed if the token doesn't exist
           current_user.can_admin_all_resources? ? not_found! : unauthorized!

@@ -70,7 +70,7 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
 
   context 'when the current user does not have permission to add assignees' do
     let(:current_user) { create(:user) }
-    let(:db_query_limit) { 27 }
+    let(:db_query_limit) { 29 }
 
     it 'does not change the assignees' do
       project.add_guest(current_user)

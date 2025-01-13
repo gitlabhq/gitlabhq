@@ -146,6 +146,8 @@ This is crucial because it has implications for data migration and may require r
 
 As an example, see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/462758), which added `organization_id` as a sharding key to an existing table.
 
+For more information about development with organizations, see [Organization](../organization)
+
 ### Define a `desired_sharding_key` to automatically backfill a `sharding_key`
 
 We need to backfill a `sharding_key` to hundreds of tables that do not have one.

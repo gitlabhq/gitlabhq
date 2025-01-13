@@ -116,7 +116,7 @@ RSpec.describe 'getting a collection of projects', feature_category: :source_cod
     it 'avoids N+1 queries', :use_sql_query_cache, :clean_gitlab_redis_cache do
       post_graphql(single_project_query, current_user: current_user)
 
-      control = ActiveRecord::QueryRecorder.new do
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         post_graphql(single_project_query, current_user: current_user)
       end
 
@@ -125,7 +125,7 @@ RSpec.describe 'getting a collection of projects', feature_category: :source_cod
       # https://gitlab.com/gitlab-org/gitlab/-/issues/442164
       expect do
         post_graphql(query, current_user: current_user)
-      end.not_to exceed_all_query_limit(control).with_threshold(17)
+      end.not_to exceed_all_query_limit(control).with_threshold(16)
     end
 
     it 'returns the expected projects' do
