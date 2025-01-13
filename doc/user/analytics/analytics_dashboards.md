@@ -13,6 +13,7 @@ DETAILS:
 > - Introduced in GitLab 15.9 as an [experiment](../../policy/development_stages_support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards`. Disabled by default.
 > - `combined_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/389067) by default in GitLab 16.11.
 > - `combined_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454350) in GitLab 17.1.
+> - `filters` configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505317) in GitLab 17.9. Disabled by default.
 
 Analytics dashboards help you visualize the collected data.
 You can use built-in dashboards by GitLab or create your own dashboards with custom visualizations.
@@ -192,6 +193,27 @@ and one visualization (line chart) that applies to all dashboards, the file stru
 ├── visualizations
 │  └── example_line_chart.yaml
 ```
+
+### Dashboard filters
+
+Dashboards support the following filters:
+
+- **Date range**: Date selector to filter data by date.
+- **Anonymous users**: Toggle to include or exclude anonymous users from the dataset.
+
+To enable filters, in the `.yaml` configuration file set the filter's `enabled` option to `true`:
+
+```yaml
+title: My dashboard
+...
+filters: 
+  excludeAnonymousUsers: 
+    enabled: true
+  dateRange: 
+    enabled: true
+```
+
+See a complete [dashboard configuration example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/analytics/product_analytics/dashboards/audience.yaml).
 
 ## Define a chart visualization
 

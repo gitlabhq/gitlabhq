@@ -31,8 +31,8 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
       context "reporter user" do
         let(:statuses_id) { json_response.map { |status| status['id'] } }
 
-        def create_status(commit, opts = {})
-          create(:commit_status, { pipeline: commit, ref: commit.ref }.merge(opts))
+        def create_status(pipeline, opts = {})
+          create(:commit_status, { pipeline: pipeline, ref: pipeline.ref }.merge(opts))
         end
 
         let!(:status1) { create_status(master, status: 'running', retried: true) }
@@ -58,44 +58,73 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
           end
         end
 
-        context 'all commit statuses' do
+        shared_examples_for 'get commit statuses' do
           before do
-            get api(get_url, reporter), params: { all: 1 }
+            get api(get_url, reporter), params: params
           end
 
           it 'returns all commit statuses' do
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
-            expect(statuses_id).to contain_exactly(
-              status1.id, status2.id, status3.id, status4.id, status5.id, status6.id
-            )
+            expect(statuses_id).to eq(expected_statuses)
           end
+        end
+
+        context 'Get all commit statuses' do
+          let(:params) { { all: 1 } }
+          let(:expected_statuses) { [status1.id, status2.id, status3.id, status4.id, status5.id, status6.id] }
+
+          it_behaves_like 'get commit statuses'
         end
 
         context 'latest commit statuses for specific ref' do
-          before do
-            get api(get_url, reporter), params: { ref: 'develop' }
-          end
+          let(:params) { { ref: 'develop' } }
+          let(:expected_statuses) { [status3.id, status5.id] }
 
-          it 'returns latest commit statuses for specific ref' do
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to include_pagination_headers
-            expect(json_response).to be_an Array
-            expect(statuses_id).to contain_exactly(status3.id, status5.id)
-          end
+          it_behaves_like 'get commit statuses'
         end
 
         context 'latest commit statues for specific name' do
-          before do
-            get api(get_url, reporter), params: { name: 'coverage' }
-          end
+          let(:params) { { name: 'coverage' } }
+          let(:expected_statuses) { [status4.id, status5.id] }
 
-          it 'return latest commit statuses for specific name' do
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to include_pagination_headers
-            expect(json_response).to be_an Array
-            expect(statuses_id).to contain_exactly(status4.id, status5.id)
+          it_behaves_like 'get commit statuses'
+        end
+
+        context 'latest commit statuses for specific pipeline' do
+          let(:params) { { pipeline_id: develop.id } }
+          let(:expected_statuses) { [status3.id, status5.id] }
+
+          it_behaves_like 'get commit statuses'
+        end
+
+        context 'return commit statuses sort by desc id' do
+          let(:params) { { all: 1, sort: "desc" } }
+          let(:expected_statuses) { [status6.id, status5.id, status4.id, status3.id, status2.id, status1.id] }
+
+          it_behaves_like 'get commit statuses'
+        end
+
+        context 'return commit statuses sort by desc pipeline_id' do
+          let(:params) { { all: 1, order_by: "pipeline_id", sort: "desc" } }
+          let(:expected_statuses) { [status3.id, status5.id, status1.id, status2.id, status4.id, status6.id] }
+
+          it_behaves_like 'get commit statuses'
+        end
+
+        context 'return commit statuses sort by asc pipeline_id' do
+          let(:params) { { all: 1, order_by: "pipeline_id" } }
+          let(:expected_statuses) { [status1.id, status2.id, status4.id, status6.id, status3.id, status5.id] }
+
+          it_behaves_like 'get commit statuses'
+        end
+
+        context 'Bad filter commit statuses' do
+          it 'return commit statuses order by an unmanaged field' do
+            get api(get_url, reporter), params: { all: 1, order_by: "name" }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
           end
         end
       end

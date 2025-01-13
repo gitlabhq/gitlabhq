@@ -21,7 +21,7 @@ namespace :gitlab do
 
     desc 'Gitlab | DB | Troubleshoot issues with the database'
     task sos: :environment do
-      Gitlab::Database::Sos.run
+      Gitlab::Database::Sos.run("tmp/sos")
     end
 
     namespace :mark_migration_complete do

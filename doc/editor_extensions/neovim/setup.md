@@ -82,7 +82,7 @@ A full list of environment variables is available in the extension's help text a
 To configure this extension:
 
 1. Configure your desired file types. For example, because this plugin supports Ruby, it adds a `FileType ruby` auto-command.
-   To configure this behavior for additional file types, add more file types to the `code_suggestions.auto_filetypes` setup option:
+   To configure this behavior for more file types, add more file types to the `code_suggestions.auto_filetypes` setup option:
 
    ```lua
    require('gitlab').setup({

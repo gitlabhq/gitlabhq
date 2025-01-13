@@ -1,23 +1,42 @@
-import Vue from 'vue';
-import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
-import initDeleteTagModal from '../../../app/assets/javascripts/tags/init_delete_tag_modal';
+import { createWrapper } from '@vue/test-utils';
+
+import initDeleteTagModal from '~/tags/init_delete_tag_modal';
+import DeleteTagModal from '~/tags/components/delete_tag_modal.vue';
 
 describe('initDeleteTagModal', () => {
-  beforeEach(() => {
-    setHTMLFixture('<div class="js-delete-tag-modal"></div>');
-  });
+  let appRoot;
+  let wrapper;
+
+  const createAppRoot = () => {
+    appRoot = document.createElement('div');
+    appRoot.setAttribute('class', 'js-delete-tag-modal');
+    document.body.appendChild(appRoot);
+
+    wrapper = createWrapper(initDeleteTagModal());
+  };
 
   afterEach(() => {
-    resetHTMLFixture();
+    if (appRoot) {
+      appRoot.remove();
+      appRoot = null;
+    }
   });
 
-  it('should mount the delete tag modal', () => {
-    expect(initDeleteTagModal()).toBeInstanceOf(Vue);
-    expect(document.querySelector('.js-delete-tag-modal')).toBeNull();
+  const findDeleteTagModal = () => wrapper.findComponent(DeleteTagModal);
+
+  describe('when there is no app root', () => {
+    it('returns false', () => {
+      expect(initDeleteTagModal()).toBe(false);
+    });
   });
 
-  it('should return false if the mounting element is missing', () => {
-    document.querySelector('.js-delete-tag-modal').remove();
-    expect(initDeleteTagModal()).toBe(false);
+  describe('when there is an app root', () => {
+    beforeEach(() => {
+      createAppRoot();
+    });
+
+    it('renders the modal', () => {
+      expect(findDeleteTagModal().exists()).toBe(true);
+    });
   });
 });

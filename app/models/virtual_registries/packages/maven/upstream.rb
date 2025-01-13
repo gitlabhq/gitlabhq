@@ -55,6 +55,10 @@ module VirtualRegistries
           { Authorization: authorization }
         end
 
+        def default_cached_responses
+          cached_responses.default
+        end
+
         private
 
         def reset_credentials

@@ -343,7 +343,7 @@ possibility. For example:
 deploy-pages:
   stage: deploy
   script:
-    - echo "Pages accessible through ${CI_PAGES_URL}/${PAGES_PREFIX}"
+    - echo "Pages accessible through ${CI_PAGES_URL}"
   variables:
     PAGES_PREFIX: "" # No prefix by default (master)
   pages:  # specifies that this is a Pages job
@@ -379,14 +379,14 @@ For example:
 deploy-pages:
   stage: deploy
   script:
-    - echo "Pages accessible through ${CI_PAGES_URL}/${PAGES_PREFIX}"
+    - echo "Pages accessible through ${CI_PAGES_URL}"
   variables:
     PAGES_PREFIX: "" # no prefix by default (master)
   pages:  # specifies that this is a Pages job
     path_prefix: "$PAGES_PREFIX"
   environment:
     name: "Pages ${PAGES_PREFIX}"
-    url: "${CI_PAGES_URL}/${PAGES_PREFIX}"
+    url: $CI_PAGES_URL
   artifacts:
     paths:
     - public

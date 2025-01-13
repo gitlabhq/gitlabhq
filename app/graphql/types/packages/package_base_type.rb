@@ -6,6 +6,8 @@ module Types
       graphql_name 'PackageBase'
       description 'Represents a package in the Package Registry'
 
+      PROTECTION_RULE_EXISTS_BATCH_SIZE = 20
+
       connection_type_class Types::CountableConnectionType
 
       authorize :read_package
@@ -39,12 +41,14 @@ module Types
       def protection_rule_exists
         object_package_type_value = ::Packages::Package.package_types[object.package_type]
 
-        BatchLoader::GraphQL.for([object.name, object_package_type_value]).batch do |inputs, loader|
-          ::Packages::Protection::Rule
-            .for_push_exists_for_multiple_packages(
-              package_names: inputs.map(&:first), package_types: inputs.map(&:last), project_id: object.project_id
-            )
-            .each { |row| loader.call([row['package_name'], row['package_type']], row['protected']) }
+        BatchLoader::GraphQL.for([object.project_id, object.name, object_package_type_value]).batch do |tuples, loader|
+          tuples.each_slice(PROTECTION_RULE_EXISTS_BATCH_SIZE) do |projects_and_packages|
+            ::Packages::Protection::Rule
+              .for_push_exists_for_projects_and_packages(projects_and_packages)
+              .each do |row|
+                loader.call([row['project_id'], row['package_name'], row['package_type']], row['protected'])
+              end
+          end
         end
       end
 

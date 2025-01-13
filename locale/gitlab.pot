@@ -17024,9 +17024,6 @@ msgstr ""
 msgid "Created %{time_ago}"
 msgstr ""
 
-msgid "Created %{timeago}"
-msgstr ""
-
 msgid "Created %{timestamp}"
 msgstr ""
 
@@ -19636,9 +19633,6 @@ msgstr ""
 msgid "DeployTokens|Your new project deploy token has been created."
 msgstr ""
 
-msgid "Deployed %{timeago}"
-msgstr ""
-
 msgid "Deployed to"
 msgstr ""
 
@@ -19800,9 +19794,6 @@ msgstr ""
 msgid "Deployment|Deployment #%{iid}"
 msgstr ""
 
-msgid "Deployment|Deployment ID"
-msgstr ""
-
 msgid "Deployment|Deployment approvals require a Premium or Ultimate subscription"
 msgstr ""
 
@@ -19911,6 +19902,15 @@ msgid "Deployment|Tag"
 msgstr ""
 
 msgid "Deployment|There was an issue fetching the deployment, please try again later."
+msgstr ""
+
+msgid "Deployment|Triggered by %{username}"
+msgstr ""
+
+msgid "Deployment|Triggered by %{username} on %{time}"
+msgstr ""
+
+msgid "Deployment|Triggered on %{time}"
 msgstr ""
 
 msgid "Deployment|Triggerer"
@@ -22250,6 +22250,9 @@ msgstr ""
 msgid "Environments|A freeze period is in effect from %{startTime} to %{endTime}. Deployments might fail during this time. For more information, see the %{docsLinkStart}deploy freeze documentation%{docsLinkEnd}."
 msgstr ""
 
+msgid "Environments|Actions"
+msgstr ""
+
 msgid "Environments|An error occurred while canceling the auto stop, please try again"
 msgstr ""
 
@@ -22322,6 +22325,9 @@ msgstr ""
 msgid "Environments|Deployment history"
 msgstr ""
 
+msgid "Environments|Deployments"
+msgstr ""
+
 msgid "Environments|Edit environment"
 msgstr ""
 
@@ -22368,6 +22374,9 @@ msgid "Environments|Kustomizations"
 msgstr ""
 
 msgid "Environments|Learn more about stopping environments"
+msgstr ""
+
+msgid "Environments|Name"
 msgstr ""
 
 msgid "Environments|New environment"

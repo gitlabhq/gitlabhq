@@ -4,7 +4,7 @@ module ActiveContext
   module Databases
     module Concerns
       module Client
-        DEFAULT_PREFIX = 'gitlab'
+        DEFAULT_PREFIX = 'gitlab_active_context'
 
         attr_reader :options
 

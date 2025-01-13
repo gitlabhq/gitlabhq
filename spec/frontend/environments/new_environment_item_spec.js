@@ -1,6 +1,6 @@
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
-import { GlCollapse, GlLink, GlSprintf, GlButton } from '@gitlab/ui';
+import { GlLink, GlSprintf } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -36,18 +36,13 @@ describe('~/environments/components/new_environment_item.vue', () => {
         projectPath: '/1',
         ...provideData,
       },
-      stubs: { GlSprintf, TimeAgoTooltip, GlCollapse },
+      stubs: { GlSprintf, TimeAgoTooltip },
     });
 
   const findDeployment = () => wrapper.findComponent(Deployment);
   const findActions = () => wrapper.findComponent(EnvironmentActions);
   const findNameLink = () => wrapper.findComponent(GlLink);
-  const findCollapse = () => wrapper.findComponent(GlCollapse);
-
-  const expandCollapsedSection = async () => {
-    const button = wrapper.findComponent(GlButton);
-    await button.vm.$emit('click');
-  };
+  const findEmptyState = () => wrapper.findByTestId('deployments-empty-state');
 
   it('displays the name when not in a folder', () => {
     wrapper = createWrapper({ apolloProvider: createApolloProvider() });
@@ -315,31 +310,6 @@ describe('~/environments/components/new_environment_item.vue', () => {
     });
   });
 
-  describe('collapse', () => {
-    const findCollapseButton = () => wrapper.findComponent(GlButton);
-
-    beforeEach(() => {
-      wrapper = createWrapper({ apolloProvider: createApolloProvider() });
-    });
-
-    it('is collapsed by default', () => {
-      expect(findCollapse().props('visible')).toBe(false);
-      expect(findCollapseButton().props('icon')).toBe('chevron-lg-right');
-      expect(findNameLink().classes('gl-font-bold')).toBe(false);
-    });
-
-    it('opens on click', async () => {
-      expect(findDeployment().props('visible')).toBe(false);
-
-      await expandCollapsedSection();
-
-      expect(findCollapseButton().attributes('aria-label')).toBe('Collapse');
-      expect(findCollapseButton().props('icon')).toBe('chevron-lg-down');
-      expect(findNameLink().classes('gl-font-bold')).toBe(true);
-      expect(findCollapse().props('visible')).toBe(true);
-      expect(findDeployment().props('visible')).toBe(true);
-    });
-  });
   describe('last deployment', () => {
     it('should pass the last deployment to the deployment component when it exists', () => {
       wrapper = createWrapper({ apolloProvider: createApolloProvider() });
@@ -373,7 +343,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
       });
 
       const deployment = findDeployment();
-      expect(deployment.props('deployment')).toEqual(upcomingDeployment);
+      expect(deployment.props('deployment')).toMatchObject(upcomingDeployment);
     });
     it('should not show the upcoming deployment when it is missing', () => {
       const environment = {
@@ -393,7 +363,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
   });
 
   describe('empty state', () => {
-    it('should link to documentation', async () => {
+    it('should link to documentation', () => {
       const environment = {
         ...resolvedEnvironment,
         lastDeployment: null,
@@ -405,27 +375,23 @@ describe('~/environments/components/new_environment_item.vue', () => {
         apolloProvider: createApolloProvider(),
       });
 
-      await expandCollapsedSection();
-
-      expect(findCollapse().text()).toBe(
+      expect(findEmptyState().text()).toBe(
         'There are no deployments for this environment yet. Learn more about setting up deployments.',
       );
-      expect(findCollapse().findComponent(GlLink).attributes('href')).toBe('/help');
+      expect(findEmptyState().findComponent(GlLink).attributes('href')).toBe('/help');
     });
 
-    it('should not link to the documentation when there are deployments', async () => {
+    it('should not show empty state when there are deployments', () => {
       wrapper = createWrapper({
         apolloProvider: createApolloProvider(),
       });
 
-      await expandCollapsedSection();
-
-      expect(findCollapse().findComponent(GlLink).exists()).toBe(false);
+      expect(findEmptyState().exists()).toBe(false);
     });
   });
 
   describe('deploy boards', () => {
-    it('should show a deploy board if the environment has a rollout status', async () => {
+    it('should show a deploy board if the environment has a rollout status', () => {
       const environment = {
         ...resolvedEnvironment,
         rolloutStatus,
@@ -436,20 +402,15 @@ describe('~/environments/components/new_environment_item.vue', () => {
         apolloProvider: createApolloProvider(),
       });
 
-      await expandCollapsedSection();
-
       const deployBoard = wrapper.findComponent(DeployBoardWrapper);
       expect(deployBoard.exists()).toBe(true);
       expect(deployBoard.props('rolloutStatus')).toBe(rolloutStatus);
     });
 
-    it('should not show a deploy board if the environment has no rollout status', async () => {
+    it('should not show a deploy board if the environment has no rollout status', () => {
       wrapper = createWrapper({
         apolloProvider: createApolloProvider(),
       });
-
-      await expandCollapsedSection();
-
       const deployBoard = wrapper.findComponent(DeployBoardWrapper);
       expect(deployBoard.exists()).toBe(false);
     });

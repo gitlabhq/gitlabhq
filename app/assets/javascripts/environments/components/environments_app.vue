@@ -87,6 +87,9 @@ export default {
     active: __('Active'),
     stopped: __('Stopped'),
     searchPlaceholder: s__('Environments|Search by environment name'),
+    name: s__('Environments|Name'),
+    deployments: s__('Environments|Deployments'),
+    actions: s__('Environments|Actions'),
   },
   modalId: 'enable-review-app-info',
   stopStaleEnvsModalId: 'stop-stale-environments-modal',
@@ -318,17 +321,24 @@ export default {
     /></template>
     <environments-app-skeleton-loader v-if="loading" />
     <template v-else-if="showContent">
+      <div
+        v-if="!showEmptyState"
+        class="gl-border-t gl-border-b gl-hidden lg:gl-flex"
+        data-testid="environments-table-header"
+      >
+        <div class="gl-w-1/5 gl-p-4 gl-font-bold">{{ $options.i18n.name }}</div>
+        <div class="gl-w-3/5 gl-p-4 gl-font-bold">{{ $options.i18n.deployments }}</div>
+        <div class="gl-p-4 gl-font-bold">{{ $options.i18n.actions }}</div>
+      </div>
       <environment-folder
         v-for="folder in folders"
         :key="folder.name"
-        class="gl-mb-3"
         :scope="scope"
         :search="search"
         :nested-environment="folder" />
       <environment-item
         v-for="environment in environments"
         :key="environment.name"
-        class="gl-mb-3 gl-border-1 gl-border-default gl-border-b-solid"
         :environment="environment.latest"
         @change="refetchEnvironments"
     /></template>

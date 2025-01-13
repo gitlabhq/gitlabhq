@@ -21,6 +21,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'activesupport'
   spec.add_dependency 'connection_pool'
+  spec.add_dependency 'elasticsearch'
   spec.add_dependency 'pg'
   spec.add_dependency 'zeitwerk'
 

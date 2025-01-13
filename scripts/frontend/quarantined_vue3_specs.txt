@@ -1,7 +1,6 @@
 # Lines beginning with a hash are ignored, like this one.
 # Do not add new specs to this file.
 ee/spec/frontend/access_tokens/components/expires_at_field_spec.js
-ee/spec/frontend/admin/application_settings/deletion_protection/index_spec.js
 ee/spec/frontend/admin/application_settings/general/components/license_dropzone_spec.js
 ee/spec/frontend/admin/signup_restrictions/components/signup_form_spec.js
 ee/spec/frontend/admin/subscriptions/show/components/subscription_activation_form_spec.js
@@ -276,7 +275,6 @@ spec/frontend/super_sidebar/components/nav_item_router_link_spec.js
 spec/frontend/super_sidebar/components/organization_switcher_spec.js
 spec/frontend/super_sidebar/components/sidebar_portal_spec.js
 spec/frontend/super_sidebar/components/user_menu_spec.js
-spec/frontend/tags/init_delete_tag_modal_spec.js
 spec/frontend/todos/components/filtered_search_tokens/group_token_spec.js
 spec/frontend/todos/components/filtered_search_tokens/project_token_spec.js
 spec/frontend/tooltips/components/tooltips_spec.js

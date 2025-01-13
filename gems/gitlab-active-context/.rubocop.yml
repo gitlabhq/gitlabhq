@@ -3,3 +3,6 @@ inherit_from:
 
 Gemfile/MissingFeatureCategory:
   Enabled: false
+
+Search/NamespacedClass:
+  Enabled: false

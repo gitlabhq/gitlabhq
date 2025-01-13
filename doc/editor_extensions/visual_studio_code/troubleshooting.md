@@ -123,9 +123,8 @@ A workaround exists for MacOS:
 
 ### Ubuntu workaround
 
-When VS Code is installed with `snap` in Ubuntu 20.04 and 22.04, it can't read passwords from the OS keychain that extension versions 3.44.0
-and later use for secure token storage.
-
+When you install VS Code with `snap` in Ubuntu 20.04 and 22.04, VS Code can't read passwords from the
+OS keychain. Extension versions 3.44.0 and later use the OS keychain for secure token storage.
 A workaround exists for Ubuntu users who use versions of VS Code earlier than 1.68.0:
 
 - You can downgrade the GitLab Workflow extension to version 3.43.1.
@@ -141,7 +140,7 @@ the last three steps to re-authenticate.
 
 ## Set token with environment variables
 
-If you often delete your VS Code storage, such as in Gitpod containers, you can create environment variables
+If you often delete your VS Code storage, such as in Gitpod containers, set environment variables
 before starting VS Code. If you set the token in a
 [VS Code environment variable](https://code.visualstudio.com/docs/editor/variables-reference#_environment-variables),
 you don't have to set a personal access token each time you delete your VS Code storage. Set these variables:

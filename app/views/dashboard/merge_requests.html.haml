@@ -34,7 +34,10 @@
   - if merge_request_dashboard_enabled?(current_user)
     = gl_tabs_nav do
       = gl_tab_link_to new_lists_enabled ? _('Active') : _('Needs attention'), merge_requests_dashboard_path
-      = gl_tab_link_to new_lists_enabled ? _('Merged') : _('Following'), merge_requests_following_dashboard_path
+      - if new_lists_enabled
+        = gl_tab_link_to _('Merged'), merge_requests_merged_dashboard_path
+      - else
+        = gl_tab_link_to _('Following'), merge_requests_following_dashboard_path
       = gl_tab_link_to _('Search'), merge_requests_search_dashboard_path, item_active: true
 
   %div{ class: "#{'gl-bg-gray-10' if merge_request_dashboard_enabled?(current_user)}" }

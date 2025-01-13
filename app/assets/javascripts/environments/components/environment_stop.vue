@@ -40,7 +40,6 @@ export default {
   },
   i18n: {
     title: s__('Environments|Stop environment'),
-    stop: s__('Environments|Stop'),
   },
   data() {
     return {
@@ -82,11 +81,10 @@ export default {
     :loading="isLoading || isEnvironmentStopping"
     :title="$options.i18n.title"
     :aria-label="$options.i18n.title"
+    size="small"
     icon="stop"
     category="secondary"
     variant="danger"
     @click="onClick"
-  >
-    {{ $options.i18n.stop }}
-  </gl-button>
+  />
 </template>

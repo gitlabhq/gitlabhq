@@ -29,6 +29,7 @@ PATH
     gitlab-active-context (0.0.1)
       activesupport
       connection_pool
+      elasticsearch
       pg
       zeitwerk
 

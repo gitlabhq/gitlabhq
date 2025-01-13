@@ -44,7 +44,7 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
 
   describe '#prefix' do
     it 'returns default prefix when not specified' do
-      expect(client.prefix).to eq('gitlab')
+      expect(client.prefix).to eq('gitlab_active_context')
     end
 
     it 'returns configured prefix' do

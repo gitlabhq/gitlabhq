@@ -3,8 +3,7 @@
 class AutoMergeProcessWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
-  data_consistency :sticky, feature_flag: :auto_merge_process_worker_sticky
-
+  data_consistency :sticky
   sidekiq_options retry: 3
 
   # Avoid _simultaneous execution_ of this job for the same MR,

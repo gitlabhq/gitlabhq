@@ -12,7 +12,13 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponses::CreateOrUpda
   let(:etag) { 'test' }
   let(:content_type) { 'text/xml' }
   let(:params) { { path: path, file: file, etag: etag, content_type: content_type } }
-  let(:file) { UploadedFile.new(Tempfile.new(etag).path, sha1: 'sha1', md5: 'md5') }
+  let(:file) do
+    UploadedFile.new(
+      Tempfile.new(etag).path,
+      sha1: '4e1243bd22c66e76c2ba9eddc1f91394e57f9f83',
+      md5: 'd8e8fca2dc0f896fd7cb4cb0031ba249'
+    )
+  end
 
   let(:service) do
     described_class.new(upstream: upstream, current_user: user, params: params)
@@ -22,7 +28,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponses::CreateOrUpda
     subject(:execute) { service.execute }
 
     shared_examples 'returning a service response success response' do
-      shared_examples 'creating a new cached response' do |with_md5: 'md5'|
+      shared_examples 'creating a new cached response' do |with_md5: 'd8e8fca2dc0f896fd7cb4cb0031ba249'|
         it 'returns a success service response', :freeze_time do
           expect { execute }.to change { upstream.cached_responses.count }.by(1)
           expect(execute).to be_success
@@ -36,7 +42,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponses::CreateOrUpda
             relative_path: "/#{path}",
             upstream_etag: etag,
             content_type: content_type,
-            file_sha1: 'sha1',
+            file_sha1: '4e1243bd22c66e76c2ba9eddc1f91394e57f9f83',
             file_md5: with_md5
           )
         end

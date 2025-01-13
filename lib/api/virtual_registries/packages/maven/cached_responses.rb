@@ -30,7 +30,7 @@ module API
             strong_memoize_attr :upstream
 
             def cached_responses
-              upstream.cached_responses.default.search_by_relative_path(params[:search])
+              upstream.default_cached_responses.order_created_desc.search_by_relative_path(params[:search])
             end
 
             def cached_response
@@ -108,7 +108,7 @@ module API
                 authorize! :destroy_virtual_registry, cached_response.upstream
 
                 destroy_conditionally!(cached_response) do |cached_response|
-                  render_validation_error!(cached_response) unless cached_response.update(upstream: nil)
+                  render_validation_error!(cached_response) unless cached_response.mark_as_pending_destruction
                 end
               end
             end

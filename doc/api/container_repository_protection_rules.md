@@ -42,7 +42,7 @@ Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/7/registry/protection/rules"
+  --url "https://gitlab.example.com/api/v4/projects/7/registry/protection/repository/rules"
 ```
 
 Example response:

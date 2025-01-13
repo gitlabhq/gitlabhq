@@ -30,12 +30,22 @@ ActiveContext.configure do |config|
   config.databases = {
     es1: {
       adapter: 'elasticsearch',
-      prefix: 'gitlab',
+      prefix: 'gitlab_active_context',
       options: ::Gitlab::CurrentSettings.elasticsearch_config
     }
   }
 end
 ```
+
+#### Elasticsearch Configuration Options
+
+| Option | Description | Required | Default | Example |
+|--------|-------------|----------|---------|---------|
+| `url` | The URL of the Elasticsearch server | Yes | N/A | `'http://localhost:9200'` |
+| `prefix` | The prefix for Elasticsearch indices | No | `'gitlab_active_context'` | `'my_custom_prefix'` |
+| `client_request_timeout` | The timeout for client requests in seconds | No | N/A | `60` |
+| `retry_on_failure` | The number of times to retry a failed request | No | `0` (no retries) | `3` |
+| `debug` | Enable or disable debug logging | No | `false` | `true` |
 
 ## Contributing
 

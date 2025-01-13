@@ -246,7 +246,12 @@ GitLab.com customers must contact their Customer Success Manager to enable this 
 
 You can add files in your VS Code workspace to ask GitLab Duo Chat about.
 
-You cannot add local files that are not part of a repository.
+Prerequisites:
+
+- You cannot add local files that are not part of a repository.
+- Only text-based files can be included. Binary files (such as PDFs or images) are not supported.
+
+To do this:
 
 1. In your IDE, in GitLab Duo Chat, type `/include`.
 1. To add files, you can either:

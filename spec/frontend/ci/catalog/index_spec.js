@@ -1,5 +1,7 @@
-import { initCatalog } from '~/ci/catalog/';
+import { createWrapper } from '@vue/test-utils';
+import { initCatalog } from '~/ci/catalog';
 import * as Router from '~/ci/catalog/router';
+import GlobalCatalog from '~/ci/catalog/global_catalog.vue';
 import CiResourcesPage from '~/ci/catalog/components/pages/ci_resources_page.vue';
 
 describe('~/ci/catalog/index', () => {
@@ -7,7 +9,7 @@ describe('~/ci/catalog/index', () => {
     const SELECTOR = 'SELECTOR';
 
     let el;
-    let component;
+    let wrapper;
     const baseRoute = '/explore/catalog';
 
     const createElement = () => {
@@ -21,15 +23,17 @@ describe('~/ci/catalog/index', () => {
       el = null;
     });
 
+    const findGlobalCatalog = () => wrapper.findComponent(GlobalCatalog);
+
     describe('when the element exists', () => {
       beforeEach(() => {
         createElement();
         jest.spyOn(Router, 'createRouter');
-        component = initCatalog(`#${SELECTOR}`);
+        wrapper = createWrapper(initCatalog(`#${SELECTOR}`));
       });
 
-      it('returns a Vue Instance', () => {
-        expect(component.$options.name).toBe('GlobalCatalog');
+      it('renders the GlobalCatalog component', () => {
+        expect(findGlobalCatalog().exists()).toBe(true);
       });
 
       it('creates a router with the received base path and component', () => {
@@ -40,7 +44,7 @@ describe('~/ci/catalog/index', () => {
 
     describe('When the element does not exist', () => {
       it('returns `null`', () => {
-        expect(initCatalog('foo')).toBe(null);
+        expect(initCatalog('foo')).toBeNull();
       });
     });
   });

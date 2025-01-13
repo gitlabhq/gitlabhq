@@ -58,7 +58,7 @@ These instructions were tested on Arch Linux `5.14.3-arch1-1` and VS Code 1.60.0
 ### MacOS
 
 NOTE:
-These instructions are untested, but likely work as intended. If you can confirm this setup,
+These instructions are untested, but should work as intended. If you can confirm this setup,
 create a documentation issue with more information.
 
 Make sure you see the self-signed CA in your keychain:

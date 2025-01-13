@@ -7,9 +7,19 @@ module VirtualRegistries
         include FileStoreMounter
         include Gitlab::SQL::Pattern
         include ::UpdateNamespaceStatistics
+        include ShaAttribute
+
+        self.table_name = 'virtual_registries_packages_maven_cache_entries'
+
+        # we're using a composite primary key: upstream_id, relative_path and status
+        self.primary_key = :upstream_id
+        query_constraints :upstream_id, :relative_path, :status
 
         belongs_to :group
-        belongs_to :upstream, class_name: 'VirtualRegistries::Packages::Maven::Upstream', inverse_of: :cached_responses
+        belongs_to :upstream,
+          class_name: 'VirtualRegistries::Packages::Maven::Upstream',
+          inverse_of: :cached_responses,
+          optional: false
 
         alias_attribute :namespace, :group
 
@@ -20,21 +30,22 @@ module VirtualRegistries
 
         ignore_column :downloaded_at, remove_with: '17.9', remove_after: '2025-01-23'
 
+        sha_attribute :file_sha1
+        sha_attribute :file_md5
+
         validates :group, top_level_group: true, presence: true
         validates :relative_path,
           :object_storage_key,
           :size,
           :file_sha1,
           presence: true
-        validates :relative_path,
-          :object_storage_key,
-          :upstream_etag,
-          :content_type,
-          length: { maximum: 255 }
-        validates :file_final_path, length: { maximum: 1024 }
+        validates :upstream_etag, :content_type, length: { maximum: 255 }
+        validates :relative_path, :object_storage_key, :file_final_path, length: { maximum: 1024 }
+        validates :file_md5, length: { is: 32 }, allow_nil: true
+        validates :file_sha1, length: { is: 40 }
         validates :relative_path,
           uniqueness: { scope: [:upstream_id, :status] },
-          if: -> { upstream.present? && default? }
+          if: :default?
         validates :file, presence: true
 
         mount_file_store_uploader ::VirtualRegistries::CachedResponseUploader
@@ -47,6 +58,7 @@ module VirtualRegistries
           fuzzy_search(query, [:relative_path], use_minimum_char_limit: false)
         end
         scope :for_group, ->(group) { where(group: group) }
+        scope :order_created_desc, -> { reorder(arel_table['created_at'].desc) }
 
         def self.next_pending_destruction
           pending_destruction.lock('FOR UPDATE SKIP LOCKED').take
@@ -83,6 +95,13 @@ module VirtualRegistries
           return false if upstream.cache_validity_hours == 0
 
           (upstream_checked_at + upstream.cache_validity_hours.hours).past?
+        end
+
+        def mark_as_pending_destruction
+          update_columns(
+            status: :pending_destruction,
+            relative_path: "#{relative_path}/deleted/#{SecureRandom.uuid}"
+          )
         end
 
         private

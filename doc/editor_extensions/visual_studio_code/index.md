@@ -171,9 +171,9 @@ Use this extension to review, comment on, and approve merge requests without lea
    merge request you want to review. Its sidebar entry expands with more information.
 1. Under the merge request's number and title, select **Description** to read more about the merge request.
 1. To review the proposed changes to a file, select the file from the list to show it in a VS Code tab.
-   Diff comments are shown inline in the tab. In the list, deleted files are marked in red:
+   GitLab shows diff comments inline in the tab. In the list, deleted files are marked in red:
 
-   ![An alphabetical list of files changed in this merge request, including the type of changes.](../img/vscode_view_changed_file_v17_6.png)
+   ![An alphabetical list of files changed in this merge request, including the change types.](../img/vscode_view_changed_file_v17_6.png)
 
 Use the diff to:
 
@@ -240,11 +240,11 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1675) in VS Code extension version 5.31.
 
 Static application security testing (SAST) in VS Code detects vulnerabilities in the active file.
-With early detection, you can remediate vulnerabilities before your changes are merged into the
+With early detection, you can remediate vulnerabilities before you merge your changes into the
 default branch.
 
 When you trigger a SAST scan, the content of the active file is passed to GitLab and checked against
-SAST vulnerability rules. Scan results are shown in the primary side bar.
+SAST vulnerability rules. GitLab shows scan results in the primary side bar.
 
 Prerequisites:
 
@@ -253,6 +253,8 @@ Prerequisites:
 - You've selected the [**Enable Real-time SAST scan checkbox**](setup.md#code-security).
 
 To perform SAST scanning of a file in VS Code:
+
+<!-- markdownlint-disable MD044 -->
 
 1. Open the file.
 1. Trigger the SAST scan by either:
@@ -266,11 +268,11 @@ To perform SAST scanning of a file in VS Code:
 1. View the results of the SAST scan.
    1. View the **Primary Side Bar**.
    1. Select GitLab Workflow ({tanuki}) to display the extension sidebar.
-<!-- markdownlint-disable MD044 -->
    1. Expand the **GITLAB REMOTE SCAN (SAST)** section.
 
    The results of the SAST scan are listed in descending order by severity. To see details of a
    finding, select it in the **GITLAB REMOTE SCAN (SAST)** section of the extension sidebar.
+
 <!-- markdownlint-enable MD044 -->
 
 ## Search issues and merge requests
