@@ -72,7 +72,7 @@ export default {
     :style="position"
     :aria-label="pinLabel"
     :class="{
-      'btn-transparent comment-indicator': isNewNote,
+      'comment-indicator gl-border-0 gl-bg-transparent': isNewNote,
       'js-image-badge design-note-pin': !isNewNote,
       resolved: isResolved,
       inactive: isInactive,
