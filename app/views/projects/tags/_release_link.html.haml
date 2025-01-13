@@ -2,4 +2,4 @@
   %span
     = sprite_icon("rocket", size: 12, css_class: "gl-fill-icon-subtle")
     = _("Release:")
-    = link_to release.name, project_release_path(project, release), class: "!gl-text-link"
+    = link_to release.name, project_release_path(project, release), class: "!gl-text-link", data: { testid: 'release-link' }

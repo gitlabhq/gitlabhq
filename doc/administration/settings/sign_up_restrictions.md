@@ -80,6 +80,52 @@ The following settings are available:
 - **Soft** - Send a confirmation email during sign up. New users can sign in immediately, but must confirm their email in three days. After three days, the user is not able to sign in until they confirm their email.
 - **Off** - New users can sign up without confirming their email address.
 
+## Turn on restricted access
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+**Status:** Beta
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/501717) in GitLab 17.8.
+
+Use restricted access to prevent overage fees.
+Overage fees occur when you exceed the number of licensed users in your subscription,
+and must be paid at the next [quarterly reconciliation](../../subscriptions/quarterly_reconciliation.md).
+
+When you turn on restricted access, instances cannot add new billable users when there are no licensed seats
+left in the subscription.
+
+Prerequisites:
+
+- You must be an administrator.
+
+To turn on restricted access:
+
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Sign-up restrictions**.
+1. Under **Seat controls**, select **Restricted access**.
+
+### Known issues
+
+When you turn on restricted access, the following known issues might occur and result in overages:
+
+- The number of billable users can still be exceeded if:
+  - You use SAML or SCIM to add new members, and have exceeded the number of seats in the subscription.
+  - Multiple users with administrator access add members simultaneously.
+  - New billable users delay accepting an invitation.
+  - You change from using the user cap to restricted access, and have users pending approval
+    from before you changed to restricted access. In this case, those users remain in a pending state. If
+    pending users are approved while using restricted access, you might exceed the number of seats in your subscription.
+  - You have no seats left in the subscription, and non billable members are promoted to a [billable](../../subscriptions/self_managed/index.md#billable-users)
+    role through group/project member management, which results in exceeded number of seats in the subscription.
+- If you renew your subscription through the GitLab Sales Team for less users than your current
+  subscription, you will incur an overage fee. To avoid this fee, remove additional users before your
+  renewal starts. For example:
+  - You have 20 users.
+  - You renew your subscription for 15 users.
+  - You will be charged overages for the five additional users.
+
 ## User cap
 
 The user cap is the maximum number of billable users who can sign up or be added to a subscription

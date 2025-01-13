@@ -16,9 +16,6 @@ options:
     - i_code_review_user_create_note_in_ipynb_diff
 data_category: optional
 performance_indicator_type: []
-distribution:
-  - ce
-  - ee
 tiers:
   - free
   - premium

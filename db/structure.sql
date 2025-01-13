@@ -529,7 +529,6 @@ BEGIN
     scanner_id, uuid, location_image, cluster_agent_id, casted_cluster_agent_id
   FROM
     vulnerability_occurrences v_o
-  INNER JOIN projects ON projects.id = v_o.project_id
   WHERE
     v_o.vulnerability_id = NEW.id
   LIMIT 1;

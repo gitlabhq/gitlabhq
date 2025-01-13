@@ -2,28 +2,20 @@
 import {
   GlButton,
   GlAlert,
-  GlLink,
   GlLoadingIcon,
   GlFormCheckbox,
   GlFormGroup,
   GlFormSelect,
-  GlSprintf,
 } from '@gitlab/ui';
-import { createAlert } from '~/alert';
-import { clearDraft } from '~/lib/utils/autosave';
-import { isMetaEnterKeyPair } from '~/lib/utils/common_utils';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { getPreferredLocales, s__, sprintf } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { fetchPolicies } from '~/lib/graphql';
-import { getPreferredLocales, s__, sprintf } from '~/locale';
-import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { addHierarchyChild, setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import { findWidget } from '~/issues/list/utils';
+import { newWorkItemFullPath, getNewWorkItemAutoSaveKey } from '~/work_items/utils';
 import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
-import {
-  getDisplayReference,
-  getNewWorkItemAutoSaveKey,
-  newWorkItemFullPath,
-} from '~/work_items/utils';
+import { clearDraft } from '~/lib/utils/autosave';
 import {
   I18N_WORK_ITEM_CREATE_BUTTON_LABEL,
   I18N_WORK_ITEM_ERROR_CREATING,
@@ -46,12 +38,12 @@ import {
   WIDGET_TYPE_MILESTONE,
   DEFAULT_EPIC_COLORS,
   WIDGET_TYPE_HIERARCHY,
-  WORK_ITEM_TYPE_VALUE_MAP,
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
+import { isMetaEnterKeyPair } from '../../lib/utils/common_utils';
 import WorkItemProjectsListbox from './work_item_links/work_item_projects_listbox.vue';
 import WorkItemTitle from './work_item_title.vue';
 import WorkItemDescription from './work_item_description.vue';
@@ -66,12 +58,10 @@ export default {
   components: {
     GlButton,
     GlAlert,
-    GlLink,
     GlLoadingIcon,
     GlFormGroup,
     GlFormCheckbox,
     GlFormSelect,
-    GlSprintf,
     WorkItemDescription,
     WorkItemTitle,
     WorkItemAssignees,
@@ -98,16 +88,6 @@ export default {
     ),
   },
   props: {
-    allowedWorkItemTypes: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    alwaysShowWorkItemTypeSelect: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     description: {
       type: String,
       required: false,
@@ -151,7 +131,7 @@ export default {
     relatedItem: {
       type: Object,
       required: false,
-      validator: (i) => i.id && i.type && i.reference && i.webUrl,
+      validator: (i) => i.id && i.type && i.reference,
       default: null,
     },
     shouldDiscardDraft: {
@@ -189,9 +169,6 @@ export default {
       skip() {
         return this.skipWorkItemQuery;
       },
-      fetchPolicy() {
-        return this.workItemTypeName ? fetchPolicies.CACHE_ONLY : fetchPolicies.CACHE_FIRST;
-      },
       update(data) {
         const title = data?.workspace?.workItem?.title;
 
@@ -211,9 +188,13 @@ export default {
       query() {
         return namespaceWorkItemTypesQuery;
       },
+      fetchPolicy() {
+        return this.workItemTypeName ? fetchPolicies.CACHE_ONLY : fetchPolicies.CACHE_FIRST;
+      },
       variables() {
         return {
           fullPath: this.fullPath,
+          name: this.workItemTypeName,
         };
       },
       update(data) {
@@ -224,18 +205,8 @@ export default {
         if (!this.workItemTypes?.length) {
           return;
         }
-
-        const selectedWorkItemType = this.workItemTypes?.find(
-          (workItemType) => WORK_ITEM_TYPE_VALUE_MAP[workItemType.name] === this.workItemTypeName,
-        );
-
-        if (selectedWorkItemType) {
-          this.selectedWorkItemTypeId = selectedWorkItemType?.id;
-        } else {
-          this.showWorkItemTypeSelect = true;
-        }
-
-        this.workItemTypes.forEach(async (workItemType) => {
+        if (this.workItemTypes?.length === 1) {
+          const workItemType = this.workItemTypes[0];
           await setNewWorkItemCache(
             this.fullPath,
             workItemType?.widgetDefinitions,
@@ -243,7 +214,19 @@ export default {
             workItemType.id,
             workItemType.iconName,
           );
-        });
+          this.selectedWorkItemTypeId = workItemType?.id;
+        } else {
+          this.workItemTypes.forEach(async (workItemType) => {
+            await setNewWorkItemCache(
+              this.fullPath,
+              workItemType?.widgetDefinitions,
+              workItemType.name,
+              workItemType.id,
+              workItemType.iconName,
+            );
+          });
+          this.showWorkItemTypeSelect = true;
+        }
       },
       error() {
         this.error = I18N_WORK_ITEM_ERROR_FETCHING_TYPES;
@@ -264,21 +247,6 @@ export default {
     },
     hasWidgets() {
       return this.workItem?.widgets?.length > 0;
-    },
-    relatedItemHelp() {
-      const message = s__(
-        'WorkItem|Adds this %{workItemType} as related to the %{relatedWorkItemType} it was created from',
-      );
-      return sprintf(message, {
-        workItemType: this.selectedWorkItemTypeName.toLocaleLowerCase(),
-        relatedWorkItemType: this.relatedItemType,
-      });
-    },
-    relatedItemReference() {
-      return getDisplayReference(this.fullPath, this.relatedItem.reference);
-    },
-    relatedItemType() {
-      return this.relatedItem?.type?.toLocaleLowerCase();
     },
     workItemAssignees() {
       return findWidget(WIDGET_TYPE_ASSIGNEES, this.workItem);
@@ -308,20 +276,12 @@ export default {
       return findWidget(WIDGET_TYPE_CRM_CONTACTS, this.workItem);
     },
     workItemTypesForSelect() {
-      let workItemTypes = this.workItemTypes ?? [];
-
-      if (this.allowedWorkItemTypes.length) {
-        workItemTypes = workItemTypes.filter((workItemType) =>
-          this.allowedWorkItemTypes.includes(workItemType.name),
-        );
-      }
-
-      return workItemTypes.map((workItemType) => ({
-        value: workItemType.id,
-        text: capitalizeFirstCharacter(
-          workItemType.name.toLocaleLowerCase(getPreferredLocales()[0]),
-        ),
-      }));
+      return this.workItemTypes
+        ? this.workItemTypes.map((node) => ({
+            value: node.id,
+            text: capitalizeFirstCharacter(node.name.toLocaleLowerCase(getPreferredLocales()[0])),
+          }))
+        : [];
     },
     selectedWorkItemType() {
       return this.workItemTypes?.find((item) => item.id === this.selectedWorkItemTypeId);
@@ -332,15 +292,8 @@ export default {
     selectedWorkItemTypeIconName() {
       return this.selectedWorkItemType?.iconName;
     },
-    selectedWorkItemTypeEnum() {
-      return WORK_ITEM_TYPE_VALUE_MAP[this.selectedWorkItemTypeName];
-    },
     formOptions() {
-      const options = [...this.workItemTypesForSelect];
-      if (!this.workItemTypeName) {
-        options.unshift({ value: null, text: s__('WorkItem|Select type') });
-      }
-      return options;
+      return [{ value: null, text: s__('WorkItem|Select type') }, ...this.workItemTypesForSelect];
     },
     createErrorText() {
       return sprintfWorkItem(I18N_WORK_ITEM_ERROR_CREATING, this.selectedWorkItemTypeName);
@@ -418,6 +371,12 @@ export default {
     },
     workItemIid() {
       return this.workItem?.iid;
+    },
+    relatedItemText() {
+      return sprintf(s__('WorkItem|Relates to %{workItemType} %{workItemReference}'), {
+        workItemType: this.relatedItem.type,
+        workItemReference: this.relatedItem.reference,
+      });
     },
     shouldIncludeRelatedItem() {
       return (
@@ -611,7 +570,7 @@ export default {
       }
 
       try {
-        const { data } = await this.$apollo.mutate({
+        const response = await this.$apollo.mutate({
           mutation: createWorkItemMutation,
           variables: {
             input: {
@@ -634,17 +593,7 @@ export default {
           },
         });
 
-        // We can get user-facing errors here. Show them in page alert
-        // because if we're in a modal the modal closes after submission.
-        if (data.workItemCreate.errors.length) {
-          createAlert({
-            message: data.workItemCreate.errors.join(' '),
-            error: data.workItemCreate.errors,
-            captureError: true,
-          });
-        }
-
-        this.$emit('workItemCreated', data.workItemCreate.workItem);
+        this.$emit('workItemCreated', response.data.workItemCreate.workItem);
         const workItemTypeName = this.selectedWorkItemTypeName || this.workItemTypeName;
         const autosaveKey = getNewWorkItemAutoSaveKey(this.fullPath, workItemTypeName);
         clearDraft(autosaveKey);
@@ -709,7 +658,7 @@ export default {
 
         <gl-loading-icon v-if="$apollo.queries.workItemTypes.loading" size="lg" />
         <gl-form-group
-          v-else-if="showWorkItemTypeSelect || alwaysShowWorkItemTypeSelect"
+          v-else-if="showWorkItemTypeSelect"
           class="gl-max-w-26 gl-flex-grow"
           :label="__('Type')"
           label-for="work-item-type"
@@ -719,7 +668,6 @@ export default {
             v-model="selectedWorkItemTypeId"
             data-testid="work-item-types-select"
             :options="formOptions"
-            @change="$emit('changeType', selectedWorkItemTypeEnum)"
           />
         </gl-form-group>
       </div>
@@ -767,19 +715,7 @@ export default {
               class="gl-mt-3"
               data-testid="relates-to-checkbox"
             >
-              <gl-sprintf
-                :message="s__('WorkItem|Relates to %{workItemType} %{workItemReference}')"
-              >
-                <template #workItemType>
-                  {{ relatedItemType }}
-                </template>
-                <template #workItemReference>
-                  <gl-link :href="relatedItem.webUrl">{{ relatedItemReference }}</gl-link>
-                </template>
-              </gl-sprintf>
-              <template #help>
-                {{ relatedItemHelp }}
-              </template>
+              {{ relatedItemText }}
             </gl-form-checkbox>
           </section>
           <aside

@@ -31,7 +31,7 @@ graph TD;
     class workspaceProject active;
 ```
 
-To set up the GitLab agent for workspaces, you're going to:
+To set up the GitLab agent for workspaces, you will:
 
 1. [Configure the `remote_development` module in the agent project](#configure-the-remote_development-module-in-the-agent-project).
 1. [Allow the GitLab agent in a group](#allow-the-gitlab-agent-in-a-group).

@@ -38,8 +38,7 @@ FactoryBot.define do
 
     trait :with_namespace do
       # rubocop: disable RSpec/FactoryBot/InlineAssociation -- We need to pass an Organization to this method
-      # TODO: Remove usage of default organization https://gitlab.com/gitlab-org/gitlab/-/issues/446293
-      namespace { assign_personal_namespace(create(:organization, :default)) }
+      namespace { assign_personal_namespace(create(:organization)) }
       # rubocop: enable RSpec/FactoryBot/InlineAssociation
     end
 

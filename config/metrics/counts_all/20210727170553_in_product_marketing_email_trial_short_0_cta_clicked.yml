@@ -17,9 +17,6 @@ options:
   track: trial_short
   series: 0
 data_category: optional
-distribution:
-  - ce
-  - ee
 tiers:
   - free
   - premium

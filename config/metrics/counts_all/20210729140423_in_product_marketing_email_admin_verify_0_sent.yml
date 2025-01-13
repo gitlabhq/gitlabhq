@@ -17,9 +17,6 @@ options:
   track: admin_verify
   series: 0
 data_category: optional
-distribution:
-  - ce
-  - ee
 tiers:
   - free
   - premium

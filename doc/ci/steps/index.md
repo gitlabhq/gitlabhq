@@ -164,8 +164,8 @@ For example:
 #### Load a step from a Git repository
 
 Load a step from a Git repository by supplying the URL and revision (commit, branch, or tag) of the repository.
-You can also specify the relative directory of the step inside the repository.
-If the URL is specified without a directory, then `step.yml` is loaded from the root folder of the repository.
+You can also specify the relative directory and filename of the step within the `steps` folder of the repository.
+If the URL is specified without a directory, then `step.yml` is loaded from the `steps` folder.
 
 For example:
 
@@ -174,8 +174,8 @@ For example:
   ```yaml
   job:
     run:
-      - name: my_echo_step
-        step: gitlab.com/gitlab-org/ci-cd/runner-tools/echo-step@main
+      - name: specifying_a_branch
+        step: gitlab.com/components/echo@main
   ```
 
 - Specify the step with a tag:
@@ -183,21 +183,33 @@ For example:
   ```yaml
   job:
     run:
-      - name: my_echo_step
-        step: gitlab.com/gitlab-org/ci-cd/runner-tools/echo-step@v1.0.0
+      - name: specifying_a_tag
+        step: gitlab.com/components/echo@v1.0.0
   ```
 
-- Specify the step with a Git rev and directory in a repository:
+- Specify the step with a directory, filename, and Git commit in a repository:
 
   ```yaml
   job:
     run:
-      - name: specifying_a_revision_and_directory_within_the_repository
+      - name: specifying_a_directory_file_and_commit_within_the_repository
+        step: gitlab.com/components/echo/-/reverse/my-step.yml@3c63f399ace12061db4b8b9a29f522f41a3d7f25
+  ```
+
+To specify a folder or file outside the `steps` folder, use the expanded `step` syntax:
+
+- Specify a directory and filename relative to the repository root.
+
+  ```yaml
+  job:
+    run:
+      - name: specifying_a_directory_outside_steps
         step:
           git:
-            url: gitlab.com/gitlab-org/ci-cd/runner-tools/echo-step
-            dir: reverse
+            url: gitlab.com/components/echo
             rev: main
+            dir: my-steps/sub-directory  # optional, defaults to the repository root
+            file: my-step.yml            # optional, defaults to `step.yml`
   ```
 
 Steps can't reference Git repositories using annotated tags. Follow [issue 123](https://gitlab.com/gitlab-org/step-runner/-/issues/123)

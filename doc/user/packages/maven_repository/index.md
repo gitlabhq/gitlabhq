@@ -595,6 +595,26 @@ To install a package by using `sbt`:
 
 ::EndTabs
 
+### Proxy downloads for Maven packages
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/507768) in GitLab 17.8.
+
+The GitLab Maven package registry uses [remote included checksums](https://maven.apache.org/resolver/expected-checksums.html#remote-included-checksums).
+When you download a file, the registry proxies the file and sends both the file and its related checksums to Maven clients in a single request.
+
+Using remote included checksums with recent Maven clients:
+
+- Reduces the number of web requests from the clients to the GitLab Maven package registry.
+- Decreases the load on your GitLab instance.
+- Improves the client command execution time.
+
+Due to technical constraints, when you use object storage, the Maven package registry ignores the [proxy download](../../../administration/object_storage.md#proxy-download)
+setting in the object storage configuration for `packages`.
+Instead, proxy download is always enabled for Maven package registry downloads.
+
+NOTE:
+If you don't use object storage, this behavior has no impact on your instance.
+
 ## CI/CD integration for Maven packages
 
 You can use CI/CD to automatically build, test, and publish Maven packages.

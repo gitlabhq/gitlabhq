@@ -17,9 +17,6 @@ instrumentation_class: InProductMarketingEmailSentMetric
 options:
   track: create
   series: 2
-distribution:
-  - ce
-  - ee
 tiers:
   - free
   - premium

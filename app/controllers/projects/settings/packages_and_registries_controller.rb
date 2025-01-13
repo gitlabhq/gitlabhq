@@ -33,7 +33,6 @@ module Projects
       end
 
       def set_feature_flag_packages_protected_packages
-        push_frontend_feature_flag(:packages_protected_packages_pypi, project)
         push_frontend_feature_flag(:packages_protected_packages_conan, project)
       end
 

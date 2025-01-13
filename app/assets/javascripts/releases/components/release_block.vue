@@ -186,7 +186,11 @@ export default {
 
       <div v-if="release.descriptionHtml" ref="gfm-content">
         <h3 class="gl-heading-5 !gl-mb-2">{{ __('Release notes') }}</h3>
-        <div v-safe-html:[$options.safeHtmlConfig]="release.descriptionHtml" class="md"></div>
+        <div
+          v-safe-html:[$options.safeHtmlConfig]="release.descriptionHtml"
+          class="md"
+          data-testid="release-description"
+        ></div>
       </div>
     </div>
 

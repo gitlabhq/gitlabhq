@@ -248,33 +248,6 @@ describe('IDE services', () => {
     });
   });
 
-  describe('pingUsage', () => {
-    let mock;
-    const TEST_RELATIVE_URL_ROOT = 'blah-blah';
-
-    beforeEach(() => {
-      jest.spyOn(axios, 'post');
-      gon.relative_url_root = TEST_RELATIVE_URL_ROOT;
-
-      mock = new MockAdapter(axios);
-    });
-
-    afterEach(() => {
-      mock.restore();
-    });
-
-    it('posts to usage endpoint', () => {
-      const TEST_PROJECT_PATH = 'foo/bar';
-      const axiosURL = `${TEST_RELATIVE_URL_ROOT}/${TEST_PROJECT_PATH}/service_ping/web_ide_pipelines_count`;
-
-      mock.onPost(axiosURL).reply(HTTP_STATUS_OK);
-
-      return services.pingUsage(TEST_PROJECT_PATH).then(() => {
-        expect(axios.post).toHaveBeenCalledWith(axiosURL);
-      });
-    });
-  });
-
   describe('getProjectPermissionsData', () => {
     const TEST_PROJECT_PATH = 'foo/bar';
 

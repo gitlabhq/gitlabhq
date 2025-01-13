@@ -139,6 +139,7 @@ export default {
               v-gl-tooltip
               class="gl-my-1"
               variant="info"
+              data-testid="latest-version-badge"
               :href="latestVersion.path"
               :title="lastReleaseText"
             >

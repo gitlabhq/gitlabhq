@@ -15,9 +15,6 @@ instrumentation_class: RedisMetric
 options:
   prefix: diff
   event: searches
-distribution:
-  - ce
-  - ee
 tiers:
   - free
   - premium

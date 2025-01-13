@@ -19,9 +19,7 @@ module Types
 
         value 'PYPI',
           value: 'pypi',
-          experiment: { milestone: '17.6' },
-          description: 'Packages of the PyPI format. ' \
-            'Available only when feature flag `packages_protected_packages_pypi` is enabled.'
+          description: 'Packages of the PyPI format.'
       end
     end
   end

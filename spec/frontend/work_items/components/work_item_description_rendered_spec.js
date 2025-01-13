@@ -240,8 +240,6 @@ describe('WorkItemDescriptionRendered', () => {
         await nextTick();
 
         expect(findCreateWorkItemModal().props()).toEqual({
-          allowedWorkItemTypes: [],
-          alwaysShowWorkItemTypeSelect: false,
           asDropdownItem: false,
           description: `lly really long title
 

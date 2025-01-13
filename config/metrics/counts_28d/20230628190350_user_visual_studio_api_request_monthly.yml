@@ -14,9 +14,6 @@ options:
   events:
     - i_editor_extensions_user_visual_studio_api_request
 performance_indicator_type: []
-distribution:
-  - ce
-  - ee
 tiers:
   - free
   - premium

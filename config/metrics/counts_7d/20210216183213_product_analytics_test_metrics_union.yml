@@ -10,9 +10,6 @@ milestone: '13.7'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49886
 time_frame: 7d
 data_source: redis_hll
-distribution:
-  - ce
-  - ee
 tiers:
   - free
   - premium

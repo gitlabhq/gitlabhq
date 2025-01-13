@@ -36,7 +36,7 @@ GitLab appends a user-specific token for static object URLs belonging to private
 external storage can be authenticated on the user's behalf.
 
 When processing requests originating
-from the external storage, GitLab checks the following to confirm the user may access the requested
+from the external storage, GitLab checks the following to confirm the user can access the requested
 object:
 
 - The `token` query parameter.

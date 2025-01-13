@@ -296,14 +296,6 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
         end
 
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
-
-        context 'when feature flag :packages_protected_packages_pypi is disabled' do
-          before do
-            stub_feature_flags(packages_protected_packages_pypi: false)
-          end
-
-          it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
-        end
       end
 
       context 'without requires_python' do

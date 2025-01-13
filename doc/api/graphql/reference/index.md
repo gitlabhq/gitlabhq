@@ -40931,7 +40931,7 @@ Package type of a package protection rule resource.
 | ----- | ----------- |
 | <a id="packagesprotectionrulepackagetypeconan"></a>`CONAN` **{warning-solid}** | **Introduced** in GitLab 17.6. **Status**: Experiment. Packages of the Conan format. Available only when feature flag `packages_protected_packages_conan` is enabled. |
 | <a id="packagesprotectionrulepackagetypenpm"></a>`NPM` | Packages of the npm format. |
-| <a id="packagesprotectionrulepackagetypepypi"></a>`PYPI` **{warning-solid}** | **Introduced** in GitLab 17.6. **Status**: Experiment. Packages of the PyPI format. Available only when feature flag `packages_protected_packages_pypi` is enabled. |
+| <a id="packagesprotectionrulepackagetypepypi"></a>`PYPI` | Packages of the PyPI format. |
 
 ### `PipelineAnalyticsJobStatus`
 

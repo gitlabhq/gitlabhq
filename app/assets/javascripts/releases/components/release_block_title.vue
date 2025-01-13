@@ -36,22 +36,24 @@ export default {
 
 <template>
   <div class="gl-contents">
-    <gl-link v-if="selfLink" class="gl-self-center gl-text-default" :href="selfLink">
-      {{ release.name }}
-    </gl-link>
-    <template v-else>
-      <span class="gl-text-default" data-testid="release-block-title">{{ release.name }}</span>
-      <gl-icon
-        v-gl-tooltip
-        name="lock"
-        :title="
-          __(
-            'Private - Guest users are not allowed to view detailed release information like title and source code.',
-          )
-        "
-        variant="subtle"
-      />
-    </template>
+    <span data-testid="release-name">
+      <gl-link v-if="selfLink" class="gl-self-center gl-text-default" :href="selfLink">
+        {{ release.name }}
+      </gl-link>
+      <template v-else>
+        <span class="gl-text-default" data-testid="release-block-title">{{ release.name }}</span>
+        <gl-icon
+          v-gl-tooltip
+          name="lock"
+          :title="
+            __(
+              'Private - Guest users are not allowed to view detailed release information like title and source code.',
+            )
+          "
+          variant="subtle"
+        />
+      </template>
+    </span>
     <ci-cd-catalog-wrapper :release-path="release.tagPath">
       <template #default="{ isCatalogRelease, detailsPagePath }">
         <gl-badge

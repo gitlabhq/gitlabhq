@@ -1,8 +1,7 @@
 query workItemRelatedItem($id: WorkItemID!) {
   workItem(id: $id) {
     id
-    reference(full: true)
-    webUrl
+    reference
     workItemType {
       id
       name

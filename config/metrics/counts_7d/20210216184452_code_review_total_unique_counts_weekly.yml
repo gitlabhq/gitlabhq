@@ -263,9 +263,6 @@ events:
   unique: user.id
 - name: i_code_review_merge_request_widget_security_reports_view
   unique: user.id
-distribution:
-  - ce
-  - ee
 tiers:
   - free
   - premium

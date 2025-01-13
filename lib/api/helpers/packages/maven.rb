@@ -54,43 +54,18 @@ module API
           nil
         end
 
-        def present_carrierwave_file_with_head_support!(package_file, supports_direct_download: true)
+        def download_package_file!(package_file)
           package_file.package.touch_last_downloaded_at
           file = package_file.file
 
-          if Feature.enabled?(:packages_maven_remote_included_checksum, package_file.project)
-            extra_response_headers = { SHA1_CHECKSUM_HEADER => package_file.file_sha1 }
-            extra_response_headers[MD5_CHECKSUM_HEADER] = package_file.file_md5 unless Gitlab::FIPS.enabled?
+          extra_response_headers = { SHA1_CHECKSUM_HEADER => package_file.file_sha1 }
+          extra_response_headers[MD5_CHECKSUM_HEADER] = package_file.file_md5 unless Gitlab::FIPS.enabled?
 
-            present_carrierwave_file!(
-              file,
-              supports_direct_download: false, # we can't support direct download if we have custom response headers
-              extra_response_headers: extra_response_headers
-            )
-          else
-            if head_request_on_aws_file?(file, supports_direct_download) && !file.file_storage?
-              return redirect(signed_head_url(file))
-            end
-
-            present_carrierwave_file!(file, supports_direct_download: supports_direct_download)
-          end
-        end
-
-        def signed_head_url(file)
-          fog_storage = ::Fog::Storage.new(file.fog_credentials)
-          fog_dir = fog_storage.directories.new(key: file.fog_directory)
-          fog_file = fog_dir.files.new(key: file.path)
-          expire_at = ::Fog::Time.now + file.fog_authenticated_url_expiration
-
-          fog_file.collection.head_url(fog_file.key, expire_at)
-        end
-
-        def head_request_on_aws_file?(file, supports_direct_download)
-          Gitlab.config.packages.object_store.enabled &&
-            supports_direct_download &&
-            file.direct_download_enabled? &&
-            request.head? &&
-            file.fog_credentials[:provider] == 'AWS'
+          present_carrierwave_file!(
+            file,
+            supports_direct_download: false, # we can't support direct download if we have custom response headers
+            extra_response_headers: extra_response_headers
+          )
         end
       end
     end

@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective, GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 const directions = {
@@ -12,6 +12,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
+    GlButton,
     GlIcon,
   },
   props: {
@@ -51,14 +52,14 @@ export default {
     data-container="body"
     data-placement="top"
   >
-    <button
+    <gl-button
       :disabled="disabled"
-      class="btn-scroll btn-transparent gl-rounded-none gl-border-none !gl-bg-transparent gl-p-0 !gl-shadow-none !gl-outline-none"
+      class="!gl-m-0 gl-block !gl-min-w-0 gl-rounded-none !gl-border-0 !gl-border-none gl-bg-transparent !gl-p-0 !gl-shadow-none !gl-outline-none"
       type="button"
       :aria-label="tooltipTitle"
       @click="clickedScroll"
     >
       <gl-icon :name="iconName" />
-    </button>
+    </gl-button>
   </div>
 </template>

@@ -143,7 +143,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         expect(json_response['slug']).to eq('mepmep')
         expect(json_response['tier']).to eq('staging')
         expect(json_response['external']).to be nil
-        expect(json_response['auto_stop_setting']).to eq('with_action')
+        expect(json_response['auto_stop_setting']).to eq('always')
       end
 
       context 'when associating a cluster agent' do

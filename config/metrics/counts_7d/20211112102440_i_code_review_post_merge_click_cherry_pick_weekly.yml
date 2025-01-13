@@ -15,9 +15,6 @@ options:
   events:
     - i_code_review_post_merge_click_cherry_pick
 data_category: optional
-distribution:
-  - ce
-  - ee
 tiers:
   - free
   - premium
