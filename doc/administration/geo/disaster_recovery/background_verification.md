@@ -113,8 +113,8 @@ If the **primary** and **secondary** sites have a checksum verification mismatch
    [check that it is in a healthy state](../../gitaly/troubleshooting_gitaly_cluster.md#check-cluster-health) before
    running these commands.
 
-   The default path is `/var/opt/gitlab/git-data/repositories`. If `git_data_dirs`
-   is customized, check the directory layout on your server to be sure:
+   The default path is `/var/opt/gitlab/git-data/repositories`. If repository storages
+   are customized, check the directory layout on your server to be sure:
 
    ```shell
    cd /var/opt/gitlab/git-data/repositories

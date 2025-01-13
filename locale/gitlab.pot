@@ -15369,6 +15369,9 @@ msgstr ""
 msgid "ContainerRegistry|Add rule"
 msgstr ""
 
+msgid "ContainerRegistry|Are you sure you want to delete the protected container tags rule %{tagNamePattern}?"
+msgstr ""
+
 msgid "ContainerRegistry|Build an image"
 msgstr ""
 
@@ -15475,6 +15478,12 @@ msgid "ContainerRegistry|Delete image repository"
 msgstr ""
 
 msgid "ContainerRegistry|Delete image repository?"
+msgstr ""
+
+msgid "ContainerRegistry|Delete protection rule"
+msgstr ""
+
+msgid "ContainerRegistry|Delete rule"
 msgstr ""
 
 msgid "ContainerRegistry|Delete selected tags"
@@ -15773,7 +15782,7 @@ msgstr ""
 msgid "ContainerRegistry|We are having trouble connecting to the Container Registry. Please try refreshing the page. If this error persists, please review %{docLinkStart}the troubleshooting documentation%{docLinkEnd}."
 msgstr ""
 
-msgid "ContainerRegistry|When a container image tag is protected, only certain user roles can create, update, and delete the protected tag, which helps to prevent unauthorized changes. You can add upto 5 protection rules per project."
+msgid "ContainerRegistry|When a container image tag is protected, only certain user roles can create, update, and delete the protected tag, which helps to prevent unauthorized changes. You can add up to 5 protection rules per project."
 msgstr ""
 
 msgid "ContainerRegistry|When a container repository is protected, only certain user roles can push the protected container image, which helps to avoid tampering with the container image."

@@ -419,21 +419,21 @@ Configure Gitaly clients in one of two ways. These instructions are for unencryp
    # Use the same token value configured on all Gitaly servers
    gitlab_rails['gitaly_token'] = '<AUTH_TOKEN>'
 
-   git_data_dirs({
+   gitlab_rails['repositories_storages'] = {
      'default'  => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
      'storage1' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
      'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
-   })
+   }
    ```
 
    Alternatively, if each Gitaly server is configured to use a different authentication token:
 
    ```ruby
-   git_data_dirs({
+   gitlab_rails['repositories_storages'] = {
      'default'  => { 'gitaly_address' => 'tcp://gitaly1.internal:8075', 'gitaly_token' => '<AUTH_TOKEN_1>' },
      'storage1' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075', 'gitaly_token' => '<AUTH_TOKEN_1>' },
      'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075', 'gitaly_token' => '<AUTH_TOKEN_2>' },
-   })
+   }
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
@@ -493,23 +493,23 @@ configuration that mixes local and remote configuration. The following setup is 
   invalid for some of the Gitaly servers.
 
 ```ruby
-git_data_dirs({
+gitlab_rails['repositories_storages'] = {
   'default' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
-  'storage1' => { 'path' => '/mnt/gitlab/git-data' },
+  'storage1' => { 'gitaly_address' => 'unix:/var/opt/gitlab/gitaly/gitaly.socket' },
   'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
-})
+}
 ```
 
 To combine local and remote Gitaly servers, use an external address for the local Gitaly server. For
 example:
 
 ```ruby
-git_data_dirs({
+gitlab_rails['repositories_storages'] = {
   'default' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
   # Address of the GitLab server that also has Gitaly running on it
   'storage1' => { 'gitaly_address' => 'tcp://gitlab.internal:8075' },
   'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
-})
+}
 
 gitaly['configuration'] = {
   # ...
@@ -537,8 +537,8 @@ If it's excluded, default Git storage directory is used for that storage shard.
 ### GitLab requires a default repository storage
 
 When adding Gitaly servers to an environment, you might want to replace the original `default` Gitaly service. However, you can't
-reconfigure the GitLab application servers to remove the `default` entry from `git_data_dirs` because GitLab requires a
-`git_data_dirs` entry called `default`. [Read more](https://gitlab.com/gitlab-org/gitlab/-/issues/36175) about this limitation.
+reconfigure the GitLab application servers to remove the `default` storage because GitLab requires a storage called `default`.
+[Read more](https://gitlab.com/gitlab-org/gitlab/-/issues/36175) about this limitation.
 
 To work around the limitation:
 

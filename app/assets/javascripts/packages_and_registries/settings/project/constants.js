@@ -117,6 +117,12 @@ export const OLDER_THAN_OPTIONS = [
   { key: 'NINETY_DAYS', variable: 90, default: true },
 ];
 
+export const MinimumAccessLevelOptions = {
+  MAINTAINER: __('Maintainer'),
+  OWNER: __('Owner'),
+  ADMIN: __('Admin'),
+};
+
 export const FETCH_SETTINGS_ERROR_MESSAGE = s__(
   'ContainerRegistry|Something went wrong while fetching the cleanup policy.',
 );
