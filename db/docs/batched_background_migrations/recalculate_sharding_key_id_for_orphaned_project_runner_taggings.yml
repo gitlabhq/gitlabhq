@@ -1,0 +1,10 @@
+---
+migration_job_name: RecalculateShardingKeyIdForOrphanedProjectRunnerTaggings
+description: >
+  This migration updates the `sharding_key_id` field for `ci_runner_machines` records pointing to missing projects.
+  If there is no other assigned project to fall back to, the runner manager is deleted.
+feature_category: runner
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177423
+milestone: '17.9'
+queued_migration_version: 20250109133913
+finalized_by: # version of the migration that finalized this BBM

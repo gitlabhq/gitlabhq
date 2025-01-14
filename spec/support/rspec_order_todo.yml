@@ -5814,7 +5814,6 @@
 - './spec/models/analytics/usage_trends/measurement_spec.rb'
 - './spec/models/appearance_spec.rb'
 - './spec/models/application_record_spec.rb'
-- './spec/models/application_setting_spec.rb'
 - './spec/models/application_setting/term_spec.rb'
 - './spec/models/approval_spec.rb'
 - './spec/models/atlassian/identity_spec.rb'

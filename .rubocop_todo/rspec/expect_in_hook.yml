@@ -236,7 +236,6 @@ RSpec/ExpectInHook:
     - 'spec/mailers/emails/service_desk_spec.rb'
     - 'spec/metrics_server/metrics_server_spec.rb'
     - 'spec/models/ability_spec.rb'
-    - 'spec/models/application_setting_spec.rb'
     - 'spec/models/ci/build_spec.rb'
     - 'spec/models/ci/namespace_mirror_spec.rb'
     - 'spec/models/ci/pipeline_spec.rb'

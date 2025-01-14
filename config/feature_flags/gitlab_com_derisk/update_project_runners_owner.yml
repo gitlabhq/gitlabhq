@@ -1,0 +1,9 @@
+---
+name: update_project_runners_owner
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/511343
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176879
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/511342
+milestone: '17.9'
+group: group::runner
+type: gitlab_com_derisk
+default_enabled: false

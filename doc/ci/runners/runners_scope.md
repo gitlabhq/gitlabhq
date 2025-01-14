@@ -434,6 +434,16 @@ NOTE:
 Project runners do not get instance with forked projects automatically.
 A fork *does* copy the CI/CD settings of the cloned repository.
 
+### Project runner ownership
+
+When a runner first connects to a project, that project becomes the runner's owner.
+
+If you delete the owner project:
+
+1. GitLab finds all other projects that share the runner.
+1. GitLab assigns ownership to the project with the oldest association.
+1. If no other projects share the runner, GitLab deletes the runner automatically.
+
 ### Create a project runner with a runner authentication token
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383143) in GitLab 15.10. Deployed behind the `create_runner_workflow_for_namespace` [flag](../../administration/feature_flags.md). Disabled by default.

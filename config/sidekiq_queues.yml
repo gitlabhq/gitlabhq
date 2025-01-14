@@ -203,6 +203,8 @@
   - 1
 - - ci_runners_process_runner_version_update
   - 1
+- - ci_runners_update_project_runners_owner
+  - 1
 - - ci_unlock_pipelines_in_queue
   - 1
 - - ci_update_approval_rules_for_related_mrs

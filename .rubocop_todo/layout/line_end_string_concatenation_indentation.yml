@@ -539,7 +539,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'spec/lib/slack/manifest_spec.rb'
     - 'spec/lib/system_check/incoming_email/imap_authentication_check_spec.rb'
     - 'spec/mailers/notify_spec.rb'
-    - 'spec/models/application_setting_spec.rb'
     - 'spec/models/ci/catalog/resources/component_spec.rb'
     - 'spec/models/diff_note_spec.rb'
     - 'spec/models/integrations/chat_message/group_mention_message_spec.rb'

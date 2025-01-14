@@ -1,6 +1,5 @@
 import { nextTick } from 'vue';
-import { GlAvatarLabeled, GlBadge, GlIcon, GlPopover } from '@gitlab/ui';
-import uniqueId from 'lodash/uniqueId';
+import { GlAvatarLabeled, GlIcon } from '@gitlab/ui';
 import projects from 'test_fixtures/api/users/projects/get.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ProjectListItemDescription from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_description.vue';
@@ -19,6 +18,7 @@ import {
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import { FEATURABLE_DISABLED, FEATURABLE_ENABLED } from '~/featurable/constants';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import TopicBadges from '~/vue_shared/components/topic_badges.vue';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
@@ -36,7 +36,6 @@ const MOCK_DELETE_PARAMS = {
   testParam: true,
 };
 
-jest.mock('lodash/uniqueId');
 jest.mock('ee_else_ce/vue_shared/components/resource_lists/utils', () => ({
   ...jest.requireActual('ee_else_ce/vue_shared/components/resource_lists/utils'),
   renderDeleteSuccessToast: jest.fn(),
@@ -77,8 +76,6 @@ describe('ProjectsListItem', () => {
   const findMergeRequestsStat = () => wrapper.findByTestId('mrs-btn');
   const findIssuesStat = () => wrapper.findByTestId('issues-btn');
   const findForksStat = () => wrapper.findByTestId('forks-btn');
-  const findProjectTopics = () => wrapper.findByTestId('project-topics');
-  const findPopover = () => findProjectTopics().findComponent(GlPopover);
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
   const findListActions = () => wrapper.findComponent(ProjectListItemActions);
   const findAccessLevelBadge = () => wrapper.findByTestId('access-level-badge');
@@ -86,15 +83,12 @@ describe('ProjectsListItem', () => {
   const findProjectDescription = () => wrapper.findComponent(ProjectListItemDescription);
   const findInactiveBadge = () => wrapper.findComponent(ProjectListItemInactiveBadge);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
+  const findTopicBadges = () => wrapper.findComponent(TopicBadges);
   const findDeleteModal = () => wrapper.findComponent(DeleteModal);
   const deleteModalFirePrimaryEvent = async () => {
     findDeleteModal().vm.$emit('primary');
     await nextTick();
   };
-
-  beforeEach(() => {
-    uniqueId.mockImplementation(jest.requireActual('lodash/uniqueId'));
-  });
 
   it('renders project avatar', () => {
     createComponent();
@@ -325,67 +319,26 @@ describe('ProjectsListItem', () => {
     });
   });
 
-  describe('if project has topics', () => {
-    beforeEach(() => {
-      uniqueId.mockImplementation((prefix) => `${prefix}1`);
-    });
-
-    it('renders first three topics', () => {
+  describe('project with topics', () => {
+    it('renders topic badges component', () => {
       createComponent();
 
-      const firstThreeTopics = project.topics.slice(0, 3);
-      const firstThreeBadges = findProjectTopics().findAllComponents(GlBadge).wrappers.slice(0, 3);
-      const firstThreeBadgesText = firstThreeBadges.map((badge) => badge.text());
-      const firstThreeBadgesHref = firstThreeBadges.map((badge) => badge.attributes('href'));
-
-      expect(firstThreeTopics).toEqual(firstThreeBadgesText);
-      expect(firstThreeBadgesHref).toEqual(
-        firstThreeTopics.map((topic) => `/explore/projects/topics/${encodeURIComponent(topic)}`),
-      );
+      expect(findTopicBadges().exists()).toBe(true);
     });
+  });
 
-    it('renders the rest of the topics in a popover', () => {
-      createComponent();
-
-      const topics = project.topics.slice(3);
-      const badges = findPopover().findAllComponents(GlBadge).wrappers;
-      const badgesText = badges.map((badge) => badge.text());
-      const badgesHref = badges.map((badge) => badge.attributes('href'));
-
-      expect(topics).toEqual(badgesText);
-      expect(badgesHref).toEqual(
-        topics.map((topic) => `/explore/projects/topics/${encodeURIComponent(topic)}`),
-      );
-    });
-
-    it('renders button to open popover', () => {
-      createComponent();
-
-      const expectedButtonId = 'project-topics-popover-1';
-
-      expect(wrapper.findByText('+ 2 more').attributes('id')).toBe(expectedButtonId);
-      expect(findPopover().props('target')).toBe(expectedButtonId);
-    });
-
-    describe('when topic has a name longer than 15 characters', () => {
-      it('truncates name and shows tooltip with full name', () => {
-        const topicWithLongName = 'topic with very very very long name';
-
-        createComponent({
-          propsData: {
-            project: {
-              ...project,
-              topics: [topicWithLongName, ...project.topics],
-            },
+  describe('project without topics', () => {
+    it('does not render topic badges component', () => {
+      createComponent({
+        propsData: {
+          project: {
+            ...project,
+            topics: [],
           },
-        });
-
-        const firstTopicBadge = findProjectTopics().findComponent(GlBadge);
-        const tooltip = getBinding(firstTopicBadge.element, 'gl-tooltip');
-
-        expect(firstTopicBadge.text()).toBe('topic with ver…');
-        expect(tooltip.value).toBe(topicWithLongName);
+        },
       });
+
+      expect(findTopicBadges().exists()).toBe(false);
     });
   });
 

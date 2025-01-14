@@ -52,7 +52,7 @@ export default {
       </gl-link>
     </template>
     <template #cell(ciJob)="{ item }">
-      <span v-if="hasCiJob(item)">{{ item.ciJob.name }}</span>
+      <gl-link v-if="hasCiJob(item)" :href="item.ciJob.webPath">{{ item.ciJob.name }}</gl-link>
     </template>
     <template #cell(createdAt)="{ item: { createdAt } }">
       <time-ago-tooltip v-if="createdAt" :time="createdAt" />

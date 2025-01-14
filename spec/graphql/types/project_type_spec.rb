@@ -47,6 +47,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       allows_multiple_merge_request_assignees allows_multiple_merge_request_reviewers is_forked
       protectable_branches available_deploy_keys explore_catalog_path
       container_protection_tag_rules allowed_custom_statuses
+      pages_force_https pages_use_unique_domain
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -299,10 +300,12 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       let_it_be(:project) { create(:project_empty_repo) }
 
       it 'raises an error' do
-        expect(subject['errors'][0]['message']).to eq('You must <a target="_blank" rel="noopener noreferrer" ' \
-                                                      'href="http://localhost/help/user/project/repository/index.md#' \
-                                                      'add-files-to-a-repository">add at least one file to the ' \
-                                                      'repository</a> before using Security features.')
+        expect(subject['errors'][0]['message']).to eq(
+          'You must <a target="_blank" rel="noopener noreferrer" ' \
+            'href="http://localhost/help/user/project/repository/index.md#' \
+            'add-files-to-a-repository">add at least one file to the ' \
+            'repository</a> before using Security features.'
+        )
       end
     end
   end
@@ -1383,6 +1386,82 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
       it 'returns correct path for explore_catalog_path' do
         expect(explore_catalog_path).to eq("/explore/catalog/#{project.path_with_namespace}")
+      end
+    end
+  end
+
+  describe 'pages_force_https' do
+    let_it_be(:current_user) { create(:user) }
+    let_it_be(:project) { create(:project, :repository) }
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            pagesForceHttps
+          }
+        }
+      )
+    end
+
+    let(:response) { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
+
+    subject(:result) { response.dig('data', 'project', 'pagesForceHttps') }
+
+    before do
+      project.add_maintainer(current_user)
+    end
+
+    context 'when the redirect from unsecured connections to HTTPS is disabled' do
+      it 'returns "false"' do
+        expect(result).to be false
+      end
+    end
+
+    context 'when the redirect from unsecured connections to HTTPS is enabled' do
+      it 'returns "true"' do
+        allow(Gitlab.config.pages).to receive(:external_https).and_return(true)
+
+        expect(result).to be true
+      end
+    end
+  end
+
+  describe 'pages_use_unique_domain' do
+    let_it_be(:current_user) { create(:user) }
+    let(:project) { create(:project, :repository, project_setting: project_settings) }
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            pagesUseUniqueDomain
+          }
+        }
+      )
+    end
+
+    let(:response) { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
+
+    subject(:result) { response.dig('data', 'project', 'pagesUseUniqueDomain') }
+
+    before do
+      project.add_maintainer(current_user)
+    end
+
+    context 'when the project pages site uses a unique subdomain' do
+      let(:project_settings) do
+        create(:project_setting, pages_unique_domain_enabled: true, pages_unique_domain: "test-unique-domain")
+      end
+
+      it 'returns "true"' do
+        expect(result).to be true
+      end
+    end
+
+    context 'when the project pages site does not use a unique subdomain' do
+      let(:project_settings) { create(:project_setting, pages_unique_domain_enabled: false) }
+
+      it 'returns "false"' do
+        expect(result).to be false
       end
     end
   end

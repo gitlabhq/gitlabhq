@@ -164,6 +164,7 @@ export const graphqlCandidates = [
     ciJob: {
       id: 'gid://gitlab/Ci::Build/1',
       name: 'build:linux',
+      webPath: '/path/to/candidate/1',
     },
     status: 'running',
     name: 'narwhal-aardvark-heron-6953',
@@ -184,6 +185,7 @@ export const graphqlCandidates = [
     ciJob: {
       id: 'gid://gitlab/Ci::Build/2',
       name: 'build:linux',
+      webPath: '/path/to/candidate/2',
     },
     status: 'failed',
     name: 'anteater-chimpanzee-snake-1254',

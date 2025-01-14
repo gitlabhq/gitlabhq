@@ -15,6 +15,7 @@ query getModelCandidates(
         ciJob {
           id
           name
+          webPath
         }
         creator {
           id

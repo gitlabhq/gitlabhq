@@ -1,6 +1,5 @@
 <script>
-import { GlIcon, GlBadge, GlTooltipDirective, GlPopover, GlSprintf } from '@gitlab/ui';
-import uniqueId from 'lodash/uniqueId';
+import { GlIcon, GlBadge, GlTooltipDirective } from '@gitlab/ui';
 
 import {
   renderDeleteSuccessToast,
@@ -14,7 +13,6 @@ import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_le
 import { FEATURABLE_ENABLED } from '~/featurable/constants';
 import { __, s__ } from '~/locale';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
-import { truncate } from '~/lib/utils/text_utility';
 import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
 import {
@@ -23,12 +21,10 @@ import {
 } from '~/vue_shared/components/resource_lists/constants';
 import { deleteProject } from '~/rest_api';
 import { createAlert } from '~/alert';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import ListItem from '~/vue_shared/components/resource_lists/list_item.vue';
 import ListItemStat from '~/vue_shared/components/resource_lists/list_item_stat.vue';
-import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
-
-const MAX_TOPICS_TO_SHOW = 3;
-const MAX_TOPIC_TITLE_LENGTH = 15;
+import TopicBadges from '~/vue_shared/components/topic_badges.vue';
 
 export default {
   i18n: {
@@ -48,8 +44,6 @@ export default {
   components: {
     GlIcon,
     GlBadge,
-    GlPopover,
-    GlSprintf,
     ListItem,
     ListItemStat,
     DeleteModal,
@@ -57,6 +51,7 @@ export default {
     ProjectListItemActions,
     ProjectListItemInactiveBadge,
     CiIcon,
+    TopicBadges,
     ProjectListItemDelayedDeletionModalFooter: () =>
       import(
         'ee_component/vue_shared/components/projects_list/project_list_item_delayed_deletion_modal_footer.vue'
@@ -111,7 +106,6 @@ export default {
   },
   data() {
     return {
-      topicsPopoverTarget: uniqueId('project-topics-popover-'),
       isDeleteModalVisible: false,
       isDeleteLoading: false,
     };
@@ -168,12 +162,6 @@ export default {
     hasTopics() {
       return this.project.topics.length;
     },
-    visibleTopics() {
-      return this.project.topics.slice(0, MAX_TOPICS_TO_SHOW);
-    },
-    popoverTopics() {
-      return this.project.topics.slice(MAX_TOPICS_TO_SHOW);
-    },
     starCount() {
       return numberToMetricPrefix(this.project.starCount);
     },
@@ -209,20 +197,6 @@ export default {
     },
   },
   methods: {
-    topicPath(topic) {
-      return `/explore/projects/topics/${encodeURIComponent(topic)}`;
-    },
-    topicTitle(topic) {
-      return truncate(topic, MAX_TOPIC_TITLE_LENGTH);
-    },
-    topicTooltipTitle(topic) {
-      // Matches conditional in app/assets/javascripts/lib/utils/text_utility.js#L88
-      if (topic.length - 1 > MAX_TOPIC_TITLE_LENGTH) {
-        return topic;
-      }
-
-      return null;
-    },
     onActionDelete() {
       this.isDeleteModalVisible = true;
     },
@@ -272,39 +246,7 @@ export default {
 
     <template #avatar-default>
       <project-list-item-description :project="project" />
-      <div v-if="hasTopics" class="gl-mt-3" data-testid="project-topics">
-        <div
-          class="-gl-mx-2 -gl-my-2 gl-inline-flex gl-w-full gl-flex-wrap gl-items-center gl-text-base gl-font-normal"
-        >
-          <span class="gl-p-2 gl-text-sm gl-text-subtle">{{ $options.i18n.topics }}:</span>
-          <div v-for="topic in visibleTopics" :key="topic" class="gl-p-2">
-            <gl-badge v-gl-tooltip="topicTooltipTitle(topic)" :href="topicPath(topic)">
-              {{ topicTitle(topic) }}
-            </gl-badge>
-          </div>
-          <template v-if="popoverTopics.length">
-            <div
-              :id="topicsPopoverTarget"
-              class="gl-p-2 gl-text-sm gl-text-subtle"
-              role="button"
-              tabindex="0"
-            >
-              <gl-sprintf :message="$options.i18n.topicsPopoverTargetText">
-                <template #count>{{ popoverTopics.length }}</template>
-              </gl-sprintf>
-            </div>
-            <gl-popover :target="topicsPopoverTarget" :title="$options.i18n.moreTopics">
-              <div class="-gl-mx-2 -gl-my-2 gl-text-base gl-font-normal">
-                <div v-for="topic in popoverTopics" :key="topic" class="gl-inline-block gl-p-2">
-                  <gl-badge v-gl-tooltip="topicTooltipTitle(topic)" :href="topicPath(topic)">
-                    {{ topicTitle(topic) }}
-                  </gl-badge>
-                </div>
-              </div>
-            </gl-popover>
-          </template>
-        </div>
-      </div>
+      <topic-badges v-if="hasTopics" :topics="project.topics" class="gl-mt-3" />
     </template>
 
     <template #stats>

@@ -783,6 +783,30 @@ module Types
       null: true, description: 'Allowed custom statuses for the project.',
       experiment: { milestone: '17.8' }, resolver: Resolvers::WorkItems::Widgets::CustomStatusResolver
 
+    field :pages_force_https, GraphQL::Types::Boolean,
+      null: false,
+      description: "Project's Pages site redirects unsecured connections to HTTPS."
+
+    field :pages_use_unique_domain, GraphQL::Types::Boolean,
+      null: false,
+      description: "Project's Pages site uses a unique subdomain."
+
+    def pages_force_https
+      project.pages_https_only?
+    end
+
+    def pages_use_unique_domain
+      lazy_project_settings = BatchLoader::GraphQL.for(object.id).batch do |project_ids, loader|
+        ::ProjectSetting.for_projects(project_ids).each do |project_setting|
+          loader.call(project_setting.project_id, project_setting)
+        end
+      end
+
+      Gitlab::Graphql::Lazy.with_value(lazy_project_settings) do |settings|
+        (settings || object.project_setting).pages_unique_domain_enabled?
+      end
+    end
+
     def protectable_branches
       ProtectableDropdown.new(project, :branches).protectable_ref_names
     end

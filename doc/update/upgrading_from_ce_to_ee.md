@@ -4,52 +4,45 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Upgrading from Community Edition to Enterprise Edition for self-compiled installations
+# Convert a self-compiled CE instance to EE
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-NOTE:
-In the past we used separate documents for upgrading from
-Community Edition to Enterprise Edition. These documents can be found in the
-[`doc/update` directory of Enterprise Edition's source code](https://gitlab.com/gitlab-org/gitlab/-/tree/11-8-stable-ee/doc/update).
+You can convert an existing self-compiled instance from Community Edition (CE) to Enterprise Edition (EE).
 
-If you want to upgrade the version only, for example 11.8 to 11.9, *without* changing the
-GitLab edition you are using (Community or Enterprise), see the
-[Upgrading from source](upgrading_from_source.md) documentation.
+These instructions assume you have a correctly configured and tested self-compiled installation of GitLab CE.
 
-## General upgrading steps
+## Convert from CE to EE
 
-This guide assumes you have a correctly configured and tested installation of
-GitLab Community Edition. If you run into any trouble or if you have any
-questions contact us at `support@gitlab.com`.
+In the following instructions, replace:
 
-In all examples, replace `EE_BRANCH` with the Enterprise Edition branch for the
-version you are using, and `CE_BRANCH` with the Community Edition branch.
-Branch names use the format `major-minor-stable-ee` for Enterprise Edition, and
-`major-minor-stable` for Community Edition. For example, for 11.8.0 you would
-use the following branches:
+- `EE_BRANCH` with the EE branch for the version you are using. EE branch names use the format `major-minor-stable-ee`.
+  For example, `17-7-stable-ee`.
+- `CE_BRANCH` with the Community Edition branch. CE branch names use the format `major-minor-stable`.
+  For example, `17-7-stable`.
 
-- Enterprise Edition: `11-8-stable-ee`
-- Community Edition: `11-8-stable`
+### Backup
 
-### 0. Backup
-
-Make a backup just in case something goes wrong:
+To back up GitLab:
 
 ```shell
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 
-### 1. Stop server
+### Stop GitLab server
+
+To stop the GitLab server:
 
 ```shell
 sudo service gitlab stop
 ```
 
-### 2. Get the EE code
+### Get the EE code
+
+To get the EE code:
 
 ```shell
 cd /home/git/gitlab
@@ -57,7 +50,9 @@ sudo -u git -H git remote add -f ee https://gitlab.com/gitlab-org/gitlab.git
 sudo -u git -H git checkout EE_BRANCH
 ```
 
-### 3. Install libraries, migrations, etc
+### Install libraries and run migrations
+
+To install libraries and run migrations:
 
 ```shell
 cd /home/git/gitlab
@@ -82,22 +77,25 @@ sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:c
 sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 ```
 
-### 4. Install `gitlab-elasticsearch-indexer`
+### Install `gitlab-elasticsearch-indexer`
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-Follow the [install instruction](../integration/advanced_search/elasticsearch.md#install-an-elasticsearch-or-aws-opensearch-cluster).
+To install `gitlab-elasticsearch-indexer`, follow the
+[install instruction](../integration/advanced_search/elasticsearch.md#install-an-elasticsearch-or-aws-opensearch-cluster).
 
-### 5. Start application
+### Start the application
+
+To start the application:
 
 ```shell
 sudo service gitlab start
 sudo service nginx restart
 ```
 
-### 6. Check application status
+### Check application status
 
 Check if GitLab and its environment are configured correctly:
 
@@ -105,7 +103,7 @@ Check if GitLab and its environment are configured correctly:
 sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 ```
 
-To make sure you didn't miss anything run a more thorough check with:
+To make sure you didn't miss anything, run a more thorough check:
 
 ```shell
 sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
@@ -113,32 +111,20 @@ sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 
 If all items are green, then congratulations upgrade complete!
 
-## Things went south? Revert to previous version (Community Edition)
+## Revert back to CE
 
-### 1. Revert the code to the previous version
+If you encounter problems converting to EE and want to revert back to CE:
 
-```shell
-cd /home/git/gitlab
-sudo -u git -H git checkout CE_BRANCH
-```
+1. Revert the code to the previous version:
 
-### 2. Restore from the backup
+   ```shell
+   cd /home/git/gitlab
+   sudo -u git -H git checkout CE_BRANCH
+   ```
 
-```shell
-cd /home/git/gitlab
-sudo -u git -H bundle exec rake gitlab:backup:restore RAILS_ENV=production
-```
+1. Restore from the backup:
 
-## Version specific steps
-
-Certain versions of GitLab may require you to perform additional steps when
-upgrading from Community Edition to Enterprise Edition. Should such steps be
-necessary, they are listed per version below.
-
-<!--
-Example:
-
-### 11.8.0
-
-Additional instructions here.
--->
+   ```shell
+   cd /home/git/gitlab
+   sudo -u git -H bundle exec rake gitlab:backup:restore RAILS_ENV=production
+   ```

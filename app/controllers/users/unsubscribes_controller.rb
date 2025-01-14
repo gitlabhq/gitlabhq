@@ -25,7 +25,7 @@ module Users
 
     # rubocop: disable CodeReuse/ActiveRecord
     def get_user
-      @email = Base64.urlsafe_decode64(params[:email])
+      @email = Base64.urlsafe_decode64(params.permit(:email)[:email])
       User.find_by(email: @email)
     end
     # rubocop: enable CodeReuse/ActiveRecord

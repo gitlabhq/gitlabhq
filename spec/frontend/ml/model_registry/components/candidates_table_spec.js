@@ -57,6 +57,7 @@ describe('CandidatesTable', () => {
   it('renders the correct information in the CI job column', () => {
     const ciJobCell = findTableRows().at(0).findAll('td').at(1);
     expect(ciJobCell.text()).toContain(graphqlCandidates[0].ciJob.name);
+    expect(ciJobCell.findComponent(GlLink).attributes('href')).toBe('/path/to/candidate/1');
   });
 
   it('renders the correct information in the created column', () => {
@@ -103,11 +104,6 @@ describe('CandidatesTable', () => {
     it('does not render content in CI Job column', () => {
       const ciJobCell = findTableRows().at(0).findAll('td').at(1);
       expect(ciJobCell.text()).toBe('');
-    });
-
-    it('does not render a badge in the CI Job column', () => {
-      const ciJobCell = findTableRows().at(0).findAll('td').at(1);
-      expect(ciJobCell.findComponent(GlBadge).exists()).toBe(false);
     });
 
     it('does not render a link in the CI Job column', () => {

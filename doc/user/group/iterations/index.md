@@ -29,6 +29,65 @@ In GitLab, iterations are similar to milestones, with a few differences:
 - Iterations require both a start and an end date.
 - Iteration date ranges cannot overlap within an iteration cadence.
 
+## Planning workflows with iterations
+
+You can use iterations to organize and track work in fixed time periods.
+The following examples show how iterations help teams maintain consistent delivery cycles.
+
+### Sprint planning and execution
+
+Use iterations to plan and execute work in fixed time periods, and help teams maintain a
+predictable delivery cadence.
+When teams work in sprints, each iteration provides a clear timebox for planning,
+execution, and delivery of work items.
+For more information, see
+[Tutorial: Use GitLab to facilitate Scrum](../../../tutorials/scrum_events/index.md).
+
+For example, when running two-week sprints, teams often need to coordinate multiple workstreams.
+The development team tracks implementation in the current sprint, while product managers prepare
+backlog items for upcoming sprints.
+
+By using iterations:
+
+- Teams can visualize their entire sprint schedule.
+- Work automatically rolls over between sprints.
+- Stakeholders can track sprint progress through burndown charts.
+- Teams can measure velocity across multiple sprints.
+
+This structure helps teams complete work consistently while maintaining visibility into progress.
+
+When you set up iterations for sprints:
+
+- Each team works in the same iteration cadence.
+- Teams can view work status in iteration reports.
+- Sprint planning becomes more predictable.
+
+### Rapid development cycles
+
+Use iterations to support shorter development cycles when your team needs frequent releases.
+When practicing methodologies like Extreme Programming (XP), teams can use one-week iterations
+to maintain fast feedback loops.
+
+For example, when implementing rapid changes, teams might deploy to production multiple times
+per iteration.
+The team tracks their work in weekly iterations while maintaining the flexibility
+to release whenever code is ready.
+
+By using iterations:
+
+- Teams maintain structured timeboxes.
+- You can track development velocity.
+- Teams can adapt planning based on weekly metrics.
+- Stakeholders can see concrete progress each week.
+
+This approach helps teams balance agile practices with organized planning.
+
+When you use iterations for rapid cycles:
+
+- Work is organized into clear weekly boundaries.
+- Teams track progress in smaller increments.
+- Release planning aligns with iteration boundaries.
+
 ## Iteration cadences
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5077) in GitLab 14.1 [with a flag](../../../administration/feature_flags.md), named `iteration_cadences`. Disabled by default.

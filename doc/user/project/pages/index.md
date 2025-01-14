@@ -183,6 +183,8 @@ For example URLs, see [GitLab Pages default domain names](getting_started_part_o
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481334) in GitLab 17.8.
 
 When you use GitLab Pages with custom domains, you can redirect all requests to GitLab Pages to a primary domain.
+When the primary domain is selected, users receive `308 Permanent Redirect` status that redirects the browser to the
+selected primary domain. Browsers might cache this redirect.
 
 Prerequisites:
 

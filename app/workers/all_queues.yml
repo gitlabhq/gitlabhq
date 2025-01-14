@@ -2964,6 +2964,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: ci_runners_update_project_runners_owner
+  :worker_name: Ci::Runners::UpdateProjectRunnersOwnerWorker
+  :feature_category: :runner
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: ci_unlock_pipelines_in_queue
   :worker_name: Ci::UnlockPipelinesInQueueWorker
   :feature_category: :job_artifacts

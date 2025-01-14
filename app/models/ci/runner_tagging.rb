@@ -13,6 +13,8 @@ module Ci
 
     enum :runner_type, Ci::Runner.runner_types
 
+    scope :for_runner, ->(runner_id) { where(runner_id: runner_id) }
+
     belongs_to :runner, class_name: 'Ci::Runner', optional: false
     belongs_to :tag, class_name: 'Ci::Tag', optional: false
 

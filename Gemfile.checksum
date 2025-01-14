@@ -442,7 +442,7 @@
 {"name":"oauth","version":"0.5.6","platform":"ruby","checksum":"4085fe28e0c5e2434135e00a6555294fd2a4ff96a98d1bdecdcd619fc6368dff"},
 {"name":"oauth2","version":"2.0.9","platform":"ruby","checksum":"b21f9defcf52dc1610e0dfab4c868342173dcd707fd15c777d9f4f04e153f7fb"},
 {"name":"octokit","version":"9.2.0","platform":"ruby","checksum":"4fa47ff35ce654127edf2c836ab9269bcc8829f5542dc1e86871f697ce7f4316"},
-{"name":"ohai","version":"18.1.3","platform":"ruby","checksum":"980cfd6a6597f897e157532ba2168d29afb83a8f5e125f682ec3248c3407df95"},
+{"name":"ohai","version":"18.1.18","platform":"ruby","checksum":"42ee8196945cb935fdeec93ba7aaee757d1d552f7b933912a1f25863c3cc1ff0"},
 {"name":"oj","version":"3.13.23","platform":"ruby","checksum":"206dfdc4020ad9974705037f269cfba211d61b7662a58c717cce771829ccef51"},
 {"name":"oj-introspect","version":"0.7.2","platform":"ruby","checksum":"c415a44567ed2870d8e963a69421d9322128e194fab7867e37e54d5a25d5333d"},
 {"name":"omniauth","version":"2.1.0","platform":"ruby","checksum":"bff7234f5ec9323622b217c7f26d52f850de0b0e2b8c807c3358fc79fe572300"},

@@ -125,7 +125,6 @@ RSpec/NoExpectationExample:
     - 'spec/mailers/notify_spec.rb'
     - 'spec/models/active_session_spec.rb'
     - 'spec/models/appearance_spec.rb'
-    - 'spec/models/application_setting_spec.rb'
     - 'spec/models/ci/build_spec.rb'
     - 'spec/models/ci/build_trace_chunk_spec.rb'
     - 'spec/models/ci/pipeline_spec.rb'

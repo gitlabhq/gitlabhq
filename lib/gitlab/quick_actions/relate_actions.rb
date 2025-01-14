@@ -41,7 +41,8 @@ module Gitlab
         types Issue
         condition { can_admin_link? }
         parse_params do |issue_param|
-          extract_references(issue_param, :issue).first
+          items = extract_references(issue_param, :issue) + extract_references(issue_param, :work_item)
+          items.first
         end
         command :unlink do |issue|
           link = IssueLink.for_items(quick_action_target, issue).first

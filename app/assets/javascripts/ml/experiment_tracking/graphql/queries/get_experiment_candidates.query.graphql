@@ -21,6 +21,7 @@ query getExperimentCandidates(
         ciJob {
           id
           name
+          webPath
         }
         name
         status

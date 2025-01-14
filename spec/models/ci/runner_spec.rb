@@ -8,7 +8,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   let_it_be(:organization, freeze: true) { create_default(:organization) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:other_project) { create(:project) }
+  let_it_be(:other_project) { create(:project, group: group) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:creator).class_name('User').optional }
@@ -578,8 +578,10 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         expect(runner.runner_projects.pluck(:project_id)).to contain_exactly(project.id, other_project.id)
       end
 
-      it 'does not change sharding_key_id' do
-        expect { assign_to }.not_to change { runner.sharding_key_id }.from(other_project.id)
+      it 'does not change sharding_key_id or owner' do
+        expect { assign_to }
+          .to not_change { runner.sharding_key_id }.from(other_project.id)
+          .and not_change { runner.owner }.from(other_project)
       end
     end
   end
@@ -1216,34 +1218,66 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   end
 
   describe 'Project-related queries' do
-    let_it_be(:project1) { create(:project) }
-    let_it_be(:project2) { create(:project) }
+    let_it_be(:projects) { create_list(:project, 2, group: group) }
 
     describe '#owner' do
+      let(:project_runner) { create(:ci_runner, :project, projects: associated_projects) }
+
       subject(:owner) { project_runner.owner }
 
       context 'with project1 as first project associated with runner' do
-        let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project1, project2]) }
+        let(:associated_projects) { projects }
 
-        it { is_expected.to eq project1 }
+        it { is_expected.to eq projects.first }
       end
 
       context 'with project2 as first project associated with runner' do
-        let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project2, project1]) }
+        let(:associated_projects) { projects.reverse }
 
-        it { is_expected.to eq project2 }
+        it { is_expected.to eq projects.last }
+      end
+
+      context 'when owner project is to be deleted' do
+        let_it_be_with_refind(:owner_project) { create(:project, group: group) }
+
+        let(:associated_projects) { [owner_project, other_project, projects.last] }
+
+        specify 'projects are associated in the expected order' do
+          expect(
+            project_runner.runner_projects.order(id: :asc).pluck(:project_id)
+          ).to eq associated_projects.map(&:id)
+        end
+
+        it { is_expected.to eq owner_project }
+
+        context 'and owner project is deleted' do
+          before do
+            owner_project.destroy!
+          end
+
+          it { is_expected.to eq other_project }
+          it { is_expected.not_to eq projects.last }
+
+          context 'and projects are associated in different order' do
+            let(:associated_projects) { [owner_project, projects.last, other_project] }
+
+            it 'is not sensitive to project ID order' do
+              is_expected.to eq projects.last
+            end
+          end
+        end
       end
     end
 
     describe '#belongs_to_one_project?' do
       it "returns false if there are two projects runner is assigned to" do
-        runner = create(:ci_runner, :project, projects: [project1, project2])
+        runner = create(:ci_runner, :project, projects: projects)
 
         expect(runner.belongs_to_one_project?).to be_falsey
       end
 
       it 'returns true if there is only one project runner is assigned to' do
-        runner = create(:ci_runner, :project, projects: [project1])
+        runner = create(:ci_runner, :project, projects: projects.take(1))
 
         expect(runner.belongs_to_one_project?).to be_truthy
       end
@@ -1252,7 +1286,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     describe '#belongs_to_more_than_one_project?' do
       context 'project runner' do
         context 'two projects assigned to runner' do
-          let(:runner) { create(:ci_runner, :project, projects: [project1, project2]) }
+          let(:runner) { create(:ci_runner, :project, projects: projects) }
 
           it 'returns true' do
             expect(runner.belongs_to_more_than_one_project?).to be_truthy
@@ -1260,7 +1294,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         end
 
         context 'one project assigned to runner' do
-          let(:runner) { create(:ci_runner, :project, projects: [project1]) }
+          let(:runner) { create(:ci_runner, :project, projects: projects.take(1)) }
 
           it 'returns false' do
             expect(runner.belongs_to_more_than_one_project?).to be_falsey
@@ -1736,16 +1770,16 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     describe '#owner' do
       subject(:owner) { runner.owner }
 
-      context 'with runner assigned to child_group' do
-        let(:runner) { child_group_runner }
+      let_it_be_with_refind(:runner) { create(:ci_runner, :group, groups: [group]) }
 
-        it { is_expected.to eq child_group }
-      end
+      it { is_expected.to eq group }
 
-      context 'with runner assigned to top_level_group_runner' do
-        let(:runner) { top_level_group_runner }
+      context 'when sharding_key_id points to non-existing group' do
+        before do
+          runner.update_columns(sharding_key_id: non_existing_record_id)
+        end
 
-        it { is_expected.to eq top_level_group }
+        it { is_expected.to be_nil }
       end
     end
   end
@@ -2240,6 +2274,45 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       let(:runner_type) { 'invalid runner type' }
 
       it { is_expected.to contain_exactly(instance_runner, group_runner, project_runner) }
+    end
+  end
+
+  describe '.with_sharding_key' do
+    subject(:scope) { described_class.with_runner_type(runner_type).with_sharding_key(sharding_key_id) }
+
+    let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+    let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project, other_project]) }
+
+    context 'with group_type' do
+      let(:runner_type) { 'group_type' }
+
+      context 'when sharding_key_id exists' do
+        let(:sharding_key_id) { group.id }
+
+        it { is_expected.to contain_exactly(group_runner) }
+      end
+
+      context 'when sharding_key_id does not exist' do
+        let(:sharding_key_id) { non_existing_record_id }
+
+        it { is_expected.to eq [] }
+      end
+    end
+
+    context 'with project_type' do
+      let(:runner_type) { 'project_type' }
+
+      context 'when sharding_key_id exists' do
+        let(:sharding_key_id) { project.id }
+
+        it { is_expected.to contain_exactly(project_runner) }
+      end
+
+      context 'when sharding_key_id does not exist' do
+        let(:sharding_key_id) { non_existing_record_id }
+
+        it { is_expected.to eq [] }
+      end
     end
   end
 end
