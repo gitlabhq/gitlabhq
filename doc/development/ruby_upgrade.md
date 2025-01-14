@@ -58,7 +58,7 @@ Before any upgrade, consider all audiences and targets, ordered by how immediate
 1. **GitLab SaaS**. GitLab.com is deployed from customized Helm charts that use Docker images from [Cloud Native GitLab (CNG)](https://gitlab.com/gitlab-org/build/CNG).
    Just like CI/CD, `.ruby-version` is meaningless in this environment. Instead, those Docker images must be patched to upgrade Ruby.
    GitLab SaaS is affected with the next deployment.
-1. **Self-managed GitLab.** Customers installing GitLab via [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab) use none of the above.
+1. **GitLab Self-Managed.** Customers installing GitLab via [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab) use none of the above.
    Instead, their Ruby version is defined by the [Ruby software bundle](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/config/software/ruby.rb) in Omnibus.
    Self-managed customers are affected as soon as they upgrade to the release containing this change.
 

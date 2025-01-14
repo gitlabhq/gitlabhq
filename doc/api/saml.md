@@ -142,7 +142,7 @@ Example response:
 }
 ```
 
-## Self-managed GitLab endpoints
+## GitLab Self-Managed endpoints
 
 ### Get a single SAML identity
 

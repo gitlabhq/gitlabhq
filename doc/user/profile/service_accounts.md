@@ -34,7 +34,7 @@ token for [Git operations](personal_access_tokens.md#clone-repository-using-pers
 [Rate limits](../../security/rate_limits.md) apply to service accounts:
 
 - On GitLab.com, there are [GitLab.com-specific rate limits](../gitlab_com/index.md#gitlabcom-specific-rate-limits).
-- On self-managed GitLab and GitLab Dedicated, there are both:
+- On GitLab Self-Managed and GitLab Dedicated, there are both:
   - [Configurable rate limits](../../security/rate_limits.md#configurable-limits).
   - [Non-configurable rate limits](../../security/rate_limits.md#non-configurable-limits).
 

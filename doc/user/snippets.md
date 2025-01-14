@@ -229,7 +229,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed, GitLab Dedicated
 
-Administrators on self-managed GitLab instances can mark snippets as spam.
+Administrators on GitLab Self-Managed instances can mark snippets as spam.
 
 Prerequisites:
 

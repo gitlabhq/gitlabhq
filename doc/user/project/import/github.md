@@ -108,7 +108,7 @@ If importing from `github.com` you can use any method to import. Self-hosted Git
 
 ### Use GitHub OAuth
 
-If you are importing to GitLab.com or to a self-managed GitLab that has GitHub OAuth [configured](../../../integration/github.md), you can use GitHub OAuth to import your repository.
+If you are importing to GitLab.com or to a GitLab Self-Managed that has GitHub OAuth [configured](../../../integration/github.md), you can use GitHub OAuth to import your repository.
 
 This method has an advantage over using a [personal access token (PAT)](#use-a-github-personal-access-token)
 because the backend exchanges the access token with the appropriate permissions.

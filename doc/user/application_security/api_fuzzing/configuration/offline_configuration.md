@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Offline configuration
 
-For self-managed GitLab instances in an environment with limited, restricted, or intermittent access to external resources through the internet, some adjustments are required for the Web API Fuzz testing job to successfully run.
+For GitLab Self-Managed instances in an environment with limited, restricted, or intermittent access to external resources through the internet, some adjustments are required for the Web API Fuzz testing job to successfully run.
 
 Steps:
 

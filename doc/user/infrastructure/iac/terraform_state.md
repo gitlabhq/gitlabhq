@@ -33,7 +33,7 @@ or consider using a separate GitLab instance with no shared points of failure.
 
 ## Prerequisites
 
-For self-managed GitLab, before you can use GitLab for your OpenTofu state files:
+For GitLab Self-Managed, before you can use GitLab for your OpenTofu state files:
 
 - An administrator must [set up Terraform/OpenTofu state storage](../../../administration/terraform_state.md).
 - You must turn on the **Infrastructure** menu for your project: 

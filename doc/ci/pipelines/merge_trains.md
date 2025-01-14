@@ -220,7 +220,7 @@ DETAILS:
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/422111) as an [experiment feature](../../policy/development_stages_support.md) in GitLab 16.10.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
+On GitLab Self-Managed, by default this feature is available. To hide the feature,
 an administrator can [disable the feature flag](../../administration/feature_flags.md)
 named `merge_trains_skip_train`. On GitLab.com and GitLab Dedicated, this feature is available.
 

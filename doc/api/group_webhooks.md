@@ -431,7 +431,7 @@ Example response:
 Resends a specific hook event.
 
 This endpoint has a rate limit of five requests per minute for each hook and authenticated user.
-To disable this limit on self-managed GitLab and GitLab Dedicated, an administrator can
+To disable this limit on GitLab Self-Managed and GitLab Dedicated, an administrator can
 [disable the feature flag](../administration/feature_flags.md) named `web_hook_event_resend_api_endpoint_rate_limit`.
 
 ```plaintext
@@ -671,7 +671,7 @@ On success, no message is returned.
 Trigger a test hook for a specified group.
 
 This endpoint has a rate limit of five requests per minute for each group and authenticated user.
-To disable this limit on self-managed GitLab and GitLab Dedicated, an administrator can
+To disable this limit on GitLab Self-Managed and GitLab Dedicated, an administrator can
 [disable the feature flag](../administration/feature_flags.md) named `web_hook_test_api_endpoint_rate_limit`.
 
 ```plaintext

@@ -115,5 +115,5 @@ unauthorized: authentication required
 ```
 
 This error happens when your authentication token expires before the image push is complete.
-By default, tokens for the container registry on self-managed GitLab instances expire after five minutes.
+By default, tokens for the container registry on GitLab Self-Managed instances expire after five minutes.
 On GitLab.com, the token expiration time is 15 minutes.

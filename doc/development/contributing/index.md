@@ -81,7 +81,7 @@ and offer support for making contributions.
 To write and test your code locally, choose a local development environment.
 
 - [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit), is a local
-development environment that includes an installation of self-managed GitLab, sample projects,
+development environment that includes an installation of GitLab Self-Managed, sample projects,
 and administrator access with which you can test functionality.
 
 - [GDK-in-a-box](first_contribution/configure-dev-env-gdk-in-a-box.md),

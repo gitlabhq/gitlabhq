@@ -67,7 +67,7 @@ The following table describes the most common models of structuring groups.
 <!-- vale gitlab_base.Simplicity = YES -->
 
 NOTE:
-On self-managed GitLab, if you want to see an overview of your entire organization, you should create one top-level group.
+On GitLab Self-Managed, if you want to see an overview of your entire organization, you should create one top-level group.
 For more information about efforts to create an organization view of all groups,
 [see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
 A top-level group offers insights in your entire organization through a complete

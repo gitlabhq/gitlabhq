@@ -144,7 +144,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381879) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `rollup_timebox_chart`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. For more information, see the history.
+On GitLab Self-Managed, by default this feature is not available. For more information, see the history.
 This feature is available for testing, but not ready for production use.
 
 With [tasks](../../tasks.md), a more granular planning is possible.

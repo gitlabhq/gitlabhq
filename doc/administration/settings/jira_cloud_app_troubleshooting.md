@@ -129,7 +129,7 @@ Depending on how you installed the app, you might want to check the following:
 
 - If you [installed the app manually](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually):
   - Ask [Jira Cloud Support](https://support.atlassian.com/jira-software-cloud/) to verify that Jira can connect to your
-    self-managed GitLab instance.
+    GitLab Self-Managed instance.
   - [Reinstall the app](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually). This method might remove all [synced data](../../integration/jira/connect-app.md#gitlab-data-synced-to-jira) from the [Jira development panel](../../integration/jira/development_panel.md).
 
 ## Error: `Failed to update the GitLab instance`
@@ -223,7 +223,7 @@ To locate the relevant log entries in Kibana, either:
 For the first log:
 
 - `json.status` is `422 Unprocessable Entity`.
-- `json.params.value` should match the self-managed GitLab URL `[[FILTERED], {"instance_url"=>"https://gitlab.example.com"}]`.
+- `json.params.value` should match the GitLab Self-Managed URL `[[FILTERED], {"instance_url"=>"https://gitlab.example.com"}]`.
 
 For the second log, you might have one of the following scenarios:
 

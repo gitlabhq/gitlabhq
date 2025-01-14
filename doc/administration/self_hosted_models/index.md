@@ -48,7 +48,7 @@ The configuration for self-hosted models is different to the default configurati
 that uses GitLab external AI vendors.
 
 NOTE:
-Both of the following configuration types are for self-managed GitLab instances.
+Both of the following configuration types are for GitLab Self-Managed instances.
 
 ### Self-hosted AI gateway and LLMs
 

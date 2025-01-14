@@ -61,6 +61,6 @@ Once you have a project identified to use:
 
 ## Related design documents
 
-- [GitLab Observability in GitLab.com and Self-Managed GitLab Instances](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_for_self_managed/)
+- [GitLab Observability in GitLab.com and GitLab Self-Managed instances](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_for_self_managed/)
 - [GitLab Observability - Metrics](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_metrics/)
 - [GitLab Observability - Logging](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_logging/)

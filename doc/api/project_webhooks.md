@@ -363,7 +363,7 @@ Example response:
 Resend a specific project webhook event.
 
 This endpoint has a rate limit of five requests per minute for each project webhook and authenticated user.
-To disable this limit on self-managed GitLab and GitLab Dedicated, an administrator can
+To disable this limit on GitLab Self-Managed and GitLab Dedicated, an administrator can
 [disable the feature flag](../administration/feature_flags.md) named `web_hook_event_resend_api_endpoint_rate_limit`.
 
 ```plaintext
@@ -496,7 +496,7 @@ In GitLab 17.0 and later, this endpoint has a special rate limit:
 - In GitLab 17.0, the rate was three requests per minute for each project webhook.
 - In GitLab 17.1, this was changed to five requests per minute for each project and authenticated user.
 
-To disable this limit on self-managed GitLab and GitLab Dedicated, an administrator can
+To disable this limit on GitLab Self-Managed and GitLab Dedicated, an administrator can
 [disable the feature flag](../administration/feature_flags.md) named `web_hook_test_api_endpoint_rate_limit`.
 
 ```plaintext

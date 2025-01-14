@@ -11,7 +11,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-This page contains information about configuring Git LFS in self-managed GitLab instances.
+This page contains information about configuring Git LFS on GitLab Self-Managed.
 For user documentation about Git LFS, see [Git Large File Storage](../../topics/git/lfs/index.md).
 
 Prerequisites:

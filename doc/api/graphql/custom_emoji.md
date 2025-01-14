@@ -50,7 +50,7 @@ You can use GraphiQL to query the emoji for a group.
 
 1. Open GraphiQL:
    - For GitLab.com, use: `https://gitlab.com/-/graphql-explorer`
-   - For self-managed GitLab, use: `https://gitlab.example.com/-/graphql-explorer`
+   - For GitLab Self-Managed, use: `https://gitlab.example.com/-/graphql-explorer`
 1. Copy the following text and paste it in the left window.
    In this query, `gitlab-org` is the group path.
 

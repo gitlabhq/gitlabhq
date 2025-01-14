@@ -1343,7 +1343,7 @@ Parameters:
 > - `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, and `unique_project_download_limit_allowlist` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92970) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, `unique_project_download_limit_allowlist` and `auto_ban_user_on_excessive_projects_download` are not available.
+On GitLab Self-Managed, by default `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, `unique_project_download_limit_allowlist` and `auto_ban_user_on_excessive_projects_download` are not available.
 To make them available, an administrator can [enable the feature flag](../administration/feature_flags.md)
 named `limit_unique_project_downloads_per_namespace_user`.
 

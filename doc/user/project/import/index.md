@@ -223,7 +223,7 @@ For Premium customers trying out Ultimate (Ultimate trial paid customer plan), P
 
 If these limits are not sufficient for your import, [contact GitLab Support](https://about.gitlab.com/support/).
 
-The above limits are for GitLab.com. Self-managed GitLab has no placeholder limits by default. A self-managed instance administrator can [set a placeholder limit](../../../administration/instance_limits.md#import-placeholder-user-limits) for their installation.
+The above limits are for GitLab.com. GitLab Self-Managed has no placeholder limits by default. A self-managed instance administrator can [set a placeholder limit](../../../administration/instance_limits.md#import-placeholder-user-limits) for their installation.
 
 ### Reassign contributions and memberships
 

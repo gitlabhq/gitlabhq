@@ -10,12 +10,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab Dedicated
-**Status:** Beta
-
-> - [Introduced](https://about.gitlab.com/blog/2024/01/31/hosted-runners-for-gitlab-dedicated-available-in-beta/) as [beta](../../policy/development_stages_support.md#beta) on GitLab Dedicated in GitLab on January 31, 2024.
+**Status:** Limited availability
 
 NOTE:
-To use this feature, you must purchase a subscription for Hosted Runners for GitLab Dedicated. To participate in the closed beta of Hosted Runners for Dedicated, reach out to your Customer Success Manager or Account representative.
+To use this feature, you must purchase a subscription for Hosted Runners for GitLab Dedicated. To participate in the limited availability of Hosted Runners for Dedicated, reach out to your Customer Success Manager or Account representative.
 
 You can run your CI/CD jobs on GitLab-hosted [runners](../../ci/runners/index.md). These runners are managed by GitLab and fully integrated with your GitLab Dedicated instance.
 GitLab-hosted runners for Dedicated are autoscaling [instance runners](../../ci/runners/runners_scope.md#instance-runners),
@@ -28,9 +26,17 @@ When you use hosted runners:
 - The storage is shared by the operating system, the image with pre-installed software, and a copy of your cloned repository. This means that the available free disk space for your jobs is reduced.
 - By default, untagged jobs run on the small Linux x86-64 runner. GitLab administrators can [change the run untagged jobs option in GitLab](#configure-hosted-runners-in-gitlab).
 
+Available features during limited availability are:
+
+- Larger Linux x86-64 machine types
+- Arm-based Linux runners
+- Production-ready autoscaling configuration to support more concurrent jobs
+- Support for caching with hosted runners
+- Early access to upcoming features including compute minute visualisation, security capabilities, and new runner types
+
 ## Security
 
-This section provides an overview of the additional built-in layers that harden the security of the GitLab Runner build environment.
+Hosted runners for Dedicated have built-in layers that harden the security of the GitLab Runner build environment.
 
 Hosted runners for GitLab Dedicated are configured as such:
 
@@ -46,23 +52,43 @@ For more information, see the architecture diagram for [Hosted runners for GitLa
 
 ## Pricing
 
-During Beta, hosted runners for GitLab Dedicated are free of charge. The detailed pricing model will be announced with the general availability.
+We offer a discount during limited availability. For pricing details, reach out to your account representative.
+
+## Trial
+
+We offer a two-month free trial for Dedicated customers. The trial includes:
+
+- Small, Medium, and Large Linux x86-64 runner
+- Small and Medium Arm-based Linux runner
+- Limited autoscaling configuration that supports up to 100 concurrent jobs
 
 ## Hosted runners on Linux
 
 Hosted runners on Linux for GitLab Dedicated use the [Docker Autoscaler](https://docs.gitlab.com/runner/executors/docker_autoscaler.html) executor. Each job gets a Docker environment in a fully isolated, ephemeral virtual machine (VM), and runs on the latest version of Docker Engine.
 
-### Machine types for Linux (x86-64)
+### Machine types for Linux - x86-64
 
 The following machine types are available for hosted runners on Linux x86-64.
 
-| Size    | Runner Tag                    | vCPUs | Memory | Storage |
-|---------|-------------------------------|-------|--------|---------|
-| Small   | `linux-small-amd64` (default) | 2     | 8 GB   | 30 GB   |
-| Medium  | `linux-medium-amd64`          | 4     | 16 GB  | 50 GB   |
-| Large   | `linux-large-amd64`           | 8     | 32 GB  | 100 GB  |
+| Size     | Runner Tag                    | vCPUs | Memory | Storage |
+|----------|-------------------------------|-------|--------|---------|
+| Small    | `linux-small-amd64` (default) | 2     | 8 GB   | 30 GB   |
+| Medium   | `linux-medium-amd64`          | 4     | 16 GB  | 50 GB   |
+| Large    | `linux-large-amd64`           | 8     | 32 GB  | 100 GB  |
 | X-Large  | `linux-xlarge-amd64`          | 16    | 64 GB  | 200 GB  |
 | 2X-Large | `linux-2xlarge-amd64`         | 32    | 128 GB | 200 GB  |
+
+### Machine types available for Linux - Arm64
+
+The following machine types are available for hosted runners on Linux Arm64.
+
+| Size     | Runner Tag            | vCPUs | Memory | Storage |
+|----------|-----------------------|-------|--------|---------|
+| Small    | `linux-small-arm64`   | 2     | 8 GB   | 30 GB   |
+| Medium   | `linux-medium-arm64`  | 4     | 16 GB  | 50 GB   |
+| Large    | `linux-large-arm64`   | 8     | 32 GB  | 100 GB  |
+| X-Large  | `linux-xlarge-arm64`  | 16    | 64 GB  | 200 GB  |
+| 2X-Large | `linux-2xlarge-arm64` | 32    | 128 GB | 200 GB  |
 
 NOTE:
 The machine type and underlying processor type might change. Jobs optimized for a specific processor design might behave inconsistently.

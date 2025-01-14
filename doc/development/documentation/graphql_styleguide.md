@@ -60,7 +60,7 @@ You can use GraphiQL to list the branch rules for a project.
 
 1. Open GraphiQL:
    - For GitLab.com, use: `https://gitlab.com/-/graphql-explorer`
-   - For self-managed GitLab, use: `https://gitlab.example.com/-/graphql-explorer`
+   - For GitLab Self-Managed, use: `https://gitlab.example.com/-/graphql-explorer`
 1. Copy the following text and paste it in the left window.
 
    <graphql codeblock here>

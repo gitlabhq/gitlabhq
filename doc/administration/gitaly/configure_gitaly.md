@@ -1118,7 +1118,7 @@ Configure the `cat-file` cache in the [Gitaly configuration file](reference.md).
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6876) on self-managed and GitLab Dedicated in GitLab 17.0.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
+On GitLab Self-Managed, by default this feature is available. To hide the feature,
 an administrator can [disable the feature flag](../feature_flags.md) named `gitaly_gpg_signing`.
 On GitLab.com, this feature is not available. On GitLab Dedicated, this feature is available.
 

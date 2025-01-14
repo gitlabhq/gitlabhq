@@ -32,7 +32,7 @@ You can use GitLab Duo Chat in:
 - Visual Studio for Windows, with the [GitLab Extension for Visual Studio](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio)
 
 NOTE:
-If you have self-managed GitLab: GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
+If you have GitLab Self-Managed: GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
 
 ## The context Chat is aware of
 

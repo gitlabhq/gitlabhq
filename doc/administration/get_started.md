@@ -67,7 +67,7 @@ You may need to import projects from external sources like GitHub, Bitbucket, or
 
 ### Popular project imports
 
-- [GitHub Enterprise to self-managed GitLab](../integration/github.md)
+- [GitHub Enterprise to GitLab Self-Managed](../integration/github.md)
 - [Bitbucket Server](../user/project/import/bitbucket_server.md)
 
 For assistance with these data types, contact your GitLab account manager or GitLab Support about our professional migration services.
@@ -207,14 +207,14 @@ Learn more about the [data types Geo replicates](../administration/geo/replicati
 
 ## Support for GitLab self-managed
 
-GitLab provides support for self-managed GitLab through different channels.
+GitLab provides support for GitLab Self-Managed through different channels.
 
 - Priority support: [Premium and Ultimate](https://about.gitlab.com/pricing/) self-managed customers receive priority support with tiered response times.
   Learn more about [upgrading to priority support](https://about.gitlab.com/support/#upgrading-to-priority-support).
 - Live upgrade assistance: Get one-on-one expert guidance during a production upgrade. With your **priority support plan**,
   you're eligible for a live, scheduled screen-sharing session with a member of our support team.
 
-To get assistance for self-managed GitLab:
+To get assistance for GitLab Self-Managed:
 
 - Use the GitLab documentation for self-service support.
 - Join the [GitLab Forum](https://forum.gitlab.com/) for community support.
@@ -240,14 +240,14 @@ To get assistance for GitLab SaaS:
   - [Account or sign-in issues](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000803379)
 - Subscribe to [the status page](https://status.gitlab.com/) for the latest on GitLab performance or service interruptions.
 
-## API and rate limits for self-managed GitLab
+## API and rate limits for GitLab Self-Managed
 
 Rate limits prevent denial-of-service or brute-force attacks. In most cases, you can reduce the load on your application
 and infrastructure by limiting the rate of requests from a single IP address.
 
 Rate limits also improve the security of your application.
 
-### Configure rate limits for self-managed GitLab
+### Configure rate limits for GitLab Self-Managed
 
 You can make changes to your default rate limits from the **Admin** area. For more information about configuration, see the [**Admin** area page](../security/rate_limits.md#configurable-limits).
 

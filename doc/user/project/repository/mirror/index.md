@@ -222,7 +222,7 @@ for you to check:
 Other providers vary. You can securely gather key fingerprints with the following
 command if you:
 
-- Run self-managed GitLab.
+- Run GitLab Self-Managed.
 - Have access to the server for the other repository.
 
 ```shell

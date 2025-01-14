@@ -222,7 +222,7 @@ DETAILS:
 **Status:** Beta
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `import_project_from_remote_file`.
+On GitLab Self-Managed, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `import_project_from_remote_file`.
 On GitLab.com and GitLab Dedicated, this feature is available.
 
 ```plaintext

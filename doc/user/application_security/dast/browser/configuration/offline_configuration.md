@@ -7,7 +7,7 @@ type: reference, howto
 
 # Offline configuration
 
-For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
+For GitLab Self-Managed instances in an environment with limited, restricted, or intermittent access
 to external resources through the internet, some adjustments are required for the DAST job to
 successfully run. For more information, see [Offline environments](../../../offline_deployments/index.md).
 

@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [beta feature](../../policy/development_stages_support.md) for self-managed GitLab instances.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [beta feature](../../policy/development_stages_support.md) for GitLab Self-Managed.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 17.3.
 
 The metadata database enables many new registry features, including

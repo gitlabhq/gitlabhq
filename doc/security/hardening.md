@@ -59,7 +59,7 @@ You can adjust the underlying operating system to increase overall security. For
 
 ## NIST 800-53 compliance
 
-You can configure self-managed GitLab to enforce compliance with the NIST 800-53 security standard. For more information, see [NIST 800-53 compliance](hardening_nist_800_53.md).
+You can configure GitLab Self-Managed to enforce compliance with the NIST 800-53 security standard. For more information, see [NIST 800-53 compliance](hardening_nist_800_53.md).
 
 <!-- ## Troubleshooting
 

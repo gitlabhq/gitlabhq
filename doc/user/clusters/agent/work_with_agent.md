@@ -162,7 +162,7 @@ To remove an agent from the UI:
 
 1. Get the `<cluster-agent-token-id>` from a query in the interactive GraphQL explorer.
    - For GitLab.com, go to <https://gitlab.com/-/graphql-explorer> to open GraphQL Explorer.
-   - For self-managed GitLab, go to `https://gitlab.example.com/-/graphql-explorer`, replacing `gitlab.example.com` with your instance's URL.
+   - For GitLab Self-Managed, go to `https://gitlab.example.com/-/graphql-explorer`, replacing `gitlab.example.com` with your instance's URL.
 
    ```graphql
    query{

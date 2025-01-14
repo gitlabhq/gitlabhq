@@ -30,7 +30,7 @@ SAML Group Sync only manages a group if that group has one or more SAML group li
 
 Prerequisites:
 
-- Self-managed GitLab instances must have configured [SAML Group Sync](#configure-saml-group-sync). GitLab.com
+- GitLab Self-Managed instances must have configured [SAML Group Sync](#configure-saml-group-sync). GitLab.com
   instances are already configured for SAML Group Sync, and require no extra configuration.
 
 When SAML is enabled, users with the Owner role see a new menu
@@ -77,7 +77,7 @@ SAML Group Sync can manage GitLab Duo seat assignment and removal based on IdP g
 
 The checkbox does not appear for groups without an active GitLab Duo add-on subscription.
 
-### Self-managed GitLab with multiple SAML IdPs
+### GitLab Self-Managed with multiple SAML IdPs
 
 When a user signs in, GitLab:
 
@@ -139,7 +139,7 @@ WARNING:
 To prevent users being accidentally removed from the GitLab group, follow these instructions closely before
 enabling Group Sync in GitLab.
 
-To configure SAML Group Sync for **self-managed GitLab instances**:
+To configure SAML Group Sync for GitLab Self-Managed:
 
 1. Configure the [SAML OmniAuth Provider](../../../integration/saml.md).
 1. Ensure your SAML identity provider sends an attribute statement with the same name as the value of the `groups_attribute` setting. See the following provider configuration example in `/etc/gitlab/gitlab.rb` for reference:

@@ -226,7 +226,7 @@ When you upgrade your GitLab version to 16.10 (or to a higher version), existing
 DETAILS:
 **Offering:** GitLab Self-Managed
 
-On large self-managed GitLab instances, when you upgrade the GitLab version and especially if several minor versions are skipped, the background aggregation processes might last longer. This delay can result in outdated data on the Value Stream Analytics page.
+On large GitLab Self-Managed instances, when you upgrade the GitLab version and especially if several minor versions are skipped, the background aggregation processes might last longer. This delay can result in outdated data on the Value Stream Analytics page.
 To speed up the aggregation process and avoid outdated data, in the [rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session) you can invoke the synchronous aggregation snippet for a given group:
 
 ```ruby

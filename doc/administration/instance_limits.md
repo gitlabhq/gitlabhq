@@ -705,7 +705,7 @@ If the limit value is set to zero, the limit is disabled.
 
 GitLab SaaS subscribers have different limits defined per plan, affecting all projects using that plan.
 
-Self-managed GitLab Premium and Ultimate limits are defined by a default plan that affects all projects:
+Premium and Ultimate limits on GitLab Self-Managed are defined by a default plan that affects all projects:
 
 | Runner scope                    | Default value |
 |---------------------------------|---------------|

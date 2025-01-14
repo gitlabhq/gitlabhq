@@ -263,7 +263,7 @@ the user also has `Manage CI/CD variables` permission in Subgroup B and Project 
 When you assign a custom role to a user with the Guest role, that user has
 access to elevated permissions over the base role, and therefore:
 
-- Is considered a [billable user](../subscriptions/self_managed/index.md#billable-users) on self-managed GitLab.
+- Is considered a [billable user](../subscriptions/self_managed/index.md#billable-users) on GitLab Self-Managed.
 - [Uses a seat](../subscriptions/gitlab_com/index.md#how-seat-usage-is-determined) on GitLab.com.
 
 This does not apply when the user's custom role only has the `read_code` permission

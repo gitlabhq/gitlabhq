@@ -11,6 +11,10 @@ module QA
 
           def enable_extensions_marketplace
             check_element('#user_extensions_marketplace_enabled', true)
+
+            # User only needs to confirm marketplace acknowledgment once, so won't always be present
+            return unless has_element?('confirm-marketplace-acknowledgement', wait: 1)
+
             click_element('confirm-marketplace-acknowledgement')
           end
 

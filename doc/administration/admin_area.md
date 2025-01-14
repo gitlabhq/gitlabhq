@@ -29,7 +29,7 @@ Only administrators on GitLab self-managed or GitLab Dedicated can access the **
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419540) in GitLab 16.10 [with a flag](feature_flags.md) named `ui_for_organizations`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](feature_flags.md) named `ui_for_organizations`.
+On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](feature_flags.md) named `ui_for_organizations`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 

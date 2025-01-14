@@ -19,7 +19,7 @@ You can query a subset of users in a GitLab instance by using:
 
 1. Open GraphiQL:
    - For GitLab.com, use: `https://gitlab.com/-/graphql-explorer`
-   - For self-managed GitLab, use: `https://gitlab.example.com/-/graphql-explorer`
+   - For GitLab Self-Managed, use: `https://gitlab.example.com/-/graphql-explorer`
 1. Copy the following text and paste it in the left window.
    This query looks for a subset of users in a GitLab instance by username.
    Alternately, you can use their [Global ID](../../development/api_graphql_styleguide.md#global-ids).

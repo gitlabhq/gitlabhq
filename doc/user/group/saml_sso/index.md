@@ -194,7 +194,7 @@ Optionally, you can pass user information to GitLab as attributes in the SAML as
 - The username can be either a **username** or **nickname** attribute. You should specify only
   one of these.
 
-For more information, see the [attributes available for self-managed GitLab instances](../../../integration/saml.md#configure-assertions).
+For more information, see the [attributes available for GitLab Self-Managed instances](../../../integration/saml.md#configure-assertions).
 
 ### Use metadata
 
@@ -582,7 +582,7 @@ For example:
 
 ## Related topics
 
-- [SAML SSO for self-managed GitLab instances](../../../integration/saml.md)
+- [SAML SSO for GitLab Self-Managed](../../../integration/saml.md)
 - [Glossary](../../../integration/saml.md#glossary)
 - [Blog post: The ultimate guide to enabling SAML and SSO on GitLab.com](https://about.gitlab.com/blog/2023/09/14/the-ultimate-guide-to-enabling-saml/)
 - [Authentication comparison between SaaS and self-managed](../../../administration/auth/index.md#gitlabcom-compared-to-self-managed)
@@ -596,8 +596,8 @@ identity provider:
 
 1. Check your identity provider's documentation. Look at their example SAML
    configurations for information on the terms they use.
-1. Check the [SAML SSO for self-managed GitLab instances documentation](../../../integration/saml.md).
-   The self-managed GitLab instance SAML configuration file supports more options
+1. Check the [SAML SSO for GitLab Self-Managed documentation](../../../integration/saml.md).
+   The GitLab Self-Managed SAML configuration file supports more options
    than the GitLab.com file. You can find information on the self-managed instance
    file in the:
    - External [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml/).

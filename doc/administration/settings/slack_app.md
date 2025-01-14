@@ -16,7 +16,7 @@ NOTE:
 This page contains administrator documentation for the GitLab for Slack app. For user documentation, see [GitLab for Slack app](../../user/project/integrations/gitlab_slack_application.md).
 
 The GitLab for Slack app distributed through the Slack App Directory only works with GitLab.com.
-On self-managed GitLab, you can create your own copy of the GitLab for Slack app from a [manifest file](https://api.slack.com/reference/manifests#creating_apps) and configure your instance.
+On GitLab Self-Managed, you can create your own copy of the GitLab for Slack app from a [manifest file](https://api.slack.com/reference/manifests#creating_apps) and configure your instance.
 
 The app is a private one-time copy installed in your Slack workspace only and not distributed through the Slack App Directory. To have the [GitLab for Slack app](../../user/project/integrations/gitlab_slack_application.md) on your self-managed instance, you must enable the integration.
 

@@ -59,7 +59,7 @@ around with existing queries:
 
 1. Open the GraphiQL explorer tool:
    - For GitLab.com, go to <https://gitlab.com/-/graphql-explorer>.
-   - For self-managed GitLab, go to `https://gitlab.example.com/-/graphql-explorer`.
+   - For GitLab Self-Managed, go to `https://gitlab.example.com/-/graphql-explorer`.
      Change `gitlab.example.com` to your instance URL.
 1. Paste a query listed in an example into the left window of your GraphiQL explorer tool.
 1. Select **Play**.

@@ -676,7 +676,7 @@ and the target list.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61955) behind a [feature flag](../feature_flags.md) named `board_multi_select` in GitLab 14.0. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an
+On GitLab Self-Managed, by default this feature is not available. To make it available, ask an
 administrator to [enable the feature flag](../../administration/feature_flags.md) named `board_multi_select`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.

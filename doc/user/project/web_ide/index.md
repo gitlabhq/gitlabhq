@@ -319,7 +319,7 @@ To update the OAuth callback URL:
 DETAILS:
 **Offering:** GitLab Self-Managed
 
-On self-managed GitLab, [Workhorse](../../../development/workhorse/index.md) must be installed
+On GitLab Self-Managed, [Workhorse](../../../development/workhorse/index.md) must be installed
 and running in front of the GitLab Rails server.
 Otherwise, you might encounter issues when you open the Web IDE or
 use certain features like Markdown preview.

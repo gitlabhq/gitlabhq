@@ -204,7 +204,7 @@ DETAILS:
 > - Push notification support [introduced](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/506) in GitLab 15.3.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `two_factor_for_cli`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use. This feature flag also affects [session duration for Git Operations when 2FA is enabled](../administration/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
+On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `two_factor_for_cli`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use. This feature flag also affects [session duration for Git Operations when 2FA is enabled](../administration/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
 
 You can enforce 2FA for [Git over SSH operations](../development/gitlab_shell/features.md#git-operations). However, you should use
 [ED25519_SK](../user/ssh.md#ed25519_sk-ssh-keys) or [ECDSA_SK](../user/ssh.md#ecdsa_sk-ssh-keys) SSH keys instead. 2FA is enforced for Git operations only, and internal commands such as [`personal_access_token`](../development/gitlab_shell/features.md#personal-access-token) are excluded.

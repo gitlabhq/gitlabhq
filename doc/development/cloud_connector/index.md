@@ -38,7 +38,7 @@ because we do not currently have interfaces in place to self-service this.
 
 #### Register the new feature in the JWT issuer
 
-- For GitLab Dedicated and self-managed GitLab instances, the CustomersDot is the **JWT issuer**.
+- For GitLab Dedicated and GitLab Self-Managed instances, the CustomersDot is the **JWT issuer**.
 - For GitLab.com deployment, GitLab.com is the **JWT issuer**, because it's able to [self-sign and create JWTs](architecture.md#gitlabcom) for every request to a Cloud Connector feature.
 
 #### Register new feature for Self-Managed, Dedicated and GitLab.com customers
@@ -149,7 +149,7 @@ As an example, the feature is delivered as a stand-alone service called `new_fea
 
 To decide if the service is available or visible to the end user, we need to:
 
-- Optional. On self-managed GitLab, if the new feature is introduced as a new [enterprise feature](../ee_features.md#implement-a-new-ee-feature),
+- Optional. On GitLab Self-Managed, if the new feature is introduced as a new [enterprise feature](../ee_features.md#implement-a-new-ee-feature),
   check to determine if user has access to the feature by following the [EE feature guideline](../ee_features.md#guard-your-ee-feature).
 
   ```ruby
@@ -158,7 +158,7 @@ To decide if the service is available or visible to the end user, we need to:
     ::License.feature_available?(:new_feature)
   ```
 
-- On self-managed GitLab, check if the customer is using an [online cloud license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#what-is-cloud-licensing)
+- On GitLab Self-Managed, check if the customer is using an [online cloud license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#what-is-cloud-licensing)
   - Cloud connector currently only support online cloud license for self-managed customers.
   - Trials or legacy licenses are not supported.
   - GitLab.com is using a legacy license.
@@ -167,7 +167,7 @@ To decide if the service is available or visible to the end user, we need to:
     ::License.current&.online_cloud_license?
   ```
 
-- On GitLab.com and self-managed GitLab, check if the service has free access.
+- On GitLab.com and GitLab Self-Managed, check if the service has free access.
   - The feature is considered free, if the [cut-off date](configuration.md) is not set, or it is set in the future.
 
   ```ruby
@@ -178,7 +178,7 @@ To decide if the service is available or visible to the end user, we need to:
 - Optional. If the service has free access, this usually means that the experimental features are subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
   - For GitLab Duo features, the customer needs to enable [experimental toggle](../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) in order to use experimental features for free.
 
-- On GitLab.com and self-managed GitLab, if the service is not accessible for free, check if the add-on bundled with this service has been purchased by the customer (for the group/namespace)
+- On GitLab.com and GitLab Self-Managed, if the service is not accessible for free, check if the add-on bundled with this service has been purchased by the customer (for the group/namespace)
 
   ```ruby
     # Returns true if at least one add-on that is bundled with the service is purchased.
@@ -188,7 +188,7 @@ To decide if the service is available or visible to the end user, we need to:
     CloudConnector::AvailableServices.find_by_name(:new_feature).purchased?(namespace)
   ```
 
-- On GitLab.com and self-managed GitLab, check if the customer's end-user has been assigned to the proper seat.
+- On GitLab.com and GitLab Self-Managed, check if the customer's end-user has been assigned to the proper seat.
 
   ```ruby
     # Returns true if service is allowed to be used.

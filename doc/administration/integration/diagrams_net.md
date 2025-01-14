@@ -19,7 +19,7 @@ The diagram editor is available in both the plain text editor and the rich text 
 
 On GitLab.com, this integration is enabled for all SaaS users and does not require any additional configuration.
 
-On self-managed GitLab, you can choose to integrate with the free [diagrams.net](https://www.drawio.com/)
+On GitLab Self-Managed, you can choose to integrate with the free [diagrams.net](https://www.drawio.com/)
 website, or use a self-managed diagrams.net site in offline environments.
 
 To set up the integration on a self-managed instance, you must:

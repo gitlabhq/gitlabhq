@@ -17,7 +17,7 @@ You can integrate with external applications to add functionality to GitLab.
 
 You can view and manage integrations for the:
 
-- [Instance](../../../administration/settings/project_integration_management.md#configure-default-settings-for-an-integration) (self-managed GitLab)
+- [Instance](../../../administration/settings/project_integration_management.md#configure-default-settings-for-an-integration) (GitLab Self-Managed)
 - [Group](#manage-group-default-settings-for-a-project-integration)
 
 You can use:

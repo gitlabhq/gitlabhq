@@ -294,7 +294,7 @@ Prerequisites:
 
 You can now create personal access tokens for a service account user with no expiry date.
 
-#### Self-managed GitLab
+#### GitLab Self-Managed
 
 Prerequisites:
 

@@ -20,7 +20,7 @@ After your organization purchases a subscription, an administrator must assign s
 You likely received an email that notified you of your seat.
 
 The AI-powered features you have access to use language models to help streamline
-your workflow. If you're on self-managed GitLab, your administrator can choose to use
+your workflow. If you're on GitLab Self-Managed, your administrator can choose to use
 GitLab models, or self-host their own models.
 
 If you have issues accessing GitLab Duo features, ask your administrator.

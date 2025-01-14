@@ -34,7 +34,7 @@ The following Git credential helpers authenticate to GitLab using OAuth. This is
 
 ### Git Credential Manager
 
-[Git Credential Manager](https://github.com/GitCredentialManager/git-credential-manager) (GCM) authenticates by default using OAuth. GCM supports GitLab.com without any manual configuration. To use GCM with self-managed GitLab, see [GitLab support](https://github.com/GitCredentialManager/git-credential-manager/blob/main/docs/gitlab.md).
+[Git Credential Manager](https://github.com/GitCredentialManager/git-credential-manager) (GCM) authenticates by default using OAuth. GCM supports GitLab.com without any manual configuration. To use GCM with GitLab Self-Managed, see [GitLab support](https://github.com/GitCredentialManager/git-credential-manager/blob/main/docs/gitlab.md).
 
 So you do not need to re-authenticate on every push, GCM supports caching as well as a variety of platform-specific credential stores that persist between sessions. This feature is useful whether you use personal access tokens or OAuth.
 
@@ -44,7 +44,7 @@ Git Credential Manager is developed primarily by GitHub, Inc. It is an open-sour
 
 ### git-credential-oauth
 
-[git-credential-oauth](https://github.com/hickford/git-credential-oauth) supports GitLab.com and several popular public hosts without any manual configuration needed. To use with self-managed GitLab, see the [git-credential-oauth custom hosts documentation](https://github.com/hickford/git-credential-oauth#custom-hosts).
+[git-credential-oauth](https://github.com/hickford/git-credential-oauth) supports GitLab.com and several popular public hosts without any manual configuration needed. To use with GitLab Self-Managed, see the [git-credential-oauth custom hosts documentation](https://github.com/hickford/git-credential-oauth#custom-hosts).
 
 Many Linux distributions include git-credential-oauth as a package.
 
@@ -95,7 +95,7 @@ DETAILS:
 **Offering:** GitLab Self-Managed
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can
+On GitLab Self-Managed, by default this feature is not available. To make it available per user, an administrator can
 [enable the feature flag](../../../administration/feature_flags.md) named `forti_authenticator`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 
@@ -226,7 +226,7 @@ DETAILS:
 **Offering:** GitLab Self-Managed
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can
+On GitLab Self-Managed, by default this feature is not available. To make it available per user, an administrator can
 [enable the feature flag](../../../administration/feature_flags.md) named `forti_token_cloud`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.

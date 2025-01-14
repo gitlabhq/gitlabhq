@@ -192,7 +192,7 @@ DETAILS:
 > - Enabled on GitLab.com in GitLab 16.5.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `global_time_tracking_report`.
+On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `global_time_tracking_report`.
 On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 

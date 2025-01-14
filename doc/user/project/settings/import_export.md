@@ -24,7 +24,7 @@ situations, you might need to migrate groups and project by using file exports.
 
 ## Migrate projects by uploading an export file
 
-Existing projects on any self-managed GitLab instance or GitLab.com can be exported to a file and
+Existing projects on any GitLab Self-Managed instance or GitLab.com can be exported to a file and
 then imported into another GitLab instance.
 
 ### Preserving user contributions

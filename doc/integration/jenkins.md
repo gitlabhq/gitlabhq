@@ -220,7 +220,7 @@ For this issue, check:
   WebHook Error => execution expired
   ```
 
-On self-managed GitLab instances, you can fix this issue by [increasing the webhook timeout value](../administration/instance_limits.md#webhook-timeout).
+On GitLab Self-Managed instances, you can fix this issue by [increasing the webhook timeout value](../administration/instance_limits.md#webhook-timeout).
 
 ### Enable job logs in Jenkins
 

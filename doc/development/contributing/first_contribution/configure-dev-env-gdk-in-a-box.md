@@ -11,7 +11,7 @@ your changes, you can use
 [GDK-in-a-box](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/gdk_in_a_box.md),
 a virtual machine (VM) pre-configured with [the GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit).
 
-The GDK is a local development environment that includes an installation of self-managed GitLab,
+The GDK is a local development environment that includes an installation of GitLab Self-Managed,
 sample projects, and administrator access with which you can test functionality.
 
 It requires 30 GB of disk space.

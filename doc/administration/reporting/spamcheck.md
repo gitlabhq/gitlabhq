@@ -15,7 +15,7 @@ Spamcheck is available to all tiers, but only on instances using GitLab Enterpri
 
 [Spamcheck](https://gitlab.com/gitlab-org/gl-security/security-engineering/security-automation/spam/spamcheck) is an anti-spam engine
 developed by GitLab originally to combat rising amount of spam in GitLab.com,
-and later made public to be used in self-managed GitLab instances.
+and later made public to be used in GitLab Self-Managed instances.
 
 ## Enable Spamcheck
 

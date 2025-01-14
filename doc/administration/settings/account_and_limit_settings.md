@@ -425,7 +425,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423302) in GitLab 16.7 [with a flag](../feature_flags.md) named `ui_for_organizations`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags.md) named `ui_for_organizations`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use.
+On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags.md) named `ui_for_organizations`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use.
 
 By default, users can create organizations. GitLab administrators can prevent users from creating organizations.
 

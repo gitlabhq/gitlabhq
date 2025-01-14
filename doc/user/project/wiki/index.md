@@ -346,7 +346,7 @@ Wikis are enabled by default in GitLab. Project [administrators](../../permissio
 can enable or disable a project wiki by following the instructions in
 [Sharing and permissions](../settings/index.md#configure-project-features-and-permissions).
 
-Administrators for self-managed GitLab installs can
+Administrators for GitLab Self-Managed can
 [configure additional wiki settings](../../../administration/wikis/index.md).
 
 You can disable group wikis from the [group settings](group.md#configure-group-wiki-visibility)

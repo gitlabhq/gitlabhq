@@ -177,7 +177,7 @@ To plan runner scope, consider the following questions:
 
 - Does your organization have security or other policies that require segmenting access to certain types of runners to specific groups or projects?
 
-The most straightforward way to deploy a runner in a self-managed GitLab environments is to create it for an instance. Runners scoped for an instance are available to all groups and projects by default.
+The most straightforward way to deploy a runner in a GitLab Self-Managed environments is to create it for an instance. Runners scoped for an instance are available to all groups and projects by default.
 
 If you are able to meet all your organization's needs with instance runners, then this deployment pattern is the most efficient pattern. It ensures that you can operate a CI/CD build fleet at scale efficiently and cost effectively.
 

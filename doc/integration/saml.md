@@ -4,14 +4,14 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# SAML SSO for self-managed GitLab instances
+# SAML SSO for GitLab Self-Managed
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
 This page describes how to set up instance-wide SAML single sign on (SSO) for
-self-managed GitLab instances.
+GitLab Self-Managed.
 
 You can configure GitLab to act as a SAML service provider (SP). This allows
 GitLab to consume assertions from a SAML identity provider (IdP), such as

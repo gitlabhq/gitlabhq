@@ -41,7 +41,7 @@ RSpec/ChangeByZero:
     - 'ee/spec/services/vulnerabilities/manually_create_service_spec.rb'
     - 'ee/spec/services/vulnerabilities/security_finding/create_merge_request_service_spec.rb'
     - 'ee/spec/services/work_items/legacy_epics/related_epic_links/create_service_spec.rb'
-    - 'ee/spec/support/shared_examples/models/concerns/replicable_model_with_separate_table_shared_examples.rb'
+    - 'ee/spec/support/shared_examples/models/concerns/verifiable_model_with_separate_table_shared_examples.rb'
     - 'ee/spec/workers/observability/alert_query_worker_spec.rb'
     - 'ee/spec/workers/security/store_security_reports_by_project_worker_spec.rb'
     - 'spec/controllers/admin/clusters_controller_spec.rb'

@@ -22,7 +22,7 @@ Before you can install the agent in your cluster, you need:
   - [Digital Ocean](https://docs.digitalocean.com/products/kubernetes/getting-started/quickstart/)
   - [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine/docs/deploy-app-cluster)
   - You should use [Infrastructure as Code techniques](../../../infrastructure/iac/index.md) for managing infrastructure resources at scale.
-- On self-managed GitLab instances, a GitLab administrator must set up the
+- On GitLab Self-Managed, a GitLab administrator must set up the
   [agent server](../../../../administration/clusters/kas.md).
   Then it is available by default at `wss://gitlab.example.com/-/kubernetes-agent/`.
   On GitLab.com, the agent server is available at `wss://kas.gitlab.com`.

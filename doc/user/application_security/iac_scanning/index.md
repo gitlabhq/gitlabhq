@@ -190,7 +190,7 @@ DETAILS:
 **Offering:** GitLab Self-Managed
 
 An offline environment has limited, restricted, or intermittent access to external resources through
-the internet. For self-managed GitLab instances in such an environment, IaC requires
+the internet. For GitLab Self-Managed instances in such an environment, IaC requires
 some configuration changes. The instructions in this section must be completed together with the
 instructions detailed in [offline environments](../offline_deployments/index.md).
 

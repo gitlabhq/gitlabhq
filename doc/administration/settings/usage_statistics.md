@@ -115,7 +115,7 @@ for all authenticated users, and on the **Admin** area pages. The statuses are:
 ### Request flow example
 
 The following example shows a basic request/response flow between a
-self-managed GitLab instance and the GitLab Version Application:
+GitLab Self-Managed instance and the GitLab Version Application:
 
 ```mermaid
 sequenceDiagram

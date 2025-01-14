@@ -18,7 +18,7 @@ Administrators can limit the amount of time that projects can use to run jobs on
 is tracked with a [compute minutes quota](../../ci/pipelines/compute_minutes.md).
 [Project runners](../../ci/runners/runners_scope.md#project-runners) are not subject to the compute quota.
 
-On self-managed GitLab instances:
+On GitLab Self-Managed:
 
 - Compute quotas are disabled by default.
 - Administrators can [assign more compute minutes](#set-the-compute-quota-for-a-group)

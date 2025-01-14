@@ -13,7 +13,7 @@ DETAILS:
 
 Find the version of GitLab you're running.
 
-## For self-managed GitLab and GitLab Dedicated
+## For GitLab Self-Managed and GitLab Dedicated
 
 Prerequisites:
 

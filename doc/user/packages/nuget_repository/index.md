@@ -306,7 +306,7 @@ Prerequisites:
 When publishing packages:
 
 - The package registry on GitLab.com can store up to 5 GB of content.
-  This limit is [configurable for self-managed GitLab instances](../../../administration/instance_limits.md#package-registry-limits).
+  This limit is [configurable for GitLab Self-Managed](../../../administration/instance_limits.md#package-registry-limits).
 - If you publish the same package with the same version multiple times, each
   consecutive upload is saved as a separate file. When installing a package,
   GitLab serves the most recent file.

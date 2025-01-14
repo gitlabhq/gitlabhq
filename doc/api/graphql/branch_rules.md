@@ -24,7 +24,7 @@ You can use GraphiQL to list the branch rules for a project.
 
 1. Open GraphiQL:
    - For GitLab.com, use: `https://gitlab.com/-/graphql-explorer`
-   - For self-managed GitLab, use: `https://gitlab.example.com/-/graphql-explorer`
+   - For GitLab Self-Managed, use: `https://gitlab.example.com/-/graphql-explorer`
 1. Copy the following text and paste it in the left window.
    This query searches for a project by its full path, for example `gitlab-org/gitlab-docs`.
    It requests all configured branch rules for the project.

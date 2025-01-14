@@ -16,7 +16,7 @@ the Amazon [Elastic Container Service (ECS)](https://aws.amazon.com/ecs/).
 In this guide, you begin by creating an ECS cluster manually using the AWS console. You create and
 deploy a simple application that you create from a GitLab template.
 
-These instructions work for both SaaS and self-managed GitLab instances.
+These instructions work for both GitLab.com and GitLab Self-Managed instances.
 Ensure your own [runners are configured](../../runners/index.md).
 
 ## Prerequisites

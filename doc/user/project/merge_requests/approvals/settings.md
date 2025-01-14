@@ -130,7 +130,7 @@ When you change this field, it can affect all open merge requests depending on t
 > - [Enabled `ff_require_saml_auth_to_approve` by default](https://gitlab.com/gitlab-org/gitlab/-/issues/431714) in GitLab 16.8 for GitLab.com and self-managed instances.
 
 FLAG:
-On self-managed GitLab, by default requiring re-authentication by using SAML authentication is available. To hide the feature, an administrator can
+On GitLab Self-Managed, by default requiring re-authentication by using SAML authentication is available. To hide the feature, an administrator can
 [disable the feature flag](../../../../administration/feature_flags.md) named `ff_require_saml_auth_to_approve`. On GitLab.com and GitLab Dedicated, this feature is available.
 
 You can force potential approvers to first authenticate with SAML or a password.
@@ -147,7 +147,7 @@ Prerequisites:
      [sign-in restrictions documentation](../../../../administration/settings/sign_in_restrictions.md#password-authentication-enabled).
    - SAML authentication for GitLab.com groups, see
      [SAML SSO for GitLab.com groups documentation](../../../../user/group/saml_sso/index.md).
-   - SAML authentication for self-managed instances, see [SAML SSO for self-managed GitLab instances](../../../../integration/saml.md).
+   - SAML authentication for self-managed instances, see [SAML SSO for GitLab Self-Managed](../../../../integration/saml.md).
 1. On the left sidebar, select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
    select **Require user re-authentication (password or SAML) to approve**.

@@ -23,7 +23,7 @@ Privacy note: GitLab submits the user's IP and user agent to Akismet.
 NOTE:
 GitLab submits all issues to Akismet.
 
-Akismet configuration is available to users on self-managed GitLab. Akismet is already enabled on
+Akismet configuration is available to users on GitLab Self-Managed. Akismet is already enabled on
 GitLab SaaS (GitLab.com), where its configuration and management are handled by GitLab Inc.
 
 ## Configure Akismet

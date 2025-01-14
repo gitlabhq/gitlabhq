@@ -298,7 +298,7 @@ The number of parallel deployments is limited by the root-level namespace. For
 specific limits for:
 
 - GitLab.com, see [Other limits](../../gitlab_com/index.md#other-limits).
-- Self-managed GitLab instances, see
+- GitLab Self-Managed, see
   [Number of parallel Pages deployments](../../../administration/instance_limits.md#number-of-parallel-pages-deployments).
 
 To immediately reduce the number of active deployments in your namespace,
