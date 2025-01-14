@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Migrating groups and projects by using [direct transfer](../../group/import/index.md) is recommended. However, in some
 situations, you might need to migrate groups and project by using file exports.
@@ -102,7 +102,7 @@ For example:
 ### Configure file exports as an import source
 
 DETAILS:
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Before you can migrate projects on GitLab Self-Managed using file exports, GitLab administrators must:
 
@@ -275,14 +275,14 @@ Deploy keys aren't imported. To use deploy keys, you must enable them in your im
 #### Import large projects
 
 DETAILS:
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 If you have a larger project, consider [using a Rake task](../../../administration/raketasks/project_import_export.md#import-large-projects).
 
 ### Set maximum import file size
 
 DETAILS:
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Administrators can set the maximum import file size one of two ways:
 

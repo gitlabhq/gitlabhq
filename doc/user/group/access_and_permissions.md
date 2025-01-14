@@ -13,7 +13,7 @@ For more information, see also [Sharing projects and groups](../project/members/
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Moved to Settings/Repository](https://gitlab.com/gitlab-org/gitlab/-/issues/220365) in GitLab 15.4.
 
@@ -59,7 +59,7 @@ To change the permitted Git access protocols for a group:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 To ensure only people from your organization can access particular resources, you can restrict access to groups by IP
 address. This top-level group setting applies to:
@@ -120,7 +120,7 @@ To allow runner downloading, add the [outbound runner CIDR ranges](../gitlab_com
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - Support for restricting group memberships to groups with a subset of the allowed email domains [added](https://gitlab.com/gitlab-org/gitlab/-/issues/354791) in GitLab 15.1.1
 
@@ -169,7 +169,7 @@ your group.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 By default, projects in a group can be forked.
 However, you can prevent the projects in a group from being forked outside of the current top-level group.
@@ -198,7 +198,7 @@ Existing forks are not removed.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 As a group Owner, you can prevent any new project membership for all
 projects in a group, allowing tighter control over project membership.
@@ -230,7 +230,7 @@ After you lock the membership for a group:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - Support for custom roles for users synced in groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435229) in GitLab 17.2.
 
@@ -260,7 +260,7 @@ You can use a workaround to [manage project access through LDAP groups](../proje
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 To create group links with LDAP group CN:
 
@@ -278,7 +278,7 @@ To create group links with LDAP group CN:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 To create group links with an LDAP user filter:
 
@@ -292,7 +292,7 @@ To create group links with an LDAP user filter:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 LDAP user permissions can be manually overridden by an administrator. To override a user's permissions:
 

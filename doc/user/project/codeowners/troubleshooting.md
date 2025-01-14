@@ -9,7 +9,7 @@ description: "Use Code Owners to define experts for your code base, and set revi
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 When working with Code Owners, you might encounter the following issues.
 

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 GitLab provides Rake tasks to check the integrity of various components.
 See also the [check GitLab configuration Rake task](maintenance.md#check-gitlab-configuration).

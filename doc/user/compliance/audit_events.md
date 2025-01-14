@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 A security audit is an in-depth analysis and review of your infrastructure, which is used to display
 areas of concern and potentially hazardous practices. To assist with the audit process, GitLab provides
@@ -58,7 +58,7 @@ After upgrading to a paid tier, you can also see successful sign-in events on au
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 To view a group's audit events:
 
@@ -72,7 +72,7 @@ Group audit events can also be accessed using the [group audit events API](../..
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Audit events**.

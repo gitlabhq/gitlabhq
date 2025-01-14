@@ -266,7 +266,7 @@ You can also enable manual deployment in your [project settings](requirements.md
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can use a [canary environment](../../user/project/canary_deployments.md) before
 deploying any changes to production.
@@ -280,7 +280,7 @@ If you set `CANARY_ENABLED`, GitLab creates two [manual jobs](../../ci/pipelines
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Use an incremental rollout to continuously deploy your application,
 starting with only a few pods. You can increase the number of pods
@@ -329,7 +329,7 @@ With `INCREMENTAL_ROLLOUT_MODE` set to `manual` and with `STAGING_ENABLED`:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Use a timed incremental rollout to continuously deploy your application, starting with
 only a few pods.

@@ -9,7 +9,7 @@ description: "Define custom Git attributes for your GitLab project to set option
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 GitLab supports defining custom Git attributes in a `.gitattributes` file in the
 root directory of your repository. Use the `.gitattributes` file to declare changes
@@ -65,7 +65,7 @@ syntax highlighting files and diffs. For more information, see
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 > - Ability to configure custom merge drivers through GitLab introduced in GitLab 15.10.
 

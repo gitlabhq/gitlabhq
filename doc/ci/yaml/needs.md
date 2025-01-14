@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can use the [`needs`](../yaml/index.md#needs) keyword to create dependencies between jobs
 in a pipeline. Jobs run as soon as their dependencies are met, regardless of the pipeline's `stages`

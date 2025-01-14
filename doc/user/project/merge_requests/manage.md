@@ -57,7 +57,7 @@ To do this:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 These attributes are editable when you bulk edit merge requests for a group:
 

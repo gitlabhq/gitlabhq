@@ -9,7 +9,7 @@ description: "Use Gitpod to build and configure prebuilt development environment
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed
+**Offering:** GitLab.com, GitLab Self-Managed
 
 With [Gitpod](https://www.gitpod.io/), you can describe your development environment as code to get fully
 set up, compiled, and tested development environments for any GitLab project. The development
@@ -43,7 +43,7 @@ With the Gitpod integration enabled for your GitLab instance, to enable it for y
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 For self-managed GitLab instances, a GitLab administrator must:
 

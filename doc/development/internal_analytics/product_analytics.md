@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed
+**Offering:** GitLab.com, GitLab Self-Managed
 **Status:** Beta
 
 > - Introduced in GitLab 15.4 as an [experiment](../../policy/development_stages_support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
@@ -125,7 +125,7 @@ If you need different providers for different projects, you can define additiona
 
 ### Instance-level settings
 
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Prerequisites:
 

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 GitLab officially supports long term support (LTS) versions of operating systems. Some operating systems, such as Ubuntu,
 have a clear distinction between LTS and non-LTS versions. However, there are other operating systems, openSUSE for

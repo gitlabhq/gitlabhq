@@ -9,7 +9,7 @@ description: "Configure a collection of file templates available for all project
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 In hosted systems, enterprises often have a need to share their own templates
 across teams. This feature allows an administrator to pick a project to be the

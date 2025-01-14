@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 This page contains links to a variety of examples that can help you understand how to
 implement [GitLab CI/CD](../index.md) for your specific use case.
@@ -106,7 +106,7 @@ to [the templates list](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/g
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 You can add custom examples and templates to your instance.
 Your GitLab administrator can [designate an instance template repository](../../administration/settings/instance_template_repository.md)

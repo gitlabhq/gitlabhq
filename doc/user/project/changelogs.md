@@ -9,7 +9,7 @@ description: "Build, automate, and customize changelogs in your GitLab project."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Changelogs are generated based on commit titles and Git trailers. To be included
 in a changelog, a commit must contain a specific Git trailer. Changelogs are generated

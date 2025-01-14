@@ -35,7 +35,8 @@ module RuboCop
       #   class Gitlab::MyDomain::MyClass
       #   end
       class NamespacedClass < RuboCop::Cop::Base
-        MSG = 'Classes must be declared inside a module indicating a product domain namespace. For more info: https://gitlab.com/gitlab-org/gitlab/-/issues/321982'
+        MSG = 'Classes must be declared inside a module indicating a product domain namespace. ' \
+          'For more info: https://docs.gitlab.com/ee/development/software_design.html#bounded-contexts'
 
         # These namespaces are considered top-level semantically.
         # Note: Nested namespace like Foo::Bar are also supported.

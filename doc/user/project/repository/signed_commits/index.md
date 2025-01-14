@@ -9,7 +9,7 @@ description: "Why you should sign your GitLab commits cryptographically, and how
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 When you add a digital signature to your commit, you provide extra assurance that a commit
 originated from you, rather than an impersonator. A digital signature is a cryptographic output

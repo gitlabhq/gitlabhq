@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can purchase GitLab Duo seats to give users in your organization access to more GitLab features. GitLab Duo is only available for Premium and Ultimate customers.
 Access to features provided by GitLab Duo is managed through seat assignment. GitLab Duo can be assigned to any user in your group namespace or instance.
@@ -207,7 +207,7 @@ Prerequisites:
 
 DETAILS:
 **Tier:** Premium
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 ### On GitLab.com
 
@@ -249,7 +249,7 @@ The trial automatically synchronizes to your instance within 24 hours. After the
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 ### On GitLab.com
 

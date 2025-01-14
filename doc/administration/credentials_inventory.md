@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 As a GitLab administrator, you are responsible for the overall security of your instance.
 To assist, GitLab provides an inventory of all the credentials that can be used to access

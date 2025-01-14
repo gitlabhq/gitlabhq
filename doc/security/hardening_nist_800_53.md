@@ -8,7 +8,7 @@ info: All material changes to this page must be approved by the [FedRAMP Complia
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 This page provides a reference for GitLab administrators
 who want to configure self-managed instances to meet applicable

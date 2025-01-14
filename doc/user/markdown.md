@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 When you enter text in the GitLab UI, GitLab assumes the text is in the Markdown language.
 The text is rendered with a set of styles. These styles are called *GitLab Flavored Markdown*.

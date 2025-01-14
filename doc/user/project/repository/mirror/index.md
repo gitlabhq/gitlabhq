@@ -9,7 +9,7 @@ description: "Use repository mirroring to push or pull the contents of a Git rep
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can _mirror_ a repository to and from external sources. You can select which repository
 serves as the source. Branches, tags, and commits are synced automatically.
@@ -106,7 +106,7 @@ To use this option, select **Only mirror protected branches** when you create a 
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - Mirroring branches matching a regex as an option in API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102608) in GitLab 15.8 [with a flag](../../../../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
 > - Option in the project setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102499) in GitLab 15.9.

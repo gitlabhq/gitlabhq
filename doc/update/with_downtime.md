@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 While you can upgrade a multi-node GitLab deployment [with zero downtime](zero_downtime.md),
 there are a number of constraints. In particular, you can upgrade to only one minor release
@@ -199,7 +199,7 @@ Upgrade a standalone Redis server by [upgrading the GitLab package](package/inde
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Follow [the zero-downtime instructions](zero_downtime.md)
 for upgrading your Redis HA cluster.

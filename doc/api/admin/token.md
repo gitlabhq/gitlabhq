@@ -9,7 +9,7 @@ description: "Documentation for the REST API that exposes token information."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 **Status:** Experiment
 
 Use this API to retrieve details about arbitrary tokens and to revoke them. Unlike other APIs that expose token information, this API allows you to retrieve details or revoke tokens without knowing the specific type of token.

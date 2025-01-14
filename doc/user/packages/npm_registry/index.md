@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Node Package Manager (npm) is the default package manager for JavaScript and Node.js. Developers use npm to share and reuse code, manage dependencies, and streamline project workflows. In GitLab, npm packages play a crucial role in the software development lifecycle.
 

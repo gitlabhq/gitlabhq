@@ -9,7 +9,7 @@ description: "Documentation for the REST API for Git tags in GitLab."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 ## List project repository tags
 

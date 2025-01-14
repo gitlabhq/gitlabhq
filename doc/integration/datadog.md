@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 The Datadog integration enables you to connect your GitLab projects to [Datadog](https://www.datadoghq.com/),
 synchronizing repository metadata to enrich your Datadog telemetry, have Datadog comment on Merge Requests, and send CI/CD pipeline and job information to Datadog.

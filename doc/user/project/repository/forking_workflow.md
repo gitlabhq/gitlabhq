@@ -9,7 +9,7 @@ description: "Fork a Git repository when you want to contribute changes back to 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Whenever possible, it's recommended to work in a common Git repository and use
 branching strategies to manage your work. However,
@@ -112,7 +112,7 @@ To update your fork from the command line, follow the instruction in
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 A fork can be configured as a mirror of the upstream if all these conditions are met:
 

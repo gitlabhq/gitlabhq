@@ -79,7 +79,7 @@ module API
         PACKAGE_FILENAME
       end
 
-      def upload_nuget_package_file(symbol_package: false)
+      def legacy_upload_nuget_package_file(symbol_package: false)
         project = project_or_group
         authorize_upload!(project)
         bad_request!('File is too large') if project.actual_limits.exceeded?(:nuget_max_file_size, params[:package].size)
@@ -98,15 +98,65 @@ module API
         package_file = ::Packages::CreatePackageFileService.new(package, file_params.merge(build: current_authenticated_job))
                                                             .execute
 
-        yield(package) if block_given?
-
         ::Packages::Nuget::ExtractionWorker.perform_async(package_file.id) # rubocop:disable CodeReuse/Worker
-
-        created!
       end
 
+      def upload_nuget_package_file(symbol_package: false)
+        authorize_upload!(project_or_group)
+        bad_request!('File is too large') if project_or_group.actual_limits.exceeded?(:nuget_max_file_size, params[:package].size)
+
+        file_params = params.merge(
+          file: params[:package],
+          file_name: file_name(symbol_package),
+          build: current_authenticated_job
+        )
+
+        if !symbol_package && nuspec_file_service.success?
+          # Create or update package on the fly if nuspec file is extracted successfully, otherwise fallback to the background job
+          create_or_update_package(file_params)
+        elsif symbol_package || nuspec_file_service.cause.nuspec_extraction_failed?
+          create_temp_package_and_enqueue_worker(file_params, symbol_package)
+        else
+          render_api_error!(nuspec_file_service.message, nuspec_file_service.reason)
+        end
+      end
+
+      def create_or_update_package(file_params)
+        response = Packages::Nuget::CreateOrUpdatePackageService
+          .new(project_or_group, current_user, file_params.merge(nuspec_file_content: nuspec_file_service.payload))
+          .execute
+
+        render_api_error!(response.message, response.reason) if response.error?
+      end
+
+      def create_temp_package_and_enqueue_worker(file_params, symbol_package)
+        check_duplicate(file_params, symbol_package)
+
+        package = ::Packages::CreateTemporaryPackageService.new(
+          project_or_group, current_user, declared_params.merge(build: current_authenticated_job)
+        ).execute(:nuget, name: temp_file_name(symbol_package))
+
+        package_file = ::Packages::CreatePackageFileService.new(package, file_params)
+                                                            .execute
+
+        ::Packages::Nuget::ExtractionWorker.perform_async(package_file.id) # rubocop:disable CodeReuse/Worker
+      end
+
+      def nuspec_file_service
+        if params['package.remote_url'].present?
+          ::Packages::Nuget::ExtractRemoteMetadataFileService.new(params['package.remote_url']).execute
+        else # file on disk
+          Zip::InputStream.open(params[:package]) do |zip|
+            ::Packages::Nuget::ExtractMetadataFileService.new(zip).execute
+          end
+        end
+      rescue ::Packages::Nuget::ExtractMetadataFileService::ExtractionError => e
+        ServiceResponse.error(message: e.message, reason: :bad_request)
+      end
+      strong_memoize_attr :nuspec_file_service
+
       def check_duplicate(file_params, symbol_package)
-        return if symbol_package
+        return if symbol_package || Feature.enabled?(:create_nuget_packages_on_the_fly, project_or_group)
 
         service_params = file_params.merge(remote_url: params['package.remote_url'])
         response = ::Packages::Nuget::CheckDuplicatesService.new(project_or_group, current_user, service_params).execute
@@ -114,13 +164,18 @@ module API
       end
 
       def publish_package(symbol_package: false)
-        upload_nuget_package_file(symbol_package: symbol_package) do |package|
-          track_package_event(
-            symbol_package ? 'push_symbol_package' : 'push_package',
-            :nuget,
-            **track_package_event_attrs(package.project)
-          )
+        if Feature.enabled?(:create_nuget_packages_on_the_fly, project_or_group)
+          upload_nuget_package_file(symbol_package: symbol_package)
+        else
+          legacy_upload_nuget_package_file(symbol_package: symbol_package)
         end
+
+        track_package_event(
+          symbol_package ? 'push_symbol_package' : 'push_package',
+          :nuget,
+          **track_package_event_attrs
+        )
+        created!
       rescue ObjectStorage::RemoteStoreError => e
         Gitlab::ErrorTracking.track_exception(e, extra: { file_name: params[:file_name], project_id: project_or_group.id })
 
@@ -152,11 +207,11 @@ module API
         present odata_entry
       end
 
-      def track_package_event_attrs(project)
+      def track_package_event_attrs
         attrs = {
           category: 'API::NugetPackages',
-          project: project,
-          namespace: project.namespace
+          project: project_or_group,
+          namespace: project_or_group.namespace
         }
         attrs[:feed] = 'v2' if request.path.include?('nuget/v2')
         attrs
@@ -229,7 +284,7 @@ module API
               track_package_event(
                 params[:format] == 'snupkg' ? 'pull_symbol_package' : 'pull_package',
                 :nuget,
-                **track_package_event_attrs(package.project)
+                **track_package_event_attrs
               )
 
               # nuget and dotnet don't support 302 Moved status codes, supports_direct_download has to be set to false

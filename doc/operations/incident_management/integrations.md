@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 GitLab can accept alerts from any source via a webhook receiver. [Alert notifications](alerts.md)
 can [trigger paging](paging.md#paging) for on-call rotations or be used to [create incidents](manage_incidents.md#from-an-alert).
@@ -45,7 +45,7 @@ receive alert payloads in JSON format. You can always
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 In [GitLab Premium](https://about.gitlab.com/pricing/), you can create multiple
 unique HTTP endpoints to receive alerts from any external source in JSON format,
@@ -392,7 +392,7 @@ GitLab displays an error or success message, depending on the outcome of your te
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 GitLab groups alerts based on their payload. When an incoming alert contains the same payload as another alert
 (excluding the `start_time` and `hosts` attributes), GitLab groups these alerts
@@ -421,7 +421,7 @@ You can also configure the associated [incident to be closed automatically](../i
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.2.
 

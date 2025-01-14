@@ -9,7 +9,7 @@ description: "Documentation for the REST API for draft notes (unpublished commen
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Draft notes are pending, unpublished comments on merge requests. They can either:
 

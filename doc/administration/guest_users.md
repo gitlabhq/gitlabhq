@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Users assigned the Guest role have limited access and capabilities compared to other user roles. Their permissions are restricted and are designed to provide basic visibility and interaction without compromising sensitive project data. For more information, see [Roles and permissions](../user/permissions.md).
 

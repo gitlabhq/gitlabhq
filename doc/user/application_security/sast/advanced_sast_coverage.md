@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 [GitLab Advanced SAST](gitlab_advanced_sast.md) finds many types of potential security vulnerabilities in code written in [supported languages](gitlab_advanced_sast.md#supported-languages).
 

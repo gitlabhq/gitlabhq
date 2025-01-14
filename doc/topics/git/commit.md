@@ -78,7 +78,7 @@ you must [force an update](git_rebase.md#force-push-to-a-remote-branch).
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 When you push changes to a branch, you can use client-side
 [Git push options](https://git-scm.com/docs/git-push#Documentation/git-push.txt--oltoptiongt).

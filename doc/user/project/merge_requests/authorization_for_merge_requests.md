@@ -9,7 +9,7 @@ description: "The most common merge request flows in GitLab use forks, protected
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 There are two main ways to have a merge request flow with GitLab:
 

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `work_item_epics`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md#beta).
@@ -46,7 +46,7 @@ between old and new experience to provide details while opening support request.
 ### Disable the new experience
 
 DETAILS:
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 We don't recommend disabling this change, because we'd like your feedback on what you don't like about it.
 If you have to disable the new experience to unblock your workflow, disable the `work_item_epics`

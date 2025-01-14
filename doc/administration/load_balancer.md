@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 In a multi-node GitLab configuration, you need a load balancer to route
 traffic to the application servers. The specifics on which load balancer to use

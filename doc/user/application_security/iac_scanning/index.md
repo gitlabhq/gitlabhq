@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Infrastructure as Code (IaC) scanning runs in your CI/CD pipeline, checking your infrastructure
 definition files for known vulnerabilities. Identify vulnerabilities before they're committed to
@@ -86,7 +86,7 @@ Supported configuration formats:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can customize the default IaC scanning rules provided with GitLab.
 
@@ -187,7 +187,7 @@ In the following example `sast-ruleset.toml` file, rules are matched by the `typ
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 An offline environment has limited, restricted, or intermittent access to external resources through
 the internet. For self-managed GitLab instances in such an environment, IaC requires

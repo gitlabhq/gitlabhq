@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 [Gitaly](https://gitlab.com/gitlab-org/gitaly) provides high-level RPC access to Git repositories.
 It is used by GitLab to read and write Git data.

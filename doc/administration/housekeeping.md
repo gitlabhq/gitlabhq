@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 GitLab supports and automates housekeeping tasks in Git repositories to ensure
 that they can be served as efficiently as possible. Housekeeping tasks include:

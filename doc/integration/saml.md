@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 This page describes how to set up instance-wide SAML single sign on (SSO) for
 self-managed GitLab instances.
@@ -1353,7 +1353,7 @@ Example configuration:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Your IdP passes group information to GitLab in the SAML response. To use this
 response, configure GitLab to identify:
@@ -2091,7 +2091,7 @@ URL, for example: `https://gitlab.example.com/users/sign_in?auto_sign_in=false`.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 You can use `attribute_statements` to map attribute names in a SAML response to entries
 in the OmniAuth [`info` hash](https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema#schema-10-and-later).
@@ -3104,7 +3104,7 @@ see [Enable OmniAuth for an existing user](omniauth.md#enable-omniauth-for-an-ex
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Use group SAML SSO if you have to allow access through multiple SAML IdPs on your
 self-managed instance.

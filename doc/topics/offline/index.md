@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Computers in an offline environment are isolated from the public internet as a security measure. This
 page lists all the information available for running GitLab in an offline environment.

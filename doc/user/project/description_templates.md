@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can define templates to use as descriptions
 for your [issues](issues/index.md) and [merge requests](merge_requests/index.md).
@@ -112,7 +112,7 @@ your merge request template with their values:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 You can set a description template at the **instance level** for issues
 and merge requests by using an [instance template repository](../../administration/settings/instance_template_repository.md).
@@ -125,7 +125,7 @@ that you can use when creating a new project in the instance.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 With **group-level** description templates, you can select a project within the group to store
 your templates. Then, you can access these templates in other projects in the group.

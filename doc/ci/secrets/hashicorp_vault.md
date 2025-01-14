@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 WARNING:
 Authenticating with `CI_JOB_JWT` was [deprecated in GitLab 15.9 and removed in GitLab 17.0](../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated).

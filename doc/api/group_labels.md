@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 This API supports managing [group labels](../user/project/labels.md#types-of-labels).
 It allows users to list, create, update, and delete group labels. Furthermore, users can subscribe to and

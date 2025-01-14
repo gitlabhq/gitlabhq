@@ -9,7 +9,7 @@ description: "When you fork a merge request, you can set whether or not members 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 When you open a merge request from your [fork](../repository/forking_workflow.md), you can allow upstream
 members to collaborate with you on your branch.

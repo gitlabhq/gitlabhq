@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 When there is a new alert or incident, it is important for a responder to be notified
 immediately so they can triage and respond to the problem. Responders can receive
@@ -41,7 +41,7 @@ a single email notification for new alerts.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 In projects that have an [escalation policy](escalation_policies.md) configured, on-call responders
 can be automatically paged about critical problems through email.

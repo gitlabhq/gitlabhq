@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Personal access tokens can be an alternative to [OAuth2](../../api/oauth2.md) and used to:
 
@@ -103,7 +103,7 @@ At any time, you can use the UI to revoke or, in GitLab 17.7 and later, rotate a
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Prerequisites:
 
@@ -311,7 +311,7 @@ You can now create personal access tokens for a service account user with no exp
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 You can create a predetermined personal access token
 as part of your tests or automation.
@@ -355,7 +355,7 @@ sudo gitlab-rails runner "token = User.find_by_username('automation-bot').person
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 You can programmatically revoke a personal access token
 as part of your tests or automation.
@@ -391,7 +391,7 @@ sudo gitlab-rails runner "PersonalAccessToken.find_by_token('token-string-here12
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 To clone a repository when SSH is disabled, clone it using a personal access token by running the following command:
 
@@ -420,7 +420,7 @@ Remember this if you set up an automation pipeline that depends on authenticatio
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 If a personal access token is revoked accidentally by any method, administrators can unrevoke that token. By default, a daily job deletes revoked tokens at 1:00 AM system time.
 

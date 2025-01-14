@@ -34,6 +34,25 @@ RSpec.describe Gitlab::Auth::VisitorLocation, feature_category: :system_access d
     end
   end
 
+  # Rescue I18nData::NoTranslationAvailable
+  context 'when I18n locale is not valid for I18nData locales' do
+    around do |example|
+      Gitlab::I18n.with_locale(:nl_NL, &example)
+    end
+
+    it 'returns English country name by default' do
+      expect(request_info.country).to eq('Germany')
+    end
+
+    context 'when country code not recognized' do
+      let(:country_code) { 'UNKNOWN' }
+
+      it 'returns country code' do
+        expect(request_info.country).to eq(country_code)
+      end
+    end
+  end
+
   context 'when location headers are not set' do
     let(:headers) { {} }
 

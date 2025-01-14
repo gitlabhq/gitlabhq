@@ -8,7 +8,7 @@ info: For assistance with this What's new page, see https://handbook.gitlab.com/
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can view some of the highlights from the last 10
 GitLab versions in the **What's new** feature. It lists new features available in different

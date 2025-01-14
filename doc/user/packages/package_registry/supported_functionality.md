@@ -13,7 +13,7 @@ and pulling packages, request forwarding, managing duplicates, and authenticatio
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Packages can be published to your project, group, or instance.
 
@@ -38,7 +38,7 @@ Packages can be published to your project, group, or instance.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Packages can be pulled from your project, group, or instance.
 
@@ -63,7 +63,7 @@ Packages can be pulled from your project, group, or instance.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Requests for packages not found in your GitLab project are forwarded to the public registry. For example, Maven Central, npmjs, or PyPI.
 
@@ -126,7 +126,7 @@ You can use GitLab pipelines to import packages from other repositories, such as
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 By default, the GitLab package registry either allows or prevents duplicates based on the default of that specific package manager format.
 
@@ -151,7 +151,7 @@ By default, the GitLab package registry either allows or prevents duplicates bas
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 GitLab tokens are used to authenticate with the GitLab package registry.
 
@@ -178,7 +178,7 @@ The following tokens are supported:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 The following authentication protocols are supported:
 
@@ -205,7 +205,7 @@ The following authentication protocols are supported:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Hash values are used to ensure you are using the correct package. You can view these values in the user interface or with the [API](../../../api/packages.md).
 

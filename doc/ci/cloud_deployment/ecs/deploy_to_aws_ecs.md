@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 This step-by-step guide helps you deploy a project hosted on GitLab.com to
 the Amazon [Elastic Container Service (ECS)](https://aws.amazon.com/ecs/).

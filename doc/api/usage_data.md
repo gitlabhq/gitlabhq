@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 The Service Ping API is associated with [Service Ping](../development/internal_analytics/service_ping/index.md).
 
@@ -43,6 +43,16 @@ Example response:
     "ci_pipeline_schedules": 0
 ...
 ```
+
+### Interpreting `schema_inconsistencies_metric`
+
+The Service Ping JSON payload includes `schema_inconsistencies_metric`. Database schema inconsistencies are expected, and are unlikely to indicate a problem with your instance.
+
+This metric is designed only for troubleshooting ongoing issues, and shouldn't be used as a regular health check. The metric should only be interpreted with
+the guidance of GitLab Support. The metric reports the same database schema inconsistencies as the
+[database schema checker Rake task](../administration/raketasks/maintenance.md#check-the-database-for-schema-inconsistencies). 
+
+For more information, see [issue 467544](https://gitlab.com/gitlab-org/gitlab/-/issues/467544).
 
 ## Export metric definitions as a single YAML file
 

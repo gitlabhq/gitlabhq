@@ -9,7 +9,7 @@ description: "Merge requests show the results of CI/CD pipelines and mergeabilit
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 The **Overview** page of a merge request displays status updates from services
 that perform actions on your merge request. All subscription levels display a
@@ -71,7 +71,7 @@ faster to preview proposed modifications.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 To view a list of licenses that detected for your project's dependencies,
 configure [License Compliance](../../compliance/license_scanning_of_cyclonedx_files/index.md)
@@ -83,7 +83,7 @@ for your project.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 If you have configured [external status checks](status_checks.md) you can
 see the status of these checks in merge requests

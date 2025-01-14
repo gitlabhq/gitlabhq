@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 While GitLab offers a [built-in deployment solution](index.md), you might prefer to use an external deployment tool, such as Heroku or ArgoCD.
 GitLab can receive deployment events from these external tools and allows you to track the deployments within GitLab.

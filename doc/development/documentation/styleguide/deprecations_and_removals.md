@@ -40,7 +40,7 @@ To deprecate a page or topic:
 
    DETAILS:
    **Tier:** Premium, Ultimate
-   **Offering:** GitLab.com, Self-managed, GitLab Dedicated
+   **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
    WARNING:
    This feature was [deprecated](https://issue-link) in GitLab 14.8
@@ -68,7 +68,7 @@ To deprecate a page or topic:
 
    DETAILS:
    **Tier:** Premium, Ultimate
-   **Offering:** GitLab.com, Self-managed, GitLab Dedicated
+   **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
    WARNING:
    This feature was [deprecated](https://issue-link) in GitLab 14.8
@@ -107,7 +107,7 @@ To remove a page:
 
    DETAILS:
    **Tier:** Premium, Ultimate
-   **Offering:** GitLab.com, Self-managed, GitLab Dedicated
+   **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
    This feature was [deprecated](https://issue-link) in GitLab X.Y
    and [removed](https://issue-link) in X.Y.
@@ -148,7 +148,7 @@ To remove a topic:
 
    DETAILS:
    **Tier:** Premium, Ultimate
-   **Offering:** GitLab.com, Self-managed, GitLab Dedicated
+   **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
    This feature was [deprecated](https://issue-link) in GitLab X.Y
    and [removed](https://issue-link) in X.Y.

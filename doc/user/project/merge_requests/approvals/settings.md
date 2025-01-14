@@ -9,7 +9,7 @@ description: "Define approval rules and limits in GitLab with merge request appr
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can configure the settings for [merge request approvals](index.md) to
 ensure the approval rules meet your use case. You can also configure
@@ -157,7 +157,7 @@ Prerequisites:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 By default, an approval on a merge request is removed when you add more changes
 after the approval. In GitLab Premium and Ultimate tiers, to keep existing approvals

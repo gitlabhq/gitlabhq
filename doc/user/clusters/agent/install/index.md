@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 To connect a Kubernetes cluster to GitLab, you must install an agent in your cluster.
 
@@ -131,7 +131,7 @@ You must register an agent before you can install the agent in your cluster. To 
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
 

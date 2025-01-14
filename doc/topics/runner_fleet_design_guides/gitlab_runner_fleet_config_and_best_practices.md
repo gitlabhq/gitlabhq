@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Available on GitLab.com, Self-managed
+**Offering:** GitLab.com, GitLab Self-Managed
 
 This page describes how to analyze your CI/CD build requirements to design, configure,
 and validate a GitLab Runner fleet hosted on Google Kubernetes Engine (GKE).

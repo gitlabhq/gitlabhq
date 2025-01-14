@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Use this API to interact with personal access tokens. For more information, see [Personal access tokens](../user/profile/personal_access_tokens.md).
 
@@ -478,7 +478,7 @@ token.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 See the [User tokens API](user_tokens.md#create-a-personal-access-token) for
 information on creating a personal access token for the currently authenticated user.

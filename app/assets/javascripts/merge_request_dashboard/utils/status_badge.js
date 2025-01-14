@@ -59,7 +59,10 @@ export function approvalBadge({ mergeRequest, currentUserId }) {
     };
   }
 
-  if (mergeRequest.approvedBy.nodes.find((u) => u.id === currentUserId)) {
+  if (
+    mergeRequest.approvedBy?.nodes.find((u) => u.id === currentUserId) ||
+    mergeRequest.approvalsRequired === 0
+  ) {
     return {
       icon: 'check-circle-filled',
       text: __('Approved'),

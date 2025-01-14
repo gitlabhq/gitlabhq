@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Within GitLab, we inform users of available third-party offers they might find valuable in order
 to enhance the development of their projects. An example is the Google Cloud Platform free credit

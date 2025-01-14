@@ -9,7 +9,7 @@ description: "Configure limits on the number of single push events your instance
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Set the number of branches or tags to limit the number of single push events
 allowed at once. If the number of events is greater than this, GitLab creates

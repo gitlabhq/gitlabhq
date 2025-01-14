@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Interact with group [webhooks](../user/project/integrations/webhooks.md) by using the REST API. Also called group hooks.
 These are different from [system hooks](system_hooks.md) that are system wide and [project webhooks](project_webhooks.md) that are limited to one project.

@@ -13,7 +13,7 @@ features.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 You can view audit events from user actions across an entire GitLab instance.
 To view instance audit events:
@@ -32,7 +32,7 @@ Instance audit events can also be accessed using the [instance audit events API]
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - Entity type `Gitlab::Audit::InstanceScope` for instance audit events [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418185) in GitLab 16.2.
 
@@ -79,7 +79,7 @@ All items are sorted by `created_at` in ascending order.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 When a user is [impersonated](../administration/admin_area.md#user-impersonation), their actions are logged as audit events with the following additional details:
 

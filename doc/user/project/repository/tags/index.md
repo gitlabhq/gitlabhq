@@ -9,7 +9,7 @@ description: "Use Git tags to mark important points in a repository's history, a
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 In Git, a tag marks an important point in a repository's history.
 Git supports two types of tags:
@@ -119,7 +119,7 @@ GitLab enforces these additional rules on all tags:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 To prevent users from removing a tag with `git push`, create a [push rule](../push_rules.md).
 

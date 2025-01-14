@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 With zero-downtime upgrades, it's possible to upgrade a live GitLab environment without having to
 take it offline. This guide will take you through the core process of performing
@@ -347,7 +347,7 @@ Run through the following steps sequentially on each component node to perform t
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 This section describes the steps required to upgrade live GitLab environment
 deployment with Geo.

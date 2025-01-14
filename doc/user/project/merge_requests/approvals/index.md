@@ -9,7 +9,7 @@ description: "To ensure all changes are reviewed, configure optional or required
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 To set up a review process for changes in your project, configure merge request approvals.
 They help to ensure that changes are reviewed before they're merged into your project.
@@ -57,7 +57,7 @@ For more information on configuring rules, see [Approval rules](rules.md).
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Required approvals enforce code reviews by specified users. Without these approvals, merging is not possible.
 

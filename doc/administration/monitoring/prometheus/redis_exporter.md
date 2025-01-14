@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 The [Redis exporter](https://github.com/oliver006/redis_exporter) enables you to measure
 various [Redis](https://redis.io) metrics. For more information on what is exported,

@@ -10,7 +10,7 @@ redirect_to: '../../user/project/import/github.md'
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134296) in GitLab 16.6
 and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147182) in 17.0.

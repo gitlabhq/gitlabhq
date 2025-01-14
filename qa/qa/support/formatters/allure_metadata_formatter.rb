@@ -71,8 +71,18 @@ module QA
         def add_failure_issues_link(example)
           return unless example.execution_result.status == :failed
 
-          search_query = ERB::Util.url_encode(example.file_path.gsub('./qa/specs/features/', '').to_s)
-          search_url = "https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&type=issue&search=#{search_query}"
+          search_parameters = {
+            sort: "updated_desc",
+            scope: "all",
+            state: "opened"
+          }.map { |key, value| "#{key}=#{value}" }.join("&")
+
+          search_terms = {
+            test_file_path: ERB::Util.url_encode(example.file_path.gsub('./qa/specs/features/', '').to_s),
+            exception_message: ERB::Util.url_encode(example.exception.message)
+          }.map { |_, value| "search=#{value}" }.join("&")
+
+          search_url = "https://gitlab.com/gitlab-org/gitlab/-/issues?#{search_parameters}&#{search_terms}"
           example.issue('Failure issues', search_url)
         rescue StandardError => e
           log(:error, "Failed to add failure issue link for example '#{example.description}', error: #{e}")

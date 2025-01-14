@@ -25,7 +25,7 @@ If 2FA is not enabled user accounts are locked after three failed sign-in attemp
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 > - Configurable locked user policy [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27048) in GitLab 16.5.
 

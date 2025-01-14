@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 After you set up the [database replication and configure the Geo nodes](../setup/index.md), use your closest GitLab site as you would do with the primary one.
 

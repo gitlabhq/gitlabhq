@@ -9,7 +9,7 @@ description: "Cherry-pick a Git commit when you want to add a single commit from
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Use `git cherry-pick` to apply the changes from a specific commit to your current
 working branch. Use this command to:

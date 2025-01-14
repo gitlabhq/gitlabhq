@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 The GitLab UI polls for updates for different resources (such as issue notes, issue titles, and pipeline
 statuses) on a schedule appropriate to the resource.

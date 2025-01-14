@@ -10,7 +10,7 @@ redirect_to: 'proxy_based_to_browser_based_migration_guide.md'
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab 16.9
 and [removed](https://gitlab.com/groups/gitlab-org/-/epics/11986) in 17.3.

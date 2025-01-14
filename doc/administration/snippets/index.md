@@ -9,7 +9,7 @@ description: "Configure snippets settings for your GitLab instance."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 You can configure a maximum size for a snippet to prevent abuse.
 The default limit is 52428800 bytes (50 MB).

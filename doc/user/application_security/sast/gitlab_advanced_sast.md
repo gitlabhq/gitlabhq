@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - Introduced in GitLab 17.1 as an [experiment](../../../policy/development_stages_support.md) for Python.
 > - Support for Go and Java added in 17.2.

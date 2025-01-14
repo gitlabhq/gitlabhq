@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed
+**Offering:** GitLab.com, GitLab Self-Managed
 
 Two-factor authentication (2FA) provides an additional level of security to your GitLab account. For others to access
 your account, they would need your username and password _and_ access to your second factor of authentication.
@@ -92,7 +92,7 @@ in a safe place.
 ### Enable a one-time password authenticator using FortiAuthenticator
 
 DETAILS:
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can
@@ -157,7 +157,7 @@ Configure FortiAuthenticator in GitLab. On your GitLab server:
 ### Enable a one-time password authenticator using Cisco Duo
 
 DETAILS:
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15760) in GitLab 15.10.
 
@@ -223,7 +223,7 @@ On your GitLab server:
 ### Enable a one-time password authenticator using FortiToken Cloud
 
 DETAILS:
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can
@@ -392,7 +392,7 @@ This clears all your 2FA registrations, including mobile applications and WebAut
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 - Take care that 2FA keeps working after [restoring a GitLab backup](../../../administration/backup_restore/index.md).
 - To ensure 2FA authorizes correctly with an OTP server, synchronize your GitLab

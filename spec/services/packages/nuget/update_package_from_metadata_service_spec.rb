@@ -125,6 +125,24 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
             .and change { ::Packages::Nuget::Metadatum.count }.by(1)
         end
       end
+
+      context 'when duplicates are not allowed' do
+        before do
+          allow(::Namespace::PackageSetting).to receive(:duplicates_allowed?).and_return(false)
+        end
+
+        it_behaves_like 'raising an', described_class::DuplicatePackageError, with_message: "A package 'DummyProject.DummyPackage' with version '1.0.0' already exists"
+
+        context 'when create_nuget_packages_on_the_fly feature flag is disabled' do
+          before do
+            stub_feature_flags(create_nuget_packages_on_the_fly: false)
+          end
+
+          it 'does not raise an error' do
+            expect { subject }.not_to raise_error
+          end
+        end
+      end
     end
 
     context 'with a nuspec file with metadata' do

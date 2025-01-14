@@ -9,7 +9,7 @@ description: "Understand how to read the display of commits in a merge request."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 A commit records and sends the source code changes to the [repository](../repository/index.md).
 For more information, see [Recording Changes to the Repository](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository).

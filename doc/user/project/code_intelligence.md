@@ -9,7 +9,7 @@ description: "Use code intelligence to find all uses of an object in your projec
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Code intelligence adds code navigation features common to interactive
 development environments (IDE), including:

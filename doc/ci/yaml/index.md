@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 This document lists the configuration options for the GitLab `.gitlab-ci.yml` file.
 This file is where you define the CI/CD jobs that make up your pipeline.
@@ -2089,7 +2089,7 @@ In this example:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Use the `dast_configuration` keyword to specify a site profile and scanner profile to be used in a
 CI/CD configuration. Both profiles must first have been created in the project. The job's stage must
@@ -3139,7 +3139,7 @@ In this example:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Use `needs:project` to download artifacts from up to five jobs in other pipelines.
 The artifacts are downloaded from the latest successful specified job for the specified ref.
@@ -3495,7 +3495,7 @@ as an artifact and published with GitLab Pages.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [experiment](../../policy/development_stages_support.md) [with a flag](../../user/feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
@@ -3541,7 +3541,7 @@ In this example, a different pages deployment is created for each branch.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/456478) in GitLab 17.4
 
@@ -4803,7 +4803,7 @@ job2:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Use `secrets` to specify [CI/CD secrets](../secrets/index.md) to:
 

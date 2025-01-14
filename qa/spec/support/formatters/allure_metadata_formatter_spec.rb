@@ -24,7 +24,8 @@ describe QA::Support::Formatters::AllureMetadataFormatter do
       metadata: {
         testcase: 'testcase',
         quarantine: { issue: 'issue' }
-      }
+      },
+      exception: RSpec::Expectations::ExpectationNotMetError.new("Some failure message")
     )
   end
   # rubocop:enable RSpec/VerifiedDoubles
@@ -47,7 +48,8 @@ describe QA::Support::Formatters::AllureMetadataFormatter do
       expect(rspec_example).to have_received(:add_link).with(name: "Job(#{ci_job})", url: ci_job_url)
       expect(rspec_example).to have_received(:issue).with(
         'Failure issues',
-        'https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&state=opened&type=issue&search=spec.rb'
+        'https://gitlab.com/gitlab-org/gitlab/-/issues?sort=updated_desc&scope=all&state=opened&' \
+          'search=spec.rb&search=Some%20failure%20message'
       )
     end
   end

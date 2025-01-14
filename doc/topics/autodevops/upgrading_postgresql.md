@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 When `POSTGRES_ENABLED` is `true`, Auto DevOps provides an
 [in-cluster PostgreSQL database](customize.md#postgresql-database-support) for your application.

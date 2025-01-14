@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14878) as an [experiment](../../../policy/development_stages_support.md) in GitLab 17.5 [with a flag](../../feature_flags.md) named `secret_detection_project_level_exclusions`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/499059) in GitLab 17.7. Feature flag `secret_detection_project_level_exclusions` removed.

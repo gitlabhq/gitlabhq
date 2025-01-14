@@ -9,7 +9,7 @@ description: "Set and configure Git protocol v2 for GitLab Self-Managed."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Git protocol v2 improves the v1 wire protocol in several ways and is
 enabled by default in GitLab for HTTP requests. To enable SSH, additional

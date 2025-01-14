@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - Group-level security policies [introduced](https://gitlab.com/groups/gitlab-org/-/epics/4425) in GitLab 15.2.
 > - Group-level security policies [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/356258) in GitLab 15.4.
@@ -287,19 +287,6 @@ GitLab applies concurrency control when:
 - You set the `time_window` property
 
 The concurrency control distributes the scheduled pipelines according to the [`time_window` settings](#time_window-schema) defined in the policy.
-
-#### Set the maximum top-level group concurrency for security policy scheduled scans
-
-For GitLab.com, this limit is managed by GitLab administrators. The current limit is 100.
-
-For self-managed instances, the limit has a default value of 10,000 can be changed in the **Admin** area.
-
-To update the **Security policy scheduled scans maximum top-level group concurrency** setting:
-
-1. Go to **Admin** > **Settings** > **CI/CD**.
-1. Expand **Continuous Integration and Deployment**.
-1. Set the **Security policy scheduled scans maximum top-level group concurrency**.
-1. Select **Save changes**.
 
 ## `scan` action type
 

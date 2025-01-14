@@ -9,7 +9,7 @@ description: "Use merge request reviews to discuss and improve code before it is
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Merge requests are the primary method of making changes to files in a
 GitLab project. [Create and submit](../creating_merge_requests.md) a merge request
@@ -75,7 +75,7 @@ GitLab adds the merge request to the user's review requests.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 GitLab Premium and Ultimate help you more quickly find the best reviewers for your merge request.
 Use the **Assign reviewers** drawer to filter lists of reviewers. See the Code Owners for the files
@@ -176,7 +176,7 @@ When you submit your review, GitLab:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430728) in GitLab 16.11 [with a flag](../../../../administration/feature_flags.md) named `mr_reviewer_requests_changes`. Disabled by default.
 > - Enabled by default [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/451211) and [self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158226) in GitLab 17.2.

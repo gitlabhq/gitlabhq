@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - HTTP proxying for secondary sites with separate URLs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in GitLab 14.5 [with a flag](../../../administration/feature_flags.md) named `geo_secondary_proxy_separate_urls`. Disabled by default.
 > - [Enabled on GitLab.com, self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in GitLab 15.1.

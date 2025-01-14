@@ -147,7 +147,7 @@ In GitLab 17.3 and earlier, follow these instructions to turn off GitLab Duo for
 ### Turn off for an instance
 
 DETAILS:
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 ::Tabs
 
@@ -219,7 +219,7 @@ These features are subject to the [Testing Agreement](https://handbook.gitlab.co
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed
+**Offering:** GitLab.com, GitLab Self-Managed
 
 ::Tabs
 

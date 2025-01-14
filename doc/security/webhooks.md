@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 To protect against the risk of data loss and exposure, GitLab administrators can now use outbound request filtering controls to restrict certain outbound requests made by the GitLab instance.
 

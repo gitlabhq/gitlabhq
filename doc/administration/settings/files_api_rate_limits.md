@@ -9,7 +9,7 @@ description: "Configure rate limits for the repository files API on GitLab Self-
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 The [Repository files API](../../api/repository_files.md) enables you to
 fetch, create, update, and delete files in your repository. To improve the security

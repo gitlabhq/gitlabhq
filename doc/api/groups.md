@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Interact with [groups](../user/group/index.md) by using the REST API.
 
@@ -719,7 +719,7 @@ Example response:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Get a list of users provisioned by a given group. Does not include subgroups.
 
@@ -794,7 +794,7 @@ Example response:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424505) in GitLab 16.6. This feature is an [experiment](../policy/development_stages_support.md).
@@ -1231,7 +1231,7 @@ Example response:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Group audit events can be accessed via the [Group audit events API](audit_events.md#group-audit-events)
 
@@ -1326,7 +1326,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Syncs the group with its linked LDAP group. Only available to group owners and administrators.
 
@@ -1586,7 +1586,7 @@ A GitLab.com group can't be deleted if it is linked to a subscription. To delete
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Restores a group marked for deletion.
 

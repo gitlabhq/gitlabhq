@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Automatic background verification ensures that the transferred data matches a
 calculated checksum. If the checksum of the data on the **primary** site matches checksum of the

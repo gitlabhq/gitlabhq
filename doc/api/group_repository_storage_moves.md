@@ -9,7 +9,7 @@ description: "Documentation for the REST API for moving the storage for reposito
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Group wiki repositories can be moved between storages. This API can help you, for example,
 [migrate to Gitaly Cluster](../administration/gitaly/index.md#migrate-to-gitaly-cluster)

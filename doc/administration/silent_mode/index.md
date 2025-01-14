@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9826) in GitLab 15.11. This feature was an [experiment](../../policy/development_stages_support.md#experiment).
 > - Enabling and disabling Silent Mode through the web UI was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131090) in GitLab 16.4.

@@ -9,7 +9,7 @@ description: "Configure external storage, such as a CDN, for static objects in y
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Configure GitLab to serve repository static objects (such as archives or raw blobs) from external
 storage such as a content delivery network (CDN).

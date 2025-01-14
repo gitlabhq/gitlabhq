@@ -9,7 +9,7 @@ description: Require approvals prior to deploying to a Protected Environment
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can require additional approvals for deployments to protected
 environments. Deployments are blocked until all required approvals are

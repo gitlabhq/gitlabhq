@@ -9,7 +9,7 @@ description: "Documentation for the REST API for Package Protection Rules in Git
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151741) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `packages_protected_packages`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/472655) in GitLab 17.5.

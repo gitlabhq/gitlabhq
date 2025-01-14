@@ -9,7 +9,7 @@ description: "Configure project templates and make them available to all project
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 As an administrator, you can configure a group that contains projects available for
 use as the source of project templates on your instance. You can then

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 If you don't want to keep your documentation in your repository, but you want
 to keep it in the same project as your code, you can use the wiki GitLab provides
@@ -457,7 +457,7 @@ line of your Apache configuration to ensure your page slugs render correctly.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 WARNING:
 This operation deletes all data in the wiki.

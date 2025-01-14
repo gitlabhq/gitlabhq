@@ -11,7 +11,7 @@ description: "Use this tutorial to build a protected workflow for your GitLab pr
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 When your team starts a new project, they need a workflow that balances efficiency
 with appropriate reviews. In GitLab, you can create user groups, combine those

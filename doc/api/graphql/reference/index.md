@@ -7202,7 +7202,7 @@ Input type: `MemberRoleCreateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationmemberrolecreatebaseaccesslevel"></a>`baseAccessLevel` | [`MemberAccessLevel!`](#memberaccesslevel) | Base access level for the custom role. |
+| <a id="mutationmemberrolecreatebaseaccesslevel"></a>`baseAccessLevel` | [`MemberRolesAccessLevel!`](#memberrolesaccesslevel) | Base access level for the custom role. |
 | <a id="mutationmemberrolecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmemberrolecreatedescription"></a>`description` | [`String`](#string) | Description of the member role. |
 | <a id="mutationmemberrolecreategrouppath"></a>`groupPath` | [`ID`](#id) | Group the member role to mutate is in. Required for SaaS. |
@@ -40444,6 +40444,19 @@ Member role standard permission.
 | <a id="memberrolestandardpermissionread_vulnerability"></a>`READ_VULNERABILITY` | Read vulnerability reports and security dashboards. |
 | <a id="memberrolestandardpermissionremove_group"></a>`REMOVE_GROUP` | Ability to delete or restore a group. This ability does not allow deleting top-level groups. Review the Retention period settings to prevent accidental deletion. |
 | <a id="memberrolestandardpermissionremove_project"></a>`REMOVE_PROJECT` | Allows deletion of projects. |
+
+### `MemberRolesAccessLevel`
+
+Access level of a group or project member.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="memberrolesaccessleveldeveloper"></a>`DEVELOPER` | The Developer role gives users access to contribute code while restricting sensitive administrative actions. |
+| <a id="memberrolesaccesslevelguest"></a>`GUEST` | The Guest role is for users who need visibility into a project or group but should not have the ability to make changes, such as external stakeholders. |
+| <a id="memberrolesaccesslevelmaintainer"></a>`MAINTAINER` | The Maintainer role is primarily used for managing code reviews, approvals, and administrative settings for projects. This role can also manage project memberships. |
+| <a id="memberrolesaccesslevelminimal_access"></a>`MINIMAL_ACCESS` | The Minimal Access role is for users who need the least amount of access into groups and projects. You can assign this role as a default, before giving a user another role with more permissions. |
+| <a id="memberrolesaccesslevelplanner"></a>`PLANNER` | The Planner role is suitable for team members who need to manage projects and track work items but do not need to contribute code. |
+| <a id="memberrolesaccesslevelreporter"></a>`REPORTER` | The Reporter role is suitable for team members who need to stay informed about a project or group but do not actively contribute code. |
 
 ### `MemberRolesOrderBy`
 

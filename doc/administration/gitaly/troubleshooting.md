@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Refer to the information below when troubleshooting Gitaly. For information on troubleshooting Gitaly Cluster (Praefect),
 see [Troubleshooting Gitaly Cluster](troubleshooting_gitaly_cluster.md).

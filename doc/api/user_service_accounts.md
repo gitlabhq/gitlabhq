@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Use this API to interact with service accounts. For more information, see [Service accounts](../user/profile/service_accounts.md).
 
@@ -16,7 +16,7 @@ Use this API to interact with service accounts. For more information, see [Servi
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 > - List all service account users [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416729) in GitLab 17.1.
 

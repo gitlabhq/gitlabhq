@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 This page contains upgrade information for minor and patch versions of GitLab 16.
 Ensure you review these instructions for:
@@ -1156,7 +1156,7 @@ Workaround: A possible workaround is to [disable proxying](../../administration/
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Specific information applies to installations using Geo:
 
@@ -1270,7 +1270,7 @@ For more information, see the:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Specific information applies to installations using Geo:
 

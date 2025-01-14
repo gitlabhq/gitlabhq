@@ -9,7 +9,7 @@ description: "Use the Web IDE to edit multiple files in the GitLab UI, stage com
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/371084) in GitLab 15.7.
@@ -291,7 +291,7 @@ For more information, see [VS Code issue 80170](https://github.com/microsoft/vsc
 ### Update the OAuth callback URL
 
 DETAILS:
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Prerequisites:
 
@@ -317,7 +317,7 @@ To update the OAuth callback URL:
 ### Workhorse dependency
 
 DETAILS:
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 On self-managed GitLab, [Workhorse](../../../development/workhorse/index.md) must be installed
 and running in front of the GitLab Rails server.

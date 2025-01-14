@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 GitLab administrators can manage the GitLab CI/CD configuration for their instance.
 
@@ -65,7 +65,7 @@ For Linux package installations:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 The maximum number of jobs that can be defined in `needs` defaults to 50.
 

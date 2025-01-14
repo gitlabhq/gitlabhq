@@ -9,7 +9,7 @@ description: "Configure rate limits for Git LFS on GitLab Self-Managed."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 [Git LFS (Large File Storage)](../../topics/git/lfs/index.md) is a Git extension
 for handling large files. If you use Git LFS in your repository, common Git operations

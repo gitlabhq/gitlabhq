@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 This document takes you through the steps of setting up a basic Postfix mail
 server with IMAP authentication on Ubuntu, to be used with [incoming email](incoming_email.md).

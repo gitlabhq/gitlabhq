@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Users can be deleted from a GitLab instance, either by:
 
@@ -73,7 +73,7 @@ primary email address.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 As an administrator, to delete a user account:
 
@@ -130,7 +130,7 @@ User approvals are associated with a user ID. Other user contributions do not ha
 ## Delete the root account on a self-managed instance
 
 DETAILS:
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 WARNING:
 The root account is the most privileged account on the system. Deleting the root account might result in losing access to the instance [**Admin** area](../../../administration/admin_area.md) if there is no other administrator available on the instance.

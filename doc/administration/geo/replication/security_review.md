@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 The following security review of the Geo feature set focuses on security aspects of
 the feature as they apply to customers running their own GitLab instances. The review

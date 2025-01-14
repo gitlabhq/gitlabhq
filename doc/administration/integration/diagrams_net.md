@@ -9,7 +9,7 @@ description: "Configure a Diagrams.net integration for GitLab Self-Managed."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86206) in GitLab 15.10.
 > - Offline environment support [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116281) in GitLab 16.1.

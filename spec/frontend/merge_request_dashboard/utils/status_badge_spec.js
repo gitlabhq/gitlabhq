@@ -104,6 +104,23 @@ describe('approvalBadge', () => {
     });
   });
 
+  describe('with approvalsRequired', () => {
+    it.each`
+      approvalsRequired | data
+      ${0}              | ${{ icon: 'check-circle-filled', text: 'Approved', variant: 'muted', iconOpticallyAligned: true }}
+      ${1}              | ${{ icon: 'hourglass', text: 'Waiting for approval', variant: 'muted' }}
+    `('returns $data when approvalsRequired $approvalsRequired', ({ approvalsRequired, data }) => {
+      expect(
+        approvalBadge({
+          mergeRequest: {
+            approvalsRequired,
+            reviewers: { nodes: [{ mergeRequestInteraction: { reviewState: 'APPROVED' } }] },
+          },
+        }),
+      ).toEqual(data);
+    });
+  });
+
   describe('when using reviewers reviewState', () => {
     it.each`
       reviewState   | data

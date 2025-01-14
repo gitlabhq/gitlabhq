@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 You can use [`git fsck`](https://git-scm.com/docs/git-fsck) to verify the integrity of all data
 committed to a repository. GitLab administrators can:

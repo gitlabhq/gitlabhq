@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 The deploy keys API can return in responses fingerprints of the public key in the following fields:
 
@@ -19,7 +19,7 @@ The deploy keys API can return in responses fingerprints of the public key in th
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 > `projects_with_readonly_access` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119147) in GitLab 16.0.
 
@@ -104,7 +104,7 @@ Example response:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/478476) in GitLab 17.5.
 

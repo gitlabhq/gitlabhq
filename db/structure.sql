@@ -9184,7 +9184,8 @@ CREATE TABLE boards_epic_lists (
     "position" integer,
     list_type smallint DEFAULT 1 NOT NULL,
     group_id bigint,
-    CONSTRAINT boards_epic_lists_position_constraint CHECK (((list_type <> 1) OR (("position" IS NOT NULL) AND ("position" >= 0))))
+    CONSTRAINT boards_epic_lists_position_constraint CHECK (((list_type <> 1) OR (("position" IS NOT NULL) AND ("position" >= 0)))),
+    CONSTRAINT check_86641111a7 CHECK ((group_id IS NOT NULL))
 );
 
 CREATE SEQUENCE boards_epic_lists_id_seq

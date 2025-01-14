@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.2 [with a flag](../../administration/feature_flags.md) named `work_item_epics`. Disabled by default. Your administrator must have [enabled the new look for epics](../../user/group/epics/epic_work_items.md). This feature is in [beta](../../policy/development_stages_support.md#beta).

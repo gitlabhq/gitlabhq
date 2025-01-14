@@ -9,7 +9,7 @@ description: "Cherry-pick a Git commit when you want to add a single commit from
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 In Git, *cherry-picking* is taking a single commit from one branch and adding it
 as the latest commit on another branch. The rest of the commits in the source branch

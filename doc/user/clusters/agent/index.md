@@ -34,7 +34,7 @@ and you can scale a single installation to multiple tenants.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
 

@@ -1,0 +1,9 @@
+---
+name: create_nuget_packages_on_the_fly
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/506035
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176359
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/509970
+milestone: '17.8'
+group: group::package registry
+type: gitlab_com_derisk
+default_enabled: false

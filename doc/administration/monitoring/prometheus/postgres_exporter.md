@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 The [PostgreSQL Server Exporter](https://github.com/prometheus-community/postgres_exporter) allows you to export various PostgreSQL metrics.
 

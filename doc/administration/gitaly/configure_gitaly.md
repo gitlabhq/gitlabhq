@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Configure Gitaly in one of two ways:
 
@@ -874,7 +874,7 @@ result as you did at the start. For example:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 [Gitaly](index.md), the service that provides storage for Git
 repositories, can be configured to cache a short rolling window of Git

@@ -45,7 +45,7 @@ table.no-vertical-table-lines tr {
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Dependency Scanning analyzes your application's dependencies for known vulnerabilities. All
 dependencies are scanned, including transitive dependencies, also known as nested dependencies.

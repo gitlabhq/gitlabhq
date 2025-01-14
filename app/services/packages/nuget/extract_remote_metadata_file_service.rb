@@ -16,13 +16,15 @@ module Packages
       end
 
       def execute
-        raise ExtractionError, 'invalid file url' if remote_url.blank?
+        return ServiceResponse.error(message: 'invalid file url') if remote_url.blank?
 
         if nuspec_file_content.blank? || !nuspec_file_content.instance_of?(String)
-          raise ExtractionError, 'nuspec file not found'
+          return ServiceResponse.error(message: 'nuspec file not found', reason: :nuspec_extraction_failed)
         end
 
         ServiceResponse.success(payload: nuspec_file_content)
+      rescue ExtractionError => e
+        ServiceResponse.error(message: e.message)
       end
 
       private

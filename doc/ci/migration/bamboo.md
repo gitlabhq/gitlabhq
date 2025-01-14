@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 This migration guide looks at how you can migrate from Atlassian Bamboo to GitLab CI/CD.
 The focus is on [Bamboo Specs YAML](https://docs.atlassian.com/bamboo-specs-docs/8.1.12/specs.html?yaml)

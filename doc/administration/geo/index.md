@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Geo is the solution for widely distributed development teams and for providing
 a warm-standby as part of a disaster recovery strategy. Geo is **not** an out of the box HA solution.

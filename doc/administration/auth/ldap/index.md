@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 GitLab integrates with [LDAP - Lightweight Directory Access Protocol](https://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol)
 to support user authentication.
@@ -483,7 +483,7 @@ you must do so in an `attributes` hash.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 These LDAP sync configuration settings are optional, excluding `group_base` which
 required when `external_groups` is configured:
@@ -502,7 +502,7 @@ If Sidekiq is configured on a different server to the Rails server, you must add
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 If you have users on multiple LDAP servers, you can configure GitLab to use them. To add additional LDAP servers:
 

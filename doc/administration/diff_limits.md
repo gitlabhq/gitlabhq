@@ -9,7 +9,7 @@ description: "Configure the maximum diff size to display on GitLab Self-Managed.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 You can set a maximum size for display of diff files (patches).
 

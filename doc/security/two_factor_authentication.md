@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 [Two-factor authentication (2FA)](../user/profile/account/two_factor_authentication.md)
 is an authentication method that requires the user to provide two different factors
@@ -27,7 +27,7 @@ If you are [using and enforcing SSO](../user/group/saml_sso/index.md#sso-enforce
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Administrators can enforce 2FA for all users in two different ways:
 
@@ -61,7 +61,7 @@ For more information, see the [list of settings that can be accessed through API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/427549) in GitLab 16.8.
 
@@ -82,7 +82,7 @@ If you are using an external provider to sign in into GitLab, this setting will 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can enforce 2FA for all users in a group or subgroup.
 
@@ -140,7 +140,7 @@ enabled, 2FA is **not** required for those individually added members.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 You can disable 2FA for a single user or all users.
 
@@ -198,7 +198,7 @@ To disable 2FA for all users even when forced 2FA is disabled, use the following
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - It's deployed behind a feature flag, disabled by default.
 > - Push notification support [introduced](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/506) in GitLab 15.3.

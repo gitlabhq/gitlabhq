@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 This reference architecture targets a peak load of 20 requests per second (RPS). Based on real data, this load typically corresponds to up to 1,000 users, which includes both manual and automated interactions.
 
@@ -110,7 +110,7 @@ or [external object storage service](../object_storage.md). It improves performa
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 You can leverage Elasticsearch and [enable advanced search](../../integration/advanced_search/elasticsearch.md)
 for faster, more advanced code search across your entire GitLab instance.

@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Pipeline secret detection scans files after they are committed to a Git repository and pushed to GitLab.
 
@@ -105,7 +105,7 @@ pipeline.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/434096) in GitLab 17.0.
 
@@ -811,7 +811,7 @@ In previous GitLab versions, the following variables were also available:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 An offline environment has limited, restricted, or intermittent access to external resources through
 the internet. For self-managed GitLab instances in such an environment, pipeline secret detection requires

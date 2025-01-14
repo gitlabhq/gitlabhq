@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Resource state events keep track of what happens to GitLab [issues](../user/project/issues/index.md)
 [merge requests](../user/project/merge_requests/index.md) and [epics starting with GitLab 15.4](../user/group/epics/index.md)

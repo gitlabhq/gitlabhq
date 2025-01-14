@@ -9,7 +9,7 @@ description: "Use your web browser to write code in a secure environment."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Remote development is a set of features you can use to make code changes
 without having to install any dependencies or clone any repositories locally.

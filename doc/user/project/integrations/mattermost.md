@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Use the Mattermost notifications integration to send notifications for GitLab events
 (for example, `issue created`) to Mattermost. You must configure both [Mattermost](#configure-mattermost-to-receive-gitlab-notifications)

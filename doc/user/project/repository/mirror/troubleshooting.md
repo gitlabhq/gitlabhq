@@ -9,7 +9,7 @@ description: "Troubleshooting problems with repository mirroring for GitLab proj
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 When mirroring fails, project maintainers can see a link similar to **{warning-solid}** **Pull mirroring failed 1 hour ago.**
 on the project details page. Select this link to go directly to the mirroring settings,

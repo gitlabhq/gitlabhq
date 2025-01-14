@@ -127,6 +127,7 @@ exceptions:
   - JPEG
   - JPG
   - JSON
+  - JSONB
   - JVM
   - JWT
   - KICS

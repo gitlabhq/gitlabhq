@@ -9,7 +9,7 @@ description: "Configure PlantUML integration with GitLab Self-Managed."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 With the [PlantUML](https://plantuml.com) integration, you can create diagrams in snippets, wikis, and repositories.
 This integration is enabled on GitLab.com for all SaaS users and does not require any additional configuration.

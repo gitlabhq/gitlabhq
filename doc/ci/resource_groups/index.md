@@ -9,7 +9,7 @@ description: Control the job concurrency in GitLab CI/CD
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 By default, pipelines in GitLab CI/CD run concurrently. Concurrency is an important factor to improve
 the feedback loop in merge requests, however, there are some situations that

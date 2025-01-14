@@ -212,7 +212,7 @@ To open a file from your current GitLab project in the GitLab UI, with specific 
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Prerequisites:
 

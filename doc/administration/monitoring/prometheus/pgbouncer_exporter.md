@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 The [PgBouncer exporter](https://github.com/prometheus-community/pgbouncer_exporter) enables
 you to measure various [PgBouncer](https://www.pgbouncer.org/) metrics.

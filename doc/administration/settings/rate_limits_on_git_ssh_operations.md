@@ -9,7 +9,7 @@ description: "Configure rate limits on Git SSH operations on GitLab Self-Managed
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Available by default](https://gitlab.com/gitlab-org/gitlab/-/issues/367998) in GitLab 15.8. [Feature flag](../feature_flags.md) `rate_limit_gitlab_shell` removed.
 

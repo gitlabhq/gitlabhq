@@ -9,7 +9,7 @@ description: "Define limits for deprecated APIs on GitLab Self-Managed."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Deprecated API endpoints are those which have been replaced with alternative
 functionality, but cannot be removed without breaking backward compatibility.

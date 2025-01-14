@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - API security testing analyzer [became the default analyzer for on-demand API security testing scans](https://gitlab.com/groups/gitlab-org/-/epics/4254) in GitLab 15.6.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/457449) from **DAST API analyzer** to **API security testing analyzer** in GitLab 17.0.

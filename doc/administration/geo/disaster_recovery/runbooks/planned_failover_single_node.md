@@ -9,7 +9,7 @@ ignore_in_report: true
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 **Status:** Experiment
 
 Disaster Recovery (Geo) promotion runbooks.

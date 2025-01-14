@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Jobs can output an archive of files and directories. This output is known as a job artifact.
 
@@ -270,7 +270,7 @@ child pipelines have a job with the same name, the job artifacts from the parent
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can use a [CI/CD job token](ci_job_token.md) to authenticate with the [jobs artifacts API endpoint](../../api/job_artifacts.md)
 and fetch artifacts from a different pipeline. You must specify which job to retrieve artifacts from,

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86092) the major analyzer version from `4` to `5` in GitLab 15.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86783) from GitLab Ultimate to GitLab Free in 15.0.
@@ -394,7 +394,7 @@ The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variab
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 To allowlist specific vulnerabilities, follow these steps:
 
@@ -696,7 +696,7 @@ You can download CycloneDX SBOMs [the same way as other job artifacts](../../../
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2340) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `enable_container_scanning_for_registry`. Disabled by default.
 > - [Enabled on self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/443827) in GitLab 17.2.
@@ -763,7 +763,7 @@ Database update information for other analyzers is available in the
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Some vulnerabilities can be fixed by applying the solution that GitLab
 automatically generates.

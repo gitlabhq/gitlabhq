@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 The following sections outline troubleshooting steps for fixing replication error messages (indicated by `Database replication working? ... no` in the
 [`geo:check` output](common.md#health-check-rake-task).

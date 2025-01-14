@@ -9,7 +9,7 @@ description: "Documentation for the REST API for container repository protection
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed
+**Offering:** GitLab.com, GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155798) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `container_registry_protected_containers`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/429074) in GitLab 17.8.

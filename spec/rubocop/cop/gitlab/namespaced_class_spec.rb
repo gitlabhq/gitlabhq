@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/namespaced_class'
 
-RSpec.describe RuboCop::Cop::Gitlab::NamespacedClass do
+RSpec.describe RuboCop::Cop::Gitlab::NamespacedClass, feature_category: :shared do
   shared_examples 'enforces namespaced classes' do
     def namespaced(code)
       return code unless namespace

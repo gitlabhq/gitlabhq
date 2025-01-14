@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Use the CI/CD analytics page to view pipeline success rates and duration, and the history of DORA metrics over time.
 
@@ -40,7 +40,7 @@ You can view CI/CD analytics for a group or project.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 To view CI/CD analytics:
 
@@ -51,7 +51,7 @@ To view CI/CD analytics:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 To view CI/CD analytics:
 
@@ -62,7 +62,7 @@ To view CI/CD analytics:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 The [deployment frequency](dora_metrics.md#deployment-frequency) charts show information about the deployment
 frequency to the `production` environment. The environment must be part of the
@@ -85,7 +85,7 @@ To view the deployment frequency chart:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 The [lead time for changes](dora_metrics.md#lead-time-for-changes) chart shows information about how long it takes for
 merge requests to be deployed to a production environment. This chart is available for groups and projects.
@@ -109,7 +109,7 @@ To view the lead time for changes chart:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356959) in GitLab 15.1
 
@@ -129,7 +129,7 @@ To view the time to restore service chart:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357072) in GitLab 15.2
 

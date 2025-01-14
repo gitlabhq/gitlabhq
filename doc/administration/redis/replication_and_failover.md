@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 This documentation is for the Linux package. To use your own
 non-bundled Redis, see [Redis replication and failover providing your own instance](replication_and_failover_external.md).

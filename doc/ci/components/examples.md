@@ -8,7 +8,7 @@ info: This page is maintained by Developer Relations, author @dnsmichi, see http
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 ## Test a component
 

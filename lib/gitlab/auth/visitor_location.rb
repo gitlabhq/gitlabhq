@@ -23,7 +23,9 @@ module Gitlab
       def country
         code = request.headers[HEADERS[:country]] # 2-letter country code, e.g. "JP" for Japan
         # If country name is not known for local language, default to English. Or just display country code
-        I18nData.countries(I18n.locale)[code] || I18nData.countries[code] || code
+        I18nData.countries(I18n.locale)[code] || code
+      rescue I18nData::NoTranslationAvailable
+        I18nData.countries[code] || code
       end
 
       def city

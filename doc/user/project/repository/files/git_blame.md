@@ -9,7 +9,7 @@ description: "Documentation on Git file blame."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 [Git blame](https://git-scm.com/docs/git-blame) provides more information
 about every line in a file, including the last modified time, author, and

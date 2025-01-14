@@ -9,7 +9,7 @@ description: "How comma-separated values (CSV) files display in GitLab projects.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 A comma-separated values (CSV) file is a delimited text file that uses a comma to separate values.
 Each line of the file is a data record. Each record consists of one or more fields, separated by

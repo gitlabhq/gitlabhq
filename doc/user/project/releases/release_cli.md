@@ -36,7 +36,7 @@ release-cli create --name "Release $CI_COMMIT_SHA" --description \
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 The `release-cli` binaries are [available in the package registry](https://gitlab.com/gitlab-org/release-cli/-/packages).
 

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 List, add, and delete [LDAP group links](../user/group/access_and_permissions.md#manage-group-memberships-with-ldap).
 

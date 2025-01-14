@@ -6,13 +6,15 @@ RSpec.describe Packages::Nuget::ExtractRemoteMetadataFileService, feature_catego
   let_it_be(:remote_url) { 'http://example.com/package.nupkg' }
   let_it_be(:nupkg_filepath) { 'packages/nuget/package.nupkg' }
 
+  let(:service) { described_class.new(remote_url) }
+
   describe '#execute' do
-    subject(:service) { described_class.new(remote_url) }
+    subject { service.execute }
 
     context 'when the remote URL is blank' do
       let(:remote_url) { '' }
 
-      it { expect { service.execute }.to raise_error(described_class::ExtractionError, 'invalid file url') }
+      it { is_expected.to be_error.and have_attributes(message: 'invalid file url') }
     end
 
     context 'when the package file is corrupted' do
@@ -21,7 +23,7 @@ RSpec.describe Packages::Nuget::ExtractRemoteMetadataFileService, feature_catego
           .and_yield('corrupted data')
       end
 
-      it { expect { service.execute }.to raise_error(described_class::ExtractionError, 'nuspec file not found') }
+      it { is_expected.to be_error.and have_attributes(message: 'nuspec file not found') }
     end
 
     context 'when reaching the maximum received fragments' do
@@ -31,7 +33,7 @@ RSpec.describe Packages::Nuget::ExtractRemoteMetadataFileService, feature_catego
           .and_yield('Fragment 5').and_yield(fixture_file(nupkg_filepath))
       end
 
-      it { expect { service.execute }.to raise_error(described_class::ExtractionError, 'nuspec file not found') }
+      it { is_expected.to be_error.and have_attributes(message: 'nuspec file not found') }
     end
 
     context 'when nuspec file is too big' do
@@ -43,7 +45,7 @@ RSpec.describe Packages::Nuget::ExtractRemoteMetadataFileService, feature_catego
         end
       end
 
-      it { expect { service.execute }.to raise_error(described_class::ExtractionError, 'nuspec file too big') }
+      it { is_expected.to be_error.and have_attributes(message: 'nuspec file too big') }
     end
 
     context 'when nuspec file is fragmented' do
@@ -96,11 +98,7 @@ RSpec.describe Packages::Nuget::ExtractRemoteMetadataFileService, feature_catego
         end
       end
 
-      it {
-        expect do
-          service.execute
-        end.to raise_error(described_class::ExtractionError, /nuspec file has the wrong entry size/)
-      }
+      it { is_expected.to be_error.and have_attributes(message: /nuspec file has the wrong entry size/) }
     end
 
     context 'with a Zip::Error exception' do
@@ -110,11 +108,7 @@ RSpec.describe Packages::Nuget::ExtractRemoteMetadataFileService, feature_catego
         allow(Zip::InputStream).to receive(:open).and_raise(Zip::Error)
       end
 
-      it {
-        expect do
-          service.execute
-        end.to raise_error(described_class::ExtractionError, /Error opening zip stream/)
-      }
+      it { is_expected.to be_error.and have_attributes(message: /Error opening zip stream/) }
     end
   end
 

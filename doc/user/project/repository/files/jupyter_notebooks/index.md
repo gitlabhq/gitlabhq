@@ -8,7 +8,7 @@ description: "GitLab projects display Jupyter Notebook files as clean, human-rea
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 [Jupyter Notebook](https://jupyter.org/) (previously, IPython Notebook) files are used for
 interactive computing in many fields. They contain a complete record of the

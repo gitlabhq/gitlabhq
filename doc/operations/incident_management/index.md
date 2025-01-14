@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 NOTE:
 This feature is not under active development. For more information, see [issue 468607](https://gitlab.com/gitlab-org/gitlab/-/issues/468607#note_1967939452).

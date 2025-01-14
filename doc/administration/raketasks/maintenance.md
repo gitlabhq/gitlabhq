@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 GitLab provides Rake tasks for general maintenance.
 
@@ -81,7 +81,7 @@ Gitaly
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 This command shows information about your [GitLab license](../../administration/license.md) and
 how many seats are used. It is only available on GitLab Enterprise

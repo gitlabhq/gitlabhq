@@ -9,7 +9,7 @@ description: "To remove unwanted large files from a Git repository and reduce it
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 The size of a Git repository can significantly impact performance and storage costs.
 It can differ slightly from one instance to another due to compression, housekeeping, and other factors.

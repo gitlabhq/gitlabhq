@@ -9,7 +9,7 @@ description: "Use protected tags in Git to control who can create tags, and prev
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Protected [tags](repository/tags/index.md):
 

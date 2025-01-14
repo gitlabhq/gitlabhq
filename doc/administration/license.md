@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 When you install a new GitLab instance without a license, only Free features
 are enabled. To enable more features in GitLab Enterprise Edition (EE), activate

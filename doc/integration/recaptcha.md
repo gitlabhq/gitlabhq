@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 GitLab leverages [reCAPTCHA](https://www.google.com/recaptcha/about/)
 to protect against spam and abuse. GitLab displays the CAPTCHA form on the sign-up page

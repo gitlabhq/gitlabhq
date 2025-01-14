@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 If you are an administrator, use the following information to troubleshoot LDAP.
 
@@ -61,7 +61,7 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 The following allows you to perform a search in LDAP using the rails console.
 Depending on what you're trying to do, it may make more sense to query [a user](#query-a-user-in-ldap)
@@ -268,7 +268,7 @@ ldapsearch -H ldaps://$host:$port -D "$bind_dn" -y bind_dn_password.txt  -b "$ba
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 The output from a manual [user sync](ldap_synchronization.md#user-sync) can show you what happens when
 GitLab tries to sync its users against LDAP. Enter the [rails console](#rails-console)
@@ -286,7 +286,7 @@ Next, [learn how to read the output](#example-console-output-after-a-user-sync).
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 The output from a [manual user sync](#sync-all-users) is very verbose, and a
 single user's successful sync can look like this:
@@ -381,7 +381,7 @@ Gitlab::Auth::Ldap::Person.find_by_uid('<uid>', adapter)
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 #### Memberships not granted
 

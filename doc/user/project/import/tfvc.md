@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Team Foundation Server (TFS), renamed [Azure DevOps Server](https://azure.microsoft.com/en-us/products/devops/server/)
 in 2019, is a set of tools developed by Microsoft which also includes

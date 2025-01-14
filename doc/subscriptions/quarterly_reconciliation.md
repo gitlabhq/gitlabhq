@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 In accordance with [the GitLab Subscription Agreement](https://about.gitlab.com/terms/),
 GitLab reviews your seat usage and sends you an invoice for any overages.

@@ -9,7 +9,7 @@ description: "Instance administrators can configure a custom issue closing patte
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 NOTE:
 This page explains how an administrator can configure issue closing patterns.

@@ -8,7 +8,7 @@ module Packages
       ExtractionError = Class.new(StandardError)
 
       def execute
-        return ServiceResponse.success if package_settings_allow_duplicates? || !target_package_is_duplicate?
+        return ServiceResponse.success if package_settings_allow_duplicates?
 
         ServiceResponse.error(
           message: 'A package with the same name and version already exists',
@@ -22,12 +22,6 @@ module Packages
 
       def package_settings_allow_duplicates?
         package_settings.nuget_duplicates_allowed? || package_settings.class.duplicates_allowed?(existing_package)
-      end
-
-      def target_package_is_duplicate?
-        existing_package.name.casecmp(metadata[:package_name]) == 0 &&
-          (existing_package.version.casecmp(metadata[:package_version]) == 0 ||
-            existing_package.normalized_nuget_version&.casecmp(metadata[:package_version]) == 0)
       end
 
       def package_settings
@@ -66,12 +60,13 @@ module Packages
       strong_memoize_attr :metadata
 
       def nuspec_file_content
-        ::Packages::Nuget::ExtractRemoteMetadataFileService
+        response = ::Packages::Nuget::ExtractRemoteMetadataFileService
           .new(params[:remote_url])
           .execute
-          .payload
-      rescue ::Packages::Nuget::ExtractRemoteMetadataFileService::ExtractionError => e
-        raise ExtractionError, e.message
+
+        raise ExtractionError, response.message if response.error?
+
+        response.payload
       end
     end
   end

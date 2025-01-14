@@ -11,6 +11,7 @@ import ExperimentMetadata from '~/ml/experiment_tracking/components/experiment_m
 import PerformanceGraph from '~/ml/experiment_tracking/components/performance_graph.vue';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import waitForPromises from 'helpers/wait_for_promises';
 import {
   MOCK_PAGE_INFO,
   MOCK_EXPERIMENT,
@@ -203,29 +204,30 @@ describe('MlExperimentsShow', () => {
     beforeEach(() => {
       createWrapper({ mountFn: mountExtended });
     });
+
     it('navigates to the correct component when tab is clicked', async () => {
-      await findCandidatesTab().vm.$emit('click');
+      findCandidatesTab().vm.$emit('click');
+      await waitForPromises();
+
       expect(findTabs().props('value')).toBe(1);
+      await waitForPromises();
+
       expect(findCandidatesList().exists()).toBe(true);
       expect(wrapper.findComponent(ExperimentMetadata).exists()).toBe(false);
 
-      await findMetadataTab().vm.$emit('click');
+      findMetadataTab().vm.$emit('click');
+      await waitForPromises();
+
       expect(findTabs().props('value')).toBe(0);
       expect(wrapper.findComponent(ExperimentMetadata).exists()).toBe(true);
       expect(wrapper.findComponent(CandidateList).exists()).toBe(false);
 
-      await findPerformanceTab().vm.$emit('click');
+      findPerformanceTab().vm.$emit('click');
+      await waitForPromises();
+
       expect(findTabs().props('value')).toBe(2);
       expect(wrapper.findComponent(ExperimentMetadata).exists()).toBe(false);
       expect(wrapper.findComponent(PerformanceGraph).exists()).toBe(true);
-    });
-
-    it('defaults to metadata on an incorrect route', async () => {
-      await findCandidatesTab().vm.$emit('click');
-      await wrapper.vm.$router.push({ path: '/invalid' });
-
-      expect(findTabs().props('value')).toBe(0);
-      expect(findCandidatesList().exists()).toBe(false);
     });
   });
 });

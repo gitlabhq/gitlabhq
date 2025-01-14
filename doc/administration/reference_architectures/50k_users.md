@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 This page describes the GitLab reference architecture designed to target a peak load of 1000 requests per second (RPS), the typical peak load of up to 50,000 users, both manual and automated, based on real data.
 
