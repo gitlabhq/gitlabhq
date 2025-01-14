@@ -32,9 +32,11 @@ module QA
             element 'created-access-token-field'
           end
 
-          base.view 'app/assets/javascripts/vue_shared/components/form/input_copy_toggle_visibility.vue' do
+          # rubocop:disable Layout/LineLength -- Single line is more readable
+          base.view 'app/assets/javascripts/vue_shared/components/input_copy_toggle_visibility/input_copy_toggle_visibility.vue' do
             element 'toggle-visibility-button'
           end
+          # rubocop:enable Layout/LineLength
 
           base.view 'app/assets/javascripts/access_tokens/components/access_token_table_app.vue' do
             element 'revoke-button'

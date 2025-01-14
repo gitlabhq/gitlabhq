@@ -2,7 +2,7 @@
 import { GlButton, GlModal } from '@gitlab/ui';
 import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
-import InputCopyToggleVisibility from '~/vue_shared/components/form/input_copy_toggle_visibility.vue';
+import InputCopyToggleVisibility from '~/vue_shared/components/input_copy_toggle_visibility/input_copy_toggle_visibility.vue';
 import {
   CONFIRM_MODAL,
   CONFIRM_MODAL_TITLE,

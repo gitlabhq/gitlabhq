@@ -735,6 +735,8 @@
   - 1
 - - remote_mirror_notification
   - 2
+- - repositories_post_receive
+  - 5
 - - repositories_rewrite_history
   - 1
 - - repository_check

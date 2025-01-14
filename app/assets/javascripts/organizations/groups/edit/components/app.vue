@@ -6,7 +6,7 @@ import { __, s__ } from '~/locale';
 import { VISIBILITY_LEVELS_INTEGER_TO_STRING } from '~/visibility_level/constants';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
-import FormErrorsAlert from '~/vue_shared/components/form/errors_alert.vue';
+import FormErrorsAlert from '~/organizations/shared/components/errors_alert.vue';
 import groupUpdateMutation from '../graphql/mutations/group_update.mutation.graphql';
 
 export default {

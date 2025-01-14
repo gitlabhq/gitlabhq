@@ -63,7 +63,7 @@ module Gitlab
 
     # Allow #to_json serialization
     def as_json(*_args)
-      options
+      options.as_json
     end
 
     private

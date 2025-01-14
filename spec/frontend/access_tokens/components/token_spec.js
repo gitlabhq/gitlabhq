@@ -1,7 +1,7 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import Token from '~/access_tokens/components/token.vue';
-import InputCopyToggleVisibility from '~/vue_shared/components/form/input_copy_toggle_visibility.vue';
+import InputCopyToggleVisibility from '~/vue_shared/components/input_copy_toggle_visibility/input_copy_toggle_visibility.vue';
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 
 describe('Token', () => {

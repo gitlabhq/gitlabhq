@@ -65,11 +65,26 @@ RSpec.describe PostReceiveService, feature_category: :team_planning do
   end
 
   shared_examples 'post_receive_service actions' do
-    it 'enqueues a PostReceive worker job' do
-      expect(PostReceive).to receive(:perform_async)
-        .with(gl_repository, identifier, changes, { ci: { skip: true } })
+    context 'when rename_post_receive_worker feature flag is disabled' do
+      before do
+        stub_feature_flags(rename_post_receive_worker: false)
+      end
 
-      subject
+      it 'enqueues a PostReceive worker job' do
+        expect(PostReceive).to receive(:perform_async)
+          .with(gl_repository, identifier, changes, { 'ci' => { 'skip' => true } })
+
+        subject
+      end
+    end
+
+    context 'when rename_post_receive_worker feature flag is enabled' do
+      it 'enqueues a PostReceiveWorker worker job' do
+        expect(Repositories::PostReceiveWorker).to receive(:perform_async)
+          .with(gl_repository, identifier, changes, { 'ci' => { 'skip' => true } })
+
+        subject
+      end
     end
 
     it 'decreases the reference counter and returns the result' do

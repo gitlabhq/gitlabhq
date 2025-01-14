@@ -3473,7 +3473,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/workers/ee/issuable/related_links_create_worker.rb'
     - 'ee/app/workers/ee/issuable_export_csv_worker.rb'
     - 'ee/app/workers/ee/new_issue_worker.rb'
-    - 'ee/app/workers/ee/post_receive.rb'
     - 'ee/app/workers/ee/project_cache_worker.rb'
     - 'ee/app/workers/ee/repository_check/batch_worker.rb'
     - 'ee/app/workers/ee/repository_check/single_repository_worker.rb'

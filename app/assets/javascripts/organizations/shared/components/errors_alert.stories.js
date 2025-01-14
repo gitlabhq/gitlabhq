@@ -2,7 +2,7 @@ import ErrorsAlert from './errors_alert.vue';
 
 export default {
   component: ErrorsAlert,
-  title: 'vue_shared/form/errors_alert',
+  title: 'organizations/shared/components/errors_alert',
 };
 
 const defaultProps = {

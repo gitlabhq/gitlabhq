@@ -1349,7 +1349,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/workers/concerns/elastic/bulk_cron_worker.rb'
     - 'ee/app/workers/concerns/geo/base_registry_sync_worker.rb'
     - 'ee/app/workers/create_github_webhook_worker.rb'
-    - 'ee/app/workers/ee/post_receive.rb'
     - 'ee/app/workers/elastic/migration_worker.rb'
     - 'ee/app/workers/elastic/namespace_update_worker.rb'
     - 'ee/app/workers/elastic_cluster_reindexing_cron_worker.rb'

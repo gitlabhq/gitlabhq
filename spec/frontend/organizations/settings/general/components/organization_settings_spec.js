@@ -13,10 +13,10 @@ import {
   FORM_FIELD_AVATAR,
   FORM_FIELD_DESCRIPTION,
 } from '~/organizations/shared/constants';
+import FormErrorsAlert from '~/organizations/shared/components/errors_alert.vue';
 import organizationUpdateMutation from '~/organizations/settings/general/graphql/mutations/organization_update.mutation.graphql';
 import { createAlert } from '~/alert';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
-import FormErrorsAlert from '~/vue_shared/components/form/errors_alert.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';

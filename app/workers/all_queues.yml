@@ -651,6 +651,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:namespaces_enable_descendants_cache_cron
+  :worker_name: Namespaces::EnableDescendantsCacheCronWorker
+  :feature_category: :groups_and_projects
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:namespaces_process_outdated_namespace_descendants_cron
   :worker_name: Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker
   :feature_category: :groups_and_projects
@@ -4106,6 +4115,15 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: false
+  :tags: []
+- :name: repositories_post_receive
+  :worker_name: Repositories::PostReceiveWorker
+  :feature_category: :source_code_management
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :cpu
+  :weight: 5
+  :idempotent: true
   :tags: []
 - :name: repositories_rewrite_history
   :worker_name: Repositories::RewriteHistoryWorker

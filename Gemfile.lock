@@ -1032,7 +1032,7 @@ GEM
     invisible_captcha (2.1.0)
       rails (>= 5.2)
     io-event (1.6.5)
-    ipaddr (1.2.5)
+    ipaddr (1.2.7)
     ipaddress (0.8.3)
     jaeger-client (1.1.0)
       opentracing (~> 0.3)

@@ -339,7 +339,7 @@
 {"name":"influxdb-client","version":"3.2.0","platform":"ruby","checksum":"dc1e8ec80542f64c9f31af6d9bfa4c147474bf32b9179a7f0cab970793b8e1f2"},
 {"name":"invisible_captcha","version":"2.1.0","platform":"ruby","checksum":"02b452f3eb1b691d155ba3e8e97e1be0e6b6be62e8bc94957234b9cde0852b1e"},
 {"name":"io-event","version":"1.6.5","platform":"ruby","checksum":"5da4c044ac5f411563da1a4743d28c8d30d7802e29370db42139a52b807b4ce2"},
-{"name":"ipaddr","version":"1.2.5","platform":"ruby","checksum":"4e679c71d6d8ed99f925487082f70f9a958de155591caa0e7f6cef9aa160f17a"},
+{"name":"ipaddr","version":"1.2.7","platform":"ruby","checksum":"cb7f4087fdbf14bcedc23ac471b8ac521648b3a5b4b5be3a4378066636e6af72"},
 {"name":"ipaddress","version":"0.8.3","platform":"ruby","checksum":"85640c4f9194c26937afc8c78e3074a8e7c97d5d1210358d1440f01034d006f5"},
 {"name":"jaeger-client","version":"1.1.0","platform":"ruby","checksum":"cb5e9b9bbee6ee8d6a82d03d947a5b04543d8c0a949c22e484254f18d8a458a8"},
 {"name":"jaro_winkler","version":"1.5.6","platform":"java","checksum":"3262aea433861fec3179184e9adc1933cca8bc15665957a143b56816f1a22f74"},

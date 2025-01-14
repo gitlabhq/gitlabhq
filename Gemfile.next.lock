@@ -1046,7 +1046,7 @@ GEM
       rails (>= 5.2)
     io-console (0.8.0)
     io-event (1.6.5)
-    ipaddr (1.2.5)
+    ipaddr (1.2.7)
     ipaddress (0.8.3)
     irb (1.14.3)
       rdoc (>= 4.0.0)

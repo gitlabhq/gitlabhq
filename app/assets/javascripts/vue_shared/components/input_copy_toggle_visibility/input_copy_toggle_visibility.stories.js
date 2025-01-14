@@ -2,7 +2,7 @@ import InputCopyToggleVisibility from './input_copy_toggle_visibility.vue';
 
 export default {
   component: InputCopyToggleVisibility,
-  title: 'vue_shared/form/input_copy_toggle_visibility',
+  title: 'vue_shared/input_copy_toggle_visibility',
 };
 
 const defaultProps = {

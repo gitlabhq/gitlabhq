@@ -1,7 +1,7 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import FormErrorsAlert from '~/vue_shared/components/form/errors_alert.vue';
+import FormErrorsAlert from '~/organizations/shared/components/errors_alert.vue';
 
 describe('FormErrorsAlert', () => {
   let wrapper;

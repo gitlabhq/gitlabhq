@@ -22,7 +22,7 @@ import {
 } from '~/visibility_level/constants';
 import CreateSnippetMutation from '~/snippets/mutations/create_snippet.mutation.graphql';
 import UpdateSnippetMutation from '~/snippets/mutations/update_snippet.mutation.graphql';
-import FormFooterActions from '~/vue_shared/components/form/form_footer_actions.vue';
+import FormFooterActions from '~/snippets/components/form_footer_actions.vue';
 import { testEntries, createGQLSnippetsQueryResponse, createGQLSnippet } from '../test_utils';
 
 jest.mock('~/alert');

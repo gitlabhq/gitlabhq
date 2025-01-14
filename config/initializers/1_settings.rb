@@ -971,6 +971,9 @@ Gitlab.ee do
   Settings.cron_jobs['ai_conversation_cleanup_cron_worker'] ||= {}
   Settings.cron_jobs['ai_conversation_cleanup_cron_worker']['cron'] ||= '30 2 * * *'
   Settings.cron_jobs['ai_conversation_cleanup_cron_worker']['job_class'] = 'Ai::Conversation::CleanupCronWorker'
+  Settings.cron_jobs['namespaces_enable_descendants_cache_cron_worker'] ||= {}
+  Settings.cron_jobs['namespaces_enable_descendants_cache_cron_worker']['cron'] ||= '*/11 * * * *'
+  Settings.cron_jobs['namespaces_enable_descendants_cache_cron_worker']['job_class'] = 'Namespaces::EnableDescendantsCacheCronWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}

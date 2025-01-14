@@ -20,7 +20,6 @@ Style/SoleNestedConditional:
     - 'ee/app/services/ee/lfs/unlock_file_service.rb'
     - 'ee/app/services/epics/tree_reorder_service.rb'
     - 'ee/app/services/vulnerability_feedback/create_service.rb'
-    - 'ee/app/workers/ee/post_receive.rb'
     - 'ee/lib/ee/gitlab/auth/o_auth/auth_hash.rb'
     - 'ee/lib/ee/gitlab/checks/push_rules/commit_check.rb'
     - 'lib/api/deploy_keys.rb'

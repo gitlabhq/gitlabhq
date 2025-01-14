@@ -5,9 +5,9 @@ import { visitUrlWithAlerts, joinPaths } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import OrganizationUrlField from '~/organizations/shared/components/organization_url_field.vue';
 import { FORM_FIELD_PATH, FORM_FIELD_PATH_VALIDATORS } from '~/organizations/shared/constants';
+import FormErrorsAlert from '~/organizations/shared/components/errors_alert.vue';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ORGANIZATION } from '~/graphql_shared/constants';
-import FormErrorsAlert from '~/vue_shared/components/form/errors_alert.vue';
 import organizationUpdateMutation from '../graphql/mutations/organization_update.mutation.graphql';
 
 export default {

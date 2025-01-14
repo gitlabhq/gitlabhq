@@ -26,8 +26,13 @@ class PostReceiveService
     # request synchronously, we can't rely on that, so invalidate the cache here
     repository&.expire_branches_cache if mr_options&.fetch(:create, false)
 
-    PostReceive.perform_async(params[:gl_repository], params[:identifier],
-      params[:changes], push_options.as_json)
+    if project && repository && Feature.enabled?(:rename_post_receive_worker, project, type: :gitlab_com_derisk)
+      Repositories::PostReceiveWorker.perform_async(params[:gl_repository], params[:identifier],
+        params[:changes], push_options.as_json)
+    else
+      PostReceive.perform_async(params[:gl_repository], params[:identifier],
+        params[:changes], push_options.as_json)
+    end
 
     if mr_options.present?
       message = process_mr_push_options(mr_options, params[:changes])
