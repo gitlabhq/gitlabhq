@@ -5,6 +5,7 @@ import { mapState, mapGetters } from 'vuex';
 import { __, s__ } from '~/locale';
 import getBlobSearchQuery from '~/search/graphql/blob_search_zoekt.query.graphql';
 import { SCOPE_BLOB, SEARCH_TYPE_ZOEKT } from '~/search/sidebar/constants/index';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { DEFAULT_FETCH_CHUNKS } from '../constants';
 import { RECEIVE_NAVIGATION_COUNT } from '../../store/mutation_types';
 import StatusBar from './status_bar.vue';
@@ -44,7 +45,9 @@ export default {
           projectId: this.query.project_id && `gid://gitlab/Project/${this.query.project_id}`,
           page: this.currentPage,
           chunkCount: DEFAULT_FETCH_CHUNKS,
-          regex: this.query.regex ? JSON.parse(this.query.regex) : false,
+          regex: parseBoolean(this.query.regex),
+          includeArchived: parseBoolean(this.query.include_archived),
+          includeForked: parseBoolean(this.query.include_forked),
         };
       },
       result({ data }) {

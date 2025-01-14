@@ -1189,6 +1189,7 @@ vulnerabilities:
   - external_issue_links
   - issue_links
   - related_issues
+  - severity_overrides
   - state_transitions
   - notes
   - user_mentions

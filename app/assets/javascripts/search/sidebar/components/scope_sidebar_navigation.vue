@@ -23,7 +23,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['navigationItems', 'currentScope']),
+    ...mapGetters(['navigationItems']),
   },
   created() {
     this.fetchSidebarCount();

@@ -154,17 +154,15 @@ where `ID` is the ID of the task. If your project is configured with a
 [closing pattern](../issues/managing_issues.md#default-closing-pattern), the task closes
 when the merge request merges.
 
-## When you add, edit, or upload a file
+## From the Web Editor
 
-You can create a merge request when you add, edit, or upload a file to a repository.
+You can create a merge request when you do the following from the Web Editor:
 
-1. [Add, edit, or upload](../repository/web_editor.md) a file to the repository.
-1. In the **Commit message**, enter a reason for the commit.
-1. Select the **Target branch** or create a new branch by typing the name.
-1. Select the **Start a new merge request with these changes** checkbox or toggle. This checkbox or toggle is visible only
-   if the target is not the same as the source branch, or if the source branch is protected.
-1. Select **Upload file**.
-1. Fill out the fields and select **Create merge request**.
+- [Create a file](../repository/web_editor.md#create-a-file).
+- [Edit a file](../repository/web_editor.md#edit-a-file).
+- [Upload a file](../repository/web_editor.md#upload-a-file).
+- [Delete a file](../repository/web_editor.md#delete-a-file).
+- [Create a directory](../repository/web_editor.md#create-a-directory).
 
 ## When you create a branch
 

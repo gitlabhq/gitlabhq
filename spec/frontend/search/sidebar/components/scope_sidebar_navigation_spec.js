@@ -17,7 +17,6 @@ describe('ScopeSidebarNavigation', () => {
   };
 
   const getterSpies = {
-    currentScope: jest.fn(() => 'issues'),
     navigationItems: jest.fn(() => MOCK_NAVIGATION_ITEMS),
   };
 
@@ -52,7 +51,7 @@ describe('ScopeSidebarNavigation', () => {
   const findNavItemActiveLabel = () =>
     findNavItemActive().find('[data-testid="nav-item-link-label"]');
 
-  describe('scope navigation', () => {
+  describe('when navigation render', () => {
     beforeEach(() => {
       jest.spyOn(sidebarEventHub, '$emit');
       createComponent({ urlQuery: { ...MOCK_QUERY, search: 'test' } });
@@ -79,33 +78,37 @@ describe('ScopeSidebarNavigation', () => {
     });
   });
 
-  describe('scope navigation sets proper state with url scope set', () => {
-    beforeEach(() => {
-      const navigationClone = { ...MOCK_NAVIGATION };
-      delete navigationClone.epics.active;
-      createComponent({ navigation: navigationClone });
+  describe('when scope navigation', () => {
+    describe('when sets proper state with url scope set', () => {
+      beforeEach(() => {
+        const navigationItemsClone = [...MOCK_NAVIGATION_ITEMS];
+        navigationItemsClone[3].is_active = false;
+        navigationItemsClone[3].items[1].is_active = true;
+        getterSpies.navigationItems = jest.fn(() => navigationItemsClone);
+
+        createComponent();
+      });
+
+      it('has correct active item', () => {
+        expect(findNavItemActive().exists()).toBe(true);
+        expect(findNavItemActiveLabel().text()).toBe('Epics');
+      });
     });
 
-    it('has correct active item', () => {
-      expect(findNavItemActive().exists()).toBe(true);
-      expect(findNavItemActiveLabel().text()).toBe('Epics');
-    });
-  });
+    describe('when sets proper state with Feature Flag off', () => {
+      beforeEach(() => {
+        const navigationItemsClone = [...MOCK_NAVIGATION_ITEMS];
+        navigationItemsClone[3].is_active = true;
 
-  describe('scope navigation sets proper state with Feature Flag off', () => {
-    beforeEach(() => {
-      const navigationClone = { ...MOCK_NAVIGATION };
-      delete navigationClone.epics.active;
-      createComponent(
-        { navigation: navigationClone },
-        { glFeatures: { workItemScopeFrontend: false } },
-      );
-    });
+        getterSpies.navigationItems = jest.fn(() => navigationItemsClone);
+        createComponent({}, { glFeatures: { workItemScopeFrontend: false } });
+      });
 
-    it('does not render work items subitems', () => {
-      expect(findNavItemActive().exists()).toBe(true);
-      expect(findNavItemActiveLabel().text()).toBe('Work items');
-      expect(findNavItems()).toHaveLength(11);
+      it('does not render work items subitems', () => {
+        expect(findNavItemActive().exists()).toBe(true);
+        expect(findNavItemActiveLabel().text()).toBe('Work items');
+        expect(findNavItems()).toHaveLength(10);
+      });
     });
   });
 });

@@ -91,6 +91,8 @@ module Search
 
     def get_sub_items
       ::WorkItems::Type::TYPE_NAMES.each_with_object({}) do |(key, value, index), hash|
+        next if key.to_s == 'epic'
+
         hash[key] ||= {}
         hash[key][:scope] = 'issues'
         hash[key][:label] = value

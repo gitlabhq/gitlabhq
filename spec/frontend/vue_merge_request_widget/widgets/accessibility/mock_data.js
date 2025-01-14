@@ -83,44 +83,11 @@ export const accessibilityReportResponseErrors = {
       runner: 'htmlcs',
       runner_extras: {},
     },
-    {
-      code: 'WCAG2AA.Principle1.Guideline1_1.1_1_1.H37',
-      type: 'error',
-      type_code: 1,
-      message:
-        'Img element missing an alt attribute. Use the alt attribute to specify a short text alternative.',
-      context: '<img src="/images/icons/slp-caret-down.svg">',
-      selector: '#navigation-mobile > div:nth-child(2) > div:nth-child(2) > button > div > img',
-      runner: 'htmlcs',
-      runner_extras: {},
-    },
-    {
-      code: 'WCAG2AA.Principle1.Guideline1_1.1_1_1.H37',
-      type: 'error',
-      type_code: 1,
-      message:
-        'Img element missing an alt attribute. Use the alt attribute to specify a short text alternative.',
-      context: '<img src="/images/icons/slp-caret-down.svg">',
-      selector: '#navigation-mobile > div:nth-child(2) > div:nth-child(3) > button > div > img',
-      runner: 'htmlcs',
-      runner_extras: {},
-    },
-    {
-      code: 'WCAG2AA.Principle1.Guideline1_1.1_1_1.H37',
-      type: 'error',
-      type_code: 1,
-      message:
-        'Img element missing an alt attribute. Use the alt attribute to specify a short text alternative.',
-      context: '<img src="/images/icons/slp-caret-down.svg">',
-      selector: '#navigation-mobile > div:nth-child(2) > div:nth-child(4) > button > div > img',
-      runner: 'htmlcs',
-      runner_extras: {},
-    },
   ],
   summary: {
-    total: 8,
+    total: 7,
     resolved: 2,
-    errored: 8,
+    errored: 5,
   },
 };
 

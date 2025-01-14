@@ -27,11 +27,11 @@ RSpec.describe UserDetail, feature_category: :system_access do
           email_opt_in: email_opt_in,
           initial_registration_type: registration_type,
           registration_type: registration_type,
+          registration_objective: registration_objective,
           glm_source: glm_source,
           glm_content: glm_content,
           joining_project: joining_project,
-          role: role,
-          registration_objective: registration_objective
+          role: role
         }
       end
 

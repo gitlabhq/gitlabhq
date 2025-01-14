@@ -28,9 +28,10 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
 
   const getterSpies = {
     currentScope: jest.fn(() => 'issues'),
+    hasMissingProjectContext: jest.fn(() => false),
   };
 
-  const createComponent = (initialState) => {
+  const createComponent = (initialState = {}, provide = {}) => {
     const store = new Vuex.Store({
       state: {
         query: MOCK_QUERY,
@@ -48,6 +49,7 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
       slots: {
         default: '<p>Filters Content</p>',
       },
+      provide,
     });
   };
 
@@ -128,6 +130,46 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
 
       it('enables the button', () => {
         expect(findApplyButton().attributes().disabled).toBeUndefined();
+      });
+    });
+
+    describe('when not zoekt multimatch', () => {
+      beforeEach(() => {
+        getterSpies.currentScope = jest.fn(() => 'issues');
+
+        createComponent({
+          query: { scope: 'issues' },
+          searchType: 'advanced_search',
+          sidebarDirty: true,
+        });
+      });
+
+      it('shows the button', () => {
+        expect(findApplyButton().exists()).toBe(true);
+      });
+    });
+
+    describe('when zoekt multimatch', () => {
+      beforeEach(() => {
+        getterSpies.currentScope = jest.fn(() => 'blobs');
+        getterSpies.hasMissingProjectContext = jest.fn(() => true);
+
+        createComponent(
+          {
+            query: { scope: 'blobs' },
+            searchType: 'zoekt',
+            sidebarDirty: true,
+          },
+          {
+            glFeatures: {
+              zoektMultimatchFrontend: true,
+            },
+          },
+        );
+      });
+
+      it('shows the button', () => {
+        expect(findApplyButton().exists()).toBe(false);
       });
     });
   });

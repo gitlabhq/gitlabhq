@@ -8369,10 +8369,10 @@ graphql@^15.7.2:
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.7.2.tgz#85ab0eeb83722977151b3feb4d631b5f2ab287ef"
   integrity sha512-AnnKk7hFQFmU/2I9YSQf3xw44ctnSFCfp3zE0N6W174gqe9fWG/2rKaKxROK7CcI3XtERpjEKFqts8o319Kf7A==
 
-gridstack@^10.3.1:
-  version "10.3.1"
-  resolved "https://registry.yarnpkg.com/gridstack/-/gridstack-10.3.1.tgz#4ed704279c40094fc1b9e3318f20b573f2fe9f40"
-  integrity sha512-Ra82k/88gdeiu3ZP40COS4bI4sGhNQlZAaAQ6szfPfr68zVpsXxiyLKr5zYcTpKX4jjcwyNsNNdcV1tDJc71fA==
+gridstack@^11.1.2:
+  version "11.1.2"
+  resolved "https://registry.yarnpkg.com/gridstack/-/gridstack-11.1.2.tgz#e72091e2883f7b37cbd150c218d38eebc9fc4f18"
+  integrity sha512-6wJ5RffnFchF63/Yhs6tcZcWxRG1EgCnxgejbQsAjQ6Qj8QqKjew73jPq5c1yCAiyEAsXxI2tOJ8lZABOAZxoQ==
 
 gzip-size@^6.0.0:
   version "6.0.0"

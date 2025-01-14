@@ -267,6 +267,18 @@ module SearchHelper
     _('The file could not be displayed because it is empty.')
   end
 
+  def search_navigation_json
+    search_navigation = Search::Navigation.new(
+      user: current_user,
+      project: @project,
+      group: @group,
+      options: nav_options
+    )
+
+    sorted_navigation = search_navigation.tabs.sort_by { |_, h| h[:sort] }
+    parse_navigation(sorted_navigation).to_json
+  end
+
   private
 
   def formatted_count(scope)
@@ -508,7 +520,6 @@ module SearchHelper
       .permit(SEARCH_GENERIC_PARAMS)
 
     active_scope = @scope == scope_name
-
     active_type = params[:type].to_s == type.to_s
 
     result = {
@@ -518,11 +529,8 @@ module SearchHelper
       link: search_path(search_params),
       active: active_nav?(active_scope, active_type, type)
     }
-
     result[:count] = formatted_count(scope_name) if active_scope
-
     result[:count_link] = search_count_path(search_params) unless active_scope
-
     result
   end
 
@@ -530,17 +538,6 @@ module SearchHelper
     {
       show_snippets: search_service.show_snippets?
     }
-  end
-
-  def search_navigation_json
-    search_navigation = Search::Navigation.new(
-      user: current_user,
-      project: @project,
-      group: @group,
-      options: nav_options
-    )
-    sorted_navigation = search_navigation.tabs.sort_by { |_, h| h[:sort] }
-    parse_navigation(sorted_navigation).to_json
   end
 
   def parse_navigation(navigation)

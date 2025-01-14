@@ -10,6 +10,9 @@ export default {
   i18n: {
     loading: s__('Reports|Accessibility scanning results are being parsed'),
     error: s__('Reports|Accessibility scanning failed loading results'),
+    newErrorsHeader: __('New'),
+    existingErrorsHeader: __('Not fixed'),
+    resolvedErrorsHeader: __('Fixed'),
   },
   components: {
     MrWidget,
@@ -95,9 +98,9 @@ export default {
       return sprintf(s__('AccessibilityReport|Message: %{message}'), { message });
     },
     getContent(collapsedData) {
-      const newErrors = collapsedData.new_errors.map((error) => {
+      const newErrors = collapsedData.new_errors.map((error, i) => {
         return {
-          header: __('New'),
+          header: i === 0 ? this.$options.i18n.newErrorsHeader : '',
           id: uniqueId('new-error-'),
           text: this.formatText(error.code),
           icon: { name: EXTENSION_ICONS.failed },
@@ -109,8 +112,9 @@ export default {
         };
       });
 
-      const existingErrors = collapsedData.existing_errors.map((error) => {
+      const existingErrors = collapsedData.existing_errors.map((error, i) => {
         return {
+          header: i === 0 ? this.$options.i18n.existingErrorsHeader : '',
           id: uniqueId('existing-error-'),
           text: this.formatText(error.code),
           icon: { name: EXTENSION_ICONS.failed },
@@ -122,8 +126,9 @@ export default {
         };
       });
 
-      const resolvedErrors = collapsedData.resolved_errors.map((error) => {
+      const resolvedErrors = collapsedData.resolved_errors.map((error, i) => {
         return {
+          header: i === 0 ? this.$options.i18n.resolvedErrorsHeader : '',
           id: uniqueId('resolved-error-'),
           text: this.formatText(error.code),
           icon: { name: EXTENSION_ICONS.success },

@@ -269,9 +269,9 @@ On the EC2 dashboard, look for **Load Balancers** in the left navigation bar:
 
    | Protocol | Port | Target group |
    | ------ | ------ | ------ |
-   | TCP | 80 | `gitlab-loadbalancer-ssh-target` |
-   | TCP | 22 | `gitlab-loadbalancer-http-target` |
-   | TLC | 443 | `gitlab-loadbalancer-http-target` |
+   | TCP | 22 | `gitlab-loadbalancer-ssh-target` |
+   | TCP | 80 | `gitlab-loadbalancer-http-target` |
+   | TLS | 443 | `gitlab-loadbalancer-http-target` |
 
    1. For the TLS listener on port `443`, under **Security Policy** settings:
       1. **Policy name:** Pick a predefined security policy from the dropdown list. You can see a breakdown of [Predefined SSL Security Policies for Network Load Balancers](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/create-tls-listener.html#describe-ssl-policies) in the AWS documentation. Check the GitLab codebase for a list of [supported SSL ciphers and protocols](https://gitlab.com/gitlab-org/gitlab/-/blob/9ee7ad433269b37251e0dd5b5e00a0f00d8126b4/lib/support/nginx/gitlab-ssl#L97-99).

@@ -185,6 +185,30 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
    agent_configs_to_remove.delete_all
    ```
 
+## Issues to be aware of when upgrading from 17.5
+
+- Migration failures when upgrading from GitLab 17.5.
+
+  When upgrading from 17.5 to 17.6, there is a slight chance of encountering an error. During the migration process, you might see an error message like the one below:
+
+  ```shell
+  rake aborted!
+  StandardError: An error has occurred, all later migrations canceled:
+
+  PG::CheckViolation: ERROR: new row for relation "ci_deleted_objects" violates check constraint "check_98f90d6c53"
+  ```
+
+  This error occurs because the migration tries to update some of the rows from the `ci_deleted_objects` table so that they will be processed, but they could be old records with a missing value for a required check constraint.
+
+  To safely resolve this issue, follow these steps:
+
+  1. Run only the following migration to fix the records affected by the check constraint.
+  1. Re-run the migrations, and they should complete successfully.
+
+   ```shell
+   gitlab-rake db:migrate:up:ci VERSION=20241028085044
+   ```
+
 ## 17.7.0
 
 - Git 2.47.0 and later is required by Gitaly. For installations from source, you should use the [Git version provided by Gitaly](../../install/installation.md#git).

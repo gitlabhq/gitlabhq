@@ -1,7 +1,6 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters } from 'vuex';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SEARCH_TYPE_ADVANCED, SEARCH_TYPE_ZOEKT } from '../constants';
 import LanguageFilter from './language_filter/index.vue';
 import ArchivedFilter from './archived_filter/index.vue';
@@ -16,7 +15,6 @@ export default {
     ArchivedFilter,
     ForksFilter,
   },
-  mixins: [glFeatureFlagsMixin()],
   computed: {
     ...mapState(['searchType']),
     ...mapGetters(['hasMissingProjectContext']),

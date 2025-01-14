@@ -302,8 +302,8 @@ end
 To subscribe the worker to a specific event in `lib/gitlab/event_store.rb`,
 add a line like this to the `Gitlab::EventStore.configure!` method:
 
-NOTE:
-New workers should be introduced with a feature flag in order to
+WARNING:
+New workers must be introduced with a feature flag in order to
 [ensure compatibility with canary deployments](sidekiq/compatibility_across_updates.md#adding-new-workers).
 
 ```ruby

@@ -22840,6 +22840,26 @@ CREATE SEQUENCE vulnerability_scanners_id_seq
 
 ALTER SEQUENCE vulnerability_scanners_id_seq OWNED BY vulnerability_scanners.id;
 
+CREATE TABLE vulnerability_severity_overrides (
+    id bigint NOT NULL,
+    vulnerability_id bigint NOT NULL,
+    author_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    original_severity smallint NOT NULL,
+    new_severity smallint NOT NULL
+);
+
+CREATE SEQUENCE vulnerability_severity_overrides_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE vulnerability_severity_overrides_id_seq OWNED BY vulnerability_severity_overrides.id;
+
 CREATE TABLE vulnerability_state_transitions (
     id bigint NOT NULL,
     vulnerability_id bigint NOT NULL,
@@ -25260,6 +25280,8 @@ ALTER TABLE ONLY vulnerability_reads ALTER COLUMN id SET DEFAULT nextval('vulner
 ALTER TABLE ONLY vulnerability_remediations ALTER COLUMN id SET DEFAULT nextval('vulnerability_remediations_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_scanners ALTER COLUMN id SET DEFAULT nextval('vulnerability_scanners_id_seq'::regclass);
+
+ALTER TABLE ONLY vulnerability_severity_overrides ALTER COLUMN id SET DEFAULT nextval('vulnerability_severity_overrides_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_state_transitions ALTER COLUMN id SET DEFAULT nextval('vulnerability_state_transitions_id_seq'::regclass);
 
@@ -28209,6 +28231,9 @@ ALTER TABLE ONLY vulnerability_representation_information
 
 ALTER TABLE ONLY vulnerability_scanners
     ADD CONSTRAINT vulnerability_scanners_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY vulnerability_severity_overrides
+    ADD CONSTRAINT vulnerability_severity_overrides_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY vulnerability_state_transitions
     ADD CONSTRAINT vulnerability_state_transitions_pkey PRIMARY KEY (id);
@@ -34345,6 +34370,12 @@ CREATE UNIQUE INDEX index_vulnerability_remediations_on_project_id_and_checksum 
 
 CREATE UNIQUE INDEX index_vulnerability_scanners_on_project_id_and_external_id ON vulnerability_scanners USING btree (project_id, external_id);
 
+CREATE INDEX index_vulnerability_severity_overrides_on_author_id ON vulnerability_severity_overrides USING btree (author_id);
+
+CREATE INDEX index_vulnerability_severity_overrides_on_project_id ON vulnerability_severity_overrides USING btree (project_id);
+
+CREATE INDEX index_vulnerability_severity_overrides_on_vulnerability_id ON vulnerability_severity_overrides USING btree (vulnerability_id);
+
 CREATE INDEX index_vulnerability_state_transitions_id_and_vulnerability_id ON vulnerability_state_transitions USING btree (vulnerability_id, id);
 
 CREATE INDEX index_vulnerability_state_transitions_on_author_id ON vulnerability_state_transitions USING btree (author_id);
@@ -40472,6 +40503,9 @@ ALTER TABLE security_findings
 
 ALTER TABLE ONLY packages_debian_project_component_files
     ADD CONSTRAINT fk_rails_bbe9ebfbd9 FOREIGN KEY (component_id) REFERENCES packages_debian_project_components(id) ON DELETE RESTRICT;
+
+ALTER TABLE ONLY vulnerability_severity_overrides
+    ADD CONSTRAINT fk_rails_bbeaab8fb3 FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY projects_sync_events
     ADD CONSTRAINT fk_rails_bbf0eef59f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

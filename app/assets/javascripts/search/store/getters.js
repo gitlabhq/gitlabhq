@@ -108,10 +108,11 @@ export const navigationItems = (state) =>
     if (item?.sub_items) {
       navigation.items = Object.keys(item.sub_items)
         .filter((subItem) => Boolean(SUBITEMS_FILTER[subItem]))
+        .sort((a, b) => SUBITEMS_FILTER[a].order - SUBITEMS_FILTER[b].order)
         .map((subItem, subIndex) => {
           return {
             id: `menu-${subItem}-${subIndex}`,
-            title: item.sub_items[subItem].label,
+            title: SUBITEMS_FILTER[subItem].label,
             link: item.sub_items[subItem].link,
             is_active: Boolean(item.sub_items[subItem]?.active),
           };

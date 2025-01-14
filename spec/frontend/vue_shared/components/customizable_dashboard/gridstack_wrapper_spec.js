@@ -22,21 +22,7 @@ const mockGridSetStatic = jest.fn();
 const mockGridDestroy = jest.fn();
 const mockGridLoad = jest.fn();
 
-jest.mock('gridstack', () => {
-  const actualModule = jest.requireActual('gridstack');
-
-  return {
-    GridStack: {
-      init: jest.fn().mockImplementation((config) => {
-        const instance = actualModule.GridStack.init(config);
-        instance.load = mockGridLoad.mockImplementation(instance.load);
-        instance.setStatic = mockGridSetStatic;
-        instance.destroy = mockGridDestroy;
-        return instance;
-      }),
-    },
-  };
-});
+jest.mock('gridstack');
 
 jest.mock('~/lib/utils/css_utils', () => ({
   loadCSSFile: jest.fn(),
@@ -72,6 +58,16 @@ describe('GridstackWrapper', () => {
     mockGridDestroy.mockReset();
 
     panelSlots = [];
+  });
+  beforeEach(() => {
+    GridStack.init = jest.fn().mockImplementation((config) => {
+      const actualModule = jest.requireActual('gridstack');
+      const instance = actualModule.GridStack.init(config);
+      instance.load = mockGridLoad.mockImplementation(instance.load);
+      instance.setStatic = mockGridSetStatic;
+      instance.destroy = mockGridDestroy;
+      return instance;
+    });
   });
 
   describe('default behaviour', () => {

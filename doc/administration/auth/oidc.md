@@ -1311,11 +1311,11 @@ response to assign users as administrator based on group membership, configure G
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377654) in GitLab 17.8.
 
-By default, GitLab ID tokens expire after 120 seconds. 
+By default, GitLab ID tokens expire after 120 seconds.
 
 To configure a custom duration for your ID tokens:
 

@@ -1,3 +1,8 @@
+import subItemActive from 'test_fixtures/search_navigation/sub_item_active.json';
+import noActiveItems from 'test_fixtures/search_navigation/no_active_items.json';
+import partialNavigationActive from 'test_fixtures/search_navigation/partial_navigation_active.json';
+import rootLevelActive from 'test_fixtures/search_navigation/root_level_active.json';
+
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { MAX_FREQUENCY, SIDEBAR_PARAMS, LS_REGEX_HANDLE } from '~/search/store/constants';
 import {
@@ -14,6 +19,7 @@ import {
 } from '~/search/store/utils';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
+
 import {
   MOCK_LS_KEY,
   MOCK_GROUPS,
@@ -23,7 +29,6 @@ import {
   MOCK_AGGREGATIONS,
   SMALL_MOCK_AGGREGATIONS,
   TEST_RAW_BUCKETS,
-  MOCK_NAVIGATION,
 } from '../mock_data';
 
 const PREV_TIME = new Date().getTime() - 1;
@@ -361,47 +366,23 @@ describe('Global Search Store Utils', () => {
 
   describe('scopeCrawler', () => {
     it('returns the correct scope when active item is at root level', () => {
-      const navigationClone = { ...MOCK_NAVIGATION };
-      navigationClone.epics.active = true;
-      delete navigationClone.issues.active;
-      const result = scopeCrawler(navigationClone);
-
-      expect(result).toBe('epics');
+      const result = scopeCrawler(rootLevelActive);
+      expect(result).toBe('merge_requests');
     });
 
     it('returns the correct parent scope when active item is in sub_items', () => {
-      const navigationClone = { ...MOCK_NAVIGATION };
-      navigationClone.epics.active = false;
-      navigationClone.issues.sub_items.objective.active = true;
-      const result = scopeCrawler(navigationClone);
-
+      const result = scopeCrawler(subItemActive);
       expect(result).toBe('issues');
     });
 
     it('returns null when no items are active', () => {
-      const navigationClone = { ...MOCK_NAVIGATION };
-      delete navigationClone.issues.active;
-      delete navigationClone.epics.active;
-      delete navigationClone.issues.sub_items.objective.active;
-
-      const result = scopeCrawler(navigationClone);
+      const result = scopeCrawler(noActiveItems);
       expect(result).toBeNull();
     });
 
-    it('returns the scope of the deepest active sub_item', () => {
-      const navigationClone = { ...MOCK_NAVIGATION };
-      navigationClone.issues.sub_items.objective.active = true;
-      const result = scopeCrawler(navigationClone);
-      expect(result).toBe('issues');
-    });
-
     it('returns parentScope if provided and active item is found', () => {
-      const navigationClone = { ...MOCK_NAVIGATION.issues.sub_items };
-
-      navigationClone.objective.active = true;
-
       const parentScope = 'customScope';
-      const result = scopeCrawler(navigationClone, parentScope);
+      const result = scopeCrawler(partialNavigationActive, parentScope);
       expect(result).toBe(parentScope);
     });
   });

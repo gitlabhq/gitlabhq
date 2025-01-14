@@ -34,15 +34,15 @@ Use the following text for the tier, offering, status, and version history.
 For offering, use any combination of these words, in this order, separated by commas:
 
 - `GitLab.com`
-- `Self-managed`
+- `GitLab Self-Managed`
 - `GitLab Dedicated`
 
 For example:
 
 - `GitLab.com`
-- `GitLab.com, Self-managed`
-- `Self-managed`
-- `Self-managed, GitLab Dedicated`
+- `GitLab.com, GitLab Self-Managed`
+- `GitLab Self-Managed`
+- `GitLab Self-Managed, GitLab Dedicated`
 
 ### Tier
 
@@ -199,8 +199,8 @@ for the features on the page. For example:
 
 - If some sections apply to Premium and Ultimate, and others apply to just Ultimate,
   the H1 `Tier:` should be `Premium, Ultimate`.
-- If some sections apply to all instances, and others apply to only `Self-managed`,
-  the `Offering:` should be `GitLab.com, Self-managed, GitLab Dedicated`.
+- If some sections apply to all instances, and others apply to only `GitLab Self-Managed`,
+  the `Offering:` should be `GitLab.com, GitLab Self-Managed, GitLab Dedicated`.
 - If some sections are beta, and others are experiment, the H1 `Status:` should be `Beta`.
   If some sections are beta, and others are generally available, then there should
   be no `Status:` for the H1.
@@ -276,7 +276,7 @@ voters to agree.
 
 ## Administrator documentation for availability details
 
-Topics that are only for instance administrators should have the `Self-managed` tier.
+Topics that are only for instance administrators should have the `GitLab Self-Managed` tier.
 Instance administrator documentation often includes sections that mention:
 
 - Changing the `gitlab.rb` or `gitlab.yml` files.

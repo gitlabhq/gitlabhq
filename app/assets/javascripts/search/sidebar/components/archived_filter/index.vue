@@ -31,7 +31,7 @@ export default {
     ...mapState(['urlQuery']),
     selectedFilter: {
       get() {
-        return [parseBoolean(this.urlQuery?.include_archived)];
+        return [parseBoolean(this.urlQuery?.[INCLUDE_ARCHIVED_FILTER_PARAM])];
       },
       set(value) {
         const includeArchived = [...value].pop() ?? false;

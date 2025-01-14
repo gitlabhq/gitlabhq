@@ -22,7 +22,7 @@ module Gitlab
             work_item_type: work_item_type(quick_action_target)
           )
         end
-        params '<#issue | group/project#issue | issue URL>'
+        params '<#item | group/project#item | item URL>'
         types Issue
         condition { can_admin_link? }
         parse_params { |issues| format_params(issues) }
@@ -37,7 +37,7 @@ module Gitlab
         execution_message do |issue|
           _('Removed linked item %{issue_ref}.') % { issue_ref: issue.to_reference(quick_action_target) }
         end
-        params '<#issue | group/project#issue | issue URL>'
+        params '<#item | group/project#item | item URL>'
         types Issue
         condition { can_admin_link? }
         parse_params do |issue_param|
