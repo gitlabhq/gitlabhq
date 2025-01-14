@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module MembersHelper
+  include SafeFormatHelper
+
   def remove_member_message(member, user: nil)
     user = current_user if defined?(current_user)
     text = 'Are you sure you want to'
@@ -72,13 +74,13 @@ module MembersHelper
     target_source_link = link_to member_source.human_name, polymorphic_url([member_source, :members]), class: :highlight
     target_type = member_source.model_name.singular
 
-    s_('Notify|%{member_link} requested %{member_role} access to the %{target_source_link} %{target_type}.')
-      .html_safe % {
-        member_link: member_link,
-        member_role: member_role,
-        target_source_link: target_source_link,
-        target_type: target_type
-      }
+    safe_format(s_(
+      'Notify|%{member_link} requested %{member_role} access to the %{target_source_link} %{target_type}.'
+    ),
+      member_link: member_link,
+      member_role: member_role,
+      target_source_link: target_source_link,
+      target_type: target_type)
   end
 end
 

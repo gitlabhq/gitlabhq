@@ -44,7 +44,7 @@ module Keeps
         migration_name = truncate_migration_name("Finalize#{migration['migration_job_name']}")
         PostDeploymentMigration::PostDeploymentMigrationGenerator
           .source_root('generator_templates/post_deployment_migration/post_deployment_migration/')
-        generator = ::PostDeploymentMigration::PostDeploymentMigrationGenerator.new([migration_name])
+        generator = ::PostDeploymentMigration::PostDeploymentMigrationGenerator.new([migration_name], { skip: true })
         migration_file = generator.invoke_all.first
         change.changed_files = [migration_file]
 
@@ -84,7 +84,7 @@ module Keeps
     end
 
     def change_description(migration_record, job_name, last_migration_file)
-      # rubocop:disable Gitlab/DocUrl -- Not running inside rails application
+      # rubocop:disable Gitlab/DocumentationLinks/HardcodedUrl -- Not running inside rails application
       <<~MARKDOWN
       #{migration_code_not_present_message unless migration_code_present?(job_name)}
       This migration was finished at `#{migration_record.finished_at || migration_record.updated_at}`, you can confirm
@@ -106,7 +106,7 @@ module Keeps
       to process the migration. Therefore we can finalize any batched background migration that was added before the
       last required stop.
       MARKDOWN
-      # rubocop:enable Gitlab/DocUrl
+      # rubocop:enable Gitlab/DocumentationLinks/HardcodedUrl
     end
 
     def truncate_migration_name(migration_name)

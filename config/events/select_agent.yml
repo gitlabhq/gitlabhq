@@ -4,9 +4,6 @@ action: select_agent
 product_group: environments
 milestone: '14.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75223
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

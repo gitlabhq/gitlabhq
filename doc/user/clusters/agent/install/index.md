@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 To connect a Kubernetes cluster to GitLab, you must install an agent in your cluster.
 
@@ -22,7 +22,7 @@ Before you can install the agent in your cluster, you need:
   - [Digital Ocean](https://docs.digitalocean.com/products/kubernetes/getting-started/quickstart/)
   - [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine/docs/deploy-app-cluster)
   - You should use [Infrastructure as Code techniques](../../../infrastructure/iac/index.md) for managing infrastructure resources at scale.
-- On self-managed GitLab instances, a GitLab administrator must set up the
+- On GitLab Self-Managed, a GitLab administrator must set up the
   [agent server](../../../../administration/clusters/kas.md).
   Then it is available by default at `wss://gitlab.example.com/-/kubernetes-agent/`.
   On GitLab.com, the agent server is available at `wss://kas.gitlab.com`.
@@ -114,9 +114,10 @@ You must register an agent before you can install the agent in your cluster. To 
    it must be in this project. Your cluster manifest files should also be in this project.
 1. Select **Operate > Kubernetes clusters**.
 1. Select **Connect a cluster (agent)**.
-   - If you want to create a configuration with CI/CD defaults, type a name.
-   - If you already have an [agent configuration file](#create-an-agent-configuration-file), select it from the list.
-1. Select **Register an agent**.
+1. In the **Name of new agent** field, enter a unique name for your agent.
+   - If an [agent configuration file](#create-an-agent-configuration-file) with this name already exists, it is used.
+   - If no configuration exists for this name, a new agent is created with the default configuration.
+1. Select **Create and register**.
 1. GitLab generates an access token for the agent. You need this token to install the agent
    in your cluster.
 
@@ -130,7 +131,7 @@ You must register an agent before you can install the agent in your cluster. To 
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
 

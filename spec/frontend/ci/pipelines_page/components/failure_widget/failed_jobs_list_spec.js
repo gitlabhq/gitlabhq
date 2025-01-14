@@ -5,6 +5,7 @@ import { GlAlert, GlLoadingIcon, GlToast } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { toggleQueryPollingByVisibility } from '~/graphql_shared/utils';
 import { createAlert } from '~/alert';
 import FailedJobsList from '~/ci/pipelines_page/components/failure_widget/failed_jobs_list.vue';
 import FailedJobDetails from '~/ci/pipelines_page/components/failure_widget/failed_job_details.vue';
@@ -16,6 +17,7 @@ Vue.use(VueApollo);
 Vue.use(GlToast);
 
 jest.mock('~/alert');
+jest.mock('~/graphql_shared/utils');
 
 describe('FailedJobsList component', () => {
   let wrapper;
@@ -141,14 +143,15 @@ describe('FailedJobsList component', () => {
   });
 
   describe('polling', () => {
-    it('polls for failed jobs', async () => {
+    beforeEach(async () => {
       mockFailedJobsResponse.mockResolvedValueOnce(failedJobsMock);
       mockFailedJobsResponse.mockResolvedValueOnce(failedJobsMock2);
 
       createComponent();
 
       await waitForPromises();
-
+    });
+    it('polls for failed jobs', async () => {
       expect(mockFailedJobsResponse).toHaveBeenCalledTimes(1);
       expect(findFailedJobRows()).toHaveLength(2);
 
@@ -158,6 +161,10 @@ describe('FailedJobsList component', () => {
 
       expect(mockFailedJobsResponse).toHaveBeenCalledTimes(2);
       expect(findFailedJobRows()).toHaveLength(1);
+    });
+
+    it('should set up toggle visibility on mount', () => {
+      expect(toggleQueryPollingByVisibility).toHaveBeenCalled();
     });
   });
 

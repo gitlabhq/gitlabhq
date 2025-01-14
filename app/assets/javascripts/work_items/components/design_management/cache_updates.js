@@ -160,7 +160,7 @@ const addImageDiffNoteToStore = (store, createImageDiffNote, query, variables) =
   };
 
   const data = produce(sourceData, (draftData) => {
-    const currentDesign = draftData.localDesign;
+    const currentDesign = draftData.designManagement.designAtVersion.design;
     currentDesign.notesCount += 1;
     currentDesign.discussions.nodes = [...currentDesign.discussions.nodes, newDiscussion];
 
@@ -204,7 +204,7 @@ export const updateWorkItemDesignCurrentTodosWidget = ({ store, todos, query }) 
   }
 
   const newData = produce(sourceData, (draftState) => {
-    draftState.localDesign.currentUserTodos.nodes = todos;
+    draftState.designManagement.designAtVersion.design.currentUserTodos.nodes = todos;
   });
 
   store.writeQuery({ ...query, data: newData });
@@ -218,7 +218,7 @@ const updateImageDiffNoteInStore = (store, repositionImageDiffNote, query, varia
   });
 
   const data = produce(sourceData, (draftData) => {
-    const currentDesign = draftData.localDesign;
+    const currentDesign = draftData.designManagement.designAtVersion.design;
     const discussion = extractCurrentDiscussion(
       currentDesign.discussions,
       repositionImageDiffNote.note.discussion.id,

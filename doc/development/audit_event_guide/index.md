@@ -32,7 +32,7 @@ To instrument an audit event, the following attributes should be provided:
 | Attribute    | Type                                | Required? | Description                                                       |
 |:-------------|:------------------------------------|:----------|:------------------------------------------------------------------|
 | `name`       | String                              | false     | Action name to be audited. Represents the [type of the event](#event-type-definitions). Used for error tracking |
-| `author`     | User                                | true      | User who authors the change. Can be an [internal user](../internal_users.md). For example, [inactive project deletion](../../administration/inactive_project_deletion.md) audit events are authored by `GitLab-Admin-Bot`. |
+| `author`     | User                                | true      | User who authors the change. Can be an [internal user](../../administration/internal_users.md). For example, [inactive project deletion](../../administration/inactive_project_deletion.md) audit events are authored by `GitLab-Admin-Bot`. |
 | `scope`      | User, Project, Group, or Instance | true      | Scope which the audit event belongs to                            |
 | `target`     | Object                              | true      | Target object being audited                                       |
 | `message`    | String                              | true      | Message describing the action ([not translated](#i18n-and-the-audit-event-message-attribute)) |

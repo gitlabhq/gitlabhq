@@ -7,15 +7,16 @@ module Projects
 
       def experiment_as_data(project, experiment)
         data = {
+          id: experiment.id,
           name: experiment.name,
           metadata: experiment.metadata,
           path: link_to_experiment(project, experiment),
           model_id: experiment.model&.id,
           created_at: experiment.created_at,
           user: {
-            id: experiment.user.id,
-            name: experiment.user.name,
-            path: user_path(experiment.user)
+            id: experiment.user&.id,
+            name: experiment.user&.name,
+            path: experiment&.user ? user_path(experiment&.user) : nil
           }
         }
 
@@ -44,11 +45,18 @@ module Projects
       end
 
       def experiments_as_data(project, experiments)
-        data = experiments.map do |exp|
+        data = experiments.map do |experiment|
           {
-            name: exp.name,
-            path: link_to_experiment(project, exp),
-            candidate_count: exp.candidate_count
+            name: experiment.name,
+            path: link_to_experiment(project, experiment),
+            candidate_count: experiment.candidate_count,
+            updated_at: experiment.updated_at,
+            user: {
+              id: experiment.user&.id,
+              name: experiment.user&.name,
+              path: experiment&.user ? user_path(experiment&.user) : nil,
+              avatar_url: experiment.user&.avatar_url
+            }
           }
         end
 

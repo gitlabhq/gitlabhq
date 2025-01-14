@@ -617,7 +617,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
               wait_for_requests
 
-              within first('[data-testid="job-item"]') do
+              within first('[data-testid="ci-job-item"]') do
                 expect(find_by_testid('play-icon')).to be_visible
               end
 

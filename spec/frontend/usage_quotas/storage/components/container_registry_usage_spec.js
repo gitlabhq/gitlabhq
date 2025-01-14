@@ -3,6 +3,7 @@ import ContainerRegistryUsage from '~/usage_quotas/storage/components/container_
 import StorageTypeWarning from '~/usage_quotas/storage/components/storage_type_warning.vue';
 
 describe('Container registry usage component', () => {
+  /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
 
   const defaultProps = {
@@ -18,9 +19,6 @@ describe('Container registry usage component', () => {
       propsData: {
         ...defaultProps,
         ...props,
-      },
-      stubs: {
-        StorageTypeWarning,
       },
     });
   };

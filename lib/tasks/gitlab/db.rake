@@ -21,7 +21,7 @@ namespace :gitlab do
 
     desc 'Gitlab | DB | Troubleshoot issues with the database'
     task sos: :environment do
-      Gitlab::Database::Sos.run
+      Gitlab::Database::Sos.run("tmp/sos")
     end
 
     namespace :mark_migration_complete do
@@ -419,7 +419,7 @@ namespace :gitlab do
     namespace :migration_testing do
       # Not possible to import Gitlab::Database::DATABASE_NAMES here
       # Specs verify that a task exists for each entry in that array.
-      all_databases = %i[main ci main_clusterwide]
+      all_databases = %i[main ci sec]
 
       task up: :environment do
         Gitlab::Database::Migrations::Runner.up(database: 'main', legacy_mode: true).run
@@ -429,6 +429,8 @@ namespace :gitlab do
         all_databases.each do |db|
           desc "Run migrations on #{db} with instrumentation"
           task db => :environment do
+            next unless Gitlab::Database.has_database?(db)
+
             Gitlab::Database::Migrations::Runner.batched_migrations_last_id(db).store
             Gitlab::Database::Migrations::Runner.up(database: db).run
           end
@@ -439,6 +441,8 @@ namespace :gitlab do
         all_databases.each do |db|
           desc "Run down migrations on #{db} in current branch with instrumentation"
           task db => :environment do
+            next unless Gitlab::Database.has_database?(db)
+
             Gitlab::Database::Migrations::Runner.down(database: db).run
           end
         end
@@ -455,6 +459,8 @@ namespace :gitlab do
         all_databases.each do |db|
           desc "Sample batched background migrations on #{db} with instrumentation"
           task db, [:duration_s] => [:environment] do |_t, args|
+            next unless Gitlab::Database.has_database?(db)
+
             duration = args[:duration_s]&.to_i&.seconds || 30.minutes # Default of 30 minutes
 
             Gitlab::Database::Migrations::Runner.batched_background_migrations(for_database: db)

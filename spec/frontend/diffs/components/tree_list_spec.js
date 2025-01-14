@@ -67,6 +67,7 @@ describe('Diffs tree list component', () => {
           mutations: { ...mutations },
           actions: {
             toggleTreeOpen: actions.toggleTreeOpen,
+            setTreeOpen: actions.setTreeOpen,
             goToFile: actions.goToFile,
             setRenderTreeList: setRenderTreeListMock,
           },
@@ -83,6 +84,31 @@ describe('Diffs tree list component', () => {
         name: 'app',
         type: 'tree',
         tree: [],
+        opened: true,
+      },
+      javascript: {
+        key: 'appjavascript',
+        path: 'app/javascript',
+        name: 'javascript',
+        type: 'tree',
+        tree: [
+          {
+            addedLines: 0,
+            changed: true,
+            deleted: false,
+            fileHash: 'appjavascriptfile',
+            key: 'file.js',
+            name: 'file.js',
+            path: 'app/javascript/file.rb',
+            removedLines: 0,
+            tempFile: true,
+            type: 'blob',
+            parentPath: 'app/javascript',
+            tree: [],
+            file_path: 'app/javascript/file.js',
+            file_hash: 'appjavascriptfile',
+          },
+        ],
         opened: true,
       },
       'index.js': {
@@ -105,7 +131,7 @@ describe('Diffs tree list component', () => {
         addedLines: 0,
         changed: true,
         deleted: false,
-        fileHash: 'test',
+        fileHash: 'apptest',
         key: 'test.rb',
         name: 'test.rb',
         path: 'app/test.rb',
@@ -141,7 +167,7 @@ describe('Diffs tree list component', () => {
         treeEntries.LICENSE,
         {
           ...treeEntries.app,
-          tree: [treeEntries['index.js'], treeEntries['test.rb']],
+          tree: [treeEntries.javascript, treeEntries['index.js'], treeEntries['test.rb']],
         },
       ],
     });
@@ -201,7 +227,7 @@ describe('Diffs tree list component', () => {
     });
 
     it('renders tree', () => {
-      expect(getScroller().props('items')).toHaveLength(4);
+      expect(getScroller().props('items')).toHaveLength(6);
     });
 
     it('hides file stats', () => {
@@ -222,6 +248,23 @@ describe('Diffs tree list component', () => {
 
       await nextTick();
       expect(getScroller().props('items')).toHaveLength(5);
+    });
+
+    it('dispatches setTreeOpen with all paths for the current diff file', async () => {
+      jest.spyOn(store, 'dispatch').mockReturnValue(undefined);
+
+      store.state.diffs.currentDiffFileId = 'appjavascriptfile';
+
+      await nextTick();
+
+      expect(store.dispatch).toHaveBeenCalledWith('diffs/setTreeOpen', {
+        opened: true,
+        path: 'app',
+      });
+      expect(store.dispatch).toHaveBeenCalledWith('diffs/setTreeOpen', {
+        opened: true,
+        path: 'app/javascript',
+      });
     });
   });
 

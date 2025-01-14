@@ -133,6 +133,222 @@ RSpec.describe Gitlab::I18n::TranslationEntry do
     end
   end
 
+  describe '#translations_contain_leading_space' do
+    it 'is true when msgstr starts with a space and msgid does not' do
+      data = {
+        msgid: 'Hello world',
+        msgstr: ' Ahoj světe'
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_leading_space?).to be_truthy
+    end
+
+    it 'is true when msgstr starts with a space, msgid does not and msgid contains namespace' do
+      data = {
+        msgid: 'General|Hello world',
+        msgstr: ' Ahoj světe'
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_leading_space?).to be_truthy
+    end
+
+    it 'is false when msgstr and msgid both start with a space and msgid contains namespace' do
+      data = {
+        msgid: 'General| Hello world',
+        msgstr: ' Ahoj světe'
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_leading_space?).to be_falsy
+    end
+
+    it 'is false when msgstr and msgid both start with a space' do
+      data = {
+        msgid: ' Hello world',
+        msgstr: ' Ahoj světe'
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_leading_space?).to be_falsy
+    end
+
+    it 'is false when msgstr starts with a space and msgid starts with a comma followed by space' do
+      data = {
+        msgid: ', or ',
+        msgstr: ' eller '
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_leading_space?).to be_falsy
+    end
+
+    it 'is false when msgstr and msgid both start with a comma followed by space' do
+      data = {
+        msgid: ', or ',
+        msgstr: ', eller '
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_leading_space?).to be_falsy
+    end
+
+    it 'is false when msgstr starts with a comma and a space and msgid starts with a comma' do
+      data = {
+        msgid: ' or ',
+        msgstr: ', eller '
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_leading_space?).to be_falsy
+    end
+
+    it 'is false when msgstr and msgid both do not start with a space' do
+      data = {
+        msgid: 'Hello world',
+        msgstr: 'Ahoj světe'
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_leading_space?).to be_falsy
+    end
+
+    it 'is false when msgstr does not contain a space but msgid does' do
+      data = {
+        msgid: 'Hello world',
+        msgstr: 'Ahojsvěte'
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_leading_space?).to be_falsy
+    end
+  end
+
+  describe '#translations_contain_trailing_space' do
+    it 'is true when msgstr ends with a space and msgid does not' do
+      data = {
+        msgid: 'Hello world',
+        msgstr: 'Ahoj světe '
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_trailing_space?).to be_truthy
+    end
+
+    it 'is true when msgstr ends with a space, msgid does not and msgid contains namespace' do
+      data = {
+        msgid: 'General|Hello world',
+        msgstr: 'Ahoj světe '
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_trailing_space?).to be_truthy
+    end
+
+    it 'is false when msgstr and msgid both end with a space and msgid contains namespace' do
+      data = {
+        msgid: 'General|Hello world ',
+        msgstr: 'Ahoj světe '
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_trailing_space?).to be_falsy
+    end
+
+    it 'is false when msgstr and msgid both end with a space' do
+      data = {
+        msgid: 'Hello world ',
+        msgstr: 'Ahoj světe '
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_trailing_space?).to be_falsy
+    end
+
+    it 'is false when msgstr and msgid both do not end with a space' do
+      data = {
+        msgid: 'Hello world',
+        msgstr: 'Ahoj světe'
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_trailing_space?).to be_falsy
+    end
+
+    it 'is false when msgstr does not contain a space but msgid does' do
+      data = {
+        msgid: 'Hello world',
+        msgstr: 'Ahojsvěte'
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_trailing_space?).to be_falsy
+    end
+  end
+
+  describe '#translations_contain_multiple_spaces' do
+    it 'is true when msgstr contains multiple spaces and msgid does not' do
+      data = {
+        msgid: 'Hello world',
+        msgstr: 'Ahoj  světe'
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_multiple_spaces?).to be_truthy
+    end
+
+    it 'is true when msgstr and msgid contain different amounts of multiple consecutive spaces' do
+      data = {
+        msgid: 'Hello  world   and  all',
+        msgstr: 'Ahoj  světe  a    všichni'
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_multiple_spaces?).to be_truthy
+    end
+
+    it 'is true when msgstr and msgid contain different amounts of multiple consecutive spaces and chunks' do
+      data = {
+        msgid: 'Hello  world   and  all',
+        msgstr: 'Ahoj  světe a    všichni'
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_multiple_spaces?).to be_truthy
+    end
+
+    it 'is false when msgstr and msgid contain the same chunks of multiple spaces at different places' do
+      data = {
+        msgid: 'Hello  world   and  all',
+        msgstr: "Ahoj  světe  a   všichni"
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_multiple_spaces?).to be_falsy
+    end
+
+    it 'is false when msgstr and msgid contain the same chunks of multiple spaces at the same places' do
+      data = {
+        msgid: 'Hello  world   and  all',
+        msgstr: 'Ahoj  světe   a  všichni'
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_multiple_spaces?).to be_falsy
+    end
+
+    it 'is false when msgstr and msgid contain one chunk of multiple spaces at the same place' do
+      data = {
+        msgid: 'Hello  world',
+        msgstr: 'Ahoj  světe'
+      }
+      entry = described_class.new(entry_data: data, nplurals: 2)
+
+      expect(entry.translations_contain_multiple_spaces?).to be_falsy
+    end
+  end
+
   describe '#translations_contain_namespace' do
     it 'is true when the msgstr contains namespace' do
       data = {

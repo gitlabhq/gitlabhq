@@ -28,7 +28,7 @@ When you put it all together, your `.gitlab-ci.yml` should look similar to the [
 You must have:
 
 - Cosign v2.0 or later installed.
-- For self-managed GitLab instances, the GitLab container registry [configured with a metadata database](../../../administration/packages/container_registry_metadata_database.md)
+- For GitLab Self-Managed, the GitLab container registry [configured with a metadata database](../../../administration/packages/container_registry_metadata_database.md)
   to display signatures.
 
 ## Set image and service image

@@ -1,4 +1,4 @@
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import ScrollButton from '~/ide/components/jobs/detail/scroll_button.vue';
 
@@ -34,13 +34,13 @@ describe('IDE job log scroll button', () => {
   it('emits click event on click', () => {
     createComponent();
 
-    wrapper.find('button').trigger('click');
+    wrapper.findComponent(GlButton).vm.$emit('click');
     expect(wrapper.emitted().click).toBeDefined();
   });
 
   it('disables button when disabled is true', () => {
     createComponent({ disabled: true });
 
-    expect(wrapper.find('button').attributes('disabled')).toBeDefined();
+    expect(wrapper.findComponent(GlButton).attributes('disabled')).toBeDefined();
   });
 });

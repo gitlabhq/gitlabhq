@@ -12,7 +12,7 @@ export const i18n = {
 
 const variantCssColorMap = {
   success: 'gl-text-success',
-  danger: 'gl-text-red-500',
+  danger: 'gl-text-danger',
 };
 
 export default {
@@ -124,12 +124,12 @@ export default {
                 <div class="gl-flex">
                   <span
                     class="gl-mr-3 gl-grow gl-font-bold"
-                    :class="item.name ? 'gl-truncate' : 'gl-gray-400 gl-italic'"
+                    :class="item.name ? 'gl-truncate' : 'gl-italic gl-text-subtle'"
                     >{{ item.text }}</span
                   >
                   <span class="gl-ml-auto gl-whitespace-nowrap" aria-hidden="true">
-                    <span class="gl-text-green-600">+{{ item.added }}</span>
-                    <span class="gl-text-red-500">-{{ item.removed }}</span>
+                    <span class="gl-text-success">+{{ item.added }}</span>
+                    <span class="gl-text-danger">-{{ item.removed }}</span>
                   </span>
                   <span class="gl-sr-only"
                     >{{ additionsText(item.added) }}, {{ deletionsText(item.removed) }}</span
@@ -150,10 +150,10 @@ export default {
     >
       <gl-sprintf :message="$options.i18n.messageAdditionsDeletions">
         <template #additions>
-          <span class="gl-font-bold gl-text-green-600">{{ additionsText() }}</span>
+          <span class="gl-font-bold gl-text-success">{{ additionsText() }}</span>
         </template>
         <template #deletions>
-          <span class="gl-font-bold gl-text-red-500">{{ deletionsText() }}</span>
+          <span class="gl-font-bold gl-text-danger">{{ deletionsText() }}</span>
         </template>
       </gl-sprintf>
     </span>

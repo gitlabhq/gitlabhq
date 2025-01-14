@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - Group-level scan result policies [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7622) in GitLab 15.6.
 > - Scan result policies feature was renamed to merge request approval policies in GitLab 16.9.
@@ -43,7 +43,9 @@ The following video gives you an overview of GitLab merge request approval polic
 - You can assign a maximum of five rules to each policy.
 - You can assign a maximum of five merge request approval policies to each security policy project.
 - Policies created for a group or subgroup can take some time to apply to all the merge requests in
-  the group.
+  the group. The time it takes is determined by the number of projects and the number of merge requests
+  in those projects. Typically, the time taken is a matter of seconds. For groups with many thousands of projects
+  and merge requests, this could take several minutes, based on what we've previously observed.
 - Merge request approval policies do not check the integrity or authenticity of the scan results
   generated in the artifact reports.
 - A merge request approval policy is evaluated according to its rules. By default, if the rules are
@@ -87,7 +89,7 @@ pipelines, each of which may contain a security scan.
   when enforcing merge request approval policies.
 
 If a project uses [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md), you must use the [`latest` security templates](../../../development/cicd/templates.md) so that the security scanning jobs are present in the pipeline.
-For more information see [Use security scanning tools with merge request pipelines](../index.md#use-security-scanning-tools-with-merge-request-pipelines).
+For more information see [Use security scanning tools with merge request pipelines](../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).
 
 ## Merge request approval policy editor
 
@@ -205,6 +207,9 @@ This rule enforces the defined actions for any merge request based on the commit
 This action sets an approval rule to be required when conditions are met for at least one rule in
 the defined policy.
 
+> - [Added](https://gitlab.com/groups/gitlab-org/-/epics/12319) support for up to five separate `require_approval` actions in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `multiple_approval_actions`.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/505374) in GitLab 17.8. Feature flag `multiple_approval_actions` removed.
+
 | Field | Type | Required | Possible values | Description |
 |-------|------|----------|-----------------|-------------|
 | `type` | `string` | true | `require_approval` | The action's type. |
@@ -276,7 +281,7 @@ The settings set in the policy overwrite settings in the project.
 > - The `fallback_behavior` field was [enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/groups/gitlab-org/-/epics/10816) in GitLab 17.0.
 
 FLAG:
-On self-managed GitLab, by default the `fallback_behavior` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `security_scan_result_policies_unblock_fail_open_approval_rules`. On GitLab.com and GitLab Dedicated, this feature is available.
+On GitLab Self-Managed, by default the `fallback_behavior` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `security_scan_result_policies_unblock_fail_open_approval_rules`. On GitLab.com and GitLab Dedicated, this feature is available.
 
 | Field  | Type     | Required | Possible values    | Description                                                                                                          |
 |--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
@@ -451,9 +456,9 @@ When using license approval policies, the combination of project, component (dep
 
 - A license approval policy is created to block merge requests with newly detected licenses matching `AGPL-1.0`. A change is made in project `demo` for component `osframework` that violates the policy. If approved and merged, future merge requests to `osframework` in project `demo` with the license `AGPL-1.0` don't require approval.
 
-### Multiple approvals
+### Additional approvals
 
-There are several situations where the merge request approval policy requires an additional approval step. For example:
+Merge request approval policies require an additional approval step in some situations. For example:
 
 - The number of security jobs is reduced in the working branch and no longer matches the number of
   security jobs in the target branch. Users can't skip the Scanning Result Policies by removing
@@ -503,7 +508,7 @@ The **False Positive** attribute only applies to findings detected by our Vulner
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 On GitLab self-managed from 15.0 to 16.4, the most likely cause is that the project was exported from a group and imported into another, and had merge request approval policy rules. These rules are stored in a separate project to the one that was exported. As a result, the project contains policy rules that reference entities that don't exist in the imported project's group. The result is policy rules that are invalid, duplicated, or both.
 
@@ -577,6 +582,7 @@ To resolve these issues:
 - For new projects, set up and run the necessary security scans on the default branch before creating merge requests.
 - Consider using scan execution policies or pipeline execution policies to ensure consistent execution of security scans across all branches.
 - Consider using [`fallback_behavior`](#fallback_behavior) with `open` to prevent invalid or unenforceable rules in a policy from requiring approval.
+- Consider using the [`policy tuning`](#policy_tuning) setting `unblock_rules_using_execution_policies` to address scenarios where security scan artifacts are missing, and scan execution policies are enforced. When enabled, this setting makes approval rules optional when scan artifacts are missing from the target branch and a scan is required by a scan execution policy. This feature only works with an existing scan execution policy that has matching scanners. It offers flexibility in the merge request process when certain security scans cannot be performed due to missing artifacts.
 
 ### Support request for debugging of merge request approval policy
 
@@ -614,3 +620,14 @@ Search in the following files:
 Common failure reasons:
 
 - Scanner removed by MR: Merge request approval policy expects that the scanners defined in the policy are present and that they successfully produce an artifact for comparison.
+
+### Inconsistent approvals from merge request approval policies
+
+If you notice any inconsistencies in your merge request approval rules, you can take either of the following steps to resynchronize your policies:
+
+- Unassign and then reassign the security policy project to the affected group or project.
+- Alternatively, you can update a policy to trigger that policy to resynchronize for the affected group or project.
+
+These actions help ensure that your merge request approval policies are correctly applied and consistent across all merge requests.
+
+If you continue to experience issues with merge request approval policies after taking these steps, contact GitLab support for assistance.

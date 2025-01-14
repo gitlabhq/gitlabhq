@@ -12,6 +12,8 @@ module QA
           tags :mattermost
 
           attribute :mattermost_address, '--mattermost-address URL', 'Address of the Mattermost server'
+
+          pipeline_mappings test_on_omnibus: %w[mattermost]
         end
       end
     end

@@ -44,12 +44,12 @@ module Gitlab
 
     def create_metric_file
       say("This generator is DEPRECATED. For event based metrics use Internal Events tracking framework instead.")
-      # rubocop: disable Gitlab/DocUrl -- links for developers, not users
+      # rubocop: disable Gitlab/DocumentationLinks/HardcodedUrl -- links for developers, not users
       say("https://docs.gitlab.com/ee/development/internal_analytics/internal_event_instrumentation/quick_start.html")
 
       say("If you need to implement Database, Prometheus or custom metrics, see")
       say("https://docs.gitlab.com/ee/development/internal_analytics/metrics/metrics_instrumentation.html")
-      # rubocop: enable Gitlab/DocUrl
+      # rubocop: enable Gitlab/DocumentationLinks/HardcodedUrl
       desc = ask("Would you like to continue anyway? y/N") || 'n'
       return unless desc.casecmp('y') == 0
 

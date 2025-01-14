@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Representation::PullRequestReview do
+RSpec.describe Gitlab::GithubImport::Representation::PullRequestReview, feature_category: :importers do
   let(:submitted_at) { Time.new(2017, 1, 1, 12, 00).utc }
 
   shared_examples 'a PullRequest review' do

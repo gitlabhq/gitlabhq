@@ -26,8 +26,11 @@ RSpec.describe 'Projects > Files > Project owner creates a license file', :js, f
     expect(file_content).to have_content('MIT License')
     expect(file_content).to have_content("Copyright (c) #{Time.zone.now.year} #{project.namespace.human_name}")
 
-    fill_in :commit_message, with: 'Add a LICENSE file', visible: true
     click_button 'Commit changes'
+    fill_in :commit_message, with: 'Add a LICENSE file', visible: true
+    within_testid('commit-change-modal') do
+      click_button 'Commit changes'
+    end
 
     expect(page).to have_current_path(
       project_blob_path(project, 'master/LICENSE'), ignore_query: true)
@@ -49,8 +52,11 @@ RSpec.describe 'Projects > Files > Project owner creates a license file', :js, f
     expect(file_content).to have_content('MIT License')
     expect(file_content).to have_content("Copyright (c) #{Time.zone.now.year} #{project.namespace.human_name}")
 
-    fill_in :commit_message, with: 'Add a LICENSE file', visible: true
     click_button 'Commit changes'
+    fill_in :commit_message, with: 'Add a LICENSE file', visible: true
+    within_testid('commit-change-modal') do
+      click_button 'Commit changes'
+    end
 
     expect(page).to have_current_path(
       project_blob_path(project, 'master/LICENSE'), ignore_query: true)

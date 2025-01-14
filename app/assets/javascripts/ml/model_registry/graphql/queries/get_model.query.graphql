@@ -13,6 +13,7 @@ query getModel($id: MlModelID!) {
     name
     versionCount
     candidateCount
+    defaultExperimentPath
     latestVersion {
       id
       createdAt

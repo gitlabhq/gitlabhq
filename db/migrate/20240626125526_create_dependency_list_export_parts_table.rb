@@ -3,7 +3,6 @@
 class CreateDependencyListExportPartsTable < Gitlab::Database::Migration[2.2]
   milestone '17.2'
 
-  # rubocop:disable Migration/EnsureFactoryForTable -- False Positive
   def change
     create_table :dependency_list_export_parts do |t|
       t.references :dependency_list_export, foreign_key: { on_delete: :cascade }, null: false, index: true
@@ -15,5 +14,4 @@ class CreateDependencyListExportPartsTable < Gitlab::Database::Migration[2.2]
       t.text :file, limit: 255
     end
   end
-  # rubocop:enable Migration/EnsureFactoryForTable
 end

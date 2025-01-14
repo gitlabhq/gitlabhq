@@ -109,11 +109,8 @@ module Ci
     scope :stale, -> do
       stale_timestamp = stale_deadline
 
-      created_before_stale_deadline = arel_table[:created_at].lteq(stale_timestamp)
-      contacted_before_stale_deadline = arel_table[:contacted_at].lteq(stale_timestamp)
-      never_contacted = arel_table[:contacted_at].eq(nil)
-
-      where(created_before_stale_deadline).where(never_contacted.or(contacted_before_stale_deadline))
+      where(created_at: ..stale_timestamp)
+        .and(never_contacted.or(where(contacted_at: ..stale_timestamp)))
     end
     scope :ordered, -> { order(id: :desc) }
 
@@ -137,7 +134,10 @@ module Ci
       joins(:runner_namespaces).where(ci_runner_namespaces: { namespace_id: group_id })
     }
 
+    scope :created_by_admins, -> { with_creator_id(User.admins.ids) }
+
     scope :with_creator_id, ->(value) { where(creator_id: value) }
+    scope :with_sharding_key, ->(value) { where(sharding_key_id: value) }
 
     scope :belonging_to_group_or_project_descendants, ->(group_id) {
       group_ids = Ci::NamespaceMirror.by_group_and_descendants(group_id).select(:namespace_id)
@@ -402,7 +402,14 @@ module Ci
       when 'group_type'
         ::Group.find_by_id(sharding_key_id)
       when 'project_type'
-        ::Project.find_by_id(sharding_key_id)
+        # NOTE: when a project is deleted, the respective ci_runner_projects records are not immediately
+        # deleted by the LFK, so we might find join records that point to a non-existing project
+        project = ::Project.find_by_id(sharding_key_id)
+        return project if project
+
+        project_ids = runner_projects.order(:id).pluck(:project_id)
+        projects_added_to_runner_asc = Arel.sql("array_position(ARRAY[#{project_ids.join(',')}]::bigint[], id)")
+        Project.order(projects_added_to_runner_asc).find_by_id(project_ids)
       end
     end
     strong_memoize_attr :owner
@@ -449,8 +456,6 @@ module Ci
     override :save_tags
     def save_tags
       super do |new_tags, old_tags|
-        next if ::Feature.disabled?(:write_to_ci_runner_taggings, owner)
-
         if old_tags.present?
           tag_links
             .where(tag_id: old_tags)

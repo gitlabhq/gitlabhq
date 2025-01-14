@@ -6,11 +6,11 @@ remove_date: '2025-01-25'
 redirect_to: '../../group/import/index.md'
 ---
 
-# Import a project from GitLab.com to your self-managed GitLab instance (removed)
+# Import a project from GitLab.com to GitLab Self-Managed (removed)
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108502) in GitLab 15.8
 and removed in 16.0.

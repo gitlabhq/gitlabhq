@@ -287,6 +287,9 @@ export default {
   [types.TOGGLE_FOLDER_OPEN](path) {
     this.treeEntries[path].opened = !this.treeEntries[path].opened;
   },
+  [types.SET_FOLDER_OPEN]({ path, opened }) {
+    this.treeEntries[path].opened = opened;
+  },
   [types.TREE_ENTRY_DIFF_LOADING]({ path, loading = true }) {
     this.treeEntries[path].diffLoading = loading;
   },

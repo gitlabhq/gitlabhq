@@ -9,7 +9,7 @@ description: "Configure a faster SSH authorization method for GitLab instances w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 NOTE:
 This document describes a drop-in replacement for the
@@ -34,7 +34,7 @@ lookup of authorized SSH keys.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Unlike [Cloud Native GitLab](https://docs.gitlab.com/charts/), by default Linux package installations
 manage an `authorized_keys` file that is located in the

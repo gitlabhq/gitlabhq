@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - Support for state names that contain periods introduced in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `allow_dots_on_tf_state_names`. Disabled by default.
 > - Support for state names that contain periods [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385597) in GitLab 16.0. Feature flag `allow_dots_on_tf_state_names` removed.
@@ -33,7 +33,7 @@ or consider using a separate GitLab instance with no shared points of failure.
 
 ## Prerequisites
 
-For self-managed GitLab, before you can use GitLab for your OpenTofu state files:
+For GitLab Self-Managed, before you can use GitLab for your OpenTofu state files:
 
 - An administrator must [set up Terraform/OpenTofu state storage](../../../administration/terraform_state.md).
 - You must turn on the **Infrastructure** menu for your project: 

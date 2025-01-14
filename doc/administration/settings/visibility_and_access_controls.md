@@ -2,14 +2,14 @@
 stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Control project visibility, creation, retention, and deletion on your self-managed GitLab instance."
+description: "Control project visibility, creation, retention, and deletion on GitLab Self-Managed."
 ---
 
 # Control access and visibility
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 GitLab enables users with administrator access to enforce
 specific controls on branches, projects, snippets, groups, and more.
@@ -53,7 +53,7 @@ is turned on, administrators must enter Admin Mode to create new projects.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - User interface [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
 
@@ -80,7 +80,7 @@ To disable the restriction:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) from default delayed project deletion in GitLab 15.1.
 > - [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89466) in GitLab 15.1.
@@ -235,6 +235,10 @@ For more details on group visibility, see
 When restricting visibility levels, consider how these restrictions interact
 with permissions for subgroups and projects that inherit their visibility from
 the item you're changing.
+
+This setting does not apply to groups and projects created under a personal namespace.
+There is a [feature request](https://gitlab.com/gitlab-org/gitlab/-/issues/382749) to extend this
+functionality to [enterprise users](../../user/enterprise_user/index.md).
 
 To restrict visibility levels for groups, projects, snippets, and selected pages:
 

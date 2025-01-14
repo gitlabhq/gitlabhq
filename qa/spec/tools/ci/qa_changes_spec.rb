@@ -4,10 +4,9 @@ require "fog/google"
 
 RSpec.describe QA::Tools::Ci::QaChanges do
   include QA::Support::Helpers::StubEnv
-  subject(:qa_changes) { described_class.new(mr_diff, mr_labels, additional_group_spec_list) }
+  subject(:qa_changes) { described_class.new(mr_diff, mr_labels) }
 
   let(:mr_labels) { [] }
-  let(:additional_group_spec_list) { [] }
 
   before do
     allow(File).to receive(:directory?).and_return(false)
@@ -78,18 +77,7 @@ RSpec.describe QA::Tools::Ci::QaChanges do
       end
     end
 
-    context "with mr label" do
-      let(:mr_labels) { ["devops::manage"] }
-
-      it ".qa_tests return specs for devops stage" do
-        expect(qa_changes.qa_tests.split(" ")).to include(
-          "qa/specs/features/browser_ui/1_manage/",
-          "qa/specs/features/api/1_manage/"
-        )
-      end
-    end
-
-    context "with SELECTIVE_EXECUTION_IMPROVED enabled" do
+    context "with SELECTIVE_EXECUTION_IMPROVED enabled", skip: "Re-enable with gitlab-org/quality/analytics/team#18" do
       let(:code_paths_mapping_data) do
         {
           "./qa/specs/features/test_spec.rb:23": %w[./lib/model.rb ./lib/second.rb],
@@ -144,43 +132,6 @@ RSpec.describe QA::Tools::Ci::QaChanges do
           it "does not throw an error" do
             expect(qa_changes.qa_tests).to be_nil
           end
-        end
-      end
-    end
-
-    context "when configured to run tests from other stages" do
-      let(:additional_group_spec_list) do
-        {
-          'foo' => %w[create],
-          'bar' => %w[monitor verify]
-        }
-      end
-
-      context "with a single extra stage configured for the group name" do
-        let(:mr_labels) { %w[devops::manage group::foo] }
-
-        it ".qa_tests return specs for both devops stage and create stage" do
-          expect(qa_changes.qa_tests.split(" ")).to include(
-            "qa/specs/features/browser_ui/1_manage/",
-            "qa/specs/features/api/1_manage/",
-            "qa/specs/features/browser_ui/3_create/",
-            "qa/specs/features/api/3_create/"
-          )
-        end
-      end
-
-      context "with a multiple extra stages configured for the group name" do
-        let(:mr_labels) { %w[devops::manage group::bar] }
-
-        it ".qa_tests return specs for both devops stage and multiple other stages" do
-          expect(qa_changes.qa_tests.split(" ")).to include(
-            "qa/specs/features/browser_ui/1_manage/",
-            "qa/specs/features/api/1_manage/",
-            "qa/specs/features/browser_ui/8_monitor/",
-            "qa/specs/features/api/8_monitor/",
-            "qa/specs/features/browser_ui/4_verify/",
-            "qa/specs/features/api/4_verify/"
-          )
         end
       end
     end

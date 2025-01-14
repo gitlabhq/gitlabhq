@@ -744,6 +744,48 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           end
         end
       end
+
+      describe 'linked resources widget' do
+        let_it_be(:linked_resources_type) { create(:work_item_type, :non_default, widgets: [:linked_resources]) }
+        let_it_be(:work_item) { create(:work_item, project: project, work_item_type: linked_resources_type) }
+        let_it_be(:resource1) do
+          create(:zoom_meeting, issue_id: work_item.id, project: project, url: 'https://zoom.us/j/123456789')
+        end
+
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets {
+              type
+              ... on WorkItemWidgetLinkedResources {
+                linkedResources {
+                  nodes {
+                    url
+                  }
+                }
+              }
+            }
+          GRAPHQL
+        end
+
+        it 'returns widget information' do
+          expect(work_item_data).to include(
+            'id' => work_item.to_gid.to_s,
+            'widgets' => include(
+              hash_including(
+                'type' => 'LINKED_RESOURCES',
+                'linkedResources' => {
+                  'nodes' => containing_exactly(
+                    hash_including(
+                      'url' => resource1.url
+                    )
+                  )
+                }
+              )
+            )
+          )
+        end
+      end
     end
 
     describe 'notes widget' do
@@ -1405,6 +1447,37 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
             )
           )
         end
+      end
+    end
+
+    describe 'custom status widget' do
+      let_it_be(:task_work_item) { create(:work_item, :task, project: project) }
+      let_it_be(:global_id) { task_work_item.to_global_id }
+      let(:work_item_fields) do
+        <<~GRAPHQL
+          id
+          widgets {
+            type
+            ... on WorkItemWidgetCustomStatus {
+              id
+              name
+              iconName
+            }
+          }
+        GRAPHQL
+      end
+
+      it 'returns mock custom status data' do
+        expect(work_item_data).to include(
+          'widgets' => array_including(
+            hash_including(
+              'type' => 'CUSTOM_STATUS',
+              'id' => 'gid://gitlab/WorkItems::Widgets::CustomStatus/10',
+              'name' => 'Custom Status',
+              'iconName' => 'custom_status icon'
+            )
+          )
+        )
       end
     end
 

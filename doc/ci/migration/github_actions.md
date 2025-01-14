@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 If you're migrating from GitHub Actions to GitLab CI/CD, you are able to create CI/CD
 pipelines that replicate and enhance your GitHub Action workflows.
@@ -26,7 +26,7 @@ and deploying your code. Both share similarities including:
 Additionally, there are some important differences between the two:
 
 - GitHub has a marketplace for downloading 3rd-party actions, which might require additional support or licenses.
-- Self-managed GitLab instances support both horizontal and vertical scaling, while
+- GitLab Self-Managed instances support both horizontal and vertical scaling, while
   GitHub Enterprise Server only supports vertical scaling.
 - GitLab maintains and supports all features in house, and some 3rd-party integrations
   are accessible through templates.

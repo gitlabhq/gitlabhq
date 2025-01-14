@@ -46,6 +46,10 @@ module Resolvers
       required: false,
       description: "Return only projects with merge requests enabled."
 
+    argument :with_namespace_domain_pages, GraphQL::Types::Boolean,
+      required: false,
+      description: "Return only projects that use the namespace domain for pages projects."
+
     type Types::ProjectType, null: true
 
     def resolve(args)
@@ -83,7 +87,8 @@ module Resolvers
         search: args[:search],
         ids: parse_gids(args[:ids]),
         with_issues_enabled: args[:with_issues_enabled],
-        with_merge_requests_enabled: args[:with_merge_requests_enabled]
+        with_merge_requests_enabled: args[:with_merge_requests_enabled],
+        with_namespace_domain_pages: args[:with_namespace_domain_pages]
       }
     end
 

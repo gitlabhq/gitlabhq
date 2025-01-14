@@ -118,7 +118,7 @@ export default {
 
   <div v-else-if="commit">
     <commit-info :commit="commit" class="gl-hidden sm:gl-flex">
-      <div class="commit-actions gl-flex gl-items-center gl-gap-3">
+      <div class="commit-actions gl-my-2 gl-flex gl-items-start gl-gap-3">
         <signature-badge v-if="commit.signature" :signature="commit.signature" class="gl-h-7" />
         <div v-if="commit.pipeline" class="gl-ml-5 gl-flex gl-h-7 gl-items-center">
           <ci-icon

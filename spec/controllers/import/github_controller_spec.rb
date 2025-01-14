@@ -342,29 +342,12 @@ RSpec.describe Import::GithubController, feature_category: :importers do
       context 'when github importer is not enabled' do
         before do
           stub_application_setting(import_sources: [])
-          stub_feature_flags(override_github_disabled: false)
         end
 
         it 'returns 404' do
           post :create, params: { target_namespace: user.namespace }, format: :json
 
           expect(response).to have_gitlab_http_status(:not_found)
-        end
-
-        context 'when the override_github_disabled flag is enabled' do
-          before do
-            stub_feature_flags(override_github_disabled: true)
-          end
-
-          it 'returns 200' do
-            allow_next_instance_of(Gitlab::LegacyGithubImport::ProjectCreator) do |service|
-              allow(service).to receive(:execute).and_return(project)
-            end
-
-            post :create, params: { target_namespace: user.namespace }, format: :json
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
         end
       end
     end

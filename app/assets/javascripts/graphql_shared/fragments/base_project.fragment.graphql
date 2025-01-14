@@ -1,3 +1,5 @@
+#import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
+
 fragment BaseProject on Project {
   id
   fullPath
@@ -33,4 +35,9 @@ fragment BaseProject on Project {
   }
   isCatalogResource
   exploreCatalogPath
+  pipeline(iid: 1) {
+    detailedStatus {
+      ...CiIcon
+    }
+  }
 }

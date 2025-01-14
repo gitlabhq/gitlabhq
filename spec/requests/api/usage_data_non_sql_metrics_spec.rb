@@ -25,11 +25,28 @@ RSpec.describe API::UsageDataNonSqlMetrics, :aggregate_failures, feature_categor
         let(:path) { endpoint }
       end
 
-      it 'returns non sql metrics if user is admin' do
-        get api(endpoint, admin, admin_mode: true)
+      context "when user is admin" do
+        context "with an available NonSqlServicePing entry" do
+          it 'returns non sql metrics' do
+            create :non_sql_service_ping, payload: { counts: { abc: 12 } }
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['counts']).to be_a(Hash)
+            get api(endpoint, admin, admin_mode: true)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['counts']).to be_a(Hash)
+          end
+        end
+
+        context "with no recent NonSqlServicePing entry" do
+          it 'returns default response' do
+            create :non_sql_service_ping, payload: { counts: { abc: 12 } }, created_at: 2.weeks.ago
+
+            get api(endpoint, admin, admin_mode: true)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to eq({})
+          end
+        end
       end
 
       it 'returns forbidden if user is not admin' do

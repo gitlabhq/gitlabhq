@@ -51,11 +51,28 @@ describe('Pipeline Url Component', () => {
     expect(findPipelineUrlLink().text()).toBe('#1');
   });
 
-  it('should render the pipeline schedule identifier instead of pipeline name', () => {
+  it('should render the pipeline name identifier instead of pipeline schedule', () => {
     createComponent(
       merge(mockPipeline(projectPath), {
         pipeline: {
           name: 'Build pipeline',
+          pipeline_schedule: { id: 1, description: 'Schedule', path: 'schedule/path' },
+        },
+      }),
+    );
+
+    expect(findCommitTitleContainer().exists()).toBe(false);
+    expect(findPipelineIdentifierContainer().exists()).toBe(true);
+    expect(findRefName().exists()).toBe(true);
+    expect(findCommitShortSha().exists()).toBe(true);
+    expect(findPipelineIdentifierLink().text()).toBe('Build pipeline');
+    expect(findPipelineIdentifierLink().attributes('href')).toBe('foo');
+  });
+
+  it('should render the pipeline schedule identifier when pipeline has no name but schedule', () => {
+    createComponent(
+      merge(mockPipeline(projectPath), {
+        pipeline: {
           pipeline_schedule: { id: 1, description: 'Schedule', path: 'schedule/path' },
         },
       }),

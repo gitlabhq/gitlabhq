@@ -8,6 +8,8 @@ module Preloaders
     end
 
     def execute
+      return if groups.blank?
+
       ActiveRecord::Associations::Preloader.new(
         records: groups,
         associations: [:organization]

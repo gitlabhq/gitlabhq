@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" or "compute minutes" in GitLab 16.1.
 
@@ -179,10 +179,12 @@ GitLab-hosted runners have different cost factors depending on the runner type
 | Linux x86-64               | `xlarge`               | `6`         |
 | Linux x86-64               | `2xlarge`              | `12`        |
 | Linux x86-64 + GPU-enabled | `medium`, GPU standard | `7`         |
+| Linux Arm64                | `small`                | `1`         |
 | Linux Arm64                | `medium`               | `2`         |
 | Linux Arm64                | `large`                | `3`         |
-| macOS M1                   | `medium`               | `6` (**Status:** Beta) |
-| Windows                    | `medium`               | `1` (**Status:** Beta) |
+| macOS M1                   | `medium`               | `6` (**Status:** Beta)  |
+| macOS M2 Pro               | `large`                | `12` (**Status:** Beta) |
+| Windows                    | `medium`               | `1` (**Status:** Beta)  |
 
 ### Monthly reset of compute usage
 

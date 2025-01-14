@@ -61,9 +61,7 @@ describe('content/components/wrappers/table_cell_base', () => {
 
     expect(findDropdown().props()).toMatchObject({
       category: 'tertiary',
-      icon: 'chevron-down',
       size: 'small',
-      noCaret: true,
     });
     expect(findDropdown().attributes()).toMatchObject({
       boundary: 'viewport',

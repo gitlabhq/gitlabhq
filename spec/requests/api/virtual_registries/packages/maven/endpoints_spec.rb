@@ -217,7 +217,11 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
         api(url),
         file_key: :file,
         headers: headers,
-        params: { file: file_upload, 'file.md5' => 'md5', 'file.sha1' => 'sha1' },
+        params: {
+          file: file_upload,
+          'file.md5' => 'd8e8fca2dc0f896fd7cb4cb0031ba249',
+          'file.sha1' => '4e1243bd22c66e76c2ba9eddc1f91394e57f9f83'
+        },
         send_rewritten_field: true
       )
     end
@@ -228,7 +232,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).to eq('')
-        expect(upstream.cached_responses.last).to have_attributes(
+        expect(upstream.default_cached_responses.search_by_relative_path(path).last).to have_attributes(
           relative_path: "/#{path}",
           upstream_etag: nil,
           upstream_checked_at: Time.zone.now,

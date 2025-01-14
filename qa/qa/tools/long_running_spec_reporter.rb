@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "fog/google"
 require "slack-notifier"
 
 module QA
@@ -38,7 +37,7 @@ module QA
       #
       # @return [Number]
       def mean_runtime
-        @mean_runtime ||= latest_report.values
+        @mean_runtime ||= knapsack_report.values
           .select { |v| v < RUNTIME_THRESHOLD }
           .then { |runtimes| runtimes.sum(0.0) / runtimes.length }
       end
@@ -47,23 +46,14 @@ module QA
       #
       # @return [Hash]
       def long_running_specs
-        @long_running_specs ||= latest_report.select { |_k, v| v > RUNTIME_THRESHOLD }
+        @long_running_specs ||= knapsack_report.select { |_k, v| v > RUNTIME_THRESHOLD }
       end
 
       # Latest knapsack report
       #
       # @return [Hash]
-      def latest_report
-        @latest_report ||= reports.each_with_object({}) do |report, hash|
-          hash.merge!(JSON.parse(client.get_object(BUCKET, report)[:body]))
-        end
-      end
-
-      # All knapsack reports in a bucket
-      #
-      # @return [Array<String>]
-      def reports
-        @reports ||= client.list_objects(BUCKET).items.map(&:name)
+      def knapsack_report
+        @latest_report ||= JSON.parse(File.read(Support::KnapsackReport::FALLBACK_REPORT))
       end
 
       # Slack notifier
@@ -77,28 +67,11 @@ module QA
         )
       end
 
-      # GCS client
-      #
-      # @return [Fog::Storage::GoogleJSON]
-      def client
-        @client ||= Fog::Storage::Google.new(
-          google_project: PROJECT,
-          **(File.exist?(gcs_json) ? { google_json_key_location: gcs_json } : { google_json_key_string: gcs_json })
-        )
-      end
-
       # Slack webhook url
       #
       # @return [String]
       def slack_webhook_url
         @slack_webhook_url ||= ENV["SLACK_WEBHOOK"] || raise("Missing SLACK_WEBHOOK env variable")
-      end
-
-      # GCS credentials json
-      #
-      # @return [Hash]
-      def gcs_json
-        ENV["QA_KNAPSACK_REPORT_GCS_CREDENTIALS"] || raise("Missing QA_KNAPSACK_REPORT_GCS_CREDENTIALS env variable!")
       end
     end
   end

@@ -45,7 +45,7 @@ table.no-vertical-table-lines tr {
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Dependency Scanning analyzes your application's dependencies for known vulnerabilities. All
 dependencies are scanned, including transitive dependencies, also known as nested dependencies.
@@ -783,7 +783,7 @@ See <https://gitlab.com/explore/catalog/components/dependency-scanning>
 
 ### Running jobs in merge request pipelines
 
-See [Use security scanning tools with merge request pipelines](../index.md#use-security-scanning-tools-with-merge-request-pipelines)
+See [Use security scanning tools with merge request pipelines](../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines)
 
 ### Customizing analyzer behavior
 
@@ -1084,7 +1084,7 @@ You can also [submit new vulnerabilities](https://gitlab.com/gitlab-org/security
 
 ## Offline environment
 
-For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
+For GitLab Self-Managed instances in an environment with limited, restricted, or intermittent access
 to external resources through the internet, some adjustments are required for dependency scanning
 jobs to run successfully. For more information, see [Offline environments](../offline_deployments/index.md).
 

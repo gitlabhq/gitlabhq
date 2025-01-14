@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68485
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/339486
 milestone: '14.2'
 type: ops
-group: group::pipeline execution
+group: group::pipeline authoring
 default_enabled: false

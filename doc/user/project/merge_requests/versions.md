@@ -9,7 +9,7 @@ description: "Use diff versions to compare pushes contained in a single merge re
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 When you create a merge request, you select two branches to compare. The differences
 between the two branches are shown as a **diff** in the merge request. Each time

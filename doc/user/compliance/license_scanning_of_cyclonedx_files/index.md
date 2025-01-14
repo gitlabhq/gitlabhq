@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 for GitLab SaaS [with two flags](../../../administration/feature_flags.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385176) in GitLab 16.4. Feature flags `license_scanning_sbom_scanner` and `package_metadata_synchronization` removed.
@@ -206,7 +206,7 @@ Users can require approval for merge requests based on the licenses that are det
 
 ## Running in an offline environment
 
-For self-managed GitLab instances in an environment with limited, restricted, or intermittent access to external resources through the internet, some adjustments are required to successfully scan
+For GitLab Self-Managed instances in an environment with limited, restricted, or intermittent access to external resources through the internet, some adjustments are required to successfully scan
 CycloneDX reports for licenses. For more information, see the offline [quick start guide](../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database).
 
 ## Use CycloneDX report as a source of license information

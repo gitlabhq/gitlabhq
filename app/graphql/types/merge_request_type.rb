@@ -105,8 +105,7 @@ module Types
 
     field :merge_after, ::Types::TimeType,
       null: true,
-      description: 'Date after which the merge request can be merged.',
-      experiment: { milestone: '17.5' }
+      description: 'Date after which the merge request can be merged.'
 
     field :detailed_merge_status, ::Types::MergeRequests::DetailedMergeStatusEnum, null: true,
       calls_gitaly: true,
@@ -237,9 +236,9 @@ module Types
       description: 'Selected auto merge strategy.'
     field :available_auto_merge_strategies, [GraphQL::Types::String], null: true, calls_gitaly: true,
       description: 'Array of available auto merge strategies.'
-    field :commits, Types::CommitType.connection_type, null: true,
+    field :commits, Types::Repositories::CommitType.connection_type, null: true,
       calls_gitaly: true, description: 'Merge request commits.'
-    field :commits_without_merge_commits, Types::CommitType.connection_type, null: true,
+    field :commits_without_merge_commits, Types::Repositories::CommitType.connection_type, null: true,
       calls_gitaly: true, description: 'Merge request commits excluding merge commits.'
     field :committers, Types::UserType.connection_type, null: true, complexity: 5,
       calls_gitaly: true, description: 'Users who have added commits to the merge request.'

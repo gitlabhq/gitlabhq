@@ -1,4 +1,6 @@
 <script>
+import { GlAlert } from '@gitlab/ui';
+import { uniqueId } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
 import { ASC } from '~/notes/constants';
@@ -20,6 +22,7 @@ export default {
   },
   components: {
     DiscussionReplyPlaceholder,
+    GlAlert,
     WorkItemNoteSignedOut,
     WorkItemCommentLocked,
     WorkItemCommentForm,
@@ -112,9 +115,17 @@ export default {
       required: false,
       default: false,
     },
+    parentId: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
+      addNoteKey: this.generateUniqueId(),
+      errorMessages: '',
+      messages: '',
       workItem: {},
       isEditing: this.isNewDiscussion,
       isSubmitting: false,
@@ -215,13 +226,17 @@ export default {
     },
   },
   methods: {
+    generateUniqueId() {
+      // used to rerender work-item-comment-form so the text in the textarea is cleared
+      return uniqueId(`work-item-add-note-${this.workItemId}-`);
+    },
     async updateWorkItem({ commentText, isNoteInternal = false }) {
       this.isSubmitting = true;
       this.$emit('replying', commentText);
       try {
         this.track('add_work_item_comment');
 
-        await this.$apollo.mutate({
+        const { data } = await this.$apollo.mutate({
           mutation: createNoteMutation,
           variables: {
             input: {
@@ -233,15 +248,10 @@ export default {
           },
           update: this.onNoteUpdate,
         });
-        /**
-         * https://gitlab.com/gitlab-org/gitlab/-/issues/388314
-         *
-         * Once form is successfully submitted, emit replied event,
-         * mark isSubmitting to false and clear storage before hiding the form.
-         * This will restrict comment form to restore the value while textarea
-         * input triggered due to keyboard event meta+enter.
-         *
-         */
+        const { errorMessages, messages } = data.createNote.quickActionsStatus;
+
+        this.errorMessages = errorMessages?.join(' ');
+        this.messages = messages?.join(' ');
         this.$emit('replied');
         clearDraft(this.autosaveKey);
         this.cancelEditing();
@@ -254,6 +264,7 @@ export default {
     },
     cancelEditing() {
       this.isEditing = this.isNewDiscussion;
+      this.addNoteKey = this.generateUniqueId();
       this.$emit('cancelEditing');
     },
     showReplyForm() {
@@ -305,9 +316,27 @@ export default {
     />
     <div v-else :class="timelineEntryInnerClass">
       <div :class="timelineContentClass">
+        <gl-alert
+          v-if="messages"
+          class="gl-mb-2"
+          data-testid="success-alert"
+          @dismiss="messages = ''"
+        >
+          {{ messages }}
+        </gl-alert>
+        <gl-alert
+          v-if="errorMessages"
+          class="gl-mb-2"
+          variant="danger"
+          data-testid="error-alert"
+          @dismiss="errorMessages = ''"
+        >
+          {{ errorMessages }}
+        </gl-alert>
         <div :class="parentClass">
           <work-item-comment-form
             v-if="isEditing"
+            :key="addNoteKey"
             :work-item-type="workItemType"
             :aria-label="__('Add a reply')"
             :is-submitting="isSubmitting"
@@ -328,10 +357,13 @@ export default {
             :has-replies="hasReplies"
             :work-item-iid="workItemIid"
             :has-email-participants-widget="hasEmailParticipantsWidget"
+            :parent-id="parentId"
             @toggleResolveDiscussion="$emit('resolve')"
             @submitForm="updateWorkItem"
             @cancelEditing="cancelEditing"
             @error="$emit('error', $event)"
+            @startEditing="$emit('startEditing')"
+            @stopEditing="$emit('stopEditing')"
           />
           <discussion-reply-placeholder
             v-else

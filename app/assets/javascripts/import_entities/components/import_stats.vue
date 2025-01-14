@@ -51,17 +51,17 @@ export default {
 
       if (fetched === imported) {
         if (imported === 0) {
-          return { name: 'status-scheduled', class: 'gl-text-gray-400' };
+          return { name: 'status-scheduled', variant: 'subtle' };
         }
 
-        return { name: 'status-success', class: 'gl-text-green-400' };
+        return { name: 'status-success', variant: 'success' };
       }
 
       if (this.status === STATUSES.FINISHED) {
-        return { name: 'status-alert', class: 'gl-text-orange-400' };
+        return { name: 'status-alert', variant: 'warning' };
       }
 
-      return { name: 'status-running', class: 'gl-text-blue-400' };
+      return { name: 'status-running', variant: 'info' };
     },
   },
 };

@@ -22,12 +22,10 @@ module QA
         ])
       end
 
-      let(:developer) { create(:user, :with_personal_access_token) }
-      let(:maintainer) { create(:user, :with_personal_access_token) }
+      let!(:developer) { create(:user, :with_personal_access_token) }
+      let!(:maintainer) { create(:user, :with_personal_access_token) }
 
       before do
-        Flow::Login.sign_in
-        project.visit!
         project.add_member(developer)
         project.add_member(maintainer, Resource::Members::AccessLevel::MAINTAINER)
         add_ci_variable
@@ -38,17 +36,12 @@ module QA
       end
 
       it 'exposes variable on protected branch',
-        quarantine: {
-          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/419506',
-          type: :investigating
-        },
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348005' do
         create_protected_branch
 
         [developer, maintainer].each do |user|
           user_commit_to_protected_branch(user.api_client)
-          go_to_pipeline_job(user)
-
+          go_to_pipeline_job_as(user)
           Page::Project::Job::Show.perform do |show|
             expect(show.output).to have_content(protected_value), 'Expect protected variable to be in job log.'
           end
@@ -58,9 +51,8 @@ module QA
       it 'does not expose variable on unprotected branch', :smoke,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347664' do
         [developer, maintainer].each do |user|
-          create_merge_request(user.api_client)
-          go_to_pipeline_job(user)
-
+          user_create_merge_request(user.api_client)
+          go_to_pipeline_job_as(user)
           Page::Project::Job::Show.perform do |show|
             expect(show.output).to have_no_content(protected_value), 'Expect protected variable to NOT be in job log.'
           end
@@ -98,7 +90,7 @@ module QA
         end
       end
 
-      def create_merge_request(api_client)
+      def user_create_merge_request(api_client)
         # Retry is needed due to delays with project authorization updates
         # Long term solution to accessing the status of a project authorization update
         # has been proposed in https://gitlab.com/gitlab-org/gitlab/-/issues/393369
@@ -118,14 +110,12 @@ module QA
         end
       end
 
-      def go_to_pipeline_job(user)
+      def go_to_pipeline_job_as(user)
         Flow::Login.sign_in(as: user)
         project.visit!
-        Flow::Pipeline.visit_latest_pipeline
-
-        Page::Project::Pipeline::Show.perform do |pipeline|
-          pipeline.click_job('job')
-        end
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+        Flow::Pipeline.wait_for_latest_pipeline_to_have_status(project: project, status: 'success')
+        project.visit_job('job')
       end
     end
   end

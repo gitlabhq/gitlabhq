@@ -1,6 +1,7 @@
 import axios from '../lib/utils/axios_utils';
 import { buildApiUrl } from './api_utils';
 
+const DEPENDENCY_PROXY_CACHE_PATH = '/api/:version/groups/:id/dependency_proxy/cache';
 const PUBLISH_PACKAGE_PATH =
   '/api/:version/projects/:id/packages/generic/:package_name/:package_version/:file_name';
 
@@ -23,4 +24,10 @@ export function publishPackage(
     params: Object.assign(defaults, options),
     ...axiosOptions,
   });
+}
+
+export function deleteDependencyProxyCacheList(groupId, options = {}) {
+  const url = buildApiUrl(DEPENDENCY_PROXY_CACHE_PATH).replace(':id', groupId);
+
+  return axios.delete(url, { params: { ...options } });
 }

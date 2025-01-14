@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import CrmContactsRoot from './components/contacts_root.vue';
+import CrmContactsApp from './contacts_app.vue';
 import routes from './routes';
 
 Vue.use(VueApollo);
@@ -53,7 +53,7 @@ export default () => {
       textQuery,
     },
     render(createElement) {
-      return createElement(CrmContactsRoot);
+      return createElement(CrmContactsApp);
     },
   });
 };

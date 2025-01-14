@@ -180,7 +180,6 @@ RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :
     before do
       visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
       click_diff_line(find_by_scrolling('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
-      click_diff_line(find_by_scrolling('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]'))
     end
 
     describe 'posting a note' do

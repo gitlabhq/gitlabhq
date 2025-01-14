@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import CrmOrganizationsRoot from './components/organizations_root.vue';
+import CrmOrganizationsApp from './organizations_app.vue';
 import routes from './routes';
 
 Vue.use(VueApollo);
@@ -53,7 +53,7 @@ export default () => {
       textQuery,
     },
     render(createElement) {
-      return createElement(CrmOrganizationsRoot);
+      return createElement(CrmOrganizationsApp);
     },
   });
 };

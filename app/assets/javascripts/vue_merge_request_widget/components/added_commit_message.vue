@@ -2,7 +2,6 @@
 import { GlSprintf, GlLink } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { n__, s__, sprintf } from '~/locale';
 
 const mergeCommitCount = s__('mrWidgetCommitsAdded|%{strongStart}1%{strongEnd} merge commit');
@@ -12,7 +11,6 @@ export default {
     GlSprintf,
     GlLink,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     state: {
       type: String,

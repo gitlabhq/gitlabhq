@@ -30,11 +30,11 @@ module Rack
 
           def []=(key, value)
             unless safe_object?(value)
-              # rubocop:disable Gitlab/DocUrl
+              # rubocop:disable Gitlab/DocumentationLinks/HardcodedUrl
               raise "Session attempted to store type #{value.class} with key '#{key}': #{value.inspect}.\n" \
                     "Serializing novel Ruby objects can cause uninitialized constants in mixed deployments.\n" \
                     "See https://docs.gitlab.com/ee/development/multi_version_compatibility.html"
-              # rubocop:enable Gitlab/DocUrl
+              # rubocop:enable Gitlab/DocumentationLinks/HardcodedUrl
             end
 
             super

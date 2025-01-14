@@ -65,9 +65,7 @@ RSpec.describe Gitlab::Audit::CiRunnerTokenAuthor, feature_category: :runner do
       let(:entity_path) { group.full_path }
 
       it 'returns correct url' do
-        expect(::Gitlab::Routing.url_helpers).to receive(:group_runners).with(entity_path).and_return('runners path')
-
-        is_expected.to eq('runners path')
+        is_expected.to eq("/groups/#{group.full_path}/-/runners")
       end
     end
 
@@ -76,11 +74,7 @@ RSpec.describe Gitlab::Audit::CiRunnerTokenAuthor, feature_category: :runner do
       let(:entity_path) { project.full_path }
 
       it 'returns correct url' do
-        expect(::Gitlab::Routing.url_helpers).to receive(:project_settings_ci_cd_path)
-          .with(project, { anchor: 'js-runners-settings' })
-          .and_return('runners path')
-
-        is_expected.to eq('runners path')
+        is_expected.to eq("/#{project.full_path}/-/settings/ci_cd#js-runners-settings")
       end
     end
   end

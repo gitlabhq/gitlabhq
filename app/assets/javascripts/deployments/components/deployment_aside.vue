@@ -4,6 +4,9 @@ import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import ShowMore from '~/vue_shared/components/show_more.vue';
 import AssigneeAvatarLink from '~/sidebar/components/assignees/assignee_avatar_link.vue';
 import { __, s__ } from '~/locale';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { InternalEvents } from '~/tracking';
+import { CLICK_PIPELINE_LINK_ON_DEPLOYMENT_PAGE } from '~/deployments/utils';
 import AsideItem from './aside_item.vue';
 
 export default {
@@ -17,6 +20,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     deployment: {
       required: true,
@@ -72,6 +76,9 @@ export default {
     hasUrl() {
       return Boolean(this.environment.externalUrl);
     },
+    pipelineId() {
+      return getIdFromGraphQLId(this.deployment.job.pipeline.id);
+    },
   },
   mounted() {
     window.addEventListener('resize', this.handleWindowResize);
@@ -87,11 +94,15 @@ export default {
     toggleSidebar() {
       this.isExpanded = !this.isExpanded;
     },
+    trackPipelineLinkClick() {
+      this.trackEvent(CLICK_PIPELINE_LINK_ON_DEPLOYMENT_PAGE);
+    },
   },
   i18n: {
     openUrl: s__('Deployment|Open URL'),
     triggerer: s__('Deployment|Triggerer'),
     relatedTags: s__('Deployment|Related Tags'),
+    pipeline: s__('Deployment|Pipeline'),
     job: s__('Deployment|Job'),
     branch: s__('Deployment|Branch'),
     tag: s__('Deployment|Tag'),
@@ -170,6 +181,17 @@ export default {
               </span>
             </template>
           </show-more>
+        </aside-item>
+
+        <aside-item v-if="hasJob" class="gl-mb-3" data-testid="deployment-pipeline">
+          <template #header>{{ $options.i18n.pipeline }}</template>
+          <gl-link
+            :href="deployment.job.pipeline.path"
+            data-testid="deployment-pipeline-link"
+            @click="trackPipelineLinkClick"
+          >
+            #{{ pipelineId }}
+          </gl-link>
         </aside-item>
 
         <aside-item v-if="hasJob" class="gl-mb-3">

@@ -13,6 +13,10 @@ To run a DAST scan:
 - Create a [DAST job](#create-a-dast-cicd-job) in your CI/CD pipeline.
 - [Authenticate](authentication.md) as a user if your application requires it.
 
+The DAST job runs in a Docker container defined by the `image` keyword in the DAST CI/CD template file.
+When you run the job, DAST connects to the target application specified by the `DAST_TARGET_URL` variable
+and crawls the site using an embedded browser.
+
 ## Create a DAST CI/CD job
 
 > - This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87183) to DAST_VERSION: 3 in GitLab 15.0.

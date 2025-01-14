@@ -19,6 +19,7 @@ RSpec.describe Types::Ci::Catalog::ResourceType, feature_category: :pipeline_com
       visibility_level
       star_count
       starrers_path
+      topics
       last_30_day_usage_count
     ]
 

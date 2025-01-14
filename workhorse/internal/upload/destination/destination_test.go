@@ -298,7 +298,7 @@ func TestUploadWithS3WorkhorseClient(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			s3Creds, s3Config, sess, ts := test.SetupS3(t, "")
+			s3Creds, s3Config, client, ts := test.SetupS3(t, "")
 			defer ts.Close()
 
 			if tc.awsSDK != "" {
@@ -325,10 +325,10 @@ func TestUploadWithS3WorkhorseClient(t *testing.T) {
 
 			if tc.expectedErr == nil {
 				require.NoError(t, err)
-				test.S3ObjectExists(t, sess, s3Config, remoteObject, test.ObjectContent)
+				test.S3ObjectExists(ctx, t, client, s3Config, remoteObject, test.ObjectContent)
 			} else {
 				require.Equal(t, tc.expectedErr, err)
-				test.S3ObjectDoesNotExist(t, sess, s3Config, remoteObject)
+				test.S3ObjectDoesNotExist(ctx, t, client, s3Config, remoteObject)
 			}
 		})
 	}

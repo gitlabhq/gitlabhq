@@ -68,7 +68,8 @@ pre-push:
       tags: backend frontend view haml
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD | while read file;do git diff --unified=1 $(git merge-base origin/master HEAD)..HEAD $file | grep -Fqe '_(' && echo $file;done; true
       glob: '*.{haml,rb,js,vue}'
-      run: tooling/bin/gettext_extractor /dev/stdout --silent | diff - locale/gitlab.pot || ( echo "\nPO files need to be updated. Try running tooling/bin/gettext_extractor locale/gitlab.pot" && exit 1 )
+      run: tooling/bin/gettext_extractor /dev/stdout --silent | diff - locale/gitlab.pot
+      fail_text: PO files need to be updated. Try running tooling/bin/gettext_extractor locale/gitlab.pot
     docs-metadata: # See https://docs.gitlab.com/ee/development/documentation/metadata.html
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
@@ -94,6 +95,11 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '{db/migrate/*.rb,db/post_migrate/*.rb,ee/elastic/migrate/*.rb}'
       run: scripts/validate_name_collisions_between_migrations
+    db-migration-timestamp:
+      tags: database
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: '{db/migrate/*.rb,db/post_migrate/*.rb}'
+      run: scripts/validate_migration_timestamps
     static-verification:
       skip: true # This is disabled by default. You can enable this check by adding skip: false in lefthook-local.yml https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md#skip
       tags: backend
@@ -156,6 +162,38 @@ pre-commit:
     secrets-detection:
       tags: secrets
       run: .lefthook/gitleaks.sh pre-commit
+    docs-metadata: # See https://docs.gitlab.com/ee/development/documentation/metadata.html
+      tags: documentation style
+      files: git diff --name-only --diff-filter=d --staged
+      glob: 'doc/*.md'
+      run: scripts/lint-docs-metadata.sh {files}
+    docs-deprecations:
+      tags: documentation
+      files: git diff --name-only --diff-filter=d --staged
+      glob: 'data/deprecations/*.yml'
+      run: echo "Changes to deprecation files detected. Checking deprecations..\n"; bundle exec rake gitlab:docs:check_deprecations
+    docs-link-check:
+      tags: documentation
+      files: git diff --name-only --diff-filter=d --staged
+      glob: 'doc/*.md'
+      run: scripts/lint-docs-link-check.sh
+    markdownlint:
+      tags: documentation style
+      files: git diff --name-only --diff-filter=d --staged
+      exclude: 'doc/api/graphql/reference/index.md'
+      glob: 'doc/*.md'
+      run: yarn markdownlint {files}
+    mermaidlint:
+      tags: documentation style,backend style,frontend style
+      files: git diff --name-only --diff-filter=d --staged
+      glob: '{app,lib,ee,spec,doc,scripts}/**/*.md'
+      run: scripts/lint/check_mermaid.mjs {files}
+    vale: # Requires Vale: https://docs.gitlab.com/ee/development/documentation/testing/vale.html
+      tags: documentation style
+      files: git diff --name-only --diff-filter=d --staged
+      exclude: 'doc/api/graphql/reference/index.md'
+      glob: 'doc/*.md'
+      run: 'if [ $VALE_WARNINGS ]; then minWarnings=warning; else minWarnings=error; fi; if command -v vale > /dev/null 2>&1; then if ! vale --config .vale.ini --minAlertLevel $minWarnings {files}; then echo "ERROR: Fix any linting errors and make sure you are using the latest version of Vale."; exit 1; fi; else echo "ERROR: Vale not found. For more information, see https://vale.sh/docs/vale-cli/installation/."; exit 1; fi'
 
 auto-fix:
   parallel: true

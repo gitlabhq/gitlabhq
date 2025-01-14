@@ -129,8 +129,14 @@ module Gitlab
             next source_name if source_name.present?
           end
 
-          user = client.user(username)
-          source_name = user.fetch(:name, username)
+          begin
+            user = client.user(username)
+            source_name = user.fetch(:name, username)
+          rescue ::Octokit::NotFound => error
+            log("GitHub user not found. #{error.message}", username: username)
+
+            source_name = username
+          end
 
           cache_source_name(username, source_name)
 

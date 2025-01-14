@@ -11,13 +11,10 @@ module QA
 
       RegexMismatchError = Class.new(StandardError)
 
-      DEFAULT_TEST_PATH_ARGS = [
-        '--',
-        File.expand_path('./features', __dir__),
-        GitlabEdition.jh? ? File.expand_path('../../.././jh/qa/qa/specs/features', __dir__) : nil
-      ].compact.freeze
+      DEFAULT_TEST_PATH = "qa/specs/features"
+      DEFAULT_TEST_PATH_ARGS = [DEFAULT_TEST_PATH].freeze
       DEFAULT_STD_ARGS = [$stderr, $stdout].freeze
-      DEFAULT_SKIPPED_TAGS = %w[orchestrated transient].freeze
+      DEFAULT_SKIPPED_TAGS = %w[orchestrated].freeze
 
       def initialize
         @tty = false
@@ -25,62 +22,79 @@ module QA
         @options = []
       end
 
-      def rspec_tags
-        tags_for_rspec = []
-
-        return tags_for_rspec if Runtime::Scenario.attributes[:test_metadata_only] || Runtime::Env.rspec_retried?
-
-        if tags.any?
-          tags.each { |tag| tags_for_rspec.push(['--tag', tag.to_s]) }
-        else
-          tags_for_rspec.push(DEFAULT_SKIPPED_TAGS.map { |tag| %W[--tag ~#{tag}] }) unless (%w[-t --tag] & options).any?
-        end
-
-        tags_for_rspec.push(%w[--tag ~geo]) unless QA::Runtime::Env.geo_environment?
-        tags_for_rspec.push(%w[--tag ~skip_signup_disabled]) if QA::Runtime::Env.signup_disabled?
-        tags_for_rspec.push(%w[--tag ~skip_live_env]) if QA::Specs::Helpers::ContextSelector.dot_com?
-
-        QA::Runtime::Env.supported_features.each_key do |key|
-          tags_for_rspec.push(%W[--tag ~requires_#{key}]) unless QA::Runtime::Env.can_test? key
-        end
-
-        tags_for_rspec
-      end
-
       def perform
         args = build_initial_args
         # use options from default .rspec file for metadata only runs
         configure_default_formatters!(args) unless metadata_run?
-        args.push(DEFAULT_TEST_PATH_ARGS) unless custom_test_paths?
 
-        run_rspec(args)
+        run_rspec(args.flatten)
       end
 
       private
 
       delegate :rspec_retried?, :parallel_run?, to: Runtime::Env
 
+      def rspec_tags
+        return @rspec_tags if @rspec_tags
+
+        tags_for_rspec = []
+
+        if Runtime::Scenario.attributes[:test_metadata_only] || Runtime::Env.rspec_retried?
+          return @rspec_tags = tags_for_rspec
+        end
+
+        if tags.any?
+          tags.each { |tag| tags_for_rspec.push(tag.to_s) }
+        else
+          tags_for_rspec.push(*DEFAULT_SKIPPED_TAGS.map { |tag| "~#{tag}" }) unless (%w[-t --tag] & options).any?
+        end
+
+        tags_for_rspec.push("~geo") unless QA::Runtime::Env.geo_environment?
+        tags_for_rspec.push("~skip_signup_disabled") if QA::Runtime::Env.signup_disabled?
+        tags_for_rspec.push("~skip_live_env") if QA::Specs::Helpers::ContextSelector.dot_com?
+
+        QA::Runtime::Env.supported_features.each_key do |key|
+          tags_for_rspec.push("~requires_#{key}") unless QA::Runtime::Env.can_test? key
+        end
+
+        @rspec_tags = tags_for_rspec
+      end
+
+      def custom_spec_paths
+        @spec_paths ||= options.select { |opt| opt.include?(DEFAULT_TEST_PATH) }
+      end
+
+      def rspec_paths
+        @rspec_paths ||= custom_spec_paths.presence || DEFAULT_TEST_PATH_ARGS
+      end
+
       def build_initial_args
         [].tap do |args|
           args.push('--tty') if tty
-          args.push(rspec_tags)
-          args.push(options)
+          args.push(rspec_tags.flat_map { |tag| ["--tag", tag] })
+          args.push(options - custom_spec_paths)
         end
       end
 
       def run_rspec(args)
+        full_arg_list = [*args, "--", *rspec_paths]
+
         if Runtime::Scenario.attributes[:count_examples_only]
-          count_examples_only(args)
+          count_examples_only(full_arg_list)
         elsif Runtime::Scenario.attributes[:test_metadata_only]
-          test_metadata_only(args)
+          test_metadata_only(full_arg_list)
         elsif Runtime::Env.knapsack?
-          KnapsackRunner.run(args.flatten, parallel: run_in_parallel?) { |status| abort if status.nonzero? }
+          KnapsackRunner.run(args, rspec_paths, example_data, parallel: run_in_parallel?) do |status|
+            abort if status.nonzero?
+          end
         elsif run_in_parallel?
-          ParallelRunner.run(args.flatten)
+          ParallelRunner.run(args, rspec_paths, example_data)
         elsif Runtime::Scenario.attributes[:loop]
-          LoopRunner.run(args.flatten)
+          LoopRunner.run(full_arg_list)
         else
-          RSpec::Core::Runner.run(args.flatten, *DEFAULT_STD_ARGS).tap { |status| abort if status.nonzero? }
+          RSpec::Core::Runner.run(full_arg_list, *DEFAULT_STD_ARGS).tap do |status|
+            abort if status.nonzero?
+          end
         end
       end
 
@@ -145,12 +159,17 @@ module QA
         end
       end
 
-      def custom_test_paths?
-        Runtime::Env.knapsack? || options.any? { |opt| opt.include?('features') }
-      end
-
       def metadata_run?
         Runtime::Scenario.attributes[:count_examples_only] || Runtime::Scenario.attributes[:test_metadata_only]
+      end
+
+      # Example ids with their execution status
+      #
+      # @return [Hash<String, String>]
+      def example_data
+        Support::ExampleData.fetch(rspec_tags).each_with_object({}) do |example, ids|
+          ids[example[:id]] = example[:status]
+        end
       end
     end
   end

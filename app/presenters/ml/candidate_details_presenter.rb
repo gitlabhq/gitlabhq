@@ -9,25 +9,38 @@ module Ml
       @current_user = current_user
     end
 
+    # rubocop:disable Metrics/AbcSize -- Monoton complexity
     def present
       {
         candidate: {
           info: {
             iid: candidate.iid,
             eid: candidate.eid,
+            gid: candidate.to_global_id.to_s,
             path_to_artifact: link_to_artifact,
             experiment_name: candidate.experiment.name,
             path_to_experiment: link_to_experiment,
             path: link_to_details,
             status: candidate.status,
-            ci_job: job_info
+            ci_job: job_info,
+            created_at: candidate.created_at,
+            author_web_url: candidate.user&.namespace&.web_url,
+            author_name: candidate.user&.name,
+            promote_path: promote_project_ml_candidate_path(candidate.project, candidate.iid),
+            can_promote: candidate.model_version_id.nil? && candidate.experiment.model_id.present?
           },
           params: candidate.params,
           metrics: candidate.metrics,
-          metadata: candidate.metadata
+          metadata: candidate.metadata,
+          projectPath: candidate.project.full_path,
+          can_write_model_registry: current_user&.can?(:write_model_registry, candidate.project),
+          markdown_preview_path: project_preview_markdown_path(candidate.project),
+          model_gid: candidate.experiment.model&.to_global_id.to_s,
+          latest_version: candidate.experiment.model&.latest_version&.version
         }
       }
     end
+    # rubocop:enable Metrics/AbcSize
 
     def present_as_json
       Gitlab::Json.generate(present.deep_transform_keys { |k| k.to_s.camelize(:lower) })

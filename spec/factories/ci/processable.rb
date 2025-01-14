@@ -27,7 +27,6 @@ FactoryBot.define do
     after(:build) do |processable, evaluator|
       next if processable.ci_stage
 
-      processable.stage = evaluator.stage
       pipeline = processable.pipeline
 
       existing_stage =

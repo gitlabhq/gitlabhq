@@ -48,7 +48,7 @@ an integrated GitLab workflow experience.
 - **Code generation**: Generates code based on a natural language code comment block.
   Write a comment, then press <kbd>Enter</kbd> to generate code based on the context of your
   comment, and the rest of your code.
-- **Context-aware suggestions**: Uses currently open files, content before and after the cursor,
+- **Context-aware suggestions**: Uses open files in your IDE, content before and after the cursor,
   filename, and extension type to provide relevant suggestions.
 - **Support for multiple languages**: Works with various programming languages supported by your development environment.
 

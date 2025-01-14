@@ -67,3 +67,26 @@ Documentation review apps follow this process:
      For implementation details, see
      [issue `gitlab-com/gl-infra/reliability#11021`](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/11021).
    - For `hugo` builds, a [parallel deployment](../../user/project/pages/index.md#parallel-deployments) is deployed.
+
+## Troubleshooting
+
+When working with review apps, you might encounter the following issues.
+
+### Error: `401 Unauthorized` in documentation review app deployment jobs
+
+You might get an error in a review app deployment job that states:
+
+```plaintext
+Server responded with code 401, message: 401 Unauthorized.
+```
+
+This issue occurs when the `DOCS_PROJECT_API_TOKEN` (or `DOCS_HUGO_PROJECT_API_TOKEN`) has either:
+
+- Expired or been revoked and must be regenerated.
+- Been recreated, but the CI/CD variable in the projects that use it wasn't updated.
+
+These conditions result in the deployment job for the documentation review app being unable to query the downstream project for
+the status of the downstream pipeline.
+
+To resolve this issue, contact the [Technical Writing team](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#contact-us). For more information on documentation review app tokens,
+see [GitLab docs site maintenance](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/maintenance.md).

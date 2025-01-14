@@ -39,7 +39,7 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu, feature_catego
     before do
       stub_container_registry_config(enabled: registry_enabled)
       stub_config(packages: { enabled: packages_enabled })
-      stub_feature_flags(ml_experiment_tracking: false, agent_registry: false)
+      stub_feature_flags(agent_registry: false)
     end
 
     context 'when Packages Registry is visible' do

@@ -26,7 +26,7 @@ module Types
 
           field :author, Types::UserType, null: true, description: 'User that created the version.'
 
-          field :commit, Types::CommitType, null: true, complexity: 10, calls_gitaly: true,
+          field :commit, Types::Repositories::CommitType, null: true, complexity: 10, calls_gitaly: true,
             description: 'Commit associated with the version.'
 
           field :components, Types::Ci::Catalog::Resources::ComponentType.connection_type, null: true,

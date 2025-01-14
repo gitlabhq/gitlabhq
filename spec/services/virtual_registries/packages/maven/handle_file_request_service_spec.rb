@@ -75,7 +75,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
       end
 
       context 'with a cached response' do
-        let_it_be_with_reload(:cached_response) do
+        let_it_be_with_refind(:cached_response) do
           create(:virtual_registries_packages_maven_cached_response,
             :upstream_checked,
             upstream: registry.upstream,

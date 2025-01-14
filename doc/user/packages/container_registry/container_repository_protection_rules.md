@@ -8,17 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed
-**Status:** Experiment
+**Offering:** GitLab.com, GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463669) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `containers_protected_containers`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-To selectively enable this feature for certain projects or groups, you need to use the root namespace of the project or group.
-It is not possible to enable this feature for projects individually.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/429074) in GitLab 17.8.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/480385) in GitLab 17.8. Feature flag `container_registry_protected_containers` removed.
 
 By default, any user with at least the Developer role can push and delete
 container images to or from container repositories. Protect a container repository to restrict
@@ -58,6 +52,7 @@ To create a protection rule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Packages and registries**.
+1. Expand **Container registry**.
 1. Under **Protected container repositories**, select **Add protection rule**.
 1. Complete the fields:
    - **Repository path pattern** is a container repository path you want to protect.
@@ -80,6 +75,7 @@ To delete a protection rule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Packages and registries**.
+1. Expand **Container registry**.
 1. Under **Protected container repositories**, next to the protection rule you want to delete, select **Delete** (**{remove}**).
 1. On the confirmation dialog, select **Delete**.
 

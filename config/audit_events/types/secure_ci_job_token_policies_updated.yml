@@ -1,6 +1,6 @@
 ---
 name: secure_ci_job_token_policies_updated
-description: Event triggered when permissions are updated for a CI_JOB_TOKEN scope
+description: Permissions are updated for a CI_JOB_TOKEN scope
 introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/495144
 introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170930
 feature_category: authorization

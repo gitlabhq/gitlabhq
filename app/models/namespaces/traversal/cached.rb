@@ -73,7 +73,6 @@ module Namespaces
       def sync_traversal_ids
         super
         return if is_a?(Namespaces::UserNamespace)
-        return unless Feature.enabled?(:namespace_descendants_cache_expiration, self, type: :gitlab_com_derisk)
 
         ids = [id]
         ids.concat((saved_changes[:parent_id] - [parent_id]).compact) if saved_changes[:parent_id]
@@ -82,7 +81,6 @@ module Namespaces
 
       def invalidate_descendants_cache
         return if is_a?(Namespaces::UserNamespace)
-        return unless Feature.enabled?(:namespace_descendants_cache_expiration, self, type: :gitlab_com_derisk)
 
         Namespaces::Descendants.expire_for([parent_id, id].compact)
       end

@@ -9,6 +9,71 @@ export const mockArtifacts = () => ({
           jobs: {
             nodes: [
               {
+                id: 'gid://gitlab/Ci::Build/17',
+                name: null,
+                artifacts: {
+                  nodes: [
+                    {
+                      downloadPath:
+                        '/root/security-reports/-/jobs/17/artifacts/download?file_type=trace',
+                      fileType: 'TRACE',
+                      __typename: 'CiJobArtifact',
+                    },
+                    {
+                      downloadPath:
+                        '/root/security-reports/-/jobs/17/artifacts/download?file_type=sast',
+                      fileType: 'SAST',
+                      __typename: 'CiJobArtifact',
+                    },
+                  ],
+                  __typename: 'CiJobArtifactConnection',
+                },
+                __typename: 'CiJob',
+              },
+              {
+                id: 'gid://gitlab/Ci::Build/16',
+                name: 'sam_scan',
+                artifacts: {
+                  nodes: [
+                    {
+                      downloadPath:
+                        '/root/security-reports/-/jobs/16/artifacts/download?file_type=trace',
+                      fileType: 'TRACE',
+                      __typename: 'CiJobArtifact',
+                    },
+                    {
+                      downloadPath:
+                        '/root/security-reports/-/jobs/16/artifacts/download?file_type=sast',
+                      fileType: null,
+                      __typename: 'CiJobArtifact',
+                    },
+                  ],
+                  __typename: 'CiJobArtifactConnection',
+                },
+                __typename: 'CiJob',
+              },
+              {
+                id: 'gid://gitlab/Ci::Build/15',
+                name: 'sast-spotbugs',
+                artifacts: {
+                  nodes: [
+                    {
+                      downloadPath:
+                        '/root/security-reports/-/jobs/15/artifacts/download?file_type=trace',
+                      fileType: 'TRACE',
+                      __typename: 'CiJobArtifact',
+                    },
+                    {
+                      downloadPath: null,
+                      fileType: 'SAST',
+                      __typename: 'CiJobArtifact',
+                    },
+                  ],
+                  __typename: 'CiJobArtifactConnection',
+                },
+                __typename: 'CiJob',
+              },
+              {
                 id: 'gid://gitlab/Ci::Build/14',
                 name: 'sam_scan',
                 artifacts: {

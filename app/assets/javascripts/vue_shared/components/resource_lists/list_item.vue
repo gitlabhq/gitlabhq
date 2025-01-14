@@ -1,5 +1,5 @@
 <script>
-import { GlAvatarLabeled, GlIcon, GlTooltipDirective, GlTruncateText } from '@gitlab/ui';
+import { GlAvatarLabeled, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 
 import { __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -9,21 +9,19 @@ import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
+import ListItemDescription from './list_item_description.vue';
 
 export default {
   i18n: {
-    showMore: __('Show more'),
-    showLess: __('Show less'),
     [TIMESTAMP_TYPE_CREATED_AT]: __('Created'),
     [TIMESTAMP_TYPE_UPDATED_AT]: __('Updated'),
   },
-  truncateTextToggleButtonProps: { class: '!gl-text-sm' },
   components: {
     GlAvatarLabeled,
     GlIcon,
-    GlTruncateText,
     ListActions,
     TimeAgoTooltip,
+    ListItemDescription,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -34,7 +32,7 @@ export default {
       type: Object,
       required: true,
       validator(resource) {
-        const requiredKeys = ['id', 'avatarUrl', 'avatarLabel', 'webUrl', 'availableActions'];
+        const requiredKeys = ['id', 'avatarUrl', 'avatarLabel', 'webUrl'];
 
         return requiredKeys.every((key) => Object.prototype.hasOwnProperty.call(resource, key));
       },
@@ -76,7 +74,10 @@ export default {
       return this.$options.i18n[this.timestampType];
     },
     hasActions() {
-      return Object.keys(this.actions).length && this.resource.availableActions?.length;
+      return (
+        this.$scopedSlots.actions ||
+        (Object.keys(this.actions).length && this.resource.availableActions?.length)
+      );
     },
   },
 };
@@ -105,28 +106,19 @@ export default {
               </div>
             </div>
           </template>
-          <gl-truncate-text
-            v-if="resource.descriptionHtml"
-            :lines="2"
-            :mobile-lines="2"
-            :show-more-text="$options.i18n.showMore"
-            :show-less-text="$options.i18n.showLess"
-            :toggle-button-props="$options.truncateTextToggleButtonProps"
-            class="gl-mt-2 gl-max-w-88"
-          >
-            <div
-              v-safe-html="resource.descriptionHtml"
-              class="md md-child-content-text-subtle gl-text-sm"
-              data-testid="description"
-            ></div>
-          </gl-truncate-text>
+          <slot name="avatar-default">
+            <list-item-description
+              v-if="resource.descriptionHtml"
+              :description-html="resource.descriptionHtml"
+            />
+          </slot>
         </gl-avatar-labeled>
       </div>
       <div
         class="gl-mt-3 gl-shrink-0 gl-flex-col gl-items-end md:gl-mt-0 md:gl-flex md:gl-pl-0"
         :class="statsPadding"
       >
-        <div class="gl-flex gl-items-center gl-gap-x-3">
+        <div class="gl-flex gl-items-center gl-gap-x-3 md:gl-h-5">
           <slot name="stats"></slot>
         </div>
         <div
@@ -138,12 +130,10 @@ export default {
         </div>
       </div>
     </div>
-    <div class="-gl-mt-3 gl-ml-3 gl-flex gl-items-center">
-      <list-actions
-        v-if="hasActions"
-        :actions="actions"
-        :available-actions="resource.availableActions"
-      />
+    <div v-if="hasActions" class="-gl-mt-3 gl-ml-3 gl-flex gl-items-center">
+      <slot name="actions">
+        <list-actions :actions="actions" :available-actions="resource.availableActions" />
+      </slot>
     </div>
 
     <slot name="footer"></slot>

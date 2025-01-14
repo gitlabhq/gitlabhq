@@ -1,6 +1,5 @@
 <script>
 import { GlAvatarLink, GlAvatar, GlTooltipDirective } from '@gitlab/ui';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
@@ -10,7 +9,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     pipeline: {
       type: Object,

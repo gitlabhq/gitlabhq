@@ -38,8 +38,8 @@ module Gitlab
             submitted_at = approved_event[:created_at] || merge_request[:updated_at]
 
             approval, approval_note = create_approval!(project.id, merge_request.id, user_id, submitted_at)
-            push_reference(project, approval, :user_id, approved_event[:approver_username])
-            push_reference(project, approval_note, :author_id, approved_event[:approver_username])
+            push_reference(project, approval, :user_id, approved_event[:approver_username]) if approval
+            push_reference(project, approval_note, :author_id, approved_event[:approver_username]) if approval_note
 
             reviewer = create_reviewer!(merge_request.id, user_id, submitted_at)
             push_reference(project, reviewer, :user_id, approved_event[:approver_username]) if reviewer

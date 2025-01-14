@@ -54,7 +54,7 @@ To enable more logging:
 
 ## Reproduce the problem in a minimal project
 
-To help improve the maintainers' ability to understand and resolve your issue, create a sample
+To help project maintainers understand and resolve your issue, create a sample
 configuration or project that reproduces your issue. For example, when troubleshooting
 a problem with Code Suggestions:
 

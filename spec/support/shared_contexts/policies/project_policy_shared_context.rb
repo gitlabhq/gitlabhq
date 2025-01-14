@@ -12,9 +12,9 @@ RSpec.shared_context 'ProjectPolicy context' do
   let_it_be_with_reload(:inherited_reporter) { create(:user) }
   let_it_be_with_reload(:inherited_developer) { create(:user) }
   let_it_be_with_reload(:inherited_maintainer) { create(:user) }
-  let_it_be_with_reload(:organization) { create(:organization, :default) }
+  let_it_be_with_reload(:organization) { create(:organization) }
   let_it_be_with_reload(:owner) { create(:user, namespace: create(:user_namespace, organization: organization)) }
-  let_it_be_with_reload(:organization_owner) { create(:user, :organization_owner) }
+  let_it_be_with_reload(:organization_owner) { create(:user, :organization_owner, organizations: [organization]) }
   let_it_be_with_reload(:admin) { create(:admin) }
   let_it_be_with_reload(:non_member) { create(:user) }
   let_it_be_with_refind(:group) { create(:group, :public) }
@@ -37,7 +37,7 @@ RSpec.shared_context 'ProjectPolicy context' do
   let(:planner_permissions) do
     base_guest_permissions +
       %i[
-        admin_issue admin_issue_board admin_issue_board_list admin_label admin_milestone
+        admin_issue admin_work_item admin_issue_board admin_issue_board_list admin_label admin_milestone
         read_confidential_issues update_issue reopen_issue destroy_issue read_internal_note
         download_wiki_code create_wiki admin_wiki export_work_items
       ]
@@ -45,7 +45,7 @@ RSpec.shared_context 'ProjectPolicy context' do
 
   let(:base_reporter_permissions) do
     %i[
-      admin_issue admin_label admin_milestone admin_issue_board_list
+      admin_issue admin_work_item admin_label admin_milestone admin_issue_board_list
       create_snippet create_incident daily_statistics create_merge_request_in download_code
       download_wiki_code fork_project metrics_dashboard read_build
       read_commit_status read_confidential_issues read_container_image

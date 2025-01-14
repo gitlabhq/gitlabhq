@@ -22,7 +22,7 @@ const createWrapper = ({ propsData = {}, slots = defaultSlots } = {}) => {
   });
 };
 
-const findLabel = () => wrapper.findComponent('label');
+const findLabel = () => wrapper.find('label');
 const findCollapsible = () => wrapper.findComponent(GlCollapse);
 const findCollapsibleButton = () => wrapper.findComponent(GlButton);
 

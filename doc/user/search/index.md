@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 GitLab has three types of search: **basic search**, [**advanced search**](advanced_search.md),
 and [**exact code search**](exact_code_search.md).
@@ -37,7 +37,7 @@ For more information, see [issue 477333](https://gitlab.com/gitlab-org/gitlab/-/
 ## Restrict search access
 
 DETAILS:
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Prerequisites:
 
@@ -59,7 +59,7 @@ enable the `ops` feature flag `block_anonymous_global_searches`.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68640) in GitLab 14.3.
 

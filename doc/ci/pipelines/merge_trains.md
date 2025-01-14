@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), the **Start merge train** and **Start merge train when pipeline succeeds** buttons became **Set to auto-merge**. **Remove from merge train** became **Cancel auto-merge**.
 > - Support for [fast-forward](../../user/project/merge_requests/methods/index.md#fast-forward-merge) and [semi-linear](../../user/project/merge_requests/methods/index.md#merge-commit-with-semi-linear-history) merge methods [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282442) in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `fast_forward_merge_trains_support`. Enabled by default.
@@ -155,11 +155,7 @@ You can also remove (**{close}**) a merge request from the merge train details v
 > - Auto-merge for merge trains [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10874) in GitLab 17.2 [with a flag](../../administration/feature_flags.md) named `merge_when_checks_pass_merge_train`. Disabled by default.
 > - Auto-merge for merge trains [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/470667) on GitLab.com in GitLab 17.2.
 > - Auto-merge for merge trains [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/470667) by default in GitLab 17.4.
-> - Auto-merge for merge trains [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/470667) in GitLab 17.7. Feature flag `merge_when_checks_pass_merge_train` removed.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
+> - Auto-merge for merge trains [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174357) in GitLab 17.7. Feature flag `merge_when_checks_pass_merge_train` removed.
 
 Prerequisites:
 
@@ -224,7 +220,7 @@ DETAILS:
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/422111) as an [experiment feature](../../policy/development_stages_support.md) in GitLab 16.10.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
+On GitLab Self-Managed, by default this feature is available. To hide the feature,
 an administrator can [disable the feature flag](../../administration/feature_flags.md)
 named `merge_trains_skip_train`. On GitLab.com and GitLab Dedicated, this feature is available.
 
@@ -287,7 +283,7 @@ See [issue 12267](https://gitlab.com/gitlab-org/gitlab/-/issues/12267) for more 
 
 ### Cannot retry merge train pipeline
 
-When a merge train pipeline fails, the merge request is dropped from the train so the pipeline can't be retried after it fails.
+When a merge train pipeline fails, the merge request is dropped from the train and the pipeline can't be retried after it fails.
 Merge train pipelines run on the merged result of the changes in the merge request and
 changes from other merge requests already on the train. If the merge request is dropped from the train,
 the merged result is out of date and the pipeline can't be retried.
@@ -299,7 +295,7 @@ You can:
 - Add the [`retry`](../yaml/index.md#retry) keyword to the job if it fails intermittently.
   If it succeeds after a retry, the merge request is not removed from the merge train.
 
-### Unable to add to the merge train
+### Cannot add a merge request to the merge train
 
 When [**Pipelines must succeed**](../../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge)
 is enabled, but the latest pipeline failed:

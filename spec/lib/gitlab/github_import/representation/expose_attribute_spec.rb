@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Representation::ExposeAttribute do
+RSpec.describe Gitlab::GithubImport::Representation::ExposeAttribute, feature_category: :importers do
   let(:klass) do
     Class.new do
       include Gitlab::GithubImport::Representation::ExposeAttribute

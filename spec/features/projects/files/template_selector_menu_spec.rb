@@ -13,7 +13,7 @@ RSpec.describe 'Template selector menu', :js, feature_category: :team_planning d
 
   context 'editing a non-matching file' do
     before do
-      create_and_edit_file('README.md')
+      visit project_edit_blob_path(project, File.join(project.default_branch, 'README.md'))
     end
 
     it 'is not displayed' do
@@ -59,10 +59,4 @@ end
 def check_template_selector_menu_display(is_visible)
   count = is_visible ? 1 : 0
   expect(page).to have_css('[data-testid="template-selector"]', count: count)
-end
-
-def create_and_edit_file(file_name)
-  visit project_new_blob_path(project, 'master', file_name: file_name)
-  click_button "Commit changes"
-  visit project_edit_blob_path(project, File.join(project.default_branch, file_name))
 end

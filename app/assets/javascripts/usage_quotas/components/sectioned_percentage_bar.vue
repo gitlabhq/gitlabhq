@@ -11,6 +11,8 @@ export default {
      *   label: string;
      *   value: number;
      *   formattedValue: number | string;
+     *   color: string;
+     *   hideLabel: boolean,
      * }[]
      */
     sections: {
@@ -27,10 +29,9 @@ export default {
     computedSections() {
       return this.sections.map((section, index) => {
         const percentage = section.value / this.sectionsCombinedValue;
-
         return {
           ...section,
-          backgroundColor: colorFromDefaultPalette(index),
+          backgroundColor: section.color ?? colorFromDefaultPalette(index),
           cssPercentage: `${roundOffFloat(percentage * 100, 4)}%`,
           srLabelPercentage: formatNumber(percentage, {
             style: 'percent',
@@ -38,6 +39,9 @@ export default {
           }),
         };
       });
+    },
+    sectionLabels() {
+      return this.computedSections.filter((s) => !s.hideLabel);
     },
   },
 };
@@ -62,7 +66,7 @@ export default {
     <div class="gl-mt-5">
       <div class="-gl-mx-3 -gl-my-3 gl-flex gl-flex-wrap gl-items-center">
         <div
-          v-for="{ id, label, backgroundColor, formattedValue } in computedSections"
+          v-for="{ id, label, backgroundColor, formattedValue } in sectionLabels"
           :key="id"
           class="gl-flex gl-items-center gl-p-3"
           :data-testid="`percentage-bar-legend-section-${id}`"

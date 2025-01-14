@@ -15,6 +15,8 @@ module Ci
 
     PLAN_LIMIT_PREFIX = 'ci_max_artifact_size_'
 
+    InvalidArtifactError = Class.new(StandardError)
+
     self.table_name = :p_ci_job_artifacts
     self.primary_key = :id
     self.sequence_name = :ci_job_artifacts_id_seq
@@ -243,7 +245,7 @@ module Ci
       end
 
       super
-    rescue StandardError => e
+    rescue InvalidArtifactError => e
       artifact_report&.assign_attributes(status: :faulty, validation_error: e.message)
 
       raise e

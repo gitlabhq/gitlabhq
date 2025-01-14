@@ -81,7 +81,7 @@ and offer support for making contributions.
 To write and test your code locally, choose a local development environment.
 
 - [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit), is a local
-development environment that includes an installation of self-managed GitLab, sample projects,
+development environment that includes an installation of GitLab Self-Managed, sample projects,
 and administrator access with which you can test functionality.
 
 - [GDK-in-a-box](first_contribution/configure-dev-env-gdk-in-a-box.md),
@@ -113,6 +113,9 @@ Follow [Configure GDK-in-a-box](first_contribution/configure-dev-env-gdk-in-a-bo
 
    Someone from GitLab will look at your request and let you know what the next steps are.
    For details, see the [merge request workflow](merge_request_workflow.md).
+
+   Have questions?
+   Use `@gitlab-bot help` to ping a GitLab Merge Request coach. For more information on MR coaches, visit [How GitLab Merge Request Coaches Can Help You](merge_request_coaches.md).
 
 ### How community merge requests are triaged
 
@@ -164,6 +167,7 @@ Request an Enterprise Edition Developers License according to the [documented pr
 
 How to find help contributing to GitLab:
 
-- Type `@gitlab-bot help` in a comment on a merge request or issue.
+- Type `@gitlab-bot help` in a comment on a merge request or issue to tag a MR coach.
+  - See [How GitLab Merge Request Coaches Can Help You](merge_request_coaches.md) for more information.
 - Join the [GitLab Community Discord](https://discord.gg/gitlab) and ask for help in the `#contribute` channel.
 - Email the Contributor Success team at `contributors@gitlab.com`.

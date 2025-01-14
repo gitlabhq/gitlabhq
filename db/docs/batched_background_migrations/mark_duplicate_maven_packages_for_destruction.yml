@@ -1,0 +1,8 @@
+---
+migration_job_name: MarkDuplicateMavenPackagesForDestruction
+description: We iterate over all maven packages that need to be de-duplicated. We keep the most recent record, and mark others as pending_destruction
+feature_category: package_registry
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175479
+milestone: '17.8'
+queued_migration_version: 20241213085750
+finalized_by: # version of the migration that finalized this BBM

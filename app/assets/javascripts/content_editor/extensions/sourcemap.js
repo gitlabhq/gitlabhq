@@ -1,5 +1,5 @@
 import { Extension } from '@tiptap/core';
-import { getMarkdownSource, docHasSourceMap } from '../services/markdown_sourcemap';
+import { getSourceMapAttributes } from '../services/markdown_sourcemap';
 import Audio from './audio';
 import Blockquote from './blockquote';
 import Bold from './bold';
@@ -37,8 +37,6 @@ export default Extension.create({
   name: 'sourcemap',
 
   addGlobalAttributes() {
-    const preserveMarkdown = () => gon.features?.preserveMarkdown;
-
     return [
       {
         types: [
@@ -75,30 +73,7 @@ export default Extension.create({
           Video.name,
           ...HTMLNodes.map((htmlNode) => htmlNode.name),
         ],
-        attributes: {
-          /**
-           * The reason to add a function that returns an empty
-           * string in these attributes is indicate that these
-           * attributes shouldn’t be rendered in the ProseMirror
-           * view.
-           */
-          sourceMarkdown: {
-            default: null,
-            parseHTML: (element) => (preserveMarkdown() ? getMarkdownSource(element) : null),
-            renderHTML: () => '',
-          },
-          sourceMapKey: {
-            default: null,
-            parseHTML: (element) => (preserveMarkdown() ? element.dataset.sourcepos : null),
-            renderHTML: () => '',
-          },
-          sourceTagName: {
-            default: null,
-            parseHTML: (element) =>
-              preserveMarkdown() && docHasSourceMap(element) ? element.tagName.toLowerCase() : null,
-            renderHTML: () => '',
-          },
-        },
+        attributes: getSourceMapAttributes(),
       },
     ];
   },

@@ -1,7 +1,5 @@
 <script>
 import { GlCollapsibleListbox, GlFormCheckbox, GlTooltip } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapState } from 'vuex';
 import { __ } from '~/locale';
 import { PARALLEL_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE } from '../constants';
 import { SETTINGS_DROPDOWN } from '../i18n';
@@ -14,17 +12,21 @@ export default {
     GlFormCheckbox,
     GlTooltip,
   },
-  computed: {
-    ...mapState('diffs', ['showWhitespace', 'viewDiffsFileByFile', 'diffViewType']),
+  props: {
+    showWhitespace: {
+      type: Boolean,
+      required: true,
+    },
+    diffViewType: {
+      type: String,
+      required: true,
+    },
+    viewDiffsFileByFile: {
+      type: Boolean,
+      required: true,
+    },
   },
   methods: {
-    ...mapActions('diffs', ['setDiffViewType', 'setShowWhitespace', 'setFileByFile']),
-    toggleFileByFile() {
-      this.setFileByFile({ fileByFile: !this.viewDiffsFileByFile });
-    },
-    toggleWhitespace(updatedSetting) {
-      this.setShowWhitespace({ showWhitespace: updatedSetting });
-    },
     tooltipTarget() {
       return document.querySelector(`.${this.$options.toggleId}`);
     },
@@ -53,7 +55,7 @@ export default {
       :aria-label="$options.i18n.preferences"
       :header-text="__('Compare changes')"
       :items="$options.diffViewTypeOptions"
-      @select="setDiffViewType"
+      @select="$emit('updateDiffViewType', $event)"
     >
       <template #footer>
         <div class="gl-border-t gl-px-4 gl-pb-2 gl-pt-4">
@@ -61,7 +63,7 @@ export default {
             data-testid="show-whitespace"
             class="gl-mb-2"
             :checked="showWhitespace"
-            @input="toggleWhitespace"
+            @input="$emit('toggleWhitespace', $event)"
           >
             {{ $options.i18n.whitespace }}
           </gl-form-checkbox>
@@ -69,7 +71,7 @@ export default {
             data-testid="file-by-file"
             class="gl-mb-0"
             :checked="viewDiffsFileByFile"
-            @input="toggleFileByFile"
+            @input="$emit('toggleFileByFile', $event)"
           >
             {{ $options.i18n.fileByFile }}
           </gl-form-checkbox>

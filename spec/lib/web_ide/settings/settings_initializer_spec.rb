@@ -15,7 +15,11 @@ RSpec.describe WebIde::Settings::SettingsInitializer, :web_ide_fast, feature_cat
   it "invokes DefaultSettingsParser and sets up necessary values in context for subsequent steps" do
     expect(returned_value).to match(
       {
-        requested_setting_names: [:vscode_extensions_gallery, :vscode_extensions_gallery_metadata],
+        requested_setting_names: [
+          :vscode_extensions_gallery,
+          :vscode_extensions_gallery_metadata,
+          :vscode_extensions_gallery_view_model
+        ],
         settings: {
           vscode_extensions_gallery: {
             control_url: "",
@@ -25,11 +29,20 @@ RSpec.describe WebIde::Settings::SettingsInitializer, :web_ide_fast, feature_cat
             resource_url_template: 'https://open-vsx.org/vscode/asset/{publisher}/{name}/{version}/Microsoft.VisualStudio.Code.WebResources/{path}',
             service_url: "https://open-vsx.org/vscode/gallery"
           },
-          vscode_extensions_gallery_metadata: {}
+          vscode_extensions_gallery_metadata: {
+            enabled: false,
+            disabled_reason: :instance_disabled
+          },
+          vscode_extensions_gallery_view_model: {
+            enabled: false,
+            reason: :instance_disabled,
+            help_url: ''
+          }
         },
         setting_types: {
           vscode_extensions_gallery: Hash,
-          vscode_extensions_gallery_metadata: Hash
+          vscode_extensions_gallery_metadata: Hash,
+          vscode_extensions_gallery_view_model: Hash
         },
         env_var_prefix: "GITLAB_WEB_IDE",
         env_var_failed_message_class: WebIde::Settings::Messages::SettingsEnvironmentVariableOverrideFailed

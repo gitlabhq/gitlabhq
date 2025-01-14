@@ -10,11 +10,18 @@ describe('Dependency proxy usage component', () => {
     dependencyProxyTotalSize: 512,
   };
 
+  const defaultProvide = {
+    glFeatures: {
+      virtualRegistryMaven: true,
+    },
+  };
+
   const findDependencyProxySizeSection = () =>
     wrapper.findByTestId('dependency-proxy-size-content');
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = ({ provide = defaultProvide, props = {} } = {}) => {
     wrapper = shallowMountExtended(DependencyProxyUsage, {
+      provide,
       propsData: {
         ...defaultProps,
         ...props,
@@ -53,9 +60,26 @@ describe('Dependency proxy usage component', () => {
     const moreInformationComponent = descriptionWrapper.findComponent(HelpPageLink);
 
     expect(descriptionWrapper.text()).toMatchInterpolatedText(
-      'Local proxy used for frequently-accessed upstream Docker images. More information',
+      'Cache for frequently-accessed Docker images and packages. More information',
     );
     expect(moreInformationComponent.text()).toBe('More information');
     expect(moreInformationComponent.props('href')).toBe('user/packages/dependency_proxy/index');
+  });
+
+  describe('when feature flag virtualRegistryMaven is disabled', () => {
+    it('displays the dependency proxy description section', () => {
+      createComponent({
+        provide: {
+          ...defaultProvide,
+          glFeatures: { virtualRegistryMaven: false },
+        },
+      });
+
+      const descriptionWrapper = wrapper.findByTestId('dependency-proxy-description');
+
+      expect(descriptionWrapper.text()).toMatchInterpolatedText(
+        'Local proxy used for frequently-accessed upstream Docker images. More information',
+      );
+    });
   });
 });

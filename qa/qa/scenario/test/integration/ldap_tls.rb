@@ -7,6 +7,8 @@ module QA
       module Integration
         class LDAPTLS < Test::Instance::All
           tags :ldap_tls
+
+          pipeline_mappings test_on_omnibus: %w[ldap-tls]
         end
       end
     end

@@ -1,17 +1,14 @@
 <script>
 import {
   GlBadge,
-  GlButton,
-  GlCollapse,
   GlDisclosureDropdown,
   GlLink,
   GlSprintf,
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
+import { s__ } from '~/locale';
 import { truncate } from '~/lib/utils/text_utility';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import isLastDeployment from '../graphql/queries/is_last_deployment.query.graphql';
 import ExternalUrl from './environment_external_url.vue';
 import Actions from './environment_actions.vue';
@@ -26,9 +23,7 @@ import DeployBoardWrapper from './deploy_board_wrapper.vue';
 export default {
   components: {
     GlDisclosureDropdown,
-    GlCollapse,
     GlBadge,
-    GlButton,
     GlLink,
     GlSprintf,
     Actions,
@@ -42,14 +37,11 @@ export default {
     TimeAgoTooltip,
     Delete,
     EnvironmentAlert: () => import('ee_component/environments/components/environment_alert.vue'),
-    EnvironmentApproval: () =>
-      import('ee_component/environments/components/environment_approval.vue'),
   },
   directives: {
     GlTooltip,
   },
-  mixins: [glFeatureFlagsMixin()],
-  inject: ['helpPagePath', 'projectPath'],
+  inject: ['helpPagePath'],
   props: {
     environment: {
       required: true,
@@ -71,38 +63,36 @@ export default {
     },
   },
   i18n: {
-    collapse: __('Collapse'),
-    expand: __('Expand'),
     emptyState: s__(
       'Environments|There are no deployments for this environment yet. %{linkStart}Learn more about setting up deployments.%{linkEnd}',
     ),
     autoStopIn: s__('Environment|Auto stop %{time}'),
     tierTooltip: s__('Environment|Deployment tier'),
-  },
-  data() {
-    return { visible: false };
+    name: s__('Environments|Name'),
+    deployments: s__('Environments|Deployments'),
+    actions: s__('Environments|Actions'),
   },
   computed: {
-    icon() {
-      return this.visible ? 'chevron-lg-down' : 'chevron-lg-right';
-    },
     externalUrl() {
       return this.environment.externalUrl;
     },
     name() {
       return this.inFolder ? this.environment.nameWithoutType : this.environment.name;
     },
-    label() {
-      return this.visible ? this.$options.i18n.collapse : this.$options.i18n.expand;
+    deployments() {
+      return [this.upcomingDeployment, this.lastDeployment].filter(Boolean);
     },
     lastDeployment() {
       return this.environment?.lastDeployment;
     },
     upcomingDeployment() {
-      return this.environment?.upcomingDeployment;
+      if (!this.environment?.upcomingDeployment) {
+        return null;
+      }
+      return { ...this.environment?.upcomingDeployment, isUpcoming: true };
     },
     hasDeployment() {
-      return Boolean(this.environment?.upcomingDeployment || this.environment?.lastDeployment);
+      return Boolean(this.deployments.length);
     },
     tier() {
       return this.lastDeployment?.tierInYaml;
@@ -144,9 +134,6 @@ export default {
 
       return now < autoStopDate;
     },
-    upcomingDeploymentIid() {
-      return this.environment.upcomingDeployment?.iid.toString() || '';
-    },
     autoStopPath() {
       return this.environment?.cancelAutoStopPath ?? '';
     },
@@ -163,71 +150,73 @@ export default {
       return this.environment?.rolloutStatus;
     },
   },
-  methods: {
-    toggleEnvironmentCollapse() {
-      this.visible = !this.visible;
-    },
-  },
-  deploymentClasses: [
-    'gl-border-default',
-    'gl-border-t-solid',
-    'gl-border-1',
-    'gl-py-5',
-    'md:gl-pl-7',
-    'gl-bg-gray-10',
-  ],
-  deployBoardClasses: [
-    'gl-border-default',
-    'gl-border-t-solid',
-    'gl-border-1',
-    'gl-py-4',
-    'md:gl-pl-7',
-    'gl-bg-gray-10',
-  ],
 };
 </script>
 <template>
-  <div>
-    <div class="gl-flex gl-items-center gl-justify-between gl-px-3 gl-pb-5 gl-pt-3">
-      <div :class="{ 'gl-ml-7': inFolder }" class="gl-mr-4 gl-flex gl-min-w-0 gl-items-center">
-        <gl-button
-          class="gl-mr-4 gl-min-w-fit"
-          :icon="icon"
-          :aria-label="label"
-          size="small"
-          category="secondary"
-          @click="toggleEnvironmentCollapse"
-        />
-        <gl-link
-          v-gl-tooltip
-          :href="environment.environmentPath"
-          class="gl-truncate"
-          :class="{ 'gl-font-bold': visible }"
-          :title="name"
-        >
-          {{ displayName }}
-        </gl-link>
-        <gl-badge
-          v-if="tier"
-          v-gl-tooltip
-          :title="$options.i18n.tierTooltip"
-          class="gl-ml-3 gl-font-monospace"
-          >{{ tier }}</gl-badge
-        >
+  <div
+    class="gl-border gl-mt-4 gl-flex gl-flex-col lg:gl-mt-0 lg:gl-flex-row lg:gl-border-x-0 lg:gl-border-t-0"
+  >
+    <div
+      class="gl-border-b gl-flex gl-shrink-0 gl-items-baseline gl-p-4 lg:gl-w-1/5 lg:gl-border-b-0"
+    >
+      <strong class="gl-block gl-w-1/3 gl-flex-shrink-0 gl-pr-4 md:gl-w-1/4 lg:gl-hidden">{{
+        $options.i18n.name
+      }}</strong>
+      <gl-link v-gl-tooltip :href="environment.environmentPath" class="gl-truncate" :title="name">
+        {{ displayName }}
+      </gl-link>
+      <gl-badge
+        v-if="tier"
+        v-gl-tooltip
+        :title="$options.i18n.tierTooltip"
+        class="gl-ml-3 gl-font-monospace"
+        >{{ tier }}</gl-badge
+      >
+    </div>
+    <div
+      class="issuable-discussion gl-border-b gl-flex gl-shrink-0 gl-flex-wrap gl-py-4 lg:gl-w-3/5 lg:gl-flex-col lg:gl-border-b-0"
+    >
+      <template v-if="hasDeployment">
+        <strong class="gl-block gl-w-1/3 gl-flex-shrink-0 gl-px-4 md:gl-w-1/4 lg:gl-hidden">{{
+          $options.i18n.deployments
+        }}</strong>
+        <ul class="main-notes-list timeline gl-relative -gl-ml-4 gl-w-2/3 lg:gl-w-full">
+          <deployment
+            v-for="deployment of deployments"
+            :key="deployment.id"
+            :data-testid="
+              deployment.isUpcoming ? 'upcoming-deployment-content' : 'latest-deployment-content'
+            "
+            :deployment="deployment"
+            :latest="deployment.isLast"
+            class="[&:nth-child(2)]:gl-mt-4"
+          />
+        </ul>
+      </template>
+      <div v-else class="gl-px-4 gl-align-middle" data-testid="deployments-empty-state">
+        <gl-sprintf :message="$options.i18n.emptyState">
+          <template #link="{ content }">
+            <gl-link :href="helpPagePath">{{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
       </div>
-      <div class="gl-flex gl-items-center">
-        <p
-          v-if="canShowAutoStopDate"
-          class="gl-mb-0 gl-mr-5 gl-text-sm gl-text-subtle"
-          data-testid="auto-stop-time"
-        >
-          <gl-sprintf :message="$options.i18n.autoStopIn">
-            <template #time>
-              <time-ago-tooltip :time="environment.autoStopAt" css-class="gl-font-bold" />
-            </template>
-          </gl-sprintf>
-        </p>
-        <div class="btn-group table-action-buttons" role="group">
+      <div v-if="rolloutStatus" class="gl-w-full">
+        <deploy-board-wrapper
+          :rollout-status="rolloutStatus"
+          :environment="environment"
+          class="gl-mt-4 gl-pl-2"
+        />
+      </div>
+      <div v-if="hasOpenedAlert" class="gl-w-full">
+        <environment-alert :environment="environment" class="gl-mt-4 gl-pl-3 gl-pt-3" />
+      </div>
+    </div>
+    <div class="gl-flex gl-flex-grow gl-items-baseline gl-p-4">
+      <strong class="gl-block gl-w-1/3 gl-flex-shrink-0 gl-pr-4 md:gl-w-1/4 lg:gl-hidden">{{
+        $options.i18n.actions
+      }}</strong>
+      <div class="gl-ml-auto">
+        <div class="btn-group" role="group">
           <external-url
             v-if="externalUrl"
             :external-url="externalUrl"
@@ -258,6 +247,7 @@ export default {
             icon="ellipsis_v"
             category="secondary"
             placement="bottom-end"
+            size="small"
             :toggle-text="__('More actions')"
           >
             <rollback
@@ -294,57 +284,18 @@ export default {
             />
           </gl-disclosure-dropdown>
         </div>
+        <p
+          v-if="canShowAutoStopDate"
+          class="gl-mb-0 gl-mt-3 gl-text-sm gl-text-subtle"
+          data-testid="auto-stop-time"
+        >
+          <gl-sprintf :message="$options.i18n.autoStopIn">
+            <template #time>
+              <time-ago-tooltip :time="environment.autoStopAt" css-class="gl-font-bold" />
+            </template>
+          </gl-sprintf>
+        </p>
       </div>
     </div>
-    <gl-collapse :visible="visible">
-      <template v-if="hasDeployment">
-        <div v-if="lastDeployment" :class="$options.deploymentClasses">
-          <deployment
-            :deployment="lastDeployment"
-            :visible="visible"
-            :class="{ 'gl-ml-7': inFolder }"
-            latest
-            class="gl-pl-4"
-          />
-        </div>
-        <div
-          v-if="upcomingDeployment"
-          :class="$options.deploymentClasses"
-          data-testid="upcoming-deployment-content"
-        >
-          <deployment
-            :deployment="upcomingDeployment"
-            :visible="visible"
-            :class="{ 'gl-ml-7': inFolder }"
-            class="gl-pl-4"
-          >
-            <template #approval>
-              <environment-approval
-                :required-approval-count="environment.requiredApprovalCount"
-                :deployment-web-path="upcomingDeployment.webPath"
-              />
-            </template>
-          </deployment>
-        </div>
-      </template>
-      <div v-else :class="$options.deploymentClasses">
-        <gl-sprintf :message="$options.i18n.emptyState">
-          <template #link="{ content }">
-            <gl-link :href="helpPagePath">{{ content }}</gl-link>
-          </template>
-        </gl-sprintf>
-      </div>
-      <div v-if="rolloutStatus" :class="$options.deployBoardClasses">
-        <deploy-board-wrapper
-          :rollout-status="rolloutStatus"
-          :environment="environment"
-          :class="{ 'gl-ml-7': inFolder }"
-          class="gl-pl-4"
-        />
-      </div>
-      <div v-if="hasOpenedAlert" class="gl-bg-gray-10 md:gl-px-7">
-        <environment-alert :environment="environment" class="gl-py-5 gl-pl-4" />
-      </div>
-    </gl-collapse>
   </div>
 </template>

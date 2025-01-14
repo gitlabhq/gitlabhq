@@ -1,6 +1,7 @@
 export const MR_REVIEW_REQUEST_TODO = {
   id: 'gid://gitlab/Todo/29',
   state: 'pending',
+  snoozedUntil: null,
   createdAt: '2024-08-02T20:17:18Z',
   action: 'review_requested',
   targetType: 'MERGEREQUEST',
@@ -33,6 +34,7 @@ export const MR_REVIEW_REQUEST_TODO = {
 export const MR_BUILD_FAILED_TODO = {
   id: 'gid://gitlab/Todo/28',
   state: 'pending',
+  snoozedUntil: null,
   createdAt: '2024-07-23T16:18:54Z',
   action: 'build_failed',
   targetType: 'MERGEREQUEST',
@@ -65,6 +67,7 @@ export const MR_BUILD_FAILED_TODO = {
 export const DESIGN_TODO = {
   id: 'gid://gitlab/Todo/435',
   state: 'pending',
+  snoozedUntil: null,
   createdAt: '2024-12-06T11:33:29Z',
   action: 'directly_addressed',
   targetType: 'DESIGN',
@@ -203,6 +206,7 @@ export const todosAuthorsResponse = [
     username: 'root',
     name: 'Administrator',
     state: 'active',
+    snoozedUntil: null,
     locked: false,
     avatar_url: 'http://gdk.test:3000/uploads/-/system/user/avatar/1/avatar.png',
     web_url: 'http://gdk.test:3000/root',
@@ -216,6 +220,7 @@ export const todosAuthorsResponse = [
     username: 'delorse',
     name: 'Flo Reinger',
     state: 'active',
+    snoozedUntil: null,
     locked: false,
     avatar_url:
       'https://www.gravatar.com/avatar/727bd7fe0418141812bccde70233599d64c05540e9f036134d0dde53a43b6930?s=80\u0026d=identicon',

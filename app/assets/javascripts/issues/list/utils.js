@@ -516,6 +516,7 @@ export function mapWorkItemWidgetsToIssuableFields({
 
     activeItem.title = workItem.title;
     activeItem.confidential = workItem.confidential;
+    activeItem.type = workItem?.workItemType?.name?.toUpperCase();
   });
 }
 

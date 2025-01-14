@@ -11,7 +11,6 @@ import {
   SNIPPET_MEASURE_BLOBS_CONTENT,
 } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
-import FormFooterActions from '~/vue_shared/components/form/form_footer_actions.vue';
 
 import { SNIPPET_CREATE_MUTATION_ERROR, SNIPPET_UPDATE_MUTATION_ERROR } from '../constants';
 import { getSnippetMixin } from '../mixins/snippets';
@@ -20,6 +19,7 @@ import UpdateSnippetMutation from '../mutations/update_snippet.mutation.graphql'
 import { markBlobPerformance } from '../utils/blob';
 import { getErrorMessage } from '../utils/error';
 
+import FormFooterActions from './form_footer_actions.vue';
 import SnippetBlobActionsEdit from './snippet_blob_actions_edit.vue';
 import SnippetDescriptionEdit from './snippet_description_edit.vue';
 import SnippetVisibilityEdit from './snippet_visibility_edit.vue';

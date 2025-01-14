@@ -52,7 +52,7 @@ export default {
 </script>
 <template>
   <span class="gl-inline-flex">
-    <gl-button-group v-if="shouldRenderDropdown" size="small">
+    <gl-button-group v-if="shouldRenderDropdown">
       <review-app-link
         :display="appButtonText"
         :link="deploymentExternalUrl"

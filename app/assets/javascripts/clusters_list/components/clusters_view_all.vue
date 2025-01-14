@@ -81,6 +81,9 @@ export default {
       this.totalAgents = number;
       this.loadingAgents = false;
     },
+    onKasDisabled($event) {
+      this.$emit('kasDisabled', $event);
+    },
     changeTab($event, tab) {
       $event.preventDefault();
       this.$emit('changeTab', tab);
@@ -136,6 +139,7 @@ export default {
           :default-branch-name="defaultBranchName"
           :is-child-component="true"
           @onAgentsLoad="onAgentsLoad"
+          @kasDisabled="onKasDisabled"
         />
 
         <template #footer>

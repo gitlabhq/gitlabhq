@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlModal, GlDisclosureDropdownItem, GlTooltipDirective } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { __ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import { setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import { isMetaClick } from '~/lib/utils/common_utils';
 import { isWorkItemItemValidEnum, newWorkItemPath } from '~/work_items/utils';
@@ -15,10 +15,12 @@ import {
 } from '../constants';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import CreateWorkItem from './create_work_item.vue';
+import CreateWorkItemCancelConfirmationModal from './create_work_item_cancel_confirmation_modal.vue';
 
 export default {
   components: {
     CreateWorkItem,
+    CreateWorkItemCancelConfirmationModal,
     GlButton,
     GlModal,
     GlDisclosureDropdownItem,
@@ -82,7 +84,9 @@ export default {
   },
   data() {
     return {
-      isVisible: false,
+      isCreateModalVisible: false,
+      isConfirmationModalVisible: false,
+      shouldDiscardDraft: false,
       workItemTypes: [],
     };
   },
@@ -144,31 +148,75 @@ export default {
     workItemCreatedText() {
       return sprintfWorkItem(I18N_WORK_ITEM_CREATED, this.workItemTypeName);
     },
+    cancelConfirmationText() {
+      return sprintf(
+        s__('WorkItem|Are you sure you want to cancel creating this %{workItemType}?'),
+        {
+          workItemType: this.workItemTypeName.toLocaleLowerCase(),
+        },
+      );
+    },
   },
   watch: {
     visible: {
       immediate: true,
       handler(visible) {
-        this.isVisible = visible;
+        this.isCreateModalVisible = visible;
       },
     },
   },
   methods: {
-    hideModal() {
+    hideCreateModal() {
       this.$emit('hideModal');
-      this.isVisible = false;
+      this.isCreateModalVisible = false;
     },
-    showModal(event) {
-      if (isMetaClick(event)) {
+    showCreateModal(event) {
+      if (Boolean(event) && isMetaClick(event)) {
         // opening in a new tab
         return;
       }
 
       // don't follow the link for normal clicks - open in modal
-      event.preventDefault();
+      event?.preventDefault();
 
-      this.isVisible = true;
+      this.isCreateModalVisible = true;
     },
+    hideConfirmationModal() {
+      this.isConfirmationModalVisible = false;
+    },
+    showConfirmationModal() {
+      this.isConfirmationModalVisible = true;
+    },
+    /*
+     Beginning of the methods for the confirmation modal when enabled
+
+     The confirmation modal is enabled when any form field is
+     filled or different from the default value.
+    */
+    handleConfirmCancellation() {
+      this.showConfirmationModal();
+    },
+    handleContinueEditing() {
+      this.shouldDiscardDraft = false;
+      this.hideConfirmationModal();
+    },
+    handleDiscardDraft(modal) {
+      if (modal === 'createModal') {
+        // This is triggered on the create modal when the user didn't update the form,
+        // so we just hide the create modal as there's no draft to discard
+        this.hideCreateModal();
+      } else {
+        // This is triggered on the confirmation modal, so the user updated the form and
+        // we want to trigger discard draftfunction on create work item component because
+        // the user confirmed it
+        this.shouldDiscardDraft = true;
+        this.hideConfirmationModal();
+        this.hideCreateModal();
+      }
+    },
+    /*
+     End of the methods for the confirmation modal when enabled
+    */
     handleCreated(workItem) {
       this.$toast.show(this.workItemCreatedText, {
         autoHideDelay: 10000,
@@ -193,7 +241,7 @@ export default {
           this.workItemTypes[0]?.iconName,
         );
       }
-      this.hideModal();
+      this.hideCreateModal();
     },
     redirectToNewPage(event) {
       if (isMetaClick(event)) {
@@ -223,7 +271,7 @@ export default {
       <gl-disclosure-dropdown-item v-if="asDropdownItem">
         <!-- using an a instead of gl-link to prevent unwanted underline style when active -->
         <template #default
-          ><a class="gl-new-dropdown-item-content" :href="newWorkItemPath" @click="showModal"
+          ><a class="gl-new-dropdown-item-content" :href="newWorkItemPath" @click="showCreateModal"
             ><span class="gl-new-dropdown-item-text-wrapper">{{ newWorkItemText }}</span></a
           ></template
         >
@@ -234,7 +282,7 @@ export default {
         variant="confirm"
         data-testid="new-epic-button"
         :href="newWorkItemPath"
-        @click="showModal"
+        @click="showCreateModal"
         >{{ newWorkItemText }}
       </gl-button>
     </template>
@@ -242,11 +290,11 @@ export default {
       modal-id="create-work-item-modal"
       modal-class="create-work-item-modal"
       body-class="!gl-pb-0"
-      :visible="isVisible"
+      :visible="isCreateModalVisible"
       scrollable
       size="lg"
       hide-footer
-      @hide="hideModal"
+      @hide="hideCreateModal"
     >
       <template #modal-header>
         <div class="gl-text gl-flex gl-w-full gl-items-center gl-gap-x-2">
@@ -274,9 +322,17 @@ export default {
         :title="title"
         :work-item-type-name="workItemTypeName"
         :related-item="relatedItem"
-        @cancel="hideModal"
+        :should-discard-draft="shouldDiscardDraft"
+        @confirmCancel="handleConfirmCancellation"
+        @discardDraft="handleDiscardDraft('createModal')"
         @workItemCreated="handleCreated"
       />
     </gl-modal>
+    <create-work-item-cancel-confirmation-modal
+      :is-visible="isConfirmationModalVisible"
+      :work-item-type-name="workItemTypeName"
+      @continueEditing="handleContinueEditing"
+      @discardDraft="handleDiscardDraft('confirmModal')"
+    />
   </div>
 </template>

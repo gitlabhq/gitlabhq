@@ -118,6 +118,10 @@ describe('issue_note_form component', () => {
       createComponentWrapper();
     });
 
+    it('should render text area with noteable type', () => {
+      expect(textarea.attributes('data-noteable-type')).toBe(noteableDataMock.noteableType);
+    });
+
     it('should render text area with placeholder', () => {
       expect(textarea.attributes('placeholder')).toBe('Write a comment or drag your files here…');
     });

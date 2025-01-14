@@ -357,13 +357,12 @@ describe('WikiNote', () => {
             verifyEditingOrDeletingStyles(false);
           });
 
-          it('should set deleted to true when delete note is successful', async () => {
+          it('should emit "note-deleted" when delete note is successful', async () => {
             jest.spyOn(confirmViaGLModal, 'confirmAction').mockImplementation(() => true);
-
             $apollo.mutate.mockResolvedValue();
 
             await wrapper.vm.deleteNote();
-            expect(wrapper.findComponent(TimelineEntryItem).exists()).toBe(false);
+            expect(Boolean(wrapper.emitted('note-deleted'))).toBe(true);
           });
         });
       });

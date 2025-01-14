@@ -57,7 +57,8 @@ module QA
             form.select_template template[:file_name], template[:name]
 
             expect(form).to have_normalized_ws_text(content[0..100])
-            form.commit_changes
+            form.click_commit_changes_in_header
+            form.commit_changes_through_modal
 
             aggregate_failures "indications of file created" do
               expect(form).to have_content(template[:file_name])

@@ -93,6 +93,7 @@ export default {
     :aria-label="title"
     :items="actionItems"
     icon="play"
+    size="small"
     text-sr-only
     right
     data-container="body"

@@ -37,6 +37,10 @@ class X509Certificate < ApplicationRecord
     by_x509_issuer(issuer).pluck(:serial_number)
   end
 
+  def all_emails
+    [email, emails].flatten.compact.uniq
+  end
+
   def mark_commit_signatures_unverified
     X509CertificateRevokeWorker.perform_async(self.id) if revoked?
   end

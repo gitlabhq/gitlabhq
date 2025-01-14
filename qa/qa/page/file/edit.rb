@@ -5,7 +5,6 @@ module QA
     module File
       class Edit < Page::Base
         include Shared::CommitMessage
-        include Shared::CommitButton
         include Shared::Editor
 
         def has_markdown_preview?(component, content)

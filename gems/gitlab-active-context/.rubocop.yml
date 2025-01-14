@@ -1,0 +1,8 @@
+inherit_from:
+  - ../config/rubocop.yml
+
+Gemfile/MissingFeatureCategory:
+  Enabled: false
+
+Search/NamespacedClass:
+  Enabled: false

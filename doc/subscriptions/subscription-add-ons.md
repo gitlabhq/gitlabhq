@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can purchase GitLab Duo seats to give users in your organization access to more GitLab features. GitLab Duo is only available for Premium and Ultimate customers.
 Access to features provided by GitLab Duo is managed through seat assignment. GitLab Duo can be assigned to any user in your group namespace or instance.
@@ -108,8 +108,6 @@ Prerequisites:
 
 The user is sent a confirmation email.
 
-To turn off these emails, an administrator can [disable the `duo_seat_assignment_email_for_sm` feature flag](../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags).
-
 #### Configure network and proxy settings
 
 For self-managed instances, to enable GitLab Duo features,
@@ -118,6 +116,10 @@ you must [enable network connectivity](../user/ai_features_enable.md).
 ## Assign and remove GitLab Duo seats in bulk
 
 You can assign or remove seats in bulk for multiple users.
+
+### SAML Group Sync
+
+GitLab.com groups can use SAML Group Sync to [manage GitLab Duo seat assignments](../user/group/saml_sso/group_sync.md#gitlab-duo-seat-assignment).
 
 ### For GitLab.com
 
@@ -150,6 +152,18 @@ Prerequisites:
 1. To the right of the user, turn on the toggle to assign a GitLab Duo seat.
 
 Administrators of self-managed instances can also use a [Rake task](../raketasks/user_management.md#bulk-assign-users-to-gitlab-duo-pro) to assign or remove seats in bulk.
+
+#### Managing GitLab Duo seats with LDAP configuration
+
+You can automatically assign and remove GitLab Duo seats for LDAP-enabled users based on LDAP group membership.
+
+To enable this functionality, you must [configure the `duo_add_on_groups` property](../administration/auth/ldap/ldap_synchronization.md#gitlab-duo-add-on-for-groups) in your LDAP settings.
+
+When `duo_add_on_groups` is configured, it becomes the single source of truth for Duo seat management among LDAP-enabled users.
+For more information, see [seat assignment workflow](../administration/duo_add_on_seat_management_with_ldap.md#seat-management-workflow).
+
+This automated process ensures that Duo seats are efficiently allocated based on your organization's LDAP group structure.
+For more information, see [GitLab Duo add-on seat management with LDAP](../administration/duo_add_on_seat_management_with_ldap.md).
 
 ## View assigned GitLab Duo users
 
@@ -193,7 +207,7 @@ Prerequisites:
 
 DETAILS:
 **Tier:** Premium
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 ### On GitLab.com
 
@@ -235,7 +249,7 @@ The trial automatically synchronizes to your instance within 24 hours. After the
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 ### On GitLab.com
 

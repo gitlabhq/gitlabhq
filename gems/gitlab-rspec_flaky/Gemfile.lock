@@ -16,13 +16,13 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (7.1.5)
-      activesupport (= 7.1.5)
-    activerecord (7.1.5)
-      activemodel (= 7.1.5)
-      activesupport (= 7.1.5)
+    activemodel (7.1.5.1)
+      activesupport (= 7.1.5.1)
+    activerecord (7.1.5.1)
+      activemodel (= 7.1.5.1)
+      activesupport (= 7.1.5.1)
       timeout (>= 0.4.0)
-    activesupport (7.1.5)
+    activesupport (7.1.5.1)
       base64
       benchmark (>= 0.3)
       bigdecimal

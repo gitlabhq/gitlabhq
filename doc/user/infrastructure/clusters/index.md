@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 To connect clusters to GitLab, use the [GitLab agent](../../clusters/agent/index.md).
 
@@ -17,7 +17,7 @@ To connect clusters to GitLab, use the [GitLab agent](../../clusters/agent/index
 WARNING:
 In GitLab 14.5, the certificate-based method to connect Kubernetes clusters
 to GitLab was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8),
-as well as its related [features](#deprecated-features). In self-managed GitLab 17.0 and later,
+as well as its related [features](#deprecated-features). In GitLab Self-Managed 17.0 and later,
 this feature is disabled by default. For GitLab SaaS users, this feature is available until
 GitLab 15.9 for users who have at least one certificate-based cluster enabled in their namespace hierarchy.
 For GitLab SaaS users that never used this feature previously, it is no longer available.

@@ -81,13 +81,14 @@ RSpec.describe 'admin/dashboard/index.html.haml' do
 
       before do
         server_info = instance_double(
-          Gitlab::Kas::ServerInfoPresenter,
+          Gitlab::Kas::ServerInfo,
           retrieved_server_info?: retrieved_server_info?,
-          version: '17.4.0-rc1',
-          git_ref_for_display: '6a0281c6896',
-          git_ref_url: 'some/url'
+          version: '17.4.0-rc1'
         )
-        assign(:kas_server_info, server_info)
+        presenter = Gitlab::Kas::ServerInfoPresenter.new(server_info)
+        allow(presenter).to receive(:git_ref_for_display).and_return('6a0281c6896')
+        allow(presenter).to receive(:git_ref_url).and_return('some/url')
+        assign(:kas_server_info, presenter)
       end
 
       context 'when successfully fetched KAS version' do

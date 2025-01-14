@@ -49,11 +49,13 @@ RSpec.describe Gitlab::Checks::SingleChangeAccess, feature_category: :source_cod
     context 'when time limit was reached' do
       it 'raises a TimeoutError' do
         logger = Gitlab::Checks::TimedLogger.new(start_time: timeout.ago, timeout: timeout)
-        access = described_class.new(changes,
-                                     project: project,
-                                     user_access: user_access,
-                                     protocol: protocol,
-                                     logger: logger)
+        access = described_class.new(
+          changes,
+          project: project,
+          user_access: user_access,
+          protocol: protocol,
+          logger: logger
+        )
 
         expect { access.validate! }.to raise_error(Gitlab::Checks::TimedLogger::TimeoutError)
       end
@@ -63,12 +65,14 @@ RSpec.describe Gitlab::Checks::SingleChangeAccess, feature_category: :source_cod
       let(:expected_commits) { [Gitlab::Git::Commit.new(project.repository, { id: "1234" })] }
 
       let(:access) do
-        described_class.new(changes,
-                            project: project,
-                            user_access: user_access,
-                            protocol: protocol,
-                            logger: logger,
-                            commits: provided_commits)
+        described_class.new(
+          changes,
+          project: project,
+          user_access: user_access,
+          protocol: protocol,
+          logger: logger,
+          commits: provided_commits
+        )
       end
 
       shared_examples '#commits' do

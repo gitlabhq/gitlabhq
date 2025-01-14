@@ -9,7 +9,7 @@ description: "How to create a merge request for a confidential issue without lea
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Merge requests in a public repository are also public, even when you create a
 merge request for a [confidential issue](../issues/confidential_issues.md).

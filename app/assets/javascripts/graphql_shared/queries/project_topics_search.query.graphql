@@ -1,5 +1,5 @@
-query searchProjectTopics($search: String) {
-  topics(search: $search) {
+query searchProjectTopics($search: String, $organizationId: OrganizationsOrganizationID) {
+  topics(search: $search, organizationId: $organizationId) {
     nodes {
       id
       name

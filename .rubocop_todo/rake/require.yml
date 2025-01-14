@@ -12,4 +12,3 @@ Rake/Require:
     - 'lib/tasks/gitlab/lfs/migrate.rake'
     - 'lib/tasks/gitlab/openapi.rake'
     - 'lib/tasks/tokens.rake'
-    - 'qa/tasks/ci.rake'

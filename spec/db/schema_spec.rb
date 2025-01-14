@@ -31,7 +31,6 @@ RSpec.describe 'Database schema',
       ci_sources_pipelines: [%w[source_partition_id source_pipeline_id], %w[partition_id pipeline_id]],
       ci_sources_projects: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
       ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
-      issues: [%w[correct_work_item_type_id]],
       notes: %w[namespace_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
       p_ci_build_trace_metadata: [%w[partition_id build_id], %w[partition_id trace_artifact_id]], # the index on build_id is enough
       p_ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[upstream_pipeline_partition_id upstream_pipeline_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
@@ -157,7 +156,7 @@ RSpec.describe 'Database schema',
       gitlab_subscription_histories: %w[gitlab_subscription_id hosted_plan_id namespace_id],
       identities: %w[user_id],
       import_failures: %w[project_id],
-      issues: %w[last_edited_by_id state_id correct_work_item_type_id],
+      issues: %w[last_edited_by_id state_id work_item_type_id],
       issue_emails: %w[email_message_id],
       jira_tracker_data: %w[jira_issue_transition_id],
       keys: %w[user_id],
@@ -233,6 +232,7 @@ RSpec.describe 'Database schema',
       # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87584
       # Fixes performance issues with the deletion of web-hooks with many log entries
       web_hook_logs: %w[web_hook_id],
+      web_hook_logs_daily: %w[web_hook_id],
       webauthn_registrations: %w[u2f_registration_id], # this column will be dropped
       ml_candidates: %w[internal_id],
       value_stream_dashboard_counts: %w[namespace_id],
@@ -256,6 +256,34 @@ RSpec.describe 'Database schema',
       system_access_group_microsoft_graph_access_tokens: %w[temp_source_id], # temporary column that is not a foreign key
       system_access_group_microsoft_applications: %w[temp_source_id], # temporary column that is not a foreign key
       subscription_user_add_on_assignment_versions: %w[item_id user_id purchase_id] # Managed by paper_trail gem, no need for FK on the historical data
+    }.with_indifferent_access.freeze
+  end
+
+  let(:ignored_tables_with_too_many_indexes) do
+    {
+      approval_merge_request_rules: 17,
+      ci_builds: 27,
+      ci_pipelines: 24,
+      ci_runners: 17,
+      ci_runners_e59bb2812d: 16,
+      deployments: 18,
+      epics: 19,
+      events: 16,
+      group_type_ci_runners_e59bb2812d: 16,
+      instance_type_ci_runners_e59bb2812d: 16,
+      issues: 41,
+      members: 21,
+      merge_requests: 33,
+      namespaces: 26,
+      p_ci_builds: 27,
+      p_ci_pipelines: 24,
+      packages_package_files: 16,
+      packages_packages: 27,
+      project_type_ci_runners_e59bb2812d: 16,
+      projects: 55,
+      sbom_occurrences: 25,
+      users: 32,
+      vulnerability_reads: 23
     }.with_indifferent_access.freeze
   end
 
@@ -428,6 +456,7 @@ RSpec.describe 'Database schema',
         "Organizations::OrganizationSetting" => %w[settings], # Custom validations
         "Packages::Composer::Metadatum" => %w[composer_json],
         "RawUsageData" => %w[payload], # Usage data payload changes often, we cannot use one schema
+        "ServicePing::NonSqlServicePing" => %w[payload], # Usage data payload changes often, we cannot use one schema
         "Releases::Evidence" => %w[summary],
         "Vulnerabilities::Finding::Evidence" => %w[data], # Validation work in progress
         "Ai::DuoWorkflows::Checkpoint" => %w[checkpoint metadata], # https://gitlab.com/gitlab-org/gitlab/-/issues/468632
@@ -520,7 +549,7 @@ RSpec.describe 'Database schema',
     end
   end
 
-  context 'with index names' do
+  context 'with indexes' do
     it 'disallows index names with a _ccnew[0-9]* suffix' do
       # During REINDEX operations, Postgres generates a temporary index with a _ccnew[0-9]* suffix
       # Since indexes are being considered temporary and subject to removal if they stick around for longer.
@@ -531,6 +560,38 @@ RSpec.describe 'Database schema',
         "#{Gitlab::Database::Reindexing::ReindexConcurrently::TEMPORARY_INDEX_PATTERN}$").all
 
       expect(problematic_indexes).to be_empty
+    end
+
+    context 'when exceeding the authorized limit' do
+      let(:max) { Gitlab::Database::MAX_INDEXES_ALLOWED_PER_TABLE }
+      let!(:known_offences) { ignored_tables_with_too_many_indexes }
+      let!(:corrected_offences) { known_offences.keys.to_set - actual_offences.keys.to_set }
+      let!(:new_offences) { actual_offences.keys.to_set - known_offences.keys.to_set }
+      let!(:actual_offences) do
+        Gitlab::Database::PostgresIndex
+          .where(schema: 'public')
+          .group(:tablename)
+          .having("COUNT(*) > #{max}")
+          .count
+      end
+
+      it 'checks for corrected_offences' do
+        expect(corrected_offences).to validate_index_limit(:corrected)
+      end
+
+      it 'checks for new_offences' do
+        expect(new_offences).to validate_index_limit(:new)
+      end
+
+      it 'checks for outdated_offences' do
+        outdated_offences = known_offences.filter_map do |table, expected|
+          actual = actual_offences[table]
+
+          "#{table} (expected #{expected}, actual #{actual})" if actual && expected != actual
+        end
+
+        expect(outdated_offences).to validate_index_limit(:outdated)
+      end
     end
   end
 

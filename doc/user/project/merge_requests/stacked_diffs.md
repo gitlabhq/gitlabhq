@@ -9,7 +9,7 @@ description: "Use stacked diffs to create small merge changes that build upon ea
 
 DETAILS:
 **Tier:** Core, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 **Status:** Experiment
 
 > - Released in [v1.42.0 of the GitLab CLI](https://gitlab.com/gitlab-org/cli/-/releases/v1.42.0) as an [experiment](../../../policy/development_stages_support.md#experiment).

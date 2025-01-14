@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 A downstream pipeline is any GitLab CI/CD pipeline triggered by another pipeline.
 Downstream pipelines run independently and concurrently to the upstream pipeline
@@ -446,7 +446,7 @@ displays to the right of the mini graph.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 ::Tabs
 
@@ -588,8 +588,8 @@ pass `CI_MERGE_REQUEST_REF_PATH` to the downstream pipeline using [variable inhe
          artifacts: true
    ```
 
-You can use this method to fetch artifacts from upstream merge request pipeline,
-but not from [merge results pipelines](merged_results_pipelines.md).
+You can use this method to fetch artifacts from upstream merge request pipelines,
+but not from [merged results pipelines](merged_results_pipelines.md).
 
 ## Pass CI/CD variables to a downstream pipeline
 
@@ -637,12 +637,12 @@ staging:
 
 The `ENVIRONMENT` variable is available in every job defined in the downstream pipeline.
 
-The `VERSION` global variable is also available in the downstream pipeline, because
-all jobs in a pipeline, including trigger jobs, inherit [global `variables`](../yaml/index.md#variables).
+The `VERSION` default variable is also available in the downstream pipeline, because
+all jobs in a pipeline, including trigger jobs, inherit [default `variables`](../yaml/index.md#default-variables).
 
-#### Prevent global variables from being passed
+#### Prevent default variables from being passed
 
-You can stop global CI/CD variables from reaching the downstream pipeline with
+You can stop default CI/CD variables from reaching the downstream pipeline with
 [`inherit:variables:false`](../yaml/index.md#inheritvariables).
 
 For example:
@@ -653,7 +653,7 @@ For example:
 
 ```yaml
 variables:
-  GLOBAL_VAR: value
+  DEFAULT_VAR: value
 
 trigger-job:
   inherit:
@@ -669,7 +669,7 @@ trigger-job:
 
 ```yaml
 variables:
-  GLOBAL_VAR: value
+  DEFAULT_VAR: value
 
 trigger-job:
   inherit:
@@ -681,7 +681,7 @@ trigger-job:
 
 ::EndTabs
 
-The `GLOBAL_VAR` variable is not available in the triggered pipeline, but `JOB_VAR`
+The `DEFAULT_VAR` variable is not available in the triggered pipeline, but `JOB_VAR`
 is available.
 
 ### Pass a predefined variable
@@ -732,7 +732,7 @@ the ones defined in the upstream project take precedence.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](../variables/index.md#pass-an-environment-variable-to-another-job).
 

@@ -47,10 +47,20 @@ export class ChunkWriter {
   constructor(htmlStream, config) {
     this.htmlStream = htmlStream;
 
-    const { balanceRate, minChunkSize, maxChunkSize, lowFrameTime, highFrameTime, timeout } = {
+    const {
+      balanceRate,
+      minChunkSize,
+      maxChunkSize,
+      lowFrameTime,
+      highFrameTime,
+      timeout,
+      signal,
+    } = {
       ...defaultConfig,
       ...config,
     };
+
+    this.registerSignal(signal);
 
     // ensure we still render chunks over time if the size criteria is not met
     this.scheduleAccumulatorFlush = throttle(this.flushAccumulator.bind(this), timeout);
@@ -70,9 +80,19 @@ export class ChunkWriter {
     });
   }
 
-  write(chunk) {
-    this.scheduleAccumulatorFlush.cancel();
+  registerSignal(signal) {
+    this.cancelAbort = () => {};
+    if (!signal) return;
+    const abort = this.abort.bind(this);
+    this.cancelAbort = () => {
+      signal.removeEventListener('abort', abort);
+    };
+    signal.addEventListener('abort', abort, {
+      once: true,
+    });
+  }
 
+  write(chunk) {
     if (this.buffer) {
       this.buffer = concatUint8Arrays(this.buffer, chunk);
     } else {
@@ -85,6 +105,7 @@ export class ChunkWriter {
       return Promise.resolve();
     }
 
+    this.scheduleAccumulatorFlush.cancel();
     return this.balancedWrite();
   }
 
@@ -134,11 +155,13 @@ export class ChunkWriter {
       this.buffer = null;
     }
     this.htmlStream.close();
+    this.cancelAbort();
   }
 
   abort() {
     this.scheduleAccumulatorFlush.cancel();
     this.buffer = null;
     this.htmlStream.abort();
+    this.cancelAbort();
   }
 }

@@ -22,7 +22,7 @@ Only the project's repository and LFS are included in the storage limit. The con
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can view the following statistics for storage usage in projects and namespaces:
 

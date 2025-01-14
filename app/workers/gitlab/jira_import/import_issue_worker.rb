@@ -34,7 +34,6 @@ module Gitlab
 
       # Necessary temporarily as new version might process jobs enqueued in old version
       def ensure_correct_work_item_type(attributes)
-        return attributes if Feature.disabled?(:issues_set_correct_work_item_type_id, :instance)
         return attributes unless attributes.key?('work_item_type_id')
 
         work_item_type = ::WorkItems::Type.find_by_correct_id_with_fallback(attributes['work_item_type_id'])

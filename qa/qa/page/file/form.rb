@@ -7,7 +7,6 @@ module QA
         include Page::Component::ListboxFilter
         include Page::Component::BlobContent
         include Shared::CommitMessage
-        include Shared::CommitButton
         include Shared::Editor
 
         view 'app/views/projects/blob/_editor.html.haml' do

@@ -2,7 +2,8 @@ import { spriteIcon } from '~/lib/utils/common_utils';
 
 export function addCommentIndicator(containerEl, { x, y }) {
   const buttonEl = document.createElement('button');
-  buttonEl.classList.add('btn-transparent');
+  buttonEl.classList.add('gl-border-0');
+  buttonEl.classList.add('gl-bg-transparent');
   buttonEl.classList.add('comment-indicator');
   buttonEl.setAttribute('type', 'button');
   buttonEl.style.left = `${x}px`;

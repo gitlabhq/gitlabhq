@@ -295,3 +295,42 @@ func TestShutdown(t *testing.T) {
 		t.Fatal("timeout waiting for WatchKey")
 	}
 }
+
+func TestLazySubscribeInit(t *testing.T) {
+	rdb := initRdb(t)
+	kw := NewKeyWatcher(rdb)
+	require.True(t, kw.firstRun)
+
+	kw.firstRun = false
+	defer kw.Shutdown()
+
+	go kw.Process()
+
+	require.Equal(t, 0, kw.getNumSubscribers())
+	require.False(t, kw.connected())
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	notify := make(chan string)
+	// Add a subscription to initiate a Redis connection
+	kw.addSubscription(ctx, "test_key", notify)
+
+	require.Eventually(t, func() bool {
+		return kw.connected()
+	}, time.Second, time.Millisecond)
+
+	// Add another one just to ensure there is at least one subscriber
+	err := kw.addSubscription(ctx, "test_key2", notify)
+	require.NoError(t, err)
+
+	require.Eventually(t, func() bool {
+		return kw.getNumSubscribers() > 0
+	}, time.Second, time.Millisecond, "Subscription was not added")
+
+	require.Eventually(t, func() bool {
+		return kw.connected()
+	}, time.Second, time.Millisecond)
+
+	kw.delSubscription(ctx, "test_key", notify)
+	kw.delSubscription(ctx, "test_key2", notify)
+}

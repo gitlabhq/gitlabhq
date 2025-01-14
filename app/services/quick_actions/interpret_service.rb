@@ -233,7 +233,8 @@ module QuickActions
       Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter.track_unique_action(
         quick_action_name.to_s,
         args: arg&.strip,
-        user: current_user
+        user: current_user,
+        project: project
       )
     end
 

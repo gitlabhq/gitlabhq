@@ -1,4 +1,4 @@
-query getMergeRequestsCount(
+query getProjectMergeRequestsCount(
   $fullPath: ID!
   $search: String
   $approvedBy: [String!]

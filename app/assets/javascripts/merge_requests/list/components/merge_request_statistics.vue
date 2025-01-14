@@ -20,11 +20,10 @@ export default {
 </script>
 
 <template>
-  <ul class="gl-contents">
+  <ul class="gl-list-none gl-gap-3 gl-p-0">
     <li
       v-if="mergeRequest.upvotes"
       v-gl-tooltip
-      class="gl-hidden sm:gl-block"
       :title="$options.i18n.upvotes"
       data-testid="issuable-upvotes"
     >
@@ -34,7 +33,6 @@ export default {
     <li
       v-if="mergeRequest.downvotes"
       v-gl-tooltip
-      class="gl-hidden sm:gl-block"
       :title="$options.i18n.downvotes"
       data-testid="issuable-downvotes"
     >

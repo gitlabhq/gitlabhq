@@ -12,6 +12,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalabili
         'TestWorker'
       end
       include ApplicationWorker
+
+      feature_category :scalability
     end
   end
 
@@ -60,7 +62,12 @@ RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalabili
         end
 
         it 'increments counter' do
-          expect(metric).to receive(:increment).with({ worker: "TestWorker", action: "dropped" })
+          expect(metric).to receive(:increment).with({
+            worker: "TestWorker",
+            action: "dropped",
+            reason: "feature_flag",
+            feature_category: "scalability"
+          })
 
           subject.call(TestWorker.new, job, queue) { nil }
         end
@@ -91,7 +98,12 @@ RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalabili
         end
 
         it 'increments counter' do
-          expect(metric).to receive(:increment).with({ worker: "TestWorker", action: "deferred" })
+          expect(metric).to receive(:increment).with({
+            worker: "TestWorker",
+            action: "deferred",
+            reason: "feature_flag",
+            feature_category: "scalability"
+          })
 
           subject.call(TestWorker.new, job, queue) { nil }
         end
@@ -186,14 +198,31 @@ RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalabili
       end
 
       context 'with stop signal from database health check' do
+        let(:metric) { instance_double(Prometheus::Client::Counter, increment: true) }
+
         before do
           stop_signal = instance_double("Gitlab::Database::HealthStatus::Signals::Stop", stop?: true)
           allow(Gitlab::Database::HealthStatus).to receive(:evaluate).and_return([stop_signal])
+          allow(Gitlab::Metrics).to receive(:counter).and_call_original
+          allow(Gitlab::Metrics).to receive(:counter).with(described_class::COUNTER, anything).and_return(metric)
         end
 
         it 'defers the job by set time' do
           expect(TestWorker).to receive(:deferred).with(1, :database_health_check).and_return(setter)
           expect(setter).to receive(:perform_in).with(health_signal_attrs[:delay], *job['args'])
+
+          TestWorker.perform_async(*job['args'])
+        end
+
+        it 'increments counter' do
+          expect(TestWorker).to receive(:deferred).with(1, :database_health_check).and_return(setter)
+          expect(setter).to receive(:perform_in).with(health_signal_attrs[:delay], *job['args'])
+          expect(metric).to receive(:increment).with({
+            worker: "TestWorker",
+            action: "deferred",
+            reason: "database_health_check",
+            feature_category: "scalability"
+          })
 
           TestWorker.perform_async(*job['args'])
         end

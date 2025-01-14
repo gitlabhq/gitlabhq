@@ -290,7 +290,7 @@ RSpec.describe API::Ci::Variables, feature_category: :secrets_management do
 
           expect(response).to have_gitlab_http_status(:bad_request)
 
-          expected_error_message = 'Updating masked attribute is not allowed on updates for hidden variables.'
+          expected_error_message = 'The visibility setting cannot be changed for masked and hidden variables.'
 
           expect(json_response['message']['base']).to contain_exactly(expected_error_message)
           expect(updated_variable).to be_masked

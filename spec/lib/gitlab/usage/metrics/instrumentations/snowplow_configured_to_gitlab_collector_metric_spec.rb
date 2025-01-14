@@ -7,8 +7,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::SnowplowConfiguredToGit
 
   context 'for collector_hostname option' do
     where(:collector_hostname, :expected_value) do
-      'snowplow.trx.gitlab.net' | true
-      'foo.bar.something.net'   | false
+      'snowplowprd.trx.gitlab.net' | true
+      'foo.bar.something.net'      | false
     end
 
     with_them do

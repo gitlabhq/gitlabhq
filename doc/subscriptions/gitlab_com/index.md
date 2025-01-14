@@ -181,7 +181,7 @@ In this case, the user sees only the features available to that subscription.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
 The user must not be assigned any other role, anywhere in the instance or in the namespace for GitLab.com.
@@ -311,6 +311,11 @@ Your subscription cost is based on the maximum number of seats you use during th
   is turned on, when there are no seats left in your subscription you must purchase more seats for groups to add new billable users.
 - If restricted access is turned off, when there are no seats left in your subscription groups can continue to add billable
   users. GitLab [bills you for the overage](../quarterly_reconciliation.md).
+
+You cannot add seats to your subscription if either:
+
+- You purchased your subscription through an [authorized reseller](../customers_portal.md#customers-that-purchased-through-a-reseller) (including GCP and AWS marketplaces). Contact the reseller to add more seats.
+- You have a multi-year subscription. Contact the [sales team](https://about.gitlab.com/sales/) to add more seats.
 
 To add seats to a subscription:
 

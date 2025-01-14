@@ -25,11 +25,11 @@ RSpec.describe Todos::SnoozingService, feature_category: :team_planning do
     context 'when the todo is already snoozed' do
       let!(:todo) { create(:todo, :pending, snoozed_until: time1, user: user) }
 
-      it 'does not change the snoozed_until timestamp' do
+      it 'changes the snoozed_until timestamp' do
         service.snooze_todo(todo, time2)
         todo.reload
 
-        expect(todo.snoozed_until).to eq(time1)
+        expect(todo.snoozed_until).to eq(time2)
       end
     end
 

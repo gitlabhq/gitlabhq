@@ -3,21 +3,6 @@ include:
   - template: Jobs/Secret-Detection.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
 
-code_quality cache:
-  image: busybox
-  extends:
-    - .default-retry
-    - .reports:rules:code_quality_cache
-    - .code-quality-cache-master-pull
-  stage: lint
-  needs: []
-  dependencies: []
-  allow_failure: true
-  script: echo "This job pulls and uses the cached code quality report from the master branch to speed up docs pipelines"
-  artifacts:
-    reports:
-      codequality: gl-code-quality-report.json
-
 .sast-analyzer:
   # We need to re-`extends` from `sast` as the `extends` here overrides the one from the template.
   extends:
@@ -32,7 +17,7 @@ code_quality cache:
     expire_in: 1 week  # GitLab-specific
   variables:
     SAST_BRAKEMAN_LEVEL: 2  # GitLab-specific
-    SAST_EXCLUDED_PATHS: "qa, spec, doc, ee/spec, config/gitlab.yml.example, tmp"  # GitLab-specific
+    SAST_EXCLUDED_PATHS: "qa, spec, doc, ee/spec, config/gitlab.yml.example, tmp, storybook"  # GitLab-specific
     SAST_EXCLUDED_ANALYZERS: bandit, flawfinder, phpcs-security-audit, pmd-apex, security-code-scan, spotbugs, eslint, nodejs-scan, sobelow
 
 semgrep-sast:
@@ -59,7 +44,7 @@ secret_detection:
   stage: lint
   needs: []
   variables:
-    DS_EXCLUDED_PATHS: "qa/qa/ee/fixtures/secure_premade_reports, spec, ee/spec, tmp"  # GitLab-specific
+    DS_EXCLUDED_PATHS: "qa/qa/ee/fixtures/secure_premade_reports, spec, ee/spec, tmp, storybook"  # GitLab-specific
     DS_EXCLUDED_ANALYZERS: "gemnasium-maven"
   artifacts:
     paths:

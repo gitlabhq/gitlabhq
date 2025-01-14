@@ -26,7 +26,6 @@ import getBlobContent from '~/ci/pipeline_editor/graphql/queries/blob_content.qu
 import getCiConfigData from '~/ci/pipeline_editor/graphql/queries/ci_config.query.graphql';
 import getTemplate from '~/ci/pipeline_editor/graphql/queries/get_starter_template.query.graphql';
 import getLatestCommitShaQuery from '~/ci/pipeline_editor/graphql/queries/latest_commit_sha.query.graphql';
-import getPipelineQuery from '~/ci/pipeline_editor/graphql/queries/pipeline.query.graphql';
 import getCurrentBranch from '~/ci/pipeline_editor/graphql/queries/client/current_branch.query.graphql';
 import getAppStatus from '~/ci/pipeline_editor/graphql/queries/client/app_status.query.graphql';
 
@@ -72,7 +71,6 @@ describe('Pipeline editor app component', () => {
   let mockCiConfigData;
   let mockGetTemplate;
   let mockLatestCommitShaQuery;
-  let mockPipelineQuery;
   const showToastMock = jest.fn();
 
   const createComponent = ({ options = {}, provide = {}, stubs = {} } = {}) => {
@@ -95,7 +93,6 @@ describe('Pipeline editor app component', () => {
       [getCiConfigData, mockCiConfigData],
       [getTemplate, mockGetTemplate],
       [getLatestCommitShaQuery, mockLatestCommitShaQuery],
-      [getPipelineQuery, mockPipelineQuery],
     ];
 
     mockApollo = createMockApollo(handlers, resolvers);
@@ -151,7 +148,6 @@ describe('Pipeline editor app component', () => {
     mockCiConfigData = jest.fn();
     mockGetTemplate = jest.fn();
     mockLatestCommitShaQuery = jest.fn();
-    mockPipelineQuery = jest.fn();
   });
 
   describe('loading state', () => {

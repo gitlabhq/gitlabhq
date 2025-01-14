@@ -47,8 +47,14 @@ describe('releases/components/tag_create', () => {
   const findTagInput = () => wrapper.findComponent(GlFormInput);
   const findTagRef = () => wrapper.findComponent(RefSelector);
   const findTagMessage = () => wrapper.findComponent(GlFormTextarea);
-  const findSave = () => wrapper.findAllComponents(GlButton).at(-2);
-  const findCancel = () => wrapper.findAllComponents(GlButton).at(-1);
+  const findSave = () => {
+    const buttons = wrapper.findAllComponents(GlButton);
+    return buttons.at(buttons.length - 2);
+  };
+  const findCancel = () => {
+    const buttons = wrapper.findAllComponents(GlButton);
+    return buttons.at(buttons.length - 1);
+  };
 
   it('initializes the input with value prop', () => {
     expect(findTagInput().attributes('value')).toBe(VALUE);

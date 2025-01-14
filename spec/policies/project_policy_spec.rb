@@ -3909,36 +3909,34 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   describe ':write_model_experiments' do
     using RSpec::Parameterized::TableSyntax
 
-    where(:ff_ml_experiment_tracking, :current_user, :access_level, :allowed) do
-      false | ref(:owner)      | Featurable::ENABLED  | false
-      true  | ref(:anonymous)  | Featurable::ENABLED  | false
-      true  | ref(:anonymous)  | Featurable::PRIVATE  | false
-      true  | ref(:anonymous)  | Featurable::DISABLED | false
-      true  | ref(:non_member) | Featurable::ENABLED  | false
-      true  | ref(:non_member) | Featurable::PRIVATE  | false
-      true  | ref(:non_member) | Featurable::DISABLED | false
-      true  | ref(:guest)      | Featurable::ENABLED  | false
-      true  | ref(:guest)      | Featurable::PRIVATE  | false
-      true  | ref(:guest)      | Featurable::DISABLED | false
-      true  | ref(:planner)    | Featurable::ENABLED  | false
-      true  | ref(:planner)    | Featurable::PRIVATE  | false
-      true  | ref(:planner)    | Featurable::DISABLED | false
-      true  | ref(:reporter)   | Featurable::ENABLED  | false
-      true  | ref(:reporter)   | Featurable::PRIVATE  | false
-      true  | ref(:reporter)   | Featurable::DISABLED | false
-      true  | ref(:developer)  | Featurable::ENABLED  | true
-      true  | ref(:developer)  | Featurable::PRIVATE  | true
-      true  | ref(:developer)  | Featurable::DISABLED | false
-      true  | ref(:maintainer) | Featurable::ENABLED  | true
-      true  | ref(:maintainer) | Featurable::PRIVATE  | true
-      true  | ref(:maintainer) | Featurable::DISABLED | false
-      true  | ref(:owner)      | Featurable::ENABLED  | true
-      true  | ref(:owner)      | Featurable::PRIVATE  | true
-      true  | ref(:owner)      | Featurable::DISABLED | false
+    where(:current_user, :access_level, :allowed) do
+      ref(:anonymous)  | Featurable::ENABLED  | false
+      ref(:anonymous)  | Featurable::PRIVATE  | false
+      ref(:anonymous)  | Featurable::DISABLED | false
+      ref(:non_member) | Featurable::ENABLED  | false
+      ref(:non_member) | Featurable::PRIVATE  | false
+      ref(:non_member) | Featurable::DISABLED | false
+      ref(:guest)      | Featurable::ENABLED  | false
+      ref(:guest)      | Featurable::PRIVATE  | false
+      ref(:guest)      | Featurable::DISABLED | false
+      ref(:planner)    | Featurable::ENABLED  | false
+      ref(:planner)    | Featurable::PRIVATE  | false
+      ref(:planner)    | Featurable::DISABLED | false
+      ref(:reporter)   | Featurable::ENABLED  | false
+      ref(:reporter)   | Featurable::PRIVATE  | false
+      ref(:reporter)   | Featurable::DISABLED | false
+      ref(:developer)  | Featurable::ENABLED  | true
+      ref(:developer)  | Featurable::PRIVATE  | true
+      ref(:developer)  | Featurable::DISABLED | false
+      ref(:maintainer) | Featurable::ENABLED  | true
+      ref(:maintainer) | Featurable::PRIVATE  | true
+      ref(:maintainer) | Featurable::DISABLED | false
+      ref(:owner)      | Featurable::ENABLED  | true
+      ref(:owner)      | Featurable::PRIVATE  | true
+      ref(:owner)      | Featurable::DISABLED | false
     end
     with_them do
       before do
-        stub_feature_flags(ml_experiment_tracking: ff_ml_experiment_tracking)
         project.project_feature.update!(model_experiments_access_level: access_level)
       end
 

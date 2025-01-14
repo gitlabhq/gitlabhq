@@ -35,19 +35,14 @@ RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_acc
         it_behaves_like "rotates token successfully"
 
         context 'when creating the new token fails' do
-          let(:error_message) { 'boom!' }
-
           before do
-            allow_next_instance_of(PersonalAccessToken) do |token|
-              allow(token).to receive_message_chain(:errors, :full_messages, :to_sentence).and_return(error_message)
-              allow(token).to receive_message_chain(:errors, :clear)
-              allow(token).to receive_message_chain(:errors, :empty?).and_return(false)
-            end
+            # change the default expiration for rotation to create an invalid token
+            stub_const('::PersonalAccessTokens::RotateService::EXPIRATION_PERIOD', 10.years)
           end
 
           it 'returns an error' do
             expect(response).to be_error
-            expect(response.message).to eq(error_message)
+            expect(response.message).to include('Expiration date must be before')
           end
 
           it 'reverts the changes' do

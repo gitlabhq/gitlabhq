@@ -925,15 +925,17 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
       end
     end
 
-    context 'when parsing the junit fails' do
+    context 'when parsing the junit fails from size error' do
       before do
         allow_next_instance_of(Gitlab::Ci::Artifacts::DecompressedArtifactSizeValidator) do |instance|
-          allow(instance).to receive(:validate!).and_raise(StandardError)
+          allow(instance).to receive(:validate!)
+            .and_raise(Gitlab::Ci::Artifacts::DecompressedArtifactSizeValidator::FileDecompressionError)
         end
       end
 
       it 'updates the artifact report to failed state' do
-        expect { job_artifact.each_blob { |b| } }.to raise_error(StandardError)
+        expect { job_artifact.each_blob { |b| } }
+          .to raise_error(Gitlab::Ci::Artifacts::DecompressedArtifactSizeValidator::FileDecompressionError)
         expect(job_artifact.artifact_report.status).to eq("faulty")
       end
     end
@@ -947,10 +949,11 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
         expect(job_artifact.artifact_report.status).to eq("validated")
       end
 
-      context 'and parsing the junit fails' do
+      context 'and parsing the junit fails from size error' do
         before do
           allow_next_instance_of(Gitlab::Ci::Artifacts::DecompressedArtifactSizeValidator) do |instance|
-            allow(instance).to receive(:validate!).and_raise(StandardError)
+            allow(instance).to receive(:validate!)
+              .and_raise(Gitlab::Ci::Artifacts::DecompressedArtifactSizeValidator::FileDecompressionError)
           end
         end
 
@@ -958,6 +961,20 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
           expect { job_artifact.each_blob { |b| } }.to raise_error(StandardError)
           expect { job_artifact.save! }.to change { Ci::JobArtifactReport.count }.by(1)
           expect(job_artifact.artifact_report.status).to eq("faulty")
+        end
+      end
+
+      context 'and parsing the junit fails from unknown error' do
+        before do
+          allow_next_instance_of(Gitlab::Ci::Artifacts::DecompressedArtifactSizeValidator) do |instance|
+            allow(instance).to receive(:validate!).and_raise(StandardError)
+          end
+        end
+
+        it 'updates the artifact report to validated and saves when job artifact saves' do
+          expect { job_artifact.each_blob { |b| } }.to raise_error(StandardError)
+          expect { job_artifact.save! }.to change { Ci::JobArtifactReport.count }.by(1)
+          expect(job_artifact.artifact_report.status).to eq("validated")
         end
       end
     end

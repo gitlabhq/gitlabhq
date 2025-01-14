@@ -10,6 +10,8 @@ module Preloaders
     end
 
     def execute
+      return unless @user
+
       preload_with_traversal_ids
     end
 

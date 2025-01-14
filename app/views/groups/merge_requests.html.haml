@@ -1,22 +1,28 @@
-- @can_bulk_update = can?(current_user, :admin_merge_request, @group) && @group.licensed_feature_available?(:group_bulk_edit) && issuables_count_for_state(:merge_requests, :all) > 0
-
+- has_bulk_update_permission = can?(current_user, :admin_merge_request, @group) && @group.licensed_feature_available?(:group_bulk_edit)
 - page_title _("Merge requests")
 - add_page_specific_style 'page_bundles/issuable_list'
 
-.top-area
-  = render 'shared/issuable/nav', type: :merge_requests, display_count: !@search_timeout_occurred
-  - if current_user
-    .nav-controls
-      - if @can_bulk_update
-        = render_if_exists 'projects/merge_requests/bulk_update_button'
-
-      = render 'shared/new_project_item_vue_select'
-
-= render 'shared/issuable/search_bar', type: :merge_requests
-- if @can_bulk_update
-  = render_if_exists 'shared/issuable/group_bulk_update_sidebar', group: @group, type: :merge_requests
-
-- if @search_timeout_occurred
-  = render 'shared/dashboard/search_timeout_occurred'
+- if Feature.enabled?(:vue_merge_request_list, @group)
+  .js-merge-request-list-root{ data: group_merge_requests_list_data(@group, current_user) }
+  - if has_bulk_update_permission
+    = render_if_exists 'shared/issuable/group_bulk_update_sidebar', group: @group, type: :merge_requests
 - else
-  = render 'shared/merge_requests'
+  - can_bulk_update = has_bulk_update_permission && issuables_count_for_state(:merge_requests, :all) > 0
+
+  .top-area
+    = render 'shared/issuable/nav', type: :merge_requests, display_count: !@search_timeout_occurred
+    - if current_user
+      .nav-controls
+        - if can_bulk_update
+          = render_if_exists 'projects/merge_requests/bulk_update_button'
+
+        = render 'shared/new_project_item_vue_select'
+
+  = render 'shared/issuable/search_bar', type: :merge_requests
+  - if can_bulk_update
+    = render_if_exists 'shared/issuable/group_bulk_update_sidebar', group: @group, type: :merge_requests
+
+  - if @search_timeout_occurred
+    = render 'shared/dashboard/search_timeout_occurred'
+  - else
+    = render 'shared/merge_requests'

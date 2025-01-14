@@ -24,7 +24,7 @@ const createStubbedMethods = (methods = {}) => {
 
 export const RENDER_ALL_SLOTS_TEMPLATE = `<div>
   <template v-for="(_, name) in $scopedSlots">
-    <div :data-testid="'slot-' + name">            
+    <div :data-testid="'slot-' + name">
       <slot :name="name" />
     </div>
   </template>
@@ -32,6 +32,7 @@ export const RENDER_ALL_SLOTS_TEMPLATE = `<div>
 
 export function stubComponent(Component, options = {}) {
   return {
+    name: Component.name,
     props: Component.props,
     model: Component.model,
     methods: createStubbedMethods(Component.methods),

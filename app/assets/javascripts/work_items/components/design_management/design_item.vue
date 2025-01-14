@@ -106,6 +106,13 @@ export default {
     showImage() {
       return !this.showLoadingSpinner && !this.showImageErrorIcon;
     },
+    routerLinkProps() {
+      return {
+        name: this.$options.ROUTES.design,
+        params: { iid: this.workItemIid, id: this.filename },
+        query: this.$route.query,
+      };
+    },
   },
   methods: {
     onImageLoad() {
@@ -138,11 +145,7 @@ export default {
 
 <template>
   <router-link
-    :to="{
-      name: $options.ROUTES.design,
-      params: { iid: workItemIid, id: filename },
-      query: $route.query,
-    }"
+    :to="routerLinkProps"
     class="card js-design-list-item design-list-item gl-mb-0 gl-cursor-pointer gl-text-default hover:gl-text-default"
   >
     <div

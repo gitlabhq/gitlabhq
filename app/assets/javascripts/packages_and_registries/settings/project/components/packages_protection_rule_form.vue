@@ -75,11 +75,10 @@ export default {
       };
     },
     packageTypeOptions() {
-      const packageTypeOptions = [{ value: 'NPM', text: s__('PackageRegistry|Npm') }];
-
-      if (this.glFeatures.packagesProtectedPackagesPypi) {
-        packageTypeOptions.push({ value: 'PYPI', text: s__('PackageRegistry|PyPI') });
-      }
+      const packageTypeOptions = [
+        { value: 'NPM', text: s__('PackageRegistry|Npm') },
+        { value: 'PYPI', text: s__('PackageRegistry|PyPI') },
+      ];
 
       if (this.glFeatures.packagesProtectedPackagesConan) {
         packageTypeOptions.push({ value: 'CONAN', text: s__('PackageRegistry|Conan') });

@@ -22,13 +22,17 @@ import { catalogSharedDataMock } from '../../mock';
 Vue.use(VueApollo);
 Vue.use(VueRouter);
 
-let router;
-
 const defaultSharedData = { ...catalogSharedDataMock.data.ciCatalogResource };
+const baseRoute = '/';
+const resourcesPageComponentStub = {
+  name: 'page-component',
+  template: '<div>Hello</div>',
+};
 
 describe('CiResourceDetailsPage', () => {
   let wrapper;
   let sharedDataResponse;
+  let router;
 
   const defaultProps = {};
 
@@ -57,16 +61,14 @@ describe('CiResourceDetailsPage', () => {
         ...defaultProps,
         ...props,
       },
-      stubs: {
-        RouterView: true,
-      },
     });
   };
 
   beforeEach(async () => {
     sharedDataResponse = jest.fn();
 
-    router = createRouter();
+    router = createRouter(baseRoute, resourcesPageComponentStub);
+
     await router.push({
       name: CI_RESOURCE_DETAILS_PAGE_NAME,
       params: { id: defaultSharedData.webPath },

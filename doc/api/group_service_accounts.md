@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Use this API to interact with service accounts for your groups. For more information, see [Service accounts](../user/profile/service_accounts.md).
 
@@ -16,13 +16,13 @@ Prerequisites:
 
 - You must have administrator access to the self-managed instance, or have the Owner role for the GitLab.com group.
 
-## List service account users
+## List all service account users
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416729) in GitLab 17.1.
 
-Lists all service account users that are provisioned by group.
+Lists all service account users in a specified top-level group.
 
-This function takes pagination parameters `page` and `per_page` to restrict the list of users.
+Use the `page` and `per_page` [pagination parameters](rest/index.md#offset-based-pagination) to filter the results.
 
 ```plaintext
 GET /groups/:id/service_accounts
@@ -63,11 +63,12 @@ Example response:
 ## Create a service account user
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407775) in GitLab 16.1.
-> - Ability to specify a username or name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144841) in GitLab 16.10.
+> - Specify a service account user username or name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144841) in GitLab 16.10.
 
-Creates a service account user.
+Creates a service account user in a given top-level group.
 
-This API endpoint works on top-level groups only. It does not work on subgroups.
+NOTE:
+This endpoint only works on top-level groups.
 
 ```plaintext
 POST /groups/:id/service_accounts
@@ -75,11 +76,11 @@ POST /groups/:id/service_accounts
 
 Supported attributes:
 
-| Attribute                  | Type           | Required                  | Description                                                                    |
-|:---------------------------|:---------------|:--------------------------|:-------------------------------------------------------------------------------|
-| `id`         | integer/string | yes  | The ID or [URL-encoded path of the target group](rest/index.md#namespaced-paths). |
-| `name`       | string | no | The name of the user. If not specified, the default `Service account user` name is used. |
-| `username`   | string | no | The username of the user. If not specified, it's automatically generated. |
+| Attribute  | Type           | Required | Description                                                                   |
+|:-----------|:---------------|:---------|:------------------------------------------------------------------------------|
+| `id`       | integer/string | yes | ID or [URL-encoded path](rest/index.md#namespaced-paths) of a top-level group.     |
+| `name`     | string         | no  | User account name. If not specified, uses `Service account user`.                  |
+| `username` | string         | no  | User account username. If not specified, generates a name prepended with `service_account_`. |
 
 Example request:
 
@@ -101,9 +102,10 @@ Example response:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416729) in GitLab 17.1.
 
-Deletes a service account user.
+Deletes a service account user from a given top-level group.
 
-This API endpoint works on top-level groups only. It does not work on subgroups.
+NOTE:
+This endpoint only works on top-level groups.
 
 ```plaintext
 DELETE /groups/:id/service_accounts/:user_id
@@ -127,7 +129,10 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
 
-This API endpoint works on top-level groups only. It does not work on subgroups.
+Creates a personal access token for an existing service account user in a given top-level group.
+
+NOTE:
+This endpoint only works on top-level groups.
 
 ```plaintext
 POST /groups/:id/service_accounts/:user_id/personal_access_tokens
@@ -137,11 +142,11 @@ Parameters:
 
 | Attribute | Type            | Required | Description |
 | --------- | --------------- | -------- | ----------- |
-| `id`      | integer/string | yes  | The ID or [URL-encoded path of the target group](rest/index.md#namespaced-paths). |
-| `user_id` | integer | yes      | The ID of a service account user.                            |
-| `name`    | string  | yes      | The name of the personal access token. |
-| `scopes`  | array   | yes      | Array of scopes of the personal access token. See [personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes) for possible values. |
-| `expires_at` | date | no      | The personal access token expiry date. When left blank, the token follows the [standard rule of expiry for personal access tokens](../user/profile/personal_access_tokens.md#access-token-expiration). To specify no expiration date, omit this key. |
+| `id`      | integer/string | yes  | ID or [URL-encoded path](rest/index.md#namespaced-paths) of a top-level group. |
+| `user_id` | integer | yes      | ID of service account user.                            |
+| `name`    | string  | yes      | Name of personal access token. |
+| `scopes`  | array   | yes      | Array of approved scopes. For a list of possible values, see [Personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes). |
+| `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If not specified, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
 
 Example request:
 
@@ -170,9 +175,10 @@ Example response:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
 
-Creates a new token valid for one week and revokes any previous tokens.
+Rotates a personal access token for an existing service account user in a given top-level group. This creates a new token valid for one week and revokes any existing tokens.
 
-This API endpoint works on top-level groups only. It does not work on subgroups.
+NOTE:
+This endpoint only works on top-level groups.
 
 ```plaintext
 POST /groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id/rotate

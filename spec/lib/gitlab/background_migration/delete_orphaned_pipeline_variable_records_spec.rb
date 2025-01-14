@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedPipelineVariableRecords,
   feature_category: :continuous_integration, migration: :gitlab_ci do
-  let(:pipelines_table) { table(:p_ci_pipelines, database: :ci, primary_key: :id) }
-  let(:variables_table) { table(:p_ci_pipeline_variables, database: :ci, primary_key: :id) }
+  let(:pipelines_table) { table(:p_ci_pipelines, primary_key: :id) }
+  let(:variables_table) { table(:p_ci_pipeline_variables, primary_key: :id) }
 
   let(:default_attributes) { { project_id: 600, partition_id: 100 } }
   let!(:regular_pipeline) { pipelines_table.create!(id: 1, **default_attributes) }

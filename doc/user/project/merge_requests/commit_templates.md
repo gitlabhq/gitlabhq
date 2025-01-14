@@ -9,7 +9,7 @@ description: "Use commit message templates to ensure commits to your GitLab proj
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 GitLab uses commit templates to create default messages for specific types of
 commits. These templates encourage commit messages to follow a particular format,

@@ -41,6 +41,8 @@ The following regions are verified for use:
 - US West (Oregon)
 - Middle East (Bahrain)
 
+For more information about selecting low emission regions, see [Choose Region based on both business requirements and sustainability goals](https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_region_a2.html).
+
 If you're interested in a region not listed here, contact your account representative or [GitLab Support](https://about.gitlab.com/support/) to inquire about availability.
 
 ## Data isolation

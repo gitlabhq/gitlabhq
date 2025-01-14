@@ -1094,4 +1094,15 @@ EOS
       expect(first_diffs_slice.count).to eq(limit)
     end
   end
+
+  describe '#diffs_for_streaming' do
+    it 'returns a diff file collection commit' do
+      expect(commit.diffs_for_streaming).to be_a_kind_of(Gitlab::Diff::FileCollection::Commit)
+    end
+
+    it_behaves_like 'diffs for streaming' do
+      let(:repository) { commit.repository }
+      let(:resource) { commit }
+    end
+  end
 end

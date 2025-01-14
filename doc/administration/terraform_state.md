@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 GitLab can be used as a backend for [Terraform](../user/infrastructure/index.md) state
 files. The files are encrypted before being stored. This feature is enabled by default.
@@ -96,7 +96,7 @@ For self-compiled installations:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Instead of storing Terraform state files on disk, we recommend the use of
 [one of the supported object storage options](object_storage.md#supported-object-storage-providers).

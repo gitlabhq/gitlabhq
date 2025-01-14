@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 This step-by-step guide helps you deploy a project hosted on GitLab.com to
 the Amazon [Elastic Container Service (ECS)](https://aws.amazon.com/ecs/).
@@ -16,7 +16,7 @@ the Amazon [Elastic Container Service (ECS)](https://aws.amazon.com/ecs/).
 In this guide, you begin by creating an ECS cluster manually using the AWS console. You create and
 deploy a simple application that you create from a GitLab template.
 
-These instructions work for both SaaS and self-managed GitLab instances.
+These instructions work for both GitLab.com and GitLab Self-Managed instances.
 Ensure your own [runners are configured](../../runners/index.md).
 
 ## Prerequisites

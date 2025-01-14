@@ -38,6 +38,23 @@ module QA
               find_element("non-animated-value").text.to_i
             end
           end
+
+          def has_active_runner?(runner)
+            within_element("runner-row-#{runner.id}") do
+              has_content?(runner.name)
+              has_element?('status-active-icon')
+            end
+          end
+
+          def has_runner_with_expected_tags?(runner)
+            within_element("runner-row-#{runner.id}") do
+              runner.tags.all? { |tag| has_content?(tag) }
+            end
+          end
+
+          def has_no_runner?(runner)
+            has_no_element?("runner-row-#{runner.id}")
+          end
         end
       end
     end

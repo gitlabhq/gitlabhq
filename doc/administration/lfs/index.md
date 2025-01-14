@@ -2,16 +2,16 @@
 stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Configure Git LFS for your self-managed GitLab instance."
+description: "Configure Git LFS for GitLab Self-Managed."
 ---
 
 # GitLab Git Large File Storage (LFS) Administration
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
-This page contains information about configuring Git LFS in self-managed GitLab instances.
+This page contains information about configuring Git LFS on GitLab Self-Managed.
 For user documentation about Git LFS, see [Git Large File Storage](../../topics/git/lfs/index.md).
 
 Prerequisites:

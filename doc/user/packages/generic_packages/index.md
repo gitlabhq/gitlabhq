@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Use the generic packages repository to publish and manage generic files, such as release binaries, in your project's package registry. This feature is particularly useful for storing and distributing artifacts that don't fit into specific package formats like npm or Maven.
 
@@ -292,7 +292,7 @@ curl --user "<username>:<access_token>" \
 With HTTP headers:
 
 ```shell
-curl --header "PROJECT-TOKEN: <project_access_token>" \
+curl --header "PRIVATE-TOKEN: <project_access_token>" \
      --location \
      "https://gitlab.example.com/api/v4/projects/1/packages/generic/my_package/0.0.1/file.txt" \
      --output file.txt

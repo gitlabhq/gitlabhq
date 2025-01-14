@@ -14,6 +14,8 @@ const DEFAULT_PROPS = {
   diffsCount: '5',
   addedLines: 10,
   removedLines: 5,
+  showWhitespace: true,
+  diffViewType: 'inline',
 };
 
 describe('DiffAppControls', () => {
@@ -80,11 +82,30 @@ describe('DiffAppControls', () => {
 
   describe('when has no changes', () => {
     beforeEach(() => {
-      createComponent({ hasChanges: false });
+      createComponent({
+        hasChanges: false,
+        showWhitespace: false,
+        diffViewType: 'parallel',
+        viewDiffsFileByFile: true,
+      });
     });
 
     it('renders settings', () => {
       expect(wrapper.findComponent(SettingsDropdown).exists()).toBe(true);
+      expect(wrapper.findComponent(SettingsDropdown).props()).toStrictEqual({
+        showWhitespace: false,
+        diffViewType: 'parallel',
+        viewDiffsFileByFile: true,
+      });
+    });
+
+    it('emits events', () => {
+      wrapper.findComponent(SettingsDropdown).vm.$emit('updateDiffViewType');
+      wrapper.findComponent(SettingsDropdown).vm.$emit('toggleWhitespace');
+      wrapper.findComponent(SettingsDropdown).vm.$emit('toggleFileByFile');
+      expect(wrapper.emitted('updateDiffViewType')).toStrictEqual([[undefined]]);
+      expect(wrapper.emitted('toggleWhitespace')).toStrictEqual([[undefined]]);
+      expect(wrapper.emitted('toggleFileByFile')).toStrictEqual([[undefined]]);
     });
   });
 });

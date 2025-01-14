@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlIcon, GlFormCheckbox, GlTooltipDirective, GlButton } from '@gitlab/ui';
+import { GlAlert, GlFormCheckbox, GlTooltipDirective, GlButton } from '@gitlab/ui';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
@@ -10,6 +10,7 @@ import updateWikiPageMutation from '~/wikis/graphql/notes/update_wiki_page_note.
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { COMMENT_FORM } from '~/notes/i18n';
 import { __, sprintf } from '~/locale';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import * as constants from '~/notes/constants';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
@@ -22,7 +23,6 @@ export default {
   i18n: COMMENT_FORM,
   components: {
     GlAlert,
-    GlIcon,
     GlFormCheckbox,
     WikiDiscussionSignedOut,
     WikiDiscussionLocked,
@@ -30,6 +30,7 @@ export default {
     CommentFieldLayout,
     MarkdownEditor,
     GlButton,
+    HelpIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -318,12 +319,9 @@ export default {
                 data-testid="wiki-internal-note-checkbox"
               >
                 {{ $options.i18n.internal }}
-                <gl-icon
+                <help-icon
                   v-gl-tooltip:tooltipcontainer.bottom
-                  name="question-o"
-                  :size="16"
                   :title="$options.i18n.internalVisibility"
-                  class="gl-text-blue-500"
                 />
               </gl-form-checkbox>
               <gl-button

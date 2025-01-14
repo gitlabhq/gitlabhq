@@ -18,10 +18,16 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
       it { is_expected.to validate_presence_of(attr) }
     end
 
-    %i[relative_path upstream_etag content_type].each do |attr|
+    %i[upstream_etag content_type].each do |attr|
       it { is_expected.to validate_length_of(attr).is_at_most(255) }
     end
-    it { is_expected.to validate_length_of(:file_final_path).is_at_most(1024) }
+
+    %i[relative_path object_storage_key file_final_path].each do |attr|
+      it { is_expected.to validate_length_of(attr).is_at_most(1024) }
+    end
+
+    it { is_expected.to validate_length_of(:file_md5).is_equal_to(32).allow_nil }
+    it { is_expected.to validate_length_of(:file_sha1).is_equal_to(40) }
 
     context 'with persisted cached response' do
       before do
@@ -29,20 +35,6 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
       end
 
       it { is_expected.to validate_uniqueness_of(:relative_path).scoped_to(:upstream_id, :status) }
-
-      context 'when upstream_id is nil' do
-        let(:new_cached_response) { build(:virtual_registries_packages_maven_cached_response) }
-
-        before do
-          cached_response.update!(upstream_id: nil)
-          new_cached_response.upstream = nil
-        end
-
-        it 'does not validate uniqueness of relative_path' do
-          new_cached_response.validate
-          expect(new_cached_response.errors.messages_for(:relative_path)).not_to include 'has already been taken'
-        end
-      end
 
       context 'with a similar cached response in a different status' do
         let!(:cached_response_in_error) do
@@ -77,6 +69,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
     it 'belongs to an upstream' do
       is_expected.to belong_to(:upstream)
         .class_name('VirtualRegistries::Packages::Maven::Upstream')
+        .required
         .inverse_of(:cached_responses)
     end
   end
@@ -116,12 +109,12 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
     end
 
     it 'can not be too large' do
-      cached_response.object_storage_key = 'a' * 256
+      cached_response.object_storage_key = 'a' * 1025
       cached_response.relative_path = nil
 
       expect(cached_response).to be_invalid
       expect(cached_response.errors.full_messages)
-        .to include('Object storage key is too long (maximum is 255 characters)')
+        .to include('Object storage key is too long (maximum is 1024 characters)')
     end
 
     it 'is set before saving' do
@@ -186,7 +179,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
             upstream: upstream,
             group_id: upstream.group_id,
             relative_path: '/test',
-            updates: { file: file, size: size, file_sha1: 'test' }
+            updates: { file: file, size: size, file_sha1: '4e1243bd22c66e76c2ba9eddc1f91394e57f9f95' }
           )
         end
       end
@@ -274,10 +267,45 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
     end
   end
 
+  describe '#mark_as_pending_destruction' do
+    let_it_be_with_refind(:cached_response) { create(:virtual_registries_packages_maven_cached_response, :default) }
+
+    subject(:execute) { cached_response.mark_as_pending_destruction }
+
+    shared_examples 'updating the status and relative_path properly' do
+      it 'updates the status and relative_path' do
+        previous_path = cached_response.relative_path
+
+        expect { execute }.to change { cached_response.status }.from('default').to('pending_destruction')
+          .and not_change { cached_response.object_storage_key }
+
+        expect(cached_response.relative_path).to start_with(previous_path)
+        expect(cached_response.relative_path).to include('/deleted/')
+      end
+    end
+
+    it_behaves_like 'updating the status and relative_path properly'
+
+    context 'with an existing pending destruction record with same relative_path and upstream_id' do
+      let_it_be(:already_pending_destruction) do
+        create(
+          :virtual_registries_packages_maven_cached_response,
+          :pending_destruction,
+          upstream: cached_response.upstream,
+          relative_path: cached_response.relative_path
+        )
+      end
+
+      it_behaves_like 'updating the status and relative_path properly'
+    end
+  end
+
   context 'with loose foreign key on virtual_registries_packages_maven_cached_responses.upstream_id' do
     it_behaves_like 'update by a loose foreign key' do
       let_it_be(:parent) { create(:virtual_registries_packages_maven_upstream) }
       let_it_be(:model) { create(:virtual_registries_packages_maven_cached_response, upstream: parent) }
+
+      let(:find_model) { model.reload }
     end
   end
 
@@ -285,6 +313,8 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
     it_behaves_like 'update by a loose foreign key' do
       let_it_be(:parent) { create(:group) }
       let_it_be(:model) { create(:virtual_registries_packages_maven_cached_response, group: parent) }
+
+      let(:find_model) { model.reload }
     end
   end
 

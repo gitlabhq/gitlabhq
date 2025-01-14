@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Container registries can grow in size over time if you don't manage your registry usage. For example,
 if you add a large number of images or tags:
@@ -32,8 +32,7 @@ To view the storage usage for the container registry:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Usage Quotas**.
 
-You cannot view container registry usage for self-managed instances, but this is
-proposed in [epic 5521](https://gitlab.com/groups/gitlab-org/-/epics/5521).
+For self-managed instances, you must [upgrade your container registry to use a metadata database](../../../administration/packages/container_registry_metadata_database.md).
 
 ## How container registry usage is calculated
 
@@ -180,7 +179,8 @@ To create a cleanup policy in the UI:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Packages and registries**.
-1. In the **Container registry cleanup policies** section, select **Set cleanup rules**.
+1. Expand **Container registry**.
+1. Under **Container registry cleanup policies**, select **Set cleanup rules**.
 1. Complete the fields:
 
    | Field                      | Description |
@@ -358,12 +358,8 @@ There can be different reasons behind this:
   - You can [set limits for the cleanup policy](reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources).
     This limits the cleanup execution in time, and avoids the expired token error.
 
-  - Extend the expiration delay of the container registry authentication tokens. This defaults to 5
-    minutes. You can set a custom value by running
-    `ApplicationSetting.last.update(container_registry_token_expire_delay: <integer>)` in the Rails
-    console, where `<integer>` is the desired number of minutes. For reference, the expiration delay
-    is set to 15 minutes on GitLab.com. If you increase this value you increase the
-    time required to revoke permissions.
+  - [Extend the expiration delay](../../../administration/packages/container_registry.md#increase-token-duration)
+    of the container registry authentication tokens. This defaults to 5 minutes.
 
 Alternatively, you can generate a list of tags to delete, and use that list to delete
 the tags. To create the list and delete the tags:

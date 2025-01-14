@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 You can enforce the following restrictions on sign ups:
 
@@ -80,6 +80,50 @@ The following settings are available:
 - **Soft** - Send a confirmation email during sign up. New users can sign in immediately, but must confirm their email in three days. After three days, the user is not able to sign in until they confirm their email.
 - **Off** - New users can sign up without confirming their email address.
 
+## Turn on restricted access
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+**Status:** Beta
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/501717) in GitLab 17.8.
+
+Use restricted access to prevent overage fees.
+Overage fees occur when you exceed the number of licensed users in your subscription,
+and must be paid at the next [quarterly reconciliation](../../subscriptions/quarterly_reconciliation.md).
+
+When you turn on restricted access, instances cannot add new billable users when there are no licensed seats
+left in the subscription.
+
+Prerequisites:
+
+- You must be an administrator.
+
+To turn on restricted access:
+
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Sign-up restrictions**.
+1. Under **Seat controls**, select **Restricted access**.
+
+### Known issues
+
+When you turn on restricted access, the following known issues might occur and result in overages:
+
+- The number of billable users can still be exceeded if:
+  - You use SAML or SCIM to add new members, and have exceeded the number of seats in the subscription.
+  - Multiple users with administrator access add members simultaneously.
+  - New billable users delay accepting an invitation.
+  - You change from using the user cap to restricted access, and have users pending approval
+    from before you changed to restricted access. In this case, those users remain in a pending state. If
+    pending users are approved while using restricted access, you might exceed the number of seats in your subscription.
+  - You have no seats left in the subscription, and non-billable members are promoted to a [billable](../../subscriptions/self_managed/index.md#billable-users)
+    role through group or project member management. As a result, the number of seats in the subscription is exceeded.
+- If you renew your subscription through the GitLab Sales Team for fewer users than your current
+  subscription, you will incur an overage fee. To avoid this fee, remove additional users before your
+  renewal starts. For example, if you have 20 users and renew your subscription for 15 users,
+you will be charged overages for the five additional users.
+
 ## User cap
 
 The user cap is the maximum number of billable users who can sign up or be added to a subscription
@@ -145,7 +189,7 @@ the minimum number of characters a user must have in their password using the Gi
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354965) in GitLab 15.2.
 
@@ -209,7 +253,7 @@ See the [documentation on setting up an LDAP user filter](../auth/ldap/index.md#
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433166) in GitLab 16.9 [with a flag](../feature_flags.md) named `member_promotion_management`.

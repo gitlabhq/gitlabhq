@@ -34,14 +34,17 @@ import {
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
 import projectCountsQuery from '~/projects/your_work/graphql/queries/project_counts.query.graphql';
+import userPreferencesUpdateMutation from '~/projects/your_work/graphql/mutations/user_preferences_update.mutation.graphql';
 import { createAlert } from '~/alert';
 import { ACCESS_LEVEL_OWNER_INTEGER } from '~/access_level/constants';
 import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from '~/graphql_shared/constants';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { programmingLanguages } from './mock_data';
 
 jest.mock('~/alert');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 Vue.use(VueRouter);
 Vue.use(VueApollo);
@@ -65,9 +68,25 @@ describe('YourWorkProjectsApp', () => {
   let mockApollo;
 
   const successHandler = jest.fn().mockResolvedValue(projectCountsGraphQlResponse);
+  const userPreferencesUpdateSuccessHandler = jest.fn().mockResolvedValue({
+    data: {
+      userPreferencesUpdate: {
+        userPreferences: {
+          projectsSort: 'NAME_DESC',
+        },
+      },
+    },
+  });
 
-  const createComponent = ({ handler = successHandler, route = defaultRoute } = {}) => {
-    mockApollo = createMockApollo([[projectCountsQuery, handler]]);
+  const createComponent = ({
+    projectsCountHandler = successHandler,
+    userPreferencesUpdateHandler = userPreferencesUpdateSuccessHandler,
+    route = defaultRoute,
+  } = {}) => {
+    mockApollo = createMockApollo([
+      [projectCountsQuery, projectsCountHandler],
+      [userPreferencesUpdateMutation, userPreferencesUpdateHandler],
+    ]);
     router = createRouter();
     router.push(route);
 
@@ -125,7 +144,7 @@ describe('YourWorkProjectsApp', () => {
       const error = new Error();
 
       beforeEach(async () => {
-        createComponent({ handler: jest.fn().mockRejectedValue(error) });
+        createComponent({ projectsCountHandler: jest.fn().mockRejectedValue(error) });
         await waitForPromises();
       });
 
@@ -153,7 +172,7 @@ describe('YourWorkProjectsApp', () => {
         filteredSearchTokens: [
           {
             type: FILTERED_SEARCH_TOKEN_LANGUAGE,
-            icon: 'lock',
+            icon: 'code',
             title: 'Language',
             token: GlFilteredSearchToken,
             unique: true,
@@ -201,7 +220,7 @@ describe('YourWorkProjectsApp', () => {
     });
 
     describe('when sort is changed', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         createComponent({
           route: {
             ...defaultRoute,
@@ -213,6 +232,7 @@ describe('YourWorkProjectsApp', () => {
         });
 
         findFilteredSearchAndSort().vm.$emit('sort-by-change', SORT_OPTION_UPDATED.value);
+        await waitForPromises();
       });
 
       it('updates query string', () => {
@@ -221,10 +241,20 @@ describe('YourWorkProjectsApp', () => {
           sort: `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_DESC}`,
         });
       });
+
+      it('calls `userPreferencesUpdate` mutation with correct variables', () => {
+        expect(userPreferencesUpdateSuccessHandler).toHaveBeenCalledWith({
+          input: { projectsSort: 'LATEST_ACTIVITY_DESC' },
+        });
+      });
+
+      it('does not call Sentry.captureException', () => {
+        expect(Sentry.captureException).not.toHaveBeenCalled();
+      });
     });
 
     describe('when sort direction is changed', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         createComponent({
           route: {
             ...defaultRoute,
@@ -236,6 +266,7 @@ describe('YourWorkProjectsApp', () => {
         });
 
         findFilteredSearchAndSort().vm.$emit('sort-direction-change', true);
+        await waitForPromises();
       });
 
       it('updates query string', () => {
@@ -244,6 +275,31 @@ describe('YourWorkProjectsApp', () => {
           sort: `${SORT_OPTION_CREATED.value}_${SORT_DIRECTION_ASC}`,
         });
       });
+
+      it('calls `userPreferencesUpdate` mutation with correct variables', () => {
+        expect(userPreferencesUpdateSuccessHandler).toHaveBeenCalledWith({
+          input: { projectsSort: 'CREATED_ASC' },
+        });
+      });
+
+      it('does not call Sentry.captureException', () => {
+        expect(Sentry.captureException).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('when `userPreferencesUpdate` mutation fails', () => {
+    const error = new Error();
+
+    beforeEach(async () => {
+      createComponent({ userPreferencesUpdateHandler: jest.fn().mockRejectedValue(error) });
+
+      findFilteredSearchAndSort().vm.$emit('sort-by-change', SORT_OPTION_UPDATED.value);
+      await waitForPromises();
+    });
+
+    it('captures error in Sentry', () => {
+      expect(Sentry.captureException).toHaveBeenCalledWith(error);
     });
   });
 

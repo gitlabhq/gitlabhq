@@ -79,6 +79,9 @@
     },
     "flux_resource_path": {
       "$ref": "../../types/nullable_string.json"
+    },
+    "auto_stop_setting": {
+      "type": "string"
     }
   },
   "additionalProperties": false

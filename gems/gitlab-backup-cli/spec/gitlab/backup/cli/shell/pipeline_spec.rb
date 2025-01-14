@@ -6,11 +6,16 @@ RSpec.describe Gitlab::Backup::Cli::Shell::Pipeline do
   let(:sort_command) { command.new('sort') }
   let(:true_command) { command.new('true') }
   let(:false_command) { command.new('false') }
+  let(:tmpdir) { Pathname.new(Dir.mktmpdir('pipeline', temp_path)) }
   let(:envdata) do
     { 'CUSTOM' => 'data' }
   end
 
   subject(:pipeline) { described_class }
+
+  after do
+    FileUtils.rm_rf(tmpdir)
+  end
 
   it { respond_to :shell_commands }
 
@@ -87,6 +92,45 @@ RSpec.describe Gitlab::Backup::Cli::Shell::Pipeline do
       expect(result.status_list.size).to eq(1)
       expect(result.status_list[0]).to be_success
       expect(output).to match(/stdin is : my custom content/)
+    end
+
+    it 'accepts input from a file' do
+      input_file = tmpdir.join('input.txt')
+      File.open(input_file, 'w+') do |file|
+        file.write('file content goes here')
+      end
+
+      read_command = command.new('read content; echo ${content}')
+
+      output_r, output_w = IO.pipe
+
+      pipeline.new(read_command).run!(input: input_file, output: output_w)
+
+      output_w.close
+      output = output_r.read
+      output_r.close
+
+      expect(output).to match(/file content goes here/)
+    end
+
+    it 'accepts output to file' do
+      echo_command = command.new("echo \"variable value ${CUSTOM}\"", env: envdata)
+      output_file = tmpdir.join('output.txt')
+
+      pipeline.new(true_command, echo_command).run!(output: output_file)
+
+      expect(File.exist?(output_file)).to be_truthy
+      expect(File.read(output_file)).to match('variable value data')
+    end
+
+    it 'accepts output to file with permissions in array format' do
+      echo_command = command.new("echo \"variable value ${CUSTOM}\"", env: envdata)
+      output_file = tmpdir.join('output.txt')
+
+      pipeline.new(true_command, echo_command).run!(output: [output_file, 'w', 0o600])
+
+      expect(File.exist?(output_file)).to be_truthy
+      expect(File.read(output_file)).to match('variable value data')
     end
   end
 

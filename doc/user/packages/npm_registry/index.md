@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Node Package Manager (npm) is the default package manager for JavaScript and Node.js. Developers use npm to share and reuse code, manage dependencies, and streamline project workflows. In GitLab, npm packages play a crucial role in the software development lifecycle.
 
@@ -455,6 +455,8 @@ npm deprecate @scope/package@1.0.1 "Only version 1.0.1 is deprecated"
 npm deprecate @scope/package@"< 1.0.5" "All package versions less than 1.0.5 are deprecated"
 ```
 
+When a package is deprecated, its status will be updated to `deprecated`.
+
 ### Remove deprecation warning
 
 To remove a package's deprecation warning, specify `""` (an empty string) for the message. For example:
@@ -462,6 +464,8 @@ To remove a package's deprecation warning, specify `""` (an empty string) for th
 ```shell
 npm deprecate @scope/package ""
 ```
+
+When a package's deprecation warning is removed, its status will be updated to `default`.
 
 ## Helpful hints
 

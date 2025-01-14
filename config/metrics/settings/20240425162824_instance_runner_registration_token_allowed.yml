@@ -11,9 +11,6 @@ data_source: system
 instrumentation_class: RunnerRegistrationTokensAllowedMetric
 data_category: optional
 performance_indicator_type: []
-distribution:
-  - ce
-  - ee
 tiers:
   - free
   - premium

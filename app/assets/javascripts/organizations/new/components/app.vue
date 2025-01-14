@@ -4,7 +4,7 @@ import { s__ } from '~/locale';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import FormErrorsAlert from '~/vue_shared/components/form/errors_alert.vue';
+import FormErrorsAlert from '~/organizations/shared/components/errors_alert.vue';
 import organizationCreateMutation from '../graphql/mutations/organization_create.mutation.graphql';
 import NewEditForm from '../../shared/components/new_edit_form.vue';
 

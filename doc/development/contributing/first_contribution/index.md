@@ -51,7 +51,7 @@ To get started, select the development option that works best for you:
 
 - GitLab Development Kit (GDK) and GDK-in-a-box - Fully local development.
 
-  GDK is a local development environment that includes an installation of self-managed GitLab,
+  GDK is a local development environment that includes an installation of GitLab Self-Managed,
   sample projects, and administrator access with which you can test functionality.
   These options rely on local hardware and may be resource intensive.
 

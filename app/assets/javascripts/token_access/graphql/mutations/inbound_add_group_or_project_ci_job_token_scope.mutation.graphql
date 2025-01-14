@@ -1,5 +1,17 @@
-mutation inboundAddGroupOrProjectCIJobTokenScope($projectPath: ID!, $targetPath: ID!) {
-  ciJobTokenScopeAddGroupOrProject(input: { projectPath: $projectPath, targetPath: $targetPath }) {
+mutation inboundAddGroupOrProjectCIJobTokenScope(
+  $projectPath: ID!
+  $targetPath: ID!
+  $defaultPermissions: Boolean
+  $jobTokenPolicies: [CiJobTokenScopePolicies!]
+) {
+  saveNamespace: ciJobTokenScopeAddGroupOrProject(
+    input: {
+      projectPath: $projectPath
+      targetPath: $targetPath
+      defaultPermissions: $defaultPermissions
+      jobTokenPolicies: $jobTokenPolicies
+    }
+  ) {
     errors
   }
 }

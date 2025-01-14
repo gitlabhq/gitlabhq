@@ -13,13 +13,12 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { __, s__, n__, sprintf } from '~/locale';
-import Api from '~/api';
+import { deleteDependencyProxyCacheList } from '~/api/packages_api';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import ManifestsList from '~/packages_and_registries/dependency_proxy/components/manifests_list.vue';
 import { GRAPHQL_PAGE_SIZE } from '~/packages_and_registries/dependency_proxy/constants';
 import { getPageParams } from '~/packages_and_registries/dependency_proxy/utils';
-import { extractPageInfo } from '~/packages_and_registries/shared/utils';
 
 import getDependencyProxyDetailsQuery from '~/packages_and_registries/dependency_proxy/graphql/queries/get_dependency_proxy_details.query.graphql';
 
@@ -87,8 +86,8 @@ export default {
       return this.group.dependencyProxyManifests?.pageInfo;
     },
     pageParams() {
-      const pageInfo = extractPageInfo(this.$route.query);
-      return getPageParams(pageInfo);
+      const { before, after } = this.$route.query;
+      return getPageParams({ before, after });
     },
     manifests() {
       return this.group.dependencyProxyManifests?.nodes ?? [];
@@ -136,7 +135,7 @@ export default {
     },
     async submit() {
       try {
-        await Api.deleteDependencyProxyCacheList(this.groupId);
+        await deleteDependencyProxyCacheList(this.groupId);
 
         this.deleteCacheAlertMessage = this.$options.i18n.deleteCacheAlertMessageSuccess;
         this.showDeleteCacheAlert = true;

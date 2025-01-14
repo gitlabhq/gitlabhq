@@ -217,7 +217,7 @@ RSpec.describe Gitlab::Ci::Reports::TestSuite do
         end
 
         it 'returns all success test cases' do
-          is_expected.to eq( { public_send("test_case_#{status_type}").key => public_send("test_case_#{status_type}") })
+          is_expected.to eq({ public_send("test_case_#{status_type}").key => public_send("test_case_#{status_type}") })
         end
       end
 

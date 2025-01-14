@@ -9,7 +9,7 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
   let_it_be(:target_group) { create(:group, :private) }
 
   subject(:execute) do
-    described_class.new(project, current_user).execute(target, policies)
+    described_class.new(project, current_user).execute(target, default_permissions, policies)
   end
 
   describe '#execute' do
@@ -78,11 +78,13 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
           :ci_job_token_project_scope_link,
           source_project: project,
           target_project: target_project,
+          default_permissions: true,
           job_token_policies: %w[read_containers],
           direction: :inbound
         )
       end
 
+      let(:default_permissions) { false }
       let(:policies) { %w[read_containers read_packages] }
 
       it_behaves_like 'when user is not logged in'
@@ -106,6 +108,7 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
 
             expect(project_link.source_project).to eq(project)
             expect(project_link.target_project).to eq(target_project)
+            expect(project_link.default_permissions).to be(false)
             expect(project_link.job_token_policies).to eq(%w[read_containers read_packages])
           end
 
@@ -132,10 +135,12 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
           :ci_job_token_group_scope_link,
           source_project: project,
           target_group: target_group,
+          default_permissions: true,
           job_token_policies: %w[read_containers]
         )
       end
 
+      let(:default_permissions) { false }
       let(:policies) { %w[read_containers read_packages] }
 
       it_behaves_like 'when user is not logged in'
@@ -159,6 +164,7 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
 
             expect(group_link.source_project).to eq(project)
             expect(group_link.target_group).to eq(target_group)
+            expect(group_link.default_permissions).to be(false)
             expect(group_link.job_token_policies).to eq(%w[read_containers read_packages])
           end
 

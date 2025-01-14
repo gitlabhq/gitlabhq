@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 > - [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" or "compute minutes" in GitLab 16.1.
 
@@ -18,7 +18,7 @@ Administrators can limit the amount of time that projects can use to run jobs on
 is tracked with a [compute minutes quota](../../ci/pipelines/compute_minutes.md).
 [Project runners](../../ci/runners/runners_scope.md#project-runners) are not subject to the compute quota.
 
-On self-managed GitLab instances:
+On GitLab Self-Managed:
 
 - Compute quotas are disabled by default.
 - Administrators can [assign more compute minutes](#set-the-compute-quota-for-a-group)

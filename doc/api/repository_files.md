@@ -9,7 +9,7 @@ description: "Documentation for the REST API for managing Git repository files i
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can fetch, create, update, and delete files in your repository with this API.
 You can also [configure rate limits](../administration/settings/files_api_rate_limits.md)

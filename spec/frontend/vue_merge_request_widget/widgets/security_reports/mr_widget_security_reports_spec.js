@@ -44,7 +44,8 @@ describe('vue_merge_request_widget/widgets/security_reports/mr_widget_security_r
     it('displays the help popover', () => {
       expect(findWidget().props('helpPopover')).toEqual({
         content: {
-          learnMorePath: '/help/user/application_security/index#merge-request',
+          learnMorePath:
+            '/help/user/application_security/detect/security_scan_results#merge-request',
           text: 'New vulnerabilities are vulnerabilities that the security scan detects in the merge request that are different to existing vulnerabilities in the default branch.',
         },
         options: {
@@ -60,15 +61,17 @@ describe('vue_merge_request_widget/widgets/security_reports/mr_widget_security_r
       ${'sast-eslint'}   | ${'/root/security-reports/-/jobs/8/artifacts/download?file_type=sast'}
       ${'secrets'}       | ${'/root/security-reports/-/jobs/7/artifacts/download?file_type=secret_detection'}
     `(
-      'has a dropdown item to download $artifactName artifacts',
+      'has a dropdown item to download $artifactName artifacts with $fileType type',
       ({ artifactName, downloadPath }) => {
+        const fileType = downloadPath.split('file_type=')[1];
+
         expect(findDropdown().exists()).toBe(true);
 
         expect(findDropdown().props('items')).toEqual(
           expect.arrayContaining([
             {
               href: downloadPath,
-              text: `Download ${artifactName}`,
+              text: `Download ${artifactName} (${fileType})`,
               extraAttrs: {
                 download: '',
                 rel: 'nofollow',
@@ -79,10 +82,32 @@ describe('vue_merge_request_widget/widgets/security_reports/mr_widget_security_r
       },
     );
 
+    it('creates a dropdown item to download artifact without file type when not present', () => {
+      const artifactName = 'sam_scan';
+      const downloadPath = '/root/security-reports/-/jobs/16/artifacts/download?file_type=sast';
+
+      expect(findDropdown().exists()).toBe(true);
+
+      expect(findDropdown().props('items')).toEqual(
+        expect.arrayContaining([
+          {
+            href: downloadPath,
+            text: `Download ${artifactName}`,
+            extraAttrs: {
+              download: '',
+              rel: 'nofollow',
+            },
+          },
+        ]),
+      );
+    });
+
     it.each`
       artifactName       | downloadPath
       ${'sast-sobelow'}  | ${''}
       ${'sast-pmd-apex'} | ${''}
+      ${null}            | ${'/root/security-reports/-/jobs/17/artifacts/download?file_type=sast'}
+      ${'sast-spotbugs'} | ${null}
     `(
       'does not have a dropdown item to download $artifactName artifacts',
       ({ artifactName, downloadPath }) => {

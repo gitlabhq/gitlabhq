@@ -4,7 +4,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
@@ -22,7 +21,7 @@ func TestS3ClientSetup(t *testing.T) {
 	options := client.Options()
 	require.Nil(t, options.BaseEndpoint)
 	require.Equal(t, "us-west-1", options.Region)
-	require.True(t, aws.BoolValue(&options.UsePathStyle))
+	require.True(t, options.UsePathStyle)
 
 	clientCache.Lock()
 	require.Len(t, clientCache.clients, 1)

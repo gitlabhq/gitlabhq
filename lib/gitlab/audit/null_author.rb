@@ -21,7 +21,7 @@ module Gitlab
         if audit_event.target_type == ::Ci::Runner.name
           Gitlab::Audit::CiRunnerTokenAuthor.new(
             entity_type: audit_event.entity_type, entity_path: audit_event.entity_path,
-            **audit_event.details.slice(:runner_authentication_token, :runner_registration_token)
+            **audit_event.details.slice(:runner_authentication_token, :runner_registration_token).symbolize_keys
           )
         elsif id == -1
           Gitlab::Audit::UnauthenticatedAuthor.new(name: name)

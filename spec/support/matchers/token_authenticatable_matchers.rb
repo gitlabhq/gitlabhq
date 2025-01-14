@@ -23,8 +23,8 @@ module TokenAuthenticatableMatchers
       \z
     }mx
   BASE64_PAYLOAD_LENGTH_HOLDER_BYTES =
-    TokenAuthenticatableStrategies::RoutableTokenGenerator::BASE64_PAYLOAD_LENGTH_HOLDER_BYTES
-  CRC_BYTES = TokenAuthenticatableStrategies::RoutableTokenGenerator::CRC_BYTES
+    Authn::TokenField::Generator::RoutableToken::BASE64_PAYLOAD_LENGTH_HOLDER_BYTES
+  CRC_BYTES = Authn::TokenField::Generator::RoutableToken::CRC_BYTES
 
   def generate_routable_token(routing_payload, random_bytes:, prefix: '')
     base64_payload = Base64.urlsafe_encode64(

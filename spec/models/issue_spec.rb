@@ -10,6 +10,13 @@ RSpec.describe Issue, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:reusable_project) { create(:project) }
 
+  before_all do
+    # Ensure support bot user is created so creation doesn't count towards query limit
+    # and we don't try to obtain an exclusive lease within a transaction.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
+    Users::Internal.support_bot_id
+  end
+
   # TODO: Remove when issues.work_item_type_id cleanup is complete
   # https://gitlab.com/gitlab-org/gitlab/-/issues/499911
   describe 'database triggers' do
@@ -52,7 +59,7 @@ RSpec.describe Issue, feature_category: :team_planning do
         let(:type_attributes) { { work_item_type_id: type1.id, correct_work_item_type_id: type2.correct_id } }
 
         it 'does not overwrite any of the provided values' do
-          expect(issue.work_item_type_id).to eq(type1.id)
+          expect(issue.attributes['work_item_type_id']).to eq(type1.id)
           expect(issue.correct_work_item_type_id).to eq(type2.correct_id)
         end
       end
@@ -90,7 +97,7 @@ RSpec.describe Issue, feature_category: :team_planning do
           expect do
             issue.update_columns(work_item_type_id: type1.id, correct_work_item_type_id: type2.correct_id)
             issue.reload
-          end.to change { issue.work_item_type_id }.to(type1.id).and(
+          end.to change { issue.attributes['work_item_type_id'] }.to(type1.id).and(
             change { issue.correct_work_item_type_id }.to(type2.correct_id)
           )
         end
@@ -565,23 +572,6 @@ RSpec.describe Issue, feature_category: :team_planning do
           }x
         )
       end
-
-      context 'when issues_use_correct_work_item_type_id FF is disabled' do
-        before do
-          stub_feature_flags(issues_use_correct_work_item_type_id: false)
-        end
-
-        it 'joins the work_item_types table for filtering with issues.work_item_type_id column' do
-          expect do
-            described_class.with_issue_type([:issue, :incident]).to_a
-          end.to make_queries_matching(
-            %r{
-              INNER\sJOIN\s"work_item_types"\sON\s"work_item_types"\."id"\s=\s"issues"\."work_item_type_id"
-              \sWHERE\s"work_item_types"\."base_type"\sIN\s\(0,\s1\)
-            }x
-          )
-        end
-      end
     end
 
     context 'when a single issue_type is provided' do
@@ -596,24 +586,6 @@ RSpec.describe Issue, feature_category: :team_planning do
             \sLIMIT\s1\)\)
           }x
         )
-      end
-
-      context 'when issues_use_correct_work_item_type_id FF is disabled' do
-        before do
-          stub_feature_flags(issues_use_correct_work_item_type_id: false)
-        end
-
-        it 'uses an optimized query for a single work item type using issues.work_item_type_id column' do
-          expect do
-            described_class.with_issue_type([:incident]).to_a
-          end.to make_queries_matching(
-            %r{
-              WHERE\s\("issues"\."work_item_type_id"\s=
-              \s\(SELECT\s"work_item_types"\."id"\sFROM\s"work_item_types"\sWHERE\s"work_item_types"\."base_type"\s=\s1
-              \sLIMIT\s1\)\)
-            }x
-          )
-        end
       end
     end
 
@@ -648,23 +620,6 @@ RSpec.describe Issue, feature_category: :team_planning do
           \sWHERE\s"work_item_types"\."base_type"\s!=\s0
         }x
       )
-    end
-
-    context 'when issues_use_correct_work_item_type_id FF is disabled' do
-      before do
-        stub_feature_flags(issues_use_correct_work_item_type_id: false)
-      end
-
-      it 'uses the work_item_types table and issues.work_item_type_id for filtering' do
-        expect do
-          described_class.without_issue_type(:issue).to_a
-        end.to make_queries_matching(
-          %r{
-            INNER\sJOIN\s"work_item_types"\sON\s"work_item_types"\."id"\s=\s"issues"\."work_item_type_id"
-            \sWHERE\s"work_item_types"\."base_type"\s!=\s0
-          }x
-        )
-      end
     end
   end
 
@@ -2649,17 +2604,19 @@ RSpec.describe Issue, feature_category: :team_planning do
         issue.work_item_type
       end.to make_queries_matching(/FROM "work_item_types" WHERE "work_item_types"\."correct_id" =/)
     end
+  end
 
-    context 'when the issues_use_correct_work_item_type_id feature flag is disabled' do
-      before do
-        stub_feature_flags(issues_use_correct_work_item_type_id: false)
-      end
+  describe '#work_item_type_id' do
+    let_it_be(:work_item_type) { create(:work_item_type, :non_default) }
+    let_it_be(:issue) { create(:issue, project: reusable_project) }
 
-      it 'uses the work_item_type_id column to fetch the associated type' do
-        expect do
-          issue.work_item_type
-        end.to make_queries_matching(/FROM "work_item_types" WHERE "work_item_types"\."id" =/)
-      end
+    it 'returns the correct work_item_types.id value even if the value in the column is wrong' do
+      issue.update_columns(
+        work_item_type_id: non_existing_record_id,
+        correct_work_item_type_id: work_item_type.correct_id
+      )
+
+      expect(issue.work_item_type_id).to eq(work_item_type.id)
     end
   end
 
@@ -2706,36 +2663,6 @@ RSpec.describe Issue, feature_category: :team_planning do
 
       expect(issue.work_item_type_id).to eq(type1.id)
       expect(issue.correct_work_item_type_id).to eq(type1.correct_id)
-    end
-
-    context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
-      before do
-        stub_feature_flags(issues_set_correct_work_item_type_id: false)
-      end
-
-      it 'does not find the type by correct_id' do
-        issue = build(:issue, project: reusable_project, work_item_type: nil)
-
-        expect(issue.work_item_type_id).to be_nil
-        expect(issue.correct_work_item_type_id).to be_nil
-
-        issue.work_item_type_id = type1.correct_id
-
-        expect(issue.work_item_type_id).to be_nil
-        expect(issue.correct_work_item_type_id).to be_nil
-      end
-
-      it 'also sets correct_work_item_type_id when setting id' do
-        issue = build(:issue, project: reusable_project, work_item_type: nil)
-
-        expect(issue.work_item_type_id).to be_nil
-        expect(issue.correct_work_item_type_id).to be_nil
-
-        issue.work_item_type_id = type1.id
-
-        expect(issue.work_item_type_id).to eq(type1.id)
-        expect(issue.correct_work_item_type_id).to eq(type1.correct_id)
-      end
     end
 
     context 'when work_item_type_id does not exist in the DB' do

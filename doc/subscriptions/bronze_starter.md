@@ -95,7 +95,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - Run pipelines in the parent project [for merge requests from a forked project](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project)
   - [Instance runners compute quota](../ci/pipelines/compute_minutes.md)
 - [Push rules](../user/project/repository/push_rules.md)
-- SAML for self-managed GitLab instance:
+- SAML for GitLab Self-Managed:
   - [Administrator groups](../integration/saml.md#administrator-groups)
   - [Auditor groups](../integration/saml.md#auditor-groups)
   - [External groups](../integration/saml.md#external-groups)

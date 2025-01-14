@@ -6,22 +6,20 @@ module Mutations
       module Rule
         class Update < ::Mutations::BaseMutation
           graphql_name 'UpdateContainerProtectionRepositoryRule'
-          description 'Updates a container registry protection rule to restrict access to project containers. ' \
-            'You can prevent users without certain roles from altering containers. ' \
-            'Available only when feature flag `container_registry_protected_containers` is enabled.'
+          description 'Updates a container repository protection rule that controls ' \
+            'who can modify container images based on user roles.'
 
           authorize :admin_container_image
 
           argument :id,
             ::Types::GlobalIDType[::ContainerRegistry::Protection::Rule],
             required: true,
-            description: 'Global ID of the container registry protection rule to be updated.'
+            description: 'Global ID of the container repository protection rule to be updated.'
 
           argument :repository_path_pattern,
             GraphQL::Types::String,
             required: false,
             validates: { allow_blank: false },
-            experiment: { milestone: '16.7' },
             description: copy_field_description(
               Types::ContainerRegistry::Protection::RuleType,
               :repository_path_pattern
@@ -30,7 +28,6 @@ module Mutations
           argument :minimum_access_level_for_delete,
             Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
             required: false,
-            experiment: { milestone: '16.7' },
             description: copy_field_description(
               Types::ContainerRegistry::Protection::RuleType,
               :minimum_access_level_for_delete
@@ -39,7 +36,6 @@ module Mutations
           argument :minimum_access_level_for_push,
             Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
             required: false,
-            experiment: { milestone: '16.7' },
             description: copy_field_description(
               Types::ContainerRegistry::Protection::RuleType,
               :minimum_access_level_for_push
@@ -48,16 +44,10 @@ module Mutations
           field :container_protection_repository_rule,
             Types::ContainerRegistry::Protection::RuleType,
             null: true,
-            experiment: { milestone: '16.7' },
-            description: 'Container registry protection rule after mutation.'
+            description: 'Container repository protection rule after mutation.'
 
           def resolve(id:, **kwargs)
             container_registry_protection_rule = authorized_find!(id: id)
-            project = container_registry_protection_rule.project
-
-            if Feature.disabled?(:container_registry_protected_containers, project.root_ancestor)
-              raise_resource_not_available_error!("'container_registry_protected_containers' feature flag is disabled")
-            end
 
             response = ::ContainerRegistry::Protection::UpdateRuleService.new(container_registry_protection_rule,
               current_user: current_user, params: kwargs).execute

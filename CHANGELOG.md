@@ -830,6 +830,20 @@ entry.
 - [Finalize migration BackfillMlExperimentMetadataProjectId](https://gitlab.com/gitlab-org/gitlab/-/commit/0768d34e5d66ec56aa9104206120d2b691d3781f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172003))
 - [Finalize migration BackfillDastSiteValidationsProjectId](https://gitlab.com/gitlab-org/gitlab/-/commit/edb777429d66afe879a5bb8d4652a610eb39eb7c) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171199))
 
+## 17.6.3 (2025-01-08)
+
+### Fixed (2 changes)
+
+- [Backport bugfix for diff_files highlighting](https://gitlab.com/gitlab-org/security/gitlab/-/commit/827c6864e66e9aa4b97f488212f6bb01a3d62342)
+- [Fix ability to use password for Git when password for Web is disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ba71cf797b32dedfcf83b31af1a09939c12a796c)
+
+### Security (4 changes)
+
+- [Prevent cyclic reference in work item hierarchy widget from frontend](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3eeb33ecc4af1392f8df5ada5ff5447d177bc030) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4685))
+- [Allow external_provider config take precedence over external_groups](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e69bec763b1eac5995a0355fac8b6f7a6918cffc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4657))
+- [Filter out sensitive parameters on Auth logs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2a5927933b15993e61c45f31c86b2416dd16c0d1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4666))
+- [Don't allow unauthorized users to close issues automatically](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f5bb3a32dd675185c9072a27313e9fb03fb9fe14) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4675))
+
 ## 17.6.2 (2024-12-10)
 
 ### Fixed (2 changes)
@@ -1843,6 +1857,20 @@ entry.
 - [Remove block_password_auth_for_saml_users FF and the accompanying code](https://gitlab.com/gitlab-org/gitlab/-/commit/02ecabc6dd80b6a700aeec569014642dcb30704f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160850)) **GitLab Enterprise Edition**
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/7427f68ca476bd1294900155a2a93b470ef888a6) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165742))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/81ccade46593d99c938fd8ab03c2e299f6f62377) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164711))
+
+## 17.5.5 (2025-01-08)
+
+### Fixed (2 changes)
+
+- [Fix ability to use password for Git when password for Web is disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1b646d0e5d3fe2825a2ad2374687bfe68d3b289f)
+- [Backport bugfix for diff_files highlighting](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c42bbbbb286533b0c05d8ea4ffccc38e9419f8ed)
+
+### Security (4 changes)
+
+- [Prevent cyclic reference in work item hierarchy widget from frontend](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ad6ec44b4d7913ac9d68c34f484dc6cb2d674f3d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4687))
+- [Allow external_provider config take precedence over external_groups](https://gitlab.com/gitlab-org/security/gitlab/-/commit/51bd1570e4cbf9c1e6fafe164fdda738150b4f69) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4658))
+- [Filter out sensitive parameters on Auth logs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/45d1f89667f9f7488dbf5056934b81d097e9f7ac) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4667))
+- [Don't allow unauthorized users to close issues automatically](https://gitlab.com/gitlab-org/security/gitlab/-/commit/301e42724feeaa53349a698e2985cb5e6400ff2a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4676))
 
 ## 17.5.4 (2024-12-10)
 

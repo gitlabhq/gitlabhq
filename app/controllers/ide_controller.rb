@@ -3,6 +3,7 @@
 class IdeController < ApplicationController
   include Gitlab::Utils::StrongMemoize
   include WebIdeCSP
+  include RoutableActions
   include StaticObjectExternalStorageCSP
   include ProductAnalyticsTracking
 
@@ -13,6 +14,7 @@ class IdeController < ApplicationController
     push_frontend_feature_flag(:build_service_proxy)
     push_frontend_feature_flag(:reject_unsigned_commits_by_gitlab)
     push_frontend_feature_flag(:web_ide_language_server, current_user)
+    push_frontend_feature_flag(:web_ide_settings_context_hash, current_user)
   end
 
   feature_category :web_ide
@@ -40,7 +42,15 @@ class IdeController < ApplicationController
   private
 
   def authorize_read_project!
-    render_404 unless can?(current_user, :read_project, project)
+    return @project if @project
+
+    path = params[:project_id]
+
+    @project = find_routable!(Project, path, request.fullpath, extra_authorization_proc: auth_proc)
+  end
+
+  def auth_proc
+    ->(project) { !project.pending_delete? }
   end
 
   def ensure_web_ide_oauth_application!

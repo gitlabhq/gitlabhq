@@ -153,6 +153,17 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
       expect(doc.text).to eql("See (#{project2.full_path}@#{commit.short_id}.)")
     end
 
+    context 'when absolute path namespace is provided instead of project' do
+      let(:reference) { "/#{namespace.full_path}@#{commit.short_id}" }
+
+      it 'does not replace this reference with a link' do
+        doc = reference_filter("See (#{reference}.)")
+
+        expect(doc.css('a')).to be_empty
+        expect(doc.text).to eql("See (/#{namespace.full_path}@#{commit.short_id}.)")
+      end
+    end
+
     it 'ignores invalid commit IDs on the referenced project' do
       act = "Committed #{invalidate_reference(reference)}"
 

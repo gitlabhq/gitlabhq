@@ -6,9 +6,6 @@ export const CONTAINER_CLEANUP_POLICY_TITLE = s__(
 export const CONTAINER_CLEANUP_POLICY_DESCRIPTION = s__(
   `ContainerRegistry|Save storage space by automatically deleting tags from the container registry and keeping the ones you want. %{linkStart}How does cleanup work?%{linkEnd}`,
 );
-export const CONTAINER_CLEANUP_POLICY_RULES_DESCRIPTION = s__(
-  'ContainerRegistry|Set rules to automatically remove unused image tags to save storage space.',
-);
 export const CONTAINER_CLEANUP_POLICY_EDIT_RULES = s__('ContainerRegistry|Edit cleanup rules');
 export const CONTAINER_CLEANUP_POLICY_SET_RULES = s__('ContainerRegistry|Set cleanup rules');
 export const SHOW_SETUP_SUCCESS_ALERT = 'showSetupSuccessAlert';
@@ -119,6 +116,12 @@ export const OLDER_THAN_OPTIONS = [
   { key: 'SIXTY_DAYS', variable: 60, default: false },
   { key: 'NINETY_DAYS', variable: 90, default: true },
 ];
+
+export const MinimumAccessLevelOptions = {
+  MAINTAINER: __('Maintainer'),
+  OWNER: __('Owner'),
+  ADMIN: __('Admin'),
+};
 
 export const FETCH_SETTINGS_ERROR_MESSAGE = s__(
   'ContainerRegistry|Something went wrong while fetching the cleanup policy.',

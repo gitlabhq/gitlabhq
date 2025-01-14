@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - With GitLab 16.1 we introduced the ability to configure the published folder in `.gitlab-ci.yml`, so you longer need to change your framework config. For more information, see how to [set a custom folder to be deployed with Pages](introduction.md#customize-the-default-folder).
 

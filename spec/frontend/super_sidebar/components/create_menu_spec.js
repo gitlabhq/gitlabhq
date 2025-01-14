@@ -18,6 +18,10 @@ describe('CreateMenu component', () => {
   const findGlDisclosureDropdownGroups = () => wrapper.findAllComponents(GlDisclosureDropdownGroup);
   const findGlDisclosureDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findInviteMembersTrigger = () => wrapper.findComponent(InviteMembersTrigger);
+  const findCreateWorkItemModalTrigger = () =>
+    findGlDisclosureDropdownItems()
+      .filter((item) => item.props('item').text === 'New epic')
+      .at(0);
   const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal);
 
   const createWrapper = ({ provide = {} } = {}) => {
@@ -82,12 +86,34 @@ describe('CreateMenu component', () => {
     });
 
     describe('create new work item modal', () => {
-      it('renders the modal', () => {
-        expect(findCreateWorkItemModal().exists()).toBe(true);
+      it('renders work item menu item correctly', () => {
+        expect(findCreateWorkItemModalTrigger().exists()).toBe(true);
       });
 
-      it('sets `isGroup` to `true`', () => {
+      it('does not render the modal by default', () => {
+        expect(findCreateWorkItemModal().exists()).toBe(false);
+      });
+
+      it('shows modal when clicking work item dropdown item', async () => {
+        findCreateWorkItemModalTrigger().vm.$emit('action');
+        await nextTick();
+
+        expect(findCreateWorkItemModal().exists()).toBe(true);
         expect(findCreateWorkItemModal().props('isGroup')).toBe(true);
+        expect(findCreateWorkItemModal().props('visible')).toBe(true);
+        expect(findCreateWorkItemModal().props('hideButton')).toBe(true);
+      });
+
+      it('hides modal when hideModal event is emitted', async () => {
+        findCreateWorkItemModalTrigger().vm.$emit('action');
+        await nextTick();
+
+        expect(findCreateWorkItemModal().exists()).toBe(true);
+
+        findCreateWorkItemModal().vm.$emit('hideModal');
+        await nextTick();
+
+        expect(findCreateWorkItemModal().exists()).toBe(false);
       });
     });
 

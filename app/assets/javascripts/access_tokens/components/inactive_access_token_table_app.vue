@@ -1,67 +1,91 @@
 <script>
-import { GlIcon, GlLink, GlPagination, GlTable, GlTooltipDirective } from '@gitlab/ui';
+import { GlLink, GlPagination, GlTable, GlTooltipDirective } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { __ } from '~/locale';
+import axios from '~/lib/utils/axios_utils';
+import {
+  convertObjectPropsToCamelCase,
+  normalizeHeaders,
+  parseIntPagination,
+} from '~/lib/utils/common_utils';
+import { s__, __ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import UserDate from '~/vue_shared/components/user_date.vue';
-import { INACTIVE_TOKENS_TABLE_FIELDS, INITIAL_PAGE, PAGE_SIZE } from './constants';
+import { INACTIVE_TOKENS_TABLE_FIELDS } from './constants';
 
 export default {
-  PAGE_SIZE,
   name: 'InactiveAccessTokenTableApp',
   components: {
-    GlIcon,
     GlLink,
     GlPagination,
     GlTable,
     TimeAgoTooltip,
     UserDate,
+    HelpIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
   lastUsedHelpLink: helpPagePath('/user/profile/personal_access_tokens.md', {
-    anchor: 'view-the-last-time-a-token-was-used',
+    anchor: 'view-the-time-at-and-ips-where-a-token-was-last-used',
   }),
   i18n: {
     emptyField: __('Never'),
     expired: __('Expired'),
     revoked: __('Revoked'),
+    lastTimeUsed: s__('AccessTokens|The last time a token was used'),
+    errorFetching: s__('AccessTokens|An error occurred while fetching the tokens.'),
   },
-  INACTIVE_TOKENS_TABLE_FIELDS,
-  inject: [
-    'accessTokenType',
-    'accessTokenTypePlural',
-    'initialInactiveAccessTokens',
-    'noInactiveTokensMessage',
-  ],
+  inject: ['noInactiveTokensMessage', 'paginationUrl'],
   data() {
     return {
-      inactiveAccessTokens: convertObjectPropsToCamelCase(this.initialInactiveAccessTokens, {
-        deep: true,
-      }),
-      currentPage: INITIAL_PAGE,
+      inactiveAccessTokens: [],
+      busy: false,
+      emptyText: '',
+      page: 1,
+      perPage: 0,
+      total: 0,
     };
   },
   computed: {
+    filteredFields() {
+      // Remove the sortability of the columns
+      return INACTIVE_TOKENS_TABLE_FIELDS.map((field) => ({
+        ...field,
+        sortable: false,
+      }));
+    },
     showPagination() {
-      return this.inactiveAccessTokens.length > PAGE_SIZE;
+      return this.total > this.perPage;
     },
   },
+  created() {
+    this.fetchData();
+  },
   methods: {
-    sortingChanged(aRow, bRow, key) {
-      if (['createdAt', 'lastUsedAt', 'expiresAt'].includes(key)) {
-        // Transform `null` value to the latest possible date
-        // https://stackoverflow.com/a/11526569/18428169
-        const maxEpoch = 8640000000000000;
-        const a = new Date(aRow[key] ?? maxEpoch).getTime();
-        const b = new Date(bRow[key] ?? maxEpoch).getTime();
-        return a - b;
-      }
+    async fetchData(newPage = '1') {
+      const url = new URL(this.paginationUrl);
+      url.searchParams.append('page', newPage);
 
-      // For other columns the default sorting works OK
-      return false;
+      this.busy = true;
+      try {
+        const { data, headers } = await axios.get(url.toString());
+
+        const { page, perPage, total } = parseIntPagination(normalizeHeaders(headers));
+        this.page = page;
+        this.perPage = perPage;
+        this.total = total;
+        this.inactiveAccessTokens = convertObjectPropsToCamelCase(data, { deep: true });
+        this.emptyText = this.noInactiveTokensMessage;
+      } catch {
+        this.inactiveAccessTokens = [];
+        this.emptyText = this.$options.i18n.errorFetching;
+      } finally {
+        this.busy = false;
+      }
+    },
+    async pageChanged(newPage) {
+      await this.fetchData(newPage.toString());
     },
   },
 };
@@ -71,15 +95,13 @@ export default {
   <div>
     <gl-table
       data-testid="inactive-access-tokens"
-      :empty-text="noInactiveTokensMessage"
-      :fields="$options.INACTIVE_TOKENS_TABLE_FIELDS"
+      :empty-text="emptyText"
+      :fields="filteredFields"
       :items="inactiveAccessTokens"
-      :per-page="$options.PAGE_SIZE"
-      :current-page="currentPage"
-      :sort-compare="sortingChanged"
       show-empty
       stacked="sm"
       class="gl-overflow-x-auto"
+      :busy="busy"
     >
       <template #cell(createdAt)="{ item: { createdAt } }">
         <user-date :date="createdAt" />
@@ -88,8 +110,8 @@ export default {
       <template #head(lastUsedAt)="{ label }">
         <span>{{ label }}</span>
         <gl-link :href="$options.lastUsedHelpLink"
-          ><gl-icon name="question-o" class="gl-ml-2" /><span class="gl-sr-only">{{
-            s__('AccessTokens|The last time a token was used')
+          ><help-icon class="gl-ml-2" /><span class="gl-sr-only">{{
+            $options.i18n.lastTimeUsed
           }}</span></gl-link
         >
       </template>
@@ -111,11 +133,13 @@ export default {
     </gl-table>
     <gl-pagination
       v-if="showPagination"
-      v-model="currentPage"
-      :per-page="$options.PAGE_SIZE"
-      :total-items="inactiveAccessTokens.length"
+      :value="page"
+      :per-page="perPage"
+      :total-items="total"
+      :disabled="busy"
       align="center"
       class="gl-mt-5"
+      @input="pageChanged"
     />
   </div>
 </template>

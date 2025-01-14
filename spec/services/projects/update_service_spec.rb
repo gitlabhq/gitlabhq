@@ -973,7 +973,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
       end
     end
 
-    describe 'when updating pages default domain redirect', feature_category: :pages do
+    describe 'when updating pages primary domain', feature_category: :pages do
       let(:domain_present) { true }
 
       before do
@@ -982,22 +982,22 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
       end
 
       context 'when selecting an existing domain' do
-        it 'updates the pages default domain redirect setting' do
-          expect { update_project(project, user, project_setting_attributes: { pages_default_domain_redirect: "http://example.com" }) }
-            .to change { project.project_setting.pages_default_domain_redirect }
+        it 'updates the pages primary domain setting' do
+          expect { update_project(project, user, project_setting_attributes: { pages_primary_domain: "http://example.com" }) }
+            .to change { project.project_setting.pages_primary_domain }
                   .from(nil).to("http://example.com")
         end
       end
 
-      context 'when clearing the default domain redirect' do
-        let(:project_settings) { create(:project_setting, pages_default_domain_redirect: "http://example.com") }
+      context 'when clearing the primary domain' do
+        let(:project_settings) { create(:project_setting, pages_primary_domain: "http://example.com") }
         let(:project) { build(:project, project_setting: project_settings) }
 
-        it 'removes the pages default domain redirect setting' do
-          expect(project.project_setting.pages_default_domain_redirect).to eq("http://example.com")
+        it 'removes the pages primary domain setting' do
+          expect(project.project_setting.pages_primary_domain).to eq("http://example.com")
 
-          expect { update_project(project, user, project_setting_attributes: { pages_default_domain_redirect: "" }) }
-            .to change { project.project_setting.pages_default_domain_redirect }
+          expect { update_project(project, user, project_setting_attributes: { pages_primary_domain: "" }) }
+            .to change { project.project_setting.pages_primary_domain }
                   .from("http://example.com").to(nil)
         end
       end
@@ -1006,12 +1006,12 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         let(:domain_present) { false }
 
         it 'returns an error to the user' do
-          result = update_project(project, user, project_setting_attributes: { pages_default_domain_redirect: "http://example.com" })
+          result = update_project(project, user, project_setting_attributes: { pages_primary_domain: "http://example.com" })
 
           expect(result).to include(status: :error)
-          expect(result[:message]).to include(_("The `pages_default_domain_redirect` attribute is missing from the domain list in the Pages project configuration. Assign `pages_default_domain_redirect` to the Pages project or reset it."))
+          expect(result[:message]).to include(_("The `pages_primary_domain` attribute is missing from the domain list in the Pages project configuration. Assign `pages_primary_domain` to the Pages project or reset it."))
 
-          expect(project.project_setting.pages_default_domain_redirect).to be_nil
+          expect(project.project_setting.pages_primary_domain).to be_nil
         end
       end
     end

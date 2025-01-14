@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::LfsObjectImporter do
+RSpec.describe Gitlab::GithubImport::Importer::LfsObjectImporter, feature_category: :importers do
   let(:project) { create(:project) }
   let(:headers) { { 'Authorization' => 'RemoteAuth 12345' } }
   let(:lfs_attributes) do

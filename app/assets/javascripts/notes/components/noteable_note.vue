@@ -109,10 +109,20 @@ export default {
       required: false,
       default: null,
     },
+    autosaveKey: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    restoreFromAutosave: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
-      isEditing: false,
+      isEditingLocal: false,
       isDeleting: false,
       isRequesting: false,
       isResolving: false,
@@ -123,6 +133,19 @@ export default {
   computed: {
     ...mapGetters('diffs', ['getDiffFileByHash']),
     ...mapGetters(['targetNoteHash', 'getNoteableData', 'getUserData', 'commentsDisabled']),
+    isEditing: {
+      get() {
+        return this.note.isEditing ?? this.isEditingLocal;
+      },
+      set(value) {
+        this.isEditingLocal = value;
+        if (value) {
+          this.$emit('handleEdit');
+        } else {
+          this.$emit('cancelForm');
+        }
+      },
+    },
     author() {
       return this.note.author;
     },
@@ -268,7 +291,6 @@ export default {
     editHandler() {
       this.isEditing = true;
       this.setSelectedCommentPositionHover();
-      this.$emit('handleEdit');
     },
     async deleteHandler() {
       let { commentType } = this;
@@ -305,7 +327,7 @@ export default {
       }
     },
     updateSuccess() {
-      this.isEditing = false;
+      this.isEditingLocal = false;
       this.isRequesting = false;
       this.oldContent = null;
       renderGFM(this.$refs.noteBody.$el);
@@ -391,7 +413,6 @@ export default {
       }
       this.recoverNoteContent();
       this.isEditing = false;
-      this.$emit('cancelForm');
     }),
     recoverNoteContent() {
       if (this.oldContent) {
@@ -527,6 +548,8 @@ export default {
             :line="line"
             :file="diffFile"
             :is-editing="isEditing"
+            :autosave-key="autosaveKey"
+            :restore-from-autosave="restoreFromAutosave"
             :help-page-path="helpPagePath"
             @handleFormUpdate="formUpdateHandler"
             @cancelForm="formCancelHandler"

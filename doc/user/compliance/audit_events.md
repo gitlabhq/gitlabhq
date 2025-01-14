@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 A security audit is an in-depth analysis and review of your infrastructure, which is used to display
 areas of concern and potentially hazardous practices. To assist with the audit process, GitLab provides
@@ -58,7 +58,7 @@ After upgrading to a paid tier, you can also see successful sign-in events on au
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 To view a group's audit events:
 
@@ -72,7 +72,7 @@ Group audit events can also be accessed using the [group audit events API](../..
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Audit events**.
@@ -88,7 +88,7 @@ The time zone used for audit events depends on where you view them:
 
 - In GitLab UI, your local time zone (GitLab 15.7 and later) or UTC (GitLab 15.6 and earlier) is used.
 - The [audit events API](../../api/audit_events.md) returns dates and times in UTC by default, or the
-  [configured time zone](../../administration/timezone.md) on a self-managed GitLab instance.
+  [configured time zone](../../administration/timezone.md) on GitLab Self-Managed.
 - In CSV exports, UTC is used.
 
 ## Contribute to audit events

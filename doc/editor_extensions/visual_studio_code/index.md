@@ -26,6 +26,7 @@ This extension brings the GitLab features you use every day directly into your V
 - [Create](#create-a-snippet) and manage snippets.
 - [Browse repositories](remote_urls.md#browse-a-repository-in-read-only-mode) without cloning them.
 - [View security findings](#view-security-findings).
+- [Perform SAST scanning](#perform-sast-scanning).
 
 The GitLab Workflow extension also streamlines your VS Code workflow with AI-assisted features:
 
@@ -170,9 +171,9 @@ Use this extension to review, comment on, and approve merge requests without lea
    merge request you want to review. Its sidebar entry expands with more information.
 1. Under the merge request's number and title, select **Description** to read more about the merge request.
 1. To review the proposed changes to a file, select the file from the list to show it in a VS Code tab.
-   Diff comments are shown inline in the tab. In the list, deleted files are marked in red:
+   GitLab shows diff comments inline in the tab. In the list, deleted files are marked in red:
 
-   ![An alphabetical list of files changed in this merge request, including the type of changes.](../img/vscode_view_changed_file_v17_6.png)
+   ![An alphabetical list of files changed in this merge request, including the change types.](../img/vscode_view_changed_file_v17_6.png)
 
 Use the diff to:
 
@@ -211,7 +212,7 @@ To open a file from your current GitLab project in the GitLab UI, with specific 
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Prerequisites:
 
@@ -228,6 +229,51 @@ To view security findings:
 1. Select either **New findings** or **Fixed findings**.
 1. Select a desired severity level.
 1. Select a finding to open it in a VS Code tab.
+
+## Perform SAST scanning
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1675) in VS Code extension version 5.31.
+
+Static application security testing (SAST) in VS Code detects vulnerabilities in the active file.
+With early detection, you can remediate vulnerabilities before you merge your changes into the
+default branch.
+
+When you trigger a SAST scan, the content of the active file is passed to GitLab and checked against
+SAST vulnerability rules. GitLab shows scan results in the primary side bar.
+
+Prerequisites:
+
+- You're using GitLab Workflow version 5.31.0 or later.
+- You've [authenticated with GitLab](setup.md#authenticate-with-gitlab).
+- You've selected the [**Enable Real-time SAST scan checkbox**](setup.md#code-security).
+
+To perform SAST scanning of a file in VS Code:
+
+<!-- markdownlint-disable MD044 -->
+
+1. Open the file.
+1. Trigger the SAST scan by either:
+   - Saving the file (if you have [selected the **Enable scanning on file save** option](setup.md#code-security)).
+   - Using the Command Palette:
+     1. Open the Command Palette:
+        - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+        - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+     1. Search for **GitLab: Run Remote Scan (SAST)** and press
+        <kbd>Enter</kbd>.
+1. View the results of the SAST scan.
+   1. View the **Primary Side Bar**.
+   1. Select GitLab Workflow ({tanuki}) to display the extension sidebar.
+   1. Expand the **GITLAB REMOTE SCAN (SAST)** section.
+
+   The results of the SAST scan are listed in descending order by severity. To see details of a
+   finding, select it in the **GITLAB REMOTE SCAN (SAST)** section of the extension sidebar.
+
+<!-- markdownlint-enable MD044 -->
 
 ## Search issues and merge requests
 

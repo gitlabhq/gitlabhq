@@ -6,7 +6,7 @@ RSpec.shared_examples 'setting CSP' do |rule_name|
   shared_context 'csp config' do |csp_rule|
     before do
       csp = ActionDispatch::ContentSecurityPolicy.new do |p|
-        p.send(csp_rule, default_csp_values) if csp_rule
+        p.send(csp_rule, *default_csp_values.split(' ')) if csp_rule
       end
 
       expect_next_instance_of(extended_controller_class) do |controller|

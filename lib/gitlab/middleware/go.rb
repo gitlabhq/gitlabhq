@@ -80,13 +80,14 @@ module Gitlab
       def get_repo_url(project_full_path)
         return ssh_url(project_full_path) if Gitlab::CurrentSettings.enabled_git_access_protocol == 'ssh'
 
-        Gitlab::RepositoryUrlBuilder.build(project_full_path, protocol: :http)
+        "#{http_url(project_full_path)}.git"
       end
 
       # create_go_get_html_response creates a HTML document for go get with the expected meta tags.
       def create_go_get_html_response(project_full_path)
-        root_path = Gitlab::Utils.append_path(Gitlab.config.gitlab.host, project_full_path)
+        root_path = get_root_path(project_full_path)
         repo_url = get_repo_url(project_full_path)
+
         go_import_meta_tag = tag.meta(name: 'go-import', content: "#{root_path} git #{repo_url}")
         head_tag = content_tag :head, go_import_meta_tag
         body_tag = content_tag :body, "go get #{root_path}"
@@ -94,6 +95,17 @@ module Gitlab
 
         response = Rack::Response.new(html, 200, { 'Content-Type' => 'text/html' })
         response.finish
+      end
+
+      # get_root_path returns a root path based on the instance URL
+      # that includes a relative part of URL if it was set
+      def get_root_path(project_full_path)
+        http_url(project_full_path).gsub(%r{\Ahttps?://}, '')
+      end
+
+      # http_url returns a direct link to the project
+      def http_url(project_full_path)
+        Gitlab::Utils.append_path(Gitlab.config.gitlab.url, project_full_path)
       end
 
       # project_for_path searches for a project based on the path_info

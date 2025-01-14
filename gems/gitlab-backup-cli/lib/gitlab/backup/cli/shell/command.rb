@@ -6,7 +6,7 @@ module Gitlab
       module Shell
         # Abstraction to control shell command execution
         # It provides an easier API to common usages
-        class Command
+        class Command < Base
           attr_reader :env
 
           # Result data structure from running a command
@@ -67,6 +67,9 @@ module Gitlab
           # @return [Command::SinglePipelineResult]
           def run_single_pipeline!(input: nil, output: nil)
             start = Time.now
+            input = typecast_input!(input)
+            output = typecast_output!(output)
+
             # Open3 writes on `err_write` and we receive from `err_read`
             err_read, err_write = IO.pipe
 

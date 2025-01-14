@@ -72,13 +72,18 @@ module Banzai
       # Returns all the nodes that are visible to the given user.
       def nodes_visible_to_user(user, nodes)
         projects = lazy { projects_for_nodes(nodes) }
+        groups = lazy { groups_for_nodes(nodes) }
         project_attr = 'data-project'
+        group_attr = 'data-group'
 
         preload_associations(projects, user)
+        preload_group_associations(groups, user)
 
         nodes.select do |node|
           if node.has_attribute?(project_attr)
             can_read_reference?(user, projects[node], node)
+          elsif node.has_attribute?(group_attr)
+            can_read_reference?(user, groups[node], node)
           else
             true
           end
@@ -233,8 +238,11 @@ module Banzai
       #     { node => project }
       #
       def projects_for_nodes(nodes)
-        @projects_for_nodes ||=
-          grouped_objects_for_nodes(nodes, Project.includes(:project_feature), 'data-project')
+        @projects_for_nodes ||= grouped_objects_for_nodes(nodes, Project.includes(:project_feature), 'data-project')
+      end
+
+      def groups_for_nodes(nodes)
+        @groups_for_nodes ||= grouped_objects_for_nodes(nodes, Group, 'data-group')
       end
 
       def can?(user, permission, subject = :global)
@@ -278,6 +286,10 @@ module Banzai
       # See #projects_for_nodes for more information.
       def preload_associations(projects, user)
         ::Preloaders::ProjectPolicyPreloader.new(projects.values, user).execute
+      end
+
+      def preload_group_associations(groups, user)
+        ::Preloaders::GroupPolicyPreloader.new(groups.values, user).execute
       end
     end
   end

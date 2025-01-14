@@ -12,7 +12,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8939) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `gitaly_bundle_uri`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available.
+On GitLab Self-Managed, by default this feature is not available.
 To make it available, an administrator can [enable the feature flag](../feature_flags.md)
 named `gitaly_bundle_uri`.
 On GitLab.com and GitLab Dedicated, this feature is not available. This feature

@@ -1,9 +1,0 @@
----
-name: require_organization
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/411832
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155732
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/470839
-milestone: '17.3'
-group: group::tenant scale
-type: gitlab_com_derisk
-default_enabled: false

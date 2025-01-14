@@ -183,6 +183,64 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
           expect(json_response['has_next_page']).to eq(true)
         end
       end
+
+      context 'when most recent activities are from projects inaccessible to user' do
+        let_it_be(:limit) { 5 }
+
+        let_it_be(:project) { create(:project, organization: organization) }
+        let_it_be(:events) { create_list(:event, limit, project: project) }
+
+        let_it_be(:private_projects) { create(:project, :private, organization: organization) }
+        let_it_be(:private_events) { create_list(:event, limit, project: private_projects) }
+
+        before_all do
+          project.add_developer(user)
+          sign_in(user)
+        end
+
+        it 'returns events from projects where user has access to' do
+          get activity_organization_path(organization, limit: 5, format: :json)
+
+          expect(response.media_type).to eq('application/json')
+
+          expect(json_response['events']).to be_an(Array)
+          expect(json_response['events'].size).to eq(limit)
+        end
+      end
+
+      context 'when most recent activities are from groups inaccessible to user' do
+        let_it_be(:limit) { 5 }
+
+        let_it_be(:group) { create(:group, organization: organization) }
+        let_it_be(:events) do
+          create_list(:event, limit, :created, target: create(:milestone, group: group), group: group)
+        end
+
+        let_it_be(:private_group) { create(:group, :private, organization: organization) }
+        let_it_be(:private_events) do
+          create_list(
+            :event,
+            limit,
+            :created,
+            group: private_group,
+            target: create(:milestone, group: private_group)
+          )
+        end
+
+        before_all do
+          group.add_developer(user)
+          sign_in(user)
+        end
+
+        it 'returns events from groups where user has access to' do
+          get activity_organization_path(organization, limit: 5, format: :json)
+
+          expect(response.media_type).to eq('application/json')
+
+          expect(json_response['events']).to be_an(Array)
+          expect(json_response['events'].size).to eq(limit)
+        end
+      end
     end
   end
 

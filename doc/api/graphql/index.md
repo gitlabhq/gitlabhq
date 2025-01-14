@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 [GraphQL](https://graphql.org/) is a query language for APIs. You can use it to
 request the exact data you need, and therefore limit the number of requests you need.
@@ -33,7 +33,7 @@ The GitLab GraphQL API endpoint is located at `/api/graphql`.
 Explore the GraphQL API using the interactive GraphQL explorer, either:
 
 - [On GitLab.com](https://gitlab.com/-/graphql-explorer).
-- On your self-managed GitLab instance on `https://<your-gitlab-site.com>/-/graphql-explorer`.
+- On GitLab Self-Managed on `https://<your-gitlab-site.com>/-/graphql-explorer`.
 
 For more information, see [GraphiQL](getting_started.md#graphiql).
 

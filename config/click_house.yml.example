@@ -8,8 +8,8 @@ test:
   main:
     database: gitlab_clickhouse_test
     url: 'http://localhost:8123'
-    username: clickhouse
-    password: clickhouse
+    username: default
+    password:
     variables:
       # execute mutations (updates, deletes) synchronously to avoid flaky tests
       mutations_sync: 1

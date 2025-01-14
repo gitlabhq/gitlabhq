@@ -1,0 +1,12 @@
+!!! 5
+%head
+  = csrf_meta_tags
+%body
+  %form{ action: @provider_path, method: :post, style: 'display:none' }
+    %input{ name: 'authenticity_token' }
+
+  = javascript_tag do
+    :plain
+      const csrfToken = document.querySelector('meta[name=csrf-token]').getAttribute('content');
+      document.querySelector('input[name=authenticity_token]').value = csrfToken;
+      document.querySelector('form').submit();

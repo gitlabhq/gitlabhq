@@ -10,7 +10,6 @@ module QA
       extend self
 
       attr_writer :gitlab_url
-      attr_accessor :dry_run
 
       ENV_VARIABLES = Gitlab::QA::Runtime::Env::ENV_VARIABLES
 
@@ -274,7 +273,8 @@ module QA
         remote_grid || (raise ArgumentError, "QA_REMOTE_GRID is required! See docs: #{docs_link}")
         video_recorder_image || (raise ArgumentError, "QA_VIDEO_RECORDER_IMAGE is required! See docs: #{docs_link}")
         selenoid_browser_image || (raise ArgumentError, "QA_SELENOID_BROWSER_IMAGE is required! See docs: #{docs_link}")
-        selenoid_browser_version || (raise ArgumentError, "QA_SELENOID_BROWSER_VERSION is required! See docs: #{docs_link}")
+        selenoid_browser_version || (raise ArgumentError,
+          "QA_SELENOID_BROWSER_VERSION is required! See docs: #{docs_link}")
       end
 
       def github_username
@@ -472,10 +472,6 @@ module QA
         QA::Runtime::Scenario.attributes.include?(:geo_secondary_address)
       end
 
-      def transient_trials
-        ENV.fetch('GITLAB_QA_TRANSIENT_TRIALS', 10).to_i
-      end
-
       def gitlab_tls_certificate
         ENV['GITLAB_TLS_CERTIFICATE']
       end
@@ -657,6 +653,27 @@ module QA
       # @return [Boolean]
       def no_admin_environment?
         enabled?(ENV["QA_NO_ADMIN_ENV"], default: false) || gitlab_host == "gitlab.com"
+      end
+
+      # Test run type
+      #
+      # @return [String]
+      def run_type
+        ENV["QA_RUN_TYPE"].presence
+      end
+
+      # Execution performed with --dry-run flag
+      #
+      # @return [Boolean]
+      def dry_run
+        enabled?(ENV["QA_RSPEC_DRY_RUN"], default: false)
+      end
+
+      # Ignore runtime data when generating knapsack reports
+      #
+      # @return [Boolean]
+      def ignore_runtime_data?
+        enabled?(ENV["QA_IGNORE_RUNTIME_DATA"], default: false)
       end
 
       private

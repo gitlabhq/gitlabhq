@@ -282,6 +282,18 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :secr
       end
     end
 
+    context 'when source is a pipeline schedule' do
+      let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule, project: project) }
+
+      it 'exposes the pipeline schedule description variable' do
+        expect(subject.to_hash)
+          .to include(
+            'CI_PIPELINE_SCHEDULE_DESCRIPTION' => pipeline.pipeline_schedule.description
+          )
+      end
+    end
+
     describe 'variable CI_KUBERNETES_ACTIVE' do
       context 'when pipeline.has_kubernetes_active? is true' do
         before do

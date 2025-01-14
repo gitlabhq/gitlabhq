@@ -7,8 +7,8 @@ module Types
         graphql_name 'CiJobTokenScopePolicies'
         description 'CI_JOB_TOKEN policy'
 
-        ::Ci::JobToken::Policies.all_policies.each do |policy|
-          value policy[:value].to_s.upcase, value: policy[:value], description: policy[:description]
+        ::Ci::JobToken::Policies.all_values.each do |policy|
+          value policy.upcase, value: policy, description: policy.titleize
         end
       end
     end

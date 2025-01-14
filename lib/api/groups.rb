@@ -114,11 +114,10 @@ module API
         paginate(projects)
       end
 
-      def present_projects(params, projects, single_hierarchy: false)
+      def present_projects(params, projects)
         options = {
           with: params[:simple] ? Entities::BasicProjectDetails : Entities::Project,
-          current_user: current_user,
-          single_hierarchy: single_hierarchy
+          current_user: current_user
         }
 
         projects, options = with_custom_attributes(projects, options)
@@ -225,6 +224,9 @@ module API
       def check_subscription!(group)
         render_api_error!("This group can't be removed because it is linked to a subscription.", :bad_request) if group.linked_to_subscription?
       end
+
+      # Overridden in EE
+      def check_query_limit; end
     end
 
     resource :groups do
@@ -300,6 +302,7 @@ module API
         use :optional_update_params_ee
       end
       put ':id', feature_category: :groups_and_projects, urgency: :low do
+        check_query_limit
         group = find_group!(params[:id])
         group.preload_shared_group_links
 
@@ -437,7 +440,7 @@ module API
 
         projects = find_group_projects(params, finder_options)
 
-        present_projects(params, projects, single_hierarchy: true)
+        present_projects(params, projects)
       end
 
       desc 'Get a list of shared projects in this group' do

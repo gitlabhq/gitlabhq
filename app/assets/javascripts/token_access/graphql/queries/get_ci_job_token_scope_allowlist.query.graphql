@@ -1,0 +1,23 @@
+#import "../fragments/allowlist_entry.fragment.graphql"
+
+query getCiJobTokenScopeAllowlist($fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    name
+    fullPath
+    avatarUrl
+    webUrl
+    ciJobTokenScopeAllowlist {
+      groupsAllowlist {
+        nodes {
+          ...AllowlistEntry
+        }
+      }
+      projectsAllowlist {
+        nodes {
+          ...AllowlistEntry
+        }
+      }
+    }
+  }
+}

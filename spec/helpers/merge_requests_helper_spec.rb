@@ -342,7 +342,6 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
         new_merge_request_path: project_new_merge_request_path(project),
         show_export_button: 'true',
         issuable_type: :merge_request,
-        issuable_count: 5,
         email: current_user.notification_email_or_default,
         export_csv_path: '/csv-url',
         rss_url: '/rss-url',
@@ -427,6 +426,42 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       it do
         expect(helper.show_mr_dashboard_banner?).to eq(should_show)
       end
+    end
+  end
+
+  describe '#group_merge_requests_list_data' do
+    let(:group) { create(:group) }
+
+    subject { helper.group_merge_requests_list_data(group, current_user) }
+
+    before do
+      helper.instance_variable_set(:@projects, [])
+
+      allow(helper).to receive(:project).and_return(group)
+      allow(helper).to receive(:current_user).and_return(current_user)
+      allow(helper).to receive(:issuables_count_for_state).and_return(5)
+      allow(helper).to receive(:url_for).and_return("/rss-url")
+    end
+
+    it 'returns the correct data' do
+      expected_data = {
+        group_id: group.id,
+        full_path: group.full_path,
+        show_new_resource_dropdown: "false",
+        autocomplete_award_emojis_path: autocomplete_award_emojis_path,
+        has_any_merge_requests: "false",
+        initial_sort: nil,
+        is_public_visibility_restricted: 'false',
+        is_signed_in: 'true',
+        issuable_type: :merge_request,
+        email: current_user.notification_email_or_default,
+        rss_url: "/rss-url",
+        releases_endpoint: group_releases_path(group, format: :json),
+        can_bulk_update: "false",
+        environment_names_path: unfoldered_environment_names_group_path(group, :json)
+      }
+
+      expect(subject).to include(expected_data)
     end
   end
 end

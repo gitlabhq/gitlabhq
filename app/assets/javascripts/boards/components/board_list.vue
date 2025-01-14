@@ -12,7 +12,6 @@ import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.grap
 import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
 import BoardNewIssue from 'ee_else_ce/boards/components/board_new_issue.vue';
 import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   DEFAULT_BOARD_LIST_ITEMS_SIZE,
   DraggableItemTypes,
@@ -49,7 +48,7 @@ export default {
     GlIntersectionObserver,
     BoardCardMoveToPosition,
   },
-  mixins: [Tracking.mixin(), glFeatureFlagMixin()],
+  mixins: [Tracking.mixin()],
   inject: [
     'isEpicBoard',
     'isIssueBoard',

@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective as GlTooltip, GlLink } from '@gitlab/ui';
 import { convertCandidateFromGraphql } from '~/ml/model_registry/utils';
 import * as i18n from '../translations';
 import CandidateDetail from './candidate_detail.vue';
@@ -9,6 +9,7 @@ export default {
   components: {
     CandidateDetail,
     GlButton,
+    GlLink,
   },
   directives: {
     GlTooltip,
@@ -38,9 +39,9 @@ export default {
     <div class="gl-mt-5 gl-pb-5">
       <span class="gl-font-bold">{{ $options.i18n.MLFLOW_ID_LABEL }}:</span>
       <p class="gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap">
-        <span class="gl-bg-gray-50">
+        <gl-link :href="candidate.info.path">
           {{ candidate.info.eid }}
-        </span>
+        </gl-link>
         <gl-button
           v-gl-tooltip
           variant="default"
@@ -52,7 +53,7 @@ export default {
           @click="copyMlflowId"
         />
       </p>
-      <candidate-detail :candidate="candidate" :show-info-section="false" />
+      <candidate-detail :candidate="candidate" />
     </div>
   </div>
 </template>

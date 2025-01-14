@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Use the following tasks when you work with the agent for Kubernetes.
 
@@ -162,7 +162,7 @@ To remove an agent from the UI:
 
 1. Get the `<cluster-agent-token-id>` from a query in the interactive GraphQL explorer.
    - For GitLab.com, go to <https://gitlab.com/-/graphql-explorer> to open GraphQL Explorer.
-   - For self-managed GitLab, go to `https://gitlab.example.com/-/graphql-explorer`, replacing `gitlab.example.com` with your instance's URL.
+   - For GitLab Self-Managed, go to `https://gitlab.example.com/-/graphql-explorer`, replacing `gitlab.example.com` with your instance's URL.
 
    ```graphql
    query{

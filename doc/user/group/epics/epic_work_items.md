@@ -8,33 +8,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
-**Status:** Experiment
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+**Status:** Beta
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.2 with [several feature flags](#enable-and-disable-the-new-look-for-epics). Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `work_item_epics`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md#beta).
 > - Listing epics using the [GraphQL API](../../../api/graphql/reference/index.md) [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12852) in GitLab 17.4.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/470685) in GitLab 17.6.
+> - [Enabled by default on self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/468310) in GitLab 17.7.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-This feature is available for testing, but not ready for production use.
 
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-The development, release, and timing of any products, features, or functionality may be subject
-to change or delay and remain at the sole discretion of GitLab Inc.
+<!-- When epics as work items are generally available and `work_item_epics` flag is removed,
+incorporate this content into epics/index.md and redirect this page there -->
 
-WARNING:
-This project is still in the experimental stage and could result in corruption or loss of production data.
-If you would like to enable this feature with no consequences, you are strongly advised to do so in a test environment.
-
-<!-- When epics as work items are made GA, incorporate this content into epics/index.md and redirect
-this page there -->
-
-We're working on changing how epics look by migrating them to a unified framework for work items to better
+We have changed how epics look by migrating them to a unified framework for work items to better
 meet the product needs of our Agile Planning offering.
 
 For more information, see [epic 9290](https://gitlab.com/groups/gitlab-org/-/epics/9290) and the
@@ -43,39 +32,30 @@ following blog posts:
 - [First look: The new Agile planning experience in GitLab](https://about.gitlab.com/blog/2024/06/18/first-look-the-new-agile-planning-experience-in-gitlab/) (June 2024)
 - [Unveiling a new epic experience for improved Agile planning](https://about.gitlab.com/blog/2024/07/03/unveiling-a-new-epic-experience-for-improved-agile-planning/) (July 2024)
 
-## Enable and disable the new look for epics
+## Troubleshooting
 
-To try out this change on GitLab self-managed, run the following Rake task.
-The task performs a database verification to ensure data consistency and might take a few minutes.
-If the consistency check passes, the Rake task enables the `work_item_epics` feature flag.
+If you run into any issues while navigating your data in the new experience, there are a couple
+of ways you can try to resolve it.
 
-If the check fails, the feature flag is not enabled. Inconsistencies are logged in the `epic_work_item_sync.log` file.
-Failed background migrations or invalid imports can cause data inconsistencies. These inconsistencies will be resolved when work item epics become generally available.
+### Access the old experience
 
-**To enable:**
+You can temporarily load the old experience by editing URL to include `force_legacy_view=true` parameter,
+for example, `https://gitlab.com/groups/gitlab-org/-/epics/9290?force_legacy_view=true`. Use this parameter to do any comparison
+between old and new experience to provide details while opening support request.
 
-```shell
-# omnibus-gitlab
-sudo gitlab-rake gitlab:work_items:epics:enable
+### Disable the new experience
 
-# installation from source
-bundle exec rake gitlab:work_items:epics:enable RAILS_ENV=production
-```
+DETAILS:
+**Offering:** GitLab Self-Managed
 
-**To disable:**
-
-```shell
-# omnibus-gitlab
-sudo gitlab-rake gitlab:work_items:epics:disable
-
-# installation from source
-bundle exec rake gitlab:work_items:epics:disable RAILS_ENV=production
-```
+We don't recommend disabling this change, because we'd like your feedback on what you don't like about it.
+If you have to disable the new experience to unblock your workflow, disable the `work_item_epics`
+[feature flag](../../../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags).
 
 ## Feedback
 
 If you run into any issues while trying out this change, you can use
-[feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/463598) to provide more details.
+[feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/494462) to provide more details.
 
 ## Related topics
 

@@ -260,13 +260,6 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
   });
 
   describe('autosize', () => {
-    it('autosizes the textarea when the value changes', async () => {
-      buildWrapper();
-      await findTextarea().setValue('Lots of newlines\n\n\n\n\n\n\nMore content\n\n\nand newlines');
-      await nextTick();
-      expect(Autosize.update).toHaveBeenCalled();
-    });
-
     it('autosizes the textarea when the value changes from outside the component', async () => {
       buildWrapper();
       wrapper.setProps({ value: 'Lots of newlines\n\n\n\n\n\n\nMore content\n\n\nand newlines' });
@@ -321,6 +314,15 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       expect(localStorage.setItem).not.toHaveBeenCalled();
     });
 
+    it('can restore note directly from autosave', () => {
+      localStorage.setItem('autosave/issue/1234', 'foo edited');
+      buildWrapper({
+        propsData: { autosaveKey: 'issue/1234', value: 'foo', restoreFromAutosave: true },
+      });
+
+      expect(findTextarea().element.value).toBe('foo edited');
+    });
+
     describe('clear local storage event handler', () => {
       it('does not clear the local storage if the autosave key is not defined', async () => {
         buildWrapper();
@@ -363,11 +365,25 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
         name: formFieldName,
         placeholder: formFieldPlaceholder,
         'aria-label': formFieldAriaLabel,
+        'data-noteable-type': '',
         'data-supports-quick-actions': 'true',
       }),
     );
+    expect(findTextarea().attributes('data-can-suggest')).toBeUndefined();
 
     expect(findTextarea().element.value).toBe(value);
+  });
+
+  it('renders data on textarea for noteable type', () => {
+    buildWrapper({ propsData: { noteableType: 'MergeRequest' } });
+
+    expect(findTextarea().attributes('data-noteable-type')).toBe('MergeRequest');
+  });
+
+  it('renders data on textarea for can suggest', () => {
+    buildWrapper({ propsData: { codeSuggestionsConfig: { canSuggest: true } } });
+
+    expect(findTextarea().attributes('data-can-suggest')).toBe('true');
   });
 
   it(`emits ${EDITING_MODE_CONTENT_EDITOR} event when enableContentEditor emitted from markdown editor`, async () => {

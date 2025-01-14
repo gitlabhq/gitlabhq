@@ -1,3 +1,4 @@
+import { GlSprintf, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import GettingStartedSection from '~/ci/pipeline_editor/components/drawer/sections/getting_started_section.vue';
@@ -8,8 +9,14 @@ Vue.config.ignoredElements = ['gl-emoji'];
 describe('Getting started section', () => {
   let wrapper;
 
+  const findLink = () => wrapper.findComponent(GlLink);
+
   const createComponent = () => {
-    wrapper = shallowMount(GettingStartedSection);
+    wrapper = shallowMount(GettingStartedSection, {
+      stubs: {
+        GlSprintf,
+      },
+    });
   };
 
   const findSectionComponent = () => wrapper.findComponent(SectionComponent);
@@ -26,7 +33,19 @@ describe('Getting started section', () => {
     });
   });
 
-  it('renders the content', () => {
-    expect(wrapper.text()).toContain(wrapper.vm.$options.i18n.firstParagraph);
+  it('renders the expected text content', () => {
+    const expectedText =
+      'GitLab CI/CD can automatically build, test, and deploy your application. The pipeline stages and jobs are defined in a .gitlab-ci.yml file. You can edit, visualize and validate the syntax in this file by using the pipeline editor. Use the rules keyword to configure jobs to run in merge requests.';
+
+    expect(wrapper.text()).toContain(expectedText);
+  });
+
+  it('renders a link to the help page', () => {
+    const link = findLink();
+    const expectedLink =
+      '/help/ci/pipelines/merge_request_pipelines.html#add-jobs-to-merge-request-pipelines';
+
+    expect(link.exists()).toBe(true);
+    expect(link.attributes('href')).toBe(expectedLink);
   });
 });

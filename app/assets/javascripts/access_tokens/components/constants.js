@@ -50,6 +50,14 @@ const ROLE_FIELD = {
 export const FIELDS = [
   ...BASE_FIELDS,
   {
+    formatter(ips) {
+      return ips?.length ? ips?.join(', ') : '-';
+    },
+    key: 'lastUsedIps',
+    label: __('Last Used IPs'),
+    sortable: false,
+  },
+  {
     key: 'expiresAt',
     label: __('Expires'),
     sortable: true,

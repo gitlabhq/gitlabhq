@@ -1,6 +1,9 @@
 ---
-stage: Data Stores
-group: Database
+stage: Data Access
+group: Database Frameworks
+type: reference, howto
+discretionary: yes
+description: Database access for engineers and related parties.
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 

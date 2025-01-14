@@ -1,0 +1,28 @@
+diff --git a/node_modules/@vue/compiler-sfc/dist/compiler-sfc.cjs.js b/node_modules/@vue/compiler-sfc/dist/compiler-sfc.cjs.js
+index dc6a170..a47e397 100644
+--- a/node_modules/@vue/compiler-sfc/dist/compiler-sfc.cjs.js
++++ b/node_modules/@vue/compiler-sfc/dist/compiler-sfc.cjs.js
+@@ -1817,7 +1817,8 @@ function parse$1(source, options = {}) {
+           if (!templateBlock.attrs.src) {
+             templateBlock.ast = compilerCore.createRoot(node.children, source);
+           }
+-          if (templateBlock.attrs.functional) {
++          // disabled by patch-package in gitlab as temporary migration
++          if (false && templateBlock.attrs.functional) {
+             const err = new SyntaxError(
+               `<template functional> is no longer supported in Vue 3, since functional components no longer have significant performance difference from stateful ones. Just use a normal <template> instead.`
+             );
+diff --git a/node_modules/@vue/compiler-sfc/dist/compiler-sfc.esm-browser.js b/node_modules/@vue/compiler-sfc/dist/compiler-sfc.esm-browser.js
+index a7cf8b0..0969009 100644
+--- a/node_modules/@vue/compiler-sfc/dist/compiler-sfc.esm-browser.js
++++ b/node_modules/@vue/compiler-sfc/dist/compiler-sfc.esm-browser.js
+@@ -26519,7 +26519,8 @@ function parse$2(source, options = {}) {
+           if (!templateBlock.attrs.src) {
+             templateBlock.ast = createRoot(node.children, source);
+           }
+-          if (templateBlock.attrs.functional) {
++          // disabled by patch-package in gitlab as temporary migration
++          if (false && templateBlock.attrs.functional) {
+             const err = new SyntaxError(
+               `<template functional> is no longer supported in Vue 3, since functional components no longer have significant performance difference from stateful ones. Just use a normal <template> instead.`
+             );

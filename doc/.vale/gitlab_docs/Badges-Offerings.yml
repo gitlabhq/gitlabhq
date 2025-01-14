@@ -4,10 +4,10 @@
 #
 # For a list of all options, see https://docs.gitlab.com/ee/development/documentation/styleguide/#available-product-tier-badges
 extends: existence
-message: "Offerings should be comma-separated, without `and`, and must be capitalized. Example: `GitLab.com, Self-managed, GitLab Dedicated`."
+message: "Offerings should be comma-separated, without `and`, and must be capitalized. Example: `GitLab.com, GitLab Self-Managed, GitLab Dedicated`."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/#available-product-tier-badges
 level: error
 nonword: true
 scope: raw
 tokens:
-  - ^\*\*Offering:\*\* (Dedicated|[^\n]*(SaaS|self-managed|Self-Managed|GitLab dedicated|and|GitLab Dedicated,|, GitLab\.com|, Dedicated))
+  - ^\*\*Offering:\*\* (Dedicated|[^\n]*(SaaS|self-managed|, Self-Managed|GitLab dedicated|and|GitLab Dedicated,|, GitLab\.com|, Dedicated))

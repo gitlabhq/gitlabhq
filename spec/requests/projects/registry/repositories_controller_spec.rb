@@ -14,30 +14,6 @@ RSpec.describe Projects::Registry::RepositoriesController, feature_category: :co
     allow(Auth::ContainerRegistryAuthenticationService).to receive(:access_token).with({}).and_return('foo')
   end
 
-  shared_examples 'having the feature flag "containerRegistryProtectedContainers"' do
-    it { is_expected.to have_gitlab_http_status(:ok) }
-
-    it do
-      is_expected.to have_attributes(
-        body: have_pushed_frontend_feature_flags(containerRegistryProtectedContainers: true)
-      )
-    end
-
-    context 'when feature flag "container_registry_protected_containers" is disabled' do
-      before do
-        stub_feature_flags(container_registry_protected_containers: false)
-      end
-
-      it { is_expected.to have_gitlab_http_status(:ok) }
-
-      it do
-        is_expected.to have_attributes(
-          body: have_pushed_frontend_feature_flags(containerRegistryProtectedContainers: false)
-        )
-      end
-    end
-  end
-
   describe 'GET #index' do
     subject do
       get project_container_registry_index_path(project)
@@ -45,8 +21,6 @@ RSpec.describe Projects::Registry::RepositoriesController, feature_category: :co
     end
 
     it { is_expected.to have_gitlab_http_status(:ok) }
-
-    it_behaves_like 'having the feature flag "containerRegistryProtectedContainers"'
   end
 
   describe 'GET #show' do
@@ -58,7 +32,5 @@ RSpec.describe Projects::Registry::RepositoriesController, feature_category: :co
     end
 
     it { is_expected.to have_gitlab_http_status(:ok) }
-
-    it_behaves_like 'having the feature flag "containerRegistryProtectedContainers"'
   end
 end

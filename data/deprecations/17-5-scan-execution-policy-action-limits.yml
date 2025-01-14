@@ -1,0 +1,20 @@
+- title: "Limit number of scan execution policy actions allowed per policy"
+  removal_milestone: "18.0"
+  announcement_milestone: "17.5"
+  breaking_change: true
+  window: 1
+  reporter: g.hickman
+  stage: security risk management
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/510897
+  impact: low
+  scope: instance, group, project
+  resolution_role: owner
+  manual_task: true
+  body: |
+    New limits have been added for maximum scan execution policy actions allowed per policy. This change was introduced in 17.4 behind feature flags `scan_execution_policy_action_limit` and `scan_execution_policy_action_limit_group`. When enabled, only the first 10 actions of a scan execution policy are processed.
+
+    By adding limits, we can ensure performance and scalability for security policies.
+
+    If additional actions are needed, limit existing polices to no more than 10 actions. Then, create new scan execution policies with additional actions, within the limit of 5 scan execution policies per security policy project.
+
+    For self-managed users, you can configure a custom limit on self-managed instances with the `scan_execution_policies_action_limit` application setting.

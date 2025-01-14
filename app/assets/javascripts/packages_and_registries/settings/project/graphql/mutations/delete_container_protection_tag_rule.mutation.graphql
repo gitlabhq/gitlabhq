@@ -1,0 +1,8 @@
+mutation deleteContainerProtectionTagRule($input: DeleteContainerProtectionTagRuleInput!) {
+  deleteContainerProtectionTagRule(input: $input) {
+    containerProtectionTagRule {
+      id
+    }
+    errors
+  }
+}

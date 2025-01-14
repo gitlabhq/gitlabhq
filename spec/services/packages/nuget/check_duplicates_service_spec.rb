@@ -10,7 +10,7 @@ RSpec.describe Packages::Nuget::CheckDuplicatesService, feature_category: :packa
   let(:params) do
     {
       file_name: file_name,
-      file: File.open(expand_fixture_path('packages/nuget/package.nupkg'))
+      file: fixture_file_upload('spec/fixtures/packages/nuget/package.nupkg')
     }
   end
 
@@ -76,6 +76,14 @@ RSpec.describe Packages::Nuget::CheckDuplicatesService, feature_category: :packa
           create(:namespace_package_setting, :group, namespace: project.namespace, nuget_duplicates_allowed: false)
         end
 
+        before do
+          allow(::Packages::Nuget::ExtractMetadataContentService).to receive(:new) do
+            instance_double(
+              ::Packages::Nuget::ExtractMetadataContentService, execute: ServiceResponse.success(payload: metadata)
+            )
+          end
+        end
+
         context 'when package file is in object storage' do
           let(:params) { super().merge(remote_url: 'https://example.com') }
 
@@ -84,21 +92,14 @@ RSpec.describe Packages::Nuget::CheckDuplicatesService, feature_category: :packa
               allow(instance).to receive(:execute)
               .and_return(ServiceResponse.success(payload: Nokogiri::XML::Document.new))
             end
-            allow(::Packages::Nuget::ExtractMetadataContentService).to receive(:new) do
-              instance_double(
-                ::Packages::Nuget::ExtractMetadataContentService, execute: ServiceResponse.success(payload: metadata)
-              )
-            end
           end
 
           it_behaves_like 'handling duplicates disallowed when package exists'
 
-          context 'when ExtractRemoteMetadataFileService raises ExtractionError' do
+          context 'when ExtractRemoteMetadataFileService returns an error' do
             before do
               allow_next_instance_of(::Packages::Nuget::ExtractRemoteMetadataFileService) do |instance|
-                allow(instance).to receive(:execute).and_raise(
-                  ::Packages::Nuget::ExtractRemoteMetadataFileService::ExtractionError, 'nuspec file not found'
-                )
+                allow(instance).to receive(:execute).and_return(ServiceResponse.error(message: 'nuspec file not found'))
               end
             end
 
@@ -113,12 +114,6 @@ RSpec.describe Packages::Nuget::CheckDuplicatesService, feature_category: :packa
         end
 
         context 'when package file is on disk' do
-          before do
-            allow_next_instance_of(::Packages::Nuget::MetadataExtractionService) do |instance|
-              allow(instance).to receive(:execute).and_return(ServiceResponse.success(payload: metadata))
-            end
-          end
-
           it_behaves_like 'handling duplicates disallowed when package exists'
         end
       end

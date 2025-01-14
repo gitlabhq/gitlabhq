@@ -38311,7 +38311,7 @@ paths:
       operationId: getApiV4MergeRequests
   "/api/v4/namespaces/{id}":
     put:
-      description: Update a namespace
+      description: "[DEPRECATED] Update a namespace"
       produces:
       - application/json
       consumes:
@@ -38329,7 +38329,7 @@ paths:
           "$ref": "#/definitions/putApiV4NamespacesId"
       responses:
         '200':
-          description: Update a namespace
+          description: "[DEPRECATED] Update a namespace"
           schema:
             "$ref": "#/definitions/API_Entities_Namespace"
       tags:
@@ -60963,7 +60963,7 @@ definitions:
             type: integer
             format: int32
             description: Whether subscription is an extended or reactivated trial
-    description: Update a namespace
+    description: "[DEPRECATED] Update a namespace"
   API_Entities_Namespace:
     type: object
     properties:

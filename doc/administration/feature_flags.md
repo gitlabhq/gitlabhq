@@ -9,7 +9,7 @@ description: "GitLab administrator: enable and disable GitLab features deployed 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 GitLab adopted [feature flags strategies](../development/feature_flags/index.md)
 to deploy features in an early stage of development so that they can be

@@ -8,7 +8,7 @@ info: For assistance with this tutorial, see https://handbook.gitlab.com/handboo
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 In GitLab, you set up and manage your company's GitLab organization by:
 
@@ -41,14 +41,14 @@ You're going to create:
 
 ## Before you begin
 
-- Make sure you have administrator access to your self-managed GitLab instance.
+- Make sure you have administrator access to GitLab Self-Managed.
 
 ## Create the organization parent group and subgroups
 
 You first create a group, Development, to serve as the parent group for the whole
 software development organization.
 
-1. Open your self-managed GitLab instance.
+1. Open GitLab Self-Managed.
 1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
 1. Select **Create group**.
 1. In **Group name**, enter `Development`.

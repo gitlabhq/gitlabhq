@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 This container uses the official Linux package, so you can use
 the unique configuration file `/etc/gitlab/gitlab.rb` to configure the instance.

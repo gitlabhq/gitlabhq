@@ -1,5 +1,5 @@
 import { sprintf } from '~/locale';
-import { createNoteErrorMessages, updateNoteErrorMessage } from '~/notes/utils';
+import { createNoteErrorMessages, updateNoteErrorMessage, isSlashCommand } from '~/notes/utils';
 import { HTTP_STATUS_UNPROCESSABLE_ENTITY, HTTP_STATUS_BAD_REQUEST } from '~/lib/utils/http_status';
 import { COMMENT_FORM, UPDATE_COMMENT_FORM } from '~/notes/i18n';
 
@@ -65,4 +65,25 @@ describe('updateNoteErrorMessage', () => {
       expect(errorMessage).toEqual(UPDATE_COMMENT_FORM.defaultError);
     });
   });
+});
+
+describe('isSlashCommand', () => {
+  it.each`
+    message                              | shouldBeSlashCommand
+    ${'/close'}                          | ${true}
+    ${'/label ~bug'}                     | ${true}
+    ${'/assign @user'}                   | ${true}
+    ${'This is not a slash command'}     | ${false}
+    ${'Messsage with a / in the middle'} | ${false}
+    ${' /not-a-command'}                 | ${false}
+    ${'\n\n/command'}                    | ${true}
+    ${''}                                | ${false}
+    ${null}                              | ${false}
+    ${undefined}                         | ${false}
+  `(
+    'when passed `$message` as a message parameter it returns `$shouldBeSlashCommand`',
+    ({ message, shouldBeSlashCommand } = {}) => {
+      expect(isSlashCommand(message)).toBe(shouldBeSlashCommand);
+    },
+  );
 });

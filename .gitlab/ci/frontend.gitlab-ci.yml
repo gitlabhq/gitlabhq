@@ -263,7 +263,7 @@ jest-build-cache:
     paths:
       - tmp/cache/jest/
   script:
-    - run_timed_command "yarn jest:ci:build-cache"
+    - run_timed_command "scripts/frontend/warm_jest_cache.mjs"
   variables:
     # Propagate exit code correctly. See https://gitlab.com/groups/gitlab-org/-/epics/6074.
     FF_USE_NEW_BASH_EVAL_STRATEGY: 'true'
@@ -312,7 +312,7 @@ jest:
   parallel: 11
   script:
     - if [[ -z "${CI_MERGE_REQUEST_IID}" ]] && ! [[ "$CI_COMMIT_BRANCH" =~ ^as-if-foss/ ]]; then export JEST_COVERAGE="--coverage"; fi
-    - run_timed_command "yarn jest:ci:without-fixtures $JEST_COVERAGE"
+    - run_timed_command "scripts/frontend/jest_ci.js $JEST_COVERAGE"
 
 jest-with-fixtures:
   extends:
@@ -327,7 +327,7 @@ jest-with-fixtures:
   parallel: 2
   script:
     - if [[ -z "${CI_MERGE_REQUEST_IID}" ]] && ! [[ "$CI_COMMIT_BRANCH" =~ ^as-if-foss/ ]]; then export JEST_COVERAGE="--coverage"; fi
-    - run_timed_command "yarn jest:ci:with-fixtures $JEST_COVERAGE"
+    - run_timed_command "scripts/frontend/jest_ci.js --fixtures $JEST_COVERAGE"
 
 jest vue3:
   extends:
@@ -363,7 +363,7 @@ jest vue3 mr:
       - junit_jest.xml
   parallel: 6
   script:
-    - run_timed_command "yarn jest:ci:vue3-mr:without-fixtures"
+    - run_timed_command "scripts/frontend/jest_ci.js --vue3"
   allow_failure: false
 
 jest-with-fixtures vue3 mr:
@@ -383,7 +383,7 @@ jest-with-fixtures vue3 mr:
       - junit_jest.xml
   parallel: 1
   script:
-    - run_timed_command "yarn jest:ci:vue3-mr:with-fixtures"
+    - run_timed_command "scripts/frontend/jest_ci.js --vue3 --fixtures"
 
 jest predictive:
   extends:
@@ -393,7 +393,7 @@ jest predictive:
     - !reference [jest, needs]
     - "detect-tests"
   script:
-    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:predictive-without-fixtures"; fi
+    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "scripts/frontend/jest_ci.js --predictive"; fi
   parallel: 4
 
 jest-with-fixtures predictive:
@@ -404,7 +404,7 @@ jest-with-fixtures predictive:
     - !reference [jest-with-fixtures, needs]
     - "detect-tests"
   script:
-    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:predictive-with-fixtures"; fi
+    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "scripts/frontend/jest_ci.js --predictive --fixtures"; fi
 
 jest vue3 predictive:
   extends:
@@ -414,7 +414,7 @@ jest vue3 predictive:
     - !reference [jest vue3 mr, needs]
     - "detect-tests"
   script:
-    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:vue3-mr:predictive-without-fixtures"; fi
+    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "scripts/frontend/jest_ci.js --vue3 --predictive"; fi
 
 jest-with-fixtures vue3 predictive:
   extends:
@@ -424,7 +424,7 @@ jest-with-fixtures vue3 predictive:
     - !reference [jest-with-fixtures vue3 mr, needs]
     - "detect-tests"
   script:
-    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:vue3-mr:predictive-with-fixtures"; fi
+    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "scripts/frontend/jest_ci.js --vue3 --predictive --fixtures"; fi
   allow_failure: false
 
 jest vue3 check quarantined predictive:

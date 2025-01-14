@@ -143,6 +143,30 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
     end
   end
 
+  describe '#switch_writes!' do
+    let_it_be_with_reload(:ready_partition) { create(:ci_partition, :ready) }
+    let_it_be_with_reload(:active_partition) { create(:ci_partition, :active) }
+    let_it_be_with_reload(:current_partition) { create(:ci_partition, :current) }
+
+    it 'switches from ready to current' do
+      expect { ready_partition.switch_writes! }
+        .to change { described_class.current }
+        .from(current_partition).to(ready_partition)
+
+      expect(current_partition.reload).to be_active
+      expect(ready_partition.reload).to be_current
+    end
+
+    it 'switches from active to current' do
+      expect { active_partition.switch_writes! }
+        .to change { described_class.current }
+        .from(current_partition).to(active_partition)
+
+      expect(current_partition.reload).to be_active
+      expect(active_partition.reload).to be_current
+    end
+  end
+
   describe '#above_threshold?' do
     subject(:above_threshold) { ci_partition.above_threshold?(threshold) }
 

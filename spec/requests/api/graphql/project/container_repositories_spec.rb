@@ -12,7 +12,7 @@ RSpec.describe 'getting container repositories in a project', feature_category: 
   let_it_be(:container_repositories) { [container_repository, container_repositories_delete_scheduled, container_repositories_delete_failed].flatten }
   let_it_be(:container_expiration_policy) { project.container_expiration_policy }
 
-  let(:excluded_fields) { %w[pipeline jobs productAnalyticsState mlModels mergeTrains] }
+  let(:excluded_fields) { %w[pipeline jobs productAnalyticsState mlModels mergeTrains mlExperiments] }
   let(:container_repositories_fields) do
     <<~GQL
       edges {
@@ -155,7 +155,7 @@ RSpec.describe 'getting container repositories in a project', feature_category: 
   it_behaves_like 'handling graphql network errors with the container registry'
 
   it_behaves_like 'not hitting graphql network errors with the container registry' do
-    let(:excluded_fields) { %w[pipeline jobs tags tagsCount productAnalyticsState mlModels mergeTrains] }
+    let(:excluded_fields) { %w[pipeline jobs tags tagsCount productAnalyticsState mlModels mergeTrains mlExperiments] }
   end
 
   it 'returns the total count of container repositories' do
@@ -228,18 +228,6 @@ RSpec.describe 'getting container repositories in a project', feature_category: 
         .each do |repository_response|
           expect(repository_response.dig('node', 'protectionRuleExists')).to eq false
         end
-    end
-
-    context "when feature flag ':container_registry_protected_containers' disabled" do
-      before do
-        stub_feature_flags(container_registry_protected_containers: false)
-      end
-
-      it 'returns false for the field "protectionRuleExists" for each container repository' do
-        subject
-
-        expect(container_repositories_response).to all include 'node' => include('protectionRuleExists' => false)
-      end
     end
 
     # In order to trigger the N+1 query, we need to create project with different container repository counts.

@@ -21,9 +21,6 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :define_commit_box_vars, only: [:show, :pipelines, :rapid_diffs]
   before_action :define_note_vars, only: [:show, :diff_for_path, :diff_files]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
-  before_action do
-    push_frontend_feature_flag(:ci_graphql_pipeline_mini_graph, @project)
-  end
   before_action :rate_limit_for_expanded_diff_files, only: :diff_files
 
   BRANCH_SEARCH_LIMIT = 1000

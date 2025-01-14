@@ -23,7 +23,18 @@ RSpec.describe RapidDiffs::DiffFileComponent, type: :component, feature_category
 
   context "when is text diff" do
     before do
-      allow(diff_file).to receive(:text_diff?).and_return(true)
+      allow(diff_file).to receive(:diffable_text?).and_return(true)
+    end
+
+    context "when file is not modified" do
+      before do
+        allow(diff_file).to receive(:modified_file?).and_return(false)
+      end
+
+      it "renders no preview" do
+        render_component
+        expect(web_component['data-viewer']).to eq('no_preview')
+      end
     end
 
     it "renders parallel text viewer" do
@@ -37,10 +48,10 @@ RSpec.describe RapidDiffs::DiffFileComponent, type: :component, feature_category
     end
   end
 
-  context "when non-text content changed" do
+  context "when no viewer found" do
     before do
-      allow(diff_file).to receive(:text_diff?).and_return(false)
-      allow(diff_file).to receive(:content_changed?).and_return(true)
+      allow(diff_file).to receive(:text?).and_return(false)
+      allow(diff_file).to receive(:content_changed?).and_return(false)
     end
 
     it "renders no preview" do
@@ -49,10 +60,9 @@ RSpec.describe RapidDiffs::DiffFileComponent, type: :component, feature_category
     end
   end
 
-  context "when no viewer found" do
+  context "when file is collapsed" do
     before do
-      allow(diff_file).to receive(:text_diff?).and_return(false)
-      allow(diff_file).to receive(:content_changed?).and_return(false)
+      allow(diff_file).to receive(:collapsed?).and_return(true)
     end
 
     it "renders no preview" do

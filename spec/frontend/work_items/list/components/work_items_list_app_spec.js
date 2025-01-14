@@ -7,6 +7,7 @@ import VueRouter from 'vue-router';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
+import WorkItemHealthStatus from '~/work_items/components/work_item_health_status.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -76,6 +77,7 @@ describeSkipVue3(skipReason, () => {
   const findIssuableList = () => wrapper.findComponent(IssuableList);
   const findIssueCardStatistics = () => wrapper.findComponent(IssueCardStatistics);
   const findIssueCardTimeInfo = () => wrapper.findComponent(IssueCardTimeInfo);
+  const findWorkItemHealthStatus = () => wrapper.findComponent(WorkItemHealthStatus);
   const findDrawer = () => wrapper.findComponent(WorkItemDrawer);
 
   const mountComponent = ({
@@ -152,6 +154,11 @@ describeSkipVue3(skipReason, () => {
 
     it('renders IssueCardTimeInfo component', () => {
       expect(findIssueCardTimeInfo().exists()).toBe(true);
+      expect(findIssueCardTimeInfo().props('isWorkItemList')).toBe(true);
+    });
+
+    it('renders IssueHealthStatus component', () => {
+      expect(findWorkItemHealthStatus().exists()).toBe(true);
     });
 
     it('renders work items', () => {

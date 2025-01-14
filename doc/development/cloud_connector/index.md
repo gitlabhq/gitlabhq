@@ -38,160 +38,80 @@ because we do not currently have interfaces in place to self-service this.
 
 #### Register the new feature in the JWT issuer
 
-- For GitLab Dedicated and self-managed GitLab instances, the CustomersDot is the **JWT issuer**.
+- For GitLab Dedicated and GitLab Self-Managed instances, the CustomersDot is the **JWT issuer**.
 - For GitLab.com deployment, GitLab.com is the **JWT issuer**, because it's able to [self-sign and create JWTs](architecture.md#gitlabcom) for every request to a Cloud Connector feature.
 
-##### Register new feature for Self-Managed, Dedicated and GitLab.com customers
+#### Register new feature for Self-Managed, Dedicated and GitLab.com customers
 
-Because the CustomersDot is the **JWT issuer** for GitLab Dedicated and self-managed GitLab instances,
-to register new feature, we need to update [CustomersDot configuration](configuration.md#customersdot-configuration).
+You must register the new feature as a unit primitive in the [`gitlab-cloud-connector`](https://gitlab.com/gitlab-org/cloud-connector/gitlab-cloud-connector) repository.
+This repository serves as the Single Source of Truth (SSoT) for all Cloud Connector configurations.
 
-Since the GitLab.com is the **JWT issuer**, because it's able to [self-sign and create JWTs](architecture.md#gitlabcom),
-to register new feature, we need to update [GitLab.com configuration](configuration.md#gitlabcom-configuration) as well.
+To register a new feature:
 
-So, in total, you need to open two separate merge requests: one to [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) and another to [GitLab.com](https://gitlab.com/gitlab-org/gitlab). No synchronization between when they are merged is needed.
+1. Create a new YAML file in the `config/unit_primitives/` directory of the `gitlab-cloud-connector` repository.
+1. Define the unit primitive configuration, and ensure you follow the [schema](configuration.md#unit-primitive-configuration).
 
-The new feature needs to be added as a new **unit primitive**, so you can include it in the **JWT** (Service Access token).
+For example, to add a new feature called `new_feature`:
 
-The new feature is delivered in several ways:
-
-- Some features (such as `documentation_search`) are delivered as part of the existing (`Duo Chat`) service.
-
-- Others are delivered as a stand-alone service (`code_suggestions`).
-
-- It is possible to move existing features (`explain_vulnerability`) to become a part of an existing (`Duo Chat`) service.
-
-- It is also possible to deliver a feature to be both part of a Duo Chat service, and also to act as a stand-alone service.
-
-**Terms**:
-
-- **feature** - `documentation_search`, registered as new **unit primitive** so it could be included in **JWT**.
-- **existing service** - `Duo Chat` - The feature is delivered as part of `Duo Chat` service.
-- **stand-alone service** - `code_suggestions`, the feature is accessible as a separate service,
-  probably through its own interface.
-- **backend service** - `Ai Gateway`, the backend where the feature is hosted.
-
-##### Register a new feature to the existing service (DuoChat)
-
-The new feature is delivered as part of an existing service (Duo Chat).
-
-As an example, the new feature is:
-
-- Named `new_feature`
-- Delivered as part of the existing `duo chat` service and accessible only through the Duo Chat window
-- Sold only through the `duo_enterprise` add-on
-
-Update [`cloud_connector.yml`](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/config/cloud_connector.yml) (for Self-Managed and Dedicated) and [`access_data.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/cloud_connector/access_data.yml) (for GitLab.com),
-by registering the `new_feature_up` **unit primitive** under the `duo chat` service:
-
-```diff
-defaults: &defaults
-  services:
-    duo_chat:
-      cut_off_date: 2024-7-15 00:00:00 UTC
-      min_gitlab_version: 16.8
-      min_gitlab_version_for_free_access: 16.8
-      bundled_with:
-        duo_pro:
-          unit_primitives:
-            - duo_chat
-            - documentation_search
-        duo_enterprise:
-          unit_primitives:
-            - duo_chat
-            - documentation_search
-+           - new_feature_up
+```yaml
+# config/unit_primitives/new_feature.yml
+---
+name: new_feature
+description: Description of the new feature
+cut_off_date: 2024-10-17T00:00:00+00:00  # Optional, set if not free
+min_gitlab_version: '16.9'
+min_gitlab_version_for_free_access: '16.8' # Optional
+group: group::your_group
+feature_category: your_category
+documentation_url: https://docs.gitlab.com/ee/path/to/docs
+backend_services:
+    - ai_gateway
+add_ons:
+    - duo_pro
+    - duo_enterprise
+license_types:
+    - premium
+    - ultimate
 ```
 
-- The feature is delivered as part of existing service (Duo Chat), so we are registering new `new_feature_up` unit primitive under the `duo_chat` service.
-- The feature is sold only through `duo_enterprise`, so we need to add `new_feature_up` as a unit primitive, under
-  **bundled with** only for `duo_enterprise` add-on.
+##### Backward Compatibility
 
-  See [configuration](configuration.md) for more information about configuration structure.
+For backward compatibility where instances are still using the old [legacy structure](configuration.md#legacy-structure), consider adding your unit primitive to the [service configuration](configuration.md#service-configuration) as well.
 
-NOTE:
-Currently, it is not supported to set `cut_off_date` or `min_gitlab_version` per unit primitive if the unit primitive is delivered as part of the existing service (`Duo Chat`).
-[Issue 465221](https://gitlab.com/gitlab-org/gitlab/-/issues/465221) proposes restructuring the current configuration structure and adding `cut_off_date` support per unit primitive.
+- If the unit primitive is a stand-alone feature, no further changes are needed, and the service with the same name is generated automatically.
+- If the unit primitive is delivered as part of existing service like `duo_chat`, `self_hosted_models` or `vertex_ai_proxy`, add the unit primitive to the desired service in the [`config/services`](https://gitlab.com/gitlab-org/cloud-connector/gitlab-cloud-connector/-/tree/main/config/services) directory.
 
-##### Register a new stand-alone service
+##### Deployment process
 
-The new feature is delivered as stand-alone service.
+Follow our [release checklist](https://gitlab.com/gitlab-org/cloud-connector/gitlab-cloud-connector/-/blob/main/.gitlab/merge_request_templates/Release.md#checklist) for publishing the new version of the library and using it in GitLab project.
 
-As an example, the new feature is:
+#### Transition from old configuration
 
-- Named `new_feature`
-- Delivered as a stand-alone service and not part of the `Duo Chat` service.
-- Sold through both the `duo_pro` and `duo_enterprise` add-ons.
-- Should not be accessible for free.
-- Minimum required GitLab version is 17.1.
+We are transitioning away from separate [CustomersDot](configuration.md#customersdot-configuration) and [GitLab.com](configuration.md#gitlabcom-configuration) configurations, as outlined in our [ADR-003 Migration Path](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/decisions/003_unit_primitives/).
 
-Update [`cloud_connector.yml`](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/config/cloud_connector.yml) (for Self-Managed and Dedicated) and [`access_data.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/cloud_connector/access_data.yml) (for GitLab.com)
-by registering the `new_feature` as a `service`. See [configuration](configuration.md).
+##### Current state and ongoing changes
 
-```diff
-defaults: &defaults
-services:
-+  new_feature:
-+    cut_off_date: 2024-1-1 00:00:00 UTC
-+    min_gitlab_version: 17.1
-+    bundled_with:
-+      duo_pro:
-+        unit_primitives:
-+          - new_feature_up
-+      duo_enterprise:
-+        unit_primitives:
-+          - new_feature_up
-```
+- New features are added as **unit primitives** in the [`gitlab-cloud-connector` configuration](configuration.md#configuration-format-and-structure).
+- Migration to the `gitlab-cloud-connector` gem as the Single Source of Truth (SSoT) is in progress in [epic 15949](https://gitlab.com/groups/gitlab-org/-/epics/15949).
 
-- The feature is accessible as a new stand-alone service, probably through its own interface,
-  so we are registering a new `new_feature` service.
-- The feature should not be accessible for free, so we need to set the `cut_off_date` in the past.
-- The feature is sold through both `duo_pro` and `duo_enterprise`, so we need to add `new_feature_up`
-  as a unit primitive, under **bundled with** for both `duo_pro` and `duo_enterprise` add-ons.
+  - `access_data.yml` was removed in [issue 507518](https://gitlab.com/gitlab-org/gitlab/-/issues/507518).
+  - `cloud_connector.yml` file is slated for deprecation and removal, as detailed in [issue 11268](https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/11268).
 
-See [configuration](configuration.md) for more information about configuration structure.
+##### Transition period guidelines
 
-##### Register a feature as combination of existing service and stand-alone feature
+- Maintain both [new](configuration.md#configuration-format-and-structure) and [CustomersDot configuration](configuration.md#customersdot-configuration) configurations.
 
-The new feature is accessible through an existing service (`Duo Chat`) and also through its own user interface.
+##### Register new features
 
-As an example, the new feature is:
+###### Process
 
-- Named `new_feature`.
-- Delivered as part of the existing `duo chat` service and accessible only through the Duo Chat window.
-- Also delivered as a stand-alone service. That is, it is also used outside of Duo Chat through its own interface.
-- Sold only through the `duo_enterprise` add-on.
+After adding a [new unit primitive to `gitlab-cloud-connector`](#register-new-feature-for-self-managed-dedicated-and-gitlabcom-customers),
+open a separate merge request to update [CustomersDot configuration](configuration.md#customersdot-configuration) for GitLab Dedicated and self-managed instances.
 
-  Update [`cloud_connector.yml`](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/config/cloud_connector.yml) (for Self-Managed and Dedicated) and [`access_data.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/cloud_connector/access_data.yml) (for GitLab.com):
-
-```diff
-defaults: &defaults
-  services:
-+  new_feature:
-+    bundled_with:
-+      duo_enterprise:
-+        unit_primitives:
-+          - new_feature
-    duo_chat:
-      bundled_with:
-        duo_pro:
-          unit_primitives:
-            - duo_chat
-            - documentation_search
-        duo_enterprise:
-          unit_primitives:
-            - duo_chat
-            - documentation_search
-+           - new_feature_up
-```
-
-- The feature is delivered as part of an existing service (Duo Chat), so we are registering
-  new `new_feature_up` unit primitive under the `duo_chat` service.
-- The feature is also delivered as a stand-alone service, so we need to register `new_feature` as a new `service`.
-- The feature is sold only through `duo_enterprise`, so we need to add `new_feature_up` as a unit primitive, under
-  **bundled with** only for `duo_enterprise` add-on for both services.
-
-See [configuration](configuration.md) for more information about configuration structure.
+1. Make sure that merge request for adding [new unit primitive to `gitlab-cloud-connector`](#register-new-feature-for-self-managed-dedicated-and-gitlabcom-customers) has been merged.
+1. Download the latest generated [`cloud-connector.yml` file](https://gitlab.com/api/v4/projects/58733651/jobs/artifacts/main/raw/config/cloud_connector.yml?job=generate_cloud_connector_yml)
+1. Replace the [`cloud-connector.yml` file](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/config/cloud_connector.yml)
+1. Ensure that the generated file reflects the changes you have made. Additionally, carefully verify that no changes have been inadvertently removed in the file.
 
 #### Implement Permission checks in GitLab Rails
 
@@ -229,7 +149,7 @@ As an example, the feature is delivered as a stand-alone service called `new_fea
 
 To decide if the service is available or visible to the end user, we need to:
 
-- Optional. On self-managed GitLab, if the new feature is introduced as a new [enterprise feature](../ee_features.md#implement-a-new-ee-feature),
+- Optional. On GitLab Self-Managed, if the new feature is introduced as a new [enterprise feature](../ee_features.md#implement-a-new-ee-feature),
   check to determine if user has access to the feature by following the [EE feature guideline](../ee_features.md#guard-your-ee-feature).
 
   ```ruby
@@ -238,7 +158,7 @@ To decide if the service is available or visible to the end user, we need to:
     ::License.feature_available?(:new_feature)
   ```
 
-- On self-managed GitLab, check if the customer is using an [online cloud license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#what-is-cloud-licensing)
+- On GitLab Self-Managed, check if the customer is using an [online cloud license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#what-is-cloud-licensing)
   - Cloud connector currently only support online cloud license for self-managed customers.
   - Trials or legacy licenses are not supported.
   - GitLab.com is using a legacy license.
@@ -247,7 +167,7 @@ To decide if the service is available or visible to the end user, we need to:
     ::License.current&.online_cloud_license?
   ```
 
-- On GitLab.com and self-managed GitLab, check if the service has free access.
+- On GitLab.com and GitLab Self-Managed, check if the service has free access.
   - The feature is considered free, if the [cut-off date](configuration.md) is not set, or it is set in the future.
 
   ```ruby
@@ -258,7 +178,7 @@ To decide if the service is available or visible to the end user, we need to:
 - Optional. If the service has free access, this usually means that the experimental features are subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
   - For GitLab Duo features, the customer needs to enable [experimental toggle](../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) in order to use experimental features for free.
 
-- On GitLab.com and self-managed GitLab, if the service is not accessible for free, check if the add-on bundled with this service has been purchased by the customer (for the group/namespace)
+- On GitLab.com and GitLab Self-Managed, if the service is not accessible for free, check if the add-on bundled with this service has been purchased by the customer (for the group/namespace)
 
   ```ruby
     # Returns true if at least one add-on that is bundled with the service is purchased.
@@ -268,7 +188,7 @@ To decide if the service is available or visible to the end user, we need to:
     CloudConnector::AvailableServices.find_by_name(:new_feature).purchased?(namespace)
   ```
 
-- On GitLab.com and self-managed GitLab, check if the customer's end-user has been assigned to the proper seat.
+- On GitLab.com and GitLab Self-Managed, check if the customer's end-user has been assigned to the proper seat.
 
   ```ruby
     # Returns true if service is allowed to be used.

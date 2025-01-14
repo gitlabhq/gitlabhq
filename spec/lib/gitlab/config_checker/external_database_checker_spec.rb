@@ -88,16 +88,17 @@ RSpec.describe Gitlab::ConfigChecker::ExternalDatabaseChecker do
   def notice_deprecated_database(database_name, database_version)
     {
       type: 'warning',
-      message: _('Database \'%{database_name}\' is using PostgreSQL %{pg_version_current}, ' \
-                 'but this version of GitLab requires PostgreSQL %{pg_version_minimum}. ' \
-                 'Please upgrade your environment to a supported PostgreSQL version. ' \
-                 'See %{pg_requirements_url} for details.') % \
-        {
-          database_name: database_name,
-          pg_version_current: database_version,
-          pg_version_minimum: Gitlab::Database::MINIMUM_POSTGRES_VERSION,
-          pg_requirements_url: Gitlab::ConfigChecker::ExternalDatabaseChecker::PG_REQUIREMENTS_LINK
-        }
+      message: _(
+        'Database \'%{database_name}\' is using PostgreSQL %{pg_version_current}, ' \
+        'but this version of GitLab requires PostgreSQL %{pg_version_minimum}. ' \
+        'Please upgrade your environment to a supported PostgreSQL version. ' \
+        'See %{pg_requirements_url} for details.'
+      ) % {
+        database_name: database_name,
+        pg_version_current: database_version,
+        pg_version_minimum: Gitlab::Database::MINIMUM_POSTGRES_VERSION,
+        pg_requirements_url: Gitlab::ConfigChecker::ExternalDatabaseChecker::PG_REQUIREMENTS_LINK
+      }
     }
   end
 end

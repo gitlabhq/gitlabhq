@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Many items are migrated when using the direct transfer method, and some are excluded.
 
@@ -73,6 +73,7 @@ Some group items are excluded from migration because they:
   - Webhooks
 - Are not supported:
   - Push rules
+  - Iteration cadence settings
 
 ## Migrated project items
 
@@ -137,6 +138,7 @@ Project items that are migrated to the destination GitLab instance include:
 | Snippets                                | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/343438)        |
 | Settings                                | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339416)        |
 | Uploads                                 | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339401)        |
+| Vulnerability report                    | [GitLab 17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/501466)        |
 | Wikis                                   | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/345923)        |
 
 <!-- vale gitlab_base.OutdatedVersions = YES -->

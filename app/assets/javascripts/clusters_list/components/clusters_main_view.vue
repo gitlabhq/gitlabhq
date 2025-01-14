@@ -1,12 +1,11 @@
 <script>
-import { GlTabs, GlTab } from '@gitlab/ui';
+import { GlTabs, GlTab, GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
 import Tracking from '~/tracking';
+import { s__, sprintf } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   CLUSTERS_TABS,
   CERTIFICATE_TAB,
-  MAX_CLUSTERS_LIST,
-  MAX_LIST_COUNT,
-  AGENT,
   EVENT_LABEL_TABS,
   EVENT_ACTIONS_CHANGE,
   AGENT_TAB,
@@ -20,9 +19,21 @@ import ClustersViewAll from './clusters_view_all.vue';
 const trackingMixin = Tracking.mixin({ label: EVENT_LABEL_TABS });
 
 export default {
+  i18n: {
+    alertTitle: s__('ClusterAgents|%{agentName} successfully created'),
+    alertText: s__(
+      'ClusterAgents|Optionally, for additional configuration settings, a %{linkStart}configuration file%{linkEnd} can be created in the repository. You can do so within the default branch by creating the file at: %{codeStart}.gitlab/agents/%{agentName}/config.yaml%{codeEnd}',
+    ),
+  },
+  configurationDocsLink: helpPagePath('user/clusters/agent/install/index', {
+    anchor: 'create-an-agent-configuration-file',
+  }),
   components: {
     GlTabs,
     GlTab,
+    GlAlert,
+    GlSprintf,
+    GlLink,
     ClustersActions,
     ClustersViewAll,
     Clusters,
@@ -41,13 +52,25 @@ export default {
   data() {
     return {
       selectedTabIndex: 0,
-      maxAgents: MAX_CLUSTERS_LIST,
+      kasDisabled: false,
+      newAgentName: null,
+      showNewAgentAlert: false,
     };
   },
   computed: {
     availableTabs() {
       const clusterTabs = this.displayClusterAgents ? CLUSTERS_TABS : [CERTIFICATE_TAB];
       return this.certificateBasedClustersEnabled ? clusterTabs : [AGENT_TAB];
+    },
+    alertTitle() {
+      return sprintf(this.$options.i18n.alertTitle, {
+        agentName: this.newAgentName,
+      });
+    },
+    alertText() {
+      return sprintf(this.$options.i18n.alertText, {
+        agentName: this.newAgentName,
+      });
     },
   },
   watch: {
@@ -67,8 +90,14 @@ export default {
     onTabChange(tab) {
       const tabName = this.availableTabs[tab].queryParamValue;
 
-      this.maxAgents = tabName === AGENT ? MAX_LIST_COUNT : MAX_CLUSTERS_LIST;
       this.track(EVENT_ACTIONS_CHANGE, { property: tabName });
+    },
+    clusterAgentCreated(name) {
+      this.newAgentName = name;
+      this.showNewAgentAlert = true;
+    },
+    closeNewAgentAlert() {
+      this.showNewAgentAlert = false;
     },
   },
 };
@@ -93,7 +122,27 @@ export default {
           :default-branch-name="defaultBranchName"
           data-testid="clusters-tab-component"
           @changeTab="setSelectedTab"
-        />
+          @kasDisabled="kasDisabled = $event"
+        >
+          <template #alerts>
+            <gl-alert
+              v-if="showNewAgentAlert"
+              :title="alertTitle"
+              variant="success"
+              class="gl-mb-4"
+              @dismiss="closeNewAgentAlert"
+            >
+              <gl-sprintf :message="alertText">
+                <template #link="{ content }"
+                  ><gl-link :href="$options.configurationDocsLink">{{ content }}</gl-link></template
+                >
+                <template #code="{ content }">
+                  <code>{{ content }}</code>
+                </template>
+              </gl-sprintf>
+            </gl-alert>
+          </template>
+        </component>
       </gl-tab>
 
       <template #tabs-end>
@@ -101,6 +150,6 @@ export default {
       </template>
     </gl-tabs>
 
-    <install-agent-modal :default-branch-name="defaultBranchName" :max-agents="maxAgents" />
+    <install-agent-modal :kas-disabled="kasDisabled" @clusterAgentCreated="clusterAgentCreated" />
   </div>
 </template>

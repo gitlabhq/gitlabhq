@@ -67,20 +67,4 @@ RSpec.describe 'getting the containers protection rules linked to a project', :a
       expect(protection_rules).to be_empty
     end
   end
-
-  context "when feature flag ':containers_protected_containers' disabled" do
-    let_it_be(:container_protection_rule) { create(:container_registry_protection_rule, project: project) }
-
-    before do
-      stub_feature_flags(container_registry_protected_containers: false)
-
-      send_graqhql_query
-    end
-
-    it_behaves_like 'a working graphql query'
-
-    it 'returns no container protection rules' do
-      expect(protection_rules).to be_empty
-    end
-  end
 end

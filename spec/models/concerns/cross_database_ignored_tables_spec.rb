@@ -115,7 +115,8 @@ RSpec.describe CrossDatabaseIgnoredTables, feature_category: :cell, query_analyz
       context 'when condition returns false' do
         let(:condition_value) { false }
 
-        it 'raises an error on creating a new object' do
+        it 'raises an error on creating a new object',
+          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508768' do
           expect { MainModel.create! }.to raise_error(cross_database_exception)
         end
       end
@@ -135,7 +136,8 @@ RSpec.describe CrossDatabaseIgnoredTables, feature_category: :cell, query_analyz
         expect { main_model_object.update!(updated_at: Time.zone.now) }.to raise_error(cross_database_exception)
       end
 
-      it 'still raises an error when deleting an object' do
+      it 'still raises an error when deleting an object',
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508770' do
         main_model_object = create_main_model_object
         expect { main_model_object.destroy! }.to raise_error(cross_database_exception)
       end
@@ -146,7 +148,8 @@ RSpec.describe CrossDatabaseIgnoredTables, feature_category: :cell, query_analyz
         stub_const("MainModel", create_main_model(%w[_test_gitlab_ci_items], %I[update]))
       end
 
-      it 'raises an error when creating a new object' do
+      it 'raises an error when creating a new object',
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508771' do
         expect { MainModel.create! }.to raise_error(cross_database_exception)
       end
 
@@ -155,7 +158,8 @@ RSpec.describe CrossDatabaseIgnoredTables, feature_category: :cell, query_analyz
         expect { main_model_object.update!(updated_at: Time.zone.now) }.not_to raise_error
       end
 
-      it 'still raises an error when deleting an object' do
+      it 'still raises an error when deleting an object',
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508772' do
         main_model_object = create_main_model_object
         expect { main_model_object.destroy! }.to raise_error(cross_database_exception)
       end

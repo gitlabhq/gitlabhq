@@ -4,7 +4,7 @@ module AccessTokensActions
   extend ActiveSupport::Concern
 
   included do
-    before_action -> { check_permission(:read_resource_access_tokens) }, only: [:index]
+    before_action -> { check_permission(:read_resource_access_tokens) }, only: [:index, :inactive]
     before_action -> { check_permission(:destroy_resource_access_tokens) }, only: [:revoke]
     before_action -> { check_permission(:manage_resource_access_tokens) }, only: [:rotate]
     before_action -> { check_permission(:create_resource_access_tokens) }, only: [:create]
@@ -71,6 +71,15 @@ module AccessTokensActions
     end
   end
 
+  def inactive
+    return render_404 unless Feature.enabled?(:retain_resource_access_token_user_after_revoke, resource.root_ancestor)
+
+    tokens = inactive_access_tokens.page(page)
+    add_pagination_headers(tokens)
+
+    render json: represent(tokens)
+  end
+
   private
 
   def check_permission(action)
@@ -94,7 +103,7 @@ module AccessTokensActions
     @scopes = Gitlab::Auth.available_scopes_for(resource)
     @active_access_tokens, @active_access_tokens_size = active_access_tokens
     if Feature.enabled?(:retain_resource_access_token_user_after_revoke, resource.root_ancestor) # rubocop:disable Style/GuardClause
-      @inactive_access_tokens = inactive_access_tokens
+      @inactive_access_tokens_size = inactive_access_tokens.size
     end
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables

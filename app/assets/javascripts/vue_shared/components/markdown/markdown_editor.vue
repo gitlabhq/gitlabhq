@@ -119,10 +119,20 @@ export default {
       required: false,
       default: () => ({}),
     },
+    noteableType: {
+      type: String,
+      required: false,
+      default: '',
+    },
     restrictedToolBarItems: {
       type: Array,
       required: false,
       default: () => [],
+    },
+    restoreFromAutosave: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -139,9 +149,12 @@ export default {
           localStorage.getItem(this.$options.EDITING_MODE_KEY) || EDITING_MODE_MARKDOWN_FIELD;
     }
 
+    const autosaveValue = this.autosaveKey ? getDraft(this.autosaveKey) : '';
+    const initialValue = this.restoreFromAutosave ? autosaveValue : this.value;
+
     return {
       alert: null,
-      markdown: this.value || (this.autosaveKey ? getDraft(this.autosaveKey) : '') || '',
+      markdown: initialValue || autosaveValue || '',
       editingMode,
       autofocused: false,
     };
@@ -238,7 +251,6 @@ export default {
       this.$emit('input', target.value);
 
       this.saveDraft();
-      this.autosizeTextarea();
     },
     renderMarkdown(markdown) {
       const url = setUrlParams(
@@ -388,6 +400,8 @@ export default {
           :value="markdown"
           class="note-textarea js-gfm-input markdown-area"
           dir="auto"
+          :data-can-suggest="codeSuggestionsConfig.canSuggest"
+          :data-noteable-type="noteableType"
           :data-supports-quick-actions="supportsQuickActions"
           :data-testid="formFieldProps['data-testid'] || 'markdown-editor-form-field'"
           :disabled="disabled"

@@ -1,0 +1,10 @@
+---
+table_name: personal_access_token_last_used_ips
+feature_categories:
+  - system_access
+description: Keeps the data for last used IP addresses for personal access tokens
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161076
+milestone: '17.8'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  organization_id: organizations

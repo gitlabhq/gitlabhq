@@ -336,7 +336,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
       let(:shared) { project.import_export_shared }
       let(:params) { {} }
 
-      let(:project_tree_saver ) { described_class.new(project: project, current_user: user, shared: shared, params: params) }
+      let(:project_tree_saver) { described_class.new(project: project, current_user: user, shared: shared, params: params) }
 
       before do
         project.add_maintainer(user)

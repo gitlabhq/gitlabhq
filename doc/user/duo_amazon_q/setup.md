@@ -8,22 +8,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 **Status:** Preview/Beta
 
 > - Introduced as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `amazon_q_integration`. Disabled by default.
+> - Feature flag `amazon_q_integration` removed in GitLab 17.8.
 
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is a Preview/Beta and is available for testing, but not ready for production use.
+NOTE:
+If you have a Duo Pro or Duo Enterprise add-on, this feature is not available.
 
-DISCLAIMER:
-**These instructions are for [users of the GDK only](https://gitlab.com/gitlab-org/gitlab/-/blob/gitlab-duo-with-amazon-q-preview/README.md?ref_type=heads).**
-Others should request [access to a lab environment](https://about.gitlab.com/aws).
+To use GitLab Duo with Amazon Q, you can [request access to a lab environment](https://about.gitlab.com/partners/technology-partners/aws/#interest).
 
-You can use GitLab Duo with Amazon Q to perform a variety of tasks,
-from creating merge requests and adding test coverage to reviewing changes for security and quality.
+If you'd prefer to set up GitLab Duo with Amazon Q on GitLab Self-Managed,
+complete the following steps.
 
 ## Set up GitLab Duo with Amazon Q
 
@@ -37,11 +34,11 @@ To set up GitLab Duo with Amazon Q, you must:
 
 ### Prerequisites
 
-- You must have a self-managed GitLab instance:
+- You must have GitLab Self-Managed:
+  - On GitLab 17.8 or later.
   - With an HTTPS URL that can be accessed by Amazon Q (the SSL certificate must not be self-signed).
     For more details about SSL, see [Configure SSL for a Linux package installation](https://docs.gitlab.com/omnibus/settings/ssl/).
   - With an Ultimate subscription that is synchronized with GitLab. (No trial access.)
-  - With the `amazon_q_integration` [feature flag enabled](../../administration/feature_flags.md).
 - GitLab Duo features [must be turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
   (Experimental and beta features are off by default.)
 

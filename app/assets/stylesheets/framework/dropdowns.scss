@@ -387,7 +387,7 @@
         flex-direction: column;
 
         .reference {
-          color: $gray-300;
+          @apply gl-text-disabled;
           margin-top: $gl-padding-4;
         }
       }
@@ -826,7 +826,7 @@
       color: $dropdown-title-btn-color;
 
       &:hover {
-        color: $gray-300;
+        @apply gl-text-disabled;
       }
     }
   }

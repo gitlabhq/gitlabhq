@@ -8,9 +8,26 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Usage trends give you an overview of how much data your instance contains, and how quickly this volume is changing over time.
+
+The usage trends page displays:
+
+- An overview of the total numbers of:
+  - Projects
+  - Groups
+  - Users
+  - Issues
+  - Merge requests
+  - Pipelines
+- Line charts with monthly values for one year for:
+  - Projects and groups
+  - Pipelines
+  - Issues and merge requests
+
+![Usage trends counts and charts for total users, projects and groups](img/usage_trends_v17_7.png)
+
 Usage trends data refreshes daily.
 
 ## View usage trends
@@ -19,25 +36,3 @@ To view usage trends:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Analytics > Usage trends**.
-
-## Total counts
-
-At the top of the page, usage trends show total counts for:
-
-- Users
-- Projects
-- Groups
-- Issues
-- Merge requests
-- Pipelines
-
-These figures can be useful for understanding how much data your instance contains in total.
-
-## Past year trend charts
-
-Usage trends also display line charts that show total counts per month, over the past 12 months,
-in the categories shown in [Total counts](#total-counts).
-
-These charts help you visualize how rapidly these records are being created on your instance.
-
-![A graph of pipeline usage trends over one year.](img/instance_activity_pipelines_chart_v13_6_a.png)

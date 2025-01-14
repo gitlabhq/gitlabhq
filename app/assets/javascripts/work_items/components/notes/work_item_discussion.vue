@@ -149,6 +149,7 @@ export default {
       this.showForm = false;
       this.isExpanded = this.hasReplies;
       this.autofocus = false;
+      this.$emit('cancelEditing');
     },
     toggleDiscussion() {
       this.isExpanded = !this.isExpanded;
@@ -235,10 +236,12 @@ export default {
     :work-item-id="workItemId"
     :work-item-iid="workItemIid"
     :is-resolving="isResolving"
+    @startEditing="$emit('startEditing')"
     @resolve="resolveDiscussion"
     @startReplying="showReplyForm"
     @deleteNote="$emit('deleteNote', note)"
     @reportAbuse="$emit('reportAbuse', note)"
+    @cancelEditing="$emit('cancelEditing')"
     @error="$emit('error', $event)"
   />
   <timeline-entry-item v-else :data-note-id="noteId" class="note note-discussion gl-px-0">
@@ -267,8 +270,10 @@ export default {
                   :is-discussion-resolvable="isDiscussionResolvable"
                   :is-resolving="isResolving"
                   @startReplying="showReplyForm"
+                  @startEditing="$emit('startEditing')"
                   @deleteNote="$emit('deleteNote', note)"
                   @reportAbuse="$emit('reportAbuse', note)"
+                  @cancelEditing="$emit('cancelEditing')"
                   @resolve="resolveDiscussion"
                   @error="$emit('error', $event)"
                 />
@@ -300,6 +305,8 @@ export default {
                         @startReplying="showReplyForm"
                         @deleteNote="$emit('deleteNote', reply)"
                         @reportAbuse="$emit('reportAbuse', reply)"
+                        @startEditing="$emit('startEditing')"
+                        @cancelEditing="$emit('cancelEditing')"
                         @error="$emit('error', $event)"
                       />
                     </template>
@@ -334,6 +341,7 @@ export default {
                       @replying="onReplying"
                       @resolve="resolveDiscussion"
                       @error="$emit('error', $event)"
+                      @startEditing="$emit('startEditing')"
                     />
                   </template>
                 </discussion-notes-replies-wrapper>

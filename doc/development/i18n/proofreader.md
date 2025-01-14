@@ -94,6 +94,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Romanian
   - Proofreaders needed.
 - Russian
+  - Alexey Butkeev - [GitLab](https://gitlab.com/abutkeev), [Crowdin](https://crowdin.com/profile/abutkeev)
   - Dmitry Fedoroff - [GitLab](https://gitlab.com/DmitryFedoroff), [Crowdin](https://crowdin.com/profile/DmitryFedoroff)
   - Mark Minakou - [GitLab](https://gitlab.com/sandzhaj), [Crowdin](https://crowdin.com/profile/sandzhaj)
   - Andrey Komarov - [GitLab](https://gitlab.com/elkamarado), [Crowdin](https://crowdin.com/profile/kamarado)
@@ -108,7 +109,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Pablo Reyes - [GitLab](https://gitlab.com/pabloryst9n), [Crowdin](https://crowdin.com/profile/pabloryst9n)
   - Gustavo Román - [GitLab](https://gitlab.com/GustavoStark), [Crowdin](https://crowdin.com/profile/gustavonewton)
 - Swedish
-  - Johannes Nilsson - [GitLab](https://gitlab.com/nlssn), [Crowdin](https://crowdin.com/profile/nlssn)
+  - Johannes Nilsson - [GitLab](https://gitlab.com/pixelregn), [Crowdin](https://crowdin.com/profile/pixelregn)
 - Turkish
   - Proofreaders needed.
 - Ukrainian

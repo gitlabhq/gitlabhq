@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'ipaddress', '~> 0.8.3'
   spec.add_runtime_dependency "railties", "~> 7"
   # See lib/net_http/connect_patch.rb
-  spec.add_runtime_dependency "net-http", "= 0.4.1"
+  spec.add_runtime_dependency "net-http", "= 0.6.0"
 
   spec.add_development_dependency 'gitlab-styles', '~> 13.0.1'
   spec.add_development_dependency 'rspec-parameterized', '~> 1.0.2'

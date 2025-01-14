@@ -4,6 +4,7 @@ class NamespaceSetting < ApplicationRecord
   include CascadingNamespaceSettingAttribute
   include Sanitizable
   include ChronicDurationAttribute
+  include EachBatch
 
   ignore_column :token_expiry_notify_inherited, remove_with: '17.9', remove_after: '2025-01-11'
   enum pipeline_variables_default_role: ProjectCiCdSetting::PIPELINE_VARIABLES_OVERRIDE_ROLES, _prefix: true

@@ -5,6 +5,7 @@ import HeaderArea from '~/repository/components/header_area.vue';
 import Breadcrumbs from '~/repository/components/header_area/breadcrumbs.vue';
 import CodeDropdown from '~/vue_shared/components/code_dropdown/code_dropdown.vue';
 import SourceCodeDownloadDropdown from '~/vue_shared/components/download_dropdown/download_dropdown.vue';
+import FileIcon from '~/vue_shared/components/file_icon.vue';
 import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_dropdown.vue';
 import BlobControls from '~/repository/components/header_area/blob_controls.vue';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
@@ -13,7 +14,7 @@ import { headerAppInjected } from 'ee_else_ce_jest/repository/mock_data';
 
 const defaultMockRoute = {
   params: {
-    path: '',
+    path: 'index.js',
   },
   meta: {
     refType: '',
@@ -34,10 +35,12 @@ describe('HeaderArea', () => {
   const findCodeDropdown = () => wrapper.findComponent(CodeDropdown);
   const findSourceCodeDownloadDropdown = () => wrapper.findComponent(SourceCodeDownloadDropdown);
   const findCloneCodeDropdown = () => wrapper.findComponent(CloneCodeDropdown);
+  const findPageHeading = () => wrapper.findByTestId('repository-heading');
+  const findFileIcon = () => wrapper.findComponent(FileIcon);
 
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
-  const createComponent = (props = {}, routeName = 'blobPathDecoded', provided = {}) => {
+  const createComponent = (props = {}, route = { name: 'blobPathDecoded' }, provided = {}) => {
     return shallowMountExtended(HeaderArea, {
       provide: {
         ...headerAppInjected,
@@ -57,7 +60,7 @@ describe('HeaderArea', () => {
       mocks: {
         $route: {
           ...defaultMockRoute,
-          name: routeName,
+          ...route,
         },
       },
     });
@@ -79,9 +82,22 @@ describe('HeaderArea', () => {
     expect(findBreadcrumbs().exists()).toBe(true);
   });
 
+  it('renders PageHeading component', () => {
+    expect(findPageHeading().exists()).toBe(true);
+  });
+
   describe('when rendered for tree view', () => {
     beforeEach(() => {
-      wrapper = createComponent({}, 'treePathDecoded');
+      wrapper = createComponent({}, { name: 'treePathDecoded', params: { path: 'project' } });
+    });
+
+    describe('PageHeading', () => {
+      it('displays correct directory name', () => {
+        expect(findPageHeading().text()).toContain('project');
+        expect(findFileIcon().props('fileName')).toBe('folder-open');
+        expect(findFileIcon().props('folder')).toBe(true);
+        expect(findFileIcon().classes('gl-text-gray-700')).toBe(true);
+      });
     });
 
     describe('Find file button', () => {
@@ -160,11 +176,23 @@ describe('HeaderArea', () => {
       expect(findCodeDropdown().exists()).toBe(false);
       expect(findSourceCodeDownloadDropdown().exists()).toBe(false);
     });
+
+    it('displays correct file name and icon', () => {
+      expect(findPageHeading().text()).toContain('index.js');
+      expect(findFileIcon().props('fileName')).toBe('index.js');
+      expect(findFileIcon().props('folder')).toBe(false);
+      expect(findFileIcon().classes('gl-text-gray-700')).toBe(false);
+    });
   });
 
-  describe('when isReadmeView is true', () => {
+  describe('when rendered for readme project overview', () => {
     beforeEach(() => {
-      wrapper = createComponent({}, 'treePathDecoded', { isReadmeView: true });
+      wrapper = createComponent({}, { name: 'treePathDecoded' }, { isReadmeView: true });
+    });
+
+    it('does not render directory name and icon', () => {
+      expect(findPageHeading().exists()).toBe(false);
+      expect(findFileIcon().exists()).toBe(false);
     });
 
     it('does not render RefSelector or Breadcrumbs', () => {
@@ -175,6 +203,25 @@ describe('HeaderArea', () => {
     it('does not render CodeDropdown and SourceCodeDownloadDropdown', () => {
       expect(findCodeDropdown().exists()).toBe(false);
       expect(findSourceCodeDownloadDropdown().exists()).toBe(false);
+    });
+  });
+
+  describe('when rendered for full project overview', () => {
+    beforeEach(() => {
+      wrapper = createComponent({}, { name: 'projectRoot' });
+    });
+
+    it('does not render directory name and icon', () => {
+      expect(findPageHeading().exists()).toBe(false);
+      expect(findFileIcon().exists()).toBe(false);
+    });
+
+    it('renders refSelector, breadcrumbs and tree controls with correct layout', () => {
+      expect(wrapper.find('section').classes()).toEqual([
+        'gl-items-center',
+        'gl-justify-between',
+        'sm:gl-flex',
+      ]);
     });
   });
 });

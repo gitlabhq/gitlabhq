@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category: :package_registry do
@@ -27,9 +28,7 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
       it 'creates a package' do
         expect(::Packages::TerraformModule::ProcessPackageFileWorker).to receive(:perform_async).once
 
-        expect { subject }
-          .to change { ::Packages::Package.count }.by(1)
-          .and change { ::Packages::Package.terraform_module.count }.by(1)
+        expect { subject }.to change { ::Packages::TerraformModule::Package.count }.by(1)
       end
     end
 
@@ -37,7 +36,7 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
       it 'returns duplicate package error' do
         is_expected.to be_error.and have_attributes(
           reason: :forbidden,
-          message: 'A package with the same name already exists in the namespace'
+          message: 'A module with the same name already exists in the namespace.'
         )
       end
     end
@@ -78,11 +77,11 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
       end
     end
 
-    context 'valid package' do
+    context 'when valid package' do
       it_behaves_like 'creating a package'
     end
 
-    context 'package already exists elsewhere' do
+    context 'when package already exists elsewhere' do
       let(:project2) { create(:project, namespace: namespace) }
       let!(:existing_package) do
         create(:terraform_module_package, project: project2, name: 'foo/bar', version: '1.0.0')
@@ -159,7 +158,7 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
         end
       end
 
-      context 'marked as pending_destruction' do
+      context 'when marked as pending_destruction' do
         before do
           existing_package.pending_destruction!
         end
@@ -168,13 +167,17 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
       end
     end
 
-    context 'version already exists' do
+    context 'when version already exists' do
       let!(:existing_version) { create(:terraform_module_package, project: project, name: 'foo/bar', version: '1.0.1') }
 
-      it { expect(subject[:reason]).to eq :forbidden }
-      it { expect(subject[:message]).to be 'Package version already exists.' }
+      it 'returns error' do
+        is_expected.to be_error.and have_attributes(
+          reason: :forbidden,
+          message: 'A module with the same name & version already exists in the project.'
+        )
+      end
 
-      context 'marked as pending_destruction' do
+      context 'when marked as pending_destruction' do
         before do
           existing_version.pending_destruction!
         end
@@ -186,15 +189,18 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
     context 'with empty version' do
       let(:overrides) { { module_version: '' } }
 
-      it { expect(subject[:reason]).to eq :bad_request }
-      it { expect(subject[:message]).to eq 'Version is empty.' }
+      it { is_expected.to be_error.and have_attributes(reason: :bad_request, message: 'Version is empty.') }
     end
 
     context 'with invalid name' do
       let(:overrides) { { module_name: 'foo@bar' } }
 
-      it { expect(subject[:reason]).to eq :unprocessable_entity }
-      it { expect(subject[:message]).to eq 'Validation failed: Name is invalid' }
+      it 'returns validation error' do
+        is_expected.to be_error.and have_attributes(
+          reason: :unprocessable_entity,
+          message: 'Validation failed: Name is invalid'
+        )
+      end
     end
   end
 end

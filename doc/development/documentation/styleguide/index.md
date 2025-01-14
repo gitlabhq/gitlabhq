@@ -222,6 +222,8 @@ However, in a few rare cases, features can be title case. These exceptions are:
 - Added to the [word list](word_list.md).
 
 If the term is not in the word list, ask a GitLab Technical Writer for advice.
+For assistance naming a feature and ensuring it meets GitLab standards, see
+[the handbook](https://handbook.gitlab.com/handbook/product/categories/gitlab-the-product/#naming-features).
 
 Do not match the capitalization of terms or phrases on the [Features page](https://about.gitlab.com/features/)
 or [`features.yml`](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/features.yml)
@@ -245,20 +247,32 @@ npm.
 ### Fake user information
 
 You may need to include user information in entries such as a REST call or user profile.
-Do not use real user information or email addresses in GitLab documentation. For email
-addresses and names, use:
+Do not use real user information or email addresses in GitLab documentation.
 
-- Email addresses: Use an email address ending in `example.com`.
-- Names: Use strings like `example_username`. Alternatively, use diverse or
-  non-gendered names with common surnames, such as `Sidney Jones`, `Zhang Wei`,
-  or `Alex Garcia`.
+For text:
+
+- Use diverse or non-gendered names with common surnames, like `Sidney Jones`, `Zhang Wei`, or `Alex Garcia`.
+- Make fake email addresses end in `example.com`.
+
+For screenshots:
+
+- Temporarily edit the page before you take the screenshot:
+
+  1. Right-click the text you want to change.
+  1. Select **Inspect**.
+  1. In the **Elements** dialog, edit the HTML to replace text that contains real user information with example data.
+  1. Close the dialog. All of the user data in the web page should now be replaced with the example data you entered.
+  1. Take the screenshot.
+
+- Alternatively, you can create example accounts in a test environment, and take the screenshot there.
+- If you can't easily reproduce the environment, you can blur the user data by using an image editing tool like Preview on macOS.
 
 ### Fake URLs
 
 When including sample URLs in the documentation, use:
 
 - `example.com` when the domain name is generic.
-- `gitlab.example.com` when referring only to self-managed GitLab instances.
+- `gitlab.example.com` when referring only to GitLab Self-Managed instances.
   Use `gitlab.com` for GitLab SaaS instances.
 
 ### Fake tokens
@@ -827,7 +841,7 @@ However, you should avoid putting too many links on any page. Too many links can
 To link to another documentation (`.md`) file in the same repository:
 
 - Use an inline link with a relative file path. For example, `[GitLab.com settings](../user/gitlab_com/index.md)`.
-- Put the entire link on a single line, even if the link is very long. ([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/MultiLineLinks.yml)).
+- Put the entire link on a single line, even if the link is very long. ([Vale](../testing/vale.md) rule: [`MultiLineLinks.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/MultiLineLinks.yml)).
 
 To link to a file outside of the documentation files, for example to link from development
 documentation to a specific code file, you can:

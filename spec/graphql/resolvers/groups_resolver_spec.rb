@@ -63,5 +63,17 @@ RSpec.describe Resolvers::GroupsResolver, feature_category: :groups_and_projects
         end
       end
     end
+
+    context 'with `owned_only` argument' do
+      let_it_be(:owned_group) { create(:group, name: 'with owner role', owners: user) }
+
+      context 'with `owned_only` argument provided' do
+        let(:params) { { owned_only: true } }
+
+        it 'return only owned groups' do
+          expect(subject).to contain_exactly(owned_group)
+        end
+      end
+    end
   end
 end

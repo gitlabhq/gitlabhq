@@ -3,6 +3,8 @@ data_category: standard
 key_path: edition
 description: Edition of GitLab such as EE or CE
 product_group: distribution_deploy
+product_categories:
+- build
 value_type: string
 status: active
 time_frame: none

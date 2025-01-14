@@ -11,6 +11,16 @@ module QA
         class All < Template
           include Bootable
           include SharedAttributes
+
+          pipeline_mappings test_on_cng: %w[cng-instance],
+            test_on_gdk: %w[gdk-instance gdk-instance-gitaly-transactions],
+            test_on_omnibus: %w[
+              instance
+              praefect
+              gitaly-transactions
+              gitaly-reftables-backend
+              git-sha256-repositories
+            ]
         end
       end
     end

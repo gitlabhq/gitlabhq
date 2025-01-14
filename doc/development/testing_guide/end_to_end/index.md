@@ -145,7 +145,9 @@ In order to limit amount of tests executed in a merge request, dynamic selection
 
 1. Changes in `qa` framework code would execute the full suite
 1. Changes in particular `_spec.rb` file in `qa` folder would execute only that particular test. In this case knapsack will not be used to run jobs in parallel.
-1. Merge request with backend changes and label `devops::manage` would execute all e2e tests related to `manage` stage. Jobs will be run in parallel in this case using knapsack.
+
+Experimental mapping of backed application code to e2e tests is being developed. It is currently in use for `test-on-gdk` pipeline. For more information, see
+[epic 47](https://gitlab.com/groups/gitlab-org/quality/quality-engineering/-/epics/47).
 
 #### Overriding selective test execution
 

@@ -370,6 +370,28 @@ describe('WorkItemLinkChild', () => {
     );
   });
 
+  describe('active state', () => {
+    it('applies blue background when child item is active', () => {
+      createComponent({
+        props: {
+          activeChildItemId: workItemObjectiveWithChild.id,
+        },
+      });
+
+      expect(findWorkItemLinkChildContents().classes()).toContain('gl-bg-blue-50');
+    });
+
+    it('does not apply blue background when child item is not active', () => {
+      createComponent({
+        props: {
+          activeChildItemId: 'gid://gitlab/WorkItem/3',
+        },
+      });
+
+      expect(findWorkItemLinkChildContents().classes()).not.toContain('gl-bg-blue-50');
+    });
+  });
+
   describe('when parent is same as the grand child', () => {
     it('hide the expand to avoid cyclic calls', () => {
       createComponent({

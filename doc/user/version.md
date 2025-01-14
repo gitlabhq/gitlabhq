@@ -9,11 +9,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Find the version of GitLab you're running.
 
-## For self-managed GitLab and GitLab Dedicated
+## For GitLab Self-Managed and GitLab Dedicated
 
 Prerequisites:
 

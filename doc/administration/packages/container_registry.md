@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 NOTE:
 The [next-generation container registry](container_registry_metadata_database.md)
@@ -1028,19 +1028,32 @@ projects_and_size = [["project_id", "creator_id", "registry_size_bytes", "projec
 # You need to specify the projects that you want to look through. You can get these in any manner.
 projects = Project.last(100)
 
-projects.each do |p|
-   project_total_size = 0
-   container_repositories = p.container_repositories
+registry_metadata_database = ContainerRegistry::GitlabApiClient.supports_gitlab_api?
 
-   container_repositories.each do |c|
-       c.tags.each do |t|
-          project_total_size = project_total_size + t.total_size unless t.total_size.nil?
-       end
-   end
+if registry_metadata_database
+  projects.each do |project|
+    size = project.container_repositories_size
+    if size > 0
+      projects_and_size << [project.project_id, project.creator&.id, size, project.full_path]
+    end
+  end
+else
+  projects.each do |project|
+    project_layers = {}
+    
+    project.container_repositories.each do |repository|
+      repository.tags.each do |tag|
+        tag.layers.each do |layer|
+          project_layers[layer.digest] ||= layer.size
+        end
+      end
+    end
 
-   if project_total_size > 0
-      projects_and_size << [p.project_id, p.creator&.id, project_total_size, p.full_path]
-   end
+    total_size = project_layers.values.compact.sum
+    if total_size > 0
+      projects_and_size << [project.project_id, project.creator&.id, total_size, project.full_path]
+    end
+  end
 end
 
 # print it as comma separated output
@@ -1048,6 +1061,9 @@ projects_and_size.each do |ps|
    puts "%s,%s,%s,%s" % ps
 end
 ```
+
+NOTE:
+The script calculates size based on container image layers. Since layers can be shared across multiple projects, the results are approximate but give a good indication of relative disk usage between projects.
 
 To remove image tags by running the cleanup policy, run the following commands in the
 [GitLab Rails console](../operations/rails_console.md):
@@ -1095,7 +1111,7 @@ end
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 17.3.
 
@@ -1372,6 +1388,13 @@ for Registry to run separately from GitLab:
   contents are written to disk.
 - `registry['health_storagedriver_enabled']`, default [set programmatically](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-7-stable/files/gitlab-cookbooks/gitlab/libraries/registry.rb#L88). Configure whether health checks on the configured storage driver are enabled.
 - `gitlab_rails['registry_issuer']`, [default value](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/10-3-stable/files/gitlab-cookbooks/gitlab/attributes/default.rb#L153). This setting needs to be set the same between Registry and GitLab.
+
+<!--- start_remove The following content will be removed on remove_date: '2025/08/15' -->
+
+WARNING:
+Support for authenticating requests using Amazon S3 Signature Version 2 in the container registry is deprecated in GitLab 17.8 and is planned for removal in 18.0. Use Signature Version 4 instead. This is a breaking change. For more information, see [issue 1449](https://gitlab.com/gitlab-org/container-registry/-/issues/1449).
+
+<!--- end_remove -->
 
 ### Configure GitLab
 

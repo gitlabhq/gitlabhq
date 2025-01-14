@@ -109,7 +109,7 @@ module PackagesHelper
       project_list_url: project_packages_path(project),
 
       settings_path: if show_package_registry_settings(project)
-                       project_settings_packages_and_registries_path(project)
+                       project_settings_packages_and_registries_path(project, anchor: 'package-registry-settings')
                      else
                        ''
                      end

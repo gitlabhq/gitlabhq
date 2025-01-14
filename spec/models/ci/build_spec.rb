@@ -558,6 +558,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       it { expect(eager_load_for_api.last.association(:job_artifacts)).to be_loaded }
       it { expect(eager_load_for_api.last.association(:runner)).to be_loaded }
       it { expect(eager_load_for_api.last.association(:tags)).to be_loaded }
+      it { expect(eager_load_for_api.last.association(:ci_stage)).to be_loaded }
       it { expect(eager_load_for_api.last.association(:pipeline)).to be_loaded }
       it { expect(eager_load_for_api.last.pipeline.association(:project)).to be_loaded }
     end
@@ -3112,6 +3113,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it { is_expected.to include(key: pipeline_schedule_variable.key, value: pipeline_schedule_variable.value, public: false, masked: false) }
+      it { is_expected.to include(key: 'CI_PIPELINE_SCHEDULE_DESCRIPTION', value: pipeline_schedule.description, public: true, masked: false) }
     end
 
     context 'when container registry is enabled' do

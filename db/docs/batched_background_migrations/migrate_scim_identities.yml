@@ -1,0 +1,8 @@
+---
+migration_job_name: MigrateScimIdentities
+description: Migrate Group scoped scim identities to new table
+feature_category: system_access
+introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170565'
+milestone: '17.8'
+queued_migration_version: 20250106175246
+finalized_by: # version of the migration that finalized this BBM

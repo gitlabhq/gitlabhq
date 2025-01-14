@@ -38,20 +38,19 @@ class StaticAnalysis
   # contain values that a FOSS installation won't find. To work
   # around this we will only enable this task on EE installations.
   TASKS_WITH_DURATIONS_SECONDS = [
-    Task.new(%w[yarn run lint:prettier], 200),
-    Task.new(%w[bin/rake gettext:lint], 105),
-    Task.new(%W[scripts/license-check.sh #{project_path}], 200),
-    (Gitlab.ee? ? Task.new(%w[bin/rake gettext:updated_check], 40) : nil),
-    Task.new(%w[bin/rake lint:static_verification], 40),
+    Task.new(%w[yarn run lint:prettier], 270),
+    Task.new(%w[bin/rake gettext:lint], 120),
+    Task.new(%W[scripts/license-check.sh #{project_path}], 80),
+    (Gitlab.ee? ? Task.new(%w[bin/rake gettext:updated_check], 60) : nil),
+    Task.new(%w[bin/rake lint:static_verification], 45),
+    Task.new(%w[bin/rake gitlab:sidekiq:all_queues_yml:check], 30),
+    (Gitlab.ee? ? Task.new(%w[bin/rake gitlab:sidekiq:sidekiq_queues_yml:check], 25) : nil),
     Task.new(%w[bin/rake config_lint], 10),
-    Task.new(%w[bin/rake gitlab:sidekiq:all_queues_yml:check], 15),
-    (Gitlab.ee? ? Task.new(%w[bin/rake gitlab:sidekiq:sidekiq_queues_yml:check], 11) : nil),
-    Task.new(%w[yarn run internal:stylelint], 33),
-    Task.new(%w[scripts/lint-conflicts.sh], 1),
-    Task.new(%w[yarn run block-dependencies], 1),
+    Task.new(%w[yarn run internal:stylelint], 10),
+    Task.new(%w[scripts/lint-conflicts.sh], 10),
+    Task.new(%w[scripts/lint-vendored-gems.sh], 10),
     Task.new(%w[yarn run check-dependencies], 1),
-    Task.new(%w[scripts/gemfile_lock_changed.sh], 1),
-    Task.new(%w[scripts/lint-vendored-gems.sh], 1)
+    Task.new(%w[scripts/gemfile_lock_changed.sh], 1)
   ].compact.freeze
 
   def run_tasks!(options = {})

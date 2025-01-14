@@ -841,6 +841,9 @@ Gitlab.ee do
   Settings.cron_jobs['search_elastic_metrics_update_cron_worker'] ||= {}
   Settings.cron_jobs['search_elastic_metrics_update_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['search_elastic_metrics_update_cron_worker']['job_class'] ||= 'Search::Elastic::MetricsUpdateCronWorker'
+  Settings.cron_jobs['search_zoekt_metrics_update_cron_worker'] ||= {}
+  Settings.cron_jobs['search_zoekt_metrics_update_cron_worker']['cron'] ||= '*/1 * * * *'
+  Settings.cron_jobs['search_zoekt_metrics_update_cron_worker']['job_class'] ||= 'Search::Zoekt::MetricsUpdateCronWorker'
   Settings.cron_jobs['pause_control_resume_worker'] ||= {}
   Settings.cron_jobs['pause_control_resume_worker']['cron'] ||= '*/5 * * * *'
   Settings.cron_jobs['pause_control_resume_worker']['job_class'] ||= 'PauseControl::ResumeWorker'
@@ -965,6 +968,12 @@ Gitlab.ee do
   Settings.cron_jobs['members_schedule_prune_deletions_worker'] ||= {}
   Settings.cron_jobs['members_schedule_prune_deletions_worker']['cron'] ||= "*/5 * * * *"
   Settings.cron_jobs['members_schedule_prune_deletions_worker']['job_class'] = 'Members::SchedulePruneDeletionsWorker'
+  Settings.cron_jobs['ai_conversation_cleanup_cron_worker'] ||= {}
+  Settings.cron_jobs['ai_conversation_cleanup_cron_worker']['cron'] ||= '30 2 * * *'
+  Settings.cron_jobs['ai_conversation_cleanup_cron_worker']['job_class'] = 'Ai::Conversation::CleanupCronWorker'
+  Settings.cron_jobs['namespaces_enable_descendants_cache_cron_worker'] ||= {}
+  Settings.cron_jobs['namespaces_enable_descendants_cache_cron_worker']['cron'] ||= '*/11 * * * *'
+  Settings.cron_jobs['namespaces_enable_descendants_cache_cron_worker']['job_class'] = 'Namespaces::EnableDescendantsCacheCronWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}
@@ -976,9 +985,9 @@ Gitlab.ee do
     Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker'] ||= {}
     Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker']['cron'] ||= "0 */6 * * *"
     Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker']['job_class'] = 'GitlabSubscriptions::ScheduleRefreshSeatsWorker'
-    Settings.cron_jobs['click_house_audit_events_sync_worker'] ||= {}
-    Settings.cron_jobs['click_house_audit_events_sync_worker']['cron'] ||= "*/3 * * * *"
-    Settings.cron_jobs['click_house_audit_events_sync_worker']['job_class'] = 'ClickHouse::AuditEventsSyncWorker'
+    Settings.cron_jobs['namespaces_schedule_dormant_member_removal_worker'] ||= {}
+    Settings.cron_jobs['namespaces_schedule_dormant_member_removal_worker']['cron'] ||= "0 */6 * * *"
+    Settings.cron_jobs['namespaces_schedule_dormant_member_removal_worker']['job_class'] = 'Namespaces::ScheduleDormantMemberRemoval'
     Settings.cron_jobs['gitlab_subscriptions_offline_cloud_license_provision_worker']['status'] = 'disabled'
     Settings.cron_jobs['send_recurring_notifications_worker'] ||= {}
     Settings.cron_jobs['send_recurring_notifications_worker']['cron'] ||= '0 7 * * *'
@@ -989,6 +998,11 @@ Gitlab.ee do
     Settings.cron_jobs['block_pipl_users_worker']['cron'] ||= '0 8 * * *'
     Settings.cron_jobs['block_pipl_users_worker']['job_class'] =
       'ComplianceManagement::Pipl::BlockPiplUsersWorker'
+
+    Settings.cron_jobs['delete_pipl_users_worker'] ||= {}
+    Settings.cron_jobs['delete_pipl_users_worker']['cron'] ||= '0 8 * * *'
+    Settings.cron_jobs['delete_pipl_users_worker']['job_class'] =
+      'ComplianceManagement::Pipl::DeletePiplUsersWorker'
   end
 
   Gitlab.jh do
@@ -1043,8 +1057,8 @@ Settings.topology_service['private_key_file'] ||= '/home/git/gitlab/config/topol
 # Cells
 #
 Settings['cell'] ||= {}
-Settings.cell['id'] ||= 1
-Settings.cell['name'] ||= 'cell-1'
+Settings.cell['id'] ||= nil
+Settings.cell['name'] ||= nil
 Settings.cell['skip_sequence_alteration'] ||= false
 
 #

@@ -29,12 +29,12 @@ export default {
     };
   },
   i18n: {
-    xAxisLabel: s__('ExperimentTracking|Candidate'),
+    xAxisLabel: s__('ExperimentTracking|Run'),
     yAxisLabel: s__('ExperimentTracking|Metric value'),
-    createNewCandidateLabel: s__('ExperimentTracking|Create candidate using MLflow'),
-    emptyStateLabel: s__('ExperimentTracking|No candidates'),
+    createNewCandidateLabel: s__('ExperimentTracking|Create run using MLflow'),
+    emptyStateLabel: s__('ExperimentTracking|No runs with logged metrics'),
     emptyStateDescriptionLabel: s__(
-      'ExperimentTracking|Performance graph will be shown when candidates with logged metrics are available',
+      'ExperimentTracking|Performance graph will be shown when runs with logged metrics are available',
     ),
   },
   computed: {

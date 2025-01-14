@@ -10,7 +10,7 @@ redirect_to: 'omniauth.md#supported-providers'
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/416000) in GitLab 16.2
 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/416281) in 17.0.

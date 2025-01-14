@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 When you deploy a version of your code to an environment, you create a deployment.
 There is usually only one active deployment per environment.
@@ -156,7 +156,7 @@ When you work with deployments, you might encounter the following issues.
 GitLab [deletes old deployment refs](#archive-old-deployments)
 to keep your Git repository performant.
 
-If you have to restore archived Git-refs, ask an administrator of your self-managed GitLab instance
+If you have to restore archived Git-refs on GitLab Self-Managed, ask an administrator
 to execute the following command on Rails console:
 
 ```ruby

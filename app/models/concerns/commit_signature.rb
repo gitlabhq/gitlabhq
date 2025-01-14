@@ -44,20 +44,20 @@ module CommitSignature
 
   def reverified_status
     return verification_status unless Feature.enabled?(:check_for_mailmapped_commit_emails, project)
-    return verification_status unless verified_signature_type? || verified_system?
+    return verification_status unless verified? || verified_system?
 
-    verified_emails = signed_by_user&.verified_emails
-    if verified_emails&.exclude?(commit.author_email)
-      'unverified_author_email'
-    else
-      verification_status
-    end
+    return 'unverified_author_email' if emails_for_verification&.exclude?(commit&.author_email)
+
+    verification_status
   end
 
   private
 
-  # We are omitting x509 signature types until https://gitlab.com/gitlab-org/gitlab/-/issues/498188 is complete
-  def verified_signature_type?
-    verified? && (ssh? || gpg?)
+  def emails_for_verification
+    if x509?
+      x509_certificate.all_emails
+    else
+      signed_by_user&.verified_emails
+    end
   end
 end

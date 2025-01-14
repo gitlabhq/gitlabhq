@@ -17,10 +17,6 @@ module API
 
       before do
         authenticated_as_admin!
-
-        if Feature.disabled?(:admin_agnostic_token_finder, current_user)
-          render_api_error!("'admin_agnostic_token_finder' feature flag is disabled", :not_found)
-        end
       end
 
       rescue_from ArgumentError do |e|
@@ -32,8 +28,7 @@ module API
       end
       namespace 'admin/token' do
         desc 'Get information about a token.' do
-          detail 'This feature was introduced in GitLab 17.5.
-                  This feature is gated by the :admin_agnostic_token_finder feature flag.'
+          detail 'This feature was introduced in GitLab 17.5.'
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
@@ -53,8 +48,7 @@ module API
         end
 
         desc 'Revoke a token.' do
-          detail 'This feature was introduced in GitLab 17.7.
-                  This feature is gated by the :admin_agnostic_token_finder and api_admin_token_revoke feature flags.'
+          detail 'This feature was introduced in GitLab 17.7.'
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },

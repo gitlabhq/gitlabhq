@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 A service account is a type of machine user that is not tied to an individual human
 user.
@@ -34,7 +34,7 @@ token for [Git operations](personal_access_tokens.md#clone-repository-using-pers
 [Rate limits](../../security/rate_limits.md) apply to service accounts:
 
 - On GitLab.com, there are [GitLab.com-specific rate limits](../gitlab_com/index.md#gitlabcom-specific-rate-limits).
-- On self-managed GitLab and GitLab Dedicated, there are both:
+- On GitLab Self-Managed and GitLab Dedicated, there are both:
   - [Configurable rate limits](../../security/rate_limits.md#configurable-limits).
   - [Non-configurable rate limits](../../security/rate_limits.md#non-configurable-limits).
 
@@ -67,7 +67,7 @@ Prerequisites:
 
    This service account is associated only with your top-level group.
 
-1. [List all service account users](../../api/group_service_accounts.md#list-service-account-users).
+1. [List all service account users](../../api/group_service_accounts.md#list-all-service-account-users).
 
 1. [Create a personal access token](../../api/group_service_accounts.md#create-a-personal-access-token-for-a-service-account-user)
    for the service account user.
@@ -84,7 +84,7 @@ Prerequisites:
 ### Administrators in GitLab self-managed
 
 DETAILS:
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Prerequisites:
 
@@ -210,3 +210,15 @@ If you are not an administrator for the instance or group a service account is a
 - [Project access tokens - bot users](../project/settings/project_access_tokens.md#bot-users-for-projects)
 - [Group access tokens - bot users](../group/settings/group_access_tokens.md#bot-users-for-groups)
 - [Internal users](../../administration/internal_users.md#internal-users)
+
+## Troubleshooting
+
+### "You are about to incur additional charges" warning when adding a service account
+
+When you add a service account, you might see a warning message stating that this action will incur additional charges due to exceeding the subscription seat count.
+This behavior is being tracked in [issue 433141](https://gitlab.com/gitlab-org/gitlab/-/issues/433141).
+
+Adding a service account does not:
+
+- Incur additional charges.
+- Increase your seat usage count after you've added the account.

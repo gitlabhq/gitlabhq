@@ -178,6 +178,13 @@ As documented in the [Docker Official Images](https://github.com/docker-library/
 it is strongly encouraged that version number tags be given aliases which allows the user to easily refer to the "most recent" release of a particular series.
 See also [Docker Tagging: Best practices for tagging and versioning Docker images](https://learn.microsoft.com/en-us/archive/blogs/stevelasker/docker-tagging-best-practices-for-tagging-and-versioning-docker-images).
 
+### Permissions
+
+To run a Docker container with non-root privileges the following user and group must be present in the container:
+
+- User `gitlab` with user ID `1000`
+- Group `gitlab` with group ID `1000`
+
 ## Command line
 
 A scanner is a command-line tool that takes environment variables as inputs,
@@ -320,8 +327,9 @@ If a report uses a `PATCH` version that doesn't match any vendored schema versio
 the latest vendored `PATCH` version. For example, if a report version is 15.0.23 and the latest vendored
 version is 15.0.6, the report is validated against version 15.0.6.
 
-GitLab uses the [`gitlab-security_report_schemas`](https://rubygems.org/gems/gitlab-security_report_schemas)
-gem to perform validation. You can see which schema versions are supported in your GitLab version
+GitLab validates reports against security report JSON schemas
+it reads from the [`gitlab-security_report_schemas`](https://rubygems.org/gems/gitlab-security_report_schemas)
+gem. You can see which schema versions are supported in your GitLab version
 by looking at the version of the gem in your GitLab installation. For example,
 [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/blob/93a2a651a48bd03d9d84847e1cade19962ab4292/Gemfile#L431)
 uses version `0.1.2.min15.0.0.max15.2.0`, which means it has versions in the range `15.0.0` and `15.2.0`.

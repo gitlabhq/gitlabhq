@@ -140,6 +140,30 @@ export const highlighter = (li, query) => {
   return li.replace(regexp, (str, $1, $2, $3) => `> ${$1}<strong>${$2}</strong>${$3} <`);
 };
 
+/**
+ * Sets up subommands for quickaction for the given
+ * input with the provided command and the subcommand descriptions.
+ *
+ * @param {Object} $input input element
+ * @param {string} cmd command that triggers subcommand selection
+ * @param {Record<string, { header: string, description: string }>} data object containing names of commands as keys with description and header as values
+ *
+ */
+export const setupSubcommands = ($input, cmd, data) => {
+  $input.filter('[data-supports-quick-actions="true"]').atwho({
+    // Always keep the trailing space otherwise the command won't display correctly
+    at: `/${cmd} `,
+    alias: cmd,
+    data: Object.keys(data),
+    maxLen: 100,
+    displayTpl({ name }) {
+      const { header, description } = data[name];
+
+      return `<li><span class="name gl-font-bold">${lodashEscape(header)}</span><small class="description"><em>${lodashEscape(description)}</em></small></li>`;
+    },
+  });
+};
+
 export const defaultAutocompleteConfig = {
   emojis: true,
   members: true,
@@ -318,18 +342,7 @@ class GfmAutoComplete {
       },
     };
 
-    $input.filter('[data-supports-quick-actions="true"]').atwho({
-      // Always keep the trailing space otherwise the command won't display correctly
-      at: '/submit_review ',
-      alias: 'submit_review',
-      data: Object.keys(REVIEW_STATES),
-      maxLen: 100,
-      displayTpl({ name }) {
-        const reviewState = REVIEW_STATES[name];
-
-        return `<li><span class="name gl-font-bold">${reviewState.header}</span><small class="description"><em>${reviewState.description}</em></small></li>`;
-      },
-    });
+    setupSubcommands($input, 'submit_review', REVIEW_STATES);
   }
 
   setupEmoji($input) {
@@ -977,9 +990,7 @@ class GfmAutoComplete {
     } else if (dataSource) {
       AjaxCache.retrieve(dataSource, true)
         .then((data) => {
-          if (data.some((c) => c.name === 'submit_review')) {
-            this.setSubmitReviewStates($input);
-          }
+          this.loadSubcommands($input, data);
           this.loadData($input, at, data);
         })
         .catch(() => {
@@ -987,6 +998,12 @@ class GfmAutoComplete {
         });
     } else {
       this.isLoadingData[at] = false;
+    }
+  }
+
+  loadSubcommands($input, data) {
+    if (data.some((c) => c.name === 'submit_review')) {
+      this.setSubmitReviewStates($input);
     }
   }
 

@@ -36,9 +36,8 @@ module WhatsNewHelper
     when 'current_tier'
       _("Only include features new to your current subscription tier.")
     when 'disabled'
-      _("%{italic_start}What's new%{italic_end} is inactive and cannot be viewed.").html_safe % {
-        italic_start: '<i>'.html_safe, italic_end: '</i>'.html_safe
-      }
+      safe_format(_("%{italic_start}What's new%{italic_end} is inactive and cannot be viewed."),
+        tag_pair(tag.i, :italic_start, :italic_end))
     end
   end
 end

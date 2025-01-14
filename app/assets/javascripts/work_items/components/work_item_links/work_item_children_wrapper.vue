@@ -100,6 +100,11 @@ export default {
       required: false,
       default: null,
     },
+    activeChildItemId: {
+      type: String,
+      required: false,
+      default: null,
+    },
     parentId: {
       type: String,
       required: false,
@@ -551,6 +556,7 @@ export default {
       :is-top-level="isTopLevel"
       :data-child-title="child.title"
       :data-child-type="child.workItemType.name"
+      :active-child-item-id="activeChildItemId"
       :parent-id="parentId"
       class="!gl-border-x-0 !gl-border-b-1 !gl-border-t-0 !gl-border-solid !gl-pb-2 last:!gl-border-b-0 last:!gl-pb-0"
       @drag="$emit('drag', $event)"

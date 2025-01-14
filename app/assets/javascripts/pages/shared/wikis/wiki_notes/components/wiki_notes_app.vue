@@ -1,5 +1,6 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
+import { cloneDeep } from 'lodash';
 import { __ } from '~/locale';
 import wikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';
 import SkeletonNote from '~/vue_shared/components/notes/skeleton_note.vue';
@@ -61,7 +62,7 @@ export default {
       },
       result({ data }) {
         this.noteableId = data?.wikiPage?.id || '';
-        this.discussions = data?.wikiPage?.discussions?.nodes || [];
+        this.discussions = cloneDeep(data?.wikiPage?.discussions?.nodes) || [];
       },
     },
   },
@@ -116,6 +117,24 @@ export default {
     getDiscussionKey(key, stringModifier) {
       return [key, stringModifier].join('-');
     },
+
+    handleDeleteNote(noteId, discussionId) {
+      const discussionIndex = this.discussions.findIndex(
+        (discussion) => discussion.id === discussionId,
+      );
+
+      if (discussionIndex === -1) return;
+
+      if (this.discussions[discussionIndex].notes.nodes.length === 1) {
+        this.discussions = this.discussions.filter(({ id }) => id !== discussionId);
+      } else {
+        const updatedNotes = this.discussions[discussionIndex].notes.nodes.filter(
+          ({ id }) => id !== noteId,
+        );
+
+        this.discussions[discussionIndex].notes.nodes = updatedNotes;
+      }
+    },
   },
 };
 </script>
@@ -159,6 +178,7 @@ export default {
               :key="getDiscussionKey(discussion.id, 'discussion')"
               :noteable-id="noteableId"
               :discussion="discussion.notes.nodes"
+              @note-deleted="(noteId) => handleDeleteNote(noteId, discussion.id)"
             />
           </template>
         </ul>

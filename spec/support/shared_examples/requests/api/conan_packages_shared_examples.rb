@@ -9,7 +9,7 @@ RSpec.shared_examples 'conan ping endpoint' do
     get api(url)
 
     expect(response).to have_gitlab_http_status(:ok)
-    expect(response.headers['X-Conan-Server-Capabilities']).to eq("")
+    expect(response.headers['X-Conan-Server-Capabilities']).to eq(x_conan_server_capabilities_header)
   end
 
   context 'packages feature disabled' do

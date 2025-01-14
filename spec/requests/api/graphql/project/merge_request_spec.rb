@@ -28,7 +28,7 @@ RSpec.describe 'getting merge request information nested in a project', feature_
     # mergeTrains because it is a licensed feature
     let(:excluded) do
       %w[jobs pipeline runners codequalityReportsComparer
-        mlModels inboundAllowlistCount groupsAllowlistCount mergeTrains ciJobTokenAuthLogs]
+        mlModels inboundAllowlistCount groupsAllowlistCount mergeTrains ciJobTokenAuthLogs mlExperiments]
     end
 
     let(:mr_fields) { all_graphql_fields_for('MergeRequest', excluded: excluded) }

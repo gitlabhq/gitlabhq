@@ -8,14 +8,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 **LLMs:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet), Anthropic [Claude 3 Haiku](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-haiku), and [Vertex AI Search](https://cloud.google.com/enterprise-search). The LLM depends on the question asked.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) as an [experiment](../../policy/development_stages_support.md#experiment) for SaaS in GitLab 16.0.
 > - Changed to [beta](../../policy/development_stages_support.md#beta) for SaaS in GitLab 16.6.
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11251) as a [beta](../../policy/development_stages_support.md#beta) for self-managed in GitLab 16.8.
 > - Changed from Ultimate to [Premium](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142808) tier in GitLab 16.9 while in [beta](../../policy/development_stages_support.md#beta).
-> - Changed to [generally available](../../policy/development_stages_support.md#generally-available-ga) in GitLab 16.11.
+> - [Generally available](../../policy/development_stages_support.md#generally-available) in GitLab 16.11.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 GitLab Duo Chat is your personal AI-powered assistant for boosting productivity.
@@ -32,35 +32,50 @@ You can use GitLab Duo Chat in:
 - Visual Studio for Windows, with the [GitLab Extension for Visual Studio](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio)
 
 NOTE:
-If you have self-managed GitLab: GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
+If you have GitLab Self-Managed: GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
 
 ## The context Chat is aware of
 
 GitLab Duo Chat is sometimes aware of the context you're working in.
 Other times, you must be more specific with your request.
 
+The context Chat is aware of also depends on your subscription tier:
+
+- In the GitLab UI:
+  - Chat is aware of code files if you have either Premium with GitLab Duo Pro, or
+    Ultimate with GitLab Duo Pro or Enterprise.
+  - For all other areas, you must have Ultimate with GitLab Duo Enterprise.
+- In the IDEs:
+  - Chat is aware of selected lines in the editor if you have either Premium with
+    GitLab Duo Pro, or Ultimate with GitLab Duo Pro or Enterprise.
+  - For all other areas, you must have Ultimate with GitLab Duo Enterprise.
+
 In the GitLab UI, GitLab Duo Chat knows about these areas:
 
-| Area          | How to ask Chat                                                                                                  |
-|---------------|------------------------------------------------------------------------------------------------------------------|
-| Epics         | From the epic, ask about `this epic`, `this`, or the URL. From any UI area, ask about the URL.                   |
-| Issues        | From the issue, ask about `this issue`, `this`, or the URL. From any UI area, ask about the URL.                 |
-| Code files    | From the single file, ask about `this code` or `this file`. From any UI area, ask about the URL.                 |
+| Area           | How to ask Chat                                                                                                                                                                             |
+|----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Epics          | From the epic, ask about `this epic`, `this`, or the URL. From any UI area, ask about the URL.                                                                                              |
+| Issues         | From the issue, ask about `this issue`, `this`, or the URL. From any UI area, ask about the URL.                                                                                            |
+| Code files     | From the single file, ask about `this code` or `this file`. From any UI area, ask about the URL.                                                                                            |
 | Merge requests | From the merge request, ask about `this merge request`, `this`, or the URL. For more information, see [Ask about a specific merge request](examples.md#ask-about-a-specific-merge-request). |
-| Commits        | From the commit, ask about `this commit` or `this`. From any UI area, ask about the URL.                        |
-| Pipeline jobs  | From the pipeline job, ask about `this pipeline job` or `this`. From any UI area, ask about the URL.            |
+| Commits        | From the commit, ask about `this commit` or `this`. From any UI area, ask about the URL.                                                                                                    |
+| Pipeline jobs  | From the pipeline job, ask about `this pipeline job` or `this`. From any UI area, ask about the URL.                                                                                        |
 
 In the IDEs, GitLab Duo Chat knows about these areas:
 
-| Area    | How to ask Chat  |
-|---------|------------------|
-| Selected lines in the editor | With the lines selected, ask about `this code` or `this file`. Chat is not aware of the file; you must select the lines you want to ask about. |
-| Epics   | Ask about the URL. |
-| Issues  | Ask about the URL. |
+| Area                         | How to ask Chat                                                                                                                                                                                                                                                                                        |
+|------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Selected lines in the editor | With the lines selected, ask about `this code` or `this file`. Chat is not aware of the file; you must select the lines you want to ask about.                                                                                                                                                         |
+| Epics                        | Ask about the URL.                                                                                                                                                                                                                                                                                     |
+| Issues                       | Ask about the URL.                                                                                                                                                                                                                                                                                     |
+| Files                        | Use the `/include` command to search for project file(s) to add to Duo Chat's context. After you've added the files, you can ask Duo Chat questions about the file contents. Available for VS Code only. For more information see [Include Context in the IDE](examples.md#ask-about-specific-files) |
 
 In addition, in the IDEs, when you use any of the slash commands,
 like `/explain`, `/refactor`, `/fix`, or `/tests,` Duo Chat has access to the
 code you selected.
+
+NOTE:
+[Repository X-Ray](../project/repository/code_suggestions/repository_xray.md) automatically enriches code generation requests for [GitLab Duo Code Suggestions](../project/repository/code_suggestions/index.md). If your project has access to Code Suggestions, then the `/refactor`, `/fix`, and `/tests` slash commands also have access to the latest Repository X-Ray report, and include that report as context for Duo.
 
 Duo Chat always has access to:
 
@@ -126,6 +141,7 @@ If you have selected code in the editor, this selection is sent along with your 
 ### In the editor window
 
 > - Introduced as [generally available](https://gitlab.com/groups/gitlab-org/-/epics/15218) in the GitLab Workflow extension for VS Code 5.15.0.
+> - Insert Snippet [added](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/merge_requests/2150) in the GitLab Workflow extension for VS Code 5.25.0.
 
 To open GitLab Duo Chat in the editor window, use any of these methods:
 
@@ -143,6 +159,7 @@ After Quick Chat opens:
    - Enter `/` to display all available commands.
    - Enter `/re` to display `/refactor`.
 1. To send your question, select **Send**, or press <kbd>Command</kbd> + <kbd>Enter</kbd>.
+1. Use the **Copy Snippet** and **Insert Snippet** links above code blocks in the responses to interact with them.
 1. To exit chat, either select the chat icon in the gutter, or press **Escape** while focused on the chat.
 
 ## Use GitLab Duo Chat in Visual Studio for Windows

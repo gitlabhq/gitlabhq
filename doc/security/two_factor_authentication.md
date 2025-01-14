@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 [Two-factor authentication (2FA)](../user/profile/account/two_factor_authentication.md)
 is an authentication method that requires the user to provide two different factors
@@ -21,13 +21,13 @@ to prove their identity:
 they would need both factors.
 
 NOTE:
-If you are [using and enforcing SSO](../user/group/saml_sso/index.md#sso-enforcement), you might already be enforcing 2FA on the identity provider (IDP) side. Enforcing 2FA on GitLab as well might be unnecessary.
+If you are [using and enforcing SSO](../user/group/saml_sso/index.md#sso-enforcement), you might already be enforcing 2FA on the identity provider (IdP) side. Enforcing 2FA on GitLab as well might be unnecessary.
 
 ## Enforce 2FA for all users
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Administrators can enforce 2FA for all users in two different ways:
 
@@ -61,7 +61,7 @@ For more information, see the [list of settings that can be accessed through API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/427549) in GitLab 16.8.
 
@@ -82,13 +82,18 @@ If you are using an external provider to sign in into GitLab, this setting will 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+You can enforce 2FA for all users in a group or subgroup.
+
+NOTE:
+2FA enforcement applies to both [direct and inherited members](../user/project/members/index.md#membership-types) group members. If 2FA is enforced on a subgroup, members of the parent group must also enroll an authentication factor.
 
 Prerequisites:
 
 - You must have the Maintainer or Owner role for the group.
 
-To enforce 2FA only for certain groups:
+To enforce 2FA for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
@@ -100,8 +105,6 @@ To enforce 2FA only for certain groups:
    and projects, the shortest grace period is used.
 1. Select **Save changes**.
 
-Enforcement affects all [direct and inherited members](../user/project/members/index.md#membership-types) in the group.
-
 Access tokens are not required to provide a second factor for authentication because
 they are API-based. Tokens generated before 2FA is enforced remain valid.
 
@@ -109,17 +112,13 @@ The GitLab [incoming email](../administration/incoming_email.md) feature does no
 
 ### 2FA in subgroups
 
-You can enable and enforce 2FA for individual subgroups in the same way as a top
-level group.
+By default, each subgroup can configure 2FA requirements that might differ from the parent group.
 
-You can prevent subgroups from setting up their own 2FA requirements:
+To prevent subgroups from setting individual 2FA requirements:
 
 1. Go to the top-level group's **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Clear the **Allow subgroups to set up their own two-factor authentication rule** checkbox.
-
-This action causes all subgroups with 2FA requirements to stop requiring 2FA from
-their members.
 
 ### 2FA in projects
 
@@ -141,11 +140,11 @@ enabled, 2FA is **not** required for those individually added members.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 You can disable 2FA for a single user or all users.
 
-This is a permanent and irreversible action. Users must reactivate 2FA to use it again.
+This action is permanent and irreversible. Users must reactivate 2FA to use it again.
 
 WARNING:
 Disabling 2FA for users does not disable the [enforce 2FA for all users](#enforce-2fa-for-all-users)
@@ -199,13 +198,13 @@ To disable 2FA for all users even when forced 2FA is disabled, use the following
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - It's deployed behind a feature flag, disabled by default.
 > - Push notification support [introduced](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/506) in GitLab 15.3.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `two_factor_for_cli`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use. This feature flag also affects [session duration for Git Operations when 2FA is enabled](../administration/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
+On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `two_factor_for_cli`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use. This feature flag also affects [session duration for Git Operations when 2FA is enabled](../administration/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
 
 You can enforce 2FA for [Git over SSH operations](../development/gitlab_shell/features.md#git-operations). However, you should use
 [ED25519_SK](../user/ssh.md#ed25519_sk-ssh-keys) or [ECDSA_SK](../user/ssh.md#ecdsa_sk-ssh-keys) SSH keys instead. 2FA is enforced for Git operations only, and internal commands such as [`personal_access_token`](../development/gitlab_shell/features.md#personal-access-token) are excluded.

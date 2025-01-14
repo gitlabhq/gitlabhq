@@ -24,9 +24,11 @@ module QA
           element 'id-of-application-field'
         end
 
-        view 'app/assets/javascripts/vue_shared/components/form/input_copy_toggle_visibility.vue' do
+        # rubocop:disable Layout/LineLength -- Single line is more readable
+        view 'app/assets/javascripts/vue_shared/components/input_copy_toggle_visibility/input_copy_toggle_visibility.vue' do
           element 'clipboard-button'
         end
+        # rubocop:enable Layout/LineLength
 
         def click_new_application_button
           click_element 'new-application-button'

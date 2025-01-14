@@ -1,7 +1,6 @@
 <script>
 import { GlBadge, GlButton, GlTooltipDirective, GlIcon, GlModal, GlToggle } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { labelForStrategy } from '../utils';
 
 import StrategyLabel from './strategy_label.vue';
@@ -23,7 +22,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: ['csrfToken'],
   props: {
     featureFlags: {

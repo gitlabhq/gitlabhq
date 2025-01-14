@@ -1,0 +1,16 @@
+- title: "`scanResultPolicies` GraphQL field is deprecated"
+  removal_milestone: "19.0"
+  announcement_milestone: "17.8"
+  breaking_change: true
+  window: 1
+  reporter: g.hickman
+  stage: security_risk_management
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/439199
+  impact: low
+  scope: group, project
+  resolution_role: owner
+  manual_task: true
+  body: |
+    In 16.10, scan result policies were renamed to merge request approval policies to more accurately reflect the change in scope and capability for the policy type.
+
+    As a result, we updated the GraphQL endpoints. Use `approvalPolicies` instead of `scanResultPolicies`.

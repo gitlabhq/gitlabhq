@@ -48,6 +48,12 @@ module Layouts
       @body_options.merge(default_attrs(@body_options, default_testid, default_classes))
     end
 
+    def icon_classes
+      default_classes = ['gl-fill-icon-subtle']
+      default_classes << @icon_class if @icon_class
+      default_classes.join(' ')
+    end
+
     def toggle_button_options_attrs
       default_testid = 'crud-action-toggle'
       default_classes = ['js-toggle-button js-toggle-content']

@@ -52,15 +52,17 @@ module Members
       memberships = ::Member.in_hierarchy(namespace).with_user(user).limit(MEMBER_BATCH_SIZE)
 
       destroyed_count = 0
-      memberships.each do |member|
-        # limit deletion to execute only for 60s (execution_tracker::MAX_RUNTIME)
-        break if execution_tracker.over_limit?
+      destroy_duration = Benchmark.realtime do
+        memberships.each do |member|
+          # limit deletion to execute only for 60s (execution_tracker::MAX_RUNTIME)
+          break if execution_tracker.over_limit?
 
-        ::Members::DestroyService.new(scheduled_by).execute(member, skip_subresources: true)
-        destroyed_count += 1
+          ::Members::DestroyService.new(scheduled_by).execute(member, skip_subresources: true)
+          destroyed_count += 1
+        end
       end
 
-      log_monitoring_data(user.id, namespace.id, destroyed_count)
+      log_monitoring_data(user.id, namespace.id, destroyed_count, destroy_duration)
 
       # when all memberships removed, cleanup schedule:
       member_deletion_schedule.destroy! if memberships.count === 0
@@ -71,12 +73,13 @@ module Members
     end
     strong_memoize_attr :member_deletion_schedules
 
-    def log_monitoring_data(user_id, namespace_id, destroyed_count)
+    def log_monitoring_data(user_id, namespace_id, destroyed_count, destroy_duration)
       Gitlab::AppLogger.info(
         message: 'Processed scheduled member deletion',
         user_id: user_id,
         namespace_id: namespace_id,
-        destroyed_count: destroyed_count
+        destroyed_count: destroyed_count,
+        destroy_duration_s: destroy_duration
       )
     end
   end

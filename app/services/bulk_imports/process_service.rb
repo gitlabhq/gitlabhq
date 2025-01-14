@@ -77,11 +77,30 @@ module BulkImports
     #   - Process the new BulkImports::Entity created during import (e.g. for the subgroups)
     #   - Or to mark the `bulk_import` as finished
     def re_enqueue
+      # Touch entities with created status so they are not marked as stale by
+      # BulkImports::StaleImportWorker if it takes more 24 hours to start them.
+      touch_created_entities
+
       BulkImportWorker.perform_in(PERFORM_DELAY, bulk_import.id)
     end
 
     def started_entities
       entities.with_status(:started)
+    end
+
+    def touch_created_entities
+      oldest_updated_at = created_entities.order_by_updated_at_and_id(:asc).first&.updated_at
+      return unless oldest_updated_at
+
+      # Only update entities if the oldest was not updated in the last 1 hour to avoid excessive load on database.
+      return if oldest_updated_at > 1.hour.ago
+
+      logger.info(
+        message: 'Touch created entities',
+        bulk_import_id: bulk_import.id
+      )
+
+      created_entities.touch_all
     end
 
     def max_batch_size_exceeded?

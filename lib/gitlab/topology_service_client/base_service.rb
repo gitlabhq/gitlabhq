@@ -32,7 +32,7 @@ module Gitlab
       end
 
       def enabled?
-        Gitlab.config.topology_service_enabled? && Gitlab.config.has_configured_cell?
+        Gitlab.config.topology_service_enabled?
       end
     end
   end

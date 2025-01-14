@@ -65,7 +65,19 @@ class SecretsInitializer
       secret_key_base: generate_new_secure_token,
       otp_key_base: generate_new_secure_token,
       db_key_base: generate_new_secure_token,
-      openid_connect_signing_key: generate_new_rsa_private_key
+      openid_connect_signing_key: generate_new_rsa_private_key,
+      # 1. We set the following two keys as an array to support keys rotation.
+      #    The last key in the array is always used to encrypt data:
+      #    https://github.com/rails/rails/blob/v7.0.8.4/activerecord/lib/active_record/encryption/key_provider.rb#L21
+      #    while all the keys are used (in the order they're defined) to decrypt data:
+      #    https://github.com/rails/rails/blob/v7.0.8.4/activerecord/lib/active_record/encryption/cipher.rb#L26.
+      #    This allows to rotate keys by adding a new key as the last key, and start a re-encryption process that
+      #    runs in the background: https://gitlab.com/gitlab-org/gitlab/-/issues/494976
+      # 2. We use the same method and length as Rails' defaults:
+      #    https://github.com/rails/rails/blob/v7.0.8.4/activerecord/lib/active_record/railties/databases.rake#L537-L540
+      active_record_encryption_primary_key: [generate_new_secure_random_alphanumeric(32)],
+      active_record_encryption_deterministic_key: [generate_new_secure_random_alphanumeric(32)],
+      active_record_encryption_key_derivation_salt: generate_new_secure_random_alphanumeric(32)
     }
 
     # encrypted_settings_key_base is optional for now
@@ -85,6 +97,10 @@ class SecretsInitializer
     OpenSSL::PKey::RSA.new(2048).to_pem
   end
 
+  def generate_new_secure_random_alphanumeric(chars)
+    SecureRandom.alphanumeric(chars)
+  end
+
   def warn_missing_secret(secret)
     return if rails_env.test?
 
@@ -93,10 +109,11 @@ class SecretsInitializer
   end
 
   def set_missing_keys(defaults)
-    defaults.stringify_keys.each_with_object({}) do |(key, default), missing|
+    defaults.each_with_object({}) do |(key, default), missing|
       next if Rails.application.credentials.public_send(key).present?
 
       warn_missing_secret(key)
+
       missing[key] = Rails.application.credentials[key] = default
     end
   end
@@ -113,7 +130,7 @@ class SecretsInitializer
 
     File.write(
       secrets_file_path,
-      YAML.dump(secrets_from_file),
+      YAML.dump(secrets_from_file.deep_stringify_keys),
       mode: 'w', perm: 0o600
     )
   end

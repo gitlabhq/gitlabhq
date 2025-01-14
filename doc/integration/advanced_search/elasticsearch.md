@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 This page describes how to enable advanced search. When enabled,
 advanced search provides faster search response times and [improved search features](../../user/search/advanced_search.md).
@@ -77,8 +77,8 @@ before we remove them.
 
 | GitLab version          | OpenSearch version             |
 |-------------------------|--------------------------------|
-| GitLab 17.6 and later   | OpenSearch 1.x and later       |
-| GitLab 15.5.3 to 17.5   | OpenSearch 1.x, 2.0 to 2.17    |
+| GitLab 17.6.3 and later | OpenSearch 1.x and later       |
+| GitLab 15.5.3 to 17.6.2 | OpenSearch 1.x, 2.0 to 2.17    |
 | GitLab 15.0 to 15.5.2   | OpenSearch 1.x                 |
 
 If your version of Elasticsearch or OpenSearch is incompatible, to prevent data loss, indexing pauses and

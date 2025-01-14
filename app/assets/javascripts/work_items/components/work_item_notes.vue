@@ -1,6 +1,5 @@
 <script>
 import { GlModal } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __ } from '~/locale';
 import {
@@ -100,6 +99,11 @@ export default {
       default: false,
       required: false,
     },
+    parentId: {
+      type: String,
+      default: null,
+      required: false,
+    },
   },
   data() {
     return {
@@ -107,7 +111,6 @@ export default {
       sortOrder: ASC,
       noteToDelete: null,
       discussionFilter: WORK_ITEM_NOTES_FILTER_ALL_NOTES,
-      addNoteKey: uniqueId(`work-item-add-note-${this.workItemId}`),
       workItemNamespace: null,
       previewNote: null,
     };
@@ -162,6 +165,7 @@ export default {
         autocompleteDataSources: this.autocompleteDataSources,
         isDiscussionLocked: this.isDiscussionLocked,
         isWorkItemConfidential: this.isWorkItemConfidential,
+        parentId: this.parentId,
       };
     },
     notesArray() {
@@ -188,12 +192,7 @@ export default {
       const modalOpen = urlParams.has('show');
 
       if (this.previewNote && !this.previewNoteLoadedInList && !modalOpen) {
-        const preview = {
-          notes: {
-            nodes: [this.previewNote],
-          },
-        };
-        visibleNotes = [...visibleNotes, preview];
+        visibleNotes = [...visibleNotes, this.previewNote];
       }
 
       if (this.sortOrder === DESC) {
@@ -247,7 +246,7 @@ export default {
         };
       },
       update(data) {
-        return data?.note;
+        return data?.note?.discussion;
       },
       result(result) {
         if (result?.errors?.length > 0) {
@@ -349,9 +348,6 @@ export default {
     filterDiscussions(filterValue) {
       this.discussionFilter = filterValue;
     },
-    updateKey() {
-      this.addNoteKey = uniqueId(`work-item-add-note-${this.workItemId}`);
-    },
     reportAbuse(isOpen, reply = {}) {
       this.$emit('openReportAbuse', reply);
     },
@@ -442,8 +438,8 @@ export default {
         <ul class="notes notes-form timeline">
           <work-item-add-note
             v-bind="workItemCommentFormProps"
-            :key="addNoteKey"
-            @cancelEditing="updateKey"
+            @startEditing="$emit('startEditing')"
+            @stopEditing="$emit('stopEditing')"
             @error="$emit('error', $event)"
           />
         </ul>
@@ -475,6 +471,8 @@ export default {
               @deleteNote="showDeleteNoteModal($event, discussion)"
               @reportAbuse="reportAbuse(true, $event)"
               @error="$emit('error', $event)"
+              @startEditing="$emit('startEditing')"
+              @cancelEditing="$emit('stopEditing')"
             />
           </template>
         </template>
@@ -489,8 +487,8 @@ export default {
         <ul class="notes notes-form timeline">
           <work-item-add-note
             v-bind="workItemCommentFormProps"
-            :key="addNoteKey"
-            @cancelEditing="updateKey"
+            @startEditing="$emit('startEditing')"
+            @stopEditing="$emit('stopEditing')"
             @error="$emit('error', $event)"
           />
         </ul>

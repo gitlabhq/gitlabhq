@@ -63,9 +63,9 @@ Prerequisites:
 | Setting name | Default | Information |
 | ------------ | :-----: | ----------- |
 | `gitlab.ca`  | null    | Deprecated. See [the SSL setup guide](ssl.md) for more information on how to set up your self-signed CA. |
-| `gitlab.cert`| null    | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). If your self-managed GitLab instance requires a custom certificate or key pair, set this option to point to your certificate file. See `gitlab.certKey`. |
-| `gitlab.certKey`| null    | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). If your self-managed GitLab instance requires a custom certificate or key pair, set this option to point to your certificate key file. See `gitlab.cert`. |
-| `gitlab.ignoreCertificateErrors` | false   | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). If you use a self-managed GitLab instance with no SSL certificate, or have certificate issues that prevent you from using the extension, set this option to `true` to ignore certificate errors. |
+| `gitlab.cert`| null    | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). If GitLab Self-Managed requires a custom certificate or key pair, set this option to point to your certificate file. See `gitlab.certKey`. |
+| `gitlab.certKey`| null    | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). If GitLab Self-Managed requires a custom certificate or key pair, set this option to point to your certificate key file. See `gitlab.cert`. |
+| `gitlab.ignoreCertificateErrors` | false   | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). If you use GitLab Self-Managed with no SSL certificate, or have certificate issues that prevent you from using the extension, set this option to `true` to ignore certificate errors. |
 
 ## HTTPS project cloning works but SSH cloning fails
 
@@ -123,9 +123,8 @@ A workaround exists for MacOS:
 
 ### Ubuntu workaround
 
-When VS Code is installed with `snap` in Ubuntu 20.04 and 22.04, it can't read passwords from the OS keychain that extension versions 3.44.0
-and later use for secure token storage.
-
+When you install VS Code with `snap` in Ubuntu 20.04 and 22.04, VS Code can't read passwords from the
+OS keychain. Extension versions 3.44.0 and later use the OS keychain for secure token storage.
 A workaround exists for Ubuntu users who use versions of VS Code earlier than 1.68.0:
 
 - You can downgrade the GitLab Workflow extension to version 3.43.1.
@@ -134,14 +133,14 @@ A workaround exists for Ubuntu users who use versions of VS Code earlier than 1.
   1. Install VS Code from the [`.deb` package](https://code.visualstudio.com/Download).
   1. Go to Ubuntu's **Password & Keys**, find the `vscodegitlab.workflow/gitlab-tokens` entry, and remove it.
   1. In VS Code, run `Gitlab: Remove Your Account` to remove the account with missing credentials.
-  1. To add the account again, run either `Gitlab: Add Account to VS Code` or `GitLab: Authenticate to GitLab.com`.
+  1. To add the account again, run `GitLab: Authenticate`.
 
 If you use VS Code version 1.68.0 or later, re-installation might not be possible. However, you can still run
 the last three steps to re-authenticate.
 
 ## Set token with environment variables
 
-If you often delete your VS Code storage, such as in Gitpod containers, you can create environment variables
+If you often delete your VS Code storage, such as in Gitpod containers, set environment variables
 before starting VS Code. If you set the token in a
 [VS Code environment variable](https://code.visualstudio.com/docs/editor/variables-reference#_environment-variables),
 you don't have to set a personal access token each time you delete your VS Code storage. Set these variables:

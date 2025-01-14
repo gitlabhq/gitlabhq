@@ -27,13 +27,16 @@ ERROR
   end
 
   def active_record_base(database: nil)
-    database_name = database || self.class.metadata[:database] || :main
+    if database.present?
+      conn = Gitlab::Database.all_database_connections[database]
+      raise ArgumentError, "#{database} is not a valid argument" unless conn
 
-    unless ::Gitlab::Database.all_database_connections.include?(database_name)
-      raise ArgumentError, "#{database_name} is not a valid argument"
+      return conn.klass
     end
 
-    Gitlab::Database.database_base_models[database_name] || Gitlab::Database.database_base_models[:main]
+    migration_schema = self.class.metadata[:migration]
+    Gitlab::Database.schemas_to_base_models.dig(migration_schema, 0) ||
+      Gitlab::Database.database_base_models[:main]
   end
 
   def table(name, database: nil, primary_key: nil)

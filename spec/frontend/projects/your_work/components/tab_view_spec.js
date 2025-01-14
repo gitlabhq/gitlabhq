@@ -8,9 +8,9 @@ import membershipProjectsGraphQlResponse from 'test_fixtures/graphql/projects/yo
 import contributedProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/contributed_projects.query.graphql.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TabView from '~/projects/your_work/components/tab_view.vue';
+import { formatProjects } from '~/projects/your_work/utils';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
 import ProjectsListEmptyState from '~/vue_shared/components/projects_list/projects_list_empty_state.vue';
-import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { createAlert } from '~/alert';
 import {
@@ -35,6 +35,7 @@ Vue.use(VueApollo);
 describe('TabView', () => {
   let wrapper;
   let mockApollo;
+  let apolloClient;
 
   const defaultPropsData = {
     sort: 'name_desc',
@@ -53,6 +54,9 @@ describe('TabView', () => {
       propsData: { ...defaultPropsData, ...propsData },
       provide: { programmingLanguages },
     });
+
+    apolloClient = mockApollo.defaultClient;
+    jest.spyOn(apolloClient, 'resetStore');
   };
 
   const findProjectsList = () => wrapper.findComponent(ProjectsList);
@@ -61,6 +65,7 @@ describe('TabView', () => {
 
   afterEach(() => {
     mockApollo = null;
+    apolloClient = null;
   });
 
   describe.each`
@@ -105,9 +110,7 @@ describe('TabView', () => {
         });
 
         it('passes projects to `ProjectsList` component', () => {
-          expect(findProjectsList().props('projects')).toEqual(
-            formatGraphQLProjects(expectedProjects),
-          );
+          expect(findProjectsList().props('projects')).toEqual(formatProjects(expectedProjects));
         });
 
         describe('when list emits refetch', () => {
@@ -115,7 +118,8 @@ describe('TabView', () => {
             findProjectsList().vm.$emit('refetch');
           });
 
-          it('refetches list', () => {
+          it('resets store and refetches list', () => {
+            expect(apolloClient.resetStore).toHaveBeenCalled();
             expect(handler[1]).toHaveBeenCalledTimes(2);
           });
         });

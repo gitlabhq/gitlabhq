@@ -1,7 +1,7 @@
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { availableGraphQLProjectActions } from 'ee_else_ce/vue_shared/components/projects_list/utils';
 
-export const formatGraphQLProjects = (projects) =>
+export const formatGraphQLProjects = (projects, callback = () => {}) =>
   projects.map(
     ({
       id,
@@ -9,21 +9,25 @@ export const formatGraphQLProjects = (projects) =>
       mergeRequestsAccessLevel,
       issuesAccessLevel,
       forkingAccessLevel,
-      webUrl,
       maxAccessLevel: accessLevel,
-      organizationEditPath: editPath,
       ...project
-    }) => ({
-      ...project,
-      id: getIdFromGraphQLId(id),
-      name: nameWithNamespace,
-      mergeRequestsAccessLevel: mergeRequestsAccessLevel.stringValue,
-      issuesAccessLevel: issuesAccessLevel.stringValue,
-      forkingAccessLevel: forkingAccessLevel.stringValue,
-      webUrl,
-      isForked: false,
-      accessLevel,
-      editPath,
-      availableActions: availableGraphQLProjectActions(project),
-    }),
+    }) => {
+      const baseProject = {
+        ...project,
+        id: getIdFromGraphQLId(id),
+        name: nameWithNamespace,
+        avatarLabel: nameWithNamespace,
+        mergeRequestsAccessLevel: mergeRequestsAccessLevel.stringValue,
+        issuesAccessLevel: issuesAccessLevel.stringValue,
+        forkingAccessLevel: forkingAccessLevel.stringValue,
+        isForked: false,
+        accessLevel,
+        availableActions: availableGraphQLProjectActions(project),
+      };
+
+      return {
+        ...baseProject,
+        ...callback(baseProject),
+      };
+    },
   );

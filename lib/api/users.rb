@@ -101,6 +101,33 @@ module API
         end
       end
 
+      desc 'Get support PIN for a user. Available only for admins.' do
+        detail 'This feature allows administrators to retrieve the support PIN for a specified user'
+        success Entities::UserSupportPin
+        is_array false
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+      end
+      get ":id/support_pin", feature_category: :user_management do
+        authenticated_as_admin!
+
+        user = User.find_by_id(params[:id])
+        not_found!('User') unless user
+
+        begin
+          result = ::Users::SupportPin::RetrieveService.new(user).execute
+        rescue StandardError
+          error!("Error retrieving Support PIN for user.", :unprocessable_entity)
+        end
+
+        if result
+          present result, with: Entities::UserSupportPin
+        else
+          not_found!('Support PIN not found or expired')
+        end
+      end
+
       desc 'Get the list of users' do
         success Entities::UserBasic
       end
@@ -1330,6 +1357,41 @@ module API
           render_api_error!(service.message, 400)
         else
           bad_request!
+        end
+      end
+
+      desc 'Create a new Support PIN for the authenticated user' do
+        detail 'This feature creates a temporary Support PIN for the authenticated user'
+        success Entities::UserSupportPin
+      end
+      post "support_pin", feature_category: :user_profile do
+        authenticate!
+
+        result = ::Users::SupportPin::UpdateService.new(current_user).execute
+
+        if result[:status] == :success
+          present({ pin: result[:pin], expires_at: result[:expires_at] }, with: Entities::UserSupportPin)
+        else
+          error!(result[:message], :unprocessable_entity)
+        end
+      end
+
+      desc 'Get the current Support PIN for the authenticated user' do
+        detail 'This feature retrieves the temporary Support PIN for the authenticated user'
+        success Entities::UserSupportPin
+      end
+      get "support_pin", feature_category: :user_profile do
+        authenticate!
+
+        result = ::Users::SupportPin::RetrieveService.new(current_user).execute
+
+        if result
+          # Convert the Time object to ISO 8601 format
+          expires_at = result[:expires_at].iso8601
+
+          present({ pin: result[:pin], expires_at: expires_at }, with: Entities::UserSupportPin)
+        else
+          not_found!('Support PIN not found or expired')
         end
       end
 

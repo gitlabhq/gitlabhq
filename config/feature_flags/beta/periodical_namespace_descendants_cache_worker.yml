@@ -1,0 +1,9 @@
+---
+name: periodical_namespace_descendants_cache_worker
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/509554
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176648
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/510967
+milestone: '17.8'
+group: group::optimize
+type: beta
+default_enabled: false

@@ -8,6 +8,8 @@ fragment MergeRequestDashboardFragment on MergeRequest {
   reference(full: true)
   title
   webUrl
+  draft
+  state
   author {
     ...User
   }
@@ -39,6 +41,13 @@ fragment MergeRequestDashboardFragment on MergeRequest {
     }
   }
   userNotesCount
+  resolvedDiscussionsCount
+  resolvableDiscussionsCount
+  commitCount
+  sourceBranchExists
+  targetBranchExists
+  conflicts
+  mergedAt
   createdAt
   updatedAt
   ...MergeRequestApprovalFragment

@@ -9,7 +9,7 @@ description: "Configure merge request approvals for your GitLab instance."
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Merge request approval rules prevent users from overriding certain settings for the project.
 When enabled for the entire instance, these settings

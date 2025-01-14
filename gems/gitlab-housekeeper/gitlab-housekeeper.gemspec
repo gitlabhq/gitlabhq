@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'rubocop'
 
   spec.add_development_dependency 'gitlab-styles'
-  spec.add_development_dependency 'rspec-rails'
+  spec.add_development_dependency 'rspec-rails', '~>7.0.0'
   spec.add_development_dependency 'rubocop-rspec'
   spec.add_development_dependency 'webmock'
 end

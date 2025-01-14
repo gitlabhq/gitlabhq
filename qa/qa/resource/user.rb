@@ -7,8 +7,7 @@ module QA
 
       attr_reader :unique_id
       attr_writer :username, :password, :ldap_user
-      attr_accessor :admin,
-        :provider,
+      attr_accessor :provider,
         :extern_uid,
         :expect_fabrication_success,
         :hard_delete_on_api_removal,
@@ -21,10 +20,11 @@ module QA
         :first_name,
         :last_name,
         :email,
-        :commit_email
+        :commit_email,
+        :is_admin
 
       def initialize
-        @admin = false
+        @is_admin = false
         @hard_delete_on_api_removal = false
         @unique_id = SecureRandom.hex(8)
         @expect_fabrication_success = true
@@ -35,7 +35,7 @@ module QA
       end
 
       def admin?
-        api_resource&.dig(:is_admin) || false
+        is_admin
       end
 
       def username
@@ -143,7 +143,7 @@ module QA
 
       def api_post_body
         {
-          admin: admin,
+          admin: is_admin,
           email: email,
           password: password,
           username: username,

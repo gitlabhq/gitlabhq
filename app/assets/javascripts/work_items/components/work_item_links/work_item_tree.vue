@@ -114,6 +114,11 @@ export default {
       required: false,
       default: false,
     },
+    activeChildItemId: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -451,6 +456,7 @@ export default {
           :has-indirect-children="hasIndirectChildren"
           :allowed-children-by-type="allowedChildrenByType"
           :dragged-item-type="draggedItemType"
+          :active-child-item-id="activeChildItemId"
           :parent-id="workItemId"
           @drag="draggedItemType = $event"
           @drop="draggedItemType = null"

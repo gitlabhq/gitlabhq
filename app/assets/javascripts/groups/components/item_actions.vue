@@ -56,7 +56,7 @@ export default {
         text: this.$options.i18n.leaveBtnTitle,
         action: this.onLeaveGroup,
         extraAttrs: {
-          class: '!gl-text-red-500',
+          class: '!gl-text-danger',
           'data-testid': `leave-group-${this.group.id}-btn`,
         },
       };
@@ -66,7 +66,7 @@ export default {
         text: this.$options.i18n.removeBtnTitle,
         href: this.removeButtonHref,
         extraAttrs: {
-          class: '!gl-text-red-500',
+          class: '!gl-text-danger',
           'data-testid': `remove-group-${this.group.id}-btn`,
         },
       };

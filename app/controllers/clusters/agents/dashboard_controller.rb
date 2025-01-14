@@ -19,7 +19,7 @@ module Clusters
       private
 
       def find_agent
-        @agent = ::Clusters::Agent.find(params[:agent_id])
+        @agent = ::Clusters::Agent.find(params.permit(:agent_id)[:agent_id])
       end
 
       def check_feature_flag!

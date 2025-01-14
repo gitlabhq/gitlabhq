@@ -11,7 +11,7 @@ module Gitlab
 
         ::Gitlab::Redis::ClusterUtil.batch_entries(names) do |batched_names|
           super(batched_names, **options)
-        end.reduce(&:merge)
+        end.reduce({}, &:merge)
       end
 
       # `delete_multi_entries` in Rails runs a multi-key `del` command

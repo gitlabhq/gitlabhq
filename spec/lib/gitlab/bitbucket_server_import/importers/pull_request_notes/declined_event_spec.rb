@@ -65,6 +65,25 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Decli
       importer.execute(declined_event)
     end
 
+    context 'when declined event has no associated user' do
+      let(:declined_event) { super().merge(decliner_username: nil) }
+
+      it 'does not set a decliner' do
+        expect_log(
+          stage: 'import_declined_event',
+          message: 'skipped due to missing user',
+          iid: merge_request.iid,
+          event_id: 7
+        )
+
+        expect { importer.execute(declined_event) }
+          .to not_change { merge_request.events.count }
+          .and not_change { merge_request.resource_state_events.count }
+
+        expect(merge_request.metrics.reload.latest_closed_by).to be_nil
+      end
+    end
+
     context 'when user contribution mapping is disabled' do
       let_it_be(:decliner_author) { create(:user, username: 'decliner_author', email: 'decliner_author@example.org') }
 

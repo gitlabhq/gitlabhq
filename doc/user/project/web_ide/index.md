@@ -9,7 +9,7 @@ description: "Use the Web IDE to edit multiple files in the GitLab UI, stage com
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/371084) in GitLab 15.7.
@@ -50,10 +50,9 @@ To open the Web IDE from a merge request:
 1. In the upper right, select **Code > Open in Web IDE**.
 
 The Web IDE opens new and modified files in separate tabs and displays changes side by side.
-To reduce load time, only 10 files with the most lines changed are opened automatically.
+To reduce load time, only 10 files with the most lines changed open automatically.
 
-On the left **Explorer** sidebar, any new or modified file is indicated
-by the merge request icon (**{merge-request}**) next to the filename.
+The left **Explorer** sidebar adds a merge request icon (**{merge-request}**) next to new or modified files.
 To view changes to a file, right-click the file and select **Compare with merge request base**.
 
 ## Open a file
@@ -82,9 +81,9 @@ For more information, see the [VS Code documentation](https://code.visualstudio.
 
 ## Restore uncommitted changes
 
-You do not have to manually save any file you modify in the Web IDE.
-Modified files are automatically staged and can be [committed](#commit-changes).
-Uncommitted changes are saved in your browser's local storage and persist
+You do not have to manually save any file you edit in the Web IDE.
+The Web IDE stages the files you modify, so you can [commit the changes](#commit-changes).
+Uncommitted changes are saved in your browser's local storage, and persist
 even if you close the browser tab or refresh the Web IDE.
 
 If your uncommitted changes are not available, you can restore the changes from local history.
@@ -158,17 +157,17 @@ To open the Command Palette and run a command in the Web IDE:
 
 ## Edit settings
 
-You can use the settings editor to view and modify your user and workspace settings.
+You can use the settings editor to view and edit your user and workspace settings.
 To open the settings editor in the Web IDE:
 
 - On the top menu bar, select **File > Preferences > Settings**,
   or press <kbd>Command</kbd>+<kbd>,</kbd>.
 
-In the settings editor, you can search for the settings you want to modify.
+In the settings editor, you can search for the settings you want to change.
 
 ## Edit keyboard shortcuts
 
-You can use the keyboard shortcuts editor to view and modify
+You can use the keyboard shortcuts editor to view and change
 the default keybindings for all available commands.
 To open the keyboard shortcuts editor in the Web IDE:
 
@@ -195,7 +194,7 @@ To change the color theme in the Web IDE:
 1. From the dropdown list, preview the themes with the arrow keys.
 1. Select a theme.
 
-The active color theme is stored in the [user settings](#edit-settings).
+The Web IDE stores your active color theme in your [user settings](#edit-settings).
 
 ## Configure sync settings
 
@@ -212,7 +211,7 @@ To configure sync settings in the Web IDE:
    - **Extensions**
    - **Profiles**
 
-These settings are synced automatically across multiple Web IDE instances.
+These settings sync automatically across multiple Web IDE instances.
 You cannot sync user profiles or go back to an earlier version of synced settings.
 
 ## View missed notifications
@@ -245,7 +244,7 @@ Prerequisites:
 
 You can use the extension marketplace to download and run VS Code extensions in the Web IDE.
 
-The extension marketplace is preconfigured at the GitLab instance level
+The extension marketplace is preconfigured for GitLab instances,
 and is hardcoded to [`https://open-vsx.org/`](https://open-vsx.org/).
 [Epic 11770](https://gitlab.com/groups/gitlab-org/-/epics/11770) proposes to change this behavior.
 
@@ -285,14 +284,14 @@ As a workaround:
    or press <kbd>Command</kbd>+<kbd>,</kbd>.
 1. In the upper-right corner, select **Open Settings (JSON)**.
 1. In the `settings.json` file, add `"editor.disableMonospaceOptimizations": true`
-   or modify the `"editor.fontFamily"` setting.
+   or change the `"editor.fontFamily"` setting.
 
 For more information, see [VS Code issue 80170](https://github.com/microsoft/vscode/issues/80170).
 
 ### Update the OAuth callback URL
 
 DETAILS:
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Prerequisites:
 
@@ -318,9 +317,9 @@ To update the OAuth callback URL:
 ### Workhorse dependency
 
 DETAILS:
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
-On self-managed GitLab, [Workhorse](../../../development/workhorse/index.md) must be installed
+On GitLab Self-Managed, [Workhorse](../../../development/workhorse/index.md) must be installed
 and running in front of the GitLab Rails server.
 Otherwise, you might encounter issues when you open the Web IDE or
 use certain features like Markdown preview.

@@ -8,9 +8,28 @@ export const MOCK_PAGE_INFO = {
 };
 
 export const MOCK_EXPERIMENT = {
+  id: 1,
   name: 'experiment',
   metadata: [],
   path: '/path/to/experiment',
+  created_at: '2022-11-07T10:42:21.480Z',
+  user: {
+    name: 'root',
+    path: '/root',
+  },
+};
+
+export const MOCK_MODEL_EXPERIMENT = {
+  id: 1,
+  name: 'experiment',
+  metadata: [],
+  path: '/path/to/experiment',
+  created_at: '2022-11-07T10:42:21.480Z',
+  user: {
+    name: 'root',
+    path: '/root',
+  },
+  model_id: 1,
 };
 
 export const MOCK_EXPERIMENT_METADATA = [

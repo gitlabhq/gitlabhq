@@ -142,7 +142,7 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
         'experiment_id' => candidate.experiment.iid.to_s,
         'user_id' => candidate.user.id.to_s,
         'start_time' => candidate.start_time,
-        'artifact_uri' => "http://www.example.com/api/v4/projects/#{project_id}/packages/generic/ml_experiment_#{experiment.iid}/#{candidate.iid}/",
+        'artifact_uri' => "http://www.example.com/api/v4/projects/#{project_id}/packages/ml_models/candidate:#{candidate.iid}/files/",
         'status' => "RUNNING",
         'lifecycle_stage' => "active"
       }
@@ -174,7 +174,7 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
       end
 
       it 'gets a run including a valid artifact_uri' do
-        expect(json_response['run']['info']['artifact_uri']).to eql("http://www.example.com/gitlab/root/api/v4/projects/#{project_id}/packages/generic/ml_experiment_#{experiment.iid}/#{candidate.iid}/")
+        expect(json_response['run']['info']['artifact_uri']).to eql("http://www.example.com/gitlab/root/api/v4/projects/#{project_id}/packages/ml_models/candidate:#{candidate.iid}/files/")
       end
     end
 
@@ -324,7 +324,7 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
         'user_id' => candidate.user.id.to_s,
         'start_time' => candidate.start_time,
         'end_time' => params[:end_time],
-        'artifact_uri' => "http://www.example.com/api/v4/projects/#{project_id}/packages/generic/ml_experiment_#{experiment.iid}/#{candidate.iid}/",
+        'artifact_uri' => "http://www.example.com/api/v4/projects/#{project_id}/packages/ml_models/candidate:#{candidate.iid}/files/",
         'status' => 'FAILED',
         'lifecycle_stage' => 'active'
       }

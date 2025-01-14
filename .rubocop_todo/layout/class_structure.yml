@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Layout/ClassStructure:
   Exclude:
-    - 'app/finders/clusters/knative_services_finder.rb'
     - 'app/finders/group_members_finder.rb'
     - 'app/finders/groups/environment_scopes_finder.rb'
     - 'app/finders/issuable_finder.rb'
@@ -50,7 +49,6 @@ Layout/ClassStructure:
     - 'app/models/clusters/agent_token.rb'
     - 'app/models/commit.rb'
     - 'app/models/commit_signatures/gpg_signature.rb'
-    - 'app/models/concerns/token_authenticatable_strategies/base.rb'
     - 'app/models/concerns/where_composite.rb'
     - 'app/models/container_repository.rb'
     - 'app/models/customer_relations/contact.rb'

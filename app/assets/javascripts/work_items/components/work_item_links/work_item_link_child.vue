@@ -79,6 +79,11 @@ export default {
       required: false,
       default: () => {},
     },
+    activeChildItemId: {
+      type: String,
+      required: false,
+      default: null,
+    },
     parentId: {
       type: String,
       required: false,
@@ -205,6 +210,7 @@ export default {
     childItemClass() {
       return {
         '!gl-ml-0': this.hasChildren || (!this.hasIndirectChildren && this.isTopLevel),
+        'gl-bg-blue-50 hover:gl-bg-blue-50 gl-border-default': this.isActive,
       };
     },
     shouldShowWeight() {
@@ -222,6 +228,9 @@ export default {
     displayableChildren() {
       const filterClosed = getItems(this.showClosed);
       return filterClosed(this.children);
+    },
+    isActive() {
+      return this.activeChildItemId === this.childItem.id;
     },
   },
   methods: {
@@ -299,6 +308,7 @@ export default {
           :show-closed="showClosed"
           :work-item-full-path="workItemFullPath"
           :show-weight="shouldShowWeight"
+          :is-active="isActive"
           @click="$emit('click', $event)"
           @removeChild="$emit('removeChild', childItem)"
         />
@@ -321,6 +331,7 @@ export default {
         :has-indirect-children="hasIndirectChildren"
         :dragged-item-type="draggedItemType"
         :allowed-children-by-type="allowedChildrenByType"
+        :active-child-item-id="activeChildItemId"
         :parent-id="parentId"
         @drag="$emit('drag', $event)"
         @drop="$emit('drop')"

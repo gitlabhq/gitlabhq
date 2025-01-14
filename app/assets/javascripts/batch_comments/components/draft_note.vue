@@ -1,9 +1,11 @@
 <script>
 import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import NoteableNote from '~/notes/components/noteable_note.vue';
+import * as types from '~/batch_comments/stores/modules/batch_comments/mutation_types';
+import { clearDraft } from '~/lib/utils/autosave';
 
 export default {
   components: {
@@ -24,10 +26,20 @@ export default {
       required: false,
       default: null,
     },
+    autosaveKey: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
-      isEditingDraft: false,
+      // diff files in virtual scroller can be culled when scrolling the page (their instances get destroyed)
+      // when a file reappears on the screen we need to restore draft's form: opened state and edited note text
+      // we can detect if a file was culled with an opened form by saving the form opened state on the draft object
+      // this can be used to force markdown editor to use autosaved content instead of an unedited draft note text
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/436954
+      restoreFromAutosave: Boolean(this.draft.isEditing),
     };
   },
   computed: {
@@ -35,6 +47,10 @@ export default {
     ...mapGetters('batchComments', ['isPublishingDraft']),
     draftCommands() {
       return this.draft.references.commands;
+    },
+    autosaveDraftKey() {
+      if (!this.autosaveKey) return null;
+      return `${this.autosaveKey}/draft-note-${this.draft.id}`;
     },
   },
   mounted() {
@@ -50,6 +66,9 @@ export default {
       'scrollToDraft',
       'toggleResolveDiscussion',
     ]),
+    ...mapMutations('batchComments', {
+      setDraftEditing: types.SET_DRAFT_EDITING,
+    }),
     ...mapActions(['setSelectedCommentPositionHover']),
     update(data) {
       this.updateDraft(data);
@@ -58,10 +77,12 @@ export default {
       this.publishSingleDraft(this.draft.id);
     },
     handleEditing() {
-      this.isEditingDraft = true;
+      this.setDraftEditing({ draftId: this.draft.id, isEditing: true });
     },
     handleNotEditing() {
-      this.isEditingDraft = false;
+      this.restoreFromAutosave = false;
+      this.clearDraft();
+      this.setDraftEditing({ draftId: this.draft.id, isEditing: false });
     },
     handleMouseEnter(draft) {
       if (draft.position) {
@@ -75,6 +96,9 @@ export default {
         this.setSelectedCommentPositionHover();
       }
     },
+    clearDraft() {
+      if (this.autosaveDraftKey) clearDraft(this.autosaveDraftKey);
+    },
   },
   safeHtmlConfig: {
     ADD_TAGS: ['use', 'gl-emoji', 'copy-code'],
@@ -87,6 +111,8 @@ export default {
     :line="line"
     :discussion-root="true"
     class="draft-note !gl-mb-0"
+    :autosave-key="autosaveDraftKey"
+    :restore-from-autosave="restoreFromAutosave"
     @handleEdit="handleEditing"
     @cancelForm="handleNotEditing"
     @updateSuccess="handleNotEditing"
@@ -106,7 +132,7 @@ export default {
         {{ __('Pending') }}
       </gl-badge>
     </template>
-    <template v-if="!isEditingDraft" #after-note-body>
+    <template v-if="!draft.isEditing" #after-note-body>
       <div
         v-if="draftCommands"
         v-safe-html:[$options.safeHtmlConfig]="draftCommands"

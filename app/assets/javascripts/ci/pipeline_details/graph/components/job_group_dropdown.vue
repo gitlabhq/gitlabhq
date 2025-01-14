@@ -2,13 +2,12 @@
 import {
   GlBadge,
   GlDisclosureDropdown,
-  GlDisclosureDropdownItem,
   GlTooltipDirective,
   GlResizeObserverDirective,
 } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
-import { sprintf } from '~/locale';
-import { JOB_DROPDOWN, SINGLE_JOB } from '../constants';
+import JobDropdownItem from '~/ci/common/private/job_dropdown_item.vue';
+import { JOB_DROPDOWN } from '../constants';
 import JobItem from './job_item.vue';
 
 /**
@@ -19,10 +18,10 @@ import JobItem from './job_item.vue';
  */
 export default {
   components: {
+    JobDropdownItem,
     JobItem,
     GlBadge,
     GlDisclosureDropdown,
-    GlDisclosureDropdownItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -51,7 +50,6 @@ export default {
   },
   jobItemTypes: {
     jobDropdown: JOB_DROPDOWN,
-    singleJob: SINGLE_JOB,
   },
   data() {
     return {
@@ -63,8 +61,8 @@ export default {
     computedJobId() {
       return this.pipelineId > -1 ? `${this.group.name}-${this.pipelineId}` : '';
     },
-    jobStatusText() {
-      return this.jobItemTooltip(this.group);
+    dropdownTooltip() {
+      return !this.showTooltip ? this.group?.status?.tooltip || this.group?.status?.text : '';
     },
     placement() {
       // MR !49053:
@@ -74,32 +72,8 @@ export default {
       // https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2615
       return this.isMobile ? 'bottom-start' : 'right-start';
     },
-    moreActionsTooltip() {
-      return !this.showTooltip ? this.jobStatusText : '';
-    },
   },
   methods: {
-    pipelineActionRequestComplete() {
-      this.$emit('pipelineActionRequestComplete');
-    },
-    jobItem(job) {
-      return {
-        text: job.name,
-        href: job.status?.detailsPath,
-      };
-    },
-    jobItemTooltip(job) {
-      const { tooltip: statusTooltip } = job.status;
-      const { text: statusText } = job.status;
-
-      if (statusTooltip) {
-        if (this.isDelayedJob) {
-          return sprintf(statusTooltip, { remainingTime: job.remainingTime });
-        }
-        return statusTooltip;
-      }
-      return statusText;
-    },
     handleResize() {
       this.isMobile = GlBreakpointInstance.getBreakpointSize() === 'xs';
     },
@@ -117,8 +91,7 @@ export default {
     :id="computedJobId"
     v-gl-resize-observer="handleResize"
     v-gl-tooltip.viewport.left="{ customClass: 'ci-job-component-tooltip' }"
-    :title="moreActionsTooltip"
-    class="ci-job-group-dropdown"
+    :title="dropdownTooltip"
     block
     fluid-width
     :placement="placement"
@@ -141,26 +114,13 @@ export default {
         </div>
       </button>
     </template>
-
-    <gl-disclosure-dropdown-item
-      v-for="job in group.jobs"
-      :key="job.id"
-      v-gl-tooltip.viewport.left="{
-        title: jobItemTooltip(job),
-        customClass: 'ci-job-component-tooltip',
-      }"
-      :item="jobItem(job)"
-    >
-      <template #list-item>
-        <job-item
-          :is-link="false"
-          :job="job"
-          :type="$options.jobItemTypes.singleJob"
-          css-class-job-name="gl-p-3"
-          hide-tooltip
-          @pipelineActionRequestComplete="pipelineActionRequestComplete"
-        />
-      </template>
-    </gl-disclosure-dropdown-item>
+    <ul class="gl-m-0 gl-w-34 gl-overflow-y-auto gl-p-0" @click.stop>
+      <job-dropdown-item
+        v-for="job in group.jobs"
+        :key="job.id"
+        :job="job"
+        @jobActionExecuted="$emit('pipelineActionRequestComplete')"
+      />
+    </ul>
   </gl-disclosure-dropdown>
 </template>

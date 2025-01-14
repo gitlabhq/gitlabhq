@@ -23,6 +23,11 @@ query groupWorkItems(
         iid
         title
         confidential
+        workItemType {
+          id
+          name
+          iconName
+        }
       }
     }
     workItemsByIid: workItems(
@@ -36,6 +41,11 @@ query groupWorkItems(
         iid
         title
         confidential
+        workItemType {
+          id
+          name
+          iconName
+        }
       }
     }
   }

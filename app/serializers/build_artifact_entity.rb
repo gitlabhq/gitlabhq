@@ -10,6 +10,8 @@ class BuildArtifactEntity < Grape::Entity
     "#{artifact.job.name}:#{artifact.file_type}"
   end
 
+  expose :file_type
+
   expose :expire_at
   expose :expired?, as: :expired
 

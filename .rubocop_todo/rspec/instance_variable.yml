@@ -28,7 +28,6 @@ RSpec/InstanceVariable:
     - 'ee/spec/views/projects/security/dast_profiles/show.html.haml_spec.rb'
     - 'ee/spec/views/projects/security/dast_scanner_profiles/new.html.haml_spec.rb'
     - 'ee/spec/views/projects/security/dast_site_profiles/new.html.haml_spec.rb'
-    - 'qa/qa/specs/features/ee/browser_ui/2_plan/issue_boards/project_issue_boards_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/2_plan/multiple_assignees_for_issues/more_than_four_assignees_spec.rb'
     - 'spec/commands/metrics_server/metrics_server_spec.rb'
     - 'spec/controllers/admin/topics/avatars_controller_spec.rb'

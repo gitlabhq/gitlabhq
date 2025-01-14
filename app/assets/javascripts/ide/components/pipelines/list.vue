@@ -4,7 +4,6 @@ import { GlLoadingIcon, GlIcon, GlTabs, GlTab, GlBadge, GlAlert } from '@gitlab/
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import IDEServices from '~/ide/services';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import JobsList from '../jobs/list.vue';
 import EmptyState from './empty_state.vue';
@@ -42,7 +41,6 @@ export default {
   },
   created() {
     this.fetchLatestPipeline();
-    IDEServices.pingUsage(this.currentProject.path_with_namespace);
   },
   methods: {
     ...mapActions('pipelines', ['fetchLatestPipeline']),

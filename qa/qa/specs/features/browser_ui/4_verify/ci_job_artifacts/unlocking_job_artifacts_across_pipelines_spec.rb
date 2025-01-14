@@ -19,26 +19,23 @@ module QA
       context 'when latest pipeline is successful' do
         before do
           add_ci_file(job_name: 'job_1', script: 'echo test')
-          Flow::Pipeline.wait_for_latest_pipeline(status: 'Passed')
         end
 
         it 'unlocks job artifacts from previous successful pipeline',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/394807' do
-          find_job('job_1').visit!
+          project.visit_job('job_1')
           Page::Project::Job::Show.perform do |job|
             expect(job).to have_locked_artifact
           end
 
-          update_ci_file(job_name: 'job_2', script: 'echo test')
+          update_ci_file(job_name: 'job_2', script: 'echo test', pipeline_count: 2, status: 'success')
 
-          Flow::Pipeline.wait_for_latest_pipeline(status: 'Passed')
-
-          find_job('job_2').visit!
+          project.visit_job('job_2')
           Page::Project::Job::Show.perform do |job|
             expect(job).to have_locked_artifact
           end
 
-          find_job('job_1').visit!
+          project.visit_job('job_1')
           Page::Project::Job::Show.perform do |job|
             expect(job).to have_unlocked_artifact
           end
@@ -48,28 +45,25 @@ module QA
       context 'when latest pipeline failed' do
         before do
           add_ci_file(job_name: 'successful_job_1', script: 'echo test')
-          Flow::Pipeline.wait_for_latest_pipeline(status: 'Passed')
         end
 
         it 'keeps job artifacts from latest failed pipelines and from latest successful pipeline',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/394808' do
-          update_ci_file(job_name: 'failed_job_1', script: 'exit 1')
-          Flow::Pipeline.wait_for_latest_pipeline(status: 'Failed')
+          update_ci_file(job_name: 'failed_job_1', script: 'exit 1', pipeline_count: 2, status: 'failed')
 
-          update_ci_file(job_name: 'failed_job_2', script: 'exit 2')
-          Flow::Pipeline.wait_for_latest_pipeline(status: 'Failed')
+          update_ci_file(job_name: 'failed_job_2', script: 'exit 2', pipeline_count: 3, status: 'failed')
 
-          find_job('failed_job_2').visit!
+          project.visit_job('failed_job_2')
           Page::Project::Job::Show.perform do |job|
             expect(job).to have_locked_artifact
           end
 
-          find_job('failed_job_1').visit!
+          project.visit_job('failed_job_1')
           Page::Project::Job::Show.perform do |job|
             expect(job).to have_unlocked_artifact
           end
 
-          find_job('successful_job_1').visit!
+          project.visit_job('successful_job_1')
           Page::Project::Job::Show.perform do |job|
             expect(job).to have_locked_artifact
           end
@@ -79,28 +73,25 @@ module QA
       context 'when latest pipeline is blocked' do
         before do
           add_ci_file(job_name: 'successful_job_1', script: 'echo test')
-          Flow::Pipeline.wait_for_latest_pipeline(status: 'Passed')
         end
 
         it 'keeps job artifacts from the latest blocked pipeline and from latest successful pipeline',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/395511' do
-          update_ci_with_manual_job(job_name: 'successful_job_with_manual_1', script: 'echo test')
-          Flow::Pipeline.wait_for_latest_pipeline(status: 'Blocked')
+          update_ci_with_manual_job(job_name: 'successful_job_with_manual_1', script: 'echo test', pipeline_count: 2)
 
-          update_ci_with_manual_job(job_name: 'successful_job_with_manual_2', script: 'echo test')
-          Flow::Pipeline.wait_for_latest_pipeline(status: 'Blocked')
+          update_ci_with_manual_job(job_name: 'successful_job_with_manual_2', script: 'echo test', pipeline_count: 3)
 
-          find_job('successful_job_with_manual_2').visit!
+          project.visit_job('successful_job_with_manual_2')
           Page::Project::Job::Show.perform do |job|
             expect(job).to have_locked_artifact
           end
 
-          find_job('successful_job_with_manual_1').visit!
+          project.visit_job('successful_job_with_manual_1')
           Page::Project::Job::Show.perform do |job|
             expect(job).to have_unlocked_artifact
           end
 
-          find_job('successful_job_1').visit!
+          project.visit_job('successful_job_1')
           Page::Project::Job::Show.perform do |job|
             expect(job).to have_locked_artifact
           end
@@ -110,36 +101,27 @@ module QA
       private
 
       def add_ci_file(job_name:, script:)
-        ci_file = ci_file_with_job_artifact(job_name, script)
-        original_pipeline_count = pipeline_count
-
         create(:commit, project: project, commit_message: "Set job #{job_name} script #{script}", actions: [
-          { action: 'create', **ci_file }
+          { action: 'create', **ci_file_with_job_artifact(job_name, script) }
         ])
-
-        wait_for_new_pipeline(original_pipeline_count)
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+        Flow::Pipeline.wait_for_latest_pipeline_to_have_status(project: project, status: 'success')
       end
 
-      def update_ci_file(job_name:, script:)
-        ci_file = ci_file_with_job_artifact(job_name, script)
-        original_pipeline_count = pipeline_count
-
+      def update_ci_file(job_name:, script:, pipeline_count:, status:)
         create(:commit, project: project, commit_message: "Set job #{job_name} script #{script}", actions: [
-          { action: 'update', **ci_file }
+          { action: 'update', **ci_file_with_job_artifact(job_name, script) }
         ])
-
-        wait_for_new_pipeline(original_pipeline_count)
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project, size: pipeline_count)
+        Flow::Pipeline.wait_for_latest_pipeline_to_have_status(project: project, status: status)
       end
 
-      def update_ci_with_manual_job(job_name:, script:)
-        ci_file = ci_file_with_manual_job(job_name, script)
-        original_pipeline_count = pipeline_count
-
+      def update_ci_with_manual_job(job_name:, script:, pipeline_count:)
         create(:commit, project: project, commit_message: "Set job #{job_name} script #{script}", actions: [
-          { action: 'update', **ci_file }
+          { action: 'update', **ci_file_with_manual_job(job_name, script) }
         ])
-
-        wait_for_new_pipeline(original_pipeline_count)
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project, size: pipeline_count)
+        Flow::Pipeline.wait_for_latest_pipeline_to_have_status(project: project, status: 'manual')
       end
 
       def ci_file_with_job_artifact(job_name, script)
@@ -178,19 +160,6 @@ module QA
                 paths: ['.gitlab-ci.yml']
           YAML
         }
-      end
-
-      def find_job(job_name)
-        create(:job, project: project, id: project.job_by_name(job_name)[:id])
-      end
-
-      def pipeline_count
-        project.pipelines.length
-      end
-
-      def wait_for_new_pipeline(original_pipeline_count)
-        QA::Runtime::Logger.info('Waiting for new pipeline to be created')
-        Support::Waiter.wait_until { pipeline_count > original_pipeline_count }
       end
     end
   end

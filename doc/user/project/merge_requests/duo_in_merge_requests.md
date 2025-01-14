@@ -85,7 +85,7 @@ When you've completed your review of a merge request and are ready to [submit yo
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find the merge request you want to review.
 1. When you are ready to submit your review, select **Finish review**.
-1. Select **Summarize my pending comments**.
+1. Select **Add Summary**.
 
 The summary is displayed in the comment box. You can edit and refine the summary prior to submitting your review.
 
@@ -98,7 +98,7 @@ Provide feedback on this experimental feature in [issue 408991](https://gitlab.c
 ## Generate a merge commit message
 
 DETAILS:
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 **LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10453) in GitLab 16.2 as an [experiment](../../../policy/development_stages_support.md#experiment) [with a flag](../../../administration/feature_flags.md) named `generate_commit_message_flag`. Disabled by default.

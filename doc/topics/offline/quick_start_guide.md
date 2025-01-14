@@ -4,13 +4,13 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Install an offline self-managed GitLab instance
+# Install an offline GitLab Self-Managed instance
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
-This is a step-by-step guide that helps you install, configure, and use a self-managed GitLab
+This is a step-by-step guide that helps you install, configure, and use a GitLab Self-Managed
 instance entirely offline.
 
 ## Installation

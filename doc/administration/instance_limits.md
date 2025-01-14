@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 GitLab, like most large applications, enforces limits in certain features to maintain a
 minimum quality of performance. Allowing some features to be limitless could affect security,
@@ -612,6 +612,7 @@ To update the `default` plan of one of these limits on a self-managed installati
 ### Maximum file size per type of artifact
 
 > - `ci_max_artifact_size_annotations` limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+> - `ci_max_artifact_size_lsif` limit [increased](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175684) in GitLab 17.8.
 
 Job artifacts defined with [`artifacts:reports`](../ci/yaml/index.md#artifactsreports)
 that are uploaded by the runner are rejected if the file size exceeds the maximum
@@ -644,7 +645,7 @@ setting is used:
 | `ci_max_artifact_size_license_management`   | 0             |
 | `ci_max_artifact_size_license_scanning`     | 0             |
 | `ci_max_artifact_size_load_performance`     | 0             |
-| `ci_max_artifact_size_lsif`                 | 100 MB        |
+| `ci_max_artifact_size_lsif`                 | 200 MB        |
 | `ci_max_artifact_size_metadata`             | 0             |
 | `ci_max_artifact_size_metrics_referee`      | 0             |
 | `ci_max_artifact_size_metrics`              | 0             |
@@ -704,7 +705,7 @@ If the limit value is set to zero, the limit is disabled.
 
 GitLab SaaS subscribers have different limits defined per plan, affecting all projects using that plan.
 
-Self-managed GitLab Premium and Ultimate limits are defined by a default plan that affects all projects:
+Premium and Ultimate limits on GitLab Self-Managed are defined by a default plan that affects all projects:
 
 | Runner scope                    | Default value |
 |---------------------------------|---------------|
@@ -913,7 +914,7 @@ panel_groups:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 See [Environment Dashboard](../ci/environments/environments_dashboard.md#adding-a-project-to-the-dashboard) for the maximum number of displayed projects.
 
@@ -1193,7 +1194,7 @@ ci_pipeline_schedules: 10,
 offset_pagination_limit: 50000,
 ci_instance_level_variables: "[FILTERED]",
 storage_size_limit: 0,
-ci_max_artifact_size_lsif: 100,
+ci_max_artifact_size_lsif: 200,
 ci_max_artifact_size_archive: 0,
 ci_max_artifact_size_metadata: 0,
 ci_max_artifact_size_trace: "[FILTERED]",

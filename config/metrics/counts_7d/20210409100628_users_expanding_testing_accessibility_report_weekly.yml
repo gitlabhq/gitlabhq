@@ -15,9 +15,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
     - users_expanding_testing_accessibility_report
-distribution:
-  - ce
-  - ee
 tiers:
   - free
   - premium

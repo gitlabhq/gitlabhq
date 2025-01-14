@@ -228,14 +228,6 @@
       position: relative;
       padding: $gl-padding-4 0;
 
-      &.opened {
-        color: $green-500;
-      }
-
-      &.closed {
-        color: $blue-500;
-      }
-
       svg {
         vertical-align: baseline;
       }

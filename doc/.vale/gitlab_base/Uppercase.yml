@@ -21,8 +21,8 @@ exceptions:
   - ANSI
   - APAC
   - API
-  - ARIA
   - APM
+  - ARIA
   - ARM
   - ARN
   - ASCII
@@ -59,13 +59,13 @@ exceptions:
   - DHCP
   - DML
   - DNS
-  - DSN
   - DOM
   - DORA
   - DSA
   - DSL
-  - DUOPRO
+  - DSN
   - DUOENT
+  - DUOPRO
   - DVCS
   - DVD
   - EBS
@@ -127,6 +127,7 @@ exceptions:
   - JPEG
   - JPG
   - JSON
+  - JSONB
   - JVM
   - JWT
   - KICS
@@ -180,7 +181,6 @@ exceptions:
   - RAM
   - RBAC
   - RDP
-  - RDS
   - RDS
   - REST
   - RFC
@@ -248,7 +248,6 @@ exceptions:
   - TTL
   - UBI
   - UDP
-  - UID
   - UID
   - UNIX
   - URI

@@ -11,7 +11,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (7.1.5)
+    activesupport (7.1.5.1)
       base64
       benchmark (>= 0.3)
       bigdecimal
@@ -163,4 +163,4 @@ DEPENDENCIES
   rubocop-rspec (~> 2.22)
 
 BUNDLED WITH
-   2.5.23
+   2.5.11

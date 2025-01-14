@@ -16,6 +16,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
       let(:step_url) { '_some_string_' }
       let(:email_opt_in) { true }
       let(:registration_type) { 'free' }
+      let(:registration_objective) { 0 }
       let(:glm_source) { 'glm_source' }
       let(:glm_content) { 'glm_content' }
       let(:joining_project) { true }
@@ -29,7 +30,8 @@ RSpec.describe UserDetail, feature_category: :system_access do
           glm_source: glm_source,
           glm_content: glm_content,
           joining_project: joining_project,
-          role: role
+          role: role,
+          registration_objective: registration_objective
         }
       end
 
@@ -94,6 +96,34 @@ RSpec.describe UserDetail, feature_category: :system_access do
 
         context "when 'registration_type' is invalid" do
           let(:registration_type) { [] }
+
+          it { is_expected.not_to allow_value(onboarding_status).for(:onboarding_status) }
+        end
+      end
+
+      context 'for registration_objective' do
+        let(:onboarding_status) do
+          {
+            registration_objective: registration_objective
+          }
+        end
+
+        it { is_expected.to allow_value(onboarding_status).for(:onboarding_status) }
+
+        context "when 'registration_objective' is invalid" do
+          let(:registration_objective) { [] }
+
+          it { is_expected.not_to allow_value(onboarding_status).for(:onboarding_status) }
+        end
+
+        context "when 'registration_objective' is invalid integer" do
+          let(:registration_objective) { 10 }
+
+          it { is_expected.not_to allow_value(onboarding_status).for(:onboarding_status) }
+        end
+
+        context "when 'registration_objective' is invalid string" do
+          let(:registration_objective) { 'long-string-not-listed' }
 
           it { is_expected.not_to allow_value(onboarding_status).for(:onboarding_status) }
         end

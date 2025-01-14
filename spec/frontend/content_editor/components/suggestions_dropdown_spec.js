@@ -37,9 +37,11 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
   const exampleMilestone1 = { iid: 21, title: '13' };
   const exampleMilestone2 = { iid: 24, title: 'Milestone with spaces' };
   const expiredMilestone = { iid: 25, title: 'Expired Milestone', expired: true };
-
-  const exampleIteration1 = { iid: 24, title: '24' };
-  const exampleIteration2 = { id: 25, title: 'Iteration with spaces' };
+  const exampleIteration = {
+    iid: 2478987,
+    title: 'Maiores atque. Nov 15, 2024 - Dec 12, 2024',
+    reference: '*iteration:2478987',
+  };
 
   const exampleCommand = {
     name: 'due',
@@ -147,30 +149,29 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
 
   describe('when query is defined', () => {
     it.each`
-      nodeType       | referenceType      | reference                    | query          | expectedHTML
-      ${'reference'} | ${'user'}          | ${exampleUser}               | ${'r'}         | ${'<strong class="!gl-text-default">r</strong>oot'}
-      ${'reference'} | ${'user'}          | ${exampleUser}               | ${'r'}         | ${'Administ<strong class="!gl-text-default">r</strong>ator'}
-      ${'reference'} | ${'issue'}         | ${exampleIssue}              | ${'test'}      | ${'<strong class="!gl-text-default">Test</strong> Issue'}
-      ${'reference'} | ${'issue'}         | ${exampleIssue}              | ${'12'}        | ${'<strong class="!gl-text-default">12</strong>3'}
-      ${'reference'} | ${'issue'}         | ${exampleIssueWithIcon}      | ${'test'}      | ${'<strong class="!gl-text-default">Test</strong>'}
-      ${'reference'} | ${'issue'}         | ${exampleIssueWithReference} | ${'test'}      | ${'<strong class="!gl-text-default">Test</strong>'}
-      ${'reference'} | ${'merge_request'} | ${exampleMergeRequest}       | ${'test'}      | ${'<strong class="!gl-text-default">Test</strong> MR'}
-      ${'reference'} | ${'merge_request'} | ${exampleMergeRequest}       | ${'22'}        | ${'<strong class="!gl-text-default">22</strong>4'}
-      ${'reference'} | ${'epic'}          | ${exampleEpic}               | ${'rem'}       | ${'❓ <strong class="!gl-text-default">Rem</strong>ote Development | Solution validation'}
-      ${'reference'} | ${'epic'}          | ${exampleEpic}               | ${'88'}        | ${'gitlab-org&amp;<strong class="!gl-text-default">88</strong>84'}
-      ${'reference'} | ${'milestone'}     | ${exampleMilestone1}         | ${'1'}         | ${'<strong class="!gl-text-default">1</strong>3'}
-      ${'reference'} | ${'milestone'}     | ${expiredMilestone}          | ${'expired'}   | ${'<span><strong class="!gl-text-default">Expired</strong> Milestone</span> <span>(expired)</span>'}
-      ${'reference'} | ${'iteration'}     | ${exampleIteration1}         | ${'2'}         | ${'<strong class="!gl-text-default">2</strong>4'}
-      ${'reference'} | ${'iteration'}     | ${exampleIteration2}         | ${'tion with'} | ${'<span>Itera<strong class="!gl-text-default">tion with</strong> spaces</span>'}
-      ${'reference'} | ${'command'}       | ${exampleCommand}            | ${'due'}       | ${'<strong class="!gl-text-default">due</strong>'}
-      ${'reference'} | ${'command'}       | ${exampleCommand}            | ${'due'}       | ${'Set <strong class="!gl-text-default">due</strong> date'}
-      ${'reference'} | ${'label'}         | ${exampleLabel1}             | ${'c'}         | ${'<strong class="!gl-text-default">C</strong>reate'}
-      ${'reference'} | ${'vulnerability'} | ${exampleVulnerability}      | ${'network'}   | ${'System procs <strong class="!gl-text-default">network</strong> activity'}
-      ${'reference'} | ${'vulnerability'} | ${exampleVulnerability}      | ${'85'}        | ${'60<strong class="!gl-text-default">85</strong>0147'}
-      ${'reference'} | ${'snippet'}       | ${exampleSnippet}            | ${'project'}   | ${'<strong class="!gl-text-default">Project</strong> creation QueryRecorder logs'}
-      ${'reference'} | ${'snippet'}       | ${exampleSnippet}            | ${'242'}       | ${'<strong class="!gl-text-default">242</strong>0859'}
-      ${'emoji'}     | ${'emoji'}         | ${exampleEmoji}              | ${'sm'}        | ${'<strong class="!gl-text-default">sm</strong>iley'}
-      ${'wiki'}      | ${'wiki'}          | ${exampleWiki}               | ${'home'}      | ${'<strong class="!gl-text-default">Home</strong>'}
+      nodeType       | referenceType      | reference                    | query        | expectedHTML
+      ${'reference'} | ${'user'}          | ${exampleUser}               | ${'r'}       | ${'<strong class="!gl-text-default">r</strong>oot'}
+      ${'reference'} | ${'user'}          | ${exampleUser}               | ${'r'}       | ${'Administ<strong class="!gl-text-default">r</strong>ator'}
+      ${'reference'} | ${'issue'}         | ${exampleIssue}              | ${'test'}    | ${'<strong class="!gl-text-default">Test</strong> Issue'}
+      ${'reference'} | ${'issue'}         | ${exampleIssue}              | ${'12'}      | ${'<strong class="!gl-text-default">12</strong>3'}
+      ${'reference'} | ${'issue'}         | ${exampleIssueWithIcon}      | ${'test'}    | ${'<strong class="!gl-text-default">Test</strong>'}
+      ${'reference'} | ${'issue'}         | ${exampleIssueWithReference} | ${'test'}    | ${'<strong class="!gl-text-default">Test</strong>'}
+      ${'reference'} | ${'merge_request'} | ${exampleMergeRequest}       | ${'test'}    | ${'<strong class="!gl-text-default">Test</strong> MR'}
+      ${'reference'} | ${'merge_request'} | ${exampleMergeRequest}       | ${'22'}      | ${'<strong class="!gl-text-default">22</strong>4'}
+      ${'reference'} | ${'epic'}          | ${exampleEpic}               | ${'rem'}     | ${'❓ <strong class="!gl-text-default">Rem</strong>ote Development | Solution validation'}
+      ${'reference'} | ${'epic'}          | ${exampleEpic}               | ${'88'}      | ${'gitlab-org&amp;<strong class="!gl-text-default">88</strong>84'}
+      ${'reference'} | ${'milestone'}     | ${exampleMilestone1}         | ${'1'}       | ${'<strong class="!gl-text-default">1</strong>3'}
+      ${'reference'} | ${'milestone'}     | ${expiredMilestone}          | ${'expired'} | ${'<span><strong class="!gl-text-default">Expired</strong> Milestone</span> <span>(expired)</span>'}
+      ${'reference'} | ${'iteration'}     | ${exampleIteration}          | ${'Maiore'}  | ${'<strong class="!gl-text-default">Maiore</strong>s'}
+      ${'reference'} | ${'command'}       | ${exampleCommand}            | ${'due'}     | ${'<strong class="!gl-text-default">due</strong>'}
+      ${'reference'} | ${'command'}       | ${exampleCommand}            | ${'due'}     | ${'Set <strong class="!gl-text-default">due</strong> date'}
+      ${'reference'} | ${'label'}         | ${exampleLabel1}             | ${'c'}       | ${'<strong class="!gl-text-default">C</strong>reate'}
+      ${'reference'} | ${'vulnerability'} | ${exampleVulnerability}      | ${'network'} | ${'System procs <strong class="!gl-text-default">network</strong> activity'}
+      ${'reference'} | ${'vulnerability'} | ${exampleVulnerability}      | ${'85'}      | ${'60<strong class="!gl-text-default">85</strong>0147'}
+      ${'reference'} | ${'snippet'}       | ${exampleSnippet}            | ${'project'} | ${'<strong class="!gl-text-default">Project</strong> creation QueryRecorder logs'}
+      ${'reference'} | ${'snippet'}       | ${exampleSnippet}            | ${'242'}     | ${'<strong class="!gl-text-default">242</strong>0859'}
+      ${'emoji'}     | ${'emoji'}         | ${exampleEmoji}              | ${'sm'}      | ${'<strong class="!gl-text-default">sm</strong>iley'}
+      ${'wiki'}      | ${'wiki'}          | ${exampleWiki}               | ${'home'}    | ${'<strong class="!gl-text-default">Home</strong>'}
     `(
       'highlights query as bolded in $referenceType text',
       ({ nodeType, referenceType, reference, query, expectedHTML }) => {
@@ -222,23 +223,22 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
 
   describe('on item select', () => {
     it.each`
-      nodeType       | referenceType      | char                 | reference               | insertedText                  | insertedProps
-      ${'reference'} | ${'user'}          | ${'@'}               | ${exampleUser}          | ${`@root`}                    | ${{}}
-      ${'reference'} | ${'issue'}         | ${'#'}               | ${exampleIssue}         | ${`#123`}                     | ${{}}
-      ${'reference'} | ${'merge_request'} | ${'!'}               | ${exampleMergeRequest}  | ${`!224`}                     | ${{}}
-      ${'reference'} | ${'milestone'}     | ${'%'}               | ${exampleMilestone1}    | ${`%13`}                      | ${{}}
-      ${'reference'} | ${'milestone'}     | ${'%'}               | ${exampleMilestone2}    | ${`%Milestone with spaces`}   | ${{ originalText: '%"Milestone with spaces"' }}
-      ${'reference'} | ${'iteration'}     | ${'*'}               | ${exampleIteration1}    | ${`24`}                       | ${{}}
-      ${'reference'} | ${'iteration'}     | ${'*'}               | ${exampleIteration2}    | ${`Iteration with spaces`}    | ${{}}
-      ${'reference'} | ${'command'}       | ${'/'}               | ${exampleCommand}       | ${'/due'}                     | ${{}}
-      ${'reference'} | ${'epic'}          | ${'&'}               | ${exampleEpic}          | ${`gitlab-org&8884`}          | ${{}}
-      ${'reference'} | ${'label'}         | ${'~'}               | ${exampleLabel1}        | ${`Create`}                   | ${{}}
-      ${'reference'} | ${'label'}         | ${'~'}               | ${exampleLabel2}        | ${`Weekly Team Announcement`} | ${{ originalText: '~"Weekly Team Announcement"' }}
-      ${'reference'} | ${'label'}         | ${'~'}               | ${exampleLabel3}        | ${`devops::create`}           | ${{ originalText: '~"devops::create"', text: 'devops::create' }}
-      ${'reference'} | ${'vulnerability'} | ${'[vulnerability:'} | ${exampleVulnerability} | ${`[vulnerability:60850147]`} | ${{}}
-      ${'reference'} | ${'snippet'}       | ${'$'}               | ${exampleSnippet}       | ${`$2420859`}                 | ${{}}
-      ${'emoji'}     | ${'emoji'}         | ${':'}               | ${exampleEmoji}         | ${`😃`}                       | ${insertedEmojiProps}
-      ${'link'}      | ${'wiki'}          | ${'[['}              | ${exampleWiki}          | ${`Home`}                     | ${{ canonicalSrc: 'home', href: '/path/to/project/-/wikis/home', isGollumLink: true, isWikiPage: true }}
+      nodeType       | referenceType      | char                 | reference               | insertedText                                    | insertedProps
+      ${'reference'} | ${'user'}          | ${'@'}               | ${exampleUser}          | ${`@root`}                                      | ${{}}
+      ${'reference'} | ${'issue'}         | ${'#'}               | ${exampleIssue}         | ${`#123`}                                       | ${{}}
+      ${'reference'} | ${'merge_request'} | ${'!'}               | ${exampleMergeRequest}  | ${`!224`}                                       | ${{}}
+      ${'reference'} | ${'milestone'}     | ${'%'}               | ${exampleMilestone1}    | ${`%13`}                                        | ${{}}
+      ${'reference'} | ${'milestone'}     | ${'%'}               | ${exampleMilestone2}    | ${`%Milestone with spaces`}                     | ${{ originalText: '%"Milestone with spaces"' }}
+      ${'reference'} | ${'iteration'}     | ${'*iteration:'}     | ${exampleIteration}     | ${`Maiores atque. Nov 15, 2024 - Dec 12, 2024`} | ${{ originalText: '*iteration:2478987' }}
+      ${'reference'} | ${'command'}       | ${'/'}               | ${exampleCommand}       | ${'/due'}                                       | ${{}}
+      ${'reference'} | ${'epic'}          | ${'&'}               | ${exampleEpic}          | ${`gitlab-org&8884`}                            | ${{}}
+      ${'reference'} | ${'label'}         | ${'~'}               | ${exampleLabel1}        | ${`Create`}                                     | ${{}}
+      ${'reference'} | ${'label'}         | ${'~'}               | ${exampleLabel2}        | ${`Weekly Team Announcement`}                   | ${{ originalText: '~"Weekly Team Announcement"' }}
+      ${'reference'} | ${'label'}         | ${'~'}               | ${exampleLabel3}        | ${`devops::create`}                             | ${{ originalText: '~"devops::create"', text: 'devops::create' }}
+      ${'reference'} | ${'vulnerability'} | ${'[vulnerability:'} | ${exampleVulnerability} | ${`[vulnerability:60850147]`}                   | ${{}}
+      ${'reference'} | ${'snippet'}       | ${'$'}               | ${exampleSnippet}       | ${`$2420859`}                                   | ${{}}
+      ${'emoji'}     | ${'emoji'}         | ${':'}               | ${exampleEmoji}         | ${`😃`}                                         | ${insertedEmojiProps}
+      ${'link'}      | ${'wiki'}          | ${'[['}              | ${exampleWiki}          | ${`Home`}                                       | ${{ canonicalSrc: 'home', href: '/path/to/project/-/wikis/home', isGollumLink: true, isWikiPage: true }}
     `(
       'runs a command to insert the selected $referenceType',
       async ({ char, nodeType, referenceType, reference, insertedText, insertedProps }) => {
@@ -329,11 +329,11 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
   });
 
   describe.each`
-    referenceType      | char   | reference              | displaysID
-    ${'issue'}         | ${'#'} | ${exampleIssue}        | ${true}
-    ${'merge_request'} | ${'!'} | ${exampleMergeRequest} | ${true}
-    ${'milestone'}     | ${'%'} | ${exampleMilestone1}   | ${false}
-    ${'iteration'}     | ${'*'} | ${exampleIteration1}   | ${true}
+    referenceType      | char             | reference              | displaysID
+    ${'issue'}         | ${'#'}           | ${exampleIssue}        | ${true}
+    ${'merge_request'} | ${'!'}           | ${exampleMergeRequest} | ${true}
+    ${'milestone'}     | ${'%'}           | ${exampleMilestone1}   | ${false}
+    ${'iteration'}     | ${'*iteration:'} | ${exampleIteration}    | ${true}
   `('rendering $referenceType references', ({ referenceType, char, reference, displaysID }) => {
     it(`displays ${referenceType} ID and title`, () => {
       buildWrapper({

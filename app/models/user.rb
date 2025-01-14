@@ -183,6 +183,9 @@ class User < ApplicationRecord
   has_one :user_synced_attributes_metadata, autosave: true
   has_one :aws_role, class_name: 'Aws::Role'
 
+  # Ghost User Migration
+  has_one :ghost_user_migration, class_name: 'Users::GhostUserMigration'
+
   # Followers
   has_many :followed_users, foreign_key: :follower_id, class_name: 'Users::UserFollowUser'
   has_many :followees, -> { active }, through: :followed_users
@@ -2557,6 +2560,22 @@ class User < ApplicationRecord
 
   def add_admin_note(new_note)
     self.note = "#{new_note}\n#{self.note}"
+  end
+
+  # rubocop: disable CodeReuse/ServiceClass
+  def support_pin_data
+    strong_memoize(:support_pin_data) do
+      Users::SupportPin::RetrieveService.new(self).execute
+    end
+  end
+  # rubocop: enable CodeReuse/ServiceClass
+
+  def support_pin
+    support_pin_data&.fetch(:pin, nil)
+  end
+
+  def support_pin_expires_at
+    support_pin_data&.fetch(:expires_at, nil)
   end
 
   protected

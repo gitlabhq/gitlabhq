@@ -24,8 +24,12 @@ RSpec.describe Gitlab::Database::MigrationHelpers::WorkItems::Widgets, feature_c
         widget_type: 22
       },
       {
-        name: 'Another Test Widget',
-        widget_type: 23
+        name: 'Test widget with widget options',
+        widget_type: 23,
+        widget_options: {
+          rollup: false,
+          editable: true
+        }
       }
     ]
   end
@@ -46,7 +50,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::WorkItems::Widgets, feature_c
   describe '#add_widget_definitions' do
     shared_examples 'properly executed up migration' do
       it 'upserts widget definitions' do
-        expected_widgets = widgets.map { |w| w.merge(work_item_type_id: work_item_type.id) }
+        expected_widgets = widgets.map { |w| { work_item_type_id: work_item_type.id, widget_options: nil }.merge(w) }
 
         expect(widget_definition_migration_model).to receive(:upsert_all)
           .with(expected_widgets, on_duplicate: :skip)

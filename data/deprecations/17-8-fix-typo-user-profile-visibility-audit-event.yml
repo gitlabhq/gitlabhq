@@ -1,0 +1,11 @@
+- title: 'Fix typo in user profile visibility updated audit event type'
+  removal_milestone: '18.0'
+  announcement_milestone: '17.8'
+  breaking_change: true
+  window: 1
+  reporter: nrosandich
+  stage: Software Supply Chain Security
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/382338
+  body: | # (required) Don't change this line.
+    To fix a typo in an audit event type, in GitLab 18.0 we'll rename the `user_profile_visiblity_updated` event type to
+    `user_profile_visibility_updated`.

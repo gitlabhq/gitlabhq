@@ -9,7 +9,7 @@ description: Test cases in GitLab can help your teams create testing scenarios i
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Test cases in GitLab can help your teams create testing scenarios in their existing development platform.
 

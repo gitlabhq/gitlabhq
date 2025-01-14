@@ -1,5 +1,6 @@
 <script>
 export default {
+  name: 'LineNumber',
   functional: true,
   props: {
     lineNumber: {

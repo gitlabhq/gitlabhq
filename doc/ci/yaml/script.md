@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can use special syntax in [`script`](index.md#script) sections to:
 
@@ -42,7 +42,7 @@ job:
     - 'curl --request POST --header "Content-Type: application/json" "https://gitlab/api/v4/projects"'
 ```
 
-You can verify the syntax is valid with the [CI Lint](../lint.md) tool.
+You can verify the syntax is valid with the [CI Lint](../yaml/lint.md) tool.
 
 Be careful when using these characters as well:
 

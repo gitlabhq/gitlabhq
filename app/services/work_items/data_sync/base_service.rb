@@ -17,7 +17,8 @@ module WorkItems
         super(container: work_item.namespace, current_user: current_user, params: params)
       end
 
-      def execute
+      def execute(**args)
+        @execution_arguments = args
         verification_response = verify_work_item_action_permission
 
         return verification_response if verification_response.error?

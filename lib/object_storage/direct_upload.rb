@@ -89,7 +89,7 @@ module ObjectStorage
             UseIamProfile: config.use_iam_profile?,
             ServerSideEncryption: config.server_side_encryption,
             SSEKMSKeyID: config.server_side_encryption_kms_key_id,
-            AwsSDK: Feature.enabled?(:workhorse_use_aws_sdk_v2, :instance) ? "v2" : "v1"
+            AwsSDK: "v2"
           }.compact
         }
       }

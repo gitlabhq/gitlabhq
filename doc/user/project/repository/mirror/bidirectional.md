@@ -9,7 +9,7 @@ description: "Create bidirectional mirrors to push and pull changes between two 
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - Moved to GitLab Premium in 13.9.
 
@@ -147,7 +147,7 @@ This sample has a few limitations:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - Moved to GitLab Premium in 13.9.
 

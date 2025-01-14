@@ -6,6 +6,8 @@ module QA
       module Integration
         class Registry < Test::Instance::All
           tags :registry
+
+          pipeline_mappings test_on_cng: ["cng-registry"], test_on_omnibus: %w[registry]
         end
       end
     end

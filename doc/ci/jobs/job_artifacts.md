@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Jobs can output an archive of files and directories. This output is known as a job artifact.
 
@@ -179,11 +179,22 @@ artifacts:
     - "*.txt"
 ```
 
-## Prevent a job from fetching artifacts
+## Fetching artifacts
 
-Jobs download all artifacts from the completed jobs in previous stages by default.
-To prevent a job from downloading any artifacts, set [`dependencies`](../yaml/index.md#dependencies)
-to an empty array (`[]`):
+By default, jobs fetch all artifacts from jobs defined in previous stages. These artifacts are downloaded into the job's working directory.
+
+You can control which artifacts to download by using these keywords:
+
+- [`dependencies`](../yaml/index.md#dependencies): Specify which jobs to download artifacts from.
+- [`needs`](../yaml/index.md#needs): Define relationships between jobs and specify which artifacts to download.
+
+When you use these keywords, the default behavior changes and artifacts are fetched from only the jobs you specify.
+
+### Prevent a job from fetching artifacts
+
+To prevent a job from downloading any artifacts, set
+[`dependencies`](../yaml/index.md#dependencies) to an empty array
+(`[]`):
 
 ```yaml
 job:
@@ -194,8 +205,8 @@ job:
 
 ## View all job artifacts in a project
 
-> - [Improved look](https://gitlab.com/gitlab-org/gitlab/-/issues/33418) in GitLab 15.6.
-> - [Improved performance](https://gitlab.com/gitlab-org/gitlab/-/issues/387765) in GitLab 15.9.
+> - Interface improvements [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33418) in GitLab 15.6.
+> - Performance improvements [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387765) in GitLab 15.9.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/407475) in GitLab 16.0. Feature flag `artifacts_management_page` removed.
 
 You can view all artifacts stored in a project from the **Build > Artifacts** page.
@@ -259,7 +270,7 @@ child pipelines have a job with the same name, the job artifacts from the parent
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can use a [CI/CD job token](ci_job_token.md) to authenticate with the [jobs artifacts API endpoint](../../api/job_artifacts.md)
 and fetch artifacts from a different pipeline. You must specify which job to retrieve artifacts from,

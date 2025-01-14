@@ -1,8 +1,5 @@
 <script>
-// NOTE! For the first iteration, we are simply copying the implementation of Assignees
-// It will soon be overhauled in Issue https://gitlab.com/gitlab-org/gitlab/-/issues/233736
-import { GlLoadingIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { n__, s__ } from '~/locale';
 import ReviewerDropdown from '~/merge_requests/components/reviewers/reviewer_dropdown.vue';
 
@@ -10,13 +7,11 @@ export default {
   name: 'ReviewerTitle',
   components: {
     GlLoadingIcon,
-    GlButton,
     ReviewerDropdown,
   },
   directives: {
     Tooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     loading: {
       type: Boolean,
@@ -56,25 +51,10 @@ export default {
     <gl-loading-icon v-if="loading" size="sm" inline class="align-bottom" />
     <template v-if="editable">
       <reviewer-dropdown
-        v-if="glFeatures.reviewerAssignDrawer"
         class="gl-ml-auto"
         :selected-reviewers="reviewers"
         :visible-reviewers="reviewers"
       />
-      <gl-button
-        v-else
-        v-tooltip.hover
-        :title="$options.i18n.changeReviewer"
-        class="hide-collapsed js-sidebar-dropdown-toggle edit-link gl-float-right gl-ml-auto"
-        data-track-action="click_edit_button"
-        data-track-label="right_sidebar"
-        data-track-property="reviewer"
-        data-testid="reviewers-edit-button"
-        category="tertiary"
-        size="small"
-      >
-        {{ __('Edit') }}
-      </gl-button>
     </template>
   </div>
 </template>

@@ -40,7 +40,8 @@ RSpec.describe ContainerRegistry::ContainerRegistryHelper, feature_category: :co
         cleanup_policies_settings_path:
           helper.cleanup_image_tags_project_settings_packages_and_registries_path(project),
         show_container_registry_settings: helper.show_container_registry_settings(project).to_s,
-        settings_path: helper.project_settings_packages_and_registries_path(project),
+        settings_path:
+          helper.project_settings_packages_and_registries_path(project, anchor: 'container-registry-settings'),
         connection_error: (!!connection_error).to_s,
         invalid_path_error: (!!invalid_path_error).to_s,
         user_callouts_path: callouts_path,

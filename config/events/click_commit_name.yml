@@ -4,9 +4,6 @@ action: click_commit_name
 product_group: pipeline_execution
 milestone: '16.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122363
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

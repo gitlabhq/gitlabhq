@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::PipelineCreation::Requests, :clean_gitlab_redis_shared_state, feature_category: :pipeline_composition do
   let_it_be(:merge_request) { create(:merge_request) }
+  let_it_be(:project) { merge_request.project }
 
   describe '.failed' do
     context 'when given a pipeline creation key and ID' do
@@ -45,6 +46,20 @@ RSpec.describe Ci::PipelineCreation::Requests, :clean_gitlab_redis_shared_state,
     end
   end
 
+  describe '.start_for_project' do
+    it 'stores a pipeline creation for the project and returns its key and ID' do
+      allow(SecureRandom).to receive(:uuid).and_return('test-id')
+
+      request = described_class.start_for_project(project)
+
+      expect(request).to eq({
+        'key' => described_class.request_key(project, 'test-id'),
+        'id' => 'test-id'
+      })
+      expect(described_class.hget(request)).to eq({ 'status' => 'in_progress' })
+    end
+  end
+
   describe '.start_for_merge_request' do
     it 'stores a pipeline creation for the merge request and returns its key and ID' do
       allow(SecureRandom).to receive(:uuid).and_return('test-id')
@@ -83,6 +98,16 @@ RSpec.describe Ci::PipelineCreation::Requests, :clean_gitlab_redis_shared_state,
     end
   end
 
+  describe '.get_request' do
+    it 'returns the data for the request' do
+      request = described_class.start_for_project(project)
+
+      expect(described_class.get_request(project, request['id'])).to eq(
+        { 'status' => described_class::IN_PROGRESS }
+      )
+    end
+  end
+
   describe '.hset' do
     it 'writes the pipeline creation to the Redis cache' do
       request = { 'key' => 'test_key', 'id' => 'test_id' }
@@ -111,6 +136,16 @@ RSpec.describe Ci::PipelineCreation::Requests, :clean_gitlab_redis_shared_state,
 
       expect(described_class.hget(request)).to eq(
         { 'status' => described_class::IN_PROGRESS }
+      )
+    end
+  end
+
+  describe '.request_key' do
+    it 'returns the Redis cache key for a single pipeline creation request' do
+      request_id = described_class.generate_id
+
+      expect(described_class.request_key(project, request_id)).to eq(
+        "pipeline_creation:projects:{#{project.id}}:request:{#{request_id}}"
       )
     end
   end

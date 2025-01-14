@@ -33,6 +33,10 @@ module Gitlab
             Process.spawn(env, 'pg_dump', *cmd_args, out: output)
           end
 
+          def build_command
+            Shell::Command.new('pg_dump', *cmd_args, env: env)
+          end
+
           private
 
           # Returns a list of arguments used by the pg_dump command

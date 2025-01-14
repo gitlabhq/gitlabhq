@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Enabled](https://gitlab.com/gitlab-org/security-products/analyzers/ruleset/-/merge_requests/18) support for specifying ambiguous passthrough refs in GitLab 16.2.
 
@@ -30,8 +30,8 @@ You can disable predefined rules for any SAST analyzer.
 When you disable a rule:
 
 - Most analyzers still scan for the vulnerability. The results are removed as a processing step after the scan completes, and they don't appear in the [`gl-sast-report.json` artifact](index.md#download-a-sast-report).
-- Findings for the disabled rule no longer appear in the [pipeline security tab](../index.md#pipeline-security-tab).
-- Existing findings for the disabled rule on the default branch are marked as [`No longer detected`](../vulnerability_report/index.md#activity-filter) in the [vulnerability report](../index.md#vulnerability-report).
+- Findings for the disabled rule no longer appear in the [pipeline security tab](../vulnerability_report/pipeline.md).
+- Existing findings for the disabled rule on the default branch are marked as [`No longer detected`](../vulnerability_report/index.md#activity-filter) in the [vulnerability report](../vulnerability_report/index.md).
 
 The Semgrep-based analyzer handles disabled rules differently:
 
@@ -145,7 +145,7 @@ differ based on the kind of configuration you're making.
 | `[[$analyzer.ruleset]]` | Predefined rules | Defines modifications to an existing rule. |
 | `interpolate` | All | If set to `true`, you can use `$VAR` in the configuration to evaluate environment variables. Use this feature with caution, so you don't leak secrets or tokens. (Default: `false`) |
 | `description` | Passthroughs | Description of the custom ruleset. |
-| `targetdir`   | Passthroughs | The directory where the final configuration should be persisted. If empty, a directory with a random name is created. The directory can contain up to 100 MB of files. |
+| `targetdir`   | Passthroughs | The directory where the final configuration should be persisted. If empty, a directory with a random name is created. The directory can contain up to 100 MB of files. In case the SAST job is running with non-root user privileges, ensure that the [active user](../../../development/integrations/secure.md#permissions) has read and write permissions for this directory. |
 | `validate`    | Passthroughs | If set to `true`, the content of each passthrough is validated. The validation works for `yaml`, `xml`, `json` and `toml` content. The proper validator is identified based on the extension used in the `target` parameter of the `[[$analyzer.passthrough]]` section. (Default: `false`) |
 | `timeout`     | Passthroughs | The maximum time to spend to evaluate the passthrough chain, before timing out. The timeout cannot exceed 300 seconds. (Default: 60) |
 

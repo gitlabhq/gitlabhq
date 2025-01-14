@@ -1,6 +1,6 @@
 ---
-stage: Data Stores
-group: Database
+stage: Data Access
+group: Database Frameworks
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 <!-- Linked from lib/gitlab/database/migrations/batched_background_migration_helpers.rb -->
 
@@ -28,8 +28,8 @@ Expected batched background migration for the given configuration to be marked a
   }
 ```
 
-First, check if you have followed the [version-specific upgrade instructions for 14.2](https://docs.gitlab.com/17.3/ee/update/versions/gitlab_14_changes.html#1420).
-If you have, you can [manually finish the batched background migration](background_migrations.md#finish-a-failed-migration-manually)).
+First, check if you have followed the [version-specific upgrade instructions for 14.2](https://archives.docs.gitlab.com/17.3/ee/update/versions/gitlab_14_changes.html#1420).
+If you have, you can [manually finish the batched background migration](background_migrations.md#finish-a-failed-migration-manually).
 If you haven't, choose one of the following methods:
 
 1. [Rollback and upgrade](#roll-back-and-follow-the-required-upgrade-path) through one of the required

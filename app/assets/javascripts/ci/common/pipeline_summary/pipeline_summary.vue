@@ -3,6 +3,7 @@ import { GlLink, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
+import { reportToSentry } from '~/ci/utils';
 import { getIncreasedPollInterval } from '~/ci/utils/polling_utils';
 import { NETWORK_STATUS_READY, PIPELINE_POLL_INTERVAL_DEFAULT } from '~/ci/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -10,14 +11,15 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { getQueryHeaders } from '~/ci/pipeline_details/graph/utils';
 import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
-import getPipelineMetadataQuery from './graphql/queries/get_pipeline_metadata.query.graphql';
+import getPipelineSummaryQuery from './graphql/queries/get_pipeline_summary.query.graphql';
 
 export default {
   name: 'PipelineSummary',
   i18n: {
     loadingText: s__('Pipeline|Checking pipeline status'),
-    pipelineMetadataFetchError: __('There was a problem fetching the pipeline metadata.'),
+    pipelineSummaryFetchError: __('There was a problem fetching the pipeline summary.'),
     pipelineStatusText: s__('Pipelines|Pipeline %{linkStart}#%{pipelineId}%{linkEnd} %{status}'),
+    pipelineCommitText: s__('Pipelines|Pipeline %{status} for %{linkStart}%{commit}%{linkEnd} '),
   },
   components: {
     CiIcon,
@@ -36,6 +38,11 @@ export default {
       type: String,
       required: true,
     },
+    includeCommitInfo: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     pipelineEtag: {
       type: String,
       required: true,
@@ -43,16 +50,16 @@ export default {
   },
   data() {
     return {
-      pipelineInfo: {},
+      pipeline: {},
       pollInterval: PIPELINE_POLL_INTERVAL_DEFAULT,
     };
   },
   apollo: {
-    pipelineInfo: {
+    pipeline: {
       context() {
         return getQueryHeaders(this.pipelineEtag);
       },
-      query: getPipelineMetadataQuery,
+      query: getPipelineSummaryQuery,
       notifyOnNetworkStatusChange: true,
       pollInterval() {
         return this.pollInterval;
@@ -61,6 +68,7 @@ export default {
         return {
           fullPath: this.fullPath,
           iid: this.iid,
+          includeCommitInfo: this.includeCommitInfo,
         };
       },
       result({ networkStatus }) {
@@ -72,29 +80,45 @@ export default {
       update({ project }) {
         return project?.pipeline || {};
       },
-      error() {
-        createAlert({ message: this.$options.i18n.pipelineMetadataFetchError });
+      error(error) {
+        createAlert({ message: this.$options.i18n.pipelineSummaryFetchError });
+        reportToSentry(this.$options.name, error);
       },
     },
   },
   computed: {
+    commitPath() {
+      return this.pipeline?.commit?.webPath;
+    },
+    commitSha() {
+      return this.pipeline?.commit?.shortId;
+    },
+    downstreamPipelines() {
+      return this.pipeline?.downstream?.nodes || [];
+    },
     finishedAt() {
-      return this.pipelineInfo?.finishedAt;
+      return this.pipeline?.finishedAt;
     },
     isLoading() {
-      return this.$apollo.queries.pipelineInfo.loading;
+      return this.$apollo.queries.pipeline.loading;
     },
     pipelineId() {
-      return getIdFromGraphQLId(this.pipelineInfo?.id);
+      return getIdFromGraphQLId(this.pipeline?.id);
     },
     pipelinePath() {
       return this.status?.detailsPath || '';
     },
+    pipelineStages() {
+      return this.pipeline?.stages?.nodes || [];
+    },
     status() {
-      return this.pipelineInfo?.detailedStatus || null;
+      return this.pipeline?.detailedStatus || null;
     },
     statusLabel() {
       return this.status?.label || '';
+    },
+    upstreamPipeline() {
+      return this.pipeline?.upstream || {};
     },
   },
   mounted() {
@@ -141,7 +165,7 @@ export default {
             <gl-sprintf :message="$options.i18n.pipelineStatusText">
               <template #status>{{ statusLabel }}</template>
               <template #link="{ content }">
-                <gl-link :href="pipelinePath">
+                <gl-link data-testid="pipeline-path" :href="pipelinePath">
                   <gl-sprintf :message="content">
                     <template #pipelineId>{{ pipelineId }}</template>
                   </gl-sprintf>
@@ -149,18 +173,30 @@ export default {
               </template>
             </gl-sprintf>
           </span>
-          <time-ago-tooltip
-            v-if="finishedAt"
-            class="gl-line-height-0 gl-flex gl-text-sm gl-text-subtle"
-            :time="finishedAt"
-            tooltip-placement="bottom"
-          />
+          <span class="align-items-center gl-flex gl-text-sm gl-text-subtle">
+            <span v-if="includeCommitInfo" data-testid="commit-info">
+              <gl-sprintf :message="$options.i18n.pipelineCommitText">
+                <template #status>{{ statusLabel }}</template>
+                <template #link>
+                  <gl-link
+                    data-testid="commit-path"
+                    :href="commitPath"
+                    class="commit-sha-container gl-mr-2"
+                  >
+                    {{ commitSha }}
+                  </gl-link>
+                </template>
+              </gl-sprintf>
+            </span>
+            <time-ago-tooltip v-if="finishedAt" :time="finishedAt" tooltip-placement="bottom" />
+          </span>
         </div>
         <pipeline-mini-graph
           data-testid="pipeline-summary-pipeline-mini-graph"
-          :full-path="fullPath"
-          :iid="iid"
-          :pipeline-etag="pipelineEtag"
+          :downstream-pipelines="downstreamPipelines"
+          :pipeline-path="pipelinePath"
+          :pipeline-stages="pipelineStages"
+          :upstream-pipeline="upstreamPipeline"
           @jobActionExecuted="onJobActionExecuted"
         />
       </div>

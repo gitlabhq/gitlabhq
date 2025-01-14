@@ -4,9 +4,6 @@ action: update_alert_status
 product_group: platform_insights
 milestone: '13.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32846
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

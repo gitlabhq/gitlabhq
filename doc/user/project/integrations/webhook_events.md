@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 This page lists the events that are triggered for [project webhooks](webhooks.md) and [group webhooks](webhooks.md#group-webhooks).
 
@@ -31,7 +31,7 @@ Event type                                   | Trigger
 [Release event](#release-events)             | A release is created, edited, or deleted.
 [Emoji event](#emoji-events)                 | An emoji reaction is added or removed.
 [Project or group access token event](#project-and-group-access-token-events) | A project or group access token will expire in seven days.
-[Vulnerability event](#vulnerability-events) | A vulnerability is updated.
+[Vulnerability event](#vulnerability-events) | A vulnerability is created or updated.
 
 **Footnotes:**
 
@@ -2223,7 +2223,7 @@ Payload example:
 
 Two access token expiration events are generated:
 
-- Seven days before a [project or group access token](../../../security/token_overview.md) expires.
+- Seven days before a [project or group access token](../../../security/tokens/index.md) expires.
 - One day before the token expires.
 
 The available values for `event_name` in the payload are:
@@ -2295,8 +2295,13 @@ Payload example for group:
 ## Vulnerability events
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169701) in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `vulnerabilities_as_webhook_events`. Disabled by default.
+> - Creating an event when a vulnerability is created or when an issue is linked to a vulnerability [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176064) in GitLab 17.8.
 
-A Vulnerability event is triggered when the [status is changed](../../application_security/vulnerabilities/index.md#vulnerability-status-values).
+A vulnerability event is triggered when:
+
+- A vulnerability is created.
+- A vulnerability's [status is changed](../../application_security/vulnerabilities/index.md#vulnerability-status-values).
+- An issue is linked to a vulnerability.
 
 Request header:
 
@@ -2345,15 +2350,24 @@ Payload example:
         "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-41123"
       }
     ],
+    "issues": [
+      {
+        "title": "REXML ReDoS vulnerability",
+        "url": "https://example.com/flightjs/Flight/-/issues/1",
+        "created_at": "2025-01-08T00:46:14.429Z",
+        "updated_at": "2025-01-08T00:46:14.429Z"
+      }
+    ],
     "report_type": "dependency_scanning",
     "confidence": "unknown",
-    "confirmed_at": "2024-12-04 05:35:05 UTC",
-    "confirmed_by_id": 50,
+    "confidence_overridden": false,
+    "confirmed_at": "2025-01-08T00:46:14.413Z",
+    "confirmed_by_id": 1,
     "dismissed_at": null,
     "dismissed_by_id": null,
     "resolved_on_default_branch": false,
-    "created_at": "2024-11-26 07:10:16 UTC",
-    "updated_at": "2024-12-04 05:35:05 UTC"
+    "created_at": "2025-01-08T00:46:14.413Z",
+    "updated_at": "2025-01-08T00:46:14.413Z"
   }
 }
 ```

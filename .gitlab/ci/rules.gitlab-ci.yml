@@ -1649,13 +1649,10 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
-    - <<: *if-ruby-branch
-      allow_failure: true
-    - <<: *if-merge-request-labels-run-all-e2e
-      allow_failure: true
+    - *if-ruby-branch
+    - *if-merge-request-labels-run-all-e2e
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
-      allow_failure: true
     # Run tests automatically for MRs that touch Ruby version files
     - <<: *if-merge-request
       changes: *ruby-version-patterns
@@ -1667,26 +1664,18 @@
       changes: *gdk-component-patterns
     - <<: *if-merge-request
       changes: *code-backstage-qa-patterns
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-schedule
-      allow_failure: true
-    - <<: *if-default-branch-schedule-nightly
-      allow_failure: true
+    - *if-dot-com-gitlab-org-schedule
+    - *if-default-branch-schedule-nightly
     # Rules to support e2e test execution
     - <<: *if-merge-request
       changes: *dependency-patterns
-      allow_failure: true
     - <<: *if-merge-request
       changes: *feature-flag-development-config-patterns
-      allow_failure: true
     - <<: *if-merge-request
       changes: *nodejs-patterns
-      allow_failure: true
     - <<: *if-merge-request
       changes: *ci-qa-patterns
-      allow_failure: true
-    - <<: *if-force-ci
-      allow_failure: true
+    - *if-force-ci
 
 .qa:rules:e2e-test-never-run:
   rules:
@@ -1731,7 +1720,6 @@
     - <<: *if-default-branch-schedule-nightly
       variables:
         <<: *qa-e2e-test-schedule-variables
-        KNAPSACK_GENERATE_REPORT: "true"
         QA_RUN_IN_PARALLEL: "false"
         COVERBAND_ENABLED: "false"
 
@@ -1739,9 +1727,7 @@
   rules:
     - !reference [".qa:rules:e2e-schedule-nightly", rules]
     - <<: *if-dot-com-gitlab-org-schedule
-      variables:
-        <<: *qa-e2e-test-schedule-variables
-        KNAPSACK_GENERATE_REPORT: "false"
+      variables: *qa-e2e-test-schedule-variables
 
 .qa:rules:code-suggestions-eval-base:
   rules:
@@ -1854,7 +1840,6 @@
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
         <<: *qa-e2e-test-schedule-variables
-        KNAPSACK_GENERATE_REPORT: "true"
         COVERBAND_ENABLED: "true"
         QA_RUN_IN_PARALLEL: "false"
 
@@ -1875,7 +1860,6 @@
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
         <<: *qa-e2e-test-schedule-variables
-        KNAPSACK_GENERATE_REPORT: "false"
         QA_RUN_IN_PARALLEL: "true"
 
 .qa:rules:test-on-omnibus-nightly:
@@ -1887,7 +1871,6 @@
       allow_failure: true
       variables:
         <<: *qa-e2e-test-schedule-variables
-        KNAPSACK_GENERATE_REPORT: "true"
         QA_RUN_IN_PARALLEL: "false"
 
 .qa:rules:fulfillment-e2e-quarantine-report:
@@ -2018,7 +2001,7 @@
       when: never
     - <<: *if-merge-request-targeting-stable-branch
       when: never
-    - <<: *if-default-refs
+    - <<: *if-not-merge-request
       when: never
     - !reference [".rails:rules:ee-and-foss-migration", rules]
 
@@ -2648,21 +2631,6 @@
   # a report artifact to compare against.
   rules:
     - !reference [".reports:rules:code_quality", rules]
-    - <<: *if-default-refs
-      changes: *docs-patterns
-
-.reports:rules:code_quality_cache:
-  rules:
-    - <<: *if-default-branch-refs
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - if: '$CODE_QUALITY_DISABLED'
-      when: never
-    - <<: *if-default-refs
-      changes: *code-backstage-qa-patterns
-      when: never
-      # Use the cached report in docs-only pipelines only, never in pipelines for code changes.
     - <<: *if-default-refs
       changes: *docs-patterns
 

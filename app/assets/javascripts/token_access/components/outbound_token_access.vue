@@ -12,7 +12,6 @@ import {
 import { createAlert } from '~/alert';
 import { __, s__, n__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import ConfirmActionModal from '~/vue_shared/components/confirm_action_modal.vue';
 import addProjectCIJobTokenScopeMutation from '../graphql/mutations/add_project_ci_job_token_scope.mutation.graphql';
@@ -68,7 +67,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: {
     fullPath: {
       default: '',
@@ -277,7 +275,11 @@ export default {
             <gl-button size="small" disabled>{{ $options.i18n.addProject }}</gl-button>
           </template>
 
-          <token-access-table :items="projects" @removeItem="projectToRemove = $event" />
+          <token-access-table
+            :items="projects"
+            :show-policies="false"
+            @removeItem="projectToRemove = $event"
+          />
           <confirm-action-modal
             v-if="projectToRemove"
             modal-id="outbound-token-access-remove-confirm-modal"

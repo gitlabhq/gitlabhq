@@ -52,12 +52,12 @@ Beta features:
 
 Two types of public releases are available:
 
-- Limited availability (LA)
-- Generally available (GA)
+- Limited availability
+- Generally available
 
 Both types are production-ready, but have different scopes.
 
-### Limited availability (LA)
+### Limited availability
 
 Limited availability features:
 
@@ -68,7 +68,7 @@ Limited availability features:
 - Are [fully supported](https://about.gitlab.com/support/statement-of-support/) and documented.
 - Have a complete user experience aligned with GitLab design standards.
 
-### Generally available (GA)
+### Generally available
 
 Generally available features:
 
@@ -78,9 +78,9 @@ Generally available features:
 
 ## Development guidelines
 
-Teams should release features as GA from the start unless there are strong reasons to release them as experimental, beta, or limited availability first.
+Teams should release features as generally available from the start unless there are strong reasons to release them as experimental, beta, or limited availability first.
 
-Product development teams should refrain from making changes that they reasonably believe
+Product development teams should refrain from making changes that they believe
 could create significant risks or friction for GitLab users or the platform, such as:
 
 - Risking damage or exfiltration of existing production data accessed by our users.
@@ -129,7 +129,7 @@ Publicly available features must:
 
 1. Meet the [review criteria](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/readiness/#criteria-for-starting-a-production-readiness-review).
 1. Complete the [Production Readiness Review](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/readiness/).
-1. Complete all sections up to and including the [GA section in the readiness template](https://gitlab.com/gitlab-com/gl-infra/readiness/-/blob/master/.gitlab/issue_templates/production_readiness.md#general-availability).
+1. Complete all sections up to and including the [General availability section in the readiness template](https://gitlab.com/gitlab-com/gl-infra/readiness/-/blob/master/.gitlab/issue_templates/production_readiness.md#general-availability).
 
 ### Provide earlier access
 
@@ -154,8 +154,8 @@ reduces [cycle time](https://handbook.gitlab.com/handbook/values/#reduce-cycle-t
 GitLab Product Managers must take the following into account when deciding what exit criteria
 to apply to their experimental and beta features:
 
-- **Time**: Define an end date at which point the feature will be generally availabile.
-  - Consider setting a time-bound target metric that will define readiness for exit into GA.
+- **Time**: Define an end date at which point the feature will be generally available.
+  - Consider setting a time-bound target metric that will define readiness for exit into general availability.
     For example, X number of customers retained MoM over 6 months after launch of experiment,
     X% growth of free and paid users in three months since launch beta, or similar.
   - Be mindful of balancing time to market, user experience, and richness of experience.
@@ -163,13 +163,13 @@ to apply to their experimental and beta features:
 - **Feedback**: Define the minimum number of customers that have been onboarded and interviewed.
   - Consider also setting a time bound when using user feedback as an exit criteria for leaving a phase.
     If a given time period elapses and we can not solicit feedback from enough users,
-    it is better to ship what we have and iterate on it as a GA at that point rather than maintain a pre-GA state.
+    it is better to ship what we have and iterate on it as generally available at that point rather than maintain a pre-general availability state.
 - **Limited Feature Completion**: Determine if there is functionality that should be completed before moving to general availability.
   - Be wary of including "just one more" feature. Iteration is easier and more effective with more feedback from more users,
     so getting to general availability is preferred.
 - **System Performance metrics**: Determine the criteria that the platform has shown before being ready for general availability.
   Examples include response times and successfully handling a specific number of requests per second.
-- **Success criteria**: Not all features may reach GA. It is OK to pivot if early feedback indicates that
+- **Success criteria**: Not all features will be generally available. It is OK to pivot if early feedback indicates that
   a different direction would provide more value or a better user experience. If open questions must be answered
   to decide if the feature is worth putting in the product, list and answer those.
 

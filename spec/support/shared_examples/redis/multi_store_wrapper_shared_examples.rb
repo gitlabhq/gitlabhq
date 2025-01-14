@@ -22,12 +22,6 @@ RSpec.shared_examples "multi_store_wrapper_shared_examples" do
       end
     end
 
-    it 'borrows connection' do
-      described_class.with do |conn|
-        expect(Thread.current[conn.borrow_counter]).to eq(1)
-      end
-    end
-
     context 'when running on single-threaded runtime' do
       before do
         allow(Gitlab::Runtime).to receive(:multi_threaded?).and_return(false)

@@ -32,7 +32,9 @@ module Types
         ::WorkItems::Widgets::Designs => ::Types::WorkItems::Widgets::DesignsType,
         ::WorkItems::Widgets::Development => ::Types::WorkItems::Widgets::DevelopmentType,
         ::WorkItems::Widgets::CrmContacts => ::Types::WorkItems::Widgets::CrmContactsType,
-        ::WorkItems::Widgets::EmailParticipants => ::Types::WorkItems::Widgets::EmailParticipantsType
+        ::WorkItems::Widgets::EmailParticipants => ::Types::WorkItems::Widgets::EmailParticipantsType,
+        ::WorkItems::Widgets::CustomStatus => ::Types::WorkItems::Widgets::CustomStatusType,
+        ::WorkItems::Widgets::LinkedResources => ::Types::WorkItems::Widgets::LinkedResourcesType
       }.freeze
 
       def self.type_mappings

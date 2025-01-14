@@ -1,6 +1,6 @@
 ---
-stage: Data Stores
-group: Tenant Scale
+stage: Tenant Scale
+group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 In GitLab, you use groups to manage one or more related projects at the same time.
 
@@ -67,7 +67,7 @@ The following table describes the most common models of structuring groups.
 <!-- vale gitlab_base.Simplicity = YES -->
 
 NOTE:
-On self-managed GitLab, if you want to see an overview of your entire organization, you should create one top-level group.
+On GitLab Self-Managed, if you want to see an overview of your entire organization, you should create one top-level group.
 For more information about efforts to create an organization view of all groups,
 [see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
 A top-level group offers insights in your entire organization through a complete
@@ -250,7 +250,7 @@ the deletion job will instead restore and unarchive the group, so the group will
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 To view a list of the subgroups that are pending deletion in a group:
 
@@ -263,7 +263,7 @@ Groups that are marked for deletion are labeled **Pending deletion**.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
@@ -288,7 +288,7 @@ This action deletes the group, its subgroups, projects, and all related resource
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 To restore a group that is marked for deletion:
 

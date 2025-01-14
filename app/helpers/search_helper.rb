@@ -163,7 +163,7 @@ module SearchHelper
   end
 
   # Overridden in EE
-  def search_blob_title(project, path)
+  def search_blob_title(_project, path)
     path
   end
 
@@ -255,14 +255,16 @@ module SearchHelper
     elsif current_controller?(:commits)
       'commits'
     elsif current_controller?(:groups)
-      if %w[issues merge_requests].include?(controller.action_name)
-        controller.action_name
-      end
+      controller.action_name if %w[issues merge_requests].include?(controller.action_name)
     end
   end
 
   def should_show_zoekt_results?(_scope, _search_type)
     false
+  end
+
+  def blob_data_oversize_message
+    _('The file could not be displayed because it is empty.')
   end
 
   private
@@ -517,9 +519,7 @@ module SearchHelper
       active: active_nav?(active_scope, active_type, type)
     }
 
-    if active_scope
-      result[:count] = formatted_count(scope_name)
-    end
+    result[:count] = formatted_count(scope_name) if active_scope
 
     result[:count_link] = search_count_path(search_params) unless active_scope
 
@@ -550,9 +550,7 @@ module SearchHelper
       scope = value[:scope] || key
       hash[key] = search_filter_link_json(scope, value[:label], value[:data], value[:search], value[:type])
 
-      if value[:sub_items]
-        hash[key][:sub_items] = parse_navigation(value[:sub_items].sort_by { |_, h| h[:sort] })
-      end
+      hash[key][:sub_items] = parse_navigation(value[:sub_items].sort_by { |_, h| h[:sort] }) if value[:sub_items]
     end
   end
 

@@ -8,7 +8,6 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import { joinPaths } from '~/lib/utils/url_utility';
 import PublishMessage from '~/packages_and_registries/shared/components/publish_message.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   LIST_DELETE_BUTTON_DISABLED,
   LIST_DELETE_BUTTON_DISABLED_FOR_MIGRATION,
@@ -41,7 +40,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
+  mixins: [Tracking.mixin()],
   inject: ['config'],
   props: {
     item: {
@@ -117,10 +116,7 @@ export default {
       return this.config.isGroupPage ? this.item.project?.webUrl : '';
     },
     showBadgeProtected() {
-      return (
-        Boolean(this.glFeatures.containerRegistryProtectedContainers) &&
-        Boolean(this.item.protectionRuleExists)
-      );
+      return Boolean(this.item.protectionRuleExists);
     },
   },
   methods: {

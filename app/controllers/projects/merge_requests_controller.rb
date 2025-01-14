@@ -39,14 +39,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   before_action only: [:show, :diffs, :rapid_diffs, :reports] do
-    push_frontend_feature_flag(:core_security_mr_widget_counts, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
-    push_frontend_feature_flag(:ci_graphql_pipeline_mini_graph, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
-    push_frontend_feature_flag(:reviewer_assign_drawer, current_user)
-    push_frontend_feature_flag(:vulnerability_code_flow, project)
-    push_frontend_feature_flag(:pipeline_vulnerability_code_flow, project)
     push_frontend_feature_flag(:mr_vulnerability_code_flow, project)
     push_frontend_feature_flag(:mr_show_reports_immediately, project)
   end
@@ -114,6 +109,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     return render_404 unless ::Feature.enabled?(:rapid_diffs, current_user, type: :wip)
 
     streaming_offset = 5
+    @reload_stream_url = diffs_stream_url(@merge_request)
     @stream_url = diffs_stream_url(@merge_request, streaming_offset, diff_view)
     @diffs_slice = @merge_request.first_diffs_slice(streaming_offset)
 

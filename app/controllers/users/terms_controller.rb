@@ -53,7 +53,7 @@ module Users
     private
 
     def viewed_term
-      @viewed_term ||= ApplicationSetting::Term.find(params[:id])
+      @viewed_term ||= ApplicationSetting::Term.find(safe_params[:id])
     end
 
     def terms
@@ -61,7 +61,7 @@ module Users
     end
 
     def redirect_path
-      redirect_to_path = safe_redirect_path(params[:redirect]) || safe_redirect_path_for_url(request.referer)
+      redirect_to_path = safe_redirect_path(safe_params[:redirect]) || safe_redirect_path_for_url(request.referer)
 
       if redirect_to_path &&
           excluded_redirect_paths.none? { |excluded| redirect_to_path.include?(excluded) }
@@ -73,6 +73,10 @@ module Users
 
     def excluded_redirect_paths
       [terms_path, new_user_session_path]
+    end
+
+    def safe_params
+      params.permit(:id, :redirect)
     end
   end
 end

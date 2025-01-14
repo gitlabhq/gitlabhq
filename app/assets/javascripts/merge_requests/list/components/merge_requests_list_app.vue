@@ -75,9 +75,9 @@ import MergeRequestReviewers from '~/issuable/components/merge_request_reviewers
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import issuableEventHub from '~/issues/list/eventhub';
+import searchLabelsQuery from '~/issues/list/queries/search_labels.query.graphql';
 import { AutocompleteCache } from '../../utils/autocomplete_cache';
 import { i18n, BRANCH_LIST_REFRESH_INTERVAL } from '../constants';
-import searchLabelsQuery from '../queries/search_labels.query.graphql';
 import MergeRequestStatistics from './merge_request_statistics.vue';
 import MergeRequestMoreActionsDropdown from './more_actions_dropdown.vue';
 import EmptyState from './empty_state.vue';
@@ -118,6 +118,8 @@ export default {
     IssuableMilestone,
     IssuableByEmail,
     DiscussionsBadge,
+    NewResourceDropdown: () =>
+      import('~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -140,6 +142,8 @@ export default {
     getMergeRequestsQuery: { default: undefined },
     getMergeRequestsCountsQuery: { default: undefined },
     isProject: { default: true },
+    groupId: { default: undefined },
+    showNewResourceDropdown: { default: undefined },
   },
   data() {
     return {
@@ -468,6 +472,12 @@ export default {
     isBulkEditButtonDisabled() {
       return this.showBulkEditSidebar || !this.mergeRequests.length;
     },
+    resourceDropdownQueryVariables() {
+      return { fullPath: this.fullPath };
+    },
+    currentTabCount() {
+      return this.tabCounts[this.state] || 0;
+    },
   },
   watch: {
     $route(newValue, oldValue) {
@@ -770,7 +780,15 @@ export default {
             {{ $options.i18n.newMergeRequest }}
           </gl-button>
 
-          <merge-request-more-actions-dropdown />
+          <new-resource-dropdown
+            v-if="showNewResourceDropdown"
+            resource-type="merge-request"
+            :group-id="groupId"
+            :query-variables="resourceDropdownQueryVariables"
+            with-local-storage
+          />
+
+          <merge-request-more-actions-dropdown :count="currentTabCount" />
         </div>
       </template>
 
@@ -793,7 +811,7 @@ export default {
 
       <template #target-branch="{ issuable = {} }">
         <span
-          v-if="issuable.targetBranch !== defaultBranch"
+          v-if="defaultBranch && issuable.targetBranch !== defaultBranch"
           class="project-ref-path gl-inline-block gl-max-w-26 gl-truncate gl-align-bottom"
           data-testid="target-branch"
         >
@@ -815,8 +833,11 @@ export default {
       </template>
 
       <template #statistics="{ issuable = {} }">
-        <li v-if="issuable.upvotes || issuable.downvotes" class="!gl-mr-0">
-          <merge-request-statistics :merge-request="issuable" />
+        <li
+          v-if="issuable.upvotes || issuable.downvotes"
+          class="!gl-mr-0 gl-hidden sm:gl-inline-flex"
+        >
+          <merge-request-statistics :merge-request="issuable" class="gl-flex" />
         </li>
       </template>
 

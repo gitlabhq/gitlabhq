@@ -7,6 +7,7 @@ const healthStatuses = {
 const states = {
   opened: 1,
   closed: 2,
+  merged: 3,
 };
 
 const sortFieldsByType = {

@@ -8,13 +8,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 This page contains possible solutions for problems you might encounter when using:
 
 - [SAML SSO for GitLab.com groups](index.md).
 - The self-managed instance-level [SAML OmniAuth Provider](../../../integration/saml.md).
-- [Switchboard](../../../administration/dedicated/configure_instance.md#activate-saml-with-switchboard) to configure SAML for GitLab Dedicated instances.
+- [Switchboard](../../../administration/dedicated/configure_instance/saml.md#activate-saml-with-switchboard) to configure SAML for GitLab Dedicated instances.
 
 ## SAML debugging tools
 
@@ -77,7 +77,7 @@ Regardless of what browser you use, the process is similar to the following:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 You can find detailed information about a SAML sign-in in the [`audit_json.log` file](../../../administration/logs/index.md#audit_jsonlog).
 
@@ -464,7 +464,7 @@ If a subset of users are receiving a `404` after signing in to the IdP, first ve
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 If you see a "500 error" in GitLab when you are redirected back from the SAML
 sign-in page, this could indicate that:
@@ -478,7 +478,7 @@ sign-in page, this could indicate that:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 If you see a "422 error" in GitLab when you are redirected from the SAML
 sign-in page, you might have an incorrectly configured Assertion Consumer
@@ -508,7 +508,7 @@ To implement this workaround:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 The following are the most likely reasons that a user is blocked when signing in through SAML:
 

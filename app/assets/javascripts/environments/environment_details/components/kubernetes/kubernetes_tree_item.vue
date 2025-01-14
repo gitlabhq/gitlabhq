@@ -49,7 +49,7 @@ export default {
           :title="status"
           :name="statusBadge.icon"
           :size="12"
-          :class="statusBadge.class"
+          :variant="statusBadge.variant"
           class="gl-ml-2"
           data-testid="resource-status-icon"
         />

@@ -9,7 +9,10 @@ description: "Use the GitLab Workflow extension for VS Code to handle common Git
 
 If your GitLab project uses CI/CD pipelines, you can start, watch, and debug CI/CD pipelines from the
 GitLab Workflow extension for VS Code. When you work locally on a Git branch, the bottom status bar
-shows the status of its most recent pipeline, or shows **No pipeline** if a pipeline hasn't run yet:
+shows either:
+
+- The status of its most recent pipeline.
+- **No pipeline** if a pipeline hasn't run yet.
 
 ![The bottom status bar, showing the most recent pipeline has failed.](../img/status_bar_pipeline_v17_6.png)
 

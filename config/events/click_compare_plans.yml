@@ -4,9 +4,6 @@ action: click_compare_plans
 product_group: activation
 milestone: '17.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153166
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

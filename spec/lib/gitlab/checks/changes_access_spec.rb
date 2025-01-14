@@ -45,12 +45,14 @@ RSpec.describe Gitlab::Checks::ChangesAccess, feature_category: :source_code_man
     context 'when time limit was reached' do
       it 'raises a TimeoutError' do
         logger = Gitlab::Checks::TimedLogger.new(start_time: timeout.ago, timeout: timeout)
-        access = described_class.new(changes,
-                                     project: project,
-                                     user_access: user_access,
-                                     protocol: protocol,
-                                     logger: logger,
-                                     push_options: push_options)
+        access = described_class.new(
+          changes,
+          project: project,
+          user_access: user_access,
+          protocol: protocol,
+          logger: logger,
+          push_options: push_options
+        )
 
         expect { access.validate! }.to raise_error(Gitlab::Checks::TimedLogger::TimeoutError)
       end

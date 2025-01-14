@@ -166,7 +166,7 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
     end
 
     context 'when source user does not exist' do
-      it 'fetches the user source name from GitHub and create a new source user' do
+      it 'fetches the user source name from GitHub and creates a new source user' do
         user = { id: 7, login: 'kittens' }
 
         expect(client).to receive(:user).with('kittens').and_return({ name: 'Source name' })
@@ -176,6 +176,27 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
           source_username: 'kittens',
           source_user_identifier: '7'
         )
+      end
+
+      context 'when GitHub user does not exist' do
+        before do
+          allow(client).to receive(:user).with('Copilot').and_raise(Octokit::NotFound)
+        end
+
+        it 'creates a new source user, logs, and sets the `source_name` to be the username' do
+          user = { id: 7, login: 'Copilot' }
+
+          expect(Gitlab::GithubImport::Logger).to receive(:info).with(hash_including(
+            message: include('GitHub user not found.'),
+            username: 'Copilot'
+          ))
+          expect { finder.source_user(user) }.to change { Import::SourceUser.count }.by(1)
+          expect(Import::SourceUser.last).to have_attributes(
+            source_name: 'Copilot',
+            source_username: 'Copilot',
+            source_user_identifier: '7'
+          )
+        end
       end
     end
   end

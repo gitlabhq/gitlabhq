@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 WARNING:
 The DAST proxy-based analyzer was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966)
@@ -56,8 +56,8 @@ target branches.
 
 ## View scan results
 
-Detected vulnerabilities appear in [merge requests](../index.md#merge-request), the [pipeline security tab](../index.md#pipeline-security-tab),
-and the [vulnerability report](../index.md#vulnerability-report).
+Detected vulnerabilities appear in [merge requests](../detect/security_scan_results.md#merge-request), the [pipeline security tab](../vulnerability_report/pipeline.md),
+and the [vulnerability report](../vulnerability_report/index.md).
 
 NOTE:
 A pipeline may consist of multiple jobs, including SAST and DAST scanning. If any job

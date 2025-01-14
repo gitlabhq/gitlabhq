@@ -1,0 +1,15 @@
+# frozen_string_literal: true
+
+class CreateSiphon<%= table_name.camelize %> < ClickHouse::Migration
+  def up
+    execute <<-SQL
+      <%= table_definition %>
+    SQL
+  end
+
+  def down
+    execute <<-SQL
+      DROP TABLE IF EXISTS <%= clickhouse_table_name %>
+    SQL
+  end
+end

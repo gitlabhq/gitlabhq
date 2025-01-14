@@ -250,6 +250,23 @@ RSpec.describe WorkItems::ParentLink, feature_category: :portfolio_management do
             expect(link.valid?).to eq(valid)
           end
         end
+
+        context 'when parent is confidential' do
+          before do
+            issue.confidential = true
+            task1.confidential = false
+          end
+
+          it 'sets the correct error message' do
+            link = build(:parent_link, work_item_parent: issue, work_item: task1)
+
+            link.valid?
+
+            expect(link.errors[:work_item]).to include(
+              'cannot assign a non-confidential task to a confidential parent. ' \
+                'Make the task confidential and try again.')
+          end
+        end
       end
     end
   end

@@ -1,3 +1,5 @@
+import { userTypes } from './constants';
+
 const RESPONSE_MAP = {
   GET: {
     '/gitlab-org/gitlab-shell/issues/5.json': {
@@ -363,6 +365,7 @@ export const issuableQueryResponse = {
           webUrl: 'root',
           webPath: '/root',
           status: null,
+          type: userTypes.human,
         },
         assignees: {
           nodes: [
@@ -376,6 +379,7 @@ export const issuableQueryResponse = {
               webUrl: '/franc',
               webPath: '/franc',
               status: null,
+              type: userTypes.human,
             },
           ],
         },
@@ -466,6 +470,7 @@ export const updateIssueAssigneesMutationResponse = {
               webUrl: '/root',
               webPath: '/root',
               status: null,
+              type: userTypes.human,
             },
           ],
           __typename: 'UserConnection',
@@ -505,8 +510,16 @@ export const subscriptionResponse = {
   },
 };
 
-export const mockUser1 = {
-  __typename: 'UserCore',
+export const createMockUser = (userDetails) => {
+  return {
+    __typename: 'UserCore',
+    status: null,
+    canMerge: false,
+    ...userDetails,
+  };
+};
+
+export const mockUser1 = createMockUser({
   id: 'gid://gitlab/User/1',
   avatarUrl:
     'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
@@ -514,20 +527,25 @@ export const mockUser1 = {
   username: 'root',
   webUrl: '/root',
   webPath: '/root',
-  status: null,
-  canMerge: false,
+});
+
+export const mockUserWithType1 = {
+  ...mockUser1,
+  type: userTypes.human,
 };
 
-export const mockUser2 = {
-  __typename: 'UserCore',
+export const mockUser2 = createMockUser({
   id: 'gid://gitlab/User/5',
   avatarUrl: '/avatar2',
   name: 'rookie',
   username: 'rookie',
   webUrl: 'rookie',
   webPath: '/rookie',
-  status: null,
-  canMerge: false,
+});
+
+export const mockUserWithType2 = {
+  ...mockUser2,
+  type: userTypes.human,
 };
 
 export const searchResponse = {
@@ -726,6 +744,39 @@ export const participantsQueryResponse = {
               status: null,
             },
           ],
+        },
+      },
+    },
+  },
+};
+
+export const mrAssigneesQueryResponse = {
+  data: {
+    workspace: {
+      __typename: 'Project',
+      id: '1',
+      issuable: {
+        __typename: 'MergeRequest',
+        id: 'gid://gitlab/MergeRequest/1',
+        iid: '1',
+        author: {
+          id: '1',
+          avatarUrl: '/avatar',
+          name: 'root',
+          username: 'root',
+          webUrl: 'root',
+          webPath: '/root',
+          status: null,
+          type: userTypes.human,
+          mergeRequestInteraction: {
+            canMerge: true,
+          },
+        },
+        assignees: {
+          nodes: [],
+        },
+        userPermissions: {
+          canMerge: true,
         },
       },
     },

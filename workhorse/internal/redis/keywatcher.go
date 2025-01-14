@@ -20,17 +20,20 @@ import (
 // KeyWatcher is responsible for watching keys in Redis and notifying subscribers.
 type KeyWatcher struct {
 	mu               sync.Mutex
+	newSubscriber    chan struct{}
 	subscribers      map[string][]chan string
 	shutdown         chan struct{}
 	reconnectBackoff backoff.Backoff
 	redisConn        *redis.Client // can be nil
 	conn             *redis.PubSub
+	firstRun         bool
 }
 
 // NewKeyWatcher initializes a KeyWatcher for managing Redis key subscriptions.
 func NewKeyWatcher(redisConn *redis.Client) *KeyWatcher {
 	return &KeyWatcher{
-		shutdown: make(chan struct{}),
+		newSubscriber: make(chan struct{}, 1),
+		shutdown:      make(chan struct{}),
 		reconnectBackoff: backoff.Backoff{
 			Min:    100 * time.Millisecond,
 			Max:    60 * time.Second,
@@ -38,6 +41,7 @@ func NewKeyWatcher(redisConn *redis.Client) *KeyWatcher {
 			Jitter: true,
 		},
 		redisConn: redisConn,
+		firstRun:  true,
 	}
 }
 
@@ -141,18 +145,32 @@ func (kw *KeyWatcher) Process() {
 	ctx := context.Background() // lint:allow context.Background
 
 	for {
-		pubsub := kw.redisConn.Subscribe(ctx, []string{}...)
-		if err := pubsub.Ping(ctx); err != nil {
-			log.WithError(fmt.Errorf("keywatcher: %v", err)).Error()
-			time.Sleep(kw.reconnectBackoff.Duration())
-			continue
+		// Connect to Redis to flag configuration issues
+		if !kw.firstRun && kw.getNumSubscribers() == 0 {
+			<-kw.newSubscriber
 		}
 
-		kw.reconnectBackoff.Reset()
+		kw.firstRun = false
+		kw.processSubscriptions(ctx)
 
-		if err := kw.receivePubSubStream(ctx, pubsub); err != nil {
-			log.WithError(fmt.Errorf("keywatcher: receivePubSubStream: %v", err)).Error()
-		}
+		// Precaution to avoid spinning in a loop
+		time.Sleep(100 * time.Millisecond)
+	}
+}
+
+func (kw *KeyWatcher) processSubscriptions(ctx context.Context) {
+	log.Info("keywatcher: listening for subscriptions")
+	pubsub := kw.redisConn.Subscribe(ctx, []string{}...)
+	if err := pubsub.Ping(ctx); err != nil {
+		log.WithError(fmt.Errorf("keywatcher: %v", err)).Error()
+		time.Sleep(kw.reconnectBackoff.Duration())
+		return
+	}
+
+	kw.reconnectBackoff.Reset()
+
+	if err := kw.receivePubSubStream(ctx, pubsub); err != nil {
+		log.WithError(fmt.Errorf("keywatcher: receivePubSubStream: %v", err)).Error()
 	}
 }
 
@@ -191,6 +209,14 @@ func (kw *KeyWatcher) notifySubscribers(key, value string) {
 }
 
 func (kw *KeyWatcher) addSubscription(ctx context.Context, key string, notify chan string) error {
+	// Use a non-blocking send because we only want to initiate the connection if not present.
+	// This does not guarantee that the connection will be set up by the time we attempt
+	// to subscribe to the channel, but missing one long poll should not be a big deal.
+	select {
+	case kw.newSubscriber <- struct{}{}:
+	default: // Drop the value if channel is full
+	}
+
 	kw.mu.Lock()
 	defer kw.mu.Unlock()
 
@@ -242,6 +268,19 @@ func (kw *KeyWatcher) delSubscription(ctx context.Context, key string, notify ch
 			kw.conn.Unsubscribe(ctx, channelPrefix+key) // nolint:errcheck,gosec // ignore errors
 		}
 	}
+}
+func (kw *KeyWatcher) getNumSubscribers() int {
+	kw.mu.Lock()
+	defer kw.mu.Unlock()
+
+	return len(kw.subscribers)
+}
+
+func (kw *KeyWatcher) connected() bool {
+	kw.mu.Lock()
+	defer kw.mu.Unlock()
+
+	return kw.conn != nil
 }
 
 // WatchKeyStatus is used to tell how WatchKey returned

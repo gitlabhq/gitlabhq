@@ -4,6 +4,7 @@ import { GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 import ReviewerDropdown from '~/merge_requests/components/reviewers/reviewer_dropdown.vue';
 import UpdateReviewers from '~/merge_requests/components/reviewers/update_reviewers.vue';
 import userPermissionsQuery from '~/merge_requests/components/reviewers/queries/user_permissions.query.graphql';
@@ -109,6 +110,16 @@ describe('Reviewer dropdown component', () => {
 
     it('renders dropdown', () => {
       expect(findDropdown().exists()).toBe(true);
+    });
+
+    it('tracks the event when edit is clicked', () => {
+      const spy = mockTracking('_category_', wrapper.element, jest.spyOn);
+      triggerEvent('.js-sidebar-dropdown-toggle');
+
+      expect(spy).toHaveBeenCalledWith('_category_', 'click_edit_button', {
+        label: 'right_sidebar',
+        property: 'reviewer',
+      });
     });
 
     it('fetches autocomplete users when dropdown opens', () => {

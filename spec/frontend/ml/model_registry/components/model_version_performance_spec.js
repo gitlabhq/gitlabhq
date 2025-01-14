@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlIcon, GlButton } from '@gitlab/ui';
+import { GlIcon, GlButton, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ModelVersionPerformance from '~/ml/model_registry/components/model_version_performance.vue';
 import CandidateDetail from '~/ml/model_registry/components/candidate_detail.vue';
@@ -42,6 +42,8 @@ const createWrapper = (modelVersion = modelVersionWithCandidate, props = {}, pro
 
 const findCandidateDetail = () => wrapper.findComponent(CandidateDetail);
 const findCopyMlflowIdButton = () => wrapper.findComponent(GlButton);
+const findCandidateLink = () => wrapper.findComponent(GlLink);
+
 describe('ml/model_registry/components/model_version_detail.vue', () => {
   describe('base behaviour', () => {
     beforeEach(() => createWrapper());
@@ -66,6 +68,12 @@ describe('ml/model_registry/components/model_version_detail.vue', () => {
 
     it('shows the mlflow id', () => {
       expect(wrapper.text()).toContain(modelVersionWithCandidate.candidate.eid);
+    });
+
+    it('links to candidate', () => {
+      expect(findCandidateLink().attributes('href')).toBe(
+        modelVersionWithCandidate.candidate._links.showPath,
+      );
     });
   });
 });

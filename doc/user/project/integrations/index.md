@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 NOTE:
 This page contains user documentation for project integrations. For administrator documentation, see [Project integration administration](../../../administration/settings/project_integration_management.md).
@@ -17,7 +17,7 @@ You can integrate with external applications to add functionality to GitLab.
 
 You can view and manage integrations for the:
 
-- [Instance](../../../administration/settings/project_integration_management.md#configure-default-settings-for-an-integration) (self-managed GitLab)
+- [Instance](../../../administration/settings/project_integration_management.md#configure-default-settings-for-an-integration) (GitLab Self-Managed)
 - [Group](#manage-group-default-settings-for-a-project-integration)
 
 You can use:

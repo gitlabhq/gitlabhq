@@ -9,7 +9,7 @@ description: "Use push rules to control the content and format of Git commits yo
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - Maximum regular expression length for push rules [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/411901) from 255 to 511 characters in GitLab 16.3.
 
@@ -241,51 +241,72 @@ In Git, filenames include both the file's name, and all directories preceding th
 When you `git push`, each filename in the push is compared to the regular expression
 in **Prohibited filenames**.
 
-The regular expression in your **Prohibited filenames** push rule can contain multiple,
-independent matches to exclude. You can match filenames broadly to any location in
-your repository, or restrict only in certain locations. Filename matches can also
-be partial, and exclude file types by extension.
+The regular expression can:
 
-These examples use regex (regular expressions) string boundary characters to match
-the beginning of a string (`^`), and its end (`$`). They also include instances
-where either the directory path or the filename can include `.` or `/`. Both of
-these special regex characters must be escaped with a backslash `\\` if you want
-to use them as standard characters in a match condition.
+- Match file names in any location in your repository.
+- Match file names in specific locations.
+- Match partial file names.
+- Exclude specific file types by extension.
+- Combine multiple expressions to exclude several patterns.
+- Allow only specific file types, and act as an allow list.
 
-- **Prevent pushing `.exe` files to any location in the repository** - This regex
-  matches any filename that contains `.exe` at the end:
+#### Regular expression examples
+
+These examples use common regex string boundary patterns:
+
+- `^`: Matches the beginning of a string.
+- `$`: Matches the end of a string.
+- `\.`: Matches a literal period character. The backslash escapes the period.
+- `\/`: Matches a literal forward slash. The backslash escapes the forward slash.
+
+##### Prevent specific file types
+
+- To prevent pushing `.exe` files to any location in the repository:
 
   ```plaintext
   \.exe$
   ```
 
-- **Prevent pushing a specific configuration file in the repository root**
+##### Prevent specific files
 
-  ```plaintext
-  ^config\.yml$
-  ```
+- To prevent pushing a specific configuration file:
 
-- **Prevent pushing a specific configuration file in a known directory**
+  - In the repository root:
 
-  ```plaintext
-  ^directory-name\/config\.yml$
-  ```
+    ```plaintext
+    ^config\.yml$
+    ```
 
-- **Prevent pushing a specific file to any location in the repository** - This example tests
-  for any file named `install.exe`. The parenthesized expression `(^|\/)` matches either
-  a file following a directory separator, or a file in the root directory of the repository:
+  - In a specific directory:
+
+    ```plaintext
+    ^directory-name\/config\.yml$
+    ```
+
+- In any location - This example prevents pushing any file named `install.exe`:
 
   ```plaintext
   (^|\/)install\.exe$
   ```
 
-- **Combine all previous expressions into one expression** - The preceding expressions rely
-  on the end-of-string character `$`. We can move that part of each expression to the
-  end of the grouped collection of match conditions, where it is appended to all matches:
+##### Combine patterns
 
-  ```plaintext
-  (\.exe|^config\.yml|^directory-name\/config\.yml|(^|\/)install\.exe)$
-  ```
+You can combine multiple patterns into one expression. This example combines all the previous expressions:
+
+```plaintext
+(\.exe|^config\.yml|^directory-name\/config\.yml|(^|\/)install\.exe)$
+```
+
+##### Allow specific file types
+
+You can use the prohibited file names feature as an allow list. This example allows only `.sh` and `.exe` files,
+regardless of their location or the operating system's directory format:
+
+```plaintext
+^.*\.(?!(exe|sh)$)[^.]+$
+```
+
+To prevent these file types instead of allowing them, change `!` to `=`.
 
 ## Related topics
 

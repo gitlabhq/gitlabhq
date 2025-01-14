@@ -1,6 +1,6 @@
 ---
 name: selective_code_owner_removals_updated
-description: Event triggered when selective code owner removal is updated
+description: Selective code owner removal is updated
 introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/327562
 introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148743
 feature_category: code_review_workflow

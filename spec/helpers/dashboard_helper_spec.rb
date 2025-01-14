@@ -81,4 +81,17 @@ RSpec.describe DashboardHelper do
       expect(helper.user_groups_requiring_reauth).to match_array([])
     end
   end
+
+  describe '.user_roles_mapping' do
+    it 'returns roles mapping' do
+      expect(helper.user_roles_mapping).to match({
+        planner: 'Planner',
+        reporter: 'Reporter',
+        developer: 'Developer',
+        maintainer: 'Maintainer',
+        owner: 'Owner',
+        guest: 'Guest'
+      })
+    end
+  end
 end

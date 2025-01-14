@@ -89,7 +89,7 @@ describe('EnvironmentsFolderAppComponent', () => {
       await waitForPromises();
     });
 
-    it('should list environmnets in folder', () => {
+    it('should list environments in folder', () => {
       const items = findEnvironmentItems();
       expect(items.length).toBe(resolvedFolder.environments.length);
     });

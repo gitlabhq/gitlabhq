@@ -7,7 +7,6 @@ import { mapGetters, mapState, mapActions } from 'vuex';
 import JobLogTopBar from 'ee_else_ce/ci/job_details/components/job_log_top_bar.vue';
 import RootCauseAnalysisButton from 'ee_else_ce/ci/job_details/components/root_cause_analysis_button.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 import { __, sprintf } from '~/locale';
@@ -43,7 +42,7 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [delayedJobMixin, glAbilitiesMixin(), glFeatureFlagMixin()],
+  mixins: [delayedJobMixin, glAbilitiesMixin()],
   props: {
     artifactHelpUrl: {
       type: String,

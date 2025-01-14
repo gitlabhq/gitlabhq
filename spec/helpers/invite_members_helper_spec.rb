@@ -25,7 +25,7 @@ RSpec.describe InviteMembersHelper do
         full_path: project.full_path
       }
 
-      expect(helper.common_invite_group_modal_data(project, ProjectMember, 'true')).to include(attributes)
+      expect(helper.common_invite_group_modal_data(project, ProjectMember)).to include(attributes)
     end
 
     context 'when sharing with groups outside the hierarchy is disabled' do
@@ -36,7 +36,7 @@ RSpec.describe InviteMembersHelper do
       end
 
       it 'provides the correct attributes' do
-        expect(helper.common_invite_group_modal_data(group, GroupMember, 'false'))
+        expect(helper.common_invite_group_modal_data(group, GroupMember))
           .to include({ groups_filter: 'descendant_groups', parent_id: group.id })
       end
     end
@@ -47,7 +47,7 @@ RSpec.describe InviteMembersHelper do
       end
 
       it 'does not return filter attributes' do
-        expect(helper.common_invite_group_modal_data(project.group, ProjectMember, 'true').keys)
+        expect(helper.common_invite_group_modal_data(project.group, ProjectMember).keys)
           .not_to include(:groups_filter, :parent_id)
       end
     end

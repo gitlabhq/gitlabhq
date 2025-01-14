@@ -5,19 +5,20 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { toggleQueryPollingByVisibility } from '~/graphql_shared/utils';
 import PipelineFailedJobsWidget from '~/ci/pipelines_page/components/failure_widget/pipeline_failed_jobs_widget.vue';
 import FailedJobsList from '~/ci/pipelines_page/components/failure_widget/failed_jobs_list.vue';
 import getPipelineFailedJobsCount from '~/ci/pipelines_page/graphql/queries/get_pipeline_failed_jobs_count.query.graphql';
-import { failedJobsCountMock } from './mock';
+import { failedJobsCountMock, failedJobsCountMockActive } from './mock';
 
 Vue.use(VueApollo);
 jest.mock('~/alert');
+jest.mock('~/graphql_shared/utils');
 
 describe('PipelineFailedJobsWidget component', () => {
   let wrapper;
 
   const defaultProps = {
-    isPipelineActive: false,
     pipelineIid: 1,
     pipelinePath: '/pipelines/1',
     projectPath: 'namespace/project/',
@@ -29,6 +30,7 @@ describe('PipelineFailedJobsWidget component', () => {
   };
 
   const defaultHandler = jest.fn().mockResolvedValue(failedJobsCountMock);
+  const activeHandler = jest.fn().mockResolvedValue(failedJobsCountMockActive);
 
   const createMockApolloProvider = (handler) => {
     const requestHandlers = [[getPipelineFailedJobsCount, handler]];
@@ -145,21 +147,65 @@ describe('PipelineFailedJobsWidget component', () => {
     });
 
     it('polls for failed jobs count when pipeline is active', async () => {
-      createComponent({ props: { isPipelineActive: true } });
+      createComponent({ handler: activeHandler });
 
       await waitForPromises();
 
-      expect(defaultHandler).toHaveBeenCalledTimes(1);
+      expect(activeHandler).toHaveBeenCalledTimes(1);
 
       jest.advanceTimersByTime(10000);
 
       await waitForPromises();
 
-      expect(defaultHandler).toHaveBeenCalledTimes(2);
+      expect(activeHandler).toHaveBeenCalledTimes(2);
+    });
+
+    it('should set up toggle visibility when pipeline is active', async () => {
+      createComponent({ handler: activeHandler });
+
+      await waitForPromises();
+
+      expect(toggleQueryPollingByVisibility).toHaveBeenCalled();
     });
   });
 
   describe('job retry', () => {
+    it.each`
+      active   | handler
+      ${true}  | ${activeHandler}
+      ${false} | ${defaultHandler}
+    `(
+      'stops polling and restarts polling: $active if pipeline is active: $active',
+      async ({ active, handler }) => {
+        createComponent({ handler });
+
+        await waitForPromises();
+
+        const stopPollingSpy = jest.spyOn(
+          wrapper.vm.$apollo.queries.failedJobsCount,
+          'stopPolling',
+        );
+        const startPollingSpy = jest.spyOn(
+          wrapper.vm.$apollo.queries.failedJobsCount,
+          'startPolling',
+        );
+
+        await findFailedJobsButton().vm.$emit('click');
+
+        await findFailedJobsList().vm.$emit('job-retried');
+
+        expect(stopPollingSpy).toHaveBeenCalled();
+
+        await waitForPromises();
+
+        if (active) {
+          expect(startPollingSpy).toHaveBeenCalled();
+        } else {
+          expect(startPollingSpy).not.toHaveBeenCalled();
+        }
+      },
+    );
+
     it('refetches failed jobs count', async () => {
       createComponent();
 

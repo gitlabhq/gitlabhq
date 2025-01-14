@@ -6,7 +6,7 @@ RSpec.describe ApplicationRecord do
   describe '#id_in' do
     let(:records) { create_list(:user, 3) }
 
-    it 'returns records of the ids' do
+    it 'returns records of the ids', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448906' do
       expect(User.id_in(records.last(2).map(&:id))).to eq(records.last(2))
     end
   end

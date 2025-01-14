@@ -394,12 +394,27 @@ Use **cannot** instead of **can not**.
 
 See also [contractions](index.md#contractions).
 
+## card
+
+Although the UI term might be **card**, do not use it in the documentation.
+Avoid the descriptor if you can.
+
+Use:
+
+- By **Seat utilization**, select **Assign seats**.
+
+Instead of:
+
+- On the **Seat utilization** card, select **Assign seats**.
+
 ## Chat, GitLab Duo Chat
 
 Use **Chat** with a capital `c` for **Chat** or **GitLab Duo Chat**.
 
 On first use on a page, use **GitLab Duo Chat**.
 Thereafter, use **Chat** by itself.
+
+Do not use **Duo Chat**.
 
 ## checkbox
 
@@ -1044,7 +1059,7 @@ do not say:
 
 - This feature has reached general availability.
 
-You can use **GA** to indicate general availability if you spell it out on first use.
+Do not use **GA** to abbreviate general availability.
 
 ## GitLab
 
@@ -1166,9 +1181,30 @@ See also:
 
 Try to avoid **GitLab SaaS** and instead, refer to the [specific offering](#offerings) instead.
 
-## GitLab self-managed
+## GitLab Self-Managed
 
-Use **GitLab self-managed** to refer to the product offering. It refers to a GitLab instance managed by customers themselves.
+Use **GitLab Self-Managed** to refer to an installation of GitLab that customers manage.
+
+Use the descriptor of **instance** as needed. Do not use **installation**.
+
+Use:
+
+- GitLab Self-Managed
+- a GitLab Self-Managed instance
+
+Instead of:
+
+- A GitLab Self-Managed installation
+- A Self-Managed GitLab installation
+- A self-managed GitLab installation
+- A GitLab instance that is GitLab Self-Managed
+
+You can use **instance** on its own to describe GitLab Self-Managed. For example:
+
+- On your instance, ensure the port is open.
+- Verify that the instance is publicly accessible.
+
+See also [self-managed](#self-managed).
 
 ## GitLab.com
 
@@ -1363,6 +1399,13 @@ Do not use:
 
 - GitLab Runner Kubernetes executor, because this can infringe on the Kubernetes trademark.
 
+## language model, large language model
+
+When referring to language models, be precise. Not all language models are large,
+and not all models are language models. When in doubt, ask a developer or PM for confirmation.
+
+You can use LLM to refer to a large language model if you spell it out on first use.
+
 ## later
 
 Use **later** when talking about version numbers.
@@ -1450,6 +1493,19 @@ Do not use:
 Use [sign in](#sign-in-sign-in) instead.
 
 However, if the user interface has **Log in**, you should match the UI.
+
+## limited availability
+
+Use lowercase for **limited availability**. For example:
+
+- This feature has limited availability.
+- Hosted runners are in limited availability.
+
+Do not use:
+
+- This feature has reached limited availability.
+
+Do not use **LA** to abbreviate limited availability.
 
 ## logged-in user, logged in user
 
@@ -1587,6 +1643,10 @@ Use:
 - The GitLab model registry supports A, B, and C.
 - You can publish a model to your project's model registry.
 
+## models
+
+For usage, see [language models](#language-model-large-language-model).
+
 ## n/a, N/A, not applicable
 
 When possible, use **not applicable**. Spelling out the phrase helps non-English speaking users and avoids
@@ -1675,7 +1735,7 @@ Instead of:
 The current product offerings are:
 
 - [GitLab.com](#gitlabcom)
-- [GitLab self-managed](#gitlab-self-managed)
+- [GitLab Self-Managed](#self-managed)
 - [GitLab Dedicated](#gitlab-dedicated)
 
 The [availability details](availability_details.md) reflect these offerings.
@@ -2116,7 +2176,7 @@ When referring to the subscription billing model:
 
 - For GitLab.com, use **seats**. Customers purchase seats. Users occupy seats when they are invited
   to a group, with some [exceptions](../../../subscriptions/gitlab_com/index.md#how-seat-usage-is-determined).
-- For GitLab self-managed, use **users**. Customers purchase subscriptions for a specified number of **users**.
+- For GitLab Self-Managed, use **users**. Customers purchase subscriptions for a specified number of **users**.
 
 ## section
 
@@ -2159,7 +2219,11 @@ If you're writing about [self-hosted models](#self-hosted-model), no need to use
 
 ## self-managed
 
-Use **self-managed** to refer to a customer's installation of GitLab. Do not use **self-hosted**.
+Use **GitLab Self-Managed** to refer to a customer's installation of GitLab.
+
+- Do not use **self-hosted**.
+
+See [GitLab Self-Managed](#gitlab-self-managed).
 
 ## Service Desk
 

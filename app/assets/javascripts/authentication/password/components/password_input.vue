@@ -77,7 +77,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-field-error-anchor input-icon-wrapper">
+  <div class="gl-field-error-anchor gl-relative">
     <gl-form-input
       :id="id"
       class="js-password-complexity-validation js-track-error !gl-pr-8"
@@ -92,7 +92,7 @@ export default {
     />
     <gl-button
       v-gl-tooltip="toggleVisibilityLabel"
-      class="input-icon-right !gl-right-0"
+      class="gl-absolute gl-right-0 gl-top-0"
       category="tertiary"
       :aria-label="toggleVisibilityLabel"
       :icon="toggleVisibilityIcon"

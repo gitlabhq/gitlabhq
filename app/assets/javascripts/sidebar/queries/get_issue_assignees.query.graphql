@@ -1,4 +1,4 @@
-#import "~/graphql_shared/fragments/user.fragment.graphql"
+#import "~/graphql_shared/fragments/user_with_type.fragment.graphql"
 #import "~/graphql_shared/fragments/user_availability.fragment.graphql"
 
 query issueAssignees($fullPath: ID!, $iid: String!) {
@@ -7,12 +7,12 @@ query issueAssignees($fullPath: ID!, $iid: String!) {
     issuable: issue(iid: $iid) {
       id
       author {
-        ...User
+        ...UserWithType
         ...UserAvailability
       }
       assignees {
         nodes {
-          ...User
+          ...UserWithType
           ...UserAvailability
         }
       }

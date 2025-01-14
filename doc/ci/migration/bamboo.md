@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 This migration guide looks at how you can migrate from Atlassian Bamboo to GitLab CI/CD.
 The focus is on [Bamboo Specs YAML](https://docs.atlassian.com/bamboo-specs-docs/8.1.12/specs.html?yaml)
@@ -342,13 +342,13 @@ You can access variables in Bamboo using the format `${system.variableName}` for
 and `${bamboo.variableName}` for other types of variables. When using a variable in a script task,
 the full stops, are converted to underscores, `${bamboo.variableName}` becomes `$bamboo_variableName`.
 
-In GitLab, [CI/CD variables](../variables/index.md) can be defined at these levels:
+In GitLab, you can define [CI/CD variables](../variables/index.md) at these levels:
 
-- Instance.
-- Group.
-- Project.
-- At the global level in the CI/CD configuration.
-- At the job level in the CI/CD configuration.
+- Instance
+- Group
+- Project
+- In the `.gitlab-ci.yml` file as default variables for all jobs
+- In the `.gitlab-ci.yml` file in individual jobs
 
 Like Bamboo's System and Global variables, GitLab has [predefined CI/CD variables](../variables/predefined_variables.md)
 that are available to every job.
@@ -373,13 +373,13 @@ The equivalent GitLab CI/CD `.gitlab-ci.yml` file would be:
 
 ```yaml
 variables:
-  GLOBAL_VAR: "A global variable"
+  DEFAULT_VAR: "A default variable"
 
 job1:
   variables:
     JOB_VAR: "A job variable"
   script:
-    - echo "Variables are '$GLOBAL_VAR' and '$JOB_VAR'"
+    - echo "Variables are '$DEFAULT_VAR' and '$JOB_VAR'"
 ```
 
 In GitLab CI/CD, variables are accessed like regular Shell script variables. For example, `$VARIABLE_NAME`.

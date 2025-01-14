@@ -137,7 +137,7 @@ class Issue < ApplicationRecord
   validates :work_item_type, presence: true
   validates :confidential, inclusion: { in: [true, false], message: 'must be a boolean' }
 
-  validate :allowed_work_item_type_change, on: :update, if: :work_item_type_id_changed?
+  validate :allowed_work_item_type_change, on: :update, if: :correct_work_item_type_id_changed?
   validate :due_date_after_start_date, if: :validate_due_date?
   validate :parent_link_confidentiality
 
@@ -211,25 +211,14 @@ class Issue < ApplicationRecord
   scope :with_issue_type, ->(types) {
     types = Array(types)
 
-    if Feature.enabled?(:issues_use_correct_work_item_type_id, :instance)
-      # Using != 1 since we also want the guard clause to handle empty arrays
-      return joins(:correct_work_item_type).where(work_item_types: { base_type: types }) if types.size != 1
+    # Using != 1 since we also want the guard clause to handle empty arrays
+    return joins(:correct_work_item_type).where(work_item_types: { base_type: types }) if types.size != 1
 
-      # This optimization helps the planer use the correct indexes when filtering by a single type
-      where(
-        '"issues"."correct_work_item_type_id" = (?)',
-        WorkItems::Type.by_type(types.first).select(:correct_id).limit(1)
-      )
-    else
-      # Using != 1 since we also want the guard clause to handle empty arrays
-      return joins(:work_item_type).where(work_item_types: { base_type: types }) if types.size != 1
-
-      # This optimization helps the planer use the correct indexes when filtering by a single type
-      where(
-        '"issues"."work_item_type_id" = (?)',
-        WorkItems::Type.by_type(types.first).select(:id).limit(1)
-      )
-    end
+    # This optimization helps the planer use the correct indexes when filtering by a single type
+    where(
+      '"issues"."correct_work_item_type_id" = (?)',
+      WorkItems::Type.by_type(types.first).select(:correct_id).limit(1)
+    )
   }
   scope :without_issue_type, ->(types) {
     joins(::Gitlab::Issues::TypeAssociationGetter.call).where.not(work_item_types: { base_type: types })
@@ -247,10 +236,10 @@ class Issue < ApplicationRecord
 
   scope :service_desk, -> {
     where(
-      "(author_id = ? AND work_item_type_id = ?) OR work_item_type_id = ?",
+      "(author_id = ? AND correct_work_item_type_id = ?) OR correct_work_item_type_id = ?",
       Users::Internal.support_bot.id,
-      WorkItems::Type.default_issue_type.id,
-      WorkItems::Type.default_by_type(:ticket).id
+      WorkItems::Type.default_issue_type.correct_id,
+      WorkItems::Type.default_by_type(:ticket).correct_id
     )
   }
   scope :inc_relations_for_view, -> do
@@ -366,9 +355,12 @@ class Issue < ApplicationRecord
 
   # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/499911
   def work_item_type
-    return correct_work_item_type if Feature.enabled?(:issues_use_correct_work_item_type_id, :instance)
+    correct_work_item_type
+  end
 
-    super
+  # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/499911
+  def work_item_type_id
+    correct_work_item_type&.id
   end
 
   def work_item_type_id=(input_work_item_type_id)
@@ -702,7 +694,7 @@ class Issue < ApplicationRecord
   end
 
   def from_service_desk?
-    author.id == Users::Internal.support_bot.id
+    author_id == Users::Internal.support_bot_id
   end
 
   def issue_link_type
@@ -930,15 +922,19 @@ class Issue < ApplicationRecord
   end
 
   def ensure_work_item_type
-    return if work_item_type.present? || work_item_type_id.present? || work_item_type_id_change&.last.present?
+    return if work_item_type.present? ||
+      correct_work_item_type_id.present? ||
+      correct_work_item_type_id_change&.last.present?
 
     self.work_item_type = WorkItems::Type.default_by_type(DEFAULT_ISSUE_TYPE)
   end
 
   def allowed_work_item_type_change
-    return unless changes[:work_item_type_id]
+    return unless changes[:correct_work_item_type_id]
 
-    involved_types = WorkItems::Type.where(id: changes[:work_item_type_id].compact).pluck(:base_type).uniq
+    involved_types = WorkItems::Type.where(
+      correct_id: changes[:correct_work_item_type_id].compact
+    ).pluck(:base_type).uniq
     disallowed_types = involved_types - WorkItems::Type::CHANGEABLE_BASE_TYPES
 
     return if disallowed_types.empty?

@@ -15,7 +15,9 @@ module QA
       clear_settings_sync_data
     end
 
-    def load_web_ide(file_name = 'README.md')
+    def load_web_ide(file_name: 'README.md', with_extensions_marketplace: false)
+      enable_extensions_marketplace if with_extensions_marketplace
+
       Page::Project::Show.perform(&:open_web_ide!)
       Page::Project::WebIDE::VSCode.perform do |ide|
         ide.wait_for_ide_to_load(file_name)
@@ -23,6 +25,16 @@ module QA
     end
 
     private
+
+    def enable_extensions_marketplace
+      Page::Main::Menu.perform(&:click_user_preferences_link)
+      Page::Profile::Preferences::Show.perform do |preferences|
+        preferences.enable_extensions_marketplace
+        preferences.save_preferences
+      end
+
+      project.visit!
+    end
 
     def clear_settings_sync_data
       # why: since the same user is used to run QA tests, the Web IDE settings can grow significantly.

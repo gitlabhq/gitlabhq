@@ -1,9 +1,9 @@
 - title: '`sidekiq` delivery method for `incoming_email` and `service_desk_email` is deprecated'
   announcement_milestone: '16.0'
-  removal_milestone: '18.0'
+  removal_milestone: '19.0'
   breaking_change: true
   reporter: msaleiko
-  stage: Monitor
+  stage: Plan
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/398132
   body: |
     The `sidekiq` delivery method for `incoming_email` and `service_desk_email` is deprecated and is
@@ -40,4 +40,4 @@
     [Issue 393157](https://gitlab.com/gitlab-org/gitlab/-/issues/393157) tracks improving email ingestion in general.
     We hope this will simplify infrastructure setup and add several improvements to how you manage GitLab in the near future.
   tiers: [Free, Silver, Gold, Core, Premium, Ultimate]
-  documentation_url: https://docs.gitlab.com/ee/user/project/service_desk.html#use-a-custom-email-address
+  documentation_url: https://docs.gitlab.com/ee/user/project/service_desk/configure.html#use-an-additional-service-desk-alias-email

@@ -36,12 +36,12 @@ release-cli create --name "Release $CI_COMMIT_SHA" --description \
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-The `release-cli` binaries are also [available in the package registry](https://gitlab.com/gitlab-org/release-cli/-/packages).
+The `release-cli` binaries are [available in the package registry](https://gitlab.com/gitlab-org/release-cli/-/packages).
 
 When you use a runner with the Shell executor, you can download and install
-the `release-cli` manually for your [supported OS and architecture](https://release-cli-downloads.s3.amazonaws.com/latest/index.html).
+the `release-cli` manually for your [supported OS and architecture](https://gitlab.com/gitlab-org/release-cli/-/packages).
 Once installed, [the `release` keyword](../../../ci/yaml/index.md#release) is available to use in your CI/CD jobs.
 
 ### Install on Unix/Linux

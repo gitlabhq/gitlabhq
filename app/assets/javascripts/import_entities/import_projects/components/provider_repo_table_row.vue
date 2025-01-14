@@ -1,18 +1,10 @@
 <script>
-import {
-  GlIcon,
-  GlBadge,
-  GlFormInput,
-  GlButton,
-  GlLink,
-  GlTooltip,
-  GlSprintf,
-  GlTooltipDirective,
-} from '@gitlab/ui';
+import { GlIcon, GlBadge, GlFormInput, GlButton, GlLink, GlTooltip, GlSprintf } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { __ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import ImportTargetDropdown from '../../components/import_target_dropdown.vue';
 import ImportStatus from '../../components/import_status.vue';
 import { STATUSES } from '../../constants';
@@ -21,6 +13,7 @@ import { isProjectImportable, isImporting, isIncompatible, getImportStatus } fro
 export default {
   name: 'ProviderRepoTableRow',
   components: {
+    HelpPopover,
     ImportStatus,
     ImportTargetDropdown,
     GlFormInput,
@@ -30,9 +23,6 @@ export default {
     GlLink,
     GlTooltip,
     GlSprintf,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
   },
   inject: {
     userNamespace: {
@@ -249,39 +239,34 @@ export default {
       >
         {{ importButtonText }}
       </gl-button>
-      <gl-tooltip :target="() => $refs.membershipsWarning.$el">
-        {{
-          s__(
-            'ImportProjects|Importing a project into a personal namespace results in all contributions being mapped to the same bot user. To map contributions to real users, import projects into a group instead.',
-          )
-        }}
-        <gl-link :href="$options.membershipsHelpPath" target="_blank">{{
-          __('Learn more.')
-        }}</gl-link>
-      </gl-tooltip>
-      <gl-icon
-        v-show="showMembershipsWarning"
-        ref="membershipsWarning"
-        name="warning"
-        class="gl-ml-3 gl-text-orange-500"
-        data-testid="memberships-warning"
-      />
-      <gl-icon
-        v-if="isFinished"
-        v-gl-tooltip
-        :size="16"
-        name="information-o"
-        :title="
-          s__(
-            'ImportProjects|Re-import creates a new project. It does not sync with the existing project.',
-          )
-        "
-        class="gl-ml-3"
-      />
+      <span class="gl-ml-3 gl-inline-flex gl-gap-3">
+        <help-popover
+          v-show="showMembershipsWarning"
+          icon="warning"
+          trigger-class="!gl-text-orange-500"
+          data-testid="memberships-warning"
+        >
+          {{
+            s__(
+              'ImportProjects|Importing a project into a personal namespace results in all contributions being mapped to the same bot user. To map contributions to real users, import projects into a group instead.',
+            )
+          }}
+          <gl-link :href="$options.membershipsHelpPath" target="_blank">{{
+            __('Learn more.')
+          }}</gl-link>
+        </help-popover>
 
-      <gl-badge v-else-if="isIncompatible" variant="danger">{{
-        __('Incompatible project')
-      }}</gl-badge>
+        <help-popover v-if="isFinished" icon="information-o">
+          {{
+            s__(
+              'ImportProjects|Re-import creates a new project. It does not sync with the existing project.',
+            )
+          }}
+        </help-popover>
+        <gl-badge v-else-if="isIncompatible" variant="danger">{{
+          __('Incompatible project')
+        }}</gl-badge>
+      </span>
     </td>
   </tr>
 </template>

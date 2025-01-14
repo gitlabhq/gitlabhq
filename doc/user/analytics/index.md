@@ -24,9 +24,8 @@ Use these features to gain insights into your overall software development lifec
 | [Value Stream Management Analytics](../group/value_stream_analytics/index.md) | Insights into time-to-value through customizable stages. | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
 | DevOps adoption [by group](../group/devops_adoption/index.md) and [by instance](../../administration/analytics/dev_ops_reports.md) | Organization's maturity in DevOps adoption, with feature adoption over time and feature distribution by group. | **{dotted-circle}** No | **{check-circle}** Yes | **{check-circle}** Yes |
 | [Usage trends](../../administration/analytics/usage_trends.md) | Overview of instance data and changes in data volume over time. | **{dotted-circle}** No | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Instance-level analytics](../../administration/analytics/index.md) | Aggregated analytics across GitLab about multiple projects and groups in one place. | **{dotted-circle}** No | **{dotted-circle}** No | **{check-circle}** Yes |
 | [Insights](../project/insights/index.md) | Customizable reports to explore issues, merged merge requests, and triage hygiene. | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
-| [Product analytics](../../operations/product_analytics/index.md) | Understanding how users behave and interact with your product.| **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No |
+| [Product analytics](../../development/internal_analytics/product_analytics.md) | Understanding how users behave and interact with your product.| **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No |
 | [Analytics dashboards](analytics_dashboards.md) | Built-in and customizable dashboards to visualize collected data. | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
 
 ### Productivity analytics

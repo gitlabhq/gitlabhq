@@ -72,6 +72,7 @@ module RSpec
     private
 
     def match_data?(actual, expected)
+      return true if actual.blank? && expected.blank?
       return false if actual.blank? || expected.blank?
 
       values_match?(expected.keys.sort, actual.keys.sort) &&

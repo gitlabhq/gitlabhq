@@ -9,7 +9,7 @@ description: "Your project's merge method determines whether to squash commits b
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 The merge method you select for your project determines how the changes in your
 merge requests are merged into an existing branch.

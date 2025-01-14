@@ -47,7 +47,10 @@ describe('releases/components/tag_search', () => {
   afterEach(() => mock.restore());
 
   const findSearch = () => wrapper.findComponent(GlSearchBoxByType);
-  const findCreate = () => wrapper.findAllComponents(GlButton).at(-1);
+  const findCreate = () => {
+    const buttons = wrapper.findAllComponents(GlButton);
+    return buttons.at(buttons.length - 1);
+  };
   const findResults = () => wrapper.findAllComponents(GlDropdownItem);
 
   describe('init', () => {

@@ -6,4 +6,4 @@ export const LOW_FRAME_TIME = 32;
 // https://web.dev/optimize-long-tasks/
 export const HIGH_FRAME_TIME = 64;
 export const BALANCE_RATE = 1.2;
-export const TIMEOUT = 500;
+export const TIMEOUT = 100;

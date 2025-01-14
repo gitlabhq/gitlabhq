@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 GitLab officially supports long term support (LTS) versions of operating systems. Some operating systems, such as Ubuntu,
 have a clear distinction between LTS and non-LTS versions. However, there are other operating systems, openSUSE for
@@ -39,15 +39,6 @@ These versions of Amazon Linux are supported.
 | Amazon Linux 2    | GitLab CE / GitLab EE 14.9.0   | `amd64`, `arm64` | [Amazon Linux 2 installation documentation](https://about.gitlab.com/install/#amazonlinux-2)       | June 2025            | [Amazon Linux details](https://aws.amazon.com/amazon-linux-2/faqs/) |
 | Amazon Linux 2023 | GitLab CE / GitLab EE 16.3.0   | `amd64`, `arm64` | [Amazon Linux 2023 installation documentation](https://about.gitlab.com/install/#amazonlinux-2023) | 2028                 | [Amazon Linux details](https://docs.aws.amazon.com/linux/al2023/ug/release-cadence.html) |
 
-## CentOS and Scientific Linux
-
-These versions of CentOS and Scientific Linux are supported.
-
-| Operating system | First supported GitLab version | Architecture | Installation documentation                                                          | Operating system EOL | Details |
-|:-----------------|:-------------------------------|:-------------|:------------------------------------------------------------------------------------|:---------------------|:--------|
-| CentOS 7         | GitLab CE / GitLab EE 7.10.0   | `x86_64`     | [CentOS installation documentation](https://about.gitlab.com/install/#centos-7)     | June 2024            | [CentOS Linux details](https://www.centos.org/about/) |
-| Scientific Linux | GitLab CE / GitLab EE 8.14.0   | `x86_64`     | [Use CentOS installation documentation](https://about.gitlab.com/install/#centos-7) | June 2024            | [Scientific Linux details](https://scientificlinux.org/downloads/sl-versions/sl7/) |
-
 ## Debian
 
 These versions of Debian are supported.
@@ -74,7 +65,6 @@ These versions of Oracle Linux are supported.
 
 | Operating system | First supported GitLab version | Architecture | Installation documentation                                                              | Operating system EOL | Details |
 |:-----------------|:-------------------------------|:-------------|:----------------------------------------------------------------------------------------|:---------------------|:--------|
-| Oracle Linux 7   | GitLab CE / GitLab EE 8.14.0   | `x86_64`     | [Use CentOS installation documentation](https://about.gitlab.com/install/#centos-7)     | Dec 2024             | [Oracle Linux details](https://www.oracle.com/a/ocom/docs/elsp-lifetime-069338.pdf) |
 | Oracle Linux 8   | GitLab CE / GitLab EE 12.8.1   | `x86_64`     | [Use AlmaLinux installation documentation](https://about.gitlab.com/install/#almalinux) | July 2029            | [Oracle Linux details](https://www.oracle.com/a/ocom/docs/elsp-lifetime-069338.pdf) |
 | Oracle Linux 9   | GitLab CE / GitLab EE 16.2.0   | `x86_64`     | [Use AlmaLinux installation documentation](https://about.gitlab.com/install/#almalinux) | June 2032            | [Oracle Linux details](https://www.oracle.com/a/ocom/docs/elsp-lifetime-069338.pdf) |
 
@@ -84,7 +74,6 @@ These versions of Raspberry Pi OS are supported.
 
 | Operating system version                                     | First supported GitLab version | Architecture | Installation documentation                                                                   | Operating system EOL | Details |
 |:-------------------------------------------------------------|:-------------------------------|:-------------|:---------------------------------------------------------------------------------------------|:---------------------|:--------|
-| Raspberry Pi OS (Buster) (formerly known as Raspbian Buster) | GitLab CE 12.2.0               | `armhf`      | [Raspberry Pi installation documentation](https://about.gitlab.com/install/#raspberry-pi-os) | June 2024            | [Raspberry Pi details](https://www.raspberrypi.com/news/new-old-functionality-with-raspberry-pi-os-legacy/) |
 | Raspberry Pi OS (Bullseye)                                   | GitLab CE 15.5.0               | `armhf`      | [Raspberry Pi installation documentation](https://about.gitlab.com/install/#raspberry-pi-os) | 2026                 | [Raspberry Pi details](https://www.raspberrypi.com/news/raspberry-pi-os-debian-bullseye/) |
 
 ## Red Hat Enterprise Linux
@@ -148,7 +137,10 @@ release for them can be found below:
 | OS version       | End of life                                                                         | Last supported GitLab version |
 |:-----------------|:------------------------------------------------------------------------------------|:------------------------------|
 | CentOS 6         | [November 2020](https://www.centos.org/about/)                                      | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=13.6&filter=all&filter=all&dist=el%2F6) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=13.6&filter=all&filter=all&dist=el%2F6) 13.6 |
+| CentOS 7         | [June 2024](https://www.centos.org/about/)                                          | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=17.7&filter=all&filter=all&dist=el%2F7) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=17.7&filter=all&filter=all&dist=el%2F7) 17.7 |
 | CentOS 8         | [December 2021](https://www.centos.org/about/)                                      | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=14.6&filter=all&filter=all&dist=el%2F8) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=14.6&filter=all&filter=all&dist=el%2F8) 14.6 |
+| Oracle Linux 7   | [December 2024](https://endoflife.date/oracle-linux)                                | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=17.7&filter=all&filter=all&dist=ol%2F7) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=17.7&filter=all&filter=all&dist=ol%2F7) 17.7 |
+| Scientific Linux 7 | [June 2024](https://scientificlinux.org/downloads/sl-versions/sl7/)               | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=17.7&filter=all&filter=all&dist=scientific%2F7) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=17.7&filter=all&filter=all&dist=scientific%2F7) 17.7 |
 | Debian 7 Wheezy  | [May 2018](https://www.debian.org/News/2018/20180601)                               | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce_11.6&dist=debian%2Fwheezy) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee_11.6&dist=debian%2Fwheezy) 11.6 |
 | Debian 8 Jessie  | [June 2020](https://www.debian.org/News/2020/20200709)                              | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce_13.2&dist=debian%2Fjessie) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee_13.2&dist=debian%2Fjessie) 13.3 |
 | Debian 9 Stretch | [June 2022](https://lists.debian.org/debian-lts-announce/2022/07/msg00002.html)     | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce_15.2&dist=debian%2Fstretch) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee_15.2&dist=debian%2Fstretch) 15.2 |
@@ -165,6 +157,7 @@ release for them can be found below:
 | Raspbian Wheezy  | [May 2015](https://downloads.raspberrypi.org/raspbian/images/raspbian-2015-05-07/)  | [GitLab CE](https://packages.gitlab.com/app/gitlab/raspberry-pi2/search?q=gitlab-ce_8.17&dist=debian%2Fwheezy) 8.17 |
 | Raspbian Jessie  | [May 2017](https://downloads.raspberrypi.org/raspbian/images/raspbian-2017-07-05/)  | [GitLab CE](https://packages.gitlab.com/app/gitlab/raspberry-pi2/search?q=gitlab-ce_11.7&dist=debian%2Fjessie) 11.7 |
 | Raspbian Stretch | [June 2020](https://downloads.raspberrypi.org/raspbian/images/raspbian-2019-04-09/) | [GitLab CE](https://packages.gitlab.com/app/gitlab/raspberry-pi2/search?q=gitlab-ce_13.3&dist=raspbian%2Fstretch) 13.3 |
+| Raspberry Pi OS Buster | [June 2024](https://www.debian.org/News/2024/20240615)                        | [GitLab CE](https://packages.gitlab.com/app/gitlab/raspberry-pi2/search?q=gitlab-ce_17.7&dist=raspbian%2Fbuster) 17.7 |
 | Ubuntu 12.04     | [April 2017](https://ubuntu.com/info/release-end-of-life)                           | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce_9.1&dist=ubuntu%2Fprecise) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee_9.1&dist=ubuntu%2Fprecise) 9.1 |
 | Ubuntu 14.04     | [April 2019](https://ubuntu.com/info/release-end-of-life)                           | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce_11.10&dist=ubuntu%2Ftrusty) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee_11.10&dist=ubuntu%2Ftrusty) 11.10 |
 | Ubuntu 16.04     | [April 2021](https://ubuntu.com/info/release-end-of-life)                           | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce_13.12&dist=ubuntu%2Fxenial) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee_13.12&dist=ubuntu%2Fxenial) 13.12 |

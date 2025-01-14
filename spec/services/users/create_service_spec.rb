@@ -23,8 +23,6 @@ RSpec.describe Users::CreateService, feature_category: :user_management do
         end
 
         it 'persists the given attributes' do
-          user.reload
-
           expect(user).to have_attributes(
             name: params[:name],
             username: params[:username],
@@ -38,8 +36,6 @@ RSpec.describe Users::CreateService, feature_category: :user_management do
           let(:admin_user) { build(:admin) }
 
           it 'persists the given attributes and sets created_by_id to nil' do
-            user.reload
-
             expect(user).to have_attributes(
               name: params[:name],
               username: params[:username],
@@ -92,8 +88,6 @@ RSpec.describe Users::CreateService, feature_category: :user_management do
         let(:params) { base_params.merge(password_automatically_set: true) }
 
         it 'persists the given attributes' do
-          user.reload
-
           expect(user).to have_attributes(
             name: params[:name],
             username: params[:username],
@@ -128,6 +122,28 @@ RSpec.describe Users::CreateService, feature_category: :user_management do
           expect(notification_service).to have_received(:new_user).with(user, an_instance_of(String))
         end
       end
+
+      context 'when user has errors' do
+        let(:params) { base_params }
+
+        before do
+          user = build(:user, email: 'invalid_email_format')
+
+          allow(service).to receive(:user).and_return(user)
+        end
+
+        it 'does not create a user' do
+          expect { service.execute }.not_to change { User.count }
+        end
+
+        it 'does not return a persisted user' do
+          expect(user).not_to be_persisted
+        end
+
+        it 'returns an error' do
+          expect(service.execute).to have_attributes(message: 'Email is invalid', status: :error)
+        end
+      end
     end
 
     context 'with nil user' do
@@ -136,8 +152,6 @@ RSpec.describe Users::CreateService, feature_category: :user_management do
       let(:service) { described_class.new(nil, params) }
 
       it 'persists the given attributes' do
-        user.reload
-
         expect(user).to have_attributes(
           name: params[:name],
           username: params[:username],

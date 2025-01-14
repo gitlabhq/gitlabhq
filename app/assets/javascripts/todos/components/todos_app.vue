@@ -13,15 +13,14 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   DEFAULT_PAGE_SIZE,
-  INSTRUMENT_TAB_LABELS,
+  getInstrumentTabLabels,
   INSTRUMENT_TODO_FILTER_CHANGE,
-  STATUS_BY_TAB,
-  TAB_PENDING,
+  getStatusByTab,
   TODO_WAIT_BEFORE_RELOAD,
-  TAB_DONE,
-  TAB_ALL,
+  getTabsIndices,
 } from '~/todos/constants';
 import getTodosQuery from './queries/get_todos.query.graphql';
 import getPendingTodosCount from './queries/get_pending_todos_count.query.graphql';
@@ -48,15 +47,16 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glFeatureFlagMixin()],
   provide() {
     return {
       currentTab: computed(() => this.currentTab),
+      currentTime: computed(() => this.currentTime),
     };
   },
   data() {
     return {
-      updatePid: null,
+      updateTimeoutId: null,
       needsRefresh: false,
       cursor: {
         first: DEFAULT_PAGE_SIZE,
@@ -67,7 +67,7 @@ export default {
       currentUserId: null,
       pageInfo: {},
       todos: [],
-      currentTab: TAB_PENDING,
+      currentTab: getTabsIndices().pending,
       pendingTodosCount: '-',
       queryFilterValues: {
         groupId: [],
@@ -79,6 +79,8 @@ export default {
       },
       alert: null,
       showSpinnerWhileLoading: true,
+      currentTime: new Date(),
+      currentTimeInterval: null,
     };
   },
   apollo: {
@@ -86,8 +88,10 @@ export default {
       query: getTodosQuery,
       fetchPolicy: 'cache-and-network',
       variables() {
+        const state = this.isOnSnoozedTab ? ['pending'] : this.statusByTab;
         return {
-          state: this.statusByTab,
+          state,
+          ...(this.isOnSnoozedTab ? { isSnoozed: true } : {}),
           ...this.queryFilterValues,
           ...this.cursor,
         };
@@ -118,7 +122,7 @@ export default {
   },
   computed: {
     statusByTab() {
-      return STATUS_BY_TAB[this.currentTab];
+      return getStatusByTab()[this.currentTab];
     },
     isLoading() {
       return this.$apollo.queries.todos.loading;
@@ -128,22 +132,28 @@ export default {
       const { sort: _, ...filters } = this.queryFilterValues;
       return Object.values(filters).some((value) => value.length > 0);
     },
+    isOnSnoozedTab() {
+      return this.glFeatures.todosSnoozing && this.currentTab === getTabsIndices().snoozed;
+    },
     showEmptyState() {
       return !this.isLoading && this.todos.length === 0;
     },
     showMarkAllAsDone() {
-      return this.currentTab === TAB_PENDING && !this.showEmptyState;
+      return this.currentTab === getTabsIndices().pending && !this.showEmptyState;
     },
   },
   created() {
     const searchParams = new URLSearchParams(window.location.search);
     const stateFromUrl = searchParams.get('state');
     switch (stateFromUrl) {
+      case 'snoozed':
+        this.currentTab = getTabsIndices().snoozed;
+        break;
       case 'done':
-        this.currentTab = TAB_DONE;
+        this.currentTab = getTabsIndices().done;
         break;
       case 'all':
-        this.currentTab = TAB_ALL;
+        this.currentTab = getTabsIndices().all;
         break;
       default:
         break;
@@ -151,9 +161,13 @@ export default {
   },
   mounted() {
     document.addEventListener('visibilitychange', this.handleVisibilityChanged);
+    this.currentTimeInterval = setInterval(() => {
+      this.currentTime = new Date();
+    }, 60 * 1000);
   },
   beforeDestroy() {
     document.removeEventListener('visibilitychange', this.handleVisibilityChanged);
+    clearInterval(this.currentTimeInterval);
   },
   methods: {
     updateCursor(cursor) {
@@ -165,7 +179,7 @@ export default {
       }
 
       this.track(INSTRUMENT_TODO_FILTER_CHANGE, {
-        label: INSTRUMENT_TAB_LABELS[tabIndex],
+        label: getInstrumentTabLabels()[tabIndex],
       });
       this.currentTab = tabIndex;
 
@@ -180,11 +194,14 @@ export default {
     },
     syncActiveTabToUrl() {
       const tabIndexToUrlStateParam = {
-        [TAB_DONE]: 'done',
-        [TAB_ALL]: 'all',
+        [getTabsIndices().done]: 'done',
+        [getTabsIndices().all]: 'all',
       };
+      if (this.glFeatures.todosSnoozing) {
+        tabIndexToUrlStateParam[getTabsIndices().snoozed] = 'snoozed';
+      }
       const searchParams = new URLSearchParams(window.location.search);
-      if (this.currentTab === TAB_PENDING) {
+      if (this.currentTab === getTabsIndices().pending) {
         searchParams.delete('state');
       } else {
         searchParams.set('state', tabIndexToUrlStateParam[this.currentTab]);
@@ -217,19 +234,19 @@ export default {
 
       this.showSpinnerWhileLoading = true;
     },
-    markInteracting() {
-      clearTimeout(this.updatePid);
+    startedInteracting() {
+      clearTimeout(this.updateTimeoutId);
     },
     stoppedInteracting() {
       if (!this.needsRefresh) {
         return;
       }
 
-      if (this.updatePid) {
-        clearTimeout(this.updatePid);
+      if (this.updateTimeoutId) {
+        clearTimeout(this.updateTimeoutId);
       }
 
-      this.updatePid = setTimeout(() => {
+      this.updateTimeoutId = setTimeout(() => {
         /*
          We double-check needsRefresh or
          whether a query is already running
@@ -237,7 +254,7 @@ export default {
         if (this.needsRefresh && !this.$apollo.queries.todos.loading) {
           this.updateAllQueries(false);
         }
-        this.updatePid = null;
+        this.updateTimeoutId = null;
       }, TODO_WAIT_BEFORE_RELOAD);
     },
   },
@@ -245,7 +262,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div data-testid="todos-list-container">
     <div
       class="gl-flex gl-flex-wrap-reverse gl-justify-between gl-border-b-1 gl-border-default gl-border-b-solid"
     >
@@ -261,6 +278,11 @@ export default {
             <gl-badge pill size="sm" class="gl-tab-counter-badge" data-testid="pending-todos-count">
               {{ pendingTodosCount }}
             </gl-badge>
+          </template>
+        </gl-tab>
+        <gl-tab v-if="glFeatures.todosSnoozing">
+          <template #title>
+            <span>{{ s__('Todos|Snoozed') }}</span>
           </template>
         </gl-tab>
         <gl-tab>
@@ -304,7 +326,7 @@ export default {
           v-else
           data-testid="todo-item-list-container"
           class="gl-m-0 gl-border-collapse gl-list-none gl-p-0"
-          @mouseenter="markInteracting"
+          @mouseenter="startedInteracting"
           @mouseleave="stoppedInteracting"
         >
           <transition-group name="todos">

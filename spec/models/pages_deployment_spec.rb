@@ -141,9 +141,9 @@ RSpec.describe PagesDeployment, feature_category: :pages do
   end
 
   describe '.count_versioned_deployments_for' do
-    it 'counts the number of active pages deployments for the root level namespace of a given project' do
+    it 'counts the number of active pages deployments for a list of projects' do
       group = create(:group)
-      create(:project, group: group).tap do |project|
+      project1 = create(:project, group: group).tap do |project|
         # not versioned
         create(:pages_deployment, project: project)
         # versioned, active
@@ -151,7 +151,7 @@ RSpec.describe PagesDeployment, feature_category: :pages do
         # versioned, not active
         create(:pages_deployment, project: project, path_prefix: 'v2', deleted_at: 1.day.from_now)
       end
-      project = create(:project, group: group).tap do |project|
+      project2 = create(:project, group: group).tap do |project|
         # not versioned
         create(:pages_deployment, project: project)
         # versioned, active
@@ -160,8 +160,19 @@ RSpec.describe PagesDeployment, feature_category: :pages do
         create(:pages_deployment, project: project, path_prefix: 'v2', deleted_at: 1.day.from_now)
       end
 
-      expect(described_class.count_versioned_deployments_for(project, 10)).to eq(2)
-      expect(described_class.count_versioned_deployments_for(project, 1)).to eq(1)
+      expect(described_class.count_versioned_deployments_for([project1, project2], 10)).to eq(2)
+      expect(described_class.count_versioned_deployments_for([project1, project2], 1)).to eq(1)
+    end
+
+    it 'counts the number of active pages deployments for a single project' do
+      group = create(:group)
+      project = create(:project, group: group).tap do |project|
+        create(:pages_deployment, project: project, path_prefix: 'v1')
+        create(:pages_deployment, project: project, path_prefix: 'v2')
+        create(:pages_deployment, project: project, path_prefix: 'v3')
+      end
+
+      expect(described_class.count_versioned_deployments_for(project, 10)).to eq(3)
     end
   end
 

@@ -13,13 +13,11 @@ module Types
         field :id,
           ::Types::GlobalIDType[::ContainerRegistry::Protection::Rule],
           null: false,
-          experiment: { milestone: '16.6' },
           description: 'ID of the container repository protection rule.'
 
         field :repository_path_pattern,
           GraphQL::Types::String,
           null: false,
-          experiment: { milestone: '16.6' },
           description:
             'Container repository path pattern protected by the protection rule. ' \
             'For example, `my-project/my-container-*`. Wildcard character `*` allowed.'
@@ -27,22 +25,18 @@ module Types
         field :minimum_access_level_for_delete,
           Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
           null: true,
-          experiment: { milestone: '16.6' },
           description:
             'Minimum GitLab access level required to delete container images from the container repository. ' \
-            'For example, `MAINTAINER`, `OWNER`, or `ADMIN`. ' \
-            'If the value is `nil`, the minimum access level is ignored. ' \
-            'Users with at least the Developer role can delete container images.'
+            'Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`.' \
+            'If the value is `nil`, the default minimum access level is `DEVELOPER`'
 
         field :minimum_access_level_for_push,
           Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
           null: true,
-          experiment: { milestone: '16.6' },
           description:
             'Minimum GitLab access level required to push container images to the container repository. ' \
-            'For example, `MAINTAINER`, `OWNER`, or `ADMIN`. ' \
-            'If the value is `nil`, the minimum access level is ignored. ' \
-            'Users with at least the Developer role can push container images.'
+            'Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`.' \
+            'If the value is `nil`, the default minimum access level is `DEVELOPER`'
       end
     end
   end

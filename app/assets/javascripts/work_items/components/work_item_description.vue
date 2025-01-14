@@ -1,12 +1,14 @@
 <script>
 import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormTextarea } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { __, s__ } from '~/locale';
 import EditedAt from '~/issues/show/components/edited.vue';
 import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   newWorkItemId,
   newWorkItemFullPath,
@@ -14,6 +16,7 @@ import {
   markdownPreviewPath,
 } from '~/work_items/utils';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
+import workItemDescriptionTemplateQuery from '../graphql/work_item_description_template.query.graphql';
 import {
   i18n,
   NEW_WORK_ITEM_IID,
@@ -21,6 +24,7 @@ import {
   WIDGET_TYPE_DESCRIPTION,
 } from '../constants';
 import WorkItemDescriptionRendered from './work_item_description_rendered.vue';
+import WorkItemDescriptionTemplateListbox from './work_item_description_template_listbox.vue';
 
 export default {
   components: {
@@ -32,8 +36,9 @@ export default {
     GlFormTextarea,
     MarkdownEditor,
     WorkItemDescriptionRendered,
+    WorkItemDescriptionTemplateListbox,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glFeatureFlagMixin()],
   inject: ['isGroup'],
   props: {
     description: {
@@ -103,6 +108,10 @@ export default {
         id: 'work-item-description',
         name: 'work-item-description',
       },
+      selectedTemplate: '',
+      descriptionTemplate: null,
+      appliedTemplate: '',
+      showTemplateApplyWarning: false,
     };
   },
   apollo: {
@@ -130,6 +139,35 @@ export default {
       },
       error() {
         this.$emit('error', i18n.fetchError);
+      },
+    },
+    descriptionTemplate: {
+      query: workItemDescriptionTemplateQuery,
+      skip() {
+        return !this.selectedTemplate;
+      },
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          name: this.selectedTemplate,
+        };
+      },
+      update(data) {
+        return data.namespace.workItemDescriptionTemplates.nodes[0] || {};
+      },
+      result() {
+        const isDirty = this.descriptionText !== this.workItemDescription?.description;
+        const isUnchangedTemplate = this.descriptionText === this.appliedTemplate;
+        const hasContent = this.descriptionText !== '';
+        if (!isUnchangedTemplate && (isDirty || hasContent)) {
+          this.showTemplateApplyWarning = true;
+        } else {
+          this.applyTemplate();
+        }
+      },
+      error(e) {
+        Sentry.captureException(e);
+        this.$emit('error', s__('WorkItem|Unable to find selected template.'));
       },
     },
   },
@@ -216,6 +254,17 @@ export default {
     showEditedAt() {
       return (this.taskCompletionStatus || this.lastEditedAt) && !this.editMode;
     },
+    canShowDescriptionTemplateSelector() {
+      return this.glFeatures.workItemsAlpha;
+    },
+    descriptionTemplateContent() {
+      return this.descriptionTemplate?.content || '';
+    },
+    canResetTemplate() {
+      const hasAppliedTemplate = this.appliedTemplate !== '';
+      const hasEditedTemplate = this.descriptionText !== this.appliedTemplate;
+      return hasAppliedTemplate && hasEditedTemplate;
+    },
   },
   watch: {
     updateInProgress(newValue) {
@@ -223,6 +272,9 @@ export default {
     },
     editMode(newValue) {
       this.isEditing = newValue;
+      this.selectedTemplate = '';
+      this.appliedTemplate = '';
+      this.showTemplateApplyWarning = false;
       if (newValue) {
         this.startEditing();
       }
@@ -299,6 +351,34 @@ export default {
       this.$emit('updateDraft', this.descriptionText);
       this.updateWorkItem();
     },
+    handleSelectTemplate(templateName) {
+      this.selectedTemplate = templateName;
+    },
+    applyTemplate() {
+      this.appliedTemplate = this.descriptionTemplateContent;
+      this.setDescriptionText(this.descriptionTemplateContent);
+      this.onInput();
+      this.showTemplateApplyWarning = false;
+    },
+    cancelApplyTemplate() {
+      this.selectedTemplate = '';
+      this.descriptionTemplate = null;
+      this.showTemplateApplyWarning = false;
+    },
+    handleClearTemplate() {
+      if (this.appliedTemplate) {
+        this.setDescriptionText('');
+        this.selectedTemplate = '';
+        this.descriptionTemplate = null;
+        this.appliedTemplate = '';
+      }
+    },
+    handleResetTemplate() {
+      if (this.canResetTemplate) {
+        this.setDescriptionText(this.appliedTemplate);
+        this.onInput();
+      }
+    },
   },
 };
 </script>
@@ -309,9 +389,44 @@ export default {
       <gl-form-group
         :class="formGroupClass"
         :label="__('Description')"
-        label-sr-only
+        :label-sr-only="!canShowDescriptionTemplateSelector"
         label-for="work-item-description"
       >
+        <work-item-description-template-listbox
+          v-if="canShowDescriptionTemplateSelector"
+          :full-path="fullPath"
+          :template="selectedTemplate"
+          @selectTemplate="handleSelectTemplate"
+          @clear="handleClearTemplate"
+          @reset="handleResetTemplate"
+        />
+        <gl-alert
+          v-if="showTemplateApplyWarning"
+          :dismissible="false"
+          variant="warning"
+          class="gl-mt-2"
+          data-testid="description-template-warning"
+        >
+          <p>
+            {{
+              s__(
+                'WorkItem|Applying a template will replace the existing description. Any changes you have made will be lost.',
+              )
+            }}
+          </p>
+          <template #actions>
+            <gl-button variant="confirm" data-testid="template-apply" @click="applyTemplate"
+              >{{ s__('WorkItem|Apply template') }}
+            </gl-button>
+            <gl-button
+              category="secondary"
+              class="gl-ml-3"
+              data-testid="template-cancel"
+              @click="cancelApplyTemplate"
+              >{{ s__('WorkItem|Cancel') }}
+            </gl-button>
+          </template>
+        </gl-alert>
         <markdown-editor
           :value="descriptionText"
           :render-markdown-path="markdownPreviewPath"
@@ -322,6 +437,7 @@ export default {
           enable-autocomplete
           supports-quick-actions
           :autofocus="autofocus"
+          :class="{ 'gl-mt-2': canShowDescriptionTemplateSelector }"
           @input="setDescriptionText"
           @keydown.meta.enter="updateWorkItem"
           @keydown.ctrl.enter="updateWorkItem"

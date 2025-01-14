@@ -27,7 +27,7 @@ The version-specific changes page should use the following format:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 This page contains upgrade information for minor and patch versions of GitLab X.
 Ensure you review these instructions for:

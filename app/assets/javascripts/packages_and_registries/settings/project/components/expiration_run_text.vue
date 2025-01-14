@@ -1,6 +1,6 @@
 <script>
 import { GlFormGroup, GlFormInput } from '@gitlab/ui';
-import { localeDateFormat, isValidDate } from '~/lib/utils/datetime_utility';
+import { localeDateFormat, isValidDate, newDate } from '~/lib/utils/datetime_utility';
 import {
   NEXT_CLEANUP_LABEL,
   NOT_SCHEDULED_POLICY_TEXT,
@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     parsedValue() {
-      const date = new Date(this.value);
+      const date = newDate(this.value);
       const isValid = isValidDate(date);
       return this.enabled && isValid
         ? localeDateFormat.asDateTimeFull.format(date)

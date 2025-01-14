@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::PipelinesEmail, :mailer do
+RSpec.describe Integrations::PipelinesEmail, :mailer, feature_category: :integrations do
   let(:pipeline) do
     create(:ci_pipeline, :failed,
       project: project,

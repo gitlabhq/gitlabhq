@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 These are some of the diagnostics tools the GitLab Support team uses during troubleshooting.
 They are listed here for transparency, and for users with experience

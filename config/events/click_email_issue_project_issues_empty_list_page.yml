@@ -4,9 +4,6 @@ action: click_email_issue_project_issues_empty_list_page
 product_group: activation
 milestone: '16.11'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146482
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

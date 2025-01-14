@@ -66,7 +66,7 @@ export default {
     title: s__('MlModelRegistry|Using the MLflow client'),
     id: MLFLOW_USAGE_MODAL_ID,
     firstLine: s__(
-      'MlModelRegistry|Creating models, model versions and candidates is also possible using the MLflow client:',
+      'MlModelRegistry|Creating models, model versions and runs is also possible using the MLflow client:',
     ),
     actionPrimary: {
       text: s__('MlModelRegistry|MLflow compatibility documentation'),

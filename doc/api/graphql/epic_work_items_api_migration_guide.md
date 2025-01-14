@@ -8,11 +8,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.2 with several feature flags. Disabled by default. Your administrator must have [enabled the new look for epics](../../user/group/epics/epic_work_items.md#enable-and-disable-the-new-look-for-epics). This feature is an [experiment](../../policy/development_stages_support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.2 [with a flag](../../administration/feature_flags.md) named `work_item_epics`. Disabled by default. Your administrator must have [enabled the new look for epics](../../user/group/epics/epic_work_items.md). This feature is in [beta](../../policy/development_stages_support.md#beta).
+> - Listing epics using the [GraphQL API](reference/index.md) [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12852) in GitLab 17.4.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/470685) in GitLab 17.6.
+> - [Enabled by default on self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/468310) in GitLab 17.7.
 
 In GitLab 17.2, we introduced [epics as work items](../../user/group/epics/epic_work_items.md).
 
@@ -57,7 +59,7 @@ around with existing queries:
 
 1. Open the GraphiQL explorer tool:
    - For GitLab.com, go to <https://gitlab.com/-/graphql-explorer>.
-   - For self-managed GitLab, go to `https://gitlab.example.com/-/graphql-explorer`.
+   - For GitLab Self-Managed, go to `https://gitlab.example.com/-/graphql-explorer`.
      Change `gitlab.example.com` to your instance URL.
 1. Paste a query listed in an example into the left window of your GraphiQL explorer tool.
 1. Select **Play**.

@@ -21,28 +21,13 @@
     }
   }
 
-  &-icon {
-    color: var(--gray-300, $gray-300);
-  }
-
-  &-footer {
+  &-footer-extra {
     border-radius: $gl-padding;
     height: $gl-padding-32;
-
-    &-arrow {
-      color: var(--gray-200, $gray-200);
-    }
-
-    &-downstream {
-      margin-right: -$gl-padding-8;
-    }
-
-    &-extra {
-      background-color: var(--gray-200, $gray-200);
-      font-size: 10px;
-      line-height: $gl-line-height;
-      width: $gl-padding;
-    }
+    background-color: var(--gray-200, $gray-200);
+    font-size: 10px;
+    line-height: $gl-line-height;
+    width: $gl-padding;
   }
 
   &-skeleton-info {

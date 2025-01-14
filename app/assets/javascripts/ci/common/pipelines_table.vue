@@ -6,8 +6,8 @@ import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
 import { PIPELINE_ID_KEY, PIPELINE_IID_KEY, TRACKING_CATEGORIES } from '~/ci/constants';
 import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsing_utils';
-import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import PipelineFailedJobsWidget from '~/ci/pipelines_page/components/failure_widget/pipeline_failed_jobs_widget.vue';
+import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
 import PipelineOperations from '../pipelines_page/components/pipeline_operations.vue';
 import PipelineTriggerer from '../pipelines_page/components/pipeline_triggerer.vue';
 import PipelineUrl from '../pipelines_page/components/pipeline_url.vue';
@@ -38,8 +38,8 @@ export default {
   components: {
     GlSkeletonLoader,
     GlTableLite,
-    LegacyPipelineMiniGraph,
     PipelineFailedJobsWidget,
+    PipelineMiniGraph,
     PipelineOperations,
     PipelineStatusBadge,
     PipelineTriggerer,
@@ -196,8 +196,9 @@ export default {
       fixed
     >
       <template #head(actions)>
-        <span class="gl-block lg:!gl-hidden">{{ s__('Pipeline|Actions') }}</span>
-        <slot name="table-header-actions"></slot>
+        <slot name="table-header-actions">
+          <span class="gl-block gl-text-right">{{ s__('Pipeline|Actions') }}</span>
+        </slot>
       </template>
 
       <template #table-colgroup="{ fields }">
@@ -250,11 +251,11 @@ export default {
             <rect height="20" rx="10" ry="10" :width="cellWidth('stages')" />
           </gl-skeleton-loader>
         </div>
-        <legacy-pipeline-mini-graph
+        <pipeline-mini-graph
           v-else
           :downstream-pipelines="getDownstreamPipelines(item)"
           :pipeline-path="item.path"
-          :stages="getStages(item)"
+          :pipeline-stages="getStages(item)"
           :upstream-pipeline="item.triggered_by"
           @miniGraphStageClick="trackPipelineMiniGraph"
         />
@@ -278,7 +279,6 @@ export default {
       <template #row-details="{ item }">
         <pipeline-failed-jobs-widget
           v-if="displayFailedJobsWidget(item)"
-          :is-pipeline-active="item.active"
           :pipeline-iid="item.iid"
           :pipeline-path="item.path"
           :project-path="getProjectPath(item)"

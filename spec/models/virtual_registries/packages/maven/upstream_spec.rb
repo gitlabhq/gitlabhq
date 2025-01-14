@@ -231,4 +231,20 @@ RSpec.describe VirtualRegistries::Packages::Maven::Upstream, type: :model, featu
 
     it { is_expected.not_to include('username', 'password') }
   end
+
+  describe '#default_cached_responses' do
+    let_it_be(:upstream) { create(:virtual_registries_packages_maven_upstream) }
+
+    let_it_be(:default_cached_response) do
+      create(:virtual_registries_packages_maven_cached_response, upstream: upstream)
+    end
+
+    let_it_be(:pending_destruction_cached_response) do
+      create(:virtual_registries_packages_maven_cached_response, :pending_destruction, upstream: upstream)
+    end
+
+    subject { upstream.default_cached_responses }
+
+    it { is_expected.to contain_exactly(default_cached_response) }
+  end
 end

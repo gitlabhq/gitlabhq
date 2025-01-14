@@ -1,3 +1,4 @@
+import { GRAY_100 } from '@gitlab/ui/src/tokens/build/js/tokens';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SectionedPercentageBar from '~/usage_quotas/components/sectioned_percentage_bar.vue';
 
@@ -97,5 +98,89 @@ describe('SectionedPercentageBar', () => {
     expect(
       section4.find(`[data-testid="${LEGEND_SECTION_COLOR_TESTID}"]`).attributes('style'),
     ).toBe('background-color: rgb(78, 127, 14);');
+  });
+
+  describe('hiding labels', () => {
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          sections: [
+            {
+              id: SECTION_1,
+              label: 'Section 1',
+              value: 20,
+              formattedValue: '20',
+              hideLabel: true,
+            },
+            {
+              id: SECTION_2,
+              label: 'Section 2',
+              value: 40,
+              formattedValue: '40',
+            },
+          ],
+        },
+      });
+    });
+
+    it('hides the label when hideLabel=true', () => {
+      const section1 = wrapper.findByTestId(PERCENTAGE_BAR_SECTION_TESTID_PREFIX + SECTION_1);
+      expect(section1.find(`[data-testid="${LEGEND_SECTION_COLOR_TESTID}"]`).exists()).toBe(false);
+    });
+
+    it('does not hide the label when hideLabel=false', () => {
+      const section2 = wrapper.findByTestId(
+        PERCENTAGE_BAR_LEGEND_SECTION_TESTID_PREFIX + SECTION_2,
+      );
+      expect(section2.find(`[data-testid="${LEGEND_SECTION_COLOR_TESTID}"]`).exists()).toBe(true);
+    });
+  });
+
+  describe('custom colors', () => {
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          sections: [
+            {
+              id: SECTION_1,
+              label: 'Section 1',
+              value: 20,
+              formattedValue: '20',
+              color: GRAY_100,
+            },
+            {
+              id: SECTION_2,
+              label: 'Section 2',
+              value: 40,
+              formattedValue: '40',
+            },
+          ],
+        },
+      });
+    });
+
+    it('uses the custom color in the percentage bar', () => {
+      const section1PercentageBar = wrapper.findByTestId(
+        PERCENTAGE_BAR_SECTION_TESTID_PREFIX + SECTION_1,
+      );
+      expect(section1PercentageBar.attributes('style')).toContain(
+        'background-color: rgb(220, 220, 222);',
+      );
+    });
+
+    it('uses the custom color in the legend', () => {
+      const section1Legend = wrapper.findByTestId(
+        PERCENTAGE_BAR_LEGEND_SECTION_TESTID_PREFIX + SECTION_1,
+      );
+
+      expect(
+        section1Legend.find(`[data-testid="${LEGEND_SECTION_COLOR_TESTID}"]`).attributes('style'),
+      ).toBe('background-color: rgb(220, 220, 222);');
+    });
+
+    it('falls back to the palette color when not specified', () => {
+      const section2 = wrapper.findByTestId(PERCENTAGE_BAR_SECTION_TESTID_PREFIX + SECTION_2);
+      expect(section2.attributes('style')).toContain('background-color: rgb(177, 79, 24);');
+    });
   });
 });

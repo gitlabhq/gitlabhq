@@ -3,7 +3,6 @@
 class CreatePCiBuildTraceMetadata < Gitlab::Database::Migration[2.2]
   milestone '17.4'
 
-  # rubocop:disable Migration/EnsureFactoryForTable -- No factory needed
   def change
     create_table(:p_ci_build_trace_metadata, primary_key: [:build_id, :partition_id],
       options: 'PARTITION BY LIST (partition_id)', if_not_exists: true) do |t|
@@ -19,5 +18,4 @@ class CreatePCiBuildTraceMetadata < Gitlab::Database::Migration[2.2]
       t.index :trace_artifact_id
     end
   end
-  # rubocop:enable Migration/EnsureFactoryForTable -- No factory needed
 end

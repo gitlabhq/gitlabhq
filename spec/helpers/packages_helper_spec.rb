@@ -380,7 +380,7 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
       it 'returns the correct data' do
         is_expected.to include(
           can_delete_packages: 'true',
-          settings_path: project_settings_packages_and_registries_path(project)
+          settings_path: project_settings_packages_and_registries_path(project, anchor: 'package-registry-settings')
         )
       end
     end

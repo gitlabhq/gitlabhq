@@ -8,11 +8,14 @@ module Gitlab
           attr_reader :error_message
 
           def initialize(error_message = '')
-            super
             @error_message = error_message
+
+            super(build_message)
           end
 
-          def message
+          private
+
+          def build_message
             "Repository Backup/Restore failed. #{error_message}"
           end
         end

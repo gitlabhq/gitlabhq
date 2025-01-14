@@ -9,6 +9,8 @@ module QA
         #
         class ServicePingDisabled < Test::Instance::All
           tags :service_ping_disabled
+
+          pipeline_mappings test_on_omnibus: %w[service-ping-disabled]
         end
       end
     end

@@ -5,11 +5,11 @@ module Ci
     class AddGroupService < ::BaseService
       include EditScopeValidations
 
-      def execute(target_group, policies: [])
+      def execute(target_group, default_permissions: true, policies: [])
         validate_source_project_and_target_group_access!(project, target_group, current_user)
 
         link = allowlist
-          .add_group!(target_group, policies: policies, user: current_user)
+          .add_group!(target_group, default_permissions: default_permissions, policies: policies, user: current_user)
 
         ServiceResponse.success(payload: { group_link: link })
 

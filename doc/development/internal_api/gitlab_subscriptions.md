@@ -634,12 +634,12 @@ Example response:
 These endpoints have been [migrated to internal endpoints](https://gitlab.com/gitlab-org/gitlab/-/issues/463741). Now, they are
 deprecated and will be [removed in a future milestone](https://gitlab.com/gitlab-org/gitlab/-/issues/473625).
 
-### [DEPRECATED] Add-On Purchases
+### Add-On Purchases (deprecated)
 
 This API is used by CustomersDot to manage add-on purchases, excluding Compute Minutes
 and Storage packs.
 
-#### [DEPRECATED] Create a subscription add-on purchase
+#### Create a subscription add-on purchase (deprecated)
 
 Use a POST command to create a subscription add-on purchase.
 
@@ -676,7 +676,7 @@ Example response:
 }
 ```
 
-#### [DEPRECATED] Update a subscription add-on purchase
+#### Update a subscription add-on purchase (deprecated)
 
 Use a PUT command to update an existing subscription add-on purchase.
 
@@ -713,7 +713,7 @@ Example response:
 }
 ```
 
-#### [DEPRECATED] Fetch a subscription add-on purchases
+#### Fetch a subscription add-on purchases (deprecated)
 
 Use a GET command to view an existing subscription add-on purchase.
 
@@ -742,14 +742,14 @@ Example response:
 }
 ```
 
-### [DEPRECATED] Compute quota provisioning
+### Compute quota provisioning (deprecated)
 
 > - [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" and "compute minutes" in GitLab 16.1.
 
 The compute quota endpoints are used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`)
 to apply additional packs of compute minutes, for personal namespaces or top-level groups in GitLab.com.
 
-#### [DEPRECATED] Create an additional pack
+#### Create an additional pack (deprecated)
 
 Use a POST command to create additional packs.
 
@@ -795,7 +795,7 @@ Example response:
 ]
 ```
 
-#### [DEPRECATED] Move additional packs
+#### Move additional packs (deprecated)
 
 Use a `PATCH` command to move additional packs from one namespace to another.
 
@@ -824,13 +824,13 @@ Example response:
 }
 ```
 
-### [DEPRECATED] Subscriptions
+### Subscriptions (deprecated)
 
 The subscription endpoints are used by
 [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`) to
 apply subscriptions (including trials) to personal namespaces, or top-level groups on GitLab.com.
 
-#### [DEPRECATED] Create a subscription
+#### Create a subscription (deprecated)
 
 Use a POST command to create a subscription.
 
@@ -881,7 +881,7 @@ Example response:
 }
 ```
 
-#### [DEPRECATED] Update a subscription
+#### Update a subscription (deprecated)
 
 Use a PUT command to update an existing subscription.
 
@@ -932,7 +932,7 @@ Example response:
 }
 ```
 
-#### [DEPRECATED] Fetch a subscription
+#### Fetch a subscription (deprecated)
 
 Use a GET command to view an existing subscription.
 

@@ -7,6 +7,6 @@ RSpec.shared_context 'a GitHub-ish import controller' do
 
   before do
     sign_in(user)
-    stub_application_setting(import_sources: [provider])
+    stub_application_setting(import_sources: [provider.to_s])
   end
 end

@@ -1,16 +1,23 @@
-import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ReviewBar from '~/batch_comments/components/review_bar.vue';
 import { REVIEW_BAR_VISIBLE_CLASS_NAME } from '~/batch_comments/constants';
+import toast from '~/vue_shared/plugins/global_toast';
 import createStore from '../create_batch_comments_store';
+
+jest.mock('~/vue_shared/plugins/global_toast');
 
 describe('Batch comments review bar component', () => {
   let store;
   let wrapper;
 
+  const findDiscardReviewButton = () => wrapper.findByTestId('discard-review-btn');
+  const findDiscardReviewModal = () => wrapper.findByTestId('discard-review-modal');
+
   const createComponent = (propsData = {}) => {
     store = createStore();
 
-    wrapper = shallowMount(ReviewBar, {
+    wrapper = shallowMountExtended(ReviewBar, {
       store,
       propsData,
     });
@@ -34,5 +41,41 @@ describe('Batch comments review bar component', () => {
     wrapper.destroy();
 
     expect(document.body.classList.contains(REVIEW_BAR_VISIBLE_CLASS_NAME)).toBe(false);
+  });
+
+  describe('when discarding a review', () => {
+    it('shows modal when clicking discard button', async () => {
+      createComponent();
+
+      expect(findDiscardReviewModal().props('visible')).toBe(false);
+
+      findDiscardReviewButton().vm.$emit('click');
+
+      await nextTick();
+
+      expect(findDiscardReviewModal().props('visible')).toBe(true);
+    });
+
+    it('calls discardReviews when primary action on modal is triggered', () => {
+      createComponent();
+
+      const dispatchSpy = jest.spyOn(store, 'dispatch').mockImplementation();
+
+      findDiscardReviewModal().vm.$emit('primary');
+
+      expect(dispatchSpy).toHaveBeenCalledWith('batchComments/discardDrafts', undefined);
+    });
+
+    it('creates a toast message when finished', async () => {
+      createComponent();
+
+      jest.spyOn(store, 'dispatch').mockImplementation();
+
+      findDiscardReviewModal().vm.$emit('primary');
+
+      await nextTick();
+
+      expect(toast).toHaveBeenCalledWith('Review discarded');
+    });
   });
 });

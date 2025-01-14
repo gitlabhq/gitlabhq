@@ -12,8 +12,6 @@
         .gl-w-full.order-md-1
         = brand_member_guidelines
       .js-invite-group-trigger{ data: { classes: 'md:gl-w-auto gl-w-full', display_text: _('Invite a group') } }
-      - if can_admin_service_accounts?(@group)
-        = render_if_exists 'groups/group_members/create_service_account'
       .js-invite-members-trigger{ data: { variant: 'confirm',
         classes: 'md:gl-w-auto gl-w-full',
         trigger_source: 'group_members_page',

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 This documentation is for GitLab instances where the overall system can be "hardened"
 against common and even not-so-common attacks. It is not designed to completely
@@ -59,7 +59,7 @@ You can adjust the underlying operating system to increase overall security. For
 
 ## NIST 800-53 compliance
 
-You can configure self-managed GitLab to enforce compliance with the NIST 800-53 security standard. For more information, see [NIST 800-53 compliance](hardening_nist_800_53.md).
+You can configure GitLab Self-Managed to enforce compliance with the NIST 800-53 security standard. For more information, see [NIST 800-53 compliance](hardening_nist_800_53.md).
 
 <!-- ## Troubleshooting
 

@@ -12,13 +12,16 @@ module Packages
 
         if duplicates_not_allowed? && current_package_exists_elsewhere?
           return ServiceResponse.error(
-            message: 'A package with the same name already exists in the namespace',
+            message: 'A module with the same name already exists in the namespace.',
             reason: :forbidden
           )
         end
 
         if current_package_version_exists?
-          return ServiceResponse.error(message: 'Package version already exists.', reason: :forbidden)
+          return ServiceResponse.error(
+            message: 'A module with the same name & version already exists in the project.',
+            reason: :forbidden
+          )
         end
 
         package, package_file = ApplicationRecord.transaction { create_terraform_module_package! }
@@ -55,17 +58,16 @@ module Packages
       end
 
       def current_package_exists_elsewhere?
-        ::Packages::Package
+        ::Packages::TerraformModule::Package
           .for_projects(project.root_namespace.all_projects.id_not_in(project.id))
-          .with_package_type(:terraform_module)
           .with_name(name)
           .not_pending_destruction
           .exists?
       end
 
       def current_package_version_exists?
-        project.packages
-          .with_package_type(:terraform_module)
+        ::Packages::TerraformModule::Package
+          .for_projects(project)
           .with_name(name)
           .with_version(params[:module_version])
           .not_pending_destruction

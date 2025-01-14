@@ -13,16 +13,18 @@ module DeployKeys
     def execute
       return empty unless can_admin_project?
 
-      case params[:filter]
-      when :enabled_keys
-        enabled_keys
-      when :available_project_keys
-        available_project_keys
-      when :available_public_keys
-        available_public_keys
-      else
-        empty
-      end
+      keys = case params[:filter]
+             when :enabled_keys
+               enabled_keys
+             when :available_project_keys
+               available_project_keys
+             when :available_public_keys
+               available_public_keys
+             else
+               empty
+             end
+
+      search_keys(keys)
     end
 
     private
@@ -45,6 +47,12 @@ module DeployKeys
 
     def can_admin_project?
       current_user.can?(:admin_project, project)
+    end
+
+    def search_keys(keys)
+      return keys unless params[:search].present?
+
+      keys.search(params[:search], params[:in])
     end
   end
 end

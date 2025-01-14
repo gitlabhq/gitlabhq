@@ -115,6 +115,7 @@ RSpec.describe Users::BuildService, feature_category: :user_management do
             admin: 1,
             avatar: anything,
             bio: 1,
+            bot_namespace: create(:group),
             can_create_group: 1,
             color_scheme_id: 1,
             color_mode_id: 1,

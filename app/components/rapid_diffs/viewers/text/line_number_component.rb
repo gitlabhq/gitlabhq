@@ -4,15 +4,16 @@ module RapidDiffs
   module Viewers
     module Text
       class LineNumberComponent < ViewComponent::Base
-        def initialize(diff_file:, line:, position:, border: nil)
-          @diff_file = diff_file
+        def initialize(line:, position:, file_hash:, file_path:, border: nil)
           @line = line
           @position = position
+          @file_hash = file_hash
+          @file_path = file_path
           @border = border
         end
 
         def id
-          @line.id(@diff_file.file_hash, @position)
+          @line.id(@file_hash, @position)
         end
 
         def line_number
@@ -20,7 +21,7 @@ module RapidDiffs
         end
 
         def legacy_id
-          @diff_file.line_code(@line)
+          @line.legacy_id(@file_path)
         end
 
         def change_type

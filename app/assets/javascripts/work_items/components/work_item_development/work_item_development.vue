@@ -6,6 +6,8 @@ import { s__, __ } from '~/locale';
 import { findWidget } from '~/issues/list/utils';
 
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import workItemDevelopmentQuery from '~/work_items/graphql/work_item_development.query.graphql';
+import workItemDevelopmentUpdatedSubscription from '~/work_items/graphql/work_item_development.subscription.graphql';
 import {
   sprintfWorkItem,
   WIDGET_TYPE_DEVELOPMENT,
@@ -78,6 +80,7 @@ export default {
     return {
       error: undefined,
       workItem: {},
+      workItemDevelopment: {},
       showCreateBranchAndMrModal: false,
       showBranchFlow: true,
       showMergeRequestFlow: false,
@@ -95,16 +98,18 @@ export default {
     workItemTypeName() {
       return this.workItem?.workItemType?.name;
     },
-    workItemDevelopment() {
-      return findWidget(WIDGET_TYPE_DEVELOPMENT, this.workItem);
-    },
     isLoading() {
-      return this.$apollo.queries.workItem.loading;
+      return (
+        this.$apollo.queries.workItem.loading || this.$apollo.queries.workItemDevelopment.loading
+      );
     },
     willAutoCloseByMergeRequest() {
       return this.workItemDevelopment?.willAutoCloseByMergeRequest;
     },
-    linkedMergeRequests() {
+    relatedMergeRequests() {
+      return this.workItemDevelopment?.relatedMergeRequests?.nodes || [];
+    },
+    closingMergeRequests() {
       return this.workItemDevelopment?.closingMergeRequests?.nodes || [];
     },
     featureFlags() {
@@ -119,18 +124,19 @@ export default {
     isRelatedDevelopmentListEmpty() {
       return (
         !this.error &&
-        this.linkedMergeRequests.length === 0 &&
+        this.relatedMergeRequests.length === 0 &&
+        this.closingMergeRequests.length === 0 &&
         this.featureFlags.length === 0 &&
         this.relatedBranches.length === 0
       );
     },
     showAutoCloseInformation() {
       return (
-        this.linkedMergeRequests.length > 0 && this.willAutoCloseByMergeRequest && !this.isLoading
+        this.closingMergeRequests.length > 0 && this.willAutoCloseByMergeRequest && !this.isLoading
       );
     },
     openStateText() {
-      return this.linkedMergeRequests.length > 1
+      return this.closingMergeRequests.length > 1
         ? sprintfWorkItem(this.$options.i18n.openStateText, this.workItemTypeName)
         : sprintfWorkItem(
             this.$options.i18n.openStateWithOneMergeRequestText,
@@ -147,7 +153,7 @@ export default {
       return this.glFeatures.workItemsAlpha;
     },
     showAddButton() {
-      return this.workItemsAlphaEnabled && this.canUpdate && this.showCreateOptions;
+      return this.canUpdate && this.showCreateOptions;
     },
     isConfidentialWorkItem() {
       return this.workItem?.confidential;
@@ -202,6 +208,35 @@ export default {
       error(e) {
         this.$emit('error', this.$options.i18n.fetchError);
         this.error = e.message || this.$options.i18n.fetchError;
+      },
+    },
+    workItemDevelopment: {
+      query: workItemDevelopmentQuery,
+      variables() {
+        return {
+          id: this.workItemId,
+        };
+      },
+      update(data) {
+        return findWidget(WIDGET_TYPE_DEVELOPMENT, data?.workItem) || {};
+      },
+      skip() {
+        return !this.workItemIid;
+      },
+      error(e) {
+        this.$emit('error', this.$options.i18n.fetchError);
+        this.error = e.message || this.$options.i18n.fetchError;
+      },
+      subscribeToMore: {
+        document: workItemDevelopmentUpdatedSubscription,
+        variables() {
+          return {
+            id: this.workItem.id,
+          };
+        },
+        skip() {
+          return !this.workItem?.id;
+        },
       },
     },
   },

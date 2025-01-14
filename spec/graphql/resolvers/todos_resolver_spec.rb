@@ -120,6 +120,32 @@ RSpec.describe Resolvers::TodosResolver, feature_category: :notifications do
 
         expect(todos).to contain_exactly(todo4, todo5)
       end
+
+      context 'when filtering by is_snoozed' do
+        let_it_be(:new_user) { create(:user) }
+
+        let_it_be(:todo1) { create(:todo, user: new_user, project: project) }
+        let_it_be(:todo2) { create(:todo, user: new_user, snoozed_until: 1.month.from_now, project: project) }
+        let_it_be(:todo3) { create(:todo, user: new_user, snoozed_until: 1.hour.from_now, project: project) }
+
+        it 'only returns snoozed todos' do
+          todos = resolve_todos(args: { is_snoozed: true, sort: 'CREATED_ASC' }, context: { current_user: new_user })
+
+          expect(todos.items).to eq([todo2, todo3])
+        end
+
+        context 'when todos_snoozing feature flag is disabled' do
+          before do
+            stub_feature_flags(todos_snoozing: false)
+          end
+
+          it 'ignores the is_snoozed filter' do
+            todos = resolve_todos(args: { is_snoozed: true, sort: 'CREATED_ASC' }, context: { current_user: new_user })
+
+            expect(todos.items).to eq([todo1, todo2, todo3])
+          end
+        end
+      end
     end
 
     context 'when sort is provided' do

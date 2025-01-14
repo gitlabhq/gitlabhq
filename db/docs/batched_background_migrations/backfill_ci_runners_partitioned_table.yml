@@ -3,6 +3,6 @@ migration_job_name: BackfillCiRunnersPartitionedTable
 description: This migration copies runners from ci_runners to the new partitioned ci_runners_e59bb2812d table
 feature_category: runner
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166520
-milestone: '17.6'
-queued_migration_version: 20241023144448
+milestone: '17.8'
+queued_migration_version: 20250103092422
 finalized_by: # version of the migration that finalized this BBM

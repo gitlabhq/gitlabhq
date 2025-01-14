@@ -93,7 +93,7 @@ RSpec.shared_examples 'a new thread email with reply-by-email enabled' do
 
     aggregate_failures do
       is_expected.to have_header('Message-ID', "<#{route_key}@#{host}>")
-      is_expected.to have_header('References', /\A<reply-.*@#{host}>\Z/ )
+      is_expected.to have_header('References', /\A<reply-.*@#{host}>\Z/)
     end
   end
 end
@@ -109,7 +109,7 @@ RSpec.shared_examples 'a thread answer email with reply-by-email enabled' do |gr
     aggregate_failures do
       is_expected.to have_header('Message-ID', /\A<.*@#{host}>\Z/)
       is_expected.to have_header('In-Reply-To', "<#{route_key}@#{host}>")
-      is_expected.to have_header('References', /\A<reply-.*@#{host}> <#{route_key}@#{host}>\Z/ )
+      is_expected.to have_header('References', /\A<reply-.*@#{host}> <#{route_key}@#{host}>\Z/)
       is_expected.to have_subject(/^Re: /)
     end
   end

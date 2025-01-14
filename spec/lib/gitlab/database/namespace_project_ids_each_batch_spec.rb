@@ -29,7 +29,8 @@ RSpec.describe Gitlab::Database::NamespaceProjectIdsEachBatch, feature_category:
   end
 
   context 'when passed an optional resolver' do
-    it 'returns the correct project IDs filtered by resolver' do
+    it 'returns the correct project IDs filtered by resolver',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/497833' do
       resolver = ->(batch) {
         Project.where(id: batch).where(path: [project1.path, project2.path]).pluck_primary_key
       }

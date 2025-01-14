@@ -73,6 +73,7 @@ describe('Work item comment form component', () => {
     hasEmailParticipantsWidget = false,
     canMarkNoteAsInternal = true,
     emailParticipantsResponseHandler = emailParticipantsSuccessHandler,
+    parentId = null,
   } = {}) => {
     workItemResponse = workItemByIidResponseFactory({
       canMarkNoteAsInternal,
@@ -102,6 +103,7 @@ describe('Work item comment form component', () => {
         isDiscussionResolved,
         hasReplies,
         hasEmailParticipantsWidget,
+        parentId,
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
@@ -436,5 +438,11 @@ describe('Work item comment form component', () => {
 
       expect(wrapper.emitted('toggleResolveDiscussion')).toEqual([[]]);
     });
+  });
+
+  it('passes the `parentId` prop down to the `WorkItemStateToggle` component', () => {
+    createComponent({ isNewDiscussion: true, parentId: 'example-id' });
+
+    expect(findWorkItemToggleStateButton().props('parentId')).toBe('example-id');
   });
 });

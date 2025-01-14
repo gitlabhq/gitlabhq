@@ -1,0 +1,13 @@
+---
+description: Tracks when the pipeline link is clicked in the sidebar
+internal_events: true
+action: clicked_deployment_details_pipeline_link
+product_group: environments
+product_categories:
+- deployment_management
+milestone: '17.8'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176004
+tiers:
+- free
+- premium
+- ultimate

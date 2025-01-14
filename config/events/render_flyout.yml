@@ -4,9 +4,6 @@ action: render_badge
 product_group: acquisition
 milestone: '15.9'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111962
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

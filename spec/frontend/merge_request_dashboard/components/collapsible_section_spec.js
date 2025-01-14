@@ -24,6 +24,9 @@ describe('Merge request dashboard collapsible section', () => {
       stubs: {
         CrudComponent,
       },
+      provide: {
+        newListsEnabled: false,
+      },
     });
   }
 

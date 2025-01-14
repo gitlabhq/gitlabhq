@@ -62,6 +62,12 @@ describe('ListPresenter', () => {
     expect(wrapper.find('ul')).toBeDefined();
   });
 
+  it('renders a footer text', () => {
+    createWrapper({ data: MOCK_ISSUES, config: { fields: MOCK_FIELDS } }, mountExtended);
+
+    expect(wrapper.findByTestId('footer').text()).toEqual('View powered by GLQL');
+  });
+
   it('renders a ol if passed as a prop', () => {
     createWrapper({ data: MOCK_ISSUES, config: { fields: MOCK_FIELDS }, listType: 'ol' });
 

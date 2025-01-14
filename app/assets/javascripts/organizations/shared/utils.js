@@ -4,6 +4,7 @@ import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
+import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
 import { SORT_CREATED_AT, SORT_UPDATED_AT } from './constants';
 
 const availableGroupActions = (userPermissions) => {
@@ -46,6 +47,9 @@ export const formatGroups = (groups) =>
       },
     }),
   );
+
+export const formatProjects = (projects) =>
+  formatGraphQLProjects(projects, (project) => ({ editPath: project.organizationEditPath }));
 
 export const timestampType = (sortName) => {
   const SORT_MAP = {

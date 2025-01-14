@@ -14,6 +14,14 @@ export const MOCK_EPIC = {
   reference: '&1',
 };
 
+export const MOCK_MERGE_REQUEST = {
+  __typename: 'MergeRequest',
+  webUrl: 'https://gitlab.com/gitlab-org/gitlab-test/-/merge_requests/1',
+  title: 'Merge request 1',
+  state: 'opened',
+  reference: '!1',
+};
+
 export const MOCK_USER = {
   __typename: 'UserCore',
   id: 'gid://gitlab/User/1',
@@ -88,6 +96,25 @@ export const MOCK_ASSIGNEES = {
       webUrl: 'https://gitlab.com/janedoe',
     },
   ],
+};
+
+export const MOCK_MR_AUTHOR = {
+  ...MOCK_USER,
+  __typename: 'MergeRequestAuthor',
+};
+
+export const MOCK_MR_ASSIGNEES = {
+  nodes: MOCK_ASSIGNEES.nodes.map(({ __typename, ...assignee }) => ({
+    __typename: 'MergeRequestAssignee',
+    ...assignee,
+  })),
+};
+
+export const MOCK_MR_REVIEWERS = {
+  nodes: MOCK_ASSIGNEES.nodes.map(({ __typename, ...assignee }) => ({
+    __typename: 'MergeRequestReviewer',
+    ...assignee,
+  })),
 };
 
 export const MOCK_FIELDS = [

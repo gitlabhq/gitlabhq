@@ -3,6 +3,12 @@
 require './spec/support/sidekiq_middleware'
 
 class Gitlab::Seeder::ComposerPackages
+  attr_reader :organization
+
+  def initialize(organization:)
+    @organization = organization
+  end
+
   def group
     @group ||= Group.find_by(path: 'composer')
 
@@ -10,7 +16,8 @@ class Gitlab::Seeder::ComposerPackages
       @group = Group.create!(
         name: 'Composer',
         path: 'composer',
-        description: FFaker::Lorem.sentence
+        description: FFaker::Lorem.sentence,
+        organization: organization
       )
 
       @group.add_owner(user)
@@ -94,7 +101,8 @@ Gitlab::Seeder.quiet do
 
   Sidekiq::Testing.inline! do
     COMPOSER_PACKAGES.each do |path, versions|
-      project = Gitlab::Seeder::ComposerPackages.new.create_real_project!(path)
+      project = Gitlab::Seeder::ComposerPackages.new(organization: Organizations::Organization.default_organization)
+      project.create_real_project!(path)
 
       versions.each do |version|
         params = {}

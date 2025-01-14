@@ -185,6 +185,24 @@ module Integrations
         updated_at: Time.zone.now
       )
 
+      issue = Issue.new(
+        iid: 1,
+        project_id: project.id,
+        namespace: project.namespace,
+        author: current_user,
+        title: 'REXML ReDoS vulnerability',
+        created_at: Time.zone.now,
+        updated_at: Time.zone.now
+      )
+
+      issue_link = Vulnerabilities::IssueLink.new(
+        project_id: project.id,
+        vulnerability: vulnerability,
+        issue: issue
+      )
+
+      vulnerability.issue_links = [issue_link]
+
       Gitlab::DataBuilder::Vulnerability.build(vulnerability)
     end
 

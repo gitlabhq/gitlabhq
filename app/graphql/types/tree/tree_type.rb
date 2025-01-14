@@ -7,7 +7,7 @@ module Types
       graphql_name 'Tree'
 
       # Complexity 10 as it triggers a Gitaly call on each render
-      field :last_commit, Types::CommitType,
+      field :last_commit, Types::Repositories::CommitType,
         null: true, complexity: 10, calls_gitaly: true, resolver: Resolvers::LastCommitResolver,
         description: 'Last commit for the tree.'
 

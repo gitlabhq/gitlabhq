@@ -31,8 +31,6 @@
   - 1
 - - ai_repository_xray_scan_dependencies
   - 1
-- - ai_store_repository_xray
-  - 1
 - - analytics_code_review_metrics
   - 1
 - - analytics_devops_adoption_create_snapshot
@@ -48,6 +46,8 @@
 - - anti_abuse_trust_score
   - 1
 - - anti_abuse_trust_score_cleanup
+  - 1
+- - app_config_cascade_duo_features_enabled
   - 1
 - - app_sec_container_scanning_scan_image
   - 1
@@ -66,6 +66,14 @@
 - - audit_events_user_impersonation_event_create
   - 1
 - - auth_saml_group_sync
+  - 1
+- - authn_sync_group_scim_identity_record
+  - 1
+- - authn_sync_group_scim_token_record
+  - 1
+- - authn_sync_scim_identity_record
+  - 1
+- - authn_sync_scim_token_record
   - 1
 - - authorized_keys
   - 2
@@ -195,6 +203,8 @@
   - 1
 - - ci_runners_process_runner_version_update
   - 1
+- - ci_runners_update_project_runners_owner
+  - 1
 - - ci_unlock_pipelines_in_queue
   - 1
 - - ci_update_approval_rules_for_related_mrs
@@ -204,8 +214,6 @@
 - - ci_upstream_projects_subscriptions_cleanup
   - 1
 - - ci_user_cancel_pipeline
-  - 1
-- - click_house_audit_event_partition_sync
   - 1
 - - click_house_buffer_sync
   - 1
@@ -386,6 +394,8 @@
 - - gitlab_subscriptions_add_on_purchases_destroy_user_add_on_assignment
   - 1
 - - gitlab_subscriptions_add_on_purchases_email_on_duo_bulk_user_assignments
+  - 1
+- - gitlab_subscriptions_add_on_purchases_ldap_add_on_seat_sync
   - 1
 - - gitlab_subscriptions_add_on_purchases_refresh_user_assignments
   - 1
@@ -579,6 +589,8 @@
   - 1
 - - namespaces_process_sync_events
   - 1
+- - namespaces_remove_dormant_members
+  - 1
 - - namespaces_storage_usage_export
   - 1
 - - namespaces_sync_namespace_name
@@ -671,6 +683,8 @@
   - 1
 - - projects_import_export_create_relation_exports
   - 1
+- - projects_import_export_import_completion_notification
+  - 1
 - - projects_import_export_parallel_project_export
   - 1
 - - projects_import_export_relation_export
@@ -721,6 +735,8 @@
   - 1
 - - remote_mirror_notification
   - 2
+- - repositories_post_receive
+  - 5
 - - repositories_rewrite_history
   - 1
 - - repository_check
@@ -788,6 +804,8 @@
 - - search_zoekt_namespace_indexer
   - 1
 - - search_zoekt_namespace_initial_indexing
+  - 1
+- - search_zoekt_node_with_negative_unclaimed_storage_event
   - 1
 - - search_zoekt_orphaned_index_event
   - 1

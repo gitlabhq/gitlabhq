@@ -9,7 +9,7 @@ description: "Configure external storage, such as a CDN, for static objects in y
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Configure GitLab to serve repository static objects (such as archives or raw blobs) from external
 storage such as a content delivery network (CDN).
@@ -36,7 +36,7 @@ GitLab appends a user-specific token for static object URLs belonging to private
 external storage can be authenticated on the user's behalf.
 
 When processing requests originating
-from the external storage, GitLab checks the following to confirm the user may access the requested
+from the external storage, GitLab checks the following to confirm the user can access the requested
 object:
 
 - The `token` query parameter.

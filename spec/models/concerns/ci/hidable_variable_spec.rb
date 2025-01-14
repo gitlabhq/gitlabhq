@@ -91,9 +91,9 @@ RSpec.describe Ci::HidableVariable, feature_category: :secrets_management do
           it 'does not pass the validation' do
             expected_error_message =
               if stored_hidden == pending_hidden && stored_masked != pending_masked
-                'Updating masked attribute is not allowed on updates for hidden variables.'
+                'The visibility setting cannot be changed for masked and hidden variables.'
               else
-                'Updating hidden attribute is not allowed on updates.'
+                'Only new variables can be set as masked and hidden.'
               end
 
             expect do

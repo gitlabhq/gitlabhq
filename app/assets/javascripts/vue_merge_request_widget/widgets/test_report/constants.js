@@ -17,6 +17,7 @@ export const i18n = {
   fixedHeader: s__('Reports|Fixed'),
   fullReport: s__('Reports|Full report'),
   partialReport: s__('Reports|View partial report'),
+  partialReportTooltipText: s__('Reports|See test results while the pipeline is running'),
 
   noChanges: (bold) => sprintf(s__('Reports|%{no} changed test results'), { no: noText(bold) }),
   resultsString: (combinedString, resolvedString) =>

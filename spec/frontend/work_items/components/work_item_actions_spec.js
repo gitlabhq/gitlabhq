@@ -129,7 +129,7 @@ describe('WorkItemActions component', () => {
     hasChildren = false,
     canCreateRelatedItem = true,
     workItemsBeta = true,
-    isDrawer = false,
+    parentId = null,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemActions, {
       isLoggedIn: isLoggedIn(),
@@ -160,7 +160,7 @@ describe('WorkItemActions component', () => {
         hideSubscribe,
         hasChildren,
         canCreateRelatedItem,
-        isDrawer,
+        parentId,
       },
       mocks: {
         $toast,
@@ -535,8 +535,6 @@ describe('WorkItemActions component', () => {
   });
 
   describe('More actions menu', () => {
-    createComponent();
-
     it('renders the dropdown button', () => {
       createComponent();
 
@@ -623,11 +621,11 @@ describe('WorkItemActions component', () => {
 
       expect(findChangeTypeButton().exists()).toBe(false);
     });
+  });
 
-    it('hides the action in case of drawer', () => {
-      createComponent({ isDrawer: true });
+  it('passes the `parentId` prop down to the `WorkItemStateToggle` component', () => {
+    createComponent({ parentId: 'example-id' });
 
-      expect(findChangeTypeButton().exists()).toBe(false);
-    });
+    expect(findWorkItemToggleOption().props('parentId')).toBe('example-id');
   });
 });

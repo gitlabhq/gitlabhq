@@ -7,9 +7,9 @@ import organizationUpdateResponseWithErrors from 'test_fixtures/graphql/organiza
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ChangeUrl from '~/organizations/settings/general/components/change_url.vue';
 import organizationUpdateMutation from '~/organizations/settings/general/graphql/mutations/organization_update.mutation.graphql';
+import FormErrorsAlert from '~/organizations/shared/components/errors_alert.vue';
 import { createAlert } from '~/alert';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
-import FormErrorsAlert from '~/vue_shared/components/form/errors_alert.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 

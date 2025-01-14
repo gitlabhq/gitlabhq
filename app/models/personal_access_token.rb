@@ -32,8 +32,6 @@ class PersonalAccessToken < ApplicationRecord
 
   attribute :organization_id, default: -> { Organizations::Organization::DEFAULT_ORGANIZATION_ID }
 
-  # PATs are 20 characters + optional configurable settings prefix (0..20)
-  TOKEN_LENGTH_RANGE = (20..40)
   MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS_BUFFERED = 400
   MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS = 365
 
@@ -43,6 +41,8 @@ class PersonalAccessToken < ApplicationRecord
   belongs_to :organization, class_name: 'Organizations::Organization'
   belongs_to :previous_personal_access_token, class_name: 'PersonalAccessToken'
 
+  has_many :last_used_ips, class_name: 'Authn::PersonalAccessTokenLastUsedIp'
+
   after_initialize :set_default_scopes, if: :persisted?
   before_save :ensure_token
 
@@ -51,6 +51,8 @@ class PersonalAccessToken < ApplicationRecord
   scope :expiring_and_not_notified, ->(date) { where(["revoked = false AND expire_notification_delivered = false AND seven_days_notification_sent_at IS NULL AND expires_at >= CURRENT_DATE AND expires_at <= ?", date]) }
   scope :expired_today_and_not_notified, -> { where(["revoked = false AND expires_at = CURRENT_DATE AND after_expiry_notification_delivered = false"]) }
   scope :expired_before, ->(date) { expired.where(arel_table[:expires_at].lt(date)) }
+  scope :expires_before, ->(date) { where(arel_table[:expires_at].lteq(date)) }
+  scope :expires_after, ->(date) { where(arel_table[:expires_at].gteq(date)) }
   scope :inactive, -> { where("revoked = true OR expires_at < CURRENT_DATE") }
   scope :last_used_before_or_unused, ->(date) { where("personal_access_tokens.created_at < :date AND (last_used_at < :date OR last_used_at IS NULL)", date: date) }
   scope :with_impersonation, -> { where(impersonation: true) }

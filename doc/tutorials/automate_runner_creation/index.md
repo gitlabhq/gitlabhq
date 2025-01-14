@@ -69,7 +69,7 @@ The availability of the extended maximum allowable lifetime limit is controlled 
 For more information, see the history.
 
 WARNING:
-Project access tokens are treated as [internal users](../../development/internal_users.md).
+Project access tokens are treated as [internal users](../../administration/internal_users.md).
 If an internal user creates a project access token, that token is able to access
 all projects that have visibility level set to [Internal](../../user/public_access.md).
 

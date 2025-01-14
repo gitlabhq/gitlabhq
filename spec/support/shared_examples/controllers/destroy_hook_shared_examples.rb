@@ -14,7 +14,7 @@ RSpec.shared_examples 'Web hook destroyer' do
 
   it 'displays a message about async delete', :aggregate_failures do
     expect_next_instance_of(WebHooks::DestroyService) do |instance|
-      expect(instance).to receive(:execute).with(anything).and_return({ status: :success, async: true } )
+      expect(instance).to receive(:execute).with(anything).and_return({ status: :success, async: true })
     end
 
     delete :destroy, params: params
@@ -25,7 +25,7 @@ RSpec.shared_examples 'Web hook destroyer' do
 
   it 'displays an error if deletion failed', :aggregate_failures do
     expect_next_instance_of(WebHooks::DestroyService) do |instance|
-      expect(instance).to receive(:execute).with(anything).and_return({ status: :error, async: true, message: "failed" } )
+      expect(instance).to receive(:execute).with(anything).and_return({ status: :error, async: true, message: "failed" })
     end
 
     delete :destroy, params: params

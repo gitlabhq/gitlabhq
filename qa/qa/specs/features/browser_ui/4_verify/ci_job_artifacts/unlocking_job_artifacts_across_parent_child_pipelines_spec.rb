@@ -16,6 +16,10 @@ module QA
         project.visit!
       end
 
+      after do
+        runner.remove_via_api!
+      end
+
       context 'without strategy:depend' do
         let(:strategy) { nil }
 
@@ -24,39 +28,30 @@ module QA
             parent_job_name: 'parent_1', parent_script: 'echo parent',
             child_job_name: 'child_1', child_script: 'echo child'
           )
-          Flow::Pipeline.wait_for_latest_pipeline(status: 'Passed')
         end
 
         context 'when latest pipeline family is successful' do
           before do
             update_parent_child_ci_files(
               parent_job_name: 'parent_2', parent_script: 'echo parent',
-              child_job_name: 'child_2', child_script: 'echo child'
+              child_job_name: 'child_2', child_script: 'echo child',
+              pipeline_count: 2, status: 'success'
             )
-            Flow::Pipeline.wait_for_latest_pipeline(status: 'Passed')
           end
 
-          it 'unlocks job artifacts from previous successful pipeline family',
+          it 'unlocks job artifacts from previous successful pipeline family', :aggregate_failures,
             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/395516' do
-            find_job('parent_2').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_locked_artifact
-            end
+            project.visit_job('parent_2')
+            expect_job_to_have_locked_artifact
 
-            find_job('child_2').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_locked_artifact
-            end
+            project.visit_job('child_2')
+            expect_job_to_have_locked_artifact
 
-            find_job('parent_1').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_unlocked_artifact
-            end
+            project.visit_job('parent_1')
+            expect_job_to_have_unlocked_artifact
 
-            find_job('child_1').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_unlocked_artifact
-            end
+            project.visit_job('child_1')
+            expect_job_to_have_unlocked_artifact
           end
         end
 
@@ -64,65 +59,49 @@ module QA
           before do
             update_parent_child_ci_files(
               parent_job_name: 'parent_2', parent_script: 'exit 1',
-              child_job_name: 'child_2', child_script: 'echo child'
+              child_job_name: 'child_2', child_script: 'echo child',
+              pipeline_count: 2, status: 'failed'
             )
-            Flow::Pipeline.wait_for_latest_pipeline(status: 'Failed')
           end
 
-          it 'does not unlock job artifacts from previous successful pipeline family',
+          it 'locks job artifacts from previous successful pipeline family', :aggregate_failures,
             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/396243' do
-            find_job('parent_2').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_locked_artifact
-            end
+            project.visit_job('parent_2')
+            expect_job_to_have_locked_artifact
 
-            find_job('child_2').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_locked_artifact
-            end
+            project.visit_job('child_2')
+            expect_job_to_have_locked_artifact
 
-            find_job('parent_1').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_locked_artifact
-            end
+            project.visit_job('parent_1')
+            expect_job_to_have_locked_artifact
 
-            find_job('child_1').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_locked_artifact
-            end
+            project.visit_job('child_1')
+            expect_job_to_have_locked_artifact
           end
         end
 
-        context 'when latest child pipeline failed' do
+        context 'when latest child pipeline failed and latest parent is successful' do
           before do
             update_parent_child_ci_files(
               parent_job_name: 'parent_2', parent_script: 'echo parent',
-              child_job_name: 'child_2', child_script: 'exit 1'
+              child_job_name: 'child_2', child_script: 'exit 1',
+              pipeline_count: 2, status: 'success'
             )
-            Flow::Pipeline.wait_for_latest_pipeline(status: 'Passed')
           end
 
-          it 'unlocks job artifacts from previous successful pipeline family because the latest parent is successful',
+          it 'unlocks job artifacts from previous successful pipeline family', :aggregate_failures,
             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/396244' do
-            find_job('parent_2').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_locked_artifact
-            end
+            project.visit_job('parent_2')
+            expect_job_to_have_locked_artifact
 
-            find_job('child_2').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_locked_artifact
-            end
+            project.visit_job('child_2')
+            expect_job_to_have_locked_artifact
 
-            find_job('parent_1').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_unlocked_artifact
-            end
+            project.visit_job('parent_1')
+            expect_job_to_have_unlocked_artifact
 
-            find_job('child_1').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_unlocked_artifact
-            end
+            project.visit_job('child_1')
+            expect_job_to_have_unlocked_artifact
           end
         end
       end
@@ -135,39 +114,30 @@ module QA
             parent_job_name: 'parent_1', parent_script: 'echo parent',
             child_job_name: 'child_1', child_script: 'echo child'
           )
-          Flow::Pipeline.wait_for_latest_pipeline(status: 'Passed')
         end
 
         context 'when latest pipeline family is successful' do
           before do
             update_parent_child_ci_files(
               parent_job_name: 'parent_2', parent_script: 'echo parent',
-              child_job_name: 'child_2', child_script: 'echo child'
+              child_job_name: 'child_2', child_script: 'echo child',
+              pipeline_count: 2, status: 'success'
             )
-            Flow::Pipeline.wait_for_latest_pipeline(status: 'Passed')
           end
 
-          it 'unlocks job artifacts from previous successful pipeline family',
+          it 'unlocks job artifacts from previous successful pipeline family', :aggregate_failures,
             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/396245' do
-            find_job('parent_2').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_locked_artifact
-            end
+            project.visit_job('parent_2')
+            expect_job_to_have_locked_artifact
 
-            find_job('child_2').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_locked_artifact
-            end
+            project.visit_job('child_2')
+            expect_job_to_have_locked_artifact
 
-            find_job('parent_1').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_unlocked_artifact
-            end
+            project.visit_job('parent_1')
+            expect_job_to_have_unlocked_artifact
 
-            find_job('child_1').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_unlocked_artifact
-            end
+            project.visit_job('child_1')
+            expect_job_to_have_unlocked_artifact
           end
         end
 
@@ -175,32 +145,24 @@ module QA
           before do
             update_parent_child_ci_files(
               parent_job_name: 'parent_2', parent_script: 'exit 1',
-              child_job_name: 'child_2', child_script: 'echo child'
+              child_job_name: 'child_2', child_script: 'echo child',
+              pipeline_count: 2, status: 'failed'
             )
-            Flow::Pipeline.wait_for_latest_pipeline(status: 'Failed')
           end
 
-          it 'does not unlock job artifacts from previous successful pipeline family',
+          it 'locks job artifacts from previous successful pipeline family', :aggregate_failures,
             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/396246' do
-            find_job('parent_2').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_locked_artifact
-            end
+            project.visit_job('parent_2')
+            expect_job_to_have_locked_artifact
 
-            find_job('child_2').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_locked_artifact
-            end
+            project.visit_job('child_2')
+            expect_job_to_have_locked_artifact
 
-            find_job('parent_1').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_locked_artifact
-            end
+            project.visit_job('parent_1')
+            expect_job_to_have_locked_artifact
 
-            find_job('child_1').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_locked_artifact
-            end
+            project.visit_job('child_1')
+            expect_job_to_have_locked_artifact
           end
         end
 
@@ -208,58 +170,53 @@ module QA
           before do
             update_parent_child_ci_files(
               parent_job_name: 'parent_2', parent_script: 'echo parent',
-              child_job_name: 'child_2', child_script: 'exit 1'
+              child_job_name: 'child_2', child_script: 'exit 1',
+              pipeline_count: 2, status: 'failed'
             )
-            Flow::Pipeline.wait_for_latest_pipeline(status: 'Failed')
           end
 
-          it 'does not unlock job artifacts from previous successful pipeline family',
+          it 'locks job artifacts from previous successful pipeline family', :aggregate_failures,
             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/396248' do
-            find_job('parent_2').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_locked_artifact
-            end
+            project.visit_job('parent_2')
+            expect_job_to_have_locked_artifact
 
-            find_job('child_2').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_locked_artifact
-            end
+            project.visit_job('child_2')
+            expect_job_to_have_locked_artifact
 
-            find_job('parent_1').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_locked_artifact
-            end
+            project.visit_job('parent_1')
+            expect_job_to_have_locked_artifact
 
-            find_job('child_1').visit!
-            Page::Project::Job::Show.perform do |job|
-              expect(job).to have_locked_artifact
-            end
+            project.visit_job('child_1')
+            expect_job_to_have_locked_artifact
           end
         end
       end
 
       private
 
-      def update_parent_child_ci_files(parent_job_name:, parent_script:, child_job_name:, child_script:)
-        original_pipeline_count = pipeline_count
-
+      def update_parent_child_ci_files(
+        parent_job_name:,
+        parent_script:,
+        child_job_name:,
+        child_script:,
+        pipeline_count:,
+        status:
+      )
         create(:commit, project: project, commit_message: 'Update parent and child pipelines CI files.', actions: [
           { action: 'update', **parent_ci_file(parent_job_name, parent_script) },
           { action: 'update', **child_ci_file(child_job_name, child_script) }
         ])
-
-        wait_for_pipeline_creation(original_pipeline_count)
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project, size: pipeline_count)
+        Flow::Pipeline.wait_for_latest_pipeline_to_have_status(project: project, status: status)
       end
 
       def add_parent_child_ci_files(parent_job_name:, parent_script:, child_job_name:, child_script:)
-        original_pipeline_count = pipeline_count
-
         create(:commit, project: project, commit_message: 'Add parent and child pipelines CI files.', actions: [
           { action: 'create', **parent_ci_file(parent_job_name, parent_script) },
           { action: 'create', **child_ci_file(child_job_name, child_script) }
         ])
-
-        wait_for_pipeline_creation(original_pipeline_count)
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+        Flow::Pipeline.wait_for_latest_pipeline_to_have_status(project: project, status: 'success')
       end
 
       def parent_ci_file(job_name, script)
@@ -298,18 +255,16 @@ module QA
         }
       end
 
-      def find_job(job_name)
-        create(:job, project: project, id: project.job_by_name(job_name)[:id])
-      end
-
-      def wait_for_pipeline_creation(original_pipeline_count)
-        Support::Waiter.wait_until(sleep_interval: 1, message: 'Wait for pipeline creation') do
-          pipeline_count > original_pipeline_count
+      def expect_job_to_have_locked_artifact
+        Page::Project::Job::Show.perform do |job|
+          expect(job).to have_locked_artifact
         end
       end
 
-      def pipeline_count
-        project.pipelines.length
+      def expect_job_to_have_unlocked_artifact
+        Page::Project::Job::Show.perform do |job|
+          expect(job).to have_unlocked_artifact
+        end
       end
     end
   end

@@ -9,25 +9,6 @@ RSpec.describe Namespaces::Traversal::Cached, feature_category: :database do
     let_it_be_with_refind(:group) { create(:group, parent: old_parent) }
     let_it_be_with_refind(:subgroup) { create(:group, parent: group) }
 
-    context 'when the namespace_descendants_cache_expiration feature flag is off' do
-      let!(:cache) { create(:namespace_descendants, namespace: group) }
-
-      before do
-        stub_feature_flags(namespace_descendants_cache_expiration: false)
-      end
-
-      it 'does not invalidate the cache' do
-        expect { group.update!(parent: new_parent) }.not_to change { cache.reload.outdated_at }
-      end
-
-      context 'when the group is deleted' do
-        it 'invalidates the cache' do
-          subgroup.destroy!
-          expect { group.destroy! }.not_to change { cache.reload.outdated_at }
-        end
-      end
-    end
-
     context 'when no cached records are present' do
       it 'does nothing' do
         group.parent = new_parent

@@ -20,7 +20,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::Identity::Passthrough, :request_store,
 
       context 'when user has a composite identity' do
         before do
-          allow(primary_user).to receive(:has_composite_identity?).and_return(true)
+          allow(primary_user).to receive(:composite_identity_enforced).and_return(true)
         end
 
         it 'adds composite identity to job payload' do

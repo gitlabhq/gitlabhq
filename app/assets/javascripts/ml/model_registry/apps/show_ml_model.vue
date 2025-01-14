@@ -186,6 +186,9 @@ export default {
     showModelLatestVersion() {
       return Boolean(this.model?.latestVersion);
     },
+    showDefaultExperiment() {
+      return this.model?.defaultExperimentPath;
+    },
   },
   methods: {
     goTo(name) {
@@ -220,6 +223,8 @@ export default {
     latestVersionTitle: s__('MlModelRegistry|Latest version'),
     authorTitle: s__('MlModelRegistry|Publisher'),
     noneText: __('None'),
+    experimentTitle: s__('MlModelRegistry|Experiment'),
+    defaultExperimentPath: s__('MlModelRegistry|Default experiment'),
   },
   modelVersionEntity: MODEL_ENTITIES.modelVersion,
   ROUTE_DETAILS,
@@ -300,7 +305,7 @@ export default {
                 </gl-tab>
                 <gl-tab @click="goTo($options.ROUTE_CANDIDATES)">
                   <template #title>
-                    {{ s__('MlModelRegistry|Version candidates') }}
+                    {{ s__('MlModelRegistry|Runs') }}
                     <gl-badge class="gl-tab-counter-badge">{{ candidateCount }}</gl-badge>
                   </template>
                 </gl-tab>
@@ -324,6 +329,19 @@ export default {
                   {{ model.author.name }}
                 </gl-link>
                 <span v-else>{{ $options.i18n.noneText }}</span>
+              </div>
+            </div>
+            <div v-if="showDefaultExperiment" class="gl-mt-5">
+              <div class="gl-text-lg gl-font-bold" data-testid="sidebar-experiment-title">
+                {{ $options.i18n.experimentTitle }}
+              </div>
+              <div class="gl-pt-2 gl-text-subtle" data-testid="sidebar-experiment-label">
+                <gl-link
+                  data-testid="sidebar-latest-experiment-link"
+                  :href="model.defaultExperimentPath"
+                >
+                  {{ $options.i18n.defaultExperimentPath }}
+                </gl-link>
               </div>
             </div>
             <div class="gl-mt-5">

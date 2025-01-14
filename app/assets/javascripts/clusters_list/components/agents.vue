@@ -6,7 +6,7 @@ import { s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import getAgentsQuery from 'ee_else_ce/clusters_list/graphql/queries/get_agents.query.graphql';
-import { AGENT_FEEDBACK_ISSUE, AGENT_FEEDBACK_KEY } from '../constants';
+import { AGENT_FEEDBACK_ISSUE, AGENT_FEEDBACK_KEY, KAS_DISABLED_ERROR } from '../constants';
 import getTreeList from '../graphql/queries/get_tree_list.query.graphql';
 import { getAgentLastContact, getAgentStatus } from '../clusters_util';
 import AgentEmptyState from './agent_empty_state.vue';
@@ -38,8 +38,12 @@ export default {
       result() {
         this.emitAgentsLoaded();
       },
-      error() {
+      error(error) {
         this.queryErrored = true;
+
+        if (error?.message?.indexOf(KAS_DISABLED_ERROR) >= 0) {
+          this.$emit('kasDisabled', true);
+        }
       },
     },
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
@@ -173,6 +177,8 @@ export default {
           <p>{{ $options.i18n.feedbackBannerText }}</p>
         </gl-banner>
       </local-storage-sync>
+
+      <slot name="alerts"></slot>
 
       <agent-table
         :agents="agentList"

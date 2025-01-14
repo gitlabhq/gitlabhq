@@ -1,17 +1,51 @@
 <script>
 import { GlFormGroup, GlButton, GlFormInput } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import addNamespaceMutation from '../graphql/mutations/inbound_add_group_or_project_ci_job_token_scope.mutation.graphql';
+import editNamespaceMutation from '../graphql/mutations/edit_namespace_job_token_scope.mutation.graphql';
+import PoliciesSelector from './policies_selector.vue';
 
 export default {
-  components: { GlFormGroup, GlButton, GlFormInput },
+  components: { GlFormGroup, GlButton, GlFormInput, PoliciesSelector },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['fullPath'],
+  props: {
+    namespace: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+  },
   data() {
     return {
-      namespacePath: '',
+      targetPath: '',
+      defaultPermissions: true,
+      jobTokenPolicies: [],
       errorMessage: '',
       isSaving: false,
     };
+  },
+  computed: {
+    isPathInputDisabled() {
+      // Disable the path if the form is currently saving or if we're editing a namespace.
+      return this.isSaving || Boolean(this.namespace);
+    },
+    saveButtonText() {
+      return this.namespace ? __('Save') : __('Add');
+    },
+  },
+  watch: {
+    namespace: {
+      immediate: true,
+      handler() {
+        // Update the local data when the namespace changes. This will happen if the form is open and
+        // the user tries to edit another namespace.
+        this.targetPath = this.namespace?.fullPath ?? '';
+        this.defaultPermissions = this.namespace?.defaultPermissions ?? true;
+        this.jobTokenPolicies = this.namespace?.jobTokenPolicies ?? [];
+      },
+    },
   },
   methods: {
     async saveNamespace() {
@@ -19,12 +53,17 @@ export default {
         this.isSaving = true;
         this.errorMessage = '';
 
-        const response = await this.$apollo.mutate({
-          mutation: addNamespaceMutation,
-          variables: { projectPath: this.fullPath, targetPath: this.namespacePath },
-        });
+        const variables = { projectPath: this.fullPath, targetPath: this.targetPath };
 
-        const error = response.data.ciJobTokenScopeAddGroupOrProject.errors[0];
+        if (this.glFeatures.addPoliciesToCiJobToken) {
+          variables.defaultPermissions = this.defaultPermissions;
+          variables.jobTokenPolicies = this.defaultPermissions ? [] : this.jobTokenPolicies;
+        }
+
+        const mutation = this.namespace ? editNamespaceMutation : addNamespaceMutation;
+        const response = await this.$apollo.mutate({ mutation, variables });
+
+        const error = response.data.saveNamespace.errors[0];
         if (error) {
           this.errorMessage = error;
         } else {
@@ -57,23 +96,33 @@ export default {
     >
       <gl-form-input
         id="namespace-input"
-        v-model.trim="namespacePath"
+        v-model.trim="targetPath"
         autofocus
         :state="!errorMessage"
         :placeholder="fullPath"
-        :disabled="isSaving"
+        :disabled="isPathInputDisabled"
         @input="errorMessage = ''"
       />
     </gl-form-group>
 
+    <policies-selector
+      v-if="glFeatures.addPoliciesToCiJobToken"
+      :is-default-permissions-selected="defaultPermissions"
+      :job-token-policies="jobTokenPolicies"
+      :disabled="isSaving"
+      class="gl-mb-6"
+      @update:isDefaultPermissionsSelected="defaultPermissions = $event"
+      @update:jobTokenPolicies="jobTokenPolicies = $event"
+    />
+
     <gl-button
       variant="confirm"
-      :disabled="!namespacePath"
+      :disabled="!targetPath"
       :loading="isSaving"
-      data-testid="add-button"
+      data-testid="submit-button"
       @click="saveNamespace"
     >
-      {{ __('Add') }}
+      {{ saveButtonText }}
     </gl-button>
     <gl-button
       class="gl-ml-3"

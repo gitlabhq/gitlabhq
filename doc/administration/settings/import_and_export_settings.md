@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Settings for import- and export-related features.
 
@@ -203,7 +203,7 @@ The default job limit is:
 
 - For the GitHub importer, 1000.
 - For the Bitbucket Cloud and Bitbucket Server importer, 100. The Bitbucket importers have a low default limit because
-  we haven't yet determined a good default limit. Administrators of self-managed GitLab instances should experiment with
+  we haven't yet determined a good default limit. Administrators of GitLab Self-Managed instances should experiment with
   a higher limit.
 
 To modify this setting:

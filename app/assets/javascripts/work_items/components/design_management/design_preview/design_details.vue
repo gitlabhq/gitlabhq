@@ -3,23 +3,20 @@
 import { GlAlert } from '@gitlab/ui';
 import { isNull } from 'lodash';
 import { createAlert } from '~/alert';
-import { fetchPolicies } from '~/lib/graphql';
 import { Mousetrap } from '~/lib/mousetrap';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { keysFor, ISSUE_CLOSE_DESIGN } from '~/behaviors/shortcuts/keybindings';
 import { updateGlobalTodoCount } from '~/sidebar/utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { ROUTES } from '../../../constants';
 import getDesignQuery from '../graphql/design_details.query.graphql';
-import getLocalDesignQuery from '../graphql/local_design.query.graphql';
 import getWorkItemDesignListQuery from '../graphql/design_collection.query.graphql';
 import createImageDiffNoteMutation from '../graphql/create_image_diff_note.mutation.graphql';
 import repositionImageDiffNoteMutation from '../graphql/reposition_image_diff_note.mutation.graphql';
 import archiveDesignMutation from '../graphql/archive_design.mutation.graphql';
 import {
-  extractDesign,
   extractDiscussions,
   getPageLayoutElement,
-  extractVersions,
   findVersionId,
   repositionImageDiffNoteOptimisticResponse,
 } from '../utils';
@@ -32,10 +29,10 @@ import {
 import {
   DESIGN_DETAIL_LAYOUT_CLASSLIST,
   DESIGN_NOT_FOUND_ERROR,
-  DESIGN_VERSION_NOT_EXIST_ERROR,
   DESIGN_SINGLE_ARCHIVE_ERROR,
   UPDATE_IMAGE_DIFF_NOTE_ERROR,
   DELETE_NOTE_ERROR,
+  DESIGN_VERSION_NOT_EXIST_ERROR,
 } from '../constants';
 import DesignReplyForm from '../design_notes/design_reply_form.vue';
 import DesignPresentation from './design_presentation.vue';
@@ -87,11 +84,15 @@ export default {
       required: false,
       default: () => [],
     },
+    allVersions: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
-      designSource: {},
-      localDesign: {},
+      design: {},
       annotationCoordinates: null,
       errorMessage: '',
       scale: DEFAULT_SCALE,
@@ -101,35 +102,29 @@ export default {
       workItemId: '',
       workItemTitle: '',
       isSidebarOpen: true,
-      allVersions: [],
     };
   },
   apollo: {
-    // If a design is opened and closed, the design is cached by Apollo.
-    // But it will replace the design widget cache of the design list query.
-    // So, while writing the designSource cache, Apollo is not able to find the existing cache
-    // and throws error while writing the cache. This is a known issue.
-    // As a workaround, the local design will help in maintaining the design cache.
-    // https://gitlab.com/gitlab-org/gitlab/-/issues/461539
-    localDesign: {
-      query: getLocalDesignQuery,
-      variables() {
-        return {
-          filenames: [this.$route.params.id],
-          atVersion: this.designsVersion,
-        };
-      },
-    },
-    designSource: {
+    design: {
       query: getDesignQuery,
-      fetchPolicy: fetchPolicies.NO_CACHE,
-      notifyOnNetworkStatusChange: true,
       variables() {
         return this.designVariables;
       },
-      update: (data) => data,
-      result(res) {
-        this.onDesignQueryResult(res);
+      update(data) {
+        const { event, image, imageV432x230 } = data.designManagement.designAtVersion;
+        return {
+          ...data.designManagement.designAtVersion.design,
+          event,
+          image,
+          imageV432x230,
+        };
+      },
+      result({ data }) {
+        if (!data?.designManagement?.designAtVersion?.design) {
+          this.onQueryError(DESIGN_NOT_FOUND_ERROR);
+        } else if (this.$route.query.version && !this.hasValidVersion) {
+          this.onQueryError(DESIGN_VERSION_NOT_EXIST_ERROR);
+        }
       },
       error() {
         this.onQueryError(DESIGN_NOT_FOUND_ERROR);
@@ -137,21 +132,23 @@ export default {
     },
   },
   computed: {
-    isLoading() {
-      return this.$apollo.loading && !this.design.id;
+    designId() {
+      const design = this.allDesigns.find((d) => d.filename === this.$route.params.id);
+      return design?.id;
     },
-    design() {
-      return this.localDesign || {};
+    isLoading() {
+      return this.$apollo.queries.design.loading;
     },
     markdownPreviewPath() {
       return `/${this.fullPath}/-/preview_markdown?target_type=Issue`;
     },
     designVariables() {
+      const versionId = getIdFromGraphQLId(
+        this.hasValidVersion ? this.designsVersion : this.latestVersionId,
+      );
+      const designId = getIdFromGraphQLId(this.designId);
       return {
-        fullPath: this.fullPath,
-        iid: this.iid,
-        filenames: [this.$route.params.id],
-        atVersion: this.designsVersion,
+        id: `gid://gitlab/DesignManagement::DesignAtVersion/${designId}.${versionId}`,
       };
     },
     mutationVariables() {
@@ -233,7 +230,7 @@ export default {
       updateStoreAfterAddImageDiffNote(
         store,
         createImageDiffNote,
-        getLocalDesignQuery,
+        getDesignQuery,
         this.designVariables,
       );
       this.closeCommentForm(data);
@@ -270,39 +267,9 @@ export default {
       return updateStoreAfterRepositionImageDiffNote(
         store,
         repositionImageDiffNote,
-        getLocalDesignQuery,
+        getDesignQuery,
         this.designVariables,
       );
-    },
-    onDesignQueryResult({ data, loading }) {
-      // On the initial load with cache-and-network policy data is undefined while loading is true
-      // To prevent throwing an error, we don't perform any logic until loading is false
-      if (loading) {
-        return;
-      }
-
-      if (!data || !extractDesign(data)) {
-        this.onQueryError(DESIGN_NOT_FOUND_ERROR);
-      } else if (this.$route.query.version && !this.hasValidVersion) {
-        this.onQueryError(DESIGN_VERSION_NOT_EXIST_ERROR);
-      } else {
-        const workItem = data.project.workItems.nodes[0];
-        this.workItemId = workItem.id;
-        this.workItemTitle = workItem.title;
-        this.allVersions = extractVersions(data);
-
-        // Write to the localDesign cache which is separate from designSource when design is opened.
-        this.$apollo.provider.defaultClient.cache.writeQuery({
-          query: getLocalDesignQuery,
-          variables: {
-            filenames: [this.$route.params.id],
-            atVersion: this.designsVersion,
-          },
-          data: {
-            localDesign: extractDesign(data),
-          },
-        });
-      }
     },
     onError(message, e) {
       this.errorMessage = message;
@@ -336,17 +303,12 @@ export default {
       this.resolvedDiscussionsExpanded = newValue;
     },
     updateWorkItemDesignCurrentTodosWidgetCache({ cache, todos }) {
-      // Write the updated todos to the localDesign cache instead of designSource
-      // to maintain it even if a new design is opened.
       updateWorkItemDesignCurrentTodosWidget({
         store: cache,
         todos,
         query: {
-          query: getLocalDesignQuery,
-          variables: {
-            filenames: [this.$route.params.id],
-            atVersion: this.designsVersion,
-          },
+          query: getDesignQuery,
+          variables: this.designVariables,
         },
       });
     },

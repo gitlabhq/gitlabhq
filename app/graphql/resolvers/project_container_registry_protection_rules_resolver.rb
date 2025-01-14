@@ -7,8 +7,6 @@ module Resolvers
     alias_method :project, :object
 
     def resolve(**_args)
-      return [] if Feature.disabled?(:container_registry_protected_containers, project.root_ancestor)
-
       project.container_registry_protection_rules
     end
   end

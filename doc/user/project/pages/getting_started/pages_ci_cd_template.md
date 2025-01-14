@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 GitLab provides `.gitlab-ci.yml` templates for the most popular Static Site Generators (SSGs).
 You can create your own `.gitlab-ci.yml` file from one of these templates, and run

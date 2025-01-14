@@ -33,6 +33,8 @@ export const defaultNamespaceProvideValues = {
   totalRepositorySizeExcess: undefined,
   isUsingProjectEnforcementWithLimits: undefined,
   isUsingProjectEnforcementWithNoLimits: undefined,
+  aboveSizeLimit: undefined,
+  subjectToHighLimit: undefined,
   isUsingNamespaceEnforcement: undefined,
 };
 

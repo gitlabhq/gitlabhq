@@ -1,7 +1,8 @@
-- title: "Compliance pipelines"
-  removal_milestone: "18.0"
-  announcement_milestone: "17.3"
+- title: 'Compliance pipelines'
+  removal_milestone: '18.0'
+  announcement_milestone: '17.3'
   breaking_change: true
+  window: 2
   reporter: khornergit
   stage: Govern
   issue_url: https://gitlab.com/groups/gitlab-org/-/epics/11275

@@ -8,7 +8,6 @@ import { createAlert } from '~/alert';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { __ } from '~/locale';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 import ReviewerDrawer from '~/merge_requests/components/reviewers/reviewer_drawer.vue';
 import eventHub from '../../event_hub';
@@ -36,7 +35,6 @@ export default {
     ApprovalSummary: () =>
       import('ee_component/merge_requests/components/reviewers/approval_summary.vue'),
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     mediator: {
       type: Object,
@@ -192,8 +190,6 @@ export default {
       }
     },
     toggleDrawerOpen(drawerOpen = !this.drawerOpen) {
-      if (!this.glFeatures.reviewerAssignDrawer) return;
-
       this.drawerOpen = drawerOpen;
     },
   },
@@ -210,7 +206,7 @@ export default {
       @request-review="requestReview"
       @remove-reviewer="removeReviewerById"
     />
-    <approval-summary v-if="glFeatures.reviewerAssignDrawer" short-text class="gl-mb-2">
+    <approval-summary short-text class="gl-mb-2">
       <gl-button
         size="small"
         category="tertiary"
@@ -232,7 +228,7 @@ export default {
       @assign-self="reviewBySelf"
       @remove-reviewer="removeReviewerById"
     />
-    <mounting-portal v-if="glFeatures.reviewerAssignDrawer" mount-to="#js-reviewer-drawer-portal">
+    <mounting-portal mount-to="#js-reviewer-drawer-portal">
       <reviewer-drawer
         :open="drawerOpen"
         @request-review="requestReview"

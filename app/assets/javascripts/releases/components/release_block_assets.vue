@@ -136,6 +136,7 @@ export default {
               <gl-link
                 :href="link.directAssetUrl || link.url"
                 class="gl-flex gl-items-center gl-leading-24"
+                data-testid="asset-link"
               >
                 <gl-icon :name="section.iconName" class="gl-mr-2 gl-shrink-0 gl-flex-grow-0" />
                 {{ link.name }}

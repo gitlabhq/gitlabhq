@@ -37,6 +37,7 @@ import {
   STATE_CLOSED,
 } from '../constants';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
+import workItemByIdQuery from './work_item_by_id.query.graphql';
 import getWorkItemTreeQuery from './work_item_tree.query.graphql';
 
 const getNotesWidgetFromSourceData = (draftData) =>
@@ -612,4 +613,47 @@ export const optimisticUserPermissions = {
   adminWorkItemLink: false,
   markNoteAsInternal: false,
   __typename: 'WorkItemPermissions',
+};
+
+export const updateCountsForParent = ({ cache, parentId, workItemType, isClosing }) => {
+  if (!parentId) {
+    return null;
+  }
+
+  const parent = cache.readQuery({
+    query: workItemByIdQuery,
+    variables: {
+      id: parentId,
+    },
+  });
+
+  if (!parent) {
+    return null;
+  }
+
+  const updatedParent = produce(parent, (draft) => {
+    const hierarchyWidget = findHierarchyWidgets(draft.workItem.widgets);
+
+    const counts = hierarchyWidget.rolledUpCountsByType.find(
+      (i) => i.workItemType.name === workItemType,
+    );
+
+    if (isClosing) {
+      counts.countsByState.closed += 1;
+      counts.countsByState.opened -= 1;
+    } else {
+      counts.countsByState.closed -= 1;
+      counts.countsByState.opened += 1;
+    }
+  });
+
+  cache.writeQuery({
+    query: workItemByIdQuery,
+    variables: {
+      id: parentId,
+    },
+    data: updatedParent,
+  });
+
+  return updatedParent;
 };

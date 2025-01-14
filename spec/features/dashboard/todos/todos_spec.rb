@@ -792,6 +792,6 @@ RSpec.describe 'Dashboard Todos (Vue version)', :js, feature_category: :notifica
   end
 
   def expect_tab_nav
-    expect(page).to have_content(/To Do \d+ Done All/)
+    expect(page).to have_content(/To Do \d+ Snoozed Done All/)
   end
 end

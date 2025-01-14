@@ -48,7 +48,6 @@ describe('Pipeline Multi Actions Dropdown', () => {
       path: '/new/download/path-three',
     },
   ];
-  const artifactItemTestId = 'artifact-item';
   const artifactsEndpointPlaceholder = ':pipeline_artifacts_id';
   const artifactsEndpoint = `endpoint/${artifactsEndpointPlaceholder}/artifacts.json`;
   const pipelineId = 108;
@@ -77,7 +76,6 @@ describe('Pipeline Multi Actions Dropdown', () => {
   const findAlert = () => wrapper.findByTestId('artifacts-fetch-error');
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findFirstArtifactItem = () => wrapper.findByTestId(artifactItemTestId);
   const findAllArtifactItemsData = () =>
     findDropdown()
       .props('items')
@@ -182,8 +180,7 @@ describe('Pipeline Multi Actions Dropdown', () => {
         });
 
         it('should render the correct artifact name and path', () => {
-          expect(findFirstArtifactItem().attributes('href')).toBe(artifacts[0].path);
-          expect(findFirstArtifactItem().text()).toBe(artifacts[0].name);
+          expect(findAllArtifactItemsData()).toEqual(artifacts);
         });
 
         describe('when opened again with new artifacts', () => {

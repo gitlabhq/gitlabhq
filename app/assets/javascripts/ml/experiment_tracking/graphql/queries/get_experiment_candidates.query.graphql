@@ -1,0 +1,41 @@
+query getExperimentCandidates(
+  $id: MlExperimentID!
+  $first: Int
+  $last: Int
+  $after: String
+  $before: String
+) {
+  mlExperiment(id: $id) {
+    id
+    candidates(after: $after, before: $before, first: $first, last: $last) {
+      count
+      nodes {
+        id
+        creator {
+          id
+          name
+          webUrl
+          avatarUrl
+        }
+        eid
+        ciJob {
+          id
+          name
+          webPath
+        }
+        name
+        status
+        createdAt
+        _links {
+          showPath
+        }
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        endCursor
+        startCursor
+      }
+    }
+  }
+}

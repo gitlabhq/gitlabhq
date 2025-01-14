@@ -143,7 +143,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
             it 'raises an error' do
               expect { satisfied_by? }.to raise_error(
                 Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
-                "rules:exists:project `invalid/path` is not a valid project path"
+                "rules:exists:project `invalid/path` not found or access denied"
               )
             end
 
@@ -153,7 +153,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
               it 'raises an error' do
                 expect { satisfied_by? }.to raise_error(
                   Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
-                  "rules:exists:project `invalid/path/subdir` is not a valid project path"
+                  "rules:exists:project `invalid/path/subdir` not found or access denied"
                 )
               end
             end
@@ -164,7 +164,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
               it 'raises an error with the variable masked' do
                 expect { satisfied_by? }.to raise_error(
                   Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
-                  "rules:exists:project `invalid/path/[MASKED]xxxx` is not a valid project path"
+                  "rules:exists:project `invalid/path/[MASKED]xxxx` not found or access denied"
                 )
               end
             end
@@ -226,10 +226,10 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
         end
 
         context 'when the user does not have access to the project' do
-          it 'raises an error' do
+          it 'raises an error without leaking information' do
             expect { satisfied_by? }.to raise_error(
               Gitlab::Ci::Build::Rules::Rule::Clause::ParseError,
-              "rules:exists:project access denied to project `#{other_project.full_path}`"
+              "rules:exists:project `#{other_project.full_path}` not found or access denied"
             )
           end
         end

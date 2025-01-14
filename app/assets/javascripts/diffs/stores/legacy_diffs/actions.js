@@ -665,6 +665,10 @@ export function toggleTreeOpen(path) {
   this[types.TOGGLE_FOLDER_OPEN](path);
 }
 
+export function setTreeOpen({ path, opened }) {
+  this[types.SET_FOLDER_OPEN]({ path, opened });
+}
+
 export function setCurrentFileHash(hash) {
   this[types.SET_CURRENT_DIFF_FILE](hash);
 }

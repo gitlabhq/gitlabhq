@@ -8,9 +8,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [beta feature](../../policy/development_stages_support.md) for self-managed GitLab instances.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [beta feature](../../policy/development_stages_support.md) for GitLab Self-Managed.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 17.3.
 
 The metadata database enables many new registry features, including
@@ -287,7 +287,7 @@ Allow enough time for downtime while step two is being executed.
 
    Edit your `/etc/gitlab/gitlab.rb` and add the `maintenance` section to the `registry['storage']`
    configuration. For example, for a `gcs` backed registry using a `gs://my-company-container-registry`
-   bucket , the configuration could be:
+   bucket, the configuration could be:
 
    ```ruby
    ## Object Storage - Container Registry

@@ -254,7 +254,7 @@ module EventsHelper
         event.target_title,
         event_wiki_page_target_url(event),
         title: event.target_title,
-        class: 'has-tooltip event-target-link'
+        class: 'event-target-link'
       )
     end
   end
@@ -266,7 +266,7 @@ module EventsHelper
         event.design.reference_link_text,
         design_url(event.design),
         title: event.target_title,
-        class: 'has-tooltip event-design event-target-link'
+        class: 'event-design event-target-link'
       )
     end
   end
@@ -279,7 +279,7 @@ module EventsHelper
     if event.note_target
       capture do
         concat content_tag(:span, "#{event.note_target_type_name} ", class: "event-target-type #{user_profile_activity_classes}")
-        concat link_to(event.note_target_reference, event_note_target_url(event), title: event.target_title, class: 'has-tooltip event-target-link')
+        concat link_to(event.note_target_reference, event_note_target_url(event), title: event.target_title, class: 'event-target-link')
       end
     else
       content_tag(:strong, '(deleted)')

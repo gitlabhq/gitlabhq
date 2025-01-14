@@ -158,6 +158,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
               put :revoke
               put :rotate
             end
+
+            collection do
+              get :inactive, format: :json
+            end
           end
 
           resource :packages_and_registries, only: [:show] do
@@ -479,7 +483,11 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         namespace :ml do
           resources :experiments, only: [:index, :show, :destroy], controller: 'experiments', param: :iid
-          resources :candidates, only: [:show, :destroy], controller: 'candidates', param: :iid
+          resources :candidates, only: [:show, :destroy], controller: 'candidates', param: :iid do
+            member do
+              get :promote
+            end
+          end
           resources :models, only: [:index, :show, :edit, :destroy, :new], controller: 'models', param: :model_id do
             resources :versions, only: [:new], controller: 'model_versions'
             resources :versions, only: [:show, :edit], controller: 'model_versions', param: :model_version_id
@@ -530,7 +538,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         defaults: { format: 'json' },
         constraints: { template_type: %r{issue|merge_request}, format: 'json' }
 
-      resource :pages, only: [:new, :show, :update, :destroy] do # rubocop: disable Cop/PutProjectRoutesUnderScope
+      resource :pages, only: [:new, :show, :update, :destroy, :regenerate_unique_domain] do # rubocop: disable Cop/PutProjectRoutesUnderScope
+        post :regenerate_unique_domain # rubocop:todo Cop/PutProjectRoutesUnderScope
         resources :domains, except: :index, controller: 'pages_domains', constraints: { id: %r{[^/]+} } do # rubocop: disable Cop/PutProjectRoutesUnderScope
           member do
             post :verify # rubocop:todo Cop/PutProjectRoutesUnderScope

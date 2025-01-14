@@ -133,13 +133,19 @@ export default {
           </div>
           <gl-table-lite :items="component.inputs" :fields="$options.fields">
             <template #cell(name)="{ item }">
-              <code v-if="item.name">{{ item.name }}</code>
+              <code v-if="item.name" data-testid="input-name">{{ item.name }}</code>
+            </template>
+            <template #cell(required)="{ item }">
+              <span data-testid="input-required">{{ item.required }}</span>
             </template>
             <template #cell(type)="{ item }">
-              {{ item.type.toLowerCase() }}
+              <span data-testid="input-type">{{ item.type.toLowerCase() }}</span>
+            </template>
+            <template #cell(description)="{ item }">
+              <span data-testid="input-description">{{ item.description }}</span>
             </template>
             <template #cell(default)="{ item }">
-              <code v-if="item.default">
+              <code v-if="item.default" data-testid="input-default">
                 <gl-truncate :text="item.default" position="end" class="gl-max-w-34" with-tooltip />
               </code>
             </template>

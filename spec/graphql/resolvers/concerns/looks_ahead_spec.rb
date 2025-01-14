@@ -92,10 +92,6 @@ RSpec.describe LooksAhead do
     GRAPHQL
   end
 
-  before_all do
-    stub_feature_flags(epic_and_work_item_associations_unification: false)
-  end
-
   def run_query(gql_query)
     query(GraphQL.parse(gql_query)).result
   end

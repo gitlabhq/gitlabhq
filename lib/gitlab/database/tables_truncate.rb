@@ -15,7 +15,7 @@ module Gitlab
 
       def execute
         raise "Cannot truncate legacy tables in single-db setup" if single_database_setup?
-        raise "database is not supported" unless %w[main ci].include?(database_name)
+        raise "database is not supported" unless %w[main ci sec].include?(database_name)
 
         logger&.info "DRY RUN:" if dry_run
 

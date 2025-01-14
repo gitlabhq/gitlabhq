@@ -182,6 +182,24 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                 expect(non_partitioned_runner.contacted_at).to be_nil
               end
 
+              context 'when project runner is missing sharding_key_id' do
+                let(:params) { { token: 'foo' } }
+                let(:runner) { Ci::Runner.project_type.last }
+                let(:non_partitioned_runner) do
+                  connection.execute(<<~SQL)
+                    INSERT INTO ci_runners(created_at, runner_type, token, sharding_key_id) VALUES(NOW(), 3, 'foo', NULL);
+                  SQL
+
+                  runner
+                end
+
+                it 'returns unprocessable entity status code', :aggregate_failures do
+                  expect { request }.not_to change { Ci::RunnerManager.count }.from(0)
+                  expect(response).to have_gitlab_http_status(:unprocessable_entity)
+                  expect(response.body).to eq({ message: 'Runner is orphaned' }.to_json)
+                end
+              end
+
               private
 
               def partitioned_runner_exists?(runner)

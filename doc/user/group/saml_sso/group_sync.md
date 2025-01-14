@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363084) for self-managed instances in GitLab 15.1.
 
@@ -30,7 +30,7 @@ SAML Group Sync only manages a group if that group has one or more SAML group li
 
 Prerequisites:
 
-- Self-managed GitLab instances must have configured [SAML Group Sync](#configure-saml-group-sync). GitLab.com
+- GitLab Self-Managed instances must have configured [SAML Group Sync](#configure-saml-group-sync). GitLab.com
   instances are already configured for SAML Group Sync, and require no extra configuration.
 
 When SAML is enabled, users with the Owner role see a new menu
@@ -54,9 +54,30 @@ To link the SAML groups:
 1. Select **Save**.
 1. Repeat to add additional group links if required.
 
-![SAML Group Links](img/saml_group_links_v13_9.png)
+![SAML Group Links](img/saml_group_links_v17_8.png)
 
-### Self-managed GitLab with multiple SAML IdPs
+### GitLab Duo seat assignment
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/480766) for GitLab.com in GitLab 17.8 [with a flag](../../../administration/feature_flags.md) named `saml_groups_duo_pro_add_on_assignment`. Disabled by default.
+
+Prerequisites:
+
+- An active [GitLab Duo add-on subscription](../../../subscriptions/subscription-add-ons.md)
+
+SAML Group Sync can manage GitLab Duo seat assignment and removal based on IdP group membership. Seats are only assigned when there are seats remaining in the subscription.  
+
+1. When [configuring a SAML Group Link](#configure-saml-group-links), select the **Assign GitLab Duo seats to users in this group** checkbox.
+1. Select **Save**.
+1. Repeat to add additional group links for all SAML users that should be assigned a GitLab Duo Pro or GitLab Duo Enterprise seat.
+   GitLab Duo seats are unassigned for users whose identity provider group memberships do not match a group link with this setting enabled.
+
+The checkbox does not appear for groups without an active GitLab Duo add-on subscription.
+
+### GitLab Self-Managed with multiple SAML IdPs
 
 When a user signs in, GitLab:
 
@@ -118,7 +139,7 @@ WARNING:
 To prevent users being accidentally removed from the GitLab group, follow these instructions closely before
 enabling Group Sync in GitLab.
 
-To configure SAML Group Sync for **self-managed GitLab instances**:
+To configure SAML Group Sync for GitLab Self-Managed:
 
 1. Configure the [SAML OmniAuth Provider](../../../integration/saml.md).
 1. Ensure your SAML identity provider sends an attribute statement with the same name as the value of the `groups_attribute` setting. See the following provider configuration example in `/etc/gitlab/gitlab.rb` for reference:
@@ -248,7 +269,7 @@ Then the GitLab Group membership is updated according to SAML Group Links.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386390) in GitLab 15.10.
 
@@ -264,13 +285,14 @@ When global group memberships lock is enabled:
   - Share a project with other groups.
 
     NOTE:
-    This limits the use of groups in other product features such as [adding a group as a Code Owner](../../project/codeowners/index.md#add-a-group-as-a-code-owner).
+    You cannot set groups or subgroups as [Code Owners](../../project/codeowners/index.md).
+    The Code Owners feature requires direct group memberships, which are not possible when this lock is enabled.
 
   - Invite members to a project created in a group.
 
 To enable global group memberships lock:
 
-1. [Configure SAML](../../../integration/saml.md) for your self-managed GitLab instance.
+1. [Configure SAML](../../../integration/saml.md) for GitLab Self-Managed.
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.

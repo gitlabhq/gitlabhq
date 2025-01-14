@@ -35,6 +35,14 @@ module QA
           all_elements('ci-resource-link', minimum: 1).last(count).map(&:text)
         end
 
+        def click_resource_link(resource_name)
+          retry_until(reload: true, sleep_interval: 2, max_attempts: 2, message: "Retry for the catalog resource") do
+            has_element?('ci-resource-link', text: resource_name)
+          end
+
+          find_element('ci-resource-link', text: resource_name).click
+        end
+
         private
 
         # Current acceptable options: 'CREATED', 'RELEASED'

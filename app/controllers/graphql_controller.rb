@@ -11,7 +11,8 @@ class GraphqlController < ApplicationController
   # Also, we allow anonymous users to access the API without a CSRF token so that it is easier for users
   # to get started with our GraphQL API.
   skip_before_action :verify_authenticity_token, if: -> {
-    Feature.enabled?(:fix_graphql_csrf, Feature.current_request) && (current_user.nil? || sessionless_user?)
+    Feature.enabled?(:fix_graphql_csrf, Feature.current_request) &&
+      (current_user.nil? || sessionless_user? || !any_mutating_query?)
   }
   skip_before_action :check_two_factor_requirement, if: -> {
     Feature.enabled?(:fix_graphql_csrf, Feature.current_request) && sessionless_user?

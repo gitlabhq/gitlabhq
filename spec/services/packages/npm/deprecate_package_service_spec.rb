@@ -44,15 +44,20 @@ RSpec.describe Packages::Npm::DeprecatePackageService, feature_category: :packag
           package_json.merge('deprecated' => 'old deprecation message'))
       end
 
-      it 'adds or updates the deprecated field' do
+      it 'adds or updates the deprecated field and sets status to `deprecated`' do
         expect { execute }
-          .to change { package_1.reload.npm_metadatum.package_json['deprecated'] }.to('This version is deprecated')
-          .and change { package_2.reload.npm_metadatum.package_json['deprecated'] }
-            .from('old deprecation message').to('This version is deprecated')
+          .to change {
+                package_1.reload.npm_metadatum.package_json['deprecated']
+              }.to('This version is deprecated')
+          .and change {
+                 package_2.reload.npm_metadatum.package_json['deprecated']
+               }.from('old deprecation message').to('This version is deprecated')
+          .and change { package_1.status }.from('default').to('deprecated')
+          .and change { package_2.status }.from('default').to('deprecated')
         expect(execute).to be_success
       end
 
-      it 'executes 5 queries' do
+      it 'executes 8 queries' do
         queries = ActiveRecord::QueryRecorder.new do
           execute
         end
@@ -61,11 +66,30 @@ RSpec.describe Packages::Npm::DeprecatePackageService, feature_category: :packag
         # 2. each_batch upper bound
         # 3. SELECT packages_packages.id, packages_packages.version FROM packages_packages
         # 4. SELECT packages_npm_metadata.* FROM packages_npm_metadata
-        # 5. UPDATE packages_npm_metadata SET package_json =
-        expect(queries.count).to eq(5)
+        # 5. TRANSACTION
+        # 6. INSERT INSERT INTO packages_npm_metadata (...) VALUES (...) DO UPDATE SET ...
+        # 7. UPDATE packages_packages SET status =
+        # 8. TRANSACTION
+        expect(queries.count).to eq(8)
       end
 
       it_behaves_like 'enqueues metadata cache worker'
+
+      context 'when the database error has happened' do
+        let(:exception) { ActiveRecord::ConnectionTimeoutError }
+
+        it 'rolls back previously successfully executed operations' do
+          allow(::Packages::Package).to receive(:id_in).and_raise(exception)
+
+          expect { execute }.to raise_error(exception)
+            .and not_change {
+              package_1.reload.npm_metadatum.package_json['deprecated']
+            }.from(nil)
+            .and not_change {
+              package_2.reload.npm_metadatum.package_json['deprecated']
+            }.from('old deprecation message')
+        end
+      end
     end
 
     context 'when passing deprecated as empty string' do
@@ -74,12 +98,15 @@ RSpec.describe Packages::Npm::DeprecatePackageService, feature_category: :packag
       before do
         package_json = package_1.npm_metadatum.package_json
         package_1.npm_metadatum.update!(package_json: package_json.merge('deprecated' => 'This version is deprecated'))
+        package_1.update!(status: :deprecated)
       end
 
-      it 'removes the deprecation warning', :aggregate_failures do
+      it 'removes the deprecation warning and sets status to `default`', :aggregate_failures do
         expect { execute }
-          .to change { package_1.reload.npm_metadatum.package_json['deprecated'] }
-            .from('This version is deprecated').to(nil)
+          .to change {
+                package_1.reload.npm_metadatum.package_json['deprecated']
+              }.from('This version is deprecated').to(nil)
+          .and change { package_1.status }.from('deprecated').to('default')
         expect(execute).to be_success
       end
 

@@ -14,7 +14,7 @@ RSpec.describe Environments::CreateService, feature_category: :environment_manag
   describe '#execute' do
     subject { service.execute }
 
-    let(:params) { { name: 'production', description: 'description', external_url: 'https://gitlab.com', tier: :production } }
+    let(:params) { { name: 'production', description: 'description', external_url: 'https://gitlab.com', tier: :production, auto_stop_setting: :always } }
 
     it 'creates an environment' do
       expect { subject }.to change { ::Environment.count }.by(1)
@@ -28,6 +28,7 @@ RSpec.describe Environments::CreateService, feature_category: :environment_manag
       expect(response.payload[:environment].description).to eq('description')
       expect(response.payload[:environment].external_url).to eq('https://gitlab.com')
       expect(response.payload[:environment].tier).to eq('production')
+      expect(response.payload[:environment].auto_stop_setting).to eq('always')
     end
 
     context 'with a cluster agent' do
@@ -66,8 +67,8 @@ RSpec.describe Environments::CreateService, feature_category: :environment_manag
       end
     end
 
-    context 'when params contain invalid value' do
-      let(:params) { { name: 'production', external_url: 'http://${URL}' } }
+    context 'when params contain invalid values' do
+      let(:params) { { name: 'production', external_url: 'http://${URL}', kubernetes_namespace: "invalid" } }
 
       it 'does not create an environment' do
         expect { subject }.not_to change { ::Environment.count }
@@ -77,7 +78,24 @@ RSpec.describe Environments::CreateService, feature_category: :environment_manag
         response = subject
 
         expect(response).to be_error
-        expect(response.message).to match_array("External url URI is invalid")
+        expect(response.message).to match_array(["External url URI is invalid",
+          "Kubernetes namespace cannot be set without a cluster agent"])
+        expect(response.payload[:environment]).to be_nil
+      end
+    end
+
+    context 'when params contain invalid auto_stop_setting' do
+      let(:params) { { name: 'production', auto_stop_setting: :invalid } }
+
+      it 'does not create an environment' do
+        expect { subject }.not_to change { ::Environment.count }
+      end
+
+      it 'returns an error' do
+        response = subject
+
+        expect(response).to be_error
+        expect(response.message).to match_array("'invalid' is not a valid auto_stop_setting")
         expect(response.payload[:environment]).to be_nil
       end
     end

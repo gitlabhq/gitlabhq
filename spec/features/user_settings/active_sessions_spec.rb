@@ -119,20 +119,4 @@ RSpec.describe 'Profile > Active Sessions', :clean_gitlab_redis_shared_state, fe
       expect(page).to have_content('You need to sign in or sign up before continuing.')
     end
   end
-
-  it 'load_raw_session does load known attributes only' do
-    new_session = ActiveSession.send(:load_raw_session,
-      'v2:{"ip_address": "127.0.0.1", "browser": "Firefox", "os": "Debian",' \
-      '"device_type": "desktop", "session_id": "8f62cc7383c",' \
-      '"new_attribute": "unknown attribute"}'
-    )
-
-    expect(new_session).to have_attributes(
-      ip_address: "127.0.0.1",
-      browser: "Firefox",
-      os: "Debian",
-      device_type: "desktop",
-      session_id: "8f62cc7383c"
-    )
-  end
 end

@@ -48,7 +48,7 @@ module Types
     field :author, Types::UserType, null: true,
       description: 'User that created the release.'
 
-    field :commit, Types::CommitType, null: true,
+    field :commit, Types::Repositories::CommitType, null: true,
       complexity: 10, calls_gitaly: true,
       description: 'Commit associated with the release.'
 

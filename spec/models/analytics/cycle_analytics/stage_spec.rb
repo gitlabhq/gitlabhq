@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Analytics::CycleAnalytics::Stage, feature_category: :value_stream_management do
-  let_it_be(:default_organization) { create(:organization, :default) }
-  let_it_be(:group) { create(:group, organization: default_organization) }
+  let_it_be(:organization) { create(:organization) }
+  let_it_be(:group) { create(:group, organization: organization) }
 
   describe 'validations' do
     subject { build(:cycle_analytics_stage, namespace: group) }

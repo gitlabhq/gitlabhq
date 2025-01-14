@@ -11,7 +11,7 @@ import {
   RENEW_SECRET_SUCCESS,
   WARNING_NO_SECRET,
 } from '~/oauth_application/constants';
-import InputCopyToggleVisibility from '~/vue_shared/components/form/input_copy_toggle_visibility.vue';
+import InputCopyToggleVisibility from '~/vue_shared/components/input_copy_toggle_visibility/input_copy_toggle_visibility.vue';
 
 jest.mock('~/alert');
 const mockEvent = { preventDefault: jest.fn() };

@@ -291,7 +291,7 @@ RSpec::Matchers.define :issue_same_number_of_queries_as do |expected|
     @expected_count ||= if expected.is_a?(ActiveRecord::QueryRecorder)
                           query_recorder_count(expected)
                         else
-                          ActiveRecord::QueryRecorder.new(&block_arg).count
+                          ActiveRecord::QueryRecorder.new(skip_cached: skip_cached, &block_arg).count
                         end
   end
 

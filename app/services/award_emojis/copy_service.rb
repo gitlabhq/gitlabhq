@@ -17,7 +17,12 @@ module AwardEmojis
       from_awardable.award_emoji.find_each do |award|
         new_award = award.dup
         new_award.awardable = to_awardable
-        new_award.save!
+        # In some instances when an awardable has a custom emoji and is being moved to a namespace where this
+        # emoji does not exist the save! will raise a validation exception.
+        # see `AwardEmoji`: validates :name, presence: true, 'gitlab/emoji_name': true
+        #
+        # We can skip copying custom emoji for now: https://gitlab.com/gitlab-org/gitlab/-/issues/501193#note_2186334353
+        new_award.save! if new_award.valid?
       end
 
       ServiceResponse.success

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed
+**Offering:** GitLab.com, GitLab Self-Managed
 
 By default, Service Desk is active in new projects.
 If it's not active, you can do it in the project's settings.
@@ -128,7 +128,7 @@ To keep your emails on brand, you can create a custom new note email template. T
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344819) in GitLab 15.9.
 
@@ -511,7 +511,7 @@ To configure a custom Service Desk email address with Microsoft 365:
 #### Configure a Microsoft 365 account
 
 First, you must create and configure a Microsoft 365 account.
-In this guide, use a licensed user for the custom email mailbox. 
+In this guide, use a licensed user for the custom email mailbox.
 You can also experiment with other configuration options.
 
 In [Microsoft 365 admin center](https://admin.microsoft.com/Adminportal/Home#/homepage):
@@ -601,7 +601,7 @@ In [Microsoft 365 admin center](https://admin.microsoft.com/Adminportal/Home#/ho
 1. In the drawer select **Mail**.
 1. Below **Email forwarding** select **Manage email forwarding**.
 1. Check **Forward all emails sent to this mailbox**.
-1. Enter the Service Desk address from the custom email form in **Forwarding email address** without the sub-address part. 
+1. Enter the Service Desk address from the custom email form in **Forwarding email address** without the sub-address part.
 1. Select **Save changes**.
 
 Next, [configure a custom email address using a Microsoft 365 account](#configure-custom-email-address-using-a-microsoft-365-account)
@@ -634,7 +634,7 @@ In GitLab:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 You can use an additional alias email address for Service Desk for an instance.
 
@@ -1173,7 +1173,7 @@ or completely separately.
 
       ::EndTabs
 
-   1. [Deprecated in GitLab 16.0 and planned for removal in 18.0)](../../../update/deprecations.md#sidekiq-delivery-method-for-incoming_email-and-service_desk_email-is-deprecated):
+   1. [Deprecated in GitLab 16.0 and planned for removal in 19.0)](../../../update/deprecations.md#sidekiq-delivery-method-for-incoming_email-and-service_desk_email-is-deprecated):
       If you experience issues with the `webhook` setup, use `sidekiq` to deliver the email payload directly to GitLab Sidekiq using Redis.
 
       ::Tabs

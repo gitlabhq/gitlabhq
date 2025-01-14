@@ -4,23 +4,23 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reduce Dependency Proxy Storage
+# Reduce dependency proxy storage for container images
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 There's no automatic removal process for blobs. Unless you delete them manually, they're stored
 indefinitely. This page covers several options for clearing unused items from the cache.
 
-## Check Dependency Proxy Storage Use
+## Check dependency proxy storage use
 
-The [**Usage Quotas**](../../storage_usage_quotas.md) page displays storage usage for the dependency proxy.
+The [**Usage Quotas**](../../storage_usage_quotas.md) page displays storage usage for the dependency proxy for container images.
 
 ## Use the API to clear the cache
 
 To reclaim disk space used by image blobs that are no longer needed, use the
-[Dependency Proxy API](../../../api/dependency_proxy.md)
+[dependency proxy API](../../../api/dependency_proxy.md)
 to clear the entire cache. If you clear the cache, the next time a pipeline runs it must pull an
 image or tag from Docker Hub.
 
@@ -31,7 +31,7 @@ image or tag from Docker Hub.
 
 ### Enable cleanup policies from within GitLab
 
-You can enable an automatic time-to-live (TTL) policy for the Dependency Proxy from the user
+You can enable an automatic time-to-live (TTL) policy for the dependency proxy for container images from the user
 interface. To do this, go to your group's **Settings > Packages and registries > Dependency Proxy**
 and enable the setting to automatically clear items from the cache after 90 days.
 

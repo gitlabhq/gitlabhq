@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe API::Ci::SecureFiles, feature_category: :mobile_devops do
   before do
     stub_ci_secure_file_object_storage
-    stub_feature_flags(ci_secure_files_read_only: false)
   end
 
   let_it_be(:maintainer) { create(:user) }
@@ -24,63 +23,6 @@ RSpec.describe API::Ci::SecureFiles, feature_category: :mobile_devops do
   end
 
   describe 'GET /projects/:id/secure_files' do
-    context 'ci_secure_files_read_only feature flag' do
-      context 'when the flag is enabled' do
-        before do
-          stub_feature_flags(ci_secure_files_read_only: true)
-        end
-
-        it 'returns a 503 when attempting to upload a file' do
-          stub_feature_flags(ci_secure_files_read_only: true)
-
-          expect do
-            post api("/projects/#{project.id}/secure_files", maintainer), params: file_params
-          end.not_to change { project.secure_files.count }
-
-          expect(response).to have_gitlab_http_status(:service_unavailable)
-        end
-
-        it 'returns a 200 when downloading a file' do
-          stub_feature_flags(ci_secure_files_read_only: true)
-
-          get api("/projects/#{project.id}/secure_files", developer)
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response).to be_a(Array)
-        end
-      end
-
-      context 'when the feature is disabled at the instance level' do
-        before do
-          stub_config(ci_secure_files: { enabled: false })
-        end
-
-        it 'returns a 403 when attempting to upload a file' do
-          expect do
-            post api("/projects/#{project.id}/secure_files", maintainer), params: file_params
-          end.not_to change { project.secure_files.count }
-
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end
-
-        it 'returns a 403 when downloading a file' do
-          get api("/projects/#{project.id}/secure_files", developer)
-
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end
-      end
-
-      context 'when the flag is disabled' do
-        it 'returns a 201 when uploading a file when the ci_secure_files_read_only feature flag is disabled' do
-          expect do
-            post api("/projects/#{project.id}/secure_files", maintainer), params: file_params
-          end.to change { project.secure_files.count }.by(1)
-
-          expect(response).to have_gitlab_http_status(:created)
-        end
-      end
-    end
-
     context 'authenticated user with admin permissions' do
       it 'returns project secure files' do
         get api("/projects/#{project.id}/secure_files", maintainer)

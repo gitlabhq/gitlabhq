@@ -23,9 +23,7 @@ module API
       end
 
       get 'non_sql_metrics' do
-        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/325534')
-
-        data = Gitlab::Usage::ServicePingReport.for(output: :non_sql_metrics_values)
+        data = ::ServicePing::NonSqlServicePing.for_current_reporting_cycle.pick(:payload) || {}
 
         present data
       end

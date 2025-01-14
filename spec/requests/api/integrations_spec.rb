@@ -59,6 +59,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
       unavailable_integration_names = [
         Integrations::GitlabSlackApplication.to_param,
         Integrations::JiraCloudApp.to_param,
+        Integrations::Prometheus.to_param,
         Integrations::Zentao.to_param
       ]
 

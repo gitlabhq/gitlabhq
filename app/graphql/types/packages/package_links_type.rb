@@ -12,7 +12,7 @@ module Types
       field :web_path, GraphQL::Types::String, null: true, description: 'Path to the package details page.'
 
       def web_path
-        return unless object.default?
+        return unless object.detailed_info?
 
         package_path(object)
       end

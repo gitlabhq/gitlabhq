@@ -7,7 +7,6 @@ exports[`Issue type info popover renders 1`] = `
 >
   <help-icon-stub
     id="reference-1"
-    size="default"
   />
   <gl-popover-stub
     container="popovercontainer"

@@ -39,18 +39,19 @@ module Banzai
           reference_cache.records_per_parent[project][identifier]
         end
 
-        def parent_records(project, identifiers)
-          return [] unless project.design_management_enabled?
+        def parent_records(parent, identifiers)
+          return DesignManagement::Design.none unless parent.is_a?(Project)
+          return DesignManagement::Design.none unless parent.design_management_enabled?
 
           iids        = identifiers.map(&:issue_iid).to_set
-          issues      = project.issues.where(iid: iids).includes(:project, :namespace)
+          issues      = parent.issues.where(iid: iids).includes(:project, :namespace)
           id_for_iid  = issues.index_by(&:iid).transform_values(&:id)
           issue_by_id = issues.index_by(&:id)
 
           designs(identifiers, id_for_iid).each do |d|
             issue = issue_by_id[d.issue_id]
             # optimisation: assign values we have already fetched
-            d.project = project
+            d.project = parent
             d.issue = issue
           end
         end

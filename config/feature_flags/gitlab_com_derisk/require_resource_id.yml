@@ -1,9 +1,0 @@
----
-name: require_resource_id
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463046
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154115
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/465363
-milestone: '17.1'
-group: group::ai framework
-type: gitlab_com_derisk
-default_enabled: false

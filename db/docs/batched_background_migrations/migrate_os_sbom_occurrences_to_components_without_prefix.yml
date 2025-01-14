@@ -1,11 +1,10 @@
 ---
 migration_job_name: MigrateOsSbomOccurrencesToComponentsWithoutPrefix
-description: >-
-  Migrates sbom occurrences that belong to a sbom component
-  which could not be migrated previously because it would
-  conflict with a corrected component that already exists.
+description: Migrates sbom occurrences that belong to a sbom component which could
+  not be migrated previously because it would conflict with a corrected component
+  that already exists.
 feature_category: software_composition_analysis
-introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152585'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152585
 milestone: '17.2'
 queued_migration_version: 20240507152320
-finalized_by:
+finalized_by: '20241226131806'

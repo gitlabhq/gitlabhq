@@ -250,7 +250,7 @@ li.note {
 
 .gitlab-promo {
   a {
-    color: $gray-300;
+    @apply gl-text-disabled;
     margin-right: 30px;
   }
 }
@@ -439,13 +439,12 @@ li.note {
 }
 
 .ref-container {
-  @apply gl-text-link #{!important};
-  background-color: var(--blue-50, $blue-50);
+  color: var(--gl-link-mention-text-color-default) !important;
+  background-color: var(--gl-link-mention-background-color-default);
 }
 
 .commit-sha-container {
-  @apply gl-text-subtle #{!important};
-  background-color: var(--gray-50, $gray-50);
+  @apply gl-bg-strong gl-text-subtle #{!important};
 }
 
 [readonly] {
@@ -462,4 +461,8 @@ copy-code {
   &:focus-within {
     opacity: 1;
   }
+}
+
+.markdown-code-block insert-code-snippet {
+  display: none;
 }

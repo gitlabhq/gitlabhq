@@ -1,13 +1,13 @@
 ---
 stage: Software Supply Chain Security
-group: Anti-Abuse
+group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Arkose Protect
 
 WARNING:
-Arkose Protect is used on GitLab.com and is not supported for self-managed GitLab
+Arkose Protect is used on GitLab.com and is not supported for GitLab Self-Managed
 instances. The following documents the internal requirements for maintaining
 Arkose Protect on GitLab.com. While this feature is theoretically usable in self-managed instances, it
 is not recommended at the moment.
@@ -150,7 +150,7 @@ index 191ae0b5cf82..b2d888b98c95 100644
 ## Additional resources
 
 <!-- markdownlint-disable MD044 -->
-The [Anti-abuse team](https://handbook.gitlab.com/handbook/engineering/development/sec/govern/anti-abuse/#team-members) owns the ArkoseLabs Protect feature. You can join our ArkoseLabs/GitLab collaboration channel on Slack: [#ext-gitlab-arkose](https://gitlab.slack.com/archives/C02SGF6RLPQ).
+The [Anti-abuse team](https://handbook.gitlab.com/handbook/engineering/development/sec/software-supply-chain-security/anti-abuse/#group-members) owns the ArkoseLabs Protect feature. You can join our ArkoseLabs/GitLab collaboration channel on Slack: [#ext-gitlab-arkose](https://gitlab.slack.com/archives/C02SGF6RLPQ).
 <!-- markdownlint-enable MD044 -->
 
 ArkoseLabs also maintains the following resources:

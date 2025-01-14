@@ -5,6 +5,12 @@ require 'spec_helper'
 RSpec.describe SidebarsHelper, feature_category: :navigation do
   include Devise::Test::ControllerHelpers
 
+  let_it_be(:current_organization) { build_stubbed(:organization, name: "Current Organization") }
+
+  before do
+    Current.organization = current_organization
+  end
+
   describe '#sidebar_tracking_attributes_by_object' do
     subject(:tracking_attrs) { helper.sidebar_tracking_attributes_by_object(object) }
 

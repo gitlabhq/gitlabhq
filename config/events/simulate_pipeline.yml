@@ -4,9 +4,6 @@ action: simulate_pipeline
 product_group: pipeline_authoring
 milestone: '15.3'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95141
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

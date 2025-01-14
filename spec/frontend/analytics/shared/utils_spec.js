@@ -1,11 +1,11 @@
 import metricsData from 'test_fixtures/projects/analytics/value_stream_analytics/summary.json';
 import {
-  filterBySearchTerm,
   extractFilterQueryParameters,
   extractPaginationQueryParameters,
+  filterBySearchTerm,
+  generateValueStreamsDashboardLink,
   getDataZoomOption,
   prepareTimeMetricsData,
-  generateValueStreamsDashboardLink,
 } from '~/analytics/shared/utils';
 import { slugify } from '~/lib/utils/text_utility';
 import { objectToQuery } from '~/lib/utils/url_utility';
@@ -216,25 +216,28 @@ describe('prepareTimeMetricsData', () => {
 
 describe('generateValueStreamsDashboardLink', () => {
   it.each`
-    groupPath              | result
-    ${''}                  | ${''}
-    ${'groups/fake-group'} | ${'/groups/fake-group/-/analytics/dashboards/value_streams_dashboard'}
+    namespacePath                | isProjectNamespace | result
+    ${''}                        | ${null}            | ${''}
+    ${'fake-group'}              | ${false}           | ${'/groups/fake-group/-/analytics/dashboards/value_streams_dashboard'}
+    ${'fake-group/fake-project'} | ${true}            | ${'/fake-group/fake-project/-/analytics/dashboards/value_streams_dashboard'}
   `(
-    'generates the dashboard link when groupPath=$groupPath and projectPaths=$projectPaths',
-    ({ groupPath, result }) => {
-      expect(generateValueStreamsDashboardLink(groupPath)).toBe(result);
+    'generates the dashboard link when namespacePath=namespacePath and isProjectNamespace=$isProjectNamespace',
+    ({ namespacePath, isProjectNamespace, result }) => {
+      expect(generateValueStreamsDashboardLink(namespacePath, isProjectNamespace)).toBe(result);
     },
   );
 
-  describe('with a relative url rool set', () => {
+  describe('with a relative url root set', () => {
     beforeEach(() => {
       gon.relative_url_root = '/foobar';
     });
 
-    it('with includes a relative path if one is set', () => {
-      expect(generateValueStreamsDashboardLink('groups/fake-path')).toBe(
-        '/foobar/groups/fake-path/-/analytics/dashboards/value_streams_dashboard',
-      );
+    it.each`
+      namespacePath                | isProjectNamespace | result
+      ${'fake-group'}              | ${false}           | ${'/foobar/groups/fake-group/-/analytics/dashboards/value_streams_dashboard'}
+      ${'fake-group/fake-project'} | ${true}            | ${'/foobar/fake-group/fake-project/-/analytics/dashboards/value_streams_dashboard'}
+    `('includes a relative path if one is set', ({ namespacePath, isProjectNamespace, result }) => {
+      expect(generateValueStreamsDashboardLink(namespacePath, isProjectNamespace)).toBe(result);
     });
   });
 });

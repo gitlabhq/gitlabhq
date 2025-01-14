@@ -9,7 +9,7 @@ description: "How to revert commits or merge requests in a GitLab project."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can revert individual commits or an entire merge request in GitLab.
 

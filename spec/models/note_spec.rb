@@ -128,7 +128,7 @@ RSpec.describe Note, feature_category: :team_planning do
       end
 
       context 'when creating a user note' do
-        subject { build(:note, project: noteable.project, noteable: noteable) }
+        subject { build(:note, project: noteable.project, noteable: noteable.reload) }
 
         it { is_expected.not_to be_valid }
       end
@@ -1082,6 +1082,62 @@ RSpec.describe Note, feature_category: :team_planning do
           it { expect(note.system_note_with_references?).to be_truthy }
         end
       end
+    end
+  end
+
+  describe 'all_referenced_mentionables_allowed?' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:issue) { create(:issue) }
+
+    RSpec.shared_examples 'does not generate N+1 queries for reference parsing' do
+      it 'does not generate N+1 queries for reference parsing', :request_store do
+        ref1 = milestone1.to_reference(issue.project, format: :name, full: true, absolute_path: true)
+        ref2 = milestone2.to_reference(issue.project, format: :name, full: true, absolute_path: true)
+        ref3 = milestone3.to_reference(issue.project, format: :name, full: true, absolute_path: true)
+
+        text = "mentioned in #{ref1}"
+        note = create(:note, :system, noteable: issue, note: text, project: issue.project)
+
+        note.system_note_visible_for?(user)
+
+        text = "mentioned in #{ref1} and #{ref2}"
+        note.update!(note: text)
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          note.system_note_visible_for?(user)
+        end
+
+        text = "mentioned in #{ref1} and #{ref2} and #{ref3}"
+        note.update!(note: text)
+
+        expect do
+          note.system_note_visible_for?(user)
+        end.to issue_same_number_of_queries_as(control).or_fewer
+      end
+    end
+
+    context 'with a project level milestone' do
+      let_it_be(:milestone1) { create(:milestone, project: create(:project, :private)) }
+      let_it_be(:milestone2) { create(:milestone, project: create(:project, :private)) }
+      let_it_be(:milestone3) { create(:milestone, project: create(:project, :private)) }
+      let_it_be(:milestone_event) { create(:resource_milestone_event, issue: issue, milestone: milestone1) }
+      let_it_be(:note) { MilestoneNote.from_event(milestone_event, resource: issue, resource_parent: issue.project) }
+
+      it { expect(note.system_note_visible_for?(user)).to be false }
+
+      it_behaves_like 'does not generate N+1 queries for reference parsing'
+    end
+
+    context 'with a group level milestone' do
+      let_it_be(:milestone1) { create(:milestone, group: create(:group, :private)) }
+      let_it_be(:milestone2) { create(:milestone, group: create(:group, :private)) }
+      let_it_be(:milestone3) { create(:milestone, group: create(:group, :private)) }
+      let_it_be(:milestone_event) { create(:resource_milestone_event, issue: issue, milestone: milestone1) }
+      let_it_be(:note) { MilestoneNote.from_event(milestone_event, resource: issue, resource_parent: issue.project) }
+
+      it { expect(note.system_note_visible_for?(user)).to be false }
+
+      it_behaves_like 'does not generate N+1 queries for reference parsing'
     end
   end
 

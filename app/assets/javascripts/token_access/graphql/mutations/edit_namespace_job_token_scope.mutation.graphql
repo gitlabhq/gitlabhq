@@ -1,0 +1,17 @@
+mutation editNamespaceJobTokenScope(
+  $projectPath: ID!
+  $targetPath: ID!
+  $defaultPermissions: Boolean!
+  $jobTokenPolicies: [CiJobTokenScopePolicies!]!
+) {
+  saveNamespace: ciJobTokenScopeUpdatePolicies(
+    input: {
+      projectPath: $projectPath
+      targetPath: $targetPath
+      defaultPermissions: $defaultPermissions
+      jobTokenPolicies: $jobTokenPolicies
+    }
+  ) {
+    errors
+  }
+}

@@ -5,4 +5,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/28355
 milestone: '13.8'
 type: development
 group: group::personal productivity
-default_enabled: false
+default_enabled: true

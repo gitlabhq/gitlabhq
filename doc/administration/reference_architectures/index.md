@@ -9,10 +9,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
-The GitLab reference architectures provide recommended scalable and elastic deployments as starting points for target loads. They are designed and tested by the
-GitLab Test Platform and Support teams.
+The GitLab reference architectures provide recommended scalable and elastic environment sizes.
 
 ## Available reference architectures
 
@@ -79,6 +78,7 @@ Each architecture is designed to handle specific RPS targets for different types
 Finding out the RPS can depend notably on the specific environment setup and monitoring stack. Some potential options include:
 
 - [GitLab Prometheus](../monitoring/prometheus/index.md#sample-prometheus-queries) with queries like `sum(irate(gitlab_transaction_duration_seconds_count{controller!~'HealthController|MetricsController|'}[1m])) by (controller, action)`.
+- [`get-rps` script](https://gitlab.com/gitlab-com/support/toolbox/dotfiles/-/blob/main/scripts/get-rps.rb?ref_type=heads) from GitLab Support.
 - Other monitoring solutions.
 - Load Balancer statistics.
 
@@ -170,8 +170,13 @@ To determine which architecture to pick for the expected load, see the following
 NOTE:
 Before you select an initial architecture, review this section thoroughly. Consider other factors such as High Availability (HA) or use of large monorepos, as they may impact the choice beyond just RPS or user count.
 
-NOTE:
-After you select an initial reference architecture, you can [scale up and down](#scaling-an-environment) according to your needs if metrics support.
+#### If in doubt, start large, monitor, and then scale down
+
+If you're uncertain about the required environment size, consider starting with a larger size, [monitoring](#monitoring) it, and then [scaling down](#scaling-an-environment) accordingly if the metrics support your situation.
+
+Starting large and then scaling down is a prudent approach when you can't determine RPS, or if the environment load could be atypically higher than expected, mostly due to [large monorepos](#large-monorepos) or notable [additional workloads](#additional-workloads).
+
+For example, if you have 3,000 users but also know that there's automation at play that would significantly increase the concurrent load, then you could start with a 100 RPS / 5k User class environment, monitor it, and if the metrics support it, scale down all components at once or one by one.
 
 ### Standalone (non-HA)
 
@@ -235,7 +240,7 @@ same architecture as the primary or if each site is configured for HA.
 
 [Large monorepos](#large-monorepos) or significant [additional workloads](#additional-workloads) can affect the performance of the environment notably. Some adjustments may be required depending on the context.
 
-If this situation applies to you, reach out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/)
+If this situation applies to you, reach out to your GitLab representative or our [Support team](https://about.gitlab.com/support/)
 for further guidance.
 
 ### Cloud provider services
@@ -281,7 +286,7 @@ graph TD
    L4C ~~~ L5A
    L4D ~~~ L5A
 
-   L5B("Do you have <a href=#large-monorepos>Large Monorepos</a> or expect</br> to have substantial <a href=#additional-workloads>additional workloads</a>?") --> |Yes| L6B><b>Additional Recommendation</b><br><br> Contact Customer Success Manager or Support]
+   L5B("Do you have <a href=#large-monorepos>Large Monorepos</a> or expect</br> to have substantial <a href=#additional-workloads>additional workloads</a>?") --> |Yes| L6B><b>Additional Recommendations</b><br><br><a href=#if-in-doubt---start-large-monitor-and-scale-down>Start large, monitor and scale down</a><br><br> Contact GitLab representative or Support]
    L4A ~~~ L5B
    L4B ~~~ L5B
    L4C ~~~ L5B
@@ -343,7 +348,7 @@ Their presence and how they are used can put a significant strain on the entire 
 The performance implications are largely software in nature. Additional hardware resources lead to diminishing returns.
 
 WARNING:
-If this applies to you, we strongly recommend you follow the linked documentation and reach out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
+If this applies to you, we strongly recommend you follow the linked documentation and reach out to your GitLab representative or our [Support team](https://about.gitlab.com/support/) for further guidance.
 
 Large monorepos come with notable cost. If you have such a repository,
 follow these guidance to ensure good performance and to keep costs in check:
@@ -371,7 +376,7 @@ You may need to adjust the suggested specifications to compensate if you use:
 - [System hooks](../system_hooks.md).
 
 Generally, you should have robust monitoring in place to measure the impact of any additional workloads to
-inform any changes needed to be made. Reach out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/)
+inform any changes needed to be made. Reach out to your GitLab representative or our [Support team](https://about.gitlab.com/support/)
 for further guidance.
 
 ### Load Balancers
@@ -858,6 +863,7 @@ You can find a full history of changes [on the GitLab project](https://gitlab.co
 
 **2024:**
 
+- [2024-12](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175854): Added _Start Large_ section as further guidance for choosing initial sizing.
 - [2024-08](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164181): Updated Expected Load section with some more examples on how to calculate RPS.
 - [2024-08](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163478): Updated Redis configuration on 40 RPS or 2k User page to have correct Redis configuration.
 - [2024-08](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163506): Updated Sidekiq configuration for Prometheus in Monitoring node on 2k.

@@ -94,5 +94,6 @@ scope path: 'merge_requests', controller: 'merge_requests/creations' do
     get :diff_for_path
     get :branch_from
     get :branch_to
+    get :diffs_stream, to: 'merge_requests/creations_diffs_stream#diffs'
   end
 end

@@ -13,7 +13,9 @@ import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemCrmContacts from '~/work_items/components/work_item_crm_contacts.vue';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
+import WorkItemParent from '~/work_items/components/work_item_parent.vue';
 import WorkItemProjectsListbox from '~/work_items/components/work_item_links/work_item_projects_listbox.vue';
+import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
 import {
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_ENUM_ISSUE,
@@ -77,8 +79,10 @@ describe('Create work item component', () => {
   const findLabelsWidget = () => wrapper.findComponent(WorkItemLabels);
   const findCrmContactsWidget = () => wrapper.findComponent(WorkItemCrmContacts);
   const findMilestoneWidget = () => wrapper.findComponent(WorkItemMilestone);
+  const findParentWidget = () => wrapper.findComponent(WorkItemParent);
   const findProjectsSelector = () => wrapper.findComponent(WorkItemProjectsListbox);
   const findSelect = () => wrapper.findComponent(GlFormSelect);
+  const findTitleSuggestions = () => wrapper.findComponent(TitleSuggestions);
   const findConfidentialCheckbox = () => wrapper.find('[data-testid="confidential-checkbox"]');
   const findRelatesToCheckbox = () => wrapper.find('[data-testid="relates-to-checkbox"]');
   const findCreateWorkItemView = () => wrapper.find('[data-testid="create-work-item-view"]');
@@ -121,6 +125,7 @@ describe('Create work item component', () => {
       },
       provide: {
         fullPath: 'full-path',
+        groupPath: 'group-path',
         hasIssuableHealthStatusFeature: false,
         hasIterationsFeature: true,
         hasIssueWeightsFeature: false,
@@ -176,9 +181,17 @@ describe('Create work item component', () => {
       expect(findAlert().exists()).toBe(false);
     });
 
-    it('emits event on Cancel button click', () => {
+    it('emits "confirmCancel" event on Cancel button click if form is filled', async () => {
+      await updateWorkItemTitle();
+
       findCancelButton().vm.$emit('click');
-      expect(wrapper.emitted('cancel')).toEqual([[]]);
+      expect(wrapper.emitted('confirmCancel')).toEqual([[]]);
+    });
+
+    it('emits "discardDraft" event on Cancel button click if form is filled', () => {
+      findCancelButton().vm.$emit('click');
+
+      expect(wrapper.emitted('discardDraft')).toEqual([[]]);
     });
   });
 
@@ -394,6 +407,22 @@ describe('Create work item component', () => {
       expect(findCreateButton().props('disabled')).toBe(false);
     });
 
+    it('when title input text is deleted after typed, title is not valid anymore to submit', async () => {
+      await initialiseComponentAndSelectWorkItem();
+      await updateWorkItemTitle();
+
+      expect(findTitleInput().props('title')).toBe('Test title');
+
+      await updateWorkItemTitle('');
+
+      wrapper.find('form').trigger('submit');
+      await waitForPromises();
+
+      expect(findTitleInput().props('title')).toBe('');
+      expect(findTitleInput().props('isValid')).toBe(false);
+      expect(wrapper.emitted('workItemCreated')).toEqual(undefined);
+    });
+
     it('shows an alert on mutation error', async () => {
       await initialiseComponentAndSelectWorkItem({ mutationHandler: errorHandler });
 
@@ -482,6 +511,10 @@ describe('Create work item component', () => {
 
       it('renders the work item milestone widget', () => {
         expect(findMilestoneWidget().exists()).toBe(true);
+      });
+
+      it('renders the work item parent widget', () => {
+        expect(findParentWidget().exists()).toBe(true);
       });
     });
   });
@@ -586,6 +619,19 @@ describe('Create work item component', () => {
       document.dispatchEvent(event);
 
       expect(createWorkItemSuccessHandler).toHaveBeenCalled();
+    });
+  });
+
+  it('renders work item title suggestions below work item title', async () => {
+    await initialiseComponentAndSelectWorkItem();
+
+    await updateWorkItemTitle();
+
+    expect(findTitleSuggestions().props()).toStrictEqual({
+      projectPath: 'full-path',
+      search: 'Test title',
+      helpText: 'These existing items have a similar title and may represent potential duplicates.',
+      title: 'Similar items',
     });
   });
 });

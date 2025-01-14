@@ -13,7 +13,9 @@
 - add_page_specific_style 'page_bundles/reports'
 - add_page_specific_style 'page_bundles/ci_status'
 
-- unless ::Feature.enabled?(:rapid_diffs, current_user, type: :wip) && params[:rapid_diffs] == 'true'
+- rapid_diffs_enabled = ::Feature.enabled?(:rapid_diffs, current_user, type: :wip) && params[:rapid_diffs] == 'true'
+
+- unless rapid_diffs_enabled
   - add_page_startup_api_call @endpoint_metadata_url
   - add_page_startup_api_call @linked_file_url if @linked_file_url
   - if mr_action == 'diffs' && !@file_by_file_default
@@ -96,8 +98,9 @@
         - if @project.builds_enabled?
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
       = render_if_exists "projects/merge_requests/reports_tab_pane"
-      - params = request.query_parameters.merge(ck: @diffs_batch_cache_key, diff_head: true)
-      = render "projects/merge_requests/tabs/pane", name: "diffs", id: "js-diffs-app", class: "diffs", data: diffs_tab_pane_data(@project, @merge_request, params)
+      - unless rapid_diffs_enabled
+        - params = request.query_parameters.merge(ck: @diffs_batch_cache_key, diff_head: true)
+        = render "projects/merge_requests/tabs/pane", name: "diffs", id: "js-diffs-app", class: "diffs", data: diffs_tab_pane_data(@project, @merge_request, params)
 
     .mr-loading-status
       .loading.hide
@@ -110,8 +113,7 @@
 
 #js-review-bar{ data: review_bar_data(@merge_request, current_user) }
 
-- if Feature.enabled?(:reviewer_assign_drawer, current_user, type: :beta)
-  #js-reviewer-drawer-portal
+#js-reviewer-drawer-portal
 
 - if current_user && Feature.enabled?(:mr_experience_survey, current_user)
   #js-mr-experience-survey{ data: { account_age: current_user.account_age_in_days } }

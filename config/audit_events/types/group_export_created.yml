@@ -1,5 +1,6 @@
+---
 name: group_export_created
-description: Triggered when a group file export is created
+description: A group file export is created
 introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/294168
 introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/TODO
 feature_category: importers

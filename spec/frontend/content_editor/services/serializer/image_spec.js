@@ -111,3 +111,17 @@ it('serializes image as an HTML tag if sourceTagName is defined', () => {
     '<img src="img.jpg" alt="image" title="image title">',
   );
 });
+
+it('does not serialize image as HTML if sourceTagName is not img', () => {
+  const imageAttrs = { src: 'img.jpg', alt: 'image', ...sourceTag('a') };
+
+  expect(serialize(paragraph(image(imageAttrs)))).toBe('![image](img.jpg)');
+
+  expect(serialize(paragraph(image({ ...imageAttrs, width: 300, height: 300 })))).toBe(
+    '![image](img.jpg){width=300 height=300}',
+  );
+
+  expect(serialize(paragraph(image({ ...imageAttrs, title: 'image title' })))).toBe(
+    '![image](img.jpg "image title")',
+  );
+});

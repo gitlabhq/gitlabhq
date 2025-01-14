@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group merge requests page', feature_category: :code_review_workflow do
+RSpec.describe 'Group merge requests page', :js, feature_category: :code_review_workflow do
   include FilteredSearchHelpers
 
   let(:path) { merge_requests_group_path(group) }
@@ -34,10 +34,10 @@ RSpec.describe 'Group merge requests page', feature_category: :code_review_workf
     end
 
     it 'ignores archived merge request count badges in state-filters' do
-      expect(page.find('#state-opened span.badge').text).to eq("1")
-      expect(page.find('#state-merged span.badge').text).to eq("0")
-      expect(page.find('#state-closed span.badge').text).to eq("0")
-      expect(page.find('#state-all span.badge').text).to eq("1")
+      expect(page.find('.issuable-state-filters')).to have_text("Open 1")
+      expect(page.find('.issuable-state-filters')).to have_text("Merged 0")
+      expect(page.find('.issuable-state-filters')).to have_text("Closed 0")
+      expect(page.find('.issuable-state-filters')).to have_text("All 1")
     end
   end
 
@@ -55,20 +55,18 @@ RSpec.describe 'Group merge requests page', feature_category: :code_review_workf
     let(:user2) { user_outside_group }
 
     it 'filters by assignee only group users' do
-      filtered_search.set('assignee:=')
+      select_tokens 'Assignee', '=', submit: false
 
-      expect(find('#js-dropdown-assignee .filter-dropdown')).to have_content(user.name)
-      expect(find('#js-dropdown-assignee .filter-dropdown')).not_to have_content(user2.name)
+      expect_suggestion(user.name)
+      expect_no_suggestion(user2.name)
     end
 
     it 'will still show the navbar with no results' do
       search_term = 'some-search-term-that-produces-zero-results'
 
-      filtered_search.set(search_term)
-      filtered_search.send_keys(:enter)
+      submit_search_term search_term
 
       expect(page).to have_content('No results found')
-      expect(page).to have_link('Open', href: "/groups/#{group.name}/-/merge_requests?scope=all&search=#{search_term}&state=opened")
     end
   end
 
@@ -98,8 +96,6 @@ RSpec.describe 'Group merge requests page', feature_category: :code_review_workf
       visit path
 
       expect(page).to have_selector('.gl-empty-state')
-      expect(page).to have_button('Select project to create merge request')
-      expect(page).to have_selector('.issues-filters')
     end
 
     context 'with no open merge requests' do
@@ -108,8 +104,6 @@ RSpec.describe 'Group merge requests page', feature_category: :code_review_workf
         visit path
 
         expect(page).to have_selector('.gl-empty-state')
-        expect(page).to have_button('Select project to create merge request')
-        expect(page).to have_selector('.issues-filters')
       end
     end
   end

@@ -32,7 +32,9 @@ describe('Job Sidebar Retry Button', () => {
     });
   };
 
-  beforeEach(createWrapper);
+  beforeEach(() => {
+    createWrapper();
+  });
 
   it.each([
     [null, false, true],
@@ -82,8 +84,9 @@ describe('Job Sidebar Retry Button', () => {
         store,
       });
     };
+
     it('should not render confirmation modal if confirmation message is null', () => {
-      findRetryLink().vm.$emit('click');
+      findRetryLink().trigger('click');
       expect(confirmAction).not.toHaveBeenCalled();
     });
 

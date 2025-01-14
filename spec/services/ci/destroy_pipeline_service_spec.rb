@@ -8,7 +8,7 @@ RSpec.describe ::Ci::DestroyPipelineService, feature_category: :continuous_integ
 
   let(:service) { described_class.new(project, user) }
 
-  shared_examples 'unsafe_execute' do
+  shared_examples 'pipeline destruction service' do
     it 'destroys the pipeline' do
       response
 
@@ -103,6 +103,34 @@ RSpec.describe ::Ci::DestroyPipelineService, feature_category: :continuous_integ
         response
       end
     end
+
+    context 'with concurrent updates' do
+      it 'destroys the pipeline' do
+        expect(service).to receive(:destroy_all_records).and_wrap_original do |original_method, *args, &block|
+          ::Ci::Pipeline.id_in(pipeline).update_all('lock_version = lock_version + 1')
+
+          original_method.call(*args, &block)
+        end
+
+        expect(response).to be_success
+
+        expect { pipeline.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context 'with concurrent destroy actions' do
+      it 'destroys the pipeline' do
+        expect(service).to receive(:destroy_all_records).and_wrap_original do |original_method, *args, &block|
+          ::Ci::Pipeline.id_in(pipeline).each(&:destroy!)
+
+          original_method.call(*args, &block)
+        end
+
+        expect(response).to be_success
+
+        expect { pipeline.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
   end
 
   describe '#execute' do
@@ -111,7 +139,7 @@ RSpec.describe ::Ci::DestroyPipelineService, feature_category: :continuous_integ
     context 'when user is owner' do
       let(:user) { project.first_owner }
 
-      it_behaves_like 'unsafe_execute'
+      it_behaves_like 'pipeline destruction service'
     end
 
     context 'when user is not owner' do
@@ -124,10 +152,24 @@ RSpec.describe ::Ci::DestroyPipelineService, feature_category: :continuous_integ
   end
 
   describe '#unsafe_execute' do
-    subject(:response) { service.unsafe_execute(pipeline) }
-
     let(:user) { nil }
 
-    it_behaves_like 'unsafe_execute'
+    context 'with a pipeline array as input' do
+      subject(:response) { service.unsafe_execute([pipeline]) }
+
+      it_behaves_like 'pipeline destruction service'
+    end
+
+    context 'with a pipeline object as input' do
+      subject(:response) { service.unsafe_execute(pipeline) }
+
+      it_behaves_like 'pipeline destruction service'
+    end
+
+    context 'with an empty array' do
+      subject(:response) { service.unsafe_execute([]) }
+
+      it { is_expected.to be_success }
+    end
   end
 end

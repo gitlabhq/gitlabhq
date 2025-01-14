@@ -13,6 +13,7 @@ import {
   STATE_EVENT_REOPEN,
   TRACKING_CATEGORY_SHOW,
 } from '~/work_items/constants';
+import { updateCountsForParent } from '~/work_items/graphql/cache_utils';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import workItemLinkedItemsQuery from '~/work_items/graphql/work_item_linked_items.query.graphql';
@@ -26,6 +27,10 @@ import {
   mockOpenChildrenCount,
   mockNoOpenChildrenCount,
 } from '../mock_data';
+
+jest.mock('~/work_items/graphql/cache_utils', () => ({
+  updateCountsForParent: jest.fn(),
+}));
 
 describe('Work Item State toggle button component', () => {
   let wrapper;
@@ -57,6 +62,7 @@ describe('Work Item State toggle button component', () => {
     workItemState = STATE_OPEN,
     workItemType = 'Task',
     hasComment = false,
+    parentId = null,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemStateToggle, {
       apolloProvider: createMockApollo([
@@ -73,6 +79,7 @@ describe('Work Item State toggle button component', () => {
         workItemType,
         canUpdate,
         hasComment,
+        parentId,
       },
     });
   };
@@ -174,6 +181,23 @@ describe('Work Item State toggle button component', () => {
         category: TRACKING_CATEGORY_SHOW,
         label: 'item_state',
         property: 'type_Task',
+      });
+    });
+
+    describe('and the `parentId` prop is provided', () => {
+      it('calls the `updateCountsForParent` cache util when changing the state', async () => {
+        createComponent({ parentId: 'example-id' });
+
+        findStateToggleButton().vm.$emit('click');
+
+        await waitForPromises();
+
+        expect(updateCountsForParent).toHaveBeenCalledWith({
+          cache: expect.anything(Object),
+          parentId: 'example-id',
+          isClosing: true,
+          workItemType: 'Task',
+        });
       });
     });
   });

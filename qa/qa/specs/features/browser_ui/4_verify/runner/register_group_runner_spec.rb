@@ -20,8 +20,10 @@ module QA
 
         Page::Group::Menu.perform(&:go_to_runners)
 
-        Support::Retrier.retry_on_exception(sleep_interval: 2, message: "Retry failed when looking for runner name") do
-          expect(page).to have_content(executor)
+        Page::Group::Runners::Index.perform do |group_runners|
+          Support::Retrier.retry_on_exception(sleep_interval: 2, message: "Retry failed to verify online runner") do
+            expect(group_runners).to have_active_runner(runner)
+          end
         end
       end
     end

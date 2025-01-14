@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 This is the API documentation for [Go Packages](../../user/packages/go_proxy/index.md).
 This API is behind a feature flag that is disabled by default. GitLab administrators with access to

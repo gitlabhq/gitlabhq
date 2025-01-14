@@ -10,8 +10,6 @@ identifiers:
 product_group: duo_chat
 milestone: '16.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132803
-distributions:
-  - ee
 tiers:
   - ultimate
 additional_properties:

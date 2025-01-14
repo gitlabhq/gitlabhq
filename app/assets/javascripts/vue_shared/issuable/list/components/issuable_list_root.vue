@@ -438,6 +438,9 @@ export default {
           <template #discussions>
             <slot name="discussions" :issuable="issuable"></slot>
           </template>
+          <template #health-status>
+            <slot name="health-status" :issuable="issuable"></slot>
+          </template>
         </issuable-item>
       </component>
       <div v-else-if="issuables.length > 0 && isGridView">

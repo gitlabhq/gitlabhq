@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed
+**Offering:** GitLab.com, GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416395) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `packages_protected_packages`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 > - The protection rule setting **Push protected up to access level** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/416382) to **Minimum access level for push** in GitLab 17.1
@@ -39,6 +39,7 @@ To protect a package:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Packages and registries**.
+1. Expand **Package registry**.
 1. Under **Protected packages**, select **Add protection rule**.
 1. Complete the fields:
    - **Name pattern** is a package name pattern you want to protect. The pattern can include a wildcard (`*`).
@@ -76,6 +77,7 @@ To unprotect a package:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Packages and registries**.
+1. Expand **Package registry**.
 1. Under **Protected packages**, next to the protection rule you want to delete, select **Delete** (**{remove}**).
 1. On the confirmation dialog, select **Delete**.
 

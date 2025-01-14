@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Use this API to interact with email addresses for user accounts. For more information, see [User account](../user/profile/index.md).
 
@@ -45,7 +45,7 @@ Example response:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Lists all email addresses for a given user account.
 
@@ -126,7 +126,7 @@ error occurs a `400 Bad Request` is returned with a message explaining the error
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Adds an email address for a given user account.
 
@@ -175,7 +175,7 @@ Returns:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Deletes an email address for a given user account. You cannot delete a primary email address.
 

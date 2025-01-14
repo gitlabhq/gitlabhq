@@ -52,6 +52,10 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
           put :revoke
           put :rotate
         end
+
+        collection do
+          get :inactive, format: :json
+        end
       end
 
       resources :integrations, only: [:index, :edit, :update] do
@@ -116,7 +120,10 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       post :resend_invite, on: :member
 
       collection do
-        get :bulk_reassignment_file
+        resource :bulk_reassignment_file, only: %i[show create], controller: 'bulk_placeholder_assignments' do
+          post :authorize
+        end
+
         delete :leave
       end
     end

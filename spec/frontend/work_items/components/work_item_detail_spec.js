@@ -1,4 +1,4 @@
-import { GlAlert, GlEmptyState } from '@gitlab/ui';
+import { GlAlert, GlEmptyState, GlIntersectionObserver } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -23,8 +23,10 @@ import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import TodosToggle from '~/work_items/components/shared/todos_toggle.vue';
 import DesignWidget from '~/work_items/components/design_management/design_management_widget.vue';
 import DesignUploadButton from '~/work_items/components//design_management/upload_button.vue';
+import WorkItemCreateBranchMergeRequestSplitButton from '~/work_items/components/work_item_development/work_item_create_branch_merge_request_split_button.vue';
+import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import uploadDesignMutation from '~/work_items/components/design_management/graphql/upload_design.mutation.graphql';
-import { i18n } from '~/work_items/constants';
+import { i18n, STATE_CLOSED } from '~/work_items/constants';
 import workItemByIdQuery from '~/work_items/graphql/work_item_by_id.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
@@ -53,6 +55,7 @@ jest.mock('~/work_items/components/design_management/cache_updates');
 
 describe('WorkItemDetail component', () => {
   let wrapper;
+  let glIntersectionObserver;
 
   Vue.use(VueApollo);
 
@@ -124,6 +127,13 @@ describe('WorkItemDetail component', () => {
   const findDesignUploadButton = () => wrapper.findComponent(DesignUploadButton);
   const findDetailWrapper = () => wrapper.findByTestId('detail-wrapper');
   const findDrawer = () => wrapper.findComponent(WorkItemDrawer);
+  const findCreateMergeRequestSplitButton = () =>
+    wrapper.findComponent(WorkItemCreateBranchMergeRequestSplitButton);
+  const findDesignDropzone = () => wrapper.findComponent(DesignDropzone);
+
+  const mockDragEvent = ({ types = ['Files'], files = [], items = [] }) => {
+    return { dataTransfer: { types, files, items } };
+  };
 
   const createComponent = ({
     isModal = false,
@@ -826,6 +836,65 @@ describe('WorkItemDetail component', () => {
     const file = new File(['foo'], 'foo.png', { type: 'image/png' });
     const fileList = [file];
 
+    describe('when designs are not added and no versions exist', () => {
+      it('renders the design dropzone when valid file is dragged and the Add design button is in viewport', async () => {
+        createComponent();
+        await waitForPromises();
+
+        glIntersectionObserver = wrapper.findComponent(GlIntersectionObserver);
+        const dragEvent = mockDragEvent({
+          types: ['Files', 'image'],
+          items: [{ type: 'image/png' }],
+        });
+
+        wrapper.trigger('dragenter', dragEvent);
+        glIntersectionObserver.vm.$emit('appear');
+        await nextTick();
+
+        wrapper.trigger('dragover', dragEvent);
+        glIntersectionObserver.vm.$emit('appear');
+        await nextTick();
+
+        expect(findDesignDropzone().exists()).toBe(true);
+      });
+
+      it('does not render the design dropzone if add design button is not in viewport', async () => {
+        createComponent();
+        await waitForPromises();
+
+        glIntersectionObserver = wrapper.findComponent(GlIntersectionObserver);
+        const dragEvent = mockDragEvent({
+          types: ['Files', 'image'],
+          items: [{ type: 'image/png' }],
+        });
+
+        wrapper.trigger('dragenter', dragEvent);
+        glIntersectionObserver.vm.$emit('disappear');
+        await nextTick();
+
+        wrapper.trigger('dragover', dragEvent);
+        glIntersectionObserver.vm.$emit('disappear');
+        await nextTick();
+
+        expect(findDesignDropzone().exists()).toBe(false);
+      });
+
+      it('does not render the design dropzone when invalid file is dragged', async () => {
+        createComponent();
+        await waitForPromises();
+
+        const dragEvent = mockDragEvent({
+          types: ['Files'],
+          items: [{ type: 'text/plain' }],
+        });
+
+        wrapper.trigger('dragenter', dragEvent);
+        await nextTick();
+
+        expect(findDesignDropzone().exists()).toBe(false);
+      });
+    });
+
     it('does not render if application has no router', async () => {
       createComponent({ router: false });
       await waitForPromises();
@@ -906,6 +975,46 @@ describe('WorkItemDetail component', () => {
       findWorkItemDesigns().vm.$emit('dismissError');
       await nextTick();
       expect(findWorkItemDesigns().props('uploadError')).toBe(null);
+    });
+  });
+
+  describe('work item dev widget create split button', () => {
+    it('should not show the button by default', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findCreateMergeRequestSplitButton().exists()).toBe(false);
+    });
+
+    it('should show the button when the widget is applicable', async () => {
+      createComponent({
+        handler: jest.fn().mockResolvedValue(
+          workItemByIidResponseFactory({
+            canUpdate: true,
+            canDelete: true,
+            developmentWidgetPresent: true,
+          }),
+        ),
+      });
+      await waitForPromises();
+
+      expect(findCreateMergeRequestSplitButton().exists()).toBe(true);
+    });
+
+    it('should not show the button when the work item is closed', async () => {
+      createComponent({
+        handler: jest.fn().mockResolvedValue(
+          workItemByIidResponseFactory({
+            canUpdate: true,
+            canDelete: true,
+            developmentWidgetPresent: true,
+            state: STATE_CLOSED,
+          }),
+        ),
+      });
+      await waitForPromises();
+
+      expect(findCreateMergeRequestSplitButton().exists()).toBe(false);
     });
   });
 
@@ -1024,6 +1133,31 @@ describe('WorkItemDetail component', () => {
       await waitForPromises();
 
       expect(findWorkItemAttributesWrapper().props('isGroup')).toBe(true);
+    });
+  });
+
+  describe('work item parent id', () => {
+    const parentId = 'gid://gitlab/Issue/1';
+
+    it('passes the `parentWorkItemId` value down to the `WorkItemStickyHeader` component', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findStickyHeader().props('parentId')).toBe(parentId);
+    });
+
+    it('passes the `parentWorkItemId` value down to the `WorkItemActions` component', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findWorkItemActions().props('parentId')).toBe(parentId);
+    });
+
+    it('passes the `parentWorkItemId` value down to the `WorkItemNotes` component', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findNotesWidget().props('parentId')).toBe(parentId);
     });
   });
 });

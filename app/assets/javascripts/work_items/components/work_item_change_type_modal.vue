@@ -1,5 +1,5 @@
 <script>
-import { GlModal, GlFormGroup, GlFormSelect, GlAlert, GlButton } from '@gitlab/ui';
+import { GlModal, GlFormGroup, GlFormSelect, GlAlert } from '@gitlab/ui';
 import { differenceBy } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -26,16 +26,14 @@ import convertWorkItemMutation from '../graphql/work_item_convert.mutation.graph
 import getWorkItemDesignListQuery from './design_management/graphql/design_collection.query.graphql';
 
 export default {
-  i18n: {
-    type: __('Type'),
-    subText: s__('WorkItem|Select which type you would like to change this item to.'),
-  },
   components: {
     GlModal,
     GlFormGroup,
     GlFormSelect,
     GlAlert,
-    GlButton,
+  },
+  actionCancel: {
+    text: __('Cancel'),
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['hasOkrsFeature'],
@@ -216,6 +214,15 @@ export default {
     selectedWorkItemTypeValue() {
       return this.selectedWorkItemType?.value || null;
     },
+    actionPrimary() {
+      return {
+        text: s__('WorkItem|Change type'),
+        attributes: {
+          variant: 'confirm',
+          disabled: this.changeTypeDisabled,
+        },
+      };
+    },
   },
   methods: {
     async changeType() {
@@ -329,6 +336,10 @@ export default {
     modal-id="work-item-change-type"
     :title="s__('WorkItem|Change type')"
     size="sm"
+    :action-primary="actionPrimary"
+    :action-cancel="$options.actionCancel"
+    @primary="changeType"
+    @canceled="hide"
   >
     <gl-alert
       v-if="errorMessage"
@@ -339,46 +350,31 @@ export default {
     >
       {{ errorMessage }}
     </gl-alert>
-    <div>
-      <div class="gl-mb-4">{{ $options.i18n.subText }}</div>
-      <gl-form-group :label="$options.i18n.type" label-for="work-item-type-select">
-        <gl-form-select
-          id="work-item-type-select"
-          :value="selectedWorkItemTypeValue"
-          width="md"
-          :options="allowedConversionWorkItemTypes"
-          @change="validateWorkItemType"
-        />
-      </gl-form-group>
-      <gl-alert
-        v-if="warningMessage"
-        data-testid="change-type-warning-message"
-        variant="warning"
-        :dismissible="false"
-      >
-        {{ warningMessage }}
-        <ul v-if="hasWidgetDifference" class="gl-mb-0">
-          <li v-for="widget in widgetsWithExistingData" :key="widget.type">
-            {{ widget.name }}
-          </li>
-        </ul>
-      </gl-alert>
+    <div class="gl-mb-4">
+      {{ s__('WorkItem|Select which type you would like to change this item to.') }}
     </div>
-    <template #modal-footer>
-      <div class="gl-m-0 gl-flex gl-flex-row gl-flex-wrap gl-justify-end">
-        <gl-button @click="hide">
-          {{ __('Cancel') }}
-        </gl-button>
-        <div class="gl-mr-3"></div>
-        <gl-button
-          :disabled="changeTypeDisabled"
-          category="primary"
-          variant="confirm"
-          data-testid="change-type-confirmation-button"
-          @click="changeType"
-          >{{ s__('WorkItem|Change type') }}</gl-button
-        >
-      </div>
-    </template>
+    <gl-form-group :label="__('Type')" label-for="work-item-type-select">
+      <gl-form-select
+        id="work-item-type-select"
+        data-testid="work-item-change-type-select"
+        :value="selectedWorkItemTypeValue"
+        width="md"
+        :options="allowedConversionWorkItemTypes"
+        @change="validateWorkItemType"
+      />
+    </gl-form-group>
+    <gl-alert
+      v-if="warningMessage"
+      data-testid="change-type-warning-message"
+      variant="warning"
+      :dismissible="false"
+    >
+      {{ warningMessage }}
+      <ul v-if="hasWidgetDifference" class="gl-mb-0">
+        <li v-for="widget in widgetsWithExistingData" :key="widget.type">
+          {{ widget.name }}
+        </li>
+      </ul>
+    </gl-alert>
   </gl-modal>
 </template>

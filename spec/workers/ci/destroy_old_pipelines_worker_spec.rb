@@ -8,13 +8,13 @@ RSpec.describe Ci::DestroyOldPipelinesWorker, :clean_gitlab_redis_shared_state, 
   let_it_be(:old_pipeline) { create(:ci_pipeline, project: project, created_at: 1.month.ago) }
   let_it_be(:new_pipeline) { create(:ci_pipeline, project: project, created_at: 1.week.ago) }
 
-  describe '#perform' do
-    before do
-      Gitlab::Redis::SharedState.with do |redis|
-        redis.rpush(Ci::ScheduleOldPipelinesRemovalCronWorker::QUEUE_KEY, [project.id])
-      end
+  before do
+    Gitlab::Redis::SharedState.with do |redis|
+      redis.rpush(Ci::ScheduleOldPipelinesRemovalCronWorker::QUEUE_KEY, [project.id])
     end
+  end
 
+  describe '#perform' do
     subject(:perform) { described_class.new.perform_work }
 
     it 'destroys the configured amount of pipelines' do
@@ -38,5 +38,11 @@ RSpec.describe Ci::DestroyOldPipelinesWorker, :clean_gitlab_redis_shared_state, 
         expect { perform }.not_to raise_error
       end
     end
+  end
+
+  describe '#remaining_work_count' do
+    subject(:remaining_work_count) { described_class.new.remaining_work_count }
+
+    it { is_expected.to eq(1) }
   end
 end

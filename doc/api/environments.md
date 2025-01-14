@@ -8,8 +8,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
+> Parameter `auto_stop_setting` [added](https://gitlab.com/gitlab-org/gitlab/-/issues/428625) in GitLab 17.8.
 > Support for [GitLab CI/CD job token](../ci/jobs/ci_job_token.md) authentication [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414549) in GitLab 16.2.
 
 ## List environments
@@ -28,7 +29,8 @@ GET /projects/:id/environments
 | `states`  | string         | no       | List all environments that match a specific state. Accepted values: `available`, `stopping`, or `stopped`. If no state value given, returns all environments. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments?name=review%2Ffix-foo"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/environments?name=review%2Ffix-foo"
 ```
 
 Example response:
@@ -49,7 +51,8 @@ Example response:
     "logs_api_path": "/project/-/logs/k8s.json?environment_name=review%2Ffix-foo",
     "auto_stop_at": "2019-06-03T18:55:13.252Z",
     "kubernetes_namespace": "flux-system",
-    "flux_resource_path": "HelmRelease/flux-system"
+    "flux_resource_path": "HelmRelease/flux-system",
+    "auto_stop_setting": "always"
   }
 ]
 ```
@@ -66,7 +69,8 @@ GET /projects/:id/environments/:environment_id
 | `environment_id` | integer        | yes      | The ID of the environment.                                                           |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/1"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/environments/1"
 ```
 
 Example of response
@@ -184,7 +188,8 @@ Example of response
     "created_by_user_id": 42
   },
   "kubernetes_namespace": "flux-system",
-  "flux_resource_path": "HelmRelease/flux-system"
+  "flux_resource_path": "HelmRelease/flux-system",
+  "auto_stop_setting": "always"
 }
 ```
 
@@ -208,10 +213,12 @@ POST /projects/:id/environments
 | `cluster_agent_id`     | integer        | no       | The cluster agent to associate with this environment.                                                               |
 | `kubernetes_namespace` | string         | no       | The Kubernetes namespace to associate with this environment.                                                        |
 | `flux_resource_path`   | string         | no       | The Flux resource path to associate with this environment. This must be the full resource path. For example, `helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent`.  |
+| `auto_stop_setting`    | string         | no       | The auto stop setting for the environment. Allowed values are `always` or `with_action`. |
 
 ```shell
 curl --data "name=deploy&external_url=https://deploy.gitlab.example.com" \
-     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/environments"
 ```
 
 Example response:
@@ -228,7 +235,8 @@ Example response:
   "created_at": "2019-05-25T18:55:13.252Z",
   "updated_at": "2019-05-27T18:55:13.252Z",
   "kubernetes_namespace": "flux-system",
-  "flux_resource_path": "HelmRelease/flux-system"
+  "flux_resource_path": "HelmRelease/flux-system",
+  "auto_stop_setting": "always"
 }
 ```
 
@@ -254,10 +262,13 @@ PUT /projects/:id/environments/:environments_id
 | `cluster_agent_id`     | integer or null | no       | The cluster agent to associate with this environment or `null` to remove it.                                        |
 | `kubernetes_namespace` | string or null  | no       | The Kubernetes namespace to associate with this environment or `null` to remove it.                                 |
 | `flux_resource_path`   | string or null  | no       | The Flux resource path to associate with this environment or `null` to remove it.                                   |
+| `auto_stop_setting`    | string or null  | no       | The auto stop setting for the environment. Allowed values are `always` or `with_action`. |
 
 ```shell
-curl --request PUT --data "external_url=https://staging.gitlab.example.com" \
-     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/1"
+curl --request PUT \
+  --data "external_url=https://staging.gitlab.example.com" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/environments/1"
 ```
 
 Example response:
@@ -274,7 +285,8 @@ Example response:
   "created_at": "2019-05-25T18:55:13.252Z",
   "updated_at": "2019-05-27T18:55:13.252Z",
   "kubernetes_namespace": "flux-system",
-  "flux_resource_path": "HelmRelease/flux-system"
+  "flux_resource_path": "HelmRelease/flux-system",
+  "auto_stop_setting": "always"
 }
 ```
 
@@ -292,7 +304,9 @@ DELETE /projects/:id/environments/:environment_id
 | `environment_id` | integer        | yes      | The ID of the environment.                                                           |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/1"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/environments/1"
 ```
 
 ## Delete multiple stopped review apps
@@ -315,7 +329,9 @@ DELETE /projects/:id/environments/review_apps
 | `dry_run` | boolean        | no       | Defaults to `true` for safety reasons. It performs a dry run where no actual deletion is performed. Set to `false` to actually delete the environment. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/review_apps"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/environments/review_apps"
 ```
 
 Example response:
@@ -355,7 +371,9 @@ POST /projects/:id/environments/:environment_id/stop
 | `force`          | boolean        | no       | Force environment to stop without executing `on_stop` actions.                       |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/1/stop"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/environments/1/stop"
 ```
 
 Example response:
@@ -370,7 +388,8 @@ Example response:
   "created_at": "2019-05-25T18:55:13.252Z",
   "updated_at": "2019-05-27T18:55:13.252Z",
   "kubernetes_namespace": "flux-system",
-  "flux_resource_path": "HelmRelease/flux-system"
+  "flux_resource_path": "HelmRelease/flux-system",
+  "auto_stop_setting": "always"
 }
 ```
 
@@ -388,7 +407,9 @@ POST /projects/:id/environments/stop_stale
 | `before`  | date           | yes      | Stop environments that have been modified or deployed to before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Valid inputs are between 10 years ago and 1 week ago |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/environments/stop_stale?before=10%2F10%2F2021"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/environments/stop_stale?before=10%2F10%2F2021"
 ```
 
 Example response:

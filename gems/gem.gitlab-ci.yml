@@ -36,7 +36,7 @@ variables:
 include:
   - local: .gitlab/ci/version.yml
 
-default:
+.default: &default
   tags:
     - gitlab-org
   image: "ruby:${RUBY_VERSION}"
@@ -52,6 +52,9 @@ default:
     - gem install bundler --version "$bundle_version" --no-document # Bundler is not installed with the image
     - bundle config                             # Show bundler configuration
     - bundle install --jobs=$(nproc) --retry=3
+
+default:
+  <<: *default
 
 .ruby_matrix:
   parallel:

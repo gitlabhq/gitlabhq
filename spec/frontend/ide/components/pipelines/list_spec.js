@@ -7,14 +7,9 @@ import { pipelines } from 'jest/ide/mock_data';
 import JobsList from '~/ide/components/jobs/list.vue';
 import List from '~/ide/components/pipelines/list.vue';
 import EmptyState from '~/ide/components/pipelines/empty_state.vue';
-import IDEServices from '~/ide/services';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 
 Vue.use(Vuex);
-
-jest.mock('~/ide/services', () => ({
-  pingUsage: jest.fn(),
-}));
 
 describe('IDE pipelines list', () => {
   let wrapper;
@@ -26,7 +21,6 @@ describe('IDE pipelines list', () => {
   };
 
   const fetchLatestPipelineMock = jest.fn();
-  const pingUsageMock = jest.fn();
   const failedStagesGetterMock = jest.fn().mockReturnValue([]);
   const fakeProjectPath = 'alpha/beta';
 
@@ -47,7 +41,6 @@ describe('IDE pipelines list', () => {
           },
           actions: {
             fetchLatestPipeline: fetchLatestPipelineMock,
-            pingUsage: pingUsageMock,
           },
           getters: {
             jobsCount: () => 1,
@@ -70,11 +63,6 @@ describe('IDE pipelines list', () => {
     createComponent();
 
     expect(fetchLatestPipelineMock).toHaveBeenCalled();
-  });
-
-  it('pings pipeline usage', () => {
-    createComponent();
-    expect(IDEServices.pingUsage).toHaveBeenCalledWith(fakeProjectPath);
   });
 
   describe('when loading', () => {

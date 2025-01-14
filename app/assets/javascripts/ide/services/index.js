@@ -78,10 +78,6 @@ export default {
     const commitSha = getters.lastCommit.id;
     return Api.commitPipelines(getters.currentProject.path_with_namespace, commitSha);
   },
-  pingUsage(projectPath) {
-    const url = `${gon.relative_url_root}/${projectPath}/service_ping/web_ide_pipelines_count`;
-    return axios.post(url);
-  },
   getProjectPermissionsData(projectPath) {
     return query({
       query: getIdeProject,

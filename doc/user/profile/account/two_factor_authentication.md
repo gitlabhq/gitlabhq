@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed
+**Offering:** GitLab.com, GitLab Self-Managed
 
 Two-factor authentication (2FA) provides an additional level of security to your GitLab account. For others to access
 your account, they would need your username and password _and_ access to your second factor of authentication.
@@ -34,7 +34,7 @@ The following Git credential helpers authenticate to GitLab using OAuth. This is
 
 ### Git Credential Manager
 
-[Git Credential Manager](https://github.com/GitCredentialManager/git-credential-manager) (GCM) authenticates by default using OAuth. GCM supports GitLab.com without any manual configuration. To use GCM with self-managed GitLab, see [GitLab support](https://github.com/GitCredentialManager/git-credential-manager/blob/main/docs/gitlab.md).
+[Git Credential Manager](https://github.com/GitCredentialManager/git-credential-manager) (GCM) authenticates by default using OAuth. GCM supports GitLab.com without any manual configuration. To use GCM with GitLab Self-Managed, see [GitLab support](https://github.com/GitCredentialManager/git-credential-manager/blob/main/docs/gitlab.md).
 
 So you do not need to re-authenticate on every push, GCM supports caching as well as a variety of platform-specific credential stores that persist between sessions. This feature is useful whether you use personal access tokens or OAuth.
 
@@ -44,7 +44,7 @@ Git Credential Manager is developed primarily by GitHub, Inc. It is an open-sour
 
 ### git-credential-oauth
 
-[git-credential-oauth](https://github.com/hickford/git-credential-oauth) supports GitLab.com and several popular public hosts without any manual configuration needed. To use with self-managed GitLab, see the [git-credential-oauth custom hosts documentation](https://github.com/hickford/git-credential-oauth#custom-hosts).
+[git-credential-oauth](https://github.com/hickford/git-credential-oauth) supports GitLab.com and several popular public hosts without any manual configuration needed. To use with GitLab Self-Managed, see the [git-credential-oauth custom hosts documentation](https://github.com/hickford/git-credential-oauth#custom-hosts).
 
 Many Linux distributions include git-credential-oauth as a package.
 
@@ -92,10 +92,10 @@ in a safe place.
 ### Enable a one-time password authenticator using FortiAuthenticator
 
 DETAILS:
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can
+On GitLab Self-Managed, by default this feature is not available. To make it available per user, an administrator can
 [enable the feature flag](../../../administration/feature_flags.md) named `forti_authenticator`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 
@@ -157,7 +157,7 @@ Configure FortiAuthenticator in GitLab. On your GitLab server:
 ### Enable a one-time password authenticator using Cisco Duo
 
 DETAILS:
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15760) in GitLab 15.10.
 
@@ -223,10 +223,10 @@ On your GitLab server:
 ### Enable a one-time password authenticator using FortiToken Cloud
 
 DETAILS:
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can
+On GitLab Self-Managed, by default this feature is not available. To make it available per user, an administrator can
 [enable the feature flag](../../../administration/feature_flags.md) named `forti_token_cloud`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
@@ -392,7 +392,7 @@ This clears all your 2FA registrations, including mobile applications and WebAut
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 - Take care that 2FA keeps working after [restoring a GitLab backup](../../../administration/backup_restore/index.md).
 - To ensure 2FA authorizes correctly with an OTP server, synchronize your GitLab

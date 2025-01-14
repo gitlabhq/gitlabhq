@@ -15,7 +15,7 @@ import TooltipOnTruncate from '~/vue_shared/directives/tooltip_on_truncate';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { s__, sprintf } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
-import { STATUS_OPEN, STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
+import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 
 export default {
   components: {
@@ -48,13 +48,6 @@ export default {
   computed: {
     assignees() {
       return this.itemContent?.assignees?.nodes || [];
-    },
-    badgeClass() {
-      return {
-        'gl-fill-icon-success': this.itemContent.state === STATUS_OPEN,
-        'gl-fill-icon-danger': this.itemContent.state === STATUS_CLOSED,
-        'gl-fill-icon-info': this.itemContent.state === STATUS_MERGED,
-      };
     },
     badgeVariant() {
       return {
@@ -97,8 +90,14 @@ export default {
     mrReference() {
       return this.itemContent?.reference;
     },
+    isMRClosed() {
+      return this.itemContent.state === STATUS_CLOSED;
+    },
+    isMRMerged() {
+      return this.itemContent.state === STATUS_MERGED;
+    },
     isMergedOrClosed() {
-      return this.itemContent.state === STATUS_MERGED || this.itemContent.state === STATUS_CLOSED;
+      return this.isMRClosed || this.isMRMerged;
     },
   },
   methods: {
@@ -121,11 +120,18 @@ export default {
       class="flex-xl-nowrap gl-flex gl-w-19/20 gl-flex-wrap gl-items-center gl-justify-between gl-gap-2"
     >
       <div class="item-title gl-flex gl-min-w-0 gl-items-center gl-gap-3">
-        <gl-icon name="merge-request" :size="16" variant="default" class="gl-shrink-0" />
+        <gl-icon
+          name="merge-request"
+          :size="16"
+          variant="default"
+          class="gl-shrink-0"
+          :class="{ 'gl-fill-icon-subtle': isMRClosed }"
+        />
         <gl-link
           v-tooltip-on-truncate
           :href="itemContent.webUrl"
           class="gl-truncate gl-font-semibold gl-text-gray-900 hover:gl-text-gray-900 hover:gl-underline"
+          :class="{ 'gl-text-subtle': isMRClosed }"
         >
           {{ itemContent.title }}
         </gl-link>

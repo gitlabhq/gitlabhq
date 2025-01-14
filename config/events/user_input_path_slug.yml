@@ -4,9 +4,6 @@ action: user_input_path_slug
 product_group: acquisition
 milestone: '15.3'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93726
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

@@ -10,8 +10,8 @@ FactoryBot.define do
     upstream_etag { OpenSSL::Digest.hexdigest('SHA256', 'test') }
     content_type { 'text/plain' }
     file_final_path { '5f/9c/5f9c/@final/c7/4c/240c' }
-    file_md5 { '54ce07f4124259b2ea58548e9d620004' }
-    file_sha1 { 'bbde7c9fb6d74f9a2393bb36b0d4ac7e72c227ee' }
+    file_md5 { 'd8e8fca2dc0f896fd7cb4cb0031ba249' }
+    file_sha1 { '4e1243bd22c66e76c2ba9eddc1f91394e57f9f83' }
     status { :default }
 
     transient do

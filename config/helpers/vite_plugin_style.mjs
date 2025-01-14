@@ -48,7 +48,7 @@ export function StylePlugin({ shouldWatch = false } = {}) {
               sourceMap: shouldWatch,
               sourceMapEmbed: shouldWatch,
               sourceMapContents: shouldWatch,
-              includePaths: [...resolveLoadPaths(), imagesPath, eeImagesPath, jhImagesPath],
+              loadPaths: [...resolveLoadPaths(), imagesPath, eeImagesPath, jhImagesPath],
             },
           },
         },

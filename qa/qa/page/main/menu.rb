@@ -27,6 +27,7 @@ module QA
           element 'user-avatar-content', required: !Runtime::Env.phone_layout?
           element 'sign-out-link'
           element 'edit-profile-link'
+          element 'preferences-item'
         end
 
         view 'app/assets/javascripts/super_sidebar/components/user_menu_profile_item.vue' do
@@ -138,6 +139,12 @@ module QA
         def click_user_profile_link
           within_user_menu do
             click_element('user-profile-link')
+          end
+        end
+
+        def click_user_preferences_link
+          within_user_menu do
+            click_element('preferences-item')
           end
         end
 

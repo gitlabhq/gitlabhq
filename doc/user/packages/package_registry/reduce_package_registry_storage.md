@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Without cleanup, package registries become large over time. When a large number of packages and
 their assets are added:
@@ -70,8 +70,8 @@ A cleanup policy defines a set of rules that, applied to a project, defines whic
 By default, the packages cleanup policy is disabled. To enable it:
 
 1. Go to your project **Settings > Packages and registries**.
-1. Expand **Manage storage used by package assets**.
-1. Set the rules appropriately.
+1. Expand **Package registry**.
+1. Under **Manage storage used by package assets**, set the rules appropriately.
 
 NOTE:
 To access these project settings, you must be at least a maintainer on the related project.

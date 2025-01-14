@@ -19,6 +19,7 @@ describe('WorkItemStickyHeader', () => {
     discussionLocked = false,
     canUpdate = true,
     features = {},
+    parentId = null,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemStickyHeader, {
       propsData: {
@@ -34,6 +35,7 @@ describe('WorkItemStickyHeader', () => {
         currentUserTodos: [],
         workItemState: STATE_OPEN,
         isGroup: false,
+        parentId,
       },
       provide: {
         glFeatures: {
@@ -164,5 +166,11 @@ describe('WorkItemStickyHeader', () => {
         expect(findLockedBadge().exists()).toBe(true);
       });
     });
+  });
+
+  it('passes the `parentId` prop down to the `WorkItemActions` component', () => {
+    createComponent({ parentId: 'example-id' });
+
+    expect(findWorkItemActions().props('parentId')).toBe('example-id');
   });
 });

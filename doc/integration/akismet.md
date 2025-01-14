@@ -1,6 +1,6 @@
 ---
 stage: Software Supply Chain Security
-group: Anti-Abuse
+group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 GitLab uses [Akismet](https://akismet.com/) to prevent the creation of
 spam issues on public projects. Issues created through the web UI or the API can be submitted to
@@ -23,14 +23,14 @@ Privacy note: GitLab submits the user's IP and user agent to Akismet.
 NOTE:
 GitLab submits all issues to Akismet.
 
-Akismet configuration is available to users on self-managed GitLab. Akismet is already enabled on
+Akismet configuration is available to users on GitLab Self-Managed. Akismet is already enabled on
 GitLab SaaS (GitLab.com), where its configuration and management are handled by GitLab Inc.
 
 ## Configure Akismet
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 To use Akismet:
 
@@ -51,7 +51,7 @@ To use Akismet:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 To better differentiate between spam and ham, you can train the Akismet
 filter whenever there is a false positive or false negative.

@@ -41,7 +41,7 @@ export default {
       return [
         {
           type: 'language',
-          icon: 'lock',
+          icon: 'code',
           title: __('Language'),
           token: GlFilteredSearchToken,
           unique: true,

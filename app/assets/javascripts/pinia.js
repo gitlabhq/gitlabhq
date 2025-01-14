@@ -1,3 +1,11 @@
+/**
+ * @typedef {import('pinia').PiniaPluginContext} PiniaPluginContext
+ * @typedef {import('vuex').Store} VuexStore
+ */
+
+/**
+ * @param {PiniaPluginContext} context
+ */
 // never use this for regular stores, only use this if you have circular dependencies during Vuex migration
 export const globalAccessorPlugin = (context) => {
   // eslint-disable-next-line no-param-reassign
@@ -14,4 +22,29 @@ export const globalAccessorPlugin = (context) => {
 
     return anotherStore;
   };
+};
+
+/**
+ * @param {PiniaPluginContext} context
+ */
+// use this only for component migration
+export const syncWithVuex = (context) => {
+  /** @type {VuexStore} */
+  const vuexStore = context.options.syncWith;
+  if (!vuexStore) {
+    return;
+  }
+  context.store.$patch(vuexStore.state);
+  vuexStore.subscribe(
+    () => {
+      context.store.$patch(vuexStore.state);
+    },
+    { prepend: true },
+  );
+  context.store.$subscribe(
+    () => {
+      vuexStore.replaceState(context.store.$state);
+    },
+    { flush: 'sync' },
+  );
 };

@@ -9,8 +9,8 @@ import {
   ALL_METRICS_QUERY_TYPE,
   VALUE_STREAM_METRIC_TILE_METADATA,
 } from '../constants';
-import { rawMetricToMetricTile, extractQueryResponseFromNamespace } from '../utils';
-import { BUCKETING_INTERVAL_ALL } from '../graphql/constants';
+import { rawMetricToMetricTile, extractQueryResponseFromNamespace, toYmd } from '../utils';
+import { BUCKETING_INTERVAL_ALL, FLOW_METRICS_QUERY_FILTERS } from '../graphql/constants';
 import FlowMetricsQuery from '../graphql/flow_metrics.query.graphql';
 import FOSSFlowMetricsQuery from '../graphql/foss.flow_metrics.query.graphql';
 import DoraMetricsQuery from '../graphql/dora_metrics.query.graphql';
@@ -94,14 +94,19 @@ export default {
     };
   },
   computed: {
+    queryDateRange() {
+      const { created_after: startDate, created_before: endDate } = this.requestParams;
+      return { startDate: toYmd(startDate), endDate: toYmd(endDate) };
+    },
     flowMetricsVariables() {
-      const {
-        created_after: startDate,
-        created_before: endDate,
-        label_names: labelNames,
-      } = this.requestParams;
-      const additionalParams = labelNames?.length ? { labelNames } : {};
-      return { startDate, endDate, fullPath: this.requestPath, ...additionalParams };
+      const additionalParams = Object.keys(FLOW_METRICS_QUERY_FILTERS).reduce((acc, key) => {
+        if (this.requestParams[key]) {
+          const graphqlField = FLOW_METRICS_QUERY_FILTERS[key];
+          return { ...acc, [graphqlField]: this.requestParams[key] };
+        }
+        return acc;
+      }, {});
+      return { fullPath: this.requestPath, ...this.queryDateRange, ...additionalParams };
     },
     hasGroupedMetrics() {
       return Boolean(this.groupBy.length);
@@ -194,12 +199,10 @@ export default {
     doraMetrics: {
       query: DoraMetricsQuery,
       variables() {
-        const { created_after: startDate, created_before: endDate } = this.requestParams;
         return {
+          ...this.queryDateRange,
           fullPath: this.requestPath,
           interval: BUCKETING_INTERVAL_ALL,
-          startDate,
-          endDate,
         };
       },
       skip() {

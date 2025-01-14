@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 When a security incident occurs, you should primarily follow the processes defined by your organization. The GitLab Security Operations team created this guide:
 
-- For administrators and maintainers of self-managed GitLab instances and groups on GitLab.com.
+- For administrators and maintainers of GitLab Self-Managed instances and groups on GitLab.com.
 - To provide additional information and best practices on how to respond to various security incidents related to GitLab services.
 - As a supplement to the processes defined by your organization to handle security incidents. It is **not a replacement**.
 
@@ -129,7 +129,7 @@ When secrets stored as CI variables are not [masked](../ci/variables/index.md#ma
 
 ### Suspected compromised instance
 
-Self-managed GitLab customers and administrators are responsible for:
+GitLab Self-Managed customers and administrators are responsible for:
 
 - The security of their underlying infrastructure.
 - Keeping their GitLab installation up to date.
@@ -188,7 +188,7 @@ Before you ask GitLab for help, search the [GitLab documentation](https://docs.g
 
 ### Security best practices
 
-Review the [GitLab Security documentation](../security/index.md) for what suggestions will work best for your environment and needs. If you are running a self-managed GitLab instance, consider reviewing our [diagram of GitLab components](../development/architecture.md#simplified-component-overview) to familiarize yourself with the various parts of a GitLab installation.
+Review the [GitLab Security documentation](../security/index.md) for what suggestions will work best for your environment and needs. For GitLab Self-Managed, consider reviewing our [diagram of GitLab components](../development/architecture.md#simplified-component-overview) to familiarize yourself with the various parts of a GitLab installation.
 
 #### Hardening Recommendations
 

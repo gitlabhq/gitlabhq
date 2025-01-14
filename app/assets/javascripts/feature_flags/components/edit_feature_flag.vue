@@ -3,7 +3,6 @@ import { GlAlert, GlLoadingIcon, GlToggle } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import { sprintf, __ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import FeatureFlagForm from './form.vue';
 
 export default {
@@ -14,7 +13,6 @@ export default {
     FeatureFlagActions: () => import('ee_component/feature_flags/components/actions.vue'),
     FeatureFlagForm,
   },
-  mixins: [glFeatureFlagMixin()],
   computed: {
     ...mapState([
       'path',

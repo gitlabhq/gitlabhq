@@ -145,7 +145,7 @@ module Auth
       patterns = actions_to_check.index_with { [] }
       # Admins get unrestricted access, but the registry expects to always see an array for each granted actions, so we
       # can return early here, but not any earlier.
-      return patterns if user.admin?
+      return patterns if user.can_admin_all_resources?
 
       user_access_level = user.max_member_access_for_project(project.id)
       applicable_rules = project.container_registry_protection_tag_rules.for_actions_and_access(actions_to_check, user_access_level)
@@ -363,7 +363,6 @@ module Auth
     end
 
     def repository_path_push_protected?
-      return false if Feature.disabled?(:container_registry_protected_containers, project&.root_ancestor)
       return false if current_user&.can_admin_all_resources?
 
       push_scopes = scopes.select { |scope| scope[:actions].include?('push') || scope[:actions].include?('*') }

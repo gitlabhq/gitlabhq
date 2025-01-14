@@ -62,6 +62,12 @@ RSpec.describe Ci::ScheduleOldPipelinesRemovalCronWorker,
 
         worker.perform
       end
+
+      it 'performs successfully multiple times' do
+        2.times do
+          expect { worker.perform }.not_to raise_error
+        end
+      end
     end
 
     context 'when the worker finishes processing before running out of batches' do

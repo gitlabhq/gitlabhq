@@ -18,6 +18,12 @@ module Packages
           message: ->(_object, _data) { _('should be a valid NPM package name with optional wildcard characters.') }
         },
         if: :npm?
+      validates :package_name_pattern,
+        format: {
+          with: Gitlab::Regex::Packages::Protection::Rules.protection_rules_pypi_package_name_pattern_regex,
+          message: ->(_object, _data) { _('should be a valid PyPI package name with optional wildcard characters.') }
+        },
+        if: :pypi?
       validates :package_type, presence: true
       validates :minimum_access_level_for_push, presence: true
 
@@ -41,32 +47,65 @@ module Packages
           .exists?
       end
 
-      def self.for_push_exists_for_multiple_packages(package_names:, package_types:, project_id:)
-        return none if package_names.blank? || package_types.blank? || project_id.blank?
-        return none if package_names.size != package_types.size
+      ##
+      # Accepts a list of projects and packages and returns a result set
+      # indicating whether the package name is protected.
+      #
+      # @param [Array<Array>] projects_and_packages an array of arrays where each sub-array contains
+      # the project id (bigint), the package name (string) and the package type (smallint).
+      # @return [ActiveRecord::Result] a result set indicating whether each project, package name and package type
+      # is protected.
+      #
+      # Example:
+      #   Packages::Protection::Rule.for_push_exists_for_projects_and_packages([
+      #     [1, '@my_group/my_project_1/package_1', 2],
+      #     [1, '@my_group/my_project_1/package_2', 2],
+      #     [2, '@my_group/my_project_2/package_1', 3],
+      #     ...
+      #   ])
+      #
+      #   [
+      #     {'project_id' => 1, 'package_name' => '@my_group/my_project_1/package_1', 'package_type' => 2,
+      #      'protected' => true},
+      #     {'project_id' => 1, 'package_name' => '@my_group/my_project_1/package_2', 'package_type' => 2,
+      #      'protected' => false},
+      #     {'project_id' => 2, 'package_name' => '@my_group/my_project_2/package_1', 'package_type' => 3,
+      #      'protected' => true},
+      #     ...
+      #   ]
+      #
+      def self.for_push_exists_for_projects_and_packages(projects_and_packages)
+        return none if projects_and_packages.blank?
+
+        project_ids, package_names, package_types = projects_and_packages.transpose
+
+        cte_query_sql = <<~SQL
+          unnest(
+            ARRAY[:project_ids]::bigint[],
+            ARRAY[:package_names]::text[],
+            ARRAY[:package_types]::smallint[]
+          ) AS projects_and_packages(project_id, package_name, package_type)
+        SQL
 
         cte_query =
-          select('*').from(
-            sanitize_sql_array(
-              [
-                "unnest(ARRAY[:package_names], ARRAY[:package_types]) AS x(package_name, package_type)",
-                { package_names: package_names, package_types: package_types }
-              ]
-            )
-          )
+          select('*').from(sanitize_sql_array(
+            [cte_query_sql, { project_ids: project_ids, package_names: package_names, package_types: package_types }]
+          ))
 
-        cte_name = :package_names_and_types_cte
+        cte_name = :projects_and_packages_cte
         cte = Gitlab::SQL::CTE.new(cte_name, cte_query)
 
-        rules_cte_package_type = "#{cte_name}.#{connection.quote_column_name('package_type')}"
+        rules_cte_project_id = "#{cte_name}.#{connection.quote_column_name('project_id')}"
         rules_cte_package_name = "#{cte_name}.#{connection.quote_column_name('package_name')}"
+        rules_cte_package_type = "#{cte_name}.#{connection.quote_column_name('package_type')}"
 
         protection_rule_exsits_subquery = select(1)
-          .where(project_id: project_id)
+          .where("#{rules_cte_project_id} = project_id")
           .where(arel_table[:package_type].eq(Arel.sql(rules_cte_package_type)))
           .where("#{rules_cte_package_name} ILIKE #{::Gitlab::SQL::Glob.to_like('package_name_pattern')}")
 
         query = select(
+          rules_cte_project_id,
           rules_cte_package_type,
           rules_cte_package_name,
           sanitize_sql_array(['EXISTS(?) AS protected', protection_rule_exsits_subquery])

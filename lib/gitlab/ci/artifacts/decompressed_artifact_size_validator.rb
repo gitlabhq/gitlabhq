@@ -10,7 +10,7 @@ module Gitlab
           gzip: ::Gitlab::Ci::DecompressedGzipSizeValidator
         }.freeze
 
-        FileDecompressionError = Class.new(StandardError)
+        FileDecompressionError = Class.new(::Ci::JobArtifact::InvalidArtifactError)
 
         def initialize(file:, file_format:, max_bytes: DEFAULT_MAX_BYTES)
           @file = file

@@ -127,6 +127,18 @@ module Ci
     end
     # rubocop: enable Metrics/ParameterLists, Metrics/AbcSize
 
+    def execute_async(source, options)
+      pipeline_creation_request = ::Ci::PipelineCreation::Requests.start_for_project(project)
+      creation_params = params.merge(pipeline_creation_request: pipeline_creation_request)
+
+      ::CreatePipelineWorker.perform_async(
+        project.id, current_user.id, params[:ref], source.to_s,
+        options.stringify_keys, creation_params.except(:ref).stringify_keys
+      )
+
+      ServiceResponse.success(payload: pipeline_creation_request['id'])
+    end
+
     private
 
     def after_successful_creation_hook

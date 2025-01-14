@@ -4,6 +4,8 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import searchProjectTopics from '~/graphql_shared/queries/project_topics_search.query.graphql';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPE_ORGANIZATION } from '~/graphql_shared/constants';
 
 export default {
   components: {
@@ -26,6 +28,10 @@ export default {
       required: false,
       default: () => [],
     },
+    organizationId: {
+      type: String,
+      required: true,
+    },
   },
   apollo: {
     topics: {
@@ -33,6 +39,7 @@ export default {
       variables() {
         return {
           search: this.search,
+          organizationId: convertToGraphQLId(TYPE_ORGANIZATION, this.organizationId),
         };
       },
       update(data) {

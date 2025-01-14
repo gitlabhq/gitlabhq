@@ -17,7 +17,7 @@ module WorkItems
           link.move_to_start
         end
 
-        create_notes_and_resource_event(work_item, link) if link.changed? && link.save
+        create_notes_and_resource_event(work_item, link) if link.save
 
         link
       end

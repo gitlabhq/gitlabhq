@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 An administrator can enforce acceptance of a terms of service and privacy policy.
 When this option is enabled, new and existing users must accept the terms.

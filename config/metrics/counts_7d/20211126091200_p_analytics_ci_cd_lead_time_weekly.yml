@@ -13,9 +13,6 @@ performance_indicator_type: []
 events:
   - name: p_analytics_ci_cd_lead_time
     unique: user.id
-distribution:
-  - ce
-  - ee
 tiers:
   - free
   - premium

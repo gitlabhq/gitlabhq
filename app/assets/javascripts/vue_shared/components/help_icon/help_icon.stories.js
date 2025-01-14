@@ -13,9 +13,3 @@ const Template = (args, { argTypes }) => ({
 
 export const Default = Template.bind({});
 Default.args = {};
-
-export const SmallVariant = Template.bind({});
-SmallVariant.args = {
-  ...Default.args,
-  size: 'small',
-};

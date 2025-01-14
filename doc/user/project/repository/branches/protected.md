@@ -9,7 +9,7 @@ description: "Protected branches in GitLab restrict who can push to, merge, or m
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 In GitLab, [permissions](../../../permissions.md) are fundamentally defined around the
 idea of having read or write permission to the repository and branches. To impose
@@ -98,7 +98,7 @@ Prerequisites:
 - You must have at least the Maintainer role.
 - When granting a group **Allowed to merge** or **Allowed to push and merge** permissions
   on a protected branch, the project must be accessible and shared with the group.
-  For more information, see [Shared projects](../../members/share_project_with_groups.md).
+  For more information, see [Shared projects](../../members/sharing_projects_groups.md).
 
 To protect a branch:
 
@@ -122,7 +122,7 @@ The protected branch displays in the list of protected branches.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106532) in GitLab 15.9 [with a flag](../../../../administration/feature_flags.md) named `group_protected_branches`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/500250) in GitLab 17.6. Feature flag `group_protected_branches` removed.
@@ -372,7 +372,7 @@ As the most permissive option determines the behavior, the resulting permissions
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 For a protected branch, you can require at least one approval by a [Code Owner](../../codeowners/index.md).
 If a branch is protected by multiple rules, code owner approval is required if _any_ of

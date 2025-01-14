@@ -9,10 +9,14 @@ description: "Documentation for the REST API that exposes token information."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 **Status:** Experiment
 
 Use this API to retrieve details about arbitrary tokens and to revoke them. Unlike other APIs that expose token information, this API allows you to retrieve details or revoke tokens without knowing the specific type of token.
+
+## Token Prefixes
+
+When making a request, tokens must begin with `glpat` or the current [custom prefix](../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix). If the token begins with a previous custom prefix, the operation will fail. Interest in support for previous custom prefixes is tracked in [issue 165663](https://gitlab.com/gitlab-org/gitlab/-/issues/165663).
 
 Prerequisites:
 
@@ -21,18 +25,14 @@ Prerequisites:
 ## Get information on a token
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165157) in GitLab 17.5 [with a flag](../../administration/feature_flags.md) named `admin_agnostic_token_finder`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/490572) in GitLab 17.8. Feature flag `admin_agnostic_token_finder` removed.
 > - [Feed tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169821) in GitLab 17.6.
 > - [OAuth application secrets added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172985) in GitLab 17.7.
 > - [Cluster agent tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172932) in GitLab 17.7.
 > - [Runner authentication tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173987) in GitLab 17.7.
 > - [Pipeline trigger tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174030) in GitLab 17.7.
 
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-Gets information for a given token. This endpoint supports the following token types:
+Gets information for a given token. This endpoint supports the following tokens:
 
 - [Personal access tokens](../../user/profile/personal_access_tokens.md)
 - [Impersonation tokens](../../api/rest/authentication.md#impersonation-tokens)
@@ -51,7 +51,7 @@ Supported attributes:
 
 | Attribute    | Type    | Required | Description                |
 |--------------|---------|----------|----------------------------|
-| `token`      | string  | Yes      | Existing token to identify |
+| `token`      | string  | Yes      | Existing token to identify. Must begin with `glpat` or the current [custom prefix](../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix). |
 
 If successful, returns [`200`](../rest/troubleshooting.md#status-codes) and information about the token.
 
@@ -123,7 +123,7 @@ Supported attributes:
 
 | Attribute    | Type    | Required | Description              |
 |--------------|---------|----------|--------------------------|
-| `token`      | string  | Yes      | Existing token to revoke |
+| `token`      | string  | Yes      | Existing token to revoke. Must begin with `glpat` or the current [custom prefix](../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix). |
 
 If successful, returns [`204`](../rest/troubleshooting.md#status-codes) without content.
 

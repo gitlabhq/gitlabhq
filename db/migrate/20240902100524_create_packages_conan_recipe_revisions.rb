@@ -6,7 +6,7 @@ class CreatePackagesConanRecipeRevisions < Gitlab::Database::Migration[2.2]
   INDEX_PACKAGE_ID_REVISION = 'idx_on_packages_conan_recipe_revisions_package_id_revision'
 
   def up
-    create_table :packages_conan_recipe_revisions do |t| # rubocop:disable Migration/EnsureFactoryForTable -- https://gitlab.com/gitlab-org/gitlab/-/issues/468630
+    create_table :packages_conan_recipe_revisions do |t|
       t.bigint :package_id, null: false
       t.bigint :project_id, null: false
       t.timestamps_with_timezone null: false

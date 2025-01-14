@@ -2,22 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe TreeHelper do
+RSpec.describe TreeHelper, feature_category: :source_code_management do
   include Devise::Test::ControllerHelpers
   let_it_be(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:sha) { 'c1c67abbaf91f624347bb3ae96eabe3a1b742478' }
 
   let_it_be(:user) { create(:user) }
-
-  describe '#commit_in_single_accessible_branch' do
-    it 'escapes HTML from the branch name' do
-      helper.instance_variable_set(:@branch_name, "<script>alert('escape me!');</script>")
-      escaped_branch_name = '&lt;script&gt;alert(&#39;escape me!&#39;);&lt;/script&gt;'
-
-      expect(helper.commit_in_single_accessible_branch).to include(escaped_branch_name)
-    end
-  end
 
   describe '#breadcrumb_data_attributes' do
     let(:ref) { 'main' }
@@ -49,6 +40,116 @@ RSpec.describe TreeHelper do
 
     it 'returns a list of breadcrumb attributes' do
       expect(helper.breadcrumb_data_attributes).to eq(base_attributes)
+    end
+  end
+
+  describe '#compare_path' do
+    before do
+      helper.instance_variable_set(:@project, project)
+      helper.instance_variable_set(:@ref, sha)
+    end
+
+    context 'when ref is blank' do
+      it 'returns nil when root_ref matches ref' do
+        expect(helper.compare_path(project, repository, '')).to be_nil
+      end
+
+      it 'returns nil when ref is nil' do
+        expect(helper.compare_path(project, repository, nil)).to be_nil
+      end
+    end
+
+    context 'when ref is present' do
+      it 'returns compare path when ref differs from root_ref' do
+        expected_path = project_compare_index_path(project, from: 'master', to: 'feature-branch')
+        expect(helper.compare_path(project, repository, 'feature-branch')).to eq(expected_path)
+      end
+
+      it 'returns nil when ref matches root_ref' do
+        allow(repository).to receive(:root_ref).and_return('main')
+        expect(helper.compare_path(project, repository, 'main')).to be_nil
+      end
+
+      it 'handles refs with special characters' do
+        expected_path = project_compare_index_path(project, from: 'master', to: 'feature/branch-1')
+        expect(helper.compare_path(project, repository, 'feature/branch-1')).to eq(expected_path)
+      end
+    end
+  end
+
+  describe '#vue_tree_header_app_data' do
+    let(:pipeline) { build_stubbed(:ci_pipeline, project: project) }
+
+    before do
+      helper.instance_variable_set(:@project, project)
+      helper.instance_variable_set(:@ref, sha)
+      allow(helper).to receive(:can?).and_return(false)
+      allow(helper).to receive(:can_collaborate_with_project?).and_return(true)
+      allow(helper).to receive(:user_access).and_return(instance_double(Gitlab::UserAccess, can_push_to_branch?: false))
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:ssh_enabled?).and_return(true)
+      allow(helper).to receive(:http_enabled?).and_return(true)
+      allow(helper).to receive(:show_xcode_link?).and_return(false)
+    end
+
+    subject { helper.vue_tree_header_app_data(project, repository, sha, pipeline) }
+
+    it 'returns a list of attributes related to the project' do
+      is_expected.to include(
+        project_id: project.id,
+        ref: sha,
+        ref_type: '',
+        breadcrumbs: helper.breadcrumb_data_attributes,
+        project_root_path: project_path(project),
+        project_path: project.full_path,
+        compare_path: project_compare_index_path(project, from: repository&.root_ref, to: sha),
+        web_ide_button_options: Gitlab::Json.parse(subject[:web_ide_button_options]).to_json,
+        web_ide_button_default_branch: project.default_branch_or_main,
+        ssh_url: ssh_clone_url_to_repo(project),
+        http_url: http_clone_url_to_repo(project),
+        xcode_url: '',
+        download_links: helper.download_links(project, sha, "#{project.path}-#{sha.tr('/', '-')}").to_json,
+        download_artifacts: '[]',
+        escaped_ref: sha
+      )
+    end
+
+    context 'when ssh is disabled' do
+      before do
+        allow(helper).to receive(:ssh_enabled?).and_return(false)
+      end
+
+      it 'does not include ssh_url' do
+        expect(subject[:ssh_url]).to be_empty
+      end
+    end
+
+    context 'when http is disabled' do
+      before do
+        allow(helper).to receive(:http_enabled?).and_return(false)
+      end
+
+      it 'does not include http_url' do
+        expect(subject[:http_url]).to be_empty
+      end
+    end
+
+    context 'when project is empty' do
+      before do
+        allow(project).to receive(:empty_repo?).and_return(true)
+      end
+
+      it 'does not include download_links' do
+        expect(subject[:download_links]).to be_empty
+      end
+    end
+
+    context 'when pipeline is not present' do
+      let(:pipeline) { nil }
+
+      it 'does not include download_artifacts' do
+        expect(subject[:download_artifacts]).to be nil
+      end
     end
   end
 

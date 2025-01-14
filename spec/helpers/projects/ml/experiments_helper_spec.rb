@@ -107,6 +107,7 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
 
     it do
       is_expected.to eq({
+        'id' => experiment.id,
         'name' => experiment.name,
         'metadata' => experiment.metadata,
         'path' => "/#{project.full_path}/-/ml/experiments/#{experiment.iid}",
@@ -128,6 +129,7 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
 
     it do
       is_expected.to include({
+        'id' => experiment.id,
         'name' => experiment.name,
         'metadata' => experiment.metadata,
         'path' => "/#{project.full_path}/-/ml/experiments/#{experiment.iid}",
@@ -155,7 +157,14 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
       expected_info = {
         "name" => experiment.name,
         "path" => "/#{project.full_path}/-/ml/experiments/#{experiment.iid}",
-        "candidate_count" => 2
+        "candidate_count" => 2,
+        "updated_at" => experiment.updated_at.strftime('%Y-%m-%dT%H:%M:%S.%LZ'),
+        "user" => {
+          "avatar_url" => experiment.user.avatar_url,
+          "id" => experiment.user_id,
+          "name" => experiment.user.name,
+          "path" => user_path(experiment.user)
+        }
       }
 
       expect(subject[0]).to eq(expected_info)

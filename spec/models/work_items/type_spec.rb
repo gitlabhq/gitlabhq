@@ -9,18 +9,6 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
         GlobalID.new(type.public_send(gid_method).to_s).model_id.to_i
       ).to eq(type.attributes['correct_id'])
     end
-
-    context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
-      before do
-        stub_feature_flags(issues_set_correct_work_item_type_id: false)
-      end
-
-      it 'uses the id column for global ids' do
-        expect(
-          GlobalID.new(type.public_send(gid_method).to_s).model_id.to_i
-        ).to eq(type.attributes['id'])
-      end
-    end
   end
 
   describe 'modules' do
@@ -134,42 +122,18 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
         let(:ids_for_scope) { nil }
 
         it { is_expected.to be_empty }
-
-        context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
-          before do
-            stub_feature_flags(issues_set_correct_work_item_type_id: false)
-          end
-
-          it { is_expected.to be_empty }
-        end
       end
 
       context 'when ids are empty array' do
         let(:ids_for_scope) { [] }
 
         it { is_expected.to be_empty }
-
-        context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
-          before do
-            stub_feature_flags(issues_set_correct_work_item_type_id: false)
-          end
-
-          it { is_expected.to be_empty }
-        end
       end
 
       context 'when using old ids' do
         let(:ids_for_scope) { [type1, type2].map(&:old_id) }
 
         it { is_expected.to contain_exactly(type1, type2) }
-
-        context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
-          before do
-            stub_feature_flags(issues_set_correct_work_item_type_id: false)
-          end
-
-          it { is_expected.to be_empty }
-        end
       end
 
       context 'when using correct ids' do
@@ -177,42 +141,18 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
 
         # type3 only gets matched because it's old_id matches type2.correct_id
         it { is_expected.to contain_exactly(type1, type2, type3) }
-
-        context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
-          before do
-            stub_feature_flags(issues_set_correct_work_item_type_id: false)
-          end
-
-          it { is_expected.to be_empty }
-        end
       end
 
       context 'when using correct ids but another type has the same old_id value' do
         let(:ids_for_scope) { [type2].map(&:correct_id) }
 
         it { is_expected.to contain_exactly(type2, type3) }
-
-        context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
-          before do
-            stub_feature_flags(issues_set_correct_work_item_type_id: false)
-          end
-
-          it { is_expected.to be_empty }
-        end
       end
 
       context 'when using ids' do
         let(:ids_for_scope) { [type1, type2].map(&:id) }
 
         it { is_expected.to be_empty }
-
-        context 'when issues_set_correct_work_item_type_id feature flag is disabled' do
-          before do
-            stub_feature_flags(issues_set_correct_work_item_type_id: false)
-          end
-
-          it { is_expected.to contain_exactly(type1, type2) }
-        end
       end
     end
 
@@ -540,6 +480,62 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
       end
 
       it { is_expected.to be_empty }
+    end
+  end
+
+  describe '#supported_conversion_types' do
+    let_it_be(:resource_parent) { create(:project) }
+    let_it_be(:issue_type) { create(:work_item_type, :issue) }
+    let_it_be(:incident_type) { create(:work_item_type, :incident) }
+    let_it_be(:task_type) { create(:work_item_type, :task) }
+    let_it_be(:ticket_type) { create(:work_item_type, :ticket) }
+
+    subject { work_item_type.supported_conversion_types(resource_parent) }
+
+    context 'when work item type is issue' do
+      let(:work_item_type) { issue_type }
+
+      it 'returns all supported types except itself' do
+        expect(subject).to include(incident_type, task_type, ticket_type)
+        expect(subject).not_to include(issue_type)
+      end
+    end
+
+    context 'when work item type is incident' do
+      let(:work_item_type) { incident_type }
+
+      it 'returns all supported types except itself' do
+        expect(subject).to include(issue_type, task_type, ticket_type)
+        expect(subject).not_to include(incident_type)
+      end
+    end
+
+    context 'when work item type is epic' do
+      let(:work_item_type) { create(:work_item_type, :epic) }
+
+      it 'does not include epic as it is excluded from supported conversion types' do
+        expect(subject).not_to include(work_item_type)
+      end
+    end
+
+    context 'when work item type is objective' do
+      let(:work_item_type) { create(:work_item_type, :objective) }
+
+      it 'returns empty array as objective is excluded from supported conversion types' do
+        expect(subject).not_to include(work_item_type)
+      end
+    end
+
+    context 'when resource_parent is provided' do
+      let(:work_item_type) { issue_type }
+
+      it 'passes resource_parent to supported_conversion_base_types' do
+        expect(work_item_type).to receive(:supported_conversion_base_types)
+          .with(resource_parent)
+          .and_call_original
+
+        subject
+      end
     end
   end
 end

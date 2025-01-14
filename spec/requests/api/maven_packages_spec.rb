@@ -30,6 +30,9 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
   let(:headers_with_token) { headers.merge('Private-Token' => personal_access_token.token) }
   let(:group_deploy_token_headers) { { Gitlab::Auth::AuthFinders::DEPLOY_TOKEN_HEADER => deploy_token_for_group.token } }
 
+  let(:sha1_checksum_header) { ::API::Helpers::Packages::Maven::SHA1_CHECKSUM_HEADER }
+  let(:md5_checksum_header) { ::API::Helpers::Packages::Maven::MD5_CHECKSUM_HEADER }
+
   let(:headers_with_deploy_token) do
     headers.merge(
       Gitlab::Auth::AuthFinders::DEPLOY_TOKEN_HEADER => deploy_token.token
@@ -101,62 +104,6 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       let_it_be(:package_file) { jar_file }
 
       it_behaves_like 'a package tracking event', described_class.name, 'pull_package'
-    end
-  end
-
-  shared_examples 'processing HEAD requests' do |instance_level: false|
-    subject { head api(url) }
-
-    before do
-      allow_any_instance_of(::Packages::PackageFileUploader).to receive(:fog_credentials).and_return(object_storage_credentials)
-      stub_package_file_object_storage(enabled: object_storage_enabled)
-    end
-
-    context 'with object storage enabled' do
-      let(:object_storage_enabled) { true }
-
-      before do
-        allow_any_instance_of(::Packages::PackageFileUploader).to receive(:file_storage?).and_return(false)
-      end
-
-      context 'non AWS provider' do
-        let(:object_storage_credentials) { { provider: 'Google' } }
-
-        it 'does not generated a signed url for head' do
-          expect_any_instance_of(Fog::AWS::Storage::Files).not_to receive(:head_url)
-
-          subject
-
-          expect(response).to have_gitlab_http_status(:redirect)
-        end
-      end
-
-      context 'with AWS provider' do
-        let(:object_storage_credentials) { { provider: 'AWS', aws_access_key_id: 'test', aws_secret_access_key: 'test' } }
-
-        it 'generates a signed url for head' do
-          expect_any_instance_of(Fog::AWS::Storage::Files).to receive(:head_url).and_call_original
-
-          subject
-        end
-      end
-    end
-
-    context 'with object storage disabled' do
-      let(:object_storage_enabled) { false }
-      let(:object_storage_credentials) { {} }
-
-      it 'does not generate a signed url for head' do
-        expect_any_instance_of(Fog::AWS::Storage::Files).not_to receive(:head_url)
-
-        subject
-      end
-
-      context 'with a non existing maven path' do
-        let(:path) { 'foo/bar/1.2.3' }
-
-        it_behaves_like 'returning response status', instance_level ? :forbidden : :redirect
-      end
     end
   end
 
@@ -303,18 +250,25 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     it_behaves_like 'downloads with a job token'
   end
 
-  shared_examples 'successfully returning the file' do
+  shared_examples 'successfully returning the file' do |include_md5_checksum: true|
     it 'returns the file', :aggregate_failures do
       subject
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response.media_type).to eq('application/octet-stream')
+      expect(response.headers[sha1_checksum_header]).to be_an_instance_of(String)
+
+      if include_md5_checksum
+        expect(response.headers[md5_checksum_header]).to be_an_instance_of(String)
+      else
+        expect(response.headers[md5_checksum_header]).to be_nil
+      end
     end
   end
 
   shared_examples 'file download in FIPS mode' do
     context 'in FIPS mode', :fips_mode do
-      it_behaves_like 'successfully returning the file'
+      it_behaves_like 'successfully returning the file', include_md5_checksum: false
 
       it 'rejects the request for an md5 file' do
         download_file(file_name: package_file.file_name + '.md5')
@@ -539,17 +493,6 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     def download_file_with_token(file_name:, params: {}, request_headers: headers_with_token, path: maven_metadatum.path)
       download_file(file_name: file_name, params: params, request_headers: request_headers, path: path)
     end
-  end
-
-  describe 'HEAD /api/v4/packages/maven/*path/:file_name' do
-    let(:path) { package.maven_metadatum.path }
-    let(:url) { "/packages/maven/#{path}/#{package_file.file_name}" }
-
-    shared_examples 'heading a file' do
-      it_behaves_like 'processing HEAD requests', instance_level: true
-    end
-
-    it_behaves_like 'handling groups, subgroups and user namespaces for', 'heading a file'
   end
 
   describe 'GET /api/v4/groups/:id/-/packages/maven/*path/:file_name' do
@@ -822,13 +765,6 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     end
   end
 
-  describe 'HEAD /api/v4/groups/:id/-/packages/maven/*path/:file_name' do
-    let(:path) { package.maven_metadatum.path }
-    let(:url) { "/groups/#{group.id}/-/packages/maven/#{path}/#{package_file.file_name}" }
-
-    it_behaves_like 'handling groups and subgroups for', 'processing HEAD requests'
-  end
-
   describe 'GET /api/v4/projects/:id/packages/maven/*path/:file_name' do
     context 'a public project' do
       let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_maven_user' } }
@@ -927,13 +863,6 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     def download_file_with_token(file_name:, params: {}, request_headers: headers_with_token, path: maven_metadatum.path)
       download_file(file_name: file_name, params: params, request_headers: request_headers, path: path)
     end
-  end
-
-  describe 'HEAD /api/v4/projects/:id/packages/maven/*path/:file_name' do
-    let(:path) { package.maven_metadatum.path }
-    let(:url) { "/projects/#{project.id}/packages/maven/#{path}/#{package_file.file_name}" }
-
-    it_behaves_like 'processing HEAD requests'
   end
 
   describe 'PUT /api/v4/projects/:id/packages/maven/*path/:file_name/authorize' do

@@ -259,15 +259,15 @@ Git [pre-push hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) a
 - Run tests or other processes before pushing a branch.
 - Avoid pushing a branch if failures occur with these tests.
 
-[`lefthook`](https://github.com/Arkweid/lefthook) is a Git hooks manager. It makes configuring,
+[Lefthook](https://github.com/Arkweid/lefthook) is a Git hooks manager. It makes configuring,
 installing, and removing Git hooks simpler. Configuration for it is available in the
 [`lefthook.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lefthook.yml)
 file for the [`gitlab`](https://gitlab.com/gitlab-org/gitlab) project.
 
-To set up `lefthook` for documentation linting, see
-[Pre-push static analysis](../../contributing/style_guides.md#pre-push-static-analysis-with-lefthook).
+To set up Lefthook for documentation linting, see
+[Pre-commit and pre-push static analysis with Lefthook](../../contributing/style_guides.md#pre-commit-and-pre-push-static-analysis-with-lefthook).
 
-To show Vale errors on push, see [Show Vale warnings on push](vale.md#show-vale-warnings-on-push).
+To show Vale errors on commit or push, see [Show Vale warnings on commit or push](vale.md#show-vale-warnings-on-commit-or-push).
 
 ## Disable linting on documentation
 

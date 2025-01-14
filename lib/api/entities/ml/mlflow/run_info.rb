@@ -20,22 +20,37 @@ module API
 
           private
 
+          CANDIDATE_PREFIX = 'candidate:'
+
           def run_id
             object.eid.to_s
           end
 
           def artifact_uri
-            expose_url(model_version_uri || generic_package_uri)
+            uri = if object.package&.generic?
+                    generic_package_uri
+                  elsif object.model_version_id
+                    model_version_uri
+                  else
+                    ml_model_candidate_uri
+                  end
+
+            expose_url(uri)
           end
 
           # Example: http://127.0.0.1:3000/api/v4/projects/20/packages/ml_models/1/files/
           def model_version_uri
-            return unless object.model_version_id
-
-            model_version = object.model_version
-
             path = api_v4_projects_packages_ml_models_files___path___path(
-              id: object.project.id, model_version_id: model_version.id, path: '', file_name: ''
+              id: object.project.id, model_version_id: object.model_version_id, path: '', file_name: ''
+            )
+
+            path.delete_suffix('(/path/)')
+          end
+
+          # Example: http://127.0.0.1:3000/api/v4/projects/20/packages/ml_models/1/files/
+          def ml_model_candidate_uri
+            path = api_v4_projects_packages_ml_models_files___path___path(
+              id: object.project.id, model_version_id: "#{CANDIDATE_PREFIX}#{object.iid}", path: '', file_name: ''
             )
 
             path.delete_suffix('(/path/)')

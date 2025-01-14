@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Each GitLab account has a user profile, which contains information about you and your GitLab activity.
 
@@ -455,7 +455,7 @@ When you sign in, three cookies are set:
 When you close your browser, the `_gitlab_session` and `gitlab_user` cookies are usually cleared client-side.
 When it expires or isn't available, GitLab:
 
-- Uses the `remember_user_token`cookie to get you a new `_gitlab_session` cookie and keep you signed in, even if you close your browser.
+- Uses the `remember_user_token` cookie to get you a new `_gitlab_session` cookie and keep you signed in, even if you close your browser.
 - Sets the `gitlab_user` to `true`.
 
 When both the `remember_user_token` and `_gitlab_session` cookies are gone or expired, you must sign in again.

@@ -144,6 +144,12 @@ module Gitlab
         "line_#{file_hash}_#{prefix}#{position}"
       end
 
+      def legacy_id(file_path)
+        return if meta?
+
+        Gitlab::Git.diff_line_code(file_path, new_pos, old_pos)
+      end
+
       private
 
       def calculate_line_code

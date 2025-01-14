@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::SingleEndpointNotesImporting do
+RSpec.describe Gitlab::GithubImport::SingleEndpointNotesImporting, feature_category: :importers do
   let(:importer_class) do
     Class.new do
       def self.name

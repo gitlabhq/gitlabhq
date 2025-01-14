@@ -136,15 +136,6 @@ Once you have the license file you can export it as an environment variable and 
 export QA_EE_LICENSE=$(cat /path/to/gitlab_license)
 ```
 
-### Transient bugs
-
-A suite of tests have been written to test for [transient bugs](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#transient-bugs).
-Those tests are tagged `:transient` and therefore can be run via:
-
-```shell
-bundle exec rspec --tag transient
-```
-
 ### Quarantined tests
 
 Tests can be put in quarantine by assigning `:quarantine` metadata. This means they will be skipped unless run with `--tag quarantine`. This can be used for tests that are expected to fail while a fix is in progress (similar to how [`skip` or `pending`](https://relishapp.com/rspec/rspec-core/v/3-8/docs/pending-and-skipped-examples) can be used).

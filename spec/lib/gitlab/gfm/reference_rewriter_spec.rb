@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Gfm::ReferenceRewriter do
+RSpec.describe Gitlab::Gfm::ReferenceRewriter, feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
 
@@ -25,14 +25,6 @@ RSpec.describe Gitlab::Gfm::ReferenceRewriter do
       let!(:issue_first) { create(:issue, project: old_project) }
       let!(:issue_second) { create(:issue, project: old_project) }
       let!(:merge_request) { create(:merge_request, source_project: old_project) }
-
-      context 'plain text description' do
-        let(:text) { 'Description that references #1, #2 and !1' }
-
-        it { is_expected.to include issue_first.to_reference(new_project) }
-        it { is_expected.to include issue_second.to_reference(new_project) }
-        it { is_expected.to include merge_request.to_reference(new_project) }
-      end
 
       context 'description with ignored elements' do
         let(:text) do
@@ -71,58 +63,7 @@ RSpec.describe Gitlab::Gfm::ReferenceRewriter do
 
           it { is_expected.to eq "#{ref}, `#1`, #{ref}, `#1`" }
         end
-
-        context 'description with project labels' do
-          let!(:label) { create(:label, id: 123, name: 'test', project: old_project) }
-
-          context 'label referenced by id' do
-            let(:text) { '#1 and ~123' }
-
-            it { is_expected.to eq %(#{old_project_ref}#1 and #{old_project_ref}~123) }
-          end
-
-          context 'label referenced by text' do
-            let(:text) { '#1 and ~"test"' }
-
-            it { is_expected.to eq %(#{old_project_ref}#1 and #{old_project_ref}~123) }
-          end
-        end
-
-        context 'description with group labels' do
-          let(:old_group) { create(:group) }
-          let!(:group_label) { create(:group_label, id: 321, name: 'group label', group: old_group) }
-
-          before do
-            old_project.update!(namespace: old_group)
-          end
-
-          context 'label referenced by id' do
-            let(:text) { '#1 and ~321' }
-
-            it { is_expected.to eq %(#{old_project_ref}#1 and #{old_project_ref}~321) }
-          end
-
-          context 'label referenced by text' do
-            let(:text) { '#1 and ~"group label"' }
-
-            it { is_expected.to eq %(#{old_project_ref}#1 and #{old_project_ref}~321) }
-          end
-        end
       end
-    end
-
-    context 'when description contains a local reference' do
-      let(:local_issue) { create(:issue, project: old_project) }
-      let(:text) { "See ##{local_issue.iid}" }
-
-      it { is_expected.to eq("See #{old_project.path}##{local_issue.iid}") }
-    end
-
-    context 'when description contains a cross reference' do
-      let(:merge_request) { create(:merge_request) }
-      let(:text) { "See #{merge_request.project.full_path}!#{merge_request.iid}" }
-
-      it { is_expected.to eq(text) }
     end
 
     context 'with a commit' do
@@ -142,26 +83,6 @@ RSpec.describe Gitlab::Gfm::ReferenceRewriter do
       end
     end
 
-    context 'reference contains project milestone' do
-      let!(:milestone) do
-        create(:milestone, title: '9.0', project: old_project)
-      end
-
-      let(:text) { 'milestone: %"9.0"' }
-
-      it { is_expected.to eq %(milestone: #{old_project_ref}%"9.0") }
-    end
-
-    context 'when referring to group milestone' do
-      let!(:milestone) do
-        create(:milestone, title: '10.0', group: group)
-      end
-
-      let(:text) { 'milestone %"10.0"' }
-
-      it { is_expected.to eq text }
-    end
-
     context 'when referring to a group' do
       let(:text) { "group @#{group.full_path}" }
 
@@ -178,9 +99,7 @@ RSpec.describe Gitlab::Gfm::ReferenceRewriter do
       before do
         create(:milestone, title: '9.0', project: old_project)
 
-        allow_any_instance_of(Milestone)
-          .to receive(:to_reference)
-          .and_return(nil)
+        allow_any_instance_of(Milestone).to receive(:to_reference).and_return(nil)
       end
 
       let(:text) { 'milestone: %"9.0"' }
@@ -190,6 +109,234 @@ RSpec.describe Gitlab::Gfm::ReferenceRewriter do
           described_class::RewriteError,
           'Unspecified reference detected for Milestone'
         )
+      end
+    end
+  end
+
+  describe '#rewrite with table syntax' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:parent_group1) { create(:group, path: "parent-group-one") }
+    let_it_be(:parent_group2) { create(:group, path: "parent-group-two") }
+    let_it_be(:user) { create(:user) }
+
+    let_it_be(:source_project) { create(:project, path: 'old-project', group: parent_group1) }
+    let_it_be(:target_project1) { create(:project, path: 'new-project', group: parent_group1) }
+    let_it_be(:target_project2) { create(:project, path: 'new-project', group: parent_group2) }
+    let_it_be(:target_group1) { create(:group, path: 'new-group', parent: parent_group1) }
+    let_it_be(:target_group2) { create(:group, path: 'new-group', parent: parent_group2) }
+
+    let_it_be(:work_item_project_first) { create(:issue, project: source_project) }
+
+    let_it_be(:merge_request) { create(:merge_request, source_project: source_project) }
+
+    let_it_be(:project_label) { create(:label, id: 123, name: 'pr label1', project: source_project) }
+    let_it_be(:parent_group_label) { create(:group_label, id: 321, name: 'gr label1', group: parent_group1) }
+
+    let_it_be(:project_milestone) { create(:milestone, title: 'project milestone', project: source_project) }
+    let_it_be(:parent_group_milestone) { create(:milestone, title: 'group milestone', group: parent_group1) }
+
+    before_all do
+      parent_group1.add_reporter(user)
+      parent_group2.add_reporter(user)
+    end
+
+    context 'with source as Project and target as Project within same parent group' do
+      let_it_be(:source_parent) { source_project }  # 'parent-group-one/old-project'
+      let_it_be(:target_parent) { target_project1 } # 'parent-group-one/new-project'
+
+      where(:source_text, :destination_text) do
+        # project level work item reference
+        'ref #1'                             | 'ref old-project#1'
+        'ref #1+'                            | 'ref old-project#1+'
+        'ref #1+s'                           | 'ref old-project#1+s'
+        # merge request reference
+        'ref !1'                             | 'ref old-project!1'
+        'ref !1+'                            | 'ref old-project!1+'
+        'ref !1+s'                           | 'ref old-project!1+s'
+        # project label reference
+        'ref ~123'                           | 'ref old-project~123'
+        'ref ~"pr label1"'                   | 'ref old-project~123'
+        # group level label reference
+        'ref ~321'                           | 'ref old-project~321'
+        'ref ~"gr label1"'                   | 'ref old-project~321'
+        # project level milestone reference
+        'ref %"project milestone"'           | 'ref /parent-group-one/old-project%"project milestone"'
+        # group level milestone reference
+        'ref %"group milestone"'             | 'ref /parent-group-one%"group milestone"'
+      end
+
+      with_them do
+        it_behaves_like 'rewrites references correctly'
+      end
+    end
+
+    context 'with source as Project and target as Project within different parent groups' do
+      let_it_be(:source_parent) { source_project }  # 'parent-group-one/old-project'
+      let_it_be(:target_parent) { target_project2 } # 'parent-group-two/new-project'
+
+      where(:source_text, :destination_text) do
+        # project level work item reference
+        'ref #1'                             | 'ref parent-group-one/old-project#1'
+        'ref #1+'                            | 'ref parent-group-one/old-project#1+'
+        'ref #1+s'                           | 'ref parent-group-one/old-project#1+s'
+        # merge request reference
+        'ref !1'                             | 'ref parent-group-one/old-project!1'
+        'ref !1+'                            | 'ref parent-group-one/old-project!1+'
+        'ref !1+s'                           | 'ref parent-group-one/old-project!1+s'
+        # project label reference
+        'ref ~123'                           | 'ref parent-group-one/old-project~123'
+        'ref ~"pr label1"'                   | 'ref parent-group-one/old-project~123'
+        # group level label reference
+        'ref ~321'                           | 'ref parent-group-one/old-project~321'
+        'ref ~"gr label1"'                   | 'ref parent-group-one/old-project~321'
+        # project level milestone reference
+        'ref %"project milestone"'           | 'ref /parent-group-one/old-project%"project milestone"'
+        # group level milestone reference
+        'ref %"group milestone"'             | 'ref /parent-group-one%"group milestone"'
+      end
+
+      with_them do
+        it_behaves_like 'rewrites references correctly'
+      end
+    end
+
+    context 'with source as Project and target as Group within same parent group' do
+      let_it_be(:source_parent) { source_project } # 'parent-group-one/old-project'
+      let_it_be(:target_parent) { target_group1 }  # 'parent-group-one/new-group'
+
+      where(:source_text, :destination_text) do
+        # project level work item reference
+        'ref #1'                             | 'ref parent-group-one/old-project#1'
+        'ref #1+'                            | 'ref parent-group-one/old-project#1+'
+        'ref #1+s'                           | 'ref parent-group-one/old-project#1+s'
+        # merge request reference
+        'ref !1'                             | 'ref parent-group-one/old-project!1'
+        'ref !1+'                            | 'ref parent-group-one/old-project!1+'
+        'ref !1+s'                           | 'ref parent-group-one/old-project!1+s'
+        # project label reference
+        'ref ~123'                           | 'ref parent-group-one/old-project~123'
+        'ref ~"pr label1"'                   | 'ref parent-group-one/old-project~123'
+        # group level label reference
+        'ref ~321'                           | 'ref parent-group-one/old-project~321'
+        'ref ~"gr label1"'                   | 'ref parent-group-one/old-project~321'
+        # project level milestone reference
+        'ref %"project milestone"'           | 'ref /parent-group-one/old-project%"project milestone"'
+        # group level milestone reference
+        'ref %"group milestone"'             | 'ref /parent-group-one%"group milestone"'
+      end
+
+      with_them do
+        it_behaves_like 'rewrites references correctly'
+      end
+    end
+
+    context 'with source as Project and target as Group within different parent groups' do
+      let_it_be(:source_parent) { source_project } # 'parent-group-one/old-project'
+      let_it_be(:target_parent) { target_group2 }  # 'parent-group-two/new-group'
+
+      where(:source_text, :destination_text) do
+        # project level work item reference
+        'ref #1'                             | 'ref parent-group-one/old-project#1'
+        'ref #1+'                            | 'ref parent-group-one/old-project#1+'
+        'ref #1+s'                           | 'ref parent-group-one/old-project#1+s'
+        # merge request reference
+        'ref !1'                             | 'ref parent-group-one/old-project!1'
+        'ref !1+'                            | 'ref parent-group-one/old-project!1+'
+        'ref !1+s'                           | 'ref parent-group-one/old-project!1+s'
+        # project label reference
+        'ref ~123'                           | 'ref parent-group-one/old-project~123'
+        'ref ~"pr label1"'                   | 'ref parent-group-one/old-project~123'
+        # group level label reference
+        'ref ~321'                           | 'ref parent-group-one/old-project~321'
+        'ref ~"gr label1"'                   | 'ref parent-group-one/old-project~321'
+        # project level milestone reference
+        'ref %"project milestone"'           | 'ref /parent-group-one/old-project%"project milestone"'
+        # group level milestone reference
+        'ref %"group milestone"'             | 'ref /parent-group-one%"group milestone"'
+      end
+
+      with_them do
+        it_behaves_like 'rewrites references correctly'
+      end
+    end
+
+    context 'with invalid references' do
+      let_it_be(:source_parent) { source_project }
+      let_it_be(:target_parent) { target_project1 }
+
+      where(:text_with_reference) do
+        [
+          # work item references
+          # project level non-existing WI references
+          'ref parent-group-one/old-project#12321',
+          'ref parent-group-one/old-project#12321+',
+          'ref parent-group-one/old-project#12321+s',
+          'ref /parent-group-one/old-project#12321',
+          'ref /parent-group-one/old-project#12321+',
+          'ref /parent-group-one/old-project#12321+s',
+
+          # group level non-existing WI references
+          'ref parent-group-one/old-group#12321',
+          'ref parent-group-one/old-group#12321+',
+          'ref parent-group-one/old-group#12321+s',
+          'ref /parent-group-one/old-group#12321',
+          'ref /parent-group-one/old-group#12321+',
+          'ref /parent-group-one/old-group#12321+s',
+
+          # project level non-existing design references
+          'ref parent-group-one/old-project#1/designs[homescreen.jpg]',
+          'ref parent-group-one/old-project#12321/designs[homescreen.jpg]',
+          'ref parent-group-one/old-group#12321/designs[homescreen.jpg]',
+          'ref /parent-group-one/old-project#1/designs[homescreen.jpg]',
+          'ref /parent-group-one/old-project#12321/designs[homescreen.jpg]',
+          'ref /parent-group-one/old-group#12321/designs[homescreen.jpg]',
+
+          # merge request references
+          # project level non-existing MR references
+          'ref parent-group-one/old-project!12321',
+          'ref parent-group-one/old-project!12321+',
+          'ref parent-group-one/old-project!12321+s',
+          'ref /parent-group-one/old-project!12321',
+          'ref /parent-group-one/old-project!12321+',
+          'ref /parent-group-one/old-project!12321+s',
+
+          # root group
+          'ref parent-group-one!1',
+          'ref parent-group-one!1+',
+          'ref parent-group-one!1+s',
+          'ref /parent-group-one!1',
+          'ref /parent-group-one!1+',
+          'ref /parent-group-one!1+s',
+
+          # sub-group
+          'ref parent-group-one/new-group!1',
+          'ref parent-group-one/new-group!1+',
+          'ref parent-group-one/new-group!1+s',
+          'ref /parent-group-one/new-group!1',
+          'ref /parent-group-one/new-group!1+',
+          'ref /parent-group-one/new-group!1+s',
+
+          # alert reference
+          'ref parent-group-one/old-project^alert#123',
+          'ref parent-group-one^alert#123',
+          'ref parent-group-one/new-group^alert#123',
+          'ref /parent-group-one/old-project^alert#123',
+          'ref /parent-group-one^alert#123',
+          'ref /parent-group-one/new-group^alert#123',
+
+          # feature flag reference
+          'ref [feature_flag:parent-group-one/old-project/123]',
+          'ref [feature_flag:parent-group-one/123]',
+          'ref [feature_flag:parent-group-one/old-group/123]',
+          'ref [feature_flag:/parent-group-one/old-project/123]',
+          'ref [feature_flag:/parent-group-one/123]',
+          'ref [feature_flag:/parent-group-one/old-group/123]'
+        ]
+      end
+
+      with_them do
+        it_behaves_like 'does not raise errors on invalid references'
       end
     end
   end

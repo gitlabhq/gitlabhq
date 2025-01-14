@@ -9,7 +9,7 @@ description: "Understand and configure the commit squashing options available in
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 As you work on a feature branch, you often create small, self-contained commits. These small commits
 help describe the process of building a feature, but can clutter your Git history after the feature

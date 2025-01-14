@@ -595,6 +595,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="querygroupsids"></a>`ids` | [`[ID!]`](#id) | Filter groups by IDs. |
 | <a id="querygroupsmarkedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the group was marked for deletion. |
+| <a id="querygroupsownedonly"></a>`ownedOnly` | [`Boolean`](#boolean) | Only include groups where the current user has an owner role. |
 | <a id="querygroupssearch"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
 | <a id="querygroupssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
 | <a id="querygroupstoplevelonly"></a>`topLevelOnly` | [`Boolean`](#boolean) | Only include top-level groups. |
@@ -727,16 +728,6 @@ Returns [`Iteration`](#iteration).
 | ---- | ---- | ----------- |
 | <a id="queryiterationid"></a>`id` | [`IterationID!`](#iterationid) | Find an iteration by its ID. |
 
-### `Query.jobTokenPoliciesByCategory`
-
-List of job token policies for use with fine-grained permissions on CI/CD job allowlist.
-
-DETAILS:
-**Introduced** in GitLab 17.7.
-**Status**: Experiment.
-
-Returns [`[JobTokenPolicyCategory!]`](#jobtokenpolicycategory).
-
 ### `Query.jobs`
 
 All jobs on this GitLab instance. Returns an empty result for users without administrator access.
@@ -849,6 +840,18 @@ Returns [`Milestone`](#milestone).
 | ---- | ---- | ----------- |
 | <a id="querymilestoneid"></a>`id` | [`MilestoneID!`](#milestoneid) | Find a milestone by its ID. |
 
+### `Query.mlExperiment`
+
+Find a machine learning experiment.
+
+Returns [`MlExperiment`](#mlexperiment).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querymlexperimentid"></a>`id` | [`MlExperimentID!`](#mlexperimentid) | ID of the experiment. |
+
 ### `Query.mlModel`
 
 Find machine learning models.
@@ -946,6 +949,26 @@ Returns [`Project`](#project).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryprojectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. For example, `gitlab-org/gitlab-foss`. |
+
+### `Query.projectSecrets`
+
+List project secrets.
+
+DETAILS:
+**Introduced** in GitLab 17.8.
+**Status**: Experiment.
+
+Returns [`ProjectSecretConnection`](#projectsecretconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryprojectsecretsprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the secrets belong to. |
 
 ### `Query.projectSecretsManager`
 
@@ -1094,6 +1117,8 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryrunnersactive"></a>`active` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in GitLab 14.8. This was renamed. Use: `paused`. |
 | <a id="queryrunnerscreatorid"></a>`creatorId` | [`UserID`](#userid) | Filter runners by creator ID. |
 | <a id="queryrunnerscreatorusername"></a>`creatorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Filter runners by creator username. |
+| <a id="queryrunnersownerfullpath"></a>`ownerFullPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owning project or group. |
+| <a id="queryrunnersownerwildcard"></a>`ownerWildcard` **{warning-solid}** | [`CiRunnerOwnerWildcard`](#cirunnerownerwildcard) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owner wildcard. |
 | <a id="queryrunnerspaused"></a>`paused` | [`Boolean`](#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
 | <a id="queryrunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
 | <a id="queryrunnerssort"></a>`sort` | [`CiRunnerSort`](#cirunnersort) | Sort order of results. |
@@ -1274,6 +1299,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="querytopicsorganizationid"></a>`organizationId` **{warning-solid}** | [`OrganizationsOrganizationID`](#organizationsorganizationid) | **Introduced** in GitLab 17.7. **Status**: Experiment. Global ID of the organization. |
 | <a id="querytopicssearch"></a>`search` | [`String`](#string) | Search query for topic name. |
 
 ### `Query.usageTrendsMeasurements`
@@ -3133,6 +3159,7 @@ Input type: `CiJobTokenScopeAddGroupOrProjectInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscopeaddgrouporprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcijobtokenscopeaddgrouporprojectdefaultpermissions"></a>`defaultPermissions` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.8. |
 | <a id="mutationcijobtokenscopeaddgrouporprojectjobtokenpolicies"></a>`jobTokenPolicies` **{warning-solid}** | [`[CiJobTokenScopePolicies!]`](#cijobtokenscopepolicies) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.5. |
 | <a id="mutationcijobtokenscopeaddgrouporprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | Project that the CI job token scope belongs to. |
 | <a id="mutationcijobtokenscopeaddgrouporprojecttargetpath"></a>`targetPath` | [`ID!`](#id) | Group or project to be added to the CI job token scope. |
@@ -3224,6 +3251,7 @@ Input type: `CiJobTokenScopeUpdatePoliciesInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscopeupdatepoliciesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcijobtokenscopeupdatepoliciesdefaultpermissions"></a>`defaultPermissions` | [`Boolean!`](#boolean) | Indicates whether default permissions are enabled (true) or fine-grained permissions are enabled (false). |
 | <a id="mutationcijobtokenscopeupdatepoliciesjobtokenpolicies"></a>`jobTokenPolicies` | [`[CiJobTokenScopePolicies!]!`](#cijobtokenscopepolicies) | List of policies added to the CI job token scope. |
 | <a id="mutationcijobtokenscopeupdatepoliciesprojectpath"></a>`projectPath` | [`ID!`](#id) | Project that the CI job token scope belongs to. |
 | <a id="mutationcijobtokenscopeupdatepoliciestargetpath"></a>`targetPath` | [`ID!`](#id) | Group or project that the CI job token targets. |
@@ -3693,11 +3721,7 @@ Input type: `CreateComplianceRequirementInput`
 
 ### `Mutation.createContainerProtectionRepositoryRule`
 
-Creates a protection rule to restrict access to a project's container registry. Available only when feature flag `container_registry_protected_containers` is enabled.
-
-DETAILS:
-**Introduced** in GitLab 16.6.
-**Status**: Experiment.
+Creates a repository protection rule to restrict access to a project's container registry.
 
 Input type: `CreateContainerProtectionRepositoryRuleInput`
 
@@ -3706,18 +3730,46 @@ Input type: `CreateContainerProtectionRepositoryRuleInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatecontainerprotectionrepositoryruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatecontainerprotectionrepositoryruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | Minimum GitLab access level required to delete container images from the container repository. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level is ignored. Users with at least the Developer role can delete container images. Introduced in GitLab 16.6: **Status**: Experiment. |
-| <a id="mutationcreatecontainerprotectionrepositoryruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | Minimum GitLab access level required to push container images to the container repository. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level is ignored. Users with at least the Developer role can push container images. Introduced in GitLab 16.6: **Status**: Experiment. |
+| <a id="mutationcreatecontainerprotectionrepositoryruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | Minimum GitLab access level required to delete container images from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`.If the value is `nil`, the default minimum access level is `DEVELOPER`. |
+| <a id="mutationcreatecontainerprotectionrepositoryruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | Minimum GitLab access level required to push container images to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`.If the value is `nil`, the default minimum access level is `DEVELOPER`. |
 | <a id="mutationcreatecontainerprotectionrepositoryruleprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project where a protection rule is located. |
-| <a id="mutationcreatecontainerprotectionrepositoryrulerepositorypathpattern"></a>`repositoryPathPattern` | [`String!`](#string) | Container repository path pattern protected by the protection rule. For example, `my-project/my-container-*`. Wildcard character `*` allowed. Introduced in GitLab 16.6: **Status**: Experiment. |
+| <a id="mutationcreatecontainerprotectionrepositoryrulerepositorypathpattern"></a>`repositoryPathPattern` | [`String!`](#string) | Container repository path pattern protected by the protection rule. For example, `my-project/my-container-*`. Wildcard character `*` allowed. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatecontainerprotectionrepositoryruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatecontainerprotectionrepositoryrulecontainerprotectionrepositoryrule"></a>`containerProtectionRepositoryRule` **{warning-solid}** | [`ContainerProtectionRepositoryRule`](#containerprotectionrepositoryrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.6. |
+| <a id="mutationcreatecontainerprotectionrepositoryrulecontainerprotectionrepositoryrule"></a>`containerProtectionRepositoryRule` | [`ContainerProtectionRepositoryRule`](#containerprotectionrepositoryrule) | Container repository protection rule after mutation. |
 | <a id="mutationcreatecontainerprotectionrepositoryruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.createContainerProtectionTagRule`
+
+Creates a protection rule to control which user roles can modify container image tags matching a specified pattern. Available only when feature flag `container_registry_protected_tags` is enabled.
+
+DETAILS:
+**Introduced** in GitLab 17.8.
+**Status**: Experiment.
+
+Input type: `createContainerProtectionTagRuleInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcreatecontainerprotectiontagruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcreatecontainerprotectiontagruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` | [`ContainerProtectionTagRuleAccessLevel!`](#containerprotectiontagruleaccesslevel) | Minimum GitLab access level required to delete container image tags from the container repository. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level is ignored. Users with at least the Developer role can delete container image tags. Introduced in GitLab 17.8: **Status**: Experiment. |
+| <a id="mutationcreatecontainerprotectiontagruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`ContainerProtectionTagRuleAccessLevel!`](#containerprotectiontagruleaccesslevel) | Minimum GitLab access level required to push container image tags to the container repository. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level is ignored. Users with at least the Developer role can push container image tags. Introduced in GitLab 17.8: **Status**: Experiment. |
+| <a id="mutationcreatecontainerprotectiontagruleprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project containing the container image tags. |
+| <a id="mutationcreatecontainerprotectiontagruletagnamepattern"></a>`tagNamePattern` | [`String!`](#string) | The pattern that matches container image tags to protect. For example, `v1.*`. Wildcard character `*` allowed. Introduced in GitLab 17.8: **Status**: Experiment. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcreatecontainerprotectiontagruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcreatecontainerprotectiontagrulecontainerprotectiontagrule"></a>`containerProtectionTagRule` **{warning-solid}** | [`ContainerProtectionTagRule`](#containerprotectiontagrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.8. |
+| <a id="mutationcreatecontainerprotectiontagruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.createCustomEmoji`
 
@@ -4388,6 +4440,7 @@ Input type: `DastSiteProfileCreateInput`
 | <a id="mutationdastsiteprofilecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdastsiteprofilecreateexcludedurls"></a>`excludedUrls` | [`[String!]`](#string) | URLs to skip during an authenticated scan. Defaults to `[]`. |
 | <a id="mutationdastsiteprofilecreatefullpath"></a>`fullPath` | [`ID!`](#id) | Project the site profile belongs to. |
+| <a id="mutationdastsiteprofilecreateoptionalvariables"></a>`optionalVariables` | [`[JSON!]`](#json) | Optional variables that can be configured for DAST scans. |
 | <a id="mutationdastsiteprofilecreateprofilename"></a>`profileName` | [`String!`](#string) | Name of the site profile. |
 | <a id="mutationdastsiteprofilecreaterequestheaders"></a>`requestHeaders` | [`String`](#string) | Comma-separated list of request header names and values to be added to every request made by DAST. |
 | <a id="mutationdastsiteprofilecreatescanfilepath"></a>`scanFilePath` | [`String`](#string) | File Path or URL used as input for the scan method. |
@@ -4436,6 +4489,7 @@ Input type: `DastSiteProfileUpdateInput`
 | <a id="mutationdastsiteprofileupdateexcludedurls"></a>`excludedUrls` | [`[String!]`](#string) | URLs to skip during an authenticated scan. |
 | <a id="mutationdastsiteprofileupdatefullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in GitLab 14.5. |
 | <a id="mutationdastsiteprofileupdateid"></a>`id` | [`DastSiteProfileID!`](#dastsiteprofileid) | ID of the site profile to be updated. |
+| <a id="mutationdastsiteprofileupdateoptionalvariables"></a>`optionalVariables` | [`[JSON!]`](#json) | Optional variables that can be configured for DAST scans. |
 | <a id="mutationdastsiteprofileupdateprofilename"></a>`profileName` | [`String!`](#string) | Name of the site profile. |
 | <a id="mutationdastsiteprofileupdaterequestheaders"></a>`requestHeaders` | [`String`](#string) | Comma-separated list of request header names and values to be added to every request made by DAST. |
 | <a id="mutationdastsiteprofileupdatescanfilepath"></a>`scanFilePath` | [`String`](#string) | File Path or URL used as input for the scan method. |
@@ -4540,11 +4594,7 @@ Input type: `DeleteAnnotationInput`
 
 ### `Mutation.deleteContainerProtectionRepositoryRule`
 
-Deletes a container registry protection rule. Available only when feature flag `container_registry_protected_containers` is enabled.
-
-DETAILS:
-**Introduced** in GitLab 16.7.
-**Status**: Experiment.
+Deletes a container repository protection rule.
 
 Input type: `DeleteContainerProtectionRepositoryRuleInput`
 
@@ -4553,15 +4603,40 @@ Input type: `DeleteContainerProtectionRepositoryRuleInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdeletecontainerprotectionrepositoryruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdeletecontainerprotectionrepositoryruleid"></a>`id` | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | Global ID of the container registry protection rule to delete. |
+| <a id="mutationdeletecontainerprotectionrepositoryruleid"></a>`id` | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | Global ID of the container repository protection rule to delete. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdeletecontainerprotectionrepositoryruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdeletecontainerprotectionrepositoryrulecontainerprotectionrepositoryrule"></a>`containerProtectionRepositoryRule` **{warning-solid}** | [`ContainerProtectionRepositoryRule`](#containerprotectionrepositoryrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.7. |
+| <a id="mutationdeletecontainerprotectionrepositoryrulecontainerprotectionrepositoryrule"></a>`containerProtectionRepositoryRule` | [`ContainerProtectionRepositoryRule`](#containerprotectionrepositoryrule) | Container repository protection rule that was deleted successfully. |
 | <a id="mutationdeletecontainerprotectionrepositoryruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.deleteContainerProtectionTagRule`
+
+Deletes a protection rule that controls which user roles can modify container image tags matching a specified pattern. Available only when feature flag `container_registry_protected_tags` is enabled.
+
+DETAILS:
+**Introduced** in GitLab 17.8.
+**Status**: Experiment.
+
+Input type: `DeleteContainerProtectionTagRuleInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdeletecontainerprotectiontagruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeletecontainerprotectiontagruleid"></a>`id` | [`ContainerRegistryProtectionTagRuleID!`](#containerregistryprotectiontagruleid) | Global ID of the tag protection rule to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdeletecontainerprotectiontagruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeletecontainerprotectiontagrulecontainerprotectiontagrule"></a>`containerProtectionTagRule` **{warning-solid}** | [`ContainerProtectionTagRule`](#containerprotectiontagrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.8. |
+| <a id="mutationdeletecontainerprotectiontagruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.deletePackagesProtectionRule`
 
@@ -5091,6 +5166,7 @@ Input type: `EnvironmentCreateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationenvironmentcreateautostopsetting"></a>`autoStopSetting` | [`AutoStopSetting`](#autostopsetting) | Auto stop setting of the environment. |
 | <a id="mutationenvironmentcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationenvironmentcreateclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID`](#clustersagentid) | Cluster agent of the environment. |
 | <a id="mutationenvironmentcreatedescription"></a>`description` | [`String`](#string) | Description of the environment. |
@@ -5161,6 +5237,7 @@ Input type: `EnvironmentUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationenvironmentupdateautostopsetting"></a>`autoStopSetting` | [`AutoStopSetting`](#autostopsetting) | Auto stop setting of the environment. |
 | <a id="mutationenvironmentupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationenvironmentupdateclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID`](#clustersagentid) | Cluster agent of the environment. |
 | <a id="mutationenvironmentupdatedescription"></a>`description` | [`String`](#string) | Description of the environment. |
@@ -7127,7 +7204,7 @@ Input type: `MemberRoleCreateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationmemberrolecreatebaseaccesslevel"></a>`baseAccessLevel` | [`MemberAccessLevel!`](#memberaccesslevel) | Base access level for the custom role. |
+| <a id="mutationmemberrolecreatebaseaccesslevel"></a>`baseAccessLevel` | [`MemberRolesAccessLevel!`](#memberrolesaccesslevel) | Base access level for the custom role. |
 | <a id="mutationmemberrolecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmemberrolecreatedescription"></a>`description` | [`String`](#string) | Description of the member role. |
 | <a id="mutationmemberrolecreategrouppath"></a>`groupPath` | [`ID`](#id) | Group the member role to mutate is in. Required for SaaS. |
@@ -7256,6 +7333,7 @@ Input type: `MergeRequestCreateInput`
 | <a id="mutationmergerequestcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestcreatedescription"></a>`description` | [`String`](#string) | Description of the merge request (Markdown rendered as HTML for caching). |
 | <a id="mutationmergerequestcreatelabels"></a>`labels` | [`[String!]`](#string) | Labels of the merge request. |
+| <a id="mutationmergerequestcreatemergeafter"></a>`mergeAfter` | [`Time`](#time) | Date after which the merge request can be merged. |
 | <a id="mutationmergerequestcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project full path the merge request is associated with. |
 | <a id="mutationmergerequestcreatesourcebranch"></a>`sourceBranch` | [`String!`](#string) | Source branch of the merge request. |
 | <a id="mutationmergerequestcreatetargetbranch"></a>`targetBranch` | [`String!`](#string) | Target branch of the merge request. |
@@ -7268,6 +7346,26 @@ Input type: `MergeRequestCreateInput`
 | <a id="mutationmergerequestcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationmergerequestcreatemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
+
+### `Mutation.mergeRequestDestroyRequestedChanges`
+
+Input type: `MergeRequestDestroyRequestedChangesInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmergerequestdestroyrequestedchangesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmergerequestdestroyrequestedchangesiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestdestroyrequestedchangesprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmergerequestdestroyrequestedchangesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmergerequestdestroyrequestedchangeserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationmergerequestdestroyrequestedchangesmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
 ### `Mutation.mergeRequestReviewerRereview`
 
@@ -7453,6 +7551,7 @@ Input type: `MergeRequestUpdateInput`
 | <a id="mutationmergerequestupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestupdatedescription"></a>`description` | [`String`](#string) | Description of the merge request (Markdown rendered as HTML for caching). |
 | <a id="mutationmergerequestupdateiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestupdatemergeafter"></a>`mergeAfter` | [`Time`](#time) | Date after which the merge request can be merged. |
 | <a id="mutationmergerequestupdateoverriderequestedchanges"></a>`overrideRequestedChanges` | [`Boolean`](#boolean) | Override all requested changes. Can only be set by users who have permissionto merge this merge request. |
 | <a id="mutationmergerequestupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
 | <a id="mutationmergerequestupdatestate"></a>`state` | [`MergeRequestNewState`](#mergerequestnewstate) | Action to perform to change the state. |
@@ -7628,6 +7727,7 @@ Input type: `MlModelVersionCreateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationmlmodelversioncreatecandidateid"></a>`candidateId` | [`MlCandidateID`](#mlcandidateid) | Global ID of a candidate to promote optionally. |
 | <a id="mutationmlmodelversioncreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmlmodelversioncreatedescription"></a>`description` | [`String`](#string) | Description of the model version. |
 | <a id="mutationmlmodelversioncreatemodelid"></a>`modelId` | [`MlModelID!`](#mlmodelid) | Global ID of the model the version belongs to. |
@@ -8049,6 +8149,7 @@ Input type: `PipelineCreateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationpipelinecreateasync"></a>`async` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.8. |
 | <a id="mutationpipelinecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationpipelinecreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project that is triggering the pipeline. |
 | <a id="mutationpipelinecreateref"></a>`ref` | [`String!`](#string) | Ref on which to run the pipeline. |
@@ -8060,7 +8161,8 @@ Input type: `PipelineCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationpipelinecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationpipelinecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationpipelinecreatepipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | Pipeline created after mutation. |
+| <a id="mutationpipelinecreatepipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | Pipeline created after mutation. Null if `async: true`. |
+| <a id="mutationpipelinecreaterequestid"></a>`requestId` **{warning-solid}** | [`String`](#string) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.8. |
 
 ### `Mutation.pipelineDestroy`
 
@@ -9687,6 +9789,28 @@ Input type: `StarProjectInput`
 | <a id="mutationstarprojectcount"></a>`count` | [`String!`](#string) | Number of stars for the project. |
 | <a id="mutationstarprojecterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.tagCreate`
+
+Input type: `TagCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationtagcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationtagcreatemessage"></a>`message` | [`String`](#string) | Tagging message. |
+| <a id="mutationtagcreatename"></a>`name` | [`String!`](#string) | Name of the tag. |
+| <a id="mutationtagcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project full path the branch is associated with. |
+| <a id="mutationtagcreateref"></a>`ref` | [`String!`](#string) | Tag name or commit SHA to create tag from. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationtagcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationtagcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationtagcreatetag"></a>`tag` | [`Tag`](#tag) | Tag after mutation. |
+
 ### `Mutation.terraformStateDelete`
 
 Input type: `TerraformStateDeleteInput`
@@ -10231,11 +10355,7 @@ Input type: `UpdateContainerExpirationPolicyInput`
 
 ### `Mutation.updateContainerProtectionRepositoryRule`
 
-Updates a container registry protection rule to restrict access to project containers. You can prevent users without certain roles from altering containers. Available only when feature flag `container_registry_protected_containers` is enabled.
-
-DETAILS:
-**Introduced** in GitLab 16.7.
-**Status**: Experiment.
+Updates a container repository protection rule that controls who can modify container images based on user roles.
 
 Input type: `UpdateContainerProtectionRepositoryRuleInput`
 
@@ -10244,18 +10364,46 @@ Input type: `UpdateContainerProtectionRepositoryRuleInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationupdatecontainerprotectionrepositoryruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdatecontainerprotectionrepositoryruleid"></a>`id` | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | Global ID of the container registry protection rule to be updated. |
-| <a id="mutationupdatecontainerprotectionrepositoryruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` **{warning-solid}** | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.7. |
-| <a id="mutationupdatecontainerprotectionrepositoryruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.7. |
-| <a id="mutationupdatecontainerprotectionrepositoryrulerepositorypathpattern"></a>`repositoryPathPattern` **{warning-solid}** | [`String`](#string) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.7. |
+| <a id="mutationupdatecontainerprotectionrepositoryruleid"></a>`id` | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | Global ID of the container repository protection rule to be updated. |
+| <a id="mutationupdatecontainerprotectionrepositoryruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | Minimum GitLab access level required to delete container images from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`.If the value is `nil`, the default minimum access level is `DEVELOPER`. |
+| <a id="mutationupdatecontainerprotectionrepositoryruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | Minimum GitLab access level required to push container images to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`.If the value is `nil`, the default minimum access level is `DEVELOPER`. |
+| <a id="mutationupdatecontainerprotectionrepositoryrulerepositorypathpattern"></a>`repositoryPathPattern` | [`String`](#string) | Container repository path pattern protected by the protection rule. For example, `my-project/my-container-*`. Wildcard character `*` allowed. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationupdatecontainerprotectionrepositoryruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdatecontainerprotectionrepositoryrulecontainerprotectionrepositoryrule"></a>`containerProtectionRepositoryRule` **{warning-solid}** | [`ContainerProtectionRepositoryRule`](#containerprotectionrepositoryrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.7. |
+| <a id="mutationupdatecontainerprotectionrepositoryrulecontainerprotectionrepositoryrule"></a>`containerProtectionRepositoryRule` | [`ContainerProtectionRepositoryRule`](#containerprotectionrepositoryrule) | Container repository protection rule after mutation. |
 | <a id="mutationupdatecontainerprotectionrepositoryruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.updateContainerProtectionTagRule`
+
+Updates a protection rule that controls which user roles can modify container image tags matching a specified pattern. Available only when feature flag `container_registry_protected_tags` is enabled.
+
+DETAILS:
+**Introduced** in GitLab 17.8.
+**Status**: Experiment.
+
+Input type: `UpdateContainerProtectionTagRuleInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdatecontainerprotectiontagruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatecontainerprotectiontagruleid"></a>`id` | [`ContainerRegistryProtectionTagRuleID!`](#containerregistryprotectiontagruleid) | Global ID of the tag protection rule to update. |
+| <a id="mutationupdatecontainerprotectiontagruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` **{warning-solid}** | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.8. |
+| <a id="mutationupdatecontainerprotectiontagruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.8. |
+| <a id="mutationupdatecontainerprotectiontagruletagnamepattern"></a>`tagNamePattern` **{warning-solid}** | [`String`](#string) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.8. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdatecontainerprotectiontagruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatecontainerprotectiontagrulecontainerprotectiontagrule"></a>`containerProtectionTagRule` **{warning-solid}** | [`ContainerProtectionTagRule`](#containerprotectiontagrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.8. |
+| <a id="mutationupdatecontainerprotectiontagruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.updateDependencyProxyImageTtlGroupPolicy`
 
@@ -10845,6 +10993,7 @@ Input type: `UserPreferencesUpdateInput`
 | <a id="mutationuserpreferencesupdatemergerequestssort"></a>`mergeRequestsSort` | [`MergeRequestSort`](#mergerequestsort) | Sort order for issue lists. |
 | <a id="mutationuserpreferencesupdateorganizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` **{warning-solid}** | [`OrganizationGroupProjectDisplay`](#organizationgroupprojectdisplay) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.2. |
 | <a id="mutationuserpreferencesupdateorganizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` **{warning-solid}** | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.2. |
+| <a id="mutationuserpreferencesupdateprojectssort"></a>`projectsSort` | [`ProjectSort`](#projectsort) | Sort order for projects. |
 | <a id="mutationuserpreferencesupdateuseworkitemsview"></a>`useWorkItemsView` | [`Boolean`](#boolean) | Use work item view instead of legacy issue view. |
 | <a id="mutationuserpreferencesupdatevisibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
 
@@ -11321,6 +11470,7 @@ Input type: `WorkItemCreateInput`
 | <a id="mutationworkitemcreatecrmcontactswidget"></a>`crmContactsWidget` | [`WorkItemWidgetCrmContactsCreateInput`](#workitemwidgetcrmcontactscreateinput) | Input for CRM contacts widget. |
 | <a id="mutationworkitemcreatedescription"></a>`description` **{warning-solid}** | [`String`](#string) | **Deprecated:** use description widget instead. Deprecated in GitLab 16.9. |
 | <a id="mutationworkitemcreatedescriptionwidget"></a>`descriptionWidget` | [`WorkItemWidgetDescriptionInput`](#workitemwidgetdescriptioninput) | Input for description widget. |
+| <a id="mutationworkitemcreatediscussionstoresolve"></a>`discussionsToResolve` | [`WorkItemResolveDiscussionsInput`](#workitemresolvediscussionsinput) | Information required to resolve discussions in a noteable, when the work item is created. |
 | <a id="mutationworkitemcreatehealthstatuswidget"></a>`healthStatusWidget` | [`WorkItemWidgetHealthStatusInput`](#workitemwidgethealthstatusinput) | Input for health status widget. |
 | <a id="mutationworkitemcreatehierarchywidget"></a>`hierarchyWidget` | [`WorkItemWidgetHierarchyCreateInput`](#workitemwidgethierarchycreateinput) | Input for hierarchy widget. |
 | <a id="mutationworkitemcreateiterationwidget"></a>`iterationWidget` | [`WorkItemWidgetIterationInput`](#workitemwidgetiterationinput) | Iteration widget of the work item. |
@@ -11573,11 +11723,12 @@ Input type: `WorkspaceCreateInput`
 | <a id="mutationworkspacecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkspacecreateclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID!`](#clustersagentid) | GlobalID of the cluster agent the created workspace will be associated with. |
 | <a id="mutationworkspacecreatedesiredstate"></a>`desiredState` | [`String!`](#string) | Desired state of the created workspace. |
-| <a id="mutationworkspacecreatedevfilepath"></a>`devfilePath` | [`String!`](#string) | Project repo git path containing the devfile used to configure the workspace. |
-| <a id="mutationworkspacecreatedevfileref"></a>`devfileRef` | [`String!`](#string) | Project repo git ref containing the devfile used to configure the workspace. |
+| <a id="mutationworkspacecreatedevfilepath"></a>`devfilePath` | [`String`](#string) | Project path containing the devfile used to configure the workspace. If not provided, the GitLab default devfile is used. |
+| <a id="mutationworkspacecreatedevfileref"></a>`devfileRef` **{warning-solid}** | [`String`](#string) | **Deprecated:** Argument is renamed to project_ref. Deprecated in GitLab 17.8. |
 | <a id="mutationworkspacecreateeditor"></a>`editor` **{warning-solid}** | [`String`](#string) | **Deprecated:** Argument is not used. Deprecated in GitLab 17.5. |
 | <a id="mutationworkspacecreatemaxhoursbeforetermination"></a>`maxHoursBeforeTermination` | [`Int!`](#int) | Maximum hours the workspace can exist before it is automatically terminated. |
 | <a id="mutationworkspacecreateprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | ID of the project that will provide the Devfile for the created workspace. |
+| <a id="mutationworkspacecreateprojectref"></a>`projectRef` | [`String`](#string) | Project repo git ref. |
 | <a id="mutationworkspacecreatevariables"></a>`variables` | [`[WorkspaceVariableInput!]`](#workspacevariableinput) | Variables to inject into the workspace. |
 
 #### Fields
@@ -11901,6 +12052,29 @@ The edge type for [`AiUserMetrics`](#aiusermetrics).
 | ---- | ---- | ----------- |
 | <a id="aiusermetricsedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="aiusermetricsedgenode"></a>`node` | [`AiUserMetrics`](#aiusermetrics) | The item at the end of the edge. |
+
+#### `AiXrayReportConnection`
+
+The connection type for [`AiXrayReport`](#aixrayreport).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aixrayreportconnectionedges"></a>`edges` | [`[AiXrayReportEdge]`](#aixrayreportedge) | A list of edges. |
+| <a id="aixrayreportconnectionnodes"></a>`nodes` | [`[AiXrayReport]`](#aixrayreport) | A list of nodes. |
+| <a id="aixrayreportconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AiXrayReportEdge`
+
+The edge type for [`AiXrayReport`](#aixrayreport).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aixrayreportedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="aixrayreportedgenode"></a>`node` | [`AiXrayReport`](#aixrayreport) | The item at the end of the edge. |
 
 #### `AlertManagementAlertConnection`
 
@@ -13268,6 +13442,29 @@ The edge type for [`ContainerProtectionRepositoryRule`](#containerprotectionrepo
 | ---- | ---- | ----------- |
 | <a id="containerprotectionrepositoryruleedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="containerprotectionrepositoryruleedgenode"></a>`node` | [`ContainerProtectionRepositoryRule`](#containerprotectionrepositoryrule) | The item at the end of the edge. |
+
+#### `ContainerProtectionTagRuleConnection`
+
+The connection type for [`ContainerProtectionTagRule`](#containerprotectiontagrule).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerprotectiontagruleconnectionedges"></a>`edges` | [`[ContainerProtectionTagRuleEdge]`](#containerprotectiontagruleedge) | A list of edges. |
+| <a id="containerprotectiontagruleconnectionnodes"></a>`nodes` | [`[ContainerProtectionTagRule]`](#containerprotectiontagrule) | A list of nodes. |
+| <a id="containerprotectiontagruleconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ContainerProtectionTagRuleEdge`
+
+The edge type for [`ContainerProtectionTagRule`](#containerprotectiontagrule).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerprotectiontagruleedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="containerprotectiontagruleedgenode"></a>`node` | [`ContainerProtectionTagRule`](#containerprotectiontagrule) | The item at the end of the edge. |
 
 #### `ContainerRepositoryConnection`
 
@@ -15553,6 +15750,43 @@ The edge type for [`MlCandidateParam`](#mlcandidateparam).
 | <a id="mlcandidateparamedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="mlcandidateparamedgenode"></a>`node` | [`MlCandidateParam`](#mlcandidateparam) | The item at the end of the edge. |
 
+#### `MlExperimentConnection`
+
+The connection type for [`MlExperiment`](#mlexperiment).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlexperimentconnectionedges"></a>`edges` | [`[MlExperimentEdge]`](#mlexperimentedge) | A list of edges. |
+| <a id="mlexperimentconnectionnodes"></a>`nodes` | [`[MlExperiment]`](#mlexperiment) | A list of nodes. |
+| <a id="mlexperimentconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `MlExperimentConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlexperimentconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
+
+#### `MlExperimentEdge`
+
+The edge type for [`MlExperiment`](#mlexperiment).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlexperimentedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mlexperimentedgenode"></a>`node` | [`MlExperiment`](#mlexperiment) | The item at the end of the edge. |
+
 #### `MlModelConnection`
 
 The connection type for [`MlModel`](#mlmodel).
@@ -16421,6 +16655,29 @@ The edge type for [`ProjectSavedReply`](#projectsavedreply).
 | ---- | ---- | ----------- |
 | <a id="projectsavedreplyedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="projectsavedreplyedgenode"></a>`node` | [`ProjectSavedReply`](#projectsavedreply) | The item at the end of the edge. |
+
+#### `ProjectSecretConnection`
+
+The connection type for [`ProjectSecret`](#projectsecret).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecretconnectionedges"></a>`edges` | [`[ProjectSecretEdge]`](#projectsecretedge) | A list of edges. |
+| <a id="projectsecretconnectionnodes"></a>`nodes` | [`[ProjectSecret]`](#projectsecret) | A list of nodes. |
+| <a id="projectsecretconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ProjectSecretEdge`
+
+The edge type for [`ProjectSecret`](#projectsecret).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecretedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="projectsecretedgenode"></a>`node` | [`ProjectSecret`](#projectsecret) | The item at the end of the edge. |
 
 #### `ProjectSecurityExclusionConnection`
 
@@ -17931,6 +18188,29 @@ The edge type for [`WorkItem`](#workitem).
 | <a id="workitemedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="workitemedgenode"></a>`node` | [`WorkItem`](#workitem) | The item at the end of the edge. |
 
+#### `WorkItemLinkedResourceConnection`
+
+The connection type for [`WorkItemLinkedResource`](#workitemlinkedresource).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemlinkedresourceconnectionedges"></a>`edges` | [`[WorkItemLinkedResourceEdge]`](#workitemlinkedresourceedge) | A list of edges. |
+| <a id="workitemlinkedresourceconnectionnodes"></a>`nodes` | [`[WorkItemLinkedResource]`](#workitemlinkedresource) | A list of nodes. |
+| <a id="workitemlinkedresourceconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `WorkItemLinkedResourceEdge`
+
+The edge type for [`WorkItemLinkedResource`](#workitemlinkedresource).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemlinkedresourceedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="workitemlinkedresourceedgenode"></a>`node` | [`WorkItemLinkedResource`](#workitemlinkedresource) | The item at the end of the edge. |
+
 #### `WorkItemRelatedBranchConnection`
 
 The connection type for [`WorkItemRelatedBranch`](#workitemrelatedbranch).
@@ -18001,6 +18281,29 @@ The edge type for [`WorkItemType`](#workitemtype).
 | ---- | ---- | ----------- |
 | <a id="workitemtypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="workitemtypeedgenode"></a>`node` | [`WorkItemType`](#workitemtype) | The item at the end of the edge. |
+
+#### `WorkItemWidgetCustomStatusConnection`
+
+The connection type for [`WorkItemWidgetCustomStatus`](#workitemwidgetcustomstatus).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetcustomstatusconnectionedges"></a>`edges` | [`[WorkItemWidgetCustomStatusEdge]`](#workitemwidgetcustomstatusedge) | A list of edges. |
+| <a id="workitemwidgetcustomstatusconnectionnodes"></a>`nodes` | [`[WorkItemWidgetCustomStatus]`](#workitemwidgetcustomstatus) | A list of nodes. |
+| <a id="workitemwidgetcustomstatusconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `WorkItemWidgetCustomStatusEdge`
+
+The edge type for [`WorkItemWidgetCustomStatus`](#workitemwidgetcustomstatus).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetcustomstatusedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="workitemwidgetcustomstatusedgenode"></a>`node` | [`WorkItemWidgetCustomStatus`](#workitemwidgetcustomstatus) | The item at the end of the edge. |
 
 #### `WorkspaceConnection`
 
@@ -18572,6 +18875,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="addonusertodosaction"></a>`action` | [`[TodoActionEnum!]`](#todoactionenum) | Action to be filtered. |
 | <a id="addonusertodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
 | <a id="addonusertodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
+| <a id="addonusertodosissnoozed"></a>`isSnoozed` | [`Boolean`](#boolean) | Whether the to-do item is snoozed. |
 | <a id="addonusertodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
 | <a id="addonusertodossort"></a>`sort` | [`TodoSort`](#todosort) | Sort todos by given criteria. |
 | <a id="addonusertodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
@@ -18827,7 +19131,7 @@ Usage data for events stored in the default PostgreSQL database. Data retained f
 
 ### `AiUserMetrics`
 
-Pre-aggregated per-user metrics for GitLab Code Suggestions and GitLab Duo Chat. Requires ClickHouse. Ultimate with GitLab Duo Pro or Enterprise only.
+Pre-aggregated per-user metrics for GitLab Code Suggestions and GitLab Duo Chat. Require ClickHouse to be enabled and GitLab Ultimate with the Duo Enterprise add-on.
 
 #### Fields
 
@@ -18836,6 +19140,14 @@ Pre-aggregated per-user metrics for GitLab Code Suggestions and GitLab Duo Chat.
 | <a id="aiusermetricscodesuggestionsacceptedcount"></a>`codeSuggestionsAcceptedCount` | [`Int`](#int) | Total count of code suggestions accepted by the user. |
 | <a id="aiusermetricsduochatinteractionscount"></a>`duoChatInteractionsCount` | [`Int`](#int) | Number of user interactions with GitLab Duo Chat. |
 | <a id="aiusermetricsuser"></a>`user` | [`UserCore!`](#usercore) | User metrics. |
+
+### `AiXrayReport`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aixrayreportlanguage"></a>`language` | [`String!`](#string) | Language of the x-ray report. |
 
 ### `AlertManagementAlert`
 
@@ -18908,6 +19220,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="alertmanagementalerttodosaction"></a>`action` | [`[TodoActionEnum!]`](#todoactionenum) | Action to be filtered. |
 | <a id="alertmanagementalerttodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
 | <a id="alertmanagementalerttodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
+| <a id="alertmanagementalerttodosissnoozed"></a>`isSnoozed` | [`Boolean`](#boolean) | Whether the to-do item is snoozed. |
 | <a id="alertmanagementalerttodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
 | <a id="alertmanagementalerttodossort"></a>`sort` | [`TodoSort`](#todosort) | Sort todos by given criteria. |
 | <a id="alertmanagementalerttodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
@@ -19036,6 +19349,7 @@ Represents the approval policy.
 | ---- | ---- | ----------- |
 | <a id="approvalpolicyactionapprovers"></a>`actionApprovers` | [`[PolicyApproversType!]`](#policyapproverstype) | Multiple approvers action. |
 | <a id="approvalpolicyallgroupapprovers"></a>`allGroupApprovers` | [`[PolicyApprovalGroup!]`](#policyapprovalgroup) | All potential approvers of the group type, including groups inaccessible to the user. |
+| <a id="approvalpolicycustomroles"></a>`customRoles` | [`[MemberRole!]`](#memberrole) | Approvers of the custom role type. Users belonging to these role(s) alone will be approvers. |
 | <a id="approvalpolicydeprecatedproperties"></a>`deprecatedProperties` **{warning-solid}** | [`[String!]`](#string) | **Introduced** in GitLab 16.10. **Status**: Experiment. All deprecated properties in the policy. |
 | <a id="approvalpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="approvalpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
@@ -19565,6 +19879,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="autocompletedusertodosaction"></a>`action` | [`[TodoActionEnum!]`](#todoactionenum) | Action to be filtered. |
 | <a id="autocompletedusertodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
 | <a id="autocompletedusertodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
+| <a id="autocompletedusertodosissnoozed"></a>`isSnoozed` | [`Boolean`](#boolean) | Whether the to-do item is snoozed. |
 | <a id="autocompletedusertodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
 | <a id="autocompletedusertodossort"></a>`sort` | [`TodoSort`](#todosort) | Sort todos by given criteria. |
 | <a id="autocompletedusertodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
@@ -19922,6 +20237,22 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="boardepiccurrentusertodosstate"></a>`state` | [`TodoStateEnum`](#todostateenum) | State of the to-do items. |
 
+##### `BoardEpic.linkedWorkItems`
+
+Work items linked to the epic.
+
+Returns [`WorkItemConnection`](#workitemconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="boardepiclinkedworkitemsfilter"></a>`filter` | [`WorkItemRelatedLinkType`](#workitemrelatedlinktype) | Filter by link type. Supported values: RELATED, BLOCKED_BY, and BLOCKS. Returns all types if omitted. |
+
 ##### `BoardEpic.notes`
 
 All notes on this noteable.
@@ -20112,6 +20443,7 @@ Check user's permission for the car.
 | <a id="cicatalogresourcename"></a>`name` | [`String`](#string) | Name of the catalog resource. |
 | <a id="cicatalogresourcestarcount"></a>`starCount` | [`Int!`](#int) | Number of times the catalog resource has been starred. |
 | <a id="cicatalogresourcestarrerspath"></a>`starrersPath` | [`String`](#string) | Relative path to the starrers page for the catalog resource project. |
+| <a id="cicatalogresourcetopics"></a>`topics` | [`[String!]`](#string) | Topics for the catalog resource. |
 | <a id="cicatalogresourceverificationlevel"></a>`verificationLevel` | [`CiCatalogResourceVerificationLevel`](#cicatalogresourceverificationlevel) | Verification level of the catalog resource. |
 | <a id="cicatalogresourcevisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Visibility level of the catalog resource. |
 | <a id="cicatalogresourcewebpath"></a>`webPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.1. **Status**: Experiment. Web path of the catalog resource. |
@@ -20469,6 +20801,7 @@ Represents an allowlist entry for the CI_JOB_TOKEN.
 | ---- | ---- | ----------- |
 | <a id="cijobtokenscopeallowlistentryaddedby"></a>`addedBy` | [`UserCore`](#usercore) | User that added the entry. |
 | <a id="cijobtokenscopeallowlistentrycreatedat"></a>`createdAt` | [`Time!`](#time) | When the entry was created. |
+| <a id="cijobtokenscopeallowlistentrydefaultpermissions"></a>`defaultPermissions` | [`Boolean`](#boolean) | Indicates whether default permissions are enabled (true) or fine-grained permissions are enabled (false). |
 | <a id="cijobtokenscopeallowlistentrydirection"></a>`direction` | [`String`](#string) | Direction of access. Defaults to INBOUND. |
 | <a id="cijobtokenscopeallowlistentryjobtokenpolicies"></a>`jobTokenPolicies` **{warning-solid}** | [`[CiJobTokenScopePolicies!]`](#cijobtokenscopepolicies) | **Introduced** in GitLab 17.5. **Status**: Experiment. List of policies for the entry. |
 | <a id="cijobtokenscopeallowlistentrysourceproject"></a>`sourceProject` | [`Project!`](#project) | Project that owns the allowlist entry. |
@@ -21499,10 +21832,23 @@ A container repository protection rule designed to prevent users with a certain 
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="containerprotectionrepositoryruleid"></a>`id` **{warning-solid}** | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | **Introduced** in GitLab 16.6. **Status**: Experiment. ID of the container repository protection rule. |
-| <a id="containerprotectionrepositoryruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` **{warning-solid}** | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | **Introduced** in GitLab 16.6. **Status**: Experiment. Minimum GitLab access level required to delete container images from the container repository. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level is ignored. Users with at least the Developer role can delete container images. |
-| <a id="containerprotectionrepositoryruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | **Introduced** in GitLab 16.6. **Status**: Experiment. Minimum GitLab access level required to push container images to the container repository. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level is ignored. Users with at least the Developer role can push container images. |
-| <a id="containerprotectionrepositoryrulerepositorypathpattern"></a>`repositoryPathPattern` **{warning-solid}** | [`String!`](#string) | **Introduced** in GitLab 16.6. **Status**: Experiment. Container repository path pattern protected by the protection rule. For example, `my-project/my-container-*`. Wildcard character `*` allowed. |
+| <a id="containerprotectionrepositoryruleid"></a>`id` | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | ID of the container repository protection rule. |
+| <a id="containerprotectionrepositoryruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | Minimum GitLab access level required to delete container images from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`.If the value is `nil`, the default minimum access level is `DEVELOPER`. |
+| <a id="containerprotectionrepositoryruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`ContainerProtectionRepositoryRuleAccessLevel`](#containerprotectionrepositoryruleaccesslevel) | Minimum GitLab access level required to push container images to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`.If the value is `nil`, the default minimum access level is `DEVELOPER`. |
+| <a id="containerprotectionrepositoryrulerepositorypathpattern"></a>`repositoryPathPattern` | [`String!`](#string) | Container repository path pattern protected by the protection rule. For example, `my-project/my-container-*`. Wildcard character `*` allowed. |
+
+### `ContainerProtectionTagRule`
+
+A container repository tag protection rule designed to prevent users with a certain access level or lower from altering the container registry.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerprotectiontagruleid"></a>`id` **{warning-solid}** | [`ContainerRegistryProtectionTagRuleID!`](#containerregistryprotectiontagruleid) | **Introduced** in GitLab 17.8. **Status**: Experiment. ID of the container repository tag protection rule. |
+| <a id="containerprotectiontagruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` **{warning-solid}** | [`ContainerProtectionTagRuleAccessLevel!`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to delete container image tags from the container repository. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level is ignored. Users with at least the Developer role can delete container image tags. |
+| <a id="containerprotectiontagruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`ContainerProtectionTagRuleAccessLevel!`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to push container image tags to the container repository. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level is ignored. Users with at least the Developer role can push container image tags. |
+| <a id="containerprotectiontagruletagnamepattern"></a>`tagNamePattern` **{warning-solid}** | [`String!`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. The pattern that matches container image tags to protect. For example, `v1.*`. Wildcard character `*` allowed. |
 
 ### `ContainerRepository`
 
@@ -21522,7 +21868,7 @@ A container repository.
 | <a id="containerrepositoryname"></a>`name` | [`String!`](#string) | Name of the container repository. |
 | <a id="containerrepositorypath"></a>`path` | [`String!`](#string) | Path of the container repository. |
 | <a id="containerrepositoryproject"></a>`project` | [`Project!`](#project) | Project of the container registry. |
-| <a id="containerrepositoryprotectionruleexists"></a>`protectionRuleExists` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 17.2. **Status**: Experiment. Whether any matching container protection rule exists for the container repository. Available only when feature flag `container_registry_protected_containers` is enabled. |
+| <a id="containerrepositoryprotectionruleexists"></a>`protectionRuleExists` | [`Boolean!`](#boolean) | Whether any matching container protection rule exists for the container repository. |
 | <a id="containerrepositorystatus"></a>`status` | [`ContainerRepositoryStatus`](#containerrepositorystatus) | Status of the container repository. |
 | <a id="containerrepositorytagscount"></a>`tagsCount` | [`Int!`](#int) | Number of tags associated with the image. |
 | <a id="containerrepositoryupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp when the container repository was updated. |
@@ -21547,7 +21893,7 @@ Details of a container repository.
 | <a id="containerrepositorydetailsname"></a>`name` | [`String!`](#string) | Name of the container repository. |
 | <a id="containerrepositorydetailspath"></a>`path` | [`String!`](#string) | Path of the container repository. |
 | <a id="containerrepositorydetailsproject"></a>`project` | [`Project!`](#project) | Project of the container registry. |
-| <a id="containerrepositorydetailsprotectionruleexists"></a>`protectionRuleExists` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 17.2. **Status**: Experiment. Whether any matching container protection rule exists for the container repository. Available only when feature flag `container_registry_protected_containers` is enabled. |
+| <a id="containerrepositorydetailsprotectionruleexists"></a>`protectionRuleExists` | [`Boolean!`](#boolean) | Whether any matching container protection rule exists for the container repository. |
 | <a id="containerrepositorydetailssize"></a>`size` | [`Float`](#float) | Deduplicated size of the image repository in bytes. This is only available on GitLab.com for repositories created after `2021-11-04`. |
 | <a id="containerrepositorydetailsstatus"></a>`status` | [`ContainerRepositoryStatus`](#containerrepositorystatus) | Status of the container repository. |
 | <a id="containerrepositorydetailstagscount"></a>`tagsCount` | [`Int!`](#int) | Number of tags associated with the image. |
@@ -22169,6 +22515,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentusertodosaction"></a>`action` | [`[TodoActionEnum!]`](#todoactionenum) | Action to be filtered. |
 | <a id="currentusertodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
 | <a id="currentusertodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
+| <a id="currentusertodosissnoozed"></a>`isSnoozed` | [`Boolean`](#boolean) | Whether the to-do item is snoozed. |
 | <a id="currentusertodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
 | <a id="currentusertodossort"></a>`sort` | [`TodoSort`](#todosort) | Sort todos by given criteria. |
 | <a id="currentusertodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
@@ -22325,6 +22672,7 @@ Represents a product analytics dashboard.
 | <a id="customizabledashboardconfigurationproject"></a>`configurationProject` | [`Project`](#project) | Project which contains the dashboard definition. |
 | <a id="customizabledashboarddescription"></a>`description` | [`String`](#string) | Description of the dashboard. |
 | <a id="customizabledashboarderrors"></a>`errors` | [`[String!]`](#string) | Errors on yaml definition. |
+| <a id="customizabledashboardfilters"></a>`filters` | [`JSON`](#json) | Dashboard global filters. |
 | <a id="customizabledashboardpanels"></a>`panels` | [`CustomizableDashboardPanelConnection`](#customizabledashboardpanelconnection) | Panels shown on the dashboard. (see [Connections](#connections)) |
 | <a id="customizabledashboardslug"></a>`slug` | [`String!`](#string) | Slug of the dashboard. |
 | <a id="customizabledashboardstatus"></a>`status` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.0. **Status**: Experiment. Status of the dashboard. |
@@ -22525,6 +22873,7 @@ Represents a DAST Site Profile.
 | <a id="dastsiteprofileexcludedurls"></a>`excludedUrls` | [`[String!]`](#string) | URLs to skip during an authenticated scan. |
 | <a id="dastsiteprofileid"></a>`id` | [`DastSiteProfileID!`](#dastsiteprofileid) | ID of the site profile. |
 | <a id="dastsiteprofilenormalizedtargeturl"></a>`normalizedTargetUrl` | [`String`](#string) | Normalized URL of the target to be scanned. |
+| <a id="dastsiteprofileoptionalvariables"></a>`optionalVariables` | [`[JSON!]`](#json) | Optional variables that can be configured for DAST scans. |
 | <a id="dastsiteprofileprofilename"></a>`profileName` | [`String`](#string) | Name of the site profile. |
 | <a id="dastsiteprofilereferencedinsecuritypolicies"></a>`referencedInSecurityPolicies` | [`[String!]`](#string) | List of security policy names that are referencing given project. |
 | <a id="dastsiteprofilerequestheaders"></a>`requestHeaders` | [`String`](#string) | Comma-separated list of request header names and values to be added to every request made by DAST. |
@@ -23352,6 +23701,7 @@ A Duo Workflow.
 | <a id="duoworkflowprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | ID of the project. |
 | <a id="duoworkflowupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the workflow was last updated. |
 | <a id="duoworkflowuserid"></a>`userId` | [`UserID!`](#userid) | ID of the user. |
+| <a id="duoworkflowworkflowdefinition"></a>`workflowDefinition` | [`String`](#string) | Duo Workflow type based on its capabilities. |
 
 ### `DuoWorkflowEnablement`
 
@@ -23389,6 +23739,7 @@ Events that describe the history and progress of a Duo Workflow.
 | <a id="duoworkfloweventmetadata"></a>`metadata` | [`JsonString`](#jsonstring) | Metadata associated with the event. |
 | <a id="duoworkfloweventparenttimestamp"></a>`parentTimestamp` | [`Time`](#time) | Time of the parent event. |
 | <a id="duoworkfloweventtimestamp"></a>`timestamp` | [`Time`](#time) | Time of the event. |
+| <a id="duoworkfloweventworkflowdefinition"></a>`workflowDefinition` | [`String`](#string) | Duo Workflow type based on its capabilities. |
 | <a id="duoworkfloweventworkflowgoal"></a>`workflowGoal` | [`String`](#string) | Goal of the workflow. |
 | <a id="duoworkfloweventworkflowstatus"></a>`workflowStatus` | [`DuoWorkflowStatus`](#duoworkflowstatus) | Status of the workflow. |
 
@@ -23435,6 +23786,7 @@ Describes where code is deployed for a project.
 | ---- | ---- | ----------- |
 | <a id="environmentautodeleteat"></a>`autoDeleteAt` | [`Time`](#time) | When the environment is going to be deleted automatically. |
 | <a id="environmentautostopat"></a>`autoStopAt` | [`Time`](#time) | When the environment is going to be stopped automatically. |
+| <a id="environmentautostopsetting"></a>`autoStopSetting` | [`AutoStopSetting`](#autostopsetting) | Auto stop setting of the environment. |
 | <a id="environmentclusteragent"></a>`clusterAgent` | [`ClusterAgent`](#clusteragent) | Cluster agent of the environment. |
 | <a id="environmentcreatedat"></a>`createdAt` | [`Time`](#time) | When the environment was created. |
 | <a id="environmentdeployfreezes"></a>`deployFreezes` | [`[CiFreezePeriod!]`](#cifreezeperiod) | Deployment freeze periods of the environment. |
@@ -23655,6 +24007,22 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="epiccurrentusertodosstate"></a>`state` | [`TodoStateEnum`](#todostateenum) | State of the to-do items. |
+
+##### `Epic.linkedWorkItems`
+
+Work items linked to the epic.
+
+Returns [`WorkItemConnection`](#workitemconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="epiclinkedworkitemsfilter"></a>`filter` | [`WorkItemRelatedLinkType`](#workitemrelatedlinktype) | Filter by link type. Supported values: RELATED, BLOCKED_BY, and BLOCKS. Returns all types if omitted. |
 
 ##### `Epic.notes`
 
@@ -23892,6 +24260,26 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="epicissueissuableresourcelinksincidentid"></a>`incidentId` | [`IssueID!`](#issueid) | ID of the incident. |
+
+##### `EpicIssue.linkedWorkItems`
+
+Work items linked to the issue.
+
+DETAILS:
+**Introduced** in GitLab 17.8.
+**Status**: Experiment.
+
+Returns [`WorkItemConnection`](#workitemconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="epicissuelinkedworkitemsfilter"></a>`filter` | [`WorkItemRelatedLinkType`](#workitemrelatedlinktype) | Filter by link type. Supported values: RELATED, BLOCKED_BY, and BLOCKS. Returns all types if omitted. |
 
 ##### `EpicIssue.notes`
 
@@ -24647,6 +25035,7 @@ GPG signature for a signed commit.
 | <a id="groupadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
 | <a id="groupaiusagedata"></a>`aiUsageData` **{warning-solid}** | [`AiUsageData`](#aiusagedata) | **Introduced** in GitLab 17.5. **Status**: Experiment. AI-related data. |
 | <a id="groupallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean!`](#boolean) | Indicates whether to regularly prune stale group runners. Defaults to false. |
+| <a id="groupallowedcustomstatuses"></a>`allowedCustomStatuses` **{warning-solid}** | [`WorkItemWidgetCustomStatusConnection`](#workitemwidgetcustomstatusconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. Allowed custom statuses for the group. |
 | <a id="groupamazons3configurations"></a>`amazonS3Configurations` | [`AmazonS3ConfigurationTypeConnection`](#amazons3configurationtypeconnection) | Amazon S3 configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
 | <a id="groupautodevopsenabled"></a>`autoDevopsEnabled` | [`Boolean`](#boolean) | Indicates whether Auto DevOps is enabled for all projects within this group. |
 | <a id="groupavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
@@ -25775,6 +26164,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupprojectssort"></a>`sort` | [`NamespaceProjectSort`](#namespaceprojectsort) | Sort projects by the criteria. |
 | <a id="groupprojectswithissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
 | <a id="groupprojectswithmergerequestsenabled"></a>`withMergeRequestsEnabled` | [`Boolean`](#boolean) | Return only projects with merge requests enabled. |
+| <a id="groupprojectswithnamespacedomainpages"></a>`withNamespaceDomainPages` | [`Boolean`](#boolean) | Return only projects that use the namespace domain for pages projects. |
 
 ##### `Group.releases`
 
@@ -25795,6 +26185,10 @@ four standard [pagination arguments](#pagination-arguments):
 ##### `Group.remoteDevelopmentClusterAgents`
 
 Cluster agents in the namespace with remote development capabilities.
+
+DETAILS:
+**Deprecated** in GitLab 17.8.
+Use `workspacesClusterAgents`.
 
 Returns [`ClusterAgentConnection`](#clusteragentconnection).
 
@@ -25843,6 +26237,8 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="grouprunnerscreatorid"></a>`creatorId` | [`UserID`](#userid) | Filter runners by creator ID. |
 | <a id="grouprunnerscreatorusername"></a>`creatorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Filter runners by creator username. |
 | <a id="grouprunnersmembership"></a>`membership` | [`CiRunnerMembershipFilter`](#cirunnermembershipfilter) | Control which runners to include in the results. |
+| <a id="grouprunnersownerfullpath"></a>`ownerFullPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owning project or group. |
+| <a id="grouprunnersownerwildcard"></a>`ownerWildcard` **{warning-solid}** | [`CiRunnerOwnerWildcard`](#cirunnerownerwildcard) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owner wildcard. |
 | <a id="grouprunnerspaused"></a>`paused` | [`Boolean`](#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
 | <a id="grouprunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
 | <a id="grouprunnerssort"></a>`sort` | [`CiRunnerSort`](#cirunnersort) | Sort order of results. |
@@ -25854,11 +26250,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.savedReplies`
 
-Saved replies available to the group. Available only when feature flag `group_saved_replies_flag` is enabled. This field can only be resolved for one group in any single request.
-
-DETAILS:
-**Introduced** in GitLab 16.10.
-**Status**: Experiment.
+Saved replies available to the group. This field can only be resolved for one group in any single request.
 
 Returns [`GroupSavedReplyConnection`](#groupsavedreplyconnection).
 
@@ -25874,11 +26266,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.savedReply`
 
-Saved reply in the group. Available only when feature flag `group_saved_replies_flag` is enabled. This field can only be resolved for one group in any single request.
-
-DETAILS:
-**Introduced** in GitLab 16.10.
-**Status**: Experiment.
+Saved reply in the group. This field can only be resolved for one group in any single request.
 
 Returns [`GroupSavedReply`](#groupsavedreply).
 
@@ -26099,6 +26487,22 @@ Returns [`[VulnerableProjectsByGrade!]`](#vulnerableprojectsbygrade).
 | <a id="groupvulnerabilitygradesincludesubgroups"></a>`includeSubgroups` | [`Boolean`](#boolean) | Include grades belonging to subgroups. |
 | <a id="groupvulnerabilitygradeslettergrade"></a>`letterGrade` | [`VulnerabilityGrade`](#vulnerabilitygrade) | Filter the response by given letter grade. |
 
+##### `Group.vulnerabilityIdentifierSearch`
+
+Search for vulnerabilities by identifier. Feature flag `vulnerability_filtering_by_identifier_group` has to be enabled for the group.
+
+DETAILS:
+**Introduced** in GitLab 17.8.
+**Status**: Experiment.
+
+Returns [`[String!]`](#string).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupvulnerabilityidentifiersearchname"></a>`name` | [`String!`](#string) | Search identifier by name. Substring or partial match search is supported and argument should be greater than 3 characters. |
+
 ##### `Group.vulnerabilityManagementPolicies`
 
 Vulnerability Management Policies of the project.
@@ -26183,7 +26587,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupworkitemdescriptiontemplatesname"></a>`name` | [`String`](#string) | Fetches the specific DescriptionTemplate. |
-| <a id="groupworkitemdescriptiontemplatessearch"></a>`search` | [`String`](#string) | Search for DescriptionTemplates by name. |
+| <a id="groupworkitemdescriptiontemplatessearch"></a>`search` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 17.8. search on template names is performed on the FE only. |
 
 ##### `Group.workItemStateCounts`
 
@@ -26280,6 +26684,26 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupworkitemsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_alpha` is disabled. |
 | <a id="groupworkitemssubscribed"></a>`subscribed` | [`SubscriptionStatus`](#subscriptionstatus) | Work items the current user is subscribed to. |
 | <a id="groupworkitemstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
+
+##### `Group.workspacesClusterAgents`
+
+Cluster agents in the namespace with workspaces capabilities.
+
+DETAILS:
+**Introduced** in GitLab 17.8.
+**Status**: Experiment.
+
+Returns [`ClusterAgentConnection`](#clusteragentconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupworkspacesclusteragentsfilter"></a>`filter` | [`NamespaceClusterAgentFilter!`](#namespaceclusteragentfilter) | Filter the types of cluster agents to return. |
 
 ### `GroupAuditEventNamespaceFilter`
 
@@ -27033,6 +27457,26 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="issueissuableresourcelinksincidentid"></a>`incidentId` | [`IssueID!`](#issueid) | ID of the incident. |
 
+##### `Issue.linkedWorkItems`
+
+Work items linked to the issue.
+
+DETAILS:
+**Introduced** in GitLab 17.8.
+**Status**: Experiment.
+
+Returns [`WorkItemConnection`](#workitemconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="issuelinkedworkitemsfilter"></a>`filter` | [`WorkItemRelatedLinkType`](#workitemrelatedlinktype) | Filter by link type. Supported values: RELATED, BLOCKED_BY, and BLOCKS. Returns all types if omitted. |
+
 ##### `Issue.notes`
 
 All notes on this noteable.
@@ -27074,6 +27518,7 @@ Check permissions for the current user on a issue.
 | <a id="issuepermissionscreatedesign"></a>`createDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_design` on this resource. |
 | <a id="issuepermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
 | <a id="issuepermissionsdestroydesign"></a>`destroyDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_design` on this resource. |
+| <a id="issuepermissionsmovedesign"></a>`moveDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `move_design` on this resource. |
 | <a id="issuepermissionsreaddesign"></a>`readDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_design` on this resource. |
 | <a id="issuepermissionsreadissue"></a>`readIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_issue` on this resource. |
 | <a id="issuepermissionsreopenissue"></a>`reopenIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `reopen_issue` on this resource. |
@@ -27248,32 +27693,6 @@ Represents the Geo replication and verification state of a job_artifact.
 | <a id="jobpermissionsreadbuild"></a>`readBuild` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_build` on this resource. |
 | <a id="jobpermissionsreadjobartifacts"></a>`readJobArtifacts` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_job_artifacts` on this resource. |
 | <a id="jobpermissionsupdatebuild"></a>`updateBuild` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_build` on this resource. |
-
-### `JobTokenPolicy`
-
-Job token policy.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="jobtokenpolicydescription"></a>`description` | [`String`](#string) | Description of the job token policy. |
-| <a id="jobtokenpolicytext"></a>`text` | [`String`](#string) | Display text of the job token policy. |
-| <a id="jobtokenpolicytype"></a>`type` | [`CiJobTokenScopePolicyTypes`](#cijobtokenscopepolicytypes) | Job token policy type. |
-| <a id="jobtokenpolicyvalue"></a>`value` | [`CiJobTokenScopePolicies`](#cijobtokenscopepolicies) | Value of the job token policy. |
-
-### `JobTokenPolicyCategory`
-
-Job token policy category type.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="jobtokenpolicycategorydescription"></a>`description` | [`String`](#string) | Description of the category. |
-| <a id="jobtokenpolicycategorypolicies"></a>`policies` | [`[JobTokenPolicy!]`](#jobtokenpolicy) | Policies of the category. |
-| <a id="jobtokenpolicycategorytext"></a>`text` | [`String`](#string) | Display text of the category. |
-| <a id="jobtokenpolicycategoryvalue"></a>`value` | [`CiJobTokenScopePolicyCategoriesTypes`](#cijobtokenscopepolicycategoriestypes) | Value of the category. |
 
 ### `Kas`
 
@@ -27536,6 +27955,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestavailableautomergestrategies"></a>`availableAutoMergeStrategies` | [`[String!]`](#string) | Array of available auto merge strategies. |
 | <a id="mergerequestawardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | List of emoji reactions associated with the merge request. (see [Connections](#connections)) |
 | <a id="mergerequestblockingmergerequests"></a>`blockingMergeRequests` **{warning-solid}** | [`BlockingMergeRequests`](#blockingmergerequests) | **Introduced** in GitLab 16.5. **Status**: Experiment. Merge requests that block another merge request from merging. |
+| <a id="mergerequestchangerequesters"></a>`changeRequesters` | [`UserCoreConnection`](#usercoreconnection) | Users that have requested changes to the merge request. (see [Connections](#connections)) |
 | <a id="mergerequestclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the merge request was closed, null if not closed. |
 | <a id="mergerequestcodequalityreportscomparer"></a>`codequalityReportsComparer` | [`CodequalityReportsComparer`](#codequalityreportscomparer) | Code quality reports comparison reported on the merge request. |
 | <a id="mergerequestcommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
@@ -27569,7 +27989,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestiid"></a>`iid` | [`String!`](#string) | Internal ID of the merge request. |
 | <a id="mergerequestinprogressmergecommitsha"></a>`inProgressMergeCommitSha` | [`String`](#string) | Commit SHA of the merge request if merge is in progress. |
 | <a id="mergerequestlabels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels of the merge request. (see [Connections](#connections)) |
-| <a id="mergerequestmergeafter"></a>`mergeAfter` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 17.5. **Status**: Experiment. Date after which the merge request can be merged. |
+| <a id="mergerequestmergeafter"></a>`mergeAfter` | [`Time`](#time) | Date after which the merge request can be merged. |
 | <a id="mergerequestmergecommitsha"></a>`mergeCommitSha` | [`String`](#string) | SHA of the merge request commit (set once merged). |
 | <a id="mergerequestmergeerror"></a>`mergeError` | [`String`](#string) | Error message due to a merge error. |
 | <a id="mergerequestmergeongoing"></a>`mergeOngoing` | [`Boolean!`](#boolean) | Indicates if a merge is currently occurring. |
@@ -27588,6 +28008,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestmilestone"></a>`milestone` | [`Milestone`](#milestone) | Milestone of the merge request. |
 | <a id="mergerequestname"></a>`name` | [`String`](#string) | Name or title of this object. |
 | <a id="mergerequestparticipants"></a>`participants` | [`MergeRequestParticipantConnection`](#mergerequestparticipantconnection) | Participants in the merge request. This includes the author, assignees, reviewers, and users mentioned in notes. (see [Connections](#connections)) |
+| <a id="mergerequestpoliciesoverridingapprovalsettings"></a>`policiesOverridingApprovalSettings` | [`[PolicyApprovalSettingsOverride!]`](#policyapprovalsettingsoverride) | Approval settings that are overridden by the policies for the merge request. |
 | <a id="mergerequestpolicyviolations"></a>`policyViolations` | [`PolicyViolationDetails`](#policyviolationdetails) | Policy violations reported on the merge request. |
 | <a id="mergerequestpreparedat"></a>`preparedAt` | [`Time`](#time) | Timestamp of when the merge request was prepared. |
 | <a id="mergerequestproject"></a>`project` | [`Project!`](#project) | Alias for target_project. |
@@ -28106,6 +28527,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestassigneetodosaction"></a>`action` | [`[TodoActionEnum!]`](#todoactionenum) | Action to be filtered. |
 | <a id="mergerequestassigneetodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
 | <a id="mergerequestassigneetodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
+| <a id="mergerequestassigneetodosissnoozed"></a>`isSnoozed` | [`Boolean`](#boolean) | Whether the to-do item is snoozed. |
 | <a id="mergerequestassigneetodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
 | <a id="mergerequestassigneetodossort"></a>`sort` | [`TodoSort`](#todosort) | Sort todos by given criteria. |
 | <a id="mergerequestassigneetodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
@@ -28515,6 +28937,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestauthortodosaction"></a>`action` | [`[TodoActionEnum!]`](#todoactionenum) | Action to be filtered. |
 | <a id="mergerequestauthortodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
 | <a id="mergerequestauthortodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
+| <a id="mergerequestauthortodosissnoozed"></a>`isSnoozed` | [`Boolean`](#boolean) | Whether the to-do item is snoozed. |
 | <a id="mergerequestauthortodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
 | <a id="mergerequestauthortodossort"></a>`sort` | [`TodoSort`](#todosort) | Sort todos by given criteria. |
 | <a id="mergerequestauthortodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
@@ -28970,6 +29393,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestparticipanttodosaction"></a>`action` | [`[TodoActionEnum!]`](#todoactionenum) | Action to be filtered. |
 | <a id="mergerequestparticipanttodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
 | <a id="mergerequestparticipanttodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
+| <a id="mergerequestparticipanttodosissnoozed"></a>`isSnoozed` | [`Boolean`](#boolean) | Whether the to-do item is snoozed. |
 | <a id="mergerequestparticipanttodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
 | <a id="mergerequestparticipanttodossort"></a>`sort` | [`TodoSort`](#todosort) | Sort todos by given criteria. |
 | <a id="mergerequestparticipanttodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
@@ -29398,6 +29822,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestreviewertodosaction"></a>`action` | [`[TodoActionEnum!]`](#todoactionenum) | Action to be filtered. |
 | <a id="mergerequestreviewertodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
 | <a id="mergerequestreviewertodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
+| <a id="mergerequestreviewertodosissnoozed"></a>`isSnoozed` | [`Boolean`](#boolean) | Whether the to-do item is snoozed. |
 | <a id="mergerequestreviewertodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
 | <a id="mergerequestreviewertodossort"></a>`sort` | [`TodoSort`](#todosort) | Sort todos by given criteria. |
 | <a id="mergerequestreviewertodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
@@ -29616,6 +30041,7 @@ Candidate for a model version in the model registry.
 | <a id="mlcandidate_links"></a>`_links` | [`MLCandidateLinks!`](#mlcandidatelinks) | Map of links to perform actions on the candidate. |
 | <a id="mlcandidatecijob"></a>`ciJob` | [`CiJob`](#cijob) | CI information about the job that created the candidate. |
 | <a id="mlcandidatecreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="mlcandidatecreator"></a>`creator` | [`UserCore`](#usercore) | User that created the candidate. |
 | <a id="mlcandidateeid"></a>`eid` | [`String!`](#string) | MLflow uuid for the candidate. |
 | <a id="mlcandidateid"></a>`id` | [`MlCandidateID!`](#mlcandidateid) | ID of the candidate. |
 | <a id="mlcandidateiid"></a>`iid` | [`Int!`](#int) | IID of the candidate scoped to project. |
@@ -29661,6 +30087,23 @@ Parameter for a candidate in the model registry.
 | <a id="mlcandidateparamid"></a>`id` | [`MlCandidateParamID!`](#mlcandidateparamid) | ID of the parameter. |
 | <a id="mlcandidateparamname"></a>`name` | [`String`](#string) | Name of the parameter. |
 | <a id="mlcandidateparamvalue"></a>`value` | [`String!`](#string) | Value set for the parameter. |
+
+### `MlExperiment`
+
+Machine learning experiment in model experiments.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlexperimentcandidatecount"></a>`candidateCount` | [`Int!`](#int) | Number of candidates in the experiment. |
+| <a id="mlexperimentcandidates"></a>`candidates` | [`MlCandidateConnection`](#mlcandidateconnection) | Candidates of the experiment. (see [Connections](#connections)) |
+| <a id="mlexperimentcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the experiment was created. |
+| <a id="mlexperimentcreator"></a>`creator` | [`UserCore`](#usercore) | User who created the experiment. |
+| <a id="mlexperimentid"></a>`id` | [`MlExperimentID!`](#mlexperimentid) | ID of the experiment. |
+| <a id="mlexperimentmodelid"></a>`modelId` | [`MlModelID`](#mlmodelid) | ID of the model. |
+| <a id="mlexperimentname"></a>`name` | [`String!`](#string) | Name of the experiment. |
+| <a id="mlexperimentpath"></a>`path` | [`String!`](#string) | Web URL of the experiment. |
 
 ### `MlModel`
 
@@ -29756,6 +30199,7 @@ Product analytics events for a specific month and year.
 | <a id="namespaceactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for repositories in the namespace in bytes. This limit only applies to namespaces under Project limit enforcement. |
 | <a id="namespaceactualsizelimit"></a>`actualSizeLimit` | [`Float`](#float) | The actual storage size limit (in bytes) based on the enforcement type of either repository or namespace. This limit is agnostic of enforcement type. |
 | <a id="namespaceadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
+| <a id="namespaceallowedcustomstatuses"></a>`allowedCustomStatuses` **{warning-solid}** | [`WorkItemWidgetCustomStatusConnection`](#workitemwidgetcustomstatusconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. Allowed custom statuses for the namespace. |
 | <a id="namespacecontainslockedprojects"></a>`containsLockedProjects` | [`Boolean`](#boolean) | Includes at least one project where the repository size exceeds the limit. This only applies to namespaces under Project limit enforcement. |
 | <a id="namespacecrossprojectpipelineavailable"></a>`crossProjectPipelineAvailable` | [`Boolean!`](#boolean) | Indicates if the cross_project_pipeline feature is available for the namespace. |
 | <a id="namespacedescription"></a>`description` | [`String`](#string) | Description of the namespace. |
@@ -29963,10 +30407,15 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespaceprojectssort"></a>`sort` | [`NamespaceProjectSort`](#namespaceprojectsort) | Sort projects by the criteria. |
 | <a id="namespaceprojectswithissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
 | <a id="namespaceprojectswithmergerequestsenabled"></a>`withMergeRequestsEnabled` | [`Boolean`](#boolean) | Return only projects with merge requests enabled. |
+| <a id="namespaceprojectswithnamespacedomainpages"></a>`withNamespaceDomainPages` | [`Boolean`](#boolean) | Return only projects that use the namespace domain for pages projects. |
 
 ##### `Namespace.remoteDevelopmentClusterAgents`
 
 Cluster agents in the namespace with remote development capabilities.
+
+DETAILS:
+**Deprecated** in GitLab 17.8.
+Use `workspacesClusterAgents`.
 
 Returns [`ClusterAgentConnection`](#clusteragentconnection).
 
@@ -30075,7 +30524,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="namespaceworkitemdescriptiontemplatesname"></a>`name` | [`String`](#string) | Fetches the specific DescriptionTemplate. |
-| <a id="namespaceworkitemdescriptiontemplatessearch"></a>`search` | [`String`](#string) | Search for DescriptionTemplates by name. |
+| <a id="namespaceworkitemdescriptiontemplatessearch"></a>`search` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 17.8. search on template names is performed on the FE only. |
 
 ##### `Namespace.workItemTypes`
 
@@ -30096,6 +30545,26 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="namespaceworkitemtypesname"></a>`name` | [`IssueType`](#issuetype) | Filter work item types by the given name. |
+
+##### `Namespace.workspacesClusterAgents`
+
+Cluster agents in the namespace with workspaces capabilities.
+
+DETAILS:
+**Introduced** in GitLab 17.8.
+**Status**: Experiment.
+
+Returns [`ClusterAgentConnection`](#clusteragentconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespaceworkspacesclusteragentsfilter"></a>`filter` | [`NamespaceClusterAgentFilter!`](#namespaceclusteragentfilter) | Filter the types of cluster agents to return. |
 
 ### `NamespaceBan`
 
@@ -30320,6 +30789,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="organizationgroupsids"></a>`ids` | [`[ID!]`](#id) | Filter groups by IDs. |
 | <a id="organizationgroupsmarkedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the group was marked for deletion. |
+| <a id="organizationgroupsownedonly"></a>`ownedOnly` | [`Boolean`](#boolean) | Only include groups where the current user has an owner role. |
 | <a id="organizationgroupssearch"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
 | <a id="organizationgroupssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
 | <a id="organizationgroupstoplevelonly"></a>`topLevelOnly` | [`Boolean`](#boolean) | Only include top-level groups. |
@@ -31290,6 +31760,18 @@ Represents policy violation for `any_merge_request` report_type.
 | <a id="policyapprovalgroupid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
 | <a id="policyapprovalgroupweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the group. |
 
+### `PolicyApprovalSettingsOverride`
+
+Represents the approval settings of merge request overridden by a policy.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="policyapprovalsettingsoverrideeditpath"></a>`editPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Path to edit the policy. |
+| <a id="policyapprovalsettingsoverridename"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Policy name. |
+| <a id="policyapprovalsettingsoverridesettings"></a>`settings` | [`JSON!`](#json) | Overridden project approval settings. |
+
 ### `PolicyApproversType`
 
 Multiple approvers action.
@@ -31299,6 +31781,7 @@ Multiple approvers action.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="policyapproverstypeallgroups"></a>`allGroups` | [`[PolicyApprovalGroup!]`](#policyapprovalgroup) | All potential approvers of the group type, including groups inaccessible to the user. |
+| <a id="policyapproverstypecustomroles"></a>`customRoles` | [`[MemberRole!]`](#memberrole) | Approvers of the custom role type. Users belonging to these role(s) alone will be approvers. |
 | <a id="policyapproverstyperoles"></a>`roles` | [`[MemberAccessLevelName!]`](#memberaccesslevelname) | Approvers of the role type. Users belonging to these role(s) alone will be approvers. |
 | <a id="policyapproverstypeusers"></a>`users` | [`[UserCore!]`](#usercore) | Approvers of the user type. |
 
@@ -31440,7 +31923,9 @@ Project-level settings for product analytics provider.
 | <a id="projectagentconfigurations"></a>`agentConfigurations` | [`AgentConfigurationConnection`](#agentconfigurationconnection) | Agent configurations defined by the project. (see [Connections](#connections)) |
 | <a id="projectaiagents"></a>`aiAgents` **{warning-solid}** | [`AiAgentConnection`](#aiagentconnection) | **Introduced** in GitLab 16.9. **Status**: Experiment. Ai Agents for the project. |
 | <a id="projectaiusagedata"></a>`aiUsageData` **{warning-solid}** | [`AiUsageData`](#aiusagedata) | **Introduced** in GitLab 17.5. **Status**: Experiment. AI-related data. |
+| <a id="projectaixrayreports"></a>`aiXrayReports` **{warning-solid}** | [`AiXrayReportConnection!`](#aixrayreportconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. X-ray reports of the project. |
 | <a id="projectallowmergeonskippedpipeline"></a>`allowMergeOnSkippedPipeline` | [`Boolean`](#boolean) | If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge requests of the project can also be merged with skipped jobs. |
+| <a id="projectallowedcustomstatuses"></a>`allowedCustomStatuses` **{warning-solid}** | [`WorkItemWidgetCustomStatusConnection`](#workitemwidgetcustomstatusconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. Allowed custom statuses for the project. |
 | <a id="projectallowsmultiplemergerequestassignees"></a>`allowsMultipleMergeRequestAssignees` | [`Boolean!`](#boolean) | Project allows assigning multiple users to a merge request. |
 | <a id="projectallowsmultiplemergerequestreviewers"></a>`allowsMultipleMergeRequestReviewers` | [`Boolean!`](#boolean) | Project allows assigning multiple reviewers to a merge request. |
 | <a id="projectapifuzzingciconfiguration"></a>`apiFuzzingCiConfiguration` | [`ApiFuzzingCiConfiguration`](#apifuzzingciconfiguration) | API fuzzing configuration for the project. |
@@ -31462,6 +31947,7 @@ Project-level settings for product analytics provider.
 | <a id="projectcomponentusages"></a>`componentUsages` | [`CiCatalogResourceComponentUsageConnection`](#cicatalogresourcecomponentusageconnection) | Component(s) used by the project. (see [Connections](#connections)) |
 | <a id="projectcontainerexpirationpolicy"></a>`containerExpirationPolicy` **{warning-solid}** | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | **Deprecated** in GitLab 17.5. Use `container_tags_expiration_policy`. |
 | <a id="projectcontainerprotectionrepositoryrules"></a>`containerProtectionRepositoryRules` **{warning-solid}** | [`ContainerProtectionRepositoryRuleConnection`](#containerprotectionrepositoryruleconnection) | **Introduced** in GitLab 16.10. **Status**: Experiment. Container protection rules for the project. |
+| <a id="projectcontainerprotectiontagrules"></a>`containerProtectionTagRules` **{warning-solid}** | [`ContainerProtectionTagRuleConnection`](#containerprotectiontagruleconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. Container repository tag protection rules for the project. Returns an empty array if the `container_registry_protected_tags` feature flag is disabled. |
 | <a id="projectcontainerregistryenabled"></a>`containerRegistryEnabled` | [`Boolean`](#boolean) | Indicates if Container Registry is enabled for the current user. |
 | <a id="projectcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the project. |
 | <a id="projectcontainertagsexpirationpolicy"></a>`containerTagsExpirationPolicy` | [`ContainerTagsExpirationPolicy`](#containertagsexpirationpolicy) | Container tags expiration policy of the project. |
@@ -31518,6 +32004,8 @@ Project-level settings for product analytics provider.
 | <a id="projectorganizationeditpath"></a>`organizationEditPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Path for editing project at the organization level. |
 | <a id="projectpackagescleanuppolicy"></a>`packagesCleanupPolicy` | [`PackagesCleanupPolicy`](#packagescleanuppolicy) | Packages cleanup policy for the project. |
 | <a id="projectpackagesprotectionrules"></a>`packagesProtectionRules` **{warning-solid}** | [`PackagesProtectionRuleConnection`](#packagesprotectionruleconnection) | **Introduced** in GitLab 16.6. **Status**: Experiment. Packages protection rules for the project. |
+| <a id="projectpagesforcehttps"></a>`pagesForceHttps` | [`Boolean!`](#boolean) | Project's Pages site redirects unsecured connections to HTTPS. |
+| <a id="projectpagesuseuniquedomain"></a>`pagesUseUniqueDomain` | [`Boolean!`](#boolean) | Project's Pages site uses a unique subdomain. |
 | <a id="projectpath"></a>`path` | [`String!`](#string) | Path of the project. |
 | <a id="projectpathlocks"></a>`pathLocks` | [`PathLockConnection`](#pathlockconnection) | The project's path locks. (see [Connections](#connections)) |
 | <a id="projectpendingmemberapprovals"></a>`pendingMemberApprovals` **{warning-solid}** | [`MemberApprovalConnection`](#memberapprovalconnection) | **Introduced** in GitLab 17.3. **Status**: Experiment. Pending member promotions of the project. |
@@ -32058,10 +32546,6 @@ Returns [`ProjectDataTransfer`](#projectdatatransfer).
 ##### `Project.dependencies`
 
 Software dependencies used by the project.
-
-DETAILS:
-**Introduced** in GitLab 15.9.
-**Status**: Experiment.
 
 Returns [`DependencyConnection`](#dependencyconnection).
 
@@ -32683,6 +33167,24 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectmilestonestimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="projectmilestonestitle"></a>`title` | [`String`](#string) | Title of the milestone. |
 
+##### `Project.mlExperiments`
+
+Find machine learning experiments.
+
+Returns [`MlExperimentConnection`](#mlexperimentconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectmlexperimentsname"></a>`name` | [`String`](#string) | Search for names that include the string. |
+| <a id="projectmlexperimentsorderby"></a>`orderBy` | [`MlModelsOrderBy`](#mlmodelsorderby) | Ordering column. Default is created_at. |
+| <a id="projectmlexperimentssort"></a>`sort` | [`SortDirectionEnum`](#sortdirectionenum) | Ordering direction. Default is desc. |
+
 ##### `Project.mlModels`
 
 Finds machine learning models.
@@ -33069,6 +33571,8 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectrunnersactive"></a>`active` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in GitLab 14.8. This was renamed. Use: `paused`. |
 | <a id="projectrunnerscreatorid"></a>`creatorId` | [`UserID`](#userid) | Filter runners by creator ID. |
 | <a id="projectrunnerscreatorusername"></a>`creatorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Filter runners by creator username. |
+| <a id="projectrunnersownerfullpath"></a>`ownerFullPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owning project or group. |
+| <a id="projectrunnersownerwildcard"></a>`ownerWildcard` **{warning-solid}** | [`CiRunnerOwnerWildcard`](#cirunnerownerwildcard) | **Introduced** in GitLab 17.8. **Status**: Experiment. Filter runners by owner wildcard. |
 | <a id="projectrunnerspaused"></a>`paused` | [`Boolean`](#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
 | <a id="projectrunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
 | <a id="projectrunnerssort"></a>`sort` | [`CiRunnerSort`](#cirunnersort) | Sort order of results. |
@@ -33653,6 +34157,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="projectpermissionsdownloadcode"></a>`downloadCode` | [`Boolean!`](#boolean) | If `true`, the user can perform `download_code` on this resource. |
 | <a id="projectpermissionsdownloadwikicode"></a>`downloadWikiCode` | [`Boolean!`](#boolean) | If `true`, the user can perform `download_wiki_code` on this resource. |
 | <a id="projectpermissionsforkproject"></a>`forkProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `fork_project` on this resource. |
+| <a id="projectpermissionsmovedesign"></a>`moveDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `move_design` on this resource. |
 | <a id="projectpermissionspushcode"></a>`pushCode` | [`Boolean!`](#boolean) | If `true`, the user can perform `push_code` on this resource. |
 | <a id="projectpermissionspushtodeleteprotectedbranch"></a>`pushToDeleteProtectedBranch` | [`Boolean!`](#boolean) | If `true`, the user can perform `push_to_delete_protected_branch` on this resource. |
 | <a id="projectpermissionsreadcommitstatus"></a>`readCommitStatus` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_commit_status` on this resource. |
@@ -33728,7 +34233,7 @@ Representation of a project secret.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectsecretbranch"></a>`branch` | [`String!`](#string) | Branches that can access the secret. |
-| <a id="projectsecretdescription"></a>`description` | [`String!`](#string) | Description of the project secret. |
+| <a id="projectsecretdescription"></a>`description` | [`String`](#string) | Description of the project secret. |
 | <a id="projectsecretenvironment"></a>`environment` | [`String!`](#string) | Environments that can access the secret. |
 | <a id="projectsecretname"></a>`name` | [`String!`](#string) | Name of the project secret. |
 | <a id="projectsecretproject"></a>`project` | [`Project!`](#project) | Project the secret belong to. |
@@ -34702,6 +35207,7 @@ Represents the scan result policy.
 | ---- | ---- | ----------- |
 | <a id="scanresultpolicyactionapprovers"></a>`actionApprovers` | [`[PolicyApproversType!]`](#policyapproverstype) | Multiple approvers action. |
 | <a id="scanresultpolicyallgroupapprovers"></a>`allGroupApprovers` | [`[PolicyApprovalGroup!]`](#policyapprovalgroup) | All potential approvers of the group type, including groups inaccessible to the user. |
+| <a id="scanresultpolicycustomroles"></a>`customRoles` | [`[MemberRole!]`](#memberrole) | Approvers of the custom role type. Users belonging to these role(s) alone will be approvers. |
 | <a id="scanresultpolicydeprecatedproperties"></a>`deprecatedProperties` **{warning-solid}** | [`[String!]`](#string) | **Introduced** in GitLab 16.10. **Status**: Experiment. All deprecated properties in the policy. |
 | <a id="scanresultpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="scanresultpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
@@ -34747,6 +35253,7 @@ JSON structure of a file with matches.
 | <a id="searchblobfiletypeblameurl"></a>`blameUrl` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Blame URL of the file. |
 | <a id="searchblobfiletypechunks"></a>`chunks` **{warning-solid}** | [`[SearchBlobChunk!]`](#searchblobchunk) | **Introduced** in GitLab 17.2. **Status**: Experiment. Maximum matches per file. |
 | <a id="searchblobfiletypefileurl"></a>`fileUrl` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. URL of the file. |
+| <a id="searchblobfiletypelanguage"></a>`language` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Language of the file. |
 | <a id="searchblobfiletypematchcount"></a>`matchCount` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Matches per file up to a max of 50 chunks. Default is 3. |
 | <a id="searchblobfiletypematchcounttotal"></a>`matchCountTotal` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Total number of matches per file. |
 | <a id="searchblobfiletypepath"></a>`path` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Path of the file. |
@@ -34760,6 +35267,7 @@ JSON structure of each line in a matched chunk.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="searchbloblinehighlights"></a>`highlights` **{warning-solid}** | [`[[Int!]!]`](#int) | **Introduced** in GitLab 17.8. **Status**: Experiment. Column numbers of the first and last highlighted characters on a line. |
 | <a id="searchbloblinelinenumber"></a>`lineNumber` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Line number of the blob. |
 | <a id="searchbloblinerichtext"></a>`richText` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Rich text of the blob. |
 | <a id="searchbloblinetext"></a>`text` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Text content of the blob. |
@@ -35294,6 +35802,16 @@ Represents a Suggested Reviewers result set.
 | <a id="systemnotemetadataaction"></a>`action` | [`String`](#string) | System note metadata action. |
 | <a id="systemnotemetadatadescriptionversion"></a>`descriptionVersion` | [`DescriptionVersion`](#descriptionversion) | Version of the changed description. |
 | <a id="systemnotemetadataid"></a>`id` | [`SystemNoteMetadataID!`](#systemnotemetadataid) | Global ID of the specific system note metadata. |
+
+### `Tag`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="tagcommit"></a>`commit` | [`Commit`](#commit) | Commit for the tag. |
+| <a id="tagmessage"></a>`message` | [`String`](#string) | Tagging message. |
+| <a id="tagname"></a>`name` | [`String!`](#string) | Name of the tag. |
 
 ### `TaskCompletionStatus`
 
@@ -36203,6 +36721,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="usercoretodosaction"></a>`action` | [`[TodoActionEnum!]`](#todoactionenum) | Action to be filtered. |
 | <a id="usercoretodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
 | <a id="usercoretodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
+| <a id="usercoretodosissnoozed"></a>`isSnoozed` | [`Boolean`](#boolean) | Whether the to-do item is snoozed. |
 | <a id="usercoretodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
 | <a id="usercoretodossort"></a>`sort` | [`TodoSort`](#todosort) | Sort todos by given criteria. |
 | <a id="usercoretodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
@@ -36294,6 +36813,7 @@ fields relate to interactions between the two entities.
 | <a id="userpreferencesissuessort"></a>`issuesSort` | [`IssueSort`](#issuesort) | Sort order for issue lists. |
 | <a id="userpreferencesorganizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` **{warning-solid}** | [`OrganizationGroupProjectDisplay!`](#organizationgroupprojectdisplay) | **Introduced** in GitLab 17.2. **Status**: Experiment. Default list view for organization groups and projects. |
 | <a id="userpreferencesorganizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` **{warning-solid}** | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | **Introduced** in GitLab 17.2. **Status**: Experiment. Sort order for organization groups and projects. |
+| <a id="userpreferencesprojectssort"></a>`projectsSort` | [`ProjectSort`](#projectsort) | Sort order for projects. |
 | <a id="userpreferencestimezone"></a>`timezone` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Timezone of the user. |
 | <a id="userpreferencesuseworkitemsview"></a>`useWorkItemsView` | [`Boolean`](#boolean) | Use work item view instead of legacy issue view. |
 | <a id="userpreferencesvisibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
@@ -37286,12 +37806,15 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="workitemcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the work item was created. |
 | <a id="workitemdescription"></a>`description` | [`String`](#string) | Description of the work item. |
 | <a id="workitemdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
+| <a id="workitemduplicatedtoworkitemurl"></a>`duplicatedToWorkItemUrl` | [`String`](#string) | URL of the work item that the work item is marked as a duplicate of. |
 | <a id="workitemid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
 | <a id="workitemiid"></a>`iid` | [`String!`](#string) | Internal ID of the work item. |
 | <a id="workitemlockversion"></a>`lockVersion` | [`Int!`](#int) | Lock version of the work item. Incremented each time the work item is updated. |
+| <a id="workitemmovedtoworkitemurl"></a>`movedToWorkItemUrl` | [`String`](#string) | URL of the work item that the work item was moved to. |
 | <a id="workitemname"></a>`name` | [`String`](#string) | Name or title of this object. |
 | <a id="workitemnamespace"></a>`namespace` **{warning-solid}** | [`Namespace`](#namespace) | **Introduced** in GitLab 15.10. **Status**: Experiment. Namespace the work item belongs to. |
 | <a id="workitemproject"></a>`project` **{warning-solid}** | [`Project`](#project) | **Introduced** in GitLab 15.3. **Status**: Experiment. Project the work item belongs to. |
+| <a id="workitempromotedtoepicurl"></a>`promotedToEpicUrl` | [`String`](#string) | URL of the epic that the work item has been promoted to. |
 | <a id="workitemstate"></a>`state` | [`WorkItemState!`](#workitemstate) | State of the work item. |
 | <a id="workitemtitle"></a>`title` | [`String!`](#string) | Title of the work item. |
 | <a id="workitemtitlehtml"></a>`titleHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `title`. |
@@ -37333,6 +37856,14 @@ Returns [`String!`](#string).
 | ---- | ---- | ----------- |
 | <a id="workitemdescriptiontemplatecontent"></a>`content` | [`String!`](#string) | Content of Description Template. |
 | <a id="workitemdescriptiontemplatename"></a>`name` | [`String!`](#string) | Name of Description Template. |
+
+### `WorkItemLinkedResource`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemlinkedresourceurl"></a>`url` | [`String!`](#string) | URL of resource. |
 
 ### `WorkItemPermissions`
 
@@ -37397,6 +37928,7 @@ Represents total number of work items for the represented states.
 | <a id="workitemtypeiconname"></a>`iconName` | [`String`](#string) | Icon name of the work item type. |
 | <a id="workitemtypeid"></a>`id` | [`WorkItemsTypeID!`](#workitemstypeid) | Global ID of the work item type. |
 | <a id="workitemtypename"></a>`name` | [`String!`](#string) | Name of the work item type. |
+| <a id="workitemtypesupportedconversiontypes"></a>`supportedConversionTypes` **{warning-solid}** | [`[WorkItemType!]`](#workitemtype) | **Introduced** in GitLab 17.8. **Status**: Experiment. Supported conversion types for the work item type. |
 | <a id="workitemtypewidgetdefinitions"></a>`widgetDefinitions` **{warning-solid}** | [`[WorkItemWidgetDefinition!]`](#workitemwidgetdefinition) | **Introduced** in GitLab 16.7. **Status**: Experiment. Available widgets for the work item type. |
 
 ### `WorkItemTypeCountsByState`
@@ -37498,6 +38030,19 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetcurrentusertodoscurrentusertodosstate"></a>`state` | [`TodoStateEnum`](#todostateenum) | State of the to-do items. |
 
+### `WorkItemWidgetCustomStatus`
+
+Represents Custom Status widget.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetcustomstatusiconname"></a>`iconName` | [`String`](#string) | Icon name of the Custom Status. |
+| <a id="workitemwidgetcustomstatusid"></a>`id` | [`WorkItemsWidgetsCustomStatusID!`](#workitemswidgetscustomstatusid) | ID of the Custom Status. |
+| <a id="workitemwidgetcustomstatusname"></a>`name` | [`String`](#string) | Name of the Custom Status. |
+| <a id="workitemwidgetcustomstatustype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
 ### `WorkItemWidgetDefinitionAssignees`
 
 Represents an assignees widget definition.
@@ -37509,6 +38054,17 @@ Represents an assignees widget definition.
 | <a id="workitemwidgetdefinitionassigneesallowsmultipleassignees"></a>`allowsMultipleAssignees` | [`Boolean!`](#boolean) | Indicates whether multiple assignees are allowed. |
 | <a id="workitemwidgetdefinitionassigneescaninvitemembers"></a>`canInviteMembers` | [`Boolean!`](#boolean) | Indicates whether the current user can invite members to the work item's parent. |
 | <a id="workitemwidgetdefinitionassigneestype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
+
+### `WorkItemWidgetDefinitionCustomStatus`
+
+Represents an Custom Status widget definition.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetdefinitioncustomstatusallowedcustomstatuses"></a>`allowedCustomStatuses` **{warning-solid}** | [`WorkItemWidgetCustomStatusConnection`](#workitemwidgetcustomstatusconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. Allowed custom statuses for the work item type. |
+| <a id="workitemwidgetdefinitioncustomstatustype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetDefinitionGeneric`
 
@@ -37706,6 +38262,17 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetlinkeditemslinkeditemsfilter"></a>`filter` | [`WorkItemRelatedLinkType`](#workitemrelatedlinktype) | Filter by link type. Supported values: RELATED, BLOCKED_BY, and BLOCKS. Returns all types if omitted. |
 
+### `WorkItemWidgetLinkedResources`
+
+Represents the linked resources widget.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetlinkedresourceslinkedresources"></a>`linkedResources` | [`WorkItemLinkedResourceConnection`](#workitemlinkedresourceconnection) | Resources for the work item. (see [Connections](#connections)) |
+| <a id="workitemwidgetlinkedresourcestype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
 ### `WorkItemWidgetMilestone`
 
 Represents a milestone widget.
@@ -37877,9 +38444,9 @@ Represents a remote development workspace.
 | <a id="workspacedesiredstate"></a>`desiredState` | [`String!`](#string) | Desired state of the workspace. |
 | <a id="workspacedesiredstateupdatedat"></a>`desiredStateUpdatedAt` | [`Time!`](#time) | Timestamp of the last update to the desired state. |
 | <a id="workspacedevfile"></a>`devfile` | [`String!`](#string) | Source YAML of the devfile used to configure the workspace. |
-| <a id="workspacedevfilepath"></a>`devfilePath` | [`String!`](#string) | Path to the devfile used to configure the workspace. |
-| <a id="workspacedevfileref"></a>`devfileRef` | [`String!`](#string) | Git reference that contains the devfile used to configure the workspace. |
-| <a id="workspacedevfileweburl"></a>`devfileWebUrl` | [`String!`](#string) | Web URL of the devfile used to configure the workspace. |
+| <a id="workspacedevfilepath"></a>`devfilePath` | [`String`](#string) | Path to the devfile used to configure the workspace. |
+| <a id="workspacedevfileref"></a>`devfileRef` **{warning-solid}** | [`String!`](#string) | **Deprecated** in GitLab 17.8. Field is renamed to project_ref. |
+| <a id="workspacedevfileweburl"></a>`devfileWebUrl` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 17.8. Field is not used. |
 | <a id="workspaceeditor"></a>`editor` **{warning-solid}** | [`String!`](#string) | **Deprecated** in GitLab 17.5. Field is not used. |
 | <a id="workspaceforceincludeallresources"></a>`forceIncludeAllResources` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 17.6. **Status**: Experiment. Forces all resources to be included for the workspaceduring the next reconciliation with the agent. |
 | <a id="workspaceid"></a>`id` | [`RemoteDevelopmentWorkspaceID!`](#remotedevelopmentworkspaceid) | Global ID of the workspace. |
@@ -37888,6 +38455,7 @@ Represents a remote development workspace.
 | <a id="workspacenamespace"></a>`namespace` | [`String!`](#string) | Namespace of the workspace in Kubernetes. |
 | <a id="workspaceprocesseddevfile"></a>`processedDevfile` | [`String!`](#string) | Processed YAML of the devfile used to configure the workspace. |
 | <a id="workspaceprojectid"></a>`projectId` | [`ID!`](#id) | ID of the project that contains the devfile for the workspace. |
+| <a id="workspaceprojectref"></a>`projectRef` | [`String!`](#string) | Git reference that contains the devfile used to configure the workspace, and that will be cloned into the workspace. |
 | <a id="workspacerespondedtoagentat"></a>`respondedToAgentAt` | [`Time`](#time) | Timestamp of the last response sent to the GitLab agent for Kubernetes for the workspace. |
 | <a id="workspaceupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of the last update to any mutable workspace property. |
 | <a id="workspaceurl"></a>`url` | [`String!`](#string) | URL of the workspace. |
@@ -38228,6 +38796,15 @@ Assignee ID wildcard values.
 | <a id="assigneewildcardidany"></a>`ANY` | An assignee is assigned. |
 | <a id="assigneewildcardidnone"></a>`NONE` | No assignee is assigned. |
 
+### `AutoStopSetting`
+
+Auto stop setting.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="autostopsettingalways"></a>`ALWAYS` | Always. |
+| <a id="autostopsettingwith_action"></a>`WITH_ACTION` | With Action. |
+
 ### `AvailabilityEnum`
 
 User availability status.
@@ -38468,46 +39045,22 @@ CI_JOB_TOKEN policy.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="cijobtokenscopepoliciesadmin_containers"></a>`ADMIN_CONTAINERS` | Admin container images in a project. |
-| <a id="cijobtokenscopepoliciesadmin_deployments"></a>`ADMIN_DEPLOYMENTS` | Admin deployments in a project. |
-| <a id="cijobtokenscopepoliciesadmin_environments"></a>`ADMIN_ENVIRONMENTS` | Admin + Stop environments in a project. |
-| <a id="cijobtokenscopepoliciesadmin_jobs"></a>`ADMIN_JOBS` | Read job metadata, upload artifacts and update the pipeline status. |
-| <a id="cijobtokenscopepoliciesadmin_packages"></a>`ADMIN_PACKAGES` | Admin packages. |
-| <a id="cijobtokenscopepoliciesadmin_releases"></a>`ADMIN_RELEASES` | Admin releases in a project. |
-| <a id="cijobtokenscopepoliciesadmin_secure_files"></a>`ADMIN_SECURE_FILES` | Admin secure files in a project. |
-| <a id="cijobtokenscopepoliciesadmin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Admin terraform state files/versions. |
-| <a id="cijobtokenscopepoliciesread_containers"></a>`READ_CONTAINERS` | Read container images in a project. |
-| <a id="cijobtokenscopepoliciesread_deployments"></a>`READ_DEPLOYMENTS` | Read deployments in a project. |
-| <a id="cijobtokenscopepoliciesread_environments"></a>`READ_ENVIRONMENTS` | Read environments in a project. |
-| <a id="cijobtokenscopepoliciesread_jobs"></a>`READ_JOBS` | Read job metadata and artifacts. |
-| <a id="cijobtokenscopepoliciesread_packages"></a>`READ_PACKAGES` | Read packages. |
-| <a id="cijobtokenscopepoliciesread_releases"></a>`READ_RELEASES` | Read releases in a project. |
-| <a id="cijobtokenscopepoliciesread_secure_files"></a>`READ_SECURE_FILES` | Read secure files in a project. |
-| <a id="cijobtokenscopepoliciesread_terraform_state"></a>`READ_TERRAFORM_STATE` | Read terraform state files/version. |
-
-### `CiJobTokenScopePolicyCategoriesTypes`
-
-CI_JOB_TOKEN policy category type.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="cijobtokenscopepolicycategoriestypescontainers"></a>`CONTAINERS` | Containers category. |
-| <a id="cijobtokenscopepolicycategoriestypesdeployments"></a>`DEPLOYMENTS` | Deployments category. |
-| <a id="cijobtokenscopepolicycategoriestypesenvironments"></a>`ENVIRONMENTS` | Environments category. |
-| <a id="cijobtokenscopepolicycategoriestypesjobs"></a>`JOBS` | Jobs category. |
-| <a id="cijobtokenscopepolicycategoriestypespackages"></a>`PACKAGES` | Packages category. |
-| <a id="cijobtokenscopepolicycategoriestypesreleases"></a>`RELEASES` | Releases category. |
-| <a id="cijobtokenscopepolicycategoriestypessecure_files"></a>`SECURE_FILES` | Secure files category. |
-| <a id="cijobtokenscopepolicycategoriestypesterraform_state"></a>`TERRAFORM_STATE` | Terraform state category. |
-
-### `CiJobTokenScopePolicyTypes`
-
-CI_JOB_TOKEN policy type.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="cijobtokenscopepolicytypesadmin"></a>`ADMIN` | Admin access to the resource. |
-| <a id="cijobtokenscopepolicytypesread"></a>`READ` | Read-only access to the resource. |
+| <a id="cijobtokenscopepoliciesadmin_containers"></a>`ADMIN_CONTAINERS` | Admin Containers. |
+| <a id="cijobtokenscopepoliciesadmin_deployments"></a>`ADMIN_DEPLOYMENTS` | Admin Deployments. |
+| <a id="cijobtokenscopepoliciesadmin_environments"></a>`ADMIN_ENVIRONMENTS` | Admin Environments. |
+| <a id="cijobtokenscopepoliciesadmin_jobs"></a>`ADMIN_JOBS` | Admin Jobs. |
+| <a id="cijobtokenscopepoliciesadmin_packages"></a>`ADMIN_PACKAGES` | Admin Packages. |
+| <a id="cijobtokenscopepoliciesadmin_releases"></a>`ADMIN_RELEASES` | Admin Releases. |
+| <a id="cijobtokenscopepoliciesadmin_secure_files"></a>`ADMIN_SECURE_FILES` | Admin Secure Files. |
+| <a id="cijobtokenscopepoliciesadmin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Admin Terraform State. |
+| <a id="cijobtokenscopepoliciesread_containers"></a>`READ_CONTAINERS` | Read Containers. |
+| <a id="cijobtokenscopepoliciesread_deployments"></a>`READ_DEPLOYMENTS` | Read Deployments. |
+| <a id="cijobtokenscopepoliciesread_environments"></a>`READ_ENVIRONMENTS` | Read Environments. |
+| <a id="cijobtokenscopepoliciesread_jobs"></a>`READ_JOBS` | Read Jobs. |
+| <a id="cijobtokenscopepoliciesread_packages"></a>`READ_PACKAGES` | Read Packages. |
+| <a id="cijobtokenscopepoliciesread_releases"></a>`READ_RELEASES` | Read Releases. |
+| <a id="cijobtokenscopepoliciesread_secure_files"></a>`READ_SECURE_FILES` | Read Secure Files. |
+| <a id="cijobtokenscopepoliciesread_terraform_state"></a>`READ_TERRAFORM_STATE` | Read Terraform State. |
 
 ### `CiRunnerAccessLevel`
 
@@ -38548,6 +39101,12 @@ Values for filtering runners in namespaces.
 | <a id="cirunnermembershipfilterall_available"></a>`ALL_AVAILABLE` **{warning-solid}** | **Introduced** in GitLab 15.5. **Status**: Experiment. Include all runners. This list includes runners for all projects in the group and subgroups, as well as for the parent groups and instance. |
 | <a id="cirunnermembershipfilterdescendants"></a>`DESCENDANTS` | Include runners that have either a direct or inherited relationship. These runners can be specific to a project or a group. |
 | <a id="cirunnermembershipfilterdirect"></a>`DIRECT` | Include runners that have a direct relationship. |
+
+### `CiRunnerOwnerWildcard`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cirunnerownerwildcardadministrators"></a>`ADMINISTRATORS` | Filter runners owned by an administrator. |
 
 ### `CiRunnerSort`
 
@@ -38825,13 +39384,23 @@ Values for sorting contacts.
 
 ### `ContainerProtectionRepositoryRuleAccessLevel`
 
-Access level of a container registry protection rule resource.
+Access level for a container repository protection rule resource.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="containerprotectionrepositoryruleaccessleveladmin"></a>`ADMIN` **{warning-solid}** | **Introduced** in GitLab 16.6. **Status**: Experiment. Admin access. |
-| <a id="containerprotectionrepositoryruleaccesslevelmaintainer"></a>`MAINTAINER` **{warning-solid}** | **Introduced** in GitLab 16.6. **Status**: Experiment. Maintainer access. |
-| <a id="containerprotectionrepositoryruleaccesslevelowner"></a>`OWNER` **{warning-solid}** | **Introduced** in GitLab 16.6. **Status**: Experiment. Owner access. |
+| <a id="containerprotectionrepositoryruleaccessleveladmin"></a>`ADMIN` | Admin access. |
+| <a id="containerprotectionrepositoryruleaccesslevelmaintainer"></a>`MAINTAINER` | Maintainer access. |
+| <a id="containerprotectionrepositoryruleaccesslevelowner"></a>`OWNER` | Owner access. |
+
+### `ContainerProtectionTagRuleAccessLevel`
+
+Access level of a container registry tag protection rule resource.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="containerprotectiontagruleaccessleveladmin"></a>`ADMIN` **{warning-solid}** | **Introduced** in GitLab 17.8. **Status**: Experiment. Admin access. |
+| <a id="containerprotectiontagruleaccesslevelmaintainer"></a>`MAINTAINER` **{warning-solid}** | **Introduced** in GitLab 17.8. **Status**: Experiment. Maintainer access. |
+| <a id="containerprotectiontagruleaccesslevelowner"></a>`OWNER` **{warning-solid}** | **Introduced** in GitLab 17.8. **Status**: Experiment. Owner access. |
 
 ### `ContainerRepositoryCleanupStatus`
 
@@ -39850,6 +40419,7 @@ Member role permission.
 | <a id="memberrolepermissionmanage_security_policy_link"></a>`MANAGE_SECURITY_POLICY_LINK` | Allows linking security policy projects. |
 | <a id="memberrolepermissionread_admin_dashboard"></a>`READ_ADMIN_DASHBOARD` | Read-only access to admin dashboard. |
 | <a id="memberrolepermissionread_code"></a>`READ_CODE` | Allows read-only access to the source code in the user interface. Does not allow users to edit or download repository archives, clone or pull repositories, view source code in an IDE, or view merge requests for private projects. You can download individual files because read-only access inherently grants the ability to make a local copy of the file. |
+| <a id="memberrolepermissionread_compliance_dashboard"></a>`READ_COMPLIANCE_DASHBOARD` | Read compliance capabilities including adherence, violations, and frameworks for groups and projects. |
 | <a id="memberrolepermissionread_crm_contact"></a>`READ_CRM_CONTACT` | Read CRM contact. |
 | <a id="memberrolepermissionread_dependency"></a>`READ_DEPENDENCY` | Allows read-only access to the dependencies and licenses. |
 | <a id="memberrolepermissionread_runners"></a>`READ_RUNNERS` | Allows read-only access to group or project runners, including the runner fleet dashboard. |
@@ -39881,12 +40451,26 @@ Member role standard permission.
 | <a id="memberrolestandardpermissionmanage_project_access_tokens"></a>`MANAGE_PROJECT_ACCESS_TOKENS` | Create, read, update, and delete project access tokens. When creating a token, users with this custom permission must select a role for that token that has the same or fewer permissions as the default role used as the base for the custom role. |
 | <a id="memberrolestandardpermissionmanage_security_policy_link"></a>`MANAGE_SECURITY_POLICY_LINK` | Allows linking security policy projects. |
 | <a id="memberrolestandardpermissionread_code"></a>`READ_CODE` | Allows read-only access to the source code in the user interface. Does not allow users to edit or download repository archives, clone or pull repositories, view source code in an IDE, or view merge requests for private projects. You can download individual files because read-only access inherently grants the ability to make a local copy of the file. |
+| <a id="memberrolestandardpermissionread_compliance_dashboard"></a>`READ_COMPLIANCE_DASHBOARD` | Read compliance capabilities including adherence, violations, and frameworks for groups and projects. |
 | <a id="memberrolestandardpermissionread_crm_contact"></a>`READ_CRM_CONTACT` | Read CRM contact. |
 | <a id="memberrolestandardpermissionread_dependency"></a>`READ_DEPENDENCY` | Allows read-only access to the dependencies and licenses. |
 | <a id="memberrolestandardpermissionread_runners"></a>`READ_RUNNERS` | Allows read-only access to group or project runners, including the runner fleet dashboard. |
 | <a id="memberrolestandardpermissionread_vulnerability"></a>`READ_VULNERABILITY` | Read vulnerability reports and security dashboards. |
 | <a id="memberrolestandardpermissionremove_group"></a>`REMOVE_GROUP` | Ability to delete or restore a group. This ability does not allow deleting top-level groups. Review the Retention period settings to prevent accidental deletion. |
 | <a id="memberrolestandardpermissionremove_project"></a>`REMOVE_PROJECT` | Allows deletion of projects. |
+
+### `MemberRolesAccessLevel`
+
+Access level of a group or project member.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="memberrolesaccessleveldeveloper"></a>`DEVELOPER` | The Developer role gives users access to contribute code while restricting sensitive administrative actions. |
+| <a id="memberrolesaccesslevelguest"></a>`GUEST` | The Guest role is for users who need visibility into a project or group but should not have the ability to make changes, such as external stakeholders. |
+| <a id="memberrolesaccesslevelmaintainer"></a>`MAINTAINER` | The Maintainer role is primarily used for managing code reviews, approvals, and administrative settings for projects. This role can also manage project memberships. |
+| <a id="memberrolesaccesslevelminimal_access"></a>`MINIMAL_ACCESS` | The Minimal Access role is for users who need the least amount of access into groups and projects. You can assign this role as a default, before giving a user another role with more permissions. |
+| <a id="memberrolesaccesslevelplanner"></a>`PLANNER` | The Planner role is suitable for team members who need to manage projects and track work items but do not need to contribute code. |
+| <a id="memberrolesaccesslevelreporter"></a>`REPORTER` | The Reporter role is suitable for team members who need to stay informed about a project or group but do not actively contribute code. |
 
 ### `MemberRolesOrderBy`
 
@@ -40320,6 +40904,7 @@ Values for sorting package.
 | Value | Description |
 | ----- | ----------- |
 | <a id="packagestatusdefault"></a>`DEFAULT` | Packages with a default status. |
+| <a id="packagestatusdeprecated"></a>`DEPRECATED` | Packages with a deprecated status. |
 | <a id="packagestatuserror"></a>`ERROR` | Packages with a error status. |
 | <a id="packagestatushidden"></a>`HIDDEN` | Packages with a hidden status. |
 | <a id="packagestatuspending_destruction"></a>`PENDING_DESTRUCTION` | Packages with a pending_destruction status. |
@@ -40374,7 +40959,7 @@ Package type of a package protection rule resource.
 | ----- | ----------- |
 | <a id="packagesprotectionrulepackagetypeconan"></a>`CONAN` **{warning-solid}** | **Introduced** in GitLab 17.6. **Status**: Experiment. Packages of the Conan format. Available only when feature flag `packages_protected_packages_conan` is enabled. |
 | <a id="packagesprotectionrulepackagetypenpm"></a>`NPM` | Packages of the npm format. |
-| <a id="packagesprotectionrulepackagetypepypi"></a>`PYPI` **{warning-solid}** | **Introduced** in GitLab 17.6. **Status**: Experiment. Packages of the PyPI format. Available only when feature flag `packages_protected_packages_pypi` is enabled. |
+| <a id="packagesprotectionrulepackagetypepypi"></a>`PYPI` | Packages of the PyPI format. |
 
 ### `PipelineAnalyticsJobStatus`
 
@@ -41092,6 +41677,9 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumbuy_pipeline_minutes_notification_dot"></a>`BUY_PIPELINE_MINUTES_NOTIFICATION_DOT` | Callout feature name for buy_pipeline_minutes_notification_dot. |
 | <a id="usercalloutfeaturenameenumcanary_deployment"></a>`CANARY_DEPLOYMENT` | Callout feature name for canary_deployment. |
 | <a id="usercalloutfeaturenameenumci_deprecation_warning_for_types_keyword"></a>`CI_DEPRECATION_WARNING_FOR_TYPES_KEYWORD` | Callout feature name for ci_deprecation_warning_for_types_keyword. |
+| <a id="usercalloutfeaturenameenumci_minutes_limit_alert_danger_stage"></a>`CI_MINUTES_LIMIT_ALERT_DANGER_STAGE` | Callout feature name for ci_minutes_limit_alert_danger_stage. |
+| <a id="usercalloutfeaturenameenumci_minutes_limit_alert_exceeded_stage"></a>`CI_MINUTES_LIMIT_ALERT_EXCEEDED_STAGE` | Callout feature name for ci_minutes_limit_alert_exceeded_stage. |
+| <a id="usercalloutfeaturenameenumci_minutes_limit_alert_warning_stage"></a>`CI_MINUTES_LIMIT_ALERT_WARNING_STAGE` | Callout feature name for ci_minutes_limit_alert_warning_stage. |
 | <a id="usercalloutfeaturenameenumcluster_security_warning"></a>`CLUSTER_SECURITY_WARNING` | Callout feature name for cluster_security_warning. |
 | <a id="usercalloutfeaturenameenumdeployment_approvals_empty_state"></a>`DEPLOYMENT_APPROVALS_EMPTY_STATE` | Callout feature name for deployment_approvals_empty_state. |
 | <a id="usercalloutfeaturenameenumdeployment_details_feedback"></a>`DEPLOYMENT_DETAILS_FEEDBACK` | Callout feature name for deployment_details_feedback. |
@@ -41124,8 +41712,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumproduct_analytics_dashboard_feedback"></a>`PRODUCT_ANALYTICS_DASHBOARD_FEEDBACK` | Callout feature name for product_analytics_dashboard_feedback. |
 | <a id="usercalloutfeaturenameenumprofile_personal_access_token_expiry"></a>`PROFILE_PERSONAL_ACCESS_TOKEN_EXPIRY` | Callout feature name for profile_personal_access_token_expiry. |
 | <a id="usercalloutfeaturenameenumproject_quality_summary_feedback"></a>`PROJECT_QUALITY_SUMMARY_FEEDBACK` | Callout feature name for project_quality_summary_feedback. |
-| <a id="usercalloutfeaturenameenumproject_repository_limit_alert_alert_threshold"></a>`PROJECT_REPOSITORY_LIMIT_ALERT_ALERT_THRESHOLD` | Callout feature name for project_repository_limit_alert_alert_threshold. |
-| <a id="usercalloutfeaturenameenumproject_repository_limit_alert_error_threshold"></a>`PROJECT_REPOSITORY_LIMIT_ALERT_ERROR_THRESHOLD` | Callout feature name for project_repository_limit_alert_error_threshold. |
 | <a id="usercalloutfeaturenameenumproject_repository_limit_alert_warning_threshold"></a>`PROJECT_REPOSITORY_LIMIT_ALERT_WARNING_THRESHOLD` | Callout feature name for project_repository_limit_alert_warning_threshold. |
 | <a id="usercalloutfeaturenameenumregistration_enabled_callout"></a>`REGISTRATION_ENABLED_CALLOUT` | Callout feature name for registration_enabled_callout. |
 | <a id="usercalloutfeaturenameenumsecurity_configuration_devops_alert"></a>`SECURITY_CONFIGURATION_DEVOPS_ALERT` | Callout feature name for security_configuration_devops_alert. |
@@ -41544,6 +42130,7 @@ Type of a work item widget.
 | <a id="workitemwidgettypecolor"></a>`COLOR` | Color widget. |
 | <a id="workitemwidgettypecrm_contacts"></a>`CRM_CONTACTS` | Crm Contacts widget. |
 | <a id="workitemwidgettypecurrent_user_todos"></a>`CURRENT_USER_TODOS` | Current User Todos widget. |
+| <a id="workitemwidgettypecustom_status"></a>`CUSTOM_STATUS` | Custom Status widget. |
 | <a id="workitemwidgettypedescription"></a>`DESCRIPTION` | Description widget. |
 | <a id="workitemwidgettypedesigns"></a>`DESIGNS` | Designs widget. |
 | <a id="workitemwidgettypedevelopment"></a>`DEVELOPMENT` | Development widget. |
@@ -41553,6 +42140,7 @@ Type of a work item widget.
 | <a id="workitemwidgettypeiteration"></a>`ITERATION` | Iteration widget. |
 | <a id="workitemwidgettypelabels"></a>`LABELS` | Labels widget. |
 | <a id="workitemwidgettypelinked_items"></a>`LINKED_ITEMS` | Linked Items widget. |
+| <a id="workitemwidgettypelinked_resources"></a>`LINKED_RESOURCES` | Linked Resources widget. |
 | <a id="workitemwidgettypemilestone"></a>`MILESTONE` | Milestone widget. |
 | <a id="workitemwidgettypenotes"></a>`NOTES` | Notes widget. |
 | <a id="workitemwidgettypenotifications"></a>`NOTIFICATIONS` | Notifications widget. |
@@ -41921,6 +42509,12 @@ An example `ComplianceManagementFrameworkID` is: `"gid://gitlab/ComplianceManage
 A `ContainerRegistryProtectionRuleID` is a global ID. It is encoded as a string.
 
 An example `ContainerRegistryProtectionRuleID` is: `"gid://gitlab/ContainerRegistry::Protection::Rule/1"`.
+
+### `ContainerRegistryProtectionTagRuleID`
+
+A `ContainerRegistryProtectionTagRuleID` is a global ID. It is encoded as a string.
+
+An example `ContainerRegistryProtectionTagRuleID` is: `"gid://gitlab/ContainerRegistry::Protection::TagRule/1"`.
 
 ### `ContainerRepositoryID`
 
@@ -42337,6 +42931,12 @@ A `MlCandidateParamID` is a global ID. It is encoded as a string.
 
 An example `MlCandidateParamID` is: `"gid://gitlab/Ml::CandidateParam/1"`.
 
+### `MlExperimentID`
+
+A `MlExperimentID` is a global ID. It is encoded as a string.
+
+An example `MlExperimentID` is: `"gid://gitlab/Ml::Experiment/1"`.
+
 ### `MlModelID`
 
 A `MlModelID` is a global ID. It is encoded as a string.
@@ -42685,6 +43285,12 @@ An example `WorkItemsRelatedWorkItemLinkID` is: `"gid://gitlab/WorkItems::Relate
 A `WorkItemsTypeID` is a global ID. It is encoded as a string.
 
 An example `WorkItemsTypeID` is: `"gid://gitlab/WorkItems::Type/1"`.
+
+### `WorkItemsWidgetsCustomStatusID`
+
+A `WorkItemsWidgetsCustomStatusID` is a global ID. It is encoded as a string.
+
+An example `WorkItemsWidgetsCustomStatusID` is: `"gid://gitlab/WorkItems::Widgets::CustomStatus/1"`.
 
 ## Abstract types
 
@@ -43815,6 +44421,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="usertodosaction"></a>`action` | [`[TodoActionEnum!]`](#todoactionenum) | Action to be filtered. |
 | <a id="usertodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
 | <a id="usertodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
+| <a id="usertodosissnoozed"></a>`isSnoozed` | [`Boolean`](#boolean) | Whether the to-do item is snoozed. |
 | <a id="usertodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
 | <a id="usertodossort"></a>`sort` | [`TodoSort`](#todosort) | Sort todos by given criteria. |
 | <a id="usertodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
@@ -43849,6 +44456,7 @@ Implementations:
 - [`WorkItemWidgetColor`](#workitemwidgetcolor)
 - [`WorkItemWidgetCrmContacts`](#workitemwidgetcrmcontacts)
 - [`WorkItemWidgetCurrentUserTodos`](#workitemwidgetcurrentusertodos)
+- [`WorkItemWidgetCustomStatus`](#workitemwidgetcustomstatus)
 - [`WorkItemWidgetDescription`](#workitemwidgetdescription)
 - [`WorkItemWidgetDesigns`](#workitemwidgetdesigns)
 - [`WorkItemWidgetDevelopment`](#workitemwidgetdevelopment)
@@ -43858,6 +44466,7 @@ Implementations:
 - [`WorkItemWidgetIteration`](#workitemwidgetiteration)
 - [`WorkItemWidgetLabels`](#workitemwidgetlabels)
 - [`WorkItemWidgetLinkedItems`](#workitemwidgetlinkeditems)
+- [`WorkItemWidgetLinkedResources`](#workitemwidgetlinkedresources)
 - [`WorkItemWidgetMilestone`](#workitemwidgetmilestone)
 - [`WorkItemWidgetNotes`](#workitemwidgetnotes)
 - [`WorkItemWidgetNotifications`](#workitemwidgetnotifications)
@@ -43881,6 +44490,7 @@ Implementations:
 Implementations:
 
 - [`WorkItemWidgetDefinitionAssignees`](#workitemwidgetdefinitionassignees)
+- [`WorkItemWidgetDefinitionCustomStatus`](#workitemwidgetdefinitioncustomstatus)
 - [`WorkItemWidgetDefinitionGeneric`](#workitemwidgetdefinitiongeneric)
 - [`WorkItemWidgetDefinitionHierarchy`](#workitemwidgetdefinitionhierarchy)
 - [`WorkItemWidgetDefinitionLabels`](#workitemwidgetdefinitionlabels)
@@ -44799,6 +45409,15 @@ Attributes for value stream stage.
 | <a id="workitemconverttaskinputlockversion"></a>`lockVersion` | [`Int!`](#int) | Current lock version of the work item containing the task in the description. |
 | <a id="workitemconverttaskinputtitle"></a>`title` | [`String!`](#string) | Full string of the task to be replaced. New title for the created work item. |
 | <a id="workitemconverttaskinputworkitemtypeid"></a>`workItemTypeId` | [`WorkItemsTypeID!`](#workitemstypeid) | Global ID of the work item type used to create the new work item. |
+
+### `WorkItemResolveDiscussionsInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemresolvediscussionsinputdiscussionid"></a>`discussionId` | [`String`](#string) | ID of a discussion to resolve. |
+| <a id="workitemresolvediscussionsinputnoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the noteable where discussions will be resolved when the work item is created. Only `MergeRequestID` is supported at the moment. |
 
 ### `WorkItemWidgetAssigneesInput`
 

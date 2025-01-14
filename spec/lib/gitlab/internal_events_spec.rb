@@ -23,7 +23,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     allow_next_instance_of(Gitlab::Tracking::EventValidator) do |instance|
       allow(instance).to receive(:validate!)
     end
-    allow(event_definition).to receive_messages(event_selection_rules: event_selection_rules, attributes: {})
+    allow(event_definition).to receive_messages(event_selection_rules: event_selection_rules, raw_attributes: {})
     allow(event_definition).to receive(:extra_tracking_classes).and_return([])
     allow(fake_snowplow).to receive(:event)
   end

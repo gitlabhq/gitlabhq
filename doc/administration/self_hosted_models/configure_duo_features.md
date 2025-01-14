@@ -9,16 +9,17 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `ai_custom_model`. Disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+> - Feature flag `ai_custom_model` removed in GitLab 17.8
 
 To configure your GitLab instance to access the available self-hosted models in your infrastructure:
 
-1. Use a [locally hosted or GitLab.com AI gateway](index.md#choose-a-configuration-type).
+1. [Confirm that a fully self-hosted model configuration is appropriate for your use case](index.md#decide-on-your-configuration-type).
 1. Configure your GitLab instance.
 1. Configure the self-hosted model.
 1. Configure the GitLab Duo features to use your self-hosted model.
@@ -137,3 +138,16 @@ Configure the GitLab Duo feature to send queries to the configured self-hosted m
 1. Select **Self-hosted models**.
 1. Select the **AI-powered features** tab.
 1. For the feature you want to configure, from the dropdown list, choose the self-hosted model you want to use. For example, `Mistral`.
+
+### Configure the feature to use GitLab AI Vendor models
+
+Prerequisites:
+
+- You must use an [online license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#what-is-cloud-licensing).
+
+Configure the GitLab Duo feature to send queries to the Cloud Connector and use the GitLab AI Vendor model:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Self-hosted models**.
+1. Select the **AI-powered features** tab.
+1. For the feature you want to configure, from the dropdown list, select **GitLab AI Vendor**.

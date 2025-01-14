@@ -83,4 +83,29 @@ describe('Panel Resizer component', () => {
       'resize-end': [[100]],
     });
   });
+
+  it('renders custom css class', () => {
+    wrapper = mount(PanelResizer, {
+      propsData: {
+        startSize: 100,
+        side: 'left',
+        customClass: 'custom-class',
+      },
+    });
+
+    expect(wrapper.classes()).toContain('custom-class');
+  });
+
+  it('emits reset event', () => {
+    wrapper = mount(PanelResizer, {
+      propsData: {
+        startSize: 100,
+        side: 'left',
+      },
+    });
+
+    wrapper.trigger('dblclick');
+
+    expect(wrapper.emitted('reset-size')).toHaveLength(1);
+  });
 });

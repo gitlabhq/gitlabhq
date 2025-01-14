@@ -22,12 +22,10 @@ RSpec.describe Gitlab::Database::HealthStatus, feature_category: :database do
     let(:wal_indicator_class) { health_status::Indicators::WriteAheadLog }
     let(:patroni_apdex_indicator_class) { health_status::Indicators::PatroniApdex }
     let(:wal_rate_indicator_class) { health_status::Indicators::WalRate }
-    let(:wal_receiver_saturation_class) { health_status::Indicators::WalReceiverSaturation }
     let(:autovacuum_indicator) { instance_double(autovacuum_indicator_class) }
     let(:wal_indicator) { instance_double(wal_indicator_class) }
     let(:patroni_apdex_indicator) { instance_double(patroni_apdex_indicator_class) }
     let(:wal_rate_indicator) { instance_double(wal_rate_indicator_class) }
-    let(:wal_receiver_saturation_indicator) { instance_double(wal_receiver_saturation_class) }
 
     before do
       allow(autovacuum_indicator_class).to receive(:new).with(health_context).and_return(autovacuum_indicator)
@@ -47,14 +45,9 @@ RSpec.describe Gitlab::Database::HealthStatus, feature_category: :database do
         expect(patroni_apdex_indicator).to receive(:evaluate).and_return(not_available_signal)
         expect(wal_rate_indicator_class).to receive(:new).with(health_context).and_return(wal_rate_indicator)
         expect(wal_rate_indicator).to receive(:evaluate).and_return(not_available_signal)
-        expect(wal_receiver_saturation_class).to receive(:new).with(health_context).and_return(
-          wal_receiver_saturation_indicator
-        )
-        expect(wal_receiver_saturation_indicator).to receive(:evaluate).and_return(not_available_signal)
 
         expect(evaluate).to contain_exactly(
           normal_signal,
-          not_available_signal,
           not_available_signal,
           not_available_signal,
           not_available_signal

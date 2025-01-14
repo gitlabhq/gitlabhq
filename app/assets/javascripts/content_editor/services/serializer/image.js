@@ -17,7 +17,7 @@ const image = preserveUnchanged({
     if (realSrc.startsWith('data:') || realSrc.startsWith('blob:')) return;
 
     if (realSrc) {
-      if (sourceTagName && !sourceMarkdown) {
+      if (sourceTagName === 'img' && !sourceMarkdown) {
         const attrs = pickBy({ alt, title, width, height }, identity);
         state.write(openTag(sourceTagName, { src: realSrc, ...attrs }));
         return;

@@ -7,7 +7,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
 
   let_it_be(:user) { create(:user) }
   let_it_be(:namespace) { create(:group, developers: user) }
-  let_it_be(:project2) { create(:project, namespace: namespace) }
+  let_it_be(:project) { create(:project, namespace: namespace) }
 
   let_it_be(:private_project) do
     create(
@@ -53,6 +53,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
             starCount
             starrersPath
             last30DayUsageCount
+            topics
           }
         }
       }
@@ -69,7 +70,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
         run_with_clean_state(query, context: ctx)
       end
 
-      create(:ci_catalog_resource, :published, project: project2)
+      create(:ci_catalog_resource, :published, project: project)
 
       expect do
         run_with_clean_state(query, context: ctx)
@@ -124,6 +125,22 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
       expect(graphql_data_at(:ciCatalogResources, :nodes)).to contain_exactly(
         a_graphql_entity_for(public_resource)
       )
+    end
+  end
+
+  describe 'catalog resources topics' do
+    it 'returns array if there are no topics set' do
+      post_graphql(query, current_user: user)
+
+      expect(graphql_data_at(:ciCatalogResources, :nodes, :topics)).to match([])
+    end
+
+    it 'returns topics' do
+      public_resource.project.update!(topic_list: 'topic1, topic2, topic3')
+
+      post_graphql(query, current_user: user)
+
+      expect(graphql_data_at(:ciCatalogResources, :nodes, :topics)).to match(%w[topic1 topic2 topic3])
     end
   end
 

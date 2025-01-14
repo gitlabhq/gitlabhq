@@ -5,8 +5,6 @@ module Resolvers
     class LinkedItemsResolver < BaseResolver
       prepend ::WorkItems::LookAheadPreloads
 
-      alias_method :linked_items_widget, :object
-
       argument :filter, Types::WorkItems::RelatedLinkTypeEnum,
         required: false,
         description: "Filter by link type. " \
@@ -28,7 +26,7 @@ module Resolvers
       end
 
       def work_item
-        linked_items_widget.work_item
+        object.is_a?(Issue) ? WorkItem.find_by_id(object.id) : object.work_item
       end
       strong_memoize_attr :work_item
 

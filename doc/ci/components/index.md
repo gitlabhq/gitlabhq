@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - Introduced as an [experimental feature](../../policy/development_stages_support.md#experiment) in GitLab 16.0, [with a flag](../../administration/feature_flags.md) named `ci_namespace_catalog_experimental`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/groups/gitlab-org/-/epics/9897) in GitLab 16.2.
@@ -542,13 +542,13 @@ In other cases, CI/CD variables might still be preferred. For example:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407249) as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 16.1.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/432045) to [beta](../../policy/development_stages_support.md#beta) in GitLab 16.7.
 > - [Made Generally Available](https://gitlab.com/gitlab-org/gitlab/-/issues/454306) in GitLab 17.0.
 
-The CI/CD Catalog is a list of projects with published CI/CD components you can use
+The [CI/CD Catalog](https://gitlab.com/explore/catalog) is a list of projects with published CI/CD components you can use
 to extend your CI/CD workflow.
 
 Anyone can [create a component project](#create-a-component-project) and add it to
@@ -680,7 +680,7 @@ and is maintained by users verified by GitLab:
   GitLab partners can contact a member of the GitLab Partner Alliance to have their
   namespace flagged as GitLab-verified. Then any CI/CD components located in the
   namespace are badged as GitLab Partner components. The Partner Alliance member
-  creates an internal request issue on behalf of the verified partner:
+  creates an internal request issue on behalf of the verified partner (GitLab team members only):
   `https://gitlab.com/gitlab-com/support/internal-requests/-/issues/new?issuable_template=CI%20Catalog%20Badge%20Request`.
 
   WARNING:
@@ -712,7 +712,7 @@ You can learn more by following a practical example for [migrating the Go CI/CD 
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 The CI/CD catalog of a fresh install of a GitLab instance starts with no published CI/CD components.
 To populate your instance's catalog, you can:
@@ -755,7 +755,7 @@ When using third-party CI/CD components, consider the following security best pr
   solution instead.
 - **Use ephemeral, isolated runner environments**: Run component jobs in temporary,
   isolated environments when possible. Be aware of [security risks](https://docs.gitlab.com/runner/security)
-  with self-managed GitLab Runners.
+  with self-managed runners.
 - **Securely handle cache and artifacts**: Do not pass cache or artifacts from other jobs
   in your pipeline to CI/CD component jobs unless absolutely necessary.
 - **Limit CI_JOB_TOKEN access**: Restrict [CI/CD job token (`CI_JOB_TOKEN`) project access and permissions](../../ci/jobs/ci_job_token.md#control-job-token-access-to-your-project)

@@ -36,6 +36,7 @@ import userPermissionsQuery from '~/vue_merge_request_widget/queries/permissions
 import conflictsStateQuery from '~/vue_merge_request_widget/queries/states/conflicts.query.graphql';
 import mergeChecksQuery from '~/vue_merge_request_widget/queries/merge_checks.query.graphql';
 import mergeChecksSubscription from '~/vue_merge_request_widget/queries/merge_checks.subscription.graphql';
+import userPermissionsReviewerQuery from '~/merge_requests/components/reviewers/queries/user_permissions.query.graphql';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
 
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
@@ -98,6 +99,17 @@ describe('MrWidgetOptions', () => {
         userPermissionsQuery,
         jest.fn().mockResolvedValue({
           data: { project: { mergeRequest: { userPermissions: {} } } },
+        }),
+      ],
+      [
+        userPermissionsReviewerQuery,
+        jest.fn().mockResolvedValue({
+          data: {
+            project: {
+              id: 1,
+              mergeRequest: { id: 1, userPermissions: { adminMergeRequest: false } },
+            },
+          },
         }),
       ],
       [

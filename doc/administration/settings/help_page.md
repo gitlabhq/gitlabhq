@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 In large organizations, it is useful to have information about who to contact or where
 to go for help. You can customize and display this information on the GitLab `/help` page.

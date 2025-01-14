@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - Name [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166555) to Jira issues integration in GitLab 17.6.
 
@@ -41,7 +41,7 @@ You can enable the Jira issues integration by configuring your project settings 
 You can also configure the integration for a specific
 [group](../../user/project/integrations/index.md#manage-group-default-settings-for-a-project-integration) or an entire
 [instance](../../administration/settings/project_integration_management.md#configure-default-settings-for-an-integration)
-on self-managed GitLab.
+on GitLab Self-Managed.
 
 With this integration, your GitLab project can interact with all Jira projects on your instance.
 To configure your project settings in GitLab:

@@ -39,6 +39,8 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
       )
     end
 
+    let(:diff_files) { merge_request.merge_request_diff.diffs.diff_files }
+
     context 'when accessed' do
       it 'passes hash of options to #diffs_for_streaming' do
         expect_next_instance_of(::Projects::MergeRequests::DiffsStreamController) do |controller|
@@ -79,9 +81,8 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
       it 'streams diffs except the offset' do
         go(offset: offset)
 
-        diff_files = merge_request.merge_request_diff.diffs.diff_files.to_a
-        offset_file_identifier_hashes = diff_files.take(offset).map(&:file_identifier_hash)
-        remaining_file_identifier_hashes = diff_files.slice(offset..).map(&:file_identifier_hash)
+        offset_file_identifier_hashes = diff_files.to_a.take(offset).map(&:file_identifier_hash)
+        remaining_file_identifier_hashes = diff_files.to_a.slice(offset..).map(&:file_identifier_hash)
 
         expect(response).to have_gitlab_http_status(:success)
         expect(response.body).not_to include(*offset_file_identifier_hashes)
@@ -114,35 +115,6 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
       end
     end
 
-    context 'with diffs_blob option' do
-      context 'when offset is not given' do
-        it 'streams all diffs' do
-          go(diff_blobs: true)
-
-          expect(response).to have_gitlab_http_status(:success)
-          expect(response.body).to include(*file_identifier_hashes(merge_request.merge_request_diff))
-        end
-      end
-
-      context 'when offset is given' do
-        let(:offset) { 5 }
-
-        it 'streams diffs except the offset' do
-          go(diff_blobs: true, offset: offset)
-
-          diff_files = merge_request.merge_request_diff.diffs.diff_files.to_a
-          offset_file_identifier_hashes = diff_files.take(offset).map(&:file_identifier_hash)
-          remaining_file_identifier_hashes = diff_files.slice(offset..).map(&:file_identifier_hash)
-
-          expect(response).to have_gitlab_http_status(:success)
-          expect(response.body).not_to include(*offset_file_identifier_hashes)
-          expect(response.body).to include(*remaining_file_identifier_hashes)
-        end
-      end
-    end
-  end
-
-  def file_identifier_hashes(diff)
-    diff.diffs.diff_files.to_a.map(&:file_identifier_hash)
+    include_examples 'with diffs_blobs param'
   end
 end

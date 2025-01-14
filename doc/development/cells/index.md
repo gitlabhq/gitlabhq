@@ -1,6 +1,6 @@
 ---
-stage: Data Stores
-group: Tenant Scale
+stage: Tenant Scale
+group: Cells Infrastructure
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
@@ -145,6 +145,8 @@ If you believe that the `organization_id` is the best option for the sharding ke
 This is crucial because it has implications for data migration and may require reconsideration of the choice of sharding key.
 
 As an example, see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/462758), which added `organization_id` as a sharding key to an existing table.
+
+For more information about development with organizations, see [Organization](../organization)
 
 ### Define a `desired_sharding_key` to automatically backfill a `sharding_key`
 

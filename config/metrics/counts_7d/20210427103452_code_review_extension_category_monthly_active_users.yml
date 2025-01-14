@@ -23,9 +23,6 @@ events:
   unique: user.id
 - name: i_editor_extensions_user_neovim_plugin_api_request
   unique: user.id
-distribution:
-  - ce
-  - ee
 tiers:
   - free
   - premium

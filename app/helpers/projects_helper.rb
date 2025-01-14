@@ -741,6 +741,18 @@ module ProjectsHelper
     })
   end
 
+  def project_pages_domain_choices
+    pages_url = build_pages_url(@project)
+    blank_option = [[s_('GitLabPages|Don’t enforce a primary domain'), '']]
+    gitlab_default_option = [[pages_url, pages_url]]
+
+    domain_options = @project.pages_domains.map { |domain| [domain.url, domain.url] } || []
+    options_for_select(
+      blank_option + domain_options + gitlab_default_option,
+      selected: @project.project_setting.pages_primary_domain
+    )
+  end
+
   private
 
   def delete_message_data(project)
@@ -826,7 +838,7 @@ module ProjectsHelper
           end
 
     link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_url }
-    s_(str).html_safe % { provider: provider, link_start: link_start, link_end: '</a>'.html_safe }
+    safe_format(s_(str), provider: provider, link_start: link_start, link_end: '</a>'.html_safe)
   end
 
   def project_lfs_status(project)

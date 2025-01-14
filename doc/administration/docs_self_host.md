@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 If you are not able to access the GitLab product documentation at `docs.gitlab.com`,
 you can host the documentation yourself instead.
@@ -17,7 +17,7 @@ NOTE:
 The local help of your instance does not include all the docs (for example, it
 doesn't include docs for GitLab Runner or GitLab Operator), and it's not
 searchable or browsable. It's intended to only support direct links to specific
-pages from within a self-managed GitLab instance.
+pages from within your instance.
 
 ## Documentation self-hosting options
 

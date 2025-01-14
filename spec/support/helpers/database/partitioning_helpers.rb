@@ -83,7 +83,7 @@ module Database
       SQL
     end
 
-    def find_partition_definition(partition, schema: )
+    def find_partition_definition(partition, schema:)
       connection.select_one(<<~SQL)
         select
           parent_class.relname as base_table,

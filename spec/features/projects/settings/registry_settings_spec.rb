@@ -200,6 +200,50 @@ RSpec.describe 'Project > Settings > Packages and registries',
       end
     end
 
+    describe 'Container protection tag rules' do
+      let(:settings_block_id) { 'project-container-protection-tag-rules-settings' }
+
+      it 'shows available section' do
+        visit_method
+
+        settings_block = find_by_testid(settings_block_id)
+        expect(settings_block).to have_text 'Protected container image tags'
+      end
+
+      context 'with protection rule' do
+        let_it_be(:container_protection_tag_rule) do
+          create(:container_registry_protection_tag_rule,
+            project: project,
+            minimum_access_level_for_push: Gitlab::Access::MAINTAINER,
+            minimum_access_level_for_delete: Gitlab::Access::OWNER
+          )
+        end
+
+        it 'renders the rule' do
+          visit_method
+
+          settings_block = find_by_testid(settings_block_id)
+          expect(settings_block).to have_content(container_protection_tag_rule.tag_name_pattern)
+          expect(settings_block).to have_content('Maintainer')
+          expect(settings_block).to have_content('Owner')
+        end
+
+        it 'deletes rule' do
+          visit_method
+
+          within_testid settings_block_id do
+            click_button 'Delete'
+          end
+
+          click_button 'Delete rule'
+
+          expect(page).to have_content('Container protection rule deleted.')
+          settings_block = find_by_testid(settings_block_id)
+          expect(settings_block).not_to have_content(container_protection_tag_rule.tag_name_pattern)
+        end
+      end
+    end
+
     describe 'Cleanup policies' do
       let(:settings_block_id) { 'container-expiration-policy-project-settings' }
 
@@ -269,33 +313,6 @@ RSpec.describe 'Project > Settings > Packages and registries',
   describe 'Container registry section', :js do
     it_behaves_like 'container registry settings' do
       let(:visit_method) { visit_and_expand_container_registry_section }
-    end
-  end
-
-  context 'with feature flag disabled', :js do
-    before do
-      stub_feature_flags(reorganize_project_level_registry_settings: false)
-    end
-
-    it 'passes axe automated accessibility testing' do
-      visit_page
-
-      wait_for_requests
-
-      expect(page).to have_selector 'h1.gl-sr-only', text: 'Packages and registries settings'
-      expect(page).to be_axe_clean.within('[data-testid="packages-and-registries-project-settings"]') # rubocop:todo Capybara/TestidFinders -- Doesn't cover use case, see https://gitlab.com/gitlab-org/gitlab/-/issues/442224
-    end
-
-    describe 'Package registry section' do
-      it_behaves_like 'package registry settings' do
-        let(:visit_method) { visit_page }
-      end
-    end
-
-    describe 'Container registry section' do
-      it_behaves_like 'container registry settings' do
-        let(:visit_method) { visit_page }
-      end
     end
   end
 

@@ -170,6 +170,15 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
         expect { import_state.finish }.to change { import_state.last_error }.from(error_message).to(nil)
       end
 
+      it 'sets the user mapping feature flag state from import data for other transitions' do
+        import_state = create(:import_state, :started)
+        import_state.project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: true }).save!
+
+        import_state.finish
+
+        expect(import_state.user_mapping_enabled).to be(true)
+      end
+
       it 'enqueues housekeeping when an import of a fresh project is completed' do
         project = create(:project_empty_repo, :import_started, import_type: :github)
 
@@ -230,6 +239,15 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
         end.to change { project.import_data }
           .from(import_data).to(nil)
       end
+
+      it 'sets the user mapping feature flag state from import data for other transitions' do
+        import_state = create(:import_state, :scheduled)
+        import_state.project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: true }).save!
+
+        import_state.cancel
+
+        expect(import_state.user_mapping_enabled).to be(true)
+      end
     end
 
     context 'state transition: started: [:finished, :canceled, :failed]' do
@@ -260,6 +278,38 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
 
           expect(project.import_state.checksums).to eq(expected_checksums)
         end
+      end
+    end
+  end
+
+  describe 'completion notification trigger', :aggregate_failures do
+    context 'when transitioning from started to finished' do
+      it 'enqueues ImportCompletionNotificationWorker' do
+        state = create(:import_state, status: :started, import_type: 'github')
+
+        expect(Projects::ImportExport::ImportCompletionNotificationWorker).to receive(:perform_async)
+
+        state.finish!
+      end
+    end
+
+    context 'when transitioning to failed' do
+      it 'enqueues ImportCompletionNotificationWorker' do
+        state = create(:import_state, status: :started, import_type: 'github')
+
+        expect(Projects::ImportExport::ImportCompletionNotificationWorker).to receive(:perform_async)
+
+        state.fail_op!
+      end
+    end
+
+    context 'when transitioning to scheduled' do
+      it 'does not enqueue ImportCompletionNotificationWorker' do
+        state = create(:import_state, status: :none, import_type: 'github')
+
+        expect(Projects::ImportExport::ImportCompletionNotificationWorker).not_to receive(:perform_async)
+
+        state.schedule!
       end
     end
   end

@@ -154,15 +154,9 @@ module Gitlab
           full_path = expand_value_nested(@project_path, context)
           project = Project.find_by_full_path(full_path)
 
-          unless project
+          unless project && Ability.allowed?(user, :read_code, project)
             raise Rules::Rule::Clause::ParseError,
-              "rules:exists:project `#{mask_context_variables_from(context, full_path)}` is not a valid project path"
-          end
-
-          unless Ability.allowed?(user, :read_code, project)
-            raise Rules::Rule::Clause::ParseError,
-              "rules:exists:project access denied to project " \
-              "`#{mask_context_variables_from(context, project.full_path)}`"
+              "rules:exists:project `#{mask_context_variables_from(context, full_path)}` not found or access denied"
           end
 
           project

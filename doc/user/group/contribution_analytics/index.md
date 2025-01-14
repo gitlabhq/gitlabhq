@@ -7,15 +7,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Contribution analytics provide an overview of the
 [contribution events](../../profile/contributions_calendar.md#user-contribution-events) made by your group's members.
 
-Use contribution analytics data visualizations to:
+Contribution analytics provides an overview of the contribution events made by the group's members, offering valuable insights into team activity and individual performance.
+This report includes visualizations like bar charts and a detailed table that breaks down contribution types (such as push events, issues, and merge requests) by group member.
 
-- Analyze your group's contributions over a period of time.
-- Identify group members who are high-performers or may benefit from additional support.
+Use contribution analytics data visualizations for:
+
+- Workload balancing: Analyze your group's contributions over a period of time, and identify group members who are high performers or may benefit from additional support.
+- Team collaboration: Evaluate the balance of contributions, such as code pushes versus reviews or approvals, to ensure collaborative development practices.
+- Training opportunities: Identify areas where team members may benefit from mentorship or training, such as low merge request approval or issue resolution rates.
+- Retrospective evaluation: Incorporate contribution analytics into retrospectives to assess how effectively the team met objectives and where adjustments may be needed.
 
 ## View contribution analytics
 
@@ -30,13 +35,15 @@ Three bar charts and a table illustrate the number of contributions made by each
 - Created, merged, and closed merge requests
 - Created and closed issues
 
+![Contribution analytics bar graphs](img/contribution_analytics_push_v17_7.png)
+
+To retrieve metrics for user contributions, you can also use the [GraphQL API](../../../api/graphql/reference/index.md#groupcontributions).
+
 ### View a member's contributions
 
 You can view the number of events associated with a specific group member.
 
 To do this, hover over the bar with the member's name.
-
-![Contribution analytics bar graphs](img/group_stats_graph_v15_9.png)
 
 ### Zoom in on a chart
 
@@ -74,10 +81,6 @@ For more information, see:
 
 - [ClickHouse integration guidelines](../../../integration/clickhouse.md)
 - [ClickHouse usage at GitLab](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/clickhouse_usage/)
-
-## Contribution analytics GraphQL API
-
-To retrieve metrics for user contributions, use the [GraphQL](../../../api/graphql/reference/index.md#groupcontributions) API.
 
 <!-- ## Troubleshooting
 

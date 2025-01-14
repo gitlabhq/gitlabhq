@@ -654,6 +654,43 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
         expect(message).to eq(_("Failed to move this issue because target project doesn't exist."))
       end
+
+      context "when we pass a work_item" do
+        let(:work_item) { create(:work_item, :issue) }
+        let(:move_command) { "/move #{project.full_path}" }
+
+        it '/move execution method message' do
+          _, _, message = service.execute(move_command, work_item)
+
+          expect(message).to eq("Moved this issue to #{project.full_path}.")
+        end
+      end
+    end
+
+    describe 'clone issue command' do
+      it 'returns the clone issue message' do
+        _, _, message = service.execute("/clone #{project.full_path}", issue)
+        translated_string = _("Cloned this issue to %{project_full_path}.")
+        formatted_message = format(translated_string, project_full_path: project.full_path.to_s)
+
+        expect(message).to eq(formatted_message)
+      end
+
+      it 'returns clone issue failure message when the referenced issue is not found' do
+        _, _, message = service.execute('/clone invalid', issue)
+
+        expect(message).to eq(_("Failed to clone this issue because target project doesn't exist."))
+      end
+
+      context "when we pass a work_item" do
+        let(:work_item) { create(:work_item, :issue, project: project) }
+
+        it '/clone execution method message' do
+          _, _, message = service.execute("/clone #{project.full_path}", work_item)
+
+          expect(message).to eq("Cloned this issue to #{project.full_path}.")
+        end
+      end
     end
 
     shared_examples 'confidential command' do
@@ -2292,15 +2329,15 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
       expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
         .to receive(:track_unique_action)
-        .with('shrug', args: 'test', user: developer)
+        .with('shrug', args: 'test', user: developer, project: project)
 
       expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
         .to receive(:track_unique_action)
-        .with('assign', args: 'me', user: developer)
+        .with('assign', args: 'me', user: developer, project: project)
 
       expect(Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter)
         .to receive(:track_unique_action)
-        .with('milestone', args: '%4', user: developer)
+        .with('milestone', args: '%4', user: developer, project: project)
 
       service.execute(content, issue)
     end
@@ -2489,7 +2526,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
         it 'executes command successfully' do
           expect { unlink_issues }.to change { IssueLink.count }.by(-1)
-          expect(unlink_issues[2]).to eq("Removed link with #{other_issue.to_reference(issue)}.")
+          expect(unlink_issues[2]).to eq("Removed linked item #{other_issue.to_reference(issue)}.")
           expect(issue.notes.last.note).to eq("removed the relation with #{other_issue.to_reference}")
           expect(other_issue.notes.last.note).to eq("removed the relation with #{issue.to_reference}")
         end
@@ -3533,6 +3570,37 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
         expect(explanations).to eq([_("Moves this issue to test/project.")])
       end
+
+      context "when work item type is an issue" do
+        let(:move_command) { "/move test/project" }
+        let(:work_item) { create(:work_item, :issue, project: project) }
+
+        it "/move is available" do
+          _, explanations = service.explain(move_command, work_item)
+
+          expect(explanations).to match_array(["Moves this issue to test/project."])
+        end
+      end
+    end
+
+    describe 'clone issue to another project command' do
+      let(:content) { '/clone test/project' }
+
+      it 'includes the project name' do
+        _, explanations = service.explain(content, issue)
+
+        expect(explanations).to match_array([_("Clones this issue, without comments, to test/project.")])
+      end
+
+      context "when work item type is an issue" do
+        let(:work_item) { create(:work_item, :issue, project: project) }
+
+        it "/clone is available" do
+          _, explanations = service.explain("/clone test/project", work_item)
+
+          expect(explanations).to match_array(["Clones this issue, without comments, to test/project."])
+        end
+      end
     end
 
     describe 'tag a commit' do
@@ -3710,7 +3778,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
         it '/unlink command is available' do
           _, explanations = service.explain(unlink_content, issue)
-          translated_string = _("Removes link with %{issue}.")
+          translated_string = _("Removes linked item %{issue}.")
           formatted_message = format(translated_string, issue: other_issue.to_s)
 
           expect(explanations).to eq([formatted_message])
@@ -3950,6 +4018,26 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           a_hash_including(name: :assign),
           a_hash_including(name: :due)
         )
+      end
+    end
+
+    context 'when target is a work item type of issue' do
+      let(:target) { create(:work_item, :issue) }
+
+      context "when work_item supports move and clone commands" do
+        it 'does recognize the actions' do
+          expect(service.available_commands(target).pluck(:name)).to include(:move, :clone)
+        end
+      end
+
+      context "when work_item does not support move and clone commands" do
+        before do
+          allow(target).to receive(:supports_move_and_clone?).and_return(false)
+        end
+
+        it 'does not recognize the action' do
+          expect(service.available_commands(target).pluck(:name)).not_to include(:move, :clone)
+        end
       end
     end
   end

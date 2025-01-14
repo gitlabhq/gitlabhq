@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 [Burndown](#burndown-charts) and [burnup](#burnup-charts) charts show the progress of completing a milestone.
 
@@ -139,12 +139,12 @@ have weight assigned, because issues with no weight don't show on the chart.
 ## Roll up weights
 
 DETAILS:
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381879) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `rollup_timebox_chart`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. For more information, see the history.
+On GitLab Self-Managed, by default this feature is not available. For more information, see the history.
 This feature is available for testing, but not ready for production use.
 
 With [tasks](../../tasks.md), a more granular planning is possible.

@@ -266,7 +266,7 @@ else:
 **IMPORTANT:** At the [cleaning up](../feature_flags/controls.md#cleaning-up) step, remove the feature flag in AI gateway repository **before** removing the flag in GitLab-Rails repository.
 If you clean up the flag in GitLab-Rails repository at first, the feature flag in AI gateway will be disabled immediately as it's the default state, hence you might encounter a surprising behavior.
 
-**IMPORTANT:** Cleaning up the feature flag in AI gateway will immediately distribute the change to all GitLab instances, including GitLab.com, Self-managed GitLab, and Dedicated.
+**IMPORTANT:** Cleaning up the feature flag in AI gateway will immediately distribute the change to all GitLab instances, including GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
 
 **Technical details:**
 
@@ -395,37 +395,7 @@ a given prompt.
 ### 1. Add your action to the Cloud Connector feature list
 
 The Cloud Connector configuration stores the permissions needed to access your service, as well as additional metadata.
-If there's still not an entry for your feature, you'll need to add one in two places:
-
-- In the GitLab monolith:
-
-```yaml
-# ee/config/cloud_connector/access_data.yml
-
-services:
-  # ...
-  rewrite_description:
-    backend: 'gitlab-ai-gateway'
-    bundled_with:
-      duo_enterprise:
-        unit_primitives:
-          - rewrite_issue_description
-```
-
-- In [`customers-gitlab-com`](https://gitlab.com/gitlab-org/customers-gitlab-com):
-
-```yaml
-# config/cloud_connector.yml
-
-services:
-  # ...
-  rewrite_description:
-    backend: 'gitlab-ai-gateway'
-    bundled_with:
-      duo_enterprise:
-        unit_primitives:
-          - rewrite_issue_description
-```
+If there's no entry for your feature, [add the feature as a Cloud Connector unit primitive](../cloud_connector/index.md#register-new-feature-for-self-managed-dedicated-and-gitlabcom-customers):
 
 For more information, see [Cloud Connector: Configuration](../cloud_connector/configuration.md).
 
@@ -685,7 +655,7 @@ arrays there that differentiate between experimental and beta features.
 
 This way we are ready for the following different cases:
 
-- If the feature is not in any array, the check will return `true`. For example, the feature was moved to GA.
+- If the feature is not in any array, the check will return `true`. For example, the feature is generally available.
 
 To move the feature from the experimental phase to the beta phase, move the name of the feature from the `EXPERIMENTAL_FEATURES` array to the `BETA_FEATURES` array.
 
@@ -882,7 +852,7 @@ Before starting a model migration:
   - Reference any model provider documentation about the changes
 
 - Verify the new model is supported in our current AI-Gateway API specification by:
-  
+
   - Check model definitions in AI gateway:
     - For LiteLLM models: `ai_gateway/models/v2/container.py`
     - For Anthropic models: `ai_gateway/models/anthropic.py`
@@ -991,7 +961,7 @@ For evaluation in merge request pipelines, we use:
 To seed project and group resources for testing and evaluation, run the following command:
 
 ```shell
-FILTER=gitlab_duo bundle exec rake db:seed_fu
+SEED_GITLAB_DUO=1 FILTER=gitlab_duo bundle exec rake db:seed_fu
 ```
 
 This command executes the [development seed file](../development_seed_files.md) for GitLab Duo, which creates `gitlab-duo` group in your GDK.

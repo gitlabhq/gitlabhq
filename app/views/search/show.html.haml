@@ -6,8 +6,8 @@
   = hidden_field_tag :group_id, params[:group_id]
 - if params[:project_id].present?
   = hidden_field_tag :project_id, params[:project_id]
-- group_attributes = @group&.attributes&.slice('id', 'name')&.merge(full_name: @group&.full_name)
-- project_attributes = @project&.attributes&.slice('id', 'namespace_id', 'name')&.merge(name_with_namespace: @project&.name_with_namespace)
+- group_attributes = @group&.attributes&.slice('id', 'name', 'full_path')&.merge(full_name: @group&.full_name)&.merge(full_path: @group&.full_path)
+- project_attributes = @project&.attributes&.slice('id', 'namespace_id', 'name')&.merge(name_with_namespace: @project&.name_with_namespace)&.merge(full_path: @project&.full_path)
 
 - if @search_results && !(@search_results.respond_to?(:failed?) && @search_results.failed?(@scope))
   - if @search_service_presenter.without_count?

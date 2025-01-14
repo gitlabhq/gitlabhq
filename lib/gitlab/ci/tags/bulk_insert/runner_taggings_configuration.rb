@@ -39,10 +39,8 @@ module Gitlab
             true
           end
 
-          def monomorphic_taggings?(runner)
-            strong_memoize_with(:monomorphic_taggings, runner.owner) do
-              ::Feature.enabled?(:write_to_ci_runner_taggings, runner.owner)
-            end
+          def monomorphic_taggings?(_runner)
+            true
           end
         end
       end

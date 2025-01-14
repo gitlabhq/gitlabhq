@@ -9,7 +9,7 @@
  * <clipboard-button
  *   title="Copy"
  *   text="Content to be copied"
- *    css-class="btn-transparent"
+ *   css-class="gl-border-0 gl-bg-transparent"
  * />
  */
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';

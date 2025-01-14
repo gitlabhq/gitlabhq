@@ -9,7 +9,7 @@ description: "Fork a Git repository when you want to contribute changes back to 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 A fork is a personal copy of the repository and all its branches, which you create
 in a namespace of your choice. You can use forks to propose changes to another project

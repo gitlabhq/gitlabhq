@@ -8,11 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9826) in GitLab 15.11. This feature was an [experiment](../../policy/development_stages_support.md#experiment).
 > - Enabling and disabling Silent Mode through the web UI was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131090) in GitLab 16.4.
-> - Silent Mode was updated to [generally available (GA)](../../policy/development_stages_support.md#generally-available-ga) in GitLab 16.6.
+> - [Generally available](../../policy/development_stages_support.md#generally-available) in GitLab 16.6.
 
 Silent Mode allows you to silence outbound communication, such as emails, from GitLab. Silent Mode is not intended to be used on environments which are in-use. Two use-cases are:
 
@@ -120,6 +120,6 @@ Outbound communications from the following features are not silenced by Silent M
 | [File hooks](../file_hooks.md)                                                                              |                                                                                                                                                                                                                                                 |
 | [Server hooks](../server_hooks.md)                                                                          |                                                                                                                                                                                                                                                 |
 | [Advanced search](../../integration/advanced_search/elasticsearch.md)                                       | If two GitLab instances are using the same Advanced Search instance, then they can both modify Search data. This is a split-brain scenario which can occur for example after promoting a secondary Geo site while the primary Geo site is live. |
-| [Snowplow](../../operations/product_analytics/index.md)                                                           | There is [a proposal to silence these requests](https://gitlab.com/gitlab-org/gitlab/-/issues/409661).                                                                                                                                          |
+| [Snowplow](../../development/internal_analytics/product_analytics.md)                                                           | There is [a proposal to silence these requests](https://gitlab.com/gitlab-org/gitlab/-/issues/409661).                                                                                                                                          |
 | [Deprecated Kubernetes Connections](../../user/clusters/agent/index.md)                                     | There is [a proposal to silence these requests](https://gitlab.com/gitlab-org/gitlab/-/issues/396470).                                                                                                                                          |
 | [Container registry webhooks](../packages/container_registry.md#configure-container-registry-notifications) | There is [a proposal to silence these requests](https://gitlab.com/gitlab-org/gitlab/-/issues/409682).                                                                                                                                          |

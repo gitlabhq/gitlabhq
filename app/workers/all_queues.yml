@@ -390,15 +390,6 @@
   :weight: 1
   :idempotent: false
   :tags: []
-- :name: cronjob:click_house_audit_events_sync
-  :worker_name: ClickHouse::AuditEventsSyncWorker
-  :feature_category: :compliance_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: cronjob:concurrency_limit_resume
   :worker_name: ConcurrencyLimit::ResumeWorker
   :feature_category: :scalability
@@ -654,6 +645,15 @@
 - :name: cronjob:metrics_global_metrics_update
   :worker_name: Metrics::GlobalMetricsUpdateWorker
   :feature_category: :observability
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: cronjob:namespaces_enable_descendants_cache_cron
+  :worker_name: Namespaces::EnableDescendantsCacheCronWorker
+  :feature_category: :groups_and_projects
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2973,6 +2973,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: ci_runners_update_project_runners_owner
+  :worker_name: Ci::Runners::UpdateProjectRunnersOwnerWorker
+  :feature_category: :runner
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: ci_unlock_pipelines_in_queue
   :worker_name: Ci::UnlockPipelinesInQueueWorker
   :feature_category: :job_artifacts
@@ -2996,15 +3005,6 @@
   :feature_category: :continuous_integration
   :has_external_dependencies: false
   :urgency: :high
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: click_house_audit_event_partition_sync
-  :worker_name: ClickHouse::AuditEventPartitionSyncWorker
-  :feature_category: :compliance_management
-  :has_external_dependencies: true
-  :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
@@ -3918,6 +3918,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: projects_import_export_import_completion_notification
+  :worker_name: Projects::ImportExport::ImportCompletionNotificationWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: projects_import_export_parallel_project_export
   :worker_name: Projects::ImportExport::ParallelProjectExportWorker
   :feature_category: :importers
@@ -4106,6 +4115,15 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: false
+  :tags: []
+- :name: repositories_post_receive
+  :worker_name: Repositories::PostReceiveWorker
+  :feature_category: :source_code_management
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :cpu
+  :weight: 5
+  :idempotent: true
   :tags: []
 - :name: repositories_rewrite_history
   :worker_name: Repositories::RewriteHistoryWorker

@@ -175,11 +175,13 @@ RSpec.describe Feature::Definition do
     using RSpec::Parameterized::TableSyntax
 
     let(:definition) do
-      described_class.new("development/enabled_feature_flag.yml",
-                          name: :enabled_feature_flag,
-                          type: 'development',
-                          milestone: milestone,
-                          default_enabled: false)
+      described_class.new(
+        "development/enabled_feature_flag.yml",
+        name: :enabled_feature_flag,
+        type: 'development',
+        milestone: milestone,
+        default_enabled: false
+      )
     end
 
     before do
@@ -260,12 +262,14 @@ RSpec.describe Feature::Definition do
     using RSpec::Parameterized::TableSyntax
 
     let(:definition) do
-      described_class.new("development/enabled_feature_flag.yml",
-                          name: :enabled_feature_flag,
-                          type: 'development',
-                          milestone: milestone,
-                          log_state_changes: log_state_change,
-                          default_enabled: false)
+      described_class.new(
+        "development/enabled_feature_flag.yml",
+        name: :enabled_feature_flag,
+        type: 'development',
+        milestone: milestone,
+        log_state_changes: log_state_change,
+        default_enabled: false
+      )
     end
 
     before do

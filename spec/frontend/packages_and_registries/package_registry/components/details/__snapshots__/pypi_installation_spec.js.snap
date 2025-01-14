@@ -121,7 +121,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
     id="reference-3"
   >
     <legend
-      class="bv-no-focus-ring col-form-label pt-0"
+      class="!gl-pt-0 bv-no-focus-ring col-form-label"
       id="reference-4"
       tabindex="-1"
     />

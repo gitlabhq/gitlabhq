@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Delete jobs from a Sidekiq queue that match the given
 [metadata](../development/logging.md#logging-context-metadata-through-rails-or-grape-requests).

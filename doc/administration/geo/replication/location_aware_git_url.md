@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 NOTE:
 [GitLab Geo supports location-aware DNS including web UI and API traffic.](../secondary_proxy/index.md#configure-location-aware-dns)

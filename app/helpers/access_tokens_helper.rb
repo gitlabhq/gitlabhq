@@ -36,11 +36,18 @@ module AccessTokensHelper
   end
 
   def expires_at_field_data
-    return {} unless Gitlab::CurrentSettings.require_personal_access_token_expiry?
-
     {
-      min_date: 1.day.from_now.iso8601
+      min_date: 1.day.from_now.iso8601,
+      max_date: max_date_allowed
     }
+  end
+
+  private
+
+  def max_date_allowed
+    return unless Gitlab::CurrentSettings.require_personal_access_token_expiry?
+
+    ::PersonalAccessToken.max_expiration_lifetime_in_days.days.from_now.iso8601
   end
 end
 

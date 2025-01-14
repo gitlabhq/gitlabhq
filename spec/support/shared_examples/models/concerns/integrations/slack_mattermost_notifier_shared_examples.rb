@@ -94,7 +94,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     let_it_be(:project) { create(:project, :repository, :wiki_repo) }
     let_it_be(:user) { create(:user) }
 
-    let(:chat_integration) { described_class.new( { project: project, webhook: webhook_url, branches_to_be_notified: 'all' }.merge(chat_integration_params)) }
+    let(:chat_integration) { described_class.new({ project: project, webhook: webhook_url, branches_to_be_notified: 'all' }.merge(chat_integration_params)) }
     let(:chat_integration_params) { {} }
     let(:data) { Gitlab::DataBuilder::Push.build_sample(project, user) }
 

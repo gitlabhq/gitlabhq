@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointDiffNotesImporter do
+RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointDiffNotesImporter, feature_category: :importers do
   let(:client) { double }
   let(:project) { create(:project, import_source: 'github/repo') }
 

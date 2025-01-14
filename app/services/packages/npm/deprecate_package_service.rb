@@ -18,7 +18,13 @@ module Packages
           attributes = relation.preload_npm_metadatum.filter_map { |package| metadatum_attributes(package) }
           next if attributes.empty?
 
-          ::Packages::Npm::Metadatum.upsert_all(attributes)
+          package_ids = attributes.pluck(:package_id) # rubocop:disable CodeReuse/ActiveRecord, Database/AvoidUsingPluckWithoutLimit -- This is a hash, not an ActiveRecord relation.
+
+          ApplicationRecord.transaction do
+            ::Packages::Npm::Metadatum.upsert_all(attributes)
+            ::Packages::Package.id_in(package_ids).update_all(status: package_status)
+          end
+
           enqueue_metadata_cache_worker = true
         end
 
@@ -85,6 +91,13 @@ module Packages
         metadatum['deprecated']
       end
       strong_memoize_attr :deprecation_message
+
+      def package_status
+        return ::Packages::Package.statuses[:default] if deprecation_message_empty?
+
+        ::Packages::Package.statuses[:deprecated]
+      end
+      strong_memoize_attr :package_status
     end
   end
 end

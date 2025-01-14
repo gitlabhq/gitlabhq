@@ -9,7 +9,7 @@ description: "Configure your GitLab workspaces to manage your GitLab development
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112397) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
@@ -230,7 +230,7 @@ When working with workspaces, you might encounter the following issues.
 
 ### Error: `Failed to renew lease`
 
-You might not be able to create a workspace due to a known issue in the GitLab agent for Kubernetes.
+Creating a workspace can fail due to a known issue in the GitLab agent for Kubernetes.
 The following error message might appear in the agent's log:
 
 ```plaintext

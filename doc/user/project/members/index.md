@@ -1,6 +1,6 @@
 ---
-stage: Data Stores
-group: Tenant Scale
+stage: Tenant Scale
+group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Members are the users and groups who have access to your project.
 
@@ -27,7 +27,7 @@ Indirect membership can be inherited, shared, or inherited shared.
 | --------------------------------------------- | ------------------ |
 | Direct | The user is added directly to the current group or project. |
 | Inherited | The user is a member of a parent group that contains the current group or project. |
-| [Shared](share_project_with_groups.md) | The user is a member of a group invited to the current group or project. |
+| [Shared](sharing_projects_groups.md) | The user is a member of a group invited to the current group or project. |
 | [Inherited shared](../members/sharing_projects_groups.md#invite-a-group-to-a-group) | The user is a member of a group invited to an ancestor of the current group or project. |
 | Indirect | An umbrella term for inherited, shared, or inherited shared members. |
 

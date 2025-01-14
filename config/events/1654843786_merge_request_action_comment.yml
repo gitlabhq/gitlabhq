@@ -12,9 +12,6 @@ product_categories:
 - code_review_workflow
 milestone: "15.1"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89544
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

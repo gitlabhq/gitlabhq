@@ -1,9 +1,0 @@
----
-name: packages_protected_packages_pypi
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/323971
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135475
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/494194
-milestone: '17.6'
-group: group::package registry
-type: gitlab_com_derisk
-default_enabled: false

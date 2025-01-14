@@ -25,12 +25,12 @@ end
 RSpec.shared_examples 'Composer package index' do |member_role:, expected_status:, package_returned:|
   include_context 'Composer user type', member_role: member_role do
     let_it_be(:expected_packages) { package_returned ? [package] : [] }
-    let_it_be(:presenter) { ::Packages::Composer::PackagesPresenter.new(group, expected_packages ) }
+    let_it_be(:presenter) { ::Packages::Composer::PackagesPresenter.new(group, expected_packages) }
 
     it_behaves_like 'Composer package index with version', 'public_api/v4/packages/composer/index', expected_status
 
     context 'with version 2' do
-      let_it_be(:presenter) { ::Packages::Composer::PackagesPresenter.new(group, expected_packages, true ) }
+      let_it_be(:presenter) { ::Packages::Composer::PackagesPresenter.new(group, expected_packages, true) }
       let(:headers) { super().merge('User-Agent' => 'Composer/2.0.9 (Darwin; 19.6.0; PHP 7.4.8; cURL 7.71.1)') }
 
       it_behaves_like 'Composer package index with version', 'public_api/v4/packages/composer/index_v2', expected_status

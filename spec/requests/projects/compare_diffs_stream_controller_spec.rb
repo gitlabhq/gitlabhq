@@ -29,27 +29,29 @@ RSpec.describe 'Compare diffs stream', feature_category: :source_code_management
   end
 
   let(:raw_compare) do
-    project.repository.compare_source_branch(target_ref, project.repository, start_ref, straight: straight)
+    project.repository.compare_source_branch(start_ref, project.repository, target_ref, straight: straight)
   end
 
   let(:compare) { Compare.new(raw_compare, project, base_sha: nil, straight: straight) }
-  let(:diff_files) { compare.diffs.diff_files }
+  let(:diff_files) { compare.diffs.diff_files.to_a }
 
   describe 'GET diffs_stream' do
-    def send_request(**extra_params)
+    def go(**extra_params)
       get diffs_stream_namespace_project_compare_index_path(request_params.merge(extra_params))
     end
 
     it 'includes all diffs' do
-      send_request
+      go
 
       streamed_content = response.body
 
       diff_files.each do |diff_file|
-        expect(streamed_content).to include(diff_file.old_path)
+        expect(streamed_content).to include(diff_file.new_path)
       end
     end
 
     include_examples 'diffs stream tests'
+
+    include_examples 'with diffs_blobs param'
   end
 end

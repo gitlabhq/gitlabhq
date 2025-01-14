@@ -276,17 +276,9 @@ describe('Image List Row', () => {
   });
 
   describe('badge "protected"', () => {
-    const mountComponentForProtectedBadge = ({
-      itemProtectionRuleExists = true,
-      glFeaturesContainerRegistryProtectedContainers = true,
-    } = {}) => {
+    const mountComponentForProtectedBadge = ({ itemProtectionRuleExists = true } = {}) => {
       return mountComponent({
         props: { item: { ...item, protectionRuleExists: itemProtectionRuleExists } },
-        provide: {
-          glFeatures: {
-            containerRegistryProtectedContainers: glFeaturesContainerRegistryProtectedContainers,
-          },
-        },
       });
     };
 
@@ -306,14 +298,6 @@ describe('Image List Row', () => {
     describe('when image is not protected', () => {
       it('does not show badge', () => {
         mountComponentForProtectedBadge({ itemProtectionRuleExists: false });
-
-        expect(findProtectedBadge().exists()).toBe(false);
-      });
-    });
-
-    describe('when feature flag "containerRegistryProtectedContainers" disabled', () => {
-      it('does not show badge', () => {
-        mountComponentForProtectedBadge({ glFeaturesContainerRegistryProtectedContainers: false });
 
         expect(findProtectedBadge().exists()).toBe(false);
       });

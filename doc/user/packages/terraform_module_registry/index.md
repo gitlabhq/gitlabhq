@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - Infrastructure registry and Terraform Module Registry [merged](https://gitlab.com/gitlab-org/gitlab/-/issues/404075) into a single Terraform Module Registry feature in GitLab 15.11.
 > - Support for groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140215) in GitLab 16.9.
@@ -51,11 +51,10 @@ You can publish Terraform modules by using the [Terraform Module Registry API](.
 
 Prerequisites:
 
-- Unless [duplicates are allowed](#allow-duplicate-terraform-modules), the package name and version [must be unique in the top-level namespace](#how-module-resolution-works).
+- Unless [duplicates are allowed](#allow-duplicate-terraform-modules), the module name [must be unique in the top-level namespace](#how-module-resolution-works). Otherwise, an [error occurs](#troubleshooting).
+- The module name and version must be unique in the project.
 - Your project and group names must not include a dot (`.`). For example, `source = "gitlab.example.com/my.group/project.name"`.
 - You must [authenticate with the API](../../../api/rest/authentication.md). If authenticating with a deploy token, it must be configured with the `write_package_registry` scope.
-- Unless [duplicates are allowed](#allow-duplicate-terraform-modules), the name of a module [must be unique in the scope of its group](#how-module-resolution-works), otherwise an
-  [error occurs](#troubleshooting).
 
 ```plaintext
 PUT /projects/:id/packages/terraform/modules/:module-name/:module-system/:module-version/file
@@ -213,7 +212,7 @@ credentials "gitlab.com" {
 }
 ```
 
-Where `gitlab.com` can be replaced with the hostname of your self-managed GitLab instance.
+Where `gitlab.com` can be replaced with the hostname of GitLab Self-Managed.
 
 You can then refer to your Terraform module from a downstream Terraform project:
 
@@ -237,7 +236,7 @@ login <USERNAME>
 password <TOKEN>
 ```
 
-Where `gitlab.com` can be replaced with the hostname of your self-managed GitLab instance, and `<USERNAME>` is your token username.
+Where `gitlab.com` can be replaced with the hostname of GitLab Self-Managed, and `<USERNAME>` is your token username.
 
 You can refer to your Terraform module from a downstream Terraform project:
 
@@ -266,14 +265,14 @@ When you upload a new module, GitLab generates a path for the module, for exampl
 - This path conforms with [the Terraform spec](https://www.terraform.io/internals/module-registry-protocol).
 - The name of the path must be unique in the namespace.
 
-For projects in subgroups, GitLab checks that the module name does not already exist anywhere in the namespace, including all subgroups and the parent group.
+For projects in subgroups where [duplicates are not allowed](#allow-duplicate-terraform-modules), GitLab checks that the module name does not already exist anywhere in the namespace, including all subgroups and the parent group.
 
 For example, if:
 
 - The project is `gitlab.example.com/parent-group/subgroup/my-project`.
 - The Terraform module is `my-infra-package`.
 
-The module name must be unique in all projects in all groups under `parent-group`.
+The module name must be unique in all projects in all groups under `parent-group`. If [duplicates are allowed](#allow-duplicate-terraform-modules), module resolution is based on the most recently published module.
 
 ## Delete a Terraform module
 
@@ -317,4 +316,4 @@ For examples of the Terraform Module Registry, check the projects below:
 
 ## Troubleshooting
 
-- Publishing a module with a duplicate name results in a `{"message":"A package with the same name already exists in the namespace"}` error.
+- Publishing a module with a duplicate name results in a `{"message":"A module with the same name already exists in the namespace."}` error.

@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::IssueAndLabelLinksImporter do
+RSpec.describe Gitlab::GithubImport::Importer::IssueAndLabelLinksImporter, feature_category: :importers do
   describe '#execute' do
     it 'imports an issue and its labels' do
       issue = double(:issue)

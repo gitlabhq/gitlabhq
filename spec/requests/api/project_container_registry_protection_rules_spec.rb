@@ -24,14 +24,6 @@ RSpec.describe API::ProjectContainerRegistryProtectionRules, :aggregate_failures
   end
 
   shared_examples 'rejecting container registry protection rules request when enough permissions' do
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(container_registry_protected_containers: false)
-      end
-
-      it_behaves_like 'returning response status', :not_found
-    end
-
     it_behaves_like 'rejecting protection rules request when invalid project'
   end
 

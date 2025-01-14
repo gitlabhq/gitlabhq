@@ -102,7 +102,6 @@ Layout/ArrayAlignment:
     - 'lib/gitlab/visibility_level.rb'
     - 'lib/kramdown/parser/atlassian_document_format.rb'
     - 'lib/tasks/cache.rake'
-    - 'qa/spec/specs/runner_spec.rb'
     - 'rubocop/cop/gitlab/rspec/avoid_setup.rb'
     - 'rubocop/cop/graphql/authorize_types.rb'
     - 'spec/controllers/import/bulk_imports_controller_spec.rb'

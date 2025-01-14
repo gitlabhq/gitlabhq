@@ -201,7 +201,7 @@ Once your GitLab Dedicated instance is created, follow our recommendations on:
 
 Also plan ahead if you need the following features:
 
-- [Inbound Private Link](../../administration/dedicated/configure_instance.md#inbound-private-link)
-- [Outbound Private Link](../../administration/dedicated/configure_instance.md#outbound-private-link)
-- [SAML SSO](../../administration/dedicated/configure_instance.md#saml)
-- [Bring your own domain](../../administration/dedicated/configure_instance.md#bring-your-own-domain-byod)
+- [Inbound Private Link](../../administration/dedicated/configure_instance/network_security.md#inbound-private-link)
+- [Outbound Private Link](../../administration/dedicated/configure_instance/network_security.md#outbound-private-link)
+- [SAML SSO](../../administration/dedicated/configure_instance/saml.md)
+- [Bring your own domain](../../administration/dedicated/configure_instance/network_security.md#bring-your-own-domain-byod)

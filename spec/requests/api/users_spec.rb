@@ -24,6 +24,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   let(:internal_user) { create(:user, :bot) }
   let(:user_with_2fa) { create(:user, :two_factor_via_otp) }
   let(:admin_with_2fa) { create(:admin, :two_factor_via_otp) }
+  let(:user_without_pin) { create(:user) }
 
   context 'admin notes' do
     let_it_be(:admin) { create(:admin, note: '2019-10-06 | 2FA added | user requested | www.gitlab.com') }
@@ -5390,5 +5391,84 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   it_behaves_like 'custom attributes endpoints', 'users' do
     let(:attributable) { user }
     let(:other_attributable) { admin }
+  end
+
+  describe 'POST /api/v4/user/support_pin' do
+    context 'when authenticated' do
+      it 'creates a new support PIN' do
+        post api('/user/support_pin', user)
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response).to include('pin', 'expires_at')
+      end
+
+      it "handles errors when creating a support PIN" do
+        allow_next_instance_of(Users::SupportPin::UpdateService) do |instance|
+          allow(instance).to receive(:execute).and_return({ status: :error, message: "Failed to create support PIN" })
+        end
+        post api("/user/support_pin", user)
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response["error"]).to eq("Failed to create support PIN")
+      end
+    end
+
+    context 'when not authenticated' do
+      it 'returns 401 Unauthorized' do
+        post api('/user/support_pin')
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
+
+  describe 'GET /api/v4/user/support_pin' do
+    context 'when authenticated' do
+      it 'retrieves the current support PIN' do
+        get api('/user/support_pin', user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include('pin', 'expires_at')
+      end
+
+      it 'returns 404 Not Found when no PIN exists' do
+        get api('/user/support_pin', user_without_pin)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  describe 'GET /api/v4/users/:id/support_pin' do
+    context 'when authenticated as admin' do
+      it 'retrieves the support PIN for a user' do
+        get api("/users/#{user.id}/support_pin", admin, admin_mode: true)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include('pin', 'expires_at')
+      end
+
+      it 'returns 404 Not Found when no PIN exists' do
+        get api("/users/#{user_without_pin.id}/support_pin", admin, admin_mode: true)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it "handles errors when retrieving the support PIN" do
+        allow_next_instance_of(Users::SupportPin::RetrieveService) do |instance|
+          allow(instance).to receive(:execute).and_raise(StandardError)
+        end
+        get api("/users/#{user.id}/support_pin", admin, admin_mode: true)
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response["error"]).to eq("Error retrieving Support PIN for user.")
+      end
+    end
+
+    context 'when authenticated as non-admin' do
+      it 'returns 403 Forbidden' do
+        get api("/users/#{user.id}/support_pin", user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
   end
 end

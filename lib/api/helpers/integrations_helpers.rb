@@ -193,99 +193,10 @@ module API
           'slack-slash-commands' => ::Integrations::SlackSlashCommands.api_arguments,
           'packagist' => ::Integrations::Packagist.api_arguments,
           'phorge' => ::Integrations::Phorge.api_arguments,
-          'pipelines-email' => [
-            {
-              required: true,
-              name: :recipients,
-              type: String,
-              desc: 'Comma-separated list of recipient email addresses'
-            },
-            {
-              required: false,
-              name: :notify_only_broken_pipelines,
-              type: ::Grape::API::Boolean,
-              desc: 'Notify only broken pipelines'
-            },
-            {
-              required: false,
-              name: :notify_only_default_branch,
-              type: ::Grape::API::Boolean,
-              desc: 'Send notifications only for the default branch'
-            },
-            {
-              required: false,
-              name: :branches_to_be_notified,
-              type: String,
-              desc: 'Branches for which notifications are to be sent'
-            }
-          ],
+          'pipelines-email' => ::Integrations::PipelinesEmail.api_arguments,
           'pivotaltracker' => ::Integrations::Pivotaltracker.api_arguments,
-          'prometheus' => [
-            {
-              required: false,
-              name: :manual_configuration,
-              type: ::Grape::API::Boolean,
-              desc: 'When enabled, the default settings will be overridden with your custom configuration'
-            },
-            {
-              required: true,
-              name: :api_url,
-              type: String,
-              desc: 'Prometheus API Base URL, like http://prometheus.example.com/'
-            },
-            {
-              required: true,
-              name: :google_iap_audience_client_id,
-              type: String,
-              desc: 'Client ID of the IAP-secured resource (looks like IAP_CLIENT_ID.apps.googleusercontent.com)'
-            },
-            {
-              required: true,
-              name: :google_iap_service_account_json,
-              type: String,
-              desc: 'Contents of the credentials.json file of your service account, like: { "type": "service_account", "project_id": ... }'
-            }
-          ],
-          'pumble' => [
-            {
-              required: true,
-              name: :webhook,
-              type: String,
-              desc: 'The Pumble chat webhook. For example, https://api.pumble.com/workspaces/x/...'
-            }
-          ].flatten,
-          'pushover' => [
-            {
-              required: true,
-              name: :api_key,
-              type: String,
-              desc: 'The application key'
-            },
-            {
-              required: true,
-              name: :user_key,
-              type: String,
-              desc: 'The user key'
-            },
-            {
-              required: true,
-              name: :priority,
-              type: String,
-              desc: 'The priority'
-            },
-            {
-              required: true,
-              name: :device,
-              type: String,
-              desc: 'Leave blank for all active devices'
-            },
-            {
-              required: true,
-              name: :sound,
-              type: String,
-              desc: 'The sound of the notification'
-            }
-          ],
+          'pumble' => ::Integrations::Pumble.api_arguments,
+          'pushover' => ::Integrations::Pushover.api_arguments,
           'redmine' => ::Integrations::Redmine.api_arguments,
           'ewm' => ::Integrations::Ewm.api_arguments,
           'youtrack' => ::Integrations::Youtrack.api_arguments,
@@ -299,67 +210,11 @@ module API
             ::Integrations::Mattermost.api_arguments,
             chat_notification_channels
           ].flatten,
-          'teamcity' => [
-            {
-              required: true,
-              name: :teamcity_url,
-              type: String,
-              desc: 'TeamCity root URL like https://teamcity.example.com'
-            },
-            {
-              required: false,
-              name: :enable_ssl_verification,
-              type: ::Grape::API::Boolean,
-              desc: 'Enable SSL verification'
-            },
-            {
-              required: true,
-              name: :build_type,
-              type: String,
-              desc: 'Build configuration ID'
-            },
-            {
-              required: true,
-              name: :username,
-              type: String,
-              desc: 'A user with permissions to trigger a manual build'
-            },
-            {
-              required: true,
-              name: :password,
-              type: String,
-              desc: 'The password of the user'
-            }
-          ],
+          'teamcity' => ::Integrations::Teamcity.api_arguments,
           'telegram' => ::Integrations::Telegram.api_arguments,
           'unify-circuit' => ::Integrations::UnifyCircuit.api_arguments,
           'webex-teams' => ::Integrations::WebexTeams.api_arguments,
-          'zentao' => [
-            {
-              required: true,
-              name: :url,
-              type: String,
-              desc: 'The base URL to the ZenTao instance web interface which is being linked to this GitLab project. For example, https://www.zentao.net'
-            },
-            {
-              required: false,
-              name: :api_url,
-              type: String,
-              desc: 'The base URL to the ZenTao instance API. Web URL value will be used if not set. For example, https://www.zentao.net'
-            },
-            {
-              required: true,
-              name: :api_token,
-              type: String,
-              desc: 'The API token created from ZenTao dashboard'
-            },
-            {
-              required: true,
-              name: :zentao_product_xid,
-              type: String,
-              desc: 'The product ID of ZenTao project'
-            }
-          ],
+          'zentao' => ::Integrations::Zentao.api_arguments,
           'squash-tm' => ::Integrations::SquashTm.api_arguments
         }
       end
@@ -399,7 +254,6 @@ module API
           ::Integrations::Phorge,
           ::Integrations::PipelinesEmail,
           ::Integrations::Pivotaltracker,
-          ::Integrations::Prometheus,
           ::Integrations::Pumble,
           ::Integrations::Pushover,
           ::Integrations::Redmine,

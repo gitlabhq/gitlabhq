@@ -10,6 +10,7 @@ import CreateWorkItem from '~/work_items/components/create_work_item.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import { WORK_ITEMS_TYPE_MAP, WORK_ITEM_TYPE_ROUTE_WORK_ITEM } from '~/work_items/constants';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
+import CreateWorkItemCancelConfirmationModal from '~/work_items/components/create_work_item_cancel_confirmation_modal.vue';
 
 const showToast = jest.fn();
 jest.mock('~/work_items/graphql/cache_utils', () => ({
@@ -24,9 +25,11 @@ describe('CreateWorkItemModal', () => {
 
   const findTrigger = () => wrapper.find('[data-testid="new-epic-button"]');
   const findDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
-  const findModal = () => wrapper.findComponent(GlModal);
+  const findCreateModal = () => wrapper.findComponent(GlModal);
   const findForm = () => wrapper.findComponent(CreateWorkItem);
   const findOpenInFullPageButton = () => wrapper.find('[data-testid="new-work-item-modal-link"]');
+  const findCancelConfirmationModal = () =>
+    wrapper.findComponent(CreateWorkItemCancelConfirmationModal);
 
   const namespaceSingleWorkItemTypeQueryResponse = {
     data: {
@@ -117,7 +120,7 @@ describe('CreateWorkItemModal', () => {
 
       await nextTick();
 
-      expect(findModal().props('visible')).toBe(true);
+      expect(findCreateModal().props('visible')).toBe(true);
       expect(mockEvent.preventDefault).toHaveBeenCalled();
     });
 
@@ -131,7 +134,7 @@ describe('CreateWorkItemModal', () => {
 
       await nextTick();
 
-      expect(findModal().props('visible')).toBe(false);
+      expect(findCreateModal().props('visible')).toBe(false);
       expect(mockEvent.preventDefault).not.toHaveBeenCalled();
     });
 
@@ -153,11 +156,11 @@ describe('CreateWorkItemModal', () => {
   it('opens modal when visible prop updates to true', async () => {
     createComponent();
 
-    expect(findModal().props('visible')).toBe(false);
+    expect(findCreateModal().props('visible')).toBe(false);
 
     await wrapper.setProps({ visible: true });
 
-    expect(findModal().props('visible')).toBe(true);
+    expect(findCreateModal().props('visible')).toBe(true);
   });
 
   it('closes modal on cancel event from form', async () => {
@@ -169,7 +172,7 @@ describe('CreateWorkItemModal', () => {
 
     findForm().vm.$emit('cancel');
 
-    expect(findModal().props('visible')).toBe(false);
+    expect(findCreateModal().props('visible')).toBe(false);
   });
 
   for (const [workItemTypeName, vals] of Object.entries(WORK_ITEMS_TYPE_MAP)) {
@@ -227,6 +230,68 @@ describe('CreateWorkItemModal', () => {
       expect(findOpenInFullPageButton().attributes('href')).toBe(
         '/full-path/-/epics/new?related_item_id=gid://gitlab/WorkItem/843',
       );
+    });
+  });
+
+  describe('CreateWorkItemCancelConfirmationModal', () => {
+    it('confirmation modal is rendered but not visible initially', () => {
+      createComponent();
+
+      expect(findCancelConfirmationModal().exists()).toBe(true);
+      expect(findCancelConfirmationModal().props('isVisible')).toBe(false);
+    });
+
+    it('confirmation modal is displayed over create modal when user clicks cancel on the form', async () => {
+      createComponent();
+
+      await wrapper.setProps({ visible: true });
+      expect(findCreateModal().props('visible')).toBe(true);
+
+      findForm().vm.$emit('confirmCancel');
+      await nextTick();
+
+      expect(findCancelConfirmationModal().props('isVisible')).toBe(true);
+      expect(findCreateModal().props('visible')).toBe(true);
+    });
+
+    it('confirmation modal closes when user clicks "Continue Editing" and create modal continues visible', async () => {
+      createComponent();
+
+      await wrapper.setProps({ visible: true });
+      expect(findCreateModal().props('visible')).toBe(true);
+
+      findForm().vm.$emit('confirmCancel');
+      await nextTick();
+
+      expect(findCancelConfirmationModal().props('isVisible')).toBe(true);
+
+      findCancelConfirmationModal().vm.$emit('continueEditing');
+      await nextTick();
+
+      expect(findCancelConfirmationModal().props('isVisible')).toBe(false);
+      expect(findCreateModal().props('visible')).toBe(true);
+    });
+
+    it('both modals close when user clicks "Discard changes" and cache is cleared', async () => {
+      createComponent();
+
+      await wrapper.setProps({ visible: true });
+      expect(findCreateModal().props('visible')).toBe(true);
+
+      findForm().vm.$emit('confirmCancel');
+      await nextTick();
+
+      expect(findCancelConfirmationModal().props('isVisible')).toBe(true);
+
+      findCancelConfirmationModal().vm.$emit('discardDraft');
+      await nextTick();
+
+      expect(findCancelConfirmationModal().props('isVisible')).toBe(false);
+      expect(findCreateModal().props('visible')).toBe(false);
+
+      await nextTick();
+
+      expect(setNewWorkItemCache).toHaveBeenCalled();
     });
   });
 });

@@ -88,29 +88,6 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer do
         )
       end
 
-      context 'when the issues_set_correct_work_item_type_id feature flag is disabled' do
-        before do
-          stub_feature_flags(issues_set_correct_work_item_type_id: false)
-        end
-
-        it 'sets work_item_type_id' do
-          expect(subject).to include(
-            iid: iid,
-            project_id: project.id,
-            namespace_id: project.project_namespace_id,
-            description: expected_description.strip,
-            title: "[#{key}] #{summary}",
-            state_id: 1,
-            updated_at: updated_at,
-            created_at: created_at,
-            author_id: current_user.id,
-            assignee_ids: nil,
-            label_ids: [project_label.id, group_label.id] + Label.reorder(id: :asc).last(2).pluck(:id),
-            work_item_type_id: issue_type.id
-          )
-        end
-      end
-
       it 'creates a hash for valid issue' do
         expect(Issue.new(subject)).to be_valid
       end

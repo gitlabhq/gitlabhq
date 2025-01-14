@@ -8,10 +8,10 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
+On GitLab Self-Managed, by default this feature is available. To hide the feature,
 an administrator can [disable the feature flag](../administration/feature_flags.md) named `sourcegraph`.
 On GitLab.com, this feature is available for public projects only.
 
@@ -35,11 +35,11 @@ For an overview, watch the video [Sourcegraph's new GitLab native integration](h
 
 For more information, see [epic 2201](https://gitlab.com/groups/gitlab-org/-/epics/2201).
 
-## Set up for self-managed GitLab instances
+## Set up for GitLab Self-Managed
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Prerequisites:
 

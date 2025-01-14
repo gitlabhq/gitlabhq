@@ -1,5 +1,5 @@
 ---
-stage: Data Stores
+stage: Tenant Scale
 group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 This guide documents how to manage PostgreSQL extensions for installations with an external
 PostgreSQL database.

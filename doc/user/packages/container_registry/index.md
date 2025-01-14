@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can use the integrated container registry to store container images for each GitLab project.
 
@@ -103,7 +103,7 @@ On a self-managed instance, you can delete all container images before moving or
 a group or project. Alternatively, [issue 18383](https://gitlab.com/gitlab-org/gitlab/-/issues/18383#possible-workaround)
 contains community suggestions to work around this limitation. [Epic 9459](https://gitlab.com/groups/gitlab-org/-/epics/9459)
 proposes adding support for moving projects and groups with container repositories
-to self-managed GitLab.
+to GitLab Self-Managed.
 
 ## Disable the container registry for a project
 
@@ -185,7 +185,7 @@ next to each tag that has an associated signature. To see the details of the sig
 Prerequisites:
 
 - To sign container images, Cosign v2.0 or later.
-- For self-managed GitLab instances, you need a
+- For GitLab Self-Managed, you need a
   [GitLab container registry configured with a metadata database](../../../administration/packages/container_registry_metadata_database.md)
   to display signatures.
 

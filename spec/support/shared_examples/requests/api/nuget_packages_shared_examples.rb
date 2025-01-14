@@ -172,16 +172,97 @@ RSpec.shared_examples 'process nuget workhorse authorization' do |user_type, sta
 end
 
 RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member = true, symbol_package = false|
-  shared_examples 'creates nuget package files' do
-    it 'creates package files' do
-      expect(::Packages::Nuget::ExtractionWorker).to receive(:perform_async).once
-      expect { subject }
-          .to change { target.packages.count }.by(1)
-          .and change { Packages::PackageFile.count }.by(1)
-      expect(response).to have_gitlab_http_status(status)
+  shared_context 'stub nuspec extraction service' do
+    before do
+      Grape::Endpoint.before_each do |endpoint|
+        allow(endpoint).to receive(:nuspec_file_service).and_return(service_result)
+      end
+    end
 
-      package_file = target.packages.last.package_files.reload.last
-      expect(package_file.file_name).to eq(file_name)
+    after do
+      Grape::Endpoint.before_each nil
+    end
+  end
+
+  shared_examples 'creates nuget package files' do
+    context 'when nuspec extraction succeeds' do
+      let(:params) { super().merge('package.remote_url' => 'http://example.com') }
+
+      before do
+        allow_next_instance_of(::Packages::Nuget::ExtractRemoteMetadataFileService) do |service|
+          allow(service).to receive(:execute).and_return(ServiceResponse.success(payload: fixture_file('packages/nuget/with_metadata.nuspec')))
+        end
+      end
+
+      it 'creates package files on the fly', unless: symbol_package do
+        expect(::Packages::Nuget::ExtractionWorker).not_to receive(:perform_async)
+        expect { subject }
+            .to change { target.packages.count }.by(1)
+            .and change { Packages::PackageFile.count }.by(1)
+        expect(response).to have_gitlab_http_status(status)
+
+        package_file = target.packages.last.package_files.reload.last
+        expect(package_file.file_name).to eq('dummyproject.withmetadata.1.2.3.nupkg')
+      end
+
+      context 'when create_nuget_packages_on_the_fly feature flag is disabled' do
+        before do
+          stub_feature_flags(create_nuget_packages_on_the_fly: false)
+        end
+
+        it 'calls the extraction worker' do
+          expect(::Packages::Nuget::ExtractionWorker).to receive(:perform_async).once
+          expect { subject }
+              .to change { target.packages.count }.by(1)
+              .and change { Packages::PackageFile.count }.by(1)
+          expect(response).to have_gitlab_http_status(status)
+
+          package_file = target.packages.last.package_files.reload.last
+          expect(package_file.file_name).to eq(file_name)
+        end
+      end
+    end
+
+    context 'when nuspec extraction fails' do
+      include_context 'stub nuspec extraction service' do
+        let(:service_result) { ServiceResponse.error(message: 'error', reason: :nuspec_extraction_failed) }
+      end
+
+      it 'calls the extraction worker' do
+        expect(::Packages::Nuget::ExtractionWorker).to receive(:perform_async).once
+        expect { subject }
+            .to change { target.packages.count }.by(1)
+            .and change { Packages::PackageFile.count }.by(1)
+        expect(response).to have_gitlab_http_status(status)
+
+        package_file = target.packages.last.package_files.reload.last
+        expect(package_file.file_name).to eq(file_name)
+      end
+    end
+
+    context 'when nuspec extraction fails with a different error', unless: symbol_package do
+      include_context 'stub nuspec extraction service' do
+        let(:service_result) { ServiceResponse.error(message: 'error', reason: :bad_request) }
+      end
+
+      it 'returns a bad request' do
+        expect { subject }.to change { target.packages.count }.by(0)
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    context "with ExtractMetadataFileService's ExtractionError", unless: symbol_package do
+      before do
+        allow(Zip::InputStream).to receive(:open).and_yield(StringIO.new('content'))
+        allow_next_instance_of(::Packages::Nuget::ExtractMetadataFileService) do |service|
+          allow(service).to receive(:execute).and_raise(service.class::ExtractionError, 'error')
+        end
+      end
+
+      it 'returns a bad request' do
+        expect { subject }.to change { target.packages.count }.by(0)
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
     end
   end
 
@@ -233,6 +314,10 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
 
         ['123123', '../../123123'].each do |remote_id|
           context "with invalid remote_id: #{remote_id}" do
+            include_context 'stub nuspec extraction service' do
+              let(:service_result) { ServiceResponse.success(payload: fixture_file('packages/nuget/with_metadata.nuspec')) }
+            end
+
             let(:params) do
               {
                 package: fog_file,
@@ -637,7 +722,7 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
 
   let(:headers) { {} }
   let(:file_name) { symbol_package ? 'package.snupkg' : 'package.nupkg' }
-  let(:params) { { package: temp_file(file_name) } }
+  let(:params) { { package: fixture_file_upload("spec/fixtures/packages/nuget/#{file_name}") } }
   let(:file_key) { :package }
   let(:send_rewritten_field) { true }
 
@@ -758,23 +843,15 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
     it_behaves_like 'returning response status', :forbidden
   end
 
-  context 'when package duplicates are not allowed' do
-    let(:params) { { package: temp_file(file_name, content: File.open(expand_fixture_path('packages/nuget/package.nupkg'))) } }
+  context 'when package duplicates are not allowed', unless: symbol_package do
+    let(:params) { { package: fixture_file_upload('spec/fixtures/packages/nuget/package.nupkg') } }
     let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_headers) }
-    let_it_be(:existing_package) { create(:nuget_package, project: project) }
-    let_it_be(:metadata) { { package_name: existing_package.name, package_version: existing_package.version } }
+    let!(:existing_package) { create(:nuget_package, project: project, name: 'DummyProject.DummyPackage', version: '1.0.0') }
     let_it_be(:package_settings) do
       create(:namespace_package_setting, :group, namespace: project.namespace, nuget_duplicates_allowed: false)
     end
 
-    before do
-      allow_next_instance_of(::Packages::Nuget::MetadataExtractionService) do |instance|
-        allow(instance).to receive(:execute).and_return(ServiceResponse.success(payload: metadata))
-      end
-    end
-
-    it_behaves_like 'returning response status', :conflict unless symbol_package
-    it_behaves_like 'returning response status', :created if symbol_package
+    it_behaves_like 'returning response status', :conflict
 
     context 'when exception_regex is set' do
       before do

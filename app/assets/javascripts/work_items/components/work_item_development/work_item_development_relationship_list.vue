@@ -1,8 +1,12 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
-import { renderGFM } from '~/behaviors/markdown/render_gfm';
-import { TYPENAME_FEATURE_FLAG } from '~/graphql_shared/constants';
+import { unionBy, uniqueId, map } from 'lodash';
+import {
+  TYPENAME_FEATURE_FLAG,
+  TYPENAME_MERGE_REQUEST,
+  TYPENAME_WORK_ITEM_RELATED_BRANCH,
+} from '~/graphql_shared/constants';
+import { STATUS_OPEN, STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 
 import WorkItemDevelopmentMrItem from './work_item_development_mr_item.vue';
 import WorkItemDevelopmentBranchItem from './work_item_development_branch_item.vue';
@@ -29,12 +33,37 @@ export default {
   },
   computed: {
     list() {
-      return [...this.sortedFeatureFlags, ...this.mergeRequests, ...this.relatedBranches];
+      return [
+        ...this.sortedFeatureFlags,
+        ...this.mergedMergeRequests,
+        ...this.openMergeRequests,
+        ...this.closedMergeRequests,
+        ...this.relatedBranches,
+      ];
+    },
+    mergeRequests() {
+      return unionBy(
+        map(this.closingMergeRequests, 'mergeRequest'),
+        this.relatedMergeRequests,
+        'id',
+      );
+    },
+    mergedMergeRequests() {
+      return this.mergeRequests.filter(({ state }) => state === STATUS_MERGED);
+    },
+    openMergeRequests() {
+      return this.mergeRequests.filter(({ state }) => state === STATUS_OPEN);
+    },
+    closedMergeRequests() {
+      return this.mergeRequests.filter(({ state }) => state === STATUS_CLOSED);
     },
     relatedBranches() {
       return this.workItemDevWidget.relatedBranches?.nodes || [];
     },
-    mergeRequests() {
+    relatedMergeRequests() {
+      return this.workItemDevWidget.relatedMergeRequests?.nodes || [];
+    },
+    closingMergeRequests() {
       return this.workItemDevWidget.closingMergeRequests?.nodes || [];
     },
     featureFlags() {
@@ -47,10 +76,6 @@ export default {
 
       return [...enabledFlags, ...disabledFlags];
     },
-  },
-  mounted() {
-    // render the popovers of the merge requests
-    renderGFM(this.$refs['list-body']);
   },
   methods: {
     itemComponent(item) {
@@ -68,7 +93,8 @@ export default {
       return component;
     },
     isMergeRequest(item) {
-      return item.fromMrDescription !== undefined;
+      // eslint-disable-next-line no-underscore-dangle
+      return item.__typename === TYPENAME_MERGE_REQUEST;
     },
     isFeatureFlag(item) {
       // eslint-disable-next-line no-underscore-dangle
@@ -76,31 +102,28 @@ export default {
     },
     isBranch(item) {
       // eslint-disable-next-line no-underscore-dangle
-      return item.__typename === 'WorkItemRelatedBranch';
-    },
-    async toggleShowLess() {
-      this.showLess = !this.showLess;
-      await this.$nextTick();
-      renderGFM(this.$refs['list-body']);
+      return item.__typename === TYPENAME_WORK_ITEM_RELATED_BRANCH;
     },
     itemId(item) {
-      return item?.id || item?.mergeRequest?.id || uniqueId('branch-id-');
-    },
-    itemObject(item) {
-      return this.isMergeRequest(item) ? item.mergeRequest : item;
+      return item?.id || uniqueId('branch-id-');
     },
   },
 };
 </script>
 <template>
   <div>
-    <ul ref="list-body" class="gl-m-0 gl-list-none gl-p-0" data-testid="work-item-dev-items-list">
+    <ul
+      ref="list-body"
+      class="gl-m-0 gl-list-none gl-p-0"
+      data-testid="work-item-dev-items-list"
+      :data-list-length="list.length"
+    >
       <li
         v-for="item in list"
         :key="itemId(item)"
         class="gl-border-b gl-py-4 first:!gl-pt-0 last:gl-border-none last:!gl-pb-0"
       >
-        <component :is="itemComponent(item)" :item-content="itemObject(item)" :is-modal="isModal" />
+        <component :is="itemComponent(item)" :item-content="item" :is-modal="isModal" />
       </li>
     </ul>
   </div>

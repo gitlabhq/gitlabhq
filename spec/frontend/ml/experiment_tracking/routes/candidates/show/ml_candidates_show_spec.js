@@ -1,39 +1,29 @@
 import { shallowMount } from '@vue/test-utils';
 import MlCandidatesShow from '~/ml/experiment_tracking/routes/candidates/show';
-import DeleteButton from '~/ml/experiment_tracking/components/delete_button.vue';
-import CandidateDetail from '~/ml/model_registry/components/candidate_detail.vue';
-import ModelExperimentsHeader from '~/ml/experiment_tracking/components/model_experiments_header.vue';
+import CandidateHeader from '~/ml/experiment_tracking/routes/candidates/show/candidate_header.vue';
+import CandidateDetail from '~/ml/experiment_tracking/routes/candidates/show/candidate_detail.vue';
 import { newCandidate } from 'jest/ml/model_registry/mock_data';
 
 describe('MlCandidatesShow', () => {
   let wrapper;
-  const CANDIDATE = newCandidate();
+  const candidate = newCandidate();
 
   const createWrapper = () => {
     wrapper = shallowMount(MlCandidatesShow, {
-      propsData: { candidate: CANDIDATE },
+      propsData: { candidate },
     });
   };
 
-  const findDeleteButton = () => wrapper.findComponent(DeleteButton);
-  const findHeader = () => wrapper.findComponent(ModelExperimentsHeader);
+  const findCandidateHeader = () => wrapper.findComponent(CandidateHeader);
   const findCandidateDetail = () => wrapper.findComponent(CandidateDetail);
 
   beforeEach(() => createWrapper());
 
-  it('shows delete button', () => {
-    expect(findDeleteButton().exists()).toBe(true);
-  });
-
-  it('passes the delete path to delete button', () => {
-    expect(findDeleteButton().props('deletePath')).toBe('path_to_candidate');
-  });
-
-  it('passes the right title', () => {
-    expect(findHeader().props('pageTitle')).toBe('Model candidate details');
+  it('creates the candidate header section', () => {
+    expect(findCandidateHeader().props('info')).toBe(candidate.info);
   });
 
   it('creates the candidate detail section', () => {
-    expect(findCandidateDetail().props('candidate')).toBe(CANDIDATE);
+    expect(findCandidateDetail().props('candidate')).toBe(candidate);
   });
 });

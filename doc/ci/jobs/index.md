@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 CI/CD jobs are the fundamental elements of a [GitLab CI/CD pipeline](../pipelines/index.md).
 Jobs are configured in the `.gitlab-ci.yml` file with a list of commands to execute
@@ -79,12 +79,14 @@ Selecting an individual job shows you its [job log](job_logs.md), and allows you
 ### View all jobs in a project
 
 DETAILS:
-**Offering:** GitLab.com, Self-managed
+**Offering:** GitLab.com, GitLab Self-Managed
 
-> - Filtering jobs by job name [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387547) on GitLab.com and self-managed in GitLab 17.3 [with a flag](../../administration/feature_flags.md) named `populate_and_use_build_names_table`. On GitLab.com, this feature is enabled by default. On self-managed, this feature is disabled by default.
+> - Filtering jobs by job name [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387547) as an [experiment](../../policy/development_stages_support.md) on GitLab.com and self-managed in GitLab 17.3 [with flags](../../administration/feature_flags.md) named `populate_and_use_build_names_table` for the API and `fe_search_build_by_name` for the UI. Disabled by default.
 
 FLAG:
 The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+Filtering jobs by name is an [experiment](../../policy/development_stages_support.md). For more information about the development of this feature, see [issue 387547](https://gitlab.com/gitlab-org/gitlab/-/issues/387547).
 
 To view the full list of jobs that ran in a project:
 
@@ -219,12 +221,12 @@ You can use hidden jobs that start with `.` as templates for reusable configurat
 - The [`extends` keyword](../yaml/index.md#extends).
 - [YAML anchors](../yaml/yaml_optimization.md#anchors).
 
-## Control the inheritance of default keywords and global variables
+## Control the inheritance of default keywords and variables
 
 You can control the inheritance of:
 
 - [default keywords](../yaml/index.md#default) with [`inherit:default`](../yaml/index.md#inheritdefault).
-- [global variables](../yaml/index.md#default) with [`inherit:variables`](../yaml/index.md#inheritvariables).
+- [default variables](../yaml/index.md#default) with [`inherit:variables`](../yaml/index.md#inheritvariables).
 
 For example:
 
@@ -375,7 +377,7 @@ The configuration can be added to:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 If a job using [`resource_group`](../yaml/index.md#resource_group) gets stuck, a
 GitLab administrator can try run the following commands from the [rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session):

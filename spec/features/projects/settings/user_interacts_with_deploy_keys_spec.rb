@@ -13,6 +13,7 @@ RSpec.describe "User interacts with deploy keys", :js, feature_category: :contin
   shared_examples 'attaches a key' do
     it 'attaches key' do
       visit(project_deploy_keys_path(project))
+      wait_for_requests
 
       page.within('.deploy-keys') do
         click_link(scope)
@@ -23,6 +24,7 @@ RSpec.describe "User interacts with deploy keys", :js, feature_category: :contin
         expect(page).to have_current_path(project_settings_repository_path(project), ignore_query: true)
 
         click_link('Enabled deploy keys')
+        wait_for_requests
 
         expect(page).to have_content(deploy_key.title)
       end
@@ -39,6 +41,7 @@ RSpec.describe "User interacts with deploy keys", :js, feature_category: :contin
 
       it 'shows deploy keys' do
         visit(project_deploy_keys_path(project))
+        wait_for_requests
 
         page.within('.deploy-keys') do
           expect(page).to have_content(deploy_key.title)
@@ -54,6 +57,7 @@ RSpec.describe "User interacts with deploy keys", :js, feature_category: :contin
 
       it 'shows pagination' do
         visit(project_deploy_keys_path(project))
+        wait_for_requests
 
         page.within('.deploy-keys') do
           expect(page).to have_link('Next')
@@ -73,6 +77,7 @@ RSpec.describe "User interacts with deploy keys", :js, feature_category: :contin
 
       it 'shows deploy keys' do
         visit(project_deploy_keys_path(project))
+        wait_for_requests
 
         page.within('.deploy-keys') do
           click_link('Privately accessible deploy keys')
@@ -87,6 +92,7 @@ RSpec.describe "User interacts with deploy keys", :js, feature_category: :contin
 
       it 'shows public deploy keys' do
         visit(project_deploy_keys_path(project))
+        wait_for_requests
 
         page.within('.deploy-keys') do
           click_link('Publicly accessible deploy keys')
@@ -100,6 +106,7 @@ RSpec.describe "User interacts with deploy keys", :js, feature_category: :contin
   context 'adding deploy keys' do
     before do
       visit(project_deploy_keys_path(project))
+      wait_for_requests
     end
 
     it 'adds new key' do

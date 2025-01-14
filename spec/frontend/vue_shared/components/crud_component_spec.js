@@ -230,4 +230,15 @@ describe('CRUD Component', () => {
       expect(wrapper.emitted('collapsed')).toStrictEqual([[]]);
     });
   });
+
+  describe('default slot', () => {
+    it('passes the showForm function to the default slot', () => {
+      const defaultSlot = jest.fn();
+      createComponent({}, { default: defaultSlot });
+
+      expect(defaultSlot).toHaveBeenCalledWith(
+        expect.objectContaining({ showForm: wrapper.vm.showForm }),
+      );
+    });
+  });
 });

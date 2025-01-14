@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 The following are LDAP-related Rake tasks.
 
@@ -42,7 +42,7 @@ rake gitlab:ldap:check[50]
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 The following task runs a [group sync](../auth/ldap/ldap_synchronization.md#group-sync) immediately.
 This is valuable when you'd like to update all configured group memberships against LDAP without

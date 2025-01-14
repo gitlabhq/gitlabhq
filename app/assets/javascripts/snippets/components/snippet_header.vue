@@ -86,6 +86,7 @@ export default {
       canCreateSnippet: false,
       isDeleteModalVisible: false,
       isDropdownShown: false,
+      embedDropdown: false,
     };
   },
   computed: {

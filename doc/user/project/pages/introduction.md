@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 This document is a user guide to explore the options and settings
 GitLab Pages offers.
@@ -297,6 +297,26 @@ the directory to be deployed with Pages both as an artifact, and under the
 as artifacts, and GitLab doesn't know which one you want to deploy.
 
 The previous YAML example uses [user-defined job names](index.md#user-defined-job-names).
+
+## Regenerate unique domain for GitLab Pages
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481746) in GitLab 17.7.
+
+You can regenerate the unique domain for your GitLab Pages site.
+
+After the domain is regenerated, the previous URL is no longer active.
+If anyone tries to access the old URL, they'll receive a `404` error.
+
+Prerequisites
+
+- You must have at least the Maintainer role for the project.
+- The **Use unique domain** setting [must be enabled](index.md#unique-domains) in your project's Pages settings.
+
+To regenerate a unique domain for your GitLab Pages site:
+
+1. On the left sidebar, select  **Deploy > Pages**.
+1. Next to **Access pages**, press **Regenerate unique domain**.
+1. GitLab generates a new unique domain for your Pages site.
 
 ## Known issues
 

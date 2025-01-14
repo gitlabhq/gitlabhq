@@ -817,6 +817,11 @@ class Project < ApplicationRecord
       .where(project_pages_metadata: { project_id: nil })
   end
 
+  scope :with_namespace_domain_pages, -> do
+    joins(:project_setting)
+      .where(project_setting: { pages_unique_domain_enabled: false })
+  end
+
   scope :with_api_commit_entity_associations, -> {
     preload(:project_feature, :route, namespace: [:route, :owner])
   }
@@ -1569,8 +1574,15 @@ class Project < ApplicationRecord
     import_url.present?
   end
 
-  def safe_import_url
-    Gitlab::UrlSanitizer.new(import_url).masked_url
+  def notify_project_import_complete?
+    return false if import_type.nil? || mirror? || forked?
+
+    gitea_import? || github_import? || bitbucket_import? || bitbucket_server_import?
+  end
+
+  def safe_import_url(masked: true)
+    url = Gitlab::UrlSanitizer.new(import_url)
+    masked ? url.masked_url : url.sanitized_url
   end
 
   def jira_import?
@@ -1591,6 +1603,14 @@ class Project < ApplicationRecord
 
   def github_import?
     import_type == 'github'
+  end
+
+  def bitbucket_import?
+    import_type == 'bitbucket'
+  end
+
+  def bitbucket_server_import?
+    import_type == 'bitbucket_server'
   end
 
   def github_enterprise_import?
@@ -2341,6 +2361,10 @@ class Project < ApplicationRecord
 
   def pages_show_onboarding?
     !(pages_metadatum&.onboarding_complete || pages_deployed?)
+  end
+
+  def pages_unique_domain_enabled?
+    project_setting.pages_unique_domain_enabled
   end
 
   def remove_private_deploy_keys
@@ -3234,9 +3258,8 @@ class Project < ApplicationRecord
   end
 
   def enforced_runner_token_expiration_interval
-    all_parent_groups = Gitlab::ObjectHierarchy.new(Group.where(id: group)).base_and_ancestors
-    all_group_settings = NamespaceSetting.where(namespace_id: all_parent_groups)
-    group_interval = all_group_settings.where.not(project_runner_token_expiration_interval: nil).minimum(:project_runner_token_expiration_interval)&.seconds
+    group_settings = NamespaceSetting.where(namespace_id: parent_groups)
+    group_interval = group_settings.where.not(project_runner_token_expiration_interval: nil).minimum(:project_runner_token_expiration_interval)&.seconds
 
     [
       Gitlab::CurrentSettings.project_runner_token_expiration_interval&.seconds,
@@ -3338,7 +3361,7 @@ class Project < ApplicationRecord
   end
 
   def pages_domain_present?(domain_url)
-    pages_url == domain_url || pages_domains.exists?(domain: domain_url)
+    pages_url == domain_url || pages_domains.any? { |domain| domain.url == domain_url }
   end
 
   # overridden in EE

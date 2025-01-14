@@ -26,18 +26,55 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
     it { is_expected.to validate_presence_of(:object_storage_key) }
     it { is_expected.to validate_presence_of(:size) }
     it { is_expected.to validate_uniqueness_of(:object_storage_key).case_insensitive }
-    it { is_expected.to validate_uniqueness_of(:signature).scoped_to(:file_path, :package_id) }
 
-    context 'when package is nil' do
+    context 'for signature & file_path uniqueness' do
       let(:new_symbol) { build(:nuget_symbol, signature: symbol.signature) }
 
-      before do
-        new_symbol.package = nil
-        new_symbol.validate
+      context 'when package is nil' do
+        before do
+          symbol.package = nil
+          new_symbol.validate
+        end
+
+        it 'does not validate uniqueness of signature' do
+          expect(new_symbol.errors.messages_for(:signature)).not_to include 'has already been taken'
+        end
       end
 
-      it 'does not validate uniqueness of signature' do
-        expect(new_symbol.errors.messages_for(:signature)).not_to include 'has already been taken'
+      context 'when package is installable' do
+        before do
+          new_symbol.object_storage_key = '123/foobar/456'
+          new_symbol.validate
+        end
+
+        it 'validates uniqueness of signature' do
+          expect(new_symbol.errors.messages_for(:signature)).to include 'has already been taken'
+        end
+      end
+
+      context 'when package is not installable' do
+        before do
+          new_symbol.package = symbol.package if package_exists
+          symbol.package.update_column(:status, :pending_destruction)
+          new_symbol.object_storage_key = '123/foobar/456'
+          new_symbol.validate
+        end
+
+        context 'and package already exists' do
+          let(:package_exists) { true }
+
+          it 'does not validate uniqueness of signature' do
+            expect(new_symbol.errors.messages_for(:signature)).not_to include 'has already been taken'
+          end
+        end
+
+        context 'and package does not exist' do
+          let(:package_exists) { false }
+
+          it 'does not validate uniqueness of signature' do
+            expect(new_symbol.errors.messages_for(:signature)).not_to include 'has already been taken'
+          end
+        end
       end
     end
   end
@@ -115,6 +152,21 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
 
       context 'when checksum is in uppercase' do
         subject { described_class.with_file_sha256(checksum.upcase) }
+
+        it { is_expected.to contain_exactly(symbol) }
+      end
+    end
+
+    describe '.with_file_path' do
+      let_it_be(:file_path) { 'symbol_package/file.pdb' }
+      let_it_be(:symbol) { create(:nuget_symbol, file_path: file_path) }
+
+      subject { described_class.with_file_path(file_path) }
+
+      it { is_expected.to contain_exactly(symbol) }
+
+      context 'when file_path is in uppercase' do
+        subject { described_class.with_file_path(file_path.upcase) }
 
         it { is_expected.to contain_exactly(symbol) }
       end

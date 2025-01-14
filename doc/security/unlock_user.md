@@ -25,7 +25,7 @@ If 2FA is not enabled user accounts are locked after three failed sign-in attemp
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 > - Configurable locked user policy [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27048) in GitLab 16.5.
 
@@ -39,7 +39,7 @@ Administrators can unlock accounts immediately by using the following tasks:
 
 Prerequisites
 
-- You must be an administrator of a self-managed GitLab instance.
+- You must be an administrator of GitLab Self-Managed.
 
 To unlock an account from the Admin area:
 
@@ -54,7 +54,7 @@ The user can now sign in.
 
 Prerequisites
 
-- You must be an administrator of a self-managed GitLab instance.
+- You must be an administrator of GitLab Self-Managed.
 
 To unlock an account from the command line:
 

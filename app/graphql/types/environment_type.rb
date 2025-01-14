@@ -94,6 +94,9 @@ module Types
       extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
     end
 
+    field :auto_stop_setting, Types::Environments::AutoStopSettingEnum,
+      description: 'Auto stop setting of the environment.'
+
     markdown_field :description_html, null: true
 
     def tier

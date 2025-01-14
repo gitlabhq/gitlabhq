@@ -209,5 +209,5 @@ _What tasks or actions should the user be capable of performing with this featur
     - `#ai_enablement_team` - Channel for the AI Enablement Team which is building the base for all features (experimentation API, Abstraction Layer, Embeddings, etc.)
 
 /label ~"AI Feature Proposal" ~"AI-Seeking community feedback" 
-/cc @tmccaslin @hbenson @pedroms @jmandell
+/cc @rogerwoo @oregand @jackib
 /parent_epic &9997

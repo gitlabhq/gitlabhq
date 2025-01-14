@@ -16,12 +16,7 @@ import csrf from '~/lib/utils/csrf';
 import { __, s__ } from '~/locale';
 import validation, { initFormField } from '~/vue_shared/directives/validation';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import {
-  SECONDARY_OPTIONS_TEXT,
-  COMMIT_LABEL,
-  COMMIT_MESSAGE_SUBJECT_MAX_LENGTH,
-  COMMIT_MESSAGE_BODY_MAX_LENGTH,
-} from '../constants';
+import { COMMIT_MESSAGE_SUBJECT_MAX_LENGTH, COMMIT_MESSAGE_BODY_MAX_LENGTH } from '../constants';
 
 export default {
   csrf,
@@ -51,10 +46,11 @@ export default {
     COMMIT_IN_DEFAULT_BRANCH: __(
       'GitLab will create a default branch, %{branchName}, and commit your changes.',
     ),
-    COMMIT_LABEL,
+    COMMIT_LABEL: __('Commit message'),
     COMMIT_MESSAGE_HINT: __(
       'Try to keep the first line under 52 characters and the others under 72.',
     ),
+    NEW_BRANCH: __('New branch'),
     NEW_BRANCH_LABEl: __('Commit to a new branch'),
     CREATE_MR_LABEL: __('Create a merge request for this change'),
     LFS_WARNING_TITLE: __("The file you're about to delete is tracked by LFS"),
@@ -66,7 +62,10 @@ export default {
     ),
     LFS_CONTINUE_TEXT: __('Continue…'),
     LFS_CANCEL_TEXT: __('Cancel'),
-    SECONDARY_OPTIONS_TEXT,
+    NO_PERMISSION_TO_COMMIT_MESSAGE: __(
+      "You don't have permission to commit to %{branchName}. %{linkStart}Learn more.%{linkEnd}",
+    ),
+    SECONDARY_OPTIONS_TEXT: __('Cancel'),
   },
   directives: {
     validation: validation(),
@@ -153,6 +152,7 @@ export default {
           variant: 'confirm',
           loading: this.loading,
           disabled: this.loading || !this.form.state || !this.valid,
+          'data-testid': 'commit-change-modal-commit-button',
         },
       };
 
@@ -229,6 +229,7 @@ export default {
       this.$refs.message?.$el.focus();
     },
     async handlePrimaryAction(e) {
+      window.onbeforeunload = null;
       e.preventDefault(); // Prevent modal from closing
 
       if (this.showLfsWarning) {
@@ -255,6 +256,7 @@ export default {
   deleteLfsHelpPath: helpPagePath('topics/git/lfs', {
     anchor: 'delete-a-git-lfs-file-from-repository-history',
   }),
+  protectedBranchHelpPath: helpPagePath('user/project/repository/branches/protected'),
 };
 </script>
 
@@ -264,6 +266,7 @@ export default {
     v-bind="$attrs"
     :modal-id="modalId"
     :title="title"
+    data-testid="commit-change-modal"
     :action-primary="primaryOptions"
     :action-cancel="cancelOptions"
     @primary="handlePrimaryAction"
@@ -323,12 +326,12 @@ export default {
         <template v-else>
           <input type="hidden" name="original_branch" :value="originalBranch" />
           <input v-if="createNewMr" type="hidden" name="create_merge_request" value="1" />
-          <gl-form-group
-            v-if="canPushCode"
-            :label="$options.i18n.BRANCH"
-            label-for="branch_selection"
-          >
-            <template v-if="canPushToBranch">
+          <template v-if="canPushCode">
+            <gl-form-group
+              v-if="canPushToBranch"
+              :label="$options.i18n.BRANCH"
+              label-for="branch_selection"
+            >
               <gl-form-radio-group
                 v-model="createNewBranch"
                 name="branch_selection"
@@ -346,7 +349,43 @@ export default {
                 </gl-form-radio>
               </gl-form-radio-group>
               <div v-if="createNewBranch" class="gl-ml-6">
+                <gl-form-group :invalid-feedback="form.fields['branch_name'].feedback">
+                  <gl-form-input
+                    v-model="form.fields['branch_name'].value"
+                    v-validation:[form.showValidation]
+                    :state="form.fields['branch_name'].state"
+                    :disabled="loading"
+                    name="branch_name"
+                    :placeholder="__('example-branch-name')"
+                    required
+                    class="gl-mt-2"
+                  />
+                </gl-form-group>
+                <gl-form-checkbox v-if="createNewBranch" v-model="createNewMr" class="gl-mt-4">
+                  <span>
+                    {{ $options.i18n.CREATE_MR_LABEL }}
+                  </span>
+                </gl-form-checkbox>
+              </div>
+            </gl-form-group>
+            <template v-else>
+              <gl-form-group
+                :label="$options.i18n.NEW_BRANCH"
+                label-for="branch_selection"
+                :invalid-feedback="form.fields['branch_name'].feedback"
+              >
+                <label for="branchNameInput" class="gl-font-normal gl-text-subtle">
+                  <gl-sprintf :message="$options.i18n.NO_PERMISSION_TO_COMMIT_MESSAGE">
+                    <template #branchName
+                      ><code class="gl-text-subtle">{{ originalBranch }}</code>
+                    </template>
+                    <template #link="{ content }">
+                      <gl-link :href="$options.protectedBranchHelpPath">{{ content }}</gl-link>
+                    </template>
+                  </gl-sprintf>
+                </label>
                 <gl-form-input
+                  id="branchNameInput"
                   v-model="form.fields['branch_name'].value"
                   v-validation:[form.showValidation]
                   :state="form.fields['branch_name'].state"
@@ -354,37 +393,16 @@ export default {
                   name="branch_name"
                   required
                   :placeholder="__('example-branch-name')"
-                  class="gl-mt-2"
                 />
-                <gl-form-checkbox v-if="createNewBranch" v-model="createNewMr" class="gl-mt-4">
-                  <span>
-                    {{ $options.i18n.CREATE_MR_LABEL }}
-                  </span>
-                </gl-form-checkbox>
-              </div>
-            </template>
-            <template v-else>
-              <label for="branchNameInput">
-                {{ $options.i18n.NEW_BRANCH_LABEl }}
-              </label>
-              <gl-form-input
-                id="branchNameInput"
-                v-model="form.fields['branch_name'].value"
-                v-validation:[form.showValidation]
-                :state="form.fields['branch_name'].state"
-                :disabled="loading"
-                name="branch_name"
-                required
-                :placeholder="__('example-branch-name')"
-                class="gl-mt-2"
-              />
+              </gl-form-group>
+
               <gl-form-checkbox v-model="createNewMr" class="gl-mt-4">
                 <span>
                   {{ $options.i18n.CREATE_MR_LABEL }}
                 </span>
               </gl-form-checkbox>
             </template>
-          </gl-form-group>
+          </template>
           <template v-else>
             <gl-alert v-if="branchAllowsCollaboration" :dismissible="false" class="gl-my-3">
               <gl-sprintf :message="$options.i18n.COMMIT_IN_BRANCH_MESSAGE">

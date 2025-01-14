@@ -7,25 +7,25 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    actionpack (7.0.8.6)
-      actionview (= 7.0.8.6)
-      activesupport (= 7.0.8.6)
+    actionpack (7.0.8.7)
+      actionview (= 7.0.8.7)
+      activesupport (= 7.0.8.7)
       rack (~> 2.0, >= 2.2.4)
       rack-test (>= 0.6.3)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.0, >= 1.2.0)
-    actionview (7.0.8.6)
-      activesupport (= 7.0.8.6)
+    actionview (7.0.8.7)
+      activesupport (= 7.0.8.7)
       builder (~> 3.1)
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
-    activemodel (7.0.8.6)
-      activesupport (= 7.0.8.6)
-    activerecord (7.0.8.6)
-      activemodel (= 7.0.8.6)
-      activesupport (= 7.0.8.6)
-    activesupport (7.0.8.6)
+    activemodel (7.0.8.7)
+      activesupport (= 7.0.8.7)
+    activerecord (7.0.8.7)
+      activemodel (= 7.0.8.7)
+      activesupport (= 7.0.8.7)
+    activesupport (7.0.8.7)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -93,8 +93,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  actionpack (~> 7.0.8.6)
-  activerecord (~> 7.0.8.6)
+  actionpack (~> 7.0.8.7)
+  activerecord (~> 7.0.8.7)
   attr_encrypted!
   codeclimate-test-reporter (<= 0.6.0)
   dm-sqlite-adapter
@@ -106,4 +106,4 @@ DEPENDENCIES
   sqlite3
 
 BUNDLED WITH
-   2.5.23
+   2.6.2

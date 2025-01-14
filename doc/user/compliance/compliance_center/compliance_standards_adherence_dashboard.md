@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125875) GraphQL APIs in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `compliance_adherence_report`. Disabled by default.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125444) compliance standards adherence dashboard in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `adherence_report_ui`. Disabled by default.
@@ -64,7 +64,7 @@ The GitLab standard consists of the following rules:
 To comply with the GitLab standard, you must prevent users from approving their own merge requests. For more information,
 see [Prevent approval by author](../../project/merge_requests/approvals/settings.md#prevent-approval-by-author).
 
-On self-managed GitLab, when instance-level setting for [prevent approval by author](../../../administration/merge_requests_approvals.md)
+On GitLab Self-Managed, when instance-level setting for [prevent approval by author](../../../administration/merge_requests_approvals.md)
 is updated, the adherence status for all the projects on the instance is not updated automatically.
 To update the adherence status for these projects, the group-level or the project-level setting must be updated.
 
@@ -73,7 +73,7 @@ To update the adherence status for these projects, the group-level or the projec
 To comply with the GitLab standard, you must prevent users from approving merge requests where they've added commits. For
 more information, see [Prevent approvals by users who add commits](../../project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits).
 
-On self-managed GitLab, when instance-level setting for [prevent approvals by users who add commits](../../../administration/merge_requests_approvals.md)
+On GitLab Self-Managed, when instance-level setting for [prevent approvals by users who add commits](../../../administration/merge_requests_approvals.md)
 is updated, the adherence status for all the projects on the instance is not updated automatically.
 To update the adherence status for these projects, the group-level or the project-level setting must be updated.
 
@@ -110,7 +110,7 @@ To comply with the SOC 2 standard, you must:
   [Prevent approvals by users who add commits](../../project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits).
 - At least one approval is required, see [Merge request approval rules](../../project/merge_requests/approvals/rules.md).
 
-These settings are available for an entire self-managed GitLab instance. However, when these settings are updated at the instance level,
+These settings are available for an entire GitLab Self-Managed instance. However, when these settings are updated at the instance level,
 the adherence status for all the projects on the instance is not updated automatically. To update the adherence status
 for these projects, you must update the group-level or project-level setting. For more information on the instance-level settings, see:
 

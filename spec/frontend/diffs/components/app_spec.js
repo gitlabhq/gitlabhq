@@ -98,6 +98,8 @@ describe('diffs/components/app', () => {
       dismissEndpoint: '',
       showSuggestPopover: true,
       mrReviews: {},
+      diffViewType: 'inline',
+      viewDiffsFileByFile: false,
       ...baseConfig,
     });
 
@@ -529,6 +531,9 @@ describe('diffs/components/app', () => {
           diffsCount: '10',
           addedLines: 15,
           removedLines: 20,
+          showWhitespace: true,
+          viewDiffsFileByFile: false,
+          diffViewType: 'inline',
         }),
       );
     });
@@ -545,6 +550,27 @@ describe('diffs/components/app', () => {
       jest.spyOn(store, 'dispatch');
       await wrapper.findComponent(DiffAppControls).vm.$emit('expandAllFiles');
       expect(store.dispatch).toHaveBeenCalledWith('diffs/expandAllFiles', undefined);
+    });
+
+    it('switches whitespace mode', async () => {
+      createComponent();
+      const spy = jest.spyOn(store, 'dispatch');
+      await wrapper.findComponent(DiffAppControls).vm.$emit('toggleWhitespace', false);
+      expect(spy).toHaveBeenCalledWith('diffs/setShowWhitespace', { showWhitespace: false });
+    });
+
+    it('switches view mode', async () => {
+      createComponent();
+      const spy = jest.spyOn(store, 'dispatch');
+      await wrapper.findComponent(DiffAppControls).vm.$emit('updateDiffViewType', 'parallel');
+      expect(spy).toHaveBeenCalledWith('diffs/setDiffViewType', 'parallel');
+    });
+
+    it('enables file by file mode', async () => {
+      createComponent();
+      const spy = jest.spyOn(store, 'dispatch').mockImplementation(() => {});
+      await wrapper.findComponent(DiffAppControls).vm.$emit('toggleFileByFile');
+      expect(spy).toHaveBeenCalledWith('diffs/setFileByFile', { fileByFile: true });
     });
 
     describe('warnings', () => {

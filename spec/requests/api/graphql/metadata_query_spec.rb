@@ -27,18 +27,44 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
     end
 
     context 'kas is enabled' do
-      let(:expected_kas_version) { Gitlab::Kas.version }
+      let(:kas_version_info) { Gitlab::VersionInfo.new(1, 2, 3) }
+      let(:expected_kas_version) { kas_version_info.to_s }
       let(:expected_kas_external_url) { Gitlab::Kas.external_url }
       let(:expected_kas_external_k8s_proxy_url) { Gitlab::Kas.tunnel_url }
 
       before do
         allow(Gitlab::Kas).to receive(:enabled?).and_return(true)
-        post_graphql(query, current_user: current_user)
       end
 
-      it 'returns version, revision, kas_enabled, kas_version, kas_external_url' do
-        expect(graphql_errors).to be_nil
-        expect(graphql_data).to eq(expected_data)
+      context 'when kas server info fetched successfully' do
+        before do
+          allow_next_instance_of(Gitlab::Kas::ServerInfo) do |server_info|
+            allow(server_info).to receive(:version_info).and_return(kas_version_info)
+          end
+          post_graphql(query, current_user: current_user)
+        end
+
+        it 'returns version, revision, kas_enabled, kas_version, kas_external_url' do
+          expect(graphql_errors).to be_nil
+          expect(graphql_data).to eq(expected_data)
+        end
+      end
+
+      context 'when failed to fetch kas server info' do
+        let(:expected_kas_version) { nil }
+
+        before do
+          allow_next_instance_of(Gitlab::Kas::ServerInfo) do |server_info|
+            # Upon RPC failure, Gitlab::Kas::ServerInfo#version_info could return nil after reporting the error.
+            allow(server_info).to receive(:version_info).and_return nil
+          end
+          post_graphql(query, current_user: current_user)
+        end
+
+        it 'returns nil as kas version' do
+          expect(graphql_errors).to be_nil
+          expect(graphql_data).to eq(expected_data)
+        end
       end
     end
 
@@ -70,6 +96,7 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
     let(:query) { graphql_query_for('metadata', {}, feature_flags_field) }
 
     before do
+      allow(Gitlab::Kas).to receive(:enabled?).and_return(false)
       stub_feature_flag_definition('foo')
       stub_feature_flag_definition('ipsum')
       stub_feature_flag_definition('dolar')
@@ -114,6 +141,12 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
 
       expect(graphql_errors).to be_nil
       expect(graphql_data).to eq('metadata' => nil)
+    end
+
+    it 'avoids unnecessary kas query' do
+      post_graphql(query, current_user: nil)
+
+      expect(Gitlab::Kas).not_to receive(:enabled?)
     end
   end
 end

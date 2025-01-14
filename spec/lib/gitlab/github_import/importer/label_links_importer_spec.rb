@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::LabelLinksImporter do
+RSpec.describe Gitlab::GithubImport::Importer::LabelLinksImporter, feature_category: :importers do
   let(:project) { create(:project) }
   let(:client) { double(:client) }
   let(:issue) do

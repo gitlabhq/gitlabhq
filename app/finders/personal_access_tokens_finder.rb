@@ -21,6 +21,8 @@ class PersonalAccessTokensFinder
     tokens = by_revoked_state(tokens)
     tokens = by_created_before(tokens)
     tokens = by_created_after(tokens)
+    tokens = by_expires_before(tokens)
+    tokens = by_expires_after(tokens)
     tokens = by_last_used_before(tokens)
     tokens = by_last_used_after(tokens)
     tokens = by_search(tokens)
@@ -111,6 +113,18 @@ class PersonalAccessTokensFinder
     return tokens unless params[:created_after]
 
     tokens.created_after(params[:created_after])
+  end
+
+  def by_expires_before(tokens)
+    return tokens unless params[:expires_before]
+
+    tokens.expires_before(params[:expires_before])
+  end
+
+  def by_expires_after(tokens)
+    return tokens unless params[:expires_after]
+
+    tokens.expires_after(params[:expires_after])
   end
 
   def by_last_used_before(tokens)

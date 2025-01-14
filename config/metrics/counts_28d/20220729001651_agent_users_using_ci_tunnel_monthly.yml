@@ -15,9 +15,6 @@ events:
   - name: agent_users_using_ci_tunnel
     unique: user.id
 performance_indicator_type: []
-distribution:
-  - ce
-  - ee
 tiers:
   - free
   - premium

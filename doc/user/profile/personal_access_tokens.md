@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Personal access tokens can be an alternative to [OAuth2](../../api/oauth2.md) and used to:
 
@@ -103,7 +103,7 @@ At any time, you can use the UI to revoke or, in GitLab 17.7 and later, rotate a
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Prerequisites:
 
@@ -148,6 +148,7 @@ Disabling the personal access tokens of a group's [enterprise users](../enterpri
 - Stops the enterprise users from creating new personal access tokens. This behavior applies
   even if an enterprise user is also an administrator of the group.
 - Disables the existing personal access tokens of the enterprise users.
+- Disables OAuth tokens. This prevents usage of the [Web IDE](../project/web_ide/index.md).
 
 NOTE:
 Disabling personal access tokens for enterprise users does not disable personal access tokens for [service accounts](service_accounts.md).
@@ -160,23 +161,24 @@ To disable the enterprise users' personal access tokens:
 1. Under **Personal access tokens**, select **Disable personal access tokens**.
 1. Select **Save changes**.
 
-## View the last time a token was used
+## View the time at and IPs where a token was last used
 
 > - In GitLab 16.0 and earlier, token usage information is updated every 24 hours.
 > - The frequency of token usage information updates [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/410168) in GitLab 16.1 from 24 hours to 10 minutes.
+> - Ability to view IP addresses [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428577) in GitLab 17.8 [with a flag](../../administration/feature_flags.md) named `pat_ip`. Disabled by default.
 
 Token usage information is updated every 10 minutes. GitLab considers a token used when the token is used to:
 
 - Authenticate with the [REST](../../api/rest/index.md) or [GraphQL](../../api/graphql/index.md) APIs.
 - Perform a Git operation.
 
-To view the last time a token was used:
+To view the last time a token was used, and the IP addresses from where the token was used:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access tokens**.
-1. In the **Active personal access tokens** area, view the **Last Used** date for
-   the relevant token.
+1. In the **Active personal access tokens** area, view the **Last Used** date and **Last Used IPs** for
+   the relevant token. **Last Used IPs** shows the last five distinct IP addresses.
 
 ## Personal access token scopes
 
@@ -210,7 +212,7 @@ If you enabled [external authorization](../../administration/settings/external_a
 
 ## Access token expiration
 
-> - Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a flag](../feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+> - Maximum token lifetime of 400 days [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241523) in GitLab 17.6 [with a flag](../feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
 
 FLAG:
 The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
@@ -292,7 +294,7 @@ Prerequisites:
 
 You can now create personal access tokens for a service account user with no expiry date.
 
-#### Self-managed GitLab
+#### GitLab Self-Managed
 
 Prerequisites:
 
@@ -309,7 +311,7 @@ You can now create personal access tokens for a service account user with no exp
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 You can create a predetermined personal access token
 as part of your tests or automation.
@@ -353,7 +355,7 @@ sudo gitlab-rails runner "token = User.find_by_username('automation-bot').person
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 You can programmatically revoke a personal access token
 as part of your tests or automation.
@@ -389,7 +391,7 @@ sudo gitlab-rails runner "PersonalAccessToken.find_by_token('token-string-here12
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 To clone a repository when SSH is disabled, clone it using a personal access token by running the following command:
 
@@ -418,7 +420,7 @@ Remember this if you set up an automation pipeline that depends on authenticatio
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 If a personal access token is revoked accidentally by any method, administrators can unrevoke that token. By default, a daily job deletes revoked tokens at 1:00 AM system time.
 

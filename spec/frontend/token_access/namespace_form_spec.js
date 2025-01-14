@@ -5,21 +5,33 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NamespaceForm from '~/token_access/components/namespace_form.vue';
 import addNamespaceMutation from '~/token_access/graphql/mutations/inbound_add_group_or_project_ci_job_token_scope.mutation.graphql';
+import editNamespaceMutation from '~/token_access/graphql/mutations/edit_namespace_job_token_scope.mutation.graphql';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
-import { getAddNamespaceHandler } from './mock_data';
+import PoliciesSelector from '~/token_access/components/policies_selector.vue';
+import { getSaveNamespaceHandler } from './mock_data';
 
 Vue.use(VueApollo);
 
 describe('Namespace form component', () => {
   let wrapper;
 
-  const defaultAddMutationHandler = getAddNamespaceHandler();
+  const defaultAddMutationHandler = getSaveNamespaceHandler();
+  const defaultEditMutationHandler = getSaveNamespaceHandler();
 
-  const createWrapper = ({ addMutationHandler = defaultAddMutationHandler } = {}) => {
+  const createWrapper = ({
+    namespace,
+    addMutationHandler = defaultAddMutationHandler,
+    editMutationHandler = defaultEditMutationHandler,
+    addPoliciesToCiJobToken = true,
+  } = {}) => {
     wrapper = shallowMountExtended(NamespaceForm, {
-      apolloProvider: createMockApollo([[addNamespaceMutation, addMutationHandler]]),
-      provide: { fullPath: 'full/path' },
+      apolloProvider: createMockApollo([
+        [addNamespaceMutation, addMutationHandler],
+        [editNamespaceMutation, editMutationHandler],
+      ]),
+      propsData: { namespace },
+      provide: { fullPath: 'full/path', glFeatures: { addPoliciesToCiJobToken } },
       stubs: {
         GlFormInput: stubComponent(GlFormInput, {
           props: ['autofocus', 'disabled', 'state', 'placeholder'],
@@ -30,8 +42,9 @@ describe('Namespace form component', () => {
 
   const findFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findFormInput = () => wrapper.findComponent(GlFormInput);
-  const findAddButton = () => wrapper.findByTestId('add-button');
+  const findSubmitButton = () => wrapper.findByTestId('submit-button');
   const findCancelButton = () => wrapper.findByTestId('cancel-button');
+  const findPoliciesSelector = () => wrapper.findComponent(PoliciesSelector);
 
   describe('on page load', () => {
     beforeEach(() => createWrapper());
@@ -55,10 +68,34 @@ describe('Namespace form component', () => {
       });
     });
 
-    describe('Add button', () => {
+    describe('policies selector', () => {
+      it('shows policies selector', () => {
+        expect(findPoliciesSelector().props()).toMatchObject({
+          isDefaultPermissionsSelected: true,
+          jobTokenPolicies: [],
+          disabled: false,
+        });
+      });
+
+      it('updates defaultPermissions when policies selector emits an update', async () => {
+        findPoliciesSelector().vm.$emit('update:isDefaultPermissionsSelected', false);
+        await nextTick();
+
+        expect(findPoliciesSelector().props('isDefaultPermissionsSelected')).toBe(false);
+      });
+
+      it('updates jobTokenPolicies when policies selector emits an update', async () => {
+        findPoliciesSelector().vm.$emit('update:jobTokenPolicies', ['ADMIN_JOB']);
+        await nextTick();
+
+        expect(findPoliciesSelector().props('jobTokenPolicies')).toEqual(['ADMIN_JOB']);
+      });
+    });
+
+    describe('Submit button', () => {
       it('shows button', () => {
-        expect(findAddButton().text()).toBe('Add');
-        expect(findAddButton().props()).toMatchObject({
+        expect(findSubmitButton().text()).toBe('Add');
+        expect(findSubmitButton().props()).toMatchObject({
           variant: 'confirm',
           disabled: true,
           loading: false,
@@ -85,12 +122,12 @@ describe('Namespace form component', () => {
       });
 
       it('enables Save button', () => {
-        expect(findAddButton().props('disabled')).toBe(false);
+        expect(findSubmitButton().props('disabled')).toBe(false);
       });
 
       describe('when the save button is clicked', () => {
         beforeEach(() => {
-          findAddButton().vm.$emit('click');
+          findSubmitButton().vm.$emit('click');
         });
 
         it('runs save mutation', () => {
@@ -98,6 +135,8 @@ describe('Namespace form component', () => {
           expect(defaultAddMutationHandler).toHaveBeenCalledWith({
             projectPath: 'full/path',
             targetPath: 'gitlab',
+            defaultPermissions: true,
+            jobTokenPolicies: [],
           });
         });
 
@@ -105,8 +144,12 @@ describe('Namespace form component', () => {
           expect(findFormInput().props('disabled')).toBe(true);
         });
 
-        it('disables Add button', () => {
-          expect(findAddButton().props('loading')).toBe(true);
+        it('disables policies selector', () => {
+          expect(findPoliciesSelector().props('disabled')).toBe(true);
+        });
+
+        it('disables submit button', () => {
+          expect(findSubmitButton().props('loading')).toBe(true);
         });
 
         it('disables Cancel button', () => {
@@ -125,8 +168,12 @@ describe('Namespace form component', () => {
             expect(findFormInput().props('disabled')).toBe(false);
           });
 
-          it('enables Add button', () => {
-            expect(findAddButton().props('loading')).toBe(false);
+          it('enables policies selector', () => {
+            expect(findPoliciesSelector().props('disabled')).toBe(false);
+          });
+
+          it('enables submit button', () => {
+            expect(findSubmitButton().props('loading')).toBe(false);
           });
 
           it('enables Cancel button', () => {
@@ -139,12 +186,12 @@ describe('Namespace form component', () => {
 
   describe.each`
     phrase                                            | addMutationHandler
-    ${'when the mutation response contains an error'} | ${getAddNamespaceHandler('some error')}
+    ${'when the mutation response contains an error'} | ${getSaveNamespaceHandler('some error')}
     ${'when the mutation throws an error'}            | ${jest.fn().mockRejectedValue(new Error('some error'))}
   `('$phrase', ({ addMutationHandler }) => {
     beforeEach(() => {
       createWrapper({ addMutationHandler });
-      findAddButton().vm.$emit('click');
+      findSubmitButton().vm.$emit('click');
 
       return waitForPromises();
     });
@@ -161,8 +208,8 @@ describe('Namespace form component', () => {
       expect(findFormInput().props('disabled')).toBe(false);
     });
 
-    it('enables Add button', () => {
-      expect(findAddButton().props('loading')).toBe(false);
+    it('enables submit button', () => {
+      expect(findSubmitButton().props('loading')).toBe(false);
     });
 
     it('enables Cancel button', () => {
@@ -172,7 +219,7 @@ describe('Namespace form component', () => {
     describe.each`
       phrase                                   | actionFn
       ${'when the namespace input is changed'} | ${() => findFormInput().vm.$emit('input', 'gitlab2')}
-      ${'when the Add button is clicked'}      | ${() => findAddButton().vm.$emit('click')}
+      ${'when the submit button is clicked'}   | ${() => findSubmitButton().vm.$emit('click')}
     `('$phrase', ({ actionFn }) => {
       beforeEach(() => {
         actionFn();
@@ -186,6 +233,65 @@ describe('Namespace form component', () => {
       it('clears form input error state', () => {
         expect(findFormInput().props('state')).toBe(true);
       });
+    });
+  });
+
+  describe('when the addPoliciesToCiJobToken feature flag is disabled', () => {
+    beforeEach(() => createWrapper({ addPoliciesToCiJobToken: false }));
+
+    it('does not show permissions selector', () => {
+      expect(findPoliciesSelector().exists()).toBe(false);
+    });
+
+    describe('when namespace is saved', () => {
+      it('calls mutation without defaultPermissions or jobTokenPolicies', () => {
+        findFormInput().vm.$emit('input', 'gitlab');
+        findSubmitButton().vm.$emit('click');
+
+        expect(defaultAddMutationHandler).toHaveBeenCalledWith({
+          projectPath: 'full/path',
+          targetPath: 'gitlab',
+        });
+      });
+    });
+  });
+
+  describe('editing a namespace', () => {
+    beforeEach(() =>
+      createWrapper({
+        namespace: {
+          fullPath: 'namespace/path',
+          defaultPermissions: false,
+          jobTokenPolicies: ['READ_JOBS'],
+        },
+      }),
+    );
+
+    describe('path input', () => {
+      it('disables the input', () => {
+        expect(findFormInput().props('disabled')).toBe(true);
+      });
+
+      it('shows the namespace full path', () => {
+        expect(findFormInput().attributes('value')).toBe('namespace/path');
+      });
+    });
+
+    it('passes expected values to the policies selector', () => {
+      expect(findPoliciesSelector().props()).toMatchObject({
+        isDefaultPermissionsSelected: false,
+        jobTokenPolicies: ['READ_JOBS'],
+      });
+    });
+
+    it('shows "Save" for the submit button text', () => {
+      expect(findSubmitButton().text()).toBe('Save');
+    });
+
+    it('calls the edit mutation when the submit button is clicked', () => {
+      findSubmitButton().vm.$emit('click');
+
+      expect(defaultEditMutationHandler).toHaveBeenCalledTimes(1);
     });
   });
 });

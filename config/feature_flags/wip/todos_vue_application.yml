@@ -1,9 +1,0 @@
----
-name: todos_vue_application
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/464069
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162587
-rollout_issue_url:
-milestone: '17.4'
-group: group::personal productivity
-type: wip
-default_enabled: false

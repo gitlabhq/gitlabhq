@@ -13,9 +13,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
     - i_quickactions_add_contacts
-distribution:
-  - ce
-  - ee
 tiers:
   - free
   - premium

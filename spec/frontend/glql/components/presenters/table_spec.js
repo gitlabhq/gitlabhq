@@ -33,6 +33,12 @@ describe('TablePresenter', () => {
     expect(headerCells).toEqual(['Title', 'Author', 'State', 'Description']);
   });
 
+  it('renders a footer text', () => {
+    createWrapper({ data: MOCK_ISSUES, config: { fields: MOCK_FIELDS } }, mountExtended);
+
+    expect(wrapper.findByTestId('footer').text()).toEqual('View powered by GLQL');
+  });
+
   it('renders a row of items presented by appropriate presenters', async () => {
     await createWrapper({ data: MOCK_ISSUES, config: { fields: MOCK_FIELDS } }, mountExtended);
 

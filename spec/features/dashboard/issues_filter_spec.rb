@@ -110,7 +110,8 @@ RSpec.describe 'Dashboard Issues filtering', :js, feature_category: :team_planni
       expect(page).to have_button('Updated date')
     end
 
-    it 'keeps sorting issues after visiting Projects Issues page' do
+    it 'keeps sorting issues after visiting Projects Issues page',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/480735' do
       pajamas_sort_by 'Due date', from: 'Created date'
 
       visit project_issues_path(project)

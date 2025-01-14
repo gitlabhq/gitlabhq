@@ -6,7 +6,7 @@ module Packages
       def execute
         candidate = params[:candidate]
 
-        return unless candidate&.for_model?
+        return unless candidate
 
         package = find_or_create_package!(
           ::Packages::Package.package_types['ml_model'],

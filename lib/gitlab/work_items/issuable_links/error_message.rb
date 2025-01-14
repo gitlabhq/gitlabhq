@@ -38,9 +38,11 @@ module Gitlab
             issuable: target_type)
         end
 
+        attr_reader :target_type
+
         private
 
-        attr_reader :target_type, :container_type
+        attr_reader :container_type
       end
     end
   end

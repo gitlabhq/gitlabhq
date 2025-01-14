@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 The Alert Management alerts API is limited to metric images. For more API endpoints, see the
 [GraphQL API](graphql/reference/index.md#alertmanagementalert).
@@ -27,8 +27,11 @@ POST /projects/:id/alert_management_alerts/:alert_iid/metric_images
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"  --form 'file=@/path/to/file.png' \
---form 'url=http://example.com' --form 'url_text=Example website' "https://gitlab.example.com/api/v4/projects/5/alert_management_alerts/93/metric_images"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+  --form 'file=@/path/to/file.png' \
+  --form 'url=http://example.com' \
+  --form 'url_text=Example website' \
+  --url "https://gitlab.example.com/api/v4/projects/5/alert_management_alerts/93/metric_images"
 ```
 
 Example response:
@@ -58,7 +61,8 @@ GET /projects/:id/alert_management_alerts/:alert_iid/metric_images
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/alert_management_alerts/93/metric_images"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/alert_management_alerts/93/metric_images"
 ```
 
 Example response:
@@ -101,7 +105,10 @@ PUT /projects/:id/alert_management_alerts/:alert_iid/metric_images/:image_id
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" --request PUT  --form 'url=http://example.com' --form 'url_text=Example website' "https://gitlab.example.com/api/v4/projects/5/alert_management_alerts/93/metric_images/1"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --request PUT  --form 'url=http://example.com' \
+  --form 'url_text=Example website' \
+  --url "https://gitlab.example.com/api/v4/projects/5/alert_management_alerts/93/metric_images/1"
 ```
 
 Example response:
@@ -132,7 +139,9 @@ DELETE /projects/:id/alert_management_alerts/:alert_iid/metric_images/:image_id
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" --request DELETE "https://gitlab.example.com/api/v4/projects/5/alert_management_alerts/93/metric_images/1"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url  "https://gitlab.example.com/api/v4/projects/5/alert_management_alerts/93/metric_images/1"
 ```
 
 Can return the following status codes:

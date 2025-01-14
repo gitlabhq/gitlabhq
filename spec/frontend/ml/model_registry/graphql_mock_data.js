@@ -155,9 +155,16 @@ export const graphqlCandidates = [
   {
     id: 'gid://gitlab/Ml::Candidate/1',
     eid: 'e9a71521-45c6-4b0a-b0c3-21f0b4528a5c',
+    creator: {
+      id: 'gid://gitlab/User/1',
+      webUrl: 'path/to/user',
+      avatarUrl: 'path/to/avatar',
+      name: 'Root',
+    },
     ciJob: {
       id: 'gid://gitlab/Ci::Build/1',
       name: 'build:linux',
+      webPath: '/path/to/candidate/1',
     },
     status: 'running',
     name: 'narwhal-aardvark-heron-6953',
@@ -169,9 +176,16 @@ export const graphqlCandidates = [
   {
     id: 'gid://gitlab/Ml::Candidate/2',
     eid: 'e9a71521-45c6-4b0a-b0c3-21f0b4528a4c',
+    creator: {
+      id: 'gid://gitlab/User/1',
+      webUrl: 'path/to/user',
+      avatarUrl: 'path/to/avatar',
+      name: 'Root',
+    },
     ciJob: {
       id: 'gid://gitlab/Ci::Build/2',
       name: 'build:linux',
+      webPath: '/path/to/candidate/2',
     },
     status: 'failed',
     name: 'anteater-chimpanzee-snake-1254',
@@ -224,6 +238,7 @@ export const emptyCandidateQuery = {
       candidates: {
         count: 0,
         nodes: [],
+        creator: {},
         pageInfo: {
           hasNextPage: false,
           hasPreviousPage: false,
@@ -392,6 +407,7 @@ export const model = {
     avatarUrl: 'path/to/avatar',
     webUrl: 'path/to/user',
   },
+  defaultExperimentPath: 'path/to/experiment',
   description: 'A model description',
   descriptionHtml: 'A model description',
   name: 'gitlab_amazing_model',
@@ -408,6 +424,7 @@ export const modelWithNoVersion = {
   createdAt: '2023-12-06T12:41:48Z',
   description: 'A model description',
   descriptionHtml: 'A model description',
+  defaultExperimentPath: 'path/to/experiment',
   author: {
     id: 'gid://gitlab/User/1',
     name: 'name',

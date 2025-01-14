@@ -146,4 +146,87 @@ RSpec.describe Emails::Imports, feature_category: :importers do
     it_behaves_like 'appearance header and footer enabled'
     it_behaves_like 'appearance header and footer not enabled'
   end
+
+  # rubocop:disable RSpec/FactoryBot/AvoidCreate -- creates are required in this case
+  describe '#project_import_complete' do
+    let(:user) { create(:user) }
+    let(:owner) { create(:owner) }
+    let(:group) { create(:group) }
+    let(:project) { create(:project, creator: user, import_url: 'https://user:password@example.com') }
+    let(:user_mapping_enabled) { true }
+
+    subject { Notify.project_import_complete(project.id, user.id, user_mapping_enabled, project.safe_import_url) }
+
+    context 'when user mapping is enabled' do
+      context 'with placeholder users awaiting reassignment' do
+        before do
+          create(:import_source_user, namespace: group)
+
+          project.update!(namespace: group)
+        end
+
+        context 'when user is a group owner' do
+          before do
+            group.add_owner(user)
+          end
+
+          it 'mentions owner role can reassign placeholder users' do
+            is_expected.to deliver_to(user)
+            is_expected.to have_subject("#{project.name} | Import from https://*****:*****@example.com completed")
+            is_expected.to have_content('You can reassign contributions on the "Members" page of the group.')
+            is_expected.to have_content('Reassign contributions')
+          end
+        end
+
+        context 'when user is not an owner' do
+          it 'mentions owners can reassign contributions' do
+            content = 'Users with the Owner role for the group can reassign contributions on the "Members" page.'
+
+            is_expected.to deliver_to(user)
+            is_expected.to have_subject("#{project.name} | Import from https://*****:*****@example.com completed")
+            is_expected.to have_content(content)
+          end
+        end
+      end
+
+      context 'without placeholder users awaiting reassignment' do
+        before do
+          group.add_owner(user)
+        end
+
+        it 'does not mention contributions reassignment' do
+          create(:import_source_user, :pending_reassignment, namespace: group)
+
+          is_expected.to deliver_to(user)
+          is_expected.to have_subject("#{project.name} | Import from https://*****:*****@example.com completed")
+          is_expected.to have_content('You can now review your import results.')
+        end
+      end
+
+      context 'when project is in user namespace' do
+        it 'does not mention contributions reassignment' do
+          create(:import_source_user, :pending_reassignment, namespace: group)
+
+          is_expected.to deliver_to(user)
+          is_expected.to have_subject("#{project.name} | Import from https://*****:*****@example.com completed")
+          is_expected.to have_content('You can now review your import results.')
+          is_expected.to have_content('View import results')
+        end
+      end
+    end
+
+    context 'when user mapping is disabled' do
+      let(:user_mapping_enabled) { false }
+
+      it 'does not mention contributions reassignment' do
+        is_expected.to deliver_to(user)
+        is_expected.to have_subject("#{project.name} | Import from https://*****:*****@example.com completed")
+        is_expected.to have_content('You can now review your import results.')
+      end
+    end
+
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+  end
+  # rubocop:enable RSpec/FactoryBot/AvoidCreate
 end

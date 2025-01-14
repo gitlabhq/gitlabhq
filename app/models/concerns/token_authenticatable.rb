@@ -31,8 +31,7 @@ module TokenAuthenticatable
 
       attr_accessor :cleartext_tokens
 
-      strategy = TokenAuthenticatableStrategies::Base
-        .fabricate(self, token_field, options)
+      strategy = Authn::TokenField::Base.fabricate(self, token_field, options)
 
       token_authenticatable_sensitive_fields.concat(strategy.sensitive_fields.map(&:to_sym))
 

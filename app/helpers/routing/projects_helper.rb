@@ -101,7 +101,7 @@ module Routing
     end
 
     def use_issue_path?(work_item)
-      work_item.issue_type == 'issue'
+      work_item.work_item_type.issue? || work_item.work_item_type.incident? || work_item.from_service_desk?
     end
   end
 end

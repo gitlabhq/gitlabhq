@@ -29,7 +29,8 @@ module Gitlab
           designs: 'Designs',
           development: 'Development',
           crm_contacts: 'CRM contacts',
-          email_participants: 'Email participants'
+          email_participants: 'Email participants',
+          custom_status: 'Custom status'
         }.freeze
 
         WIDGETS_FOR_TYPE = {
@@ -64,10 +65,14 @@ module Gitlab
             :development,
             :email_participants,
             :hierarchy,
+            :iteration,
+            :labels,
             :linked_items,
+            :milestone,
             :notes,
             :notifications,
             :participants,
+            :start_and_due_date,
             :time_tracking
           ],
           test_case: [
@@ -110,7 +115,8 @@ module Gitlab
             :participants,
             :start_and_due_date,
             :time_tracking,
-            [:weight, { editable: true, rollup: false }]
+            [:weight, { editable: true, rollup: false }],
+            :custom_status
           ],
           objective: [
             :assignees,

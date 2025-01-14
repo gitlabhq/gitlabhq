@@ -8,7 +8,7 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuesCalendar
   include RecordUserLastActivity
 
-  ISSUES_EXCEPT_ACTIONS = %i[index calendar new create bulk_update import_csv export_csv service_desk].freeze
+  ISSUES_EXCEPT_ACTIONS = %i[index calendar new create bulk_update import_csv export_csv service_desk can_create_branch].freeze
   SET_ISSUABLES_INDEX_ONLY_ACTIONS = %i[index calendar service_desk].freeze
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
@@ -50,6 +50,8 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:issues_list_drawer, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_force_frontend_feature_flag(:glql_integration, project&.glql_integration_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_items_beta, project&.work_items_beta_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_items_alpha, project&.work_items_alpha_feature_flag_enabled?)
   end
 
   before_action only: [:index, :show] do
@@ -61,9 +63,6 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   before_action only: :show do
-    push_frontend_feature_flag(:work_items_beta, project&.group)
-    push_force_frontend_feature_flag(:work_items_beta, project&.work_items_beta_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_alpha, project&.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
     push_frontend_feature_flag(:namespace_level_work_items, project&.group)
     push_frontend_feature_flag(:work_items_view_preference, current_user)
@@ -234,11 +233,11 @@ class Projects::IssuesController < Projects::ApplicationController
   def can_create_branch
     can_create = current_user &&
       can?(current_user, :push_code, @project) &&
-      @issue.can_be_worked_on?
+      issue.can_be_worked_on?
 
     respond_to do |format|
       format.json do
-        render json: { can_create_branch: can_create, suggested_branch_name: @issue.suggested_branch_name }
+        render json: { can_create_branch: can_create, suggested_branch_name: issue.suggested_branch_name }
       end
     end
   end
@@ -399,7 +398,11 @@ class Projects::IssuesController < Projects::ApplicationController
   private
 
   def show_work_item?
-    Feature.enabled?(:work_items_view_preference, current_user) && current_user&.user_preference&.use_work_items_view
+    # Service Desk issues and incidents should not use the work item view
+    !issue.from_service_desk? &&
+      !issue.work_item_type&.incident? &&
+      Feature.enabled?(:work_items_view_preference, current_user) &&
+      current_user&.user_preference&.use_work_items_view
   end
 
   def work_item_redirect_except_actions

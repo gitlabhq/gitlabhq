@@ -19,7 +19,8 @@ module Packages
             description: description,
             license_url: license_url,
             project_url: project_url,
-            icon_url: icon_url
+            icon_url: icon_url,
+            project_id: package.project_id
           )
         end
       end

@@ -23,9 +23,9 @@ module Ci
       return if hidden == false && !hidden_changed?
 
       if hidden_changed?
-        errors.add(:base, 'Updating hidden attribute is not allowed on updates.')
+        errors.add(:base, 'Only new variables can be set as masked and hidden.')
       else
-        errors.add(:base, 'Updating masked attribute is not allowed on updates for hidden variables.')
+        errors.add(:base, 'The visibility setting cannot be changed for masked and hidden variables.')
       end
     end
   end

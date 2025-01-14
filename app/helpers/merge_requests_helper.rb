@@ -253,35 +253,38 @@ module MergeRequestsHelper
     end
   end
 
-  def project_merge_requests_list_data(project, current_user)
-    merge_project = merge_request_source_project_for_project(project)
-
+  def common_merge_request_list_data(current_user)
     {
       autocomplete_award_emojis_path: autocomplete_award_emojis_path,
-      full_path: project.full_path,
-      has_any_merge_requests: project_merge_requests(project).exists?.to_s,
       initial_sort: default_merge_request_sort || current_user&.user_preference&.merge_requests_sort,
       is_public_visibility_restricted:
         Gitlab::CurrentSettings.restricted_visibility_levels&.include?(Gitlab::VisibilityLevel::PUBLIC).to_s,
       is_signed_in: current_user.present?.to_s,
-      new_merge_request_path: merge_project && project_new_merge_request_path(merge_project),
       show_export_button: "true",
       issuable_type: :merge_request,
-      issuable_count: issuables_count_for_state(:merge_request, params[:state]),
       email: current_user.present? ? current_user.notification_email_or_default : nil,
-      export_csv_path: export_csv_project_merge_requests_path(project, request.query_parameters),
       rss_url: url_for(safe_params.merge(rss_url_options)),
+      emails_help_page_path: help_page_path('development/emails.md', anchor: 'email-namespace'),
+      quick_actions_help_path: help_page_path('user/project/quick_actions.md'),
+      markdown_help_path: help_page_path('user/markdown.md')
+    }
+  end
+
+  def project_merge_requests_list_data(project, current_user)
+    merge_project = merge_request_source_project_for_project(project)
+
+    common_merge_request_list_data(current_user).merge({
+      full_path: project.full_path,
+      has_any_merge_requests: project_merge_requests(project).exists?.to_s,
+      new_merge_request_path: merge_project && project_new_merge_request_path(merge_project),
+      export_csv_path: export_csv_project_merge_requests_path(project),
       releases_endpoint: project_releases_path(project, format: :json),
       can_bulk_update: can?(current_user, :admin_merge_request, project).to_s,
       environment_names_path: unfoldered_environment_names_project_path(project, :json),
       default_branch: project.default_branch,
       initial_email: can?(current_user, :create_merge_request_in, project) &&
-        project.new_issuable_address(current_user, 'merge_request'),
-      emails_help_page_path: help_page_path('development/emails.md', anchor: 'email-namespace'),
-      quick_actions_help_path: help_page_path('user/project/quick_actions.md'),
-      markdown_help_path: help_page_path('user/markdown.md'),
-      reset_path: new_issuable_address_project_path(project, issuable_type: 'merge_request')
-    }
+        project.new_issuable_address(current_user, 'merge_request')
+    })
   end
 
   def project_merge_requests_list_more_actions_data(project, current_user)
@@ -295,6 +298,19 @@ module MergeRequestsHelper
     }
   end
 
+  def group_merge_requests_list_data(group, current_user)
+    common_merge_request_list_data(current_user).merge({
+      group_id: group.id,
+      full_path: group.full_path,
+      show_new_resource_dropdown: (current_user.presence && any_projects?(@projects)).to_s,
+      has_any_merge_requests: group_merge_requests(group).exists?.to_s,
+      releases_endpoint: group_releases_path(group, format: :json),
+      can_bulk_update: (can?(current_user, :admin_merge_request, group) &&
+        group.licensed_feature_available?(:group_bulk_edit)).to_s,
+      environment_names_path: unfoldered_environment_names_group_path(group, :json)
+    })
+  end
+
   def identity_verification_alert_data(_)
     { identity_verification_required: 'false' }
   end
@@ -306,6 +322,7 @@ module MergeRequestsHelper
   def sticky_header_data(project, merge_request)
     data = {
       iid: merge_request.iid,
+      defaultBranchName: project.default_branch,
       projectPath: project.full_path,
       sourceProjectPath: merge_request.source_project_path,
       title: markdown_field(merge_request, :title),
@@ -399,10 +416,18 @@ module MergeRequestsHelper
 
   def merge_request_header(merge_request)
     link_to_author = link_to_member(merge_request.author, size: 24, extra_class: 'gl-font-bold gl-mr-2', avatar: false)
+    target_branch_class = "ref-container gl-inline-block gl-truncate gl-max-w-26"
     copy_action_description = _('Copy branch name')
     copy_action_shortcut = 'b'
     copy_button_title = "#{copy_action_description} <kbd class='flat ml-1' " \
       "aria-hidden=true>#{copy_action_shortcut}</kbd>"
+
+    target_branch_class = if @project.default_branch != merge_request.target_branch
+                            "#{target_branch_class} gl-ml-2"
+                          else
+                            "#{target_branch_class} gl-mx-2"
+                          end
+
     copy_button = clipboard_button(
       text: merge_request.source_branch,
       title: copy_button_title,
@@ -411,18 +436,35 @@ module MergeRequestsHelper
       class: '!gl-hidden md:!gl-inline-block gl-mx-1 js-source-branch-copy'
     )
 
+    target_copy_button = clipboard_button(
+      text: merge_request.target_branch,
+      title: copy_action_description,
+      aria_label: copy_action_description,
+      class: '!gl-hidden md:!gl-inline-block gl-mx-1'
+    )
+
     target_branch = link_to merge_request.target_branch,
       project_tree_path(merge_request.target_project, merge_request.target_branch),
       title: merge_request.target_branch,
-      class: 'ref-container gl-inline-block gl-truncate gl-max-w-26 gl-mx-2'
+      class: target_branch_class
 
-    _('%{author} requested to merge %{source_branch} %{copy_button} into %{target_branch} %{created_at}').html_safe % {
+    copy_button_data = {
       author: link_to_author.html_safe,
       source_branch: merge_request_source_branch(merge_request).html_safe,
       copy_button: copy_button.html_safe,
       target_branch: target_branch.html_safe,
+      target_copy_button: " ",
       created_at: time_ago_with_tooltip(merge_request.created_at, html_class: 'gl-inline-block').html_safe
     }
+
+    if @project.default_branch != merge_request.target_branch
+      copy_button_data[:target_copy_button] = target_copy_button.html_safe
+    end
+
+    safe_format(_(
+      '%{author} requested to merge %{source_branch} %{copy_button} ' \
+        'into %{target_branch} %{target_copy_button} %{created_at}'
+    ), copy_button_data)
   end
 
   def hidden_merge_request_icon(merge_request)
@@ -477,8 +519,8 @@ module MergeRequestsHelper
             ],
             [
               {
-                id: 'waiting_for_author',
-                title: _('Waiting for author'),
+                id: 'waiting_for_assignee',
+                title: _('Waiting for assignee'),
                 hideCount: true,
                 helpContent: _(
                   'Your assigned merge requests that are waiting for approvals, ' \
@@ -490,8 +532,8 @@ module MergeRequestsHelper
                 }
               },
               {
-                id: 'waiting_for_reviewer',
-                title: _('Waiting for reviewer'),
+                id: 'waiting_for_approvals',
+                title: _('Waiting for approvals'),
                 hideCount: true,
                 helpContent: _(
                   'Your assigned merge requests that are waiting for approvals, ' \

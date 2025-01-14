@@ -14,7 +14,7 @@ Each user can be one of the following types:
 
 - Regular.
 - External - access to groups and projects only if direct member.
-- [Internal users](../internal_users.md) - system created.
+- [Internal users](../../administration/internal_users.md) - system created.
 - [Auditor](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/base_policy.rb#L9):
   - No access to projects or groups settings menu.
   - No access to **Admin** area.

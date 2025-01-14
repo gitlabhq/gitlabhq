@@ -65,7 +65,7 @@ with the _upstream_ project after merge.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 GitLab enables Git LFS by default for both self-managed instances and GitLab.com.
 It offers both server settings and project-specific settings.

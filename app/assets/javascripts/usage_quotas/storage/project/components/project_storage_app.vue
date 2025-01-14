@@ -182,8 +182,8 @@ export default {
     <div class="gl-pt-5">
       <div class="gl-flex gl-justify-between">
         <div>
-          <h4 class="gl-mb-3 gl-mt-0 gl-text-lg">{{ s__('UsageQuota|Usage breakdown') }}</h4>
-          <p>
+          <h2 class="gl-heading-2 gl-mb-3">{{ s__('UsageQuota|Usage breakdown') }}</h2>
+          <p class="gl-text-subtle">
             {{ s__('UsageQuota|Includes artifacts, repositories, wiki, and other items.') }}
             <help-page-link
               href="user/storage_usage_quotas"
@@ -193,10 +193,7 @@ export default {
             >
           </p>
         </div>
-        <p
-          class="gl-m-0 gl-whitespace-nowrap gl-text-size-h-display gl-font-bold"
-          data-testid="total-usage"
-        >
+        <p class="gl-heading-2 gl-m-0 gl-whitespace-nowrap" data-testid="total-usage">
           {{ totalUsage }}
         </p>
       </div>
@@ -217,8 +214,8 @@ export default {
       :storage-types="projectStorageTypes"
       data-testid="usage-quotas-project-usage-details"
     />
-    <div>
-      <h2 class="gl-mb-2 gl-mt-5 gl-text-lg gl-font-bold">
+    <div class="gl-mt-7">
+      <h2 class="gl-heading-2">
         {{ s__('UsageQuota|Namespace entities') }}
       </h2>
 

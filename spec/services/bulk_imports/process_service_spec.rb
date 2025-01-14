@@ -108,18 +108,57 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
       end
     end
 
-    context 'when maximum allowed number of import entities in progress' do
-      it 're-enqueues itself' do
+    context 'when maximum allowed number of import entities in progress', :freeze_time do
+      let(:updated_at) { 2.hours.ago }
+
+      before do
         bulk_import.update!(status: 1)
-        create(:bulk_import_entity, :created, bulk_import: bulk_import)
+        create(:bulk_import_entity, :created, bulk_import: bulk_import, updated_at: updated_at)
+
         (described_class::DEFAULT_BATCH_SIZE + 1).times do
-          create(:bulk_import_entity, :started, bulk_import: bulk_import)
+          create(:bulk_import_entity, :started, bulk_import: bulk_import, updated_at: updated_at)
         end
 
+        create(:bulk_import_entity, :finished, bulk_import: bulk_import, updated_at: updated_at)
+      end
+
+      it 're-enqueues itself' do
         expect(BulkImportWorker).to receive(:perform_in).with(described_class::PERFORM_DELAY, bulk_import.id)
         expect(BulkImports::ExportRequestWorker).not_to receive(:perform_async)
 
         subject.execute
+      end
+
+      it 'touches created entities' do
+        subject.execute
+
+        created_entities = bulk_import.entities.with_status(:created)
+        other_entities = bulk_import.entities - created_entities
+
+        expect(created_entities).to all(have_attributes(updated_at: be > 1.minute.ago))
+        expect(other_entities).to all(have_attributes(updated_at: eq(updated_at)))
+      end
+
+      context 'when entity with created status was recently updated' do
+        let(:updated_at) { 30.minutes.ago }
+
+        it 'does not update any entity' do
+          subject.execute
+
+          expect(bulk_import.entities).to all(have_attributes(updated_at: eq(updated_at)))
+        end
+      end
+
+      context 'when there is no entity with created status' do
+        before do
+          bulk_import.entities.with_status(:created).update_all(status: 1)
+        end
+
+        it 'does not update any entity' do
+          subject.execute
+
+          expect(bulk_import.entities).to all(have_attributes(updated_at: eq(updated_at)))
+        end
       end
     end
 

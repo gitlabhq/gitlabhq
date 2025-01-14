@@ -5,6 +5,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
+import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 
 import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
@@ -41,7 +42,7 @@ describe('WorkItemDrawer', () => {
 
   const createComponent = ({
     open = false,
-    activeItem = { iid: '1', webUrl: 'test', fullPath: 'gitlab-org/gitlab' },
+    activeItem = { id: '1', iid: '1', webUrl: 'test', fullPath: 'gitlab-org/gitlab' },
     issuableType = TYPE_ISSUE,
     clickOutsideExcludeSelector = undefined,
     isGroup = true,
@@ -393,6 +394,27 @@ describe('WorkItemDrawer', () => {
       await nextTick();
 
       expect(document.activeElement).toBe(findReferenceLink().element);
+    });
+  });
+
+  describe('when drawer is opened from a link', () => {
+    beforeEach(() => {
+      setHTMLFixture(
+        `<div><a id="listItem-gitlab-org/gitlab/1" tabIndex="1">Link 1</a><div id="drawer-container"></div></div>`,
+      );
+    });
+    afterEach(() => {
+      resetHTMLFixture();
+    });
+
+    it('focuses on the link when drawer is closed', async () => {
+      createComponent({ attachTo: '#drawer-container', open: true });
+
+      findGlDrawer().vm.$emit('close');
+
+      await nextTick();
+
+      expect(document.activeElement).toBe(document.getElementById('listItem-gitlab-org/gitlab/1'));
     });
   });
 });

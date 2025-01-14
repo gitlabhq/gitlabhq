@@ -5,6 +5,7 @@ import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { __ } from '~/locale';
 import { getQueryHeaders } from '~/ci/pipeline_details/graph/utils';
 import { graphqlEtagPipelinePath } from '~/ci/pipeline_details/utils';
+import { toggleQueryPollingByVisibility } from '~/graphql_shared/utils';
 import getPipelineFailedJobsCount from '../../graphql/queries/get_pipeline_failed_jobs_count.query.graphql';
 import FailedJobsList from './failed_jobs_list.vue';
 import { POLL_INTERVAL } from './constants';
@@ -20,10 +21,6 @@ export default {
   },
   inject: ['fullPath', 'graphqlPath'],
   props: {
-    isPipelineActive: {
-      required: true,
-      type: Boolean,
-    },
     pipelineIid: {
       required: true,
       type: Number,
@@ -43,10 +40,6 @@ export default {
         return getQueryHeaders(this.graphqlResourceEtag);
       },
       query: getPipelineFailedJobsCount,
-      // Only poll if the pipeline is active
-      pollInterval() {
-        return this.isPipelineActive ? POLL_INTERVAL : 0;
-      },
       variables() {
         return {
           fullPath: this.projectPath,
@@ -54,6 +47,8 @@ export default {
         };
       },
       update({ project }) {
+        this.isPipelineActive = project?.pipeline?.active || false;
+
         return project?.pipeline?.jobs?.count || 0;
       },
       error() {
@@ -65,6 +60,9 @@ export default {
     return {
       failedJobsCount: 0,
       isExpanded: false,
+      // explicity set to null so watcher can detect
+      // reactivity changes for polling
+      isPipelineActive: null,
     };
   },
   computed: {
@@ -84,15 +82,37 @@ export default {
       return this.failedJobsCount > 100;
     },
   },
+  watch: {
+    isPipelineActive(active) {
+      if (!active) {
+        this.$apollo.queries.failedJobsCount.stopPolling();
+      } else {
+        this.$apollo.queries.failedJobsCount.startPolling(POLL_INTERVAL);
+        // ensure we only toggle polling back on tab switch
+        // if the pipeline is active
+        toggleQueryPollingByVisibility(this.$apollo.queries.failedJobsCount, POLL_INTERVAL);
+      }
+    },
+  },
+  beforeDestroy() {
+    this.$apollo.queries.failedJobsCount.stopPolling();
+  },
   methods: {
     toggleWidget() {
       this.isExpanded = !this.isExpanded;
     },
     async refetchCount() {
       try {
+        // "pause" polling during manual refetch of count
+        // to avoid redundant calls
+        this.$apollo.queries.failedJobsCount.stopPolling();
         await this.$apollo.queries.failedJobsCount.refetch();
       } catch {
         createAlert({ message: this.$options.fetchError });
+      } finally {
+        if (this.isPipelineActive) {
+          this.$apollo.queries.failedJobsCount.startPolling(POLL_INTERVAL);
+        }
       }
     },
   },

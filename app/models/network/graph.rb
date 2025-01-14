@@ -27,14 +27,8 @@ module Network
       # https://gitlab.com/gitlab-org/gitlab-foss/issues/58013
       Gitlab::GitalyClient.allow_n_plus_1_calls do
         # Decorate with app/model/network/commit.rb
-        if Feature.enabled?(:use_list_commits_rpc_network_graph, @project, type: :gitlab_com_derisk)
-          list_commits(count_to_display_commit_in_center).map do |commit|
-            Network::Commit.new(commit)
-          end
-        else
-          find_commits(count_to_display_commit_in_center).map do |commit|
-            Network::Commit.new(commit)
-          end
+        list_commits(count_to_display_commit_in_center).map do |commit|
+          Network::Commit.new(commit)
         end
       end
     end
@@ -76,11 +70,7 @@ module Network
       offset = -1
       skip = 0
       while offset == -1
-        tmp_commits = if Feature.enabled?(:use_list_commits_rpc_network_graph, @project, type: :gitlab_com_derisk)
-                        list_commits(skip)
-                      else
-                        find_commits(skip)
-                      end
+        tmp_commits = list_commits(skip)
 
         if tmp_commits.present?
           index = tmp_commits.index do |c|

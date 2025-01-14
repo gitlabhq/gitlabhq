@@ -14,7 +14,7 @@ import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_m
 import { TYPENAME_NOTE, TYPENAME_DISCUSSION } from '~/graphql_shared/constants';
 import activeDiscussionQuery from '../graphql/client/active_design_discussion.query.graphql';
 import createNoteMutation from '../graphql/create_note.mutation.graphql';
-import getLocalDesignQuery from '../graphql/local_design.query.graphql';
+import getDesignQuery from '../graphql/design_details.query.graphql';
 import toggleResolveDiscussionMutation from '../graphql/toggle_resolve_discussion.mutation.graphql';
 import destroyNoteMutation from '../graphql/destroy_note.mutation.graphql';
 import { hasErrors } from '../cache_updates';
@@ -84,6 +84,10 @@ export default {
       required: false,
       default: '',
     },
+    designVariables: {
+      type: Object,
+      required: true,
+    },
   },
   apollo: {
     activeDesignDiscussion: {
@@ -121,12 +125,6 @@ export default {
       return {
         noteableId: this.noteableId,
         discussionId: this.discussion.id,
-      };
-    },
-    designVariables() {
-      return {
-        filenames: [this.$route.params.id],
-        atVersion: this.designsVersion,
       };
     },
     resolveCheckboxText() {
@@ -224,12 +222,13 @@ export default {
        * Get previous todo count
        */
       const { defaultClient: client } = this.$apollo.provider.clients;
+
       const sourceData = client.readQuery({
-        query: getLocalDesignQuery,
+        query: getDesignQuery,
         variables: this.designVariables,
       });
 
-      const currentDesign = sourceData.localDesign;
+      const currentDesign = sourceData.designManagement.designAtVersion.design;
       const prevTodoCount = currentDesign.currentUserTodos?.nodes?.length || 0;
 
       try {

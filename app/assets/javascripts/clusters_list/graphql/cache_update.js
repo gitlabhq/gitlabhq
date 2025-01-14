@@ -17,13 +17,7 @@ export function addAgentConfigToStore(
     });
 
     const data = produce(sourceData, (draftData) => {
-      const configuration = {
-        agentName: clusterAgent.name,
-        __typename: 'AgentConfiguration',
-      };
-
       draftData.project.clusterAgents.nodes.push(clusterAgent);
-      draftData.project.agentConfigurations.nodes.push(configuration);
     });
 
     store.writeQuery({

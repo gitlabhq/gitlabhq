@@ -63,7 +63,7 @@ describe('diff_stats', () => {
     it("renders the bytes changes instead of line changes when the file isn't diffable", () => {
       const content = getBytesContainer();
 
-      expect(content.classes('gl-text-green-600')).toBe(true);
+      expect(content.classes('gl-text-success')).toBe(true);
       expect(content.text()).toBe('+1.00 KiB (+100%)');
     });
   });

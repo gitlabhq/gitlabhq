@@ -31,6 +31,10 @@ module Mutations
         required: false,
         description: copy_field_description(Types::MergeRequestType, :labels)
 
+      argument :merge_after, ::Types::TimeType,
+        required: false,
+        description: copy_field_description(Types::MergeRequestType, :merge_after)
+
       field :merge_request,
         Types::MergeRequestType,
         null: true,

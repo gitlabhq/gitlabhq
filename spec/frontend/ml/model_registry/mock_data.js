@@ -17,6 +17,7 @@ export const newCandidate = () => ({
   info: {
     iid: 'candidate_iid',
     eid: 'abcdefg',
+    gid: 'gid://gitlab/Ml::Candidate/1',
     pathToArtifact: 'path_to_artifact',
     experimentName: 'The Experiment',
     pathToExperiment: 'path/to/experiment',
@@ -37,7 +38,17 @@ export const newCandidate = () => ({
         avatar: '/img.png',
       },
     },
+    createdAt: '2024-01-01T00:00:00Z',
+    authorName: 'Test User',
+    authorWebUrl: '/test-user',
+    canPromote: true,
+    promotePath: 'promote/path',
   },
+  projectPath: 'some/project',
+  canWriteModelRegistry: true,
+  markdownPreviewPath: '/markdown-preview',
+  modelGid: 'gid://gitlab/Ml::Model/1',
+  latestVersion: '1.0.2',
 });
 
 const LATEST_VERSION = {

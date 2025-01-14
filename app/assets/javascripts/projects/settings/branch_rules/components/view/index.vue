@@ -32,7 +32,7 @@ import {
 import deleteBranchRuleMutation from '../../mutations/branch_rule_delete.mutation.graphql';
 import BranchRuleModal from '../../../components/branch_rule_modal.vue';
 import Protection from './protection.vue';
-import RuleDrawer from './rule_drawer.vue';
+import AccessLevelsDrawer from './access_levels_drawer.vue';
 import ProtectionToggle from './protection_toggle.vue';
 import {
   I18N,
@@ -68,7 +68,7 @@ export default {
     GlModal,
     GlButton,
     BranchRuleModal,
-    RuleDrawer,
+    AccessLevelsDrawer,
     PageHeading,
     CrudComponent,
     SettingsSection,
@@ -227,6 +227,9 @@ export default {
     },
     showSquashSetting() {
       return this.glFeatures.branchRuleSquashSettings && !this.branch?.includes('*'); // Squash settings are not available for wildcards
+    },
+    squashOption() {
+      return this.branchRule?.squashOption;
     },
   },
   methods: {
@@ -470,7 +473,7 @@ export default {
           @edit="openAllowedToPushAndMergeDrawer"
         />
 
-        <rule-drawer
+        <access-levels-drawer
           :is-open="isAllowedToMergeDrawerOpen || isAllowedToPushAndMergeDrawerOpen"
           :roles="accessLevelsDrawerData.roles"
           :users="accessLevelsDrawerData.users"
@@ -563,6 +566,12 @@ export default {
                 </gl-link>
               </template>
             </gl-sprintf>
+          </template>
+          <template v-if="squashOption && squashOption.option" #content>
+            <div>
+              <span>{{ squashOption.option }}</span>
+              <p class="gl-text-subtle">{{ squashOption.helpText }}</p>
+            </div>
           </template>
         </protection>
       </settings-section>

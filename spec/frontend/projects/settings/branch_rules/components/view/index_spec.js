@@ -14,7 +14,7 @@ import PageHeading from '~/vue_shared/components/page_heading.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 import RuleView from '~/projects/settings/branch_rules/components/view/index.vue';
-import RuleDrawer from '~/projects/settings/branch_rules/components/view/rule_drawer.vue';
+import AccessLevelsDrawer from '~/projects/settings/branch_rules/components/view/access_levels_drawer.vue';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import Protection from '~/projects/settings/branch_rules/components/view/protection.vue';
 import ProtectionToggle from '~/projects/settings/branch_rules/components/view/protection_toggle.vue';
@@ -108,7 +108,7 @@ describe('View branch rules', () => {
         ProjectRules: true,
         ProtectionToggle,
         BranchRuleModal,
-        RuleDrawer,
+        AccessLevelsDrawer,
         PageHeading,
         CrudComponent,
         GlSprintf,
@@ -145,7 +145,7 @@ describe('View branch rules', () => {
   const findBranchRuleModal = () => wrapper.findComponent(BranchRuleModal);
   const findBranchRuleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findNoDataTitle = () => wrapper.findByText(I18N.noData);
-  const findRuleDrawer = () => wrapper.findComponent(RuleDrawer);
+  const findAccessLevelsDrawer = () => wrapper.findComponent(AccessLevelsDrawer);
 
   const findMatchingBranchesLink = () =>
     wrapper.findByText(
@@ -168,14 +168,30 @@ describe('View branch rules', () => {
       expect(findSquashSettingSection().exists()).toBe(true);
     });
 
-    it('renders squash heading and content', () => {
+    it('renders squash heading and content with an empty state', async () => {
+      const branchRulesQueryHandler = jest.fn().mockResolvedValue({
+        data: {
+          project: {
+            branchRules: {
+              nodes: [
+                {
+                  ...branchProtectionsMockResponse.data.project.branchRules.nodes[0],
+                  squashOption: null,
+                },
+              ],
+            },
+          },
+        },
+      });
+
+      await createComponent({ branchRulesQueryHandler });
       const content = findSquashSettingSection().text();
 
       expect(content).toContain('Squash commits when merging');
       expect(content).toContain(
         'Set the default behavior of this option in merge requests. Changes to this are also applied to existing merge requests.',
       );
-      expect(content).toContain('No squash settings defined');
+      expect(content).toContain('No default set until defined by user');
     });
 
     it('does not render squash settings for wildcard branch rules', async () => {
@@ -466,14 +482,14 @@ describe('View branch rules', () => {
       return nextTick();
     };
 
-    it('rule drawer is closed by default', () => {
-      expect(findRuleDrawer().props('isOpen')).toBe(false);
+    it('access levels drawer is closed by default', () => {
+      expect(findAccessLevelsDrawer().props('isOpen')).toBe(false);
     });
 
-    it('passes expected props to rule drawer', async () => {
+    it('passes expected props to access levels drawer', async () => {
       await openEditRuleDrawer();
 
-      expect(findRuleDrawer().props()).toMatchObject({
+      expect(findAccessLevelsDrawer().props()).toMatchObject({
         ...allowedToMergeDrawerProps,
         isOpen: true,
         title,
@@ -482,10 +498,10 @@ describe('View branch rules', () => {
 
     it('when save button is clicked it calls edit rule mutation', async () => {
       await openEditRuleDrawer();
-      findRuleDrawer().vm.$emit('editRule', [{ accessLevel: 30 }]);
+      findAccessLevelsDrawer().vm.$emit('editRule', [{ accessLevel: 30 }]);
       await nextTick();
 
-      expect(findRuleDrawer().props('isLoading')).toEqual(true);
+      expect(findAccessLevelsDrawer().props('isLoading')).toEqual(true);
 
       await waitForPromises();
 
@@ -502,13 +518,13 @@ describe('View branch rules', () => {
         }),
       );
 
-      expect(findRuleDrawer().props('isLoading')).toEqual(false);
+      expect(findAccessLevelsDrawer().props('isLoading')).toEqual(false);
     });
 
     it('emits a tracking event when save button is clicked', async () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
       await openEditRuleDrawer();
-      findRuleDrawer().vm.$emit('editRule', [{ accessLevel: 30 }]);
+      findAccessLevelsDrawer().vm.$emit('editRule', [{ accessLevel: 30 }]);
       await waitForPromises();
 
       const eventName =

@@ -88,7 +88,7 @@ export default {
       :from-label="__('From')"
       :to-label="__('To')"
       theme="animate-picker"
-      width="full"
+      width="xl"
       start-picker-class="js-daterange-picker-from gl-flex gl-flex-col md:gl-flex-row md:gl-items-center gl-grow"
       end-picker-class="js-daterange-picker-to gl-flex gl-flex-col md:gl-flex-row md:gl-items-center gl-grow"
       label-class="gl-mb-3 sm:gl-mb-0"

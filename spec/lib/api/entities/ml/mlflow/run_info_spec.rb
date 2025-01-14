@@ -67,8 +67,8 @@ RSpec.describe API::Entities::Ml::Mlflow::RunInfo, feature_category: :mlops do
 
   describe 'artifact_uri' do
     context 'when candidate does not belong to a model version' do
-      it 'returns the generic package (legacy) format of the artifact_uri' do
-        expect(subject[:artifact_uri]).to eq("http://localhost/api/v4/projects/#{candidate.project_id}/packages/generic#{candidate.artifact_root}")
+      it 'returns the ml package format of the artifact_uri' do
+        expect(subject[:artifact_uri]).to eq("http://localhost/api/v4/projects/#{candidate.project_id}/packages/ml_models/candidate:#{candidate.internal_id}/files/")
       end
     end
 
@@ -78,6 +78,14 @@ RSpec.describe API::Entities::Ml::Mlflow::RunInfo, feature_category: :mlops do
 
       it 'returns the model version format of the artifact_uri' do
         expect(subject[:artifact_uri]).to eq("http://localhost/api/v4/projects/#{candidate.project_id}/packages/ml_models/#{version.id}/files/")
+      end
+    end
+
+    context 'when candidate has already a generic package' do
+      let!(:candidate) { create(:ml_candidates, :with_generic_package, name: 'run1') }
+
+      it 'returns the generic version format of the artifact_uri' do
+        expect(subject[:artifact_uri]).to eq("http://localhost/api/v4/projects/#{candidate.project_id}/packages/generic#{candidate.artifact_root}")
       end
     end
   end

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 This page describes the GitLab reference architecture designed to target a peak load of 500 requests per second (RPS) - The typical peak load of up to 25,000 users, both manual and automated, based on real data.
 
@@ -2069,7 +2069,7 @@ On each node perform the following:
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
    the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
-1. Copy the SSH host keys (all in the name format `/etc/ssh/ssh_host_*_key*`) from the first Linux package node you configured and
+1. Copy the SSH host keys (all in the name format `/etc/ssh/ssh_host_*_key*`) from the first Rails node you configured and
    add or replace the files of the same name on this server. This ensures host mismatch errors aren't thrown
    for your users as they hit the load balanced Rails nodes. If this is the first Linux package node you are configuring,
    then you can skip this step.

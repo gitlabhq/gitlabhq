@@ -446,20 +446,6 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#can_admin_service_accounts?', feature_category: :user_management do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:group) { create(:group) }
-
-    before do
-      allow(helper).to receive(:current_user) { user }
-      group.add_owner(user)
-    end
-
-    it 'returns false when current_user can not admin members' do
-      expect(helper.can_admin_service_accounts?(group)).to be(false)
-    end
-  end
-
   describe '#localized_jobs_to_be_done_choices' do
     it 'has a translation for all `jobs_to_be_done` values' do
       expect(localized_jobs_to_be_done_choices.keys).to match_array(NamespaceSetting.jobs_to_be_dones.keys)
@@ -790,6 +776,23 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
           html_confirmation_message: 'true'
         })
       end
+    end
+  end
+
+  describe '#group_merge_requests' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, namespace: group) }
+    let_it_be(:merge_request) { create(:merge_request, :simple, source_project: project, target_project: project) }
+
+    before do
+      group.add_owner(user)
+
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    it 'returns group merge requests' do
+      expect(helper.group_merge_requests(group)).to contain_exactly(merge_request)
     end
   end
 end

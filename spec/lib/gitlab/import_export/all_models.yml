@@ -275,7 +275,9 @@ merge_requests:
 - scan_result_policy_violations
 - applicable_post_merge_approval_rules
 - requested_changes
+- change_requesters
 - scan_result_policy_reads_through_violations
+- security_policies_through_violations
 - scan_result_policy_reads_through_approval_rules
 - running_scan_result_policy_violations
 - failed_scan_result_policy_violations
@@ -906,6 +908,7 @@ project:
 - security_exclusions
 - security_statistics
 - vulnerability_management_policies
+- project_control_compliance_statuses
 award_emoji:
 - awardable
 - user
@@ -1213,10 +1216,11 @@ vulnerability_finding:
 scanner:
   - findings
   - security_findings
-primary_identifier:
+identifiers: &identifiers_definition
   - finding_identifiers
   - findings
   - primary_findings
+primary_identifier: *identifiers_definition
 initial_finding_pipeline: *pipeline_definition
 latest_finding_pipeline: *pipeline_definition
 vulnerability_read:

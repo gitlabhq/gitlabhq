@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 The following sections outline troubleshooting steps for fixing replication error messages (indicated by `Database replication working? ... no` in the
 [`geo:check` output](common.md#health-check-rake-task).
@@ -37,18 +37,21 @@ If the secondary site is not able to reconnect, use the following steps to remov
 
    Slots where `active` is `f` are inactive.
 
-   - When this slot should be active, because you have a **secondary** site configured using that slot,
-     look for the [PostgreSQL logs](../../../logs/index.md#postgresql-logs) for the **secondary** site,
+- If this slot should be active, because you have a **secondary** site configured using that slot:
+  - Look for the [PostgreSQL logs](../../../logs/index.md#postgresql-logs) for the **secondary** site,
      to view why the replication is not running.
-   - If you are no longer using the slot (for example, you no longer have Geo enabled), or the secondary site is no longer able to reconnect,
-     you should remove it using the PostgreSQL console session:
+  - If the secondary site is no longer able to reconnect:
 
-     ```sql
-     SELECT pg_drop_replication_slot('<name_of_inactive_slot>');
-     ```
+    1. Remove the slot using the PostgreSQL console session:
 
-1. Follow either the steps [to remove that Geo site](../remove_geo_site.md) if it's no longer required,
-   or [re-initiate the replication process](../../setup/database.md#step-3-initiate-the-replication-process), which recreates the replication slot correctly.
+       ```sql
+       SELECT pg_drop_replication_slot('<name_of_inactive_slot>');
+       ```
+
+    1. [Re-initiate the replication process](../../setup/database.md#step-3-initiate-the-replication-process),
+       which recreates the replication slot correctly.
+
+- If you are no longer using the slot (for example, you no longer have Geo enabled), follow the steps [to remove that Geo site](../remove_geo_site.md).
 
 ## Message: `WARNING: oldest xmin is far in the past` and `pg_wal` size growing
 

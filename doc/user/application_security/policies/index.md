@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Policies provide security and compliance teams with a way to enforce controls globally in
 their organization.
@@ -227,6 +227,18 @@ The Owner role and custom roles with the `manage_security_policy_link` permissio
 | Subgroup          | **{check-circle}** Yes                                        | **{check-circle}** Yes                                              | **{dotted-circle}** No                                            |
 | Project           | **{check-circle}** Yes                                        | **{check-circle}** Yes                                              | **{check-circle}** Yes                                            |
 
+#### Required permissions
+
+To create and manage security policies:
+
+- For policies enforced on groups: You must have at least the Maintainer role for the group.
+- For policies enforced on projects:
+  - You must be the project owner.
+  - You must be a group member with permissions to create projects in the group.
+
+NOTE:
+If you're not a group member, you may face limitations in adding or editing policies for your project. The ability to create and manage policies requires permissions to create projects in the group. Make sure you have the required permissions in the group, even when working with project-level policies.
+
 ## Policy implementation
 
 Implementation options for security policy projects differ slightly between GitLab.com, GitLab
@@ -283,7 +295,7 @@ The high-level workflow for enforcing policies globally across all subgroups and
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Prerequisites:
 
@@ -352,6 +364,9 @@ To link a group, subgroup, or project to a security policy project:
 
 To unlink a security policy project, follow the same steps but instead select the trash can icon in
 the dialog.
+You can link to a security policy project from a different subgroup in the same top-level group, or from an entirely different top-level group.
+However, when you enforce a
+[pipeline execution policy](../policies/pipeline_execution_policies.md#pipeline-execution-policy-schema), users must have at least read-only access to the project that contains the CI/CD configuration referenced in the policy to trigger the pipeline.
 
 ### Viewing the linked security policy project
 
@@ -394,7 +409,9 @@ policies:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Policies**.
 
-![Policies List Page](img/policies_list_v15_1.png)
+![Policies List Page](img/policies_list_v17_7.png)
+
+A green checkmark in the first column indicates that the policy is enabled and enforced on all groups and projects within its scope. A gray checkmark indicates that the policy is currently not enabled.
 
 ## Policy editor
 
@@ -433,14 +450,6 @@ Use the policy editor to create, edit, and delete policies:
    If you are a project owner and a security policy project is not associated with this project,
    a security policy project is created and linked to this project when the merge request is created.
 
-## Managing projects in bulk by using a script
-
-You can use the [Vulnerability-Check Migration](https://gitlab.com/gitlab-org/gitlab/-/snippets/2328089)
-script to bulk create policies or associate security policy projects with development projects. For
-instructions and a demonstration of how to use the Vulnerability-Check Migration script, see
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>[Migration from Vulnerability-Check rules to Scan Result Policies with automated script](https://youtu.be/biU1N26DfBc).
-<!-- Video published on 2022-05-20 -->
-
 ## Troubleshooting
 
 When working with security policies, consider these troubleshooting tips:
@@ -451,5 +460,8 @@ When working with security policies, consider these troubleshooting tips:
 - When creating a merge request approval policy, neither the array `severity_levels` nor the array
   `vulnerability_states` in the [`scan_finding` rule](../policies/merge_request_approval_policies.md#scan_finding-rule-type)
   can be left empty. For a working rule, at least one entry must exist for each array.
+- The owner of a project can enforce policies for that project, provided they also have permissions to create projects in the group.
+  Project owners who are not group members may face limitations in adding or editing policies. If you're unable to manage policies for your project,
+  contact your group administrator to ensure you have the necessary permissions in the group.
 
 If you are still experiencing issues, you can [view recent reported bugs](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=popularity&state=opened&label_name%5B%5D=group%3A%3Asecurity%20policies&label_name%5B%5D=type%3A%3Abug&first_page_size=20) and raise new unreported issues.

@@ -1,12 +1,18 @@
-import { GlLink, GlAvatarsInline, GlAvatarLink, GlAvatar } from '@gitlab/ui';
+import { GlLink, GlAvatarsInline, GlAvatarLink, GlAvatar, GlIcon } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import { workItemDevelopmentMRNodes } from 'jest/work_items/mock_data';
+import { STATUS_CLOSED } from '~/issues/constants';
 import WorkItemDevelopmentMRItem from '~/work_items/components/work_item_development/work_item_development_mr_item.vue';
 
 describe('WorkItemDevelopmentMRItem', () => {
   let wrapper;
 
   const openMergeRequest = workItemDevelopmentMRNodes[0].mergeRequest;
+
+  const closedMergeRequest = {
+    ...openMergeRequest,
+    state: STATUS_CLOSED,
+  };
 
   const mergeRequestWithNoAssignees = workItemDevelopmentMRNodes[1].mergeRequest;
 
@@ -19,6 +25,7 @@ describe('WorkItemDevelopmentMRItem', () => {
   };
 
   const findMRTitle = () => wrapper.findComponent(GlLink);
+  const findMRIcon = () => wrapper.findComponent(GlIcon);
   const findAssigneeAvatars = () => wrapper.findComponent(GlAvatarsInline);
   const findAvatarLink = () => wrapper.findComponent(GlAvatarLink);
   const findAvatar = () => wrapper.findComponent(GlAvatar);
@@ -49,5 +56,12 @@ describe('WorkItemDevelopmentMRItem', () => {
       expect(findAvatarLink().exists()).toBe(true);
       expect(findAvatar().exists()).toBe(true);
     });
+  });
+
+  it('has subtle class for closed merge requests', () => {
+    createComponent({ mergeRequest: closedMergeRequest });
+
+    expect(findMRTitle().classes()).toContain('gl-text-subtle');
+    expect(findMRIcon().attributes('class')).toContain('gl-fill-icon-subtle');
   });
 });

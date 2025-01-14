@@ -5,7 +5,7 @@ description: Get started with GitLab Dedicated.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Dedicated
+# Administer GitLab Dedicated
 
 DETAILS:
 **Tier:** Ultimate
@@ -61,7 +61,7 @@ Geo does not use an active-active failover configuration. For more information, 
 
 Optionally, private connectivity is available for your GitLab Dedicated instance, using [AWS PrivateLink](https://aws.amazon.com/privatelink/) as a connection gateway.
 
-Both [inbound](../../administration/dedicated/configure_instance.md#inbound-private-link) and [outbound](../../administration/dedicated/configure_instance.md#outbound-private-link) private links are supported.
+Both [inbound](../../administration/dedicated/configure_instance/network_security.md#inbound-private-link) and [outbound](../../administration/dedicated/configure_instance/network_security.md#outbound-private-link) private links are supported.
 
 ![Diagram of a GitLab-managed AWS VPC using AWS PrivateLink to connect with a customer-managed AWS VPC.](img/privatelink_diagram_v17_1.png)
 
@@ -82,5 +82,5 @@ GitLab team members with edit access can update the [source](https://lucid.app/l
 To get started with GitLab Dedicated, use Switchboard to:
 
 1. [Create your GitLab Dedicated instance](../../administration/dedicated/create_instance.md).
-1. [Configure your GitLab Dedicated instance](../../administration/dedicated/configure_instance.md).
+1. [Configure your GitLab Dedicated instance](../../administration/dedicated/configure_instance/index.md).
 1. [Create a hosted runner](../../administration/dedicated/hosted_runners.md).

@@ -417,11 +417,11 @@ module TestEnv
     Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter.upsert_restrictions
     Gitlab::DatabaseImporters::WorkItems::RelatedLinksRestrictionsImporter.upsert_restrictions
 
-    # We need this temporarily to make sure the app works when work_item_types.id and work_item_types.correct_id
-    # are different (as in some production apps). We can remove when work_item_types.id values are fixed (1 - 9)
+    # Updating old_id to simulate an environment that has gone through the process of cleaning
+    # the issues.work_item_type_id column. old_id is used as a fallback id.
     # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/499911
     WorkItems::Type.find_each do |work_item_type|
-      work_item_type.update!(id: -work_item_type.id, old_id: -work_item_type.id)
+      work_item_type.update!(old_id: -work_item_type.id)
     end
   end
 

@@ -8,7 +8,7 @@ module API
         expose :deployments, using: "API::Entities::Pages::Deployments"
         expose :unique_domain_enabled?, as: :is_unique_domain_enabled
         expose :force_https?, as: :force_https
-        expose :pages_default_domain_redirect
+        expose :pages_primary_domain
       end
     end
   end

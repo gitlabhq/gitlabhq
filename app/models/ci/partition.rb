@@ -22,10 +22,10 @@ module Ci
       end
 
       event :switch_writes do
-        transition ready: :current
+        transition [:ready, :active] => :current
       end
 
-      before_transition [:ready] => :current do
+      before_transition any => :current do
         Ci::Partition.with_status(:current).update_all(status: Ci::Partition.statuses[:active])
       end
     end

@@ -6,6 +6,8 @@ module QA
       module Integration
         class SMTP < Test::Instance::All
           tags :smtp
+
+          pipeline_mappings test_on_omnibus: %w[smtp]
         end
       end
     end

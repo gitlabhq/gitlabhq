@@ -99,7 +99,6 @@ describe('WorkItemChangeTypeModal component', () => {
   const findGlFormSelect = () => wrapper.findComponent(GlFormSelect);
   const findWarningAlert = () => wrapper.findByTestId('change-type-warning-message');
   const findErrorAlert = () => wrapper.findByTestId('change-type-error-message');
-  const findConfirmationButton = () => wrapper.findByTestId('change-type-confirmation-button');
 
   beforeEach(async () => {
     createComponent();
@@ -109,7 +108,13 @@ describe('WorkItemChangeTypeModal component', () => {
   it('renders change type modal with the select', () => {
     expect(findChangeTypeModal().exists()).toBe(true);
     expect(findGlFormSelect().exists()).toBe(true);
-    expect(findConfirmationButton().props('disabled')).toBe(true);
+    expect(findChangeTypeModal().props('actionPrimary')).toEqual({
+      attributes: {
+        disabled: true,
+        variant: 'confirm',
+      },
+      text: 'Change type',
+    });
   });
 
   it('calls the `namespaceWorkItemTypesQuery` to get the work item types', () => {
@@ -137,7 +142,7 @@ describe('WorkItemChangeTypeModal component', () => {
       'Parent item type issue is not supported on key result. Remove the parent item to change type.',
     );
 
-    expect(findConfirmationButton().props('disabled')).toBe(true);
+    expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(true);
   });
 
   it('does not allow to change type and disables `Change type` button when the work item has child items', async () => {
@@ -150,7 +155,7 @@ describe('WorkItemChangeTypeModal component', () => {
     expect(findWarningAlert().text()).toBe(
       'Key result does not support the task child item types. Remove child items to change type.',
     );
-    expect(findConfirmationButton().props('disabled')).toBe(true);
+    expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(true);
   });
 
   describe('when widget data has difference', () => {
@@ -167,7 +172,7 @@ describe('WorkItemChangeTypeModal component', () => {
       await nextTick();
 
       expect(findWarningAlert().text()).toContain('Design');
-      expect(findConfirmationButton().props('disabled')).toBe(false);
+      expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(false);
     });
 
     // These are all possible use cases of conflicts among project level work items
@@ -193,7 +198,7 @@ describe('WorkItemChangeTypeModal component', () => {
         await nextTick();
 
         expect(findWarningAlert().text()).toContain(expectedString);
-        expect(findConfirmationButton().props('disabled')).toBe(false);
+        expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(false);
       },
     );
   });
@@ -208,7 +213,7 @@ describe('WorkItemChangeTypeModal component', () => {
 
       await nextTick();
 
-      findConfirmationButton().vm.$emit('click');
+      findChangeTypeModal().vm.$emit('primary');
 
       await waitForPromises();
 
@@ -237,7 +242,7 @@ describe('WorkItemChangeTypeModal component', () => {
 
         await nextTick();
 
-        findConfirmationButton().vm.$emit('click');
+        findChangeTypeModal().vm.$emit('primary');
 
         await waitForPromises();
 

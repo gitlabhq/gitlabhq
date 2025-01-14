@@ -1,7 +1,7 @@
 import { GlLabel } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -141,6 +141,14 @@ describe('Board card', () => {
 
     expect(wrapper.classes()).toContain('multi-select');
     expect(wrapper.classes()).not.toContain('is-active');
+  });
+
+  it('render card with unique id', () => {
+    mountComponent();
+
+    expect(findBoardCardButton().attributes().id).toBe(
+      `listItem-${mockIssue.referencePath.split('#')[0]}/${getIdFromGraphQLId(mockIssue.id)}`,
+    );
   });
 
   describe('when mouseup event is called on the card', () => {

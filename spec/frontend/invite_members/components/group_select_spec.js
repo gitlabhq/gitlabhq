@@ -222,6 +222,25 @@ describe('GroupSelect', () => {
             name: infiniteScrollGroup.full_name,
             avatarUrl: infiniteScrollGroup.avatar_url,
           });
+
+          if (isProject) {
+            expect(apiAction).toHaveBeenCalledWith(
+              defaultProps.sourceId,
+              { search: '', page: 2 },
+              {
+                signal: expect.any(AbortSignal),
+              },
+            );
+          } else {
+            expect(apiAction).toHaveBeenCalledWith(
+              '',
+              expect.objectContaining({ page: 2 }),
+              undefined,
+              {
+                signal: expect.any(AbortSignal),
+              },
+            );
+          }
         });
 
         describe('when API request fails', () => {

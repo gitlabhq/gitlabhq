@@ -1,5 +1,5 @@
 import { Response } from 'miragejs';
-import emojis from 'public/-/emojis/3/emojis.json';
+import emojis from 'public/-/emojis/4/emojis.json';
 import { EMOJI_VERSION } from '~/emoji';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 

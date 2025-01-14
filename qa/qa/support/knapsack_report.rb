@@ -7,16 +7,19 @@ module QA
     class KnapsackReport
       PROJECT = "gitlab-qa-resources"
       BUCKET = "knapsack-reports"
-      FALLBACK_REPORT = "knapsack/master_report.json"
-      PATTERN_VAR_NAME = "KNAPSACK_TEST_FILE_PATTERN"
-      DEFAULT_TEST_PATTERN = "qa/specs/features/**/*_spec.rb"
+      BASE_PATH = "knapsack"
+      EXAMPLE_RUNTIMES_PATH = "example_runtimes"
+      FALLBACK_REPORT = "#{BASE_PATH}/master_report.json".freeze
+      DEFAULT_TEST_PATTERN = "#{Specs::Runner::DEFAULT_TEST_PATH}/**/*_spec.rb".freeze
+      RUNTIME_REPORT = "#{BASE_PATH}/#{EXAMPLE_RUNTIMES_PATH}/master_report.json".freeze
 
       class << self
-        delegate :configure!, :move_regenerated_report, :download_report, :upload_report, :merged_report, to: :new
+        delegate :configure!, :upload_example_runtimes, :knapsack_report, to: :new
       end
 
-      def initialize(report_name = nil)
-        @report_name = report_name
+      def initialize(logger: QA::Runtime::Logger.logger, test_pattern: DEFAULT_TEST_PATTERN)
+        @logger = logger
+        @test_pattern = test_pattern
       end
 
       # Configure knapsack report
@@ -28,95 +31,102 @@ module QA
       def configure!
         return unless QA::Runtime::Env.knapsack?
 
+        logger.debug("Configuring knapsack execution")
         setup_logger!
         setup_environment!
-        download_report
       end
 
-      # Download knapsack report from gcs bucket
+      # Create local knapsack report based on example runtime data and configure it to be used by knapsack
       #
-      # @return [void]
-      def download_report
-        logger.info("Downloading latest knapsack report for '#{report_name}' to '#{report_path}'")
-        return logger.info("Report already exists, skipping!") if File.exist?(report_path)
+      # Passing list of examples allows to craft a more precise report that will not have runtime data
+      # for examples that will actually be skipped due to dynamic metadata which can cause uneven test distribution
+      #
+      # @param example_data [Hash<String, String>] example id list to be included in the report
+      # @return [Hash<String, Number>]
+      def create_local_report!(example_data)
+        logger.info("Creating knapsack report from runtime data")
+        report_path = File.join(BASE_PATH, report_name)
+        knapsack_report = knapsack_report(example_data)
+        File.write(report_path, knapsack_report.to_json)
+        ENV["KNAPSACK_REPORT_PATH"] = report_path
 
-        file = client.get_object(BUCKET, report_file)
-        File.write(report_path, file[:body])
+        knapsack_report
       rescue StandardError => e
         ENV["KNAPSACK_REPORT_PATH"] = FALLBACK_REPORT
-        logger.warn("Failed to fetch latest knapsack report: #{e}")
+        logger.warn("Failed to create knapsack report: #{e}")
         logger.warn("Falling back to '#{FALLBACK_REPORT}'")
       end
 
-      # Create a copy of the report that contains the selective tests and has '-selective' suffix
+      # Knapsack report hash
       #
-      # @param [String] qa_tests
-      # @return [void]
-      def create_for_selective(qa_tests)
-        timed_specs = JSON.parse(File.read(report_path))
+      # @param example_data [Hash<String, String>]
+      # @return [Hash<String, Number>]
+      def knapsack_report(example_data)
+        runtime_report = JSON.load_file(RUNTIME_REPORT)
+        report = example_data.each_with_object(Hash.new { |h, k| h[k] = 0 }) do |(id, status), report|
+          next report[example_file_path(id)] += runtime_report[id] || 0.01 if status == "passed"
 
-        qa_tests_array = qa_tests.split(' ')
-        filtered_timed_specs = timed_specs.select { |k, _| qa_tests_array.any? { |qa_test| k.include? qa_test } }
-        File.write(selective_path, filtered_timed_specs.to_json)
-      end
-
-      # Rename and move new regenerated report to a separate folder used to indicate report name
-      #
-      # @return [void]
-      def move_regenerated_report
-        return unless ENV["KNAPSACK_GENERATE_REPORT"] == "true"
-
-        tmp_path = "tmp/knapsack/#{report_name}"
-        FileUtils.mkdir_p(tmp_path)
-
-        # Use path from knapsack config in case of fallback to master_report.json
-        knapsack_report_path = Knapsack.report.report_path
-        logger.debug("Moving regenerated #{knapsack_report_path} to save as artifact")
-        FileUtils.cp(knapsack_report_path, "#{tmp_path}/#{ENV['CI_NODE_INDEX']}.json")
-      end
-
-      # Merge and upload knapsack report to gcs bucket
-      #
-      # Fetches all files defined in glob and uses parent folder as report name
-      #
-      # @param [String] glob
-      # @return [void]
-      def upload_report(glob)
-        reports = Pathname.glob(glob).each_with_object(Hash.new { |hsh, key| hsh[key] = [] }) do |report, hash|
-          next unless report.extname == ".json"
-
-          hash[report.parent.basename.to_s].push(report)
+          # if example was not executed, add small runtime to the report
+          # this is needed for knapsack to not consider all specs that got skipped dynamically as leftover specs
+          # https://github.com/KnapsackPro/knapsack?tab=readme-ov-file#what-does-leftover-specs-mean
+          report[example_file_path(id)] += 0.01
         end
-        return logger.error("Glob '#{glob}' did not contain any valid report files!") if reports.empty?
 
-        reports.each do |name, jsons|
-          file = "#{name}.json"
-
-          report = jsons
-            .map { |json| JSON.parse(File.read(json)) }
-            .reduce({}, :merge)
-            .sort_by { |_k, v| v } # sort report by execution time
-            .to_h
-          next logger.warn("Knapsack generated empty report for '#{name}', skipping upload!") if report.empty?
-
-          logger.info("Uploading latest knapsack report '#{file}'")
-          client.put_object(BUCKET, file, JSON.pretty_generate(report))
-        rescue StandardError => e
-          logger.error("Failed to upload knapsack report for '#{name}'. Error: #{e}")
-        end
+        report
+          .transform_values { |v| v.round(3) }
+          .sort
+          .to_h
       end
 
-      # Single merged knapsack report
+      # Create and upload custom report based on data from JsonFormatter report files
       #
-      # @return [Hash]
-      def merged_report
-        logger.info("Fetching all knapsack reports from GCS '#{BUCKET}' bucket")
-        client.list_objects(BUCKET).items.each_with_object({}) do |report, hash|
-          hash.merge!(JSON.parse(client.get_object(BUCKET, report.name)[:body]))
+      # @param glob [String]
+      # @return [void]
+      def upload_example_runtimes(glob)
+        raise "QA_RUN_TYPE must be set for custom report" unless run_type
+
+        reports = Pathname.glob(glob).select { |file| file.extname == ".json" }
+        raise "Glob '#{glob}' did not contain any valid report files!" if reports.empty?
+
+        logger.info("Processing '#{reports.size}' report files")
+        report = example_runtimes(reports).sort.to_h
+
+        file = "#{EXAMPLE_RUNTIMES_PATH}/#{run_type}.json"
+        logger.info("Uploading example runtime report '#{file}'")
+        client.put_object(BUCKET, file, JSON.pretty_generate(report))
+      end
+
+      # Merged example runtime data report from all report files
+      #
+      # @return [Hash<String, Number>]
+      def create_merged_runtime_report
+        logger.info("Fetching all example runtime data from GCS '#{BUCKET}' bucket")
+        items = client.list_objects(BUCKET, prefix: EXAMPLE_RUNTIMES_PATH).items
+        logger.info("Fetched example runtime files #{items.map(&:name)}, creating merged knapsack report")
+        client.list_objects(BUCKET, prefix: EXAMPLE_RUNTIMES_PATH).items
+          .each_with_object({}) do |report, runtimes|
+            json = JSON.parse(client.get_object(BUCKET, report.name)[:body])
+
+            # merge report and keep only the longest runtime
+            json.each { |id, runtime| runtimes[id] = runtime unless (runtimes[id] || 0) > runtime }
+          end
+      end
+
+      # Create knapsack report from example runtime data
+      #
+      # @param runtime_report [Hash<String, Number>]
+      # @return [Hash<String, Number>]
+      def create_knapsack_report(runtime_report)
+        runtime_report.each_with_object(Hash.new { |hsh, key| hsh[key] = 0 }) do |(id, runtime), spec_runtimes|
+          spec_runtimes[example_file_path(id)] += runtime
         end
       end
 
       private
+
+      attr_reader :logger, :test_pattern
+
+      delegate :run_type, to: QA::Runtime::Env
 
       # Setup knapsack logger
       #
@@ -129,16 +139,18 @@ module QA
       #
       # @return [void]
       def setup_environment!
-        ENV["KNAPSACK_TEST_DIR"] = "qa/specs"
-        ENV["KNAPSACK_REPORT_PATH"] = report_path
-        ENV[PATTERN_VAR_NAME] = ENV[PATTERN_VAR_NAME].presence || DEFAULT_TEST_PATTERN
-      end
+        ENV["KNAPSACK_TEST_DIR"] = "qa/specs/features"
+        ENV["KNAPSACK_REPORT_PATH"] = FALLBACK_REPORT
 
-      # Logger instance
-      #
-      # @return [ActiveSupport::Logger]
-      def logger
-        QA::Runtime::Logger.logger
+        if ENV["KNAPSACK_TEST_FILE_PATTERN"]
+          logger.warn(<<~MSG)
+            KNAPSACK_TEST_FILE_PATTERN variable is set and is overriding automatically generated test pattern '#{test_pattern}'!
+            To ensure correct test distribution, please remove KNAPSACK_TEST_FILE_PATTERN variable and pass specific test folders as command line arguments instead.
+          MSG
+        else
+          logger.debug("Setting knapsack test pattern to '#{test_pattern}'")
+          ENV["KNAPSACK_TEST_FILE_PATTERN"] = test_pattern
+        end
       end
 
       # GCS client
@@ -155,30 +167,6 @@ module QA
         @report_base_path ||= "knapsack"
       end
 
-      # Knapsack report path
-      #
-      # @return [String]
-      def report_path
-        @report_path ||= "#{report_base_path}/#{report_file}"
-      end
-
-      # Knapsack report name
-      #
-      # @return [String]
-      def report_file
-        @report_file ||= "#{report_name}.json"
-      end
-
-      # Report name
-      #
-      # Infer report name from ci job name
-      # Remove characters incompatible with gcs bucket naming from job names like ee:instance-parallel
-      #
-      # @return [String]
-      def report_name
-        @report_name ||= ENV["QA_KNAPSACK_REPORT_NAME"] || ENV["CI_JOB_NAME"].split(" ").first.tr(":", "-")
-      end
-
       # GCS credentials json
       #
       # @return [Hash]
@@ -191,15 +179,36 @@ module QA
         { google_json_key_string: json_key }
       end
 
-      # Add '-selective-parallel' suffix to report name
+      # Get example runtimes from JsonFormatter report files
+      #
+      # @param reports [Array<Pathname>]
+      # @return [Hash<Number>]
+      def example_runtimes(reports)
+        reports
+          .flat_map { |report| JSON.load_file(report, symbolize_names: true) }
+          .each_with_object({}) do |json, runtimes|
+            json[:examples].each do |ex|
+              next if ex[:ignore_runtime_data] || ex[:status] != "passed"
+
+              # keep the longest running example
+              runtimes[ex[:id]] = ex[:run_time] unless (runtimes[:id] || 0) > ex[:run_time]
+            end
+          end
+      end
+
+      # Knapsack report file name
       #
       # @return [String]
-      def selective_path
-        extension = File.extname(report_path)
-        directory = File.dirname(report_path)
-        file_name = File.basename(report_path, extension)
+      def report_name
+        "#{ENV['CI_JOB_NAME_SLUG'] || 'local'}-knapsack-report.json"
+      end
 
-        File.join(directory, "#{file_name}-selective-parallel#{extension}")
+      # Extract file path from example id
+      #
+      # @param example_id [String]
+      # @return [String]
+      def example_file_path(example_id)
+        example_id.match(/(\S+)\[\S+\]/)[1].gsub("./", "")
       end
     end
   end

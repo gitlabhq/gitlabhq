@@ -37,7 +37,7 @@ module Notes
       @interpret_service = QuickActions::InterpretService.new(
         container: note.resource_parent,
         current_user: current_user,
-        params: options
+        params: options.merge(discussion_id: note.discussion_id)
       )
 
       # NOTE: old_note would be nil if the note hasn't changed or it is a new record
@@ -57,10 +57,15 @@ module Notes
         update_params[:spend_time][:note_id] = note.id
       end
 
+      execute_triggers(note, update_params)
       execute_update_service(note, update_params)
     end
 
     private
+
+    def execute_triggers(note, params)
+      # This is overridden in EE
+    end
 
     def execute_update_service(note, params)
       service_response = noteable_update_service(note, params).execute(note.noteable)

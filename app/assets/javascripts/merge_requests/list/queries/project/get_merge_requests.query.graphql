@@ -1,7 +1,7 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "../merge_request.fragment.graphql"
 
-query getMergeRequests(
+query getProjectMergeRequests(
   $hideUsers: Boolean = false
   $isSignedIn: Boolean = false
   $fullPath: ID!

@@ -1,4 +1,5 @@
 import { ACTIVE_CONNECTION_TIME } from '~/clusters_list/constants';
+import { agent, tokens, connections } from '../mocks/apollo';
 
 export const agentConfigurationsResponse = {
   data: {
@@ -408,3 +409,46 @@ export const expectedAgentsList = [
     project: agentProject,
   },
 ];
+
+export const createAgentResponse = {
+  data: {
+    createClusterAgent: {
+      clusterAgent: {
+        ...agent,
+        connections,
+        tokens,
+      },
+      errors: [],
+    },
+  },
+};
+
+export const createAgentErrorResponse = {
+  data: {
+    createClusterAgent: {
+      clusterAgent: {
+        ...agent,
+        connections,
+        tokens,
+      },
+      errors: ['could not create agent'],
+    },
+  },
+};
+
+export const getAgentResponse = {
+  data: {
+    project: {
+      __typename: 'Project',
+      id: 'project-1',
+      clusterAgents: { nodes: [{ ...agent, connections, tokens }] },
+      ciAccessAuthorizedAgents: { nodes: [] },
+      userAccessAuthorizedAgents: { nodes: [] },
+      repository: {
+        tree: {
+          trees: { nodes: [{ ...agent, path: null }] },
+        },
+      },
+    },
+  },
+};

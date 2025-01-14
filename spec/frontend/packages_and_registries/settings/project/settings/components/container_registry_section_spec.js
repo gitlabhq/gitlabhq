@@ -4,7 +4,8 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 import ContainerRegistrySection from '~/packages_and_registries/settings/project/components/container_registry_section.vue';
 import ContainerExpirationPolicy from '~/packages_and_registries/settings/project/components/container_expiration_policy.vue';
-import ContainerProtectionRules from '~/packages_and_registries/settings/project/components/container_protection_rules.vue';
+import ContainerProtectionRepositoryRules from '~/packages_and_registries/settings/project/components/container_protection_repository_rules.vue';
+import ContainerProtectionTagRules from '~/packages_and_registries/settings/project/components/container_protection_tag_rules.vue';
 
 describe('Container registry project settings section', () => {
   let wrapper;
@@ -12,17 +13,23 @@ describe('Container registry project settings section', () => {
   const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
   const findLink = () => findSettingsBlock().findComponent(GlLink);
   const findContainerExpirationPolicy = () => wrapper.findComponent(ContainerExpirationPolicy);
-  const findContainerProtectionRules = () => wrapper.findComponent(ContainerProtectionRules);
+  const findContainerProtectionRepositoryRules = () =>
+    wrapper.findComponent(ContainerProtectionRepositoryRules);
+  const findContainerProtectionTagRules = () => wrapper.findComponent(ContainerProtectionTagRules);
 
   const defaultProvide = {
     glFeatures: {
-      containerRegistryProtectedContainers: true,
+      containerRegistryProtectedTags: true,
     },
   };
 
-  const mountComponent = (provide = defaultProvide) => {
+  const mountComponent = ({ provide = defaultProvide, props = {} } = {}) => {
     wrapper = shallowMount(ContainerRegistrySection, {
       provide,
+      propsData: {
+        enabled: false,
+        ...props,
+      },
       stubs: {
         GlSprintf,
       },
@@ -36,6 +43,7 @@ describe('Container registry project settings section', () => {
 
     it('renders with title', () => {
       expect(findSettingsBlock().props('title')).toBe('Container registry');
+      expect(findSettingsBlock().props('defaultExpanded')).toBe(false);
     });
 
     it('renders with description', () => {
@@ -51,23 +59,35 @@ describe('Container registry project settings section', () => {
       expect(link.attributes('href')).toBe(docsPath);
     });
 
-    it('renders container expiration policy & protection rules', () => {
-      mountComponent();
-
+    it('renders container registry settings components', () => {
       expect(findContainerExpirationPolicy().exists()).toBe(true);
-      expect(findContainerProtectionRules().exists()).toBe(true);
+      expect(findContainerProtectionRepositoryRules().exists()).toBe(true);
+      expect(findContainerProtectionTagRules().exists()).toBe(true);
+    });
+  });
+
+  describe('with `expanded` prop set', () => {
+    beforeEach(() => {
+      mountComponent({ props: { expanded: true } });
     });
 
-    describe('when feature flag "containerRegistryProtectedContainers" is disabled', () => {
-      it('container protection rules settings is hidden', () => {
-        mountComponent({
-          ...defaultProvide,
-          glFeatures: { containerRegistryProtectedContainers: false },
-        });
+    it('sets settings block `defaultExpanded` prop to true', () => {
+      expect(findSettingsBlock().props('defaultExpanded')).toBe(true);
+    });
+  });
 
-        expect(findContainerProtectionRules().exists()).toBe(false);
-        expect(findContainerExpirationPolicy().exists()).toBe(true);
+  describe('when feature flag "containerRegistryProtectedTags" is disabled', () => {
+    it('container protection tag rules settings is hidden', () => {
+      mountComponent({
+        provide: {
+          ...defaultProvide,
+          glFeatures: { containerRegistryProtectedTags: false },
+        },
       });
+
+      expect(findContainerExpirationPolicy().exists()).toBe(true);
+      expect(findContainerProtectionRepositoryRules().exists()).toBe(true);
+      expect(findContainerProtectionTagRules().exists()).toBe(false);
     });
   });
 });

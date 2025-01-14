@@ -2,44 +2,26 @@
 
 module Gitlab
   module Kas
-    class ServerInfoPresenter
+    class ServerInfoPresenter < Gitlab::View::Presenter::Delegated
+      presents ::Gitlab::Kas::ServerInfo, as: :server_info
+
       GROUP = 'gitlab-org/cluster-integration'
       PROJECT = 'gitlab-agent'
       private_constant :GROUP, :PROJECT
 
-      delegate :git_ref, to: :server_info, private: true
-      delegate :version, to: :server_info
-
-      def initialize
-        @server_info = fetch_server_info
-      end
-
-      def retrieved_server_info?
-        server_info.present?
-      end
-
       def git_ref_for_display
-        return unless git_ref.present?
+        return unless retrieved_server_info? && git_ref.present?
 
         commit&.short_id || git_ref
       end
 
       def git_ref_url
-        return unless git_ref.present?
+        return unless retrieved_server_info? && git_ref.present?
 
         build_git_ref_url
       end
 
       private
-
-      attr_reader :server_info
-
-      def fetch_server_info
-        Gitlab::Kas::Client.new.get_server_info
-      rescue StandardError => e
-        Gitlab::ErrorTracking.track_exception(e)
-        nil
-      end
 
       def build_git_ref_url
         Gitlab::Utils.append_path(Gitlab::Saas.com_url, git_ref_path)

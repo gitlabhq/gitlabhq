@@ -12,13 +12,6 @@ RSpec.describe Gitlab::TopologyServiceClient::BaseService, feature_category: :ce
 
         expect { base_service }.to raise_error(NotImplementedError)
       end
-
-      it 'raises an error when no cell is configured' do
-        allow(Gitlab.config.topology_service).to receive(:enabled).and_return(true)
-        expect(Gitlab.config.cell).to receive(:name).once.and_return(nil)
-
-        expect { base_service }.to raise_error(NotImplementedError)
-      end
     end
   end
 end

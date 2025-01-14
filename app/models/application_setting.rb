@@ -18,6 +18,30 @@ class ApplicationSetting < ApplicationRecord
     encrypted_vertex_ai_access_token_iv
   ], remove_with: '17.5', remove_after: '2024-09-19'
 
+  ignore_columns %i[
+    elasticsearch_aws
+    elasticsearch_search
+    elasticsearch_indexing
+    elasticsearch_username
+    elasticsearch_aws_region
+    elasticsearch_aws_access_key
+    elasticsearch_limit_indexing
+    elasticsearch_pause_indexing
+    elasticsearch_requeue_workers
+    elasticsearch_max_bulk_size_mb
+    elasticsearch_retry_on_failure
+    elasticsearch_max_bulk_concurrency
+    elasticsearch_client_request_timeout
+    elasticsearch_worker_number_of_shards
+    elasticsearch_analyzers_smartcn_search
+    elasticsearch_analyzers_kuromoji_search
+    elasticsearch_analyzers_smartcn_enabled
+    elasticsearch_analyzers_kuromoji_enabled
+    elasticsearch_indexed_field_length_limit
+    elasticsearch_indexed_file_size_limit_kb
+    elasticsearch_max_code_indexing_concurrency
+  ], remove_with: '17.11', remove_after: '2025-04-17'
+
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
     'Admin area > Settings > Metrics and profiling > Metrics - Grafana'
@@ -694,6 +718,8 @@ class ApplicationSetting < ApplicationRecord
   validates :importers, json_schema: { filename: "application_setting_importers" }
 
   jsonb_accessor :package_registry, nuget_skip_metadata_url_validation: [:boolean, { default: false }]
+
+  jsonb_accessor :oauth_provider, ropc_without_client_credentials: [:boolean, { default: true }]
 
   validates :package_registry, json_schema: { filename: 'application_setting_package_registry' }
 

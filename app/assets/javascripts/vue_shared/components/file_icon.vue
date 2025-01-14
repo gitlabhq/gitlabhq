@@ -30,7 +30,6 @@ export default {
       required: false,
       default: '',
     },
-
     folder: {
       type: Boolean,
       required: false,
@@ -46,19 +45,16 @@ export default {
       required: false,
       default: false,
     },
-
     loading: {
       type: Boolean,
       required: false,
       default: false,
     },
-
     size: {
       type: Number,
       required: false,
       default: 16,
     },
-
     cssClasses: {
       type: String,
       required: false,

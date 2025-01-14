@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 To migrate GitLab groups and projects by using direct transfer, you:
 
@@ -75,7 +75,7 @@ GitLab 16.8.
 ## User contribution and membership mapping
 
 DETAILS:
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 > - Mapping of shared and inherited shared members as direct members was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129017) in GitLab 16.3.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148220) in GitLab 16.11, shared and inherited shared members are no longer mapped as direct members if they are already shared or inherited shared members of the imported group or project.
@@ -111,7 +111,7 @@ There is a [known issue](index.md#known-issues) affecting the mapping of shared 
 To ensure GitLab maps users and their contributions correctly between the source and destination instances:
 
 1. Create the required users on the destination GitLab instance. You can create users with the API only on self-managed instances because it requires
-   administrator access. When migrating to GitLab.com or a self-managed GitLab instance you can:
+   administrator access. When migrating to GitLab.com or GitLab Self-Managed you can:
    - Create users manually.
    - Set up or use your existing [SAML SSO provider](../saml_sso/index.md) and leverage user synchronization of SAML SSO groups supported through
      [SCIM](../../group/saml_sso/scim_setup.md). You can

@@ -90,7 +90,7 @@ module Ci
 
     def self.clone_accessors
       %i[pipeline project ref tag options name
-        allow_failure stage stage_idx
+        allow_failure stage_idx
         yaml_variables when environment description needs_attributes
         scheduling_type ci_stage partition_id].freeze
     end

@@ -66,7 +66,7 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline, feature_category: 
       expect(imported_group.mentions_disabled?).to eq(group_data['mentions_disabled'])
     end
 
-    it 'skips duplicates on pipeline rerun' do
+    it 'skips duplicates on pipeline rerun', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/509519' do
       expect { subject.run }.to change { Group.count }.by(1)
       expect { subject.run }.not_to change { Group.count }
     end

@@ -288,12 +288,12 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
           it_behaves_like 'not verifying with email'
         end
 
-        context 'when request is not from a QA user' do
+        context 'when request is from a QA user' do
           before do
-            allow(Gitlab::Qa).to receive(:request?).and_return(false)
+            allow(Gitlab::Qa).to receive(:request?).and_return(true)
           end
 
-          it_behaves_like 'verifying with email'
+          it_behaves_like 'not verifying with email'
         end
 
         context 'when the skip_require_email_verification feature flag is turned on' do
@@ -302,6 +302,21 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
           end
 
           it_behaves_like 'not verifying with email'
+        end
+
+        context 'when the user is not active' do
+          context 'when the user is signing in from an unknown IP address' do
+            before do
+              user.block!
+              allow(AuthenticationEvent).to receive(:initial_login_or_known_ip_address?).and_return(false)
+              sign_in
+            end
+
+            it 'does not prompt for email verification', :aggregate_failures do
+              expect(response).to redirect_to(new_user_session_path)
+              expect(flash[:alert]).to include('Your account has been blocked')
+            end
+          end
         end
       end
     end

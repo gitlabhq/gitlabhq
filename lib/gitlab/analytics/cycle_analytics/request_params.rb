@@ -174,9 +174,9 @@ module Gitlab
 
           {
             name: project.name,
-            full_path: project.full_path,
             type: namespace.type,
-            path: project.full_path
+            path: project.full_path,
+            rest_api_request_path: project.full_path
           }
         end
 

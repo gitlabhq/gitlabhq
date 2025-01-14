@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 When you use Mailgun to send emails for your GitLab instance and [Mailgun](https://www.mailgun.com/)
 integration is enabled and configured in GitLab, you can receive their webhook for

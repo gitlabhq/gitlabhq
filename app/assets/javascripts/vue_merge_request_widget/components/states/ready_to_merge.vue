@@ -712,13 +712,10 @@ export default {
                   v-gl-tooltip.hover.focus="__('Select merge moment')"
                   :disabled="isMergeButtonDisabled"
                   variant="confirm"
-                  class="gl-mr-0"
                   data-testid="merge-immediately-dropdown"
-                  icon="chevron-down"
                   toggle-class="btn-icon js-merge-moment"
                   :toggle-text="__('Select a merge moment')"
                   text-sr-only
-                  no-caret
                 >
                   <gl-disclosure-dropdown-item
                     v-if="
@@ -736,7 +733,7 @@ export default {
                   >
                     <template #list-item>
                       <strong>{{ __(`Merge now and restart train`) }}</strong>
-                      <p class="gl-mb-0 gl-text-sm gl-text-gray-400">
+                      <p class="gl-mb-0 gl-text-sm gl-text-subtle">
                         {{ __('Restart merge train pipelines with the merged changes.') }}
                       </p>
                     </template>
@@ -748,7 +745,7 @@ export default {
                   >
                     <template #list-item>
                       <strong>{{ __(`Merge now and don't restart train`) }}</strong>
-                      <p class="gl-mb-0 gl-text-sm gl-text-gray-400">
+                      <p class="gl-mb-0 gl-text-sm gl-text-subtle">
                         {{ __('Merge train pipelines continue without the merged changes.') }}
                       </p>
                     </template>
@@ -760,7 +757,7 @@ export default {
                   {{ autoMergeHelperText }}
                 </div>
                 <help-popover
-                  class="gl-ml-2"
+                  class="gl-ml-2 gl-inline-flex"
                   :options="autoMergeHelpPopoverOptions"
                   data-testid="auto-merge-helper-text-icon"
                 >

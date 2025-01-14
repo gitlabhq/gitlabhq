@@ -14,12 +14,7 @@ module RenderAccessTokens
   end
 
   def inactive_access_tokens
-    tokens = finder(state: 'inactive', sort: 'updated_at_desc').execute.preload_users
-
-    # We don't call `add_pagination_headers` as this overrides the
-    # pagination of active tokens.
-
-    represent(tokens)
+    finder(state: 'inactive', sort: 'updated_at_desc').execute.preload_users
   end
 
   def add_pagination_headers(relation)

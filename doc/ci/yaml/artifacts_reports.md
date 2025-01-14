@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Use [`artifacts:reports`](index.md#artifactsreports) to:
 
@@ -384,7 +384,7 @@ The collected Secret Detection report is uploaded to GitLab.
 GitLab can display the results of one or more reports in:
 
 - The merge request [secret scanning widget](../../user/application_security/secret_detection/pipeline/index.md).
-- The [pipeline security tab](../../user/application_security/index.md#pipeline-security-tab).
+- The [pipeline security tab](../../user/application_security/detect/security_scan_results.md).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 
 ## `artifacts:reports:terraform`

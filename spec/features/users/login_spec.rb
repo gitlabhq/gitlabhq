@@ -470,6 +470,27 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, :aggregate_failures, featu
     end
   end
 
+  describe 'with auto_sign_in_with_provider enabled' do
+    before do
+      stub_omniauth_saml_config(
+        enabled: true,
+        auto_sign_in_with_provider: 'saml',
+        allow_single_sign_on: ['saml']
+      )
+
+      allow_next_instance_of(ActionDispatch::Routing::RoutesProxy) do |instance|
+        allow(instance).to receive(:user_saml_omniauth_authorize_path)
+          .and_return('/api/graphql?my_fake_idp') # A dummy page where we can do a POST request
+      end
+    end
+
+    it 'redirects to the identity provider', :js do
+      visit new_user_session_path
+
+      expect(page.current_url).to end_with('/api/graphql?my_fake_idp')
+    end
+  end
+
   describe 'without two-factor authentication' do
     it 'renders sign in text for providers' do
       visit new_user_session_path

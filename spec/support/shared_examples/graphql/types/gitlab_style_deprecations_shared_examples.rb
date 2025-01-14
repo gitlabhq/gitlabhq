@@ -71,7 +71,7 @@ RSpec.shared_examples 'Gitlab-style deprecations' do
 
   it 'does not allow :experiment and :deprecated together' do
     expect do
-      subject(experiment: { milestone: '1.10' }, deprecated: { milestone: '1.10', reason: 'my reason' } )
+      subject(experiment: { milestone: '1.10' }, deprecated: { milestone: '1.10', reason: 'my reason' })
     end.to raise_error(
       ArgumentError,
       eq("`experiment` and `deprecated` arguments cannot be passed at the same time")

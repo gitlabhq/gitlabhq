@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 GitLab Inc. periodically collects information about your instance in order
 to perform various actions.
@@ -115,7 +115,7 @@ for all authenticated users, and on the **Admin** area pages. The statuses are:
 ### Request flow example
 
 The following example shows a basic request/response flow between a
-self-managed GitLab instance and the GitLab Version Application:
+GitLab Self-Managed instance and the GitLab Version Application:
 
 ```mermaid
 sequenceDiagram

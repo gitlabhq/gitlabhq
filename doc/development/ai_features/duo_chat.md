@@ -203,7 +203,7 @@ Test and iterate on the prompt using RSpec tests that make real requests to the 
 
 - Prompts require trial and error, the non-deterministic nature of working with LLM can be surprising.
 - Anthropic provides good [guide](https://docs.anthropic.com/claude/docs/intro-to-prompting) on working on prompts.
-- GitLab [guide](prompts.md) on working with prompts.
+- GitLab [guide](ai_feature_development_playbook.md) on working with prompts.
 
 The key things to keep in mind are properly instructing the large language model through prompts and tool descriptions,
 keeping tools self-sufficient, and returning responses to the zero-shot agent. With some trial and error on prompts,

@@ -201,7 +201,7 @@ export default {
       });
       createAlert({
         message: s__(
-          'MLOps|Something went wrong while trying to delete the model version. Please try again later.',
+          'MlModelRegistry|Something went wrong while trying to delete the model version. Please try again later.',
         ),
         variant: VARIANT_DANGER,
       });

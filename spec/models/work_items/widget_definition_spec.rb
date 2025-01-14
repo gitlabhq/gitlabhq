@@ -21,7 +21,8 @@ RSpec.describe WorkItems::WidgetDefinition, feature_category: :team_planning do
       ::WorkItems::Widgets::Designs,
       ::WorkItems::Widgets::Development,
       ::WorkItems::Widgets::CrmContacts,
-      ::WorkItems::Widgets::EmailParticipants
+      ::WorkItems::Widgets::EmailParticipants,
+      ::WorkItems::Widgets::CustomStatus
     ]
 
     if Gitlab.ee?
@@ -114,7 +115,9 @@ RSpec.describe WorkItems::WidgetDefinition, feature_category: :team_planning do
     end
 
     describe '.widget_classes' do
-      subject { described_class.widget_classes }
+      # Excluding LinkedResources as the linked_resources widget is still not added to any work item type
+      # Follow-up will add the widget to the types as part of https://gitlab.com/gitlab-org/gitlab/-/issues/372482
+      subject { described_class.widget_classes - [::WorkItems::Widgets::LinkedResources] }
 
       it 'returns all widget classes no matter if disabled or not' do
         is_expected.to match_array(all_widget_classes)

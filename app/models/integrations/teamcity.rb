@@ -12,21 +12,25 @@ module Integrations
 
     field :teamcity_url,
       title: -> { s_('ProjectService|TeamCity server URL') },
+      help: -> { s_('TeamCityIntegration|TeamCity root URL (for example, `https://teamcity.example.com`).') },
       placeholder: 'https://teamcity.example.com',
       exposes_secrets: true,
       required: true
 
     field :build_type,
-      help: -> { s_('ProjectService|The build configuration ID of the TeamCity project.') },
+      help: -> { s_('TeamCityIntegration|The build configuration ID of the TeamCity project.') },
       required: true
 
     field :username,
-      help: -> { s_('ProjectService|Must have permission to trigger a manual build in TeamCity.') }
+      help: -> { s_('TeamCityIntegration|A user with permissions to trigger a manual build.') },
+      required: true
 
     field :password,
       type: :password,
+      help: -> { s_('TeamCityIntegration|The password of the user.') },
       non_empty_password_title: -> { s_('ProjectService|Enter new password') },
-      non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current password') }
+      non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current password') },
+      required: true
 
     validates :teamcity_url, presence: true, public_url: true, if: :activated?
     validates :build_type, presence: true, if: :activated?

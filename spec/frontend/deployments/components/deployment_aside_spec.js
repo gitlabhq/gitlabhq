@@ -5,6 +5,9 @@ import mockEnvironmentFixture from 'test_fixtures/graphql/deployments/graphql/qu
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ShowMore from '~/vue_shared/components/show_more.vue';
 import DeploymentAside from '~/deployments/components/deployment_aside.vue';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { CLICK_PIPELINE_LINK_ON_DEPLOYMENT_PAGE } from '~/deployments/utils';
 
 const {
   data: {
@@ -16,8 +19,9 @@ const {
     project: { environment },
   },
 } = mockEnvironmentFixture;
+const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
-describe('~/deployments/components/deployment_header.vue', () => {
+describe('~/deployments/components/deployment_aside.vue', () => {
   let wrapper;
 
   const findSidebarToggleButton = () => wrapper.findByTestId('deployment-sidebar-toggle-button');
@@ -25,6 +29,8 @@ describe('~/deployments/components/deployment_header.vue', () => {
   const findSidebarItems = () => wrapper.findByTestId('deployment-sidebar-items');
   const findUrlButtonWrapper = () => wrapper.findByTestId('deployment-url-button-wrapper');
   const findTriggererItem = () => wrapper.findByTestId('deployment-triggerer-item');
+  const findPipelineSection = () => wrapper.findByTestId('deployment-pipeline');
+  const findPipelineLink = () => wrapper.findByTestId('deployment-pipeline-link');
 
   const createComponent = ({ propsData = {} } = {}) => {
     wrapper = mountExtended(DeploymentAside, {
@@ -61,6 +67,28 @@ describe('~/deployments/components/deployment_header.vue', () => {
 
       expect(link.attributes('href')).toBe(deployment.triggerer.webUrl);
       expect(link.text()).toContain(deployment.triggerer.name);
+    });
+
+    it('shows a section with a link to the Pipeline', () => {
+      expect(findPipelineSection().exists()).toBe(true);
+      expect(findPipelineSection().text()).toContain('Pipeline');
+
+      expect(findPipelineLink().exists()).toBe(true);
+      expect(findPipelineLink().attributes('href')).toBe(deployment.job.pipeline.path);
+      expect(findPipelineLink().text()).toBe(`#${getIdFromGraphQLId(deployment.job.pipeline.id)}`);
+    });
+
+    it('should call trackEvent method when pipeline link is clicked', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      await findPipelineLink().vm.$emit('click');
+
+      expect(trackEventSpy).toHaveBeenCalledTimes(1);
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        CLICK_PIPELINE_LINK_ON_DEPLOYMENT_PAGE,
+        {},
+        undefined,
+      );
     });
 
     it('shows a link to the tags of a deployment', () => {

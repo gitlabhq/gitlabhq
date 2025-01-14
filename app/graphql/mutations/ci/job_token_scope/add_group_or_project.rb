@@ -18,6 +18,13 @@ module Mutations
           required: true,
           description: 'Group or project to be added to the CI job token scope.'
 
+        argument :default_permissions, GraphQL::Types::Boolean,
+          required: false,
+          default_value: true,
+          experiment: { milestone: '17.8' },
+          description: 'Indicates whether default permissions are enabled (true) or fine-grained permissions are ' \
+            'enabled (false).'
+
         argument :job_token_policies, [Types::Ci::JobTokenScope::PoliciesEnum],
           required: false,
           default_value: [],
@@ -36,16 +43,16 @@ module Mutations
           null: true,
           description: "CI job token's access scope."
 
-        def resolve(args)
-          project = authorized_find!(args[:project_path])
-
-          target = find_target_path(args[:target_path])
-
-          args.delete(:job_token_policies) unless Feature.enabled?(:add_policies_to_ci_job_token, project)
+        def resolve(project_path:, target_path:, default_permissions:, job_token_policies:)
+          project = authorized_find!(project_path)
+          target = find_target_path(target_path)
+          policies_enabled = Feature.enabled?(:add_policies_to_ci_job_token, project)
+          # Use default permissions if policies feature isn't enabled.
+          default = policies_enabled ? default_permissions : true
 
           result = ::Ci::JobTokenScope::AddGroupOrProjectService
             .new(project, current_user)
-            .execute(target, policies: args[:job_token_policies])
+            .execute(target, default_permissions: default, policies: job_token_policies)
 
           if result.success?
             {

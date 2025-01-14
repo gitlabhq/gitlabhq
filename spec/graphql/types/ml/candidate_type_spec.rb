@@ -29,6 +29,11 @@ RSpec.describe GitlabSchema.types['MlCandidate'], feature_category: :mlops do
                 iid
                 eid
                 status
+                creator {
+                  id
+                  name
+                  webUrl
+                }
                 ciJob {
                   id
                 }
@@ -71,6 +76,11 @@ RSpec.describe GitlabSchema.types['MlCandidate'], feature_category: :mlops do
       'iid' => candidate.iid,
       'eid' => candidate.eid,
       'status' => candidate.status,
+      'creator' => {
+        'id' => "gid://gitlab/User/#{current_user.id}",
+        'name' => current_user.name,
+        'webUrl' => "http://localhost/#{current_user.username}"
+      },
       'ciJob' => {
         'id' => "gid://gitlab/Ci::Build/#{candidate.ci_build_id}"
       },

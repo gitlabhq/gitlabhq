@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 If you run a self-managed instance with 50 or more users on the Free tier
 ([either Community Edition or unlicensed Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/)),

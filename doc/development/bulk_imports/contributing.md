@@ -11,6 +11,7 @@ At a high level, to add a new relation to the direct transfer importer, you must
 1. Add a new relation to the list of exported data.
 1. Add a new ETL (Extract/Transform/Load) Pipeline on the import side with data processing instructions.
 1. Add newly-created pipeline to the list of importing stages.
+1. Add a label for the newly created relation to display in the UI.
 1. Ensure sufficient test coverage.
 
 ## Export from source
@@ -368,3 +369,26 @@ There are a number of helper service classes to assist with data download:
 - `BulkImports::FileDownloadService`: Downloads a file from a given location.
 - `BulkImports::FileDecompressionService`: Gzip decompression service with required validations.
 - `BulkImports::ArchiveExtractionService`: Tar extraction service.
+
+## Adapt the UI
+
+### Add a label for the new relation
+
+Once a new relation is added to Direct Transfer, you need to make sure that the relation is displayed in human readable form in the UI.
+
+1. Add a new key value pair to the [`BULK_IMPORT_STATIC_ITEMS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/import/constants.js#L9)
+
+```diff
+diff --git a/app/assets/javascripts/import/constants.js b/app/assets/javascripts/import/constants.js
+index 439f453cd9d3..d6b4119a0af9 100644
+--- a/app/assets/javascripts/import/constants.js
++++ b/app/assets/javascripts/import/constants.js
+@@ -31,6 +31,7 @@ export const BULK_IMPORT_STATIC_ITEMS = {
+   service_desk_setting: __('Service Desk'),
+   vulnerabilities: __('Vulnerabilities'),
+   commit_notes: __('Commit notes'),
++  documents: __('Documents')
+ };
+ 
+ const STATISTIC_ITEMS = {
+```

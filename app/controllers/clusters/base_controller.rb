@@ -18,7 +18,7 @@ class Clusters::BaseController < ApplicationController
   private
 
   def cluster
-    @cluster ||= clusterable.clusters.find(params[:id])
+    @cluster ||= clusterable.clusters.find(params.permit(:id)[:id])
                                  .present(current_user: current_user)
   end
 

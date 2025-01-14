@@ -241,6 +241,38 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
       end
     end
 
+    describe 'by expires before' do
+      where(:by_expires_before, :expected_tokens) do
+        2.days.ago       | []
+        29.days.from_now | [:expired, :expired_impersonation]
+        30.days.from_now | ref(:tokens_keys)
+      end
+
+      with_them do
+        let(:params) { { expires_before: by_expires_before } }
+
+        it 'returns tokens by expires before' do
+          is_expected.to match_array(tokens.values_at(*expected_tokens))
+        end
+      end
+    end
+
+    describe 'by expires after' do
+      where(:by_expires_after, :expected_tokens) do
+        2.days.ago       | ref(:tokens_keys)
+        30.days.from_now | [:active, :active_other, :revoked, :active_impersonation, :revoked_impersonation, :bot]
+        31.days.from_now | []
+      end
+
+      with_them do
+        let(:params) { { expires_after: by_expires_after } }
+
+        it 'returns tokens by expires after' do
+          is_expected.to match_array(tokens.values_at(*expected_tokens))
+        end
+      end
+    end
+
     describe 'by last used date' do
       before do
         PersonalAccessToken.update_all(last_used_at: Time.now)

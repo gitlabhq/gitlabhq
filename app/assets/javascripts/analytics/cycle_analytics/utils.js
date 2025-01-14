@@ -77,14 +77,14 @@ export const buildCycleAnalyticsInitialData = ({
   createdAfter,
   createdBefore,
   namespaceName,
-  namespaceFullPath,
+  namespaceRestApiRequestPath,
 } = {}) => {
   return {
     projectId: parseInt(projectId, 10),
     groupPath,
     namespace: {
       name: namespaceName,
-      fullPath: namespaceFullPath,
+      restApiRequestPath: namespaceRestApiRequestPath,
     },
     createdAfter: newDate(createdAfter),
     createdBefore: newDate(createdBefore),
@@ -93,5 +93,5 @@ export const buildCycleAnalyticsInitialData = ({
   };
 };
 
-export const constructPathWithNamespace = ({ fullPath }, endpoint) =>
-  joinPaths('/', fullPath, endpoint);
+export const constructPathWithNamespace = ({ restApiRequestPath }, endpoint) =>
+  joinPaths('/', restApiRequestPath, endpoint);

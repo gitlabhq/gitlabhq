@@ -846,54 +846,6 @@
   }
 }
 
-.mr-widget-status-icon-neutral,
-.mr-widget-status-icon-notice {
-  color: var(--gl-status-neutral-icon-color);
-}
-
-.mr-widget-status-icon-warning {
-  color: var(--gl-status-warning-icon-color);
-}
-
-.mr-widget-status-icon-failed,
-.mr-widget-status-icon-error {
-  color: var(--gl-status-danger-icon-color);
-}
-
-.mr-widget-status-icon-success {
-  color: var(--gl-status-success-icon-color);
-}
-
-.mr-widget-status-icon-info,
-.mr-widget-status-icon-scheduled {
-  color: var(--gl-status-info-icon-color);
-}
-
-.mr-widget-status-icon-level-1::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  opacity: 0.3;
-  border-radius: $gl-border-radius-full;
-  border-style: solid;
-  border-width: $gl-border-size-4;
-}
-
-.mr-widget-status-icon-level-1::after {
-  content: '';
-  position: absolute;
-  border-radius: $gl-border-radius-full;
-  border-style: solid;
-  border-width: $gl-border-size-4;
-  left: $gl-spacing-scale-2;
-  right: $gl-spacing-scale-2;
-  top: $gl-spacing-scale-2;
-  bottom: $gl-spacing-scale-2;
-}
-
 .memory-graph-container {
   background: var(--white, $white);
   border: 1px solid var(--gray-100, $gray-100);

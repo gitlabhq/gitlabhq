@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 The pipeline editor is the primary place to edit the GitLab CI/CD configuration in
 the `.gitlab-ci.yml` file in the root of your repository. To access the editor, go to **Build > Pipeline editor**.

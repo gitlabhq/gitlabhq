@@ -1,1 +1,22 @@
-= _("No preview for this file type")
+.rd-no-preview{ class: ('rd-no-preview-important' if important?) }
+  .rd-no-preview-body
+    %p.rd-no-preview-paragraph
+      = change_description
+      = mode_changed_description
+    %p.rd-no-preview-paragraph
+      = no_preview_reason
+  .rd-no-preview-actions
+    - if @diff_file.collapsed? && expandable?
+      = action_button(button_options: { data: { click: 'showChanges' } }) do
+        = _('Show changes')
+    - elsif expandable?
+      = action_button(button_options: { data: { click: 'showFileContents' } }) do
+        = _('Show file contents')
+    - elsif @diff_file.content_changed?
+      = action_button(href: old_blob_path) do
+        = _('View original file')
+      = action_button(href: new_blob_path) do
+        = _('View changed file')
+    - elsif @diff_file.deleted_file? || @diff_file.new_file? || @diff_file.renamed_file? || @diff_file.mode_changed?
+      = action_button(href: blob_path) do
+        = _('View file')

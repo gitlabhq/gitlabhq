@@ -1,9 +1,0 @@
----
-name: ci_catalog_ranking_from_new_usage_table
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/495075
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173081
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/505196
-milestone: '17.7'
-group: group::pipeline authoring
-type: gitlab_com_derisk
-default_enabled: false

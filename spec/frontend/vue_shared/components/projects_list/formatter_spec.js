@@ -20,12 +20,15 @@ const {
 describe('formatGraphQLProjects', () => {
   it('correctly formats the projects', () => {
     const [firstMockProject] = projects;
-    const formattedProjects = formatGraphQLProjects(projects);
+    const formattedProjects = formatGraphQLProjects(projects, (project) => ({
+      customProperty: project.nameWithNamespace,
+    }));
     const [firstFormattedProject] = formattedProjects;
 
     expect(firstFormattedProject).toMatchObject({
       id: getIdFromGraphQLId(firstMockProject.id),
       name: firstMockProject.nameWithNamespace,
+      avatarLabel: firstMockProject.nameWithNamespace,
       mergeRequestsAccessLevel: firstMockProject.mergeRequestsAccessLevel.stringValue,
       issuesAccessLevel: firstMockProject.issuesAccessLevel.stringValue,
       forkingAccessLevel: firstMockProject.forkingAccessLevel.stringValue,
@@ -33,6 +36,7 @@ describe('formatGraphQLProjects', () => {
         integerValue: 50,
       },
       availableActions: ['edit', 'delete'],
+      customProperty: firstMockProject.name,
     });
 
     expect(formattedProjects.length).toBe(projects.length);

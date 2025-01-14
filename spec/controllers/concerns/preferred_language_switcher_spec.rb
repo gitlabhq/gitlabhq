@@ -24,6 +24,7 @@ RSpec.describe PreferredLanguageSwitcher, type: :controller, feature_category: :
 
     before do
       request.env['HTTP_ACCEPT_LANGUAGE'] = accept_language_header
+      stub_const('PreferredLanguageSwitcherHelper::SWITCHER_MINIMUM_TRANSLATION_LEVEL', 50)
 
       get :new
     end

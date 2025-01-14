@@ -8,5 +8,5 @@
   %tr.rd-hunk-lines.rd-hunk-lines-parallel
     - sides(pair).each do |side|
       - line, position = side.values_at(:line, :position)
-      = render RapidDiffs::Viewers::Text::LineNumberComponent.new(diff_file: @diff_file, **side)
+      = render RapidDiffs::Viewers::Text::LineNumberComponent.new(file_hash: @file_hash, file_path: @file_path, **side)
       = render RapidDiffs::Viewers::Text::LineContentComponent.new(line: line, position: position)

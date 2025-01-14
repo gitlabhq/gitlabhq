@@ -1,4 +1,7 @@
 import { defineStore } from 'pinia';
+import * as actions from './actions';
+import mutations from './mutations';
+import * as getters from './getters';
 
 export const useBatchComments = defineStore('batchComments', {
   state() {
@@ -13,11 +16,8 @@ export const useBatchComments = defineStore('batchComments', {
     };
   },
   actions: {
-    addDraftToDiscussion() {},
-    createNewDraft() {},
-    clearDrafts() {},
+    ...mutations,
+    ...actions,
   },
-  getters: {
-    hasDrafts() {},
-  },
+  getters,
 });

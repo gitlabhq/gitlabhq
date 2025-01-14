@@ -3,6 +3,7 @@
 module WorkItems
   class ParentLink < ApplicationRecord
     include RelativePositioning
+    include EachBatch
 
     self.table_name = 'work_item_parent_links'
 
@@ -62,8 +63,11 @@ module WorkItems
       return unless work_item_parent && work_item
 
       if work_item_parent.confidential? && !work_item.confidential?
-        errors.add :work_item, _("cannot assign a non-confidential work item to a confidential "\
-                                 "parent. Make the work item confidential and try again.")
+        errors.add :work_item, format(
+          _("cannot assign a non-confidential %{work_item_type} to a confidential "\
+                    "parent. Make the %{work_item_type} confidential and try again."),
+          work_item_type: work_item.work_item_type.name.downcase
+        )
       end
     end
 

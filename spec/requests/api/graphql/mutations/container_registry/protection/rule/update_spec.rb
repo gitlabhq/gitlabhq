@@ -143,18 +143,4 @@ RSpec.describe 'Updating the container registry protection rule', :aggregate_fai
       it { is_expected.tap { expect_graphql_errors_to_include(/you don't have permission to perform this action/) } }
     end
   end
-
-  context "when feature flag ':container_registry_protected_containers' disabled" do
-    before do
-      stub_feature_flags(container_registry_protected_containers: false)
-    end
-
-    it_behaves_like 'an erroneous response'
-
-    it 'returns error of disabled feature flag' do
-      is_expected.tap do
-        expect_graphql_errors_to_include(/'container_registry_protected_containers' feature flag is disabled/)
-      end
-    end
-  end
 end

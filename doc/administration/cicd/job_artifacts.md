@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 This is the administration documentation. To learn how to use job artifacts in your GitLab CI/CD pipeline,
 see the [job artifacts configuration documentation](../../ci/jobs/job_artifacts.md).

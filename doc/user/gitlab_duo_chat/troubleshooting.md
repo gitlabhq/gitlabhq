@@ -33,9 +33,9 @@ If this does not work, you can also check the following troubleshooting document
 You might get an error that states
 `I'm sorry, I couldn't find any documentation to answer your question. Error code: M2000`.
 
-This error occurs when Duo Chat is unable to find relevant documentation to answer your question. This can happen if the search query does not match any available documents or if there is an issue with the document search functionality.
+This error occurs when Chat is unable to find relevant documentation to answer your question. This can happen if the search query does not match any available documents or if there is an issue with the document search functionality.
 
-Please try again or refer to the [Duo Chat best practices documentation](best_practices.md) to refine your question.
+Please try again or refer to the [GitLab Duo Chat best practices documentation](best_practices.md) to refine your question.
 
 ## `Error M3002`
 

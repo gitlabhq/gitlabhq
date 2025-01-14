@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 You can limit the number of inbound alerts for [incidents](../../operations/incident_management/incidents.md)
 that can be created in a period of time. The inbound [incident management](../../operations/incident_management/index.md)

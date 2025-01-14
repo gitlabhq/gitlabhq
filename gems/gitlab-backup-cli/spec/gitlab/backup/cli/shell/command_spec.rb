@@ -1,11 +1,16 @@
 # frozen_string_literal: true
 
 RSpec.describe Gitlab::Backup::Cli::Shell::Command do
+  let(:tmpdir) { Pathname.new(Dir.mktmpdir('command', temp_path)) }
   let(:envdata) do
     { 'CUSTOM' => 'data' }
   end
 
   subject(:command) { described_class }
+
+  after do
+    FileUtils.remove_entry(tmpdir)
+  end
 
   describe '#initialize' do
     it 'accepts required attributes' do
@@ -118,6 +123,45 @@ RSpec.describe Gitlab::Backup::Cli::Shell::Command do
 
       expect(result.status).to be_success
       expect(output).to match(/stdin is : my custom content/)
+    end
+
+    it 'accepts input from a file' do
+      input_file = tmpdir.join('input.txt')
+      File.open(input_file, 'w+') do |file|
+        file.write('file content goes here')
+      end
+
+      read_command = command.new('read content; echo ${content}')
+
+      output_r, output_w = IO.pipe
+
+      read_command.run_single_pipeline!(input: input_file, output: output_w)
+
+      output_w.close
+      output = output_r.read
+      output_r.close
+
+      expect(output).to match(/file content goes here/)
+    end
+
+    it 'accepts output to file' do
+      echo_command = command.new("echo \"variable value ${CUSTOM}\"", env: envdata)
+      output_file = tmpdir.join('output.txt')
+
+      echo_command.run_single_pipeline!(output: output_file)
+
+      expect(File.exist?(output_file)).to be_truthy
+      expect(File.read(output_file)).to match('variable value data')
+    end
+
+    it 'accepts output to file with permissions in array format' do
+      echo_command = command.new("echo \"variable value ${CUSTOM}\"", env: envdata)
+      output_file = tmpdir.join('output.txt')
+
+      echo_command.run_single_pipeline!(output: [output_file, 'w', 0o600])
+
+      expect(File.exist?(output_file)).to be_truthy
+      expect(File.read(output_file)).to match('variable value data')
     end
 
     it 'returns a Command::SinglePipelineResult' do

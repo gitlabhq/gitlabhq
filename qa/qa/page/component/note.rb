@@ -15,6 +15,8 @@ module QA
 
           base.view 'app/assets/javascripts/notes/components/comment_form.vue' do
             element 'comment-field'
+            element 'add-to-review-button'
+            element 'start-review-button'
           end
 
           base.view 'app/assets/javascripts/notes/components/comment_type_dropdown.vue' do
@@ -153,6 +155,18 @@ module QA
           click_element 'discussion-menu-item'
           click_element 'comment-button'
 
+          has_comment?(text)
+        end
+
+        def start_review_with_comment(text)
+          fill_editor_element 'comment-field', text
+          click_element 'start-review-button'
+          has_comment?(text)
+        end
+
+        def add_comment_to_review(text)
+          fill_editor_element 'comment-field', text
+          click_element 'add-to-review-button'
           has_comment?(text)
         end
 

@@ -44,6 +44,8 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inlin
   let_it_be(:reply_source_user) { generate_source_user(project, reply[:author_username]) }
   let_it_be(:note_source_user) { generate_source_user(project, pr_inline_comment[:author_username]) }
 
+  let(:cached_references) { placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id) }
+
   def expect_log(stage:, message:, iid:, comment_id:)
     allow(Gitlab::BitbucketServerImport::Logger).to receive(:info).and_call_original
     expect(Gitlab::BitbucketServerImport::Logger)
@@ -56,7 +58,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inlin
     it 'pushes placeholder references' do
       importer.execute(pr_inline_comment)
 
-      cached_references = placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id)
       expect(cached_references).to contain_exactly(
         ['DiffNote', instance_of(Integer), 'author_id', note_source_user.id],
         ['DiffNote', instance_of(Integer), 'author_id', reply_source_user.id]
@@ -92,6 +93,27 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inlin
       expect_log(stage: 'import_inline_comments', message: 'finished', iid: merge_request.iid, comment_id: 7)
 
       importer.execute(pr_inline_comment)
+    end
+
+    context 'when one of the comments has no associated author' do
+      let(:pr_inline_comment) { super().merge(author_username: nil) }
+
+      it 'creates the comment without an author' do
+        expect { importer.execute(pr_inline_comment) }.to change { Note.count }.by(2)
+
+        start_note, reply_note = merge_request.notes.order(:id).to_a
+
+        expect(start_note.author_id).to eq(project.creator_id)
+        expect(reply_note.author_id).to eq(reply_source_user.mapped_user_id)
+      end
+
+      it 'does not push placeholder references for that comment' do
+        importer.execute(pr_inline_comment)
+
+        expect(cached_references).to contain_exactly(
+          ['DiffNote', instance_of(Integer), 'author_id', reply_source_user.id]
+        )
+      end
     end
 
     context 'when note has @ username mentions' do
@@ -198,7 +220,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inlin
       it 'does not push placeholder references' do
         importer.execute(pr_inline_comment)
 
-        cached_references = placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id)
         expect(cached_references).to be_empty
       end
     end

@@ -242,6 +242,36 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       it_behaves_like 'throttles based on key and scope'
     end
 
+    context 'when using a user allow list' do
+      let(:scope) { user }
+      let(:start_time) { Time.current.beginning_of_hour }
+
+      before do
+        # Hit the rate limit before running examples
+        travel_to(start_time) { subject.throttled?(:test_action, scope: scope) }
+      end
+
+      context 'when the user is in the allow list' do
+        let(:allowlist) { [user.username.titlecase] } # titlecase to test that case sensitivity is ignored
+
+        it 'is not throttled' do
+          travel_to(start_time + 1.minute) do
+            expect(subject.throttled?(:test_action, scope: scope, users_allowlist: allowlist)).to eq(false)
+          end
+        end
+      end
+
+      context 'when the user is not in the allow list' do
+        let(:allowlist) { ['DifferentUsername'] }
+
+        it 'is throttled' do
+          travel_to(start_time + 1.minute) do
+            expect(subject.throttled?(:test_action, scope: scope, users_allowlist: allowlist)).to eq(true)
+          end
+        end
+      end
+    end
+
     context 'when using ActiveRecord models and strings as scope' do
       let(:scope) { [project, 'app/controllers/groups_controller.rb'] }
 

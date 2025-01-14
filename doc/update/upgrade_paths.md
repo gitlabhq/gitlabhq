@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Upgrading across multiple GitLab versions in one go is *only possible by accepting downtime*.
 If you don't want any downtime, read how to [upgrade with zero downtime](zero_downtime.md).
@@ -31,18 +31,19 @@ To determine your upgrade path:
      - [`15.0.5`](versions/gitlab_15_changes.md#1500).
      - [`15.1.6`](versions/gitlab_15_changes.md#1510). GitLab instances with multiple web nodes.
      - [`15.4.6`](versions/gitlab_15_changes.md#1540).
-     - [`15.11.13`](versions/gitlab_15_changes.md#15110). The latest GitLab 15.11 release.
+     - [`15.11.13`](versions/gitlab_15_changes.md#15110).
    - GitLab 16 includes the following required upgrade stops:
-     - [`16.0.9`](versions/gitlab_16_changes.md#1600). Instances with
+     - [`16.0.10`](versions/gitlab_16_changes.md#1600). Instances with
        [lots of users](versions/gitlab_16_changes.md#long-running-user-type-data-change) or
        [large pipeline variables history](versions/gitlab_16_changes.md#1610).
-     - [`16.1.7`](versions/gitlab_16_changes.md#1610). Instances with NPM packages in their package registry.
-     - [`16.2.10`](versions/gitlab_16_changes.md#1620). Instances with [large pipeline variables history](versions/gitlab_16_changes.md#1630).
-     - [`16.3.8`](versions/gitlab_16_changes.md#1630).
-     - [`16.7.z`](versions/gitlab_16_changes.md#1670). The latest GitLab 16.7 release.
-     - [`16.11.z`](https://gitlab.com/gitlab-org/gitlab/-/releases). The latest GitLab 16.11 release.
+     - [`16.1.8`](versions/gitlab_16_changes.md#1610). Instances with NPM packages in their package registry.
+     - [`16.2.11`](versions/gitlab_16_changes.md#1620). Instances with [large pipeline variables history](versions/gitlab_16_changes.md#1630).
+     - [`16.3.9`](versions/gitlab_16_changes.md#1630).
+     - [`16.7.10`](versions/gitlab_16_changes.md#1670).
+     - [`16.11.10`](https://gitlab.com/gitlab-org/gitlab/-/releases).
    - GitLab 17 includes the following required upgrade stops:
-     - [`17.3.z`](versions/gitlab_17_changes.md#1730). The latest GitLab 17.3 release.
+     - [`17.1.8`](versions/gitlab_17_changes.md#long-running-pipeline-messages-data-change). Instances with large `ci_pipeline_messages` tables.
+     - [`17.3.7`](versions/gitlab_17_changes.md#1730). The latest GitLab 17.3 release.
      - [`17.5.z`](versions/gitlab_17_changes.md#1750). The latest GitLab 17.5 release.
      - `17.8.z`. Not yet released.
      - `17.11.z`. Not yet released.

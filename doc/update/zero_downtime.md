@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 With zero-downtime upgrades, it's possible to upgrade a live GitLab environment without having to
 take it offline. This guide will take you through the core process of performing
@@ -43,7 +43,7 @@ The zero-downtime upgrade process has the following requirements:
     - Any of these components that are not deployed in a HA fashion will need to be upgraded separately with downtime.
 - **You can only upgrade one minor release at a time**. So from `16.1` to `16.2`, not to `16.3`. If you skip releases, database modifications may be run in the wrong sequence [and leave the database schema in a broken state](https://gitlab.com/gitlab-org/gitlab/-/issues/321542).
 - You have to use [post-deployment migrations](../development/database/post_deployment_migrations.md).
-- [Zero-downtime upgrades are not available with the GitLab Charts](https://docs.gitlab.com/charts/installation/upgrade.html). This in turn means this type of upgrade is not available for Cloud Native Hybrid environments.
+- [Zero-downtime upgrades are not available with the GitLab Charts](https://docs.gitlab.com/charts/installation/upgrade.html) but are with [GitLab Operator](https://docs.gitlab.com/operator/gitlab_upgrades.html).
 
 In addition to the above, please be aware of the following considerations:
 
@@ -347,7 +347,7 @@ Run through the following steps sequentially on each component node to perform t
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 This section describes the steps required to upgrade live GitLab environment
 deployment with Geo.

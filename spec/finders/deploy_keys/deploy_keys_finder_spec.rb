@@ -62,6 +62,15 @@ RSpec.describe DeployKeys::DeployKeysFinder, feature_category: :continuous_deliv
         end
       end
 
+      context 'when has search' do
+        let_it_be(:another_deploy_key_public) { create(:deploy_key, public: true, title: 'new-key') }
+        let(:params) { { filter: :available_public_keys, search: 'key', in: 'title' } }
+
+        it 'returns the correct result' do
+          expect(result.map(&:id)).to match_array([another_deploy_key_public.id])
+        end
+      end
+
       context 'when there are no set filters' do
         it 'returns an empty collection' do
           expect(result).to eq DeployKey.none

@@ -73,14 +73,11 @@ module Ci
     scope :stale, -> do
       stale_timestamp = stale_deadline
 
-      created_before_stale_deadline = arel_table[:created_at].lteq(stale_timestamp)
-      contacted_before_stale_deadline = arel_table[:contacted_at].lteq(stale_timestamp)
-
       from_union(
         never_contacted,
-        where(contacted_before_stale_deadline),
+        where(contacted_at: ..stale_timestamp),
         remove_duplicates: false
-      ).where(created_before_stale_deadline)
+      ).where(created_at: ..stale_timestamp)
     end
 
     scope :for_runner, ->(runner) do

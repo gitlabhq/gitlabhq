@@ -27,7 +27,7 @@ Before submitting a merge request with a new or updated CI/CD template, you must
 - Follow the [CI/CD template authoring guidelines](#template-authoring-guidelines).
 - Name the template following the `*.gitlab-ci.yml` format.
 - Use valid [`.gitlab-ci.yml` syntax](../../ci/yaml/index.md). Verify it's valid
-  with the [CI/CD lint tool](../../ci/lint.md).
+  with the [CI/CD lint tool](../../ci/yaml/lint.md).
 - [Add template metrics](#add-metrics).
 - Include [a changelog](../changelog.md) if the merge request introduces a user-facing change.
 - Follow the [template review process](#contribute-cicd-template-merge-requests).

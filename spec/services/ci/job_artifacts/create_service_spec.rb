@@ -20,7 +20,7 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
     shared_examples_for 'handling lsif artifact' do
       context 'when artifact is lsif' do
         let(:artifact_type) { 'lsif' }
-        let(:max_artifact_size) { 100.megabytes.to_i }
+        let(:max_artifact_size) { 200.megabytes.to_i }
 
         before do
           allow(Ci::JobArtifact)
@@ -35,16 +35,6 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
 
         it 'returns 200MB in bytes as maximum size' do
           expect(authorize[:headers][:MaximumSize]).to eq(200.megabytes.to_i)
-        end
-
-        context 'when increase_lsif_artifacts_limit is disabled' do
-          before do
-            stub_feature_flags(increase_lsif_artifacts_limit: false)
-          end
-
-          it 'returns maximum_size based on Ci::JobArtifact.max_artifact_size' do
-            expect(authorize[:headers][:MaximumSize]).to eq(max_artifact_size)
-          end
         end
       end
     end

@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Configure GitLab Duo on a self-managed instance
 
 DETAILS:
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 **Tier:** Premium, Ultimate
 
 GitLab Duo is powered by large language models (LLMs), with data sent through an AI gateway.

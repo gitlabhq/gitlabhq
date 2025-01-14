@@ -15,8 +15,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
     - i_code_review_file_browser_tree_view
-distribution:
-  - ce
 tiers:
   - free
   - premium

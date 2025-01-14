@@ -5,17 +5,67 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "Manage Git access to projects by adding CA certificates to your top-level group, instead of individual groups."
 ---
 
-# Manage group's SSH certificates
+# Manage group SSH certificates
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com
 
-Manage Git access to the projects by sharing public Certified Authority (`CA`) files in your organization's top-level group.
+You can control and manage Git access to your projects and groups with SSH certificates.
 
-Git access control options on GitLab SaaS (SSH, HTTPS) rely on credentials (such as access tokens and SSH keys)
-setup in the user profile and are out of control of the organization.
-To temporarily grant Git access to your projects, you can use SSH certificates.
+SSH certificates are cryptographically signed documents that authenticate a user's identity and
+permissions.
+They are issued by a trusted Certificate Authority (CA) and contain information such as
+the user's identity, validity period, and permissions.
+
+The benefits of SSH certificate authentication are:
+
+- **Centralized access control**: You can manage access through a central CA, instead of individual
+  user-managed SSH keys.
+- **Enhanced security**: SSH certificates are more secure than traditional SSH keys.
+- **Time-limited access**: You can set certificates to expire after a specific period.
+- **Simplified credential management**: Organizations can maintain a list of approved
+  SSH certificate credentials for repository access.
+- **Independent from user-managed credentials**: Access is controlled with group-managed
+  certificates, and not users' personal public SSH keys.
+
+## SSH certificates and SSH keys
+
+The following table compares SSH certificates and SSH keys:
+
+| Feature                   | SSH certificates                      | SSH keys |
+| ------------------------- | ------------------------------------- | -------- |
+| **Access control**        | Centralized through group-managed CA. | Distributed across individual user accounts. |
+| **Expiration**            | Built-in expiration.                  | No built-in expiration. |
+| **Credential management** | Managed by group Owners.              | Managed by individual users. |
+| **Setup complexity**      | More complex initial setup.           | Simpler initial setup. |
+
+## Authentication flow
+
+The following diagram illustrates how SSH certificate authentication works
+in GitLab, from requesting a certificate to accessing a repository:
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+sequenceDiagram
+    accTitle: SSH certificate authentication flow
+    accDescr: Sequential diagram showing how a user obtains an SSH certificate from a Group Certificate Authority and uses it to access a Git repository through GitLab.
+
+    participant User
+    participant GroupCA as Group Certificate Authority
+    participant GitLab
+    participant GitRepo as Git Repository
+
+    User->>GroupCA: Request SSH certificate
+    GroupCA->>User: Issue signed SSH certificate
+    User->>GitLab: Attempt to access repository via SSH
+    GitLab->>GitLab: Verify certificate is valid and issued by Group CA
+    GitLab->>GitRepo: Grant access
+    GitRepo->>User: Allow repository operations
+```
+
+The authentication process verifies that users have valid SSH certificates before
+allowing repository access.
 
 ## Add a CA certificate to a top-level group
 
@@ -68,11 +118,17 @@ The user certificates can only be used to access the projects in the top-level g
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/426235) in GitLab 16.9.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/488635) in GitLab 17.7. Feature flag `enforce_ssh_certificates_via_settings` removed.
 
-You can enforce usage of SSH certificates and forbid users from authenticating using SSH
+You can enforce the usage of SSH certificates and restrict users from authenticating using SSH
 keys and access tokens.
 
-When SSH certificates are enforced, only individual user accounts are affected.
-It does not apply to service accounts, deploy keys, and other types of internal accounts.
+When SSH certificates are enforced:
+
+- Only individual user accounts are affected.
+- It does not apply to service accounts, deploy keys, and other types of internal accounts.
+- Only SSH certificates added to the group by Owners are used to authenticate repository access.
+
+NOTE:
+Enforcing SSH certificates disables HTTPS access for regular users.
 
 Prerequisites:
 

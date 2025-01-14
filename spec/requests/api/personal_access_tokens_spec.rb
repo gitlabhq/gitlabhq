@@ -426,6 +426,26 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
         expect(json_response['id']).to eq(user_token.id)
       end
 
+      context 'when an ip is recently used' do
+        let(:current_ip_address) { '127.0.0.1' }
+
+        it 'returns ips used' do
+          get api(user_token_path, current_user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['last_used_ips']).to match_array(user_token.last_used_ips)
+        end
+      end
+
+      context 'when there is not an ip recently used' do
+        it 'does not return an ip' do
+          get api(user_token_path, current_user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['last_used_ip']).to be_nil
+        end
+      end
+
       it 'fails to return other users PAT by id' do
         get api(other_users_path, current_user)
 

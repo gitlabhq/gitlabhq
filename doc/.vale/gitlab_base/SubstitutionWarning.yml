@@ -66,14 +66,17 @@ swap:
   pop-up: "dialog"
   popup: "dialog"
   repo: "repository"
+  root group: "top-level group"
   signed in user: "authenticated user"
   signed-in user: "authenticated user"
   since: "because' or 'after"
   source (?:install|installation): self-compiled installation
   source (?:installs|installations): self-compiled installations
+  sub group: "subgroup"
   sub-group: "subgroup"
   sub-groups: "subgroups"
   timezone: "time zone"
+  top level group: "top-level group"
   utiliz(?:es?|ing): "use"
   VSCode: "VS Code"
   we recommend: "you should"

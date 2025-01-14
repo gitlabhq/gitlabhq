@@ -73,10 +73,6 @@ export default defineConfig({
       ...(IS_JH ? [] : JH_ALIAS_FALLBACK),
       ...(!IS_EE && !IS_JH ? JH_ELSE_EE_ALIAS_FALLBACK : []),
       {
-        find: '~/',
-        replacement: javascriptsPath,
-      },
-      {
         find: '~katex',
         replacement: 'katex',
       },
@@ -164,12 +160,5 @@ export default defineConfig({
   },
   worker: {
     format: 'es',
-  },
-  css: {
-    preprocessorOptions: {
-      sass: {
-        api: 'modern',
-      },
-    },
   },
 });

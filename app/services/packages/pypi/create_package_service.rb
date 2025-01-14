@@ -45,8 +45,6 @@ module Packages
       private
 
       def package_protected?
-        return false if Feature.disabled?(:packages_protected_packages_pypi, project)
-
         super(package_name: params[:name], package_type: :pypi)
       end
 

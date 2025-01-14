@@ -14,6 +14,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import { addHierarchyChild, setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import { findWidget } from '~/issues/list/utils';
 import { newWorkItemFullPath, getNewWorkItemAutoSaveKey } from '~/work_items/utils';
+import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
 import { clearDraft } from '~/lib/utils/autosave';
 import {
   I18N_WORK_ITEM_CREATE_BUTTON_LABEL,
@@ -35,6 +36,8 @@ import {
   WIDGET_TYPE_LINKED_ITEMS,
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_MILESTONE,
+  DEFAULT_EPIC_COLORS,
+  WIDGET_TYPE_HIERARCHY,
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
@@ -47,6 +50,7 @@ import WorkItemDescription from './work_item_description.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemLabels from './work_item_labels.vue';
 import WorkItemMilestone from './work_item_milestone.vue';
+import WorkItemParent from './work_item_parent.vue';
 import WorkItemLoading from './work_item_loading.vue';
 import WorkItemCrmContacts from './work_item_crm_contacts.vue';
 
@@ -66,6 +70,8 @@ export default {
     WorkItemLoading,
     WorkItemCrmContacts,
     WorkItemProjectsListbox,
+    TitleSuggestions,
+    WorkItemParent,
     WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
     WorkItemHealthStatus: () =>
       import('ee_component/work_items/components/work_item_health_status.vue'),
@@ -74,7 +80,13 @@ export default {
       import('ee_component/work_items/components/work_item_rolledup_dates.vue'),
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
   },
-  inject: ['fullPath'],
+  inject: ['fullPath', 'groupPath'],
+  i18n: {
+    suggestionTitle: s__('WorkItem|Similar items'),
+    similarWorkItemHelpText: s__(
+      'WorkItem|These existing items have a similar title and may represent potential duplicates.',
+    ),
+  },
   props: {
     description: {
       type: String,
@@ -122,10 +134,16 @@ export default {
       validator: (i) => i.id && i.type && i.reference,
       default: null,
     },
+    shouldDiscardDraft: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       isTitleValid: true,
+      workItemTitle: this.title || '',
       isConfidential: false,
       isRelatedToItem: true,
       error: null,
@@ -152,6 +170,11 @@ export default {
         return this.skipWorkItemQuery;
       },
       update(data) {
+        const title = data?.workspace?.workItem?.title;
+
+        if (this.isTitleFilled(title)) {
+          this.updateTitle(title);
+        }
         return data?.workspace?.workItem ?? {};
       },
       result() {
@@ -246,6 +269,9 @@ export default {
     workItemColor() {
       return findWidget(WIDGET_TYPE_COLOR, this.workItem);
     },
+    workItemHierarchy() {
+      return findWidget(WIDGET_TYPE_HIERARCHY, this.workItem);
+    },
     workItemCrmContacts() {
       return findWidget(WIDGET_TYPE_CRM_CONTACTS, this.workItem);
     },
@@ -316,6 +342,9 @@ export default {
     workItemCrmContactIds() {
       return this.workItemCrmContacts?.contacts?.nodes?.map((item) => item.id) || [];
     },
+    workItemParent() {
+      return this.workItemHierarchy?.parent || null;
+    },
     workItemColorValue() {
       const colorWidget = findWidget(WIDGET_TYPE_COLOR, this.workItem);
       return colorWidget?.color || '';
@@ -326,9 +355,6 @@ export default {
     },
     workItemAuthor() {
       return this.workItem?.author;
-    },
-    workItemTitle() {
-      return this.workItem?.title || this.title;
     },
     workItemDescription() {
       const descriptionWidget = findWidget(WIDGET_TYPE_DESCRIPTION, this.workItem);
@@ -359,6 +385,46 @@ export default {
         this.relatedItem?.id
       );
     },
+    isFormFilled() {
+      const isTitleFilled = Boolean(this.workItemTitle.trim());
+      const isDescriptionFilled = Boolean(this.workItemDescription.trim());
+      const defaultColorValue = DEFAULT_EPIC_COLORS;
+
+      return (
+        isTitleFilled ||
+        isDescriptionFilled ||
+        this.workItemAssigneeIds.length > 0 ||
+        this.workItemLabelIds.length > 0 ||
+        this.workItemCrmContactIds.length > 0 ||
+        (Boolean(this.workItemColorValue) && this.workItemColorValue !== defaultColorValue) ||
+        Boolean(this.workItemHealthStatusValue) ||
+        Boolean(this.workItemDueDateFixed) ||
+        Boolean(this.workItemStartDateFixed) ||
+        Boolean(this.workItemDueDateIsFixed) ||
+        Boolean(this.workItemStartDateIsFixed) ||
+        Boolean(this.workItemIterationId)
+      );
+    },
+  },
+  watch: {
+    shouldDiscardDraft: {
+      immediate: true,
+      handler(shouldDiscardDraft) {
+        // If this component is rendered in the create modal and user added data,
+        // we need to track the button clicked on the confirmation modal (another modal)
+        if (shouldDiscardDraft) {
+          this.handleDiscardDraft();
+        }
+      },
+    },
+    /*
+      Only needed for the cancellation confirmation modal
+      when creating a work item in the project route,
+      as you can choose the work item type in the dropdown
+    */
+    selectedWorkItemTypeName(newValue) {
+      this.$emit('updateType', newValue);
+    },
   },
   mounted() {
     // We need this event listener in the document because when
@@ -375,18 +441,24 @@ export default {
         this.createWorkItem();
       }
     },
+    isTitleFilled(newValue) {
+      const title = newValue ?? this.workItemTitle;
+      return Boolean(String(title).trim());
+    },
+    updateTitle(newValue) {
+      this.workItemTitle = newValue;
+    },
     isWidgetSupported(widgetType) {
       const widgetDefinitions =
         this.selectedWorkItemType?.widgetDefinitions?.flatMap((i) => i.type) || [];
       return widgetDefinitions.indexOf(widgetType) !== -1;
     },
     validate(newValue) {
-      const title = newValue || this.workItemTitle;
-      this.isTitleValid = Boolean(title.trim());
+      this.isTitleValid = this.isTitleFilled(newValue);
     },
     async updateDraftData(type, value) {
       if (type === 'title') {
-        this.validate(value);
+        this.workItemTitle = value;
       }
 
       try {
@@ -488,9 +560,12 @@ export default {
         };
       }
 
-      if (this.parentId) {
+      if (
+        this.parentId ||
+        (this.isWidgetSupported(WIDGET_TYPE_HIERARCHY) && this.workItemParent?.id)
+      ) {
         workItemCreateInput.hierarchyWidget = {
-          parentId: this.parentId,
+          parentId: this.workItemParent?.id ?? this.parentId,
         };
       }
 
@@ -505,8 +580,15 @@ export default {
           update: (store, { data: { workItemCreate } }) => {
             const { workItem } = workItemCreate;
 
-            if (this.parentId) {
-              addHierarchyChild({ cache: store, id: this.parentId, workItem });
+            if (
+              this.parentId ||
+              (this.isWidgetSupported(WIDGET_TYPE_HIERARCHY) && this.workItemParent?.id)
+            ) {
+              addHierarchyChild({
+                cache: store,
+                id: this.workItemParent?.id ?? this.parentId,
+                workItem,
+              });
             }
           },
         });
@@ -521,12 +603,23 @@ export default {
       }
     },
     handleCancelClick() {
-      this.$emit('cancel');
+      /*
+      If any form field is filled or has a non-default value, ask user to confirm
+      if they want to discard the draft
+    */
+      if (this.isFormFilled) {
+        this.$emit('confirmCancel');
+      } else {
+        this.$emit('discardDraft');
+        this.handleDiscardDraft();
+      }
+    },
+    handleDiscardDraft() {
       const workItemTypeName = this.selectedWorkItemTypeName || this.workItemTypeName;
       const autosaveKey = getNewWorkItemAutoSaveKey(this.fullPath, workItemTypeName);
       clearDraft(autosaveKey);
 
-      const selectedWorkItemWidgets = this.selectedWorkItemType.widgetDefinitions || [];
+      const selectedWorkItemWidgets = this.selectedWorkItemType?.widgetDefinitions || [];
 
       setNewWorkItemCache(
         this.fullPath,
@@ -586,6 +679,12 @@ export default {
           :is-valid="isTitleValid"
           :title="workItemTitle"
           @updateDraft="updateDraftData('title', $event)"
+        />
+        <title-suggestions
+          :project-path="fullPath"
+          :search="workItemTitle"
+          :help-text="$options.i18n.similarWorkItemHelpText"
+          :title="$options.i18n.suggestionTitle"
         />
         <div data-testid="work-item-overview" class="work-item-overview">
           <section>
@@ -714,6 +813,18 @@ export default {
               :work-item="workItem"
               :full-path="fullPath"
               :can-update="canUpdate"
+              @error="$emit('error', $event)"
+            />
+            <work-item-parent
+              v-if="workItemHierarchy"
+              class="work-item-attributes-item"
+              :can-update="canUpdate"
+              :work-item-id="workItemId"
+              :work-item-type="selectedWorkItemTypeName"
+              :group-path="groupPath"
+              :full-path="fullPath"
+              :parent="workItemParent"
+              :is-group="isGroup"
               @error="$emit('error', $event)"
             />
             <work-item-crm-contacts

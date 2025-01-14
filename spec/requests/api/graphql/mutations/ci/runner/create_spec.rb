@@ -25,13 +25,9 @@ RSpec.describe 'RunnerCreate', feature_category: :runner do
   end
 
   let(:mutation) do
-    variables = {
-      **mutation_params
-    }
-
     graphql_mutation(
       :runner_create,
-      variables,
+      mutation_params,
       <<-QL
         runner {
           ephemeralAuthenticationToken

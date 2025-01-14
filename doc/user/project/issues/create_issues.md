@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 When you create an issue, you are prompted to enter the fields of the issue.
 If you know the values you want to assign to an issue, you can use
@@ -166,6 +166,9 @@ HTML page to create issues with certain fields prefilled.
 | Description          | `issue[description]`  | Must be [URL-encoded](../../../api/rest/index.md#namespaced-paths). If used in combination with `issuable_template` or a [default issue template](../description_templates.md#set-a-default-template-for-merge-requests-and-issues), the `issue[description]` value is appended to the template. |
 | Confidential         | `issue[confidential]` | If `true`, the issue is marked as confidential.                                                                                 |
 | Relate to…           | `add_related_issue`   | A numeric issue ID. If present, the issue form shows a [**Relate to** checkbox](#from-another-issue-or-incident) to optionally link the new issue to the specified existing issue. |
+
+In [GitLab 17.8 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177215),
+when you select an issue template, the URL changes to show the template used.
 
 Adapt these examples to form your new issue URL with prefilled fields.
 To create an issue in the GitLab project:

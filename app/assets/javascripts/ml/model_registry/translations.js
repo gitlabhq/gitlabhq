@@ -8,18 +8,20 @@ export const modelsCountLabel = (modelCount) =>
 export const DESCRIPTION_LABEL = __('Description');
 export const NO_DESCRIPTION_PROVIDED_LABEL = s__('MlModelRegistry|No description provided');
 export const INFO_LABEL = s__('MlModelRegistry|Info');
+export const DETAILS_LABEL = s__('MlModelRegistry|Details & Metadata');
 export const ID_LABEL = s__('MlModelRegistry|ID');
 export const MLFLOW_ID_LABEL = s__('MlModelRegistry|MLflow run ID');
 export const STATUS_LABEL = s__('MlModelRegistry|Status');
 export const EXPERIMENT_LABEL = s__('MlModelRegistry|Experiment');
 export const ARTIFACTS_LABEL = s__('MlModelRegistry|Artifacts');
+export const NO_ARTIFACTS_MESSAGE = s__('MlModelRegistry|No logged artifacts.');
 export const PARAMETERS_LABEL = s__('MlModelRegistry|Parameters');
-export const PERFORMANCE_LABEL = s__('MlModelRegistry|Model performance');
+export const PERFORMANCE_LABEL = s__('MlModelRegistry|Performance');
 export const METADATA_LABEL = s__('MlModelRegistry|Metadata');
 export const NO_PARAMETERS_MESSAGE = s__('MlModelRegistry|No logged parameters');
 export const NO_METRICS_MESSAGE = s__('MlModelRegistry|No logged metrics');
 export const NO_METADATA_MESSAGE = s__('MlModelRegistry|No logged metadata');
-export const NO_CI_MESSAGE = s__('MlModelRegistry|Candidate not linked to a CI build');
+export const NO_CI_MESSAGE = s__('MlModelRegistry|Run not linked to a CI build');
 export const CI_SECTION_LABEL = s__('MlModelRegistry|CI Info');
 export const JOB_LABEL = __('Job');
 export const CI_USER_LABEL = s__('MlModelRegistry|Triggered by');
@@ -44,9 +46,9 @@ export const makeLoadModelErrorMessage = (message) =>
     message,
   });
 
-export const NO_CANDIDATES_LABEL = s__('MlModelRegistry|This model has no candidates');
+export const NO_CANDIDATES_LABEL = s__('MlModelRegistry|This model has no runs');
 export const makeLoadCandidatesErrorMessage = (message) =>
-  sprintf(s__('MlModelRegistry|Failed to load model candidates with error: %{message}'), {
+  sprintf(s__('MlModelRegistry|Failed to load model runs with error: %{message}'), {
     message,
   });
 

@@ -5,7 +5,7 @@ module Ci
     class UpdatePoliciesService < ::BaseService
       include EditScopeValidations
 
-      def execute(target, policies)
+      def execute(target, default_permissions, policies)
         return unless Feature.enabled?(:add_policies_to_ci_job_token, project)
 
         validate_target_exists!(target)
@@ -15,7 +15,7 @@ module Ci
 
         return error_link_not_found unless link
 
-        if link.update(job_token_policies: policies)
+        if link.update(default_permissions: default_permissions, job_token_policies: policies)
           ServiceResponse.success(payload: link)
         else
           error_updating(link)

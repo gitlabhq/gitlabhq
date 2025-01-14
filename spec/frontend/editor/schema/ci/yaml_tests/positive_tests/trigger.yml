@@ -1,0 +1,52 @@
+trigger-include-string:
+  trigger:
+    include: '/path/to/child-pipeline.yml'
+
+trigger-include-local:
+  trigger:
+    include:
+      - local: '/path/to/child-pipeline.yml'
+
+trigger-include-local-inputs:
+  trigger:
+    include:
+      - local: '/path/to/child-pipeline.yml'
+        inputs:
+          example: 'a'
+
+trigger-include-project-inputs:
+  trigger:
+    include:
+      - file: '/path/to/child-pipeline.yml'
+        project: 'group/project'
+        inputs:
+          example: 'a'
+
+trigger-include-template-inputs:
+  trigger:
+    include:
+      - template: 'my_template.yml'
+        inputs:
+          example: 'a'
+
+trigger-include-artifact-inputs:
+  trigger:
+    include:
+      - artifact: 'child.yml'
+        job: 'generate-child'
+        inputs:
+          example: 'a'
+
+trigger-include-component-inputs:
+  trigger:
+    include:
+      - component: '/path/to/components/component@1.0.0'
+        inputs:
+          example: 'a'
+
+trigger-include-remote-inputs:
+  trigger:
+    include:
+      - remote: 'https://gitlab.com/example-project/-/raw/main/.child.yml'
+        inputs:
+          example: 'a'

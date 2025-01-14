@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395692) in GitLab 17.1 and officially released in GitLab 17.3 with a flag named `dependency_scanning_using_sbom_reports`.
@@ -113,6 +113,35 @@ repository, you need to provide one.
 
 The examples below show how to create a file that is supported by the GitLab analyzer for popular
 languages and package managers.
+
+#### Go
+
+The following example `.gitlab-ci.yml` demonstrates how to enable the CI/CD
+component with [dependency path](../../dependency_list/index.md#dependency-paths)
+support on a Go project. The dependency graph is output as a job artifact in the `build`
+stage, before dependency scanning runs.
+
+```yaml
+stages:
+  - build
+  - test
+
+include:
+  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
+
+go:build:
+  stage: build
+  image: "golang:latest"
+  script:
+    - "go mod tidy"
+    - "go build ./..."
+    - "go mod graph >go.graph"
+  artifacts:
+    when: on_success
+    access: developer
+    paths: ["**/go.graph"]
+
+```
 
 #### Gradle
 
@@ -275,3 +304,14 @@ merge cyclonedx sboms:
     paths:
       - gl-sbom-all.cdx.json
 ```
+
+## Troubleshooting
+
+When working with dependency scanning, you might encounter the following issues.
+
+### Warning: `grep: command not found`
+
+The analyzer image contains minimal dependencies to decrease the image's attack surface.
+As a result, utilities commonly found in other images, like `grep`, are missing from the image.
+This may result in a warning like `/usr/bin/bash: line 3: grep: command not found` to appear in
+the job log. This warning does not impact the results of the analyzer and can be ignored.

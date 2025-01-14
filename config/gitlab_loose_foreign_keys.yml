@@ -310,10 +310,6 @@ group_security_exclusions:
   - table: namespaces
     column: group_id
     on_delete: async_delete
-group_type_ci_runners_e59bb2812d:
-  - table: namespaces
-    column: sharding_key_id
-    on_delete: async_delete
 groups_visits:
   - table: namespaces
     column: entity_id
@@ -501,10 +497,6 @@ project_security_statistics:
   - table: projects
     column: project_id
     on_delete: async_delete
-project_type_ci_runners_e59bb2812d:
-  - table: projects
-    column: sharding_key_id
-    on_delete: async_delete
 projects:
   - table: users
     column: marked_for_deletion_by_user_id
@@ -596,6 +588,17 @@ user_details:
   - table: namespaces
     column: enterprise_group_id
     on_delete: async_nullify
+virtual_registries_packages_maven_cache_entries:
+  - table: virtual_registries_packages_maven_upstreams
+    column: upstream_id
+    on_delete: update_column_to
+    target_column: status
+    target_value: 2
+  - table: namespaces
+    column: group_id
+    on_delete: update_column_to
+    target_column: status
+    target_value: 2
 virtual_registries_packages_maven_cached_responses:
   - table: virtual_registries_packages_maven_upstreams
     column: upstream_id

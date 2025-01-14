@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10, you no longer need to add any users to the parent group in GitLab to successfully import the **Require a pull request before merging - Allow specified actors to bypass required pull requests** branch protection rule.
@@ -16,10 +16,6 @@ DETAILS:
 
 You can import your GitHub projects from either GitHub.com or GitHub Enterprise. Importing projects does not
 migrate or import any types of groups or organizations from GitHub to GitLab.
-
-WARNING:
-Importing from GitHub to GitLab.com is [unavailable](https://status.gitlab.com).
-For more information, contact [GitLab Support](https://about.gitlab.com/support/).
 
 Imported issues, merge requests, comments, and events have an **Imported** badge in GitLab.
 
@@ -66,7 +62,13 @@ on the GitLab instance you import to.
 
 ### Accounts for user contribution mapping
 
-For user contribution mapping between GitHub and GitLab to work:
+> - [Preparation requirement removed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) in GitLab 17.8.
+
+Before using [the old method of user contribution mapping](#old-method-of-user-contribution-mapping) for imports to GitLab self-managed and GitLab
+Dedicated, you must take meet certain requirements. Imports to GitLab.com use [an improved method](../import/index.md#user-contribution-and-membership-mapping)
+that doesn't require preparation.
+
+These requirements are:
 
 - Each GitHub author and assignee in the repository must have a
   [public-facing email address](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address).
@@ -74,18 +76,6 @@ For user contribution mapping between GitHub and GitLab to work:
 - If a user's email address in GitHub is set as their secondary email address in GitLab, they must confirm it.
 
 GitHub Enterprise does not require a public email address, so you might have to add it to existing accounts.
-
-If the above requirements are not met, the importer can't map the particular user's contributions. In that case:
-
-- The project creator is set as the author and assignee of issues and merge requests. The project creator is usually the
-  user that initiated the import process. For some contributions that have a description or note such as pull requests,
-  issue, notes, the importer amends the text with details of who originally created the contribution.
-- Reviewers and approvals added on pull requests in GitHub cannot be imported. In this case, the importer creates comments
-  describing that non-existent users were added as reviewers and approvers. However, the actual reviewer status and
-  approval are not applied to the merge request in GitLab.
-
-[In GitLab 17.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/477553), GitLab adds backticks to username mentions in issues, merge requests, and notes.
-These backticks prevent linking to an incorrect user with the same username on the GitLab instance.
 
 ## Known issues
 
@@ -108,15 +98,6 @@ These backticks prevent linking to an incorrect user with the same username on t
 
 ## Import your GitHub repository into GitLab
 
-Before you begin, ensure that any GitHub user you want to map to a GitLab user
-has a GitLab email address that matches their
-[publicly visible email address](https://docs.github.com/en/rest/users#get-a-user)
-on GitHub.
-
-If a GitHub user's public email address doesn't match any GitLab user email
-address, the user's activity is associated with the user account that is
-performing the import.
-
 You can import your GitHub repository by either:
 
 - [Using GitHub OAuth](#use-github-oauth)
@@ -127,7 +108,7 @@ If importing from `github.com` you can use any method to import. Self-hosted Git
 
 ### Use GitHub OAuth
 
-If you are importing to GitLab.com or to a self-managed GitLab that has GitHub OAuth [configured](../../../integration/github.md), you can use GitHub OAuth to import your repository.
+If you are importing to GitLab.com or to a GitLab Self-Managed that has GitHub OAuth [configured](../../../integration/github.md), you can use GitHub OAuth to import your repository.
 
 This method has an advantage over using a [personal access token (PAT)](#use-a-github-personal-access-token)
 because the backend exchanges the access token with the appropriate permissions.
@@ -257,6 +238,39 @@ After imports are completed, they can be in one of three states:
 
 Expand **Details** to see a list of [repository entities](#imported-data) that failed to import.
 
+## Username mentions
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477553) in GitLab 17.5.
+
+GitLab adds backticks to username mentions in issues, merge requests, and notes.
+These backticks prevent linking to an incorrect user with the same username on the GitLab instance.
+
+## User contribution mapping
+
+> - [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [User contribution and membership mapping](../import/index.md#user-contribution-and-membership-mapping) in 17.8.
+
+The GitHub importer uses [an improved method](../import/index.md#user-contribution-and-membership-mapping)
+of mapping user contributions for:
+
+- GitLab.com
+- GitLab self-managed 17.6 or later when the `importer_user_mapping` and `github_user_mapping` feature flags are enabled.
+
+### Old method of user contribution mapping
+
+You can use the old user contribution mapping method for imports to GitLab self-managed and GitLab Dedicated instances. For imports to GitLab.com, you must
+use [the improved method](../import/index.md#user-contribution-and-membership-mapping) instead.
+
+Using the old method, when [user accounts are provisioned correctly](#accounts-for-user-contribution-mapping), users are mapped during the import.
+
+If the requirements are not met, the importer can't map the particular user's contributions. In that case:
+
+- The project creator is set as the author and assignee of issues and merge requests. The project creator is usually the
+  user that initiated the import process. For some contributions that have a description or note such as pull requests,
+  issue, notes, the importer amends the text with details of who originally created the contribution.
+- Reviewers and approvals added on pull requests in GitHub cannot be imported. In this case, the importer creates comments
+  describing that non-existent users were added as reviewers and approvers. However, the actual reviewer status and
+  approval are not applied to the merge request in GitLab.
+
 ## Mirror a repository and share pipeline status
 
 DETAILS:
@@ -296,7 +310,7 @@ Increasing the number of Sidekiq workers does *not* reduce the time spent clonin
 
 ### Enable GitHub OAuth using a GitHub Enterprise Cloud OAuth App
 
-If you belong to a [GitHub Enterprise Cloud organization](https://docs.github.com/en/enterprise-cloud@latest/get-started/onboarding) you can configure your self-managed GitLab instance to obtain a higher [GitHub API rate limit](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28#primary-rate-limit-for-authenticated-users).
+If you belong to a [GitHub Enterprise Cloud organization](https://docs.github.com/en/enterprise-cloud@latest/get-started/onboarding) you can configure GitLab Self-Managed to obtain a higher [GitHub API rate limit](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api?apiVersion=2022-11-28#primary-rate-limit-for-authenticated-users).
 
 GitHub API requests are usually subject to a rate limit of 5,000 requests per hour. Using the steps below, you obtain a higher 15,000 requests per hour rate limit, resulting in a faster overall import time.
 

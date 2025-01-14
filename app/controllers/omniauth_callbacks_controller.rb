@@ -265,6 +265,9 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         persist_accepted_terms_if_required(@user) if new_user
 
         perform_registration_tasks(@user, oauth['provider']) if new_user
+
+        enqueue_after_sign_in_workers(@user)
+
         sign_in_and_redirect_or_verify_identity(@user, auth_user, new_user)
       end
     else
@@ -436,6 +439,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # overridden in EE
   def sign_in_and_redirect_or_verify_identity(user, _, _)
     sign_in_and_redirect(user, event: :authentication)
+  end
+
+  # overridden in specific EE class
+  def enqueue_after_sign_in_workers(_user)
+    true
   end
 
   def store_idp_two_factor_status(bypass_2fa)

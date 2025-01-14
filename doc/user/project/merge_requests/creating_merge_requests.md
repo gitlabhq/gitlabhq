@@ -9,7 +9,7 @@ description: "How to create merge requests in GitLab."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 GitLab provides many different ways to create a merge request, including by [using Git commands](../../../topics/git/merge.md).
 
@@ -50,9 +50,8 @@ To create a branch and a merge request at the same time:
 1. Select **Plan > Issues** and find your issue.
 1. Go to the bottom of the issue description.
 1. Select **Create merge request > Create merge request and branch**.
-1. In the dialog, review the suggested branch name. It's based on your project's
-   [branch name template](../repository/branches/index.md) Rename it if the
-   branch name is already taken, or you need a different branch name.
+1. On the dialog, review the suggested branch name.
+It's based on your project's [branch name template](../repository/branches/index.md).1. Optional. If the branch name is already taken, or you need a different branch name, rename it.
 1. Select a source branch or tag.
 1. Select **Create merge request**.
 
@@ -88,6 +87,71 @@ GitLab cross-links the issue and merge request, and adds the
 to the description of the merge request. In most cases, this looks like `Closes #ID`,
 where `ID` is the ID of the issue. If your project is configured with a
 [closing pattern](../issues/managing_issues.md#default-closing-pattern), the issue closes
+when the merge request merges.
+
+## From a task
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477785) in GitLab 17.8.
+
+If your team breaks issues into [tasks](../../tasks.md), you can create a branch directly from the task to speed the process up.
+The new branch, and later its merge request, are marked as related to this task.
+After merging the merge request, the task is closed automatically, unless
+[automatic issue closing is disabled](../issues/managing_issues.md#disable-automatic-issue-closing):
+
+Prerequisites:
+
+- You must have at least a Developer role for the project containing the task.
+
+::Tabs
+
+:::TabTitle Merge request and branch
+
+To create a branch and a merge request at the same time:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Plan > Issues**.
+1. In the issue list, find your task.
+1. Go to the bottom of the task description.
+1. Select **Create merge request**.
+1. On the dialog, review the suggested branch name.
+   It's based on your project's [branch name template](../repository/branches/index.md).
+1. Optional. If the branch name is already taken, or you need a different branch name, rename it.
+1. Select a source branch or tag.
+1. Select **Create merge request**.
+
+:::TabTitle Branch only
+
+To create only a branch directly from a task:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Plan > Issues**.
+1. In the issue list, find your task.
+1. Go to the bottom of the task description.
+1. Select **Create merge request > Create branch**.
+1. On the dialog, review the suggested branch name.
+   It's based on your project's [branch name template](../repository/branches/index.md).
+1. Optional. If the branch name is already taken, or you need a different branch name, rename it.
+1. Select a source branch or tag.
+1. Select **Create branch**.
+
+::EndTabs
+
+If your Git repository is empty, GitLab:
+
+- Creates a default branch.
+- Commits a blank `README.md` file to it.
+- Creates and redirects you to a new branch based on the issue title.
+- If your project is [configured with a deployment service](../integrations/index.md) like Kubernetes,
+  GitLab prompts you to set up [auto deploy](../../../topics/autodevops/stages.md#auto-deploy)
+  by helping you create a `.gitlab-ci.yml` file.
+
+If the name of the branch you create is
+[prefixed with the task number](../repository/branches/index.md#prefix-branch-names-with-issue-numbers),
+GitLab cross-links the issue and merge request, and adds the
+[closing pattern](../issues/managing_issues.md#closing-issues-automatically)
+to the description of the merge request. In most cases, this looks like `Closes #ID`,
+where `ID` is the ID of the task. If your project is configured with a
+[closing pattern](../issues/managing_issues.md#default-closing-pattern), the task closes
 when the merge request merges.
 
 ## When you add, edit, or upload a file

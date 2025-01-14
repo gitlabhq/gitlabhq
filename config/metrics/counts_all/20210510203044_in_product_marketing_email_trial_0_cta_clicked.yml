@@ -17,9 +17,6 @@ instrumentation_class: InProductMarketingEmailCtaClickedMetric
 options:
   track: trial
   series: 0
-distribution:
-  - ce
-  - ee
 tiers:
   - free
   - premium

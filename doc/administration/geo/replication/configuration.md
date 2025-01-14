@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 NOTE:
 This is the final step in setting up a **secondary** Geo site. Stages of the
@@ -370,7 +370,7 @@ The two most obvious issues that can become apparent in the dashboard are:
 
 Disabling a **secondary** site stops the synchronization process.
 
-If `git_data_dirs` is customized on the **primary** site for multiple
+If repository storages are customized on the **primary** site for multiple
 repository shards you must duplicate the same configuration on each **secondary** site.
 
 Point your users to the [Using a Geo Site guide](usage.md).

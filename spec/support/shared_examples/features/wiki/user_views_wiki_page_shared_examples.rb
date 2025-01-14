@@ -209,7 +209,7 @@ RSpec.shared_examples 'User views a wiki page' do
     let(:title) { '<foo> !@#$%^&*()[]{}=_+\'"\\|<>? <bar>' }
 
     before do
-      wiki_page.update(title: title ) # rubocop:disable Rails/SaveBang
+      wiki_page.update(title: title) # rubocop:disable Rails/SaveBang
     end
 
     it 'preserves the special characters' do

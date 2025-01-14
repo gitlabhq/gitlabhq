@@ -82,7 +82,7 @@ module API
           else
             track_package_event('pull_package', :maven, project: project, namespace: project&.namespace) if jar_file?(format)
 
-            present_carrierwave_file_with_head_support!(package_file)
+            download_package_file!(package_file)
           end
         end
       end
@@ -131,7 +131,7 @@ module API
       else
         track_package_event('pull_package', :maven, project: project, namespace: project.namespace) if jar_file?(format)
 
-        present_carrierwave_file_with_head_support!(package_file)
+        download_package_file!(package_file)
       end
     end
 

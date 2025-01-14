@@ -201,7 +201,7 @@ CREATE TABLE namespaces (
     shared_runners_enabled boolean DEFAULT true NOT NULL,
     allow_descendants_override_disabled_shared_runners boolean DEFAULT false NOT NULL,
     traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
-    organization_id bigint DEFAULT 1,
+    organization_id bigint,
     CONSTRAINT check_2eae3bdf93 CHECK ((organization_id IS NOT NULL))
 );
 
@@ -529,7 +529,6 @@ BEGIN
     scanner_id, uuid, location_image, cluster_agent_id, casted_cluster_agent_id
   FROM
     vulnerability_occurrences v_o
-  INNER JOIN projects ON projects.id = v_o.project_id
   WHERE
     v_o.vulnerability_id = NEW.id
   LIMIT 1;
@@ -751,6 +750,64 @@ END
 $$;
 
 COMMENT ON FUNCTION table_sync_function_0992e728d3() IS 'Partitioning migration: table sync for merge_request_diff_commits table';
+
+CREATE FUNCTION table_sync_function_29bc99d6db() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF (TG_OP = 'DELETE') THEN
+  DELETE FROM web_hook_logs_daily where "id" = OLD."id" AND "created_at" = OLD."created_at";
+ELSIF (TG_OP = 'UPDATE') THEN
+  UPDATE web_hook_logs_daily
+  SET "web_hook_id" = NEW."web_hook_id",
+    "trigger" = NEW."trigger",
+    "url" = NEW."url",
+    "request_headers" = NEW."request_headers",
+    "request_data" = NEW."request_data",
+    "response_headers" = NEW."response_headers",
+    "response_body" = NEW."response_body",
+    "response_status" = NEW."response_status",
+    "execution_duration" = NEW."execution_duration",
+    "internal_error_message" = NEW."internal_error_message",
+    "updated_at" = NEW."updated_at",
+    "url_hash" = NEW."url_hash"
+  WHERE web_hook_logs_daily."id" = NEW."id" AND web_hook_logs_daily."created_at" = NEW."created_at";
+ELSIF (TG_OP = 'INSERT') THEN
+  INSERT INTO web_hook_logs_daily ("id",
+    "web_hook_id",
+    "trigger",
+    "url",
+    "request_headers",
+    "request_data",
+    "response_headers",
+    "response_body",
+    "response_status",
+    "execution_duration",
+    "internal_error_message",
+    "updated_at",
+    "created_at",
+    "url_hash")
+  VALUES (NEW."id",
+    NEW."web_hook_id",
+    NEW."trigger",
+    NEW."url",
+    NEW."request_headers",
+    NEW."request_data",
+    NEW."response_headers",
+    NEW."response_body",
+    NEW."response_status",
+    NEW."execution_duration",
+    NEW."internal_error_message",
+    NEW."updated_at",
+    NEW."created_at",
+    NEW."url_hash");
+END IF;
+RETURN NULL;
+
+END
+$$;
+
+COMMENT ON FUNCTION table_sync_function_29bc99d6db() IS 'Partitioning migration: table sync for web_hook_logs table';
 
 CREATE FUNCTION table_sync_function_3f39f64fc3() RETURNS trigger
     LANGUAGE plpgsql
@@ -1104,6 +1161,22 @@ IF NEW."namespace_id" IS NULL THEN
   INTO NEW."namespace_id"
   FROM "analytics_cycle_analytics_group_value_streams"
   WHERE "analytics_cycle_analytics_group_value_streams"."id" = NEW."value_stream_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_0d96daa4d734() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."group_id" IS NULL THEN
+  SELECT "group_id"
+  INTO NEW."group_id"
+  FROM "bulk_import_exports"
+  WHERE "bulk_import_exports"."id" = NEW."export_id";
 END IF;
 
 RETURN NEW;
@@ -1801,6 +1874,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_4cc5c3ac4d7f() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "bulk_import_exports"
+  WHERE "bulk_import_exports"."id" = NEW."export_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_54707c384ad7() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -2422,6 +2511,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_96298f7da5d3() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."protected_branch_project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."protected_branch_project_id"
+  FROM "protected_branches"
+  WHERE "protected_branches"."id" = NEW."protected_branch_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_9699ea03bb37() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -2838,6 +2943,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_cd50823537a3() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "issues"
+  WHERE "issues"."id" = NEW."issue_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_cf646a118cbb() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -3087,6 +3208,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "alert_management_alerts"
   WHERE "alert_management_alerts"."id" = NEW."alert_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_ed554313ca66() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."protected_branch_namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."protected_branch_namespace_id"
+  FROM "protected_branches"
+  WHERE "protected_branches"."id" = NEW."protected_branch_id";
 END IF;
 
 RETURN NEW;
@@ -3869,7 +4006,6 @@ CREATE TABLE security_findings (
     scan_id bigint NOT NULL,
     scanner_id bigint NOT NULL,
     severity smallint NOT NULL,
-    confidence smallint,
     project_fingerprint text,
     deduplicated boolean DEFAULT false NOT NULL,
     uuid uuid,
@@ -3940,6 +4076,34 @@ CREATE TABLE web_hook_logs (
     updated_at timestamp without time zone NOT NULL,
     created_at timestamp without time zone NOT NULL,
     url_hash text
+)
+PARTITION BY RANGE (created_at);
+
+CREATE SEQUENCE web_hook_logs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE web_hook_logs_id_seq OWNED BY web_hook_logs.id;
+
+CREATE TABLE web_hook_logs_daily (
+    id bigint DEFAULT nextval('web_hook_logs_id_seq'::regclass) NOT NULL,
+    web_hook_id bigint NOT NULL,
+    trigger character varying,
+    url character varying,
+    request_headers text,
+    request_data text,
+    response_headers text,
+    response_body text,
+    response_status character varying,
+    execution_duration double precision,
+    internal_error_message character varying,
+    updated_at timestamp without time zone NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    url_hash text,
+    CONSTRAINT check_df72cb58f5 CHECK ((char_length(url_hash) <= 44))
 )
 PARTITION BY RANGE (created_at);
 
@@ -5769,6 +5933,466 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_31 (
     calculated_at timestamp with time zone
 );
 
+CREATE TABLE virtual_registries_packages_maven_cache_entries (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    file_final_path text,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    CONSTRAINT check_215f531366 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT check_2a52b4e0fc CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_36391449ea CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_45d3174f8a CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_c9d6e475d9 CHECK ((char_length(file_final_path) <= 1024)),
+    CONSTRAINT check_cc222855d6 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT check_f2ea43b900 CHECK ((octet_length(file_sha1) = 20)),
+    CONSTRAINT check_fd9fc90696 CHECK ((char_length(upstream_etag) <= 255))
+)
+PARTITION BY HASH (relative_path);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_00 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    file_final_path text,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    CONSTRAINT check_215f531366 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT check_2a52b4e0fc CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_36391449ea CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_45d3174f8a CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_c9d6e475d9 CHECK ((char_length(file_final_path) <= 1024)),
+    CONSTRAINT check_cc222855d6 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT check_f2ea43b900 CHECK ((octet_length(file_sha1) = 20)),
+    CONSTRAINT check_fd9fc90696 CHECK ((char_length(upstream_etag) <= 255))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_01 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    file_final_path text,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    CONSTRAINT check_215f531366 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT check_2a52b4e0fc CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_36391449ea CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_45d3174f8a CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_c9d6e475d9 CHECK ((char_length(file_final_path) <= 1024)),
+    CONSTRAINT check_cc222855d6 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT check_f2ea43b900 CHECK ((octet_length(file_sha1) = 20)),
+    CONSTRAINT check_fd9fc90696 CHECK ((char_length(upstream_etag) <= 255))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_02 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    file_final_path text,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    CONSTRAINT check_215f531366 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT check_2a52b4e0fc CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_36391449ea CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_45d3174f8a CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_c9d6e475d9 CHECK ((char_length(file_final_path) <= 1024)),
+    CONSTRAINT check_cc222855d6 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT check_f2ea43b900 CHECK ((octet_length(file_sha1) = 20)),
+    CONSTRAINT check_fd9fc90696 CHECK ((char_length(upstream_etag) <= 255))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_03 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    file_final_path text,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    CONSTRAINT check_215f531366 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT check_2a52b4e0fc CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_36391449ea CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_45d3174f8a CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_c9d6e475d9 CHECK ((char_length(file_final_path) <= 1024)),
+    CONSTRAINT check_cc222855d6 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT check_f2ea43b900 CHECK ((octet_length(file_sha1) = 20)),
+    CONSTRAINT check_fd9fc90696 CHECK ((char_length(upstream_etag) <= 255))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_04 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    file_final_path text,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    CONSTRAINT check_215f531366 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT check_2a52b4e0fc CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_36391449ea CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_45d3174f8a CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_c9d6e475d9 CHECK ((char_length(file_final_path) <= 1024)),
+    CONSTRAINT check_cc222855d6 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT check_f2ea43b900 CHECK ((octet_length(file_sha1) = 20)),
+    CONSTRAINT check_fd9fc90696 CHECK ((char_length(upstream_etag) <= 255))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_05 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    file_final_path text,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    CONSTRAINT check_215f531366 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT check_2a52b4e0fc CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_36391449ea CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_45d3174f8a CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_c9d6e475d9 CHECK ((char_length(file_final_path) <= 1024)),
+    CONSTRAINT check_cc222855d6 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT check_f2ea43b900 CHECK ((octet_length(file_sha1) = 20)),
+    CONSTRAINT check_fd9fc90696 CHECK ((char_length(upstream_etag) <= 255))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_06 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    file_final_path text,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    CONSTRAINT check_215f531366 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT check_2a52b4e0fc CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_36391449ea CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_45d3174f8a CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_c9d6e475d9 CHECK ((char_length(file_final_path) <= 1024)),
+    CONSTRAINT check_cc222855d6 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT check_f2ea43b900 CHECK ((octet_length(file_sha1) = 20)),
+    CONSTRAINT check_fd9fc90696 CHECK ((char_length(upstream_etag) <= 255))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_07 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    file_final_path text,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    CONSTRAINT check_215f531366 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT check_2a52b4e0fc CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_36391449ea CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_45d3174f8a CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_c9d6e475d9 CHECK ((char_length(file_final_path) <= 1024)),
+    CONSTRAINT check_cc222855d6 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT check_f2ea43b900 CHECK ((octet_length(file_sha1) = 20)),
+    CONSTRAINT check_fd9fc90696 CHECK ((char_length(upstream_etag) <= 255))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_08 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    file_final_path text,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    CONSTRAINT check_215f531366 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT check_2a52b4e0fc CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_36391449ea CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_45d3174f8a CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_c9d6e475d9 CHECK ((char_length(file_final_path) <= 1024)),
+    CONSTRAINT check_cc222855d6 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT check_f2ea43b900 CHECK ((octet_length(file_sha1) = 20)),
+    CONSTRAINT check_fd9fc90696 CHECK ((char_length(upstream_etag) <= 255))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_09 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    file_final_path text,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    CONSTRAINT check_215f531366 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT check_2a52b4e0fc CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_36391449ea CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_45d3174f8a CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_c9d6e475d9 CHECK ((char_length(file_final_path) <= 1024)),
+    CONSTRAINT check_cc222855d6 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT check_f2ea43b900 CHECK ((octet_length(file_sha1) = 20)),
+    CONSTRAINT check_fd9fc90696 CHECK ((char_length(upstream_etag) <= 255))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_10 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    file_final_path text,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    CONSTRAINT check_215f531366 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT check_2a52b4e0fc CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_36391449ea CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_45d3174f8a CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_c9d6e475d9 CHECK ((char_length(file_final_path) <= 1024)),
+    CONSTRAINT check_cc222855d6 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT check_f2ea43b900 CHECK ((octet_length(file_sha1) = 20)),
+    CONSTRAINT check_fd9fc90696 CHECK ((char_length(upstream_etag) <= 255))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_11 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    file_final_path text,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    CONSTRAINT check_215f531366 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT check_2a52b4e0fc CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_36391449ea CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_45d3174f8a CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_c9d6e475d9 CHECK ((char_length(file_final_path) <= 1024)),
+    CONSTRAINT check_cc222855d6 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT check_f2ea43b900 CHECK ((octet_length(file_sha1) = 20)),
+    CONSTRAINT check_fd9fc90696 CHECK ((char_length(upstream_etag) <= 255))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_12 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    file_final_path text,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    CONSTRAINT check_215f531366 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT check_2a52b4e0fc CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_36391449ea CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_45d3174f8a CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_c9d6e475d9 CHECK ((char_length(file_final_path) <= 1024)),
+    CONSTRAINT check_cc222855d6 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT check_f2ea43b900 CHECK ((octet_length(file_sha1) = 20)),
+    CONSTRAINT check_fd9fc90696 CHECK ((char_length(upstream_etag) <= 255))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_13 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    file_final_path text,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    CONSTRAINT check_215f531366 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT check_2a52b4e0fc CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_36391449ea CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_45d3174f8a CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_c9d6e475d9 CHECK ((char_length(file_final_path) <= 1024)),
+    CONSTRAINT check_cc222855d6 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT check_f2ea43b900 CHECK ((octet_length(file_sha1) = 20)),
+    CONSTRAINT check_fd9fc90696 CHECK ((char_length(upstream_etag) <= 255))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_14 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    file_final_path text,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    CONSTRAINT check_215f531366 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT check_2a52b4e0fc CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_36391449ea CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_45d3174f8a CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_c9d6e475d9 CHECK ((char_length(file_final_path) <= 1024)),
+    CONSTRAINT check_cc222855d6 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT check_f2ea43b900 CHECK ((octet_length(file_sha1) = 20)),
+    CONSTRAINT check_fd9fc90696 CHECK ((char_length(upstream_etag) <= 255))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_15 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    file_final_path text,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    CONSTRAINT check_215f531366 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT check_2a52b4e0fc CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_36391449ea CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_45d3174f8a CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_c9d6e475d9 CHECK ((char_length(file_final_path) <= 1024)),
+    CONSTRAINT check_cc222855d6 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT check_f2ea43b900 CHECK ((octet_length(file_sha1) = 20)),
+    CONSTRAINT check_fd9fc90696 CHECK ((char_length(upstream_etag) <= 255))
+);
+
 CREATE TABLE abuse_events (
     id bigint NOT NULL,
     user_id bigint,
@@ -6773,8 +7397,6 @@ CREATE TABLE application_settings (
     container_registry_token_expire_delay integer DEFAULT 5,
     after_sign_up_text text,
     user_default_external boolean DEFAULT false NOT NULL,
-    elasticsearch_indexing boolean DEFAULT false NOT NULL,
-    elasticsearch_search boolean DEFAULT false NOT NULL,
     repository_storages character varying DEFAULT 'default'::character varying,
     enabled_git_access_protocol character varying,
     usage_ping_enabled boolean DEFAULT true NOT NULL,
@@ -6801,9 +7423,6 @@ CREATE TABLE application_settings (
     unique_ips_limit_enabled boolean DEFAULT false NOT NULL,
     default_artifacts_expire_in character varying DEFAULT '0'::character varying NOT NULL,
     elasticsearch_url character varying DEFAULT 'http://localhost:9200'::character varying,
-    elasticsearch_aws boolean DEFAULT false NOT NULL,
-    elasticsearch_aws_region character varying DEFAULT 'us-east-1'::character varying,
-    elasticsearch_aws_access_key character varying,
     geo_status_timeout integer DEFAULT 10,
     uuid character varying,
     polling_interval_multiplier numeric DEFAULT 1.0 NOT NULL,
@@ -6869,7 +7488,6 @@ CREATE TABLE application_settings (
     runners_registration_token_encrypted character varying,
     local_markdown_version integer DEFAULT 0 NOT NULL,
     first_day_of_week integer DEFAULT 0 NOT NULL,
-    elasticsearch_limit_indexing boolean DEFAULT false NOT NULL,
     default_project_creation integer DEFAULT 2 NOT NULL,
     lets_encrypt_notification_email character varying,
     lets_encrypt_terms_of_service_accepted boolean DEFAULT false NOT NULL,
@@ -6932,9 +7550,6 @@ CREATE TABLE application_settings (
     encrypted_slack_app_verification_token_iv character varying(255),
     force_pages_access_control boolean DEFAULT false NOT NULL,
     updating_name_disabled_for_users boolean DEFAULT false NOT NULL,
-    elasticsearch_indexed_field_length_limit integer DEFAULT 0 NOT NULL,
-    elasticsearch_max_bulk_size_mb smallint DEFAULT 10 NOT NULL,
-    elasticsearch_max_bulk_concurrency smallint DEFAULT 10 NOT NULL,
     disable_overriding_approvers_per_merge_request boolean DEFAULT false NOT NULL,
     prevent_merge_requests_author_approval boolean DEFAULT false NOT NULL,
     prevent_merge_requests_committers_approval boolean DEFAULT false NOT NULL,
@@ -6950,7 +7565,6 @@ CREATE TABLE application_settings (
     container_registry_features text[] DEFAULT '{}'::text[] NOT NULL,
     spam_check_endpoint_url text,
     spam_check_endpoint_enabled boolean DEFAULT false NOT NULL,
-    elasticsearch_pause_indexing boolean DEFAULT false NOT NULL,
     repository_storages_weighted jsonb DEFAULT '{}'::jsonb NOT NULL,
     max_import_size integer DEFAULT 0 NOT NULL,
     compliance_frameworks smallint[] DEFAULT '{}'::smallint[] NOT NULL,
@@ -6965,12 +7579,10 @@ CREATE TABLE application_settings (
     maintenance_mode boolean DEFAULT false NOT NULL,
     maintenance_mode_message text,
     wiki_page_max_content_bytes bigint DEFAULT 52428800 NOT NULL,
-    elasticsearch_indexed_file_size_limit_kb integer DEFAULT 1024 NOT NULL,
     enforce_namespace_storage_limit boolean DEFAULT false NOT NULL,
     container_registry_delete_tags_service_timeout integer DEFAULT 250 NOT NULL,
     kroki_url character varying,
     kroki_enabled boolean,
-    elasticsearch_client_request_timeout integer DEFAULT 0 NOT NULL,
     gitpod_enabled boolean DEFAULT false NOT NULL,
     gitpod_url text DEFAULT 'https://gitpod.io/'::text,
     abuse_notification_email character varying,
@@ -6980,10 +7592,6 @@ CREATE TABLE application_settings (
     encrypted_ci_jwt_signing_key text,
     encrypted_ci_jwt_signing_key_iv text,
     container_registry_expiration_policies_worker_capacity integer DEFAULT 4 NOT NULL,
-    elasticsearch_analyzers_smartcn_enabled boolean DEFAULT false NOT NULL,
-    elasticsearch_analyzers_smartcn_search boolean DEFAULT false NOT NULL,
-    elasticsearch_analyzers_kuromoji_enabled boolean DEFAULT false NOT NULL,
-    elasticsearch_analyzers_kuromoji_search boolean DEFAULT false NOT NULL,
     secret_detection_token_revocation_enabled boolean DEFAULT false NOT NULL,
     secret_detection_token_revocation_url text,
     encrypted_secret_detection_token_revocation_token text,
@@ -7022,7 +7630,6 @@ CREATE TABLE application_settings (
     encrypted_spam_check_api_key bytea,
     encrypted_spam_check_api_key_iv bytea,
     floc_enabled boolean DEFAULT false NOT NULL,
-    elasticsearch_username text,
     encrypted_elasticsearch_password bytea,
     encrypted_elasticsearch_password_iv bytea,
     diff_max_lines integer DEFAULT 50000 NOT NULL,
@@ -7202,8 +7809,6 @@ CREATE TABLE application_settings (
     unconfirmed_users_delete_after_days integer DEFAULT 7 NOT NULL,
     default_branch_protection_defaults jsonb DEFAULT '{}'::jsonb NOT NULL,
     gitlab_shell_operation_limit integer DEFAULT 600,
-    elasticsearch_requeue_workers boolean DEFAULT false NOT NULL,
-    elasticsearch_worker_number_of_shards integer DEFAULT 2 NOT NULL,
     protected_paths_for_get_request text[] DEFAULT '{}'::text[] NOT NULL,
     namespace_storage_forks_cost_factor double precision DEFAULT 1.0 NOT NULL,
     package_registry_allow_anyone_to_pull_option boolean DEFAULT true NOT NULL,
@@ -7237,7 +7842,6 @@ CREATE TABLE application_settings (
     encrypted_arkose_labs_data_exchange_key bytea,
     encrypted_arkose_labs_data_exchange_key_iv bytea,
     rate_limits jsonb DEFAULT '{}'::jsonb NOT NULL,
-    elasticsearch_max_code_indexing_concurrency integer DEFAULT 30 NOT NULL,
     enable_member_promotion_management boolean DEFAULT false NOT NULL,
     lock_math_rendering_limits_enabled boolean DEFAULT false NOT NULL,
     security_approval_policies_limit integer DEFAULT 5 NOT NULL,
@@ -7275,7 +7879,6 @@ CREATE TABLE application_settings (
     sign_in_restrictions jsonb DEFAULT '{}'::jsonb NOT NULL,
     transactional_emails jsonb DEFAULT '{}'::jsonb NOT NULL,
     identity_verification_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
-    elasticsearch_retry_on_failure integer DEFAULT 0 NOT NULL,
     integrations jsonb DEFAULT '{}'::jsonb NOT NULL,
     user_seat_management jsonb DEFAULT '{}'::jsonb NOT NULL,
     secret_detection_service_url text DEFAULT ''::text NOT NULL,
@@ -7285,6 +7888,30 @@ CREATE TABLE application_settings (
     show_migrate_from_jenkins_banner boolean DEFAULT true NOT NULL,
     encrypted_ci_job_token_signing_key bytea,
     encrypted_ci_job_token_signing_key_iv bytea,
+    elasticsearch jsonb DEFAULT '{}'::jsonb NOT NULL,
+    oauth_provider jsonb DEFAULT '{}'::jsonb NOT NULL,
+    elasticsearch_aws boolean DEFAULT false NOT NULL,
+    elasticsearch_search boolean DEFAULT false NOT NULL,
+    elasticsearch_indexing boolean DEFAULT false NOT NULL,
+    elasticsearch_username text,
+    elasticsearch_aws_region character varying DEFAULT 'us-east-1'::character varying,
+    elasticsearch_aws_access_key character varying,
+    elasticsearch_limit_indexing boolean DEFAULT false NOT NULL,
+    elasticsearch_pause_indexing boolean DEFAULT false NOT NULL,
+    elasticsearch_requeue_workers boolean DEFAULT false NOT NULL,
+    elasticsearch_max_bulk_size_mb smallint DEFAULT 10 NOT NULL,
+    elasticsearch_retry_on_failure integer DEFAULT 0 NOT NULL,
+    elasticsearch_max_bulk_concurrency smallint DEFAULT 10 NOT NULL,
+    elasticsearch_client_request_timeout integer DEFAULT 0 NOT NULL,
+    elasticsearch_worker_number_of_shards integer DEFAULT 2 NOT NULL,
+    elasticsearch_analyzers_smartcn_search boolean DEFAULT false NOT NULL,
+    elasticsearch_analyzers_kuromoji_search boolean DEFAULT false NOT NULL,
+    elasticsearch_analyzers_smartcn_enabled boolean DEFAULT false NOT NULL,
+    elasticsearch_analyzers_kuromoji_enabled boolean DEFAULT false NOT NULL,
+    elasticsearch_indexed_field_length_limit integer DEFAULT 0 NOT NULL,
+    elasticsearch_indexed_file_size_limit_kb integer DEFAULT 1024 NOT NULL,
+    elasticsearch_max_code_indexing_concurrency integer DEFAULT 30 NOT NULL,
+    observability_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -7302,6 +7929,7 @@ CREATE TABLE application_settings (
     CONSTRAINT app_settings_registry_repair_worker_max_concurrency_positive CHECK ((container_registry_data_repair_detail_worker_max_concurrency >= 0)),
     CONSTRAINT app_settings_yaml_max_depth_positive CHECK ((max_yaml_depth > 0)),
     CONSTRAINT app_settings_yaml_max_size_positive CHECK ((max_yaml_size_bytes > 0)),
+    CONSTRAINT application_settings_oauth_provider_settings_hash CHECK ((jsonb_typeof(oauth_provider) = 'object'::text)),
     CONSTRAINT check_0542340619 CHECK ((char_length(diagramsnet_url) <= 2048)),
     CONSTRAINT check_12f01f1dcd CHECK ((char_length(vertex_ai_project) <= 255)),
     CONSTRAINT check_17d9558205 CHECK ((char_length((kroki_url)::text) <= 1024)),
@@ -7337,8 +7965,10 @@ CREATE TABLE application_settings (
     CONSTRAINT check_application_settings_cluster_agents_is_hash CHECK ((jsonb_typeof(cluster_agents) = 'object'::text)),
     CONSTRAINT check_application_settings_code_creation_is_hash CHECK ((jsonb_typeof(code_creation) = 'object'::text)),
     CONSTRAINT check_application_settings_duo_workflow_is_hash CHECK ((jsonb_typeof(duo_workflow) = 'object'::text)),
+    CONSTRAINT check_application_settings_elasticsearch_is_hash CHECK ((jsonb_typeof(elasticsearch) = 'object'::text)),
     CONSTRAINT check_application_settings_importers_is_hash CHECK ((jsonb_typeof(importers) = 'object'::text)),
     CONSTRAINT check_application_settings_integrations_is_hash CHECK ((jsonb_typeof(integrations) = 'object'::text)),
+    CONSTRAINT check_application_settings_o11y_settings_is_hash CHECK ((jsonb_typeof(observability_settings) = 'object'::text)),
     CONSTRAINT check_application_settings_package_registry_is_hash CHECK ((jsonb_typeof(package_registry) = 'object'::text)),
     CONSTRAINT check_application_settings_rate_limits_is_hash CHECK ((jsonb_typeof(rate_limits) = 'object'::text)),
     CONSTRAINT check_application_settings_rate_limits_unauth_git_http_is_hash CHECK ((jsonb_typeof(rate_limits_unauthenticated_git_http) = 'object'::text)),
@@ -8554,7 +9184,8 @@ CREATE TABLE boards_epic_lists (
     "position" integer,
     list_type smallint DEFAULT 1 NOT NULL,
     group_id bigint,
-    CONSTRAINT boards_epic_lists_position_constraint CHECK (((list_type <> 1) OR (("position" IS NOT NULL) AND ("position" >= 0))))
+    CONSTRAINT boards_epic_lists_position_constraint CHECK (((list_type <> 1) OR (("position" IS NOT NULL) AND ("position" >= 0)))),
+    CONSTRAINT check_86641111a7 CHECK ((group_id IS NOT NULL))
 );
 
 CREATE SEQUENCE boards_epic_lists_id_seq
@@ -8725,6 +9356,8 @@ CREATE TABLE bulk_import_export_uploads (
     updated_at timestamp with time zone NOT NULL,
     export_file text,
     batch_id bigint,
+    project_id bigint,
+    group_id bigint,
     CONSTRAINT check_5add76239d CHECK ((char_length(export_file) <= 255))
 );
 
@@ -10674,6 +11307,27 @@ CREATE TABLE compliance_requirements (
     CONSTRAINT check_f1fb6fdd81 CHECK ((char_length(name) <= 255))
 );
 
+CREATE TABLE compliance_requirements_controls (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    compliance_requirement_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    name smallint NOT NULL,
+    control_type smallint NOT NULL,
+    expression text,
+    CONSTRAINT check_110c87ed8d CHECK ((char_length(expression) <= 255))
+);
+
+CREATE SEQUENCE compliance_requirements_controls_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE compliance_requirements_controls_id_seq OWNED BY compliance_requirements_controls.id;
+
 CREATE SEQUENCE compliance_requirements_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -11233,6 +11887,7 @@ CREATE TABLE dast_site_profiles (
     scan_method smallint DEFAULT 0 NOT NULL,
     auth_submit_field text,
     scan_file_path text,
+    optional_variables jsonb DEFAULT '[]'::jsonb NOT NULL,
     CONSTRAINT check_5203110fee CHECK ((char_length(auth_username_field) <= 255)),
     CONSTRAINT check_6cfab17b48 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_8d2aa0f66d CHECK ((char_length(scan_file_path) <= 1024)),
@@ -11947,7 +12602,9 @@ CREATE TABLE duo_workflows_workflows (
     status smallint DEFAULT 0 NOT NULL,
     goal text,
     agent_privileges smallint[] DEFAULT '{1,2}'::smallint[] NOT NULL,
-    CONSTRAINT check_5aedde451d CHECK ((char_length(goal) <= 4096))
+    workflow_definition text DEFAULT 'software_development'::text NOT NULL,
+    CONSTRAINT check_5aedde451d CHECK ((char_length(goal) <= 4096)),
+    CONSTRAINT check_ec723e2a1a CHECK ((char_length(workflow_definition) <= 255))
 );
 
 CREATE SEQUENCE duo_workflows_workflows_id_seq
@@ -13902,7 +14559,8 @@ CREATE TABLE issuable_slas (
     issue_id bigint NOT NULL,
     due_at timestamp with time zone NOT NULL,
     label_applied boolean DEFAULT false NOT NULL,
-    issuable_closed boolean DEFAULT false NOT NULL
+    issuable_closed boolean DEFAULT false NOT NULL,
+    namespace_id bigint
 );
 
 CREATE SEQUENCE issuable_slas_id_seq
@@ -15682,6 +16340,24 @@ CREATE SEQUENCE namespaces_sync_events_id_seq
 
 ALTER SEQUENCE namespaces_sync_events_id_seq OWNED BY namespaces_sync_events.id;
 
+CREATE TABLE non_sql_service_pings (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    recorded_at timestamp with time zone NOT NULL,
+    payload jsonb NOT NULL,
+    organization_id bigint NOT NULL
+);
+
+CREATE SEQUENCE non_sql_service_pings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE non_sql_service_pings_id_seq OWNED BY non_sql_service_pings.id;
+
 CREATE TABLE note_diff_files (
     id bigint NOT NULL,
     diff text NOT NULL,
@@ -15817,7 +16493,7 @@ CREATE TABLE oauth_access_grants (
     scopes character varying,
     code_challenge text,
     code_challenge_method text,
-    organization_id bigint DEFAULT 1 NOT NULL,
+    organization_id bigint NOT NULL,
     CONSTRAINT oauth_access_grants_code_challenge CHECK ((char_length(code_challenge) <= 128)),
     CONSTRAINT oauth_access_grants_code_challenge_method CHECK ((char_length(code_challenge_method) <= 5))
 );
@@ -15841,7 +16517,7 @@ CREATE TABLE oauth_access_tokens (
     revoked_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     scopes character varying,
-    organization_id bigint DEFAULT 1 NOT NULL,
+    organization_id bigint NOT NULL,
     CONSTRAINT check_70f294ef54 CHECK ((expires_in IS NOT NULL))
 );
 
@@ -15889,7 +16565,7 @@ CREATE TABLE oauth_device_grants (
     scopes text DEFAULT ''::text NOT NULL,
     device_code text NOT NULL,
     user_code text,
-    organization_id bigint DEFAULT 1 NOT NULL,
+    organization_id bigint NOT NULL,
     CONSTRAINT check_a6271f2c07 CHECK ((char_length(device_code) <= 255)),
     CONSTRAINT check_b0459113c7 CHECK ((char_length(scopes) <= 255)),
     CONSTRAINT check_b36370c6df CHECK ((char_length(user_code) <= 255))
@@ -15908,7 +16584,7 @@ CREATE TABLE oauth_openid_requests (
     id bigint NOT NULL,
     access_grant_id bigint NOT NULL,
     nonce character varying NOT NULL,
-    organization_id bigint DEFAULT 1 NOT NULL
+    organization_id bigint NOT NULL
 );
 
 CREATE SEQUENCE oauth_openid_requests_id_seq
@@ -17194,6 +17870,24 @@ CREATE SEQUENCE path_locks_id_seq
 
 ALTER SEQUENCE path_locks_id_seq OWNED BY path_locks.id;
 
+CREATE TABLE personal_access_token_last_used_ips (
+    id bigint NOT NULL,
+    personal_access_token_id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    ip_address inet
+);
+
+CREATE SEQUENCE personal_access_token_last_used_ips_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE personal_access_token_last_used_ips_id_seq OWNED BY personal_access_token_last_used_ips.id;
+
 CREATE TABLE personal_access_tokens (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -17249,7 +17943,7 @@ CREATE TABLE plan_limits (
     offset_pagination_limit integer DEFAULT 50000 NOT NULL,
     ci_instance_level_variables integer DEFAULT 25 NOT NULL,
     storage_size_limit integer DEFAULT 0 NOT NULL,
-    ci_max_artifact_size_lsif integer DEFAULT 100 NOT NULL,
+    ci_max_artifact_size_lsif integer DEFAULT 200 NOT NULL,
     ci_max_artifact_size_archive integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_metadata integer DEFAULT 0 NOT NULL,
     ci_max_artifact_size_trace integer DEFAULT 0 NOT NULL,
@@ -17377,8 +18071,10 @@ CREATE TABLE pm_advisories (
     cvss_v3 text,
     urls text[] DEFAULT '{}'::text[],
     identifiers jsonb NOT NULL,
+    cve text,
     CONSTRAINT check_152def3868 CHECK ((char_length(cvss_v2) <= 128)),
     CONSTRAINT check_19cbd06439 CHECK ((char_length(advisory_xid) <= 36)),
+    CONSTRAINT check_b1c980b212 CHECK ((char_length(cve) <= 24)),
     CONSTRAINT check_bed97fa77a CHECK ((char_length(cvss_v3) <= 128)),
     CONSTRAINT check_e4bfd3ffbf CHECK ((char_length(title) <= 256)),
     CONSTRAINT check_fee880f7aa CHECK ((char_length(description) <= 8192)),
@@ -18092,6 +18788,26 @@ CREATE SEQUENCE project_compliance_standards_adherence_id_seq
 
 ALTER SEQUENCE project_compliance_standards_adherence_id_seq OWNED BY project_compliance_standards_adherence.id;
 
+CREATE TABLE project_control_compliance_statuses (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    compliance_requirements_control_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    compliance_requirement_id bigint NOT NULL,
+    status smallint NOT NULL
+);
+
+CREATE SEQUENCE project_control_compliance_statuses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE project_control_compliance_statuses_id_seq OWNED BY project_control_compliance_statuses.id;
+
 CREATE TABLE project_custom_attributes (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -18555,13 +19271,13 @@ CREATE TABLE project_settings (
     observability_alerts_enabled boolean DEFAULT true NOT NULL,
     spp_repository_pipeline_access boolean,
     max_number_of_vulnerabilities integer,
-    pages_default_domain_redirect text,
+    pages_primary_domain text,
     CONSTRAINT check_1a30456322 CHECK ((char_length(pages_unique_domain) <= 63)),
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
     CONSTRAINT check_3ca5cbffe6 CHECK ((char_length(issue_branch_template) <= 255)),
     CONSTRAINT check_4b142e71f3 CHECK ((char_length(product_analytics_data_collector_host) <= 255)),
     CONSTRAINT check_67292e4b99 CHECK ((char_length(mirror_branch_regex) <= 255)),
-    CONSTRAINT check_999e5f0aaa CHECK ((char_length(pages_default_domain_redirect) <= 255)),
+    CONSTRAINT check_999e5f0aaa CHECK ((char_length(pages_primary_domain) <= 255)),
     CONSTRAINT check_acb7fad2f9 CHECK ((char_length(product_analytics_instrumentation_key) <= 255)),
     CONSTRAINT check_b09644994b CHECK ((char_length(squash_commit_template) <= 500)),
     CONSTRAINT check_bde223416c CHECK ((show_default_award_emojis IS NOT NULL)),
@@ -18810,7 +19526,9 @@ CREATE TABLE protected_branch_unprotect_access_levels (
     protected_branch_id bigint NOT NULL,
     access_level integer DEFAULT 40,
     user_id bigint,
-    group_id bigint
+    group_id bigint,
+    protected_branch_project_id bigint,
+    protected_branch_namespace_id bigint
 );
 
 CREATE SEQUENCE protected_branch_unprotect_access_levels_id_seq
@@ -19637,6 +20355,7 @@ CREATE TABLE scan_result_policies (
     policy_tuning jsonb DEFAULT '{}'::jsonb NOT NULL,
     action_idx smallint DEFAULT 0 NOT NULL,
     custom_roles bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    licenses jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT age_value_null_or_positive CHECK (((age_value IS NULL) OR (age_value >= 0))),
     CONSTRAINT check_scan_result_policies_rule_idx_positive CHECK (((rule_idx IS NULL) OR (rule_idx >= 0))),
     CONSTRAINT custom_roles_array_check CHECK ((array_position(custom_roles, NULL::bigint) IS NULL))
@@ -20387,6 +21106,24 @@ CREATE SEQUENCE subscription_add_ons_id_seq
     CACHE 1;
 
 ALTER SEQUENCE subscription_add_ons_id_seq OWNED BY subscription_add_ons.id;
+
+CREATE TABLE subscription_provision_syncs (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    sync_requested_at timestamp with time zone NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    attrs jsonb NOT NULL
+);
+
+CREATE SEQUENCE subscription_provision_syncs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE subscription_provision_syncs_id_seq OWNED BY subscription_provision_syncs.id;
 
 CREATE TABLE subscription_seat_assignments (
     id bigint NOT NULL,
@@ -22166,15 +22903,6 @@ CREATE SEQUENCE vulnerability_user_mentions_id_seq
 
 ALTER SEQUENCE vulnerability_user_mentions_id_seq OWNED BY vulnerability_user_mentions.id;
 
-CREATE SEQUENCE web_hook_logs_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE web_hook_logs_id_seq OWNED BY web_hook_logs.id;
-
 CREATE TABLE web_hooks (
     id bigint NOT NULL,
     project_id bigint,
@@ -22462,15 +23190,6 @@ CREATE TABLE work_item_types (
     CONSTRAINT check_fecb3a98d1 CHECK ((char_length(icon_name) <= 255))
 );
 
-CREATE SEQUENCE work_item_types_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE work_item_types_id_seq OWNED BY work_item_types.id;
-
 CREATE TABLE work_item_weights_sources (
     work_item_id bigint NOT NULL,
     namespace_id bigint NOT NULL,
@@ -22535,8 +23254,7 @@ CREATE TABLE workspaces (
     namespace text NOT NULL,
     desired_state text NOT NULL,
     actual_state text NOT NULL,
-    devfile_ref text NOT NULL,
-    devfile_path text NOT NULL,
+    devfile_path text,
     devfile text,
     processed_devfile text,
     url text,
@@ -22547,15 +23265,17 @@ CREATE TABLE workspaces (
     url_query_string text,
     workspaces_agent_config_version integer NOT NULL,
     desired_config_generator_version integer,
+    project_ref text,
     CONSTRAINT check_15543fb0fa CHECK ((char_length(name) <= 64)),
     CONSTRAINT check_157d5f955c CHECK ((char_length(namespace) <= 64)),
     CONSTRAINT check_2b401b0034 CHECK ((char_length(deployment_resource_version) <= 64)),
     CONSTRAINT check_35e31ca320 CHECK ((desired_config_generator_version IS NOT NULL)),
+    CONSTRAINT check_72fee08424 CHECK ((char_length(project_ref) <= 256)),
     CONSTRAINT check_77d1a2ff50 CHECK ((char_length(processed_devfile) <= 65535)),
     CONSTRAINT check_8a0ab61b6b CHECK ((char_length(url_query_string) <= 256)),
-    CONSTRAINT check_8e363ee3ad CHECK ((char_length(devfile_ref) <= 256)),
     CONSTRAINT check_8e4db5ffc2 CHECK ((char_length(actual_state) <= 32)),
     CONSTRAINT check_9e42558c35 CHECK ((char_length(url) <= 1024)),
+    CONSTRAINT check_a758efdc89 CHECK ((project_ref IS NOT NULL)),
     CONSTRAINT check_b70eddcbc1 CHECK ((char_length(desired_state) <= 32)),
     CONSTRAINT check_dc58d56169 CHECK ((char_length(devfile_path) <= 2048)),
     CONSTRAINT check_eb32879a3d CHECK ((char_length(devfile) <= 65535)),
@@ -23201,6 +23921,38 @@ ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static
 
 ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_31 FOR VALUES WITH (modulus 32, remainder 31);
 
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_00 FOR VALUES WITH (modulus 16, remainder 0);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_01 FOR VALUES WITH (modulus 16, remainder 1);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_02 FOR VALUES WITH (modulus 16, remainder 2);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_03 FOR VALUES WITH (modulus 16, remainder 3);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_04 FOR VALUES WITH (modulus 16, remainder 4);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_05 FOR VALUES WITH (modulus 16, remainder 5);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_06 FOR VALUES WITH (modulus 16, remainder 6);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_07 FOR VALUES WITH (modulus 16, remainder 7);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_08 FOR VALUES WITH (modulus 16, remainder 8);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_09 FOR VALUES WITH (modulus 16, remainder 9);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_10 FOR VALUES WITH (modulus 16, remainder 10);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_11 FOR VALUES WITH (modulus 16, remainder 11);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_12 FOR VALUES WITH (modulus 16, remainder 12);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_13 FOR VALUES WITH (modulus 16, remainder 13);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_14 FOR VALUES WITH (modulus 16, remainder 14);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_15 FOR VALUES WITH (modulus 16, remainder 15);
+
 ALTER TABLE ONLY p_ci_builds ATTACH PARTITION ci_builds FOR VALUES IN ('100');
 
 ALTER TABLE ONLY p_ci_builds_metadata ATTACH PARTITION ci_builds_metadata FOR VALUES IN ('100');
@@ -23578,6 +24330,8 @@ ALTER TABLE ONLY compliance_framework_security_policies ALTER COLUMN id SET DEFA
 ALTER TABLE ONLY compliance_management_frameworks ALTER COLUMN id SET DEFAULT nextval('compliance_management_frameworks_id_seq'::regclass);
 
 ALTER TABLE ONLY compliance_requirements ALTER COLUMN id SET DEFAULT nextval('compliance_requirements_id_seq'::regclass);
+
+ALTER TABLE ONLY compliance_requirements_controls ALTER COLUMN id SET DEFAULT nextval('compliance_requirements_controls_id_seq'::regclass);
 
 ALTER TABLE ONLY container_registry_protection_rules ALTER COLUMN id SET DEFAULT nextval('container_registry_protection_rules_id_seq'::regclass);
 
@@ -23983,6 +24737,8 @@ ALTER TABLE ONLY namespaces_storage_limit_exclusions ALTER COLUMN id SET DEFAULT
 
 ALTER TABLE ONLY namespaces_sync_events ALTER COLUMN id SET DEFAULT nextval('namespaces_sync_events_id_seq'::regclass);
 
+ALTER TABLE ONLY non_sql_service_pings ALTER COLUMN id SET DEFAULT nextval('non_sql_service_pings_id_seq'::regclass);
+
 ALTER TABLE ONLY note_diff_files ALTER COLUMN id SET DEFAULT nextval('note_diff_files_id_seq'::regclass);
 
 ALTER TABLE ONLY note_metadata ALTER COLUMN note_id SET DEFAULT nextval('note_metadata_note_id_seq'::regclass);
@@ -24103,6 +24859,8 @@ ALTER TABLE ONLY pages_domains ALTER COLUMN id SET DEFAULT nextval('pages_domain
 
 ALTER TABLE ONLY path_locks ALTER COLUMN id SET DEFAULT nextval('path_locks_id_seq'::regclass);
 
+ALTER TABLE ONLY personal_access_token_last_used_ips ALTER COLUMN id SET DEFAULT nextval('personal_access_token_last_used_ips_id_seq'::regclass);
+
 ALTER TABLE ONLY personal_access_tokens ALTER COLUMN id SET DEFAULT nextval('personal_access_tokens_id_seq'::regclass);
 
 ALTER TABLE ONLY plan_limits ALTER COLUMN id SET DEFAULT nextval('plan_limits_id_seq'::regclass);
@@ -24152,6 +24910,8 @@ ALTER TABLE ONLY project_compliance_framework_settings ALTER COLUMN project_id S
 ALTER TABLE ONLY project_compliance_framework_settings ALTER COLUMN id SET DEFAULT nextval('project_compliance_framework_settings_id_seq'::regclass);
 
 ALTER TABLE ONLY project_compliance_standards_adherence ALTER COLUMN id SET DEFAULT nextval('project_compliance_standards_adherence_id_seq'::regclass);
+
+ALTER TABLE ONLY project_control_compliance_statuses ALTER COLUMN id SET DEFAULT nextval('project_control_compliance_statuses_id_seq'::regclass);
 
 ALTER TABLE ONLY project_custom_attributes ALTER COLUMN id SET DEFAULT nextval('project_custom_attributes_id_seq'::regclass);
 
@@ -24350,6 +25110,8 @@ ALTER TABLE ONLY status_page_settings ALTER COLUMN project_id SET DEFAULT nextva
 ALTER TABLE ONLY subscription_add_on_purchases ALTER COLUMN id SET DEFAULT nextval('subscription_add_on_purchases_id_seq'::regclass);
 
 ALTER TABLE ONLY subscription_add_ons ALTER COLUMN id SET DEFAULT nextval('subscription_add_ons_id_seq'::regclass);
+
+ALTER TABLE ONLY subscription_provision_syncs ALTER COLUMN id SET DEFAULT nextval('subscription_provision_syncs_id_seq'::regclass);
 
 ALTER TABLE ONLY subscription_seat_assignments ALTER COLUMN id SET DEFAULT nextval('subscription_seat_assignments_id_seq'::regclass);
 
@@ -25045,6 +25807,57 @@ ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_30
 ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_31
     ADD CONSTRAINT namespace_descendants_31_pkey PRIMARY KEY (namespace_id);
 
+ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_entries_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_00
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_entries_00_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_01
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_entries_01_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_02
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_entries_02_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_03
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_entries_03_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_04
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_entries_04_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_05
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_entries_05_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_06
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_entries_06_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_07
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_entries_07_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_08
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_entries_08_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_09
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_entries_09_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_10
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_entries_10_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_11
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_entries_11_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_12
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_entries_12_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_13
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_entries_13_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_14
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_entries_14_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_15
+    ADD CONSTRAINT virtual_registries_packages_maven_cache_entries_15_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
 ALTER TABLE ONLY abuse_events
     ADD CONSTRAINT abuse_events_pkey PRIMARY KEY (id);
 
@@ -25701,6 +26514,9 @@ ALTER TABLE ONLY compliance_framework_security_policies
 
 ALTER TABLE ONLY compliance_management_frameworks
     ADD CONSTRAINT compliance_management_frameworks_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY compliance_requirements_controls
+    ADD CONSTRAINT compliance_requirements_controls_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY compliance_requirements
     ADD CONSTRAINT compliance_requirements_pkey PRIMARY KEY (id);
@@ -26446,6 +27262,9 @@ ALTER TABLE ONLY namespaces_storage_limit_exclusions
 ALTER TABLE ONLY namespaces_sync_events
     ADD CONSTRAINT namespaces_sync_events_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY non_sql_service_pings
+    ADD CONSTRAINT non_sql_service_pings_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY note_diff_files
     ADD CONSTRAINT note_diff_files_pkey PRIMARY KEY (id);
 
@@ -26695,6 +27514,9 @@ ALTER TABLE ONLY pages_domains
 ALTER TABLE ONLY path_locks
     ADD CONSTRAINT path_locks_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY personal_access_token_last_used_ips
+    ADD CONSTRAINT personal_access_token_last_used_ips_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY personal_access_tokens
     ADD CONSTRAINT personal_access_tokens_pkey PRIMARY KEY (id);
 
@@ -26781,6 +27603,9 @@ ALTER TABLE ONLY project_compliance_framework_settings
 
 ALTER TABLE ONLY project_compliance_standards_adherence
     ADD CONSTRAINT project_compliance_standards_adherence_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY project_control_compliance_statuses
+    ADD CONSTRAINT project_control_compliance_statuses_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY project_custom_attributes
     ADD CONSTRAINT project_custom_attributes_pkey PRIMARY KEY (id);
@@ -27136,6 +27961,9 @@ ALTER TABLE ONLY subscription_add_on_purchases
 ALTER TABLE ONLY subscription_add_ons
     ADD CONSTRAINT subscription_add_ons_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY subscription_provision_syncs
+    ADD CONSTRAINT subscription_provision_syncs_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY subscription_seat_assignments
     ADD CONSTRAINT subscription_seat_assignments_pkey PRIMARY KEY (id);
 
@@ -27384,6 +28212,9 @@ ALTER TABLE ONLY vulnerability_statistics
 
 ALTER TABLE ONLY vulnerability_user_mentions
     ADD CONSTRAINT vulnerability_user_mentions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY web_hook_logs_daily
+    ADD CONSTRAINT web_hook_logs_daily_pkey PRIMARY KEY (id, created_at);
 
 ALTER TABLE ONLY web_hook_logs
     ADD CONSTRAINT web_hook_logs_pkey PRIMARY KEY (id, created_at);
@@ -28600,6 +29431,142 @@ CREATE INDEX namespace_descendants_30_namespace_id_idx ON gitlab_partitions_stat
 
 CREATE INDEX namespace_descendants_31_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_31 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
 
+CREATE INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_relpath ON ONLY virtual_registries_packages_maven_cache_entries USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_packages_mav_upstream_id_relative_path_idx10 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_10 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_packages_mav_upstream_id_relative_path_idx11 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_11 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_packages_mav_upstream_id_relative_path_idx12 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_12 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_packages_mav_upstream_id_relative_path_idx13 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_13 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_packages_mav_upstream_id_relative_path_idx14 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_14 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_packages_mav_upstream_id_relative_path_idx15 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_15 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_packages_mave_upstream_id_relative_path_idx1 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_01 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_packages_mave_upstream_id_relative_path_idx2 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_02 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_packages_mave_upstream_id_relative_path_idx3 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_03 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_packages_mave_upstream_id_relative_path_idx4 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_04 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_packages_mave_upstream_id_relative_path_idx5 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_05 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_packages_mave_upstream_id_relative_path_idx6 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_06 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_packages_mave_upstream_id_relative_path_idx7 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_07 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_packages_mave_upstream_id_relative_path_idx8 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_08 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_packages_mave_upstream_id_relative_path_idx9 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_09 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_created_at ON ONLY virtual_registries_packages_maven_cache_entries USING btree (upstream_id, created_at) WHERE (status = 0);
+
+CREATE INDEX virtual_registries_packages_maven__upstream_id_created_at_idx10 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_10 USING btree (upstream_id, created_at) WHERE (status = 0);
+
+CREATE INDEX virtual_registries_packages_maven__upstream_id_created_at_idx11 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_11 USING btree (upstream_id, created_at) WHERE (status = 0);
+
+CREATE INDEX virtual_registries_packages_maven__upstream_id_created_at_idx12 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_12 USING btree (upstream_id, created_at) WHERE (status = 0);
+
+CREATE INDEX virtual_registries_packages_maven__upstream_id_created_at_idx13 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_13 USING btree (upstream_id, created_at) WHERE (status = 0);
+
+CREATE INDEX virtual_registries_packages_maven__upstream_id_created_at_idx14 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_14 USING btree (upstream_id, created_at) WHERE (status = 0);
+
+CREATE INDEX virtual_registries_packages_maven__upstream_id_created_at_idx15 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_15 USING btree (upstream_id, created_at) WHERE (status = 0);
+
+CREATE INDEX virtual_registries_packages_maven_c_upstream_id_created_at_idx1 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_01 USING btree (upstream_id, created_at) WHERE (status = 0);
+
+CREATE INDEX virtual_registries_packages_maven_c_upstream_id_created_at_idx2 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_02 USING btree (upstream_id, created_at) WHERE (status = 0);
+
+CREATE INDEX virtual_registries_packages_maven_c_upstream_id_created_at_idx3 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_03 USING btree (upstream_id, created_at) WHERE (status = 0);
+
+CREATE INDEX virtual_registries_packages_maven_c_upstream_id_created_at_idx4 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_04 USING btree (upstream_id, created_at) WHERE (status = 0);
+
+CREATE INDEX virtual_registries_packages_maven_c_upstream_id_created_at_idx5 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_05 USING btree (upstream_id, created_at) WHERE (status = 0);
+
+CREATE INDEX virtual_registries_packages_maven_c_upstream_id_created_at_idx6 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_06 USING btree (upstream_id, created_at) WHERE (status = 0);
+
+CREATE INDEX virtual_registries_packages_maven_c_upstream_id_created_at_idx7 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_07 USING btree (upstream_id, created_at) WHERE (status = 0);
+
+CREATE INDEX virtual_registries_packages_maven_c_upstream_id_created_at_idx8 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_08 USING btree (upstream_id, created_at) WHERE (status = 0);
+
+CREATE INDEX virtual_registries_packages_maven_c_upstream_id_created_at_idx9 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_09 USING btree (upstream_id, created_at) WHERE (status = 0);
+
+CREATE INDEX virtual_registries_packages_maven_ca_upstream_id_created_at_idx ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_00 USING btree (upstream_id, created_at) WHERE (status = 0);
+
+CREATE INDEX idx_vreg_pkgs_maven_cache_entries_on_group_id_status ON ONLY virtual_registries_packages_maven_cache_entries USING btree (group_id, status);
+
+CREATE INDEX virtual_registries_packages_maven_cache_e_group_id_status_idx10 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_10 USING btree (group_id, status);
+
+CREATE INDEX virtual_registries_packages_maven_cache_e_group_id_status_idx11 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_11 USING btree (group_id, status);
+
+CREATE INDEX virtual_registries_packages_maven_cache_e_group_id_status_idx12 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_12 USING btree (group_id, status);
+
+CREATE INDEX virtual_registries_packages_maven_cache_e_group_id_status_idx13 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_13 USING btree (group_id, status);
+
+CREATE INDEX virtual_registries_packages_maven_cache_e_group_id_status_idx14 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_14 USING btree (group_id, status);
+
+CREATE INDEX virtual_registries_packages_maven_cache_e_group_id_status_idx15 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_15 USING btree (group_id, status);
+
+CREATE INDEX virtual_registries_packages_maven_cache_en_group_id_status_idx1 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_01 USING btree (group_id, status);
+
+CREATE INDEX virtual_registries_packages_maven_cache_en_group_id_status_idx2 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_02 USING btree (group_id, status);
+
+CREATE INDEX virtual_registries_packages_maven_cache_en_group_id_status_idx3 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_03 USING btree (group_id, status);
+
+CREATE INDEX virtual_registries_packages_maven_cache_en_group_id_status_idx4 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_04 USING btree (group_id, status);
+
+CREATE INDEX virtual_registries_packages_maven_cache_en_group_id_status_idx5 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_05 USING btree (group_id, status);
+
+CREATE INDEX virtual_registries_packages_maven_cache_en_group_id_status_idx6 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_06 USING btree (group_id, status);
+
+CREATE INDEX virtual_registries_packages_maven_cache_en_group_id_status_idx7 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_07 USING btree (group_id, status);
+
+CREATE INDEX virtual_registries_packages_maven_cache_en_group_id_status_idx8 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_08 USING btree (group_id, status);
+
+CREATE INDEX virtual_registries_packages_maven_cache_en_group_id_status_idx9 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_09 USING btree (group_id, status);
+
+CREATE INDEX virtual_registries_packages_maven_cache_ent_group_id_status_idx ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_00 USING btree (group_id, status);
+
+CREATE INDEX idx_vreg_pkgs_maven_cache_entries_on_relative_path_trigram ON ONLY virtual_registries_packages_maven_cache_entries USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_packages_maven_cache_ent_relative_path_idx10 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_10 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_packages_maven_cache_ent_relative_path_idx11 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_11 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_packages_maven_cache_ent_relative_path_idx12 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_12 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_packages_maven_cache_ent_relative_path_idx13 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_13 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_packages_maven_cache_ent_relative_path_idx14 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_14 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_packages_maven_cache_ent_relative_path_idx15 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_15 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_packages_maven_cache_entr_relative_path_idx1 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_01 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_packages_maven_cache_entr_relative_path_idx2 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_02 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_packages_maven_cache_entr_relative_path_idx3 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_03 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_packages_maven_cache_entr_relative_path_idx4 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_04 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_packages_maven_cache_entr_relative_path_idx5 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_05 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_packages_maven_cache_entr_relative_path_idx6 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_06 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_packages_maven_cache_entr_relative_path_idx7 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_07 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_packages_maven_cache_entr_relative_path_idx8 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_08 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_packages_maven_cache_entr_relative_path_idx9 ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_09 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_packages_maven_cache_entri_relative_path_idx ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_00 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_packages_maven_upstream_id_relative_path_idx ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_00 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
 CREATE INDEX analytics_index_audit_events_part_on_created_at_and_author_id ON ONLY audit_events USING btree (created_at, author_id);
 
 CREATE INDEX analytics_index_events_on_created_at_and_author_id ON events USING btree (created_at, author_id);
@@ -28816,6 +29783,10 @@ CREATE UNIQUE INDEX i_pm_package_versions_on_package_id_and_version ON pm_packag
 
 CREATE UNIQUE INDEX i_pm_packages_purl_type_and_name ON pm_packages USING btree (purl_type, name);
 
+CREATE INDEX i_protected_branch_unprotect_access_levels_protected_branch_nam ON protected_branch_unprotect_access_levels USING btree (protected_branch_namespace_id);
+
+CREATE INDEX i_protected_branch_unprotect_access_levels_protected_branch_pro ON protected_branch_unprotect_access_levels USING btree (protected_branch_project_id);
+
 CREATE UNIQUE INDEX i_sbom_occurrences_vulnerabilities_on_occ_id_and_vuln_id ON sbom_occurrences_vulnerabilities USING btree (sbom_occurrence_id, vulnerability_id);
 
 CREATE INDEX i_software_license_policies_on_custom_software_license_id ON software_license_policies USING btree (custom_software_license_id);
@@ -28867,6 +29838,8 @@ CREATE INDEX p_ci_pipelines_ci_ref_id_id_idx ON ONLY p_ci_pipelines USING btree 
 CREATE INDEX idx_ci_pipelines_artifacts_locked ON ci_pipelines USING btree (ci_ref_id, id) WHERE (locked = 1);
 
 CREATE INDEX idx_ci_running_builds_on_runner_type_and_owner_xid_and_id ON ci_running_builds USING btree (runner_type, runner_owner_namespace_xid, runner_id);
+
+CREATE INDEX idx_compliance_requirements_controls_on_namespace_id ON compliance_requirements_controls USING btree (namespace_id);
 
 CREATE INDEX idx_compliance_security_policies_on_policy_configuration_id ON compliance_framework_security_policies USING btree (policy_configuration_id);
 
@@ -28988,7 +29961,7 @@ CREATE INDEX idx_namespace_hostname_import_type_id_source_name_and_username ON i
 
 CREATE UNIQUE INDEX idx_namespace_settings_on_default_compliance_framework_id ON namespace_settings USING btree (default_compliance_framework_id);
 
-CREATE INDEX idx_namespace_settings_on_last_dormant_member_review_at ON namespace_settings USING btree (last_dormant_member_review_at) WHERE (remove_dormant_members IS TRUE);
+CREATE INDEX idx_namespace_settings_on_last_dormant_members_review_at ON namespace_settings USING btree (last_dormant_member_review_at) WHERE (remove_dormant_members = true);
 
 CREATE UNIQUE INDEX idx_o11y_log_issue_conn_on_issue_id_logs_search_metadata ON observability_logs_issues_connections USING btree (issue_id, service_name, severity_number, log_timestamp, log_fingerprint, trace_identifier);
 
@@ -29058,6 +30031,8 @@ CREATE INDEX idx_packages_packages_on_npm_scope_and_project_id ON packages_packa
 
 CREATE INDEX idx_packages_packages_on_project_id_name_version_package_type ON packages_packages USING btree (project_id, name, version, package_type);
 
+CREATE INDEX idx_pat_last_used_ips_on_pat_id ON personal_access_token_last_used_ips USING btree (personal_access_token_id);
+
 CREATE INDEX idx_personal_access_tokens_on_previous_personal_access_token_id ON personal_access_tokens USING btree (previous_personal_access_token_id);
 
 CREATE INDEX idx_pkgs_conan_file_metadata_on_pkg_file_id_when_recipe_file ON packages_conan_file_metadata USING btree (package_file_id) WHERE (conan_file_type = 1);
@@ -29074,7 +30049,7 @@ CREATE INDEX idx_pkgs_npm_metadata_caches_on_id_and_project_id_and_status ON pac
 
 CREATE INDEX idx_pkgs_nuget_symbols_on_lowercase_signature_and_file_name ON packages_nuget_symbols USING btree (lower(signature), lower(file));
 
-CREATE UNIQUE INDEX idx_pkgs_nuget_symbols_on_signature_and_file_path_with_pkg_id ON packages_nuget_symbols USING btree (signature, file_path) WHERE (package_id IS NOT NULL);
+CREATE INDEX idx_pkgs_nuget_symbols_on_lowercase_signature_and_file_path ON packages_nuget_symbols USING btree (lower(signature), lower(file_path));
 
 CREATE INDEX idx_pkgs_on_project_id_name_version_on_installable_terraform ON packages_packages USING btree (project_id, name, version, id) WHERE ((package_type = 12) AND (status = ANY (ARRAY[0, 1])));
 
@@ -29091,6 +30066,12 @@ CREATE INDEX idx_project_audit_events_on_author_id_created_at_id ON ONLY project
 CREATE INDEX idx_project_audit_events_on_project_created_at_id ON ONLY project_audit_events USING btree (project_id, created_at, id);
 
 CREATE INDEX idx_project_audit_events_on_project_id_author_created_at_id ON ONLY project_audit_events USING btree (project_id, author_id, created_at, id DESC);
+
+CREATE INDEX idx_project_control_statuses_on_namespace_id ON project_control_compliance_statuses USING btree (namespace_id);
+
+CREATE INDEX idx_project_control_statuses_on_project_id ON project_control_compliance_statuses USING btree (project_id);
+
+CREATE INDEX idx_project_control_statuses_on_requirement_id ON project_control_compliance_statuses USING btree (compliance_requirement_id);
 
 CREATE INDEX idx_project_repository_check_partial ON projects USING btree (repository_storage, created_at) WHERE (last_repository_check_at IS NULL);
 
@@ -29111,8 +30092,6 @@ CREATE INDEX idx_protected_branch_merge_access_levels_protected_branch_names ON 
 CREATE INDEX idx_protected_branch_merge_access_levels_protected_branch_proje ON protected_branch_merge_access_levels USING btree (protected_branch_project_id);
 
 CREATE INDEX idx_reminder_frequency_on_work_item_progresses ON work_item_progresses USING btree (reminder_frequency);
-
-CREATE INDEX idx_sbom_components_on_name_gin ON sbom_components USING gin (name gin_trgm_ops);
 
 CREATE UNIQUE INDEX idx_sbom_components_on_name_purl_type_component_type_and_org_id ON sbom_components USING btree (name, purl_type, component_type, organization_id);
 
@@ -29212,6 +30191,10 @@ CREATE INDEX index_p_ci_builds_on_execution_config_id ON ONLY p_ci_builds USING 
 
 CREATE INDEX index_0928d9f200 ON ci_builds USING btree (execution_config_id) WHERE (execution_config_id IS NOT NULL);
 
+CREATE INDEX tmp_p_ci_builds_trigger_request_id_idx ON ONLY p_ci_builds USING btree (trigger_request_id) WHERE (trigger_request_id IS NOT NULL);
+
+CREATE INDEX index_437b1804fb ON ci_builds USING btree (trigger_request_id) WHERE (trigger_request_id IS NOT NULL);
+
 CREATE INDEX index_abuse_events_on_abuse_report_id ON abuse_events USING btree (abuse_report_id);
 
 CREATE INDEX index_abuse_events_on_category_and_source ON abuse_events USING btree (category, source);
@@ -29263,6 +30246,10 @@ CREATE INDEX index_abuse_reports_on_status_category_and_id ON abuse_reports USIN
 CREATE INDEX index_abuse_reports_on_status_reporter_id_and_id ON abuse_reports USING btree (status, reporter_id, id);
 
 CREATE INDEX index_abuse_trust_scores_on_user_id_and_source_and_created_at ON abuse_trust_scores USING btree (user_id, source, created_at);
+
+CREATE INDEX p_ci_pipelines_trigger_id_idx ON ONLY p_ci_pipelines USING btree (trigger_id);
+
+CREATE INDEX index_ac3541b851 ON ci_pipelines USING btree (trigger_id);
 
 CREATE UNIQUE INDEX "index_achievements_on_namespace_id_LOWER_name" ON achievements USING btree (namespace_id, lower(name));
 
@@ -29644,6 +30631,10 @@ CREATE INDEX index_bulk_import_entities_on_project_id ON bulk_import_entities US
 
 CREATE INDEX index_bulk_import_export_uploads_on_export_id ON bulk_import_export_uploads USING btree (export_id);
 
+CREATE INDEX index_bulk_import_export_uploads_on_group_id ON bulk_import_export_uploads USING btree (group_id);
+
+CREATE INDEX index_bulk_import_export_uploads_on_project_id ON bulk_import_export_uploads USING btree (project_id);
+
 CREATE INDEX index_bulk_import_exports_on_group_id ON bulk_import_exports USING btree (group_id);
 
 CREATE INDEX index_bulk_import_exports_on_project_id ON bulk_import_exports USING btree (project_id);
@@ -29695,6 +30686,8 @@ CREATE UNIQUE INDEX index_chat_teams_on_namespace_id ON chat_teams USING btree (
 CREATE UNIQUE INDEX index_ci_build_needs_on_build_id_and_name ON ci_build_needs USING btree (build_id, name);
 
 CREATE INDEX index_ci_build_needs_on_partition_id_build_id ON ci_build_needs USING btree (partition_id, build_id);
+
+CREATE INDEX index_ci_build_needs_on_project_id ON ci_build_needs USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ci_build_pending_states_on_build_id ON ci_build_pending_states USING btree (build_id);
 
@@ -30070,6 +31063,8 @@ CREATE UNIQUE INDEX index_ci_runner_machines_on_runner_id_and_system_xid ON ci_r
 
 CREATE INDEX index_ci_runner_machines_on_runner_type ON ci_runner_machines USING btree (runner_type);
 
+CREATE INDEX index_ci_runner_machines_on_sharding_key_id_when_not_null ON ci_runner_machines USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
+
 CREATE INDEX index_ci_runner_machines_on_version ON ci_runner_machines USING btree (version);
 
 CREATE INDEX index_ci_runner_namespaces_on_namespace_id ON ci_runner_namespaces USING btree (namespace_id);
@@ -30101,6 +31096,8 @@ CREATE INDEX index_ci_runners_on_description_trigram ON ci_runners USING gin (de
 CREATE INDEX index_ci_runners_on_locked ON ci_runners USING btree (locked);
 
 CREATE INDEX index_ci_runners_on_runner_type_and_id ON ci_runners USING btree (runner_type, id);
+
+CREATE INDEX index_ci_runners_on_sharding_key_id_when_not_null ON ci_runners USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
 
 CREATE INDEX index_ci_runners_on_token_expires_at_and_id_desc ON ci_runners USING btree (token_expires_at, id DESC);
 
@@ -31060,6 +32057,8 @@ CREATE INDEX index_issuable_slas_on_due_at_id_label_applied_issuable_closed ON i
 
 CREATE UNIQUE INDEX index_issuable_slas_on_issue_id ON issuable_slas USING btree (issue_id);
 
+CREATE INDEX index_issuable_slas_on_namespace_id ON issuable_slas USING btree (namespace_id);
+
 CREATE INDEX index_issue_assignees_on_user_id_and_issue_id ON issue_assignees USING btree (user_id, issue_id);
 
 CREATE INDEX index_issue_assignment_events_on_namespace_id ON issue_assignment_events USING btree (namespace_id);
@@ -31654,6 +32653,10 @@ CREATE INDEX index_namespaces_sync_events_on_namespace_id ON namespaces_sync_eve
 
 CREATE INDEX index_non_requested_project_members_on_source_id_and_type ON members USING btree (source_id, source_type) WHERE ((requested_at IS NULL) AND ((type)::text = 'ProjectMember'::text));
 
+CREATE INDEX index_non_sql_service_pings_on_organization_id ON non_sql_service_pings USING btree (organization_id);
+
+CREATE UNIQUE INDEX index_non_sql_service_pings_on_recorded_at ON non_sql_service_pings USING btree (recorded_at);
+
 CREATE UNIQUE INDEX index_note_diff_files_on_diff_note_id ON note_diff_files USING btree (diff_note_id);
 
 CREATE INDEX index_note_metadata_on_note_id ON note_metadata USING btree (note_id);
@@ -31952,6 +32955,8 @@ CREATE UNIQUE INDEX index_packages_npm_metadata_caches_on_object_storage_key ON 
 
 CREATE INDEX index_packages_npm_metadata_caches_on_project_id_status ON packages_npm_metadata_caches USING btree (project_id, status);
 
+CREATE INDEX index_packages_npm_metadata_on_package_json_deprecate_exist ON packages_npm_metadata USING btree (package_id) WHERE (package_json ? 'deprecated'::text);
+
 CREATE INDEX index_packages_npm_metadata_on_project_id ON packages_npm_metadata USING btree (project_id);
 
 CREATE INDEX index_packages_nuget_dl_metadata_on_dependency_link_id ON packages_nuget_dependency_link_metadata USING btree (dependency_link_id);
@@ -32098,6 +33103,8 @@ CREATE INDEX index_pats_on_expiring_at_thirty_days_notification_sent_at ON perso
 
 CREATE INDEX index_pe_approval_rules_on_required_approvals_and_created_at ON protected_environment_approval_rules USING btree (required_approvals, created_at);
 
+CREATE INDEX index_personal_access_token_last_used_ips_on_organization_id ON personal_access_token_last_used_ips USING btree (organization_id);
+
 CREATE INDEX index_personal_access_tokens_on_id_and_created_at ON personal_access_tokens USING btree (id, created_at);
 
 CREATE INDEX index_personal_access_tokens_on_organization_id ON personal_access_tokens USING btree (organization_id);
@@ -32119,6 +33126,8 @@ CREATE UNIQUE INDEX index_plan_limits_on_plan_id ON plan_limits USING btree (pla
 CREATE UNIQUE INDEX index_plans_on_name ON plans USING btree (name);
 
 CREATE UNIQUE INDEX index_pm_advisories_on_advisory_xid_and_source_xid ON pm_advisories USING btree (advisory_xid, source_xid);
+
+CREATE INDEX index_pm_advisories_on_cve ON pm_advisories USING btree (cve);
 
 CREATE INDEX index_pm_affected_packages_on_pm_advisory_id ON pm_affected_packages USING btree (pm_advisory_id);
 
@@ -33480,6 +34489,8 @@ CREATE INDEX index_zoekt_indices_on_replica_id ON zoekt_indices USING btree (zoe
 
 CREATE UNIQUE INDEX index_zoekt_indices_on_state_and_id ON zoekt_indices USING btree (state, id);
 
+CREATE INDEX index_zoekt_indices_on_watermark_level_and_id ON zoekt_indices USING btree (watermark_level, id);
+
 CREATE INDEX index_zoekt_indices_on_watermark_level_reserved_storage_bytes ON zoekt_indices USING btree (watermark_level, id) WHERE (reserved_storage_bytes > 0);
 
 CREATE UNIQUE INDEX index_zoekt_indices_on_zoekt_node_id_and_id ON zoekt_indices USING btree (zoekt_node_id, id);
@@ -33702,6 +34713,8 @@ CREATE INDEX tmp_idx_orphaned_approval_project_rules ON approval_project_rules U
 
 CREATE UNIQUE INDEX tmp_idx_packages_dependencies_on_name_version_pattern ON packages_dependencies USING btree (name, version_pattern) WHERE (project_id IS NULL);
 
+CREATE INDEX tmp_idx_packages_on_project_id_when_mvn_not_pending_destruction ON packages_packages USING btree (project_id) WHERE ((package_type = 1) AND (status <> 4));
+
 CREATE INDEX tmp_index_ci_job_artifacts_on_expire_at_where_locked_unknown ON ci_job_artifacts USING btree (expire_at, job_id) WHERE ((locked = 2) AND (expire_at IS NOT NULL));
 
 CREATE INDEX tmp_index_for_null_member_namespace_id ON members USING btree (member_namespace_id) WHERE (member_namespace_id IS NULL);
@@ -33709,6 +34722,8 @@ CREATE INDEX tmp_index_for_null_member_namespace_id ON members USING btree (memb
 CREATE INDEX tmp_index_for_project_namespace_id_migration_on_routes ON routes USING btree (id) WHERE ((namespace_id IS NULL) AND ((source_type)::text = 'Project'::text));
 
 CREATE UNIQUE INDEX tmp_index_issues_on_tmp_epic_id ON issues USING btree (tmp_epic_id);
+
+CREATE INDEX tmp_index_packages_conan_file_metadata_on_id_for_migration ON packages_conan_file_metadata USING btree (id) WHERE ((package_reference_id IS NULL) AND (conan_package_reference IS NOT NULL));
 
 CREATE INDEX tmp_index_packages_dependencies_on_id_without_project_id ON packages_dependencies USING btree (id) WHERE (project_id IS NULL);
 
@@ -33727,6 +34742,10 @@ CREATE UNIQUE INDEX u_zoekt_repositories_zoekt_index_id_and_project_id ON zoekt_
 CREATE UNIQUE INDEX uniq_audit_group_event_filters_destination_id_and_event_type ON audit_events_group_streaming_event_type_filters USING btree (external_streaming_destination_id, audit_event_type);
 
 CREATE UNIQUE INDEX uniq_audit_instance_event_filters_destination_id_and_event_type ON audit_events_instance_streaming_event_type_filters USING btree (external_streaming_destination_id, audit_event_type);
+
+CREATE UNIQUE INDEX uniq_compliance_requirements_controls_name_requirement_id ON compliance_requirements_controls USING btree (compliance_requirement_id, name);
+
+CREATE UNIQUE INDEX uniq_compliance_statuses_control_project_id ON project_control_compliance_statuses USING btree (compliance_requirements_control_id, project_id);
 
 CREATE UNIQUE INDEX uniq_google_cloud_logging_configuration_namespace_id_and_name ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, name);
 
@@ -33749,6 +34768,8 @@ CREATE UNIQUE INDEX uniq_idx_on_packages_conan_package_revisions_revision ON pac
 CREATE UNIQUE INDEX uniq_idx_packages_packages_on_project_id_name_version_ml_model ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 14) AND (status <> 4));
 
 CREATE UNIQUE INDEX uniq_idx_project_compliance_framework_on_project_framework ON project_compliance_framework_settings USING btree (project_id, framework_id);
+
+CREATE UNIQUE INDEX uniq_idx_provision_syncs_on_namespace_id_and_sync_requested_at ON subscription_provision_syncs USING btree (namespace_id, sync_requested_at DESC);
 
 CREATE UNIQUE INDEX uniq_idx_security_policy_requirements_on_requirement_and_policy ON security_policy_requirements USING btree (compliance_framework_security_policy_id, compliance_requirement_id);
 
@@ -35296,6 +36317,166 @@ ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_part
 
 ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_31_pkey;
 
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_mav_upstream_id_relative_path_idx10;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_mav_upstream_id_relative_path_idx11;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_mav_upstream_id_relative_path_idx12;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_mav_upstream_id_relative_path_idx13;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_mav_upstream_id_relative_path_idx14;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_mav_upstream_id_relative_path_idx15;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_mave_upstream_id_relative_path_idx1;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_mave_upstream_id_relative_path_idx2;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_mave_upstream_id_relative_path_idx3;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_mave_upstream_id_relative_path_idx4;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_mave_upstream_id_relative_path_idx5;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_mave_upstream_id_relative_path_idx6;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_mave_upstream_id_relative_path_idx7;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_mave_upstream_id_relative_path_idx8;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_mave_upstream_id_relative_path_idx9;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_created_at ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven__upstream_id_created_at_idx10;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_created_at ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven__upstream_id_created_at_idx11;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_created_at ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven__upstream_id_created_at_idx12;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_created_at ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven__upstream_id_created_at_idx13;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_created_at ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven__upstream_id_created_at_idx14;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_created_at ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven__upstream_id_created_at_idx15;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_created_at ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_c_upstream_id_created_at_idx1;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_created_at ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_c_upstream_id_created_at_idx2;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_created_at ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_c_upstream_id_created_at_idx3;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_created_at ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_c_upstream_id_created_at_idx4;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_created_at ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_c_upstream_id_created_at_idx5;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_created_at ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_c_upstream_id_created_at_idx6;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_created_at ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_c_upstream_id_created_at_idx7;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_created_at ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_c_upstream_id_created_at_idx8;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_created_at ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_c_upstream_id_created_at_idx9;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_created_at ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_ca_upstream_id_created_at_idx;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_group_id_status ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_e_group_id_status_idx10;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_group_id_status ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_e_group_id_status_idx11;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_group_id_status ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_e_group_id_status_idx12;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_group_id_status ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_e_group_id_status_idx13;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_group_id_status ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_e_group_id_status_idx14;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_group_id_status ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_e_group_id_status_idx15;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_group_id_status ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_en_group_id_status_idx1;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_group_id_status ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_en_group_id_status_idx2;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_group_id_status ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_en_group_id_status_idx3;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_group_id_status ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_en_group_id_status_idx4;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_group_id_status ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_en_group_id_status_idx5;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_group_id_status ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_en_group_id_status_idx6;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_group_id_status ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_en_group_id_status_idx7;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_group_id_status ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_en_group_id_status_idx8;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_group_id_status ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_en_group_id_status_idx9;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_group_id_status ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_ent_group_id_status_idx;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_ent_relative_path_idx10;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_ent_relative_path_idx11;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_ent_relative_path_idx12;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_ent_relative_path_idx13;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_ent_relative_path_idx14;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_ent_relative_path_idx15;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entr_relative_path_idx1;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entr_relative_path_idx2;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entr_relative_path_idx3;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entr_relative_path_idx4;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entr_relative_path_idx5;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entr_relative_path_idx6;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entr_relative_path_idx7;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entr_relative_path_idx8;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entr_relative_path_idx9;
+
+ALTER INDEX idx_vreg_pkgs_maven_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entri_relative_path_idx;
+
+ALTER INDEX virtual_registries_packages_maven_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_00_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_01_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_02_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_03_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_04_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_05_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_06_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_07_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_08_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_09_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_10_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_11_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_12_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_13_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_14_pkey;
+
+ALTER INDEX virtual_registries_packages_maven_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_15_pkey;
+
+ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_upstream_id_relative_path_idx;
+
 ALTER INDEX p_ci_builds_status_created_at_project_id_idx ATTACH PARTITION ci_builds_gitlab_monitor_metrics;
 
 ALTER INDEX p_ci_builds_metadata_pkey ATTACH PARTITION ci_builds_metadata_pkey;
@@ -35389,6 +36570,10 @@ ALTER INDEX p_ci_job_artifacts_job_id_file_type_partition_id_idx ATTACH PARTITIO
 ALTER INDEX p_ci_pipelines_ci_ref_id_id_idx ATTACH PARTITION idx_ci_pipelines_artifacts_locked;
 
 ALTER INDEX index_p_ci_builds_on_execution_config_id ATTACH PARTITION index_0928d9f200;
+
+ALTER INDEX tmp_p_ci_builds_trigger_request_id_idx ATTACH PARTITION index_437b1804fb;
+
+ALTER INDEX p_ci_pipelines_trigger_id_idx ATTACH PARTITION index_ac3541b851;
 
 ALTER INDEX p_ci_builds_metadata_build_id_idx ATTACH PARTITION index_ci_builds_metadata_on_build_id_and_has_exposed_artifacts;
 
@@ -35686,6 +36871,8 @@ CREATE TRIGGER table_sync_trigger_57c8465cd7 AFTER INSERT OR DELETE OR UPDATE ON
 
 CREATE TRIGGER table_sync_trigger_61879721b5 AFTER INSERT OR DELETE OR UPDATE ON ci_runners FOR EACH ROW EXECUTE FUNCTION table_sync_function_686d6c7993();
 
+CREATE TRIGGER table_sync_trigger_b99eb6998c AFTER INSERT OR DELETE OR UPDATE ON web_hook_logs FOR EACH ROW EXECUTE FUNCTION table_sync_function_29bc99d6db();
+
 CREATE TRIGGER table_sync_trigger_bc3e7b56bd AFTER INSERT OR DELETE OR UPDATE ON ci_runner_machines FOR EACH ROW EXECUTE FUNCTION table_sync_function_e438f29263();
 
 CREATE TRIGGER table_sync_trigger_cd362c20e2 AFTER INSERT OR DELETE OR UPDATE ON merge_request_diff_files FOR EACH ROW EXECUTE FUNCTION table_sync_function_3f39f64fc3();
@@ -35709,6 +36896,8 @@ CREATE TRIGGER trigger_0a29d4d42b62 BEFORE INSERT OR UPDATE ON approval_project_
 CREATE TRIGGER trigger_0aea02e5a699 BEFORE INSERT OR UPDATE ON protected_branch_merge_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_0aea02e5a699();
 
 CREATE TRIGGER trigger_0c326daf67cf BEFORE INSERT OR UPDATE ON analytics_cycle_analytics_value_stream_settings FOR EACH ROW EXECUTE FUNCTION trigger_0c326daf67cf();
+
+CREATE TRIGGER trigger_0d96daa4d734 BEFORE INSERT OR UPDATE ON bulk_import_export_uploads FOR EACH ROW EXECUTE FUNCTION trigger_0d96daa4d734();
 
 CREATE TRIGGER trigger_0da002390fdc BEFORE INSERT OR UPDATE ON operations_feature_flags_issues FOR EACH ROW EXECUTE FUNCTION trigger_0da002390fdc();
 
@@ -35794,6 +36983,8 @@ CREATE TRIGGER trigger_4ad9a52a6614 BEFORE INSERT OR UPDATE ON sbom_occurrences_
 
 CREATE TRIGGER trigger_4b43790d717f BEFORE INSERT OR UPDATE ON protected_environment_approval_rules FOR EACH ROW EXECUTE FUNCTION trigger_4b43790d717f();
 
+CREATE TRIGGER trigger_4cc5c3ac4d7f BEFORE INSERT OR UPDATE ON bulk_import_export_uploads FOR EACH ROW EXECUTE FUNCTION trigger_4cc5c3ac4d7f();
+
 CREATE TRIGGER trigger_54707c384ad7 BEFORE INSERT OR UPDATE ON security_orchestration_policy_rule_schedules FOR EACH ROW EXECUTE FUNCTION trigger_54707c384ad7();
 
 CREATE TRIGGER trigger_56d49f4ed623 BEFORE INSERT OR UPDATE ON workspace_variables FOR EACH ROW EXECUTE FUNCTION trigger_56d49f4ed623();
@@ -35872,6 +37063,8 @@ CREATE TRIGGER trigger_9259aae92378 BEFORE INSERT OR UPDATE ON packages_build_in
 
 CREATE TRIGGER trigger_94514aeadc50 BEFORE INSERT OR UPDATE ON deployment_approvals FOR EACH ROW EXECUTE FUNCTION trigger_94514aeadc50();
 
+CREATE TRIGGER trigger_96298f7da5d3 BEFORE INSERT OR UPDATE ON protected_branch_unprotect_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_96298f7da5d3();
+
 CREATE TRIGGER trigger_9699ea03bb37 BEFORE INSERT OR UPDATE ON related_epic_links FOR EACH ROW EXECUTE FUNCTION trigger_9699ea03bb37();
 
 CREATE TRIGGER trigger_96a76ee9f147 BEFORE INSERT OR UPDATE ON design_management_versions FOR EACH ROW EXECUTE FUNCTION trigger_96a76ee9f147();
@@ -35924,6 +37117,8 @@ CREATE TRIGGER trigger_cac7c0698291 BEFORE INSERT OR UPDATE ON evidences FOR EAC
 
 CREATE TRIGGER trigger_catalog_resource_sync_event_on_project_update AFTER UPDATE ON projects FOR EACH ROW WHEN ((((old.name)::text IS DISTINCT FROM (new.name)::text) OR (old.description IS DISTINCT FROM new.description) OR (old.visibility_level IS DISTINCT FROM new.visibility_level))) EXECUTE FUNCTION insert_catalog_resource_sync_event();
 
+CREATE TRIGGER trigger_cd50823537a3 BEFORE INSERT OR UPDATE ON issuable_slas FOR EACH ROW EXECUTE FUNCTION trigger_cd50823537a3();
+
 CREATE TRIGGER trigger_cf646a118cbb BEFORE INSERT OR UPDATE ON milestone_releases FOR EACH ROW EXECUTE FUNCTION trigger_cf646a118cbb();
 
 CREATE TRIGGER trigger_d4487a75bd44 BEFORE INSERT OR UPDATE ON terraform_state_versions FOR EACH ROW EXECUTE FUNCTION trigger_d4487a75bd44();
@@ -35957,6 +37152,8 @@ CREATE TRIGGER trigger_e815625b59fa BEFORE INSERT OR UPDATE ON resource_link_eve
 CREATE TRIGGER trigger_ebab34f83f1d BEFORE INSERT OR UPDATE ON packages_debian_publications FOR EACH ROW EXECUTE FUNCTION trigger_ebab34f83f1d();
 
 CREATE TRIGGER trigger_ec1934755627 BEFORE INSERT OR UPDATE ON alert_management_alert_metric_images FOR EACH ROW EXECUTE FUNCTION trigger_ec1934755627();
+
+CREATE TRIGGER trigger_ed554313ca66 BEFORE INSERT OR UPDATE ON protected_branch_unprotect_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_ed554313ca66();
 
 CREATE TRIGGER trigger_efb9d354f05a BEFORE INSERT OR UPDATE ON incident_management_issuable_escalation_statuses FOR EACH ROW EXECUTE FUNCTION trigger_efb9d354f05a();
 
@@ -36141,6 +37338,9 @@ ALTER TABLE ONLY subscription_user_add_on_assignments
 ALTER TABLE ONLY approval_project_rules_users
     ADD CONSTRAINT fk_0dfcd9e339 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ci_runner_projects
+    ADD CONSTRAINT fk_0e743433ff FOREIGN KEY (runner_id) REFERENCES ci_runners(id) ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY security_policy_project_links
     ADD CONSTRAINT fk_0eba4d5d71 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -36167,6 +37367,9 @@ ALTER TABLE ONLY cluster_agent_url_configurations
 
 ALTER TABLE ONLY member_approvals
     ADD CONSTRAINT fk_1383c72212 FOREIGN KEY (member_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_control_compliance_statuses
+    ADD CONSTRAINT fk_13fb61bcfa FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY audit_events_streaming_headers
     ADD CONSTRAINT fk_1413743b7d FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -36279,6 +37482,9 @@ ALTER TABLE ONLY alert_management_alerts
 ALTER TABLE ONLY design_management_designs
     ADD CONSTRAINT fk_239cd63678 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY bulk_import_export_uploads
+    ADD CONSTRAINT fk_23e0e92313 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY audit_events_streaming_http_instance_namespace_filters
     ADD CONSTRAINT fk_23f3ab7df0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -36305,6 +37511,9 @@ ALTER TABLE ONLY user_namespace_callouts
 
 ALTER TABLE ONLY user_details
     ADD CONSTRAINT fk_27ac767d6a FOREIGN KEY (bot_namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY issuable_slas
+    ADD CONSTRAINT fk_282ef683a5 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY work_item_dates_sources
     ADD CONSTRAINT fk_283fb4ad36 FOREIGN KEY (start_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
@@ -36380,6 +37589,9 @@ ALTER TABLE ONLY approvals
 
 ALTER TABLE ONLY namespaces
     ADD CONSTRAINT fk_319256d87a FOREIGN KEY (file_template_project_id) REFERENCES projects(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY protected_branch_unprotect_access_levels
+    ADD CONSTRAINT fk_325cad614b FOREIGN KEY (protected_branch_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY bulk_import_entities
     ADD CONSTRAINT fk_32782a175e FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
@@ -36599,6 +37811,9 @@ ALTER TABLE ONLY status_check_responses
 
 ALTER TABLE ONLY merge_request_metrics
     ADD CONSTRAINT fk_56067dcb44 FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY protected_branch_unprotect_access_levels
+    ADD CONSTRAINT fk_5632201009 FOREIGN KEY (protected_branch_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_request_diffs
     ADD CONSTRAINT fk_56ac6fc9c0 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -36864,6 +38079,9 @@ ALTER TABLE ONLY sent_notifications
 ALTER TABLE ONLY labels
     ADD CONSTRAINT fk_7de4989a69 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY bulk_import_export_uploads
+    ADD CONSTRAINT fk_7e03e410b4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_7e85395a64 FOREIGN KEY (sprint_id) REFERENCES sprints(id) ON DELETE SET NULL;
 
@@ -37017,6 +38235,9 @@ ALTER TABLE ONLY boards_epic_list_user_preferences
 ALTER TABLE ONLY dependency_proxy_blob_states
     ADD CONSTRAINT fk_95ee495fd6 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY subscription_provision_syncs
+    ADD CONSTRAINT fk_964dc9cc6c FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_96b1dd429c FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
 
@@ -37028,6 +38249,9 @@ ALTER TABLE ONLY agent_user_access_group_authorizations
 
 ALTER TABLE ONLY vulnerability_occurrences
     ADD CONSTRAINT fk_97ffe77653 FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY project_control_compliance_statuses
+    ADD CONSTRAINT fk_9826fbb4a6 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY protected_branch_merge_access_levels
     ADD CONSTRAINT fk_98f3d044fe FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -37214,9 +38438,6 @@ ALTER TABLE ONLY member_approvals
 
 ALTER TABLE ONLY related_epic_links
     ADD CONSTRAINT fk_b30520b698 FOREIGN KEY (issue_link_id) REFERENCES issue_links(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY issues
-    ADD CONSTRAINT fk_b37be69be6 FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(id);
 
 ALTER TABLE ONLY duo_workflows_checkpoints
     ADD CONSTRAINT fk_b3d9cea509 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -37554,6 +38775,9 @@ ALTER TABLE ONLY software_license_policies
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_dccd3f98fc FOREIGN KEY (assignee_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY project_control_compliance_statuses
+    ADD CONSTRAINT fk_de8f1f0f22 FOREIGN KEY (compliance_requirement_id) REFERENCES compliance_requirements(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY protected_branches
     ADD CONSTRAINT fk_de9216e774 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -37760,6 +38984,9 @@ ALTER TABLE p_ci_stages
 
 ALTER TABLE ONLY agent_group_authorizations
     ADD CONSTRAINT fk_fb70782616 FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY compliance_requirements_controls
+    ADD CONSTRAINT fk_fbad5ced4f FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY system_note_metadata
     ADD CONSTRAINT fk_fbd87415c9 FOREIGN KEY (description_version_id) REFERENCES description_versions(id) ON DELETE SET NULL;
@@ -38102,6 +39329,9 @@ ALTER TABLE ONLY lfs_file_locks
 
 ALTER TABLE ONLY project_alerting_settings
     ADD CONSTRAINT fk_rails_27a84b407d FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY compliance_requirements_controls
+    ADD CONSTRAINT fk_rails_27dc3d2491 FOREIGN KEY (compliance_requirement_id) REFERENCES compliance_requirements(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_credit_card_validations
     ADD CONSTRAINT fk_rails_27ebc03cbf FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -38616,6 +39846,9 @@ ALTER TABLE ONLY approval_group_rules
 ALTER TABLE ONLY jira_imports
     ADD CONSTRAINT fk_rails_675d38c03b FOREIGN KEY (label_id) REFERENCES labels(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY non_sql_service_pings
+    ADD CONSTRAINT fk_rails_67cc36015b FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY vulnerability_findings_remediations
     ADD CONSTRAINT fk_rails_681c85ae0f FOREIGN KEY (vulnerability_remediation_id) REFERENCES vulnerability_remediations(id) ON DELETE CASCADE;
 
@@ -38759,6 +39992,9 @@ ALTER TABLE ONLY resource_state_events
 
 ALTER TABLE ONLY audit_events_group_external_streaming_destinations
     ADD CONSTRAINT fk_rails_7dffb88f29 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY personal_access_token_last_used_ips
+    ADD CONSTRAINT fk_rails_7e650a7967 FOREIGN KEY (personal_access_token_id) REFERENCES personal_access_tokens(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY clusters_kubernetes_namespaces
     ADD CONSTRAINT fk_rails_7e7688ecaf FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
@@ -38957,6 +40193,9 @@ ALTER TABLE p_catalog_resource_component_usages
 
 ALTER TABLE ONLY packages_debian_project_distributions
     ADD CONSTRAINT fk_rails_94b95e1f84 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY personal_access_token_last_used_ips
+    ADD CONSTRAINT fk_rails_95388fbaeb FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_rubygems_metadata
     ADD CONSTRAINT fk_rails_95a3f5ce78 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
@@ -39725,6 +40964,9 @@ ALTER TABLE ONLY abuse_report_assignees
 
 ALTER TABLE ONLY cluster_groups
     ADD CONSTRAINT fk_rails_fdb8648a96 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_control_compliance_statuses
+    ADD CONSTRAINT fk_rails_fe05913910 FOREIGN KEY (compliance_requirements_control_id) REFERENCES compliance_requirements_controls(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY resource_label_events
     ADD CONSTRAINT fk_rails_fe91ece594 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;

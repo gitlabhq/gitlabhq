@@ -77,7 +77,7 @@ module API
       end
       route_setting :authentication, job_token_allowed: true
       get ':id/packages/:package_id' do
-        render_api_error!('Package not found', 404) unless package.default?
+        render_api_error!('Package not found', 404) unless package.detailed_info?
 
         present package, with: ::API::Entities::Package, user: current_user, namespace: user_project.namespace
       end
@@ -103,7 +103,7 @@ module API
       end
       route_setting :authentication, job_token_allowed: true
       get ':id/packages/:package_id/pipelines' do
-        not_found!('Package not found') unless package.default?
+        not_found!('Package not found') unless package.detailed_info?
 
         params[:pagination] = 'keyset' # keyset is the only available pagination
         pipelines = paginate_with_strategies(

@@ -106,7 +106,7 @@ RSpec.describe 'Projects > Files > User deletes files', :js, feature_category: :
 
       epoch = Time.zone.now.strftime('%s%L').last(5)
       expect(page).to have_checked_field _('Create a merge request for this change')
-      expect(find_field(_('Commit to a new branch')).value).to eq "#{user.username}-protected-branch-patch-#{epoch}"
+      expect(find_field('branch_name').value).to eq "#{user.username}-protected-branch-patch-#{epoch}"
 
       fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Commit changes')

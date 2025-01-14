@@ -1,5 +1,5 @@
 <script>
-import { GlBadge } from '@gitlab/ui';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { s__ } from '~/locale';
 
 const STATUS_TEXT = {
@@ -10,16 +10,6 @@ const STATUS_TEXT = {
   canceled: s__('Deployment|Cancelled'),
   skipped: s__('Deployment|Skipped'),
   blocked: s__('Deployment|Waiting'),
-};
-
-const STATUS_VARIANT = {
-  success: 'success',
-  running: 'info',
-  failed: 'danger',
-  created: 'neutral',
-  canceled: 'neutral',
-  skipped: 'neutral',
-  blocked: 'neutral',
 };
 
 const STATUS_ICON = {
@@ -34,7 +24,7 @@ const STATUS_ICON = {
 
 export default {
   components: {
-    GlBadge,
+    CiIcon,
   },
   props: {
     status: {
@@ -54,12 +44,16 @@ export default {
     text() {
       return STATUS_TEXT[this.status];
     },
-    variant() {
-      return STATUS_VARIANT[this.status];
+    statusObject() {
+      return {
+        text: this.text,
+        icon: this.icon,
+        detailsPath: this.href,
+      };
     },
   },
 };
 </script>
 <template>
-  <gl-badge v-if="status" :icon="icon" :variant="variant" :href="href">{{ text }}</gl-badge>
+  <ci-icon v-if="status" :status="statusObject" show-status-text class="!gl-border-0" />
 </template>

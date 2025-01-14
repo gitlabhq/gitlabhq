@@ -29,5 +29,13 @@ module Search
     def failed?(*)
       error.present?
     end
+
+    def blobs_count
+      0
+    end
+
+    def file_count
+      0
+    end
   end
 end

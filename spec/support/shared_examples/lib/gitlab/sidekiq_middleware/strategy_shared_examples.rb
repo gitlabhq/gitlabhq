@@ -196,7 +196,7 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
       allow(fake_duplicate_job).to receive(:delete!)
       allow(fake_duplicate_job).to receive(:scheduled?) { false }
       allow(fake_duplicate_job).to receive(:options) { {} }
-      allow(fake_duplicate_job).to receive(:latest_wal_locations).and_return( wal_locations )
+      allow(fake_duplicate_job).to receive(:latest_wal_locations).and_return(wal_locations)
       allow(fake_duplicate_job).to receive(:idempotency_key).and_return('abc123')
       allow(fake_duplicate_job).to receive(:strategy).and_return(:until_executed)
       allow(fake_duplicate_job).to receive(:reschedulable?) { false }
@@ -222,7 +222,7 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
 
     context 'when latest_wal_location is empty' do
       before do
-        allow(fake_duplicate_job).to receive(:latest_wal_locations).and_return( {} )
+        allow(fake_duplicate_job).to receive(:latest_wal_locations).and_return({})
       end
 
       include_examples 'does not update job hash'

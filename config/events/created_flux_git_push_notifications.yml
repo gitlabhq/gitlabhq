@@ -5,9 +5,6 @@ action: create_flux_git_push_notification
 product_group: environments
 milestone: '17.3'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150613
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

@@ -9,8 +9,9 @@ class Packages::Package < ApplicationRecord
   include Packages::Downloadable
   include EnumInheritance
 
-  DISPLAYABLE_STATUSES = [:default, :error].freeze
-  INSTALLABLE_STATUSES = [:default, :hidden].freeze
+  DISPLAYABLE_STATUSES = [:default, :error, :deprecated].freeze
+  INSTALLABLE_STATUSES = [:default, :hidden, :deprecated].freeze
+  DETAILED_INFO_STATUSES = [:default, :deprecated].freeze
   STATUS_MESSAGE_MAX_LENGTH = 255
 
   enum package_type: {
@@ -30,7 +31,7 @@ class Packages::Package < ApplicationRecord
     ml_model: 14
   }
 
-  enum status: { default: 0, hidden: 1, processing: 2, error: 3, pending_destruction: 4 }
+  enum status: { default: 0, hidden: 1, processing: 2, error: 3, pending_destruction: 4, deprecated: 5 }
 
   belongs_to :project
   belongs_to :creator, class_name: 'User'
@@ -269,6 +270,10 @@ class Packages::Package < ApplicationRecord
         package_type: package_type
       })
     )
+  end
+
+  def detailed_info?
+    DETAILED_INFO_STATUSES.include?(status.to_sym)
   end
 
   private

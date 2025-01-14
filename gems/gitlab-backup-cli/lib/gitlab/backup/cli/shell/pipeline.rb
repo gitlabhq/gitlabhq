@@ -4,7 +4,7 @@ module Gitlab
   module Backup
     module Cli
       module Shell
-        class Pipeline
+        class Pipeline < Base
           # Result data structure from running a pipeline
           #
           # @attr [String] stderr
@@ -33,6 +33,9 @@ module Gitlab
           # @return [Pipeline::Result]
           def run!(input: nil, output: nil)
             start = Time.now
+            input = typecast_input!(input)
+            output = typecast_output!(output)
+
             # Open3 writes on `err_write` and we receive from `err_read`
             err_read, err_write = IO.pipe
 

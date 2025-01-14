@@ -8,67 +8,25 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Use this API to interact with service accounts. For more information, see [Service accounts](../user/profile/service_accounts.md).
-
-## Create a service account user
-
-> - Ability to create a service account user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406782) in GitLab 16.1
-> - Ability to specify a username or name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144841) in GitLab 16.10.
-
-Create a service account user. You can specify the account username and name. If you do not specify any attributes:
-
-- The default name is `Service account user`.
-- The username is automatically generated.
-
-Prerequisites:
-
-- You must be an administrator.
-
-```plaintext
-POST /service_accounts
-```
-
-Supported attributes:
-
-| Attribute  | Type   | Required | Description |
-|:-----------|:-------|:---------|:------------|
-| `name`     | string | no       | Name of the user. |
-| `username` | string | no       | Username of the user. |
-
-Example request:
-
-```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/service_accounts"
-```
-
-Example response:
-
-```json
-{
-  "id": 57,
-  "username": "service_account_6018816a18e515214e0c34c2b33523fc",
-  "name": "Service account user"
-}
-```
 
 ## List all service account users
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
-> - Ability to list all service account users [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416729) in GitLab 17.1.
+> - List all service account users [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416729) in GitLab 17.1.
 
 Lists all service account users.
 
+Use the `page` and `per_page` [pagination parameters](rest/index.md#offset-based-pagination) to filter the results.
+
 Prerequisites:
 
-- You must be an administrator.
-
-This function takes [pagination parameters](rest/index.md#offset-based-pagination) `page` and `per_page` to restrict the
-list of users.
+- You must have administrator access to the instance.
 
 ```plaintext
 GET /service_accounts
@@ -78,8 +36,8 @@ Supported attributes:
 
 | Attribute  | Type   | Required | Description |
 |:-----------|:-------|:---------|:------------|
-| `order_by` | string | no       | Order list of users by `username` or `id` Default is `id`. |
-| `sort`     | string | no       | Specify sorting by `asc` or `desc`. Default is `desc`. |
+| `order_by` | string | no       | Attribute to order results by. Possible values: `id` or `username`. Default value: `id`. |
+| `sort`     | string | no       | Direction to sort results by. Possible values: `desc` or `asc`. Default value: `desc`.   |
 
 Example request:
 
@@ -102,4 +60,42 @@ Example response:
     "name": "john doe"
   }
 ]
+```
+
+## Create a service account user
+
+> - Create a service account user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406782) in GitLab 16.1
+> - Username and name attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144841) in GitLab 16.10.
+
+Creates a service account user.
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+```plaintext
+POST /service_accounts
+```
+
+Supported attributes:
+
+| Attribute  | Type   | Required | Description |
+|:-----------|:-------|:---------|:------------|
+| `name`     | string | no       | Name of the user. If not set, uses `Service account user`. |
+| `username` | string | no       | Username of the user account. If not set, generates a name prepended with `service_account_`. |
+
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/service_accounts"
+```
+
+Example response:
+
+```json
+{
+  "id": 57,
+  "username": "service_account_6018816a18e515214e0c34c2b33523fc",
+  "name": "Service account user"
+}
 ```

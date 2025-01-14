@@ -153,6 +153,7 @@ export default {
             :title="milestone.description"
             :href="milestone.webUrl"
             class="gl-mr-2"
+            data-testid="milestone-title"
           >
             {{ milestone.title }}
           </gl-link>

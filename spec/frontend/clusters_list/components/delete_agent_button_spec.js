@@ -11,7 +11,8 @@ import DeleteAgentButton from '~/clusters_list/components/delete_agent_button.vu
 import { DELETE_AGENT_BUTTON } from '~/clusters_list/constants';
 import { stubComponent } from 'helpers/stub_component';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import { getAgentResponse, mockDeleteResponse, mockErrorDeleteResponse } from '../mocks/apollo';
+import { mockDeleteResponse, mockErrorDeleteResponse } from '../mocks/apollo';
+import { getAgentResponse } from './mock_data';
 
 Vue.use(VueApollo);
 

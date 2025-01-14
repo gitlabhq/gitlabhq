@@ -33,6 +33,16 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
 
       it_behaves_like 'fails to transfer work item', 'Cannot move work item due to insufficient permissions'
     end
+
+    context 'when work item is already moved once' do
+      let(:current_user) { projects_member }
+
+      before do
+        original_work_item.update!(moved_to: create(:issue))
+      end
+
+      it_behaves_like 'fails to transfer work item', 'Cannot move work item due to insufficient permissions'
+    end
   end
 
   context 'when user has permission to move work item' do

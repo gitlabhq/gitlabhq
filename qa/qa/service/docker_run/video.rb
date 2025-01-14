@@ -12,7 +12,8 @@ module QA
           DESKTOP_VIDEO_SIZE = '1920x1080'
 
           def configure!
-            return unless QA::Runtime::Env.record_video?
+            return if Runtime::Env.dry_run
+            return unless Runtime::Env.record_video?
 
             begin
               QA::Runtime::Env.require_video_variables!

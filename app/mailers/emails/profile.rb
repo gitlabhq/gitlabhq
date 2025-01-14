@@ -30,6 +30,7 @@ module Emails
 
     def user_deactivated_email(name, email)
       @name = name
+      @host = Gitlab.config.gitlab.host
 
       email_with_layout(
         to: email,

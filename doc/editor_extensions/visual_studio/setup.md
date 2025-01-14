@@ -28,7 +28,7 @@ After you download and install the extension, connect it to your GitLab account.
 
 ### Create a personal access token
 
-If you are on a self-managed GitLab instance, create a personal access token.
+If you are on GitLab Self-Managed, create a personal access token.
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
@@ -57,5 +57,5 @@ This extension provides these custom commands, which you can configure:
 You can access the extension's custom commands with keyboard shortcuts, which you can customize:
 
 1. On the top bar, go to **Tools > Options**.
-1. Go to **Environment > Keyboard**. Commands exposed by this extension are prefixed with `GitLab.`.
+1. Go to **Environment > Keyboard**. This extension prefixes its commands with `GitLab.`.
 1. Select a command, and assign it a keyboard shortcut.

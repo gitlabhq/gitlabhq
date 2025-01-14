@@ -244,73 +244,61 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
   end
 
   describe '#supported_quick_action_commands' do
-    let(:work_item) { build(:work_item, :task) }
+    let_it_be(:custom_type_without_widgets) { create(:work_item_type, :non_default) }
+    let_it_be(:custom_work_item_type) do
+      create(:work_item_type, :non_default, widgets: [
+        :assignees,
+        :labels,
+        :start_and_due_date,
+        :current_user_todos
+      ])
+    end
+
+    let_it_be(:work_item_with_widgets) { build(:work_item, work_item_type: custom_work_item_type) }
+    let_it_be(:work_item_without_widgets) { build(:work_item, work_item_type: custom_type_without_widgets) }
+
+    let(:work_item) { work_item_without_widgets }
 
     subject { work_item.supported_quick_action_commands }
 
     it 'returns quick action commands supported for all work items' do
       is_expected.to include(:title, :reopen, :close, :cc, :tableflip, :shrug, :type, :promote_to, :checkin_reminder,
-        :subscribe, :unsubscribe, :confidential, :award)
+        :subscribe, :unsubscribe, :confidential, :award, :move, :clone)
     end
 
-    context 'when work item supports the assignee widget' do
-      it 'returns assignee related quick action commands' do
+    it 'omits quick action commands from assignees widget' do
+      is_expected.not_to include(:assign, :unassign, :reassign)
+    end
+
+    it 'omits quick action commands from labels widget' do
+      is_expected.not_to include(:label, :labels, :relabel, :remove_label, :unlabel)
+    end
+
+    it 'omits quick action commands from start and due date widget' do
+      is_expected.not_to include(:due, :remove_due_date)
+    end
+
+    it 'omits quick action commands from current user todos widget' do
+      is_expected.not_to include(:todo, :done)
+    end
+
+    context 'when work item type has relevant widgets' do
+      let(:work_item) { work_item_with_widgets }
+
+      it 'returns quick action commands from assignee widget' do
         is_expected.to include(:assign, :unassign, :reassign)
       end
-    end
 
-    context 'when work item does not the assignee widget' do
-      let(:work_item) { build(:work_item, :test_case) }
-
-      it 'omits assignee related quick action commands' do
-        is_expected.not_to include(:assign, :unassign, :reassign)
-      end
-    end
-
-    context 'when work item supports the labels widget' do
-      it 'returns labels related quick action commands' do
+      it 'returns quick action commands from labels widget' do
         is_expected.to include(:label, :labels, :relabel, :remove_label, :unlabel)
       end
-    end
 
-    context 'when work item does not support the labels widget' do
-      let(:work_item) { build(:work_item, :incident) }
-
-      it 'omits labels related quick action commands' do
-        is_expected.not_to include(:label, :labels, :relabel, :remove_label, :unlabel)
-      end
-    end
-
-    context 'when work item supports the start and due date widget' do
-      it 'returns due date related quick action commands' do
+      it 'returns quick action commands from start and due date widget' do
         is_expected.to include(:due, :remove_due_date)
       end
-    end
 
-    context 'when work item does not support the start and due date widget' do
-      let(:work_item) { build(:work_item, :incident) }
-
-      it 'omits due date related quick action commands' do
-        is_expected.not_to include(:due, :remove_due_date)
-      end
-    end
-
-    context 'when work item supports the current user todos widget' do
-      it 'returns todos related quick action commands' do
+      it 'returns quick action commands from current user todos widget' do
         is_expected.to include(:todo, :done)
-      end
-    end
-
-    context 'when work item does not support current user todos widget' do
-      let(:work_item) { build(:work_item, :task) }
-
-      before do
-        WorkItems::Type.default_by_type(:task).widget_definitions
-                       .find_by_widget_type(:current_user_todos).update!(disabled: true)
-      end
-
-      it 'omits todos related quick action commands' do
-        is_expected.not_to include(:todo, :done)
       end
     end
   end

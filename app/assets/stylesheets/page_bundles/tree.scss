@@ -88,7 +88,7 @@
 
   table.tree-table {
     margin-bottom: 0;
-    @apply dark:gl-bg-gray-50;
+    @apply dark:gl-bg-neutral-900;
 
     tr {
       @apply gl-border-b gl-border-b-section;
@@ -99,7 +99,7 @@
       }
 
       th {
-        @apply gl-bg-subtle dark:gl-bg-gray-100;
+        @apply gl-bg-subtle dark:gl-bg-neutral-800;
         border: 0;
       }
 
@@ -109,7 +109,7 @@
 
       &:hover:not(.tree-truncated-warning) {
         td {
-          @apply gl-bg-blue-50 dark:gl-bg-gray-100;
+          @apply gl-bg-blue-50 dark:gl-bg-neutral-800;
           background-clip: padding-box;
           border-top: 1px solid var(--gl-action-selected-border-color-default);
           border-bottom: 1px solid var(--gl-action-selected-border-color-default);
@@ -148,7 +148,7 @@
 
       &.selected {
         td {
-          @apply gl-bg-strong dark:gl-bg-gray-100 gl-border-t gl-border-b;
+          @apply gl-bg-strong dark:gl-bg-neutral-800 gl-border-t gl-border-b;
         }
       }
 

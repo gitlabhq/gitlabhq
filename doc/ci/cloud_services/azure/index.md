@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 WARNING:
 `CI_JOB_JWT_V2` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
@@ -19,9 +19,6 @@ to retrieve temporary credentials from Azure without needing to store secrets.
 
 To get started, configure OpenID Connect (OIDC) for identity federation between GitLab and Azure.
 For more information on using OIDC with GitLab, read [Connect to cloud services](../index.md).
-
-Azure [does not support wildcard matching for subjects of a conditional role](https://gitlab.com/gitlab-org/gitlab/-/issues/346737#note_836584745).
-A separate credential configuration must be created for each branch that needs to access Azure.
 
 Prerequisites:
 
@@ -65,7 +62,8 @@ Instead of the Azure CLI, you can [use the Azure Portal to create these resource
 
 ## Create Azure AD federated identity credentials
 
-To create the federated identity credentials for the above Azure AD application:
+To create the federated identity credentials for the above Azure AD application
+for a specific branch in `<mygroup>/<myproject>`:
 
 ```shell
 objectId=$(az ad app show --id $appId --query id -otsv)
@@ -97,6 +95,59 @@ identity credentials from the Azure Portal:
    `Object ID`, and `Tenant ID`.
 1. Under `Certificates & secrets`, go to `Federated credentials` to review your
    Azure AD federated identity credentials.
+
+### Create credentials for any branch or any tag
+
+To create credentials for any branch or tag (wildcard matching), you can use
+[flexible federated identity credentials](https://learn.microsoft.com/entra/workload-id/workload-identities-flexible-federated-identity-credentials).
+
+For all branches in `<mygroup>/<myproject>`:
+
+```shell
+objectId=$(az ad app show --id $appId --query id -otsv)
+
+cat <<EOF > body.json
+{
+  "name": "gitlab-federated-identity",
+  "issuer": "https://gitlab.example.com",
+  "subject": null,
+  "claimsMatchingExpression": {
+    "value": "claims['sub'] matches 'project_path:<mygroup>/<myproject>:ref_type:branch:ref:*'",
+    "languageVersion": 1
+  },
+  "description": "GitLab service account federated identity",
+  "audiences": [
+    "https://gitlab.example.com"
+  ]
+}
+EOF
+
+az rest --method POST --uri "https://graph.microsoft.com/beta/applications/$objectId/federatedIdentityCredentials" --body @body.json
+```
+
+For all tags in `<mygroup>/<myproject>`:
+
+```shell
+objectId=$(az ad app show --id $appId --query id -otsv)
+
+cat <<EOF > body.json
+{
+  "name": "gitlab-federated-identity",
+  "issuer": "https://gitlab.example.com",
+  "subject": null,
+  "claimsMatchingExpression": {
+    "value": "claims['sub'] matches 'project_path:<mygroup>/<myproject>:ref_type:tag:ref:*'",
+    "languageVersion": 1
+  },
+  "description": "GitLab service account federated identity",
+  "audiences": [
+    "https://gitlab.example.com"
+  ]
+}
+EOF
+
+az rest --method POST --uri "https://graph.microsoft.com/beta/applications/$objectId/federatedIdentityCredentials" --body @body.json
+```
 
 ## Grant permissions for the service principal
 

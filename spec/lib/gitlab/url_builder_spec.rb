@@ -23,8 +23,9 @@ RSpec.describe Gitlab::UrlBuilder do
       :commit            | ->(commit)        { "/#{commit.project.full_path}/-/commit/#{commit.id}" }
       :issue             | ->(issue)         { "/#{issue.project.full_path}/-/issues/#{issue.iid}" }
       [:issue, :task]    | ->(issue)         { "/#{issue.project.full_path}/-/work_items/#{issue.iid}" }
-      [:work_item, :task] | ->(work_item)    { "/#{work_item.project.full_path}/-/work_items/#{work_item.iid}" }
-      [:work_item, :issue] | ->(work_item)   { "/#{work_item.project.full_path}/-/issues/#{work_item.iid}" }
+      [:work_item, :task]     | ->(work_item)    { "/#{work_item.project.full_path}/-/work_items/#{work_item.iid}" }
+      [:work_item, :issue]    | ->(work_item)    { "/#{work_item.project.full_path}/-/issues/#{work_item.iid}" }
+      [:work_item, :incident] | ->(work_item)    { "/#{work_item.project.full_path}/-/issues/#{work_item.iid}" }
       :merge_request     | ->(merge_request) { "/#{merge_request.project.full_path}/-/merge_requests/#{merge_request.iid}" }
       :project_milestone | ->(milestone)     { "/#{milestone.project.full_path}/-/milestones/#{milestone.iid}" }
       :project_snippet   | ->(snippet)       { "/#{snippet.project.full_path}/-/snippets/#{snippet.id}" }
@@ -78,6 +79,14 @@ RSpec.describe Gitlab::UrlBuilder do
       it 'returns only the path if only_path is given' do
         expect(subject.build(object, only_path: true)).to eq(path)
       end
+    end
+
+    context 'when passing a Service Desk issue', feature_category: :service_desk do
+      let(:service_desk_issue) { create(:work_item, :issue, author: Users::Internal.support_bot) }
+
+      subject { described_class.build(service_desk_issue, only_path: true) }
+
+      it { is_expected.to eq("/#{service_desk_issue.project.full_path}/-/issues/#{service_desk_issue.iid}") }
     end
 
     context 'when passing a wiki note' do

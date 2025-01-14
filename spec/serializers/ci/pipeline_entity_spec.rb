@@ -39,7 +39,7 @@ RSpec.describe Ci::PipelineEntity, feature_category: :continuous_integration do
           .to include :duration, :finished_at, :event_type_name
         expect(subject[:details][:status]).to include :icon, :favicon, :text, :label, :tooltip
 
-        expect(subject[:details][:event_type_name]).to eq('Merged result pipeline')
+        expect(subject[:details][:event_type_name]).to eq('Merged results pipeline')
       end
 
       it 'contains flags' do

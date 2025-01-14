@@ -76,13 +76,28 @@ module Gitlab
         validate_html(errors, entry)
         validate_translation(errors, entry)
         validate_namespace(errors, entry)
+        validate_spaces(errors, entry)
 
         errors
       end
 
+      def validate_spaces(errors, entry)
+        if entry.translations_contain_leading_space?
+          errors << 'has leading space. Remove it from the translation'
+        end
+
+        if entry.translations_contain_trailing_space?
+          errors << 'has trailing space. Remove it from the translation'
+        end
+
+        if entry.translations_contain_multiple_spaces?
+          errors << 'has different sets of consecutive multiple spaces. Make them consistent with source string'
+        end
+      end
+
       def validate_namespace(errors, entry)
         if entry.translations_contain_namespace?
-          errors << 'contains a namespace, remove it from the translation. For more information see ' \
+          errors << 'contains a namespace. Remove it from the translation. For more information see ' \
                     'https://docs.gitlab.com/ee/development/i18n/translation.html#namespaced-strings'
         end
       end

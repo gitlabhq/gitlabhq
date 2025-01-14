@@ -1333,6 +1333,18 @@ describe('legacyDiffs actions', () => {
     });
   });
 
+  describe('setTreeOpen', () => {
+    it('commits SET_FOLDER_OPEN', () => {
+      return testAction(
+        store.setTreeOpen,
+        { path: 'path', opened: true },
+        { treeEntries: { path: {} } },
+        [{ type: store[types.SET_FOLDER_OPEN], payload: { path: 'path', opened: true } }],
+        [],
+      );
+    });
+  });
+
   describe('goToFile', () => {
     const file = { path: 'path' };
     const fileHash = 'test';

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 The **Admin** area provides a web UI to manage and configure features of GitLab
 self-managed instances. If you are an administrator, to access the **Admin** area:
@@ -29,7 +29,7 @@ Only administrators on GitLab self-managed or GitLab Dedicated can access the **
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419540) in GitLab 16.10 [with a flag](feature_flags.md) named `ui_for_organizations`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](feature_flags.md) named `ui_for_organizations`.
+On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](feature_flags.md) named `ui_for_organizations`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
@@ -165,7 +165,7 @@ the identities being used for an account.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 An administrator can export user permissions for all users in the GitLab instance from the **Admin** area's Users page.
 The export lists direct membership the users have in groups and projects.
@@ -498,7 +498,7 @@ The content of each log file is listed in chronological order. To minimize perfo
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 The **Audit events** page lists changes made within the GitLab server. With this information you can control, analyze, and track every change.
 

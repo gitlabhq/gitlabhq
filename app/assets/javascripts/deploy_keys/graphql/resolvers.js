@@ -19,7 +19,7 @@ const DEFAULT_PAGE_SIZE = 5;
 
 export const resolvers = (endpoints) => ({
   Project: {
-    deployKeys(_, { scope, page }, { client }) {
+    deployKeys(_, { scope, page, search }, { client }) {
       const key = `${scope}Endpoint`;
       let { [key]: endpoint } = endpoints;
 
@@ -28,7 +28,7 @@ export const resolvers = (endpoints) => ({
       }
 
       return axios
-        .get(endpoint, { params: { page, per_page: DEFAULT_PAGE_SIZE } })
+        .get(endpoint, { params: { page, per_page: DEFAULT_PAGE_SIZE, ...search } })
         .then(({ headers, data }) => {
           const normalizedHeaders = normalizeHeaders(headers);
           const pageInfo = {
@@ -37,7 +37,7 @@ export const resolvers = (endpoints) => ({
           };
           client.writeQuery({
             query: pageInfoQuery,
-            variables: { input: { page, scope } },
+            variables: { input: { page, scope, search } },
             data: { pageInfo },
           });
           return data?.keys?.map(mapDeployKey) || [];

@@ -26,6 +26,11 @@ export default {
       required: false,
       default: '',
     },
+    autosaveKey: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     ...mapGetters('batchComments', ['draftsForFile']),
@@ -53,7 +58,7 @@ export default {
           class="js-diff-notes-index -gl-translate-x-1/2"
           size="sm"
         />
-        <draft-note :draft="draft" />
+        <draft-note :draft="draft" :autosave-key="autosaveKey" />
       </div>
     </div>
   </div>

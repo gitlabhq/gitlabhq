@@ -9,7 +9,7 @@ type: concepts, howto
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can use Fortanix Data Security Manager (DSM) as your secrets manager for GitLab CI/CD pipelines.
 

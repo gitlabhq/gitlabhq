@@ -25,6 +25,7 @@ sast:
     - when: never
   variables:
     SEARCH_MAX_DEPTH: 4
+  cache: []
   script:
     - echo "$CI_JOB_NAME is used for configuration only, and its script should not be executed"
     - exit 1

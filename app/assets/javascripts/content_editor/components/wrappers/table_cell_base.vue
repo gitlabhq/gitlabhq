@@ -170,11 +170,9 @@ export default {
       <gl-disclosure-dropdown
         ref="dropdown"
         dropup
-        icon="chevron-down"
         size="small"
         category="tertiary"
         boundary="viewport"
-        no-caret
         text-sr-only
         :items="dropdownItems"
         :toggle-text="__('Edit table')"

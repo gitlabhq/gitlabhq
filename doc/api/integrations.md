@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 This API enables you to work with external services that integrate with GitLab.
 
@@ -775,10 +775,11 @@ GET /projects/:id/integrations/external-wiki
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435706) in GitLab 16.9 [with a flag](../administration/feature_flags.md) named `git_guardian_integration`. Enabled by default. Disabled on GitLab.com.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/438695#note_2226917025) in GitLab 17.7.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176391) in GitLab 17.8. Feature flag `git_guardian_integration` removed.
 > - `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `integration_api_inheritance`. Disabled by default.
 > - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
 
@@ -834,7 +835,7 @@ GET /projects/:id/integrations/git-guardian
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - `use_inherited_settings` parameter [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `integration_api_inheritance`. Disabled by default.
 > - `use_inherited_settings` parameter [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467186) in GitLab 17.3. Feature flag `integration_api_inheritance` removed.
@@ -1298,7 +1299,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `teamcity_url` | string | yes | TeamCity root URL (for example, `https://teamcity.example.com`). |
 | `enable_ssl_verification` | boolean | no | Enable SSL verification. Defaults to `true` (enabled). |
-| `build_type` | string | yes | Build configuration ID. |
+| `build_type` | string | yes | The build configuration ID of the TeamCity project. |
 | `username` | string | yes | A user with permissions to trigger a manual build. |
 | `password` | string | yes | The password of the user. |
 | `push_events` | boolean | no | Enable notifications for push events. |
@@ -1825,8 +1826,8 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `api_key` | string | yes | Your application key. |
-| `user_key` | string | yes | Your user key. |
+| `api_key` | string | yes | The application key. |
+| `user_key` | string | yes | The user key. |
 | `priority` | string | yes | The priority. |
 | `device` | string | no | Leave blank for all active devices. |
 | `sound` | string | no | The sound of the notification. |

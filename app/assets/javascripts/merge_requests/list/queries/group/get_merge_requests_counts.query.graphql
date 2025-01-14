@@ -1,0 +1,131 @@
+query getGroupMergeRequestsCount(
+  $fullPath: ID!
+  $search: String
+  $approvedBy: [String!]
+  $assigneeUsernames: String
+  $assigneeWildcardId: AssigneeWildcardId
+  $reviewerUsername: String
+  $reviewerWildcardId: ReviewerWildcardId
+  $authorUsername: String
+  $draft: Boolean
+  $labelName: [String!]
+  $releaseTag: String
+  $mergeUser: String
+  $milestoneTitle: String
+  $milestoneWildcardId: MilestoneWildcardId
+  $myReactionEmoji: String
+  $sourceBranches: [String!]
+  $targetBranches: [String!]
+  $deployedBefore: Time
+  $deployedAfter: Time
+  $environmentName: String
+  $not: MergeRequestsResolverNegatedParams
+) {
+  namespace: group(fullPath: $fullPath) {
+    id
+    openedMergeRequests: mergeRequests(
+      state: opened
+      search: $search
+      approvedBy: $approvedBy
+      assigneeUsername: $assigneeUsernames
+      assigneeWildcardId: $assigneeWildcardId
+      reviewerUsername: $reviewerUsername
+      reviewerWildcardId: $reviewerWildcardId
+      authorUsername: $authorUsername
+      draft: $draft
+      labelName: $labelName
+      releaseTag: $releaseTag
+      mergedBy: $mergeUser
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      sourceBranches: $sourceBranches
+      targetBranches: $targetBranches
+      deployedBefore: $deployedBefore
+      deployedAfter: $deployedAfter
+      environmentName: $environmentName
+      not: $not
+      includeSubgroups: true
+    ) {
+      count
+    }
+    mergedMergeRequests: mergeRequests(
+      state: merged
+      search: $search
+      approvedBy: $approvedBy
+      assigneeUsername: $assigneeUsernames
+      assigneeWildcardId: $assigneeWildcardId
+      reviewerUsername: $reviewerUsername
+      reviewerWildcardId: $reviewerWildcardId
+      authorUsername: $authorUsername
+      draft: $draft
+      labelName: $labelName
+      releaseTag: $releaseTag
+      mergedBy: $mergeUser
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      sourceBranches: $sourceBranches
+      targetBranches: $targetBranches
+      deployedBefore: $deployedBefore
+      deployedAfter: $deployedAfter
+      environmentName: $environmentName
+      not: $not
+      includeSubgroups: true
+    ) {
+      count
+    }
+    closedMergeRequests: mergeRequests(
+      state: closed
+      search: $search
+      approvedBy: $approvedBy
+      assigneeUsername: $assigneeUsernames
+      assigneeWildcardId: $assigneeWildcardId
+      reviewerUsername: $reviewerUsername
+      reviewerWildcardId: $reviewerWildcardId
+      authorUsername: $authorUsername
+      draft: $draft
+      labelName: $labelName
+      releaseTag: $releaseTag
+      mergedBy: $mergeUser
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      sourceBranches: $sourceBranches
+      targetBranches: $targetBranches
+      deployedBefore: $deployedBefore
+      deployedAfter: $deployedAfter
+      environmentName: $environmentName
+      not: $not
+      includeSubgroups: true
+    ) {
+      count
+    }
+    allMergeRequests: mergeRequests(
+      state: all
+      search: $search
+      approvedBy: $approvedBy
+      assigneeUsername: $assigneeUsernames
+      assigneeWildcardId: $assigneeWildcardId
+      reviewerUsername: $reviewerUsername
+      reviewerWildcardId: $reviewerWildcardId
+      authorUsername: $authorUsername
+      draft: $draft
+      labelName: $labelName
+      releaseTag: $releaseTag
+      mergedBy: $mergeUser
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      sourceBranches: $sourceBranches
+      targetBranches: $targetBranches
+      deployedBefore: $deployedBefore
+      deployedAfter: $deployedAfter
+      environmentName: $environmentName
+      not: $not
+      includeSubgroups: true
+    ) {
+      count
+    }
+  }
+}

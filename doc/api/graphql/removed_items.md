@@ -8,11 +8,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 GraphQL is a versionless API, unlike the REST API.
 Occasionally, items have to be updated or removed from the GraphQL API.
 According to our [process for removing items](index.md#deprecation-and-removal-process), here are the items that have been removed.
+
+For deprecations, see the [Deprecations by version page](../../update/deprecations.md).
 
 ## GitLab 17.0
 

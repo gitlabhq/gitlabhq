@@ -84,8 +84,16 @@ RSpec.shared_examples 'migration that adds widgets to a work item type' do
       created_widgets = work_item_widget_definitions.last(widgets.size)
 
       widgets.each do |widget|
+        expected_attributes = {
+          work_item_type_id: work_item_type.id,
+          widget_type: widget[:widget_type],
+          name: widget[:name],
+          # Hashes from json from DB have string keys
+          widget_options: widget[:widget_options] ? widget[:widget_options].stringify_keys : nil
+        }
+
         expect(created_widgets).to include(
-          have_attributes(widget.merge(work_item_type_id: work_item_type.id))
+          have_attributes(expected_attributes)
         )
       end
     end

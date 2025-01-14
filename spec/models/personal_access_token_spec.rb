@@ -34,6 +34,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
     it { is_expected.to belong_to(:previous_personal_access_token).class_name('PersonalAccessToken') }
     it { is_expected.to belong_to(:organization).class_name('Organizations::Organization') }
+    it { is_expected.to have_many(:last_used_ips) }
   end
 
   describe 'scopes' do
@@ -117,6 +118,25 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
           old_formerly_used_token,
           old_still_used_token
         )
+      end
+    end
+
+    describe 'expires scopes', :time_freeze do
+      let!(:expires_last_month_token) { create(:personal_access_token, expires_at: 1.month.ago) }
+      let!(:expires_next_month_token) { create(:personal_access_token, expires_at: 1.month.from_now) }
+      let!(:expires_two_months_token) { create(:personal_access_token, expires_at: 2.months.from_now) }
+
+      describe '.expires_before' do
+        it 'finds tokens that expire before or on date' do
+          expect(described_class.expires_before(1.month.ago)).to contain_exactly(expires_last_month_token)
+        end
+      end
+
+      describe '.expires_after' do
+        it 'finds tokens that expires after or on date' do
+          expect(described_class.expires_after(1.month.from_now.beginning_of_hour))
+            .to contain_exactly(expires_next_month_token, expires_two_months_token)
+        end
       end
     end
 
@@ -666,7 +686,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
   end
 
   describe '#token' do
-    let(:random_bytes) { 'a' * TokenAuthenticatableStrategies::RoutableTokenGenerator::RANDOM_BYTES_LENGTH }
+    let(:random_bytes) { 'a' * Authn::TokenField::Generator::RoutableToken::RANDOM_BYTES_LENGTH }
     let(:devise_token) { 'devise-token' }
     let_it_be(:user) { create(:user) }
     let_it_be(:organization) { create(:organization) }
@@ -682,8 +702,8 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     subject(:token) { token_owner_record.token }
 
     before do
-      allow(TokenAuthenticatableStrategies::RoutableTokenGenerator)
-        .to receive(:random_bytes).with(TokenAuthenticatableStrategies::RoutableTokenGenerator::RANDOM_BYTES_LENGTH)
+      allow(Authn::TokenField::Generator::RoutableToken)
+        .to receive(:random_bytes).with(Authn::TokenField::Generator::RoutableToken::RANDOM_BYTES_LENGTH)
         .and_return(random_bytes)
       allow(Devise).to receive(:friendly_token).and_return(devise_token)
       allow(Settings).to receive(:cell).and_return({ id: 1 })

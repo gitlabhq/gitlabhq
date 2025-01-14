@@ -1,0 +1,97 @@
+#
+# PRODUCTION
+#
+production:
+  main:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_production
+    username: git
+    password: "secure password"
+    host: localhost
+    # load_balancing:
+    #   hosts:
+    #     - host1.example.com
+    #     - host2.example.com
+    #   discover:
+    #     nameserver: 1.2.3.4
+    #     port: 8600
+    #     record: secondary.postgresql.service.consul
+    #     interval: 300
+  ci:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_production
+    database_tasks: false
+    username: git
+    password: "secure password"
+    host: localhost
+
+#
+# Development specific
+#
+development:
+  main:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_development
+    username: postgres
+    password: "secure password"
+    host: localhost
+    variables:
+      statement_timeout: 15s
+  ci:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_development_ci
+    database_tasks: false
+    username: postgres
+    password: "secure password"
+    host: localhost
+    variables:
+      statement_timeout: 15s
+
+#
+# Staging specific
+#
+staging:
+  main:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_staging
+    username: git
+    password: "secure password"
+    host: localhost
+  ci:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_staging
+    database_tasks: false
+    username: git
+    password: "secure password"
+    host: localhost
+
+test: &test
+  main: &main
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_test
+    username: postgres
+    password:
+    host: localhost
+    prepared_statements: false
+    variables:
+      statement_timeout: 15s
+  main_replica:
+    <<: *main
+    database_tasks: false
+  ci:
+    adapter: postgresql
+    encoding: unicode
+    database: gitlabhq_ci_test
+    username: postgres
+    password:
+    host: localhost
+    prepared_statements: false
+    variables:
+      statement_timeout: 15s

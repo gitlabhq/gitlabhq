@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357032) in GitLab 15.2.
 > - `enterprise` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103969) in GitLab 15.6.
@@ -30,7 +30,7 @@ Response body attributes:
 | `kas.enabled`             | boolean        | Indicates whether KAS is enabled.                                                                                             |
 | `kas.externalUrl`         | string or null | URL used by the agents to communicate with KAS. It's `null` if `kas.enabled` is `false`.                                      |
 | `kas.externalK8sProxyUrl` | string or null | URL used by the Kubernetes tooling to communicate with the KAS Kubernetes API proxy. It's `null` if `kas.enabled` is `false`. |
-| `kas.version`             | string or null | Version of KAS. It's `null` if `kas.enabled` is `false`.                                                                      |
+| `kas.version`             | string or null | Version of KAS. It's `null` if `kas.enabled` is `false` or when GitLab instance failed to fetch server info from KAS.         |
 | `enterprise`              | boolean        | Indicates whether GitLab instance is Enterprise Edition.                                                                      |
 
 Example request:

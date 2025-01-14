@@ -2662,11 +2662,11 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     end
 
     context 'when user is using a composite identity', :request_store, :sidekiq_inline do
-      let(:user) { create(:user, username: 'gitlab-duo') }
+      let(:user) { create(:user, username: 'user-with-composite-identity') }
 
       before do
-        allow_any_instance_of(::User).to receive(:has_composite_identity?) do |user|
-          user.username == 'gitlab-duo'
+        allow_any_instance_of(::User).to receive(:composite_identity_enforced) do |user|
+          user.username == 'user-with-composite-identity'
         end
       end
 
@@ -2867,6 +2867,17 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['title']).to eq('Updated merge request')
         expect(json_response['reviewers']).to be_empty
+      end
+    end
+
+    context 'accepts merge_after' do
+      let(:params) { { merge_after: '2025-01-09T20:47+0100' } }
+
+      it 'sets merge_after on the MR' do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['merge_after']).to eq('2025-01-09T19:47:00.000Z')
       end
     end
 

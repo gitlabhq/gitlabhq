@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 When administering the GitLab for Jira Cloud app, you might encounter the following issues.
 
@@ -56,7 +56,7 @@ To resolve this issue, disable the **Jira Connect Proxy URL** setting.
   1. Clear the **Jira Connect Proxy URL** text box.
   1. Select **Save changes**.
 
-If the issue persists, verify that your self-managed GitLab instance can connect to
+If the issue persists, verify that your instance can connect to
 `connect-install-keys.atlassian.com` to get the public key from Atlassian.
 To test connectivity, run the following command:
 
@@ -67,13 +67,13 @@ curl --head "https://connect-install-keys.atlassian.com"
 
 ## Data sync fails with `Invalid JWT`
 
-If the GitLab for Jira Cloud app continuously fails to sync data from a self-managed GitLab instance,
+If the GitLab for Jira Cloud app continuously fails to sync data from your instance,
 a secret token might be outdated. Atlassian can send new secret tokens to GitLab.
 If GitLab fails to process or store these tokens, an `Invalid JWT` error occurs.
 
-To resolve this issue on your self-managed GitLab instance:
+To resolve this issue:
 
-- Confirm your self-managed GitLab instance is publicly available to:
+- Confirm the instance is publicly available to:
   - GitLab.com (if you [installed the app from the official Atlassian Marketplace listing](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace)).
   - Jira Cloud (if you [installed the app manually](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually)).
 - Ensure the token request sent to the `/-/jira_connect/events/installed` endpoint when you install the app is accessible from Jira.
@@ -83,7 +83,7 @@ To resolve this issue on your self-managed GitLab instance:
   curl --include --request POST "https://gitlab.example.com/-/jira_connect/events/installed"
   ```
 
-- If your self-managed GitLab instance has [SSL configured](https://docs.gitlab.com/omnibus/settings/ssl/), check your
+- If your instance has [SSL configured](https://docs.gitlab.com/omnibus/settings/ssl/), check your
   [certificates are valid and publicly trusted](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting.html#useful-openssl-debugging-commands).
 
 Depending on how you installed the app, you might want to check the following:
@@ -129,7 +129,7 @@ Depending on how you installed the app, you might want to check the following:
 
 - If you [installed the app manually](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually):
   - Ask [Jira Cloud Support](https://support.atlassian.com/jira-software-cloud/) to verify that Jira can connect to your
-    self-managed GitLab instance.
+    GitLab Self-Managed instance.
   - [Reinstall the app](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually). This method might remove all [synced data](../../integration/jira/connect-app.md#gitlab-data-synced-to-jira) from the [Jira development panel](../../integration/jira/development_panel.md).
 
 ## Error: `Failed to update the GitLab instance`
@@ -223,7 +223,7 @@ To locate the relevant log entries in Kibana, either:
 For the first log:
 
 - `json.status` is `422 Unprocessable Entity`.
-- `json.params.value` should match the self-managed GitLab URL `[[FILTERED], {"instance_url"=>"https://gitlab.example.com"}]`.
+- `json.params.value` should match the GitLab Self-Managed URL `[[FILTERED], {"instance_url"=>"https://gitlab.example.com"}]`.
 
 For the second log, you might have one of the following scenarios:
 

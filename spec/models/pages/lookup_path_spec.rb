@@ -50,11 +50,11 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
     end
   end
 
-  describe '#default_domain_redirect' do
-    it 'delegates to Project#project_setting#pages_default_domain_redirect' do
-      project.project_setting.pages_default_domain_redirect = 'my.domain.com'
+  describe '#primary_domain' do
+    it 'delegates to Project#project_setting#pages_primary_domain' do
+      project.project_setting.pages_primary_domain = 'my.domain.com'
 
-      expect(lookup_path.default_domain_redirect).to eq('my.domain.com')
+      expect(lookup_path.primary_domain).to eq('my.domain.com')
     end
   end
 

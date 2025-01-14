@@ -159,6 +159,29 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           it 'creates a runner_manager' do
             expect { verify }.to change { Ci::RunnerManager.count }.by(1)
           end
+
+          # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/504277 is closed.
+          context 'when project runner is missing sharding_key_id' do
+            let(:runner) { Ci::Runner.project_type.last }
+            let(:params) { { token: 'foo' } }
+            let(:connection) { Ci::Runner.connection }
+
+            before do
+              connection.execute(<<~SQL)
+                ALTER TABLE ci_runners DISABLE TRIGGER ALL;
+
+                INSERT INTO ci_runners(created_at, runner_type, token, sharding_key_id) VALUES(NOW(), 3, 'foo', NULL);
+
+                ALTER TABLE ci_runners ENABLE TRIGGER ALL;
+              SQL
+            end
+
+            it 'returns unprocessable entity status code', :aggregate_failures do
+              expect { verify }.not_to change { Ci::RunnerManager.count }.from(0)
+              expect(response).to have_gitlab_http_status(:unprocessable_entity)
+              expect(response.body).to eq({ message: 'Runner is orphaned' }.to_json)
+            end
+          end
         end
       end
 

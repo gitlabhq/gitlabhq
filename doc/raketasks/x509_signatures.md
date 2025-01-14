@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 When [signing commits with X.509](../user/project/repository/signed_commits/x509.md),
 the trust anchor might change and the signatures stored in the database must be updated.

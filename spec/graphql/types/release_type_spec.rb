@@ -51,6 +51,6 @@ RSpec.describe GitlabSchema.types['Release'] do
   describe 'commit field' do
     subject { described_class.fields['commit'] }
 
-    it { is_expected.to have_graphql_type(Types::CommitType) }
+    it { is_expected.to have_graphql_type(Types::Repositories::CommitType) }
   end
 end

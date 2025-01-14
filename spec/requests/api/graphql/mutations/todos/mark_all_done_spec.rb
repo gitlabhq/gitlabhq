@@ -6,6 +6,7 @@ RSpec.describe 'Marking all todos done', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
+  let_it_be(:group) { create(:group) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:current_user) { create(:user, developer_of: project) }
   let_it_be(:author) { create(:user) }
@@ -95,5 +96,21 @@ RSpec.describe 'Marking all todos done', feature_category: :team_planning do
     let(:current_user) { nil }
 
     it_behaves_like 'a mutation that returns a top-level access error'
+  end
+
+  context 'when filtering by a specific group' do
+    let_it_be(:todo4) do
+      create(:todo, user: current_user, author: author, state: :pending, target: issue, group: group)
+    end
+
+    let(:input) { { 'groupId' => group.id } }
+
+    it 'resolves to-dos for that group only' do
+      post_graphql_mutation(mutation, current_user: current_user)
+
+      expect(todo1.reload.state).to eq('pending')
+      expect(todo3.reload.state).to eq('pending')
+      expect(todo4.reload.state).to eq('done')
+    end
   end
 end

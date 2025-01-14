@@ -24,6 +24,13 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
   let(:mutation_response) { graphql_mutation_response(:work_item_create) }
   let(:current_user) { developer }
 
+  before_all do
+    # Ensure support bot user is created so creation doesn't count towards query limit
+    # and we don't try to obtain an exclusive lease within a transaction.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
+    Users::Internal.support_bot_id
+  end
+
   RSpec.shared_examples 'creates work item' do
     it 'creates the work item' do
       expect(work_item_type_gid.model_id.to_i).to eq(work_item_create_type.correct_id)
@@ -781,6 +788,111 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
         end
 
         it_behaves_like 'mutation setting work item contacts'
+      end
+    end
+  end
+
+  context 'when resolving a merge request discussion' do
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+    let_it_be_with_reload(:discussion_note1) do
+      create(:discussion_note, project: project, noteable: merge_request)
+    end
+
+    let_it_be_with_reload(:discussion_note2) do
+      create(:discussion_note, project: project, noteable: merge_request)
+    end
+
+    let_it_be_with_reload(:discussion_reply1) do
+      create(:discussion_note, project: project, noteable: merge_request, in_reply_to: discussion_note1)
+    end
+
+    let_it_be_with_reload(:discussion_reply2) do
+      create(:discussion_note, project: project, noteable: merge_request, in_reply_to: discussion_note2)
+    end
+
+    let(:namespace_argument) { { 'namespacePath' => project.full_path } }
+    let(:mutation) do
+      graphql_mutation(
+        :workItemCreate,
+        input.merge(resolve_discussion_arguments).merge(namespace_argument),
+        fields
+      )
+    end
+
+    let(:fields) do
+      <<~GRAPHQL
+        workItem {
+          id
+        }
+        errors
+      GRAPHQL
+    end
+
+    context 'when a noteable that is not a merge reques is specified' do
+      let(:resolve_discussion_arguments) do
+        {
+          discussions_to_resolve: { noteable_id: create(:issue, project: project).to_gid.to_s }
+        }
+      end
+
+      it 'returns an error' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(graphql_errors).to contain_exactly(
+          hash_including(
+            'message' => _('Only Merge Requests are allowed as a noteable to resolve discussions of at the moment.')
+          )
+        )
+      end
+    end
+
+    context 'when no discussion ID is provided' do
+      let(:resolve_discussion_arguments) do
+        {
+          discussions_to_resolve: { noteable_id: merge_request.to_gid.to_s }
+        }
+      end
+
+      it 'resolves all discussions for the MR', :aggregate_failures do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+        end.to change { discussion_note1.reload.resolved? }.from(false).to(true)
+          .and(change { discussion_note1.reload.resolved? }.from(false).to(true))
+          .and(change { WorkItem.count }.by(1))
+      end
+
+      context 'when user cannot resolve discussions' do
+        it 'returns an error' do
+          post_graphql_mutation(mutation, current_user: create(:user, guest_of: project))
+
+          expect(graphql_errors).to contain_exactly(
+            hash_including(
+              'message' => "The resource that you are attempting to access does not exist or you don't " \
+                'have permission to perform this action'
+            )
+          )
+        end
+      end
+    end
+
+    context 'when a discussion ID is provided', :aggregate_failures do
+      let(:resolve_discussion_arguments) do
+        {
+          discussions_to_resolve: {
+            noteable_id: merge_request.to_gid.to_s,
+            discussion_id: discussion_note1.discussion_id
+          }
+        }
+      end
+
+      it 'resolves only the specified discussion' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+        end.to change { discussion_note1.reload.resolved? }.from(false).to(true)
+          .and(change { discussion_reply1.reload.resolved? }.from(false).to(true))
+          .and(not_change { discussion_note2.reload.resolved? }.from(false))
+          .and(not_change { discussion_reply2.reload.resolved? }.from(false))
+          .and(change { WorkItem.count }.by(1))
       end
     end
   end

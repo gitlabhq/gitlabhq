@@ -42,53 +42,16 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
       allow(client).to receive_message_chain(:octokit, :repository).and_return({ status: 200 })
     end
 
-    context 'when Github Importer is disabled' do
-      before do
-        stub_application_setting(import_sources: nil)
-        stub_feature_flags(override_github_disabled: false)
-      end
+    it 'rejects requests when Github Importer is disabled' do
+      stub_application_setting(import_sources: nil)
 
-      it 'rejects requests' do
-        post api("/import/github", user), params: {
-          target_namespace: user.namespace_path,
-          personal_access_token: token,
-          repo_id: non_existing_record_id
-        }
+      post api("/import/github", user), params: {
+        target_namespace: user.namespace_path,
+        personal_access_token: token,
+        repo_id: non_existing_record_id
+      }
 
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-
-      context 'when override_github_disabled ops flag is enabled for the user' do
-        before do
-          stub_feature_flags(override_github_disabled: user)
-        end
-
-        it 'accepts requests' do
-          post api("/import/github", user), params: {
-            target_namespace: user.namespace_path,
-            personal_access_token: token,
-            repo_id: non_existing_record_id
-          }
-
-          expect(response).to have_gitlab_http_status(:created)
-        end
-      end
-
-      context 'when override_github_disabled ops flag is enabled for another user' do
-        before do
-          stub_feature_flags(override_github_disabled: create(:user))
-        end
-
-        it 'rejects requests' do
-          post api("/import/github", user), params: {
-            target_namespace: user.namespace_path,
-            personal_access_token: token,
-            repo_id: non_existing_record_id
-          }
-
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end
-      end
+      expect(response).to have_gitlab_http_status(:forbidden)
     end
 
     it 'returns 201 response when the project is imported successfully' do

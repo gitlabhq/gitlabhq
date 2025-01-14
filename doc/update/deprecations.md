@@ -13,13 +13,12 @@ The following GitLab features are deprecated and no longer recommended for use.
 - Some features cause breaking changes when they are removed.
 - On GitLab.com, deprecated features can be removed at any time during the month leading up to the release.
 - To view documentation for a removed feature, see the [GitLab Docs archive](https://docs.gitlab.com/archives/).
+- For GraphQL API deprecations, you should [verify your API calls work without the deprecated items](https://docs.gitlab.com/ee/api/graphql/index.html#verify-against-the-future-breaking-change-schema).
 
 For advanced searching and filtering of this deprecation information, try
 [a tool built by our Customer Success team](https://gitlab-com.gitlab.io/cs-tools/gitlab-cs-tools/what-is-new-since/?tab=deprecations).
 
-[REST API deprecations](https://docs.gitlab.com/ee/api/rest/deprecations.html)
-and [GraphQL deprecations](https://docs.gitlab.com/ee/api/graphql/removed_items.html)
-are documented separately.
+[REST API deprecations](https://docs.gitlab.com/ee/api/rest/deprecations.html) are documented separately.
 
 **{rss}** **To be notified of upcoming breaking changes**,
 add this URL to your RSS feed reader: `https://about.gitlab.com/breaking-changes.xml`
@@ -211,6 +210,72 @@ The `Project.services` GraphQL field is deprecated. A `Project.integrations` fie
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
+### `scanResultPolicies` GraphQL field is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.8</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/439199).
+
+</div>
+
+In 16.10, scan result policies were renamed to merge request approval policies to more accurately reflect the change in scope and capability for the policy type.
+
+As a result, we updated the GraphQL endpoints. Use `approvalPolicies` instead of `scanResultPolicies`.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
+### `sidekiq` delivery method for `incoming_email` and `service_desk_email` is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">16.0</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/398132).
+
+</div>
+
+The `sidekiq` delivery method for `incoming_email` and `service_desk_email` is deprecated and is
+scheduled for removal in GitLab 18.0.
+
+GitLab uses a separate process called `mail_room` to ingest emails. Currently, GitLab administrators
+can configure their GitLab instances to use `sidekiq` or `webhook` delivery methods to deliver ingested
+emails from `mail_room` to GitLab.
+
+Using the deprecated `sidekiq` delivery method, `mail_room` writes the job data directly to the GitLab
+Redis queue. This means that there is a hard coupling between the delivery method and the Redis
+configuration. Another disadvantage is that framework optimizations such as job payload compression are missed.
+
+Using the `webhook` delivery method, `mail_room` pushes the ingested email body to the GitLab
+API. That way `mail_room` does not need to know your Redis configuration and the GitLab application
+adds the processing job. `mail_room` authenticates with a shared secret key.
+
+Reconfiguring an Omnibus installation generates this secret key file automatically,
+so no secret file configuration setting is needed.
+
+You can configure a custom secret key file (32 characters base 64 encoded) by running a command
+like below and referencing the secret file in `incoming_email_secret_file` and
+`service_desk_email_secret_file` (always specify the absolute path):
+
+```shell
+echo $( ruby -rsecurerandom -e "puts SecureRandom.base64(32)" ) > ~/.gitlab-mailroom-secret
+```
+
+If you run GitLab on more than one machine, you need to provide the secret key file for each machine.
+
+We encourage GitLab administrators to switch to the webhook delivery method for
+`incoming_email_delivery_method` and `service_desk_email_delivery_method` instead of `sidekiq`.
+
+[Issue 393157](https://gitlab.com/gitlab-org/gitlab/-/issues/393157) tracks improving email ingestion in general.
+We hope this will simplify infrastructure setup and add several improvements to how you manage GitLab in the near future.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
 ### `workflow:rules` templates
 
 <div class="deprecation-notes">
@@ -231,6 +296,32 @@ This is one small step towards moving away from CI/CD templates in preference of
 <div class="milestone-wrapper" data-milestone="18.0">
 
 ## GitLab 18.0
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### Amazon S3 Signature Version 2
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.8</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/container-registry/-/issues/1449).
+
+</div>
+
+Using Signature Version 2 to authenticate requests to Amazon S3 buckets in the container registry is deprecated.
+
+To ensure continued compatibility and security, migrate to Signature Version 4. This change requires updating your S3 bucket configuration settings and ensuring that your GitLab container registry settings are compatible with Signature Version 4.
+
+To migrate:
+
+1. Check your S3 storage backend configuration in the GitLab container registry settings.
+1. Remove the `v4auth: false` option if it's set.
+1. Verify your existing credentials work with v4 authentication.
+
+If you encounter any issues after making these changes, try regenerating your AWS credentials.
+
+</div>
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
@@ -504,6 +595,40 @@ To prepare for this change, we recommend reviewing and updating your GraphQL que
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Enforce keyset pagination on audit event API
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.8</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382338).
+
+</div>
+
+The Audit Event APIs for instances, groups, and projects currently support optional keyset pagination. In GitLab 18.0
+we will enforce keyset pagination on these APIs.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### Fix typo in user profile visibility updated audit event type
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.8</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382338).
+
+</div>
+
+To fix a typo in an audit event type, in GitLab 18.0 we'll rename the `user_profile_visiblity_updated` event type to
+`user_profile_visibility_updated`.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### GitLab Runner platforms and setup instructions in GraphQL API
 
 <div class="deprecation-notes">
@@ -544,6 +669,28 @@ The configuration arguments disabled for authentication tokens are:
 This change is a breaking change. You must use an [authentication token](https://docs.gitlab.com/ee/ci/runners/runners_scope.html) in the `gitlab-runner register` command instead.
 
 See also how to [prevent your runner registration workflow from breaking](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html#prevent-your-runner-registration-workflow-from-breaking) in GitLab 17.0 and later.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### GitLab Runner support for Alpine versions
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.7</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/38369).
+
+</div>
+
+GitLab Runner versions 17.7 and later support only a single Alpine version (`latest`) instead of specific versions.
+Alpine versions 3.18 and 3.19 will be supported to the stated EOL date. In contrast, Ubuntu 20.04, as an LTS release,
+will be supported to its EOL date, at which point we will move to the most recent LTS release.
+
+When you upgrade an Alpine container, make sure your container image uses
+[a supported named version](https://docs.gitlab.com/runner/install/support-policy.html),
+`latest` (for GitLab Runner images), or `alpine-latest` (for GitLab Runner helper images).
 
 </div>
 
@@ -673,22 +820,23 @@ We also plan to make this easier to manage by adding an option to control this f
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
-### Limited `scan` actions in a scan execution policy
+### Limit number of scan execution policy actions allowed per policy
 
 <div class="deprecation-notes">
 
 - Announced in GitLab <span class="milestone">17.5</span>
 - Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/472213).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/510897).
 
 </div>
 
-Starting in GitLab 18.0, [scan execution policies](https://docs.gitlab.com/ee/user/application_security/policies/scan_execution_policies.html)
-are limited to 10 `scan` actions per policy. You can't create new policies that exceed the limit, and you
-can't update existing policies if they exceed the limit. For any existing policy that exceeds the limit,
-only the policy's first 10 `scan` actions are run.
+New limits have been added for maximum scan execution policy actions allowed per policy. This change was introduced in 17.4 behind feature flags `scan_execution_policy_action_limit` and `scan_execution_policy_action_limit_group`. When enabled, only the first 10 actions of a scan execution policy are processed.
 
-You can configure a custom limit on self-managed instances with the `scan_execution_policies_action_limit` application setting.
+By adding limits, we can ensure performance and scalability for security policies.
+
+If additional actions are needed, limit existing polices to no more than 10 actions. Then, create new scan execution policies with additional actions, within the limit of 5 scan execution policies per security policy project.
+
+For self-managed users, you can configure a custom limit on self-managed instances with the `scan_execution_policies_action_limit` application setting.
 
 </div>
 
@@ -1373,54 +1521,6 @@ The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/
 From GitLab 18.0 and later, the methods to register runners introduced by the new GitLab Runner token architecture will be the only supported methods.
 
 </div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
-### `sidekiq` delivery method for `incoming_email` and `service_desk_email` is deprecated
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">16.0</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/398132).
-
-</div>
-
-The `sidekiq` delivery method for `incoming_email` and `service_desk_email` is deprecated and is
-scheduled for removal in GitLab 18.0.
-
-GitLab uses a separate process called `mail_room` to ingest emails. Currently, GitLab administrators
-can configure their GitLab instances to use `sidekiq` or `webhook` delivery methods to deliver ingested
-emails from `mail_room` to GitLab.
-
-Using the deprecated `sidekiq` delivery method, `mail_room` writes the job data directly to the GitLab
-Redis queue. This means that there is a hard coupling between the delivery method and the Redis
-configuration. Another disadvantage is that framework optimizations such as job payload compression are missed.
-
-Using the `webhook` delivery method, `mail_room` pushes the ingested email body to the GitLab
-API. That way `mail_room` does not need to know your Redis configuration and the GitLab application
-adds the processing job. `mail_room` authenticates with a shared secret key.
-
-Reconfiguring an Omnibus installation generates this secret key file automatically,
-so no secret file configuration setting is needed.
-
-You can configure a custom secret key file (32 characters base 64 encoded) by running a command
-like below and referencing the secret file in `incoming_email_secret_file` and
-`service_desk_email_secret_file` (always specify the absolute path):
-
-```shell
-echo $( ruby -rsecurerandom -e "puts SecureRandom.base64(32)" ) > ~/.gitlab-mailroom-secret
-```
-
-If you run GitLab on more than one machine, you need to provide the secret key file for each machine.
-
-We encourage GitLab administrators to switch to the webhook delivery method for
-`incoming_email_delivery_method` and `service_desk_email_delivery_method` instead of `sidekiq`.
-
-[Issue 393157](https://gitlab.com/gitlab-org/gitlab/-/issues/393157) tracks improving email ingestion in general.
-We hope this will simplify infrastructure setup and add several improvements to how you manage GitLab in the near future.
-
-</div>
 </div>
 
 <div class="milestone-wrapper" data-milestone="17.9">
@@ -1563,7 +1663,7 @@ another RHEL-compatible operating system.
 
 </div>
 
-Long term support (LTS) for [OpenSSL version 1.1.1 ended in September 2023](https://endoflife.date/openssl). Therefore, OpenSSL 3 will be the default in GitLab 17.7.
+Long term support (LTS) for [OpenSSL version 1.1.1 ended in September 2023](https://endoflife.date/openssl). Therefore, OpenSSL 3 will be the default in GitLab 17.7. GitLab bundles OpenSSL 3, so you are not required to make any changes to your operating system.
 
 With the upgrade to OpenSSL 3:
 
@@ -2521,7 +2621,9 @@ If you do access the internal container registry API and use the original tag de
 
 </div>
 
-With the [deprecation of old JSON web token versions](https://docs.gitlab.com/ee/update/deprecations.html?removal_milestone=17.0#old-versions-of-json-web-tokens-are-deprecated) in GitLab 17.0, the associated `/-/jwks` endpoint which is an alias for `/oauth/discovery/keys` is no longer necessary and will be removed. Please remove any uses of `/-/jwks`, for example change `https://gitlab.example.com/-/jwks` to `https://gitlab.example.com`.
+With the [deprecation of old JSON web token versions](https://docs.gitlab.com/ee/update/deprecations.html?removal_milestone=17.0#old-versions-of-json-web-tokens-are-deprecated) in GitLab 17.0, the associated `/-/jwks` endpoint, which is an alias for `/oauth/discovery/keys`, is no longer necessary and will be removed.
+If you've been specifying `jwks_url` in your auth configuration, update your configuration to `oauth/discovery/keys` instead and remove all uses of `/-/jwks` in your endpoints.
+If you've already been using `oauth_discovery_keys` in your auth configuration and the `/-/jwks` alias in your endpoints, remove `/-/jwks` from your endpoints. For example, change `https://gitlab.example.com/-/jwks` to `https://gitlab.example.com`.
 
 </div>
 

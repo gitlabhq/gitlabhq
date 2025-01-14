@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
-**Offering:** GitLab.com, Self-managed
+**Offering:** GitLab.com, GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443696) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `ai_impact_analytics_dashboard`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/451873) in GitLab 17.2. Feature flag `ai_impact_analytics_dashboard` removed.
@@ -33,7 +33,7 @@ AI impact analytics displays key metrics and metric trends for a project or grou
 
 - **Code Suggestions: Unique users**: Percentage of users that engage with Code Suggestions every month. It is calculated as the number of monthly unique Code Suggestions users divided by total monthly [unique contributors](../../user/profile/contributions_calendar.md#user-contribution-events). Only unique code contributors, meaning users with `pushed` events, are included in the calculation.
 - **Code Suggestions: Acceptance rate**: Percentage of code suggestions provided by GitLab Duo that have been accepted by code contributors in the last 30 days.
-- **Duo Chat: Unique users**: Percentage of users that engage with Duo Chat every month. It is calculated as the number of monthly unique Duo Chat users divided by the total GitLab Duo assigned users.
+- **Duo Chat: Unique users**: Percentage of users that engage with GitLab Duo Chat every month. It is calculated as the number of monthly unique GitLab Duo Chat users divided by the total GitLab Duo assigned users.
 
 ### Metric trends
 
@@ -72,7 +72,6 @@ Prerequisites:
 
 To retrieve AI impact metrics, you can also use the following GraphQL APIs:
 
-- [`AiUserMetrics`](../../api/graphql/reference/index.md#aiusermetrics)
-  - Requires ClickHouse
-  - Ultimate with GitLab Duo Pro or Enterprise
+- [`AiMetrics`](../../api/graphql/reference/index.md#aimetrics) - Requires ClickHouse 
+- [`AiUserMetrics`](../../api/graphql/reference/index.md#aiusermetrics) - Requires ClickHouse
 - [`AiUsageData`](../../api/graphql/reference/index.md#aiusagedata) - Does not require ClickHouse

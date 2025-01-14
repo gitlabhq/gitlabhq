@@ -77,7 +77,6 @@ module Projects
         user: build.user,
         ci_stage: stage,
         name: 'pages:deploy',
-        stage: 'deploy',
         stage_idx: stage.position
       )
     end

@@ -529,6 +529,13 @@ module Types
       experiment: { milestone: '16.10' },
       resolver: Resolvers::ProjectContainerRegistryProtectionRulesResolver
 
+    field :container_protection_tag_rules,
+      Types::ContainerRegistry::Protection::TagRuleType.connection_type,
+      null: true,
+      experiment: { milestone: '17.8' },
+      description: 'Container repository tag protection rules for the project. ' \
+        'Returns an empty array if the `container_registry_protected_tags` feature flag is disabled.'
+
     field :container_repositories, Types::ContainerRegistry::ContainerRepositoryType.connection_type,
       null: true,
       description: 'Container repositories of the project.',
@@ -719,6 +726,11 @@ module Types
       description: 'Finds machine learning models',
       resolver: Resolvers::Ml::FindModelsResolver
 
+    field :ml_experiments, ::Types::Ml::ExperimentType.connection_type,
+      null: true,
+      description: 'Find machine learning experiments',
+      resolver: ::Resolvers::Ml::FindExperimentsResolver
+
     field :allows_multiple_merge_request_assignees,
       GraphQL::Types::Boolean,
       method: :allows_multiple_merge_request_assignees?,
@@ -766,6 +778,34 @@ module Types
       resolver: Resolvers::PagesDeploymentsResolver,
       connection: true,
       description: "List of the project's Pages Deployments."
+
+    field :allowed_custom_statuses, Types::WorkItems::Widgets::CustomStatusType.connection_type,
+      null: true, description: 'Allowed custom statuses for the project.',
+      experiment: { milestone: '17.8' }, resolver: Resolvers::WorkItems::Widgets::CustomStatusResolver
+
+    field :pages_force_https, GraphQL::Types::Boolean,
+      null: false,
+      description: "Project's Pages site redirects unsecured connections to HTTPS."
+
+    field :pages_use_unique_domain, GraphQL::Types::Boolean,
+      null: false,
+      description: "Project's Pages site uses a unique subdomain."
+
+    def pages_force_https
+      project.pages_https_only?
+    end
+
+    def pages_use_unique_domain
+      lazy_project_settings = BatchLoader::GraphQL.for(object.id).batch do |project_ids, loader|
+        ::ProjectSetting.for_projects(project_ids).each do |project_setting|
+          loader.call(project_setting.project_id, project_setting)
+        end
+      end
+
+      Gitlab::Graphql::Lazy.with_value(lazy_project_settings) do |settings|
+        (settings || object.project_setting).pages_unique_domain_enabled?
+      end
+    end
 
     def protectable_branches
       ProtectableDropdown.new(project, :branches).protectable_ref_names
@@ -937,6 +977,12 @@ module Types
         id: project.to_param,
         namespace_id: project.namespace.to_param
       )
+    end
+
+    def container_protection_tag_rules
+      return [] unless Feature.enabled?(:container_registry_protected_tags, object)
+
+      object.container_registry_protection_tag_rules
     end
 
     private

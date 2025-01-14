@@ -16,7 +16,7 @@ module Ci
       when :online
         title = s_("Runners|Runner is online; last contact was %{runner_contact} ago") % { runner_contact: time_ago_in_words(contacted_at) }
         icon = 'status-active'
-        span_class = 'gl-text-green-500'
+        span_class = 'gl-text-success'
       when :never_contacted
         title = s_("Runners|Runner has never contacted this instance")
         icon = 'warning-solid'

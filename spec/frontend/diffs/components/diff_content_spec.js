@@ -9,6 +9,7 @@ import { createAlert } from '~/alert';
 import DiffContentComponent from '~/diffs/components/diff_content.vue';
 import DiffDiscussions from '~/diffs/components/diff_discussions.vue';
 import DiffView from '~/diffs/components/diff_view.vue';
+import DiffFileDrafts from '~/batch_comments/components/diff_file_drafts.vue';
 import { IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { diffViewerModes } from '~/ide/constants';
 import NoteForm from '~/notes/components/note_form.vue';
@@ -118,6 +119,15 @@ describe('DiffContent', () => {
 
       expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
     });
+
+    it('passes autosaveKey down', () => {
+      const autosaveKey = 'autosave';
+      createComponent({
+        props: { diffFile: textDiffFile, autosaveKey },
+      });
+
+      expect(wrapper.findComponent(DiffView).props('autosaveKey')).toBe(autosaveKey);
+    });
   });
 
   describe('with whitespace only change', () => {
@@ -191,6 +201,25 @@ describe('DiffContent', () => {
       });
 
       expect(wrapper.findComponent(DiffDiscussions).exists()).toBe(true);
+    });
+
+    it('renders diff file drafts', () => {
+      const autosaveKey = 'autosave';
+      getCommentFormForDiffFileGetterMock.mockReturnValue(() => true);
+      createComponent({
+        props: {
+          diffFile: {
+            ...imageDiffFile,
+            discussions: [
+              { name: 'discussion-stub', position: { position_type: IMAGE_DIFF_POSITION_TYPE } },
+            ],
+          },
+          autosaveKey,
+        },
+      });
+
+      expect(wrapper.findComponent(DiffFileDrafts).exists()).toBe(true);
+      expect(wrapper.findComponent(DiffFileDrafts).props('autosaveKey')).toBe(autosaveKey);
     });
 
     it('emits saveDiffDiscussion when note-form emits `handleFormUpdate`', () => {

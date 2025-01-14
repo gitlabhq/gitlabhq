@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Pipeline secret detection scans files after they are committed to a Git repository and pushed to GitLab.
 
@@ -18,7 +18,7 @@ You can run scans and view [pipeline secret detection JSON report artifacts](../
 
 With GitLab Ultimate, pipeline secret detection results are also processed so you can:
 
-- See them in the [merge request widget](../../index.md#merge-request), [pipeline security report](../../vulnerability_report/pipeline.md), and [vulnerability report](../../vulnerability_report/index.md) UIs.
+- See them in the [merge request widget](../../detect/security_scan_results.md#merge-request), [pipeline security report](../../vulnerability_report/pipeline.md), and [vulnerability report](../../vulnerability_report/index.md) UIs.
 - Use them in approval workflows.
 - Review them in the security dashboard.
 - [Automatically respond](../automatic_response.md) to leaks in public repositories.
@@ -86,7 +86,7 @@ pipeline secret detection can detect if a secret was added in one commit and rem
 - Merge request
 
   In a merge request, pipeline secret detection scans every commit made on the source branch. To use this
-  feature, you must use the [`latest` pipeline secret detection template](../../index.md#use-security-scanning-tools-with-merge-request-pipelines), as it supports
+  feature, you must use the [`latest` pipeline secret detection template](../../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines), as it supports
   [merge request pipelines](../../../../ci/pipelines/merge_request_pipelines.md). Pipeline secret detection's
   results are only available after the pipeline is completed.
 
@@ -105,7 +105,7 @@ pipeline.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/434096) in GitLab 17.0.
 
@@ -266,7 +266,7 @@ To enable full history scan, set the variable `SECRET_DETECTION_HISTORIC_SCAN` t
 
 #### Run jobs in merge request pipelines
 
-See [Use security scanning tools with merge request pipelines](../../index.md#use-security-scanning-tools-with-merge-request-pipelines).
+See [Use security scanning tools with merge request pipelines](../../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).
 
 #### Override the analyzer jobs
 
@@ -330,7 +330,7 @@ To create a ruleset configuration file:
 
 #### Modify rules from the default ruleset
 
-You can modify rules predefined in the [default ruleset](../pipeline/detected_secrets.md).
+You can modify rules predefined in the [default ruleset](../detected_secrets.md).
 
 Modifying rules can help you adapt pipeline secret detection to an existing workflow or tool. For example you may want to override the severity of a detected secret or disable a rule from being detected at all.
 
@@ -811,10 +811,10 @@ In previous GitLab versions, the following variables were also available:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 An offline environment has limited, restricted, or intermittent access to external resources through
-the internet. For self-managed GitLab instances in such an environment, pipeline secret detection requires
+the internet. For GitLab Self-Managed instances in such an environment, pipeline secret detection requires
 some configuration changes. The instructions in this section must be completed together with the
 instructions detailed in [offline environments](../../offline_deployments/index.md).
 

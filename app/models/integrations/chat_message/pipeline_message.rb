@@ -130,7 +130,7 @@ module Integrations
       def yaml_error_field
         {
           title: s_("ChatMessage|Invalid CI config YAML file"),
-          value: pipeline.yaml_errors,
+          value: pipeline.error_messages,
           short: false
         }
       end

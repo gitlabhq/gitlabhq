@@ -1,9 +1,0 @@
----
-name: issues_set_correct_work_item_type_id
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/504064
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171781
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/504107
-milestone: '17.7'
-group: group::project management
-type: wip
-default_enabled: false

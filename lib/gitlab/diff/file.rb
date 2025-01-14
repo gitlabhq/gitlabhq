@@ -71,9 +71,7 @@ module Gitlab
       end
 
       def line_code(line)
-        return if line.meta?
-
-        Gitlab::Git.diff_line_code(file_path, line.new_pos, line.old_pos)
+        line.legacy_id(file_path)
       end
 
       def line_for_line_code(code)
@@ -451,8 +449,12 @@ module Gitlab
         diffable? && !deleted_file?
       end
 
-      def text_diff?
-        modified_file? && text?
+      def modified_file?
+        new_file? || deleted_file? || content_changed?
+      end
+
+      def diffable_text?
+        !too_large? && diffable? && text?
       end
 
       private
@@ -482,10 +484,6 @@ module Gitlab
           line_count -= 1 if line_count > 0 && blob.lines.last.blank?
           line_count
         end
-      end
-
-      def modified_file?
-        new_file? || deleted_file? || content_changed?
       end
 
       # We can't use Object#try because Blob doesn't inherit from Object, but

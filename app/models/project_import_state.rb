@@ -6,6 +6,8 @@ class ProjectImportState < ApplicationRecord
 
   self.table_name = "project_mirror_data"
 
+  attr_accessor :user_mapping_enabled, :safe_import_url
+
   after_commit :expire_etag_cache
 
   belongs_to :project, inverse_of: :import_state
@@ -66,6 +68,7 @@ class ProjectImportState < ApplicationRecord
     end
 
     after_transition any => [:canceled, :failed] do |state, _|
+      state.set_notification_data
       state.project.remove_import_data
     end
 
@@ -82,6 +85,7 @@ class ProjectImportState < ApplicationRecord
     after_transition started: :finished do |state, _|
       project = state.project
 
+      state.set_notification_data
       project.reset_cache_and_import_attrs
 
       if Gitlab::ImportSources.values.include?(project.import_type) && project.repo_exists? # rubocop: disable Performance/InefficientHashSearch -- not a Hash
@@ -89,6 +93,13 @@ class ProjectImportState < ApplicationRecord
           Projects::AfterImportWorker.perform_async(project.id)
         end
       end
+
+      state.send_completion_notification
+    end
+
+    after_transition any => [:failed] do |state, _|
+      state.set_notification_data
+      state.send_completion_notification(notify_group_owners: false)
     end
   end
 
@@ -146,6 +157,33 @@ class ProjectImportState < ApplicationRecord
   def started?
     # import? does SQL work so only run it if it looks like there's an import running
     status == 'started' && project.import?
+  end
+
+  def send_completion_notification(notify_group_owners: true)
+    return unless project.notify_project_import_complete?
+
+    run_after_commit do
+      Projects::ImportExport::ImportCompletionNotificationWorker.perform_async(
+        project.id,
+        'user_mapping_enabled' => user_mapping_enabled?,
+        'notify_group_owners' => notify_group_owners,
+        'safe_import_url' => safe_import_url
+      )
+    end
+  end
+
+  def set_notification_data
+    self.user_mapping_enabled ||= project.import_data&.user_mapping_enabled?
+    self.safe_import_url ||= project.safe_import_url(masked: false)
+  end
+
+  private
+
+  # Return whether or not user mapping was enabled during the project's import to determine who to
+  # send completion emails to. user_mapping_enabled should be set if import_data is removed.
+  # This can be removed when all 3rd party project importer user mapping feature flags are removed.
+  def user_mapping_enabled?
+    user_mapping_enabled || project.import_data&.user_mapping_enabled?
   end
 end
 

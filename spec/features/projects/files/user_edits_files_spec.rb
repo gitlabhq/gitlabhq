@@ -17,6 +17,11 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
   let(:project_tree_path_root_ref) { project_tree_path(project, project.repository.root_ref) }
   let(:project2_tree_path_root_ref) { project_tree_path(project2, project2.repository.root_ref) }
 
+  let_it_be(:lf_text) { 'Line 1\nLine 2\nLine 3\n' }
+  let_it_be(:crlf_text) { 'Line 1\r\nLine 2\r\nLine 3\r\n"' }
+  let_it_be(:project_with_lf) { create(:project, :custom_repo, name: 'Project with lf', files: { 'lf_file.txt' => lf_text }) }
+  let_it_be(:project_with_crlf) { create(:project, :custom_repo, name: 'Project with crlf', files: { 'crlf_file.txt' => crlf_text }) }
+
   before do
     stub_feature_flags(vscode_web_ide: false)
 
@@ -81,8 +86,12 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       find('.file-editor', match: :first)
 
       editor_set_value('*.rbca')
-      fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Commit changes')
+
+      within_testid('commit-change-modal') do
+        fill_in(:commit_message, with: 'New commit message', visible: true)
+        click_button('Commit changes')
+      end
 
       expect(page).to have_current_path(project_blob_path(project, 'master/.gitignore'), ignore_query: true)
 
@@ -97,8 +106,12 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       find('.file-editor', match: :first)
 
       editor_set_value('*.rbca')
-      fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Commit changes')
+
+      within_testid('commit-change-modal') do
+        fill_in(:commit_message, with: 'New commit message', visible: true)
+        click_button('Commit changes')
+      end
 
       expect(page).to have_current_path(project_blob_path(project, 'master/.gitignore'), ignore_query: true)
 
@@ -117,10 +130,14 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       find('.file-editor', match: :first)
 
       editor_set_value('*.rbca')
-      fill_in(:commit_message, with: 'New commit message', visible: true)
-      fill_in(:branch_name, with: 'new_branch_name', visible: true)
       click_button('Commit changes')
 
+      within_testid('commit-change-modal') do
+        fill_in(:commit_message, with: 'New commit message', visible: true)
+        choose(option: true)
+        fill_in(:branch_name, with: 'new_branch_name', visible: true)
+        click_button('Commit changes')
+      end
       expect(page).to have_current_path(project_new_merge_request_path(project), ignore_query: true)
 
       click_link('Changes')
@@ -206,8 +223,12 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       find('.file-editor', match: :first)
 
       editor_set_value('*.rbca')
-      fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Commit changes')
+
+      within_testid('commit-change-modal') do
+        fill_in(:commit_message, with: 'New commit message', visible: true)
+        click_button('Commit changes')
+      end
 
       fork = user.fork_of(project2.reload)
 
@@ -233,8 +254,12 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
         expect(page).not_to have_link('Fork')
 
         editor_set_value('*.rbca')
-        fill_in(:commit_message, with: 'Another commit', visible: true)
         click_button('Commit changes')
+
+        within_testid('commit-change-modal') do
+          fill_in(:commit_message, with: 'Another commit', visible: true)
+          click_button('Commit changes')
+        end
 
         fork = user.fork_of(project2)
 
@@ -262,6 +287,49 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       visit(project_edit_blob_path(project_with_json, tree_join(project_with_json.default_branch, 'package.json')))
       wait_for_requests
       expect(find('.monaco-editor')).to have_content(json_text)
+    end
+  end
+
+  context 'for line endings', :js do
+    before_all do
+      project_with_lf.add_maintainer(user)
+      project_with_crlf.add_maintainer(user)
+    end
+
+    it 'does not mutate LF line endings' do
+      visit(project_edit_blob_path(project_with_lf, tree_join(project_with_lf.default_branch, 'lf_file.txt')))
+      wait_for_requests
+
+      find('.file-editor', match: :first)
+
+      click_button('Commit changes')
+
+      within_testid('commit-change-modal') do
+        fill_in(:commit_message, with: 'New commit message', visible: true)
+        choose(option: true)
+        fill_in(:branch_name, with: 'new_branch_name', visible: true)
+        click_button('Commit changes')
+      end
+
+      expect(page).to have_content('Changes 0')
+    end
+
+    it 'does not mutate CRLF line endings' do
+      visit(project_edit_blob_path(project_with_crlf, tree_join(project_with_crlf.default_branch, 'crlf_file.txt')))
+      wait_for_requests
+
+      find('.file-editor', match: :first)
+
+      click_button('Commit changes')
+
+      within_testid('commit-change-modal') do
+        fill_in(:commit_message, with: 'New commit message', visible: true)
+        choose(option: true)
+        fill_in(:branch_name, with: 'new_branch_name', visible: true)
+        click_button('Commit changes')
+      end
+
+      expect(page).to have_content('Changes 0')
     end
   end
 end

@@ -19,6 +19,13 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
     let(:issuable_type) { :task }
     let(:params) { {} }
 
+    before_all do
+      # Ensure support bot user is created so creation doesn't count towards query limit
+      # and we don't try to obtain an exclusive lease within a transaction.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
+      Users::Internal.support_bot_id
+    end
+
     before do
       project.add_guest(user)
       another_project.add_reporter(user)

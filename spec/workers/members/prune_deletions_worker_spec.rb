@@ -59,7 +59,8 @@ RSpec.describe Members::PruneDeletionsWorker, :saas, feature_category: :seat_cos
               message: 'Processed scheduled member deletion',
               user_id: user.id,
               namespace_id: group.id,
-              destroyed_count: 1
+              destroyed_count: 1,
+              destroy_duration_s: an_instance_of(Float)
             )
 
             perform_work

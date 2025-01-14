@@ -91,18 +91,6 @@
   }
 }
 
-.btn-transparent {
-  color: var(--gl-button-default-primary-foreground-color-default);
-  background-color: transparent;
-  border: 0;
-
-  &:hover,
-  &:active,
-  &:focus {
-    background-color: transparent;
-  }
-}
-
 .btn-group {
   &.btn-grouped {
     @include btn-with-margin;

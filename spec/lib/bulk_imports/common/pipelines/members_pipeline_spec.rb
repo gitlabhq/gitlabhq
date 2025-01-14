@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category: :importers do
-  let_it_be(:default_organization) { create(:organization, :default) }
   let_it_be(:user) { create(:user) }
   let_it_be(:bulk_import) { create(:bulk_import, :with_configuration, user: user) }
   let_it_be(:member_user1) { create(:user, email: 'email1@email.com') }

@@ -34,7 +34,7 @@ module WebHooks
 
       # A hook is disabled if:
       #
-      # - we are no longer in the grace-perod (recent_failures > ?)
+      # - we have exceeded the grace FAILURE_THRESHOLD (recent_failures > ?)
       # - and either:
       #   - disabled_until is nil (i.e. this was set by WebHook#fail!)
       #   - or disabled_until is in the future (i.e. this was set by WebHook#backoff!)
@@ -52,8 +52,8 @@ module WebHooks
 
       # A hook is executable if:
       #
-      # - we are still in the grace-period (recent_failures <= ?)
-      # - OR we have exceeded the grace period and neither of the following is true:
+      # - we have not yet exceeeded the grace FAILURE_THRESHOLD (recent_failures <= ?)
+      # - OR we have exceeded the grace FAILURE_THRESHOLD and neither of the following is true:
       #   - disabled_until is nil (i.e. this was set by WebHook#fail!)
       #   - disabled_until is in the future (i.e. this was set by WebHook#backoff!)
       # - AND silent mode is not enabled.
@@ -99,11 +99,11 @@ module WebHooks
       save(validate: false)
     end
 
-    # Don't actually back-off until FAILURE_THRESHOLD failures have been seen
-    # we mark the grace-period using the recent_failures counter
+    # Don't actually back-off until a grace level of FAILURE_THRESHOLD failures have been seen
+    # tracked in the recent_failures counter
     def backoff!
       return unless auto_disabling_enabled?
-      return if permanently_disabled? || (backoff_count >= MAX_FAILURES && temporarily_disabled?)
+      return if permanently_disabled? || temporarily_disabled?
 
       attrs = { recent_failures: next_failure_count }
 

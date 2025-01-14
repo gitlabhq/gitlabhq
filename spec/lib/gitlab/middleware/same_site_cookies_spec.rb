@@ -35,7 +35,7 @@ RSpec.describe Gitlab::Middleware::SameSiteCookies do
     let(:request) { Rack::MockRequest.new(subject) }
 
     def do_request
-      request.post('/some/path', { 'HTTP_USER_AGENT' => user_agent }.compact )
+      request.post('/some/path', { 'HTTP_USER_AGENT' => user_agent }.compact)
     end
 
     context 'without SSL enabled' do

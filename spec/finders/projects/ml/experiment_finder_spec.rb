@@ -28,6 +28,10 @@ RSpec.describe Projects::Ml::ExperimentFinder, feature_category: :mlops do
       expect(experiments[0].association_cached?(:project)).to be(true)
     end
 
+    it 'including the user', :aggregate_failures do
+      expect(experiments[0].association_cached?(:user)).to be(true)
+    end
+
     it 'does not return models belonging to a different project' do
       is_expected.not_to include(other_experiment)
     end

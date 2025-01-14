@@ -9,7 +9,7 @@ description: "Search for files in your GitLab repository directly from the GitLa
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 The GitLab UI extends the history and tracking capabilities of Git with user-friendly
 features in your browser. You can:

@@ -176,7 +176,7 @@ project_setting:
     - allow_pipeline_trigger_approve_deployment
     - pages_unique_domain_enabled
     - pages_unique_domain
-    - pages_default_domain_redirect
+    - pages_primary_domain
     - pages_multiple_versions_enabled
     - runner_registration_enabled
     - product_analytics_instrumentation_key

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.
 > - Ability to import reviewers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416611) in GitLab 16.3.
@@ -16,11 +16,6 @@ DETAILS:
 > - An **Imported** badge on some imported items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461211) in GitLab 17.2.
 
 Import your projects from Bitbucket Server to GitLab.
-
-WARNING:
-Importing from Bitbucket Server to GitLab.com is [unavailable](https://status.gitlab.com).
-For more information, contact [GitLab Support](https://about.gitlab.com/support/).
-[Importing from Bitbucket Cloud](bitbucket.md) is not affected.
 
 ## Prerequisites
 
@@ -90,18 +85,26 @@ The following items are changed when they are imported:
 - Project filtering doesn't support fuzzy search. Only **starts with** or **full match** strings are
   supported.
 
-## User assignment
+## User contribution mapping
 
 > - User mapping by email address or username [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36885) in GitLab 13.4 [with a flag](../../../administration/feature_flags.md) named `bitbucket_server_user_mapping_by_username`. Disabled by default.
 > - Mapping user mentions to GitLab users [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433008) in GitLab 16.8.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153041) to map users only by email address in GitLab 17.1.
+> - [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [User contribution and membership mapping](../import/index.md#user-contribution-and-membership-mapping) in 17.8.
 
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
+The Bitbucket Server importer uses [an improved method](../import/index.md#user-contribution-and-membership-mapping)
+of mapping user contributions for:
 
-When issues and pull requests are importing, the importer tries to match a Bitbucket Server user's email address
-with a confirmed email address in the GitLab user database. If no such user is found:
+- GitLab.com
+- GitLab self-managed 17.7 or later when the `importer_user_mapping` and `bitbucket_server_user_mapping` feature flags are enabled.
+
+### Old method of user contribution mapping
+
+You can use the old user contribution mapping method for imports to GitLab self-managed and GitLab Dedicated instances. For imports to GitLab.com, you must
+use [the improved method](../import/index.md#user-contribution-and-membership-mapping) instead.
+
+Using the old method, the importer tries to match a Bitbucket Server user's email address with a confirmed email address in the GitLab user database. If no
+such user is found:
 
 - The project creator is used instead. The importer appends a note in the comment to mark the original creator.
 - For pull request reviewers, no reviewer is assigned.

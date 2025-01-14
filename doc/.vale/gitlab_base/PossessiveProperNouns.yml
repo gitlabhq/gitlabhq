@@ -10,21 +10,21 @@ level: warning
 ignorecase: true
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/#possessives
 tokens:
+  - Amazon's
+  - Apple's
+  - Atlassian's
+  - AWS's
+  - Azure's
+  - Bundler's
+  - Capybara's
   - Docker's
   - Gitaly's
-  - RSpec's
-  - Capybara's
-  - Bundler's
-  - Nvidia's
-  - Amazon's
-  - AWS's
-  - Google's
-  - Google Cloud's
-  - Apple's
-  - Microsoft's
-  - Azure's
   - GitHub's
+  - Google Cloud's
+  - Google's
+  - Microsoft's
+  - Nvidia's
   - Oracle's
   - Red Hat's
-  - Atlassian's
+  - RSpec's
   - Salesforce's

@@ -8,6 +8,8 @@ module Ml
 
     enum status: { running: 0, scheduled: 1, finished: 2, failed: 3, killed: 4 }
 
+    PACKAGE_PREFIX = 'candidate_'
+
     validates :eid, :experiment, :project, presence: true
     validates :status, inclusion: { in: statuses.keys }
     validates :model_version_id, uniqueness: { allow_nil: true }
@@ -68,9 +70,7 @@ module Ml
     end
 
     def package_version
-      return "candidate_#{iid}" if for_model?
-
-      iid
+      package&.generic? ? iid : "#{PACKAGE_PREFIX}#{iid}"
     end
 
     def from_ci?
@@ -92,6 +92,12 @@ module Ml
         return unless project_id.present? && iid.present?
 
         find_by(project_id: project_id, internal_id: iid)
+      end
+
+      def with_project_id_and_id(project_id, id)
+        return unless project_id.present? && id.present?
+
+        find_by(project_id: project_id, id: id)
       end
     end
 

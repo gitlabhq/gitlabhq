@@ -60,6 +60,53 @@ RSpec.describe 'Merge Requests Diffs', feature_category: :code_review_workflow d
       let(:expected_options) { collection_arguments(total_pages: 20) }
 
       it_behaves_like 'serializes diffs with expected arguments'
+
+      context 'with externally stored diff' do
+        let(:branch_name) { "test-diff-branch-#{SecureRandom.hex}" }
+        let(:merge_request) do
+          create(:merge_request, target_project: project, source_project: project, source_branch: branch_name)
+        end
+
+        let(:expected_options) { collection_arguments(total_pages: 2) }
+
+        before do
+          stub_object_storage_uploader(
+            config: Gitlab.config.external_diffs.object_store,
+            uploader: ExternalDiffUploader,
+            direct_upload: true
+          )
+
+          stub_external_diffs_setting(enabled: true)
+
+          project.repository.commit_files(
+            user,
+            branch_name: branch_name,
+            message: 'some text file',
+            actions: [{
+              action: :create,
+              file_path: "#{branch_name}.txt",
+              content: 'some stuff'
+            }]
+          )
+
+          project.repository.commit_files(
+            user,
+            branch_name: branch_name,
+            message: 'empty file',
+            actions: [{
+              action: :create,
+              file_path: "empty-#{branch_name}.txt",
+              content: nil
+            }]
+          )
+
+          # HttpIO will make a direct call to the URL, so stub that request with the actual diff
+          stub_request(:get, /merge_request_diffs/)
+            .to_return(status: 200, body: merge_request.merge_request_diff.external_diff.file.read, headers: {})
+        end
+
+        it_behaves_like 'serializes diffs with expected arguments'
+      end
     end
 
     context 'with caching', :use_clean_rails_memory_store_caching do

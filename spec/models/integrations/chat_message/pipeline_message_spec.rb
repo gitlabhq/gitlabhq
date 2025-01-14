@@ -53,7 +53,7 @@ RSpec.describe Integrations::ChatMessage::PipelineMessage do
     test_pipeline = build(:ci_empty_pipeline, name: 'Build pipeline')
 
     allow(test_pipeline).to receive(:has_yaml_errors?).and_return(has_yaml_errors)
-    allow(test_pipeline).to receive(:yaml_errors).and_return("yaml error description here")
+    allow(test_pipeline).to receive(:error_messages).and_return("yaml error description here")
     allow(Ci::Pipeline).to receive(:find) { test_pipeline }
 
     allow(Gitlab::UrlBuilder).to receive(:build).with(test_commit).and_return("http://example.com/commit")

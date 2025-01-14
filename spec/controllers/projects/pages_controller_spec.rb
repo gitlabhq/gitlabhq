@@ -218,5 +218,168 @@ RSpec.describe Projects::PagesController, feature_category: :pages do
         end
       end
     end
+
+    context 'when updating pages_primary_domain' do
+      let(:request_params) do
+        {
+          namespace_id: project.namespace,
+          project_id: project,
+          project: {
+            project_setting_attributes: {
+              pages_primary_domain: pages_primary_domain
+            }
+          }
+        }
+      end
+
+      before do
+        create(:project_setting, project: project)
+      end
+
+      context 'when pages_primary_domain is updated' do
+        let(:pages_primary_domain) { 'http://default.com' }
+
+        before do
+          allow_next_instance_of(Projects::UpdateService) do |service|
+            allow(service).to receive(:validate!)
+          end
+        end
+
+        it 'updates pages_primary_domain and redirects back to pages settings' do
+          expect { patch :update, params: request_params }
+            .to change { project.project_setting.reload.pages_primary_domain }
+                  .from(nil).to('http://default.com')
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(project_pages_path(project))
+        end
+      end
+
+      context 'when pages_primary_domain is reset' do
+        let(:pages_primary_domain) { '' }
+
+        before do
+          allow_next_instance_of(Projects::UpdateService) do |service|
+            allow(service)
+              .to receive(:validate_pages_default_domain_redirect)
+                    .and_return(true)
+          end
+        end
+
+        it 'resets pages_primary_domain to nil' do
+          project.project_setting.update!(pages_primary_domain: 'http://default.com')
+
+          expect { patch :update, params: request_params }
+            .to change { project.project_setting.reload.pages_primary_domain }
+                  .from('http://default.com').to(nil)
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(project_pages_path(project))
+        end
+      end
+
+      context 'when it fails to update' do
+        let(:pages_primary_domain) { 'http://default.com' }
+
+        before do
+          allow_next_instance_of(Projects::UpdateService) do |service|
+            allow(service)
+              .to receive(:execute)
+                    .and_return(status: :error, message: 'some error happened')
+          end
+        end
+
+        it 'adds an error message' do
+          expect { patch :update, params: request_params }
+            .not_to change { project.project_setting.reload.pages_primary_domain }
+
+          expect(response).to redirect_to(project_pages_path(project))
+          expect(flash[:alert]).to eq('some error happened')
+        end
+      end
+    end
+  end
+
+  describe 'POST regenerate_unique_domain' do
+    before do
+      project.project_setting.update!(
+        pages_unique_domain_enabled: true,
+        pages_unique_domain: 'pages-abcde'
+      )
+    end
+
+    context 'when update is successful' do
+      it 'redirects with success message' do
+        original_domain = project.project_setting.pages_unique_domain
+
+        post :regenerate_unique_domain, params: { namespace_id: project.namespace, project_id: project }
+
+        expect(response).to redirect_to(project_pages_path(project))
+        expect(flash[:notice]).to eq('Successfully regenerated unique domain')
+        project.reload
+        expect(project.project_setting.pages_unique_domain).not_to eq(original_domain)
+        expect(project.project_setting.pages_unique_domain).to be_present
+      end
+    end
+
+    context 'when update fails' do
+      before do
+        allow(Gitlab::Pages::RandomDomain).to receive(:generate).and_return(false)
+      end
+
+      it 'redirects with error message when domain regeneration fails' do
+        post :regenerate_unique_domain, params: { namespace_id: project.namespace, project_id: project }
+
+        expect(response).to redirect_to(project_pages_path(project))
+        expect(flash[:alert]).to eq('Failed to regenerate unique domain')
+      end
+
+      it 'redirects with error message when project setting update fails' do
+        allow_next_instance_of(ProjectSetting) do |instance|
+          allow(instance).to receive(:update).and_return(false)
+        end
+
+        post :regenerate_unique_domain, params: { namespace_id: project.namespace, project_id: project }
+
+        expect(response).to redirect_to(project_pages_path(project))
+        expect(flash[:alert]).to eq('Failed to regenerate unique domain')
+      end
+    end
+
+    context 'when user does not have permission' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'returns 404' do
+        post :regenerate_unique_domain, params: { namespace_id: project.namespace, project_id: project }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when unique domains is not enabled' do
+      before do
+        project.project_setting.update!(pages_unique_domain_enabled: false)
+      end
+
+      it 'returns 403' do
+        post :regenerate_unique_domain, params: { namespace_id: project.namespace, project_id: project }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when pages is disabled' do
+      before do
+        allow(Gitlab.config.pages).to receive(:enabled).and_return(false)
+      end
+
+      it 'returns 404 status' do
+        post :regenerate_unique_domain, params: { namespace_id: project.namespace, project_id: project }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 end

@@ -1,5 +1,6 @@
 <script>
 import { GlTable, GlLink, GlSprintf } from '@gitlab/ui';
+import ReadOnlyProjectBadge from 'ee_component/usage_quotas/storage/components/read_only_project_badge.vue';
 import { __ } from '~/locale';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import NumberToHumanSize from '~/vue_shared/components/number_to_human_size/number_to_human_size.vue';
@@ -21,8 +22,13 @@ export default {
     HelpPageLink,
     StorageTypeHelpLink,
     StorageTypeWarning,
+    ReadOnlyProjectBadge,
   },
   props: {
+    namespace: {
+      type: Object,
+      required: true,
+    },
     projects: {
       type: Array,
       required: true,
@@ -43,7 +49,6 @@ export default {
     sortableFields: {
       type: Object,
       required: true,
-      default: null,
     },
   },
   created() {
@@ -144,7 +149,7 @@ export default {
         :project-avatar-url="project.avatarUrl"
         :size="16"
         :alt="project.name"
-        class="gl-mr-2 gl-inline-block !gl-text-center"
+        class="gl-mr-2"
       />
 
       <gl-link
@@ -154,6 +159,8 @@ export default {
       >
         {{ getProjectRelativePath(project.nameWithNamespace) }}
       </gl-link>
+
+      <read-only-project-badge :project="project" :namespace="namespace" />
     </template>
 
     <template #cell(storage)="{ item: project }">
@@ -170,7 +177,7 @@ export default {
             href="user/storage_usage_quotas#view-project-fork-storage-usage"
             target="_blank"
           >
-            <help-icon size="small" />
+            <help-icon />
           </help-page-link>
         </div>
       </template>

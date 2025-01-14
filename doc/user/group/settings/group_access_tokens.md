@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 With group access tokens, you can use a single token to:
 
@@ -76,7 +76,7 @@ To create a group access token:
 A group access token is displayed. Save the group access token somewhere safe. After you leave or refresh the page, you can't view it again.
 
 WARNING:
-Group access tokens are treated as [internal users](../../../development/internal_users.md).
+Group access tokens are treated as [internal users](../../../administration/internal_users.md).
 If an internal user creates a group access token, that token is able to access
 all projects that have visibility level set to [Internal](../../public_access.md).
 
@@ -122,7 +122,7 @@ If you are an administrator, you can create group access tokens in the Rails con
    1. Use the group token to [clone a group's project](../../../topics/git/clone.md#clone-with-https)
       using HTTPS.
 
-## Revoke a group access token
+## Revoke or rotate a group access token
 
 > - Ability to view revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
 
@@ -146,11 +146,12 @@ the active tokens. The inactive group access tokens table:
 
 ### Use the UI
 
-To revoke a group access token:
+To revoke or rotate a group access token:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Access tokens**.
-1. Next to the group access token to revoke, select **Revoke** (**{remove}**).
+1. For the relevant token, select **Revoke** (**{remove}**) or **Rotate** (**{retry}**).
+1. On the confirmation dialog, select **Revoke** or **Rotate**.
 
 ## Scopes for a group access token
 

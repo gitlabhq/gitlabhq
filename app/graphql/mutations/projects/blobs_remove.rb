@@ -31,7 +31,7 @@ module Mutations
       def resolve(project_path:, blob_oids:)
         project = authorized_find!(project_path)
 
-        result = Repositories::RewriteHistoryService.new(project, current_user).async_execute(blob_oids: blob_oids)
+        result = ::Repositories::RewriteHistoryService.new(project, current_user).async_execute(blob_oids: blob_oids)
 
         return { errors: result.errors } if result.error?
 

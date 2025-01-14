@@ -9,7 +9,7 @@ description: "Syntax highlighting helps you read files in your GitLab project mo
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 GitLab provides syntax highlighting on all files through [Highlight.js](https://github.com/highlightjs/highlight.js/) and the
 [Rouge](https://rubygems.org/gems/rouge) Ruby gem. It attempts to guess what language

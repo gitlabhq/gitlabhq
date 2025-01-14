@@ -9,23 +9,24 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `ai_custom_model`. Disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+> - Feature flag `ai_custom_model` removed in GitLab 17.8
 
 There are multiple platforms available to host your self-hosted Large Language Models (LLMs). Each platform has unique features and benefits that can cater to different needs. The following documentation summarises the currently supported options:
 
-## For non-cloud on-premise model deployments
+## For self-hosted model deployments
 
 1. [vLLM](https://docs.vllm.ai/en/latest/index.html).
    A high-performance inference server optimized for serving LLMs with memory efficiency. It supports model parallelism and integrates easily with existing workflows.
-   - [vLLM Installation Guide](https://docs.vllm.ai/en/latest/getting_started/installation.html)
+   - [vLLM Installation Guide](https://docs.vllm.ai/en/latest/getting_started/installation.html). We recommend installing version [v0.6.4.post1](https://github.com/vllm-project/vllm/releases/tag/v0.6.4.post1) or later.
    - [vLLM Supported Models](https://docs.vllm.ai/en/latest/models/supported_models.html)
 
-   For information on available options when using vLLM to run a model, see the [vLLM documentation on engine arguments](https://docs.vllm.ai/en/stable/models/engine_args.html).
+   For information on available options when using vLLM to run a model, see the [vLLM documentation on engine arguments](https://docs.vllm.ai/en/stable/usage/engine_args.html).
 
    For example, to set up and run the Mistral model, run the following command:
 

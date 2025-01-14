@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import LegacyTemplateSelector from '~/blob/legacy_template_selector';
 import { __ } from '~/locale';
+import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import Api from '../api';
 
 export default class IssuableTemplateSelector extends LegacyTemplateSelector {
@@ -63,6 +64,11 @@ export default class IssuableTemplateSelector extends LegacyTemplateSelector {
     this.setInputValueToTemplateContent();
     this.setToggleText(__('Choose a template'));
     this.previousSelectedIndex = null;
+
+    updateHistory({
+      url: setUrlParams({ issuable_template: null }),
+      replace: true,
+    });
   }
 
   setToggleText(text) {
@@ -94,6 +100,14 @@ export default class IssuableTemplateSelector extends LegacyTemplateSelector {
       this.currentTemplate = currentTemplate;
       this.stopLoadingSpinner();
       this.setInputValueToTemplateContent();
+
+      // Update URL with template param when template is selected
+      if (this.currentTemplate?.name) {
+        updateHistory({
+          url: setUrlParams({ issuable_template: encodeURIComponent(this.currentTemplate.name) }),
+          replace: true,
+        });
+      }
     };
 
     this.startLoadingSpinner();

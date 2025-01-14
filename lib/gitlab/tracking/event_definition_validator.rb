@@ -10,7 +10,7 @@ module Gitlab
       end
 
       def initialize(definition)
-        @attributes = definition.attributes
+        @attributes = definition.raw_attributes
         @path = definition.path
       end
 

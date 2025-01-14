@@ -52,14 +52,46 @@ RSpec.describe Gitlab::I18n::PoLinter do
 
       it 'has an error for translation with namespace' do
         message_id = "404|Not found"
-        expected_message = "contains a namespace, remove it from the translation. For more information see https://docs.gitlab.com/ee/development/i18n/translation.html#namespaced-strings"
+        expected_message = "contains a namespace. Remove it from the translation. For more information see https://docs.gitlab.com/ee/development/i18n/translation.html#namespaced-strings"
 
         expect(errors[message_id]).to include(expected_message)
       end
 
       it 'has an error for plural translation with namespace' do
         message_id = "CommitHistory|1 commit"
-        expected_message = "contains a namespace, remove it from the translation. For more information see https://docs.gitlab.com/ee/development/i18n/translation.html#namespaced-strings"
+        expected_message = "contains a namespace. Remove it from the translation. For more information see https://docs.gitlab.com/ee/development/i18n/translation.html#namespaced-strings"
+
+        expect(errors[message_id]).to include(expected_message)
+      end
+    end
+
+    context 'for a translations with spaces' do
+      let(:po_path) { 'spec/fixtures/spaces.po' }
+
+      it 'has an error for translation with a leading space' do
+        message_id = "1 commit"
+        expected_message = "has leading space. Remove it from the translation"
+
+        expect(errors[message_id]).to include(expected_message)
+      end
+
+      it 'has an error for plural translation with a leading space' do
+        message_id = "With plural"
+        expected_message = "has leading space. Remove it from the translation"
+
+        expect(errors[message_id]).to include(expected_message)
+      end
+
+      it 'has an error for translation with a trailing space' do
+        message_id = "User"
+        expected_message = "has trailing space. Remove it from the translation"
+
+        expect(errors[message_id]).to include(expected_message)
+      end
+
+      it 'has an error for translation with a multiple spaces not present in source string' do
+        message_id = "Hello there  world"
+        expected_message = "has different sets of consecutive multiple spaces. Make them consistent with source string"
 
         expect(errors[message_id]).to include(expected_message)
       end
@@ -233,6 +265,7 @@ RSpec.describe Gitlab::I18n::PoLinter do
       expect(linter).to receive(:validate_unescaped_chars).with([], fake_entry)
       expect(linter).to receive(:validate_translation).with([], fake_entry)
       expect(linter).to receive(:validate_namespace).with([], fake_entry)
+      expect(linter).to receive(:validate_spaces).with([], fake_entry)
       expect(linter).to receive(:validate_html).with([], fake_entry)
 
       linter.validate_entry(fake_entry)

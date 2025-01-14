@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Configure Gitaly Cluster using either:
 
@@ -643,7 +643,7 @@ Updates to example must be made at:
    addresses referenced in the Praefect configuration must be unique.
 
    ```ruby
-   # Name of storage hash must match storage name in git_data_dirs on GitLab
+   # Name of storage hash must match storage name in gitlab_rails['repositories_storages'] on GitLab
    # server ('default') and in gitaly['configuration'][:storage][INDEX][:name] on Gitaly nodes ('gitaly-1')
    praefect['configuration'] = {
       # ...
@@ -801,16 +801,16 @@ For Linux package installations:
    sudo cp cert.pem /etc/gitlab/trusted-certs/
    ```
 
-1. On the Praefect clients (except Gitaly servers), edit `git_data_dirs` in
+1. On the Praefect clients (except Gitaly servers), edit `gitlab_rails['repositories_storages']` in
    `/etc/gitlab/gitlab.rb` as follows:
 
    ```ruby
-   git_data_dirs({
+   gitlab_rails['repositories_storages'] = {
      "default" => {
        "gitaly_address" => 'tls://PRAEFECT_LOADBALANCER_HOST:3305',
        "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
      }
-   })
+   }
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
@@ -943,17 +943,17 @@ You can also appoint an authoritative name server by setting it in this format:
 :::TabTitle Linux package (Omnibus)
 
 1. Add the IP address for each Praefect node to the DNS service discovery address.
-1. On the Praefect clients (except Gitaly servers), edit `git_data_dirs` in
+1. On the Praefect clients (except Gitaly servers), edit `gitlab_rails['repositories_storages']` in
    `/etc/gitlab/gitlab.rb` as follows. Replace `PRAEFECT_SERVICE_DISCOVERY_ADDRESS`
    with Praefect service discovery address, such as `praefect.service.consul`.
 
    ```ruby
-   git_data_dirs({
+   gitlab_rails['repositories_storages'] = {
      "default" => {
        "gitaly_address" => 'dns:PRAEFECT_SERVICE_DISCOVERY_ADDRESS:2305',
        "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
      }
-   })
+   }
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
@@ -1006,17 +1006,17 @@ Prerequisites:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 1. Repeat the above steps on each Praefect server to use with
    service discovery.
-1. On the Praefect clients (except Gitaly servers), edit `git_data_dirs` in
+1. On the Praefect clients (except Gitaly servers), edit `gitlab_rails['repositories_storages']` in
    `/etc/gitlab/gitlab.rb` as follows. Replace `CONSUL_SERVER` with the IP or
    address of a Consul server. The default Consul DNS port is `8600`.
 
    ```ruby
-   git_data_dirs({
+   gitlab_rails['repositories_storages'] = {
      "default" => {
        "gitaly_address" => 'dns://CONSUL_SERVER:8600/praefect.service.consul:2305',
        "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
      }
-   })
+   }
    ```
 
 1. Use `dig` from the Praefect clients to confirm that each IP address has been registered to
@@ -1207,13 +1207,18 @@ of choice already. Some examples include [HAProxy](https://www.haproxy.org/)
 Big-IP LTM, and Citrix Net Scaler. This documentation outlines what ports
 and protocols you need configure.
 
-NOTE:
 You should use the equivalent of HAProxy `leastconn` load-balancing strategy because long-running operations (for
 example, clones) keep some connections open for extended periods.
 
 | LB Port | Backend Port | Protocol |
 |:--------|:-------------|:---------|
 | 2305    | 2305         | TCP      |
+
+You must use a TCP load balancer. Using an HTTP/2 or gRPC load balancer
+with Praefect is not supported. If TLS is enabled, Praefect requires
+that the Application-Layer Protocol Negotiation (ALPN) extension is used per [RFC 7540](https://datatracker.ietf.org/doc/html/rfc7540#section-3.3).
+TCP load balancers pass ALPN directly without additional configuration. With a HTTP/2 or gRPC load balancer, ensuring that the ALPN is used
+[can be difficult](https://github.com/grpc/grpc-go/issues/7922).
 
 ### GitLab
 
@@ -1223,11 +1228,11 @@ To complete this section you need:
 - [Configured Gitaly nodes](#gitaly)
 
 The Praefect cluster needs to be exposed as a storage location to the GitLab
-application, which is done by updating the `git_data_dirs`.
+application, which is done by updating `gitlab_rails['repositories_storages']`.
 
 Particular attention should be shown to:
 
-- the storage name added to `git_data_dirs` in this section must match the
+- the storage name added to `gitlab_rails['repositories_storages']` in this section must match the
   storage name under `praefect['configuration'][:virtual_storage]` on the Praefect nodes. This
   was set in the [Praefect](#praefect) section of this guide. This document uses
   `default` as the Praefect storage name.
@@ -1275,12 +1280,12 @@ Particular attention should be shown to:
    - The port should be changed to `3305`.
 
    ```ruby
-   git_data_dirs({
+   gitlab_rails['repositories_storages'] = {
      "default" => {
        "gitaly_address" => "tcp://PRAEFECT_LOADBALANCER_HOST:2305",
        "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
      }
-   })
+   }
    ```
 
 1. Configure the GitLab Shell secret token so that callbacks from Gitaly nodes during a `git push`
@@ -1372,13 +1377,13 @@ which prevents the communication with the cluster.
 For example:
 
 ```ruby
-git_data_dirs({
+gitlab_rails['repositories_storages'] = {
   'default' => { 'gitaly_address' => 'tcp://old-gitaly.internal:8075' },
   'cluster' => {
     'gitaly_address' => 'tls://<PRAEFECT_LOADBALANCER_HOST>:3305',
     'gitaly_token' => '<praefect_external_token>'
   }
-})
+}
 ```
 
 See [Mixed Configuration](configure_gitaly.md#mixed-configuration) for further information on

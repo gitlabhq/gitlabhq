@@ -19,7 +19,7 @@ RSpec.describe TestReportSummaryEntity do
         expect(as_json[:test_suites].count).to eq(1)
       end
 
-      it 'contains build_ids' do
+      it 'contains build_ids', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463030' do
         expect(as_json[:test_suites].first).to include(:build_ids)
       end
     end

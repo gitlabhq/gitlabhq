@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 With GitLab Pages, you can publish static websites directly from a repository
 in GitLab.
@@ -178,11 +178,29 @@ The project maintainer can disable this feature on:
 
 For example URLs, see [GitLab Pages default domain names](getting_started_part_one.md#gitlab-pages-default-domain-names).
 
+## Primary domain
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481334) in GitLab 17.8.
+
+When you use GitLab Pages with custom domains, you can redirect all requests to GitLab Pages to a primary domain.
+When the primary domain is selected, users receive `308 Permanent Redirect` status that redirects the browser to the
+selected primary domain. Browsers might cache this redirect.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+- A [custom domain](custom_domains_ssl_tls_certification/index.md#set-up-a-custom-domain) must be set up.
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Deploy > Pages**.
+1. From the **Primary domain** dropdown list, select the domain to redirect to.
+1. Select **Save changes**.
+
 ## Expiring deployments
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162826) in GitLab 17.4.
 
@@ -235,13 +253,14 @@ To recover a stopped deployment that has not yet been deleted:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [experiment](../../../policy/development_stages_support.md) [with a flag](../../feature_flags.md) named `pages_multiple_versions_setting`. Disabled by default.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/480195) from "multiple deployments" to "parallel deployments" in GitLab 17.4.
 > - [Enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/422145) in GitLab 17.4.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/502219) to remove the project setting.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/502219) to remove the project setting in GitLab 17.7.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/507423) to allow periods in `path_prefix` in GitLab 17.8.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -258,8 +277,8 @@ The value of `pages.path_prefix` is:
 
 - Converted to lowercase.
 - Shortened to 63 bytes.
-- Any character except numbers (`0-9`) and letter (`a-z`) is replaced with a hyphen (`-`).
-- Leading and trailing hyphens (`-`) are removed.
+- Any character except numbers (`0-9`), letters (`a-z`) and periods (`.`) is replaced with a hyphen (`-`).
+- Leading and trailing hyphens (`-`) and period (`.`) are removed.
 
 ### Example configuration
 
@@ -281,7 +300,7 @@ The number of parallel deployments is limited by the root-level namespace. For
 specific limits for:
 
 - GitLab.com, see [Other limits](../../gitlab_com/index.md#other-limits).
-- Self-managed GitLab instances, see
+- GitLab Self-Managed, see
   [Number of parallel Pages deployments](../../../administration/instance_limits.md#number-of-parallel-pages-deployments).
 
 To immediately reduce the number of active deployments in your namespace,
@@ -326,7 +345,7 @@ possibility. For example:
 deploy-pages:
   stage: deploy
   script:
-    - echo "Pages accessible through ${CI_PAGES_URL}/${PAGES_PREFIX}"
+    - echo "Pages accessible through ${CI_PAGES_URL}"
   variables:
     PAGES_PREFIX: "" # No prefix by default (master)
   pages:  # specifies that this is a Pages job
@@ -362,14 +381,14 @@ For example:
 deploy-pages:
   stage: deploy
   script:
-    - echo "Pages accessible through ${CI_PAGES_URL}/${PAGES_PREFIX}"
+    - echo "Pages accessible through ${CI_PAGES_URL}"
   variables:
     PAGES_PREFIX: "" # no prefix by default (master)
   pages:  # specifies that this is a Pages job
     path_prefix: "$PAGES_PREFIX"
   environment:
     name: "Pages ${PAGES_PREFIX}"
-    url: "${CI_PAGES_URL}/${PAGES_PREFIX}"
+    url: $CI_PAGES_URL
   artifacts:
     paths:
     - public

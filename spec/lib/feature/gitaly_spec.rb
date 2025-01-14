@@ -106,107 +106,122 @@ RSpec.describe Feature::Gitaly do
     subject { described_class.server_feature_flags }
 
     it 'returns a hash of flags starting with the prefix, with dashes instead of underscores' do
-      expect(subject).to eq('gitaly-feature-global-flag' => 'true',
-                            'gitaly-feature-project-flag' => 'false',
-                            'gitaly-feature-repository-flag' => 'false',
-                            'gitaly-feature-user-flag' => 'false',
-                            'gitaly-feature-group-flag' => 'false')
+      expect(subject).to eq(
+        'gitaly-feature-global-flag' => 'true',
+        'gitaly-feature-project-flag' => 'false',
+        'gitaly-feature-repository-flag' => 'false',
+        'gitaly-feature-user-flag' => 'false',
+        'gitaly-feature-group-flag' => 'false'
+      )
     end
 
     context 'when a project is passed' do
       it 'returns the value for the flag on the given project' do
-        expect(described_class.server_feature_flags(project: project))
-          .to eq('gitaly-feature-global-flag' => 'true',
-                 'gitaly-feature-project-flag' => 'true',
-                 'gitaly-feature-repository-flag' => 'false',
-                 'gitaly-feature-user-flag' => 'false',
-                 'gitaly-feature-group-flag' => 'false')
+        expect(described_class.server_feature_flags(project: project)).to eq(
+          'gitaly-feature-global-flag' => 'true',
+          'gitaly-feature-project-flag' => 'true',
+          'gitaly-feature-repository-flag' => 'false',
+          'gitaly-feature-user-flag' => 'false',
+          'gitaly-feature-group-flag' => 'false'
+        )
 
-        expect(described_class.server_feature_flags(project: project_2))
-          .to eq('gitaly-feature-global-flag' => 'true',
-                 'gitaly-feature-project-flag' => 'false',
-                 'gitaly-feature-repository-flag' => 'false',
-                 'gitaly-feature-user-flag' => 'false',
-                 'gitaly-feature-group-flag' => 'false')
+        expect(described_class.server_feature_flags(project: project_2)).to eq(
+          'gitaly-feature-global-flag' => 'true',
+          'gitaly-feature-project-flag' => 'false',
+          'gitaly-feature-repository-flag' => 'false',
+          'gitaly-feature-user-flag' => 'false',
+          'gitaly-feature-group-flag' => 'false'
+        )
       end
     end
 
     context 'when a repository is passed' do
       it 'returns the value for the flag on the given repository' do
-        expect(described_class.server_feature_flags(repository: repository))
-          .to eq('gitaly-feature-global-flag' => 'true',
-                 'gitaly-feature-project-flag' => 'false',
-                 'gitaly-feature-repository-flag' => 'true',
-                 'gitaly-feature-user-flag' => 'false',
-                 'gitaly-feature-group-flag' => 'false')
+        expect(described_class.server_feature_flags(repository: repository)).to eq(
+          'gitaly-feature-global-flag' => 'true',
+          'gitaly-feature-project-flag' => 'false',
+          'gitaly-feature-repository-flag' => 'true',
+          'gitaly-feature-user-flag' => 'false',
+          'gitaly-feature-group-flag' => 'false'
+        )
 
-        expect(described_class.server_feature_flags(repository: repository_2))
-          .to eq('gitaly-feature-global-flag' => 'true',
-                 'gitaly-feature-project-flag' => 'false',
-                 'gitaly-feature-repository-flag' => 'false',
-                 'gitaly-feature-user-flag' => 'false',
-                 'gitaly-feature-group-flag' => 'false')
+        expect(described_class.server_feature_flags(repository: repository_2)).to eq(
+          'gitaly-feature-global-flag' => 'true',
+          'gitaly-feature-project-flag' => 'false',
+          'gitaly-feature-repository-flag' => 'false',
+          'gitaly-feature-user-flag' => 'false',
+          'gitaly-feature-group-flag' => 'false'
+        )
       end
     end
 
     context 'when a user is passed' do
       it 'returns the value for the flag on the given user' do
-        expect(described_class.server_feature_flags(user: user))
-          .to eq('gitaly-feature-global-flag' => 'true',
-                 'gitaly-feature-project-flag' => 'false',
-                 'gitaly-feature-repository-flag' => 'false',
-                 'gitaly-feature-user-flag' => 'true',
-                 'gitaly-feature-group-flag' => 'false')
+        expect(described_class.server_feature_flags(user: user)).to eq(
+          'gitaly-feature-global-flag' => 'true',
+          'gitaly-feature-project-flag' => 'false',
+          'gitaly-feature-repository-flag' => 'false',
+          'gitaly-feature-user-flag' => 'true',
+          'gitaly-feature-group-flag' => 'false'
+        )
 
-        expect(described_class.server_feature_flags(user: create(:user)))
-          .to eq('gitaly-feature-global-flag' => 'true',
-                 'gitaly-feature-project-flag' => 'false',
-                 'gitaly-feature-repository-flag' => 'false',
-                 'gitaly-feature-user-flag' => 'false',
-                 'gitaly-feature-group-flag' => 'false')
+        expect(described_class.server_feature_flags(user: create(:user))).to eq(
+          'gitaly-feature-global-flag' => 'true',
+          'gitaly-feature-project-flag' => 'false',
+          'gitaly-feature-repository-flag' => 'false',
+          'gitaly-feature-user-flag' => 'false',
+          'gitaly-feature-group-flag' => 'false'
+        )
       end
     end
 
     context 'when a group is passed' do
       it 'returns the value for the flag on the given group' do
-        expect(described_class.server_feature_flags(group: group))
-          .to eq('gitaly-feature-global-flag' => 'true',
-                 'gitaly-feature-project-flag' => 'false',
-                 'gitaly-feature-repository-flag' => 'false',
-                 'gitaly-feature-user-flag' => 'false',
-                 'gitaly-feature-group-flag' => 'true')
+        expect(described_class.server_feature_flags(group: group)).to eq(
+          'gitaly-feature-global-flag' => 'true',
+          'gitaly-feature-project-flag' => 'false',
+          'gitaly-feature-repository-flag' => 'false',
+          'gitaly-feature-user-flag' => 'false',
+          'gitaly-feature-group-flag' => 'true'
+        )
 
-        expect(described_class.server_feature_flags(group: create(:group)))
-          .to eq('gitaly-feature-global-flag' => 'true',
-                 'gitaly-feature-project-flag' => 'false',
-                 'gitaly-feature-repository-flag' => 'false',
-                 'gitaly-feature-user-flag' => 'false',
-                 'gitaly-feature-group-flag' => 'false')
+        expect(described_class.server_feature_flags(group: create(:group))).to eq(
+          'gitaly-feature-global-flag' => 'true',
+          'gitaly-feature-project-flag' => 'false',
+          'gitaly-feature-repository-flag' => 'false',
+          'gitaly-feature-user-flag' => 'false',
+          'gitaly-feature-group-flag' => 'false'
+        )
       end
     end
 
     context 'when multiple actors are passed' do
       it 'returns the corresponding enablement status for actors' do
-        expect(described_class.server_feature_flags(project: project_2, repository: repository))
-          .to eq('gitaly-feature-global-flag' => 'true',
-                 'gitaly-feature-project-flag' => 'false',
-                 'gitaly-feature-repository-flag' => 'true',
-                 'gitaly-feature-user-flag' => 'false',
-                 'gitaly-feature-group-flag' => 'false')
+        expect(described_class.server_feature_flags(project: project_2, repository: repository)).to eq(
+          'gitaly-feature-global-flag' => 'true',
+          'gitaly-feature-project-flag' => 'false',
+          'gitaly-feature-repository-flag' => 'true',
+          'gitaly-feature-user-flag' => 'false',
+          'gitaly-feature-group-flag' => 'false'
+        )
 
-        expect(described_class.server_feature_flags(project: project, repository: repository_2))
-          .to eq('gitaly-feature-global-flag' => 'true',
-                 'gitaly-feature-project-flag' => 'true',
-                 'gitaly-feature-repository-flag' => 'false',
-                 'gitaly-feature-user-flag' => 'false',
-                 'gitaly-feature-group-flag' => 'false')
+        expect(described_class.server_feature_flags(project: project, repository: repository_2)).to eq(
+          'gitaly-feature-global-flag' => 'true',
+          'gitaly-feature-project-flag' => 'true',
+          'gitaly-feature-repository-flag' => 'false',
+          'gitaly-feature-user-flag' => 'false',
+          'gitaly-feature-group-flag' => 'false'
+        )
 
-        expect(described_class.server_feature_flags(user: user, project: project, repository: repository, group: group))
-          .to eq('gitaly-feature-global-flag' => 'true',
-                 'gitaly-feature-project-flag' => 'true',
-                 'gitaly-feature-repository-flag' => 'true',
-                 'gitaly-feature-user-flag' => 'true',
-                 'gitaly-feature-group-flag' => 'true')
+        expect(
+          described_class.server_feature_flags(user: user, project: project, repository: repository, group: group)
+        ).to eq(
+          'gitaly-feature-global-flag' => 'true',
+          'gitaly-feature-project-flag' => 'true',
+          'gitaly-feature-repository-flag' => 'true',
+          'gitaly-feature-user-flag' => 'true',
+          'gitaly-feature-group-flag' => 'true'
+        )
       end
     end
 

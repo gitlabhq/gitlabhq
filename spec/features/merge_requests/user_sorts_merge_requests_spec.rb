@@ -35,7 +35,7 @@ RSpec.describe 'User sorts merge requests', :js, feature_category: :code_review_
 
     visit(merge_requests_group_path(group))
 
-    expect(find('.filter-dropdown-container button.gl-new-dropdown-toggle')).to have_content('Milestone')
+    expect(find('.sort-dropdown-container')).to have_content('Milestone')
   end
 
   it 'fallbacks to issuable_sort cookie key when remembering the sorting option' do

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 GitLab compliance features ensure your GitLab instance meets common compliance standards, and are available at various pricing tiers. For more information about compliance management, see the compliance
 management [solutions page](https://about.gitlab.com/solutions/compliance/).

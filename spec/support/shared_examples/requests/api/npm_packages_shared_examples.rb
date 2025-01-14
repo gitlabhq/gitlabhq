@@ -742,7 +742,7 @@ RSpec.shared_examples 'rejects invalid package names' do
 end
 
 RSpec.shared_examples 'handling get metadata requests for packages in multiple projects' do
-  let_it_be(:project2) { create(:project, namespace: namespace) }
+  let_it_be(:project2) { create(:project, :private, namespace: namespace) }
   let_it_be(:package2) do
     create(:npm_package,
       project: project2,
@@ -755,8 +755,6 @@ RSpec.shared_examples 'handling get metadata requests for packages in multiple p
   subject { get(url, headers: headers) }
 
   before_all do
-    project.update!(visibility: 'private')
-
     group.add_guest(user)
     project.add_reporter(user)
     project2.add_reporter(user)
@@ -794,6 +792,7 @@ RSpec.shared_examples 'handling get metadata requests for packages in multiple p
 
   context 'with limited access to the project with the first package version' do
     before do
+      project.update!(visibility: 'private')
       project.add_guest(user)
     end
 

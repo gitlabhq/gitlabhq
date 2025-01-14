@@ -11,19 +11,25 @@ module Integrations
 
     field :recipients,
       type: :textarea,
-      help: -> { _('Comma-separated list of email addresses.') },
+      help: -> { _('Comma-separated list of recipient email addresses.') },
       required: true
 
     field :notify_only_broken_pipelines,
-      type: :checkbox
+      type: :checkbox,
+      description: -> { _('Send notifications for broken pipelines.') }
 
     field :notify_only_default_branch,
       type: :checkbox,
-      api_only: true
+      api_only: true,
+      description: -> { _('Send notifications for the default branch.') }
 
     field :branches_to_be_notified,
       type: :select,
       title: -> { s_('Integrations|Branches for which notifications are to be sent') },
+      description: -> {
+                     _('Branches to send notifications for. Valid options are `all`, `default`, `protected`, ' \
+                       'and `default_and_protected`. The default value is `default`.')
+                   },
       choices: branch_choices
 
     def initialize_properties

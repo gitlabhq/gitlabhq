@@ -9,11 +9,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 ## Set up your local GitLab instance
 
 1. [Configure GDK to set up Duo Features in the local environment](../ai_features/index.md)
-1. For GitLab Rails, enable `ai_custom_model` feature flag:
-
-   ```ruby
-   Feature.enable(:ai_custom_model)
-   ```
 
 1. For AI gateway:
 

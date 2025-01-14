@@ -74,14 +74,10 @@ class PagesDeployment < ApplicationRecord
     update(deleted_at: Time.now.utc)
   end
 
-  def self.count_versioned_deployments_for(project_or_namespace, limit)
-    namespace = project_or_namespace.try(:root_ancestor) || project_or_namespace
-
-    project_id_in(namespace.all_projects)
-      .active
-      .versioned
-      .limit(limit)
-      .count
+  def self.count_versioned_deployments_for(projects, limit, group_by_project: false)
+    query = project_id_in(projects).active.versioned
+    query = query.group(:project_id) if group_by_project
+    query.limit(limit).count
   end
 
   def active?

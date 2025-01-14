@@ -1,0 +1,9 @@
+---
+name: rename_post_receive_worker
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/505502
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176398
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/512125
+milestone: '17.9'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

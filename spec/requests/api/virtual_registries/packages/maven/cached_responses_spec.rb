@@ -115,21 +115,11 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::CachedResponses, :aggreg
     let(:id) { Base64.urlsafe_encode64("#{upstream.id} #{cached_response.relative_path}") }
     let(:url) { "/virtual_registries/packages/maven/cached_responses/#{id}" }
 
-    let_it_be(:processing_cached_response) do
-      create(
-        :virtual_registries_packages_maven_cached_response,
-        :processing,
-        upstream: upstream,
-        group: upstream.group,
-        relative_path: cached_response.relative_path
-      )
-    end
-
     subject(:api_request) { delete api(url), headers: headers }
 
     shared_examples 'successful response' do
       it 'returns a successful response' do
-        expect { api_request }.to change { upstream.cached_responses.count }.by(-1)
+        expect { api_request }.to change { cached_response.reload.status }.from('default').to('pending_destruction')
         expect(response).to have_gitlab_http_status(:no_content)
       end
     end
@@ -192,7 +182,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::CachedResponses, :aggreg
       before do
         allow_next_found_instance_of(cached_response.class) do |instance|
           errors = ActiveModel::Errors.new(instance).tap { |e| e.add(:cached_response, 'error message') }
-          allow(instance).to receive_messages(save: false, errors: errors)
+          allow(instance).to receive_messages(mark_as_pending_destruction: false, errors: errors)
         end
       end
 

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 <!-- vale gitlab_base.FutureTense = NO -->
 
@@ -174,7 +174,7 @@ Repeat these steps to create all the labels you'll need:
 - **Type:** You will use these labels to represent the different types of work typically pulled into a single iteration:
   - `type::story`
   - `type::bug`
-  - `type::mantainence`
+  - `type::maintenance`
 
 ### Create an iteration cadence
 

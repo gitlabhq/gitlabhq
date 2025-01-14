@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 **Status:** Beta
 
 WARNING:
@@ -343,7 +343,7 @@ Depending on the project visibility, the access type is different:
 - On public projects, the `https` Git URL is used. Make sure you can [clone the repository with HTTPS](../../../topics/git/clone.md#clone-with-https).
 - On internal or private projects, the `ssh` Git URL is used. Make sure you can [clone the repository with SSH](../../../topics/git/clone.md#clone-with-ssh).
 
-You can access the `ssh` Git URL from a CI/CD job using [SSH keys with GitLab CI/CD](../../../ci/ssh_keys/index.md).
+You can access the `ssh` Git URL from a CI/CD job using [SSH keys with GitLab CI/CD](../../../ci/jobs/ssh_keys.md).
 
 ### Working with Deploy Tokens
 

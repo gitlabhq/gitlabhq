@@ -186,6 +186,7 @@ export default Node.create({
           [COMMANDS.UNASSIGN_REVIEWER]: '@',
           [COMMANDS.REASSIGN_REVIEWER]: '@',
           [COMMANDS.MILESTONE]: '%',
+          [COMMANDS.ITERATION]: '*iteration:',
         },
       }),
     ];

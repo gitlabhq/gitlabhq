@@ -74,6 +74,26 @@ RSpec.describe 'searching groups', :with_license, feature_category: :groups_and_
         expect(names).to contain_exactly(other_group.name)
       end
     end
+
+    context 'with `owned_only` argument' do
+      let_it_be(:owned_group) { create(:group, name: 'with owner role', owners: user) }
+
+      let(:query) do
+        <<~QUERY
+          query {
+            groups(ownedOnly: true) {
+              #{fields}
+            }
+          }
+        QUERY
+      end
+
+      it 'return only owned groups' do
+        subject
+
+        expect(names).to contain_exactly(owned_group.name)
+      end
+    end
   end
 
   describe 'group sorting' do

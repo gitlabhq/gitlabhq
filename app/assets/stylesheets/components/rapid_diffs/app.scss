@@ -1,0 +1,18 @@
+.rd-app-header {
+  display: flex;
+  padding: $gl-spacing-scale-3 0;
+  min-height: 3rem;
+  // do not let dropdowns cover sticky header
+  position: relative;
+  z-index: 1;
+}
+
+.rd-app-settings {
+  display: flex;
+  margin-left: auto;
+}
+
+.rd-app-body {
+  display: flex;
+  flex-direction: column;
+}

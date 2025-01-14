@@ -1,5 +1,5 @@
 ---
-stage: Secure
+stage: Application Security Testing
 group: Secret Detection
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Every API call to project security settings must be [authenticated](rest/authentication.md).
 
@@ -32,7 +32,7 @@ GET /projects/:id/security_settings
 | `id`          | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).                                                            |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/7/security_settings"
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/7/security_settings"
 ```
 
 Example response:
@@ -68,7 +68,7 @@ Prerequisites:
 | `pre_receive_secret_detection_enabled`        | boolean | yes        | The value to update `pre_receive_secret_detection_enabled` to  |
 
 ```shell
-curl --header POST "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/7/security_settings?pre_receive_secret_detection_enabled=false"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/7/security_settings?pre_receive_secret_detection_enabled=false"
 ```
 
 Example response:

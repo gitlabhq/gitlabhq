@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13266) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `pipeline_execution_policy_type`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/454278) in GitLab 17.3. Feature flag `pipeline_execution_policy_type` removed.
@@ -169,8 +169,10 @@ Prerequisites:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173480) in GitLab 17.7.
 
-Use the `skip_ci` keyword to specify whether users are allowed to apply the `skip-ci` directive to skip the pipelines.
-When the keyword is not specified, the `skip-ci` directive is ignored, preventing all users
+Pipeline execution policies offer control over who can use the `[skip ci]` directive. You can specify certain users or service accounts that are allowed to use `[skip ci]` while still ensuring critical security and compliance checks are performed.
+
+Use the `skip_ci` keyword to specify whether users are allowed to apply the `skip_ci` directive to skip the pipelines.
+When the keyword is not specified, the `skip_ci` directive is ignored, preventing all users
 from bypassing the pipeline execution policies.
 
 | Field                   | Type     | Possible values          | Description |
@@ -207,9 +209,11 @@ the only jobs that run are the pipeline execution policy jobs.
 
 ### `override_project_ci`
 
+> - Updated handling of workflow rules [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175088) in GitLab 17.8 [with a flag](../../../administration/feature_flags.md) named `policies_always_override_project_ci`. Enabled by default.
+
 This strategy replaces the project's existing CI/CD configuration with a new one defined by the pipeline execution policy. This strategy is ideal when the entire pipeline needs to be standardized or replaced, like when you want to enforce organization-wide CI/CD standards or compliance requirements in a highly regulated industry. To override the pipeline configuration, define the CI/CD jobs and do not use `include:project`.
 
-The strategy takes precedence over other policies using the `inject_ci` strategy. If any policy with `override_project_ci` applies, the project CI configuration will be ignored. Other security policy configurations will not be overridden.
+The strategy takes precedence over other policies that use the `inject_ci` strategy. If a policy with `override_project_ci` applies, the project CI/CD configuration is ignored. However, other security policy configurations are not overridden.
 
 Alternatively, you can merge the project's CI/CD configuration with the project's `.gitlab-ci.yml` instead of overriding it. To merge the configuration, use `include:project`. This strategy allows users to include the project CI/CD configuration in the pipeline execution policy configuration, enabling the users to customize the policy jobs. For example, they can combine the policy and project CI/CD configuration into one YAML file to override the `before_script` configuration or define required variables, such as `CS_IMAGE`, to define the required path to the container to scan. Here's a [short demo](https://youtu.be/W8tubneJ1X8) of this behavior.
 The following diagram illustrates how variables defined at the project and policy levels are selected in the resulting pipeline:
@@ -309,8 +313,10 @@ When a pipeline execution policy uses workflow rules that prevent policy jobs fr
 project's original CI/CD configuration remains in effect instead of being overridden. You can
 conditionally apply pipeline execution policies to control when the policy impacts the project's
 CI/CD configuration. For example, if you set a workflow rule `if: $CI_PIPELINE_SOURCE ==
-"merge_request_event"`, the project's CI configuration is only overridden when the pipeline source
-is a merge request event.
+"merge_request_event"`, the project's CI/CD configuration is only overridden when the pipeline source
+is a merge request event. However, if the feature flag `policies_always_override_project_ci` is enabled,
+the workflow rules in the pipeline execution policy also override the project's original CI/CD configuration.
+As a result, if workflow rules cause the pipeline execution policy to be filtered out, no pipeline is created.
 
 ### Include a project's CI/CD configuration in the pipeline execution policy configuration
 
@@ -326,28 +332,54 @@ compliance_job:
  ...
 ```
 
-> Jobs from the project configuration that are defined for a custom
-> `stage` are excluded from the final pipeline.
-> To include a job in the final configuration, you can:
->
-> - Use [stages](../../../ci/yaml/index.md#stages) to define custom stages in the pipeline execution policy configuration.
-> - Use a [default pipeline stage](../../../ci/yaml/index.md#stages)
-> - Use a reserved stage (`.pipeline-policy-pre` or `.pipeline-policy-post`).
-
 ## CI/CD variables
 
 Pipeline execution jobs are executed in isolation. Variables defined in another policy or in the project's `.gitlab-ci.yml` file are not available in the pipeline execution policy
 and cannot be overwritten from the outside.
 
-Variables can be shared with pipeline execution policies using group or project settings. If a variable is not defined in a pipeline execution policy, the value from group or project settings is applied.
-If the variable is defined in the pipeline execution policy, the group or project setting is overwritten.
-This behavior is independent from the pipeline execution policy strategy.
+Variables can be shared with pipeline execution policies using group or project settings, which follow the standard [CI/CD variable precedence](../../../ci/variables/index.md#cicd-variable-precedence) rules. However, the precedence rules are more complex when using a pipeline execution policy as they can vary depending on the pipeline execution policy strategy:
+
+- `inject_ci` strategy: If the variable is defined in the pipeline execution policy, the job always uses this value. If a variable is not defined in a pipeline execution policy, the job applies the value from the group or project settings.
+- `override_project_ci` strategy: All jobs in the resulting pipeline are treated as policy jobs. Variables defined in the policy (including those in included files) take precedence over project and group variables. This means that variables from jobs in the CI/CD configuration of the included project take precedence over the variables defined in the project and group settings.
+
+For more details on variable in pipeline execution policies, see [precedence of variable in pipeline execution policies](#precedence-of-variables-in-pipeline-execution-policies).
 
 You can [define project or group variables in the UI](../../../ci/variables/index.md#define-a-cicd-variable-in-the-ui).
 
+### Precedence of variables in pipeline execution policies
+
+When using pipeline execution policies, especially with the `override_project_ci` strategy, the precedence of variable values defined in multiple places can differ from standard GitLab CI/CD pipelines. These are some important points to understand:
+
+- When using `override_project_ci`, all jobs in the resulting pipeline are considered policy jobs, including those from the CI/CD configurations of included projects.
+- Variables defined in a policy pipeline (for the entire instance or for a job) take precedence over variables defined in the project or group settings.
+- This behavior applies to all jobs, including those included from the project's CI/CD configuration file (`.gitlab-ci.yml`).
+
+### Example
+
+If a variable in a project's CI/CD configuration and a job variable defined in an included `.gitlab-ci.yml` file have the same name, the job variable takes precedence when using `override_project_ci`.
+
+In the project's CI/CD settings, a `MY_VAR` variable is defined:
+
+- Key: `MY_VAR`
+- Value: `Project configuration variable value`
+
+In `.gitlab-ci.yml` of the included project, the same variable is defined:
+
+```yaml
+project-job:
+  variables:
+    MY_VAR: "Project job variable value"
+  script:
+    - echo $MY_VAR  # This will output "Project job variable value"
+```
+
+In this case, the job variable value `Project job variable value` takes precedence.
+
 ## Behavior with `[skip ci]`
 
-To prevent a regular pipeline from triggering, users can push a commit to a protected branch with `[skip ci]` in the commit message. However, jobs defined with a pipeline execution policy are always triggered, as the policy ignores the `[skip ci]` directive. This prevents developers from skipping the execution of jobs defined in the policy, which ensures that critical security and compliance checks are always performed.
+By default, to prevent a regular pipeline from triggering, users can push a commit to a protected branch with `[skip ci]` in the commit message. However, jobs defined with a pipeline execution policy are always triggered, as the policy ignores the `[skip ci]` directive. This prevents developers from skipping the execution of jobs defined in the policy, which ensures that critical security and compliance checks are always performed.
+
+For more flexible control over `[skip ci]` behavior, see the [`skip_ci` type](#skip_ci-type) section.
 
 ## Interaction with scan execution policies
 
@@ -395,7 +427,7 @@ pipeline_execution_policy:
 
 You can customize enforced jobs, based on the presence of a project variable. In this example,
 the value of `CS_IMAGE` is defined in the policy as `alpine:latest`. However, if the project
-also defines the value of `CS_IMAGE`, that value is used instead. The CI/CD variable must be a
+also defines the value of `PROJECT_CS_IMAGE`, that value is used instead. The CI/CD variable must be a
 predefined project variable, not defined in the project's `.gitlab-ci.yml` file.
 
 ```yaml
@@ -406,7 +438,7 @@ variables:
 policy::container-security:
   stage: .pipeline-policy-pre
   rules:
-    - if: $CS_IMAGE
+    - if: $PROJECT_CS_IMAGE
       variables:
         CS_IMAGE: $PROJECT_CS_IMAGE
     - when: always

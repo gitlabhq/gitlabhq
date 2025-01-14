@@ -165,32 +165,22 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
     # The below situation can occur when using the git mailmap feature.
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/425042.
     describe 'the effect of mailmapping' do
-      def expect_to_have_mapped_verified_label_content(ref, fingerprint_message)
+      def expect_to_have_label_content(ref, message, fingerprint_message)
         visit project_commit_path(project, ref)
         wait_for_all_requests
 
         page.find('.gl-badge', text: 'Verified').click
 
         within '.popover' do
-          expect(page).to have_content 'This commit was previously signed with a verified signature and verified committer email address. However the committer email address is no longer verified to the same user.'
-          expect(page).to have_content fingerprint_message
-        end
-      end
-
-      def expect_to_have_verified_label_content(ref, fingerprint_message)
-        visit project_commit_path(project, ref)
-        wait_for_all_requests
-
-        page.find('.gl-badge', text: 'Verified').click
-
-        within '.popover' do
-          expect(page).to have_content 'Verified commit This commit was signed with a verified signature and the committer email was verified to belong to the same user.'
+          expect(page).to have_content message
           expect(page).to have_content fingerprint_message
         end
       end
 
       context 'on SSH signed commits' do
         let(:commit) { project.commit('7b5160f9bb23a3d58a0accdbe89da13b96b1ece9') }
+        let(:message) { 'This commit was signed with a verified signature and the committer email was verified to belong to the same user.' }
+        let(:mapped_message) { 'This commit was previously signed with a verified signature and verified committer email address. However the committer email address is no longer verified to the same user.' }
 
         context 'when user commit email is not verified and the commit is signed and verified' do
           let(:commit) { project.commit('7b5160f9bb23a3d58a0accdbe89da13b96b1ece9') }
@@ -198,11 +188,10 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
 
           before do
             create(:ssh_signature, user: user_1, commit_sha: commit.sha, project: project, verification_status: :verified)
-            allow(commit).to receive(:author_email).and_return('unverified@email.org')
           end
 
           it 'label is mapped verified' do
-            expect_to_have_mapped_verified_label_content(commit.sha, "SSH key fingerprint: #{fingerprint}")
+            expect_to_have_label_content(commit.sha, mapped_message, "SSH key fingerprint: #{fingerprint}")
           end
 
           context 'when the check_for_mailmapped_commit_emails feature flag is disabled' do
@@ -211,7 +200,7 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
             end
 
             it 'label is verified' do
-              expect_to_have_verified_label_content(commit.sha, "SSH key fingerprint: #{fingerprint}")
+              expect_to_have_label_content(commit.sha, message, "SSH key fingerprint: #{fingerprint}")
             end
           end
         end
@@ -219,6 +208,8 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
 
       context 'on GPG on signed commits' do
         let(:commit) { project.commit(GpgHelpers::SIGNED_COMMIT_SHA) }
+        let(:message) { 'This commit was signed with a verified signature and the committer email was verified to belong to the same user.' }
+        let(:mapped_message) { 'This commit was previously signed with a verified signature and verified committer email address. However the committer email address is no longer verified to the same user.' }
 
         context 'when user commit email is not verified and the commit is signed and verified' do
           let(:fingerprint) { GpgHelpers::User1.primary_keyid }
@@ -236,7 +227,7 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
           end
 
           it 'label is mapped verified' do
-            expect_to_have_mapped_verified_label_content(commit.sha, "GPG Key ID: #{fingerprint}")
+            expect_to_have_label_content(commit.sha, mapped_message, "GPG Key ID: #{fingerprint}")
           end
 
           context 'when the check_for_mailmapped_commit_emails feature flag is disabled' do
@@ -245,7 +236,56 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
             end
 
             it 'label is verified' do
-              expect_to_have_verified_label_content(commit.sha, "GPG Key ID: #{fingerprint}")
+              expect_to_have_label_content(commit.sha, message, "GPG Key ID: #{fingerprint}")
+            end
+          end
+        end
+      end
+
+      context 'on x509 on signed commits' do
+        let_it_be(:commit_sha) { '189a6c924013fc3fe40d6f1ec1dc20214183bc97' }
+        let_it_be(:commit) { create(:commit, project: project, sha: commit_sha) }
+        let_it_be(:x509_certificate) { create(:x509_certificate, email: 'r.meier@siemens.com') }
+        let_it_be(:user) { create(:user, email: 'gitlab@example.org') }
+        let(:message) { 'This commit was signed with a verified signature and the committer email is verified to belong to the same user.' }
+        let(:mapped_message) { 'This commit was previously signed with a verified signature and verified committer email address. However the committer email address is no longer verified to the same user.' }
+        let(:fingerprint) { x509_certificate.subject_key_identifier.tr(':', ' ') }
+
+        let(:attributes) do
+          {
+            commit_sha: commit_sha,
+            project: project,
+            x509_certificate_id: x509_certificate.id,
+            verification_status: "verified"
+          }
+        end
+
+        let(:signature) { create(:x509_commit_signature, commit_sha: commit_sha, x509_certificate: x509_certificate, project: project) }
+
+        before do
+          signature
+        end
+
+        context 'happy path - no mapping' do
+          it 'label is verified' do
+            expect_to_have_label_content(commit.sha, message, fingerprint)
+          end
+        end
+
+        context 'when user commit email is not verified and the commit is signed and verified' do
+          let(:x509_certificate) { create(:x509_certificate, email: 'gitlab@example.org') }
+
+          it 'label is mapped verified' do
+            expect_to_have_label_content(commit.sha, mapped_message, fingerprint)
+          end
+
+          context 'when the check_for_mailmapped_commit_emails feature flag is disabled' do
+            before do
+              stub_feature_flags(check_for_mailmapped_commit_emails: false)
+            end
+
+            it 'label is verified' do
+              expect_to_have_label_content(commit.sha, message, fingerprint)
             end
           end
         end

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 This page collects instructions for all the things you can do with [epics](index.md) or in relation
 to them.
@@ -134,7 +134,7 @@ To update multiple epics at the same time:
 ### Open epics in a drawer
 
 DETAILS:
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `issues_list_drawer`. Disabled by default.
 > - Feature flag [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170066) from `issues_list_drawer` to `epics_list_drawer` in GitLab 17.6.
@@ -160,7 +160,7 @@ To open the epic in full view, either:
 
 DETAILS:
 **Status:** Beta
-**Offering:** GitLab.com, Self-managed
+**Offering:** GitLab.com, GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4231) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `work_items_beta`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md#beta).
 
@@ -437,7 +437,8 @@ You can always view the issues assigned to the epic if they are in the group's c
 It's possible because the visibility setting of a project must be the same as or less restrictive than
 of its parent group.
 
-<!-- When epics as work items are GA, use the info below in the main body. -->
+<!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
+use the info below in the main body. -->
 
 If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
 **Child items**.
@@ -456,7 +457,8 @@ To see the number of open and closed epics and issues:
 The numbers reflect all child issues and epics associated with the epic, including those you might
 not have permission to view.
 
-<!-- When epics as work items are GA, use the info below in the main body. -->
+<!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
+use the info below in the main body. -->
 
 If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
 **Child items**.
@@ -475,7 +477,8 @@ To see the completed and total weight of child issues:
 The weights and progress reflect all issues associated with the epic, including issues you might
 not have permission to view.
 
-<!-- When epics as work items are GA, use the info below in the main body. -->
+<!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
+use the info below in the main body. -->
 
 If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
 **Child items**.
@@ -563,7 +566,8 @@ To add an existing issue to an epic:
    If there are multiple issues to be added, press <kbd>Space</kbd> and repeat this step.
 1. Select **Add**.
 
-<!-- When epics as work items are GA, use the info below in the main body. -->
+<!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
+use the info below in the main body. -->
 
 If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
 **Child items**.
@@ -595,7 +599,8 @@ To create an issue from an epic:
 
 The new issue is assigned to the epic.
 
-<!-- When epics as work items are GA, use the info below in the main body. -->
+<!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
+use the info below in the main body. -->
 
 If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
 **Child items**.
@@ -635,7 +640,8 @@ To reorder issues assigned to an epic:
 1. Go to the **Child issues and epics** section.
 1. Drag issues into the desired order.
 
-<!-- When epics as work items are GA, use the info below in the main body. -->
+<!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
+use the info below in the main body. -->
 
 If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
 **Child items**.
@@ -644,7 +650,7 @@ If your administrator [enabled the new look for epics](epic_work_items.md), this
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
 
@@ -660,7 +666,8 @@ To move an issue to another epic:
 1. Go to the **Child issues and epics** section.
 1. Drag issues into the desired parent epic in the visible hierarchy.
 
-<!-- When epics as work items are GA, use the info below in the main body. -->
+<!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
+use the info below in the main body. -->
 
 If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
 **Child items**.
@@ -678,11 +685,12 @@ For more on epic templates, see [Epic Templates - Repeatable sets of issues](htt
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can add any epic that belongs to a group or subgroup of the parent epic's group.
 New child epics appear at the top of the list of epics in the **Child issues and epics** section.
-<!-- When epics as work items are GA, use the info below in the main body. -->
+<!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
+use the info below in the main body. -->
 If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
 **Child items**.
 
@@ -742,7 +750,8 @@ To view child epics from the parent:
 
 - In an epic, in the **Child issues and epics** section, select **Roadmap view**.
 
-<!-- When epics as work items are GA, use the info below in the main body. -->
+<!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
+use the info below in the main body. -->
 
 If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
 **Child items**.
@@ -764,7 +773,8 @@ To add a new epic as child epic:
 1. Enter a title for the new epic.
 1. Select **Create epic**.
 
-<!-- When epics as work items are GA, use the info below in the main body. -->
+<!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
+use the info below in the main body. -->
 
 If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
 **Child items**.
@@ -781,7 +791,8 @@ To add an existing epic as child epic:
    If there are multiple epics to be added, press <kbd>Space</kbd> and repeat this step.
 1. Select **Add**.
 
-<!-- When epics as work items are GA, use the info below in the main body. -->
+<!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
+use the info below in the main body. -->
 
 If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
 **Child items**.
@@ -804,7 +815,8 @@ To move child epics to another epic:
 1. Go to the **Child issues and epics** section.
 1. Drag epics into the desired parent epic.
 
-<!-- When epics as work items are GA, use the info below in the main body. -->
+<!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
+use the info below in the main body. -->
 
 If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
 **Child items**.
@@ -825,7 +837,8 @@ To reorder child epics assigned to an epic:
 1. Go to the **Child issues and epics** section.
 1. Drag epics into the desired order.
 
-<!-- When epics as work items are GA, use the info below in the main body. -->
+<!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
+use the info below in the main body. -->
 
 If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
 **Child items**.

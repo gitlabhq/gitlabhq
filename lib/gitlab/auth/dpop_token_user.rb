@@ -45,7 +45,7 @@ module Gitlab
         openssh_public_key = convert_public_key_to_openssh_key!(user_public_key)
 
         # Decode the JSON token again, this time with the key,
-        # the expected algorthm, verifying all the timestamps, etc
+        # the expected algorithm, verifying all the timestamps, etc
         # Overwrites the attrs, in case .decode returns a different result
         # when verify is true.
         payload, header = JWT.decode(

@@ -2,7 +2,7 @@
 
 module Resolvers
   class LastCommitResolver < BaseResolver
-    type Types::CommitType, null: true
+    type Types::Repositories::CommitType, null: true
 
     calls_gitaly!
 

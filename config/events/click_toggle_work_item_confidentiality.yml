@@ -4,9 +4,6 @@ action: click_toggle_work_item_confidentiality
 product_group: product_planning
 milestone: '15.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94059
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

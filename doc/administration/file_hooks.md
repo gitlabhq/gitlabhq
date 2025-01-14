@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Use custom file hooks (not to be confused with [server hooks](server_hooks.md) or [system hooks](system_hooks.md)),
 to introduce custom integrations without modifying the GitLab source code.

@@ -114,9 +114,12 @@ describe('Test report extension', () => {
           expect(wrapper.text()).toContain('Test summary results are being parsed');
         });
 
-        it('displays a link to view the partial report', () => {
+        it('displays a link to view the partial report with tooltip text', () => {
           expect(findFullReportLink().text()).toBe('View partial report');
           expect(findFullReportLink().attributes('href')).toBe('pipeline/path/test_report');
+          expect(findFullReportLink().attributes('title')).toBe(
+            'See test results while the pipeline is running',
+          );
         });
       });
     });

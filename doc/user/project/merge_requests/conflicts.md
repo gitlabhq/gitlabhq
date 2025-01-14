@@ -9,7 +9,7 @@ description: "Understand merge conflicts, and learn how to fix them in Git proje
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Merge conflicts occur when two branches in a merge request, the source and target,
 have different changes to the same lines of code. In most cases, GitLab can merge changes together,

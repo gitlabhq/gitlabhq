@@ -25,39 +25,20 @@ More logs are available in the **GitLab Extension Output** window:
 1. Verify that the debug log contains similar output:
 
    ```shell
-   14:48:21:344 GitlabProposalSource.GetCodeSuggestionAsync
-   14:48:21:344 LsClient.SendTextDocumentCompletionAsync("GitLab.Extension.Test\TestData.cs", 34, 0)
-   14:48:21:346 LS(55096): time="2023-07-17T14:48:21-05:00" level=info msg="update context"
+   GetProposalManagerAsync: Code suggestions enabled. ContentType (csharp) or file extension (cs) is supported.
+   GitlabProposalSourceProvider.GetProposalSourceAsync
    ```
 
-## Extension not loaded on startup
+### View activity log
 
-After restarting, the following error is displayed:
-
-```plaintext
-SetSite failed for package [VisualStudioPackage]Source: 'Microsoft.VisualStudio.Composition' Description: Expected 1 export(s) with contract name "Microsoft.VisualStudio.Language.Suggestions.SuggestionServiceBase" but found 0 after applying applicable constraints.
-Microsoft.VisualStudio.Composition.CompositionFailedException: Expected 1 export(s) with contract name "Microsoft.VisualStudio.Language.Suggestions.SuggestionServiceBase" but found 0 after applying applicable constraints.
-  at Microsoft.VisualStudio.Composition.ExportProvider.GetExports(ImportDefinition importDefinition)
-  at Microsoft.VisualStudio.Composition.ExportProvider.GetExports[T,TMetadataView](String contractName, ImportCardinality cardinality)
-  at Microsoft.VisualStudio.Composition.ExportProvider.GetExport[T,TMetadataView](String contractName)
-  at Microsoft.VisualStudio.Composition.ExportProvider.GetExportedValue[T]()
-  at Microsoft.VisualStudio.ComponentModelHost.ComponentModel.GetService[T]()
-[...]
-```
-
-To fix this issue, install the IntelliCode component for Visual Studio.
-
-## Error: unable to find last release
-
-If you receive this error message, your commits are likely on the main branch of
-your fork, instead of a feature branch:
+If your extension does not load or crashes, check the activity log for errors.
+Your activity log is available in this location:
 
 ```plaintext
-buildtag.sh: Error: unable to find last release.
+C:\Users\WINDOWS_USERNAME\AppData\Roaming\Microsoft\VisualStudio\VS_VERSION\ActivityLog.xml
 ```
 
-To resolve this issue:
+Replace these values in the directory path:
 
-1. Create a separate feature branch for your changes.
-1. Cherry-pick your commits into your feature branch.
-1. Retry your command.
+- `WINDOWS_USERNAME`: Your Windows username.
+- `VS_VERSION`: The version of your Visual Studio installation.

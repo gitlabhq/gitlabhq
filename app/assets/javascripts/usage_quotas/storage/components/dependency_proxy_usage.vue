@@ -3,6 +3,7 @@ import UsageBanner from '~/vue_shared/components/usage_quotas/usage_banner.vue';
 import { s__ } from '~/locale';
 import NumberToHumanSize from '~/vue_shared/components/number_to_human_size/number_to_human_size.vue';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'DependencyProxyUsage',
@@ -11,6 +12,7 @@ export default {
     HelpPageLink,
     UsageBanner,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     dependencyProxyTotalSize: {
       type: Number,
@@ -26,9 +28,20 @@ export default {
   i18n: {
     dependencyProxy: s__('UsageQuota|Dependency proxy'),
     storageUsed: s__('UsageQuota|Storage used'),
-    dependencyProxyMessage: s__(
+    dependencyProxyDescription: s__(
       'UsageQuota|Local proxy used for frequently-accessed upstream Docker images.',
     ),
+    virtualRegistryDescription: s__(
+      'UsageQuota|Cache for frequently-accessed Docker images and packages.',
+    ),
+  },
+  computed: {
+    description() {
+      if (this.glFeatures.virtualRegistryMaven) {
+        return this.$options.i18n.virtualRegistryDescription;
+      }
+      return this.$options.i18n.dependencyProxyDescription;
+    },
   },
 };
 </script>
@@ -39,7 +52,7 @@ export default {
     </template>
     <template #left-secondary-text>
       <div data-testid="dependency-proxy-description">
-        {{ $options.i18n.dependencyProxyMessage }}
+        {{ description }}
         <help-page-link href="user/packages/dependency_proxy/index">
           {{ __('More information') }}
         </help-page-link>

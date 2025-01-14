@@ -1,9 +1,9 @@
 import { GlAlert, GlForm } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EditedAt from '~/issues/show/components/edited.vue';
 import { updateDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -11,8 +11,10 @@ import { ENTER_KEY } from '~/lib/utils/keys';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
 import WorkItemDescriptionRendered from '~/work_items/components/work_item_description_rendered.vue';
+import WorkItemDescriptionTemplatesListbox from '~/work_items/components/work_item_description_template_listbox.vue';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import workItemDescriptionTemplateQuery from '~/work_items/graphql/work_item_description_template.query.graphql';
 import { autocompleteDataSources, markdownPreviewPath, newWorkItemId } from '~/work_items/utils';
 import {
   updateWorkItemMutationResponse,
@@ -34,13 +36,31 @@ describe('WorkItemDescription', () => {
   const findRenderedDescription = () => wrapper.findComponent(WorkItemDescriptionRendered);
   const findEditedAt = () => wrapper.findComponent(EditedAt);
   const findConflictsAlert = () => wrapper.findComponent(GlAlert);
-  const findConflictedDescription = () => wrapper.find('[data-testid="conflicted-description"]');
+  const findConflictedDescription = () => wrapper.findByTestId('conflicted-description');
+  const findDescriptionTemplateListbox = () =>
+    wrapper.findComponent(WorkItemDescriptionTemplatesListbox);
+  const findDescriptionTemplateWarning = () => wrapper.findByTestId('description-template-warning');
+  const findDescriptionTemplateWarningButton = (type) =>
+    findDescriptionTemplateWarning().find(`[data-testid="template-${type}"]`);
 
   const editDescription = (newText) => findMarkdownEditor().vm.$emit('input', newText);
 
-  const findCancelButton = () => wrapper.find('[data-testid="cancel"]');
-  const findSubmitButton = () => wrapper.find('[data-testid="save-description"]');
+  const findCancelButton = () => wrapper.findByTestId('cancel');
+  const findSubmitButton = () => wrapper.findByTestId('save-description');
   const clickCancel = () => findForm().vm.$emit('reset', new Event('reset'));
+
+  const successfulTemplateHandler = jest.fn().mockResolvedValue({
+    data: {
+      namespace: {
+        id: 'gid://gitlab/Namespaces::ProjectNamespace/34',
+        workItemDescriptionTemplates: {
+          __typename: 'WorkItemDescriptionTemplateConnection',
+          nodes: [{ name: 'example', content: 'A template' }],
+        },
+        __typename: 'Namespace',
+      },
+    },
+  });
 
   const createComponent = async ({
     mutationHandler = mutationSuccessHandler,
@@ -55,11 +75,13 @@ describe('WorkItemDescription', () => {
     workItemTypeName = workItemQueryResponse.data.workItem.workItemType.name,
     editMode = false,
     showButtonsBelowField,
+    descriptionTemplateHandler = successfulTemplateHandler,
   } = {}) => {
-    wrapper = shallowMount(WorkItemDescription, {
+    wrapper = shallowMountExtended(WorkItemDescription, {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, workItemResponseHandler],
         [updateWorkItemMutation, mutationHandler],
+        [workItemDescriptionTemplateQuery, descriptionTemplateHandler],
       ]),
       propsData: {
         fullPath: 'test-project-path',
@@ -72,6 +94,9 @@ describe('WorkItemDescription', () => {
       },
       provide: {
         isGroup,
+        glFeatures: {
+          workItemsAlpha: true,
+        },
       },
       stubs: {
         GlAlert,
@@ -267,6 +292,102 @@ describe('WorkItemDescription', () => {
       );
 
       expect(wrapper.emitted('updateWorkItem')).toEqual([[{ clearDraft: expect.any(Function) }]]);
+    });
+
+    describe('description templates', () => {
+      it('displays the description template selection listbox', async () => {
+        await createComponent({ isEditing: true });
+        expect(findDescriptionTemplateListbox().exists()).toBe(true);
+      });
+
+      describe('selecting a template successfully', () => {
+        beforeEach(async () => {
+          await createComponent({
+            isEditing: true,
+            workItemId: newWorkItemId(workItemQueryResponse.data.workItem.workItemType.name),
+          });
+          findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example');
+          await nextTick();
+          await waitForPromises();
+        });
+
+        it('queries for the template content when a template is selected', () => {
+          expect(successfulTemplateHandler).toHaveBeenCalledWith({
+            name: 'example',
+            fullPath: 'test-project-path',
+          });
+        });
+
+        it('displays a warning when a description template is selected', () => {
+          expect(findDescriptionTemplateWarning().exists()).toBe(true);
+          expect(findDescriptionTemplateWarningButton('cancel').exists()).toBe(true);
+          expect(findDescriptionTemplateWarningButton('apply').exists()).toBe(true);
+        });
+
+        it('hides the warning when the cancel button is clicked', async () => {
+          expect(findDescriptionTemplateWarning().exists()).toBe(true);
+          findDescriptionTemplateWarningButton('cancel').vm.$emit('click');
+          await nextTick();
+          expect(findDescriptionTemplateWarning().exists()).toBe(false);
+        });
+
+        it('applies the template when the apply button is clicked', async () => {
+          findDescriptionTemplateWarningButton('apply').vm.$emit('click');
+          await nextTick();
+          expect(findMarkdownEditor().props('value')).toBe('A template');
+        });
+
+        it('hides the warning when the template is applied', async () => {
+          findDescriptionTemplateWarningButton('apply').vm.$emit('click');
+          await nextTick();
+          expect(findDescriptionTemplateWarning().exists()).toBe(false);
+        });
+
+        describe('clearing a template', () => {
+          it('sets the description to be empty when cleared', async () => {
+            // apply a template
+            findDescriptionTemplateWarningButton('apply').vm.$emit('click');
+            await nextTick();
+            expect(findMarkdownEditor().props('value')).toBe('A template');
+            // clear the template
+            findDescriptionTemplateListbox().vm.$emit('clear');
+            await nextTick();
+            // check we have cleared correctly
+            expect(findMarkdownEditor().props('value')).toBe('');
+          });
+        });
+
+        describe('resetting a template', () => {
+          it('sets the description back to the original template value when reset', async () => {
+            // apply a template
+            findDescriptionTemplateWarningButton('apply').vm.$emit('click');
+            // write something else
+            findMarkdownEditor().vm.$emit('input', 'some other value');
+            await nextTick();
+            // reset the template
+            findDescriptionTemplateListbox().vm.$emit('reset');
+            await nextTick();
+            // check we have reset correctly
+            expect(findMarkdownEditor().props('value')).toBe('A template');
+          });
+        });
+      });
+
+      describe('selecting a template unsuccessfully', () => {
+        beforeEach(async () => {
+          await createComponent({
+            isEditing: true,
+            descriptionTemplateHandler: jest.fn().mockRejectedValue(new Error()),
+          });
+          findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example');
+          await nextTick();
+          await waitForPromises();
+        });
+
+        it('emits an error event', () => {
+          expect(wrapper.emitted('error')).toEqual([['Unable to find selected template.']]);
+        });
+      });
     });
 
     describe('when description has conflicts', () => {

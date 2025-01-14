@@ -4,9 +4,6 @@ action: click_end_tutorial_button
 product_group: activation
 milestone: '17.4'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161656
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

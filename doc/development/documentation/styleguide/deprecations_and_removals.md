@@ -13,8 +13,20 @@ This process requires temporarily changing content to be "deprecated" or "remove
 If a feature is not generally available, you can delete the content outright instead of following these instructions.
 
 NOTE:
-A separate process exists for [GraphQL docs](../../api_graphql_styleguide.md#deprecating-schema-items)
-and [REST API docs](../restful_api_styleguide.md#deprecations).
+REST API docs [have a separate deprecation style](../restful_api_styleguide.md#deprecations).
+The GraphQL API [has a separate deprecation process](../../../api/graphql/index.md#deprecation-and-removal-process),
+and [style for the deprecation reason](../../api_graphql_styleguide.md#deprecation-reason-style-guide).
+
+## Features not actively being developed
+
+When a feature is no longer actively developed, but not deprecated, add the following note under
+the topic title and version history:
+
+```markdown
+NOTE:
+This feature is not under active development, but
+[community contributions](https://about.gitlab.com/community/contribute/) are welcome.
+```
 
 ## Deprecate a page or topic
 
@@ -28,7 +40,7 @@ To deprecate a page or topic:
 
    DETAILS:
    **Tier:** Premium, Ultimate
-   **Offering:** GitLab.com, Self-managed, GitLab Dedicated
+   **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
    WARNING:
    This feature was [deprecated](https://issue-link) in GitLab 14.8
@@ -56,7 +68,7 @@ To deprecate a page or topic:
 
    DETAILS:
    **Tier:** Premium, Ultimate
-   **Offering:** GitLab.com, Self-managed, GitLab Dedicated
+   **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
    WARNING:
    This feature was [deprecated](https://issue-link) in GitLab 14.8
@@ -95,7 +107,7 @@ To remove a page:
 
    DETAILS:
    **Tier:** Premium, Ultimate
-   **Offering:** GitLab.com, Self-managed, GitLab Dedicated
+   **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
    This feature was [deprecated](https://issue-link) in GitLab X.Y
    and [removed](https://issue-link) in X.Y.
@@ -136,7 +148,7 @@ To remove a topic:
 
    DETAILS:
    **Tier:** Premium, Ultimate
-   **Offering:** GitLab.com, Self-managed, GitLab Dedicated
+   **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
    This feature was [deprecated](https://issue-link) in GitLab X.Y
    and [removed](https://issue-link) in X.Y.

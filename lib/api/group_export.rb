@@ -70,8 +70,7 @@ module API
 
       resource do
         before do
-          not_found! unless Gitlab::CurrentSettings.bulk_import_enabled? ||
-            Feature.enabled?(:override_bulk_import_disabled, current_user, type: :ops)
+          not_found! unless Gitlab::CurrentSettings.bulk_import_enabled?
         end
 
         desc 'Start relations export' do

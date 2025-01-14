@@ -1,8 +1,0 @@
----
-name: cache_autocomplete_sources_members
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133454
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/427452
-milestone: '16.5'
-type: development
-group: group::global search
-default_enabled: true

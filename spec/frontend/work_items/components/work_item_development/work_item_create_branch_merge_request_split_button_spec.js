@@ -42,7 +42,7 @@ describe('WorkItemCreateBranchMergeRequestSplitButton', () => {
     });
 
     it('shows loading indicator till the permission call is made', () => {
-      expect(findMainButton().text()).toBe('Checking branch availability...');
+      expect(findMainButton().text()).toBe('Create merge request');
       expect(findMainButton().props('loading')).toBe(true);
     });
 

@@ -61,15 +61,22 @@ describe('sorterFor', () => {
   });
 
   it('sorts by state', () => {
-    const items = [{ state: 'closed' }, { state: 'opened' }, { state: 'closed' }];
+    const items = [
+      { state: 'closed' },
+      { state: 'opened' },
+      { state: 'closed' },
+      { state: 'merged' },
+    ];
 
     expect(items.sort(sorterFor('state'))).toEqual([
       { state: 'opened' },
       { state: 'closed' },
       { state: 'closed' },
+      { state: 'merged' },
     ]);
 
     expect(items.sort(sorterFor('state', false))).toEqual([
+      { state: 'merged' },
       { state: 'closed' },
       { state: 'closed' },
       { state: 'opened' },

@@ -9,12 +9,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `ai_custom_model`. Disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+> - Feature flag `ai_custom_model` removed in GitLab 17.8
 
 The following table shows the supported models along with their specific features and hardware requirements to help you select the model that best fits your infrastructure needs for optimal performance.
 
@@ -50,13 +51,30 @@ The following models are under evaluation, and support is limited:
 
 <!-- vale gitlab_base.Spelling = YES -->
 
-## Hardware Requirements
+## Hardware requirements
 
-For optimal performance, the following hardware specifications are recommended as baselines for hosting these models. Hosting requirements may vary depending model to model, so we recommend checking model vendor documentation as well:
+The following hardware specifications are the minimum requirements for running self-hosted models on-premise. Requirements vary significantly based on the model size and intended usage:
 
-- **CPU**: Minimum 8 cores (16 threads recommended).
-- **RAM**: At least 32 GB (64 GB or more recommended for larger models).
-- **GPU**:
-  - **Minimum**: 2x NVIDIA A100 or equivalent for optimal inference performance.
-  - **Note**: For running Mixtral 8x22B and Mixtral 8x22B-it, it is recommended to use 8x NVIDIA A100 GPUs.
-- **Storage**: SSD with sufficient space for model weights and data.
+### Base system requirements
+
+- **CPU**:
+  - Minimum: 8 cores (16 threads)
+  - Recommended: 16+ cores for production environments
+- **RAM**:
+  - Minimum: 32 GB
+  - Recommended: 64 GB for most models
+- **Storage**:
+  - SSD with sufficient space for model weights and data.
+
+### GPU requirements by model size
+
+| Model size | Recommended GPU configuration | Minimum VRAM required |
+|------------|------------------------------|---------------------|
+| 7B models<br>(for example, Mistral 7B) | 1x NVIDIA A100 (40GB) | 24 GB |
+| 22B models<br>(for example, Codestral 22B) | 2x NVIDIA A100 (80GB) | 90 GB |
+| Mixtral 8x7B | 2x NVIDIA A100 (80GB) | 100 GB |
+| Mixtral 8x22B | 8x NVIDIA A100 (80GB) | 300 GB |
+
+### AI Gateway Hardware Requirements
+
+For recommendations on AI gateway hardware, see the [AI gateway scaling recommendations](../../install/install_ai_gateway.md#scaling-recommendations).

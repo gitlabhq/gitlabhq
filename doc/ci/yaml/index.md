@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 This document lists the configuration options for the GitLab `.gitlab-ci.yml` file.
 This file is where you define the CI/CD jobs that make up your pipeline.
@@ -21,7 +21,7 @@ This file is where you define the CI/CD jobs that make up your pipeline.
   [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
 
 When you are editing your `.gitlab-ci.yml` file, you can validate it with the
-[CI Lint](../lint.md) tool.
+[CI Lint](../yaml/lint.md) tool.
 
 If you are editing content on this page, follow the [instructions for documenting keywords](../../development/cicd/cicd_reference_documentation_guide.md).
 
@@ -36,7 +36,6 @@ A GitLab CI/CD pipeline configuration includes:
   | [`default`](#default)     | Custom default values for job keywords. |
   | [`include`](#include)     | Import configuration from other YAML files. |
   | [`stages`](#stages)       | The names and order of the pipeline stages. |
-  | [`variables`](#variables) | Define CI/CD variables for all job in the pipeline. |
   | [`workflow`](#workflow)   | Control what types of pipeline run. |
 
 - [Header keywords](#header-keywords)
@@ -79,8 +78,14 @@ A GitLab CI/CD pipeline configuration includes:
   | [`tags`](#tags)                               | List of tags that are used to select a runner.                                                              |
   | [`timeout`](#timeout)                         | Define a custom job-level timeout that takes precedence over the project-wide setting.                      |
   | [`trigger`](#trigger)                         | Defines a downstream pipeline trigger.                                                                      |
-  | [`variables`](#variables)                     | Define job variables on a job level.                                                                        |
   | [`when`](#when)                               | When to run job.                                                                                            |
+
+- [CI/CD variables](#variables)
+
+  | Keyword                                   | Description |
+  |:------------------------------------------|:------------|
+  | [Default `variables`](#default-variables) | Define default CI/CD variables for all jobs in the pipeline. |
+  | [Job `variables`](#job-variables)         | Define CI/CD variables for individual jobs. |
 
 ## Global keywords
 
@@ -657,7 +662,7 @@ workflow:
 
 - If the name is an empty string, the pipeline is not assigned a name. A name consisting
   of only CI/CD variables could evaluate to an empty string if all the variables are also empty.
-- `workflow:rules:variables` become [global variables](#variables) available in all jobs,
+- `workflow:rules:variables` become [default variables](#default-variables) available in all jobs,
   including [`trigger`](#trigger) jobs which forward variables to downstream pipelines by default.
   If the downstream pipeline uses the same variable, the [variable is overwritten](../variables/index.md#cicd-variable-precedence)
   by the upstream variable value. Be sure to either:
@@ -717,8 +722,8 @@ You can use [`variables`](#variables) in `workflow:rules` to define variables fo
 specific pipeline conditions.
 
 When the condition matches, the variable is created and can be used by all jobs
-in the pipeline. If the variable is already defined at the global level, the `workflow`
-variable takes precedence and overrides the global variable.
+in the pipeline. If the variable is already defined at the top level as a default variable,
+the `workflow` variable takes precedence and overrides the default variable.
 
 **Keyword type**: Global keyword.
 
@@ -778,7 +783,7 @@ When the branch is something else:
 
 **Additional details**:
 
-- `workflow:rules:variables` become [global variables](#variables) available in all jobs,
+- `workflow:rules:variables` become [default variables](#variables) available in all jobs,
   including [`trigger`](#trigger) jobs which forward variables to downstream pipelines by default.
   If the downstream pipeline uses the same variable, the [variable is overwritten](../variables/index.md#cicd-variable-precedence)
   by the upstream variable value. Be sure to either:
@@ -2084,7 +2089,7 @@ In this example:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Use the `dast_configuration` keyword to specify a site profile and scanner profile to be used in a
 CI/CD configuration. Both profiles must first have been created in the project. The job's stage must
@@ -2819,7 +2824,7 @@ job2:
 
 ### `inherit`
 
-Use `inherit` to [control inheritance of default keywords and variables](../jobs/index.md#control-the-inheritance-of-default-keywords-and-global-variables).
+Use `inherit` to [control inheritance of default keywords and variables](../jobs/index.md#control-the-inheritance-of-default-keywords-and-variables).
 
 #### `inherit:default`
 
@@ -2859,30 +2864,30 @@ job2:
 
 #### `inherit:variables`
 
-Use `inherit:variables` to control the inheritance of [global variables](#variables) keywords.
+Use `inherit:variables` to control the inheritance of [default variables](#default-variables) keywords.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
 **Supported values**:
 
-- `true` (default) or `false` to enable or disable the inheritance of all global variables.
+- `true` (default) or `false` to enable or disable the inheritance of all default variables.
 - A list of specific variables to inherit.
 
 **Example of `inherit:variables`**:
 
 ```yaml
 variables:
-  VARIABLE1: "This is variable 1"
-  VARIABLE2: "This is variable 2"
-  VARIABLE3: "This is variable 3"
+  VARIABLE1: "This is default variable 1"
+  VARIABLE2: "This is default variable 2"
+  VARIABLE3: "This is default variable 3"
 
 job1:
-  script: echo "This job does not inherit any global variables."
+  script: echo "This job does not inherit any default variables."
   inherit:
     variables: false
 
 job2:
-  script: echo "This job inherits only the two listed global variables. It does not inherit 'VARIABLE3'."
+  script: echo "This job inherits only the two listed default variables. It does not inherit 'VARIABLE3'."
   inherit:
     variables:
       - VARIABLE1
@@ -2891,7 +2896,7 @@ job2:
 
 **Additional details**:
 
-- You can also list global variables to inherit on one line: `variables: [VARIABLE1, VARIABLE2]`
+- You can also list default variables to inherit on one line: `variables: [VARIABLE1, VARIABLE2]`
 
 ### `interruptible`
 
@@ -3134,7 +3139,7 @@ In this example:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Use `needs:project` to download artifacts from up to five jobs in other pipelines.
 The artifacts are downloaded from the latest successful specified job for the specified ref.
@@ -3490,11 +3495,12 @@ as an artifact and published with GitLab Pages.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [experiment](../../policy/development_stages_support.md) [with a flag](../../user/feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
 > - [Enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/422145) in GitLab 17.4.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/507423) to allow periods in GitLab 17.8.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -3505,7 +3511,15 @@ Use `pages.path_prefix` to configure a path prefix for [parallel deployments](..
 
 **Keyword type**: Job keyword. You can use it only as part of a `pages` job.
 
-**Supported values**: A string, a [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file), or a combination of both. The given value is converted to lowercase, shortened to 63 bytes, and everything except alphanumeric characters is replaced with a hyphen. Leading and trailing hyphens are not permitted.
+**Supported values**:
+
+- A string
+- [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)
+- A combination of both
+
+The given value is converted to lowercase and shortened to 63 bytes.
+Everything except alphanumeric characters or periods is replaced with a hyphen.
+Leading and trailing hyphens or periods are not permitted.
 
 **Example of `pages.path_prefix`**:
 
@@ -3523,11 +3537,11 @@ pages:
 
 In this example, a different pages deployment is created for each branch.
 
-### `pages:pages.expire_in`
+#### `pages:pages.expire_in`
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/456478) in GitLab 17.4
 
@@ -4789,7 +4803,7 @@ job2:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Use `secrets` to specify [CI/CD secrets](../secrets/index.md) to:
 
@@ -5511,196 +5525,6 @@ child3:
   which have high precedence. If a variable with the same name is defined in the downstream pipeline,
   that variable is usually overwritten by the forwarded variable.
 
-### `variables`
-
-Use `variables` to define [CI/CD variables](../variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file) for jobs.
-
-**Keyword type**: Global and job keyword. You can use it at the global level,
-and also at the job level.
-
-You can use variables defined in a job in the job's `script`, `before_script`, or `after_script` sections,
-and also with some [job keywords](#job-keywords), but not [global keywords](#global-keywords).
-Check the **Supported values** section of each job keyword to see if it supports variables.
-
-Variables defined in a global (top-level) `variables` section act as default variables
-for all jobs. Each global variable is made available to every job in the pipeline, except when the job already has a variable
-defined with the same name. The variable defined in the job [takes precedence](../variables/index.md#cicd-variable-precedence),
-so the value of the global variable with the same name cannot be used in the job.
-
-Like job variables, you cannot use global variables as values for other global keywords,
-like [`include`](includes.md#use-variables-with-include).
-
-**Supported values**: Variable name and value pairs:
-
-- The name can use only numbers, letters, and underscores (`_`). In some shells,
-  the first character must be a letter.
-- The value must be a string.
-
-CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
-
-**Examples of `variables`**:
-
-```yaml
-variables:
-  DEPLOY_SITE: "https://example.com/"
-
-deploy_job:
-  stage: deploy
-  script:
-    - deploy-script --url $DEPLOY_SITE --path "/"
-  environment: production
-
-deploy_review_job:
-  stage: deploy
-  variables:
-    DEPLOY_SITE: "https://dev.example.com/"
-    REVIEW_PATH: "/review"
-  script:
-    - deploy-review-script --url $DEPLOY_SITE --path $REVIEW_PATH
-  environment: production
-```
-
-In this example:
-
-- `deploy_job` has no variables defined. The global `DEPLOY_SITE` variable is copied to the job
-  and can be used in the `script` section.
-- `deploy_review_job` already has a `DEPLOY_SITE` variable defined, so the global `DEPLOY_SITE`
-  is not copied to the job. The job also has a `REVIEW_PATH` job-level variable defined.
-  Both job-level variables can be used in the `script` section.
-
-**Additional details**:
-
-- All YAML-defined variables are also set to any linked [Docker service containers](../services/index.md).
-- YAML-defined variables are meant for non-sensitive project configuration. Store sensitive information
-  in [protected variables](../variables/index.md#protect-a-cicd-variable) or [CI/CD secrets](../secrets/index.md).
-- [Manual pipeline variables](../variables/index.md#use-pipeline-variables)
-  and [scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule)
-  are not passed to downstream pipelines by default. Use [trigger:forward](#triggerforward)
-  to forward these variables to downstream pipelines.
-
-**Related topics**:
-
-- [Predefined variables](../variables/predefined_variables.md) are variables the runner
-  automatically creates and makes available in the job.
-- You can [configure runner behavior with variables](../runners/configure_runners.md#configure-runner-behavior-with-variables).
-
-#### `variables:description`
-
-Use the `description` keyword to define a description for a pipeline-level (global) variable.
-The description displays with [the prefilled variable name when running a pipeline manually](../pipelines/index.md#prefill-variables-in-manual-pipelines).
-
-**Keyword type**: Global keyword. You cannot use it for job-level variables.
-
-**Supported values**:
-
-- A string.
-
-**Example of `variables:description`**:
-
-```yaml
-variables:
-  DEPLOY_NOTE:
-    description: "The deployment note. Explain the reason for this deployment."
-```
-
-**Additional details**:
-
-- When used without `value`, the variable exists in pipelines that were not triggered manually,
-  and the default value is an empty string (`''`).
-
-#### `variables:value`
-
-Use the `value` keyword to define a pipeline-level (global) variable's value. When used with
-[`variables: description`](#variablesdescription), the variable value is [prefilled when running a pipeline manually](../pipelines/index.md#prefill-variables-in-manual-pipelines).
-
-**Keyword type**: Global keyword. You cannot use it for job-level variables.
-
-**Supported values**:
-
-- A string.
-
-**Example of `variables:value`**:
-
-```yaml
-variables:
-  DEPLOY_ENVIRONMENT:
-    value: "staging"
-    description: "The deployment target. Change this variable to 'canary' or 'production' if needed."
-```
-
-**Additional details**:
-
-- If used without [`variables: description`](#variablesdescription), the behavior is
-  the same as [`variables`](#variables).
-
-#### `variables:options`
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105502) in GitLab 15.7.
-
-Use `variables:options` to define an array of values that are [selectable in the UI when running a pipeline manually](../pipelines/index.md#configure-a-list-of-selectable-prefilled-variable-values).
-
-Must be used with `variables: value`, and the string defined for `value`:
-
-- Must also be one of the strings in the `options` array.
-- Is the default selection.
-
-If there is no [`description`](#variablesdescription),
-this keyword has no effect.
-
-**Keyword type**: Global keyword. You cannot use it for job-level variables.
-
-**Supported values**:
-
-- An array of strings.
-
-**Example of `variables:options`**:
-
-```yaml
-variables:
-  DEPLOY_ENVIRONMENT:
-    value: "staging"
-    options:
-      - "production"
-      - "staging"
-      - "canary"
-    description: "The deployment target. Set to 'staging' by default."
-```
-
-#### `variables:expand`
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353991) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_raw_variables_in_yaml_config`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/375034) in GitLab 15.6.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375034) in GitLab 15.7.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/375034) in GitLab 15.8. Feature flag `ci_raw_variables_in_yaml_config` removed.
-
-Use the `expand` keyword to configure a variable to be expandable or not.
-
-**Keyword type**: Global and job keyword. You can use it at the global level, and also at the job level.
-
-**Supported values**:
-
-- `true` (default): The variable is expandable.
-- `false`: The variable is not expandable.
-
-**Example of `variables:expand`**:
-
-```yaml
-variables:
-  VAR1: value1
-  VAR2: value2 $VAR1
-  VAR3:
-    value: value3 $VAR1
-    expand: false
-```
-
-- The result of `VAR2` is `value2 value1`.
-- The result of `VAR3` is `value3 $VAR1`.
-
-**Additional details**:
-
-- The `expand` keyword can only be used with the global and job-level `variables` keywords.
-  You can't use it with [`rules:variables`](#rulesvariables) or [`workflow:rules:variables`](#workflowrulesvariables).
-
 ### `when`
 
 Use `when` to configure the conditions for when jobs run. If not defined in a job,
@@ -5779,11 +5603,12 @@ In this example, the script:
 - `when` can be used with [`rules`](#rules) for more dynamic job control.
 - `when` can be used with [`workflow`](#workflow) to control when a pipeline can start.
 
-### `manual_confirmation`
+#### `manual_confirmation`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18906) in GitLab 17.1.
 
-Use `manual_confirmation` with [`when: manual`](#when) to define a custom confirmation message for manual jobs. If there is no manual job defined with `when: manual`, this keyword has no effect.
+Use `manual_confirmation` with [`when: manual`](#when) to define a custom confirmation message for manual jobs.
+If there is no manual job defined with `when: manual`, this keyword has no effect.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -5801,6 +5626,230 @@ delete_job:
   when: manual
   manual_confirmation: 'Are you sure you want to delete this environment?'
 ```
+
+## `variables`
+
+Use `variables` to define [CI/CD variables](../variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file).
+
+Variables can be [defined in a CI/CD job](#job-variables), or as a top-level (global) keyword to define
+[default CI/CD variables](#default-variables) for all jobs.
+
+**Additional details**:
+
+- All YAML-defined variables are also set to any linked [Docker service containers](../services/index.md).
+- YAML-defined variables are meant for non-sensitive project configuration. Store sensitive information
+  in [protected variables](../variables/index.md#protect-a-cicd-variable) or [CI/CD secrets](../secrets/index.md).
+- [Manual pipeline variables](../variables/index.md#use-pipeline-variables)
+  and [scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule)
+  are not passed to downstream pipelines by default. Use [trigger:forward](#triggerforward)
+  to forward these variables to downstream pipelines.
+
+**Related topics**:
+
+- [Predefined variables](../variables/predefined_variables.md) are variables the runner
+  automatically creates and makes available in the job.
+- You can [configure runner behavior with variables](../runners/configure_runners.md#configure-runner-behavior-with-variables).
+
+### Job `variables`
+
+You can use job variables in commands in the job's `script`, `before_script`, or `after_script` sections,
+and also with some [job keywords](#job-keywords). Check the **Supported values** section of each job keyword
+to see if it supports variables.
+
+You cannot use job variables as values for [global keywords](#global-keywords) like
+[`include`](includes.md#use-variables-with-include).
+
+**Supported values**: Variable name and value pairs:
+
+- The name can use only numbers, letters, and underscores (`_`). In some shells,
+  the first character must be a letter.
+- The value must be a string.
+
+CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+
+**Example of job `variables`**:
+
+```yaml
+review_job:
+  variables:
+    DEPLOY_SITE: "https://dev.example.com/"
+    REVIEW_PATH: "/review"
+  script:
+    - deploy-review-script --url $DEPLOY_SITE --path $REVIEW_PATH
+```
+
+In this example:
+
+- `review_job` has `DEPLOY_SITE` and `REVIEW_PATH` job variables defined.
+  Both job variables can be used in the `script` section.
+
+### Default `variables`
+
+Variables defined in a top-level `variables` section act as default variables
+for all jobs.
+
+Each default variable is made available to every job in the pipeline, except when
+the job already has a variable defined with the same name. The variable defined in the job
+[takes precedence](../variables/index.md#cicd-variable-precedence), so the value of
+the default variable with the same name cannot be used in the job.
+
+Like job variables, you cannot use default variables as values for other global keywords,
+like [`include`](includes.md#use-variables-with-include).
+
+**Supported values**: Variable name and value pairs:
+
+- The name can use only numbers, letters, and underscores (`_`). In some shells,
+  the first character must be a letter.
+- The value must be a string.
+
+CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+
+**Examples of `variables`**:
+
+```yaml
+variables:
+  DEPLOY_SITE: "https://example.com/"
+
+deploy_job:
+  stage: deploy
+  script:
+    - deploy-script --url $DEPLOY_SITE --path "/"
+  environment: production
+
+deploy_review_job:
+  stage: deploy
+  variables:
+    DEPLOY_SITE: "https://dev.example.com/"
+    REVIEW_PATH: "/review"
+  script:
+    - deploy-review-script --url $DEPLOY_SITE --path $REVIEW_PATH
+  environment: production
+```
+
+In this example:
+
+- `deploy_job` has no variables defined. The default `DEPLOY_SITE` variable is copied to the job
+  and can be used in the `script` section.
+- `deploy_review_job` already has a `DEPLOY_SITE` variable defined, so the default `DEPLOY_SITE`
+  is not copied to the job. The job also has a `REVIEW_PATH` job variable defined.
+  Both job variables can be used in the `script` section.
+
+#### `variables:description`
+
+Use the `description` keyword to define a description for a default variable.
+The description displays with [the prefilled variable name when running a pipeline manually](../pipelines/index.md#prefill-variables-in-manual-pipelines).
+
+**Keyword type**: You can only use this keyword with default `variables`, not job `variables`.
+
+**Supported values**:
+
+- A string.
+
+**Example of `variables:description`**:
+
+```yaml
+variables:
+  DEPLOY_NOTE:
+    description: "The deployment note. Explain the reason for this deployment."
+```
+
+**Additional details**:
+
+- When used without `value`, the variable exists in pipelines that were not triggered manually,
+  and the default value is an empty string (`''`).
+
+#### `variables:value`
+
+Use the `value` keyword to define a pipeline-level (default) variable's value. When used with
+[`variables: description`](#variablesdescription), the variable value is [prefilled when running a pipeline manually](../pipelines/index.md#prefill-variables-in-manual-pipelines).
+
+**Keyword type**: You can only use this keyword with default `variables`, not job `variables`.
+
+**Supported values**:
+
+- A string.
+
+**Example of `variables:value`**:
+
+```yaml
+variables:
+  DEPLOY_ENVIRONMENT:
+    value: "staging"
+    description: "The deployment target. Change this variable to 'canary' or 'production' if needed."
+```
+
+**Additional details**:
+
+- If used without [`variables: description`](#variablesdescription), the behavior is
+  the same as [`variables`](#variables).
+
+#### `variables:options`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105502) in GitLab 15.7.
+
+Use `variables:options` to define an array of values that are [selectable in the UI when running a pipeline manually](../pipelines/index.md#configure-a-list-of-selectable-prefilled-variable-values).
+
+Must be used with `variables: value`, and the string defined for `value`:
+
+- Must also be one of the strings in the `options` array.
+- Is the default selection.
+
+If there is no [`description`](#variablesdescription),
+this keyword has no effect.
+
+**Keyword type**: You can only use this keyword with default `variables`, not job `variables`.
+
+**Supported values**:
+
+- An array of strings.
+
+**Example of `variables:options`**:
+
+```yaml
+variables:
+  DEPLOY_ENVIRONMENT:
+    value: "staging"
+    options:
+      - "production"
+      - "staging"
+      - "canary"
+    description: "The deployment target. Set to 'staging' by default."
+```
+
+### `variables:expand`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353991) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_raw_variables_in_yaml_config`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/375034) in GitLab 15.6.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375034) in GitLab 15.7.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/375034) in GitLab 15.8. Feature flag `ci_raw_variables_in_yaml_config` removed.
+
+Use the `expand` keyword to configure a variable to be expandable or not.
+
+**Keyword type**: You can use this keyword with both default and job `variables`.
+
+**Supported values**:
+
+- `true` (default): The variable is expandable.
+- `false`: The variable is not expandable.
+
+**Example of `variables:expand`**:
+
+```yaml
+variables:
+  VAR1: value1
+  VAR2: value2 $VAR1
+  VAR3:
+    value: value3 $VAR1
+    expand: false
+```
+
+- The result of `VAR2` is `value2 value1`.
+- The result of `VAR3` is `value3 $VAR1`.
+
+**Additional details**:
+
+- The `expand` keyword can only be used with default and job `variables` keywords.
+  You can't use it with [`rules:variables`](#rulesvariables) or [`workflow:rules:variables`](#workflowrulesvariables).
 
 ## Deprecated keywords
 

@@ -67,10 +67,10 @@ RSpec.describe Packages::Npm::CheckManifestCoherenceService, :aggregate_failures
         '5.0.3-test'   | 'v5.0.3-test+build' | true  | nil
         '5.0.3-test'   | 'v5.0.3+build-test' | false | described_class::MANIFEST_NOT_COHERENT_ERROR
         '5.0.3'        | 'v5.0.3+build-test' | true  | nil
-        '5.0.3'        | '=5.0.3'            | false | described_class::VERSION_NOT_COMPLIANT_ERROR
+        '5.0.3'        | '=5.0.3'            | true  | nil
         '5.1.3'        | '05.01.03'          | true  | nil
         '5.1.3-beta.1' | '5.1.3-beta.01'     | true  | nil
-        '5.0.3'        | '         =5.0.3'   | false | described_class::VERSION_NOT_COMPLIANT_ERROR
+        '5.0.3'        | '=5.0.3'            | true  | nil
         '5.0.3-beta'   | '5.0.3beta'         | false | described_class::VERSION_NOT_COMPLIANT_ERROR
       end
 

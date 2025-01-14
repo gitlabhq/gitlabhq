@@ -227,6 +227,11 @@ module Types
       description: 'Find machine learning models.',
       resolver: Resolvers::Ml::ModelDetailResolver
 
+    field :ml_experiment, ::Types::Ml::ExperimentType,
+      null: true,
+      description: 'Find a machine learning experiment.',
+      resolver: Resolvers::Ml::ExperimentDetailResolver
+
     field :integration_exclusions, Types::Integrations::ExclusionType.connection_type,
       null: true,
       experiment: { milestone: '17.0' },
@@ -244,10 +249,6 @@ module Types
       deprecated: { reason: 'Replaced with metadata.featureFlags', milestone: '17.4' },
       description: 'Check if a feature flag is enabled',
       resolver: Resolvers::FeatureFlagResolver
-
-    field :job_token_policies_by_category, [::Types::Ci::JobTokenScope::JobTokenPolicyCategoryType],
-      description: 'List of job token policies for use with fine-grained permissions on CI/CD job allowlist.',
-      experiment: { milestone: '17.7' }
 
     def design_management
       DesignManagementObject.new(nil)
@@ -301,10 +302,6 @@ module Types
       return unless authorized
 
       stage
-    end
-
-    def job_token_policies_by_category
-      ::Ci::JobToken::Policies::POLICIES_BY_CATEGORY
     end
   end
 end

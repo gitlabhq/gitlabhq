@@ -350,10 +350,7 @@ describe('Details Header', () => {
   });
 
   describe('badge "protected"', () => {
-    const createComponentForBadgeProtected = async ({
-      imageProtectionRuleExists = true,
-      glFeaturesContainerRegistryProtectedContainers = true,
-    } = {}) => {
+    const createComponentForBadgeProtected = async ({ imageProtectionRuleExists = true } = {}) => {
       await mountComponent({
         propsData: {
           image: {
@@ -363,9 +360,6 @@ describe('Details Header', () => {
         },
         provide: {
           ...defaultProvide,
-          glFeatures: {
-            containerRegistryProtectedContainers: glFeaturesContainerRegistryProtectedContainers,
-          },
         },
       });
     };
@@ -386,14 +380,6 @@ describe('Details Header', () => {
     describe('when no protection rule exists for the given package', () => {
       it('does not show badge', () => {
         createComponentForBadgeProtected({ imageProtectionRuleExists: false });
-
-        expect(findProtectedBadge().exists()).toBe(false);
-      });
-    });
-
-    describe('when feature flag ":container_registry_protected_container" is disabled', () => {
-      it('does not show badge', () => {
-        createComponentForBadgeProtected({ glFeaturesContainerRegistryProtectedContainers: false });
 
         expect(findProtectedBadge().exists()).toBe(false);
       });

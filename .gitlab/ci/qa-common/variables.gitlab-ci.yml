@@ -1,14 +1,15 @@
 # Default variables for e2e test pipelines
 
 variables:
+  GIT_DEPTH: "20"
+  GIT_STRATEGY: "clone" # 'GIT_STRATEGY: clone' optimizes the pack-objects cache hit ratio
+  GIT_SUBMODULE_STRATEGY: "none"
   FF_TIMESTAMPS: "true"
   REGISTRY_HOST: "registry.gitlab.com"
   REGISTRY_GROUP: "gitlab-org"
   ALLURE_JOB_NAME: $CI_PROJECT_NAME
   COLORIZED_LOGS: "true"
-  FEATURE_FLAGS: ""
   QA_LOG_LEVEL: "info"
-  QA_TESTS: ""
   # run all tests by default when test-on-omnibus is included natively in other projects
   # this will be overridden when selective test execution is used in gitlab canonical project
   QA_RUN_ALL_TESTS: "true"
@@ -18,4 +19,4 @@ variables:
   # Retry failed specs in separate process
   QA_RETRY_FAILED_SPECS: "true"
   # helm chart ref used by test-on-cng pipeline
-  GITLAB_HELM_CHART_REF: "37029a770840f692c6b57b4ac0b6d498873ed355"
+  GITLAB_HELM_CHART_REF: "6ed126a4874a1a9155503b2191554a890df1129a"

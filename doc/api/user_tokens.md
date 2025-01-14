@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Use this API to interact with personal access tokens and impersonation tokens. For more information, see [personal access tokens](../user/profile/personal_access_tokens.md) and [impersonation tokens](rest/authentication.md#impersonation-tokens).
 
@@ -36,7 +36,7 @@ Supported attributes:
 | `name`       | string  | yes      | Name of personal access token |
 | `description`| string  | no       | Description of personal access token |
 | `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
-| `scopes`     | array   | yes      | Array of approved scopes. For a list of possible values, see [Personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes):  |
+| `scopes`     | array   | yes      | Array of approved scopes. For a list of possible values, see [Personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes).  |
 
 Example request:
 
@@ -91,7 +91,7 @@ Supported attributes:
 | `name`       | string | yes      | Name of personal access token |
 | `description`| string | no       | Description of personal access token |
 | `scopes`     | array  | yes      | Array of approved scopes. Only accepts `k8s_proxy`. |
-| `expires_at` | array  | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined, token expires at the end of the current day. Subject to the [maximum allowable lifetime limits](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| `expires_at` | array  | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
 
 Example request:
 
@@ -247,8 +247,8 @@ Supported attributes:
 | `user_id`    | integer | yes      | ID of user account |
 | `name`       | string  | yes      | Name of impersonation token |
 | `description`| string  | no       | Description of impersonation token |
-| `expires_at` | date    | yes      | Expiration date of the impersonation token in ISO format (`YYYY-MM-DD`) |
-| `scopes`     | array   | yes      | Array of approved scopes. For a list of possible values, see [Personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes):  |
+| `expires_at` | date    | yes      | Expiration date of the impersonation token in ISO format (`YYYY-MM-DD`). If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| `scopes`     | array   | yes      | Array of approved scopes. For a list of possible values, see [Personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes).  |
 
 Example request:
 

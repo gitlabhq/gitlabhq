@@ -33,10 +33,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    designVariables: {
-      type: Object,
-      required: true,
-    },
     isOpen: {
       type: Boolean,
       required: true,
@@ -51,6 +47,10 @@ export default {
     },
     isCommentFormPresent: {
       type: Boolean,
+      required: true,
+    },
+    designVariables: {
+      type: Object,
       required: true,
     },
   },
@@ -133,7 +133,6 @@ export default {
         <design-description
           v-if="showDescriptionForm"
           :design="design"
-          :design-variables="designVariables"
           :markdown-preview-path="markdownPreviewPath"
           class="gl-border-b gl-my-5"
         />
@@ -166,7 +165,7 @@ export default {
             v-for="discussion in unresolvedDiscussions"
             :key="discussion.id"
             :discussion="discussion"
-            :design-id="$route.params.id"
+            :design-variables="designVariables"
             :noteable-id="design.id"
             :markdown-preview-path="markdownPreviewPath"
             :register-path="registerPath"
@@ -192,7 +191,7 @@ export default {
                 v-for="discussion in resolvedDiscussions"
                 :key="discussion.id"
                 :discussion="discussion"
-                :design-id="$route.params.id"
+                :design-variables="designVariables"
                 :noteable-id="design.id"
                 :markdown-preview-path="markdownPreviewPath"
                 :register-path="registerPath"

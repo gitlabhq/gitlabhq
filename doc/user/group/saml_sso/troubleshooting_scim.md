@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 This section contains possible solutions for problems you might encounter.
 
@@ -30,9 +30,9 @@ When that user is added back to the SCIM app:
 For users de-provisioned by SCIM before that date, their SAML identity is destroyed.
 To solve this problem, the user must [link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account).
 
-### Self-managed GitLab
+### GitLab Self-Managed
 
-For a self-managed GitLab instance, administrators of that instance can instead [add the user identity themselves](../../../administration/admin_area.md#user-identities). This might save time if administrators need to re-add multiple identities.
+For GitLab Self-Managed, administrators of that instance can instead [add the user identity themselves](../../../administration/admin_area.md#user-identities). This might save time if administrators need to re-add multiple identities.
 
 ## User cannot sign in
 
@@ -291,8 +291,8 @@ In your Okta SCIM application, check that the SCIM **Base URL** is correct and p
 SCIM API endpoint URL. Check the following documentation to find information on this URL for:
 
 - [GitLab.com groups](scim_setup.md#configure-gitlab).
-- [Self-managed GitLab instances](../../../administration/settings/scim_setup.md#configure-gitlab).
+- [GitLab Self-Managed instances](../../../administration/settings/scim_setup.md#configure-gitlab).
 
-For self-managed GitLab instances, ensure that GitLab is publicly available so Okta can connect to it. If needed,
+For GitLab Self-Managed instances, ensure that GitLab is publicly available so Okta can connect to it. If needed,
 you can [allow access to Okta IP addresses](https://help.okta.com/en-us/Content/Topics/Security/ip-address-allow-listing.htm)
 on your firewall.

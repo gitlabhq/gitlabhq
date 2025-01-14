@@ -55,7 +55,12 @@ const firstSystemNodeId = mockNotesWidgetResponse.discussions.nodes[0].notes.nod
 const mockDiscussions = mockWorkItemNotesWidgetResponseWithComments.discussions.nodes;
 
 const mockWorkItemNoteResponse = {
-  data: { note: mockDiscussions[0].notes.nodes[0] },
+  data: {
+    note: {
+      id: mockDiscussions[0].notes.nodes[0].id,
+      discussion: { id: mockDiscussions[0].id, notes: mockDiscussions[0].notes },
+    },
+  },
 };
 
 describe('WorkItemNotes component', () => {
@@ -103,6 +108,7 @@ describe('WorkItemNotes component', () => {
     isGroup = false,
     isModal = false,
     isWorkItemConfidential = false,
+    parentId = null,
   } = {}) => {
     wrapper = shallowMount(WorkItemNotes, {
       apolloProvider: createMockApollo([
@@ -124,6 +130,7 @@ describe('WorkItemNotes component', () => {
         reportAbusePath: '/report/abuse/path',
         isModal,
         isWorkItemConfidential,
+        parentId,
       },
       stubs: {
         GlModal: stubComponent(GlModal, { methods: { show: showModal } }),
@@ -171,6 +178,30 @@ describe('WorkItemNotes component', () => {
       expect(workItemNoteQueryHandler).not.toHaveBeenCalled();
     });
 
+    it('skips preview note if modal is open', async () => {
+      setWindowLocation('?show=true#note_174');
+
+      const mockPreviewNote = {
+        id: 'gid://gitlab/Note/174',
+        discussion: { id: 'discussion-1' },
+      };
+
+      createComponent({
+        propsData: {
+          previewNote: mockPreviewNote,
+        },
+      });
+
+      await waitForPromises();
+
+      // Preview note should not be rendered when modal is open
+      const discussions = wrapper.findAllComponents(WorkItemDiscussion);
+      expect(discussions.length).toBe(0);
+
+      // Should still show loading state
+      expect(findNotesLoading().exists()).toBe(true);
+    });
+
     it('makes query for target note if note_id in URL', () => {
       setWindowLocation('#note_174');
 
@@ -188,9 +219,9 @@ describe('WorkItemNotes component', () => {
 
       await waitForPromises();
 
-      expect(findWorkItemCommentNoteAtIndex(0).props('discussion')).toEqual([
-        mockWorkItemNoteResponse.data.note,
-      ]);
+      expect(findWorkItemCommentNoteAtIndex(0).props('discussion')).toEqual(
+        mockWorkItemNoteResponse.data.note.discussion.notes.nodes,
+      );
     });
   });
 
@@ -504,5 +535,12 @@ describe('WorkItemNotes component', () => {
         }),
       );
     });
+  });
+
+  it('passes the `parentId` prop down to the `WorkItemAddNote` component', async () => {
+    createComponent({ parentId: 'example-id' });
+    await waitForPromises();
+
+    expect(findWorkItemAddNote().props('parentId')).toBe('example-id');
   });
 });

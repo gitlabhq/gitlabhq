@@ -1,4 +1,5 @@
 **
 
 !.gitignore
+!example_runtimes/
 !master_report.json

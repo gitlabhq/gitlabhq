@@ -8,12 +8,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9341) in GitLab 15.11 as an [experiment](../../../../policy/development_stages_support.md#experiment) release [with a flag](../../../../administration/feature_flags.md) named `ml_experiment_tracking`. Disabled by default. To enable the feature, an administrator can [enable the feature flag](../../../../administration/feature_flags.md) named `ml_experiment_tracking`.
-
-NOTE:
-Model experiment tracking is an [experimental feature](../../../../policy/development_stages_support.md). Refer to <https://gitlab.com/gitlab-org/gitlab/-/issues/381660> for feedback and feature requests.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9341) in GitLab 15.11.
+> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/9341) in GitLab 17.8.
 
 When creating machine learning models, data scientists often experiment with different parameters, configurations, and feature
 engineering to improve the performance of the model. Keeping track of all this metadata and the associated

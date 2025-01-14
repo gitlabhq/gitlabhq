@@ -14,7 +14,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
       product_group: 'platform_insights',
       time_frame: 'none',
       data_source: 'database',
-      distribution: %w[ee ce],
       tiers: %w[free premium ultimate],
       data_category: 'standard',
       removed_by_url: 'http://gdk.test'
@@ -558,7 +557,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
         product_group: 'platform_insights',
         time_frame: 'none',
         data_source: 'database',
-        distribution: %w[ee ce],
         tiers: %w[free starter premium ultimate bronze silver gold],
         data_category: 'optional'
       }

@@ -152,11 +152,11 @@ While in the [beta status](../policy/development_stages_support.md#beta):
 - The [API documentation](../api/api_resources.md) must [document the beta status](documentation/experiment_beta.md) and the feature flag [must be documented](documentation/feature_flags.md).
 - The [OpenAPI documentation](../api/openapi/openapi_interactive.md) must not describe the changes.
 
-When the feature becomes [generally available](../policy/development_stages_support.md#generally-available-ga):
+When the feature becomes [generally available](../policy/development_stages_support.md#generally-available):
 
 - [Remove](feature_flags/controls.md#cleaning-up) the feature flag.
 - Remove the [experiment or beta status](documentation/experiment_beta.md) from the [API documentation](../api/api_resources.md).
-- Add the [OpenAPI documentation](../api/openapi/openapi_interactive.md) to make the changes programatically discoverable.
+- Add the [OpenAPI documentation](../api/openapi/openapi_interactive.md) to make the changes programmatically discoverable.
 
 ## Declared parameters
 

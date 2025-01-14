@@ -19,6 +19,7 @@ import {
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
 } from '~/projects/filtered_search_and_sort/constants';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import {
   CONTRIBUTED_TAB,
   CUSTOM_DASHBOARD_ROUTE_NAMES,
@@ -27,6 +28,7 @@ import {
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
 } from '../constants';
 import projectCountsQuery from '../graphql/queries/project_counts.query.graphql';
+import userPreferencesUpdateMutation from '../graphql/mutations/user_preferences_update.mutation.graphql';
 import TabView from './tab_view.vue';
 
 export default {
@@ -92,7 +94,7 @@ export default {
       return [
         {
           type: FILTERED_SEARCH_TOKEN_LANGUAGE,
-          icon: 'lock',
+          icon: 'code',
           title: __('Language'),
           token: GlFilteredSearchToken,
           unique: true,
@@ -195,12 +197,16 @@ export default {
     onSortDirectionChange(isAscending) {
       const sort = this.createSortQuery({ sortBy: this.activeSortOption.value, isAscending });
 
-      this.pushQuery({ ...this.routeQueryWithoutPagination, sort });
+      this.updateSort(sort);
     },
     onSortByChange(sortBy) {
       const sort = this.createSortQuery({ sortBy, isAscending: this.isAscending });
 
+      this.updateSort(sort);
+    },
+    updateSort(sort) {
       this.pushQuery({ ...this.routeQueryWithoutPagination, sort });
+      this.userPreferencesUpdateMutate(sort);
     },
     onFilter(filters) {
       const { sort } = this.$route.query;
@@ -211,6 +217,21 @@ export default {
       this.pushQuery(
         calculateGraphQLPaginationQueryParams({ ...pagination, routeQuery: this.$route.query }),
       );
+    },
+    async userPreferencesUpdateMutate(sort) {
+      try {
+        await this.$apollo.mutate({
+          mutation: userPreferencesUpdateMutation,
+          variables: {
+            input: {
+              projectsSort: sort.toUpperCase(),
+            },
+          },
+        });
+      } catch (error) {
+        // Silently fail but capture exception in Sentry
+        Sentry.captureException(error);
+      }
     },
   },
 };

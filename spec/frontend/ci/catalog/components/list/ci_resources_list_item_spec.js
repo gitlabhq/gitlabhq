@@ -1,5 +1,3 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
 import { update, cloneDeep } from 'lodash';
 import { GlAvatar, GlBadge, GlSprintf, GlTruncate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -11,15 +9,18 @@ import ProjectVisibilityIcon from '~/ci/catalog/components/shared/project_visibi
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 import { catalogSinglePageResponse } from '../../mock';
 
-Vue.use(VueRouter);
-
 const defaultEvent = { preventDefault: jest.fn, ctrlKey: false, metaKey: false };
+const baseRoute = '/';
+const resourcesPageComponentStub = {
+  name: 'page-component',
+  template: '<div>Hello</div>',
+};
 
 describe('CiResourcesListItem', () => {
   let wrapper;
   let routerPush;
+  let router;
 
-  const router = createRouter();
   const resource = catalogSinglePageResponse.data.ciCatalogResources.nodes[0];
   const release = {
     author: { id: 'author-id', name: 'author', username: 'author-username', webUrl: '/user/1' },
@@ -58,6 +59,7 @@ describe('CiResourcesListItem', () => {
   const findUserLink = () => wrapper.findByTestId('user-link');
 
   beforeEach(() => {
+    router = createRouter(baseRoute, resourcesPageComponentStub);
     routerPush = jest.spyOn(router, 'push').mockImplementation(() => {});
   });
 

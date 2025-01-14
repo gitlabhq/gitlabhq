@@ -608,7 +608,7 @@ module Ci
     end
 
     def stages_count
-      statuses.select(:stage).distinct.count
+      stages.count
     end
 
     def total_size
@@ -624,8 +624,7 @@ module Ci
     end
 
     def stages_names
-      statuses.order(:stage_idx).distinct
-        .pluck(:stage, :stage_idx).map(&:first)
+      stages.order(:position).pluck(:name)
     end
 
     def ref_exists?
@@ -715,7 +714,7 @@ module Ci
     end
 
     def cancelable?
-      cancelable_statuses.any?
+      cancelable_statuses.any? && internal_pipeline?
     end
 
     def auto_canceled?

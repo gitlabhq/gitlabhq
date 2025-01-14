@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 This page contains links to a variety of examples that can help you understand how to
 implement [GitLab CI/CD](../index.md) for your specific use case.
@@ -34,7 +34,7 @@ The following table lists examples with step-by-step tutorials that are containe
 | PHP with Laravel, Envoy       | [Test and deploy Laravel applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md). |
 | PHP with npm, SCP             | [Running Composer and npm scripts with deployment via SCP in GitLab CI/CD](deployment/composer-npm-deploy.md). |
 | PHP with PHPUnit, `atoum`     | [Testing PHP projects](php.md). |
-| Secrets management with Vault | [Authenticating and Reading Secrets With HashiCorp Vault](authenticating-with-hashicorp-vault/index.md). |
+| Secrets management with Vault | [Authenticating and Reading Secrets With HashiCorp Vault](../secrets/hashicorp_vault.md). |
 
 ### Contributed examples
 
@@ -106,9 +106,9 @@ to [the templates list](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/g
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
-You can add custom examples and templates to your self-managed GitLab instance.
+You can add custom examples and templates to your instance.
 Your GitLab administrator can [designate an instance template repository](../../administration/settings/instance_template_repository.md)
 that contains examples and templates specific to your organization.
 

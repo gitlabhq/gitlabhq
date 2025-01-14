@@ -7,6 +7,7 @@ import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrl, setUrlParams, updateHistory, removeParams } from '~/lib/utils/url_utility';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { makeDrawerItemFullPath, makeDrawerUrlParam, canRouterNav } from '../utils';
 
 export default {
@@ -151,8 +152,17 @@ export default {
         url: setUrlParams({ [DETAIL_VIEW_QUERY_PARAM_NAME]: params }),
       });
     },
-    handleClose() {
+    handleClose(isClickedOutside) {
       updateHistory({ url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME]) });
+
+      if (!isClickedOutside) {
+        document
+          .getElementById(
+            `listItem-${this.activeItemFullPath}/${getIdFromGraphQLId(this.activeItem.id)}`,
+          )
+          ?.focus();
+      }
+
       this.$emit('close');
     },
     handleClickOutside(event) {
@@ -172,7 +182,7 @@ export default {
           }
         }
       }
-      this.handleClose();
+      this.handleClose(true);
     },
     focusOnHeaderLink() {
       this.$refs?.workItemUrl?.$el?.focus();
@@ -260,6 +270,7 @@ export default {
         is-drawer
         class="work-item-drawer !gl-pt-0 xl:!gl-px-6"
         @deleteWorkItem="deleteWorkItem"
+        @workItemTypeChanged="$emit('workItemTypeChanged', $event)"
         v-on="$listeners"
       />
     </template>

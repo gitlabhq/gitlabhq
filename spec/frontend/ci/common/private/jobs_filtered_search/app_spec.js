@@ -28,7 +28,7 @@ describe('Jobs filtered search', () => {
         ...props,
       },
       provide: {
-        glFeatures: { adminJobsFilterRunnerType: true, populateAndUseBuildNamesTable: true },
+        glFeatures: { adminJobsFilterRunnerType: true, feSearchBuildByName: true },
         ...provideOptions,
       },
     });
@@ -144,8 +144,8 @@ describe('Jobs filtered search', () => {
     });
   });
 
-  describe('when feature flag `populateAndUseBuildNamesTable` is disabled', () => {
-    const provideOptions = { glFeatures: { populateAndUseBuildNamesTable: false } };
+  describe('when feature flag `feSearchBuildByName` is disabled', () => {
+    const provideOptions = { glFeatures: { feSearchBuildByName: false } };
 
     describe('with query string passed', () => {
       it('filtered search returns only data shape for search token `status`', () => {

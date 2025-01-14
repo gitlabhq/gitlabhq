@@ -4,9 +4,6 @@ action: request_delete_package_version
 product_group: package_registry
 milestone: '16.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117497
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

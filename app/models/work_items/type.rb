@@ -54,6 +54,8 @@ module WorkItems
     # where it's possible to switch between issue and incident.
     CHANGEABLE_BASE_TYPES = %w[issue incident test_case].freeze
 
+    EE_BASE_TYPES = %w[objective epic key_result requirement].freeze
+
     columns_changing_default :id
 
     cache_markdown_field :description, pipeline: :single_line
@@ -87,8 +89,6 @@ module WorkItems
     scope :order_by_name_asc, -> { order(arel_table[:name].lower.asc) }
     scope :by_type, ->(base_type) { where(base_type: base_type) }
     scope :with_correct_id_and_fallback, ->(correct_ids) {
-      return id_in(correct_ids) if Feature.disabled?(:issues_set_correct_work_item_type_id, :instance)
-
       # This shouldn't work for nil ids as we expect newer instances to have NULL values in old_id
       correct_ids = Array(correct_ids).compact
       return none if correct_ids.blank?
@@ -137,8 +137,6 @@ module WorkItems
     end
 
     def to_global_id
-      return super if Feature.disabled?(:issues_set_correct_work_item_type_id, :instance)
-
       ::Gitlab::GlobalId.build(self, id: correct_id)
     end
     # Alias necessary here as the Gem uses `alias` to define the `gid` method
@@ -170,6 +168,11 @@ module WorkItems
         allowed_child_types_by_name: allowed_child_types_by_name,
         allowed_parent_types_by_name: allowed_parent_types_by_name
       }
+    end
+
+    def supported_conversion_types(resource_parent)
+      type_names = supported_conversion_base_types(resource_parent) - [base_type]
+      WorkItems::Type.by_type(type_names).order_by_name_asc
     end
 
     def allowed_child_types(cache: false)
@@ -207,6 +210,11 @@ module WorkItems
 
     def strip_whitespace
       name&.strip!
+    end
+
+    # resource_parent is used in EE
+    def supported_conversion_base_types(_resource_parent)
+      WorkItems::Type.base_types.keys.excluding(*EE_BASE_TYPES)
     end
   end
 end

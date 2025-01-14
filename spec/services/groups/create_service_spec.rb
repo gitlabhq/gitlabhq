@@ -238,12 +238,9 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
     end
 
     context 'when organization_id is not specified' do
-      let_it_be(:default_organization) { create(:organization, :default) }
       let(:group_params) { { path: 'group_path' } }
 
-      it 'creates group in default organization' do
-        expect(created_group.organization).to eq(default_organization)
-      end
+      it_behaves_like 'does not create a group'
     end
   end
 

@@ -63,7 +63,7 @@ RSpec.describe 'gitlab:usage data take tasks', :silence_stdout, :with_license, f
       end
       stub_response(body: payload.merge(conv_index: { usage_data_id: 123 }))
       stub_response(body: nil, url: service_ping_metadata_url, status: 201)
-      create(:organization, :default)
+      create(:organization)
     end
 
     it 'generates and sends Service Ping payload' do

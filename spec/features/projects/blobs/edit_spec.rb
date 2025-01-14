@@ -34,7 +34,13 @@ RSpec.describe 'Editing file blob', :js, feature_category: :source_code_manageme
       # there may be no diff and nothing to render.
       fill_editor(content: "class NextFeature#{object_id}\\nend\\n")
 
-      click_button 'Commit changes' if commit_changes
+      return unless commit_changes
+
+      click_button('Commit changes')
+
+      within_testid('commit-change-modal') do
+        click_button('Commit changes')
+      end
     end
 
     def fill_editor(content: 'class NextFeature\\nend\\n')
@@ -204,18 +210,23 @@ RSpec.describe 'Editing file blob', :js, feature_category: :source_code_manageme
 
         it 'shows blob editor with same branch' do
           expect(page).to have_current_path(project_edit_blob_path(project, tree_join(branch, file_path)))
-          expect(find('.js-branch-name').value).to eq(branch)
+
+          click_button('Commit changes')
+
+          expect(page).to have_selector('code', text: branch)
         end
       end
 
       context 'with protected branch' do
-        it 'shows blob editor with patch branch' do
+        it 'shows blob editor with patch branch and option to create MR' do
           freeze_time do
             visit project_edit_blob_path(project, tree_join(protected_branch, file_path))
 
-            epoch = Time.zone.now.strftime('%s%L').last(5)
+            click_button('Commit changes')
 
-            expect(find('.js-branch-name').value).to eq "#{user.username}-protected-branch-patch-#{epoch}"
+            epoch = Time.zone.now.strftime('%s%L').last(5)
+            expect(page).to have_checked_field _('Create a merge request for this change')
+            expect(find_field('branch_name').value).to eq "#{user.username}-protected-branch-patch-#{epoch}"
           end
         end
       end
@@ -232,7 +243,10 @@ RSpec.describe 'Editing file blob', :js, feature_category: :source_code_manageme
 
       it 'shows blob editor with same branch' do
         expect(page).to have_current_path(project_edit_blob_path(project, tree_join(branch, file_path)))
-        expect(find('.js-branch-name').value).to eq(branch)
+
+        click_button('Commit changes')
+
+        expect(page).to have_selector('code', text: branch)
       end
     end
   end

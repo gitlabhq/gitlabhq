@@ -469,7 +469,6 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
     methodToDispatch = replyId ? 'replyToDiscussion' : 'createNewNote';
   }
 
-  $('.notes-form .flash-container').hide(); // hide previous flash notification
   commit(types.REMOVE_PLACEHOLDER_NOTES); // remove previous placeholders
 
   if (hasQuickActions) {

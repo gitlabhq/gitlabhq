@@ -155,6 +155,11 @@ export default {
       required: false,
       default: false,
     },
+    parentId: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -266,6 +271,11 @@ export default {
       if (!this.isSubmitting) {
         this.commentText = newText;
         updateDraft(this.autosaveKey, this.commentText);
+        if (this.commentText) {
+          this.$emit('startEditing');
+        } else {
+          this.$emit('stopEditing');
+        }
       }
     },
     async cancelEditing() {
@@ -370,6 +380,7 @@ export default {
               :work-item-type="workItemType"
               :full-path="fullPath"
               :has-comment="Boolean(commentText.length)"
+              :parent-id="parentId"
               can-update
               @submit-comment="submitForm"
               @error="$emit('error', $event)"

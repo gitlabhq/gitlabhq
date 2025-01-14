@@ -21,6 +21,7 @@ RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous
       expect(group_link.source_project).to eq(project)
       expect(group_link.target_group).to eq(target_group)
       expect(group_link.added_by).to eq(current_user)
+      expect(group_link.default_permissions).to eq(default_permissions)
       expect(group_link.job_token_policies).to eq(policies)
     end
 
@@ -39,13 +40,16 @@ RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous
         expect(group_link.source_project).to eq(project)
         expect(group_link.target_group).to eq(target_group)
         expect(group_link.added_by).to eq(current_user)
+        expect(group_link.default_permissions).to be(true)
         expect(group_link.job_token_policies).to eq([])
       end
     end
   end
 
   describe '#execute' do
-    subject(:result) { service.execute(target_group, policies: policies) }
+    subject(:result) { service.execute(target_group, default_permissions: default_permissions, policies: policies) }
+
+    let(:default_permissions) { false }
 
     it_behaves_like 'editable group job token scope' do
       context 'when user has permissions on source and target groups' do
@@ -55,6 +59,12 @@ RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous
         end
 
         it_behaves_like 'adds group'
+
+        context 'when default_permissions is set to true' do
+          let(:default_permissions) { true }
+
+          it_behaves_like 'adds group'
+        end
 
         context 'when token scope is disabled' do
           before do

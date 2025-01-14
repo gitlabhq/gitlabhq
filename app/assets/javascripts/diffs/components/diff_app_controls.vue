@@ -38,6 +38,18 @@ export default {
       required: false,
       default: null,
     },
+    showWhitespace: {
+      type: Boolean,
+      required: true,
+    },
+    diffViewType: {
+      type: String,
+      required: true,
+    },
+    viewDiffsFileByFile: {
+      type: Boolean,
+      required: true,
+    },
   },
   computed: {
     expandButtonInfo() {
@@ -104,6 +116,13 @@ export default {
         />
       </gl-button-group>
     </template>
-    <settings-dropdown />
+    <settings-dropdown
+      :show-whitespace="showWhitespace"
+      :view-diffs-file-by-file="viewDiffsFileByFile"
+      :diff-view-type="diffViewType"
+      @updateDiffViewType="$emit('updateDiffViewType', $event)"
+      @toggleWhitespace="$emit('toggleWhitespace', $event)"
+      @toggleFileByFile="$emit('toggleFileByFile', $event)"
+    />
   </div>
 </template>

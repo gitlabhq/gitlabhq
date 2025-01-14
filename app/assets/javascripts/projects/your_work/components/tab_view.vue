@@ -6,7 +6,6 @@ import ProjectsListEmptyState from '~/vue_shared/components/projects_list/projec
 import { DEFAULT_PER_PAGE } from '~/api';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
-import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
 import { TIMESTAMP_TYPE_UPDATED_AT } from '~/vue_shared/components/resource_lists/constants';
 import { FILTERED_SEARCH_TERM_KEY } from '~/projects/filtered_search_and_sort/constants';
 import { ACCESS_LEVELS_INTEGER_TO_STRING } from '~/access_level/constants';
@@ -14,6 +13,7 @@ import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
 } from '../constants';
+import { formatProjects } from '../utils';
 
 export default {
   name: 'YourWorkProjectsTabView',
@@ -84,7 +84,7 @@ export default {
           const { nodes, pageInfo } = get(response, this.tab.queryPath);
 
           return {
-            nodes: formatGraphQLProjects(nodes),
+            nodes: formatProjects(nodes),
             pageInfo,
           };
         },
@@ -137,9 +137,13 @@ export default {
         this.programmingLanguages.find(({ id }) => id === parseInt(programmingLanguageId, 10))?.name
       );
     },
+    apolloClient() {
+      return this.$apollo.provider.defaultClient;
+    },
   },
   methods: {
     onRefetch() {
+      this.apolloClient.resetStore();
       this.$apollo.queries.projects.refetch();
     },
     onNext(endCursor) {

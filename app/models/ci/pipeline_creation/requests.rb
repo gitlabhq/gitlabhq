@@ -13,21 +13,35 @@
 #     }
 #   }
 # }
+# NOTE: For general project pipelines, `REDIS_KEY` includes the project ID and the request ID for the pipeline creation.
+# This means that the request ID is referenced twice when fetching the request data - in `REDIS_KEY` and in
+# `CREATION_ID`. It also means that the value for `REDIS_KEY` will only ever contain one pipeline creation request.
+# This is somewhat unexpected, but it is necessary in order to match the data structure for merge request pipelines
+# (which can have several pipelines creation requests stored under their `REDIS_KEY`). We've decided that maintaining
+# two separate data structures is more confusing and results in more code, so it's better to match the data structures
+# even if it means that we have a redundant use of the request ID when storing general project pipeline creation
+# requests.
 #
-# NOTE: All hash keys should be strings because this data is JSONified for Redis and when passing the creation key and
-# ID into pipeline creation workers
+# NOTE: The `REDIS_KEY` for general project pipelines MUST contain the request ID (not only the project ID) in order to
+# ensure that the keys expire. Some projects are so active that their creation request data will never expire from
+# Redis if we store all the pipeline creations for a project under one key.
 #
+# NOTE: All hash keys should be strings because this data is JSONified for Redis and the pipeline creation workers.
+#
+# TODO: In an attempt to make the Redis data easier to understand, we plan to simplify the way we store MR pipeline
+# creation data in https://gitlab.com/gitlab-org/gitlab/-/issues/509925
 module Ci
   module PipelineCreation
     class Requests
       FAILED = 'failed'
-      # GraphQL does not seem to accept spaces so we need to update the regex
       IN_PROGRESS = 'in_progress'
       SUCCEEDED = 'succeeded'
       STATUSES = [FAILED, IN_PROGRESS, SUCCEEDED].freeze
 
       REDIS_EXPIRATION_TIME = 300
-      MERGE_REQUEST_REDIS_KEY = "pipeline_creation:projects:{%{project_id}}:mrs:{%{mr_id}}"
+      PROJECT_REDIS_KEY = "pipeline_creation:projects:{%{project_id}}"
+      MERGE_REQUEST_REDIS_KEY = "#{PROJECT_REDIS_KEY}:mrs:{%{mr_id}}".freeze
+      REQUEST_REDIS_KEY = "#{PROJECT_REDIS_KEY}:request:{%{request_id}}".freeze
 
       class << self
         def failed(request, error)
@@ -40,6 +54,15 @@ module Ci
           return unless request.present?
 
           hset(request, SUCCEEDED, pipeline_id: pipeline_id)
+        end
+
+        def start_for_project(project)
+          request_id = generate_id
+          request = { 'key' => request_key(project, request_id), 'id' => request_id }
+
+          hset(request, IN_PROGRESS)
+
+          request
         end
 
         def start_for_merge_request(merge_request)
@@ -60,6 +83,14 @@ module Ci
           requests
             .map { |request| Gitlab::Json.parse(request) }
             .any? { |request| request['status'] == IN_PROGRESS }
+        end
+
+        def get_request(project, request_id)
+          hget({ 'key' => request_key(project, request_id), 'id' => request_id })
+        end
+
+        def request_key(project, request_id)
+          format(REQUEST_REDIS_KEY, project_id: project.id, request_id: request_id)
         end
 
         def merge_request_key(merge_request)

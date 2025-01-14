@@ -9,7 +9,7 @@ description: "Documentation for the REST API for merge request approval settings
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Configuration for
 [approval settings on all merge requests](../user/project/merge_requests/approvals/settings.md)

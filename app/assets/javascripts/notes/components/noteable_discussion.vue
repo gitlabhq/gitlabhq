@@ -350,6 +350,7 @@ export default {
                   class="discussion-reply-holder clearfix gl-bg-subtle"
                   :class="discussionHolderClass"
                 >
+                  <div class="flash-container !gl-mt-0 gl-mb-2"></div>
                   <discussion-actions
                     v-if="!isReplying && userCanReply"
                     :discussion="discussion"

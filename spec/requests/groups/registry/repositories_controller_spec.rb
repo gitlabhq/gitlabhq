@@ -14,30 +14,6 @@ RSpec.describe Groups::Registry::RepositoriesController, feature_category: :cont
     login_as(user)
   end
 
-  shared_examples 'having the feature flag "containerRegistryProtectedContainers"' do
-    it { is_expected.to have_gitlab_http_status(:ok) }
-
-    it do
-      is_expected.to have_attributes(
-        body: have_pushed_frontend_feature_flags(containerRegistryProtectedContainers: true)
-      )
-    end
-
-    context 'when feature flag "container_registry_protected_containers" is disabled' do
-      before do
-        stub_feature_flags(container_registry_protected_containers: false)
-      end
-
-      it { is_expected.to have_gitlab_http_status(:ok) }
-
-      it do
-        is_expected.to have_attributes(
-          body: have_pushed_frontend_feature_flags(containerRegistryProtectedContainers: false)
-        )
-      end
-    end
-  end
-
   describe 'GET groups/:group_id/-/container_registries.json' do
     subject do
       get group_container_registries_path(group_id: group)
@@ -45,8 +21,6 @@ RSpec.describe Groups::Registry::RepositoriesController, feature_category: :cont
     end
 
     it { is_expected.to have_gitlab_http_status(:ok) }
-
-    it_behaves_like 'having the feature flag "containerRegistryProtectedContainers"'
 
     it 'avoids N+1 queries' do
       project = create(:project, group: group)
@@ -78,7 +52,5 @@ RSpec.describe Groups::Registry::RepositoriesController, feature_category: :cont
     end
 
     it { is_expected.to have_gitlab_http_status(:ok) }
-
-    it_behaves_like 'having the feature flag "containerRegistryProtectedContainers"'
   end
 end

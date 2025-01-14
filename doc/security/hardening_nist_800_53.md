@@ -8,7 +8,7 @@ info: All material changes to this page must be approved by the [FedRAMP Complia
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 This page provides a reference for GitLab administrators
 who want to configure self-managed instances to meet applicable
@@ -89,7 +89,7 @@ In order to meet FedRAMP requirements, ensure that the
 existing identity provider is FedRAMP authorized on the [FedRAMP Marketplace](https://marketplace.fedramp.gov/products). To
 meet requirements such as PIV, you should leverage an
 identity provider rather than using native authentication in
-self-managed GitLab.
+GitLab Self-Managed.
 
 GitLab provides resources for configuring various
 identity providers and protocols, including

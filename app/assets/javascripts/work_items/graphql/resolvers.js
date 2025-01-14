@@ -16,6 +16,7 @@ import {
   WIDGET_TYPE_START_AND_DUE_DATE,
   NEW_WORK_ITEM_IID,
   WIDGET_TYPE_MILESTONE,
+  WIDGET_TYPE_HIERARCHY,
 } from '../constants';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
 
@@ -63,6 +64,7 @@ export const updateNewWorkItemCache = (input, cache) => {
     iteration,
     weight,
     milestone,
+    parent,
   } = input;
 
   const query = workItemByIidQuery;
@@ -119,6 +121,11 @@ export const updateNewWorkItemCache = (input, cache) => {
           newData: milestone,
           nodePath: 'milestone',
         },
+        {
+          widgetType: WIDGET_TYPE_HIERARCHY,
+          newData: parent,
+          nodePath: 'parent',
+        },
       ];
 
       widgetUpdates.forEach(({ widgetType, newData, nodePath }) => {
@@ -127,7 +134,10 @@ export const updateNewWorkItemCache = (input, cache) => {
 
       updateDatesWidget(draftData, rolledUpDates);
 
-      if (title) draftData.workspace.workItem.title = title;
+      // We want to allow users to delete a title for an in-progress work item draft
+      // as we check for the title being valid when submitting the form
+      if (title !== undefined) draftData.workspace.workItem.title = title;
+
       if (confidential !== undefined) draftData.workspace.workItem.confidential = confidential;
     }),
   );

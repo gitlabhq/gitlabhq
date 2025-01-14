@@ -1,11 +1,10 @@
 <script>
-import { GlBadge, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import { __, n__ } from '~/locale';
 
 export default {
   components: {
     GlBadge,
-    GlIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -47,5 +46,4 @@ export default {
   >
     {{ approvalCount }}
   </gl-badge>
-  <gl-icon v-else-if="!fullText" name="dash" />
 </template>

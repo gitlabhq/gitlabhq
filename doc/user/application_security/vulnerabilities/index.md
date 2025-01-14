@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Each vulnerability in a project has a vulnerability page containing details of the vulnerability,
 including:
@@ -20,23 +20,24 @@ including:
 - Linked issues
 - Actions log
 - Filename and line number of the vulnerability (if available)
-- Vulnerability risk data
-  - Severity - [Common Vulnerability Scoring System (CVSS)](severities.md)
-  - Likelihood of exploitation - [EPSS](risk_assessment_data.md#epss)
+- Severity
+
+For vulnerabilities in the [Common Vulnerabilities and Exposures (CVE)](https://www.cve.org/)
+catalog you can also retrieve the following by using the GraphQL API:
+
+- EPSS score
+- KEV status
+
+For details on how to retrieve this additional data, see [vulnerability risk assessment data](risk_assessment_data.md).
 
 If the scanner determined the vulnerability to be a false positive, an alert message is included at
 the top of the vulnerability's page.
-
-When a vulnerability is no longer detected in a project's default branch, you should
-change its status to **Resolved**. This ensures that if it is accidentally reintroduced in a future
-merge, it is reported again as a new record. To change the status of multiple vulnerabilities, use
-the Vulnerability Report's [Activity filter](../vulnerability_report/index.md#activity-filter).
 
 ## Explaining a vulnerability
 
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 **LLM:** Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [experiment](../../../policy/development_stages_support.md#experiment) on GitLab.com.
@@ -96,7 +97,7 @@ The following data is shared with third-party AI APIs:
 
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 **Status:** Beta
 **LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
@@ -228,7 +229,7 @@ The following data is shared with third-party AI APIs:
 
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 **Status:** Beta
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14862) in GitLab 17.6 with a flag named [`resolve_vulnerability_in_mr`](https://gitlab.com/gitlab-org/gitlab/-/issues/482753). Disabled by default.
@@ -263,13 +264,13 @@ Vulnerability Resolution in a merge request sometimes cannot generate a suggeste
   - A new request may succeed, so you can try to resolve the vulnerability again.
   - If you continue to see these errors, contact GitLab for assistance.
 - **Resolution target could not be found in the merge request, unable to create suggestion:**
-  - This error may occur when the target branch has not run a full security scan pipeline. See the [merge request documentation](../index.md#ultimate).
+  - This error may occur when the target branch has not run a full security scan pipeline. See the [merge request documentation](../detect/security_scan_results.md#merge-request).
 
 ## Vulnerability code flow
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 For specific types of vulnerabilities, GitLab Advanced SAST provides [code flow](../sast/gitlab_advanced_sast.md#vulnerability-code-flow) information.
 A vulnerability's code flow is the path the data takes from the user input (source) to the vulnerable line of code (sink), through all assignments, manipulation, and sanitization.
@@ -310,6 +311,17 @@ stateDiagram
     Resolved --> Needs_triage: If reintroduced and detected again
     Resolved --> [*]
 ```
+
+## Vulnerability is no longer detected
+
+A vulnerability may be no longer detected because of changes made deliberately to remediate it or
+as a side effect of other changes. When a security scan runs and a vulnerability is no longer
+detected in the default branch, the scanner adds **No longer detected** to the record's activity log
+but the record's status does not change. Instead you should check and confirm the
+vulnerability has been resolved and if so,
+[manually change its status to **Resolved**](#change-the-status-of-a-vulnerability). You can also
+use a [vulnerability management policy](../policies/vulnerability_management_policy.md) to
+automatically change the status of vulnerabilities matching specific criteria to **Resolved**.
 
 ## Vulnerability dismissal reasons
 

@@ -3,6 +3,7 @@
 module Integrations
   class Pushover < Integration
     include HasAvatar
+
     BASE_URI = 'https://api.pushover.net/1'
 
     validates :api_key, :user_key, :priority, presence: true, if: :activated?
@@ -13,6 +14,7 @@ module Integrations
       help: -> { s_('PushoverService|Enter your application key.') },
       non_empty_password_title: -> { s_('ProjectService|Enter new API key') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current API key.') },
+      description: -> { s_('PushoverService|The application key.') },
       placeholder: '',
       required: true
 
@@ -22,6 +24,7 @@ module Integrations
       help: -> { s_('PushoverService|Enter your user key.') },
       non_empty_password_title: -> { s_('PushoverService|Enter new user key') },
       non_empty_password_help: -> { s_('PushoverService|Leave blank to use your current user key.') },
+      description: -> { s_('PushoverService|The user key.') },
       placeholder: '',
       required: true
 
@@ -33,6 +36,7 @@ module Integrations
     field :priority,
       type: :select,
       required: true,
+      help: -> { s_('PushoverService|The priority.') },
       choices: -> do
         [
           [s_('PushoverService|Lowest priority'), -2],
@@ -44,6 +48,7 @@ module Integrations
 
     field :sound,
       type: :select,
+      help: -> { s_('PushoverService|The sound of the notification.') },
       choices: -> do
         [
           ['Device default sound', nil],
@@ -97,15 +102,18 @@ module Integrations
 
       message =
         if Gitlab::Git.blank_ref?(before)
-          s_("PushoverService|%{user_name} pushed new branch \"%{ref}\".") % { user_name: data[:user_name], ref: ref }
+          format(s_("PushoverService|%{user_name} pushed new branch \"%{ref}\"."), user_name: data[:user_name],
+            ref: ref)
         elsif Gitlab::Git.blank_ref?(after)
-          s_("PushoverService|%{user_name} deleted branch \"%{ref}\".") % { user_name: data[:user_name], ref: ref }
+          format(s_("PushoverService|%{user_name} deleted branch \"%{ref}\"."), user_name: data[:user_name], ref: ref)
         else
-          s_("PushoverService|%{user_name} push to branch \"%{ref}\".") % { user_name: data[:user_name], ref: ref }
+          format(s_("PushoverService|%{user_name} push to branch \"%{ref}\"."), user_name: data[:user_name], ref: ref)
         end
 
       if data[:total_commits_count] > 0
-        message = [message, s_("PushoverService|Total commits count: %{total_commits_count}") % { total_commits_count: data[:total_commits_count] }].join("\n")
+        message = [message,
+          format(s_("PushoverService|Total commits count: %{total_commits_count}"),
+            total_commits_count: data[:total_commits_count])].join("\n")
       end
 
       pushover_data = {
@@ -116,13 +124,11 @@ module Integrations
         title: project.full_name.to_s,
         message: message,
         url: data[:project][:web_url],
-        url_title: s_("PushoverService|See project %{project_full_name}") % { project_full_name: project.full_name }
+        url_title: format(s_("PushoverService|See project %{project_full_name}"), project_full_name: project.full_name)
       }
 
       # Sound parameter MUST NOT be sent to API if not selected
-      if sound
-        pushover_data[:sound] = sound
-      end
+      pushover_data[:sound] = sound if sound
 
       Gitlab::HTTP.post('/messages.json', base_uri: BASE_URI, body: pushover_data)
     end

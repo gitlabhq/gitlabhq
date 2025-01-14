@@ -37,7 +37,7 @@ Make sure you have the following before you complete this tutorial:
 - A test project. You can use any project you like, but consider creating a test project specifically for this tutorial.
 - Some familiarity with command-line Git.
 
-Additionally, on self-managed GitLab only, ensure secret push protection is
+Additionally, on GitLab Self-Managed only, ensure secret push protection is
 [enabled on the instance](secret_push_protection/index.md#allow-the-use-of-secret-push-protection-in-your-gitlab-instance).
 
 ## Enable secret push protection

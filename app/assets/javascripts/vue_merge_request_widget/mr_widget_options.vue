@@ -544,7 +544,7 @@ export default {
           type="danger"
           dismissible
           data-testid="merge-error"
-          class="mr-widget-section"
+          class="mr-widget-section gl-rounded-b-none gl-border-b-section"
         >
           <span v-safe-html="mergeError"></span>
         </mr-widget-alert-message>
@@ -552,7 +552,7 @@ export default {
           v-if="showMergePipelineForkWarning"
           type="warning"
           :help-path="mr.mergeRequestPipelinesHelpPath"
-          class="mr-widget-section"
+          class="mr-widget-section gl-rounded-b-none gl-border-b-section"
           data-testid="merge-pipeline-fork-warning"
         >
           {{

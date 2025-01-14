@@ -12,7 +12,7 @@ helpers and abstractions, and extends Monaco [using extensions](#extensions). Mu
 GitLab features use it, including:
 
 - [Web IDE](../../user/project/web_ide/index.md)
-- [CI Linter](../../ci/lint.md)
+- [CI Linter](../../ci/yaml/lint.md)
 - [Snippets](../../user/snippets.md)
 - [Web Editor](../../user/project/repository/web_editor.md)
 - [Security Policies](../../user/application_security/policies/index.md)

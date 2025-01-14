@@ -50,7 +50,7 @@ RSpec.describe Gitlab::Highlight do
       let(:result) { described_class.highlight(file_name, content) } # content is 44 bytes
 
       before do
-        stub_config(extra: { 'maximum_text_highlight_size_kilobytes' => 0.0001 } ) # 1.024 bytes
+        stub_config(extra: { 'maximum_text_highlight_size_kilobytes' => 0.0001 }) # 1.024 bytes
       end
 
       it 'returns plain version for long content' do

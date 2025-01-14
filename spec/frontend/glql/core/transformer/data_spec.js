@@ -3,19 +3,22 @@ import * as functions from '~/glql/core/transformer/functions';
 
 describe('GLQL Data Transformer', () => {
   describe('transform', () => {
-    it('transforms data for issues source', () => {
+    it.each`
+      sourceType
+      ${'issues'}
+      ${'mergeRequests'}
+    `('transforms data for $sourceType source', ({ sourceType }) => {
       const mockData = {
         project: {
-          issues: {
+          [sourceType]: {
             nodes: [
-              { id: '1', title: 'Issue 1', labels: { nodes: [{ title: 'bug' }] } },
-              { id: '2', title: 'Issue 2', labels: { nodes: [{ title: 'feature' }] } },
+              { id: '1', title: 'Lorem ipsum', labels: { nodes: [{ title: 'bug' }] } },
+              { id: '2', title: 'Dolor sit amet', labels: { nodes: [{ title: 'feature' }] } },
             ],
           },
         },
       };
       const mockConfig = {
-        source: 'issues',
         fields: [
           { key: 'title', name: 'title' },
           {
@@ -32,13 +35,13 @@ describe('GLQL Data Transformer', () => {
         nodes: [
           {
             id: '1',
-            title: 'Issue 1',
+            title: 'Lorem ipsum',
             labels_bug: { nodes: [{ title: 'bug' }] },
             labels: { nodes: [] },
           },
           {
             id: '2',
-            title: 'Issue 2',
+            title: 'Dolor sit amet',
             labels_bug: { nodes: [] },
             labels: { nodes: [{ title: 'feature' }] },
           },

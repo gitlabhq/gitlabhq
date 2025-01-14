@@ -117,13 +117,17 @@ export default {
       };
 
       if (this.isProject) {
-        return this.fetchGroupsNew(axiosConfig);
+        return this.fetchGroupsNew(options, axiosConfig);
       }
 
       return this.fetchGroupsLegacy(options, axiosConfig);
     },
-    fetchGroupsNew(axiosConfig) {
-      return getProjectShareLocations(this.sourceId, { search: this.searchTerm }, axiosConfig);
+    fetchGroupsNew(options, axiosConfig) {
+      return getProjectShareLocations(
+        this.sourceId,
+        { search: this.searchTerm, ...options },
+        axiosConfig,
+      );
     },
     fetchGroupsLegacy(options, axiosConfig) {
       const combinedOptions = {

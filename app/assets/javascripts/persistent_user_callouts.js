@@ -30,6 +30,8 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-period-in-terraform-state-name-alert',
   '.js-new-mr-dashboard-banner',
   '.js-pipl-compliance-alert',
+  '.gcp-signup-offer',
+  '.js-gold-trial-callout',
 ];
 
 const initCallouts = () => {

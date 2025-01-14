@@ -9,18 +9,18 @@ description: "Use Gitpod to build and configure prebuilt development environment
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed
+**Offering:** GitLab.com, GitLab Self-Managed
 
 With [Gitpod](https://www.gitpod.io/), you can describe your development environment as code to get fully
 set up, compiled, and tested development environments for any GitLab project. The development
 environments are not only automated but also prebuilt which means that Gitpod continuously builds
 your Git branches like a CI/CD server.
 
-This means you don't have to wait for dependencies to be downloaded and builds to finish, you can start
+This means you don't have to wait for dependencies to download and builds to start
 coding immediately. With Gitpod you can start coding instantly on any project, branch, and merge
 request from your browser.
 
-To use the GitLab Gitpod integration, it must be enabled for your GitLab instance and in your preferences. Users of:
+To use the GitLab Gitpod integration, you must enable it for your GitLab instance and in your preferences. Users of:
 
 - GitLab.com can use it immediately after it's [enabled in their user preferences](#enable-gitpod-in-your-user-preferences).
 - GitLab self-managed instances can use it after:
@@ -43,9 +43,9 @@ With the Gitpod integration enabled for your GitLab instance, to enable it for y
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
-For self-managed GitLab instances, a GitLab administrator must:
+For GitLab Self-Managed instances, a GitLab administrator must:
 
 1. Enable the Gitpod integration in GitLab:
    1. On the left sidebar, at the bottom, select **Admin**.
@@ -54,7 +54,7 @@ For self-managed GitLab instances, a GitLab administrator must:
    1. Select the **Enable Gitpod integration** checkbox.
    1. Enter the Gitpod instance URL (for example, `https://gitpod.example.com` or `https://gitpod.io`).
    1. Select **Save changes**.
-1. Register the self-managed GitLab instance in Gitpod. For more information, see the [Gitpod documentation](https://www.gitpod.io/docs/configure/authentication/gitlab#registering-a-self-hosted-gitlab-installation).
+1. Register the GitLab Self-Managed instance in Gitpod. For more information, see the [Gitpod documentation](https://www.gitpod.io/docs/configure/authentication/gitlab#registering-a-self-hosted-gitlab-installation).
 
 GitLab users can then [enable the Gitpod integration for themselves](#enable-gitpod-in-your-user-preferences).
 

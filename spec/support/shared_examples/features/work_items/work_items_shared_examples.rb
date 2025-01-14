@@ -170,6 +170,7 @@ RSpec.shared_examples 'work items assignees' do
     click_button 'assign yourself'
 
     expect(page).to have_link(user.name)
+    wait_for_requests
     using_session :other_session do
       expect(page).to have_link(user.name)
     end
@@ -216,6 +217,7 @@ RSpec.shared_examples 'work items labels' do |namespace_type|
     end
 
     expect(page).to have_css '.gl-label', text: label2.title
+    wait_for_requests
     using_session :other_session do
       expect(page).to have_css '.gl-label', text: label2.title
     end
@@ -868,6 +870,13 @@ RSpec.shared_examples 'work items hierarchy' do |testid, type|
 end
 
 RSpec.shared_examples 'work items linked items' do |is_group = false|
+  before_all do
+    # Ensure support bot user is created so creation doesn't count towards query limit
+    # and we don't try to obtain an exclusive lease within a transaction.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
+    Users::Internal.support_bot_id
+  end
+
   it 'are not displayed when issue does not have work item links', :aggregate_failures do
     within_testid('work-item-relationships') do
       expect(page).to have_selector('[data-testid="link-item-add-button"]')
@@ -976,5 +985,22 @@ RSpec.shared_examples 'work items linked items' do |is_group = false|
 
       expect(page).to have_link linked_item.title
     end
+  end
+end
+
+RSpec.shared_examples 'work items change type' do |selected_type, expected_selector|
+  it 'change work item type to selected type', :aggregate_failures do
+    click_button _('More actions'), match: :first
+    click_button s_('WorkItem|Change type')
+
+    expect(find('#work-item-change-type')).to have_content(s_('WorkItem|Change type'))
+
+    find_by_testid('work-item-change-type-select').select(selected_type)
+
+    click_button s_('WorkItem|Change type')
+
+    wait_for_requests
+
+    expect(page).to have_selector(expected_selector)
   end
 end

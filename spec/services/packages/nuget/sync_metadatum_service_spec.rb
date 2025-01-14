@@ -24,9 +24,7 @@ RSpec.describe Packages::Nuget::SyncMetadatumService, feature_category: :package
       it 'saves nuget metadatum' do
         subject
 
-        metadata.each do |attribute, expected_value|
-          expect(nuget_metadatum.send(attribute)).to eq(expected_value)
-        end
+        expect(nuget_metadatum).to have_attributes(**metadata)
       end
     end
 
@@ -37,7 +35,7 @@ RSpec.describe Packages::Nuget::SyncMetadatumService, feature_category: :package
 
     it_behaves_like 'saving metadatum attributes'
 
-    context 'with exisiting nuget metadatum' do
+    context 'with existing nuget metadatum' do
       let_it_be(:package) { create(:nuget_package, :with_metadatum) }
 
       it 'does not create a nuget metadatum' do
@@ -62,8 +60,10 @@ RSpec.describe Packages::Nuget::SyncMetadatumService, feature_category: :package
       it 'updates the nuget metadatum' do
         subject
 
-        expect(nuget_metadatum.authors).to eq('Package authors 2')
-        expect(nuget_metadatum.description).to eq('Package description 2')
+        expect(nuget_metadatum).to have_attributes(
+          authors: 'Package authors 2',
+          description: 'Package description 2'
+        )
       end
     end
 

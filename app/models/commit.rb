@@ -16,6 +16,7 @@ class Commit
   include ActsAsPaginatedDiff
   include CacheMarkdownField
   include GlobalID::Identification
+  include Repositories::StreamableDiff
 
   participant :author
   participant :committer
@@ -511,7 +512,6 @@ class Commit
   def diffs(diff_options = {})
     Gitlab::Diff::FileCollection::Commit.new(self, diff_options: diff_options)
   end
-  alias_method :diffs_for_streaming, :diffs
 
   def persisted?
     true

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 The agent server is a component installed together with GitLab. It is required to
 manage the [GitLab agent for Kubernetes](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent).
@@ -16,7 +16,7 @@ manage the [GitLab agent for Kubernetes](https://gitlab.com/gitlab-org/cluster-i
 The KAS acronym refers to the former name, `Kubernetes agent server`.
 
 The agent server for Kubernetes is installed and available on GitLab.com at `wss://kas.gitlab.com`.
-If you use self-managed GitLab, by default the agent server is installed and available.
+If you use GitLab Self-Managed, by default the agent server is installed and available.
 
 ## Installation options
 
@@ -160,7 +160,7 @@ to authenticate and authorize the user.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
 
@@ -204,7 +204,7 @@ To fix this issue, ensure that the paths are correct.
 
 ### `dial tcp <GITLAB_INTERNAL_IP>:443: connect: connection refused`
 
-If you are running self-managed GitLab and:
+If you are running GitLab Self-Managed and:
 
 - The instance isn't running behind an SSL-terminating proxy.
 - The instance doesn't have HTTPS configured on the GitLab instance itself.

@@ -46,13 +46,24 @@ export default {
 
       axios
         .post(this.reassignmentCsvPath, formData)
-        .then(() => {
-          // nothing to do here, modal already closes itself
-        })
-        .catch(() => {
+        .then((response) => {
           createAlert({
-            message: s__('UserMapping|Something went wrong while uploading the CSV file.'),
+            message: response.data.message,
+            variant: 'success',
           });
+        })
+        .catch((error) => {
+          if (error.response.data?.message) {
+            const { message } = error.response.data;
+
+            createAlert({
+              message,
+            });
+          } else {
+            createAlert({
+              message: s__('UserMapping|Something went wrong while uploading the CSV file.'),
+            });
+          }
         });
     },
     isValidFileType(file) {
@@ -119,8 +130,8 @@ export default {
           icon="download"
           data-testid="csv-download-button"
           class="vertical-align-text-top"
-          >{{ s__('UserMapping|Download the prefilled CSV template.') }}</gl-button
-        >
+          >{{ s__('UserMapping|Download the prefilled CSV template.') }}
+        </gl-button>
       </li>
       <li>{{ s__('UserMapping|Review and complete the CSV file.') }}</li>
       <li>{{ s__('UserMapping|Upload the completed CSV file.') }}</li>

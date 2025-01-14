@@ -8,14 +8,6 @@ description: Configuration of a single list within an epic board
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49728
 milestone: '13.7'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  group_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: epic_board_id
-        table: boards_epic_boards
-        sharding_key: group_id
-        belongs_to: epic_board
-desired_sharding_key_migration_job_name: BackfillBoardsEpicListsGroupId
 table_size: small
+sharding_key:
+  group_id: namespaces

@@ -9,20 +9,16 @@ description: "Build templates for text frequently used in comments, and share th
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - User interface [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113232) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `saved_replies`. Disabled by default. Enabled for GitLab team members only.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119468) in GitLab 16.0.
 > - [Feature flag `saved_replies` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123363) in GitLab 16.6.
 > - Group-level saved replies [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12669) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `group_saved_replies_flag`. Disabled by default.
 > - Group-level saved replies [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/440817) on GitLab.com and self-managed in GitLab 16.11.
-> - Group-level saved replies [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148958) in GitLab 17.0. Feature flag `group_saved_replies_flag` removed.
+> - Group-level saved replies [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/504028) in GitLab 17.8. Feature flag `group_saved_replies_flag` removed.
 > - Project-level saved replies [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12669) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `project_saved_replies_flag`. Enabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/504028) in GitLab 17.7. Feature flag `project_saved_replies_flag` removed.
-
-FLAG:
-The availability of Project-level saved replies is controlled by a feature flag.
-For more information, see the history.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/504028) in GitLab 17.8. Feature flag `project_saved_replies_flag` removed.
 
 With comment templates, create and reuse text for any text area in:
 

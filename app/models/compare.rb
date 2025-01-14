@@ -3,6 +3,7 @@
 class Compare
   include Gitlab::Utils::StrongMemoize
   include ActsAsPaginatedDiff
+  include Repositories::StreamableDiff
 
   delegate :same, :head, :base, :generated_files, to: :@compare
 
@@ -88,7 +89,9 @@ class Compare
       diff_refs: diff_refs)
   end
 
-  alias_method :diffs_for_streaming, :diffs
+  def repository
+    project.repository
+  end
 
   def diff_refs
     Gitlab::Diff::DiffRefs.new(

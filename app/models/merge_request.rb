@@ -1361,27 +1361,36 @@ class MergeRequest < ApplicationRecord
   # skip_requested_changes_check
   # skip_jira_check
   def mergeable_state?(**params)
-    results = check_mergeability_states(checks: self.class.mergeable_state_checks, **params)
-
-    results.success?
+    execute_merge_checks(
+      self.class.mergeable_state_checks,
+      params: params,
+      execute_all: false
+    ).success?
   end
 
   # This runs only git related checks
   def mergeable_git_state?(**params)
-    results = check_mergeability_states(checks: self.class.mergeable_git_state_checks, **params)
-
-    results.success?
+    execute_merge_checks(
+      self.class.mergeable_git_state_checks,
+      params: params,
+      execute_all: false
+    ).success?
   end
 
   # This runs all the checks
   def mergeability_checks_pass?(**params)
-    results = check_mergeability_states(checks: self.class.all_mergeability_checks, **params)
-
-    results.success?
+    execute_merge_checks(
+      self.class.all_mergeability_checks,
+      params: params,
+      execute_all: false
+    ).success?
   end
 
   def all_mergeability_checks_results
-    check_mergeability_states(checks: self.class.all_mergeability_checks, execute_all: true).payload[:results]
+    execute_merge_checks(
+      self.class.all_mergeability_checks,
+      execute_all: true
+    ).payload[:results]
   end
 
   def ff_merge_possible?
@@ -2418,14 +2427,6 @@ class MergeRequest < ApplicationRecord
   end
 
   private
-
-  def check_mergeability_states(checks:, execute_all: false, **params)
-    execute_merge_checks(
-      checks,
-      params: params,
-      execute_all: execute_all
-    )
-  end
 
   def merge_base_pipelines
     return ::Ci::Pipeline.none unless diff_head_pipeline&.target_sha

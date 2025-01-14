@@ -17,6 +17,13 @@ module API
           include SharedEndpoints
 
           included do
+            helpers do
+              def x_conan_server_capabilities_header
+                return [] unless Feature.enabled?(:conan_package_revisions_support, Feature.current_request)
+
+                ['revisions']
+              end
+            end
             before do
               authenticate_non_get!
             end
@@ -33,7 +40,7 @@ module API
             route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
 
             get 'ping', urgency: :default do
-              header 'X-Conan-Server-Capabilities', [].join(',')
+              header 'X-Conan-Server-Capabilities', x_conan_server_capabilities_header.join(',')
             end
 
             desc 'Search for packages' do

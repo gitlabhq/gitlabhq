@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can configure your [CI/CD pipeline](../pipelines/index.md) to display unit test results directly in merge requests and pipeline details.
 This makes it easier to identify test failures without searching through job logs.

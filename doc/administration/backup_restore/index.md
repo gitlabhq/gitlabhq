@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Your GitLab instance contains critical data for your software development or organization.
 It is important to have a disaster recovery plan that includes regular backups for:

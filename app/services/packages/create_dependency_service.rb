@@ -73,7 +73,8 @@ module Packages
         {
           package_id: package.id,
           dependency_id: dependency_id,
-          dependency_type: Packages::DependencyLink.dependency_types[type.to_s]
+          dependency_type: Packages::DependencyLink.dependency_types[type.to_s],
+          project_id: project_id
         }
       end
 

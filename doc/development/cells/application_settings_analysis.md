@@ -1,17 +1,17 @@
 ---
-stage: Data Stores
-group: Tenant Scale
+stage: Tenant Scale
+group: Cells Infrastructure
 info: Analysis of Application Settings for Cells 1.0.
 ---
 # Application Settings analysis
 
 ## Statistics
 
-- Number of attributes: 510
+- Number of attributes: 511
 - Number of encrypted attributes: 45 (9.0%)
-- Number of attributes documented: 311 (61.0%)
+- Number of attributes documented: 312 (61.0%)
 - Number of attributes on GitLab.com different from the defaults: 222 (44.0%)
-- Number of attributes with `clusterwide` set: 510 (100.0%)
+- Number of attributes with `clusterwide` set: 511 (100.0%)
 - Number of attributes with `clusterwide: true` set: 124 (24.0%)
 
 ## Individual columns
@@ -81,9 +81,9 @@ info: Analysis of Application Settings for Cells 1.0.
 | `container_registry_token_expire_delay` | `false` | `integer` | `integer` | `false` | `5` | `true` | `false`| `true` |
 | `container_registry_vendor` | `false` | `text` | `` | `true` | `''::text` | `true` | `true`| `false` |
 | `container_registry_version` | `false` | `text` | `` | `true` | `''::text` | `true` | `true`| `false` |
-| `content_validation_api_key` [JIHU] | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
-| `content_validation_endpoint_enabled` [JIHU] | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
-| `content_validation_endpoint_url` [JIHU] | `false` | `text` | `` | `false` | `null` | `false` | `false`| `false` |
+| `content_validation_api_key` (`JIHU`) | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
+| `content_validation_endpoint_enabled` (`JIHU`) | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `content_validation_endpoint_url` (`JIHU`) | `false` | `text` | `` | `false` | `null` | `false` | `false`| `false` |
 | `created_at` | `false` | `timestamp` | `` | `false` | `null` | `true` | `false`| `false` |
 | `cube_api_base_url` | `false` | `text` | `` | `false` | `null` | `true` | `true`| `false` |
 | `cube_api_key` | `true` | `bytea` | `` | `false` | `null` | `true` | `true`| `false` |
@@ -123,12 +123,12 @@ info: Analysis of Application Settings for Cells 1.0.
 | `diff_max_files` | `false` | `integer` | `integer` | `true` | `1000` | `true` | `true`| `true` |
 | `diff_max_lines` | `false` | `integer` | `integer` | `true` | `50000` | `true` | `true`| `true` |
 | `diff_max_patch_bytes` | `false` | `integer` | `integer` | `true` | `204800` | `false` | `true`| `true` |
-| `dingtalk_app_key` [JIHU] | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
-| `dingtalk_app_secret` [JIHU] | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
-| `dingtalk_corpid` [JIHU] | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
-| `dingtalk_integration_enabled` [JIHU] | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `dingtalk_app_key` (`JIHU`) | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
+| `dingtalk_app_secret` (`JIHU`) | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
+| `dingtalk_corpid` (`JIHU`) | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
+| `dingtalk_integration_enabled` (`JIHU`) | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `disable_admin_oauth_scopes` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
-| `disable_download_button` [JIHU] | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `disable_download_button` (`JIHU`) | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `disable_feed_token` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `disable_overriding_approvers_per_merge_request` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `disable_personal_access_tokens` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
@@ -148,6 +148,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `eks_account_id` | `false` | `character` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `eks_integration_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `true`| `true` |
 | `eks_secret_access_key` | `true` | `text` | `string` | `false` | `null` | `true` | `true`| `true` |
+| `elasticsearch` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `false`| `false` |
 | `elasticsearch_analyzers_kuromoji_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `true`| `false` |
 | `elasticsearch_analyzers_kuromoji_search` | `false` | `boolean` | `` | `true` | `false` | `false` | `true`| `false` |
 | `elasticsearch_analyzers_smartcn_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `true`| `false` |
@@ -197,9 +198,9 @@ info: Analysis of Application Settings for Cells 1.0.
 | `external_pipeline_validation_service_token` | `true` | `text` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `external_pipeline_validation_service_url` | `false` | `text` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `failed_login_attempts_unlock_period_in_minutes` | `false` | `integer` | `integer` | `false` | `null` | `false` | `false`| `true` |
-| `feishu_app_key` [JIHU] | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
-| `feishu_app_secret` [JIHU] | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
-| `feishu_integration_enabled` [JIHU] | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `feishu_app_key` (`JIHU`) | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
+| `feishu_app_secret` (`JIHU`) | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
+| `feishu_integration_enabled` (`JIHU`) | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `file_template_project_id` | `false` | `bigint` | `integer` | `false` | `null` | `false` | `false`| `true` |
 | `first_day_of_week` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
 | `floc_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
@@ -321,6 +322,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `notes_create_limit_allowlist` | `false` | `text[]` | `` | `true` | `'{}'::text[]` | `true` | `true`| `false` |
 | `notify_on_unknown_sign_in` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `npm_package_requests_forwarding` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
+| `oauth_provider` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `observability_backend_ssl_verification_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `openai_api_key` | `true` | `bytea` | `` | `false` | `null` | `false` | `false`| `false` |
 | `outbound_local_requests_whitelist` | `false` | `character` | `array of strings` | `true` | `'{}'::character` | `true` | `true`| `true` |
@@ -333,16 +335,16 @@ info: Analysis of Application Settings for Cells 1.0.
 | `pages_domain_verification_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `password_authentication_enabled_for_git` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `password_authentication_enabled_for_web` | `false` | `boolean` | `boolean` | `false` | `null` | `true` | `false`| `true` |
-| `password_expiration_enabled` [JIHU] | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
-| `password_expires_in_days` [JIHU] | `false` | `integer` | `` | `true` | `90` | `false` | `false`| `false` |
-| `password_expires_notice_before_days` [JIHU] | `false` | `integer` | `` | `true` | `7` | `false` | `false`| `false` |
+| `password_expiration_enabled` (`JIHU`) | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `password_expires_in_days` (`JIHU`) | `false` | `integer` | `` | `true` | `90` | `false` | `false`| `false` |
+| `password_expires_notice_before_days` (`JIHU`) | `false` | `integer` | `` | `true` | `7` | `false` | `false`| `false` |
 | `password_lowercase_required` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `password_number_required` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `password_symbol_required` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `password_uppercase_required` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `performance_bar_allowed_group_id` | `false` | `bigint` | `string` | `false` | `null` | `true` | `false`| `true` |
 | `personal_access_token_prefix` | `false` | `text` | `string` | `false` | `'glpat-'::text` | `false` | `false`| `true` |
-| `phone_verification_code_enabled` [JIHU] | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `phone_verification_code_enabled` (`JIHU`) | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `pipeline_limit_per_project_user_sha` | `false` | `integer` | `integer` | `true` | `0` | `true` | `false`| `true` |
 | `plantuml_enabled` | `false` | `boolean` | `boolean` | `false` | `null` | `true` | `true`| `true` |
 | `plantuml_url` | `false` | `character` | `string` | `false` | `null` | `true` | `true`| `true` |

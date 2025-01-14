@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Migrating groups and projects by using [direct transfer](../../group/import/index.md) is recommended. However, in some
 situations, you might need to migrate groups and project by using file exports.
@@ -24,7 +24,7 @@ situations, you might need to migrate groups and project by using file exports.
 
 ## Migrate projects by uploading an export file
 
-Existing projects on any self-managed GitLab instance or GitLab.com can be exported to a file and
+Existing projects on any GitLab Self-Managed instance or GitLab.com can be exported to a file and
 then imported into another GitLab instance.
 
 ### Preserving user contributions
@@ -102,9 +102,9 @@ For example:
 ### Configure file exports as an import source
 
 DETAILS:
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
-Before you can migrate projects on a self-managed GitLab instance using file exports, GitLab administrators must:
+Before you can migrate projects on GitLab Self-Managed using file exports, GitLab administrators must:
 
 1. [Enable file exports](../../../administration/settings/import_and_export_settings.md#enable-project-export) on the source
    instance.
@@ -198,6 +198,7 @@ For a quick overview, items that are exported include:
 - Some merge request approval rules:
   - [Approvals for protected branches](../merge_requests/approvals/rules.md#approvals-for-protected-branches)
   - [Eligible approvers](../merge_requests/approvals/rules.md#eligible-approvers)
+- Vulnerability report ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/501466) in GitLab 17.7)
 
 #### Project items that are not exported
 
@@ -274,14 +275,14 @@ Deploy keys aren't imported. To use deploy keys, you must enable them in your im
 #### Import large projects
 
 DETAILS:
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 If you have a larger project, consider [using a Rake task](../../../administration/raketasks/project_import_export.md#import-large-projects).
 
 ### Set maximum import file size
 
 DETAILS:
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Administrators can set the maximum import file size one of two ways:
 

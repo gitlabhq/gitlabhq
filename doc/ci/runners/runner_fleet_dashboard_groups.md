@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed
+**Offering:** GitLab.com, GitLab Self-Managed
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151640) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `runners_dashboard_for_groups`. Disabled by default.
@@ -42,6 +42,6 @@ To view the runner fleet dashboard for groups:
 1. Select **Build > Runners**.
 1. Select **Fleet dashboard**.
 
-For self-managed GitLab instances, most of the dashboard metrics work without any additional configuration.
+For GitLab Self-Managed, most of the dashboard metrics work without any additional configuration.
 To use the **Runner usage** and **Wait time to pick a job** metrics,
 you must [configure the ClickHouse analytics database](runner_fleet_dashboard.md#enable-more-ci-analytics-features-with-clickhouse).

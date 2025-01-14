@@ -30,18 +30,19 @@ module Gitlab
           create_links(target_issues)
         end
 
-        desc { _("Remove link with another issue") }
+        desc { _("Remove linked item") }
         explanation do |issue|
-          _('Removes link with %{issue_ref}.') % { issue_ref: issue.to_reference(quick_action_target) }
+          _('Removes linked item %{issue_ref}.') % { issue_ref: issue.to_reference(quick_action_target) }
         end
         execution_message do |issue|
-          _('Removed link with %{issue_ref}.') % { issue_ref: issue.to_reference(quick_action_target) }
+          _('Removed linked item %{issue_ref}.') % { issue_ref: issue.to_reference(quick_action_target) }
         end
         params '<#issue | group/project#issue | issue URL>'
         types Issue
         condition { can_admin_link? }
         parse_params do |issue_param|
-          extract_references(issue_param, :issue).first
+          items = extract_references(issue_param, :issue) + extract_references(issue_param, :work_item)
+          items.first
         end
         command :unlink do |issue|
           link = IssueLink.for_items(quick_action_target, issue).first

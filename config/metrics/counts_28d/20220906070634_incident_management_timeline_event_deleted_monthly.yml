@@ -14,9 +14,6 @@ performance_indicator_type: []
 options:
   events:
     - incident_management_timeline_event_deleted
-distribution:
-  - ce
-  - ee
 tiers:
   - free
   - premium

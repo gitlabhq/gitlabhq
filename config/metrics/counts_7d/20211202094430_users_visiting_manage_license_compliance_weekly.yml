@@ -15,9 +15,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
     - users_visiting_testing_manage_license_compliance
-distribution:
-  - ce
-  - ee
 tiers:
   - free
   - premium

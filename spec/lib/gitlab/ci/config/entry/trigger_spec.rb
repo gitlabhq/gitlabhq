@@ -163,7 +163,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Trigger, feature_category: :pipeline_c
       it { is_expected.to be_valid }
 
       it 'returns a trigger configuration hash' do
-        expect(subject.value).to eq(include: 'path/to/config.yml' )
+        expect(subject.value).to eq(include: 'path/to/config.yml')
       end
     end
 

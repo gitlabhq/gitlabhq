@@ -7,8 +7,8 @@ description: "Connect and use GitLab Duo in Neovim."
 
 # GitLab plugin for Neovim - `gitlab.vim`
 
-The [GitLab plugin](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim)
-integrates GitLab with Neovim, and is built in Lua.
+The [GitLab plugin](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim) is a Lua-based plugin
+that integrates GitLab with Neovim.
 
 [Install and configure the extension](setup.md).
 
@@ -33,6 +33,16 @@ require('gitlab').setup({
   statusline = {
     enabled = false
   }
+})
+```
+
+## Disable `Started Code Suggestions LSP Integration` messages
+
+To change the minimal message level, add this to your configuration:
+
+```lua
+require('gitlab').setup({
+  minimal_message_level = vim.log.levels.ERROR,
 })
 ```
 

@@ -9,7 +9,7 @@ description: "How to view a file's Git history in GitLab."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Git file history provides information about the commit history associated
 with a file:

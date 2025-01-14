@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillPCiPipelinesTriggerId,
+RSpec.describe Gitlab::BackgroundMigration::BackfillPCiPipelinesTriggerId, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/510352',
   migration: :gitlab_ci, feature_category: :continuous_integration do
   let!(:migration) do
     described_class.new(

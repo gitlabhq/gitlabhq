@@ -9,7 +9,7 @@ description: "Use push rules to control the content and format of Git commits yo
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 The following [push rules](../user/group/access_and_permissions.md#group-push-rules)
 endpoints are only available to group owners and administrators.

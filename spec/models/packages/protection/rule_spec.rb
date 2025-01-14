@@ -41,31 +41,49 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
       it { is_expected.to validate_uniqueness_of(:package_name_pattern).scoped_to(:project_id, :package_type) }
       it { is_expected.to validate_length_of(:package_name_pattern).is_at_most(255) }
 
-      where(:package_name_pattern, :allowed) do
-        '@my-scope/my-package'                            | true
-        '@my-scope/*my-package-with-wildcard-inbetween'   | true
-        '@my-scope/*my-package-with-wildcard-start'       | true
-        '@my-scope/my-*package-*with-wildcard-multiple-*' | true
-        '@my-scope/my-package-with_____underscore'        | true
-        '@my-scope/my-package-with-regex-characters.+'    | true
-        '@my-scope/my-package-with-wildcard-end*'         | true
+      context 'for different package types' do
+        subject { build(:package_protection_rule, package_type: package_type) }
 
-        '@my-scope/my-package-with-percent-sign-%'        | false
-        '*@my-scope/my-package-with-wildcard-start'       | false
-        '@my-scope/my-package-with-backslash-\*'          | false
-      end
+        where(:package_type, :package_name_pattern, :allowed) do
+          :npm  | '@my-scope/my-package'                            | true
+          :npm  | '@my-scope/*my-package-with-wildcard-inbetween'   | true
+          :npm  | '@my-scope/*my-package-with-wildcard-start'       | true
+          :npm  | '@my-scope/my-*package-*with-wildcard-multiple-*' | true
+          :npm  | '@my-scope/my-package-with_____underscore'        | true
+          :npm  | '@my-scope/my-package-with-regex-characters.+'    | true
+          :npm  | '@my-scope/my-package-with-wildcard-end*'         | true
+          :npm  | '@my-scope/my-package-with-percent-sign-%'        | false
+          :npm  | '*@my-scope/my-package-with-wildcard-start'       | false
+          :npm  | '@my-scope/my-package-with-backslash-\*'          | false
 
-      with_them do
-        if params[:allowed]
-          it { is_expected.to allow_value(package_name_pattern).for(:package_name_pattern) }
-        else
-          it {
-            is_expected.not_to(
-              allow_value(package_name_pattern)
-              .for(:package_name_pattern)
-              .with_message(_('should be a valid NPM package name with optional wildcard characters.'))
-            )
-          }
+          :pypi | 'my-scope/my-package'                             | true
+          :pypi | 'my-scope/*my-package-with-wildcard-inbetween'    | true
+          :pypi | 'my-scope/*my-package-with-wildcard-start'        | true
+          :pypi | 'my-scope/my-*package-*with-wildcard-multiple-*'  | true
+          :pypi | 'my-scope/my-package-with_____underscore'         | true
+          :pypi | 'my-scope/my-package-with-wildcard-end*'          | true
+          :pypi | '*my-scope/my-package-with-wildcard-start'        | false
+          :pypi | 'my-scope/my-package-with-backslash-\*'           | false
+          :pypi | 'my-scope/my-package-with-percent-sign-%'         | false
+          :pypi | 'my-scope/my-package-with-regex-characters.+'     | false
+          :pypi | '$my-scope/my-package-with-dollar-sign'           | false
+          :pypi | '$my-scope/my-package-with space sign'            | false
+          :pypi | 'my-scope/my-package-with-@at@-sign'              | false
+          :pypi | 'my-scope/my-package-with-@at@-sign-and-widlcard' | false
+        end
+
+        with_them do
+          if params[:allowed]
+            it { is_expected.to allow_value(package_name_pattern).for(:package_name_pattern) }
+          else
+            it {
+              is_expected.not_to(
+                allow_value(package_name_pattern)
+                .for(:package_name_pattern)
+                .with_message(/should be a valid #{package_type} package name with optional wildcard characters./i)
+              )
+            }
+          end
         end
       end
     end
@@ -290,73 +308,113 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
     end
   end
 
-  describe '.for_push_exists_for_multiple_packages' do
-    let_it_be(:project_with_ppr) { create(:project) }
-
-    let_it_be(:ppr_for_maintainer) do
+  describe '.for_push_exists_for_projects_and_packages' do
+    let_it_be(:project1) { create(:project) }
+    let_it_be(:project1_ppr) do
       create(:package_protection_rule,
         package_name_pattern: '@my-scope/my-package-prod*',
-        project: project_with_ppr,
+        project: project1,
         package_type: :npm
       )
     end
 
-    let(:package_names) {
-      %w[
-        @my-scope/my-package-prod-1
-        @my-scope/my-package-prod-unmatched-package-type
-        @my-scope/unmatched-package-name
-        @my-scope/unmatched-package-name-and-package-type
-      ]
-    }
+    let_it_be(:project2) { create(:project) }
+    let_it_be(:project2_ppr) do create(:package_protection_rule, project: project2) end
 
-    let(:package_types) do
+    let_it_be(:unprotected_project) { create(:project) }
+
+    let(:package_type_npm) { Packages::Package.package_types[:npm] }
+
+    let(:single_project_input) do
       [
-        Packages::Package.package_types[:npm],
-        Packages::Package.package_types[:maven],
-        Packages::Package.package_types[:npm],
-        Packages::Package.package_types[:maven]
+        [project1.id, '@my-scope/my-package-prod-1', Packages::Package.package_types[:npm]],
+        [project1.id, '@my-scope/my-package-prod-unmatched-package-type', Packages::Package.package_types[:maven]],
+        [project1.id, '@my-scope/unmatched-package-name', Packages::Package.package_types[:npm]],
+        [project1.id, '@my-scope/unmatched-package-name-and-package-type', Packages::Package.package_types[:maven]]
       ]
     end
 
-    subject do
-      described_class
-        .for_push_exists_for_multiple_packages(
-          project_id: project_with_ppr.id,
-          package_names: package_names,
-          package_types: package_types
-        )
-        .to_a
+    let(:single_project_expected_result) do
+      [
+        { 'project_id' => project1.id,
+          'package_name' => '@my-scope/my-package-prod-1',
+          'package_type' => Packages::Package.package_types[:npm],
+          'protected' => true },
+        { 'project_id' => project1.id,
+          'package_name' => '@my-scope/my-package-prod-unmatched-package-type',
+          'package_type' => Packages::Package.package_types[:maven],
+          'protected' => false },
+        { 'project_id' => project1.id,
+          'package_name' => '@my-scope/unmatched-package-name',
+          'package_type' => Packages::Package.package_types[:npm],
+          'protected' => false },
+        { 'project_id' => project1.id,
+          'package_name' => '@my-scope/unmatched-package-name-and-package-type',
+          'package_type' => Packages::Package.package_types[:maven],
+          'protected' => false }
+      ]
     end
 
-    it do
-      is_expected.to eq([
-        { "package_name" => '@my-scope/my-package-prod-1',
-          "package_type" => Packages::Package.package_types[:npm],
-          "protected" => true },
-        { "package_name" => '@my-scope/my-package-prod-unmatched-package-type',
-          "package_type" => Packages::Package.package_types[:maven],
-          "protected" => false },
-        { "package_name" => '@my-scope/unmatched-package-name',
-          "package_type" => Packages::Package.package_types[:npm],
-          "protected" => false },
-        { "package_name" => '@my-scope/unmatched-package-name-and-package-type',
-          "package_type" => Packages::Package.package_types[:maven],
-          "protected" => false }
-      ])
+    let(:multi_projects_input) do
+      [
+        *single_project_input,
+        [project2.id, project2_ppr.package_name_pattern, Packages::Package.package_types[project2_ppr.package_type]],
+        [project2.id, "#{project2_ppr.package_name_pattern}-unprotected",
+          Packages::Package.package_types[project2_ppr.package_type]]
+      ]
     end
 
-    context 'when edge cases' do
-      where(:package_names, :package_types, :expected_result) do
-        nil                             | nil | []
-        []                              | []  | []
-        nil                             | []  | []
-        %w[@my-scope/my-package-prod-1] | []  | []
-      end
+    let(:multi_projects_expected_result) do
+      [
+        *single_project_expected_result,
+        { 'project_id' => project2.id,
+          'package_name' => project2_ppr.package_name_pattern,
+          'package_type' => Packages::Package.package_types[project2_ppr.package_type],
+          'protected' => true },
+        { 'project_id' => project2.id,
+          'package_name' => "#{project2_ppr.package_name_pattern}-unprotected",
+          'package_type' => Packages::Package.package_types[project2_ppr.package_type],
+          'protected' => false }
+      ]
+    end
 
-      with_them do
-        it { is_expected.to eq([]) }
-      end
+    let(:unprotected_projects_input) do
+      [
+        *multi_projects_input,
+        [unprotected_project.id, "#{unprotected_project.full_path}-unprotected1", package_type_npm],
+        [unprotected_project.id, "#{unprotected_project.full_path}-unprotected2", package_type_npm]
+      ]
+    end
+
+    let(:unprotected_projects_expected_result) do
+      [
+        *multi_projects_expected_result,
+        { 'project_id' => unprotected_project.id,
+          'package_name' => "#{unprotected_project.full_path}-unprotected1",
+          'package_type' => package_type_npm,
+          'protected' => false },
+        { 'project_id' => unprotected_project.id,
+          'package_name' => "#{unprotected_project.full_path}-unprotected2",
+          'package_type' => package_type_npm,
+          'protected' => false }
+      ]
+    end
+
+    subject { described_class.for_push_exists_for_projects_and_packages(projects_and_packages).to_a }
+
+    # rubocop:disable Layout/LineLength -- Avoid formatting to ensure one-line table syntax
+    where(:projects_and_packages, :expected_result) do
+      ref(:single_project_input)       | ref(:single_project_expected_result)
+      ref(:multi_projects_input)       | ref(:multi_projects_expected_result)
+      ref(:unprotected_projects_input) | ref(:unprotected_projects_expected_result)
+      nil                              | []
+      []                               | []
+      [[nil, nil, nil]]                | [{ "package_name" => nil, "package_type" => nil, "project_id" => nil, "protected" => false }]
+    end
+    # rubocop:enable Layout/LineLength
+
+    with_them do
+      it { is_expected.to match_array expected_result }
     end
   end
 end

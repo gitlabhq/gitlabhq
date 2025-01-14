@@ -4,6 +4,8 @@ import { useFakeDate } from 'helpers/fake_date';
 import { TEST_HOST } from 'helpers/test_constants';
 import { shallowMountExtended as shallowMount } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { visitUrl } from '~/lib/utils/url_utility';
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_relationship_icons.vue';
@@ -22,6 +24,7 @@ const createComponent = ({
   showWorkItemTypeIcon = false,
   isActive = false,
   preventRedirect = false,
+  fullPath = 'gitlab-org/issuable-project-path',
 } = {}) =>
   shallowMount(IssuableItem, {
     propsData: {
@@ -33,6 +36,7 @@ const createComponent = ({
       showWorkItemTypeIcon,
       isActive,
       preventRedirect,
+      fullPath,
     },
     slots,
     stubs: {
@@ -48,6 +52,14 @@ const createComponent = ({
 
 const MOCK_GITLAB_URL = TEST_HOST;
 
+jest.mock('~/lib/utils/url_utility', () => {
+  const actual = jest.requireActual('~/lib/utils/url_utility');
+  return {
+    ...actual,
+    visitUrl: jest.fn(),
+  };
+});
+
 describe('IssuableItem', () => {
   // The mock data is dependent that this is after our default date
   useFakeDate(2020, 11, 11);
@@ -62,6 +74,7 @@ describe('IssuableItem', () => {
   const findIssuablePrefetchTrigger = () => wrapper.findByTestId('issuable-prefetch-trigger');
   const findStatusEl = () => wrapper.findByTestId('issuable-status');
   const findRelationshipIcons = () => wrapper.findComponent(WorkItemRelationshipIcons);
+  const findIssuableTitleLink = () => wrapper.findByTestId('issuable-title-link');
 
   describe('computed', () => {
     describe('author', () => {
@@ -683,6 +696,24 @@ describe('IssuableItem', () => {
         });
       });
     });
+
+    it('renders link with unique id for issuable', () => {
+      wrapper = createComponent({ issuable: { ...mockIssuable, namespace: { fullPath: '' } } });
+
+      expect(findIssuableTitleLink().attributes().id).toBe(
+        `listItem-${'gitlab-org/issuable-project-path'}/${getIdFromGraphQLId(mockIssuable.id)}`,
+      );
+    });
+
+    it('renders link with unique id for work item', () => {
+      wrapper = createComponent({
+        issuable: { ...mockIssuable, namespace: { fullPath: 'gitlab-org/test-project-path' } },
+      });
+
+      expect(findIssuableTitleLink().attributes().id).toBe(
+        `listItem-${'gitlab-org/test-project-path'}/${getIdFromGraphQLId(mockIssuable.id)}`,
+      );
+    });
   });
 
   describe('when preventing redirect on clicking the link', () => {
@@ -742,6 +773,45 @@ describe('IssuableItem', () => {
       });
 
       expect(findIssuablePrefetchTrigger().exists()).toBe(true);
+    });
+  });
+
+  describe('when item is of unsupported work item type', () => {
+    const fullPath = 'gitlab-org/gitlab';
+
+    const testCases = [
+      {
+        type: 'incident',
+        item: {
+          ...mockIssuable,
+          workItemType: { name: 'Incident' },
+        },
+      },
+      {
+        type: 'Service Desk issue',
+        item: {
+          ...mockIssuable,
+          workItemType: { name: 'Issue' },
+          author: { username: 'support-bot' },
+        },
+      },
+    ];
+
+    testCases.forEach(({ type, item }) => {
+      describe(`when item is ${type}`, () => {
+        it('uses redirect on row click', async () => {
+          wrapper = createComponent({
+            preventRedirect: true,
+            showCheckbox: false,
+            issuable: { ...item, namespace: { fullPath } },
+          });
+
+          await findIssuableItemWrapper().trigger('click');
+
+          expect(wrapper.emitted('select-issuable')).not.toBeDefined();
+          expect(visitUrl).toHaveBeenCalledWith(item.webUrl);
+        });
+      });
     });
   });
 });

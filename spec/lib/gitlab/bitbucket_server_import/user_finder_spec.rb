@@ -45,6 +45,14 @@ RSpec.describe Gitlab::BitbucketServerImport::UserFinder, :clean_gitlab_redis_sh
 
       expect(user_id).to eq(source_user.mapped_user.id)
     end
+
+    it 'returns nil when username is nil' do
+      user_representation[:username] = nil
+
+      user_id = user_finder.uid(user_representation)
+
+      expect(user_id).to be_nil
+    end
   end
 
   context 'when user contribution mapping is disabled' do

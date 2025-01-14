@@ -56,6 +56,11 @@ export default {
       required: false,
       default: null,
     },
+    autosaveKey: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   idState() {
     return {
@@ -299,7 +304,7 @@ export default {
           <div v-for="draft in lineDrafts(line, 'left')" :key="draft.id" class="content">
             <article class="note-wrapper">
               <ul class="notes draft-notes">
-                <draft-note :draft="draft" :line="line.left" />
+                <draft-note :draft="draft" :line="line.left" :autosave-key="autosaveKey" />
               </ul>
             </article>
           </div>
@@ -311,7 +316,7 @@ export default {
           <div v-for="draft in lineDrafts(line, 'right')" :key="draft.id" class="content">
             <article class="note-wrapper">
               <ul class="notes draft-notes">
-                <draft-note :draft="draft" :line="line.right" />
+                <draft-note :draft="draft" :line="line.right" :autosave-key="autosaveKey" />
               </ul>
             </article>
           </div>

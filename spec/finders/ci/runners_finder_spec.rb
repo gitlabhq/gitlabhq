@@ -217,6 +217,74 @@ RSpec.describe Ci::RunnersFinder, '#execute', feature_category: :fleet_visibilit
           end
         end
 
+        context 'by owner' do
+          let_it_be(:admin2) { create(:admin) }
+          let_it_be(:instance_runner) { create(:ci_runner, :instance) }
+          let_it_be(:instance_admin_runner) { create(:ci_runner, :instance, creator: admin) }
+          let_it_be(:instance_admin_runner2) { create(:ci_runner, :instance, creator: admin2) }
+          let_it_be(:groups) { create_list(:group, 2) }
+          let_it_be(:group_runner) { create(:ci_runner, :group, groups: [groups.first]) }
+          let_it_be(:group_runner2) { create(:ci_runner, :group, groups: [groups.second]) }
+          let_it_be(:projects) { create_list(:project, 2, group: groups.first) }
+          let_it_be(:project_runner) { create(:ci_runner, :project, projects: [projects.first]) }
+          let_it_be(:project_runner2) { create(:ci_runner, :project, projects: [projects.second]) }
+
+          context 'when owner is set to administrators wildcard' do
+            let(:current_user) { admin2 }
+            let(:params) do
+              { owner: { wildcard: :administrators } }
+            end
+
+            it 'calls corresponding scope and finds admin runner' do
+              expect(Ci::Runner).to receive(:created_by_admins).and_call_original
+              is_expected.to contain_exactly(instance_admin_runner, instance_admin_runner2)
+            end
+          end
+
+          context 'when owner is set to first group full_path' do
+            let(:params) do
+              { owner: { full_path: groups.first.name } }
+            end
+
+            it 'calls corresponding scope and finds group' do
+              expect(Ci::Runner).to receive(:belonging_to_group).and_call_original
+              expect(execute).to contain_exactly group_runner
+            end
+          end
+
+          context 'when owner is set to first project full_path' do
+            let(:params) do
+              { owner: { full_path: projects.first.full_path } }
+            end
+
+            it 'calls corresponding scope and finds project' do
+              expect(Ci::Runner).to receive(:belonging_to_project).and_call_original
+              expect(execute).to contain_exactly project_runner
+            end
+          end
+
+          context 'when owner is set to empty path' do
+            let(:params) do
+              { owner: { full_path: '' } }
+            end
+
+            it 'does not filter' do
+              is_expected.to contain_exactly(
+                instance_admin_runner, instance_admin_runner2, instance_runner,
+                group_runner, group_runner2, project_runner, project_runner2
+              )
+            end
+          end
+
+          context 'when owner is set to a non-existing path' do
+            let(:params) do
+              { owner: { full_path: "not-a-group-or-project" } }
+            end
+
+            it { is_expected.to be_empty }
+          end
+        end
+
         context 'by version' do
           let(:params) { { version_prefix: '15.' } }
 

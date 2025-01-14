@@ -11,17 +11,12 @@ class QueueBackfillSeatAssignmentsTable < Gitlab::Database::Migration[2.2]
   SUB_BATCH_SIZE = 1000
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :members,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op, there were invalid records that needs to be fixed.
+    # Fixed by: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174545
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :members, :id, [])
+    # no-op, there were invalid records that needs to be fixed.
+    # Fixed by: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174545
   end
 end

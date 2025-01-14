@@ -797,7 +797,9 @@ class Note < ApplicationRecord
   def does_not_exceed_notes_limit?
     return unless noteable
 
-    errors.add(:base, _('Maximum number of comments exceeded')) if noteable.notes.count >= Noteable::MAX_NOTES_LIMIT
+    notes_count = noteable.persisted? ? noteable.notes.count : noteable.notes.size
+
+    errors.add(:base, _('Maximum number of comments exceeded')) if notes_count >= Noteable::MAX_NOTES_LIMIT
   end
 
   def noteable_label_url_method

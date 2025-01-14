@@ -4,6 +4,7 @@ module QA
   module Tools
     module Lib
       module Group
+        include Support::API
         def fetch_group_id(api_client, name = ENV['TOP_LEVEL_GROUP_NAME'])
           group_name = name || "gitlab-qa-sandbox-group-#{Time.now.wday + 1}"
 

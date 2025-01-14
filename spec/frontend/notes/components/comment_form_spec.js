@@ -49,8 +49,8 @@ describe('issue_comment_form component', () => {
   const findCloseReopenButton = () => wrapper.findByTestId('close-reopen-button');
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
   const findMarkdownEditorTextarea = () => findMarkdownEditor().find('textarea');
-  const findAddToReviewDropdown = () => wrapper.findByTestId('add-to-review-dropdown');
-  const findAddToReviewButton = () => findAddToReviewDropdown().find('button');
+  const findStartReviewButton = () => wrapper.findByTestId('start-review-button');
+  const findAddToReviewButton = () => wrapper.findByTestId('add-to-review-button');
   const findAddCommentNowButton = () => wrapper.findByTestId('add-comment-now-button');
   const findConfidentialNoteCheckbox = () => wrapper.findByTestId('internal-note-checkbox');
   const findInternalNoteTooltipIcon = () => wrapper.findByTestId('question-o-icon');
@@ -348,10 +348,13 @@ describe('issue_comment_form component', () => {
           expect(findMarkdownEditor().find('textarea').attributes('disabled')).toBeDefined();
         });
 
-        it('should support quick actions', () => {
+        it('should support quick actions and other props', () => {
           mountComponent({ mountFunction: mountExtended });
 
-          expect(findMarkdownEditor().props('supportsQuickActions')).toBe(true);
+          expect(findMarkdownEditor().props()).toMatchObject({
+            supportsQuickActions: true,
+            noteableType: noteableDataMock.noteableType,
+          });
         });
 
         it('should link to markdown docs', () => {
@@ -466,9 +469,11 @@ describe('issue_comment_form component', () => {
                     note: 'a',
                     noteable_id: noteableDataMock.id,
                     noteable_type: 'Issue',
+                    type: 'DiscussionNote',
                   },
                 },
                 endpoint: notesDataMock.draftsPath,
+                flashContainer: expect.anything(),
                 isDraft: true,
               });
             });
@@ -485,9 +490,11 @@ describe('issue_comment_form component', () => {
                     note: 'a',
                     noteable_id: noteableDataMock.id,
                     noteable_type: 'Issue',
+                    type: 'DiscussionNote',
                   },
                 },
                 endpoint: notesDataMock.draftsPath,
+                flashContainer: expect.anything(),
                 isDraft: true,
               });
             });
@@ -510,6 +517,7 @@ describe('issue_comment_form component', () => {
                   },
                 },
                 endpoint: noteableDataMock.create_note_path,
+                flashContainer: expect.anything(),
                 isDraft: false,
               });
             });
@@ -532,6 +540,7 @@ describe('issue_comment_form component', () => {
                   },
                 },
                 endpoint: noteableDataMock.create_note_path,
+                flashContainer: expect.anything(),
                 isDraft: false,
               });
             });
@@ -797,6 +806,7 @@ describe('issue_comment_form component', () => {
               },
             },
             endpoint: noteableDataMock.create_note_path,
+            flashContainer: expect.anything(),
             isDraft: false,
           });
         });
@@ -865,7 +875,7 @@ describe('issue_comment_form component', () => {
   });
 
   describe('with batchComments in store', () => {
-    describe('add to review and comment now buttons', () => {
+    describe('start review, add to review and comment now buttons', () => {
       let store;
 
       beforeEach(() => {
@@ -873,10 +883,19 @@ describe('issue_comment_form component', () => {
         store.registerModule('batchComments', batchComments());
       });
 
-      it('when no drafts exist, should not render', () => {
+      it('when no drafts exist on non-merge request, should not render', () => {
         mountComponent({ store });
         expect(findCommentTypeDropdown().exists()).toBe(true);
-        expect(findAddToReviewDropdown().exists()).toBe(false);
+        expect(findStartReviewButton().exists()).toBe(false);
+        expect(findAddToReviewButton().exists()).toBe(false);
+        expect(findAddCommentNowButton().exists()).toBe(false);
+      });
+
+      it('when no drafts exist in a merge request, should render', () => {
+        mountComponent({ noteableType: constants.MERGE_REQUEST_NOTEABLE_TYPE, store });
+        expect(findCommentTypeDropdown().exists()).toBe(true);
+        expect(findStartReviewButton().exists()).toBe(true);
+        expect(findAddToReviewButton().exists()).toBe(false);
         expect(findAddCommentNowButton().exists()).toBe(false);
       });
 
@@ -885,11 +904,12 @@ describe('issue_comment_form component', () => {
           store.state.batchComments.drafts = [{ note: 'A' }];
         });
 
-        it('should render', async () => {
+        it('should render proper action elements', async () => {
           await mountComponent({ store });
           expect(findCommentTypeDropdown().exists()).toBe(false);
-          expect(findAddToReviewDropdown().exists()).toBe(true);
+          expect(findAddToReviewButton().exists()).toBe(true);
           expect(findAddCommentNowButton().exists()).toBe(true);
+          expect(findStartReviewButton().exists()).toBe(false);
         });
 
         it('clicking `add to review`, should call draft endpoint, set `isDraft` true', async () => {

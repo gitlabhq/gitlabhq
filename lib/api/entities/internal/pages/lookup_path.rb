@@ -12,7 +12,7 @@ module API
             :source,
             :unique_host,
             :root_directory,
-            :default_domain_redirect
+            :primary_domain
         end
       end
     end

@@ -18,8 +18,8 @@ import {
 } from '../mock_data';
 
 const { path: groupPath } = currentGroup;
-const mockMilestonesPath = `/${namespace.fullPath}/-/milestones.json`;
-const mockLabelsPath = `/${namespace.fullPath}/-/labels.json`;
+const mockMilestonesPath = `/${namespace.restApiRequestPath}/-/milestones.json`;
+const mockLabelsPath = `/${namespace.restApiRequestPath}/-/labels.json`;
 const mockFullPath = '/namespace/-/analytics/value_stream_analytics/value_streams';
 const mockSetDateActionCommit = {
   payload: { createdAfter, createdBefore },
@@ -89,7 +89,7 @@ describe('Project Value Stream Analytics actions', () => {
       groupEndpoint: 'foo',
       labelsEndpoint: mockLabelsPath,
       milestonesEndpoint: mockMilestonesPath,
-      projectEndpoint: namespace.fullPath,
+      projectEndpoint: namespace.restApiRequestPath,
     };
 
     it('will dispatch fetchValueStreams actions and commit SET_LOADING and INITIALIZE_VSA', () => {

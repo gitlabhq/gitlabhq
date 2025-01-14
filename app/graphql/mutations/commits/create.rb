@@ -27,7 +27,7 @@ module Mutations
       argument :message,
         GraphQL::Types::String,
         required: true,
-        description: copy_field_description(Types::CommitType, :message)
+        description: copy_field_description(Types::Repositories::CommitType, :message)
 
       argument :actions,
         [Types::CommitActionType],
@@ -40,7 +40,7 @@ module Mutations
         description: "ETag path for the commit's pipeline."
 
       field :commit,
-        Types::CommitType,
+        Types::Repositories::CommitType,
         null: true,
         description: 'Commit after mutation.'
 

@@ -155,7 +155,7 @@ It works in production, staging, and local development environments. It is espec
 
 On GitLab.com events are sent to a collector configured by GitLab. By default, self-managed instances do not have a collector configured and do not collect data with Snowplow.
 
-You can configure your self-managed GitLab instance to use a custom Snowplow collector.
+You can configure your instance to use a custom Snowplow collector.
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.

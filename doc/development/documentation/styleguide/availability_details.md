@@ -18,7 +18,7 @@ The Markdown for availability details should look like the following:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 **Status:** Experiment
 
 > - [Introduced](https://link-to-issue) in GitLab 16.3.

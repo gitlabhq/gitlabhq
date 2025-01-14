@@ -12,10 +12,10 @@ module Pages
       project_settings = ProjectSetting.find_by_project_id(event.data['project_id'])
 
       return unless project_settings
-      return unless project_settings.pages_default_domain_redirect
-      return unless event.data['domain'] == project_settings.pages_default_domain_redirect
+      return unless project_settings.pages_primary_domain
+      return unless event.data['domain'] == project_settings.pages_primary_domain
 
-      project_settings.update!(pages_default_domain_redirect: nil)
+      project_settings.update!(pages_primary_domain: nil)
     end
   end
 end

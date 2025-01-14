@@ -266,7 +266,7 @@ export default {
         >
           <template #header-buttons><slot name="header-buttons"></slot></template>
         </formatting-toolbar>
-        <div v-if="showPlaceholder" class="gl-absolute gl-px-5 gl-pt-4 gl-text-gray-400">
+        <div v-if="showPlaceholder" class="gl-absolute gl-px-5 gl-pt-4 gl-text-disabled">
           {{ placeholder }}
         </div>
         <tiptap-editor-content

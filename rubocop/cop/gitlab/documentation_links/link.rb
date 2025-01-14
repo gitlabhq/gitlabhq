@@ -59,18 +59,23 @@ module RuboCop
 
           def on_send(node)
             return unless valid_argument_count?(node)
-            return unless first_argument_is_string?(node)
 
-            path = node.arguments.first.value
-            path_without_anchor = path.gsub(%r{#.*$}, '')
+            path = check_path_argument(node)
+            return unless path
 
-            return unless path_has_md_extension?(node, path, path_without_anchor)
+            path_without_anchor = check_md_extension(node, path)
 
             docs_file_path = File.join('doc', path_without_anchor)
 
-            return unless docs_file_exists?(node, docs_file_path)
+            return unless check_file_exists(node, docs_file_path)
 
-            anchor_exists_in_markdown?(node, docs_file_path)
+            return unless has_anchor?(node)
+
+            anchor = get_anchor(node)
+
+            return unless check_anchor_type(node, anchor)
+
+            check_anchor_exists(node, anchor, docs_file_path)
           end
 
           def external_dependency_checksum
@@ -85,6 +90,58 @@ module RuboCop
 
           private
 
+          def check_path_argument(node)
+            unless first_argument_is_string?(node)
+              add_offense(node, message: MSG_PATH_NOT_A_STRING)
+              return
+            end
+
+            node.arguments.first.value
+          end
+
+          def check_md_extension(node, path)
+            path_without_anchor = path.gsub(%r{#.*$}, '')
+
+            unless path_has_md_extension?(path_without_anchor)
+              add_offense(node, message: format(MSG_PATH_NEEDS_MD_EXTENSION, path: path)) do |corrector|
+                extension_pattern = /(\.[\da-zA-Z]+)?/
+                path_without_extension = path_without_anchor.gsub(/#{extension_pattern}$/, '')
+                arg_with_md_extension = path.gsub(/#{path_without_extension}#{extension_pattern}(\#.+)?$/,
+                  "#{path_without_extension}.md\\2")
+                corrector.replace(node.arguments.first.source_range, "'#{arg_with_md_extension}'")
+              end
+              path_without_anchor += ".md"
+            end
+
+            path_without_anchor
+          end
+
+          def check_file_exists(node, docs_file_path)
+            unless docs_file_exists?(docs_file_path)
+              add_offense(node, message: format(MSG_FILE_NOT_FOUND, file_path: docs_file_path))
+              return false
+            end
+
+            true
+          end
+
+          def check_anchor_type(node, anchor)
+            unless anchor.instance_of? String
+              add_offense(node, message: MSG_ANCHOR_NOT_A_STRING)
+              return false
+            end
+
+            true
+          end
+
+          def check_anchor_exists(node, anchor, docs_file_path)
+            return true if anchor_exists_in_markdown?(anchor, docs_file_path)
+
+            add_offense(node, message: format(MSG_ANCHOR_NOT_FOUND, anchor: anchor, file_path: docs_file_path))
+
+            false
+          end
+
           def valid_argument_count?(node)
             node.arguments.count > 0
           end
@@ -92,55 +149,44 @@ module RuboCop
           def first_argument_is_string?(node)
             return true if node.arguments.first.str_type?
 
-            add_offense(node, message: MSG_PATH_NOT_A_STRING)
-
             false
           end
 
-          def path_has_md_extension?(node, path, path_without_anchor)
+          def path_has_md_extension?(path_without_anchor)
             return true if path_without_anchor.end_with?('.md')
 
-            add_offense(node, message: format(MSG_PATH_NEEDS_MD_EXTENSION, path: path)) do |corrector|
-              extension_pattern = /(\.[\da-zA-Z]+)?/
-              path_without_extension = path_without_anchor.gsub(/#{extension_pattern}$/, '')
-              arg_with_md_extension = path.gsub(/#{path_without_extension}#{extension_pattern}(\#.+)?$/,
-                "#{path_without_extension}.md\\2")
-              corrector.replace(node.arguments.first.source_range, "'#{arg_with_md_extension}'")
-            end
-
             false
           end
 
-          def docs_file_exists?(node, docs_file_path)
+          def docs_file_exists?(docs_file_path)
             return true if File.exist?(docs_file_path)
 
-            add_offense(node, message: format(MSG_FILE_NOT_FOUND, file_path: docs_file_path))
-
             false
           end
 
-          def anchor_exists_in_markdown?(node, docs_file_path)
-            anchor = get_anchor(node)
-
+          def anchor_exists_in_markdown?(anchor, docs_file_path)
             return true unless anchor
 
             anchors = get_anchors_in_markdown(docs_file_path)
 
             return true if anchors.include?(anchor)
 
-            add_offense(node, message: format(MSG_ANCHOR_NOT_FOUND, anchor: anchor, file_path: docs_file_path))
-
             false
           end
 
+          def has_anchor?(node)
+            return !node.arguments.first.value[/#(.+)$/, 1].nil? if node.arguments.length == 1
+
+            anchor_param(node) != nil
+          end
+
           def get_anchor(node)
-            return node.arguments.first.value[/#(.+)$/, 1] if node.arguments.length === 1
+            return node.arguments.first.value[/#(.+)$/, 1] if node.arguments.length == 1
 
             anchor_node = anchor_param(node)
             return unless anchor_node
-            return anchor_node.value if anchor_node.str_type?
 
-            add_offense(node, message: MSG_ANCHOR_NOT_A_STRING)
+            anchor_node.value if anchor_node.str_type?
           end
 
           # This methods extracts anchors from a Markdown file. The logic in here replicates our

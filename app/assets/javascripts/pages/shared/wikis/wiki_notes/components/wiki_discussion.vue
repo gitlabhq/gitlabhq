@@ -112,10 +112,12 @@ export default {
 <template>
   <timeline-entry-item class="note discussion note-comment">
     <wiki-note
+      :key="firstNote.id"
       :user-permissions="getUserPermissions(firstNote)"
       :note="firstNote"
       :noteable-id="noteableId"
       @reply="toggleReplying(true)"
+      @note-deleted="$emit('note-deleted', firstNote.id)"
     >
       <template v-if="replies.length || isReplying" #note-footer>
         <div
@@ -129,6 +131,7 @@ export default {
               :noteable-id="noteableId"
               :user-permissions="getUserPermissions(reply)"
               :note="reply"
+              @note-deleted="$emit('note-deleted', reply.id)"
             />
           </div>
 

@@ -223,7 +223,7 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
       stub_current_partition_id(ci_testing_partition_id)
     end
 
-    let(:new_pipeline ) { create(:ci_pipeline, project: pipeline.project) }
+    let(:new_pipeline) { create(:ci_pipeline, project: pipeline.project) }
     let(:new_build) { create(:ci_build, pipeline: new_pipeline) }
 
     it 'assigns the same partition id as the one that build has', :aggregate_failures do

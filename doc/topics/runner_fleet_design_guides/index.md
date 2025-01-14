@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Available on GitLab.com, Self-managed
+**Offering:** GitLab.com, GitLab Self-Managed
 
 This section provides a set of best practices to successfully set up GitLab Runner.
 

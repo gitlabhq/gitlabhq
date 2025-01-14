@@ -1,66 +1,61 @@
-#import "./fragments/design_file.fragment.graphql"
 #import "./fragments/discussion_resolved_status.fragment.graphql"
 #import "~/graphql_shared/fragments/author.fragment.graphql"
 #import "./fragments/design_note.fragment.graphql"
 #import "./fragments/version.fragment.graphql"
 #import "./fragments/diff_refs.fragment.graphql"
 
-query getDesignDetails(
-  $fullPath: ID!
-  $iid: String!
-  $atVersion: DesignManagementVersionID
-  $filenames: [String!]
-) {
-  project(fullPath: $fullPath) {
-    id
-    workItems(iid: $iid) {
-      nodes {
+query getDesignDetails($id: DesignManagementDesignAtVersionID!) {
+  designManagement {
+    designAtVersion(id: $id) {
+      id
+      event
+      image
+      imageV432x230
+      design {
         id
-        title
-        widgets {
-          ... on WorkItemWidgetDesigns {
-            type
-            designCollection {
-              designs(atVersion: $atVersion, filenames: $filenames) {
-                nodes {
-                  ...DesignFile
-                  discussions {
-                    nodes {
-                      id
-                      replyId
-                      ...ResolvedStatus
-                      notes {
-                        nodes {
-                          ...DesignNote
-                        }
-                      }
-                    }
-                  }
-                  issue {
-                    id
-                    title
-                    webPath
-                    webUrl
-                    participants {
-                      nodes {
-                        ...Author
-                      }
-                    }
-                    userPermissions {
-                      createDesign
-                      updateDesign
-                    }
-                  }
-                }
-              }
-              versions {
-                nodes {
-                  ...VersionListItem
-                }
+        filename
+        notesCount
+        description
+        descriptionHtml
+        fullPath
+        currentUserTodos(state: pending) {
+          nodes {
+            id
+          }
+        }
+        diffRefs {
+          ...DesignDiffRefs
+        }
+        discussions {
+          nodes {
+            id
+            replyId
+            ...ResolvedStatus
+            notes {
+              nodes {
+                ...DesignNote
               }
             }
           }
         }
+        issue {
+          id
+          title
+          webPath
+          webUrl
+          participants {
+            nodes {
+              ...Author
+            }
+          }
+          userPermissions {
+            createDesign
+            updateDesign
+          }
+        }
+      }
+      version {
+        ...VersionListItem
       }
     }
   }

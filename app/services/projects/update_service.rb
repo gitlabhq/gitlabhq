@@ -75,7 +75,7 @@ module Projects
       validate_default_branch_change
       validate_renaming_project_with_tags
       validate_restrict_user_defined_variables_change
-      validate_pages_default_domain_redirect
+      validate_pages_primary_domain
     end
 
     def validate_restrict_user_defined_variables_change
@@ -137,13 +137,13 @@ module Projects
       )
     end
 
-    def validate_pages_default_domain_redirect
-      default_domain_redirect = params.dig(:project_setting_attributes, :pages_default_domain_redirect)
+    def validate_pages_primary_domain
+      primary_domain = params.dig(:project_setting_attributes, :pages_primary_domain)
 
-      return unless default_domain_redirect.presence
-      return if project.pages_domain_present?(default_domain_redirect)
+      return unless primary_domain.presence
+      return if project.pages_domain_present?(primary_domain)
 
-      raise_validation_error(s_("UpdateProject|The `pages_default_domain_redirect` attribute is missing from the domain list in the Pages project configuration. Assign `pages_default_domain_redirect` to the Pages project or reset it."))
+      raise_validation_error(s_("UpdateProject|The `pages_primary_domain` attribute is missing from the domain list in the Pages project configuration. Assign `pages_primary_domain` to the Pages project or reset it."))
     end
 
     def ambiguous_head_documentation_link

@@ -217,17 +217,8 @@ label {
   }
 }
 
-.input-icon-wrapper,
 .select-wrapper {
   position: relative;
-}
-
-.input-icon-wrapper > .input-icon-right {
-  position: absolute;
-  right: 0.8em;
-  top: 50%;
-  transform: translateY(-50%);
-  color: $gray-400;
 }
 
 .input-lg {

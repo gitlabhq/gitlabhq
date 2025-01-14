@@ -16,9 +16,6 @@ performance_indicator_type: []
 options:
   events:
     - ci_users_executing_verify_environment_job
-distribution:
-  - ce
-  - ee
 tiers:
   - free
   - premium

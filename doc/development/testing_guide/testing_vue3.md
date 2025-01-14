@@ -248,6 +248,67 @@ export default {
 
 ```
 
+### Testing Vue router
+
+When testing a full non-mocked `vue-router@4` there are a few caveats to keep in consideration for compatibility with Vue 2.
+
+#### Window location
+
+`vue-router@4` will not detect changes in window location, so setting a current URL with helpers such as `setWindowLocation` will not have an effect.
+
+Instead, set an initial route or navigate to another route manually.
+
+#### Initial route
+
+When setting an initial route for your tests, `vue-router@4` will default to a `/` route. If the router configuration doesn't define a route for `/` path the test will error out by default. In this case, it is important to navigate to one of the defined routes before a component is created.
+
+```javascript
+router = createRouter();
+
+await router.push({ name: 'tab', params: { tabId }})
+```
+
+Note the `await` is necessary, since [all navigations are always asynchronous](https://router.vuejs.org/guide/migration/#All-navigations-are-now-always-asynchronous).
+
+#### Navigating to another route
+
+To navigate to another route on an already mounted component, it is necessary to `await` calls to `push` or `replace` on the router.
+
+```javascript
+createComponent()
+
+await router.push('/different-route')
+```
+
+When access to the `push` method is not available, for example in cases where we are triggering a `push` _inside the component's code_ through an event, `await waitForPromises` will be sufficient.
+
+Consider the following component:
+
+```html
+<script>
+export default {
+  methods: {
+    nextPage() {
+      this.$router.push({
+        path: 'some path'
+      })
+    }
+  }
+}
+</script>
+<template>
+  <gl-keyset-pagination @push="nextPage" />
+</template>
+```
+
+If we want to be able to test that the `$router.push` call is made, we must trigger the navigation through the `next` even on the `gl-keyset-pagination` component.
+
+```javascript
+wrapper.findComponent(GlKeysetNavigation).vm.$emit('push');
+// $router.push is triggered in the component
+await waitForPromises()
+```
+
 ## Quarantine list
 
 The `scripts/frontend/quarantined_vue3_specs.txt` file is built up of all the known failing Vue 3 test files.

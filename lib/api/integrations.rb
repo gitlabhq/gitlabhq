@@ -93,10 +93,6 @@ module API
             end
           end
           put "#{path}/#{slug}" do
-            if slug == "git-guardian" && Feature.disabled?(:git_guardian_integration)
-              render_api_error!('GitGuardian feature is disabled', 400)
-            end
-
             integration = user_project.find_or_initialize_integration(slug.underscore)
 
             render_api_error!('400 Integration not available', 400) if integration.nil?
@@ -137,10 +133,6 @@ module API
           requires :slug, type: String, values: INTEGRATIONS.keys, desc: 'The name of the integration'
         end
         delete "#{path}/:slug" do
-          if params[:slug] == "git-guardian" && Feature.disabled?(:git_guardian_integration)
-            render_api_error!('GitGuardian feature is disabled', 400)
-          end
-
           integration = user_project.find_or_initialize_integration(params[:slug].underscore)
 
           not_found!('Integration') unless integration&.persisted?

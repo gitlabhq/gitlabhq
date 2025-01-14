@@ -9,9 +9,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
-Administer and manage users in your self-managed GitLab installation.
+Administer and manage users in GitLab Self-Managed.
 
 ## User accounts
 

@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 ## General information
 
@@ -59,7 +59,7 @@ You can find all those directories listed in the [Linux package configuration do
 
 ### Platform usage and settings
 
-- [Review GitLab token type and usages](token_overview.md).
+- [Review GitLab token type and usages](tokens/index.md).
 - [How to configure rate limits improve security and availability](rate_limits.md).
 - [How to filter outbound webhook requests](webhooks.md).
 - [How to configure import and export limits and timeouts](../administration/settings/import_and_export_settings.md).
@@ -69,7 +69,7 @@ You can find all those directories listed in the [Linux package configuration do
 
 ### Patching
 
-Self-managed GitLab customers and administrators are responsible for the security of their underlying hosts, and for keeping GitLab itself up to date. It is important to [regularly patch GitLab](../policy/maintenance.md), patch your operating system and its software, and harden your hosts in accordance with vendor guidance.
+GitLab Self-Managed customers and administrators are responsible for the security of their underlying hosts, and for keeping GitLab itself up to date. It is important to [regularly patch GitLab](../policy/maintenance.md), patch your operating system and its software, and harden your hosts in accordance with vendor guidance.
 
 ## Monitoring
 

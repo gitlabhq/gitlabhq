@@ -356,8 +356,8 @@ class ApplicationSettingsAnalysis
 
   DOC_PAGE_HEADERS = [
     "---",
-    "stage: Data Stores",
-    "group: Tenant Scale",
+    "stage: Tenant Scale",
+    "group: Cells Infrastructure",
     "info: Analysis of Application Settings for Cells 1.0.",
     "---",
     "# Application Settings analysis\n",

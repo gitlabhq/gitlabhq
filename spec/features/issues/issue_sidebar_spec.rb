@@ -6,6 +6,9 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
   include MobileHelpers
   include Features::InviteMembersModalHelpers
 
+  # Ensure support bot user is created so creation doesn't count towards query limit
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
+  let_it_be(:support_bot) { Users::Internal.support_bot }
   let_it_be(:group) { create(:group, :nested) }
   let_it_be(:project) { create(:project, :public, namespace: group) }
   let_it_be(:user) { create(:user) }

@@ -2,7 +2,7 @@
 name: merge_request_dashboard_new_lists
 feature_issue_url:
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173399
-rollout_issue_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/512602
 milestone: '17.7'
 group: group::code review
 type: wip

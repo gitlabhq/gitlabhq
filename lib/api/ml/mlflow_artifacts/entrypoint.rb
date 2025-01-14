@@ -33,7 +33,7 @@ module API
         end
         resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
           desc 'API to interface with MLFlow Client, REST API version 2.16.0' do
-            detail 'This feature is gated by :ml_experiment_tracking.'
+            detail 'MLflow compatible API'
           end
           namespace MLFLOW_API_PREFIX do
             mount ::API::Ml::MlflowArtifacts::Artifacts

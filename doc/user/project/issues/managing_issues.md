@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 After you create an issue, you can start working with it.
 
@@ -100,7 +100,7 @@ When bulk editing issues in a project, you can edit the following attributes:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - Minimum role to bulk edit issues from a group [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
@@ -166,7 +166,7 @@ copied to the target project.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 > - Minimum role to bulk move issues [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
@@ -306,7 +306,7 @@ You can also use the `/reopen` [quick action](../quick_actions.md) in a comment 
 ### Closing issues automatically
 
 You can close issues automatically by using certain words, called a _closing pattern_,
-in a commit message or merge request description. Administrators of self-managed GitLab instances
+in a commit message or merge request description. Administrators of GitLab Self-Managed instances
 can [change the default closing pattern](../../../administration/issue_closing_pattern.md).
 
 If a commit message or merge request description contains text matching the [closing pattern](#default-closing-pattern),
@@ -419,7 +419,7 @@ Merge requests and commits in this project can still close another project's iss
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Prerequisites:
 
@@ -474,7 +474,7 @@ Alternatively:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - Minimum role to promote an issue to an epic [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
@@ -525,7 +525,7 @@ You can use the `/promote_to_incident` [quick action](../quick_actions.md) to pr
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 To add an issue to an [iteration](../../group/iterations/index.md):
 
@@ -642,7 +642,7 @@ You can use the OR operator (**is one of: `||`**) when you [filter the list of i
 ### Open issues in a drawer
 
 DETAILS:
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `issues_list_drawer`. Disabled by default.
 
@@ -734,7 +734,7 @@ Up to five similar issues, sorted by most recently updated, are displayed below 
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218618) in GitLab 15.4: health status is visible on issue cards in issue boards.
 
@@ -779,7 +779,7 @@ You can also set and clear health statuses using the `/health_status` and `/clea
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 If a status page application is associated with the project, you can use the `/publish`
 [quick action](../quick_actions.md) to publish the issue.

@@ -1,4 +1,8 @@
 # frozen_string_literal: true
+
+# This a development rake task.
+return if Rails.env.production?
+
 # Update banned SSH keys from a Git repository
 #
 # This task:

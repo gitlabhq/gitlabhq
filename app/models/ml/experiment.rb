@@ -4,6 +4,7 @@ module Ml
   class Experiment < ApplicationRecord
     include AtomicInternalId
     include Sortable
+    include Presentable
 
     PACKAGE_PREFIX = 'ml_experiment_'
 
@@ -17,6 +18,7 @@ module Ml
     has_many :metadata, class_name: 'Ml::ExperimentMetadata'
 
     scope :including_project, -> { includes(:project) }
+    scope :including_user, -> { includes(:user) }
     scope :by_project, ->(project) { where(project: project) }
     scope :with_candidate_count, -> {
       left_outer_joins(:candidates)
@@ -67,6 +69,10 @@ module Ml
 
       def find_or_create(project, name, user)
         create_with(user: user).find_or_create_by(project: project, name: name)
+      end
+
+      def count_for_project(project)
+        by_project(project).count
       end
 
       private

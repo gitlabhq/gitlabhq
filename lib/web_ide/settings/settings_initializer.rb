@@ -3,11 +3,22 @@
 module WebIde
   module Settings
     class SettingsInitializer
+      SETTINGS_DEPENDENCIES = {
+        vscode_extensions_gallery_view_model: [:vscode_extensions_gallery_metadata, :vscode_extensions_gallery]
+      }.freeze
+
       # @param [Hash] context
       # @return [Hash]
       # @raise [RuntimeError]
       def self.init(context)
         context => { requested_setting_names: Array => requested_setting_names }
+
+        # NOTE: We override the requested_setting_names to include *all* nested setting dependencies.
+        requested_setting_names = Gitlab::Fp::Settings::SettingsDependencyResolver.resolve(
+          requested_setting_names,
+          SETTINGS_DEPENDENCIES
+        )
+        context[:requested_setting_names] = requested_setting_names
 
         context[:settings], context[:setting_types] = Gitlab::Fp::Settings::DefaultSettingsParser.parse(
           module_name: "Web IDE",

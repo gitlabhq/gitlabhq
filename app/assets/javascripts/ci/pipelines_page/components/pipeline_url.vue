@@ -123,17 +123,19 @@ export default {
     pipelineIdentifier() {
       const { name, path, pipeline_schedule: pipelineSchedule } = this.pipeline || {};
 
-      if (pipelineSchedule) {
-        return {
-          text: pipelineSchedule.description,
-          link: pipelineSchedule.path,
-        };
-      }
-
+      // pipeline name should take priority over
+      // pipeline schedule description
       if (name) {
         return {
           text: name,
           link: path,
+        };
+      }
+
+      if (pipelineSchedule) {
+        return {
+          text: pipelineSchedule.description,
+          link: pipelineSchedule.path,
         };
       }
 

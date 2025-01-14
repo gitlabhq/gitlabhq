@@ -27,7 +27,7 @@ RSpec.describe Gitlab::GrapeLogging::Loggers::QueueDurationLogger do
 
       it 'adds the duration to log parameters' do
         travel_to(start_time) do
-          expect(subject.parameters(mock_request, nil)).to eq( { queue_duration_s: 2.seconds.to_f })
+          expect(subject.parameters(mock_request, nil)).to eq({ queue_duration_s: 2.seconds.to_f })
         end
       end
     end

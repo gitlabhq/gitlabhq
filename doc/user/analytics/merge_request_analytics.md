@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Merge request analytics provide DevOps managers with valuable insights into their team's code review and merging workflows.
 Based on the detailed metrics and trends related to merge requests, organizations can monitor and optimize their development processes.

@@ -12,5 +12,9 @@ FactoryBot.define do
     trait :current do
       status { 2 }
     end
+
+    trait :active do
+      status { 3 }
+    end
   end
 end

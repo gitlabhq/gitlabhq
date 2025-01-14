@@ -12,7 +12,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecut
       let(:proc) { -> {} }
 
       before do
-        allow(fake_duplicate_job).to receive(:latest_wal_locations).and_return( {} )
+        allow(fake_duplicate_job).to receive(:latest_wal_locations).and_return({})
         allow(fake_duplicate_job).to receive(:scheduled?) { false }
         allow(fake_duplicate_job).to receive(:options) { {} }
         allow(fake_duplicate_job).to receive(:idempotency_key).and_return('abc123')

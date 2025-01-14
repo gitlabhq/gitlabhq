@@ -93,8 +93,6 @@ RSpec.describe Packages::Nuget::Symbols::CreateSymbolFilesService, feature_categ
       it 'does not create a symbol record' do
         expect { subject }.not_to change { package.nuget_symbols.count }
       end
-
-      it_behaves_like 'logging an error', ActiveRecord::RecordInvalid
     end
 
     context 'when a symbol file has the wrong entry size' do

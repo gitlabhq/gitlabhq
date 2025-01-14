@@ -2,26 +2,24 @@
 import {
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
-  GlIcon,
   GlButtonGroup,
   GlButton,
   GlLink,
-  GlTooltip,
   GlTooltipDirective,
   GlSprintf,
 } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { __ } from '~/locale';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
 
 export default {
   components: {
-    GlIcon,
+    HelpPopover,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
     GlButtonGroup,
     GlButton,
     GlLink,
-    GlTooltip,
     GlSprintf,
   },
   directives: {
@@ -93,8 +91,6 @@ export default {
           toggle-text="Import options"
           text-sr-only
           :disabled="isInvalid"
-          icon="chevron-down"
-          no-caret
           variant="confirm"
           category="secondary"
         >
@@ -118,43 +114,31 @@ export default {
       </gl-button>
     </template>
 
-    <gl-icon
-      v-if="isFinished"
-      v-gl-tooltip
-      name="information-o"
-      data-testid="reimport-info-icon"
-      :title="
+    <help-popover v-if="isFinished" icon="information-o" data-testid="reimport-info-icon">
+      {{
         s__('BulkImport|Re-import creates a new group. It does not sync with the existing group.')
-      "
-    />
+      }}
+    </help-popover>
 
-    <div v-if="showImportWithoutProjectsWarning" :id="`tooltip-description-container-${id}`">
-      <span ref="projectCreationWarning">
-        <gl-icon
-          name="warning"
-          class="gl-text-orange-500"
-          data-testid="project-creation-warning-icon"
-        />
-      </span>
-
-      <gl-tooltip
-        :target="() => $refs.projectCreationWarning"
-        :container="`tooltip-description-container-${id}`"
+    <help-popover
+      v-if="showImportWithoutProjectsWarning"
+      icon="warning"
+      trigger-class="!gl-text-orange-500"
+      data-testid="project-creation-warning-icon"
+    >
+      <gl-sprintf
+        :message="
+          s__(
+            `BulkImport|Because of settings on the source GitLab instance or group, you can't import projects with this group. To permit importing projects with this group, reconfigure the source GitLab instance or group. %{linkStart}Learn more.%{linkEnd}`,
+          )
+        "
       >
-        <gl-sprintf
-          :message="
-            s__(
-              `BulkImport|Because of settings on the source GitLab instance or group, you can't import projects with this group. To permit importing projects with this group, reconfigure the source GitLab instance or group. %{linkStart}Learn more.%{linkEnd}`,
-            )
-          "
-        >
-          <template #link="{ content }">
-            <gl-link :href="$options.projectCreationHelp" target="_blank">
-              {{ content }}
-            </gl-link>
-          </template>
-        </gl-sprintf>
-      </gl-tooltip>
-    </div>
+        <template #link="{ content }">
+          <gl-link :href="$options.projectCreationHelp" target="_blank">
+            {{ content }}
+          </gl-link>
+        </template>
+      </gl-sprintf>
+    </help-popover>
   </div>
 </template>

@@ -103,6 +103,6 @@ Or:
 
 ## Related topics
 
-- Duo Chat best practices [blog post](https://about.gitlab.com/blog/2024/04/02/10-best-practices-for-using-ai-powered-gitlab-duo-chat/)
+- GitLab Duo Chat best practices [blog post](https://about.gitlab.com/blog/2024/04/02/10-best-practices-for-using-ai-powered-gitlab-duo-chat/)
 - [Videos on how to use Chat](https://www.youtube.com/playlist?list=PL05JrBw4t0Kp5uj_JgQiSvHw1jQu0mSVZ)
-- [Request a Duo Chat learning session](https://gitlab.com/groups/gitlab-com/marketing/developer-relations/-/epics/476)
+- [Request a GitLab Duo Chat learning session](https://gitlab.com/groups/gitlab-com/marketing/developer-relations/-/epics/476)

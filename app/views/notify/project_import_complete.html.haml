@@ -1,0 +1,39 @@
+- header_style = 'font-size:24px; text-align:center; line-height:30px;'
+- text_style = 'font-size:16px; text-align:center; line-height:24px; margin-top: 24px;'
+- button_style = 'border: 1px solid #694cc0; border-radius: 4px; font-size: 14px; padding: 8px 16px; background-color: #7b58cf; color: #fff; cursor: pointer;'
+
+- strong_tag_pair = tag_pair(tag.strong, :strong_open, :strong_close)
+- start_date = l(@project.created_at.to_date, format: :long)
+
+%h1{ style: header_style }
+  = s_('Import|Import completed')
+
+%p{ style: text_style }
+  - if @is_project_creator
+    = safe_format(s_('Import|The import you started on %{start_date} from %{strong_open}%{hostname}%{strong_close} has completed.'),
+      strong_tag_pair,
+      hostname: @hostname,
+      start_date: start_date)
+  - else
+    = safe_format(s_('Import|The import %{project_creator_name} started on %{start_date} from %{strong_open}%{hostname}%{strong_close} has completed.'),
+      strong_tag_pair,
+      project_creator_name: sanitize_name(@project.creator.name),
+      hostname: @hostname,
+      start_date: start_date)
+
+  - if !@user_mapping_available
+    = s_('Import|You can now review your import results.')
+  - elsif @is_group_owner
+    = s_('Import|You can reassign contributions on the "Members" page of the group.')
+  - else
+    = s_('Import|Users with the Owner role for the group can reassign contributions on the "Members" page.')
+
+%p{ style: text_style }
+  - if @user_mapping_available && @is_group_owner
+    = link_to group_group_members_url(@namespace, tab: 'placeholders'), target: '_blank', rel: 'noopener noreferrer' do
+      %button{ type: 'button', style: button_style }
+        = s_('Import|Reassign contributions')
+  - else
+    = link_to import_history_index_url, target: '_blank', rel: 'noopener noreferrer' do
+      %button{ type: 'button', style: button_style }
+        = s_('Import|View import results')

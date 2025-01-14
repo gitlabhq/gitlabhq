@@ -136,7 +136,8 @@ module AlertManagement
     end
 
     def self.link_reference_pattern
-      @link_reference_pattern ||= compose_link_reference_pattern('alert_management', %r{(?<alert>\d+)/details(\#)?})
+      pattern = %r{(?<alert>\d+)/details(?:\#)?}
+      @link_reference_pattern ||= compose_link_reference_pattern('alert_management', pattern)
     end
 
     def self.reference_valid?(reference)

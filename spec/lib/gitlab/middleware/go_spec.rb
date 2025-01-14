@@ -5,11 +5,18 @@ require 'spec_helper'
 RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management do
   let(:app) { double(:app) }
   let(:middleware) { described_class.new(app) }
+  let(:instance_host) { 'localhost' }
+  let(:instance_url) { "http://#{instance_host}" }
   let(:env) do
     {
       'rack.input' => '',
       'REQUEST_METHOD' => 'GET'
     }
+  end
+
+  before do
+    stub_config_setting(url: instance_url)
+    stub_config_setting(host: instance_host)
   end
 
   describe '#call' do
@@ -48,6 +55,14 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
             context 'when the project is public' do
               it 'returns the full project path' do
                 expect_response_with_path(go, enabled_protocol, project.full_path)
+              end
+            end
+
+            context 'when a custom url is set' do
+              let(:instance_url) { "http://#{instance_host}/gitlab" }
+
+              it 'returns the full project path' do
+                expect_response_with_path(go, enabled_protocol, project.full_path, url_based: true)
               end
             end
 
@@ -309,19 +324,20 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
       expect(response[0]).to eq(404)
     end
 
-    def expect_response_with_path(response, protocol, path, source_branch = nil)
+    def expect_response_with_path(response, protocol, path, url_based: false)
+      root_url = url_based ? Gitlab.config.gitlab.url.gsub(%r{\Ahttps?://}, '') : Gitlab.config.gitlab.host
+
       repository_url = case protocol
                        when :ssh
                          shell = Gitlab.config.gitlab_shell
                          "ssh://#{shell.ssh_user}@#{shell.ssh_host}/#{path}.git"
                        else
-                         "http://#{Gitlab.config.gitlab.host}/#{path}.git"
+                         "http://#{root_url}/#{path}.git"
                        end
-      project_url = "http://#{Gitlab.config.gitlab.host}/#{path}"
+
       expect(response[0]).to eq(200)
       expect(response[1]['Content-Type']).to eq('text/html')
-      go_source = source_branch ? %(<meta name="go-source" content="#{Gitlab.config.gitlab.host}/#{path} #{project_url} #{project_url}/-/tree/#{source_branch}{/dir} #{project_url}/-/blob/#{source_branch}{/dir}/{file}#L{line}">) : ''
-      expected_body = %(<html><head><meta name="go-import" content="#{Gitlab.config.gitlab.host}/#{path} git #{repository_url}">#{go_source}</head><body>go get #{Gitlab.config.gitlab.host}/#{path}</body></html>)
+      expected_body = %(<html><head><meta name="go-import" content="#{root_url}/#{path} git #{repository_url}"></head><body>go get #{root_url}/#{path}</body></html>)
       expect(response[2]).to eq([expected_body])
     end
   end

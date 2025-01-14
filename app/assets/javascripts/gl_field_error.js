@@ -124,8 +124,8 @@ export default class GlFieldError {
     // For UX, wait til after first invalid submission to check each keyup
     // eslint-disable-next-line @gitlab/no-global-event-off
     this.inputElement
-      .off('keyup.fieldValidator')
-      .on('keyup.fieldValidator', this.updateValidity.bind(this));
+      .off('input.fieldValidator')
+      .on('input.fieldValidator', this.updateValidity.bind(this));
   }
 
   /* Get or set current input value */

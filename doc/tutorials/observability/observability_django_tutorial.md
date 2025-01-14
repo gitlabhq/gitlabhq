@@ -145,7 +145,7 @@ To create an application:
 
 1. To instrument the application, in the `manage.py` file, add the following code.
    - Replace `{{PROJECT_ACCESS_TOKEN}}` and `{{PROJECT_ID}}` with the values from your project.
-   - If you're using self-managed GitLab, replace `gitlab.com` with your self-managed instance hostname.
+   - If you're using GitLab Self-Managed, replace `gitlab.com` with your self-managed instance hostname.
 
    ```python
    resource = Resource(attributes={

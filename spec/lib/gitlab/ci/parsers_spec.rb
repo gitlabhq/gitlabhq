@@ -65,7 +65,7 @@ RSpec.describe Gitlab::Ci::Parsers do
 
   describe '.instrument!' do
     it 'prepends the Instrumentation module into each parser' do
-      expect(described_class.parsers.values).to all( receive(:prepend).with(Gitlab::Ci::Parsers::Instrumentation) )
+      expect(described_class.parsers.values).to all(receive(:prepend).with(Gitlab::Ci::Parsers::Instrumentation))
 
       described_class.instrument!
     end

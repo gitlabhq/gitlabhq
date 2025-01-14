@@ -5,6 +5,7 @@ Bundler.require(:default, :development, :test)
 
 require 'thor'
 require 'gitlab/rspec/next_instance_of'
+require 'active_record/base'
 
 ENV["RAILS_ENV"] ||= "test"
 GITLAB_PATH = File.expand_path(File.join(__dir__, '/fixtures/'))

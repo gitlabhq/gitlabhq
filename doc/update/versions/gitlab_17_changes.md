@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 This page contains upgrade information for minor and patch versions of GitLab 17.
 Ensure you review these instructions for:
@@ -19,6 +19,8 @@ Ensure you review these instructions for:
 For more information about upgrading GitLab Helm Chart, see [the release notes for 8.0](https://docs.gitlab.com/charts/releases/8_0.html).
 
 ## Issues to be aware of when upgrading from 16.11
+
+- You must remove references to the [now deprecated bundled Grafana](../deprecations.md#bundled-grafana-deprecated-and-disabled) key from `gitlab.rb` before upgrading to GitLab 17.0 or later. After upgrading, any references to the key in `gitlab.rb` will cause `gitlab-ctl reconfigure` to fail.
 
 - You should [migrate to the new runner registration workflow](../../ci/runners/new_creation_workflow.md) before upgrading to GitLab 17.0.
 
@@ -242,6 +244,11 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
   [AWS SDK v2 for Go](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/4987) instead of the MinIO client.
   You can enable the MinIO client again by setting the `FF_USE_LEGACY_S3_CACHE_ADAPTER`
   [GitLab Runner feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html) to `true`.
+- The token used by Gitaly to authenticate with GitLab is now [its own setting](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8688).
+  This means Gitaly doesn't need GitLab Rails and Shell recipes to run and populate the default secret file inside the shell directory,
+  and can have its own secret file. Some customized environments may need to
+  [update their authentication configuration](../../administration/gitaly/configure_gitaly.md#configure-authentication)
+  to avoid secrets mismatches.
 
 ## 17.4.0
 
@@ -259,6 +266,21 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
 - When you upgrade to GitLab 17.4, an OAuth application is generated for the Web IDE.
   If your GitLab server's external URL configuration in the `GitLab.rb` file contains uppercase letters, the Web IDE might fail to load.
   To resolve this issue, see [update the OAuth callback URL](../../user/project/web_ide/index.md#update-the-oauth-callback-url).
+- In accordance with [RFC 7540](https://datatracker.ietf.org/doc/html/rfc7540#section-3.3),
+  Gitaly and Praefect now reject TLS connections that do not support ALPN.
+  If you use an HTTP/2 or gRPC load balancer in front of Praefect with
+  TLS enabled, you may encounter `FAIL: 14:connections to all backends failing` errors
+  if ALPN is not used. You can temporarily disable this enforcement
+  by setting `GRPC_ENFORCE_ALPN_ENABLED=false` in the
+  Praefect environment, but we strongly advise [using a TCP load balancer instead](../../administration/gitaly/praefect.md#load-balancer). With the Linux package, edit
+  `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    praefect['env'] = { 'GRPC_ENFORCE_ALPN_ENABLED' => 'false' }
+    ```
+
+  Then run `gitlab-ctl reconfigure`. Note that this setting will
+  be removed in the future.
 
 ## 17.3.0
 
@@ -350,6 +372,70 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
   in a failure when running the migrations.
   This is due to a bug.
   [Issue 468875](https://gitlab.com/gitlab-org/gitlab/-/issues/468875) has been fixed with GitLab 17.1.2.
+
+### Long-running pipeline messages data change
+
+GitLab 17.1 is a required stop for large GitLab instances with a lot of records in the `ci_pipeline_messages` table.
+
+A data change might take many hours to complete on larger GitLab instances, at a rate of 1.5-2 million records
+processed per hour. If your instance is affected:
+
+1. Upgrade to 17.1.
+1. [Make sure all batched migrations have completed successfully](../background_migrations.md#batched-background-migrations).
+1. Upgrade to 17.2 or 17.3.
+
+To check if you are affected:
+
+1. Start a [database console](../../administration/troubleshooting/postgresql.md#start-a-database-console)
+1. Run:
+
+   ```sql
+   SELECT relname as table,n_live_tup as rows FROM pg_stat_user_tables
+   WHERE relname='ci_pipeline_messages' and n_live_tup>1500000;
+   ```
+
+1. If the query returns output with a count for `ci_pipeline_messages` then your
+   instance meets the threshold for this required stop. Instances reporting `0 rows` can skip
+   the 17.1 upgrade stop.
+
+GitLab 17.1 introduced a [batched background migration](../background_migrations.md#batched-background-migrations)
+that ensures every record in the `ci_pipeline_messages` table has the [correct partitioning key](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153391).
+Partitioning CI tables is expected to provide performance improvements for instances with large amounts of CI data.
+
+The upgrade to GitLab 17.2 runs a `Finalize` migration which ensures the 17.1 background migration is completed,
+executing the 17.1 change synchronously during the upgrade if required.
+
+GitLab 17.2 also [adds foreign key database constraints](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158065)
+which require the partitioning key to be populated. The constraints [are validated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159571)
+as part of the upgrade to GitLab 17.3.
+
+If 17.1 is omitted from the upgrade path (or the 17.1 migration is not complete):
+
+- There is extended downtime for affected instances while the upgrade completes.
+- Fixing forward is safe.
+- To make the environment available sooner, a Rake task can be used to run the migration:
+
+  ```shell
+  sudo gitlab-rake gitlab:background_migrations:finalize[BackfillPartitionIdCiPipelineMessage,ci_pipeline_messages,id,'[]']
+  ```
+
+Until all database migrations are complete, GitLab is likely to be unusable, generating `500` errors, caused by incompatibility between the partly upgraded database schema and the running Sidekiq and Puma processes.
+
+The Linux package (Omnibus) or Docker upgrade is likely to fail
+with a time out after an hour:
+
+```plaintext
+FATAL: Mixlib::ShellOut::CommandTimeout: rails_migration[gitlab-rails]
+[..]
+Mixlib::ShellOut::CommandTimeout: Command timed out after 3600s:
+```
+
+To fix this:
+
+1. Run the Rake task above to complete the batched migration.
+1. [Complete the rest of the timed-out operation](../package/package_troubleshooting.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s). At the end of this process, Sidekiq and Puma are restarted to fix the `500` errors.
+
+Feedback about this conditional stop on the upgrade path can be provided [in the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/503891).
 
 ### Geo installations 17.1.0
 

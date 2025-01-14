@@ -17,9 +17,7 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
   let(:tag) { described_class.new(repository, 'tag') }
 
   before do
-    stub_container_registry_config(enabled: true,
-                                   api_url: 'http://registry.gitlab',
-                                   host_port: 'registry.gitlab')
+    stub_container_registry_config(enabled: true, api_url: 'http://registry.gitlab', host_port: 'registry.gitlab')
   end
 
   it { expect(tag).to respond_to(:repository) }
@@ -30,9 +28,7 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
   describe '#path' do
     context 'when tag belongs to zero-level repository' do
       let(:repository) do
-        create(:container_repository, name: '',
-                                      tags: %w[rc1],
-                                      project: project)
+        create(:container_repository, name: '', tags: %w[rc1], project: project)
       end
 
       it 'returns path to the image' do
@@ -42,9 +38,7 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
 
     context 'when tag belongs to first-level repository' do
       let(:repository) do
-        create(:container_repository, name: 'my_image',
-                                      tags: %w[tag],
-                                      project: project)
+        create(:container_repository, name: 'my_image', tags: %w[tag], project: project)
       end
 
       it 'returns path to the image' do

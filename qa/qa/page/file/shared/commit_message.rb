@@ -18,10 +18,6 @@ module QA
               element 'commit-content'
             end
 
-            base.view 'app/views/shared/_commit_message_container.html.haml' do
-              element 'commit-message-field'
-            end
-
             base.view 'app/views/projects/commits/_commit.html.haml' do
               element 'commit-content'
             end

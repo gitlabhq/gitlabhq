@@ -5,7 +5,11 @@ import Vue, { nextTick } from 'vue';
 import AgentEmptyState from '~/clusters_list/components/agent_empty_state.vue';
 import AgentTable from '~/clusters_list/components/agent_table.vue';
 import Agents from '~/clusters_list/components/agents.vue';
-import { AGENT_FEEDBACK_KEY, AGENT_FEEDBACK_ISSUE } from '~/clusters_list/constants';
+import {
+  AGENT_FEEDBACK_KEY,
+  AGENT_FEEDBACK_ISSUE,
+  KAS_DISABLED_ERROR,
+} from '~/clusters_list/constants';
 import getAgentsQuery from 'ee_else_ce/clusters_list/graphql/queries/get_agents.query.graphql';
 import getTreeListQuery from '~/clusters_list/graphql/queries/get_tree_list.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -29,7 +33,12 @@ describe('Agents', () => {
     projectPath: 'path/to/project',
   };
 
-  const createWrapper = async ({ props = {}, glFeatures = {}, queryResponse = null } = {}) => {
+  const createWrapper = async ({
+    props = {},
+    glFeatures = {},
+    queryResponse = null,
+    slots,
+  } = {}) => {
     const agentQueryResponse = queryResponse || jest.fn().mockResolvedValue(clusterAgentsResponse);
     const treeListQueryResponse = jest.fn().mockResolvedValue(treeListResponseData);
 
@@ -56,6 +65,7 @@ describe('Agents', () => {
         GlBanner,
         LocalStorageSync,
       },
+      slots,
     });
 
     await nextTick();
@@ -71,21 +81,33 @@ describe('Agents', () => {
   });
 
   describe('when there is a list of agents', () => {
-    beforeEach(() => {
-      return createWrapper();
-    });
+    it('should render agent table', async () => {
+      createWrapper();
+      await waitForPromises();
 
-    it('should render agent table', () => {
       expect(findAgentTable().exists()).toBe(true);
       expect(findEmptyState().exists()).toBe(false);
     });
 
-    it('should pass agent and folder info to table component', () => {
+    it('should pass agent and folder info to table component', async () => {
+      createWrapper();
+      await waitForPromises();
+
       expect(findAgentTable().props('agents')).toMatchObject(expectedAgentsList);
     });
 
-    it('should emit agents count to the parent component', () => {
+    it('should emit agents count to the parent component', async () => {
+      createWrapper();
+      await waitForPromises();
+
       expect(wrapper.emitted().onAgentsLoad).toEqual([[expectedAgentsList.length]]);
+    });
+
+    it('should render a slot for alerts if provided', async () => {
+      createWrapper({ slots: { alerts: 'slotContent' } });
+      await waitForPromises();
+
+      expect(wrapper.text()).toContain('slotContent');
     });
 
     describe.each`
@@ -164,15 +186,23 @@ describe('Agents', () => {
   });
 
   describe('when agents query has errored', () => {
-    beforeEach(() => {
+    it('displays an alert message', async () => {
       createWrapper({
         queryResponse: jest.fn().mockRejectedValue({}),
       });
-      return waitForPromises();
+      await waitForPromises();
+
+      expect(findAlert().text()).toBe('An error occurred while loading your agents');
     });
 
-    it('displays an alert message', () => {
-      expect(findAlert().text()).toBe('An error occurred while loading your agents');
+    it('emits `kasDisabled` event if the error is related to KAS being disabled', async () => {
+      const error = new Error(KAS_DISABLED_ERROR);
+      createWrapper({
+        queryResponse: jest.fn().mockRejectedValue(error),
+      });
+      await waitForPromises();
+
+      expect(wrapper.emitted().kasDisabled).toEqual([[true]]);
     });
   });
 

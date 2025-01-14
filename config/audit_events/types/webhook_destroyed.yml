@@ -1,6 +1,6 @@
 ---
 name: webhook_destroyed
-description: Event triggered when a webhook is destroyed.
+description: A webhook is destroyed
 introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/458817
 introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102342
 feature_category: webhooks

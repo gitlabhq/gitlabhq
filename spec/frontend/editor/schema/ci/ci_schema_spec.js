@@ -46,6 +46,7 @@ import WorkflowRulesAutoCancelOnNewCommitYaml from './yaml_tests/positive_tests/
 import StagesYaml from './yaml_tests/positive_tests/stages.yml';
 import RetryYaml from './yaml_tests/positive_tests/retry.yml';
 import ParallelYaml from './yaml_tests/positive_tests/parallel.yml';
+import TriggerYaml from './yaml_tests/positive_tests/trigger.yml';
 
 // YAML NEGATIVE TEST
 import ArtifactsNegativeYaml from './yaml_tests/negative_tests/artifacts.yml';
@@ -62,7 +63,7 @@ import ProjectPathIncludeTailSlashYaml from './yaml_tests/negative_tests/project
 import RulesNegativeYaml from './yaml_tests/negative_tests/rules.yml';
 import RulesNeedsNegativeYaml from './yaml_tests/negative_tests/rules_needs.yml';
 import RunNegativeYaml from './yaml_tests/negative_tests/run.yml';
-import TriggerNegative from './yaml_tests/negative_tests/trigger.yml';
+import TriggerNegativeYaml from './yaml_tests/negative_tests/trigger.yml';
 import VariablesInvalidOptionsYaml from './yaml_tests/negative_tests/variables/invalid_options.yml';
 import VariablesInvalidSyntaxDescYaml from './yaml_tests/negative_tests/variables/invalid_syntax_desc.yml';
 import VariablesWrongSyntaxUsageExpand from './yaml_tests/negative_tests/variables/wrong_syntax_usage_expand.yml';
@@ -130,6 +131,7 @@ describe('positive tests', () => {
       StagesYaml,
       RetryYaml,
       ParallelYaml,
+      TriggerYaml,
     }),
   )('schema validates %s', (_, input) => {
     // We construct a new "JSON" from each main key that is inside a
@@ -185,7 +187,7 @@ describe('negative tests', () => {
       RulesNegativeYaml,
       RulesNeedsNegativeYaml,
       RunNegativeYaml,
-      TriggerNegative,
+      TriggerNegativeYaml,
       VariablesInvalidOptionsYaml,
       VariablesInvalidSyntaxDescYaml,
       VariablesWrongSyntaxUsageExpand,

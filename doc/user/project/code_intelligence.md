@@ -9,7 +9,7 @@ description: "Use code intelligence to find all uses of an object in your projec
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Code intelligence adds code navigation features common to interactive
 development environments (IDE), including:
@@ -135,7 +135,7 @@ SCIP index and converts it to LSIF for use in GitLab:
 ::EndTabs
 
 NOTE:
-GitLab limits the artifact produced by the code generation jobs to 100 MB by the
+GitLab limits the artifact produced by the code generation jobs to 200 MB by the
 [(`ci_max_artifact_size_lsif`)](../../administration/instance_limits.md#maximum-file-size-per-type-of-artifact)
 artifact application limit. On self-managed installations, an instance administrator
 can change this value.

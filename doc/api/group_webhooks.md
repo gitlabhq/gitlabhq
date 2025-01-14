@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Interact with group [webhooks](../user/project/integrations/webhooks.md) by using the REST API. Also called group hooks.
 These are different from [system hooks](system_hooks.md) that are system wide and [project webhooks](project_webhooks.md) that are limited to one project.
@@ -431,7 +431,7 @@ Example response:
 Resends a specific hook event.
 
 This endpoint has a rate limit of five requests per minute for each hook and authenticated user.
-To disable this limit on self-managed GitLab and GitLab Dedicated, an administrator can
+To disable this limit on GitLab Self-Managed and GitLab Dedicated, an administrator can
 [disable the feature flag](../administration/feature_flags.md) named `web_hook_event_resend_api_endpoint_rate_limit`.
 
 ```plaintext
@@ -671,7 +671,7 @@ On success, no message is returned.
 Trigger a test hook for a specified group.
 
 This endpoint has a rate limit of five requests per minute for each group and authenticated user.
-To disable this limit on self-managed GitLab and GitLab Dedicated, an administrator can
+To disable this limit on GitLab Self-Managed and GitLab Dedicated, an administrator can
 [disable the feature flag](../administration/feature_flags.md) named `web_hook_test_api_endpoint_rate_limit`.
 
 ```plaintext

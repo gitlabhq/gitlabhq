@@ -8,7 +8,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecut
       let(:proc) { -> {} }
 
       before do
-        allow(fake_duplicate_job).to receive(:latest_wal_locations).and_return( {} )
+        allow(fake_duplicate_job).to receive(:latest_wal_locations).and_return({})
       end
 
       it 'deletes the lock before executing' do

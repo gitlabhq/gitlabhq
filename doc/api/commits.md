@@ -9,7 +9,7 @@ description: "Documentation for the REST API for Git commits in GitLab."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 This API operates on [repository commits](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository). Read more about [GitLab-specific information](../user/project/repository/index.md#commit-changes-to-a-repository) for commits.
 
@@ -696,6 +696,8 @@ The commit status API for use with GitLab.
 
 ### List the statuses of a commit
 
+> - `pipeline_id`, `order_by`, and `sort` fields [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176142) in GitLab 17.9.
+
 List the statuses of a commit in a project.
 The pagination parameters `page` and `per_page` can be used to restrict the list of references.
 
@@ -703,14 +705,17 @@ The pagination parameters `page` and `per_page` can be used to restrict the list
 GET /projects/:id/repository/commits/:sha/statuses
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
-| `sha`     | string  | yes | The commit SHA |
-| `ref`     | string  | no  | The name of a repository branch or tag or, if not given, the default branch |
-| `stage`   | string  | no  | Filter by [build stage](../ci/yaml/index.md#stages), for example, `test` |
-| `name`    | string  | no  | Filter by [job name](../ci/yaml/index.md#job-keywords), for example, `bundler:audit` |
-| `all`     | boolean | no  | Return all statuses, not only the latest ones |
+| Attribute     | Type           | Required | Description                                                                          |
+|---------------|----------------| -------- |--------------------------------------------------------------------------------------|
+| `id`          | integer/string | Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).          |
+| `sha`         | string         | Yes | Hash of the commit.                                                                      |
+| `ref`         | string         | No  | Name of the branch or tag. Default is the default branch.          |
+| `stage`       | string         | No  | Filter statuses by [build stage](../ci/yaml/index.md#stages). For example, `test`.             |
+| `name`        | string         | No  | Filter statuses by [job name](../ci/yaml/index.md#job-keywords). For example, `bundler:audit`. |
+| `pipeline_id` | integer        | No  | Filter statuses by pipeline ID. For example, `1234`.                                            |
+| `order_by`    | string         | No  | Values for sorting statuses. Valid values are `id` and `pipeline_id`. Default is `id`.                    |
+| `sort`        | string         | No  | Sort statuses in ascending or descending order. Valid values are `asc` and `desc`. Default is `asc`.                  |
+| `all`         | boolean        | No  | Include all statuses instead of latest only. Default is `false`.                                       |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \

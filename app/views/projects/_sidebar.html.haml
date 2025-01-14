@@ -6,7 +6,7 @@
 
 %aside.project-page-sidebar{ data: { testid: 'project-page-sidebar' } }
   .project-page-sidebar-block.home-panel-home-desc.gl-py-4.gl-border-b.gl-border-b-subtle{ class: '!gl-pt-2' }
-    %h2.gl-text-base.gl-font-bold.gl-leading-reset.gl-text-strong.gl-m-0.gl-mb-1= s_('ProjectPage|Project information')
+    %h2.gl-text-base.gl-font-bold.gl-leading-reset.gl-text-heading.gl-m-0.gl-mb-1= s_('ProjectPage|Project information')
     -# Project description
     - if @project.description.present?
       .home-panel-description.gl-break-words

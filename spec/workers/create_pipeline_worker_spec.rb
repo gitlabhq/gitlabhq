@@ -28,10 +28,15 @@ RSpec.describe CreatePipelineWorker, feature_category: :pipeline_composition do
       let(:create_pipeline_service) { instance_double(Ci::CreatePipelineService) }
 
       it 'calls the Service' do
-        expect(Ci::CreatePipelineService).to receive(:new).with(project, user, ref: project.default_branch).and_return(create_pipeline_service)
-        expect(create_pipeline_service).to receive(:execute).with(:web, any_args)
+        expect(Ci::CreatePipelineService).to receive(:new)
+          .with(project, user, ref: project.default_branch, pipeline_creation_request: { 'key' => 'test-key' })
+          .and_return(create_pipeline_service)
+        expect(create_pipeline_service).to receive(:execute).with(:web, { save_on_errors: false })
 
-        worker.perform(project.id, user.id, project.default_branch, :web)
+        worker.perform(
+          project.id, user.id, project.default_branch, :web,
+          { 'save_on_errors' => false }, { 'pipeline_creation_request' => { 'key' => 'test-key' } }
+        )
       end
     end
   end

@@ -198,7 +198,7 @@ if (global.document) {
         const props = Object.fromEntries(
           Object.entries(this.$props)
             .filter(([prop]) => isPropertyValidOnDomNode(prop))
-            .map(([key, value]) => [key, typeof value === 'function' ? '[Function]' : value]),
+            .map(([key, value]) => [key, typeof value === 'function' ? ['[Function]'] : value]),
         );
 
         return Vue.h(`${stubTag || 'anonymous'}-stub`, props, slotContents);
@@ -213,4 +213,24 @@ if (global.document) {
 
     return stub;
   };
+
+  /**
+   * VTU stubs "transition" and "transition-group" by default.
+   *
+   * In vue/test-utils@2.3.1, with vue/compat@v3.4.22 (or higher) this generates many warnings when stubbing <transition> that look like:
+   *   [Vue warn]: Wrong type passed as event handler to onBeforeEnter - did you forget @ or : in front of your prop?
+   *     Expected function or array of functions, received type string.
+   *     at <Transition onBeforeEnter=fn<bound onBeforeEnter> onEnter=fn<bound onEnter> onAfterEnter=fn<bound onAfterEnter>  ... >
+   *
+   * "transition" and "transition-group" stubs are not created by the custom `plugins.createStubs` so we can't patch this stubbing.
+   *
+   * This problem has been fixed at https://github.com/vuejs/test-utils/pull/2413, so this config can be removed when we update to
+   * a newer version of vue/test-utils.
+   *
+   * TLDR: Remove this after updating vue/test-utils@2
+   */
+  if (VTU.config.stubs) {
+    VTU.config.stubs.transition = false;
+    VTU.config.stubs['transition-group'] = false;
+  }
 }

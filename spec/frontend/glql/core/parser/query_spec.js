@@ -29,7 +29,6 @@ describe('GLQL Query Parser', () => {
       webUrl
       reference
       state
-      type
       author {
         id
         avatarUrl
@@ -70,7 +69,6 @@ describe('GLQL Query Parser', () => {
       webUrl
       reference
       state
-      type
       author {
         id
         avatarUrl

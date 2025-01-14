@@ -2,7 +2,6 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import { createAlert } from '~/alert';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -26,7 +25,6 @@ describe('MrWidgetPipelineContainer', () => {
   let mergePipelineResponse;
 
   const createComponent = async ({
-    ciGraphqlPipelineMiniGraph = true,
     props = {},
     mergePipelineHandler = mergePipelineResponse,
   } = {}) => {
@@ -40,11 +38,6 @@ describe('MrWidgetPipelineContainer', () => {
           ...props,
         },
         apolloProvider: mockApollo,
-        provide: {
-          glFeatures: {
-            ciGraphqlPipelineMiniGraph,
-          },
-        },
       }),
     );
 
@@ -71,16 +64,10 @@ describe('MrWidgetPipelineContainer', () => {
 
     it('sends correct props to the pipeline widget', () => {
       // pipeline from mr store
-      const pipelineMiniGraphVariables = {
-        iid: mockStore.pipelineIid,
-        fullPath: mockStore.pipelineProjectPath,
-      };
-
       expect(findMrWidgetPipeline().props()).toMatchObject({
         pipeline: mockStore.pipeline,
         pipelineCoverageDelta: mockStore.pipelineCoverageDelta,
         pipelineEtag: mockStore.pipelineEtag,
-        pipelineMiniGraphVariables,
         ciStatus: mockStore.ciStatus,
         hasCi: mockStore.hasCI,
         sourceBranch: mockStore.sourceBranch,
@@ -125,67 +112,18 @@ describe('MrWidgetPipelineContainer', () => {
       });
     });
 
-    describe('with feature flag disabled', () => {
-      it('does not fire the query', async () => {
-        await createComponent({
-          ciGraphqlPipelineMiniGraph: false,
-          props: {
-            isPostMerge: true,
-          },
-        });
-
-        expect(wrapper.vm.$apollo.queries.mergePipeline.skip).toBe(true);
-      });
-    });
-
-    describe('with feature flag enabled', () => {
-      it('fires the query', () => {
-        const queryVariables = {
-          id: `gid://gitlab/Ci::Pipeline/${mockStore.mergePipeline.id}`,
-          fullPath: mockStore.targetProjectFullPath,
-        };
-
-        expect(mergePipelineResponse).toHaveBeenCalledWith(queryVariables);
-      });
-
-      describe('when the merge pipeline query is unsuccessful', () => {
-        const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
-
-        it('throws an error for the query', async () => {
-          await createComponent({
-            mergePipelineHandler: failedHandler,
-            props: {
-              isPostMerge: true,
-            },
-          });
-
-          expect(createAlert).toHaveBeenCalledWith({
-            message: 'There was a problem fetching the merge pipeline.',
-          });
-        });
-      });
-    });
-
     it('renders pipeline', () => {
       expect(findMrWidgetPipeline().exists()).toBe(true);
       expect(findCIErrorMessage().exists()).toBe(false);
     });
 
     it('sends correct props to the pipeline widget', () => {
-      const { data } = mockMergePipelineQueryResponse;
-
-      const pipelineMiniGraphVariables = {
-        iid: data.project.pipeline.iid,
-        fullPath: data.project.pipeline.project.fullPath,
-      };
-
       expect(findMrWidgetPipeline().props()).toMatchObject({
         ciStatus: mockStore.mergePipeline.details.status.text,
         hasCi: mockStore.hasCI,
         pipeline: mockStore.mergePipeline,
         pipelineCoverageDelta: mockStore.pipelineCoverageDelta,
         pipelineEtag: mockStore.pipelineEtag,
-        pipelineMiniGraphVariables,
         sourceBranch: mockStore.targetBranch,
         sourceBranchLink: mockStore.targetBranch,
       });

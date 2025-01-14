@@ -52,7 +52,7 @@ project.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can seed issues specifically for working with the
 [Insights charts](../user/project/insights/index.md) with the

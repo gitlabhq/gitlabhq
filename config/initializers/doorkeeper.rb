@@ -119,8 +119,7 @@ Doorkeeper.configure do
   # Allow Resource Owner Password Credentials Grant without client credentials,
   # this was disabled by default in Doorkeeper 5.5.
   #
-  # We might want to disable this in the future, see https://gitlab.com/gitlab-org/gitlab/-/issues/323615
-  skip_client_authentication_for_password_grant true
+  skip_client_authentication_for_password_grant -> { Gitlab::CurrentSettings.ropc_without_client_credentials }
 
   # 2 hours in seconds
   # This is also the database default value
@@ -152,6 +151,14 @@ Doorkeeper.configure do
 
       find_or_create_access_token(client, resource_owner, scopes, { organization_id: organization.id }, server)
       super
+    end
+
+    def validate_client
+      if Doorkeeper.config.skip_client_authentication_for_password_grant.call
+        client.present? || (!parameters[:client_id] && credentials.blank?)
+      else
+        client.present?
+      end
     end
   end
 

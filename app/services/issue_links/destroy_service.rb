@@ -4,6 +4,11 @@ module IssueLinks
   class DestroyService < IssuableLinks::DestroyService
     include IncidentManagement::UsageData
 
+    def success(...)
+      GraphqlTriggers.work_item_updated(@source)
+      super
+    end
+
     private
 
     def permission_to_remove_relation?

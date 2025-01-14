@@ -55,7 +55,7 @@ RSpec.shared_context 'container repository delete tags service shared context' d
     content = "{\n  \"config\": {\n  }\n}"
     expect_any_instance_of(ContainerRegistry::Client)
       .to receive(:upload_blob)
-      .with(repository.path, content, digest) { double(success?: success ) }
+      .with(repository.path, content, digest) { double(success?: success) }
   end
 
   def expect_delete_tags(names)

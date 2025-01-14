@@ -5,7 +5,7 @@ class WorkItem < Issue
 
   COMMON_QUICK_ACTIONS_COMMANDS = [
     :title, :reopen, :close, :cc, :tableflip, :shrug, :type, :promote_to, :checkin_reminder,
-    :subscribe, :unsubscribe, :confidential, :award, :react
+    :subscribe, :unsubscribe, :confidential, :award, :react, :move, :clone
   ].freeze
 
   self.table_name = 'issues'
@@ -235,17 +235,13 @@ class WorkItem < Issue
   end
 
   def max_depth_reached?(child_type)
-    # Using the association here temporarily. We should use the `work_item_type_id` column value after the cleanup
-    # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/499911
     restriction = ::WorkItems::HierarchyRestriction.find_by_parent_type_id_and_child_type_id(
-      work_item_type.id,
+      work_item_type_id,
       child_type.id
     )
     return false unless restriction&.maximum_depth
 
-    # Using the association here temporarily. We should use the `work_item_type_id` column value after the cleanup
-    # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/499911
-    if work_item_type.id == child_type.id
+    if work_item_type_id == child_type.id
       same_type_base_and_ancestors.count >= restriction.maximum_depth
     else
       hierarchy(different_type_id: child_type.id).base_and_ancestors.count >= restriction.maximum_depth
@@ -282,7 +278,7 @@ class WorkItem < Issue
 
   override :allowed_work_item_type_change
   def allowed_work_item_type_change
-    return unless work_item_type_id_changed?
+    return unless correct_work_item_type_id_changed?
 
     child_links = WorkItems::ParentLink.for_parents(id)
     parent_link = ::WorkItems::ParentLink.find_by(work_item: self)
@@ -337,7 +333,7 @@ class WorkItem < Issue
     return unless restriction&.maximum_depth
 
     children_with_new_type = self.class.where(id: child_links.select(:work_item_id))
-      .where(work_item_type_id: work_item_type_id)
+      .where(correct_work_item_type_id: correct_work_item_type_id)
     max_child_depth = ::Gitlab::WorkItems::WorkItemHierarchy.new(children_with_new_type).max_descendants_depth.to_i
 
     ancestor_depth =

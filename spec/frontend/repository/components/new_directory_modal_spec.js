@@ -1,4 +1,3 @@
-import { GlModal, GlFormTextarea, GlFormCheckbox } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import axios from 'axios';
@@ -6,21 +5,22 @@ import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import { visitUrl } from '~/lib/utils/url_utility';
+import * as urlUtility from '~/lib/utils/url_utility';
+import { logError } from '~/lib/logger';
+import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
 import NewDirectoryModal from '~/repository/components/new_directory_modal.vue';
 
 jest.mock('~/alert');
-jest.mock('~/lib/utils/url_utility', () => ({
-  visitUrl: jest.fn(),
-}));
+jest.mock('~/lib/logger');
 
 const initialProps = {
   modalTitle: 'Create new directory',
   modalId: 'modal-new-directory',
   commitMessage: 'Add new directory',
   targetBranch: 'some-target-branch',
-  originalBranch: 'master',
+  originalBranch: 'main',
   canPushCode: true,
+  canPushToBranch: true,
   path: 'create_dir',
 };
 
@@ -35,6 +35,7 @@ const defaultFormValue = {
 describe('NewDirectoryModal', () => {
   let wrapper;
   let mock;
+  let visitUrlSpy;
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(NewDirectoryModal, {
@@ -46,89 +47,50 @@ describe('NewDirectoryModal', () => {
         static: true,
         visible: true,
       },
+      stubs: {
+        CommitChangesModal,
+      },
     });
   };
 
-  const findModal = () => wrapper.findComponent(GlModal);
+  const findCommitChangesModal = () => wrapper.findComponent(CommitChangesModal);
   const findDirName = () => wrapper.find('[name="dir_name"]');
-  const findBranchName = () => wrapper.find('[name="branch_name"]');
-  const findCommitMessage = () => wrapper.findComponent(GlFormTextarea);
-  const findMrCheckbox = () => wrapper.findComponent(GlFormCheckbox);
-
-  const fillForm = async (inputValue = {}) => {
-    const {
-      dirName = defaultFormValue.dirName,
-      branchName = defaultFormValue.branchName,
-      commitMessage = defaultFormValue.commitMessage,
-      createNewMr = true,
-    } = inputValue;
-
+  const fillForm = async (dirName = defaultFormValue.dirName) => {
     await findDirName().vm.$emit('input', dirName);
-    await findBranchName().vm.$emit('input', branchName);
-    await findCommitMessage().vm.$emit('input', commitMessage);
-    await findMrCheckbox().vm.$emit('input', createNewMr);
     await nextTick();
   };
 
   const submitForm = async () => {
-    const mockEvent = { preventDefault: jest.fn() };
-    findModal().vm.$emit('primary', mockEvent);
+    findCommitChangesModal().vm.$emit('submit-form', new FormData());
     await waitForPromises();
   };
 
-  it('renders modal component', () => {
+  beforeEach(() => {
+    visitUrlSpy = jest.spyOn(urlUtility, 'visitUrl');
     createComponent();
-
-    const { modalTitle: title } = initialProps;
-
-    expect(findModal().props()).toMatchObject({
-      title,
-      size: 'md',
-      actionPrimary: {
-        text: NewDirectoryModal.i18n.PRIMARY_OPTIONS_TEXT,
-      },
-      actionCancel: {
-        text: 'Cancel',
-      },
-    });
   });
 
-  describe('form', () => {
-    it.each`
-      component            | defaultValue                  | canPushCode | targetBranch                 | originalBranch                 | exist    | attributes
-      ${findDirName}       | ${undefined}                  | ${true}     | ${initialProps.targetBranch} | ${initialProps.originalBranch} | ${true}  | ${'value'}
-      ${findBranchName}    | ${initialProps.targetBranch}  | ${true}     | ${initialProps.targetBranch} | ${initialProps.originalBranch} | ${true}  | ${'value'}
-      ${findBranchName}    | ${undefined}                  | ${false}    | ${initialProps.targetBranch} | ${initialProps.originalBranch} | ${false} | ${'value'}
-      ${findCommitMessage} | ${initialProps.commitMessage} | ${true}     | ${initialProps.targetBranch} | ${initialProps.originalBranch} | ${true}  | ${'value'}
-      ${findMrCheckbox}    | ${'true'}                     | ${true}     | ${'new-target-branch'}       | ${'master'}                    | ${true}  | ${'checked'}
-      ${findMrCheckbox}    | ${'true'}                     | ${true}     | ${'master'}                  | ${'master'}                    | ${true}  | ${'checked'}
-    `(
-      'has the correct form fields',
-      ({
-        component,
-        defaultValue,
-        canPushCode,
-        targetBranch,
-        originalBranch,
-        exist,
-        attributes,
-      }) => {
-        createComponent({
-          canPushCode,
-          targetBranch,
-          originalBranch,
-        });
-        const formField = component();
+  describe('default', () => {
+    beforeEach(() => {
+      createComponent();
+    });
 
-        if (!exist) {
-          expect(formField.exists()).toBe(false);
-          return;
-        }
+    it('renders commit changes modal', () => {
+      expect(findCommitChangesModal().props()).toMatchObject({
+        modalId: 'modal-new-directory',
+        commitMessage: 'Add new directory',
+        targetBranch: 'some-target-branch',
+        originalBranch: 'main',
+        canPushCode: true,
+        canPushToBranch: true,
+        valid: false,
+        loading: false,
+      });
+    });
 
-        expect(formField.exists()).toBe(true);
-        expect(formField.attributes(attributes)).toBe(defaultValue);
-      },
-    );
+    it('includes directory name input', () => {
+      expect(findDirName().exists()).toBe(true);
+    });
   });
 
   describe('form submission', () => {
@@ -141,61 +103,53 @@ describe('NewDirectoryModal', () => {
     });
 
     describe('valid form', () => {
-      beforeEach(() => {
-        createComponent();
+      it('enables submit button when form is complete', async () => {
+        await fillForm({ dirName: 'test-dir' });
+        expect(findCommitChangesModal().props('valid')).toBe(true);
       });
 
-      it('passes the formData', async () => {
-        const { dirName, branchName, commitMessage, originalBranch, createNewMr } =
-          defaultFormValue;
+      it('passes additional formData', async () => {
+        const { dirName, branchName } = defaultFormValue;
         mock.onPost(initialProps.path).reply(HTTP_STATUS_OK, {});
         await fillForm();
         await submitForm();
 
-        expect(mock.history.post[0].data.get('dir_name')).toEqual(dirName);
-        expect(mock.history.post[0].data.get('branch_name')).toEqual(branchName);
-        expect(mock.history.post[0].data.get('commit_message')).toEqual(commitMessage);
-        expect(mock.history.post[0].data.get('original_branch')).toEqual(originalBranch);
-        expect(mock.history.post[0].data.get('create_merge_request')).toEqual(String(createNewMr));
-      });
-
-      it('does not submit "create_merge_request" formData if createNewMr is not checked', async () => {
-        mock.onPost(initialProps.path).reply(HTTP_STATUS_OK, {});
-        await fillForm({ createNewMr: false });
-        await submitForm();
-        expect(mock.history.post[0].data.get('create_merge_request')).toBeNull();
+        const formData = mock.history.post[0].data;
+        expect(formData.get('dir_name')).toBe(dirName);
+        expect(formData.get('branch_name')).toBe(branchName);
       });
 
       it('redirects to the new directory', async () => {
         const response = { filePath: 'new-dir-path' };
         mock.onPost(initialProps.path).reply(HTTP_STATUS_OK, response);
 
-        await fillForm({ dirName: 'foo', branchName: 'master', commitMessage: 'foo' });
+        await fillForm('foo');
         await submitForm();
 
-        expect(visitUrl).toHaveBeenCalledWith(response.filePath);
+        expect(visitUrlSpy).toHaveBeenCalledWith(response.filePath);
       });
     });
 
     describe('invalid form', () => {
-      beforeEach(() => {
-        createComponent();
+      it('passes correct prop for validity', async () => {
+        await fillForm('');
+        expect(findCommitChangesModal().props('valid')).toBe(false);
       });
 
-      it('disables submit button', async () => {
-        await fillForm({ dirName: '', branchName: '', commitMessage: '' });
-        expect(findModal().props('actionPrimary').attributes.disabled).toBe(true);
-      });
-
-      it('creates an alert error', async () => {
+      it('creates an alert error and logs the error', async () => {
         mock.onPost(initialProps.path).timeout();
+        const mockError = new Error('timeout of 0ms exceeded');
 
-        await fillForm({ dirName: 'foo', branchName: 'master', commitMessage: 'foo' });
+        await fillForm('foo');
         await submitForm();
 
         expect(createAlert).toHaveBeenCalledWith({
           message: NewDirectoryModal.i18n.ERROR_MESSAGE,
         });
+        expect(logError).toHaveBeenCalledWith(
+          'Failed to create a new directory. See exception details for more information.',
+          mockError,
+        );
       });
     });
   });

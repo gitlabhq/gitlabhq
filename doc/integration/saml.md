@@ -4,14 +4,14 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# SAML SSO for self-managed GitLab instances
+# SAML SSO for GitLab Self-Managed
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 This page describes how to set up instance-wide SAML single sign on (SSO) for
-self-managed GitLab instances.
+GitLab Self-Managed.
 
 You can configure GitLab to act as a SAML service provider (SP). This allows
 GitLab to consume assertions from a SAML identity provider (IdP), such as
@@ -708,6 +708,28 @@ Google Workspace Administrator also provides the IdP metadata, Entity ID, and SH
 fingerprint. However, GitLab does not need this information to connect to the
 Google Workspace SAML application.
 
+### Set up Microsoft Entra ID
+
+1. Sign in to the [Microsoft Entra admin center](https://entra.microsoft.com/).
+1. [Create a non-gallery application](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/overview-application-gallery#create-your-own-application).
+1. [Configure SSO for that application](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/add-application-portal-setup-sso).
+
+   The following settings in your `gitlab.rb` file correspond to the Microsoft Entra ID fields:
+
+   | `gitlab.rb` setting                 | Microsoft Entra ID field                       |
+   | ------------------------------------| ---------------------------------------------- |
+   | `issuer`                           | **Identifier (Entity ID)**                     |
+   | `assertion_consumer_service_url`   | **Reply URL (Assertion Consumer Service URL)** |
+   | `idp_sso_target_url`               | **Login URL**                                  |
+   | `idp_cert_fingerprint`             | **Thumbprint**                                 |
+
+1. Set the following attributes:
+   - **Unique User Identifier (Name ID)** to `user.objectID`.
+      - **Name identifier format** to `persistent`. For more information, see how to [manage user SAML identity](../user/group/saml_sso/index.md#manage-user-saml-identity).
+   - **Additional claims** to [supported attributes](#configure-assertions).
+
+For more information, see an [example configuration page](../user/group/saml_sso/example_saml_config.md#azure-active-directory).
+
 ### Set up other IdPs
 
 Some IdPs have documentation on how to use them as the IdP in SAML configurations.
@@ -1331,7 +1353,7 @@ Example configuration:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Your IdP passes group information to GitLab in the SAML response. To use this
 response, configure GitLab to identify:
@@ -1493,6 +1515,9 @@ For information on automatically managing GitLab group membership, see [SAML Gro
 
 ## Bypass two-factor authentication
 
+> - Bypass 2FA enforcement [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122109) in GitLab 16.1 [with a flag](../administration/feature_flags.md) named `by_pass_two_factor_current_session`.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/416535) in GitLab 17.8.
+
 To configure a SAML authentication method to count as two-factor authentication
 (2FA) on a per session basis, register that method in the `upstream_two_factor_authn_contexts`
 list.
@@ -1508,7 +1533,7 @@ list.
    ```
 
 1. Edit your installation configuration to register the SAML authentication method
-   in the `upstream_two_factor_authn_contexts` list.
+   in the `upstream_two_factor_authn_contexts` list. You must enter the `AuthnContext` from your SAML response.
 
    ::Tabs
 
@@ -2066,7 +2091,7 @@ URL, for example: `https://gitlab.example.com/users/sign_in?auto_sign_in=false`.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 You can use `attribute_statements` to map attribute names in a SAML response to entries
 in the OmniAuth [`info` hash](https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema#schema-10-and-later).
@@ -2889,7 +2914,7 @@ To implement signing:
                   security: {
                     authn_requests_signed: true,  # enable signature on AuthNRequest
                     want_assertions_signed: true,  # enable the requirement of signed assertion
-                    want_assertions_encrypted: false,  # enable the requirement of encrypted assertion 
+                    want_assertions_encrypted: false,  # enable the requirement of encrypted assertion
                     metadata_signed: false,  # enable signature on Metadata
                     signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
                     digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256',
@@ -2924,7 +2949,7 @@ To implement signing:
         security:
           authn_requests_signed: true  # enable signature on AuthNRequest
           want_assertions_signed: true  # enable the requirement of signed assertion
-          want_assertions_encrypted: false  # enable the requirement of encrypted assertion 
+          want_assertions_encrypted: false  # enable the requirement of encrypted assertion
           metadata_signed: false  # enable signature on Metadata
           signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
           digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256'
@@ -2982,7 +3007,7 @@ To implement signing:
                            security: {
                              authn_requests_signed: true,  # enable signature on AuthNRequest
                              want_assertions_signed: true,  # enable the requirement of signed assertion
-                             want_assertions_encrypted: false,  # enable the requirement of encrypted assertion 
+                             want_assertions_encrypted: false,  # enable the requirement of encrypted assertion
                              metadata_signed: false,  # enable signature on Metadata
                              signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
                              digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256',
@@ -3019,7 +3044,7 @@ To implement signing:
                         security: {
                           authn_requests_signed: true,  # enable signature on AuthNRequest
                           want_assertions_signed: true,  # enable the requirement of signed assertion
-                          want_assertions_encrypted: false,  # enable the requirement of encrypted assertion 
+                          want_assertions_encrypted: false,  # enable the requirement of encrypted assertion
                           metadata_signed: false,  # enable signature on Metadata
                           signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
                           digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256',
@@ -3079,7 +3104,7 @@ see [Enable OmniAuth for an existing user](omniauth.md#enable-omniauth-for-an-ex
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Use group SAML SSO if you have to allow access through multiple SAML IdPs on your
 self-managed instance.
@@ -3221,6 +3246,12 @@ such as the following:
 | Additional URLs | Optional | May include the issuer, identifier, or assertion consumer service URL in other fields on some providers. |
 
 For example configurations, see the [notes on specific providers](#set-up-identity-providers).
+
+## Configure SAML with Geo
+
+To configure Geo with SAML, see [Configuring instance-wide SAML](../administration/geo/replication/single_sign_on.md#configuring-instance-wide-saml).
+
+For more information, see [Geo with Single Sign On (SSO)](../administration/geo/replication/single_sign_on.md).
 
 ## Glossary
 

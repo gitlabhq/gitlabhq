@@ -195,29 +195,7 @@ module Banzai
         def objects_for_paths(paths, absolute_path)
           search_paths = absolute_path ? paths.pluck(1..-1) : paths
 
-          klass = parent_type.to_s.camelize.constantize
-          result = if parent_type == :namespace
-                     klass.id_in(Route.by_paths(search_paths).select(:namespace_id))
-                   else
-                     klass.where_full_path_in(search_paths)
-                   end
-
-          return result if parent_type == :group || parent_type == :namespace
-          return unless parent_type == :project
-
-          projects = result.includes(namespace: :route)
-            .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
-
-          return projects unless absolute_path
-
-          # If we make it to here, then we're handling absolute path(s).
-          # Which means we need to also search groups as well as projects.
-          # Possible future optimization might be to use Route along the lines of:
-          #   Routable.where_full_path_in(paths).includes(:source)
-          # See `routable.rb`
-          groups = Group.where_full_path_in(search_paths)
-
-          projects.to_a + groups.to_a
+          Route.by_paths(search_paths).preload(source: [:route, { namespace: :route }]).map(&:source)
         end
 
         def refs_cache

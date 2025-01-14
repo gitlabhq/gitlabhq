@@ -159,6 +159,13 @@ export const autocompleteDataSources = ({ fullPath, iid, workItemTypeId, isGroup
     workItemTypeId,
     isGroup,
   }),
+  iterations: autocompleteSourcesPath({
+    autocompleteType: 'iterations',
+    fullPath,
+    iid,
+    workItemTypeId,
+    isGroup,
+  }),
 });
 
 export const markdownPreviewPath = ({ fullPath, iid, isGroup = false }) => {

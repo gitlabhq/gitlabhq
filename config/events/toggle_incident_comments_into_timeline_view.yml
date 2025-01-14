@@ -4,9 +4,6 @@ action: toggle_incident_comments_into_timeline_view
 product_group: platform_insights
 milestone: '13.5'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44487
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

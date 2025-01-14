@@ -15,8 +15,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
     - i_code_review_click_whitespace_setting
-distribution:
-  - ce
 tiers:
   - free
   - premium

@@ -25,7 +25,7 @@ RSpec.describe Gitlab::GrapeLogging::Loggers::TokenLogger do
       end
 
       it 'adds the token information to log parameters' do
-        expect(subject).to eq( { token_id: 1, token_type: "PersonalAccessToken" })
+        expect(subject).to eq({ token_id: 1, token_type: "PersonalAccessToken" })
       end
     end
   end

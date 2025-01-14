@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 To bring existing projects to GitLab, or copy GitLab groups and projects to a different location, you can:
 
@@ -83,12 +83,14 @@ difficult, but several tools exist including:
 ## User contribution and membership mapping
 
 DETAILS:
-**Offering:** GitLab.com, Self-managed
+**Offering:** GitLab.com, GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443557) for direct transfer in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `bulk_import_importer_user_mapping`. Disabled by default.
 > - Introduced in GitLab 17.6 [for Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/467084) [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `gitea_user_mapping`, and [for GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/466355) with flags named `importer_user_mapping` and `github_user_mapping`. Disabled by default.
 > - Introduced in GitLab 17.7 [for Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/466356) [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `bitbucket_server_user_mapping`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/472735) for direct transfer in GitLab 17.7.
+> - Enabled on GitLab.com for [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/499993), [Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/509897), and [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/498390) in GitLab 17.7.
+> - Enabled on self-managed for [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/499993), [Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/509897) and [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/498390) in GitLab 17.8.
 
 FLAG:
 The availability of this feature is controlled by feature flags.
@@ -98,7 +100,7 @@ NOTE:
 To leave feedback about this feature, add a comment to [issue 502565](https://gitlab.com/gitlab-org/gitlab/-/issues/502565).
 
 This method of user contribution and membership mapping is available for
-[direct transfer migrations](../../group/import/index.md) on:
+[direct transfer migrations](../../group/import/index.md), [GitHub importer](github.md), [Bitbucket Server importer](bitbucket_server.md), and [Gitea importer](gitea.md) on:
 
 - GitLab.com
 - GitLab self-managed when two feature flags are enabled
@@ -221,7 +223,7 @@ For Premium customers trying out Ultimate (Ultimate trial paid customer plan), P
 
 If these limits are not sufficient for your import, [contact GitLab Support](https://about.gitlab.com/support/).
 
-The above limits are for GitLab.com. Self-managed GitLab has no placeholder limits by default. A self-managed instance administrator can [set a placeholder limit](../../../administration/instance_limits.md#import-placeholder-user-limits) for their installation.
+The above limits are for GitLab.com. GitLab Self-Managed has no placeholder limits by default. A self-managed instance administrator can [set a placeholder limit](../../../administration/instance_limits.md#import-placeholder-user-limits) for their installation.
 
 ### Reassign contributions and memberships
 

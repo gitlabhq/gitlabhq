@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 The [DevOps Research and Assessment (DORA)](https://cloud.google.com/blog/products/devops-sre/using-the-four-keys-to-measure-your-devops-performance)
 team has identified four metrics that measure DevOps performance.
@@ -46,7 +46,7 @@ High deployment frequency means you can get feedback sooner and iterate faster t
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 **Status:** Experiment
 
 Deployment frequency forecasting (formerly named Value stream forecasting) uses a statistical forecasting model to predict productivity metrics and identify anomalies across the software development lifecycle.
@@ -140,6 +140,7 @@ GitLab calculates change failure rate as the number of incidents divided by the 
 - [GitLab incidents](../../operations/incident_management/incidents.md) are tracked.
 - All incidents are production incidents, regardless of the environment.
 - Change failure rate is used primarily as high-level stability tracking, which is why in a given day, all incidents and deployments are aggregated into a joined daily rate. Adding specific relations between deployments and incidents is proposed in [issue 444295](https://gitlab.com/gitlab-org/gitlab/-/issues/444295).
+- Change failure rate calculates duplicate incidents as separate entries, which results in double counting. [Issue 480920](https://gitlab.com/gitlab-org/gitlab/-/issues/480920) proposes a solution for a more accurate calculation.
 
 For example, if you have 10 deployments (considering one deployment per day) with two incidents on the first day and one incident on the last day, then your change failure rate is 0.3.
 
@@ -155,7 +156,7 @@ The first step is to benchmark the quality and stability, between groups and pro
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `dora_configuration`. Disabled by default. This feature is an [experiment](../../policy/development_stages_support.md).

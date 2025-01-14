@@ -6,7 +6,7 @@
 # Each table / view needs to have assigned gitlab_schema. For example:
 #
 # - gitlab_shared - defines a set of tables that are found on all databases (data accessed is dependent on connection)
-# - gitlab_main / gitlab_ci - defines a set of tables that can only exist on a given application database
+# - gitlab_main / gitlab_ci / gitlab_sec - defines a set of tables that can only exist on a given application database
 # - gitlab_geo - defines a set of tables that can only exist on the geo database
 # - gitlab_internal - defines all internal tables of Rails and PostgreSQL
 #
@@ -31,6 +31,7 @@ module Gitlab
         '_test_gitlab_main_cell_' => :gitlab_main_cell,
         '_test_gitlab_main_' => :gitlab_main,
         '_test_gitlab_ci_' => :gitlab_ci,
+        '_test_gitlab_sec_' => :gitlab_sec,
         '_test_gitlab_jh_' => :gitlab_jh,
         '_test_gitlab_embedding_' => :gitlab_embedding,
         '_test_gitlab_geo_' => :gitlab_geo,
@@ -77,13 +78,13 @@ module Gitlab
       end
 
       def self.table_schema!(name)
-        # rubocop:disable Gitlab/DocUrl
+        # rubocop:disable Gitlab/DocumentationLinks/HardcodedUrl
         self.table_schema(name) || raise(
           UnknownSchemaError,
           "Could not find gitlab schema for table #{name}: Any new or deleted tables must be added to the database dictionary " \
           "See https://docs.gitlab.com/ee/development/database/database_dictionary.html"
         )
-        # rubocop:enable Gitlab/DocUrl
+        # rubocop:enable Gitlab/DocumentationLinks/HardcodedUrl
       end
 
       def self.require_sharding_key?(schema)

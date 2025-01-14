@@ -3116,6 +3116,28 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#pages_unique_domain_enabled?' do
+    let(:project) { create(:project) }
+
+    subject { project.pages_unique_domain_enabled? }
+
+    context 'if unique domain is enabled' do
+      before do
+        project.project_setting.update!(pages_unique_domain_enabled: true, pages_unique_domain: 'foo123.example.com')
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'if unique domain is disabled' do
+      before do
+        project.project_setting.update!(pages_unique_domain_enabled: false)
+      end
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   describe '#default_branch_protected?' do
     let_it_be(:namespace) { create(:namespace) }
     let_it_be(:project) { create(:project, namespace: namespace) }
@@ -4071,6 +4093,61 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#notify_project_import_complete?' do
+    let(:import_type) { 'gitlab_project' }
+    let(:project) { build(:project, import_type: import_type) }
+
+    before do
+      allow(project).to receive(:forked?).and_return(false)
+    end
+
+    it 'returns false for forked projects' do
+      allow(project).to receive(:forked?).and_return(true)
+
+      expect(project.notify_project_import_complete?).to be(false)
+    end
+
+    it 'returns false for projects with a remote mirror' do
+      allow(project).to receive(:mirror?).and_return(true)
+
+      expect(project.notify_project_import_complete?).to be(false)
+    end
+
+    it 'returns false for unsupported import types' do
+      project.import_type = 'gitlab_project'
+
+      expect(project.notify_project_import_complete?).to be(false)
+    end
+
+    %w[github gitea bitbucket bitbucket_server].each do |import_type|
+      it "returns true for #{import_type}" do
+        project.import_type = import_type
+        expect(project.notify_project_import_complete?).to be(true)
+      end
+    end
+  end
+
+  describe '#safe_import_url' do
+    let_it_be(:import_url) { 'https://example.com' }
+    let_it_be(:project) do
+      create(
+        :project,
+        import_url: import_url,
+        import_data_attributes: { credentials: { user: 'user', password: 'password' } }
+      )
+    end
+
+    it 'returns import_url with credentials masked' do
+      expect(project.safe_import_url).to include('*****:*****')
+    end
+
+    it 'returns import_url with no credentials, masked or not' do
+      safe_import_url = project.safe_import_url(masked: false)
+
+      expect(safe_import_url).to eq(import_url)
+    end
+  end
+
   describe '#jira_import?' do
     let_it_be(:project) { build(:project, import_type: 'jira') }
     let_it_be(:jira_import) { build(:jira_import_state, project: project) }
@@ -4148,6 +4225,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     subject(:project) { build(:project, import_type: 'gitea') }
 
     it { expect(project.gitea_import?).to be true }
+  end
+
+  describe '#bitbucket_import?' do
+    subject(:project) { build(:project, import_type: 'bitbucket') }
+
+    it { expect(project.bitbucket_import?).to be true }
+  end
+
+  describe '#bitbucket_server_import?' do
+    subject(:project) { build(:project, import_type: 'bitbucket_server') }
+
+    it { expect(project.bitbucket_server_import?).to be true }
   end
 
   describe '#any_import_in_progress?' do
@@ -9771,6 +9860,34 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       project = build_stubbed(:project, namespace: namespace)
 
       expect(project.uploads_sharding_key).to eq(namespace_id: namespace.id)
+    end
+  end
+
+  describe '#pages_domain_present?' do
+    let_it_be(:project) { create(:project) }
+
+    before do
+      allow(project).to receive(:pages_url).and_return('https://example.com')
+    end
+
+    context 'when the domain matches pages_url' do
+      it 'returns true' do
+        expect(project.pages_domain_present?('https://example.com')).to be(true)
+      end
+    end
+
+    context 'when the domain exists in pages_domains' do
+      let!(:pages_domain) { create(:pages_domain, project: project, domain: 'custom.com') }
+
+      it 'returns true' do
+        expect(project.pages_domain_present?('https://custom.com')).to be(true)
+      end
+    end
+
+    context 'when the domain does not match pages_url or pages_domains' do
+      it 'returns false' do
+        expect(project.pages_domain_present?('https://unknown.com')).to be(false)
+      end
     end
   end
 end

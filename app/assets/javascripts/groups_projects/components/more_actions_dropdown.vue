@@ -71,7 +71,7 @@ export default {
           'data-confirm-btn-variant': 'danger',
           'data-testid': `leave-${this.namespaceType}-link`,
           rel: 'nofollow',
-          class: '!gl-text-red-500 js-leave-link',
+          class: '!gl-text-danger js-leave-link',
         },
       };
     },

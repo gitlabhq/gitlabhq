@@ -216,6 +216,7 @@ module QA
           it "returns admin user with configured credentials" do
             expect(described_class.admin_user.username).to eq(username)
             expect(described_class.admin_user.password).to eq(password)
+            expect(described_class.admin_user.admin?).to be(true)
           end
         end
 

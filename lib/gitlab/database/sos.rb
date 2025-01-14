@@ -4,10 +4,14 @@
 module Gitlab
   module Database
     module Sos
-      TASKS = [].freeze
+      TASKS = [
+        Sos::ShowAllSettings
+      ].freeze
 
-      def self.run
-        TASKS
+      def self.run(output_file)
+        Output.writing(output_file, mode: :directory) do |output|
+          TASKS.each { |t| t.run(output) }
+        end
       end
     end
   end

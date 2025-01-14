@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 This document describes how to configure runners in the GitLab UI.
 
@@ -29,7 +29,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-You can override the job timeout for instance runners on self-managed GitLab installations only.
+You can override the job timeout for instance runners on GitLab Self-Managed.
 
 On GitLab.com, you cannot override the job timeout for GitLab hosted instance runners and must use the [project defined timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) instead.
 
@@ -554,7 +554,7 @@ For this feature to work correctly, the submodules must be configured
 
 - the HTTP(S) URL of a publicly-accessible repository, or
 - a relative path to another repository on the same GitLab server. See the
-  [Git submodules](../git_submodules.md) documentation.
+  [Git submodules](git_submodules.md) documentation.
 
 You can provide additional flags to control advanced behavior using [`GIT_SUBMODULE_UPDATE_FLAGS`](#git-submodule-update-flags).
 

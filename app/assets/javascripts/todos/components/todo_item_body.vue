@@ -130,9 +130,7 @@ export default {
       if (this.todo.action === TODO_ACTION_TYPE_MEMBER_ACCESS_REQUESTED) {
         name = sprintf(s__('Todos|has requested access to %{what} %{which}'), {
           what: this.todo.memberAccessType,
-          // This one doesn't seem to be available via GraphQL.
-          // We probably want to move this logic to the backend anyhow...
-          which: this.todo.access_request_target_name,
+          which: this.todo.targetEntity.name,
         });
       }
 
@@ -141,8 +139,8 @@ export default {
       }
 
       if (this.todo.action === TODO_ACTION_TYPE_OKR_CHECKIN_REQUESTED) {
-        name = sprintf(s__('Todos|requested an OKR update for %{what}'), {
-          what: this.todo.targetEntity.title,
+        name = sprintf(s__('Todos|requested an OKR update for %{which}'), {
+          which: this.todo.targetEntity.name,
         });
       }
 
@@ -171,7 +169,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-items-start gl-px-2">
+  <div class="gl-flex gl-items-start gl-px-2" data-testid="todo-item-container">
     <div class="gl-mr-3 gl-hidden sm:gl-inline-block">
       <gl-avatar-link :href="author.webUrl">
         <gl-avatar :size="24" :src="author.avatarUrl" role="none" />
@@ -179,13 +177,17 @@ export default {
     </div>
     <div>
       <div v-if="showAuthorOnNote" class="gl-inline-flex gl-font-bold">
-        <gl-link v-if="author" :href="author.webUrl" class="!gl-text-default">{{
-          authorOnNote
-        }}</gl-link>
+        <gl-link
+          v-if="author"
+          :href="author.webUrl"
+          class="!gl-text-default"
+          data-testid="todo-author-name-content"
+          >{{ authorOnNote }}</gl-link
+        >
         <span v-else>{{ $options.i18n.removed }}</span>
         <span v-if="todo.note">:</span>
       </div>
-      <span v-if="actionName">
+      <span v-if="actionName" data-testid="todo-action-name-content">
         {{ actionName }}
       </span>
       <span v-if="noteText" v-safe-html="noteText"></span>

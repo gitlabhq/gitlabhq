@@ -1,6 +1,6 @@
 <script>
 import { debounce } from 'lodash';
-import { GlCollapsibleListbox, GlAvatar, GlIcon } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlButton, GlAvatar, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
@@ -25,6 +25,7 @@ export default {
   },
   components: {
     GlCollapsibleListbox,
+    GlButton,
     GlAvatar,
     GlIcon,
     UpdateReviewers,
@@ -157,13 +158,8 @@ export default {
     <template #default="{ loading, updateReviewers }">
       <gl-collapsible-listbox
         v-model="currentSelectedReviewers"
-        :toggle-text="__('Edit')"
-        toggle-class="*:!gl-text-default"
         :header-text="$options.i18n.selectReviewer"
         :reset-button-label="$options.i18n.unassign"
-        category="tertiary"
-        no-caret
-        size="small"
         searchable
         multiple
         placement="bottom-end"
@@ -177,6 +173,20 @@ export default {
         @hidden="updateReviewers"
         @reset="removeAllReviewers"
       >
+        <template #toggle>
+          <gl-button
+            class="js-sidebar-dropdown-toggle *:!gl-text-default"
+            size="small"
+            category="tertiary"
+            :loading="loading"
+            data-track-action="click_edit_button"
+            data-track-label="right_sidebar"
+            data-track-property="reviewer"
+            data-testid="reviewers-edit-button"
+          >
+            {{ __('Edit') }}
+          </gl-button>
+        </template>
         <template #list-item="{ item }">
           <span class="gl-flex gl-items-center">
             <div class="gl-relative gl-mr-3">

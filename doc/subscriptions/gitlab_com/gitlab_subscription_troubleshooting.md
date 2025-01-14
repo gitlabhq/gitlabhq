@@ -9,25 +9,57 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed
+**Offering:** GitLab.com, GitLab Self-Managed
 
-When you use subscriptions for GitLab.com or GitLab self-managed, you might encounter the following issues.
+When you purchase or use subscriptions for GitLab.com or GitLab self-managed, you might encounter the following issues.
 
 ## Credit card declined
 
-When purchasing a GitLab subscription, your credit card might be declined because:
+When you purchase a GitLab subscription, your credit card might be declined because:
 
 - The credit card details are incorrect. The most common cause for this is an incomplete or fake address.
 - The credit card account has insufficient funds.
 - The credit card has expired.
 - The transaction exceeds the credit limit or the card's maximum transaction amount.
+- The [transaction is not allowed](#error-transaction_not_allowed).
 
 Check with your financial institution to confirm if any of these reasons apply. If they don't
 apply, contact [GitLab Support](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293).
 
+### Error: `transaction_not_allowed`
+
+When you purchase a GitLab subscription, you might get an error that states:
+
+```plaintext
+Transaction declined.402 - [card_error/card_declined/transaction_not_allowed]
+Your card does not support this type of purchase.
+```
+
+This error indicates that the type of transaction you are making is restricted by your card issuer.
+It is a security measure designed to protect your account.
+
+Your transaction might be declined because of one or more of the following reasons:
+
+- Your card was issued in India and the transaction does not comply with [RBI's e-mandate rules](https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=12051&Mode=0).
+- Your card isn't activated for online purchases.
+- Your card has specific usage limitations.
+  For example, it is a debit card that is limited to local transactions only.
+- The transaction triggers your bank's security protocols.
+
+To resolve this issue, try the following:
+
+- For cards issued in India: Process your transaction through an authorized local reseller.
+  Reach out to one of the following GitLab partners in India:
+
+  - [Datamato Technologies Private Limited](https://partners.gitlab.com/english/directory/partner/1345598/datamato-technologies-private-limited)
+  - [FineShift Software Private Limited](https://partners.gitlab.com/English/directory/partner/1737250/fineshift-software-private-limited)
+
+- For cards issued outside of the United States: Ensure your card is enabled for international use, and verify if there are country-specific restrictions.
+- Contact your financial institution: Ask for the reason why your transaction was declined, and request that your card is enabled for this type of transaction. 
+
 ## Error: `Attempt_Exceed_Limitation`
 
-When purchasing a GitLab subscription, you might get the error
+When you purchase a GitLab subscription, you might get the error
 `Attempt_Exceed_Limitation - Attempt exceed the limitation, refresh page to try again.`.
 
 This issue occurs when the credit card form is re-submitted three times within one minute or six times within one hour.
@@ -35,7 +67,7 @@ To resolve this issue, wait a few minutes and retry the purchase.
 
 ## Error: `Subscription not allowed to add`
 
-When purchasing subscription add-ons (such as additional seats, compute minutes, storage, or GitLab Duo Pro)
+When you purchase subscription add-ons (such as additional seats, compute minutes, storage, or GitLab Duo Pro)
 you might get the error `Subscription not allowed to add...`.
 
 This issue occurs when you have an active subscription that:

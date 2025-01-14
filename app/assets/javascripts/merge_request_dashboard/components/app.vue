@@ -86,22 +86,32 @@ export default {
                   <div class="gl-overflow-x-auto">
                     <table class="gl-w-full">
                       <colgroup>
-                        <col style="width: 60px" />
-                        <col style="width: 70px" />
-                        <col style="width: 47%; min-width: 200px" />
+                        <col v-if="!newListsEnabled" style="width: 60px" />
+                        <col :style="newListsEnabled ? 'width: 210px;' : 'width: 70px;'" />
+                        <col
+                          :style="{ width: newListsEnabled ? '40%' : '47%', minWidth: '200px' }"
+                        />
                         <col style="width: 120px" />
                         <col style="width: 120px" />
-                        <col style="min-width: 200px" />
+                        <col :style="newListsEnabled ? 'width: 220px;' : 'min-width: 200px;'" />
                       </colgroup>
                       <thead class="gl-border-b gl-bg-subtle">
                         <tr>
-                          <th class="gl-pb-3 gl-pl-5 gl-pr-3" :aria-label="__('Pipeline status')">
+                          <th v-if="!newListsEnabled" class="gl-pb-3 gl-pl-5 gl-pr-3">
                             <gl-icon name="pipeline" />
                             <span class="gl-sr-only">{{ __('Pipeline status') }}</span>
                           </th>
-                          <th class="gl-px-3 gl-pb-3" :aria-label="__('Approvals')">
-                            <gl-icon name="approval" />
-                            <span class="gl-sr-only">{{ __('Approvals') }}</span>
+                          <th
+                            class="gl-px-3 gl-pb-3"
+                            :class="{ 'gl-text-sm gl-text-subtle': newListsEnabled }"
+                          >
+                            <template v-if="newListsEnabled">
+                              {{ __('Status') }}
+                            </template>
+                            <template v-else>
+                              <gl-icon name="approval" />
+                              <span class="gl-sr-only">{{ __('Approvals') }}</span>
+                            </template>
                           </th>
                           <th class="gl-px-3 gl-pb-3 gl-text-sm gl-text-subtle">
                             {{ __('Title') }}
@@ -115,7 +125,12 @@ export default {
                           <th
                             class="gl-pb-3 gl-pl-3 gl-pr-5 gl-text-right gl-text-sm gl-text-subtle"
                           >
-                            {{ __('Activity') }}
+                            <template v-if="newListsEnabled">
+                              {{ __('Checks') }}
+                            </template>
+                            <template v-else>
+                              {{ __('Activity') }}
+                            </template>
                           </th>
                         </tr>
                       </thead>
@@ -126,11 +141,15 @@ export default {
                             :key="mergeRequest.id"
                             :merge-request="mergeRequest"
                             :is-last="index === mergeRequests.length - 1"
+                            :list-id="list.id"
                             data-testid="merge-request"
                           />
                         </template>
                         <tr v-else>
-                          <td colspan="6" :class="{ 'gl-py-6 gl-text-center': !error }">
+                          <td
+                            :colspan="newListsEnabled ? 5 : 6"
+                            :class="{ 'gl-py-6 gl-text-center': !error }"
+                          >
                             <template v-if="loading">
                               {{ __('Loading...') }}
                             </template>
@@ -176,7 +195,10 @@ export default {
       </template>
     </gl-tabs>
     <div class="gl-mt-6 gl-text-center">
-      <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/497573">
+      <gl-link v-if="newListsEnabled" href="https://gitlab.com/gitlab-org/gitlab/-/issues/512314">
+        {{ __('Leave feedback') }}
+      </gl-link>
+      <gl-link v-else href="https://gitlab.com/gitlab-org/gitlab/-/issues/497573">
         {{ __('Leave feedback') }}
       </gl-link>
     </div>

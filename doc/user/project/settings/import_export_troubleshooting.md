@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 If you have problems with [migrating projects by using file exports](import_export.md), see the possible solutions below.
 
@@ -360,11 +360,3 @@ Marked stuck import jobs as failed. JIDs: xyz
 | High memory usage (see also some [analysis](https://gitlab.com/gitlab-org/gitlab/-/issues/18857)) | DB Commit sweet spot that uses less memory |
 | | [Netflix Fast JSON API](https://github.com/Netflix/fast_jsonapi) may help |
 | | Batch reading/writing to disk and any SQL |
-
-### Temporary solutions
-
-While the performance problems are not tackled, there is a process to workaround
-importing big projects, using a foreground import:
-
-[Foreground import](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/5384) of big projects for customers.
-(Using the import template in the [infrastructure tracker](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues))

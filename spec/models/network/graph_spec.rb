@@ -52,46 +52,26 @@ RSpec.describe Network::Graph, feature_category: :source_code_management do
   describe '#commits' do
     let(:graph) { described_class.new(project, 'refs/heads/master', project.repository.commit, nil) }
 
-    context 'when use_list_commits_rpc_network_graph FF is enabled' do
-      let(:opts) do
-        {
-          revisions: %w[--tags --branches],
-          pagination_params: { limit: 650 },
-          reverse: false,
-          order: :date,
-          ref: 'refs/heads/master',
-          skip: 0
-        }
-      end
-
-      before do
-        stub_feature_flags(use_list_commits_rpc_network_graph: true)
-      end
-
-      it 'only fetches the commits once using `list_all`', :request_store do
-        expect(Gitlab::Git::Commit).to receive(:list_all)
-                                         .with(project.repository.raw_repository, opts)
-                                         .once
-                                         .and_call_original
-
-        graph
-      end
-
-      it_behaves_like 'a collection of commits'
+    let(:opts) do
+      {
+        revisions: %w[--tags --branches],
+        pagination_params: { limit: 650 },
+        reverse: false,
+        order: :date,
+        ref: 'refs/heads/master',
+        skip: 0
+      }
     end
 
-    context 'when use_list_commits_rpc_network_graph FF is disabled' do
-      before do
-        stub_feature_flags(use_list_commits_rpc_network_graph: false)
-      end
+    it 'only fetches the commits once using `list_all`', :request_store do
+      expect(Gitlab::Git::Commit).to receive(:list_all)
+                                       .with(project.repository.raw_repository, opts)
+                                       .once
+                                       .and_call_original
 
-      it 'only fetches the commits once using `find_all`', :request_store do
-        expect(Gitlab::Git::Commit).to receive(:find_all).once.and_call_original
-
-        graph
-      end
-
-      it_behaves_like 'a collection of commits'
+      graph
     end
+
+    it_behaves_like 'a collection of commits'
   end
 end

@@ -12,7 +12,8 @@ RSpec.describe WebIde::Settings::Main, :web_ide_fast, feature_category: :web_ide
       [WebIde::Settings::ExtensionsGalleryMetadataGenerator, :map],
       [Gitlab::Fp::Settings::EnvVarOverrideProcessor, :and_then],
       [WebIde::Settings::ExtensionsGalleryValidator, :and_then],
-      [WebIde::Settings::ExtensionsGalleryMetadataValidator, :and_then]
+      [WebIde::Settings::ExtensionsGalleryMetadataValidator, :and_then],
+      [WebIde::Settings::ExtensionsGalleryViewModelGenerator, :map]
     ]
   end
 

@@ -23,6 +23,8 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Appro
 
   let_it_be(:source_user) { generate_source_user(project, approved_event[:approver_username]) }
 
+  let(:cached_references) { placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id) }
+
   def expect_log(stage:, message:, iid:, event_id:)
     allow(Gitlab::BitbucketServerImport::Logger).to receive(:info).and_call_original
     expect(Gitlab::BitbucketServerImport::Logger)
@@ -35,12 +37,25 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Appro
     it 'pushes placeholder references' do
       importer.execute(approved_event)
 
-      cached_references = placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id)
       expect(cached_references).to contain_exactly(
         ['Approval', instance_of(Integer), 'user_id', source_user.id],
         ['MergeRequestReviewer', instance_of(Integer), 'user_id', source_user.id],
         ['Note', instance_of(Integer), 'author_id', source_user.id]
       )
+    end
+
+    context 'if approval is not persisted' do
+      before do
+        allow(Approval).to receive(:create).and_return(Approval.new)
+      end
+
+      it 'does not push placeholder references for the approval or approval note' do
+        importer.execute(approved_event)
+
+        expect(cached_references).to contain_exactly(
+          ['MergeRequestReviewer', instance_of(Integer), 'user_id', source_user.id]
+        )
+      end
     end
 
     it 'creates the approval, reviewer and approval note' do
@@ -71,6 +86,26 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Appro
       expect_log(stage: 'import_approved_event', message: 'finished', iid: merge_request.iid, event_id: 4)
 
       importer.execute(approved_event)
+    end
+
+    context 'when approved event has no associated approver' do
+      let(:approved_event) { super().merge(approver_username: nil) }
+
+      it 'does not set an approver' do
+        expect_log(
+          stage: 'import_approved_event',
+          message: 'skipped due to missing user',
+          iid: merge_request.iid,
+          event_id: 4
+        )
+
+        expect { importer.execute(approved_event) }
+          .to not_change { merge_request.approvals.count }
+          .and not_change { merge_request.notes.count }
+          .and not_change { merge_request.reviewers.count }
+
+        expect(merge_request.approvals).to be_empty
+      end
     end
 
     context 'when user contribution mapping is disabled' do
@@ -109,7 +144,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Appro
       it 'does not push placeholder references' do
         importer.execute(approved_event)
 
-        cached_references = placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id)
         expect(cached_references).to be_empty
       end
 

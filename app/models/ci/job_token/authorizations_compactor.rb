@@ -27,7 +27,7 @@ module Ci
           end
 
           origin_project_id_batches.each do |batch|
-            projects = Project.where(id: batch)
+            projects = Project.where(id: batch).includes(:project_namespace)
             origin_project_traversal_ids += projects.map { |p| p.project_namespace.traversal_ids }
           end
 

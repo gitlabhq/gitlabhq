@@ -34,7 +34,7 @@ and you can scale a single installation to multiple tenants.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
 
@@ -53,7 +53,7 @@ GitLab supports the following Kubernetes versions. If you want to run
 GitLab in a Kubernetes cluster, you might need a different version of Kubernetes:
 
 - For the [Helm Chart](https://docs.gitlab.com/charts/installation/cloud/index.html).
-- For [GitLab Operator](https://docs.gitlab.com/operator/installation.html#kubernetes).
+- For [GitLab Operator](https://docs.gitlab.com/operator/installation.html).
 
 You can upgrade your
 Kubernetes version to a supported version at any time:

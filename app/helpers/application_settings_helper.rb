@@ -543,7 +543,8 @@ module ApplicationSettingsHelper
       :code_suggestions_api_rate_limit,
       :require_personal_access_token_expiry,
       :observability_backend_ssl_verification_enabled,
-      :show_migrate_from_jenkins_banner
+      :show_migrate_from_jenkins_banner,
+      :ropc_without_client_credentials
     ].tap do |settings|
       unless Gitlab.com?
         settings << :resource_usage_limits
@@ -616,7 +617,7 @@ module ApplicationSettingsHelper
 
   def signup_form_data
     {
-      host: new_user_session_url(host: Gitlab.config.gitlab.host),
+      host: new_user_registration_url(host: Gitlab.config.gitlab.host),
       settings_path: general_admin_application_settings_path(anchor: 'js-signup-settings'),
       signup_enabled: @application_setting[:signup_enabled].to_s,
       require_admin_approval_after_user_signup: @application_setting[:require_admin_approval_after_user_signup].to_s,
@@ -636,7 +637,9 @@ module ApplicationSettingsHelper
       supported_syntax_link_url: 'https://github.com/google/re2/wiki/Syntax',
       email_restrictions: @application_setting.email_restrictions.to_s,
       after_sign_up_text: @application_setting[:after_sign_up_text].to_s,
-      pending_user_count: pending_user_count
+      pending_user_count: pending_user_count,
+      # This is going to be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/509583
+      seat_control: ''
     }
   end
 end

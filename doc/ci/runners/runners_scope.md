@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 GitLab Runner has the following types of runners, which are available based on who you want to have access:
 
@@ -241,7 +241,7 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 
-You can create a group runner for your self-managed GitLab instance or for GitLab.com.
+You can create a group runner for GitLab Self-Managed or for GitLab.com.
 When you create a runner, it is assigned a runner authentication token that you use to register it.
 The runner uses the token to authenticate with GitLab when it picks up jobs from the job queue.
 
@@ -306,7 +306,7 @@ Prerequisites:
 - You must have the Maintainer or Owner role for the group.
 
 You can view all runners for a group and its subgroups and projects.
-You can do this for your self-managed GitLab instance or for GitLab.com.
+You can do this for GitLab Self-Managed or for GitLab.com.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Build > Runners**.
@@ -371,7 +371,7 @@ To delete a single or multiple group runners:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363012) in GitLab 15.1.
 
@@ -434,6 +434,16 @@ NOTE:
 Project runners do not get instance with forked projects automatically.
 A fork *does* copy the CI/CD settings of the cloned repository.
 
+### Project runner ownership
+
+When a runner first connects to a project, that project becomes the runner's owner.
+
+If you delete the owner project:
+
+1. GitLab finds all other projects that share the runner.
+1. GitLab assigns ownership to the project with the oldest association.
+1. If no other projects share the runner, GitLab deletes the runner automatically.
+
 ### Create a project runner with a runner authentication token
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383143) in GitLab 15.10. Deployed behind the `create_runner_workflow_for_namespace` [flag](../../administration/feature_flags.md). Disabled by default.
@@ -444,7 +454,7 @@ Prerequisites:
 
 - You must have the Maintainer role for the project.
 
-You can create a project runner for your self-managed GitLab instance or for GitLab.com. When you create a runner,
+You can create a project runner for GitLab Self-Managed or for GitLab.com. When you create a runner,
 it is assigned a runner authentication token that you use to register to the runner. The runner uses the token to
 authenticate with GitLab when it picks up jobs from the job queue.
 
@@ -599,7 +609,7 @@ A runner can have one of the following statuses.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377963) in GitLab 15.8.
 
@@ -623,7 +633,7 @@ To view runner statistics:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365078) in GitLab 15.3.
 

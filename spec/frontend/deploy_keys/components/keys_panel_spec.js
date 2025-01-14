@@ -45,6 +45,12 @@ describe('Deploy keys panel', () => {
     expect(findEmptyState().text()).toBe('No deploy keys found, start by adding a new one above.');
   });
 
+  it('renders help box with empty search text if keys are empty on search', () => {
+    mountComponent({ keys: [], hasSearch: true });
+    expect(findEmptyState().exists()).toBe(true);
+    expect(findEmptyState().text()).toBe('No search results found.');
+  });
+
   it('renders no table header if keys are empty', () => {
     mountComponent({ keys: [] });
     expect(findTableRowHeader().exists()).toBe(false);

@@ -118,7 +118,12 @@ module Types
       Types::WorkItems::DescriptionTemplateType.connection_type,
       resolver: Resolvers::WorkItems::DescriptionTemplatesResolver,
       null: true, experiment: { milestone: '17.6' },
+      calls_gitaly: true,
       description: 'Work item description templates available to the namespace.'
+
+    field :allowed_custom_statuses, Types::WorkItems::Widgets::CustomStatusType.connection_type,
+      null: true, description: 'Allowed custom statuses for the namespace.',
+      experiment: { milestone: '17.8' }, resolver: Resolvers::WorkItems::Widgets::CustomStatusResolver
 
     markdown_field :description_html, null: true
 

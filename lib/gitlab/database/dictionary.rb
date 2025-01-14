@@ -161,9 +161,9 @@ module Gitlab
         attr_reader :file_path, :data
 
         def help_page_url
-          # rubocop:disable Gitlab/DocUrl -- link directly to docs.gitlab.com, always
+          # rubocop:disable Gitlab/DocumentationLinks/HardcodedUrl -- link directly to docs.gitlab.com, always
           'https://docs.gitlab.com/ee/development/database/database_dictionary.html'
-          # rubocop:enable Gitlab/DocUrl
+          # rubocop:enable Gitlab/DocumentationLinks/HardcodedUrl
         end
       end
     end

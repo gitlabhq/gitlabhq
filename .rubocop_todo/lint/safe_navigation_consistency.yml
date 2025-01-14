@@ -4,7 +4,6 @@ Lint/SafeNavigationConsistency:
   Exclude:
     - 'app/models/concerns/ci/deployable.rb'
     - 'app/policies/packages/policies/dependency_proxy/group_policy.rb'
-    - 'app/services/packages/npm/process_package_file_service.rb'
     - 'app/workers/container_expiration_policies/cleanup_container_repository_worker.rb'
     - 'ee/app/controllers/concerns/ee/groups/params.rb'
     - 'ee/app/models/ee/issue.rb'

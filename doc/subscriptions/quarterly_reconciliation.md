@@ -9,13 +9,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 In accordance with [the GitLab Subscription Agreement](https://about.gitlab.com/terms/),
 GitLab reviews your seat usage and sends you an invoice for any overages.
 This review occurs either quarterly (quarterly reconciliation process) or annually (annual true-up process).
 
-To prevent overages, you can [turn on restricted access](../user/group/manage.md#turn-on-restricted-access).
+To prevent overages, you can turn on restricted access for [your group](../user/group/manage.md#turn-on-restricted-access)
+or [your instance](../administration/settings/sign_up_restrictions.md#turn-on-restricted-access).
 This setting restricts groups from adding new billable users when there are no seats left in the subscription.
 
 ## Quarterly reconciliation versus annual true-ups

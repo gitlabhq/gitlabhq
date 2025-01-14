@@ -8,9 +8,6 @@ status: active
 time_frame: all
 data_source: system
 instrumentation_class: InstanceFeatureFlagsMetric
-distribution:
-  - ce
-  - ee
 tiers:
   - free
   - premium

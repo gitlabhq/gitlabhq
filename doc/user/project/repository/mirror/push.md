@@ -9,7 +9,7 @@ description: "Create a push mirror to passively receive changes from an upstream
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 A _push mirror_ is a downstream repository that [mirrors](index.md) the commits made
 to the upstream repository. Push mirrors passively receive copies of the commits made to the

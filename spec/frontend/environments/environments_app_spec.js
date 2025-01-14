@@ -195,12 +195,31 @@ describe('~/environments/components/environments_app.vue', () => {
     expect(text).toContainEqual(expect.stringMatching('production'));
   });
 
+  it('should show environments table headers when there are environments are present', async () => {
+    await createWrapperWithMocked({
+      environmentsApp: resolvedEnvironmentsApp,
+      folder: resolvedFolder,
+    });
+
+    const tableHeaders = wrapper.findByTestId('environments-table-header');
+    expect(tableHeaders.text()).toBe('Name Deployments Actions');
+  });
+
   it('should show an empty state with no environments', async () => {
     await createWrapperWithMocked({
       environmentsApp: { ...resolvedEnvironmentsApp, environments: [] },
     });
 
     expect(wrapper.findComponent(EmptyState).exists()).toBe(true);
+  });
+
+  it('should not show environments table headers with no environment', async () => {
+    await createWrapperWithMocked({
+      environmentsApp: { ...resolvedEnvironmentsApp, environments: [] },
+    });
+
+    const tableHeaders = wrapper.findByTestId('environments-table-header');
+    expect(tableHeaders.exists()).toBe(false);
   });
 
   it('should show a button to create a new environment', async () => {

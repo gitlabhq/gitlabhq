@@ -119,7 +119,7 @@ We can use the [`import/no-deprecated`](https://github.com/benmosher/eslint-plug
  * @param {Boolean} options.gatherArrays - gather array values into an Array
  * @returns {Object}
  *
- * ex: "?one=1&two=2" into {one: 1, two: 2}
+ *For example: "?one=1&two=2" into {one: 1, two: 2}
  * @deprecated Please use `queryToObject` instead. See https://gitlab.com/gitlab-org/gitlab/-/issues/283982 for more information
  */
 export function queryToObject(query, options = {}) {

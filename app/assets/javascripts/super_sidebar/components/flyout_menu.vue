@@ -124,7 +124,7 @@ export default {
     this.$options.cleanupFunction = autoUpdate(target, flyout, updatePosition);
   },
   beforeUnmount() {
-    this.$options.cleanupFunction();
+    this.$options.cleanupFunction?.();
     clearTimeout(this.hoverTimeoutId);
   },
   beforeDestroy() {

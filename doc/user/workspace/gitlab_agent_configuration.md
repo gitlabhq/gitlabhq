@@ -9,7 +9,7 @@ description: "Configure the GitLab agent for workspaces."
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112397) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
@@ -50,7 +50,10 @@ graph TD;
     class wp active;
 ```
 
-If a cluster agent is allowed for one group, for example `subgroup-1`, then the cluster agent is available for all projects under `subgroup-1` (including nested projects) to create a workspace. Therefore, you must consider the group where a cluster agent is allowed, as it might affect the scope within which a cluster agent may be available for hosting workspaces.
+If you allow a cluster agent for a specific group, for example, `subgroup-1`,
+it is available to create workspaces in all projects under that group.
+Consider the scope of the allowed group carefully, as it determines where the cluster agent can
+host workspaces.
 
 ## Allow a cluster agent for workspaces in a group
 
@@ -67,7 +70,7 @@ To allow a cluster agent for workspaces in a group:
 1. From the list of available agents, find the agent with status **Blocked**, and select **Allow**.
 1. On the confirmation dialog, select **Allow agent**.
 
-The status of the selected agent is updated to **Allowed**, and the agent is displayed in the **Allowed agents** tab.
+GitLab updates the status of the selected agent to **Allowed**, and displays the agent in the **Allowed agents** tab.
 
 ## Remove an allowed cluster agent for workspaces within a group
 
@@ -84,14 +87,21 @@ To remove an allowed cluster agent from a group:
 1. From the list of allowed agents, find the agent you want to remove, and select **Block**.
 1. On the confirmation dialog, select **Block agent**.
 
-The status of the selected agent is updated to **Blocked**, and the agent is removed from the **Allowed agents** tab.
+GitLab updates the status of the selected agent to **Blocked**, and removes the agent from the **Allowed agents** tab.
 
 Removing an allowed cluster agent from a group does not immediately stop running workspaces using this agent.
 Running workspaces stop when they are automatically terminated or manually stopped.
 
 ## Legacy agent authorization strategy
 
-In GitLab 17.1 and earlier, an agent doesn't have to be allowed to be available in a group for creating workspaces. You can use an agent present anywhere in the top-level group of a workspace project to create a workspace, as long as the remote development module is enabled and you have at least the Developer role for the top-level group.
+In GitLab 17.1 and earlier, the availability of an agent in a group was not a prerequisite for
+creating workspaces.
+You can use any agent in the top-level group of a workspace project to create a workspace,
+if both of the following are true:
+
+- The remote development module is enabled.
+- You have at least the Developer role for the top-level group.
+
 For example, if the path to your workspace project is `top-level-group/subgroup-1/subgroup-2/workspace-project`,
 you can use any configured agent in `top-level-group` and in any of its subgroups.
 
@@ -500,15 +510,15 @@ For more information about `labels`, see
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14910) in GitLab 17.6.
 
 Use this setting to automatically stop the agent's workspaces after the specified number of hours
-have passed since the workspace last transitioned to an active state.
+have passed, because the workspace last transitioned to an active state.
 An "active state" is defined as any non-stopped or non-terminated state.
 
-The timer for this setting starts when the workspace is created, and is reset every time the
-workspace is restarted.
+The timer for this setting starts when you create the workspace, and is reset every time you
+restart the workspace.
 It also applies even if the workspace is in an error or failure state.
 
 The default value is `36`, or one and a half days. This avoids stopping the workspace during
-the user's normal working hours.
+the user's typical working hours.
 
 **Example configuration:**
 
@@ -551,7 +561,7 @@ A valid value:
 - `max_active_hours_before_stop` + `max_stopped_hours_before_termination` must be less than or equal to `8760`.
 
 The automatic termination is only triggered on a full reconciliation, which happens every hour.
-This means that the workspace might be stopped for up to one hour longer than the configured value.
+This means that the workspace might stop for up to one hour longer than the configured value.
 
 ## Configuring user access with remote development
 

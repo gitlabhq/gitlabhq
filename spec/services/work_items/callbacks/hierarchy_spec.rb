@@ -14,6 +14,13 @@ RSpec.describe WorkItems::Callbacks::Hierarchy, feature_category: :portfolio_man
   let(:callback) { described_class.new(issuable: work_item, current_user: user, params: params) }
   let(:not_found_error) { 'No matching work item found. Make sure that you are adding a valid work item ID.' }
 
+  before_all do
+    # Ensure support bot user is created so creation doesn't count towards query limit
+    # and we don't try to obtain an exclusive lease within a transaction.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
+    Users::Internal.support_bot_id
+  end
+
   shared_examples 'raises a callback error' do |message_arg|
     it { expect { subject }.to raise_error(::Issuable::Callbacks::Base::Error, message_arg || message) }
   end

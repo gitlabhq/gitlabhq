@@ -4,9 +4,6 @@ action: iframe_loaded
 product_group: subscription_management
 milestone: '14.10'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84065
-distributions:
-  - ce
-  - ee
 tiers:
   - free
   - premium

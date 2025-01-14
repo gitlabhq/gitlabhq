@@ -8,7 +8,6 @@ import PackagesCleanupPolicy from '~/packages_and_registries/settings/project/co
 import PackagesCleanupPolicyForm from '~/packages_and_registries/settings/project/components/packages_cleanup_policy_form.vue';
 import { FETCH_SETTINGS_ERROR_MESSAGE } from '~/packages_and_registries/settings/project/constants';
 import packagesCleanupPolicyQuery from '~/packages_and_registries/settings/project/graphql/queries/get_packages_cleanup_policy.query.graphql';
-import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 
 import { packagesCleanupPolicyPayload, packagesCleanupPolicyData } from '../mock_data';
 
@@ -18,17 +17,13 @@ describe('Packages cleanup policy project settings', () => {
   let wrapper;
   let fakeApollo;
 
-  let defaultProvidedValues = {
+  const defaultProvidedValues = {
     projectPath: 'path',
-    glFeatures: {
-      reorganizeProjectLevelRegistrySettings: false,
-    },
   };
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findFormComponent = () => wrapper.findComponent(PackagesCleanupPolicyForm);
   const findHeader = () => wrapper.find('h2');
-  const findSettingsBlock = () => wrapper.findComponent(SettingsSection);
 
   const mountComponent = (provide = defaultProvidedValues, config) => {
     wrapper = shallowMount(PackagesCleanupPolicy, {
@@ -56,9 +51,9 @@ describe('Packages cleanup policy project settings', () => {
     });
     await waitForPromises();
 
+    expect(findHeader().text()).toBe('Manage storage used by package assets');
     expect(findFormComponent().exists()).toBe(true);
     expect(findFormComponent().props('value')).toEqual(packagesCleanupPolicyData);
-    expect(findSettingsBlock().exists()).toBe(true);
   });
 
   describe('fetchSettingsError', () => {
@@ -75,45 +70,6 @@ describe('Packages cleanup policy project settings', () => {
 
     it('shows an alert', () => {
       expect(findAlert().html()).toContain(FETCH_SETTINGS_ERROR_MESSAGE);
-    });
-  });
-
-  describe('when "reorganizeProjectLevelRegistrySettings" feature flag is enabled', () => {
-    beforeEach(() => {
-      defaultProvidedValues = {
-        ...defaultProvidedValues,
-        glFeatures: {
-          reorganizeProjectLevelRegistrySettings: true,
-        },
-      };
-    });
-
-    it('renders the setting form', async () => {
-      mountComponentWithApollo({
-        resolver: jest.fn().mockResolvedValue(packagesCleanupPolicyPayload()),
-      });
-      await waitForPromises();
-
-      expect(findHeader().text()).toBe('Manage storage used by package assets');
-      expect(findFormComponent().exists()).toBe(true);
-      expect(findFormComponent().props('value')).toEqual(packagesCleanupPolicyData);
-    });
-
-    describe('fetchSettingsError', () => {
-      beforeEach(async () => {
-        mountComponentWithApollo({
-          resolver: jest.fn().mockRejectedValue(new Error('GraphQL error')),
-        });
-        await waitForPromises();
-      });
-
-      it('the form is hidden', () => {
-        expect(findFormComponent().exists()).toBe(false);
-      });
-
-      it('shows an alert', () => {
-        expect(findAlert().html()).toContain(FETCH_SETTINGS_ERROR_MESSAGE);
-      });
     });
   });
 });

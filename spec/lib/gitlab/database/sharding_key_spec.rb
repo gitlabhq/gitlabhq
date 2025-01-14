@@ -14,7 +14,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'merge_request_diff_files_99208b8fac', # has a desired sharding key instead
       'ml_model_metadata', # has a desired sharding key instead.
       'p_ci_pipeline_variables', # has a desired sharding key instead
-      'sbom_occurrences_vulnerabilities' # has desired sharding key instead
+      'sbom_occurrences_vulnerabilities', # has desired sharding key instead
+      'web_hook_logs_daily' # temporary copy of web_hook_logs
     ]
   end
 
@@ -174,13 +175,15 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       SELECT c.table_name,
         CASE WHEN c.column_default IS NOT NULL THEN 'has default' ELSE NULL END,
         CASE WHEN c.is_nullable::boolean THEN 'nullable / not null constraint missing' ELSE NULL END,
-        CASE WHEN fk.name IS NULL THEN 'no foreign key' ELSE NULL END
+        CASE WHEN fk.name IS NULL THEN 'no foreign key' ELSE
+          CASE WHEN fk.is_valid THEN NULL ELSE 'foreign key exist but it is not validated' END
+        END
       FROM information_schema.columns c
       LEFT JOIN postgres_foreign_keys fk
       ON fk.constrained_table_name = c.table_name AND fk.constrained_columns = '{organization_id}' and fk.referenced_columns = '{id}'
       WHERE c.column_name = 'organization_id'
         AND (fk.referenced_table_name = 'organizations' OR fk.referenced_table_name IS NULL)
-        AND (c.column_default IS NOT NULL OR c.is_nullable::boolean OR fk.name IS NULL)
+        AND (c.column_default IS NOT NULL OR c.is_nullable::boolean OR fk.name IS NULL OR NOT fk.is_valid)
       ORDER BY c.table_name;
     SQL
 
@@ -221,7 +224,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     end
 
     expect(messages).to be_empty, "Expected all organization_id columns to be not nullable, have no default, " \
-      "and have a foreign key, but the following tables do not meet this criteria:" \
+      "and have a validated foreign key, but the following tables do not meet this criteria:" \
       "\n#{messages.join("\n")}\n\n" \
       "If this is a work in progress, please create an issue under " \
       "https://gitlab.com/groups/gitlab-org/-/epics/11670, " \
@@ -272,15 +275,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     tables_exempted_from_sharding_table_names = tables_exempted_from_sharding.map(&:table_name)
 
     tables_exempted_from_sharding.each do |entry|
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/471182
-      tables_to_be_fixed = %w[geo_nodes]
-
-      if entry.table_name.in?(tables_to_be_fixed)
-        puts "The table #{entry.table_name} needs to be fixed"
-
-        next
-      end
-
       fks = referenced_foreign_keys(entry.table_name).to_a
 
       fks.reject! { |fk| fk.constrained_table_name.in?(tables_exempted_from_sharding_table_names) }

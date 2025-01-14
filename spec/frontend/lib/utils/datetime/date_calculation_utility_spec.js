@@ -37,6 +37,7 @@ import {
   nMonthsBefore,
   nSecondsAfter,
   nSecondsBefore,
+  nHoursAfter,
   nWeeksAfter,
   nWeeksBefore,
   nYearsAfter,
@@ -532,6 +533,29 @@ describe('date addition/subtraction methods', () => {
       ({ inputAsString, numberOfDays, options, expectedAsString }) => {
         const inputDate = new Date(inputAsString);
         const actual = nDaysBefore(inputDate, numberOfDays, options);
+
+        expect(actual.toISOString()).toBe(expectedAsString);
+      },
+    );
+  });
+
+  describe('nHoursAfter', () => {
+    const input = '2024-12-23T00:00:00.000Z';
+
+    it.each`
+      inputAsString | numberOfHours | expectedAsString
+      ${input}      | ${1}          | ${'2024-12-23T01:00:00.000Z'}
+      ${input}      | ${3}          | ${'2024-12-23T03:00:00.000Z'}
+      ${input}      | ${-1}         | ${'2024-12-22T23:00:00.000Z'}
+      ${input}      | ${0}          | ${'2024-12-23T00:00:00.000Z'}
+      ${input}      | ${0.6}        | ${'2024-12-23T00:00:00.000Z'}
+      ${input}      | ${18}         | ${'2024-12-23T18:00:00.000Z'}
+      ${input}      | ${48}         | ${'2024-12-25T00:00:00.000Z'}
+    `(
+      'when the provided date is $inputAsString, numberOfHours is $numberOfHours, and the options parameter is $options, returns $expectedAsString',
+      ({ inputAsString, numberOfHours, expectedAsString }) => {
+        const inputDate = new Date(inputAsString);
+        const actual = nHoursAfter(inputDate, numberOfHours);
 
         expect(actual.toISOString()).toBe(expectedAsString);
       },

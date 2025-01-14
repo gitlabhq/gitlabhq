@@ -58,7 +58,7 @@ The results of the scans are exported as JSON reports that must comply with the 
 After the data is available as a Report Artifact it can be processed by the GitLab Rails application to enable our security features, including:
 
 - [Security Dashboards](../../user/application_security/security_dashboard/index.md), Merge Request widget, Pipeline view, and so on.
-- [Interactions with vulnerabilities](../../user/application_security/index.md#interact-with-findings-and-vulnerabilities).
+- [Security scan results](../../user/application_security/detect/security_scan_results.md).
 - [Approval rules](../../user/application_security/index.md#security-approvals-in-merge-requests).
 
 Depending on the context, the security reports may be stored either in the database or stay as Report Artifacts for on-demand access.
@@ -157,3 +157,9 @@ The corresponding Semgrep report must contain the `eslint_rule_id`:
 
 [Tracking of vulnerabilities](../integrations/secure.md#tracking-and-merging-vulnerabilities) relies on a combination of the two identifiers
 to remap DB records previously generated with the legacy analyzers to those generated with the new `semgrep` ones.
+
+## Development Setup: Package Metadata Database synchronization
+
+For security scanning and license compliance features that use the Package Metadata Database (PMDB), you need to set up PMDB synchronization in your development environment.
+
+See the [Package Metadata Synchronization guide](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/package_metadata_synchronization.md) in the GDK documentation for detailed setup instructions.

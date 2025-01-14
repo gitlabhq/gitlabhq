@@ -1,3 +1,7 @@
+import { identity } from 'lodash';
+
+const preserveMarkdown = () => gon.features?.preserveMarkdown;
+
 export const docHasSourceMap = (element) => {
   const commentNode = element.ownerDocument.body.lastChild;
   return Boolean(commentNode?.nodeName === '#comment' && commentNode.textContent);
@@ -24,6 +28,15 @@ const getRangeFromSourcePos = (sourcePos) => {
   };
 };
 
+const getMarkdownSourceKey = (element) => {
+  return element.dataset.sourcepos;
+};
+
+const getSourceTagName = (element) => {
+  if (!docHasSourceMap(element)) return undefined;
+  return element.tagName.toLowerCase();
+};
+
 export const getMarkdownSource = (element) => {
   if (!element.dataset.sourcepos) return undefined;
 
@@ -36,16 +49,8 @@ export const getMarkdownSource = (element) => {
 
     for (let i = range.start.row; i <= range.end.row; i += 1) {
       if (i === range.start.row && i === range.end.row) {
-        // include leading whitespace in the sourcemap
-        if (!source[i]?.substring(0, range.start.col).trim()) {
-          range.start.col = 0;
-        }
         elSource += source[i].substring(range.start.col, range.end.col + 1);
       } else if (i === range.start.row) {
-        // include leading whitespace in the sourcemap
-        if (!source[i]?.substring(0, range.start.col).trim()) {
-          range.start.col = 0;
-        }
         elSource += source[i]?.substring(range.start.col) || '';
       } else if (i === range.end.row) {
         elSource += `\n${source[i]?.substring(0, range.end.col + 1) || ''}`;
@@ -58,4 +63,24 @@ export const getMarkdownSource = (element) => {
   } catch {
     return undefined;
   }
+};
+
+export const getSourceMapAttributes = (queryElement = identity) => {
+  return {
+    sourceMarkdown: {
+      default: null,
+      parseHTML: (el) => (preserveMarkdown() ? getMarkdownSource(queryElement(el)) : null),
+      renderHTML: () => '',
+    },
+    sourceMapKey: {
+      default: null,
+      parseHTML: (el) => (preserveMarkdown() ? getMarkdownSourceKey(queryElement(el)) : null),
+      renderHTML: () => '',
+    },
+    sourceTagName: {
+      default: null,
+      parseHTML: (el) => (preserveMarkdown() ? getSourceTagName(queryElement(el)) : null),
+      renderHTML: () => '',
+    },
+  };
 };

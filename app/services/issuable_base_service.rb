@@ -216,6 +216,7 @@ class IssuableBaseService < ::BaseContainerService
 
       after_create(issuable)
       set_crm_contacts(issuable, add_crm_contact_emails)
+      execute_triggers
       execute_hooks(issuable)
 
       users_to_invalidate = issuable.allows_reviewers? ? issuable.assignees | issuable.reviewers : issuable.assignees
@@ -260,6 +261,10 @@ class IssuableBaseService < ::BaseContainerService
   def after_update(issuable, old_associations)
     handle_description_updated(issuable)
     handle_label_changes(issuable, old_associations[:labels])
+  end
+
+  def execute_triggers
+    # This is overridden in EE
   end
 
   def handle_description_updated(issuable)
@@ -328,6 +333,7 @@ class IssuableBaseService < ::BaseContainerService
           old_associations: old_associations
         )
 
+        execute_triggers
         issuable.update_project_counter_caches if update_project_counters
       end
     end

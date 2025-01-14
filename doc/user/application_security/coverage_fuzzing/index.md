@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Coverage-guided fuzz testing sends random inputs to an instrumented version of your application in
 an effort to cause unexpected behavior. Such behavior indicates a bug that you should address.
@@ -158,11 +158,11 @@ You can download the JSON report file from the CI/CD pipelines page. For more in
 
 ## Corpus registry
 
-The corpus registry is a library of corpuses. Corpuses in a project's registry are available to
-all jobs in that project. A project-wide registry is a more efficient way to manage corpuses than
+The corpus registry is a library of corpora. Corpora in a project's registry are available to
+all jobs in that project. A project-wide registry is a more efficient way to manage corpora than
 the default option of one corpus per job.
 
-The corpus registry uses the package registry to store the project's corpuses. Corpuses stored in
+The corpus registry uses the package registry to store the project's corpora. Corpora stored in
 the registry are hidden to ensure data integrity.
 
 When you download a corpus, the file is named `artifacts.zip`, regardless of the filename used when

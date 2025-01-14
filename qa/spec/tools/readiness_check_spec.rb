@@ -64,7 +64,9 @@ RSpec.describe QA::Tools::ReadinessCheck do
     end
 
     it "raises an error on validation" do
-      expect { readiness_check.perform }.to raise_error("#{msg_base} Timed out connecting to server")
+      expect { readiness_check.perform }.to raise_error(
+        "#{msg_base} Failed to obtain valid http response from example.com/users/sign_in"
+      )
     end
   end
 

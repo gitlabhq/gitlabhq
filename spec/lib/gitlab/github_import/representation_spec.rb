@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Representation do
+RSpec.describe Gitlab::GithubImport::Representation, feature_category: :importers do
   describe '.symbolize_hash' do
     it 'returns a Hash with the keys as Symbols' do
       hash = described_class.symbolize_hash('number' => 10)

@@ -456,6 +456,14 @@ module QA
       end
 
       class << self
+        def skip_selectors_check!
+          @check_selectors = false
+        end
+
+        def check_selectors?
+          @check_selectors.nil? ? true : @check_selectors
+        end
+
         def path
           raise NotImplementedError
         end
@@ -465,6 +473,7 @@ module QA
         end
 
         def errors
+          return [] unless check_selectors?
           return ["Page class does not have views / elements defined!"] if views.empty?
 
           views.flat_map(&:errors)

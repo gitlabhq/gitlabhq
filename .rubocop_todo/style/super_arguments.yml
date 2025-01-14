@@ -122,7 +122,6 @@ Style/SuperArguments:
     - 'ee/lib/gitlab/llm/chain/utils/chat_authorizer.rb'
     - 'ee/lib/google_cloud/artifact_registry/client.rb'
     - 'keeps/delete_obsolete_advanced_search_migrations.rb'
-    - 'keeps/mark_old_advanced_search_migrations_as_obsolete.rb'
     - 'lib/api/api_guard.rb'
     - 'lib/api/entities/project_with_access.rb'
     - 'lib/backup/targets/database.rb'

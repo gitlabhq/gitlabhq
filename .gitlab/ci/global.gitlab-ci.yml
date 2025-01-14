@@ -196,21 +196,43 @@
     - *node-modules-cache
 
 .qa-bundler-variables: &qa-bundler-variables
-  variables:
-    BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
-    BUNDLE_SILENCE_ROOT_WARNING: "true"
-    BUNDLE_PATH: vendor
-    BUNDLE_WITHOUT: development
+  BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
+  BUNDLE_SILENCE_ROOT_WARNING: "true"
+  BUNDLE_PATH: vendor
+  BUNDLE_WITHOUT: development
+
+.cng-helm-cache: &cng-helm-cache
+  key: cng-helm-cache-${GITLAB_HELM_CHART_REF}
+  paths:
+    - $CNG_HELM_REPOSITORY_CACHE
+  policy: pull
 
 .qa-cache:
-  <<: *qa-bundler-variables
+  variables: *qa-bundler-variables
   cache:
     - *qa-ruby-gems-cache
 
 .qa-cache-push:
-  <<: *qa-bundler-variables
+  variables: *qa-bundler-variables
   cache:
     - <<: *qa-ruby-gems-cache
+      policy: pull-push
+
+.cng-qa-cache:
+  variables:
+    CNG_HELM_REPOSITORY_CACHE: $CI_PROJECT_DIR/qa/tmp/helm-cng
+    <<: *qa-bundler-variables
+  cache:
+    - *qa-ruby-gems-cache
+    - *cng-helm-cache
+
+.cng-qa-cache-push:
+  variables:
+    CNG_HELM_REPOSITORY_CACHE: $CI_PROJECT_DIR/qa/tmp/helm-cng
+    <<: *qa-bundler-variables
+  cache:
+    - *qa-ruby-gems-cache
+    - <<: *cng-helm-cache
       policy: pull-push
 
 .yarn-cache:
@@ -238,22 +260,6 @@
   cache:
     - *node-modules-cache  # We don't push this cache as it's already rebuilt by `update-assets-compile-*-cache`
     - *storybook-node-modules-cache-push
-
-.code-quality-cache: &code-quality-cache
-  paths:
-    - gl-code-quality-report.json
-
-.code-quality-cache-push:
-  cache:
-    - key: $CI_COMMIT_BRANCH-code-quality-cache
-      <<: *code-quality-cache
-      policy: push
-
-.code-quality-cache-master-pull:
-  cache:
-    - key: master-code-quality-cache
-      <<: *code-quality-cache
-      policy: pull  # Docs pipelines can save time by pulling a copy of the code quality report from the latest master pipeline.
 
 .redis-services:
   services:
@@ -307,7 +313,7 @@
 
 .zoekt-services:
   services:
-    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.8
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.9
       alias: zoekt-ci-image
 
 .ai-gateway-variables:
@@ -526,8 +532,7 @@
     - name: clickhouse/clickhouse-server:23.11.3.23-alpine
       alias: clickhouse
   variables:
-    CLICKHOUSE_USER: clickhouse
-    CLICKHOUSE_PASSWORD: clickhouse
+    CLICKHOUSE_USER: default
     CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
     CLICKHOUSE_DB: gitlab_clickhouse_test
 

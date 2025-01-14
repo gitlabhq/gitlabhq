@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 By default, a GitLab Runner polls a GitLab instance for new CI/CD
 jobs periodically. The actual polling interval [depends on the `check_interval` and number of runners configured in the runner configuration file](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#how-check_interval-works).

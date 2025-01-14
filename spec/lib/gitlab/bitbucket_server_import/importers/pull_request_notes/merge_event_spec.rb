@@ -5,7 +5,10 @@ require 'spec_helper'
 RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::MergeEvent, feature_category: :importers do
   include Import::UserMappingHelper
 
-  let_it_be(:project) { create(:project, :repository, :bitbucket_server_import, :import_user_mapping_enabled) }
+  let_it_be_with_reload(:project) do
+    create(:project, :repository, :bitbucket_server_import, :import_user_mapping_enabled)
+  end
+
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let_it_be(:now) { Time.now.utc.change(usec: 0) }
   let_it_be(:merge_event) do

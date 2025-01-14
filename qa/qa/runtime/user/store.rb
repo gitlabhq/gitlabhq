@@ -77,7 +77,12 @@ module QA
             return @admin_user = nil if Env.no_admin_environment?
 
             info("Initializing admin user using predefined credentials")
-            @admin_user = init_user(username: admin_username, password: admin_password, api_client: @admin_api_client)
+            @admin_user = init_user(
+              username: admin_username,
+              password: admin_password,
+              api_client: @admin_api_client,
+              admin: true
+            )
           end
           alias_method :initialize_admin_user, :admin_user
 
@@ -185,13 +190,15 @@ module QA
           # @param [String] username
           # @param [String] password
           # @param [QA::Runtime::API::Client] api_client
+          # @param [Boolean] admin
           # @return [QA::Resource::User]
-          def init_user(username:, password:, api_client: nil)
+          def init_user(username:, password:, api_client: nil, admin: false)
             return if username.nil? || password.nil?
 
             user = Resource::User.init do |user|
               user.username = username
               user.password = password
+              user.is_admin = admin
             end
 
             if api_client && client_belongs_to_user?(api_client, user)

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can use the [`needs`](../yaml/index.md#needs) keyword to create dependencies between jobs
 in a pipeline. Jobs run as soon as their dependencies are met, regardless of the pipeline's `stages`
@@ -69,20 +69,3 @@ By creating dependencies that don't unnecessarily
 block each other, your pipelines run as quickly as possible regardless of
 pipeline stages, ensuring output (including errors) is available to developers
 as quickly as possible.
-<!--- start_remove The following content will be removed on remove_date: '2024-12-19' -->
-
-## Needs dependency visualization (deprecated)
-
-WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/336560) in GitLab 17.1
-and was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156207) in 17.4.
-View `needs` relationships in the [full pipeline graph](../pipelines/index.md#group-jobs-by-stage-or-needs-configuration)
-instead.
-
-The needs dependency visualization makes it easier to visualize the dependencies
-between jobs in a pipeline. This graph displays all the jobs in a pipeline
-that need or are needed by other jobs. Jobs with no dependencies are not displayed in this view.
-
-To see the needs visualization, select **Needs** when viewing a pipeline that uses the `needs` keyword.
-Selecting a node highlights all the job paths it depends on.
-<!--- end_remove -->

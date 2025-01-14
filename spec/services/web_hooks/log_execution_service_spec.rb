@@ -55,17 +55,14 @@ RSpec.describe WebHooks::LogExecutionService, feature_category: :webhooks do
 
     context 'obtaining an exclusive lease' do
       let(:lease_key) { "web_hooks:update_hook_failure_state:#{project_hook.id}" }
+      let(:response_category) { :error }
 
       it 'updates failure state using a lease that ensures fresh state is written' do
-        service = described_class.new(hook: project_hook, log_data: data, response_category: :error)
-        # Write state somewhere else, so that the hook is out-of-date
-        WebHook.find(project_hook.id).update!(recent_failures: 5, disabled_until: 10.minutes.from_now, backoff_count: 1)
-
         lease = stub_exclusive_lease(lease_key, timeout: described_class::LOCK_TTL)
 
         expect(lease).to receive(:try_obtain)
         expect(lease).to receive(:cancel)
-        expect { service.execute }.to change { WebHook.find(project_hook.id).backoff_count }.to(2)
+        expect { service.execute }.to change { WebHook.find(project_hook.id).recent_failures }.to(1)
       end
 
       context 'when a lease cannot be obtained' do

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 The [**Admin** area](index.md) has the instance settings for CI/CD-related features,
 including runners, job artifacts, and the package registry.
@@ -329,8 +329,8 @@ from the **Admin** area:
    - **Maximum number of pipeline subscriptions to and from a project**
    - **Maximum number of pipeline schedules**
    - **Maximum number of needs dependencies that a job can have**
-   - **Maximum number of runners registered per group**
-   - **Maximum number of runners registered per project**
+   - **Maximum number of runners created or active in a group during the past seven days**
+   - **Maximum number of runners created or active in a project during the past seven days**
    - **Maximum number of downstream pipelines in a pipeline's hierarchy tree**
    - **Maximum number of instance-level CI/CD variables**
 <!-- vale gitlab_base.CurrentStatus = YES -->
@@ -381,7 +381,7 @@ To disable the banner:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) from GitLab Premium to GitLab Ultimate in 15.0.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9.
@@ -426,7 +426,7 @@ To select a CI/CD template for the required pipeline configuration:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 GitLab administrators can disable the forwarding of Maven requests to [Maven Central](https://search.maven.org/).
 
@@ -442,7 +442,7 @@ To disable forwarding Maven requests:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 GitLab administrators can disable the forwarding of npm requests to [npmjs.com](https://www.npmjs.com/).
 
@@ -458,7 +458,7 @@ To disable it:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 GitLab administrators can disable the forwarding of PyPI requests to [pypi.org](https://pypi.org/).
 

@@ -8,7 +8,7 @@ info: This page is owned by the Solutions Architecture team.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 If you want to provision a single GitLab instance on AWS, you have two options:
 

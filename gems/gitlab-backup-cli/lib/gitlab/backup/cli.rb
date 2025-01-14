@@ -6,6 +6,7 @@
 # while we have this dependency, we need this external require
 require "rainbow/ext/string"
 require 'active_support/all'
+require 'active_record'
 
 module Gitlab
   module Backup
@@ -15,6 +16,7 @@ module Gitlab
       autoload :BaseExecutor, 'gitlab/backup/cli/base_executor'
       autoload :Commands, 'gitlab/backup/cli/commands'
       autoload :Context, 'gitlab/backup/cli/context'
+      autoload :Services, 'gitlab/backup/cli/services'
       autoload :Dependencies, 'gitlab/backup/cli/dependencies'
       autoload :Errors, 'gitlab/backup/cli/errors'
       autoload :GitlabConfig, 'gitlab/backup/cli/gitlab_config'

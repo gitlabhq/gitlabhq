@@ -25,6 +25,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       scopes: ['api'],
       created_at: '2021-05-01T00:00:00.000Z',
       last_used_at: null,
+      last_used_ips: null,
       expired: false,
       expires_soon: true,
       expires_at: null,
@@ -39,6 +40,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       scopes: ['api', 'sudo'],
       created_at: '2022-04-21T00:00:00.000Z',
       last_used_at: '2022-04-21T00:00:00.000Z',
+      last_used_ips: ['192.168.0.1', '192.168.0.2'],
       expired: true,
       expires_soon: false,
       expires_at: new Date().toISOString(),
@@ -57,6 +59,9 @@ describe('~/access_tokens/components/access_token_table_app', () => {
         initialActiveAccessTokens: defaultActiveAccessTokens,
         noActiveTokensMessage,
         showRole,
+        glFeatures: {
+          patIp: true,
+        },
         ...props,
       },
     });
@@ -137,6 +142,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
           'Scopes',
           'Created',
           'Last Used',
+          'Last Used IPs',
           'Expires',
           'Action',
         ]);
@@ -152,6 +158,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
           'Scopes',
           'Created',
           'Last Used',
+          'Last Used IPs',
           'Expires',
           'Role',
           'Action',
@@ -168,9 +175,25 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       const assistiveElement = lastUsed.find('.gl-sr-only');
       expect(anchor.exists()).toBe(true);
       expect(anchor.attributes('href')).toBe(
-        '/help/user/profile/personal_access_tokens.md#view-the-last-time-a-token-was-used',
+        '/help/user/profile/personal_access_tokens.md#view-the-time-at-and-ips-where-a-token-was-last-used',
       );
       expect(assistiveElement.text()).toBe('The last time a token was used');
+    });
+
+    it('`Last Used IPs` header should contain a link and an assistive message', () => {
+      createComponent({ backendPagination });
+
+      const headers = wrapper.findAll('th');
+      const lastUsedIPs = headers.at(5);
+      const anchor = lastUsedIPs.find('a');
+      const assistiveElement = lastUsedIPs.find('.gl-sr-only');
+      expect(anchor.exists()).toBe(true);
+      expect(anchor.attributes('href')).toBe(
+        '/help/user/profile/personal_access_tokens.md#view-the-time-at-and-ips-where-a-token-was-last-used',
+      );
+      expect(assistiveElement.text()).toBe(
+        'The last five distinct IP addresses from where the token was used',
+      );
     });
 
     it('updates the table after new tokens are created', async () => {
@@ -178,7 +201,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       await triggerSuccess();
 
       const cells = findCells();
-      expect(cells).toHaveLength(16);
+      expect(cells).toHaveLength(18);
 
       // First row
       expect(cells.at(0).text()).toBe('a');
@@ -186,9 +209,10 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       expect(cells.at(2).text()).toBe('api');
       expect(cells.at(3).text()).not.toBe('Never');
       expect(cells.at(4).text()).toBe('Never');
-      expect(cells.at(5).text()).toBe('Never');
-      expect(cells.at(6).text()).toBe('Maintainer');
-      let buttons = cells.at(7).findAllComponents(GlButton);
+      expect(cells.at(5).text()).toBe('-');
+      expect(cells.at(6).text()).toBe('Never');
+      expect(cells.at(7).text()).toBe('Maintainer');
+      let buttons = cells.at(8).findAllComponents(GlButton);
       expect(buttons).toHaveLength(2);
       expect(buttons.at(0).attributes()).toMatchObject({
         'aria-label': 'Revoke',
@@ -213,14 +237,15 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       expect(buttons.at(1).props('category')).toBe('tertiary');
 
       // Second row
-      expect(cells.at(8).text()).toBe('b');
-      expect(cells.at(9).text()).toBe('Test description');
-      expect(cells.at(10).text()).toBe('api, sudo');
-      expect(cells.at(11).text()).not.toBe('Never');
+      expect(cells.at(9).text()).toBe('b');
+      expect(cells.at(10).text()).toBe('Test description');
+      expect(cells.at(11).text()).toBe('api, sudo');
       expect(cells.at(12).text()).not.toBe('Never');
-      expect(cells.at(13).text()).toBe('Expired');
-      expect(cells.at(14).text()).toBe('Maintainer');
-      buttons = cells.at(15).findAllComponents(GlButton);
+      expect(cells.at(13).text()).not.toBe('Never');
+      expect(cells.at(14).text()).toBe('192.168.0.1, 192.168.0.2');
+      expect(cells.at(15).text()).toBe('Expired');
+      expect(cells.at(16).text()).toBe('Maintainer');
+      buttons = cells.at(17).findAllComponents(GlButton);
       expect(buttons.at(0).attributes('href')).toBe(
         '/-/user_settings/personal_access_tokens/2/revoke',
       );
@@ -243,13 +268,14 @@ describe('~/access_tokens/components/access_token_table_app', () => {
           });
 
           const headers = findHeaders();
-          expect(headers).toHaveLength(7);
+          expect(headers).toHaveLength(8);
           [
             'Token name',
             'Description',
             'Scopes',
             'Created',
             'Last Used',
+            'Last Used IPs',
             'Expires',
             'Role',
           ].forEach((text, index) => {
@@ -271,14 +297,14 @@ describe('~/access_tokens/components/access_token_table_app', () => {
           backendPagination,
         });
 
-        expect(findHeaders().at(7).text()).toBe('Action');
-        expect(findCells().at(7).findComponent(GlButton).exists()).toBe(false);
+        expect(findHeaders().at(8).text()).toBe('Action');
+        expect(findCells().at(8).findComponent(GlButton).exists()).toBe(false);
       });
 
       it.each([
         { revoke_path: '/-/user_settings/personal_access_tokens/1/revoke', rotate_path: null },
         { revoke_path: null, rotate_path: '/-/user_settings/personal_access_tokens/1/rotate' },
-      ])(`%p in some tokens, shows revoke or rotate button`, (input) => {
+      ])(`% in some tokens, shows revoke or rotate button`, (input) => {
         createComponent({
           initialActiveAccessTokens: [
             defaultActiveAccessTokens.map((data) => ({ ...data, ...input }))[0],
@@ -288,8 +314,8 @@ describe('~/access_tokens/components/access_token_table_app', () => {
           backendPagination,
         });
 
-        expect(findHeaders().at(7).text()).toBe('Action');
-        expect(findCells().at(7).findComponent(GlButton).exists()).toBe(true);
+        expect(findHeaders().at(8).text()).toBe('Action');
+        expect(findCells().at(8).findComponent(GlButton).exists()).toBe(true);
       });
     });
   });
@@ -302,7 +328,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
 
       // First and second rows
       expect(cells.at(0).text()).toBe('a');
-      expect(cells.at(8).text()).toBe('b');
+      expect(cells.at(9).text()).toBe('b');
 
       const headers = findHeaders();
       await headers.at(0).trigger('click');
@@ -310,7 +336,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
 
       // First and second rows have swapped
       expect(cells.at(0).text()).toBe('b');
-      expect(cells.at(8).text()).toBe('a');
+      expect(cells.at(9).text()).toBe('a');
     });
 
     it('sorts rows by date', async () => {
@@ -320,14 +346,14 @@ describe('~/access_tokens/components/access_token_table_app', () => {
 
       // First and second rows
       expect(cells.at(4).text()).toBe('Never');
-      expect(cells.at(12).text()).not.toBe('Never');
+      expect(cells.at(13).text()).not.toBe('Never');
 
       const headers = findHeaders();
       await headers.at(4).trigger('click');
 
       // First and second rows have swapped
       expect(cells.at(4).text()).not.toBe('Never');
-      expect(cells.at(12).text()).toBe('Never');
+      expect(cells.at(13).text()).toBe('Never');
     });
 
     describe('pagination', () => {
@@ -354,11 +380,11 @@ describe('~/access_tokens/components/access_token_table_app', () => {
 
         describe('when clicked on the second page', () => {
           it('shows only one token in the table', async () => {
-            expect(findCells()).toHaveLength(PAGE_SIZE * 7);
+            expect(findCells()).toHaveLength(PAGE_SIZE * 8);
             await findPagination().vm.$emit('input', 2);
             await nextTick();
 
-            expect(findCells()).toHaveLength(7);
+            expect(findCells()).toHaveLength(8);
           });
 
           it('scrolls to the top', async () => {
@@ -379,12 +405,11 @@ describe('~/access_tokens/components/access_token_table_app', () => {
     });
 
     it('does not sort rows alphabetically', async () => {
-      // await axios.waitForAll();
       const cells = findCells();
 
       // First and second rows
       expect(cells.at(0).text()).toBe('a');
-      expect(cells.at(8).text()).toBe('b');
+      expect(cells.at(9).text()).toBe('b');
 
       const headers = findHeaders();
       await headers.at(0).trigger('click');
@@ -392,7 +417,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
 
       // First and second rows are not swapped
       expect(cells.at(0).text()).toBe('a');
-      expect(cells.at(8).text()).toBe('b');
+      expect(cells.at(9).text()).toBe('b');
     });
 
     it('change the busy state in the table', async () => {

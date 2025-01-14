@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Merge request status badge component renders badge 1`] = `
+<gl-badge-stub
+  data-testid="merge-request-status-badge"
+  icon="comment-lines"
+  iconsize="md"
+  tag="span"
+  target="_self"
+  variant="muted"
+>
+  You commented
+</gl-badge-stub>
+`;
+
+exports[`Merge request status badge component renders badge when currentUser is a reviewer 1`] = `
+<gl-badge-stub
+  data-testid="merge-request-status-badge"
+  icon="status-alert"
+  iconopticallyaligned="true"
+  iconsize="md"
+  tag="span"
+  target="_self"
+  variant="muted"
+>
+  You requested changes
+</gl-badge-stub>
+`;

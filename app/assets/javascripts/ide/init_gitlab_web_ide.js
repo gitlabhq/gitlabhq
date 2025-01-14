@@ -38,6 +38,7 @@ export const initGitlabWebIDE = async (el) => {
     editorFont: editorFontJSON,
     codeSuggestionsEnabled,
     extensionsGallerySettings: extensionsGallerySettingsJSON,
+    settingsContextHash,
     signOutPath,
   } = el.dataset;
 
@@ -59,7 +60,7 @@ export const initGitlabWebIDE = async (el) => {
         'X-Requested-With': 'XMLHttpRequest',
       };
 
-  const isLanguageServerEnabled = gon.features.webIdeLanguageServer || false;
+  const isLanguageServerEnabled = gon?.features?.webIdeLanguageServer || false;
 
   try {
     // See ClientOnlyConfig https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/main/packages/web-ide-types/src/config.ts#L17
@@ -86,6 +87,7 @@ export const initGitlabWebIDE = async (el) => {
       },
       editorFont,
       extensionsGallerySettings,
+      ...(gon?.features?.webIdeSettingsContextHash && { settingsContextHash }),
       codeSuggestionsEnabled,
       handleContextUpdate: handleUpdateUrl,
       handleTracking,

@@ -34,7 +34,7 @@ export const CATEGORY_ICON_MAP = {
 /* eslint-enable @gitlab/require-i18n-strings */
 
 export const EMOJIS_PER_ROW = 9;
-export const EMOJI_ROW_HEIGHT = 34;
+export const EMOJI_ROW_HEIGHT = 36;
 export const CATEGORY_ROW_HEIGHT = 37;
 
 export const CACHE_VERSION_KEY = 'gl-emoji-map-version';

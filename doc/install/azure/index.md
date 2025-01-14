@@ -9,7 +9,7 @@ description: 'Learn how to spin up a pre-configured GitLab VM on Microsoft Azure
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 For users of the Microsoft Azure business cloud, GitLab has a pre-configured offering in
 the [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/marketplace/).

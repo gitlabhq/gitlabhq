@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 Configure Gitaly in one of two ways:
 
@@ -173,10 +173,22 @@ Gitaly and GitLab use two shared secrets for authentication:
 
    - Method 2:
 
-     Edit `/etc/gitlab/gitlab.rb`:
+     On all nodes running GitLab Rails, edit `/etc/gitlab/gitlab.rb`:
 
      ```ruby
      gitlab_shell['secret_token'] = 'shellsecret'
+     ```
+
+    On all nodes running Gitaly, edit `/etc/gitlab/gitlab.rb`:
+
+     ```ruby
+     gitaly['gitlab_secret'] = 'shellsecret'
+     ```
+
+     After those changes, reconfigure GitLab:
+
+     ```shell
+     sudo gitlab-ctl reconfigure
      ```
 
 :::TabTitle Self-compiled (source)
@@ -407,21 +419,21 @@ Configure Gitaly clients in one of two ways. These instructions are for unencryp
    # Use the same token value configured on all Gitaly servers
    gitlab_rails['gitaly_token'] = '<AUTH_TOKEN>'
 
-   git_data_dirs({
+   gitlab_rails['repositories_storages'] = {
      'default'  => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
      'storage1' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
      'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
-   })
+   }
    ```
 
    Alternatively, if each Gitaly server is configured to use a different authentication token:
 
    ```ruby
-   git_data_dirs({
+   gitlab_rails['repositories_storages'] = {
      'default'  => { 'gitaly_address' => 'tcp://gitaly1.internal:8075', 'gitaly_token' => '<AUTH_TOKEN_1>' },
      'storage1' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075', 'gitaly_token' => '<AUTH_TOKEN_1>' },
      'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075', 'gitaly_token' => '<AUTH_TOKEN_2>' },
-   })
+   }
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
@@ -481,23 +493,23 @@ configuration that mixes local and remote configuration. The following setup is 
   invalid for some of the Gitaly servers.
 
 ```ruby
-git_data_dirs({
+gitlab_rails['repositories_storages'] = {
   'default' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
-  'storage1' => { 'path' => '/mnt/gitlab/git-data' },
+  'storage1' => { 'gitaly_address' => 'unix:/var/opt/gitlab/gitaly/gitaly.socket' },
   'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
-})
+}
 ```
 
 To combine local and remote Gitaly servers, use an external address for the local Gitaly server. For
 example:
 
 ```ruby
-git_data_dirs({
+gitlab_rails['repositories_storages'] = {
   'default' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
   # Address of the GitLab server that also has Gitaly running on it
   'storage1' => { 'gitaly_address' => 'tcp://gitlab.internal:8075' },
   'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
-})
+}
 
 gitaly['configuration'] = {
   # ...
@@ -525,8 +537,8 @@ If it's excluded, default Git storage directory is used for that storage shard.
 ### GitLab requires a default repository storage
 
 When adding Gitaly servers to an environment, you might want to replace the original `default` Gitaly service. However, you can't
-reconfigure the GitLab application servers to remove the `default` entry from `git_data_dirs` because GitLab requires a
-`git_data_dirs` entry called `default`. [Read more](https://gitlab.com/gitlab-org/gitlab/-/issues/36175) about this limitation.
+reconfigure the GitLab application servers to remove the `default` storage because GitLab requires a storage called `default`.
+[Read more](https://gitlab.com/gitlab-org/gitlab/-/issues/36175) about this limitation.
 
 To work around the limitation:
 
@@ -610,14 +622,14 @@ When a repository cgroup reaches its:
 NOTE:
 When these limits are reached, performance may be reduced and users may be disconnected.
 
-### Configure repository cgroups (new method)
+### Configure repository cgroups
 
 > - This method of configuring repository cgroups was introduced in GitLab 15.1.
 > - `cpu_quota_us`[introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5422) in GitLab 15.10.
 > - `max_cgroups_per_repo` [introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5689) in GitLab 16.7.
+> - Documentation for the legacy method was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176694) in GitLab 17.8.
 
-To configure repository cgroups in Gitaly using the new method, use the following settings for the new configuration method
-to `gitaly['configuration'][:cgroups]` in `/etc/gitlab/gitlab.rb`:
+To configure repository cgroups in Gitaly, use the following settings for `gitaly['configuration'][:cgroups]` in `/etc/gitlab/gitlab.rb`:
 
 - `mountpoint` is where the parent cgroup directory is mounted. Defaults to `/sys/fs/cgroup`.
 - `hierarchy_root` is the parent cgroup under which Gitaly creates groups, and
@@ -676,42 +688,9 @@ gitaly['configuration'] = {
 }
 ```
 
-### Configure repository cgroups (legacy method)
-
-To configure repository cgroups in Gitaly using the legacy method, use the following settings
-in `/etc/gitlab/gitlab.rb`:
-
-- `cgroups_count` is the number of cgroups created. Each time a new
-  command is spawned, Gitaly assigns it to one of these cgroups based
-  on the command line arguments of the command. A circular hashing algorithm assigns
-  commands to these cgroups.
-- `cgroups_mountpoint` is where the parent cgroup directory is mounted. Defaults to `/sys/fs/cgroup`.
-- `cgroups_hierarchy_root` is the parent cgroup under which Gitaly creates groups, and
-  is expected to be owned by the user and group Gitaly runs as. A Linux package installation
-  creates the set of directories `mountpoint/<cpu|memory>/hierarchy_root`
-  when Gitaly starts.
-- `cgroups_memory_enabled` enables or disables the memory limit on cgroups.
-- `cgroups_memory_bytes` is the total memory limit each cgroup imposes on the processes added to it.
-- `cgroups_cpu_enabled` enables or disables the CPU limit on cgroups.
-- `cgroups_cpu_shares` is the CPU limit each cgroup imposes on the processes added to it. The maximum is 1024 shares,
-  which represents 100% of CPU.
-
-For example:
-
-```ruby
-# in /etc/gitlab/gitlab.rb
-gitaly['cgroups_count'] = 1000
-gitaly['cgroups_mountpoint'] = "/sys/fs/cgroup"
-gitaly['cgroups_hierarchy_root'] = "gitaly"
-gitaly['cgroups_memory_limit'] = 32212254720
-gitaly['cgroups_memory_enabled'] = true
-gitaly['cgroups_cpu_shares'] = 1024
-gitaly['cgroups_cpu_enabled'] = true
-```
-
 ### Configuring oversubscription
 
-In the previous example using the new configuration method:
+In the previous example:
 
 - The top level memory limit is capped at 60 GB.
 - Each of the 1000 cgroups in the repositories pool is capped at 20 GB.
@@ -895,7 +874,7 @@ result as you did at the start. For example:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab Self-Managed
 
 [Gitaly](index.md), the service that provides storage for Git
 repositories, can be configured to cache a short rolling window of Git
@@ -1139,7 +1118,7 @@ Configure the `cat-file` cache in the [Gitaly configuration file](reference.md).
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6876) on self-managed and GitLab Dedicated in GitLab 17.0.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
+On GitLab Self-Managed, by default this feature is available. To hide the feature,
 an administrator can [disable the feature flag](../feature_flags.md) named `gitaly_gpg_signing`.
 On GitLab.com, this feature is not available. On GitLab Dedicated, this feature is available.
 

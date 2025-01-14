@@ -326,19 +326,20 @@ module GraphqlHelpers
     "{ #{q} }"
   end
 
-  def graphql_mutation(name, input, fields = nil, excluded = [], &block)
+  def graphql_mutation(name, input, fields = nil, excluded = [], operation_name = nil, &block)
     raise ArgumentError, 'Please pass either `fields` parameter or a block to `#graphql_mutation`, but not both.' if fields.present? && block
 
     name = name.graphql_name if name.respond_to?(:graphql_name)
     mutation_name = GraphqlHelpers.fieldnamerize(name)
     input_variable_name = "$#{input_variable_name_for_mutation(name)}"
     mutation_field = GitlabSchema.mutation.fields[mutation_name]
+    operation_name = " #{operation_name}" if operation_name.present?
 
     fields = yield if block
     fields ||= all_graphql_fields_for(mutation_field.type.to_type_signature, excluded: excluded)
 
     query = <<~MUTATION
-      mutation(#{input_variable_name}: #{mutation_field.arguments['input'].type.to_type_signature}) {
+      mutation#{operation_name}(#{input_variable_name}: #{mutation_field.arguments['input'].type.to_type_signature}) {
         #{mutation_name}(input: #{input_variable_name}) {
           #{fields}
         }
