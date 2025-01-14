@@ -24,7 +24,6 @@ RSpec.describe Tooling::Danger::RubocopDiscourageTodoAddition, feature_category:
           - 'ee/spec/features/billings/billing_plans_spec.rb'
           - 'ee/spec/features/boards/scoped_issue_board_spec.rb'
           - 'ee/spec/features/boards/user_visits_board_spec.rb'
-          - 'ee/spec/features/ci_shared_runner_warnings_spec.rb'
           - 'ee/spec/features/bar_spec.rb'
           - 'ee/spec/features/epic_boards/epic_boards_spec.rb'
     YML

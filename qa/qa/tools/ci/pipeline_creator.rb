@@ -55,9 +55,14 @@ module QA
 
         # Generate E2E test pipelines yaml files
         #
+        # @param pipeline_types [Array] pipeline types to generate
         # @return [void]
-        def create
-          updated_pipeline_definitions.each do |type, yaml|
+        def create(pipeline_types = SUPPORTED_PIPELINES)
+          unless (pipeline_types - SUPPORTED_PIPELINES).empty?
+            raise(ArgumentError, "Unsupported pipeline type filter set!")
+          end
+
+          updated_pipeline_definitions(pipeline_types).each do |type, yaml|
             file_name = generated_yml_file_name(type)
             File.write(file_name, "#{yaml}\n#{variables_section}\n")
             logger.info("Pipeline definition file created: '#{file_name}'")
@@ -155,7 +160,7 @@ module QA
               "FEATURE_FLAGS" => env["QA_FEATURE_FLAGS"],
               # QA_SUITES is only used by test-on-omnibus due to pipeline being reusable in external projects
               "QA_SUITES" => executable_qa_suites,
-              "QA_TESTS" => tests.any? ? tests.join(" ") : nil
+              "QA_TESTS" => tests.join(" ")
             }.filter_map { |k, v| "  #{k}: \"#{v}\"" unless v.blank? }.join("\n")
 
             "#{variables}#{vars}"
@@ -211,9 +216,12 @@ module QA
 
         # Updated pipeline yml files
         #
+        # @param pipeline_types [Array<Symbol>]
         # @return [Hash<Symbol, String>]
-        def updated_pipeline_definitions
+        def updated_pipeline_definitions(pipeline_types)
           pipeline_job_runtimes.each_with_object({}) do |(pipeline_type, jobs), definitions|
+            next unless pipeline_types.include?(pipeline_type)
+
             logger.info("Processing pipeline '#{pipeline_type}'")
             definitions[pipeline_type] = jobs.reduce(pipeline_definitions[pipeline_type]) do |pipeline_yml, job|
               runtime_min = (job[:runtime] / 60).ceil

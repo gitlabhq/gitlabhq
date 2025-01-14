@@ -33,7 +33,6 @@
 - './ee/spec/features/burndown_charts_spec.rb'
 - './ee/spec/features/burnup_charts_spec.rb'
 - './ee/spec/features/ci_shared_runner_settings_spec.rb'
-- './ee/spec/features/ci_shared_runner_warnings_spec.rb'
 - './ee/spec/features/clusters/cluster_detail_page_spec.rb'
 - './ee/spec/features/dashboards/activity_spec.rb'
 - './ee/spec/features/dashboards/groups_spec.rb'

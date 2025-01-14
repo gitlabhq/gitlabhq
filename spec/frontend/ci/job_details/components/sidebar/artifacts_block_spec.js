@@ -1,8 +1,16 @@
-import { GlPopover } from '@gitlab/ui';
+import { GlBadge, GlPopover } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { trimText } from 'helpers/text_helper';
 import ArtifactsBlock from '~/ci/job_details/components/sidebar/artifacts_block.vue';
-import { getTimeago } from '~/lib/utils/datetime_utility';
+import {
+  lockedText,
+  formattedDate,
+  expiredArtifact,
+  nonExpiredArtifact,
+  lockedExpiredArtifact,
+  lockedNonExpiredArtifact,
+  reports,
+} from './constants';
 
 describe('Artifacts block', () => {
   let wrapper;
@@ -11,6 +19,7 @@ describe('Artifacts block', () => {
     mountExtended(ArtifactsBlock, {
       propsData: {
         helpUrl: 'help-url',
+        reports: [],
         ...propsData,
       },
     });
@@ -22,41 +31,7 @@ describe('Artifacts block', () => {
   const findBrowseBtn = () => wrapper.findByTestId('browse-artifacts-button');
   const findArtifactsHelpLink = () => wrapper.findByTestId('artifacts-help-link');
   const findPopover = () => wrapper.findComponent(GlPopover);
-
-  const expireAt = '2018-08-14T09:38:49.157Z';
-  const timeago = getTimeago();
-  const formattedDate = timeago.format(expireAt);
-  const lockedText =
-    'These artifacts are the latest. They will not be deleted (even if expired) until newer artifacts are available.';
-
-  const expiredArtifact = {
-    expireAt,
-    expired: true,
-    locked: false,
-  };
-
-  const nonExpiredArtifact = {
-    downloadPath: '/gitlab-org/gitlab-foss/-/jobs/98314558/artifacts/download',
-    browsePath: '/gitlab-org/gitlab-foss/-/jobs/98314558/artifacts/browse',
-    keepPath: '/gitlab-org/gitlab-foss/-/jobs/98314558/artifacts/keep',
-    expireAt,
-    expired: false,
-    locked: false,
-  };
-
-  const lockedExpiredArtifact = {
-    ...expiredArtifact,
-    downloadPath: '/gitlab-org/gitlab-foss/-/jobs/98314558/artifacts/download',
-    browsePath: '/gitlab-org/gitlab-foss/-/jobs/98314558/artifacts/browse',
-    expired: true,
-    locked: true,
-  };
-
-  const lockedNonExpiredArtifact = {
-    ...nonExpiredArtifact,
-    keepPath: undefined,
-    locked: true,
-  };
+  const findReportsBadge = () => wrapper.findComponent(GlBadge);
 
   describe('with expired artifacts that are not locked', () => {
     beforeEach(() => {
@@ -188,6 +163,31 @@ describe('Artifacts block', () => {
 
     it('links to artifacts help page', () => {
       expect(findArtifactsHelpLink().attributes('href')).toBe('/help/ci/jobs/job_artifacts');
+    });
+  });
+
+  describe('without reports', () => {
+    beforeEach(() => {
+      wrapper = createWrapper({
+        artifact: nonExpiredArtifact,
+      });
+    });
+
+    it('does not display report badge', () => {
+      expect(findReportsBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('with reports', () => {
+    beforeEach(() => {
+      wrapper = createWrapper({
+        artifact: nonExpiredArtifact,
+        reports,
+      });
+    });
+
+    it('does display report badge', () => {
+      expect(findReportsBadge().text()).toBe('sast');
     });
   });
 });

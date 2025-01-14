@@ -111,7 +111,7 @@ export default {
         icon="ellipsis_v"
         category="tertiary"
         placement="bottom-end"
-        class="note-action-button more-actions-toggle"
+        class="note-action-button more-actions-toggle print:gl-hidden"
         no-caret
       >
         <gl-disclosure-dropdown-item

@@ -52,30 +52,27 @@ The context Chat is aware of also depends on your subscription tier:
 
 In the GitLab UI, GitLab Duo Chat knows about these areas:
 
-| Area           | How to ask Chat                                                                                                                                                                             |
-|----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Epics          | From the epic, ask about `this epic`, `this`, or the URL. From any UI area, ask about the URL.                                                                                              |
-| Issues         | From the issue, ask about `this issue`, `this`, or the URL. From any UI area, ask about the URL.                                                                                            |
-| Code files     | From the single file, ask about `this code` or `this file`. From any UI area, ask about the URL.                                                                                            |
+| Area           | How to ask Chat |
+|----------------|-----------------|
+| Epics          | From the epic, ask about `this epic`, `this`, or the URL. From any UI area, ask about the URL. |
+| Issues         | From the issue, ask about `this issue`, `this`, or the URL. From any UI area, ask about the URL. |
+| Code files     | From the single file, ask about `this code` or `this file`. From any UI area, ask about the URL. |
 | Merge requests | From the merge request, ask about `this merge request`, `this`, or the URL. For more information, see [Ask about a specific merge request](examples.md#ask-about-a-specific-merge-request). |
-| Commits        | From the commit, ask about `this commit` or `this`. From any UI area, ask about the URL.                                                                                                    |
-| Pipeline jobs  | From the pipeline job, ask about `this pipeline job` or `this`. From any UI area, ask about the URL.                                                                                        |
+| Commits        | From the commit, ask about `this commit` or `this`. From any UI area, ask about the URL. |
+| Pipeline jobs  | From the pipeline job, ask about `this pipeline job` or `this`. From any UI area, ask about the URL. |
 
 In the IDEs, GitLab Duo Chat knows about these areas:
 
-| Area                         | How to ask Chat                                                                                                                                                                                                                                                                                        |
-|------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Selected lines in the editor | With the lines selected, ask about `this code` or `this file`. Chat is not aware of the file; you must select the lines you want to ask about.                                                                                                                                                         |
-| Epics                        | Ask about the URL.                                                                                                                                                                                                                                                                                     |
-| Issues                       | Ask about the URL.                                                                                                                                                                                                                                                                                     |
-| Files                        | Use the `/include` command to search for project file(s) to add to Duo Chat's context. After you've added the files, you can ask Duo Chat questions about the file contents. Available for VS Code only. For more information see [Include Context in the IDE](examples.md#ask-about-specific-files) |
+| Area                         | How to ask Chat |
+|------------------------------|-----------------|
+| Selected lines in the editor | With the lines selected, ask about `this code` or `this file`. Chat is not aware of the file; you must select the lines you want to ask about. |
+| Epics                        | Ask about the URL. |
+| Issues                       | Ask about the URL. |
+| Files                        | Use the `/include` command to search for project files to add to Duo Chat's context. After you've added the files, you can ask Duo Chat questions about the file contents. Available for VS Code only. For more information see [Include Context in the IDE](examples.md#ask-about-specific-files) |
 
 In addition, in the IDEs, when you use any of the slash commands,
 like `/explain`, `/refactor`, `/fix`, or `/tests,` Duo Chat has access to the
 code you selected.
-
-NOTE:
-[Repository X-Ray](../project/repository/code_suggestions/repository_xray.md) automatically enriches code generation requests for [GitLab Duo Code Suggestions](../project/repository/code_suggestions/index.md). If your project has access to Code Suggestions, then the `/refactor`, `/fix`, and `/tests` slash commands also have access to the latest Repository X-Ray report, and include that report as context for Duo.
 
 Duo Chat always has access to:
 
@@ -83,6 +80,17 @@ Duo Chat always has access to:
 - General programming and coding knowledge.
 
 We are continuously working to expand contextual awareness of Chat to include more types of content.
+
+### Additional features
+
+[Repository X-Ray](../project/repository/code_suggestions/repository_xray.md) automatically enriches
+code generation requests for [GitLab Duo Code Suggestions](../project/repository/code_suggestions/index.md).
+If your project has access to Code Suggestions, then the `/refactor`, `/fix`, and `/tests` slash commands
+also have access to the latest Repository X-Ray report, and include that report as context for Duo.
+
+The extensions for GitLab Duo scan for secrets and sensitive values matching known formats. The extensions
+redact this sensitive content locally before sending it to Duo Chat, or using it for code generation.
+This applies to files added via `/include`, and all generation commands.
 
 ## Use GitLab Duo Chat in the GitLab UI
 

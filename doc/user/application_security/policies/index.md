@@ -47,6 +47,19 @@ Policy changes made in a merge request take effect as soon as the merge request 
 that do not go through a merge request, but instead are committed directly to the default branch,
 may require up to 10 minutes before the policy changes take effect.
 
+## Deleting security policy projects
+
+> - The deletion protection for security policy projects was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/482967) in GitLab 17.8 [with a flag](../../../administration/feature_flags.md) named `reject_security_policy_project_deletion`. Disabled by default.
+> - The deletion protection for groups that contain security policy projects was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512043) in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `reject_security_policy_project_deletion_groups`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+To delete a security policy project or one of its parent groups, you must remove the link to it
+from all other projects or groups. Otherwise, an error message is displayed when you attempt
+to delete a linked security policy project or a parent group.
+
 ## Policy design guidelines
 
 When designing your policies, your goals should be to:

@@ -1307,6 +1307,45 @@ response to assign users as administrator based on group membership, configure G
 
 ::EndTabs
 
+### Configure a custom duration for ID Tokens
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377654) in GitLab 17.8.
+
+By default, GitLab ID tokens expire after 120 seconds. 
+
+To configure a custom duration for your ID tokens:
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['oidc_provider_openid_id_token_expire_in_seconds'] = 3600
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+
+:::TabTitle Self-compiled (source)
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     oidc_provider:
+      openid_id_token_expire_in_seconds: 3600
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#self-compiled-installations)
+   for the changes to take effect.
+
+::EndTabs
+
 ## Troubleshooting
 
 1. Ensure `discovery` is set to `true`. If you set it to `false`, you must

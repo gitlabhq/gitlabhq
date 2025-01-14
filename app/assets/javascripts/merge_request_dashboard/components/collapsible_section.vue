@@ -87,7 +87,9 @@ export default {
     </template>
 
     <template v-if="!hasMergeRequests && !loading" #empty>
-      {{ __('No merge requests match this list.') }}
+      <p class="gl-pt-1 gl-text-center gl-text-subtle">
+        {{ __('No merge requests match this list.') }}
+      </p>
     </template>
 
     <template #default>

@@ -6,6 +6,8 @@
 module Ci
   module JobToken
     class GroupScopeLink < Ci::ApplicationRecord
+      include BulkInsertSafe
+
       self.table_name = 'ci_job_token_group_scope_links'
 
       GROUP_LINK_LIMIT = 200
@@ -19,6 +21,7 @@ module Ci
 
       scope :with_source, ->(project) { where(source_project: project) }
       scope :with_target, ->(group) { where(target_group: group) }
+      scope :autopopulated, -> { where(autopopulated: true) }
 
       validates :source_project, presence: true
       validates :target_group, presence: true

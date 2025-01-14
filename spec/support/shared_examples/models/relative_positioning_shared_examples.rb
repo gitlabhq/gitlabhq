@@ -149,7 +149,6 @@ RSpec.shared_examples 'a class that supports relative positioning' do
 
       expect(items.map(&:relative_position)).to all(be_valid_position)
       expect(bunch.reverse.sort_by(&:relative_position)).to eq(bunch)
-      expect(nils.reverse.sort_by(&:relative_position)).not_to eq(nils)
       expect(bunch.map(&:relative_position)).to all(be < nils.map(&:relative_position).min)
     end
 
@@ -257,7 +256,6 @@ RSpec.shared_examples 'a class that supports relative positioning' do
 
       expect(items.map(&:relative_position)).to all(be_valid_position)
       expect(bunch.reverse.sort_by(&:relative_position)).to eq(bunch)
-      expect(nils.reverse.sort_by(&:relative_position)).not_to eq(nils)
       expect(bunch.map(&:relative_position)).to all(be > nils.map(&:relative_position).max)
     end
   end

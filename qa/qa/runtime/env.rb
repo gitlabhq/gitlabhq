@@ -102,6 +102,10 @@ module QA
         enabled?(ENV['SELECTIVE_EXECUTION_IMPROVED'], default: false)
       end
 
+      def mr_targeting_stable_branch?
+        /^[\d-]+-stable(-ee|-jh)?$/.match?(ENV['CI_MERGE_REQUEST_TARGET_BRANCH_NAME'] || "")
+      end
+
       def schedule_type
         ENV['SCHEDULE_TYPE']
       end

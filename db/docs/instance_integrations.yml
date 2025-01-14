@@ -4,6 +4,7 @@ classes:
 - Integrations::Instance::Integration
 - Integrations::Instance::Asana
 - Integrations::Instance::Assembla
+- Integrations::Instance::Bamboo
 feature_categories:
 - integrations
 description: Support 3rd party instance-wide integrations

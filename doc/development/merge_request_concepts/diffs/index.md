@@ -176,28 +176,8 @@ target branch is artificially merged into the source branch, then the resulting
 merge ref is compared to the source branch to calculate an accurate
 diff.
 
-Until we complete the epics ["use merge refs for diffs"](https://gitlab.com/groups/gitlab-org/-/epics/854)
-and ["merge conflicts in diffs"](https://gitlab.com/groups/gitlab-org/-/epics/4893),
-both options `main (base)` and `main (HEAD)` are available to be displayed in merge requests:
-
-![Merge ref head options](../img/merge_ref_head_options_v13_6.png)
-
-The `main (HEAD)` option is meant to replace `main (base)` in the future.
-
 In order to support comments for both options, diff note positions are stored for
 both `main (base)` and `main (HEAD)` versions ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198457) in 12.10).
 The position for `main (base)` version is stored in `Note#position` and
 `Note#original_position` columns, for `main (HEAD)` version `DiffNotePosition`
 has been introduced.
-
-One of the key challenges to deal with when working on merge ref diffs are merge
-conflicts. If the target and source branch contains a merge conflict, the branches
-cannot be automatically merged. The
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [recording on YouTube](https://www.youtube.com/watch?v=GFXIFA4ZuZw&feature=youtu.be&ab_channel=GitLabUnfiltered) <!-- Video published on 2020-07-24 -->
-is a quick introduction to the problem and the motivation behind the [epic](https://gitlab.com/groups/gitlab-org/-/epics/854).
-
-In 13.5 a solution for both-modified merge
-conflict has been
-[introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232484). However,
-there are more classes of merge conflicts that are to be
-[addressed](https://gitlab.com/groups/gitlab-org/-/epics/4893) in the future.

@@ -107,6 +107,7 @@ export default {
     placement="bottom-end"
     no-caret
     data-testid="wiki-more-dropdown"
+    class="print:gl-hidden"
     @shown="showDropdown"
     @hidden="hideDropdown"
   >

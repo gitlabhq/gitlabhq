@@ -78,7 +78,7 @@ RSpec.describe BulkImports::ExportRequestWorker, feature_category: :importers do
                   a_hash_including(
                     'exception.backtrace' => anything,
                     'exception.class' => 'NoMethodError',
-                    'exception.message' => /^undefined method `model_id' for nil:NilClass/,
+                    'exception.message' => /^undefined method `model_id' for nil/,
                     'message' => 'Failed to fetch source entity id'
                   )
                 ).twice

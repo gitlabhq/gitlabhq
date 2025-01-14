@@ -41,6 +41,7 @@ import {
   I18N_BULK_DELETE_PARTIAL_ERROR,
   I18N_BULK_DELETE_CONFIRMATION_TOAST,
   I18N_BULK_DELETE_MAX_SELECTED,
+  I18N_CHECKBOX,
 } from '../constants';
 import JobCheckbox from './job_checkbox.vue';
 import ArtifactsBulkDelete from './artifacts_bulk_delete.vue';
@@ -149,7 +150,7 @@ export default {
         return [
           {
             key: 'checkbox',
-            label: '',
+            label: I18N_CHECKBOX,
             thClass: 'gl-w-1/20',
           },
           ...this.$options.fields,

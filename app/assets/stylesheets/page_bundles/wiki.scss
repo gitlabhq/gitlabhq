@@ -140,11 +140,6 @@ ul.wiki-pages-list.content-list {
   .container-limited.limit-container-width {
     max-width: 100%;
   }
-
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-disclosure-dropdown {
-    display: none !important;
-  }
 }
 
 .edited-text {

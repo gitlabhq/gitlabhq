@@ -131,6 +131,16 @@ module QA
           expect(generated_cng_yaml).to include("some-other-job" => cng_pipeline_definition["some-other-job"])
         end
 
+        it "only creates specifically selected pipelines" do
+          pipeline_creator.create([:test_on_omnibus])
+
+          expect(File.exist?(cng_pipeline_file)).to be(false)
+        end
+
+        it "raises error on incorrect pipeline type in argument" do
+          expect { pipeline_creator.create([:test_on_dot_com]) }.to raise_error(ArgumentError)
+        end
+
         context "with specific test files" do
           let(:test_files) { ["some_spec.rb", "some_other_spec.rb"] }
 

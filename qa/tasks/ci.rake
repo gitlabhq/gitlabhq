@@ -11,49 +11,67 @@ namespace :ci do
     logger.info("*** Analyzing merge request changes*** ")
 
     pipeline_path = args[:pipeline_path] || "tmp"
-    diff = mr_diff
-    labels = mr_labels
     run_all_label_present = mr_labels.include?("pipeline:run-all-e2e")
     run_no_tests_label_present = mr_labels.include?("pipeline:skip-e2e")
 
     if run_all_label_present && run_no_tests_label_present
       raise "cannot have both pipeline:run-all-e2e and pipeline:skip-e2e labels. Please remove one of these labels"
-    elsif run_no_tests_label_present
-      logger.info("Merge request has pipeline:skip-e2e label, e2e test execution will be skipped.")
-      QA::Tools::Ci::PipelineCreator.create_noop(pipeline_path: pipeline_path, logger: logger)
-      next
     end
 
-    qa_changes = QA::Tools::Ci::QaChanges.new(diff, labels)
-    # skip running tests when only quarantine changes detected
+    pipeline_creator = QA::Tools::Ci::PipelineCreator.new(
+      [],
+      pipeline_path: pipeline_path,
+      logger: logger
+    )
+
+    if run_no_tests_label_present
+      logger.info("Merge request has pipeline:skip-e2e label, e2e test execution will be skipped.")
+      next pipeline_creator.create_noop
+    end
+
+    diff = mr_diff
+    qa_changes = QA::Tools::Ci::QaChanges.new(diff)
+
     if qa_changes.quarantine_changes?
       logger.info("Merge request contains only quarantine changes, e2e test execution will be skipped!")
-      QA::Tools::Ci::PipelineCreator.create_noop(pipeline_path: pipeline_path, logger: logger)
-      next
+      next pipeline_creator.create_noop
+    end
+
+    if qa_changes.only_spec_removal?
+      logger.info("Merge request contains only e2e spec removal, e2e test execution will be skipped!")
+      next pipeline_creator.create_noop
     end
 
     # on run-all label or framework changes do not infer specific tests
-    tests = run_all_label_present || qa_changes.framework_changes? ? nil : qa_changes.qa_tests
+    run_all_tests = run_all_label_present || qa_changes.framework_changes?
+    tests = run_all_tests ? [] : qa_changes.qa_tests
 
     if run_all_label_present
       logger.info("Merge request has pipeline:run-all-e2e label, full test suite will be executed")
     elsif qa_changes.framework_changes? # run all tests when framework changes detected
       logger.info("Merge request contains qa framework changes, full test suite will be executed")
-    elsif tests
-      logger.info("Detected following specs to execute: '#{tests}'")
+    elsif tests.any?
+      logger.info("Following specs were selected for execution: '#{tests}'")
     else
-      logger.info("No specific specs to execute detected, running full test suites will be executed")
+      logger.info("No specific specs to execute detected, full test suite will be executed")
     end
 
-    feature_flags = QA::Tools::Ci::FfChanges.new(diff).fetch
-
-    logger.info("*** Creating E2E test pipeline definitions ***")
-    QA::Tools::Ci::PipelineCreator.new(
-      tests&.split(" ") || [],
+    creator_args = {
       pipeline_path: pipeline_path,
       logger: logger,
-      env: { "QA_FEATURE_FLAGS" => feature_flags }
-    ).create
+      env: { "QA_FEATURE_FLAGS" => QA::Tools::Ci::FfChanges.new(diff).fetch }
+    }
+
+    logger.info("*** Creating E2E test pipeline definitions ***")
+    QA::Tools::Ci::PipelineCreator.new(tests, **creator_args).create
+    next if run_all_tests
+    next unless QA::Runtime::Env.selective_execution_improved_enabled? && !QA::Runtime::Env.mr_targeting_stable_branch?
+
+    pipelines_for_selective_improved = [:test_on_gdk]
+    logger.warn("*** Recreating #{pipelines_for_selective_improved} using spec list based on coverage mappings ***")
+    tests_from_mapping = qa_changes.qa_tests(from_code_path_mapping: true)
+    logger.info("Following specs were selected for execution: '#{tests_from_mapping}'")
+    QA::Tools::Ci::PipelineCreator.new(tests_from_mapping, **creator_args).create(pipelines_for_selective_improved)
   end
 
   desc "Export test run metrics to influxdb"

@@ -783,8 +783,6 @@
   - 1
 - - search_zoekt_default_branch_changed
   - 1
-- - search_zoekt_delete_project
-  - 1
 - - search_zoekt_delete_project_event
   - 1
 - - search_zoekt_index_marked_as_to_delete_event

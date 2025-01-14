@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlButtonGroup, GlLink, GlPopover } from '@gitlab/ui';
+import { GlBadge, GlButton, GlButtonGroup, GlLink, GlPopover } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -23,6 +23,7 @@ export default {
   },
   artifactsHelpPath: helpPagePath('ci/jobs/job_artifacts'),
   components: {
+    GlBadge,
     GlButton,
     GlButtonGroup,
     GlLink,
@@ -40,6 +41,10 @@ export default {
       type: String,
       required: true,
     },
+    reports: {
+      type: Array,
+      required: true,
+    },
   },
   computed: {
     isExpired() {
@@ -52,24 +57,35 @@ export default {
     willExpire() {
       return this.artifact?.expired === false && !this.isLocked;
     },
+    hasReports() {
+      return this.reports.length > 0;
+    },
   },
 };
 </script>
 <template>
   <div>
-    <div class="title gl-font-bold">
-      <span class="gl-mr-2">{{ $options.i18n.jobArtifacts }}</span>
-      <gl-link :href="$options.artifactsHelpPath" data-testid="artifacts-help-link">
-        <help-icon id="artifacts-help" />
-      </gl-link>
-      <gl-popover
-        target="artifacts-help"
-        :title="$options.i18n.jobArtifacts"
-        triggers="hover focus"
-      >
-        {{ $options.i18n.artifactsHelpText }}
-      </gl-popover>
+    <div class="gl-flex gl-items-center">
+      <div class="title gl-font-bold">
+        <span class="gl-mr-2">{{ $options.i18n.jobArtifacts }}</span>
+        <gl-link :href="$options.artifactsHelpPath" data-testid="artifacts-help-link">
+          <help-icon id="artifacts-help" />
+        </gl-link>
+        <gl-popover
+          target="artifacts-help"
+          :title="$options.i18n.jobArtifacts"
+          triggers="hover focus"
+        >
+          {{ $options.i18n.artifactsHelpText }}
+        </gl-popover>
+      </div>
+      <span v-if="hasReports" class="gl-ml-2">
+        <gl-badge v-for="(report, index) in reports" :key="index" class="gl-mr-2">
+          {{ report.file_type }}
+        </gl-badge>
+      </span>
     </div>
+
     <p
       v-if="isExpired || willExpire"
       class="build-detail-row"

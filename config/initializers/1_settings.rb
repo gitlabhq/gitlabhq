@@ -114,6 +114,9 @@ end
 
 Settings.omniauth['providers'] ||= []
 
+Settings['oidc_provider'] ||= {}
+Settings.oidc_provider['openid_id_token_expire_in_seconds'] = 120 if Settings.oidc_provider['openid_id_token_expire_in_seconds'].nil?
+
 # Handle backward compatibility with the renamed kerberos_spnego provider
 # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96335#note_1094265436
 Gitlab.ee do

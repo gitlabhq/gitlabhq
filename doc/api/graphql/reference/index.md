@@ -950,6 +950,23 @@ Returns [`Project`](#project).
 | ---- | ---- | ----------- |
 | <a id="queryprojectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. For example, `gitlab-org/gitlab-foss`. |
 
+### `Query.projectSecret`
+
+View a specific project secret.
+
+DETAILS:
+**Introduced** in GitLab 17.9.
+**Status**: Experiment.
+
+Returns [`ProjectSecret`](#projectsecret).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryprojectsecretname"></a>`name` | [`String!`](#string) | Name of the project secret to view. |
+| <a id="queryprojectsecretprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the secrets belong to. |
+
 ### `Query.projectSecrets`
 
 List project secrets.
@@ -27824,6 +27841,7 @@ Represents an entry from the Cloud License history.
 | <a id="linkedworkitemtypelinktype"></a>`linkType` | [`String!`](#string) | Type of link. |
 | <a id="linkedworkitemtypelinkupdatedat"></a>`linkUpdatedAt` | [`Time!`](#time) | Timestamp the link was updated. |
 | <a id="linkedworkitemtypeworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Linked work item. |
+| <a id="linkedworkitemtypeworkitemstate"></a>`workItemState` | [`WorkItemState!`](#workitemstate) | State of the linked work item. |
 
 ### `Location`
 

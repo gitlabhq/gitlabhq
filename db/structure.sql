@@ -6948,7 +6948,8 @@ CREATE TABLE alert_management_alert_assignees (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
     alert_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_f3efe02c81 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE alert_management_alert_assignees_id_seq
@@ -9087,7 +9088,8 @@ CREATE TABLE boards_epic_board_labels (
     id bigint NOT NULL,
     epic_board_id bigint NOT NULL,
     label_id bigint NOT NULL,
-    group_id bigint
+    group_id bigint,
+    CONSTRAINT check_c71449be47 CHECK ((group_id IS NOT NULL))
 );
 
 CREATE SEQUENCE boards_epic_board_labels_id_seq
@@ -11856,7 +11858,8 @@ CREATE TABLE dast_site_profile_secret_variables (
     project_id bigint,
     CONSTRAINT check_236213f179 CHECK ((length(encrypted_value) <= 13352)),
     CONSTRAINT check_8cbef204b2 CHECK ((char_length(key) <= 255)),
-    CONSTRAINT check_b49080abbf CHECK ((length(encrypted_value_iv) <= 17))
+    CONSTRAINT check_b49080abbf CHECK ((length(encrypted_value_iv) <= 17)),
+    CONSTRAINT check_d972e5f59d CHECK ((project_id IS NOT NULL))
 );
 
 COMMENT ON TABLE dast_site_profile_secret_variables IS '{"owner":"group::dynamic analysis","description":"Secret variables used in DAST on-demand scans"}';
@@ -17285,6 +17288,7 @@ CREATE TABLE packages_debian_project_distribution_keys (
     fingerprint text NOT NULL,
     project_id bigint,
     CONSTRAINT check_9e8a5eef0a CHECK ((char_length(fingerprint) <= 255)),
+    CONSTRAINT check_c2a4dc05d5 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_d188f6547f CHECK ((char_length(public_key) <= 524288))
 );
 

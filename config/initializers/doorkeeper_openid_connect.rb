@@ -23,6 +23,8 @@ Doorkeeper::OpenidConnect.configure do
     user.id
   end
 
+  expiration Gitlab.config.oidc_provider.openid_id_token_expire_in_seconds
+
   claims do
     with_options scope: :openid do |o|
       o.claim(:sub_legacy, response: [:id_token, :user_info]) do |user|
@@ -55,7 +57,9 @@ Doorkeeper::OpenidConnect.configure do
         end
       end
 
-      o.claim(:website, response: [:id_token, :user_info]) { |user| user.full_website_url if user.website_url.present? }
+      o.claim(:website, response: [:id_token, :user_info]) do |user|
+        user.full_website_url if user.website_url.present?
+      end
       o.claim(:profile, response: [:id_token, :user_info]) { |user| Gitlab::Routing.url_helpers.user_url user }
       o.claim(:picture, response: [:id_token, :user_info]) { |user| user.avatar_url(only_path: false) }
       o.claim(:groups) do |user|

@@ -209,6 +209,7 @@ The following GitLab application features are not available:
   - For more information, see the [Supporting AI Features on GitLab Dedicated](https://about.gitlab.com/direction/saas-platforms/dedicated/#supporting-ai-features-on-gitlab-dedicated)
 - Features other than [available features](#available-features) that must be configured outside of the GitLab user interface
 - Any functionality or feature behind a feature flag that is turned `off` by default
+- [Sigstore for keyless signing and verification](../../ci/yaml/signing_examples.md)
 
 The following features are not supported:
 

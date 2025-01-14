@@ -68,6 +68,9 @@ export default {
     externalLinks() {
       return filterAnnotations(this.job.annotations, 'external_link');
     },
+    reports() {
+      return this.job?.reports || [];
+    },
   },
   watch: {
     job(value, oldValue) {
@@ -101,6 +104,7 @@ export default {
           v-if="hasArtifact"
           class="gl-border-b gl-border-subtle gl-py-4"
           :artifact="artifact"
+          :reports="reports"
           :help-url="artifactHelpUrl"
         />
 
