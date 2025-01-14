@@ -94,7 +94,7 @@ export default {
       return [
         {
           type: FILTERED_SEARCH_TOKEN_LANGUAGE,
-          icon: 'lock',
+          icon: 'code',
           title: __('Language'),
           token: GlFilteredSearchToken,
           unique: true,

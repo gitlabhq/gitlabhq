@@ -5166,6 +5166,7 @@ Input type: `EnvironmentCreateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationenvironmentcreateautostopsetting"></a>`autoStopSetting` | [`AutoStopSetting`](#autostopsetting) | Auto stop setting of the environment. |
 | <a id="mutationenvironmentcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationenvironmentcreateclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID`](#clustersagentid) | Cluster agent of the environment. |
 | <a id="mutationenvironmentcreatedescription"></a>`description` | [`String`](#string) | Description of the environment. |
@@ -5236,6 +5237,7 @@ Input type: `EnvironmentUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationenvironmentupdateautostopsetting"></a>`autoStopSetting` | [`AutoStopSetting`](#autostopsetting) | Auto stop setting of the environment. |
 | <a id="mutationenvironmentupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationenvironmentupdateclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID`](#clustersagentid) | Cluster agent of the environment. |
 | <a id="mutationenvironmentupdatedescription"></a>`description` | [`String`](#string) | Description of the environment. |
@@ -23784,6 +23786,7 @@ Describes where code is deployed for a project.
 | ---- | ---- | ----------- |
 | <a id="environmentautodeleteat"></a>`autoDeleteAt` | [`Time`](#time) | When the environment is going to be deleted automatically. |
 | <a id="environmentautostopat"></a>`autoStopAt` | [`Time`](#time) | When the environment is going to be stopped automatically. |
+| <a id="environmentautostopsetting"></a>`autoStopSetting` | [`AutoStopSetting`](#autostopsetting) | Auto stop setting of the environment. |
 | <a id="environmentclusteragent"></a>`clusterAgent` | [`ClusterAgent`](#clusteragent) | Cluster agent of the environment. |
 | <a id="environmentcreatedat"></a>`createdAt` | [`Time`](#time) | When the environment was created. |
 | <a id="environmentdeployfreezes"></a>`deployFreezes` | [`[CiFreezePeriod!]`](#cifreezeperiod) | Deployment freeze periods of the environment. |
@@ -38790,6 +38793,15 @@ Assignee ID wildcard values.
 | ----- | ----------- |
 | <a id="assigneewildcardidany"></a>`ANY` | An assignee is assigned. |
 | <a id="assigneewildcardidnone"></a>`NONE` | No assignee is assigned. |
+
+### `AutoStopSetting`
+
+Auto stop setting.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="autostopsettingalways"></a>`ALWAYS` | Always. |
+| <a id="autostopsettingwith_action"></a>`WITH_ACTION` | With Action. |
 
 ### `AvailabilityEnum`
 

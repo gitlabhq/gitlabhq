@@ -3,7 +3,7 @@
 module Environments
   class UpdateService < BaseService
     ALLOWED_ATTRIBUTES = %i[description external_url tier cluster_agent kubernetes_namespace
-      flux_resource_path].freeze
+      flux_resource_path auto_stop_setting].freeze
 
     def execute(environment)
       unless can?(current_user, :update_environment, environment)
@@ -19,13 +19,13 @@ module Environments
           payload: { environment: environment })
       end
 
-      if environment.update(**params.slice(*ALLOWED_ATTRIBUTES))
+      begin
+        environment.update!(**params.slice(*ALLOWED_ATTRIBUTES))
         ServiceResponse.success(payload: { environment: environment })
-      else
-        ServiceResponse.error(
-          message: environment.errors.full_messages,
-          payload: { environment: environment }
-        )
+      rescue ActiveRecord::RecordInvalid => err
+        ServiceResponse.error(message: err.record.errors.full_messages, payload: { environment: environment })
+      rescue ArgumentError => err
+        ServiceResponse.error(message: [err.message], payload: { environment: environment })
       end
     end
 

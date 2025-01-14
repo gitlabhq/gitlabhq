@@ -172,7 +172,7 @@ describe('YourWorkProjectsApp', () => {
         filteredSearchTokens: [
           {
             type: FILTERED_SEARCH_TOKEN_LANGUAGE,
-            icon: 'lock',
+            icon: 'code',
             title: 'Language',
             token: GlFilteredSearchToken,
             unique: true,

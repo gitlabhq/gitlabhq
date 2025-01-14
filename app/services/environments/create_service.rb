@@ -3,7 +3,7 @@
 module Environments
   class CreateService < BaseService
     ALLOWED_ATTRIBUTES = %i[name description external_url tier cluster_agent kubernetes_namespace
-      flux_resource_path].freeze
+      flux_resource_path auto_stop_setting].freeze
 
     def execute
       unless can?(current_user, :create_environment, project)
@@ -19,15 +19,13 @@ module Environments
           payload: { environment: nil })
       end
 
-      environment = project.environments.create(**params.slice(*ALLOWED_ATTRIBUTES))
-
-      if environment.persisted?
+      begin
+        environment = project.environments.create!(**params.slice(*ALLOWED_ATTRIBUTES))
         ServiceResponse.success(payload: { environment: environment })
-      else
-        ServiceResponse.error(
-          message: environment.errors.full_messages,
-          payload: { environment: nil }
-        )
+      rescue ActiveRecord::RecordInvalid => err
+        ServiceResponse.error(message: err.record.errors.full_messages, payload: { environment: nil })
+      rescue ArgumentError => err
+        ServiceResponse.error(message: [err.message], payload: { environment: nil })
       end
     end
 

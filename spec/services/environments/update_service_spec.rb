@@ -15,7 +15,7 @@ RSpec.describe Environments::UpdateService, feature_category: :environment_manag
   describe '#execute' do
     subject { service.execute(environment) }
 
-    let(:params) { { external_url: 'https://gitlab.com/', description: 'description' } }
+    let(:params) { { external_url: 'https://gitlab.com/', description: 'description', auto_stop_setting: :with_action } }
 
     it 'updates the external URL' do
       expect { subject }.to change { environment.reload.external_url }.to('https://gitlab.com/')
@@ -23,6 +23,10 @@ RSpec.describe Environments::UpdateService, feature_category: :environment_manag
 
     it 'updates the description' do
       expect { subject }.to change { environment.reload.description }.to('description')
+    end
+
+    it 'updates the auto stop setting' do
+      expect { subject }.to change { environment.reload.auto_stop_setting }.to('with_action')
     end
 
     it 'returns successful response' do
@@ -84,14 +88,27 @@ RSpec.describe Environments::UpdateService, feature_category: :environment_manag
       end
     end
 
-    context 'when params contain invalid value' do
-      let(:params) { { external_url: 'http://${URL}' } }
+    context 'when params contain invalid values' do
+      let(:params) { { external_url: 'http://${URL}', kubernetes_namespace: "invalid" } }
 
       it 'returns an error' do
         response = subject
 
         expect(response).to be_error
-        expect(response.message).to match_array("External url URI is invalid")
+        expect(response.message).to match_array(["External url URI is invalid",
+          "Kubernetes namespace cannot be set without a cluster agent"])
+        expect(response.payload[:environment]).to eq(environment)
+      end
+    end
+
+    context 'when params contain invalid auto_stop_setting' do
+      let(:params) { { auto_stop_setting: :invalid } }
+
+      it 'returns an error' do
+        response = subject
+
+        expect(response).to be_error
+        expect(response.message).to match_array("'invalid' is not a valid auto_stop_setting")
         expect(response.payload[:environment]).to eq(environment)
       end
     end

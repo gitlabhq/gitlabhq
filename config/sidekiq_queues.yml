@@ -47,6 +47,8 @@
   - 1
 - - anti_abuse_trust_score_cleanup
   - 1
+- - app_config_cascade_duo_features_enabled
+  - 1
 - - app_sec_container_scanning_scan_image
   - 1
 - - app_sec_dast_scanner_profiles_builds_consistency

@@ -62,7 +62,7 @@ describe('ProjectsExploreFilteredSearchAndSort', () => {
       filteredSearchTokens: [
         {
           type: 'language',
-          icon: 'lock',
+          icon: 'code',
           title: 'Language',
           token: GlFilteredSearchToken,
           unique: true,

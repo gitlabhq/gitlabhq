@@ -43,6 +43,11 @@ module Mutations
         required: false,
         description: 'Flux resource path of the environment.'
 
+      argument :auto_stop_setting,
+        Types::Environments::AutoStopSettingEnum,
+        required: false,
+        description: 'Auto stop setting of the environment.'
+
       field :environment,
         Types::EnvironmentType,
         null: true,
