@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Issuable::Clone::CopyResourceEventsService do
+RSpec.describe Gitlab::Issuable::Clone::CopyResourceEventsService, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project1) { create(:project, :public, group: group) }
@@ -43,24 +43,34 @@ RSpec.describe Gitlab::Issuable::Clone::CopyResourceEventsService do
       subject.execute
 
       new_issue_milestone_events = new_issue.reload.resource_milestone_events
-      expect(new_issue_milestone_events.count).to eq(3)
+      expect(new_issue_milestone_events.count).to eq(4)
 
       expect_milestone_event(
         new_issue_milestone_events.first,
-        milestone: milestone1_project2,
+        milestone: milestone1_project1,
         action: 'add',
         state: 'opened',
         imported_from: 'bitbucket'
       )
       expect_milestone_event(
         new_issue_milestone_events.second,
-        milestone: milestone2_project2,
+        milestone: milestone2_project1,
         action: 'add',
         state: 'opened',
         imported_from: 'github'
       )
       expect_milestone_event(
-        new_issue_milestone_events.third, milestone: nil, action: 'remove', state: 'opened'
+        new_issue_milestone_events.third,
+        milestone: nil,
+        action: 'remove',
+        state: 'opened'
+      )
+      expect_milestone_event(
+        new_issue_milestone_events.fourth,
+        milestone: milestone3_project1,
+        action: 'add',
+        state: 'opened',
+        imported_from: 'github'
       )
     end
 

@@ -223,7 +223,6 @@ function change_exit_code_if_applicable() {
     alert_job_in_slack $new_exit_code "Known infra error caused this job to fail"
   elif [[ $found_known_flaky_test -ne $previous_exit_status ]]; then
     new_exit_code=$found_known_flaky_test
-    alert_job_in_slack $new_exit_code "A Known flaky test caused this job to fail"
   fi
 
   echo "New exit code: $new_exit_code"

@@ -737,7 +737,7 @@ GEM
     gitlab (4.19.0)
       httparty (~> 0.20)
       terminal-table (>= 1.5.1)
-    gitlab-chronic (0.10.5)
+    gitlab-chronic (0.10.6)
       numerizer (~> 0.2)
     gitlab-cloud-connector (0.2.6)
       activesupport (~> 7.0)

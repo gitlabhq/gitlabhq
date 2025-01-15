@@ -11957,6 +11957,7 @@ CREATE TABLE dast_site_validations (
     project_id bigint,
     CONSTRAINT check_13b34efe4b CHECK ((char_length(url_path) <= 255)),
     CONSTRAINT check_283be72e9b CHECK ((char_length(state) <= 255)),
+    CONSTRAINT check_cb7514c7d3 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_cd3b538210 CHECK ((char_length(url_base) <= 255))
 );
 
