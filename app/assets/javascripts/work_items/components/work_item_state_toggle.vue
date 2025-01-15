@@ -60,6 +60,11 @@ export default {
       required: false,
       default: false,
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     parentId: {
       type: String,
       required: false,
@@ -291,7 +296,7 @@ export default {
       </template>
     </gl-disclosure-dropdown-item>
 
-    <gl-button v-else :loading="updateInProgress" @click="action">{{
+    <gl-button v-else :loading="updateInProgress" :disabled="disabled" @click="action">{{
       toggleWorkItemStateText
     }}</gl-button>
 

@@ -88,16 +88,19 @@ describe('ValueStreamMetrics', () => {
   const { path: requestPath } = group;
 
   const createComponent = async ({ props = {}, apolloProvider = null } = {}) => {
+    const { requestParams, ...propsRest } = props;
+
     wrapper = shallowMountExtended(ValueStreamMetrics, {
       apolloProvider,
       propsData: {
         requestPath,
         requestParams: {
-          created_after: mockStartDate,
-          created_before: mockEndDate,
+          startDate: mockStartDate,
+          endDate: mockEndDate,
+          ...requestParams,
         },
         isLicensed: true,
-        ...props,
+        ...propsRest,
       },
     });
 
@@ -129,12 +132,20 @@ describe('ValueStreamMetrics', () => {
     startDate = '2018-12-15',
     endDate = '2019-01-14',
     labelNames,
+    projectIds,
+    assigneeUsernames,
+    authorUsername,
+    milestoneTitle,
   } = {}) =>
     expect(flowMetricsRequestHandler).toHaveBeenCalledWith({
       fullPath,
       startDate,
       endDate,
       labelNames,
+      projectIds,
+      assigneeUsernames,
+      authorUsername,
+      milestoneTitle,
     });
 
   afterEach(() => {
@@ -228,6 +239,10 @@ describe('ValueStreamMetrics', () => {
     });
 
     describe('with additional params', () => {
+      const assigneeUsernames = ['Rei Ayanami', 'Asuka Shikinami', 'Mari Makinami'];
+      const authorUsername = 'Yui Ikari';
+      const milestoneTitle = 'N3i';
+
       beforeEach(async () => {
         setGraphqlQueryHandlerResponses();
 
@@ -235,10 +250,13 @@ describe('ValueStreamMetrics', () => {
           apolloProvider: createMockApolloProvider(),
           props: {
             requestParams: {
-              'project_ids[]': [1],
-              created_after: '2020-01-01',
-              created_before: '2020-02-01',
-              'labelNames[]': ['some', 'fake', 'label'],
+              startDate: new Date('2020-01-01'),
+              endDate: new Date('2020-02-01'),
+              projectIds: [1],
+              labelNames: ['some', 'fake', 'label'],
+              assigneeUsernames,
+              authorUsername,
+              milestoneTitle,
             },
           },
         });
@@ -246,15 +264,19 @@ describe('ValueStreamMetrics', () => {
 
       it('fetches the flowMetrics data', () => {
         expectFlowMetricsRequests({
-          'project_ids[]': [1],
+          labelNames: ['some', 'fake', 'label'],
+          projectIds: [1],
           startDate: '2020-01-01',
           endDate: '2020-02-01',
+          assigneeUsernames,
+          authorUsername,
+          milestoneTitle,
         });
       });
 
       it('fetches the doraMetrics data', () => {
         expectDoraMetricsRequests({
-          'project_ids[]': [1],
+          projectIds: [1],
           startDate: '2020-01-01',
           endDate: '2020-02-01',
         });

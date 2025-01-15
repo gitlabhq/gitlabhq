@@ -19,9 +19,6 @@ import ValueStreamsDashboardLink from './value_streams_dashboard_link.vue';
 import MetricTile from './metric_tile.vue';
 
 const extractMetricsGroupData = (keyList = [], data = []) => {
-  const dataKeys = data.map(({ identifier }) => identifier);
-  if (!keyList.length || !dataKeys.some((key) => keyList.includes(key))) return [];
-
   return keyList.reduce((acc, curr) => {
     const metric = data.find((item) => item.identifier === curr);
     return metric ? [...acc, metric] : acc;
@@ -95,14 +92,13 @@ export default {
   },
   computed: {
     queryDateRange() {
-      const { created_after: startDate, created_before: endDate } = this.requestParams;
+      const { startDate, endDate } = this.requestParams;
       return { startDate: toYmd(startDate), endDate: toYmd(endDate) };
     },
     flowMetricsVariables() {
-      const additionalParams = Object.keys(FLOW_METRICS_QUERY_FILTERS).reduce((acc, key) => {
+      const additionalParams = FLOW_METRICS_QUERY_FILTERS.reduce((acc, key) => {
         if (this.requestParams[key]) {
-          const graphqlField = FLOW_METRICS_QUERY_FILTERS[key];
-          return { ...acc, [graphqlField]: this.requestParams[key] };
+          return { ...acc, [key]: this.requestParams[key] };
         }
         return acc;
       }, {});

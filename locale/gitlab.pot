@@ -14375,6 +14375,9 @@ msgstr ""
 msgid "Compliance Center|Frameworks"
 msgstr ""
 
+msgid "Compliance Center|Report and manage standards adherence, violations, and compliance frameworks for the group. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "Compliance Center|Standards Adherence"
 msgstr ""
 
@@ -47273,9 +47276,6 @@ msgstr ""
 msgid "Report abuse to administrator"
 msgstr ""
 
-msgid "Report and manage standards adherence, violations, and compliance frameworks for the group."
-msgstr ""
-
 msgid "Report couldn't be prepared."
 msgstr ""
 
@@ -62367,9 +62367,6 @@ msgstr ""
 msgid "ValueStreamAnalytics|There was an error while fetching flow metrics data."
 msgstr ""
 
-msgid "ValueStreamAnalytics|There was an error while fetching value stream analytics %{requestTypeName} data."
-msgstr ""
-
 msgid "ValueStreamAnalytics|Total number of deploys to production."
 msgstr ""
 
@@ -68529,9 +68526,6 @@ msgstr ""
 msgid "read-only"
 msgstr ""
 
-msgid "recent activity"
-msgstr ""
-
 msgid "register"
 msgstr ""
 
@@ -68782,9 +68776,6 @@ msgid "then"
 msgstr ""
 
 msgid "this document"
-msgstr ""
-
-msgid "time summary"
 msgstr ""
 
 msgid "to yourself"

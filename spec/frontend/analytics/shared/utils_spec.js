@@ -1,13 +1,11 @@
-import metricsData from 'test_fixtures/projects/analytics/value_stream_analytics/summary.json';
 import {
   extractFilterQueryParameters,
   extractPaginationQueryParameters,
   filterBySearchTerm,
   generateValueStreamsDashboardLink,
   getDataZoomOption,
-  prepareTimeMetricsData,
+  overviewMetricsRequestParams,
 } from '~/analytics/shared/utils';
-import { slugify } from '~/lib/utils/text_utility';
 import { objectToQuery } from '~/lib/utils/url_utility';
 
 describe('filterBySearchTerm', () => {
@@ -181,39 +179,6 @@ describe('getDataZoomOption', () => {
   });
 });
 
-describe('prepareTimeMetricsData', () => {
-  let prepared;
-  const [first, second] = metricsData;
-  delete second.identifier; // testing the case when identifier is missing
-
-  const firstIdentifier = first.identifier;
-  const secondIdentifier = slugify(second.title);
-
-  beforeEach(() => {
-    prepared = prepareTimeMetricsData([first, second], {
-      [firstIdentifier]: { description: 'Is a value that is good' },
-    });
-  });
-
-  it('will add a `identifier` based on the title', () => {
-    expect(prepared).toMatchObject([
-      { identifier: firstIdentifier },
-      { identifier: secondIdentifier },
-    ]);
-  });
-
-  it('will add a `label` key', () => {
-    expect(prepared).toMatchObject([{ label: 'New issues' }, { label: 'Commits' }]);
-  });
-
-  it('will add a popover description using the key if it is provided', () => {
-    expect(prepared).toMatchObject([
-      { description: 'Is a value that is good' },
-      { description: '' },
-    ]);
-  });
-});
-
 describe('generateValueStreamsDashboardLink', () => {
   it.each`
     namespacePath                | isProjectNamespace | result
@@ -239,5 +204,24 @@ describe('generateValueStreamsDashboardLink', () => {
     `('includes a relative path if one is set', ({ namespacePath, isProjectNamespace, result }) => {
       expect(generateValueStreamsDashboardLink(namespacePath, isProjectNamespace)).toBe(result);
     });
+  });
+});
+
+describe('overviewMetricsRequestParams', () => {
+  it('returns empty object when no params provided', () => {
+    expect(overviewMetricsRequestParams()).toEqual({});
+  });
+
+  it.each`
+    requestParam           | value                   | expected
+    ${'created_after'}     | ${'2024-01-01'}         | ${'startDate'}
+    ${'created_before'}    | ${'2024-12-31'}         | ${'endDate'}
+    ${'label_name'}        | ${['bug', 'feature']}   | ${'labelNames'}
+    ${'assignee_username'} | ${['user1', 'user2']}   | ${'assigneeUsernames'}
+    ${'author_username'}   | ${'Author A'}           | ${'authorUsername'}
+    ${'milestone_title'}   | ${'some new milestone'} | ${'milestoneTitle'}
+  `('correctly transforms the $requestParam parameter', ({ requestParam, value, expected }) => {
+    const result = overviewMetricsRequestParams({ [requestParam]: value });
+    expect(result[expected]).toBe(value);
   });
 });

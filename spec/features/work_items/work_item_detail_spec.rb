@@ -27,6 +27,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     let(:linked_item) { task }
 
     before_all do
+      stub_feature_flags(comment_temperature: false)
       group.add_developer(user)
     end
 

@@ -77,6 +77,7 @@ export const buildCycleAnalyticsInitialData = ({
   createdAfter,
   createdBefore,
   namespaceName,
+  namespacePath,
   namespaceRestApiRequestPath,
 } = {}) => {
   return {
@@ -84,6 +85,7 @@ export const buildCycleAnalyticsInitialData = ({
     groupPath,
     namespace: {
       name: namespaceName,
+      path: namespacePath,
       restApiRequestPath: namespaceRestApiRequestPath,
     },
     createdAfter: newDate(createdAfter),

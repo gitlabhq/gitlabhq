@@ -62,6 +62,7 @@ describe('Work Item State toggle button component', () => {
     workItemState = STATE_OPEN,
     workItemType = 'Task',
     hasComment = false,
+    disabled = false,
     parentId = null,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemStateToggle, {
@@ -79,10 +80,19 @@ describe('Work Item State toggle button component', () => {
         workItemType,
         canUpdate,
         hasComment,
+        disabled,
         parentId,
       },
     });
   };
+
+  it('disables button when disabled prop is set', () => {
+    createComponent({
+      disabled: true,
+    });
+
+    expect(findStateToggleButton().props('disabled')).toBe(true);
+  });
 
   describe('work item State button text', () => {
     it.each`

@@ -203,7 +203,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'ee/spec/features/projects/settings/merge_request_approvals_settings_spec.rb'
     - 'ee/spec/features/projects/settings/merge_requests_settings_spec.rb'
     - 'ee/spec/frontend/fixtures/analytics/charts.rb'
-    - 'ee/spec/frontend/fixtures/analytics/metrics.rb'
     - 'ee/spec/frontend/fixtures/analytics/value_streams.rb'
     - 'ee/spec/frontend/fixtures/analytics/value_streams_code_stage.rb'
     - 'ee/spec/frontend/fixtures/analytics/value_streams_issue_stage.rb'

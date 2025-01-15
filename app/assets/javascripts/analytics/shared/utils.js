@@ -1,7 +1,6 @@
-import { flatten } from 'lodash';
 import dateFormat from '~/lib/dateformat';
 import { SECONDS_IN_DAY } from '~/lib/utils/datetime_utility';
-import { slugify } from '~/lib/utils/text_utility';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { urlQueryToFilter } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
 import {
@@ -84,49 +83,6 @@ export const getDataZoomOption = ({
 export const removeFlash = (type = 'alert') => {
   // flash-warning don't have dismiss button.
   document.querySelector(`.flash-${type} .js-close`)?.click();
-};
-
-/**
- * Prepares metric data to be rendered in the metric_card component
- *
- * @param {MetricData[]} data - The metric data to be rendered
- * @param {Object} popoverContent - Key value pair of data to display in the popover
- * @returns {TransformedMetricData[]} An array of metrics ready to render in the metric_card
- */
-export const prepareTimeMetricsData = (data = [], popoverContent = {}) =>
-  data.map(({ title: label, identifier, ...rest }) => {
-    const metricIdentifier = identifier || slugify(label);
-    return {
-      ...rest,
-      label,
-      identifier: metricIdentifier,
-      description: popoverContent[metricIdentifier]?.description || '',
-    };
-  });
-
-const requestData = ({ request, endpoint, requestPath, params, name }) => {
-  return request({ endpoint, params, requestPath })
-    .then(({ data }) => data)
-    .catch(() => {
-      throw new Error(name);
-    });
-};
-
-/**
- * Takes a configuration array of metrics requests (key metrics and DORA) and returns
- * a flat array of all the responses. Different metrics are retrieved from different endpoints
- * additionally we only support certain metrics for FOSS users.
- *
- * @param {Array} requests - array of metric api requests to be made
- * @param {String} requestPath - path for the group / project we are requesting
- * @param {Object} params - optional parameters to filter, including `created_after` and `created_before` dates
- * @returns a flat array of metrics
- */
-export const fetchMetricsData = (requests = [], requestPath, params) => {
-  const promises = requests.map((r) => requestData({ ...r, requestPath, params }));
-  return Promise.all(promises).then((responses) =>
-    prepareTimeMetricsData(flatten(responses), VALUE_STREAM_METRIC_TILE_METADATA),
-  );
 };
 
 /**
@@ -248,4 +204,34 @@ export const extractQueryResponseFromNamespace = ({ result, resultKey }) => {
     return namespace[resultKey] || {};
   }
   return {};
+};
+
+/**
+ * Takes the raw snake_case query parameters and extracts + converts the relevant values
+ * for the overview metrics component
+ * @param {Object} params - Object containing the supported query parameters
+ * @param {Date} params.created_before
+ * @param {Date} params.created_after
+ * @param {string} params.author_username
+ * @param {string} params.milestone_title
+ * @param {Array} params.label_name
+ * @param {Array} params.assignee_username
+ *
+ * @returns {Object} CamelCased parameter names
+ */
+export const overviewMetricsRequestParams = (params = {}) => {
+  const {
+    createdAfter: startDate,
+    createdBefore: endDate,
+    labelName: labelNames,
+    assigneeUsername: assigneeUsernames,
+    ...rest
+  } = convertObjectPropsToCamelCase(params);
+  return {
+    startDate,
+    endDate,
+    labelNames,
+    assigneeUsernames,
+    ...rest,
+  };
 };

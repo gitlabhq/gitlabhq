@@ -12,6 +12,7 @@ import {
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import { findWidget } from '~/issues/list/utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
+import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import WorkItemStateToggle from '~/work_items/components/work_item_state_toggle.vue';
@@ -51,10 +52,15 @@ export default {
     GlFormCheckbox,
     HelpIcon,
     WorkItemStateToggle,
+    CommentTemperature: () =>
+      import(
+        /* webpackChunkName: 'comment_temperature' */ 'ee_component/ai/components/comment_temperature.vue'
+      ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glAbilitiesMixin()],
   props: {
     workItemId: {
       type: String,
@@ -169,6 +175,7 @@ export default {
       toggleResolveChecked: this.isDiscussionResolved,
       emailParticipants: [],
       workItem: {},
+      isMeasuringCommentTemperature: false,
     };
   },
   computed: {
@@ -216,6 +223,9 @@ export default {
     },
     showInternalNoteCheckbox() {
       return this.canMarkNoteAsInternal && this.isNewDiscussion;
+    },
+    currentUserId() {
+      return window.gon.current_user_id;
     },
   },
   apollo: {
@@ -296,7 +306,15 @@ export default {
       this.$emit('cancelEditing');
       clearDraft(this.autosaveKey);
     },
-    submitForm() {
+    submitForm(shouldMeasureTemperature = true) {
+      this.isMeasuringCommentTemperature =
+        this.glAbilities.measureCommentTemperature && shouldMeasureTemperature;
+
+      if (this.isMeasuringCommentTemperature) {
+        this.$refs.commentTemperature.measureCommentTemperature();
+        return;
+      }
+
       if (this.isSubmitting) {
         return;
       }
@@ -334,11 +352,20 @@ export default {
             supports-quick-actions
             :autofocus="autofocus"
             @input="setCommentText"
-            @keydown.meta.enter="submitForm"
-            @keydown.ctrl.enter="submitForm"
+            @keydown.meta.enter="submitForm()"
+            @keydown.ctrl.enter="submitForm()"
             @keydown.esc.stop="cancelEditing"
           />
         </comment-field-layout>
+        <comment-temperature
+          v-if="glAbilities.measureCommentTemperature"
+          ref="commentTemperature"
+          v-model="commentText"
+          :item-id="workItemId"
+          :item-type="workItemTypeKey"
+          :user-id="currentUserId"
+          @save="submitForm(false)"
+        />
         <div class="note-form-actions" data-testid="work-item-comment-form-actions">
           <div v-if="showResolveDiscussionToggle">
             <label>
@@ -367,9 +394,9 @@ export default {
               category="primary"
               variant="confirm"
               data-testid="confirm-button"
-              :disabled="!commentText.length"
+              :disabled="!commentText.length || isMeasuringCommentTemperature"
               :loading="isSubmitting"
-              @click="submitForm"
+              @click="submitForm()"
               >{{ commentButtonTextComputed }}
             </gl-button>
             <work-item-state-toggle
@@ -380,9 +407,10 @@ export default {
               :work-item-type="workItemType"
               :full-path="fullPath"
               :has-comment="Boolean(commentText.length)"
+              :disabled="Boolean(commentText.lengt) && isMeasuringCommentTemperature"
               :parent-id="parentId"
               can-update
-              @submit-comment="submitForm"
+              @submit-comment="submitForm()"
               @error="$emit('error', $event)"
             />
             <gl-button
