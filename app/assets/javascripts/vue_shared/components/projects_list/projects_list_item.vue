@@ -4,7 +4,7 @@ import { GlIcon, GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import {
   renderDeleteSuccessToast,
   deleteParams,
-} from 'ee_else_ce/vue_shared/components/resource_lists/utils';
+} from 'ee_else_ce/vue_shared/components/projects_list/utils';
 import ProjectListItemDescription from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_description.vue';
 import ProjectListItemActions from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_actions.vue';
 import ProjectListItemInactiveBadge from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';

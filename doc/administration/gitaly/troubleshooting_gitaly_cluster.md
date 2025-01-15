@@ -89,7 +89,7 @@ Here are common errors and potential causes:
 - 500 response code
   - `ActionView::Template::Error (7:permission denied)`
     - `praefect['configuration'][:auth][:token]` and `gitlab_rails['gitaly_token']` do not match on the GitLab server.
-    - `git_data_dirs` storage configuration is missing on the Sidekiq server.
+    - `gitlab_rails['repositories_storages']` storage configuration is missing on the Sidekiq server.
   - `Unable to save project. Error: 7:permission denied`
     - Secret token in `praefect['configuration'][:virtual_storage]` on GitLab server does not match the
       value in `gitaly['auth_token']` on one or more Gitaly servers.

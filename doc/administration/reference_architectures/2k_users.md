@@ -663,11 +663,11 @@ To configure the Sidekiq server, on the server node you want to use for Sidekiq:
    # of the Gitaly setup
    gitlab_rails['gitaly_token'] = 'gitalysecret'
 
-   git_data_dirs({
+   gitlab_rails['repositories_storages'] = {
      'default' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
      'storage1' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
      'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
-   })
+   }
 
    ## PostgreSQL connection details
    gitlab_rails['db_adapter'] = 'postgresql'
@@ -784,11 +784,11 @@ On each node perform the following:
    # of the Gitaly setup
    gitlab_rails['gitaly_token'] = 'gitalysecret'
 
-   git_data_dirs({
+   gitlab_rails['repositories_storages'] = {
      'default' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
      'storage1' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
      'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
-   })
+   }
 
    ## Disable components that will not be on the GitLab application server
    roles(['application_role'])
@@ -867,14 +867,14 @@ On each node perform the following:
    ```
 
 1. If you're using [Gitaly with TLS support](#gitaly-tls-support), make sure the
-   `git_data_dirs` entry is configured with `tls` instead of `tcp`:
+   `gitlab_rails['repositories_storages']` entry is configured with `tls` instead of `tcp`:
 
    ```ruby
-   git_data_dirs({
+   gitlab_rails['repositories_storages'] = {
      'default' => { 'gitaly_address' => 'tls://gitaly1.internal:9999' },
      'storage1' => { 'gitaly_address' => 'tls://gitaly1.internal:9999' },
      'storage2' => { 'gitaly_address' => 'tls://gitaly2.internal:9999' },
-   })
+   }
    ```
 
    1. Copy the cert into `/etc/gitlab/trusted-certs`:

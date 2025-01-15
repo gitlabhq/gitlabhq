@@ -855,7 +855,6 @@ RSpec/VerifiedDoubles:
     - 'spec/support/shared_examples/requests/api/composer_packages_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/conan_packages_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/debian_common_shared_examples.rb'
-    - 'spec/support/shared_examples/requests/api/nuget_packages_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/pypi_packages_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/rubygems_packages_shared_examples.rb'
     - 'spec/support/shared_examples/requests/rack_attack_shared_examples.rb'

@@ -98,7 +98,7 @@ module ReleasesHelper
     commit = project.repository.commit(@release.tag)
 
     deployments.map do |deployment|
-      user = deployment.deployable.user
+      user = deployment.deployable&.user
       environment = deployment.environment
 
       {
@@ -118,11 +118,15 @@ module ReleasesHelper
           short_sha: commit.short_id,
           title: commit.title
         },
-        triggerer: {
-          name: user&.name,
-          web_url: user ? user_url(user) : nil,
-          avatar_url: user&.avatar_url
-        },
+
+        triggerer: if user
+                     {
+                       name: user.name,
+                       web_url: user_url(user),
+                       avatar_url: user.avatar_url
+                     }
+                   end,
+
         created_at: deployment.created_at,
         finished_at: deployment.finished_at
       }

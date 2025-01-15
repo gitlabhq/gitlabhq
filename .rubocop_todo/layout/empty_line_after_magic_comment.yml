@@ -531,8 +531,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/requests/api/group_debian_distributions_spec.rb'
     - 'spec/requests/api/helm_packages_spec.rb'
     - 'spec/requests/api/maven_packages_spec.rb'
-    - 'spec/requests/api/nuget_group_packages_spec.rb'
-    - 'spec/requests/api/nuget_project_packages_spec.rb'
     - 'spec/requests/api/project_debian_distributions_spec.rb'
     - 'spec/requests/api/pypi_packages_spec.rb'
     - 'spec/requests/api/rpm_project_packages_spec.rb'

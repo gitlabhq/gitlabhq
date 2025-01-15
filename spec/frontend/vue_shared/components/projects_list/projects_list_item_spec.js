@@ -27,7 +27,7 @@ import {
 import {
   renderDeleteSuccessToast,
   deleteParams,
-} from 'ee_else_ce/vue_shared/components/resource_lists/utils';
+} from 'ee_else_ce/vue_shared/components/projects_list/utils';
 import { deleteProject } from '~/api/projects_api';
 import { createAlert } from '~/alert';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
@@ -36,8 +36,8 @@ const MOCK_DELETE_PARAMS = {
   testParam: true,
 };
 
-jest.mock('ee_else_ce/vue_shared/components/resource_lists/utils', () => ({
-  ...jest.requireActual('ee_else_ce/vue_shared/components/resource_lists/utils'),
+jest.mock('ee_else_ce/vue_shared/components/projects_list/utils', () => ({
+  ...jest.requireActual('ee_else_ce/vue_shared/components/projects_list/utils'),
   renderDeleteSuccessToast: jest.fn(),
   deleteParams: jest.fn(() => MOCK_DELETE_PARAMS),
 }));

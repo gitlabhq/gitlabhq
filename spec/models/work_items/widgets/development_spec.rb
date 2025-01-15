@@ -9,6 +9,12 @@ RSpec.describe WorkItems::Widgets::Development, feature_category: :team_planning
     it { is_expected.to eq(:development) }
   end
 
+  describe '.quick_action_params' do
+    subject { described_class.quick_action_params }
+
+    it { is_expected.to include(:branch_name) }
+  end
+
   describe '#type' do
     subject { described_class.new(build_stubbed(:work_item)).type }
 

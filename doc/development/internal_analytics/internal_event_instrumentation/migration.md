@@ -191,6 +191,6 @@ To start using Internal Events Tracking, follow these steps:
 
 ### Frontend
 
-If you are calling `trackRedisHllUserEvent` in the frontend to track the frontend event, you can convert this to Internal events by using mixin, raw JavaScript or data tracking attribute,
+You can convert `trackRedisHllUserEvent` calls to Internal events by using the mixin, raw JavaScript, or the `data-event-tracking` attribute.
 
-[Quick start guide](quick_start.md#frontend-tracking) has example for each methods.
+[Quick start guide](quick_start.md#frontend-tracking) has examples for each method.

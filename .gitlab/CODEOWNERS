@@ -714,7 +714,7 @@ lib/gitlab/checks/**
 /doc/api/boards.md @msedlakjakubowski
 /doc/api/branches.md @brendan777
 /doc/api/bulk_imports.md @ashrafkhamis
-/doc/api/chat.md @fneill
+/doc/api/chat.md @jglassman1
 /doc/api/cluster_agents.md @phillipwells
 /doc/api/code_suggestions.md @jglassman1
 /doc/api/commits.md @brendan777
@@ -1096,7 +1096,7 @@ lib/gitlab/checks/**
 /doc/user/get_started/get_started_projects.md @emily.sahlani
 /doc/user/get_started/getting_started_gitlab_duo.md @sselhorn
 /doc/user/gitlab_duo/ @sselhorn
-/doc/user/gitlab_duo_chat/ @fneill
+/doc/user/gitlab_duo_chat/ @jglassman1
 /doc/user/glql/ @msedlakjakubowski
 /doc/user/group/access_and_permissions.md @emily.sahlani
 /doc/user/group/clusters/ @phillipwells

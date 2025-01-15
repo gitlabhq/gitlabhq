@@ -42,7 +42,7 @@ namespace :tw do
       CodeOwnerRule.new('Distribution', '@axil'),
       CodeOwnerRule.new('Distribution (Charts)', '@axil'),
       CodeOwnerRule.new('Distribution (Omnibus)', '@eread'),
-      CodeOwnerRule.new('Duo Chat', '@fneill'),
+      CodeOwnerRule.new('Duo Chat', '@jglassman1'),
       CodeOwnerRule.new('Duo Workflow', '@sselhorn'),
       CodeOwnerRule.new('Dynamic Analysis', '@phillipwells'),
       CodeOwnerRule.new('Editor Extensions', '@aqualls'),

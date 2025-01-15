@@ -1461,7 +1461,7 @@ To configure the Praefect nodes, on each one:
          password: '<praefect_postgresql_password>',
       },
       # Praefect Virtual Storage config
-      # Name of storage hash must match storage name in git_data_dirs on GitLab
+      # Name of storage hash must match storage name in gitlab_rails['repositories_storages'] on GitLab
       # server ('praefect') and in gitaly['configuration'][:storage] on Gitaly nodes ('gitaly-1')
       virtual_storage: [
          {
@@ -1746,16 +1746,16 @@ To configure Praefect with TLS:
    sudo cp cert.pem /etc/gitlab/trusted-certs/
    ```
 
-1. On the Praefect clients (except Gitaly servers), edit `git_data_dirs` in
+1. On the Praefect clients (except Gitaly servers), edit `gitlab_rails['repositories_storages']` in
    `/etc/gitlab/gitlab.rb` as follows:
 
    ```ruby
-   git_data_dirs({
+   gitlab_rails['repositories_storages'] = {
      "default" => {
        "gitaly_address" => 'tls://LOAD_BALANCER_SERVER_ADDRESS:3305',
        "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
      }
-   })
+   }
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
@@ -1837,15 +1837,15 @@ To configure the Sidekiq nodes, on each one:
    ]
 
    # Gitaly
-   # git_data_dirs get configured for the Praefect virtual storage
+   # gitlab_rails['repositories_storages'] gets configured for the Praefect virtual storage
    # Address is Internal Load Balancer for Praefect
    # Token is praefect_external_token
-   git_data_dirs({
+   gitlab_rails['repositories_storages'] = {
      "default" => {
        "gitaly_address" => "tcp://10.6.0.40:2305", # internal load balancer IP
        "gitaly_token" => '<praefect_external_token>'
      }
-   })
+   }
 
    # PostgreSQL
    gitlab_rails['db_host'] = '10.6.0.20' # internal load balancer IP
@@ -1975,15 +1975,15 @@ On each node perform the following:
    ```ruby
    external_url 'https://gitlab.example.com'
 
-   # git_data_dirs get configured for the Praefect virtual storage
+   # gitlab_rails['repositories_storages'] gets configured for the Praefect virtual storage
    # Address is Internal Load Balancer for Praefect
    # Token is praefect_external_token
-   git_data_dirs({
+   gitlab_rails['repositories_storages'] = {
      "default" => {
        "gitaly_address" => "tcp://10.6.0.40:2305", # internal load balancer IP
        "gitaly_token" => '<praefect_external_token>'
      }
-   })
+   }
 
    ## Disable components that will not be on the GitLab application server
    roles(['application_role'])
@@ -2069,15 +2069,15 @@ On each node perform the following:
    ```
 
 1. If you're using [Gitaly with TLS support](#gitaly-cluster-tls-support), make sure the
-   `git_data_dirs` entry is configured with `tls` instead of `tcp`:
+   `gitlab_rails['repositories_storages']` entry is configured with `tls` instead of `tcp`:
 
    ```ruby
-   git_data_dirs({
+   gitlab_rails['repositories_storages'] = {
      "default" => {
        "gitaly_address" => "tls://10.6.0.40:2305", # internal load balancer IP
        "gitaly_token" => '<praefect_external_token>'
      }
-   })
+   }
    ```
 
    1. Copy the cert into `/etc/gitlab/trusted-certs`:

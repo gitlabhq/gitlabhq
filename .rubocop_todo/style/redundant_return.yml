@@ -45,7 +45,6 @@ Style/RedundantReturn:
     - 'ee/app/workers/ee/repository_check/single_repository_worker.rb'
     - 'ee/lib/ee/api/entities/billable_member.rb'
     - 'ee/lib/ee/gitlab/checks/diff_check.rb'
-    - 'lib/api/nuget_project_packages.rb'
     - 'lib/api/pagination_params.rb'
     - 'lib/feature/gitaly.rb'
     - 'lib/gitlab/auth/database/authentication.rb'

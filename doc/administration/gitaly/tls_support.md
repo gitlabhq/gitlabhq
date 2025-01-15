@@ -51,14 +51,14 @@ The process for configuring TLS support depends on your installation type.
    sudo cp cert.pem /etc/gitlab/trusted-certs/
    ```
 
-1. On the Gitaly clients, edit `git_data_dirs` in `/etc/gitlab/gitlab.rb` as follows:
+1. On the Gitaly clients, edit `gitlab_rails['repositories_storages']` in `/etc/gitlab/gitlab.rb` as follows:
 
    ```ruby
-   git_data_dirs({
+   gitlab_rails['repositories_storages'] = {
      'default' => { 'gitaly_address' => 'tls://gitaly1.internal:9999' },
      'storage1' => { 'gitaly_address' => 'tls://gitaly1.internal:9999' },
      'storage2' => { 'gitaly_address' => 'tls://gitaly2.internal:9999' },
-   })
+   }
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).

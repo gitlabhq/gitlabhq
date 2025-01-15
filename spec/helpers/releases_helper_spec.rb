@@ -166,6 +166,23 @@ RSpec.describe ReleasesHelper, feature_category: :release_orchestration do
           end
         end
 
+        context 'when deployable is nil' do
+          let_it_be(:deployment_with_user) do
+            create(:deployment, environment: environment, project: project, sha: project.repository.commit.id,
+              deployable: nil)
+          end
+
+          before do
+            allow(release).to receive(:related_deployments).and_return([deployment_with_user])
+          end
+
+          it 'sets triggerer as nil' do
+            deployment_data = Gitlab::Json.parse(helper.data_for_show_page[:deployments]).first
+
+            expect(deployment_data['triggerer']).to be_nil
+          end
+        end
+
         context 'when user cannot read deployments' do
           # rubocop: disable CodeReuse/ActiveRecord -- mock for can? is incorrectly flagged
           before do

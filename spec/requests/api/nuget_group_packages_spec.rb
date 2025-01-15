@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe API::NugetGroupPackages, feature_category: :package_registry do
@@ -105,7 +106,7 @@ RSpec.describe API::NugetGroupPackages, feature_category: :package_registry do
     end
   end
 
-  context 'a group' do
+  context 'for a group' do
     let(:target) { group }
 
     it_behaves_like 'handling all endpoints'
@@ -171,8 +172,11 @@ RSpec.describe API::NugetGroupPackages, feature_category: :package_registry do
 
       subject { get api(url), headers: headers }
 
-      before do
+      before_all do
         subgroup.add_reporter(user)
+      end
+
+      before do
         project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value('private'))
         subgroup.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value('private'))
         group.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value('private'))

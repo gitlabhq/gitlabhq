@@ -15,8 +15,8 @@ const Template = (args, { argTypes }) => ({
       <template #body>
         <p><code>#body</code> slot content</p>
       </template>
-      <template #alert-popover>
-        <div><code>#alert-popover</code> slot content</div>
+      <template #alert-message>
+        <div><code>#alert-message</code> slot content</div>
       </template>
     </panels-base>
   `,

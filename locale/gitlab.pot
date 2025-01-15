@@ -43971,6 +43971,9 @@ msgstr ""
 msgid "Project '%{project_name}' was successfully updated."
 msgstr ""
 
+msgid "Project '%{project_name}' will be deleted on %{date}."
+msgstr ""
+
 msgid "Project Badges"
 msgstr ""
 

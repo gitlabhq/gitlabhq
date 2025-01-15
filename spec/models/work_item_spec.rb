@@ -250,7 +250,8 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
         :assignees,
         :labels,
         :start_and_due_date,
-        :current_user_todos
+        :current_user_todos,
+        :development
       ])
     end
 
@@ -299,6 +300,10 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
 
       it 'returns quick action commands from current user todos widget' do
         is_expected.to include(:todo, :done)
+      end
+
+      it 'returns quick action commands from development widget' do
+        is_expected.to include(:create_merge_request)
       end
     end
   end

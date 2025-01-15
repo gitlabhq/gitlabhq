@@ -133,7 +133,6 @@ spec/frontend/ci/pipeline_editor/components/job_assistant_drawer/accordion_items
 spec/frontend/ci/pipeline_editor/components/lint/ci_lint_warnings_spec.js
 spec/frontend/ci/pipeline_editor/components/pipeline_editor_tabs_spec.js
 spec/frontend/ci/pipeline_editor/pipeline_editor_app_spec.js
-spec/frontend/ci/pipelines_page/components/pipelines_artifacts_spec.js
 spec/frontend/ci/runner/components/registration/runner_instructions/runner_instructions_modal_spec.js
 spec/frontend/ci/runner/components/runner_filtered_search_bar_spec.js
 spec/frontend/ci/runner/components/runner_form_fields_spec.js

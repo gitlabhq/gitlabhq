@@ -449,7 +449,6 @@ Style/IfUnlessModifier:
     - 'lib/api/invitations.rb'
     - 'lib/api/maven_packages.rb'
     - 'lib/api/merge_requests.rb'
-    - 'lib/api/nuget_project_packages.rb'
     - 'lib/api/pages_domains.rb'
     - 'lib/api/project_snippets.rb'
     - 'lib/api/projects.rb'

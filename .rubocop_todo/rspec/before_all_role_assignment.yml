@@ -1119,7 +1119,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/requests/api/maven_packages_spec.rb'
     - 'spec/requests/api/merge_request_approvals_spec.rb'
     - 'spec/requests/api/merge_requests_spec.rb'
-    - 'spec/requests/api/nuget_group_packages_spec.rb'
     - 'spec/requests/api/package_files_spec.rb'
     - 'spec/requests/api/pages/internal_access_spec.rb'
     - 'spec/requests/api/pages/private_access_spec.rb'
