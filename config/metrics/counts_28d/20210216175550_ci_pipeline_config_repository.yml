@@ -18,5 +18,6 @@ tiers:
 - ultimate
 performance_indicator_type:
 - customer_health_score
+- leading_indicator
 milestone: "12.9"
 introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26441"

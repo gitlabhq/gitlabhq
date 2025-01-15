@@ -2,7 +2,8 @@
 key_path: counts.count_total_create_ci_build_monthly
 description: Monthly count of ci builds created across all projects and project types
 product_group: pipeline_execution
-performance_indicator_type: []
+performance_indicator_type:
+- lighthouse
 value_type: number
 status: active
 milestone: '16.9'

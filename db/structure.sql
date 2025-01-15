@@ -8086,7 +8086,8 @@ CREATE TABLE approval_group_rules_protected_branches (
     id bigint NOT NULL,
     approval_group_rule_id bigint NOT NULL,
     protected_branch_id bigint NOT NULL,
-    group_id bigint
+    group_id bigint,
+    CONSTRAINT check_b14ec67f68 CHECK ((group_id IS NOT NULL))
 );
 
 CREATE SEQUENCE approval_group_rules_protected_branches_id_seq
@@ -8689,6 +8690,7 @@ CREATE TABLE audit_events_streaming_headers (
     value text NOT NULL,
     active boolean DEFAULT true NOT NULL,
     group_id bigint,
+    CONSTRAINT check_3feba4e364 CHECK ((group_id IS NOT NULL)),
     CONSTRAINT check_53c3152034 CHECK ((char_length(key) <= 255)),
     CONSTRAINT check_ac213cca22 CHECK ((char_length(value) <= 255))
 );
@@ -9206,7 +9208,8 @@ CREATE TABLE boards_epic_user_preferences (
     user_id bigint NOT NULL,
     epic_id bigint NOT NULL,
     collapsed boolean DEFAULT false NOT NULL,
-    group_id bigint
+    group_id bigint,
+    CONSTRAINT check_e23d7636e9 CHECK ((group_id IS NOT NULL))
 );
 
 CREATE SEQUENCE boards_epic_user_preferences_id_seq
@@ -22556,6 +22559,7 @@ CREATE TABLE vulnerability_flags (
     origin text NOT NULL,
     description text NOT NULL,
     project_id bigint,
+    CONSTRAINT check_36177ddefa CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_45e743349f CHECK ((char_length(description) <= 1024)),
     CONSTRAINT check_49c1d00032 CHECK ((char_length(origin) <= 255))
 );

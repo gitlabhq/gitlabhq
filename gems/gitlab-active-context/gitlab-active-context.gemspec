@@ -22,9 +22,12 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'activesupport'
   spec.add_dependency 'connection_pool'
   spec.add_dependency 'elasticsearch'
+  spec.add_dependency 'opensearch-ruby'
   spec.add_dependency 'pg'
   spec.add_dependency 'zeitwerk'
 
+  spec.add_development_dependency 'aws-sdk-core'
+  spec.add_development_dependency 'faraday_middleware-aws-sigv4'
   spec.add_development_dependency 'gitlab-styles'
   spec.add_development_dependency 'rspec-rails'
   spec.add_development_dependency 'rubocop-rspec'

@@ -461,7 +461,7 @@ RSpec.describe Gitlab::Utils::UsageData do
     end
 
     it 'returns the evaluated block when give' do
-      expect(described_class.alt_usage_data { Gitlab::CurrentSettings.uuid } ).to eq(Gitlab::CurrentSettings.uuid)
+      expect(described_class.alt_usage_data { Gitlab::CurrentSettings.uuid }).to eq(Gitlab::CurrentSettings.uuid)
     end
 
     it 'returns the value when given' do

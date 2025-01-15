@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Database::Reindexing::ReindexConcurrently, '#perform' do
   let(:column_name) { '_test_column' }
   let(:index_name) { '_test_reindex_index' }
   let(:index) { Gitlab::Database::PostgresIndex.by_identifier("public.#{iname(index_name)}") }
-  let(:logger) { double('logger', debug: nil, info: nil, error: nil ) }
+  let(:logger) { double('logger', debug: nil, info: nil, error: nil) }
   let(:connection) { ActiveRecord::Base.connection }
 
   before do

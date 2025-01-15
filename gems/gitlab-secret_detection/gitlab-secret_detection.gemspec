@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "grpc", "= 1.63.0"
   spec.add_runtime_dependency "grpc-tools", "= 1.63.0"
   spec.add_runtime_dependency "parallel", "~> 1.22"
-  spec.add_runtime_dependency "re2", "~> 2.4"
+  spec.add_runtime_dependency "re2", "~> 2.7"
   spec.add_runtime_dependency "toml-rb", "~> 2.2"
 
   spec.add_development_dependency "benchmark-malloc", "~> 0.2"

@@ -282,13 +282,13 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
   describe "#latest_metrics" do
     let_it_be(:candidate3) { create(:ml_candidates, experiment: candidate.experiment) }
     let_it_be(:metric1) { create(:ml_candidate_metrics, candidate: candidate3) }
-    let_it_be(:metric2) { create(:ml_candidate_metrics, candidate: candidate3 ) }
+    let_it_be(:metric2) { create(:ml_candidate_metrics, candidate: candidate3) }
     let_it_be(:metric3) { create(:ml_candidate_metrics, name: metric1.name, candidate: candidate3) }
 
     subject { candidate3.latest_metrics }
 
     it 'fetches only the last metric for the name' do
-      expect(subject).to match_array([metric2, metric3] )
+      expect(subject).to match_array([metric2, metric3])
     end
   end
 

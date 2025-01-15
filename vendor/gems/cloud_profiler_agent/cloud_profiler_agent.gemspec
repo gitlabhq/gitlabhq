@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'googleauth', '>= 0.14'
   spec.add_runtime_dependency 'google-cloud-profiler-v2', '~> 0.3'
-  spec.add_runtime_dependency 'google-protobuf', '~> 3.13'
+  spec.add_runtime_dependency 'google-protobuf', '~> 3.25'
   spec.add_runtime_dependency 'stackprof', '~> 0.2'
 
   spec.add_development_dependency 'rspec', '>= 3.10'

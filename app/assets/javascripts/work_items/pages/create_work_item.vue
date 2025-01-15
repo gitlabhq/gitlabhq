@@ -118,6 +118,7 @@ export default {
       @workItemCreated="workItemCreated"
     />
     <create-work-item-cancel-confirmation-modal
+      v-if="workItemType"
       :is-visible="isCancelConfirmationModalVisible"
       :work-item-type-name="workItemType"
       @continueEditing="handleContinueEditing"

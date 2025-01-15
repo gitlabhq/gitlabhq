@@ -36,6 +36,10 @@ else
 end
 
 gem 'activerecord-gitlab', path: 'gems/activerecord-gitlab', feature_category: :shared
+# This can be dropped after upgrading to Rails 7.2: https://github.com/rails/rails/pull/49674
+gem 'mutex_m', '~> 0.3', feature_category: :shared
+# Need by Rails
+gem 'drb', '~> 2.2', feature_category: :shared
 
 gem 'bootsnap', '~> 1.18.3', require: false, feature_category: :shared
 

@@ -372,3 +372,12 @@ deploy-pages:
 The `FF_USE_FASTZIP` variable enables the [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) which is needed for [`ARTIFACT_COMPRESSION_LEVEL`](../../../ci/runners/configure_runners.md#artifact-and-cache-settings).
 
 The previous YAML example uses [user-defined job names](index.md#user-defined-job-names).
+
+### `401` error when accessing private GitLab Pages sites in multiple browser tabs
+
+When you try to access a private Pages URL in two different tabs simultaneously without prior authentication,
+two different `state` values are returned for each tab.
+However, in the Pages session, only the most recent `state` value is stored for the given client.
+As a result, after submitting credentials, one of the tabs returns a `401 Unauthorized` error.
+
+To resolve the `401` error, refresh the page.

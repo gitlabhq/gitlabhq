@@ -407,7 +407,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
       it 'returns a collection of commits' do
         commits = described_class.find_all(repository)
 
-        expect(commits).to all( be_a_kind_of(described_class) )
+        expect(commits).to all(be_a_kind_of(described_class))
       end
 
       context 'max_count' do
@@ -504,7 +504,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
           commits = described_class.batch_by_oid(repository, oids)
 
           expect(commits.count).to eq(2)
-          expect(commits).to all( be_a(described_class) )
+          expect(commits).to all(be_a(described_class))
           expect(commits.first.sha).to eq(SeedRepo::Commit::ID)
           expect(commits.second.sha).to eq(SeedRepo::FirstCommit::ID)
         end

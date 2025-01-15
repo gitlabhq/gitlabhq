@@ -76,7 +76,7 @@ RSpec.describe Gitlab::Auth::OAuth::AuthHash, :aggregate_failures, feature_categ
     end
 
     it 'generates a temp email' do
-      expect( auth_hash.email).to start_with('temp-email-for-oauth')
+      expect(auth_hash.email).to start_with('temp-email-for-oauth')
     end
   end
 

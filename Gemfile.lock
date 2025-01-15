@@ -30,6 +30,7 @@ PATH
       activesupport
       connection_pool
       elasticsearch
+      opensearch-ruby
       pg
       zeitwerk
 
@@ -113,7 +114,7 @@ PATH
       grpc (= 1.63.0)
       grpc-tools (= 1.63.0)
       parallel (~> 1.22)
-      re2 (~> 2.4)
+      re2 (~> 2.7)
       toml-rb (~> 2.2)
 
 PATH
@@ -155,7 +156,7 @@ PATH
   specs:
     cloud_profiler_agent (0.0.1.pre)
       google-cloud-profiler-v2 (~> 0.3)
-      google-protobuf (~> 3.13)
+      google-protobuf (~> 3.25)
       googleauth (>= 0.14)
       stackprof (~> 0.2)
 
@@ -556,6 +557,7 @@ GEM
       doorkeeper (>= 5.5, < 5.9)
       jwt (>= 2.5)
     dotenv (2.7.6)
+    drb (2.2.1)
     dry-cli (1.0.0)
     dry-core (1.0.1)
       concurrent-ruby (~> 1.0)
@@ -1184,6 +1186,7 @@ GEM
       ruby2_keywords (~> 0.0.1)
     mustermann-grape (1.0.2)
       mustermann (>= 1.0.0)
+    mutex_m (0.3.0)
     nap (1.1.0)
     neighbor (0.3.2)
       activerecord (>= 6.1)
@@ -1293,6 +1296,9 @@ GEM
       tzinfo
       validate_url
       webfinger (~> 2.0)
+    opensearch-ruby (3.4.0)
+      faraday (>= 1.0, < 3)
+      multi_json (>= 1.0)
     openssl (3.2.0)
     openssl-signature_algorithm (1.3.0)
       openssl (> 2.0)
@@ -2048,6 +2054,7 @@ DEPENDENCIES
   doorkeeper (~> 5.8, >= 5.8.1)
   doorkeeper-device_authorization_grant (~> 1.0.0)
   doorkeeper-openid_connect (~> 1.8.10)
+  drb (~> 2.2)
   duo_api (~> 1.3)
   ed25519 (~> 1.3.0)
   elasticsearch-api (= 7.17.11)
@@ -2185,6 +2192,7 @@ DEPENDENCIES
   mini_magick (~> 4.12)
   minitest (~> 5.11.0)
   multi_json (~> 1.14.1)
+  mutex_m (~> 0.3)
   neighbor (~> 0.3.2)
   net-http (= 0.6.0)
   net-ldap (~> 0.17.1)

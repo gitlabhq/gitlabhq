@@ -50,7 +50,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::GenericMetric, feature_
 
     describe '#value' do
       it 'gives the correct value' do
-        expect(subject.value).to eq(ApplicationRecord.database.version )
+        expect(subject.value).to eq(ApplicationRecord.database.version)
       end
 
       context 'when raising an exception' do

@@ -5,7 +5,7 @@ PATH
       grpc (= 1.63.0)
       grpc-tools (= 1.63.0)
       parallel (~> 1.22)
-      re2 (~> 2.4)
+      re2 (~> 2.7)
       toml-rb (~> 2.2)
 
 GEM
@@ -73,7 +73,7 @@ GEM
     racc (1.7.3)
     rack (3.1.8)
     rainbow (3.1.1)
-    re2 (2.4.3)
+    re2 (2.10.0)
       mini_portile2 (~> 2.8.5)
     regexp_parser (2.8.2)
     rexml (3.3.9)
