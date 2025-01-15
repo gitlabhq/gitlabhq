@@ -528,7 +528,7 @@ and maintain them as needed.
 
 As an alternative we recommend using the new OpenTofu CI/CD component on GitLab.com
 or the new OpenTofu CI/CD template on self-managed.
-CI/CD components are not yet available on GitLab self-managed,
+CI/CD components are not yet available on GitLab Self-Managed,
 but [Issue #415638](https://gitlab.com/gitlab-org/gitlab/-/issues/415638)
 proposes to add this feature. If CI/CD components become available on self-managed,
 the OpenTofu CI/CD template will be removed.
@@ -4419,7 +4419,7 @@ GitLab administrators can no longer perform actions on protected branches or tag
 
 </div>
 
-GitLab self-monitoring gives administrators of GitLab self-managed instances the tools to monitor the health of their instances. This feature is deprecated in GitLab 14.9, and is scheduled for removal in 16.0.
+GitLab self-monitoring gives instance administrators the tools to monitor the health of their instances. This feature is deprecated in GitLab 14.9, and is scheduled for removal in 16.0.
 
 </div>
 
@@ -4697,12 +4697,12 @@ However, since certificate-based integration with Kubernetes clusters is depreca
 Whether your existing project access tokens have expiry dates automatically applied depends on what GitLab offering you have, and when you upgraded to GitLab 16.0 or later:
 
 - On GitLab.com, during the 16.0 milestone, existing project access tokens without an expiry date were automatically given an expiry date of 365 days later than the current date.
-- On GitLab self-managed, if you upgraded from GitLab 15.11 or earlier to GitLab 16.0 or later:
+- On GitLab Self-Managed, if you upgraded from GitLab 15.11 or earlier to GitLab 16.0 or later:
   - On or before July 23, 2024, existing project access tokens without an expiry date were automatically given an expiry date of 365 days later than the current date.
     This change is a breaking change.
   - On or after July 24, 2024, existing project access tokens without an expiry date did not have an expiry date set.
 
-On GitLab self-managed, if you do a new install of one of the following GitLab versions, your existing project access tokens do not have expiry dates automatically applied:
+On GitLab Self-Managed, if you do a new install of one of the following GitLab versions, your existing project access tokens do not have expiry dates automatically applied:
 
 - 16.0.9
 - 16.1.7
@@ -4733,7 +4733,7 @@ We recommend giving your access tokens an expiration date in line with your comp
 default is applied:
 
 - On GitLab.com during the 16.0 milestone.
-- On GitLab self-managed instances when they are upgraded to 16.0.
+- On GitLab Self-Managed when they are upgraded to 16.0.
 
 </div>
 
@@ -5471,7 +5471,7 @@ For more information about the blockers to removal, see [this issue](https://git
 
 For updates and details about this deprecation, follow [this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
 
-GitLab self-managed customers can still use the feature [with a feature flag](https://docs.gitlab.com/ee/update/deprecations.html#self-managed-certificate-based-integration-with-kubernetes).
+GitLab Self-Managed customers can still use the feature [with a feature flag](https://docs.gitlab.com/ee/update/deprecations.html#self-managed-certificate-based-integration-with-kubernetes).
 
 </div>
 
@@ -7227,7 +7227,7 @@ This change is part of regular maintenance to keep our codebase clean.
 
 </div>
 
-In GitLab 14.4, GitLab released an integrated error tracking backend that replaces Sentry. This feature caused database performance issues. In GitLab 14.9, integrated error tracking is removed from GitLab.com, and turned off by default in GitLab self-managed. While we explore the future development of this feature, please consider switching to the Sentry backend by [changing your error tracking to Sentry in your project settings](https://docs.gitlab.com/ee/operations/error_tracking.html#sentry-error-tracking).
+In GitLab 14.4, GitLab released an integrated error tracking backend that replaces Sentry. This feature caused database performance issues. In GitLab 14.9, integrated error tracking is removed from GitLab.com, and turned off by default in GitLab Self-Managed. While we explore the future development of this feature, please consider switching to the Sentry backend by [changing your error tracking to Sentry in your project settings](https://docs.gitlab.com/ee/operations/error_tracking.html#sentry-error-tracking).
 
 For additional background on this removal, please reference [Disable Integrated Error Tracking by Default](https://gitlab.com/groups/gitlab-org/-/epics/7580). If you have feedback please add a comment to [Feedback: Removal of Integrated Error Tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/355493).
 

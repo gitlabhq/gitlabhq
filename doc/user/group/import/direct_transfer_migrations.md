@@ -83,8 +83,8 @@ DETAILS:
 > - Removed from GitLab.com direct transfer migrations in GitLab 17.5 in favor of [the alternative](../../project/import/index.md#user-contribution-and-membership-mapping).
 
 This method of user contribution and membership mapping is available for
-GitLab self-managed without enabled feature flags.
-For information on the other method available for GitLab self-managed
+GitLab Self-Managed without enabled feature flags.
+For information on the other method available for GitLab Self-Managed
 with enabled feature flags and for GitLab.com,
 see [user contribution and membership mapping](../../project/import/index.md#user-contribution-and-membership-mapping).
 

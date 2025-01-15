@@ -11,7 +11,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-As an administrator of a GitLab self-managed instance, you can manage the behavior of your
+As an instance administrator, you can manage the behavior of your
 deployment.
 
 Use **Settings** to control settings across the instance.

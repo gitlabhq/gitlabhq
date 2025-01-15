@@ -17,7 +17,7 @@ In this tutorial, you'll learn how to create, configure, instrument, and monitor
 
 Take a moment and make sure you have the following:
 
-- A GitLab Ultimate subscription for GitLab.com or GitLab self-managed
+- A GitLab Ultimate subscription for GitLab.com or GitLab Self-Managed
 - A local installation of Ruby on Rails
 - Basic knowledge of Git, Ruby on Rails, and the core concepts of [OpenTelemetry](https://opentelemetry.io/)
 

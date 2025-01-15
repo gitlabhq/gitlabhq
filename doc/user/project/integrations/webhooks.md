@@ -40,7 +40,7 @@ GitLab.com enforces [webhook limits](../../../user/gitlab_com/index.md#webhooks)
 - Number of webhook calls per minute.
 - Webhook timeout duration.
 
-For GitLab self-managed instances, administrators can modify these limits.
+For GitLab Self-Managed, administrators can modify these limits.
 
 ## Group webhooks
 

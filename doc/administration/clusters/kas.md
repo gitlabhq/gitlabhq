@@ -222,3 +222,37 @@ set the following parameter in `/etc/gitlab/gitlab.rb`. Replace `gitlab.example.
 ```ruby
 gitlab_kas['gitlab_address'] = 'http://gitlab.example.com'
 ```
+
+### Error: `x509: certificate signed by unknown authority`
+
+If you encounter this error when trying to reach the GitLab URL, it means it doesn't trust the GitLab certificate.
+
+You might see a similar error in the Kubernetes Agent Server (KAS) logs of your GitLab application server:
+
+```json
+{"level":"error","time":"2023-03-07T20:19:48.151Z","msg":"AgentInfo()","grpc_service":"gitlab.agent.agent_configuration.rpc.AgentConfiguration","grpc_method":"GetConfiguration","error":"Get \"https://gitlab.example.com/api/v4/internal/kubernetes/agent_info\": x509: certificate signed by unknown authority"}
+```
+
+To fix this error, install the public certificate of your internal CA in the `/etc/gitlab/trusted-certs` directory.
+
+Alternatively, you can configure your KAS to read the certificate from a custom directory. To do this, add to `/etc/gitlab/gitlab.rb` the following configuration:
+
+```ruby
+gitlab_kas['env'] = {
+   'SSL_CERT_DIR' => "/opt/gitlab/embedded/ssl/certs/"
+ }
+```
+
+To apply the changes:
+
+1. Reconfigure GitLab:
+
+```shell
+sudo gitlab-ctl reconfigure
+```
+
+1. Restart GitLab KAS:
+
+```shell
+gitlab-ctl restart gitlab-kas
+```

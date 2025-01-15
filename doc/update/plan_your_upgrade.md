@@ -12,7 +12,7 @@ DETAILS:
 
 Creating an upgrade plan involves documenting:
 
-- The steps to take to upgrade your GitLab self-managed instance.
+- The steps to take to upgrade your instance.
 - The steps to take if the upgrade doesn't go smoothly.
 
 Your upgrade plan should include:

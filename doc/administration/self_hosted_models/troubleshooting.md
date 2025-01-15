@@ -279,7 +279,7 @@ If you are experiencing issues accessing Code Suggestions after setup, try the f
 
 ## Verify GitLab setup
 
-To verify your GitLab self-managed setup, run the following command:
+To verify your GitLab Self-Managed setup, run the following command:
 
 ```shell
 gitlab-rake gitlab:duo:verify_self_hosted_setup

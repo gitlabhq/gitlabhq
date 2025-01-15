@@ -201,7 +201,7 @@ To change the GitLab.com account linked to your Customers Portal profile:
 If you purchased a subscription through an authorized reseller (including GCP and AWS marketplaces), you have access to the Customers Portal to:
 
 - View your subscription.
-- Associate your subscription with the relevant group (GitLab SaaS) or download the license (GitLab self-managed).
+- Associate your subscription with the relevant group (GitLab.com) or download the license (GitLab Self-Managed).
 - Manage contact information.
 
 Other changes and requests must be done through the reseller, including:

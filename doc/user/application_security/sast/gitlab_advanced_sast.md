@@ -72,7 +72,7 @@ variables.
 
 Like other GitLab SAST analyzers, the Advanced SAST analyzer requires a runner and a CI/CD pipeline; see [SAST requirements](index.md#requirements) for details.
 
-On GitLab self-managed, you must also use a GitLab version that supports Advanced SAST:
+On GitLab Self-Managed, you must also use a GitLab version that supports Advanced SAST:
 
 - You should use GitLab 17.4 or later if possible. GitLab 17.4 includes a new code-flow view, vulnerability deduplication, and further updates to the SAST CI/CD template.
 - The [SAST CI/CD templates](index.md#stable-vs-latest-sast-templates) were updated to include Advanced SAST in the following releases:
@@ -161,9 +161,9 @@ The code flow information is shown the **Code flow** tab and includes:
 ### Code flow feature availability
 
 The code flow view is integrated into each view where vulnerability details are shown.
-On GitLab self-managed, you can activate the view by [enabling the required feature flags](../../../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) starting in the minimum version shown.
+On GitLab Self-Managed, you can activate the view by [enabling the required feature flags](../../../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) starting in the minimum version shown.
 
-| Location                                                          | Availability on GitLab.com        | Availability on GitLab self-managed                                   | Feature flags required                                              |
+| Location                                                          | Availability on GitLab.com        | Availability on GitLab Self-Managed                                   | Feature flags required                                              |
 |-------------------------------------------------------------------|-----------------------------------|-----------------------------------------------------------------------|---------------------------------------------------------------------|
 | [Vulnerability Report](../vulnerability_report/index.md)          | Enabled by default in GitLab 17.3 | Enabled by default in GitLab 17.6. Available in GitLab 17.3 or later. |                                            |
 | [Merge request widget](index.md#merge-request-widget)             | Enabled by default in GitLab 17.6 | Enabled by default in GitLab 17.6. Available in GitLab 17.5 or later. |  |

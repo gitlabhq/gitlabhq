@@ -17,7 +17,7 @@ In this tutorial, you'll learn how to configure, instrument, and monitor a NodeJ
 
 Take a moment and make sure you have the following:
 
-- A GitLab Ultimate subscription for GitLab.com or GitLab self-managed
+- A GitLab Ultimate subscription for GitLab.com or GitLab Self-Managed
 - A local installation of NodeJS
 - Basic knowledge of Git, NodeJS, JavaScript, and the core concepts of [OpenTelemetry](https://opentelemetry.io/)
 

@@ -170,7 +170,7 @@ While GitLab can be deployed on a single box for up to 500 users, when it is hor
   - GitLab Instance Scaled on AWS EC2 and PaaS. `[GitLab Built]`
     - [Using GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) - `[GitLab Solution]`
 
-- [Amazon Managed Grafana](https://docs.aws.amazon.com/grafana/latest/userguide/gitlab-AMG-datasource.html) for GitLab self-managed Prometheus metrics. `[AWS Built]`
+- [Amazon Managed Grafana](https://docs.aws.amazon.com/grafana/latest/userguide/gitlab-AMG-datasource.html) for GitLab Self-Managed Prometheus metrics. `[AWS Built]`
 
 ### GitLab Runner on AWS Compute
 

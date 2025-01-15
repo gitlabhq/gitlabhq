@@ -11,7 +11,6 @@ exports[`note_app when sort direction is asc shows skeleton notes after the load
     helppagepath=""
     isoverviewtab="true"
     renderdifffile="true"
-    shouldscrolltonote="true"
   />
   <skeleton-loading-container-stub
     class="note-skeleton"
@@ -33,7 +32,6 @@ exports[`note_app when sort direction is desc shows skeleton notes before the lo
     helppagepath=""
     isoverviewtab="true"
     renderdifffile="true"
-    shouldscrolltonote="true"
   />
 </ul>
 `;

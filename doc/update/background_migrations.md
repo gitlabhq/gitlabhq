@@ -20,7 +20,7 @@ Read below for detailed information about the two types of migrations.
 ## Database background migrations
 
 > - Feature [flag](../user/feature_flags.md) `execute_batched_migrations_on_schedule` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/329511) in GitLab 13.12.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable it](../development/database/batched_background_migrations.md#enable-or-disable-background-migrations).
+> - For GitLab Self-Managed, administrators can opt to [disable it](../development/database/batched_background_migrations.md#enable-or-disable-background-migrations).
 
 Certain releases may require different migrations to be finished before you
 update to the newer version. Two kinds of migrations exist. They differ, and you

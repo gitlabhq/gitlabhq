@@ -157,7 +157,7 @@ The replication for some data types is behind a corresponding feature flag:
 > - They're enabled on GitLab.com.
 > - They can't be enabled or disabled per-project.
 > - They are recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable them](#enable-or-disable-replication-for-some-data-types).
+> - For a GitLab Self-Managed instance, GitLab administrators can opt to [disable them](#enable-or-disable-replication-for-some-data-types).
 
 #### Enable or disable replication (for some data types)
 

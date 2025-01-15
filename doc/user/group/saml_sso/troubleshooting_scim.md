@@ -103,7 +103,7 @@ When the SCIM app changes:
 - Administrators of the identity provider can:
   1. Remove users from the SCIM app, which:
      - In GitLab.com, removes all removed users from the group.
-     - In GitLab self-managed, blocks users.
+     - In GitLab Self-Managed, blocks users.
   1. Turn on sync for the new SCIM app to [link existing users](scim_setup.md#link-scim-and-saml-identities).
 
 ## SCIM app returns `"User has already been taken","status":409` error
@@ -291,8 +291,8 @@ In your Okta SCIM application, check that the SCIM **Base URL** is correct and p
 SCIM API endpoint URL. Check the following documentation to find information on this URL for:
 
 - [GitLab.com groups](scim_setup.md#configure-gitlab).
-- [GitLab Self-Managed instances](../../../administration/settings/scim_setup.md#configure-gitlab).
+- [GitLab Self-Managed](../../../administration/settings/scim_setup.md#configure-gitlab).
 
-For GitLab Self-Managed instances, ensure that GitLab is publicly available so Okta can connect to it. If needed,
+For GitLab Self-Managed, ensure your instance is publicly available so Okta can connect to it. If needed,
 you can [allow access to Okta IP addresses](https://help.okta.com/en-us/Content/Topics/Security/ip-address-allow-listing.htm)
 on your firewall.

@@ -284,7 +284,7 @@ you will be charged overages for the five additional users.
 > - [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/9263) in GitLab 16.3.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/421693) in GitLab 17.1 Feature flag `saas_user_caps` removed.
 
-For more information about user caps for GitLab self-managed, see [User cap](../../administration/settings/sign_up_restrictions.md#user-cap).
+For more information about user caps for GitLab Self-Managed, see [User cap](../../administration/settings/sign_up_restrictions.md#user-cap).
 
 When the number of billable members reaches the user cap, the group Owner must approve new members.
 

@@ -124,7 +124,7 @@ the container registry after the policy runs. The next time the policy runs, the
 It may take multiple runs to delete all tags.
 
 WARNING:
-GitLab self-managed installations support third-party container registries that comply with the
+GitLab Self-Managed instances support third-party container registries that comply with the
 [Docker Registry HTTP API V2](https://distribution.github.io/distribution/spec/api/)
 specification. However, this specification does not include a tag delete operation. Therefore, GitLab uses a
 workaround to delete tags when interacting with third-party container registries. Refer to
@@ -349,7 +349,7 @@ View some common [regex pattern examples](#regex-pattern-examples).
 
 There can be different reasons behind this:
 
-- If you are on GitLab self-managed instances and you have 1000+ tags in a container repository, you
+- If you are on GitLab Self-Managed and you have 1000+ tags in a container repository, you
   might run into a [Container Registry token expiration issue](https://gitlab.com/gitlab-org/gitlab/-/issues/288814),
   with `error authorizing context: invalid token` in the logs.
 

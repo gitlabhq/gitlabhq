@@ -76,7 +76,7 @@ The authentication process for self-hosted models is secure, efficient, and made
 
 - **Offline environments**: In offline setups, there are no connections to `cloud.gitlab.com`. All requests are routed exclusively to the self-hosted AI gateway.
 
-- **Token minting and verification**: The GitLab self-managed instance mints the token, which is then verified by the AI gateway against the GitLab instance.
+- **Token minting and verification**: The instance mints the token, which is then verified by the AI gateway against the GitLab instance.
 
 - **Model configuration and security**: When an administrator configures a model, they can incorporate an API key to authenticate requests. Additionally, you can enhance security by specifying connection IP addresses within your network, ensuring that only trusted IPs can interact with the model.
 

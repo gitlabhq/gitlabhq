@@ -176,8 +176,8 @@ from the GitLab project.
 
 Additionally:
 
-- Domain verification is **required for GitLab.com users**;
-  for GitLab self-managed instances, your GitLab administrator has the option
+- Domain verification is **required for GitLab.com users**.
+  For GitLab Self-Managed, your GitLab administrator has the option
   to [disabled custom domain verification](../../../../administration/pages/index.md#custom-domain-verification).
 - [DNS propagation may take some time (up to 24 hours)](https://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/complete-guide-to-dns-records/),
   although it's usually a matter of minutes to complete. Until it does, verification

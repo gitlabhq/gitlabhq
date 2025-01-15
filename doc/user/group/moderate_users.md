@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 If you are assigned the Owner role for a group, you can [approve](manage.md#user-cap-for-groups), ban, or automatically remove dormant members.
 
 NOTE:
-This topic is specifically related to user moderation in groups. For information related to a GitLab self-managed instance, see the [administration documentation](../../administration/moderate_users.md).
+This topic is specifically related to user moderation in groups. For information related to GitLab Self-Managed, see the [administration documentation](../../administration/moderate_users.md).
 
 ## Ban and unban users
 

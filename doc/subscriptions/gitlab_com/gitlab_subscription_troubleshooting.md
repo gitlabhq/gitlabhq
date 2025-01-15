@@ -11,7 +11,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed
 
-When you purchase or use subscriptions for GitLab.com or GitLab self-managed, you might encounter the following issues.
+When you purchase or use subscriptions for GitLab.com or GitLab Self-Managed, you might encounter the following issues.
 
 ## Credit card declined
 
@@ -91,7 +91,7 @@ Ensure that you have the Owner role for that namespace, and review the [transfer
 
 ## Subscription data fails to synchronize
 
-On GitLab self-managed, your subscription data might fail to synchronize.
+On GitLab Self-Managed, your subscription data might fail to synchronize.
 This issue can occur when network traffic between your GitLab instance and certain
 IP addresses is not allowed.
 

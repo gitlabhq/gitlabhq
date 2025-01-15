@@ -146,14 +146,14 @@ depends on what GitLab offering you have, and when you upgraded to GitLab 16.0 o
 
 - On GitLab.com, during the 16.0 milestone, existing project access tokens without
   an expiry date were automatically given an expiry date of 365 days later than the current date.
-- On GitLab self-managed, if you upgraded from GitLab 15.11 or earlier to GitLab 16.0 or later:
+- On GitLab Self-Managed, if you upgraded from GitLab 15.11 or earlier to GitLab 16.0 or later:
   - On or before July 23, 2024, existing project access tokens without an expiry
     date were automatically given an expiry date of 365 days later than the current date.
     This change is a breaking change.
   - On or after July 24, 2024, existing project access tokens without an expiry
     date did not have an expiry date set.
 
-On GitLab self-managed, if you do a new install of one of the following GitLab
+On GitLab Self-Managed, if you do a new install of one of the following GitLab
 versions, your existing project access tokens do not have expiry dates
 automatically applied:
 
@@ -188,7 +188,7 @@ GitLab runs a check every day at 1:00 AM UTC to identify project access tokens t
 - Project maintainers and owners are notified by email when the check identifies their project access tokens as expiring in the next seven days.
 - In GitLab 17.7 and later, project members who have inherited the Owner or Maintainer role due to the project belonging to a group can also receive notification emails. You can enable this by changing:
   - The [group setting](../../group/manage.md#expiry-emails-for-group-and-project-access-tokens) in any of the parent groups of the project.
-  - On GitLab self-managed, the [instance setting](../../../administration/settings/email.md#group-and-project-access-token-expiry-emails-to-inherited-members).
+  - On GitLab Self-Managed, the [instance setting](../../../administration/settings/email.md#group-and-project-access-token-expiry-emails-to-inherited-members).
 
 ## Bot users for projects
 

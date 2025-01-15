@@ -65,7 +65,7 @@ The date you're notified about the overage is not the same as the date you are b
 and expected invoice amount is sent:
 
    - On GitLab.com: On the reconciliation date, to group owners.
-   - On GitLab self-managed: Six days after the reconciliation date, to administrators.
+   - On GitLab Self-Managed: Six days after the reconciliation date, to administrators.
 
 1. Seven days after the email notification, the subscription is updated to include the additional seats,
 and an invoice is generated for a prorated amount.

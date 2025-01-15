@@ -266,7 +266,7 @@ Prerequisites:
 1. Select **Activate my trial**.
 1. [Assign seats](#assign-gitlab-duo-seats) to the users who need access.
 
-### On GitLab self-managed and GitLab Dedicated
+### On GitLab Self-Managed and GitLab Dedicated
 
 Prerequisites:
 

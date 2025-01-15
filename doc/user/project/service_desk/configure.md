@@ -16,7 +16,7 @@ If it's not active, you can do it in the project's settings.
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.
-- On GitLab self-managed, you must [set up incoming email](../../../administration/incoming_email.md#set-it-up)
+- On GitLab Self-Managed, you must [set up incoming email](../../../administration/incoming_email.md#set-it-up)
   for the GitLab instance. You should use
   [email sub-addressing](../../../administration/incoming_email.md#email-sub-addressing),
   but you can also use [catch-all mailboxes](../../../administration/incoming_email.md#catch-all-mailbox).
@@ -242,7 +242,7 @@ DETAILS:
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/387003) in GitLab 16.4.
 > - Ability to select the SMTP authentication method [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429680) in GitLab 16.6.
 > - [Feature flag `service_desk_custom_email` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/387003) in GitLab 16.7.
-> - Local network allowed for SMTP host on GitLab self-managed [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435206) in GitLab 16.7
+> - Local network allowed for SMTP host on GitLab Self-Managed [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435206) in GitLab 16.7.
 
 Configure a custom email address to show as the sender of your support communication.
 Maintain brand identity and instill confidence among support requesters with a domain they recognize.
@@ -273,8 +273,8 @@ The custom email address you want to use must meet all of the following requirem
 - You have SMTP credentials (ideally, you should use an app password).
   The username and password are stored in the database using the Advanced Encryption Standard (AES)
   with a 256-bit key.
-- The **SMTP host** must be resolvable from the network of your GitLab instance (on GitLab self-managed)
-  or the public internet (on GitLab SaaS).
+- The **SMTP host** must be resolvable from the network of your GitLab instance (on GitLab Self-Managed)
+  or the public internet (on GitLab.com).
 - You must have at least the Maintainer role for the project.
 - Service Desk must be configured for the project.
 

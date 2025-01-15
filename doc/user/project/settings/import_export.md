@@ -24,7 +24,7 @@ situations, you might need to migrate groups and project by using file exports.
 
 ## Migrate projects by uploading an export file
 
-Existing projects on any GitLab Self-Managed instance or GitLab.com can be exported to a file and
+Existing projects can be exported to a file and
 then imported into another GitLab instance.
 
 ### Preserving user contributions
@@ -32,7 +32,7 @@ then imported into another GitLab instance.
 The requirements for preserving user contribution depends on whether you're migrating to GitLab.com or to a GitLab
 self-managed instance.
 
-#### When migrating from GitLab self-managed to GitLab.com
+#### When migrating from GitLab Self-Managed to GitLab.com
 
 When migrating projects by using file exports, an administrator's access token is required for user contributions to map correctly.
 
@@ -44,7 +44,7 @@ contribution history, do one of the following:
 - Consider engaging Professional Services. For more information, see the
   [Professional Services Full Catalog](https://about.gitlab.com/services/catalog/).
 
-#### When migrating to GitLab self-managed
+#### When migrating to GitLab Self-Managed
 
 To ensure GitLab maps users and their contributions correctly:
 
@@ -228,7 +228,7 @@ Migrating projects with file exports uses the same export and import mechanisms 
 
 You can import a project and its data. The amount of data you can import depends on the maximum import file size:
 
-- On GitLab self-managed instances, administrators of self-managed instances can
+- On GitLab Self-Managed, administrators can
   [set maximum import file size](#set-maximum-import-file-size).
 - On GitLab.com, the value is [set to 5 GB](../../gitlab_com/index.md#account-and-limit-settings).
 
@@ -338,9 +338,9 @@ Professional Services team.
   exporting a group from the Enterprise Edition to the Community Edition, you may lose this data. For more information,
   see [downgrading from EE to CE](../../../index.md).
 
-The maximum import file size depends on whether you import to a GitLab self-managed instance or GitLab.com:
+The maximum import file size depends on whether you import to GitLab Self-Managed or GitLab.com:
 
-- If importing to a GitLab self-managed instance, you can import a import file of any size. Administrators can change
+- If importing to a GitLab Self-Managed instance, you can import a import file of any size. Administrators can change
   this behavior using either:
   - The `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings).
   - The [**Admin** area](../../../administration/settings/account_and_limit_settings.md).

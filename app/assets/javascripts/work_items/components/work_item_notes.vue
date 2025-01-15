@@ -25,6 +25,7 @@ import {
   updateCacheAfterDeletingNote,
 } from '~/work_items/graphql/cache_utils';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import { collapseSystemNotes } from '~/work_items/notes/collapse_utils';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
@@ -234,6 +235,11 @@ export default {
       return Boolean(n);
     },
   },
+  mounted() {
+    if (this.targetNoteHash) {
+      this.cleanup = scrollToTargetOnResize();
+    }
+  },
   apollo: {
     previewNote: {
       skip() {
@@ -256,6 +262,8 @@ export default {
         // make sure skeleton notes are placed below the preview note
         if (result?.data?.note && this.$apollo.queries.workItemNotes?.loading) {
           this.isLoadingMore = true;
+        } else {
+          this.cleanup?.();
         }
       },
       error(error) {

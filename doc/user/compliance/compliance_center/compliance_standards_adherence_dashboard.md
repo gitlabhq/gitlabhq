@@ -110,7 +110,7 @@ To comply with the SOC 2 standard, you must:
   [Prevent approvals by users who add commits](../../project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits).
 - At least one approval is required, see [Merge request approval rules](../../project/merge_requests/approvals/rules.md).
 
-These settings are available for an entire GitLab Self-Managed instance. However, when these settings are updated at the instance level,
+These settings are available for an entire instance. However, when these settings are updated at the instance level,
 the adherence status for all the projects on the instance is not updated automatically. To update the adherence status
 for these projects, you must update the group-level or project-level setting. For more information on the instance-level settings, see:
 

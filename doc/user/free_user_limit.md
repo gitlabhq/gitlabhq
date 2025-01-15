@@ -145,7 +145,7 @@ For larger teams, you should upgrade to the paid Premium or Ultimate tiers. Thes
 do not limit users and have more features to increase team productivity. For more
 information, see:
 
-- [Upgrade your subscription tier on GitLab self-managed](../subscriptions/self_managed/index.md#upgrade-your-subscription-tier).
+- [Upgrade your subscription tier on GitLab Self-Managed](../subscriptions/self_managed/index.md#upgrade-your-subscription-tier).
 - [Upgrade your subscription tier on GitLab.com](../subscriptions/gitlab_com/index.md#upgrade-subscription-tier).
 
 To try the paid tiers before deciding to upgrade, start a

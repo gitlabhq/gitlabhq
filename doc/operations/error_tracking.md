@@ -23,7 +23,7 @@ For error tracking to work, you need:
   - To use the GitLab backend, see [GitLab integrated error tracking](integrated_error_tracking.md).
     Integrated error tracking is available only on GitLab.com.
   - To use Sentry as the backend, see [Sentry error tracking](sentry_error_tracking.md).
-    Sentry-based error tracking is available for GitLab.com, GitLab Dedicated, and GitLab self-managed.
+    Sentry-based error tracking is available for GitLab.com, GitLab Dedicated, and GitLab Self-Managed.
 
 ## How error tracking works
 
@@ -32,4 +32,4 @@ The following table gives an overview of the capabilities for each GitLab offeri
 | Feature | Availability | Data collection | Data storage | Data query |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
 | [GitLab integrated Error Tracking](integrated_error_tracking.md) | GitLab.com | With [Sentry SDK](https://github.com/getsentry/sentry?tab=readme-ov-file#official-sentry-sdks) | On GitLab.com | With GitLab.com |
-| [Sentry-based Error Tracking](sentry_error_tracking.md) | GitLab.com, GitLab Dedicated, GitLab self-managed | With [Sentry SDK](https://github.com/getsentry/sentry?tab=readme-ov-file#official-sentry-sdks) | On Sentry instance (Cloud Sentry.io or [self-hosted Sentry](https://develop.sentry.dev/self-hosted/)) | With GitLab.com or Sentry instance |
+| [Sentry-based Error Tracking](sentry_error_tracking.md) | GitLab.com, GitLab Dedicated, GitLab Self-Managed | With [Sentry SDK](https://github.com/getsentry/sentry?tab=readme-ov-file#official-sentry-sdks) | On Sentry instance (Cloud Sentry.io or [self-hosted Sentry](https://develop.sentry.dev/self-hosted/)) | With GitLab.com or Sentry instance |

@@ -77,7 +77,7 @@ To continue using registration tokens after GitLab 17.0:
 
 - On GitLab.com, you can manually [enable the legacy runner registration process](runners_scope.md#enable-use-of-runner-registration-tokens-in-projects-and-groups)
   in the top-level group settings until GitLab 18.0.
-- On GitLab self-managed, you can manually [enable the legacy runner registration process](../../administration/settings/continuous_integration.md#allow-runner-registrations-tokens)
+- On GitLab Self-Managed, you can manually [enable the legacy runner registration process](../../administration/settings/continuous_integration.md#allow-runner-registrations-tokens)
   in the **Admin** area settings until GitLab 18.0.
 
 ## Impact on existing runners

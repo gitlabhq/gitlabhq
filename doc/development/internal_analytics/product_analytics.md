@@ -17,7 +17,7 @@ DETAILS:
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 > - Snowplow integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398253) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `product_analytics_snowplow_support`. Disabled by default.
 > - Snowplow integration feature flag `product_analytics_snowplow_support` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130228) in GitLab 16.4.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/414865) from GitLab self-managed to GitLab.com in 16.7.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/414865) from GitLab Self-Managed to GitLab.com in 16.7.
 > - Enabled in GitLab 16.7 as a [beta](../../policy/development_stages_support.md#beta) feature.
 > - `product_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/398653) by default in GitLab 16.11.
 > - Feature flag `product_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454059) in GitLab 17.1.
@@ -118,7 +118,7 @@ A self-managed product analytics provider is a deployed instance of the
 
 On GitLab.com, the self-managed provider details are defined in [project-level settings](#project-level-settings).
 
-On GitLab self-managed, you must define the self-managed analytics provider in [instance-level settings](#instance-level-settings).
+On GitLab Self-Managed, you must define the self-managed analytics provider in [instance-level settings](#instance-level-settings).
 If you need different providers for different projects, you can define additional analytics providers in [project-level settings](#project-level-settings).
 
 ::EndTabs
@@ -132,7 +132,7 @@ Prerequisites:
 - You must have administrator access for the instance.
 
 NOTE:
-These instance-level settings are required to enable product analytics on GitLab self-managed,
+These instance-level settings are required to enable product analytics on GitLab Self-Managed,
 and cascade to all projects by default.
 
 To enable product analytics on your instance:

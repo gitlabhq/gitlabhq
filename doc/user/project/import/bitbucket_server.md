@@ -96,11 +96,11 @@ The Bitbucket Server importer uses [an improved method](../import/index.md#user-
 of mapping user contributions for:
 
 - GitLab.com
-- GitLab self-managed 17.7 or later when the `importer_user_mapping` and `bitbucket_server_user_mapping` feature flags are enabled.
+- GitLab Self-Managed 17.7 or later when the `importer_user_mapping` and `bitbucket_server_user_mapping` feature flags are enabled.
 
 ### Old method of user contribution mapping
 
-You can use the old user contribution mapping method for imports to GitLab self-managed and GitLab Dedicated instances. For imports to GitLab.com, you must
+You can use the old user contribution mapping method for imports to GitLab Self-Managed and GitLab Dedicated instances. For imports to GitLab.com, you must
 use [the improved method](../import/index.md#user-contribution-and-membership-mapping) instead.
 
 Using the old method, the importer tries to match a Bitbucket Server user's email address with a confirmed email address in the GitLab user database. If no

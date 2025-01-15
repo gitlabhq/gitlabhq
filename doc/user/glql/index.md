@@ -27,7 +27,7 @@ Embed queries in Markdown code blocks.
 This feature is an [experiment](../../policy/development_stages_support.md).
 To test it:
 
-- On GitLab self-managed, ask your administrator to enable the `glql_integration` feature flag on your instance.
+- On GitLab Self-Managed, ask your administrator to enable the `glql_integration` feature flag on your instance.
 - On GitLab.com, contact your account representative.
 
 Share your feedback in [epic 14939](https://gitlab.com/groups/gitlab-org/-/epics/14939),

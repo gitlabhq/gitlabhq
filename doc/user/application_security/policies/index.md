@@ -94,8 +94,8 @@ Policies enforced on an existing group or subgroup are automatically enforced in
 - The existing group or subgroup is already linked to the security policy project.
 
 NOTE:
-GitLab SaaS users can enforce policies against their top-level group or across subgroups, but cannot
-enforce policies across GitLab SaaS top-level groups. GitLab self-managed users can enforce policies
+GitLab.com users can enforce policies against their top-level group or across subgroups, but cannot
+enforce policies across GitLab.com top-level groups. GitLab Self-Managed users can enforce policies
 across multiple top-level groups in their instance.
 
 The following example illustrates two groups and their structure:
@@ -255,7 +255,7 @@ If you're not a group member, you may face limitations in adding or editing poli
 ## Policy implementation
 
 Implementation options for security policy projects differ slightly between GitLab.com, GitLab
-Dedicated, and GitLab self-managed. The main difference is that on GitLab.com it's only possible to
+Dedicated, and GitLab Self-Managed. The main difference is that on GitLab.com it's only possible to
 create subgroups. Ensuring separation of duties requires more granular permission configuration.
 
 ### Enforce policies globally in your GitLab.com namespace
@@ -304,7 +304,7 @@ The high-level workflow for enforcing policies globally across all subgroups and
    additional review or approval of policy changes, you can create an additional policy scoped only
    to your security policy project and enforce additional approvals.
 
-### Enforce policies globally in GitLab Dedicated or your GitLab self-managed instance
+### Enforce policies globally in GitLab Dedicated or GitLab Self-Managed
 
 DETAILS:
 **Tier:** Ultimate

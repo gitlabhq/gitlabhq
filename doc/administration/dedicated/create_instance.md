@@ -29,7 +29,7 @@ If you've been granted access to Switchboard, you will receive an email invitati
 credentials to sign in.
 
 The credentials for Switchboard are separate from any other GitLab credentials you may already have
-to sign in to a GitLab self-managed or GitLab.com instance.
+to sign in to a GitLab Self-Managed instance or GitLab.com.
 
 After you first sign in to Switchboard, you must update your password and set up MFA before you can
 complete your onboarding to create a new instance.

@@ -222,7 +222,7 @@ To configure your Jira instance so you can install apps from outside the Atlassi
       on your instance configuration.
 
       By default, your manifest file is located at `/-/jira_connect/app_descriptor.json`.
-      For example, if your GitLab self-managed instance domain is `app.pet-store.cloud`,
+      For example, if your instance domain is `app.pet-store.cloud`,
       your manifest file is located at `https://app.pet-store.cloud/-/jira_connect/app_descriptor.json`.
 
    1. Select **Upload**.

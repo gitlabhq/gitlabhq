@@ -15,7 +15,7 @@ user.
 
 A service account:
 
-- Does not use a licensed seat, but is not available on [trial versions](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com?&glm_content=free-user-limit-faq/ee/user/free_user_limit.html) on GitLab.com. It is available on trial versions on GitLab self-managed.
+- Does not use a licensed seat, but is not available on [trial versions](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com?&glm_content=free-user-limit-faq/ee/user/free_user_limit.html) on GitLab.com. It is available on trial versions on GitLab Self-Managed.
 - Is not a:
   - Billable user.
   - Bot user.
@@ -50,7 +50,7 @@ accounts allowed under your license:
 How you create an account differs depending on whether you are a:
 
 - Top-level group Owner.
-- In GitLab self-managed, an administrator.
+- In GitLab Self-Managed, an administrator.
 
 ### Top-level group Owners
 
@@ -61,7 +61,7 @@ How you create an account differs depending on whether you are a:
 Prerequisites:
 
 - You must have the Owner role in a top-level group.
-- For GitLab self-managed or GitLab Dedicated, top-level group Owners must be [allowed to create service accounts](../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
+- For GitLab Self-Managed or GitLab Dedicated, top-level group Owners must be [allowed to create service accounts](../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
 
 1. [Create a service account](../../api/group_service_accounts.md#create-a-service-account-user).
 
@@ -81,7 +81,7 @@ Prerequisites:
 1. Make this service account a group or project member by [manually adding the service account user to the group or project](#add-a-service-account-to-subgroup-or-project).
 1. Use the returned personal access token value to authenticate as the service account user.
 
-### Administrators in GitLab self-managed
+### Administrators in GitLab Self-Managed
 
 DETAILS:
 **Offering:** GitLab Self-Managed
@@ -179,7 +179,10 @@ Prerequisites:
 
 To delete a service account, [use the service accounts API to delete the service account user](../../api/group_service_accounts.md#delete-a-service-account-user).
 
-#### Administrators in GitLab self-managed
+#### Administrators in GitLab Self-Managed
+
+DETAILS:
+**Offering:** GitLab Self-Managed
 
 Prerequisites:
 

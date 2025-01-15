@@ -26,7 +26,7 @@ and deploying your code. Both share similarities including:
 Additionally, there are some important differences between the two:
 
 - GitHub has a marketplace for downloading 3rd-party actions, which might require additional support or licenses.
-- GitLab Self-Managed instances support both horizontal and vertical scaling, while
+- GitLab Self-Managed supports both horizontal and vertical scaling, while
   GitHub Enterprise Server only supports vertical scaling.
 - GitLab maintains and supports all features in house, and some 3rd-party integrations
   are accessible through templates.

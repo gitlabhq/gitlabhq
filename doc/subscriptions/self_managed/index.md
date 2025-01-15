@@ -5,7 +5,7 @@ description: Billable users, renewal and upgrade info.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab self-managed subscription
+# GitLab Self-Managed subscription
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -16,25 +16,25 @@ If you experience any issues, see the [troubleshooting page](../gitlab_com/gitla
 
 ## Obtain a self-managed subscription
 
-To subscribe to GitLab for a GitLab self-managed installation:
+To subscribe to GitLab for a GitLab Self-Managed instance:
 
 1. Go to the [Pricing page](https://about.gitlab.com/pricing/) and select a self-managed plan. You are redirected to the [Customers Portal](https://customers.gitlab.com/) to complete your purchase.
 1. After purchase, an activation code is sent to the email address associated with the Customers Portal account.
    You must [add this code to your GitLab instance](../../administration/license.md).
 
 NOTE:
-If you're purchasing a subscription for an existing **Free** GitLab self-managed
+If you're purchasing a subscription for an existing **Free** GitLab Self-Managed
 instance, ensure you're purchasing enough seats to
 [cover your users](../../administration/admin_area.md#administering-users).
 
 ## How GitLab bills for users
 
-A GitLab self-managed subscription uses a hybrid model. You pay for a subscription
+A GitLab Self-Managed subscription uses a hybrid model. You pay for a subscription
 according to the [maximum number](#maximum-users) of users enabled during the
 subscription period.
 
 For instances that are not offline or on a closed network, the maximum number of
-simultaneous users in the GitLab self-managed installation is checked each quarter.
+simultaneous users in the GitLab Self-Managed instance is checked each quarter.
 
 If an instance is unable to generate a quarterly usage report, the existing
 [true up model](#users-over-subscription) is used. Prorated charges are not

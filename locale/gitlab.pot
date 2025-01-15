@@ -1439,6 +1439,9 @@ msgstr[1] ""
 msgid "%{strong_start}Read %{help_link_start}these instructions%{help_link_end} to understand the implications of enabling this setting.%{strong_end} Removed members no longer have access to this top-level group, its subgroups, and their projects."
 msgstr ""
 
+msgid "%{strong_start}no%{strong_end}"
+msgstr ""
+
 msgid "%{tabname} changed"
 msgstr ""
 
@@ -68338,6 +68341,9 @@ msgid "new"
 msgstr ""
 
 msgid "new merge request"
+msgstr ""
+
+msgid "no"
 msgstr ""
 
 msgid "no expiration"

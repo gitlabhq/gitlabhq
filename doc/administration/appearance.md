@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-You can update your settings to change the look and feel of your GitLab self-managed instance.
+You can update your settings to change the look and feel of your instance.
 
 To open the **Appearance** settings:
 

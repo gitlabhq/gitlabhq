@@ -175,6 +175,7 @@ export default {
         if (!isReady) return;
         this.$nextTick(() => {
           window.mrTabs?.eventHub.$emit('NotesAppReady');
+          this.cleanup?.();
         });
       },
       immediate: true,
@@ -195,7 +196,7 @@ export default {
     window.addEventListener('hashchange', this.handleHashChanged);
 
     if (this.targetNoteHash && this.targetNoteHash.startsWith('note_')) {
-      scrollToTargetOnResize();
+      this.cleanup = scrollToTargetOnResize();
     }
 
     eventHub.$on('notesApp.updateIssuableConfidentiality', this.setConfidentiality);

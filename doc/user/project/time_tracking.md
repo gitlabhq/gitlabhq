@@ -230,7 +230,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed, GitLab Dedicated
 
-In GitLab self-managed instances, you can limit the display of time units to hours.
+On GitLab Self-Managed, you can limit the display of time units to hours.
 To do so:
 
 1. On the left sidebar, select **Search or go to**.

@@ -28,7 +28,7 @@
 
     As an alternative we recommend using the new OpenTofu CI/CD component on GitLab.com
     or the new OpenTofu CI/CD template on self-managed.
-    CI/CD components are not yet available on GitLab self-managed,
+    CI/CD components are not yet available on GitLab Self-Managed,
     but [Issue #415638](https://gitlab.com/gitlab-org/gitlab/-/issues/415638)
     proposes to add this feature. If CI/CD components become available on self-managed,
     the OpenTofu CI/CD template will be removed.

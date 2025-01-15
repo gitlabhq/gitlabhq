@@ -1010,9 +1010,9 @@ read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secre
 
 ### Email ingestion doesn't work in 16.6.0
 
-GitLab self-managed `16.6.0` introduced a regression that prevents `mail_room` (email ingestion) from starting.
+In GitLab 16.6, a regression prevents `mail_room` (email ingestion) from starting.
 Service Desk and other reply-by-email features don't work.
-[Issue 432257](https://gitlab.com/gitlab-org/gitlab/-/issues/432257) tracks fixing this problem.
+This issue was fixed in 16.6.1. See [issue 432257](https://gitlab.com/gitlab-org/gitlab/-/issues/432257) for details.
 
 The workaround is to run the following commands in your GitLab installation
 to patch the affected files:

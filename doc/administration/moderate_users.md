@@ -10,10 +10,10 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-If you are the administrator of a GitLab self-managed instance, you have several options to moderate and control user access.
+If you are an instance administrator, you have several options to moderate and control user access.
 
 NOTE:
-This topic is specifically related to user moderation in a GitLab self-managed instance. For information related to groups, see the [group documentation](../user/group/moderate_users.md).
+This topic is specifically related to user moderation in GitLab Self-Managed. For information related to groups, see the [group documentation](../user/group/moderate_users.md).
 
 ## Users pending approval
 

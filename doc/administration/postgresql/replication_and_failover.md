@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-If you're a Free user of GitLab self-managed, consider using a cloud-hosted solution.
+If you're a Free user of GitLab Self-Managed, consider using a cloud-hosted solution.
 This document doesn't cover self-compiled installations.
 
 If a setup with replication and failover isn't what you were looking for, see

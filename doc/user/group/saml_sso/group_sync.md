@@ -30,7 +30,7 @@ SAML Group Sync only manages a group if that group has one or more SAML group li
 
 Prerequisites:
 
-- GitLab Self-Managed instances must have configured [SAML Group Sync](#configure-saml-group-sync). GitLab.com
+- Your GitLab Self-Managed instance must have configured [SAML Group Sync](#configure-saml-group-sync). GitLab.com
   instances are already configured for SAML Group Sync, and require no extra configuration.
 
 When SAML is enabled, users with the Owner role see a new menu

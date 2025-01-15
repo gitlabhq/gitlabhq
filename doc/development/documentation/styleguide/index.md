@@ -272,7 +272,7 @@ For screenshots:
 When including sample URLs in the documentation, use:
 
 - `example.com` when the domain name is generic.
-- `gitlab.example.com` when referring only to GitLab Self-Managed instances.
+- `gitlab.example.com` when referring only to GitLab Self-Managed.
   Use `gitlab.com` for GitLab SaaS instances.
 
 ### Fake tokens

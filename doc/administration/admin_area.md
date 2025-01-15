@@ -22,7 +22,7 @@ If the GitLab instance uses Admin Mode, you must [enable Admin Mode for your ses
 the **Admin** button is visible.
 
 NOTE:
-Only administrators on GitLab self-managed or GitLab Dedicated can access the **Admin** area. On GitLab.com the **Admin** area feature is not available.
+Only administrators on GitLab Self-Managed or GitLab Dedicated can access the **Admin** area. On GitLab.com the **Admin** area feature is not available.
 
 ## Administering organizations
 

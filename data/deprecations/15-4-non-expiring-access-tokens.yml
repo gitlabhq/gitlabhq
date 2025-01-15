@@ -7,12 +7,12 @@
     Whether your existing project access tokens have expiry dates automatically applied depends on what GitLab offering you have, and when you upgraded to GitLab 16.0 or later:
 
     - On GitLab.com, during the 16.0 milestone, existing project access tokens without an expiry date were automatically given an expiry date of 365 days later than the current date.
-    - On GitLab self-managed, if you upgraded from GitLab 15.11 or earlier to GitLab 16.0 or later:
+    - On GitLab Self-Managed, if you upgraded from GitLab 15.11 or earlier to GitLab 16.0 or later:
       - On or before July 23, 2024, existing project access tokens without an expiry date were automatically given an expiry date of 365 days later than the current date.
         This change is a breaking change.
       - On or after July 24, 2024, existing project access tokens without an expiry date did not have an expiry date set.
 
-    On GitLab self-managed, if you do a new install of one of the following GitLab versions, your existing project access tokens do not have expiry dates automatically applied:
+    On GitLab Self-Managed, if you do a new install of one of the following GitLab versions, your existing project access tokens do not have expiry dates automatically applied:
 
     - 16.0.9
     - 16.1.7
@@ -43,7 +43,7 @@
     default is applied:
 
     - On GitLab.com during the 16.0 milestone.
-    - On GitLab self-managed instances when they are upgraded to 16.0.
+    - On GitLab Self-Managed when they are upgraded to 16.0.
   stage: Foundations
   tiers: [Free, Premium, Ultimate]
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/369122

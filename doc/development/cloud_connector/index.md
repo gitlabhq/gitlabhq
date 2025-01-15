@@ -38,7 +38,7 @@ because we do not currently have interfaces in place to self-service this.
 
 #### Register the new feature in the JWT issuer
 
-- For GitLab Dedicated and GitLab Self-Managed instances, the CustomersDot is the **JWT issuer**.
+- For GitLab Dedicated and GitLab Self-Managed, the CustomersDot is the **JWT issuer**.
 - For GitLab.com deployment, GitLab.com is the **JWT issuer**, because it's able to [self-sign and create JWTs](architecture.md#gitlabcom) for every request to a Cloud Connector feature.
 
 #### Register new feature for Self-Managed, Dedicated and GitLab.com customers

@@ -30,7 +30,7 @@ Prerequisites:
 - IaC scanning requires the AMD64 architecture. Microsoft Windows is not supported.
 - Minimum of 4 GB RAM to ensure consistent performance.
 - The `test` stage is required in the `.gitlab-ci.yml` file.
-- On GitLab self-managed you need GitLab Runner with the
+- On GitLab Self-Managed you need GitLab Runner with the
   [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
   [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
 - If you're using SaaS runners on GitLab.com, this is enabled by default.
@@ -190,7 +190,7 @@ DETAILS:
 **Offering:** GitLab Self-Managed
 
 An offline environment has limited, restricted, or intermittent access to external resources through
-the internet. For GitLab Self-Managed instances in such an environment, IaC requires
+the internet. For instances in such an environment, IaC requires
 some configuration changes. The instructions in this section must be completed together with the
 instructions detailed in [offline environments](../offline_deployments/index.md).
 

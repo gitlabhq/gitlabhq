@@ -154,6 +154,17 @@ To apply the changes:
    gitlab-ctl restart gitlab-kas
    ```
 
+## Error: `Failed to register agent pod`
+
+The agent pod logs might display the error message `Failed to register agent pod. Please make sure the agent version matches the server version`.
+
+To resolve this issue, ensure that the agent version matches the GitLab version.
+
+If the versions match and the error persists:
+
+1. Make sure `gitlab-kas` is running with `gitlab-ctl status gitlab-kas`.
+1. Check the `gitlab-kas` [logs](../../../administration/logs/index.md#gitlab-agent-server) to make sure the agent is functioning properly.
+
 ## Failed to perform vulnerability scan on workload: jobs.batch already exists
 
 ```json

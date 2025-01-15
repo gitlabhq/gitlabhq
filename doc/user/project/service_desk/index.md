@@ -88,9 +88,9 @@ Meanwhile:
   Also see [this article on DKIM failures](https://automatedemailwarmup.com/blog/dkim-fail/) for more
   information and potential solutions.
 
-### Email ingestion doesn't work in 16.6.0 self-managed
+### Email ingestion doesn't work in 16.6.0
 
-GitLab self-managed `16.6.0` introduced a regression that prevents `mail_room` (email ingestion) from starting.
+GitLab Self-Managed `16.6.0` introduced a regression that prevents `mail_room` (email ingestion) from starting.
 Service Desk and other reply-by-email features don't work.
 [Issue 432257](https://gitlab.com/gitlab-org/gitlab/-/issues/432257) tracks fixing this problem.
 

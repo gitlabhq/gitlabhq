@@ -177,7 +177,7 @@ On GitLab SaaS:
   /chatops run feature set ci_unlock_pipelines_extra_low true
   ```
 
-On GitLab self-managed:
+On GitLab Self-Managed:
 
 - [Enable the feature flag](../../administration/feature_flags.md) named `ci_unlock_pipelines_extra_low`.
 

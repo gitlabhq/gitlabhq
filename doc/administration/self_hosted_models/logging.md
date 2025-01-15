@@ -263,11 +263,11 @@ By default, the log does not contain LLM prompt input and response output to sup
 
 ## Logging Scenarios
 
-### GitLab self-managed and self-hosted AI gateway
+### GitLab Self-Managed and self-hosted AI gateway
 
 In this configuration, both GitLab and the AI gateway are hosted by the customer.
 
-- **Logging Behavior**: Full logging is enabled, and all prompts, inputs, and outputs are logged to `llm.log` on the GitLab self-managed instance.
+- **Logging Behavior**: Full logging is enabled, and all prompts, inputs, and outputs are logged to `llm.log` on the instance.
 - **Expanded Logging**: When the `:expanded_ai_logging` feature flag is activated, extra debugging information is logged, including:
   - Preprocessed prompts.
   - Final prompts.
@@ -276,7 +276,7 @@ In this configuration, both GitLab and the AI gateway are hosted by the customer
   - The customer has full control over data handling.
   - Logging of sensitive information can be enabled or disabled at the customer's discretion.
 
-### GitLab self-managed and GitLab-managed AI gateway (cloud-connected)
+### GitLab Self-Managed and GitLab-managed AI gateway (cloud-connected)
 
 In this scenario, the customer hosts GitLab but relies on the GitLab-managed AI gateway for AI processing.
 
@@ -291,8 +291,8 @@ The `:expanded_ai_logging` feature flag controls whether additional debugging in
 
 ### Behavior by Deployment Setup
 
-- **GitLab self-managed and self-hosted AI gateway**: The feature flag enables detailed logging to `llm.log` on the self-hosted instance, capturing inputs and outputs for AI models.
-- **GitLab self-managed and GitLab-managed AI gateway**: The feature flag enables logging on your self-managed instance. However, the flag does **not** activate expanded logging for the GitLab-managed AI gateway side. Logging remains disabled for the cloud-connected AI gateway to protect sensitive data.
+- **GitLab Self-Managed and self-hosted AI gateway**: The feature flag enables detailed logging to `llm.log` on the self-hosted instance, capturing inputs and outputs for AI models.
+- **GitLab Self-Managed and GitLab-managed AI gateway**: The feature flag enables logging on your self-managed instance. However, the flag does **not** activate expanded logging for the GitLab-managed AI gateway side. Logging remains disabled for the cloud-connected AI gateway to protect sensitive data.
 For more information, see the [Feature Flag section under Privacy Considerations](../../development/ai_features/index.md#privacy-considerations) documentation.
 
 ### Logging in cloud-connected AI gateways

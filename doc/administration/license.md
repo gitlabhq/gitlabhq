@@ -27,7 +27,7 @@ To activate your instance with an activation code:
 1. Copy the activation code, a 24-character alphanumeric string, from either:
    - Your subscription confirmation email.
    - The [Customers Portal](https://customers.gitlab.com/customers/sign_in), on the **Manage Purchases** page.
-1. Sign in to your GitLab self-managed instance.
+1. Sign in to your instance.
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Subscription**.
 1. Paste the activation code in **Activation code**.

@@ -17,16 +17,16 @@ Choose which GitLab offering suits your needs:
   You don't need to install anything to use GitLab.com, you only need to
   [sign up](https://gitlab.com/users/sign_up) and start using GitLab straight away.
 - [GitLab Dedicated](gitlab_dedicated/index.md): A single-tenant SaaS service for highly regulated and large enterprises.
-- GitLab self-managed: Install, administer, and maintain your own GitLab instance.
+- GitLab Self-Managed: Install, administer, and maintain your own GitLab instance.
 
-On a GitLab self-managed instance, a GitLab subscription provides the same set of
+On GitLab Self-Managed, a GitLab subscription provides the same set of
 features for all users.
 
 On GitLab.com, you can apply a subscription to a top-level group
 namespace. You cannot apply a subscription to a personal namespace.
 
 NOTE:
-Subscriptions cannot be transferred between GitLab.com and GitLab self-managed.
+Subscriptions cannot be transferred between GitLab.com and GitLab Self-Managed.
 A new subscription must be purchased and applied as needed.
 
 ## Choose a subscription tier

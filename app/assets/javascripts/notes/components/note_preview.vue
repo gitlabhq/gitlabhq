@@ -111,13 +111,7 @@ export default {
 </script>
 
 <template>
-  <noteable-note
-    v-if="showNote"
-    :id="`note_${noteId}`"
-    :note="note"
-    :show-reply-button="false"
-    should-scroll-to-note
-  >
+  <noteable-note v-if="showNote" :id="`note_${noteId}`" :note="note" :show-reply-button="false">
     <template #note-body>
       <div ref="noteBody" class="note-body">
         <div v-safe-html:[$options.safeHtmlConfig]="noteHtml" class="note-text md"></div>

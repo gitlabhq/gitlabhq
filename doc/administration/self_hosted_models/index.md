@@ -70,7 +70,7 @@ If you do not meet the use case criteria for self-hosted models, you can use the
 GitLab.com AI gateway with default GitLab external vendor LLMs.
 
 The GitLab.com AI gateway is the default Enterprise offering and is not self-hosted. In this configuration,
-you connect your GitLab Self-Managed instance to the GitLab-hosted AI gateway, which
+you connect your instance to the GitLab-hosted AI gateway, which
 integrates with external vendor LLM providers (such as Google Vertex or Anthropic).
 
 These LLMs communicate through the [GitLab Cloud Connector](../../development/cloud_connector/index.md),

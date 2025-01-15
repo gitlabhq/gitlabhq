@@ -13,6 +13,45 @@ DETAILS:
 This document lists tokens used in GitLab, their purpose and, where
 applicable, security guidance.
 
+## Security considerations
+
+To keep your tokens secure:
+
+- Treat tokens like passwords and keep them secure.
+- When creating a scoped token, use the most limited scope possible to reduce the impact of an accidentally leaked token.
+  - If separate processes require different scopes (for example, `read` and `write`), consider using separate tokens, one for each scope. If one token leaks, it gives reduced access than a single token with a wide scope like full API access.
+- When creating a token, consider setting a token that expires when your task is complete. For example, if you need to perform a one-time import, set the token to expire after a few hours.
+- If you set up a demo environment to showcase a project you have been working on, and you record a video or write a blog post describing that project, make sure you don't accidentally leak a secret.
+  After the demo is finished, revoke all the secrets created during the demo.
+- Adding tokens to URLs can be a security risk. Instead, pass the token with a header like [`Private-Token`](../../api/rest/authentication.md#personalprojectgroup-access-tokens).
+  - When cloning or adding a remote with a token in the URL, Git writes the URL to its `.git/config` file in plaintext.
+  - URLs are often logged by proxies and application servers, which could leak those credentials to system administrators.
+- You can store tokens using [Git credential storage](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
+- Review all active access tokens of all types on a regular basis and revoke any you don't need.
+
+Do not:
+
+- Store tokens in plaintext in your projects. If the token is an external secret for GitLab CI/CD,
+  review how to [use external secrets in CI/CD](../../ci/secrets/index.md) recommendations.
+- Include tokens when pasting code, console commands, or log outputs into an issue, MR description, comment, or any other free text inputs.
+- Log credentials in the console logs or artifacts. Consider [protecting](../../ci/variables/index.md#protect-a-cicd-variable) and
+  [masking](../../ci/variables/index.md#mask-a-cicd-variable) your credentials.
+
+### Tokens in CI/CD
+
+Avoid using personal access tokens as CI/CD variables wherever possible due to their wide scope.
+If access to other resources is required from a CI/CD job, use one of the following, ordered by least to most access scope:
+
+1. Job tokens (lowest access scope)
+1. Project tokens
+1. Group tokens
+
+Additional recommendations for [CI/CD variable security](../../ci/variables/index.md#cicd-variable-security) include:
+
+- Use [secrets storage](../../ci/pipelines/pipeline_security.md#secrets-storage) for any credentials.
+- CI/CD variable containing sensitive information should be [protected](../../ci/variables/index.md#protect-a-cicd-variable),
+  [masked](../../ci/variables/index.md#mask-a-cicd-variable), and [hidden](../../ci/variables/index.md#hide-a-cicd-variable).
+
 ## Personal access tokens
 
 You can create [personal access tokens](../../user/profile/personal_access_tokens.md)
@@ -31,6 +70,9 @@ such as [rotating a personal access token](../../api/personal_access_tokens.md#r
 You
 [receive an email](../../user/profile/personal_access_tokens.md#personal-access-token-expiry-emails)
 when your personal access tokens are expiring soon.
+
+When considering a CI/CD job that requires tokens for permissions, avoid using personal access tokens, especially if stored as a CI/CD variable.
+CI/CD job tokens and project access tokens can often achieve the same result with much less risk.
 
 ## OAuth 2.0 tokens
 
@@ -307,26 +349,3 @@ The following table shows the prefixes for each type of token.
 | GitLab session cookies            | `_gitlab_session=` |
 | SCIM Tokens                       | `glsoat-` <br /> &bull; ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435096) in GitLab 16.8 behind a feature flag named `prefix_scim_tokens`. Disabled by default.) <br > &bull; ([Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435423) in GitLab 16.9. Feature flag `prefix_scim_tokens` removed.) |
 | Feature Flags Client token        | `glffct-`          |
-
-## Security considerations
-
-To keep your tokens secure:
-
-- Treat access tokens like passwords and keep them secure.
-- When creating a scoped token, consider using the most limited scope possible to reduce the impact of accidentally leaking the token.
-- When creating a token, consider setting a token that expires when your task is complete. For example, if you need to perform a one-time import, set the token to expire after a few hours.
-- If you set up a demo environment to showcase a project you have been working on, and you record a video or write a blog post describing that project, make sure you don't accidentally leak a secret.
-  After the demo is finished, revoke all the secrets created during the demo.
-- Adding access tokens to URLs is a security risk, especially when cloning or adding a remote, because Git writes URLs to its `.git/config` file in plaintext. URLs are
-  also often logged by proxies and application servers, which leaks those credentials to system administrators. Instead, pass an access token to an API call with
-  a header like [`Private-Token`](../../api/rest/authentication.md#personalprojectgroup-access-tokens).
-- You can store tokens using [Git credential storage](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
-- Review all active access tokens of all types on a regular basis and revoke any you don't need.
-
-Do not:
-
-- Store tokens in plaintext in your projects. If the token is an external secret for GitLab CI/CD,
-  review how to [use external secrets in CI](../../ci/secrets/index.md) recommendations.
-- Include tokens when pasting code, console commands, or log outputs into an issue, MR description, or comment.
-- Log credentials in the console logs or artifacts. Consider [protecting](../../ci/variables/index.md#protect-a-cicd-variable)
-  and [masking](../../ci/variables/index.md#mask-a-cicd-variable) your credentials.

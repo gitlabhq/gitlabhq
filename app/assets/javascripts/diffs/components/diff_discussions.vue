@@ -86,7 +86,6 @@ export default {
           :discussions-by-diff-order="true"
           :line="line"
           :help-page-path="helpPagePath"
-          :should-scroll-to-note="false"
         >
           <template v-if="renderAvatarBadge" #avatar-badge>
             <design-note-pin

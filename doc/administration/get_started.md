@@ -129,7 +129,7 @@ GitLab provides backup methods to keep your data safe and recoverable. Whether y
 - Run a test backup and restore.
 - Set up a way to periodically verify the backups.
 
-### Back up a GitLab self-managed instance
+### Back up an instance
 
 The routine differs, depending on whether you deployed with the Linux package or the Helm chart.
 
@@ -205,7 +205,7 @@ Learn more about using [Geo as a disaster recovery solution](../administration/g
 Geo replicates your database, your Git repositories, and a few other assets.
 Learn more about the [data types Geo replicates](../administration/geo/replication/datatypes.md#replicated-data-types).
 
-## Support for GitLab self-managed
+## Support for GitLab Self-Managed
 
 GitLab provides support for GitLab Self-Managed through different channels.
 

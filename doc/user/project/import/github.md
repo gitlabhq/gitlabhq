@@ -64,8 +64,8 @@ on the GitLab instance you import to.
 
 > - [Preparation requirement removed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) in GitLab 17.8.
 
-Before using [the old method of user contribution mapping](#old-method-of-user-contribution-mapping) for imports to GitLab self-managed and GitLab
-Dedicated, you must take meet certain requirements. Imports to GitLab.com use [an improved method](../import/index.md#user-contribution-and-membership-mapping)
+Before using [the old method of user contribution mapping](#old-method-of-user-contribution-mapping) for imports to GitLab Self-Managed and GitLab
+Dedicated, you must meet certain requirements. Imports to GitLab.com use [an improved method](../import/index.md#user-contribution-and-membership-mapping)
 that doesn't require preparation.
 
 These requirements are:
@@ -253,11 +253,11 @@ The GitHub importer uses [an improved method](../import/index.md#user-contributi
 of mapping user contributions for:
 
 - GitLab.com
-- GitLab self-managed 17.6 or later when the `importer_user_mapping` and `github_user_mapping` feature flags are enabled.
+- GitLab Self-Managed 17.6 or later when the `importer_user_mapping` and `github_user_mapping` feature flags are enabled.
 
 ### Old method of user contribution mapping
 
-You can use the old user contribution mapping method for imports to GitLab self-managed and GitLab Dedicated instances. For imports to GitLab.com, you must
+You can use the old user contribution mapping method for imports to GitLab Self-Managed and GitLab Dedicated instances. For imports to GitLab.com, you must
 use [the improved method](../import/index.md#user-contribution-and-membership-mapping) instead.
 
 Using the old method, when [user accounts are provisioned correctly](#accounts-for-user-contribution-mapping), users are mapped during the import.

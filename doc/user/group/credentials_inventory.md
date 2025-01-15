@@ -15,7 +15,7 @@ DETAILS:
 As a GitLab.com top-level group owner, you are responsible for the overall security of your groups and projects.
 To assist, GitLab provides an inventory of all the credentials that can be used to access your groups and projects.
 
-This page describes how to manage the credentials inventory for GitLab.com. To manage credentials on GitLab self-managed, see [Credentials inventory for GitLab self-managed](../../administration/credentials_inventory.md).
+This page describes how to manage the credentials inventory for GitLab.com. To manage credentials on GitLab Self-Managed, see [Credentials inventory for GitLab Self-Managed](../../administration/credentials_inventory.md).
 
 In the credentials inventory, you can view:
 

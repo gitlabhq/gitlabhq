@@ -251,7 +251,7 @@ To install a package:
    - `<personal_access_token>` with the scope set to `api`, or `<deploy_token>` with the scope set
      to `read_package_registry` and/or `write_package_registry`.
 
-1. If you are on a GitLab self-managed instance, add `gitlab-domains` to `composer.json`.
+1. If you are on GitLab Self-Managed, add `gitlab-domains` to `composer.json`.
 
    ```shell
    composer config gitlab-domains gitlab01.example.com gitlab02.example.com

@@ -200,10 +200,10 @@ A personal access token can perform actions based on the assigned scopes.
 | `read_registry`    | Grants read-only (pull) access to [container registry](../packages/container_registry/index.md) images if a project is private and authorization is required. Available only when the container registry is enabled.                                                                                               |
 | `write_registry`   | Grants read-write (push) access to [container registry](../packages/container_registry/index.md) images if a project is private and authorization is required. Available only when the container registry is enabled.  |
 | `sudo`             | Grants permission to perform API actions as any user in the system, when authenticated as an administrator.                                                                                                                                                                                                        |
-| `admin_mode`       | Grants permission to perform API actions as an administrator, when Admin Mode is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107875) in GitLab 15.8. Available on GitLab self-managed only.)                                                                                                                             |
+| `admin_mode`       | Grants permission to perform API actions as an administrator, when Admin Mode is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107875) in GitLab 15.8. Available on GitLab Self-Managed only.)                                                                                                                             |
 | `create_runner`    | Grants permission to create runners.                                                                                                                                                                                                                                                                               |
 | `manage_runner`    | Grants permission to manage runners.                                                                    |
-| `ai_features`      | This scope:<br>- Grants permission to perform API actions for features like GitLab Duo, Code Suggestions API and Duo Chat API.<br>- Does not work for GitLab self-managed versions 16.5, 16.6, and 16.7.<br>For GitLab Duo plugin for JetBrains, this scope:<br>- Supports users with AI features enabled in the GitLab Duo plugin for JetBrains.<br>- Addresses a security vulnerability in JetBrains IDE plugins that could expose personal access tokens.<br>- Is designed to minimize potential risks for GitLab Duo plugin users by limiting the impact of compromised tokens.<br>For all other extensions, see the individual scope requirements in their documentation.                                                                                                                                |
+| `ai_features`      | This scope:<br>- Grants permission to perform API actions for features like GitLab Duo, Code Suggestions API and Duo Chat API.<br>- Does not work for GitLab Self-Managed versions 16.5, 16.6, and 16.7.<br>For GitLab Duo plugin for JetBrains, this scope:<br>- Supports users with AI features enabled in the GitLab Duo plugin for JetBrains.<br>- Addresses a security vulnerability in JetBrains IDE plugins that could expose personal access tokens.<br>- Is designed to minimize potential risks for GitLab Duo plugin users by limiting the impact of compromised tokens.<br>For all other extensions, see the individual scope requirements in their documentation.                                                                                                                                |
 | `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes.                                                                                                                                                                                                                                  |
 | `read_service_ping`| Grant access to download Service Ping payload through the API when authenticated as an admin use. |
 
@@ -234,14 +234,14 @@ depends on what GitLab offering you have, and when you upgraded to GitLab 16.0 o
 
 - On GitLab.com, during the 16.0 milestone, existing personal access tokens without
   an expiry date were automatically given an expiry date of 365 days later than the current date.
-- On GitLab self-managed, if you upgraded from GitLab 15.11 or earlier to GitLab 16.0 or later:
+- On GitLab Self-Managed, if you upgraded from GitLab 15.11 or earlier to GitLab 16.0 or later:
   - On or before July 23, 2024, existing personal access tokens without an expiry
     date were automatically given an expiry date of 365 days later than the current date.
     This change is a breaking change.
   - On or after July 24, 2024, existing personal access tokens without an expiry
     date did not have an expiry date set.
 
-On GitLab self-managed, if you do a new install of one of the following GitLab
+On GitLab Self-Managed, if you do a new install of one of the following GitLab
 versions, your existing personal access tokens do not have expiry dates
 automatically applied:
 

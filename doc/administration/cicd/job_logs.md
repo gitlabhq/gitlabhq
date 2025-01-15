@@ -213,7 +213,7 @@ For more information, see how to
 
 ## Incremental logging architecture
 
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-incremental-logging).
+> - To use in your instance, ask a GitLab administrator to [enable it](#enable-or-disable-incremental-logging).
 
 By default, job logs are sent from the GitLab Runner in chunks and cached
 temporarily on disk. After the job completes, a background job archives the job

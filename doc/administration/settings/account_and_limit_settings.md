@@ -250,10 +250,10 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163726) in GitLab 17.5 [with a feature flag](../feature_flags.md) named `allow_top_level_group_owners_to_create_service_accounts` for GitLab self-managed. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163726) in GitLab 17.5 [with a feature flag](../feature_flags.md) named `allow_top_level_group_owners_to_create_service_accounts` for GitLab Self-Managed. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172502) in GitLab 17.6. Feature flag `allow_top_level_group_owners_to_create_service_accounts` removed.
 
-By default, in GitLab self-managed, top-level group Owners can not create service accounts. GitLab administrators can allow top-level group Owners to create service accounts.
+By default, in GitLab Self-Managed, top-level group Owners can not create service accounts. GitLab administrators can allow top-level group Owners to create service accounts.
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.

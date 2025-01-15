@@ -275,7 +275,7 @@ The [import sources](../project/import/index.md#supported-import-sources) that a
 which GitLab you use:
 
 - GitLab.com: All available import sources are enabled by default.
-- GitLab self-managed: No import sources are enabled by default and must be
+- GitLab Self-Managed: No import sources are enabled by default and must be
   [enabled](../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
 
 ## Import placeholder user limits

@@ -92,7 +92,7 @@ fingerprint.
 
 ![Okta basic SAML](img/Okta-GroupSAML_v15_3.png)
 
-### Basic SAML app configuration for GitLab self-managed
+### Basic SAML app configuration for GitLab Self-Managed
 
 ![Okta admin panel view](img/Okta-SM_v15_3.png)
 

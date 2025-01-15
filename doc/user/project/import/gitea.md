@@ -97,11 +97,11 @@ The Gitea importer uses [an improved method](../import/index.md#user-contributio
 of mapping user contributions for:
 
 - GitLab.com
-- GitLab self-managed 17.6 or later when the `importer_user_mapping` and `gitea_user_mapping` feature flags are enabled.
+- GitLab Self-Managed 17.6 or later when the `importer_user_mapping` and `gitea_user_mapping` feature flags are enabled.
 
 ### Old method of user contribution mapping
 
-You can use the old user contribution mapping method for imports to GitLab self-managed and GitLab Dedicated instances. For imports to GitLab.com, you must
+You can use the old user contribution mapping method for imports to GitLab Self-Managed and GitLab Dedicated instances. For imports to GitLab.com, you must
 use [the improved method](../import/index.md#user-contribution-and-membership-mapping) instead.
 
 Using the old method, user contributions are assigned to the project creator (usually the user who started the import process) by default.

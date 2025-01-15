@@ -19,7 +19,7 @@ In this tutorial, we'll show you how to create, configure, instrument, and monit
 
 To follow along this tutorial, you should have:
 
-- A GitLab Ultimate subscription for GitLab.com or GitLab self-managed
+- A GitLab Ultimate subscription for GitLab.com or GitLab Self-Managed
 - A local installation of Python 3 and Django (You can install it with `python -m pip install Django`.)
 - Basic knowledge of Git and Python
 - Basic knowledge of the core concepts of [OpenTelemetry](https://opentelemetry.io/)

@@ -306,7 +306,7 @@ You can also use the `/reopen` [quick action](../quick_actions.md) in a comment 
 ### Closing issues automatically
 
 You can close issues automatically by using certain words, called a _closing pattern_,
-in a commit message or merge request description. Administrators of GitLab Self-Managed instances
+in a commit message or merge request description. GitLab Self-Managed administrators
 can [change the default closing pattern](../../../administration/issue_closing_pattern.md).
 
 If a commit message or merge request description contains text matching the [closing pattern](#default-closing-pattern),

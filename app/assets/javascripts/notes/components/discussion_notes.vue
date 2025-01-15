@@ -54,11 +54,6 @@ export default {
       required: false,
       default: false,
     },
-    shouldScrollToNote: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
   },
   computed: {
     ...mapGetters(['userCanReply']),
@@ -146,7 +141,6 @@ export default {
           :discussion-root="true"
           :discussion-resolve-path="discussion.resolve_path"
           :is-overview-tab="isOverviewTab"
-          :should-scroll-to-note="shouldScrollToNote"
           :internal-note="isDiscussionInternal"
           :class="{ '!gl-border-t-0': isFileDiscussion }"
           @handleDeleteNote="$emit('deleteNote')"
@@ -202,7 +196,6 @@ export default {
           :discussion-root="index === 0"
           :discussion-resolve-path="discussion.resolve_path"
           :is-overview-tab="isOverviewTab"
-          :should-scroll-to-note="shouldScrollToNote"
           :internal-note="isDiscussionInternal"
           @handleDeleteNote="$emit('deleteNote')"
         >

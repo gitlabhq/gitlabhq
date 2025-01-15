@@ -44,7 +44,7 @@ module Ci
     private
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def ids_for_ref(items, refs)
+    def pipelines_for_ref(items)
       unfiltered_items =
         if Feature.enabled?(:exclude_child_pipelines_from_tag_branch_query, project)
           items
@@ -52,13 +52,34 @@ module Ci
           pipelines
         end
 
-      unfiltered_items.where(ref: refs).group(:ref).select('max(id)')
+      where_query = Arel.sql("#{Ci::Pipeline.table_name}.ref = refs.ref")
+
+      unfiltered_items
+        .where(where_query)
+        .order(id: :desc)
+        .limit(1) # Limit to 1 because we only want the latest pipeline per ref
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
+    def refs_values(refs)
+      # Create list of form `[['main'], ['branch1']]`
+      list = refs.map { |ref| Array(ref) }
+
+      # Create values list of form `(VALUES ('main'), ('branch1'))`
+      values_list = Arel::Nodes::Grouping.new(Arel::Nodes::ValuesList.new(list))
+
+      # (VALUES ('main'), ('branch1')) AS refs(ref)
+      Arel::Nodes::As.new(values_list, Arel.sql('refs(ref)'))
+    end
+
     # rubocop: disable CodeReuse/ActiveRecord
-    def from_ids(ids)
-      pipelines.unscoped.where(project_id: project.id, id: ids)
+    def from_derived_table(derived_pipelines_table, refs_values_table)
+      pipelines
+        .unscoped
+        .from([
+          refs_values_table,
+          derived_pipelines_table.arel.lateral.as(Ci::Pipeline.table_name)
+        ])
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -102,9 +123,9 @@ module Ci
       when ALLOWED_SCOPES[:FINISHED]
         items.finished
       when ALLOWED_SCOPES[:BRANCHES]
-        from_ids(ids_for_ref(items, branches))
+        from_derived_table(pipelines_for_ref(items), refs_values(branches))
       when ALLOWED_SCOPES[:TAGS]
-        from_ids(ids_for_ref(items, tags))
+        from_derived_table(pipelines_for_ref(items), refs_values(tags))
       else
         items
       end

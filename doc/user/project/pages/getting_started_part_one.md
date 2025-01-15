@@ -27,7 +27,7 @@ subdomain of `namespace.example.io`.
 The [`namespace`](../../namespace/index.md)
 is defined by your username on GitLab.com,
 or the group name you created this project under.
-For GitLab self-managed instances, replace `example.io`
+For GitLab Self-Managed, replace `example.io`
 with your instance's Pages domain. For GitLab.com,
 Pages domains are `*.gitlab.io`.
 

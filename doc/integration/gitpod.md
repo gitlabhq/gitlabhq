@@ -23,7 +23,7 @@ request from your browser.
 To use the GitLab Gitpod integration, you must enable it for your GitLab instance and in your preferences. Users of:
 
 - GitLab.com can use it immediately after it's [enabled in their user preferences](#enable-gitpod-in-your-user-preferences).
-- GitLab self-managed instances can use it after:
+- GitLab Self-Managed instances can use it after:
   1. It's [enabled and configured by a GitLab administrator](#configure-a-self-managed-instance).
   1. It's [enabled in their user settings](#enable-gitpod-in-your-user-preferences).
 
@@ -45,7 +45,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed, GitLab Dedicated
 
-For GitLab Self-Managed instances, a GitLab administrator must:
+For GitLab Self-Managed, a GitLab administrator must:
 
 1. Enable the Gitpod integration in GitLab:
    1. On the left sidebar, at the bottom, select **Admin**.
@@ -54,7 +54,7 @@ For GitLab Self-Managed instances, a GitLab administrator must:
    1. Select the **Enable Gitpod integration** checkbox.
    1. Enter the Gitpod instance URL (for example, `https://gitpod.example.com` or `https://gitpod.io`).
    1. Select **Save changes**.
-1. Register the GitLab Self-Managed instance in Gitpod. For more information, see the [Gitpod documentation](https://www.gitpod.io/docs/configure/authentication/gitlab#registering-a-self-hosted-gitlab-installation).
+1. Register the instance in Gitpod. For more information, see the [Gitpod documentation](https://www.gitpod.io/docs/configure/authentication/gitlab#registering-a-self-hosted-gitlab-installation).
 
 GitLab users can then [enable the Gitpod integration for themselves](#enable-gitpod-in-your-user-preferences).
 

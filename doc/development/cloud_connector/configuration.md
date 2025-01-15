@@ -230,7 +230,7 @@ To add a new unit primitive, follow [Register new feature for Self-Managed, Dedi
 
 #### CustomersDot configuration
 
-For GitLab Dedicated and GitLab Self-Managed instances we are delegating trust to the CustomersDot, the access token issuer.
+For GitLab Dedicated and GitLab Self-Managed we are delegating trust to the CustomersDot, the access token issuer.
 
 The configuration is located in [`cloud_connector.yml`](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/config/cloud_connector.yml),
 and represents an almost exact copy of the GitLab.com configuration.

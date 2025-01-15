@@ -111,7 +111,7 @@ under [Configuring Git Protocol](../administration/git_protocol.md).
 
 ## Incoming Email
 
-You can configure a GitLab self-managed instance to allow for incoming email to be
+You can configure GitLab Self-Managed to allow for incoming email to be
 used for commenting or creating issues and merge requests by registered users on
 the GitLab instance. In a hardened environment you should not configure
 this feature as it involves outside communications sending in information.

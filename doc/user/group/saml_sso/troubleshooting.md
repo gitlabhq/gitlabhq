@@ -414,7 +414,7 @@ DETAILS:
 If the user receives a `404` after signing in successfully, check if you have IP restrictions configured. IP restriction settings are configured:
 
 - On GitLab.com, [at the group level](../../../user/group/access_and_permissions.md#restrict-group-access-by-ip-address).
-- For GitLab self-managed, [at the instance level](../../../administration/reporting/ip_addr_restrictions.md).
+- For GitLab Self-Managed, [at the instance level](../../../administration/reporting/ip_addr_restrictions.md).
 
 Because SAML SSO for groups is a paid feature, your subscription expiring can result in a `404` error when you're signing in using SAML SSO on GitLab.com.
 If all users are receiving a `404` when attempting to sign in using SAML, confirm

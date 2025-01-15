@@ -15,7 +15,7 @@ DETAILS:
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114524) in GitLab 15.10.
 > - Ability to create and remove a custom role with the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393235) in GitLab 16.4.
 > - Ability to use the UI to add a user to your group with a custom role, change a user's custom role, or remove a custom role from a group member [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393239) in GitLab 16.7.
-> - Ability to create and remove an instance-wide custom role on GitLab self-managed [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141562) in GitLab 16.9.
+> - Ability to create and remove an instance-wide custom role on GitLab Self-Managed [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141562) in GitLab 16.9.
 
 Custom roles allow an organization to create user roles with the precise privileges and permissions required for that organization's needs.
 
@@ -66,7 +66,7 @@ In **Settings > Roles and permissions**, the list of all custom roles displays t
 - Base role that the custom role uses as a template.
 - Permissions.
 
-### GitLab self-managed
+### GitLab Self-Managed
 
 Prerequisites:
 
@@ -113,7 +113,7 @@ Prerequisites:
 1. Modify the role as needed.
 1. Select **Save role** to update the role.
 
-### GitLab self-managed
+### GitLab Self-Managed
 
 Prerequisites:
 

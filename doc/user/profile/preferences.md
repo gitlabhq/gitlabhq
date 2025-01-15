@@ -70,7 +70,7 @@ To change back to the default colors, clear the **Color for removed lines** and 
 
 ## Behavior
 
-Use the **Behavior** section to customize the behavior and layout of your GitLab self-managed instance. You can change your layout width and choose the default content for your homepage, group and project overview pages. You have options to customize appearance and function, like whitespace rendering, file display, and text automation.
+Use the **Behavior** section to customize the behavior of the system layout and default views. You can change your layout width and choose the default content for your homepage, group and project overview pages. You have options to customize appearance and function, like whitespace rendering, file display, and text automation.
 
 ### Change the layout width on the UI
 
@@ -340,7 +340,7 @@ For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epi
 
 Prerequisites:
 
-- For [GitLab self-managed](../../subscriptions/self_managed/index.md), an administrator must
+- For [GitLab Self-Managed](../../subscriptions/self_managed/index.md), an administrator must
   [enable exact code search](../../integration/exact_code_search/zoekt.md#enable-exact-code-search).
 
 To disable [exact code search](../../user/search/exact_code_search.md) in user preferences:

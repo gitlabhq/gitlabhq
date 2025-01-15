@@ -309,7 +309,7 @@ to the AI gateway. This might result in your requests having higher latency.
 
 Prerequisites:
 
-- You must be an administrator for the GitLab self-managed instance.
+- You must be an administrator for the GitLab Self-Managed instance.
 
 ::Tabs
 

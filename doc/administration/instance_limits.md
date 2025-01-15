@@ -342,7 +342,7 @@ Blocked recursive webhook calls are logged in `auth.log` with the message `"Recu
 
 The number of [placeholder users](../user/project/import/index.md#placeholder-users) created during an import can be limited per top-level namespace.
 
-The default limit for [GitLab self-managed](../subscriptions/self_managed/index.md) is `0` (unlimited).
+The default limit for [GitLab Self-Managed](../subscriptions/self_managed/index.md) is `0` (unlimited).
 
 To change this limit for a self-managed installation, run the following in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
 
@@ -458,7 +458,7 @@ any job with an [`environment`](../ci/environments/index.md) specified. The numb
 of deployments in a pipeline is checked at pipeline creation. Pipelines that have
 too many deployments fail with a `deployments_limit_exceeded` error.
 
-The default limit is 500 for all [GitLab self-managed and SaaS plans](https://about.gitlab.com/pricing/).
+The default limit is 500 for all [GitLab Self-Managed and GitLab.com plans](https://about.gitlab.com/pricing/).
 
 To change the limit for a self-managed installation, change the `default` plan's limit with the following
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session) command:
@@ -671,7 +671,7 @@ Plan.default.actual_limits.update!(ci_max_artifact_size_junit: 10)
 The total number of file entries (including directories and symlinks) is limited to `200,000` per
 GitLab Pages website.
 
-This is the default limit for all [GitLab self-managed and SaaS plans](https://about.gitlab.com/pricing/).
+This is the default limit for all [GitLab Self-Managed and GitLab.com plans](https://about.gitlab.com/pricing/).
 
 You can update the limit in your self-managed instance using the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
@@ -685,7 +685,7 @@ Plan.default.actual_limits.update!(pages_file_entries: 100)
 
 The total number of custom domains per GitLab Pages website is limited to `150` for [GitLab SaaS](../subscriptions/gitlab_com/index.md).
 
-The default limit for [GitLab self-managed](../subscriptions/self_managed/index.md) is `0` (unlimited).
+The default limit for [GitLab Self-Managed](../subscriptions/self_managed/index.md) is `0` (unlimited).
 To set a limit on your self-managed instance, use the
 [**Admin** area](pages/index.md#set-maximum-number-of-gitlab-pages-custom-domains-for-a-project).
 

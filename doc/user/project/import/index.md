@@ -27,12 +27,12 @@ You can also copy GitLab projects by using a GitLab file export, which is a supp
 
 ## Supported import sources
 
-> - All importers default to disabled for GitLab self-managed installations. This change was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118970) in GitLab 16.0.
+> - All importers default to disabled for GitLab Self-Managed installations. This change was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118970) in GitLab 16.0.
 
 The import sources that are available to you by default depend on which GitLab you use:
 
 - GitLab.com: all available import sources are [enabled by default](../../gitlab_com/index.md#default-import-sources).
-- GitLab self-managed: no import sources are enabled by default and must be
+- GitLab Self-Managed: no import sources are enabled by default and must be
   [enabled](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
 
 GitLab can import projects from these supported import sources.
@@ -54,7 +54,7 @@ Only import projects from sources you trust. If you import a project from an unt
 an attacker could steal your sensitive data. For example, an imported project
 with a malicious `.gitlab-ci.yml` file could allow an attacker to exfiltrate group CI/CD variables.
 
-GitLab self-managed administrators can reduce their attack surface by disabling import sources they don't need:
+GitLab Self-Managed administrators can reduce their attack surface by disabling import sources they don't need:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
@@ -103,10 +103,10 @@ This method of user contribution and membership mapping is available for
 [direct transfer migrations](../../group/import/index.md), [GitHub importer](github.md), [Bitbucket Server importer](bitbucket_server.md), and [Gitea importer](gitea.md) on:
 
 - GitLab.com
-- GitLab self-managed when two feature flags are enabled
+- GitLab Self-Managed when two feature flags are enabled
 
 User contribution mapping is not supported when you import projects to a personal namespace.
-For information on the other method available for GitLab self-managed without enabled feature flags,
+For information on the other method available for GitLab Self-Managed without enabled feature flags,
 see [user contribution and membership mapping](../../group/import/direct_transfer_migrations.md#user-contribution-and-membership-mapping).
 
 Any memberships and contributions you import are first mapped to [placeholder users](#placeholder-users).

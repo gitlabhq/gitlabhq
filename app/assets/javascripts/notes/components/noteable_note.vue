@@ -99,11 +99,6 @@ export default {
       required: false,
       default: false,
     },
-    shouldScrollToNote: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     discussion: {
       type: Object,
       required: false,
@@ -271,12 +266,6 @@ export default {
         this.$el.scrollIntoView();
       }
     });
-  },
-
-  mounted() {
-    if (this.isTarget && this.shouldScrollToNote) {
-      this.$el.scrollIntoView({ duration: 0 });
-    }
   },
 
   methods: {

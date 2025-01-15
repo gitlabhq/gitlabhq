@@ -30,7 +30,7 @@ You can migrate groups in two ways:
 - By direct transfer (recommended).
 - By [uploading an export file](../../project/settings/import_export.md).
 
-If you migrate from GitLab.com to GitLab Self-Managed, an administrator can create users on the GitLab Self-Managed instance.
+If you migrate from GitLab.com to a GitLab Self-Managed instance, an administrator can create users on the instance.
 
 On GitLab Self-Managed, by default [migrating group items](migrated_items.md#migrated-group-items) is not available. To show the
 feature, an administrator can [enable it in application settings](../../../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer).
