@@ -1297,7 +1297,7 @@ configuration. Some `gitaly['..']` configuration options continue to be used by 
 - `consul_service_name`
 - `consul_service_meta`
 
-Migrate by moving your existing configuration under the new structure. `git_data_dirs` is supported [until GitLab 17.0](https://gitlab.com/gitlab-org/gitaly/-/issues/5133). The new structure is supported from GitLab 15.10.
+Migrate by moving your existing configuration under the new structure. `git_data_dirs` is supported [until GitLab 18.0](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8786). The new structure is supported from GitLab 15.10.
 
 **Migrate to the new structure**
 

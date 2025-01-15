@@ -57,7 +57,11 @@ module Import
 
         update_params = {}
         update_params[:name] = placeholder_creator.placeholder_name if params[:source_name]
-        update_params[:username] = placeholder_creator.placeholder_username if params[:source_username]
+
+        if params[:source_username]
+          update_params[:username] = placeholder_creator.send(:username_and_email_generator).username # rubocop:disable GitlabSecurity/PublicSend -- Safe to call, we don't want to publically expose this method.
+        end
+
         update_params
       end
 

@@ -34,6 +34,20 @@ module WorkItems
             params: callback_params.merge({ operation: operation })
           )
         end
+
+        @callbacks += WorkItem.non_widgets.filter_map do |association_name|
+          sync_callback_class = WorkItem.sync_callback_class(association_name)
+          next if sync_callback_class.nil?
+
+          sync_callback_class.new(
+            work_item: original_work_item,
+            target_work_item: work_item,
+            current_user: current_user,
+            params: { operation: operation }
+          )
+        end
+
+        @callbacks
       end
     end
   end

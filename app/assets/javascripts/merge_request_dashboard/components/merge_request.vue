@@ -94,7 +94,10 @@ export default {
       />
       <gl-icon v-else name="dash" />
     </td>
-    <td class="gl-px-3 gl-py-4 gl-align-top">
+    <td
+      class="gl-py-4 gl-align-top"
+      :class="{ 'gl-pl-5 gl-pr-3': newListsEnabled, 'gl-px-3': !newListsEnabled }"
+    >
       <status-badge v-if="newListsEnabled" :merge-request="mergeRequest" :list-id="listId" />
       <approval-count v-else :merge-request="mergeRequest" />
     </td>

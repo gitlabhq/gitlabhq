@@ -7,6 +7,7 @@ RSpec.describe 'getting pipeline information nested in a project', feature_categ
 
   let_it_be(:project) { create(:project, :repository, :public) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:pipeline_2) { create(:ci_pipeline, project: project, sha: 'sha') }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:build_job) { create(:ci_build, :trace_with_sections, name: 'build-a', pipeline: pipeline, stage_idx: 0, stage: 'build') }
   let_it_be(:failed_build) { create(:ci_build, :failed, name: 'failed-build', pipeline: pipeline, stage_idx: 0, stage: 'build') }
@@ -456,6 +457,59 @@ RSpec.describe 'getting pipeline information nested in a project', feature_categ
       expect do
         post_graphql(query, current_user: current_user)
       end.not_to exceed_all_query_limit(control)
+    end
+  end
+
+  context 'when no arguments are passed' do
+    let(:variables) do
+      {
+        path: project.full_path
+      }
+    end
+
+    let(:query) do
+      <<~GQL
+      query($path: ID!) {
+        project(fullPath: $path) {
+          pipeline {
+            id
+          }
+        }
+      }
+      GQL
+    end
+
+    it 'returns latest pipeline' do
+      post_graphql(query, current_user: current_user, variables: variables)
+
+      expect(graphql_data_at(:project, :pipeline, :id)).to eq(pipeline.to_global_id.to_s)
+    end
+  end
+
+  context 'when sha argument is passed' do
+    let(:variables) do
+      {
+        path: project.full_path,
+        sha: 'sha'
+      }
+    end
+
+    let(:query) do
+      <<~GQL
+      query($path: ID!, $sha: String!) {
+        project(fullPath: $path) {
+          pipeline(sha: $sha) {
+            id
+          }
+        }
+      }
+      GQL
+    end
+
+    it 'returns pipeline by sha' do
+      post_graphql(query, current_user: current_user, variables: variables)
+
+      expect(graphql_data_at(:project, :pipeline, :id)).to eq(pipeline_2.to_global_id.to_s)
     end
   end
 

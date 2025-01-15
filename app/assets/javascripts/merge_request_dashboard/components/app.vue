@@ -61,18 +61,17 @@ export default {
         <div v-for="(lists, i) in tab.lists" :key="`lists_${i}`">
           <div
             v-if="i === 1 && newListsEnabled"
-            class="gl-mt-8 gl-rounded-base gl-bg-gray-50 gl-px-4 gl-py-2 gl-font-bold gl-text-subtle"
+            class="gl-mb-5 gl-mt-8 gl-rounded-base gl-bg-gray-50 gl-px-4 gl-py-2 gl-font-bold gl-text-subtle"
             data-testid="merge-request-count-explanation"
           >
             {{ __('Items below are excluded from the active count') }}
           </div>
           <merge-requests-query
-            v-for="list in lists"
+            v-for="(list, listIndex) in lists"
             :key="`list_${list.id}`"
             :query="list.query"
             :variables="list.variables"
             :hide-count="list.hideCount"
-            :class="{ '!gl-mt-3': i === 0 }"
           >
             <template #default="{ mergeRequests, count, hasNextPage, loadMore, loading, error }">
               <collapsible-section
@@ -81,6 +80,10 @@ export default {
                 :title="list.title"
                 :help-content="list.helpContent"
                 :loading="loading"
+                :class="{
+                  '!gl-mt-0': newListsEnabled && listIndex === 0,
+                  '!gl-mt-3': newListsEnabled && listIndex > 0,
+                }"
               >
                 <div>
                   <div class="gl-overflow-x-auto">
@@ -102,7 +105,7 @@ export default {
                             <span class="gl-sr-only">{{ __('Pipeline status') }}</span>
                           </th>
                           <th
-                            class="gl-px-3 gl-pb-3"
+                            class="gl-pb-3 gl-pl-5 gl-pr-3"
                             :class="{ 'gl-text-sm gl-text-subtle': newListsEnabled }"
                           >
                             <template v-if="newListsEnabled">

@@ -110,3 +110,85 @@ Example response:
   ...
 ]
 ```
+
+## Get details on an enterprise user
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176328) in GitLab 17.9.
+
+Gets details on a specified enterprise user.
+
+```plaintext
+GET /groups/:id/enterprise_users/:user_id
+```
+
+Supported attributes:
+
+| Attribute        | Type           | Required | Description |
+|:-----------------|:---------------|:---------|:------------|
+| `id`             | integer/string | yes      | ID or [URL-encoded path](rest/index.md#namespaced-paths) of a top-level group. |
+| `user_id`        | integer        | yes      | ID of user account. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/enterprise_users/:user_id"
+```
+
+Example response:
+
+```json
+{
+  "id": 66,
+  "username": "user22",
+  "name": "Sidney Jones22",
+  "state": "active",
+  "avatar_url": "https://www.gravatar.com/avatar/xxx?s=80&d=identicon",
+  "web_url": "http://my.gitlab.com/user22",
+  "created_at": "2021-09-10T12:48:22.381Z",
+  "bio": "",
+  "location": null,
+  "public_email": "",
+  "skype": "",
+  "linkedin": "",
+  "twitter": "",
+  "website_url": "",
+  "organization": null,
+  "job_title": "",
+  "pronouns": null,
+  "bot": false,
+  "work_information": null,
+  "followers": 0,
+  "following": 0,
+  "local_time": null,
+  "last_sign_in_at": null,
+  "confirmed_at": "2021-09-10T12:48:22.330Z",
+  "last_activity_on": null,
+  "email": "user22@example.org",
+  "theme_id": 1,
+  "color_scheme_id": 1,
+  "projects_limit": 100000,
+  "current_sign_in_at": null,
+  "identities": [
+    {
+      "provider": "group_saml",
+      "extern_uid": "2435223452345",
+      "saml_provider_id": 1
+    }
+  ],
+  "can_create_group": true,
+  "can_create_project": true,
+  "two_factor_enabled": false,
+  "external": false,
+  "private_profile": false,
+  "commit_email": "user22@example.org",
+  "shared_runners_minutes_limit": null,
+  "extra_shared_runners_minutes_limit": null,
+  "scim_identities": [
+    {
+      "extern_uid": "2435223452345",
+      "group_id": 1,
+      "active": true
+    }
+  ]
+}
+```

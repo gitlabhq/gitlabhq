@@ -1001,22 +1001,19 @@ notifications:
 
 ::EndTabs
 
-## Run the Cleanup policy now
+## Run the cleanup policy
 
-WARNING:
-If you're using a distributed architecture and Sidekiq is running on a different node, the cleanup
-policies don't work. To fix this:
+Prerequisites:
 
-1. Configure the `gitlab.rb` file on the Sidekiq nodes to
-   point to the correct registry URL.
-1. Copy the `registry.key` file to each Sidekiq node.
+- If you use a distributed architecture where the container registry runs on a different node than Sidekiq, follow the steps in [Configure the container registry when using an external Sidekiq](../sidekiq/index.md#configure-the-container-registry-when-using-an-external-sidekiq).
 
-For more information, see the [Sidekiq configuration](../sidekiq/index.md)
-page.
+After you [create a cleanup policy](../../user/packages/container_registry/reduce_container_registry_storage.md#create-a-cleanup-policy), you can run it immediately to reduce the container registry storage space. You don't have to wait for the scheduled cleanup.
 
-To reduce the amount of [Container Registry disk space used by a given project](#registry-disk-space-usage-by-project),
-administrators can set up cleanup policies
-and [run garbage collection](#container-registry-garbage-collection).
+To reduce the amount of container registry disk space used by a given project, administrators can:
+
+1. [Check disk space usage by project](#registry-disk-space-usage-by-project) to identify projects that need cleanup.
+1. Run the cleanup policy using the GitLab Rails console to remove image tags.
+1. [Run garbage collection](#container-registry-garbage-collection) to remove unreferenced layers and untagged manifests.
 
 ### Registry Disk Space Usage by Project
 

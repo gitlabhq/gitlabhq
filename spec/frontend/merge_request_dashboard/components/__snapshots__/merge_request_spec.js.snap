@@ -120,7 +120,7 @@ exports[`Merge request dashboard merge request component when newListsEnabled is
   class="gl-border-b"
 >
   <td
-    class="gl-align-top gl-px-3 gl-py-4"
+    class="gl-align-top gl-pl-5 gl-pr-3 gl-py-4"
   >
     <status-badge-stub
       listid="returned_to_you"

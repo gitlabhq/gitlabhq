@@ -364,6 +364,8 @@ module GitalySetup
       # running until `make test` cleans it up.
       next if ENV['GITALY_PID_FILE']
 
+      ::Gitlab::GitalyClient.clear_stubs!
+
       pids.each { |pid| stop(pid) }
 
       [storage_path, second_storage_path].each { |storage_dir| FileUtils.rm_rf(storage_dir) }

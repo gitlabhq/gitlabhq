@@ -57,7 +57,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       end
 
       it 'must not be a placeholder email' do
-        member.invite_email = "gitlab_migration_5c34ae6b9_1@#{Settings.gitlab.host}"
+        member.invite_email = 'gitlab_migration_placeholder_user@noreply.localhost'
 
         expect(member).not_to be_valid
       end

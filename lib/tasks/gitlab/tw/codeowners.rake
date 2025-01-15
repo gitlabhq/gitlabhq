@@ -23,7 +23,6 @@ namespace :tw do
       # CodeOwnerRule.new('Activation', ''),
       # CodeOwnerRule.new('Acquisition', ''),
       CodeOwnerRule.new('AI Framework', '@sselhorn'),
-      # CodeOwnerRule.new('AI Model Validation', ''),
       # CodeOwnerRule.new('Analytics Instrumentation', ''),
       CodeOwnerRule.new('Authentication', '@idurham'),
       CodeOwnerRule.new('Authorization', '@idurham'),

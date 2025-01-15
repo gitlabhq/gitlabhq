@@ -476,7 +476,7 @@ To copy the task's email address:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the project.
+- You must have at least the Guest role for the project.
 - The issue and task must belong to the same project.
 
 To set an issue as a parent of a task:

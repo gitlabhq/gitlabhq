@@ -370,7 +370,7 @@ module Types
 
     field :pipelines,
       null: true,
-      description: 'Build pipelines of the project.',
+      description: 'Pipelines of the project.',
       extras: [:lookahead],
       resolver: Resolvers::Ci::ProjectPipelinesResolver
 
@@ -389,13 +389,14 @@ module Types
 
     field :pipeline, Types::Ci::PipelineType,
       null: true,
-      description: 'Build pipeline of the project.',
+      description: 'Pipeline of the project. If no arguments are provided, returns the latest pipeline for the ' \
+        'head commit on the default branch',
       extras: [:lookahead],
       resolver: Resolvers::Ci::ProjectPipelineResolver
 
     field :pipeline_counts, Types::Ci::PipelineCountsType,
       null: true,
-      description: 'Build pipeline counts of the project.',
+      description: 'Pipeline counts of the project.',
       resolver: Resolvers::Ci::ProjectPipelineCountsResolver
 
     field :ci_variables, Types::Ci::ProjectVariableType.connection_type,

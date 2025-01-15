@@ -117,6 +117,16 @@ class WorkItem < Issue
     def related_link_class
       WorkItems::RelatedWorkItemLink
     end
+
+    def sync_callback_class(association_name)
+      ::WorkItems::DataSync::NonWidgets.const_get(association_name.to_s.camelcase, false)
+    rescue NameError
+      nil
+    end
+
+    def non_widgets
+      [:related_vulnerabilities]
+    end
   end
 
   def create_dates_source_from_current_dates

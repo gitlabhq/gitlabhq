@@ -7,14 +7,20 @@ module Gitlab
     class UsernameAndEmailGenerator
       include Gitlab::Utils::StrongMemoize
 
-      def initialize(username_prefix:, email_domain: Gitlab.config.gitlab.host)
+      def initialize(username_prefix:, email_domain: Gitlab.config.gitlab.host, random_segment: SecureRandom.hex(16))
         @username_prefix = username_prefix
         @email_domain = email_domain
+        @random_segment = random_segment
       end
 
       def username
         uniquify.string(->(counter) { Kernel.sprintf(username_pattern, counter) }) do |suggested_username|
-          ::Namespace.by_path(suggested_username) || ::User.find_by_any_email(email_for(suggested_username))
+          suggested_email = email_for(suggested_username)
+
+          ::Namespace.by_path(suggested_username) ||
+            ::User.username_exists?(suggested_username) ||
+            ::User.find_by_any_email(suggested_email) ||
+            ::Email.find_by_email(suggested_email)
         end
       end
       strong_memoize_attr :username
@@ -26,8 +32,10 @@ module Gitlab
 
       private
 
+      attr_reader :random_segment, :username_prefix
+
       def username_pattern
-        "#{@username_prefix}_#{SecureRandom.hex(16)}%s"
+        "#{username_prefix}_#{random_segment}%s"
       end
 
       def email_for(name)

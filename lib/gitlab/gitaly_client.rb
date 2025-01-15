@@ -215,6 +215,7 @@ module Gitlab
 
     def self.clear_stubs!
       MUTEX.synchronize do
+        @channels&.each_value(&:close)
         @stubs = nil
         @channels = nil
       end

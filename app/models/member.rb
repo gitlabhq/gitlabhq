@@ -647,7 +647,7 @@ class Member < ApplicationRecord
   end
 
   def user_is_not_placeholder
-    if Gitlab::Import::PlaceholderUserCreator.placeholder_email_pattern.match?(invite_email)
+    if Gitlab::Import::PlaceholderUserCreator.placeholder_email?(invite_email)
       errors.add(:invite_email, _('must not be a placeholder email'))
     elsif user&.placeholder?
       errors.add(:user_id, _("must not be a placeholder user"))

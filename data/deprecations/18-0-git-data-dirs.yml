@@ -1,0 +1,21 @@
+- title: "`git_data_dirs` for configuring Gitaly storages"
+  # The milestones for the deprecation announcement, and the removal.
+  removal_milestone: "18.0"
+  announcement_milestone: "16.0"
+  # Change breaking_change to false if needed.
+  breaking_change: true
+  # The stage and GitLab username of the person reporting the change,
+  # and a link to the deprecation issue
+  reporter: jamesliu-gitlab
+  stage: data-access
+  issue_url: https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8786
+  impact: medium  # Can be one of: [critical, high, medium, low]
+  scope: instance  # Can be one or a combination of: [instance, group, project]
+  resolution_role: Admin  # Can be one of: [Admin, Owner, Maintainer, Developer]
+  manual_task: true  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
+  body: |
+    Support for using `git_data_dirs` to configure Gitaly storages for Linux package instances has been deprecated
+    [since 16.0](https://docs.gitlab.com/ee/update/versions/gitlab_16_changes.html#gitaly-configuration-structure-change) and will be removed in 18.0.
+
+    For migration instructions, see
+    [Migrating from `git_data_dirs`](https://docs.gitlab.com/omnibus/settings/configuration.html#migrating-from-git_data_dirs).

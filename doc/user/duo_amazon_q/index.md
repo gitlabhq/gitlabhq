@@ -129,3 +129,8 @@ To create test coverage:
 
 - If the merge request includes a test file, it is updated with the suggested tests.
 - If the merge request does not include a test file, Amazon Q populates a comment with the suggested tests.
+
+## Related topics
+
+- [Set up GitLab Duo with Amazon Q](setup.md)
+- [GitLab Duo authentication and authorization](../gitlab_duo/security.md)

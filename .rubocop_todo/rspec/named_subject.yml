@@ -82,7 +82,6 @@ RSpec/NamedSubject:
     - 'ee/spec/finders/projects/integrations/jira/issues_finder_spec.rb'
     - 'ee/spec/finders/security/approval_groups_finder_spec.rb'
     - 'ee/spec/finders/security/pipeline_vulnerabilities_finder_spec.rb'
-    - 'ee/spec/finders/security/vulnerabilities_finder_spec.rb'
     - 'ee/spec/finders/security/vulnerability_feedbacks_finder_spec.rb'
     - 'ee/spec/finders/security/vulnerability_reads_finder_spec.rb'
     - 'ee/spec/finders/snippets_finder_spec.rb'

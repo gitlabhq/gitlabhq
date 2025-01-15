@@ -9108,7 +9108,8 @@ CREATE TABLE boards_epic_board_positions (
     relative_position integer,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    group_id bigint
+    group_id bigint,
+    CONSTRAINT check_9d94ce874e CHECK ((group_id IS NOT NULL))
 );
 
 CREATE SEQUENCE boards_epic_board_positions_id_seq

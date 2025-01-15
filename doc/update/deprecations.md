@@ -1460,6 +1460,26 @@ Update all references to `ciUsedMinutes` from these types to `ciDuration`.
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### `git_data_dirs` for configuring Gitaly storages
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">16.0</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8786).
+
+</div>
+
+Support for using `git_data_dirs` to configure Gitaly storages for Linux package instances has been deprecated
+[since 16.0](https://docs.gitlab.com/ee/update/versions/gitlab_16_changes.html#gitaly-configuration-structure-change) and will be removed in 18.0.
+
+For migration instructions, see
+[Migrating from `git_data_dirs`](https://docs.gitlab.com/omnibus/settings/configuration.html#migrating-from-git_data_dirs).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### `mergeTrainIndex` and `mergeTrainsCount` GraphQL fields deprecated
 
 <div class="deprecation-notes">

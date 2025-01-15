@@ -15,6 +15,12 @@ RSpec.describe Import::SourceUsers::UpdateService, feature_category: :importers 
   subject(:service) { described_class.new(import_source_user, params) }
 
   describe '#execute' do
+    before do
+      allow_next_instance_of(Gitlab::Import::PlaceholderUserCreator) do |service|
+        allow(service).to receive(:random_segment).and_return('random')
+      end
+    end
+
     it 'updates both placeholder user and source user' do
       result = service.execute
 
@@ -22,17 +28,17 @@ RSpec.describe Import::SourceUsers::UpdateService, feature_category: :importers 
       expect(import_source_user.reload.source_username).to eq(new_source_username)
 
       expect(placeholder_user.reload.name).to eq('Placeholder John Doe')
-      expect(placeholder_user.reload.username).to eq('johndoe_placeholder_user_1')
+      expect(placeholder_user.reload.username).to eq('johndoe_placeholder_random')
 
       expect(result).to be_success
     end
 
     it 'generates unique usernames' do
-      create(:user, username: 'johndoe_placeholder_user_1')
+      create(:user, username: 'johndoe_placeholder_random')
 
       result = service.execute
 
-      expect(placeholder_user.reload.username).to eq('johndoe_placeholder_user_2')
+      expect(placeholder_user.reload.username).to eq('johndoe_placeholder_random1')
       expect(import_source_user.reload.source_username).to eq(new_source_username)
       expect(result).to be_success
     end
