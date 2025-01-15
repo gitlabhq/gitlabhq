@@ -270,7 +270,7 @@ for both the `/data` and `/data/` URL paths.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/859) in GitLab 16.1 with a Pages flag named `FF_CONFIGURABLE_ROOT_DIR`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1073) in GitLab 16.1.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/890) in GitLab 16.2.
+> - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/890) in GitLab 16.2.
 
 By default, the [artifact](../../../ci/jobs/job_artifacts.md) folder
 that contains the static files of your site needs to have the name `public`.

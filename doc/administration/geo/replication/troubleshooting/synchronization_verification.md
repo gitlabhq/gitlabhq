@@ -715,14 +715,6 @@ If there's a very large number of repositories to reverify, the single update qu
 ::Geo::RegistryBulkUpdateService.new(:resync_all, Geo::ProjectRepositoryRegistry).execute
 ```
 
-#### Sync individual repository now
-
-```ruby
-project = Project.find_by_full_path('<group/project>')
-
-project.replicator.sync
-```
-
 #### Sync all failed repositories now
 
 The following script:

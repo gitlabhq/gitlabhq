@@ -203,7 +203,7 @@ Keep in mind the following observations related to this example:
 #### Cumulative label event duration
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432576) in GitLab 16.9 [with flags](../../../administration/feature_flags.md) named `enable_vsa_cumulative_label_duration_calculation` and `vsa_duration_from_db`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17476) in GitLab 16.10. Feature flag `vsa_duration_from_db` removed.
+> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17476) in GitLab 16.10. Feature flag `vsa_duration_from_db` removed.
 > - Feature flag `enable_vsa_cumulative_label_duration_calculation` [removed](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17478) in GitLab 17.0.
 
 With this feature, value stream analytics measures the duration of repetitive events for label-based stages. You should configure label removal or addition events for both start and end events.
@@ -281,7 +281,7 @@ You can change the name of a project environment in your GitLab CI/CD configurat
 ## View value stream analytics
 
 > - Predefined date ranges dropdown list [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408656/) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `vsa_predefined_date_ranges`. Disabled by default.
-> - Predefined date ranges dropdown list [enabled on self-managed and GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/433149) in GitLab 16.7.
+> - Predefined date ranges dropdown list [enabled on GitLab Self-Managed and GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/433149) in GitLab 16.7.
 > - Predefined date ranges dropdown list [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/438051) in GitLab 16.9. Feature flag `vsa_predefined_date_ranges` removed.
 
 Prerequisites:

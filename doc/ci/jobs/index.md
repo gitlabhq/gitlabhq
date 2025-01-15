@@ -81,7 +81,7 @@ Selecting an individual job shows you its [job log](job_logs.md), and allows you
 DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed
 
-> - Filtering jobs by job name [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387547) as an [experiment](../../policy/development_stages_support.md) on GitLab.com and self-managed in GitLab 17.3 [with flags](../../administration/feature_flags.md) named `populate_and_use_build_names_table` for the API and `fe_search_build_by_name` for the UI. Disabled by default.
+> - Filtering jobs by job name [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387547) as an [experiment](../../policy/development_stages_support.md) on GitLab.com and GitLab Self-Managed in GitLab 17.3 [with flags](../../administration/feature_flags.md) named `populate_and_use_build_names_table` for the API and `fe_search_build_by_name` for the UI. Disabled by default.
 
 FLAG:
 The availability of this feature is controlled by a feature flag. For more information, see the history.

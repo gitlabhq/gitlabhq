@@ -152,7 +152,7 @@ HTML emails show HTML formatting, such as:
 ### Files attached to comments
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11733) in GitLab 15.8 [with a flag](../../../administration/feature_flags.md) named `service_desk_new_note_email_native_attachments`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/386860) in GitLab 15.10.
+> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/386860) in GitLab 15.10.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/11733) in GitLab 16.6. Feature flag `service_desk_new_note_email_native_attachments` removed.
 
 If a comment contains any attachments and their total size is less than or equal to 10 MB, these

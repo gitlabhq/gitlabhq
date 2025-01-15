@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - Introduced as an [experimental feature](../../policy/development_stages_support.md#experiment) in GitLab 16.0, [with a flag](../../administration/feature_flags.md) named `ci_namespace_catalog_experimental`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/groups/gitlab-org/-/epics/9897) in GitLab 16.2.
+> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/9897) in GitLab 16.2.
 > - [Feature flag `ci_namespace_catalog_experimental` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/394772) in GitLab 16.3.
 > - [Moved](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/130824) to [beta](../../policy/development_stages_support.md#beta) in GitLab 16.6.
 > - [Made generally available](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/134062) in GitLab 17.0.

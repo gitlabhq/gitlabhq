@@ -103,7 +103,7 @@ and an [HTTP status code](#http-status-codes):
 
 ## Rewrites
 
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/619) in GitLab 15.2.
+> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/619) in GitLab 15.2.
 
 Provide a status code of `200` to serve the content of the `to` path when the
 request matches the `from`:
@@ -119,7 +119,7 @@ rewrite the URL.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/936) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `FF_ENABLE_DOMAIN_REDIRECT`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com/-/merge_requests/3395) in GitLab 16.9.
-> - [Enabled on self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1087) in GitLab 16.10.
+> - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1087) in GitLab 16.10.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1097) in GitLab 17.4. Feature flag `FF_ENABLE_DOMAIN_REDIRECT` removed.
 
 To create a domain-level redirect, add a domain-level path (beginning with `http://`

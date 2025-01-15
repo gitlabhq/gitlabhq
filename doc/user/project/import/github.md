@@ -182,7 +182,7 @@ When the **Organization** tab is selected, you can further narrow down your sear
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373705) in GitLab 15.5.
 > - Importing collaborators as an additional item was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398154) in GitLab 16.0.
 > - Feature flag `github_import_extended_events` was introduced in GitLab 16.8. Disabled by default. This flag improves the performance of imports but removes the **Import issue and pull request events** option.
-> - Feature flag `github_import_extended_events` was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.9.
+> - Feature flag `github_import_extended_events` was [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.9.
 > - Improved import performance made [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.11. Feature flag `github_import_extended_events` removed.
 
 To make imports as fast as possible, the following items aren't imported from GitHub by default:

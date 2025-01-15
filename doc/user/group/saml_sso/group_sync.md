@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363084) for self-managed instances in GitLab 15.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363084) for GitLab Self-Managed instances in GitLab 15.1.
 
 WARNING:
 Adding or changing Group Sync configuration can remove users from the mapped GitLab group.

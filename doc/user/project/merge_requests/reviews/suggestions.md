@@ -86,7 +86,7 @@ Multi-line comments display the comment's line numbers above the body of the com
 #### Using the rich text editor
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1 [with a flag](../../../../administration/feature_flags.md) named `content_editor_on_issues`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375172) in GitLab 16.2.
+> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375172) in GitLab 16.2.
 > - Feature flag `content_editor_on_issues` removed in GitLab 16.5.
 
 When you insert suggestions, use the WYSIWYG [rich text editor](../../../rich_text_editor.md) to move

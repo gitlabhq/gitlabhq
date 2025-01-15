@@ -44,7 +44,7 @@ To document feature flags:
 ## Offerings
 
 When documenting the [offerings](styleguide/availability_details.md#offering), for features
-**disabled on self-managed**, don't list `GitLab Dedicated` as the feature's offering.
+**disabled on GitLab Self-Managed**, don't list `GitLab Dedicated` as the feature's offering.
 
 ## Add history text
 
@@ -56,8 +56,8 @@ Possible history entries are:
 ```markdown
 > - [Introduced](https://issue-link) in GitLab X.X [with a flag](../../administration/feature_flags.md) named `flag_name`. Disabled by default.
 > - [Enabled on GitLab.com](https://issue-link) in GitLab X.X.
-> - [Enabled on self-managed and GitLab Dedicated](https://issue-link) in GitLab X.X.
-> - [Enabled on GitLab.com, self-managed, and GitLab Dedicated](https://issue-link) in GitLab X.X.
+> - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://issue-link) in GitLab X.X.
+> - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://issue-link) in GitLab X.X.
 > - [Generally available](https://issue-link) in GitLab X.Y. Feature flag `flag_name` removed.
 ```
 
@@ -113,7 +113,7 @@ When the feature is enabled by default for all offerings:
 ```markdown
 > - [Introduced](https://issue-link) in GitLab 13.7 [with a flag](../../administration/feature_flags.md) named `forti_token_cloud`. Disabled by default.
 > - [Enabled on GitLab.com](https://issue-link) in GitLab 13.8.
-> - [Enabled on self-managed and GitLab Dedicated](https://issue-link) in GitLab 13.9.
+> - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://issue-link) in GitLab 13.9.
 
 FLAG:
 The availability of this feature is controlled by a feature flag. For more information, see the history.
@@ -124,7 +124,7 @@ When the flag is removed, add a `Generally available` entry. Ensure that you del
 ```markdown
 > - [Introduced](https://issue-link) in GitLab 13.7 [with a flag](../../administration/feature_flags.md) named `forti_token_cloud`. Disabled by default.
 > - [Enabled on GitLab.com](https://issue-link) in GitLab 13.8.
-> - [Enabled on self-managed and GitLab Dedicated](https://issue-link) in GitLab 13.9.
+> - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://issue-link) in GitLab 13.9.
 > - [Generally available](https://issue-link) in GitLab 14.0. Feature flag `forti_token_cloud` removed.
 ```
 
@@ -139,14 +139,14 @@ Combine entries if they happened in the same release:
   ```markdown
   > - [Introduced](https://issue-link) in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ci_include_rules`. Disabled by default.
   > - [Enabled on GitLab.com](https://issue-link) in GitLab 14.3.
-  > - [Enabled on self-managed and GitLab Dedicated](https://issue-link) in GitLab 14.3.
+  > - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://issue-link) in GitLab 14.3.
   ```
 
 - After:
 
   ```markdown
   > - [Introduced](https://issue-link) in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ci_include_rules`. Disabled by default.
-  > - [Enabled on GitLab.com, self-managed, and GitLab Dedicated](https://issue-link) in GitLab 14.3.
+  > - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://issue-link) in GitLab 14.3.
   ```
 
 If the feature flag is introduced and enabled in the same release, combine the entries:
@@ -162,7 +162,7 @@ Delete `Enabled on GitLab.com` entries only when the feature is enabled by defau
   ```markdown
   > - [Introduced](https://issue-link) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
   > - [Enabled on GitLab.com](https://issue-link) in GitLab 15.7.
-  > - [Enabled on self-managed and GitLab Dedicated](https://issue-link) in GitLab 15.8.
+  > - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://issue-link) in GitLab 15.8.
   > - [Generally available](https://issue-link) in GitLab 15.9. Feature flag `ci_hooks_pre_get_sources_script` removed.
   ```
 
@@ -170,6 +170,6 @@ Delete `Enabled on GitLab.com` entries only when the feature is enabled by defau
 
   ```markdown
   > - [Introduced](https://issue-link) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
-  > - [Enabled on self-managed and GitLab Dedicated](https://issue-link) in GitLab 15.8.
+  > - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://issue-link) in GitLab 15.8.
   > - [Generally available](https://issue-link) in GitLab 15.9. Feature flag `ci_hooks_pre_get_sources_script` removed.
   ```

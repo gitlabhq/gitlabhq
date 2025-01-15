@@ -215,7 +215,7 @@ Do not assign availability details to the following pages:
 - Pages in the `/solutions` folder. These pages are automatically assigned a `Solutions` badge.
 
 Also, do not assign them when a feature does not have one obvious subscription tier or offering.
-For example, if a feature applies to one tier for GitLab.com and a different availability for self-managed.
+For example, if a feature applies to one tier for GitLab.com and a different availability for GitLab Self-Managed.
 
 In this case, do any or all of the following:
 

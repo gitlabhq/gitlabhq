@@ -42,7 +42,7 @@ so you can ensure the new page name is as accurate as possible.
 There are two types of redirects:
 
 - [Redirects added into the documentation files themselves](#redirect-to-a-page-that-already-exists), for users who
-  view the docs in `/help` on self-managed instances. For example,
+  view the docs in `/help` on GitLab Self-Managed instances. For example,
   [`/help` on GitLab.com](https://gitlab.com/help). These must be added in the same
   MR that renames or moves a doc. Redirects to internal pages expire after three months
   and redirects to external pages (starting with `https:`) expire after a year.
@@ -176,6 +176,6 @@ must have already been removed from (or never existed in) the navigation, and on
 of the following must be true:
 
 - The page was added and removed in the same release, so it was never included in
-  a self-managed release.
+  a GitLab Self-Managed release.
 - The page does not contain any content of value, like a placeholder page or a page
   with extremely low usage statistics.

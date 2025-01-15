@@ -47,6 +47,46 @@ end
 | `retry_on_failure` | The number of times to retry a failed request | No | `0` (no retries) | `3` |
 | `debug` | Enable or disable debug logging | No | `false` | `true` |
 
+### Registering a queue
+
+Queues keep track of items needing to be processed in bulk asynchronously. A queue definition has a unique key which registers queues based on the number of shards defined. Each shard creates a queue.
+
+To create a new queue: add a file, extend `ActiveContext::Concerns::Queue`, define `number_of_shards` and call `register!`:
+
+```ruby
+# frozen_string_literal: true
+
+module Ai
+  module Context
+    module Queues
+      class MergeRequest
+        class << self
+          def number_of_shards
+            2
+          end
+        end
+
+        include ActiveContext::Concerns::Queue
+      end
+    end
+  end
+end
+```
+
+To access the unique queues:
+
+```ruby
+ActiveContext.queues
+=> #<Set: {"ai_context_queues:{merge_request}"}>
+```
+
+To view sharded queues:
+
+```ruby
+ActiveContext.raw_queues
+=> ["ai_context_queues:{merge_request}:0", "ai_context_queues:{merge_request}:1"]
+```
+
 ## Contributing
 
 TODO

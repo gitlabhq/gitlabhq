@@ -699,7 +699,7 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2340) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `enable_container_scanning_for_registry`. Disabled by default.
-> - [Enabled on self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/443827) in GitLab 17.2.
+> - [Enabled on GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/443827) in GitLab 17.2.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/443827) in GitLab 17.2. Feature flag `enable_container_scanning_for_registry` removed.
 
 When a container image is pushed with the `latest` tag, a container scanning job is automatically triggered by the security policy bot in a new pipeline against the default branch.

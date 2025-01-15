@@ -12,7 +12,7 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371332) in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `google_cloud`. Disabled by default.
-> - [Enabled on self-managed and GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100545) in GitLab 15.5.
+> - [Enabled on GitLab Self-Managed and GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100545) in GitLab 15.5.
 
 Cloud Seed is an open-source program led
 by [GitLab Incubation Engineering](https://handbook.gitlab.com/handbook/engineering/development/incubation/) in collaboration with

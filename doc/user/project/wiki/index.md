@@ -219,7 +219,7 @@ Prerequisites:
 ## Export a wiki page
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414691) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `print_wiki`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134251/) in GitLab 16.5.
+> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134251/) in GitLab 16.5.
 > - Feature flag `print_wiki` removed in GitLab 16.6.
 
 You can export a wiki page as a PDF file:

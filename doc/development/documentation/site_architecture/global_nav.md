@@ -60,7 +60,7 @@ Documentation pages can be said to belong in the following groups:
 
 - GitLab users. This is documentation for day-to-day use of GitLab for users with any level
   of permissions, from Reporter to Owner.
-- GitLab administrators. This tends to be documentation for self-managed instances that requires
+- GitLab administrators. This tends to be documentation for GitLab Self-Managed instances that requires
   access to the underlying infrastructure hosting GitLab.
 - Other documentation. This includes documentation for customers outside their day-to-day use of
   GitLab and for contributors. Documentation that doesn't fit in the other groups belongs here.

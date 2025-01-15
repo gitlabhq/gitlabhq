@@ -80,9 +80,6 @@ class NotesFinder
               { iid: iid }
             end
 
-    # the reads finder needs to query by vulnerability_id
-    return noteables_for_type(type).find_by!(vulnerability_id: query[:id]) if type == 'vulnerability' # rubocop: disable CodeReuse/ActiveRecord
-
     noteables_for_type(type).find_by!(query) # rubocop: disable CodeReuse/ActiveRecord
   end
 

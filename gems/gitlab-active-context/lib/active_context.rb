@@ -20,4 +20,12 @@ module ActiveContext
   def self.adapter
     ActiveContext::Adapter.current
   end
+
+  def self.queues
+    ActiveContext::Queues.queues
+  end
+
+  def self.raw_queues
+    ActiveContext::Queues.raw_queues
+  end
 end

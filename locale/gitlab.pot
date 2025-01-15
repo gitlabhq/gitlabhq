@@ -14504,6 +14504,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Controls"
 msgstr ""
 
+msgid "ComplianceFrameworks|Controls (optional)"
+msgstr ""
+
 msgid "ComplianceFrameworks|Controls are pre-defined rules that are configured for GitLab resources."
 msgstr ""
 
@@ -61309,6 +61312,9 @@ msgstr ""
 msgid "Use a one-time password authenticator on your mobile device or computer to enable two-factor authentication (2FA)."
 msgstr ""
 
+msgid "Use an existing commit message"
+msgstr ""
+
 msgid "Use authorized_keys file to authenticate SSH keys"
 msgstr ""
 
@@ -61319,9 +61325,6 @@ msgid "Use cURL"
 msgstr ""
 
 msgid "Use custom color #FF0000"
-msgstr ""
-
-msgid "Use existing commit message"
 msgstr ""
 
 msgid "Use hashed storage"

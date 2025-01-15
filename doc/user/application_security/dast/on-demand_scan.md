@@ -17,7 +17,7 @@ Only run DAST scans against a test server.
 
 ## On-demand scans
 
-> - Runner tags selection [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111499) in GitLab 16.3.
+> - Runner tags selection [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111499) in GitLab 16.3.
 > - Browser based on-demand DAST scans available in GitLab 17.0 and later because [proxy-based DAST was removed in the same version](../../../update/deprecations.md#proxy-based-dast-deprecated).
 
 An on-demand DAST scan runs outside the DevOps lifecycle. Changes in your repository don't trigger
@@ -131,7 +131,7 @@ To delete an on-demand scan:
 
 ## Site profile
 
-> - Site profile features, scan method and file URL, were [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/345837) in GitLab 15.6.
+> - Site profile features, scan method and file URL, were [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/345837) in GitLab 15.6.
 > - GraphQL endpoint path feature was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378692) in GitLab 15.7.
 
 A site profile defines the attributes and configuration details of the deployed application,

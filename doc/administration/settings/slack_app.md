@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358872) for self-managed in GitLab 16.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358872) for GitLab Self-Managed in GitLab 16.2.
 
 NOTE:
 This page contains administrator documentation for the GitLab for Slack app. For user documentation, see [GitLab for Slack app](../../user/project/integrations/gitlab_slack_application.md).
@@ -73,7 +73,7 @@ To use Slash commands for a project, configure the [GitLab for Slack app](../../
 ## Install the GitLab for Slack app
 
 > - Installation for a specific instance [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391526) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `gitlab_for_slack_app_instance_and_group_level`. Disabled by default.
-> - [Enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147820) in GitLab 16.11.
+> - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147820) in GitLab 16.11.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175803) in GitLab 17.8. Feature flag `gitlab_for_slack_app_instance_and_group_level` removed.
 
 Prerequisites:

@@ -112,7 +112,7 @@ To improve your security, try these features:
 | [Code Review](../project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code) | Ultimate | GitLab Duo Enterprise | GitLab.com | Experiment |
 | [Code Review Summary](../project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review) | Ultimate | GitLab Duo Enterprise | GitLab.com | Experiment |
 | [Merge Commit Message Generation](../project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
-| [Root Cause Analysis](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | Generally available |
-| [Vulnerability Explanation](../application_security/vulnerabilities/index.md#explaining-a-vulnerability) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | Generally available |
-| [Vulnerability Resolution](../application_security/vulnerabilities/index.md#vulnerability-resolution) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | Beta |
-| [AI Impact Dashboard](../analytics/ai_impact_analytics.md) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed | Generally available |
+| [Root Cause Analysis](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
+| [Vulnerability Explanation](../application_security/vulnerabilities/index.md#explaining-a-vulnerability) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
+| [Vulnerability Resolution](../application_security/vulnerabilities/index.md#vulnerability-resolution) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
+| [AI Impact Dashboard](../analytics/ai_impact_analytics.md) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed | General availability |

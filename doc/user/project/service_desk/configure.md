@@ -239,7 +239,7 @@ DETAILS:
 **Status**: Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329990) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `service_desk_custom_email`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/387003) in GitLab 16.4.
+> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/387003) in GitLab 16.4.
 > - Ability to select the SMTP authentication method [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429680) in GitLab 16.6.
 > - [Feature flag `service_desk_custom_email` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/387003) in GitLab 16.7.
 > - Local network allowed for SMTP host on GitLab Self-Managed [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435206) in GitLab 16.7.

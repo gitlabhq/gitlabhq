@@ -8,7 +8,7 @@ description: 'Learn how to document version-specific changes'
 # Version-specific changes
 
 A version-specific page contains upgrade notes a GitLab administrator
-should follow when upgrading their self-managed instance.
+should follow when upgrading their GitLab Self-Managed instance.
 
 It contains information like:
 

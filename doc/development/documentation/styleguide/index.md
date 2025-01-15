@@ -273,7 +273,7 @@ When including sample URLs in the documentation, use:
 
 - `example.com` when the domain name is generic.
 - `gitlab.example.com` when referring only to GitLab Self-Managed.
-  Use `gitlab.com` for GitLab SaaS instances.
+  Use `gitlab.com` for GitLab.com.
 
 ### Fake tokens
 
@@ -1878,7 +1878,7 @@ words as part of sentences and titles, use the following phrases:
 - Self-compiled
 
 It's OK to add the explanatory parentheses when
-[using tabs](#use-tabs-to-describe-a-self-managed-configuration-procedure):
+[using tabs](#use-tabs-to-describe-a-gitlab-self-managed-configuration-procedure):
 
 - Linux package (Omnibus)
 - Helm chart (Kubernetes)
@@ -1886,7 +1886,7 @@ It's OK to add the explanatory parentheses when
 - Docker
 - Self-compiled (source)
 
-### Use tabs to describe a self-managed configuration procedure
+### Use tabs to describe a GitLab Self-Managed configuration procedure
 
 Configuration procedures can require users to edit configuration files, reconfigure
 GitLab, or restart GitLab. In this case:

@@ -14,8 +14,8 @@ hour from the default branch of GitLab, Omnibus, Runner, Charts, and Operator.
 After a merge request that updates documentation is merged, it is available online
 in an hour or less.
 
-However, it's only available at `/help` on self-managed instances in the next released
-version. The date an update is merged can impact which self-managed release the update
+However, it's only available at `/help` on GitLab Self-Managed instances in the next released
+version. The date an update is merged can impact which GitLab Self-Managed release the update
 is present in.
 
 For example:
@@ -25,7 +25,7 @@ For example:
 1. It is merged on 2021-10-19 and available online the same day at <https://docs.gitlab.com>.
 1. GitLab 14.4 is released on 2021-10-22, based on the `gitlab` codebase from 2021-10-18
    (one day *before* the update was merged).
-1. The change shows up in the 14.5 self-managed release, due to missing the release cutoff
+1. The change shows up in the 14.5 GitLab Self-Managed release, due to missing the release cutoff
    for 14.4.
 
 If it is important that a documentation update is present in that month's release,

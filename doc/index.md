@@ -25,7 +25,7 @@ Explore the different areas of the documentation:
 | [**New to Git and GitLab?**](tutorials/index.md)<br/>Start learning about Git and GitLab. | [**Contribute to GitLab development**](#contribute-to-gitlab)<br/>Create new GitLab functionality and documentation. |
 | [**Coming to GitLab from another platform?**](#coming-to-gitlab-from-another-platform)<br/>Learn how to move to GitLab. | [**Build an integration with GitLab**](#build-an-integration-with-gitlab)<br/>Integrate with Jira and other common applications. |
 | [**Choose a subscription**](subscriptions/index.md)<br/>Determine which subscription tier makes sense for you. | [**Install GitLab**](install/index.md)<br/>Install GitLab on different platforms. |
-| [**Reference architectures**](administration/reference_architectures/index.md)<br/>View recommended deployments at scale. | [**Upgrade GitLab**](update/index.md)<br/>Upgrade your GitLab self-managed instance to the latest version. |
+| [**Reference architectures**](administration/reference_architectures/index.md)<br/>View recommended deployments at scale. | [**Upgrade GitLab**](update/index.md)<br/>Upgrade your GitLab Self-Managed instance to the latest version. |
 
 ## Popular topics
 
@@ -38,7 +38,7 @@ View some of the most popular topics:
 | [Environments and deployments](ci/environments/index.md)                       | Deploy your application to different environments. |
 | [Configuring runners](ci/runners/configure_runners.md)                         | Get started using runners. |
 | [Two-factor authentication](user/profile/account/two_factor_authentication.md) | Improve the security of your GitLab account. |
-| [Back up and restore GitLab](administration/backup_restore/index.md)           | Back up and restore a GitLab self-managed instance. |
+| [Back up and restore GitLab](administration/backup_restore/index.md)           | Back up and restore a GitLab Self-Managed instance. |
 | [GitLab release and maintenance policy](policy/maintenance.md)                 | Determine how and when to upgrade. |
 | [SSH keys](user/ssh.md)                                                        | Use SSH keys to communicate with GitLab. |
 

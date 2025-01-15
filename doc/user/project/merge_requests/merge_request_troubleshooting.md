@@ -156,7 +156,7 @@ greater than 1000. The cached value is rounded to thousands (or millions) and up
 
 ## Check out merge requests locally through the `head` ref
 
-> - Deleting `head` refs 14 days after a merge request closes or merges [enabled on self-managed and GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130098) in GitLab 16.4.
+> - Deleting `head` refs 14 days after a merge request closes or merges [enabled on GitLab Self-Managed and GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130098) in GitLab 16.4.
 > - Deleting `head` refs 14 days after a merge request closes or merges [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/336070) in GitLab 16.6. Feature flag `merge_request_refs_cleanup` removed.
 
 A merge request contains all the history from a repository, plus the additional

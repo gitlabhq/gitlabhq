@@ -12,7 +12,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11439) in GitLab 16.7 as an [experiment](../../../../policy/development_stages_support.md) for GitLab Dedicated customers.
 > - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/12729) to Beta and made available on GitLab.com in GitLab 17.1.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156907) in GitLab 17.2 [with flags](../../../../administration/feature_flags.md) named `pre_receive_secret_detection_beta_release` and `pre_receive_secret_detection_push_check`.
+> - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156907) in GitLab 17.2 [with flags](../../../../administration/feature_flags.md) named `pre_receive_secret_detection_beta_release` and `pre_receive_secret_detection_push_check`.
 > - Feature flag `pre_receive_secret_detection_beta_release` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/472418) in GitLab 17.4.
 > - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/13107) in GitLab 17.5.
 > - Feature flag `pre_receive_secret_detection_push_check` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/472419) in GitLab 17.7.

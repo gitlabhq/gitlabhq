@@ -224,6 +224,7 @@ Style/IfUnlessModifier:
     - 'ee/app/controllers/projects/path_locks_controller.rb'
     - 'ee/app/controllers/projects/push_rules_controller.rb'
     - 'ee/app/finders/security/pipeline_vulnerabilities_finder.rb'
+    - 'ee/app/finders/security/vulnerabilities_finder.rb'
     - 'ee/app/graphql/mutations/audit_events/external_audit_event_destinations/create.rb'
     - 'ee/app/graphql/mutations/audit_events/external_audit_event_destinations/destroy.rb'
     - 'ee/app/graphql/mutations/boards/scoped_board_mutation.rb'

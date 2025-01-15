@@ -25,6 +25,9 @@ module Mutations
           else
             { pipeline_schedule: nil, errors: ['Unable to schedule a pipeline to run immediately.'] }
           end
+
+        rescue Gitlab::Access::AccessDeniedError
+          raise_resource_not_available_error!
         end
       end
     end

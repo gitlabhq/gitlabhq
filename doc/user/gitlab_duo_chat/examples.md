@@ -20,7 +20,7 @@ DETAILS:
 **LLMs:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet), [Vertex AI Search](https://cloud.google.com/enterprise-search)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) for GitLab.com in GitLab 16.0.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451215) ability to ask doc-related questions on self-managed in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `ai_gateway_docs_search`. Enabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451215) ability to ask doc-related questions on GitLab Self-Managed in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `ai_gateway_docs_search`. Enabled by default.
 > - [Generally available and feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154876) in GitLab 17.1.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
@@ -44,7 +44,7 @@ DETAILS:
 **LLM:** Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for GitLab.com in GitLab 16.0.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for self-managed and GitLab Dedicated in GitLab 16.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for GitLab Self-Managed and GitLab Dedicated in GitLab 16.8.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 You can ask about a specific GitLab issue. For example:
@@ -69,7 +69,7 @@ DETAILS:
 **LLM:** Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128487) for GitLab.com in GitLab 16.3.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128487) for self-managed and GitLab Dedicated in GitLab 16.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128487) for GitLab Self-Managed and GitLab Dedicated in GitLab 16.8.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 You can ask about a specific GitLab epic. For example:
@@ -148,7 +148,7 @@ DETAILS:
 **LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab Self-Managed and GitLab Dedicated in GitLab 16.8.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 You can ask GitLab Duo Chat to explain selected code:
@@ -185,7 +185,7 @@ DETAILS:
 **LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for GitLab.com in GitLab 16.1.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for self-managed and GitLab Dedicated in GitLab 16.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for GitLab Self-Managed and GitLab Dedicated in GitLab 16.8.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 You can ask GitLab Duo Chat questions about code by pasting that code into
@@ -275,7 +275,7 @@ DETAILS:
 **LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab Self-Managed and GitLab Dedicated in GitLab 16.8.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 You can ask GitLab Duo Chat to refactor selected code:
@@ -300,7 +300,7 @@ DETAILS:
 **Editors:** Web IDE, VS Code, JetBrains IDEs
 **LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com, self-managed and GitLab Dedicated in GitLab 17.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com, GitLab Self-Managed and GitLab Dedicated in GitLab 17.3.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 You can ask GitLab Duo Chat to fix selected code:
@@ -325,7 +325,7 @@ DETAILS:
 **LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab Self-Managed and GitLab Dedicated in GitLab 16.8.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 You can ask GitLab Duo Chat to create tests for the selected code:
@@ -351,7 +351,7 @@ DETAILS:
 **LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423524) for GitLab.com in GitLab 16.7.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423524) for self-managed and GitLab Dedicated in GitLab 16.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423524) for GitLab Self-Managed and GitLab Dedicated in GitLab 16.8.
 > - [Updated LLM](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149619) from Claude 2.1 to Claude 3 Sonnet in GitLab 17.2.
 > - [Updated LLM](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157696) from Claude 3 Sonnet to Claude 3.5 Sonnet in GitLab 17.2.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.

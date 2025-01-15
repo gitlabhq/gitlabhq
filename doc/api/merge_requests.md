@@ -1878,7 +1878,7 @@ Example response:
 ## List merge request diffs
 
 > - `generated_file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576) in GitLab 16.9 [with a flag](../administration/feature_flags.md) named `collapse_generated_diff_files`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/432670) in GitLab 16.10.
+> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/432670) in GitLab 16.10.
 > - `generated_file` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148478) in GitLab 16.11. Feature flag `collapse_generated_diff_files` removed.
 
 List diffs of the files changed in a merge request.

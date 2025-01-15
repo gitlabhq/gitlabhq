@@ -45,7 +45,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "minitest", "~> 5.11.0"
   spec.add_dependency "parallel", "~> 1.19"
   spec.add_dependency "rack", "~> 2.2.9"
-  spec.add_dependency "rexml", "~> 3.3.2"
+  spec.add_dependency "rexml", "~> 3.4.0"
 
   spec.add_development_dependency "factory_bot", "~> 6.4.6"
   spec.add_development_dependency "gitlab-styles", "~> 11.0"

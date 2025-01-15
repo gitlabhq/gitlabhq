@@ -67,5 +67,14 @@ RSpec.describe 'PipelineSchedulePlay', feature_category: :continuous_integration
         expect(mutation_response['errors']).to match_array(['Unable to schedule a pipeline to run immediately.'])
       end
     end
+
+    context 'when PipelineScheduleService raises AccessDeniedError' do
+      before do
+        allow(Ci::PipelineScheduleService).to receive_message_chain(:new,
+          :execute).and_raise Gitlab::Access::AccessDeniedError
+      end
+
+      it_behaves_like 'a mutation on an unauthorized resource'
+    end
   end
 end

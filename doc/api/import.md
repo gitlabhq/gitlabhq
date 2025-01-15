@@ -18,7 +18,7 @@ Use the Import API to import repositories from GitHub or Bitbucket Server.
 > - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 > - `collaborators_import` key in `optional_stages` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398154) in GitLab 16.0.
 > - Feature flag `github_import_extended_events` was introduced in GitLab 16.8. Disabled by default. This flag improves the performance of imports but disables the `single_endpoint_issue_events_import` optional stage.
-> - Feature flag `github_import_extended_events` was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.9.
+> - Feature flag `github_import_extended_events` was [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.9.
 > - Improved import performance made [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.11. Feature flag `github_import_extended_events` removed.
 
 Import your projects from GitHub to GitLab using the API.
@@ -148,7 +148,7 @@ Returns the following status codes:
 ### Import GitHub gists into GitLab snippets
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371099) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `github_import_gists`. Disabled by default. Enabled on GitLab.com.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/386579) in GitLab 15.10.
+> - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/386579) in GitLab 15.10.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/386579) in GitLab 15.11. Feature flag `github_import_gists` removed.
 
 You can use the GitLab API to import personal GitHub gists (with up to 10 files) into personal GitLab snippets.

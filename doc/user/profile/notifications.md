@@ -12,7 +12,7 @@ DETAILS:
 
 > - Enhanced email styling [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78604) in GitLab 14.9 [with a feature flag](../../administration/feature_flags.md) named `enhanced_notify_css`. Disabled by default.
 > - Enhanced email styling [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/355907) in GitLab 14.9.
-> - Enhanced email styling [enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/355907) in GitLab 15.0.
+> - Enhanced email styling [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/355907) in GitLab 15.0.
 > - Product marketing emails [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/418137) in GitLab 16.6.
 
 Stay informed about what's happening in GitLab with email notifications.

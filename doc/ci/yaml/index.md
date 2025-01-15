@@ -539,7 +539,7 @@ You can use some [predefined CI/CD variables](../variables/predefined_variables.
 #### `workflow:auto_cancel:on_new_commit`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412473) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/434676) in GitLab 16.9.
+> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/434676) in GitLab 16.9.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/434676) in GitLab 16.10. Feature flag `ci_workflow_auto_cancel_on_new_commit` removed.
 
 Use `workflow:auto_cancel:on_new_commit` to configure the behavior of
@@ -618,7 +618,7 @@ In this example, if `job2` fails, `job1` is canceled if it is still running and 
 #### `workflow:name`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372538) in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `pipeline_name`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/376095) in GitLab 15.7.
+> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/376095) in GitLab 15.7.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/376095) in GitLab 15.8. Feature flag `pipeline_name` removed.
 
 You can use `name` in `workflow:` to define a name for pipelines.
@@ -794,7 +794,7 @@ When the branch is something else:
 #### `workflow:rules:auto_cancel`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436467) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/434676) in GitLab 16.9.
+> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/434676) in GitLab 16.9.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/434676) in GitLab 16.10. Feature flag `ci_workflow_auto_cancel_on_new_commit` removed.
 > - `on_job_failure` option for `workflow:rules` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23605) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `auto_cancel_pipeline_on_job_failure`. Disabled by default.
 > - `on_job_failure` option for `workflow:rules` [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/433163) in GitLab 16.11. Feature flag `auto_cancel_pipeline_on_job_failure` removed.
@@ -2782,7 +2782,7 @@ arm-sql-job:
 #### `image:pull_policy`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21619) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `ci_docker_image_pull_policy`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) in GitLab 15.2.
+> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) in GitLab 15.2.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) in GitLab 15.4. [Feature flag `ci_docker_image_pull_policy`](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) removed.
 > - Requires GitLab Runner 15.1 or later.
 
@@ -3499,7 +3499,7 @@ DETAILS:
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [experiment](../../policy/development_stages_support.md) [with a flag](../../user/feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
-> - [Enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/422145) in GitLab 17.4.
+> - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/422145) in GitLab 17.4.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/507423) to allow periods in GitLab 17.8.
 
 FLAG:
@@ -4086,7 +4086,7 @@ test:
 #### `retry:exit_codes`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430037) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `ci_retry_on_exit_codes`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/430037) in GitLab 16.11.
+> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/430037) in GitLab 16.11.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/452412) in GitLab 17.5. Feature flag `ci_retry_on_exit_codes` removed.
 
 Use `retry:exit_codes` with `retry:max` to retry jobs for only specific failure cases.
@@ -5071,7 +5071,7 @@ arm-sql-job:
 #### `services:pull_policy`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21619) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `ci_docker_image_pull_policy`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) in GitLab 15.2.
+> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) in GitLab 15.2.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) in GitLab 15.4. [Feature flag `ci_docker_image_pull_policy`](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) removed.
 > - Requires GitLab Runner 15.1 or later.
 
@@ -5820,7 +5820,7 @@ variables:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353991) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_raw_variables_in_yaml_config`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/375034) in GitLab 15.6.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375034) in GitLab 15.7.
+> - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375034) in GitLab 15.7.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/375034) in GitLab 15.8. Feature flag `ci_raw_variables_in_yaml_config` removed.
 
 Use the `expand` keyword to configure a variable to be expandable or not.

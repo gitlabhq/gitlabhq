@@ -36,7 +36,7 @@ Also, you can sort them by [**Label priority**](project/labels.md#set-label-prio
 > - Multiple to-do items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 13.8 [with a flag](../administration/feature_flags.md) named `multiple_todos`. Disabled by default.
 > - Member access request notifications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374725) in GitLab 15.8.
 > - Multiple to-do items [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 16.2.
-> - Multiple to-do items [enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 17.8. Feature flag `multiple_todos` enabled by default.
+> - Multiple to-do items [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 17.8. Feature flag `multiple_todos` enabled by default.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.

@@ -36,7 +36,7 @@ see [epic 3869](https://gitlab.com/groups/gitlab-org/-/epics/3869).
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `only_allow_merge_if_all_status_checks_passed`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/372340) in GitLab 15.8.
-> - Enabled on self-managed and feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111492) in GitLab 15.9.
+> - Enabled on GitLab Self-Managed and feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111492) in GitLab 15.9.
 
 By default, merge requests in projects can be merged even if external status checks fail. To block the merging of merge requests when external checks fail:
 

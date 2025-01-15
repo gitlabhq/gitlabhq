@@ -641,6 +641,17 @@ module Gitlab
 
           expect(render(input, context)).to include(output.strip)
         end
+
+        it 'does not allow reading arbitrary files via kroki\'s macro blockdiag' do
+          input = <<~ADOC
+            = File Read Test
+
+            blockdiag::/etc/hosts[format=svg]
+          ADOC
+
+          output = render(input, context)
+          expect(output).to include('/etc/hosts')
+        end
       end
     end
 

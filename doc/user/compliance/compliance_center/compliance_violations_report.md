@@ -91,7 +91,7 @@ separation of duties is:
 ## Export a report of merge request compliance violations on projects in a group
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356791) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `compliance_violation_csv_export`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/424447) in GitLab 16.5.
+> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/424447) in GitLab 16.5.
 > - [Feature flag `compliance_violation_csv_export`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142568) removed in GitLab 16.9.
 
 Export a report of merge request compliance violations on merge requests belonging to projects in a group. Reports:

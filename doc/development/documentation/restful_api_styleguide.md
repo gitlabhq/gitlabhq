@@ -35,7 +35,7 @@ In the Markdown doc for a resource (AKA endpoint):
   for Premium, include that it's also available for Ultimate.
 - If an attribute is available only in certain offerings, add the offerings to the **Description**. If the attribute's
   description also has both offering and tier, combine them. For
-  example: _Self-managed, Premium and Ultimate only._
+  example: _GitLab Self-Managed, Premium and Ultimate only._
 
 After a new API documentation page is added, [add an entry in the global navigation](site_architecture/global_nav.md#add-a-navigation-entry). [Example](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/3497).
 

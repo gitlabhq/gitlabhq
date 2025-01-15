@@ -97,7 +97,7 @@ gem 'bcrypt', '~> 3.1', '>= 3.1.14', feature_category: :system_access
 gem 'doorkeeper', '~> 5.8', '>= 5.8.1', feature_category: :system_access
 gem 'doorkeeper-openid_connect', '~> 1.8.10', feature_category: :system_access
 gem 'doorkeeper-device_authorization_grant', '~> 1.0.0', feature_category: :system_access
-gem 'rexml', '~> 3.3.2', feature_category: :shared
+gem 'rexml', '~> 3.4.0', feature_category: :shared
 gem 'ruby-saml', '~> 1.17.0', feature_category: :system_access
 gem 'omniauth', '~> 2.1.0', feature_category: :system_access
 gem 'omniauth-auth0', '~> 3.1', feature_category: :system_access

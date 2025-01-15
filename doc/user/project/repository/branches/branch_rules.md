@@ -32,7 +32,7 @@ You can manage your branches:
 ## View branch rules
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) in GitLab 15.1 with a flag named `branch_rules`. Disabled by default.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363170) in GitLab 15.11.
+> - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363170) in GitLab 15.11.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123368) in GitLab 16.1. Feature flag `branch_rules` removed.
 
 The **Branch rules overview** page shows all branches with any configured protections,
@@ -65,7 +65,7 @@ To view branch rules and protections for a single branch:
 > - Feature flag `add_branch_rules` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) to `edit_branch_rules` in GitLab 16.11. Disabled by default.
 > - **All branches** and **All protected branches** options [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388129) in GitLab 17.0.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.4.
-> - [Enabled on self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.5.
+> - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.5.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -145,7 +145,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12522) in GitLab 17.4 [with a flag](../../../../administration/feature_flags.md) named `edit_branch_rules`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.4.
-> - [Enabled on self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.5.
+> - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.5.
 
 NOTE:
 Not available for `all protected branches`.
@@ -168,7 +168,7 @@ For more information, see [External status checks](../../merge_requests/status_c
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) in GitLab 16.8 with a flag named `add_branch_rules`. Disabled by default.
 > - Feature flag `add_branch_rules` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) to `edit_branch_rules` in GitLab 16.11. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.4.
-> - [Enabled on self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.5.
+> - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.5.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -219,7 +219,7 @@ For additional information about branch protection controls, see [Protected bran
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) in GitLab 16.8 with a flag named `add_branch_rules`. Disabled by default.
 > - Feature flag `add_branch_rules` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) to `edit_branch_rules` in GitLab 16.11. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.4.
-> - [Enabled on self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.5.
+> - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/454501) in GitLab 17.5.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.

@@ -90,7 +90,7 @@ To disable your instance fetching this data:
 
 ### Restrict runner registration by all users in an instance
 
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/368008) in GitLab 15.5.
+> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/368008) in GitLab 15.5.
 
 GitLab administrators can adjust who is allowed to register runners, by showing and hiding areas of the UI.
 This setting does not affect the ability to create a runner from the UI or through an authenticated API call.

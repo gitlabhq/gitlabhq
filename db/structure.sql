@@ -7785,8 +7785,6 @@ CREATE TABLE application_settings (
     lock_memberships_to_saml boolean DEFAULT false NOT NULL,
     gitlab_dedicated_instance boolean DEFAULT false NOT NULL,
     update_runner_versions_enabled boolean DEFAULT true NOT NULL,
-    encrypted_openai_api_key bytea,
-    encrypted_openai_api_key_iv bytea,
     database_max_running_batched_background_migrations integer DEFAULT 2 NOT NULL,
     encrypted_product_analytics_configurator_connection_string bytea,
     encrypted_product_analytics_configurator_connection_string_iv bytea,
@@ -7794,8 +7792,6 @@ CREATE TABLE application_settings (
     package_metadata_purl_types smallint[] DEFAULT '{1,2,3,4,5,6,7,8,9,10,11,12,13,14}'::smallint[],
     ci_max_includes integer DEFAULT 150 NOT NULL,
     remember_me_enabled boolean DEFAULT true NOT NULL,
-    encrypted_anthropic_api_key bytea,
-    encrypted_anthropic_api_key_iv bytea,
     diagramsnet_enabled boolean DEFAULT true NOT NULL,
     diagramsnet_url text DEFAULT 'https://embed.diagrams.net'::text,
     allow_account_deletion boolean DEFAULT true NOT NULL,
@@ -7803,8 +7799,6 @@ CREATE TABLE application_settings (
     namespace_aggregation_schedule_lease_duration_in_seconds integer DEFAULT 300 NOT NULL,
     container_registry_data_repair_detail_worker_max_concurrency integer DEFAULT 2 NOT NULL,
     vertex_ai_host text,
-    encrypted_vertex_ai_credentials bytea,
-    encrypted_vertex_ai_credentials_iv bytea,
     vertex_ai_project text,
     delete_unconfirmed_users boolean DEFAULT false NOT NULL,
     unconfirmed_users_delete_after_days integer DEFAULT 7 NOT NULL,
@@ -7825,8 +7819,6 @@ CREATE TABLE application_settings (
     container_registry_db_enabled boolean DEFAULT false NOT NULL,
     failed_login_attempts_unlock_period_in_minutes integer,
     max_login_attempts integer,
-    encrypted_vertex_ai_access_token bytea,
-    encrypted_vertex_ai_access_token_iv bytea,
     project_jobs_api_rate_limit integer DEFAULT 600 NOT NULL,
     math_rendering_limits_enabled boolean DEFAULT true NOT NULL,
     service_access_tokens_expiration_enforced boolean DEFAULT true NOT NULL,
@@ -23262,7 +23254,8 @@ CREATE TABLE workspace_variables (
     encrypted_value bytea NOT NULL,
     encrypted_value_iv bytea NOT NULL,
     project_id bigint,
-    CONSTRAINT check_5545042100 CHECK ((char_length(key) <= 255))
+    CONSTRAINT check_5545042100 CHECK ((char_length(key) <= 255)),
+    CONSTRAINT check_ed95da8691 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE workspace_variables_id_seq
@@ -30225,6 +30218,8 @@ CREATE INDEX idx_vulnerability_reads_for_traversal_ids_queries_srt_severity ON v
 CREATE INDEX idx_vulnerability_reads_project_id_scanner_id_vulnerability_id ON vulnerability_reads USING btree (project_id, scanner_id, vulnerability_id);
 
 CREATE UNIQUE INDEX idx_wi_type_custom_fields_on_ns_id_wi_type_id_custom_field_id ON work_item_type_custom_fields USING btree (namespace_id, work_item_type_id, custom_field_id);
+
+CREATE INDEX idx_zoekt_repositories_on_zoekt_index_id_and_state ON zoekt_repositories USING btree (zoekt_index_id, state);
 
 CREATE INDEX index_p_ci_builds_on_execution_config_id ON ONLY p_ci_builds USING btree (execution_config_id) WHERE (execution_config_id IS NOT NULL);
 

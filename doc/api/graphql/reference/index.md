@@ -10693,7 +10693,6 @@ Input type: `UpdateNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdatenotebody"></a>`body` | [`String`](#string) | Content of the note. |
 | <a id="mutationupdatenoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdatenoteconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** No longer allowed to update confidentiality of notes. Deprecated in GitLab 14.10. |
 | <a id="mutationupdatenoteid"></a>`id` | [`NoteID!`](#noteid) | Global ID of the note to update. |
 
 #### Fields
@@ -24335,7 +24334,6 @@ Represents an epic board list.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="epiclistcollapsed"></a>`collapsed` | [`Boolean`](#boolean) | Indicates if this list is collapsed for this user. |
-| <a id="epiclistepicscount"></a>`epicsCount` **{warning-solid}** | [`Int`](#int) | **Deprecated** in GitLab 14.9. This was renamed. Use: `metadata`. |
 | <a id="epiclistid"></a>`id` | [`BoardsEpicListID!`](#boardsepiclistid) | Global ID of the board list. |
 | <a id="epiclistlabel"></a>`label` | [`Label`](#label) | Label of the list. |
 | <a id="epiclistlisttype"></a>`listType` | [`String!`](#string) | Type of the list. |

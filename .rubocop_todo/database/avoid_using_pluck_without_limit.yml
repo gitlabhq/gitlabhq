@@ -92,7 +92,6 @@ Database/AvoidUsingPluckWithoutLimit:
     - 'ee/app/models/allowed_email_domain.rb'
     - 'ee/app/models/approval_wrapped_rule.rb'
     - 'ee/app/models/concerns/audit_events/streaming/streamable_event_type_filter.rb'
-    - 'ee/app/models/concerns/ee/ci/artifactable.rb'
     - 'ee/app/models/concerns/ee/issuable_link.rb'
     - 'ee/app/models/concerns/elasticsearch_indexed_container.rb'
     - 'ee/app/models/concerns/geo/verifiable_model.rb'

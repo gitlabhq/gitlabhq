@@ -183,6 +183,7 @@ RSpec/ContextWording:
     - 'ee/spec/finders/productivity_analytics_finder_spec.rb'
     - 'ee/spec/finders/scim_finder_spec.rb'
     - 'ee/spec/finders/security/pipeline_vulnerabilities_finder_spec.rb'
+    - 'ee/spec/finders/security/vulnerabilities_finder_spec.rb'
     - 'ee/spec/finders/security/vulnerability_reads_finder_spec.rb'
     - 'ee/spec/finders/snippets_finder_spec.rb'
     - 'ee/spec/finders/template_finder_spec.rb'

@@ -12,7 +12,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2256) in GitLab 14.6 [with a flag](../../administration/feature_flags.md) named `customer_relations`. Disabled by default.
 > - In GitLab 14.8 and later, you can [create contacts and organizations only in top-level groups](https://gitlab.com/gitlab-org/gitlab/-/issues/350634).
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/346082) in GitLab 15.0.
+> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/346082) in GitLab 15.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/346082) in GitLab 15.1.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
@@ -259,7 +259,7 @@ API.
 ## Autocomplete contacts
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2256) in GitLab 14.8 [with a flag](../../administration/feature_flags.md) named `contacts_autocomplete`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/352123) in GitLab 15.0.
+> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/352123) in GitLab 15.0.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352123) in GitLab 15.2. [Feature flag `contacts_autocomplete`](https://gitlab.com/gitlab-org/gitlab/-/issues/352123) removed.
 
 When you use the `/add_contacts` quick action, follow it with `[contact:` and an autocomplete list with the [active](#change-the-state-of-a-contact) contacts appears:

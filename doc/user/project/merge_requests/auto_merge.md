@@ -18,7 +18,7 @@ DETAILS:
 > - [Merged](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154366) the flag `additional_merge_when_checks_ready` with the flag `merge_when_checks_pass` in GitLab 17.1.
 > - Auto-merge for merge trains [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10874) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `merge_when_checks_pass_merge_train`. Disabled by default.
 > - Auto-merge for merge trains [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/470667) on GitLab.com in GitLab 17.2.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/412995) the flag `merge_when_checks_pass` on self-managed by default in GitLab 17.4.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/412995) the flag `merge_when_checks_pass` on GitLab Self-Managed by default in GitLab 17.4.
 > - Auto-merge for merge trains [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174357) in GitLab 17.7. Feature flag `merge_when_checks_pass_merge_train` removed.
 > - Auto-merge [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/412995) in GitLab 17.7. Feature flag `merge_when_checks_pass` removed.
 

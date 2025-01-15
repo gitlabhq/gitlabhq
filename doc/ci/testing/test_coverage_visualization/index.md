@@ -39,7 +39,7 @@ By default, the data used to draw the visualization on the merge request expires
 ## Coverage report from child pipeline
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363301) in GitLab 15.1 [with a flag](../../../administration/feature_flags.md) named `ci_child_pipeline_coverage_reports`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363557) and feature flag `ci_child_pipeline_coverage_reports` removed in GitLab 15.2.
+> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363557) and feature flag `ci_child_pipeline_coverage_reports` removed in GitLab 15.2.
 
 If a job in a child pipeline creates a coverage report, the report is included in
 the parent pipeline's coverage report.
