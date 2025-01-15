@@ -62,6 +62,40 @@ describe('sidebar reviewers', () => {
     axiosMock.restore();
   });
 
+  it.each`
+    copy               | canUpdate | expected
+    ${'shows'}         | ${true}   | ${true}
+    ${'does not show'} | ${false}  | ${false}
+  `('$copy Assign button when canUpdate is $canUpdate', ({ canUpdate, expected }) => {
+    wrapper = shallowMount(SidebarReviewers, {
+      apolloProvider: apolloMock,
+      propsData: {
+        issuableIid: '1',
+        issuableId: 1,
+        mediator,
+        field: '',
+        projectPath: 'projectPath',
+        changing: false,
+      },
+      data() {
+        return {
+          issuable: { userPermissions: { adminMergeRequest: canUpdate } },
+        };
+      },
+      provide: {
+        projectPath: 'projectPath',
+        issuableId: 1,
+        issuableIid: 1,
+        multipleApprovalRulesAvailable: false,
+      },
+      stubs: {
+        ApprovalSummary: true,
+      },
+    });
+
+    expect(wrapper.find('[data-testid="sidebar-reviewers-assign-buton"]').exists()).toBe(expected);
+  });
+
   it('calls the mediator when it saves the reviewers', () => {
     createComponent();
 

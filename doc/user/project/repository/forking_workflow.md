@@ -11,19 +11,20 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Whenever possible, it's recommended to work in a common Git repository and use
-branching strategies to manage your work. However,
-if you do not have write access for the repository you want to contribute to, you
-can create a fork.
+A fork is a personal copy of another Git repository, placed in the namespace of your choice.
+Your copy contains the upstream repository's content, including all branches, tags,
+and CI/CD job configurations.
+You can create merge requests from your fork to target the upstream repository.
+Individual commits can also be [cherry-picked](../merge_requests/cherry_pick_changes.md) from
+your fork into the upstream repository.
 
-A fork is a personal copy of the repository and all its branches, which you create
-in a namespace of your choice. Make changes in your own fork and
-submit them through a merge request to the repository you don't have access to.
+If you have write access to the original repository, you don't need a fork.
+Instead, use branches to manage your work.
+If you don't have write access to a repository you want to contribute to, fork it.
+Make your changes in your fork, then submit them through a merge request to the upstream repository.
 
-The forked project uses a
-[deduplication strategy](../../../development/git_object_deduplication.md)
-to have a potentially smaller storage space than the source project. Forked projects
-can access the object pool connected to the source project.
+To create a [confidential merge request](../merge_requests/confidential.md),
+use a personal fork of a public repository.
 
 ## Create a fork
 
@@ -46,7 +47,11 @@ To fork an existing project in GitLab:
    visibility levels, read [Project and group visibility](../../public_access.md).
 1. Select **Fork project**.
 
-GitLab creates your fork, and redirects you to the new fork's page.
+GitLab creates your fork, redirects you to the new fork's page, and logs the fork's
+creation in the [audit log](../../compliance/audit_event_types.md).
+
+If you intend to contribute changes upstream frequently, consider setting a
+[default target](../merge_requests/creating_merge_requests.md#set-the-default-target-project) for your fork.
 
 ## Update your fork
 
@@ -71,7 +76,7 @@ or the command line. GitLab Premium and Ultimate tiers can also automate updates
 
 Prerequisites:
 
-- The fork must be created from an [unprotected branch](../repository/branches/protected.md) in upstream repository.
+- You must create your fork from an [unprotected branch](../repository/branches/protected.md) in upstream repository.
 
 To update your fork from the GitLab UI:
 
@@ -89,12 +94,12 @@ To update your fork from the GitLab UI:
 1. If your fork is **behind** the upstream repository, select **Update fork**
    to pull changes from the upstream repository.
 1. If your fork is **ahead and behind** the upstream repository, you can update from the UI
-   only if no merge conflicts are detected:
+   only if GitLab detects no merge conflicts:
    - If your fork contains no merge conflicts, you can select **Create merge request**
      to propose pushing your changes to the upstream repository, **Update fork**
      to pull changes down to your fork, or both. The type of changes in your fork
      determine which actions are appropriate.
-   - If your fork contains merge conflicts, a step-by-step guide to update your fork from the command line is shown.
+   - If your fork contains merge conflicts, GitLab shows a step-by-step guide to update your fork from the command line.
 
 ### From the command line
 
@@ -130,23 +135,14 @@ With mirroring, before approving a merge request, you are asked to sync. You sho
 
 ## Merge changes back upstream
 
-When you are ready to send your code back to the upstream project,
-[create a merge request](../merge_requests/creating_merge_requests.md). For **Source branch**,
-choose your forked project's branch. For **Target branch**, choose the original project's branch.
-
-NOTE:
-When creating a merge request, if the forked project's visibility is more restrictive than the parent project (for example the fork is private, the parent is public), the target branch defaults to the forked project's default branch. This prevents potentially exposing the private code of the forked project.
-
-![Selecting branches](img/forking_workflow_branch_select_v15_9.png)
-
-Then you can add labels, a milestone, and assign the merge request to someone who can review
-your changes. Then select **Submit merge request** to conclude the process. When successfully merged, your
-changes are added to the repository and branch you're merging into.
+When you are ready to send your code back to the upstream repository, create a new merge request as
+described in [When you work in a fork](../merge_requests/creating_merge_requests.md#when-you-work-in-a-fork).
+When successfully merged, your changes are added to the repository and branch you're merging into.
 
 ## Unlink a fork
 
-Removing a fork relationship unlinks your fork from its upstream project.
-Your fork then becomes an independent project.
+Removing a fork relationship unlinks your fork from its upstream repository.
+Your fork then becomes an independent repository.
 
 Prerequisites:
 
@@ -154,7 +150,7 @@ Prerequisites:
 
 WARNING:
 If you remove a fork relationship, you can't send merge requests to the source.
-If anyone has forked your project, their fork also loses the relationship.
+If anyone has forked your repository, their fork also loses the relationship.
 To restore the fork relationship, [use the API](../../../api/project_forks.md#create-a-fork-relationship-between-projects).
 
 To remove a fork relationship:
@@ -165,15 +161,25 @@ To remove a fork relationship:
 1. In the **Remove fork relationship** section, select **Remove fork relationship**.
 1. To confirm, enter the project path and select **Confirm**.
 
+GitLab logs the unlink operation in the [audit log](../../compliance/audit_event_types.md).
 When you unlink a fork that uses a [hashed storage pool](../../../administration/repository_storage_paths.md#hashed-object-pools)
 to share objects with another repository:
 
 - All objects are copied from the pool into your fork.
 - After the copy process completes, no further updates from the storage pool are propagated to your fork.
 
+## Check a fork's storage usage
+
+Your fork uses a [deduplication strategy](../../../development/git_object_deduplication.md)
+to reduce the storage space it needs. Your fork can access the object pool connected to the source repository.
+
+For more information and to check the storage use, see [View project fork storage usage](../../storage_usage_quotas.md#view-project-fork-storage-usage).
+
 ## Related topics
 
 - GitLab community forum: [Refreshing a fork](https://forum.gitlab.com/t/refreshing-a-fork/32469)
+- [Prevent project forking outside group](../../group/access_and_permissions.md#prevent-project-forking-outside-group)
+- [Understand how Git LFS works with forks](../../../topics/git/lfs/index.md#understand-how-git-lfs-works-with-forks)
 
 ## Troubleshooting
 

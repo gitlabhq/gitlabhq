@@ -42,7 +42,7 @@ module HasUserType
 
   # `service_account` allows instance/namespaces to configure a user for external integrations/automations
   # `service_user` is an internal, `gitlab-com`-specific user type for integrations like suggested reviewers
-  NON_INTERNAL_USER_TYPES = %w[human project_bot service_user service_account duo_code_review_bot].freeze
+  NON_INTERNAL_USER_TYPES = %w[human project_bot service_user service_account].freeze
   INTERNAL_USER_TYPES = (USER_TYPES.keys - NON_INTERNAL_USER_TYPES).freeze
 
   included do
@@ -51,6 +51,7 @@ module HasUserType
     scope :bots, -> { where(user_type: BOT_USER_TYPES) }
     scope :without_bots, -> { where(user_type: USER_TYPES.keys - BOT_USER_TYPES) }
     scope :non_internal, -> { where(user_type: NON_INTERNAL_USER_TYPES) }
+    scope :with_duo_code_review_bot, -> { where(user_type: NON_INTERNAL_USER_TYPES + ['duo_code_review_bot']) }
     scope :without_ghosts, -> { where(user_type: USER_TYPES.keys - ['ghost']) }
     scope :without_project_bot, -> { where(user_type: USER_TYPES.keys - ['project_bot']) }
     scope :without_humans, -> { where(user_type: USER_TYPES.keys - ['human']) }

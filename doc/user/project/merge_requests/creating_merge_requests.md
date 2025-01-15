@@ -23,7 +23,7 @@ to streamline merge request creation.
 
 You can create a merge request from the list of merge requests.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find your GitLab project.
 1. Select **Code > Merge requests**.
 1. In the upper-right corner, select **New merge request**.
 1. Select a source and target branch, then select **Compare branches and continue**.
@@ -50,8 +50,9 @@ To create a branch and a merge request at the same time:
 1. Select **Plan > Issues** and find your issue.
 1. Go to the bottom of the issue description.
 1. Select **Create merge request > Create merge request and branch**.
-1. On the dialog, review the suggested branch name.
-It's based on your project's [branch name template](../repository/branches/index.md).1. Optional. If the branch name is already taken, or you need a different branch name, rename it.
+1. On the dialog, review the suggested branch name. It's based on your project's
+   [branch name template](../repository/branches/index.md).
+1. Optional. If the branch name is already taken, or you need a different branch name, rename it.
 1. Select a source branch or tag.
 1. Select **Create merge request**.
 
@@ -184,33 +185,47 @@ You can create a merge request from your fork to contribute back to the main pro
 1. For **Source branch**, select the branch in your fork that contains your changes.
 1. For **Target branch**:
 
-   1. Select the target project. (Make sure to select the upstream project, rather than your fork.)
-   1. Select a branch from the upstream repository.
+   1. Select the upstream repository, and not your fork.
+      If you contribute changes upstream frequently, consider setting a
+      [default target](#set-the-default-target-project) for your fork.
+   1. Select a branch from the upstream repository:
+
+      ![Selecting branches](../repository/img/forking_workflow_branch_select_v15_9.png)
 
    NOTE:
-   If you contribute changes upstream frequently, consider setting a
-   [default target project](#set-the-default-target-project) for your fork.
+   If your fork's visibility is more restricted than the parent repository, the target branch defaults
+   to your fork's default branch. This prevents potential exposure of private information in your fork.
 
 1. Select **Compare branches and continue**.
-1. Select **Create merge request**. The merge request is created in the target project,
+1. Select **Create merge request**. The merge request is created in the target repository,
    not your fork.
+1. Add your desired labels, milestones, reviewers, and assignees.
+1. Select **Submit merge request**.
+
+If the merge request targets another repository, it uses:
+
+- The target project's approval rules.
+- Your fork's CI/CD configuration, resources, and project CI/CD variables.
+
+To run CI/CD pipelines in the upstream project,
+[you must be a member of that project](../../../ci/pipelines/merge_request_pipelines.md#use-with-forked-projects).
+If you run a merge request pipeline
+[in the parent project](../../../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project)
+for a merge request from a fork, all variables become available to the pipeline.
 
 After your work merges, [unlink your fork](../repository/forking_workflow.md#unlink-a-fork)
-from its upstream project if you don't intend to make more contributions.
-
-For more information, [see the forking workflow documentation](../repository/forking_workflow.md).
+from its upstream repository if you don't intend to make more contributions.
 
 ### Set the default target project
 
-By default, merge requests originating from a fork target the upstream project, not the forked project.
-
-You can configure your forked project to be the default target rather than the upstream project.
+By default, merge requests originating from a fork target the upstream repository, not your fork.
+You can configure your forked repository to be the default target, rather than the upstream repository.
 
 Prerequisites:
 
 - You're working in a fork.
 - You must have at least the Developer role, or be allowed to create merge requests in the project.
-- The upstream project allows merge requests to be created.
+- The upstream repository allows merge requests to be created.
 - The [visibility settings](../../public_access.md#change-project-visibility) for
   the fork must match, or be less strict than, the upstream repository. For example:
   this setting isn't shown if your fork is private, but the upstream is public.
@@ -226,11 +241,11 @@ To do this:
 ## By sending an email
 
 You can create a merge request by sending an email message to GitLab.
-The merge request target branch is the project's default branch.
+The merge request target branch is the repository's default branch.
 
 Prerequisites:
 
-- The merge request must target the current project, not an upstream project.
+- The merge request must target the current repository, not an upstream repository.
 - A GitLab administrator must configure [incoming email](../../../administration/incoming_email.md).
   This setting is enabled on GitLab.com.
 - A GitLab administrator must configure [Reply by email](../../../administration/reply_by_email.md).
@@ -281,13 +296,13 @@ The option to **Create merge request** doesn't display on an issue if:
 
 To make this button appear, one possible workaround is to
 [remove your project's fork relationship](../repository/forking_workflow.md#unlink-a-fork).
-After removal, the fork relationship cannot be restored. This project can no longer
-be able to receive or send merge requests to the source project, or other forks.
+After removal, you can't restore the fork relationship. Your project can no longer
+send or receive merge requests to the source project, or other forks of it.
 
 ### Email message could not be processed
 
 When sending an email to create a merge request, and you attempt to target an
-upstream project, GitLab responds with this error:
+upstream repository, GitLab responds with this error:
 
 ```plaintext
 Unfortunately, your email message to GitLab could not be processed.

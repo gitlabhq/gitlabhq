@@ -49,7 +49,7 @@ defaultClient.cache.policies.addTypePolicies({
   Board: {
     fields: {
       epics: {
-        keyArgs: ['boardId'],
+        keyArgs: ['boardId', 'issueFilters'],
       },
     },
   },

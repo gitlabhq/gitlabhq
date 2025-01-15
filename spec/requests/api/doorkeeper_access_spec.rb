@@ -16,7 +16,7 @@ RSpec.describe 'doorkeeper access', feature_category: :system_access do
     let(:group) { create(:group, :private) }
     let(:user) do
       user = create(:user)
-      allow(user).to receive(:has_composite_identity?).and_return(true)
+      allow(user).to receive(:composite_identity_enforced).and_return(true)
       user
     end
 

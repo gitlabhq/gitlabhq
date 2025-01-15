@@ -757,11 +757,11 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
     end
 
     context 'with composite identity', :request_store do
-      let(:user) { create(:user, username: 'gitlab-duo') }
+      let_it_be(:user) { create(:user, username: 'user-with-composite-identity') }
 
       before do
-        allow_any_instance_of(::User).to receive(:has_composite_identity?) do |user|
-          user.username == 'gitlab-duo'
+        allow_any_instance_of(::User).to receive(:composite_identity_enforced) do |user|
+          user.username == 'user-with-composite-identity'
         end
 
         set_bearer_token(oauth_access_token.plaintext_token)

@@ -53,6 +53,10 @@ module Gitlab
             { belongs_to_key => issuable_db_id(issue_event) }
           end
 
+          def backticked_username(user)
+            "`@#{user&.login || 'ghost'}`"
+          end
+
           def imported_from
             ::Import::SOURCE_GITHUB
           end

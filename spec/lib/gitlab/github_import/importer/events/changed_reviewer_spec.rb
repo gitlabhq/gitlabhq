@@ -6,7 +6,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedReviewer, feature_
   subject(:importer) { described_class.new(project, client) }
 
   let_it_be(:project) { create(:project, :repository, :with_import_url) }
-  let_it_be(:requested_reviewer) { create(:user) }
+  let_it_be_with_reload(:requested_reviewer) { create(:user) }
   let_it_be(:review_requester) { create(:user) }
   let_it_be(:issuable) { create(:merge_request, source_project: project, target_project: project) }
 
@@ -65,6 +65,18 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedReviewer, feature_
             note_id: Note.last.id
           )
         )
+    end
+
+    context 'when requested_reviewer is nil' do
+      before do
+        requested_reviewer.username = nil
+      end
+
+      it 'references `@ghost`' do
+        importer.execute(issue_event)
+
+        expect(issuable.notes.last.note).to end_with('`@ghost`')
+      end
     end
   end
 

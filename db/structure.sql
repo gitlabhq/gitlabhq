@@ -11726,7 +11726,8 @@ CREATE TABLE dast_pre_scan_verifications (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_a764bbc378 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE dast_pre_scan_verifications_id_seq
@@ -11804,7 +11805,8 @@ CREATE TABLE dast_profiles_tags (
     id bigint NOT NULL,
     dast_profile_id bigint NOT NULL,
     tag_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_b1aa92f799 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE dast_profiles_tags_id_seq

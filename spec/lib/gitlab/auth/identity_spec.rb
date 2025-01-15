@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
 
     context 'when composite identity is required for the actor' do
       before do
-        allow(primary_user).to receive(:has_composite_identity?).and_return(true)
+        allow(primary_user).to receive(:composite_identity_enforced).and_return(true)
       end
 
       it 'returns an identity' do
@@ -52,7 +52,7 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
 
       context 'when actor user does not have composite identity enforced' do
         before do
-          allow(primary_user).to receive(:has_composite_identity?).and_return(false)
+          allow(primary_user).to receive(:composite_identity_enforced).and_return(false)
         end
 
         context 'when token has composite user scope' do
@@ -91,7 +91,7 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
 
     context 'when composite identity is required for the actor' do
       before do
-        allow(primary_user).to receive(:has_composite_identity?).and_return(true)
+        allow(primary_user).to receive(:composite_identity_enforced).and_return(true)
       end
 
       it 'returns an identity' do
@@ -127,7 +127,7 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
     context 'when composite identity feature flag is enabled' do
       context 'when service_account has composite identity enforced' do
         before do
-          allow(primary_user).to receive(:has_composite_identity?).and_return(true)
+          allow(primary_user).to receive(:composite_identity_enforced).and_return(true)
         end
 
         it 'creates and links identity with scope user' do

@@ -100,7 +100,7 @@ To configure a self-hosted model:
    - **Model family**: Select the model family the deployment belongs to. Only GitLab-approved models
      are in this list.
    - **Endpoint**: Enter the URL where the model is hosted.
-     - For models hosted through vLLM, it is essential to suffix the URL with `/v1`.
+     - For models hosted through vLLM, you must suffix the URL with `/v1`. The default port is `8000`, so the default endpoint URL is `https://<hostname>:8000/v1`.
    - **API key**: Optional. Add an API key if you need one to access the model.
    - **Model identifier (optional)**: Optional. The model identifier is based on your deployment method:
 

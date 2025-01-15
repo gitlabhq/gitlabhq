@@ -51,6 +51,12 @@ RSpec.describe User, feature_category: :system_access do
       end
     end
 
+    describe '.with_duo_code_review_bot' do
+      it 'includes all non_internal and duo_code_review_bot users' do
+        expect(described_class.with_duo_code_review_bot).to match_array(non_internal + [duo_code_review_bot])
+      end
+    end
+
     describe '.without_ghosts' do
       it 'includes everyone except ghosts' do
         expect(described_class.without_ghosts).to match_array(everyone - [ghost])

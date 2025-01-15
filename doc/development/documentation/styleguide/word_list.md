@@ -1949,6 +1949,10 @@ Use **press** when talking about keyboard keys. For example:
 
 Do not use profanity. Doing so may negatively affect other users and contributors, which is contrary to the GitLab value of [Diversity, Inclusion, and Belonging](https://handbook.gitlab.com/handbook/values/#diversity-inclusion).
 
+## project
+
+See [repository, project](#repository-project).
+
 ## project access token
 
 Use sentence case for **project access token**.
@@ -2016,6 +2020,12 @@ When writing about the Reporter role:
 Do not use bold.
 
 Do not use **Reporter permissions**. A user who is assigned the Reporter role has a set of associated permissions.
+
+## repository, project
+
+A GitLab project contains, among other things, a Git repository. Use **repository** when referring to the
+Git repository. Use **project** to refer to the GitLab user interface for managing and configuring the
+Git repository, wiki, and other features.
 
 ## Repository Mirroring
 

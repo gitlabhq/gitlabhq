@@ -26,42 +26,6 @@ When you use hosted runners:
 - The storage is shared by the operating system, the image with pre-installed software, and a copy of your cloned repository. This means that the available free disk space for your jobs is reduced.
 - By default, untagged jobs run on the small Linux x86-64 runner. GitLab administrators can [change the run untagged jobs option in GitLab](#configure-hosted-runners-in-gitlab).
 
-Available features during limited availability are:
-
-- Larger Linux x86-64 machine types
-- Arm-based Linux runners
-- Production-ready autoscaling configuration to support more concurrent jobs
-- Support for caching with hosted runners
-- Early access to upcoming features including compute minute visualisation, security capabilities, and new runner types
-
-## Security
-
-Hosted runners for Dedicated have built-in layers that harden the security of the GitLab Runner build environment.
-
-Hosted runners for GitLab Dedicated are configured as such:
-
-- Firewall rules only allow outbound communication from the ephemeral VM to the public internet.
-- Inbound communication from the public internet to the ephemeral VM is not allowed.
-- Firewall rules do not permit communication between VMs.
-- The only internal communication allowed to the ephemeral VMs is from the runner manager.
-- Ephemeral runner VMs only serve a single job and are deleted after the job execution.
-
-You can also [enable private connections](#outbound-private-link) from the hosted runners to your AWS account.
-
-For more information, see the architecture diagram for [Hosted runners for GitLab Dedicated](index.md#hosted-runners-for-gitlab-dedicated).
-
-## Pricing
-
-We offer a discount during limited availability. For pricing details, reach out to your account representative.
-
-## Trial
-
-We offer a two-month free trial for Dedicated customers. The trial includes:
-
-- Small, Medium, and Large Linux x86-64 runner
-- Small and Medium Arm-based Linux runner
-- Limited autoscaling configuration that supports up to 100 concurrent jobs
-
 ## Hosted runners on Linux
 
 Hosted runners on Linux for GitLab Dedicated use the [Docker Autoscaler](https://docs.gitlab.com/runner/executors/docker_autoscaler.html) executor. Each job gets a Docker environment in a fully isolated, ephemeral virtual machine (VM), and runs on the latest version of Docker Engine.
@@ -78,7 +42,7 @@ The following machine types are available for hosted runners on Linux x86-64.
 | X-Large  | `linux-xlarge-amd64`          | 16    | 64 GB  | 200 GB  |
 | 2X-Large | `linux-2xlarge-amd64`         | 32    | 128 GB | 200 GB  |
 
-### Machine types available for Linux - Arm64
+### Machine types for Linux - Arm64
 
 The following machine types are available for hosted runners on Linux Arm64.
 
@@ -113,7 +77,9 @@ To avoid rate limits, instead use:
 
 The runners are configured to run in `privileged` mode to support [Docker in Docker](../../ci/docker/using_docker_build.md#use-docker-in-docker) to build Docker images natively or run multiple containers within your isolated job.
 
-## Manage hosted runners in Switchboard
+## Manage hosted runners
+
+### Manage hosted runners in Switchboard
 
 You can create and view hosted runners for your GitLab Dedicated instance using Switchboard.
 
@@ -121,7 +87,7 @@ Prerequisites:
 
 - You must purchase a subscription for Hosted Runners for GitLab Dedicated.
 
-### Create hosted runners in Switchboard
+#### Create hosted runners in Switchboard
 
 For each instance, you can create one runner of each type and size combination. Switchboard displays the available runner options.
 
@@ -134,7 +100,7 @@ To create hosted runners:
 
 You will receive an email notification when your hosted runner is ready to use.
 
-### View hosted runners in Switchboard
+#### View hosted runners in Switchboard
 
 To view hosted runners:
 
@@ -142,11 +108,11 @@ To view hosted runners:
 1. At the top of the page, select **Hosted runners**.
 1. Optional. From the list of hosted runners, copy the **Runner ID** of the runner you want to access in GitLab.
 
-## View and configure hosted runners in GitLab
+### View and configure hosted runners in GitLab
 
 GitLab administrators can manage hosted runners for their GitLab Dedicated instance from the [**Admin** area](../../administration/admin_area.md#administering-runners).
 
-### View hosted runners in GitLab
+#### View hosted runners in GitLab
 
 You can view hosted runners for your GitLab Dedicated instance in the Runners page and in the [Fleet dashboard](../../ci/runners/runner_fleet_dashboard.md).
 
@@ -160,7 +126,7 @@ To view hosted runners in GitLab:
 1. Select **CI/CD > Runners**.
 1. Optional. Select **Fleet dashboard**.
 
-### Configure hosted runners in GitLab
+#### Configure hosted runners in GitLab
 
 Prerequisites:
 
@@ -181,7 +147,23 @@ Any changes to the runner description and the runner tags are not controlled by 
 By default, hosted runners are available for all projects and groups in your GitLab Dedicated instance.
 GitLab maintainers can disable hosted runners for a [project](../../ci/runners/runners_scope.md#disable-instance-runners-for-a-project) or a [group](../../ci/runners/runners_scope.md#disable-instance-runners-for-a-group).
 
-## Outbound private link
+## Security and Network
+
+Hosted runners for GitLab Dedicated have built-in layers that harden the security of the GitLab Runner build environment.
+
+Hosted runners for GitLab Dedicated have the following configurations:
+
+- Firewall rules allow only outbound communication from the ephemeral VM to the public internet.
+- Firewall rules do not allow inbound communication from the public internet to the ephemeral VM.
+- Firewall rules do not allow communication between VMs.
+- Only the runner manager can communicate with the ephemeral VMs.
+- Ephemeral runner VMs only serve a single job and are deleted after the job execution.
+
+You can also [enable private connections](#outbound-private-link) from hosted runners to your AWS account.
+
+For more information, see the architecture diagram for [Hosted runners for GitLab Dedicated](index.md#hosted-runners-for-gitlab-dedicated).
+
+### Outbound private link
 
 Outbound private link creates a secure connection between hosted runners for GitLab Dedicated and services in your AWS VPC.
 This connection doesn't expose any traffic to the public internet and allows hosted runners to:
@@ -199,16 +181,18 @@ These links are pre-configured and cannot be modified. The tenant's Prometheus i
 
 To use an outbound private link with other VPC services, manual configuration is required. For more information, see [Outbound private link](configure_instance/network_security.md#outbound-private-link).
 
-## IP ranges
+### IP ranges
 
 IP ranges for hosted runners for GitLab Dedicated are available upon request. IP ranges are maintained on a best-effort basis and may change at any time due to changes in the infrastructure. For more information, reach out to your Customer Success Manager or Account representative.
 
-## Migrate jobs to hosted runners
+## Use hosted runners
 
-To migrate your jobs to use hosted runners:
+After you [create hosted runners in Switchboard](#create-hosted-runners-in-switchboard) and the runners are ready, you can use them.
 
-1. Use the small Linux x86-64 runner for untagged jobs.
-1. Add the appropriate tags to your job configurations in the `.gitlab-ci.yml` file:
+To use runners, adjust the [tags](../../ci/yaml/index.md#tags) in your job configuration in the `.gitlab-ci.yml` file to match the hosted
+runner you want to use.
+
+For the Linux medium x86-64 runner, configure your job like this:
 
    ```yaml
    job_name:
@@ -216,6 +200,23 @@ To migrate your jobs to use hosted runners:
        - linux-medium-amd64  # Use the medium-sized Linux runner
    ```
 
-1. [Modify the tags](#configure-hosted-runners-in-gitlab) to match your existing job configurations.
-
+By default, untagged jobs are picked up by the small Linux x86-64 runner.
 GitLab administrators can [configure instance runners in GitLab](#configure-hosted-runners-in-gitlab) to not run untagged jobs.
+
+To migrate jobs without changing job configurations, [modify the hosted runner tags](#configure-hosted-runners-in-gitlab)
+to match the tags used in your existing job configurations.
+
+If you see your job is stuck with the error message `no runners that match all of the job's tags`:
+
+1. Verify if you've selected the correct tag
+1. Confirm if [instance runners are enabled for your project or group](../../ci/runners/runners_scope.md#enable-instance-runners-for-a-project).
+
+## Pricing
+
+For pricing details, reach out to your account representative.
+
+We offer a two-month free trial for GitLab Dedicated customers. The trial includes:
+
+- Small, Medium, and Large Linux x86-64 runners
+- Small and Medium Linux Arm runners
+- Limited autoscaling configuration that supports up to 100 concurrent jobs

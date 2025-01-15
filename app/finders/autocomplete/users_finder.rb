@@ -62,7 +62,7 @@ module Autocomplete
       # reorder_by_name will break the ORDER BY applied in optionally_search().
       find_users
         .where(state: states)
-        .non_internal
+        .with_duo_code_review_bot
         .reorder_by_name
         .optionally_search(search, use_minimum_char_limit: use_minimum_char_limit)
         .limit_to_todo_authors(

@@ -38,7 +38,7 @@ def add_labels(labels)
 end
 
 ANY_MAINTAINER_CAN_MERGE_MESSAGE = <<~MSG
-This MR contains docs in the /%<directory>s directory, but any Maintainer (other than the author) can merge. You do not need tech writer review.
+This MR contains docs in the /%<directory>s directory, but any Maintainer can merge. You do not need tech writer review.
 MSG
 
 SOLUTIONS_MESSAGE = <<~MSG

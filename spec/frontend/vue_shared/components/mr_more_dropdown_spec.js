@@ -14,6 +14,7 @@ describe('MR More actions sidebar', () => {
   const findCopyReferenceButton = () => wrapper.find('[data-testid="copy-reference"]');
   const findReopenMergeRequestOption = () => wrapper.find('[data-testid="reopen-merge-request"]');
   const findReportAbuseOption = () => wrapper.find('[data-testid="report-abuse-option"]');
+  const findLockMergeRequestOption = () => wrapper.find('[data-testid="lock-merge-request"]');
 
   const createComponent = ({
     isCurrentUser = true,
@@ -101,6 +102,22 @@ describe('MR More actions sidebar', () => {
 
       expect(findReopenMergeRequestOption().exists()).toBe(false);
     });
+  });
+
+  describe('Lock merge request', () => {
+    it.each`
+      copy            | canUpdateMergeRequest | expected
+      ${'should'}     | ${true}               | ${true}
+      ${'should not'} | ${false}              | ${false}
+    `(
+      '$copy have the lock option when `canUpdateMergeRequest` is $canUpdateMergeRequest',
+      ({ canUpdateMergeRequest, expected }) => {
+        createComponent({
+          canUpdateMergeRequest,
+        });
+        expect(findLockMergeRequestOption().exists()).toBe(expected);
+      },
+    );
   });
 
   describe('Copy reference', () => {

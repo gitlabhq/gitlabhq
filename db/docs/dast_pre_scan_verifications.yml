@@ -8,14 +8,6 @@ description: Verification status for DAST Profiles
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103063
 milestone: '15.6'
 gitlab_schema: gitlab_sec
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: dast_profile_id
-        table: dast_profiles
-        sharding_key: project_id
-        belongs_to: dast_profile
-desired_sharding_key_migration_job_name: BackfillDastPreScanVerificationsProjectId
 table_size: small
+sharding_key:
+  project_id: projects
