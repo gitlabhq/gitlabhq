@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.7.2 (2025-01-14)
+
+### Fixed (1 change)
+
+- [Fix handling of short gzip metadata files](https://gitlab.com/gitlab-org/gitlab/-/commit/aaa32a37cf34a2e171f5ae1b7ce1259796605f92) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177633))
+
+### Changed (1 change)
+
+- [Remove `download_code` dependency from access to read merge requests](https://gitlab.com/gitlab-org/gitlab/-/commit/01a950b82192d6b93de58bf3678767f58c08c5f2) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176667))
+
 ## 17.7.1 (2025-01-08)
 
 ### Fixed (3 changes)
