@@ -31,9 +31,8 @@ module Types
           experiment: { milestone: '17.8' },
           description:
             'Minimum GitLab access level required to delete container image tags from the container repository. ' \
-            'For example, `MAINTAINER`, `OWNER`, or `ADMIN`. ' \
-            'If the value is `nil`, the minimum access level is ignored. ' \
-            'Users with at least the Developer role can delete container image tags.'
+            'Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. ' \
+            'If the value is `nil`, the default minimum access level is `DEVELOPER`.'
 
         field :minimum_access_level_for_push,
           Types::ContainerRegistry::Protection::TagRuleAccessLevelEnum,
@@ -41,9 +40,8 @@ module Types
           experiment: { milestone: '17.8' },
           description:
             'Minimum GitLab access level required to push container image tags to the container repository. ' \
-            'For example, `MAINTAINER`, `OWNER`, or `ADMIN`. ' \
-            'If the value is `nil`, the minimum access level is ignored. ' \
-            'Users with at least the Developer role can push container image tags.'
+            'Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. ' \
+            'If the value is `nil`, the default minimum access level is `DEVELOPER`.'
         # rubocop:enable GraphQL/ExtractType -- These are stored as user preferences
       end
     end

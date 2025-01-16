@@ -48,7 +48,6 @@ gem 'bootsnap', '~> 1.18.3', require: false, feature_category: :shared
 gem 'ffi', '~> 1.17', force_ruby_platform: true, feature_category: :shared
 
 gem 'openssl', '~> 3.0', feature_category: :shared
-gem 'ipaddr', '~> 1.2.5', feature_category: :shared
 
 gem 'gitlab-safe_request_store', path: 'gems/gitlab-safe_request_store', feature_category: :shared
 
@@ -757,8 +756,6 @@ gem 'uri', '= 0.13.0', feature_category: :shared
 gem 'duo_api', '~> 1.3', feature_category: :system_access
 
 gem 'gitlab-sdk', '~> 0.3.0', feature_category: :application_instrumentation
-
-gem 'openbao_client', path: 'gems/openbao_client', feature_category: :artifact_security
 
 gem 'paper_trail', '~> 15.0', feature_category: :shared
 

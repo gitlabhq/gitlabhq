@@ -124,12 +124,6 @@ PATH
       oj (~> 3.13.16)
 
 PATH
-  remote: gems/openbao_client
-  specs:
-    openbao_client (1.0.0)
-      typhoeus (~> 1.0, >= 1.0.1)
-
-PATH
   remote: vendor/gems/attr_encrypted
   specs:
     attr_encrypted (3.2.4)
@@ -1030,7 +1024,6 @@ GEM
     invisible_captcha (2.1.0)
       rails (>= 5.2)
     io-event (1.6.5)
-    ipaddr (1.2.7)
     ipaddress (0.8.3)
     jaeger-client (1.1.0)
       opentracing (~> 0.3)
@@ -2156,7 +2149,6 @@ DEPENDENCIES
   icalendar (~> 2.10.1)
   influxdb-client (~> 3.1)
   invisible_captcha (~> 2.1.0)
-  ipaddr (~> 1.2.5)
   ipaddress (~> 0.8.3)
   ipynbdiff!
   jira-ruby (~> 2.3.0)
@@ -2214,7 +2206,6 @@ DEPENDENCIES
   omniauth-shibboleth-redux (~> 2.0)
   omniauth_crowd (~> 2.4.0)!
   omniauth_openid_connect (~> 0.8.0)
-  openbao_client!
   openid_connect (~> 2.3.0)
   openssl (~> 3.0)
   opentelemetry-exporter-otlp

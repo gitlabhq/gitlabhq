@@ -36,7 +36,8 @@ module Types
           experiment: { milestone: '16.5' },
           description:
             'Minimum GitLab access required to push packages to the package registry. ' \
-            'For example, `MAINTAINER`, `OWNER`, or `ADMIN`.'
+            'Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. ' \
+            'If the value is `nil`, the default minimum access level is `DEVELOPER`.'
       end
     end
   end

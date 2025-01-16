@@ -199,6 +199,17 @@ might not be published in the CI/CD catalog, but could be used for testing.
 When [referencing a CI/CD catalog component](#component-versions), you can use a
 special format to specify the latest [semantic version](#semantic-versioning) in a range.
 
+This approach offers significant benefits for both consumers and authors of components:
+
+- For users, using version ranges is an excellent way to automatically receive
+  minor or patch updates without risking breaking changes from major releases. This ensures
+  your pipelines stay up-to-date with the latest bug fixes and security patches
+  while maintaining stability.
+- For component authors, the use of version ranges allows major version releases
+  without risk of immediately breaking existing pipelines. Users who have
+  specified version ranges continue to use the latest compatible minor or patch version,
+  giving them time to update their pipelines at their own pace.
+
 To specify the latest release of:
 
 - A minor version, use both the major and minor version numbers in the reference,

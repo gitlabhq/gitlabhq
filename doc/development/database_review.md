@@ -185,6 +185,24 @@ Include in the MR description:
     - The `gitlab-qa` user (`user_id = 1614863`), for queries involving a user.
       - Optionally, you can also use your own `user_id`, or the `user_id` of a user with a long history within the project or group being used to generate the query plan.
   - That means that no query plan should return 0 records or less records than the provided limit (if a limit is included). If a query is used in batching, a proper example batch with adequate included results should be identified and provided.
+
+    NOTE: The `UPDATE` statement always returns 0 records. To identify the rows it updates, we need to check the following lines below.
+
+    For example, the `UPDATE` statement returns 0 records, but we can see that it updates 1 row from the line starting with `-> Index scan`.:
+
+    ```sql
+    EXPLAIN UPDATE p_ci_pipelines SET updated_at = current_timestamp WHERE id = 1606117348;
+
+     ModifyTable on public.p_ci_pipelines  (cost=0.58..3.60 rows=0 width=0) (actual time=5.977..5.978 rows=0 loops=1)
+      Buffers: shared hit=339 read=4 dirtied=4
+      WAL: records=20 fpi=4 bytes=21800
+      I/O Timings: read=4.920 write=0.000
+      ->  Index Scan using ci_pipelines_pkey on public.ci_pipelines p_ci_pipelines_1  (cost=0.58..3.60 rows=1 width=18) (actual time=0.041..0.044 rows=1 loops=1)
+            Index Cond: (p_ci_pipelines_1.id = 1606117348)
+            Buffers: shared hit=8
+            I/O Timings: read=0.000 write=0.000
+    ```
+
   - If your queries belong to a new feature in GitLab.com and thus they don't return data in production:
     - You may analyze the query and to provide the plan from a local environment.
     - [postgres.ai](https://postgres.ai/) allows updates to data (`exec UPDATE issues SET ...`) and creation of new tables and columns (`exec ALTER TABLE issues ADD COLUMN ...`).
