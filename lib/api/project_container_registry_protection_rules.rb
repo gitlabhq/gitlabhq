@@ -23,7 +23,6 @@ module API
           ]
           tags %w[projects]
           is_array true
-          hidden true
         end
         get do
           present user_project.container_registry_protection_rules,
@@ -40,7 +39,6 @@ module API
             { code: 422, message: 'Unprocessable Entity' }
           ]
           tags %w[projects]
-          hidden true
         end
         params do
           requires :repository_path_pattern, type: String,
@@ -81,7 +79,6 @@ module API
               { code: 422, message: 'Unprocessable Entity' }
             ]
             tags %w[projects]
-            hidden true
           end
           params do
             optional :repository_path_pattern, type: String,
@@ -116,7 +113,6 @@ module API
               { code: 404, message: 'Not Found' }
             ]
             tags %w[projects]
-            hidden true
           end
           delete do
             protection_rule = user_project.container_registry_protection_rules.find(params[:protection_rule_id])

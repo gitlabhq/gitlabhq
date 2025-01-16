@@ -479,6 +479,8 @@ Here is a summary, which is also reflected in other sections.
 - Merge request reviewers stay as Reviewers even after they have reviewed.
 - Authors [request a review](../user/project/merge_requests/reviews/index.md#request-a-review) by assigning users as Reviewers.
 - Authors [re-request a review](../user/project/merge_requests/reviews/index.md#re-request-a-review) when they have made changes and wish a reviewer to re-review.
+- Reviewers use the [reviews feature](../user/project/merge_requests/reviews/index.md#start-a-review) to submit feedback.
+  Tip: Select **Start review** or **Start a review** rather than **Add comment now** in any comment context on the MR.
 
 ## Best practices
 
