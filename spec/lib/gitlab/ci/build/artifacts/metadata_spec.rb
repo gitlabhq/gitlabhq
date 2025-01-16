@@ -148,6 +148,26 @@ RSpec.describe Gitlab::Ci::Build::Artifacts::Metadata, feature_category: :job_ar
       it 'raises error' do
         expect { find_entries }.to raise_error(described_class::InvalidStreamError, /not in gzip format/)
       end
+
+      context 'when metadata is an HttpIO stream' do
+        let(:tmpfile) { Tempfile.new('test-metadata') }
+        let(:url) { "file://#{tmpfile.path}" }
+        let(:metadata_file_stream) { Gitlab::HttpIO.new(url, 0) }
+
+        before do
+          # Normally file:// URLs are not allowed, but bypass this for the sake of testing
+          # so we don't have to run a Web server.
+          allow(::Gitlab::UrlSanitizer).to receive(:valid?).with(url).and_return(true)
+        end
+
+        after do
+          tmpfile.unlink
+        end
+
+        it 'raises error' do
+          expect { find_entries }.to raise_error(described_class::InvalidStreamError, /not in gzip format/)
+        end
+      end
     end
 
     context 'with generated metadata' do
