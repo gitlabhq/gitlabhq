@@ -12,7 +12,7 @@
 
 - name: Use self-hosted model for GitLab Duo Code Suggestions
   description: |
-    You can now host your own supported large language models (LLMs) and configure them to make suggestions to developers while they write code. This feature is in beta and available with an Ultimate and Duo Enterprise subscription on self-managed GitLab environments.
+    You can now host your own supported large language models (LLMs) and configure them to make suggestions to developers while they write code. This feature is in beta and available with an Ultimate and Duo Enterprise subscription on GitLab Self-Managed.
   stage: ai-powered
   self-managed: true
   gitlab-com: false

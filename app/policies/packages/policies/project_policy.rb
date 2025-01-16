@@ -12,25 +12,15 @@ module Packages
           Gitlab::CurrentSettings.package_registry_allow_anyone_to_pull_option
       end
 
-      condition(:allow_guest_plus_roles_to_pull_packages_enabled, scope: :subject) do
-        Feature.enabled?(:allow_guest_plus_roles_to_pull_packages, @subject.project.root_ancestor)
-      end
-
       rule { project.packages_disabled }.policy do
         prevent(:read_package)
       end
 
-      # TODO: Remove with the rollout of the FF allow_guest_plus_roles_to_pull_packages
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/512210
       rule { can?(:reporter_access) }.policy do
         enable :read_package
       end
 
       rule { can?(:public_access) }.policy do
-        enable :read_package
-      end
-
-      rule { can?(:guest_access) & allow_guest_plus_roles_to_pull_packages_enabled }.policy do
         enable :read_package
       end
 

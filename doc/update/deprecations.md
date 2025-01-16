@@ -365,11 +365,11 @@ The allowlist is now enabled by default in all new projects. In older
 projects, it might still be disabled or you might have manually selected
 the **All groups and projects** option to make access unrestricted.
 
-Starting in GitLab 17.6, administrators for Self-managed and GitLab Dedicated instances can optionally
+Starting in GitLab 17.6, administrators for GitLab Self-Managed and GitLab Dedicated instances can optionally
 [enforce this more secure setting for all projects](https://docs.gitlab.com/ee/administration/settings/continuous_integration.html#job-token-permissions).
 This setting prevents project maintainers from selecting **All groups and projects**.
 This change ensures a higher level of security between projects.
-In GitLab 18.0, this setting will be enabled by default on GitLab.com, Self-managed, and GitLab Dedicated.
+In GitLab 18.0, this setting will be enabled by default on GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
 
 To prepare for this change, project maintainers using job tokens for cross-project authentication
 should populate their project's **Authorized groups and projects** allowlists. They should then change
@@ -785,7 +785,7 @@ Along with this change we are also deprecating and removing the 2017 GraphQL API
 
 </div>
 
-Starting in 18.0, Guest users on GitLab.com will be able to pull packages from private projects. This is the same ability that Guest users already have on self-managed GitLab.
+Starting in 18.0, Guest users on GitLab.com will be able to pull packages from private projects. This is the same ability that Guest users already have on GitLab Self-Managed.
 
 This change streamlines package sharing capabilities within organizations and simplifies access management for package consumers by providing consistent behavior across all GitLab deployments.
 
@@ -2189,7 +2189,7 @@ The ability for Developers to change the status of vulnerabilities is now deprec
 
 </div>
 
-In self-managed GitLab 17.0, custom role creation will be removed for group Owners. This functionality will move to the instance level for administrators only.
+In GitLab Self-Managed 17.0, custom role creation will be removed for group Owners. This functionality will move to the instance level for administrators only.
 Group Owners will be able to assign custom roles at the group level.
 
 Group owners on GitLab.com can continue to manage custom roles and assign at the group level.
@@ -3287,7 +3287,7 @@ If you use the agent for pull-based deployments, you should [migrate to Flux](ht
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Twitter OmniAuth login option is deprecated from self-managed GitLab
+### Twitter OmniAuth login option is deprecated from GitLab Self-Managed
 
 <div class="deprecation-notes">
 
@@ -3297,7 +3297,7 @@ If you use the agent for pull-based deployments, you should [migrate to Flux](ht
 
 </div>
 
-Twitter OAuth 1.0a OmniAuth is deprecated and will be removed for self-managed GitLab instances in GitLab 17.0 due to low use and lack of gem support. Use [another supported OmniAuth provider](https://docs.gitlab.com/ee/integration/omniauth.html#supported-providers) instead.
+Twitter OAuth 1.0a OmniAuth is deprecated and will be removed for GitLab Self-Managed in GitLab 17.0 due to low use and lack of gem support. Use [another supported OmniAuth provider](https://docs.gitlab.com/ee/integration/omniauth.html#supported-providers) instead.
 
 </div>
 
@@ -4437,7 +4437,7 @@ GitLab self-monitoring gives instance administrators the tools to monitor the he
 
 The GitLab.com importer was deprecated in GitLab 15.8 and will be removed in GitLab 16.0.
 
-The GitLab.com importer was introduced in 2015 for importing a project from GitLab.com to a self-managed GitLab instance through the UI.
+The GitLab.com importer was introduced in 2015 for importing a project from GitLab.com to a GitLab Self-Managed instance through the UI.
 This feature is available on self-managed instances only. [Migrating GitLab groups and projects by direct transfer](https://docs.gitlab.com/ee/user/group/import/#migrate-groups-by-direct-transfer-recommended)
 supersedes the GitLab.com importer and provides a more cohesive importing functionality.
 
@@ -4774,7 +4774,7 @@ and `config/redis.shared_state.yml` files.
 
 The group and project deletion protection setting in the **Admin** area had an option to delete groups and projects immediately. Starting with 16.0, this option will no longer be available, and delayed group and project deletion will become the default behavior.
 
-The option will no longer appear as a group setting. Self-managed users will still have the option to define the deletion delay period, and SaaS users have a non-adjustable default retention period of 7 days. Users can still immediately delete the project from the project settings, and the group from the group settings.
+The option will no longer appear as a group setting. Users on GitLab Self-Managed will still have the option to define the deletion delay period, and SaaS users have a non-adjustable default retention period of 7 days. Users can still immediately delete the project from the project settings, and the group from the group settings.
 
 The option to delete groups and projects immediately by default was deprecated to prevent users from accidentally taking this action and permanently losing groups and projects.
 

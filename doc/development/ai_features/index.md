@@ -122,7 +122,7 @@ export CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1
 
 You need to restart GDK to apply the change.
 
-If you use `CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1`, th `root`/`admin` user must
+If you use `CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1`, the `root`/`admin` user must
 have a [seat assigned](../../subscriptions/subscription-add-ons.md#for-gitlabcom)
 to receive a "Code completion test was successful" notification from the health check
 on the `http://localhost:3000/admin/code_suggestions` page.
@@ -528,11 +528,11 @@ however, diverging the components for each model could increase the maintenance 
 Hence, it's generally advised to reuse the existing components for multiple models as long as it doesn't degrade a feature quality.
 Here are the rules of thumbs:
 
-1. Iterate on the existing prompt template for multiple models. Do _NOT_ introduce a new one unless it causes a quality degredation for a particular model.
-1. Iterate on the existing input/output parsers and tools/functions-calling for multiple models. Do _NOT_ introduce a new one unless it causes a quality degredation for a particular model.
-1. If a quality degredation is detected for a particular model, the shared component should be diverged for the particular model.
+1. Iterate on the existing prompt template for multiple models. Do _NOT_ introduce a new one unless it causes a quality degradation for a particular model.
+1. Iterate on the existing input/output parsers and tools/functions-calling for multiple models. Do _NOT_ introduce a new one unless it causes a quality degradation for a particular model.
+1. If a quality degradation is detected for a particular model, the shared component should be diverged for the particular model.
 
-An [example](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/713) of this case is that we can apply Claude specific CoT optimization to the other models such as Mixtral as long as it doesn't cause a quality degredation.
+An [example](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/713) of this case is that we can apply Claude specific CoT optimization to the other models such as Mixtral as long as it doesn't cause a quality degradation.
 
 ## How to migrate an existing action to the AI gateway
 

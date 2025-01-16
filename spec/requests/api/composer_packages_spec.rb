@@ -51,9 +51,9 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
             'PRIVATE' | :developer | :user | true  | true
             'PRIVATE' | :developer | :user | false | false # Anonymous User - fallback
             'PRIVATE' | :developer | :job  | true  | true
-            'PRIVATE' | :guest     | :user | true  | true
+            'PRIVATE' | :guest     | :user | true  | false
             'PRIVATE' | :guest     | :user | false | false # Anonymous User - fallback
-            'PRIVATE' | :guest     | :job  | true  | true
+            'PRIVATE' | :guest     | :job  | true  | false
             'PRIVATE' | nil        | :user | true  | false
             'PRIVATE' | nil        | :user | false | false # Anonymous User - fallback
             'PRIVATE' | nil        | :job  | true  | false
@@ -82,9 +82,9 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
             :PRIVATE | :developer | :user | true  | :success      | true
             :PRIVATE | :developer | :user | false | :unauthorized | false
             :PRIVATE | :developer | :job  | true  | :success      | false # Anonymous User - fallback
-            :PRIVATE | :guest     | :user | true  | :success      | true
+            :PRIVATE | :guest     | :user | true  | :success      | false
             :PRIVATE | :guest     | :user | false | :unauthorized | false
-            :PRIVATE | :guest     | :job  | true  | :success      | false
+            :PRIVATE | :guest     | :job  | true  | :success      | false # Anonymous User - fallback
             :PRIVATE | nil        | :user | true  | :success      | false
             :PRIVATE | nil        | :user | false | :unauthorized | false
             :PRIVATE | nil        | nil   | nil   | :success      | false # Anonymous User
@@ -110,9 +110,9 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
             :developer | :user | true  | 'Composer package index'       | :success      | true
             :developer | :user | false | 'process Composer api request' | :unauthorized | false
             :developer | :job  | true  | 'Composer package index'       | :success      | true
-            :guest     | :user | true  | 'Composer package index'       | :success      | true
+            :guest     | :user | true  | 'Composer package index'       | :success      | false
             :guest     | :user | false | 'process Composer api request' | :unauthorized | false
-            :guest     | :job  | true  | 'Composer package index'       | :success      | true
+            :guest     | :job  | true  | 'Composer package index'       | :success      | false
             nil        | :user | true  | 'Composer package index'       | :not_found    | false
             nil        | :user | false | 'process Composer api request' | :unauthorized | false
             nil        | :job  | true  | 'Composer package index'       | :not_found    | false
@@ -131,7 +131,7 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
             :developer  | :user | true  | 'Composer package index'       | :success      | true
             :developer  | :user | false | 'process Composer api request' | :unauthorized | false
             :developer  | :job  | true  | 'process Composer api request' | :unauthorized | false
-            :guest      | :user | true  | 'Composer package index'       | :success      | true
+            :guest      | :user | true  | 'Composer package index'       | :success      | false
             :guest      | :user | false | 'process Composer api request' | :unauthorized | false
             :guest      | :job  | true  | 'process Composer api request' | :unauthorized | false
             nil         | :user | true  | 'Composer package index'       | :not_found    | false
@@ -175,9 +175,9 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
           'PRIVATE' | :developer | :user | true  | 'Composer provider index'       | :success
           'PRIVATE' | :developer | :user | false | 'process Composer api request'  | :unauthorized
           'PRIVATE' | :developer | :job  | true  | 'Composer provider index'       | :success
-          'PRIVATE' | :guest     | :user | true  | 'Composer provider index'       | :success
+          'PRIVATE' | :guest     | :user | true  | 'Composer empty provider index' | :success
           'PRIVATE' | :guest     | :user | false | 'process Composer api request'  | :unauthorized
-          'PRIVATE' | :guest     | :job  | true  | 'Composer provider index'       | :success
+          'PRIVATE' | :guest     | :job  | true  | 'Composer empty provider index' | :success
           'PRIVATE' | nil        | :user | true  | 'process Composer api request'  | :not_found
           'PRIVATE' | nil        | :user | false | 'process Composer api request'  | :unauthorized
           'PRIVATE' | nil        | :job  | true  | 'process Composer api request'  | :not_found
@@ -206,7 +206,7 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
           'PRIVATE' | :developer | :user | true  | 'Composer provider index'       | :success
           'PRIVATE' | :developer | :user | false | 'process Composer api request'  | :unauthorized
           'PRIVATE' | :developer | :job  | true  | 'process Composer api request'  | :unauthorized
-          'PRIVATE' | :guest     | :user | true  | 'Composer provider index'       | :success
+          'PRIVATE' | :guest     | :user | true  | 'Composer empty provider index' | :success
           'PRIVATE' | :guest     | :user | false | 'process Composer api request'  | :unauthorized
           'PRIVATE' | :guest     | :job  | true  | 'process Composer api request'  | :unauthorized
           'PRIVATE' | nil        | :user | true  | 'process Composer api request'  | :not_found
@@ -259,9 +259,9 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
           'PRIVATE' | :developer | :user | true  | 'Composer package api request' | :success
           'PRIVATE' | :developer | :user | false | 'process Composer api request' | :unauthorized
           'PRIVATE' | :developer | :job  | true  | 'Composer package api request' | :success
-          'PRIVATE' | :guest     | :user | true  | 'Composer package api request' | :success
+          'PRIVATE' | :guest     | :user | true  | 'process Composer api request' | :not_found
           'PRIVATE' | :guest     | :user | false | 'process Composer api request' | :unauthorized
-          'PRIVATE' | :guest     | :job  | true  | 'Composer package api request' | :success
+          'PRIVATE' | :guest     | :job  | true  | 'process Composer api request' | :not_found
           'PRIVATE' | nil        | :user | true  | 'process Composer api request' | :not_found
           'PRIVATE' | nil        | :user | false | 'process Composer api request' | :unauthorized
           'PRIVATE' | nil        | :job  | true  | 'process Composer api request' | :not_found
@@ -290,7 +290,7 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
           'PRIVATE' | :developer | :user | true  | 'Composer package api request' | :success
           'PRIVATE' | :developer | :user | false | 'process Composer api request' | :unauthorized
           'PRIVATE' | :developer | :job  | true  | 'process Composer api request' | :unauthorized
-          'PRIVATE' | :guest     | :user | true  | 'Composer package api request' | :success
+          'PRIVATE' | :guest     | :user | true  | 'process Composer api request' | :not_found
           'PRIVATE' | :guest     | :user | false | 'process Composer api request' | :unauthorized
           'PRIVATE' | :guest     | :job  | true  | 'process Composer api request' | :unauthorized
           'PRIVATE' | nil        | :user | true  | 'process Composer api request' | :not_found
@@ -350,9 +350,9 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
           'PRIVATE' | :developer | :user | true  | 'Composer package api request' | :success
           'PRIVATE' | :developer | :user | false | 'process Composer api request' | :unauthorized
           'PRIVATE' | :developer | :job  | true  | 'Composer package api request' | :success
-          'PRIVATE' | :guest     | :user | true  | 'Composer package api request' | :success
+          'PRIVATE' | :guest     | :user | true  | 'process Composer api request' | :not_found
           'PRIVATE' | :guest     | :user | false | 'process Composer api request' | :unauthorized
-          'PRIVATE' | :guest     | :job  | true  | 'Composer package api request' | :success
+          'PRIVATE' | :guest     | :job  | true  | 'process Composer api request' | :not_found
           'PRIVATE' | nil        | :user | true  | 'process Composer api request' | :not_found
           'PRIVATE' | nil        | :user | false | 'process Composer api request' | :unauthorized
           'PRIVATE' | nil        | :job  | true  | 'process Composer api request' | :not_found
@@ -381,7 +381,7 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
           'PRIVATE' | :developer | :user | true  | 'Composer package api request' | :success
           'PRIVATE' | :developer | :user | false | 'process Composer api request' | :unauthorized
           'PRIVATE' | :developer | :job  | true  | 'process Composer api request' | :unauthorized
-          'PRIVATE' | :guest     | :user | true  | 'Composer package api request' | :success
+          'PRIVATE' | :guest     | :user | true  | 'process Composer api request' | :not_found
           'PRIVATE' | :guest     | :user | false | 'process Composer api request' | :unauthorized
           'PRIVATE' | :guest     | :job  | true  | 'process Composer api request' | :unauthorized
           'PRIVATE' | nil        | :user | true  | 'process Composer api request' | :not_found
@@ -602,9 +602,9 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
             'PRIVATE' | :developer | :user | true  | :success
             'PRIVATE' | :developer | :user | false | :unauthorized
             'PRIVATE' | :developer | :job  | true  | :success
-            'PRIVATE' | :guest     | :user | true  | :success
+            'PRIVATE' | :guest     | :user | true  | :forbidden
             'PRIVATE' | :guest     | :user | false | :unauthorized
-            'PRIVATE' | :guest     | :job  | true  | :success
+            'PRIVATE' | :guest     | :job  | true  | :forbidden
             'PRIVATE' | nil        | :user | true  | :not_found
             'PRIVATE' | nil        | :user | false | :unauthorized
             'PRIVATE' | nil        | :job  | true  | :not_found
@@ -660,7 +660,7 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
             'PRIVATE' | :developer | :user | true  | :success
             'PRIVATE' | :developer | :user | false | :unauthorized
             'PRIVATE' | :developer | :job  | true  | :unauthorized
-            'PRIVATE' | :guest     | :user | true  | :success
+            'PRIVATE' | :guest     | :user | true  | :forbidden
             'PRIVATE' | :guest     | :user | false | :unauthorized
             'PRIVATE' | :guest     | :job  | true  | :unauthorized
             'PRIVATE' | nil        | :user | true  | :not_found

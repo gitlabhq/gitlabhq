@@ -88,7 +88,7 @@ RSpec.describe API::RpmProjectPackages, feature_category: :package_registry do
     context 'with valid project' do
       where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
         'PUBLIC'  | :developer  | true  | true  | 'process rpm packages upload/download' | success_status
-        'PUBLIC'  | :guest      | true  | true  | 'process rpm packages upload/download' | success_status
+        'PUBLIC'  | :guest      | true  | true  | 'process rpm packages upload/download' | :forbidden
         'PUBLIC'  | :developer  | true  | false | 'rejects rpm packages access'          | :unauthorized
         'PUBLIC'  | :guest      | true  | false | 'rejects rpm packages access'          | :unauthorized
         'PUBLIC'  | :developer  | false | true  | 'process rpm packages upload/download' | :not_found
@@ -97,7 +97,7 @@ RSpec.describe API::RpmProjectPackages, feature_category: :package_registry do
         'PUBLIC'  | :guest      | false | false | 'rejects rpm packages access'          | :unauthorized
         'PUBLIC'  | :anonymous  | false | true  | 'process rpm packages upload/download' | :unauthorized
         'PRIVATE' | :developer  | true  | true  | 'process rpm packages upload/download' | success_status
-        'PRIVATE' | :guest      | true  | true  | 'process rpm packages upload/download' | success_status
+        'PRIVATE' | :guest      | true  | true  | 'rejects rpm packages access'          | :forbidden
         'PRIVATE' | :developer  | true  | false | 'rejects rpm packages access'          | :unauthorized
         'PRIVATE' | :guest      | true  | false | 'rejects rpm packages access'          | :unauthorized
         'PRIVATE' | :developer  | false | true  | 'rejects rpm packages access'          | :not_found

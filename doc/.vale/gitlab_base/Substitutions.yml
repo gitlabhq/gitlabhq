@@ -31,8 +31,8 @@ swap:
   developer permissions: the Developer role
   disallow: prevent
   frontmatter: front matter
-  GitLab self hosted: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
-  GitLab self-hosted: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
+  GitLab self hosted: GitLab Self-Managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
+  GitLab self-hosted: GitLab Self-Managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
   GitLabber: GitLab team member
   GitLabbers: GitLab team members
   GitLab-shell: GitLab Shell

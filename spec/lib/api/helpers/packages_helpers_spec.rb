@@ -262,8 +262,10 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
             project.add_guest(user)
           end
 
-          it 'returns project' do
-            is_expected.to eq(project)
+          it 'returns Forbidden' do
+            expect(helper).to receive(:render_api_error!).with('403 Forbidden', 403)
+
+            is_expected.to be_nil
           end
         end
       end

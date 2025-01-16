@@ -87,7 +87,7 @@
     - Identify which images are signed and which are not.
     - Find and validate the signatures that are associated with a container image.
 
-    This improvement is generally available only on GitLab.com. Self-managed support is in beta and requires users to enable the
+    This improvement is generally available only on GitLab.com. Support for GitLab Self-Managed is in beta and requires users to enable the
     [next-generation container registry](https://docs.gitlab.com/ee/administration/packages/container_registry_metadata_database.html), which is also in beta.
   stage: package
   self-managed: false
@@ -102,7 +102,7 @@
   description: |
     Operators of self-managed runner fleets at the group level need observability and the ability to quickly answer critical questions about their runner fleet infrastructure at a glance. With the runner fleet dashboard for groups, you directly have runner fleet observability and actionable insights in the GitLab UI. You can now quickly determine the runner health, and gain insights into runner usage metrics as well as CI/CD job queue service capabilities, in your organization's target service-level objectives.
 
-    Customers on GitLab.com can use all of the fleet dashboard metrics available for groups today. Self-managed customers can use most of the fleet dashboard metrics, but must configure the ClickHouse analytics database to use the **Runner usage** and **Wait time to pick a job** metrics.
+    Customers on GitLab.com can use all of the fleet dashboard metrics available for groups today. Customers on GitLab Self-Managed can use most of the fleet dashboard metrics, but must configure the ClickHouse analytics database to use the **Runner usage** and **Wait time to pick a job** metrics.
   stage: verify
   self-managed: true
   gitlab-com: true

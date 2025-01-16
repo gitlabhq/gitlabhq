@@ -26,11 +26,11 @@
     projects, it might still be disabled or you might have manually selected
     the **All groups and projects** option to make access unrestricted.
 
-    Starting in GitLab 17.6, administrators for Self-managed and GitLab Dedicated instances can optionally
+    Starting in GitLab 17.6, administrators for GitLab Self-Managed and GitLab Dedicated instances can optionally
     [enforce this more secure setting for all projects](https://docs.gitlab.com/ee/administration/settings/continuous_integration.html#job-token-permissions).
     This setting prevents project maintainers from selecting **All groups and projects**.
     This change ensures a higher level of security between projects.
-    In GitLab 18.0, this setting will be enabled by default on GitLab.com, Self-managed, and GitLab Dedicated.
+    In GitLab 18.0, this setting will be enabled by default on GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
 
     To prepare for this change, project maintainers using job tokens for cross-project authentication
     should populate their project's **Authorized groups and projects** allowlists. They should then change

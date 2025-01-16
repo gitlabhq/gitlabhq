@@ -6,7 +6,7 @@
   stage: govern
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/439284
   body: |  # (required) Don't change this line.
-    In self-managed GitLab 17.0, custom role creation will be removed for group Owners. This functionality will move to the instance level for administrators only.
+    In GitLab Self-Managed 17.0, custom role creation will be removed for group Owners. This functionality will move to the instance level for administrators only.
     Group Owners will be able to assign custom roles at the group level.
 
     Group owners on GitLab.com can continue to manage custom roles and assign at the group level.

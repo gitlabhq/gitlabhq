@@ -26,8 +26,8 @@ DISCLAIMER:
 This page contains information related to upcoming products, features, and functionality.
 It is important to note that the information presented is for informational purposes only.
 Please do not rely on this information for purchasing or planning purposes.
-The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the
-sole discretion of GitLab Inc.
+The development, release, and timing of any products, features, or functionality may be
+subject to change or delay and remain at the sole discretion of GitLab Inc.
 
 GitLab Duo Workflow is an AI-powered coding agent in the Visual Studio Code (VS Code) IDE.
 
@@ -40,7 +40,7 @@ Duo Workflow:
 For more information, see:
 
 - [How to use Duo Workflow](#use-gitlab-duo-workflow-in-vs-code).
-- [Best practices for Duo Workflow](#best-practices-for-duo-workflow).
+- [How to get the best results](#how-to-get-the-best-results).
 
 ## Risks of Duo Workflow and AI Agents
 
@@ -104,15 +104,15 @@ Other risks to be aware of when using Duo Workflow:
 
 Before you can use GitLab Duo Workflow:
 
+1. Ensure that the project you want to use with Duo Workflow with meets these requirements:
+   - You must have at least the Developer role for the project.
+   - Your project must belong to a [group namespace](../namespace/index.md)
+     with an **Ultimate** subscription and [experimental features turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
+   - The project must have [GitLab Duo turned on](../gitlab_duo/index.md).
 1. [Install Visual Studio Code](https://code.visualstudio.com/download) (VS Code).
 1. [Install and set up](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#setup) the GitLab Workflow extension for VS Code.
    Minimum version 5.16.0.
 1. [Install Docker and set the socket file path](#install-docker-and-set-the-socket-file-path).
-1. Ensure that your project meets these requirements:
-   - You must have at least the Developer role for the project. For information, see [roles and permissions](../permissions.md).
-   - It must belong to a [group namespace](../namespace/index.md)
-   with an **Ultimate** subscription and [experimental features turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
-   - It must have [GitLab Duo turned on](../gitlab_duo/index.md).
 
 ### Install Docker and set the socket file path
 
@@ -121,7 +121,7 @@ read and write files, and make API calls to GitLab.
 
 If you are on macOS or Linux, you can either:
 
-- Recommended. Use the [automated setup script](#automated-setup).
+- Use the [automated setup script](#automated-setup). Recommended.
 - Follow the [manual setup](#manual-setup).
 
 If you are not on macOS or Linux, follow the [manual setup](#manual-setup).
@@ -178,24 +178,40 @@ To use GitLab Duo Workflow:
    - On Windows and Linux: <kbd>Ctrl</kbd> + <kbd>P</kbd>.
 1. Type `Duo Workflow` and select **GitLab: Show Duo Workflow**.
 1. To create a workflow, select **New worklow**.
-1. In the **Task description** text box, specify a junior-level code task in detail,
+1. For **Task description**, specify a junior-level code task in detail,
    and then select **Start**.
 
 After you describe your task, Duo Workflow generates and executes on a plan to address it.
 While it executes, you can pause or ask it to adjust the plan.
 
-### Best practices for Duo Workflow
+### How to get the best results
 
 When you describe your task to Duo Workflow, keep these tips in mind to get the best results:
 
-- It works best:
-  - On junior-level code tasks such as small features or bugs.
-  - In repositories of small or medium size.
+- It works best within these conditions:
+  - Code tasks on the level of a junior engineer.
+  - Repositories up to medium size.
+  - In the [supported languages](#supported-languages).
+- Use mainly to work on small features or bugs.
 - Be detailed with a clear definition of done.
 - Try to add implementation examples, with commit or merge request IDs.
 - Mention files by their names, and GitLab references by their IDs.
   For example, project, issue, or merge request IDs.
-  For more information, see [the context that GitLab Duo Workflow is aware of](#the-context-gitlab-duo-workflow-is-aware-of).
+  For more information, see [the context that it's aware of](#the-context-gitlab-duo-workflow-is-aware-of).
+
+## Supported languages
+
+Duo Workflow officially supports the following languages:
+
+- CSS
+- Go
+- HTML
+- Java
+- JavaScript
+- Markdown
+- Python
+- Ruby
+- TypeScript
 
 ## The context GitLab Duo Workflow is aware of
 
@@ -212,7 +228,7 @@ Duo Workflow also has access to the GitLab Search API to find related issues, me
 
 ## Current limitations
 
-Duo Workflow:
+Duo Workflow has the following limitations:
 
 - Requires the workspace folder in VS Code to have a Git repository for a GitLab project.
 - Only runs workflows for the GitLab project that's open in VS Code.
@@ -225,9 +241,9 @@ Duo Workflow:
 
 If you encounter issues:
 
-1. Ensure you meet the [prerequisites](#prerequisites).
 1. Ensure that you have the latest version of the GitLab Workflow extension.
-1. Check that your opened folder in VS Code has a Git repository for your GitLab project.
+1. Ensure that the project you want to use it with meets the [prerequisites](#prerequisites).
+1. Ensure that the folder you opened in VS Code has a Git repository for your GitLab project.
 1. Ensure that you've checked out the branch for the code you'd like to change.
 1. Check your Docker and Docker socket configuration:
    1. [Install Docker and set the socket file path](#install-docker-and-set-the-socket-file-path).
@@ -246,7 +262,7 @@ If you encounter issues:
       - On macOS: <kbd>Cmd</kbd> + <kbd>,</kbd>
    1. For permission issues, ensure your operating system user has the necessary Docker permissions.
    1. Verify Docker's internet connectivity by executing the command `docker image pull redhat/ubi8`.
-      
+
       If this does not work, the DNS configuration of Colima might be at fault.
       Edit the DNS setting in `~/.colima/default/colima.yaml` to `dns: [1.1.1.1]` and then restart Colima with `colima restart`.
 1. Check the Language Server logs:

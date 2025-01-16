@@ -124,25 +124,15 @@ If you are an administrator, you can create group access tokens in the Rails con
 
 ## Revoke or rotate a group access token
 
-> - Ability to view revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
+> - Ability to view expired and revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
+> - Ability to view expired and revoked tokens limited to 30 days and [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/471683) in GitLab 17.9. Feature flag `retain_resource_access_token_user_after_revoke` removed.
 
-FLAG:
-The availability of being able to view revoked tokens is controlled by a feature flag. For more information, see the history.
+In GitLab 17.9 and later, you can view both active and inactive group
+access tokens on the access tokens page.
 
-In GitLab 17.3 and later, if you enable the `retain_resource_access_token_user_after_revoke`
-feature flag, you can view both active and inactive revoked group access tokens
-on the access tokens page. If you do not enable the feature flag, you can only view
-the active tokens. The inactive group access tokens table:
+The inactive group access tokens table displays revoked and expired tokens for 30 days after they became inactive.
 
-- Contains:
-  - Existing tokens that have been revoked but have not yet expired. After these
-    tokens expire, they are no longer in the table.
-  - Tokens created after the feature flag was enabled that have been revoked.
-    These tokens remain in the table even after they have expired.
-
-- Does not contain:
-  - Tokens that have already expired or been revoked.
-  - Existing tokens that expire in the future or have not been revoked.
+Tokens that belong to [an active token family](../../../api/group_access_tokens.md#automatic-reuse-detection) are displayed for 30 days after the latest active token from the family is expired or revoked.
 
 ### Use the UI
 
@@ -236,6 +226,8 @@ GitLab runs a check every day at 1:00 AM UTC to identify group access tokens tha
 - In GitLab 17.7 and later, members with the inherited role of Owner in the group can also receive notification emails. You can configure this by changing:
   - The [group setting](../manage.md#expiry-emails-for-group-and-project-access-tokens) for the group or any parent group.
   - On GitLab Self-Managed, the [instance setting](../../../administration/settings/email.md#group-and-project-access-token-expiry-emails-to-inherited-members).
+
+Your expired access tokens are listed in the [inactive group access tokens table](#revoke-or-rotate-a-group-access-token) for 30 days after the tokens expire.
 
 ## Bot users for groups
 

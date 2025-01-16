@@ -314,7 +314,7 @@ RSpec.shared_examples 'handling project level terraform module download requests
       :public   | :developer | false | :personal_access_token | 'grants terraform module package file access' | :success
       :public   | :guest     | false | :personal_access_token | 'grants terraform module package file access' | :success
       :private  | :developer | true  | :personal_access_token | 'grants terraform module package file access' | :success
-      :private  | :guest     | true  | :personal_access_token | 'grants terraform module package file access' | :success
+      :private  | :guest     | true  | :personal_access_token | 'rejects terraform module packages access'  | :forbidden
       :private  | :developer | false | :personal_access_token | 'rejects terraform module packages access'  | :not_found
       :private  | :guest     | false | :personal_access_token | 'rejects terraform module packages access'  | :not_found
       :internal | :developer | true  | :personal_access_token | 'grants terraform module package file access' | :success
@@ -327,7 +327,7 @@ RSpec.shared_examples 'handling project level terraform module download requests
       :public   | :developer  | false | :job_token  | 'grants terraform module package file access' | :success
       :public   | :guest      | false | :job_token  | 'grants terraform module package file access' | :success
       :private  | :developer  | true  | :job_token  | 'grants terraform module package file access' | :success
-      :private  | :guest      | true  | :job_token  | 'grants terraform module package file access' | :success
+      :private  | :guest      | true  | :job_token  | 'rejects terraform module packages access'    | :forbidden
       :private  | :developer  | false | :job_token  | 'rejects terraform module packages access'    | :not_found
       :private  | :guest      | false | :job_token  | 'rejects terraform module packages access'    | :not_found
       :internal | :developer  | true  | :job_token  | 'grants terraform module package file access' | :success

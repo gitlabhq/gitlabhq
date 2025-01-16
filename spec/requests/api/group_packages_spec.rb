@@ -82,7 +82,7 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
         it_behaves_like 'returns packages', :group, :maintainer
         it_behaves_like 'returns packages', :group, :developer
         it_behaves_like 'returns packages', :group, :reporter
-        it_behaves_like 'returns packages', :group, :guest
+        it_behaves_like 'rejects packages access', :group, :guest, :forbidden
 
         context 'with subgroup' do
           let(:subgroup) { create(:group, :private, parent: group) }
@@ -93,7 +93,7 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
           it_behaves_like 'returns packages with subgroups', :group, :maintainer
           it_behaves_like 'returns packages with subgroups', :group, :developer
           it_behaves_like 'returns packages with subgroups', :group, :reporter
-          it_behaves_like 'returns packages with subgroups', :group, :guest
+          it_behaves_like 'rejects packages access', :group, :guest, :forbidden
 
           context 'excluding subgroup' do
             let(:url) { "/groups/#{group.id}/packages?exclude_subgroups=true" }
@@ -102,7 +102,7 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
             it_behaves_like 'returns packages', :group, :maintainer
             it_behaves_like 'returns packages', :group, :developer
             it_behaves_like 'returns packages', :group, :reporter
-            it_behaves_like 'returns packages', :group, :guest
+            it_behaves_like 'rejects packages access', :group, :guest, :forbidden
           end
         end
       end

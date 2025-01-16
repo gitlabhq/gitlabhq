@@ -103,9 +103,9 @@
   image_url: https://about.gitlab.com/images/15_7/prefill.png
   published_at: 2022-12-22
   release: 15.7
-- name: "Self-managed support for the GitLab for Jira Cloud app"
+- name: "GitLab Self-Managed support for the GitLab for Jira Cloud app"
   description: |  # Do not modify this line, instead modify the lines below.
-    For self-managed GitLab, we're excited to announce support for the [GitLab for Jira Cloud app](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud)!
+    For GitLab Self-Managed, we're excited to announce support for the [GitLab for Jira Cloud app](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud)!
   stage: Foundations
   self-managed: true
   gitlab-com: false

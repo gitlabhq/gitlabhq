@@ -42,38 +42,32 @@ RSpec.describe 'package details', feature_category: :package_registry do
 
   subject { post_graphql(query, current_user: user) }
 
-  context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
+  context 'with unauthorized user' do
     before do
-      stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+      project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      project.add_guest(user)
     end
 
-    context 'with unauthorized user' do
+    it 'returns no packages' do
+      subject
+
+      expect(graphql_data_at(:package)).to be_nil
+    end
+
+    context 'with access to package registry for everyone' do
       before do
-        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
-        project.add_guest(user)
-      end
-
-      it 'returns no packages' do
+        project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
         subject
-
-        expect(graphql_data_at(:package)).to be_nil
       end
 
-      context 'with access to package registry for everyone' do
-        before do
-          project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
-          subject
+      it_behaves_like 'a working graphql query' do
+        it 'matches the JSON schema' do
+          expect(package_details).to match_schema('graphql/packages/package_details')
         end
+      end
 
-        it_behaves_like 'a working graphql query' do
-          it 'matches the JSON schema' do
-            expect(package_details).to match_schema('graphql/packages/package_details')
-          end
-        end
-
-        it '`public_package` returns true' do
-          expect(graphql_data_at(:package, :public_package)).to eq(true)
-        end
+      it '`public_package` returns true' do
+        expect(graphql_data_at(:package, :public_package)).to eq(true)
       end
     end
   end

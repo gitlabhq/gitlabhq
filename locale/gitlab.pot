@@ -60023,12 +60023,6 @@ msgstr ""
 msgid "TrialWidget|See upgrade options"
 msgstr ""
 
-msgid "TrialWidget|Ultimate"
-msgstr ""
-
-msgid "TrialWidget|Ultimate Trial"
-msgstr ""
-
 msgid "TrialWidget|Ultimate with GitLab Duo Enterprise"
 msgstr ""
 
@@ -60042,9 +60036,6 @@ msgid "TrialWidget|Your trial of GitLab Duo Enterprise has ended"
 msgstr ""
 
 msgid "TrialWidget|Your trial of GitLab Duo Pro has ended"
-msgstr ""
-
-msgid "TrialWidget|Your trial of Ultimate has ended"
 msgstr ""
 
 msgid "TrialWidget|Your trial of Ultimate with GitLab Duo Enterprise has ended"

@@ -71,7 +71,7 @@
   description: |
     You can now troubleshoot the setup for GitLab Duo on your self-managed instance. In the **Admin** area, on the GitLab Duo page, select **Run health check**. This health check performs a series of validations and suggests appropriate corrective actions to ensure GitLab Duo is operational.
 
-    The health check for GitLab Duo is available on Self-managed and GitLab Dedicated as a beta feature.
+    The health check for GitLab Duo is available on GitLab Self-Managed and GitLab Dedicated as a beta feature.
   stage: data_store
   self-managed: true
   gitlab-com: false

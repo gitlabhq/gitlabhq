@@ -115,7 +115,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
           it_behaves_like 'returns packages', :project, :developer
           it_behaves_like 'returns packages', :project, :reporter
           it_behaves_like 'rejects packages access', :project, :no_type, :not_found
-          it_behaves_like 'returns packages', :project, :guest
+          it_behaves_like 'rejects packages access', :project, :guest, :forbidden
 
           context 'user is a maintainer' do
             before do
@@ -450,7 +450,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
           :public  | :guest      | false | :personal_access_token | false | 'returning response status' | :unauthorized
           :public  | :anonymous  | false | nil                    | true  | 'returns package pipelines' | :success
           :private | :developer  | true  | :personal_access_token | true  | 'returns package pipelines' | :success
-          :private | :guest      | true  | :personal_access_token | true  | 'returns package pipelines' | :success
+          :private | :guest      | true  | :personal_access_token | true  | 'returning response status' | :forbidden
           :private | :developer  | true  | :personal_access_token | false | 'returning response status' | :unauthorized
           :private | :guest      | true  | :personal_access_token | false | 'returning response status' | :unauthorized
           :private | :developer  | false | :personal_access_token | true  | 'returning response status' | :not_found

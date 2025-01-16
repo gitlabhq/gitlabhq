@@ -19,6 +19,8 @@ By default, any user with at least the Developer role can create,
 edit, and delete packages. Add a package protection rule to restrict
 which users can make changes to your packages.
 
+GitLab supports only push protection for npm packages, but [epic 5574](https://gitlab.com/groups/gitlab-org/-/epics/5574) proposes to add additional features and package formats.
+
 When a package is protected, the default behavior enforces these restrictions on the package:
 
 | Action                                   | Who can do it                                                                     |

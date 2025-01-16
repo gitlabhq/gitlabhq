@@ -60,13 +60,7 @@ module Packages
     end
 
     def visible_projects
-      access = if Feature.enabled?(:allow_guest_plus_roles_to_pull_packages, group.root_ancestor)
-                 ::Gitlab::Access::GUEST
-               else
-                 ::Gitlab::Access::REPORTER
-               end
-
-      public_or_visible = ::Project.public_or_visible_to_user(current_user, access)
+      public_or_visible = ::Project.public_or_visible_to_user(current_user, Gitlab::Access::REPORTER)
 
       return public_or_visible.or(with_public_package_registry) if params[:within_public_package_registry]
 

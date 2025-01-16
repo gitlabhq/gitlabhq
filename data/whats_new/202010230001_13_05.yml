@@ -18,7 +18,7 @@
   release: 13.5
 - name: Install the GitLab Kubernetes Agent with Omnibus GitLab
   description: |
-    Last month we introduced the [GitLab Kubernetes Agent](https://about.gitlab.com/releases/2020/09/22/gitlab-13-4-released/#introducing-the-gitlab-kubernetes-agent) for self-managed GitLab instances installed with Helm.
+    Last month we introduced the [GitLab Kubernetes Agent](https://about.gitlab.com/releases/2020/09/22/gitlab-13-4-released/#introducing-the-gitlab-kubernetes-agent) for GitLab Self-Managed instances installed with Helm.
 
     This release adds support for the [official Linux package](https://about.gitlab.com/install/). In this new Kubernetes integration, the Agent orchestrates deployments by pulling new changes from GitLab, rather than GitLab pushing updates to your cluster. You can learn more about [how the Kubernetes Agent works now](https://docs.gitlab.com/ee/user/clusters/agent/) and [check out our vision](https://about.gitlab.com/direction/configure/kubernetes_management/) to see what’s in store.
   stage: Configure
