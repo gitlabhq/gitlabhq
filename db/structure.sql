@@ -8644,6 +8644,7 @@ CREATE TABLE audit_events_streaming_event_type_filters (
     external_audit_event_destination_id bigint NOT NULL,
     audit_event_type text NOT NULL,
     group_id bigint,
+    CONSTRAINT check_9eb6a21b47 CHECK ((group_id IS NOT NULL)),
     CONSTRAINT check_d20c8e5a51 CHECK ((char_length(audit_event_type) <= 255))
 );
 
@@ -10968,6 +10969,7 @@ CREATE TABLE cluster_agent_tokens (
     CONSTRAINT check_0fb634d04d CHECK ((name IS NOT NULL)),
     CONSTRAINT check_2b79dbb315 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_4e4ec5070a CHECK ((char_length(description) <= 1024)),
+    CONSTRAINT check_5aff240050 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_c60daed227 CHECK ((char_length(token_encrypted) <= 255))
 );
 
@@ -12019,6 +12021,7 @@ CREATE TABLE dependency_list_exports (
     pipeline_id bigint,
     export_type smallint DEFAULT 0 NOT NULL,
     organization_id bigint,
+    expires_at timestamp with time zone,
     CONSTRAINT check_67a9c23e79 CHECK ((num_nonnulls(group_id, organization_id, project_id) > 0)),
     CONSTRAINT check_fff6fc9b2f CHECK ((char_length(file) <= 255))
 );
@@ -12342,7 +12345,8 @@ CREATE TABLE design_management_repositories (
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_4f95da7ef9 CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE design_management_repositories_id_seq
@@ -17346,7 +17350,8 @@ CREATE TABLE packages_debian_publications (
     id bigint NOT NULL,
     package_id bigint NOT NULL,
     distribution_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_30a36cda06 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE packages_debian_publications_id_seq
@@ -19768,7 +19773,8 @@ CREATE TABLE related_epic_links (
     updated_at timestamp with time zone NOT NULL,
     link_type smallint DEFAULT 0 NOT NULL,
     group_id bigint,
-    issue_link_id bigint
+    issue_link_id bigint,
+    CONSTRAINT check_9c7bbef67d CHECK ((group_id IS NOT NULL))
 );
 
 CREATE SEQUENCE related_epic_links_id_seq

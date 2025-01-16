@@ -357,6 +357,6 @@ You can look into the following examples of MRs for implementing `cascading_lock
 - [Add cascading settings in Groups](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162101)
 - [Add cascading settings in Projects](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163050)
 
-### Reasoning for supporing both HAML and Vue
+### Reasoning for supporting both HAML and Vue
 
 It is the goal to build all new frontend features in Vue and to eventually move away from building features in HAML. However there are still HAML frontend features that utilize cascading settings, so support will remain with `initCascadingSettingsLockTooltips` until those components have been migrated into Vue.

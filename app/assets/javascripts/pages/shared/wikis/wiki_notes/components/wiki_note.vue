@@ -36,11 +36,6 @@ export default {
       required: false,
       default: false,
     },
-    userPermissions: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
   },
   data() {
     return {
@@ -53,18 +48,14 @@ export default {
     userSignedId() {
       return Boolean(this.currentUserData?.id);
     },
+    userPermissions() {
+      return this.note.userPermissions;
+    },
     canReply() {
-      const {
-        userPermissions: { createNote },
-        userSignedId,
-      } = this;
-
-      return createNote && userSignedId && !this.replyNote;
+      return this.userPermissions?.createNote && this.userSignedId && !this.replyNote;
     },
     canEdit() {
-      const { currentUserData, userSignedId } = this;
-
-      return userSignedId && currentUserData?.id.toString() === this.authorId;
+      return this.userSignedId && this.userPermissions?.adminNote;
     },
     canReportAsAbuse() {
       const { currentUserData, userSignedId } = this;

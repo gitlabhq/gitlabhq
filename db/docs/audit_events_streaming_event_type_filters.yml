@@ -8,14 +8,6 @@ description: Represents a event type filter for audit event streaming
 introduced_by_url:
 milestone: '15.6'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  group_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: external_audit_event_destination_id
-        table: audit_events_external_audit_event_destinations
-        sharding_key: namespace_id
-        belongs_to: external_audit_event_destination
-desired_sharding_key_migration_job_name: BackfillAuditEventsStreamingEventTypeFiltersGroupId
 table_size: small
+sharding_key:
+  group_id: namespaces

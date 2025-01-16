@@ -7,6 +7,7 @@ import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_plac
 import WikiDiscussionsSignedOut from '~/pages/shared/wikis/wiki_notes/components/wiki_discussions_signed_out.vue';
 import WikiCommentForm from '~/pages/shared/wikis/wiki_notes/components/wiki_comment_form.vue';
 import * as autosave from '~/lib/utils/autosave';
+import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import { currentUserData, note, noteableId, noteableType } from '../mock_data';
 
 describe('WikiDiscussion', () => {
@@ -71,11 +72,23 @@ describe('WikiDiscussion', () => {
         });
       });
 
+      it('should toggle reply visibility when the toggle replies widget is toggled', async () => {
+        const toggleRepliesWidget = wrapper.findComponent(ToggleRepliesWidget);
+
+        toggleRepliesWidget.vm.$emit('toggle');
+        await nextTick();
+        expect(noteFooter().findComponent(WikiNote).exists()).toBe(false);
+
+        toggleRepliesWidget.vm.$emit('toggle');
+        await nextTick();
+        expect(noteFooter().findComponent(WikiNote).exists()).toBe(true);
+      });
+
       it("should set 'replyNote' prop to true when rendering replies", () => {
         expect(noteFooter().findComponent(WikiNote).props('replyNote')).toBe(true);
       });
 
-      it('should render reply in note footer when there is at least 1 reply', () => {
+      it('should render reply in note footer by default when there is at least 1 reply', () => {
         expect(noteFooter().findComponent(WikiNote).props('note')).toMatchObject({
           ...note,
           body: 'another example note',

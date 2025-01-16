@@ -22,7 +22,6 @@ describe('WikiNote', () => {
   const createWrapper = (props) => {
     return shallowMountExtended(WikiNote, {
       propsData: {
-        note,
         noteableId,
         ...props,
       },
@@ -47,7 +46,7 @@ describe('WikiNote', () => {
   };
 
   beforeEach(() => {
-    wrapper = createWrapper();
+    wrapper = createWrapper({ note });
   });
 
   describe('renders correctly by default', () => {
@@ -95,7 +94,7 @@ describe('WikiNote', () => {
       expect(noteActions.props()).toMatchObject({
         authorId: '1',
         noteUrl: note.url,
-        showReply: false,
+        showReply: true,
         showEdit: false,
         canReportAsAbuse: true,
       });
@@ -114,7 +113,7 @@ describe('WikiNote', () => {
 
   describe('when user is signed in', () => {
     beforeEach(() => {
-      wrapper = createWrapper();
+      wrapper = createWrapper({ note });
     });
 
     it('should emit reply when reply event is fired from note actions', () => {
@@ -125,11 +124,7 @@ describe('WikiNote', () => {
     });
 
     it('should pass prop "showReply" as true to note actions when user can reply', () => {
-      wrapper = createWrapper({
-        userPermissions: {
-          createNote: true,
-        },
-      });
+      wrapper = createWrapper({ note });
 
       const noteActions = wrapper.findComponent(NoteActions);
       expect(noteActions.props().showReply).toBe(true);
@@ -137,8 +132,12 @@ describe('WikiNote', () => {
 
     it('should pass prop "showReply" as false to note actions when user cannot reply', () => {
       wrapper = createWrapper({
-        userPermissions: {
-          createNote: false,
+        note: {
+          ...note,
+          userPermissions: {
+            ...note.userPermissions,
+            createNote: false,
+          },
         },
       });
 
@@ -176,9 +175,9 @@ describe('WikiNote', () => {
         wrapper = createWrapper({
           note: {
             ...note,
-            author: {
-              ...note.author,
-              id: 'gid://gitlab/User/70',
+            userPermissions: {
+              ...note.userPermissions,
+              adminNote: true,
             },
           },
         });
