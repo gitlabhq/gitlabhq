@@ -7,7 +7,7 @@ module Types
         graphql_name 'WorkItemWidgetMilestoneInput'
 
         argument :milestone_id,
-          Types::GlobalIDType[::Milestone],
+          ::Types::GlobalIDType[::Milestone],
           required: :nullable,
           prepare: ->(id, _) { id.model_id unless id.nil? },
           description: 'Milestone to assign to the work item.'

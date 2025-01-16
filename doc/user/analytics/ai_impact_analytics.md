@@ -70,8 +70,5 @@ Prerequisites:
 1. Select **Analyze > Analytics Dashboards**.
 1. Select **AI impact analytics**.
 
-To retrieve AI impact metrics, you can also use the following GraphQL APIs:
-
-- [`AiMetrics`](../../api/graphql/reference/index.md#aimetrics) - Requires ClickHouse 
-- [`AiUserMetrics`](../../api/graphql/reference/index.md#aiusermetrics) - Requires ClickHouse
-- [`AiUsageData`](../../api/graphql/reference/index.md#aiusagedata) - Does not require ClickHouse
+To retrieve AI impact metrics, you can also use the `AiMetrics`, `AiUserMetrics`, and `AiUsageData` [GraphQL APIs](../../api/graphql/reference/index.md).
+For an overview and sample queries, see [issue 512931](https://gitlab.com/gitlab-org/gitlab/-/issues/512931).

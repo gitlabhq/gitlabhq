@@ -3,7 +3,7 @@
 module Resolvers
   module WorkItems
     class DescriptionTemplatesResolver < BaseResolver
-      type Types::WorkItems::DescriptionTemplateType.connection_type, null: true
+      type ::Types::WorkItems::DescriptionTemplateType.connection_type, null: true
 
       argument :name, GraphQL::Types::String,
         required: false,

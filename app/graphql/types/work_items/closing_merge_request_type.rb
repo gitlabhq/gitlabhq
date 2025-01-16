@@ -14,7 +14,7 @@ module Types
       field :id, ::Types::GlobalIDType[::MergeRequestsClosingIssues],
         null: false,
         description: 'Global ID of the closing merge request association.'
-      field :merge_request, Types::MergeRequestType,
+      field :merge_request, ::Types::MergeRequestType,
         null: true,
         description: 'Related merge request.'
     end

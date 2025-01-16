@@ -8,9 +8,9 @@ module Types
         graphql_name 'WorkItemWidgetDefinitionCustomStatus'
         description 'Represents an Custom Status widget definition'
 
-        implements Types::WorkItems::WidgetDefinitionInterface
+        implements ::Types::WorkItems::WidgetDefinitionInterface
 
-        field :allowed_custom_statuses, Types::WorkItems::Widgets::CustomStatusType.connection_type,
+        field :allowed_custom_statuses, ::Types::WorkItems::Widgets::CustomStatusType.connection_type,
           null: true, experiment: { milestone: '17.8' },
           description: 'Allowed custom statuses for the work item type.',
           resolver: Resolvers::WorkItems::Widgets::CustomStatusResolver

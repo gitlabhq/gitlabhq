@@ -44,12 +44,16 @@ These checks help you identify and resolve configuration issues on your own.
 
 ## Enable debug logs
 
-To enable more logging:
+Enable debug logs to capture more information about problems. Debug logs can
+contain sensitive workspace configuration, so review the output before sharing
+it with others.
 
-- Set the `vim.lsp` log level in `init.lua`:
+To enable extra logging:
+
+- Set the `vim.lsp` log level in your current buffer:
 
   ```lua
-  vim.lsp.set_log_level('debug')
+  :lua vim.lsp.set_log_level('debug')
   ```
 
 ## Reproduce the problem in a minimal project
@@ -69,6 +73,8 @@ a problem with Code Suggestions:
 1. Create a new file named `minimal.lua`, with these contents:
 
    ```lua
+   -- NOTE: Do not set this in your usual configuration, as this log level
+   -- could include sensitive workspace configuration.
    vim.lsp.set_log_level('debug')
 
    vim.opt.rtp:append('$HOME/.local/share/nvim/site/pack/gitlab/start/gitlab.vim')
@@ -87,11 +93,9 @@ a problem with Code Suggestions:
    ```
 
 1. Attempt to reproduce the behavior you experienced. Adjust `minimal.lua` or other project files as needed.
-1. View recent entries in `~/.local/state/nvim/lsp.log` and capture relevant output:
-
-   ```plaintext
-   echo ~/.local/state/nvim/lsp.log
-   ```
+1. View recent entries in `~/.local/state/nvim/lsp.log` and capture relevant output.
+1. Redact any references to sensitive information, such as tokens beginning with `glpat-`.
+1. Remove sensitive information from any Vim registers or log files.
 
 ### Error: `GCS:unavailable`
 

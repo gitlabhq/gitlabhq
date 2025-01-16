@@ -5,7 +5,7 @@ module Resolvers
     class AncestorsResolver < BaseResolver
       prepend ::WorkItems::LookAheadPreloads
 
-      type Types::WorkItemType.connection_type, null: true
+      type ::Types::WorkItemType.connection_type, null: true
 
       def resolve_with_lookahead
         ancestors = object.ancestors

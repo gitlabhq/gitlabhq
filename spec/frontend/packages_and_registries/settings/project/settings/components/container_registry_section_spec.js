@@ -21,6 +21,7 @@ describe('Container registry project settings section', () => {
     glFeatures: {
       containerRegistryProtectedTags: true,
     },
+    isContainerRegistryMetadataDatabaseEnabled: true,
   };
 
   const mountComponent = ({ provide = defaultProvide, props = {} } = {}) => {
@@ -82,6 +83,21 @@ describe('Container registry project settings section', () => {
         provide: {
           ...defaultProvide,
           glFeatures: { containerRegistryProtectedTags: false },
+        },
+      });
+
+      expect(findContainerExpirationPolicy().exists()).toBe(true);
+      expect(findContainerProtectionRepositoryRules().exists()).toBe(true);
+      expect(findContainerProtectionTagRules().exists()).toBe(false);
+    });
+  });
+
+  describe('when "isContainerRegistryMetadataDatabaseEnabled" is set to false', () => {
+    it('container protection tag rules settings is hidden', () => {
+      mountComponent({
+        provide: {
+          ...defaultProvide,
+          isContainerRegistryMetadataDatabaseEnabled: false,
         },
       });
 

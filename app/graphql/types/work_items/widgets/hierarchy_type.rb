@@ -10,7 +10,7 @@ module Types
         graphql_name 'WorkItemWidgetHierarchy'
         description 'Represents a hierarchy widget'
 
-        implements Types::WorkItems::WidgetInterface
+        implements ::Types::WorkItems::WidgetInterface
 
         field :parent, ::Types::WorkItemType,
           null: true, complexity: 5,

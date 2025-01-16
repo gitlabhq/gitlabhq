@@ -10,10 +10,10 @@ module Types
         graphql_name 'WorkItemWidgetCrmContacts'
         description 'Represents CRM contacts widget'
 
-        implements Types::WorkItems::WidgetInterface
+        implements ::Types::WorkItems::WidgetInterface
 
         field :contacts,
-          Types::CustomerRelations::ContactType.connection_type,
+          ::Types::CustomerRelations::ContactType.connection_type,
           null: true,
           description: 'Collection of CRM contacts associated with the work item.',
           method: :customer_relations_contacts

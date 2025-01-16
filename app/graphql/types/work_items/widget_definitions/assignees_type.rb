@@ -8,7 +8,7 @@ module Types
         graphql_name 'WorkItemWidgetDefinitionAssignees'
         description 'Represents an assignees widget definition'
 
-        implements Types::WorkItems::WidgetDefinitionInterface
+        implements ::Types::WorkItems::WidgetDefinitionInterface
 
         field :can_invite_members, GraphQL::Types::Boolean,
           null: false,

@@ -299,14 +299,6 @@
 
 .assignee-grid,
 .reviewer-grid {
-  [data-css-area='attention'] {
-    grid-area: attention;
-
-    button.selected svg {
-      fill: $orange-500;
-    }
-  }
-
   [data-css-area='user'] {
     grid-area: user;
   }

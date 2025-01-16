@@ -13,9 +13,9 @@ module Types
           prepare: ->(ids, _ctx) { ids.map { |gid| gid.model_id.to_i } }
 
         argument :operation_mode,
-          Types::MutationOperationModeEnum,
+          ::Types::MutationOperationModeEnum,
           required: false,
-          default_value: Types::MutationOperationModeEnum.default_mode,
+          default_value: ::Types::MutationOperationModeEnum.default_mode,
           description: 'Set the operation mode.'
       end
     end

@@ -20,17 +20,17 @@ module Mutations
           description: 'Global ID of the new parent work item.'
 
         argument :relative_position,
-          Types::RelativePositionTypeEnum,
+          ::Types::RelativePositionTypeEnum,
           required: false,
           description: 'Position relative to the adjacent work item. Valid values are `BEFORE` or `AFTER`.'
 
-        field :work_item, Types::WorkItemType,
+        field :work_item, ::Types::WorkItemType,
           null: true, description: 'Work item after mutation.'
 
-        field :adjacent_work_item, Types::WorkItemType,
+        field :adjacent_work_item, ::Types::WorkItemType,
           null: true, description: 'Adjacent work item after mutation.'
 
-        field :parent_work_item, Types::WorkItemType,
+        field :parent_work_item, ::Types::WorkItemType,
           null: true, description: "Work item's parent after mutation."
 
         authorize :read_work_item

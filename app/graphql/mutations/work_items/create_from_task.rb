@@ -19,11 +19,11 @@ module Mutations
         description: 'Arguments necessary to convert a task into a work item.',
         prepare: ->(attributes, _ctx) { attributes.to_h }
 
-      field :work_item, Types::WorkItemType,
+      field :work_item, ::Types::WorkItemType,
         null: true,
         description: 'Updated work item.'
 
-      field :new_work_item, Types::WorkItemType,
+      field :new_work_item, ::Types::WorkItemType,
         null: true,
         description: 'New work item created from task.'
 

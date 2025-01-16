@@ -14,7 +14,7 @@ module Mutations
         required: true,
         description: 'Desired state of the subscription.'
 
-      field :work_item, Types::WorkItemType,
+      field :work_item, ::Types::WorkItemType,
         null: true,
         description: 'Work item after mutation.'
 

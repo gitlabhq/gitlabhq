@@ -17,7 +17,7 @@ module Mutations
         required: true,
         description: 'Global ID of the new work item type.'
 
-      field :work_item, Types::WorkItemType,
+      field :work_item, ::Types::WorkItemType,
         null: true,
         description: 'Updated work item.'
 

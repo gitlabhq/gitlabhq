@@ -3,7 +3,7 @@
 module Types
   module WorkItems
     module WidgetInterface
-      include Types::BaseInterface
+      include ::Types::BaseInterface
 
       graphql_name 'WorkItemWidget'
 

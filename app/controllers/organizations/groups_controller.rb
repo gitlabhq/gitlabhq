@@ -37,7 +37,7 @@ module Organizations
     private
 
     def group
-      @group ||= Group.in_organization(organization).find_by_full_path(params[:id])
+      @group ||= Group.in_organization(organization).find_by_full_path(params.permit(:id)[:id])
     end
 
     def create_group

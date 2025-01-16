@@ -22,10 +22,10 @@ module Mutations
           '`!1`, `project_full_path!1` or `https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1`.'
 
       field :closing_merge_request,
-        Types::WorkItems::ClosingMergeRequestType,
+        ::Types::WorkItems::ClosingMergeRequestType,
         null: true,
         description: 'Closing merge request added to the work item.'
-      field :work_item, Types::WorkItemType,
+      field :work_item, ::Types::WorkItemType,
         null: true,
         description: 'Work item with new closing merge requests.'
 

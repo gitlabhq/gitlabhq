@@ -79,6 +79,42 @@ module Ci
                   expect(build).to eq(pending_job)
                   expect(pending_job.runner_manager).to eq(project_runner_manager)
                 end
+
+                context 'when logger is enabled' do
+                  before do
+                    stub_const('Ci::RegisterJobService::Logger::MAX_DURATION', 0)
+                  end
+
+                  it 'logs the instrumentation' do
+                    expect(Gitlab::AppJsonLogger).to receive(:info).once.with(
+                      hash_including(
+                        class: 'Ci::RegisterJobService::Logger',
+                        message: 'RegisterJobService exceeded maximum duration',
+                        runner_id: project_runner.id,
+                        runner_type: project_runner.runner_type,
+                        total_duration_s: anything,
+                        process_queue_duration_s: anything,
+                        metrics_success_duration_s: anything,
+                        retrieve_queue_duration_s: anything,
+                        process_build_duration_s: { count: 1, max: anything, sum: anything }
+                      )
+                    )
+
+                    build
+                  end
+
+                  context 'when the FF ci_register_job_instrumentation_logger is disabled' do
+                    before do
+                      stub_feature_flags(ci_register_job_instrumentation_logger: false)
+                    end
+
+                    it 'does not log the instrumentation' do
+                      expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+                      build
+                    end
+                  end
+                end
               end
             end
 

@@ -698,6 +698,70 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
       it_behaves_like 'omniauth sign in that remembers user with two factor enabled'
     end
+
+    context 'when multiple OIDC providers are configured' do
+      let(:oidc_providers) do
+        [
+          {
+            'name' => 'openid_connect',
+            'args' => {
+              'name' => 'openid_connect',
+              'strategy_class' => "OmniAuth::Strategies::OpenIDConnect",
+              'client_options' => { 'gitlab' => {} }
+            }
+          },
+          {
+            'name' => 'openid_connect2',
+            'args' => {
+              'name' => 'openid_connect2',
+              'strategy_class' => "OmniAuth::Strategies::OpenIDConnect",
+              'client_options' => { 'gitlab' => {} }
+            }
+          }
+        ]
+      end
+
+      let(:provider_settings) { oidc_providers.map { |provider| GitlabSettings::Options.new(provider) } }
+      let(:provider_names) { provider_settings.map(&:name).map(&:to_s) }
+
+      context 'when a non-default provider is used', :aggregate_failures do
+        let(:provider2) { provider_names[1] }
+        let(:user) { create(:omniauth_user, extern_uid: "my-uid2", provider: provider2.to_sym) }
+
+        controller(described_class) do
+          alias_method :openid_connect2, :handle_omniauth
+        end
+
+        before do
+          prepare_provider_route(provider2)
+          allow(routes).to receive(:generate_extras).and_return(["/users/auth/#{provider2}/callback", []])
+
+          stub_omniauth_setting(
+            enabled: true,
+            block_auto_created_users: false,
+            allow_single_sign_on: provider_names,
+            providers: provider_settings
+          )
+
+          request.env['devise.mapping'] = Devise.mappings[:user]
+          request.env['omniauth.auth'] = Rails.application.env_config['omniauth.auth']
+
+          mock_auth_hash(provider2, "my-uid2", user.email)
+          stub_omniauth_provider(provider2, context: request)
+        end
+
+        it 'authenticates a user with the non-default provider' do
+          prov_names = provider_names.map(&:to_sym)
+
+          expect(controller).to receive(provider2.to_sym).and_call_original
+          expect(AuthHelper.oidc_providers).to match(prov_names)
+
+          post provider2.to_sym
+
+          expect(request.env['warden']).to be_authenticated
+        end
+      end
+    end
   end
 
   describe '#saml' do

@@ -50,7 +50,6 @@ $item-remove-button-space: 42px;
 
   .issue-token-state-icon-open,
   .issue-token-state-icon-closed,
-  .confidential-icon,
   .item-milestone .icon,
   .item-weight .board-card-info-icon {
     min-width: $gl-padding;
@@ -59,10 +58,6 @@ $item-remove-button-space: 42px;
     &:focus {
       @apply gl-focus;
     }
-  }
-
-  .confidential-icon {
-    color: $orange-500;
   }
 
   .item-title {

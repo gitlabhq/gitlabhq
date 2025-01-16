@@ -820,9 +820,6 @@ You should do this in either of the following scenarios:
 - [Migrating to the OpenID Connect protocol](#migrate-to-generic-openid-connect-configuration).
 - Offering different levels of authentication.
 
-NOTE:
-This is not compatible with [configuring users based on OIDC group membership](#configure-users-based-on-oidc-group-membership). For more information, see [issue 408248](https://gitlab.com/gitlab-org/gitlab/-/issues/408248).
-
 The following example configurations show how to offer different levels of authentication, one option with 2FA and one without 2FA.
 
 For Linux package installations:

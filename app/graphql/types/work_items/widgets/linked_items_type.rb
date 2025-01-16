@@ -8,9 +8,9 @@ module Types
         graphql_name 'WorkItemWidgetLinkedItems'
         description 'Represents the linked items widget'
 
-        implements Types::WorkItems::WidgetInterface
+        implements ::Types::WorkItems::WidgetInterface
 
-        field :linked_items, Types::WorkItems::LinkedItemType.connection_type,
+        field :linked_items, ::Types::WorkItems::LinkedItemType.connection_type,
           null: true, complexity: 5,
           experiment: { milestone: '16.3' },
           extras: [:lookahead],

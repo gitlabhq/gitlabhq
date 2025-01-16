@@ -10,7 +10,7 @@ module Types
         graphql_name 'WorkItemWidgetMilestone'
         description 'Represents a milestone widget'
 
-        implements Types::WorkItems::WidgetInterface
+        implements ::Types::WorkItems::WidgetInterface
 
         field :milestone,
           ::Types::MilestoneType,

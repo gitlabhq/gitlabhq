@@ -13,12 +13,12 @@ module Resolvers
 
       alias_method :notes_widget, :object
 
-      argument :filter, Types::WorkItems::NotesFilterTypeEnum,
+      argument :filter, ::Types::WorkItems::NotesFilterTypeEnum,
         required: false,
-        default_value: Types::WorkItems::NotesFilterTypeEnum.default_value,
+        default_value: ::Types::WorkItems::NotesFilterTypeEnum.default_value,
         description: 'Type of notes collection: ALL_NOTES, ONLY_COMMENTS, ONLY_ACTIVITY.'
 
-      type Types::Notes::DiscussionType.connection_type, null: true
+      type ::Types::Notes::DiscussionType.connection_type, null: true
 
       def resolve(**args)
         finder = Issuable::DiscussionsListService.new(current_user, work_item, params(args))

@@ -16783,7 +16783,8 @@ CREATE TABLE operations_strategies (
     feature_flag_id bigint NOT NULL,
     name character varying(255) NOT NULL,
     parameters jsonb DEFAULT '{}'::jsonb NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_85b486853f CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE operations_strategies_id_seq
@@ -17159,6 +17160,7 @@ CREATE TABLE packages_debian_group_distribution_keys (
     public_key text NOT NULL,
     fingerprint text NOT NULL,
     group_id bigint,
+    CONSTRAINT check_008dba9ceb CHECK ((group_id IS NOT NULL)),
     CONSTRAINT check_bc95dc3fbe CHECK ((char_length(fingerprint) <= 255)),
     CONSTRAINT check_f708183491 CHECK ((char_length(public_key) <= 524288))
 );
@@ -30216,6 +30218,8 @@ CREATE UNIQUE INDEX idx_vulnerability_issue_links_on_vulnerability_id_and_link_t
 CREATE INDEX idx_vulnerability_reads_for_traversal_ids_queries_srt_severity ON vulnerability_reads USING btree (state, report_type, severity, traversal_ids, vulnerability_id) WHERE (archived = false);
 
 CREATE INDEX idx_vulnerability_reads_project_id_scanner_id_vulnerability_id ON vulnerability_reads USING btree (project_id, scanner_id, vulnerability_id);
+
+CREATE INDEX idx_vulnerability_statistics_on_traversal_ids_and_letter_grade ON vulnerability_statistics USING btree (traversal_ids, letter_grade) WHERE (archived = false);
 
 CREATE UNIQUE INDEX idx_wi_type_custom_fields_on_ns_id_wi_type_id_custom_field_id ON work_item_type_custom_fields USING btree (namespace_id, work_item_type_id, custom_field_id);
 

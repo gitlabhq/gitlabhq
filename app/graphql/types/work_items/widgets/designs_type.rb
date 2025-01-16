@@ -10,9 +10,9 @@ module Types
         graphql_name 'WorkItemWidgetDesigns'
         description 'Represents designs widget'
 
-        implements Types::WorkItems::WidgetInterface
+        implements ::Types::WorkItems::WidgetInterface
 
-        field :design_collection, Types::DesignManagement::DesignCollectionType, null: true,
+        field :design_collection, ::Types::DesignManagement::DesignCollectionType, null: true,
           description: 'Collection of design images associated with the issue.'
       end
       # rubocop:enable Graphql/AuthorizeTypes

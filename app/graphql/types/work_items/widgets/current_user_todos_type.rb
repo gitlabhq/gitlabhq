@@ -10,8 +10,8 @@ module Types
         graphql_name 'WorkItemWidgetCurrentUserTodos'
         description 'Represents a todos widget'
 
-        implements Types::WorkItems::WidgetInterface
-        implements Types::CurrentUserTodos
+        implements ::Types::WorkItems::WidgetInterface
+        implements ::Types::CurrentUserTodos
 
         private
 

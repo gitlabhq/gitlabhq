@@ -24,7 +24,7 @@ module Types
           description: 'Global ID of the parent work item. Use `null` to remove the association.'
 
         argument :relative_position,
-          Types::RelativePositionTypeEnum,
+          ::Types::RelativePositionTypeEnum,
           required: false,
           description: 'Type of switch. Valid values are `BEFORE` or `AFTER`.'
       end

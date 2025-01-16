@@ -10,11 +10,11 @@ module Types
         graphql_name 'WorkItemWidgetCustomStatus'
         description 'Represents Custom Status widget'
 
-        implements Types::WorkItems::WidgetInterface
+        implements ::Types::WorkItems::WidgetInterface
 
         # TODO change the ID to CustomStatus model ID while implementing
         # https://gitlab.com/gitlab-org/gitlab/-/issues/498393
-        field :id, Types::GlobalIDType[::WorkItems::Widgets::CustomStatus],
+        field :id, ::Types::GlobalIDType[::WorkItems::Widgets::CustomStatus],
           null: false,
           description: 'ID of the Custom Status.'
 

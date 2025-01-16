@@ -12,7 +12,7 @@ module Mutations
         required: true,
         description: 'Global ID of the work item.'
 
-      field :project, Types::ProjectType,
+      field :project, ::Types::ProjectType,
         null: true,
         description: 'Project the deleted work item belonged to.',
         deprecated: {
@@ -20,7 +20,7 @@ module Mutations
           milestone: '16.9'
         }
 
-      field :namespace, Types::NamespaceType,
+      field :namespace, ::Types::NamespaceType,
         null: true,
         description: 'Namespace the deleted work item belonged to.'
 

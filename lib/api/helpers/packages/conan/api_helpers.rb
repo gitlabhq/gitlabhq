@@ -327,6 +327,10 @@ module API
           def package_scope
             params[:id].present? ? :project : :instance
           end
+
+          def search_project
+            project
+          end
         end
       end
     end

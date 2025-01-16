@@ -8,7 +8,7 @@ module Types
         graphql_name 'WorkItemWidgetDefinitionGeneric'
         description 'Represents a generic widget definition'
 
-        implements Types::WorkItems::WidgetDefinitionInterface
+        implements ::Types::WorkItems::WidgetDefinitionInterface
       end
       # rubocop:enable Graphql/AuthorizeTypes
     end

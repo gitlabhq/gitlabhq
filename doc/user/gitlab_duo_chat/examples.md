@@ -405,6 +405,8 @@ To troubleshoot a failed CI/CD job:
 
 An analysis of the reasons for the failure and an example fix is displayed.
 
+Provide feedback on this feature in [epic 13872](https://gitlab.com/groups/gitlab-org/-/epics/13872).
+
 ## Explain a vulnerability
 
 DETAILS:

@@ -32,6 +32,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def handle_omniauth
     if ::AuthHelper.saml_providers.include?(oauth['provider'].to_sym)
       saml
+    elsif ::AuthHelper.oidc_providers.include?(oauth['provider'].to_sym)
+      openid_connect
     else
       omniauth_flow(Gitlab::Auth::OAuth)
     end
@@ -43,7 +45,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   # overridden in EE
   def openid_connect
-    handle_omniauth
+    omniauth_flow(Gitlab::Auth::OAuth)
   end
 
   def jwt

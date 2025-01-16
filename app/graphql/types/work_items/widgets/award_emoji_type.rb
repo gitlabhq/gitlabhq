@@ -10,7 +10,7 @@ module Types
         graphql_name 'WorkItemWidgetAwardEmoji'
         description 'Represents the emoji reactions widget'
 
-        implements Types::WorkItems::WidgetInterface
+        implements ::Types::WorkItems::WidgetInterface
 
         field :award_emoji,
           ::Types::AwardEmojis::AwardEmojiType.connection_type,

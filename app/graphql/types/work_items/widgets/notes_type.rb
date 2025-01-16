@@ -10,7 +10,7 @@ module Types
         graphql_name 'WorkItemWidgetNotes'
         description 'Represents a notes widget'
 
-        implements Types::WorkItems::WidgetInterface
+        implements ::Types::WorkItems::WidgetInterface
 
         field :discussion_locked, GraphQL::Types::Boolean,
           null: true,
@@ -19,7 +19,7 @@ module Types
         # This field loads user comments, system notes and resource events as a discussion for an work item,
         # raising the complexity considerably. In order to discourage fetching this field as part of fetching
         # a list of issues we raise the complexity
-        field :discussions, Types::Notes::DiscussionType.connection_type,
+        field :discussions, ::Types::Notes::DiscussionType.connection_type,
           null: true,
           skip_type_authorization: [:read_note, :read_emoji],
           description: "Notes on this work item.",

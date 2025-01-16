@@ -94,19 +94,51 @@ RSpec.describe Gitlab::Auth::OAuth::Provider, feature_category: :system_access d
     end
 
     context 'for an OpenID Connect provider' do
-      before do
-        provider = ActiveSupport::InheritableOptions.new(
-          name: 'openid_connect',
-          args: ActiveSupport::InheritableOptions.new(name: 'custom_oidc')
-        )
-        allow(Gitlab.config.omniauth).to receive(:providers).and_return([provider])
-      end
+      context 'when the default oidc provider exists' do
+        before do
+          provider = ActiveSupport::InheritableOptions.new(
+            name: 'openid_connect',
+            args: ActiveSupport::InheritableOptions.new(name: 'custom_oidc')
+          )
+          allow(Gitlab.config.omniauth).to receive(:providers).and_return([provider])
+        end
 
-      context 'when the provider exists' do
-        subject { described_class.config_for('custom_oidc') }
+        subject(:config) { described_class.config_for('custom_oidc') }
 
         it 'returns the config' do
-          expect(subject).to be_a(ActiveSupport::InheritableOptions)
+          expect(config).to be_a(ActiveSupport::InheritableOptions)
+          expect(config.name).to eq('openid_connect')
+          expect(config.args.name).to eq('custom_oidc')
+        end
+      end
+
+      context 'when an oidc provider with a strategy exists' do
+        before do
+          provider = ActiveSupport::InheritableOptions.new(
+            name: 'openid_connect2',
+            args: ActiveSupport::InheritableOptions.new(
+              name: 'openid_connect2_inner',
+              strategy_class: 'OmniAuth::Strategies::OpenIDConnect'
+            )
+          )
+          allow(Gitlab.config.omniauth).to receive(:providers).and_return([provider])
+        end
+
+        subject(:config) { described_class.config_for('openid_connect2') }
+
+        it 'returns the config' do
+          expect(config).to be_a(ActiveSupport::InheritableOptions)
+          expect(config.name).to eq('openid_connect2')
+          expect(config.args.name).to eq('openid_connect2_inner')
+          expect(config.args.strategy_class).to eq('OmniAuth::Strategies::OpenIDConnect')
+        end
+      end
+
+      context 'when the provider does not exist' do
+        subject(:config) { described_class.config_for('') }
+
+        it 'returns nil' do
+          expect(config).to be_nil
         end
       end
     end

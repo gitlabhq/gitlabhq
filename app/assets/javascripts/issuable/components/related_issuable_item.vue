@@ -152,8 +152,8 @@ export default {
           v-gl-tooltip
           name="eye-slash"
           :title="__('Confidential')"
-          class="confidential-icon"
           :aria-label="__('Confidential')"
+          variant="warning"
         />
         <gl-link :href="computedPath" class="sortable-link" @click="handleTitleClick">
           {{ title }}

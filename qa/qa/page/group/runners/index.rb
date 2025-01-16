@@ -55,6 +55,14 @@ module QA
           def has_no_runner?(runner)
             has_no_element?("runner-row-#{runner.id}")
           end
+
+          def go_to_runner_managers_page(runner)
+            within_element("runner-row-#{runner.id}") do
+              within_element("td-summary") do
+                find_element("a[href*='/runners/#{runner.id}']").click
+              end
+            end
+          end
         end
       end
     end

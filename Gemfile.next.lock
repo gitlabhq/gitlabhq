@@ -108,16 +108,6 @@ PATH
       pg_query
 
 PATH
-  remote: gems/gitlab-secret_detection
-  specs:
-    gitlab-secret_detection (0.1.1)
-      grpc (= 1.63.0)
-      grpc-tools (= 1.63.0)
-      parallel (~> 1.22)
-      re2 (~> 2.7)
-      toml-rb (~> 2.2)
-
-PATH
   remote: gems/gitlab-utils
   specs:
     gitlab-utils (0.1.0)
@@ -797,6 +787,12 @@ GEM
       activesupport (>= 5.2.0)
       rake (~> 13.0)
       snowplow-tracker (~> 0.8.0)
+    gitlab-secret_detection (0.14.2)
+      grpc (= 1.63.0)
+      grpc-tools (= 1.63.0)
+      parallel (~> 1.19)
+      re2 (= 2.7.0)
+      toml-rb (~> 2.2.0)
     gitlab-security_report_schemas (0.1.2.min15.0.0.max15.2.1)
       activesupport (>= 6, < 8)
       json_schemer (~> 2.3.0)
@@ -2140,7 +2136,7 @@ DEPENDENCIES
   gitlab-safe_request_store!
   gitlab-schema-validation!
   gitlab-sdk (~> 0.3.0)
-  gitlab-secret_detection!
+  gitlab-secret_detection (< 1.0)
   gitlab-security_report_schemas (= 0.1.2.min15.0.0.max15.2.1)
   gitlab-sidekiq-fetcher!
   gitlab-styles (~> 13.0.2)
