@@ -12,7 +12,7 @@ import { DELETE_AGENT_BUTTON } from '~/clusters_list/constants';
 import { stubComponent } from 'helpers/stub_component';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mockDeleteResponse, mockErrorDeleteResponse } from '../mocks/apollo';
-import { getAgentResponse } from './mock_data';
+import { clusterAgentsResponse } from './mock_data';
 
 Vue.use(VueApollo);
 
@@ -55,7 +55,7 @@ describe('DeleteAgentButton', () => {
         projectPath,
         defaultBranchName,
       },
-      data: getAgentResponse.data,
+      data: clusterAgentsResponse.data,
     });
   };
 

@@ -115,7 +115,7 @@ RSpec.shared_examples 'Debian packages read endpoint' do |desired_behavior, succ
       :public  | :invalid_token | :basic         | :unauthorized  | nil
       :private | :developer     | :basic         | success_status | success_body
       :private | :developer     | :private_token | :unauthorized  | nil
-      :private | :guest         | :basic         | :forbidden     | nil
+      :private | :guest         | :basic         | success_status | success_body
       :private | :not_a_member  | :basic         | :not_found     | nil
       :private | :anonymous     | :basic         | :unauthorized  | nil
       :private | :invalid_token | :basic         | :unauthorized  | nil

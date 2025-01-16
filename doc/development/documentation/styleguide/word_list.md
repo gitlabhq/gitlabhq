@@ -2463,6 +2463,14 @@ Do not use **root group**.
 
 Use [**2FA** and **two-factor authentication**](#2fa-two-factor-authentication) instead.
 
+## turn on, turn off
+
+Use **turn on** and **turn off** instead of **enable** or **disable**.
+
+For details, see [the Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/t/turn-on-turn-off).
+
+See also [enable](#enable) and [disable](#disable).
+
 ## type
 
 Use **type** when the cursor remains where you're typing. For example,

@@ -87,7 +87,7 @@ Introducing a breaking change in a minor release requires a PM and EM to follow 
 1. Title should follow the format `Breaking change exception: Description`
 1. Provide an impact assessment for the breaking change
    1. How many customers are impacted?
-   1. Can we get the same outcome without a breaking-change? (i.e. no removal)
+   1. Can we get the same outcome without a breaking-change? (that is, no removal)
    1. Can the breaking-change wait till the next major release, or the next scheduled upgrade stop, for example [Database scenarios](../database/required_stops.md))?
    1. What is the alternative for customers to do the same job the change will break?
    1. How difficult is it for customers to migrate to the alternative? Is there a migration plan?

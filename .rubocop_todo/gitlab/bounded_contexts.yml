@@ -3367,7 +3367,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/services/phone_verification/telesign_client/risk_score_service.rb'
     - 'ee/app/services/phone_verification/telesign_client/send_verification_code_service.rb'
     - 'ee/app/services/phone_verification/telesign_client/verify_code_service.rb'
-    - 'ee/app/services/phone_verification/users/rate_limit_service.rb'
     - 'ee/app/services/phone_verification/users/record_user_data_service.rb'
     - 'ee/app/services/phone_verification/users/send_verification_code_service.rb'
     - 'ee/app/services/phone_verification/users/verify_code_service.rb'

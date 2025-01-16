@@ -85,7 +85,7 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache do
   end
 
   describe '#selected_template_name' do
-    let(:template_names) { %w[another_issue_template custom_issue_template] }
+    let(:template_names) { ['another_issue_template', 'custom_issue_template', 'Bug Report Template'] }
 
     context 'when no issuable_template parameter is provided' do
       it 'does not select a template' do
@@ -111,6 +111,14 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache do
 
         it 'returns nil' do
           expect(helper.selected_template_name(template_names)).to be_nil
+        end
+      end
+
+      context 'when param is URL-encoded' do
+        let(:template_param_value) { 'Bug%20Report%20Template' }
+
+        it 'returns the matching template name' do
+          expect(helper.selected_template_name(template_names)).to eq('Bug Report Template')
         end
       end
     end
@@ -154,7 +162,8 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache do
       {
         "Project templates" => [
           { name: "another_issue_template", id: "another_issue_template", project_id: project.id },
-          { name: "custom_issue_template", id: "custom_issue_template", project_id: project.id }
+          { name: "custom_issue_template", id: "custom_issue_template", project_id: project.id },
+          { name: "Bug Report Template", id: "Bug Report Template", project_id: project.id }
         ],
         "Group templates" => [
           { name: "another_issue_template", id: "another_issue_template", project_id: project.id }
@@ -168,7 +177,11 @@ RSpec.describe IssuablesDescriptionTemplatesHelper, :clean_gitlab_redis_cache do
     end
 
     it 'returns unique list of template names' do
-      expect(helper.template_names(build(:issue))).to contain_exactly('another_issue_template', 'custom_issue_template')
+      expect(helper.template_names(build(:issue))).to contain_exactly(
+        'another_issue_template',
+        'custom_issue_template',
+        'Bug Report Template'
+      )
     end
   end
 end

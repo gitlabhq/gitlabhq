@@ -264,7 +264,7 @@ sync in data that are subject to change and control access to some GitLab featur
 ### AI gateway
 
 AI gateway is able to issue UJWTs which are meant for users to directly communicate with the AI gateway,
-i.e. not having to make a call to a GitLab instance first. This is in addition to using a IJWT.
+that is not having to make a call to a GitLab instance first. This is in addition to using a IJWT.
 Only GitLab instances can request a UJWT, which is done by making a request with the IJWT.
 AI gateway will then return a short-lived UJWT that the instance can pass over to the user.
 The client can use this UJWT to directly communicate with the AI gateway.

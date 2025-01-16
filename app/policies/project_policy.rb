@@ -320,6 +320,10 @@ class ProjectPolicy < BasePolicy
     can?(:reporter_access) || can?(:planner_access)
   end
 
+  condition(:allow_guest_plus_roles_to_pull_packages_enabled, scope: :subject) do
+    Feature.enabled?(:allow_guest_plus_roles_to_pull_packages, @subject.root_ancestor)
+  end
+
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
   # not.
   rule { guest | admin | organization_owner }.enable :read_project_for_iids
@@ -1095,6 +1099,12 @@ class ProjectPolicy < BasePolicy
   rule { can?(:create_pipeline_schedule) }.policy do
     enable :read_ci_pipeline_schedules_plan_limit
   end
+
+  # TODO: Remove this rule and move :read_package permission from
+  # can?(:reporter_access) to can?(:guest_access)
+  # with the rollout of the FF allow_guest_plus_roles_to_pull_packages
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/512210
+  rule { can?(:guest_access) & allow_guest_plus_roles_to_pull_packages_enabled }.enable :read_package
 
   private
 

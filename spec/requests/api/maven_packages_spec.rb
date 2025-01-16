@@ -431,13 +431,19 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         it_behaves_like 'bumping the package last downloaded at field'
         it_behaves_like 'successfully returning the file'
 
-        it 'denies download when not enough permissions' do
-          unless project.root_namespace == user.namespace
-            project.add_guest(user)
+        context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
+          before do
+            stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+          end
 
-            subject
+          it 'denies download when not enough permissions' do
+            unless project.root_namespace == user.namespace
+              project.add_guest(user)
 
-            expect(response).to have_gitlab_http_status(:forbidden)
+              subject
+
+              expect(response).to have_gitlab_http_status(:forbidden)
+            end
           end
         end
 
@@ -587,12 +593,18 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         it_behaves_like 'bumping the package last downloaded at field'
         it_behaves_like 'successfully returning the file'
 
-        it 'denies download when not enough permissions' do
-          group.add_guest(user)
+        context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
+          before do
+            stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+          end
 
-          subject
+          it 'denies download when not enough permissions' do
+            group.add_guest(user)
 
-          expect(response).to have_gitlab_http_status(download_denied_status)
+            subject
+
+            expect(response).to have_gitlab_http_status(download_denied_status)
+          end
         end
 
         it 'denies download when no private token' do
@@ -643,21 +655,27 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           project.add_developer(user)
         end
 
-        context 'when user does not have enough permission for the recent project' do
-          it 'tries to download the recent package' do
-            subject
-
-            expect(response).to have_gitlab_http_status(:forbidden)
-          end
-        end
-
-        context 'when the FF maven_remove_permissions_check_from_finder disabled' do
+        context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
           before do
-            stub_feature_flags(maven_remove_permissions_check_from_finder: false)
+            stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
           end
 
-          it_behaves_like 'bumping the package last downloaded at field'
-          it_behaves_like 'successfully returning the file'
+          context 'when user does not have enough permission for the recent project' do
+            it 'tries to download the recent package' do
+              subject
+
+              expect(response).to have_gitlab_http_status(:forbidden)
+            end
+          end
+
+          context 'when the FF maven_remove_permissions_check_from_finder disabled' do
+            before do
+              stub_feature_flags(maven_remove_permissions_check_from_finder: false)
+            end
+
+            it_behaves_like 'bumping the package last downloaded at field'
+            it_behaves_like 'successfully returning the file'
+          end
         end
       end
 
@@ -818,12 +836,18 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       it_behaves_like 'bumping the package last downloaded at field'
       it_behaves_like 'successfully returning the file'
 
-      it 'denies download when not enough permissions' do
-        project.add_guest(user)
+      context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
+        before do
+          stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+        end
 
-        subject
+        it 'denies download when not enough permissions' do
+          project.add_guest(user)
 
-        expect(response).to have_gitlab_http_status(:forbidden)
+          subject
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
       end
 
       it 'denies download when no private token' do

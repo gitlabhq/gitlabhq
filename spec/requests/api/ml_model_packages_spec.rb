@@ -81,8 +81,8 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
       true  |  :developer  | :private | true  | :personal_access_token | :success
       true  |  :developer  | :public  | true  | :job_token             | :success
       true  |  :developer  | :public  | true  | :personal_access_token | :success
-      true  |  :guest      | :private | true  | :job_token             | :forbidden
-      true  |  :guest      | :private | true  | :personal_access_token | :forbidden
+      true  |  :guest      | :private | true  | :job_token             | :success
+      true  |  :guest      | :private | true  | :personal_access_token | :success
       true  |  :guest      | :public  | true  | :job_token             | :success
       true  |  :guest      | :public  | true  | :personal_access_token | :success
       true  |  :reporter   | :private | true  | :job_token             | :success

@@ -329,13 +329,22 @@ export const clusterAgentsResponse = {
       id: 'gid://gitlab/Project/1',
       clusterAgents: {
         nodes: agents,
+        count: agents.length,
       },
-      ciAccessAuthorizedAgents: {
-        nodes: ciAccessAuthorizedAgentsNodes,
-      },
-      userAccessAuthorizedAgents: {
-        nodes: userAccessAuthorizedAgentsNodes,
-      },
+    },
+  },
+};
+
+export const sharedAgentsResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+    },
+    ciAccessAuthorizedAgents: {
+      nodes: ciAccessAuthorizedAgentsNodes,
+    },
+    userAccessAuthorizedAgents: {
+      nodes: userAccessAuthorizedAgentsNodes,
     },
   },
 };
@@ -346,6 +355,12 @@ const trees = [
     name: 'agent-2',
     path: '.gitlab/agents/agent-2',
     webPath: '/project/path/.gitlab/agents/agent-2',
+  },
+  {
+    id: 'tree-2',
+    name: 'new-agent-2',
+    path: '.gitlab/agents/new-agent-2',
+    webPath: '/project/path/.gitlab/agents/new-agent-2',
   },
 ];
 
@@ -364,17 +379,6 @@ export const treeListResponseData = {
 };
 
 export const expectedAgentsList = [
-  {
-    id: '1',
-    name: 'agent-1',
-    webPath: '/agent-1',
-    configFolder: undefined,
-    status: 'unused',
-    lastContact: null,
-    connections: null,
-    tokens: null,
-    project: agentProject,
-  },
   {
     id: '2',
     name: 'agent-2',
@@ -397,12 +401,11 @@ export const expectedAgentsList = [
     project: agentProject,
   },
   {
-    id: '3',
-    name: 'ci-agent-1',
+    id: '1',
+    name: 'agent-1',
+    webPath: '/agent-1',
     configFolder: undefined,
-    webPath: 'shared-project/agent-1',
     status: 'unused',
-    isShared: true,
     lastContact: null,
     connections: null,
     tokens: null,
@@ -432,23 +435,6 @@ export const createAgentErrorResponse = {
         tokens,
       },
       errors: ['could not create agent'],
-    },
-  },
-};
-
-export const getAgentResponse = {
-  data: {
-    project: {
-      __typename: 'Project',
-      id: 'project-1',
-      clusterAgents: { nodes: [{ ...agent, connections, tokens }] },
-      ciAccessAuthorizedAgents: { nodes: [] },
-      userAccessAuthorizedAgents: { nodes: [] },
-      repository: {
-        tree: {
-          trees: { nodes: [{ ...agent, path: null }] },
-        },
-      },
     },
   },
 };

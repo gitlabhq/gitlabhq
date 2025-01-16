@@ -11,11 +11,28 @@ module WorkItems
           target_work_item.milestone = matching_milestone
         end
 
+        def after_save_commit
+          return unless target_work_item.get_widget(:milestone)
+          return if work_item.milestone_id.blank?
+
+          handle_changed_milestone_system_notes
+        end
+
         def post_move_cleanup
           work_item.update_column(:milestone_id, nil)
         end
 
         private
+
+        def handle_changed_milestone_system_notes
+          #  do not create system note if we are setting exactly same milestone
+          return if work_item.milestone_id == target_work_item.milestone_id
+
+          target_work_item.system_note_timestamp = Time.current
+          ResourceEvents::ChangeMilestoneService.new(
+            target_work_item, current_user, old_milestone: work_item.milestone
+          ).execute
+        end
 
         def matching_milestone
           params = { project_ids: target_work_item.project&.id, group_ids: ancestors }

@@ -123,7 +123,7 @@ things.map(Number);
 ```
 
 NOTE:
-If the String could represent a non-integer (i.e., it includes a decimal), **do not** use `parseInt`. Consider `Number` or `parseFloat` instead.
+If the String could represent a non-integer (a number that includes a decimal), **do not** use `parseInt`. Consider `Number` or `parseFloat` instead.
 
 ## CSS Selectors - Use `js-` prefix
 

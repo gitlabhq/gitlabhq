@@ -167,7 +167,7 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
         'PUBLIC'  | :guest      | false | false | 'rejects nuget packages access'             | :unauthorized
         'PUBLIC'  | :anonymous  | false | true  | 'process nuget download versions request'   | :success
         'PRIVATE' | :developer  | true  | true  | 'process nuget download versions request'   | :success
-        'PRIVATE' | :guest      | true  | true  | 'rejects nuget packages access'             | :forbidden
+        'PRIVATE' | :guest      | true  | true  | 'process nuget download versions request'   | :success
         'PRIVATE' | :developer  | true  | false | 'rejects nuget packages access'             | :unauthorized
         'PRIVATE' | :guest      | true  | false | 'rejects nuget packages access'             | :unauthorized
         'PRIVATE' | :developer  | false | true  | 'rejects nuget packages access'             | :not_found
@@ -228,7 +228,7 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
         'PUBLIC'  | :guest      | false | false | 'rejects nuget packages access'            | :unauthorized
         'PUBLIC'  | :anonymous  | false | true  | 'process nuget download content request'   | :success
         'PRIVATE' | :developer  | true  | true  | 'process nuget download content request'   | :success
-        'PRIVATE' | :guest      | true  | true  | 'rejects nuget packages access'            | :forbidden
+        'PRIVATE' | :guest      | true  | true  | 'process nuget download content request'   | :success
         'PRIVATE' | :developer  | true  | false | 'rejects nuget packages access'            | :unauthorized
         'PRIVATE' | :guest      | true  | false | 'rejects nuget packages access'            | :unauthorized
         'PRIVATE' | :developer  | false | true  | 'rejects nuget packages access'            | :not_found

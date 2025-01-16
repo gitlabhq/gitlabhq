@@ -1023,7 +1023,7 @@ can be used.
 ## `llm.log`
 
 DETAILS:
-**Tier:** Ultimate
+**Tier:** Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120506) in GitLab 16.0.

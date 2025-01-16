@@ -334,7 +334,7 @@ You can modify rules predefined in the [default ruleset](../detected_secrets.md)
 
 Modifying rules can help you adapt pipeline secret detection to an existing workflow or tool. For example you may want to override the severity of a detected secret or disable a rule from being detected at all.
 
-You can also use a ruleset configuration file stored remotely (i.e. in a remote Git repository or website) to modify predefined rules.
+You can also use a ruleset configuration file stored remotely (that is, a remote Git repository or website) to modify predefined rules.
 
 ##### Disable a rule
 

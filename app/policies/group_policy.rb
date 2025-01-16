@@ -126,6 +126,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     @subject.allow_runner_registration_token?
   end
 
+  condition(:allow_guest_plus_roles_to_pull_packages_enabled, scope: :subject) do
+    Feature.enabled?(:allow_guest_plus_roles_to_pull_packages, @subject.root_ancestor)
+  end
+
   rule { can?(:read_group) & design_management_enabled }.policy do
     enable :read_design_activity
   end
@@ -435,6 +439,11 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { admin | reporter | planner }.enable :read_internal_note
 
   rule { can?(:remove_group) }.enable :view_edit_page
+
+  # TODO: Remove this rule and move :read_package permission from reporter to guest
+  # with the rollout of the FF allow_guest_plus_roles_to_pull_packages
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/512210
+  rule { guest & allow_guest_plus_roles_to_pull_packages_enabled }.enable :read_package
 
   def access_level(for_any_session: false)
     return GroupMember::NO_ACCESS if @user.nil?

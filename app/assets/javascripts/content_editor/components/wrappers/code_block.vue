@@ -293,7 +293,7 @@ export default {
         class="gl-relative gl-z-1 !gl-break-words"
         :class="{
           'line_content new code': isCodeSuggestion,
-          themeClass: isCodeSuggestion,
+          [themeClass]: isCodeSuggestion,
         }"
         spellcheck="false"
         data-testid="suggestion-field"

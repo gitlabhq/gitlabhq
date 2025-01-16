@@ -98,7 +98,7 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
               set_visibility('private', scope)
             end
 
-            it_behaves_like 'reject metadata request', status: :forbidden
+            it_behaves_like 'accept metadata request', status: :ok
           end
         end
 
@@ -205,7 +205,7 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
         true  | :public  | nil       | 'redirect metadata request'            | :redirected
         false | :public  | nil       | 'returning response status with error' | :not_found
         false | :private | nil       | 'reject metadata request'              | :unauthorized
-        false | :private | :guest    | 'reject metadata request'              | :forbidden
+        false | :private | :guest    | 'returning response status with error' | :not_found
         false | :private | :reporter | 'returning response status with error' | :not_found
       end
 
@@ -339,7 +339,7 @@ RSpec.shared_examples 'handling audit request' do |path:, scope: :project|
               project.add_guest(user)
             end
 
-            it_behaves_like 'reject audit request', status: :forbidden
+            it_behaves_like 'accept audit request', status: :ok
           end
 
           %i[oauth personal_access_token job_token deploy_token].each do |auth|
@@ -451,7 +451,7 @@ RSpec.shared_examples 'handling get dist tags requests' do |scope: :project|
             project.update!(visibility: 'private')
           end
 
-          it_behaves_like 'reject package tags request', status: :forbidden
+          it_behaves_like 'accept package tags request', status: :ok
         end
       end
 
@@ -524,7 +524,7 @@ RSpec.shared_examples 'handling get dist tags requests' do |scope: :project|
         :internal | nil       | 'reject package tags request'          | :unauthorized
         :public   | :guest    | 'returning response status with error' | :not_found
         :internal | :guest    | 'returning response status with error' | :not_found
-        :private  | :guest    | 'reject package tags request'          | :forbidden
+        :private  | :guest    | 'returning response status with error' | :not_found
         :public   | :reporter | 'returning response status with error' | :not_found
       end
 
@@ -778,28 +778,34 @@ RSpec.shared_examples 'handling get metadata requests for packages in multiple p
     end
   end
 
-  context 'with limited access to the project with the last package version' do
-    before_all do
-      project2.add_guest(user)
-    end
-
-    it 'includes matching package versions from authorized projects in the response' do
-      subject
-
-      expect(json_response['versions'].keys).to contain_exactly(package.version)
-    end
-  end
-
-  context 'with limited access to the project with the first package version' do
+  context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
     before do
-      project.update!(visibility: 'private')
-      project.add_guest(user)
+      stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
     end
 
-    it 'includes matching package versions from authorized projects in the response' do
-      subject
+    context 'with limited access to the project with the last package version' do
+      before_all do
+        project2.add_guest(user)
+      end
 
-      expect(json_response['versions'].keys).to contain_exactly(package2.version)
+      it 'includes matching package versions from authorized projects in the response' do
+        subject
+
+        expect(json_response['versions'].keys).to contain_exactly(package.version)
+      end
+    end
+
+    context 'with limited access to the project with the first package version' do
+      before do
+        project.update!(visibility: 'private')
+        project.add_guest(user)
+      end
+
+      it 'includes matching package versions from authorized projects in the response' do
+        subject
+
+        expect(json_response['versions'].keys).to contain_exactly(package2.version)
+      end
     end
   end
 end

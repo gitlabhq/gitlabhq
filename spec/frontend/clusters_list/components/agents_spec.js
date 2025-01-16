@@ -1,4 +1,4 @@
-import { GlAlert, GlLoadingIcon, GlBanner } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon, GlBanner, GlTabs, GlTab } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
@@ -11,6 +11,7 @@ import {
   KAS_DISABLED_ERROR,
 } from '~/clusters_list/constants';
 import getAgentsQuery from 'ee_else_ce/clusters_list/graphql/queries/get_agents.query.graphql';
+import getSharedAgentsQuery from 'ee_else_ce/clusters_list/graphql/queries/get_shared_agents.query.graphql';
 import getTreeListQuery from '~/clusters_list/graphql/queries/get_tree_list.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -19,6 +20,7 @@ import {
   clusterAgentsResponse,
   treeListResponseData,
   expectedAgentsList,
+  sharedAgentsResponse,
 } from 'ee_else_ce_jest/clusters_list/components/mock_data';
 
 Vue.use(VueApollo);
@@ -33,18 +35,39 @@ describe('Agents', () => {
     projectPath: 'path/to/project',
   };
 
+  const projectId = 'gid://gitlab/Project/1';
+
+  const emptyAgentsResponse = {
+    data: {
+      project: {
+        id: projectId,
+        clusterAgents: { nodes: [], count: 0 },
+      },
+    },
+  };
+
+  const emptySharedAgentsResponse = {
+    data: {
+      project: {
+        id: projectId,
+        ciAccessAuthorizedAgents: { nodes: [] },
+        userAccessAuthorizedAgents: { nodes: [] },
+      },
+    },
+  };
+
   const createWrapper = async ({
     props = {},
     glFeatures = {},
-    queryResponse = null,
+    agentQueryResponse = jest.fn().mockResolvedValue(clusterAgentsResponse),
+    treeListQueryResponse = jest.fn().mockResolvedValue(treeListResponseData),
+    sharedAgentsQueryResponse = jest.fn().mockResolvedValue(emptySharedAgentsResponse),
     slots,
   } = {}) => {
-    const agentQueryResponse = queryResponse || jest.fn().mockResolvedValue(clusterAgentsResponse);
-    const treeListQueryResponse = jest.fn().mockResolvedValue(treeListResponseData);
-
     const apolloProvider = createMockApollo(
       [
         [getAgentsQuery, agentQueryResponse],
+        [getSharedAgentsQuery, sharedAgentsQueryResponse],
         [getTreeListQuery, treeListQueryResponse],
       ],
       {},
@@ -71,6 +94,8 @@ describe('Agents', () => {
     await nextTick();
   };
 
+  const findAgentTabs = () => wrapper.findComponent(GlTabs);
+  const findTab = () => wrapper.findAllComponents(GlTab);
   const findAgentTable = () => wrapper.findComponent(AgentTable);
   const findEmptyState = () => wrapper.findComponent(AgentEmptyState);
   const findAlert = () => wrapper.findComponent(GlAlert);
@@ -81,12 +106,25 @@ describe('Agents', () => {
   });
 
   describe('when there is a list of agents', () => {
+    it('should not render empty state', async () => {
+      createWrapper();
+      await waitForPromises();
+
+      expect(findEmptyState().exists()).toBe(false);
+    });
+
+    it('should render agent tabs', async () => {
+      createWrapper();
+      await waitForPromises();
+
+      expect(findAgentTabs().exists()).toBe(true);
+    });
+
     it('should render agent table', async () => {
       createWrapper();
       await waitForPromises();
 
       expect(findAgentTable().exists()).toBe(true);
-      expect(findEmptyState().exists()).toBe(false);
     });
 
     it('should pass agent and folder info to table component', async () => {
@@ -152,27 +190,111 @@ describe('Agents', () => {
         expect(findBanner().props('buttonLink')).toBe(AGENT_FEEDBACK_ISSUE);
       });
     });
+
+    describe('agent tabs', () => {
+      it('should render project agents tab when the agents query has returned data', async () => {
+        createWrapper();
+        await waitForPromises();
+
+        expect(findTab().at(0).attributes('title')).toBe('Project agents');
+      });
+
+      it('should render project agents tab with alert when the agents query has errored', async () => {
+        createWrapper({ agentQueryResponse: jest.fn().mockRejectedValue({}) });
+        await waitForPromises();
+
+        expect(findTab().at(0).attributes('title')).toBe('Project agents');
+        expect(findTab().at(0).text()).toBe('An error occurred while loading your agents');
+      });
+
+      it('should not render shared agents tab when the query has not returned data', async () => {
+        createWrapper();
+        await waitForPromises();
+
+        expect(findTab()).toHaveLength(1);
+      });
+
+      it('should render shared agents tab when the query has returned data', async () => {
+        createWrapper({
+          sharedAgentsQueryResponse: jest.fn().mockResolvedValue(sharedAgentsResponse),
+        });
+        await waitForPromises();
+
+        expect(findTab()).toHaveLength(2);
+        expect(findTab().at(1).attributes('title')).toBe('Shared agents');
+      });
+
+      it('should render shared agents tab with alert when the agents query has errored', async () => {
+        createWrapper({ sharedAgentsQueryResponse: jest.fn().mockRejectedValue({}) });
+        await waitForPromises();
+
+        expect(findTab().at(1).attributes('title')).toBe('Shared agents');
+        expect(findTab().at(1).text()).toBe('An error occurred while loading your agents');
+      });
+    });
+  });
+
+  describe('agent list update', () => {
+    const initialResponse = { ...clusterAgentsResponse };
+    const newAgent = {
+      ...clusterAgentsResponse.data.project.clusterAgents.nodes[0],
+      id: 'gid://gitlab/Clusters::Agent/999',
+    };
+    const updatedResponse = {
+      data: {
+        project: {
+          ...clusterAgentsResponse.data.project,
+          clusterAgents: {
+            nodes: [...clusterAgentsResponse.data.project.clusterAgents.nodes, newAgent],
+            count: 3,
+          },
+        },
+      },
+    };
+
+    beforeEach(() => {
+      const agentQueryResponse = jest
+        .fn()
+        .mockResolvedValueOnce(initialResponse)
+        .mockResolvedValueOnce(updatedResponse);
+
+      createWrapper({ agentQueryResponse });
+    });
+
+    it('should update the agent table when query data changes', async () => {
+      await waitForPromises();
+
+      expect(findAgentTable().props('agents')).toHaveLength(expectedAgentsList.length);
+
+      await wrapper.vm.$apollo.queries.agents.refetch();
+      await waitForPromises();
+
+      expect(findAgentTable().props('agents')).toHaveLength(expectedAgentsList.length + 1);
+    });
+
+    it('should navigate to the project agents tab', async () => {
+      // The project agents tab is opened by default
+      await waitForPromises();
+      expect(findAgentTabs().props('value')).toBe(0);
+
+      // Open the second tab
+      findAgentTabs().vm.$emit('input', 1);
+      await waitForPromises();
+      expect(findAgentTabs().props('value')).toBe(1);
+
+      // On data change, go back to the project agents tab
+      await wrapper.vm.$apollo.queries.agents.refetch();
+      await waitForPromises();
+      expect(findAgentTabs().props('value')).toBe(0);
+    });
   });
 
   describe('when the agent list is empty', () => {
-    beforeEach(() => {
-      const emptyResponse = {
-        data: {
-          project: {
-            id: 'gid://gitlab/Project/1',
-            clusterAgents: {
-              nodes: [],
-            },
-            ciAccessAuthorizedAgents: {
-              nodes: [],
-            },
-            userAccessAuthorizedAgents: {
-              nodes: [],
-            },
-          },
-        },
-      };
-      return createWrapper({ queryResponse: jest.fn().mockResolvedValue(emptyResponse) });
+    beforeEach(async () => {
+      createWrapper({
+        agentQueryResponse: jest.fn().mockResolvedValue(emptyAgentsResponse),
+      });
+      await waitForPromises();
     });
 
     it('should render empty state', () => {
@@ -188,7 +310,7 @@ describe('Agents', () => {
   describe('when agents query has errored', () => {
     it('displays an alert message', async () => {
       createWrapper({
-        queryResponse: jest.fn().mockRejectedValue({}),
+        agentQueryResponse: jest.fn().mockRejectedValue({}),
       });
       await waitForPromises();
 
@@ -198,7 +320,7 @@ describe('Agents', () => {
     it('emits `kasDisabled` event if the error is related to KAS being disabled', async () => {
       const error = new Error(KAS_DISABLED_ERROR);
       createWrapper({
-        queryResponse: jest.fn().mockRejectedValue(error),
+        agentQueryResponse: jest.fn().mockRejectedValue(error),
       });
       await waitForPromises();
 
@@ -209,9 +331,8 @@ describe('Agents', () => {
   describe('when agents query is loading', () => {
     beforeEach(() => {
       createWrapper({
-        queryResponse: jest.fn().mockReturnValue(new Promise(() => {})),
+        agentQueryResponse: jest.fn().mockReturnValue(new Promise(() => {})),
       });
-      return waitForPromises();
     });
 
     it('displays a loading icon', () => {

@@ -501,7 +501,7 @@ curl --request POST \
 "https://gitlab.com/api/v4/internal/gitlab_subscriptions/namespaces/1234/subscription_add_on_purchases"
 ```
 
-The dates should reflect the day prior to the request, i.e., yesterday.
+The dates should reflect the day prior to the request (that is, yesterday).
 
 Example response:
 

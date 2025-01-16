@@ -59,10 +59,10 @@ For self-compiled installations:
      # Uncomment and set to true if you need to enable email S/MIME signing (default: false)
      enabled: true
      # S/MIME private key file in PEM format, unencrypted
-     # Default is '.gitlab_smime_key' relative to Rails.root (i.e. root of the GitLab app).
+     # Default is '.gitlab_smime_key' relative to Rails.root (the root of the GitLab app).
      key_file: /etc/pki/smime/private/gitlab.key
      # S/MIME public certificate key in PEM format, will be attached to signed messages
-     # Default is '.gitlab_smime_cert' relative to Rails.root (i.e. root of the GitLab app).
+     # Default is '.gitlab_smime_cert' relative to Rails.root (the root of the GitLab app).
      cert_file: /etc/pki/smime/certs/gitlab.crt
      # S/MIME extra CA public certificates in PEM format, will be attached to signed messages
      # Optional

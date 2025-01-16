@@ -45,7 +45,7 @@ RSpec.describe Issues::CloseWorker, feature_category: :team_planning do
       context "when the user can not update the issues" do
         let(:current_user_id) { create(:user).id }
 
-        it 'does not close the issues' do
+        it 'does not close the issue' do
           perform_job
 
           issue.reload
@@ -54,16 +54,15 @@ RSpec.describe Issues::CloseWorker, feature_category: :team_planning do
         end
       end
 
-      # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/work_items/509422
-      context "when user is not provided to the worker (backwards compatibility)" do
+      context "when user is not provided to the worker" do
         let(:current_user_id) { nil }
 
-        it 'does closes the issue' do
+        it 'does not close the issue' do
           perform_job
 
           issue.reload
 
-          expect(issue).to be_closed
+          expect(issue).not_to be_closed
         end
       end
     end

@@ -541,3 +541,24 @@ pipeline_execution_policy:
       excluding:
       - id: 456
 ```
+
+### Configure `ci_skip` in a pipeline execution policy
+
+In the following example, the pipeline execution policy is enforced, and [skipping CI](#skip_ci-type) is disallowed except for the user with ID `75`.
+
+```yaml
+pipeline_execution_policy:
+  - name: My pipeline execution policy with ci.skip exceptions
+    description: 'Enforces CI/CD jobs'
+    enabled: true
+    pipeline_config_strategy: inject_ci
+    content:
+      include:
+        - project: group-a/project1
+          file: README.md
+    skip_ci:
+      allowed: false
+      allowlist:
+        users:
+          - id: 75
+```

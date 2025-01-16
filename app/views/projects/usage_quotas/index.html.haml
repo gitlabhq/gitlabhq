@@ -1,7 +1,7 @@
 - content_for :usage_quotas_alerts do
   = render Pajamas::AlertComponent.new(title: _('Repository usage recalculation started'),
     variant: :info,
-    alert_options: { class: 'js-recalculation-started-alert gl-mt-4 gl-mb-5 hidden' }) do |c|
+    alert_options: { class: 'js-recalculation-started-alert gl-mt-4 gl-mb-5 gl-hidden' }) do |c|
     - c.with_body do
       = _('To view usage, refresh this page in a few minutes.')
 

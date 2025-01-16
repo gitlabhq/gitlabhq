@@ -133,7 +133,7 @@ As an example, the feature is delivered as a stand-alone service called `new_fea
      - Provided parameters such as user, namespace or extra claims would be ignored for Self managed instances.
        Refer to [this section](#the-new-feature-is-introduced-through-the-existing-backend-service) to see how custom claims are handled for self-managed instances.
 
-   The **backend service** (i.e. Ai Gateway) must validate this token and any scopes it carries when receiving the request.
+   The **backend service** (AI gateway) must validate this token and any scopes it carries when receiving the request.
 
 1. If you need to embed additional claims in the token specific to your use case, you can pass these
    in the `extra_claims` argument.

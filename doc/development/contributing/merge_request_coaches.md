@@ -41,7 +41,7 @@ Don't hesitate to ask for help if:
 
 ## Where to find us
 
-You can reach MR Coaches by commenting `@gitlab-bot help` on your merge request or issue
+You can reach MR Coaches by commenting `@gitlab-bot help` on your merge request or issue.
 
 ## What we look for in contributions
 

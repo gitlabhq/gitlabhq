@@ -16755,7 +16755,8 @@ CREATE TABLE operations_feature_flags_issues (
     id bigint NOT NULL,
     feature_flag_id bigint NOT NULL,
     issue_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_0e57762955 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE operations_feature_flags_issues_id_seq

@@ -641,6 +641,7 @@ tests = [
       ee/spec/features/registrations/saas/trial_flow_just_me_importing_project_spec.rb
       ee/spec/controllers/registrations/company_controller_spec.rb
       ee/spec/features/registrations/email_opt_in_registration_spec.rb
+      ee/spec/features/registrations/one_trust_spec.rb
     ]
   },
 

@@ -1141,6 +1141,9 @@ msgstr ""
 msgid "%{path} on %{ref}"
 msgstr ""
 
+msgid "%{percentage}%%"
+msgstr ""
+
 msgid "%{percentage}%% complete"
 msgstr ""
 
@@ -1652,6 +1655,9 @@ msgid "(Copy)"
 msgstr ""
 
 msgid "(Limited to %{quota} compute minutes per month)"
+msgstr ""
+
+msgid "(Slice multiplier: %{multiplier}, Maximum running slices: %{max_slices})"
 msgstr ""
 
 msgid "(UTC %{offset})"
@@ -11333,13 +11339,13 @@ msgstr ""
 msgid "Cancel and close"
 msgstr ""
 
+msgid "Cancel deletion for all indices"
+msgstr ""
+
 msgid "Cancel downstream pipeline"
 msgstr ""
 
 msgid "Cancel editing"
-msgstr ""
-
-msgid "Cancel index deletion"
 msgstr ""
 
 msgid "Cancel pipeline"
@@ -13105,6 +13111,9 @@ msgstr ""
 msgid "ClusterAgents|Premium"
 msgstr ""
 
+msgid "ClusterAgents|Project agents"
+msgstr ""
+
 msgid "ClusterAgents|Receptive"
 msgstr ""
 
@@ -13133,6 +13142,9 @@ msgid "ClusterAgents|See agent activity updates, like tokens created or revoked 
 msgstr ""
 
 msgid "ClusterAgents|Shared"
+msgstr ""
+
+msgid "ClusterAgents|Shared agents"
 msgstr ""
 
 msgid "ClusterAgents|Tell us what you think"
@@ -19134,6 +19146,9 @@ msgstr ""
 msgid "Deleting this group also deletes all child projects, including archived projects, and their resources."
 msgstr ""
 
+msgid "Deletion scheduled at: %{time}"
+msgstr ""
+
 msgid "DeletionSettings|Deletion protection"
 msgstr ""
 
@@ -20817,9 +20832,6 @@ msgid "Documentation for popular identity providers"
 msgstr ""
 
 msgid "Documentation pages URL"
-msgstr ""
-
-msgid "Documents reindexed: %{processed_documents} (%{percentage}%%)"
 msgstr ""
 
 msgid "Domain"
@@ -23478,9 +23490,6 @@ msgid "Expand settings section"
 msgstr ""
 
 msgid "Expand sidebar"
-msgstr ""
-
-msgid "Expected documents: %{expected_documents}"
 msgstr ""
 
 msgid "Experiment"
@@ -26360,6 +26369,9 @@ msgid "GlobalSearch|Only first %{max_shown} of not indexed projects is shown"
 msgstr ""
 
 msgid "GlobalSearch|Open file in repository"
+msgstr ""
+
+msgid "GlobalSearch|Overview"
 msgstr ""
 
 msgid "GlobalSearch|Pages or actions"
@@ -29956,6 +29968,9 @@ msgid "Index root namespaces automatically"
 msgstr ""
 
 msgid "Index the instance"
+msgstr ""
+
+msgid "Indexed documents: %{processed_documents}/%{expected_documents}"
 msgstr ""
 
 msgid "Indexing CPU to tasks multiplier"
@@ -46664,9 +46679,6 @@ msgstr ""
 msgid "Registry setup"
 msgstr ""
 
-msgid "Reindexing Status: %{status} (Slice multiplier: %{multiplier}, Maximum running slices: %{max_slices})"
-msgstr ""
-
 msgid "Reject"
 msgstr ""
 
@@ -56167,9 +56179,6 @@ msgstr ""
 msgid "Task"
 msgstr ""
 
-msgid "Task ID: %{elastic_task}"
-msgstr ""
-
 msgid "Task list"
 msgstr ""
 
@@ -60712,7 +60721,7 @@ msgstr ""
 msgid "Unused"
 msgstr ""
 
-msgid "Unused, previous indices: %{index_names} will be deleted after %{time} automatically."
+msgid "Unused indices scheduled for deletion"
 msgstr ""
 
 msgid "Unverified"

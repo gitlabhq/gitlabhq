@@ -32,7 +32,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import {
   createAgentResponse,
   createAgentErrorResponse,
-  getAgentResponse,
+  clusterAgentsResponse,
 } from 'ee_else_ce_jest/clusters_list/components/mock_data';
 import { createAgentTokenResponse, createAgentTokenErrorResponse } from '../mocks/apollo';
 import ModalStub from '../stubs';
@@ -105,7 +105,7 @@ describe('InstallAgentModal', () => {
       variables: {
         projectPath,
       },
-      data: getAgentResponse.data,
+      data: clusterAgentsResponse.data,
     });
   };
 

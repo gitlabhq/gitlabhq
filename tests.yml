@@ -331,6 +331,7 @@ mapping:
     test:
     - 'ee/spec/features/registrations/saas/*_spec.rb'
     - ee/spec/features/registrations/email_opt_in_registration_spec.rb
+    - ee/spec/features/registrations/one_trust_spec.rb
 
   # ultimate trials
   - source: 'ee/app/controllers/gitlab_subscriptions/trials_controller\.rb'

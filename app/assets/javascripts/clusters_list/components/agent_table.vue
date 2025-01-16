@@ -93,41 +93,49 @@ export default {
   computed: {
     fields() {
       const tdClass = '!gl-pt-3 !gl-pb-4 !gl-align-middle';
+      const thClass = '!gl-border-t-0';
       return [
         {
           key: 'name',
           label: this.$options.i18n.nameLabel,
           tdClass,
+          thClass,
         },
         {
           key: 'status',
           label: this.$options.i18n.statusLabel,
           tdClass,
+          thClass,
         },
         {
           key: 'lastContact',
           label: this.$options.i18n.lastContactLabel,
           tdClass,
+          thClass,
         },
         {
           key: 'version',
           label: this.$options.i18n.versionLabel,
           tdClass,
+          thClass,
         },
         {
           key: 'agentID',
           label: this.$options.i18n.agentIdLabel,
           tdClass,
+          thClass,
         },
         {
           key: 'configuration',
           label: this.$options.i18n.configurationLabel,
           tdClass,
+          thClass,
         },
         {
           key: 'options',
           label: '',
           tdClass,
+          thClass,
         },
       ];
     },

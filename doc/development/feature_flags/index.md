@@ -1045,8 +1045,7 @@ use a **percentage of time** rollout. For example:
 ### Dropping Sidekiq jobs
 
 Instead of [deferring jobs](#deferring-sidekiq-jobs), jobs can be entirely dropped by enabling the feature flag
-`drop_sidekiq_jobs_{WorkerName}`. Use this feature flag when you are certain the jobs are safe to be dropped, i.e.
-the jobs do not need to be processed in the future.
+`drop_sidekiq_jobs_{WorkerName}`. Use this feature flag when you are certain the jobs do not need to be processed in the future, and therefore are safe to be dropped.
 
 ```shell
 # drop all the jobs
@@ -1057,5 +1056,4 @@ the jobs do not need to be processed in the future.
 ```
 
 NOTE:
-Dropping feature flag (`drop_sidekiq_jobs_{WorkerName}`) takes precedence over deferring feature flag (`run_sidekiq_jobs_{WorkerName}`),
-i.e. when `drop_sidekiq_jobs` is enabled and `run_sidekiq_jobs` is disabled, jobs are entirely dropped.
+Dropping feature flag (`drop_sidekiq_jobs_{WorkerName}`) takes precedence over deferring feature flag (`run_sidekiq_jobs_{WorkerName}`). When `drop_sidekiq_jobs` is enabled and `run_sidekiq_jobs` is disabled, jobs are entirely dropped.

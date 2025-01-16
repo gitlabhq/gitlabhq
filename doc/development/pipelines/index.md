@@ -245,7 +245,7 @@ that already existed before the enablement of merge trains, but that we couldn't
 Merge train pipelines run a single `pre-merge-checks` job which ensures the latest pipeline before merge is:
 
 1. A [Merged Results pipeline](../../ci/pipelines/merged_results_pipelines.md)
-1. A [`tier-3` pipeline](#pipeline-tiers) (i.e. full pipeline, not predictive one)
+1. A [`tier-3` pipeline](#pipeline-tiers) (a full pipeline, not a predictive one)
 1. Created at most 8 hours ago (72 hours for stable branches)
 
 We opened [a feedback issue](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/513)
@@ -260,7 +260,7 @@ to actually start running tests in merge train pipelines.
 
 #### Why do we need to have a "stable" default branch?
 
-If the default branch is unstable (i.e. CI/CD pipelines for the default branch are failing frequently), all of the merge requests pipelines that were added AFTER a faulty merge request pipeline would have to be **canceled** and **added back to the train**, which would create a lot of delays if the merge train is long.
+If the default branch is unstable (for example, the CI/CD pipelines for the default branch are failing frequently), all of the merge requests pipelines that were added AFTER a faulty merge request pipeline would have to be **canceled** and **added back to the train**, which would create a lot of delays if the merge train is long.
 
 #### How stable does the default branch have to be?
 
