@@ -340,7 +340,12 @@ module Gitlab
       end
 
       def content_changed?
-        return blobs_changed? if diff_refs
+        if Feature.enabled?(:show_diff_if_head_sha_commit_is_missing, self.repository.project)
+          return blobs_changed? if diff_refs && new_blob
+        else
+          return blobs_changed? if diff_refs # rubocop:disable Style/IfInsideElse -- Disabling this for the duration of the flag for better readability
+        end
+
         return false if new_file? || deleted_file? || renamed_file?
 
         text? && diff_lines.any?
