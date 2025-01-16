@@ -3,7 +3,7 @@ import UsageBanner from '~/vue_shared/components/usage_quotas/usage_banner.vue';
 import { s__ } from '~/locale';
 import NumberToHumanSize from '~/vue_shared/components/number_to_human_size/number_to_human_size.vue';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
-import StorageTypeWarning from './storage_type_warning.vue';
+import StorageTypeWarning from '../../components/storage_type_warning.vue';
 
 export default {
   name: 'ContainerRegistryUsage',

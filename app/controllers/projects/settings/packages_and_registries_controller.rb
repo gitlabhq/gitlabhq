@@ -37,7 +37,7 @@ module Projects
       end
 
       def set_feature_flag_container_registry_protected_tags
-        push_frontend_feature_flag(:container_registry_protected_tags, project.root_ancestor)
+        push_frontend_feature_flag(:container_registry_protected_tags, project)
       end
     end
   end

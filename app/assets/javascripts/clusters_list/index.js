@@ -30,7 +30,6 @@ export default () => {
     canAddCluster,
     canAdminCluster,
     kasInstallVersion,
-    kasCheckVersion,
     displayClusterAgents,
     certificateBasedClustersEnabled,
   } = el.dataset;
@@ -49,7 +48,6 @@ export default () => {
       canAddCluster: parseBoolean(canAddCluster),
       canAdminCluster: parseBoolean(canAdminCluster),
       kasInstallVersion,
-      kasCheckVersion,
       displayClusterAgents: parseBoolean(displayClusterAgents),
       certificateBasedClustersEnabled: parseBoolean(certificateBasedClustersEnabled),
     },

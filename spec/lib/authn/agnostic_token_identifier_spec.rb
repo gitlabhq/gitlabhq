@@ -3,6 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Authn::AgnosticTokenIdentifier, feature_category: :system_access do
+  shared_examples 'supported token type' do
+    describe '#initialize' do
+      it 'finds the correct revocable token type' do
+        expect(token).to be_instance_of(token_type)
+      end
+    end
+  end
+
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
@@ -31,11 +39,29 @@ RSpec.describe Authn::AgnosticTokenIdentifier, feature_category: :system_access 
     end
 
     with_them do
-      describe '#initialize' do
-        it 'finds the correct revocable token type' do
-          expect(token).to be_instance_of(token_type)
-        end
-      end
+      it_behaves_like 'supported token type'
+    end
+  end
+
+  context 'with CI Job tokens' do
+    let(:plaintext) { create(:ci_build, status: status).token }
+    let(:token_type) { ::Authn::Tokens::CiJobToken }
+
+    before do
+      rsa_key = OpenSSL::PKey::RSA.generate(3072).to_s
+      stub_application_setting(ci_jwt_signing_key: rsa_key)
+    end
+
+    context 'when job is running' do
+      let(:status) { :running }
+
+      it_behaves_like 'supported token type'
+    end
+
+    context 'when job is not running' do
+      let(:status) { :success }
+
+      it_behaves_like 'supported token type'
     end
   end
 end

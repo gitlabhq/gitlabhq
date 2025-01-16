@@ -1010,6 +1010,9 @@ msgstr ""
 msgid "%{labelStart}Project:%{labelEnd} %{project}"
 msgstr ""
 
+msgid "%{labelStart}Report Type:%{labelEnd} %{reportType}"
+msgstr ""
+
 msgid "%{labelStart}Scanner:%{labelEnd} %{scanner}"
 msgstr ""
 
@@ -1017,9 +1020,6 @@ msgid "%{labelStart}Sent request:%{labelEnd} %{headers}"
 msgstr ""
 
 msgid "%{labelStart}Severity:%{labelEnd} %{severity}"
-msgstr ""
-
-msgid "%{labelStart}Tool:%{labelEnd} %{reportType}"
 msgstr ""
 
 msgid "%{labelStart}URL:%{labelEnd} %{url}"
@@ -13223,9 +13223,6 @@ msgid "ClusterAgents|You cannot see this token again after you close this window
 msgstr ""
 
 msgid "ClusterAgents|You will need to create a token to connect to your agent"
-msgstr ""
-
-msgid "ClusterAgents|Your agent version is out of sync with your GitLab KAS version (v%{version}), which might cause compatibility problems. Update the agent installed on your cluster to the most recent version."
 msgstr ""
 
 msgid "ClusterAgents|Your instance doesn't have the %{linkStart}GitLab Agent Server (KAS)%{linkEnd} set up. Ask a GitLab Administrator to install it."
@@ -31732,6 +31729,36 @@ msgstr ""
 msgid "JiraConnect|Your browser is not supported"
 msgstr ""
 
+msgid "JiraIntegration|Enable viewing Jira issues in GitLab."
+msgstr ""
+
+msgid "JiraIntegration|Keys of Jira projects. When `issues_enabled` is `true`, this setting specifies which Jira projects to view issues from in GitLab."
+msgstr ""
+
+msgid "JiraIntegration|Prefix to match Jira issue keys."
+msgstr ""
+
+msgid "JiraIntegration|Regular expression to match Jira issue keys."
+msgstr ""
+
+msgid "JiraIntegration|The ID of one or more transitions for [custom issue transitions](../integration/jira/issues.md#custom-issue-transitions).Ignored when `jira_issue_transition_automatic` is enabled. Defaults to a blank string,which disables custom transitions."
+msgstr ""
+
+msgid "JiraIntegration|The Jira API token, password, or personal access token to use with Jira. When using Basic Authentication (`jira_auth_type` is `0`), use an API token for Jira Cloud, and a password for Jira Data Center or Jira Server. For a Jira personal access token (`jira_auth_type` is `1`), use the personal access token."
+msgstr ""
+
+msgid "JiraIntegration|The URL to the Jira project which is being linked to this GitLab project (for example, `https://jira.example.com`)."
+msgstr ""
+
+msgid "JiraIntegration|The authentication method to use with Jira. Use `0` for Basic Authentication, and `1` for Jira personal access token. Defaults to `0`."
+msgstr ""
+
+msgid "JiraIntegration|The base URL to the Jira instance API. Web URL value is used if not set (for example, `https://jira-api.example.com`)."
+msgstr ""
+
+msgid "JiraIntegration|The email or username to use with Jira. Use an email for Jira Cloud, and a username for Jira Data Center and Jira Server. Required when using Basic Authentication (`jira_auth_type` is `0`)."
+msgstr ""
+
 msgid "JiraRequest|A connection error occurred while connecting to Jira. Try your request again."
 msgstr ""
 
@@ -47437,6 +47464,9 @@ msgstr ""
 msgid "Reports|New"
 msgstr ""
 
+msgid "Reports|Report Type"
+msgstr ""
+
 msgid "Reports|See test results while the pipeline is running"
 msgstr ""
 
@@ -47447,9 +47477,6 @@ msgid "Reports|Test summary failed to load results"
 msgstr ""
 
 msgid "Reports|Test summary results are being parsed"
-msgstr ""
-
-msgid "Reports|Tool"
 msgstr ""
 
 msgid "Reports|View partial report"

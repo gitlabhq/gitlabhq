@@ -1,6 +1,6 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
-import DependencyProxyUsage from '~/usage_quotas/storage/components/dependency_proxy_usage.vue';
+import DependencyProxyUsage from '~/usage_quotas/storage/namespace/components/dependency_proxy_usage.vue';
 
 describe('Dependency proxy usage component', () => {
   /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */

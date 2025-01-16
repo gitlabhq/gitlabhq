@@ -216,7 +216,7 @@ This method should return an array of hashes for each field, where the keys can 
 
 | Key            | Type    | Required | Default                      | Description |
 |:---------------|:--------|:---------|:-----------------------------|:--|
-| `type:`        | symbol  | true     | `:text`                      | The type of the form field. Can be `:text`, `:number`, `:textarea`, `:password`, `:checkbox`, or `:select`. |
+| `type:`        | symbol  | true     | `:text`                      | The type of the form field. Can be `:text`, `:number`, `:textarea`, `:password`, `:checkbox`, `:string_array` or `:select`. |
 | `section:`     | symbol  | false    |                              | Specify which section the field belongs to. |
 | `name:`        | string  | true     |                              | The property name for the form field. |
 | `required:`    | boolean | false    | `false`                      | Specify if the form field is required or optional. Note [backend validations](#define-validations) for presence are still needed. |

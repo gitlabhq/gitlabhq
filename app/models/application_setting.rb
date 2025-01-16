@@ -707,6 +707,13 @@ class ApplicationSetting < ApplicationRecord
 
   validates :sign_in_restrictions, json_schema: { filename: 'application_setting_sign_in_restrictions' }
 
+  jsonb_accessor :search,
+    global_search_merge_requests_enabled: [:boolean, { default: true }],
+    global_search_work_items_enabled: [:boolean, { default: true }],
+    global_search_users_enabled: [:boolean, { default: true }]
+
+  validates :search, json_schema: { filename: 'application_setting_search' }
+
   jsonb_accessor :transactional_emails,
     resource_access_token_notify_inherited: [:boolean, { default: false }],
     lock_resource_access_token_notify_inherited: [:boolean, { default: false }]

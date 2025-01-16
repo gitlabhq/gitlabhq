@@ -53,6 +53,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.resource_access_token_notify_inherited).to be(false) }
     it { expect(setting.lock_resource_access_token_notify_inherited).to be(false) }
     it { expect(setting.ropc_without_client_credentials).to be(true) }
+    it { expect(setting.global_search_merge_requests_enabled).to be(true) }
+    it { expect(setting.global_search_work_items_enabled).to be(true) }
+    it { expect(setting.global_search_users_enabled).to be(true) }
   end
 
   describe 'USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS' do
@@ -95,6 +98,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       }
     end
 
+    it { expect(described_class).to validate_jsonb_schema(['application_setting_search']) }
     it { expect(described_class).to validate_jsonb_schema(['resource_usage_limits']) }
     it { expect(described_class).to validate_jsonb_schema(['application_setting_rate_limits']) }
     it { expect(described_class).to validate_jsonb_schema(['application_setting_package_registry']) }

@@ -1,7 +1,7 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import StorageUsageStatistics from '~/usage_quotas/storage/components/storage_usage_statistics.vue';
-import StorageUsageOverviewCard from '~/usage_quotas/storage/components/storage_usage_overview_card.vue';
-import { mockGetNamespaceStorageGraphQLResponse } from '../mock_data';
+import StorageUsageStatistics from '~/usage_quotas/storage/namespace/components/storage_usage_statistics.vue';
+import StorageUsageOverviewCard from '~/usage_quotas/storage/namespace/components/storage_usage_overview_card.vue';
+import { mockGetNamespaceStorageGraphQLResponse } from '../../mock_data';
 
 const defaultProps = {
   usedStorage:

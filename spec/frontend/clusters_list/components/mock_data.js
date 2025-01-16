@@ -51,9 +51,11 @@ export const clusterAgents = [
       nodes: [
         {
           metadata: { version: 'v14.8.0' },
+          warnings: [],
         },
         {
           metadata: { version: 'v14.8.0' },
+          warnings: [],
         },
       ],
     },
@@ -79,6 +81,7 @@ export const clusterAgents = [
       nodes: [
         {
           metadata: { version: 'v14.6.0' },
+          warnings: [{ version: { message: 'This agent is outdated' } }],
         },
       ],
     },
@@ -104,9 +107,11 @@ export const clusterAgents = [
       nodes: [
         {
           metadata: { version: 'v14.7.0' },
+          warnings: [],
         },
         {
           metadata: { version: 'v14.8.0' },
+          warnings: [],
         },
       ],
     },
@@ -132,9 +137,11 @@ export const clusterAgents = [
       nodes: [
         {
           metadata: { version: 'v14.5.0' },
+          warnings: [{ version: { message: 'This agent is outdated' } }],
         },
         {
           metadata: { version: 'v14.3.0' },
+          warnings: [{ version: { message: 'This agent is outdated' } }],
         },
       ],
     },

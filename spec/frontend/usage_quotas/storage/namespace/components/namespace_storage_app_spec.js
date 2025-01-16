@@ -5,21 +5,21 @@ import { cloneDeep } from 'lodash';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { captureException } from '~/ci/runner/sentry_utils';
-import NamespaceStorageApp from '~/usage_quotas/storage/components/namespace_storage_app.vue';
-import ProjectList from '~/usage_quotas/storage/components/project_list.vue';
-import getNamespaceStorageQuery from 'ee_else_ce/usage_quotas/storage/queries/namespace_storage.query.graphql';
-import getProjectListStorageQuery from 'ee_else_ce/usage_quotas/storage/queries/project_list_storage.query.graphql';
+import NamespaceStorageApp from '~/usage_quotas/storage/namespace/components/namespace_storage_app.vue';
+import ProjectList from '~/usage_quotas/storage/namespace/components/project_list.vue';
+import getNamespaceStorageQuery from 'ee_else_ce/usage_quotas/storage/namespace/queries/namespace_storage.query.graphql';
+import getProjectListStorageQuery from 'ee_else_ce/usage_quotas/storage/namespace/queries/project_list_storage.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import SearchAndSortBar from '~/usage_quotas/components/search_and_sort_bar/search_and_sort_bar.vue';
-import StorageUsageStatistics from '~/usage_quotas/storage/components/storage_usage_statistics.vue';
-import DependencyProxyUsage from '~/usage_quotas/storage/components/dependency_proxy_usage.vue';
-import ContainerRegistryUsage from '~/usage_quotas/storage/components/container_registry_usage.vue';
+import StorageUsageStatistics from '~/usage_quotas/storage/namespace/components/storage_usage_statistics.vue';
+import DependencyProxyUsage from '~/usage_quotas/storage/namespace/components/dependency_proxy_usage.vue';
+import ContainerRegistryUsage from '~/usage_quotas/storage/namespace/components/container_registry_usage.vue';
 import {
   namespace,
   defaultNamespaceProvideValues,
   mockGetNamespaceStorageGraphQLResponse,
   mockGetProjectListStorageGraphQLResponse,
-} from '../mock_data';
+} from '../../mock_data';
 
 jest.mock('~/ci/runner/sentry_utils');
 

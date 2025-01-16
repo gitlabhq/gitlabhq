@@ -34,11 +34,11 @@ RSpec.describe 'Topic show page', :with_current_organization, feature_category: 
     it 'shows title, avatar and description as markdown' do
       expect(page).to have_content(topic.title)
       expect(page).not_to have_content(topic.name)
-      expect(page).to have_selector('.gl-avatar.gl-avatar-s64')
-      expect(find('.topic-description')).to have_selector('p > strong')
-      expect(find('.topic-description')).to have_selector('p > a[rel]')
-      expect(find('.topic-description')).to have_selector('p > gl-emoji')
-      expect(find('.topic-description')).to have_selector('p > code')
+      expect(page).to have_selector('.gl-avatar.gl-avatar-s48')
+      expect(find('.md')).to have_selector('p > strong')
+      expect(find('.md')).to have_selector('p > a[rel]')
+      expect(find('.md')).to have_selector('p > gl-emoji')
+      expect(find('.md')).to have_selector('p > code')
     end
 
     context 'with associated projects' do

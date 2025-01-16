@@ -1,5 +1,5 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import ContainerRegistryUsage from '~/usage_quotas/storage/components/container_registry_usage.vue';
+import ContainerRegistryUsage from '~/usage_quotas/storage/namespace/components/container_registry_usage.vue';
 import StorageTypeWarning from '~/usage_quotas/storage/components/storage_type_warning.vue';
 
 describe('Container registry usage component', () => {

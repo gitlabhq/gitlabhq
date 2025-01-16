@@ -2479,7 +2479,6 @@ RSpec/NamedSubject:
     - 'spec/models/import_failure_spec.rb'
     - 'spec/models/incident_management/project_incident_management_setting_spec.rb'
     - 'spec/models/instance_configuration_spec.rb'
-    - 'spec/models/integrations/apple_app_store_spec.rb'
     - 'spec/models/integrations/asana_spec.rb'
     - 'spec/models/integrations/bamboo_spec.rb'
     - 'spec/models/integrations/bugzilla_spec.rb'

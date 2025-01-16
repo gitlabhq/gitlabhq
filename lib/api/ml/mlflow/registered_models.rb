@@ -169,6 +169,20 @@ module API
 
             present result, with: Entities::Ml::Mlflow::ListRegisteredModels
           end
+
+          params do
+            optional :name, type: String,
+              desc: 'The name of the model'
+            optional :alias, type: String,
+              desc: 'The alias of the model, e.g. the Semantic Version `1.0.0`'
+          end
+          desc 'Gets a Model Version by alias' do
+            detail 'https://mlflow.org/docs/latest/rest-api.html#get-model-version-by-alias'
+          end
+          get 'alias', urgency: :low do
+            present find_model_version(user_project, params[:name], params[:alias]),
+              with: Entities::Ml::Mlflow::ModelVersion, root: :model_version
+          end
         end
       end
     end

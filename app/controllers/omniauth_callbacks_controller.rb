@@ -268,7 +268,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
         perform_registration_tasks(@user, oauth['provider']) if new_user
 
-        enqueue_after_sign_in_workers(@user)
+        enqueue_after_sign_in_workers(@user, auth_user)
 
         sign_in_and_redirect_or_verify_identity(@user, auth_user, new_user)
       end
@@ -444,7 +444,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   # overridden in specific EE class
-  def enqueue_after_sign_in_workers(_user)
+  def enqueue_after_sign_in_workers(_user, _auth_user)
     true
   end
 

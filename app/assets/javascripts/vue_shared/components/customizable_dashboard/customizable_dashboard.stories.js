@@ -15,24 +15,36 @@ const Template = (args, { argTypes }) => ({
 export const Default = Template.bind({});
 Default.args = {
   editable: false,
-  panels: [
-    {
-      component: 'CubeLineChart',
-      title: s__('ProductAnalytics|Audience'),
-      gridAttributes: {
-        width: 3,
-        height: 3,
+  initialDashboard: {
+    title: 'Dashboard',
+    description: 'Test description',
+    panels: [
+      {
+        component: 'CubeLineChart',
+        title: s__('ProductAnalytics|Audience'),
+        gridAttributes: {
+          width: 3,
+          height: 3,
+        },
       },
-    },
-    {
-      component: 'CubeLineChart',
-      title: s__('ProductAnalytics|Audience'),
-      gridAttributes: {
-        width: 3,
-        height: 3,
+      {
+        component: 'CubeLineChart',
+        title: s__('ProductAnalytics|Audience'),
+        gridAttributes: {
+          width: 3,
+          height: 3,
+        },
       },
-    },
-  ],
+    ],
+    userDefined: true,
+    status: null,
+    errors: null,
+  },
+  availableVisualizations: {
+    loading: true,
+    hasError: false,
+    visualizations: [],
+  },
 };
 
 export const Editable = Template.bind({});

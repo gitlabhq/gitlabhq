@@ -1,14 +1,14 @@
 <script>
 import { GlTable, GlLink, GlSprintf } from '@gitlab/ui';
-import ReadOnlyProjectBadge from 'ee_component/usage_quotas/storage/components/read_only_project_badge.vue';
+import ReadOnlyProjectBadge from 'ee_component/usage_quotas/storage/namespace/components/read_only_project_badge.vue';
 import { __ } from '~/locale';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import NumberToHumanSize from '~/vue_shared/components/number_to_human_size/number_to_human_size.vue';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import StorageTypeHelpLink from './storage_type_help_link.vue';
-import StorageTypeWarning from './storage_type_warning.vue';
+import StorageTypeHelpLink from '../../components/storage_type_help_link.vue';
+import StorageTypeWarning from '../../components/storage_type_warning.vue';
 
 export default {
   name: 'ProjectList',

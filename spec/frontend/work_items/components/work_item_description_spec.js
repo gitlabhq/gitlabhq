@@ -16,6 +16,7 @@ import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutati
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import workItemDescriptionTemplateQuery from '~/work_items/graphql/work_item_description_template.query.graphql';
 import { autocompleteDataSources, markdownPreviewPath, newWorkItemId } from '~/work_items/utils';
+import { ROUTES } from '~/work_items/constants';
 import {
   updateWorkItemMutationResponse,
   workItemByIidResponseFactory,
@@ -27,6 +28,7 @@ jest.mock('~/lib/utils/autosave');
 
 describe('WorkItemDescription', () => {
   let wrapper;
+  let router;
 
   Vue.use(VueApollo);
 
@@ -40,8 +42,8 @@ describe('WorkItemDescription', () => {
   const findDescriptionTemplateListbox = () =>
     wrapper.findComponent(WorkItemDescriptionTemplatesListbox);
   const findDescriptionTemplateWarning = () => wrapper.findByTestId('description-template-warning');
-  const findDescriptionTemplateWarningButton = (type) =>
-    findDescriptionTemplateWarning().find(`[data-testid="template-${type}"]`);
+  const findApplyTemplate = () => wrapper.findByTestId('template-apply');
+  const findCancelApplyTemplate = () => wrapper.findByTestId('template-cancel');
 
   const editDescription = (newText) => findMarkdownEditor().vm.$emit('input', newText);
 
@@ -76,7 +78,13 @@ describe('WorkItemDescription', () => {
     editMode = false,
     showButtonsBelowField,
     descriptionTemplateHandler = successfulTemplateHandler,
+    routeName = '',
+    routeQuery = {},
   } = {}) => {
+    router = {
+      replace: jest.fn(),
+    };
+
     wrapper = shallowMountExtended(WorkItemDescription, {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, workItemResponseHandler],
@@ -97,6 +105,13 @@ describe('WorkItemDescription', () => {
         glFeatures: {
           workItemsAlpha: true,
         },
+      },
+      mocks: {
+        $route: {
+          name: routeName,
+          query: routeQuery,
+        },
+        $router: router,
       },
       stubs: {
         GlAlert,
@@ -320,25 +335,25 @@ describe('WorkItemDescription', () => {
 
         it('displays a warning when a description template is selected', () => {
           expect(findDescriptionTemplateWarning().exists()).toBe(true);
-          expect(findDescriptionTemplateWarningButton('cancel').exists()).toBe(true);
-          expect(findDescriptionTemplateWarningButton('apply').exists()).toBe(true);
+          expect(findCancelApplyTemplate().exists()).toBe(true);
+          expect(findApplyTemplate().exists()).toBe(true);
         });
 
         it('hides the warning when the cancel button is clicked', async () => {
           expect(findDescriptionTemplateWarning().exists()).toBe(true);
-          findDescriptionTemplateWarningButton('cancel').vm.$emit('click');
+          findCancelApplyTemplate().vm.$emit('click');
           await nextTick();
           expect(findDescriptionTemplateWarning().exists()).toBe(false);
         });
 
         it('applies the template when the apply button is clicked', async () => {
-          findDescriptionTemplateWarningButton('apply').vm.$emit('click');
+          findApplyTemplate().vm.$emit('click');
           await nextTick();
           expect(findMarkdownEditor().props('value')).toBe('A template');
         });
 
         it('hides the warning when the template is applied', async () => {
-          findDescriptionTemplateWarningButton('apply').vm.$emit('click');
+          findApplyTemplate().vm.$emit('click');
           await nextTick();
           expect(findDescriptionTemplateWarning().exists()).toBe(false);
         });
@@ -346,7 +361,7 @@ describe('WorkItemDescription', () => {
         describe('clearing a template', () => {
           it('sets the description to be empty when cleared', async () => {
             // apply a template
-            findDescriptionTemplateWarningButton('apply').vm.$emit('click');
+            findApplyTemplate().vm.$emit('click');
             await nextTick();
             expect(findMarkdownEditor().props('value')).toBe('A template');
             // clear the template
@@ -360,7 +375,7 @@ describe('WorkItemDescription', () => {
         describe('resetting a template', () => {
           it('sets the description back to the original template value when reset', async () => {
             // apply a template
-            findDescriptionTemplateWarningButton('apply').vm.$emit('click');
+            findApplyTemplate().vm.$emit('click');
             // write something else
             findMarkdownEditor().vm.$emit('input', 'some other value');
             await nextTick();
@@ -386,6 +401,134 @@ describe('WorkItemDescription', () => {
 
         it('emits an error event', () => {
           expect(wrapper.emitted('error')).toEqual([['Unable to find selected template.']]);
+        });
+      });
+
+      describe('URL param handling', () => {
+        describe('when on new work item route', () => {
+          beforeEach(async () => {
+            await createComponent({
+              routeName: ROUTES.new,
+              routeQuery: { description_template: 'bug', other_param: 'some_value' },
+              isEditing: true,
+            });
+          });
+
+          it('sets selected template from URL on mount', () => {
+            expect(findDescriptionTemplateListbox().props().template).toBe('bug');
+          });
+
+          it('updates URL when applying template', async () => {
+            findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example-template');
+            await nextTick();
+            await waitForPromises();
+
+            findApplyTemplate().vm.$emit('click');
+
+            expect(router.replace).toHaveBeenCalledWith({
+              query: {
+                description_template: 'example-template',
+                other_param: 'some_value',
+              },
+            });
+          });
+
+          it('removes template param (and not other params) from URL when canceling template', async () => {
+            findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example-template');
+            await nextTick();
+            await waitForPromises();
+
+            findCancelApplyTemplate().vm.$emit('click');
+
+            expect(router.replace).toHaveBeenCalledWith({
+              query: {
+                other_param: 'some_value',
+              },
+            });
+          });
+        });
+
+        describe('issuable_template param', () => {
+          beforeEach(async () => {
+            await createComponent({
+              routeName: ROUTES.new,
+              routeQuery: { issuable_template: 'my issue template', other_param: 'some_value' },
+              isEditing: true,
+            });
+          });
+
+          it('sets selected template from old template param', () => {
+            expect(findDescriptionTemplateListbox().props().template).toBe('my issue template');
+          });
+
+          it('removes old template param on apply', async () => {
+            findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example-template');
+            await nextTick();
+            await waitForPromises();
+
+            findApplyTemplate().vm.$emit('click');
+
+            expect(router.replace).toHaveBeenCalledWith({
+              query: {
+                description_template: 'example-template',
+                other_param: 'some_value',
+              },
+            });
+          });
+
+          it('removes old template param on cancel', async () => {
+            await createComponent({
+              routeName: ROUTES.new,
+              routeQuery: { issuable_template: 'my issue template', other_param: 'some_value' },
+              isEditing: true,
+            });
+
+            findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example-template');
+            await nextTick();
+            await waitForPromises();
+
+            findCancelApplyTemplate().vm.$emit('click');
+
+            expect(router.replace).toHaveBeenCalledWith({
+              query: {
+                other_param: 'some_value',
+              },
+            });
+          });
+        });
+
+        describe('when not on new work item route', () => {
+          beforeEach(async () => {
+            await createComponent({
+              routeName: ROUTES.workItem,
+              routeQuery: { description_template: 'my issue template' },
+              isEditing: true,
+            });
+          });
+
+          it('does not set selected template from URL on mount', () => {
+            expect(findDescriptionTemplateListbox().props().template).toBe('');
+          });
+
+          it('does not update URL when applying template', async () => {
+            findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example-template');
+            await nextTick();
+            await waitForPromises();
+
+            findApplyTemplate().vm.$emit('click');
+
+            expect(router.replace).not.toHaveBeenCalled();
+          });
+
+          it('does not update URL when canceling template', async () => {
+            findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example-template');
+            await nextTick();
+            await waitForPromises();
+
+            findCancelApplyTemplate().vm.$emit('click');
+
+            expect(router.replace).not.toHaveBeenCalled();
+          });
         });
       });
     });

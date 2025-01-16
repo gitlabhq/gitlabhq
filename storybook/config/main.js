@@ -1,3 +1,4 @@
+const path = require('path');
 const IS_EE = require('../../config/helpers/is_ee_env');
 
 module.exports = {
@@ -15,4 +16,10 @@ module.exports = {
   docs: {
     autodocs: true,
   },
+  staticDirs: [
+    {
+      from: path.resolve(__dirname, '../../app/assets/images'),
+      to: '/assets/images',
+    },
+  ],
 };

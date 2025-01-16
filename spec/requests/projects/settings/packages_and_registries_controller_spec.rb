@@ -16,28 +16,6 @@ RSpec.describe Projects::Settings::PackagesAndRegistriesController, feature_cate
     stub_container_registry_config(enabled: container_registry_enabled)
   end
 
-  shared_examples 'pushed feature flag' do |feature_flag_name|
-    let(:feature_flag_name_camelized) { feature_flag_name.to_s.camelize(:lower).to_sym }
-
-    it "pushes feature flag :#{feature_flag_name} to the view" do
-      subject
-
-      expect(response.body).to have_pushed_frontend_feature_flags(feature_flag_name_camelized => true)
-    end
-
-    context "when feature flag :#{feature_flag_name} is disabled" do
-      before do
-        stub_feature_flags(feature_flag_name.to_sym => false)
-      end
-
-      it "does not push feature flag :#{feature_flag_name} to the view" do
-        subject
-
-        expect(response.body).to have_pushed_frontend_feature_flags(feature_flag_name_camelized => false)
-      end
-    end
-  end
-
   describe 'GET #show' do
     context 'when user is authorized' do
       let(:user) { project.creator }

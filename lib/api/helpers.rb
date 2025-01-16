@@ -371,6 +371,10 @@ module API
       forbidden! unless current_user.can_admin_all_resources?
     end
 
+    def authorize_read_application_statistics!
+      authenticated_as_admin!
+    end
+
     def authorize!(action, subject = :global, reason = nil)
       forbidden!(reason) unless can?(current_user, action, subject)
     end

@@ -51,8 +51,7 @@
 }
 
 .top-area {
-  border-bottom: 1px solid $border-color;
-  display: flex;
+  @apply gl-flex gl-border-b;
 
   @include media-breakpoint-down(md) {
     flex-flow: column-reverse wrap;

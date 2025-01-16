@@ -1,9 +1,9 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import StorageUsageOverviewCard from '~/usage_quotas/storage/components/storage_usage_overview_card.vue';
+import StorageUsageOverviewCard from '~/usage_quotas/storage/namespace/components/storage_usage_overview_card.vue';
 import NumberToHumanSize from '~/vue_shared/components/number_to_human_size/number_to_human_size.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { mockGetNamespaceStorageGraphQLResponse } from '../mock_data';
+import { mockGetNamespaceStorageGraphQLResponse } from '../../mock_data';
 
 describe('StorageUsageOverviewCard', () => {
   /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */

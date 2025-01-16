@@ -9,6 +9,8 @@ RSpec.describe API::Ml::Mlflow::RegisteredModels, feature_category: :mlops do
     create(:ml_models, :with_metadata, project: project)
   end
 
+  let_it_be(:model_version) { create(:ml_model_versions, project: project, model: model, version: '1.0.0') }
+
   let_it_be(:tokens) do
     {
       write: create(:personal_access_token, scopes: %w[read_api api], user: developer),
@@ -51,6 +53,52 @@ RSpec.describe API::Ml::Mlflow::RegisteredModels, feature_category: :mlops do
 
         context 'and name is not passed' do
           let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/registered-models/get" }
+
+          it_behaves_like 'MLflow|Not Found - Resource Does Not Exist'
+        end
+      end
+
+      it_behaves_like 'MLflow|an authenticated resource'
+      it_behaves_like 'MLflow|a read-only model registry resource'
+    end
+  end
+
+  describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/alias' do
+    let(:model_name) { model_version.model.name }
+    let(:version) { model_version.version }
+    let(:route) do
+      "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/registered-models/alias?name=#{model_name}&alias=#{version}"
+    end
+
+    it 'returns the model version', :aggregate_failures do
+      is_expected.to have_gitlab_http_status(:ok)
+
+      expect(json_response['model_version']['name']).to eq(model_name)
+      expect(json_response['model_version']['aliases']).to eq([version])
+    end
+
+    describe 'Error States' do
+      context 'when has access' do
+        context 'and model does not exist' do
+          let(:model_name) { 'foo' }
+
+          it_behaves_like 'MLflow|Not Found - Resource Does Not Exist'
+        end
+
+        context 'and model version does not exist' do
+          let(:version) { '1.0.1' }
+
+          it_behaves_like 'MLflow|Not Found - Resource Does Not Exist'
+        end
+
+        context 'and name is not passed' do
+          let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/registered-models/alias" }
+
+          it_behaves_like 'MLflow|Not Found - Resource Does Not Exist'
+        end
+
+        context 'and alias is not passed' do
+          let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/registered-models/alias?name=#{model_name}" }
 
           it_behaves_like 'MLflow|Not Found - Resource Does Not Exist'
         end

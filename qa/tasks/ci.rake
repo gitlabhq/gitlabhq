@@ -42,8 +42,10 @@ namespace :ci do
       next pipeline_creator.create_noop
     end
 
+    feature_flags_changes = QA::Tools::Ci::FfChanges.new(diff).fetch
     # on run-all label or framework changes do not infer specific tests
-    run_all_tests = run_all_label_present || qa_changes.framework_changes?
+    run_all_tests = run_all_label_present || qa_changes.framework_changes? ||
+      !feature_flags_changes.nil?
     tests = run_all_tests ? [] : qa_changes.qa_tests
 
     if run_all_label_present
@@ -59,7 +61,7 @@ namespace :ci do
     creator_args = {
       pipeline_path: pipeline_path,
       logger: logger,
-      env: { "QA_FEATURE_FLAGS" => QA::Tools::Ci::FfChanges.new(diff).fetch }
+      env: { "QA_FEATURE_FLAGS" => feature_flags_changes }
     }
 
     logger.info("*** Creating E2E test pipeline definitions ***")

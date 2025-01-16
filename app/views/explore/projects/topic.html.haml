@@ -5,27 +5,32 @@
 
 = render_dashboard_ultimate_trial(current_user)
 
-.gl-pb-3.gl-pt-6
-  %div{ class: container_class }
-    .gl-pb-5.gl-items-center.gl-flex
-      = render Pajamas::AvatarComponent.new(@topic, size: 64, alt: '')
-      - if @topic.title_or_name.length > max_topic_title_length
-        %h1.gl-mt-3.gl-ml-5.gl-str-truncated.has-tooltip{ title: @topic.title_or_name }
-          = truncate(@topic.title_or_name, length: max_topic_title_length)
-      - else
-        %h1.gl-mt-3.gl-ml-5
+%div{ class: container_class }
+  = render ::Layouts::PageHeadingComponent.new(_('Topics')) do |c|
+    - c.with_heading do
+      .gl-flex.gl-items-center.gl-gap-3
+        = render Pajamas::AvatarComponent.new(@topic, size: 48, alt: '')
+        - if @topic.title_or_name.length > max_topic_title_length
+          %span.gl-str-truncated.has-tooltip{ title: @topic.title_or_name }
+            = truncate(@topic.title_or_name, length: max_topic_title_length)
+        - else
           = @topic.title_or_name
+
     - if @topic.description.present?
-      .topic-description
-        = markdown(@topic.description)
+      - c.with_description do
+        .md= markdown(@topic.description)
+
+    - c.with_actions do
+      = link_button_to nil, topic_explore_projects_path(@topic.name, rss_url_options), title: s_("Topics|Subscribe to the new projects feed"), aria: { label: s_("Topics|Subscribe to the new projects feed") }, class: 'gl-inline-flex has-tooltip', icon: 'rss'
 
 %div{ class: container_class }
-  .gl-py-5.gl-border-default.gl-border-b-solid.gl-border-b-1
-    %h3.gl-m-0= _('Projects with this topic')
-  .top-area.gl-p-5.gl-justify-between.gl-bg-subtle
-    .nav-controls
-      = render 'shared/projects/search_form'
+  .top-area.gl-p-5.gl-justify-between.gl-bg-subtle.gl-border-t
+    .nav-controls.gl-w-full
+      = render 'shared/projects/search_form', topic_view: true
       = render 'filter'
-    = link_button_to nil, topic_explore_projects_path(@topic.name, rss_url_options), title: s_("Topics|Subscribe to the new projects feed"), class: 'gl-hidden sm:gl-inline-flex has-tooltip', icon: 'rss'
+
+  .gl-flex.gl-flex-wrap.gl-gap-3.gl-justify-between.gl-items-center.gl-py-5.gl-w-full.gl-border-b.gl-border-b-subtle
+    %h2.gl-heading-4.gl-m-0= _('Projects with this topic')
+    = render 'shared/projects/dropdown', topic_view: true
 
   = render 'projects', projects: @projects

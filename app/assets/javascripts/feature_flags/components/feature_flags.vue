@@ -11,7 +11,7 @@ import {
 import { isEmpty } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
-
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { n__, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { buildUrlWithCurrentLocation, historyPushState } from '~/lib/utils/common_utils';
@@ -34,6 +34,7 @@ export default {
     GlLink,
     GlSprintf,
     TablePagination,
+    PageHeading,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -206,26 +207,26 @@ export default {
           {{ s__('FeatureFlags|New feature flag') }}
         </gl-button>
       </div>
-      <div class="gl-mt-6 gl-flex gl-flex-row gl-items-baseline gl-justify-between">
-        <div class="gl-flex gl-items-center">
-          <h2 class="page-title gl-my-0 gl-text-size-h-display">
+
+      <page-heading>
+        <template #heading>
+          <span>
             {{ s__('FeatureFlags|Feature flags') }}
-          </h2>
+          </span>
           <gl-badge
             v-if="count"
             v-gl-tooltip="{ disabled: !isFeatureFlagsLimitSet }"
             :title="countBadgeTooltipMessage"
-            class="gl-ml-4"
+            class="gl-ml-3 gl-align-middle"
             >{{ countBadgeContents }}</gl-badge
           >
-        </div>
-        <div class="gl-hidden gl-items-center gl-justify-end md:gl-flex">
+        </template>
+        <template #actions>
           <gl-button
             v-if="userListPath"
             :href="userListPath"
             variant="confirm"
             category="tertiary"
-            class="gl-mb-0 gl-mr-3"
             data-testid="ff-user-list-button"
           >
             {{ s__('FeatureFlags|View user lists') }}
@@ -236,7 +237,6 @@ export default {
             variant="confirm"
             category="secondary"
             data-testid="ff-configure-button"
-            class="gl-mb-0 gl-mr-3"
           >
             {{ s__('FeatureFlags|Configure') }}
           </gl-button>
@@ -249,9 +249,10 @@ export default {
             data-testid="ff-new-button"
           >
             {{ s__('FeatureFlags|New feature flag') }}
-          </gl-button>
-        </div>
-      </div>
+          </gl-button></template
+        >
+      </page-heading>
+
       <empty-state
         :alerts="alerts"
         :is-loading="isLoading"

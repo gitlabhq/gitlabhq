@@ -2,7 +2,7 @@
 
 module API
   class Statistics < ::API::Base
-    before { authenticated_as_admin! }
+    before { authorize_read_application_statistics! }
 
     feature_category :devops_reports
 

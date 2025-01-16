@@ -78,11 +78,8 @@ export const I18N_AGENT_TABLE = {
   versionMismatchText: s__(
     "ClusterAgents|The agent version do not match each other across your cluster's pods. This can happen when a new agent version was just deployed and Kubernetes is shutting down the old pods.",
   ),
-  versionOutdatedTitle: s__('ClusterAgents|Agent version update required'),
-  versionOutdatedText: s__(
-    'ClusterAgents|Your agent version is out of sync with your GitLab KAS version (v%{version}), which might cause compatibility problems. Update the agent installed on your cluster to the most recent version.',
-  ),
-  versionMismatchOutdatedTitle: s__('ClusterAgents|Agent version mismatch and update'),
+  versionWarningsTitle: s__('ClusterAgents|Agent version update required'),
+  versionWarningsMismatchTitle: s__('ClusterAgents|Agent version mismatch and update'),
   viewDocsText: s__('ClusterAgents|How do I update an agent?'),
   defaultConfigText: s__('ClusterAgents|Default configuration'),
   defaultConfigTooltip: s__('ClusterAgents|What is default configuration?'),

@@ -53,6 +53,7 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
   let(:runner_authentication_token) { create(:ci_runner, registration_type: :authenticated_user) }
   let(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
   let(:ci_trigger) { create(:ci_trigger) }
+  let(:ci_build) { create(:ci_build, status: :running) }
 
   let(:plaintext) { nil }
   let(:params) { { token: plaintext } }
@@ -83,6 +84,18 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['id']).to eq(token.id)
           end
+        end
+      end
+
+      context 'with valid CI job token' do
+        let(:token) { ci_build }
+        let(:plaintext) { ci_build.token }
+
+        it 'contains a job' do
+          post_token
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['job']['id']).to eq(ci_build.id)
         end
       end
 

@@ -22,9 +22,13 @@ import {
   NEW_WORK_ITEM_IID,
   TRACKING_CATEGORY_SHOW,
   WIDGET_TYPE_DESCRIPTION,
+  ROUTES,
 } from '../constants';
 import WorkItemDescriptionRendered from './work_item_description_rendered.vue';
 import WorkItemDescriptionTemplateListbox from './work_item_description_template_listbox.vue';
+
+const paramName = 'description_template';
+const oldParamNameFromPreWorkItems = 'issuable_template';
 
 export default {
   components: {
@@ -113,63 +117,6 @@ export default {
       appliedTemplate: '',
       showTemplateApplyWarning: false,
     };
-  },
-  apollo: {
-    workItem: {
-      query: workItemByIidQuery,
-      skip() {
-        return !this.workItemIid;
-      },
-      variables() {
-        return {
-          fullPath: this.workItemFullPath,
-          iid: this.workItemIid,
-        };
-      },
-      update(data) {
-        return data?.workspace?.workItem || {};
-      },
-      result() {
-        if (this.isEditing && !this.createFlow) {
-          this.checkForConflicts();
-        }
-        if (this.isEditing && this.createFlow) {
-          this.startEditing();
-        }
-      },
-      error() {
-        this.$emit('error', i18n.fetchError);
-      },
-    },
-    descriptionTemplate: {
-      query: workItemDescriptionTemplateQuery,
-      skip() {
-        return !this.selectedTemplate;
-      },
-      variables() {
-        return {
-          fullPath: this.fullPath,
-          name: this.selectedTemplate,
-        };
-      },
-      update(data) {
-        return data.namespace.workItemDescriptionTemplates.nodes[0] || {};
-      },
-      result() {
-        const isDirty = this.descriptionText !== this.workItemDescription?.description;
-        const isUnchangedTemplate = this.descriptionText === this.appliedTemplate;
-        const hasContent = this.descriptionText !== '';
-        if (!isUnchangedTemplate && (isDirty || hasContent)) {
-          this.showTemplateApplyWarning = true;
-        } else {
-          this.applyTemplate();
-        }
-      },
-      error(e) {
-        Sentry.captureException(e);
-        this.$emit('error', s__('WorkItem|Unable to find selected template.'));
-      },
-    },
   },
   computed: {
     createFlow() {
@@ -265,6 +212,9 @@ export default {
       const hasEditedTemplate = this.descriptionText !== this.appliedTemplate;
       return hasAppliedTemplate && hasEditedTemplate;
     },
+    shouldUpdateTemplateUrlParam() {
+      return this.$route?.name === ROUTES.new;
+    },
   },
   watch: {
     updateInProgress(newValue) {
@@ -278,6 +228,69 @@ export default {
       if (newValue) {
         this.startEditing();
       }
+    },
+  },
+  mounted() {
+    if (this.shouldUpdateTemplateUrlParam) {
+      this.selectedTemplate =
+        this.$route.query[paramName] || this.$route.query[oldParamNameFromPreWorkItems];
+    }
+  },
+  apollo: {
+    workItem: {
+      query: workItemByIidQuery,
+      skip() {
+        return !this.workItemIid;
+      },
+      variables() {
+        return {
+          fullPath: this.workItemFullPath,
+          iid: this.workItemIid,
+        };
+      },
+      update(data) {
+        return data?.workspace?.workItem || {};
+      },
+      result() {
+        if (this.isEditing && !this.createFlow) {
+          this.checkForConflicts();
+        }
+        if (this.isEditing && this.createFlow) {
+          this.startEditing();
+        }
+      },
+      error() {
+        this.$emit('error', i18n.fetchError);
+      },
+    },
+    descriptionTemplate: {
+      query: workItemDescriptionTemplateQuery,
+      skip() {
+        return !this.selectedTemplate;
+      },
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          name: this.selectedTemplate,
+        };
+      },
+      update(data) {
+        return data.namespace.workItemDescriptionTemplates.nodes[0] || {};
+      },
+      result() {
+        const isDirty = this.descriptionText !== this.workItemDescription?.description;
+        const isUnchangedTemplate = this.descriptionText === this.appliedTemplate;
+        const hasContent = this.descriptionText !== '';
+        if (!isUnchangedTemplate && (isDirty || hasContent)) {
+          this.showTemplateApplyWarning = true;
+        } else {
+          this.applyTemplate();
+        }
+      },
+      error(e) {
+        Sentry.captureException(e);
+        this.$emit('error', s__('WorkItem|Unable to find selected template.'));
+      },
     },
   },
   methods: {
@@ -359,11 +372,31 @@ export default {
       this.setDescriptionText(this.descriptionTemplateContent);
       this.onInput();
       this.showTemplateApplyWarning = false;
+
+      if (this.shouldUpdateTemplateUrlParam) {
+        const params = new URLSearchParams(this.$route.query);
+        params.delete(oldParamNameFromPreWorkItems);
+        params.set(paramName, this.selectedTemplate);
+
+        this.$router.replace({
+          query: Object.fromEntries(params),
+        });
+      }
     },
     cancelApplyTemplate() {
       this.selectedTemplate = '';
       this.descriptionTemplate = null;
       this.showTemplateApplyWarning = false;
+
+      if (this.shouldUpdateTemplateUrlParam) {
+        const params = new URLSearchParams(this.$route.query);
+        params.delete(paramName);
+        params.delete(oldParamNameFromPreWorkItems);
+
+        this.$router.replace({
+          query: Object.fromEntries(params),
+        });
+      }
     },
     handleClearTemplate() {
       if (this.appliedTemplate) {
