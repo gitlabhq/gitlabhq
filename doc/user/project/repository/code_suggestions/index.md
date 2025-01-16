@@ -107,7 +107,7 @@ To get the best results from code generation:
   This space tells the code generator that you have completed your instructions.
 - In GitLab 17.2 and later, when the `advanced_context_resolver` and `code_suggestions_context`
   feature flags are enabled, open related files in other tabs to expand the
-  [inference window context](#inference-window-context).
+  [context that Code Suggestions is aware of](#use-files-open-in-tabs-as-context).
 
 For example, to create a Python web service with some specific requirements,
 you might write something like:
@@ -123,19 +123,20 @@ To generate quality code, write clear, descriptive, specific tasks.
 
 For use cases and best practices, follow the [GitLab Duo examples documentation](../../../gitlab_duo_examples.md).
 
-## Advanced Context
+## The context Code Suggestions is aware of
 
-When using Code Suggestions, the Advanced Context feature searches in the background
-to find and include relevant context from across a user's repository.
+Code Suggestions is aware of and uses:
 
-For more information, see the [Advanced Context Resolver project epic](https://gitlab.com/groups/gitlab-org/editor-extensions/-/epics/57).
+- The file open in your IDE.
+- The content before and after the cursor in that file.
+- The filename and extension.
 
-### Advanced Context supported languages
+Code Suggestions also uses files from your repository as context to make suggestions and
+generate code:
 
-The Advanced Context feature supports these languages:
-
-- Code completion: all configured languages.
-- Code generation:
+- Code completion can use files in your repository that are written in the [languages enabled for Code Suggestions in your IDE](supported_extensions.md#supported-languages).
+- Code generation can use files in your repository that are written in the following
+languages:
   - Go
   - Java
   - JavaScript
@@ -147,7 +148,9 @@ The Advanced Context feature supports these languages:
   - Vue
   - YAML
 
-### Open tabs as context
+For more information, see [epic 57](https://gitlab.com/groups/gitlab-org/editor-extensions/-/epics/57).
+
+### Using open files as context
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464767) in GitLab 17.1 [with a flag](../../../../administration/feature_flags.md) named `advanced_context_resolver`. Disabled by default.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab 17.1 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_context`. Disabled by default.
@@ -161,13 +164,16 @@ FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 
-To get more accurate and relevant results from Code Suggestions and code generation, you can use
-the contents of the files open in tabs in your IDE. Similar to prompt engineering, these files
-give GitLab Duo more information about the standards and practices in your code project.
+As well as using files from your repository, Code Suggestions can use the files
+open in tabs in your IDE as context.
 
-Open tabs as context is part of the Advanced Context feature.
+These files give GitLab Duo more information about the standards and practices
+in your code project.
 
-#### Enable open tabs as context
+For more information on possible future context expansion to improve the quality
+of suggestions, see [epic 11669](https://gitlab.com/groups/gitlab-org/-/epics/11669).
+
+#### Turn on open files as context
 
 By default, Code Suggestions uses the open files in your IDE for context when making suggestions.
 
@@ -176,13 +182,10 @@ Prerequisites:
 - You must have GitLab 17.2 or later. Earlier GitLab versions that support Code Suggestions
   cannot weigh the content of open tabs more heavily than other files in your project.
 - GitLab Duo Code Suggestions must be enabled for your project.
-- Use a [supported code language](#advanced-context-supported-languages):
-  - Code completion: All configured languages.
-  - Code generation: Go, Java, JavaScript, Kotlin, Python, Ruby, Rust, TypeScript (`.ts` and `.tsx` files),
-    Vue, and YAML.
+- Use a [supported code language](#the-context-code-suggestions-is-aware-of).
 - For Visual Studio Code, you must have GitLab Workflow extension version 4.14.2 or later.
 
-To confirm that open tabs are used as context:
+To confirm that files open in tabs are being used as context:
 
 ::Tabs
 
@@ -204,52 +207,29 @@ To confirm that open tabs are used as context:
 
 ::EndTabs
 
-#### Use open tabs as context
+#### Use files open in tabs as context
 
-Open the files you want to provide for context:
+After you have confirmed that files open in tabs are being used as context,
+open the files you want to provide for context:
 
-- Open tabs uses the most recently opened or changed files.
+- Code Suggestions uses the most recently opened or changed files.
 - If you do not want a file used as additional context, close that file.
 
 When you start working in a file, GitLab Duo uses your open files
 as extra context, within [truncation limits](#truncation-of-file-content).
 
-You can adjust your code generation results by adding code comments to your file
-that explain what you want to build. Code generation treats your code comments
-like chat. Your code comments update the `user_instruction`, and then improve
-the next results you receive.
+To adjust your code generation results, add code comments to your file
+that explain what you want to build:
 
-To learn about the code that builds the prompt, see these files:
-
-- **Code generation**:
-  [`ee/lib/api/code_suggestions.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/api/code_suggestions.rb#L76)
-  in the `gitlab` repository.
-- **Code completion**:
-  [`ai_gateway/code_suggestions/processing/completions.py`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/fcb3f485a8f047a86a8166aad81f93b6d82106a7/ai_gateway/code_suggestions/processing/completions.py#L273)
-  in the `modelops` repository.
-
-### Inference window context
-
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.8.
-> - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/206) open tabs context in GitLab 17.2 [with flags](../../../../administration/feature_flags.md) named `advanced_context_resolver` and `code_suggestions_context`. Disabled by default.
-
-Code Suggestions inferences against:
-
-- The currently opened file.
-- The content before and after the cursor.
-- The filename and extension.
-- In GitLab 17.2 and later when the `advanced_context_resolver` and `code_suggestions_context` feature flags are enabled.
-  - Files opened in other tabs.
-  - User instructions.
-
-For more information on possible future context expansion to improve the quality of suggestions, see [epic 11669](https://gitlab.com/groups/gitlab-org/-/epics/11669).
+- Code generation treats your code comments like chat.
+- Your code comments update the `user_instruction`, and then improve the next results you receive.
 
 ## Truncation of file content
 
 Because of LLM limits and performance reasons, the content of the currently
 opened file is truncated:
 
-- For code completion: 
+- For code completion:
   - In GitLab 17.5 and earlier, to 2,048 tokens (roughly 8,192 characters).
   - In GitLab 17.6 and later, to 32,000 tokens (roughly 128,000 characters).
 - For code generation: to 142,856 tokens (roughly 500,000 characters).
@@ -279,6 +259,17 @@ However, Code Suggestions might generate suggestions that are:
 - Offensive or insensitive.
 
 When using Code Suggestions, [code review best practice](../../../../development/code_review.md) still applies.
+
+## How the prompt is built
+
+To learn about the code that builds the prompt, see these files:
+
+- **Code generation**:
+  [`ee/lib/api/code_suggestions.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/api/code_suggestions.rb#L76)
+  in the `gitlab` repository.
+- **Code completion**:
+  [`ai_gateway/code_suggestions/processing/completions.py`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/fcb3f485a8f047a86a8166aad81f93b6d82106a7/ai_gateway/code_suggestions/processing/completions.py#L273)
+  in the `modelops` repository.
 
 ## Response time
 

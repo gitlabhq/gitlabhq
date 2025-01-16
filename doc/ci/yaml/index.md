@@ -2520,7 +2520,7 @@ rubocop:
 - You can use multiple parents for `extends`.
 - The `extends` keyword supports up to eleven levels of inheritance, but you should
   avoid using more than three levels.
-- In the example above, `.tests` is a [hidden job](../jobs/index.md#hide-jobs),
+- In the example above, `.tests` is a [hidden job](../jobs/index.md#hide-a-job),
   but you can extend configuration from regular jobs as well.
 
 **Related topics**:
@@ -2552,7 +2552,7 @@ Use `hooks:pre_get_sources_script` to specify a list of commands to execute on t
 before cloning the Git repository and any submodules.
 You can use it for example to:
 
-- Adjust the [Git configuration](../jobs/index.md#get_sources-job-section-fails-because-of-an-http2-problem).
+- Adjust the [Git configuration](../jobs/job_troubleshooting.md#get_sources-job-section-fails-because-of-an-http2-problem).
 - Export [tracing variables](../../topics/git/troubleshooting_git.md#debug-git-with-traces).
 
 **Supported values**: An array including:
@@ -3680,7 +3680,7 @@ deploystacks: [vultr, processing]
 
 - `parallel:matrix` jobs add the variable values to the job names to differentiate
   the jobs from each other, but [large values can cause names to exceed limits](https://gitlab.com/gitlab-org/gitlab/-/issues/362262):
-  - [Job names](../jobs/index.md#job-name) must be 255 characters or fewer.
+  - [Job names](../jobs/index.md#job-names) must be 255 characters or fewer.
   - When using [`needs`](#needs), job names must be 128 characters or fewer.
 - You cannot create multiple matrix configurations with the same variable values but different variable names.
   Job names are generated from the variable values, not the variable names, so matrix entries
@@ -5348,7 +5348,7 @@ trigger-multi-project-pipeline:
 - You can use [`when:manual`](#when) in the same job as `trigger`, but you cannot
   use the API to start `when:manual` trigger jobs. See [issue 284086](https://gitlab.com/gitlab-org/gitlab/-/issues/284086)
   for more details.
-- You cannot [manually specify CI/CD variables](../jobs/index.md#specifying-variables-when-running-manual-jobs)
+- You cannot [manually specify CI/CD variables](../jobs/job_control.md#specify-variables-when-running-manual-jobs)
   before running a manual trigger job.
 - [CI/CD variables](#variables) defined in a top-level `variables` section (globally) or in the trigger job are forwarded
   to the downstream pipeline as [trigger variables](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline).

@@ -55,6 +55,9 @@
     "manage_security_policy_link": {
       "type": "boolean"
     },
+    "read_admin_cicd": {
+      "type": "boolean"
+    },
     "read_admin_dashboard": {
       "type": "boolean"
     },

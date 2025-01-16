@@ -59,7 +59,23 @@ To run a manual job, you must have permission to merge to the assigned branch:
    or deployment view.
 1. Next to the manual job, select **Run** (**{play}**).
 
-You can also [add custom CI/CD variables when running a manual job](index.md#specifying-variables-when-running-manual-jobs).
+### Specify variables when running manual jobs
+
+When running manual jobs you can supply additional job specific variables.
+
+You can do this from the job page of the manual job you want to run with
+additional variables. To access this page, select the **name** of the manual job in
+the pipeline view, *not* **Run** (**{play}**).
+
+Define CI/CD variables here when you want to alter the execution of a job that uses
+[CI/CD variables](../variables/index.md).
+
+If you add a variable that is already defined in the CI/CD settings or `.gitlab-ci.yml` file,
+the [variable is overridden](../variables/index.md#use-pipeline-variables) with the new value.
+Any variables overridden by using this process are [expanded](../variables/index.md#prevent-cicd-variable-expansion)
+and not [masked](../variables/index.md#mask-a-cicd-variable).
+
+![The run manual job page with fields for specifying CI/CD variables.](img/manual_job_variables_v13_10.png)
 
 ### Add a confirmation dialog for manual jobs
 

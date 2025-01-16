@@ -27,6 +27,7 @@ Any dependencies are noted in the `Description` column for each permission.
 
 | Permission | Description | API Attribute | Scope | Introduced |
 |:-----------|:------------|:--------------|:------|:-----------|
+| Read-only access to admin runners settings page | Read-only access to admin runners settings page | [`read_admin_cicd`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177233) | Instance | GitLab [17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/507960) |
 | Read-only access to admin dashboard | Read-only access to admin dashboard | [`read_admin_dashboard`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171581) | Instance | GitLab [17.6](https://gitlab.com/gitlab-org/gitlab/-/issues/501549) |
 
 ## Code review workflow

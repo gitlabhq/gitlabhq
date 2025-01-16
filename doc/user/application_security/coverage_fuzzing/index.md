@@ -105,7 +105,7 @@ my_fuzz_target:
     - ./gitlab-cov-fuzz run --regression=$REGRESSION -- <your fuzz target>
 ```
 
-The `Coverage-Fuzzing` template includes the [hidden job](../../../ci/jobs/index.md#hide-jobs)
+The `Coverage-Fuzzing` template includes the [hidden job](../../../ci/jobs/index.md#hide-a-job)
 `.fuzz_base`, which you must [extend](../../../ci/yaml/index.md#extends) for each of your fuzzing
 targets. Each fuzzing target **must** have a separate job. For example, the
 [go-fuzzing-example project](https://gitlab.com/gitlab-org/security-products/demos/go-fuzzing-example)

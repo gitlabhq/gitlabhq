@@ -483,7 +483,11 @@ Vulnerabilities in the log are marked as `Approved` when the corresponding CVE I
 
 ### Running container scanning in an offline environment
 
-For GitLab Self-Managed instances in an environment with limited, restricted, or intermittent access
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab Self-Managed
+
+For instances in an environment with limited, restricted, or intermittent access
 to external resources through the internet, some adjustments are required for the container scanning job to
 successfully run. For more information, see [Offline environments](../offline_deployments/index.md).
 

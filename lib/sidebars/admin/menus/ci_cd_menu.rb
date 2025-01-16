@@ -45,3 +45,5 @@ module Sidebars
     end
   end
 end
+
+Sidebars::Admin::Menus::CiCdMenu.prepend_mod

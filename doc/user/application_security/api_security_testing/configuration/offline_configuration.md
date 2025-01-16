@@ -6,7 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Offline configuration
 
-For GitLab Self-Managed instances in an environment with limited, restricted, or intermittent access to external resources through the internet, some adjustments are required for the API security testing job to successfully run.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab Self-Managed
+
+For instances in an environment with limited, restricted, or intermittent access to external resources through the internet, some adjustments are required for the API security testing job to successfully run.
 
 Steps:
 

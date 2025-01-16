@@ -3,7 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillCiRunnerMachinesPartitionedTable, migration: :gitlab_ci, feature_category: :fleet_visibility do
+RSpec.describe QueueBackfillCiRunnerMachinesPartitionedTable, migration: :gitlab_ci,
+  feature_category: :fleet_visibility do
   let!(:batched_migration) { 'BackfillCiRunnerMachinesPartitionedTable' }
 
   it 'schedules a new batched migration' do

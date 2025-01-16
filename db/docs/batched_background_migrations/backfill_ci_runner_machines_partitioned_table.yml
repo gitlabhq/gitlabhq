@@ -1,0 +1,10 @@
+---
+migration_job_name: BackfillCiRunnerMachinesPartitionedTable
+description: >
+  This migration copies runner managers from ci_runner_machines to the new
+  partitioned ci_runner_machines_687967fa8a table
+feature_category: runner
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171901
+milestone: '17.7'
+queued_migration_version: 20241107064635
+finalized_by: 20250113163026

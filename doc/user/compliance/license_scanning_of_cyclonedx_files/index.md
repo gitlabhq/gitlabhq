@@ -206,7 +206,11 @@ Users can require approval for merge requests based on the licenses that are det
 
 ## Running in an offline environment
 
-For GitLab Self-Managed instances in an environment with limited, restricted, or intermittent access to external resources through the internet, some adjustments are required to successfully scan
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab Self-Managed
+
+For instances in an environment with limited, restricted, or intermittent access to external resources through the internet, some adjustments are required to successfully scan
 CycloneDX reports for licenses. For more information, see the offline [quick start guide](../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database).
 
 ## Use CycloneDX report as a source of license information

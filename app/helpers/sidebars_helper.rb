@@ -416,7 +416,7 @@ module SidebarsHelper
 
     if display_admin_area_link?
       links.append(
-        { title: s_('Navigation|Admin area'), link: admin_root_path, icon: 'admin' }
+        { title: s_('Navigation|Admin area'), link: admin_area_link, icon: 'admin' }
       )
     end
 
@@ -502,6 +502,10 @@ module SidebarsHelper
 
   def terms_link
     Gitlab::CurrentSettings.terms ? '/-/users/terms' : nil
+  end
+
+  def admin_area_link
+    admin_root_path
   end
 
   def display_admin_area_link?

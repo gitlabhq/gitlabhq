@@ -1306,6 +1306,9 @@ production: &base
     # The URL to the Kubernetes API proxy (used by GitLab users)
     # external_k8s_proxy_url: https://localhost:8154 # default: nil
 
+    # The client timeout in seconds for the KAS API (used by the GitLab backend)
+    # client_timeout_seconds: 5
+
   suggested_reviewers:
     # File that contains the secret key for verifying access to GitLab internal API for Suggested Reviewers.
     # Default is '.gitlab_suggested_reviewers_secret' relative to Rails.root (i.e. root of the GitLab app).

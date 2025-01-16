@@ -244,7 +244,7 @@ To add a new list item when you press the <kbd>Enter</kbd> key:
 
 ### Change the tab width
 
-Change the default size of tabs in diffs, blobs, and snippets. The WebIDE, file editor, and Markdown editor do not support this feature.
+Change the default size of tabs in diffs, blobs, and snippets. The Web IDE, file editor, and Markdown editor do not support this feature.
 
 To adjust the default tab width:
 

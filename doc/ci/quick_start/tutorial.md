@@ -428,7 +428,7 @@ single sources of truth.
 
 This step introduces:
 
-- [Hidden jobs](../jobs/index.md#hide-jobs): Jobs that start with `.` are never
+- [Hidden jobs](../jobs/index.md#hide-a-job): Jobs that start with `.` are never
   added to a pipeline. Use them to hold configuration you want to reuse.
 - [`extends`](../yaml/index.md#extends): Use extends to repeat configuration in
   multiple places, often from hidden jobs. If you update the hidden job's configuration,

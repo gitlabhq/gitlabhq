@@ -6,6 +6,8 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:agent) { create(:cluster_agent, project: project) }
 
+  let(:client) { described_class.new }
+
   describe '#initialize' do
     context 'kas is not enabled' do
       before do
@@ -51,11 +53,11 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
       let(:server_info) { double }
       let(:response) { double(Gitlab::Agent::ServerInfo::Rpc::GetServerInfoResponse, current_server_info: server_info) }
 
-      subject { described_class.new.get_server_info }
+      subject { client.get_server_info }
 
       before do
         expect(Gitlab::Agent::ServerInfo::Rpc::ServerInfo::Stub).to receive(:new)
-          .with('example.kas.internal', :this_channel_is_insecure, timeout: described_class::TIMEOUT)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
           .and_return(stub)
 
         expect(Gitlab::Agent::ServerInfo::Rpc::GetServerInfoRequest).to receive(:new)
@@ -76,11 +78,11 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
 
       let(:connected_agents) { [double] }
 
-      subject { described_class.new.get_connected_agents_by_agent_ids(agent_ids: [agent.id]) }
+      subject { client.get_connected_agents_by_agent_ids(agent_ids: [agent.id]) }
 
       before do
         expect(Gitlab::Agent::AgentTracker::Rpc::AgentTracker::Stub).to receive(:new)
-          .with('example.kas.internal', :this_channel_is_insecure, timeout: described_class::TIMEOUT)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
           .and_return(stub)
 
         expect(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIDsRequest).to receive(:new)
@@ -107,11 +109,11 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
 
       let(:agent_configurations) { [double] }
 
-      subject { described_class.new.list_agent_config_files(project: project) }
+      subject { client.list_agent_config_files(project: project) }
 
       before do
         expect(Gitlab::Agent::ConfigurationProject::Rpc::ConfigurationProject::Stub).to receive(:new)
-          .with('example.kas.internal', :this_channel_is_insecure, timeout: described_class::TIMEOUT)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
           .and_return(stub)
 
         expect(Gitlab::Agent::Entity::GitalyRepository).to receive(:new)
@@ -135,7 +137,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
     end
 
     describe '#send_autoflow_event' do
-      subject { described_class.new.send_autoflow_event(project: project, type: 'any-type', id: 'any-id', data: { 'any-data-key': 'any-data-value' }) }
+      subject { client.send_autoflow_event(project: project, type: 'any-type', id: 'any-id', data: { 'any-data-key': 'any-data-value' }) }
 
       context 'when autoflow_enabled FF is disabled' do
         before do
@@ -159,7 +161,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
           stub_feature_flags(autoflow_enabled: true)
 
           expect(Gitlab::Agent::AutoFlow::Rpc::AutoFlow::Stub).to receive(:new)
-            .with('example.kas.internal', :this_channel_is_insecure, timeout: described_class::TIMEOUT)
+            .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
             .and_return(stub)
 
           expect(Gitlab::Agent::Event::Project).to receive(:new)
@@ -204,11 +206,11 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
       let(:project_param) { instance_double(Gitlab::Agent::Event::Project) }
       let(:response) { double(Gitlab::Agent::Notifications::Rpc::GitPushEventResponse) }
 
-      subject { described_class.new.send_git_push_event(project: project) }
+      subject { client.send_git_push_event(project: project) }
 
       before do
         expect(Gitlab::Agent::Notifications::Rpc::Notifications::Stub).to receive(:new)
-          .with('example.kas.internal', :this_channel_is_insecure, timeout: described_class::TIMEOUT)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
           .and_return(stub)
 
         expect(Gitlab::Agent::Event::Project).to receive(:new)
@@ -242,13 +244,13 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
           .and_return(credentials)
 
         expect(Gitlab::Agent::ConfigurationProject::Rpc::ConfigurationProject::Stub).to receive(:new)
-          .with('example.kas.internal', credentials, timeout: described_class::TIMEOUT)
+          .with('example.kas.internal', credentials, timeout: client.send(:timeout))
           .and_return(stub)
 
         allow(stub).to receive(:list_agent_config_files)
           .and_return(double(config_files: []))
 
-        described_class.new.list_agent_config_files(project: project)
+        client.list_agent_config_files(project: project)
       end
     end
   end

@@ -61,6 +61,7 @@ To configure KAS to listen on a UNIX socket:
    gitlab_kas['internal_api_listen_address'] = '/var/opt/gitlab/gitlab-kas/sockets/internal-api.socket'
    gitlab_kas['private_api_listen_network'] = 'unix'
    gitlab_kas['private_api_listen_address'] = '/var/opt/gitlab/gitlab-kas/sockets/private-api.socket'
+   gitlab_kas['client_timeout_seconds'] = '5'
    gitlab_kas['env'] = {
      'SSL_CERT_DIR' => "/opt/gitlab/embedded/ssl/certs/",
      'OWN_PRIVATE_API_URL' => 'unix:///var/opt/gitlab/gitlab-kas/sockets/private-api.socket'
@@ -84,6 +85,7 @@ To enable the agent server on multiple nodes:
    gitlab_kas['api_secret_key'] = '<32_bytes_long_base64_encoded_value>'
    gitlab_kas['private_api_secret_key'] = '<32_bytes_long_base64_encoded_value>'
    gitlab_kas['private_api_listen_address'] = '0.0.0.0:8155'
+   gitlab_kas['client_timeout_seconds'] = '5'
    gitlab_kas['env'] = {
      'SSL_CERT_DIR' => "/opt/gitlab/embedded/ssl/certs/",
      'OWN_PRIVATE_API_URL' => 'grpc://<ip_or_hostname_of_this_host>:8155' # use grpcs:// when using TLS on the private API endpoint
@@ -111,6 +113,7 @@ To enable the agent server on multiple nodes:
      the IP addresses the host is assigned, and uses the address that matches the specified CIDR as its own private IP address.
    - By default, kas uses the port from the `private_api_listen_address` parameter. Configure `OWN_PRIVATE_API_PORT` to use a different port.
    - Optional. By default, kas uses the `grpc` scheme. If you use TLS on the private API endpoint, configure `OWN_PRIVATE_API_SCHEME=grpcs`.
+   - Optional. By default, the `client_timeout_seconds` parameter is configured to wait for the kas response for 5 seconds.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 1. Optional. If you use a multi-server environment with separate GitLab Rails and Sidekiq nodes, enable the agent server on the Sidekiq nodes.
@@ -124,6 +127,7 @@ To enable the agent server on multiple nodes:
 | `gitlab_kas['private_api_secret_key']` | The shared secret used for authentication between different KAS instances. The value must be Base64-encoded and exactly 32 bytes long. |
 | `OWN_PRIVATE_API_URL` | The environment variable used by KAS for service discovery. Set to the hostname or IP address of the node you're configuring. The node must be reachable by other nodes in the cluster. |
 | `OWN_PRIVATE_API_HOST` | Optional value used to verify the TLS certificate host name. <sup>1</sup> A client compares this value to the host name in the server's TLS certificate file.|
+| `gitlab_kas['client_timeout_seconds']` | The timeout for the client to connect to the agent server. |
 | `gitlab_kas_external_url` | The user-facing URL for the in-cluster `agentk`. Can be a fully qualified domain or subdomain, <sup>2</sup> or a GitLab external URL. <sup>3</sup> If blank, defaults to a GitLab external URL. |
 | `gitlab_rails['gitlab_kas_external_url']` | The user-facing URL for the in-cluster `agentk`. If blank, defaults to the `gitlab_kas_external_url`. |
 | `gitlab_rails['gitlab_kas_external_k8s_proxy_url']` | The user-facing URL for Kubernetes API proxying. If blank, defaults to a URL based on `gitlab_kas_external_url`. |
@@ -256,3 +260,25 @@ sudo gitlab-ctl reconfigure
 ```shell
 gitlab-ctl restart gitlab-kas
 ```
+
+### GRPC::DeadlineExceeded in Clusters::Agents::NotifyGitPushWorker
+
+This error likely occurs when the client does not receive a response within the default timeout period (5 seconds). To resolve the issue, you can increase the client timeout by modifying the `/etc/gitlab/gitlab.rb` configuration file.
+
+#### Steps to Resolve
+
+1. Add or update the following configuration to increase the timeout value:
+
+```ruby
+gitlab_kas['client_timeout_seconds'] = "10"
+```
+
+1. Apply the changes by reconfiguring GitLab:
+
+```shell
+gitlab-ctl reconfigure
+```
+
+#### Note
+
+You can adjust the timeout value to suit your specific needs. Testing is recommended to ensure the issue is resolved without impacting system performance.

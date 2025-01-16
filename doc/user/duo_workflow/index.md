@@ -29,18 +29,18 @@ Please do not rely on this information for purchasing or planning purposes.
 The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the
 sole discretion of GitLab Inc.
 
-Duo Workflow is an AI-powered coding agent in the VS Code IDE. It helps you solve coding tasks more quickly.
-Use it to speed up routine tasks, to improve your work, or to learn different approaches or technologies.
+GitLab Duo Workflow is an AI-powered coding agent in the Visual Studio Code (VS Code) IDE.
 
-Duo Workflow works in the project you have open in your IDE, and helps you with coding tasks like:
+Duo Workflow:
 
-- Draft code to implement your issue or improve your merge request, so you can get started more quickly.
-- Refactor or simplify your code, to improve its structure and make it easier to maintain.
-- Write or extend your tests, to improve test coverage and code reliability.
+- Is designed to help you solve junior-level coding tasks more quickly,
+  such as drafting code for small features or bugs.
+- Works best in small or medium-sized repositories.
 
-After you describe your goal, Duo Workflow generates and executes on a plan to address it. While it executes, you can pause or ask it to adjust the plan.
+For more information, see:
 
-To improve its accuracy, be specific in your goal. Outline any changes you'd like to see. Reference related files, issues, or merge requests.
+- [How to use Duo Workflow](#use-gitlab-duo-workflow-in-vs-code).
+- [Best practices for Duo Workflow](#best-practices-for-duo-workflow).
 
 ## Risks of Duo Workflow and AI Agents
 
@@ -107,7 +107,12 @@ Before you can use GitLab Duo Workflow:
 1. [Install Visual Studio Code](https://code.visualstudio.com/download) (VS Code).
 1. [Install and set up](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#setup) the GitLab Workflow extension for VS Code.
    Minimum version 5.16.0.
-1. In VS Code, [set the Docker socket file path](#install-docker-and-set-the-socket-file-path).
+1. [Install Docker and set the socket file path](#install-docker-and-set-the-socket-file-path).
+1. Ensure that your project meets these requirements:
+   - You must have at least the Developer role for the project. For information, see [roles and permissions](../permissions.md).
+   - It must belong to a [group namespace](../namespace/index.md)
+   with an **Ultimate** subscription and [experimental features turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
+   - It must have [GitLab Duo turned on](../gitlab_duo/index.md).
 
 ### Install Docker and set the socket file path
 
@@ -116,17 +121,16 @@ read and write files, and make API calls to GitLab.
 
 If you are on macOS or Linux, you can either:
 
-- Use the [automated setup script](#automated-setup).
+- Recommended. Use the [automated setup script](#automated-setup).
 - Follow the [manual setup](#manual-setup).
 
-If you are not on macOS or Linux, follow the manual setup.
+If you are not on macOS or Linux, follow the [manual setup](#manual-setup).
 
 #### Automated setup
 
 The automated setup script:
 
 - Installs [Docker](https://formulae.brew.sh/formula/docker) and [Colima](https://github.com/abiosoft/colima).
-- Pulls the Docker base image.
 - Sets Docker socket path in VS Code settings.
 
 You can run the script with the `--dry-run` flag to check the dependencies
@@ -143,12 +147,6 @@ that get installed with the script.
 #### Manual setup
 
 1. Install a Docker container engine, such as [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation/).
-1. Pull the base Docker image:
-
-   ```shell
-   docker pull registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.4
-   ```
-
 1. Set the Docker socket path in VS Code:
    1. Open VS Code, then open its settings:
       - On macOS: <kbd>Cmd</kbd> + <kbd>,</kbd>
@@ -173,13 +171,31 @@ that get installed with the script.
 
 To use GitLab Duo Workflow:
 
-1. In VS Code, open a folder that has a Git repository for a GitLab project.
-   - The GitLab namespace for the project must have an **Ultimate** subscription.
+1. In VS Code, open the Git repository folder for your GitLab project.
    - You must check out the branch for the code you would like to change.
 1. Open the command palette:
    - On macOS: <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>
    - On Windows and Linux: <kbd>Ctrl</kbd> + <kbd>P</kbd>.
 1. Type `Duo Workflow` and select **GitLab: Show Duo Workflow**.
+1. To create a workflow, select **New worklow**.
+1. In the **Task description** text box, specify a junior-level code task in detail,
+   and then select **Start**.
+
+After you describe your task, Duo Workflow generates and executes on a plan to address it.
+While it executes, you can pause or ask it to adjust the plan.
+
+### Best practices for Duo Workflow
+
+When you describe your task to Duo Workflow, keep these tips in mind to get the best results:
+
+- It works best:
+  - On junior-level code tasks such as small features or bugs.
+  - In repositories of small or medium size.
+- Be detailed with a clear definition of done.
+- Try to add implementation examples, with commit or merge request IDs.
+- Mention files by their names, and GitLab references by their IDs.
+  For example, project, issue, or merge request IDs.
+  For more information, see [the context that GitLab Duo Workflow is aware of](#the-context-gitlab-duo-workflow-is-aware-of).
 
 ## The context GitLab Duo Workflow is aware of
 
@@ -187,34 +203,52 @@ GitLab Duo Workflow is aware of the context you're working in, specifically:
 
 | Area           | How to use GitLab Duo Workflow                                                                     |
 |----------------|----------------------------------------------------------------------------------------------------|
-| Merge requests | Enter the merge request ID and project ID in the Duo Workflow panel                                |
+| Local files | Duo Workflow can access all files available to Git in the project you have open in your editor. |
+| Merge requests | Enter the merge request ID if the MR is in the current project. In addition, enter the project ID if it is in a separate project. The accessed project must also fulfill the Duo Workflow [prerequisites](#prerequisites). |
+| Issues | Enter the issue ID if the MR is in the current project. In addition, enter the project ID if it is in a separate project. The accessed project must also fulfill the Duo Workflow [prerequisites](#prerequisites). |
+| CI Pipeline for Merge Request | Enter the merge request ID of the pipeline, if the pipeline is in the current project. In addition, enter the project ID if it is in a separate project. The accessed project must also fulfill the Duo Workflow [prerequisites](#prerequisites).  |
 
-In addition, Duo Workflow has read-only access to:
-
-- The GitLab API for fetching project and merge request information.
-- Merge request's CI pipeline trace to locate errors in the pipeline job execution.
+Duo Workflow also has access to the GitLab Search API to find related issues, merge requests, code or commits.
 
 ## Current limitations
 
-Duo Workflow can only run workflows for the GitLab project that's open in VS Code.
+Duo Workflow:
+
+- Requires the workspace folder in VS Code to have a Git repository for a GitLab project.
+- Only runs workflows for the GitLab project that's open in VS Code.
+- Only changes files in the current branch and cannot check out other branches.
+- Only accesses references for the current project, and cannot access external sources or the web.
+- Only reliably accesses GitLab references if provided with their IDs. For example, issue ID and not issue URL.
+- Can be slow or fail in large repositories.
 
 ## Troubleshooting
 
 If you encounter issues:
 
+1. Ensure you meet the [prerequisites](#prerequisites).
 1. Ensure that you have the latest version of the GitLab Workflow extension.
-1. Check that your open folder in VS Code corresponds to the GitLab project you want to interact with.
-1. Ensure that you've checked out the branch as well.
+1. Check that your opened folder in VS Code has a Git repository for your GitLab project.
+1. Ensure that you've checked out the branch for the code you'd like to change.
 1. Check your Docker and Docker socket configuration:
    1. [Install Docker and set the socket file path](#install-docker-and-set-the-socket-file-path).
-   1. Restart your container manager. For example, if using Colima:
+   1. Restart your container manager. For example, if you use Colima, `colima restart`.
+   1. Pull the base Docker image:
 
       ```shell
-      colima stop
-      colima start
+      docker pull registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.4
       ```
 
+   1. If this does not work the DNS configuration of Colima might be at fault. Edit the DNS setting in  `~/.colima/default/colima.yaml` to `dns: [1.1.1.1]` and then restart Colima with `colima restart`.
+1. Check the Language Server logs:
+   1. To open the logs in VS Code, select **View** > **Output**. In the output panel at the bottom, in the top-right corner, select **GitLab Workflow** or **GitLab Language Server** from the list.
+   1. Review for errors, warnings, connection issues, or authentication problems.
+   1. For more output in the logs, open the settings:
+      - On macOS: <kbd>Cmd</kbd> + <kbd>,</kbd>
    1. For permission issues, ensure your operating system user has the necessary Docker permissions.
+   1. Verify Docker's internet connectivity by executing the command `docker image pull redhat/ubi8`.
+      
+      If this does not work, the DNS configuration of Colima might be at fault.
+      Edit the DNS setting in `~/.colima/default/colima.yaml` to `dns: [1.1.1.1]` and then restart Colima with `colima restart`.
 1. Check the Language Server logs:
    1. To open the logs in VS Code, select **View** > **Output**. In the output panel at the bottom, in the top-right corner, select **GitLab Workflow** or **GitLab Language Server** from the list.
    1. Review for errors, warnings, connection issues, or authentication problems.
@@ -226,9 +260,11 @@ If you encounter issues:
 
 ## Audit log
 
-Audit event is created for each API request done by Duo Workflow. View these events on the [instance audit events](../../administration/audit_event_reports.md#instance-audit-events) page.
+An audit event is created for each API request done by Duo Workflow.
+On your GitLab Self-Managed instance, you can view these events on the [instance audit events](../../administration/audit_event_reports.md#instance-audit-events) page.
 
 ## Give feedback
 
-Duo Workflow is an experiment and your feedback is crucial. To report issues or suggest improvements,
+Duo Workflow is an experiment and your feedback is crucial to improve it for you and others.
+To report issues or suggest improvements,
 [complete this survey](https://gitlab.fra1.qualtrics.com/jfe/form/SV_9GmCPTV7oH9KNuu).

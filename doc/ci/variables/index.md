@@ -16,7 +16,7 @@ CI/CD variables are a type of environment variable. You can use them to:
 - Store values you want to re-use.
 - Avoid hard-coding values in your `.gitlab-ci.yml` file.
 
-You can [override variable values](#cicd-variable-precedence) for a specific pipeline when you [run a pipeline manually](../pipelines/index.md#run-a-pipeline-manually), [run a manual job](../jobs/index.md#specifying-variables-when-running-manual-jobs),
+You can [override variable values](#cicd-variable-precedence) for a specific pipeline when you [run a pipeline manually](../pipelines/index.md#run-a-pipeline-manually), [run a manual job](../jobs/job_control.md#specify-variables-when-running-manual-jobs),
 or have them [prefilled in manual pipelines](../pipelines/index.md#prefill-variables-in-manual-pipelines).
 
 Variable names are limited by the [shell the runner uses](https://docs.gitlab.com/runner/shells/index.html)
@@ -763,7 +763,7 @@ The order of precedence for variables is (from highest to lowest):
    - [Scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule).
    - [Manual pipeline run variables](../pipelines/index.md#run-a-pipeline-manually).
    - Variables added when [creating a pipeline with the API](../../api/pipelines.md#create-a-new-pipeline).
-   - [Manual job variables](../jobs/index.md#specifying-variables-when-running-manual-jobs).
+   - [Manual job variables](../jobs/job_control.md#specify-variables-when-running-manual-jobs).
 1. Project [variables](#for-a-project).
 1. Group [variables](#for-a-group). If the same variable name exists in a
    group and its subgroups, the job uses the value from the closest subgroup. For example, if

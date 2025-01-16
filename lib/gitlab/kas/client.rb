@@ -3,7 +3,6 @@
 module Gitlab
   module Kas
     class Client
-      TIMEOUT = 2.seconds.freeze
       JWT_AUDIENCE = 'gitlab-kas'
 
       STUB_CLASSES = {
@@ -106,7 +105,7 @@ module Gitlab
 
       def stub_for(service)
         @stubs ||= {}
-        @stubs[service] ||= STUB_CLASSES.fetch(service).new(kas_endpoint_url, credentials, timeout: TIMEOUT)
+        @stubs[service] ||= STUB_CLASSES.fetch(service).new(kas_endpoint_url, credentials, timeout: timeout)
       end
 
       def repository(project)
@@ -144,6 +143,10 @@ module Gitlab
           token.issuer = Settings.gitlab.host
           token.audience = JWT_AUDIENCE
         end.encoded
+      end
+
+      def timeout
+        Gitlab::Kas.client_timeout_seconds.seconds
       end
     end
   end

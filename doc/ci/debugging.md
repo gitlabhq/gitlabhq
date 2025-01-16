@@ -28,7 +28,7 @@ for that feature:
 - [Environments](environments/index.md#troubleshooting).
 - [GitLab Runner](https://docs.gitlab.com/runner/faq/).
 - [ID tokens](secrets/id_token_authentication.md#troubleshooting).
-- [Jobs](jobs/index.md#troubleshooting).
+- [Jobs](jobs/job_troubleshooting.md).
 - [Job artifacts](jobs/job_artifacts_troubleshooting.md).
 - [Merge request pipelines](pipelines/mr_pipeline_troubleshooting.md),
   [merged results pipelines](pipelines/merged_results_pipelines.md#troubleshooting),
