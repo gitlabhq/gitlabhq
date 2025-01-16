@@ -167,8 +167,11 @@ export default {
       return !this.discussionResolved ? this.discussion.resolve_with_issue_path : '';
     },
     canShowReplyActions() {
-      if (this.shouldRenderDiffs && !this.discussion.diff_file?.diff_refs) {
-        return false;
+      if (this.shouldRenderDiffs) {
+        return (
+          this.discussion.original_position.position_type === 'file' ||
+          this.discussion.diff_file?.diff_refs
+        );
       }
 
       return true;

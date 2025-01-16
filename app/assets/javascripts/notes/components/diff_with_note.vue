@@ -71,6 +71,28 @@ export default {
     isFileDiscussion() {
       return this.positionType === FILE_DIFF_POSITION_TYPE;
     },
+    showHeader() {
+      return (
+        this.discussion.diff_file || this.discussion.original_position.position_type === 'file'
+      );
+    },
+    backfilledDiffFile() {
+      /*
+       * https://gitlab.com/gitlab-com/gl-infra/production/-/issues/19118
+       *
+       * For the vast majority of cases, this should just be discussion.diff_file,
+       * but due to that defect, there are potentially some file discussions that cannot
+       * be rendered because there is no diff file attached
+       *
+       * This allows the header to display (sans file mode change) to roughly simulate
+       * having an actual diff file.
+       */
+      return (
+        this.discussion.diff_file || {
+          file_path: this.discussion.original_position.new_path,
+        }
+      );
+    },
   },
   mounted() {
     if (this.isTextFile && !this.hasTruncatedDiffLines) {
@@ -98,9 +120,9 @@ export default {
 <template>
   <div :class="{ 'text-file': isTextFile }" class="diff-file file-holder">
     <diff-file-header
-      v-if="discussion.diff_file"
+      v-if="showHeader"
       :discussion-path="discussion.discussion_path"
-      :diff-file="discussion.diff_file"
+      :diff-file="backfilledDiffFile"
       :can-current-user-fork="false"
       class="gl-border gl-border-section"
       :expanded="!isCollapsed"
