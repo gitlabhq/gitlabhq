@@ -200,21 +200,6 @@ export default {
       return !this.isUsingLfs || (this.isUsingLfs && this.lfsWarningDismissed);
     },
   },
-  watch: {
-    createNewBranch: {
-      handler(newValue) {
-        if (newValue) {
-          this.form.fields.branch_name.value = '';
-        } else {
-          this.form.fields.branch_name = {
-            ...this.form.fields.branch_name,
-            value: this.originalBranch,
-            state: true,
-          };
-        }
-      },
-    },
-  },
   methods: {
     show() {
       this.$refs[this.modalId].show();
@@ -233,9 +218,7 @@ export default {
       e.preventDefault(); // Prevent modal from closing
 
       if (this.showLfsWarning) {
-        this.lfsWarningDismissed = true;
-        await this.$nextTick();
-        this.$refs.message?.$el.focus();
+        await this.handleContinueLfsWarning();
         return;
       }
 

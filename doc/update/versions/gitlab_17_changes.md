@@ -89,6 +89,11 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   the upgrade. This bug has been fixed with GitLab 17.1.2 and upgrading from GitLab 16.x directly to 17.1.2 will not
   cause these issues.
 
+- A [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/476542) in the Git versions shipped with 
+  GitLab 17.0.x and GitLab 17.1.x causes a noticeable increase in CPU usage when under load. The primary cause of 
+  this regression was resolved in the Git versions shipped with GitLab 17.2 so, for systems that see heavy peak loads, 
+  you should upgrade to GitLab 17.2.
+
 ### Linux package installations
 
 Specific information applies to Linux package installations:

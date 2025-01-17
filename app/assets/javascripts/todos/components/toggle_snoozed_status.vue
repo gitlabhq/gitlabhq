@@ -174,7 +174,7 @@ export default {
     },
   },
   i18n: {
-    snooze: s__('Todos|Snooze'),
+    snooze: s__('Todos|Snooze...'),
     snoozeError: s__('Todos|Failed to snooze todo. Try again later.'),
     unSnooze: s__('Todos|Remove snooze'),
     unSnoozeError: s__('Todos|Failed to un-snooze todo. Try again later.'),

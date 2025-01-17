@@ -65,7 +65,7 @@ export default {
 
       formData.append('dir_name', this.dir);
       if (!formData.has('branch_name')) {
-        formData.append('branch_name', this.targetBranch);
+        formData.append('branch_name', this.originalBranch);
       }
 
       return axios

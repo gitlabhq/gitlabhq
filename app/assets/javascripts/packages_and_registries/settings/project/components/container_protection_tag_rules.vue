@@ -3,6 +3,7 @@ import {
   GlAlert,
   GlBadge,
   GlButton,
+  GlDrawer,
   GlLoadingIcon,
   GlModal,
   GlModalDirective,
@@ -11,6 +12,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import ContainerProtectionTagRuleForm from '~/packages_and_registries/settings/project/components/container_protection_tag_rule_form.vue';
 import getContainerProtectionTagRulesQuery from '~/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql';
 import deleteContainerProtectionTagRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_tag_rule.mutation.graphql';
 import { __, s__ } from '~/locale';
@@ -22,10 +24,12 @@ const I18N_MINIMUM_ACCESS_LEVEL_TO_DELETE = s__('ContainerRegistry|Minimum acces
 
 export default {
   components: {
+    ContainerProtectionTagRuleForm,
     CrudComponent,
     GlAlert,
     GlBadge,
     GlButton,
+    GlDrawer,
     GlLoadingIcon,
     GlModal,
     GlSprintf,
@@ -63,6 +67,7 @@ export default {
       protectionRuleMutationItem: null,
       protectionRulesQueryPayload: { nodes: [], pageInfo: {} },
       protectionRulesQueryPaginationParams: { first: MAX_LIMIT },
+      showDrawer: false,
     };
   },
   computed: {
@@ -98,6 +103,9 @@ export default {
     clearAlertMessage() {
       this.alertErrorMessage = '';
     },
+    closeDrawer() {
+      this.showDrawer = false;
+    },
     async deleteProtectionRule(protectionRule) {
       this.clearAlertMessage();
 
@@ -120,6 +128,9 @@ export default {
       } finally {
         this.resetProtectionRuleMutation();
       }
+    },
+    openDrawer() {
+      this.showDrawer = true;
     },
     refetchProtectionRules() {
       this.$apollo.queries.protectionRulesQueryPayload.refetch();
@@ -181,8 +192,11 @@ export default {
 
 <template>
   <crud-component
+    :collapsed="false"
     :title="$options.i18n.title"
+    :toggle-text="s__('ContainerRegistry|Add protection rule')"
     data-testid="project-container-protection-tag-rules-settings"
+    @showForm="openDrawer"
   >
     <template v-if="containsTableItems" #count>
       <gl-badge>
@@ -196,6 +210,7 @@ export default {
         </gl-sprintf>
       </gl-badge>
     </template>
+
     <template #default>
       <p
         class="gl-pb-0 gl-text-subtle"
@@ -252,6 +267,18 @@ export default {
       <p v-else data-testid="empty-text" class="gl-text-subtle">
         {{ s__('ContainerRegistry|No container image tags are protected.') }}
       </p>
+
+      <gl-drawer :z-index="1400" :open="showDrawer" @close="closeDrawer">
+        <template #title>
+          <h2 class="gl-my-0 gl-text-size-h2 gl-leading-24">
+            {{ s__('ContainerRegistry|Add protection rule') }}
+          </h2>
+        </template>
+        <template #default>
+          <container-protection-tag-rule-form />
+        </template>
+      </gl-drawer>
+
       <gl-modal
         v-if="protectionRuleMutationItem"
         :modal-id="$options.modal.id"

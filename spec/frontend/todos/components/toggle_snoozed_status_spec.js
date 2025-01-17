@@ -131,7 +131,7 @@ describe('ToggleSnoozedStatus', () => {
     createComponent({ props: { isSnoozed: false, isPending: true } });
 
     expect(findSnoozeDropdown().props()).toMatchObject({
-      toggleText: 'Snooze',
+      toggleText: 'Snooze...',
       icon: 'clock',
       placement: 'bottom-end',
       textSrOnly: true,
@@ -202,7 +202,7 @@ describe('ToggleSnoozedStatus', () => {
     const tooltip = findGlTooltip();
 
     expect(tooltip.exists()).toBe(true);
-    expect(tooltip.text()).toBe('Snooze');
+    expect(tooltip.text()).toBe('Snooze...');
   });
 
   it('only shows the tooltip when the dropdown is closed', async () => {

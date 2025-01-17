@@ -37392,7 +37392,7 @@ ALTER TABLE ONLY approval_project_rules_users
     ADD CONSTRAINT fk_0dfcd9e339 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_runner_projects
-    ADD CONSTRAINT fk_0e743433ff FOREIGN KEY (runner_id) REFERENCES ci_runners(id) ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_0e743433ff FOREIGN KEY (runner_id) REFERENCES ci_runners(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY security_policy_project_links
     ADD CONSTRAINT fk_0eba4d5d71 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

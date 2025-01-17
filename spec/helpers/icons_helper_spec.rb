@@ -48,6 +48,11 @@ RSpec.describe IconsHelper do
         .to eq "<svg class=\"s72\" data-testid=\"#{icon_name}-icon\"><use href=\"#{icons_path}##{icon_name}\"></use></svg>"
     end
 
+    it 'returns svg icon html + size + variant classes' do
+      expect(sprite_icon(icon_name, size: 72, variant: 'subtle').to_s)
+        .to eq "<svg class=\"s72 gl-fill-icon-subtle\" data-testid=\"#{icon_name}-icon\"><use href=\"#{icons_path}##{icon_name}\"></use></svg>"
+    end
+
     it 'returns svg icon html + size classes + additional class' do
       expect(sprite_icon(icon_name, size: 72, css_class: 'icon-danger').to_s)
         .to eq "<svg class=\"s72 icon-danger\" data-testid=\"#{icon_name}-icon\"><use href=\"#{icons_path}##{icon_name}\"></use></svg>"

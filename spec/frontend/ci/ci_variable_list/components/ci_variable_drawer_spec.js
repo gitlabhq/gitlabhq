@@ -243,6 +243,23 @@ describe('CI Variable Drawer', () => {
             expect(findVisibilityRadioGroup().attributes('checked')).toBe(expectedVisibility);
           },
         );
+
+        it('is updated on variable update', async () => {
+          await createComponent({
+            props: {
+              selectedVariable: {
+                ...mockProjectVariableFileType,
+                masked: true,
+                hidden: true,
+              },
+            },
+          });
+
+          expect(findVisibilityRadioGroup().attributes('checked')).toBe(VISIBILITY_HIDDEN);
+          await wrapper.setProps({ mutationResponse: { message: 'Success', hasError: false } });
+
+          expect(findVisibilityRadioGroup().attributes('checked')).toBe(VISIBILITY_VISIBLE);
+        });
       });
 
       it('is disabled when editing a hidden variable', () => {

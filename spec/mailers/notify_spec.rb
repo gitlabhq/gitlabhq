@@ -89,16 +89,16 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
     end
   end
 
-  describe 'with HTML-encoded entities' do
+  describe 'with non-ASCII characters' do
     before do
-      described_class.test_email('test@test.com', 'Subject', 'Some body with &mdash;').deliver
+      described_class.test_email('test@test.com', 'Subject', 'Some body with 中文 &mdash;').deliver
     end
 
     subject { ActionMailer::Base.deliveries.last }
 
-    it 'retains 7bit encoding' do
-      expect(subject.body.ascii_only?).to eq(true)
-      expect(subject.body.encoding).to eq('7bit')
+    it 'removes HTML encoding and uses UTF-8 charset' do
+      expect(subject.charset).to eq('UTF-8')
+      expect(subject.body).to include('中文 —')
     end
   end
 

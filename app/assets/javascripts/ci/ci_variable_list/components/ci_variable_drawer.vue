@@ -381,6 +381,8 @@ export default {
     },
     resetForm() {
       this.variable = { ...defaultVariableState };
+
+      this.visibility = VISIBILITY_VISIBLE;
     },
     setEnvironmentScope(scope) {
       this.variable = { ...this.variable, environmentScope: scope };

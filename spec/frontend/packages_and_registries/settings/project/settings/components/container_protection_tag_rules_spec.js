@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlAlert, GlBadge, GlModal, GlSprintf, GlTable } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlDrawer, GlModal, GlSprintf, GlTable } from '@gitlab/ui';
 
 import containerProtectionTagRuleEmptyRulesQueryPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql.empty_rules.json';
 import containerProtectionTagRuleNullProjectQueryPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql.null_project.json';
@@ -18,6 +18,7 @@ import {
 import waitForPromises from 'helpers/wait_for_promises';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import ContainerProtectionTagRules from '~/packages_and_registries/settings/project/components/container_protection_tag_rules.vue';
+import ContainerProtectionTagRuleForm from '~/packages_and_registries/settings/project/components/container_protection_tag_rule_form.vue';
 import getContainerProtectionTagRulesQuery from '~/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql';
 import deleteContainerProtectionTagRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_tag_rule.mutation.graphql';
 import { MinimumAccessLevelOptions } from '~/packages_and_registries/settings/project/constants';
@@ -36,6 +37,9 @@ describe('ContainerProtectionTagRules', () => {
   const findTableComponent = () => wrapper.findComponent(GlTable);
   const findBadge = () => wrapper.findComponent(GlBadge);
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findDrawer = () => wrapper.findComponent(GlDrawer);
+  const findDrawerTitle = () => wrapper.findComponent(GlDrawer).find('h2');
+  const findForm = () => wrapper.findComponent(ContainerProtectionTagRuleForm);
   const findModal = () => wrapper.findComponent(GlModal);
 
   const defaultProvidedValues = {
@@ -83,6 +87,7 @@ describe('ContainerProtectionTagRules', () => {
 
     it('renders card component with title', () => {
       expect(findCrudComponent().props('title')).toBe('Protected container image tags');
+      expect(findCrudComponent().props('toggleText')).toBe('Add protection rule');
     });
 
     it('renders card component with description', () => {
@@ -93,6 +98,10 @@ describe('ContainerProtectionTagRules', () => {
 
     it('shows loading icon', () => {
       expect(findLoader().exists()).toBe(true);
+    });
+
+    it('drawer is hidden', () => {
+      expect(findDrawer().props('open')).toBe(false);
     });
 
     it('hides the table', () => {
@@ -112,6 +121,31 @@ describe('ContainerProtectionTagRules', () => {
       expect(containerProtectionTagRuleQueryResolver).toHaveBeenCalledWith(
         expect.objectContaining({ projectPath: defaultProvidedValues.projectPath, first: 5 }),
       );
+    });
+
+    describe('when `Add protection rule` button is clicked', () => {
+      beforeEach(async () => {
+        await findCrudComponent().vm.$emit('showForm');
+      });
+
+      it('opens drawer', () => {
+        expect(findDrawer().props('open')).toBe(true);
+        expect(findDrawerTitle().text()).toBe('Add protection rule');
+      });
+
+      it('renders form', () => {
+        expect(findForm().exists()).toBe(true);
+      });
+
+      describe('when drawer emits `close` event', () => {
+        beforeEach(async () => {
+          await findDrawer().vm.$emit('close');
+        });
+
+        it('closes drawer', () => {
+          expect(findDrawer().props('open')).toBe(false);
+        });
+      });
     });
   });
 

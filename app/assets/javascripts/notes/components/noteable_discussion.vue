@@ -13,6 +13,7 @@ import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
+import { FILE_DIFF_POSITION_TYPE, IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
@@ -163,9 +164,22 @@ export default {
     },
     canShowReplyActions() {
       if (this.shouldRenderDiffs) {
+        if (this.discussion.diff_file?.diff_refs) {
+          return true;
+        }
+
+        /*
+         * https://gitlab.com/gitlab-com/gl-infra/production/-/issues/19118
+         *
+         * For most diff discussions we should have a `diff_file`.
+         * However in some cases we might we might not have this object.
+         * In these we need to check if the `original_position.position_type`
+         * is either a file or an image, doing this allows us to still
+         * render the reply actions.
+         */
         return (
-          this.discussion.original_position.position_type === 'file' ||
-          this.discussion.diff_file?.diff_refs
+          this.discussion.original_position?.position_type === FILE_DIFF_POSITION_TYPE ||
+          this.discussion.original_position?.position_type === IMAGE_DIFF_POSITION_TYPE
         );
       }
 

@@ -1010,9 +1010,6 @@ msgstr ""
 msgid "%{labelStart}Project:%{labelEnd} %{project}"
 msgstr ""
 
-msgid "%{labelStart}Report Type:%{labelEnd} %{reportType}"
-msgstr ""
-
 msgid "%{labelStart}Scanner:%{labelEnd} %{scanner}"
 msgstr ""
 
@@ -1020,6 +1017,9 @@ msgid "%{labelStart}Sent request:%{labelEnd} %{headers}"
 msgstr ""
 
 msgid "%{labelStart}Severity:%{labelEnd} %{severity}"
+msgstr ""
+
+msgid "%{labelStart}Tool:%{labelEnd} %{reportType}"
 msgstr ""
 
 msgid "%{labelStart}URL:%{labelEnd} %{url}"
@@ -2413,7 +2413,7 @@ msgstr ""
 msgid "AI|Write a summary to fill out the selected issue template"
 msgstr ""
 
-msgid "AI|Your request does not seem to contain code to %{action}. To %{human_name} select the lines of code in your editor and then type the command %{command_name} in the chat. You may add additional instructions after this command. If you have no code to select, you can also simply add the code after the command."
+msgid "AI|Your request does not seem to contain code to %{action}. To %{human_name} select the lines of code in your %{platform} and then type the command %{command_name} in the chat. You may add additional instructions after this command. If you have no code to select, you can also simply add the code after the command."
 msgstr ""
 
 msgid "API"
@@ -15603,6 +15603,12 @@ msgstr ""
 msgid "ContainerRegistry|Minimum access level to push"
 msgstr ""
 
+msgid "ContainerRegistry|Minimum role allowed to delete"
+msgstr ""
+
+msgid "ContainerRegistry|Minimum role allowed to push"
+msgstr ""
+
 msgid "ContainerRegistry|Missing or insufficient permission, delete button disabled"
 msgstr ""
 
@@ -15621,6 +15627,12 @@ msgstr ""
 msgid "ContainerRegistry|Note: Any policy update will result in a change to the scheduled run date and time"
 msgstr ""
 
+msgid "ContainerRegistry|Only users with at least this role can delete tags with a name that matches the protection rule."
+msgstr ""
+
+msgid "ContainerRegistry|Only users with at least this role can push tags with a name that matches the protection rule."
+msgstr ""
+
 msgid "ContainerRegistry|Partial cleanup complete"
 msgstr ""
 
@@ -15628,6 +15640,9 @@ msgid "ContainerRegistry|Path pattern with %{linkStart}wildcards%{linkEnd} such 
 msgstr ""
 
 msgid "ContainerRegistry|Please try different search criteria"
+msgstr ""
+
+msgid "ContainerRegistry|Protect container tags matching"
 msgstr ""
 
 msgid "ContainerRegistry|Protected container image tags"
@@ -15747,6 +15762,9 @@ msgid "ContainerRegistry|Tags that match these rules are %{strongStart}removed%{
 msgstr ""
 
 msgid "ContainerRegistry|Tags with names that match this regex pattern are kept. %{linkStart}View regex examples.%{linkEnd}"
+msgstr ""
+
+msgid "ContainerRegistry|Tags with names that match this regex pattern are protected. Must be less than 100 characters. %{linkStart}What regex patterns are supported?%{linkEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|Tags with names that match this regex pattern are removed. %{linkStart}View regex examples.%{linkEnd}"
@@ -47464,9 +47482,6 @@ msgstr ""
 msgid "Reports|New"
 msgstr ""
 
-msgid "Reports|Report Type"
-msgstr ""
-
 msgid "Reports|See test results while the pipeline is running"
 msgstr ""
 
@@ -47477,6 +47492,9 @@ msgid "Reports|Test summary failed to load results"
 msgstr ""
 
 msgid "Reports|Test summary results are being parsed"
+msgstr ""
+
+msgid "Reports|Tool"
 msgstr ""
 
 msgid "Reports|View partial report"
@@ -59293,6 +59311,9 @@ msgid "Todos|Select this item to sign in with SAML and view it."
 msgstr ""
 
 msgid "Todos|Snooze"
+msgstr ""
+
+msgid "Todos|Snooze..."
 msgstr ""
 
 msgid "Todos|Snoozed"

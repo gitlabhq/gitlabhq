@@ -235,26 +235,6 @@ describe('CommitChangesModal', () => {
       });
     });
 
-    it('clear branch name when new branch option is selected', async () => {
-      createComponent();
-      expect(wrapper.vm.$data.form.fields.branch_name).toEqual({
-        feedback: null,
-        required: true,
-        state: true,
-        value: 'some-target-branch',
-      });
-
-      findFormRadioGroup().vm.$emit('input', true);
-      await nextTick();
-
-      expect(wrapper.vm.$data.form.fields.branch_name).toEqual({
-        feedback: null,
-        required: true,
-        state: true,
-        value: '',
-      });
-    });
-
     it.each`
       input                     | value                          | emptyRepo | canPushCode | canPushToBranch | exist
       ${'authenticity_token'}   | ${'mock-csrf-token'}           | ${false}  | ${true}     | ${true}         | ${true}
