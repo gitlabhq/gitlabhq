@@ -10,8 +10,8 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed, GitLab Dedicated
 
-The **Admin** area provides a web UI to manage and configure features of GitLab
-self-managed instances. If you are an administrator, to access the **Admin** area:
+The **Admin** area provides a web UI to manage and configure features of a
+GitLab Self-Managed instance. If you are an administrator, to access the **Admin** area:
 
 - In GitLab 17.3 and later: on the left sidebar, at the bottom, select **Admin**.
 - In GitLab 16.7 and later: on the left sidebar, at the bottom, select **Admin area**.

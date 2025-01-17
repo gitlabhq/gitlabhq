@@ -66,7 +66,7 @@ address. This top-level group setting applies to:
 
 - The GitLab UI, including subgroups, projects, and issues. It does not apply to GitLab Pages.
 - The API.
-- In self-managed installations of GitLab 15.1 and later, you can also configure
+- On GitLab Self-Managed, in 15.1 and later, you can also configure
   [globally-allowed IP address ranges](../../administration/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges)
   for the group.
 

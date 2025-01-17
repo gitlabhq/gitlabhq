@@ -212,7 +212,7 @@ export default {
       const hasEditedTemplate = this.descriptionText !== this.appliedTemplate;
       return hasAppliedTemplate && hasEditedTemplate;
     },
-    shouldUpdateTemplateUrlParam() {
+    isNewWorkItemRoute() {
       return this.$route?.name === ROUTES.new;
     },
   },
@@ -231,7 +231,7 @@ export default {
     },
   },
   mounted() {
-    if (this.shouldUpdateTemplateUrlParam) {
+    if (this.isNewWorkItemRoute) {
       this.selectedTemplate =
         this.$route.query[paramName] || this.$route.query[oldParamNameFromPreWorkItems];
     }
@@ -367,36 +367,34 @@ export default {
     handleSelectTemplate(templateName) {
       this.selectedTemplate = templateName;
     },
+    resetQueryParams() {
+      if (!this.isNewWorkItemRoute) {
+        return;
+      }
+
+      const params = new URLSearchParams(this.$route.query);
+      params.delete(paramName);
+      params.delete(oldParamNameFromPreWorkItems);
+      if (this.selectedTemplate) {
+        params.set(paramName, this.selectedTemplate);
+      }
+
+      this.$router.replace({
+        query: Object.fromEntries(params),
+      });
+    },
     applyTemplate() {
       this.appliedTemplate = this.descriptionTemplateContent;
       this.setDescriptionText(this.descriptionTemplateContent);
       this.onInput();
       this.showTemplateApplyWarning = false;
-
-      if (this.shouldUpdateTemplateUrlParam) {
-        const params = new URLSearchParams(this.$route.query);
-        params.delete(oldParamNameFromPreWorkItems);
-        params.set(paramName, this.selectedTemplate);
-
-        this.$router.replace({
-          query: Object.fromEntries(params),
-        });
-      }
+      this.resetQueryParams();
     },
     cancelApplyTemplate() {
       this.selectedTemplate = '';
       this.descriptionTemplate = null;
       this.showTemplateApplyWarning = false;
-
-      if (this.shouldUpdateTemplateUrlParam) {
-        const params = new URLSearchParams(this.$route.query);
-        params.delete(paramName);
-        params.delete(oldParamNameFromPreWorkItems);
-
-        this.$router.replace({
-          query: Object.fromEntries(params),
-        });
-      }
+      this.resetQueryParams();
     },
     handleClearTemplate() {
       if (this.appliedTemplate) {

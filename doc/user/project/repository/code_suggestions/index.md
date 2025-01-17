@@ -293,7 +293,7 @@ Other supported IDEs offer slower response times and will return the generated c
 By default, code completion requests are sent from the IDE directly to the AI gateway to minimize the latency.
 For this direct connection to work, the IDE must be able to connect to `https://cloud.gitlab.com:443`. If this is not
 possible (for example, because of network restrictions), you can disable direct connections for all users. If you do this,
-code completion requests are sent indirectly through the GitLab self-managed instance, which in turn sends the requests
+code completion requests are sent indirectly through the GitLab Self-Managed instance, which in turn sends the requests
 to the AI gateway. This might result in your requests having higher latency.
 
 #### Configure direct or indirect connections

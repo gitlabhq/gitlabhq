@@ -24,7 +24,7 @@ The reason we spread this out across three releases is that dropping a column is
 a destructive operation that can't be rolled back easily.
 
 Following this procedure helps us to make sure there are no deployments to GitLab.com
-and upgrade processes for self-managed installations that lump together any of these steps.
+and upgrade processes for GitLab Self-Managed instances that lump together any of these steps.
 
 ### Ignoring the column (release M)
 

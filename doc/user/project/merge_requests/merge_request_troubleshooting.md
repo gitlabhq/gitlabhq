@@ -145,7 +145,7 @@ This error can happen if your merge request:
 - Is many commits behind the target branch.
 - References a Git LFS file that is locked.
 
-Users in self-managed installations can request an administrator review server logs
+Users on GitLab Self-Managed can request an administrator review server logs
 to determine the cause of the error. GitLab SaaS users should
 [contact Support](https://about.gitlab.com/support/#contact-support) for help.
 

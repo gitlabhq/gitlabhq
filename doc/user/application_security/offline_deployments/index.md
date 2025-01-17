@@ -16,7 +16,7 @@ To set up an offline environment, you must receive an [opt-out exemption of clou
 It's possible to run most of the GitLab security scanners when not connected to the internet.
 
 This document describes how to operate Secure Categories (that is, scanner types) in an offline
-environment. These instructions also apply to self-managed installations that are secured, have
+environment. These instructions also apply to GitLab Self-Managed instances that are secured, have
 security policies (for example, firewall policies), or are otherwise restricted from accessing the
 full internet. GitLab refers to these environments as _offline environments_. Other common names
 include:

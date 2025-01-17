@@ -406,93 +406,95 @@ describe('WorkItemDescription', () => {
 
       describe('URL param handling', () => {
         describe('when on new work item route', () => {
-          beforeEach(async () => {
-            await createComponent({
-              routeName: ROUTES.new,
-              routeQuery: { description_template: 'bug', other_param: 'some_value' },
-              isEditing: true,
+          describe('description_template param', () => {
+            beforeEach(async () => {
+              await createComponent({
+                routeName: ROUTES.new,
+                routeQuery: { description_template: 'bug', other_param: 'some_value' },
+                isEditing: true,
+              });
+            });
+
+            it('sets selected template from URL on mount', () => {
+              expect(findDescriptionTemplateListbox().props().template).toBe('bug');
+            });
+
+            it('updates URL when applying template', async () => {
+              findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example-template');
+              await nextTick();
+              await waitForPromises();
+
+              findApplyTemplate().vm.$emit('click');
+
+              expect(router.replace).toHaveBeenCalledWith({
+                query: {
+                  description_template: 'example-template',
+                  other_param: 'some_value',
+                },
+              });
+            });
+
+            it('removes template param (and not other params) from URL when canceling template', async () => {
+              findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example-template');
+              await nextTick();
+              await waitForPromises();
+
+              findCancelApplyTemplate().vm.$emit('click');
+
+              expect(router.replace).toHaveBeenCalledWith({
+                query: {
+                  other_param: 'some_value',
+                },
+              });
             });
           });
 
-          it('sets selected template from URL on mount', () => {
-            expect(findDescriptionTemplateListbox().props().template).toBe('bug');
-          });
-
-          it('updates URL when applying template', async () => {
-            findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example-template');
-            await nextTick();
-            await waitForPromises();
-
-            findApplyTemplate().vm.$emit('click');
-
-            expect(router.replace).toHaveBeenCalledWith({
-              query: {
-                description_template: 'example-template',
-                other_param: 'some_value',
-              },
-            });
-          });
-
-          it('removes template param (and not other params) from URL when canceling template', async () => {
-            findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example-template');
-            await nextTick();
-            await waitForPromises();
-
-            findCancelApplyTemplate().vm.$emit('click');
-
-            expect(router.replace).toHaveBeenCalledWith({
-              query: {
-                other_param: 'some_value',
-              },
-            });
-          });
-        });
-
-        describe('issuable_template param', () => {
-          beforeEach(async () => {
-            await createComponent({
-              routeName: ROUTES.new,
-              routeQuery: { issuable_template: 'my issue template', other_param: 'some_value' },
-              isEditing: true,
-            });
-          });
-
-          it('sets selected template from old template param', () => {
-            expect(findDescriptionTemplateListbox().props().template).toBe('my issue template');
-          });
-
-          it('removes old template param on apply', async () => {
-            findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example-template');
-            await nextTick();
-            await waitForPromises();
-
-            findApplyTemplate().vm.$emit('click');
-
-            expect(router.replace).toHaveBeenCalledWith({
-              query: {
-                description_template: 'example-template',
-                other_param: 'some_value',
-              },
-            });
-          });
-
-          it('removes old template param on cancel', async () => {
-            await createComponent({
-              routeName: ROUTES.new,
-              routeQuery: { issuable_template: 'my issue template', other_param: 'some_value' },
-              isEditing: true,
+          describe('issuable_template param', () => {
+            beforeEach(async () => {
+              await createComponent({
+                routeName: ROUTES.new,
+                routeQuery: { issuable_template: 'my issue template', other_param: 'some_value' },
+                isEditing: true,
+              });
             });
 
-            findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example-template');
-            await nextTick();
-            await waitForPromises();
+            it('sets selected template from old template param', () => {
+              expect(findDescriptionTemplateListbox().props().template).toBe('my issue template');
+            });
 
-            findCancelApplyTemplate().vm.$emit('click');
+            it('removes old template param on apply', async () => {
+              findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example-template');
+              await nextTick();
+              await waitForPromises();
 
-            expect(router.replace).toHaveBeenCalledWith({
-              query: {
-                other_param: 'some_value',
-              },
+              findApplyTemplate().vm.$emit('click');
+
+              expect(router.replace).toHaveBeenCalledWith({
+                query: {
+                  description_template: 'example-template',
+                  other_param: 'some_value',
+                },
+              });
+            });
+
+            it('removes old template param on cancel', async () => {
+              await createComponent({
+                routeName: ROUTES.new,
+                routeQuery: { issuable_template: 'my issue template', other_param: 'some_value' },
+                isEditing: true,
+              });
+
+              findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example-template');
+              await nextTick();
+              await waitForPromises();
+
+              findCancelApplyTemplate().vm.$emit('click');
+
+              expect(router.replace).toHaveBeenCalledWith({
+                query: {
+                  other_param: 'some_value',
+                },
+              });
             });
           });
         });

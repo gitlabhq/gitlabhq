@@ -8,7 +8,7 @@ description: "Development Guidelines: learn about organization when developing G
 # Organization
 
 The [Organization initiative](../../user/organization/index.md) focuses on reaching feature parity between
-SaaS and self-managed installations.
+GitLab.com and GitLab Self-Managed.
 
 ## Consolidate groups and projects
 

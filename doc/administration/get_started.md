@@ -18,7 +18,7 @@ and back up GitLab.
 
 Authentication is the first step in making your installation secure.
 
-- [Enforce two-factor authentication (2FA) for all users](../security/two_factor_authentication.md). We highly recommended 2FA for self-managed instances.
+- [Enforce two-factor authentication (2FA) for all users](../security/two_factor_authentication.md). We highly recommended 2FA for GitLab Self-Managed instances.
 - Ensure users do the following:
   - Choose a strong, secure password. If possible, store it in a password management system.
   - If it is not configured for everyone, enable [two-factor authentication (2FA)](../user/profile/account/two_factor_authentication.md) for your account.
@@ -118,7 +118,7 @@ Unlike other monitoring solutions (for example, Zabbix or New Relic), Prometheus
 
 ## Back up your GitLab data
 
-GitLab provides backup methods to keep your data safe and recoverable. Whether you use a self-managed or a GitLab SaaS database, it's crucial to back up your data regularly.
+GitLab provides backup methods to keep your data safe and recoverable. Whether you use a GitLab Self-Managed or a GitLab.com database, it's crucial to back up your data regularly.
 
 - Decide on a backup strategy.
 - Consider writing a cron job to make daily backups.
@@ -209,7 +209,7 @@ Learn more about the [data types Geo replicates](../administration/geo/replicati
 
 GitLab provides support for GitLab Self-Managed through different channels.
 
-- Priority support: [Premium and Ultimate](https://about.gitlab.com/pricing/) self-managed customers receive priority support with tiered response times.
+- Priority support: [Premium and Ultimate](https://about.gitlab.com/pricing/) GitLab Self-Managed customers receive priority support with tiered response times.
   Learn more about [upgrading to priority support](https://about.gitlab.com/support/#upgrading-to-priority-support).
 - Live upgrade assistance: Get one-on-one expert guidance during a production upgrade. With your **priority support plan**,
   you're eligible for a live, scheduled screen-sharing session with a member of our support team.

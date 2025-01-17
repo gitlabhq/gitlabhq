@@ -142,7 +142,7 @@ This step [queues a batched background migration](../batched_background_migratio
 
 This step must occur at least one release after the release that
 includes step (2). This gives time for the background
-migration to execute properly in self-managed installations. In this step,
+migration to execute properly in GitLab Self-Managed instances. In this step,
 add another post-deployment migration that cleans up after the
 background migration. This includes forcing any remaining jobs to
 execute, and copying data that may have been missed, due to dropped or

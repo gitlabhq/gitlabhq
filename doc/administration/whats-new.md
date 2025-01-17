@@ -16,11 +16,11 @@ GitLab versions in the **What's new** feature. It lists new features available i
 
 All users can see the feature list, but the entries might differ depending on the subscription type:
 
-- Features only available on GitLab.com are not shown to self-managed installations.
-- Features only available to self-managed installations are not shown on GitLab.com.
+- Features only available on GitLab.com are not shown on GitLab Self-Managed instances.
+- Features only available to GitLab Self-Managed instances are not shown on GitLab.com.
 
   NOTE:
-  For self-managed installations, the updated **What's new** is included
+  For GitLab Self-Managed, the updated **What's new** is included
   in the first patch release after a new version, such as `13.10.1`.
 
 ## Access What's new

@@ -55,7 +55,7 @@ contact the [Distribution team product manager](https://handbook.gitlab.com/hand
 is uncertainty about whether we should declare a required stop, the Distribution product
 manager may escalate to GitLab product leadership (VP or Chief Product Officer) to make
 a final determination. This may happen, for example, if a change might require a stop for
-a small subset of very large self-managed installations and there are well-defined workarounds
+a small subset of very large GitLab Self-Managed instances and there are well-defined workarounds
 if customers run into issues.
 
 ## Causes of required stops

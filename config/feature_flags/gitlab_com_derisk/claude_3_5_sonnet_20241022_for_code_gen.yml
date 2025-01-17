@@ -1,0 +1,9 @@
+---
+name: claude_3_5_sonnet_20241022_for_code_gen
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/502690
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176672
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/503249
+milestone: '17.8'
+group: group::code creation
+type: gitlab_com_derisk
+default_enabled: false

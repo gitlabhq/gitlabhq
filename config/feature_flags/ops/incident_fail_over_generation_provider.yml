@@ -1,0 +1,9 @@
+---
+name: incident_fail_over_generation_provider
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/503249
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176672
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/511072
+milestone: '17.8'
+group: group::code creation
+type: ops
+default_enabled: false

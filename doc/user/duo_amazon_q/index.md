@@ -27,7 +27,7 @@ so they can start to experiment right away.
 
 To access GitLab Duo with Amazon Q, request [access to a lab environment](https://about.gitlab.com/partners/technology-partners/aws/#interest).
 Alternately, if you have GitLab 17.8 or later, you can
-[set it up on your self-managed installation](setup.md).
+[set it up on your GitLab Self-Managed instance](setup.md).
 
 ## Use GitLab Duo with Amazon Q in an issue
 

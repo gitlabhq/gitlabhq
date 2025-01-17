@@ -339,7 +339,7 @@ If you no longer wish to receive any email notifications:
 1. If you belong to any groups or projects, set their notification setting to **Global** or
    **Disabled**.
 
-On self-managed installations, even after doing this, your instance administrator
+On GitLab Self-Managed instances, even after doing this, your instance administrator
 [can still email you](../../administration/email_from_gitlab.md).
 
 ## Unsubscribe from notification emails

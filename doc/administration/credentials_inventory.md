@@ -12,7 +12,7 @@ DETAILS:
 
 As a GitLab administrator, you are responsible for the overall security of your instance.
 To assist, GitLab provides an inventory of all the credentials that can be used to access
-your self-managed instance.
+your GitLab Self-Managed instance.
 
 This page describes how to manage the credentials inventory for GitLab Self-Managed. To manage credentials on GitLab.com, see [Credentials inventory for GitLab.com](../user/group/credentials_inventory.md).
 
