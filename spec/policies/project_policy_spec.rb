@@ -1698,6 +1698,8 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   describe 'read_package' do
+    using RSpec::Parameterized::TableSyntax
+
     context 'with admin' do
       let(:current_user) { admin }
 
@@ -1706,11 +1708,39 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       it_behaves_like 'package access with repository disabled'
     end
 
-    %w[anonymous non_member guest planner reporter developer maintainer owner].each do |role|
-      context "with #{role}" do
-        let(:current_user) { send(role) }
+    where(:project, :role, :allowed) do
+      ref(:public_project)  | :anonymous  | true
+      ref(:public_project)  | :non_member | true
+      ref(:public_project)  | :guest      | true
 
-        it { is_expected.to be_allowed(:read_package) }
+      ref(:private_project) | :anonymous  | false
+      ref(:private_project) | :non_member | false
+      ref(:private_project) | :guest      | true
+    end
+
+    with_them do
+      let(:current_user) { send(role) }
+
+      it do
+        expect(subject.can?(:read_package)).to be(allowed)
+      end
+    end
+
+    context 'with private project' do
+      let(:project) { private_project }
+
+      context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
+        before do
+          stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+        end
+
+        %w[guest planner].each do |role|
+          context "with #{role}" do
+            let(:current_user) { send(role) }
+
+            it { is_expected.to be_disallowed(:read_package) }
+          end
+        end
       end
     end
   end

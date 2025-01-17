@@ -164,15 +164,15 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
           'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | :anonymous  | 'returning both packages'
           'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :maintainer | 'returning both packages'
           'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :developer  | 'returning both packages'
-          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :guest      | 'returning package1'
+          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :guest      | 'returning both packages'
           'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :anonymous  | 'returning package1'
           'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :maintainer | 'returning both packages'
           'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :developer  | 'returning both packages'
-          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning package1'
+          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning both packages'
           'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :anonymous  | 'returning package1'
           'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :maintainer | 'returning both packages'
           'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :developer  | 'returning both packages'
-          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning no packages'
+          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning both packages'
           'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :anonymous  | 'returning no packages'
         end
 
@@ -209,6 +209,33 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
             end
 
             it_behaves_like 'returning package1'
+          end
+        end
+
+        context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
+          before_all do
+            group.add_guest(user)
+            subgroup.add_guest(user)
+            project1.add_guest(user)
+            project2.add_guest(user)
+          end
+
+          before do
+            stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+            project2.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project2_visibility, false))
+            subgroup.update!(visibility_level: Gitlab::VisibilityLevel.const_get(subgroup_visibility, false))
+            project1.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
+            group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
+          end
+
+          where(:group_visibility, :subgroup_visibility, :project2_visibility, :shared_example_name) do
+            'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | 'returning package1'
+            'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | 'returning package1'
+            'PRIVATE' | 'PRIVATE' | 'PRIVATE' | 'returning no packages'
+          end
+
+          with_them do
+            it_behaves_like params[:shared_example_name]
           end
         end
       end
@@ -303,15 +330,15 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
           'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | :anonymous  | 'returning both projects'
           'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :maintainer | 'returning both projects'
           'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :developer  | 'returning both projects'
-          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :guest      | 'returning project1'
+          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :guest      | 'returning both projects'
           'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :anonymous  | 'returning project1'
           'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :maintainer | 'returning both projects'
           'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :developer  | 'returning both projects'
-          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning project1'
+          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning both projects'
           'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :anonymous  | 'returning project1'
           'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :maintainer | 'returning both projects'
           'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :developer  | 'returning both projects'
-          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning no project'
+          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning both projects'
           'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :anonymous  | 'returning no project'
         end
 

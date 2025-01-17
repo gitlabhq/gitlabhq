@@ -144,10 +144,9 @@ class AuditEventService
   def log_authentication_event_to_database
     return unless Gitlab::Database.read_write? && authentication_event?
 
-    event = AuthenticationEvent.new(authentication_event_payload)
-    save_or_track event
-
-    event
+    AuthenticationEvent.new(authentication_event_payload).tap do |event|
+      save_or_track event
+    end
   end
 
   def save_or_track(event)
@@ -155,6 +154,8 @@ class AuditEventService
     stream_event_to_external_destinations(event) if should_save_stream?(@save_type)
   rescue StandardError => e
     Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, audit_event_type: event.class.to_s)
+
+    nil
   end
 end
 

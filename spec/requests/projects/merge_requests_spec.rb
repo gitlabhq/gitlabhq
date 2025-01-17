@@ -86,7 +86,7 @@ RSpec.describe 'merge requests actions', feature_category: :source_code_manageme
 
               context 'when the assignee is changed' do
                 before do
-                  update_service( assignee_ids: [] )
+                  update_service(assignee_ids: [])
                 end
 
                 it_behaves_like 'a non-cached request'

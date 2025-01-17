@@ -1190,13 +1190,29 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     context 'with planner' do
       let(:current_user) { planner }
 
-      it { is_expected.to be_disallowed(:read_package) }
+      it { is_expected.to be_allowed(:read_package) }
+
+      context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
+        before do
+          stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+        end
+
+        it { is_expected.to be_disallowed(:read_package) }
+      end
     end
 
     context 'with guest' do
       let(:current_user) { guest }
 
-      it { is_expected.to be_disallowed(:read_package) }
+      it { is_expected.to be_allowed(:read_package) }
+
+      context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
+        before do
+          stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+        end
+
+        it { is_expected.to be_disallowed(:read_package) }
+      end
     end
 
     context 'with non member' do

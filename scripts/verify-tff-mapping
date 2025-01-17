@@ -473,18 +473,6 @@ tests = [
 
   ## BEGIN Remote development GraphQL resolvers (in alphabetical order by resolver source file path)
   {
-    explanation: 'Map Remote Development GraphQL query root admin_workspaces_resolver.rb to request specs',
-    changed_file: 'ee/app/graphql/resolvers/remote_development/admin_workspaces_resolver.rb',
-    expected: %w[
-      ee/spec/requests/api/graphql/remote_development/workspace/with_id_arg_spec.rb
-      ee/spec/requests/api/graphql/remote_development/workspaces/with_actual_states_arg_spec.rb
-      ee/spec/requests/api/graphql/remote_development/workspaces/with_agent_ids_arg_spec.rb
-      ee/spec/requests/api/graphql/remote_development/workspaces/with_ids_arg_spec.rb
-      ee/spec/requests/api/graphql/remote_development/workspaces/with_no_args_spec.rb
-      ee/spec/requests/api/graphql/remote_development/workspaces/with_project_ids_arg_spec.rb
-    ]
-  },
-  {
     explanation:
       'Map Remote Development GraphQL cluster_agent/remote_development_agent_config_resolver.rb to request specs',
     changed_file:
@@ -502,6 +490,7 @@ tests = [
       ee/spec/requests/api/graphql/remote_development/cluster_agent/workspaces/with_ids_arg_spec.rb
       ee/spec/requests/api/graphql/remote_development/cluster_agent/workspaces/with_no_args_spec.rb
       ee/spec/requests/api/graphql/remote_development/cluster_agent/workspaces/with_project_ids_arg_spec.rb
+      ee/spec/requests/api/graphql/remote_development/workspace_variables/with_no_args_spec.rb
     ]
   },
   {
@@ -527,6 +516,19 @@ tests = [
     # rubocop:enable Layout/LineLength
   },
   {
+    explanation: 'Map Remote Development GraphQL query root workspaces_admin_resolver.rb to request specs',
+    changed_file: 'ee/app/graphql/resolvers/remote_development/workspaces_admin_resolver.rb',
+    expected: %w[
+      ee/spec/requests/api/graphql/remote_development/workspace/with_id_arg_spec.rb
+      ee/spec/requests/api/graphql/remote_development/workspaces/with_actual_states_arg_spec.rb
+      ee/spec/requests/api/graphql/remote_development/workspaces/with_agent_ids_arg_spec.rb
+      ee/spec/requests/api/graphql/remote_development/workspaces/with_ids_arg_spec.rb
+      ee/spec/requests/api/graphql/remote_development/workspaces/with_no_args_spec.rb
+      ee/spec/requests/api/graphql/remote_development/workspaces/with_project_ids_arg_spec.rb
+      ee/spec/requests/api/graphql/remote_development/workspace_variables/with_no_args_spec.rb
+    ]
+  },
+  {
     explanation: 'Map Remote Development GraphQL workspaces_resolver.rb to request specs',
     changed_file: 'ee/app/graphql/resolvers/remote_development/workspaces_resolver.rb',
     expected: %w[
@@ -536,9 +538,12 @@ tests = [
       ee/spec/requests/api/graphql/remote_development/current_user/workspaces/with_ids_arg_spec.rb
       ee/spec/requests/api/graphql/remote_development/current_user/workspaces/with_no_args_spec.rb
       ee/spec/requests/api/graphql/remote_development/current_user/workspaces/with_project_ids_arg_spec.rb
+      ee/spec/requests/api/graphql/remote_development/workspace_variables/with_no_args_spec.rb
     ]
   },
+  ## END Remote development GraphQL resolvers
 
+  ## BEGIN Remote development GraphQL types
   {
     explanation: 'Map Remote Development GraphQL query root workspace type resolver to request specs',
     changed_file: 'ee/app/graphql/types/remote_development/workspace_type.rb',
@@ -547,7 +552,37 @@ tests = [
       ee/spec/requests/api/graphql/remote_development/workspace/with_id_arg_spec.rb
     ]
   },
-  ## END Remote development GraphQL resolvers
+  {
+    explanation: 'Map Remote Development GraphQL workspace_variable_type.rb to request specs',
+    changed_file: 'ee/app/graphql/types/remote_development/workspace_variable_type.rb',
+    expected: %w[
+      ee/spec/graphql/types/remote_development/workspace_variable_type_spec.rb
+      ee/spec/requests/api/graphql/remote_development/workspace_variables/with_no_args_spec.rb
+    ]
+  },
+  {
+    explanation: 'Map Remote Development GraphQL workspace_variable_input_type_enum.rb to request specs',
+    changed_file: 'ee/app/graphql/types/remote_development/workspace_variable_input.rb',
+    expected: %w[
+      ee/spec/graphql/types/remote_development/workspace_variable_input_spec.rb
+      ee/spec/requests/api/graphql/mutations/remote_development/workspace_operations/create_spec.rb
+    ]
+  },
+  {
+    explanation: 'Map Remote Development GraphQL workspace_variable_type_enum.rb to request specs',
+    changed_file: 'ee/app/graphql/types/remote_development/workspace_variable_type_enum.rb',
+    expected: %w[
+      ee/spec/requests/api/graphql/remote_development/workspace_variables/with_no_args_spec.rb
+    ]
+  },
+  {
+    explanation: 'Map Remote Development GraphQL workspace_variable_input_type_enum.rb to request specs',
+    changed_file: 'ee/app/graphql/types/remote_development/workspace_variable_input_type_enum.rb',
+    expected: %w[
+      ee/spec/requests/api/graphql/mutations/remote_development/workspace_operations/create_spec.rb
+    ]
+  },
+  ## END Remote development GraphQL types
 
   {
     explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1987834618',

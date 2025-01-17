@@ -1,21 +1,26 @@
+import { createTestingPinia } from '@pinia/testing';
 import * as types from '~/batch_comments/stores/modules/batch_comments/mutation_types';
-import mutations from '~/batch_comments/stores/modules/batch_comments/mutations';
-import createState from '~/batch_comments/stores/modules/batch_comments/state';
+import { useBatchComments } from '~/batch_comments/store';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useNotes } from '~/notes/store/legacy_notes';
 
-// eslint-disable-next-line jest/no-disabled-tests
-describe.skip('Batch comments mutations', () => {
-  let state;
+describe('Batch comments mutations', () => {
+  let store;
 
   beforeEach(() => {
-    state = createState();
+    createTestingPinia({ stubActions: false, plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes();
+    store = useBatchComments();
   });
 
   describe(types.ADD_NEW_DRAFT, () => {
     const draft = { id: 1, note: 'test' };
     it('adds processed object into drafts array', () => {
-      mutations[types.ADD_NEW_DRAFT](state, draft);
+      store[types.ADD_NEW_DRAFT](draft);
 
-      expect(state.drafts).toEqual([
+      expect(store.drafts).toEqual([
         {
           ...draft,
           isDraft: true,
@@ -24,26 +29,26 @@ describe.skip('Batch comments mutations', () => {
     });
 
     it('sets `shouldAnimateReviewButton` to true if it is a first draft', () => {
-      mutations[types.ADD_NEW_DRAFT](state, draft);
+      store[types.ADD_NEW_DRAFT](draft);
 
-      expect(state.shouldAnimateReviewButton).toBe(true);
+      expect(store.shouldAnimateReviewButton).toBe(true);
     });
 
     it('does not set `shouldAnimateReviewButton` to true if it is not a first draft', () => {
-      state.drafts.push({ id: 1 }, { id: 2 });
-      mutations[types.ADD_NEW_DRAFT](state, { id: 2, note: 'test2' });
+      store.drafts.push({ id: 1 }, { id: 2 });
+      store[types.ADD_NEW_DRAFT]({ id: 2, note: 'test2' });
 
-      expect(state.shouldAnimateReviewButton).toBe(false);
+      expect(store.shouldAnimateReviewButton).toBe(false);
     });
   });
 
   describe(types.DELETE_DRAFT, () => {
     it('removes draft from array by ID', () => {
-      state.drafts.push({ id: 1 }, { id: 2 });
+      store.drafts.push({ id: 1 }, { id: 2 });
 
-      mutations[types.DELETE_DRAFT](state, 1);
+      store[types.DELETE_DRAFT](1);
 
-      expect(state.drafts).toEqual([{ id: 2 }]);
+      expect(store.drafts).toEqual([{ id: 2 }]);
     });
   });
 
@@ -51,9 +56,9 @@ describe.skip('Batch comments mutations', () => {
     it('adds to processed drafts in state', () => {
       const drafts = [{ id: 1 }, { id: 2 }];
 
-      mutations[types.SET_BATCH_COMMENTS_DRAFTS](state, drafts);
+      store[types.SET_BATCH_COMMENTS_DRAFTS](drafts);
 
-      expect(state.drafts).toEqual([
+      expect(store.drafts).toEqual([
         {
           id: 1,
           isDraft: true,
@@ -68,39 +73,39 @@ describe.skip('Batch comments mutations', () => {
 
   describe(types.REQUEST_PUBLISH_REVIEW, () => {
     it('sets isPublishing to true', () => {
-      mutations[types.REQUEST_PUBLISH_REVIEW](state);
+      store[types.REQUEST_PUBLISH_REVIEW]();
 
-      expect(state.isPublishing).toBe(true);
+      expect(store.isPublishing).toBe(true);
     });
   });
 
   describe(types.RECEIVE_PUBLISH_REVIEW_SUCCESS, () => {
     it('sets isPublishing to false', () => {
-      state.isPublishing = true;
+      store.isPublishing = true;
 
-      mutations[types.RECEIVE_PUBLISH_REVIEW_SUCCESS](state);
+      store[types.RECEIVE_PUBLISH_REVIEW_SUCCESS]();
 
-      expect(state.isPublishing).toBe(false);
+      expect(store.isPublishing).toBe(false);
     });
   });
 
   describe(types.RECEIVE_PUBLISH_REVIEW_ERROR, () => {
     it('updates isPublishing to false', () => {
-      state.isPublishing = true;
+      store.isPublishing = true;
 
-      mutations[types.RECEIVE_PUBLISH_REVIEW_ERROR](state);
+      store[types.RECEIVE_PUBLISH_REVIEW_ERROR]();
 
-      expect(state.isPublishing).toBe(false);
+      expect(store.isPublishing).toBe(false);
     });
   });
 
   describe(types.RECEIVE_DRAFT_UPDATE_SUCCESS, () => {
     it('updates draft in store', () => {
-      state.drafts.push({ id: 1 });
+      store.drafts.push({ id: 1 });
 
-      mutations[types.RECEIVE_DRAFT_UPDATE_SUCCESS](state, { id: 1, note: 'test' });
+      store[types.RECEIVE_DRAFT_UPDATE_SUCCESS]({ id: 1, note: 'test' });
 
-      expect(state.drafts).toEqual([
+      expect(store.drafts).toEqual([
         {
           id: 1,
           note: 'test',
@@ -112,21 +117,21 @@ describe.skip('Batch comments mutations', () => {
 
   describe(types.CLEAR_DRAFTS, () => {
     it('clears drafts array', () => {
-      state.drafts.push({ id: 1 });
+      store.drafts.push({ id: 1 });
 
-      mutations[types.CLEAR_DRAFTS](state);
+      store[types.CLEAR_DRAFTS]();
 
-      expect(state.drafts).toEqual([]);
+      expect(store.drafts).toEqual([]);
     });
   });
 
   describe(types.SET_DRAFT_EDITING, () => {
     it('sets draft editing mode', () => {
-      state.drafts.push({ id: 1, isEditing: false });
+      store.drafts.push({ id: 1, isEditing: false });
 
-      mutations[types.SET_DRAFT_EDITING](state, { draftId: 1, isEditing: true });
+      store[types.SET_DRAFT_EDITING]({ draftId: 1, isEditing: true });
 
-      expect(state.drafts[0].isEditing).toBe(true);
+      expect(store.drafts[0].isEditing).toBe(true);
     });
   });
 });

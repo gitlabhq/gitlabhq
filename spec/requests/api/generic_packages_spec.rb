@@ -771,9 +771,9 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
         'PUBLIC'  | :guest     | false | :invalid_user_basic_auth       | :success
         'PUBLIC'  | :anonymous | false | :none                          | :success
         'PRIVATE' | :developer | true  | :personal_access_token         | :success
-        'PRIVATE' | :guest     | true  | :personal_access_token         | :forbidden
+        'PRIVATE' | :guest     | true  | :personal_access_token         | :success
         'PRIVATE' | :developer | true  | :user_basic_auth               | :success
-        'PRIVATE' | :guest     | true  | :user_basic_auth               | :forbidden
+        'PRIVATE' | :guest     | true  | :user_basic_auth               | :success
         'PRIVATE' | :developer | true  | :invalid_personal_access_token | :unauthorized
         'PRIVATE' | :guest     | true  | :invalid_personal_access_token | :unauthorized
         'PRIVATE' | :developer | true  | :invalid_user_basic_auth       | :unauthorized

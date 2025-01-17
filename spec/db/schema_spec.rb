@@ -420,7 +420,8 @@ RSpec.describe 'Database schema',
         'ProjectAutoDevops' => %w[deploy_strategy],
         'ResourceLabelEvent' => %w[action],
         'User' => %w[layout dashboard project_view],
-        'Users::Callout' => %w[feature_name]
+        'Users::Callout' => %w[feature_name],
+        'Vulnerability' => %w[confidence] # this enum is in the process of being deprecated
       }.freeze
     end
 

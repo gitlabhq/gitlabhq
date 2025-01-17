@@ -196,6 +196,8 @@ module Gitlab
         end
       rescue ActiveRecord::RecordInvalid => e
         ::Gitlab::ErrorTracking.track_exception(e, audit_operation: @name)
+
+        nil
       end
 
       def log_to_file(events)

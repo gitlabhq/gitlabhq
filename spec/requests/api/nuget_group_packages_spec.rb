@@ -45,9 +45,7 @@ RSpec.describe API::NugetGroupPackages, feature_category: :package_registry do
         example_names_with_status:
         {
           anonymous_requests_example_name: 'rejects nuget packages access',
-          anonymous_requests_status: :unauthorized,
-          guest_requests_example_name: 'rejects nuget packages access',
-          guest_requests_status: :not_found
+          anonymous_requests_status: :unauthorized
         }
 
       it_behaves_like 'allows anyone to pull public nuget packages on group level' do
@@ -62,9 +60,7 @@ RSpec.describe API::NugetGroupPackages, feature_category: :package_registry do
         example_names_with_status:
         {
           anonymous_requests_example_name: 'rejects nuget packages access',
-          anonymous_requests_status: :unauthorized,
-          guest_requests_example_name: 'rejects nuget packages access',
-          guest_requests_status: :not_found
+          anonymous_requests_status: :unauthorized
         }
 
       it_behaves_like 'allows anyone to pull public nuget packages on group level' do
@@ -78,9 +74,7 @@ RSpec.describe API::NugetGroupPackages, feature_category: :package_registry do
       it_behaves_like 'handling nuget search requests',
         example_names_with_status: {
           anonymous_requests_example_name: 'rejects nuget packages access',
-          anonymous_requests_status: :unauthorized,
-          guest_requests_example_name: 'process empty nuget search request',
-          guest_requests_status: :success
+          anonymous_requests_status: :unauthorized
         }
 
       it_behaves_like 'allows anyone to pull public nuget packages on group level' do

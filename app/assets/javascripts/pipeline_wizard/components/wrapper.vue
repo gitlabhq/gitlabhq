@@ -171,9 +171,9 @@ export default {
   <div class="row gl-mt-8">
     <main class="col-md-6 gl-pr-8">
       <header class="gl-mb-5">
-        <h3 class="gl-mt-0 gl-text-subtle" data-testid="step-count">
+        <h2 class="gl-mt-0" data-testid="step-count">
           {{ sprintf($options.i18n.stepNofN, { currentStep, stepCount }) }}
-        </h3>
+        </h2>
         <gl-progress-bar :value="progress" />
       </header>
       <section class="gl-mb-4">

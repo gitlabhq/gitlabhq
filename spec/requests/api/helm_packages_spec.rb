@@ -66,7 +66,7 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
         :public  | :not_a_member | 'process helm download content request'   | :success
         :public  | :anonymous    | 'process helm download content request'   | :success
         :private | :reporter     | 'process helm download content request'   | :success
-        :private | :guest        | 'rejects helm packages access'            | :forbidden
+        :private | :guest        | 'process helm download content request'   | :success
         :private | :not_a_member | 'rejects helm packages access'            | :not_found
         :private | :anonymous    | 'rejects helm packages access'            | :unauthorized
       end

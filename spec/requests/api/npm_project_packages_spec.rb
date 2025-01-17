@@ -205,15 +205,21 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
       it_behaves_like 'a package file that requires auth'
 
-      context 'with guest' do
-        let(:headers) { build_token_auth_header(token.plaintext_token) }
+      context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
+        before do
+          stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+        end
 
-        it 'denies download when not enough permissions' do
-          project.add_guest(user)
+        context 'with guest' do
+          let(:headers) { build_token_auth_header(token.plaintext_token) }
 
-          subject
+          it 'denies download when not enough permissions' do
+            project.add_guest(user)
 
-          expect(response).to have_gitlab_http_status(:forbidden)
+            subject
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
         end
       end
 

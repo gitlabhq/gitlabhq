@@ -12204,7 +12204,8 @@ CREATE TABLE deploy_tokens (
     creator_id bigint,
     read_virtual_registry boolean DEFAULT false NOT NULL,
     project_id bigint,
-    group_id bigint
+    group_id bigint,
+    write_virtual_registry boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE deploy_tokens_id_seq
@@ -23305,6 +23306,7 @@ CREATE TABLE workspace_variables (
     encrypted_value bytea NOT NULL,
     encrypted_value_iv bytea NOT NULL,
     project_id bigint,
+    user_provided boolean DEFAULT false NOT NULL,
     CONSTRAINT check_5545042100 CHECK ((char_length(key) <= 255)),
     CONSTRAINT check_ed95da8691 CHECK ((project_id IS NOT NULL))
 );

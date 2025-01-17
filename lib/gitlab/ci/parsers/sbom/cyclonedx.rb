@@ -5,10 +5,6 @@ module Gitlab
     module Parsers
       module Sbom
         class Cyclonedx
-          def initialize(project: nil)
-            @project = project
-          end
-
           def parse!(blob, sbom_report)
             @report = sbom_report
             @data = Gitlab::Json.parse(blob)
@@ -64,7 +60,7 @@ module Gitlab
 
           def parse_components
             data['components']&.each_with_index do |component_data, index|
-              component = Component.new(component_data, project: @project).parse
+              component = Component.new(component_data).parse
               report.add_component(component) if component.ingestible?
             rescue ::Sbom::PackageUrl::InvalidPackageUrl
               report.add_error("/components/#{index}/purl is invalid")

@@ -51,7 +51,7 @@ RSpec.describe ::Packages::Conan::PackagePresenter, feature_category: :package_r
       it { is_expected.to eq(expected_result) }
 
       context 'when there are multiple channels for the same package' do
-        let(:conan_metadatum) { create(:conan_metadatum, package_channel: 'newest' ) }
+        let(:conan_metadatum) { create(:conan_metadatum, package_channel: 'newest') }
         let!(:newest_package) { create(:conan_package, name: package.name, version: package.version, project: project, conan_metadatum: conan_metadatum) }
 
         it { is_expected.to eq(expected_result) }

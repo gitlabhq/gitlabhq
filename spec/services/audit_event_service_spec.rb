@@ -116,16 +116,18 @@ RSpec.describe AuditEventService, :with_license, feature_category: :audit_events
         audit_service.for_authentication.security_event
       end
 
-      it 'tracks exceptions when the event cannot be created' do
-        allow_next_instance_of(AuditEvent) do |event|
-          allow(event).to receive(:valid?).and_return(false)
+      context 'when the event cannot be created' do
+        let(:user) { create(:user, current_sign_in_ip: "not-an-ip-address") }
+
+        before do
+          allow(Gitlab::RequestContext.instance).to receive(:client_ip).and_return("not-an-ip-address")
         end
 
-        expect(Gitlab::ErrorTracking).to(
-          receive(:track_and_raise_for_dev_exception)
-        )
+        it 'tracks exceptions' do
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
 
-        audit_service.for_authentication.security_event
+          audit_service.for_authentication.security_event
+        end
       end
 
       context 'with IP address', :request_store do
@@ -138,7 +140,6 @@ RSpec.describe AuditEventService, :with_license, feature_category: :audit_events
 
         with_them do
           let(:user) { create(:user, current_sign_in_ip: from_author_sign_in) }
-          let(:audit_service) { described_class.new(user, user, with: 'standard') }
 
           before do
             allow(Gitlab::RequestContext.instance).to receive(:client_ip).and_return(from_context)

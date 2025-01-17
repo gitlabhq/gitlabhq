@@ -54,6 +54,9 @@ Upgrades occur in your selected [maintenance window](#maintenance-windows) accor
 
 For example, GitLab 16.9 released on 2024-02-15. Instances in the EMEA and Americas (Option 1) regions were then upgraded to 16.8 on 2024-02-20, 5 days after the 16.9 release.
 
+NOTE:
+If a production change lock (PCL) is active during a scheduled upgrade, GitLab defers the upgrade to the first maintenance window after the PCL ends. For more information, including upcoming and current PCL periods, see [Production Change Lock](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/#production-change-lock-pcl).
+
 ## Emergency maintenance
 
 In an event of a platform outage, degradation, or a security event requiring urgent action,

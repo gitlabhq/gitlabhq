@@ -214,6 +214,17 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
    gitlab-rake db:migrate:up:ci VERSION=20241028085044
    ```
 
+## 17.8.0
+
+- In GitLab 17.8.0, GitLab agent server for Kubernetes (KAS) does not start with the default settings on the GitLab Linux package (Omnibus) and Docker installations.
+  To resolve this issue, edit `/etc/gitlab/gitlab.rb`:
+
+  ```ruby
+  gitlab_kas['env'] = { 'OWN_PRIVATE_API_URL' => 'grpc://127.0.0.1:8155' }
+  ```
+
+  Multiple node installations should use the settings described in the [documentation](../../administration/clusters/kas.md).
+
 ## 17.7.0
 
 - Git 2.47.0 and later is required by Gitaly. For installations from source, you should use the [Git version provided by Gitaly](../../install/installation.md#git).

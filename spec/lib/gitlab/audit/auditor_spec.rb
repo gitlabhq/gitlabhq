@@ -312,11 +312,10 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
 
     context 'when audit events are invalid' do
       before do
-        expect_next_instance_of(AuditEvent) do |instance|
-          allow(instance).to receive(:save!).and_raise(ActiveRecord::RecordInvalid)
-        end
         allow(Gitlab::ErrorTracking).to receive(:track_exception)
       end
+
+      let(:author) { build(:user) } # use non-persisted author (hence non-valid id)
 
       it 'tracks error' do
         audit!

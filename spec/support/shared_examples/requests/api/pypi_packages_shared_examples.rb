@@ -241,7 +241,7 @@ RSpec.shared_examples 'pypi simple API endpoint' do
       :public  | :guest      | false | false | 'PyPI package versions' | :success
       :public  | :anonymous  | false | true  | 'PyPI package versions' | :success
       :private | :developer  | true  | true  | 'PyPI package versions' | :success
-      :private | :guest      | true  | true  | 'process PyPI api request' | :forbidden
+      :private | :guest      | true  | true  | 'PyPI package versions' | :success
       :private | :developer  | true  | false | 'process PyPI api request' | :unauthorized
       :private | :guest      | true  | false | 'process PyPI api request' | :unauthorized
       :private | :developer  | false | true  | 'process PyPI api request' | :not_found
@@ -326,7 +326,7 @@ RSpec.shared_examples 'pypi simple index API endpoint' do
       :public  | :guest      | false | false | 'PyPI package index' | :success
       :public  | :anonymous  | false | true  | 'PyPI package index' | :success
       :private | :developer  | true  | true  | 'PyPI package index' | :success
-      :private | :guest      | true  | true  | 'process PyPI api request' | :forbidden
+      :private | :guest      | true  | true  | 'PyPI package index' | :success
       :private | :developer  | true  | false | 'process PyPI api request' | :unauthorized
       :private | :guest      | true  | false | 'process PyPI api request' | :unauthorized
       :private | :developer  | false | true  | 'process PyPI api request' | :not_found
@@ -365,7 +365,7 @@ RSpec.shared_examples 'pypi file download endpoint' do
       :public  | :guest      | false | false | 'PyPI package download'     | :success
       :public  | :anonymous  | false | true  | 'PyPI package download'     | :success
       :private | :developer  | true  | true  | 'PyPI package download'     | :success
-      :private | :guest      | true  | true  | 'rejected package download' | :forbidden
+      :private | :guest      | true  | true  | 'PyPI package download'     | :success
       :private | :developer  | true  | false | 'rejected package download' | :unauthorized
       :private | :guest      | true  | false | 'rejected package download' | :unauthorized
       :private | :developer  | false | true  | 'rejected package download' | :not_found

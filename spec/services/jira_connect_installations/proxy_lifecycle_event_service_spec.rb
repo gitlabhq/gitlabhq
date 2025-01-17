@@ -87,7 +87,7 @@ RSpec.describe JiraConnectInstallations::ProxyLifecycleEventService, feature_cat
         it 'returns an error ServiceResponse', :aggregate_failures do
           expect(execute_service).to be_kind_of(ServiceResponse)
           expect(execute_service[:status]).to eq(:error)
-          expect(execute_service[:message]).to eq( { type: :response_error, code: 422 } )
+          expect(execute_service[:message]).to eq({ type: :response_error, code: 422 })
         end
 
         it 'logs the error response' do

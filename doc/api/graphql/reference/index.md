@@ -18344,6 +18344,29 @@ The edge type for [`Workspace`](#workspace).
 | <a id="workspaceedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="workspaceedgenode"></a>`node` | [`Workspace`](#workspace) | The item at the end of the edge. |
 
+#### `WorkspaceVariableConnection`
+
+The connection type for [`WorkspaceVariable`](#workspacevariable).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workspacevariableconnectionedges"></a>`edges` | [`[WorkspaceVariableEdge]`](#workspacevariableedge) | A list of edges. |
+| <a id="workspacevariableconnectionnodes"></a>`nodes` | [`[WorkspaceVariable]`](#workspacevariable) | A list of nodes. |
+| <a id="workspacevariableconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `WorkspaceVariableEdge`
+
+The edge type for [`WorkspaceVariable`](#workspacevariable).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workspacevariableedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="workspacevariableedgenode"></a>`node` | [`WorkspaceVariable`](#workspacevariable) | The item at the end of the edge. |
+
 ## Object types
 
 Object types represent the resources that the GitLab GraphQL API can return.
@@ -21308,7 +21331,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="clusteragentworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
 | <a id="clusteragentworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
-| <a id="clusteragentworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalID. |
+| <a id="clusteragentworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `ClusterAgentActivityEvent`
 
@@ -38476,7 +38499,23 @@ Represents a remote development workspace.
 | <a id="workspaceupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of the last update to any mutable workspace property. |
 | <a id="workspaceurl"></a>`url` | [`String!`](#string) | URL of the workspace. |
 | <a id="workspaceuser"></a>`user` | [`UserCore!`](#usercore) | Owner of the workspace. |
+| <a id="workspaceworkspacevariables"></a>`workspaceVariables` **{warning-solid}** | [`WorkspaceVariableConnection`](#workspacevariableconnection) | **Introduced** in GitLab 17.9. **Status**: Experiment. User defined variables associated with the workspace. |
 | <a id="workspaceworkspacesagentconfigversion"></a>`workspacesAgentConfigVersion` **{warning-solid}** | [`Int!`](#int) | **Introduced** in GitLab 17.6. **Status**: Experiment. Version of the associated WorkspacesAgentConfig for the workspace. |
+
+### `WorkspaceVariable`
+
+Represents a remote development workspace variable.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workspacevariablecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the workspace variable was created. |
+| <a id="workspacevariableid"></a>`id` | [`RemoteDevelopmentWorkspaceVariableID!`](#remotedevelopmentworkspacevariableid) | Global ID of the workspace variable. |
+| <a id="workspacevariablekey"></a>`key` | [`String`](#string) | Name of the workspace variable. |
+| <a id="workspacevariableupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the workspace variable was updated. |
+| <a id="workspacevariablevalue"></a>`value` | [`String`](#string) | Value of the workspace variable. |
+| <a id="workspacevariablevariabletype"></a>`variableType` | [`WorkspaceVariableType`](#workspacevariabletype) | Type of the workspace variable. |
 
 ### `WorkspacesAgentConfig`
 
@@ -42179,6 +42218,14 @@ Enum for the type of the variable to be injected in a workspace.
 | ----- | ----------- |
 | <a id="workspacevariableinputtypeenvironment"></a>`ENVIRONMENT` | Name type. |
 
+### `WorkspaceVariableType`
+
+Enum for the type of the variable injected in a workspace.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="workspacevariabletypeenvironment"></a>`ENVIRONMENT` | Environment type. |
+
 ## Scalar types
 
 Scalar values are atomic values, and do not have fields of their own.
@@ -43150,6 +43197,12 @@ An example `RemoteDevelopmentRemoteDevelopmentAgentConfigID` is: `"gid://gitlab/
 A `RemoteDevelopmentWorkspaceID` is a global ID. It is encoded as a string.
 
 An example `RemoteDevelopmentWorkspaceID` is: `"gid://gitlab/RemoteDevelopment::Workspace/1"`.
+
+### `RemoteDevelopmentWorkspaceVariableID`
+
+A `RemoteDevelopmentWorkspaceVariableID` is a global ID. It is encoded as a string.
+
+An example `RemoteDevelopmentWorkspaceVariableID` is: `"gid://gitlab/RemoteDevelopment::WorkspaceVariable/1"`.
 
 ### `RemoteDevelopmentWorkspacesAgentConfigID`
 
@@ -45636,6 +45689,7 @@ Attributes for defining a variable to be injected in a workspace.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workspacevariableinputkey"></a>`key` | [`String!`](#string) | Key of the variable. |
-| <a id="workspacevariableinputtype"></a>`type` | [`WorkspaceVariableInputType!`](#workspacevariableinputtype) | Type of the variable to be injected in a workspace. |
+| <a id="workspacevariableinputkey"></a>`key` | [`String!`](#string) | Name of the workspace variable. |
+| <a id="workspacevariableinputtype"></a>`type` **{warning-solid}** | [`WorkspaceVariableInputType`](#workspacevariableinputtype) | **Deprecated:** Use `variableType` instead. Deprecated in GitLab 17.9. |
 | <a id="workspacevariableinputvalue"></a>`value` | [`String!`](#string) | Value of the variable. |
+| <a id="workspacevariableinputvariabletype"></a>`variableType` | [`WorkspaceVariableType`](#workspacevariabletype) | Type of the variable to be injected in a workspace. |

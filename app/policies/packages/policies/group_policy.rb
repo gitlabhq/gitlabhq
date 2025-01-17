@@ -14,10 +14,16 @@ module Packages
           @subject.all_projects.with_public_package_registry.any?
       end
 
+      condition(:allow_guest_plus_roles_to_pull_packages_enabled, scope: :subject) do
+        Feature.enabled?(:allow_guest_plus_roles_to_pull_packages, @subject.root_ancestor)
+      end
+
       rule { group.public_group }.policy do
         enable :read_package
       end
 
+      # TODO: Remove with the rollout of the FF allow_guest_plus_roles_to_pull_packages
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/512210
       rule { group.reporter }.policy do
         enable :read_package
       end
@@ -37,6 +43,10 @@ module Packages
         # 2. The :read_group permission is more broad and used in many places. This may grant access to other
         #    package-related actions that we don't want to.
         enable :read_package_within_public_registries
+      end
+
+      rule { group.guest & allow_guest_plus_roles_to_pull_packages_enabled }.policy do
+        enable :read_package
       end
     end
   end

@@ -3,7 +3,6 @@
 ee/spec/frontend/access_tokens/components/expires_at_field_spec.js
 ee/spec/frontend/admin/application_settings/general/components/license_dropzone_spec.js
 ee/spec/frontend/admin/signup_restrictions/components/signup_form_spec.js
-ee/spec/frontend/admin/subscriptions/show/components/subscription_activation_form_spec.js
 ee/spec/frontend/admin/subscriptions/show/components/subscription_breakdown_spec.js
 ee/spec/frontend/ai/settings/components/duo_experiment_beta_features_form_spec.js
 ee/spec/frontend/analytics/analytics_dashboards/components/analytics_dashboard_panel_spec.js
@@ -135,7 +134,6 @@ spec/frontend/ci/pipeline_editor/components/pipeline_editor_tabs_spec.js
 spec/frontend/ci/pipeline_editor/pipeline_editor_app_spec.js
 spec/frontend/ci/runner/components/registration/runner_instructions/runner_instructions_modal_spec.js
 spec/frontend/ci/runner/components/runner_filtered_search_bar_spec.js
-spec/frontend/ci/runner/components/runner_form_fields_spec.js
 spec/frontend/ci_settings_pipeline_triggers/components/edit_trigger_modal_spec.js
 spec/frontend/clusters/agents/components/activity_history_item_spec.js
 spec/frontend/clusters/agents/components/revoke_token_button_spec.js
@@ -220,9 +218,7 @@ spec/frontend/packages_and_registries/package_registry/pages/details_spec.js
 spec/frontend/packages_and_registries/settings/group/components/forwarding_settings_spec.js
 spec/frontend/packages_and_registries/settings/project/settings/components/cleanup_image_tags_spec.js
 spec/frontend/packages_and_registries/settings/project/settings/components/container_expiration_policy_spec.js
-spec/frontend/packages_and_registries/settings/project/settings/components/container_protection_repository_rule_form_spec.js
 spec/frontend/packages_and_registries/settings/project/settings/components/container_protection_repository_rules_spec.js
-spec/frontend/packages_and_registries/settings/project/settings/components/packages_protection_rule_form_spec.js
 spec/frontend/packages_and_registries/settings/project/settings/components/packages_protection_rules_spec.js
 spec/frontend/pages/projects/forks/new/components/fork_form_spec.js
 spec/frontend/pages/projects/forks/new/components/project_namespace_spec.js

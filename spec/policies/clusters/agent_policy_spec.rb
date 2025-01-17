@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Clusters::AgentPolicy do
-  let(:cluster_agent) { create(:cluster_agent, name: 'agent' ) }
+  let(:cluster_agent) { create(:cluster_agent, name: 'agent') }
   let(:user) { create(:admin) }
   let(:policy) { described_class.new(user, cluster_agent) }
   let(:project) { cluster_agent.project }

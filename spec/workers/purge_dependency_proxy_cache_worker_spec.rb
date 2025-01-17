@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe PurgeDependencyProxyCacheWorker, type: :worker, feature_category: :virtual_registry do
   let_it_be(:user) { create(:admin) }
-  let_it_be_with_refind(:blob) { create(:dependency_proxy_blob ) }
+  let_it_be_with_refind(:blob) { create(:dependency_proxy_blob) }
   let_it_be_with_reload(:group) { blob.group }
-  let_it_be_with_refind(:manifest) { create(:dependency_proxy_manifest, group: group ) }
+  let_it_be_with_refind(:manifest) { create(:dependency_proxy_manifest, group: group) }
   let_it_be(:group_id) { group.id }
 
   subject { described_class.new.perform(user.id, group_id) }
@@ -52,7 +52,7 @@ RSpec.describe PurgeDependencyProxyCacheWorker, type: :worker, feature_category:
     end
 
     context 'an invalid user id' do
-      let(:user) { double('User', id: 99999 ) }
+      let(:user) { double('User', id: 99999) }
 
       it_behaves_like 'not expiring blobs and manifests'
     end

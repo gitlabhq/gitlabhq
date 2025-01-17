@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class QueueRecalculateShardingKeyIdForOrphanedProjectRunners < Gitlab::Database::Migration[2.2]
-  milestone '17.9'
+  milestone '17.8'
 
   restrict_gitlab_migration gitlab_schema: :gitlab_ci
 

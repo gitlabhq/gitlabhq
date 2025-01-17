@@ -25,7 +25,7 @@ RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_regi
         :private  | :maintainer | true
         :private  | :developer  | true
         :private  | :reporter   | true
-        :private  | :guest      | false
+        :private  | :guest      | true
         :private  | :anonymous  | false
 
         :internal | :maintainer | true
@@ -97,6 +97,19 @@ RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_regi
 
           it { is_expected.to match_array([private_package]) }
         end
+      end
+
+      context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
+        before_all do
+          project.update_column(:visibility_level, Gitlab::VisibilityLevel.string_options['private'])
+          project.add_guest(user)
+        end
+
+        before do
+          stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+        end
+
+        it { is_expected.to eq([]) }
       end
     end
 

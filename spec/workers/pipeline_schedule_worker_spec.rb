@@ -76,7 +76,7 @@ RSpec.describe PipelineScheduleWorker, :sidekiq_inline, feature_category: :conti
 
     context 'when gitlab-ci.yml is corrupted' do
       before do
-        stub_ci_pipeline_yaml_file(YAML.dump(rspec: { variables: 'rspec' } ))
+        stub_ci_pipeline_yaml_file(YAML.dump(rspec: { variables: 'rspec' }))
       end
 
       it 'creates a new pipeline' do

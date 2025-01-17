@@ -70,9 +70,9 @@ export default {
   [types.SET_REVIEW_BAR_RENDERED]() {
     this.reviewBarRendered = true;
   },
-  [types.SET_DRAFT_EDITING](state, { draftId, isEditing }) {
-    const draftIndex = state.drafts.findIndex((draft) => draft.id === draftId);
-    const draft = state.drafts[draftIndex];
-    state.drafts.splice(draftIndex, 1, { ...draft, isEditing });
+  [types.SET_DRAFT_EDITING]({ draftId, isEditing }) {
+    const draftIndex = this.drafts.findIndex((draft) => draft.id === draftId);
+    const draft = this.drafts[draftIndex];
+    this.drafts.splice(draftIndex, 1, { ...draft, isEditing });
   },
 };

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe JwtController, feature_category: :system_access do
   include_context 'parsed logs'
 
-  let(:service) { double(execute: {} ) }
+  let(:service) { double(execute: {}) }
   let(:service_class) { Auth::ContainerRegistryAuthenticationService }
   let(:service_name) { 'container_registry' }
   let(:parameters) { { service: service_name } }
@@ -23,7 +23,7 @@ RSpec.describe JwtController, feature_category: :system_access do
   end
 
   shared_examples 'a token that expires today' do
-    let(:pat) { create(:personal_access_token, user: user, scopes: ['api'], expires_at: Date.today ) }
+    let(:pat) { create(:personal_access_token, user: user, scopes: ['api'], expires_at: Date.today) }
     let(:headers) { { authorization: credentials('personal_access_token', pat.token) } }
 
     it 'fails authentication' do

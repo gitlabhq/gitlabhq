@@ -124,10 +124,11 @@ mapping:
     test: 'spec/mailers/previews_spec.rb'
 
   ## BEGIN Remote development GraphQL resolvers (in alphabetical order by resolver source file path)
-  - source: 'ee/app/graphql/resolvers/remote_development/admin_workspaces_resolver\.rb'
+  - source: 'ee/app/graphql/resolvers/remote_development/workspaces_admin_resolver\.rb'
     test:
       - 'ee/spec/requests/api/graphql/remote_development/workspace/*_spec.rb'
       - 'ee/spec/requests/api/graphql/remote_development/workspaces/*_spec.rb'
+      - 'ee/spec/requests/api/graphql/remote_development/workspace_variables/*_spec.rb'
 
   - source: 'ee/app/graphql/resolvers/remote_development/cluster_agent/remote_development_agent_config_resolver\.rb'
     test:
@@ -140,10 +141,12 @@ mapping:
   - source: 'ee/app/graphql/resolvers/remote_development/cluster_agent/workspaces_resolver\.rb'
     test:
       - 'ee/spec/requests/api/graphql/remote_development/cluster_agent/workspaces/*_spec.rb'
+      - 'ee/spec/requests/api/graphql/remote_development/workspace_variables/*_spec.rb'
 
   - source: 'ee/app/graphql/resolvers/remote_development/workspaces_resolver\.rb'
     test:
       - 'ee/spec/requests/api/graphql/remote_development/current_user/workspaces/*_spec.rb'
+      - 'ee/spec/requests/api/graphql/remote_development/workspace_variables/*_spec.rb'
 
   - source: 'ee/app/graphql/resolvers/remote_development/namespace/cluster_agents_resolver\.rb'
     test:
@@ -154,12 +157,34 @@ mapping:
     test:
       - 'ee/spec/requests/api/graphql/remote_development/current_user/workspaces/*_spec.rb'
       - 'ee/spec/requests/api/graphql/remote_development/workspace/*_spec.rb'
+      - 'ee/spec/requests/api/graphql/remote_development/workspace_variables/*_spec.rb'
 
   ## END Remote development GraphQL resolvers
+
+  ## BEGIN Remote development GraphQL types
 
   - source: 'ee/app/graphql/types/remote_development/workspace_type\.rb'
     test:
       - 'ee/spec/requests/api/graphql/remote_development/workspace/with_id_arg_spec.rb'
+
+  - source: 'ee/app/graphql/types/remote_development/workspace_variable_input\.rb'
+    test:
+      - 'ee/spec/graphql/types/remote_development/workspace_variable_input_spec.rb'
+      - 'ee/spec/requests/api/graphql/mutations/remote_development/workspace_operations/create_spec.rb'
+
+  - source: 'ee/app/graphql/types/remote_development/workspace_variable_type\.rb'
+    test:
+      - 'ee/spec/requests/api/graphql/remote_development/workspace_variables/with_no_args_spec.rb'
+
+  - source: 'ee/app/graphql/types/remote_development/workspace_variable_type_enum\.rb'
+    test:
+      - 'ee/spec/requests/api/graphql/remote_development/workspace_variables/with_no_args_spec.rb'
+
+  - source: 'ee/app/graphql/types/remote_development/workspace_variable_input_type_enum\.rb'
+    test:
+      - 'ee/spec/requests/api/graphql/mutations/remote_development/workspace_operations/create_spec.rb'
+
+  ## END Remote development GraphQL types
 
   # Usage metric schema changes should trigger validations for all metrics and tooling
   - source: 'config/metrics/schema/.*\.json'

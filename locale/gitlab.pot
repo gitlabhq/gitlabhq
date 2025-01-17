@@ -40789,7 +40789,16 @@ msgstr ""
 msgid "PagesUsageQuota|Learn about limits for Pages deployments"
 msgstr ""
 
+msgid "PagesUsageQuota|Other projects in namespace"
+msgstr ""
+
 msgid "PagesUsageQuota|Remaining deployments"
+msgstr ""
+
+msgid "PagesUsageQuota|This project"
+msgstr ""
+
+msgid "PagesUsageQuota|This project is using the namespace domain \"%{domain}\". The usage quota includes parallel deployments for all projects in the namespace that use this domain."
 msgstr ""
 
 msgid "Pages|+ %{n} more deployments"
@@ -51726,9 +51735,6 @@ msgid "SecurityOrchestration|Security policy project will be unlinked soon"
 msgstr ""
 
 msgid "SecurityOrchestration|Security policy projects store your organization's security policies. They are identified when policies are created, or when a project is linked as a security policy project. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
-msgid "SecurityOrchestration|Security policy scheduled scans maximum top-level group concurrency"
 msgstr ""
 
 msgid "SecurityOrchestration|SecurityOrchestration|Scan execution policies with more than %{maxCount} actions detected. Those policies will not work after GitLab 18.0 (May 15, 2025). Before then you must edit these policies to reduce the number of actions."

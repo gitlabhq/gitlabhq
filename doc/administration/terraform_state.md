@@ -248,3 +248,51 @@ To find a state file path:
    ```
 
 The relative path is displayed.
+
+## Restoring Terraform state files from backups
+
+To restore Terraform state files from backups, you must have access to the encrypted state files and the GitLab database. 
+
+### Database tables
+
+The following database table helps trace the S3 path back to specific projects:
+
+- `terraform_states`: Contains the base state information, including the universally unique ID (UUID) for each state.
+
+### File structure and path composition
+
+The state files are stored in a specific directory structure, where:
+
+- The first three segments of the path are derived from the SHA-2 hash value of the project ID. 
+- Each state has a UUID stored on the `terraform_states` database table that forms part of the path.  
+
+For example, for a project where the:
+
+- Project ID is `12345`
+- State UUID is `example-uuid`
+
+If the SHA-2 hash value of `12345` is `5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5`, the folder structure would be:
+
+```plaintext
+terraform/                                                                 <- configured Terraform storage directory
+├─ 59/                                                                     <- first and second character of project ID hash
+|  ├─ 94/                                                                  <- third and fourth character of project ID hash
+|  |  ├─ 5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5/ <- full project ID hash
+|  |  |  ├─ example-uuid/                                                  <- state UUID
+|  |  |  |  ├─ 1.tf                                                        <- individual state versions
+|  |  |  |  ├─ 2.tf
+|  |  |  |  ├─ 3.tf
+```
+
+### Decryption process
+
+The state files are encrypted using Lockbox and require the following information for decryption:
+
+- The `db_key_base` [application secret](../development/application_secrets.md#secret-entries)
+- The project ID
+
+The encryption key is derived from both the `db_key_base` and the project ID. If you can't access `db_key_base`, decryption is not possible.
+
+To learn how to manually decrypt files, see the documentation from [Lockbox](https://github.com/ankane/lockbox). 
+
+To view the encryption key generation process, see the [state uploader code](https://gitlab.com/gitlab-org/gitlab/-/blob/e0137111fbbd28316f38da30075aba641e702b98/app/uploaders/terraform/state_uploader.rb#L43).

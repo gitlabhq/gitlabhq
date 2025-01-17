@@ -129,7 +129,7 @@ RSpec.describe Ci::BuildPresenter do
 
     context 'when variable is stored in ci_trigger_requests.variables' do
       before do
-        trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' } )
+        trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' })
       end
 
       it 'returns variables' do

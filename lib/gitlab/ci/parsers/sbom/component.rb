@@ -9,9 +9,8 @@ module Gitlab
 
           TRIVY_SOURCE_PACKAGE_FIELD = 'SrcName'
 
-          def initialize(data, project: nil)
+          def initialize(data)
             @data = data
-            @project = project
           end
 
           def parse
@@ -57,8 +56,6 @@ module Gitlab
           strong_memoize_attr :container_scanning_component?
 
           def licenses
-            return [] unless Feature.enabled?(:license_scanning_with_sbom_licenses, @project)
-
             data.fetch('licenses', []).filter_map do |license_data|
               license = License.new(license_data).parse
               next unless license

@@ -37,6 +37,10 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
     it 'DEFAULT_SCOPES contains all default scopes' do
       expect(subject::DEFAULT_SCOPES).to match_array [:api]
     end
+
+    it 'VIRTUAL_REGISTRY_SCOPES contains all scopes for Virtual Registry access' do
+      expect(subject::VIRTUAL_REGISTRY_SCOPES).to match_array %i[read_virtual_registry write_virtual_registry]
+    end
   end
 
   describe 'available_scopes' do
@@ -224,6 +228,28 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
         it 'contains all registry related scopes' do
           expect(subject.registry_scopes).to eq %i[read_registry write_registry]
+        end
+      end
+    end
+
+    context 'virtual_registry_scopes' do
+      context 'when dependency proxy and virtual registry are both disabled' do
+        before do
+          stub_config(dependency_proxy: { enabled: false })
+        end
+
+        it 'is empty' do
+          expect(subject.virtual_registry_scopes).to eq []
+        end
+      end
+
+      context 'when dependency proxy is enabled' do
+        before do
+          stub_config(dependency_proxy: { enabled: true })
+        end
+
+        it 'contains all virtual registry related scopes' do
+          expect(subject.virtual_registry_scopes).to eq %i[read_virtual_registry write_virtual_registry]
         end
       end
     end

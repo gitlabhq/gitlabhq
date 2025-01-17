@@ -16,6 +16,8 @@ module Gitlab
         events.each { |event| log_event(event) }
       rescue ActiveRecord::RecordInvalid => e
         ::Gitlab::ErrorTracking.track_exception(e, audit_operation: audit_operation)
+
+        nil
       end
 
       private

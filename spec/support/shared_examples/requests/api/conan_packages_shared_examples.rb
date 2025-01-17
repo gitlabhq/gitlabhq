@@ -63,7 +63,7 @@ RSpec.shared_examples 'conan search endpoint' do
       :maintainer | true
       :developer  | true
       :reporter   | true
-      :guest      | false
+      :guest      | true
       :anonymous  | false
     end
 
@@ -715,12 +715,18 @@ RSpec.shared_examples 'a private project with packages' do
     expect(response.media_type).to eq('application/octet-stream')
   end
 
-  it 'denies download when not enough permissions' do
-    project.add_guest(user)
+  context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
+    before do
+      stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+    end
 
-    subject
+    it 'denies download when not enough permissions' do
+      project.add_guest(user)
 
-    expect(response).to have_gitlab_http_status(:forbidden)
+      subject
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
   end
 end
 

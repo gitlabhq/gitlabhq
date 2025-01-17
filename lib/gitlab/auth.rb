@@ -46,6 +46,13 @@ module Gitlab
     WRITE_REGISTRY_SCOPE = :write_registry
     REGISTRY_SCOPES = [READ_REGISTRY_SCOPE, WRITE_REGISTRY_SCOPE].freeze
 
+    # Scopes used for Virtual Registry access
+    READ_VIRTUAL_REGISTRY_SCOPE = :read_virtual_registry
+    WRITE_VIRTUAL_REGISTRY_SCOPE = :write_virtual_registry
+    VIRTUAL_REGISTRY_SCOPES = [
+      READ_VIRTUAL_REGISTRY_SCOPE, WRITE_VIRTUAL_REGISTRY_SCOPE
+    ].freeze
+
     # Scopes used for GitLab Observability access which is outside of the GitLab app itself.
     # Hence the lack of ability mapping in `abilities_for_scopes`.
     READ_OBSERVABILITY_SCOPE = :read_observability
@@ -289,6 +296,8 @@ module Gitlab
           read_api: read_only_authentication_abilities,
           read_registry: %i[read_container_image],
           write_registry: %i[create_container_image],
+          read_virtual_registry: %i[read_dependency_proxy],
+          write_virtual_registry: %i[write_dependency_proxy],
           read_repository: %i[download_code],
           write_repository: %i[download_code push_code],
           create_runner: %i[create_instance_runner create_runner],
@@ -435,6 +444,12 @@ module Gitlab
         REGISTRY_SCOPES
       end
 
+      def virtual_registry_scopes
+        return [] unless Gitlab.config.dependency_proxy.enabled
+
+        VIRTUAL_REGISTRY_SCOPES
+      end
+
       def resource_bot_scopes
         non_admin_available_scopes - [READ_USER_SCOPE]
       end
@@ -479,7 +494,7 @@ module Gitlab
       end
 
       def non_admin_available_scopes
-        API_SCOPES + REPOSITORY_SCOPES + registry_scopes + OBSERVABILITY_SCOPES + AI_FEATURES_SCOPES
+        API_SCOPES + REPOSITORY_SCOPES + registry_scopes + virtual_registry_scopes + OBSERVABILITY_SCOPES + AI_FEATURES_SCOPES
       end
 
       def find_build_by_token(token)

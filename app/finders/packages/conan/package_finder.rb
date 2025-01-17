@@ -37,7 +37,8 @@ module Packages
       end
 
       def projects_available_in_current_context
-        return ::Project.public_or_visible_to_user(current_user, ::Gitlab::Access::REPORTER) unless username.present?
+        return ::Project.public_or_visible_to_user(current_user, project_min_access_level) unless username.present?
+
         return project_from_path if can_access_project_package?
 
         nil
@@ -54,6 +55,12 @@ module Packages
 
       def can_access_project_package?
         Ability.allowed?(current_user, :read_package, project_from_path.try(:packages_policy_subject))
+      end
+
+      def project_min_access_level
+        return ::Gitlab::Access::GUEST if Feature.enabled?(:allow_guest_plus_roles_to_pull_packages, current_user)
+
+        ::Gitlab::Access::REPORTER
       end
     end
   end

@@ -1,0 +1,27 @@
+diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
+index 5b4b617..1baafa5 100644
+--- a/node_modules/@vue/compat/dist/vue.cjs.js
++++ b/node_modules/@vue/compat/dist/vue.cjs.js
+@@ -10208,8 +10208,20 @@ function emit(instance, event, ...rawArgs) {
+     }
+   }
+   let args = rawArgs;
+-  const isModelListener = event.startsWith("update:");
+-  const modifiers = isModelListener && getModelModifiers(props, event.slice(7));
++
++  // This applies https://github.com/vuejs/core/pull/12654. Once that has been
++  // merged and we've upgraded to the version of @vue/compat that includes it,
++  // this patch can be removed.
++  let isModelListener;
++  let modifiers;
++  if (
++    (isModelListener = compatModelEventPrefix + event in props)
++  ) {
++    modifiers = props.modelModifiers
++  } else if ((isModelListener = event.startsWith('update:'))) {
++    modifiers = getModelModifiers(props, event.slice(7));
++  }
++
+   if (modifiers) {
+     if (modifiers.trim) {
+       args = rawArgs.map((a) => isString(a) ? a.trim() : a);
