@@ -40,7 +40,7 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
         let!(:status3) { create_status(develop, status: 'running', allow_failure: true) }
         let!(:status4) { create_status(master, name: 'coverage', status: 'success') }
         let!(:status5) { create_status(develop, name: 'coverage', status: 'success') }
-        let!(:status6) { create_status(master, status: 'success') }
+        let!(:status6) { create_status(master, status: 'success', stage: 'deploy') }
 
         context 'latest commit statuses' do
           before do
@@ -76,6 +76,19 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
           let(:expected_statuses) { [status1.id, status2.id, status3.id, status4.id, status5.id, status6.id] }
 
           it_behaves_like 'get commit statuses'
+        end
+
+        context 'commit statuses filtered by stage' do
+          before do
+            get api(get_url, reporter), params: { stage: 'deploy' }
+          end
+
+          it 'returns all commit statuses with the specified stage' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response).to be_an Array
+            expect(statuses_id).to contain_exactly(status6.id)
+          end
         end
 
         context 'latest commit statuses for specific ref' do

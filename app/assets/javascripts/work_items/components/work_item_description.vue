@@ -468,7 +468,7 @@ export default {
           enable-autocomplete
           supports-quick-actions
           :autofocus="autofocus"
-          :class="{ 'gl-mt-2': canShowDescriptionTemplateSelector }"
+          :class="{ 'gl-mt-3': canShowDescriptionTemplateSelector }"
           @input="setDescriptionText"
           @keydown.meta.enter="updateWorkItem"
           @keydown.ctrl.enter="updateWorkItem"

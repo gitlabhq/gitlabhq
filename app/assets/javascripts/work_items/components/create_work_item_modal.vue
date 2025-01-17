@@ -300,7 +300,7 @@ export default {
         <div class="gl-text gl-flex gl-w-full gl-items-center gl-gap-x-2">
           <h2 class="modal-title">{{ newWorkItemText }}</h2>
           <gl-button
-            v-gl-tooltip
+            v-gl-tooltip.right
             data-testid="new-work-item-modal-link"
             :href="newWorkItemPath"
             :title="__('Open in full page')"

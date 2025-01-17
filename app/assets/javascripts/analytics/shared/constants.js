@@ -302,11 +302,21 @@ export const VALUE_STREAM_METRIC_METADATA = {
   },
   [AI_METRICS.CODE_SUGGESTIONS_USAGE_RATE]: {
     description: s__(
-      'AiImpactAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors.',
+      'AiImpactAnalytics|Monthly user engagement with GitLab Duo Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors.',
     ),
     groupLink: '',
     projectLink: '',
     docsLink: helpPagePath('user/project/repository/code_suggestions/index'),
+  },
+  [AI_METRICS.CODE_SUGGESTIONS_ACCEPTANCE_RATE]: {
+    description: s__(
+      'AiImpactAnalytics|Monthly GitLab Duo Code Suggestions accepted / total Code Suggestions generated.',
+    ),
+    groupLink: '',
+    projectLink: '',
+    docsLink: helpPagePath('user/project/repository/code_suggestions/index', {
+      anchor: 'use-code-suggestions',
+    }),
   },
 };
 

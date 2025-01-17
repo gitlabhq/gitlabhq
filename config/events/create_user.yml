@@ -9,9 +9,6 @@ additional_properties:
 product_group: acquisition
 milestone: '15.8'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108508
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

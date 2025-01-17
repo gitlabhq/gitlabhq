@@ -44,7 +44,7 @@ RSpec.describe ::API::Entities::MergeRequestBasic, feature_category: :code_revie
       # for this test whenever it is `nil`
       allow_any_instance_of(MergeRequestDiff).to receive(:head_commit_sha).and_return(Gitlab::Git::SHA1_BLANK_SHA)
 
-      query = scope.all
+      query = scope.to_a
       batch = ActiveRecord::QueryRecorder.new do
         entities = query.map(&method(:present))
 

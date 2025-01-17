@@ -7,9 +7,6 @@ identifiers:
 product_group: analytics_instrumentation
 milestone: '16.10'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146118
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

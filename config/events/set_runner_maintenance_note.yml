@@ -12,9 +12,6 @@ additional_properties:
 product_group: runner
 milestone: '17.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170483
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

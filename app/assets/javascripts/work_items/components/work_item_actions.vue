@@ -315,6 +315,9 @@ export default {
     showChangeType() {
       return !this.isEpic && this.glFeatures.workItemsBeta;
     },
+    upperCaseWorkItemTypeName() {
+      return this.workItemType?.toUpperCase();
+    },
   },
   methods: {
     copyToClipboard(text, message) {
@@ -601,7 +604,7 @@ export default {
     <create-work-item-modal
       :visible="isCreateWorkItemModalVisible"
       :related-item="relatedItemData"
-      :work-item-type-name="workItemType.toUpperCase()"
+      :work-item-type-name="upperCaseWorkItemTypeName"
       :show-project-selector="!isEpic"
       :is-group="isGroup"
       hide-button

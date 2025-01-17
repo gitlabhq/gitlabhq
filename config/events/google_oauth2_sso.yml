@@ -6,8 +6,6 @@ identifiers:
 product_group: authentication
 milestone: '15.7'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170427
-distributions:
-- ce
 tiers:
 - free
 - premium

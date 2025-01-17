@@ -5,9 +5,6 @@ identifiers:
 product_group: platform_insights
 milestone: "<13.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40379
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium
