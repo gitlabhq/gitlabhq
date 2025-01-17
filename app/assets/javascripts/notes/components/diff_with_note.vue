@@ -9,7 +9,7 @@ import { getDiffMode } from '~/diffs/store/utils';
 import { diffViewerModes } from '~/ide/constants';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import { isCollapsed } from '~/diffs/utils/diff_file';
-import { FILE_DIFF_POSITION_TYPE } from '~/diffs/constants';
+import { FILE_DIFF_POSITION_TYPE, IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 
 const FIRST_CHAR_REGEX = /^(\+|-| )/;
 
@@ -69,11 +69,21 @@ export default {
       return this.discussion.position?.position_type;
     },
     isFileDiscussion() {
+      if (!this.discussion.diff_file) {
+        return (
+          this.discussion.original_position.position_type === IMAGE_DIFF_POSITION_TYPE ||
+          this.discussion.original_position.position_type === FILE_DIFF_POSITION_TYPE
+        );
+      }
+
       return this.positionType === FILE_DIFF_POSITION_TYPE;
     },
     showHeader() {
+      if (this.discussion.diff_file) return true;
+
       return (
-        this.discussion.diff_file || this.discussion.original_position.position_type === 'file'
+        this.discussion.original_position.position_type === FILE_DIFF_POSITION_TYPE ||
+        this.discussion.original_position.position_type === IMAGE_DIFF_POSITION_TYPE
       );
     },
     backfilledDiffFile() {

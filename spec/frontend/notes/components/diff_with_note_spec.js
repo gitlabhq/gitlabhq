@@ -4,6 +4,7 @@ import imageDiscussionFixture from 'test_fixtures/merge_requests/image_diff_disc
 import { createStore } from '~/mr_notes/stores';
 import DiffWithNote from '~/notes/components/diff_with_note.vue';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
+import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 
 describe('diff_with_note', () => {
   let store;
@@ -22,6 +23,7 @@ describe('diff_with_note', () => {
   };
 
   const findDiffViewer = () => wrapper.findComponent(DiffViewer);
+  const findDiffFileHeader = () => wrapper.findComponent(DiffFileHeader);
 
   beforeEach(() => {
     store = createStore();
@@ -76,16 +78,76 @@ describe('diff_with_note', () => {
   });
 
   describe('image diff', () => {
-    beforeEach(() => {
-      const imageDiscussion = imageDiscussionFixture[0];
-      wrapper = shallowMount(DiffWithNote, {
-        propsData: { discussion: imageDiscussion, diffFile: {} },
-        store,
+    describe('when discussion has a diff_file', () => {
+      beforeEach(() => {
+        const imageDiscussion = imageDiscussionFixture[0];
+        wrapper = shallowMount(DiffWithNote, {
+          propsData: { discussion: imageDiscussion, diffFile: {} },
+          store,
+        });
+      });
+
+      it('shows image diff', () => {
+        expect(selectors.diffTable.exists()).toBe(false);
+        expect(findDiffViewer().exists()).toBe(true);
+        expect(findDiffFileHeader().exists()).toBe(true);
       });
     });
 
-    it('shows image diff', () => {
-      expect(selectors.diffTable.exists()).toBe(false);
+    describe('when discussion does not have a diff_file', () => {
+      beforeEach(() => {
+        const imageDiscussion = JSON.parse(JSON.stringify(imageDiscussionFixture[0]));
+        delete imageDiscussion.diff_file;
+
+        wrapper = shallowMount(DiffWithNote, {
+          propsData: { discussion: imageDiscussion, diffFile: {} },
+          store,
+        });
+      });
+
+      it('does not show image diff', () => {
+        expect(findDiffViewer().exists()).toBe(false);
+        expect(selectors.diffTable.exists()).toBe(false);
+        expect(findDiffFileHeader().exists()).toBe(true);
+      });
+    });
+  });
+
+  describe('file diff', () => {
+    describe('when discussion has a diff_file', () => {
+      beforeEach(() => {
+        const fileDiscussion = JSON.parse(JSON.stringify(discussionFixture[0]));
+        fileDiscussion.position.position_type = 'file';
+        fileDiscussion.original_position.position_type = 'file';
+
+        wrapper = shallowMount(DiffWithNote, {
+          propsData: { discussion: fileDiscussion, diffFile: {} },
+          store,
+        });
+      });
+
+      it('shows file header', () => {
+        expect(findDiffFileHeader().exists()).toBe(true);
+      });
+    });
+
+    describe('when discussion does not have a diff_file', () => {
+      beforeEach(() => {
+        const fileDiscussion = JSON.parse(JSON.stringify(discussionFixture[0]));
+        delete fileDiscussion.diff_file;
+
+        fileDiscussion.position.position_type = 'file';
+        fileDiscussion.original_position.position_type = 'file';
+
+        wrapper = shallowMount(DiffWithNote, {
+          propsData: { discussion: fileDiscussion, diffFile: {} },
+          store,
+        });
+      });
+
+      it('shows file header', () => {
+        expect(findDiffFileHeader().exists()).toBe(true);
+      });
     });
   });
 
