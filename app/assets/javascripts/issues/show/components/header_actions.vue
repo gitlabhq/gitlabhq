@@ -180,7 +180,7 @@ export default {
       });
     },
     showLockIssueOption() {
-      return this.issueType === TYPE_ISSUE && this.isUserSignedIn;
+      return this.issueType === TYPE_ISSUE && this.isUserSignedIn && this.canUpdateIssue;
     },
     showMovedSidebarOptions() {
       return this.isUserSignedIn;

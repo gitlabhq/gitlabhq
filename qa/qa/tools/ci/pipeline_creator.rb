@@ -160,7 +160,7 @@ module QA
               "FEATURE_FLAGS" => env["QA_FEATURE_FLAGS"],
               # QA_SUITES is only used by test-on-omnibus due to pipeline being reusable in external projects
               "QA_SUITES" => executable_qa_suites,
-              "QA_TESTS" => tests.join(" ")
+              "QA_TESTS" => tests&.join(" ")
             }.filter_map { |k, v| "  #{k}: \"#{v}\"" unless v.blank? }.join("\n")
 
             "#{variables}#{vars}"
