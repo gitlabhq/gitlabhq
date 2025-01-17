@@ -1568,7 +1568,7 @@ GEM
       msgpack (>= 0.4.3)
       optimist (>= 3.0.0)
     rchardet (1.8.0)
-    rdoc (6.10.0)
+    rdoc (6.11.0)
       psych (>= 4.0.0)
     re2 (2.7.0)
       mini_portile2 (~> 2.8.5)

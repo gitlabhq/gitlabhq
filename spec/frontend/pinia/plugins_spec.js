@@ -2,12 +2,12 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
 import { createPinia, defineStore, setActivePinia } from 'pinia';
-import { syncWithVuex } from '~/pinia';
+import { syncWithVuex } from '~/pinia/plugins';
 import waitForPromises from 'helpers/wait_for_promises';
 
 Vue.use(Vuex);
 
-describe('Pinia helpers', () => {
+describe('Pinia plugins', () => {
   describe('syncWithVuex', () => {
     let vuexStore;
     let usePiniaStore;

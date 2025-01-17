@@ -41,6 +41,8 @@ RSpec.describe 'View on environment', :js, feature_category: :groups_and_project
         file_path: file_path,
         file_content: '# Noop'
       ).execute
+
+      stub_feature_flags(blob_overflow_menu: false)
     end
 
     context 'and an active deployment' do

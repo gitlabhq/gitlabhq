@@ -5,6 +5,7 @@ import { mapActions, mapGetters } from 'vuex';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import store from '~/mr_notes/stores';
+import { pinia } from '~/pinia/instance';
 
 export const initReviewBar = () => {
   const el = document.getElementById('js-review-bar');
@@ -17,6 +18,7 @@ export const initReviewBar = () => {
   new Vue({
     el,
     store,
+    pinia,
     apolloProvider,
     components: {
       ReviewBar: () => import('./components/review_bar.vue'),

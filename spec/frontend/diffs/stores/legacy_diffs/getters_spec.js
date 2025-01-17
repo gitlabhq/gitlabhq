@@ -12,7 +12,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { createCustomGetters } from 'helpers/pinia_helpers';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { useNotes } from '~/notes/store/legacy_notes';
-import { globalAccessorPlugin } from '~/pinia';
+import { globalAccessorPlugin } from '~/pinia/plugins';
 import discussion from '../../mock_data/diff_discussions';
 import diffsMockData from '../../mock_data/merge_request_diffs';
 

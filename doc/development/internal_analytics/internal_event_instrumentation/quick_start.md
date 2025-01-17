@@ -239,7 +239,7 @@ Prefer using `additional_properties` instead.
 #### Composable matchers
 
 When a singe action triggers an event multiple times, triggers multiple different events, or increments some metrics but not others for the event,
-you can use the `trigger_internal_events` and `increment_usage_metrics` matchers.
+you can use the `trigger_internal_events` and `increment_usage_metrics` matchers on a block argument.
 
 ```ruby
  expect { subject }
@@ -292,6 +292,8 @@ Or you can use the `not_to` syntax:
 ```ruby
 expect { subject }.not_to trigger_internal_events('mr_created', 'member_role_created')
 ```
+
+The `trigger_internal_events` matcher can also be used for testing [Haml with data attributes](#haml-with-data-attributes).
 
 ### Frontend tracking
 
@@ -579,40 +581,65 @@ describe('DeleteApplication', () => {
 
 #### Haml with data attributes
 
-If you are using the data attributes to register tracking at the Haml layer,
-you can use the `have_internal_tracking` matcher method to assert if expected data attributes are assigned.
+If you are using [data attributes](#data-event-attribute) to track internal events at the Haml layer,
+you can use the [`trigger_internal_events` matcher](#composable-matchers) to assert that the expected properties are present.
 
-For example, if we need to test the below Haml,
+For example, if you need to test the below Haml,
 
 ```haml
-%div{ data: { testid: '_testid_', event_tracking: 'render', event_label: '_tracking_label_' } }
+%div{ data: { testid: '_testid_', event_tracking: 'some_event', event_label: 'some_label' } }
 ```
+
+You can call assertions on any rendered HTML compatible with the `have_css` matcher.
+Use the `:on_click` and `:on_load` chain methods to indicate when you expect the event to trigger.
 
 Below would be the test case for above haml.
 
-- [RSpec view specs](https://rspec.info/features/6-0/rspec-rails/view-specs/view-spec/)
+- rendered HTML is a `String` ([RSpec views](https://rspec.info/features/6-0/rspec-rails/view-specs/view-spec/))
 
 ```ruby
   it 'assigns the tracking items' do
     render
 
-    expect(rendered).to have_internal_tracking(event: 'render', label: '_tracking_label_', testid: '_testid_')
+    expect(rendered).to trigger_internal_events('some_event').on_click
+      .with(additional_properties: { label: 'some_label' })
   end
 ```
 
-- [ViewComponent](https://viewcomponent.org/) specs
+- rendered HTML is a `Capybara::Node::Simple` ([ViewComponent](https://viewcomponent.org/))
 
 ```ruby
   it 'assigns the tracking items' do
     render_inline(component)
 
-    expect(page).to have_internal_tracking(event: 'render', label: '_tracking_label_', testid: '_testid_')
+    expect(page.find_by_testid('_testid_'))
+      .to trigger_internal_events('some_event').on_click
+      .with(additional_properties: { label: 'some_label' })
   end
 ```
 
-`event` is required for the matcher and `label`/`testid` are optional.
-It is recommended to use `testid` when possible for exactness.
-When you want to ensure that tracking isn't assigned, you can use `not_to` with the above matchers.
+- rendered HTML is a `Nokogiri::HTML4::DocumentFragment` ([ViewComponent](https://viewcomponent.org/))
+
+```ruby
+  it 'assigns the tracking items' do
+    expect(render_inline(component))
+      .to trigger_internal_events('some_event').on_click
+      .with(additional_properties: { label: 'some_label' })
+  end
+```
+
+Or you can use the `not_to` syntax:
+
+```ruby
+  it 'assigns the tracking items' do
+    render_inline(component)
+
+    expect(page).not_to trigger_internal_events
+  end
+```
+
+When negated, the matcher accepts no additional chain methods or arguments.
+This asserts that no tracking attributes are in use.
 
 ### Using Internal Events API
 

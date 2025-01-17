@@ -570,7 +570,7 @@
 {"name":"rbs","version":"3.6.1","platform":"ruby","checksum":"ed7273d018556844583d1785ac54194e67eec594d68e317d57fa90ad035532c0"},
 {"name":"rbtrace","version":"0.5.1","platform":"ruby","checksum":"e8cba64d462bfb8ba102d7be2ecaacc789247d52ac587d8003549d909cb9c5dc"},
 {"name":"rchardet","version":"1.8.0","platform":"ruby","checksum":"693acd5253d5ade81a51940697955f6dd4bb2f0d245bda76a8e23deec70a52c7"},
-{"name":"rdoc","version":"6.10.0","platform":"ruby","checksum":"db665021883ac9df3ba29cdf71aece960749888db1bf9615b4a584cfa3fa3eda"},
+{"name":"rdoc","version":"6.11.0","platform":"ruby","checksum":"bec66fb9b019be64f7ba7d2cd2aecb283a3a01fef23a95b33e2349c6d1aa0040"},
 {"name":"re2","version":"2.7.0","platform":"aarch64-linux","checksum":"778921298b6e8aba26a6230dd298c9b361b92e45024f81fa6aee788060fa307c"},
 {"name":"re2","version":"2.7.0","platform":"arm-linux","checksum":"d328b5286d83ae265e13b855da8e348a976f80f91b748045b52073a570577954"},
 {"name":"re2","version":"2.7.0","platform":"arm64-darwin","checksum":"7d993f27a1afac4001c539a829e2af211ced62604930c90df32a307cf74cb4a4"},

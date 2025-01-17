@@ -3,6 +3,7 @@ import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import getRefMixin from '~/repository/mixins/get_ref';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import initSourcegraph from '~/sourcegraph';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
@@ -21,6 +22,8 @@ import { FIND_FILE_BUTTON_CLICK } from '~/tracking/constants';
 import { updateElementsVisibility } from '~/repository/utils/dom';
 import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql';
 import { getRefType } from '~/repository/utils/ref_type';
+import { TEXT_FILE_TYPE } from '../../constants';
+import OverflowMenu from './blob_overflow_menu.vue';
 
 export default {
   i18n: {
@@ -33,11 +36,12 @@ export default {
   buttonClassList: 'sm:gl-w-auto gl-w-full sm:gl-mt-0 gl-mt-3',
   components: {
     GlButton,
+    OverflowMenu,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [getRefMixin],
+  mixins: [getRefMixin, glFeatureFlagMixin()],
   apollo: {
     project: {
       query: blobControlsQuery,
@@ -67,6 +71,11 @@ export default {
       required: false,
       default: null,
     },
+    isBinary: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -74,6 +83,9 @@ export default {
     };
   },
   computed: {
+    isLoadingRepositoryBlob() {
+      return this.$apollo.queries.project.loading;
+    },
     filePath() {
       return this.$route.params.path;
     },
@@ -85,6 +97,12 @@ export default {
     },
     showBlameButton() {
       return !this.blobInfo.storedExternally && this.blobInfo.externalStorage !== 'lfs';
+    },
+    isBinaryFileType() {
+      return this.isBinary || this.blobInfo.simpleViewer?.fileType !== TEXT_FILE_TYPE;
+    },
+    rawPath() {
+      return this.blobInfo.externalStorageUrl || this.blobInfo.rawPath;
     },
     findFileShortcutKey() {
       return keysFor(START_SEARCH_PROJECT_FILE)[0];
@@ -105,6 +123,9 @@ export default {
       return shouldDisableShortcuts()
         ? null
         : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
+    },
+    isEmpty() {
+      return this.blobInfo.rawSize === '0';
     },
   },
   watch: {
@@ -136,11 +157,14 @@ export default {
       InternalEvents.trackEvent(FIND_FILE_BUTTON_CLICK);
       Shortcuts.focusSearchFile();
     },
+    onCopy() {
+      navigator.clipboard.writeText(this.blobInfo.rawTextBlob);
+    },
   },
 };
 </script>
 <template>
-  <div v-if="showBlobControls" class="gl-flex gl-flex-wrap gl-items-baseline gl-gap-3">
+  <div v-if="showBlobControls" class="gl-flex gl-flex-wrap gl-items-center gl-gap-3">
     <gl-button
       v-gl-tooltip.html="findFileTooltip"
       :aria-keyshortcuts="findFileShortcutKey"
@@ -170,5 +194,18 @@ export default {
     >
       {{ $options.i18n.permalink }}
     </gl-button>
+
+    <overflow-menu
+      v-if="!isLoadingRepositoryBlob && glFeatures.blobOverflowMenu"
+      :raw-path="rawPath"
+      :rich-viewer="blobInfo.richViewer"
+      :simple-viewer="blobInfo.simpleViewer"
+      :is-binary="isBinaryFileType"
+      :environment-name="blobInfo.environmentFormattedExternalUrl"
+      :environment-path="blobInfo.environmentExternalUrlForRouteMap"
+      :is-empty="isEmpty"
+      :override-copy="true"
+      @copy="onCopy"
+    />
   </div>
 </template>

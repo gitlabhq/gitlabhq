@@ -44,7 +44,7 @@ function setupMrNotesState(store, notesDataset, diffsDataset) {
   });
 }
 
-export function initMrStateLazyLoad(store = mrNotes, { reviewBarParams } = {}) {
+export function initMrStateLazyLoad(store = mrNotes) {
   store.dispatch('setActiveTab', window.mrTabs.getCurrentAction());
   window.mrTabs.eventHub.$on('MergeRequestTabChange', (value) =>
     store.dispatch('setActiveTab', value),
@@ -65,7 +65,7 @@ export function initMrStateLazyLoad(store = mrNotes, { reviewBarParams } = {}) {
         eventHub.$once('fetchNotesData', () => store.dispatch('fetchNotes'));
 
         requestIdleCallback(() => {
-          initReviewBar(reviewBarParams);
+          initReviewBar();
           initOverviewTabCounter();
           initDiscussionCounter();
         });

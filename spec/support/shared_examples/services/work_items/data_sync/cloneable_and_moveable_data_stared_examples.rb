@@ -62,6 +62,8 @@ RSpec.shared_examples 'cloneable and moveable work item' do
 end
 
 RSpec.shared_examples 'cloneable and moveable widget data' do
+  include DesignManagementTestHelpers
+
   def work_item_assignees(work_item)
     work_item.reload.assignees
   end
@@ -92,6 +94,10 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
 
   def work_item_crm_contacts(work_item)
     work_item.reload.customer_relations_contacts
+  end
+
+  def work_item_designs(work_item)
+    work_item.reload.designs.pluck(:filename)
   end
 
   def work_item_labels(work_item)
@@ -181,6 +187,13 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     timelogs.pluck(:user_id, :time_spent)
   end
 
+  let_it_be(:designs) do
+    designs = create_list(:design, 2, :with_lfs_file, issue: original_work_item)
+    # we need to create an owner for the group, as it is needed when we try to copy the desigins to the new namespace
+    group.add_owner(create(:user))
+    designs.pluck(:filename)
+  end
+
   let_it_be(:labels) do
     labels = []
     if original_work_item.namespace.is_a?(Group)
@@ -223,6 +236,7 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
       { widget_name: :sent_notifications,          eval_value: :work_item_sent_notifications, expected_data: notifications, operations: [move] },
       { widget_name: :timelogs,                    eval_value: :work_item_timelogs,           expected_data: timelogs,      operations: [move] },
       { widget_name: :customer_relations_contacts, eval_value: :work_item_crm_contacts,       expected_data: crm_contacts,  operations: [move, clone] },
+      { widget_name: :designs,                     eval_value: :work_item_designs,            expected_data: designs,       operations: [move, clone] },
       { widget_name: :labels,                      eval_value: :work_item_labels,             expected_data: labels,        operations: [move, clone] },
       { widget_name: :work_item_children,          eval_value: :work_item_children,           expected_data: child_items,   operations: [move] }
     ]
@@ -231,10 +245,8 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
 
   context "with widget" do
     before do
+      enable_design_management
       allow(original_work_item).to receive(:from_service_desk?).and_return(true)
-      allow(WorkItems::CopyTimelogsWorker).to receive(:perform_async) do |*args|
-        WorkItems::CopyTimelogsWorker.perform_inline(*args)
-      end
     end
 
     it_behaves_like 'for clone and move services'
@@ -248,6 +260,10 @@ RSpec.shared_examples 'for clone and move services' do
     new_work_item = service.execute[:work_item]
 
     widgets.each do |widget|
+      # This example is being called from EE spec where we text move/clone on a group level work item(Epic).
+      # Designs are only available for project level work items so we will skip the spec group level work items.
+      next if widget[:widget_name] == :designs && original_work_item.project.blank?
+
       widget_value = send(widget[:eval_value], new_work_item)
 
       if widget[:operations].include?(described_class)

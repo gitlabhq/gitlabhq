@@ -9,6 +9,22 @@ query getBlobControls($projectPath: ID!, $filePath: String!, $ref: String!, $ref
           permalinkPath
           storedExternally
           externalStorage
+          environmentFormattedExternalUrl
+          environmentExternalUrlForRouteMap
+          rawPath
+          rawTextBlob
+          simpleViewer {
+            fileType
+            tooLarge
+            type
+            renderError
+          }
+          richViewer {
+            fileType
+            tooLarge
+            type
+            renderError
+          }
         }
       }
     }

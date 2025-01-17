@@ -61,6 +61,7 @@ export default function initHeaderApp({ router, isReadmeView = false, isBlobView
       downloadLinks,
       downloadArtifacts,
       projectShortPath,
+      isBinary,
     } = headerEl.dataset;
 
     const {
@@ -125,6 +126,7 @@ export default function initHeaderApp({ router, isReadmeView = false, isBlobView
         downloadLinks: downloadLinks ? JSON.parse(downloadLinks) : null,
         downloadArtifacts: downloadArtifacts ? JSON.parse(downloadArtifacts) : [],
         isBlobView,
+        isBinary: parseBoolean(isBinary),
       },
       apolloProvider,
       router: router || createRouter(projectPath, escapedRef),

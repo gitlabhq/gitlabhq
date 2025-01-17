@@ -2413,7 +2413,7 @@ msgstr ""
 msgid "AI|Write a summary to fill out the selected issue template"
 msgstr ""
 
-msgid "AI|Your request does not seem to contain code to %{action}. To %{human_name} select the lines of code in your %{platform} and then type the command %{command_name} in the chat. You may add additional instructions after this command. If you have no code to select, you can also simply add the code after the command."
+msgid "AI|Your request does not seem to contain code to %{action}. To %{human_name} select the lines of code in your editor and then type the command %{command_name} in the chat. You may add additional instructions after this command. If you have no code to select, you can also simply add the code after the command."
 msgstr ""
 
 msgid "API"
@@ -36666,7 +36666,7 @@ msgstr ""
 msgid "Multiple Prometheus integrations are not supported"
 msgstr ""
 
-msgid "Multiple components '%{name}' have 'gl/inject-editor' attribute"
+msgid "Multiple components '%{name}' have '%{attribute}' attribute"
 msgstr ""
 
 msgid "Multiple integrations of a single type are not supported for this project"
@@ -37548,7 +37548,7 @@ msgstr ""
 msgid "No committers"
 msgstr ""
 
-msgid "No component has 'gl/inject-editor' attribute"
+msgid "No component has '%{attribute}' attribute"
 msgstr ""
 
 msgid "No components present in devfile"
@@ -62762,6 +62762,9 @@ msgid "Viewed"
 msgstr ""
 
 msgid "Viewing commit"
+msgstr ""
+
+msgid "Violates security policy"
 msgstr ""
 
 msgid "Violation"

@@ -46,7 +46,12 @@ export default {
         .catch(() => this.$emit('error'));
     },
     initHighlightWorker(blob, isUsingLfs) {
-      const { rawTextBlob, language, fileType, externalStorageUrl, rawPath, simpleViewer } = blob;
+      const { rawTextBlob, name, fileType, externalStorageUrl, rawPath, simpleViewer } = blob;
+      let { language } = blob;
+
+      if (name.endsWith('.gleam')) {
+        language = 'gleam';
+      }
 
       if (simpleViewer?.fileType !== TEXT_FILE_TYPE) return;
 

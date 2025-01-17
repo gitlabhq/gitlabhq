@@ -158,6 +158,10 @@ GEM
     rake (13.2.1)
     rdoc (6.8.1)
       psych (>= 4.0.0)
+    redis (5.3.0)
+      redis-client (>= 0.22.0)
+    redis-client (0.23.1)
+      connection_pool
     regexp_parser (2.9.3)
     reline (0.5.12)
       io-console (~> 0.5)
@@ -241,6 +245,7 @@ DEPENDENCIES
   gitlab-active-context!
   gitlab-styles
   rake (~> 13.0)
+  redis
   rspec (~> 3.0)
   rspec-rails
   rubocop

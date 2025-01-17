@@ -22,5 +22,17 @@ module ActiveContext
         @raw_queues << "#{key}:#{shard}"
       end
     end
+
+    def self.all_queued_items
+      {}.tap do |hash|
+        @raw_queues&.each do |queue_key|
+          references = ActiveContext::Redis.with_redis do |redis|
+            queue_key = "#{queue_key}:zset"
+            redis.zrangebyscore(queue_key, '-inf', '+inf')
+          end
+          hash[queue_key] = references if references.present?
+        end
+      end
+    end
   end
 end

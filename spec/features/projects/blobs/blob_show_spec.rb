@@ -29,6 +29,10 @@ RSpec.describe 'File blob', :js, feature_category: :source_code_management do
     ).execute
   end
 
+  before do
+    stub_feature_flags(blob_overflow_menu: false)
+  end
+
   context 'Ruby file' do
     before do
       visit_blob('files/ruby/popen.rb')

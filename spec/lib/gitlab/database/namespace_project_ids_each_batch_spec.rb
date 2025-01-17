@@ -25,18 +25,17 @@ RSpec.describe Gitlab::Database::NamespaceProjectIdsEachBatch, feature_category:
   it 'returns the correct project IDs' do
     expect(
       described_class.new(group_id: group.id).execute
-    ).to eq([project1.id, project2.id, project3.id, project4.id, project5.id])
+    ).to match_array([project1.id, project2.id, project3.id, project4.id, project5.id])
   end
 
   context 'when passed an optional resolver' do
-    it 'returns the correct project IDs filtered by resolver',
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/497833' do
+    it 'returns the correct project IDs filtered by resolver' do
       resolver = ->(batch) {
         Project.where(id: batch).where(path: [project1.path, project2.path]).pluck_primary_key
       }
       expect(
         described_class.new(group_id: group.id, resolver: resolver).execute
-      ).to eq([project1.id, project2.id])
+      ).to match_array([project1.id, project2.id])
     end
   end
 end

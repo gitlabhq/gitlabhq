@@ -31611,7 +31611,7 @@ CREATE INDEX index_design_management_repository_states_pending_verification ON d
 
 CREATE INDEX index_design_management_versions_on_author_id ON design_management_versions USING btree (author_id) WHERE (author_id IS NOT NULL);
 
-CREATE INDEX index_design_management_versions_on_issue_id ON design_management_versions USING btree (issue_id);
+CREATE INDEX index_design_management_versions_on_issue_id_and_id ON design_management_versions USING btree (issue_id, id);
 
 CREATE INDEX index_design_management_versions_on_namespace_id ON design_management_versions USING btree (namespace_id);
 
@@ -32824,6 +32824,8 @@ CREATE INDEX index_observability_metrics_issues_connections_on_project_id ON obs
 CREATE INDEX index_observability_traces_issues_connections_on_project_id ON observability_traces_issues_connections USING btree (project_id);
 
 CREATE UNIQUE INDEX index_on_deploy_keys_id_and_type_and_public ON keys USING btree (id, type) WHERE (public = true);
+
+CREATE INDEX index_on_design_management_designs_issue_id_and_id ON design_management_designs USING btree (issue_id, id);
 
 CREATE INDEX index_on_dingtalk_tracker_data_corpid ON dingtalk_tracker_data USING btree (corpid) WHERE (corpid IS NOT NULL);
 

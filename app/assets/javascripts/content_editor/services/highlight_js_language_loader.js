@@ -91,6 +91,7 @@ export default {
   gauss: () => import(/* webpackChunkName: 'hl-gauss' */ 'highlight.js/lib/languages/gauss'),
   gcode: () => import(/* webpackChunkName: 'hl-gcode' */ 'highlight.js/lib/languages/gcode'),
   gherkin: () => import(/* webpackChunkName: 'hl-gherkin' */ 'highlight.js/lib/languages/gherkin'),
+  gleam: () => import(/* webpackChunkName: 'hl-gleam' */ '@gleam-lang/highlight.js-gleam'),
   glsl: () => import(/* webpackChunkName: 'hl-glsl' */ 'highlight.js/lib/languages/glsl'),
   gml: () => import(/* webpackChunkName: 'hl-gml' */ 'highlight.js/lib/languages/gml'),
   go: () => import(/* webpackChunkName: 'hl-go' */ 'highlight.js/lib/languages/go'),

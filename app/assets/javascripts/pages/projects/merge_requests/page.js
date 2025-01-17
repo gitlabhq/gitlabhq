@@ -10,6 +10,7 @@ import initSidebarBundle from '~/sidebar/sidebar_bundle';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { initMrMoreDropdown } from '~/mr_more_dropdown';
+import { pinia } from '~/pinia/instance';
 import initShow from './init_merge_request_show';
 import getStateQuery from './queries/get_state.query.graphql';
 
@@ -21,7 +22,7 @@ const tabData = Vue.observable({
 
 export function initMrPage() {
   initMrNotes();
-  initShow(store);
+  initShow(store, pinia);
   initMrMoreDropdown();
   startCodeReviewMessaging({ signalBus: diffsEventHub });
 
@@ -44,7 +45,7 @@ export function initMrPage() {
 }
 
 requestIdleCallback(() => {
-  initSidebarBundle(store);
+  initSidebarBundle(store, pinia);
 
   const el = document.getElementById('js-merge-sticky-header');
 
@@ -78,6 +79,7 @@ requestIdleCallback(() => {
       el,
       name: 'MergeRequestStickyHeaderRoot',
       store,
+      pinia,
       apolloProvider,
       provide: {
         query: getStateQuery,

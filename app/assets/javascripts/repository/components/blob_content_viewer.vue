@@ -335,6 +335,7 @@ export default {
     <gl-loading-icon v-if="isLoading" size="sm" />
     <div v-if="blobInfo && !isLoading" id="fileHolder" class="file-holder">
       <blob-header
+        is-blob-page
         :blob="blobInfo"
         :hide-viewer-switcher="isBinaryFileType || isUsingLfs"
         :is-binary="isBinaryFileType"

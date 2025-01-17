@@ -8,7 +8,7 @@ import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
 import { createTestPiniaAction, createCustomGetters } from 'helpers/pinia_helpers';
-import { globalAccessorPlugin } from '~/pinia';
+import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useBatchComments } from '~/batch_comments/store';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';

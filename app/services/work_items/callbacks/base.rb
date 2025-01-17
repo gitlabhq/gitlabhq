@@ -8,6 +8,10 @@ module WorkItems
       def raise_error(message)
         raise Error, message
       end
+
+      def log_error(message)
+        ::Gitlab::AppLogger.error message
+      end
     end
   end
 end

@@ -5,6 +5,8 @@ require 'logger'
 require 'elasticsearch'
 require 'opensearch'
 require 'aws-sdk-core'
+require 'active_support/concern'
+require 'redis'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

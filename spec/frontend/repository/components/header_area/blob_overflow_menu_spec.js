@@ -1,6 +1,8 @@
 import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
-import BlobOverflowMenu from '~/repository/components/header_area/blob_overflow_menu.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import BlobOverflowMenu from '~/repository/components/header_area/blob_overflow_menu.vue';
+import createRouter from '~/repository/router';
+import { refMock } from '../../mock_data';
 
 const Blob = {
   binary: false,
@@ -36,16 +38,25 @@ const mockEnvironmentPath = 'https://my.testing.environment';
 describe('Blob Overflow Menu', () => {
   let wrapper;
 
+  const projectPath = '/some/project';
+  const router = createRouter(projectPath, refMock);
+
+  router.replace({ name: 'blobPath', params: { path: '/some/file.js' } });
+
   const blobHash = 'foo-bar';
 
   function createComponent(propsData = {}, provided = {}) {
     wrapper = shallowMountExtended(BlobOverflowMenu, {
+      router,
       provide: {
         blobHash,
         ...provided,
       },
       propsData: {
         rawPath: Blob.rawPath,
+        richViewer: Blob.richViewer,
+        simpleViewer: Blob.simpleViewer,
+        isBinary: false,
         ...propsData,
       },
       stub: {
@@ -83,9 +94,12 @@ describe('Blob Overflow Menu', () => {
       });
 
       it('renders "Copy file contents" button as disabled if the viewer is Rich', () => {
-        createComponent({
-          activeViewer: 'rich',
-        });
+        // Create rich viewer element in DOM
+        const richViewer = document.createElement('div');
+        richViewer.className = 'blob-viewer';
+        richViewer.dataset.type = 'rich';
+        document.body.appendChild(richViewer);
+        createComponent();
 
         expect(findCopyFileContentItem().props('item')).toMatchObject({
           extraAttrs: { disabled: true },
@@ -94,7 +108,10 @@ describe('Blob Overflow Menu', () => {
 
       it('does not render the copy button if a rendering error is set', () => {
         createComponent({
-          hasRenderError: true,
+          richViewer: {
+            ...Blob.richViewer,
+            renderError: 'File too big',
+          },
         });
 
         expect(findDropdownItemWithText('Copy file contents')).toBeUndefined();

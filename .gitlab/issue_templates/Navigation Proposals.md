@@ -1,15 +1,52 @@
 <!-- This template is used for proposing changes to the left sidebar contextual navigation. This could include additions, removals, or general changes to overall hierarchy.-->
 
-### Proposal 
+# Summary
+
+_Please summarize the navigation changes you are hoping to make._
+
+# Background
 
 <!-- Use this section to explain the proposed changes, including details around usage and business drivers. -->
 
+Link to epic / issue with overall feature proposal: _issue link_
 
-#### Other locations that were considered
+Does this navigation proposal facilitate one of our primary JTBDs? Which job?
 
- <!-- Include other design patterns or places you considered for this feature besides navigation. -->
 
-### Checklist
+How does this change improve the workflow for users attempting to complete that job?
+
+
+How many users will be impacted by this proposed change?
+
+- [ ] Limited
+- [ ] Moderate
+- [ ] All users
+
+What is the product maturity stage of the associated feature?
+
+- [ ] Experimental
+- [ ] Beta
+- [ ] General availability
+
+How often do you expect an average GitLab user (_not_ just your target persona) to reach for this functionality?
+
+- [ ] Several times a day
+- [ ] Once a day
+- [ ] A few times a week
+- [ ] Once a week
+- [ ] Less than once a week
+
+# Approaches considered
+
+_Please describe the alternative designs you considered._
+
+# Justification
+
+_Provide your justification for this change. See https://handbook.gitlab.com/handbook/product/ux/navigation/ for the minimum validation we request based on the scope of access of your proposed change._
+
+# Review checklist
+
+#### Requester
 
 - [ ] Review the [handbook page for navigation](https://handbook.gitlab.com/handbook/product/ux/navigation/).
 - [ ] Add relevant information to the issue description detailing your proposal, including usage and business drivers.
@@ -21,6 +58,17 @@
 - [ ] Engage the [Foundations Product Manager](https://handbook.gitlab.com/handbook/product/categories/#foundations-group) for approval. The Foundations DRI (@jtucker_gl) will work with UX partners in product design, research, and technical writing, as applicable.
 - [ ] Consider whether you need to [communicate the change somehow](https://design.gitlab.com/patterns/navigation#messaging-changes-to-users), or if you will have an interim period in the UI where your item will live in more than one place.
 - [ ] Ensure engineers are familiar with the [implementation steps for navigation](https://docs.gitlab.com/ee/development/navigation_sidebar.html#navigation-sidebar).
+
+#### Foundations Product Manager
+
+- [ ] Confirm proposal has necessary information
+- [ ] Schedule design review for next milestone
+
+#### Foundations Product Designer
+
+- [ ] Confirm Pajamas guidelines are followed
+- [ ] Confirm a11y needs are addressed
+- [ ] Confirm burden of proof supplied for stated scope of access
 
 /label ~UX ~"UI text" ~"documentation" ~"Category:Navigation & Settings"  ~navigation ~type::ignore
 /label ~"Nav request::Start"  

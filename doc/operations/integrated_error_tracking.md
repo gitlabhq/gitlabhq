@@ -50,7 +50,7 @@ For example, if you use
 you can identify a user by email:
 
 ```python
-Sentry.setUser({ email: "john.doe@example.com" });
+sentry_sdk.set_user({ email: "john.doe@example.com" });
 ```
 
 For more information about user identification, see the [Sentry documentation](https://docs.sentry.io/).

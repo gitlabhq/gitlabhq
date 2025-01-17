@@ -4,7 +4,7 @@ import { DESC, ASC, NOTEABLE_TYPE_MAPPING } from '~/notes/constants';
 import { createCustomGetters } from 'helpers/pinia_helpers';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
-import { globalAccessorPlugin } from '~/pinia';
+import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useBatchComments } from '~/batch_comments/store';
 import {
   notesDataMock,

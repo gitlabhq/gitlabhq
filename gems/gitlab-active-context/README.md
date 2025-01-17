@@ -87,6 +87,63 @@ ActiveContext.raw_queues
 => ["ai_context_queues:{merge_request}:0", "ai_context_queues:{merge_request}:1"]
 ```
 
+### Adding a new collection
+
+A collection maps data to references and specifies a queue to track its references.
+
+To add a new collection:
+
+1. Create a new file in the appropriate directory
+1. Define a class that `includes ActiveContext::Concerns::Collection`
+1. Implement the `self.queue` class method to return the associated queue
+1. Implement the `references` instance method to return the references for an object
+
+Example:
+
+```ruby
+module Ai
+  module Context
+    module Collections
+      class MergeRequest
+        include ActiveContext::Concerns::Collection
+
+        def self.queue
+          Queues::MergeRequest
+        end
+
+        def references
+          [Search::Elastic::References::Embedding.serialize(object)]
+        end
+      end
+    end
+  end
+end
+```
+
+Adding references to the queue can be done a few ways:
+
+```ruby
+Ai::Context::Collections::MergeRequest.track!(MergeRequest.first)
+```
+
+```ruby
+Ai::Context::Collections::MergeRequest.track!(MergeRequest.take(10))
+```
+
+```ruby
+ActiveContext.track!(MergeRequest.first, collection: Ai::Context::Collections::MergeRequest)
+```
+
+```ruby
+ActiveContext.track!(MergeRequest.first, collection: Ai::Context::Collections::MergeRequest, queue: Ai::Context::Queues::Default)
+```
+
+To view all tracked references:
+
+```ruby
+ActiveContext::Queues.all_queued_items
+```
+
 ## Contributing
 
 ### Development guidelines

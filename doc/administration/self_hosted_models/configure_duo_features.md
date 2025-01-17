@@ -108,7 +108,7 @@ To configure a self-hosted model:
      |-------------|---------|---------|
      | vLLM | `custom_openai/<name of the model served through vLLM>` | `custom_openai/Mixtral-8x7B-Instruct-v0.1` |
      | Bedrock | `bedrock/<model ID of the model>` | `bedrock/mistral.mixtral-8x7b-instruct-v0:1` |
-     | Azure | `azure/<model ID of the model>` | `azure/gpt-35-turbo` |
+     | Azure OpenAI | `azure/<model ID of the model>` | `azure/gpt-35-turbo` |
      | Others | The field is optional |  |
 
 1. Select **Create self-hosted model**.

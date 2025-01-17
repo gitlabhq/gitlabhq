@@ -2,6 +2,7 @@
 import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, s__, __ } from '~/locale';
 import { setUrlParams, relativePathToAbsolute, getBaseURL } from '~/lib/utils/url_utility';
+import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constants';
 
 export const i18n = {
   dropdownLabel: __('Actions'),
@@ -10,12 +11,8 @@ export const i18n = {
   btnRawTitle: s__('BlobViewer|Open raw'),
 };
 
-const RICH_BLOB_VIEWER = 'rich';
-const SIMPLE_BLOB_VIEWER = 'simple';
-
 export default {
   i18n,
-  RICH_BLOB_VIEWER,
   components: {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
@@ -36,15 +33,15 @@ export default {
       type: String,
       required: true,
     },
-    activeViewer: {
-      type: String,
-      default: SIMPLE_BLOB_VIEWER,
+    richViewer: {
+      type: Object,
       required: false,
+      default: () => {},
     },
-    hasRenderError: {
-      type: Boolean,
+    simpleViewer: {
+      type: Object,
       required: false,
-      default: false,
+      default: () => {},
     },
     isBinary: {
       type: Boolean,
@@ -73,11 +70,26 @@ export default {
     },
   },
   computed: {
+    activeViewerType() {
+      if (this.$route?.query?.plain !== '1') {
+        const richViewer = document.querySelector('.blob-viewer[data-type="rich"]');
+        if (richViewer) {
+          return RICH_BLOB_VIEWER;
+        }
+      }
+      return SIMPLE_BLOB_VIEWER;
+    },
+    viewer() {
+      return this.activeViewerType === RICH_BLOB_VIEWER ? this.richViewer : this.simpleViewer;
+    },
+    hasRenderError() {
+      return Boolean(this.viewer.renderError);
+    },
     downloadUrl() {
       return setUrlParams({ inline: false }, relativePathToAbsolute(this.rawPath, getBaseURL()));
     },
     copyDisabled() {
-      return this.activeViewer === this.$options.RICH_BLOB_VIEWER;
+      return this.activeViewerType === RICH_BLOB_VIEWER;
     },
     getBlobHashTarget() {
       if (this.overrideCopy) {

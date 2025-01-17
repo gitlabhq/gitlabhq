@@ -38,7 +38,7 @@ export default {
       type: Object,
       required: true,
     },
-    hideDefaultActions: {
+    isBlobPage: {
       type: Boolean,
       required: false,
       default: false,
@@ -121,9 +121,6 @@ export default {
     };
   },
   computed: {
-    showDefaultActions() {
-      return !this.hideDefaultActions;
-    },
     showWebIdeLink() {
       return !this.blob.archived && this.blob.editBlobPath;
     },
@@ -206,7 +203,7 @@ export default {
       <slot name="actions"></slot>
 
       <default-actions
-        v-if="showDefaultActions"
+        v-if="!glFeatures.blobOverflowMenu || (glFeatures.blobOverflowMenu && !isBlobPage)"
         :raw-path="blob.externalStorageUrl || blob.rawPath"
         :active-viewer="viewer"
         :has-render-error="hasRenderError"

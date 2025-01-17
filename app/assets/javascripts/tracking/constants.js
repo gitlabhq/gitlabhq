@@ -22,6 +22,7 @@ export const DEFAULT_SNOWPLOW_OPTIONS = {
 
 export const ACTION_ATTR_SELECTOR = '[data-track-action]';
 export const LOAD_ACTION_ATTR_SELECTOR = '[data-track-action="render"]';
+// Keep these in sync with the strings used in spec/support/matchers/internal_events_matchers.rb
 export const INTERNAL_EVENTS_SELECTOR = '[data-event-tracking]';
 export const LOAD_INTERNAL_EVENTS_SELECTOR = '[data-event-tracking-load="true"]';
 

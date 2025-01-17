@@ -17,6 +17,8 @@ RSpec.describe "User browses files", :js, feature_category: :source_code_managem
 
   before do
     sign_in(user)
+
+    stub_feature_flags(blob_overflow_menu: false)
   end
 
   it "shows last commit for current directory", :js do

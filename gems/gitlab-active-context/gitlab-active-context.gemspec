@@ -29,6 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'aws-sdk-core'
   spec.add_development_dependency 'faraday_middleware-aws-sigv4'
   spec.add_development_dependency 'gitlab-styles'
+  spec.add_development_dependency 'redis'
   spec.add_development_dependency 'rspec-rails'
   spec.add_development_dependency 'rubocop-rspec'
   spec.add_development_dependency 'webmock'
