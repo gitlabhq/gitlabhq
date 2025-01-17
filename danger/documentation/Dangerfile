@@ -47,7 +47,7 @@ MSG
 
 # For regular pages, prompt for a TW review
 DOCS_UPDATE_SHORT_MESSAGE = <<~MSG
-This merge request adds or changes documentation files. A review from the Technical Writing team before you merge is **recommended**. Reviews can happen after you merge.
+This merge request adds or changes documentation files and requires Technical Writing review. The review should happen before merge, but can be post-merge if the merge request is time sensitive.
 MSG
 
 DOCS_UPDATE_LONG_MESSAGE = <<~MSG.freeze

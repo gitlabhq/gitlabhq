@@ -30,6 +30,11 @@ import {
   TEST_ID_TOGGLE_ACTION,
   TEST_ID_REPORT_ABUSE,
   TEST_ID_NEW_RELATED_WORK_ITEM,
+  WORK_ITEM_TYPE_VALUE_INCIDENT,
+  WORK_ITEM_TYPE_VALUE_ISSUE,
+  WORK_ITEM_TYPE_VALUE_KEY_RESULT,
+  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WORK_ITEM_TYPE_VALUE_TASK,
 } from '~/work_items/constants';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemNotificationsMutation from '~/work_items/graphql/update_work_item_notifications.mutation.graphql';
@@ -115,10 +120,13 @@ describe('WorkItemActions component', () => {
   const createComponent = ({
     canUpdate = true,
     canDelete = true,
+    hasOkrsFeature = true,
     isConfidential = false,
     isDiscussionLocked = false,
-    subscribed = false,
+    isGroup = false,
     isParentConfidential = false,
+    okrsMvc = false,
+    subscribed = false,
     convertWorkItemMutationHandler = convertWorkItemMutationSuccessHandler,
     notificationsMutationHandler,
     lockDiscussionMutationHandler = lockDiscussionMutationResolver,
@@ -147,7 +155,8 @@ describe('WorkItemActions component', () => {
         fullPath: 'gitlab-org/gitlab-test',
         workItemId: 'gid://gitlab/WorkItem/1',
         workItemIid: '1',
-        isGroup: false,
+        workItemWebUrl: 'web/url',
+        isGroup,
         canUpdate,
         canDelete,
         isConfidential,
@@ -166,10 +175,11 @@ describe('WorkItemActions component', () => {
         $toast,
       },
       provide: {
-        fullPath: 'gitlab-org/gitlab-test',
         glFeatures: {
+          okrsMvc,
           workItemsBeta,
         },
+        hasOkrsFeature,
       },
       stubs: {
         GlModal: stubComponent(GlModal, {
@@ -219,7 +229,7 @@ describe('WorkItemActions component', () => {
       },
       {
         testId: TEST_ID_NEW_RELATED_WORK_ITEM,
-        text: 'New related task',
+        text: 'New related item',
       },
       {
         testId: TEST_ID_CHANGE_TYPE_ACTION,
@@ -255,14 +265,14 @@ describe('WorkItemActions component', () => {
     ]);
   });
 
-  it('includes a new related item option', () => {
-    createComponent({ workItemType: 'Task' });
+  it('renders "New related epic" instead of the default "New related item" when type is Epic', () => {
+    createComponent({ workItemType: 'Epic' });
 
     expect(findDropdownItemsActual()).toEqual(
       expect.arrayContaining([
         {
           testId: TEST_ID_NEW_RELATED_WORK_ITEM,
-          text: 'New related task',
+          text: 'New related epic',
         },
       ]),
     );
@@ -566,7 +576,54 @@ describe('WorkItemActions component', () => {
     });
   });
 
+  describe('allowed work item types for modal', () => {
+    describe('when group', () => {
+      it('passes empty array', () => {
+        createComponent({ isGroup: true });
+
+        expect(findCreateWorkItemModal().props('allowedWorkItemTypes')).toEqual([]);
+      });
+    });
+
+    describe('when okrs feature is not available', () => {
+      it('passes default of incident, issue, and task', () => {
+        createComponent({ hasOkrsFeature: false, okrsMvc: false });
+
+        expect(findCreateWorkItemModal().props('allowedWorkItemTypes')).toEqual([
+          WORK_ITEM_TYPE_VALUE_INCIDENT,
+          WORK_ITEM_TYPE_VALUE_ISSUE,
+          WORK_ITEM_TYPE_VALUE_TASK,
+        ]);
+      });
+    });
+
+    describe('when okrs feature is available', () => {
+      it('passes default of incident, issue, and task', () => {
+        createComponent({ hasOkrsFeature: true, okrsMvc: true });
+
+        expect(findCreateWorkItemModal().props('allowedWorkItemTypes')).toEqual([
+          WORK_ITEM_TYPE_VALUE_INCIDENT,
+          WORK_ITEM_TYPE_VALUE_ISSUE,
+          WORK_ITEM_TYPE_VALUE_TASK,
+          WORK_ITEM_TYPE_VALUE_KEY_RESULT,
+          WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+        ]);
+      });
+    });
+  });
+
   describe('new related item', () => {
+    it('passes related item data to create work item modal', () => {
+      createComponent();
+
+      expect(findCreateWorkItemModal().props('relatedItem')).toEqual({
+        id: 'gid://gitlab/WorkItem/1',
+        reference: 'gitlab-org/gitlab-test#1',
+        type: 'Task',
+        webUrl: 'web/url',
+      });
+    });
+
     it('opens the create work item modal', async () => {
       createComponent({ workItemType: 'Task' });
 

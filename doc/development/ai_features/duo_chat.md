@@ -241,8 +241,7 @@ LangSmith has best-in-class tracing capabilities, and it's integrated with GitLa
 ![LangSmith UI](img/langsmith_v16_10.png)
 
 Tracing is especially useful for evaluation that runs GitLab Duo Chat against large dataset.
-LangSmith integration works with any tools, including [Prompt Library](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library)
-and [RSpec tests](#testing-gitlab-duo-chat).
+LangSmith integration works with any tools, including [Prompt Library](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library).
 
 ### Use tracing with LangSmith
 
@@ -270,140 +269,52 @@ It's not available in Production environment.
 1. Observe project in the LangSmith [page](https://smith.langchain.com/) > Projects > \[Project name\]. 'Runs' tab should contain
    your last requests.
 
-## Testing GitLab Duo Chat
+## Evaluate your merge request in one click
 
-Because the success of answers to user questions in GitLab Duo Chat heavily depends
-on toolchain and prompts of each tool, it's common that even a minor change in a
-prompt or a tool impacts processing of some questions.
+To evaluate your merge request with [Central Evaluation Framework](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library) (a.k.a. CEF),
+you can use [Evaluation Runner](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner) (internal only).
+Follow [run evaluation on your merge request](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner#run-evaluation-on-your-merge-request) instruction.
 
-To make sure that a change in the toolchain doesn't break existing
-functionality, you can use the following RSpec tests to validate answers to some
-predefined questions when using real LLMs:
+### Prevent regressions in your merge request
 
-1. `ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb`
-   This test validates that the zero-shot agent is selecting the correct tools
-   for a set of Chat questions. It checks on the tool selection but does not
-   evaluate the quality of the Chat response.
-1. `ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb`
-   This test evaluates the quality of a Chat response by passing the question
-   asked along with the Chat-provided answer and context to at least two other
-   LLMs for evaluation. This evaluation is limited to questions about issues and
-   epics only. Learn more about the [GitLab Duo Chat QA Evaluation Test](#gitlab-duo-chat-qa-evaluation-test).
+When you make a change to Duo Chat or related components,
+you should run the [regression evaluator](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/eli5/duo_chat/regression_evaluator.md)
+to detect quality degradation and bugs in the merge request.
+It covers any Duo Chat execution patterns, including tool execution and slash commands.
 
-If you are working on any changes to the GitLab Duo Chat logic, be sure to run
-the [GitLab Duo Chat CI jobs](#testing-with-ci) the merge request that contains
-your changes. Some of the CI jobs must be [manually triggered](../../ci/jobs/job_control.md#run-a-manual-job).
+To run the regression evaluator, [run evaluation on your merge request](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner#run-evaluation-on-your-merge-request) and click a play button for the regression evaluator.
+Later, you can [compare the evaluation result of the merge request against master](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner#compare-the-evaluation-result-of-your-merge-request-against-master).
+Make sure that there are no quality degradation and bugs in the [LangSmith's comparison page](https://docs.smith.langchain.com/evaluation/how_to_guides/compare_experiment_results).
 
-## Testing locally
+While there are no strict guidelines for interpreting the comparison results, here are some helpful tips to consider:
 
-To run the QA Evaluation test locally, the following environment variables
-must be exported:
+- If the number of degraded scores exceeds the number of improved scores, it may indicate that the merge request has introduced a quality degradation.
+- If any examples encounter errors during evaluation, it could suggest a potential bug in the merge request.
 
-```ruby
-ANTHROPIC_API_KEY='your-key' VERTEX_AI_PROJECT='your-project-id' REAL_AI_REQUEST=1 bundle exec rspec ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb
-```
+In either of these scenarios, we recommend further investigation:
 
-## Testing with CI
+1. Compare your results with [the daily evaluation results](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner#view-daily-evaluation-result-on-master). e.g. look at the daily evaluations from yesterday and the day before.
+1. If you observe similar patterns in these daily evaluations, it's likely that your merge request is safe to merge. However, if the patterns differ, it may indicate that your merge request has introduced unexpected changes.
 
-The following CI jobs for GitLab project run the tests tagged with `real_ai_request`:
+We strongly recommend running the regression evaluator in at least the following environments:
 
-- `rspec-ee unit gitlab-duo-chat-zeroshot`:
-  the job runs `ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb`.
-  The job must be manually triggered and is allowed to fail.
+| Environment                                                                 | Evaluation pipeline name                                  |
+| -----------                                                                 | ------------------------                                  |
+| Self-managed GitLab and a custom model that is widely adopted               | `duo-chat regression sm: [bedrock_mistral_8x7b_instruct]` |
+| GitLab.com and GitLab Duo Enterprise add-on                                 | `duo-chat regression .com: [duo_enterprise]`              |
+| GitLab.com and GitLab Duo Pro add-on                                        | `duo-chat regression .com: [duo_pro]`                     |
 
-- `rspec-ee unit gitlab-duo-chat-qa`:
-  The job runs the QA evaluation tests in
-  `ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb`.
-  The job must be manually triggered and is allowed to fail.
-  Read about [GitLab Duo Chat QA Evaluation Test](#gitlab-duo-chat-qa-evaluation-test).
+Additionally, you can run other evaluators, such as `gitlab-docs`, which has a more comprehensive dataset for specific scopes.
+See [available evaluation pipelines](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner#evaluation-pipelines) for more information.
 
-- `rspec-ee unit gitlab-duo-chat-qa-fast`:
-  The job runs a single QA evaluation test from `ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb`.
-  The job is always run and not allowed to fail. Although there's a chance that the QA test still might fail,
-  it is cheap and fast to run and intended to prevent a regression in the QA test helpers.
+### Add an example to the regression dataset
 
-- `rspec-ee unit gitlab-duo pg14`:
-  This job runs tests to ensure that the GitLab Duo features are functional without running into system errors.
-  The job is always run and not allowed to fail.
-  This job does NOT conduct evaluations. The quality of the feature is tested in the other jobs such as QA jobs.
+When you introduce a new feature or received a regression report from users, you should add a new example to the regression dataset for expanding the coverage.
+To add an example to the regression dataset, follow [this section](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/eli5/duo_chat/regression_evaluator.md#guideline).
 
-### Management of credentials and API keys for CI jobs
+For more information, see [the guideline of the regression evaluator](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/eli5/duo_chat/regression_evaluator.md#guideline).
 
-All API keys required to run the rspecs should be [masked](../../ci/variables/index.md#mask-a-cicd-variable)
-
-The exception is GCP credentials as they contain characters that prevent them from being masked.
-Because the CI jobs need to run on MR branches, GCP credentials cannot be added as a protected variable
-and must be added as a regular CI variable.
-For security, the GCP credentials and the associated project added to
-GitLab project's CI must not be able to access any production infrastructure and sandboxed.
-
-### GitLab Duo Chat QA Evaluation Test
-
-Evaluation of a natural language generation (NLG) system such as
-GitLab Duo Chat is a rapidly evolving area with many unanswered questions and ambiguities.
-
-A practical working assumption is LLMs can generate a reasonable answer when given a clear question and a context.
-With the assumption, we are exploring using LLMs as evaluators
-to determine the correctness of a sample of questions
-to track the overall accuracy of GitLab Duo Chat's responses and detect regressions in the feature.
-
-For the discussions related to the topic,
-see [the merge request](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/431)
-and [the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/427251).
-
-The current QA evaluation test consists of the following components.
-
-#### (Deprecated) Epic and issue fixtures
-
-NOTE:
-This section is deprecated in favor of the [development seed file](index.md#seed-project-and-group-resources-for-testing-and-evaluation).
-
-The fixtures are the replicas of the _public_ issues and epics from projects and groups _owned by_ GitLab.
-The internal notes were excluded when they were sampled. The fixtures have been committed into the canonical `gitlab` repository.
-See [the snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/3613745) used to create the fixtures.
-
-#### RSpec and helpers
-
-1. [The RSpec file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb)
-   and the included helpers invoke the Chat service, an internal interface with the question.
-
-1. After collecting the Chat service's answer,
-   the answer is injected into a prompt, also known as an "evaluation prompt", that instructs
-   a LLM to grade the correctness of the answer based on the question and a context.
-   The context is simply a JSON serialization of the issue or epic being asked about in each question.
-
-1. The evaluation prompt is sent to two LLMs, Claude and Vertex.
-
-1. The evaluation responses of the LLMs are saved as JSON files.
-
-1. For each question, RSpec will regex-match for `CORRECT` or `INCORRECT`.
-
-#### Collection and tracking of QA evaluation with CI/CD automation
-
-The `gitlab` project's CI configurations have been setup to run the RSpec,
-collect the evaluation response as artifacts and execute
-[a reporter script](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/duo_chat/reporter.rb)
-that automates collection and tracking of evaluations.
-
-When `rspec-ee unit gitlab-duo-chat-qa` job runs in a pipeline for a merge request,
-the reporter script uses the evaluations saved as CI artifacts
-to generate a Markdown report and posts it as a note in the merge request.
-
-To keep track of and compare QA test results over time, you must manually
-run the `rspec-ee unit gitlab-duo-chat-qa` on the `master` the branch:
-
-1. Visit the [new pipeline page](https://gitlab.com/gitlab-org/gitlab/-/pipelines/new).
-1. Select "Run pipeline" to run a pipeline against the `master` branch
-1. When the pipeline first starts, the `rspec-ee unit gitlab-duo-chat-qa` job under the
-   "Test" stage will not be available. Wait a few minutes for other CI jobs to
-   run and then manually kick off this job by selecting the "Play" icon.
-
-When the test runs on `master`, the reporter script posts the generated report as an issue,
-saves the evaluations artifacts as a snippet, and updates the tracking issue in
-[`GitLab-org/ai-powered/ai-framework/qa-evaluation#1`](https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation/-/issues/1)
-in the project [`GitLab-org/ai-powered/ai-framework/qa-evaluation`](https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation).
-
-### GitLab Duo Chat Self-managed End-to-End Tests
+## GitLab Duo Chat Self-managed End-to-End Tests
 
 In MRs, the end-to-end tests exercise the Duo Chat functionality of self-managed instances by using an instance of the GitLab Linux package
 integrated with the `latest` version of AI gateway. The instance of AI gateway is configured to return [mock responses](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#mocking-ai-model-responses).
@@ -608,6 +519,15 @@ that requires "saas" mode to create a group (necessary for importing subgroups),
 you need to set `GITLAB_SIMULATE_SAAS=1`. This is just to complete the import
 successfully, and then you can switch back to `GITLAB_SIMULATE_SAAS=0` if
 desired.
+
+#### (Deprecated) Epic and issue fixtures
+
+NOTE:
+This section is deprecated in favor of the [development seed file](index.md#seed-project-and-group-resources-for-testing-and-evaluation).
+
+The fixtures are the replicas of the _public_ issues and epics from projects and groups _owned by_ GitLab.
+The internal notes were excluded when they were sampled. The fixtures have been committed into the canonical `gitlab` repository.
+See [the snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/3613745) used to create the fixtures.
 
 ## How a Chat prompt is constructed
 

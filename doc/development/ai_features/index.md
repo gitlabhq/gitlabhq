@@ -987,7 +987,7 @@ See [this architecture doc](https://gitlab.com/gitlab-org/modelops/ai-model-vali
 
 A valuable tool for local development to ensure the changes are correct outside of unit tests is to use [LangSmith](duo_chat.md#tracing-with-langsmith) for tracing. The tool allows you to trace LLM calls within Duo Chat to verify the LLM tool is using the correct model.
 
-To prevent regressions, we also have CI jobs to make sure our tools are working correctly. For more details, see the [Duo Chat testing section](duo_chat.md#gitlab-duo-chat-qa-evaluation-test).
+To prevent regressions, we also have CI jobs to make sure our tools are working correctly. For more details, see the [Duo Chat testing section](duo_chat.md#prevent-regressions-in-your-merge-request).
 
 ### Monitoring and Metrics
 

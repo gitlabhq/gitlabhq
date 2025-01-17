@@ -59,6 +59,16 @@ module Ci
         )
       end
 
+      def project_link_traversal_ids
+        project_links.includes(target_project: :project_namespace).map do |p|
+          p.target_project.project_namespace.traversal_ids
+        end
+      end
+
+      def group_link_traversal_ids
+        group_links.includes(:target_group).map { |g| g.target_group.traversal_ids }
+      end
+
       def project_links
         Ci::JobToken::ProjectScopeLink
           .with_source(@source_project)

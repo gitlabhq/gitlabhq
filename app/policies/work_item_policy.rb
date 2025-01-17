@@ -4,6 +4,10 @@ class WorkItemPolicy < IssuePolicy
   condition(:is_member) { is_project_member? }
   condition(:is_member_and_author) { is_project_member? & is_author? }
 
+  condition(:can_report_spam) do
+    @subject.submittable_as_spam_by?(@user)
+  end
+
   rule { can?(:admin_issue) }.enable :admin_work_item
   rule { can?(:destroy_issue) | is_member_and_author }.enable :delete_work_item
 
@@ -28,6 +32,8 @@ class WorkItemPolicy < IssuePolicy
   rule { group_issue & ~group_level_issues_license_available }.policy do
     prevent(*::WorkItemPolicy.ability_map.map.keys)
   end
+
+  rule { can_report_spam }.enable :report_spam
 end
 
 WorkItemPolicy.prepend_mod

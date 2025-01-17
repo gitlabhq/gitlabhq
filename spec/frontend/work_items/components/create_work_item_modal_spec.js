@@ -1,27 +1,20 @@
-import Vue, { nextTick } from 'vue';
-import VueApollo from 'vue-apollo';
+import { nextTick } from 'vue';
 import { GlDisclosureDropdownItem, GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/namespace_work_item_types.query.graphql.json';
-import { setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
-import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import CreateWorkItem from '~/work_items/components/create_work_item.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
-import { WORK_ITEMS_TYPE_MAP, WORK_ITEM_TYPE_ROUTE_WORK_ITEM } from '~/work_items/constants';
-import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
+import {
+  WORK_ITEMS_TYPE_MAP,
+  WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
+  WORK_ITEM_TYPE_ENUM_KEY_RESULT,
+} from '~/work_items/constants';
 import CreateWorkItemCancelConfirmationModal from '~/work_items/components/create_work_item_cancel_confirmation_modal.vue';
 
 const showToast = jest.fn();
-jest.mock('~/work_items/graphql/cache_utils', () => ({
-  setNewWorkItemCache: jest.fn(),
-}));
-
-Vue.use(VueApollo);
 
 describe('CreateWorkItemModal', () => {
   let wrapper;
-  let apolloProvider;
 
   const findTrigger = () => wrapper.find('[data-testid="new-epic-button"]');
   const findDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
@@ -31,43 +24,12 @@ describe('CreateWorkItemModal', () => {
   const findCancelConfirmationModal = () =>
     wrapper.findComponent(CreateWorkItemCancelConfirmationModal);
 
-  const namespaceSingleWorkItemTypeQueryResponse = {
-    data: {
-      workspace: {
-        ...namespaceWorkItemTypesQueryResponse.data.workspace,
-        workItemTypes: {
-          nodes: [namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes[0]],
-        },
-      },
-    },
-  };
-
-  const workItemTypesQueryHandler = jest.fn().mockResolvedValue({
-    data: namespaceSingleWorkItemTypeQueryResponse.data,
-  });
-
-  const workItemTypesEmptyQueryHandler = jest.fn().mockResolvedValue({
-    data: {
-      workspace: {
-        workItemTypes: {
-          nodes: [],
-          __typename: 'WorkItemType',
-        },
-      },
-    },
-  });
-
   const createComponent = ({
     asDropdownItem = false,
     hideButton = false,
     workItemTypeName = 'EPIC',
-    namespaceWorkItemTypesQueryHandler = workItemTypesQueryHandler,
     relatedItem = null,
   } = {}) => {
-    apolloProvider = createMockApollo([
-      [namespaceWorkItemTypesQuery, namespaceWorkItemTypesQueryHandler],
-    ]);
-
     wrapper = shallowMount(CreateWorkItemModal, {
       propsData: {
         workItemTypeName,
@@ -75,7 +37,6 @@ describe('CreateWorkItemModal', () => {
         hideButton,
         relatedItem,
       },
-      apolloProvider,
       provide: {
         fullPath: 'full-path',
       },
@@ -89,16 +50,6 @@ describe('CreateWorkItemModal', () => {
       },
     });
   };
-
-  it('passes workItemTypeName to CreateWorkItem and sets the cache', async () => {
-    createComponent();
-
-    expect(findForm().props('workItemTypeName')).toBe('EPIC');
-
-    await waitForPromises();
-
-    expect(setNewWorkItemCache).toHaveBeenCalled();
-  });
 
   it('shows toast on workItemCreated', async () => {
     createComponent();
@@ -189,34 +140,6 @@ describe('CreateWorkItemModal', () => {
     });
   }
 
-  it('when there are no work item types it does not set the cache', async () => {
-    createComponent({ namespaceWorkItemTypesQueryHandler: workItemTypesEmptyQueryHandler });
-
-    await waitForPromises();
-
-    expect(setNewWorkItemCache).not.toHaveBeenCalled();
-  });
-
-  it('when the work item type is invalid it does not set the cache', async () => {
-    createComponent({ workItemTypeName: 'INVALID' });
-
-    await waitForPromises();
-
-    expect(setNewWorkItemCache).not.toHaveBeenCalled();
-  });
-
-  it('resets the cache on work item created event', async () => {
-    createComponent();
-
-    await waitForPromises();
-
-    await nextTick();
-
-    findForm().vm.$emit('workItemCreated', { webUrl: '/' });
-
-    expect(setNewWorkItemCache).toHaveBeenCalled();
-  });
-
   describe('when there is a related item', () => {
     beforeEach(async () => {
       createComponent({
@@ -230,6 +153,22 @@ describe('CreateWorkItemModal', () => {
       expect(findOpenInFullPageButton().attributes('href')).toBe(
         '/full-path/-/epics/new?related_item_id=gid://gitlab/WorkItem/843',
       );
+    });
+  });
+
+  describe('when "changeType" event is emitted', () => {
+    it('updates the selected type', async () => {
+      createComponent();
+
+      expect(wrapper.find('h2').text()).toBe('New epic');
+
+      findForm().vm.$emit('changeType', WORK_ITEM_TYPE_ENUM_KEY_RESULT);
+      await nextTick();
+      findForm().vm.$emit('workItemCreated', { webUrl: '/' });
+
+      expect(wrapper.find('h2').text()).toBe('New key result');
+      expect(findTrigger().text()).toBe('New key result');
+      expect(showToast).toHaveBeenCalledWith('Key result created', expect.any(Object));
     });
   });
 
@@ -270,28 +209,6 @@ describe('CreateWorkItemModal', () => {
 
       expect(findCancelConfirmationModal().props('isVisible')).toBe(false);
       expect(findCreateModal().props('visible')).toBe(true);
-    });
-
-    it('both modals close when user clicks "Discard changes" and cache is cleared', async () => {
-      createComponent();
-
-      await wrapper.setProps({ visible: true });
-      expect(findCreateModal().props('visible')).toBe(true);
-
-      findForm().vm.$emit('confirmCancel');
-      await nextTick();
-
-      expect(findCancelConfirmationModal().props('isVisible')).toBe(true);
-
-      findCancelConfirmationModal().vm.$emit('discardDraft');
-      await nextTick();
-
-      expect(findCancelConfirmationModal().props('isVisible')).toBe(false);
-      expect(findCreateModal().props('visible')).toBe(false);
-
-      await nextTick();
-
-      expect(setNewWorkItemCache).toHaveBeenCalled();
     });
   });
 });

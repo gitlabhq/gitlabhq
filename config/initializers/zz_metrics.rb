@@ -38,6 +38,7 @@ if Gitlab::Metrics.enabled? && Gitlab::Runtime.application?
     Gitlab::Metrics::LooseForeignKeysSlis.initialize_slis!
     Gitlab::Metrics::Llm.initialize_slis! if Gitlab.ee?
     Gitlab::Metrics::Lfs.initialize_slis!
+    Gitlab::Metrics::SecurityScanSlis.initialize_slis! if Gitlab.ee?
   end
 
   GC::Profiler.enable

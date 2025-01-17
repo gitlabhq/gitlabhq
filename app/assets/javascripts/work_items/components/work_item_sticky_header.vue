@@ -190,6 +190,7 @@ export default {
             :work-item-reference="workItem.reference"
             :work-item-create-note-email="workItem.createNoteEmail"
             :work-item-state="workItem.state"
+            :work-item-web-url="workItem.webUrl"
             :is-modal="isModal"
             :work-item-author-id="workItemAuthorId"
             :is-group="isGroup"

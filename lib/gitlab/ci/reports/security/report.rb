@@ -5,8 +5,8 @@ module Gitlab
     module Reports
       module Security
         class Report
-          attr_reader :created_at, :type, :findings, :scanners, :identifiers
-          attr_accessor :scan, :pipeline, :scanned_resources, :errors,
+          attr_reader :created_at, :type, :findings, :scans, :scanners, :identifiers
+          attr_accessor :pipeline, :scanned_resources, :errors,
             :analyzer, :version, :schema_validation_status, :warnings
 
           delegate :project_id, to: :pipeline
@@ -17,6 +17,7 @@ module Gitlab
             @pipeline = pipeline
             @created_at = created_at
             @findings = []
+            @scans = {}
             @scanners = {}
             @identifiers = {}
             @scanned_resources = []
@@ -44,8 +45,16 @@ module Gitlab
             warnings.present?
           end
 
+          def add_scan(scan)
+            scans[scan.start_time] ||= scan
+          end
+
           def add_scanner(scanner)
             scanners[scanner.key] ||= scanner
+          end
+
+          def scan
+            scans.first&.last
           end
 
           def add_identifier(identifier)

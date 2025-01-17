@@ -62,7 +62,7 @@ container_scanning:
       - kube-system
 ```
 
-For every target namespace, all images in the following workload resources are scanned:
+For every target namespace, all images in the following workload resources are scanned by default:
 
 - Pod
 - ReplicaSet
@@ -71,6 +71,8 @@ For every target namespace, all images in the following workload resources are s
 - DaemonSet
 - CronJob
 - Job
+
+This can be customized by [configuring the Trivy Kubernetes Resource Detection](#configure-trivy-kubernetes-resource-detection).
 
 ### Enable via scan execution policies
 
@@ -205,6 +207,36 @@ For example:
 container_scanning:
   report_max_size: "300000000" # 300MB
 ```
+
+## Configure Trivy Kubernetes resource detection
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/431707) in GitLab 17.9.
+
+By default, Trivy looks for the following Kubernetes resource types to discover scannable images:
+
+- Pod
+- ReplicaSet
+- ReplicationController
+- StatefulSet
+- DaemonSet
+- CronJob
+- Job
+- Deployment
+
+You can limit the Kubernetes resource types that Trivy discovers, for example to only scan "active" images.
+
+To do this:
+
+- Specify the resource types with the `resource_types` field:
+
+  ```yaml
+  container_scanning:
+    vulnerability_report:
+      resource_types:
+        - Deployment
+        - Pod
+        - Job
+  ```
 
 ## View cluster vulnerabilities
 

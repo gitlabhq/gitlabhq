@@ -31,6 +31,7 @@ const mockRelatedItem = {
     workItem: {
       id: 'gid://gitlab/WorkItem/234',
       reference: 'gitlab#100',
+      webUrl: 'web/url',
       workItemType: {
         id: 'gid://gitlab/WorkitemType/1',
         name: 'Epic',
@@ -105,15 +106,16 @@ describe('Create work item page component', () => {
         await waitForPromises();
       });
 
-      it('queries for the releated item', () => {
+      it('queries for the related item', () => {
         expect(relatedItemQueryHandler).toHaveBeenCalledWith({ id: 'gid://gitlab/WorkItem/234' });
       });
 
       it('passes the relatedItem to the CreateWorkItem component', () => {
-        const { id, reference, workItemType } = mockRelatedItem.data.workItem;
+        const { id, reference, webUrl, workItemType } = mockRelatedItem.data.workItem;
         expect(findCreateWorkItem().props('relatedItem')).toEqual({
           id,
           reference,
+          webUrl,
           type: workItemType.name,
         });
       });

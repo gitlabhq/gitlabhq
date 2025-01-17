@@ -657,6 +657,7 @@ that is detected. Build files are searched for in the following order:
 1. `build.sbt` for single or [multi-project](https://www.scala-sbt.org/1.x/docs/Multi-Project.html) sbt builds.
 
 The search begins with the root directory and then continues with subdirectories if no builds are found in the root directory. Consequently an sbt build file in the root directory would be detected before a Gradle build file in a subdirectory.
+For [multi-module](https://maven.apache.org/pom.html#Aggregation) Maven projects, and multi-project [Gradle](https://docs.gradle.org/current/userguide/intro_multi_project_builds.html) and [sbt](https://www.scala-sbt.org/1.x/docs/Multi-Project.html) builds, sub-module and sub-project files are analyzed if they are declared in the parent build file.
 
 #### JavaScript
 

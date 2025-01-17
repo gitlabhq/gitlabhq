@@ -21,17 +21,11 @@ import {
   ISSUABLE_EPIC,
   WORK_ITEMS_TYPE_MAP,
   WORK_ITEM_TYPE_ENUM_EPIC,
-  WORK_ITEM_TYPE_ENUM_INCIDENT,
-  WORK_ITEM_TYPE_ENUM_ISSUE,
-  WORK_ITEM_TYPE_ENUM_TASK,
-  WORK_ITEM_TYPE_ENUM_TEST_CASE,
-  WORK_ITEM_TYPE_ENUM_OBJECTIVE,
-  WORK_ITEM_TYPE_ENUM_KEY_RESULT,
-  WORK_ITEM_TYPE_ENUM_REQUIREMENTS,
   WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
   NEW_WORK_ITEM_GID,
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
   STATE_CLOSED,
+  WORK_ITEM_TYPE_VALUE_MAP,
 } from './constants';
 
 export const isAssigneesWidget = (widget) => widget.type === WIDGET_TYPE_ASSIGNEES;
@@ -68,6 +62,11 @@ export const findHierarchyWidgetAncestors = (workItem) =>
 
 export const findDesignWidget = (widgets) =>
   widgets?.find((widget) => widget.type === WIDGET_TYPE_DESIGNS);
+
+export const convertTypeEnumToName = (workItemTypeEnum) =>
+  Object.keys(WORK_ITEM_TYPE_VALUE_MAP).find(
+    (value) => WORK_ITEM_TYPE_VALUE_MAP[value] === workItemTypeEnum,
+  );
 
 export const getWorkItemIcon = (icon) => {
   if (icon === ISSUABLE_EPIC) return WORK_ITEMS_TYPE_MAP[WORK_ITEM_TYPE_ENUM_EPIC].icon;
@@ -235,27 +234,6 @@ export const newWorkItemFullPath = (fullPath, workItemType) => {
   const workItemTypeLowercase = workItemType.split(' ').join('-').toLowerCase();
   // eslint-disable-next-line @gitlab/require-i18n-strings
   return `${fullPath}-${workItemTypeLowercase}-id`;
-};
-
-/**
- * Checks whether the work item type is a valid enum
- *
- * @param {string} workItemType
- */
-
-export const isWorkItemItemValidEnum = (workItemType) => {
-  return (
-    [
-      WORK_ITEM_TYPE_ENUM_EPIC,
-      WORK_ITEM_TYPE_ENUM_INCIDENT,
-      WORK_ITEM_TYPE_ENUM_ISSUE,
-      WORK_ITEM_TYPE_ENUM_TASK,
-      WORK_ITEM_TYPE_ENUM_TEST_CASE,
-      WORK_ITEM_TYPE_ENUM_OBJECTIVE,
-      WORK_ITEM_TYPE_ENUM_KEY_RESULT,
-      WORK_ITEM_TYPE_ENUM_REQUIREMENTS,
-    ].indexOf(workItemType) >= 0
-  );
 };
 
 export const newWorkItemId = (workItemType) => {

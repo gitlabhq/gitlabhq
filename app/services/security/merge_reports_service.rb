@@ -29,6 +29,7 @@ module Security
 
     def copy_resources_to_target_report
       sorted_source_reports.each do |source_report|
+        copy_scans_to_target(source_report)
         copy_scanners_to_target(source_report)
         copy_identifiers_to_target(source_report)
         copy_scanned_resources_to_target(source_report)
@@ -37,6 +38,11 @@ module Security
 
     def sorted_source_reports
       source_reports.sort { |a, b| a.primary_scanner_order_to(b) }
+    end
+
+    def copy_scans_to_target(source_report)
+      # no need for de-duping: it's done by Report internally
+      source_report.scans.values.each { |scan| target_report.add_scan(scan) }
     end
 
     def copy_scanners_to_target(source_report)

@@ -205,22 +205,6 @@ this:
 1. If the update returns a status code `204`, have the user attempt to sign in
    using SAML SSO.
 
-## 403 Forbidden response for disable action
-
-If you [restrict group access by IP address](../access_and_permissions.md#restrict-group-access-by-ip-address),
-SCIM deprovisioning might fail with the error response:
-
-```plaintext
-{"message":"403 Forbidden"}
-```
-
-This is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429607) when restricting group access by IP
-address.
-
-To work around this issue, use the Group SCIM API to
-[update a single SCIM provisioned user](../../../development/internal_api/index.md#update-a-single-scim-provisioned-user)
-to set the user's `active` state to `false`.
-
 ## Azure Active Directory
 
 The following troubleshooting information is specifically for SCIM provisioned through Azure Active Directory.

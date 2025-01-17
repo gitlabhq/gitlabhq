@@ -10,3 +10,5 @@ classes:
 gitlab_schema: gitlab_main_cell
 sharding_key:
   namespace_id: namespaces
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178183
+removed_in_milestone: '17.9'

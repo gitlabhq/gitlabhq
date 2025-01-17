@@ -21121,24 +21121,6 @@ CREATE SEQUENCE subscription_add_ons_id_seq
 
 ALTER SEQUENCE subscription_add_ons_id_seq OWNED BY subscription_add_ons.id;
 
-CREATE TABLE subscription_provision_syncs (
-    id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
-    sync_requested_at timestamp with time zone NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    attrs jsonb NOT NULL
-);
-
-CREATE SEQUENCE subscription_provision_syncs_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE subscription_provision_syncs_id_seq OWNED BY subscription_provision_syncs.id;
-
 CREATE TABLE subscription_seat_assignments (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL,
@@ -25191,8 +25173,6 @@ ALTER TABLE ONLY subscription_add_on_purchases ALTER COLUMN id SET DEFAULT nextv
 
 ALTER TABLE ONLY subscription_add_ons ALTER COLUMN id SET DEFAULT nextval('subscription_add_ons_id_seq'::regclass);
 
-ALTER TABLE ONLY subscription_provision_syncs ALTER COLUMN id SET DEFAULT nextval('subscription_provision_syncs_id_seq'::regclass);
-
 ALTER TABLE ONLY subscription_seat_assignments ALTER COLUMN id SET DEFAULT nextval('subscription_seat_assignments_id_seq'::regclass);
 
 ALTER TABLE ONLY subscription_user_add_on_assignment_versions ALTER COLUMN id SET DEFAULT nextval('subscription_user_add_on_assignment_versions_id_seq'::regclass);
@@ -28044,9 +28024,6 @@ ALTER TABLE ONLY subscription_add_on_purchases
 
 ALTER TABLE ONLY subscription_add_ons
     ADD CONSTRAINT subscription_add_ons_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY subscription_provision_syncs
-    ADD CONSTRAINT subscription_provision_syncs_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY subscription_seat_assignments
     ADD CONSTRAINT subscription_seat_assignments_pkey PRIMARY KEY (id);
@@ -34873,8 +34850,6 @@ CREATE UNIQUE INDEX uniq_idx_packages_packages_on_project_id_name_version_ml_mod
 
 CREATE UNIQUE INDEX uniq_idx_project_compliance_framework_on_project_framework ON project_compliance_framework_settings USING btree (project_id, framework_id);
 
-CREATE UNIQUE INDEX uniq_idx_provision_syncs_on_namespace_id_and_sync_requested_at ON subscription_provision_syncs USING btree (namespace_id, sync_requested_at DESC);
-
 CREATE UNIQUE INDEX uniq_idx_security_policy_requirements_on_requirement_and_policy ON security_policy_requirements USING btree (compliance_framework_security_policy_id, compliance_requirement_id);
 
 CREATE UNIQUE INDEX uniq_idx_streaming_destination_id_and_namespace_id ON audit_events_streaming_instance_namespace_filters USING btree (external_streaming_destination_id, namespace_id);
@@ -38338,9 +38313,6 @@ ALTER TABLE ONLY boards_epic_list_user_preferences
 
 ALTER TABLE ONLY dependency_proxy_blob_states
     ADD CONSTRAINT fk_95ee495fd6 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY subscription_provision_syncs
-    ADD CONSTRAINT fk_964dc9cc6c FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_96b1dd429c FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;

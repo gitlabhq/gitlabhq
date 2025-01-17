@@ -35,7 +35,7 @@ GitLab Duo Chat retains chat history to help you return quickly to previously di
 
 ## Training data
 
-GitLab does not train generative AI models based on private (non-public) data. The vendors we work with also do not train models based on private data.
+GitLab does not train generative AI models.
 
 For more information on our AI [sub-processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors), see:
 
