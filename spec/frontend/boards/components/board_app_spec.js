@@ -68,7 +68,9 @@ describe('BoardApp', () => {
     expect(boardListQueryHandler).toHaveBeenCalled();
   });
 
-  it('should have dynamic width classes when a card is selected', () => {
+  it('should have dynamic width classes when a card is selected', async () => {
+    findBoardContent().vm.$emit('drawer-opened');
+    await nextTick();
     const classes = findBoardContent().classes();
     expect(classes).toContain('lg:gl-w-[calc(100%-480px)]');
     expect(classes).toContain('xl:gl-w-[calc(100%-768px)]');

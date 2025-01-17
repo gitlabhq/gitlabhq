@@ -220,6 +220,8 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
 - FIPS Linux packages now use the system Libgcrypt, except FIPS Linux packages for AmazonLinux 2. Previous versions of the FIPS Linux packages used the
   same Libgcrypt used by the regular Linux packages, which was a bug. For more information, see
   [the FIPS documentation](../../development/fips_compliance.md#system-libgcrypt).
+- Linux `gitlab-runner` packages have broken out `gitlab-runner-helper-images` as a new required dependency. If you manually install `gitlab-runner` packages for upgrades,
+  be sure to also [download the helper images manually](https://docs.gitlab.com/runner/install/linux-manually/#download).
 
 ### OpenSSL 3 upgrade
 

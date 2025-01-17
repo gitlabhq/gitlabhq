@@ -79,6 +79,36 @@ skippable: true
 skip_condition: '<description>'
 ```
 
+### Migrations for index settings and mappings changes
+
+Changes to index settings and mappings are not immediately available to an existing index but are applied to newly created indices.
+
+To apply setting changes, for example adding an analyzer, either:
+
+- Use a [zero-downtime reindexing migration](#zero-downtime-reindex-migration)
+- Add release notes to the feature issue, alerting users to apply the changes by either using [zero-downtime reindexing](../../integration/advanced_search/elasticsearch.md#zero-downtime-reindexing) or [re-create the index](../../integration/advanced_search/elasticsearch.md#index-the-instance).
+
+To apply mapping changes, either:
+
+- Use a [zero-downtime reindexing migration](#zero-downtime-reindex-migration).
+- Use an [update mapping migration](#elasticmigrationupdatemappingshelper) to change the mapping for the existing index and optionally a follow-up [backfill migration](#elasticmigrationbackfillhelper) to ensure all documents in the index has this field populated.
+
+#### Zero-downtime reindex migration
+
+Creates a new index for the targeted index and copies existing documents over.
+
+```ruby
+class MigrationName < Elastic::Migration
+  def migrate
+    Elastic::ReindexingTask.create!(targets: %w[Issue], options: { skip_pending_migrations_check: true })
+  end
+
+  def completed?
+    true
+  end
+end
+```
+
 ### Migration helpers
 
 The following migration helpers are available in `ee/app/workers/concerns/elastic/`:

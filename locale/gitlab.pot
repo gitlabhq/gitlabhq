@@ -17150,7 +17150,25 @@ msgstr ""
 msgid "Credentials"
 msgstr ""
 
+msgid "CredentialsInventory|Active"
+msgstr ""
+
+msgid "CredentialsInventory|Created date"
+msgstr ""
+
+msgid "CredentialsInventory|Expiration date"
+msgstr ""
+
 msgid "CredentialsInventory|GPG Keys"
+msgstr ""
+
+msgid "CredentialsInventory|GPG keys"
+msgstr ""
+
+msgid "CredentialsInventory|Inactive"
+msgstr ""
+
+msgid "CredentialsInventory|Last used date"
 msgstr ""
 
 msgid "CredentialsInventory|No credentials found"
@@ -17162,7 +17180,22 @@ msgstr ""
 msgid "CredentialsInventory|Project and group access tokens"
 msgstr ""
 
+msgid "CredentialsInventory|Revoked"
+msgstr ""
+
 msgid "CredentialsInventory|SSH Keys"
+msgstr ""
+
+msgid "CredentialsInventory|SSH keys"
+msgstr ""
+
+msgid "CredentialsInventory|Search or filter credentials..."
+msgstr ""
+
+msgid "CredentialsInventory|State"
+msgstr ""
+
+msgid "CredentialsInventory|Type"
 msgstr ""
 
 msgid "Credit card"

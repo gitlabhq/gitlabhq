@@ -245,7 +245,7 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
       where(:by_expires_before, :expected_tokens) do
         2.days.ago       | []
         29.days.from_now | [:expired, :expired_impersonation]
-        30.days.from_now | ref(:tokens_keys)
+        31.days.from_now | ref(:tokens_keys)
       end
 
       with_them do

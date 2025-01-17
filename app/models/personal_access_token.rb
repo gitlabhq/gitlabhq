@@ -51,7 +51,7 @@ class PersonalAccessToken < ApplicationRecord
   scope :expiring_and_not_notified, ->(date) { where(["revoked = false AND expire_notification_delivered = false AND seven_days_notification_sent_at IS NULL AND expires_at >= CURRENT_DATE AND expires_at <= ?", date]) }
   scope :expired_today_and_not_notified, -> { where(["revoked = false AND expires_at = CURRENT_DATE AND after_expiry_notification_delivered = false"]) }
   scope :expired_before, ->(date) { expired.where(arel_table[:expires_at].lt(date)) }
-  scope :expires_before, ->(date) { where(arel_table[:expires_at].lteq(date)) }
+  scope :expires_before, ->(date) { where(arel_table[:expires_at].lt(date)) }
   scope :expires_after, ->(date) { where(arel_table[:expires_at].gteq(date)) }
   scope :inactive, -> { where("revoked = true OR expires_at < CURRENT_DATE") }
   scope :last_used_before_or_unused, ->(date) { where("personal_access_tokens.created_at < :date AND (last_used_at < :date OR last_used_at IS NULL)", date: date) }

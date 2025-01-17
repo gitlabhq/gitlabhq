@@ -170,6 +170,7 @@ export default {
         const excludedElements = document.querySelectorAll(selector);
         for (const parent of excludedElements) {
           if (parent.contains(event.target)) {
+            this.$emit('clicked-outside');
             return;
           }
         }
@@ -178,6 +179,7 @@ export default {
         const excludedElements = document.querySelectorAll(this.clickOutsideExcludeSelector);
         for (const parent of excludedElements) {
           if (parent.contains(event.target)) {
+            this.$emit('clicked-outside');
             return;
           }
         }
@@ -223,6 +225,7 @@ export default {
     header-height="calc(var(--top-bar-height) + var(--performance-bar-height))"
     class="gl-w-full gl-leading-reset lg:gl-w-[480px] xl:gl-w-[768px] min-[1440px]:gl-w-[912px]"
     @close="handleClose"
+    @opened="$emit('opened')"
   >
     <template #title>
       <div class="gl-text gl-flex gl-w-full gl-items-center gl-gap-x-2 xl:gl-px-4">

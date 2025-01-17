@@ -190,10 +190,12 @@ RSpec.shared_examples 'conan check_credentials endpoint' do
     subject { get api(url), headers: headers }
   end
 
-  it 'responds with a 200 OK with PAT' do
+  it 'responds with a 200 OK with PAT', :aggregate_failures do
     get api(url), headers: headers
 
     expect(response).to have_gitlab_http_status(:ok)
+    expect(response.header['Content-Type']).to eq('text/plain')
+    expect(response.body).to eq('ok')
   end
 
   context 'with job token' do

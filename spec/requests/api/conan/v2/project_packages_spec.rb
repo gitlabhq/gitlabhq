@@ -5,6 +5,12 @@ require 'spec_helper'
 RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_registry do
   include_context 'conan api setup'
 
+  describe 'GET /api/v4/projects/:id/packages/conan/v2/users/check_credentials' do
+    let(:url) { "/projects/#{project.id}/packages/conan/v2/users/check_credentials" }
+
+    it_behaves_like 'conan check_credentials endpoint'
+  end
+
   describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/search' do
     let(:url) { "/projects/#{project.id}/packages/conan/v2/conans/search" }
 

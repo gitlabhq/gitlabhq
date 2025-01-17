@@ -77,10 +77,21 @@ To establish a one-way or two-way data synchronization between Jira and GitLab, 
 
 You can use one of the available open-source migration scripts to help you migrate your Jira issues to GitLab.
 
-Many of our customers have had success using [jira2gitlab](https://github.com/swingbit/jira2gitlab).
+Many of our customers have had success using [`jira2gitlab`](https://github.com/swingbit/jira2gitlab).
 
 View a complete demo of the process: <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Migrating from Jira to GitLab with Jira2GitLab](https://www.youtube.com/watch?v=aJfnTZrS4t4)
 <!-- Video published on 2024-01-09 -->
+
+## Use a first-party script
+
+[GitLab Professional Services](https://about.gitlab.com/services/) has built their fork of the previously-mentioned `jira2gitlab` script, `Jira2Lab`:
+
+- Blog post: [Seamlessly migrate from Jira to GitLab with Jira2Lab at scale](https://about.gitlab.com/blog/2024/10/10/seamlessly-migrate-from-jira-to-gitlab-with-jira2lab-at-scale/)
+- [Repository](https://gitlab.com/gitlab-org/professional-services-automation/tools/migration/jira2lab)
+
+As stated in the `Jira2Lab` README:
+
+> We encourage users to compare both tools to best meet their migration needs.
 
 ## Write your own script
 

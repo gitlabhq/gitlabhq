@@ -24,7 +24,7 @@ const CLICK_TO_EXPAND_BUTTON_HTML = renderVueComponentForLegacyJS(
   },
   __('Click to expand it.'),
 ).outerHTML;
-const COLLAPSED_HTML = `<div class="nothing-here-block diff-collapsed">This diff is collapsed. ${CLICK_TO_EXPAND_BUTTON_HTML}</div>`;
+const COLLAPSED_HTML = `<div class="nothing-here-block diff-collapsed">${__('This diff is collapsed.')} ${CLICK_TO_EXPAND_BUTTON_HTML}</div>`;
 
 export default class SingleFileDiff {
   constructor(file) {

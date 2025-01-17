@@ -128,7 +128,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
       describe '.expires_before' do
         it 'finds tokens that expire before or on date' do
-          expect(described_class.expires_before(1.month.ago)).to contain_exactly(expires_last_month_token)
+          expect(described_class.expires_before((1.month - 1.day).ago)).to contain_exactly(expires_last_month_token)
         end
       end
 
