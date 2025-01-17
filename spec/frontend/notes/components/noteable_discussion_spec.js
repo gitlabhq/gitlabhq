@@ -87,6 +87,25 @@ describe('noteable_discussion component', () => {
     expect(wrapper.find('.discussion-header').exists()).toBe(true);
   });
 
+  describe('when diff discussion does not have a diff_file', () => {
+    it.each`
+      positionType
+      ${'file'}
+      ${'image'}
+    `('should show reply actions when position_type is $positionType', async ({ positionType }) => {
+      const discussion = { ...discussionMock, original_position: { position_type: positionType } };
+      discussion.diff_file = { ...getDiffFileMock(), diff_refs: null };
+      discussion.diff_discussion = true;
+
+      wrapper.setProps({ discussion });
+      await nextTick();
+
+      const replyWrapper = wrapper.find('[data-testid="reply-wrapper"]');
+
+      expect(replyWrapper.exists()).toBe(true);
+    });
+  });
+
   describe('drafts', () => {
     useLocalStorageSpy();
 
