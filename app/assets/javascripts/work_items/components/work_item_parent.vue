@@ -215,10 +215,12 @@ export default {
             variables: {
               input: {
                 fullPath: this.fullPath,
-                parent: {
-                  ...this.availableWorkItems?.find(({ id }) => id === this.localSelectedItem),
-                  webUrl: this.parentWebUrl ?? null,
-                },
+                parent: this.localSelectedItem
+                  ? {
+                      ...this.availableWorkItems?.find(({ id }) => id === this.localSelectedItem),
+                      webUrl: this.parentWebUrl ?? null,
+                    }
+                  : null,
                 workItemType: this.workItemType,
               },
             },

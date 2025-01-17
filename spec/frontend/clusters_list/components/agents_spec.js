@@ -234,6 +234,61 @@ describe('Agents', () => {
     });
   });
 
+  describe('sharedAgentsList computed property', () => {
+    const ciAccessAgent = sharedAgentsResponse.data.project.ciAccessAuthorizedAgents.nodes[0];
+    const userAccessAgent = sharedAgentsResponse.data.project.userAccessAuthorizedAgents.nodes[0];
+
+    const createSharedAgentsResponse = (ciAgents, userAgents) => ({
+      data: {
+        project: {
+          id: projectId,
+          ciAccessAuthorizedAgents: { nodes: ciAgents },
+          userAccessAuthorizedAgents: { nodes: userAgents },
+        },
+      },
+    });
+
+    it('filters out agents from the same project', async () => {
+      const sameProjectAgent = {
+        agent: {
+          ...userAccessAgent.agent,
+          project: { id: projectId, fullPath: provideData.projectPath },
+        },
+      };
+
+      const updatedResponse = createSharedAgentsResponse([ciAccessAgent], [sameProjectAgent]);
+
+      createWrapper({
+        sharedAgentsQueryResponse: jest.fn().mockResolvedValue(updatedResponse),
+      });
+
+      await waitForPromises();
+
+      expect(findTab()).toHaveLength(2);
+      expect(findTab().at(1).attributes('title')).toBe('Shared agents');
+
+      expect(findTab().at(1).findComponent(AgentTable).props('agents')).toHaveLength(1);
+    });
+
+    it('filters out agents duplicates', async () => {
+      const updatedResponse = createSharedAgentsResponse(
+        [ciAccessAgent],
+        [ciAccessAgent, userAccessAgent],
+      );
+
+      createWrapper({
+        sharedAgentsQueryResponse: jest.fn().mockResolvedValue(updatedResponse),
+      });
+
+      await waitForPromises();
+
+      expect(findTab()).toHaveLength(2);
+      expect(findTab().at(1).attributes('title')).toBe('Shared agents');
+
+      expect(findTab().at(1).findComponent(AgentTable).props('agents')).toHaveLength(2);
+    });
+  });
+
   describe('agent list update', () => {
     const initialResponse = { ...clusterAgentsResponse };
     const newAgent = {

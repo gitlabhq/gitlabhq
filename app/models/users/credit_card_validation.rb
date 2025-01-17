@@ -6,8 +6,6 @@ module Users
 
     self.table_name = 'user_credit_card_validations'
 
-    ignore_columns %i[last_digits network holder_name expiration_date], remove_with: '16.9', remove_after: '2024-01-22'
-
     attr_accessor :last_digits, :network, :holder_name, :expiration_date
 
     belongs_to :user

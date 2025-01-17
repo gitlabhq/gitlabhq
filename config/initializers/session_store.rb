@@ -18,7 +18,14 @@ raw_config = if File.exist?(Rails.root.join('config/session_store.yml'))
                {}
              end
 
-session_cookie_token_prefix = raw_config.fetch(:session_cookie_token_prefix, "")
+cell_id = Gitlab.config.cell.id
+session_cookie_token_prefix = if raw_config.fetch(:session_cookie_token_prefix, '').present?
+                                raw_config.fetch(:session_cookie_token_prefix)
+                              elsif cell_id.present?
+                                "cell-#{cell_id}"
+                              else
+                                ""
+                              end
 
 cookie_key = if Rails.env.development?
                cookie_key_prefix = raw_config.fetch(:cookie_key, "_gitlab_session")

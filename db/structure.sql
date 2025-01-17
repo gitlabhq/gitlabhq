@@ -296,7 +296,8 @@ CREATE TABLE projects (
     suggestion_commit_message character varying(255),
     project_namespace_id bigint,
     hidden boolean DEFAULT false NOT NULL,
-    organization_id bigint
+    organization_id bigint,
+    CONSTRAINT check_1a6f946a8a CHECK ((organization_id IS NOT NULL))
 );
 
 CREATE FUNCTION find_projects_by_id(projects_id bigint) RETURNS projects
@@ -12312,7 +12313,8 @@ CREATE TABLE design_management_designs (
     namespace_id bigint,
     CONSTRAINT check_07155e2715 CHECK ((char_length((filename)::text) <= 255)),
     CONSTRAINT check_aaf9fa6ae5 CHECK ((char_length(description) <= 1000000)),
-    CONSTRAINT check_cfb92df01a CHECK ((iid IS NOT NULL))
+    CONSTRAINT check_cfb92df01a CHECK ((iid IS NOT NULL)),
+    CONSTRAINT check_ed4c70e3f1 CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE design_management_designs_id_seq
@@ -21388,6 +21390,46 @@ CREATE SEQUENCE system_access_microsoft_graph_access_tokens_id_seq
 
 ALTER SEQUENCE system_access_microsoft_graph_access_tokens_id_seq OWNED BY system_access_microsoft_graph_access_tokens.id;
 
+CREATE TABLE system_hooks (
+    id bigint NOT NULL,
+    created_at timestamp(6) without time zone,
+    updated_at timestamp(6) without time zone,
+    disabled_until timestamp with time zone,
+    recent_failures smallint DEFAULT 0 NOT NULL,
+    backoff_count smallint DEFAULT 0 NOT NULL,
+    branch_filter_strategy smallint DEFAULT 0 NOT NULL,
+    push_events boolean DEFAULT true NOT NULL,
+    merge_requests_events boolean DEFAULT false NOT NULL,
+    tag_push_events boolean DEFAULT false,
+    enable_ssl_verification boolean DEFAULT true,
+    repository_update_events boolean DEFAULT false NOT NULL,
+    push_events_branch_filter text,
+    name text,
+    description text,
+    custom_webhook_template text,
+    encrypted_token bytea,
+    encrypted_token_iv bytea,
+    encrypted_url bytea,
+    encrypted_url_iv bytea,
+    encrypted_url_variables bytea,
+    encrypted_url_variables_iv bytea,
+    encrypted_custom_headers bytea,
+    encrypted_custom_headers_iv bytea,
+    CONSTRAINT check_32d89afab7 CHECK ((char_length(push_events_branch_filter) <= 5000)),
+    CONSTRAINT check_6439bc2682 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_6e64a69bc5 CHECK ((char_length(custom_webhook_template) <= 4096)),
+    CONSTRAINT check_f6fffb36bd CHECK ((char_length(description) <= 2048))
+);
+
+CREATE SEQUENCE system_hooks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE system_hooks_id_seq OWNED BY system_hooks.id;
+
 CREATE TABLE system_note_metadata (
     commit_count integer,
     action character varying,
@@ -25171,6 +25213,8 @@ ALTER TABLE ONLY system_access_microsoft_applications ALTER COLUMN id SET DEFAUL
 
 ALTER TABLE ONLY system_access_microsoft_graph_access_tokens ALTER COLUMN id SET DEFAULT nextval('system_access_microsoft_graph_access_tokens_id_seq'::regclass);
 
+ALTER TABLE ONLY system_hooks ALTER COLUMN id SET DEFAULT nextval('system_hooks_id_seq'::regclass);
+
 ALTER TABLE ONLY system_note_metadata ALTER COLUMN id SET DEFAULT nextval('system_note_metadata_id_seq'::regclass);
 
 ALTER TABLE ONLY taggings ALTER COLUMN id SET DEFAULT nextval('taggings_id_seq'::regclass);
@@ -26271,9 +26315,6 @@ ALTER TABLE ONLY chat_names
 ALTER TABLE ONLY chat_teams
     ADD CONSTRAINT chat_teams_pkey PRIMARY KEY (id);
 
-ALTER TABLE projects
-    ADD CONSTRAINT check_1a6f946a8a CHECK ((organization_id IS NOT NULL)) NOT VALID;
-
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;
 
@@ -26306,6 +26347,9 @@ ALTER TABLE events
 
 ALTER TABLE projects
     ADD CONSTRAINT check_fa75869cb1 CHECK ((project_namespace_id IS NOT NULL)) NOT VALID;
+
+ALTER TABLE ci_pipeline_messages
+    ADD CONSTRAINT check_fe8ee122a2 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE ONLY ci_build_needs
     ADD CONSTRAINT ci_build_needs_pkey PRIMARY KEY (id);
@@ -28034,6 +28078,9 @@ ALTER TABLE ONLY system_access_microsoft_applications
 
 ALTER TABLE ONLY system_access_microsoft_graph_access_tokens
     ADD CONSTRAINT system_access_microsoft_graph_access_tokens_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY system_hooks
+    ADD CONSTRAINT system_hooks_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY system_note_metadata
     ADD CONSTRAINT system_note_metadata_pkey PRIMARY KEY (id);
@@ -30975,6 +31022,8 @@ CREATE UNIQUE INDEX index_ci_pipeline_chat_data_on_pipeline_id ON ci_pipeline_ch
 CREATE INDEX index_ci_pipeline_chat_data_on_project_id ON ci_pipeline_chat_data USING btree (project_id);
 
 CREATE INDEX index_ci_pipeline_messages_on_pipeline_id ON ci_pipeline_messages USING btree (pipeline_id);
+
+CREATE INDEX index_ci_pipeline_messages_on_project_id ON ci_pipeline_messages USING btree (project_id);
 
 CREATE INDEX index_ci_pipeline_metadata_on_project_id ON ci_pipeline_metadata USING btree (project_id);
 

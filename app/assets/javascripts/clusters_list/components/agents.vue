@@ -128,7 +128,7 @@ export default {
 
       const filteredList = sharedAgents.filter((node, index, list) => {
         if (!node?.agent) return false;
-        const isDuplicate = index !== list.findIndex((agent) => agent.id === node.id);
+        const isDuplicate = index !== list.findIndex((agent) => agent.agent.id === node.agent.id);
         const isSameProject = node.agent.project.fullPath === this.projectPath;
         return !isDuplicate && !isSameProject;
       });

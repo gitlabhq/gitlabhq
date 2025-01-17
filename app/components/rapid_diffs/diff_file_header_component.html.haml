@@ -13,6 +13,9 @@
 -#  * submodule compare
 
 .rd-diff-file-header{ data: { testid: 'rd-diff-file-header' } }
+  .rd-diff-file-toggle.gl-mr-2<
+    = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-down', button_options: { data: { opened: '', click: 'toggleFile' }, aria: { label: _('Hide file contents') } })
+    = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-right', button_options: { data: { closed: '', click: 'toggleFile' }, aria: { label: _('Show file contents') } })
   .rd-diff-file-title
     - if @diff_file.submodule?
       %span

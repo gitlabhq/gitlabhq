@@ -73,3 +73,4 @@
 - UserGroupNotificationSettingsFinder
 - UserGroupsCounter
 - Ai::FeatureSettings::FeatureSettingFinder
+- Autocomplete::VulnerabilitiesAutocompleteFinder

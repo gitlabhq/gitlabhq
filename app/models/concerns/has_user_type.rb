@@ -42,6 +42,7 @@ module HasUserType
 
   # `service_account` allows instance/namespaces to configure a user for external integrations/automations
   # `service_user` is an internal, `gitlab-com`-specific user type for integrations like suggested reviewers
+  # Changes to these types might have billing implications, https://docs.gitlab.com/ee/subscriptions/gitlab_com/#billable-users
   NON_INTERNAL_USER_TYPES = %w[human project_bot service_user service_account].freeze
   INTERNAL_USER_TYPES = (USER_TYPES.keys - NON_INTERNAL_USER_TYPES).freeze
 

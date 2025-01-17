@@ -7,6 +7,8 @@ class ServiceHook < WebHook
 
   self.allow_legacy_sti_class = true
 
+  has_many :web_hook_logs, foreign_key: 'web_hook_id', inverse_of: :web_hook
+
   belongs_to :integration
   validates :integration, presence: true
 

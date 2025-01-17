@@ -16,7 +16,7 @@ class ApplicationSetting < ApplicationRecord
     encrypted_vertex_ai_credentials_iv
     encrypted_vertex_ai_access_token
     encrypted_vertex_ai_access_token_iv
-  ], remove_with: '17.5', remove_after: '2024-09-19'
+  ], remove_with: '17.10', remove_after: '2025-02-15'
 
   ignore_columns %i[
     elasticsearch_aws

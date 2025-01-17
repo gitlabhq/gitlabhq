@@ -318,14 +318,22 @@ const ciAccessAuthorizedAgentsNodes = [
       userAccessAuthorizations: null,
       connections: null,
       tokens: null,
-      project: agentProject,
+      project: { id: '2', fullPath: 'path/to/another/project' },
     },
   },
 ];
 const userAccessAuthorizedAgentsNodes = [
   {
     agent: {
-      ...agents[0],
+      __typename: 'ClusterAgent',
+      id: '4',
+      name: 'user-access-agent-1',
+      webPath: 'shared-project/agent-1',
+      createdAt: timestamp,
+      userAccessAuthorizations: null,
+      connections: null,
+      tokens: null,
+      project: { id: '2', fullPath: 'path/to/another/project' },
     },
   },
 ];
@@ -346,12 +354,12 @@ export const sharedAgentsResponse = {
   data: {
     project: {
       id: 'gid://gitlab/Project/1',
-    },
-    ciAccessAuthorizedAgents: {
-      nodes: ciAccessAuthorizedAgentsNodes,
-    },
-    userAccessAuthorizedAgents: {
-      nodes: userAccessAuthorizedAgentsNodes,
+      ciAccessAuthorizedAgents: {
+        nodes: ciAccessAuthorizedAgentsNodes,
+      },
+      userAccessAuthorizedAgents: {
+        nodes: userAccessAuthorizedAgentsNodes,
+      },
     },
   },
 };

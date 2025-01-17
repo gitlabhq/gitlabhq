@@ -426,7 +426,6 @@ RSpec/ExampleWithoutDescription:
     - 'spec/models/event_spec.rb'
     - 'spec/models/group_group_link_spec.rb'
     - 'spec/models/group_spec.rb'
-    - 'spec/models/hooks/web_hook_spec.rb'
     - 'spec/models/incident_management/issuable_escalation_status_spec.rb'
     - 'spec/models/incident_management/timeline_event_spec.rb'
     - 'spec/models/incident_management/timeline_event_tag_spec.rb'

@@ -36884,13 +36884,10 @@ msgstr[1] ""
 msgid "NamespaceStorageSize|%{namespace_name} is now read-only. Your ability to write new data to this namespace is restricted. %{read_only_link_start}Which actions are restricted?%{link_end}"
 msgstr ""
 
-msgid "NamespaceStorageSize|For more information about storage limits, see our %{faq_link_start}FAQ%{link_end}."
+msgid "NamespaceStorageSize|If %{namespace_name} exceeds the %{storage_docs_link_start}storage quota%{link_end}, your ability to write new data to this namespace will be restricted. %{read_only_link_start}Which actions become restricted?%{link_end}"
 msgstr ""
 
-msgid "NamespaceStorageSize|If %{namespace_name} exceeds the storage quota, your ability to write new data to this namespace will be restricted. %{read_only_link_start}Which actions become restricted?%{link_end}"
-msgstr ""
-
-msgid "NamespaceStorageSize|If a project reaches 100%% of the storage quota (%{free_size_limit}) the project will be in a read-only state, and you won't be able to push to your repository or add large files."
+msgid "NamespaceStorageSize|If a project reaches 100%% of the %{storage_docs_link_start}storage quota%{link_end} (%{free_size_limit}) the project will be in a read-only state, and you won't be able to push to your repository or add large files."
 msgstr ""
 
 msgid "NamespaceStorageSize|To manage your usage and prevent your projects from being placed in a read-only state, you should immediately %{manage_storage_link_start}reduce storage%{link_end}, or %{support_link_start}contact support%{link_end} to help you manage your usage."
@@ -36920,7 +36917,7 @@ msgstr ""
 msgid "NamespaceStorageSize|We've noticed an unusually high storage usage on %{namespace_name}"
 msgstr ""
 
-msgid "NamespaceStorageSize|You have consumed all available storage and you can't push or add large files to projects over the free tier limit (%{free_size_limit})."
+msgid "NamespaceStorageSize|You have consumed all available %{storage_docs_link_start}storage%{link_end} and you can't push or add large files to projects over the free tier limit (%{free_size_limit})."
 msgstr ""
 
 msgid "NamespaceStorageSize|You have reached the free storage limit of %{free_size_limit} for %{namespace_name}"
@@ -52397,6 +52394,9 @@ msgstr ""
 msgid "SecurityReports|New feature: Grouping"
 msgstr ""
 
+msgid "SecurityReports|New status must be different than current status."
+msgstr ""
+
 msgid "SecurityReports|No identifiers found."
 msgstr ""
 
@@ -62993,6 +62993,9 @@ msgid "VulnerabilityManagement|Create Jira issue"
 msgstr ""
 
 msgid "VulnerabilityManagement|Dismiss as..."
+msgstr ""
+
+msgid "VulnerabilityManagement|Dismissed: %{dismissalReason}"
 msgstr ""
 
 msgid "VulnerabilityManagement|Enter a name"

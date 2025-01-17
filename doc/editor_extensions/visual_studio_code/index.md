@@ -56,34 +56,50 @@ or **Accept Next Line Of Inline Suggestion**:
 
 ## Switch GitLab accounts in VS Code
 
-If you use multiple GitLab accounts (such as personal and work), the extension uses your `git remote` URL
-to determine which account to use. In some cases, the extension can't determine which account to use, and
-must ask you to select which project and account to use. This can happen:
+The GitLab Workflow extension uses one account for each [VS Code Workspace](https://code.visualstudio.com/docs/editor/workspaces) (window). The extension automatically selects the account when:
 
-- If you have a single remote URL `git@gitlab.com:gitlab-org/gitlab-vscode-extension.git`, but two accounts for
-  `gitlab.com` (like `@sidney` and `@sidney_work`).
-- If you have a single GitLab account (for example `@sidney`), but you have multiple remotes, like:
-  - `origin`: `git@gitlab.com:gitlab-org/gitlab-vscode-extension.git`
-  - `personal-fork`: `git@gitlab.com:myusername/gitlab-vscode-extension.git`
+- You have added only one GitLab account to the extension.
+- All workspaces in your VS Code window use the same GitLab account, based on the `git remote` configuration.
+
+In other cases, you must select a GitLab account for the active VS Code window.
+
+To change the account selection:
+
+1. Open the Command Palette:
+   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. Run the command `GitLab: Select Account for this Workspace`.
+1. Select your desired account from the list.
+
+You can also change accounts by selecting the GitLab account status bar item.
+
+## Select your GitLab project
+
+When your Git repository can be associated with multiple GitLab projects, the extension cannot determine which account to use. This can happen when you have multiple remotes, for example:
+
+- `origin`: `git@gitlab.com:gitlab-org/gitlab-vscode-extension.git`
+- `personal-fork`: `git@gitlab.com:myusername/gitlab-vscode-extension.git`
 
 In these cases, the extension adds a **(multiple projects)** label to show you must choose an account.
+
 To select an account:
 
 1. On the vertical menu bar, select **GitLab Workflow** (**{tanuki}**) to display the extension sidebar.
 1. Expand **Issues and Merge Requests**.
 1. Select the line containing **(multiple projects)** to expand the list of accounts.
-1. Select the option you want to use:
+1. Select your desired project:
    ![select project-account combination](../img/select-project-account_v17_7.png)
 
-The **Issues and Merge requests** list updates with your information.
+The **Issues and Merge requests** list updates with your selected project's information.
 
 ### Change your selection
 
-To change your account selection for a project:
+To change your project selection:
 
 1. On the vertical menu bar, select **GitLab Workflow** (**{tanuki}**) to display the extension sidebar.
 1. Expand **Issues and Merge Requests** to show the project list.
-1. Right-click the project's name, and select  **Clear selected project**.
+1. Right-click the project's name.
+1. Select **Clear selected project**.
 
 ## Use slash commands
 

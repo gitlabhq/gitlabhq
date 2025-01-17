@@ -133,7 +133,6 @@ Style/FormatString:
     - 'ee/app/helpers/ee/timeboxes_helper.rb'
     - 'ee/app/helpers/vulnerabilities_helper.rb'
     - 'ee/app/mailers/ee/emails/admin_notification.rb'
-    - 'ee/app/mailers/emails/namespace_storage_usage_mailer.rb'
     - 'ee/app/models/ci/minutes/notification.rb'
     - 'ee/app/models/dast/profile.rb'
     - 'ee/app/models/dast/site_profile_secret_variable.rb'
