@@ -1215,10 +1215,62 @@ example, clones) keep some connections open for extended periods.
 | 2305    | 2305         | TCP      |
 
 You must use a TCP load balancer. Using an HTTP/2 or gRPC load balancer
-with Praefect is not supported. If TLS is enabled, Praefect requires
-that the Application-Layer Protocol Negotiation (ALPN) extension is used per [RFC 7540](https://datatracker.ietf.org/doc/html/rfc7540#section-3.3).
-TCP load balancers pass ALPN directly without additional configuration. With a HTTP/2 or gRPC load balancer, ensuring that the ALPN is used
-[can be difficult](https://github.com/grpc/grpc-go/issues/7922).
+with Praefect does not work because of [Gitaly sidechannels](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/sidechannel.md).
+This optimization intercepts the gRPC handshaking process. It redirects all heavy Git operations to a more efficient "channel" than gRPC,
+but HTTP/2 or gRPC load balancers do not handle such requests properly.
+
+If TLS is enabled, [some versions of Praefect](#alpn-enforcement) require that the Application-Layer Protocol Negotiation (ALPN) extension is used per [RFC 7540](https://datatracker.ietf.org/doc/html/rfc7540#section-3.3).
+TCP load balancers pass ALPN directly without additional configuration:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Client as Client
+    participant LB as TCP Load Balancer
+    participant Praefect as Praefect
+
+    Client->>LB: Establish TLS Session (w/ ALPN Extension)
+    LB->>Praefect: Establish TLS Session (w/ ALPN Extension)
+    Client->>LB: Encrypted TCP packets
+    LB->>Praefect: Encrypted TCP packets
+    Praefect->>LB: Encrypted Response
+    LB->>Client: Encrypted Response
+```
+
+Some TCP load balancers can be configured to accept a TLS client connection and
+proxy the connection to Praefect with a new TLS connection. However, this only works
+if ALPN is supported on both connections.
+
+For this reason, NGINX's [`ngx_stream_proxy_module`](https://nginx.org/en/docs/stream/ngx_stream_proxy_module.html)
+does not work when the `proxy_ssl` configuration option is enabled:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Client as Client
+    participant NGINX as NGINX Stream Proxy
+    participant Praefect as Praefect
+
+    Client->>NGINX: Establish TLS Session (w/ ALPN Extension)
+    NGINX->>Praefect: Establish New TLS Session
+    Praefect->>NGINX: Connection failed: missing selected ALPN property
+```
+
+On step 2, ALPN is not used because [NGINX does not support this](https://mailman.nginx.org/pipermail/nginx-devel/2017-July/010307.html).
+For more information, [follow NGINX issue 406](https://github.com/nginx/nginx/issues/406) for more details.
+
+#### ALPN enforcement
+
+ALPN enforcement was enabled in some versions of GitLab. However, ALPN enforcement broke deployments and so is disabled
+[to provide a path to migrate](https://github.com/grpc/grpc-go/issues/7922). The following versions of GitLab have ALPN enforcement enabled:
+
+- GitLab 17.7.0
+- GitLab 17.6.0 - 17.6.2
+- GitLab 17.5.0 - 17.5.4
+- GitLab 17.4.x
+
+With [GitLab 17.5.5, 17.6.3, and 17.7.1](https://about.gitlab.com/releases/2025/01/08/patch-release-gitlab-17-7-1-released/),
+ALPN enforcement is disabled again. GitLab 17.4 and earlier never had ALPN enforcement enabled.
 
 ### GitLab
 

@@ -17916,14 +17916,12 @@ CREATE TABLE personal_access_tokens (
     last_used_at timestamp with time zone,
     after_expiry_notification_delivered boolean DEFAULT false NOT NULL,
     previous_personal_access_token_id bigint,
-    advanced_scopes text,
     organization_id bigint NOT NULL,
     seven_days_notification_sent_at timestamp with time zone,
     thirty_days_notification_sent_at timestamp with time zone,
     sixty_days_notification_sent_at timestamp with time zone,
     description text,
-    CONSTRAINT check_6d2ddc9355 CHECK ((char_length(description) <= 255)),
-    CONSTRAINT check_aa95773861 CHECK ((char_length(advanced_scopes) <= 4096))
+    CONSTRAINT check_6d2ddc9355 CHECK ((char_length(description) <= 255))
 );
 
 CREATE SEQUENCE personal_access_tokens_id_seq
