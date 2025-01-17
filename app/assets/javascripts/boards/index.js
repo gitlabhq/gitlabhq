@@ -35,6 +35,17 @@ defaultClient.cache.policies.addTypePolicies({
       };
     },
   },
+  BoardEpicConnection: {
+    merge(existing = { nodes: [] }, incoming, { args }) {
+      if (!args.after) {
+        return incoming;
+      }
+      return {
+        ...incoming,
+        nodes: [...existing.nodes, ...incoming.nodes],
+      };
+    },
+  },
   Board: {
     fields: {
       epics: {
