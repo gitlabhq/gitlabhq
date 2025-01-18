@@ -214,18 +214,18 @@ If you see your job is stuck with the error message `no runners that match all o
 1. Verify if you've selected the correct tag
 1. Confirm if [instance runners are enabled for your project or group](../../ci/runners/runners_scope.md#enable-instance-runners-for-a-project).
 
-## Pricing
-
-For pricing details, reach out to your account representative.
-
-We offer a two-month free trial for GitLab Dedicated customers. The trial includes:
-
-- Small, Medium, and Large Linux x86-64 runners
-- Small and Medium Linux Arm runners
-- Limited autoscaling configuration that supports up to 100 concurrent jobs
-
 ## Upgrades
 
 Runner version upgrades require a short downtime.
 Runners are upgraded during the scheduled maintenance windows of a GitLab Dedicated tenant.
 An [issue](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/issues/4505) exists to implement zero downtime upgrades.
+
+## Pricing
+
+For pricing details, reach out to your account representative.
+
+We offer a 30-day free trial for GitLab Dedicated customers. The trial includes:
+
+- Small, Medium, and Large Linux x86-64 runners
+- Small and Medium Linux Arm runners
+- Limited autoscaling configuration that supports up to 100 concurrent jobs
