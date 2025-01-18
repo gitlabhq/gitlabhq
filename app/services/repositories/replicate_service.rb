@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Repositories
-  class ReplicateService < Repositories::BaseService
+  class ReplicateService < ::Repositories::BaseService
     Error = Class.new(StandardError)
 
     def execute(new_repository, type, partition_hint: "")

@@ -808,10 +808,10 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
 
   describe 'GET /projects/:id/repository/changelog' do
     it 'generates the changelog for a version' do
-      spy = instance_spy(Repositories::ChangelogService)
+      spy = instance_spy(::Repositories::ChangelogService)
       release_notes = 'Release notes'
 
-      allow(Repositories::ChangelogService)
+      allow(::Repositories::ChangelogService)
         .to receive(:new)
         .with(
           project,
@@ -842,10 +842,10 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     end
 
     it 'returns generated changelog when using JOB-TOKEN auth' do
-      spy = instance_spy(Repositories::ChangelogService)
+      spy = instance_spy(::Repositories::ChangelogService)
       release_notes = 'Release notes'
 
-      allow(Repositories::ChangelogService)
+      allow(::Repositories::ChangelogService)
         .to receive(:new)
         .with(
           project,
@@ -877,9 +877,9 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     end
 
     it 'supports leaving out the from and to attribute' do
-      spy = instance_spy(Repositories::ChangelogService)
+      spy = instance_spy(::Repositories::ChangelogService)
 
-      allow(Repositories::ChangelogService)
+      allow(::Repositories::ChangelogService)
         .to receive(:new)
         .with(
           project,
@@ -906,9 +906,9 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     end
 
     it 'supports specified config file path' do
-      spy = instance_spy(Repositories::ChangelogService)
+      spy = instance_spy(::Repositories::ChangelogService)
 
-      expect(Repositories::ChangelogService)
+      expect(::Repositories::ChangelogService)
         .to receive(:new)
         .with(
           project,
@@ -962,9 +962,9 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
 
   describe 'POST /projects/:id/repository/changelog' do
     it 'generates the changelog for a version' do
-      spy = instance_spy(Repositories::ChangelogService)
+      spy = instance_spy(::Repositories::ChangelogService)
 
-      allow(Repositories::ChangelogService)
+      allow(::Repositories::ChangelogService)
         .to receive(:new)
         .with(
           project,
@@ -1000,9 +1000,9 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     end
 
     it 'supports leaving out the from and to attribute' do
-      spy = instance_spy(Repositories::ChangelogService)
+      spy = instance_spy(::Repositories::ChangelogService)
 
-      allow(Repositories::ChangelogService)
+      allow(::Repositories::ChangelogService)
         .to receive(:new)
         .with(
           project,
@@ -1034,9 +1034,9 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     end
 
     it 'produces an error when generating the changelog fails' do
-      spy = instance_spy(Repositories::ChangelogService)
+      spy = instance_spy(::Repositories::ChangelogService)
 
-      allow(Repositories::ChangelogService)
+      allow(::Repositories::ChangelogService)
         .to receive(:new)
         .with(
           project,
@@ -1075,9 +1075,9 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     end
 
     it "support specified config file path" do
-      spy = instance_spy(Repositories::ChangelogService)
+      spy = instance_spy(::Repositories::ChangelogService)
 
-      expect(Repositories::ChangelogService)
+      expect(::Repositories::ChangelogService)
         .to receive(:new)
         .with(
           project,

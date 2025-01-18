@@ -74,12 +74,14 @@ export default {
     activeItem: {
       deep: true,
       immediate: true,
-      handler(newValue) {
+      handler(newValue, oldValue) {
         if (newValue?.iid) {
           this.setDrawerParams();
           // focus on header link when drawer is updated
           this.$nextTick(() => {
-            this.focusOnHeaderLink();
+            if (!oldValue || oldValue?.iid !== newValue?.iid) {
+              this.focusOnHeaderLink();
+            }
           });
         }
       },

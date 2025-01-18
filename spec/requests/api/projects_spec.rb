@@ -5700,14 +5700,14 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
   end
 
   describe 'POST /projects/:id/housekeeping' do
-    let(:housekeeping) { Repositories::HousekeepingService.new(project) }
+    let(:housekeeping) { ::Repositories::HousekeepingService.new(project) }
     let(:params) { {} }
     let(:path) { "/projects/#{project.id}/housekeeping" }
 
     subject(:request) { post api(path, user), params: params }
 
     before do
-      allow(Repositories::HousekeepingService).to receive(:new).with(project, :eager).and_return(housekeeping)
+      allow(::Repositories::HousekeepingService).to receive(:new).with(project, :eager).and_return(housekeeping)
     end
 
     context 'when authenticated as owner' do
@@ -5736,7 +5736,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         let(:params) { { task: :prune } }
 
         it 'triggers a prune' do
-          expect(Repositories::HousekeepingService).to receive(:new).with(project, :prune).and_return(housekeeping)
+          expect(::Repositories::HousekeepingService).to receive(:new).with(project, :prune).and_return(housekeeping)
           expect(housekeeping).to receive(:execute).once
 
           request
@@ -5749,7 +5749,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         let(:params) { { task: :unsupported_task } }
 
         it 'responds with bad_request' do
-          expect(Repositories::HousekeepingService).not_to receive(:new)
+          expect(::Repositories::HousekeepingService).not_to receive(:new)
 
           request
 
@@ -5759,7 +5759,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       context 'when housekeeping lease is taken' do
         it 'returns conflict' do
-          expect(housekeeping).to receive(:execute).once.and_raise(Repositories::HousekeepingService::LeaseTaken)
+          expect(housekeeping).to receive(:execute).once.and_raise(::Repositories::HousekeepingService::LeaseTaken)
 
           request
 

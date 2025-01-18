@@ -196,7 +196,7 @@ export default {
 
             <!-- Flex order for slots is defined in the parent component: e.g. related_issues_block.vue -->
             <span v-if="weight > 0" class="order-md-1">
-              <issue-weight :weight="weight" class="item-weight gl-flex gl-items-center" />
+              <issue-weight :weight="weight" class="item-weight gl-items-center" />
             </span>
 
             <span v-if="dueDate" class="order-md-1">

@@ -135,10 +135,10 @@ module Git
     end
 
     def perform_housekeeping
-      housekeeping = Repositories::HousekeepingService.new(project)
+      housekeeping = ::Repositories::HousekeepingService.new(project)
       housekeeping.increment!
       housekeeping.execute if housekeeping.needed?
-    rescue Repositories::HousekeepingService::LeaseTaken
+    rescue ::Repositories::HousekeepingService::LeaseTaken
     end
 
     def process_commit_worker_pool

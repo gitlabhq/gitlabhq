@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Repositories
-  class LfsApiController < Repositories::GitHttpClientController
+  class LfsApiController < ::Repositories::GitHttpClientController
     include LfsRequest
     include Gitlab::Utils::StrongMemoize
 
@@ -211,4 +211,4 @@ module Repositories
   end
 end
 
-Repositories::LfsApiController.prepend_mod_with('Repositories::LfsApiController')
+::Repositories::LfsApiController.prepend_mod_with('Repositories::LfsApiController')

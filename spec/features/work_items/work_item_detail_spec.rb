@@ -129,7 +129,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     it 'change type action is not displayed' do
       click_button _('More actions'), match: :first
 
-      expect(find_by_testid('work-item-actions-dropdown')).to have_button(s_('WorkItem|Change type'))
+      expect(find_by_testid('work-item-actions-dropdown')).not_to have_button(s_('WorkItem|Change type'))
     end
   end
 end

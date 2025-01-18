@@ -80,6 +80,11 @@ export const config = {
           },
         },
       },
+      Namespace: {
+        fields: {
+          merge: true,
+        },
+      },
       WorkItemWidgetNotes: {
         fields: {
           // If we add any key args, the discussions field becomes discussions({"filter":"ONLY_ACTIVITY","first":10}) and

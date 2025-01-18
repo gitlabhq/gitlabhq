@@ -198,6 +198,7 @@ export const workItemQueryResponse = {
         id: '1',
         fullPath: 'test-project-path',
         name: 'Project name',
+        fullName: 'Group name',
       },
       workItemType: {
         __typename: 'WorkItemType',
@@ -319,6 +320,7 @@ export const updateWorkItemMutationResponse = {
           id: '1',
           fullPath: 'test-project-path',
           name: 'Project name',
+          fullName: 'Group name',
         },
         workItemType: {
           __typename: 'WorkItemType',
@@ -454,6 +456,7 @@ export const convertWorkItemMutationResponse = {
           id: '1',
           fullPath: 'test-project-path',
           name: 'Project name',
+          fullName: 'Group name',
         },
         workItemType: {
           __typename: 'WorkItemType',
@@ -1397,6 +1400,7 @@ export const workItemResponseFactory = ({
         id: '1',
         fullPath: 'test-project-path',
         name: 'Project name',
+        fullName: 'Group name',
       },
       workItemType,
       userPermissions: {
@@ -1764,6 +1768,7 @@ export const createWorkItemMutationResponse = {
           id: '1',
           fullPath: 'test-project-path',
           name: 'Project name',
+          fullName: 'Group name',
         },
         workItemType: {
           __typename: 'WorkItemType',
@@ -2342,6 +2347,7 @@ export const workItemObjectiveWithChild = {
     id: '1',
     fullPath: 'test-project-path',
     name: 'Project name',
+    fullName: 'Group name',
   },
   userPermissions: {
     deleteWorkItem: true,
@@ -2431,6 +2437,7 @@ export const workItemObjectiveWithoutChild = {
     id: '1',
     fullPath: 'test-project-path',
     name: 'Project name',
+    fullName: 'Group name',
   },
   userPermissions: {
     deleteWorkItem: true,
@@ -3028,6 +3035,7 @@ export const changeWorkItemParentMutationResponse = {
           id: '1',
           fullPath: 'test-project-path',
           name: 'Project name',
+          fullName: 'Group name',
         },
         reference: 'test-project-path#2',
         createNoteEmail:
@@ -5452,6 +5460,7 @@ export const createWorkItemQueryResponse = {
           id: 'full-path-epic-id',
           fullPath: 'full-path',
           name: 'Gitlab Org',
+          fullName: 'Group name',
           __typename: 'Namespace',
         },
         author: {
@@ -5803,12 +5812,16 @@ export const mockUserPreferences = (useWorkItemsView = true) => ({
   },
 });
 
-export const mockProjectPermissionsQueryResponse = ({ createDesign = true } = {}) => ({
+export const mockProjectPermissionsQueryResponse = ({
+  createDesign = true,
+  moveDesign = true,
+} = {}) => ({
   data: {
     workspace: {
       id: 'gid://gitlab/Project/1',
       userPermissions: {
         createDesign,
+        moveDesign,
         __typename: 'ProjectPermissions',
       },
       __typename: 'Project',

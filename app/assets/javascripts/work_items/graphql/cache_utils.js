@@ -568,6 +568,7 @@ export const setNewWorkItemCache = async (
                 id: newWorkItemPath,
                 fullPath,
                 name: newWorkItemPath,
+                fullName: newWorkItemPath,
                 __typename: 'Namespace',
               },
               author: {

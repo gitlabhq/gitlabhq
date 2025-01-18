@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Repositories
-  class LfsLocksApiController < Repositories::GitHttpClientController
+  class LfsLocksApiController < ::Repositories::GitHttpClientController
     include LfsRequest
 
     # added here as a part of the refactor, will be removed

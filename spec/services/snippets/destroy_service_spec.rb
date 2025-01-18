@@ -41,7 +41,7 @@ RSpec.describe Snippets::DestroyService, feature_category: :source_code_manageme
     shared_examples 'deletes the snippet repository' do
       it 'removes the snippet repository' do
         expect(snippet.repository.exists?).to be_truthy
-        expect_next_instance_of(Repositories::DestroyService) do |instance|
+        expect_next_instance_of(::Repositories::DestroyService) do |instance|
           expect(instance).to receive(:execute).and_call_original
         end
 
@@ -50,7 +50,7 @@ RSpec.describe Snippets::DestroyService, feature_category: :source_code_manageme
 
       context 'when the repository deletion service raises an error' do
         before do
-          allow_next_instance_of(Repositories::DestroyService) do |instance|
+          allow_next_instance_of(::Repositories::DestroyService) do |instance|
             allow(instance).to receive(:execute).and_return({ status: :error })
           end
         end
@@ -70,7 +70,7 @@ RSpec.describe Snippets::DestroyService, feature_category: :source_code_manageme
         it 'does not schedule anything and return success' do
           allow(snippet).to receive(:repository).and_return(nil)
 
-          expect_next_instance_of(Repositories::DestroyService) do |instance|
+          expect_next_instance_of(::Repositories::DestroyService) do |instance|
             expect(instance).to receive(:execute).and_call_original
           end
 
@@ -150,7 +150,7 @@ RSpec.describe Snippets::DestroyService, feature_category: :source_code_manageme
         expect(snippet.repository).not_to be_nil
         expect(snippet.repository.exists?).to be_falsey
 
-        expect_next_instance_of(Repositories::DestroyService) do |instance|
+        expect_next_instance_of(::Repositories::DestroyService) do |instance|
           expect(instance).to receive(:execute).and_call_original
         end
 

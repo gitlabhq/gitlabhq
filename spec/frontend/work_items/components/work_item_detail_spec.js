@@ -88,7 +88,9 @@ describe('WorkItemDetail component', () => {
     .mockResolvedValue(mockProjectPermissionsQueryResponse());
   const workspacePermissionsNotAllowedHandler = jest
     .fn()
-    .mockResolvedValue(mockProjectPermissionsQueryResponse({ createDesign: false }));
+    .mockResolvedValue(
+      mockProjectPermissionsQueryResponse({ createDesign: false, moveDesign: false }),
+    );
   const uploadSuccessDesignMutationHandler = jest
     .fn()
     .mockResolvedValue(mockUploadDesignMutationResponse);

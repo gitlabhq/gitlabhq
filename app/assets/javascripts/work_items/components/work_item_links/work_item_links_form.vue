@@ -301,6 +301,7 @@ export default {
     markFormSubmitInProgress(value) {
       this.submitInProgress = value;
       this.$emit('update-in-progress', this.submitInProgress);
+      if (!value) this.$refs.wiTitleInput?.$el?.focus();
     },
     addChild() {
       this.markFormSubmitInProgress(true);
@@ -340,7 +341,6 @@ export default {
           } else {
             this.unsetError();
             this.workItemsToAdd = [];
-            this.closeForm();
           }
         })
         .catch(() => {
@@ -379,7 +379,6 @@ export default {
           } else {
             this.unsetError();
             this.$emit('addChild');
-            this.closeForm();
           }
         })
         .catch(() => {

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Repositories::DestroyService < Repositories::BaseService
+class Repositories::DestroyService < ::Repositories::BaseService
   def execute
     return success unless repository
     return success unless repo_exists?(disk_path)

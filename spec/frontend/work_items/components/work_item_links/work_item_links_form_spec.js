@@ -200,7 +200,7 @@ describe('WorkItemLinksForm', () => {
         expect(wrapper.emitted('update-in-progress')[1]).toEqual([false]);
       });
 
-      it('creates child task in non confidential parent and closes the form', async () => {
+      it('creates child task in non confidential parent', async () => {
         submitForm({ title: 'Create task test' });
 
         expect(wrapper.emitted('update-in-progress')).toEqual([[true]]);
@@ -219,7 +219,6 @@ describe('WorkItemLinksForm', () => {
           },
         });
         expect(wrapper.emitted('addChild')).toEqual([[]]);
-        expect(wrapper.emitted('cancel')).toEqual([[]]);
         expect(wrapper.emitted('update-in-progress')[1]).toEqual([false]);
       });
 
@@ -265,7 +264,7 @@ describe('WorkItemLinksForm', () => {
         expect(findWorkItemTokenInput().exists()).toBe(false);
       });
 
-      it('creates child issue in non confidential parent and closes the form', async () => {
+      it('creates child issue in non confidential parent', async () => {
         submitForm({ title: 'Create issue test', fullPath: projectData[0].fullPath });
 
         expect(wrapper.emitted('update-in-progress')).toEqual([[true]]);
@@ -285,7 +284,6 @@ describe('WorkItemLinksForm', () => {
         });
         expect(wrapper.emitted('addChild')).toEqual([[]]);
         expect(wrapper.emitted('update-in-progress')[1]).toEqual([false]);
-        expect(wrapper.emitted('cancel')).toEqual([[]]);
       });
 
       it('creates child issue in confidential parent', async () => {
@@ -459,7 +457,7 @@ describe('WorkItemLinksForm', () => {
       });
     });
 
-    it('selects, adds children and closes the form', async () => {
+    it('selects and adds children', async () => {
       await selectAvailableWorkItemTokens();
 
       expect(findAddChildButton().text()).toBe('Add tasks');
@@ -473,7 +471,6 @@ describe('WorkItemLinksForm', () => {
       await waitForPromises();
 
       expect(updateMutationResolver).toHaveBeenCalled();
-      expect(wrapper.emitted('cancel')).toEqual([[]]);
     });
 
     it('shows validation error when non-confidential child items are being added to confidential parent', async () => {

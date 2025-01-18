@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Repositories
-  class GitHttpClientController < Repositories::ApplicationController
+  class GitHttpClientController < ::Repositories::ApplicationController
     include ActionController::HttpAuthentication::Basic
     include KerberosHelper
     include Gitlab::Utils::StrongMemoize
@@ -153,4 +153,4 @@ module Repositories
   end
 end
 
-Repositories::GitHttpClientController.prepend_mod_with('Repositories::GitHttpClientController')
+::Repositories::GitHttpClientController.prepend_mod_with('Repositories::GitHttpClientController')

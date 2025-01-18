@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Repositories
-  class GitHttpController < Repositories::GitHttpClientController
+  class GitHttpController < ::Repositories::GitHttpClientController
     include WorkhorseRequest
 
     before_action :access_check
@@ -152,4 +152,4 @@ module Repositories
   end
 end
 
-Repositories::GitHttpController.prepend_mod_with('Repositories::GitHttpController')
+::Repositories::GitHttpController.prepend_mod_with('Repositories::GitHttpController')

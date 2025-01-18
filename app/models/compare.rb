@@ -3,7 +3,7 @@
 class Compare
   include Gitlab::Utils::StrongMemoize
   include ActsAsPaginatedDiff
-  include Repositories::StreamableDiff
+  include ::Repositories::StreamableDiff
 
   delegate :same, :head, :base, :generated_files, to: :@compare
 

@@ -654,7 +654,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
   describe '#housekeeping' do
     let_it_be(:group) { create(:group) }
-    let(:housekeeping_service_dbl) { instance_double(Repositories::HousekeepingService) }
+    let(:housekeeping_service_dbl) { instance_double(::Repositories::HousekeepingService) }
     let(:params) do
       {
         namespace_id: project.namespace.path,
@@ -665,7 +665,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
     let(:prune) { nil }
     let_it_be(:project) { create(:project, group: group) }
-    let(:housekeeping) { Repositories::HousekeepingService.new(project) }
+    let(:housekeeping) { ::Repositories::HousekeepingService.new(project) }
 
     subject { post :housekeeping, params: params }
 
@@ -674,7 +674,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         group.add_owner(user)
         sign_in(user)
 
-        allow(Repositories::HousekeepingService).to receive(:new).with(project, :eager).and_return(housekeeping)
+        allow(::Repositories::HousekeepingService).to receive(:new).with(project, :eager).and_return(housekeeping)
       end
 
       it 'forces a full garbage collection' do
@@ -707,7 +707,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         let(:prune) { true }
 
         it 'enqueues pruning' do
-          allow(Repositories::HousekeepingService).to receive(:new).with(project, :prune).and_return(housekeeping_service_dbl)
+          allow(::Repositories::HousekeepingService).to receive(:new).with(project, :prune).and_return(housekeeping_service_dbl)
           expect(housekeeping_service_dbl).to receive(:execute)
 
           subject

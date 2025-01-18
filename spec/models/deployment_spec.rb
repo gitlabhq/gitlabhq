@@ -1611,7 +1611,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
       it 'removes deployment without any errors' do
         deployment = create(:deployment, environment: environment, project: project)
 
-        Repositories::DestroyService.new(project.repository).execute
+        ::Repositories::DestroyService.new(project.repository).execute
         project.save! # to trigger a repository removal
 
         expect { described_class.where(id: deployment).fast_destroy_all }

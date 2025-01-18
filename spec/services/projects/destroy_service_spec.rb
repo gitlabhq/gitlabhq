@@ -331,7 +331,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     before do
       allow(project.repository).to receive(:before_delete).and_raise(::Gitlab::Git::CommandError)
       allow(Gitlab::GitLogger).to receive(:warn).with(
-        class: Repositories::DestroyService.name,
+        class: ::Repositories::DestroyService.name,
         container_id: project.id,
         disk_path: project.disk_path,
         message: 'Gitlab::Git::CommandError').and_call_original
@@ -586,7 +586,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       # 3. Design repository
 
       it 'Repositories::DestroyService is called for existing repos' do
-        expect_next_instances_of(Repositories::DestroyService, 3) do |instance|
+        expect_next_instances_of(::Repositories::DestroyService, 3) do |instance|
           expect(instance).to receive(:execute).and_return(status: :success)
         end
 
@@ -596,7 +596,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       context 'when the removal has errors' do
         using RSpec::Parameterized::TableSyntax
 
-        let(:mock_error) { instance_double(Repositories::DestroyService, execute: { message: 'foo', status: :error }) }
+        let(:mock_error) { instance_double(::Repositories::DestroyService, execute: { message: 'foo', status: :error }) }
         let(:project_repository) { project.repository }
         let(:wiki_repository) { project.wiki.repository }
         let(:design_repository) { project.design_repository }
@@ -609,8 +609,8 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
         with_them do
           before do
-            allow(Repositories::DestroyService).to receive(:new).with(anything).and_call_original
-            allow(Repositories::DestroyService).to receive(:new).with(repo).and_return(mock_error)
+            allow(::Repositories::DestroyService).to receive(:new).with(anything).and_call_original
+            allow(::Repositories::DestroyService).to receive(:new).with(repo).and_return(mock_error)
           end
 
           it 'raises correct error' do

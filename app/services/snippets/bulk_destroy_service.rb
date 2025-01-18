@@ -47,7 +47,7 @@ module Snippets
 
     def attempt_delete_repositories!
       snippets.each do |snippet|
-        result = Repositories::DestroyService.new(snippet.repository).execute
+        result = ::Repositories::DestroyService.new(snippet.repository).execute
 
         raise DeleteRepositoryError if result[:status] == :error
       end

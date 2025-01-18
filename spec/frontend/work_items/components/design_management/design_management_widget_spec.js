@@ -98,6 +98,7 @@ describe('DesignWidget', () => {
     routeArg = MOCK_ROUTE,
     uploadError = null,
     uploadErrorVariant = ALERT_VARIANTS.danger,
+    canReorderDesign = true,
   } = {}) {
     wrapper = shallowMountExtended(DesignWidget, {
       isLoggedIn: isLoggedIn(),
@@ -110,6 +111,7 @@ describe('DesignWidget', () => {
         workItemId,
         uploadError,
         uploadErrorVariant,
+        canReorderDesign,
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
@@ -163,6 +165,14 @@ describe('DesignWidget', () => {
 
     it('renders VueDraggable component', () => {
       expect(findVueDraggable().exists()).toBe(true);
+      expect(findVueDraggable().vm.$attrs.disabled).toBe(false);
+    });
+
+    it('renders VueDraggable component with dragging disabled when canReorderDesign prop is false', async () => {
+      await createComponent({ canReorderDesign: false });
+      await waitForPromises();
+
+      expect(findVueDraggable().vm.$attrs.disabled).toBe(true);
     });
 
     it('calls moveDesignMutation with correct parameters and reorders designs', async () => {

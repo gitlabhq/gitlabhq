@@ -136,7 +136,7 @@ module Projects
     def remove_repository(repository)
       return true unless repository
 
-      result = Repositories::DestroyService.new(repository).execute
+      result = ::Repositories::DestroyService.new(repository).execute
 
       result[:status] == :success
     end

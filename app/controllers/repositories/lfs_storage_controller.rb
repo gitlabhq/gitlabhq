@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Repositories
-  class LfsStorageController < Repositories::GitHttpClientController
+  class LfsStorageController < ::Repositories::GitHttpClientController
     include LfsRequest
     include WorkhorseRequest
     include SendFileUpload

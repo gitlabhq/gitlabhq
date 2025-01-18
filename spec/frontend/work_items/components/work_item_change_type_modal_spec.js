@@ -41,6 +41,7 @@ describe('WorkItemChangeTypeModal component', () => {
   const convertWorkItemMutationSuccessHandler = jest
     .fn()
     .mockResolvedValue(convertWorkItemMutationResponse);
+
   const graphqlError = 'GraphQL error';
   const convertWorkItemMutationErrorResponse = {
     errors: [
@@ -52,6 +53,7 @@ describe('WorkItemChangeTypeModal component', () => {
       workItemConvert: null,
     },
   };
+
   const noDesignQueryHandler = jest.fn().mockResolvedValue(designCollectionResponse([]));
   const oneDesignQueryHandler = jest.fn().mockResolvedValue(designCollectionResponse([mockDesign]));
 
@@ -63,6 +65,7 @@ describe('WorkItemChangeTypeModal component', () => {
     widgets = [],
     workItemType = WORK_ITEM_TYPE_VALUE_TASK,
     convertWorkItemMutationHandler = convertWorkItemMutationSuccessHandler,
+
     designQueryHandler = noDesignQueryHandler,
   } = {}) => {
     wrapper = mountExtended(WorkItemChangeTypeModal, {
@@ -74,6 +77,7 @@ describe('WorkItemChangeTypeModal component', () => {
       propsData: {
         workItemId: 'gid://gitlab/WorkItem/1',
         fullPath: 'gitlab-org/gitlab-test',
+        workItemIid: '1',
         hasParent,
         hasChildren,
         widgets,
@@ -98,7 +102,6 @@ describe('WorkItemChangeTypeModal component', () => {
   const findChangeTypeModal = () => wrapper.findComponent(GlModal);
   const findGlFormSelect = () => wrapper.findComponent(GlFormSelect);
   const findWarningAlert = () => wrapper.findByTestId('change-type-warning-message');
-  const findErrorAlert = () => wrapper.findByTestId('change-type-error-message');
 
   beforeEach(async () => {
     createComponent();
@@ -137,6 +140,7 @@ describe('WorkItemChangeTypeModal component', () => {
     findGlFormSelect().vm.$emit('change', WORK_ITEM_TYPE_ENUM_KEY_RESULT);
 
     await nextTick();
+    await waitForPromises();
 
     expect(findWarningAlert().text()).toBe(
       'Parent item type issue is not supported on key result. Remove the parent item to change type.',
@@ -151,6 +155,7 @@ describe('WorkItemChangeTypeModal component', () => {
     findGlFormSelect().vm.$emit('change', WORK_ITEM_TYPE_ENUM_KEY_RESULT);
 
     await nextTick();
+    await waitForPromises();
 
     expect(findWarningAlert().text()).toBe(
       'Key result does not support the task child item types. Remove child items to change type.',
@@ -226,9 +231,9 @@ describe('WorkItemChangeTypeModal component', () => {
     });
 
     it.each`
-      errorType          | expectedErrorMessage      | failureHandler
-      ${'graphql error'} | ${graphqlError}           | ${jest.fn().mockResolvedValue(convertWorkItemMutationErrorResponse)}
-      ${'network error'} | ${'Error: Network error'} | ${jest.fn().mockRejectedValue(new Error('Network error'))}
+      errorType          | expectedErrorMessage | failureHandler
+      ${'graphql error'} | ${graphqlError}      | ${jest.fn().mockResolvedValue(convertWorkItemMutationErrorResponse)}
+      ${'network error'} | ${'Network error'}   | ${jest.fn().mockRejectedValue(new Error('Network error'))}
     `(
       'emits an error when there is a $errorType',
       async ({ expectedErrorMessage, failureHandler }) => {
@@ -246,7 +251,7 @@ describe('WorkItemChangeTypeModal component', () => {
 
         await waitForPromises();
 
-        expect(findErrorAlert().text()).toContain(expectedErrorMessage);
+        expect(wrapper.emitted('error')[0][0]).toEqual(expectedErrorMessage);
       },
     );
   });

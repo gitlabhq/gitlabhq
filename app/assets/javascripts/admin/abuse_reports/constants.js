@@ -25,7 +25,7 @@ export const FILTERED_SEARCH_TOKEN_USER = {
 export const FILTERED_SEARCH_TOKEN_REPORTER = {
   ...FILTERED_SEARCH_TOKEN_USER,
   type: 'reporter',
-  title: __('Reporter'),
+  title: s__('AbuseReport|Reporter'),
 };
 
 export const FILTERED_SEARCH_TOKEN_STATUS = {

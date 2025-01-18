@@ -33,7 +33,7 @@ class Project < ApplicationRecord
   include FeatureGate
   include OptionallySearch
   include FromUnion
-  include Repositories::CanHousekeepRepository
+  include ::Repositories::CanHousekeepRepository
   include EachBatch
   include GitlabRoutingHelper
   include BulkMemberAccessLoad

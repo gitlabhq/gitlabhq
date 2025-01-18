@@ -16,7 +16,7 @@ import WorkItemActions from '~/work_items/components/work_item_actions.vue';
 import WorkItemAbuseModal from '~/work_items/components/work_item_abuse_modal.vue';
 import WorkItemStateToggle from '~/work_items/components/work_item_state_toggle.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
-import WorkItemChangeTypeModal from '~/work_items/components/work_item_change_type_modal.vue';
+import WorkItemChangeTypeModal from 'ee_else_ce/work_items/components/work_item_change_type_modal.vue';
 import {
   STATE_OPEN,
   TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,

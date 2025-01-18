@@ -21,6 +21,7 @@ fragment WorkItem on WorkItem {
     id
     fullPath
     name
+    fullName
   }
   author {
     ...Author

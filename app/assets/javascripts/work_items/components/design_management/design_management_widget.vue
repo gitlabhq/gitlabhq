@@ -69,6 +69,11 @@ export default {
       required: false,
       default: ALERT_VARIANTS.danger,
     },
+    canReorderDesign: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   apollo: {
     designCollection: {
@@ -155,6 +160,7 @@ export default {
       return (
         !this.$options.isLoggedIn ||
         !this.isLatestVersion ||
+        !this.canReorderDesign ||
         this.isReorderingInProgress ||
         this.isMobile
       );
@@ -332,6 +338,10 @@ export default {
   dragOptions: {
     animation: 200,
     ghostClass: 'gl-invisible',
+    forceFallback: true,
+    tag: 'ol',
+    filter: '.no-drag',
+    draggable: '.js-design-tile',
   },
   i18n: {
     designLoadingError: s__(
@@ -441,10 +451,6 @@ export default {
             :value="designs"
             :disabled="isDraggingDisabled"
             v-bind="$options.dragOptions"
-            :force-fallback="true"
-            tag="ol"
-            draggable=".js-design-tile"
-            filter=".no-drag"
             class="list-unstyled row -gl-my-1 gl-flex gl-gap-y-5"
             :class="{ 'gl-px-3 gl-py-2': hasDesigns, 'gl-hidden': !hasDesigns }"
             @end="onDragEnd"

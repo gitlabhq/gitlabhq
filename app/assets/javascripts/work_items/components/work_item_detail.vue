@@ -83,6 +83,7 @@ import WorkItemCreateBranchMergeRequestSplitButton from './work_item_development
 
 const defaultWorkspacePermissions = {
   createDesign: false,
+  moveDesign: false,
 };
 
 export default {
@@ -371,6 +372,9 @@ export default {
     showUploadDesign() {
       return this.hasDesignWidget && this.workspacePermissions.createDesign;
     },
+    canReorderDesign() {
+      return this.hasDesignWidget && this.workspacePermissions.moveDesign;
+    },
     workItemNotificationsSubscribed() {
       return Boolean(this.isWidgetPresent(WIDGET_TYPE_NOTIFICATIONS)?.subscribed);
     },
@@ -476,6 +480,9 @@ export default {
     },
     showCreateBranchMergeRequestSplitButton() {
       return this.workItemDevelopment && this.workItemIsOpen;
+    },
+    namespaceFullName() {
+      return this.workItem?.namespace?.fullName || '';
     },
   },
   methods: {
@@ -762,6 +769,7 @@ export default {
       :is-group="isGroupWorkItem"
       :allowed-child-types="allowedChildTypes"
       :parent-id="parentWorkItemId"
+      :namespace-full-name="namespaceFullName"
       @hideStickyHeader="hideStickyHeader"
       @showStickyHeader="showStickyHeader"
       @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
@@ -866,6 +874,7 @@ export default {
                 :is-group="isGroupWorkItem"
                 :widgets="widgets"
                 :allowed-child-types="allowedChildTypes"
+                :namespace-full-name="namespaceFullName"
                 @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
                 @toggleWorkItemConfidentiality="toggleConfidentiality"
                 @error="updateError = $event"
@@ -979,6 +988,7 @@ export default {
               :upload-error="designUploadError"
               :upload-error-variant="designUploadErrorVariant"
               :is-saving="isSaving"
+              :can-reorder-design="canReorderDesign"
               @upload="onUploadDesign"
               @dismissError="designUploadError = null"
             >

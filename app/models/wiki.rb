@@ -3,7 +3,7 @@
 class Wiki
   extend ::Gitlab::Utils::Override
   include HasRepository
-  include Repositories::CanHousekeepRepository
+  include ::Repositories::CanHousekeepRepository
   include Gitlab::Utils::StrongMemoize
   include GlobalID::Identification
   include Gitlab::Git::WrapsGitalyErrors

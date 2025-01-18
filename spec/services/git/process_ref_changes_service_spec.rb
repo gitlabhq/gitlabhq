@@ -201,10 +201,10 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
     end
 
     describe "housekeeping", :clean_gitlab_redis_cache, :clean_gitlab_redis_queues, :clean_gitlab_redis_shared_state do
-      let(:housekeeping) { Repositories::HousekeepingService.new(project) }
+      let(:housekeeping) { ::Repositories::HousekeepingService.new(project) }
 
       before do
-        allow(Repositories::HousekeepingService).to receive(:new).and_return(housekeeping)
+        allow(::Repositories::HousekeepingService).to receive(:new).and_return(housekeeping)
 
         allow(push_service_class)
           .to receive(:new)

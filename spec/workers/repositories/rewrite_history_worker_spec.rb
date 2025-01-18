@@ -23,7 +23,7 @@ RSpec.describe Repositories::RewriteHistoryWorker, feature_category: :source_cod
     end
 
     it 'executes RewriteHistoryService service' do
-      allow_next_instance_of(Repositories::RewriteHistoryService) do |instance|
+      allow_next_instance_of(::Repositories::RewriteHistoryService) do |instance|
         expect(instance).to receive(:execute).with(blob_oids: blob_oids, redactions: []).and_call_original
       end
 
@@ -34,7 +34,7 @@ RSpec.describe Repositories::RewriteHistoryWorker, feature_category: :source_cod
       let(:project_id) { non_existing_record_id }
 
       it 'skips the execution' do
-        expect(Repositories::RewriteHistoryService).not_to receive(:new)
+        expect(::Repositories::RewriteHistoryService).not_to receive(:new)
         perform
       end
     end
@@ -43,14 +43,14 @@ RSpec.describe Repositories::RewriteHistoryWorker, feature_category: :source_cod
       let(:user_id) { non_existing_record_id }
 
       it 'skips the execution' do
-        expect(Repositories::RewriteHistoryService).not_to receive(:new)
+        expect(::Repositories::RewriteHistoryService).not_to receive(:new)
         perform
       end
     end
 
     describe 'Emails' do
       before do
-        allow_next_instance_of(Repositories::RewriteHistoryService) do |instance|
+        allow_next_instance_of(::Repositories::RewriteHistoryService) do |instance|
           allow(instance).to receive(:execute).and_return(response)
         end
       end

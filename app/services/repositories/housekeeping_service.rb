@@ -3,8 +3,8 @@
 # Used for git housekeeping
 #
 # Ex.
-#   Repositories::HousekeepingService.new(project).execute
-#   Repositories::HousekeepingService.new(project.wiki).execute
+#   ::Repositories::HousekeepingService.new(project).execute
+#   ::Repositories::HousekeepingService.new(project.wiki).execute
 #
 module Repositories
   class HousekeepingService < BaseService

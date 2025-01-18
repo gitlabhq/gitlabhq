@@ -162,6 +162,7 @@ describe('WorkItemDescription', () => {
                 id: 'gid://gitlab/Group/24',
                 fullPath: 'gitlab-org',
                 name: 'Gitlab Org',
+                fullName: 'Gitlab Org',
                 __typename: 'Namespace',
               },
             },

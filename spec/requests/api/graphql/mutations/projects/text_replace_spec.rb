@@ -32,7 +32,7 @@ RSpec.describe "projectTextReplace", feature_category: :source_code_management d
 
   describe 'Replacing text' do
     it 'processes text redaction asynchoronously' do
-      expect(Repositories::RewriteHistoryWorker).to receive(:perform_async).with(
+      expect(::Repositories::RewriteHistoryWorker).to receive(:perform_async).with(
         project_id: project.id, user_id: current_user.id, redactions: literal_replacements, blob_oids: []
       )
 

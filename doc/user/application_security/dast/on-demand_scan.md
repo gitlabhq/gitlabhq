@@ -133,6 +133,7 @@ To delete an on-demand scan:
 
 > - Site profile features, scan method and file URL, were [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/345837) in GitLab 15.6.
 > - GraphQL endpoint path feature was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378692) in GitLab 15.7.
+> - Additional variables [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177703) in GitLab 17.9.
 
 A site profile defines the attributes and configuration details of the deployed application,
 website, or API to be scanned by DAST. A site profile can be referenced in `.gitlab-ci.yml` and
@@ -157,6 +158,7 @@ A site profile contains:
 - **Scan method**: A type of method to perform API testing. The supported methods are OpenAPI, Postman Collections, HTTP Archive (HAR), or GraphQL.
   - **GraphQL endpoint path**: The path to the GraphQL endpoint. This path is concatenated with the target URL to provide the URI for the scan to test. The GraphQL endpoint must support introspection queries.
   - **File URL**: The URL of the OpenAPI, Postman Collection, or HTTP Archive file.
+- **Additional variables**: A list of environment variables to configure specific scan behaviors. These variables provide the same configuration options as pipeline-based DAST scans, such as setting timeouts, adding an authentication success URL, or enabling advanced scan features.
 
 When an API site type is selected, a host override is used to ensure the API being scanned is on the same host as the target. This is done to reduce the risk of running an active scan against the wrong API.
 
