@@ -23,7 +23,7 @@ and the following external authentication and authorization providers:
 NOTE:
 UltraAuth has removed their software which supports OmniAuth integration. We have therefore removed all references to UltraAuth integration.
 
-## GitLab.com compared to self-managed
+## GitLab.com compared to GitLab Self-Managed
 
 The external authentication and authorization providers may support the following capabilities.
 For more information, see the links shown on this page for each external provider.

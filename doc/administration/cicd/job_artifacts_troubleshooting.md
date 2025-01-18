@@ -139,7 +139,7 @@ GitLab 15.3 and later. It analyzes the artifacts returned by the above database 
 determines which should be `locked` or `unlocked`. Artifacts are then deleted
 by that worker if needed.
 
-The worker can be enabled on self-managed instances:
+The worker can be enabled on GitLab Self-Managed:
 
 1. Start a [Rails console](../operations/rails_console.md#starting-a-rails-console-session).
 
@@ -161,7 +161,7 @@ in 24 hours.
 There is a related `ci_job_artifacts_backlog_large_loop_limit` feature flag
 which causes the worker to process `unknown` artifacts
 [in batches that are five times larger](https://gitlab.com/gitlab-org/gitlab/-/issues/356319).
-This flag is not recommended for use on self-managed instances.
+This flag is not recommended for use.
 
 ### List projects and builds with artifacts with a specific expiration (or no expiration)
 

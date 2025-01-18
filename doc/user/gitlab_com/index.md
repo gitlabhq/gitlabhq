@@ -208,7 +208,7 @@ Below are the current settings regarding [GitLab CI/CD](../../ci/index.md).
 Any settings or feature limits not listed here are using the defaults listed in
 the related documentation.
 
-| Setting                                                                          | GitLab.com                                                                                                 | Default (self-managed) |
+| Setting                                                                          | GitLab.com                                                                                                 | Default (GitLab Self-Managed) |
 |----------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|------------------------|
 | Artifacts maximum size (compressed)                                              | 1 GB                                                                                                       | See [Maximum artifacts size](../../administration/settings/continuous_integration.md#maximum-artifacts-size). |
 | Artifacts [expiry time](../../ci/yaml/index.md#artifactsexpire_in)               | 30 days unless otherwise specified                                                                         | See [Default artifacts expiration](../../administration/settings/continuous_integration.md#default-artifacts-expiration). Artifacts created before June 22, 2020 have no expiry. |

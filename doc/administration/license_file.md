@@ -103,7 +103,7 @@ To go back to Free features, [delete all expired licenses](#remove-a-license).
 
 ## Remove a license
 
-To remove a license from a self-managed instance:
+To remove a license from a GitLab Self-Managed instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Subscription**.
@@ -241,7 +241,7 @@ This issue might occur if:
 
 - You're running GitLab Community Edition. Before you add your license, you
   must [upgrade to Enterprise Edition](../update/index.md#community-to-enterprise-edition).
-- You're using GitLab.com. You cannot add a self-managed license to GitLab.com.
+- You're using GitLab.com. You cannot add a GitLab Self-Managed license to GitLab.com.
   To use paid features on GitLab.com, [purchase a separate subscription](../subscriptions/gitlab_com/index.md).
 
 ### Users exceed license limit upon renewal
