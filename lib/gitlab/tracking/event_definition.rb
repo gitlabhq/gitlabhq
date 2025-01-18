@@ -15,8 +15,7 @@ module Gitlab
         end
 
         def internal_event_exists?(event_name)
-          internal_event_actions.include?(event_name) ||
-            Gitlab::UsageDataCounters::HLLRedisCounter.legacy_event?(event_name)
+          internal_event_actions.include?(event_name)
         end
 
         def find(event_name)

@@ -19,7 +19,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     allow(redis).to receive(:ttl).and_return(123456)
     allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis)
     allow(Gitlab::Tracking).to receive(:tracker).and_return(fake_snowplow)
-    allow(Gitlab::Tracking::EventDefinition).to receive(:find).and_return(event_definition)
+    allow(Gitlab::Tracking::EventDefinition).to receive_messages(find: event_definition, internal_event_exists?: true)
     allow_next_instance_of(Gitlab::Tracking::EventValidator) do |instance|
       allow(instance).to receive(:validate!)
     end
@@ -120,7 +120,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   end
 
   let(:fake_snowplow) { instance_double(Gitlab::Tracking::Destinations::Snowplow) }
-  let(:event_name) { 'i_search_total' }
+  let(:event_name) { 'an_event' }
   let(:category) { 'InternalEventTracking' }
   let(:unique_value) { user.id }
   let(:property_name) { :user }
@@ -546,6 +546,21 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       expect_redis_tracking
       expect_no_redis_hll_tracking
       expect_snowplow_tracking(project.namespace)
+    end
+  end
+
+  context 'when event is not defined' do
+    let(:event_name) { 'an_event_that_does_not_exist' }
+
+    before do
+      allow(Gitlab::Tracking::EventDefinition).to receive(:internal_event_exists?).with(event_name).and_return(false)
+    end
+
+    it 'logs a warning' do
+      expect(Gitlab::AppJsonLogger).to receive(:warn)
+        .with("InternalEvents.track_event called with undefined event: an_event_that_does_not_exist")
+
+      described_class.track_event(event_name)
     end
   end
 
