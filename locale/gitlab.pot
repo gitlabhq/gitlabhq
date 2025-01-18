@@ -12918,6 +12918,9 @@ msgstr ""
 msgid "ClusterAgents|Are you sure you want to revoke this token? You cannot undo this action."
 msgstr ""
 
+msgid "ClusterAgents|Available configurations"
+msgstr ""
+
 msgid "ClusterAgents|CI/CD workflow with restricted access"
 msgstr ""
 
@@ -13116,6 +13119,9 @@ msgid "ClusterAgents|Receptive"
 msgstr ""
 
 msgid "ClusterAgents|Recommended"
+msgstr ""
+
+msgid "ClusterAgents|Register an agent"
 msgstr ""
 
 msgid "ClusterAgents|Requires a Maintainer or greater role to delete agents"

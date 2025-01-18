@@ -56,11 +56,26 @@ describe('Agents', () => {
     },
   };
 
+  const emptyTreeListResponse = {
+    data: {
+      project: {
+        id: projectId,
+        repository: {
+          tree: {
+            trees: {
+              nodes: [],
+            },
+          },
+        },
+      },
+    },
+  };
+
   const createWrapper = async ({
     props = {},
     glFeatures = {},
     agentQueryResponse = jest.fn().mockResolvedValue(clusterAgentsResponse),
-    treeListQueryResponse = jest.fn().mockResolvedValue(treeListResponseData),
+    treeListQueryResponse = jest.fn().mockResolvedValue(emptyTreeListResponse),
     sharedAgentsQueryResponse = jest.fn().mockResolvedValue(emptySharedAgentsResponse),
     slots,
   } = {}) => {
@@ -128,7 +143,7 @@ describe('Agents', () => {
     });
 
     it('should pass agent and folder info to table component', async () => {
-      createWrapper();
+      createWrapper({ treeListQueryResponse: jest.fn().mockResolvedValue(treeListResponseData) });
       await waitForPromises();
 
       expect(findAgentTable().props('agents')).toMatchObject(expectedAgentsList);
@@ -230,6 +245,16 @@ describe('Agents', () => {
 
         expect(findTab().at(1).attributes('title')).toBe('Shared agents');
         expect(findTab().at(1).text()).toBe('An error occurred while loading your agents');
+      });
+
+      it('should render configurations tab when the query has returned data', async () => {
+        createWrapper({
+          treeListQueryResponse: jest.fn().mockResolvedValue(treeListResponseData),
+        });
+        await waitForPromises();
+
+        expect(findTab()).toHaveLength(2);
+        expect(findTab().at(1).attributes('title')).toBe('Available configurations');
       });
     });
   });
@@ -344,12 +369,13 @@ describe('Agents', () => {
     });
   });
 
-  describe('when the agent list is empty', () => {
+  describe('when the agent list and configuration list are empty', () => {
     beforeEach(async () => {
       createWrapper({
         agentQueryResponse: jest.fn().mockResolvedValue(emptyAgentsResponse),
       });
       await waitForPromises();
+      await nextTick();
     });
 
     it('should render empty state', () => {

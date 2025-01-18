@@ -7,6 +7,7 @@ const ModalStub = {
     </div>
   `,
   methods: {
+    show: jest.fn(),
     hide: jest.fn(),
   },
 };

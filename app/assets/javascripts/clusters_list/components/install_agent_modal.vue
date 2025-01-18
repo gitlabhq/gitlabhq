@@ -37,6 +37,7 @@ export default {
   EVENT_ACTIONS_OPEN,
   EVENT_ACTIONS_CLICK,
   EVENT_LABEL_MODAL,
+  glabCommand: 'glab cluster agent bootstrap <agent-name>',
   enableKasPath: helpPagePath('administration/clusters/kas'),
   registerAgentPath: helpPagePath('user/clusters/agent/install/index', {
     anchor: 'register-the-agent-with-gitlab',
@@ -44,10 +45,7 @@ export default {
   bootstrapAgentWithFluxHelpPath: helpPagePath('user/clusters/agent/install/index', {
     anchor: 'bootstrap-the-agent-with-flux-support-recommended',
   }),
-  terraformDocsLink:
-    'https://registry.terraform.io/providers/gitlabhq/gitlab/latest/docs/resources/cluster_agent_token',
   commandLanguage: 'shell',
-  glabCommand: 'glab cluster agent bootstrap <agent-name>',
   components: {
     AgentToken,
     GlAlert,
@@ -78,6 +76,7 @@ export default {
       error: null,
       clusterAgent: null,
       isValidated: false,
+      glabCommand: this.$options.glabCommand,
     };
   },
   computed: {
@@ -113,6 +112,7 @@ export default {
       this.agentToken = null;
       this.clusterAgent = null;
       this.error = null;
+      this.glabCommand = this.$options.glabCommand;
     },
     createAgentMutation() {
       return this.$apollo
@@ -194,6 +194,11 @@ export default {
       }
       this.registerAgent();
     },
+    showModalForAgent(name) {
+      this.agentName = name;
+      this.$refs.modal?.show();
+      this.glabCommand = this.glabCommand.replace('<agent-name>', this.agentName);
+    },
   },
 };
 </script>
@@ -217,13 +222,9 @@ export default {
           <code-block-highlighted
             :language="$options.commandLanguage"
             class="gl-border gl-mb-0 gl-mr-3 gl-w-full gl-px-3 gl-py-2"
-            :code="$options.glabCommand"
+            :code="glabCommand"
           />
-          <modal-copy-button
-            :text="$options.glabCommand"
-            :modal-id="$options.modalId"
-            category="tertiary"
-          />
+          <modal-copy-button :text="glabCommand" :modal-id="$options.modalId" category="tertiary" />
         </p>
         <gl-sprintf :message="$options.i18n.bootstrapWithFluxOptions">
           <template #code="{ content }">

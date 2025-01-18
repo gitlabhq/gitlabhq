@@ -55,6 +55,7 @@ export default {
       kasDisabled: false,
       newAgentName: null,
       showNewAgentAlert: false,
+      hasAgentConfig: false,
     };
   },
   computed: {
@@ -94,10 +95,16 @@ export default {
     },
     clusterAgentCreated(name) {
       this.newAgentName = name;
-      this.showNewAgentAlert = true;
+      if (!this.hasAgentConfig) {
+        this.showNewAgentAlert = true;
+      }
     },
     closeNewAgentAlert() {
       this.showNewAgentAlert = false;
+    },
+    openRegistrationModal(name) {
+      this.hasAgentConfig = true;
+      this.$refs.installAgentModal.showModalForAgent(name);
     },
   },
 };
@@ -123,6 +130,7 @@ export default {
           data-testid="clusters-tab-component"
           @changeTab="setSelectedTab"
           @kasDisabled="kasDisabled = $event"
+          @registerAgent="openRegistrationModal"
         >
           <template #alerts>
             <gl-alert
@@ -149,7 +157,10 @@ export default {
         <clusters-actions />
       </template>
     </gl-tabs>
-
-    <install-agent-modal :kas-disabled="kasDisabled" @clusterAgentCreated="clusterAgentCreated" />
+    <install-agent-modal
+      ref="installAgentModal"
+      :kas-disabled="kasDisabled"
+      @clusterAgentCreated="clusterAgentCreated"
+    />
   </div>
 </template>

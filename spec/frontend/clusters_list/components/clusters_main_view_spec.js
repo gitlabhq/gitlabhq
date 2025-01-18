@@ -108,7 +108,7 @@ describe('ClustersMainViewComponent', () => {
           expect(findComponent().props('defaultBranchName')).toBe(defaultBranchName);
         });
 
-        it(`passes kasDisabled param if received from the component to the modal`, async () => {
+        it('passes kasDisabled param if received from the component to the modal', async () => {
           findComponent().vm.$emit('kasDisabled', true);
           await nextTick();
 
@@ -121,6 +121,27 @@ describe('ClustersMainViewComponent', () => {
             property: tabName,
           });
         });
+      });
+    });
+
+    describe('when an agent is registered from the config table', () => {
+      const modalSpy = jest.fn();
+
+      beforeEach(() => {
+        createWrapper({ displayClusterAgents: true });
+        findModal().vm.showModalForAgent = modalSpy;
+        findComponent().vm.$emit('registerAgent', 'new-agent-name');
+      });
+
+      it('calls showModalForAgent when registerAgent is received from the component', () => {
+        expect(modalSpy).toHaveBeenCalledWith('new-agent-name');
+      });
+
+      it('should not render a success alert', async () => {
+        findModal().vm.$emit('clusterAgentCreated', 'new-agent-name');
+        await nextTick();
+
+        expect(findAlert().exists()).toBe(false);
       });
     });
 

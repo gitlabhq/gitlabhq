@@ -318,6 +318,29 @@ describe('InstallAgentModal', () => {
         });
       });
     });
+
+    describe('calling showModalForAgent from outside of the component', () => {
+      let showModalSpy;
+
+      beforeEach(() => {
+        createWrapper();
+
+        showModalSpy = jest.spyOn(wrapper.vm.$refs.modal, 'show');
+        wrapper.vm.showModalForAgent('new-agent-name');
+      });
+
+      it('should open the modal', () => {
+        expect(showModalSpy).toHaveBeenCalled();
+      });
+
+      it('should update the input with the provided agent name', () => {
+        expect(findAgentInput().attributes('value')).toBe('new-agent-name');
+      });
+
+      it('should update the bootstrap command with the new agent name', () => {
+        expect(findCodeBlock().props('code')).toBe('glab cluster agent bootstrap new-agent-name');
+      });
+    });
   });
 
   describe('when KAS is disabled', () => {

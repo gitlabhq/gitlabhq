@@ -12,6 +12,7 @@ import getTreeList from '../graphql/queries/get_tree_list.query.graphql';
 import { getAgentLastContact, getAgentStatus } from '../clusters_util';
 import AgentEmptyState from './agent_empty_state.vue';
 import AgentTable from './agent_table.vue';
+import AgentConfigsTable from './agents_configs_table.vue';
 
 export default {
   i18n: {
@@ -21,6 +22,7 @@ export default {
     ),
     feedbackBannerButton: s__('ClusterAgents|Give feedback'),
     error: s__('ClusterAgents|An error occurred while loading your agents'),
+    availableConfigs: s__('ClusterAgents|Available configurations'),
   },
   AGENT_FEEDBACK_ISSUE,
   AGENT_FEEDBACK_KEY,
@@ -80,6 +82,7 @@ export default {
   components: {
     AgentEmptyState,
     AgentTable,
+    AgentConfigsTable,
     GlAlert,
     GlLoadingIcon,
     GlBanner,
@@ -115,6 +118,7 @@ export default {
       sharedAgents: [],
       agentList: [],
       agentsCount: null,
+      availableConfigs: [],
       configFolders: [],
       currentTab: 0,
     };
@@ -212,6 +216,8 @@ export default {
           const configFolder = this.findConfigFolder(agent.name);
           return { ...agent, configFolder };
         });
+
+        this.updateConfigFolders();
       }
     },
     updateAgentsList(data) {
@@ -227,7 +233,13 @@ export default {
           return b.lastContact - a.lastContact;
         });
 
+      this.updateConfigFolders();
       this.currentTab = 0;
+    },
+    updateConfigFolders() {
+      this.availableConfigs = this.configFolders.filter(
+        (folder) => !this.agentList.find((agent) => agent.name === folder.name),
+      );
     },
 
     handleBannerClose() {
@@ -274,6 +286,14 @@ export default {
           :agents="tab.agents"
           :default-branch-name="defaultBranchName"
           :max-agents="limit"
+        />
+      </gl-tab>
+
+      <gl-tab v-if="availableConfigs.length" :title="$options.i18n.availableConfigs">
+        <agent-configs-table
+          :configs="availableConfigs"
+          :max-configs="limit"
+          @registerAgent="$emit('registerAgent', $event)"
         />
       </gl-tab>
     </gl-tabs>

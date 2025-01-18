@@ -117,6 +117,13 @@ describe('ClustersViewAllComponent', () => {
       expect(wrapper.emitted('kasDisabled')).toEqual([[true]]);
     });
 
+    it('should emit `registerAgent` event when received from Agents component', async () => {
+      findAgentsComponent().vm.$emit('registerAgent', 'new-agent-name');
+      await nextTick();
+
+      expect(wrapper.emitted('registerAgent')).toEqual([['new-agent-name']]);
+    });
+
     describe('when there are no agents', () => {
       it('should show the empty title', () => {
         expect(findAgentCardTitle().text()).toBe(AGENT_CARD_INFO.emptyTitle);

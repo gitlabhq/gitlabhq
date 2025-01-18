@@ -128,10 +128,6 @@ export const I18N_AGENT_MODAL = {
   registrationSuccess: s__('ClusterAgents|%{agentName} successfully created.'),
   registrationErrorTitle: s__('ClusterAgents|Failed to register an agent'),
   unknownError: s__('ClusterAgents|An unknown error occurred. Please try again.'),
-  maxAgentsSupport: s__('ClusterAgents|We only support 100 agents on the UI.'),
-  useTerraformText: s__(
-    'ClusterAgents|To manage more agents, %{linkStart}use Terraform%{linkEnd}.',
-  ),
   registerWithUITitle: s__('ClusterAgents|Option 2: Create and register an agent with the UI'),
   bootstrapWithFluxTitle: s__('ClusterAgents|Option 1: Bootstrap the agent with Flux'),
   bootstrapWithFluxDescription: s__(
@@ -287,3 +283,5 @@ export const AGENT_FEEDBACK_ISSUE = 'https://gitlab.com/gitlab-org/gitlab/-/issu
 export const AGENT_FEEDBACK_KEY = 'agent_feedback_banner';
 
 export const CONNECT_MODAL_ID = 'connect-to-cluster-modal';
+
+export const MAX_CONFIGS_SHOWN = 100;
