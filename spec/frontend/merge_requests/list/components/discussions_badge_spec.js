@@ -32,7 +32,7 @@ describe('Merge requests list discussions badge component', () => {
     });
 
     it('renders resolved tooltip', () => {
-      expect(findBadge().attributes('title')).toBe('All 1 thread resolved');
+      expect(findBadge().attributes('title')).toBe('The only thread is resolved');
     });
   });
 

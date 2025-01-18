@@ -5739,11 +5739,6 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-msgid "All %{resolvableDiscussionsCount} thread resolved"
-msgid_plural "All %{resolvableDiscussionsCount} threads resolved"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "All (default)"
 msgstr ""
 
@@ -6646,9 +6641,6 @@ msgid "An error occurred while uploading the file. Please try again."
 msgstr ""
 
 msgid "An error occurred while validating group path"
-msgstr ""
-
-msgid "An error occurred while validating password"
 msgstr ""
 
 msgid "An error occurred while validating username"
@@ -24121,6 +24113,9 @@ msgid "Failed to update the organization user"
 msgstr ""
 
 msgid "Failed to upload object map file"
+msgstr ""
+
+msgid "Failed to validate password due to server or connection issue. Try again."
 msgstr ""
 
 msgid "Failure"
@@ -57167,6 +57162,11 @@ msgstr ""
 
 msgid "The number of times an upload record could not find its file"
 msgstr ""
+
+msgid "The only thread is resolved"
+msgid_plural "All %{resolvableDiscussionsCount} threads resolved"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "The page could not be displayed because it timed out."
 msgstr ""
