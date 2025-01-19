@@ -104,7 +104,8 @@ Other risks to be aware of when using Duo Workflow:
 
 Before you can use GitLab Duo Workflow:
 
-1. Ensure that the project you want to use with Duo Workflow with meets these requirements:
+1. Ensure you have an account on GitLab.com. 
+1. Ensure that the GitLab.com project you want to use with Duo Workflow meets these requirements:
    - You must have at least the Developer role for the project.
    - Your project must belong to a [group namespace](../namespace/index.md)
      with an **Ultimate** subscription and [experimental features turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
