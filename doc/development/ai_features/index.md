@@ -592,6 +592,9 @@ What needs to be included in the code:
 NOTE:
 For more information, see [the GitLab AI gateway documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md#optional-enable-authentication-and-authorization-in-ai-gateway) about authentication and authorization in AI gateway.
 
+If your Duo feature involves an autonomous agent, you should use
+[composite identity](composite_identity.md) authorization.
+
 ### Pairing requests with responses
 
 Because multiple users' requests can be processed in parallel, when receiving responses,

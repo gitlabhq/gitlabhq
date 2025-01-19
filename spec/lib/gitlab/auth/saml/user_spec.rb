@@ -40,6 +40,7 @@ RSpec.describe Gitlab::Auth::Saml::User, feature_category: :system_access do
           saml_user.save # rubocop:disable Rails/SaveBang
           expect(gl_user).to be_valid
           expect(gl_user).to eq existing_user
+          expect(gl_user.external).to be false
           identity = gl_user.identities.first
           expect(identity.extern_uid).to eql uid
           expect(identity.provider).to eql 'saml'
@@ -47,24 +48,40 @@ RSpec.describe Gitlab::Auth::Saml::User, feature_category: :system_access do
       end
 
       context 'external groups' do
-        before do
-          stub_saml_group_config(%w[Interns])
+        context 'no external groups configuration is defined' do
+          it 'does not mark the user as external' do
+            saml_user.save # rubocop:disable Rails/SaveBang -- Not ActiveRecord object
+            expect(gl_user).to be_valid
+            expect(gl_user.external).to be false
+          end
+
+          it 'does not change a user manually set as external' do
+            existing_user.update!(external: true)
+
+            saml_user.save # rubocop:disable Rails/SaveBang -- Not ActiveRecord object
+            expect(gl_user).to be_valid
+            expect(gl_user.external).to be true
+          end
         end
 
         context 'are defined' do
-          it 'marks the user as external' do
+          before do
             stub_saml_group_config(%w[Freelancers])
+          end
+
+          it 'marks the user as external' do
             saml_user.save # rubocop:disable Rails/SaveBang
             expect(gl_user).to be_valid
             expect(gl_user.external).to be_truthy
           end
-        end
 
-        context 'are defined but the user does not belong there' do
-          it 'does not mark the user as external' do
-            saml_user.save # rubocop:disable Rails/SaveBang
-            expect(gl_user).to be_valid
-            expect(gl_user.external).to be_falsey
+          context 'are defined but the user does not belong there' do
+            it 'does not mark the user as external' do
+              stub_saml_group_config(%w[Interns])
+              saml_user.save # rubocop:disable Rails/SaveBang -- Not ActiveRecord object
+              expect(gl_user).to be_valid
+              expect(gl_user.external).to be false
+            end
           end
         end
 
@@ -142,7 +159,7 @@ RSpec.describe Gitlab::Auth::Saml::User, feature_category: :system_access do
             stub_saml_group_config(%w[Interns])
             saml_user.save # rubocop:disable Rails/SaveBang
             expect(gl_user).to be_valid
-            expect(gl_user.external).to be_falsey
+            expect(gl_user.external).to be false
           end
         end
       end
