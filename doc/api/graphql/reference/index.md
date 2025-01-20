@@ -3736,6 +3736,30 @@ Input type: `CreateComplianceRequirementInput`
 | <a id="mutationcreatecompliancerequirementerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationcreatecompliancerequirementrequirement"></a>`requirement` | [`ComplianceRequirement`](#compliancerequirement) | Created compliance requirement. |
 
+### `Mutation.createComplianceRequirementsControl`
+
+DETAILS:
+**Introduced** in GitLab 17.9.
+**Status**: Experiment.
+
+Input type: `CreateComplianceRequirementsControlInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcreatecompliancerequirementscontrolclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcreatecompliancerequirementscontrolcompliancerequirementid"></a>`complianceRequirementId` | [`ComplianceManagementComplianceFrameworkComplianceRequirementID!`](#compliancemanagementcomplianceframeworkcompliancerequirementid) | Global ID of the compliance requirement of the new control. |
+| <a id="mutationcreatecompliancerequirementscontrolparams"></a>`params` | [`ComplianceRequirementsControlInput!`](#compliancerequirementscontrolinput) | Parameters to create the compliance requirement control. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcreatecompliancerequirementscontrolclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcreatecompliancerequirementscontrolerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationcreatecompliancerequirementscontrolrequirementscontrol"></a>`requirementsControl` | [`ComplianceRequirementsControl`](#compliancerequirementscontrol) | Created compliance requirements control. |
+
 ### `Mutation.createContainerProtectionRepositoryRule`
 
 Creates a repository protection rule to restrict access to a project's container registry.
@@ -13367,6 +13391,29 @@ The edge type for [`ComplianceRequirement`](#compliancerequirement).
 | <a id="compliancerequirementedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="compliancerequirementedgenode"></a>`node` | [`ComplianceRequirement`](#compliancerequirement) | The item at the end of the edge. |
 
+#### `ComplianceRequirementsControlConnection`
+
+The connection type for [`ComplianceRequirementsControl`](#compliancerequirementscontrol).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="compliancerequirementscontrolconnectionedges"></a>`edges` | [`[ComplianceRequirementsControlEdge]`](#compliancerequirementscontroledge) | A list of edges. |
+| <a id="compliancerequirementscontrolconnectionnodes"></a>`nodes` | [`[ComplianceRequirementsControl]`](#compliancerequirementscontrol) | A list of nodes. |
+| <a id="compliancerequirementscontrolconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ComplianceRequirementsControlEdge`
+
+The edge type for [`ComplianceRequirementsControl`](#compliancerequirementscontrol).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="compliancerequirementscontroledgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="compliancerequirementscontroledgenode"></a>`node` | [`ComplianceRequirementsControl`](#compliancerequirementscontrol) | The item at the end of the edge. |
+
 #### `ComplianceStandardsAdherenceConnection`
 
 The connection type for [`ComplianceStandardsAdherence`](#compliancestandardsadherence).
@@ -21721,6 +21768,7 @@ Represents a ComplianceRequirement associated with a ComplianceFramework.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="compliancerequirementcompliancerequirementscontrols"></a>`complianceRequirementsControls` | [`ComplianceRequirementsControlConnection`](#compliancerequirementscontrolconnection) | Compliance controls of the compliance requirement. (see [Connections](#connections)) |
 | <a id="compliancerequirementcontrolexpression"></a>`controlExpression` | [`String`](#string) | Control expression of the compliance requirement. |
 | <a id="compliancerequirementdescription"></a>`description` | [`String!`](#string) | Description of the compliance requirement. |
 | <a id="compliancerequirementid"></a>`id` | [`ID!`](#id) | Compliance requirement ID. |
@@ -21736,6 +21784,19 @@ Lists down all the possible types of requirement controls.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="compliancerequirementcontrolcontrolexpressions"></a>`controlExpressions` | [`[ControlExpression!]!`](#controlexpression) | List of requirement controls. |
+
+### `ComplianceRequirementsControl`
+
+Represents a ComplianceRequirementsControl associated with a ComplianceRequirement.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="compliancerequirementscontrolcontroltype"></a>`controlType` | [`String!`](#string) | Type of the compliance control. |
+| <a id="compliancerequirementscontrolexpression"></a>`expression` | [`String`](#string) | Expression of the compliance control. |
+| <a id="compliancerequirementscontrolid"></a>`id` | [`ID!`](#id) | Compliance requirements control ID. |
+| <a id="compliancerequirementscontrolname"></a>`name` | [`String!`](#string) | Name of the compliance control. |
 
 ### `ComplianceStandardsAdherence`
 
@@ -44817,6 +44878,15 @@ Attributes for defining a CI/CD variable.
 | <a id="compliancerequirementinputcontrolexpression"></a>`controlExpression` | [`String`](#string) | Control expression for the compliance requirement. |
 | <a id="compliancerequirementinputdescription"></a>`description` | [`String`](#string) | New description for the compliance requirement. |
 | <a id="compliancerequirementinputname"></a>`name` | [`String`](#string) | New name for the compliance requirement. |
+
+### `ComplianceRequirementsControlInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="compliancerequirementscontrolinputexpression"></a>`expression` | [`String`](#string) | Expression of the compliance control. |
+| <a id="compliancerequirementscontrolinputname"></a>`name` | [`String`](#string) | New name for the compliance requirement control. |
 
 ### `ComplianceStandardsAdherenceInput`
 

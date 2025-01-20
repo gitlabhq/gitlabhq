@@ -142,7 +142,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
     let(:headers) { {} }
     let(:url) { api("/projects/#{project.id}/packages/npm/#{package.name}/-/#{package_file.file_name}") }
 
-    subject { get(url, headers: headers) }
+    subject(:request) { get(url, headers: headers) }
 
     before do
       project.add_developer(user)
@@ -201,6 +201,10 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
       before do
         project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      it_behaves_like 'enforcing job token policies', :read_packages do
+        let(:headers) { build_token_auth_header(target_job.token) }
       end
 
       it_behaves_like 'a package file that requires auth'
@@ -365,6 +369,10 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
 
         context 'with a scoped name' do
           let(:package_name) { "@#{group.path}/my_package_name" }
+
+          it_behaves_like 'enforcing job token policies', :admin_packages do
+            let(:request) { upload_package(package_name, params.merge(job_token: target_job.token)) }
+          end
 
           it_behaves_like 'handling upload with different authentications'
         end

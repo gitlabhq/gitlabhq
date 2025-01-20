@@ -23872,6 +23872,9 @@ msgstr ""
 msgid "Failed to create compliance requirement"
 msgstr ""
 
+msgid "Failed to create compliance requirement control"
+msgstr ""
+
 msgid "Failed to create framework"
 msgstr ""
 
@@ -37928,6 +37931,9 @@ msgid "Not found"
 msgstr ""
 
 msgid "Not found."
+msgstr ""
+
+msgid "Not permitted to create compliance control"
 msgstr ""
 
 msgid "Not permitted to destroy framework"

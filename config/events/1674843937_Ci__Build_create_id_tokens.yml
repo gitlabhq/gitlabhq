@@ -12,9 +12,6 @@ product_categories:
 - secrets_management
 milestone: "15.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110422
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

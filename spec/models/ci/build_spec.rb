@@ -5077,28 +5077,71 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       build.clear_memoization(:build_data)
     end
 
-    context 'with project hooks' do
-      let(:build_data) { double(:BuildData, dup: double(:DupedData)) }
-
+    context 'when ci_async_build_hooks_execution flag is disabled' do
       before do
-        create(:project_hook, project: project, job_events: true)
+        stub_feature_flags(ci_async_build_hooks_execution: false)
       end
 
-      it 'calls project.execute_hooks(build_data, :job_hooks)' do
-        expect(::Gitlab::DataBuilder::Build)
-          .to receive(:build).with(build).and_return(build_data)
-        expect(build.project)
-          .to receive(:execute_hooks).with(build_data.dup, :job_hooks)
-
-        build.execute_hooks
-      end
-
-      context 'with blocked users' do
+      context 'with project services' do
         before do
-          allow(build).to receive(:user) { FactoryBot.build(:user, :blocked) }
+          create(:integration, active: true, job_events: true, project: project)
         end
 
-        it 'does not call project.execute_hooks' do
+        it 'executes services' do
+          allow_next_instance_of(Integration) do |integration|
+            expect(integration).to receive(:async_execute)
+          end
+
+          build.execute_hooks
+        end
+      end
+
+      context 'without relevant project services' do
+        before do
+          create(:integration, active: true, job_events: false, project: project)
+        end
+
+        it 'does not execute services' do
+          allow_next_instance_of(Integration) do |integration|
+            expect(integration).not_to receive(:async_execute)
+          end
+
+          build.execute_hooks
+        end
+      end
+
+      context 'with project hooks' do
+        let(:build_data) { double(:BuildData, dup: double(:DupedData)) }
+
+        before do
+          create(:project_hook, project: project, job_events: true)
+        end
+
+        it 'executes hooks' do
+          expect(::Gitlab::DataBuilder::Build)
+            .to receive(:build).with(build).and_return(build_data)
+
+          expect(build.project)
+            .to receive(:execute_hooks).with(build_data.dup, :job_hooks)
+
+          build.execute_hooks
+        end
+
+        context 'with blocked users' do
+          before do
+            allow(build).to receive(:user) { FactoryBot.build(:user, :blocked) }
+          end
+
+          it 'does not execute hooks' do
+            expect(build.project).not_to receive(:execute_hooks)
+
+            build.execute_hooks
+          end
+        end
+      end
+
+      context 'without project hooks' do
+        it 'does not execute hooks' do
           expect(build.project).not_to receive(:execute_hooks)
 
           build.execute_hooks
@@ -5106,39 +5149,35 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
     end
 
-    context 'without project hooks' do
-      it 'does not call project.execute_hooks' do
-        expect(build.project).not_to receive(:execute_hooks)
+    context 'when ci_async_build_hooks_execution flag is enabled' do
+      let(:build_data) { double(:BuildData) }
+
+      before do
+        create(:project_hook, project: project, job_events: true)
+        allow(Ci::ExecuteBuildHooksWorker).to receive(:perform_async)
+      end
+
+      it 'enqueues ExecuteBuildHooksWorker' do
+        expect(::Gitlab::DataBuilder::Build)
+            .to receive(:build).with(build).and_return(build_data)
 
         build.execute_hooks
-      end
-    end
 
-    context 'with project services' do
-      before do
-        create(:integration, active: true, job_events: true, project: project)
+        expect(Ci::ExecuteBuildHooksWorker)
+          .to have_received(:perform_async)
+          .with(project.id, build_data)
       end
 
-      it 'executes services' do
-        allow_next_found_instance_of(Integration) do |integration|
-          expect(integration).to receive(:async_execute)
+      context 'with blocked users' do
+        before do
+          allow(build).to receive(:user) { FactoryBot.build(:user, :blocked) }
         end
 
-        build.execute_hooks
-      end
-    end
+        it 'does not enqueue ExecuteBuildHooksWorker' do
+          build.execute_hooks
 
-    context 'without relevant project services' do
-      before do
-        create(:integration, active: true, job_events: false, project: project)
-      end
-
-      it 'does not execute services' do
-        allow_next_found_instance_of(Integration) do |integration|
-          expect(integration).not_to receive(:async_execute)
+          expect(Ci::ExecuteBuildHooksWorker).not_to receive(:perform_async)
         end
-
-        build.execute_hooks
       end
     end
   end

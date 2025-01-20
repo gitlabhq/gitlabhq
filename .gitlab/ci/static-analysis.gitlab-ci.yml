@@ -243,6 +243,19 @@ custom-roles-verify:
   script:
     - bundle exec rake gitlab:custom_roles:check_docs
 
+ci-job-token-policies-verify:
+  variables:
+    SETUP_DB: "false"
+  extends:
+    - .default-retry
+    - .ruby-cache
+    - .default-before_script
+    - .ci-job-token-policies:rules:ci-job-token-policies-verify
+  stage: lint
+  needs: []
+  script:
+    - bundle exec rake ci:job_tokens:check_policies
+
 templates-shellcheck:
   extends:
     - .ci-templates:rules:shellcheck

@@ -6,9 +6,6 @@ identifiers:
 product_group: container_registry
 milestone: "13.7"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48617
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

@@ -10,9 +10,6 @@ identifiers:
 product_group: source_code
 milestone: "16.3"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128592
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

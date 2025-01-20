@@ -1075,6 +1075,11 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
               expect(response).to have_gitlab_http_status(:forbidden)
             end
+
+            it_behaves_like 'enforcing job token policies', :read_jobs do
+              let(:token) { target_job.token }
+              let(:request) { download_artifact }
+            end
           end
 
           context 'when using runnners token' do

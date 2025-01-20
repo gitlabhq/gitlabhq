@@ -67,7 +67,8 @@ module ProjectsHelper
     data_attrs = {
       user_id: author.id,
       username: author.username,
-      name: author.name
+      name: author.name,
+      testid: "author-link"
     }
 
     inject_classes = ["author-link", opts[:extra_class]]

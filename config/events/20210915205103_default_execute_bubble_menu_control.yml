@@ -6,9 +6,6 @@ identifiers:
 product_group: remote_development
 milestone: "14.2"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67363
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

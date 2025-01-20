@@ -176,6 +176,21 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
         'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif'
       end
 
+      it_behaves_like 'enforcing job token policies', :read_jobs do
+        before do
+          stub_licensed_features(cross_project_pipelines: true)
+        end
+
+        around do |example|
+          Sidekiq::Testing.inline! { example.run }
+        end
+
+        let(:request) do
+          get api("/projects/#{source_project.id}/jobs/#{job.id}/artifacts/#{artifact}"),
+            params: { job_token: target_job.token }
+        end
+      end
+
       context 'when user is anonymous' do
         let(:api_user) { nil }
 
@@ -305,10 +320,14 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
           context 'when job token is used' do
             let(:other_job) { create(:ci_build, :running, user: user) }
 
-            subject { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", job_token: other_job.token) }
+            subject(:request) { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", job_token: other_job.token) }
 
             before do
               stub_licensed_features(cross_project_pipelines: true)
+            end
+
+            it_behaves_like 'enforcing job token policies', :read_jobs do
+              let(:other_job) { target_job }
             end
 
             context 'when job token scope is enabled' do
@@ -482,6 +501,21 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
 
     def get_for_ref(ref = pipeline.ref, job_name = job.name)
       get api("/projects/#{project.id}/jobs/artifacts/#{ref}/download", api_user), params: { job: job_name }
+    end
+
+    it_behaves_like 'enforcing job token policies', :read_jobs do
+      before do
+        stub_licensed_features(cross_project_pipelines: true)
+      end
+
+      around do |example|
+        Sidekiq::Testing.inline! { example.run }
+      end
+
+      let(:request) do
+        get api("/projects/#{source_project.id}/jobs/artifacts/#{pipeline.ref}/download"),
+          params: { job: job.name, job_token: target_job.token }
+      end
     end
 
     context 'when not logged in' do

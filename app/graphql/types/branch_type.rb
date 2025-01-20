@@ -11,7 +11,7 @@ module Types
       description: 'Name of the branch.'
 
     field :commit, Types::Repositories::CommitType,
-      null: true, resolver: Resolvers::BranchCommitResolver,
+      null: true, resolver: Resolvers::Repositories::RefCommitResolver,
       description: 'Commit for the branch.'
   end
   # rubocop: enable Graphql/AuthorizeTypes

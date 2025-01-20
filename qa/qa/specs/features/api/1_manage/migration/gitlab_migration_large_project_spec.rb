@@ -4,12 +4,12 @@
 
 # rubocop:disable Rails/Pluck, Layout/LineLength, RSpec/MultipleMemoizedHelpers
 module QA
-  RSpec.describe "Manage", :skip_live_env,
+  RSpec.describe "Manage", :skip_live_env, product_group: :import_and_integrate,
     only: { condition: -> { ENV["CI_PROJECT_NAME"] == "import-metrics" } },
     custom_test_metrics: {
       tags: { import_type: ENV["QA_IMPORT_TYPE"], import_repo: ENV["QA_LARGE_IMPORT_REPO"] || "migration-test-project" }
     } do
-    describe "Gitlab migration", orchestrated: false, product_group: :import_and_integrate do
+    describe "Gitlab migration", :import, orchestrated: false, requires_admin: 'creates a user via API' do
       include_context "with gitlab group migration"
 
       let!(:logger) { Runtime::Logger.logger }

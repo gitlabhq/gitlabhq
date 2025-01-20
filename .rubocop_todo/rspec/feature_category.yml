@@ -1441,7 +1441,6 @@ RSpec/FeatureCategory:
     - 'spec/graphql/resolvers/board_lists_resolver_spec.rb'
     - 'spec/graphql/resolvers/board_resolver_spec.rb'
     - 'spec/graphql/resolvers/boards_resolver_spec.rb'
-    - 'spec/graphql/resolvers/branch_commit_resolver_spec.rb'
     - 'spec/graphql/resolvers/ci/template_resolver_spec.rb'
     - 'spec/graphql/resolvers/ci/test_report_summary_resolver_spec.rb'
     - 'spec/graphql/resolvers/ci/test_suite_resolver_spec.rb'

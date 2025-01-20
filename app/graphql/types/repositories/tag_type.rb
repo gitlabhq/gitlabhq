@@ -18,7 +18,7 @@ module Types
         description: 'Tagging message.'
 
       field :commit, Types::Repositories::CommitType,
-        null: true, resolver: Resolvers::BranchCommitResolver,
+        null: true, resolver: Resolvers::Repositories::RefCommitResolver,
         description: 'Commit for the tag.'
     end
   end

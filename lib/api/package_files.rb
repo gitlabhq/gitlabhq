@@ -31,6 +31,7 @@ module API
         use :pagination
       end
       route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, job_token_policies: :read_packages
       get ':id/packages/:package_id/package_files' do
         package = ::Packages::PackageFinder
           .new(user_project, params[:package_id]).execute
@@ -54,6 +55,7 @@ module API
         requires :package_file_id, type: Integer, desc: 'ID of a package file'
       end
       route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, job_token_policies: :admin_packages
       delete ':id/packages/:package_id/package_files/:package_file_id' do
         authorize_destroy_package!(user_project)
 

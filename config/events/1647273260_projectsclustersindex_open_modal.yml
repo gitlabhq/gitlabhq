@@ -5,9 +5,6 @@ action: open_modal
 product_group: environments
 milestone: "14.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82690
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

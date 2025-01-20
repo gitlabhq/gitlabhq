@@ -58,8 +58,11 @@ module API
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+              route_setting :authorization, job_token_policies: :read_packages
 
               get 'revisions/:recipe_revision/files/:file_name', requirements: FILE_NAME_REQUIREMENTS do
+                authorize_job_token_policies!(project)
+
                 render_api_error!('Not supported', :not_found)
               end
             end

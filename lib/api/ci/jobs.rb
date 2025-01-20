@@ -240,6 +240,7 @@ module API
           ]
         end
         route_setting :authentication, job_token_allowed: true
+        route_setting :authorization, skip_job_token_policies: true
         get '', feature_category: :continuous_integration, urgency: :low do
           validate_current_authenticated_job
 
@@ -256,6 +257,7 @@ module API
           ]
         end
         route_setting :authentication, job_token_allowed: true
+        route_setting :authorization, skip_job_token_policies: true
         get '/allowed_agents', urgency: :default, feature_category: :deployment_management do
           validate_current_authenticated_job
 

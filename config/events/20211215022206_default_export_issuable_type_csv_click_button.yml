@@ -6,9 +6,6 @@ identifiers:
 product_group: optimize
 milestone: "13.10"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54214
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

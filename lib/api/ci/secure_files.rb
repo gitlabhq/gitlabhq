@@ -29,6 +29,7 @@ module API
           use :pagination
         end
         route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: true
+        route_setting :authorization, job_token_policies: :read_secure_files
         get ':id/secure_files' do
           secure_files = user_project.secure_files.order_by_created_at
           present paginate(secure_files), with: Entities::Ci::SecureFile
@@ -44,6 +45,7 @@ module API
         end
 
         route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: true
+        route_setting :authorization, job_token_policies: :read_secure_files
         get ':id/secure_files/:secure_file_id' do
           secure_file = user_project.secure_files.find(params[:secure_file_id])
           present secure_file, with: Entities::Ci::SecureFile
@@ -54,6 +56,7 @@ module API
           tags %w[secure_files]
         end
         route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: true
+        route_setting :authorization, job_token_policies: :read_secure_files
         get ':id/secure_files/:secure_file_id/download' do
           secure_file = user_project.secure_files.find(params[:secure_file_id])
 
@@ -79,6 +82,7 @@ module API
             requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The secure file being uploaded', documentation: { type: 'file' }
           end
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: true
+          route_setting :authorization, job_token_policies: :admin_secure_files
           post ':id/secure_files' do
             secure_file = user_project.secure_files.new(
               name: Gitlab::PathTraversal.check_path_traversal!(params[:name])
@@ -101,6 +105,7 @@ module API
             failure [{ code: 404, message: '404 Not found' }]
           end
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: true
+          route_setting :authorization, job_token_policies: :admin_secure_files
           delete ':id/secure_files/:secure_file_id' do
             secure_file = user_project.secure_files.find(params[:secure_file_id])
 

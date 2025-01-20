@@ -807,6 +807,18 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
   end
 
   describe 'GET /projects/:id/repository/changelog' do
+    it_behaves_like 'enforcing job token policies', :read_releases do
+      before do
+        allow(Repositories::ChangelogService).to receive(:new)
+          .and_return(instance_spy(Repositories::ChangelogService))
+      end
+
+      let(:request) do
+        get api("/projects/#{source_project.id}/repository/changelog"),
+          params: { version: '1.0.0', job_token: target_job.token }
+      end
+    end
+
     it 'generates the changelog for a version' do
       spy = instance_spy(::Repositories::ChangelogService)
       release_notes = 'Release notes'

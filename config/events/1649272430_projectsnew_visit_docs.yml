@@ -5,9 +5,6 @@ action: visit_docs
 product_group: environments
 milestone: "14.10"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84224
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

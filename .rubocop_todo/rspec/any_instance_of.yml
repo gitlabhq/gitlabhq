@@ -52,7 +52,6 @@ RSpec/AnyInstanceOf:
     - 'ee/spec/support/shared_examples/lib/gitlab/geo/geo_logs_event_source_info_shared_examples.rb'
     - 'ee/spec/support/shared_examples/models/member_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/base_sync_service_shared_examples.rb'
-    - 'ee/spec/workers/concerns/elastic/indexing_control_spec.rb'
     - 'ee/spec/workers/geo/registry_sync_worker_spec.rb'
     - 'ee/spec/workers/project_cache_worker_spec.rb'
     - 'ee/spec/workers/repository_import_worker_spec.rb'

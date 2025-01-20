@@ -8,14 +8,6 @@ description: https://docs.gitlab.com/ee/operations/feature_flags.html#user-list
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30243
 milestone: '13.0'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: user_list_id
-        table: operations_user_lists
-        sharding_key: project_id
-        belongs_to: user_list
-desired_sharding_key_migration_job_name: BackfillOperationsStrategiesUserListsProjectId
 table_size: small
+sharding_key:
+  project_id: projects

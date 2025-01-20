@@ -20,7 +20,11 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
     let(:url) { "/projects/#{project.id}/packages" }
     let(:package_schema) { 'public_api/v4/packages/packages' }
 
-    subject { get api(url), params: params }
+    subject(:request) { get api(url), params: params }
+
+    it_behaves_like 'enforcing job token policies', :read_packages do
+      let(:params) { { job_token: target_job.token } }
+    end
 
     context 'without the need for a license' do
       context 'project is public' do
@@ -227,6 +231,10 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
 
     subject { get api(package_url, user) }
 
+    it_behaves_like 'enforcing job token policies', :read_packages do
+      let(:request) { get api(package_url), params: { job_token: target_job.token } }
+    end
+
     shared_examples 'no destroy url' do
       it 'returns no destroy url' do
         subject
@@ -411,6 +419,10 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
         expect(json_response.length).to eq(3)
         expect(json_response.pluck('id')).to eq(pipelines.reverse.map(&:id))
       end
+    end
+
+    it_behaves_like 'enforcing job token policies', :read_packages do
+      let(:request) { get api(package_pipelines_url), params: { job_token: target_job.token } }
     end
 
     context 'without the need for a license' do
@@ -621,6 +633,14 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
   end
 
   describe 'DELETE /projects/:id/packages/:package_id' do
+    it_behaves_like 'enforcing job token policies', :admin_packages do
+      before_all do
+        project.add_maintainer(user)
+      end
+
+      let(:request) { delete api(package_url), params: { job_token: target_job.token } }
+    end
+
     context 'without the need for a license' do
       context 'project is public' do
         it 'returns 403 for non authenticated user' do

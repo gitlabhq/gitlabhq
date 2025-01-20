@@ -7,9 +7,6 @@ identifiers:
 product_group: activation
 milestone: '14.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169895
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

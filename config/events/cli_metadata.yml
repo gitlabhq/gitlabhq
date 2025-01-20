@@ -8,8 +8,6 @@ identifiers:
 product_group: package_registry
 milestone: '13.5'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41846#note_419970912
-distributions:
-- ce
 tiers:
 - free
 - premium

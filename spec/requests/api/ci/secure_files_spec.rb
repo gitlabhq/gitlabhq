@@ -23,6 +23,13 @@ RSpec.describe API::Ci::SecureFiles, feature_category: :mobile_devops do
   end
 
   describe 'GET /projects/:id/secure_files' do
+    it_behaves_like 'enforcing job token policies', :read_secure_files do
+      let_it_be(:user) { developer }
+      let(:request) do
+        get api("/projects/#{source_project.id}/secure_files"), params: { job_token: target_job.token }
+      end
+    end
+
     context 'authenticated user with admin permissions' do
       it 'returns project secure files' do
         get api("/projects/#{project.id}/secure_files", maintainer)
@@ -75,6 +82,14 @@ RSpec.describe API::Ci::SecureFiles, feature_category: :mobile_devops do
   end
 
   describe 'GET /projects/:id/secure_files/:secure_file_id' do
+    it_behaves_like 'enforcing job token policies', :read_secure_files do
+      let_it_be(:user) { developer }
+      let(:request) do
+        get api("/projects/#{source_project.id}/secure_files/#{secure_file.id}"),
+          params: { job_token: target_job.token }
+      end
+    end
+
     context 'authenticated user with admin permissions' do
       it 'returns project secure file details' do
         get api("/projects/#{project.id}/secure_files/#{secure_file.id}", maintainer)
@@ -139,6 +154,14 @@ RSpec.describe API::Ci::SecureFiles, feature_category: :mobile_devops do
   end
 
   describe 'GET /projects/:id/secure_files/:secure_file_id/download' do
+    it_behaves_like 'enforcing job token policies', :read_secure_files do
+      let_it_be(:user) { developer }
+      let(:request) do
+        get api("/projects/#{source_project.id}/secure_files/#{secure_file.id}/download"),
+          params: { job_token: target_job.token }
+      end
+    end
+
     context 'authenticated user with admin permissions' do
       it 'returns a secure file' do
         sample_file = fixture_file('ci_secure_files/upload-keystore.jks')
@@ -197,6 +220,14 @@ RSpec.describe API::Ci::SecureFiles, feature_category: :mobile_devops do
   end
 
   describe 'POST /projects/:id/secure_files' do
+    it_behaves_like 'enforcing job token policies', :admin_secure_files do
+      let_it_be(:user) { maintainer }
+      let(:request) do
+        post api("/projects/#{source_project.id}/secure_files"),
+          params: file_params.merge(job_token: target_job.token)
+      end
+    end
+
     context 'authenticated user with admin permissions' do
       it 'creates a secure file' do
         expect do
@@ -347,6 +378,14 @@ RSpec.describe API::Ci::SecureFiles, feature_category: :mobile_devops do
   end
 
   describe 'DELETE /projects/:id/secure_files/:secure_file_id' do
+    it_behaves_like 'enforcing job token policies', :admin_secure_files do
+      let_it_be(:user) { maintainer }
+      let(:request) do
+        delete api("/projects/#{source_project.id}/secure_files/#{secure_file.id}"),
+          params: { job_token: target_job.token }
+      end
+    end
+
     context 'authenticated user with admin permissions' do
       it 'deletes the secure file' do
         expect do

@@ -395,8 +395,10 @@ module API
           optional :direct_download, default: false, type: Boolean, desc: 'Perform direct download from remote storage instead of proxying artifacts'
         end
         route_setting :authentication, job_token_allowed: true
+        route_setting :authorization, job_token_policies: :read_jobs
         get '/:id/artifacts', feature_category: :job_artifacts do
           authenticate_job_via_dependent_job!
+          authorize_job_token_policies!(current_job.project)
 
           audit_download(current_job, current_job.artifacts_file&.filename) if current_job.artifacts_file
           present_artifacts_file!(current_job.artifacts_file, supports_direct_download: params[:direct_download])

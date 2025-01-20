@@ -6,9 +6,6 @@ identifiers:
 product_group: product_planning
 milestone: "13.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53753
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

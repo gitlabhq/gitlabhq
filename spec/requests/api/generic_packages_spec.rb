@@ -86,6 +86,14 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
   end
 
   describe 'PUT /api/v4/projects/:id/packages/generic/:package_name/:package_version/(*path)/:file_name/authorize' do
+    it_behaves_like 'enforcing job token policies', :admin_packages do
+      before do
+        source_project.add_developer(user)
+      end
+
+      let(:request) { authorize_upload_file(workhorse_headers.merge(job_token_header(target_job.token))) }
+    end
+
     context 'with valid project' do
       where(:project_visibility, :user_role, :member?, :authenticate_with, :expected_status) do
         'PUBLIC'  | :developer | true  | :personal_access_token         | :success
@@ -206,6 +214,14 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
     let(:file_upload) { fixture_file_upload('spec/fixtures/packages/generic/myfile.tar.gz') }
     let(:params) { { file: file_upload } }
+
+    it_behaves_like 'enforcing job token policies', :admin_packages do
+      before do
+        source_project.add_developer(user)
+      end
+
+      let(:request) { upload_file(params, workhorse_headers.merge(job_token_header(target_job.token))) }
+    end
 
     context 'authentication' do
       where(:project_visibility, :user_role, :member?, :authenticate_with, :expected_status) do
@@ -750,6 +766,16 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
   describe 'GET /api/v4/projects/:id/packages/generic/:package_name/:package_version/(*path)/:file_name' do
     let_it_be(:package) { create(:generic_package, project: project) }
     let_it_be(:package_file) { create(:package_file, :generic, package: package) }
+
+    it_behaves_like 'enforcing job token policies', :read_packages do
+      before do
+        source_project.add_developer(user)
+      end
+
+      let(:request) do
+        download_file(job_token_header(target_job.token))
+      end
+    end
 
     context 'authentication' do
       where(:project_visibility, :user_role, :member?, :authenticate_with, :expected_status) do

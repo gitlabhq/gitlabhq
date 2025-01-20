@@ -11,9 +11,6 @@ product_categories:
 - integrations
 milestone: "15.3"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93468
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

@@ -67,6 +67,7 @@ module API
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+              route_setting :authorization, skip_job_token_policies: true
 
               get 'check_credentials', urgency: :default do
                 :ok
@@ -87,6 +88,7 @@ module API
             end
 
             route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+            route_setting :authorization, skip_job_token_policies: true
 
             get 'conans/search', urgency: :low do
               service = ::Packages::Conan::SearchService.new(search_project, current_user, query: params[:q]).execute

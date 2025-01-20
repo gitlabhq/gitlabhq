@@ -2,14 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::BranchCommitResolver do
+RSpec.describe Resolvers::Repositories::RefCommitResolver, feature_category: :source_code_management do
   include GraphqlHelpers
 
-  subject(:commit) { resolve(described_class, obj: branch) }
+  subject(:commit) { resolve(described_class, obj: ref) }
 
   let_it_be(:repository) { create(:project, :repository).repository }
 
-  let(:branch) { repository.find_branch('master') }
+  let(:ref) { repository.find_branch('master') }
 
   describe '#resolve' do
     it 'resolves commit' do
@@ -20,8 +20,8 @@ RSpec.describe Resolvers::BranchCommitResolver do
       expect(sync(commit).container).to eq(repository.project)
     end
 
-    context 'when branch does not exist' do
-      let(:branch) { nil }
+    context 'when ref does not exist' do
+      let(:ref) { nil }
 
       it 'returns nil' do
         is_expected.to be_nil
@@ -34,7 +34,7 @@ RSpec.describe Resolvers::BranchCommitResolver do
 
       commits = batch_sync(max_queries: 2) do
         [
-          resolve(described_class, obj: branch),
+          resolve(described_class, obj: ref),
           resolve(described_class, obj: repository.find_branch('spooky-stuff'))
         ]
       end

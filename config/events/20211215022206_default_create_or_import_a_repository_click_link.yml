@@ -6,9 +6,6 @@ identifiers:
 product_group: acquisition
 milestone: "13.12"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58689
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

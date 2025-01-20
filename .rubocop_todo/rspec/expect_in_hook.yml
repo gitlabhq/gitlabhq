@@ -67,7 +67,6 @@ RSpec/ExpectInHook:
     - 'ee/spec/tasks/gitlab/license_rake_spec.rb'
     - 'ee/spec/tasks/gitlab/spdx_rake_spec.rb'
     - 'ee/spec/workers/analytics/cycle_analytics/consistency_worker_spec.rb'
-    - 'ee/spec/workers/elastic_indexing_control_worker_spec.rb'
     - 'ee/spec/workers/geo/secondary/registry_consistency_worker_spec.rb'
     - 'ee/spec/workers/geo/verification_state_backfill_worker_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/11_fulfillment/license/cloud_activation_spec.rb'

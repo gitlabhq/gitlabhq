@@ -10,9 +10,6 @@ description: "Count of unique users adding incidents to the TODO list. Event mig
 product_group: platform_insights
 milestone: "15.7"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105223
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

@@ -411,7 +411,15 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
       project.repository.add_tag(user, 'v1.2.99', 'master')
     end
 
-    subject { post api(url), headers: headers, params: params }
+    subject(:request) { post api(url), headers: headers, params: params }
+
+    it_behaves_like 'enforcing job token policies', :admin_packages do
+      before_all do
+        project.add_developer(user)
+      end
+
+      let(:params) { { tag: 'v1.2.99', job_token: target_job.token } }
+    end
 
     shared_examples 'composer package publish' do
       where(:project_visibility_level, :member_role, :token_type, :valid_token, :shared_examples_name, :expected_status) do
@@ -546,7 +554,7 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
     let(:url) { "/projects/#{project.id}/packages/composer/archives/#{package_name}.zip" }
     let(:params) { { sha: sha } }
 
-    subject { get api(url), headers: headers, params: params }
+    subject(:request) { get api(url), headers: headers, params: params }
 
     context 'with valid project' do
       let!(:package) { create(:composer_package, :with_metadatum, name: package_name, project: project) }
@@ -586,6 +594,14 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
       context 'with a match package name and sha' do
         let(:branch) { project.repository.find_branch('master') }
         let(:sha) { branch.target }
+
+        it_behaves_like 'enforcing job token policies', :read_packages do
+          before_all do
+            project.add_developer(user)
+          end
+
+          let(:headers) { job_basic_auth_header(target_job) }
+        end
 
         context 'with basic auth' do
           where(:project_visibility_level, :member_role, :token_type, :valid_token, :expected_status) do

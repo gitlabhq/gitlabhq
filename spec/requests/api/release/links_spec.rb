@@ -25,6 +25,14 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
   end
 
   describe 'GET /projects/:id/releases/:tag_name/assets/links' do
+    it_behaves_like 'enforcing job token policies', :read_releases do
+      let_it_be(:user) { maintainer }
+      let(:request) do
+        get api("/projects/#{source_project.id}/releases/v0.1/assets/links"),
+          params: { job_token: target_job.token }
+      end
+    end
+
     context 'when there are two release links' do
       let!(:release_link_1) { create(:release_link, release: release, created_at: 2.days.ago) }
       let!(:release_link_2) { create(:release_link, release: release, created_at: 1.day.ago) }
@@ -105,6 +113,14 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
 
   describe 'GET /projects/:id/releases/:tag_name/assets/links/:link_id' do
     let!(:release_link) { create(:release_link, release: release) }
+
+    it_behaves_like 'enforcing job token policies', :read_releases do
+      let_it_be(:user) { maintainer }
+      let(:request) do
+        get api("/projects/#{source_project.id}/releases/v0.1/assets/links/#{release_link.id}"),
+          params: { job_token: target_job.token }
+      end
+    end
 
     it 'returns 200 HTTP status' do
       get api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", maintainer)
@@ -197,6 +213,14 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
     end
 
     let(:last_release_link) { release.links.last }
+
+    it_behaves_like 'enforcing job token policies', :admin_releases do
+      let_it_be(:user) { maintainer }
+      let(:request) do
+        post api("/projects/#{source_project.id}/releases/v0.1/assets/links"),
+          params: params.merge(job_token: target_job.token)
+      end
+    end
 
     it 'accepts the request' do
       post api("/projects/#{project.id}/releases/v0.1/assets/links", maintainer), params: params
@@ -343,6 +367,14 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
     let(:params) { { name: 'awesome-app.msi' } }
     let!(:release_link) { create(:release_link, release: release) }
 
+    it_behaves_like 'enforcing job token policies', :admin_releases do
+      let_it_be(:user) { maintainer }
+      let(:request) do
+        put api("/projects/#{source_project.id}/releases/v0.1/assets/links/#{release_link.id}"),
+          params: params.merge(job_token: target_job.token)
+      end
+    end
+
     it 'accepts the request' do
       put api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", maintainer),
         params: params
@@ -481,6 +513,14 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
   describe 'DELETE /projects/:id/releases/:tag_name/assets/links/:link_id' do
     let!(:release_link) do
       create(:release_link, release: release)
+    end
+
+    it_behaves_like 'enforcing job token policies', :admin_releases do
+      let_it_be(:user) { maintainer }
+      let(:request) do
+        delete api("/projects/#{source_project.id}/releases/v0.1/assets/links/#{release_link.id}"),
+          params: { job_token: target_job.token }
+      end
     end
 
     it 'accepts the request' do

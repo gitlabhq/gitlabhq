@@ -122,6 +122,11 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '{ee/config/custom_abilities/*yml,doc/user/custom_roles/abilities.md,tooling/custom_roles/docs/templates/custom_abilities.md.erb}'
       run: bundle exec rake gitlab:custom_roles:check_docs
+    verify_job_token_policies:
+      tags: backend
+      files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
+      glob: '{{,ee/}lib/api/*.rb,app/validators/json_schemas/ci_job_token_policies.json,doc/ci/jobs/granular_permissions.md,tooling/ci/job_tokens/docs/templates/granular_permissions.md.erb}'
+      run: bundle exec rake ci:job_tokens:check_policies
     rubocop:
       tags: backend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD

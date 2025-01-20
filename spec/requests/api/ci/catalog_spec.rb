@@ -28,6 +28,16 @@ RSpec.describe API::Ci::Catalog, feature_category: :pipeline_composition do
       post api(url, user), params: { version: release.tag, metadata: metadata }
     end
 
+    it_behaves_like 'enforcing job token policies', :admin_releases do
+      before_all do
+        project.add_developer(user)
+      end
+
+      let(:request) do
+        post api(url), params: { version: release.tag, metadata: metadata, job_token: target_job.token }
+      end
+    end
+
     context 'when the project does not exist' do
       let(:url) { "/projects/invalid-path/catalog/publish" }
 

@@ -70,7 +70,7 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
     let(:url_prefix) { "#{Settings.gitlab.base_url}/api/v4/projects/#{project_id}" }
     let(:recipe_path) { package.conan_recipe_path }
 
-    subject { get api(url), headers: headers }
+    subject(:request) { get api(url), headers: headers }
 
     describe 'GET /api/v4/projects/:id/packages/conan/v1/conans/:package_name/package_version/:package_username' \
       '/:package_channel' do
@@ -129,7 +129,7 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
 
     describe 'POST /api/v4/projects/:id/packages/conan/v1/conans/:package_name/package_version/:package_username' \
       '/:package_channel/upload_urls' do
-      subject do
+      subject(:request) do
         post api("/projects/#{project_id}/packages/conan/v1/conans/#{recipe_path}/upload_urls"), params: params.to_json,
           headers: headers
       end
@@ -139,7 +139,7 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
 
     describe 'POST /api/v4/projects/:id/packages/conan/v1/conans/:package_name/package_version/:package_username' \
       '/:package_channel/packages/:conan_package_reference/upload_urls' do
-      subject do
+      subject(:request) do
         post api("/projects/#{project_id}/packages/conan/v1/conans/#{recipe_path}/packages/123456789/upload_urls"),
           params: params.to_json, headers: headers
       end
@@ -151,7 +151,9 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
       '/:package_channel' do
       let_it_be_with_reload(:package) { create(:conan_package, project: project) }
 
-      subject { delete api("/projects/#{project_id}/packages/conan/v1/conans/#{recipe_path}"), headers: headers }
+      subject(:request) do
+        delete api("/projects/#{project_id}/packages/conan/v1/conans/#{recipe_path}"), headers: headers
+      end
 
       it_behaves_like 'delete package endpoint'
     end
@@ -160,7 +162,7 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
   context 'with file download endpoints' do
     include_context 'conan file download endpoints'
 
-    subject { get api(url), headers: headers }
+    subject(:request) { get api(url), headers: headers }
 
     describe 'GET /api/v4/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username' \
       '/:package_channel/:recipe_revision/export/:file_name' do
@@ -194,7 +196,7 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
       '/:package_channel/:recipe_revision/export/:file_name/authorize' do
       let(:file_name) { 'conanfile.py' }
 
-      subject do
+      subject(:request) do
         put api("/projects/#{project_id}/packages/conan/v1/files/#{recipe_path}/0/export/#{file_name}/authorize"),
           headers: headers_with_token
       end
@@ -206,7 +208,7 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
       '/:package_channel/:recipe_revision/export/:conan_package_reference/:package_revision/:file_name/authorize' do
       let(:file_name) { 'conaninfo.txt' }
 
-      subject do
+      subject(:request) do
         put api("/projects/#{project_id}/packages/conan/v1/files/#{recipe_path}/0/package/123456789/0/#{file_name}" \
           "/authorize"),
           headers: headers_with_token

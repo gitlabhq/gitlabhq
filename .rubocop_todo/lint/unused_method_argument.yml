@@ -20,7 +20,6 @@ Lint/UnusedMethodArgument:
     - 'app/graphql/mutations/notes/create/image_diff_note.rb'
     - 'app/graphql/resolvers/base_resolver.rb'
     - 'app/graphql/resolvers/board_list_issues_resolver.rb'
-    - 'app/graphql/resolvers/branch_commit_resolver.rb'
     - 'app/graphql/resolvers/ci/runner_groups_resolver.rb'
     - 'app/graphql/resolvers/ci/runner_platforms_resolver.rb'
     - 'app/graphql/resolvers/ci/runner_setup_resolver.rb'

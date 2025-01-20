@@ -319,6 +319,14 @@ RSpec.describe API::Helpers, feature_category: :shared do
             end
           end
 
+          context 'when job token policies are skipped' do
+            before do
+              allow(helper).to receive(:route_setting).with(:authorization).and_return(skip_job_token_policies: true)
+            end
+
+            it { is_expected.to eq project }
+          end
+
           context 'when the `enforce_job_token_policies` feature flag is disabled' do
             before do
               stub_feature_flags(enforce_job_token_policies: false)

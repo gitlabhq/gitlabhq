@@ -87,17 +87,23 @@ class PostReceiveService
 
   def broadcast_message
     banner = nil
+    user_access_level = if project && user && Feature.enabled?(:derisk_user_access_level_in_git_hook, project)
+                          user.max_member_access_for_project(project.id)
+                        end
 
     if project
       scoped_messages =
-        System::BroadcastMessage.current_banner_messages(current_path: project.full_path).select do |message|
+        System::BroadcastMessage.current_banner_messages(
+          current_path: project.full_path,
+          user_access_level: user_access_level
+        ).select do |message|
           message.target_path.present? && message.matches_current_path(project.full_path) && message.show_in_cli?
         end
 
       banner = scoped_messages.last
     end
 
-    banner ||= System::BroadcastMessage.current_show_in_cli_banner_messages.last
+    banner ||= System::BroadcastMessage.current_show_in_cli_banner_messages(user_access_level: user_access_level).last
 
     banner&.message
   end

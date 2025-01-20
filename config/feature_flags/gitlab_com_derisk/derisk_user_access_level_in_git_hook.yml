@@ -1,0 +1,9 @@
+---
+name: derisk_user_access_level_in_git_hook
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/497152
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176156
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/512882
+milestone: '17.9'
+group: group::personal productivity
+type: gitlab_com_derisk
+default_enabled: false

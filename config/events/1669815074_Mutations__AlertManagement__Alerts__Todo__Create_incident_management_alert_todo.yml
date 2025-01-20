@@ -10,9 +10,6 @@ identifiers:
 product_group: platform_insights
 milestone: "15.7"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105223/diffs
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium

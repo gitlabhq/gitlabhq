@@ -4,7 +4,7 @@ module QA
   RSpec.describe "Manage", product_group: :import_and_integrate do
     include_context "with gitlab group migration"
 
-    describe "Gitlab migration" do
+    describe "Gitlab migration", :import, :orchestrated, requires_admin: 'creates a user via API' do
       context 'with subgroups and labels' do
         let(:subgroup) do
           create(:group,

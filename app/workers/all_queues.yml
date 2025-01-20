@@ -2919,6 +2919,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: ci_execute_build_hooks
+  :worker_name: Ci::ExecuteBuildHooksWorker
+  :feature_category: :pipeline_composition
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: ci_initialize_pipelines_iid_sequence
   :worker_name: Ci::InitializePipelinesIidSequenceWorker
   :feature_category: :continuous_integration

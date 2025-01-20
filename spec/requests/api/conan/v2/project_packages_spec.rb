@@ -42,6 +42,12 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
     it_behaves_like 'project not found by project id'
 
+    # TODO remove expected_success_status: :not_found when endpoint is implemented
+    it_behaves_like 'enforcing job token policies', :read_packages, expected_success_status: :not_found do
+      let(:request) { get_request }
+      let(:headers) { job_basic_auth_header(target_job) }
+    end
+
     context 'when feature flag is disabled' do
       before do
         stub_feature_flags(conan_package_revisions_support: false)

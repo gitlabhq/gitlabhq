@@ -14,7 +14,7 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
 
   let(:headers) { {} }
 
-  subject { get(url, headers: headers) }
+  subject(:request) { get(url, headers: headers) }
 
   shared_examples 'accept metadata request' do |status:|
     it 'accepts the metadata request' do
@@ -129,6 +129,10 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
         end
       end
     end
+  end
+
+  it_behaves_like 'enforcing job token policies', :read_packages do
+    let(:headers) { build_token_auth_header(target_job.token) }
   end
 
   context 'with a group namespace' do
@@ -270,7 +274,7 @@ RSpec.shared_examples 'handling audit request' do |path:, scope: :project|
     { 'HTTP_CONTENT_ENCODING' => 'gzip', 'CONTENT_TYPE' => 'application/json' }
   end
 
-  subject { post(url, headers: headers.merge(default_headers), params: params) }
+  subject(:request) { post(url, headers: headers.merge(default_headers), params: params) }
 
   shared_examples 'accept audit request' do |status:|
     it 'accepts the audit request' do
@@ -342,6 +346,14 @@ RSpec.shared_examples 'handling audit request' do |path:, scope: :project|
             it_behaves_like 'accept audit request', status: :ok
           end
 
+          it_behaves_like 'enforcing job token policies', :read_packages do
+            before_all do
+              project.add_reporter(user)
+            end
+
+            let(:headers) { build_token_auth_header(target_job.token) }
+          end
+
           %i[oauth personal_access_token job_token deploy_token].each do |auth|
             context "with #{auth}" do
               let(:auth) { auth }
@@ -399,7 +411,7 @@ RSpec.shared_examples 'handling get dist tags requests' do |scope: :project|
 
   let(:headers) { {} }
 
-  subject { get(url, headers: headers) }
+  subject(:request) { get(url, headers: headers) }
 
   shared_examples 'reject package tags request' do |status:|
     before do
@@ -477,6 +489,10 @@ RSpec.shared_examples 'handling get dist tags requests' do |scope: :project|
         end
       end
     end
+  end
+
+  it_behaves_like 'enforcing job token policies', :read_packages do
+    let(:headers) { build_token_auth_header(target_job.token) }
   end
 
   context 'with a group namespace' do
@@ -578,7 +594,7 @@ RSpec.shared_examples 'handling create dist tag requests' do |scope: :project|
   end
 
   shared_examples 'handling all conditions' do
-    subject { put(url, env: env, headers: headers) }
+    subject(:request) { put(url, env: env, headers: headers) }
 
     context 'with unauthenticated requests' do
       let(:package_name) { 'unscoped-package' }
@@ -622,7 +638,7 @@ RSpec.shared_examples 'handling delete dist tag requests' do |scope: :project|
   end
 
   shared_examples 'handling all conditions' do
-    subject { delete(url, headers: headers) }
+    subject(:request) { delete(url, headers: headers) }
 
     context 'with unauthenticated requests' do
       let(:package_name) { 'unscoped-package' }
@@ -713,6 +729,10 @@ RSpec.shared_examples 'handles authenticated requests, for tags create or delete
     before do
       project.send(:"add_#{non_guest_role}", user)
       project.update!(visibility: 'private')
+    end
+
+    it_behaves_like 'enforcing job token policies', :admin_packages do
+      let(:headers) { build_token_auth_header(target_job.token) }
     end
 
     context 'with authentication methods' do

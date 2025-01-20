@@ -100,6 +100,12 @@ RSpec.shared_examples 'job token for package GET requests' do
   end
 end
 
+RSpec.shared_examples 'enforcing read_packages job token policy' do
+  it_behaves_like 'enforcing job token policies', :read_packages do
+    let(:headers) { build_token_auth_header(target_job.token) }
+  end
+end
+
 RSpec.shared_examples 'job token for package uploads' do |authorize_endpoint: false, accept_invalid_username: false|
   context 'with job token headers' do
     let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, job.token).merge(workhorse_headers) }

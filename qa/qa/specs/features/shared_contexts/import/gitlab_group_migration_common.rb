@@ -1,12 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.shared_context(
-    'with gitlab group migration',
-    :import,
-    :orchestrated,
-    requires_admin: 'creates a user via API'
-  ) do
+  RSpec.shared_context 'with gitlab group migration' do
     let!(:import_wait_duration) { { max_duration: 120, sleep_interval: 2 } }
 
     # source instance objects

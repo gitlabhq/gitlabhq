@@ -74,7 +74,7 @@ Your project is now onboarded and ready for your application to start sending ev
 
 To collect and send usage events to GitLab, you must include a code snippet in your website.
 You can choose from several platform and technology-specific tracking SDKs to integrate with your application.
-For this example website, we use the [Browser SDK](../../operations/product_analytics/instrumentation/browser_sdk.md).
+For this example website, we use the [Browser SDK](../../development/internal_analytics/browser_sdk.md).
 
 To instrument your new website:
 

@@ -268,6 +268,17 @@ importers:
   rules:
     - if: $QA_SUITES =~ /Test::Integration::Import/
 
+import-with-smtp:
+  extends:
+    - .qa
+    - .failure-videos
+  variables:
+    QA_SCENARIO: Test::Integration::ImportWithSMTP
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::ImportWithSMTP/
+    - !reference [.rules:test:manual, rules]
+
 # ========== ai-gateway ===========
 ai-gateway:
   extends:

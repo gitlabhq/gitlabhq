@@ -391,6 +391,8 @@ end
 RSpec.shared_examples 'recipe download_urls' do
   let(:recipe_path) { package.conan_recipe_path }
 
+  it_behaves_like 'enforcing read_packages job token policy'
+
   it 'returns the download_urls for the recipe files' do
     expected_response = {
       'conanfile.py' => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conanfile.py",
@@ -407,6 +409,8 @@ end
 
 RSpec.shared_examples 'package download_urls' do
   let(:recipe_path) { package.conan_recipe_path }
+
+  it_behaves_like 'enforcing read_packages job token policy'
 
   it 'returns the download_urls for the package files' do
     expected_response = {
@@ -436,8 +440,9 @@ RSpec.shared_examples 'rejects invalid upload_url params' do
 end
 
 RSpec.shared_examples 'recipe snapshot endpoint' do
-  subject { get api(url), headers: headers }
+  subject(:request) { get api(url), headers: headers }
 
+  it_behaves_like 'enforcing read_packages job token policy'
   it_behaves_like 'conan FIPS mode'
   it_behaves_like 'rejects invalid recipe'
   it_behaves_like 'rejects recipe for invalid project'
@@ -462,8 +467,9 @@ RSpec.shared_examples 'recipe snapshot endpoint' do
 end
 
 RSpec.shared_examples 'package snapshot endpoint' do
-  subject { get api(url), headers: headers }
+  subject(:request) { get api(url), headers: headers }
 
+  it_behaves_like 'enforcing read_packages job token policy'
   it_behaves_like 'conan FIPS mode'
   it_behaves_like 'rejects invalid recipe'
   it_behaves_like 'rejects recipe for invalid project'
@@ -515,6 +521,7 @@ RSpec.shared_examples 'recipe upload_urls endpoint' do
       'conanmanifest.txt': 123 }
   end
 
+  it_behaves_like 'enforcing read_packages job token policy'
   it_behaves_like 'conan FIPS mode'
   it_behaves_like 'rejects invalid recipe'
   it_behaves_like 'rejects invalid upload_url params'
@@ -578,6 +585,7 @@ RSpec.shared_examples 'package upload_urls endpoint' do
       'conan_package.tgz': 523 }
   end
 
+  it_behaves_like 'enforcing read_packages job token policy'
   it_behaves_like 'conan FIPS mode'
   it_behaves_like 'rejects invalid recipe'
   it_behaves_like 'rejects invalid upload_url params'
@@ -629,6 +637,10 @@ RSpec.shared_examples 'delete package endpoint' do
   context 'with delete permissions' do
     before do
       project.add_maintainer(user)
+    end
+
+    it_behaves_like 'enforcing job token policies', :admin_packages do
+      let(:headers) { job_basic_auth_header(target_job) }
     end
 
     it 'triggers an internal event' do
@@ -705,6 +717,7 @@ RSpec.shared_examples 'a private project with packages' do
     project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
   end
 
+  it_behaves_like 'enforcing read_packages job token policy'
   it_behaves_like 'denies download with no token'
   it_behaves_like 'bumping the package last downloaded at field'
 
@@ -773,6 +786,7 @@ RSpec.shared_examples 'project not found by project id' do
 end
 
 RSpec.shared_examples 'workhorse authorize endpoint' do
+  it_behaves_like 'enforcing admin_packages job token policy'
   it_behaves_like 'conan FIPS mode'
   it_behaves_like 'rejects invalid recipe'
   it_behaves_like 'rejects invalid file_name', 'conanfile.py.git%2fgit-upload-pack'
@@ -854,7 +868,7 @@ RSpec.shared_examples 'workhorse recipe file upload endpoint' do
   let(:file_name) { 'conanfile.py' }
   let(:params) { { file: temp_file(file_name) } }
 
-  subject do
+  subject(:request) do
     workhorse_finalize(
       url,
       method: :put,
@@ -865,6 +879,7 @@ RSpec.shared_examples 'workhorse recipe file upload endpoint' do
     )
   end
 
+  it_behaves_like 'enforcing admin_packages job token policy'
   it_behaves_like 'conan FIPS mode'
   it_behaves_like 'rejects invalid recipe'
   it_behaves_like 'rejects invalid file_name', 'conanfile.py.git%2fgit-upload-pack'
@@ -879,7 +894,7 @@ RSpec.shared_examples 'workhorse package file upload endpoint' do
   let(:file_name) { 'conaninfo.txt' }
   let(:params) { { file: temp_file(file_name) } }
 
-  subject do
+  subject(:request) do
     workhorse_finalize(
       url,
       method: :put,
@@ -890,6 +905,7 @@ RSpec.shared_examples 'workhorse package file upload endpoint' do
     )
   end
 
+  it_behaves_like 'enforcing admin_packages job token policy'
   it_behaves_like 'rejects invalid recipe'
   it_behaves_like 'rejects invalid file_name', 'conaninfo.txttest'
   it_behaves_like 'uploads a package file'
@@ -1125,5 +1141,17 @@ end
 RSpec.shared_examples 'conan FIPS mode' do
   context 'when FIPS mode is enabled', :fips_mode do
     it_behaves_like 'returning response status', :not_found
+  end
+end
+
+RSpec.shared_examples 'enforcing read_packages job token policy' do
+  it_behaves_like 'enforcing job token policies', :read_packages do
+    let(:headers) { job_basic_auth_header(target_job) }
+  end
+end
+
+RSpec.shared_examples 'enforcing admin_packages job token policy' do
+  it_behaves_like 'enforcing job token policies', :admin_packages do
+    let(:headers_with_token) { job_basic_auth_header(target_job).merge(workhorse_headers) }
   end
 end

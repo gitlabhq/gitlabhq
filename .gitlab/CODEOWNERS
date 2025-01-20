@@ -1251,6 +1251,7 @@ lib/gitlab/checks/**
 /app/assets/javascripts/packages_and_registries/dependency_proxy/
 /app/assets/javascripts/packages_and_registries/harbor_registry/
 /ee/app/services/ee/auth/container_registry_authentication_service.rb
+app/services/auth/container_registry_authentication_service.rb
 
 [Authentication] @gitlab-org/software-supply-chain-security/authentication/approvers
 /app/assets/javascripts/access_tokens/

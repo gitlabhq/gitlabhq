@@ -87,6 +87,8 @@ module API
 
         return forbidden! unless authorized_project_scope?(project)
 
+        project && authorize_job_token_policies!(project) && return
+
         return project if can?(current_user, :read_package, project&.packages_policy_subject)
         # guest users can have :read_project but not :read_package
         return forbidden! if can?(current_user, :read_project, project)

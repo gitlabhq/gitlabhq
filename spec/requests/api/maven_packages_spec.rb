@@ -479,6 +479,14 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         end
       end
 
+      it_behaves_like 'enforcing job token policies', :read_packages do
+        before_all do
+          project.add_maintainer(user)
+        end
+
+        let(:request) { download_file(file_name: package_file.file_name, params: { job_token: target_job.token }) }
+      end
+
       it_behaves_like 'rejecting request with invalid params'
 
       it_behaves_like 'handling groups, subgroups and user namespaces for', 'getting a file', visibilities: { public: :redirect, internal: :not_found, private: :not_found }
@@ -642,6 +650,12 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
             it_behaves_like 'returning response status', :redirect
           end
+        end
+      end
+
+      it_behaves_like 'enforcing job token policies', :read_packages do
+        let(:request) do
+          download_file(file_name: package_file.file_name, params: { job_token: target_job.token })
         end
       end
 
@@ -832,6 +846,12 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
       subject { download_file_with_token(file_name: package_file.file_name) }
 
+      it_behaves_like 'enforcing job token policies', :read_packages do
+        let(:request) do
+          download_file(file_name: package_file.file_name, params: { job_token: target_job.token })
+        end
+      end
+
       it_behaves_like 'tracking the file download event'
       it_behaves_like 'bumping the package last downloaded at field'
       it_behaves_like 'successfully returning the file'
@@ -890,6 +910,10 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
   end
 
   describe 'PUT /api/v4/projects/:id/packages/maven/*path/:file_name/authorize' do
+    it_behaves_like 'enforcing job token policies', :admin_packages do
+      let(:request) { authorize_upload(job_token: target_job.token) }
+    end
+
     it 'rejects a malicious request' do
       put api("/projects/#{project.id}/packages/maven/com/example/my-app/#{version}/%2e%2e%2F.ssh%2Fauthorized_keys/authorize"), headers: headers_with_token
 
@@ -986,6 +1010,10 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     before do
       # by configuring this path we allow to pass temp file from any path
       allow(Packages::PackageFileUploader).to receive(:workhorse_upload_path).and_return('/')
+    end
+
+    it_behaves_like 'enforcing job token policies', :admin_packages do
+      let(:request) { upload_file(params: { file: file_upload, job_token: target_job.token }) }
     end
 
     it 'rejects requests without a file from workhorse' do

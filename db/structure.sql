@@ -16809,7 +16809,8 @@ CREATE TABLE operations_strategies_user_lists (
     id bigint NOT NULL,
     strategy_id bigint NOT NULL,
     user_list_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_be4b61e4d3 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE operations_strategies_user_lists_id_seq

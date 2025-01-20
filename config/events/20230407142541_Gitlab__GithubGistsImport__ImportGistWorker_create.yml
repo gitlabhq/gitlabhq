@@ -13,10 +13,7 @@ product_categories:
 - importers
 milestone: "15.11"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117057
-distributions:
-- ce
-- ee
-tiers: 
+tiers:
 - free
 - premium
 - ultimate

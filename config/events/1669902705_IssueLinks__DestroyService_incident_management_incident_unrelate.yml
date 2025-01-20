@@ -10,9 +10,6 @@ milestone: "15.7"
 description: "Count of unique users removing issue that are related to an incident. Migrated from Service Ping metric"
 product_group: platform_insights
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105223
-distributions:
-- ce
-- ee
 tiers:
 - free
 - premium
