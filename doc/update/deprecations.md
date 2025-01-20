@@ -820,6 +820,29 @@ We also plan to make this easier to manage by adding an option to control this f
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Legacy Web IDE is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/513938).
+
+</div>
+
+The legacy Vue-based GitLab Web IDE implementation will be removed from GitLab.
+This change follows our successful transition to the GitLab VSCode Fork-based Web IDE,
+which has been the default Web IDE experience since GitLab 15.11.
+
+This removal affects users who are still accessing the legacy Web IDE implementation.
+
+To prepare for this removal, enable the `vscode_web_ide` feature flag on your GitLab instance
+if it was previously disabled in the GitLab instance.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Limit number of scan execution policy actions allowed per policy
 
 <div class="deprecation-notes">
