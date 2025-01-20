@@ -79,7 +79,7 @@ func run() (error, error) {
 		return fmt.Errorf("write file size invalid"), err
 	}
 
-	if _, err := io.Copy(os.Stdout, reader); err != nil {
+	if _, err := io.Copy(os.Stdout, reader); err != nil { //nolint:gosec
 		return fmt.Errorf("write %q from %q to stdout", fileName, scrubbedArchivePath), err
 	}
 	return nil, nil

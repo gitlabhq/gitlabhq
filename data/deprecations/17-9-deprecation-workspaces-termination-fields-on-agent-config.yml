@@ -1,0 +1,24 @@
+- title: "`defaultMaxHoursBeforeTermination` and `maxHoursBeforeTerminationLimit` fields are deprecated"
+  removal_milestone: "18.0"
+  announcement_milestone: "17.9"
+  breaking_change: true
+  window: 1
+  reporter: saahmed
+  stage: create
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/509787
+  impact: low
+  scope: project
+  manual_task: true
+  body: |
+    The `defaultMaxHoursBeforeTermination` and `maxHoursBeforeTerminationLimit` fields are no longer used internally.
+    They are deprecated in the `WorkspacesAgentConfig` type.
+
+    This removal extends to the [agent configuration](https://docs.gitlab.com/ee/user/workspace/gitlab_agent_configuration.html#workspace-settings)
+    file associated with your workspaces setup.
+
+    To prepare for this change:
+
+    - Review and update your GraphQL queries that interact with the `WorkspacesAgentConfig` type.
+    - Remove any references to the `defaultMaxHoursBeforeTermination` and `maxHoursBeforeTerminationLimit` fields.
+    - Remove the fields `default_max_hours_before_termination` and `max_hours_before_termination_limit` from your agent configuration file.
+    - Adjust your application logic accordingly.

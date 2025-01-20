@@ -34834,14 +34834,18 @@ msgstr ""
 msgid "Members listed as CODEOWNERS of affected files."
 msgstr ""
 
-msgid "Members of %{group} can also merge into this branch: %{branch}"
-msgstr ""
-
-msgid "Members of %{group} can also push to this branch: %{branch}"
-msgstr ""
-
 msgid "Members of a group may only view projects they have permission to access"
 msgstr ""
+
+msgid "Members of this group can also merge into this branch: %{branch}"
+msgid_plural "Members of these groups can also merge into this branch: %{branch}"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Members of this group can also push to this branch: %{branch}"
+msgid_plural "Members of these groups can also push to this branch: %{branch}"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "MembersOverage|Continue with overages"
 msgstr ""
@@ -56973,12 +56977,6 @@ msgstr ""
 msgid "The finding is not a vulnerability because it is part of a test or is test data."
 msgstr ""
 
-msgid "The following %{user} can also merge into this branch: %{branch}"
-msgstr ""
-
-msgid "The following %{user} can also push to this branch: %{branch}"
-msgstr ""
-
 msgid "The following SSH key was deleted by an administrator, %{username}."
 msgstr ""
 
@@ -57001,6 +56999,16 @@ msgstr[1] ""
 
 msgid "The following personal access tokens have expired:"
 msgstr ""
+
+msgid "The following user can also merge into this branch: %{branch}"
+msgid_plural "The following users can also merge into this branch: %{branch}"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "The following user can also push to this branch: %{branch}"
+msgid_plural "The following users can also push to this branch: %{branch}"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "The fork relationship has been removed."
 msgstr ""

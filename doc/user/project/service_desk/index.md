@@ -10,6 +10,16 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed
 
+NOTE:
+This feature is not under active development, but
+[community contributions](https://about.gitlab.com/community/contribute/) are welcome.
+To determine if the feature as it is meets your needs, explore the existing documentation or see the
+[open issues for the Service Desk category](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=updated_desc&state=opened&label_name%5B%5D=Category%3AService%20Desk&first_page_size=100)
+to learn more about work that hasn't been done yet.
+The decision to deprioritize Service Desk has been made to
+focus on building and extending the work item framework which
+the Service Desk category will also benefit from long-term.
+
 With Service Desk, your customers
 can email you bug reports, feature requests, or general feedback.
 Service Desk provides a unique email address, so they don't need their own GitLab accounts.

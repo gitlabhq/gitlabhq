@@ -16,6 +16,11 @@ DETAILS:
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/346082) in GitLab 15.1.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
+NOTE:
+This feature is not under active development, but
+[community contributions](https://about.gitlab.com/community/contribute/) are welcome.
+To determine if the feature meets your needs, see the open issues in the [Managing and billing Clients Epic](https://gitlab.com/groups/gitlab-org/-/epics/5323).
+
 With customer relations management (CRM) you can create a record of contacts
 (individuals) and organizations (companies) and relate them to issues.
 

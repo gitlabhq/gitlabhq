@@ -1,0 +1,18 @@
+- title: "`RemoteDevelopmentAgentConfig` GraphQL type is deprecated"
+  removal_milestone: "18.0"
+  announcement_milestone: "17.9"
+  breaking_change: true
+  window: 1
+  reporter: saahmed
+  stage: create
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/509787
+  impact: low
+  scope: project
+  manual_task: true
+  body: |
+    The `RemoteDevelopmentAgentConfig` type is no longer used internally. It is deprecated in the `ClusterAgent` type.
+
+    To prepare for this change:
+
+    - Review and update your GraphQL queries that interact with the `RemoteDevelopmentAgentConfig` type.
+    - Switch over to the experimental type `workspacesAgentConfig`.

@@ -1,3 +1,4 @@
+// Package main provides a utility for generating metadata for a ZIP archive.
 package main
 
 import (
@@ -14,6 +15,7 @@ import (
 
 const progName = "gitlab-zip-metadata"
 
+// Version holds the version of the program, which is set during the build process.
 var Version = "unknown"
 
 var printVersion = flag.Bool("version", false, "Print version and exit")
@@ -63,9 +65,8 @@ func fatalError(err error) {
 
 	if code > 0 {
 		os.Exit(code)
-	} else {
-		os.Exit(1)
 	}
+	os.Exit(1)
 }
 
 // sizeToLimit tries to dermine an appropriate limit in bytes for an archive of

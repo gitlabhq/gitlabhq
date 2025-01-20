@@ -46,6 +46,9 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 | [Workspaces `editor` GraphQL field is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/508155) | Low | Create | Project |
 | [Enforce keyset pagination on audit event API](https://gitlab.com/gitlab-org/gitlab/-/issues/382338) |  | Software supply chain security |  |
 | [Fix typo in user profile visibility updated audit event type](https://gitlab.com/gitlab-org/gitlab/-/issues/382338) |  | Software supply chain security |  |
+| [`maxHoursBeforeTermination` GraphQL field is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/509787) | Low | Create | Project |
+| [`RemoteDevelopmentAgentConfig` GraphQL type is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/509787) | Low | Create | Project |
+| [`defaultMaxHoursBeforeTermination` and `maxHoursBeforeTerminationLimit` fields are deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/509787) | Low | Create | Project |
 
 ## Window 2
 

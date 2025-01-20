@@ -30,12 +30,11 @@ namespace :ci do
     end
 
     diff = mr_diff
+    qa_changes = QA::Tools::Ci::QaChanges.new(diff)
 
     if diff.empty?
       logger.info("No specific specs to execute detected, running full test suites")
     else
-      qa_changes = QA::Tools::Ci::QaChanges.new(diff)
-
       if qa_changes.quarantine_changes?
         logger.info("Merge request contains only quarantine changes, e2e test execution will be skipped!")
         next pipeline_creator.create_noop

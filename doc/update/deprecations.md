@@ -1427,6 +1427,27 @@ The [`GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN`](https://docs.gitlab.com/ee/admi
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### `RemoteDevelopmentAgentConfig` GraphQL type is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/509787).
+
+</div>
+
+The `RemoteDevelopmentAgentConfig` type is no longer used internally. It is deprecated in the `ClusterAgent` type.
+
+To prepare for this change:
+
+- Review and update your GraphQL queries that interact with the `RemoteDevelopmentAgentConfig` type.
+- Switch over to the experimental type `workspacesAgentConfig`.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### `ciJobTokenScopeAddProject` GraphQL mutation is deprecated
 
 <div class="deprecation-notes">
@@ -1460,6 +1481,33 @@ Update all references to `ciUsedMinutes` from these types to `ciDuration`.
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### `defaultMaxHoursBeforeTermination` and `maxHoursBeforeTerminationLimit` fields are deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/509787).
+
+</div>
+
+The `defaultMaxHoursBeforeTermination` and `maxHoursBeforeTerminationLimit` fields are no longer used internally.
+They are deprecated in the `WorkspacesAgentConfig` type.
+
+This removal extends to the [agent configuration](https://docs.gitlab.com/ee/user/workspace/gitlab_agent_configuration.html#workspace-settings)
+file associated with your workspaces setup.
+
+To prepare for this change:
+
+- Review and update your GraphQL queries that interact with the `WorkspacesAgentConfig` type.
+- Remove any references to the `defaultMaxHoursBeforeTermination` and `maxHoursBeforeTerminationLimit` fields.
+- Remove the fields `default_max_hours_before_termination` and `max_hours_before_termination_limit` from your agent configuration file.
+- Adjust your application logic accordingly.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### `git_data_dirs` for configuring Gitaly storages
 
 <div class="deprecation-notes">
@@ -1475,6 +1523,31 @@ Support for using `git_data_dirs` to configure Gitaly storages for Linux package
 
 For migration instructions, see
 [Migrating from `git_data_dirs`](https://docs.gitlab.com/omnibus/settings/configuration.html#migrating-from-git_data_dirs).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### `maxHoursBeforeTermination` GraphQL field is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/509787).
+
+</div>
+
+The `maxHoursBeforeTermination` GraphQL field is no longer used internally. It is deprecated in the following GraphQL elements:
+
+- `Workspace` type.
+- Input to `workspaceCreate` mutation.
+
+To prepare for this change:
+
+- Review and update your GraphQL queries that interact with the `Workspace` type.
+- Remove any references to the `maxHoursBeforeTermination` field.
+- Adjust your application logic accordingly.
 
 </div>
 

@@ -161,7 +161,7 @@ If adding support for a binary relation:
 As mentioned above, there are three kinds of relations in direct transfer imports:
 
 1. NDJSON-exported relations, downloaded from the `export_relations` API. For example, `documents.ndjson.gz`.
-1. GraphQL API relations. For example, `members` information is fetched using GraphQL to import groupand project user memberships.
+1. GraphQL API relations. For example, `members` information is fetched using GraphQL to import group and project user memberships.
 1. Binary relations, downloaded from the `export_relations` API. For example, `lfs_objects.tar.gz`.
 
 Because the direct transfer importer is based on the Extract/Transform/Load data processing technique, to start importing a relation we must define:

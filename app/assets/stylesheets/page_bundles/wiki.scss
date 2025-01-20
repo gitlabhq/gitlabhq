@@ -33,7 +33,7 @@
 
     &:hover,
     &.active {
-      background: var(--gray-50, $gray-50);
+      @apply gl-bg-neutral-50 dark:gl-bg-neutral-900;
     }
 
     &:hover {
