@@ -20,9 +20,6 @@ class Snippet < ApplicationRecord
   include CreatedAtFilterable
   include EachBatch
   include Import::HasImportSource
-  include SafelyChangeColumnDefault
-
-  columns_changing_default :organization_id
 
   MAX_FILE_COUNT = 10
 

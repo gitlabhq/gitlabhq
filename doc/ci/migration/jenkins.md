@@ -26,7 +26,10 @@ Additionally, there are some important differences between the two:
 - GitLab CI/CD pipelines are all configured in a YAML format configuration file.
   Jenkins uses either a Groovy format configuration file (declarative pipelines)
   or Jenkins DSL (scripted pipelines).
-- GitLab can run either on SaaS (cloud) or self-managed deployments. Jenkins deployments must be self-managed.
+- GitLab offers [GitLab.com](../../subscriptions/gitlab_com/index.md), a multi-tenant SaaS service,
+  and [GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md), a fully isolated
+  single-tenant SaaS service. You can also run your own [GitLab Self-Managed](../../subscriptions/self_managed/index.md)
+  instance. Jenkins deployments must be self-hosted.
 - GitLab provides source code management (SCM) out of the box. Jenkins requires a separate
   SCM solution to store code.
 - GitLab provides a built-in container registry. Jenkins requires a separate solution

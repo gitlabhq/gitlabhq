@@ -519,7 +519,7 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
       end
 
       it 'does not allow pipeline to be executed' do
-        expect(RunPipelineScheduleWorker).not_to receive(:perform_async)
+        expect(Ci::PipelineSchedules::PlayService).not_to receive(:new)
 
         go
 
@@ -529,7 +529,7 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
 
     context 'when a developer makes the request' do
       it 'executes a new pipeline' do
-        expect(RunPipelineScheduleWorker).to receive(:perform_async).with(pipeline_schedule.id, user.id).and_return('job-123')
+        expect(Ci::PipelineSchedules::PlayService).to receive_message_chain(:new, :execute).with(pipeline_schedule).and_return('job-123')
 
         go
 

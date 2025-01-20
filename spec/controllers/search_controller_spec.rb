@@ -580,7 +580,7 @@ RSpec.describe SearchController, feature_category: :global_search do
       it 'returns an empty array when given abusive search term' do
         get :autocomplete, params: { term: ('hal' * 4000), scope: 'projects' }
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to match_array([])
+        expect(json_response).to be_empty
       end
 
       describe 'rate limit scope' do

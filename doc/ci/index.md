@@ -52,7 +52,7 @@ runners on GitLab.com if you'd like.
 
 If you don't use GitLab.com, you can:
 
-- Register runners or use runners already registered for your self-managed instance.
+- Register runners or use runners already registered for your GitLab Self-Managed instance.
 - Create a runner on your local machine.
 
 For more information, see:

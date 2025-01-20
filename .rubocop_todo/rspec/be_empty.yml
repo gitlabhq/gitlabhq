@@ -23,7 +23,6 @@ RSpec/BeEmpty:
     - 'ee/spec/support/shared_examples/lib/sidebars/menus_shared_examples.rb'
     - 'ee/spec/support/shared_examples/models/authz/member_roles_shared_examples.rb'
     - 'ee/spec/support/shared_examples/quick_actions/merge_request/unassign_reviewer_shared_examples.rb'
-    - 'spec/controllers/search_controller_spec.rb'
     - 'spec/finders/ci/group_variables_finder_spec.rb'
     - 'spec/finders/group_members_finder_spec.rb'
     - 'spec/finders/merge_request_target_project_finder_spec.rb'

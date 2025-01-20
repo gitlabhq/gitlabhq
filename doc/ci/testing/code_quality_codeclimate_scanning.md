@@ -55,7 +55,7 @@ To enable Code Quality, either:
   Code Quality now runs in pipelines.
 
 WARNING:
-On self-managed instances, if a malicious actor compromises the Code Quality job definition they
+On GitLab Self-Managed, if a malicious actor compromises the Code Quality job definition they
 could execute privileged Docker commands on the runner host. Having proper access control policies
 mitigates this attack vector by allowing access only to trusted actors.
 

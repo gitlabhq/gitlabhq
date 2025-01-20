@@ -30,7 +30,7 @@ On GitLab.com:
 - You can [purchase additional compute minutes](../../subscriptions/gitlab_com/compute_minutes.md)
   if you need more than the amount of compute in your monthly quota.
 
-Compute quotas [are disabled by default on self-managed instances](../../administration/cicd/compute_minutes.md).
+Compute quotas [are disabled by default on GitLab Self-Managed](../../administration/cicd/compute_minutes.md).
 
 ## View compute usage
 
@@ -140,7 +140,7 @@ The default cost factors for jobs running on instance runners on GitLab.com are:
 - Discounted dynamically for [community contributions to GitLab projects](#community-contributions-to-gitlab-projects).
 - Increased if you use [different types of instance runners](#gitlab-hosted-runner-cost-factors).
 
-The cost factors on self-managed instances [are different](../../administration/cicd/compute_minutes.md).
+The cost factors on GitLab Self-Managed [are different](../../administration/cicd/compute_minutes.md).
 
 #### Community contributions to GitLab projects
 

@@ -402,5 +402,5 @@ After disabling this setting, all new artifacts expire according to the `expire_
 Artifacts in old pipelines continue to be kept until a new pipeline runs for the same ref.
 Then the artifacts in the earlier pipeline for that ref are allowed to expire too.
 
-You can disable this behavior for all projects on a self-managed instance in the
+You can disable this behavior for all projects on GitLab Self-Managed in the
 [instance's CI/CD settings](../../administration/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).

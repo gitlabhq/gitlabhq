@@ -849,7 +849,7 @@ to set `ci_pipeline_variables_minimum_override_role` to one of:
 - `owner`: Only users with the Owner role can run pipelines with pipeline variables.
   You must have the Owner role for the project to change the setting to this value.
 - `maintainer`: Only users with at least the Maintainer role can run pipelines with pipeline variables.
-  Default when not specified on self-managed and Dedicated.
+  Default when not specified on GitLab Self-Managed and GitLab Dedicated.
 - `developer`: Only users with at least the Developer role can run pipelines with pipeline variables.
 
 ## Exporting variables

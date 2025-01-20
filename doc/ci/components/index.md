@@ -163,8 +163,8 @@ could extend the wrong configuration. Make sure your pipeline and the component 
 any configuration with the same name, unless you intend to [override](../yaml/includes.md#override-included-configuration-values)
 the component's configuration.
 
-To use GitLab.com components in a self-managed instance, you must
-[mirror the component project](#use-a-gitlabcom-component-in-a-self-managed-instance).
+To use GitLab.com components on a GitLab Self-Managed instance, you must
+[mirror the component project](#use-a-gitlabcom-component-on-gitlab-self-managed).
 
 WARNING:
 If a component requires the use of tokens, passwords, or other sensitive data to function,
@@ -364,16 +364,16 @@ full URL and path for your instance (like `https://gitlab.com/api/v4`).
 
 These [predefined variables](../variables/predefined_variables.md)
 ensure that your component also works when used on another instance, for example when using
-[a GitLab.com component in a self-managed instance](#use-a-gitlabcom-component-in-a-self-managed-instance).
+[a GitLab.com component on a GitLab Self-Managed instance](#use-a-gitlabcom-component-on-gitlab-self-managed).
 
 ### Do not assume API resources are always public
 
-Ensure that the component and its testing pipeline work also [in a self-managed instance](#use-a-gitlabcom-component-in-a-self-managed-instance).
+Ensure that the component and its testing pipeline work also [on GitLab Self-Managed](#use-a-gitlabcom-component-on-gitlab-self-managed).
 While some API resources of public projects on GitLab.com could be accessed via unauthenticated requests
-on self-managed a component project could be mirrored as private or internal project.
+on a GitLab Self-Managed instance a component project could be mirrored as private or internal project.
 
 It's important that an access token can optionally be provided via inputs or variables to
-authenticate requests on self-managed instances.
+authenticate requests on GitLab Self-Managed instances.
 
 ### Avoid using global keywords
 
@@ -719,7 +719,7 @@ can be converted to a CI/CD component:
 
 You can learn more by following a practical example for [migrating the Go CI/CD template to CI/CD component](examples.md#cicd-component-migration-example-go).
 
-## Use a GitLab.com component in a self-managed instance
+## Use a GitLab.com component on GitLab Self-Managed
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -729,9 +729,9 @@ The CI/CD catalog of a fresh install of a GitLab instance starts with no publish
 To populate your instance's catalog, you can:
 
 - [Publish your own components](#publish-a-component-project).
-- Mirror components from GitLab.com in your self-managed instance.
+- Mirror components from GitLab.com in your GitLab Self-Managed instance.
 
-To mirror a GitLab.com component in your self-managed instance:
+To mirror a GitLab.com component in your GitLab Self-Managed instance:
 
 1. Make sure that [network outbound requests](../../security/webhooks.md) are allowed for `gitlab.com`.
 1. [Create a group](../../user/group/index.md#create-a-group) to host the component projects (recommended group: `components`).

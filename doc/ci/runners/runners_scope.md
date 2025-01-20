@@ -25,7 +25,7 @@ Use instance runners when you have multiple jobs with similar requirements. Rath
 having multiple runners idling for many projects, you can have a few runners that handle
 multiple projects.
 
-If you are using a self-managed instance of GitLab, administrators can:
+If you are using GitLab Self-Managed, administrators can:
 
 - [Install GitLab Runner](https://docs.gitlab.com/runner/install/index.html) and register an instance runner.
 - Configure a maximum number of instance runner [compute minutes for each group](../../administration/cicd/compute_minutes.md#set-the-compute-quota-for-a-group).
@@ -134,7 +134,7 @@ To delete a single or multiple instance runners:
 On GitLab.com, [instance runners](index.md) are enabled in all projects by
 default.
 
-On self-managed instances of GitLab, an administrator can
+On GitLab Self-Managed, an administrator can
 [enable them for all new projects](../../administration/settings/continuous_integration.md#enable-instance-runners-for-new-projects).
 
 For existing projects, an administrator must

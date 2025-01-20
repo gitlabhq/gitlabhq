@@ -16,7 +16,7 @@ module Mutations
         def resolve(id:)
           schedule = authorized_find!(id: id)
 
-          job_id = ::Ci::PipelineScheduleService
+          job_id = ::Ci::PipelineSchedules::PlayService
             .new(schedule.project, current_user)
             .execute(schedule)
 

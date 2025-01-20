@@ -237,13 +237,13 @@ a job artifact served by GitLab Pages. This page warns about the potential for
 malicious user-generated content, as described in
 [issue 352611](https://gitlab.com/gitlab-org/gitlab/-/issues/352611).
 
-Self-managed administrators can disable the external redirect warning page,
+GitLab Self-Managed administrators can disable the external redirect warning page,
 so you can view job artifact pages directly:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
-1. Deselect **Enable the external redirect page for job artifacts**.
+1. Clear **Enable the external redirect page for job artifacts**.
 
 ## Archive jobs
 

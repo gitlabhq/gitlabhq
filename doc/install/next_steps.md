@@ -76,5 +76,5 @@ installation.
 
 ## Install the product documentation
 
-This is an optional step. If you want to host the documentation on your own
+Optional. If you want to host the documentation on your own
 server, see how to [self-host the product documentation](../administration/docs_self_host.md).

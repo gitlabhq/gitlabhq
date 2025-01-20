@@ -289,7 +289,7 @@
     "jest-jasmine2": "^29.7.0",
     "jest-junit": "^12.3.0",
     "jest-util": "^29.7.0",
-    "markdownlint-cli2": "^0.14.0",
+    "markdownlint-cli2": "^0.17.1",
     "markdownlint-rule-helpers": "^0.25.0",
     "miragejs": "^0.1.40",
     "mock-apollo-client": "1.2.0",
