@@ -37,6 +37,7 @@ const ICON_COLORS = {
   'issue-close': 'system-note-icon-info',
   issues: 'system-note-icon-success',
   error: 'system-note-icon-danger',
+  'review-warning': 'system-note-icon-warning',
 };
 
 export default {

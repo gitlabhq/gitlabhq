@@ -10,8 +10,13 @@ module SessionHelpers
 
     session_id = Rack::Session::SessionId.new(SecureRandom.hex)
 
+    store = ActiveSupport::Cache::RedisCacheStore.new(
+      namespace: Gitlab::Redis::Sessions::SESSION_NAMESPACE,
+      redis: Gitlab::Redis::Sessions
+    )
+    store.write(session_id.private_id, session_data)
+
     Gitlab::Redis::Sessions.with do |redis|
-      redis.set("session:gitlab:#{session_id.private_id}", Marshal.dump(session_data))
       redis.sadd("session:lookup:user:gitlab:#{user_id}", [session_id.private_id]) if user_id
     end
 

@@ -14,6 +14,17 @@ RSpec.describe 'Session initializer for GitLab' do
   end
 
   describe 'config#session_store' do
+    it 'initialized as a redis_store with Gitlab::Sessions::CacheStore' do
+      expect(subject).to receive(:session_store).with(
+        ::Gitlab::Sessions::CacheStore,
+        a_hash_including(
+          cache: ActiveSupport::Cache::RedisCacheStore
+        )
+      )
+
+      load_session_store
+    end
+
     context 'when cell.id is configured' do
       before do
         stub_config(cell: { id: 1 })
@@ -21,12 +32,9 @@ RSpec.describe 'Session initializer for GitLab' do
 
       it 'initialized as a `redis_store` with session cookies prefix that includes cell id' do
         expect(subject).to receive(:session_store).with(
-          Gitlab::Sessions::RedisStore,
+          ::Gitlab::Sessions::CacheStore,
           a_hash_including(
-            redis_server: Gitlab::Redis::Sessions.params.merge(
-              namespace: Gitlab::Redis::Sessions::SESSION_NAMESPACE,
-              serializer: Gitlab::Sessions::RedisStoreSerializer
-            ),
+            cache: ActiveSupport::Cache::RedisCacheStore,
             session_cookie_token_prefix: 'cell-1'
           )
         )
@@ -42,12 +50,9 @@ RSpec.describe 'Session initializer for GitLab' do
 
       it 'initialized as a `redis_store` with empty session cookie prefix' do
         expect(subject).to receive(:session_store).with(
-          Gitlab::Sessions::RedisStore,
+          ::Gitlab::Sessions::CacheStore,
           a_hash_including(
-            redis_server: Gitlab::Redis::Sessions.params.merge(
-              namespace: Gitlab::Redis::Sessions::SESSION_NAMESPACE,
-              serializer: Gitlab::Sessions::RedisStoreSerializer
-            ),
+            cache: ActiveSupport::Cache::RedisCacheStore,
             session_cookie_token_prefix: ''
           )
         )

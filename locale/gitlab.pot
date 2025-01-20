@@ -16557,7 +16557,7 @@ msgstr ""
 msgid "Could not retrieve the list of branches. Use the YAML editor mode, or refresh this page later. To view the list of branches, go to %{boldStart}Code - Branches%{boldEnd}"
 msgstr ""
 
-msgid "Could not retrieve the list of protected branches. Use the YAML editor mode, or refresh this page later. To view the list of protected branches, go to %{boldStart}Settings - Branches%{boldEnd} and expand %{boldStart}Protected branches%{boldEnd}."
+msgid "Could not retrieve the list of protected branches. Use the YAML editor mode, or refresh this page later. To view the list of protected branches, go to %{boldStart}Settings - Repository%{boldEnd} and expand %{boldStart}Protected branches%{boldEnd}."
 msgstr ""
 
 msgid "Could not revoke access token %{access_token_name}."

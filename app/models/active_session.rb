@@ -245,7 +245,8 @@ class ActiveSession
       # Explanation of why this Marshal.load call is OK:
       # https://gitlab.com/gitlab-com/gl-security/product-security/appsec/appsec-reviews/-/issues/124#note_744576714
       # rubocop:disable Security/MarshalLoad
-      Marshal.load(raw_session)
+      session_data = Marshal.load(raw_session)
+      session_data.is_a?(ActiveSupport::Cache::Entry) ? session_data.value : session_data
       # rubocop:enable Security/MarshalLoad
     end
   end

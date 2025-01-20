@@ -181,13 +181,31 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions, feature_category: :s
   end
 
   describe '.sessions_from_ids' do
-    it 'uses the ActiveSession lookup to return original sessions' do
-      Gitlab::Redis::Sessions.with do |redis|
-        # Emulate redis-rack: https://github.com/redis-store/redis-rack/blob/c75f7f1a6016ee224e2615017fbfee964f23a837/lib/rack/session/redis.rb#L88
-        redis.set("session:gitlab:#{rack_session.private_id}", Marshal.dump({ _csrf_token: 'abcd' }))
+    context 'with new session format from Gitlab::Sessions::CacheStore' do
+      before do
+        store = ActiveSupport::Cache::RedisCacheStore.new(
+          namespace: Gitlab::Redis::Sessions::SESSION_NAMESPACE,
+          redis: Gitlab::Redis::Sessions
+        )
+        # ActiveSupport::Cache::RedisCacheStore wraps the data in ActiveSupport::Cache::Entry
+        # https://github.com/rails/rails/blob/v7.0.8.6/activesupport/lib/active_support/cache.rb#L506
+        store.write(rack_session.private_id, { _csrf_token: 'abcd' })
       end
 
-      expect(described_class.sessions_from_ids([rack_session.private_id])).to eq [{ _csrf_token: 'abcd' }]
+      it 'uses the ActiveSession lookup to return original sessions' do
+        expect(described_class.sessions_from_ids([rack_session.private_id])).to eq [{ _csrf_token: 'abcd' }]
+      end
+    end
+
+    context 'with old session format from Gitlab::Sessions::RedisStore' do
+      it 'uses the ActiveSession lookup to return original sessions' do
+        Gitlab::Redis::Sessions.with do |redis|
+          # Emulate redis-rack: https://github.com/redis-store/redis-rack/blob/c75f7f1a6016ee224e2615017fbfee964f23a837/lib/rack/session/redis.rb#L88
+          redis.set("session:gitlab:#{rack_session.private_id}", Marshal.dump({ _csrf_token: 'abcd' }))
+        end
+
+        expect(described_class.sessions_from_ids([rack_session.private_id])).to eq [{ _csrf_token: 'abcd' }]
+      end
     end
 
     it 'avoids a redis lookup for an empty array' do

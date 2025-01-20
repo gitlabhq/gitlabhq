@@ -40,20 +40,11 @@ cookie_key = if Rails.env.development?
 
 ::Redis::Store::Factory.prepend(Gitlab::Patch::RedisStoreFactory)
 
-Rails.application.configure do
-  config.session_store(
-    Gitlab::Sessions::RedisStore, # Using the cookie_store would enable session replay attacks
-    redis_server: Gitlab::Redis::Sessions.params.merge(
-      namespace: Gitlab::Redis::Sessions::SESSION_NAMESPACE,
-      serializer: Gitlab::Sessions::RedisStoreSerializer
-    ),
-    key: cookie_key,
-    secure: Gitlab.config.gitlab.https,
-    httponly: true,
-    expires_in: Settings.gitlab['session_expire_delay'] * 60,
-    path: Rails.application.config.relative_url_root.presence || '/',
-    session_cookie_token_prefix: session_cookie_token_prefix
-  )
+ENV['USE_REDIS_CACHE_STORE_AS_SESSION_STORE'] = 'true' if Rails.env.test? || Rails.env.development?
 
-  config.middleware.insert_after Gitlab::Sessions::RedisStore, Gitlab::Middleware::UnauthenticatedSessionExpiry
+session_store_class, options = Gitlab::Sessions::StoreBuilder.new(cookie_key, session_cookie_token_prefix).prepare
+
+Rails.application.configure do
+  config.session_store(session_store_class, **options)
+  config.middleware.insert_after session_store_class, Gitlab::Middleware::UnauthenticatedSessionExpiry
 end

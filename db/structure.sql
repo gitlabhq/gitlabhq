@@ -26309,6 +26309,9 @@ ALTER TABLE vulnerability_scanners
 ALTER TABLE p_ci_pipeline_variables
     ADD CONSTRAINT check_6e932dbabf CHECK ((project_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE sbom_occurrences_vulnerabilities
+    ADD CONSTRAINT check_a02e48df9c CHECK ((project_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;
 

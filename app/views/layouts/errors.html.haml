@@ -5,6 +5,9 @@
     %title= yield(:title)
     - if vite_enabled?
       = universal_stylesheet_link_tag 'errors'
+      = universal_stylesheet_link_tag 'application'
+      = universal_stylesheet_link_tag 'fonts'
+      = universal_stylesheet_link_tag 'tailwind'
     - else
       %style
         = error_css
