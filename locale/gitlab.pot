@@ -57701,6 +57701,9 @@ msgstr ""
 msgid "There was an error subscribing to this label."
 msgstr ""
 
+msgid "There was an error summarizing your pending comments."
+msgstr ""
+
 msgid "There was an error syncing project %{name}"
 msgstr ""
 
@@ -57732,9 +57735,6 @@ msgid "There was an error while running this job again"
 msgstr ""
 
 msgid "There was an error with the reCAPTCHA. Please solve the reCAPTCHA again."
-msgstr ""
-
-msgid "There was an summarizing your pending comments."
 msgstr ""
 
 msgid "These branches already have an open merge request: %{link_to_mr}. Select a different source or target branch."

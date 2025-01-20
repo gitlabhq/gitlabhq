@@ -19,9 +19,11 @@ import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import {
   issuableQueryResponse,
   updateIssueAssigneesMutationResponse,
+  issuableQueryWithPlaceholderResponse,
   mrAssigneesQueryResponse,
+  initialAssigneesPlaceholder,
+  initialAssignees,
 } from '../../mock_data';
-import { userTypes } from '../../constants';
 
 jest.mock('~/alert');
 
@@ -31,17 +33,6 @@ const updateIssueAssigneesMutationSuccess = jest
 const mockError = jest.fn().mockRejectedValue('Error!');
 
 Vue.use(VueApollo);
-
-const initialAssignees = [
-  {
-    id: 'some-user',
-    avatarUrl: 'some-user-avatar',
-    name: 'test',
-    username: 'test',
-    webUrl: '/test',
-    type: userTypes.human,
-  },
-];
 
 describe('Sidebar assignees widget', () => {
   let wrapper;
@@ -161,10 +152,10 @@ describe('Sidebar assignees widget', () => {
             'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',
           name: 'Jacki Kub',
           username: 'francina.skiles',
+          type: 'HUMAN',
           webUrl: '/franc',
           webPath: '/franc',
           status: null,
-          type: userTypes.human,
         },
       ]);
     });
@@ -232,7 +223,7 @@ describe('Sidebar assignees widget', () => {
                 webUrl: '/root',
                 webPath: '/root',
                 status: null,
-                type: userTypes.human,
+                type: 'HUMAN',
               },
             ],
             id: 'gid://gitlab/Issue/1',
@@ -430,5 +421,89 @@ describe('Sidebar assignees widget', () => {
     });
     await waitForPromises();
     expect(findInviteMembersLink().exists()).toBe(true);
+  });
+
+  describe('when Placeholder users are present', () => {
+    const customIssuableQueryHandler = jest
+      .fn()
+      .mockResolvedValue(issuableQueryWithPlaceholderResponse);
+
+    it('filters out placeholders from the assignees list', async () => {
+      createComponent({
+        issuableQueryHandler: customIssuableQueryHandler,
+      });
+
+      await waitForPromises();
+
+      const assignees = findAssignees().props('users');
+
+      expect(assignees.some((user) => user.type === 'PLACEHOLDER')).toBe(false);
+    });
+
+    it('does not display initialAssignee if the initial assignee is a placeholder user', async () => {
+      const pendingPromise = new Promise(() => {});
+      const loadingQueryHandler = jest.fn().mockReturnValue(pendingPromise);
+
+      createComponent({
+        issuableQueryHandler: loadingQueryHandler,
+        props: {
+          initialAssignees: initialAssigneesPlaceholder,
+        },
+      });
+
+      await nextTick();
+
+      expect(findEditableItem().props('initialLoading')).toBe(true);
+      expect(findAssignees().exists()).toBe(false);
+    });
+
+    it('displays the initial assignee if assignee is not a placeholder user', async () => {
+      createComponent({
+        props: {
+          initialAssignees,
+        },
+      });
+
+      await nextTick();
+
+      const assignees = findAssignees().props('users');
+      expect(assignees).toHaveLength(1);
+      expect(assignees[0].type).toEqual('HUMAN');
+    });
+
+    it('does not show the assignee as selected if the assignee is a placeholder', async () => {
+      createComponent({
+        issuableQueryHandler: customIssuableQueryHandler,
+      });
+
+      await waitForPromises();
+
+      const assignees = findAssignees().props('users');
+      expect(assignees).toHaveLength(0);
+    });
+
+    it('does not pass placeholder users to user-select as dropdown values', async () => {
+      createComponent({
+        issuableQueryHandler: customIssuableQueryHandler,
+        props: {
+          initialAssignees: initialAssigneesPlaceholder,
+        },
+      });
+
+      await waitForPromises();
+      expect(findUserSelect().props('value')).toEqual([]);
+    });
+
+    it('does not pass the author to user-select if issuableAuthor is a placeholder user', async () => {
+      createComponent({
+        issuableQueryHandler: customIssuableQueryHandler,
+        props: {
+          initialAssignees,
+        },
+      });
+
+      await waitForPromises();
+      expect(findUserSelect().props('issuableAuthor')).toEqual({});
+    });
   });
 });

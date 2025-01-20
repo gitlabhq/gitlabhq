@@ -81,6 +81,7 @@ export default {
     },
     convertToListboxItems(data) {
       return data.map((item) => ({
+        ...item,
         text: item.name,
         value: item.username,
       }));

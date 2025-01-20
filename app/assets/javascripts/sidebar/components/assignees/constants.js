@@ -1,4 +1,4 @@
-// as defined in app/models/concerns/has_user_type.rb
+// app/models/concerns/has_user_type.rb
 
 export const userTypes = {
   human: 'HUMAN',
