@@ -7,6 +7,7 @@
 extends: existence
 message: "If possible, remove the reference to '%s'."
 link: https://docs.gitlab.com/ee/development/documentation/versions.html
+vocab: false
 level: suggestion
 nonword: true
 ignorecase: true

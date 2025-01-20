@@ -123,7 +123,7 @@ export default {
     <help-popover
       v-if="showImportWithoutProjectsWarning"
       icon="warning"
-      trigger-class="!gl-text-orange-500"
+      trigger-class="!gl-text-warning"
       data-testid="project-creation-warning-icon"
     >
       <gl-sprintf

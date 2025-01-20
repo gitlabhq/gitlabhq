@@ -7,6 +7,7 @@
 extends: existence
 message: "Pluralize 'Prerequisites', even if it includes only one item."
 link: https://docs.gitlab.com/ee/development/documentation/topic_types/task.html#task-prerequisites
+vocab: false
 level: warning
 nonword: true
 scope: text

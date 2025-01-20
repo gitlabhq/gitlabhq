@@ -11,6 +11,7 @@
 extends: existence
 message: "Update the format of the '%s' alert box. View the style guide for details."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#alert-boxes
+vocab: false
 level: error
 nonword: true
 scope: raw

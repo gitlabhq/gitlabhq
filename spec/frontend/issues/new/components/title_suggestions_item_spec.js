@@ -121,7 +121,7 @@ describe('Issue title suggestions item component', () => {
       });
 
       expect(findIcon().props('name')).toBe('eye-slash');
-      expect(findIcon().attributes('class')).toMatch('gl-text-orange-500');
+      expect(findIcon().attributes('variant')).toBe('warning');
       expect(findIcon().attributes('title')).toBe('Confidential');
     });
   });

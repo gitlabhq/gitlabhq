@@ -7,6 +7,7 @@
 extends: existence
 message: "Use lowercase for the anchor link."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#anchor-links
+vocab: false
 level: error
 scope: raw
 raw:

@@ -214,10 +214,10 @@ export default {
             <gl-icon
               v-gl-tooltip.top
               name="eye-slash"
-              class="gl-text-orange-500"
               data-testid="confidential-icon"
               :aria-label="$options.i18n.confidential"
               :title="$options.i18n.confidential"
+              variant="warning"
             />
           </span>
           <gl-link

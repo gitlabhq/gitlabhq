@@ -7,6 +7,7 @@
 extends: existence
 message: "Instead of '%s', try starting this sentence with a specific subject and verb."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#this-these-that-those
+vocab: false
 level: warning
 ignorecase: false
 tokens:

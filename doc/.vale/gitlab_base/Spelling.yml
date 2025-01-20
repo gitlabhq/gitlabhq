@@ -11,6 +11,7 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: spelling
 message: "Check the spelling of '%s'. If the spelling is correct, ask a Technical Writer to add this word to the spelling exception list."
+vocab: false
 level: warning
 ignore:
   - gitlab_base/spelling-exceptions.txt

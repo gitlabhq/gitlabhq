@@ -7,6 +7,7 @@
 extends: existence
 message: "Avoid using 'level' when referring to groups, instances, or projects: '%s'"
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#level
+vocab: false
 level: suggestion
 ignorecase: true
 tokens:

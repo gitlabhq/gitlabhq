@@ -7,6 +7,7 @@
 extends: existence
 message: "Put the full link on one line, even if the link is very long."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#links
+vocab: false
 level: error
 scope: raw
 raw:

@@ -47,6 +47,7 @@ describe('Board card component', () => {
 
   const findIssuableBlockedIcon = () => wrapper.findComponent(IssuableBlockedIcon);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findConfidentialIcon = () => wrapper.findByTestId('confidential-icon');
   const findHiddenIssueIcon = () => wrapper.findByTestId('hidden-icon');
   const findWorkItemIcon = () => wrapper.findComponent(WorkItemTypeIcon);
   const findUserAvatar = () => wrapper.findComponent(UserAvatarLink);
@@ -113,7 +114,7 @@ describe('Board card component', () => {
   });
 
   it('does not render confidential icon', () => {
-    expect(wrapper.find('.confidential-icon').exists()).toBe(false);
+    expect(findConfidentialIcon().exists()).toBe(false);
   });
 
   it('does not render hidden issue icon', () => {
@@ -214,7 +215,7 @@ describe('Board card component', () => {
     });
 
     it('renders confidential icon', () => {
-      expect(wrapper.find('.confidential-icon').exists()).toBe(true);
+      expect(findConfidentialIcon().exists()).toBe(true);
     });
   });
 

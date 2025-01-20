@@ -9,6 +9,7 @@ message: "Improve SEO and accessibility by rewriting the link text for '%s'."
 level: warning
 ignorecase: true
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#text-for-links
+vocab: false
 scope: raw
 nonword: true
 tokens:

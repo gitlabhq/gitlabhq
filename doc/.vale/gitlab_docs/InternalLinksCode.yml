@@ -6,6 +6,7 @@
 extends: existence
 message: "Use full URLs for files outside the docs directory."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#links
+vocab: false
 level: error
 scope: raw
 raw:

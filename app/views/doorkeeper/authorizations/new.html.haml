@@ -32,7 +32,7 @@
           = sprite_icon('tanuki-verified', css_class: 'gl-fill-icon-success')
           = _('This application is provided by GitLab.')
       - else
-        %p.gl-text-orange-500
+        %p.gl-text-warning
           = sprite_icon('warning-solid')
           = safe_format(_('Make sure you trust %{strong_start}%{client_name}%{strong_end} before authorizing.'),
             { client_name: @pre_auth.client.name },

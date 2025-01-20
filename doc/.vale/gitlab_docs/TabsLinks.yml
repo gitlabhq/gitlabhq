@@ -7,6 +7,7 @@
 extends: existence
 message: "Do not include tabs query parameters in links."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#tabs
+vocab: false
 level: error
 scope: raw
 raw:

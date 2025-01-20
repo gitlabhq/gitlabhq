@@ -7,6 +7,7 @@
 extends: existence
 message: "Remove the merge conflict marker '%s'."
 link: https://docs.gitlab.com/ee/development/code_review.html#merging-a-merge-request
+vocab: false
 level: error
 scope: raw
 raw:

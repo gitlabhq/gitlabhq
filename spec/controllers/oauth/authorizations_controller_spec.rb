@@ -176,7 +176,7 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
             it 'displays the warning message' do
               subject
               expect(response.body).to have_css(
-                'p.gl-text-orange-500', text: "Make sure you trust #{application.name} before authorizing.")
+                'p.gl-text-warning', text: "Make sure you trust #{application.name} before authorizing.")
               expect(response.body).to have_css('[data-testid="warning-solid-icon"]')
             end
           end

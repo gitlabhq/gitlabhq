@@ -6,6 +6,7 @@
 extends: substitution
 message: "Use inclusive language. Consider '%s' instead of '%s'."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
+vocab: false
 level: warning
 ignorecase: true
 swap:
@@ -18,5 +19,5 @@ swap:
   manpower: GitLab team members
   master: primary, main, controller, active, parent, hub
   sanity (?:check|test): check for completeness
-  slave: secondary, agent, standby, child, spoke 
+  slave: secondary, agent, standby, child, spoke
   whitelist(?:ed|ing|s)?: allowlist

@@ -8,6 +8,7 @@
 extends: substitution
 message: "Use '%s' instead of '%s', but consider rewriting the sentence."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
+vocab: false
 level: warning
 nonword: true
 ignorecase: true

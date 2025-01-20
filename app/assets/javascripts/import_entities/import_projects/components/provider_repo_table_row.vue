@@ -243,7 +243,7 @@ export default {
         <help-popover
           v-show="showMembershipsWarning"
           icon="warning"
-          trigger-class="!gl-text-orange-500"
+          trigger-class="!gl-text-warning"
           data-testid="memberships-warning"
         >
           {{

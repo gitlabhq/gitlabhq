@@ -90,8 +90,8 @@ export default {
         v-gl-tooltip
         name="eye-slash"
         :title="__('Confidential')"
-        class="gl-text-orange-500"
         :aria-label="__('Confidential')"
+        variant="warning"
       />
       <span class="gl-text-subtle">
         {{ __('Opened') }} <time :datetime="issue.createdAt">{{ formattedTime }}</time>

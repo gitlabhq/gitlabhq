@@ -8,6 +8,7 @@ extends: existence
 message: "Instead of future tense '%s', use present tense."
 ignorecase: true
 nonword: true
+vocab: false
 level: warning
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#future-tense
 tokens:

@@ -822,8 +822,8 @@ export default {
                 v-gl-tooltip
                 :title="s__('BulkImport|Some groups will be imported without projects.')"
                 name="warning"
-                class="gl-text-orange-500"
                 data-testid="import-projects-warning"
+                variant="warning"
               />
             </span>
             <div class="gl-ml-4 gl-flex">

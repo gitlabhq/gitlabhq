@@ -55,8 +55,8 @@ export default {
     <span
       v-if="formattedDueDate"
       :class="{
-        'gl-text-red-500': showDueDateAsError,
-        'gl-text-orange-500': showDueDateAsWarning,
+        'gl-text-danger': showDueDateAsError,
+        'gl-text-warning': showDueDateAsWarning,
       }"
       >{{ formattedDueDate }}</span
     >

@@ -6,6 +6,7 @@
 extends: substitution
 message: "The offerings are 'GitLab Self-Managed' and 'GitLab Dedicated', with that exact capitalization."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/#available-product-tier-badges
+vocab: false
 level: warning
 action:
   name: replace

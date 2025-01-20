@@ -329,7 +329,8 @@ export default {
           <gl-icon
             v-if="isVersionMismatch(item) || hasWarnings(item)"
             name="warning"
-            class="gl-ml-2 gl-text-orange-500"
+            class="gl-ml-2"
+            variant="warning"
           />
         </span>
 

@@ -197,7 +197,8 @@ export default {
           v-if="isInvalidTag"
           v-gl-tooltip.d0="$options.i18n.MISSING_MANIFEST_WARNING_TOOLTIP"
           name="warning"
-          class="gl-mr-2 gl-text-orange-500"
+          class="gl-mr-2"
+          variant="warning"
         />
       </div>
     </template>

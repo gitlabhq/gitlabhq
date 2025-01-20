@@ -6,6 +6,7 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: repetition
 message: "Remove this duplicate word: '%s'."
+vocab: false
 level: error
 alpha: true
 tokens:

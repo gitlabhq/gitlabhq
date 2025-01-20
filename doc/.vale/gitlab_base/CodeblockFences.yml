@@ -7,6 +7,7 @@
 extends: existence
 message: "Instead of '%s' for the code block, use yaml, ruby, plaintext, markdown, javascript, shell, go, python, dockerfile, or typescript."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#code-blocks
+vocab: false
 level: error
 scope: raw
 raw:

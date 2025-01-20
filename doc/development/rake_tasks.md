@@ -401,7 +401,7 @@ See [How to update Emojis](fe_guide/emojis.md) for detailed instructions.
 
 ## Update project templates
 
-See [contributing to project templates for GitLab team members](project_templates.md#for-gitlab-team-members).
+See [contributing to project templates for GitLab team members](project_templates/add_new_template.md#for-gitlab-team-members).
 
 ## Generate route lists
 

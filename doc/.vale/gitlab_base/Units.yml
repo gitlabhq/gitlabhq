@@ -7,6 +7,7 @@
 extends: existence
 message: "Add a space between the number and the unit in '%s'."
 link: 'https://docs.gitlab.com/ee/development/documentation/styleguide/'
+vocab: false
 nonword: true
 level: warning
 ignorecase: true

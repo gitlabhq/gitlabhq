@@ -176,8 +176,8 @@ describe('PanelsBase', () => {
   describe('Alert variants', () => {
     describe.each`
       alertVariant       | borderColor                 | iconName           | iconColor
-      ${VARIANT_DANGER}  | ${'gl-border-t-red-500'}    | ${'error'}         | ${'gl-text-red-500'}
-      ${VARIANT_WARNING} | ${'gl-border-t-orange-500'} | ${'warning'}       | ${'gl-text-orange-500'}
+      ${VARIANT_DANGER}  | ${'gl-border-t-red-500'}    | ${'error'}         | ${'gl-text-danger'}
+      ${VARIANT_WARNING} | ${'gl-border-t-orange-500'} | ${'warning'}       | ${'gl-text-warning'}
       ${VARIANT_INFO}    | ${'gl-border-t-blue-500'}   | ${'information-o'} | ${'gl-text-blue-500'}
     `('when the alert is $alertVariant', ({ alertVariant, borderColor, iconName, iconColor }) => {
       beforeEach(() => {

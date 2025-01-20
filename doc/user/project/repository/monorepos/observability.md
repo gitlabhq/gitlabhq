@@ -33,10 +33,10 @@ The following are log entry fields in the Gitaly logs that can be filtered on:
 | `json.grpc.code`   | OK                  | Indicates the RPC has successfully served its request                                         |
 | `json.grpc.code`   | Canceled            | Often times indicates the client killed the connection, usually due to a timeout of some sort |
 | `json.grpc.code`   | ResourceExhausted   | Indicates there are too many Git processes being spawned on the machine simultaneously        |
-| `json.user_id`     | A `user_id` who initiated the clone/fetch. This is in the form of `user-<user_id>` eg: `user-22345`  | Indicates there are too many Git processes being spawned on the machine simultaneously        |
-| `json.username`     | A username who initiated the clone/fetch. eg: `ilovecoding` | In order to see how many clones/fetches were from a given user. This is sometimes helpful to find excessive clone operations by a single user |
-| `json.grpc.request.glRepository`     | A repository in question. In the form of `project-<project_id>` eg: `project-214`  | In order to see how many clones/fetches were for a given repository. |
-| `json.grpc.request.glProjectPath`    | A repository in question. In the form of a project path eg: `my-org/coolproject`  | In order to see how many clones/fetches were for a given repository. |
+| `json.user_id`     | A `user_id` who initiated the clone/fetch. This is in the form of `user-<user_id>`. For example: `user-22345` | Indicates there are too many Git processes being spawned on the machine simultaneously        |
+| `json.username`     | A username who initiated the clone/fetch. For example: `ilovecoding` | In order to see how many clones/fetches were from a given user. This is sometimes helpful to find excessive clone operations by a single user |
+| `json.grpc.request.glRepository`     | A repository in question. In the form of `project-<project_id>`. For example: `project-214` | In order to see how many clones/fetches were for a given repository. |
+| `json.grpc.request.glProjectPath`    | A repository in question. In the form of a project path. For example: `my-org/coolproject` | In order to see how many clones/fetches were for a given repository. |
 
 The following are log entry fields that give useful information about CPU and
 memory:

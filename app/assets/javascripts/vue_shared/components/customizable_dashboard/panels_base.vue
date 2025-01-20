@@ -94,8 +94,8 @@ export default {
     [VARIANT_INFO]: 'gl-border-t-blue-500',
   },
   alertIconClassMap: {
-    [VARIANT_DANGER]: 'gl-text-red-500',
-    [VARIANT_WARNING]: 'gl-text-orange-500',
+    [VARIANT_DANGER]: 'gl-text-danger',
+    [VARIANT_WARNING]: 'gl-text-warning',
     [VARIANT_INFO]: 'gl-text-blue-500',
   },
 };

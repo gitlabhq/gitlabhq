@@ -7,6 +7,7 @@
 extends: existence
 message: "Rewrite '%s' to be plural without parentheses."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#s
+vocab: false
 level: warning
 ignorecase: true
 nonword: true
