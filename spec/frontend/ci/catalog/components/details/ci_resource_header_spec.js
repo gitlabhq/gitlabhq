@@ -5,6 +5,7 @@ import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_sel
 import CiResourceHeader from '~/ci/catalog/components/details/ci_resource_header.vue';
 import CiVerificationBadge from '~/ci/catalog/components/shared/ci_verification_badge.vue';
 import ProjectVisibilityIcon from '~/ci/catalog/components/shared/project_visibility_icon.vue';
+import TopicBadges from '~/vue_shared/components/topic_badges.vue';
 import { catalogSharedDataMock } from '../../mock';
 
 describe('CiResourceHeader', () => {
@@ -21,6 +22,7 @@ describe('CiResourceHeader', () => {
   const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
   const findAvatar = () => wrapper.findComponent(GlAvatar);
   const findAvatarLink = () => wrapper.findComponent(GlAvatarLink);
+  const findTopicBadgesComponent = () => wrapper.findComponent(TopicBadges);
   const findVerificationBadge = () => wrapper.findComponent(CiVerificationBadge);
   const findVersionBadge = () => wrapper.findComponent(GlBadge);
   const findVisibilityIcon = () => wrapper.findComponent(ProjectVisibilityIcon);
@@ -134,6 +136,26 @@ describe('CiResourceHeader', () => {
 
       it('displays the correct badge', () => {
         expect(findVerificationBadge().props('verificationLevel')).toBe(verificationLevel);
+      });
+    });
+  });
+
+  describe('project topics', () => {
+    describe('when there are no topics', () => {
+      it('does not render the topic badges component', () => {
+        createComponent();
+
+        expect(findTopicBadgesComponent().exists()).toBe(false);
+      });
+    });
+
+    describe('when there are topics', () => {
+      it('renders the topic badges component', () => {
+        const topics = ['vue.js', 'Ruby'];
+        createComponent({ props: { resource: { ...resource, topics } } });
+
+        expect(findTopicBadgesComponent().exists()).toBe(true);
+        expect(findTopicBadgesComponent().props('topics')).toBe(topics);
       });
     });
   });

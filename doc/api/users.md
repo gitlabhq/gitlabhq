@@ -32,7 +32,7 @@ Supported attributes:
 | Attribute              | Type     | Required | Description |
 |:-----------------------|:---------|:---------|:------------|
 | `username`             | string   | no       | Get a single user with a specific username. |
-| `search`               | string   | no       | Search for a username. |
+| `search`               | string   | no       | Search for users by name, username, or public email. |
 | `active`               | boolean  | no       | Filters only active users. Default is `false`. |
 | `external`             | boolean  | no       | Filters only external users. Default is `false`. |
 | `blocked`              | boolean  | no       | Filters only blocked users. Default is `false`. |
@@ -74,8 +74,7 @@ This endpoint supports [keyset pagination](rest/index.md#keyset-based-pagination
 
 You can also use `?search=` to search for users by name, username, or public email. For example, `/users?search=John`. When you search for a:
 
-- Public email, you must use the full email address to get an exact match. A search might return a partial match. For
-  example, if you search for the email `on@example.com`, the search can return both `on@example.com` and `jon@example.com`.
+- Public email, you must use the full email address to get an exact match.
 - Name or username, you do not have to get an exact match because this is a fuzzy search.
 
 In addition, you can lookup users by username:
@@ -162,6 +161,7 @@ Supported attributes:
 
 | Attribute          | Type    | Required | Description |
 |:-------------------|:--------|:---------|:------------|
+| `search`           | string  | no       | Search for users by name, username, public email, or private email. |
 | `extern_uid`       | string  | no       | Get a single user with a specific external authentication provider UID. |
 | `provider`         | string  | no       | The external provider. |
 | `order_by`         | string  | no       | Return users ordered by `id`, `name`, `username`, `created_at`, or `updated_at` fields. Default is `id` |

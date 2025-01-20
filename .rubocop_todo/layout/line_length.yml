@@ -107,7 +107,6 @@ Layout/LineLength:
     - 'app/models/concerns/ignorable_columns.rb'
     - 'app/models/concerns/iid_routes.rb'
     - 'app/models/concerns/integrations/has_data_fields.rb'
-    - 'app/models/concerns/issuable.rb'
     - 'app/models/concerns/mentionable/reference_regexes.rb'
     - 'app/models/concerns/milestoneable.rb'
     - 'app/models/concerns/noteable.rb'

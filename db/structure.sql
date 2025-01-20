@@ -22229,42 +22229,6 @@ CREATE SEQUENCE value_stream_dashboard_counts_id_seq
 
 ALTER SEQUENCE value_stream_dashboard_counts_id_seq OWNED BY value_stream_dashboard_counts.id;
 
-CREATE TABLE virtual_registries_packages_maven_cached_responses (
-    id bigint NOT NULL,
-    group_id bigint NOT NULL,
-    upstream_id bigint,
-    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
-    downloaded_at timestamp with time zone DEFAULT now() NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    file_store integer DEFAULT 1 NOT NULL,
-    size integer NOT NULL,
-    relative_path text NOT NULL,
-    file text NOT NULL,
-    object_storage_key text NOT NULL,
-    upstream_etag text,
-    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
-    status smallint DEFAULT 0 NOT NULL,
-    file_final_path text,
-    file_md5 bytea,
-    file_sha1 bytea NOT NULL,
-    CONSTRAINT check_28c64d513d CHECK ((char_length(object_storage_key) <= 255)),
-    CONSTRAINT check_30b7e853d9 CHECK ((char_length(upstream_etag) <= 255)),
-    CONSTRAINT check_3f121b03fd CHECK ((char_length(file_final_path) <= 1024)),
-    CONSTRAINT check_68b105cda6 CHECK ((char_length(file) <= 255)),
-    CONSTRAINT check_731cd48dbf CHECK ((char_length(content_type) <= 255)),
-    CONSTRAINT check_d35a8e931f CHECK ((char_length(relative_path) <= 255))
-);
-
-CREATE SEQUENCE virtual_registries_packages_maven_cached_responses_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE virtual_registries_packages_maven_cached_responses_id_seq OWNED BY virtual_registries_packages_maven_cached_responses.id;
-
 CREATE TABLE virtual_registries_packages_maven_registries (
     id bigint NOT NULL,
     group_id bigint NOT NULL,
@@ -25266,8 +25230,6 @@ ALTER TABLE ONLY users_statistics ALTER COLUMN id SET DEFAULT nextval('users_sta
 
 ALTER TABLE ONLY value_stream_dashboard_counts ALTER COLUMN id SET DEFAULT nextval('value_stream_dashboard_counts_id_seq'::regclass);
 
-ALTER TABLE ONLY virtual_registries_packages_maven_cached_responses ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_maven_cached_responses_id_seq'::regclass);
-
 ALTER TABLE ONLY virtual_registries_packages_maven_registries ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_maven_registries_id_seq'::regclass);
 
 ALTER TABLE ONLY virtual_registries_packages_maven_registry_upstreams ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_maven_registry_upstreams_id_seq'::regclass);
@@ -28191,9 +28153,6 @@ ALTER TABLE ONLY value_stream_dashboard_counts
 ALTER TABLE ONLY verification_codes
     ADD CONSTRAINT verification_codes_pkey PRIMARY KEY (created_at, visitor_id_code, code, phone);
 
-ALTER TABLE ONLY virtual_registries_packages_maven_cached_responses
-    ADD CONSTRAINT virtual_registries_packages_maven_cached_responses_pkey PRIMARY KEY (id);
-
 ALTER TABLE ONLY virtual_registries_packages_maven_registries
     ADD CONSTRAINT virtual_registries_packages_maven_registries_pkey PRIMARY KEY (id);
 
@@ -30227,14 +30186,6 @@ CREATE INDEX idx_user_details_on_provisioned_by_group_id_user_id ON user_details
 CREATE INDEX idx_user_member_roles_on_member_role_id ON user_member_roles USING btree (member_role_id);
 
 CREATE INDEX idx_user_member_roles_on_user_id ON user_member_roles USING btree (user_id);
-
-CREATE INDEX idx_vreg_pkgs_maven_cached_responses_on_group_id_status ON virtual_registries_packages_maven_cached_responses USING btree (group_id, status);
-
-CREATE INDEX idx_vreg_pkgs_maven_cached_responses_on_relative_path_trigram ON virtual_registries_packages_maven_cached_responses USING gin (relative_path gin_trgm_ops);
-
-CREATE UNIQUE INDEX idx_vregs_pkgs_mvn_cached_resp_on_uniq_default_upt_id_relpath ON virtual_registries_packages_maven_cached_responses USING btree (upstream_id, relative_path) WHERE (status = 0);
-
-CREATE INDEX idx_vregs_pkgs_mvn_cached_resp_on_upst_id_status_id ON virtual_registries_packages_maven_cached_responses USING btree (upstream_id, status, id);
 
 CREATE INDEX idx_vuln_reads_for_filtering ON vulnerability_reads USING btree (project_id, state, dismissal_reason, severity DESC, vulnerability_id DESC NULLS LAST);
 

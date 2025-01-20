@@ -55245,7 +55245,13 @@ msgstr ""
 msgid "StatusPage|your status page frontend."
 msgstr ""
 
+msgid "Step %{currentStep}"
+msgstr ""
+
 msgid "Step %{currentStep} of %{stepCount}"
+msgstr ""
+
+msgid "Step %{currentStep} of %{stepsTotal}"
 msgstr ""
 
 msgid "Step %{step}"

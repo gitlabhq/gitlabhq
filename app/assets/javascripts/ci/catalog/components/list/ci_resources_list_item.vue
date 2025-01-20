@@ -15,6 +15,7 @@ import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
 import { toNounSeriesText } from '~/lib/utils/grammar';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
+import TopicBadges from '~/vue_shared/components/topic_badges.vue';
 import { CI_RESOURCE_DETAILS_PAGE_NAME } from '../../router/constants';
 import { VERIFICATION_LEVEL_UNVERIFIED, VISIBILITY_LEVEL_PRIVATE } from '../../constants';
 import CiVerificationBadge from '../shared/ci_verification_badge.vue';
@@ -37,6 +38,7 @@ export default {
     GlTruncate,
     Markdown,
     ProjectVisibilityIcon,
+    TopicBadges,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -89,6 +91,9 @@ export default {
     },
     hasReleasedVersion() {
       return Boolean(this.latestVersion?.createdAt);
+    },
+    hasTopics() {
+      return this.resource?.topics?.length;
     },
     isPrivate() {
       return this.resource?.visibilityLevel === VISIBILITY_LEVEL_PRIVATE;
@@ -206,16 +211,12 @@ export default {
         </div>
       </div>
       <div class="gl-flex gl-flex-col gl-justify-between gl-gap-2 gl-text-sm md:gl-flex-row">
-        <div>
-          <markdown
-            v-if="resource.description"
-            class="gl-flex gl-basis-2/3"
-            :markdown="resource.description"
-          />
+        <div class="gl-flex gl-basis-2/3 gl-flex-col">
+          <markdown v-if="resource.description" :markdown="resource.description" />
           <div
             v-if="hasComponents"
             data-testid="ci-resource-component-names"
-            class="gl-mt-1 gl-inline-flex gl-flex-wrap gl-text-sm gl-text-default"
+            class="gl-mt-2 gl-inline-flex gl-flex-wrap gl-text-sm gl-text-default"
           >
             <span class="gl-font-bold"> &#8226; {{ $options.i18n.components }} </span>
             <gl-sprintf :message="componentNamesSprintfMessage">
@@ -229,6 +230,12 @@ export default {
               </template>
             </gl-sprintf>
           </div>
+          <topic-badges
+            v-if="hasTopics"
+            :topics="resource.topics"
+            :show-label="false"
+            class="gl-mb-2 gl-mt-3"
+          />
         </div>
         <div class="gl-flex gl-shrink-0 gl-justify-end">
           <div v-if="hasReleasedVersion" class="gl-shrink-0">

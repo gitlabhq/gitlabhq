@@ -255,7 +255,8 @@ RSpec.describe 'Database schema',
       group_scim_auth_access_tokens: %w[temp_source_id], # temporary column that is not a foreign key
       system_access_group_microsoft_graph_access_tokens: %w[temp_source_id], # temporary column that is not a foreign key
       system_access_group_microsoft_applications: %w[temp_source_id], # temporary column that is not a foreign key
-      subscription_user_add_on_assignment_versions: %w[item_id user_id purchase_id] # Managed by paper_trail gem, no need for FK on the historical data
+      subscription_user_add_on_assignment_versions: %w[item_id user_id purchase_id], # Managed by paper_trail gem, no need for FK on the historical data
+      virtual_registries_packages_maven_cache_entries: %w[group_id] # We can't use a foreign key due to object storage references
     }.with_indifferent_access.freeze
   end
 

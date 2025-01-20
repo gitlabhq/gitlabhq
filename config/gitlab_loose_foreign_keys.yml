@@ -594,22 +594,6 @@ virtual_registries_packages_maven_cache_entries:
     on_delete: update_column_to
     target_column: status
     target_value: 2
-  - table: namespaces
-    column: group_id
-    on_delete: update_column_to
-    target_column: status
-    target_value: 2
-virtual_registries_packages_maven_cached_responses:
-  - table: virtual_registries_packages_maven_upstreams
-    column: upstream_id
-    on_delete: update_column_to
-    target_column: status
-    target_value: 2
-  - table: namespaces
-    column: group_id
-    on_delete: update_column_to
-    target_column: status
-    target_value: 2
 vulnerabilities:
   - table: users
     column: dismissed_by_id

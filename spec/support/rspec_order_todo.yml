@@ -5958,7 +5958,6 @@
 - './spec/models/concerns/integrations/has_data_fields_spec.rb'
 - './spec/models/concerns/integrations/reset_secret_fields_spec.rb'
 - './spec/models/concerns/issuable_link_spec.rb'
-- './spec/models/concerns/issuable_spec.rb'
 - './spec/models/concerns/legacy_bulk_insert_spec.rb'
 - './spec/models/concerns/limitable_spec.rb'
 - './spec/models/concerns/loaded_in_group_list_spec.rb'

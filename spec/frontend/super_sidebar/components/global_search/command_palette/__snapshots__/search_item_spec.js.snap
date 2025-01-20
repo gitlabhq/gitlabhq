@@ -15,10 +15,10 @@ exports[`SearchItem should render the item 1`] = `
     src="https://www.gravatar.com/avatar/a9638f4ec70148d51e56bf05ad41e993?s=80&d=identicon"
   />
   <span
-    class="gl-flex gl-flex-col"
+    class="gl-flex gl-flex-col gl-min-w-0 gl-w-full"
   >
     <span
-      class="gl-text-strong"
+      class="gl-text-strong gl-truncate"
     >
       Cole Dickinson
     </span>
@@ -37,10 +37,10 @@ exports[`SearchItem should render the item 2`] = `
     variant="current"
   />
   <span
-    class="gl-flex gl-flex-col"
+    class="gl-flex gl-flex-col gl-min-w-0 gl-w-full"
   >
     <span
-      class="gl-text-strong"
+      class="gl-text-strong gl-truncate"
     >
       Manage &gt; Activity
     </span>
@@ -63,15 +63,15 @@ exports[`SearchItem should render the item 3`] = `
     src="/project/avatar/1/avatar.png"
   />
   <span
-    class="gl-flex gl-flex-col"
+    class="gl-flex gl-flex-col gl-min-w-0 gl-w-full"
   >
     <span
-      class="gl-text-strong"
+      class="gl-text-strong gl-truncate"
     >
       MockProject1
     </span>
     <span
-      class="gl-text-sm gl-text-subtle"
+      class="gl-text-sm gl-text-subtle gl-truncate"
     >
       Gitlab Org / MockProject1
     </span>
@@ -94,10 +94,10 @@ exports[`SearchItem should render the item 4`] = `
     src=""
   />
   <span
-    class="gl-flex gl-flex-col"
+    class="gl-flex gl-flex-col gl-min-w-0 gl-w-full"
   >
     <span
-      class="gl-text-strong"
+      class="gl-text-strong gl-truncate"
     >
       Dismiss Cipher with no integrity
     </span>

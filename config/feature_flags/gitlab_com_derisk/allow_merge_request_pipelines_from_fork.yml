@@ -1,0 +1,9 @@
+---
+name: allow_merge_request_pipelines_from_fork
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/378945
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175394
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/512897
+milestone: '17.8'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

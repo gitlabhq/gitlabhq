@@ -32520,6 +32520,22 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="projectcompliancestandardsadherencefilters"></a>`filters` | [`ComplianceStandardsProjectAdherenceInput`](#compliancestandardsprojectadherenceinput) | Filters applied when retrieving compliance standards adherence. |
 
+##### `Project.components`
+
+Find software dependencies by name.
+
+DETAILS:
+**Introduced** in GitLab 17.9.
+**Status**: Experiment.
+
+Returns [`[Component!]`](#component).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcomponentsname"></a>`name` | [`String`](#string) | Entire name or part of the name. |
+
 ##### `Project.containerRepositories`
 
 Container repositories of the project.

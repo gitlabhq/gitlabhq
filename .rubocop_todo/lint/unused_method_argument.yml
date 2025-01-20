@@ -93,7 +93,6 @@ Lint/UnusedMethodArgument:
     - 'app/models/concerns/bulk_insert_safe.rb'
     - 'app/models/concerns/cache_markdown_field.rb'
     - 'app/models/concerns/cross_database_modification.rb'
-    - 'app/models/concerns/issuable.rb'
     - 'app/models/concerns/mentionable.rb'
     - 'app/models/concerns/note_on_diff.rb'
     - 'app/models/concerns/reactive_caching.rb'

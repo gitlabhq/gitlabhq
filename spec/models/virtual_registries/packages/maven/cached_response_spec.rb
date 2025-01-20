@@ -309,15 +309,6 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
     end
   end
 
-  context 'with loose foreign key on virtual_registries_packages_maven_cached_responses.group_id' do
-    it_behaves_like 'update by a loose foreign key' do
-      let_it_be(:parent) { create(:group) }
-      let_it_be(:model) { create(:virtual_registries_packages_maven_cached_response, group: parent) }
-
-      let(:find_model) { model.reload }
-    end
-  end
-
   def with_threads(count: 5, &block)
     return unless block
 

@@ -10,6 +10,7 @@ describe('Topic Badges', () => {
   let wrapper;
 
   const defaultProps = {
+    showLabel: true,
     topics: ['Vue.js', 'Ruby', 'JavaScript', 'docker'],
   };
 
@@ -17,6 +18,7 @@ describe('Topic Badges', () => {
   const findFirstBadge = () => wrapper.findComponent(GlBadge);
   const findMoreTopicsLabel = () => wrapper.findByTestId('more-topics-label');
   const findPopover = () => wrapper.findComponent(GlPopover);
+  const findTopicsLabel = () => wrapper.findByText('Topics:');
 
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(TopicBadges, {
@@ -104,6 +106,28 @@ describe('Topic Badges', () => {
 
       expect(findFirstBadge().text()).toBe('topic with ver…');
       expect(tooltip.value).toBe(topicWithLongName);
+    });
+  });
+
+  describe('`showLabel` prop', () => {
+    describe('when `showLabel` is true', () => {
+      it('renders the topics label', () => {
+        createComponent();
+
+        expect(findTopicsLabel().exists()).toBe(true);
+      });
+    });
+
+    describe('when `showLabel` is false', () => {
+      it('does not render the topics label', () => {
+        createComponent({
+          props: {
+            showLabel: false,
+          },
+        });
+
+        expect(findTopicsLabel().exists()).toBe(false);
+      });
     });
   });
 });

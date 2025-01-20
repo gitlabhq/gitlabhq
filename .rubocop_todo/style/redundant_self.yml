@@ -41,7 +41,6 @@ Style/RedundantSelf:
     - 'app/models/concerns/ignorable_columns.rb'
     - 'app/models/concerns/integrations/base_data_fields.rb'
     - 'app/models/concerns/integrations/has_data_fields.rb'
-    - 'app/models/concerns/issuable.rb'
     - 'app/models/concerns/issue_resource_event.rb'
     - 'app/models/concerns/limitable.rb'
     - 'app/models/concerns/mentionable.rb'

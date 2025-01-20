@@ -14,6 +14,7 @@ import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
+import TopicBadges from '~/vue_shared/components/topic_badges.vue';
 import { VERIFICATION_LEVEL_UNVERIFIED, VISIBILITY_LEVEL_PRIVATE } from '../../constants';
 import CiVerificationBadge from '../shared/ci_verification_badge.vue';
 import ProjectVisibilityIcon from '../shared/project_visibility_icon.vue';
@@ -38,6 +39,7 @@ export default {
     GlLink,
     Markdown,
     ProjectVisibilityIcon,
+    TopicBadges,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -69,6 +71,9 @@ export default {
     },
     hasLatestVersion() {
       return this.latestVersion?.name;
+    },
+    hasTopics() {
+      return this.resource?.topics?.length;
     },
     isProjectPrivate() {
       return this.resource?.visibilityLevel === VISIBILITY_LEVEL_PRIVATE;
@@ -181,7 +186,8 @@ export default {
       v-if="isLoadingData"
       class="gl-animate-skeleton-loader gl-my-3 gl-h-4 !gl-max-w-20 gl-rounded-base"
     ></div>
-    <markdown v-else-if="resource.description" class="gl-mb-5" :markdown="resource.description" />
+    <markdown v-else-if="resource.description" class="gl-mb-3" :markdown="resource.description" />
+    <topic-badges v-if="hasTopics" :topics="resource.topics" :show-label="false" class="gl-mb-5" />
     <abuse-category-selector
       v-if="hasLatestVersion && isReportAbuseDrawerOpen && reportAbusePath"
       :reported-user-id="authorId"

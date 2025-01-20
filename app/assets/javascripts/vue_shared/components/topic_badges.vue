@@ -25,6 +25,11 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
+    showLabel: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     topics: {
       type: Array,
       required: true,
@@ -70,9 +75,9 @@ export default {
 <template>
   <div
     v-if="topics.length"
-    class="gl-inline-flex gl-flex-wrap gl-items-center gl-gap-2 gl-text-sm gl-text-subtle"
+    class="gl-inline-flex gl-flex-wrap gl-items-center gl-gap-3 gl-text-sm gl-text-subtle"
   >
-    <span>{{ $options.i18n.topics }}:</span>
+    <span v-if="showLabel">{{ $options.i18n.topics }}:</span>
     <div v-for="topic in visibleTopics" :key="topic">
       <gl-badge v-gl-tooltip="topicTooltipTitle(topic)" :href="topicPath(topic)">
         {{ topicTitle(topic) }}

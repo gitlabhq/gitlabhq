@@ -7,6 +7,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CiVerificationBadge from '~/ci/catalog/components/shared/ci_verification_badge.vue';
 import ProjectVisibilityIcon from '~/ci/catalog/components/shared/project_visibility_icon.vue';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
+import TopicBadges from '~/vue_shared/components/topic_badges.vue';
 import { catalogSinglePageResponse } from '../../mock';
 
 const defaultEvent = { preventDefault: jest.fn, ctrlKey: false, metaKey: false };
@@ -49,6 +50,7 @@ describe('CiResourcesListItem', () => {
   const findBadge = () => wrapper.findComponent(GlBadge);
   const findMarkdown = () => wrapper.findComponent(Markdown);
   const findTimeAgoMessage = () => wrapper.findComponent(GlSprintf);
+  const findTopicBadgesComponent = () => wrapper.findComponent(TopicBadges);
   const findVerificationBadge = () => wrapper.findComponent(CiVerificationBadge);
   const findVisibilityIcon = () => wrapper.findComponent(ProjectVisibilityIcon);
 
@@ -145,6 +147,26 @@ describe('CiResourcesListItem', () => {
         expect(findComponentNames().text()).toMatchInterpolatedText(
           '• Components: test-component, component_two, test-component, component_two, test-component',
         );
+      });
+    });
+  });
+
+  describe('project topics', () => {
+    describe('when there are no topics', () => {
+      it('does not render the topic badges component', () => {
+        createComponent();
+
+        expect(findTopicBadgesComponent().exists()).toBe(false);
+      });
+    });
+
+    describe('when there are topics', () => {
+      it('renders the topic badges component', () => {
+        const topics = ['vue.js', 'Ruby'];
+        createComponent({ props: { resource: { ...resource, topics } } });
+
+        expect(findTopicBadgesComponent().exists()).toBe(true);
+        expect(findTopicBadgesComponent().props('topics')).toBe(topics);
       });
     });
   });

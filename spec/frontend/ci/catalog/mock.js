@@ -132,6 +132,7 @@ export const catalogResponseBody = {
           starCount: 0,
           last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-42/-/starrers',
+          topics: [],
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -150,6 +151,7 @@ export const catalogResponseBody = {
           starCount: 0,
           last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-41/-/starrers',
+          topics: [],
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -168,6 +170,7 @@ export const catalogResponseBody = {
           starCount: 0,
           last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-40/-/starrers',
+          topics: [],
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -186,6 +189,7 @@ export const catalogResponseBody = {
           starCount: 0,
           last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-39/-/starrers',
+          topics: [],
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -204,6 +208,7 @@ export const catalogResponseBody = {
           starCount: 0,
           last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-38/-/starrers',
+          topics: [],
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -222,6 +227,7 @@ export const catalogResponseBody = {
           starCount: 0,
           last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-37/-/starrers',
+          topics: [],
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -240,6 +246,7 @@ export const catalogResponseBody = {
           starCount: 0,
           last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-36/-/starrers',
+          topics: [],
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -258,6 +265,7 @@ export const catalogResponseBody = {
           starCount: 0,
           last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-35/-/starrers',
+          topics: [],
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -276,6 +284,7 @@ export const catalogResponseBody = {
           starCount: 0,
           last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-34/-/starrers',
+          topics: [],
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -294,6 +303,7 @@ export const catalogResponseBody = {
           starCount: 0,
           last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-33/-/starrers',
+          topics: [],
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -312,6 +322,7 @@ export const catalogResponseBody = {
           starCount: 0,
           last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-32/-/starrers',
+          topics: [],
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -330,6 +341,7 @@ export const catalogResponseBody = {
           starCount: 0,
           last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-31/-/starrers',
+          topics: [],
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -348,6 +360,7 @@ export const catalogResponseBody = {
           starCount: 0,
           last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-30/-/starrers',
+          topics: [],
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -366,6 +379,7 @@ export const catalogResponseBody = {
           starCount: 0,
           last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-29/-/starrers',
+          topics: [],
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -384,6 +398,7 @@ export const catalogResponseBody = {
           starCount: 0,
           last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-28/-/starrers',
+          topics: [],
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -402,6 +417,7 @@ export const catalogResponseBody = {
           starCount: 0,
           last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-27/-/starrers',
+          topics: [],
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -420,6 +436,7 @@ export const catalogResponseBody = {
           starCount: 0,
           last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-26/-/starrers',
+          topics: [],
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -438,6 +455,7 @@ export const catalogResponseBody = {
           starCount: 0,
           last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-25/-/starrers',
+          topics: [],
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -456,6 +474,7 @@ export const catalogResponseBody = {
           starCount: 0,
           last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-24/-/starrers',
+          topics: [],
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -474,6 +493,7 @@ export const catalogResponseBody = {
           starCount: 0,
           last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-23/-/starrers',
+          topics: [],
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -586,6 +606,7 @@ export const catalogSharedDataMock = {
       starCount: 1,
       last30DayUsageCount: 4,
       starrersPath: '/path/to/project/-/starrers',
+      topics: [],
       verificationLevel: 'UNVERIFIED',
       versions: {
         __typename: 'CiCatalogResourceVersionConnection',
