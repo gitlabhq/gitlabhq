@@ -40,6 +40,12 @@ GitLab offers the following machine type for hosted runners on Linux Arm64.
 | `saas-linux-medium-arm64` (Premium and Ultimate only) | 4     | 16 GB  | 50 GB   |
 | `saas-linux-large-arm64` (Premium and Ultimate only)  | 8     | 32 GB  | 100 GB  |
 
+NOTE:
+Users can experience network connectivity issues when they use Docker-in-Docker with hosted runners on Linux
+Arm. This issue occurs when the maximum transmission unit (MTU) value in Google Cloud and Docker don't match.
+To resolve this issue, set `--mtu=1400` in the client side Docker configuration. 
+For more details, see [issue 473739](https://gitlab.com/gitlab-org/gitlab/-/issues/473739#workaround).
+
 ## Container images
 
 As runners on Linux are using the `docker+machine` [executor](https://docs.gitlab.com/runner/executors/#docker-machine-executor),

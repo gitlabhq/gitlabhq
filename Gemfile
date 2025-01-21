@@ -268,7 +268,7 @@ gem 'asciidoctor-plantuml', '~> 0.0.16', feature_category: :markdown
 gem 'asciidoctor-kroki', '~> 0.10.0', require: false, feature_category: :markdown
 gem 'rouge', '~> 4.4.0', feature_category: :shared
 gem 'truncato', '~> 0.7.12', feature_category: :team_planning
-gem 'nokogiri', '~> 1.16', feature_category: :shared
+gem 'nokogiri', '~> 1.18', feature_category: :shared
 gem 'gitlab-glfm-markdown', '~> 0.0.21', feature_category: :markdown
 gem 'tanuki_emoji', '~> 0.13', feature_category: :markdown
 gem 'unicode-emoji', '~> 4.0', feature_category: :markdown
