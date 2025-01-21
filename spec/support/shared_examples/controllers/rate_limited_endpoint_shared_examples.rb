@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 #
 # Requires a context containing:
 # - request (use method definition to avoid memoizing!)

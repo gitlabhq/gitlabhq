@@ -58,7 +58,6 @@ This window takes place on April 28 - 30, 2025 from 09:00 UTC to 22:00 UTC.
 |-------------|--------|-------|-------|
 | [Replace GraphQL field `take_ownership_pipeline_schedule` with `admin_pipeline_schedule` in PipelineSchedulePermissions](https://gitlab.com/gitlab-org/gitlab/-/issues/391941) | Low | Verify | Project |
 | [`GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN` is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/453949) | Medium | Verify | Instance |
-| [Compliance pipelines](https://gitlab.com/groups/gitlab-org/-/epics/11275) |  | Govern |  |
 | [The `heroku/builder:22` image is deprecated](https://gitlab.com/gitlab-org/cluster-integration/auto-build-image/-/issues/79) | Medium | Deploy | Project |
 | [`ciUsedMinutes` GraphQL field renamed to `ciDuration`](https://gitlab.com/gitlab-org/gitlab/-/issues/497364) | Medium | Verify | Instance |
 | [`mergeTrainIndex` and `mergeTrainsCount` GraphQL fields deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/473759) | Low | Verify | Project |

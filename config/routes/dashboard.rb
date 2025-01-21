@@ -16,16 +16,7 @@ resource :dashboard, controller: 'dashboard', only: [] do
     resources :groups, only: [:index]
     resources :snippets, only: [:index]
 
-    resources :todos, only: [:index, :destroy] do
-      collection do
-        get :vue
-        delete :destroy_all
-        patch :bulk_restore
-      end
-      member do
-        patch :restore
-      end
-    end
+    resources :todos, only: [:index, :destroy]
 
     resources :projects, only: [:index] do
       collection do

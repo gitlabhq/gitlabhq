@@ -11,9 +11,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
   - p_ci_templates_implicit_security_sast
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

@@ -22989,12 +22989,6 @@ msgstr ""
 msgid "Error updating %{issuableType}"
 msgstr ""
 
-msgid "Error updating status for all to-do items."
-msgstr ""
-
-msgid "Error updating status of to-do item."
-msgstr ""
-
 msgid "Error updating the snippet"
 msgstr ""
 
@@ -23397,9 +23391,6 @@ msgid "Everyone can access the wiki."
 msgstr ""
 
 msgid "Everyone can contribute"
-msgstr ""
-
-msgid "Everything on your to-do list is marked as done."
 msgstr ""
 
 msgid "Everything you need to create a GitLab Pages site using Bridgetown"
@@ -46562,9 +46553,6 @@ msgstr ""
 msgid "Raw blob requests"
 msgstr ""
 
-msgid "Re-add this to-do item"
-msgstr ""
-
 msgid "Re-authentication period expired or never requested. Please try again"
 msgstr ""
 
@@ -50271,9 +50259,6 @@ msgstr ""
 msgid "Search assignees"
 msgstr ""
 
-msgid "Search authors"
-msgstr ""
-
 msgid "Search branch"
 msgstr ""
 
@@ -50362,9 +50347,6 @@ msgid "Search page"
 msgstr ""
 
 msgid "Search project"
-msgstr ""
-
-msgid "Search projects"
 msgstr ""
 
 msgid "Search protected branches"
@@ -58946,9 +58928,6 @@ msgstr ""
 msgid "To %{link_to_help} of your domain, add the above key to a TXT record within your DNS configuration within seven days."
 msgstr ""
 
-msgid "To Do"
-msgstr ""
-
 msgid "To GitLab"
 msgstr ""
 
@@ -59224,13 +59203,7 @@ msgstr ""
 msgid "Todos|Directly addressed"
 msgstr ""
 
-msgid "Todos|Do you want to remove the filters?"
-msgstr ""
-
 msgid "Todos|Done"
-msgstr ""
-
-msgid "Todos|Due %{due_date}"
 msgstr ""
 
 msgid "Todos|Due %{when}"
@@ -59249,15 +59222,6 @@ msgid "Todos|Failed to snooze todo. Try again later."
 msgstr ""
 
 msgid "Todos|Failed to un-snooze todo. Try again later."
-msgstr ""
-
-msgid "Todos|Filter by author"
-msgstr ""
-
-msgid "Todos|Filter by group"
-msgstr ""
-
-msgid "Todos|Filter by project"
 msgstr ""
 
 msgid "Todos|Filter to-do items"
@@ -59332,12 +59296,6 @@ msgid "Todos|Merge train removed"
 msgstr ""
 
 msgid "Todos|Not sure where to go next? Take a look at your %{assignedIssuesLinkStart}assigned issues%{assignedIssuesLinkEnd} or %{mergeRequestLinkStart}merge requests%{mergeRequestLinkEnd}."
-msgstr ""
-
-msgid "Todos|Not sure where to go next? Take a look at your %{strongStart}%{assignedIssuesLinkStart}assigned issues%{assignedIssuesLinkEnd}%{strongEnd} or %{strongStart}%{mergeRequestLinkStart}merge requests%{mergeRequestLinkEnd}%{mergeRequestLinkEnd}%{strongEnd}."
-msgstr ""
-
-msgid "Todos|Nothing is on your to-do list. Nice work!"
 msgstr ""
 
 msgid "Todos|Nothing left to do. High five!"
@@ -59432,9 +59390,6 @@ msgstr ""
 msgid "Todos|Undo"
 msgstr ""
 
-msgid "Todos|Undo mark all as done"
-msgstr ""
-
 msgid "Todos|Unmergeable"
 msgstr ""
 
@@ -59462,9 +59417,6 @@ msgstr ""
 msgid "Todos|You"
 msgstr ""
 
-msgid "Todos|You're all done!"
-msgstr ""
-
 msgid "Todos|Your SSH key has expired"
 msgstr ""
 
@@ -59483,9 +59435,6 @@ msgstr ""
 msgid "Todos|assigned you"
 msgstr ""
 
-msgid "Todos|has added you as an approver"
-msgstr ""
-
 msgid "Todos|has requested access to %{what} %{which}"
 msgstr ""
 
@@ -59496,9 +59445,6 @@ msgid "Todos|requested a review"
 msgstr ""
 
 msgid "Todos|requested a review from yourself"
-msgstr ""
-
-msgid "Todos|requested an OKR update for %{what}"
 msgstr ""
 
 msgid "Todos|requested an OKR update for %{which}"
@@ -66776,12 +66722,6 @@ msgstr ""
 msgid "assign yourself"
 msgstr ""
 
-msgid "assigned"
-msgstr ""
-
-msgid "assigned you"
-msgstr ""
-
 msgid "at"
 msgstr ""
 
@@ -67582,9 +67522,6 @@ msgid "from %d job"
 msgid_plural "from %d jobs"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "from yourself"
-msgstr ""
 
 msgid "frontmatter"
 msgstr ""
@@ -68928,9 +68865,6 @@ msgid "then"
 msgstr ""
 
 msgid "this document"
-msgstr ""
-
-msgid "to yourself"
 msgstr ""
 
 msgid "today"

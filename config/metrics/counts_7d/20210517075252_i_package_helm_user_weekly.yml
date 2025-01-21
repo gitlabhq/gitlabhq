@@ -15,9 +15,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
     - i_package_helm_user
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

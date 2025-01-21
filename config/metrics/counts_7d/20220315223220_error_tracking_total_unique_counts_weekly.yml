@@ -15,9 +15,6 @@ events:
   unique: user.id
 - name: error_tracking_view_details
   unique: user.id
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

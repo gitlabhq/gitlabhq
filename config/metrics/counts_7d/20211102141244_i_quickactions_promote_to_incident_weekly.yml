@@ -13,9 +13,6 @@ options:
   events:
     - i_quickactions_promote_to_incident
 data_category: optional
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

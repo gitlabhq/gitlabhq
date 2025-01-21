@@ -2005,7 +2005,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/github_import/importer/single_endpoint_diff_notes_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/single_endpoint_issue_events_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/representation/note_text_spec.rb'
-    - 'spec/lib/gitlab/gl_repository/repo_type_spec.rb'
     - 'spec/lib/gitlab/grape_logging/loggers/cloudflare_logger_spec.rb'
     - 'spec/lib/gitlab/grape_logging/loggers/exception_logger_spec.rb'
     - 'spec/lib/gitlab/grape_logging/loggers/filter_parameters_spec.rb'

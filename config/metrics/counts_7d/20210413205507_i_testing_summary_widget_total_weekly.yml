@@ -17,9 +17,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
     - i_testing_summary_widget_total
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

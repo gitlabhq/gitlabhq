@@ -49,9 +49,6 @@ events:
   unique: user.id
 - name: p_analytics_ci_cd_lead_time
   unique: user.id
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

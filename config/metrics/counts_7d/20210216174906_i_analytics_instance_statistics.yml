@@ -11,9 +11,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
   - i_analytics_instance_statistics
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

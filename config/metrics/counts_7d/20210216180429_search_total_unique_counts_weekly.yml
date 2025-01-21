@@ -17,9 +17,6 @@ events:
   unique: user.id
 - name: i_search_paid
   unique: user.id
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

@@ -149,9 +149,6 @@ events:
   unique: user.id
 - name: i_quickactions_invite_email_multiple
   unique: user.id
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

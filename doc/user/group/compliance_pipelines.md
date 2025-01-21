@@ -14,7 +14,7 @@ DETAILS:
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159841) in GitLab 17.3
-and is planned for removal in 18.0. Use [pipeline execution policy type](../application_security/policies/pipeline_execution_policies.md) instead.
+and is planned for removal in 19.0. Use [pipeline execution policy type](../application_security/policies/pipeline_execution_policies.md) instead.
 This change is a breaking change. For more information, see the [migration guide](#pipeline-execution-policies-migration).
 
 Group owners can configure a compliance pipeline in a project separate to other projects. By default, the compliance
@@ -41,7 +41,7 @@ For more information, see:
 ## Pipeline execution policies migration
 
 To consolidate and simplify scan and pipeline enforcement, we have introduced pipeline execution policies. We deprecated
-compliance pipelines in GitLab 17.3 and will remove compliance pipelines in GitLab 18.0.
+compliance pipelines in GitLab 17.3 and will remove compliance pipelines in GitLab 19.0.
 
 Pipeline execution policies extend a project's `.gitlab-ci.yml` file with the configuration provided in separate YAML file
 (for example, `pipeline-execution.yml`) linked in the pipeline execution policy.

@@ -27,9 +27,6 @@ events:
 - name: users_updating_work_item_todo
   unique: user.id
 data_category: optional
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

@@ -367,7 +367,6 @@ module Gitlab
     config.assets.precompile << "page_bundles/terminal.css"
     config.assets.precompile << "page_bundles/terms.css"
     config.assets.precompile << "page_bundles/todos.css"
-    config.assets.precompile << "page_bundles/todos_vue.css"
     config.assets.precompile << "page_bundles/tree.css"
     config.assets.precompile << "page_bundles/users.css"
     config.assets.precompile << "page_bundles/web_ide_loader.css"

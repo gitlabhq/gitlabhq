@@ -31,9 +31,6 @@ events:
   unique: user.id
 - name: incident_management_incident_change_confidential
   unique: user.id
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

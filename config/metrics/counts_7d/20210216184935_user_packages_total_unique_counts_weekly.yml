@@ -33,9 +33,6 @@ events:
   unique: user.id
 - name: i_package_ml_model_user
   unique: user.id
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

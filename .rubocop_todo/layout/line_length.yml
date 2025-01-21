@@ -3244,7 +3244,6 @@ Layout/LineLength:
     - 'spec/lib/gitlab/github_import/importer/diff_note_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/lfs_object_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/object_counter_spec.rb'
-    - 'spec/lib/gitlab/gl_repository/repo_type_spec.rb'
     - 'spec/lib/gitlab/gpg/commit_spec.rb'
     - 'spec/lib/gitlab/gpg/invalid_gpg_signature_updater_spec.rb'
     - 'spec/lib/gitlab/graphql/loaders/batch_lfs_oid_loader_spec.rb'

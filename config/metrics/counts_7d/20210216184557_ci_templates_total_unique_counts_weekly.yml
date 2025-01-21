@@ -190,9 +190,6 @@ options:
   - p_ci_templates_diffblue_cover
   - p_ci_templates_opentofu_base_latest
   - p_ci_templates_opentofu_latest
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

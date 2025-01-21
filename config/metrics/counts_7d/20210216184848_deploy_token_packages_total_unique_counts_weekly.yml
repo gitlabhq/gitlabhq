@@ -33,9 +33,6 @@ events:
   unique: user.id
 - name: i_package_rpm_deploy_token
   unique: user.id
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

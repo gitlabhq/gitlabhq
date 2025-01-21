@@ -12,9 +12,6 @@ data_source: internal_events
 events:
 - name: p_analytics_ci_cd_pipelines
   unique: user.id
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

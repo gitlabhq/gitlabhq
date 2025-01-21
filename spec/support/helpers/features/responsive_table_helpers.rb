@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # These helpers allow you to access rows in a responsive table
 #
 # Usage:

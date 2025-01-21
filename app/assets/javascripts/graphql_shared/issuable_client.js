@@ -11,7 +11,6 @@ import {
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_AWARD_EMOJI,
   WIDGET_TYPE_HIERARCHY,
-  WIDGET_TYPE_DESIGNS,
 } from '~/work_items/constants';
 
 import isExpandedHierarchyTreeChildQuery from '~/work_items/graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
@@ -191,11 +190,6 @@ export const config = {
                   };
                 }
 
-                // Prevent cache being overwritten when opening a design
-                if (incomingWidget?.type === WIDGET_TYPE_DESIGNS && context.variables.filenames) {
-                  return existingWidget;
-                }
-
                 return { ...existingWidget, ...incomingWidget };
               });
             },
@@ -231,10 +225,21 @@ export const config = {
         merge: true,
       },
       WorkItemType: {
+        // this prevents child and parent work item types from overriding each other
         fields: {
           widgetDefinitions: {
             merge(existing = [], incoming) {
-              return [...existing, ...incoming];
+              if (existing.length === 0) {
+                return incoming;
+              }
+
+              return existing.map((existingWidget) => {
+                const incomingWidget = incoming.find(
+                  (w) => w.type && w.type === existingWidget.type,
+                );
+
+                return { ...existingWidget, ...incomingWidget };
+              });
             },
           },
         },

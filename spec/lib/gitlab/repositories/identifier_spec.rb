@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GlRepository::Identifier do
+RSpec.describe Gitlab::Repositories::Identifier, feature_category: :source_code_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:personal_snippet) { create(:personal_snippet, author: project.first_owner) }
   let_it_be(:project_snippet) { create(:project_snippet, project: project, author: project.first_owner) }
@@ -15,6 +15,7 @@ RSpec.describe Gitlab::GlRepository::Identifier do
       let(:expected_type) { Gitlab::GlRepository::PROJECT }
     end
 
+    # rubocop:disable RSpec/PendingWithoutReason -- waiting for https://gitlab.com/gitlab-org/gitlab/-/issues/219192
     pending 'https://gitlab.com/gitlab-org/gitlab/-/issues/219192' do
       it_behaves_like 'parsing gl_repository identifier' do
         let(:record_id) { project.id }
@@ -23,6 +24,7 @@ RSpec.describe Gitlab::GlRepository::Identifier do
         let(:expected_type) { Gitlab::GlRepository::PROJECT }
       end
     end
+    # rubocop:enable RSpec/PendingWithoutReason
 
     it_behaves_like 'parsing gl_repository identifier' do
       let(:identifier) { "project-1000000" }

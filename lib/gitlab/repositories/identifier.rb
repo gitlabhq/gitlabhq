@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gitlab
-  class GlRepository
+  module Repositories
     class Identifier
       include Gitlab::Utils::StrongMemoize
 
@@ -64,12 +64,14 @@ module Gitlab
       end
 
       def repo_type
-        strong_memoize(:repo_type) { Gitlab::GlRepository.types[repo_type_name] }
+        Gitlab::GlRepository.types[repo_type_name]
       end
+      strong_memoize_attr :repo_type
 
       def container
-        strong_memoize(:container) { container_class.find_by_id(container_id) }
+        container_class.find_by_id(container_id)
       end
+      strong_memoize_attr :container
 
       def valid?
         repo_type.present? && container_class.present? && container_id&.positive?
@@ -80,8 +82,9 @@ module Gitlab
       attr_reader :container_id_str, :repo_type_name
 
       def container_id
-        strong_memoize(:container_id) { Integer(container_id_str, 10, exception: false) }
+        Integer(container_id_str, 10, exception: false)
       end
+      strong_memoize_attr :container_id
     end
   end
 end

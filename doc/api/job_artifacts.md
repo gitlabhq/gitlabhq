@@ -19,7 +19,7 @@ available in the Premium and Ultimate tier.
 
 > - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.5.
 
-Get the job's artifacts zipped archive of a project.
+Get a zipped archive of a job's artifacts from a project.
 
 If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
 as the request might redirect through a CDN.
@@ -78,22 +78,26 @@ Possible response status codes:
 
 > - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.5.
 
-Download the artifacts zipped archive from the latest **successful** pipeline for
-the given reference name and job, provided the job finished successfully. This
-is the same as [getting the job's artifacts](#get-job-artifacts), but by
-defining the job's name instead of its ID.
+Download a zipped archive of a job's artifacts in the latest **successful**
+pipeline using the reference name. This endpoint is the same as
+[getting the job's artifacts](#get-job-artifacts), but uses the job's name instead of its ID.
 
-To determine which pipeline is the latest successful pipeline, GitLab checks the creation time
-of the successful pipelines. The start or end time of individual jobs does not affect
-which pipeline is the latest.
+The latest successful pipeline is determined based on creation time.
+The start or end time of individual jobs does not affect which pipeline is the latest.
+
+For [parent and child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines),
+artifacts are searched in hierarchical order from parent to child. If both parent and child pipelines
+have a job with the same name, the artifact from the parent pipeline is returned.
+
+Prerequisites:
+
+- You must have a completed pipeline with a `success` status.
+- If the pipeline includes manual jobs, they must either:
+  - Complete successfully.
+  - Have `allow_failure: true` set.
 
 If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
 as the request might redirect through a CDN.
-
-NOTE:
-If a pipeline is [parent of other child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines), artifacts
-are searched in hierarchical order from parent to child. For example, if both parent and
-child pipelines have a job with the same name, the artifact from the parent pipeline is returned.
 
 ```plaintext
 GET /projects/:id/jobs/artifacts/:ref_name/download?job=name
@@ -151,9 +155,8 @@ Possible response status codes:
 
 ## Download a single artifact file by job ID
 
-Download a single artifact file from a job with a specified ID from inside
-the job's artifacts zipped archive. The file is extracted from the archive and
-streamed to the client.
+Download a single file from a job's zipped artifacts using the job ID.
+The file is extracted from the archive and streamed to the client.
 
 If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
 as the request might redirect through a CDN.
@@ -190,16 +193,23 @@ Possible response status codes:
 
 ## Download a single artifact file from specific tag or branch
 
-Download a single artifact file for a specific job of the latest **successful** pipeline
-for the given reference name from inside the job's artifacts archive.
-The file is extracted from the archive and streamed to the client, with the `plain/text` content type.
+Download a single file from a job's artifacts in the latest **successful** pipeline
+using the reference name.
+The file is extracted from the archive and streamed to the client with the `plain/text` content type.
+
+For [parent and child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines),
+artifacts are searched in hierarchical order from parent to child. If both parent and child pipelines
+have a job with the same name, the artifact from the parent pipeline is returned.
 
 The artifact file provides more detail than what is available in the
 [CSV export](../user/application_security/vulnerability_report/index.md#export-vulnerability-details).
 
-Artifacts for [parent and child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines)
-are searched in hierarchical order from parent to child. For example, if both parent and child pipelines
-have a job with the same name, the artifact from the parent pipeline is returned.
+Prerequisites:
+
+- You must have a completed pipeline with a `success` status.
+- If the pipeline includes manual jobs, they must either:
+  - Complete successfully.
+  - Have `allow_failure: true` set.
 
 If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
 as the request might redirect through a CDN.

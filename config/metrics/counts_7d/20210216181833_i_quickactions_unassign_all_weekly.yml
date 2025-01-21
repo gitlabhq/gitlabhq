@@ -11,9 +11,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
   - i_quickactions_unassign_all
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

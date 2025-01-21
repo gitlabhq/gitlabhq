@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # rubocop: disable RSpec/EnvAssignment
 
 RSpec.configure do |config|
