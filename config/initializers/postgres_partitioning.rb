@@ -48,7 +48,8 @@ if Gitlab.ee?
       Analytics::ValueStreamDashboard::Count,
       Ci::FinishedBuildChSyncEvent,
       Search::Zoekt::Task,
-      Ai::CodeSuggestionEvent
+      Ai::CodeSuggestionEvent,
+      Ai::DuoChatEvent
     ])
 else
   Gitlab::Database::Partitioning.register_tables(

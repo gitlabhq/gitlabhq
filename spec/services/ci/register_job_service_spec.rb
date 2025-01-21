@@ -94,9 +94,12 @@ module Ci
                         runner_type: project_runner.runner_type,
                         total_duration_s: anything,
                         process_queue_duration_s: anything,
-                        metrics_success_duration_s: anything,
                         retrieve_queue_duration_s: anything,
-                        process_build_duration_s: { count: 1, max: anything, sum: anything }
+                        process_build_duration_s: { count: 1, max: anything, sum: anything },
+                        process_build_runner_matched_duration_s: { count: 1, max: anything, sum: anything },
+                        process_build_link_identity_duration_s: { count: 1, max: anything, sum: anything },
+                        process_build_present_build_duration_s: { count: 1, max: anything, sum: anything },
+                        process_build_assign_runner_duration_s: { count: 1, max: anything, sum: anything }
                       )
                     )
 
@@ -923,6 +926,30 @@ module Ci
 
             expect(execute).not_to be_valid
             expect(pending_job.reload.queuing_entry).not_to be_present
+          end
+
+          context 'when logger is enabled' do
+            before do
+              stub_const('Ci::RegisterJobService::Logger::MAX_DURATION', 0)
+            end
+
+            it 'logs the instrumentation' do
+              expect(Gitlab::AppJsonLogger).to receive(:info).once.with(
+                hash_including(
+                  class: 'Ci::RegisterJobService::Logger',
+                  message: 'RegisterJobService exceeded maximum duration',
+                  runner_id: runner.id,
+                  runner_type: runner.runner_type,
+                  total_duration_s: anything,
+                  process_queue_duration_s: anything,
+                  retrieve_queue_duration_s: anything,
+                  process_build_duration_s: { count: 1, max: anything, sum: anything },
+                  process_build_not_pending_duration_s: { count: 1, max: anything, sum: anything }
+                )
+              )
+
+              execute
+            end
           end
         end
       end

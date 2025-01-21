@@ -46,6 +46,7 @@ export const newCandidate = () => ({
   },
   projectPath: 'some/project',
   canWriteModelRegistry: true,
+  canWriteModelExperiments: true,
   markdownPreviewPath: '/markdown-preview',
   modelGid: 'gid://gitlab/Ml::Model/1',
   latestVersion: '1.0.2',

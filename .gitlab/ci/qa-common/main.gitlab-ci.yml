@@ -108,7 +108,7 @@ stages:
     - .qa-install
     - .ruby-image
   stage: report
-  when: always
+  when: on_success
   variables:
     QA_JSON_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/rspec-*.json
   script:

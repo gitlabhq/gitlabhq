@@ -116,26 +116,42 @@ describe('Accessibility widget', () => {
       };
 
       expect(text.firstNewError).toBe(
-        'New The accessibility scanning found an error of the following type: WCAG2AA.Principle2.Guideline2_4.2_4_1.H64.1 Learn more Message: Iframe element requires a non-empty title attribute that identifies the frame.',
+        'New The accessibility scanning found an error of the following type: WCAG2AA.Principle2.Guideline2_4.2_4_1.H64.1 Message: Iframe element requires a non-empty title attribute that identifies the frame. Details Details',
       );
       expect(text.secondNewError).toBe(
-        'The accessibility scanning found an error of the following type: WCAG2AA.Principle3.Guideline3_2.3_2_2.H32.2 Learn more Message: This form does not contain a submit button, which creates issues for those who cannot submit the form using the keyboard. Submit buttons are INPUT elements with type attribute &quot;submit&quot; or &quot;image&quot;, or BUTTON elements with type &quot;submit&quot; or omitted/invalid.',
+        'The accessibility scanning found an error of the following type: WCAG2AA.Principle3.Guideline3_2.3_2_2.H32.2 Message: This form does not contain a submit button, which creates issues for those who cannot submit the form using the keyboard. Submit buttons are INPUT elements with type attribute &quot;submit&quot; or &quot;image&quot;, or BUTTON elements with type &quot;submit&quot; or omitted/invalid. Details Details',
       );
       expect(text.thirdNewError).toBe(
-        'The accessibility scanning found an error of the following type: WCAG2AA.Principle2.Guideline2_4.2_4_1.H64.1 Learn more Message: Iframe element requires a non-empty title attribute that identifies the frame.',
+        'The accessibility scanning found an error of the following type: WCAG2AA.Principle2.Guideline2_4.2_4_1.H64.1 Message: Iframe element requires a non-empty title attribute that identifies the frame. Details Details',
       );
       expect(text.firstExistingError).toBe(
-        'Not fixed The accessibility scanning found an error of the following type: WCAG2AA.Principle1.Guideline1_1.1_1_1.H30.2 Learn more Message: Img element is the only content of the link, but is missing alt text. The alt text should describe the purpose of the link.',
+        'Not fixed The accessibility scanning found an error of the following type: WCAG2AA.Principle1.Guideline1_1.1_1_1.H30.2 Message: Img element is the only content of the link, but is missing alt text. The alt text should describe the purpose of the link. Details Details',
       );
       expect(text.secondExistingError).toBe(
-        'The accessibility scanning found an error of the following type: WCAG2AA.Principle1.Guideline1_1.1_1_1.H37 Learn more Message: Img element missing an alt attribute. Use the alt attribute to specify a short text alternative.',
+        'The accessibility scanning found an error of the following type: WCAG2AA.Principle1.Guideline1_1.1_1_1.H37 Message: Img element missing an alt attribute. Use the alt attribute to specify a short text alternative. Details Details',
       );
       expect(text.firstResolvedError).toBe(
-        'Fixed The accessibility scanning found an error of the following type: WCAG2AA.Principle2.Guideline2_4.2_4_1.H64.1 Learn more Message: Iframe element requires a non-empty title attribute that identifies the frame.',
+        'Fixed The accessibility scanning found an error of the following type: WCAG2AA.Principle2.Guideline2_4.2_4_1.H64.1 Message: Iframe element requires a non-empty title attribute that identifies the frame. Details Details',
       );
       expect(text.secondResolvedError).toBe(
-        'The accessibility scanning found an error of the following type: WCAG2AA.Principle3.Guideline3_2.3_2_2.H32.2 Learn more Message: This form does not contain a submit button, which creates issues for those who cannot submit the form using the keyboard. Submit buttons are INPUT elements with type attribute &quot;submit&quot; or &quot;image&quot;, or BUTTON elements with type &quot;submit&quot; or omitted/invalid.',
+        'The accessibility scanning found an error of the following type: WCAG2AA.Principle3.Guideline3_2.3_2_2.H32.2 Message: This form does not contain a submit button, which creates issues for those who cannot submit the form using the keyboard. Submit buttons are INPUT elements with type attribute &quot;submit&quot; or &quot;image&quot;, or BUTTON elements with type &quot;submit&quot; or omitted/invalid. Details Details',
       );
+    });
+
+    it('report list item has a correct link pointing to the error description', () => {
+      const links = findAllExtensionListItems().wrappers.map((item) =>
+        item.find('a').attributes('href'),
+      );
+
+      expect(links).toEqual([
+        'https://www.w3.org/TR/WCAG20-TECHS/H64.html',
+        'https://www.w3.org/TR/WCAG20-TECHS/H32.html',
+        'https://www.w3.org/TR/WCAG20-TECHS/H64.html',
+        'https://www.w3.org/TR/WCAG20-TECHS/H30.html',
+        'https://www.w3.org/TR/WCAG20-TECHS/H37.html',
+        'https://www.w3.org/TR/WCAG20-TECHS/H64.html',
+        'https://www.w3.org/TR/WCAG20-TECHS/H32.html',
+      ]);
     });
   });
 });

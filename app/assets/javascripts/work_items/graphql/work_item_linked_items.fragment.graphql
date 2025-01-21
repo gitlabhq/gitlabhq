@@ -9,6 +9,7 @@ fragment WorkItemLinkedItemsFragment on WorkItem {
         nodes {
           linkId
           linkType
+          workItemState
           workItem {
             id
             iid

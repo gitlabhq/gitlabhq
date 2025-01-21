@@ -1,0 +1,13 @@
+---
+table_name: ai_duo_chat_events
+classes:
+- Ai::DuoChatEvent
+feature_categories:
+- value_stream_management
+description: Database storage for raw duo chat usage events. Partitioned by month.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177239
+milestone: '17.9'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  personal_namespace_id: namespaces
+table_size: small

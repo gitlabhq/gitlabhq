@@ -3545,6 +3545,20 @@ CREATE TABLE ai_code_suggestion_events (
 )
 PARTITION BY RANGE ("timestamp");
 
+CREATE TABLE ai_duo_chat_events (
+    id bigint NOT NULL,
+    "timestamp" timestamp with time zone NOT NULL,
+    user_id bigint NOT NULL,
+    personal_namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    event smallint NOT NULL,
+    namespace_path text,
+    payload jsonb,
+    CONSTRAINT check_628cdfbf3f CHECK ((char_length(namespace_path) <= 255))
+)
+PARTITION BY RANGE ("timestamp");
+
 CREATE TABLE audit_events (
     id bigint NOT NULL,
     author_id bigint NOT NULL,
@@ -6848,6 +6862,15 @@ CREATE SEQUENCE ai_conversation_threads_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ai_conversation_threads_id_seq OWNED BY ai_conversation_threads.id;
+
+CREATE SEQUENCE ai_duo_chat_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_duo_chat_events_id_seq OWNED BY ai_duo_chat_events.id;
 
 CREATE TABLE ai_feature_settings (
     id bigint NOT NULL,
@@ -21762,7 +21785,8 @@ CREATE TABLE user_achievements (
     revoked_at timestamp with time zone,
     priority integer,
     namespace_id bigint,
-    show_on_profile boolean DEFAULT true NOT NULL
+    show_on_profile boolean DEFAULT true NOT NULL,
+    CONSTRAINT check_2236a10887 CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE user_achievements_id_seq
@@ -24054,6 +24078,8 @@ ALTER TABLE ONLY ai_conversation_messages ALTER COLUMN id SET DEFAULT nextval('a
 
 ALTER TABLE ONLY ai_conversation_threads ALTER COLUMN id SET DEFAULT nextval('ai_conversation_threads_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_duo_chat_events ALTER COLUMN id SET DEFAULT nextval('ai_duo_chat_events_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_feature_settings ALTER COLUMN id SET DEFAULT nextval('ai_feature_settings_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_self_hosted_models ALTER COLUMN id SET DEFAULT nextval('ai_self_hosted_models_id_seq'::regclass);
@@ -25950,6 +25976,9 @@ ALTER TABLE ONLY ai_conversation_messages
 
 ALTER TABLE ONLY ai_conversation_threads
     ADD CONSTRAINT ai_conversation_threads_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_duo_chat_events
+    ADD CONSTRAINT ai_duo_chat_events_pkey PRIMARY KEY (id, "timestamp");
 
 ALTER TABLE ONLY ai_feature_settings
     ADD CONSTRAINT ai_feature_settings_pkey PRIMARY KEY (id);
@@ -30349,6 +30378,10 @@ CREATE INDEX index_ai_conversation_threads_on_organization_id ON ai_conversation
 
 CREATE INDEX index_ai_conversation_threads_on_user_id_and_last_updated_at ON ai_conversation_threads USING btree (user_id, last_updated_at);
 
+CREATE INDEX index_ai_duo_chat_events_on_personal_namespace_id ON ONLY ai_duo_chat_events USING btree (personal_namespace_id);
+
+CREATE INDEX index_ai_duo_chat_events_on_user_id ON ONLY ai_duo_chat_events USING btree (user_id);
+
 CREATE INDEX index_ai_feature_settings_on_ai_self_hosted_model_id ON ai_feature_settings USING btree (ai_self_hosted_model_id);
 
 CREATE UNIQUE INDEX index_ai_feature_settings_on_feature ON ai_feature_settings USING btree (feature);
@@ -34234,8 +34267,6 @@ CREATE INDEX index_vulnerabilities_common_finder_query_on_default_branch ON vuln
 CREATE INDEX index_vulnerabilities_on_author_id ON vulnerabilities USING btree (author_id);
 
 CREATE INDEX index_vulnerabilities_on_confirmed_by_id ON vulnerabilities USING btree (confirmed_by_id);
-
-CREATE INDEX index_vulnerabilities_on_detected_at_and_id ON vulnerabilities USING btree (id, detected_at);
 
 CREATE INDEX index_vulnerabilities_on_dismissed_by_id ON vulnerabilities USING btree (dismissed_by_id);
 
@@ -40731,6 +40762,9 @@ ALTER TABLE ONLY dependency_proxy_blobs
 
 ALTER TABLE ONLY board_user_preferences
     ADD CONSTRAINT fk_rails_dbebdaa8fe FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;
+
+ALTER TABLE ai_duo_chat_events
+    ADD CONSTRAINT fk_rails_dc42b37fb3 FOREIGN KEY (personal_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY instance_audit_events_streaming_headers
     ADD CONSTRAINT fk_rails_dc933c1f3c FOREIGN KEY (instance_external_audit_event_destination_id) REFERENCES audit_events_instance_external_audit_event_destinations(id) ON DELETE CASCADE;

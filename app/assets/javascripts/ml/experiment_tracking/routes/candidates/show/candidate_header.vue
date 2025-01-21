@@ -19,7 +19,7 @@ export default {
   },
   mixins: [timeagoMixin],
   props: {
-    info: {
+    candidate: {
       type: Object,
       required: true,
     },
@@ -33,6 +33,9 @@ export default {
     },
     statusVariant() {
       return this.$options.statusVariants[this.info.status];
+    },
+    info() {
+      return this.candidate.info;
     },
   },
   i18n: {
@@ -87,6 +90,7 @@ export default {
         {{ $options.i18n.promoteText }}
       </gl-button>
       <delete-button
+        v-if="candidate.canWriteModelExperiments"
         :delete-path="info.path"
         :delete-confirmation-text="$options.i18n.deleteCandidateConfirmationMessage"
         :action-primary-text="$options.i18n.deleteCandidatePrimaryActionLabel"

@@ -21,6 +21,7 @@ import WorkItemStateBadge from '../work_item_state_badge.vue';
 import { canRouterNav, findLinkedItemsWidget, getDisplayReference } from '../../utils';
 import {
   STATE_OPEN,
+  STATE_CLOSED,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
   LINKED_CATEGORIES_MAP,
@@ -145,7 +146,9 @@ export default {
     filteredLinkedChildItems() {
       const linkedChildWorkItems = findLinkedItemsWidget(this.childItem).linkedItems?.nodes || [];
       return linkedChildWorkItems.filter((item) => {
-        return item.linkType !== LINKED_CATEGORIES_MAP.RELATES_TO;
+        return (
+          item.linkType !== LINKED_CATEGORIES_MAP.RELATES_TO && item.workItemState !== STATE_CLOSED
+        );
       });
     },
     issueAsWorkItem() {

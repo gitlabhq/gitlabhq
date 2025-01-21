@@ -104,11 +104,16 @@ export default {
           id: uniqueId('new-error-'),
           text: this.formatText(error.code),
           icon: { name: EXTENSION_ICONS.failed },
-          link: {
-            href: this.formatLearnMoreUrl(error.code),
-            text: __('Learn more'),
-          },
           supportingText: this.formatMessage(error.message),
+          actions: [
+            {
+              id: uniqueId('new-error-details-link-'),
+              text: __('Details'),
+              icon: 'external-link',
+              href: this.formatLearnMoreUrl(error.code),
+              variant: 'link',
+            },
+          ],
         };
       });
 
@@ -118,11 +123,16 @@ export default {
           id: uniqueId('existing-error-'),
           text: this.formatText(error.code),
           icon: { name: EXTENSION_ICONS.failed },
-          link: {
-            href: this.formatLearnMoreUrl(error.code),
-            text: __('Learn more'),
-          },
           supportingText: this.formatMessage(error.message),
+          actions: [
+            {
+              id: uniqueId('existing-error-details-link-'),
+              text: __('Details'),
+              icon: 'external-link',
+              href: this.formatLearnMoreUrl(error.code),
+              variant: 'link',
+            },
+          ],
         };
       });
 
@@ -132,11 +142,16 @@ export default {
           id: uniqueId('resolved-error-'),
           text: this.formatText(error.code),
           icon: { name: EXTENSION_ICONS.success },
-          link: {
-            href: this.formatLearnMoreUrl(error.code),
-            text: __('Learn more'),
-          },
           supportingText: this.formatMessage(error.message),
+          actions: [
+            {
+              id: uniqueId('resolved-error-details-link-'),
+              text: __('Details'),
+              icon: 'external-link',
+              href: this.formatLearnMoreUrl(error.code),
+              variant: 'link',
+            },
+          ],
         };
       });
 

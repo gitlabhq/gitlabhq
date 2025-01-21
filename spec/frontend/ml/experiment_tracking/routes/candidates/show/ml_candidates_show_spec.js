@@ -20,7 +20,7 @@ describe('MlCandidatesShow', () => {
   beforeEach(() => createWrapper());
 
   it('creates the candidate header section', () => {
-    expect(findCandidateHeader().props('info')).toBe(candidate.info);
+    expect(findCandidateHeader().props('candidate')).toBe(candidate);
   });
 
   it('creates the candidate detail section', () => {

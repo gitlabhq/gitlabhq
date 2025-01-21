@@ -133,6 +133,7 @@ without using 2FA. For example:
 To ensure this does not occur, [prevent sharing of projects](../user/project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups)
 for the 2FA group.
 
+WARNING:
 If you add members to a project in a group or subgroup that has 2FA
 enabled, 2FA is **not** required for those individually added members.
 

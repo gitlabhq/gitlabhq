@@ -14,17 +14,12 @@ export default {
       required: true,
     },
   },
-  computed: {
-    info() {
-      return Object.freeze(this.candidate.info);
-    },
-  },
 };
 </script>
 
 <template>
   <div>
-    <candidate-header :info="info" />
+    <candidate-header :candidate="candidate" />
     <candidate-detail :candidate="candidate" />
   </div>
 </template>

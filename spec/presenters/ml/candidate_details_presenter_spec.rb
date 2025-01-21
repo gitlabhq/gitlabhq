@@ -86,6 +86,7 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
             metadata: [],
             projectPath: project.full_path,
             can_write_model_registry: false,
+            can_write_model_experiments: false,
             markdown_preview_path: "/#{project.full_path}/-/preview_markdown",
             model_gid: '',
             latest_version: nil

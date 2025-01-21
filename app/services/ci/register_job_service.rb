@@ -98,10 +98,8 @@ module Ci
         next unless result
 
         if result.valid?
-          @logger.instrument(:metrics_success, once: true) do
-            @metrics.register_success(result.build_presented)
-            @metrics.observe_queue_depth(:found, depth)
-          end
+          @metrics.register_success(result.build_presented)
+          @metrics.observe_queue_depth(:found, depth)
 
           return result # rubocop:disable Cop/AvoidReturnFromBlocks
         else
@@ -168,22 +166,9 @@ module Ci
     end
 
     def process_build(build, params)
-      unless build.pending?
-        @metrics.increment_queue_operation(:build_not_pending)
+      return remove_from_queue!(build) unless build.pending?
 
-        ##
-        # If this build can not be picked because we had stale data in
-        # `ci_pending_builds` table, we need to respond with 409 to retry
-        # this operation.
-        #
-        if ::Ci::UpdateBuildQueueService.new.remove!(build)
-          return Result.new(nil, nil, nil, false)
-        end
-
-        return
-      end
-
-      if runner.matches_build?(build)
+      if runner_matched?(build)
         @metrics.increment_queue_operation(:build_can_pick)
       else
         @metrics.increment_queue_operation(:build_not_pick)
@@ -191,14 +176,16 @@ module Ci
         return
       end
 
-      # Make sure that composite identity is propagated to `PipelineProcessWorker`
-      # when the build's status change.
-      ::Gitlab::Auth::Identity.link_from_job(build)
+      @logger.instrument(:process_build_link_identity) do
+        # Make sure that composite identity is propagated to `PipelineProcessWorker`
+        # when the build's status change.
+        ::Gitlab::Auth::Identity.link_from_job(build)
+      end
 
       # In case when 2 runners try to assign the same build, second runner will be declined
       # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
-      if assign_runner!(build, params)
-        present_build!(build)
+      if assign_runner_with_instrumentation!(build, params)
+        present_build_with_instrumentation!(build)
       end
     rescue ActiveRecord::StaleObjectError
       # We are looping to find another build that is not conflicting
@@ -233,6 +220,33 @@ module Ci
       MAX_QUEUE_DEPTH
     end
 
+    def remove_from_queue!(build)
+      @metrics.increment_queue_operation(:build_not_pending)
+
+      @logger.instrument(:process_build_not_pending) do
+        ##
+        # If this build can not be picked because we had stale data in
+        # `ci_pending_builds` table, we need to respond with 409 to retry
+        # this operation.
+        #
+        if ::Ci::UpdateBuildQueueService.new.remove!(build)
+          Result.new(nil, nil, nil, false)
+        end
+      end
+    end
+
+    def runner_matched?(build)
+      @logger.instrument(:process_build_runner_matched) do
+        runner.matches_build?(build)
+      end
+    end
+
+    def present_build_with_instrumentation!(build)
+      @logger.instrument(:process_build_present_build) do
+        present_build!(build)
+      end
+    end
+
     # Force variables evaluation to occur now
     def present_build!(build)
       # We need to use the presenter here because Gitaly calls in the presenter
@@ -255,6 +269,12 @@ module Ci
         end
 
         log_build_dependencies(size: size, count: dependencies.size) if size > 0
+      end
+    end
+
+    def assign_runner_with_instrumentation!(build, params)
+      @logger.instrument(:process_build_assign_runner) do
+        assign_runner!(build, params)
       end
     end
 

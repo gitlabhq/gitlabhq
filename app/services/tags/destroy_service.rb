@@ -7,7 +7,12 @@ module Tags
 
       # If we've found the tag upstream we don't need to refind it so we can
       # pass skip_find: true
-      return error('No such tag', 404) unless skip_find || tag_exists?(tag_name)
+      unless skip_find
+        tag = repository.find_tag(tag_name)
+
+        return error('No such tag', 404) unless tag
+        return error("You don't have access to delete the tag") unless allowed_to_delete?(tag)
+      end
 
       if repository.rm_tag(current_user, tag_name)
         # When a tag in a repository is destroyed, release assets will be
@@ -34,8 +39,8 @@ module Tags
 
     private
 
-    def tag_exists?(tag_name)
-      repository.find_tag(tag_name)
+    def allowed_to_delete?(tag)
+      Ability.allowed?(current_user, :delete_tag, tag)
     end
 
     def destroy_releases(tag_name)

@@ -34,6 +34,7 @@ module Ml
           metadata: candidate.metadata,
           projectPath: candidate.project.full_path,
           can_write_model_registry: current_user&.can?(:write_model_registry, candidate.project),
+          can_write_model_experiments: current_user&.can?(:write_model_experiments, candidate.project),
           markdown_preview_path: project_preview_markdown_path(candidate.project),
           model_gid: candidate.experiment.model&.to_global_id.to_s,
           latest_version: candidate.experiment.model&.latest_version&.version

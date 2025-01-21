@@ -8,14 +8,6 @@ description: Achievements awarded to and revoked from users
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107027
 milestone: '15.8'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  namespace_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: achievement_id
-        table: achievements
-        sharding_key: namespace_id
-        belongs_to: achievement
-desired_sharding_key_migration_job_name: BackfillUserAchievementsNamespaceId
 table_size: small
+sharding_key:
+  namespace_id: namespaces

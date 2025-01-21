@@ -618,6 +618,7 @@ export const mockBlockingLinkedItem = {
       {
         linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/8',
         linkType: 'blocks',
+        workItemState: 'OPEN',
         workItem: {
           id: 'gid://gitlab/WorkItem/675',
           iid: '83',
@@ -657,6 +658,7 @@ export const mockBlockedByLinkedItem = {
       {
         linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/8',
         linkType: 'is_blocked_by',
+        workItemState: 'OPEN',
         workItem: {
           id: 'gid://gitlab/WorkItem/675',
           iid: '83',
@@ -686,6 +688,7 @@ export const mockBlockedByLinkedItem = {
       {
         linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/8',
         linkType: 'is_blocked_by',
+        workItemState: 'OPEN',
         workItem: {
           id: 'gid://gitlab/WorkItem/676',
           iid: '84',
@@ -732,6 +735,7 @@ export const mockLinkedItems = {
       {
         linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/8',
         linkType: 'relates_to',
+        workItemState: 'OPEN',
         workItem: {
           id: 'gid://gitlab/WorkItem/675',
           iid: '83',
@@ -761,6 +765,7 @@ export const mockLinkedItems = {
       {
         linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/9',
         linkType: 'is_blocked_by',
+        workItemState: 'OPEN',
         workItem: {
           id: 'gid://gitlab/WorkItem/646',
           iid: '55',
@@ -790,6 +795,7 @@ export const mockLinkedItems = {
       {
         linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/10',
         linkType: 'blocks',
+        workItemState: 'OPEN',
         workItem: {
           id: 'gid://gitlab/WorkItem/647',
           iid: '56',
@@ -874,6 +880,7 @@ export const workItemSingleLinkedItemResponse = {
                 {
                   linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/8',
                   linkType: 'is_blocked_by',
+                  workItemState: 'OPEN',
                   workItem: {
                     id: 'gid://gitlab/WorkItem/675',
                     iid: '83',

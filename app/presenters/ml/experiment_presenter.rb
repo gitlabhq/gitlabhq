@@ -3,7 +3,6 @@
 module Ml
   class ExperimentPresenter < Gitlab::View::Presenter::Delegated
     presents ::Ml::Experiment, as: :experiment
-    include Rails.application.routes.url_helpers
 
     def path
       project_ml_experiment_path(experiment.project, experiment)

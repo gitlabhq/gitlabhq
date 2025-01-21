@@ -170,7 +170,9 @@ export default {
     filteredLinkedItems() {
       const linkedItems = findLinkedItemsWidget(this.issuable)?.linkedItems?.nodes || [];
       return linkedItems.filter((item) => {
-        return item.linkType !== LINKED_CATEGORIES_MAP.RELATES_TO;
+        return (
+          item.linkType !== LINKED_CATEGORIES_MAP.RELATES_TO && item.workItemState !== STATE_CLOSED
+        );
       });
     },
     createdAt() {
