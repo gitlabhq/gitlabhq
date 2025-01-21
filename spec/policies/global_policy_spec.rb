@@ -357,6 +357,18 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       let(:current_user) { service_account }
 
       it { is_expected.to be_disallowed(:receive_notifications) }
+
+      context 'with custom email address starting with service account prefix' do
+        let(:current_user) { build(:user, :service_account, email: 'service_account@example.com') }
+
+        it { is_expected.to be_allowed(:receive_notifications) }
+      end
+
+      context 'with custom email address ending with no-reply domain' do
+        let(:current_user) { build(:user, :service_account, email: "bot@#{User::NOREPLY_EMAIL_DOMAIN}") }
+
+        it { is_expected.to be_allowed(:receive_notifications) }
+      end
     end
 
     context 'migration bot' do

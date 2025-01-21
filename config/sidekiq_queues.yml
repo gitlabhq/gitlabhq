@@ -841,6 +841,8 @@
   - 1
 - - security_persist_security_policies
   - 1
+- - security_pipeline_execution_policies_run_schedule
+  - 1
 - - security_process_scan_result_policy
   - 1
 - - security_refresh_compliance_framework_security_policies

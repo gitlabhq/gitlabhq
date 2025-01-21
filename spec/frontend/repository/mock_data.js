@@ -95,8 +95,10 @@ export const blobControlsDataMock = {
       nodes: [
         {
           id: '5678',
+          name: 'file.js',
           blamePath: 'blame/file.js',
           permalinkPath: 'permalink/file.js',
+          path: 'some/file.js',
           storedExternally: false,
           externalStorage: 'https://external-storage',
           environmentFormattedExternalUrl: '',

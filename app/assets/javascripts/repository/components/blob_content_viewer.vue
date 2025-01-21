@@ -356,7 +356,7 @@ export default {
       >
         <template #actions>
           <blob-button-group
-            v-if="isLoggedIn && !blobInfo.archived"
+            v-if="isLoggedIn && !blobInfo.archived && !glFeatures.blobOverflowMenu"
             :path="path"
             :name="blobInfo.name"
             :replace-path="blobInfo.replacePath"

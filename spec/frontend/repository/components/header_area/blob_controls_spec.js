@@ -160,6 +160,9 @@ describe('Blob controls component', () => {
 
       expect(findOverflowMenu().exists()).toBe(true);
       expect(findOverflowMenu().props()).toEqual({
+        name: 'file.js',
+        projectPath: 'some/project',
+        path: 'some/file.js',
         rawPath: 'https://testing.com/flightjs/flight/snippets/51/raw',
         isBinary: true,
         environmentName: '',

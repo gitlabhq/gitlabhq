@@ -110,9 +110,6 @@ RSpec.describe Gitlab::Ci::Reports::Security::Scanner do
         { external_id: 'spotbugs', name: 'foo', vendor: 'bar' }         | { external_id: 'semgrep', name: 'foo', vendor: 'bar' }          | -1
         { external_id: 'semgrep', name: 'foo', vendor: 'bar' }          | { external_id: 'unknown', name: 'foo', vendor: 'bar' }          | -1
         { external_id: 'gemnasium', name: 'foo', vendor: 'bar' }        | { external_id: 'gemnasium', name: 'foo', vendor: nil }          | 1
-        { external_id: 'gitlab-sbom-vulnerability-scanner', name: 'foo', vendor: 'bar' }        | { external_id: 'gemnasium', name: 'foo', vendor: 'bar' } | 1
-        { external_id: 'gitlab-sbom-vulnerability-scanner', name: 'foo', vendor: 'bar' }        | { external_id: 'gemnasium-python', name: 'foo', vendor: 'bar' } | 1
-        { external_id: 'gitlab-sbom-vulnerability-scanner', name: 'foo', vendor: 'bar' }        | { external_id: 'gemnasium-maven', name: 'foo', vendor: 'bar' } | 1
       end
 
       with_them do

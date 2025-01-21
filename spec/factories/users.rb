@@ -119,6 +119,7 @@ FactoryBot.define do
       name { 'Service account user' }
       user_type { :service_account }
       skip_confirmation { true }
+      email { "#{User::SERVICE_ACCOUNT_PREFIX}_#{generate(:username)}@#{User::NOREPLY_EMAIL_DOMAIN}" }
     end
 
     trait :migration_bot do

@@ -38167,9 +38167,9 @@ Represents Custom Status widget.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgetcustomstatusiconname"></a>`iconName` | [`String`](#string) | Icon name of the Custom Status. |
-| <a id="workitemwidgetcustomstatusid"></a>`id` | [`WorkItemsWidgetsCustomStatusID!`](#workitemswidgetscustomstatusid) | ID of the Custom Status. |
-| <a id="workitemwidgetcustomstatusname"></a>`name` | [`String`](#string) | Name of the Custom Status. |
+| <a id="workitemwidgetcustomstatusiconname"></a>`iconName` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Icon name of the Custom Status. |
+| <a id="workitemwidgetcustomstatusid"></a>`id` **{warning-solid}** | [`WorkItemsWidgetsCustomStatusID!`](#workitemswidgetscustomstatusid) | **Introduced** in GitLab 17.8. **Status**: Experiment. ID of the Custom Status. |
+| <a id="workitemwidgetcustomstatusname"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. Name of the Custom Status. |
 | <a id="workitemwidgetcustomstatustype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetDefinitionAssignees`
@@ -38516,7 +38516,7 @@ Represents a status widget.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgetstatusstatus"></a>`status` | [`String`](#string) | Status of the work item. |
+| <a id="workitemwidgetstatusstatus"></a>`status` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.5. **Status**: Experiment. Status of the work item. |
 | <a id="workitemwidgetstatustype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetTestReports`

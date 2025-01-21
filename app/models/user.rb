@@ -77,6 +77,9 @@ class User < ApplicationRecord
 
   FIRST_GROUP_PATHS_LIMIT = 200
 
+  SERVICE_ACCOUNT_PREFIX = 'service_account'
+  NOREPLY_EMAIL_DOMAIN = "noreply.#{Gitlab.config.gitlab.host}".freeze
+
   # lib/tasks/tokens.rake needs to be updated when changing mail and feed tokens
   add_authentication_token_field :incoming_email_token, token_generator: -> { self.generate_incoming_mail_token } # rubocop:disable Gitlab/TokenWithoutPrefix -- wontfix: the prefix is in the generator
   add_authentication_token_field :feed_token, format_with_prefix: :prefix_for_feed_token

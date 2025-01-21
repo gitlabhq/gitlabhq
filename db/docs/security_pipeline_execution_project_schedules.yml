@@ -1,0 +1,13 @@
+---
+table_name: security_pipeline_execution_project_schedules
+classes:
+- Security::PipelineExecutionProjectSchedule
+feature_categories:
+- security_policy_management
+description: Stores schedule executions for pipeline execution schedule policies
+introduced_by_url:
+milestone: '17.9'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects
+table_size: small

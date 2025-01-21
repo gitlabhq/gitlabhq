@@ -26,3 +26,4 @@ Migration/EnsureFactoryForTable:
     - 'db/migrate/20240404192955_create_early_access_program_tracking_events.rb'
     - 'db/migrate/20241216070908_create_compliance_requirements_controls.rb'
     - 'db/migrate/20241227065733_create_project_control_compliance_statuses.rb'
+    - 'db/migrate/20250107082720_create_security_pipeline_execution_schedules.rb'

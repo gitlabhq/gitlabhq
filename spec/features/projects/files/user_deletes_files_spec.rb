@@ -25,6 +25,7 @@ RSpec.describe 'Projects > Files > User deletes files', :js, feature_category: :
   let_it_be(:user) { create(:user) }
 
   before do
+    stub_feature_flags(blob_overflow_menu: false)
     sign_in(user)
   end
 

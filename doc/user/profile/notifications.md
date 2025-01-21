@@ -39,7 +39,8 @@ You might receive notifications for one of the following reasons:
 
 > GitLab does not send a notification when:
 >
-> - The account is a project bot or service account. 
+> - The account is a project bot.
+> - The account is a service account with default email address.
 > - The account is blocked (banned) or deactivated.
 > - [A comment is edited to include a user mention](../discussions/index.md#edit-a-comment-to-add-a-mention).
 > - An administrator has blocked notifications.

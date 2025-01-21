@@ -20528,6 +20528,24 @@ CREATE SEQUENCE security_orchestration_policy_rule_schedules_id_seq
 
 ALTER SEQUENCE security_orchestration_policy_rule_schedules_id_seq OWNED BY security_orchestration_policy_rule_schedules.id;
 
+CREATE TABLE security_pipeline_execution_project_schedules (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    next_run_at timestamp with time zone NOT NULL,
+    security_policy_id bigint NOT NULL,
+    project_id bigint NOT NULL
+);
+
+CREATE SEQUENCE security_pipeline_execution_project_schedules_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE security_pipeline_execution_project_schedules_id_seq OWNED BY security_pipeline_execution_project_schedules.id;
+
 CREATE TABLE security_policies (
     id bigint NOT NULL,
     security_orchestration_policy_configuration_id bigint NOT NULL,
@@ -25110,6 +25128,8 @@ ALTER TABLE ONLY security_orchestration_policy_configurations ALTER COLUMN id SE
 
 ALTER TABLE ONLY security_orchestration_policy_rule_schedules ALTER COLUMN id SET DEFAULT nextval('security_orchestration_policy_rule_schedules_id_seq'::regclass);
 
+ALTER TABLE ONLY security_pipeline_execution_project_schedules ALTER COLUMN id SET DEFAULT nextval('security_pipeline_execution_project_schedules_id_seq'::regclass);
+
 ALTER TABLE ONLY security_policies ALTER COLUMN id SET DEFAULT nextval('security_policies_id_seq'::regclass);
 
 ALTER TABLE ONLY security_policy_project_links ALTER COLUMN id SET DEFAULT nextval('security_policy_project_links_id_seq'::regclass);
@@ -27921,6 +27941,9 @@ ALTER TABLE ONLY security_orchestration_policy_configurations
 ALTER TABLE ONLY security_orchestration_policy_rule_schedules
     ADD CONSTRAINT security_orchestration_policy_rule_schedules_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY security_pipeline_execution_project_schedules
+    ADD CONSTRAINT security_pipeline_execution_project_schedules_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY security_policies
     ADD CONSTRAINT security_policies_pkey PRIMARY KEY (id);
 
@@ -30096,6 +30119,8 @@ CREATE INDEX idx_pat_last_used_ips_on_pat_id ON personal_access_token_last_used_
 
 CREATE INDEX idx_personal_access_tokens_on_previous_personal_access_token_id ON personal_access_tokens USING btree (previous_personal_access_token_id);
 
+CREATE INDEX idx_pipeline_execution_schedules_security_policy_id_and_id ON security_pipeline_execution_project_schedules USING btree (security_policy_id, id);
+
 CREATE INDEX idx_pkgs_conan_file_metadata_on_pkg_file_id_when_recipe_file ON packages_conan_file_metadata USING btree (package_file_id) WHERE (conan_file_type = 1);
 
 CREATE INDEX idx_pkgs_debian_group_distribution_keys_on_distribution_id ON packages_debian_group_distribution_keys USING btree (distribution_id);
@@ -30163,6 +30188,8 @@ CREATE INDEX idx_sbom_occurrences_on_project_id_and_source_id ON sbom_occurrence
 CREATE INDEX idx_scan_result_policies_on_configuration_id_id_updated_at ON scan_result_policies USING btree (security_orchestration_policy_configuration_id, id, updated_at);
 
 CREATE INDEX idx_scan_result_policy_violations_on_policy_id_and_id ON scan_result_policy_violations USING btree (scan_result_policy_id, id);
+
+CREATE INDEX idx_security_pipeline_execution_project_schedules_next_run_at ON security_pipeline_execution_project_schedules USING btree (next_run_at, id);
 
 CREATE INDEX idx_security_policies_config_id_policy_index ON security_policies USING btree (security_orchestration_policy_configuration_id, policy_index);
 
@@ -34834,6 +34861,8 @@ CREATE UNIQUE INDEX uniq_idx_on_packages_conan_package_revisions_revision ON pac
 
 CREATE UNIQUE INDEX uniq_idx_packages_packages_on_project_id_name_version_ml_model ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 14) AND (status <> 4));
 
+CREATE UNIQUE INDEX uniq_idx_pipeline_execution_schedules_projects_and_policies ON security_pipeline_execution_project_schedules USING btree (project_id, security_policy_id);
+
 CREATE UNIQUE INDEX uniq_idx_project_compliance_framework_on_project_framework ON project_compliance_framework_settings USING btree (project_id, framework_id);
 
 CREATE UNIQUE INDEX uniq_idx_security_policy_requirements_on_requirement_and_policy ON security_policy_requirements USING btree (compliance_framework_security_policy_id, compliance_requirement_id);
@@ -37535,6 +37564,9 @@ ALTER TABLE ONLY namespace_settings
 ALTER TABLE ONLY packages_nuget_metadata
     ADD CONSTRAINT fk_21569c0856 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY security_pipeline_execution_project_schedules
+    ADD CONSTRAINT fk_21a3dca413 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE p_ci_build_trace_metadata
     ADD CONSTRAINT fk_21d25cac1a_p FOREIGN KEY (partition_id, trace_artifact_id) REFERENCES p_ci_job_artifacts(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -38425,6 +38457,9 @@ ALTER TABLE ONLY merge_request_merge_schedules
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_a6963e8447 FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY security_pipeline_execution_project_schedules
+    ADD CONSTRAINT fk_a766128d99 FOREIGN KEY (security_policy_id) REFERENCES security_policies(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_requests_closing_issues
     ADD CONSTRAINT fk_a8703820ae FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

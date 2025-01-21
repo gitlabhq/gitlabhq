@@ -197,6 +197,9 @@ export default {
 
     <overflow-menu
       v-if="!isLoadingRepositoryBlob && glFeatures.blobOverflowMenu"
+      :name="blobInfo.name"
+      :project-path="projectPath"
+      :path="blobInfo.path"
       :raw-path="rawPath"
       :rich-viewer="blobInfo.richViewer"
       :simple-viewer="blobInfo.simpleViewer"

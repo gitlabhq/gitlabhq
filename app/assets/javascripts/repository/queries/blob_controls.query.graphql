@@ -5,12 +5,14 @@ query getBlobControls($projectPath: ID!, $filePath: String!, $ref: String!, $ref
       blobs(paths: [$filePath], ref: $ref, refType: $refType) {
         nodes {
           id
+          name
           blamePath
           permalinkPath
           storedExternally
           externalStorage
           environmentFormattedExternalUrl
           environmentExternalUrlForRouteMap
+          path
           rawPath
           rawTextBlob
           simpleViewer {

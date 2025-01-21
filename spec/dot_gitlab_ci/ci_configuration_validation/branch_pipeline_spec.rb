@@ -58,8 +58,8 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
       end
     end
 
-    context 'with gitlab.com gitlab-org/gitlab ruby3_2 branch scheduled pipeline' do
-      let(:ci_commit_branch) { 'ruby3_2' }
+    context 'with gitlab.com gitlab-org/gitlab ruby3_3 branch scheduled pipeline' do
+      let(:ci_commit_branch) { 'ruby3_3' }
       let(:ci_pipeline_source) { 'schedule' }
       let(:expected_job_name) { 'ruby_syntax: [${RUBY_VERSION_DEFAULT}]' }
       let(:variables_attributes) do

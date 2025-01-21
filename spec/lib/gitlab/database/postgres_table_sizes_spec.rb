@@ -62,6 +62,13 @@ RSpec.describe Gitlab::Database::PostgresTableSize, type: :model, feature_catego
       end
     end
 
+    describe '.alerting' do
+      it 'returns tables greater than or equal to ALERT threshold' do
+        expect(described_class.alerting).to include(medium_table, large_table, over_limit_table)
+        expect(described_class.alerting).not_to include(small_table)
+      end
+    end
+
     describe '.by_table_name' do
       let(:table_name) { small_table.table_name }
 
@@ -94,6 +101,23 @@ RSpec.describe Gitlab::Database::PostgresTableSize, type: :model, feature_catego
       it 'returns over_limit' do
         expect(over_limit_table.size_classification).to eq('over_limit')
       end
+    end
+  end
+
+  describe '#alert_report_hash' do
+    it 'returns a hash of the record' do
+      expect(small_table.alert_report_hash).to eq(
+        {
+          identifier: small_table.identifier,
+          schema_name: small_table.schema_name,
+          table_name: small_table.table_name,
+          total_size: small_table.total_size,
+          table_size: small_table.table_size,
+          index_size: small_table.index_size,
+          size_in_bytes: small_table.size_in_bytes,
+          classification: small_table.size_classification
+        }
+      )
     end
   end
 end

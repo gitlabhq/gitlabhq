@@ -101,6 +101,10 @@ The on-demand DAST scan runs as specified and the project's dashboard shows the 
 
 ### View details of an on-demand scan
 
+Prerequisites:
+
+- You must be able to push to the branch associated with the DAST scan.
+
 To view details of an on-demand scan:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -109,6 +113,10 @@ To view details of an on-demand scan:
 1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Edit**.
 
 ### Edit an on-demand scan
+
+Prerequisites:
+
+- You must be able to push to the branch associated with the DAST scan.
 
 To edit an on-demand scan:
 
@@ -120,6 +128,10 @@ To edit an on-demand scan:
 1. Select **Save scan**.
 
 ### Delete an on-demand scan
+
+Prerequisites:
+
+- You must be able to push to the branch associated with the DAST scan.
 
 To delete an on-demand scan:
 
@@ -195,6 +207,10 @@ The site profile is saved, for use in an on-demand scan.
 
 ### Edit a site profile
 
+Prerequisites:
+
+- If a DAST scan uses the profile, you must be able to push to the branch associated with the scan.
+
 NOTE:
 If a site profile is linked to a security policy, you cannot edit the profile from this page. See
 [Scan execution policies](../policies/scan_execution_policies.md) for more information.
@@ -215,6 +231,10 @@ To edit a site profile:
 1. Edit the fields then select **Save profile**.
 
 ### Delete a site profile
+
+Prerequisites:
+
+- If a DAST scan uses the profile, you must be able to push to the branch associated with the scan.
 
 NOTE:
 If a site profile is linked to a security policy, a user cannot delete the profile from this page.
@@ -369,6 +389,10 @@ To create a scanner profile:
 
 ### Edit a scanner profile
 
+Prerequisites:
+
+- If a DAST scan uses the profile, you must be able to push to the branch associated with the scan.
+
 NOTE:
 If a scanner profile is linked to a security policy, you cannot edit the profile from this page.
 For more information, see [Scan execution policies](../policies/scan_execution_policies.md).
@@ -384,6 +408,10 @@ To edit a scanner profile:
 1. Select **Save profile**.
 
 ### Delete a scanner profile
+
+Prerequisites:
+
+- If a DAST scan uses the profile, you must be able to push to the branch associated with the scan.
 
 NOTE:
 If a scanner profile is linked to a security policy, a user cannot delete the profile from this

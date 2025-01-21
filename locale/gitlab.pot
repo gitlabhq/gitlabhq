@@ -50740,6 +50740,9 @@ msgstr ""
 msgid "Security policy bot cannot be added as a group member"
 msgstr ""
 
+msgid "Security policy must be of type pipeline_execution_schedule_policy"
+msgstr ""
+
 msgid "Security policy project is already assigned."
 msgstr ""
 

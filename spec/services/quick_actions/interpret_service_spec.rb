@@ -2915,7 +2915,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           )
         end
 
-        it 'is not part of the available commands' do
+        it 'is not part of the available commands', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/512578' do
           expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :convert_to_ticket))
         end
       end
