@@ -187,7 +187,7 @@ RSpec.describe 'User page', feature_category: :user_profile do
   context 'with private profile' do
     let_it_be(:user) { create(:user, private_profile: true) }
 
-    it 'shows no page content container' do
+    it 'shows no page content container', :aggregate_failures do
       subject
 
       expect(page).to have_css("div.profile-header")
@@ -198,6 +198,8 @@ RSpec.describe 'User page', feature_category: :user_profile do
       subject
 
       expect(page).to have_content("This user has a private profile")
+      expect(page).not_to have_content("Info")
+      expect(page).not_to have_content("Member since")
     end
   end
 

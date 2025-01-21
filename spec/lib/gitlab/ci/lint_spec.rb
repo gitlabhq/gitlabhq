@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be_with_refind(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
   let(:sha) { nil }
@@ -370,6 +370,72 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
 
         it_behaves_like 'when sha is not provided'
 
+        context 'when the content contains protected variables' do
+          let(:content) do
+            <<~HEREDOC
+            include:
+              - 'https://test.example.com/${SECRET_TOKEN}.yml'
+
+            rubocop:
+              script:
+                - bundle exec rubocop
+            HEREDOC
+          end
+
+          before do
+            create(:ci_variable, key: 'SECRET_TOKEN', value: 'secret!!!!!', project: project, protected: true)
+
+            project.add_maintainer(user)
+
+            stub_request(:get, "https://test.example.com/secret!!!!!.yml")
+          end
+
+          context 'when the ref is a protected branch' do
+            before do
+              create(:protected_branch, project: project, name: 'master')
+            end
+
+            it 'expands the protected variables' do
+              expect(subject).not_to be_valid
+              expect(subject.errors).to include(
+                'Included file `https://test.example.com/secret!!!!!.yml` is empty or does not exist!'
+              )
+            end
+          end
+
+          context 'when the ref is a protected tag' do
+            let(:sha) do
+              project.repository.create_file(
+                project.creator,
+                'test.yml',
+                '',
+                message: 'Created test.yml',
+                branch_name: 'new-branch'
+              )
+            end
+
+            before do
+              project.repository.add_tag(project.creator, '6.6.6', sha)
+              project.repository.rm_branch(project.creator, 'new-branch')
+
+              create(:protected_tag, project: project, name: '6.6.6')
+            end
+
+            after do
+              project.repository.rm_tag(project.creator, '6.6.6')
+            end
+
+            # We don't mark pipelines as `tag` during static validation, so we never expand protected variables for
+            # tags even if the tag is protected.
+            it 'does not expand protected variables' do
+              expect(subject).not_to be_valid
+              expect(subject.errors).to include(
+                'Included file `https://test.example.com/.yml` does not have YAML extension!'
+              )
+            end
+          end
+        end
+
         context 'when sha is provided' do
           let(:sha) { project.commit.sha }
 
@@ -477,6 +543,17 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
     end
 
     context 'when user does not have permissions to write the ref' do
+      let(:content) do
+        <<~HEREDOC
+        include:
+          - 'https://test.example.com/${SECRET_TOKEN}.yml'
+
+        rubocop:
+          script:
+            - bundle exec rubocop
+        HEREDOC
+      end
+
       before do
         project.add_reporter(user)
       end
@@ -484,7 +561,55 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
       context 'when using default static mode' do
         let(:dry_run) { false }
 
-        it_behaves_like 'content is valid'
+        before do
+          create(:ci_variable, key: 'SECRET_TOKEN', value: 'secret!!!!!', project: project, protected: true)
+        end
+
+        context 'when the ref is a protected branch' do
+          before do
+            sha = project.repository.commit.sha
+            ref = Gitlab::Ci::RefFinder.new(project).find_by_sha(sha)
+
+            create(:protected_branch, project: project, name: ref)
+          end
+
+          it 'does not expand protected variables' do
+            expect(subject).not_to be_valid
+            expect(subject.errors).to include(
+              'Included file `https://test.example.com/.yml` does not have YAML extension!'
+            )
+          end
+        end
+
+        context 'when the ref is a protected tag' do
+          let(:sha) do
+            project.repository.create_file(
+              project.creator,
+              'test.yml',
+              '',
+              message: 'Created test.yml',
+              branch_name: 'new-branch'
+            )
+          end
+
+          before do
+            project.repository.add_tag(project.creator, '6.6.6', sha)
+            project.repository.rm_branch(project.creator, 'new-branch')
+
+            create(:protected_tag, project: project, name: '6.6.6')
+          end
+
+          after do
+            project.repository.rm_tag(project.creator, '6.6.6')
+          end
+
+          it 'does not expand protected variables' do
+            expect(subject).not_to be_valid
+            expect(subject.errors).to include(
+              'Included file `https://test.example.com/.yml` does not have YAML extension!'
+            )
+          end
+        end
       end
 
       context 'when using dry run mode' do
