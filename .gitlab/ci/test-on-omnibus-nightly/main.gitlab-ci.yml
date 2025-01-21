@@ -6,7 +6,7 @@ include:
 
 workflow:
   rules:
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $SCHEDULE_TYPE == "nightly"'
+    - when: always
 
 # ==========================================
 # Prepare stage
@@ -103,7 +103,6 @@ relative-url:
 # ------------------------------------------
 # Registry with CDN
 # ------------------------------------------
-
 registry-with-cdn:
   extends:
     - .qa
@@ -118,7 +117,6 @@ registry-with-cdn:
 # ------------------------------------------
 # Object Storage with MiniO
 # ------------------------------------------
-
 object-storage:
   extends:
     - .qa
@@ -130,7 +128,6 @@ object-storage:
 # ------------------------------------------
 # Object Storage with AWS
 # ------------------------------------------
-
 object-storage-aws:
   extends:
     - object-storage
@@ -144,7 +141,6 @@ object-storage-aws:
 # ------------------------------------------
 # Object Storage with GCS
 # ------------------------------------------
-
 object-storage-gcs:
   extends:
     - object-storage
@@ -182,14 +178,9 @@ gitlab-pages:
     - .qa
   variables:
     QA_SCENARIO: Test::Integration::GitlabPages
-  rules:
-    - !reference [.rules:test:qa, rules]
-    - if: $QA_SUITES =~ /Test::Instance::GitlabPages/
-    - !reference [.rules:test:manual, rules]
 
 # ========== git sha256 enabled ===========
 git-sha256-repositories:
-  when: manual
   extends:
     - .parallel
     - .qa
@@ -198,9 +189,6 @@ git-sha256-repositories:
     QA_SCENARIO: Test::Instance::Image
     QA_USE_SHA256_REPOSITORY_OBJECT_STORAGE: true
     GITLAB_QA_OPTS: "--enable-feature support_sha256_repositories"
-  rules:
-    - !reference [.rules:test:qa-parallel, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
 
 # ========== Update From Previous with AI components ===========
 update-minor-ee-ai-components:

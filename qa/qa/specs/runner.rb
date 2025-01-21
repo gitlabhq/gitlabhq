@@ -14,7 +14,7 @@ module QA
       DEFAULT_TEST_PATH = "qa/specs/features"
       DEFAULT_TEST_PATH_ARGS = [DEFAULT_TEST_PATH].freeze
       DEFAULT_STD_ARGS = [$stderr, $stdout].freeze
-      DEFAULT_SKIPPED_TAGS = %w[orchestrated].freeze
+      DEFAULT_SKIPPED_TAGS = %w[~orchestrated].freeze
 
       def initialize
         @tty = false
@@ -46,7 +46,7 @@ module QA
         if tags.any?
           tags.each { |tag| tags_for_rspec.push(tag.to_s) }
         else
-          tags_for_rspec.push(*DEFAULT_SKIPPED_TAGS.map { |tag| "~#{tag}" }) unless (%w[-t --tag] & options).any?
+          tags_for_rspec.push(*DEFAULT_SKIPPED_TAGS) unless (%w[-t --tag] & options).any?
         end
 
         tags_for_rspec.push("~geo") unless QA::Runtime::Env.geo_environment?

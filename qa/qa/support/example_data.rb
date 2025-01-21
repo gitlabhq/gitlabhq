@@ -17,7 +17,7 @@ module QA
           logger.debug("Fetching example data for tags '#{tags}' and specs '#{specs}'")
 
           Tempfile.open("test-metadata.json") do |file|
-            tags = tags.presence || Specs::Runner::DEFAULT_SKIPPED_TAGS.map { |tag| "~#{tag}" }
+            tags = tags.presence || Specs::Runner::DEFAULT_SKIPPED_TAGS
             args = [
               "--dry-run",
               "--no-color",
