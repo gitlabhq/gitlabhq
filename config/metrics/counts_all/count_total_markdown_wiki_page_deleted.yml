@@ -13,9 +13,6 @@ events:
   - name: delete_wiki_page
     filter:
       property: markdown
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

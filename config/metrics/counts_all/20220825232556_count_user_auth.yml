@@ -11,9 +11,6 @@ data_source: database
 instrumentation_class: CountUserAuthMetric
 data_category: optional
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

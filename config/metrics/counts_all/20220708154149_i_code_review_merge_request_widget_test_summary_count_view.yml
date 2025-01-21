@@ -15,9 +15,6 @@ events:
 - name: view_merge_request_widget
   filter:
     label: test_summary
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

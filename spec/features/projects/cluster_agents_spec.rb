@@ -37,7 +37,8 @@ RSpec.describe 'ClusterAgents', :js, feature_category: :environment_management d
         visit project_clusters_path(project)
       end
 
-      it 'displays a table with agent', :aggregate_failures do
+      it 'displays a table with agent', :aggregate_failures,
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/514076' do
         expect(page).to have_content(agent.name)
         expect(page).to have_selector('[data-testid="cluster-agent-list-table"] tbody tr', count: 1)
       end

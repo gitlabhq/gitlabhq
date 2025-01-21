@@ -16,9 +16,6 @@ events:
   filter:
     label: terraform
     property: warning
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

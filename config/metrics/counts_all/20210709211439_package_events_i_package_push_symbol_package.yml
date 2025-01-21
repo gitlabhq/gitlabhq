@@ -13,9 +13,6 @@ data_source: internal_events
 events:
   - name: push_symbol_package_to_registry
 data_category: optional
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

@@ -52,7 +52,9 @@ POST /bulk_imports
 | `entities[migrate_memberships]`   | Boolean | no      | Import user memberships. Defaults to `true`. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token_for_destination_gitlab_instance>" "https://destination-gitlab-instance.example.com/api/v4/bulk_imports" \
+curl --request POST \
+  --url "https://destination-gitlab-instance.example.com/api/v4/bulk_imports" \
+  --header "PRIVATE-TOKEN: <your_access_token_for_destination_gitlab_instance>" \
   --header "Content-Type: application/json" \
   --data '{
     "configuration": {
@@ -103,7 +105,9 @@ The status can be one of the following:
 - `failed`
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/bulk_imports?per_page=2&page=1"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/bulk_imports?per_page=2&page=1"
 ```
 
 ```json
@@ -150,7 +154,9 @@ The status can be one of the following:
 - `failed`
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/bulk_imports/entities?per_page=2&page=1&status=started"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/bulk_imports/entities?per_page=2&page=1&status=started"
 ```
 
 ```json
@@ -229,7 +235,9 @@ GET /bulk_imports/:id
 ```
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/bulk_imports/1"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/bulk_imports/1"
 ```
 
 ```json
@@ -264,7 +272,9 @@ The status can be one of the following:
 - `failed`
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/bulk_imports/1/entities?per_page=2&page=1&status=finished"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/bulk_imports/1/entities?per_page=2&page=1&status=finished"
 ```
 
 ```json
@@ -322,7 +332,9 @@ GET /bulk_imports/:id/entities/:entity_id
 ```
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/bulk_imports/1/entities/2"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/bulk_imports/1/entities/2"
 ```
 
 ```json
@@ -380,7 +392,9 @@ GET /bulk_imports/:id/entities/:entity_id/failures
 ```
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/bulk_imports/1/entities/2/failures"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/bulk_imports/1/entities/2/failures"
 ```
 
 ```json
@@ -405,7 +419,9 @@ POST /bulk_imports/:id/cancel
 ```
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/bulk_imports/1/cancel"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/bulk_imports/1/cancel"
 ```
 
 ```json

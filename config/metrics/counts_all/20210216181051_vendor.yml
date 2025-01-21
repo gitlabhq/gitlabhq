@@ -10,9 +10,6 @@ value_type: number
 status: active
 time_frame: all
 data_source: system
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

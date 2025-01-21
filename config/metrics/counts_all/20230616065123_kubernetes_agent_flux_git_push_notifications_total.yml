@@ -12,9 +12,6 @@ data_category: optional
 performance_indicator_type: []
 events:
   - name: create_flux_git_push_notification
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

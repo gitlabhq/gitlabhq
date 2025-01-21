@@ -45,7 +45,7 @@
 {"name":"axiom-types","version":"0.1.1","platform":"ruby","checksum":"c1ff113f3de516fa195b2db7e0a9a95fd1b08475a502ff660d04507a09980383"},
 {"name":"babosa","version":"2.0.0","platform":"ruby","checksum":"a6218db8a4dc8fd99260dde8bc3d5fa1a0c52178196e236ebb31e41fbdcdb8a6"},
 {"name":"backport","version":"1.2.0","platform":"ruby","checksum":"912c7dfdd9ee4625d013ddfccb6205c3f92da69a8990f65c440e40f5b2fc7f75"},
-{"name":"base32","version":"0.3.2","platform":"ruby","checksum":"532e9b19c5dd1fce281df67fc93a803ebd5d26426a93f6dda6612769bc46fe2c"},
+{"name":"base32","version":"0.3.4","platform":"ruby","checksum":"cb9810ab7c79862ed6ead254b3a44fa2535d088396cd412eef38bdc206055aba"},
 {"name":"base64","version":"0.2.0","platform":"ruby","checksum":"0f25e9b21a02a0cc0cea8ef92b2041035d39350946e8789c562b2d1a3da01507"},
 {"name":"batch-loader","version":"2.0.5","platform":"ruby","checksum":"964bf638b8f498bab40abaafc6f89c057b2e02aa25b64fc1ec12872ad6bff213"},
 {"name":"bcrypt","version":"3.1.18","platform":"java","checksum":"5464e06c00cb6bd3ff982feef4cb7f1efc9b302753cbaf12e73512d8f401f2d2"},

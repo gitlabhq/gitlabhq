@@ -12,9 +12,6 @@ data_category: optional
 performance_indicator_type: []
 events:
   - name: request_api_proxy_access_via_ci
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

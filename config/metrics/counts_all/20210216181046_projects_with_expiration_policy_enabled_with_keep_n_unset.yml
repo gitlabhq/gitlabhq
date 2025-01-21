@@ -14,9 +14,6 @@ instrumentation_class: DistinctCountProjectsWithExpirationPolicyMetric
 options:
   enabled: true
   keep_n: null
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

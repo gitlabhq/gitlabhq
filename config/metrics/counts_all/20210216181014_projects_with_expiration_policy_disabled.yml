@@ -12,9 +12,6 @@ data_source: database
 instrumentation_class: DistinctCountProjectsWithExpirationPolicyMetric
 options:
   enabled: false
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

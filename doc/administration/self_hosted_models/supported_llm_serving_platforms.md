@@ -45,7 +45,9 @@ There are multiple platforms available to host your self-hosted Large Language M
 
 1. [AWS Bedrock](https://aws.amazon.com/bedrock/).
    A fully managed service that allows developers to build and scale generative AI applications using pre-trained models from leading AI companies. It seamlessly integrates with other AWS services and offers a pay-as-you-go pricing model.
-   - [AWS Bedrock Model Deployment Guide](https://docs.epam-rail.com/Deployment/Bedrock%20Model%20Deployment)
+
+   You must configure the GitLab instance with your appropriate AWS IAM permissions before accessing Bedrock models. You cannot do this in the self-hosted models UI. For example, you can authenticate the AI Gateway instance by defining the [`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_REGION_NAME`](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) when starting the Docker image. For more information, see the [AWS Identity and Access Management (IAM) Guide](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html).
+
    - [Supported foundation models in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
 
 1. [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/).

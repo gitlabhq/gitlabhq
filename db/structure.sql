@@ -12500,6 +12500,7 @@ CREATE TABLE dora_daily_metrics (
     time_to_restore_service_in_seconds integer,
     incidents_count integer,
     project_id bigint,
+    CONSTRAINT check_25a1971e50 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT dora_daily_metrics_deployment_frequency_positive CHECK ((deployment_frequency >= 0)),
     CONSTRAINT dora_daily_metrics_lead_time_for_changes_in_seconds_positive CHECK ((lead_time_for_changes_in_seconds >= 0))
 );
@@ -22916,7 +22917,8 @@ CREATE TABLE vulnerability_user_mentions (
     mentioned_projects_ids bigint[],
     mentioned_groups_ids bigint[],
     note_id bigint,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_0105942303 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE vulnerability_user_mentions_id_seq

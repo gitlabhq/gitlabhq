@@ -144,8 +144,10 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryaimessagesagentversionid"></a>`agentVersionId` | [`AiAgentVersionID`](#aiagentversionid) | Global ID of the agent to answer the chat. |
+| <a id="queryaimessagesconversationtype"></a>`conversationType` | [`AiConversationsThreadsConversationType`](#aiconversationsthreadsconversationtype) | Conversation type of the thread. |
 | <a id="queryaimessagesrequestids"></a>`requestIds` | [`[ID!]`](#id) | Array of request IDs to fetch. |
 | <a id="queryaimessagesroles"></a>`roles` | [`[AiMessageRole!]`](#aimessagerole) | Array of roles to fetch. |
+| <a id="queryaimessagesthreadid"></a>`threadId` | [`AiConversationThreadID`](#aiconversationthreadid) | Global Id of the existing thread.If it is not specified, the last thread for the specified conversation_type will be retrieved. |
 
 ### `Query.aiSelfHostedModels`
 
@@ -1766,6 +1768,7 @@ Input type: `AiActionInput`
 | <a id="mutationaiactionchat"></a>`chat` | [`AiChatInput`](#aichatinput) | Input for chat AI action. |
 | <a id="mutationaiactionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaiactionclientsubscriptionid"></a>`clientSubscriptionId` | [`String`](#string) | Client generated ID that can be subscribed to, to receive a response for the mutation. |
+| <a id="mutationaiactionconversationtype"></a>`conversationType` | [`AiConversationsThreadsConversationType`](#aiconversationsthreadsconversationtype) | Conversation type of the thread. |
 | <a id="mutationaiactionexplainvulnerability"></a>`explainVulnerability` | [`AiExplainVulnerabilityInput`](#aiexplainvulnerabilityinput) | Input for explain_vulnerability AI action. |
 | <a id="mutationaiactiongeneratecommitmessage"></a>`generateCommitMessage` | [`AiGenerateCommitMessageInput`](#aigeneratecommitmessageinput) | Input for generate_commit_message AI action. |
 | <a id="mutationaiactiongeneratecubequery"></a>`generateCubeQuery` | [`AiGenerateCubeQueryInput`](#aigeneratecubequeryinput) | Input for generate_cube_query AI action. |
@@ -1777,6 +1780,7 @@ Input type: `AiActionInput`
 | <a id="mutationaiactionsummarizecomments"></a>`summarizeComments` | [`AiSummarizeCommentsInput`](#aisummarizecommentsinput) | Input for summarize_comments AI action. |
 | <a id="mutationaiactionsummarizenewmergerequest"></a>`summarizeNewMergeRequest` | [`AiSummarizeNewMergeRequestInput`](#aisummarizenewmergerequestinput) | Input for summarize_new_merge_request AI action. |
 | <a id="mutationaiactionsummarizereview"></a>`summarizeReview` | [`AiSummarizeReviewInput`](#aisummarizereviewinput) | Input for summarize_review AI action. |
+| <a id="mutationaiactionthreadid"></a>`threadId` | [`AiConversationThreadID`](#aiconversationthreadid) | Global Id of the existing thread to continue the conversation. If it is not specified, a new thread will be created for the specified conversation_type. |
 
 #### Fields
 
@@ -1785,6 +1789,7 @@ Input type: `AiActionInput`
 | <a id="mutationaiactionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaiactionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationaiactionrequestid"></a>`requestId` | [`String`](#string) | ID of the request. |
+| <a id="mutationaiactionthreadid"></a>`threadId` | [`AiConversationThreadID`](#aiconversationthreadid) | Global Id of the thread. |
 
 ### `Mutation.aiAgentCreate`
 
@@ -38746,6 +38751,14 @@ The category of the additional context.
 | <a id="aiadditionalcontextcategorymerge_request"></a>`MERGE_REQUEST` | Merge_request content category. |
 | <a id="aiadditionalcontextcategorysnippet"></a>`SNIPPET` | Snippet content category. |
 
+### `AiConversationsThreadsConversationType`
+
+Conversation type of the thread.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aiconversationsthreadsconversationtypeduo_chat"></a>`DUO_CHAT` | duo_chat thread. |
+
 ### `AiFeatureProviders`
 
 Providers for AI features that can be configured.
@@ -42350,6 +42363,12 @@ An example `AiAgentID` is: `"gid://gitlab/Ai::Agent/1"`.
 A `AiAgentVersionID` is a global ID. It is encoded as a string.
 
 An example `AiAgentVersionID` is: `"gid://gitlab/Ai::AgentVersion/1"`.
+
+### `AiConversationThreadID`
+
+A `AiConversationThreadID` is a global ID. It is encoded as a string.
+
+An example `AiConversationThreadID` is: `"gid://gitlab/Ai::Conversation::Thread/1"`.
 
 ### `AiDuoWorkflowsWorkflowID`
 

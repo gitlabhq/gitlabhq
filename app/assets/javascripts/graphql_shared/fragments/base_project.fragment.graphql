@@ -35,7 +35,7 @@ fragment BaseProject on Project {
   }
   isCatalogResource
   exploreCatalogPath
-  pipeline(iid: 1) {
+  pipeline {
     detailedStatus {
       ...CiIcon
     }

@@ -26,19 +26,42 @@ RSpec.describe PreferencesHelper, feature_category: :shared do
       expect { helper.dashboard_choices }.to raise_error(KeyError)
     end
 
-    it 'provides better option descriptions' do
-      expect(helper.dashboard_choices).to match_array [
-        { text: "Your Projects (default)", value: 'projects' },
-        { text: "Starred Projects", value: 'stars' },
-        { text: "Your Activity", value: 'your_activity' },
-        { text: "Your Projects' Activity", value: 'project_activity' },
-        { text: "Starred Projects' Activity", value: 'starred_project_activity' },
-        { text: "Followed Users' Activity", value: 'followed_user_activity' },
-        { text: "Your Groups", value: 'groups' },
-        { text: "Your To-Do List", value: 'todos' },
-        { text: "Assigned issues", value: 'issues' },
-        { text: "Assigned merge requests", value: 'merge_requests' }
-      ]
+    context 'when feature flag your_work_projects_vue is enabled' do
+      it 'returns expected options' do
+        expect(helper.dashboard_choices).to match_array [
+          { text: "Your Contributed Projects (default)", value: 'projects' },
+          { text: "Starred Projects", value: 'stars' },
+          { text: "Your Activity", value: 'your_activity' },
+          { text: "Your Projects' Activity", value: 'project_activity' },
+          { text: "Starred Projects' Activity", value: 'starred_project_activity' },
+          { text: "Followed Users' Activity", value: 'followed_user_activity' },
+          { text: "Your Groups", value: 'groups' },
+          { text: "Your To-Do List", value: 'todos' },
+          { text: "Assigned issues", value: 'issues' },
+          { text: "Assigned merge requests", value: 'merge_requests' }
+        ]
+      end
+    end
+
+    context 'when feature flag your_work_projects_vue is disabled' do
+      before do
+        stub_feature_flags(your_work_projects_vue: false)
+      end
+
+      it 'returns expected options' do
+        expect(helper.dashboard_choices).to match_array [
+          { text: "Your Projects (default)", value: 'projects' },
+          { text: "Starred Projects", value: 'stars' },
+          { text: "Your Activity", value: 'your_activity' },
+          { text: "Your Projects' Activity", value: 'project_activity' },
+          { text: "Starred Projects' Activity", value: 'starred_project_activity' },
+          { text: "Followed Users' Activity", value: 'followed_user_activity' },
+          { text: "Your Groups", value: 'groups' },
+          { text: "Your To-Do List", value: 'todos' },
+          { text: "Assigned issues", value: 'issues' },
+          { text: "Assigned merge requests", value: 'merge_requests' }
+        ]
+      end
     end
   end
 

@@ -15,9 +15,6 @@ events:
     filter:
       property: user
 data_category: optional
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

@@ -16,9 +16,6 @@ events:
   filter:
     label: test_summary
     property: failed
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

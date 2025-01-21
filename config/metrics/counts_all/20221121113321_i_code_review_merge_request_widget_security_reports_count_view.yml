@@ -16,9 +16,6 @@ events:
   filter:
     label: security_reports
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

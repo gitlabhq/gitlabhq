@@ -9,9 +9,6 @@ value_type: number
 status: removed
 time_frame: all
 data_source: redis
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

@@ -17,9 +17,6 @@ events:
 - name: click_full_report_on_merge_request_widget
   filter:
     label: license_compliance
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

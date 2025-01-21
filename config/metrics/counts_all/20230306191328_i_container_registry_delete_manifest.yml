@@ -15,9 +15,6 @@ options:
   prefix: container_registry_events
   event: i_container_registry_delete_manifest
 data_category: optional
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

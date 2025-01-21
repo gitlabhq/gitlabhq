@@ -11,9 +11,6 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/338178
 time_frame: all
 data_source: database
 data_category: operational
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

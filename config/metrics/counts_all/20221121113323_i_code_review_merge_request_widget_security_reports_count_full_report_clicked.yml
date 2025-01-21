@@ -16,9 +16,6 @@ events:
 - name: click_full_report_on_merge_request_widget
   filter:
     label: security_reports
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

@@ -195,6 +195,9 @@ export default {
     pipelineStatus() {
       return this.project.pipeline?.detailedStatus;
     },
+    dataTestid() {
+      return `projects-list-item-${this.project.id}`;
+    },
   },
   methods: {
     onActionDelete() {
@@ -223,6 +226,7 @@ export default {
     :show-icon="showProjectIcon"
     icon-name="project"
     :timestamp-type="timestampType"
+    :data-testid="dataTestid"
   >
     <template #avatar-meta>
       <gl-icon
@@ -246,7 +250,12 @@ export default {
 
     <template #avatar-default>
       <project-list-item-description :project="project" />
-      <topic-badges v-if="hasTopics" :topics="project.topics" class="gl-mt-3" />
+      <topic-badges
+        v-if="hasTopics"
+        :topics="project.topics"
+        class="gl-mt-3"
+        data-testid="project-topics"
+      />
     </template>
 
     <template #stats>

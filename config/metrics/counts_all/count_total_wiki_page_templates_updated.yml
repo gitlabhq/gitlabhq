@@ -11,9 +11,6 @@ events:
   - name: update_wiki_page
     filter:
       label: template
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

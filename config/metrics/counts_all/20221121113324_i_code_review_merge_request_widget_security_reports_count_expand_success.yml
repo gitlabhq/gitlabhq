@@ -17,9 +17,6 @@ events:
     label: security_reports
     property: success
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

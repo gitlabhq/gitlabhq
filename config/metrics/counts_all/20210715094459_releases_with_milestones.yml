@@ -13,9 +13,6 @@ time_frame: all
 data_source: database
 instrumentation_class: 'CountUsersAssociatingMilestonesToReleasesMetric'
 data_category: optional
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

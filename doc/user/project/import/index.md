@@ -99,15 +99,14 @@ For more information, see the history.
 NOTE:
 To leave feedback about this feature, add a comment to [issue 502565](https://gitlab.com/gitlab-org/gitlab/-/issues/502565).
 
-This method of user contribution and membership mapping is available for
-[direct transfer migrations](../../group/import/index.md), [GitHub importer](github.md), [Bitbucket Server importer](bitbucket_server.md), and [Gitea importer](gitea.md) on:
-
-- GitLab.com
-- GitLab Self-Managed when two feature flags are enabled
+This method of user contribution and membership mapping is available by default for
+[direct transfer](../../group/import/index.md), [GitHub importer](github.md),
+[Bitbucket Server importer](bitbucket_server.md), and [Gitea importer](gitea.md) on
+GitLab.com and GitLab Self-Managed.
+For information on the other method available for GitLab Self-Managed with disabled feature flags,
+see the documentation for each importer.
 
 User contribution mapping is not supported when you import projects to a personal namespace.
-For information on the other method available for GitLab Self-Managed without enabled feature flags,
-see [user contribution and membership mapping](../../group/import/direct_transfer_migrations.md#user-contribution-and-membership-mapping).
 
 Any memberships and contributions you import are first mapped to [placeholder users](#placeholder-users).
 These placeholders are created on the destination instance even if
