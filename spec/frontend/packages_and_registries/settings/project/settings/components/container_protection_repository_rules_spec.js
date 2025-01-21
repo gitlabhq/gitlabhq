@@ -337,7 +337,7 @@ describe('Container protection repository rules project settings', () => {
             .findAllComponents('option')
             .wrappers.map((w) => w.text());
 
-          expect(accessLevelOptions).toEqual(['Maintainer', 'Owner', 'Admin']);
+          expect(accessLevelOptions).toEqual(['Maintainer', 'Owner', 'Administrator']);
         });
 
         describe('when value changes', () => {

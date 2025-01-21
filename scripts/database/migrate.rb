@@ -46,7 +46,7 @@ def parse_options
     opts.on('--debug', 'Enable debug mode') do |v|
       options[:debug] = v
     end
-    opts.on('-t', '--task=TASK', 'Set task') do |v|
+    opts.on('-t', '--task=[up|down]', 'Set task - "up" to migrate forward, "down" to rollback') do |v|
       options[:task] = v
     end
   end.parse!
@@ -125,6 +125,9 @@ def execute
       puts "$ #{cmd}"
       raise "Migration #{version} failed" unless system(cmd)
     end
+  else
+    puts 'Invalid task. Use --task=[up|down]'
+    exit 1
   end
 end
 # rubocop:enable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity

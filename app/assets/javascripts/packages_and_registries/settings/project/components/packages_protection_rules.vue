@@ -17,6 +17,7 @@ import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/
 import deletePackagesProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_packages_protection_rule.mutation.graphql';
 import updatePackagesProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_packages_protection_rule.mutation.graphql';
 import PackagesProtectionRuleForm from '~/packages_and_registries/settings/project/components/packages_protection_rule_form.vue';
+import { MinimumAccessLevelOptions } from '~/packages_and_registries/settings/project/constants';
 import { s__, __ } from '~/locale';
 
 const PAGINATION_DEFAULT_PER_PAGE = 10;
@@ -239,11 +240,7 @@ export default {
       tdClass: '!gl-align-middle gl-text-right',
     },
   ],
-  minimumAccessLevelOptions: [
-    { value: 'MAINTAINER', text: __('Maintainer') },
-    { value: 'OWNER', text: __('Owner') },
-    { value: 'ADMIN', text: s__('AdminUsers|Administrator') },
-  ],
+  minimumAccessLevelOptions: MinimumAccessLevelOptions,
   modal: { id: 'delete-package-protection-rule-confirmation-modal' },
   modalActionPrimary: {
     text: s__('PackageRegistry|Delete package protection rule'),

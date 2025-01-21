@@ -117,11 +117,21 @@ export const OLDER_THAN_OPTIONS = [
   { key: 'NINETY_DAYS', variable: 90, default: true },
 ];
 
-export const MinimumAccessLevelOptions = {
-  MAINTAINER: __('Maintainer'),
-  OWNER: __('Owner'),
-  ADMIN: __('Admin'),
+const GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN = 'ADMIN';
+export const GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER = 'MAINTAINER';
+const GRAPHQL_ACCESS_LEVEL_VALUE_OWNER = 'OWNER';
+
+export const MinimumAccessLevelText = {
+  [GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN]: s__('AdminUsers|Administrator'),
+  [GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER]: __('Maintainer'),
+  [GRAPHQL_ACCESS_LEVEL_VALUE_OWNER]: __('Owner'),
 };
+
+export const MinimumAccessLevelOptions = [
+  { value: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER, text: __('Maintainer') },
+  { value: GRAPHQL_ACCESS_LEVEL_VALUE_OWNER, text: __('Owner') },
+  { value: GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN, text: s__('AdminUsers|Administrator') },
+];
 
 export const FETCH_SETTINGS_ERROR_MESSAGE = s__(
   'ContainerRegistry|Something went wrong while fetching the cleanup policy.',

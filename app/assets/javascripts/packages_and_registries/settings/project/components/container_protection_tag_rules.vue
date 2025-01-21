@@ -16,7 +16,7 @@ import ContainerProtectionTagRuleForm from '~/packages_and_registries/settings/p
 import getContainerProtectionTagRulesQuery from '~/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql';
 import deleteContainerProtectionTagRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_tag_rule.mutation.graphql';
 import { __, s__ } from '~/locale';
-import { MinimumAccessLevelOptions } from '~/packages_and_registries/settings/project/constants';
+import { MinimumAccessLevelText } from '~/packages_and_registries/settings/project/constants';
 
 const MAX_LIMIT = 5;
 const I18N_MINIMUM_ACCESS_LEVEL_TO_PUSH = s__('ContainerRegistry|Minimum access level to push');
@@ -91,9 +91,9 @@ export default {
         return {
           id: protectionRule.id,
           minimumAccessLevelForPush:
-            MinimumAccessLevelOptions[protectionRule.minimumAccessLevelForPush],
+            MinimumAccessLevelText[protectionRule.minimumAccessLevelForPush],
           minimumAccessLevelForDelete:
-            MinimumAccessLevelOptions[protectionRule.minimumAccessLevelForDelete],
+            MinimumAccessLevelText[protectionRule.minimumAccessLevelForDelete],
           tagNamePattern: protectionRule.tagNamePattern,
         };
       });

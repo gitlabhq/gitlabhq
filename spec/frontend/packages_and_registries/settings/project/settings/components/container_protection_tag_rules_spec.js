@@ -21,7 +21,7 @@ import ContainerProtectionTagRules from '~/packages_and_registries/settings/proj
 import ContainerProtectionTagRuleForm from '~/packages_and_registries/settings/project/components/container_protection_tag_rule_form.vue';
 import getContainerProtectionTagRulesQuery from '~/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql';
 import deleteContainerProtectionTagRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_tag_rule.mutation.graphql';
-import { MinimumAccessLevelOptions } from '~/packages_and_registries/settings/project/constants';
+import { MinimumAccessLevelText } from '~/packages_and_registries/settings/project/constants';
 
 Vue.use(VueApollo);
 
@@ -216,10 +216,10 @@ describe('ContainerProtectionTagRules', () => {
         tagRules.forEach((protectionRule, i) => {
           expect(findTableRowCell(i, 0).text()).toBe(protectionRule.tagNamePattern);
           expect(findTableRowCell(i, 1).text()).toBe(
-            MinimumAccessLevelOptions[protectionRule.minimumAccessLevelForPush],
+            MinimumAccessLevelText[protectionRule.minimumAccessLevelForPush],
           );
           expect(findTableRowCell(i, 2).text()).toBe(
-            MinimumAccessLevelOptions[protectionRule.minimumAccessLevelForDelete],
+            MinimumAccessLevelText[protectionRule.minimumAccessLevelForDelete],
           );
         });
       });

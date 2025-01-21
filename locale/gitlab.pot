@@ -3639,9 +3639,6 @@ msgstr ""
 msgid "Adjust how frequently the GitLab UI polls for updates."
 msgstr ""
 
-msgid "Admin"
-msgstr ""
-
 msgid "Admin Mode"
 msgstr ""
 

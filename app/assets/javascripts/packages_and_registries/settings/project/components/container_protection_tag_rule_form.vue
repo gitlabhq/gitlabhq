@@ -1,10 +1,9 @@
 <script>
 import { GlFormGroup, GlForm, GlFormInput, GlFormSelect, GlLink, GlSprintf } from '@gitlab/ui';
-import { __ } from '~/locale';
-
-const GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER = 'MAINTAINER';
-const GRAPHQL_ACCESS_LEVEL_VALUE_OWNER = 'OWNER';
-const GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN = 'ADMIN';
+import {
+  MinimumAccessLevelOptions,
+  GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
+} from '~/packages_and_registries/settings/project/constants';
 
 export default {
   components: {
@@ -25,11 +24,7 @@ export default {
       },
     };
   },
-  minimumAccessLevelOptions: [
-    { value: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER, text: __('Maintainer') },
-    { value: GRAPHQL_ACCESS_LEVEL_VALUE_OWNER, text: __('Owner') },
-    { value: GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN, text: __('Admin') },
-  ],
+  minimumAccessLevelOptions: MinimumAccessLevelOptions,
 };
 </script>
 

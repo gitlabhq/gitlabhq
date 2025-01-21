@@ -5,7 +5,7 @@ class RequeueDeleteOrphanedPartitionedCiRunnerMachineRecords < Gitlab::Database:
 
   restrict_gitlab_migration gitlab_schema: :gitlab_ci
 
-  MIGRATION = "DeleteOrphanedPartitionedCiRunnerMachineRecords"
+  MIGRATION = "RequeueDeleteOrphanedPartitionedCiRunnerMachineRecords"
   DELAY_INTERVAL = 2.minutes
   BATCH_SIZE = 1000
   SUB_BATCH_SIZE = 100
