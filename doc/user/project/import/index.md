@@ -130,7 +130,11 @@ When you reassign a contribution to a user on the destination instance, the user
 ### Requirements
 
 - You must be able to create enough users, subject to [user limits](#placeholder-user-limits).
-- If importing to GitLab.com, you must set up your paid namespace before the import.
+- If you import to GitLab.com, you must set up your paid namespace before the import.
+- If you import to GitLab.com and use [SAML SSO for GitLab.com groups](../../group/saml_sso/index.md),
+  all users must link their SAML identity to their GitLab.com account before you start to
+  [reassign contributions and memberships](#reassign-contributions-and-memberships).
+  Otherwise, memberships cannot be validated and relations are not created correctly on GitLab.com.
 
 ### Placeholder users
 

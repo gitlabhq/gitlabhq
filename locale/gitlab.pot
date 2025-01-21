@@ -429,6 +429,11 @@ msgid_plural "%d personal projects will be removed and cannot be restored."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d policy violations"
+msgid_plural "%d policy violations"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d previously merged commit"
 msgid_plural "%d previously merged commits"
 msgstr[0] ""
@@ -1372,6 +1377,9 @@ msgid "%{strongStart}%{you}%{strongEnd}%{break}Assigned to %{name}"
 msgstr ""
 
 msgid "%{strongStart}%{you}%{strongEnd}%{break}Review requested from %{name}"
+msgstr ""
+
+msgid "%{strongStart}Merge reports (%{reportsCount}):%{strongEnd} %{summaryText}"
 msgstr ""
 
 msgid "%{strongStart}Tip:%{strongEnd} You can also %{linkStart}check out with merge request ID%{linkEnd}."
@@ -35114,9 +35122,6 @@ msgid "Merge now and restart train"
 msgstr ""
 
 msgid "Merge options"
-msgstr ""
-
-msgid "Merge reports (%{reportsCount}):"
 msgstr ""
 
 msgid "Merge request"

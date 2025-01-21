@@ -1,10 +1,11 @@
 <script>
-import { GlSprintf } from '@gitlab/ui';
+import { GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import StateContainer from '../state_container.vue';
 
 export default {
   components: {
+    GlSkeletonLoader,
     GlSprintf,
     StateContainer,
     MrSecurityWidget: () =>
@@ -53,6 +54,15 @@ export default {
         this.accessibilityWidget,
       ].filter((w) => w);
     },
+    collapsedSummaryText() {
+      return null;
+    },
+    statusIcon() {
+      return 'success';
+    },
+    isLoadingSummary() {
+      return false;
+    },
   },
 };
 </script>
@@ -67,19 +77,35 @@ export default {
   >
     <state-container
       v-if="glFeatures.mrReportsTab"
-      status="success"
+      :status="statusIcon"
       is-collapsible
       collapse-on-desktop
       :collapsed="collapsed"
+      :is-loading="isLoadingSummary"
       :expand-details-tooltip="__('Expand merge request reports')"
       :collapse-details-tooltip="__('Collapse merge request reports')"
       @toggle="collapsed = !collapsed"
     >
-      <strong>
-        <gl-sprintf :message="__('Merge reports (%{reportsCount}):')">
-          <template #reportsCount>{{ widgets.length }}</template>
+      <template #loading>
+        <gl-skeleton-loader :width="334" :height="24">
+          <rect x="0" y="0" width="24" height="24" rx="4" />
+          <rect x="32" y="2" width="302" height="20" rx="4" />
+        </gl-skeleton-loader>
+      </template>
+      <template #default>
+        <gl-sprintf
+          :message="__('%{strongStart}Merge reports (%{reportsCount}):%{strongEnd} %{summaryText}')"
+        >
+          <template #strong="{ content }">
+            <strong>
+              <gl-sprintf :message="content">
+                <template #reportsCount>{{ widgets.length }}</template>
+              </gl-sprintf>
+            </strong>
+          </template>
+          <template #summaryText>&nbsp;{{ collapsedSummaryText }}</template>
         </gl-sprintf>
-      </strong>
+      </template>
     </state-container>
     <div
       v-show="!collapsed"

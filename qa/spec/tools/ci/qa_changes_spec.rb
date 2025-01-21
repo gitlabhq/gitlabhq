@@ -57,6 +57,26 @@ RSpec.describe QA::Tools::Ci::QaChanges do
     end
   end
 
+  context "with empty diff" do
+    let(:mr_diff) { [] }
+
+    it ".framework_changes? return false" do
+      expect(qa_changes.framework_changes?).to be(false)
+    end
+
+    it ".quarantine_changes? return false" do
+      expect(qa_changes.quarantine_changes?).to be(false)
+    end
+
+    it ".only_spec_removal? return false" do
+      expect(qa_changes.only_spec_removal?).to be(false)
+    end
+
+    it ".qa_tests returns empty array" do
+      expect(qa_changes.qa_tests).to eq([])
+    end
+  end
+
   context "with non qa changes" do
     let(:mr_diff) { [{ path: "Gemfile" }] }
 

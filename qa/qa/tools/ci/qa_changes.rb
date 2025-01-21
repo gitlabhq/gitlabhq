@@ -50,6 +50,7 @@ module QA
         #
         # @return [Boolean]
         def quarantine_changes?
+          return false if mr_diff.empty?
           return false if mr_diff.any? { |change| change[:new_file] || change[:deleted_file] }
 
           files_count = 0
@@ -77,6 +78,8 @@ module QA
         #
         # @return [Boolean]
         def only_spec_removal?
+          return false if mr_diff.empty?
+
           only_spec_changes? && mr_diff.all? { |change| change[:deleted_file] }
         end
 

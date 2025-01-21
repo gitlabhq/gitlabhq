@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admin_mode,
+RSpec.describe ::Ci::CollectAggregatePipelineAnalyticsService, :click_house, :enable_admin_mode,
   feature_category: :fleet_visibility do
   include ClickHouseHelpers
 
@@ -54,14 +54,14 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admi
     end
 
     it 'returns error' do
-      expect(result.error?).to eq(true)
+      expect(result.error?).to be true
       expect(result.errors).to contain_exactly('ClickHouse database is not configured')
     end
   end
 
   shared_examples 'returns Not allowed error' do
     it 'returns error' do
-      expect(result.error?).to eq(true)
+      expect(result.error?).to be true
       expect(result.errors).to contain_exactly('Not allowed')
     end
   end
@@ -80,7 +80,7 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admi
 
     with_them do
       it 'returns aggregate analytics' do
-        expect(result.success?).to eq(true)
+        expect(result.success?).to be true
         expect(result.errors).to eq([])
         expect(result.payload[:aggregate]).to eq(expected_aggregate)
       end
@@ -94,7 +94,7 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admi
       context 'and there are pipelines in the last week', time_travel_to: '2023-01-08' do
         it 'returns aggregate analytics from last week' do
           expect(result.errors).to eq([])
-          expect(result.success?).to eq(true)
+          expect(result.success?).to be true
           expect(result.payload[:aggregate]).to eq(
             count: { any: 6 }, duration_statistics: { p50: 30.minutes, p99: 6975.seconds }
           )
@@ -104,7 +104,7 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admi
       context 'and there are no pipelines in the last week', time_travel_to: '2023-01-15 00:00:01' do
         it 'returns empty aggregate analytics' do
           expect(result.errors).to eq([])
-          expect(result.success?).to eq(true)
+          expect(result.success?).to be true
           expect(result.payload[:aggregate]).to eq(count: { any: 0 }, duration_statistics: { p50: nil, p99: nil })
         end
       end
@@ -116,7 +116,7 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admi
 
       it 'does not include job starting 1 second before start of week' do
         expect(result.errors).to eq([])
-        expect(result.success?).to eq(true)
+        expect(result.success?).to be true
         expect(result.payload[:aggregate]).to eq(count: { any: 6 })
       end
     end
@@ -127,7 +127,7 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admi
 
       it 'includes job starting 1 second before start of week' do
         expect(result.errors).to eq([])
-        expect(result.success?).to eq(true)
+        expect(result.success?).to be true
         expect(result.payload[:aggregate]).to eq(count: { any: 7 })
       end
     end
@@ -137,7 +137,7 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admi
 
       it 'returns an error' do
         expect(result.errors).to contain_exactly("Maximum of 366 days can be requested")
-        expect(result.error?).to eq(true)
+        expect(result.error?).to be true
       end
     end
 
@@ -152,7 +152,7 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admi
       end
 
       it 'returns aggregate analytics for specified project only' do
-        expect(result.success?).to eq(true)
+        expect(result.success?).to be true
         expect(result.errors).to eq([])
         expect(result.payload[:aggregate]).to eq(count: { any: 1, success: 0, failed: 1 })
       end
@@ -177,7 +177,7 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsService, :click_house, :enable_admi
     let(:project) { nil }
 
     it 'returns error' do
-      expect(result.error?).to eq(true)
+      expect(result.error?).to be true
       expect(result.errors).to contain_exactly('Project must be specified')
     end
   end

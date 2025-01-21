@@ -192,3 +192,34 @@ Example response:
   ]
 }
 ```
+
+## Disable two-factor authentication for an enterprise user
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177943) in GitLab 17.9.
+
+Disables two-factor authentication (2FA) for a specified enterprise user.
+
+```plaintext
+PATCH /groups/:id/enterprise_users/:user_id/disable_two_factor
+```
+
+Supported attributes:
+
+| Attribute        | Type           | Required | Description |
+|:-----------------|:---------------|:---------|:------------|
+| `id`             | integer/string | yes      | ID or [URL-encoded path](rest/index.md#namespaced-paths) of a top-level group. |
+| `user_id`        | integer        | yes      | ID of user account. |
+
+Example request:
+
+```shell
+curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/enterprise_users/:user_id/disable_two_factor"
+```
+
+If successful, returns `204 No content`.
+
+Other possible responses:
+
+- `400 Bad request`: 2FA is not enabled for the specified user.
+- `403 Forbidden`: The authenticated user is not an Owner.
+- `404 Not found`: User can not be found.

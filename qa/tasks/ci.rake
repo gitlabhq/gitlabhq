@@ -33,7 +33,7 @@ namespace :ci do
     qa_changes = QA::Tools::Ci::QaChanges.new(diff)
 
     if diff.empty?
-      logger.info("No specific specs to execute detected, running full test suites")
+      logger.info("No changed file diff provided, full test suite will be executed")
     else
       if qa_changes.quarantine_changes?
         logger.info("Merge request contains only quarantine changes, e2e test execution will be skipped!")
@@ -47,8 +47,7 @@ namespace :ci do
 
       feature_flags_changes = QA::Tools::Ci::FfChanges.new(diff).fetch
       # on run-all label or framework changes do not infer specific tests
-      run_all_tests = run_all_label_present || qa_changes.framework_changes? ||
-        !feature_flags_changes.nil?
+      run_all_tests = run_all_label_present || qa_changes.framework_changes? || !feature_flags_changes.nil?
       tests = run_all_tests ? [] : qa_changes.qa_tests
 
       if run_all_label_present

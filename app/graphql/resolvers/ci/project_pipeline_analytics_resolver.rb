@@ -34,28 +34,35 @@ module Resolvers
         experiment: { milestone: '17.5' }
 
       def resolve(lookahead:, source: nil, ref: nil, from_time: nil, to_time: nil)
-        result = legacy_fields(lookahead)
+        base_service_args = {
+          current_user: context[:current_user], project: project,
+          source: source, ref: ref,
+          from_time: from_time, to_time: to_time
+        }
 
-        if any_field_selected?(lookahead, :aggregate)
-          aggregate_lookahead = lookahead&.selection(:aggregate)
-          response =
-            ::Ci::CollectPipelineAnalyticsService.new(
-              current_user: context[:current_user], project: project,
-              source: source, ref: ref,
-              from_time: from_time, to_time: to_time,
-              status_groups: selected_status_groups(aggregate_lookahead),
-              duration_percentiles: selected_duration_percentiles(aggregate_lookahead)
-            ).execute
-
-          raise_resource_not_available_error! response.message if response.error?
-
-          result[:aggregate] = response.payload[:aggregate]
+        legacy_fields(lookahead).then do |result|
+          result.merge(
+            call_service(base_service_args, lookahead, :aggregate, ::Ci::CollectAggregatePipelineAnalyticsService)
+          )
         end
-
-        result
       end
 
       private
+
+      def call_service(base_service_args, lookahead, field, service)
+        return {} unless any_field_selected?(lookahead, field)
+
+        field_lookahead = lookahead&.selection(field)
+        response = service.new(
+          **base_service_args,
+          status_groups: selected_status_groups(field_lookahead),
+          duration_percentiles: selected_duration_percentiles(field_lookahead)
+        ).execute
+
+        raise_resource_not_available_error! response.message if response.error?
+
+        { field => response.payload[field] }
+      end
 
       def legacy_fields(lookahead)
         # NOTE: The fields below will eventually be deprecated once we move to using the new `aggregate`
@@ -105,7 +112,7 @@ module Resolvers
 
         selection = []
         selection << :any if aggregate_lookahead.selects?(:count, arguments: { status: :any })
-        selection + ::Ci::CollectPipelineAnalyticsService::STATUS_GROUPS.filter do |status|
+        selection + ::Ci::CollectPipelineAnalyticsServiceBase::STATUS_GROUPS.filter do |status|
           aggregate_lookahead.selects?(:count, arguments: { status: status })
         end
       end
@@ -113,7 +120,7 @@ module Resolvers
       def selected_period_statuses(lookahead, period)
         return [] unless lookahead
 
-        selected = ::Ci::CollectPipelineAnalyticsService::STATUS_GROUPS.filter do |status|
+        selected = ::Ci::CollectPipelineAnalyticsServiceBase::STATUS_GROUPS.filter do |status|
           lookahead.selection(:"#{period}_pipelines").selects?(:totals, arguments: { status: status })
         end
         selected << :success if lookahead.selects?(:"#{period}_pipelines_successful")
@@ -124,7 +131,7 @@ module Resolvers
       def selected_duration_percentiles(aggregate_lookahead)
         return [] unless aggregate_lookahead
 
-        ::Ci::CollectPipelineAnalyticsService::ALLOWED_PERCENTILES.filter do |percentile|
+        ::Ci::CollectPipelineAnalyticsServiceBase::ALLOWED_PERCENTILES.filter do |percentile|
           aggregate_lookahead.selection(:duration_statistics).selects?("p#{percentile}")
         end
       end
