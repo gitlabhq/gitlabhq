@@ -133,18 +133,6 @@ RSpec.describe Resolvers::TodosResolver, feature_category: :notifications do
 
           expect(todos.items).to eq([todo2, todo3])
         end
-
-        context 'when todos_snoozing feature flag is disabled' do
-          before do
-            stub_feature_flags(todos_snoozing: false)
-          end
-
-          it 'ignores the is_snoozed filter' do
-            todos = resolve_todos(args: { is_snoozed: true, sort: 'CREATED_ASC' }, context: { current_user: new_user })
-
-            expect(todos.items).to eq([todo1, todo2, todo3])
-          end
-        end
       end
     end
 

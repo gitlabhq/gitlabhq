@@ -24,7 +24,7 @@ describe('TodoItem', () => {
 
   const findTodoItemTimestamp = () => wrapper.findComponent(TodoItemTimestamp);
 
-  const createComponent = (props = {}, todosSnoozingEnabled = true) => {
+  const createComponent = (props = {}) => {
     wrapper = shallowMount(TodoItem, {
       propsData: {
         currentUserId: '1',
@@ -35,7 +35,6 @@ describe('TodoItem', () => {
       },
       provide: {
         currentTab: 0,
-        glFeatures: { todosSnoozing: todosSnoozingEnabled },
       },
     });
   };
@@ -132,36 +131,6 @@ describe('TodoItem', () => {
       const icon = wrapper.findComponent(GlIcon);
       expect(icon.exists()).toBe(true);
       expect(icon.props('name')).toBe('clock');
-    });
-
-    it('renders the TodoItemTimestamp when the `todosSnoozing` feature flag is disabled and the item is snoozed', () => {
-      createComponent(
-        {
-          todo: {
-            ...MR_REVIEW_REQUEST_TODO,
-            snoozedUntil: mockForAnHour,
-          },
-        },
-        false,
-      );
-
-      expect(findTodoItemTimestamp().exists()).toBe(true);
-      expect(wrapper.text()).not.toContain('Snoozed until');
-    });
-
-    it('renders the TodoItemTimestamp when the `todosSnoozing` feature flag is disabled and the item was snoozed', () => {
-      createComponent(
-        {
-          todo: {
-            ...MR_REVIEW_REQUEST_TODO,
-            snoozedUntil: mockYesterday,
-          },
-        },
-        false,
-      );
-
-      expect(findTodoItemTimestamp().exists()).toBe(true);
-      expect(wrapper.text()).not.toContain('First sent 4 months ago');
     });
   });
 

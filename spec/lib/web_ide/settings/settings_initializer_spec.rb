@@ -2,7 +2,7 @@
 
 require "fast_spec_helper"
 
-RSpec.describe WebIde::Settings::SettingsInitializer, :web_ide_fast, feature_category: :web_ide do
+RSpec.describe WebIde::Settings::SettingsInitializer, feature_category: :web_ide do
   let(:all_possible_requested_setting_names) { WebIde::Settings::DefaultSettings.default_settings.keys }
   let(:context) do
     { requested_setting_names: all_possible_requested_setting_names }

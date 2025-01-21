@@ -36,25 +36,13 @@ export const TODO_EMPTY_TITLE_POOL = [
   s__('Todos|Henceforth, you shall be known as "To-Do Destroyer"'),
 ];
 
-/**
- * Note: This is a function so we can insert items depending on the todosSnoozing feature flag's state.
- * When removing the feature flag, this can be converted back to a plain constant. Same goes for a
- * couple other functions below.
- */
-export const getStatusByTab = () => {
-  const STATUS_BY_TAB = [['pending'], ['done'], ['pending', 'done']];
-  if (gon.features?.todosSnoozing) {
-    STATUS_BY_TAB.splice(1, 0, ['pending']);
-  }
-  return STATUS_BY_TAB;
-};
-
-export const getTabsIndices = () => ({
+export const STATUS_BY_TAB = [['pending'], ['pending'], ['done'], ['pending', 'done']];
+export const TABS_INDICES = {
   pending: 0,
   snoozed: 1,
-  done: gon.features?.todosSnoozing ? 2 : 1,
-  all: gon.features?.todosSnoozing ? 3 : 2,
-});
+  done: 2,
+  all: 3,
+};
 
 /**
  * Instrumentation
@@ -64,13 +52,12 @@ export const INSTRUMENT_TODO_ITEM_FOLLOW = 'follow_todo_link';
 export const INSTRUMENT_TODO_SORT_CHANGE = 'sort_todo_list';
 export const INSTRUMENT_TODO_FILTER_CHANGE = 'filter_todo_list';
 
-export const getInstrumentTabLabels = () => {
-  const INSTRUMENT_TAB_LABELS = ['status_pending', 'status_done', 'status_all'];
-  if (gon.features?.todosSnoozing) {
-    INSTRUMENT_TAB_LABELS.splice(1, 0, 'status_snoozed');
-  }
-  return INSTRUMENT_TAB_LABELS;
-};
+export const INSTRUMENT_TAB_LABELS = [
+  'status_pending',
+  'status_snoozed',
+  'status_done',
+  'status_all',
+];
 
 export const DEFAULT_PAGE_SIZE = 20;
 export const TODO_WAIT_BEFORE_RELOAD = 1 * 1000; // 1 second

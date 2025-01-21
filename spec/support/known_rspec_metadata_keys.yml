@@ -160,7 +160,6 @@
 - :use_sql_query_cache
 - :use_sql_query_cache_for_tracking_db
 - :uses_fast_spec_helper_but_runs_slow
-- :web_ide_fast
 - :with_clean_rails_cache
 - :with_cloud_connector
 - :with_current_organization

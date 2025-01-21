@@ -1252,6 +1252,34 @@ In GitLab 18.0, only the runner registration methods implemented in the new GitL
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### SAST jobs no longer use global cache settings
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/512564).
+
+</div>
+
+In GitLab 18.0, we will update SAST and IaC Scanning to explicitly [disable the use of the CI/CD job cache](https://docs.gitlab.com/ee/ci/caching/#disable-cache-for-specific-jobs) by default.
+
+This change affects the CI/CD templates for:
+
+- SAST: `SAST.gitlab-ci.yml`.
+- IaC Scanning: `SAST-IaC.gitlab-ci.yml`.
+
+We already updated the `latest` templates `SAST.latest.gitlab-ci.yml` and `SAST-IaC.latest.gitlab-ci.yml`. See [stable and latest templates](https://docs.gitlab.com/ee/user/application_security/sast/#stable-vs-latest-sast-templates) for more details on these template versions.
+
+The cache directories are not in scope for scanning in most projects, so fetching the cache can cause timeouts or false-positive results.
+
+If you need to use the cache when scanning a project, you can restore the previous behavior by [overriding](https://docs.gitlab.com/ee/user/application_security/sast/#overriding-sast-jobs) the
+[`cache`](https://docs.gitlab.com/ee/ci/yaml/#cache) property in the project's CI configuration.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Support for REST API endpoints that reset runner registration tokens
 
 <div class="deprecation-notes">

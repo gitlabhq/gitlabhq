@@ -45,10 +45,10 @@ tests = [
 
   {
     explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/368628',
-    changed_file: 'lib/gitlab/usage_data_counters/web_ide_counter.rb',
+    changed_file: 'lib/gitlab/usage_data_counters/work_item_activity_unique_counter.rb',
     expected: %w[
       spec/lib/gitlab/usage_data_spec.rb
-      spec/lib/gitlab/usage_data_counters/web_ide_counter_spec.rb
+      spec/lib/gitlab/usage_data_counters/work_item_activity_unique_counter_spec.rb
     ]
   },
 

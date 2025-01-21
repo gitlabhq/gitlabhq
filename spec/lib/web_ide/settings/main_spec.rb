@@ -2,7 +2,7 @@
 
 require "fast_spec_helper"
 
-RSpec.describe WebIde::Settings::Main, :web_ide_fast, feature_category: :web_ide do
+RSpec.describe WebIde::Settings::Main, feature_category: :web_ide do
   let(:settings) { 'some settings' }
   let(:context_passed_along_steps) { { settings: settings } }
 

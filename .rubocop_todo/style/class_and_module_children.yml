@@ -189,7 +189,6 @@ Style/ClassAndModuleChildren:
     - 'app/controllers/projects/runner_projects_controller.rb'
     - 'app/controllers/projects/runners_controller.rb'
     - 'app/controllers/projects/service_desk_controller.rb'
-    - 'app/controllers/projects/service_ping_controller.rb'
     - 'app/controllers/projects/snippets/application_controller.rb'
     - 'app/controllers/projects/snippets/blobs_controller.rb'
     - 'app/controllers/projects/snippets_controller.rb'

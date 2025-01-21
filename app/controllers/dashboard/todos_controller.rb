@@ -4,9 +4,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   feature_category :notifications
   urgency :low
 
-  def index
-    push_frontend_feature_flag(:todos_snoozing, current_user)
-  end
+  def index; end
 
   def destroy
     todo = current_user.todos.find(params[:id])

@@ -2,7 +2,7 @@
 
 require "fast_spec_helper"
 
-RSpec.describe WebIde::Settings::ExtensionsGalleryMetadataValidator, :web_ide_fast, feature_category: :web_ide do
+RSpec.describe WebIde::Settings::ExtensionsGalleryMetadataValidator, feature_category: :web_ide do
   include ResultMatchers
 
   let(:context) do

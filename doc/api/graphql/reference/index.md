@@ -22209,6 +22209,7 @@ The currently authenticated GitLab user.
 | <a id="currentuserbio"></a>`bio` | [`String`](#string) | Bio of the user. |
 | <a id="currentuserbot"></a>`bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
 | <a id="currentusercallouts"></a>`callouts` | [`UserCalloutConnection`](#usercalloutconnection) | User callouts that belong to the user. (see [Connections](#connections)) |
+| <a id="currentusercodesuggestionscontexts"></a>`codeSuggestionsContexts` **{warning-solid}** | [`[String!]!`](#string) | **Introduced** in GitLab 17.9. **Status**: Experiment. List of additional contexts enabled for Code Suggestions. |
 | <a id="currentusercommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="currentusercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="currentuserdiscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |

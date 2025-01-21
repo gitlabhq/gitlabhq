@@ -230,18 +230,6 @@ RSpec.describe TodosFinder, feature_category: :notifications do
 
             expect(todos).to match_array([todo2])
           end
-
-          context 'when todos_snoozing feature flag is disabled' do
-            before do
-              stub_feature_flags(todos_snoozing: false)
-            end
-
-            it 'returns all pending todos' do
-              todos = finder.new(user, { is_snoozed: true }).execute
-
-              expect(todos).to match_array([todo1, todo2, todo3])
-            end
-          end
         end
 
         context 'by project' do

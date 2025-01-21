@@ -622,10 +622,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      scope :service_ping, controller: :service_ping do
-        post :web_ide_pipelines_count # rubocop:todo Cop/PutProjectRoutesUnderScope
-      end
-
       resources :web_ide_terminals, path: :ide_terminals, only: [:create, :show], constraints: { id: /\d+/, format: :json } do # rubocop: disable Cop/PutProjectRoutesUnderScope
         member do
           post :cancel # rubocop:todo Cop/PutProjectRoutesUnderScope

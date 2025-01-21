@@ -45,7 +45,7 @@ Auto Build builds an application using a project's `Dockerfile` if present. If n
 application into a Docker image. The feature uses the
 [`pack` command](https://github.com/buildpacks/pack).
 The default [builder](https://buildpacks.io/docs/for-app-developers/concepts/builder/)
-is `heroku/buildpacks:18` but a different builder can be selected using
+is `heroku/buildpacks:22` but a different builder can be selected using
 the CI/CD variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`.
 
 Each buildpack requires your project's repository to contain certain files for

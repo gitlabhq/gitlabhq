@@ -49,6 +49,7 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 | [`maxHoursBeforeTermination` GraphQL field is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/509787) | Low | Create | Project |
 | [`RemoteDevelopmentAgentConfig` GraphQL type is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/509787) | Low | Create | Project |
 | [`defaultMaxHoursBeforeTermination` and `maxHoursBeforeTerminationLimit` fields are deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/509787) | Low | Create | Project |
+| [SAST jobs no longer use global cache settings](https://gitlab.com/gitlab-org/gitlab/-/issues/512564) | Medium | Application security testing | Instance |
 
 ## Window 2
 

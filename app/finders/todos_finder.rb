@@ -52,7 +52,7 @@ class TodosFinder
     items = by_action(items)
     items = by_author(items)
     items = by_state(items)
-    items = by_snoozed_status(items) if Feature.enabled?(:todos_snoozing, current_user)
+    items = by_snoozed_status(items)
     items = by_target_id(items)
     items = by_types(items)
     items = by_group(items)

@@ -25,7 +25,6 @@ describe('GlobalSearch MergeRequestsFilters', () => {
     provide = {
       glFeatures: {
         searchMrFilterSourceBranch: true,
-        searchMrFilterAuthor: true,
       },
     },
   ) => {
@@ -112,16 +111,6 @@ describe('GlobalSearch MergeRequestsFilters', () => {
 
     it(`will not render SourceBranchFilter`, () => {
       expect(findSourceBranchFilter().exists()).toBe(false);
-    });
-  });
-
-  describe('When feature flag search_mr_filter_author is disabled', () => {
-    beforeEach(() => {
-      createComponent(null, { glFeatures: { searchMrFilterAuthor: false } });
-    });
-
-    it(`will not render AuthorFilter`, () => {
-      expect(findAuthorFilter().exists()).toBe(false);
     });
   });
 

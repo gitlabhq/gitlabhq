@@ -2,7 +2,7 @@
 
 require "fast_spec_helper"
 
-RSpec.describe Gitlab::Fp::Settings::PublicApi, :web_ide_fast, feature_category: :web_ide do
+RSpec.describe Gitlab::Fp::Settings::PublicApi, feature_category: :web_ide do
   let(:settings_module) { Module.new { extend Gitlab::Fp::Settings::PublicApi } }
   let(:settings_main_class) { double(Class.new) } # rubocop:disable RSpec/VerifiedDoubles -- we want to use 'fast_spec_helper' so we don't want to refer to a concrete class
   let(:options) { {} }

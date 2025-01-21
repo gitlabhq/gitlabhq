@@ -12,7 +12,7 @@ import TodosFilterBar from '~/todos/components/todos_filter_bar.vue';
 import TodosMarkAllDoneButton from '~/todos/components/todos_mark_all_done_button.vue';
 import TodosPagination, { CURSOR_CHANGED_EVENT } from '~/todos/components/todos_pagination.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
-import { getInstrumentTabLabels, getStatusByTab, TODO_WAIT_BEFORE_RELOAD } from '~/todos/constants';
+import { INSTRUMENT_TAB_LABELS, STATUS_BY_TAB, TODO_WAIT_BEFORE_RELOAD } from '~/todos/constants';
 import { mockTracking, unmockTracking } from 'jest/__helpers__/tracking_helper';
 import getPendingTodosCount from '~/todos/components/queries/get_pending_todos_count.query.graphql';
 import { todosResponse, getPendingTodosCountResponse } from '../mock_data';
@@ -28,7 +28,6 @@ describe('TodosApp', () => {
   const createComponent = ({
     todosQueryHandler = todosQuerySuccessHandler,
     todosCountsQueryHandler = todosCountsQuerySuccessHandler,
-    glFeatures = { todosSnoozing: true },
   } = {}) => {
     const mockApollo = createMockApollo();
     mockApollo.defaultClient.setRequestHandler(getTodosQuery, todosQueryHandler);
@@ -36,9 +35,6 @@ describe('TodosApp', () => {
 
     wrapper = shallowMountExtended(TodosApp, {
       apolloProvider: mockApollo,
-      provide: {
-        glFeatures,
-      },
     });
   };
 
@@ -54,12 +50,8 @@ describe('TodosApp', () => {
 
   ignoreConsoleMessages([/\[Vue warn\]: \(deprecation TRANSITION_GROUP_ROOT\)/]);
 
-  beforeEach(() => {
-    gon.features = { todosSnoozing: true };
-  });
-
   it('should have a tracking event for each tab', () => {
-    expect(getStatusByTab().length).toBe(getInstrumentTabLabels().length);
+    expect(STATUS_BY_TAB.length).toBe(INSTRUMENT_TAB_LABELS.length);
   });
 
   it('shows a loading state while fetching todos', () => {

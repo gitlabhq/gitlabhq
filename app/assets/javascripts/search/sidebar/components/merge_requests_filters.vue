@@ -34,7 +34,7 @@ export default {
       return this.searchType === SEARCH_TYPE_ADVANCED;
     },
     shouldShowAuthorFilter() {
-      return this.isAdvancedSearch && this.glFeatures.searchMrFilterAuthor;
+      return this.isAdvancedSearch;
     },
   },
 };

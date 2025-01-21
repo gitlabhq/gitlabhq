@@ -4,8 +4,7 @@ import emptyTodosAllDoneSvg from '@gitlab/svgs/dist/illustrations/empty-todos-al
 import emptyTodosSvg from '@gitlab/svgs/dist/illustrations/empty-todos-md.svg';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { TODO_EMPTY_TITLE_POOL, getTabsIndices } from '../constants';
+import { TODO_EMPTY_TITLE_POOL, TABS_INDICES } from '../constants';
 
 export default {
   components: {
@@ -13,7 +12,6 @@ export default {
     GlLink,
     GlSprintf,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: {
     currentTab: {
       type: Number,
@@ -54,10 +52,10 @@ export default {
       return this.$options.emptyTodosAllDoneSvg;
     },
     isDoneTab() {
-      return this.currentTab === getTabsIndices().done;
+      return this.currentTab === TABS_INDICES.done;
     },
     isSnoozedTab() {
-      return this.glFeatures.todosSnoozing && this.currentTab === getTabsIndices().snoozed;
+      return this.currentTab === TABS_INDICES.snoozed;
     },
   },
   methods: {

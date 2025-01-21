@@ -950,12 +950,6 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
     end
   end
 
-  describe Projects::ServicePingController, 'routing' do
-    it 'routes to service_ping#web_ide_pipelines_count' do
-      expect(post('/gitlab/gitlabhq/service_ping/web_ide_pipelines_count')).to route_to('projects/service_ping#web_ide_pipelines_count', namespace_id: 'gitlab', project_id: 'gitlabhq')
-    end
-  end
-
   describe Projects::EnvironmentsController, 'routing' do
     describe 'legacy routing' do
       it_behaves_like 'redirecting a legacy path', "/gitlab/gitlabhq/environments", "/gitlab/gitlabhq/-/environments"

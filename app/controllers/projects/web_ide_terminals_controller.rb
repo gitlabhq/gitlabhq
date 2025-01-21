@@ -38,8 +38,6 @@ class Projects::WebIdeTerminalsController < Projects::ApplicationController
       current_build = pipeline.builds.last
 
       if current_build
-        Gitlab::UsageDataCounters::WebIdeCounter.increment_terminals_count
-
         render_terminal(current_build)
       else
         render status: :bad_request, json: pipeline.errors.full_messages

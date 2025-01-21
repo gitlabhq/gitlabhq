@@ -2,7 +2,7 @@
 
 require "fast_spec_helper"
 
-RSpec.describe WebIde::Settings::ExtensionsGalleryValidator, :web_ide_fast, feature_category: :web_ide do
+RSpec.describe WebIde::Settings::ExtensionsGalleryValidator, feature_category: :web_ide do
   include ResultMatchers
 
   let(:service_url) { "https://open-vsx.org/vscode/gallery" }

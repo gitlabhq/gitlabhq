@@ -5,7 +5,6 @@ import dateFormat from '~/lib/dateformat';
 import { formatDate, getDayDifference, fallsBefore } from '~/lib/utils/datetime_utility';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { INSTRUMENT_TODO_ITEM_FOLLOW, TODO_STATE_DONE } from '../constants';
 import TodoItemTitle from './todo_item_title.vue';
 import TodoItemBody from './todo_item_body.vue';
@@ -28,7 +27,7 @@ export default {
     TodoItemActions,
     TodoItemTitleHiddenBySaml,
   },
-  mixins: [timeagoMixin, glFeatureFlagMixin()],
+  mixins: [timeagoMixin],
   inject: ['currentTab'],
   props: {
     currentUserId: {
@@ -51,7 +50,7 @@ export default {
       return this.todo.state === TODO_STATE_DONE;
     },
     isSnoozed() {
-      if (!this.glFeatures.todosSnoozing || this.todo.snoozedUntil == null) {
+      if (this.todo.snoozedUntil == null) {
         return false;
       }
 
@@ -59,9 +58,6 @@ export default {
       return !fallsBefore(snoozedUntil, new Date());
     },
     hasReachedSnoozeTimestamp() {
-      if (!this.glFeatures.todosSnoozing) {
-        return false;
-      }
       return this.todo.snoozedUntil != null && !this.isSnoozed;
     },
     targetUrl() {
