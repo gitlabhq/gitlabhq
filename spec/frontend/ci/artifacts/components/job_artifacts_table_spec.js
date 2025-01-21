@@ -3,11 +3,13 @@ import {
   GlTable,
   GlLink,
   GlPagination,
+  GlPopover,
   GlModal,
   GlFormCheckbox,
 } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+// Fixtures located in spec/frontend/fixtures/job_artifacts.rb
 import getJobArtifactsResponse from 'test_fixtures/graphql/ci/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -32,6 +34,7 @@ import {
 } from '~/ci/artifacts/constants';
 import { totalArtifactsSizeForJob } from '~/ci/artifacts/utils';
 import { createAlert } from '~/alert';
+import { jobArtifactsResponseWithSecurityFiles } from './constants';
 
 const jobArtifactsCountLimit = 100;
 
@@ -96,6 +99,12 @@ describe('JobArtifactsTable component', () => {
     findPagination().vm.$emit('input', page);
     await waitForPromises();
   };
+
+  const findVisibleFileTypeBadge = () => wrapper.findByTestId('visible-file-type-badge');
+  const findPopoverText = () => wrapper.findByTestId('file-types-popover-text');
+  const findAllRemainingFileTypeBadges = () =>
+    wrapper.findAllByTestId('remaining-file-type-badges');
+  const findPopover = () => wrapper.findComponent(GlPopover);
 
   const projectId = 'some/project/id';
 
@@ -923,6 +932,45 @@ describe('JobArtifactsTable component', () => {
         nextPageCursor: pageInfo.endCursor,
       });
       expect(findPagination().props('value')).toEqual(2);
+    });
+  });
+
+  describe('file type badges', () => {
+    it('displays file type badge', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findVisibleFileTypeBadge().text()).toBe('archive');
+    });
+
+    it('displays reamining file types in popover', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findPopoverText().text()).toBe('+2 more');
+      expect(findPopover().exists()).toBe(true);
+      expect(findAllRemainingFileTypeBadges().at(0).text()).toBe('metadata');
+      expect(findAllRemainingFileTypeBadges().at(1).text()).toBe('trace');
+    });
+
+    describe('with security file types', () => {
+      const query = jest.fn().mockResolvedValue(jobArtifactsResponseWithSecurityFiles);
+
+      beforeEach(async () => {
+        createComponent({
+          handlers: {
+            getJobArtifactsQuery: query,
+          },
+        });
+
+        await waitForPromises();
+      });
+
+      it('displays security badge first in the list', () => {
+        expect(findVisibleFileTypeBadge().text()).toBe('sast');
+      });
     });
   });
 });

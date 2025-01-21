@@ -2,7 +2,6 @@ import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { GlAlert } from '@gitlab/ui';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import { createMockDirective } from 'helpers/vue_mock_directive';
 import PipelineEditorFileTreeContainer from '~/ci/pipeline_editor/components/file_tree/container.vue';
 import PipelineEditorFileTreeItem from '~/ci/pipeline_editor/components/file_tree/file_item.vue';
 import { FILE_TREE_TIP_DISMISSED_KEY } from '~/ci/pipeline_editor/constants';
@@ -20,9 +19,6 @@ describe('Pipeline editor file nav', () => {
         },
         propsData: {
           includes,
-        },
-        directives: {
-          GlTooltip: createMockDirective('gl-tooltip'),
         },
         stubs,
       }),

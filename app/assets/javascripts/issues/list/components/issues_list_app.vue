@@ -93,6 +93,7 @@ import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/n
 import {
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   DETAIL_VIEW_QUERY_PARAM_NAME,
+  INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
 } from '~/work_items/constants';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import { makeDrawerUrlParam } from '~/work_items/utils';
@@ -165,6 +166,9 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagMixin(), hasNewIssueDropdown()],
+  provide: {
+    [INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION]: true,
+  },
   inject: [
     'autocompleteAwardEmojisPath',
     'calendarPath',
@@ -586,7 +590,7 @@ export default {
       return !isEmpty(this.activeIssuable);
     },
     issuesDrawerEnabled() {
-      return this.glFeatures?.issuesListDrawer;
+      return this.glFeatures?.issuesListDrawer || gon.current_user_use_work_items_view;
     },
   },
   watch: {

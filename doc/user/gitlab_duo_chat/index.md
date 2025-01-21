@@ -128,6 +128,7 @@ If you have selected code in the editor, this selection is sent along with your 
 
 > - Introduced in GitLab 16.6 as an [experiment](../../policy/development_stages_support.md#experiment).
 > - Changed to generally available in GitLab 16.11.
+> - Status [added](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1712) in the GitLab Workflow extension for VS Code 5.29.0.
 
 Prerequisites:
 
@@ -143,6 +144,8 @@ To use GitLab Duo Chat in GitLab Workflow extension for VS Code:
      1. Select **Explain selected code** or **Generate Tests**.
    - Use the keyboard shortcut: <kbd>ALT</kbd>+<kbd>d</kbd> (on Windows and Linux) or <kbd>Option</kbd>+<kbd>d</kbd> (on Mac).
 1. In the message box, enter your question and press **Enter** or select **Send**.
+1. In the chat pane, on the top right corner, select **Show Status** to show information
+   in the Command Palette.
 
 If you have selected code in the editor, this selection is sent along with your question to the AI. This way you can ask questions about this code selection. For instance, `Could you simplify this?`.
 

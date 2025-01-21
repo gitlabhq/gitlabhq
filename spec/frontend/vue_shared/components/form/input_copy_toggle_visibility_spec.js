@@ -15,9 +15,6 @@ describe('InputCopyToggleVisibility', () => {
   const createComponent = ({ props, ...options } = {}) => {
     wrapper = mountExtended(InputCopyToggleVisibility, {
       propsData: props,
-      directives: {
-        GlTooltip: createMockDirective('gl-tooltip'),
-      },
       ...options,
     });
   };
@@ -117,6 +114,9 @@ describe('InputCopyToggleVisibility', () => {
           props: {
             value: valueProp,
             readonly: true,
+          },
+          directives: {
+            GlTooltip: createMockDirective('gl-tooltip'),
           },
         });
       });
@@ -233,91 +233,107 @@ describe('InputCopyToggleVisibility', () => {
     });
 
     describe('and `value` prop is passed', () => {
-      beforeEach(() => {
-        createComponent({
-          props: {
-            value: valueProp,
-            readonly: false,
-          },
+      describe('tooltip', () => {
+        beforeEach(() => {
+          createComponent({
+            props: {
+              value: valueProp,
+              readonly: false,
+            },
+            directives: {
+              GlTooltip: createMockDirective('gl-tooltip'),
+            },
+          });
+        });
+
+        it('renders a reveal button', () => {
+          const revealButton = findRevealButton();
+
+          expect(revealButton.exists()).toBe(true);
+
+          const tooltip = getBinding(revealButton.element, 'gl-tooltip');
+
+          expect(tooltip.value).toBe(InputCopyToggleVisibility.i18n.toggleVisibilityLabelReveal);
+        });
+
+        it('renders a hide button once revealed', async () => {
+          const revealButton = findRevealButton();
+          await revealButton.trigger('click');
+          await nextTick();
+
+          const hideButton = findHideButton();
+          expect(hideButton.exists()).toBe(true);
+
+          const tooltip = getBinding(hideButton.element, 'gl-tooltip');
+
+          expect(tooltip.value).toBe(InputCopyToggleVisibility.i18n.toggleVisibilityLabelHide);
         });
       });
 
-      it('renders a reveal button', () => {
-        const revealButton = findRevealButton();
-
-        expect(revealButton.exists()).toBe(true);
-
-        const tooltip = getBinding(revealButton.element, 'gl-tooltip');
-
-        expect(tooltip.value).toBe(InputCopyToggleVisibility.i18n.toggleVisibilityLabelReveal);
-      });
-
-      it('renders a hide button once revealed', async () => {
-        const revealButton = findRevealButton();
-        await revealButton.trigger('click');
-        await nextTick();
-
-        const hideButton = findHideButton();
-        expect(hideButton.exists()).toBe(true);
-
-        const tooltip = getBinding(hideButton.element, 'gl-tooltip');
-
-        expect(tooltip.value).toBe(InputCopyToggleVisibility.i18n.toggleVisibilityLabelHide);
-      });
-
-      it('emits `input` event when editing', () => {
-        expect(wrapper.emitted('input')).toBeUndefined();
-        const newVal = 'ding!';
-
-        const input = findFormInput();
-        input.element.value = newVal;
-        input.trigger('input');
-
-        expect(wrapper.emitted()).toHaveProperty('input');
-        expect(wrapper.emitted('input')).toHaveLength(1);
-        expect(wrapper.emitted('input')[0][0]).toBe(newVal);
-      });
-
-      it('copies updated value to clipboard after editing', async () => {
-        const writeTextSpy = jest.spyOn(global.navigator.clipboard, 'writeText');
-
-        triggerCopyShortcut();
-        await nextTick();
-
-        expect(wrapper.emitted('copy')).toHaveLength(1);
-        expect(writeTextSpy).toHaveBeenCalledWith(valueProp);
-
-        const updatedValue = 'wow amazing';
-        wrapper.setProps({ value: updatedValue });
-        await nextTick();
-
-        triggerCopyShortcut();
-        await nextTick();
-
-        expect(wrapper.emitted('copy')).toHaveLength(2);
-        expect(writeTextSpy).toHaveBeenCalledWith(updatedValue);
-      });
-
-      describe('when input is clicked', () => {
-        it('shows the actual value', async () => {
-          const input = findFormInput();
-
-          expectInputToBeMasked();
-          await findFormInput().trigger('click');
-
-          expect(input.element.value).toBe(valueProp);
+      describe('no tooltip', () => {
+        beforeEach(() => {
+          createComponent({
+            props: {
+              value: valueProp,
+              readonly: false,
+            },
+          });
         });
 
-        it('ensures the selection start/end are in the correct position once the actual value has been revealed', async () => {
+        it('emits `input` event when editing', () => {
+          expect(wrapper.emitted('input')).toBeUndefined();
+          const newVal = 'ding!';
+
           const input = findFormInput();
-          const selectionStart = 2;
-          const selectionEnd = 4;
+          input.element.value = newVal;
+          input.trigger('input');
 
-          input.element.setSelectionRange(selectionStart, selectionEnd);
-          await input.trigger('click');
+          expect(wrapper.emitted()).toHaveProperty('input');
+          expect(wrapper.emitted('input')).toHaveLength(1);
+          expect(wrapper.emitted('input')[0][0]).toBe(newVal);
+        });
 
-          expect(input.element.selectionStart).toBe(selectionStart);
-          expect(input.element.selectionEnd).toBe(selectionEnd);
+        it('copies updated value to clipboard after editing', async () => {
+          const writeTextSpy = jest.spyOn(global.navigator.clipboard, 'writeText');
+
+          triggerCopyShortcut();
+          await nextTick();
+
+          expect(wrapper.emitted('copy')).toHaveLength(1);
+          expect(writeTextSpy).toHaveBeenCalledWith(valueProp);
+
+          const updatedValue = 'wow amazing';
+          wrapper.setProps({ value: updatedValue });
+          await nextTick();
+
+          triggerCopyShortcut();
+          await nextTick();
+
+          expect(wrapper.emitted('copy')).toHaveLength(2);
+          expect(writeTextSpy).toHaveBeenCalledWith(updatedValue);
+        });
+
+        describe('when input is clicked', () => {
+          it('shows the actual value', async () => {
+            const input = findFormInput();
+
+            expectInputToBeMasked();
+            await findFormInput().trigger('click');
+
+            expect(input.element.value).toBe(valueProp);
+          });
+
+          it('ensures the selection start/end are in the correct position once the actual value has been revealed', async () => {
+            const input = findFormInput();
+            const selectionStart = 2;
+            const selectionEnd = 4;
+
+            input.element.setSelectionRange(selectionStart, selectionEnd);
+            await input.trigger('click');
+
+            expect(input.element.selectionStart).toBe(selectionStart);
+            expect(input.element.selectionEnd).toBe(selectionEnd);
+          });
         });
       });
     });

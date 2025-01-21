@@ -37,7 +37,6 @@ describe('ml/model_registry/components/searchable_table.vue', () => {
     errorMessage: '',
     showSearch: false,
     sortableFields: [],
-    canWriteModelRegistry: true,
   };
 
   const mountComponent = (props = {}) => {
@@ -114,7 +113,6 @@ describe('ml/model_registry/components/searchable_table.vue', () => {
         pageInfo: defaultPageInfo,
         showSearch: false,
         sortableFields: [],
-        canWriteModelRegistry: true,
       });
     });
 
@@ -147,7 +145,6 @@ describe('ml/model_registry/components/searchable_table.vue', () => {
         pageInfo: defaultPageInfo,
         showSearch: false,
         sortableFields: [],
-        canWriteModelRegistry: true,
       });
     });
 
@@ -180,7 +177,6 @@ describe('ml/model_registry/components/searchable_table.vue', () => {
         pageInfo: defaultPageInfo,
         showSearch: false,
         sortableFields: [],
-        canWriteModelRegistry: true,
       });
     });
 

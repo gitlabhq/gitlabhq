@@ -8,7 +8,7 @@ module Import
 
     GIT_SERVICE_NAME = "git-upload-pack"
     GIT_EXPECTED_FIRST_PACKET_LINE = "# service=#{GIT_SERVICE_NAME}"
-    GIT_BODY_MESSAGE_REGEXP = /^[0-9a-f]{4}#{GIT_EXPECTED_FIRST_PACKET_LINE}/
+    GIT_BODY_MESSAGE_REGEXP = /^[0-9a-fA-F]{4}#{GIT_EXPECTED_FIRST_PACKET_LINE}/
     # https://github.com/git/git/blob/master/Documentation/technical/protocol-common.txt#L56-L59
     GIT_PROTOCOL_PKT_LEN = 4
     GIT_MINIMUM_RESPONSE_LENGTH = GIT_PROTOCOL_PKT_LEN + GIT_EXPECTED_FIRST_PACKET_LINE.length

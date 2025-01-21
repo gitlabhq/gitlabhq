@@ -17528,6 +17528,7 @@ CREATE TABLE packages_nuget_symbols (
     CONSTRAINT check_0e93ca58b7 CHECK ((char_length(file) <= 255)),
     CONSTRAINT check_28b82b08fa CHECK ((char_length(object_storage_key) <= 255)),
     CONSTRAINT check_30b0ef2ca2 CHECK ((char_length(file_path) <= 255)),
+    CONSTRAINT check_7a67b0fc8b CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_8dc7152679 CHECK ((char_length(signature) <= 255))
 );
 

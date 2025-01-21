@@ -108,6 +108,14 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
         expect(parsed['canWriteModelRegistry']).to eq(false)
       end
     end
+
+    context 'when no user' do
+      let_it_be(:user) { nil }
+
+      it 'canWriteModelRegistry is false' do
+        expect(parsed['canWriteModelRegistry']).to eq(nil)
+      end
+    end
   end
 
   describe '#edit_ml_model_data' do

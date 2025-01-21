@@ -1,7 +1,6 @@
 import { mount } from '@vue/test-utils';
 
 import { nextTick } from 'vue';
-import { stubTransition } from 'helpers/stub_transition';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import TimeTracker from '~/sidebar/components/time_tracking/time_tracker.vue';
 import SidebarEventHub from '~/sidebar/event_hub';
@@ -33,9 +32,6 @@ describe('Issuable Time Tracker', () => {
     return mount(TimeTracker, {
       propsData: { ...defaultProps, ...props },
       directives: { GlTooltip: createMockDirective('gl-tooltip') },
-      stubs: {
-        transition: stubTransition(),
-      },
       provide: {
         issuableType,
       },

@@ -22,7 +22,7 @@ This table lists the secrets detected by:
 
 | Description                                   | ID                                            | Pipeline secret detection | Client-side secret detection | Secret push protection |
 |:----------------------------------------------|:----------------------------------------------|:--------------------------|:-----------------------------|:-----------------------|
-| Adobe Client ID (Oauth Web)                   | Adobe Client ID (Oauth Web)                   | **{check-circle}** Yes    | **{dotted-circle}** No       | **{dotted-circle}** No |
+| Adobe Client ID (OAuth Web)                   | Adobe Client ID (OAuth Web)                   | **{check-circle}** Yes    | **{dotted-circle}** No       | **{dotted-circle}** No |
 | Adobe Client Secret                           | Adobe Client Secret                           | **{check-circle}** Yes    | **{dotted-circle}** No       | **{dotted-circle}** No |
 | Age secret key                                | Age secret key                                | **{check-circle}** Yes    | **{dotted-circle}** No       | **{dotted-circle}** No |
 | Alibaba AccessKey ID                          | Alibaba AccessKey ID                          | **{check-circle}** Yes    | **{dotted-circle}** No       | **{dotted-circle}** No |

@@ -56,7 +56,7 @@ GEM
       racc
     pastel (0.8.0)
       tty-color (~> 0.5)
-    pry (0.15.0)
+    pry (0.15.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
     racc (1.8.1)
@@ -142,7 +142,7 @@ DEPENDENCIES
   climate_control (~> 1.2.0)
   gitlab-cng!
   gitlab-styles (~> 13.0.2)
-  pry (~> 0.15.0)
+  pry (~> 0.15.2)
   rspec (~> 3.13)
   simplecov (~> 0.22.0)
 

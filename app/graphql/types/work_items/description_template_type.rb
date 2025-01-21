@@ -6,6 +6,8 @@ module Types
     class DescriptionTemplateType < BaseObject
       graphql_name 'WorkItemDescriptionTemplate'
 
+      field :category, GraphQL::Types::String,
+        description: 'Category of description template.', null: true, calls_gitaly: true
       field :content, GraphQL::Types::String,
         description: 'Content of Description Template.', null: false, calls_gitaly: true
       field :name, GraphQL::Types::String,

@@ -4,7 +4,6 @@ import { GlCollapse, GlIcon } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { stubTransition } from 'helpers/stub_transition';
 import { sprintf } from '~/locale';
 import EnvironmentsFolder from '~/environments/components/environment_folder.vue';
 import EnvironmentItem from '~/environments/components/new_environment_item.vue';
@@ -42,7 +41,6 @@ describe('~/environments/components/environments_folder.vue', () => {
         search: '',
         ...propsData,
       },
-      stubs: { transition: stubTransition() },
       provide: { helpPagePath: '/help', projectId: '1', projectPath: 'path/to/project' },
     });
 

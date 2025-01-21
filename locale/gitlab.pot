@@ -7989,6 +7989,9 @@ msgid_plural "Artifacts|%{strongStart}%{count}%{strongEnd} artifacts selected"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Artifacts|+%{count} more"
+msgstr ""
+
 msgid "Artifacts|An error occurred while deleting the artifact"
 msgstr ""
 

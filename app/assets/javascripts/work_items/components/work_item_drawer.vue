@@ -4,7 +4,10 @@ import { __ } from '~/locale';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
-import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
+import {
+  DETAIL_VIEW_QUERY_PARAM_NAME,
+  INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
+} from '~/work_items/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrl, setUrlParams, updateHistory, removeParams } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -23,7 +26,14 @@ export default {
     WorkItemDetail: () => import('~/work_items/components/work_item_detail.vue'),
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['fullPath', 'isGroup'],
+  inject: {
+    preventRouterNav: {
+      from: INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
+      default: false,
+    },
+    isGroup: {},
+    fullPath: {},
+  },
   inheritAttrs: false,
   props: {
     open: {

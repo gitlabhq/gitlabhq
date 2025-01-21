@@ -96,6 +96,8 @@ To enable secret push protection in a project:
 1. On the left sidebar, select **Secure > Security configuration**.
 1. Turn on the **Secret push protection** toggle.
 
+You can also enable secret push protection for all projects in a group [with the API](../../../../api/group_security_settings.md#update-secret_push_protection_enabled-setting).
+
 ## Coverage
 
 By default, secret push protection checks the content of each file modified in a commit. If you

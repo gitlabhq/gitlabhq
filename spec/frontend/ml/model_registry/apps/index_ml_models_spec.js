@@ -18,7 +18,7 @@ Vue.use(VueApollo);
 
 const defaultProps = {
   projectPath: 'path/to/project',
-  canWriteModelRegistry: false,
+  canWriteModelRegistry: true,
   maxAllowedFileSize: 99999,
   markdownPreviewPath: '/markdown-preview',
   createModelPath: 'path/to/project/-/ml/models/new,',
@@ -94,7 +94,12 @@ describeSkipVue3(skipReason, () => {
   describe('create button', () => {
     describe('when user has no permission to write model registry', () => {
       it('does not display create button', async () => {
-        await createWrapper({ resolver: emptyQueryResolver() });
+        await createWrapper({
+          props: {
+            canWriteModelRegistry: false,
+          },
+          resolver: emptyQueryResolver(),
+        });
 
         expect(findModelCreate().exists()).toBe(false);
       });

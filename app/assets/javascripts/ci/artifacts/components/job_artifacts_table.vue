@@ -1,5 +1,6 @@
 <script>
 import {
+  GlBadge,
   GlSkeletonLoader,
   GlTable,
   GlLink,
@@ -7,10 +8,12 @@ import {
   GlButton,
   GlIcon,
   GlPagination,
+  GlPopover,
   GlFormCheckbox,
   GlTooltipDirective,
 } from '@gitlab/ui';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
+import { s__, sprintf } from '~/locale';
 import { createAlert } from '~/alert';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
@@ -59,6 +62,7 @@ const INITIAL_PAGINATION_STATE = {
 export default {
   name: 'JobArtifactsTable',
   components: {
+    GlBadge,
     GlSkeletonLoader,
     GlTable,
     GlLink,
@@ -66,6 +70,7 @@ export default {
     GlButton,
     GlIcon,
     GlPagination,
+    GlPopover,
     GlFormCheckbox,
     TimeAgo,
     CiIcon,
@@ -336,6 +341,38 @@ export default {
       this.jobArtifactsToDelete = job.artifacts.nodes.map((node) => node.id);
       this.handleBulkDeleteModalShow();
     },
+    artifactBadges(artifacts = []) {
+      if (!artifacts.length) {
+        return { first: null, remaining: [] };
+      }
+
+      // Extract file types and normalize to lowercase
+      const fileTypeList = artifacts.map((artifact) => artifact.fileType?.toLowerCase() || '');
+
+      // Find the first security file type (sast/dast)
+      const securityFileType = fileTypeList.find(
+        (fileType) => fileType === 'sast' || fileType === 'dast',
+      );
+
+      if (securityFileType) {
+        const index = fileTypeList.findIndex((fileType) => fileType === securityFileType);
+        // Move security file type to the front of the array
+        fileTypeList.unshift(fileTypeList.splice(index, 1)[0]);
+      }
+
+      return {
+        first: fileTypeList.shift(),
+        remaining: fileTypeList,
+      };
+    },
+    popoverText(remaining = []) {
+      return sprintf(s__('Artifacts|+%{count} more'), {
+        count: remaining.length,
+      });
+    },
+    popoverTarget(id) {
+      return `artifact-popover-${id}`;
+    },
   },
   fields: [
     {
@@ -473,6 +510,27 @@ export default {
           <gl-link :href="item.webPath">
             {{ item.name }}
           </gl-link>
+          <template v-if="artifactBadges(item.artifacts.nodes)">
+            <gl-badge data-testid="visible-file-type-badge">
+              {{ artifactBadges(item.artifacts.nodes).first }}
+            </gl-badge>
+            <template v-if="artifactBadges(item.artifacts.nodes).remaining.length">
+              <gl-badge :id="popoverTarget(item.id)" data-testid="file-types-popover-text">
+                {{ popoverText(artifactBadges(item.artifacts.nodes).remaining) }}
+              </gl-badge>
+              <gl-popover :target="popoverTarget(item.id)" placement="right" triggers="hover focus">
+                <div class="gl-flex gl-flex-wrap gl-gap-3">
+                  <gl-badge
+                    v-for="(fileType, index) in artifactBadges(item.artifacts.nodes).remaining"
+                    :key="index"
+                    data-testid="remaining-file-type-badges"
+                  >
+                    {{ fileType }}
+                  </gl-badge>
+                </div>
+              </gl-popover>
+            </template>
+          </template>
         </div>
         <div class="gl-mb-1">
           <gl-icon name="pipeline" class="gl-mr-2" />

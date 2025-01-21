@@ -26,7 +26,8 @@ GET /projects/:id/error_tracking/settings
 | `id`      | integer | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/error_tracking/settings"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/error_tracking/settings"
 ```
 
 Example response:
@@ -66,7 +67,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/error_tracking/settings?active=true&integrated=true"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/error_tracking/settings?active=true&integrated=true"
 ```
 
 Example response:
@@ -97,7 +99,8 @@ PATCH /projects/:id/error_tracking/settings
 | `integrated` | boolean | no       | Pass `true` to enable the integrated error tracking backend. |
 
 ```shell
-curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/error_tracking/settings?active=true"
+curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/error_tracking/settings?active=true"
 ```
 
 Example response:
@@ -128,7 +131,8 @@ GET /projects/:id/error_tracking/client_keys
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/error_tracking/client_keys"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/error_tracking/client_keys"
 ```
 
 Example response:
@@ -163,8 +167,10 @@ POST /projects/:id/error_tracking/client_keys
 | `id`       | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
-     "https://gitlab.example.com/api/v4/projects/5/error_tracking/client_keys"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/projects/5/error_tracking/client_keys"
 ```
 
 Example response:
@@ -192,5 +198,6 @@ DELETE /projects/:id/error_tracking/client_keys/:key_id
 | `key_id`  | integer | yes | The ID of the client key. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/error_tracking/client_keys/13"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/error_tracking/client_keys/13"
 ```

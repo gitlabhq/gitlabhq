@@ -37982,6 +37982,7 @@ Returns [`String!`](#string).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="workitemdescriptiontemplatecategory"></a>`category` | [`String`](#string) | Category of description template. |
 | <a id="workitemdescriptiontemplatecontent"></a>`content` | [`String!`](#string) | Content of Description Template. |
 | <a id="workitemdescriptiontemplatename"></a>`name` | [`String!`](#string) | Name of Description Template. |
 

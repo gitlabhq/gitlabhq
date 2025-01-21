@@ -110,7 +110,6 @@ export default {
     :error-message="errorMessage"
     :is-loading="isLoading"
     :sortable-fields="$options.sortableFields"
-    can-write-model-registry
     @fetch-page="fetchPage"
   >
     <template #empty-state>

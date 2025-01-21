@@ -16,9 +16,6 @@ const issuableTitleProps = {
 const createComponent = (propsData = issuableTitleProps) =>
   shallowMount(IssuableTitle, {
     propsData,
-    stubs: {
-      transition: true,
-    },
     slots: {
       'status-badge': 'Open',
     },

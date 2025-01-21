@@ -30,6 +30,7 @@ RSpec.describe 'getting work item description templates', feature_category: :gro
       workItemDescriptionTemplates
       {
         nodes {
+          category
           name
           content
         }
@@ -49,6 +50,7 @@ RSpec.describe 'getting work item description templates', feature_category: :gro
     expected_graphql_data.each_with_index do |template, index|
       expect(".gitlab/issue_templates/#{template['name']}.md").to eq(template_files.to_a[index][0])
       expect(template["content"]).to eq(template_files.to_a[index][1])
+      expect(template["category"]).to eq("Project Templates")
     end
   end
 
@@ -61,6 +63,8 @@ RSpec.describe 'getting work item description templates', feature_category: :gro
       expect(expected_graphql_data.first["name"]).to eq("project_issues_template_a")
 
       expect(expected_graphql_data.first["content"]).to eq("project_issues_template_a content")
+
+      expect(expected_graphql_data.first["category"]).to be_nil
     end
   end
 

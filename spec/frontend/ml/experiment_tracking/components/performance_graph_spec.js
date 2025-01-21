@@ -18,16 +18,15 @@ describe('PerformanceGraph', () => {
     });
   };
 
-  const findGraph = () => wrapper.findComponent(PerformanceGraph);
-  const findLineChart = () => findGraph().findComponent(GlLineChart);
+  const findLineChart = () => wrapper.findComponent(GlLineChart);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 
   describe('rendering', () => {
     it('renders the component', () => {
       createWrapper();
 
-      expect(findGraph().props('candidates')).toEqual(MOCK_CANDIDATES);
-      expect(findGraph().props('metricNames')).toEqual(MOCK_METRICS);
+      expect(wrapper.props('candidates')).toEqual(MOCK_CANDIDATES);
+      expect(wrapper.props('metricNames')).toEqual(MOCK_METRICS);
       expect(findEmptyState().exists()).toBe(false);
     });
 

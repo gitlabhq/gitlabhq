@@ -22,7 +22,6 @@ class CustomEnvironment extends TestEnvironment {
     this.jestConsoleWatcher = setupConsoleWatcher(this, context.console, {
       ignores: [
         /The updateQuery callback for fetchMore is deprecated/,
-        /^\[Vue warn\]: Wrong type passed as event handler to .* - did you forget @ or : in front of your prop\?/,
         // TODO: Remove this and replace with localized calls to `ignoreVueConsoleWarnings`
         // https://gitlab.com/gitlab-org/gitlab/-/issues/396779#note_1788506238
         /^\[Vue warn\]: Missing required prop/,
