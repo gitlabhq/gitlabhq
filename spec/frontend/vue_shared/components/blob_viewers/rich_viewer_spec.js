@@ -38,7 +38,8 @@ describe('Blob Rich Viewer component', () => {
         generatedContent += `<span>Line: ${i + 1}</span>\n`;
       }
 
-      generatedContent += '<img src="x" onerror="alert(`XSS`)">'; // for testing against XSS
+      generatedContent +=
+        '<img src="x" onerror="alert(`XSS`)" style="position:fixed;" data-lines-path="test/xss.json" data-remote="xss">'; // for testing against XSS
       return `<div class="js-markup-content">${generatedContent}</div>`;
     };
 

@@ -27,6 +27,7 @@
 
             - user_local_time = local_time(@user.timezone)
             %div{ itemprop: 'address', itemscope: true, itemtype: 'https://schema.org/PostalAddress' }
+            - unless @user.private_profile?
               %h2.gl-text-base.gl-mb-2.gl-mt-4= s_('UserProfile|Info')
               - if work_information(@user).present?
                 .gl-flex.gl-gap-2.gl-mb-2
