@@ -91,6 +91,7 @@ export default {
           <gl-icon variant="subtle" :name="iconName" />
         </div>
         <gl-avatar-labeled
+          class="gl-break-anywhere"
           :entity-id="resource.id"
           :entity-name="resource.avatarLabel"
           :label="resource.avatarLabel"
@@ -115,7 +116,7 @@ export default {
         </gl-avatar-labeled>
       </div>
       <div
-        class="gl-mt-3 gl-shrink-0 gl-flex-col gl-items-end md:gl-mt-0 md:gl-flex md:gl-pl-0"
+        class="gl-mt-3 gl-shrink-0 gl-flex-col gl-items-end md:gl-mt-0 md:gl-flex md:gl-pl-3"
         :class="statsPadding"
       >
         <div class="gl-flex gl-items-center gl-gap-x-3 md:gl-h-5">

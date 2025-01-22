@@ -25,6 +25,7 @@ describe('Diffs Module Getters', () => {
       createCustomGetters(() => ({
         legacyDiffs: getters,
         legacyNotes: notesGetters,
+        legacyMrNotes: {},
         batchComments: {},
       })),
       globalAccessorPlugin,
@@ -43,6 +44,7 @@ describe('Diffs Module Getters', () => {
     getters = {};
     notesGetters = {};
     store = useLegacyDiffs();
+    useMrNotes();
     useNotes().$reset();
     store.$reset();
     discussionMock = { ...discussion };
@@ -441,7 +443,7 @@ describe('Diffs Module Getters', () => {
     beforeEach(() => {
       store.defaultSuggestionCommitMessage =
         '%{branch_name}%{project_path}%{project_name}%{username}%{user_full_name}%{file_paths}%{suggestions_count}%{files_count}';
-      useMrNotes().page = {
+      useMrNotes().$patch({
         mrMetadata: {
           branch_name: 'branch',
           project_path: '/path',
@@ -449,7 +451,7 @@ describe('Diffs Module Getters', () => {
           username: 'user',
           user_full_name: 'user userton',
         },
-      };
+      });
     });
 
     it.each`
@@ -463,7 +465,7 @@ describe('Diffs Module Getters', () => {
     `(
       'provides the correct "base" default commit message based on state ($specialState)',
       ({ specialState, output }) => {
-        useMrNotes().$patch({ page: { mrMetadata: specialState } });
+        useMrNotes().$patch({ mrMetadata: specialState });
 
         expect(store.suggestionCommitMessage()).toBe(output);
       },

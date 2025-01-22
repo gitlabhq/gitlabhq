@@ -97,7 +97,6 @@ module Integrations
 
     field :jira_auth_type,
       type: :number,
-      required: true,
       section: SECTION_TYPE_CONNECTION,
       title: -> { s_('JiraService|Authentication type') },
       choices: -> {

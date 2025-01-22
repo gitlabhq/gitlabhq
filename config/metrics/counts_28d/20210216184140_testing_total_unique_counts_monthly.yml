@@ -17,8 +17,6 @@ options:
   - i_testing_metrics_report_artifact_uploaders
   - users_expanding_testing_code_quality_report
   - users_expanding_testing_accessibility_report
-distribution:
-- ce
 tiers:
 - free
 performance_indicator_type: []

@@ -93,6 +93,7 @@ class MergeRequestsFinder < IssuableFinder
     items = by_negated_reviewer(items)
     items = by_negated_approved_by(items)
     items = by_negated_target_branch(items)
+    items = by_negated_review_states(items)
     by_negated_source_branch(items)
   end
 
@@ -258,6 +259,12 @@ class MergeRequestsFinder < IssuableFinder
     return items if params.reviewer_id? || params.reviewer_username?
 
     items.review_states(params.review_state)
+  end
+
+  def by_negated_review_states(items)
+    return items unless params.not_review_states.present?
+
+    items.no_review_states(params.not_review_states)
   end
 
   def by_negated_reviewer(items)

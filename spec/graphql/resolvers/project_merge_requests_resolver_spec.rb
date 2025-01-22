@@ -164,6 +164,29 @@ RSpec.describe Resolvers::ProjectMergeRequestsResolver do
         expect(result).to contain_exactly(merge_request2)
       end
     end
+
+    context 'with negated review states' do
+      let_it_be(:merge_request3) do
+        create(
+          :merge_request,
+          :unique_branches,
+          source_project: project,
+          target_project: project,
+          author: other_user,
+          reviewers: [reviewer]
+        )
+      end
+
+      before_all do
+        merge_request3.merge_request_reviewers.update_all(state: :requested_changes)
+      end
+
+      it do
+        result = resolve_mr(project, not: { review_states: ['REQUESTED_CHANGES'] })
+
+        expect(result).to contain_exactly(merge_request)
+      end
+    end
   end
 
   def resolve_mr(project, resolver: described_class, user: current_user, **args)

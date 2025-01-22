@@ -376,7 +376,7 @@ module QA
         let(:user) { Resource::User.init { |usr| usr.api_client = instance_double(Runtime::API::Client) } }
 
         before do
-          allow(Runtime::Env).to receive(:running_on_dot_com?).and_return(false)
+          allow(Runtime::Env).to receive(:running_on_live_env?).and_return(false)
 
           described_class.instance_variable_set(:@admin_api_client, admin_api_client)
           described_class.instance_variable_set(:@test_user, user)
@@ -503,7 +503,7 @@ module QA
         let(:user) { Resource::User.new }
 
         before do
-          allow(Runtime::Env).to receive(:running_on_dot_com?).and_return(false)
+          allow(Runtime::Env).to receive(:running_on_live_env?).and_return(false)
           allow(Resource::User).to receive(:fabricate!).and_yield(user).and_return(user)
 
           described_class.instance_variable_set(:@admin_api_client, admin_api_client)

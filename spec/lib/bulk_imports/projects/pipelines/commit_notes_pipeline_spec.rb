@@ -74,6 +74,15 @@ RSpec.describe BulkImports::Projects::Pipelines::CommitNotesPipeline, feature_ca
     context 'when importer_user_mapping is enabled' do
       let(:importer_user_mapping_enabled) { true }
 
+      let_it_be(:source_user) do
+        create(:import_source_user,
+          import_type: ::Import::SOURCE_DIRECT_TRANSFER,
+          namespace: group,
+          source_user_identifier: 101,
+          source_hostname: bulk_import.configuration.url
+        )
+      end
+
       it 'imports merge_requests and maps user references to placeholder users', :aggregate_failures do
         pipeline.run
 

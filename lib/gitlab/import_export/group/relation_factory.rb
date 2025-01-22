@@ -40,6 +40,7 @@ module Gitlab
           case @relation_name
           when :notes then setup_note
           when :'Iterations::Cadence' then setup_iterations_cadence
+          when :events then setup_event
           end
 
           update_group_references
@@ -66,6 +67,10 @@ module Gitlab
 
         def setup_iterations_cadence
           @relation_hash['automatic'] = false
+        end
+
+        def setup_event
+          @relation_hash = {} if @relation_hash['author_id'].nil?
         end
       end
     end

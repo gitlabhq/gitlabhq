@@ -504,6 +504,39 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
     it 'has preloaded project' do
       expect(created_object.project).to equal(project)
     end
+
+    it 'builds an event' do
+      expect(created_object).to be_an(Event)
+    end
+
+    context 'when user ID maps to no user' do
+      let(:members_mapper) { double('members_mapper', map: {}) }
+
+      it 'does not build an event' do
+        expect(created_object).to be_nil
+      end
+    end
+  end
+
+  describe 'approval object' do
+    let(:relation_sym) { :approvals }
+    let(:relation_hash) do
+      {
+        'user_id' => admin.id
+      }
+    end
+
+    it 'builds an approvals' do
+      expect(created_object).to be_an(Approval)
+    end
+
+    context 'when user ID maps to no user' do
+      let(:members_mapper) { double('members_mapper', map: {}) }
+
+      it 'does not build an approval' do
+        expect(created_object).to be_nil
+      end
+    end
   end
 
   describe 'protected refs access levels' do

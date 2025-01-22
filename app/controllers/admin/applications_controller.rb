@@ -10,7 +10,8 @@ class Admin::ApplicationsController < Admin::ApplicationController
 
   def index
     applications = ApplicationsFinder.new.execute
-    @applications = Kaminari.paginate_array(applications).page(params[:page])
+    @applications = applications.keyset_paginate(cursor: params[:cursor])
+    @applications_total_count = applications.count
   end
 
   def show; end

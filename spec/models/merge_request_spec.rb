@@ -243,6 +243,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
+    describe '.no_review_states' do
+      let(:states) { [MergeRequestReviewer.states[:requested_changes]] }
+
+      subject(:merge_requests) { described_class.no_review_states(states) }
+
+      it { expect(merge_requests).to contain_exactly(merge_request2) }
+    end
+
     describe '.assignee_or_reviewer' do
       let_it_be(:merge_request5) do
         create(:merge_request, :prepared, :unique_branches, assignees: [user1], reviewers: [user2], created_at:

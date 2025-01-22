@@ -18,7 +18,7 @@
 - else
   = render ::Layouts::CrudComponent.new(s_('AdminArea|Instance OAuth applications'),
     icon: 'applications',
-    count: @applications.size,
+    count: @applications_total_count,
     options: { class: 'gl-mt-5', data: { testid: 'oauth-applications' } }) do |c|
     - c.with_description do
       - docs_link_path = help_page_path('integration/oauth_provider.md')
@@ -49,6 +49,6 @@
                     = render Pajamas::ButtonComponent.new(href: edit_admin_application_path(application), category: :tertiary, icon: 'pencil', button_options: { title: _('Edit'), class: 'has-tooltip' })
                     = render Pajamas::ButtonComponent.new(category: :tertiary, icon: 'remove', button_options: { data: { path: admin_application_path(application), name: application.name }, title: _('Destroy'), class: 'has-tooltip js-application-delete-button' })
     - c.with_pagination do
-      = paginate @applications, theme: 'gitlab'
+      = keyset_paginate @applications, without_first_and_last_pages: true
 
 .js-application-delete-modal

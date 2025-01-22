@@ -17,9 +17,6 @@ events:
   unique: user.id
 - name: incident_management_alert_create_incident
   unique: user.id
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

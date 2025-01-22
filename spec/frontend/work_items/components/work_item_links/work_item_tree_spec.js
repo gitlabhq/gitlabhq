@@ -13,6 +13,7 @@ import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/wor
 import WorkItemLinksForm from '~/work_items/components/work_item_links/work_item_links_form.vue';
 import WorkItemActionsSplitButton from '~/work_items/components/work_item_links/work_item_actions_split_button.vue';
 import WorkItemMoreActions from '~/work_items/components/shared/work_item_more_actions.vue';
+import WorkItemToggleClosedItems from '~/work_items/components/shared/work_item_toggle_closed_items.vue';
 import WorkItemRolledUpData from '~/work_items/components/work_item_links/work_item_rolled_up_data.vue';
 import WorkItemRolledUpCount from '~/work_items/components/work_item_links/work_item_rolled_up_count.vue';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
@@ -61,6 +62,7 @@ describe('WorkItemTree', () => {
   const findErrorMessage = () => wrapper.findComponent(GlAlert);
   const findWorkItemLinkChildrenWrapper = () => wrapper.findComponent(WorkItemChildrenWrapper);
   const findMoreActions = () => wrapper.findComponent(WorkItemMoreActions);
+  const findShowClosedButton = () => wrapper.findComponent(WorkItemToggleClosedItems);
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
   const findRolledUpData = () => wrapper.findComponent(WorkItemRolledUpData);
   const findRolledUpCount = () => wrapper.findComponent(WorkItemRolledUpCount);
@@ -75,6 +77,7 @@ describe('WorkItemTree', () => {
     hasSubepicsFeature = true,
     workItemHierarchyTreeHandler = workItemHierarchyTreeResponseHandler,
     shouldWaitForPromise = true,
+    closedChildrenCount = 0,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemTree, {
       propsData: {
@@ -93,6 +96,7 @@ describe('WorkItemTree', () => {
       ]),
       provide: {
         hasSubepicsFeature,
+        closedChildrenCount,
       },
       stubs: { CrudComponent },
     });
@@ -273,6 +277,10 @@ describe('WorkItemTree', () => {
       expect(loadMore.props('fetchNextPageInProgress')).toBe(false);
     });
 
+    it('does not render the `work-item-toggle-closed-items` component when hasNextPage is true', () => {
+      expect(findShowClosedButton().exists()).toBe(false);
+    });
+
     it('queries next page children when work-item-children-load-more emits "fetch-next-page"', async () => {
       findWorkItemChildrenLoadMore().vm.$emit('fetch-next-page');
       await waitForPromises();
@@ -422,6 +430,29 @@ describe('WorkItemTree', () => {
     });
   });
 
+  describe('work item show closed button', () => {
+    beforeEach(async () => {
+      await createComponent({
+        workItemHierarchyTreeHandler: jest
+          .fn()
+          .mockResolvedValue(workItemHierarchyTreeSingleClosedItemResponse),
+      });
+      await findMoreActions().vm.$emit('toggle-show-closed');
+    });
+
+    it('displays show closed button', () => {
+      expect(findShowClosedButton().exists()).toBe(true);
+    });
+
+    it('shows the closed item when the show closed button is clicked', async () => {
+      await findShowClosedButton().vm.$emit('show-closed');
+
+      expect(findShowClosedButton().exists()).toBe(false);
+
+      expect(wrapper.findByTestId('work-item-no-child-items-open').exists()).toBe(false);
+    });
+  });
+
   it('displays no child items open message', async () => {
     await createComponent({
       workItemHierarchyTreeHandler: jest
@@ -436,6 +467,8 @@ describe('WorkItemTree', () => {
     expect(wrapper.findByTestId('work-item-no-child-items-open').text()).toBe(
       'No child items are currently open.',
     );
+
+    expect(findShowClosedButton().exists()).toBe(true);
   });
 
   describe('when there is show URL parameter', () => {

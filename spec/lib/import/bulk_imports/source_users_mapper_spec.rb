@@ -50,11 +50,25 @@ RSpec.describe Import::BulkImports::SourceUsersMapper, feature_category: :import
         expect(mapper.map['102']).to eq(import_source_user_2.reassign_to_user_id)
       end
     end
+
+    context 'when import source does not exists' do
+      it 'returns nil' do
+        expect(mapper.map['-1']).to eq(nil)
+      end
+    end
   end
 
   describe '#include?' do
-    it 'always returns true' do
-      expect(mapper.include?('any_identifier')).to eq(true)
+    context 'when a source user with the source_user_identifier exists' do
+      it 'returns true' do
+        expect(mapper.include?(101)).to eq(true)
+      end
+    end
+
+    context 'when a source user with the source_user_identifier does not exist' do
+      it 'returns false' do
+        expect(mapper.include?(-1)).to eq(false)
+      end
     end
   end
 end

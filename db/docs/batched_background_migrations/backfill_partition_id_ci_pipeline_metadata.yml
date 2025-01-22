@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillPartitionIdCiPipelineMetadata
-description: Fixes incorrect values for ci_pipeline_metadata being in the wrong partition
-feature_category: continuous_integration
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141078
-milestone: '16.8'
-queued_migration_version: 20240108082419
-finalized_by: 20240122132856

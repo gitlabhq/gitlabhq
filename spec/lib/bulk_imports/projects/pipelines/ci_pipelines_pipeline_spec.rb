@@ -192,6 +192,15 @@ RSpec.describe BulkImports::Projects::Pipelines::CiPipelinesPipeline, feature_ca
     end
 
     context 'when importer_user_mapping is enabled' do
+      let_it_be(:source_user) do
+        create(:import_source_user,
+          import_type: ::Import::SOURCE_DIRECT_TRANSFER,
+          namespace: group,
+          source_user_identifier: 101,
+          source_hostname: bulk_import.configuration.url
+        )
+      end
+
       let(:importer_user_mapping_enabled) { true }
       let(:extract_data) { [ci_pipeline] }
       let(:ci_pipeline) do

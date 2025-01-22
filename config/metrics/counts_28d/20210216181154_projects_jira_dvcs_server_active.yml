@@ -10,9 +10,6 @@ value_type: number
 status: active
 time_frame: 28d
 data_source: database
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

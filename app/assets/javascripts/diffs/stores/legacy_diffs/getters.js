@@ -9,7 +9,6 @@ import {
   DIFF_COMPARE_HEAD_VERSION_INDEX,
 } from '~/diffs/constants';
 import { useNotes } from '~/notes/store/legacy_notes';
-import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { computeSuggestionCommitMessage } from '../../utils/suggestions';
 import { parallelizeDiffLines } from '../../store/utils';
 
@@ -218,7 +217,7 @@ export function diffLines() {
 
 export function suggestionCommitMessage() {
   return (values = {}) => {
-    const { mrMetadata } = useMrNotes().page;
+    const { mrMetadata } = this.tryStore('legacyMrNotes');
     return computeSuggestionCommitMessage({
       message: this.defaultSuggestionCommitMessage,
       values: {

@@ -754,14 +754,20 @@ RSpec.describe SessionsController, feature_category: :system_access do
         cookies[:test_cookie] = 'test-value'
         cookies.encrypted[:test_encrypted_cookie] = 'test-value'
         cookies.signed[:test_signed_cookie] = 'test-value'
+        cookies[:current_signin_tab] = 'preserved'
+        cookies[:preferred_language] = 'preserved'
       end
 
-      it 'clears all cookies known by Rails' do
+      it 'preserve some cookies and clear the rest of cookies known by Rails' do
         delete :destroy
 
         %w[test_cookie test_encrypted_cookie test_signed_cookie].each do |key|
           expect(response.cookies).to have_key(key)
           expect(response.cookies[key]).to be_nil
+        end
+
+        %w[current_signin_tab preferred_language].each do |key|
+          expect(response.cookies).not_to have_key(key)
         end
       end
 

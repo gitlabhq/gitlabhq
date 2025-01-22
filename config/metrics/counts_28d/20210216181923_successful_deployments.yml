@@ -12,9 +12,6 @@ instrumentation_class: CountDeploymentsMetric
 options:
   type: success
 data_source: database
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

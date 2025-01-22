@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillCatalogResourceVersionsReleasedAt
-description: Backfills catalog_resource_versions.released_at with data from releases.released_at.
-feature_category: pipeline_composition
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142255
-milestone: '16.9'
-queued_migration_version: 20240118225727
-finalized_by: 20240129181136

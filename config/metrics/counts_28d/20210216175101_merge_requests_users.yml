@@ -9,9 +9,6 @@ value_type: number
 status: removed
 time_frame: 28d
 data_source: redis_hll
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

@@ -30,19 +30,22 @@ module Import
         "Ci::Bridge" => {
           1 => {
             model: Ci::Bridge,
-            columns: { "user_id" => "user_id" }
+            columns: { "user_id" => "user_id", "erased_by_id" => "erased_by_id" },
+            columns_ignored_on_deletion: %w[user_id erased_by_id]
           }
         },
         "Ci::Build" => {
           1 => {
             model: Ci::Build,
-            columns: { "user_id" => "user_id", "erased_by_id" => "erased_by_id" }
+            columns: { "user_id" => "user_id", "erased_by_id" => "erased_by_id" },
+            columns_ignored_on_deletion: %w[user_id erased_by_id]
           }
         },
         "Ci::Pipeline" => {
           1 => {
             model: Ci::Pipeline,
-            columns: { "user_id" => "user_id" }
+            columns: { "user_id" => "user_id" },
+            columns_ignored_on_deletion: %w[user_id]
           }
         },
         "Ci::PipelineSchedule" => {
@@ -74,7 +77,8 @@ module Import
         "Event" => {
           1 => {
             model: Event,
-            columns: { "author_id" => "author_id" }
+            columns: { "author_id" => "author_id" },
+            columns_ignored_on_deletion: %w[author_id]
           }
         },
         "Epic" => {
@@ -88,7 +92,8 @@ module Import
         "GenericCommitStatus" => {
           1 => {
             model: GenericCommitStatus,
-            columns: { "user_id" => "user_id" }
+            columns: { "user_id" => "user_id", "erased_by_id" => "erased_by_id" },
+            columns_ignored_on_deletion: %w[user_id erased_by_id]
           }
         },
         "LegacyDiffNote" => {
@@ -102,7 +107,8 @@ module Import
           1 => {
             model: Issue,
             columns: { "author_id" => "author_id", "updated_by_id" => "updated_by_id",
-                       "closed_by_id" => "closed_by_id", "last_edited_by_id" => "last_edited_by_id" }
+                       "closed_by_id" => "closed_by_id", "last_edited_by_id" => "last_edited_by_id" },
+            columns_ignored_on_deletion: %w[last_edited_by_id]
           }
         },
         "IssueAssignee" => {

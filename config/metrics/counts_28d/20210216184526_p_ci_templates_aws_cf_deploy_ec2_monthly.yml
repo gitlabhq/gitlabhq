@@ -15,9 +15,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
   - p_ci_templates_aws_cf_deploy_ec2
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

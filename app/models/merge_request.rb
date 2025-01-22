@@ -468,6 +468,18 @@ class MergeRequest < ApplicationRecord
     )
   end
 
+  scope :no_review_states, ->(states) do
+    where(
+      reviewers_subquery.exists
+    )
+    .where(
+      reviewers_subquery
+        .where(Arel::Table.new("#{to_ability_name}_reviewers")[:state].in(states))
+        .exists
+        .not
+    )
+  end
+
   scope :assignee_or_reviewer, ->(user, assigned_review_states, reviewer_state) do
     assigned_to_scope = assigned_to(user)
     assigned_to_scope = assigned_to_scope.review_states(assigned_review_states) if assigned_review_states

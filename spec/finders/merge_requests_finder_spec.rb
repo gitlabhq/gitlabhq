@@ -605,6 +605,17 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         end
 
         it { is_expected.to contain_exactly(*expected_mr) }
+
+        context 'by NOT review_states' do
+          let(:params) { { not: { review_states: %w[requested_changes reviewed] } } }
+          let(:expected_mr) { [merge_request3] }
+
+          before do
+            merge_request2.merge_request_reviewers.update_all(state: :reviewed)
+          end
+
+          it { is_expected.to contain_exactly(*expected_mr) }
+        end
       end
 
       context 'assignee or reviewer filtering' do

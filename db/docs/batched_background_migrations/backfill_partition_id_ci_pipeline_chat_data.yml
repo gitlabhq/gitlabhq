@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillPartitionIdCiPipelineChatData
-description: Fixes incorrect values for ci pipeline chat data being in the wrong partition
-feature_category: continuous_integration
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139515
-milestone: '16.8'
-queued_migration_version: 20231218092401
-finalized_by: 20240104101601

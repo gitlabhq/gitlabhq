@@ -110,7 +110,8 @@ RUN set -eux; \
     && cp .ruby-version ./gitlab/ \
     && cp .tool-versions ./gitlab/ \
     && make redis/redis.conf all \
-    && gdk kill
+    && gdk kill \
+    && rm -rf ./gitlab/.git
 
 ENTRYPOINT [ "/home/gdk/entrypoint" ]
 CMD [ "gdk", "tail" ]

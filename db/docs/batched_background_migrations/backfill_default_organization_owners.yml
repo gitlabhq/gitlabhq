@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillDefaultOrganizationOwners
-description: No-op in favor of re-enqueueing with BackfillDefaultOrganizationOwnersAgain
-feature_category: cell
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141297
-milestone: '16.8'
-queued_migration_version: 20240108182342
-finalized_by: 20240126210641

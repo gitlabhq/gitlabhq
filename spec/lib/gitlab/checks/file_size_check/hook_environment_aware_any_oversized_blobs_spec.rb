@@ -68,14 +68,6 @@ RSpec.describe Gitlab::Checks::FileSizeCheck::HookEnvironmentAwareAnyOversizedBl
           end
 
           it_behaves_like 'filters the blobs'
-
-          context 'when check_oversized_blobs_without_blob_stitcher feature flag is disabled' do
-            before do
-              stub_feature_flags(check_oversized_blobs_without_blob_stitcher: false)
-            end
-
-            it_behaves_like 'filters the blobs'
-          end
         end
       end
     end

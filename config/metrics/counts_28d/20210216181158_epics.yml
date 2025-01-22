@@ -7,8 +7,6 @@ value_type: number
 status: active
 time_frame: 28d
 data_source: database
-distribution:
-- ee
 tiers:
 - premium
 - ultimate

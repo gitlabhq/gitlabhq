@@ -45174,6 +45174,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestsresolvernegatedparamsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filters merge requests to those not in the given milestone. |
 | <a id="mergerequestsresolvernegatedparamsmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filters merge requests to those without the given reaction from the authenticated user. |
 | <a id="mergerequestsresolvernegatedparamsreleasetag"></a>`releaseTag` | [`String`](#string) | Filters merge requests to those without the given release tag. |
+| <a id="mergerequestsresolvernegatedparamsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.9. |
 | <a id="mergerequestsresolvernegatedparamsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Filters merge requests to those not reviewed by the given user. |
 | <a id="mergerequestsresolvernegatedparamssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Filters merge requests to exclude the source branch names provided in the given array. |
 | <a id="mergerequestsresolvernegatedparamstargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Filters merge requests to exclude the target branch names provided in the given array. |

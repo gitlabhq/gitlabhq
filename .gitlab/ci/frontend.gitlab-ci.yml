@@ -80,6 +80,11 @@ compile-test-assets:
       - "${WEBPACK_COMPILE_LOG_PATH}"
     when: always
 
+gdk:compile-test-assets:
+  extends:
+    - compile-test-assets
+    - .build-images:rules:build-gdk-image
+
 update-assets-compile-production-cache:
   extends:
     - compile-production-assets

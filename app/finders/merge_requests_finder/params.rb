@@ -57,5 +57,11 @@ class MergeRequestsFinder
         params[:review_states].map { |state| MergeRequestReviewer.states[state] }
       end
     end
+
+    def not_review_states
+      return unless params[:not][:review_states].present?
+
+      params[:not][:review_states].map { |state| MergeRequestReviewer.states[state] }
+    end
   end
 end

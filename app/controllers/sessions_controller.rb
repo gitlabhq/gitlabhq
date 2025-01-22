@@ -58,6 +58,7 @@ class SessionsController < Devise::SessionsController
 
   CAPTCHA_HEADER = 'X-GitLab-Show-Login-Captcha'
   MAX_FAILED_LOGIN_ATTEMPTS = 5
+  PRESERVE_COOKIES = %w[current_signin_tab preferred_language].freeze
 
   def new
     set_minimum_password_length
@@ -99,6 +100,8 @@ class SessionsController < Devise::SessionsController
     # cookies must be deleted after super call
     # Warden sets some cookies for deletion, this will not override those settings
     cookies.each do |cookie|
+      next if PRESERVE_COOKIES.include?(cookie[0])
+
       cookies.delete(cookie[0])
     end
   end

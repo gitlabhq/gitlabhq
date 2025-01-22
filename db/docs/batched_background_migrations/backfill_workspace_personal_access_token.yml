@@ -1,7 +1,0 @@
-migration_job_name: BackfillWorkspacePersonalAccessToken
-description: Create personal access token for workspaces without one
-feature_category: remote_development
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131516
-milestone: '16.4'
-queued_migration_version: 20230909120000
-finalized_by: 20230918143333

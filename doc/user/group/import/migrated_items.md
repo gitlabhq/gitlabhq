@@ -138,7 +138,7 @@ Project items that are migrated to the destination GitLab instance include:
 | Snippets                                | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/343438)        |
 | Settings                                | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339416)        |
 | Uploads                                 | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339401)        |
-| Vulnerability report                    | [GitLab 17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/501466)        |
+| Vulnerability reports <sup>3</sup>      | [GitLab 17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/501466)        |
 | Wikis                                   | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/345923)        |
 
 <!-- vale gitlab_base.OutdatedVersions = YES -->
@@ -148,6 +148,10 @@ Project items that are migrated to the destination GitLab instance include:
 1. Imported branches respect the [default branch protection settings](../../project/repository/branches/protected.md) of the destination group.
    These settings might cause an unprotected branch to be imported as protected.
 1. See [user contribution and membership mapping](direct_transfer_migrations.md#user-contribution-and-membership-mapping).
+1. Vulnerability reports are migrated without their status.
+   For more information, see [issue 512859](https://gitlab.com/gitlab-org/gitlab/-/issues/512859).
+   For the `ActiveRecord::RecordNotUnique` error when migrating vulnerability reports,
+   see [issue 509904](https://gitlab.com/gitlab-org/gitlab/-/issues/509904).
 
 ### Issue-related items
 

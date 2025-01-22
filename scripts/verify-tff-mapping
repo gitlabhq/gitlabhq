@@ -126,8 +126,8 @@ tests = [
   },
   {
     explanation: 'Migration should map to its timestamped spec',
-    changed_file: 'db/post_migrate/20231207194620_backfill_catalog_resources_visibility_level.rb',
-    expected: ['spec/migrations/20231207194620_backfill_catalog_resources_visibility_level_spec.rb']
+    changed_file: 'db/post_migrate/20241118124301_requeue_backfill_security_policies.rb',
+    expected: ['spec/migrations/20241118124301_requeue_backfill_security_policies_spec.rb']
   },
   {
     explanation: 'FOSS views should map to respective spec',

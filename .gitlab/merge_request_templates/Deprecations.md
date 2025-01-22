@@ -85,7 +85,6 @@ yourself as a reviewer if it's not ready for merge yet.
   - Make sure all links and anchors are correct. Do not link to the H1 (top) anchor on a docs page.
 - [ ] Code. Make sure any included code is wrapped in code blocks.
 - [ ] Capitalization. Make sure to capitalize feature names. Stay consistent with the Documentation Style Guidance on [Capitalization](https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#capitalization).
-- [ ] Blank spaces. Remove unnecessary spaces (end of line spaces, double spaces, extra blank lines, and lines with only spaces).
 
 </details>
 
@@ -93,13 +92,17 @@ When the PM indicates it is ready for merge and all issues have been addressed, 
 
 #### Technical writer merge process
 
-The [deprecations doc's `.md` file](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/update/deprecations.md)
-must be updated before this MR is merged:
+Remove unnecessary spaces and text, and update the [deprecations doc's `.md` file](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/update/deprecations.md):
 
 1. Check out the MR's branch (in the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) project).
-1. From the command line (in the branch), run `bin/rake gitlab:docs:compile_deprecations`.
-   If you want to double check that it worked, you can run `bin/rake gitlab:docs:check_deprecations`
-   to verify that the doc is up to date.
+1. Remove unnecessary spaces (end of line spaces, double spaces, extra blank lines, lines with only spaces).
+1. Remove unnecessary text (template and commented out text).
+1. Update the `deprecations.md` file:
+
+   1. From the command line (in the branch), run `bin/rake gitlab:docs:compile_deprecations`.
+   1. To double check that it worked, you can run `bin/rake gitlab:docs:check_deprecations`
+      to verify that the doc is up to date.
+
 1. Commit the updated file and push the changes.
 1. Set the merge request to auto-merge, or if the pipeline is already complete, merge.
 

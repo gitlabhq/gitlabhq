@@ -10,9 +10,6 @@ data_source: internal_events
 events:
   - name: g_project_management_issue_cross_referenced
     unique: user.id
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

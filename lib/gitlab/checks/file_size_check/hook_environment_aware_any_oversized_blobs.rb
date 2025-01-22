@@ -13,16 +13,7 @@ module Gitlab
 
         def find(timeout: nil)
           if ignore_alternate_directories?
-            return oversized_blobs(timeout: timeout) if Feature.enabled?(
-              :check_oversized_blobs_without_blob_stitcher, project)
-
-            blobs = repository.list_all_blobs(bytes_limit: 0, dynamic_timeout: timeout,
-              ignore_alternate_object_directories: true).to_a
-
-            blobs.select! do |blob|
-              ::Gitlab::Utils.bytes_to_megabytes(blob.size) > file_size_limit_megabytes
-            end
-            filter_existing(blobs)
+            oversized_blobs(timeout: timeout)
           else
             any_oversize_blobs.find(timeout: timeout)
           end

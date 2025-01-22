@@ -23,6 +23,7 @@ import {
 } from '../../constants';
 
 import WorkItemMoreActions from '../shared/work_item_more_actions.vue';
+import WorkItemToggleClosedItems from '../shared/work_item_toggle_closed_items.vue';
 import WorkItemRelationshipList from './work_item_relationship_list.vue';
 import WorkItemAddRelationshipForm from './work_item_add_relationship_form.vue';
 
@@ -36,6 +37,7 @@ export default {
     WorkItemRelationshipList,
     WorkItemAddRelationshipForm,
     WorkItemMoreActions,
+    WorkItemToggleClosedItems,
   },
   props: {
     isGroup: {
@@ -133,8 +135,17 @@ export default {
     isEmptyRelatedWorkItems() {
       return !this.error && this.linkedWorkItems.length === 0;
     },
+    displayableLinksCount() {
+      return this.displayableLinks(this.linkedWorkItems)?.length;
+    },
+    showClosedItemsButton() {
+      return !this.showClosed && this.linkedWorkItemsCount > this.displayableLinksCount;
+    },
     hasAllLinkedItemsHidden() {
-      return this.displayableLinks(this.linkedWorkItems).length === 0;
+      return this.displayableLinksCount === 0;
+    },
+    closedItemsCount() {
+      return Math.max(0, this.linkedWorkItemsCount - this.displayableLinksCount);
     },
     countBadgeAriaLabel() {
       const message = sprintf(
@@ -155,6 +166,9 @@ export default {
     },
     openBlocksLinks() {
       return this.displayableLinks(this.linksBlocks);
+    },
+    toggleClosedItemsClasses() {
+      return { '!gl-px-3 gl-pb-3 gl-pt-2': !this.hasAllLinkedItemsHidden };
     },
   },
   mounted() {
@@ -427,6 +441,16 @@ export default {
         data-testid="work-item-no-linked-items-open"
       >
         {{ $options.i18n.noLinkedItemsOpen }}
+      </div>
+
+      <div>
+        <work-item-toggle-closed-items
+          v-if="showClosedItemsButton"
+          :class="toggleClosedItemsClasses"
+          data-testid="work-item-show-closed"
+          :number-of-closed-items="closedItemsCount"
+          @show-closed="toggleShowClosed"
+        />
       </div>
     </template>
   </crud-component>

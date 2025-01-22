@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import Translate from '~/vue_shared/translate';
 import createDefaultClient from '~/lib/graphql';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import csrf from '~/lib/utils/csrf';
 import AdminUsersApp from './components/app.vue';
 import AdminUsersFilterApp from './components/admin_users_filter_app.vue';
@@ -17,7 +17,7 @@ const apolloProvider = new VueApollo({
 });
 
 // eslint-disable-next-line max-params
-const initApp = (el, component, userPropKey, props = {}) => {
+const initApp = (el, component, userPropKey, props = {}, provide = {}) => {
   if (!el) {
     return false;
   }
@@ -26,6 +26,9 @@ const initApp = (el, component, userPropKey, props = {}) => {
 
   return new Vue({
     el,
+    provide: {
+      ...provide,
+    },
     apolloProvider,
     render: (createElement) =>
       createElement(component, {
@@ -49,7 +52,15 @@ export const initAdminUserActions = (el = document.querySelector('#js-admin-user
   initApp(el, UserActions, 'user', { showButtonLabels: true });
 
 export const initAdminUsersApp = (el = document.querySelector('#js-admin-users-app')) =>
-  initApp(el, AdminUsersApp, 'users');
+  initApp(
+    el,
+    AdminUsersApp,
+    'users',
+    {},
+    {
+      isAtSeatsLimit: parseBoolean(el?.dataset?.isAtSeatsLimit),
+    },
+  );
 
 export const initDeleteUserModals = () => {
   return new Vue({

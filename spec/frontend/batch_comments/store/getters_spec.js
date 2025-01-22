@@ -1,10 +1,22 @@
-import * as getters from '~/batch_comments/stores/modules/batch_comments/getters';
+import { createTestingPinia } from '@pinia/testing';
+import { useBatchComments } from '~/batch_comments/store';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useNotes } from '~/notes/store/legacy_notes';
 
-// eslint-disable-next-line jest/no-disabled-tests
-describe.skip('Batch comments store getters', () => {
+describe('Batch comments store getters', () => {
+  let store;
+
+  beforeEach(() => {
+    createTestingPinia({ stubActions: false, plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes();
+    store = useBatchComments();
+  });
+
   describe('draftsForFile', () => {
     it('returns drafts for a file hash', () => {
-      const state = {
+      store.$patch({
         drafts: [
           {
             file_hash: 'filehash',
@@ -15,9 +27,9 @@ describe.skip('Batch comments store getters', () => {
             comment: 'testing 1234',
           },
         ],
-      };
+      });
 
-      expect(getters.draftsForFile(state)('filehash')).toEqual([
+      expect(store.draftsForFile('filehash')).toEqual([
         {
           file_hash: 'filehash',
           comment: 'testing 123',

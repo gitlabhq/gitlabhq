@@ -51,6 +51,7 @@ build-gdk-image:
     - docker
   stage: build-images
   needs:
+    - job: gdk:compile-test-assets
     - job: retag-gdk-image
       optional: true
   script:

@@ -9,9 +9,6 @@ removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113551
 milestone_removed: "15.10"
 time_frame: 28d
 data_source: redis_hll
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

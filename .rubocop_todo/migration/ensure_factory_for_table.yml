@@ -1,23 +1,6 @@
 ---
 Migration/EnsureFactoryForTable:
   Exclude:
-    - 'db/migrate/20230926092914_add_approval_group_rules.rb'
-    - 'db/migrate/20230926092944_add_approval_group_rules_groups.rb'
-    - 'db/migrate/20230926093004_add_approval_group_rules_users.rb'
-    - 'db/migrate/20230926093025_add_approval_group_rules_protected_branches.rb'
-    - 'db/migrate/20231020095624_create_audit_events_streaming_http_group_namespace_filters.rb'
-    - 'db/migrate/20231031164724_create_sbom_occurrences_vulnerabilities.rb'
-    - 'db/migrate/20231110044738_create_abuse_report_assignees_table.rb'
-    - 'db/migrate/20231115064007_create_audit_events_streaming_http_instance_namespace_filters.rb'
-    - 'db/migrate/20231124191759_add_catalog_resource_sync_events_table.rb'
-    - 'db/migrate/20231207150738_add_work_item_dates_sources.rb'
-    - 'db/migrate/20231220113459_add_work_item_color.rb'
-    - 'db/migrate/20240108123023_create_ai_agents_table.rb'
-    - 'db/migrate/20240108123115_create_ai_agent_versions_table.rb'
-    - 'db/migrate/20240112124030_create_audit_events_group_external_streaming_destinations.rb'
-    - 'db/migrate/20240130162148_create_audit_events_instance_external_streaming_destinations.rb'
-    - 'db/migrate/20240131052824_create_catalog_verified_namespaces.rb'
-    - 'db/migrate/20240201112236_create_group_saved_replies_table.rb'
     - 'db/migrate/20240207134321_create_audit_events_group_streaming_event_type_filters.rb'
     - 'db/migrate/20240221145450_create_audit_events_instance_streaming_event_type_filters.rb'
     - 'db/migrate/20240301210341_create_catalog_resource_component_usages_table.rb'

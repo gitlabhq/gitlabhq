@@ -4889,6 +4889,9 @@ msgstr ""
 msgid "AdminUsers|The user will not receive any notifications"
 msgstr ""
 
+msgid "AdminUsers|There are no more seats left in your subscription. New users cannot be approved for this instance."
+msgstr ""
+
 msgid "AdminUsers|To confirm, type %{projectName}"
 msgstr ""
 
@@ -53603,6 +53606,9 @@ msgstr ""
 msgid "Should you ever lose your phone or access to your one time password secret, each of these recovery codes can be used one time each to regain access to your account. Please save them in a safe place, or you %{boldStart}will%{boldEnd} lose access to your account."
 msgstr ""
 
+msgid "Show %{count} closed %{itemText}"
+msgstr ""
+
 msgid "Show Pipeline ID"
 msgstr ""
 
@@ -67781,7 +67787,9 @@ msgid "it's not allowed to add this type of parent item"
 msgstr ""
 
 msgid "item"
-msgstr ""
+msgid_plural "items"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "key result"
 msgstr ""

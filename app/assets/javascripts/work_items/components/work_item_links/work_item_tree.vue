@@ -33,6 +33,7 @@ import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import namespaceWorkItemTypesQuery from '../../graphql/namespace_work_item_types.query.graphql';
 import WorkItemChildrenLoadMore from '../shared/work_item_children_load_more.vue';
 import WorkItemMoreActions from '../shared/work_item_more_actions.vue';
+import WorkItemToggleClosedItems from '../shared/work_item_toggle_closed_items.vue';
 import WorkItemActionsSplitButton from './work_item_actions_split_button.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
 import WorkItemChildrenWrapper from './work_item_children_wrapper.vue';
@@ -54,6 +55,7 @@ export default {
     WorkItemMoreActions,
     WorkItemRolledUpData,
     WorkItemRolledUpCount,
+    WorkItemToggleClosedItems,
   },
   inject: ['hasSubepicsFeature'],
   provide() {
@@ -271,9 +273,28 @@ export default {
         return acc;
       }, {});
     },
-    hasAllChildItemsHidden() {
+    displayableChildrenCount() {
       const filterClosed = getItems(this.showClosed);
-      return filterClosed(this.children).length === 0;
+      return filterClosed(this.children)?.length;
+    },
+    hasAllChildItemsHidden() {
+      return this.displayableChildrenCount === 0;
+    },
+    showClosedItemsButton() {
+      return (
+        !this.showClosed &&
+        !this.hasNextPage &&
+        this.children?.length > this.displayableChildrenCount
+      );
+    },
+    closedChildrenCount() {
+      return Math.max(0, this.children.length - this.displayableChildrenCount);
+    },
+    toggleClosedItemsClasses() {
+      return {
+        '!gl-pl-6': this.hasIndirectChildren,
+        '!gl-px-3 gl-pb-3 gl-pt-2': !this.hasAllChildItemsHidden,
+      };
     },
   },
   mounted() {
@@ -479,6 +500,16 @@ export default {
         data-testid="work-item-no-child-items-open"
       >
         {{ $options.i18n.noChildItemsOpen }}
+      </div>
+
+      <div>
+        <work-item-toggle-closed-items
+          v-if="showClosedItemsButton"
+          :class="toggleClosedItemsClasses"
+          data-testid="work-item-show-closed"
+          :number-of-closed-items="closedChildrenCount"
+          @show-closed="toggleShowClosed"
+        />
       </div>
     </template>
   </crud-component>

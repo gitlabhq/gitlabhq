@@ -47,7 +47,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'danger/clickhouse/Dangerfile'
     - 'danger/experiments/Dangerfile'
     - 'danger/feature_flag/Dangerfile'
-    - 'db/post_migrate/20231124133015_drop_idx_projects_id_created_at_disable_overriding_approvers_false_for_gitlab_com.rb'
     - 'ee/app/components/namespaces/combined_storage_users/base_alert_component.rb'
     - 'ee/app/components/namespaces/combined_storage_users/non_owner_alert_component.rb'
     - 'ee/app/components/namespaces/combined_storage_users/owner_alert_component.rb'
