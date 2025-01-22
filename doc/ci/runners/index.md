@@ -13,12 +13,17 @@ DETAILS:
 Use GitLab-hosted runners to run your CI/CD jobs on GitLab.com and GitLab Dedicated to build, test, and deploy
 applications on different environments.
 
+Use GitLab-hosted runners to run your CI/CD jobs on GitLab.com and GitLab Dedicated. These runners can build, test, and deploy
+applications on different environments.
+
+To create and register your own runners, see [self-managed runners](https://docs.gitlab.com/runner/).
+
 ## Hosted runners for GitLab.com
 
 DETAILS:
 **Offering:** GitLab.com
 
-These runners fully integrated with GitLab.com and are enabled by default for all projects, with no configuration required.
+These runners are fully integrated with GitLab.com and are enabled by default for all projects, with no configuration required.
 Your jobs can run on:
 
 - [Hosted runners on Linux](hosted_runners/linux.md)

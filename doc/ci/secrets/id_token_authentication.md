@@ -95,7 +95,7 @@ The token also includes custom claims provided by GitLab:
   "user_email": "sample-user@example.com",
   "user_identities": [
       {"provider": "github", "extern_uid": "2435223452345"},
-      {"provider": "bitbucket", "extern_uid": "john.smith"},
+      {"provider": "bitbucket", "extern_uid": "john.smith"}
   ],
   "pipeline_id": "574",
   "pipeline_source": "push",

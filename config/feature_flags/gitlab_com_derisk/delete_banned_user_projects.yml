@@ -1,0 +1,9 @@
+---
+name: delete_banned_user_projects
+feature_issue_url: https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/702
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176345
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/510856
+milestone: '17.8'
+group: group::authorization
+type: gitlab_com_derisk
+default_enabled: false

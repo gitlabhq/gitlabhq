@@ -121,21 +121,6 @@ describe('approvalBadge', () => {
     });
   });
 
-  describe('when using reviewers reviewState', () => {
-    it.each`
-      reviewState   | data
-      ${'REVIEWED'} | ${{ icon: 'hourglass', text: '1 approval required', variant: 'muted' }}
-    `('returns $data when reviewState $reviewState', ({ reviewState, data }) => {
-      expect(
-        approvalBadge({
-          mergeRequest: {
-            reviewers: { nodes: [{ mergeRequestInteraction: { reviewState } }] },
-          },
-        }),
-      ).toEqual(data);
-    });
-  });
-
   describe('when using approved by current user', () => {
     it.each`
       approved | data

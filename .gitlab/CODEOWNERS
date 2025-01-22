@@ -1019,12 +1019,14 @@ lib/gitlab/checks/**
 /doc/raketasks/spdx.md @rdickenson
 /doc/raketasks/x509_signatures.md @brendan777
 /doc/security/ @idurham
+/doc/security/hardening_nist_800_53.md @emily.sahlani
 /doc/solutions/ @jfullam @brianwald @Darwinjs
 /doc/solutions/integrations/index.md @jfullam @brianwald @Darwinjs
 /doc/solutions/integrations/servicenow.md @ashrafkhamis
 /doc/subscriptions/ @lciutacu
 /doc/subscriptions/gitlab_com/ @lyspin
 /doc/subscriptions/gitlab_dedicated/ @emily.sahlani
+/doc/subscriptions/gitlab_dedicated_for_government/ @emily.sahlani
 /doc/topics/ @msedlakjakubowski
 /doc/topics/autodevops/ @phillipwells
 /doc/topics/git/ @brendan777

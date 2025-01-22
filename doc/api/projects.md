@@ -1457,6 +1457,7 @@ settings with access control options can be one of:
 - `disabled`: Disable the feature.
 - `private`: Enable and set the feature to **Only project members**.
 - `enabled`: Enable and set the feature to **Everyone with access**.
+- `public`: Enable and set the feature to **Everyone**. Only available for `pages_access_level`.
 
 | Attribute                              | Type   | Required | Description |
 |:---------------------------------------|:-------|:---------|:------------|
@@ -1579,6 +1580,7 @@ settings with access control options can be one of:
 - `disabled`: Disable the feature.
 - `private`: Enable and set the feature to **Only project members**.
 - `enabled`: Enable and set the feature to **Everyone with access**.
+- `public`: Enable and set the feature to **Everyone**. Only available for `pages_access_level`.
 
 | Attribute                              | Type   | Required | Description |
 |:---------------------------------------|:-------|:---------|:------------|
@@ -1713,6 +1715,7 @@ settings with access control options can be one of:
 - `disabled`: Disable the feature.
 - `private`: Enable and set the feature to **Only project members**.
 - `enabled`: Enable and set the feature to **Everyone with access**.
+- `public`: Enable and set the feature to **Everyone**. Only available for `pages_access_level`.
 
 Supported project visibility attributes:
 

@@ -128,12 +128,14 @@ To view an incident's [details page](incidents.md#incident-details), select it f
 
 ### Who can view an incident
 
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
 Whether you can view an incident depends on the [project visibility level](../../user/public_access.md) and
 the incident's confidentiality status:
 
 - Public project and a non-confidential incident: Anyone can view the incident.
 - Private project and non-confidential incident: You must have at least the Guest role for the project.
-- Confidential incident (regardless of project visibility): You must have at least the Reporter role for the project.
+- Confidential incident (regardless of project visibility): You must have at least the Planner role for the project.
 
 ## Assign to a user
 

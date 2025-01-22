@@ -737,7 +737,7 @@ GEM
       terminal-table (>= 1.5.1)
     gitlab-chronic (0.10.6)
       numerizer (~> 0.2)
-    gitlab-cloud-connector (0.2.6)
+    gitlab-cloud-connector (1.0.0)
       activesupport (~> 7.0)
       jwt (~> 2.9.3)
     gitlab-dangerfiles (4.8.0)
@@ -1038,7 +1038,7 @@ GEM
     io-console (0.8.0)
     io-event (1.6.5)
     ipaddress (0.8.3)
-    irb (1.15.0)
+    irb (1.15.1)
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
@@ -2116,7 +2116,7 @@ DEPENDENCIES
   gitlab-active-context!
   gitlab-backup-cli!
   gitlab-chronic (~> 0.10.5)
-  gitlab-cloud-connector (~> 0.2.5)
+  gitlab-cloud-connector (~> 1.0.0)
   gitlab-dangerfiles (~> 4.8.0)
   gitlab-duo-workflow-service-client (~> 0.1)!
   gitlab-experiment (~> 0.9.1)

@@ -109,3 +109,5 @@ This table shows some example queries for exact match and regular expression mod
   For more information, see [issue 455073](https://gitlab.com/gitlab-org/gitlab/-/issues/455073).
 - You can use exact code search on the default branch of a project only.
   For more information, see [issue 403307](https://gitlab.com/gitlab-org/gitlab/-/issues/403307).
+- Multiple matches on a single line are counted as one result.
+  For more information, see [issue 514526](https://gitlab.com/gitlab-org/gitlab/-/issues/514526).

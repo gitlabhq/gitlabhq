@@ -266,7 +266,7 @@ As a result, we updated the GraphQL endpoints. Use `approvalPolicies` instead of
 </div>
 
 The `sidekiq` delivery method for `incoming_email` and `service_desk_email` is deprecated and is
-scheduled for removal in GitLab 18.0.
+scheduled for removal in GitLab 19.0.
 
 GitLab uses a separate process called `mail_room` to ingest emails. Currently, GitLab administrators
 can configure their GitLab instances to use `sidekiq` or `webhook` delivery methods to deliver ingested

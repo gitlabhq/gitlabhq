@@ -8907,7 +8907,8 @@ ALTER SEQUENCE badges_id_seq OWNED BY badges.id;
 CREATE TABLE banned_users (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    user_id bigint NOT NULL
+    user_id bigint NOT NULL,
+    projects_deleted boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE batched_background_migration_job_transition_logs_id_seq
@@ -23320,7 +23321,7 @@ CREATE TABLE workspaces (
     cluster_agent_id bigint NOT NULL,
     desired_state_updated_at timestamp with time zone NOT NULL,
     responded_to_agent_at timestamp with time zone,
-    max_hours_before_termination smallint NOT NULL,
+    max_hours_before_termination smallint DEFAULT 8760 NOT NULL,
     name text NOT NULL,
     namespace text NOT NULL,
     desired_state text NOT NULL,
@@ -23564,7 +23565,9 @@ CREATE TABLE zoekt_indices (
     reserved_storage_bytes bigint DEFAULT '10737418240'::bigint,
     used_storage_bytes bigint DEFAULT 0 NOT NULL,
     watermark_level smallint DEFAULT 0 NOT NULL,
-    metadata jsonb DEFAULT '{}'::jsonb NOT NULL
+    metadata jsonb DEFAULT '{}'::jsonb NOT NULL,
+    used_storage_bytes_updated_at timestamp with time zone DEFAULT '1970-01-01 00:00:00+00'::timestamp with time zone NOT NULL,
+    last_indexed_at timestamp with time zone DEFAULT '1970-01-01 00:00:00+00'::timestamp with time zone NOT NULL
 );
 
 CREATE SEQUENCE zoekt_indices_id_seq
@@ -30018,6 +30021,8 @@ CREATE INDEX idx_issues_on_state_id ON issues USING btree (state_id);
 CREATE UNIQUE INDEX idx_jira_connect_subscriptions_on_installation_id_namespace_id ON jira_connect_subscriptions USING btree (jira_connect_installation_id, namespace_id);
 
 CREATE INDEX idx_keys_expires_at_and_before_expiry_notification_undelivered ON keys USING btree (date(timezone('UTC'::text, expires_at)), before_expiry_notification_delivered_at) WHERE (before_expiry_notification_delivered_at IS NULL);
+
+CREATE INDEX idx_last_indexed_at_gt_used_storage_bytes_updated_at ON zoekt_indices USING btree (last_indexed_at, used_storage_bytes_updated_at) WHERE (last_indexed_at >= used_storage_bytes_updated_at);
 
 CREATE INDEX idx_member_roles_on_base_access_level ON member_roles USING btree (base_access_level);
 
@@ -37716,7 +37721,7 @@ ALTER TABLE ONLY project_topics
     ADD CONSTRAINT fk_34af9ab07a FOREIGN KEY (topic_id) REFERENCES topics(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY namespaces
-    ADD CONSTRAINT fk_34fceca87c FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_34fceca87c FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY saml_providers
     ADD CONSTRAINT fk_351dde3a84 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;

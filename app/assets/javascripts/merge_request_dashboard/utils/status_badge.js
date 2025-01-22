@@ -43,18 +43,10 @@ export function waitingForAssigneeBadge({ currentUserAsReviewer }) {
 }
 
 export function approvalBadge({ mergeRequest, currentUserId }) {
-  const reivewersNotApproved = mergeRequest.reviewers.nodes.filter(
-    (r) => r.mergeRequestInteraction.reviewState !== 'APPROVED',
-  );
-
-  if (mergeRequest.approvalsLeft > 0 || reivewersNotApproved.length) {
+  if (mergeRequest.approvalsLeft > 0) {
     return {
       icon: 'hourglass',
-      text: n__(
-        '%d approval required',
-        '%d approvals required',
-        mergeRequest.approvalsLeft || reivewersNotApproved.length,
-      ),
+      text: n__('%d approval required', '%d approvals required', mergeRequest.approvalsLeft),
       variant: 'muted',
     };
   }

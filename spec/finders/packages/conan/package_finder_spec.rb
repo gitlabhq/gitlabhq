@@ -80,7 +80,7 @@ RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_regi
           let(:query) { nil }
 
           it 'returns an empty array' do
-            expect(subject).to match_array([])
+            expect(subject).to be_empty
           end
         end
 
@@ -88,7 +88,7 @@ RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_regi
           let(:query) { "/1.0.0" }
 
           it 'returns an empty array' do
-            expect(subject).to match_array([])
+            expect(subject).to be_empty
           end
         end
 
@@ -157,7 +157,7 @@ RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_regi
           it 'returns an empty array' do
             params = { query: conan_package.conan_recipe }
             result = described_class.new(user, params).execute
-            expect(result).to match_array([])
+            expect(result).to be_empty
           end
         end
 

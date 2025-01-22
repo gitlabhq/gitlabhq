@@ -11771,7 +11771,7 @@ Input type: `WorkspaceCreateInput`
 | <a id="mutationworkspacecreatedevfilepath"></a>`devfilePath` | [`String`](#string) | Project path containing the devfile used to configure the workspace. If not provided, the GitLab default devfile is used. |
 | <a id="mutationworkspacecreatedevfileref"></a>`devfileRef` **{warning-solid}** | [`String`](#string) | **Deprecated:** Argument is renamed to project_ref. Deprecated in GitLab 17.8. |
 | <a id="mutationworkspacecreateeditor"></a>`editor` **{warning-solid}** | [`String`](#string) | **Deprecated:** Argument is not used. Deprecated in GitLab 17.5. |
-| <a id="mutationworkspacecreatemaxhoursbeforetermination"></a>`maxHoursBeforeTermination` | [`Int!`](#int) | Maximum hours the workspace can exist before it is automatically terminated. |
+| <a id="mutationworkspacecreatemaxhoursbeforetermination"></a>`maxHoursBeforeTermination` **{warning-solid}** | [`Int`](#int) | **Deprecated:** Field is not used. Deprecated in GitLab 17.9. |
 | <a id="mutationworkspacecreateprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | ID of the project that will provide the Devfile for the created workspace. |
 | <a id="mutationworkspacecreateprojectref"></a>`projectRef` | [`String`](#string) | Project repo git ref. |
 | <a id="mutationworkspacecreatevariables"></a>`variables` | [`[WorkspaceVariableInput!]`](#workspacevariableinput) | Variables to inject into the workspace. |
@@ -38580,7 +38580,7 @@ Represents a remote development workspace.
 | <a id="workspaceeditor"></a>`editor` **{warning-solid}** | [`String!`](#string) | **Deprecated** in GitLab 17.5. Field is not used. |
 | <a id="workspaceforceincludeallresources"></a>`forceIncludeAllResources` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 17.6. **Status**: Experiment. Forces all resources to be included for the workspaceduring the next reconciliation with the agent. |
 | <a id="workspaceid"></a>`id` | [`RemoteDevelopmentWorkspaceID!`](#remotedevelopmentworkspaceid) | Global ID of the workspace. |
-| <a id="workspacemaxhoursbeforetermination"></a>`maxHoursBeforeTermination` | [`Int!`](#int) | Number of hours until the workspace automatically terminates. |
+| <a id="workspacemaxhoursbeforetermination"></a>`maxHoursBeforeTermination` **{warning-solid}** | [`Int!`](#int) | **Deprecated** in GitLab 17.9. Field is not used. |
 | <a id="workspacename"></a>`name` | [`String!`](#string) | Name of the workspace in Kubernetes. |
 | <a id="workspacenamespace"></a>`namespace` | [`String!`](#string) | Namespace of the workspace in Kubernetes. |
 | <a id="workspaceprocesseddevfile"></a>`processedDevfile` | [`String!`](#string) | Processed YAML of the devfile used to configure the workspace. |

@@ -39,6 +39,8 @@
   - 1
 - - anti_abuse_ban_duplicate_users
   - 1
+- - anti_abuse_banned_user_project_deletion
+  - 1
 - - anti_abuse_new_abuse_report
   - 1
 - - anti_abuse_spam_abuse_events
@@ -820,6 +822,8 @@
 - - search_zoekt_repo_to_index_event
   - 1
 - - search_zoekt_task_failed_event
+  - 1
+- - search_zoekt_update_index_used_storage_bytes_event
   - 1
 - - secrets_management_provision_project_secrets_manager
   - 1

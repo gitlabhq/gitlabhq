@@ -108,6 +108,10 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     work_item.reload.work_item_children.pluck(:title)
   end
 
+  def work_item_parent(work_item)
+    work_item.reload.work_item_parent
+  end
+
   let_it_be(:users) { create_list(:user, 3) }
   let_it_be(:thumbs_ups) { create_list(:award_emoji, 2, name: 'thumbsup', awardable: original_work_item) }
   let_it_be(:thumbs_downs) { create_list(:award_emoji, 2, name: 'thumbsdown', awardable: original_work_item) }
@@ -222,6 +226,12 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     [child_item1, child_item2].pluck(:title)
   end
 
+  let_it_be(:parent) do
+    parent = create(:work_item, :epic)
+    create(:parent_link, work_item: original_work_item, work_item_parent: parent)
+    parent
+  end
+
   let_it_be(:move) { WorkItems::DataSync::MoveService }
   let_it_be(:clone) { WorkItems::DataSync::CloneService }
 
@@ -238,7 +248,8 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
       { widget_name: :customer_relations_contacts, eval_value: :work_item_crm_contacts,       expected_data: crm_contacts,  operations: [move, clone] },
       { widget_name: :designs,                     eval_value: :work_item_designs,            expected_data: designs,       operations: [move, clone] },
       { widget_name: :labels,                      eval_value: :work_item_labels,             expected_data: labels,        operations: [move, clone] },
-      { widget_name: :work_item_children,          eval_value: :work_item_children,           expected_data: child_items,   operations: [move] }
+      { widget_name: :work_item_children,          eval_value: :work_item_children,           expected_data: child_items,   operations: [move] },
+      { widget_name: :work_item_parent,            eval_value: :work_item_parent,             expected_data: parent,        operations: [move, clone] }
     ]
   end
   # rubocop: enable Layout/LineLength

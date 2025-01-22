@@ -142,7 +142,7 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :groups_and_pro
     it 'returns nothing if search only in inherited relation' do
       result = described_class.new(group, params: { search: user1.name }).execute(include_relations: [:inherited])
 
-      expect(result.to_a).to match_array([])
+      expect(result.to_a).to be_empty
     end
 
     it 'returns searched member only from sub_group if search only in inherited relation' do

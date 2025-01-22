@@ -41,9 +41,43 @@ Writing consistent codebases.
 
 Resources to get started, examples and tips.
 
-## Code review and Maintainership guidelines
+## Code review and maintainership guidelines
 
-How to create a merge request that minimizes review time and things to pay attention to when reviewing code.
+**Note**: this section is currently in development. You can contribute or track its progress in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/16090)
+
+GitLab standard [code review guidelines](../code_review.md#approval-guidelines) apply to Python projects as well.
+
+### How to find a reviewer
+
+This section explains how to integrate your project with [reviewer roulette](../code_review.md#reviewer-roulette)
+and other resources to find reviewers with Python expertise.
+
+[Work item](https://gitlab.com/gitlab-org/gitlab/-/issues/514318).
+
+### How to find a project to review
+
+[Work item](https://gitlab.com/gitlab-org/gitlab/-/issues/511513).
+
+### Maintainer responsibilities
+
+In addition to code reviews, maintainers are also responsible for monitoring and adopting relevant engineering practices
+introduced in GitLab.com into their respective Python projects. This helps to ensure Python projects are aligned
+with company standards. This consistency is important for simplifying project transitions in both directions.
+
+[Work item](https://gitlab.com/gitlab-org/gitlab/-/issues/508558).
+
+### How to become a maintainer
+
+Each project has its own process and maintainership program. We recommend reviewing the following guideline:
+
+[Work item](https://gitlab.com/gitlab-org/gitlab/-/issues/514316).
+
+### Code review best practices
+
+When writing and reviewing code, follow our Style Guides. Code authors and reviewers are encouraged to pay attention
+to these areas:
+
+[Work item](https://gitlab.com/gitlab-org/gitlab/-/issues/507548).
 
 ## Deploying a Python codebase
 

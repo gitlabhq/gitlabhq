@@ -1,6 +1,6 @@
 ---
-stage: SaaS Platforms
-group: GitLab Dedicated
+stage: GitLab Dedicated
+group: Switchboard
 description: Access application logs and S3 bucket data to monitor your GitLab Dedicated instance.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---

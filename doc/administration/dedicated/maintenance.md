@@ -1,6 +1,6 @@
 ---
-stage: SaaS Platforms
-group: GitLab Dedicated
+stage: GitLab Dedicated
+group: Environment Automation
 description: Maintenance windows, release schedules, and emergency maintenance processes for GitLab Dedicated instances.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---

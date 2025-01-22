@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'set' # rubocop:disable Lint/RedundantRequireStatement -- Ruby 3.1 and earlier needs this. Drop this line after Ruby 3.2+ is only supported.
-
 module BundlerChecksum::Command
   module Lint
     extend self

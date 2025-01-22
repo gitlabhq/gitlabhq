@@ -1,6 +1,6 @@
 ---
-stage: SaaS Platforms
-group: GitLab Dedicated
+stage: GitLab Dedicated
+group: Switchboard
 description: Manage Switchboard users and configure notification preferences, including SMTP email service settings.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---

@@ -23,7 +23,7 @@ RSpec.describe Ci::GroupVariablesFinder, feature_category: :secrets_management d
     let_it_be(:project) { project_without_group }
 
     it 'returns an empty array' do
-      expect(finder.to_a).to match_array([])
+      expect(finder.to_a).to be_empty
     end
   end
 

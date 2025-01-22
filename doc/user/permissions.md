@@ -228,7 +228,7 @@ Project permissions for [issues](project/issues/index.md):
 | View issues                                                           |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Create issues                                                         |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Authors and assignees can modify the title and description even if they don't have the Reporter role. |
 | View [confidential issues](project/issues/confidential_issues.md)     |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Update metadata on issues                                             |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Metadata includes labels, assignees, milestones, epics, weight, confidentiality, time tracking, and more.<br /><br />Guest users can only set metadata when creating an issue. They cannot change the metadata on existing issues. |
+| Update issues, including metadata, item locking, and resolving threads. |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Metadata includes labels, assignees, milestones, epics, weight, confidentiality, time tracking, and more.<br /><br />Guest users can only set metadata when creating an issue. They cannot change the metadata on existing issues. |
 | Add internal note                                                     |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Close / reopen issues                                                 |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Authors and assignees can close and reopen issues even if they don't have the Reporter role. |
 | Manage [design management](project/issues/design_management.md) files |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
@@ -517,7 +517,7 @@ Group permissions for [epics](group/epics/index.md):
 | ----------------------------------------------------------------------------- | ----- | ------- | -------- | --------- | ---------- | ----- | ----- |
 | View epic                                                                     | ✓     | ✓       | ✓        | ✓         | ✓          | ✓     |       |
 | Create epic                                                                   |       | ✓       | ✓        | ✓         | ✓          | ✓     |       |
-| Edit epic                                                                     |       | ✓       | ✓        | ✓         | ✓          | ✓     |       |
+| Edit epic, including metadata, item locking, and resolving threads.           |       | ✓       | ✓        | ✓         | ✓          | ✓     |       |
 | Delete epic                                                                   |       | ✓       |          |           |            | ✓     |       |
 | Manage [epic boards](group/epics/epic_boards.md)                              |       | ✓       | ✓        | ✓         | ✓          | ✓     |       |
 | Add issue to an [epic](group/epics/index.md)                                  | ✓     | ✓       | ✓        | ✓         | ✓          | ✓     | You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic) and edit the issue. |

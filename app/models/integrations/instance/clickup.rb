@@ -3,7 +3,7 @@
 module Integrations
   module Instance
     class Clickup < Integration
-      # To be updated as part of https://gitlab.com/gitlab-org/gitlab/-/issues/474809
+      include Integrations::Base::Clickup
     end
   end
 end

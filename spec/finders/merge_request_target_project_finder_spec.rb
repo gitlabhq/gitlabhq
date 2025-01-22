@@ -106,7 +106,7 @@ RSpec.describe MergeRequestTargetProjectFinder do
     end
 
     it 'returns no projects with search for project that does no exist' do
-      expect(finder.execute(search: 'root')).to match_array([])
+      expect(finder.execute(search: 'root')).to be_empty
     end
   end
 end

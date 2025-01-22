@@ -1392,7 +1392,6 @@ Layout/LineLength:
     - 'ee/spec/models/concerns/ee/noteable_spec.rb'
     - 'ee/spec/models/concerns/ee/project_security_scanners_information_spec.rb'
     - 'ee/spec/models/concerns/elastic/application_versioned_search_spec.rb'
-    - 'ee/spec/models/concerns/elastic/merge_request_spec.rb'
     - 'ee/spec/models/concerns/elastic/note_spec.rb'
     - 'ee/spec/models/concerns/elastic/repository_spec.rb'
     - 'ee/spec/models/concerns/epic_tree_sorting_spec.rb'
