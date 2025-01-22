@@ -3,7 +3,7 @@
 RSpec.describe QA::Tools::KnapsackReportUpdater, :aggregate_failures do
   include QA::Support::Helpers::StubEnv
 
-  subject(:report_updater) { described_class.new(wait_before_merge: 0) }
+  subject(:report_updater) { described_class.new(wait_before_approve: 0, wait_before_merge: 0) }
 
   let(:approver_id) { 1 }
   let(:mr_iid) { 1 }

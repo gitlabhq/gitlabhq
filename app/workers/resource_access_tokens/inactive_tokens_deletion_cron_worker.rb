@@ -14,8 +14,6 @@ module ResourceAccessTokens
     MAX_RUNTIME = 3.minutes
 
     def perform(cursor = nil)
-      return unless Feature.enabled?(:enable_inactive_tokens_deletion_cron_worker) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- cron worker without actor
-
       runtime_limiter = Gitlab::Metrics::RuntimeLimiter.new(MAX_RUNTIME)
 
       # rubocop:disable CodeReuse/ActiveRecord -- each_batch

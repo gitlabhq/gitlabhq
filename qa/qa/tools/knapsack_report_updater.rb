@@ -8,14 +8,17 @@ module QA
 
       GITLAB_PROJECT_ID = 278964
       UPDATE_BRANCH_NAME = "qa-knapsack-master-report-update"
+
+      DEFAULT_WAIT_BEFORE_APPROVE = 30
       DEFAULT_WAIT_BEFORE_MERGE = 120
 
-      def self.run(wait_before_merge: DEFAULT_WAIT_BEFORE_MERGE)
-        new(wait_before_merge: wait_before_merge).update_master_report
+      def self.run(wait_before_approve: DEFAULT_WAIT_BEFORE_APPROVE, wait_before_merge: DEFAULT_WAIT_BEFORE_MERGE)
+        new(wait_before_approve: wait_before_approve, wait_before_merge: wait_before_merge).update_master_report
       end
 
-      def initialize(wait_before_merge: DEFAULT_WAIT_BEFORE_MERGE)
+      def initialize(wait_before_approve: DEFAULT_WAIT_BEFORE_APPROVE, wait_before_merge: DEFAULT_WAIT_BEFORE_MERGE)
         @wait_before_merge = wait_before_merge
+        @wait_before_approve = wait_before_approve
       end
 
       # Create master_report.json merge request
@@ -34,7 +37,7 @@ module QA
 
       private
 
-      attr_reader :wait_before_merge, :mr_iid
+      attr_reader :wait_before_approve, :wait_before_merge, :mr_iid
 
       # Knapsack report generator
       #
@@ -174,6 +177,8 @@ module QA
       # @return [void]
       def approve_mr
         logger.info("  approving merge request")
+        # due to async nature of mr creation, approval is being reset because it happens before commit creation
+        sleep(wait_before_approve)
         api_request(:post, "merge_requests/#{mr_iid}/approve", {}, token_header(approver_access_token))
       end
 
