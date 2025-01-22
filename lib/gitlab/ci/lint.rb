@@ -81,7 +81,7 @@ module Gitlab
         logger.instrument(:yaml_process, once: true) do
           Gitlab::Ci::YamlProcessor.new(content, project: project,
             user: current_user,
-            ref: RefFinder.new(project).find_by_sha(sha),
+            ref: find_ref,
             sha: sha,
             verify_project_sha: verify_project_sha,
             logger: logger).execute
@@ -143,6 +143,23 @@ module Gitlab
             duration >= LOG_MAX_DURATION_THRESHOLD
           end
         end
+      end
+
+      def find_ref
+        ref = RefFinder.new(project).find_by_sha(sha)
+
+        return unless ref
+
+        allowed_to_write_ref?(ref) ? ref : nil
+      end
+
+      def allowed_to_write_ref?(ref)
+        access = Gitlab::UserAccess.new(current_user, container: project)
+
+        # We only check access for protected branches and not for protected tags
+        # because it's not possible to perform static validation on a protected tag
+        # as we initialize a new `Ci::Pipeline` in `Ci::Config` and do not pass `tag: true`.
+        access.can_update_branch?(ref)
       end
     end
   end

@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.7.3 (2025-01-22)
+
+### Fixed (1 change)
+
+- [Add BoardEpicConnection type policy for pagination](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f49b4349cecbbca2629e4abf9e2746d48537f350) **GitLab Enterprise Edition**
+
+### Security (4 changes)
+
+- [Fix protected variable exfiltration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ed6f52bb29b7dc1d6fad13c8d62725aa3a3c7283) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4714))
+- [Enhance rich viewer sanitization](https://gitlab.com/gitlab-org/security/gitlab/-/commit/68187f7e86b936d1d361c78160b3855db7ffa495) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4709))
+- [Avoid recursive sidekiq calls on cyclic work item hierarchies](https://gitlab.com/gitlab-org/security/gitlab/-/commit/77692306d5122b9a3006667a4bbd695f4e983a33) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4673))
+- [Respect the private profile constraints](https://gitlab.com/gitlab-org/security/gitlab/-/commit/325eea0ef21773481a0aa753cffacf05a835acbc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4698))
+
 ## 17.7.2 (2025-01-14)
 
 ### Fixed (1 change)
