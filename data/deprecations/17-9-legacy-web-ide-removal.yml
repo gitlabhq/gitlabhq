@@ -5,8 +5,8 @@
   reporter: ealcantara
   stage: create
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/513938
-  impact: [low]
-  scope: [instance]
+  impact: low
+  scope: instance
   resolution_role: [Admin]
   manual_task: true
   tiers: [Free, Premium, Ultimate]

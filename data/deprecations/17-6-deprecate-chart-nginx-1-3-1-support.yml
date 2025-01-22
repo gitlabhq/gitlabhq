@@ -11,7 +11,7 @@
   issue_url: https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5794
   # Use the impact calculator https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?
   impact: small
-  scope: [instance]
+  scope: instance
   resolution_role: [Admin]
   manual_task: true
   body: |  # (required) Don't change this line.

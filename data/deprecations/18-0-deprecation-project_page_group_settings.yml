@@ -6,8 +6,8 @@
   reporter: lohrc
   stage: data_stores
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/443347
-  impact: [low]
-  scope: [group]
+  impact: low
+  scope: group
   tiers: [core, premium, ultimate]
   body: |  # (required) Don't change this line.
     Group owners can access a project page in the group settings that lists the projects the group contains, with options to create, edit, or delete a project, as well as a link to the Members page for each project.

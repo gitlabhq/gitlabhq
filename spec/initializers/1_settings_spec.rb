@@ -41,4 +41,17 @@ RSpec.describe '1_settings', feature_category: :shared do
       it { is_expected.to be(false) }
     end
   end
+
+  describe 'log_decompressed_response_bytesize' do
+    it { expect(Settings.gitlab.log_decompressed_response_bytesize).to eq(0) }
+
+    context 'when GITLAB_LOG_DECOMPRESSED_RESPONSE_BYTESIZE is set' do
+      before do
+        stub_env('GITLAB_LOG_DECOMPRESSED_RESPONSE_BYTESIZE', '10')
+        load_settings
+      end
+
+      it { expect(Settings.gitlab.log_decompressed_response_bytesize).to eq(10) }
+    end
+  end
 end

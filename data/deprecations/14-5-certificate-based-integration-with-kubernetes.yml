@@ -3,7 +3,7 @@
   removal_milestone: "19.0"
   breaking_change: true
   impact: high
-  scope: [instance, group, project]
+  scope: instance, group, project
   resolution_role: Maintainer
   manual_task: true
   body: |

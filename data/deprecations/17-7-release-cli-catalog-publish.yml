@@ -8,7 +8,7 @@
   window: 3  # Can be 1, 2, or 3 - The window when the breaking change will be deployed on GitLab.com
   # Use the impact calculator https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?
   impact: high  # Can be one of: [critical, high, medium, low]
-  scope:  # Can be one or a combination of: [instance, group, project]
+  scope: instance
   resolution_role: Developer  # Can be one of: [Admin, Owner, Maintainer, Developer]
   manual_task: true  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
   body: |  # (required) Don't change this line.
