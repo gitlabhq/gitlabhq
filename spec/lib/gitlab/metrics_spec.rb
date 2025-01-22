@@ -282,4 +282,45 @@ RSpec.describe Gitlab::Metrics do
       it { is_expected.not_to be_a(Gitlab::Metrics::NullMetric) }
     end
   end
+
+  describe '.initialize_slis!', feature_category: :error_budgets do
+    let!(:puma_slis) do
+      [
+        Gitlab::Metrics::RequestsRackMiddleware,
+        Gitlab::Metrics::GlobalSearchSlis,
+        Gitlab::Metrics::Middleware::PathTraversalCheck
+      ]
+    end
+
+    let!(:sidekiq_slis) do
+      [
+        Gitlab::Metrics::Lfs,
+        Gitlab::Metrics::LooseForeignKeysSlis
+      ]
+    end
+
+    context 'when puma runtime' do
+      it "initializes only puma SLIs" do
+        allow(Gitlab::Runtime).to receive_messages(puma?: true, sidekiq?: false)
+
+        expect(Gitlab::Metrics::SliConfig.enabled_slis).to include(*puma_slis)
+        expect(Gitlab::Metrics::SliConfig.enabled_slis).not_to include(*sidekiq_slis)
+        expect(Gitlab::Metrics::SliConfig.enabled_slis).to all(receive(:initialize_slis!))
+
+        described_class.initialize_slis!
+      end
+    end
+
+    context 'when sidekiq runtime' do
+      it "initializes only sidekiq SLIs" do
+        allow(Gitlab::Runtime).to receive_messages(puma?: false, sidekiq?: true)
+
+        expect(Gitlab::Metrics::SliConfig.enabled_slis).not_to include(*puma_slis)
+        expect(Gitlab::Metrics::SliConfig.enabled_slis).to include(*sidekiq_slis)
+        expect(Gitlab::Metrics::SliConfig.enabled_slis).to all(receive(:initialize_slis!))
+
+        described_class.initialize_slis!
+      end
+    end
+  end
 end

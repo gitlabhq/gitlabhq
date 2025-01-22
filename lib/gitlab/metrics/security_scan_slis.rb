@@ -3,6 +3,10 @@
 module Gitlab
   module Metrics
     module SecurityScanSlis
+      include Gitlab::Metrics::SliConfig
+
+      sidekiq_enabled!
+
       class << self
         def initialize_slis!
           Gitlab::Metrics::Sli::ErrorRate.initialize_sli(:security_scan, possible_labels)

@@ -3,6 +3,10 @@
 module Gitlab
   module Metrics
     module LooseForeignKeysSlis
+      include Gitlab::Metrics::SliConfig
+
+      sidekiq_enabled!
+
       class << self
         def initialize_slis!
           Gitlab::Metrics::Sli::Apdex.initialize_sli(:loose_foreign_key_clean_ups, possible_labels)

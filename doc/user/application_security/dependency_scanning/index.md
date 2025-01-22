@@ -178,8 +178,8 @@ The following languages and dependency managers are supported by Dependency Scan
       <td>Y</td>
     </tr>
     <tr>
-      <td rowspan="4">Python</td>
-      <td rowspan="4">3.11<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-7">7</a></b></sup></td>
+      <td rowspan="5">Python</td>
+      <td rowspan="5">3.11<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-7">7</a></b></sup></td>
       <td><a href="https://setuptools.readthedocs.io/en/latest/">setuptools</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-8">8</a></b></sup></td>
       <td><code>setup.py</code></td>
       <td>N</td>
@@ -209,6 +209,11 @@ The following languages and dependency managers are supported by Dependency Scan
       <td><a href="https://python-poetry.org/">Poetry</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-4">4</a></b></sup></td>
       <td><code>poetry.lock</code></td>
       <td>N</td>
+    </tr>
+    <tr>
+      <td><a href="https://docs.astral.sh/uv/">uv</a></td>
+      <td><code>uv.lock</code></td>
+      <td>Y</td>
     </tr>
     <tr>
       <td>Ruby</td>
@@ -434,6 +439,13 @@ The following package managers use lockfiles that GitLab analyzers are capable o
       <td>v1</td>
       <td>
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/python-poetry/default/poetry.lock">1.x</a>
+      </td>
+    </tr>
+    <tr>
+      <td>uv</td>
+      <td>v0.x</td>
+      <td>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/scanner/parser/uv/fixtures/simple/uv.lock">0.x</a>
       </td>
     </tr>
   </tbody>

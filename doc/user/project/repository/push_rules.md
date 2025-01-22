@@ -241,6 +241,10 @@ In Git, filenames include both the file's name, and all directories preceding th
 When you `git push`, each filename in the push is compared to the regular expression
 in **Prohibited filenames**.
 
+NOTE:
+This feature uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax),
+which does not support positive or negative lookaheads.
+
 The regular expression can:
 
 - Match file names in any location in your repository.
@@ -248,7 +252,6 @@ The regular expression can:
 - Match partial file names.
 - Exclude specific file types by extension.
 - Combine multiple expressions to exclude several patterns.
-- Allow only specific file types, and act as an allow list.
 
 #### Regular expression examples
 
@@ -296,17 +299,6 @@ You can combine multiple patterns into one expression. This example combines all
 ```plaintext
 (\.exe|^config\.yml|^directory-name\/config\.yml|(^|\/)install\.exe)$
 ```
-
-##### Allow specific file types
-
-You can use the prohibited file names feature as an allow list. This example allows only `.sh` and `.exe` files,
-regardless of their location or the operating system's directory format:
-
-```plaintext
-^.*\.(?!(exe|sh)$)[^.]+$
-```
-
-To prevent these file types instead of allowing them, change `!` to `=`.
 
 ## Related topics
 

@@ -80,15 +80,40 @@ A list of all projects for the instance is displayed.
 
 If you are not authenticated, the list shows public projects only.
 
+## View projects you have contributed to
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13066) in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `your_work_projects_vue`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+The **Contributed** tab displays projects where you have:
+
+- Created issues, merge requests, or epics
+- Commented on issues, merge requests, or epics
+- Closed issues, merge requests, or epics
+- Pushed commits
+- Approved merge requests
+- Merged merge requests
+
+To view projects you have contributed to:
+
+1. On the left sidebar, select **Search or go to**.
+1. Select **View all my projects**.
+1. Select the **Contributed** tab.
+
 ## View projects you are a member of
+
+> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) tab label from "Yours" to "Member" in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `your_work_projects_vue`. Disabled by default.
 
 To view projects you are a member of:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **View all my projects**.
+1. Select the **Yours** tab.
 
-On the left sidebar, **Projects** is selected. On the list, on the **Yours** tab,
-all the projects you are a member of are displayed.
+NOTE:
+This tab appears as **Member** when the `your_work_projects_vue` feature flag is enabled.
 
 ## View personal projects
 
@@ -280,17 +305,23 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
+> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) tab label from "Pending deletion" to "Inactive" in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `your_work_projects_vue`. Disabled by default.
+
 To view a list of all projects that are pending deletion:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **View all my projects**.
 1. Select the **Pending deletion** tab.
 
+NOTE:
+This tab appears as **Inactive** when the `your_work_projects_vue` feature flag is enabled.
+
 Each project in the list shows:
 
+- A badge indicating that the project has been marked for deletion.
 - The time the project was marked for deletion.
 - The time the project is scheduled for final deletion.
-- A **Restore** link to stop the project being eventually deleted.
+- A **Restore** action to stop the project being eventually deleted.
 
 ## Restore a project
 

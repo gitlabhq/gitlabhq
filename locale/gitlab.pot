@@ -2421,7 +2421,7 @@ msgstr ""
 msgid "AI|Write a summary to fill out the selected issue template"
 msgstr ""
 
-msgid "AI|Your request does not seem to contain code to %{action}. To %{human_name} select the lines of code in your editor and then type the command %{command_name} in the chat. You may add additional instructions after this command. If you have no code to select, you can also simply add the code after the command."
+msgid "AI|Your request does not seem to contain code to %{action}. To %{human_name} select the lines of code in your %{platform} and then type the command %{command_name} in the chat. You may add additional instructions after this command. If you have no code to select, you can also simply add the code after the command."
 msgstr ""
 
 msgid "API"
@@ -5247,6 +5247,9 @@ msgid "AiImpactAnalytics|Monthly GitLab Duo Code Suggestions accepted / total Co
 msgstr ""
 
 msgid "AiImpactAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors in the last 30 days. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "AiImpactAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors."
 msgstr ""
 
 msgid "AiImpactAnalytics|Monthly user engagement with GitLab Duo Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors."
@@ -30753,12 +30756,6 @@ msgstr ""
 msgid "InviteMembersModal| To get more members, the owner of this top-level group can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier."
 msgstr ""
 
-msgid "InviteMembersModal|%{linkStart}Read more%{linkEnd} about access expiration"
-msgstr ""
-
-msgid "InviteMembersModal|%{linkStart}Read more%{linkEnd} about role permissions. You can change this later. Invited members are limited to this role or their current group role, whichever is lower."
-msgstr ""
-
 msgid "InviteMembersModal|Access expiration date (optional)"
 msgstr ""
 
@@ -30777,6 +30774,9 @@ msgstr ""
 msgid "InviteMembersModal|During your trial, you can invite as many members to %{groupName} as you like. When the trial ends, you'll have a maximum of %{dashboardLimit} members on the Free tier. To get more members, %{linkStart}upgrade to a paid plan%{linkEnd}."
 msgstr ""
 
+msgid "InviteMembersModal|From this date onward, the user can no longer access the group or project. Learn more about %{linkStart}access%{linkEnd}."
+msgstr ""
+
 msgid "InviteMembersModal|GitLab is better with colleagues!"
 msgstr ""
 
@@ -30790,6 +30790,9 @@ msgid "InviteMembersModal|Invite a group"
 msgstr ""
 
 msgid "InviteMembersModal|Invite members"
+msgstr ""
+
+msgid "InviteMembersModal|Invited members are limited to this role or their current group role, whichever is higher. Learn more about %{linkStart}roles%{linkEnd}."
 msgstr ""
 
 msgid "InviteMembersModal|Inviting a group %{linkStart}adds its members to your group%{linkEnd}, including members who join after the invite. This might put your group over the free %{count} user limit."
@@ -67973,11 +67976,10 @@ msgstr ""
 msgid "mrWidget|%{boldStart}Merging!%{boldEnd} We're almost there…"
 msgstr ""
 
-msgid "mrWidget|%{dangerStart}%{rules} rule can't be approved%{dangerEnd}"
-msgstr ""
-
-msgid "mrWidget|%{dangerStart}%{rules} rules can't be approved%{dangerEnd}"
-msgstr ""
+msgid "mrWidget|%{dangerStart}1 rule can't be approved%{dangerEnd}"
+msgid_plural "mrWidget|%{dangerStart}%{count} rules can't be approved%{dangerEnd}"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "mrWidget|%{mergeError}."
 msgstr ""
@@ -67994,11 +67996,10 @@ msgstr ""
 msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB"
 msgstr ""
 
-msgid "mrWidget|%{rules} invalid rule has been approved automatically"
-msgstr ""
-
-msgid "mrWidget|%{rules} invalid rules have been approved automatically"
-msgstr ""
+msgid "mrWidget|1 invalid rule has been approved automatically"
+msgid_plural "mrWidget|%{count} invalid rules have been approved automatically"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "mrWidget|A new merge train has started and this merge request is the first of the queue."
 msgstr ""

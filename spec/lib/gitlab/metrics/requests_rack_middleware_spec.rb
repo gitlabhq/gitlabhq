@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures, fea
       end
 
       it 'guarantees SLI metrics are incremented with all the required labels' do
-        described_class.initialize_metrics
+        described_class.initialize_slis!
 
         expect(Gitlab::Metrics::RailsSlis.request_apdex).to receive(:increment).and_call_original
         expect(Gitlab::Metrics::RailsSlis.request_error_rate).to receive(:increment).and_call_original
@@ -469,7 +469,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures, fea
       end
     end
 
-    describe '.initialize_metrics', :prometheus do
+    describe '.initialize_slis!', :prometheus do
       it "sets labels for http_requests_total" do
         expected_labels = []
 
@@ -481,7 +481,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures, fea
           end
         end
 
-        described_class.initialize_metrics
+        described_class.initialize_slis!
 
         expect(described_class.http_requests_total.values.keys).to contain_exactly(*expected_labels)
       end
@@ -489,7 +489,7 @@ RSpec.describe Gitlab::Metrics::RequestsRackMiddleware, :aggregate_failures, fea
       it 'sets labels for http_request_duration_seconds' do
         expected_labels = described_class::HTTP_METHODS.keys.map { |method| { method: method } }
 
-        described_class.initialize_metrics
+        described_class.initialize_slis!
 
         expect(described_class.http_request_duration_seconds.values.keys).to include(*expected_labels)
       end

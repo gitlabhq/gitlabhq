@@ -318,6 +318,14 @@ export const VALUE_STREAM_METRIC_METADATA = {
       anchor: 'use-code-suggestions',
     }),
   },
+  [AI_METRICS.DUO_CHAT_USAGE_RATE]: {
+    description: s__(
+      'AiImpactAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors.',
+    ),
+    groupLink: '',
+    projectLink: '',
+    docsLink: helpPagePath('user/gitlab_duo_chat/index'),
+  },
 };
 
 export const USAGE_OVERVIEW_NO_DATA_ERROR = s__(

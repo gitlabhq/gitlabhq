@@ -3,6 +3,10 @@
 module Gitlab
   module Metrics
     class RequestsRackMiddleware
+      include Gitlab::Metrics::SliConfig
+
+      puma_enabled!
+
       HTTP_METHODS = {
         "delete" => %w[200 202 204 303 400 401 403 404 500 503],
         "get" => %w[200 204 301 302 303 304 307 400 401 403 404 410 422 429 500 503],
@@ -50,7 +54,7 @@ module Gitlab
         ::Gitlab::Metrics.counter(:http_health_requests_total, 'Health endpoint request count')
       end
 
-      def self.initialize_metrics
+      def self.initialize_slis!
         # This initialization is done to avoid gaps in scraped metrics after
         # restarts. It makes sure all counters/histograms are available at
         # process start.

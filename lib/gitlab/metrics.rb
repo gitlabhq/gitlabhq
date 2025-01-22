@@ -101,5 +101,9 @@ module Gitlab
 
       retval
     end
+
+    def self.initialize_slis!
+      Gitlab::Metrics::SliConfig.enabled_slis.each(&:initialize_slis!)
+    end
   end
 end
