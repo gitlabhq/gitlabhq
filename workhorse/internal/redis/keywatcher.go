@@ -19,11 +19,12 @@ import (
 
 // KeyWatcher is responsible for watching keys in Redis and notifying subscribers.
 type KeyWatcher struct {
+	// Put this field first to ensure backoff.Backoff is aligned for 64-bit access
+	reconnectBackoff backoff.Backoff
 	mu               sync.Mutex
 	newSubscriber    chan struct{}
 	subscribers      map[string][]chan string
 	shutdown         chan struct{}
-	reconnectBackoff backoff.Backoff
 	redisConn        *redis.Client // can be nil
 	conn             *redis.PubSub
 	firstRun         bool
