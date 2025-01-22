@@ -76,7 +76,7 @@ You can seed groups with subgroups that contain milestones/projects/issues
 with the `gitlab:seed:group_seed` task:
 
 ```shell
-bin/rake "gitlab:seed:group_seed[subgroup_depth, username]"
+bin/rake "gitlab:seed:group_seed[subgroup_depth, username, organization_path]"
 ```
 
 Group are additionally seeded with epics if GitLab instance has epics feature available.

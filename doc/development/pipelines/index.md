@@ -721,10 +721,10 @@ Exceptions to this general guideline should be motivated and documented.
 
 ### Ruby versions testing
 
-We're running Ruby 3.1 on GitLab.com, as well as for the default branch.
-To prepare for the next Ruby version, we run merge requests in Ruby 3.2.
+We're running Ruby 3.2 on GitLab.com, as well as for the default branch.
+To prepare for the next Ruby version, we run merge requests in Ruby 3.3.
 Please see the roadmap at
-[Ruby 3.2 epic](https://gitlab.com/groups/gitlab-org/-/epics/9684#plan)
+[Ruby 3.3 epic](https://gitlab.com/groups/gitlab-org/-/epics/12350)
 for more details.
 
 To make sure all supported Ruby versions are working, we also run our test
@@ -733,7 +733,7 @@ suite on dedicated 2-hourly scheduled pipelines for each supported versions.
 For merge requests, you can add the following labels to run the respective
 Ruby version only:
 
-- `pipeline:run-in-ruby3_1`
+- `pipeline:run-in-ruby3_3`
 
 ### PostgreSQL versions testing
 
@@ -746,25 +746,24 @@ We run our test suite against PostgreSQL 14, 15 and 16 on nightly scheduled pipe
 
 | Where?                                                                                        | PostgreSQL version           | Ruby version          |
 |-----------------------------------------------------------------------------------------------|------------------------------|-----------------------|
-| Merge requests                                                                                | 14 (default version)         | 3.1 (default version) |
-| `master` branch commits                                                                       | 14 (default version)         | 3.1 (default version) |
-| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05) | 14 (default version)         | 3.1 (default version) |
-| `maintenance` scheduled pipelines for the `ruby3_2` branch (every odd-numbered hour at XX:10) | 14 (default version)         | 3.2                   |
-| `nightly` scheduled pipelines for the `master` branch                                         | 14 (default version), 15, 16 | 3.1 (default version) |
+| Merge requests                                                                                | 14 (default version)         | 3.2 (default version) |
+| `master` branch commits                                                                       | 14 (default version)         | 3.2 (default version) |
+| `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05) | 14 (default version)         | 3.2 (default version) |
+| `maintenance` scheduled pipelines for the `ruby-next` branch (every odd-numbered hour at XX:10) | 14 (default version)         | 3.3                   |
+| `nightly` scheduled pipelines for the `master` branch                                         | 14 (default version), 15, 16 | 3.2 (default version) |
 
-For each current Ruby versions we're testing against with, we run
-maintenance scheduled pipelines every 2 hours on their respective `ruby\d_\d`
-branches. All these branches must not have any changes. These branches are
-only there to run pipelines with their respective Ruby versions in the
-scheduled maintenance pipelines.
+For the next Ruby versions we're testing against with, we run
+maintenance scheduled pipelines every 2 hours on the `ruby-next` branch.
+`ruby-next` must not have any changes. The branch is only there to run
+pipelines with another Ruby version in the scheduled maintenance pipelines.
 
 Additionally, we have scheduled pipelines running on `ruby-sync` branch also
-every 2 hours, updating all the `ruby\d_\d` branches to be up-to-date with
+every 2 hours, updating all next branches to be up-to-date with
 the default branch `master`. No pipelines will be triggered by this push.
 
 The `gitlab` job in the `ruby-sync` branch uses a `gitlab-org/gitlab` project
 token named `RUBY_SYNC` with `write_repository` scope and `Maintainer` role,
-expiring on 2024-12-01. The token is stored in the `RUBY_SYNC_TOKEN` variable
+expiring on 2025-12-02. The token is stored in the `RUBY_SYNC_TOKEN` variable
 in the pipeline schedule for `ruby-sync` branch.
 
 ### Redis versions testing

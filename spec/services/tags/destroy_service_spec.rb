@@ -65,6 +65,18 @@ RSpec.describe Tags::DestroyService, feature_category: :source_code_management d
           expect(execute).to include(status: :error, message: 'No such tag')
         end
       end
+
+      context 'when tag was deleted after find_tag check' do
+        before do
+          allow(repository).to receive(:find_tag).with(tag_name).and_return(repository.tags.first)
+        end
+
+        let(:tag_name) { 'deleted_tag' }
+
+        it 'returns an error message' do
+          expect(execute).to include(status: :error, message: 'Failed to remove tag')
+        end
+      end
     end
 
     context 'when skip_find is true' do

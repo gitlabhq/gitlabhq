@@ -8,5 +8,9 @@ RSpec.describe AntiAbuse::Reports::UserMention, feature_category: :insider_threa
     it { is_expected.to belong_to(:note).optional(false) }
   end
 
-  it_behaves_like 'has user mentions'
+  it_behaves_like 'has user mentions' do
+    let_it_be(:mentionable_key) { 'abuse_report_id' }
+    let_it_be(:user) { create(:user, :with_namespace) }
+    let_it_be(:mentionable) { create(:abuse_report, user: user) }
+  end
 end

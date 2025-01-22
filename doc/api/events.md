@@ -47,7 +47,10 @@ YYYY-MM-DD
 
 ### Event Time Period Limit
 
-GitLab removes events older than 3 years from the events table for performance reasons.
+For information about activity retention limits, see:
+
+- [User activity time period limit](../user/profile/contributions_calendar.md#event-time-period-limit)
+- [Project activity time period limit](../user/project/working_with_projects.md#event-time-period-limit)
 
 ## List currently authenticated user's events
 

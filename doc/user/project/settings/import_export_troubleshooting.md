@@ -181,7 +181,7 @@ it is terminated during execution.
 
 GitLab.com users should [contact Support](https://about.gitlab.com/support/#contact-support) to resolve this issue.
 
-Self-managed users can use the Rails console to bypass the Sidekiq process and
+GitLab Self-Managed administrators can use the Rails console to bypass the Sidekiq process and
 manually trigger the project export:
 
 ```ruby

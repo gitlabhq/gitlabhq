@@ -386,15 +386,14 @@ For more information, see [Deployment safety](../../../ci/environments/deploymen
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216485) in GitLab 15.6.
 
-Releases can be made accessible to non-project members while keeping repository-related information such as
-[source code](release_fields.md#source-code) and [release evidence](release_evidence.md) private. Use this for
-projects that use releases as a way to give access to new versions of software but do not want the source code to
-be public.
+You can make releases accessible to non-project members while keeping repository-related information, such as [source code](release_fields.md#source-code) and [release evidence](release_evidence.md), available only to project members. These settings are ideal for
+projects that use releases to give access to new versions of software, but do not want the source code to be publicly available.
 
 To make releases available publicly, set the following [project settings](../settings/index.md#configure-project-features-and-permissions):
 
-- Repository is enabled and set to **Only Project Members**
-- Releases is enabled and set to **Everyone With Access**
+- **Project visibility** is set to **Public**
+- **Repository** is enabled and set to **Only Project Members**
+- **Releases** is enabled and set to **Everyone With Access**
 
 ### Create, update, and delete a release and its assets
 

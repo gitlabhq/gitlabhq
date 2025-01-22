@@ -3,7 +3,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { handleBlobRichViewer } from '~/blob/viewer';
 import MarkdownFieldView from '~/vue_shared/components/markdown/field_view.vue';
 import { handleLocationHash } from '~/lib/utils/common_utils';
-import { sanitize } from '~/lib/dompurify';
+import { sanitize, defaultConfig } from '~/lib/dompurify';
 import ViewerMixin from './mixins';
 import {
   MARKUP_FILE_TYPE,
@@ -98,7 +98,8 @@ export default {
     },
   },
   safeHtmlConfig: {
-    ADD_TAGS: ['gl-emoji', 'copy-code'],
+    ...defaultConfig,
+    FORBID_ATTR: [...defaultConfig.FORBID_ATTR, 'style', 'data-lines-path'],
   },
 };
 </script>

@@ -85,7 +85,7 @@ To enable silent admin project and group file exports:
 
 ## Allow contribution mapping to administrators
 
-> - Introduced in GitLab 17.5 [with flag](../../administration/feature_flags.md) named `importer_user_mapping`. Disabled by default.
+> - Introduced in GitLab 17.5 [with a flag](../../administration/feature_flags.md) named `importer_user_mapping`. Disabled by default.
 
 Allow mapping of imported user contributions to administrators.
 

@@ -600,7 +600,7 @@ remain compliant.
 ### Why we perform the tests
 
 The Quality Department measures and improves the performance of GitLab. They create and validate architectures
-to ensure reliable configurations for self-managed users.
+to ensure reliable configurations for GitLab Self-Managed.
 
 For more information, see our [handbook page](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/performance-and-scalability/).
 

@@ -27,10 +27,10 @@
     and maintain them as needed.
 
     As an alternative we recommend using the new OpenTofu CI/CD component on GitLab.com
-    or the new OpenTofu CI/CD template on self-managed.
+    or the new OpenTofu CI/CD template on GitLab Self-Managed.
     CI/CD components are not yet available on GitLab Self-Managed,
     but [Issue #415638](https://gitlab.com/gitlab-org/gitlab/-/issues/415638)
-    proposes to add this feature. If CI/CD components become available on self-managed,
+    proposes to add this feature. If CI/CD components become available on GitLab Self-Managed,
     the OpenTofu CI/CD template will be removed.
 
     You can read more about the new OpenTofu CI/CD component [here](https://gitlab.com/components/opentofu).

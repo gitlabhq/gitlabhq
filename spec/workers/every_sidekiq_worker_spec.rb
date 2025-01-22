@@ -444,6 +444,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Search::Zoekt::AdjustIndicesReservedStorageBytesEventWorker' => 1,
         'Search::Zoekt::DeleteProjectEventWorker' => 1,
         'Search::Zoekt::IndexMarkedAsReadyEventWorker' => 1,
+        'Search::Zoekt::IndexMarkAsPendingEvictionEventWorker' => 1,
         'Search::Zoekt::IndexMarkedAsToDeleteEventWorker' => 1,
         'Search::Zoekt::IndexOverWatermarkEventWorker' => 1,
         'Search::Zoekt::IndexToEvictEventWorker' => 1,

@@ -1,6 +1,6 @@
 /*
 
-https://github.com/brijeshb42/monaco-themes/blob/master/themes/Tomorrow-Night.json
+https://github.com/brijeshb42/monaco-themes/blob/master/themes/Monokai.json
 
 The MIT License (MIT)
 

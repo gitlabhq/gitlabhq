@@ -20,8 +20,8 @@ The certificate-based integration is
 [**deprecated**](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/)
 in GitLab 14.5. The sunsetting plans are described:
 
-- for [GitLab.com customers](../../../update/deprecations.md#saas-certificate-based-integration-with-kubernetes).
-- for [Self-managed customers](../../../update/deprecations.md#self-managed-certificate-based-integration-with-kubernetes).
+- for [GitLab.com customers](../../../update/deprecations.md#gitlabcom-certificate-based-integration-with-kubernetes).
+- for [Self-managed customers](../../../update/deprecations.md#gitlab-self-managed-certificate-based-integration-with-kubernetes).
 
 If you are using the certificate-based integration, you should move to another workflow as soon as possible.
 

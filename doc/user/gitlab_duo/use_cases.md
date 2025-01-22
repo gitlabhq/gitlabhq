@@ -11,7 +11,7 @@ The following use cases provide practical examples, exercises, and workflows wit
 Learn how to:
 
 - Refactor existing source code.
-- Use GitLab Duo Root Cause Analysis to debug problems.
+- Use GitLab Duo Root Cause Analysis to troubleshoot failed jobs.
 - Solve security vulnerabilities.
 
 NOTE:
@@ -56,7 +56,7 @@ you need to configure CI/CD.
   Please show a .gitignore and .gitlab-ci.yml configuration for a C# project.
   ```
 
-- If your CI/CD job fails, use root cause analysis to [troubleshoot failed CI/CD jobs](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
+- If your CI/CD job fails, use Root Cause Analysis to [troubleshoot failed CI/CD jobs](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
   Alternatively, you can copy the error message into
   GitLab Duo Chat, and ask for help:
 
@@ -621,10 +621,10 @@ Resources:
 
 - [Project with source code](https://gitlab.com/gitlab-da/use-cases/ai/gitlab-duo-coffee-chat/gitlab-duo-coffee-chat-2024-02-01)
 
-## Root cause analysis use cases
+## Root Cause Analysis use cases
 
-Use root cause analysis to determine the root cause for a CI/CD
-pipeline failure. The following examples illustrate common errors, and
+Use Root Cause Analysis to determine the root cause of a CI/CD
+job failure. The following examples illustrate common errors, and
 encourage you to fork and practice finding and fixing the root cause.
 
 For more information, see the blog post [Developing GitLab Duo: Blending AI and Root Cause Analysis to fix CI/CD pipelines](https://about.gitlab.com/blog/2024/06/06/developing-gitlab-duo-blending-ai-and-root-cause-analysis-to-fix-ci-cd/).
@@ -650,7 +650,7 @@ The project [Challenge: Root Cause Analysis - Go GitLab Release Fetcher](https:/
 provides an exercise to analyze and fix CI/CD problems with a Go Tanuki app. In this exercise,
 the `build` and `docker-build` jobs are failing. When you have fixed
 the problem, the CI/CD pipeline succeeds and the `build` job prints an output.
-The `solution/` directory provides two possible solutions after root cause analysis.
+The `solution/` directory provides two possible solutions.
 
 ## Use GitLab Duo to contribute to GitLab
 

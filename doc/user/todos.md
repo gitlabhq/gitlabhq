@@ -160,6 +160,35 @@ You can mark all your to-do items as done at the same time.
 
 In the To-Do List, in the upper-right corner, select **Mark all as done**.
 
+## Snooze to-do items
+
+You can snooze to-do items to temporarily hide them from your main To-Do List. This allows you to focus on more urgent tasks and return to snoozed items later.
+
+To snooze a to-do item:
+
+1. In your To-Do List, next to the to-do item you want to snooze, select Snooze (**{clock}**).
+1. Choose one of the preset snooze durations:
+   - For one hour
+   - Until later today (4 hours later)
+   - Until tomorrow (tomorrow at 8 AM local time)
+
+Snoozed to-do items are removed from your main To-Do List and appear in a separate **Snoozed** tab.
+
+When the snooze period ends, the to-do item automatically returns to your main To-Do List. It appears with an indicator showing when it was originally created.
+
+## View snoozed to-do items
+
+To view or manage your snoozed to-do items:
+
+1. Go to your To-Do List.
+1. At the top of the list, select the Snoozed tab.
+
+From the Snoozed tab, you can:
+
+- View when a snoozed to-do is scheduled to return to your main list.
+- Remove the snooze to immediately return an item to your main To-Do List.
+- Mark a snoozed to-do as done.
+
 ## How a user's To-Do List is affected when their access changes
 
 For security reasons, GitLab deletes to-do items when a user no longer has access to a related resource.

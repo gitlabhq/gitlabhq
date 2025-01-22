@@ -36,6 +36,12 @@ With the Value Streams Dashboard, you can:
 
 For a click-through demo, see [the Value Stream Management product tour](https://gitlab.navattic.com/vsm).
 
+To view the Value Streams Dashboard as an analytics dashboard for a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Analyze > Analytics dashboards**.
+1. From the list of available dashboards, select **Value Streams Dashboard**.
+
 NOTE:
 Data displayed on the Value Streams Dashboard is continuously collected in the backend.
 If you upgrade to the Ultimate tier, you get access to historical data, and can view metrics about past GitLab usage and performance.

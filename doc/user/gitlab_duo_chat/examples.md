@@ -382,30 +382,46 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123692) in GitLab 16.2 as an [experiment](../../policy/development_stages_support.md#experiment) on GitLab.com.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/441681) and moved to GitLab Duo Chat in GitLab 17.3.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+> - Failed jobs widget for merge requests [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174586) in GitLab 17.7.
 
-You can ask GitLab Duo Chat to determine the root cause of a CI/CD job failure by analyzing the logs.
+You can use GitLab Duo Root Cause Analysis in GitLab Duo Chat to quickly identify and fix CI/CD job failures.
+It analyzes the last 100,000 characters of the job log to determine the cause of failure and provides an example fix.
 
-NOTE:
-The last 100,000 characters of the job log are analyzed.
+You can access this feature either from the **Pipelines** tab in merge requests or directly from the job log.
+
+Root Cause Analysis does not support:
+
+- Trigger jobs
+- Downstream pipelines
+
+Provide feedback on this feature in [epic 13872](https://gitlab.com/groups/gitlab-org/-/epics/13872).
 
 Prerequisites:
 
-- Have permission to view the CI/CD job.
-- Have a paid GitLab Duo Enterprise seat.
+- You must have permission to view the CI/CD job.
+- You must have a paid GitLab Duo Enterprise seat.
 
-To troubleshoot a failed CI/CD job:
+### From a merge request
+
+To troubleshoot a failed CI/CD job from a merge request:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Go to your merge request.
+1. Select the **Pipelines** tab.
+1. From the Failed jobs widget, either:
+   - Select the job ID to go to the job log.
+   - Select **Troubleshoot** to analyze the failure directly.
+
+### From the job log
+
+To troubleshoot a failed CI/CD job from the job log:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Jobs**.
 1. Select the failed CI/CD job.
-1. From the job log page, do one of the following:
-
-   - Below the job log, select **Troubleshoot**.
+1. Below the job log, either:
+   - Select **Troubleshoot**.
    - Open GitLab Duo Chat and type `/troubleshoot`.
-
-An analysis of the reasons for the failure and an example fix is displayed.
-
-Provide feedback on this feature in [epic 13872](https://gitlab.com/groups/gitlab-org/-/epics/13872).
 
 ## Explain a vulnerability
 
@@ -464,11 +480,11 @@ DETAILS:
 
 These commands are dynamic and are available only in the GitLab UI when using Duo Chat:
 
-| Command                | Purpose                                                                                                            | Area             |
-|------------------------|--------------------------------------------------------------------------------------------------------------------|------------------|
-| /summarize_comments    | Generate a summary of all comments on the current issue                                                            | Issues           |
-| /troubleshoot          | [Troubleshoot failed CI/CD jobs with Root Cause Analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | Failed pipelines |
-| /vulnerability_explain | [Explain current vulnerability](../application_security/vulnerabilities/index.md#explaining-a-vulnerability)       | Vulnerabilities  |
+| Command                | Purpose                                                                                                            | Area |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------ | ---- |
+| /summarize_comments    | Generate a summary of all comments on the current issue                                                            | Issues |
+| /troubleshoot          | [Troubleshoot failed CI/CD jobs with Root Cause Analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | Jobs |
+| /vulnerability_explain | [Explain current vulnerability](../application_security/vulnerabilities/index.md#explaining-a-vulnerability)       | Vulnerabilities |
 
 ### IDE
 

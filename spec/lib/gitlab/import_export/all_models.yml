@@ -901,6 +901,7 @@ project:
 - security_policies
 - approval_policy_rule_project_links
 - approval_policy_rules
+- security_pipeline_execution_config_links
 - secrets_manager
 - observability_metrics
 - observability_traces

@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.8.1 (2025-01-22)
+
+### Security (4 changes)
+
+- [Fix protected variable exfiltration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/998874eb0ed029872a47991788565213aa6707b8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4713))
+- [Enhance rich viewer sanitization](https://gitlab.com/gitlab-org/security/gitlab/-/commit/895088208f7a39aad0bd9cd8dbec8cf6b8f8f1f3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4708))
+- [Avoid recursive sidekiq calls on cyclic work item hierarchies](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1872a670e73e294db21773d8289bc51c6b9ec9aa) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4711))
+- [Respect the private profile constraints](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f434b2e5d6542b3d762852a725a19780d6966db1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4704))
+
 ## 17.8.0 (2025-01-15)
 
 ### Added (127 changes)
@@ -457,6 +466,19 @@ entry.
 - [Remove feature flag `ai_custom_model`](https://gitlab.com/gitlab-org/gitlab/-/commit/790adc35614aa08ea66a4a3b66233e9320cf9dce) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175687))
 - [Remove default on `group_saved_replies_flag feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/75d49fe13646e1e0d3b68233ac4a965c86853917) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175647))
 - [Remove use_actual_plan_in_license_check flag](https://gitlab.com/gitlab-org/gitlab/-/commit/b8c3fe16aedb69c82ff52d1c695d72e933c4b946) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175649))
+
+## 17.7.3 (2025-01-22)
+
+### Fixed (1 change)
+
+- [Add BoardEpicConnection type policy for pagination](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f49b4349cecbbca2629e4abf9e2746d48537f350) **GitLab Enterprise Edition**
+
+### Security (4 changes)
+
+- [Fix protected variable exfiltration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ed6f52bb29b7dc1d6fad13c8d62725aa3a3c7283) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4714))
+- [Enhance rich viewer sanitization](https://gitlab.com/gitlab-org/security/gitlab/-/commit/68187f7e86b936d1d361c78160b3855db7ffa495) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4709))
+- [Avoid recursive sidekiq calls on cyclic work item hierarchies](https://gitlab.com/gitlab-org/security/gitlab/-/commit/77692306d5122b9a3006667a4bbd695f4e983a33) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4673))
+- [Respect the private profile constraints](https://gitlab.com/gitlab-org/security/gitlab/-/commit/325eea0ef21773481a0aa753cffacf05a835acbc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4698))
 
 ## 17.7.2 (2025-01-14)
 
@@ -1295,6 +1317,24 @@ entry.
 - [Protected packages: Use CheckRuleExistenceService in npm push protection](https://gitlab.com/gitlab-org/gitlab/-/commit/a57fa587649d1280132d041b802b93ae172c403d) by @gerardo-navarro ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166925))
 - [Finalize migration BackfillMlExperimentMetadataProjectId](https://gitlab.com/gitlab-org/gitlab/-/commit/0768d34e5d66ec56aa9104206120d2b691d3781f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172003))
 - [Finalize migration BackfillDastSiteValidationsProjectId](https://gitlab.com/gitlab-org/gitlab/-/commit/edb777429d66afe879a5bb8d4652a610eb39eb7c) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171199))
+
+## 17.6.4 (2025-01-22)
+
+### Fixed (2 changes)
+
+- [Add BoardEpicConnection type policy for pagination](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0fc02660321fef5d2fee627bd9b81c0aaca62a82) **GitLab Enterprise Edition**
+- [Fix handling of short gzip metadata files](https://gitlab.com/gitlab-org/security/gitlab/-/commit/09c5801a07e2dcbd48a44ea97cb56aa6fb141105)
+
+### Security (4 changes)
+
+- [Fix protected variable exfiltration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/da2d664ff802e6c961a8e463f39d5b7f179ba0f7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4715))
+- [Enhance rich viewer sanitization](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fca347dbd3660d89b1a58d39e1cf4ce680363988) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4710))
+- [Avoid recursive sidekiq calls on cyclic work item hierarchies](https://gitlab.com/gitlab-org/security/gitlab/-/commit/db1de035fb5ddfee1849a411020f22f5808e811b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4660))
+- [Respect the private profile constraints](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e834095ace85698c4c32f915e280158bb0ae9e88) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4699))
+
+### Other (1 change)
+
+- [Reorder migrations for ci_deleted_objects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/313e91e2a458db2ebcab4a8bb57384467ee295be)
 
 ## 17.6.3 (2025-01-08)
 

@@ -280,8 +280,8 @@ If [SCIM](scim_setup.md) is configured, see [user access](scim_setup.md#user-acc
 When a user tries to sign in with Group SSO, GitLab attempts to find or create a user based on the following:
 
 - Find an existing user with a matching SAML identity. This would mean the user either had their account created by [SCIM](scim_setup.md) or they have previously signed in with the group's SAML IdP.
-- If there is no conflicting user with the same email address, create a new account automatically.
-- If there is a conflicting user with the same email address, redirect the user to the sign-in page to:
+- If an account does not already exist with the same email address, create a new account automatically. GitLab tries to match both the primary and secondary email addresses.
+- If an account already exists with the same email address, redirect the user to the sign-in page to:
   - Create a new account with another email address.
   - Sign-in to their existing account to link the SAML identity.
 

@@ -24,7 +24,7 @@ Instead, all per-instance configurations must be made using the application (UI 
 
 ## Enabling features
 
-All features need to be Generally Available before they can be deployed to GitLab Dedicated. In most cases, this means any feature flags are defaulted to on, and the feature is being used on GitLab.com and by Self-Managed users.
+All features need to be Generally Available before they can be deployed to GitLab Dedicated. In most cases, this means any feature flags are defaulted to on, and the feature is being used on GitLab.com and by users on GitLab Self-Managed.
 
 New versions of GitLab and any other changes, are deployed using automation during scheduled maintenance windows. Because of the required automation and the timing of deployments, features must be safe for auto-rollout. This means that new features don't require any immediate manual adjustment from operators or customers.
 

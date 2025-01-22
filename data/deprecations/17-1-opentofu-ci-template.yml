@@ -15,8 +15,8 @@
   manual_task: true
   window: 1
   body: |  # (required) Don't change this line.
-    We introduces the OpenTofu CI/CD template in 16.8 as CI/CD components were not available for self-managed installations yet.
-    With the introduction of [GitLab CI/CD components for self-managed users](https://docs.gitlab.com/ee/ci/components/#use-a-gitlabcom-component-in-a-self-managed-instance)
+    We introduced the OpenTofu CI/CD template in 16.8 as CI/CD components were not available for GitLab Self-Managed yet.
+    With the introduction of [GitLab CI/CD components for GitLab Self-Managed](https://docs.gitlab.com/ee/ci/components/#use-a-gitlabcom-component-in-a-self-managed-instance)
     we are removing the redundant OpenTofu CI/CD templates in favor of the CI/CD components.
 
     For information about migrating from the CI/CD template to the component, see the [OpenTofu component documentation](https://gitlab.com/components/opentofu#usage-on-self-managed).

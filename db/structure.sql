@@ -20531,6 +20531,21 @@ CREATE SEQUENCE security_orchestration_policy_rule_schedules_id_seq
 
 ALTER SEQUENCE security_orchestration_policy_rule_schedules_id_seq OWNED BY security_orchestration_policy_rule_schedules.id;
 
+CREATE TABLE security_pipeline_execution_policy_config_links (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    security_policy_id bigint NOT NULL
+);
+
+CREATE SEQUENCE security_pipeline_execution_policy_config_links_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE security_pipeline_execution_policy_config_links_id_seq OWNED BY security_pipeline_execution_policy_config_links.id;
+
 CREATE TABLE security_pipeline_execution_project_schedules (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -25133,6 +25148,8 @@ ALTER TABLE ONLY security_orchestration_policy_configurations ALTER COLUMN id SE
 
 ALTER TABLE ONLY security_orchestration_policy_rule_schedules ALTER COLUMN id SET DEFAULT nextval('security_orchestration_policy_rule_schedules_id_seq'::regclass);
 
+ALTER TABLE ONLY security_pipeline_execution_policy_config_links ALTER COLUMN id SET DEFAULT nextval('security_pipeline_execution_policy_config_links_id_seq'::regclass);
+
 ALTER TABLE ONLY security_pipeline_execution_project_schedules ALTER COLUMN id SET DEFAULT nextval('security_pipeline_execution_project_schedules_id_seq'::regclass);
 
 ALTER TABLE ONLY security_policies ALTER COLUMN id SET DEFAULT nextval('security_policies_id_seq'::regclass);
@@ -27945,6 +27962,9 @@ ALTER TABLE ONLY security_orchestration_policy_configurations
 
 ALTER TABLE ONLY security_orchestration_policy_rule_schedules
     ADD CONSTRAINT security_orchestration_policy_rule_schedules_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY security_pipeline_execution_policy_config_links
+    ADD CONSTRAINT security_pipeline_execution_policy_config_links_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY security_pipeline_execution_project_schedules
     ADD CONSTRAINT security_pipeline_execution_project_schedules_pkey PRIMARY KEY (id);
@@ -33200,6 +33220,8 @@ CREATE INDEX index_pats_on_expiring_at_thirty_days_notification_sent_at ON perso
 
 CREATE INDEX index_pe_approval_rules_on_required_approvals_and_created_at ON protected_environment_approval_rules USING btree (required_approvals, created_at);
 
+CREATE INDEX index_pep_policy_config_links_security_policy_id ON security_pipeline_execution_policy_config_links USING btree (security_policy_id);
+
 CREATE INDEX index_personal_access_token_last_used_ips_on_organization_id ON personal_access_token_last_used_ips USING btree (organization_id);
 
 CREATE INDEX index_personal_access_tokens_on_id_and_created_at ON personal_access_tokens USING btree (id, created_at);
@@ -34973,6 +34995,8 @@ CREATE UNIQUE INDEX unique_namespace_cluster_agent_mappings_for_agent_associatio
 CREATE UNIQUE INDEX unique_organizations_on_path_case_insensitive ON organizations USING btree (lower(path));
 
 CREATE UNIQUE INDEX unique_packages_project_id_and_name_and_version_when_debian ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 9) AND (status <> 4));
+
+CREATE UNIQUE INDEX unique_pep_policy_config_links_project_security_policy ON security_pipeline_execution_policy_config_links USING btree (project_id, security_policy_id);
 
 CREATE UNIQUE INDEX unique_pool_repositories_on_disk_path_and_shard_id ON pool_repositories USING btree (disk_path, shard_id);
 
@@ -37600,6 +37624,9 @@ ALTER TABLE ONLY import_failures
 ALTER TABLE ONLY project_ci_cd_settings
     ADD CONSTRAINT fk_24c15d2f2e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY security_pipeline_execution_policy_config_links
+    ADD CONSTRAINT fk_256bbe966d FOREIGN KEY (security_policy_id) REFERENCES security_policies(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY agent_activity_events
     ADD CONSTRAINT fk_256c631779 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
@@ -37806,6 +37833,9 @@ ALTER TABLE ONLY abuse_reports
 
 ALTER TABLE ONLY protected_environment_approval_rules
     ADD CONSTRAINT fk_405568b491 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY security_pipeline_execution_policy_config_links
+    ADD CONSTRAINT fk_40c1d0c74a FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY subscription_add_on_purchases
     ADD CONSTRAINT fk_410004d68b FOREIGN KEY (subscription_add_on_id) REFERENCES subscription_add_ons(id) ON DELETE CASCADE;

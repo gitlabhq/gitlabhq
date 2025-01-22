@@ -1,4 +1,4 @@
-- title: "Upgrading the operating system version of GitLab SaaS runners on Linux"
+- title: "Upgrading the operating system version of GitLab.com runners on Linux"
   removal_milestone: "17.0"
   announcement_milestone: "16.9"
   breaking_change: true
@@ -7,7 +7,7 @@
   issue_url: https://gitlab.com/gitlab-org/ci-cd/shared-runners/infrastructure/-/issues/60
   manual_task: true
   body: |  # (required) Don't change this line.
-    GitLab is upgrading the container-optimized operating system (COS) of the ephemeral VMs used to execute jobs for SaaS runners on Linux.
+    GitLab is upgrading the container-optimized operating system (COS) of the ephemeral VMs used to execute jobs for GitLab.com runners on Linux.
     That COS upgrade includes a Docker Engine upgrade from Version 19.03.15 to Version 23.0.5, which introduces a known compatibility issue.
 
     Docker-in-Docker prior to version 20.10 or Kaniko images older than v1.9.0, will be unable to detect the container runtime and fail.

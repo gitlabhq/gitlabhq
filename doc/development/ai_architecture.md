@@ -142,7 +142,7 @@ The following table documents functionality that Code Suggestions offers today, 
 
 ### Self-managed support
 
-Code Suggestions for self-managed users was introduced as part of the [Cloud Connector MVC](https://gitlab.com/groups/gitlab-org/-/epics/10516).
+Code Suggestions for GitLab Self-Managed was introduced as part of the [Cloud Connector MVC](https://gitlab.com/groups/gitlab-org/-/epics/10516).
 
 For more information on the technical solution for this project see the [Cloud Connector architecture documentation](cloud_connector/architecture.md).
 

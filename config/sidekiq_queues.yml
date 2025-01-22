@@ -789,6 +789,8 @@
   - 1
 - - search_zoekt_delete_project_event
   - 1
+- - search_zoekt_index_mark_as_pending_eviction_event
+  - 1
 - - search_zoekt_index_marked_as_ready_event
   - 1
 - - search_zoekt_index_marked_as_to_delete_event

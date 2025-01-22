@@ -4,9 +4,13 @@ group: Duo Workflow
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
-# Setting up local development for Duo Workflow
+# Set up local development for GitLab Duo Workflow
 
-This detailed guide describes setting up the local development environment for [Duo Workflow](../../user/duo_workflow/index.md). Alternatively, you can also [set up Duo Workflow directly with GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_workflow.md?ref_type=heads).
+This guide describes how to set up the local development environment for the various projects that make up [GitLab Duo Workflow](../../user/duo_workflow/index.md).
+
+Alternatively, you can also [set up Duo Workflow directly with the GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_workflow.md?ref_type=heads).
+
+Follow [these instructions](#duo-workflow-ui-in-visual-studio-code-vs-code) to see Duo Workflow UI local build in VS Code.
 
 ## Prerequisites
 
@@ -15,6 +19,13 @@ This detailed guide describes setting up the local development environment for [
     GCP. This should by available to all engineers at GitLab.
 - Docker
   - See which Docker tooling is approved for GitLab team members in the [handbook](https://handbook.gitlab.com/handbook/tools-and-tips/mac/#docker-desktop).
+
+## Duo Workflow UI in Visual Studio Code (VS Code)
+
+There is no need for the GDK, Duo Workflow service or Duo Workflow executor local build to test Duo Workflow UI.
+Only set these up if you are making changes to one of these packages and need to test their integration with the Duo Workflow UI in VS Code.
+
+Please refer to the [Duo Workflow README.md](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/webview_duo_workflow/README.md) file in the Language Server project to get started with local development of Duo Workflow UI.
 
 ## Set up your local GitLab instance
 
@@ -171,26 +182,6 @@ This detailed guide describes setting up the local development environment for [
      --header "Authorization: Bearer $YOUR_GITLAB_PAT" \
      $GDK_GITLAB_URL/api/v4/ai/duo_workflows/workflows/$WORKFLOW_ID/checkpoints
    ```
-
-## Configure the GitLab Duo Workflow extension for VS Code
-
-The above steps show how to start a workflow directly from the Duo Workflow
-Executor.
-
-If you would like to start Duo Workflow with the VS Code extension instead,
-follow [these steps](../../user/duo_workflow/index.md#prerequisites).
-
-If you would like to start Duo Workflow with a locally running VS Code extension and GitLab Language Server (for debugging or making changes to the extension)
-
-1. Clone [language server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp).
-1. Clone [VSCode extension](https://gitlab.com/gitlab-org/gitlab-vscode-extension).
-1. Change directory (`cd`) into language server.
-1. Run `npm install`.
-1. Run `npm run watch -- --editor=vscode --packages webview-duo-workflow workflow-api --vscode-path path-to-vscode-extension-from-step-2`.
-1. Open VSCode extension project in VSCode.
-1. Click **Run and Debug**, choose **Run Extension** in the dropdown and select **Play**.
-1. If prompted with **All installed extensions are temporarily disabled**, do not click **Reload and Enable extensions** because that will use native extensions.
-1. In the command palette, run `GitLab: Show Duo Workflow`.
 
 ## Troubleshooting
 

@@ -48,7 +48,7 @@ You can find technical information about why we moved away from cluster certific
 the GitLab agent model on the [agent's design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/gitlab_to_kubernetes_communication/).
 
 If you need more time to migrate to GitLab agent, you can [enable the feature flag](../../../administration/feature_flags.md)
-named `certificate_based_clusters`, which was [introduced in GitLab 15.0](../../../update/deprecations.md#self-managed-certificate-based-integration-with-kubernetes).
+named `certificate_based_clusters`, which was [introduced in GitLab 15.0](../../../update/deprecations.md#gitlab-self-managed-certificate-based-integration-with-kubernetes).
 This feature flag re-enables the certificate-based Kubernetes integration.
 
 ## Deprecated features

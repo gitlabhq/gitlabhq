@@ -19,7 +19,7 @@
     - The `ref`, which is the Git branch or tag name for the pipeline.
     - The `description` and `target_url` parameter, used by external CI/CD integrations.
 
-    Users on self-managed instances should update their pipelines to ensure they do not use parameters that exceed 255 characters. Users on GitLab.com do not need to make any changes, as these are already limited in that database.
+    Users on GitLab Self-Managed should update their pipelines to ensure they do not use parameters that exceed 255 characters. Users on GitLab.com do not need to make any changes, as these are already limited in that database.
 #
 # OPTIONAL FIELDS
 #

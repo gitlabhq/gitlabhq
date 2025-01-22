@@ -129,6 +129,34 @@ For details, see the [migration guide](https://docs.gitlab.com/ee/user/group/com
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
+### GitLab Self-Managed certificate-based integration with Kubernetes
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">14.5</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+
+</div>
+
+The certificate-based integration with Kubernetes [will be deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/).
+
+For GitLab Self-Managed, we are introducing the [feature flag](https://docs.gitlab.com/ee/administration/feature_flags.html#enable-or-disable-the-feature) `certificate_based_clusters` in GitLab 15.0 so you can keep your certificate-based integration enabled. However, the feature flag will be disabled by default, so this change is a **breaking change**.
+
+In GitLab 18.0 we will remove both the feature and its related code. Until the final removal in 18.0, features built on this integration will continue to work, if you enable the feature flag. Until the feature is removed, GitLab will continue to fix security and critical issues as they arise.
+
+For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend you use the
+[agent for Kubernetes](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab. [How do I migrate?](https://docs.gitlab.com/ee/user/infrastructure/clusters/migrate_to_gitlab_agent.html)
+
+Although an explicit removal date is set, we don't plan to remove this feature until the new solution has feature parity.
+For more information about the blockers to removal, see [this issue](https://gitlab.com/gitlab-org/configure/general/-/issues/199).
+
+For updates and details about this deprecation, follow [this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
 ### Running a single database is deprecated
 
 <div class="deprecation-notes">
@@ -145,34 +173,6 @@ We recommend running both databases on the same Postgres instance(s) due to ease
 This change provides additional scalability for the largest of GitLab instances, like GitLab.com.
 This change applies to all installation methods: Omnibus GitLab, GitLab Helm chart, GitLab Operator, GitLab Docker images, and installation from source.
 Before upgrading to GitLab 19.0, please ensure you have [migrated](https://docs.gitlab.com/ee/administration/postgresql/multiple_databases.html) to two databases.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
-### Self-managed certificate-based integration with Kubernetes
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">14.5</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
-
-</div>
-
-The certificate-based integration with Kubernetes [will be deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/).
-
-As a self-managed customer, we are introducing the [feature flag](https://docs.gitlab.com/ee/administration/feature_flags.html#enable-or-disable-the-feature) `certificate_based_clusters` in GitLab 15.0 so you can keep your certificate-based integration enabled. However, the feature flag will be disabled by default, so this change is a **breaking change**.
-
-In GitLab 18.0 we will remove both the feature and its related code. Until the final removal in 18.0, features built on this integration will continue to work, if you enable the feature flag. Until the feature is removed, GitLab will continue to fix security and critical issues as they arise.
-
-For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend you use the
-[agent for Kubernetes](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab. [How do I migrate?](https://docs.gitlab.com/ee/user/infrastructure/clusters/migrate_to_gitlab_agent.html)
-
-Although an explicit removal date is set, we don't plan to remove this feature until the new solution has feature parity.
-For more information about the blockers to removal, see [this issue](https://gitlab.com/gitlab-org/configure/general/-/issues/199).
-
-For updates and details about this deprecation, follow [this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
 
 </div>
 
@@ -347,6 +347,54 @@ To migrate:
 1. Verify your existing credentials work with v4 authentication.
 
 If you encounter any issues after making these changes, try regenerating your AWS credentials.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### Application Security Testing analyzers major version update
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/513417).
+
+</div>
+
+The Application Security Testing stage will be bumping the major versions of its analyzers in
+tandem with the GitLab 18.0 release.
+
+If you are not using the default included templates, or have pinned your analyzer versions, you
+must update your CI/CD job definition to either remove the pinned version or update
+the latest major version.
+
+Users of GitLab 17.0 to GitLab 15.11 will continue to experience analyzer updates until the
+release of GitLab 18.0, after which all newly fixed bugs and released features will be
+released only in the new major version of the analyzers.
+
+We do not backport bugs and features to deprecated versions as per our maintenance policy. As
+required, security patches will be backported within the latest 3 minor releases.
+
+Specifically, the following analyzers are being deprecated and will no longer be updated after
+the GitLab 18.0 release:
+
+- Advanced SAST: version 1
+- Container Scanning: version 7
+- Dependency Scanning: version 0
+- Gemnasium: [all versions](https://gitlab.com/gitlab-org/gitlab/-/issues/501308)
+- DAST: version 5
+- DAST API: version 4
+- Fuzz API: version 4
+- IaC Scanning: version 5
+- Pipeline Secret Detection: version 6
+- Static Application Security Testing (SAST): version 5 of [all analyzers](https://docs.gitlab.com/ee/user/application_security/sast/analyzers/)
+  - `kics`
+  - `kubesec`
+  - `pmd-apex`
+  - `semgrep`
+  - `sobelow`
+  - `spotbugs`
 
 </div>
 
@@ -527,10 +575,10 @@ To continue using Terraform, clone the templates and [Terraform image](https://g
 and maintain them as needed.
 
 As an alternative we recommend using the new OpenTofu CI/CD component on GitLab.com
-or the new OpenTofu CI/CD template on self-managed.
+or the new OpenTofu CI/CD template on GitLab Self-Managed.
 CI/CD components are not yet available on GitLab Self-Managed,
 but [Issue #415638](https://gitlab.com/gitlab-org/gitlab/-/issues/415638)
-proposes to add this feature. If CI/CD components become available on self-managed,
+proposes to add this feature. If CI/CD components become available on GitLab Self-Managed,
 the OpenTofu CI/CD template will be removed.
 
 You can read more about the new OpenTofu CI/CD component [here](https://gitlab.com/components/opentofu).
@@ -859,7 +907,7 @@ By adding limits, we can ensure performance and scalability for security policie
 
 If additional actions are needed, limit existing polices to no more than 10 actions. Then, create new scan execution policies with additional actions, within the limit of 5 scan execution policies per security policy project.
 
-For self-managed users, you can configure a custom limit on self-managed instances with the `scan_execution_policies_action_limit` application setting.
+For GitLab Self-Managed administrators, you can configure a custom limit with the `scan_execution_policies_action_limit` application setting.
 
 </div>
 
@@ -875,8 +923,8 @@ For self-managed users, you can configure a custom limit on self-managed instanc
 
 </div>
 
-We introduces the OpenTofu CI/CD template in 16.8 as CI/CD components were not available for self-managed installations yet.
-With the introduction of [GitLab CI/CD components for self-managed users](https://docs.gitlab.com/ee/ci/components/#use-a-gitlabcom-component-in-a-self-managed-instance)
+We introduced the OpenTofu CI/CD template in 16.8 as CI/CD components were not available for GitLab Self-Managed yet.
+With the introduction of [GitLab CI/CD components for GitLab Self-Managed](https://docs.gitlab.com/ee/ci/components/#use-a-gitlabcom-component-in-a-self-managed-instance)
 we are removing the redundant OpenTofu CI/CD templates in favor of the CI/CD components.
 
 For information about migrating from the CI/CD template to the component, see the [OpenTofu component documentation](https://gitlab.com/components/opentofu#usage-on-self-managed).
@@ -2280,7 +2328,7 @@ The ability for Developers to change the status of vulnerabilities is now deprec
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Deprecate custom role creation for group owners on self-managed
+### Deprecate custom role creation for group owners on GitLab Self-Managed
 
 <div class="deprecation-notes">
 
@@ -2295,7 +2343,7 @@ Group Owners will be able to assign custom roles at the group level.
 
 Group owners on GitLab.com can continue to manage custom roles and assign at the group level.
 
-If using the API to manage custom roles on a self-managed instance, a new instance endpoint has been added and is required to continue API operations.
+If using the API to manage custom roles on GitLab Self-Managed, a new instance endpoint has been added and is required to continue API operations.
 
 - List all member roles on the instance - `GET /api/v4/member_roles`
 - Add member role to the instance - `POST /api/v4/member_roles`
@@ -2364,9 +2412,9 @@ The parameters, `sign_in_text` and `help_text`, are deprecated in the [Settings 
 
 </div>
 
-We have recently announced the release of Windows Server 2022 for our SaaS runners on Windows (Beta). With it, we are deprecating Windows 2019 in GitLab 17.0.
+We have recently announced the release of Windows Server 2022 for our GitLab.com runners on Windows (Beta). With it, we are deprecating Windows 2019 in GitLab 17.0.
 
-For more information about how to migrate to using Windows 2022, see [Windows 2022 support for GitLab SaaS runners now available](https://about.gitlab.com/blog/2024/01/22/windows-2022-support-for-gitlab-saas-runners/).
+For more information about how to migrate to using Windows 2022, see [Windows 2022 support for GitLab.com runners now available](https://about.gitlab.com/blog/2024/01/22/windows-2022-support-for-gitlab-saas-runners/).
 
 </div>
 
@@ -3081,7 +3129,7 @@ While the above approach is recommended for most instances, Sidekiq can also be 
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Removal of tags from small SaaS runners on Linux
+### Removal of tags from small GitLab.com runners on Linux
 
 <div class="deprecation-notes">
 
@@ -3091,7 +3139,7 @@ While the above approach is recommended for most instances, Sidekiq can also be 
 
 </div>
 
-Due to historical reasons, small Linux SaaS Runners had a lot of tags attached because they were used as labels. We want to streamline the tag to just use `saas-linux-small-amd64` and be consistent across all SaaS runners.
+Due to historical reasons, small Linux GitLab.com Runners had a lot of tags attached because they were used as labels. We want to streamline the tag to just use `saas-linux-small-amd64` and be consistent across all GitLab.com runners.
 
 We are deprecating the tags: `docker`, `east-c`, `gce`, `git-annex`, `linux`, `mongo`, `mysql`, `postgres`, `ruby`, `shared`.
 
@@ -3111,7 +3159,7 @@ For more information, see [Removing tags from our small SaaS runner on Linux](ht
 
 </div>
 
-Required pipeline configuration will be removed in GitLab 17.0. This impacts self-managed users on the Ultimate tier.
+Required pipeline configuration will be removed in GitLab 17.0. This impacts users on GitLab Self-Managed on the Ultimate tier.
 
 You should replace required pipeline configuration with either:
 
@@ -3431,7 +3479,7 @@ You can still access unified approval rules with the API.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Upgrading the operating system version of GitLab SaaS runners on Linux
+### Upgrading the operating system version of GitLab.com runners on Linux
 
 <div class="deprecation-notes">
 
@@ -3441,7 +3489,7 @@ You can still access unified approval rules with the API.
 
 </div>
 
-GitLab is upgrading the container-optimized operating system (COS) of the ephemeral VMs used to execute jobs for SaaS runners on Linux.
+GitLab is upgrading the container-optimized operating system (COS) of the ephemeral VMs used to execute jobs for GitLab.com runners on Linux.
 That COS upgrade includes a Docker Engine upgrade from Version 19.03.15 to Version 23.0.5, which introduces a known compatibility issue.
 
 Docker-in-Docker prior to version 20.10 or Kaniko images older than v1.9.0, will be unable to detect the container runtime and fail.
@@ -4197,7 +4245,7 @@ The container registry [pull-through cache](https://docs.docker.com/docker-hub/m
 </div>
 
 Cookie authentication in the GitLab for Jira Cloud app is now deprecated in favor of OAuth authentication.
-On self-managed, you must [set up OAuth authentication](https://docs.gitlab.com/ee/integration/jira/connect-app.html#set-up-oauth-authentication-for-self-managed-instances)
+On GitLab Self-Managed, you must [set up OAuth authentication](https://docs.gitlab.com/ee/integration/jira/connect-app.html#set-up-oauth-authentication-for-self-managed-instances)
 to continue to use the GitLab for Jira Cloud app. Without OAuth, you can't manage linked namespaces.
 
 </div>
@@ -4334,7 +4382,7 @@ For more information, see [the deprecation notes for Consul 1.9.0](https://githu
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 
-### Deprecation and planned removal for `CI_PRE_CLONE_SCRIPT` variable on GitLab SaaS
+### Deprecation and planned removal for `CI_PRE_CLONE_SCRIPT` variable on GitLab.com
 
 <div class="deprecation-notes">
 
@@ -4344,7 +4392,7 @@ For more information, see [the deprecation notes for Consul 1.9.0](https://githu
 
 </div>
 
-The [`CI_PRE_CLONE_SCRIPT` variable](https://docs.gitlab.com/ee/ci/runners/saas/linux_saas_runner.html#pre-clone-script) supported by GitLab SaaS Runners is deprecated as of GitLab 15.9 and will be removed in 16.0. The `CI_PRE_CLONE_SCRIPT` variable enables you to run commands in your CI/CD job prior to the runner executing Git init and get fetch. For more information about how this feature works, see [Pre-clone script](https://docs.gitlab.com/ee/ci/runners/saas/linux_saas_runner.html#pre-clone-script). As an alternative, you can use the [`pre_get_sources_script`](https://docs.gitlab.com/ee/ci/yaml/#hookspre_get_sources_script).
+The [`CI_PRE_CLONE_SCRIPT` variable](https://docs.gitlab.com/ee/ci/runners/saas/linux_saas_runner.html#pre-clone-script) supported by GitLab.com Runners is deprecated as of GitLab 15.9 and will be removed in 16.0. The `CI_PRE_CLONE_SCRIPT` variable enables you to run commands in your CI/CD job prior to the runner executing Git init and get fetch. For more information about how this feature works, see [Pre-clone script](https://docs.gitlab.com/ee/ci/runners/saas/linux_saas_runner.html#pre-clone-script). As an alternative, you can use the [`pre_get_sources_script`](https://docs.gitlab.com/ee/ci/yaml/#hookspre_get_sources_script).
 
 </div>
 
@@ -4419,7 +4467,7 @@ In GitLab 16.0, validation will be added to strictly limit the following to 255 
 - The `ref`, which is the Git branch or tag name for the pipeline.
 - The `description` and `target_url` parameter, used by external CI/CD integrations.
 
-Users on self-managed instances should update their pipelines to ensure they do not use parameters that exceed 255 characters. Users on GitLab.com do not need to make any changes, as these are already limited in that database.
+Users on GitLab Self-Managed should update their pipelines to ensure they do not use parameters that exceed 255 characters. Users on GitLab.com do not need to make any changes, as these are already limited in that database.
 
 </div>
 
@@ -4539,7 +4587,7 @@ GitLab self-monitoring gives instance administrators the tools to monitor the he
 The GitLab.com importer was deprecated in GitLab 15.8 and will be removed in GitLab 16.0.
 
 The GitLab.com importer was introduced in 2015 for importing a project from GitLab.com to a GitLab Self-Managed instance through the UI.
-This feature is available on self-managed instances only. [Migrating GitLab groups and projects by direct transfer](https://docs.gitlab.com/ee/user/group/import/#migrate-groups-by-direct-transfer-recommended)
+This feature is available on GitLab Self-Managed only. [Migrating GitLab groups and projects by direct transfer](https://docs.gitlab.com/ee/user/group/import/#migrate-groups-by-direct-transfer-recommended)
 supersedes the GitLab.com importer and provides a more cohesive importing functionality.
 
 See [migrated group items](https://docs.gitlab.com/ee/user/group/import/#migrated-group-items) and [migrated project items](https://docs.gitlab.com/ee/user/group/import/#migrated-project-items) for an overview.
@@ -4875,7 +4923,7 @@ and `config/redis.shared_state.yml` files.
 
 The group and project deletion protection setting in the **Admin** area had an option to delete groups and projects immediately. Starting with 16.0, this option will no longer be available, and delayed group and project deletion will become the default behavior.
 
-The option will no longer appear as a group setting. Users on GitLab Self-Managed will still have the option to define the deletion delay period, and SaaS users have a non-adjustable default retention period of 7 days. Users can still immediately delete the project from the project settings, and the group from the group settings.
+The option will no longer appear as a group setting. Users on GitLab Self-Managed will still have the option to define the deletion delay period, and GitLab.com users have a non-adjustable default retention period of 7 days. Users can still immediately delete the project from the project settings, and the group from the group settings.
 
 The option to delete groups and projects immediately by default was deprecated to prevent users from accidentally taking this action and permanently losing groups and projects.
 
@@ -5328,7 +5376,7 @@ You can use the `vulnerabilityFindingDismiss` GraphQL mutation to set the status
 
 </div>
 
-Using third-party container registries with GitLab as an auth endpoint is deprecated in GitLab 15.8 and the [end of support](https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology) is scheduled for GitLab 16.0. This impacts self-managed customers that have connected their external registry to the GitLab user interface to find, view, and delete container images.
+Using third-party container registries with GitLab as an auth endpoint is deprecated in GitLab 15.8 and the [end of support](https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology) is scheduled for GitLab 16.0. This impacts users on GitLab Self-Managed that have connected their external registry to the GitLab user interface to find, view, and delete container images.
 
 Supporting both the GitLab container registry as well as third-party container registries is challenging for maintenance, code quality, and backward compatibility. This hinders our ability to stay [efficient](https://handbook.gitlab.com/handbook/values/#efficiency). As a result we will not support this functionality moving forward.
 
@@ -5536,6 +5584,32 @@ We are deprecating support for [uploading backups to remote storage](https://doc
 
 <div class="deprecation breaking-change" data-milestone="15.9">
 
+### GitLab.com certificate-based integration with Kubernetes
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">14.5</span>
+- Removal in GitLab <span class="milestone">15.9</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+
+</div>
+
+The certificate-based integration with Kubernetes will be [deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/). As a GitLab.com user, on new namespaces, you will no longer be able to integrate GitLab and your cluster using the certificate-based approach as of GitLab 15.0. The integration for current users will be enabled per namespace.
+
+For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend you use the
+[agent for Kubernetes](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab. [How do I migrate?](https://docs.gitlab.com/ee/user/infrastructure/clusters/migrate_to_gitlab_agent.html)
+
+Although an explicit removal date is set, we don't plan to remove this feature until the new solution has feature parity.
+For more information about the blockers to removal, see [this issue](https://gitlab.com/gitlab-org/configure/general/-/issues/199).
+
+For updates and details about this deprecation, follow [this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+
+GitLab Self-Managed customers can still use the feature [with a feature flag](https://docs.gitlab.com/ee/update/deprecations.html#self-managed-certificate-based-integration-with-kubernetes).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="15.9">
+
 ### Live Preview no longer available in the Web IDE
 
 <div class="deprecation-notes">
@@ -5547,32 +5621,6 @@ We are deprecating support for [uploading backups to remote storage](https://doc
 </div>
 
 The Live Preview feature of the Web IDE was intended to provide a client-side preview of static web applications. However, complex configuration steps and a narrow set of supported project types have limited its utility. With the introduction of the Web IDE Beta in GitLab 15.7, you can now connect to a full server-side runtime environment. With upcoming support for installing extensions in the Web IDE, we'll also support more advanced workflows than those available with Live Preview. As of GitLab 15.9, Live Preview is no longer available in the Web IDE.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="15.9">
-
-### SaaS certificate-based integration with Kubernetes
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">14.5</span>
-- Removal in GitLab <span class="milestone">15.9</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
-
-</div>
-
-The certificate-based integration with Kubernetes will be [deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/). As a GitLab SaaS customer, on new namespaces, you will no longer be able to integrate GitLab and your cluster using the certificate-based approach as of GitLab 15.0. The integration for current users will be enabled per namespace.
-
-For a more robust, secure, forthcoming, and reliable integration with Kubernetes, we recommend you use the
-[agent for Kubernetes](https://docs.gitlab.com/ee/user/clusters/agent/) to connect Kubernetes clusters with GitLab. [How do I migrate?](https://docs.gitlab.com/ee/user/infrastructure/clusters/migrate_to_gitlab_agent.html)
-
-Although an explicit removal date is set, we don't plan to remove this feature until the new solution has feature parity.
-For more information about the blockers to removal, see [this issue](https://gitlab.com/gitlab-org/configure/general/-/issues/199).
-
-For updates and details about this deprecation, follow [this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
-
-GitLab Self-Managed customers can still use the feature [with a feature flag](https://docs.gitlab.com/ee/update/deprecations.html#self-managed-certificate-based-integration-with-kubernetes).
 
 </div>
 

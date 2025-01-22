@@ -428,7 +428,7 @@ end
 
 ## Default logging locations
 
-For self-managed users and GitLab.com, GitLab is deployed in two ways:
+For GitLab Self-Managed and GitLab.com, GitLab is deployed in two ways:
 
 - [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab)
 - [Cloud Native GitLab](https://gitlab.com/gitlab-org/build/CNG) via a [Helm Chart](https://gitlab.com/gitlab-org/charts/gitlab)

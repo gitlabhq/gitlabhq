@@ -95,7 +95,7 @@ Policies enforced on an existing group or subgroup are automatically enforced in
 
 NOTE:
 GitLab.com users can enforce policies against their top-level group or across subgroups, but cannot
-enforce policies across GitLab.com top-level groups. GitLab Self-Managed users can enforce policies
+enforce policies across GitLab.com top-level groups. GitLab Self-Managed administrators can enforce policies
 across multiple top-level groups in their instance.
 
 The following example illustrates two groups and their structure:

@@ -21,7 +21,7 @@ If 2FA is not enabled user accounts are locked after three failed sign-in attemp
 - The next successful sign-in, at which point the user must verify their identity with a code sent to their email.
 - GitLab Support verifies the identity of the user and [manually unlocks](https://handbook.gitlab.com/handbook/support/workflows/reinstating-blocked-accounts/#manual-unlock) the account.
 
-## Self-managed users
+## GitLab Self-Managed and GitLab Dedicated users
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

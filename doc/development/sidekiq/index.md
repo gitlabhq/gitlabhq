@@ -55,7 +55,7 @@ end
 
 A past example is the use of `allow_unrouted_sidekiq_calls` in [Geo Rake tasks](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149958#note_1906072228)
 as it does not affect GitLab.com. However, developer should write shard-aware code where possible since
-that is a pre-requisite for sharding to be [released as a feature to self-managed users](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/3430).
+that is a pre-requisite for sharding to be [released as a feature to users on GitLab Self-Managed](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/3430).
 
 ## Retries
 

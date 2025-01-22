@@ -38,6 +38,7 @@ class SystemNoteMetadata < ApplicationRecord
   belongs_to :note
   belongs_to :description_version
 
+  scope :for_notes, ->(notes) { where(note_id: notes) }
   delegate_missing_to :note
 
   def declarative_policy_delegate

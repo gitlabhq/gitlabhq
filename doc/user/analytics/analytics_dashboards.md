@@ -25,17 +25,16 @@ You can use built-in dashboards by GitLab or create your own dashboards with cus
 A data source is a connection to a database or collection of data which can be used by your dashboard
 filters and visualizations to query and retrieve results.
 
-Analytics dashboards use [Value Stream Management](../analytics/value_streams_dashboard.md) as a data source.
-
 ## Built-in dashboards
 
 To help you get started with analytics, GitLab provides built-in dashboards with predefined visualizations.
 These dashboards are labeled **By GitLab**.
 You cannot edit the built-in dashboards, but you can create custom dashboards with a similar style.
 
-### Value Stream Management dashboard
+The following built-in dashboards are available:
 
-- **Value Streams Dashboard** displays metrics related to [DevOps performance, security exposure, and workstream optimization](../analytics/value_streams_dashboard.md#devsecops-metrics-comparison-panels).
+- [**Value Streams Dashboard**](../analytics/value_streams_dashboard.md) displays metrics related to DevOps performance, security exposure, and workstream optimization.
+- [**AI Impact Dashboard**](../analytics/ai_impact_analytics.md) displays the impact of AI tools on software development lifecycle (SDLC) metrics for a project or group.
 
 ## Custom dashboards
 
@@ -113,21 +112,9 @@ To view a list of dashboards (both built-in and custom) for a group:
 1. Select **Analyze > Analytics dashboards**.
 1. From the list of available dashboards, select the dashboard you want to view.
 
-### View the Value Streams Dashboard
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132839) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/432185) in GitLab 17.0.
-> - Feature flag `group_analytics_dashboard_dynamic_vsd` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/441206) in GitLab 17.0.
-
-To view the Value Streams Dashboard as an analytics dashboard for a group:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Analyze > Analytics dashboards**.
-1. From the list of available dashboards, select **Value Streams Dashboard**.
-
 ## Change the location of dashboards
 
-You can change the location of your project or group dashboards.
+You can change the location of your project or group custom dashboards.
 
 Prerequisites:
 
@@ -138,7 +125,7 @@ Prerequisites:
 NOTE:
 [Issue 411572](https://gitlab.com/gitlab-org/gitlab/-/issues/411572) proposes connecting this feature to group-level dashboards.
 
-To change the location of a group's dashboards:
+To change the location of a group's custom dashboards:
 
 1. On the left sidebar, select **Search or go to** and find the project you want to store your dashboard files in.
    The project must belong to the group for which you create the dashboards.
@@ -166,80 +153,6 @@ To change the location of project dashboards:
 1. Select **Settings > Analytics**.
 1. In the **Analytics Dashboards** section, select your dashboard files project.
 1. Select **Save changes**.
-
-## Define a dashboard
-
-To define a dashboard:
-
-1. In `.gitlab/analytics/dashboards/`, create a directory named like the dashboard.
-
-   Each dashboard should have its own directory.
-1. In the new directory, create a `.yaml` file with the same name as the directory, for example `.gitlab/analytics/dashboards/my_dashboard/my_dashboard.yaml`.
-
-   This file contains the dashboard definition. It must conform to the JSON schema defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
-1. Optional. To create new visualizations to add to your dashboard, see [defining a chart visualization](#define-a-chart-visualization).
-
-For [example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/analytics/product_analytics/dashboards/audience.yaml), if you want to create three dashboards (Conversion funnels, Demographic breakdown, and North star metrics)
-and one visualization (line chart) that applies to all dashboards, the file structure looks like this:
-
-```plaintext
-.gitlab/analytics/dashboards
-├── conversion_funnels
-│  └── conversion_funnels.yaml
-├── demographic_breakdown
-│  └── demographic_breakdown.yaml
-├── north_star_metrics
-|  └── north_star_metrics.yaml
-├── visualizations
-│  └── example_line_chart.yaml
-```
-
-### Dashboard filters
-
-Dashboards support the following filters:
-
-- **Date range**: Date selector to filter data by date.
-- **Anonymous users**: Toggle to include or exclude anonymous users from the dataset.
-
-To enable filters, in the `.yaml` configuration file set the filter's `enabled` option to `true`:
-
-```yaml
-title: My dashboard
-...
-filters: 
-  excludeAnonymousUsers: 
-    enabled: true
-  dateRange: 
-    enabled: true
-```
-
-See a complete [dashboard configuration example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/analytics/product_analytics/dashboards/audience.yaml).
-
-## Define a chart visualization
-
-You can define different charts and add visualization options to some of them, such as:
-
-- Line chart, with the options listed in the [ECharts documentation](https://echarts.apache.org/en/option.html).
-- Column chart, with the options listed in the [ECharts documentation](https://echarts.apache.org/en/option.html).
-- Data table.
-- Single stat, with the only option to set `decimalPlaces` (number, default value is 0).
-
-To define a chart visualization for your dashboards:
-
-1. In the `.gitlab/analytics/dashboards/visualizations/` directory, create a `.yaml` file.
-   The filename should be descriptive of the visualization it defines.
-1. In the `.yaml` file, define the visualization configuration, according to the schema in
-   `ee/app/validators/json_schemas/analytics_visualization.json`.
-
-For [example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/analytics/product_analytics/visualizations/events_over_time.yaml), to create a line chart that illustrates event count over time, in the `visualizations` folder
-create a `line_chart.yaml` file with the following required fields:
-
-- version
-- type
-- data
-- options
-
-To contribute, see [adding a new visualization render type](../../development/fe_guide/customizable_dashboards.md#adding-a-new-visualization-render-type).
 
 ## Create a custom dashboard
 
@@ -343,6 +256,82 @@ When you change or remove a measure then dependent dimensions may also be remove
 
 <!--- end_remove -->
 
+## Create a dashboard by configuration
+
+For more complex use cases, you can also create dashboards manually by configuration.
+
+To define a dashboard:
+
+1. In `.gitlab/analytics/dashboards/`, create a directory named like the dashboard.
+
+   Each dashboard should have its own directory.
+1. In the new directory, create a `.yaml` file with the same name as the directory, for example `.gitlab/analytics/dashboards/my_dashboard/my_dashboard.yaml`.
+
+   This file contains the dashboard definition. It must conform to the JSON schema defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
+1. Optional. To create new visualizations to add to your dashboard, see [defining a chart visualization](#define-a-chart-visualization).
+
+For [example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/analytics/product_analytics/dashboards/audience.yaml), if you want to create three dashboards (Conversion funnels, Demographic breakdown, and North star metrics)
+and one visualization (line chart) that applies to all dashboards, the file structure looks like this:
+
+```plaintext
+.gitlab/analytics/dashboards
+├── conversion_funnels
+│  └── conversion_funnels.yaml
+├── demographic_breakdown
+│  └── demographic_breakdown.yaml
+├── north_star_metrics
+|  └── north_star_metrics.yaml
+├── visualizations
+│  └── example_line_chart.yaml
+```
+
+### Dashboard filters
+
+Dashboards support the following filters:
+
+- **Date range**: Date selector to filter data by date.
+- **Anonymous users**: Toggle to include or exclude anonymous users from the dataset.
+
+To enable filters, in the `.yaml` configuration file set the filter's `enabled` option to `true`:
+
+```yaml
+title: My dashboard
+...
+filters: 
+  excludeAnonymousUsers: 
+    enabled: true
+  dateRange: 
+    enabled: true
+```
+
+See a complete [dashboard configuration example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/analytics/product_analytics/dashboards/audience.yaml).
+
+### Define a chart visualization
+
+You can define different charts and add visualization options to some of them, such as:
+
+- Line chart, with the options listed in the [ECharts documentation](https://echarts.apache.org/en/option.html).
+- Column chart, with the options listed in the [ECharts documentation](https://echarts.apache.org/en/option.html).
+- Data table.
+- Single stat, with the only option to set `decimalPlaces` (number, default value is 0).
+
+To define a chart visualization for your dashboards:
+
+1. In the `.gitlab/analytics/dashboards/visualizations/` directory, create a `.yaml` file.
+   The filename should be descriptive of the visualization it defines.
+1. In the `.yaml` file, define the visualization configuration, according to the schema in
+   `ee/app/validators/json_schemas/analytics_visualization.json`.
+
+For [example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/analytics/product_analytics/visualizations/events_over_time.yaml), to create a line chart that illustrates event count over time, in the `visualizations` folder
+create a `line_chart.yaml` file with the following required fields:
+
+- version
+- type
+- data
+- options
+
+To contribute, see [adding a new visualization render type](../../development/fe_guide/analytics_dashboards.md#adding-a-new-visualization-render-type).
+
 ## Troubleshooting
 
 ### `Something went wrong while loading the dashboard.`
@@ -350,11 +339,11 @@ When you change or remove a measure then dependent dimensions may also be remove
 If the dashboard displays a global error message that data could not be loaded, first try reloading the page.
 If the error persists:
 
-- Check that your configurations match the [dashboard JSON schema](#define-a-dashboard) defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
+- Check that your configurations match the [dashboard JSON schema](../../development/fe_guide/analytics_dashboards.md) defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
 
 ### `Invalid dashboard configuration`
 
-If the dashboard displays a global error message that the configuration is invalid, check that your configurations match the [dashboard JSON schema](#define-a-dashboard) defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
+If the dashboard displays a global error message that the configuration is invalid, check that your configurations match the [dashboard JSON schema](../../development/fe_guide/analytics_dashboards.md) defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
 
 ### `Invalid visualization configuration`
 

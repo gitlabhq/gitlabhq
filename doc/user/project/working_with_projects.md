@@ -390,6 +390,10 @@ To view the activity of a project:
    - **Designs**: Designs added, updated, and removed in the project.
    - **Team**: Members who joined and left the project.
 
+### Event time period limit
+
+GitLab removes project activity events older than 3 years from the events table for performance reasons.
+
 ## Search in projects
 
 To search through your projects, on the left sidebar, select **Search or go to**.

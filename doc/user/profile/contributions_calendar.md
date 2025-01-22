@@ -107,3 +107,7 @@ To reset your feed token:
 1. On the confirmation dialog, select **OK**.
 
 A new token is generated.
+
+### Event time period limit
+
+GitLab removes user activity events older than 3 years from the events table for performance reasons.
