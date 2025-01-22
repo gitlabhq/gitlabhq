@@ -45,12 +45,12 @@ export default {
       aria-hidden="true"
     />
     <gl-icon v-if="item.icon" class="gl-mr-3 gl-shrink-0" :name="item.icon" />
-    <span class="gl-flex gl-flex-col">
-      <span v-safe-html="highlightedName" class="gl-text-strong"></span>
+    <span class="gl-flex gl-w-full gl-min-w-0 gl-flex-col">
+      <span v-safe-html="highlightedName" class="gl-truncate gl-text-strong"></span>
       <span
         v-if="item.namespace"
         v-safe-html="item.namespace"
-        class="gl-text-sm gl-text-subtle"
+        class="gl-truncate gl-text-sm gl-text-subtle"
       ></span>
     </span>
   </div>
