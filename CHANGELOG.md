@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.8.1 (2025-01-22)
+
+### Security (4 changes)
+
+- [Fix protected variable exfiltration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/998874eb0ed029872a47991788565213aa6707b8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4713))
+- [Enhance rich viewer sanitization](https://gitlab.com/gitlab-org/security/gitlab/-/commit/895088208f7a39aad0bd9cd8dbec8cf6b8f8f1f3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4708))
+- [Avoid recursive sidekiq calls on cyclic work item hierarchies](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1872a670e73e294db21773d8289bc51c6b9ec9aa) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4711))
+- [Respect the private profile constraints](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f434b2e5d6542b3d762852a725a19780d6966db1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4704))
+
 ## 17.8.0 (2025-01-15)
 
 ### Added (127 changes)
