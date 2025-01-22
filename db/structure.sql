@@ -7015,7 +7015,8 @@ CREATE TABLE alert_management_alert_user_mentions (
     mentioned_users_ids bigint[],
     mentioned_projects_ids bigint[],
     mentioned_groups_ids bigint[],
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_5094a9a20a CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE alert_management_alert_user_mentions_id_seq
@@ -34439,6 +34440,8 @@ CREATE INDEX index_vulnerability_state_transitions_id_and_vulnerability_id ON vu
 CREATE INDEX index_vulnerability_state_transitions_on_author_id ON vulnerability_state_transitions USING btree (author_id);
 
 CREATE INDEX index_vulnerability_state_transitions_on_project_id ON vulnerability_state_transitions USING btree (project_id);
+
+CREATE INDEX index_vulnerability_state_transitions_resolved_activity ON vulnerability_state_transitions USING btree (created_at, vulnerability_id) WHERE (to_state = 3);
 
 CREATE INDEX index_vulnerability_statistics_on_latest_pipeline_id ON vulnerability_statistics USING btree (latest_pipeline_id);
 

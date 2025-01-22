@@ -8,9 +8,6 @@ status: active
 time_frame: all
 instrumentation_class: CountSnippetsMetric
 data_source: database
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

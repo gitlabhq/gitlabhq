@@ -344,7 +344,7 @@ for all projects from the **Admin** area.
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > CI/CD**.
-1. Expand the **Continuous Integration and Deployment** section.
+1. Expand the **Job token permissions** section.
 1. Enable **Enable and enforce job token allowlist for all projects** setting to
    require all projects to control job token access with the allowlist.
 

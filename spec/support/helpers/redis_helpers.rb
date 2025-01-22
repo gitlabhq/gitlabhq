@@ -10,7 +10,7 @@ module RedisHelpers
   # Defines a class of wrapper that uses `resque.yml` regardless of `config/redis.yml.example`
   # this allows us to test against a standalone Redis even if Cache and SharedState are using
   # Redis Cluster. We do not use queue as it does not perform redis cluster validations.
-  def define_helper_redis_store_class(store_name = "Sessions")
+  def define_helper_redis_store_class(store_name = "Workhorse")
     Class.new(Gitlab::Redis::Wrapper) do
       define_singleton_method(:name) { store_name }
 

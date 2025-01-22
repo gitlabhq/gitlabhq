@@ -25,7 +25,7 @@ end
 # Prometheus metrics needing to check ApplicationSetting. Disable the
 # instrumentation in that case. Code reloading should only be enabled in
 # development.
-if Rails.application.config.cache_classes
+if Rails.application.config.cache_classes || Rails.env.test?
   # this only instruments `RedisClient` used in `Sidekiq.redis`
   RedisClient.register(Gitlab::Instrumentation::RedisClientMiddleware)
   RedisClient.prepend(Gitlab::Patch::RedisClient)

@@ -37,8 +37,6 @@ stages:
 
 .parallel:
   parallel: 5
-  variables:
-    QA_KNAPSACK_REPORT_PATH: $CI_PROJECT_DIR/qa/knapsack
 
 .ruby-image:
   # Because this pipeline template can be included directly in other projects,

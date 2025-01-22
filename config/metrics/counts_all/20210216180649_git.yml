@@ -12,9 +12,6 @@ data_source: database
 instrumentation_class: CountImportedProjectsMetric
 options:
   import_type: git
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

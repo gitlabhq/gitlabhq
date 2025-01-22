@@ -12,9 +12,6 @@ data_source: database
 performance_indicator_type:
 - customer_health_score
 - leading_indicator
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

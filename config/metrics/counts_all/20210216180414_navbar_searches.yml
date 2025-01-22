@@ -12,9 +12,6 @@ time_frame: all
 data_source: internal_events
 events:
   - name: perform_navbar_search
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

@@ -14,9 +14,6 @@ options:
   prefix: web_ide
   event: previews_count
   include_usage_prefix: false
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium
