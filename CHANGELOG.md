@@ -2,6 +2,24 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.6.4 (2025-01-22)
+
+### Fixed (2 changes)
+
+- [Add BoardEpicConnection type policy for pagination](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0fc02660321fef5d2fee627bd9b81c0aaca62a82) **GitLab Enterprise Edition**
+- [Fix handling of short gzip metadata files](https://gitlab.com/gitlab-org/security/gitlab/-/commit/09c5801a07e2dcbd48a44ea97cb56aa6fb141105)
+
+### Security (4 changes)
+
+- [Fix protected variable exfiltration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/da2d664ff802e6c961a8e463f39d5b7f179ba0f7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4715))
+- [Enhance rich viewer sanitization](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fca347dbd3660d89b1a58d39e1cf4ce680363988) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4710))
+- [Avoid recursive sidekiq calls on cyclic work item hierarchies](https://gitlab.com/gitlab-org/security/gitlab/-/commit/db1de035fb5ddfee1849a411020f22f5808e811b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4660))
+- [Respect the private profile constraints](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e834095ace85698c4c32f915e280158bb0ae9e88) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4699))
+
+### Other (1 change)
+
+- [Reorder migrations for ci_deleted_objects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/313e91e2a458db2ebcab4a8bb57384467ee295be)
+
 ## 17.6.3 (2025-01-08)
 
 ### Fixed (2 changes)
