@@ -16,9 +16,6 @@ options:
   events:
   - i_container_registry_delete_repository_user
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

@@ -15,9 +15,6 @@ options:
   events:
     - i_quickactions_remove_child
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

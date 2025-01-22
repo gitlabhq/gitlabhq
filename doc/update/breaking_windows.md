@@ -77,7 +77,6 @@ This window takes place on May 5 - 7, 2025 from 09:00 UTC to 22:00 UTC.
 | [The `ci_job_token_scope_enabled` projects API attribute is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/423091) | Low | Govern | Project |
 | [Deprecate license metadata format V1](https://gitlab.com/gitlab-org/gitlab/-/issues/438477) |  | Secure |  |
 | [The `direction` GraphQL argument for `ciJobTokenScopeRemoveProject` is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/383084) | Low | Govern | Project |
-| [`require_password_to_approve` field](https://gitlab.com/gitlab-org/gitlab/-/issues/431346) |  | Govern |  |
 | [Replace `threshold` with `maxretries` for container registry notifications](https://gitlab.com/gitlab-org/container-registry/-/issues/1243) | Low | Package | Project |
 | [`ciJobTokenScopeAddProject` GraphQL mutation is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/474175) | Low | Govern | Project |
 | [Guest users can pull packages from private projects on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/336622) | High | Package | Project |

@@ -357,15 +357,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '#squash_option' do
-    let(:merge_request) { build(:merge_request, project: project) }
-    let(:project_setting) { project.project_setting }
-
-    subject { merge_request.squash_option }
-
-    it { is_expected.to eq(project_setting) }
-  end
-
   describe '#squash?' do
     let(:merge_request) { build(:merge_request, squash: squash) }
 
@@ -6466,7 +6457,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   describe '#missing_required_squash?' do
     using RSpec::Parameterized::TableSyntax
 
-    where(:squash, :require_squash, :expected) do
+    where(:squash, :project_requires_squash, :expected) do
       false | true  | true
       false | false | false
       true  | true  | false
@@ -6474,12 +6465,15 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
 
     with_them do
-      let(:merge_request) { build_stubbed(:merge_request, squash: squash, project: project) }
+      let(:merge_request) { build_stubbed(:merge_request, squash: squash) }
 
       subject { merge_request.missing_required_squash? }
 
       before do
-        allow(project.project_setting).to receive(:squash_always?).and_return(require_squash)
+        allow(merge_request.target_project).to(
+          receive(:squash_always?)
+            .and_return(project_requires_squash)
+        )
       end
 
       it { is_expected.to eq(expected) }
@@ -6977,29 +6971,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     it 'returns limited diffs' do
       expect(subject.count).to eq(limit)
-    end
-  end
-
-  describe '#squash_on_merge?' do
-    let(:merge_request) { build_stubbed(:merge_request) }
-
-    where(:squash_always, :squash_never, :squash, :expected) do
-      true  | false | false | true
-      true  | false | true  | true
-      false | true  | false | false
-      false | true  | true  | false
-      false | false | true  | true
-      false | false | false | false
-    end
-
-    with_them do
-      subject { merge_request.squash_on_merge? }
-
-      before do
-        allow(merge_request).to receive_messages(squash_always?: squash_always, squash_never?: squash_never, squash?: squash)
-      end
-
-      it { is_expected.to eq(expected) }
     end
   end
 end

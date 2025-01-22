@@ -14,9 +14,6 @@ options:
   events:
   - i_container_registry_delete_tag_deploy_token
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

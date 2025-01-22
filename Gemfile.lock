@@ -744,8 +744,8 @@ GEM
       mime-types
       net-http-persistent (~> 4.0)
       nokogiri (~> 1, >= 1.10.8)
-    gitlab-glfm-markdown (0.0.23)
-      rb_sys (= 0.9.94)
+    gitlab-glfm-markdown (0.0.24)
+      rb_sys (= 0.9.107)
     gitlab-kas-grpc (17.7.0)
       grpc (~> 1.0)
     gitlab-labkit (0.37.0)
@@ -1536,7 +1536,7 @@ GEM
     rb-fsevent (0.11.2)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    rb_sys (0.9.94)
+    rb_sys (0.9.107)
     rbs (3.6.1)
       logger
     rbtrace (0.5.1)

@@ -14,8 +14,6 @@ options:
   events:
     - i_quickactions_blocked_by
 performance_indicator_type: []
-distribution:
-- ee
 tiers:
 - premium
 - ultimate

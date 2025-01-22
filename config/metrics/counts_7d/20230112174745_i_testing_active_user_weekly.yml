@@ -17,9 +17,6 @@ events:
   unique: user.id
 - name: i_testing_coverage_report_uploaded
   unique: user.id
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

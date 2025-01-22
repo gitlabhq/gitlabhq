@@ -725,12 +725,6 @@
   - "tooling/custom_roles/docs/templates/custom_abilities.md.erb"
   - "ee/{lib/,spec/}tasks/gitlab/custom_roles/*"
 
-.ci-job-token-policies-patterns: &ci-job-token-policies-patterns
-  - "{,ee/}lib/api/*.rb"
-  - "app/validators/json_schemas/ci_job_token_policies.json"
-  - "doc/ci/jobs/fine_grained_permissions.md"
-  - "tooling/ci/job_tokens/docs/templates/fine_grained_permissions.md.erb"
-
 .cng-orchestrator-patterns: &cng-orchestrator-patterns
   - "qa/gems/gitlab-cng/**/*.rb"
   - "qa/gems/gitlab-cng/{Gemfile,Gemfile.lock}"
@@ -1267,14 +1261,6 @@
       when: never
     - <<: *if-default-refs
       changes: *custom-roles-patterns
-
-#############################
-# CI job token policy rules #
-#############################
-.ci-job-token-policies:rules:ci-job-token-policies-verify:
-  rules:
-    - <<: *if-default-refs
-      changes: *ci-job-token-policies-patterns
 
 ##################
 # Frontend rules #

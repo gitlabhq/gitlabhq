@@ -378,10 +378,10 @@ class MergeRequest < ApplicationRecord
   scope :references_project, -> { references(:target_project) }
   scope :with_api_entity_associations, -> {
     preload_routables.preload(
-      :assignees, :author, :reviewers, :merge_user,
-      :unresolved_notes, :labels, :milestone, :timelogs, :merge_schedule,
-      latest_merge_request_diff: :merge_request_diff_commits,
-      target_project: [:project_feature, :project_setting],
+      :assignees, :author, :unresolved_notes, :labels, :milestone,
+      :timelogs, :latest_merge_request_diff, :reviewers,
+      :merge_schedule,
+      target_project: :project_feature,
       metrics: [:latest_closed_by, :merged_by]
     )
   }
@@ -1666,8 +1666,8 @@ class MergeRequest < ApplicationRecord
   end
 
   def squash_on_merge?
-    return true if squash_always?
-    return false if squash_never?
+    return true if target_project.squash_always?
+    return false if target_project.squash_never?
 
     squash?
   end
@@ -2353,7 +2353,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def missing_required_squash?
-    !squash && squash_always?
+    !squash && target_project.squash_always?
   end
 
   def current_patch_id_sha
@@ -2425,12 +2425,6 @@ class MergeRequest < ApplicationRecord
 
     diff.paginated_diffs(1, limit).diff_files
   end
-
-  def squash_option
-    target_project.project_setting
-  end
-
-  delegate :squash_always?, :squash_never?, :squash_enabled_by_default?, :squash_readonly?, to: :squash_option
 
   private
 

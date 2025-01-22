@@ -1623,29 +1623,6 @@ use `count` from `cars` in `MergeTrains::TrainType` instead.
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
-### `require_password_to_approve` field
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">16.9</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/431346).
-
-</div>
-
-In GitLab 16.7, we added the ability to re-authenticate with SAML SSO for the
-[Require user re-authentication to approve](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/settings.html#require-user-re-authentication-to-approve)
-feature.
-
-For this reason, in GitLab 18.0, we are removing the `require_password_to_approve` field.
-
-In GitLab 17.1, we added the `require_reauthentication_to_approve` field to replace the `require_password_to_approve`
-field. You should switch to the new field as soon as possible.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
 ### `runnerRegistrationToken` parameter for GitLab Runner Helm Chart
 
 <div class="deprecation-notes">
