@@ -764,6 +764,35 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
           let(:dry_run) { false }
 
           it_behaves_like 'valid project config'
+
+          context 'when running on a protected branch' do
+            let_it_be(:yaml_content) do
+              {
+                include: { remote: 'https://test.example.com/${SECRET_TOKEN}.yml' },
+                test: { stage: 'test', script: 'echo 1' }
+              }.to_yaml
+            end
+
+            before do
+              sha = project.repository.commit.sha # this is always the sha used by this endpoint for linting
+              ref = Gitlab::Ci::RefFinder.new(project).find_by_sha(sha)
+
+              create(:protected_branch, name: ref, project: project)
+              create(:ci_variable, key: 'SECRET_TOKEN', value: 'secret!!!!!', project: project, protected: true)
+            end
+
+            it 'does not expand protected variables' do
+              ci_lint
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response['merged_yaml']).to be_nil
+              expect(json_response['includes']).to be_nil
+              expect(json_response['valid']).to be_falsey
+              expect(json_response['errors']).to eq([
+                'Included file `https://test.example.com/.yml` does not have YAML extension!'
+              ])
+            end
+          end
         end
 
         context 'when running with include jobs param' do
@@ -787,6 +816,47 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
             ci_lint
 
             expect(json_response).not_to have_key('jobs')
+          end
+        end
+      end
+
+      context 'when authenticated as project maintainer' do
+        before do
+          project.add_maintainer(api_user)
+        end
+
+        context 'when running static validation' do
+          let(:dry_run) { false }
+
+          context 'when running on a protected branch' do
+            let_it_be(:yaml_content) do
+              {
+                include: { remote: 'https://test.example.com/${SECRET_TOKEN}.yml' },
+                test: { stage: 'test', script: 'echo 1' }
+              }.to_yaml
+            end
+
+            before do
+              sha = project.repository.commit.sha # this is always the sha used by this endpoint for linting
+              ref = Gitlab::Ci::RefFinder.new(project).find_by_sha(sha)
+
+              create(:protected_branch, name: ref, project: project)
+              create(:ci_variable, key: 'SECRET_TOKEN', value: 'secret!!!!!', project: project, protected: true)
+
+              stub_request(:get, "https://test.example.com/secret!!!!!.yml")
+            end
+
+            it 'expands protected variables', :aggregate_failures do
+              ci_lint
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response['merged_yaml']).to be_nil
+              expect(json_response['includes']).to be_nil
+              expect(json_response['valid']).to be_falsey
+              expect(json_response['errors']).to eq([
+                'Included file `https://test.example.com/secret!!!!!.yml` is empty or does not exist!'
+              ])
+            end
           end
         end
       end
