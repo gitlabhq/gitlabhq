@@ -350,8 +350,8 @@ class ApplicationSettingsAnalysis
 
   DOC_API_SETTINGS_FILE_PATH = File.expand_path('../../doc/api/settings.md', __dir__)
   DOC_API_SETTINGS_TABLE_REGEX = Regexp.new(
-    "## List of settings that can be accessed via API calls(?:.*?)(?:--\|\n)+?(?<rows>.+)" \
-      "### Configure inactive project deletion", Regexp::MULTILINE
+    "## Available settings(?:.*?)(?:--\|\n)+?(?<rows>.+)" \
+      "### Inactive project settings", Regexp::MULTILINE
   )
 
   DOC_PAGE_HEADERS = [

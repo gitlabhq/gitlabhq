@@ -33,7 +33,7 @@ Merge requests with documentation changes have the following jobs available:
 - `review-docs-deploy`, which uses Nanoc static-site generation using
   [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs).
 - `review-docs-hugo-deploy`: Optional. This review app is only for testing the Hugo static site generation from
-  [`gitlab-docs-hugo`](https://gitlab.com/gitlab-org/technical-writing-group/gitlab-docs-hugo),
+  [`gitlab-docs-hugo`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com),
   which is still in development.
 
 To deploy a review app and preview changes:
@@ -57,11 +57,11 @@ Documentation review apps follow this process:
    either:
 
    - The `docs deploy` flag, which triggers a pipeline in the `gitlab-org/gitlab-docs` project.
-   - The `docs-hugo deploy` flag, which triggers a pipeline in the `gitlab-org/technical-writing-group/gitlab-docs-hugo`
+   - The `docs-hugo deploy` flag, which triggers a pipeline in the `gitlab-org/technical-writing/docs-gitlab-com`
      project.
 
    The `DOCS_BRANCH` environment variable determines which branch of either the `gitlab-org/gitlab-docs` project or the
-   `gitlab-org/technical-writing-group/gitlab-docs-hugo` project are used. If not set, the `main` branch is used.
+   `gitlab-org/technical-writing/docs-gitlab-com` project are used. If not set, the `main` branch is used.
 1. After the documentation preview site is built:
    - For `nanoc` builds, the HTML files are uploaded as [artifacts](../../ci/yaml/index.md#artifacts) to a GCP bucket.
      For implementation details, see

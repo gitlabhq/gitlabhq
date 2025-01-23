@@ -29,22 +29,28 @@ export const globalAccessorPlugin = (context) => {
  */
 // use this only for component migration
 export const syncWithVuex = (context) => {
-  /** @type {VuexStore} */
-  const vuexStore = context.options.syncWith;
-  if (!vuexStore) {
+  const config = context.options.syncWith;
+  if (!config) {
     return;
   }
-  context.store.$patch(vuexStore.state);
+  const { store: vuexStore, namespace } =
+    /** @type {{ store: VuexStore, namespace: string }} */ config;
+  const getVuexState = namespace ? () => vuexStore.state[namespace] : () => vuexStore.state;
+  context.store.$patch(getVuexState());
   vuexStore.subscribe(
     () => {
-      context.store.$patch(vuexStore.state);
+      context.store.$patch(getVuexState());
     },
     { prepend: true },
   );
   context.store.$subscribe(
-    () => {
-      vuexStore.replaceState(context.store.$state);
-    },
+    namespace
+      ? () => {
+          vuexStore.state[namespace] = context.store.$state;
+        }
+      : () => {
+          vuexStore.replaceState(context.store.$state);
+        },
     { flush: 'sync' },
   );
 };

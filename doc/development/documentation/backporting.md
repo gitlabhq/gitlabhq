@@ -37,10 +37,10 @@ current stable branch:
 Prerequisites:
 
 - The person requesting the backport does this step. You must have at
-  least the Developer role for the [Technical Writing project](https://gitlab.com/gitlab-org/technical-writing).
+  least the Developer role for the [Technical Writing team tasks project](https://gitlab.com/gitlab-org/technical-writing/team-tasks).
 
-1. Open an [issue in the Technical Writing project](https://gitlab.com/gitlab-org/technical-writing/-/issues/new)
-using the [backport changes template](https://gitlab.com/gitlab-org/technical-writing/-/blob/main/.gitlab/issue_templates/backport_changes.md).
+1. Open an [issue in the Technical Writing team tasks project](https://gitlab.com/gitlab-org/technical-writing/team-tasks/-/issues/new)
+using the [backport changes template](https://gitlab.com/gitlab-org/technical-writing/team-tasks/-/blob/main/.gitlab/issue_templates/backport_changes.md).
 
 1. In the issue, state why the backport is needed. Include:
    - The background to this change.
@@ -92,7 +92,7 @@ For the change to appear in:
 Prerequisites:
 
 - The technical writer assigned to the backport does this step. You must have at
-  least the Maintainer role for the [Technical Writing project](https://gitlab.com/gitlab-org/technical-writing).
+  least the Maintainer role for the [Technical Writing team tasks project](https://gitlab.com/gitlab-org/technical-writing/team-tasks).
 
 After the changes are merged to the appropriate stable branch,
 you must update the Docker image that holds that version's documentation.

@@ -799,7 +799,7 @@ Use **drawer** to describe a [drawer UI component](../drawers.md) that:
 
 To see examples of drawers:
 
-- Go to the [Technical Writing Pipeline Editor](https://gitlab.com/gitlab-org/technical-writing/-/ci/editor?branch_name=main) and select **Help** (**{information-o}**).
+- Go to the [Technical Writing Pipeline Editor](https://gitlab.com/gitlab-org/technical-writing/team-tasks/-/ci/editor?branch_name=main) and select **Help** (**{information-o}**).
 - Open GitLab Duo Chat.
 
 Before using this term, confirm whether **drawer** or [**dialog**](#dialog) is

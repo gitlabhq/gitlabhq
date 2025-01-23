@@ -289,6 +289,12 @@ build:
     - docker run my-docker-image /script/to/run/tests
 ```
 
+##### Docker-in-Docker with proxy enabled in the Docker executor
+
+You might need to configure proxy settings to use the `docker push` command.
+
+For more information, see [Proxy settings when using dind service](https://docs.gitlab.com/runner/configuration/proxy.html#proxy-settings-when-using-dind-service).
+
 #### Use the Kubernetes executor with Docker-in-Docker
 
 You can use the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/index.html) to run jobs in a Docker container.

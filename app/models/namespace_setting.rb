@@ -27,8 +27,6 @@ class NamespaceSetting < ApplicationRecord
   validates :enabled_git_access_protocol, inclusion: { in: enabled_git_access_protocols.keys }
   validates :default_branch_protection_defaults, json_schema: { filename: 'default_branch_protection_defaults' }
   validates :default_branch_protection_defaults, bytesize: { maximum: -> { DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE } }
-  validates :allow_mfa_for_subgroups, presence: true, if: :subgroup?
-  validates :resource_access_token_creation_allowed, presence: true, if: :subgroup?
 
   sanitizes! :default_branch_name
 

@@ -11,6 +11,10 @@ describe('Pinia plugins', () => {
   describe('syncWithVuex', () => {
     let vuexStore;
     let usePiniaStore;
+    let namespace;
+
+    const getVuexName = (name) => (namespace ? `${namespace}/${name}` : name);
+    const getVuexState = () => (namespace ? vuexStore.state[namespace] : vuexStore.state);
 
     const createState = () => ({
       primitive: 'foo',
@@ -22,20 +26,33 @@ describe('Pinia plugins', () => {
       },
     });
 
-    const createVuexStore = () => {
-      vuexStore = new Vuex.Store({
-        state() {
-          return createState();
+    const createVuexStoreConfig = () => ({
+      state() {
+        return createState();
+      },
+      mutations: {
+        setPrimitive(state, value) {
+          state.primitive = value;
         },
-        mutations: {
-          setPrimitive(state, value) {
-            state.primitive = value;
-          },
-          setObject(state, value) {
-            state.object = value;
-          },
-          setDeepNested(state, value) {
-            state.nested.object = value;
+        setObject(state, value) {
+          state.object = value;
+        },
+        setDeepNested(state, value) {
+          state.nested.object = value;
+        },
+      },
+    });
+
+    const createVuexStore = () => {
+      vuexStore = new Vuex.Store(createVuexStoreConfig());
+    };
+
+    const createNamespacedVuexStore = () => {
+      vuexStore = new Vuex.Store({
+        modules: {
+          [namespace]: {
+            namespaced: true,
+            ...createVuexStoreConfig(),
           },
         },
       });
@@ -43,7 +60,10 @@ describe('Pinia plugins', () => {
 
     const createPiniaStore = () => {
       usePiniaStore = defineStore('exampleStore', {
-        syncWith: vuexStore,
+        syncWith: {
+          store: vuexStore,
+          namespace,
+        },
         state() {
           return createState();
         },
@@ -61,65 +81,87 @@ describe('Pinia plugins', () => {
       });
     };
 
-    beforeEach(() => {
-      createVuexStore();
-      createPiniaStore();
-      setActivePinia(createPinia().use(syncWithVuex));
-    });
-
-    describe('primitives', () => {
-      it('syncs Pinia with Vuex', () => {
-        vuexStore.commit('setPrimitive', 'newValue');
-        expect(usePiniaStore().primitive).toBe('newValue');
+    describe.each([
+      [
+        'with a root level store',
+        () => {
+          createVuexStore();
+          createPiniaStore();
+          setActivePinia(createPinia().use(syncWithVuex));
+        },
+      ],
+      [
+        'with a namespaced store',
+        () => {
+          namespace = 'myStore';
+          createNamespacedVuexStore();
+          createPiniaStore(namespace);
+          setActivePinia(createPinia().use(syncWithVuex));
+        },
+      ],
+    ])('%s', (caseName, setupFn) => {
+      beforeEach(() => {
+        setupFn();
       });
 
-      it('syncs Vuex with Pinia', () => {
-        usePiniaStore().setPrimitive('newValue');
-        expect(vuexStore.state.primitive).toBe('newValue');
-      });
-    });
-
-    describe('root objects', () => {
-      it('syncs Pinia with Vuex', () => {
-        const obj = { foo: 1 };
-        vuexStore.commit('setObject', obj);
-        expect(usePiniaStore().object).toStrictEqual(obj);
+      afterEach(() => {
+        namespace = undefined;
       });
 
-      it('syncs Vuex with Pinia after Pinia is initialized', () => {
-        usePiniaStore();
-        const obj = { foo: 1 };
-        vuexStore.commit('setObject', obj);
-        expect(usePiniaStore().object).toStrictEqual(obj);
+      describe('primitives', () => {
+        it('syncs Pinia with Vuex', () => {
+          vuexStore.commit(getVuexName('setPrimitive'), 'newValue');
+          expect(usePiniaStore().primitive).toBe('newValue');
+        });
+
+        it('syncs Vuex with Pinia', () => {
+          usePiniaStore().setPrimitive('newValue');
+          expect(getVuexState().primitive).toBe('newValue');
+        });
       });
 
-      it('syncs Vuex with Pinia', () => {
-        const obj = { foo: 1 };
-        usePiniaStore().setObject(obj);
-        expect(vuexStore.state.object).toStrictEqual(obj);
-      });
-    });
+      describe('root objects', () => {
+        it('syncs Pinia with Vuex', () => {
+          const obj = { foo: 1 };
+          vuexStore.commit(getVuexName('setObject'), obj);
+          expect(usePiniaStore().object).toStrictEqual(obj);
+        });
 
-    describe('nested objects', () => {
-      it('syncs Pinia with Vuex', async () => {
-        const obj = { foo: 1 };
-        vuexStore.commit('setDeepNested', obj);
-        await waitForPromises();
-        expect(usePiniaStore().nested.object).toStrictEqual(obj);
-      });
+        it('syncs Vuex with Pinia after Pinia is initialized', () => {
+          usePiniaStore();
+          const obj = { foo: 1 };
+          vuexStore.commit(getVuexName('setObject'), obj);
+          expect(usePiniaStore().object).toStrictEqual(obj);
+        });
 
-      it('syncs Pinia with Vuex after Pinia is initialized', async () => {
-        usePiniaStore();
-        const obj = { foo: 1 };
-        vuexStore.commit('setDeepNested', obj);
-        await waitForPromises();
-        expect(usePiniaStore().nested.object).toStrictEqual(obj);
+        it('syncs Vuex with Pinia', () => {
+          const obj = { foo: 1 };
+          usePiniaStore().setObject(obj);
+          expect(getVuexState().object).toStrictEqual(obj);
+        });
       });
 
-      it('syncs Vuex with Pinia', () => {
-        const obj = { foo: 1 };
-        usePiniaStore().setDeepNested(obj);
-        expect(vuexStore.state.nested.object).toStrictEqual(obj);
+      describe('nested objects', () => {
+        it('syncs Pinia with Vuex', async () => {
+          const obj = { foo: 1 };
+          vuexStore.commit(getVuexName('setDeepNested'), obj);
+          await waitForPromises();
+          expect(usePiniaStore().nested.object).toStrictEqual(obj);
+        });
+
+        it('syncs Pinia with Vuex after Pinia is initialized', async () => {
+          usePiniaStore();
+          const obj = { foo: 1 };
+          vuexStore.commit(getVuexName('setDeepNested'), obj);
+          await waitForPromises();
+          expect(usePiniaStore().nested.object).toStrictEqual(obj);
+        });
+
+        it('syncs Vuex with Pinia', () => {
+          const obj = { foo: 1 };
+          usePiniaStore().setDeepNested(obj);
+          expect(getVuexState().nested.object).toStrictEqual(obj);
+        });
       });
     });
   });

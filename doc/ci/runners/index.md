@@ -10,11 +10,8 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Dedicated
 
-Use GitLab-hosted runners to run your CI/CD jobs on GitLab.com and GitLab Dedicated to build, test, and deploy
-applications on different environments.
-
-Use GitLab-hosted runners to run your CI/CD jobs on GitLab.com and GitLab Dedicated. These runners can build, test, and deploy
-applications on different environments.
+Use GitLab-hosted runners to run your CI/CD jobs on GitLab.com and GitLab Dedicated.
+These runners can build, test, and deploy applications on different environments.
 
 To create and register your own runners, see [self-managed runners](https://docs.gitlab.com/runner/).
 

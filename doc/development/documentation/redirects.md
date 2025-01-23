@@ -53,7 +53,7 @@ There are two types of redirects:
 
 Expired redirect files are removed from the documentation projects by the
 [`clean_redirects` Rake task](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/raketasks.md#clean-up-redirects),
-as part of the Technical Writing team's [monthly tasks](https://gitlab.com/gitlab-org/technical-writing/-/blob/main/.gitlab/issue_templates/tw-monthly-tasks.md).
+as part of the Technical Writing team's [monthly tasks](https://gitlab.com/gitlab-org/technical-writing/team-tasks/-/blob/main/.gitlab/issue_templates/tw-monthly-tasks.md).
 
 ## Redirect to a page that already exists
 

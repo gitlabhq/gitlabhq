@@ -19336,7 +19336,7 @@ msgstr ""
 msgid "Dependencies|There was a problem fetching vulnerabilities."
 msgstr ""
 
-msgid "Dependencies|There was an error fetching the components for this group. Please try again later."
+msgid "Dependencies|There was an error fetching the components for this %{namespaceType}. Please try again later."
 msgstr ""
 
 msgid "Dependencies|There was an error fetching the package managers for this group. Please try again later."
@@ -36320,9 +36320,6 @@ msgstr ""
 msgid "MlModelRegistry|No logged parameters"
 msgstr ""
 
-msgid "MlModelRegistry|No registered versions"
-msgstr ""
-
 msgid "MlModelRegistry|No runs associated with this model"
 msgstr ""
 
@@ -36418,11 +36415,6 @@ msgstr ""
 
 msgid "MlModelRegistry|folder name"
 msgstr ""
-
-msgid "MlModelRegistry|· %d version"
-msgid_plural "MlModelRegistry|· %d versions"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "Mock an external CI integration."
 msgstr ""
@@ -51506,9 +51498,6 @@ msgid "SecurityOrchestration|Merge request approval"
 msgstr ""
 
 msgid "SecurityOrchestration|Merge request approval policies allow a maximum 1 bot message action."
-msgstr ""
-
-msgid "SecurityOrchestration|Merge request approval policies allow a maximum of 1 approver action."
 msgstr ""
 
 msgid "SecurityOrchestration|Merge request approval policies allow a maximum of 5 approver actions."
