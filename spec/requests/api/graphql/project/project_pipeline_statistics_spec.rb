@@ -242,11 +242,11 @@ RSpec.describe 'Query.project.pipelineAnalytics', :aggregate_failures, :click_ho
         context 'with no pipelines in time window', time_travel_to: Time.utc(2024, 1, 1) do
           let(:expected_duration_statistics) do
             {
-              'p50' => nil,
-              'p75' => nil,
-              'p90' => nil,
-              'p95' => nil,
-              'p99' => nil
+              'p50' => 0,
+              'p75' => 0,
+              'p90' => 0,
+              'p95' => 0,
+              'p99' => 0
             }
           end
 

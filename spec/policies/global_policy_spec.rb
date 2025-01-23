@@ -741,4 +741,16 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       it { is_expected.to be_disallowed(:create_organizatinon) }
     end
   end
+
+  describe 'admin pages' do
+    context 'with regular user' do
+      it { is_expected.to be_disallowed(:read_admin_cicd) }
+    end
+
+    context 'with an admin', :enable_admin_mode do
+      let(:current_user) { admin_user }
+
+      it { is_expected.to be_allowed(:read_admin_cicd) }
+    end
+  end
 end

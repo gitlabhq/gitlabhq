@@ -15324,6 +15324,12 @@ CREATE SEQUENCE members_id_seq
 
 ALTER SEQUENCE members_id_seq OWNED BY members.id;
 
+CREATE TABLE merge_request_approval_metrics (
+    merge_request_id bigint NOT NULL,
+    last_approved_at timestamp with time zone NOT NULL,
+    target_project_id bigint NOT NULL
+);
+
 CREATE TABLE merge_request_assignees (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -27222,6 +27228,9 @@ ALTER TABLE ONLY members_deletion_schedules
 ALTER TABLE ONLY members
     ADD CONSTRAINT members_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY merge_request_approval_metrics
+    ADD CONSTRAINT merge_request_approval_metrics_pkey PRIMARY KEY (merge_request_id);
+
 ALTER TABLE ONLY merge_request_assignees
     ADD CONSTRAINT merge_request_assignees_pkey PRIMARY KEY (id);
 
@@ -32473,6 +32482,8 @@ CREATE INDEX index_members_on_user_id_and_access_level_requested_at_is_null ON m
 
 CREATE INDEX index_members_on_user_id_created_at ON members USING btree (user_id, created_at) WHERE ((ldap = true) AND ((type)::text = 'GroupMember'::text) AND ((source_type)::text = 'Namespace'::text));
 
+CREATE INDEX index_merge_request_approval_metrics_on_merge_request_id ON merge_request_approval_metrics USING btree (merge_request_id);
+
 CREATE UNIQUE INDEX index_merge_request_assignees_on_merge_request_id_and_user_id ON merge_request_assignees USING btree (merge_request_id, user_id);
 
 CREATE INDEX index_merge_request_assignees_on_project_id ON merge_request_assignees USING btree (project_id);
@@ -32710,6 +32721,8 @@ CREATE INDEX index_ml_models_on_project_id ON ml_models USING btree (project_id)
 CREATE UNIQUE INDEX index_ml_models_on_project_id_and_name ON ml_models USING btree (project_id, name);
 
 CREATE INDEX index_ml_models_on_user_id ON ml_models USING btree (user_id);
+
+CREATE UNIQUE INDEX index_mr_approval_metrics_on_project_id_and_mr_id ON merge_request_approval_metrics USING btree (target_project_id, merge_request_id);
 
 CREATE UNIQUE INDEX index_mr_blocks_on_blocking_and_blocked_mr_ids ON merge_request_blocks USING btree (blocking_merge_request_id, blocked_merge_request_id);
 
@@ -37748,6 +37761,9 @@ ALTER TABLE ONLY approvals
 ALTER TABLE ONLY namespaces
     ADD CONSTRAINT fk_319256d87a FOREIGN KEY (file_template_project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY merge_request_approval_metrics
+    ADD CONSTRAINT fk_324639fb86 FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY protected_branch_unprotect_access_levels
     ADD CONSTRAINT fk_325cad614b FOREIGN KEY (protected_branch_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -39901,6 +39917,9 @@ ALTER TABLE ONLY reviews
 
 ALTER TABLE ONLY ci_running_builds
     ADD CONSTRAINT fk_rails_5ca491d360 FOREIGN KEY (runner_id) REFERENCES ci_runners(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY merge_request_approval_metrics
+    ADD CONSTRAINT fk_rails_5cb1ca73f8 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_stages
     ADD CONSTRAINT fk_rails_5d4d96d44b_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;

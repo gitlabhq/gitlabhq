@@ -150,7 +150,7 @@ requirements:
 - [Unlock users](unlock_user.md).
   By default, GitLab locks users after 10 failed sign-in attempts.
   Users remain locked for 10 minutes or until an administrator unlocks
-  the user. In GitLab 16.5 and later, administrators can [use the API](../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls)
+  the user. In GitLab 16.5 and later, administrators can [use the API](../api/settings.md#available-settings)
   to configure max login attempts and time period for remaining locked
   out. Per guidance in AC-7, FedRAMP defers to NIST 800-63B for
   defining parameters for account lockouts, which the default setting

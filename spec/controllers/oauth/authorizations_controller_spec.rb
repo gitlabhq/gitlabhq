@@ -61,6 +61,21 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
     end
   end
 
+  shared_examples 'RequestPayloadLogger information appended' do
+    it 'logs custom information in the payload' do
+      expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
+        method.call(payload)
+
+        expect(payload[:remote_ip]).to be_present
+        expect(payload[:username]).to eq(user.username)
+        expect(payload[:user_id]).to be_present
+        expect(payload[:ua]).to be_present
+      end
+
+      subject
+    end
+  end
+
   describe 'GET #new' do
     subject { get :new, params: params }
 
@@ -336,10 +351,14 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
         end
       end
     end
+
+    it_behaves_like "RequestPayloadLogger information appended"
   end
 
   describe 'POST #create' do
     subject { post :create, params: params }
+
+    it_behaves_like "RequestPayloadLogger information appended"
 
     include_examples 'OAuth Authorizations require confirmed user'
   end

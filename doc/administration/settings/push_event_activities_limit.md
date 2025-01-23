@@ -32,7 +32,7 @@ To modify this setting:
   1. Select **Settings > Network**.
   1. Expand **Performance optimization**.
   1. Edit the **Push event activities limit** setting.
-- Through the [Application settings API](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls)
+- Through the [Application settings API](../../api/settings.md#available-settings)
   as `push_event_activities_limit`.
 
 The default value is `3`, but the value can be greater than or equal to `0`. Setting this value to `0` does not disable throttling.

@@ -26,7 +26,7 @@ To prevent new users from creating top-level groups:
 
 - In GitLab 15.5 and later, use either:
   - The [GitLab UI](../administration/settings/account_and_limit_settings.md#prevent-new-users-from-creating-top-level-groups).
-  - The [Application settings API](../api/settings.md#change-application-settings).
+  - The [Application settings API](../api/settings.md#update-application-settings).
 - In GitLab 15.4 and earlier, modify a configuration file:
 
 ::Tabs

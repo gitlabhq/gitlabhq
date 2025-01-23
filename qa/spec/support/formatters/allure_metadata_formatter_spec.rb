@@ -6,7 +6,11 @@ describe QA::Support::Formatters::AllureMetadataFormatter do
   let(:formatter) { described_class.new(StringIO.new) }
 
   let(:rspec_example_notification) do
-    instance_double(RSpec::Core::Notifications::ExampleNotification, example: rspec_example)
+    instance_double(
+      RSpec::Core::Notifications::FailedExampleNotification,
+      example: rspec_example,
+      message_lines: ["Some failure", "message"]
+    )
   end
 
   # rubocop:disable RSpec/VerifiedDoubles
@@ -49,8 +53,28 @@ describe QA::Support::Formatters::AllureMetadataFormatter do
       expect(rspec_example).to have_received(:issue).with(
         'Failure issues',
         'https://gitlab.com/gitlab-org/gitlab/-/issues?sort=updated_desc&scope=all&state=opened&' \
-          'search=spec.rb&search=Some%20failure%20message'
+          'search=spec.rb&search=Some%20failure%0Amessage'
       )
+    end
+
+    context 'when message_lines is empty' do
+      let(:rspec_example_notification) do
+        instance_double(
+          RSpec::Core::Notifications::FailedExampleNotification,
+          example: rspec_example,
+          message_lines: []
+        )
+      end
+
+      it 'uses exception message for the search URL', :aggregate_failures do
+        formatter.example_finished(rspec_example_notification)
+
+        expect(rspec_example).to have_received(:issue).with(
+          'Failure issues',
+          'https://gitlab.com/gitlab-org/gitlab/-/issues?sort=updated_desc&scope=all&state=opened&' \
+            'search=spec.rb&search=Some%20failure%20message'
+        )
+      end
     end
   end
 

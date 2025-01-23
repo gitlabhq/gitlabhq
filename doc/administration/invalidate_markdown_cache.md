@@ -26,7 +26,7 @@ Pre-requisite:
 - You must be an administrator.
 
 To avoid problems caused by cached HTML versions, invalidate the existing cache by increasing the `local_markdown_version`
-setting in application settings [using the API](../api/settings.md#change-application-settings):
+setting in application settings [using the API](../api/settings.md#update-application-settings):
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/settings?local_markdown_version=<increased_number>"

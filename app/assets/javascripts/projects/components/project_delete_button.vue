@@ -34,6 +34,10 @@ export default {
       type: Number,
       required: true,
     },
+    buttonText: {
+      type: String,
+      required: true,
+    },
   },
 };
 </script>
@@ -47,5 +51,6 @@ export default {
     :merge-requests-count="mergeRequestsCount"
     :forks-count="forksCount"
     :stars-count="starsCount"
+    :button-text="buttonText"
   />
 </template>

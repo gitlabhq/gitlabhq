@@ -4,7 +4,7 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Appearance API
+# Application appearance API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -16,9 +16,9 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-## Get current appearance configuration
+## Get details on current application appearance
 
-List the current appearance configuration of the GitLab instance.
+Gets details on the current appearance configuration for this GitLab instance.
 
 ```plaintext
 GET /application/appearance
@@ -27,7 +27,9 @@ GET /application/appearance
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/appearance"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/application/appearance"
 ```
 
 Example response:
@@ -54,9 +56,9 @@ Example response:
 }
 ```
 
-## Change appearance configuration
+## Update application appearance
 
-Use an API call to modify GitLab instance appearance configuration.
+Updates the current appearance configuration for this GitLab instance.
 
 ```plaintext
 PUT /application/appearance
@@ -69,8 +71,8 @@ PUT /application/appearance
 | `pwa_name`                        | string  | no       | Full name of the Progressive Web App. Used for the attribute `name` in `manifest.json`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.8. |
 | `pwa_short_name`                  | string  | no       | Short name for Progressive Web App. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.8. |
 | `pwa_description`                 | string  | no       | An explanation of what the Progressive Web App does. Used for the attribute `description` in `manifest.json`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.8. |
-| `pwa_icon`                        | mixed   | no       | Icon used for Progressive Web App. See [Change logo](#change-logo). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.8. |
-| `logo`                            | mixed   | no       | Instance image used on the sign in / sign up page. See [Change logo](#change-logo) |
+| `pwa_icon`                        | mixed   | no       | Icon used for Progressive Web App. See [Update application logo](#update-application-logo). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.8. |
+| `logo`                            | mixed   | no       | Instance image used on the sign in / sign up page. See [Update application logo](#update-application-logo) |
 | `header_logo`                     | mixed   | no       | Instance image used for the main navigation bar |
 | `favicon`                         | mixed   | no       | Instance favicon in `.ico` or `.png` format |
 | `member_guidelines`               | string  | no       | Markdown text shown on the group or project member page for users with permission to change members |
@@ -85,7 +87,9 @@ PUT /application/appearance
 Example request:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/appearance?email_header_and_footer_enabled=true&header_message=test"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/application/appearance?email_header_and_footer_enabled=true&header_message=test"
 ```
 
 Example response:
@@ -112,13 +116,13 @@ Example response:
 }
 ```
 
-## Change logo
+## Update application logo
 
-Upload a logo to your GitLab instance.
+Updates the current logo for this GitLab instance with an included image file.
 
-To upload an avatar from your file system, use the `--form` argument. This causes
-cURL to post data using the header `Content-Type: multipart/form-data`. The
-`file=` parameter must point to an image file on your file system and be
+To upload an avatar from your local file system, use the `--form` argument to include the file.
+This causes cURL to post data using the header `Content-Type: multipart/form-data`.
+The `file=` parameter must point to an image file on your file system and be
 preceded by `@`.
 
 ```plaintext
@@ -127,16 +131,17 @@ PUT /application/appearance
 
 | Attribute  | Type  | Required | Description |
 |------------|-------|----------|-------------|
-| `logo`     | mixed | Yes      | File to upload |
-| `pwa_icon` | mixed | Yes      | File to upload. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.8. |
+| `logo`     | mixed | Yes      | Image used as a logo. |
+| `pwa_icon` | mixed | Yes      | Image used for the Progressive Web App. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.8. |
 
 Example request:
 
 ```shell
-curl --location --request PUT "https://gitlab.example.com/api/v4/application/appearance?data=image/png" \
---header "Content-Type: multipart/form-data" \
---header "PRIVATE-TOKEN: <your_access_token>" \
---form "logo=@/path/to/logo.png"
+curl --location --request PUT \
+  --url "https://gitlab.example.com/api/v4/application/appearance?data=image/png" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: multipart/form-data" \
+  --form "logo=@/path/to/logo.png"
 ```
 
 Example response:

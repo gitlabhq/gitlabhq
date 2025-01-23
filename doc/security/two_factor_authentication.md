@@ -55,7 +55,7 @@ Use the [application settings API](../api/settings.md) to modify the following s
 - `require_two_factor_authentication`.
 - `two_factor_grace_period`.
 
-For more information, see the [list of settings that can be accessed through API calls](../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
+For more information, see the [list of settings that can be accessed through API calls](../api/settings.md#available-settings).
 
 ## Enforce 2FA for Administrator users
 

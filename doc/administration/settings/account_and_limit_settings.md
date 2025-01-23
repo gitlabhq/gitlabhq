@@ -442,7 +442,7 @@ By default, new users can create top-level groups. GitLab administrators can pre
 
 - In GitLab 15.5 and later, use either:
   - The GitLab UI with the steps in this section.
-  - The [Application settings API](../../api/settings.md#change-application-settings).
+  - The [Application settings API](../../api/settings.md#update-application-settings).
 - In GitLab 15.4 and earlier, modify a [configuration file](../../administration/user_settings.md#prevent-users-from-creating-top-level-groups).
 
 1. On the left sidebar, at the bottom, select **Admin**.
@@ -471,6 +471,7 @@ DETAILS:
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421310) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `disallow_private_profiles`. Disabled by default.
+> - [Generally Available](https://gitlab.com/gitlab-org/gitlab/-/issues/427400) in GitLab 17.9. Feature flag `disallow_private_profiles` removed.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.

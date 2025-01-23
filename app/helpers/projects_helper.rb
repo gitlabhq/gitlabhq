@@ -730,14 +730,11 @@ module ProjectsHelper
   end
 
   def delete_immediately_message(project)
-    message = _('This action deletes %{codeOpen}%{project_path_with_namespace}%{codeClose} and everything this ' \
-      'project contains. %{strongOpen}There is no going back.%{strongClose}')
-
-    ERB::Util.html_escape(message) % delete_message_data(project)
+    _('This action will permanently delete this project, including all its resources.')
   end
 
-  def project_delete_immediately_button_data(project)
-    project_delete_button_shared_data(project).merge({
+  def project_delete_immediately_button_data(project, button_text = nil)
+    project_delete_button_shared_data(project, button_text).merge({
       form_path: project_path(project, permanently_delete: true)
     })
   end
@@ -767,7 +764,7 @@ module ProjectsHelper
     }
   end
 
-  def project_delete_button_shared_data(project)
+  def project_delete_button_shared_data(project, button_text = nil)
     merge_requests_count = Projects::AllMergeRequestsCountService.new(project).count
     issues_count = Projects::AllIssuesCountService.new(project).count
     forks_count = Projects::ForksCountService.new(project).count
@@ -778,7 +775,8 @@ module ProjectsHelper
       issues_count: number_with_delimiter(issues_count),
       merge_requests_count: number_with_delimiter(merge_requests_count),
       forks_count: number_with_delimiter(forks_count),
-      stars_count: number_with_delimiter(project.star_count)
+      stars_count: number_with_delimiter(project.star_count),
+      button_text: button_text.presence || _('Delete project')
     }
   end
 

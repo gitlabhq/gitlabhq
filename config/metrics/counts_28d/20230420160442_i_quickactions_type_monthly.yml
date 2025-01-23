@@ -14,9 +14,6 @@ options:
   events:
     - i_quickactions_type
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

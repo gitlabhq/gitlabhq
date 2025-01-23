@@ -4,6 +4,9 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   include Gitlab::GonHelper
   include InitializesCurrentUserMode
   include Gitlab::Utils::StrongMemoize
+  include RequestPayloadLogger
+
+  alias_method :auth_user, :current_user
 
   prepend_before_action :set_current_organization
 

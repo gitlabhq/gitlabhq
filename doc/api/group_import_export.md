@@ -98,7 +98,7 @@ The maximum import file size can be set by the Administrator on self-managed ins
 As an administrator, you can modify the maximum import file size either:
 
 - In the [**Admin** area](../administration/settings/import_and_export_settings.md).
-- By using the `max_import_size` option in the [Application settings API](settings.md#change-application-settings).
+- By using the `max_import_size` option in the [Application settings API](settings.md#update-application-settings).
 
 For information on the maximum import file size on GitLab.com, see
 [Account and limit settings](../user/gitlab_com/index.md#account-and-limit-settings).

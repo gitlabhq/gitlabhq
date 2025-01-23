@@ -541,6 +541,8 @@
   - 1
 - - merge_request_reset_approvals
   - 1
+- - merge_requests_approval_metrics_event
+  - 1
 - - merge_requests_capture_suggested_reviewers_accepted
   - 1
 - - merge_requests_cleanup_ref

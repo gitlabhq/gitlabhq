@@ -131,7 +131,7 @@ variables:
 
 You can extend and manage your Auto DevOps configuration with GitLab APIs:
 
-- [Use API calls to access settings](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls),
+- [Use API calls to access settings](../../api/settings.md#available-settings),
   which include `auto_devops_enabled`, to enable Auto DevOps on projects by default.
 - [Create a new project](../../api/projects.md#create-a-project).
 - [Edit groups](../../api/groups.md#update-group-attributes).

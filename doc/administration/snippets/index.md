@@ -46,7 +46,7 @@ To retrieve the current value, start the Rails console and run:
 ### Use the API
 
 To set the limit by using the Application Settings API
-(similar to [updating any other setting](../../api/settings.md#change-application-settings)),
+(similar to [updating any other setting](../../api/settings.md#update-application-settings)),
 use this command:
 
 ```shell
@@ -55,7 +55,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/application/settings?snippet_size_limit=52428800"
 ```
 
-You can also use the API to [retrieve the current value](../../api/settings.md#get-current-application-settings).
+You can also use the API to [retrieve the current value](../../api/settings.md#get-details-on-current-application-settings).
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \

@@ -2,7 +2,6 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import AssignedUsers from '~/merge_request_dashboard/components/assigned_users.vue';
 
 let wrapper;
-let glTooltipDirectiveMock;
 
 const createMockUsers = () => [
   {
@@ -27,12 +26,7 @@ function createComponent({
   type = 'ASSIGNEES',
   newListsEnabled = false,
 } = {}) {
-  glTooltipDirectiveMock = jest.fn();
-
   wrapper = mountExtended(AssignedUsers, {
-    directives: {
-      GlTooltip: glTooltipDirectiveMock,
-    },
     provide: {
       newListsEnabled,
     },
@@ -70,14 +64,6 @@ describe('Merge request dashboard assigned users component', () => {
       expect(findCurrentUserIcon().exists()).toBe(true);
     });
 
-    it('adds this is you text to tooltip', () => {
-      createComponent();
-
-      expect(glTooltipDirectiveMock.mock.calls[1][1].value).toBe(
-        '<strong>This is you.</strong><br />Assigned to Admin',
-      );
-    });
-
     it('renders current user last', () => {
       createComponent();
 
@@ -99,31 +85,6 @@ describe('Merge request dashboard assigned users component', () => {
 
       expect(findReviewStateIcon().exists()).toBe(true);
       expect(findReviewStateIcon().html()).toMatchSnapshot();
-    });
-
-    it.each`
-      state                  | title
-      ${'REQUESTED_CHANGES'} | ${'Admin requested changes'}
-      ${'APPROVED'}          | ${'Approved by Admin'}
-      ${'REVIEWED'}          | ${'Admin left feedback'}
-      ${'UNREVIEWED'}        | ${'Review requested from Admin'}
-    `('sets title as $title for review state $state', ({ state, title }) => {
-      createComponent({
-        type: 'REVIEWER',
-        users: [
-          {
-            id: 'gid://gitlab/user/2',
-            webUrl: '/root',
-            name: 'Admin',
-            avatarUrl: '/root',
-            mergeRequestInteraction: {
-              reviewState: state,
-            },
-          },
-        ],
-      });
-
-      expect(glTooltipDirectiveMock.mock.calls[0][1].value).toBe(title);
     });
   });
 });

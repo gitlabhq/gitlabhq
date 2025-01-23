@@ -145,3 +145,6 @@ export const JOB_TOKEN_POLICIES = keyBy(
   POLICIES_BY_RESOURCE.flatMap(({ policies }) => policies),
   ({ value }) => value,
 );
+
+export const JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT = 'JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT';
+export const JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG = 'JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG';

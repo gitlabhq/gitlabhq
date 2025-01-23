@@ -31,7 +31,7 @@ DETAILS:
 
 By default, user accounts are locked after 10 failed sign-in attempts. Accounts are unlocked automatically after 10 minutes.
 
-In GitLab 16.5 and later, administrators can use the [Application settings API](../api/settings.md#change-application-settings) to modify the `max_login_attempts` or `failed_login_attempts_unlock_period_in_minutes` settings.
+In GitLab 16.5 and later, administrators can use the [Application settings API](../api/settings.md#update-application-settings) to modify the `max_login_attempts` or `failed_login_attempts_unlock_period_in_minutes` settings.
 
 Administrators can unlock accounts immediately by using the following tasks:
 

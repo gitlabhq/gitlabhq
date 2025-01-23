@@ -241,4 +241,15 @@ describe('CRUD Component', () => {
       );
     });
   });
+
+  describe('actions slot', () => {
+    it('passes the showForm function to the actions slot', () => {
+      const actionsSlot = jest.fn();
+      createComponent({}, { actions: actionsSlot });
+
+      expect(actionsSlot).toHaveBeenCalledWith(
+        expect.objectContaining({ showForm: wrapper.vm.showForm }),
+      );
+    });
+  });
 });

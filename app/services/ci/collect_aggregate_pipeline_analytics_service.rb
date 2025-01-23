@@ -47,7 +47,7 @@ module Ci
       duration_query = query.select(*allowed_duration_percentiles.map { |p| query.duration_quantile_function(p) })
       duration_result = ::ClickHouse::Client.select(duration_query.to_sql, :main)
       result[:duration_statistics] = duration_result.first.symbolize_keys.transform_values do |interval|
-        interval ? interval.to_f.round(3).seconds : nil
+        interval ? interval.to_f.round(3).seconds : 0.0
       end
     end
 

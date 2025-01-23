@@ -67,4 +67,51 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
       end
     end
   end
+
+  describe '#each_change' do
+    let(:migration) do
+      { 'milestone' => '15.0', 'migration_job_name' => 'TestMigration', 'feature_category' => 'shared' }
+    end
+
+    let(:migration_record) { MigrationRecord.new(id: 1, finished_at: "2020-04-01 12:00:01") }
+    let(:queue_method_node) do
+      instance_double(RuboCop::AST::SendNode, children: [nil, nil, nil,
+        instance_double(RuboCop::AST::StrNode, source: 'table'),
+        instance_double(RuboCop::AST::StrNode, source: 'column')])
+    end
+
+    let(:generator) { instance_double(::PostDeploymentMigration::PostDeploymentMigrationGenerator) }
+    let(:groups_helper) { instance_double(::Keeps::Helpers::Groups) }
+
+    before do
+      allow(keep).to receive_messages(batched_background_migrations: { 'path/to/migration.yml' => migration },
+        before_cuttoff_milestone?: true, migration_finalized?: false, fetch_migration_status: migration_record,
+        last_migration_for_job: 'path/to/last_migration.rb', find_queue_method_node: queue_method_node,
+        groups_helper: groups_helper
+      )
+      allow(groups_helper).to receive_messages(labels_for_feature_category: [],
+        pick_reviewer_for_feature_category: "reviewer")
+      allow(PostDeploymentMigration::PostDeploymentMigrationGenerator).to receive(:source_root)
+
+      stub_request(:any, /.*/).to_return(status: 200, body: "", headers: {})
+    end
+
+    context 'when generator raises Rails::Generators::Error' do
+      before do
+        allow(::PostDeploymentMigration::PostDeploymentMigrationGenerator).to receive(:new)
+          .and_raise(Rails::Generators::Error)
+      end
+
+      it 'skips to the next iteration' do
+        changes = []
+        keep.each_change { |change| changes << change }
+
+        expect(changes).to be_empty
+      end
+
+      it 'does not raise the error' do
+        expect { keep.each_change { |change| change } }.not_to raise_error
+      end
+    end
+  end
 end

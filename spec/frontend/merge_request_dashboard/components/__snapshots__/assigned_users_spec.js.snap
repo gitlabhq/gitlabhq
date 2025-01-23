@@ -29,8 +29,10 @@ exports[`Merge request dashboard assigned users component renders user avatars 1
       class="gl-avatars-inline-child"
     >
       <a
-        class="gl-avatar-link gl-link gl-relative"
+        class="gl-avatar-link gl-link gl-relative js-user-link"
+        data-name="Admin"
         data-testid="assigned-user"
+        data-user-id="2"
         href="/root"
         target="blank"
       >
@@ -60,8 +62,10 @@ exports[`Merge request dashboard assigned users component renders user avatars 1
       class="gl-avatars-inline-child"
     >
       <a
-        class="gl-avatar-link gl-link gl-relative"
+        class="gl-avatar-link gl-link gl-relative js-user-link"
+        data-name="Admin"
         data-testid="assigned-user"
+        data-user-id="1"
         href="/root"
         target="blank"
       >

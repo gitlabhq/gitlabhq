@@ -795,7 +795,7 @@ For new GitLab Self-Managed instances, the default is `157286400` bytes (150 MB)
 
 For existing instances that upgrade to GitLab 16.3 or later, the default is calculated
 by multiplying [`max_yaml_size_bytes` (default 1 MB)](#maximum-size-and-depth-of-cicd-configuration-yaml-files)
-with [`ci_max_includes` (default 150)](../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
+with [`ci_max_includes` (default 150)](../api/settings.md#available-settings).
 If both limits are unmodified, the default is set to 1 MB x 150 = `157286400` bytes (150 MB).
 
 You can change this limit by using the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).

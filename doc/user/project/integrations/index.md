@@ -184,7 +184,7 @@ If a single push includes changes to more than three branches or tags, integrati
 supported by `push_hooks` and `tag_push_hooks` events are not executed.
 
 To change the number of supported branches or tags, configure the
-[`push_event_hooks_limit` setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
+[`push_event_hooks_limit` setting](../../../api/settings.md#available-settings).
 
 ## SSL verification
 

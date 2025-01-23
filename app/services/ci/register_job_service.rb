@@ -176,11 +176,9 @@ module Ci
         return
       end
 
-      @logger.instrument(:process_build_link_identity) do
-        # Make sure that composite identity is propagated to `PipelineProcessWorker`
-        # when the build's status change.
-        ::Gitlab::Auth::Identity.link_from_job(build)
-      end
+      # Make sure that composite identity is propagated to `PipelineProcessWorker`
+      # when the build's status change.
+      ::Gitlab::Auth::Identity.link_from_job(build)
 
       # In case when 2 runners try to assign the same build, second runner will be declined
       # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
@@ -223,16 +221,12 @@ module Ci
     def remove_from_queue!(build)
       @metrics.increment_queue_operation(:build_not_pending)
 
-      @logger.instrument(:process_build_not_pending) do
-        ##
-        # If this build can not be picked because we had stale data in
-        # `ci_pending_builds` table, we need to respond with 409 to retry
-        # this operation.
-        #
-        if ::Ci::UpdateBuildQueueService.new.remove!(build)
-          Result.new(nil, nil, nil, false)
-        end
-      end
+      ##
+      # If this build can not be picked because we had stale data in
+      # `ci_pending_builds` table, we need to respond with 409 to retry
+      # this operation.
+      #
+      Result.new(nil, nil, nil, false) if ::Ci::UpdateBuildQueueService.new.remove!(build)
     end
 
     def runner_matched?(build)
@@ -251,12 +245,18 @@ module Ci
     def present_build!(build)
       # We need to use the presenter here because Gitaly calls in the presenter
       # may fail, and we need to ensure the response has been generated.
-      presented_build = ::Ci::BuildRunnerPresenter.new(build) # rubocop:disable CodeReuse/Presenter
+      presented_build = @logger.instrument(:present_build_presenter) do
+        ::Ci::BuildRunnerPresenter.new(build) # rubocop:disable CodeReuse/Presenter -- old code
+      end
 
-      log_artifacts_context(build)
-      log_build_dependencies_size(presented_build)
+      @logger.instrument(:present_build_logs) do
+        log_artifacts_context(build)
+        log_build_dependencies_size(presented_build)
+      end
 
-      build_json = Gitlab::Json.dump(::API::Entities::Ci::JobRequest::Response.new(presented_build))
+      build_json = @logger.instrument(:present_build_response_json) do
+        Gitlab::Json.dump(::API::Entities::Ci::JobRequest::Response.new(presented_build))
+      end
       Result.new(build, build_json, presented_build, true)
     end
 
@@ -282,16 +282,22 @@ module Ci
       build.runner_id = runner.id
       build.runner_session_attributes = params[:session] if params[:session].present?
 
-      failure_reason, _ = pre_assign_runner_checks.find { |_, check| check.call(build, params) }
+      failure_reason, _ = @logger.instrument(:assign_runner_failure_reason) do
+        pre_assign_runner_checks.find { |_, check| check.call(build, params) }
+      end
 
       if failure_reason
         @metrics.increment_queue_operation(:runner_pre_assign_checks_failed)
 
-        build.drop!(failure_reason)
+        @logger.instrument(:assign_runner_drop) do
+          build.drop!(failure_reason)
+        end
       else
         @metrics.increment_queue_operation(:runner_pre_assign_checks_success)
 
-        build.run!
+        @logger.instrument(:assign_runner_run) do
+          build.run!
+        end
         persist_runtime_features(build, params)
 
         build.runner_manager = runner_manager if runner_manager

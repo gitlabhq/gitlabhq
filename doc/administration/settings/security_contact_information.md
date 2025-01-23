@@ -17,7 +17,7 @@ providing public contact information. GitLab supports using a
 [`security.txt`](https://securitytxt.org/) file for this purpose.
 
 Administrators can add a `security.txt` file using the GitLab UI or the
-[REST API](../../api/settings.md#change-application-settings).
+[REST API](../../api/settings.md#update-application-settings).
 Any content added is made available at
 `https://gitlab.example.com/.well-known/security.txt`. Authentication is not
 required to view this file.

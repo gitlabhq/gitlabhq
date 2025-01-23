@@ -108,7 +108,9 @@ RSpec.describe MergeRequests::ApprovalService, feature_category: :code_review_wo
       it 'publishes MergeRequests::ApprovedEvent' do
         expect { service.execute(merge_request) }
           .to publish_event(MergeRequests::ApprovedEvent)
-          .with(current_user_id: user.id, merge_request_id: merge_request.id)
+          .with(current_user_id: user.id,
+            merge_request_id: merge_request.id,
+            approved_at: anything)
       end
 
       it 'changes reviewers state to unapproved' do

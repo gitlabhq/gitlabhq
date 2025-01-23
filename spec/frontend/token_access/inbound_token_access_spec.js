@@ -6,6 +6,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import InboundTokenAccess from '~/token_access/components/inbound_token_access.vue';
+import { JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT } from '~/token_access/constants';
 import NamespaceForm from '~/token_access/components/namespace_form.vue';
 import inboundRemoveGroupCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_remove_group_ci_job_token_scope.mutation.graphql';
 import inboundRemoveProjectCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_remove_project_ci_job_token_scope.mutation.graphql';
@@ -58,6 +59,7 @@ describe('TokenAccess component', () => {
   const failureHandler = jest.fn().mockRejectedValue(error);
   const mockToastShow = jest.fn();
 
+  const findFormSelector = () => wrapper.findByTestId('form-selector');
   const findRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findToggleFormBtn = () => wrapper.findByTestId('crud-form-toggle');
@@ -72,13 +74,18 @@ describe('TokenAccess component', () => {
 
   const createComponent = (
     requestHandlers,
-    { addPoliciesToCiJobToken = false, enforceAllowlist = false, stubs = {} } = {},
+    {
+      addPoliciesToCiJobToken = false,
+      authenticationLogsMigrationForAllowlist = false,
+      enforceAllowlist = false,
+      stubs = {},
+    } = {},
   ) => {
     wrapper = shallowMountExtended(InboundTokenAccess, {
       provide: {
         fullPath: projectPath,
         enforceAllowlist,
-        glFeatures: { addPoliciesToCiJobToken },
+        glFeatures: { addPoliciesToCiJobToken, authenticationLogsMigrationForAllowlist },
       },
       apolloProvider: createMockApollo(requestHandlers),
       mocks: {
@@ -346,6 +353,53 @@ describe('TokenAccess component', () => {
 
         expect(inboundGroupsAndProjectsWithScopeResponseHandler).toHaveBeenCalledTimes(2);
       });
+    });
+  });
+
+  describe('when authenticationLogsMigrationForAllowlist feature flag is disabled', () => {
+    beforeEach(() =>
+      createComponent(
+        [
+          [
+            inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
+            inboundGroupsAndProjectsWithScopeResponseHandler,
+          ],
+        ],
+        { authenticationLogsMigrationForAllowlist: false, stubs: { CrudComponent } },
+      ),
+    );
+
+    it('renders toggle form button and hides actions dropdown', () => {
+      expect(findToggleFormBtn().exists()).toBe(true);
+      expect(findFormSelector().exists()).toBe(false);
+    });
+  });
+
+  describe('when authenticationLogsMigrationForAllowlist feature flag is enabled', () => {
+    beforeEach(() =>
+      createComponent(
+        [
+          [
+            inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
+            inboundGroupsAndProjectsWithScopeResponseHandler,
+          ],
+        ],
+        { authenticationLogsMigrationForAllowlist: true, stubs: { CrudComponent } },
+      ),
+    );
+
+    it('toggle form button is replaced by actions dropdown', () => {
+      expect(findToggleFormBtn().exists()).toBe(false);
+      expect(findFormSelector().exists()).toBe(true);
+    });
+
+    it('Add group or project option renders the namespace form', async () => {
+      expect(findNamespaceForm().exists()).toBe(false);
+
+      findFormSelector().vm.$emit('select', JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT);
+      await nextTick();
+
+      expect(findNamespaceForm().exists()).toBe(true);
     });
   });
 

@@ -504,7 +504,7 @@ The **Audit events** page lists changes made within the GitLab server. With this
 
 ### Statistics
 
-The **Instance overview** section of the Dashboard lists the current statistics of the GitLab instance. This information is retrieved using the [Application statistics API](../api/statistics.md#get-current-application-statistics).
+The **Instance overview** section of the Dashboard lists the current statistics of the GitLab instance. This information is retrieved using the [Application statistics API](../api/statistics.md#get-details-on-current-application-statistics).
 
 NOTE:
 These statistics show exact counts for values less than 10,000. For values of 10,000 and higher, these statistics show approximate data

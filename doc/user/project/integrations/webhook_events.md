@@ -56,7 +56,7 @@ Push events are triggered when you push to the repository, except when:
 
 - You push tags.
 - A single push includes changes for more than three branches by default
-  (depending on the [`push_event_hooks_limit` setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls)).
+  (depending on the [`push_event_hooks_limit` setting](../../../api/settings.md#available-settings)).
 
 If you push more than 20 commits at once, the `commits`
 attribute in the payload contains information about the newest 20 commits only.
@@ -155,7 +155,7 @@ Tag events are triggered when you create or delete tags in the repository.
 
 This hook is not executed if a single push includes changes for more than three
 tags by default (depending on the
-[`push_event_hooks_limit` setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls)).
+[`push_event_hooks_limit` setting](../../../api/settings.md#available-settings)).
 
 Request header:
 

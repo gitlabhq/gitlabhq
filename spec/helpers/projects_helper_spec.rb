@@ -2024,15 +2024,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     subject { helper.delete_immediately_message(project) }
 
     it 'returns correct message' do
-      expect(subject).to eq "This action deletes <code>#{project.path_with_namespace}</code> and everything this project contains. <strong>There is no going back.</strong>"
+      expect(subject).to eq "This action will permanently delete this project, including all its resources."
     end
   end
 
   describe '#project_delete_immediately_button_data' do
-    subject { helper.project_delete_immediately_button_data(project) }
-
-    it 'returns expected hash' do
-      expect(subject).to match({
+    let(:base_button_data) do
+      {
         form_path: project_path(project, permanently_delete: true),
         confirm_phrase: project.path_with_namespace,
         is_fork: 'false',
@@ -2040,7 +2038,23 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         merge_requests_count: '0',
         forks_count: '0',
         stars_count: '0'
-      })
+      }
+    end
+
+    describe 'with default button text' do
+      subject { helper.project_delete_immediately_button_data(project) }
+
+      it 'returns expected hash' do
+        expect(subject).to match(base_button_data.merge(button_text: 'Delete project'))
+      end
+    end
+
+    describe 'with custom button text' do
+      subject { helper.project_delete_immediately_button_data(project, 'Delete project immediately') }
+
+      it 'returns expected hash' do
+        expect(subject).to match(base_button_data.merge(button_text: 'Delete project immediately'))
+      end
     end
   end
 

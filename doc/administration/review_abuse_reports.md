@@ -25,7 +25,7 @@ To receive notifications of new abuse reports by email:
 1. Provide an email address and select **Save changes**.
 
 The notification email address can also be set and retrieved
-[using the API](../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
+[using the API](../api/settings.md#available-settings).
 
 ## Reporting abuse
 

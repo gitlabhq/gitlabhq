@@ -252,7 +252,7 @@ problems, GitLab enforces a maximum limit on the number of include directives
 processed in any one document. By default, a document can have up to 32 include directives, which is
 inclusive of transitive dependencies. To customize the number of processed includes directives, change
 the application setting `asciidoc_max_includes` with the
-[application settings API](../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
+[application settings API](../api/settings.md#available-settings).
 
 NOTE:
 The current maximum allowed value for `asciidoc_max_includes` is 64. If the value is

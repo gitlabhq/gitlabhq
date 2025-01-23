@@ -18,3 +18,5 @@ class Admin::JobsController < Admin::ApplicationController
     redirect_to admin_jobs_path, status: :see_other
   end
 end
+
+Admin::JobsController.prepend_mod

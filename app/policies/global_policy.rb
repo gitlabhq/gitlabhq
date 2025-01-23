@@ -149,6 +149,9 @@ class GlobalPolicy < BasePolicy
     enable :create_instance_runner
     enable :read_web_hook
     enable :admin_web_hook
+
+    # Admin pages
+    enable :read_admin_cicd
   end
 
   # We can't use `read_statistics` because the user may have different permissions for different projects

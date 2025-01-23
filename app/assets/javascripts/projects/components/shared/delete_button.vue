@@ -39,6 +39,11 @@ export default {
       type: Number,
       required: true,
     },
+    buttonText: {
+      type: String,
+      required: false,
+      default: __('Delete project'),
+    },
   },
   data() {
     return {
@@ -57,9 +62,6 @@ export default {
     onButtonClick() {
       this.isModalVisible = true;
     },
-  },
-  i18n: {
-    deleteProject: __('Delete project'),
   },
 };
 </script>
@@ -89,7 +91,7 @@ export default {
       variant="danger"
       data-testid="delete-button"
       @click="onButtonClick"
-      >{{ $options.i18n.deleteProject }}</gl-button
+      >{{ buttonText }}</gl-button
     >
   </gl-form>
 </template>

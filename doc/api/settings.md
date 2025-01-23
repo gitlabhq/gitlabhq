@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Use this API to interact with the
-[application settings](#list-of-settings-that-can-be-accessed-via-api-calls)
+[application settings](#available-settings)
 for your GitLab instance.
 
 Changes to your application settings are subject to caching and might not immediately take effect.
@@ -22,7 +22,7 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-## Get current application settings
+## Get details on current application settings
 
 > - `always_perform_delayed_deletion` feature flag [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332) in GitLab 15.11.
 > - `delayed_project_deletion` and `delayed_group_deletion` attributes removed in GitLab 16.0.
@@ -31,15 +31,16 @@ Prerequisites:
 > - `user_email_lookup_limit` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136886) in GitLab 16.7.
 > - `allow_all_integrations` and `allowed_integrations` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/issues/500610) in GitLab 17.6.
 
-List the current [application settings](#list-of-settings-that-can-be-accessed-via-api-calls)
-of the GitLab instance.
+Gets details on the current [application settings](#available-settings) for this GitLab instance.
 
 ```plaintext
 GET /application/settings
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/settings"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/application/settings"
 ```
 
 Example response:
@@ -199,7 +200,7 @@ these parameters:
 }
 ```
 
-## Change application settings
+## Update application settings
 
 > - `always_perform_delayed_deletion` feature flag [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332) in GitLab 15.11.
 > - `delayed_project_deletion` and `delayed_group_deletion` attributes removed in GitLab 16.0.
@@ -207,15 +208,16 @@ these parameters:
 > - `default_branch_protection` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. Use `default_branch_protection_defaults` instead.
 > - `allow_all_integrations` and `allowed_integrations` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/issues/500610) in GitLab 17.6.
 
-Use an API call to modify GitLab instance
-[application settings](#list-of-settings-that-can-be-accessed-via-api-calls).
+Updates the current [application settings](#available-settings) for this GitLab instance.
 
 ```plaintext
 PUT /application/settings
 ```
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/settings?signup_enabled=false&default_project_visibility=internal"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/application/settings?signup_enabled=false&default_project_visibility=internal"
 ```
 
 Example response:
@@ -373,7 +375,7 @@ Example responses:
   "allowed_integrations": []
 ```
 
-## List of settings that can be accessed via API calls
+## Available settings
 
 > - `housekeeping_full_repack_period`, `housekeeping_gc_period`, and `housekeeping_incremental_repack_period` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106963) in GitLab 15.8. Use `housekeeping_optimize_repository_period` instead.
 > - `allow_account_deletion` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412411) in GitLab 16.1.
@@ -383,9 +385,9 @@ Example responses:
 > - `receptive_cluster_agents_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463427) in GitLab 17.4.
 > - `allow_all_integrations` and `allowed_integrations` [added](https://gitlab.com/gitlab-org/gitlab/-/issues/500610) in GitLab 17.6.
 
-In general, all settings are optional. Certain settings though, if enabled,
-require other settings to be set to function properly. These requirements are
-listed in the descriptions of the relevant settings.
+In general, all settings are optional. When enabling some settings, you might also need
+to configure other related settings. These requirements are
+`Required` column of the following table.
 
 | Attribute                                | Type             | Required                             | Description |
 |------------------------------------------|------------------|:------------------------------------:|-------------|
@@ -541,10 +543,10 @@ listed in the descriptions of the relevant settings.
 | `hide_third_party_offers`                | boolean          | no                                   | Do not display offers from third parties in GitLab. |
 | `home_page_url`                          | string           | no                                   | Redirect to this URL when not logged in. |
 | `housekeeping_bitmaps_enabled`           | boolean          | no                                   | Deprecated. Git packfile bitmap creation is always enabled and cannot be changed via API and UI. Always returns `true`. |
-| `housekeeping_enabled`                   | boolean          | no                                   | Enable or disable Git housekeeping. Requires additional fields to be set. For more information, see [Housekeeping fields](#housekeeping-fields). |
-| `housekeeping_full_repack_period`        | integer          | no                                   | Deprecated. Number of Git pushes after which an incremental `git repack` is run. Use `housekeeping_optimize_repository_period` instead. For more information, see [Housekeeping fields](#housekeeping-fields). |
-| `housekeeping_gc_period`                 | integer          | no                                   | Deprecated. Number of Git pushes after which `git gc` is run. Use `housekeeping_optimize_repository_period` instead. For more information, see [Housekeeping fields](#housekeeping-fields). |
-| `housekeeping_incremental_repack_period` | integer          | no                                   | Deprecated. Number of Git pushes after which an incremental `git repack` is run. Use `housekeeping_optimize_repository_period` instead. For more information, see [Housekeeping fields](#housekeeping-fields).|
+| `housekeeping_enabled`                   | boolean          | no                                   | Enable or disable Git housekeeping. Requires additional fields to be set. For more information, see [Housekeeping settings](#housekeeping-settings). |
+| `housekeeping_full_repack_period`        | integer          | no                                   | Deprecated. Number of Git pushes after which an incremental `git repack` is run. Use `housekeeping_optimize_repository_period` instead. For more information, see [Housekeeping settings](#housekeeping-settings). |
+| `housekeeping_gc_period`                 | integer          | no                                   | Deprecated. Number of Git pushes after which `git gc` is run. Use `housekeeping_optimize_repository_period` instead. For more information, see [Housekeeping settings](#housekeeping-settings). |
+| `housekeeping_incremental_repack_period` | integer          | no                                   | Deprecated. Number of Git pushes after which an incremental `git repack` is run. Use `housekeeping_optimize_repository_period` instead. For more information, see [Housekeeping settings](#housekeeping-settings).|
 | `housekeeping_optimize_repository_period`| integer          | no                                   | Number of Git pushes after which an incremental `git repack` is run. |
 | `html_emails_enabled`                    | boolean          | no                                   | Enable HTML emails. |
 | `import_sources`                         | array of strings | no                                   | Sources to allow project import from, possible values: `github`, `bitbucket`, `bitbucket_server`, `fogbugz`, `git`, `gitlab_project`, `gitea`, and `manifest`. |
@@ -728,7 +730,7 @@ listed in the descriptions of the relevant settings.
 | `require_admin_two_factor_authentication` | boolean         | no | Allow administrators to require 2FA for all administrators on the instance. |
 | `pre_receive_secret_detection_enabled` | boolean         | no | Allow projects to enable secret push protection. This does not enable secret push protection. When you enable this feature, you accept the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/). Ultimate only. |
 
-### Configure inactive project deletion
+### Inactive project settings
 
 You can configure inactive projects deletion or turn it off.
 
@@ -739,7 +741,7 @@ You can configure inactive projects deletion or turn it off.
 | `inactive_projects_min_size_mb`          | integer          | no                                   | If `delete_inactive_projects` is `true`, the minimum repository size for projects to be checked for inactivity. Default is `0`. [Became operational](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0. |
 | `inactive_projects_send_warning_email_after_months` | integer | no                                 | If `delete_inactive_projects` is `true`, sets the time (in months) to wait before emailing maintainers that the project is scheduled be deleted because it is inactive. Default is `1`. [Became operational](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0. |
 
-## Housekeeping fields
+### Housekeeping settings
 
 ::Tabs
 
@@ -761,7 +763,7 @@ to be set, or _all_ of these values to be set:
 
 ::EndTabs
 
-### Package registry: Package file size limits
+### Package registry settings: Package file size limits
 
 The package file size limits are not part of the Application settings API.
 Instead, these settings can be accessed using the [Plan limits API](plan_limits.md).

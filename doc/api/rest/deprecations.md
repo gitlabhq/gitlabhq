@@ -133,7 +133,7 @@ The `default_branch_protection` field is deprecated in GitLab 17.0 for the follo
 
 - [New group API](../groups.md#create-a-group).
 - [Update group API](../groups.md#update-group-attributes).
-- [Application API](../settings.md#change-application-settings)
+- [Application Settings API](../settings.md#update-application-settings)
 
 You should use the `default_branch_protection_defaults` field instead, which provides more finer grained control
 over the default branch protections.

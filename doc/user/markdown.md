@@ -1615,7 +1615,7 @@ By default, a document can have up to 32 include directives.
 
 To customize the number of processed include directives, administrators can change the
 `asciidoc_max_includes` application setting with the
-[application settings API](../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
+[application settings API](../api/settings.md#available-settings).
 
 ### Use includes from external URLs
 

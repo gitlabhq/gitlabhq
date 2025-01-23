@@ -42,7 +42,7 @@ module QA
           example = example_notification.example
 
           add_quarantine_issue_link(example)
-          add_failure_issues_link(example)
+          add_failure_issues_link(example, example_notification)
           add_ci_job_link(example)
           set_flaky_status(example)
           set_behaviour_categories(example)
@@ -68,24 +68,31 @@ module QA
         #
         # @param [RSpec::Core::Example] example
         # @return [void]
-        def add_failure_issues_link(example)
+        def add_failure_issues_link(example, example_notification)
           return unless example.execution_result.status == :failed
 
           search_parameters = {
-            sort: "updated_desc",
-            scope: "all",
-            state: "opened"
-          }.map { |key, value| "#{key}=#{value}" }.join("&")
+            sort: 'updated_desc',
+            scope: 'all',
+            state: 'opened'
+          }.map { |key, value| "#{key}=#{value}" }.join('&')
 
+          exception_message = example.exception.message || ""
+          exception_message_lines = strip_ansi_codes(example_notification.message_lines) || []
           search_terms = {
-            test_file_path: ERB::Util.url_encode(example.file_path.gsub('./qa/specs/features/', '').to_s),
-            exception_message: ERB::Util.url_encode(example.exception.message)
-          }.map { |_, value| "search=#{value}" }.join("&")
+            test_file_path: example.file_path.gsub('./qa/specs/features/', '').to_s,
+            exception_message: exception_message_lines.empty? ? exception_message : exception_message_lines.join("\n")
+          }.map { |_, value| "search=#{ERB::Util.url_encode(value)}" }.join('&')
 
           search_url = "https://gitlab.com/gitlab-org/gitlab/-/issues?#{search_parameters}&#{search_terms}"
           example.issue('Failure issues', search_url)
         rescue StandardError => e
           log(:error, "Failed to add failure issue link for example '#{example.description}', error: #{e}")
+        end
+
+        def strip_ansi_codes(strings)
+          modified = Array(strings).map { |string| string.dup.gsub(/\x1b\[{1,2}[0-9;:?]*m/m, '') }
+          modified.size == 1 ? modified[0] : modified
         end
 
         # Add ci job link

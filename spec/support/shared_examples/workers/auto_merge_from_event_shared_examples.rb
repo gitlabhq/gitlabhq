@@ -6,7 +6,7 @@ RSpec.shared_examples 'process auto merge from event worker' do
   let_it_be(:merge_request) { create(:merge_request, source_project: project, merge_user: user) }
   let(:merge_request_id) { merge_request.id }
 
-  let(:data) { { current_user_id: user.id, merge_request_id: merge_request_id } }
+  let(:data) { { current_user_id: user.id, merge_request_id: merge_request_id, approved_at: Time.current.iso8601 } }
 
   it_behaves_like 'subscribes to event' do
     it 'calls AutoMergeService' do

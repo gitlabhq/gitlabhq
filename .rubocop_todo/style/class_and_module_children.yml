@@ -6,7 +6,6 @@ Style/ClassAndModuleChildren:
     - 'app/controllers/admin/abuse_reports_controller.rb'
     - 'app/controllers/admin/application_controller.rb'
     - 'app/controllers/admin/application_settings/appearances_controller.rb'
-    - 'app/controllers/admin/application_settings_controller.rb'
     - 'app/controllers/admin/applications_controller.rb'
     - 'app/controllers/admin/clusters_controller.rb'
     - 'app/controllers/admin/cohorts_controller.rb'

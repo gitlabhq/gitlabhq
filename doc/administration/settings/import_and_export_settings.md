@@ -63,7 +63,7 @@ To enable migration of groups and projects by direct transfer:
 1. Select **Save changes**.
 
 The same setting
-[is available](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls) in the API as the
+[is available](../../api/settings.md#available-settings) in the API as the
 `bulk_import_enabled` attribute.
 
 ## Enable silent admin exports

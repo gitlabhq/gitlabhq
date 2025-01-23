@@ -60,6 +60,10 @@ export default {
       default: '',
       required: false,
     },
+    canUpdateAllJobs: {
+      default: false,
+      required: true,
+    },
   },
   apollo: {
     jobs: {
@@ -240,7 +244,7 @@ export default {
     <jobs-table-tabs
       :all-jobs-count="count"
       :loading="loading"
-      :show-cancel-all-jobs-button="isCancelable"
+      :show-cancel-all-jobs-button="canUpdateAllJobs && isCancelable"
       @fetchJobsByStatus="fetchJobsByStatus"
     />
 

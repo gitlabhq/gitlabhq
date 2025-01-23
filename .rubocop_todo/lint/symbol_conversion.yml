@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Lint/SymbolConversion:
   Exclude:
-    - 'app/controllers/admin/application_settings_controller.rb'
     - 'app/controllers/groups_controller.rb'
     - 'app/controllers/projects/issues_controller.rb'
     - 'app/controllers/projects_controller.rb'

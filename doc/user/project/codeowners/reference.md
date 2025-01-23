@@ -241,20 +241,45 @@ role as Code Owners for `file.md`:
 
 ## Add a group as a Code Owner
 
-To set the members of a group or subgroup as a Code Owner:
+You can set **direct members** of a group or subgroup as a Code Owner.
+For more information about group membership, see [Membership types](../../project/members/index.md#membership-types).
 
-In the `CODEOWNERS` file, enter text that follows one of these patterns:
+To set direct members of a group or subgroup as a Code Owner:
+
+1. Open the `CODEOWNERS` file.
+1. Enter text that follows one of these patterns:
+
+   ```plaintext
+   # All direct group members as Code Owners for a file
+   file.md @group-x
+
+   # All direct subgroup members as Code Owners for a file
+   file.md @group-x/subgroup-y
+
+   # All direct group and direct subgroup members as Code Owners for a file
+   file.md @group-x @group-x/subgroup-y
+   ```
+
+1. Save the file.
+1. Commit and merge the changes.
+
+### Example configuration
 
 ```plaintext
-# All group members as Code Owners for a file
-file.md @group-x
-
-# All subgroup members as Code Owners for a file
-file.md @group-x/subgroup-y
-
-# All group and subgroup members as Code Owners for a file
-file.md @group-x @group-x/subgroup-y
+[Maintainers]
+* @gitlab-org/maintainers/group-name
 ```
+
+In this example:
+
+- The group `group-name` is listed under the `[Maintainers]` section.
+- The `group-name` contains the following direct members:
+
+  ![List of group members.](../img/direct_group_members_v17_9.png)
+
+- In the merge request approval widget, the same direct members are listed as `Maintainers`:
+
+  ![Merge request maintainers.](../img/merge_request_maintainers_v17_9.png)
 
 NOTE:
 When [Global SAML group memberships lock](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock) is enabled, you cannot set a group or subgroup as a Code Owner. For more information, see [Incompatibility with Global SAML group memberships lock](troubleshooting.md#incompatibility-with-global-saml-group-memberships-lock).

@@ -286,7 +286,7 @@ DETAILS:
 
 Administrators can set the maximum import file size one of two ways:
 
-- With the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings).
+- With the `max_import_size` option in the [Application settings API](../../../api/settings.md#update-application-settings).
 - In the [**Admin** area UI](../../../administration/settings/import_and_export_settings.md#max-import-size).
 
 The default is `0` (unlimited).
@@ -342,7 +342,7 @@ The maximum import file size depends on whether you import to GitLab Self-Manage
 
 - If importing to a GitLab Self-Managed instance, you can import a import file of any size. Administrators can change
   this behavior using either:
-  - The `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings).
+  - The `max_import_size` option in the [Application settings API](../../../api/settings.md#update-application-settings).
   - The [**Admin** area](../../../administration/settings/account_and_limit_settings.md).
 - On GitLab.com, you can import groups using import files of no more than
   [5 GB](../../gitlab_com/index.md#account-and-limit-settings) in size.

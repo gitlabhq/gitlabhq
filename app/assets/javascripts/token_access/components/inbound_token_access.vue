@@ -2,8 +2,9 @@
 import {
   GlAlert,
   GlButton,
-  GlLink,
+  GlCollapsibleListbox,
   GlIcon,
+  GlLink,
   GlLoadingIcon,
   GlSprintf,
   GlTooltipDirective,
@@ -22,6 +23,10 @@ import inboundUpdateCIJobTokenScopeMutation from '../graphql/mutations/inbound_u
 import inboundGetCIJobTokenScopeQuery from '../graphql/queries/inbound_get_ci_job_token_scope.query.graphql';
 import inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery from '../graphql/queries/inbound_get_groups_and_projects_with_ci_job_token_scope.query.graphql';
 import getCiJobTokenScopeAllowlistQuery from '../graphql/queries/get_ci_job_token_scope_allowlist.query.graphql';
+import {
+  JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT,
+  JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG,
+} from '../constants';
 import TokenAccessTable from './token_access_table.vue';
 import NamespaceForm from './namespace_form.vue';
 
@@ -38,6 +43,7 @@ export default {
     settingDisabledMessage: s__(
       'CICD|Access unrestricted, so users with sufficient permissions in this project can authenticate with a job token generated in any other project.',
     ),
+    add: __('Add'),
     addGroupOrProject: __('Add group or project'),
     projectsFetchError: __('There was a problem fetching the projects'),
     scopeFetchError: __('There was a problem fetching the job token scope value'),
@@ -58,11 +64,22 @@ export default {
       text: s__('CICD|Only this project and any groups and projects in the allowlist'),
     },
   ],
+  crudFormActions: [
+    {
+      text: __('Group or project'),
+      value: JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT,
+    },
+    {
+      text: __('All projects in authentication log'),
+      value: JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG,
+    },
+  ],
   components: {
     GlAlert,
     GlButton,
-    GlLink,
+    GlCollapsibleListbox,
     GlIcon,
+    GlLink,
     GlLoadingIcon,
     GlSprintf,
     CrudComponent,
@@ -132,6 +149,7 @@ export default {
       projectName: '',
       namespaceToEdit: null,
       namespaceToRemove: null,
+      selectedAction: null,
     };
   },
   computed: {
@@ -146,6 +164,9 @@ export default {
     allowlist() {
       const { groups, projects } = this.groupsAndProjectsWithAccess;
       return [...groups, ...projects];
+    },
+    canAutopopulateAuthLog() {
+      return this.glFeatures.authenticationLogsMigrationForAllowlist;
     },
     groupCount() {
       return this.groupsAndProjectsWithAccess.groups.length;
@@ -169,6 +190,10 @@ export default {
     },
   },
   methods: {
+    hideSelectedAction() {
+      this.namespaceToEdit = null;
+      this.selectedAction = null;
+    },
     mapAllowlistNodes(list) {
       // The defaultPermissions and jobTokenPolicies are separate fields from the target (the group or project in the
       // allowlist). Combine them into a single object.
@@ -235,6 +260,11 @@ export default {
     refetchGroupsAndProjects() {
       this.$apollo.queries.groupsAndProjectsWithAccess.refetch();
     },
+    selectAction(action, showFormFn) {
+      // TODO: render autopopulate modal when selected
+      this.selectedAction = action;
+      showFormFn();
+    },
     showNamespaceForm(namespace, showFormFn) {
       this.namespaceToEdit = namespace;
       showFormFn();
@@ -289,10 +319,20 @@ export default {
       <crud-component
         :title="$options.i18n.cardHeaderTitle"
         :description="$options.i18n.cardHeaderDescription"
-        :toggle-text="$options.i18n.addGroupOrProject"
+        :toggle-text="!canAutopopulateAuthLog ? $options.i18n.addGroupOrProject : undefined"
         class="gl-mt-5"
-        @hideForm="namespaceToEdit = null"
+        @hideForm="hideSelectedAction"
       >
+        <template v-if="canAutopopulateAuthLog" #actions="{ showForm }">
+          <gl-collapsible-listbox
+            v-model="selectedAction"
+            :items="$options.crudFormActions"
+            :toggle-text="$options.i18n.add"
+            data-testid="form-selector"
+            size="small"
+            @select="selectAction($event, showForm)"
+          />
+        </template>
         <template #count>
           <gl-loading-icon v-if="isAllowlistLoading" data-testid="count-loading-icon" />
           <template v-else>

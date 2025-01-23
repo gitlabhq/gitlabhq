@@ -8,7 +8,7 @@ RSpec.describe MergeRequests::ProcessAutoMergeFromEventWorker, feature_category:
   let_it_be(:merge_request) { create(:merge_request, source_project: project, merge_user: user) }
   let(:merge_request_id) { merge_request.id }
 
-  let(:data) { { current_user_id: user.id, merge_request_id: merge_request_id } }
+  let(:data) { { current_user_id: user.id, merge_request_id: merge_request_id, approved_at: Time.current.iso8601 } }
 
   it_behaves_like 'process auto merge from event worker' do
     let(:event) { ::MergeRequests::DiscussionsResolvedEvent.new(data: data) }

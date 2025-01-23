@@ -44,23 +44,28 @@ module Keeps
         migration_name = truncate_migration_name("Finalize#{migration['migration_job_name']}")
         PostDeploymentMigration::PostDeploymentMigrationGenerator
           .source_root('generator_templates/post_deployment_migration/post_deployment_migration/')
-        generator = ::PostDeploymentMigration::PostDeploymentMigrationGenerator.new([migration_name], { skip: true })
-        migration_file = generator.invoke_all.first
-        change.changed_files = [migration_file]
 
-        add_ensure_call_to_migration(migration_file, queue_method_node, job_name, migration_record)
-        ::Gitlab::Housekeeper::Shell.rubocop_autocorrect(migration_file)
+        begin
+          generator = ::PostDeploymentMigration::PostDeploymentMigrationGenerator.new([migration_name])
+          migration_file = generator.invoke_all.first
+          change.changed_files = [migration_file]
 
-        digest = Digest::SHA256.hexdigest(generator.migration_number)
-        digest_file = Pathname.new('db').join('schema_migrations', generator.migration_number.to_s).to_s
-        File.open(digest_file, 'w') { |f| f.write(digest) }
+          add_ensure_call_to_migration(migration_file, queue_method_node, job_name, migration_record)
+          ::Gitlab::Housekeeper::Shell.rubocop_autocorrect(migration_file)
 
-        add_finalized_by_to_yaml(migration_yaml_file, generator.migration_number)
+          digest = Digest::SHA256.hexdigest(generator.migration_number)
+          digest_file = Pathname.new('db').join('schema_migrations', generator.migration_number.to_s).to_s
+          File.open(digest_file, 'w') { |f| f.write(digest) }
 
-        change.changed_files << digest_file
-        change.changed_files << migration_yaml_file
+          add_finalized_by_to_yaml(migration_yaml_file, generator.migration_number)
 
-        yield(change)
+          change.changed_files << digest_file
+          change.changed_files << migration_yaml_file
+
+          yield(change)
+        rescue Rails::Generators::Error
+          next
+        end
       end
     end
 

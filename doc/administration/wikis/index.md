@@ -63,13 +63,13 @@ To retrieve the current value, start the Rails console and run:
 #### Through the API
 
 To set the wiki page size limit through the Application Settings API, use a command,
-as you would to [update any other setting](../../api/settings.md#change-application-settings):
+as you would to [update any other setting](../../api/settings.md#update-application-settings):
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/settings?wiki_page_max_content_bytes=52428800"
 ```
 
-You can also use the API to [retrieve the current value](../../api/settings.md#get-current-application-settings):
+You can also use the API to [retrieve the current value](../../api/settings.md#get-details-on-current-application-settings):
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/settings"
@@ -120,7 +120,7 @@ To check if includes are enabled, start the Rails console and run:
 ### Through the API
 
 To set the wiki to allow URI includes for AsciiDoc through the
-[Application Settings API](../../api/settings.md#change-application-settings),
+[Application Settings API](../../api/settings.md#update-application-settings),
 use a `curl` command:
 
 ```shell

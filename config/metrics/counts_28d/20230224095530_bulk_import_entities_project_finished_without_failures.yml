@@ -15,9 +15,6 @@ options:
   status: 2
   has_failures: false
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

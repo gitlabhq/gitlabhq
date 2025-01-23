@@ -105,7 +105,7 @@ RSpec.describe ::Ci::CollectAggregatePipelineAnalyticsService, :click_house, :en
         it 'returns empty aggregate analytics' do
           expect(result.errors).to eq([])
           expect(result.success?).to be true
-          expect(result.payload[:aggregate]).to eq(count: { any: 0 }, duration_statistics: { p50: nil, p99: nil })
+          expect(result.payload[:aggregate]).to eq(count: { any: 0 }, duration_statistics: { p50: 0, p99: 0 })
         end
       end
     end
