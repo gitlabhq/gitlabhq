@@ -2,9 +2,6 @@ name: gitlab_sec
 description: Schema for all Cell-local Security features.
 allow_cross_joins:
   - gitlab_shared
-  - gitlab_main:
-      specific_tables:
-      - vulnerability_state_transitions
   - gitlab_main_cell:
       specific_tables:
       - security_findings
@@ -53,9 +50,6 @@ allow_cross_joins:
 allow_cross_transactions:
   - gitlab_internal
   - gitlab_shared
-  - gitlab_main:
-      specific_tables:
-      - vulnerability_state_transitions
   - gitlab_main_cell:
       specific_tables:
       - security_findings
@@ -101,8 +95,4 @@ allow_cross_transactions:
       - dast_site_tokens
       - dast_site_validations
       - dast_sites
-allow_cross_foreign_keys:
-  - gitlab_main:
-      specific_tables:
-      - vulnerability_state_transitions
 require_sharding_key: true

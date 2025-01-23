@@ -71,3 +71,17 @@ Generative AI may produce unexpected results that may be:
 - Out of date information
 
 GitLab is actively iterating on all our AI-assisted capabilities to improve the quality of the generated content. We improve the quality through prompt engineering, evaluating new AI/ML models to power these features, and through novel heuristics built into these features directly.
+
+## Secret detection and redaction
+
+> - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/632) in GitLab 17.9.
+
+GitLab Duo includes secret detection and redaction, powered by Gitleaks. It automatically
+detects and removes sensitive information like API keys, credentials, and tokens from your
+code before processing it with large language models. This security feature is particularly
+important for compliance with data protection regulations, like GDPR.
+
+Your code goes through a pre-scan security workflow when using GitLab Duo:
+
+1. Your code is scanned for sensitive information using Gitleaks.
+1. Any detected secrets are automatically removed from the request.

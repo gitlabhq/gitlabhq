@@ -501,7 +501,7 @@ You can set up two-factor authentication (2FA) for
 
 ## Use EGit on Eclipse
 
-If you are using [EGit](https://eclipse.dev/egit/), you can [add your SSH key to Eclipse](https://wiki.eclipse.org/EGit/User_Guide#Eclipse_SSH_Configuration).
+If you are using [EGit](https://projects.eclipse.org/projects/technology.egit), you can [add your SSH key to Eclipse](https://wiki.eclipse.org/EGit/User_Guide/#Eclipse_SSH_Configuration).
 
 ## Use SSH on Microsoft Windows
 

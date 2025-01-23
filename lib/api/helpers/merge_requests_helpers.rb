@@ -45,6 +45,9 @@ module API
           integer_none_any: true,
           desc: 'Returns merge requests which have the user as a reviewer with the given user `id`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive with `reviewer_username`.'
         mutually_exclusive :reviewer_id, :reviewer_username
+        optional :review_state, type: String,
+          values: Helpers::MergeRequestsHelpers.review_states,
+          desc: "Returns merge requests a reviewer has #{Helpers::MergeRequestsHelpers.review_states_help} as its state. Introduced in GitLab 17.9."
         optional :state, type: String,
           values: %w[opened closed locked merged all],
           default: 'all',
@@ -151,6 +154,14 @@ module API
 
       def self.sort_options_help
         sort_options.map { |y| "`#{y}`" }.to_sentence(last_word_connector: ' or ')
+      end
+
+      def self.review_states
+        MergeRequestReviewer.states.keys
+      end
+
+      def self.review_states_help
+        review_states.map { |y| "`#{y}`" }.to_sentence(last_word_connector: ' or ')
       end
     end
   end

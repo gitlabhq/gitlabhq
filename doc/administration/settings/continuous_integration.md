@@ -314,6 +314,8 @@ It is also possible to specify a [custom CI/CD configuration file for a specific
 
 > - **Maximum number of active pipelines per project** setting [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/368195) in GitLab 16.0.
 > - **Maximum number of instance-level CI/CD variables** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/456845) in GitLab 17.1.
+> - **Maximum size of a dotenv artifact in bytes** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155791) in GitLab 17.1.
+> - **Maximum number of variables in a dotenv artifact** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155791) in GitLab 17.1.
 > - **Maximum number of jobs in a single pipeline** setting [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/287669) from GitLab Enterprise Edition to GitLab Community Edition in 17.6.
 
 You can configure some [CI/CD limits](../../administration/instance_limits.md#cicd-limits)
@@ -321,9 +323,12 @@ from the **Admin** area:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > CI/CD**.
-1. Expand the **Continuous Integration and Deployment** section.
+1. Expand **Continuous Integration and Deployment**.
 <!-- vale gitlab_base.CurrentStatus = NO -->
 1. In the **CI/CD limits** section, you can set the following limits:
+   - **Maximum number of instance-level CI/CD variables**
+   - **Maximum size of a dotenv artifact in bytes**
+   - **Maximum number of variables in a dotenv artifact**
    - **Maximum number of jobs in a single pipeline**
    - **Total number of jobs in currently active pipelines**
    - **Maximum number of pipeline subscriptions to and from a project**
@@ -332,7 +337,6 @@ from the **Admin** area:
    - **Maximum number of runners created or active in a group during the past seven days**
    - **Maximum number of runners created or active in a project during the past seven days**
    - **Maximum number of downstream pipelines in a pipeline's hierarchy tree**
-   - **Maximum number of instance-level CI/CD variables**
 <!-- vale gitlab_base.CurrentStatus = YES -->
 
 ## Job token permissions

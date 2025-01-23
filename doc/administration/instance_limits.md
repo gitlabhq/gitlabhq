@@ -820,6 +820,9 @@ To set this limit to `100` on your instance, run the following command in the
 Plan.default.actual_limits.update!(dotenv_variables: 100)
 ```
 
+You can also set this limit by using the [GitLab UI](../administration/settings/continuous_integration.md#set-cicd-limits) or the
+[Plan limits API](../api/plan_limits.md).
+
 This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
 
 ### Limit dotenv file size

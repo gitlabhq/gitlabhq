@@ -414,7 +414,8 @@
     @apply gl-mt-5;
   }
 
-  &:empty {
+  &:empty,
+  &:has(.reports-widgets-container:empty) {
     display: none;
   }
 

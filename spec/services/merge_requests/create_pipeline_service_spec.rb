@@ -64,6 +64,16 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
       end
     end
 
+    context 'when ci_allow_fork_pipelines_to_run_in_parent_project is disabled' do
+      before do
+        project.update!(ci_allow_fork_pipelines_to_run_in_parent_project: false)
+      end
+
+      it 'uses a merge request ref' do
+        expect(response.payload.ref).to eq(merge_request.ref_path)
+      end
+    end
+
     context 'with fork merge request' do
       let_it_be(:forked_project) { fork_project(project, nil, repository: true, target_project: create(:project, :private, :repository)) }
 
@@ -76,13 +86,21 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
           expect(response.payload.project).to eq(project)
         end
 
-        context 'when the feature is disabled in CI/CD settings' do
+        it 'uses a merge request ref' do
+          expect(response.payload.ref).to eq(merge_request.ref_path)
+        end
+
+        context 'when ci_allow_fork_pipelines_to_run_in_parent_project is disabled' do
           before do
             project.update!(ci_allow_fork_pipelines_to_run_in_parent_project: false)
           end
 
           it 'creates a pipeline in the source project' do
             expect(response.payload.project).to eq(source_project)
+          end
+
+          it 'uses the source branch as a ref' do
+            expect(response.payload.ref).to eq(merge_request.source_branch)
           end
         end
 

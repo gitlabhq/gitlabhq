@@ -1,198 +1,53 @@
-import VueApollo from 'vue-apollo';
-import Vue, { nextTick } from 'vue';
-import { GlCollapse, GlIcon } from '@gitlab/ui';
-import waitForPromises from 'helpers/wait_for_promises';
-import createMockApollo from 'helpers/mock_apollo_helper';
+import { GlIcon, GlLink, GlBadge } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { sprintf } from '~/locale';
 import EnvironmentsFolder from '~/environments/components/environment_folder.vue';
-import EnvironmentItem from '~/environments/components/new_environment_item.vue';
-import { resolvedEnvironmentsApp, resolvedFolder } from './graphql/mock_data';
-
-Vue.use(VueApollo);
+import { resolvedEnvironmentsApp } from './graphql/mock_data';
 
 describe('~/environments/components/environments_folder.vue', () => {
   let wrapper;
-  let environmentFolderMock;
-  let intervalMock;
-  let nestedEnvironment;
 
-  const findLink = () => wrapper.findByText('See all environments.');
-  const findMessage = () =>
-    wrapper.findByText(
-      sprintf(
-        'Showing %{listedEnvironmentsCount} of %{totalEnvironmentsCount} environments in this folder.',
-        { listedEnvironmentsCount: 2, totalEnvironmentsCount: 4 },
-      ),
-    );
-  const findFolderMessageElement = () => wrapper.findByTestId('environment-folder-message-element');
+  const findIcon = () => wrapper.findComponent(GlIcon);
+  const findLink = () => wrapper.findComponent(GlLink);
+  const findBadge = () => wrapper.findComponent(GlBadge);
 
-  const createApolloProvider = () => {
-    const mockResolvers = { Query: { folder: environmentFolderMock, interval: intervalMock } };
-
-    return createMockApollo([], mockResolvers);
-  };
-
-  const createWrapper = (propsData, apolloProvider) =>
+  const createWrapper = () =>
     mountExtended(EnvironmentsFolder, {
-      apolloProvider,
       propsData: {
-        scope: 'available',
-        search: '',
-        ...propsData,
+        nestedEnvironment: resolvedEnvironmentsApp.environments[0],
       },
-      provide: { helpPagePath: '/help', projectId: '1', projectPath: 'path/to/project' },
     });
-
-  beforeEach(() => {
-    environmentFolderMock = jest.fn();
-    [nestedEnvironment] = resolvedEnvironmentsApp.environments;
-    environmentFolderMock.mockReturnValue(resolvedFolder);
-    intervalMock = jest.fn();
-    intervalMock.mockReturnValue(2000);
-  });
-
-  afterEach(() => {
-    wrapper?.destroy();
-  });
 
   describe('default', () => {
-    let folderName;
-    let button;
-
-    beforeEach(async () => {
-      wrapper = createWrapper({ nestedEnvironment }, createApolloProvider());
-
-      await nextTick();
-      await waitForPromises();
-      folderName = wrapper.findByText(nestedEnvironment.name);
-      button = wrapper.findByRole('button', { name: 'Expand' });
+    beforeEach(() => {
+      wrapper = createWrapper();
     });
 
-    it('displays the name of the folder', () => {
-      expect(folderName.text()).toBe(nestedEnvironment.name);
-    });
+    it('displays the correct icon', () => {
+      const icon = findIcon();
 
-    describe('collapse', () => {
-      let icons;
-      let collapse;
-
-      beforeEach(() => {
-        collapse = wrapper.findComponent(GlCollapse);
-        icons = wrapper.findAllComponents(GlIcon);
-      });
-
-      it('is collapsed by default', () => {
-        expect(collapse.props('visible')).toBe(false);
-        const iconNames = icons.wrappers.map((i) => i.props('name')).slice(0, 2);
-        expect(iconNames).toEqual(['chevron-lg-right', 'folder']);
-        expect(folderName.classes('gl-font-bold')).toBe(false);
-      });
-
-      it('opens on click and starts polling', async () => {
-        expect(environmentFolderMock).toHaveBeenCalledTimes(1);
-
-        await button.trigger('click');
-        jest.advanceTimersByTime(2000);
-        await waitForPromises();
-
-        expect(button.attributes('aria-label')).toBe('Collapse');
-        expect(collapse.props('visible')).toBe(true);
-        const iconNames = icons.wrappers.map((i) => i.props('name')).slice(0, 2);
-        expect(iconNames).toEqual(['chevron-lg-down', 'folder-open']);
-        expect(folderName.classes('gl-font-bold')).toBe(true);
-
-        expect(environmentFolderMock).toHaveBeenCalledTimes(2);
-      });
-
-      it('displays all environments when opened', async () => {
-        await button.trigger('click');
-
-        const names = resolvedFolder.environments.map((e) =>
-          expect.stringMatching(e.nameWithoutType),
-        );
-        const environments = wrapper
-          .findAllComponents(EnvironmentItem)
-          .wrappers.map((w) => w.text());
-        expect(environments).toEqual(expect.arrayContaining(names));
-      });
-
-      it('stops polling on click', async () => {
-        await button.trigger('click');
-        jest.advanceTimersByTime(2000);
-        await waitForPromises();
-
-        expect(environmentFolderMock).toHaveBeenCalledTimes(2);
-
-        const collapseButton = wrapper.findByRole('button', { name: 'Collapse' });
-        await collapseButton.trigger('click');
-
-        expect(environmentFolderMock).toHaveBeenCalledTimes(2);
-      });
-
-      describe('when there are more environments to show inside the folder', () => {
-        it('displays the message with the correct text and a link to navigate to all environments', async () => {
-          environmentFolderMock.mockReturnValue({ ...resolvedFolder, activeCount: 4 });
-          wrapper = createWrapper({ scope: 'active', nestedEnvironment }, createApolloProvider());
-
-          await nextTick();
-          await waitForPromises();
-
-          const link = findLink();
-          const message = findMessage();
-          const element = findFolderMessageElement();
-
-          expect(element.exists()).toBe(true);
-          expect(link.attributes('href')).toBe(nestedEnvironment.latest.folderPath);
-          expect(message.exists()).toBe(true);
-        });
-      });
-
-      describe('when all available environments inside the folder are shown', () => {
-        it("doesn't display the message and a link", () => {
-          const link = findLink();
-          const message = findMessage();
-          const element = findFolderMessageElement();
-
-          expect(element.exists()).toBe(false);
-          expect(link.exists()).toBe(false);
-          expect(message.exists()).toBe(false);
-        });
+      expect(icon.props()).toMatchObject({
+        name: 'folder',
+        variant: 'subtle',
       });
     });
-  });
 
-  it.each(['available', 'stopped'])(
-    'with scope=%s, fetches environments with scope',
-    async (scope) => {
-      wrapper = createWrapper({ nestedEnvironment, scope }, createApolloProvider());
+    it('displays a link to an environments folder', () => {
+      const link = findLink();
 
-      await nextTick();
-      await waitForPromises();
+      expect(link.attributes('href')).toBe('/h5bp/html5-boilerplate/-/environments/folders/review');
+      expect(link.text()).toContain('review');
+    });
 
-      expect(environmentFolderMock).toHaveBeenCalledTimes(1);
-      expect(environmentFolderMock).toHaveBeenCalledWith(
-        {},
-        expect.objectContaining({ scope }),
-        expect.anything(),
-        expect.anything(),
-      );
-    },
-  );
+    it('displays a badge with a total environments count', () => {
+      const badge = findBadge();
 
-  it('should query for the entered parameter', async () => {
-    const search = 'hello';
+      expect(badge.text()).toBe('2');
+    });
 
-    wrapper = createWrapper({ nestedEnvironment, search }, createApolloProvider());
+    it('displays a badge inside a link element', () => {
+      const link = findLink();
 
-    await nextTick();
-    await waitForPromises();
-
-    expect(environmentFolderMock).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({ search }),
-      expect.anything(),
-      expect.anything(),
-    );
+      expect(link.findComponent(GlBadge).exists()).toBe(true);
+    });
   });
 });

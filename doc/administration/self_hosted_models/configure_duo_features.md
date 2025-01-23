@@ -84,11 +84,17 @@ To configure your GitLab instance to access the AI gateway:
 Prerequisites:
 
 - You must be an administrator.
+- You must have a Duo Enterprise license add-on.
 
 To configure a self-hosted model:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Self-hosted models**.
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **GitLab Duo**.
+1. In the **GitLab Duo** section, select **Change configuration**.
+1. Under **Self-hosted AI models**, select **Turn on self-hosted models**.
+1. Select **Save changes**.
+1. On the left sidebar, select **Self-hosted models**.
    - If the **Self-hosted models** menu item is not available, synchronize your
      subscription after purchase:
      1. On the left sidebar, select **Subscription**.

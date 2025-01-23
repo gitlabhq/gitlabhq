@@ -115,12 +115,23 @@ The Markdown format is tested by using [markdownlint](../testing/markdownlint.md
 
 ### HTML in Markdown
 
-Hard-coded HTML is valid, although it's discouraged from being used. HTML is permitted if:
+Hard-coded HTML is valid, although it's discouraged for a few reasons:
+
+- Custom markup has potential to break future site-wide changes or design system updates.
+- Custom markup does not have test coverage to ensure consistency across the site.
+- Custom markup might not be responsive or accessible.
+- Custom markup might not adhere to Pajamas guidelines.
+- HTML and CSS in Markdown do not render on `/help`.
+- Hand-coding HTML can be error-prone. It's possible to break the page layout or other components with malformed HTML.
+
+HTML is permitted if:
 
 - There's no equivalent markup in Markdown.
-- Advanced tables are necessary.
-- Special styling is required.
-- Reviewed and approved by a technical writer.
+- The content is reviewed and approved by a technical writer.
+- There is an urgent need for the custom element that cannot wait for implementation by Technical Writing engineers.
+
+If you have an idea or request for a new element that would be useful on the Docs site, please
+submit a [feature request](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/new?issuable_template=Default).
 
 ### Heading levels in Markdown
 

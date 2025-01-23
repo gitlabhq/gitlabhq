@@ -110,6 +110,7 @@ export default {
     <div
       v-show="!collapsed"
       data-testid="reports-widgets-container"
+      class="reports-widgets-container"
       :class="{
         'gl-border-t gl-relative gl-border-t-section gl-bg-subtle': glFeatures.mrReportsTab,
       }"

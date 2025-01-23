@@ -58,7 +58,7 @@
   - c.with_body do
     .project-controls{ data: { testid: 'project_controls'} }
       .gl-flex.gl-items-center.gl-gap-2.gl-mb-2.gl-justify-between.gl-flex-wrap
-        .controls.gl-flex.gl-items-center.gl-gap-4{ class: "#{css_controls_class} !gl-pr-0" }
+        .controls.gl-flex.gl-items-center.gl-gap-4.gl-flex-wrap{ class: "#{css_controls_class} !gl-pr-0" }
           - if stars
             = link_to project_starrers_path(project), class: "#{css_metadata_classes} stars", title: _('Stars'), data: { container: 'body', placement: 'top' } do
               = sprite_icon('star-o', size: 14, css_class: 'gl-mr-2')
