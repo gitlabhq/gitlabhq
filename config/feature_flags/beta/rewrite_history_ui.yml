@@ -1,9 +1,0 @@
----
-name: rewrite_history_ui
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/450701
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153824
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/462999
-milestone: '17.1'
-group: group::source code
-type: beta
-default_enabled: true

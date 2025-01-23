@@ -39,8 +39,6 @@ RSpec.describe ContainerRegistry::Protection::TagRule, type: :model, feature_cat
     subject { build(:container_registry_protection_tag_rule) }
 
     describe '#tag_name_pattern' do
-      it { is_expected.to validate_presence_of(:minimum_access_level_for_delete) }
-      it { is_expected.to validate_presence_of(:minimum_access_level_for_push) }
       it { is_expected.to validate_presence_of(:tag_name_pattern) }
       it { is_expected.to validate_length_of(:tag_name_pattern).is_at_most(100) }
       it { is_expected.to validate_uniqueness_of(:tag_name_pattern).scoped_to(:project_id) }
@@ -55,6 +53,53 @@ RSpec.describe ContainerRegistry::Protection::TagRule, type: :model, feature_cat
 
         invalid_regexps.each do |invalid_regexp|
           it { is_expected.not_to allow_value(invalid_regexp).for(:tag_name_pattern) }
+        end
+      end
+    end
+
+    describe '#validate_access_levels' do
+      subject(:tag_rule) { described_class.new(attributes) }
+
+      let(:minimum_access_level_for_delete) { Gitlab::Access::ADMIN }
+      let(:minimum_access_level_for_push) { Gitlab::Access::OWNER }
+      let(:attributes) do
+        {
+          tag_name_pattern: '.*',
+          minimum_access_level_for_delete: minimum_access_level_for_delete,
+          minimum_access_level_for_push: minimum_access_level_for_push
+        }
+      end
+
+      context 'when both access levels are present' do
+        it 'is valid' do
+          expect(tag_rule).to be_valid
+        end
+      end
+
+      context 'when both access levels are nil' do
+        let(:minimum_access_level_for_delete) { nil }
+        let(:minimum_access_level_for_push) { nil }
+
+        it 'is valid' do
+          expect(tag_rule).to be_valid
+        end
+      end
+
+      context 'when minimum_access_level_for_push is nil' do
+        let(:minimum_access_level_for_push) { nil }
+
+        it 'is not valid' do
+          expect(tag_rule).not_to be_valid
+          expect(tag_rule.errors[:base]).to include('Access levels should either both be present or both be nil')
+        end
+      end
+
+      context 'when minimum_access_level_for_delete is nil' do
+        let(:minimum_access_level_for_delete) { nil }
+
+        it 'is not valid' do
+          expect(tag_rule).not_to be_valid
+          expect(tag_rule.errors[:base]).to include('Access levels should either both be present or both be nil')
         end
       end
     end

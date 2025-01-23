@@ -63,7 +63,8 @@ RSpec.describe 'Updating the container registry tag protection rule', :aggregate
       post_graphql_mutation_update_rule
       expect(container_protection_tag_rule.reload).to have_attributes(
         tag_name_pattern: input[:tag_name_pattern],
-        minimum_access_level_for_push: input[:minimum_access_level_for_push].downcase
+        minimum_access_level_for_push: input[:minimum_access_level_for_push]&.downcase,
+        minimum_access_level_for_delete: input[:minimum_access_level_for_delete]&.downcase
       )
     end
   end
@@ -147,13 +148,30 @@ RSpec.describe 'Updating the container registry tag protection rule', :aggregate
   context 'with blank input fields `minimumAccessLevelForPush` and `minimumAccessLevelForDelete`' do
     let(:input) { super().merge(minimum_access_level_for_push: nil, minimum_access_level_for_delete: nil) }
 
+    it_behaves_like 'a successful response'
+  end
+
+  context 'with only `minimumAccessLevelForDelete` blank' do
+    let(:input) { super().merge(minimum_access_level_for_delete: nil) }
+
     it_behaves_like 'not updating the tag rule'
 
     it 'returns error with correct error message' do
       post_graphql_mutation_update_rule
 
-      expect(mutation_response['errors']).to match_array ["Minimum access level for delete can't be blank",
-        "Minimum access level for push can't be blank"]
+      expect(mutation_response['errors']).to match_array ["Access levels should either both be present or both be nil"]
+    end
+  end
+
+  context 'with only `minimumAccessLevelForPush` blank' do
+    let(:input) { super().merge(minimum_access_level_for_push: nil) }
+
+    it_behaves_like 'not updating the tag rule'
+
+    it 'returns error with correct error message' do
+      post_graphql_mutation_update_rule
+
+      expect(mutation_response['errors']).to match_array ["Access levels should either both be present or both be nil"]
     end
   end
 

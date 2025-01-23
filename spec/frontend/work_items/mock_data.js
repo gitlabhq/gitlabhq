@@ -1,6 +1,12 @@
 import { map } from 'lodash';
 import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
-import { WIDGET_TYPE_LINKED_ITEMS, NEW_WORK_ITEM_IID, STATE_CLOSED } from '~/work_items/constants';
+import {
+  WIDGET_TYPE_LINKED_ITEMS,
+  NEW_WORK_ITEM_IID,
+  STATE_CLOSED,
+  WIDGET_TYPE_CUSTOM_FIELDS,
+  CUSTOM_FIELDS_TYPE_NUMBER,
+} from '~/work_items/constants';
 
 export const mockAssignees = [
   {
@@ -1347,6 +1353,7 @@ export const workItemResponseFactory = ({
   healthStatusWidgetPresent = true,
   notesWidgetPresent = true,
   designWidgetPresent = true,
+  customFieldsWidgetPresent = true,
   confidential = false,
   discussionLocked = false,
   canInviteMembers = false,
@@ -1423,6 +1430,29 @@ export const workItemResponseFactory = ({
       reference: 'test-project-path#1',
       createNoteEmail:
         'gitlab-incoming+test-project-path-13fp7g6i9agekcv71s0jx9p58-issue-1@gmail.com',
+      ...(customFieldsWidgetPresent
+        ? {
+            mockWidgets: [
+              {
+                __typename: 'LocalWorkItemCustomFields',
+                type: WIDGET_TYPE_CUSTOM_FIELDS,
+                customFieldValues: [
+                  {
+                    id: 'gid://gitlab/CustomFieldValue/1',
+                    customField: {
+                      id: '1-number',
+                      fieldType: CUSTOM_FIELDS_TYPE_NUMBER,
+                      name: 'Number custom field label',
+                      selectOptions: null,
+                      __typename: 'CustomField',
+                    },
+                    value: 5,
+                  },
+                ],
+              },
+            ],
+          }
+        : {}),
       widgets: [
         {
           __typename: 'WorkItemWidgetDescription',
@@ -5496,6 +5526,7 @@ export const createWorkItemQueryResponse = {
           markNoteAsInternal: true,
           __typename: 'WorkItemPermissions',
         },
+        mockWidgets: [],
         widgets: [
           {
             type: 'ASSIGNEES',

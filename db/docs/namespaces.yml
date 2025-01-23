@@ -18,5 +18,6 @@ schema_inconsistencies:
 - type: missing_indexes
   object_name: index_namespaces_on_ldap_sync_last_successful_update_at
   introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135040
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/461310
+sharding_key:
+  organization_id: organizations
 table_size: medium

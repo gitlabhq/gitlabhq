@@ -85,7 +85,6 @@ describe('WorkItemDevelopment CE', () => {
     workItemFullPath = 'full-path',
     workItemType = 'Issue',
     workItemQueryHandler = workItemSucessQueryHandler(),
-    workItemsAlphaEnabled = true,
     workItemDevelopmentQueryHandler = devWidgetSuccessQueryHandlerWithOneMR,
   } = {}) => {
     mockApollo = createMockApollo([
@@ -105,11 +104,6 @@ describe('WorkItemDevelopment CE', () => {
         workItemIid,
         workItemFullPath,
         workItemType,
-      },
-      provide: {
-        glFeatures: {
-          workItemsAlpha: workItemsAlphaEnabled,
-        },
       },
       stubs: {
         WorkItemCreateBranchMergeRequestModal: true,

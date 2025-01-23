@@ -541,7 +541,10 @@ module MergeRequestsHelper
                 ),
                 query: 'assignedMergeRequests',
                 variables: {
-                  reviewStates: %w[UNREVIEWED UNAPPROVED REVIEW_STARTED]
+                  reviewStates: %w[UNREVIEWED UNAPPROVED REVIEW_STARTED],
+                  not: {
+                    reviewStates: %w[REQUESTED_CHANGES REVIEWED]
+                  }
                 }
               },
               {
@@ -561,7 +564,10 @@ module MergeRequestsHelper
                 helpContent: _('Includes all merge requests you are assigned to and a reviewer has approved.'),
                 query: 'assignedMergeRequests',
                 variables: {
-                  reviewState: 'APPROVED'
+                  reviewState: 'APPROVED',
+                  not: {
+                    reviewStates: %w[REQUESTED_CHANGES REVIEWED UNREVIEWED REVIEW_STARTED UNAPPROVED]
+                  }
                 }
               }
             ]

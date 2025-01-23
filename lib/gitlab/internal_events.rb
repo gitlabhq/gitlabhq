@@ -25,8 +25,6 @@ module Gitlab
         track_analytics_event(event_name, send_snowplow_event, category: category,
           additional_properties: additional_properties, **kwargs)
 
-        return if Feature.disabled?(:move_ai_tracking_to_instrumentation_layer, kwargs[:user])
-
         kwargs[:additional_properties] = additional_properties
         event_definition.extra_tracking_classes.each do |tracking_class|
           tracking_class.track_event(event_name, **kwargs)

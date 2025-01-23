@@ -52,7 +52,7 @@ module Gitlab
 
       # Calculate page size after extract
       def total_size
-        root_dir = build.options[:publish] || PUBLIC_DIR
+        root_dir = build.pages[:publish] || PUBLIC_DIR
 
         build.artifacts_metadata_entry("#{root_dir}/", recursive: true).total_size
       end

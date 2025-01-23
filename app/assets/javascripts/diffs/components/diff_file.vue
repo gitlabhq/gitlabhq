@@ -273,9 +273,15 @@ export default {
         }
       },
     },
+    diffFileHash: {
+      handler(newHash, oldHash) {
+        if (oldHash) notesEventHub.$off(`loadCollapsedDiff/${oldHash}`, this.requestDiff);
+        notesEventHub.$on(`loadCollapsedDiff/${newHash}`, this.requestDiff);
+      },
+      immediate: true,
+    },
   },
   created() {
-    notesEventHub.$on(`loadCollapsedDiff/${this.file.file_hash}`, this.requestDiff);
     eventHub.$on(EVT_EXPAND_ALL_FILES, this.expandAllListener);
   },
   mounted() {
@@ -292,6 +298,7 @@ export default {
     }
   },
   beforeDestroy() {
+    notesEventHub.$off(`loadCollapsedDiff/${this.diffFileHash}`, this.requestDiff);
     eventHub.$off(EVT_EXPAND_ALL_FILES, this.expandAllListener);
   },
   methods: {

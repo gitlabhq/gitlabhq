@@ -485,13 +485,16 @@ module Ci
       options[:pages] != false && name == 'pages' # Legacy behaviour
     end
 
-    # Overriden on EE
-    # rubocop:disable Gitlab/NoCodeCoverageComment -- Fully tested in EE and tested in Foss through feature specs in spec/models/ci/build_spec.rb
-    # :nocov:
     def pages
-      {}
+      return {} unless pages_generator? && publish_path_available?
+
+      {}.tap do |result|
+        result[:publish] = ExpandVariables.expand(options[:publish].to_s, -> {
+          pages_base_variables.sort_and_expand_all
+        })
+      end
     end
-    # rubocop:enable Gitlab/NoCodeCoverageComment
+    strong_memoize_attr :pages
 
     def runnable?
       true
@@ -669,6 +672,17 @@ module Ci
           .append(key: 'CI_PAGES_URL', value: pages_url_builder.pages_url)
       end
     end
+
+    # This method can be used for expanding extra variables in both CE and EE `build.pages`.
+    # It includes all variables that can be used as a value in pages_options.
+    def pages_base_variables
+      ::Gitlab::Ci::Variables::Collection.new
+        .concat(persisted_variables)
+        .concat(scoped_variables)
+        .concat(job_variables)
+        .concat(persisted_environment_variables)
+    end
+    strong_memoize_attr :pages_base_variables
 
     def features
       {
@@ -1003,6 +1017,10 @@ module Ci
 
     def supports_artifacts_exclude?
       options&.dig(:artifacts, :exclude)&.any?
+    end
+
+    def publish_path_available?
+      options&.dig(:publish).present?
     end
 
     def multi_build_steps?

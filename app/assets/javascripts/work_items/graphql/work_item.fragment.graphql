@@ -40,6 +40,44 @@ fragment WorkItem on WorkItem {
     adminWorkItemLink
     markNoteAsInternal
   }
+  mockWidgets @client {
+    type
+    customFieldValues {
+      ... on LocalWorkItemNumberFieldValue {
+        id
+        customField {
+          id
+          fieldType
+          name
+        }
+        value
+      }
+
+      ... on LocalWorkItemTextFieldValue {
+        id
+        customField {
+          id
+          fieldType
+          name
+        }
+        value
+      }
+
+      ... on LocalWorkItemSelectFieldValue {
+        id
+        customField {
+          id
+          fieldType
+          name
+          selectOptions
+        }
+        selectedOptions {
+          id
+          value
+        }
+      }
+    }
+  }
   widgets {
     ...WorkItemWidgets
   }

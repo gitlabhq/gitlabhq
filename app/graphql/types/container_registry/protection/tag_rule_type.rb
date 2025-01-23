@@ -27,7 +27,7 @@ module Types
         # rubocop:disable GraphQL/ExtractType -- These are stored as separate fields
         field :minimum_access_level_for_delete,
           Types::ContainerRegistry::Protection::TagRuleAccessLevelEnum,
-          null: false,
+          null: true,
           experiment: { milestone: '17.8' },
           description:
             'Minimum GitLab access level required to delete container image tags from the container repository. ' \
@@ -36,7 +36,7 @@ module Types
 
         field :minimum_access_level_for_push,
           Types::ContainerRegistry::Protection::TagRuleAccessLevelEnum,
-          null: false,
+          null: true,
           experiment: { milestone: '17.8' },
           description:
             'Minimum GitLab access level required to push container image tags to the container repository. ' \

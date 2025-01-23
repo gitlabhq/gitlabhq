@@ -27,13 +27,12 @@ module Ml
             author_web_url: candidate.user&.namespace&.web_url,
             author_name: candidate.user&.name,
             promote_path: promote_project_ml_candidate_path(candidate.project, candidate.iid),
-            can_promote: candidate.model_version_id.nil? && candidate.experiment.model_id.present?
+            can_promote: can_promote
           },
           params: candidate.params,
           metrics: candidate.metrics,
           metadata: candidate.metadata,
           projectPath: candidate.project.full_path,
-          can_write_model_registry: current_user&.can?(:write_model_registry, candidate.project),
           can_write_model_experiments: current_user&.can?(:write_model_experiments, candidate.project),
           markdown_preview_path: project_preview_markdown_path(candidate.project),
           model_gid: candidate.experiment.model&.to_global_id.to_s,
@@ -103,6 +102,12 @@ module Ml
 
     def link_to_experiment
       project_ml_experiment_path(candidate.project, candidate.experiment.iid)
+    end
+
+    def can_promote
+      candidate.model_version_id.nil? &&
+        candidate.experiment.model_id.present? &&
+        current_user&.can?(:write_model_registry, candidate.project)
     end
   end
 end

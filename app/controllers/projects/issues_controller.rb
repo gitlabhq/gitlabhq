@@ -52,6 +52,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_force_frontend_feature_flag(:glql_integration, project&.glql_integration_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_beta, project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, project&.work_items_alpha_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:custom_fields_feature, project)
   end
 
   before_action only: [:index, :show] do

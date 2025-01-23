@@ -3464,6 +3464,7 @@ This directory is exported as an artifact and published with GitLab Pages.
 #### `pages:publish`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415821) in GitLab 16.1.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/500000) to allow variables when passed to `publish` property in GitLab 17.9.
 
 Use `publish` to configure the content directory of a [`pages` job](#pages).
 
@@ -3490,6 +3491,25 @@ pages:
 This example uses [Eleventy](https://www.11ty.dev) to generate a static website and
 output the generated HTML files into a the `dist/` directory. This directory is exported
 as an artifact and published with GitLab Pages.
+
+It is also possible to use variables in the `publish` field. For example:
+
+```yaml
+pages:
+  stage: deploy
+  script:
+    - mkdir -p $CUSTOM_FOLDER/$CUSTOM_PATH
+    - cp -r public $CUSTOM_FOLDER/$CUSTOM_SUBFOLDER
+  artifacts:
+    paths:
+      - $CUSTOM_FOLDER/$CUSTOM_SUBFOLDER
+  publish: $CUSTOM_FOLDER/$CUSTOM_SUBFOLDER
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  variables:
+    CUSTOM_FOLDER: "custom_folder"
+    CUSTOM_SUBFOLDER: "custom_subfolder"
+```
 
 #### `pages:pages.path_prefix`
 

@@ -637,9 +637,7 @@ module ApplicationSettingsHelper
       supported_syntax_link_url: 'https://github.com/google/re2/wiki/Syntax',
       email_restrictions: @application_setting.email_restrictions.to_s,
       after_sign_up_text: @application_setting[:after_sign_up_text].to_s,
-      pending_user_count: pending_user_count,
-      # This is going to be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/509583
-      seat_control: ''
+      pending_user_count: pending_user_count
     }
   end
 end

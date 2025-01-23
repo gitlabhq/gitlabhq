@@ -12,9 +12,10 @@ module ContainerRegistry
 
       belongs_to :project, inverse_of: :container_registry_protection_tag_rules
 
-      validates :minimum_access_level_for_delete, :minimum_access_level_for_push, presence: true
       validates :tag_name_pattern, presence: true, uniqueness: { scope: :project_id }, length: { maximum: 100 }
       validates :tag_name_pattern, untrusted_regexp: true
+
+      validate :validate_access_levels
 
       scope :for_actions_and_access, ->(actions, access_level) {
         conditions = []
@@ -30,6 +31,14 @@ module ContainerRegistry
 
       def delete_restricted?(access_level)
         Gitlab::Access.sym_options_with_admin[minimum_access_level_for_delete.to_sym] > access_level
+      end
+
+      private
+
+      def validate_access_levels
+        return unless minimum_access_level_for_delete.present? ^ minimum_access_level_for_push.present?
+
+        errors.add(:base, _('Access levels should either both be present or both be nil'))
       end
     end
   end

@@ -186,6 +186,10 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
         let(:file) { custom_root_file }
         let(:metadata_filename) { custom_root_file_metadata }
 
+        before do
+          allow(build).to receive(:pages_generator?).and_return(true)
+        end
+
         context 'when the directory specified with `publish` is included in the artifacts' do
           let(:options) { { publish: 'foo' } }
 

@@ -14,6 +14,7 @@ module Groups
         group&.create_group_level_work_items_feature_flag_enabled?)
       push_force_frontend_feature_flag(:glql_integration, group&.glql_integration_feature_flag_enabled?)
       push_frontend_feature_flag(:issues_list_drawer, group)
+      push_force_frontend_feature_flag(:custom_fields_feature, group)
     end
     before_action :handle_new_work_item_path, only: [:show]
 

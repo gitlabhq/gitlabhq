@@ -11411,10 +11411,11 @@ CREATE TABLE container_registry_protection_tag_rules (
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    minimum_access_level_for_push smallint NOT NULL,
-    minimum_access_level_for_delete smallint NOT NULL,
+    minimum_access_level_for_push smallint,
+    minimum_access_level_for_delete smallint,
     tag_name_pattern text NOT NULL,
-    CONSTRAINT check_50aba315a8 CHECK ((char_length(tag_name_pattern) <= 255))
+    CONSTRAINT check_50aba315a8 CHECK ((char_length(tag_name_pattern) <= 255)),
+    CONSTRAINT check_ae29637175 CHECK ((num_nonnulls(minimum_access_level_for_delete, minimum_access_level_for_push) <> 1))
 );
 
 CREATE SEQUENCE container_registry_protection_tag_rules_id_seq

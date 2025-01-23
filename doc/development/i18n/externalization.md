@@ -867,6 +867,69 @@ s__(NAMESPACE, LABEL);
 n__(LABEL_SINGULAR, LABEL_PLURAL, appleCount);
 ```
 
+### Using variables to insert text dynamically
+
+When text values are used in translatable strings as variables, special care must be taken to ensure grammatical correctness across different languages.
+
+#### Risks and challenges
+
+When using variables to add text into translatable strings, several localization challenges can arise:
+
+- **Gender agreement**: Languages with grammatical gender may require different forms of articles, adjectives or pronouns depending on the gender of the inserted noun. For example, in French, articles, adjectives and some past participles must agree with the noun's gender and position in the sentence.
+
+- **Case and declension**: In languages with cases (like German), the inserted text may need different forms depending on its grammatical role in the sentence.
+
+- **Word order**: Different languages have different word order requirements, and inserted text may need to appear in different positions in the sentence for natural-sounding translations.
+
+#### Best practices
+
+1. **Avoid adding text as variables when possible**:
+   - Instead of one string with a variable, create unique strings for each case. For example:
+
+```ruby
+    # Instead of:
+    s_('WorkItem|Adds this %{workItemType} as related to %{relatedWorkItemType}')
+
+    # Create separate strings:
+    s_('WorkItem|Adds this task as related to incident')
+    s_('WorkItem|Adds this incident as related to task')
+```
+
+1. **Use topic-comment structure over sentence-like arrangement**:
+   When variable use cannot be avoided, consider restructuring the message to use a topic-comment arrangement rather than a full sentence:
+
+```ruby
+   # Instead of a sentence with inserted variables:
+   s_('WorkItem|Adds this %{workItemType} as related to %{relatedWorkItemType}')
+
+   # Use topic-comment structure:
+   s_('WorkItem|Related items: %{workItemType} → %{relatedWorkItemType}')
+```
+
+## Case transformation in translatable strings
+
+Different languages have different capitalization rules that may not match English. For example, in German all nouns are capitalized regardless of their position in the sentence. Avoid using `downcase` or `toLocaleLowerCase()` on translatable strings. Let translators control text.
+
+- **Context-dependent cases**
+
+While the `toLocaleLowerCase()` method is locale-aware, it cannot handle context-specific capitalization needs. For example:
+
+```ruby
+    # This forces lowercase, but it may not work for many languages:
+    job_type = "CI/CD Pipeline".toLocaleLowerCase()
+    s_("Jobs|Starting a new %{job_type}") % { job_type: job_type }
+
+    # In German this would incorrectly show:
+    # "Starting a new ci/cd pipeline"
+    # When it should be:
+    # "Starting a new CI/CD Pipeline"  (Pipeline is a noun and must be capitalized)
+
+    # In French it might show:
+    # "Starting a new ci/cd pipeline"
+    # When it should be:
+    # "Démarrer un nouveau pipeline CI/CD"  (technical terms might keep original case)
+```
+
 ## Updating the PO files with the new content
 
 Now that the new content is marked for translation, run this command to update the

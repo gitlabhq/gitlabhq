@@ -2838,6 +2838,9 @@ msgstr ""
 msgid "Access granted"
 msgstr ""
 
+msgid "Access levels should either both be present or both be nil"
+msgstr ""
+
 msgid "Access requests"
 msgstr ""
 
@@ -7261,9 +7264,6 @@ msgstr ""
 msgid "ApplicationSettings|Hard"
 msgstr ""
 
-msgid "ApplicationSettings|Invitations above seat count are blocked"
-msgstr ""
-
 msgid "ApplicationSettings|Invitations do not require administrator approval"
 msgstr ""
 
@@ -7354,9 +7354,6 @@ msgid "ApplicationSettings|To enable Registration Features, first enable optiona
 msgstr ""
 
 msgid "ApplicationSettings|Upload denylist file"
-msgstr ""
-
-msgid "ApplicationSettings|User cap"
 msgstr ""
 
 msgid "ApplicationSettings|Users added beyond this limit require administrator approval. Leave blank for unlimited."
@@ -66809,6 +66806,9 @@ msgid "can only be changed by a group admin."
 msgstr ""
 
 msgid "can only have a maximum of %{limit} active custom fields."
+msgstr ""
+
+msgid "can only have a maximum of %{limit} custom fields."
 msgstr ""
 
 msgid "can only have one escalation policy"

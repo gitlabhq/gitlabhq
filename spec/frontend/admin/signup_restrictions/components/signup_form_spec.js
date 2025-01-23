@@ -6,7 +6,7 @@ import SignupForm from '~/pages/admin/application_settings/general/components/si
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
-describe('Signup Form', () => {
+describe('SignUpRestrictionsApp', () => {
   /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
 

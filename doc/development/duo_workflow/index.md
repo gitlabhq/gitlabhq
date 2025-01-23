@@ -4,30 +4,43 @@ group: Duo Workflow
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
-# Set up local development for GitLab Duo Workflow
+# Development of GitLab Duo Workflow
 
 This guide describes how to set up the local development environment for the various projects that make up [GitLab Duo Workflow](../../user/duo_workflow/index.md).
-
-Alternatively, you can also [set up Duo Workflow directly with the GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_workflow.md?ref_type=heads).
-
-Follow [these instructions](#duo-workflow-ui-in-visual-studio-code-vs-code) to see Duo Workflow UI local build in VS Code.
 
 ## Prerequisites
 
 - Vertex API access
-  - You need access to the `ai-enablement-dev-69497ba7` project in
-    GCP. This should by available to all engineers at GitLab.
+  - You need access to the `ai-enablement-dev-69497ba7` project in GCP. This should by available to all engineers at GitLab.
 - Docker
   - See which Docker tooling is approved for GitLab team members in the [handbook](https://handbook.gitlab.com/handbook/tools-and-tips/mac/#docker-desktop).
 
-## Duo Workflow UI in Visual Studio Code (VS Code)
+## Set up local development for GitLab Duo Workflow
+
+Duo Workflow consists of four separate services:
+
+1. [GitLab instance](https://gitlab.com/gitlab-org/gitlab/)
+1. [Duo Workflow Service](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-service)
+1. [Duo Workflow Executor](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-executor/)
+1. [Duo Workflow UI within the Language server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/webview_duo_workflow/README.md)
+
+### GDK Setup
+
+We recommend [setting up Duo Workflow directly with the GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_workflow.md?ref_type=heads)
+for setting up local versions of GitLab, the Duo Workflow Service and Executor.
+
+This setup can be used with the [publicly available version of the VS Code Extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
+Follow [these instructions](#duo-workflow-ui-in-visual-studio-code-vs-code) to see Duo Workflow UI local build in VS Code if you want to actively need to develop it or use an unreleased version.
+
+### Manual Setup
+
+#### Duo Workflow UI in Visual Studio Code (VS Code)
 
 There is no need for the GDK, Duo Workflow service or Duo Workflow executor local build to test Duo Workflow UI.
 Only set these up if you are making changes to one of these packages and need to test their integration with the Duo Workflow UI in VS Code.
-
 Please refer to the [Duo Workflow README.md](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/webview_duo_workflow/README.md) file in the Language Server project to get started with local development of Duo Workflow UI.
 
-## Set up your local GitLab instance
+#### Set up your local GitLab instance
 
 1. Configure the Duo Workflow Service URL in your local GitLab instance by updating the `config/gitlab.yml` file:
 
@@ -66,122 +79,9 @@ Please refer to the [Duo Workflow README.md](https://gitlab.com/gitlab-org/edito
      $YOUR_GDK_ROOT_URL/api/v4/ai/duo_workflows/workflows
    ```
 
-## Set up the Duo Workflow Service
+#### Set up the Duo Workflow Service and Executor
 
-1. Clone the [Duo Workflow Service repository](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-service).
-
-   ```shell
-     git clone git@gitlab.com:gitlab-org/duo-workflow/duo-workflow-service.git
-   ```
-
-1. Navigate to the Duo Workflow Service directory.
-
-   ```shell
-   cd duo-workflow-service
-   ```
-
-1. Install dependencies with [poetry](https://python-poetry.org/docs/#installing-with-pipx).
-
-   ```shell
-   poetry install
-   ```
-
-1. Copy the example env file in the Service repo.
-
-   ```shell
-   cp .env.example .env
-   ```
-
-1. Add your `ANTHROPIC_API_KEY` in the `.env` file.
-
-1. Setup [`gcloud`](https://cloud.google.com/sdk/docs/install) on your system.
-1. Login using your GitLab Google account by running:
-
-   ```shell
-   gcloud auth login
-   ```
-
-1. Set the `ai-enablement-dev-69497ba7` as active project by running:
-
-   ```shell
-   gcloud config set project ai-enablement-dev-69497ba7
-   ```
-
-1. Create the credentials for the application to use
-
-   ```shell
-   gcloud auth application-default login --disable-quota-project
-   ```
-
-1. Optional: You can disable auth for local development in the `.env` file. This disables authentication or the gRPC connection between the Duo Workflow Service and Duo Workflow Executor but a token will still be required for requests to your local GitLab instance.
-
-   ```dotenv
-   DUO_WORKFLOW_AUTH__ENABLED=false
-   ```
-
-1. Run the Duo Workflow Service server
-
-   ```shell
-   poetry run python -m duo_workflow_service.server
-   ```
-
-1. If you can correctly connect to Claude, you should see something
-   like this in the output
-
-   ```shell
-   2024-09-06 17:16:54 [info     ] Connected to model: claude-3-sonnet-20240229: You're talking to Claude, an AI assistant created by Anthropic.
-   2024-09-06 17:16:54 [info     ] Starting server on port 50052
-   2024-09-06 17:16:54 [info     ] Started server
-   ```
-
-## Set up the Duo Workflow Executor
-
-1. Clone the [Duo Workflow Executor repository](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-executor)
-
-   ```shell
-     git clone git@gitlab.com:gitlab-org/duo-workflow/duo-workflow-executor.git
-   ```
-
-1. Navigate to the Duo Workflow Executor directory
-
-   ```shell
-   cd duo-workflow-executor
-   ```
-
-1. Create a Dockerfile in the Duo Workflow Executor root directory with the following contents:
-
-   ```Dockerfile
-   FROM alpine
-
-   RUN apk add go busybox-extras git bash
-   ```
-
-1. Build a development image to use:
-
-   ```shell
-   docker build -t alpine-dev-workflow .
-   ```
-
-1. Run the executor with your GitLab token and workflow ID
-
-   ```shell
-   make && \
-   ./bin/duo-workflow-executor \
-       --goal='Fix the pipeline for the Merge request 62 in the project 19.' \
-       --insecure --debug \
-       --workflow-id=$WORKFLOW_ID \
-       --token=$YOUR_GITLAB_PAT \
-       --base-url="$GDK_GITLAB_URL" \
-       --user-id="1"
-   ```
-
-1. Verify that the checkpoints for workflow have been created
-
-   ```shell
-   curl --verbose \
-     --header "Authorization: Bearer $YOUR_GITLAB_PAT" \
-     $GDK_GITLAB_URL/api/v4/ai/duo_workflows/workflows/$WORKFLOW_ID/checkpoints
-   ```
+Refer to the readme of [Duo Workflow Service](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-service) and [Duo Workflow Executor](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-executor/) to set them up individually.
 
 ## Troubleshooting
 

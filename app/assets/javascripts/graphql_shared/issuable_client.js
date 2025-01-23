@@ -11,6 +11,11 @@ import {
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_AWARD_EMOJI,
   WIDGET_TYPE_HIERARCHY,
+  WIDGET_TYPE_CUSTOM_FIELDS,
+  CUSTOM_FIELDS_TYPE_NUMBER,
+  CUSTOM_FIELDS_TYPE_TEXT,
+  CUSTOM_FIELDS_TYPE_SINGLE_SELECT,
+  CUSTOM_FIELDS_TYPE_MULTI_SELECT,
 } from '~/work_items/constants';
 
 import isExpandedHierarchyTreeChildQuery from '~/work_items/graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
@@ -133,6 +138,282 @@ export const config = {
       },
       WorkItem: {
         fields: {
+          // @todo: Mocking CUSTOM_FIELDS widget while not suported by backend
+          mockWidgets: {
+            read() {
+              return [
+                {
+                  __typename: 'LocalWorkItemCustomFields',
+                  type: WIDGET_TYPE_CUSTOM_FIELDS,
+                  customFieldValues: [
+                    {
+                      id: 'gid://gitlab/CustomFieldValue/1',
+                      customField: {
+                        id: '1-number',
+                        fieldType: CUSTOM_FIELDS_TYPE_NUMBER,
+                        // eslint-disable-next-line @gitlab/require-i18n-strings
+                        name: 'Number custom field label',
+                        __typename: 'LocalWorkItemCustomField',
+                      },
+                      value: 5,
+                      __typename: 'LocalWorkItemNumberFieldValue',
+                    },
+                    {
+                      id: 'gid://gitlab/CustomFieldValue/2',
+                      customField: {
+                        id: '2-number',
+                        fieldType: CUSTOM_FIELDS_TYPE_NUMBER,
+                        // eslint-disable-next-line @gitlab/require-i18n-strings
+                        name: 'Null Number custom field label',
+                        __typename: 'LocalWorkItemCustomField',
+                      },
+                      value: null,
+                      __typename: 'LocalWorkItemNumberFieldValue',
+                    },
+                    {
+                      id: 'gid://gitlab/CustomFieldValue/3',
+                      customField: {
+                        id: '1-text',
+                        fieldType: CUSTOM_FIELDS_TYPE_TEXT,
+                        // eslint-disable-next-line @gitlab/require-i18n-strings
+                        name: 'Text custom field label',
+                        __typename: 'LocalWorkItemCustomField',
+                      },
+                      // eslint-disable-next-line @gitlab/require-i18n-strings
+                      value: 'some text',
+                      __typename: 'LocalWorkItemTextFieldValue',
+                    },
+                    {
+                      id: 'gid://gitlab/CustomFieldValue/4',
+                      customField: {
+                        id: '11-text',
+                        fieldType: CUSTOM_FIELDS_TYPE_TEXT,
+                        // eslint-disable-next-line @gitlab/require-i18n-strings
+                        name: 'Long Text custom field label',
+                        __typename: 'LocalWorkItemCustomField',
+                      },
+                      value:
+                        // eslint-disable-next-line @gitlab/require-i18n-strings
+                        'some long long lo ng long long long long long long texttt  ng long long long long long long texttt  ng long long long long long long texttt ng long long long long texttt some long long long long long long long texttt some long long long long long long long texttt some long long long long long long long texttt some long long long long long long long texttt some long long long long long long long texttt some long long long long long long long texttt some long long long long long long long texttt some long long long long long long',
+                      __typename: 'LocalWorkItemTextFieldValue',
+                    },
+                    {
+                      id: 'gid://gitlab/CustomFieldValue/5',
+                      customField: {
+                        id: '2-text',
+                        fieldType: CUSTOM_FIELDS_TYPE_TEXT,
+                        // eslint-disable-next-line @gitlab/require-i18n-strings
+                        name: 'Link Text custom field label',
+                        __typename: 'LocalWorkItemCustomField',
+                      },
+                      value: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/41',
+                      __typename: 'LocalWorkItemTextFieldValue',
+                    },
+                    {
+                      id: 'gid://gitlab/CustomFieldValue/6',
+                      customField: {
+                        id: '3-text',
+                        fieldType: CUSTOM_FIELDS_TYPE_TEXT,
+                        // eslint-disable-next-line @gitlab/require-i18n-strings
+                        name: 'Null Text custom field label',
+                        __typename: 'LocalWorkItemCustomField',
+                      },
+                      value: null,
+                      __typename: 'LocalWorkItemTextFieldValue',
+                    },
+                    {
+                      id: 'gid://gitlab/CustomFieldValue/7',
+                      customField: {
+                        id: '4-text',
+                        fieldType: CUSTOM_FIELDS_TYPE_TEXT,
+                        // eslint-disable-next-line @gitlab/require-i18n-strings
+                        name: 'Empty string Text custom field label',
+                        __typename: 'LocalWorkItemCustomField',
+                      },
+                      value: '',
+                      __typename: 'LocalWorkItemTextFieldValue',
+                    },
+                    {
+                      id: 'gid://gitlab/CustomFieldValue/8',
+                      customField: {
+                        id: '1-select',
+                        fieldType: CUSTOM_FIELDS_TYPE_SINGLE_SELECT,
+                        // eslint-disable-next-line @gitlab/require-i18n-strings
+                        name: 'Single select custom field label',
+                        selectOptions: [
+                          {
+                            id: 'select-1',
+                            value:
+                              // eslint-disable-next-line @gitlab/require-i18n-strings
+                              'Option 1 is longlonglongonglonglonglonglonglong',
+                          },
+                          {
+                            id: 'select-2',
+                            // eslint-disable-next-line @gitlab/require-i18n-strings
+                            value: 'Option 2',
+                          },
+                          {
+                            id: 'select-3',
+                            // eslint-disable-next-line @gitlab/require-i18n-strings
+                            value: 'Option 3',
+                          },
+                        ],
+                        __typename: 'LocalWorkItemCustomFieldSelect',
+                      },
+                      selectedOptions: [
+                        {
+                          id: 'select-1',
+                          value:
+                            // eslint-disable-next-line @gitlab/require-i18n-strings
+                            'Option 1 is longlonglongonglonglonglonglonglong',
+                        },
+                      ],
+                      __typename: 'LocalWorkItemSelectFieldValue',
+                    },
+                    {
+                      id: 'gid://gitlab/CustomFieldValue/9',
+                      customField: {
+                        id: '2-select',
+                        fieldType: CUSTOM_FIELDS_TYPE_SINGLE_SELECT,
+                        // eslint-disable-next-line @gitlab/require-i18n-strings
+                        name: 'Null Single select custom field label',
+                        selectOptions: [
+                          {
+                            id: 'select-1',
+                            value:
+                              // eslint-disable-next-line @gitlab/require-i18n-strings
+                              'Option 1 is long long lo ng long long long long long long',
+                          },
+                          {
+                            id: 'select-2',
+                            // eslint-disable-next-line @gitlab/require-i18n-strings
+                            value: 'Option 2',
+                          },
+                          {
+                            id: 'select-3',
+                            // eslint-disable-next-line @gitlab/require-i18n-strings
+                            value: 'Option 3',
+                          },
+                        ],
+                        __typename: 'LocalWorkItemCustomFieldSelect',
+                      },
+                      selectedOptions: null,
+                      __typename: 'LocalWorkItemSelectFieldValue',
+                    },
+                    {
+                      id: 'gid://gitlab/CustomFieldValue/10',
+                      customField: {
+                        id: '1-multi-select',
+                        fieldType: CUSTOM_FIELDS_TYPE_MULTI_SELECT,
+                        // eslint-disable-next-line @gitlab/require-i18n-strings
+                        name: 'Multi select custom field label',
+                        selectOptions: [
+                          {
+                            id: 'select-1',
+                            value:
+                              // eslint-disable-next-line @gitlab/require-i18n-strings
+                              'Option 1 is long long lo ng long long long long long long',
+                          },
+                          {
+                            id: 'select-2',
+                            // eslint-disable-next-line @gitlab/require-i18n-strings
+                            value: 'Option 2',
+                          },
+                          {
+                            id: 'select-3',
+                            // eslint-disable-next-line @gitlab/require-i18n-strings
+                            value: 'Option 3',
+                          },
+                        ],
+                        __typename: 'LocalWorkItemCustomFieldSelect',
+                      },
+                      selectedOptions: [
+                        {
+                          id: 'select-1',
+                          value:
+                            // eslint-disable-next-line @gitlab/require-i18n-strings
+                            'Option 1 is long long lo ng long long long long long long',
+                        },
+                        {
+                          id: 'select-2',
+                          // eslint-disable-next-line @gitlab/require-i18n-strings
+                          value: 'Option 2',
+                        },
+                      ],
+                      __typename: 'LocalWorkItemSelectFieldValue',
+                    },
+                    {
+                      id: 'gid://gitlab/CustomFieldValue/11',
+                      customField: {
+                        id: '2-multi-select',
+                        fieldType: CUSTOM_FIELDS_TYPE_MULTI_SELECT,
+                        // eslint-disable-next-line @gitlab/require-i18n-strings
+                        name: 'Null Multi select custom field label',
+                        selectOptions: [
+                          {
+                            id: 'select-1',
+                            value:
+                              // eslint-disable-next-line @gitlab/require-i18n-strings
+                              'Option 1 is long long lo ng long long long long long long',
+                          },
+                          {
+                            id: 'select-2',
+                            // eslint-disable-next-line @gitlab/require-i18n-strings
+                            value: 'Option 2',
+                          },
+                          {
+                            id: 'select-3',
+                            // eslint-disable-next-line @gitlab/require-i18n-strings
+                            value: 'Option 3',
+                          },
+                        ],
+                        __typename: 'LocalWorkItemCustomFieldSelect',
+                      },
+                      selectedOptions: null,
+                      __typename: 'LocalWorkItemSelectFieldValue',
+                    },
+                    {
+                      id: 'gid://gitlab/CustomFieldValue/12',
+                      customField: {
+                        id: '3-multi-select',
+                        fieldType: CUSTOM_FIELDS_TYPE_MULTI_SELECT,
+                        // eslint-disable-next-line @gitlab/require-i18n-strings
+                        name: 'One selected Multi select custom field label',
+                        selectOptions: [
+                          {
+                            id: 'select-1',
+                            value:
+                              // eslint-disable-next-line @gitlab/require-i18n-strings
+                              'Option 1 is long long lo ng long long long long long long',
+                          },
+                          {
+                            id: 'select-2',
+                            // eslint-disable-next-line @gitlab/require-i18n-strings
+                            value: 'Option 2',
+                          },
+                          {
+                            id: 'select-3',
+                            // eslint-disable-next-line @gitlab/require-i18n-strings
+                            value: 'Option 3',
+                          },
+                        ],
+                        __typename: 'LocalWorkItemCustomFieldSelect',
+                      },
+                      selectedOptions: [
+                        {
+                          id: 'select-1',
+                          value:
+                            // eslint-disable-next-line @gitlab/require-i18n-strings
+                            'Option 1 is long long lo ng long long long long long long',
+                        },
+                      ],
+                      __typename: 'LocalWorkItemSelectFieldValue',
+                    },
+                  ],
+                },
+              ];
+            },
+          },
           // widgets policy because otherwise the subscriptions invalidate the cache
           widgets: {
             merge(existing = [], incoming, context) {

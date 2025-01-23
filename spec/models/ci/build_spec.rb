@@ -4356,9 +4356,31 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe '#pages', feature_category: :pages do
-    subject { build.pages }
+    where(:pages_generator, :options, :result) do
+      false | {}                    | {}
+      false | { publish: 'public' } | {}
+      true  | nil                   | {}
+      true  | { publish: '' }       | {}
+      true  | {}                    | {}
+      true  | { publish: nil }      | {}
+      true  | { publish: 'public' } | { publish: 'public' }
+      true  | { publish: '$CUSTOM_FOLDER' } | { publish: 'custom_folder' }
+      true  | { publish: '$CUSTOM_FOLDER/$CUSTOM_SUBFOLDER' } | { publish: 'custom_folder/custom_subfolder' }
+    end
 
-    it { is_expected.to eq({}) }
+    with_them do
+      before do
+        allow(build).to receive_messages(options: options)
+        allow(build).to receive(:pages_generator?).and_return(pages_generator)
+        # Create custom variables to test that they are properly expanded in the `build.pages.publish` property
+        create(:ci_job_variable, key: 'CUSTOM_FOLDER', value: 'custom_folder', job: build)
+        create(:ci_job_variable, key: 'CUSTOM_SUBFOLDER', value: 'custom_subfolder', job: build)
+      end
+
+      subject { build.pages }
+
+      it { is_expected.to include(result) }
+    end
   end
 
   describe 'pages deployments', feature_category: :pages do
