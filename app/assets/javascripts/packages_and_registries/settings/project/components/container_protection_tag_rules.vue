@@ -10,6 +10,7 @@ import {
   GlSprintf,
   GlTable,
   GlTooltipDirective,
+  GlSkeletonLoader,
 } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import ContainerProtectionTagRuleForm from '~/packages_and_registries/settings/project/components/container_protection_tag_rule_form.vue';
@@ -34,6 +35,7 @@ export default {
     GlDrawer,
     GlLoadingIcon,
     GlModal,
+    GlSkeletonLoader,
     GlSprintf,
     GlTable,
   },
@@ -61,11 +63,15 @@ export default {
       error(e) {
         this.alertErrorMessage = e.message;
       },
+      result() {
+        this.initialLoading = false;
+      },
     },
   },
   data() {
     return {
       alertErrorMessage: '',
+      initialLoading: true,
       protectionRuleMutationInProgress: false,
       protectionRuleMutationItem: null,
       protectionRulesQueryPayload: { nodes: [], pageInfo: {} },
@@ -75,7 +81,7 @@ export default {
   },
   computed: {
     containsTableItems() {
-      return this.protectionRulesQueryResult.length > 0;
+      return this.tagProtectionRulesCount > 0;
     },
     isLoadingProtectionRules() {
       return this.$apollo.queries.protectionRulesQueryPayload.loading;
@@ -83,8 +89,8 @@ export default {
     protectionRulesQueryResult() {
       return this.protectionRulesQueryPayload.nodes;
     },
-    showTopLevelLoadingIcon() {
-      return this.isLoadingProtectionRules && !this.containsTableItems;
+    rulesLimitReached() {
+      return this.tagProtectionRulesCount === MAX_LIMIT;
     },
     showTableLoading() {
       return this.protectionRuleMutationInProgress || this.isLoadingProtectionRules;
@@ -100,6 +106,15 @@ export default {
           tagNamePattern: protectionRule.tagNamePattern,
         };
       });
+    },
+    tagProtectionRulesCount() {
+      return this.protectionRulesQueryResult.length;
+    },
+    toggleText() {
+      if (this.initialLoading || this.rulesLimitReached) {
+        return undefined;
+      }
+      return s__('ContainerRegistry|Add protection rule');
     },
   },
   methods: {
@@ -204,7 +219,7 @@ export default {
   <crud-component
     :collapsed="false"
     :title="$options.i18n.title"
-    :toggle-text="s__('ContainerRegistry|Add protection rule')"
+    :toggle-text="toggleText"
     data-testid="project-container-protection-tag-rules-settings"
     @showForm="openDrawer"
   >
@@ -212,13 +227,25 @@ export default {
       <gl-badge>
         <gl-sprintf :message="s__('ContainerRegistry|%{count} of %{max}')">
           <template #count>
-            {{ protectionRulesQueryResult.length }}
+            {{ tagProtectionRulesCount }}
           </template>
           <template #max>
             {{ $options.MAX_LIMIT }}
           </template>
         </gl-sprintf>
       </gl-badge>
+    </template>
+
+    <template #actions>
+      <span
+        v-if="rulesLimitReached"
+        class="gl-text-base gl-font-bold gl-leading-normal"
+        data-testid="max-rules"
+        >{{ s__('ContainerRegistry|Maximum number of rules reached.') }}</span
+      >
+      <div v-if="initialLoading">
+        <gl-skeleton-loader :lines="1" :equal-width-lines="true" />
+      </div>
     </template>
 
     <template #default>
@@ -243,12 +270,7 @@ export default {
         {{ alertErrorMessage }}
       </gl-alert>
 
-      <gl-loading-icon
-        v-if="showTopLevelLoadingIcon"
-        size="sm"
-        class="gl-my-5"
-        data-testid="loading-icon"
-      />
+      <gl-loading-icon v-if="initialLoading" size="sm" class="gl-my-5" data-testid="loading-icon" />
       <gl-table
         v-else-if="containsTableItems"
         class="gl-border-t-1 gl-border-t-gray-100 gl-border-t-solid"

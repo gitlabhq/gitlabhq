@@ -1,8 +1,17 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlAlert, GlBadge, GlDrawer, GlModal, GlSprintf, GlTable } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlBadge,
+  GlDrawer,
+  GlModal,
+  GlSkeletonLoader,
+  GlSprintf,
+  GlTable,
+} from '@gitlab/ui';
 
 import containerProtectionTagRuleEmptyRulesQueryPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql.empty_rules.json';
+import containerProtectionTagRuleMaxRulesQueryPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql.max_rules.json';
 import containerProtectionTagRuleNullProjectQueryPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql.null_project.json';
 import containerProtectionTagRuleQueryPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql.json';
 import deleteContainerProtectionTagRuleMutationPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_tag_rule.mutation.graphql.json';
@@ -32,7 +41,9 @@ describe('ContainerProtectionTagRules', () => {
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
   const findDescription = () => wrapper.findByTestId('description');
   const findEmptyText = () => wrapper.findByTestId('empty-text');
+  const findMaxRulesText = () => wrapper.findByTestId('max-rules');
   const findLoader = () => wrapper.findByTestId('loading-icon');
+  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findTableLoader = () => wrapper.findByTestId('table-loading-icon');
   const findTableComponent = () => wrapper.findComponent(GlTable);
   const findBadge = () => wrapper.findComponent(GlBadge);
@@ -87,7 +98,7 @@ describe('ContainerProtectionTagRules', () => {
 
     it('renders card component with title', () => {
       expect(findCrudComponent().props('title')).toBe('Protected container image tags');
-      expect(findCrudComponent().props('toggleText')).toBe('Add protection rule');
+      expect(findCrudComponent().props('toggleText')).toBeNull();
     });
 
     it('renders card component with description', () => {
@@ -98,6 +109,10 @@ describe('ContainerProtectionTagRules', () => {
 
     it('shows loading icon', () => {
       expect(findLoader().exists()).toBe(true);
+    });
+
+    it('shows skeleton loader', () => {
+      expect(findSkeletonLoader().exists()).toBe(true);
     });
 
     it('drawer is hidden', () => {
@@ -199,6 +214,14 @@ describe('ContainerProtectionTagRules', () => {
 
       it('hides loading icon', () => {
         expect(findLoader().exists()).toBe(false);
+      });
+
+      it('hides skeleton loader', () => {
+        expect(findSkeletonLoader().exists()).toBe(false);
+      });
+
+      it('sets toggleText prop on CrudComponent', () => {
+        expect(findCrudComponent().props('toggleText')).toBe('Add protection rule');
       });
 
       it('shows count badge', () => {
@@ -402,6 +425,33 @@ describe('ContainerProtectionTagRules', () => {
           expect($toast.show).toHaveBeenCalledWith('Container protection rule deleted.');
         });
       });
+    });
+  });
+
+  describe('when data is loaded & contains maximum number of tag protection rules', () => {
+    beforeEach(async () => {
+      createComponent({
+        containerProtectionTagRuleQueryResolver: jest
+          .fn()
+          .mockResolvedValue(containerProtectionTagRuleMaxRulesQueryPayload),
+      });
+      await waitForPromises();
+    });
+
+    it('hides skeleton loader', () => {
+      expect(findSkeletonLoader().exists()).toBe(false);
+    });
+
+    it('sets toggleText prop on CrudComponent to null', () => {
+      expect(findCrudComponent().props('toggleText')).toBeNull();
+    });
+
+    it('shows maximum number of rules reached text', () => {
+      expect(findMaxRulesText().text()).toBe('Maximum number of rules reached.');
+    });
+
+    it('shows count badge', () => {
+      expect(findBadge().text()).toMatchInterpolatedText('5 of 5');
     });
   });
 

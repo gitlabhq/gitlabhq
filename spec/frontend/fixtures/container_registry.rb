@@ -47,7 +47,7 @@ RSpec.describe 'Container registry (JavaScript fixtures)', feature_category: :co
         end
 
         context 'with tag protection rules' do
-          let_it_be(:container_protection_tag_rule) do
+          before do
             create(:container_registry_protection_tag_rule,
               project: project,
               minimum_access_level_for_push: Gitlab::Access::MAINTAINER,
@@ -56,6 +56,24 @@ RSpec.describe 'Container registry (JavaScript fixtures)', feature_category: :co
           end
 
           it "graphql/#{project_container_protection_tag_rules_query_path}.json" do
+            query = get_graphql_query_as_string(project_container_protection_tag_rules_query_path)
+
+            post_graphql(query, current_user: owner, variables: { projectPath: project.full_path, first: 5 })
+
+            expect_graphql_errors_to_be_empty
+          end
+        end
+
+        context 'with maximum number of tag protection rules' do
+          before do
+            5.times do |i|
+              create(:container_registry_protection_tag_rule,
+                project: project,
+                tag_name_pattern: "v#{i + 1}.+")
+            end
+          end
+
+          it "graphql/#{project_container_protection_tag_rules_query_path}.max_rules.json" do
             query = get_graphql_query_as_string(project_container_protection_tag_rules_query_path)
 
             post_graphql(query, current_user: owner, variables: { projectPath: project.full_path, first: 5 })

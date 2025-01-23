@@ -216,7 +216,7 @@ export default {
           <template v-else>{{ description }}</template>
         </p>
       </div>
-      <div class="gl-flex gl-items-baseline gl-gap-3" data-testid="crud-actions">
+      <div class="gl-flex gl-items-center gl-gap-3" data-testid="crud-actions">
         <slot name="actions"></slot>
         <gl-button
           v-if="toggleText && !isFormUsedAndVisible"

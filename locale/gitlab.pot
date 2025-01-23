@@ -15615,6 +15615,9 @@ msgstr ""
 msgid "ContainerRegistry|Manifest media type: %{mediaType}"
 msgstr ""
 
+msgid "ContainerRegistry|Maximum number of rules reached."
+msgstr ""
+
 msgid "ContainerRegistry|Minimum access level for push"
 msgstr ""
 
