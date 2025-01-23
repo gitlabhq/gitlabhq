@@ -44120,9 +44120,6 @@ msgstr ""
 msgid "Project avatar"
 msgstr ""
 
-msgid "Project cannot be deleted because it is linked as Security Policy Project"
-msgstr ""
-
 msgid "Project cannot be shared with the group it is in or one of its ancestors."
 msgstr ""
 
@@ -51643,6 +51640,9 @@ msgstr ""
 msgid "SecurityOrchestration|Prevent users from skipping pipelines"
 msgstr ""
 
+msgid "SecurityOrchestration|Project cannot be deleted because it is linked as a security policy project"
+msgstr ""
+
 msgid "SecurityOrchestration|Require %{approvals} %{plural} from %{approvers}"
 msgstr ""
 
@@ -51878,6 +51878,9 @@ msgid "SecurityOrchestration|Turn off default mode to edit scope."
 msgstr ""
 
 msgid "SecurityOrchestration|Unlink project"
+msgstr ""
+
+msgid "SecurityOrchestration|Unlink the project from the following containers:"
 msgstr ""
 
 msgid "SecurityOrchestration|Unlinking a security project removes all policies stored in the linked security project. Save to confirm this action."

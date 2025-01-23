@@ -8,7 +8,7 @@
 - add_page_specific_style 'page_bundles/projects'
 
 #tree-holder.tree-holder.clearfix.js-per-page.gl-mt-5{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
-  - if params[:common_repository_blob_header_app] == 'true'
+  - if Feature.enabled?(:blob_repository_vue_header_app, project)
     #js-repository-blob-header-app{ data: vue_tree_header_app_data(project, repository, ref, pipeline) }
 
   - else

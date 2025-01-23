@@ -377,6 +377,11 @@ Example responses:
 
 ## Available settings
 
+<!--
+This heading is referenced by a script: `scripts/cells/application-settings-analysis.rb`
+ Any updates to this heading should be reflected for the DOC_API_SETTINGS_TABLE_REGEX variable.
+ -->
+
 > - `housekeeping_full_repack_period`, `housekeeping_gc_period`, and `housekeeping_incremental_repack_period` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106963) in GitLab 15.8. Use `housekeeping_optimize_repository_period` instead.
 > - `allow_account_deletion` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412411) in GitLab 16.1.
 > - `allow_project_creation_for_guest_and_below` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134625) in GitLab 16.8.

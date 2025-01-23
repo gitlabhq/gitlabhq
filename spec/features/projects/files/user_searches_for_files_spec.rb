@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Files > User searches for files', feature_category: :source_code_management do
+RSpec.describe 'Projects > Files > User searches for files', :js, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, namespace: user.namespace) }
 
@@ -31,7 +31,7 @@ RSpec.describe 'Projects > Files > User searches for files', feature_category: :
       end
 
       it 'shows "Find file" button' do
-        expect(page).to have_selector('.tree-controls .shortcuts-find-file')
+        expect(page).to have_button('Find file')
       end
     end
   end
@@ -42,7 +42,7 @@ RSpec.describe 'Projects > Files > User searches for files', feature_category: :
     end
 
     it 'shows found files', :js do
-      expect(page).to have_selector('.tree-controls .shortcuts-find-file')
+      expect(page).to have_button('Find file')
 
       submit_search('coffee')
 

@@ -13,6 +13,7 @@ RSpec.describe 'projects/tree/show' do
   let(:tree) { repository.tree(commit.id, path) }
 
   before do
+    stub_feature_flags(blob_repository_vue_header_app: false)
     assign(:project, project)
     assign(:repository, repository)
 

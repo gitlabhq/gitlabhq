@@ -9,5 +9,5 @@ description: Issue board list preferences on a per-user basis, specifically whet
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15657
 milestone: '12.3'
 gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463411
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514598
 table_size: small

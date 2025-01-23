@@ -83,6 +83,7 @@ Supported attributes:
 |:-----------|:-------|:---------|:------------|
 | `name`     | string | no       | Name of the user. If not set, uses `Service account user`. |
 | `username` | string | no       | Username of the user account. If not set, generates a name prepended with `service_account_`. |
+| `email`    | string | no       | Email of the user account. If not set, generates a no-reply email address. |
 
 Example request:
 
@@ -96,6 +97,37 @@ Example response:
 {
   "id": 57,
   "username": "service_account_6018816a18e515214e0c34c2b33523fc",
-  "name": "Service account user"
+  "name": "Service account user",
+  "email": "service_account_6018816a18e515214e0c34c2b33523fc@noreply.gitlab.example.com"
+}
+```
+
+### Specify a custom email address
+
+You can specify a custom email address at service account creation to receive
+notifications on this service account's actions.
+
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "email=custom_email@gitlab.example.com" "https://gitlab.example.com/api/v4/service_accounts"
+```
+
+Example response:
+
+```json
+{
+  "id": 57,
+  "username": "service_account_6018816a18e515214e0c34c2b33523fc",
+  "name": "Service account user",
+  "email": "custom_email@gitlab.example.com"
+}
+```
+
+This fails if the email address has already been taken by another user:
+
+```json
+{
+  "message": "400 Bad request - Email has already been taken"
 }
 ```

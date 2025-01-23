@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { provideWebIdeLink } from 'ee_else_ce/pages/projects/shared/web_ide_link/provide_web_ide_link';
 import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import apolloProvider from './graphql';
 import projectShortPathQuery from './queries/project_short_path.query.graphql';
@@ -62,6 +63,7 @@ export default function initHeaderApp({ router, isReadmeView = false, isBlobView
       downloadArtifacts,
       projectShortPath,
       isBinary,
+      ...options
     } = headerEl.dataset;
 
     const {
@@ -127,6 +129,7 @@ export default function initHeaderApp({ router, isReadmeView = false, isBlobView
         downloadArtifacts: downloadArtifacts ? JSON.parse(downloadArtifacts) : [],
         isBlobView,
         isBinary: parseBoolean(isBinary),
+        ...provideWebIdeLink(options),
       },
       apolloProvider,
       router: router || createRouter(projectPath, escapedRef),

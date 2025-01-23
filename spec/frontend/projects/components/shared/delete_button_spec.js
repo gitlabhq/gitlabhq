@@ -56,6 +56,17 @@ describe('DeleteButton', () => {
     );
   });
 
+  it('renders the button', () => {
+    createComponent();
+    expect(wrapper.findComponent(GlButton).exists()).toBe(true);
+    expect(wrapper.findComponent(GlButton).props('disabled')).toBe(false);
+  });
+
+  it('disables the button when the disabled prop is true', () => {
+    createComponent({ disabled: true });
+    expect(wrapper.findComponent(GlButton).props('disabled')).toBe(true);
+  });
+
   describe('when button is clicked', () => {
     beforeEach(() => {
       createComponent();

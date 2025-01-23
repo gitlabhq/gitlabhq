@@ -8,5 +8,5 @@ description: Configuration of a single list on an issue board
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/611dab2e522e5e59cf09cd459a31686e65616863
 milestone: '8.11'
 gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463411
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514597
 table_size: small

@@ -10,6 +10,11 @@ export default {
       type: String,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     formPath: {
       type: String,
       required: true,
@@ -45,6 +50,7 @@ export default {
 <template>
   <shared-delete-button
     :confirm-phrase="confirmPhrase"
+    :disabled="disabled"
     :form-path="formPath"
     :is-fork="isFork"
     :issues-count="issuesCount"

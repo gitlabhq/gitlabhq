@@ -6,7 +6,7 @@ import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { keysFor, START_SEARCH_PROJECT_FILE } from '~/behaviors/shortcuts/keybindings';
 import { sanitize } from '~/lib/dompurify';
 import { InternalEvents } from '~/tracking';
-import { FIND_FILE_BUTTON_CLICK } from '~/tracking/constants';
+import { FIND_FILE_BUTTON_CLICK, REF_SELECTOR_CLICK } from '~/tracking/constants';
 import { visitUrl, joinPaths, webIDEUrl } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
@@ -163,6 +163,7 @@ export default {
   },
   methods: {
     onInput(selectedRef) {
+      InternalEvents.trackEvent(REF_SELECTOR_CLICK);
       visitUrl(generateRefDestinationPath(this.projectRootPath, this.originalBranch, selectedRef));
     },
     handleFindFile() {
@@ -287,7 +288,7 @@ export default {
               :download-artifacts="downloadArtifacts"
             />
             <clone-code-dropdown
-              class="git-clone-holder js-git-clone-holder !gl-w-full"
+              class="mobile-git-clone js-git-clone-holder !gl-w-full"
               :ssh-url="sshUrl"
               :http-url="httpUrl"
               :kerberos-url="kerberosUrl"
