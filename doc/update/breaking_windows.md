@@ -32,6 +32,7 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 | [GitLab Runner platforms and setup instructions in GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/387937) | Low | Verify | Instance, group, project |
 | [CI/CD job token - **Limit access from your project** setting removal](https://gitlab.com/gitlab-org/gitlab/-/issues/395708) | High | Verify | Project |
 | [CI/CD job token - **Authorized groups and projects** allowlist enforcement](https://gitlab.com/gitlab-org/gitlab/-/issues/383084) | High | Govern | Project |
+| [Deprecate License Scanning CI/CD artifact report type](https://gitlab.com/gitlab-org/gitlab/-/issues/439301) |  | Secure |  |
 | [OpenTofu CI/CD template](https://gitlab.com/components/opentofu/-/issues/43#note_1913822299) | Low | Depoy | Project |
 | [Replace `add_on_purchase` GraphQL field with `add_on_purchases`](https://gitlab.com/gitlab-org/gitlab/-/issues/476858) | Low | Fulfillment | Instance, group |
 | [Replace namespace `add_on_purchase` GraphQL field with `add_on_purchases`](https://gitlab.com/gitlab-org/gitlab/-/issues/489850) | Low | Fulfillment | Instance, group |

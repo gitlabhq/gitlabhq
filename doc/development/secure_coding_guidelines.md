@@ -1741,6 +1741,8 @@ This class of issue applies to more than just email; other examples might includ
 
 ### Related topics
 
+- [Watch a walkthrough video](https://www.youtube.com/watch?v=ydg95R2QKwM) for an instance of this issue causing vulnerability CVE-2023-7028.
+  The video covers what happened, how it worked, and what you need to know for the future.
 - Rails documentation for [ActionController::StrongParameters](https://api.rubyonrails.org/classes/ActionController/StrongParameters.html) and [ActionController::Parameters](https://api.rubyonrails.org/classes/ActionController/Parameters.html)
 
 ## Who to contact if you have questions

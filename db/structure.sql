@@ -13035,7 +13035,8 @@ CREATE TABLE events (
     target_id bigint,
     imported_from smallint DEFAULT 0 NOT NULL,
     personal_namespace_id bigint,
-    CONSTRAINT check_97e06e05ad CHECK ((octet_length(fingerprint) <= 128))
+    CONSTRAINT check_97e06e05ad CHECK ((octet_length(fingerprint) <= 128)),
+    CONSTRAINT check_events_sharding_key_is_not_null CHECK (((group_id IS NOT NULL) OR (project_id IS NOT NULL) OR (personal_namespace_id IS NOT NULL)))
 );
 
 CREATE SEQUENCE events_id_seq
@@ -26360,9 +26361,6 @@ ALTER TABLE sprints
 
 ALTER TABLE web_hook_logs
     ADD CONSTRAINT check_df72cb58f5 CHECK ((char_length(url_hash) <= 44)) NOT VALID;
-
-ALTER TABLE events
-    ADD CONSTRAINT check_events_sharding_key_is_not_null CHECK (((group_id IS NOT NULL) OR (project_id IS NOT NULL) OR (personal_namespace_id IS NOT NULL))) NOT VALID;
 
 ALTER TABLE projects
     ADD CONSTRAINT check_fa75869cb1 CHECK ((project_namespace_id IS NOT NULL)) NOT VALID;

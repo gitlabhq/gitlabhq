@@ -2,6 +2,7 @@
   removal_milestone: "18.0"
   announcement_milestone: "16.9"
   breaking_change: true
+  window: 1
   reporter: gonzoyumo
   stage: secure
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/439301
