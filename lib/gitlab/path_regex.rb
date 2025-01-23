@@ -139,13 +139,16 @@ module Gitlab
     PROJECT_PATH_FORMAT_REGEX = /(?:#{PATH_REGEX_STR})#{NO_SUFFIX_REGEX}/
     FULL_NAMESPACE_FORMAT_REGEX = %r{(#{NAMESPACE_FORMAT_REGEX}/){,#{Namespace::NUMBER_OF_ANCESTORS_ALLOWED}}#{NAMESPACE_FORMAT_REGEX}}
 
+    ORGANIZATION_PATH_REGEX_STR = '[a-zA-Z0-9_][a-zA-Z0-9_\-]' + "{0,#{Namespace::URL_MAX_LENGTH - 1}}"
+    ORGANIZATION_PATH_FORMAT_REGEX = /(?:#{ORGANIZATION_PATH_REGEX_STR})/
+
     def organization_route_regex
       @organization_route_regex ||= begin
         illegal_words = Regexp.new(Regexp.union(ILLEGAL_ORGANIZATION_PATH_WORDS).source, Regexp::IGNORECASE)
 
         single_line_regexp %r{
           (?!(#{illegal_words})/)
-          #{NAMESPACE_FORMAT_REGEX}
+          #{ORGANIZATION_PATH_FORMAT_REGEX}
         }x
       end
     end
@@ -217,6 +220,14 @@ module Gitlab
 
     def full_project_git_path_regex
       @full_project_git_path_regex ||= %r{\A\/?(?<namespace_path>#{full_namespace_route_regex})\/(?<project_path>#{project_route_regex})\.git\z}
+    end
+
+    def organization_format_regex
+      @organization_format_regex ||= /\A#{ORGANIZATION_PATH_FORMAT_REGEX}\z/o
+    end
+
+    def organization_format_message
+      "can contain only letters, digits, '_' and '-'. Cannot start with '-'."
     end
 
     def namespace_format_regex

@@ -104,7 +104,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
       using RSpec::Parameterized::TableSyntax
 
       let(:default_path_error) do
-        "can contain only letters, digits, '_', '-' and '.'. Cannot start with '-' or end in '.', '.git' or '.atom'."
+        "can contain only letters, digits, '_' and '-'. Cannot start with '-'."
       end
 
       let(:reserved_path_error) do
@@ -112,10 +112,8 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
       end
 
       where(:path, :valid, :error_message) do
-        'path.'           | false  | ref(:default_path_error)
-        'path.git'        | false  | ref(:default_path_error)
+        'org.path'        | false  | ref(:default_path_error)
         'new'             | false  | ref(:reserved_path_error)
-        '.path'           | true   | nil
         'org__path'       | true   | nil
         'some-name'       | true   | nil
         'simple'          | true   | nil
