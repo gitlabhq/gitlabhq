@@ -415,6 +415,7 @@ GLQL's
 Gmail
 Godep
 Golang
+Goldmark
 Gollum
 Google
 goroutine
@@ -912,6 +913,8 @@ SHAs
 shfmt
 Shippo
 Shopify
+shortcode
+shortcodes
 Sidekiq
 Sigstore
 Silverlight

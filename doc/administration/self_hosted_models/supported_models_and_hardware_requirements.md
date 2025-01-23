@@ -68,7 +68,7 @@ The following hardware specifications are the minimum requirements for running s
 
 ### GPU requirements by model size
 
-| Model size | Recommended GPU configuration | Minimum VRAM required |
+| Model size | Minimum GPU configuration | Minimum VRAM required |
 |------------|------------------------------|---------------------|
 | 7B models<br>(for example, Mistral 7B) | 1x NVIDIA A100 (40GB) | 24 GB |
 | 22B models<br>(for example, Codestral 22B) | 2x NVIDIA A100 (80GB) | 90 GB |

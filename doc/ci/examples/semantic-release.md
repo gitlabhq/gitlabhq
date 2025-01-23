@@ -94,19 +94,19 @@ As part of publishing a package, semantic-release increases the version number i
 
 <!-- markdownlint-disable MD044 -->
 
-1. On the left sidebar, select your avatar.
-1. Select **Preferences > Access tokens**.
+1. Open the left sidebar.
+1. Select **Settings > Access tokens**.
+1. In your project, select **Add new token**.
 1. In the **Token name** box, enter a token name.
-1. Under **select scopes**, select the **api** checkbox.
+1. Under **Select scopes**, select the **api** checkbox.
 1. Select **Create project access token**.
-1. Copy the value.
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Copy the token value.
+1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable**.
+1. Under **Visibility**, select **Masked**.
 1. In the **Key** box, enter `GITLAB_TOKEN`.
-1. In the **Value** box, paste the token.
-1. Select the **Mask variable** checkbox.
+1. In the **Value** box, enter the token value.
 1. Select **Add variable**.
 <!-- markdownlint-enable MD044 -->
 
@@ -116,7 +116,7 @@ semantic-release pulls its configuration information from a `.releaserc.json` fi
 
 ```json
 {
-  "branches": ["master"],
+  "branches": ["main"],
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
@@ -132,6 +132,8 @@ semantic-release pulls its configuration information from a `.releaserc.json` fi
   ]
 }
 ```
+
+In the previous semantic-release configuration example, you can change the branch name to your project's default branch.
 
 ## Begin publishing releases
 
