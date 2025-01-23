@@ -173,7 +173,7 @@ span.idiff {
 
   .new-file {
     a {
-      color: $green-600;
+      @apply gl-text-success;
     }
   }
 
@@ -187,7 +187,7 @@ span.idiff {
     text-decoration: none;
 
     .new-file {
-      color: $green-600;
+      @apply gl-text-success;
     }
 
     .deleted-file {

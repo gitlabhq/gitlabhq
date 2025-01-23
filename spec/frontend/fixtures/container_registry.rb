@@ -20,6 +20,8 @@ RSpec.describe 'Container registry (JavaScript fixtures)', feature_category: :co
       base_path = 'packages_and_registries/settings/project/graphql'
       project_container_protection_tag_rules_query_path =
         "#{base_path}/queries/get_container_protection_tag_rules.query.graphql"
+      create_container_protection_tag_rule_mutation_path =
+        "#{base_path}/mutations/create_container_protection_tag_rule.mutation.graphql"
       delete_container_protection_tag_rule_mutation_path =
         "#{base_path}/mutations/delete_container_protection_tag_rule.mutation.graphql"
 
@@ -106,6 +108,77 @@ RSpec.describe 'Container registry (JavaScript fixtures)', feature_category: :co
               "The resource that you are attempting to access does not exist or " \
                 "you don't have permission to perform this action"
             )
+          end
+        end
+
+        context 'when there are no errors creating a rule' do
+          it "graphql/#{create_container_protection_tag_rule_mutation_path}.json" do
+            mutation = get_graphql_query_as_string(create_container_protection_tag_rule_mutation_path)
+
+            post_graphql(
+              mutation,
+              current_user: owner,
+              variables: {
+                input: {
+                  projectPath: project.full_path,
+                  tagNamePattern: 'v.*',
+                  minimumAccessLevelForPush: 'MAINTAINER',
+                  minimumAccessLevelForDelete: 'OWNER'
+                }
+              }
+            )
+
+            expect_graphql_errors_to_be_empty
+          end
+        end
+
+        context 'when there are field errors creating a rule' do
+          it "graphql/#{create_container_protection_tag_rule_mutation_path}.server_errors.json" do
+            mutation = get_graphql_query_as_string(create_container_protection_tag_rule_mutation_path)
+
+            post_graphql(
+              mutation,
+              current_user: owner,
+              variables: {
+                input: {
+                  project_path: project.full_path,
+                  tagNamePattern: '',
+                  minimumAccessLevelForPush: 'MAINTAINER',
+                  minimumAccessLevelForDelete: 'OWNER'
+                }
+              }
+            )
+
+            expect_graphql_errors_to_include(
+              "tagNamePattern can't be blank"
+            )
+          end
+        end
+
+        context 'when there are errors creating a rule' do
+          before do
+            create(:container_registry_protection_tag_rule, project: project,
+              tag_name_pattern: "v.*")
+          end
+
+          it "graphql/#{create_container_protection_tag_rule_mutation_path}.errors.json" do
+            mutation = get_graphql_query_as_string(create_container_protection_tag_rule_mutation_path)
+
+            post_graphql(
+              mutation,
+              current_user: owner,
+              variables: {
+                input: {
+                  project_path: project.full_path,
+                  tagNamePattern: 'v.*',
+                  minimumAccessLevelForPush: 'MAINTAINER',
+                  minimumAccessLevelForDelete: 'OWNER'
+                }
+              }
+            )
+
+            expect(graphql_data_at('createContainerProtectionTagRule', 'errors'))
+              .to include('Tag name pattern has already been taken')
           end
         end
       end

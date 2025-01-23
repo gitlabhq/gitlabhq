@@ -37,7 +37,7 @@ swap:
   GitLabber: GitLab team member
   GitLabbers: GitLab team members
   GitLab-shell: GitLab Shell
-  gitlab omnibus: Linux package
+  gitlab omnibus(?! builder): "Linux package"
   golang: Go
   guest access: the Guest role
   guest permission: the Guest role

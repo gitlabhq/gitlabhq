@@ -17,6 +17,8 @@ import getContainerProtectionTagRulesQuery from '~/packages_and_registries/setti
 import deleteContainerProtectionTagRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_tag_rule.mutation.graphql';
 import { __, s__ } from '~/locale';
 import { MinimumAccessLevelText } from '~/packages_and_registries/settings/project/constants';
+import { InternalEvents } from '~/tracking';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 const MAX_LIMIT = 5;
 const I18N_MINIMUM_ACCESS_LEVEL_TO_PUSH = s__('ContainerRegistry|Minimum access level to push');
@@ -39,6 +41,7 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [InternalEvents.mixin()],
   inject: ['projectPath'],
   apollo: {
     protectionRulesQueryPayload: {
@@ -123,11 +126,18 @@ export default {
         }
         this.refetchProtectionRules();
         this.$toast.show(s__('ContainerRegistry|Container protection rule deleted.'));
+        this.trackEvent('container_protection_tag_rule_deleted');
       } catch (error) {
         this.alertErrorMessage = error.message;
+        Sentry.captureException(error);
       } finally {
         this.resetProtectionRuleMutation();
       }
+    },
+    handleSubmit() {
+      this.$toast.show(s__('ContainerRegistry|Container protection rule created.'));
+      this.closeDrawer();
+      this.refetchProtectionRules();
     },
     openDrawer() {
       this.showDrawer = true;
@@ -275,7 +285,7 @@ export default {
           </h2>
         </template>
         <template #default>
-          <container-protection-tag-rule-form />
+          <container-protection-tag-rule-form @cancel="closeDrawer" @submit="handleSubmit" />
         </template>
       </gl-drawer>
 

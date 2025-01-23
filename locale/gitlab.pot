@@ -15480,6 +15480,9 @@ msgstr ""
 msgid "ContainerRegistry|Container Scanning for Registry: On"
 msgstr ""
 
+msgid "ContainerRegistry|Container protection rule created."
+msgstr ""
+
 msgid "ContainerRegistry|Container protection rule deleted."
 msgstr ""
 
@@ -15628,6 +15631,9 @@ msgid "ContainerRegistry|Minimum role allowed to push"
 msgstr ""
 
 msgid "ContainerRegistry|Missing or insufficient permission, delete button disabled"
+msgstr ""
+
+msgid "ContainerRegistry|Must be less than 100 characters."
 msgstr ""
 
 msgid "ContainerRegistry|Next cleanup scheduled to run on:"
@@ -15819,6 +15825,9 @@ msgid "ContainerRegistry|There are no container images available in this group"
 msgstr ""
 
 msgid "ContainerRegistry|There are no container images stored for this project"
+msgstr ""
+
+msgid "ContainerRegistry|This field is required."
 msgstr ""
 
 msgid "ContainerRegistry|This image has no active tags"

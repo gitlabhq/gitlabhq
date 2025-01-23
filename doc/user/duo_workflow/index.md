@@ -90,7 +90,7 @@ product. The following risks are important to understand:
 
 Other risks to be aware of when using Duo Workflow:
 
-1. Duo Workflow also gets access to a time limited `ai_worfklows` scoped GitLab
+1. Duo Workflow also gets access to a time-limited `ai_workflows` scoped GitLab
    OAuth token with your user's identity. This token can be used to access
    certain GitLab APIs on your behalf. This token is limited to the duration of
    the workflow and only has access to certain APIs in GitLab but it can still,
@@ -223,9 +223,28 @@ GitLab Duo Workflow is aware of the context you're working in, specifically:
 | Local files | Duo Workflow can access all files available to Git in the project you have open in your editor. |
 | Merge requests | Enter the merge request ID if the MR is in the current project. In addition, enter the project ID if it is in a separate project. The accessed project must also fulfill the Duo Workflow [prerequisites](#prerequisites). |
 | Issues | Enter the issue ID if the MR is in the current project. In addition, enter the project ID if it is in a separate project. The accessed project must also fulfill the Duo Workflow [prerequisites](#prerequisites). |
+| Epics | Enter the epic ID and the name of the group the epic is in. The group must include a project that fulfills the Duo Workflow [prerequisites](#prerequisites). |
 | CI Pipeline for Merge Request | Enter the merge request ID of the pipeline, if the pipeline is in the current project. In addition, enter the project ID if it is in a separate project. The accessed project must also fulfill the Duo Workflow [prerequisites](#prerequisites).  |
 
 Duo Workflow also has access to the GitLab Search API to find related issues, merge requests, code or commits.
+
+## APIs that Duo Workflow has access to
+
+To create solutions and understand the context of the problem,
+Duo Workflow accesses several GitLab APIs.
+
+Specifically, an OAuth token with the `ai_workflows` scope has access
+to the following APIs:
+
+- [Projects API](../../api/projects.md)
+- [Search API](../../api/search.md)
+- [CI Pipelines API](../../api/pipelines.md)
+- [CI Jobs API](../../api/jobs.md)
+- [Merge Requests API](../../api/merge_requests.md)
+- [Epics API](../../api/epics.md)
+- [Issues API](../../api/issues.md)
+- [Notes API](../../api/notes.md)
+- [Usage Data API](../../api/usage_data.md)
 
 ## Current limitations
 

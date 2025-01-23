@@ -193,7 +193,7 @@ label {
   }
 
   .gl-field-success-message {
-    color: $green-600;
+    @apply gl-text-success;
   }
 
   .gl-field-error-message {

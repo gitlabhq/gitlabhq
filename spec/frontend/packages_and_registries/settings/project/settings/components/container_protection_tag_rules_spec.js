@@ -146,6 +146,39 @@ describe('ContainerProtectionTagRules', () => {
           expect(findDrawer().props('open')).toBe(false);
         });
       });
+
+      describe('when form emits `cancel` event', () => {
+        beforeEach(async () => {
+          await findForm().vm.$emit('cancel');
+        });
+
+        it('closes drawer', () => {
+          expect(findDrawer().props('open')).toBe(false);
+        });
+      });
+
+      describe('when form emits `submit` event', () => {
+        it('refetches protection rules after successful graphql mutation', async () => {
+          const containerProtectionTagRuleQueryResolver = jest
+            .fn()
+            .mockResolvedValue(containerProtectionTagRuleQueryPayload);
+
+          createComponent({
+            containerProtectionTagRuleQueryResolver,
+          });
+
+          await waitForPromises();
+
+          expect(containerProtectionTagRuleQueryResolver).toHaveBeenCalledTimes(1);
+
+          await findCrudComponent().vm.$emit('showForm');
+          await findForm().vm.$emit('submit');
+
+          expect(findDrawer().props('open')).toBe(false);
+          expect(containerProtectionTagRuleQueryResolver).toHaveBeenCalledTimes(2);
+          expect($toast.show).toHaveBeenCalledWith('Container protection rule created.');
+        });
+      });
     });
   });
 

@@ -210,13 +210,10 @@ After all components listed in the tables above build successfully, the directly
 responsible individual may then authorize updates to the build images used
 to ship GitLab packages and Cloud Native images to customers.
 
-<!-- vale gitlab_base.Substitutions = NO -->
-<!-- The repository name is GitLab Omnibus Builder, "Linux package builder" would make no sense. -->
 | Component Name                                                                   | Where to track work                                                                                                |
 |----------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
 | GitLab Omnibus Builder                                                           | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-omnibus-builder)                                             |
 | Cloud Native GitLab                                                              | [Issue Tracker](https://gitlab.com/gitlab-org/build/CNG)                                                           |
-<!-- vale gitlab_base.Substitutions = YES -->
 
 ##### Released independently
 

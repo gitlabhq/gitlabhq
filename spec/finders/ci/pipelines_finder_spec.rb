@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::PipelinesFinder do
   let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:empty_project) { create(:project, :public) }
   let(:current_user) { nil }
   let(:params) { {} }
 
@@ -52,6 +53,14 @@ RSpec.describe Ci::PipelinesFinder do
       context 'when scope is branches' do
         let(:params) { { scope: 'branches' } }
 
+        context 'when project has no branches' do
+          let!(:project) { empty_project }
+
+          it 'returns empty result' do
+            is_expected.to be_empty
+          end
+        end
+
         context 'when project has child pipelines' do
           let!(:child_pipeline) { create(:ci_pipeline, project: project, ref: pipeline_branch2.ref, source: :parent_pipeline) }
 
@@ -81,6 +90,14 @@ RSpec.describe Ci::PipelinesFinder do
 
       context 'when scope is tags' do
         let(:params) { { scope: 'tags' } }
+
+        context 'when project has no tags' do
+          let!(:project) { empty_project }
+
+          it 'returns empty result' do
+            is_expected.to be_empty
+          end
+        end
 
         context 'when project has child pipelines' do
           let!(:child_pipeline) { create(:ci_pipeline, project: project, source: :parent_pipeline, ref: 'v1.0.0', tag: true) }

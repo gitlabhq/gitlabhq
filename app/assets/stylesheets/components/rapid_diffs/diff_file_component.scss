@@ -24,7 +24,7 @@
 }
 
 .rd-lines-added {
-  color: $green-600;
+  @apply gl-text-success;
 }
 
 .rd-lines-removed {

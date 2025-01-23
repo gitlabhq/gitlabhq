@@ -44,7 +44,7 @@ module Ci
     private
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def pipelines_for_ref(items)
+    def pipeline_for_ref_subquery(items)
       unfiltered_items =
         if Feature.enabled?(:exclude_child_pipelines_from_tag_branch_query, project)
           items
@@ -123,11 +123,19 @@ module Ci
       when ALLOWED_SCOPES[:FINISHED]
         items.finished
       when ALLOWED_SCOPES[:BRANCHES]
-        from_derived_table(pipelines_for_ref(items), refs_values(branches))
+        pipelines_for_refs(items, branches)
       when ALLOWED_SCOPES[:TAGS]
-        from_derived_table(pipelines_for_ref(items), refs_values(tags))
+        pipelines_for_refs(items, tags)
       else
         items
+      end
+    end
+
+    def pipelines_for_refs(items, refs)
+      if refs.empty?
+        Ci::Pipeline.none
+      else
+        from_derived_table(pipeline_for_ref_subquery(items), refs_values(refs))
       end
     end
 
