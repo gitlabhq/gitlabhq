@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ServicePing
-  class NonSqlServicePing < ApplicationRecord
+  class QueriesServicePing < ApplicationRecord
     REPORTING_CADENCE = RawUsageData::REPORTING_CADENCE
 
     belongs_to :organization, class_name: 'Organizations::Organization'

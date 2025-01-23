@@ -2,7 +2,8 @@
 
 class GitlabServicePingWorker # rubocop:disable Scalability/IdempotentWorker
   LEASE_KEY = 'gitlab_service_ping_worker:ping'
-  NON_SQL_LEASE_KEY = 'gitlab_service_ping_worker:ping'
+  NON_SQL_LEASE_KEY = 'gitlab_service_ping_worker:non_sql_ping'
+  QUERIES_LEASE_KEY = 'gitlab_service_ping_worker:queries_ping'
   LEASE_TIMEOUT = 86400
 
   include ApplicationWorker
@@ -19,6 +20,10 @@ class GitlabServicePingWorker # rubocop:disable Scalability/IdempotentWorker
   def perform(options = {})
     day_lock(NON_SQL_LEASE_KEY) do
       save_non_sql_data
+    end
+
+    day_lock(QUERIES_LEASE_KEY) do
+      save_queries_data
     end
 
     # Sidekiq does not support keyword arguments, so the args need to be
@@ -76,6 +81,22 @@ class GitlabServicePingWorker # rubocop:disable Scalability/IdempotentWorker
     }
 
     ServicePing::NonSqlServicePing.upsert(record, unique_by: :recorded_at)
+  rescue StandardError => err
+    Gitlab::ErrorTracking.track_and_raise_for_dev_exception(err)
+    nil
+  end
+
+  def save_queries_data
+    payload = Gitlab::Usage::ServicePingReport.for(output: :metrics_queries)
+    record = {
+      recorded_at: payload[:recorded_at],
+      payload: payload,
+      created_at: Time.current,
+      updated_at: Time.current,
+      organization_id: Organizations::Organization.first.id
+    }
+
+    ServicePing::QueriesServicePing.upsert(record, unique_by: :recorded_at)
   rescue StandardError => err
     Gitlab::ErrorTracking.track_and_raise_for_dev_exception(err)
     nil

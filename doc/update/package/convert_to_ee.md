@@ -18,7 +18,7 @@ version (for example, CE 17.1 to EE 17.1) is **recommended**.
 
 WARNING:
 After you convert from EE from CE, don't revert back to CE if you plan to go to EE again. Reverting back to CE can cause
-[database issues](package_troubleshooting.md#500-error-when-accessing-project--settings--repository) that may require
+[database issues](package_troubleshooting.md#500-error-when-accessing-project-repository-settings) that may require
 Support intervention.
 
 ## Convert from CE to EE

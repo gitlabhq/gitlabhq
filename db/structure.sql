@@ -19757,6 +19757,24 @@ CREATE SEQUENCE push_rules_id_seq
 
 ALTER SEQUENCE push_rules_id_seq OWNED BY push_rules.id;
 
+CREATE TABLE queries_service_pings (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    recorded_at timestamp with time zone NOT NULL,
+    payload jsonb NOT NULL,
+    organization_id bigint NOT NULL
+);
+
+CREATE SEQUENCE queries_service_pings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE queries_service_pings_id_seq OWNED BY queries_service_pings.id;
+
 CREATE TABLE raw_usage_data (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -25077,6 +25095,8 @@ ALTER TABLE ONLY protected_tags ALTER COLUMN id SET DEFAULT nextval('protected_t
 
 ALTER TABLE ONLY push_rules ALTER COLUMN id SET DEFAULT nextval('push_rules_id_seq'::regclass);
 
+ALTER TABLE ONLY queries_service_pings ALTER COLUMN id SET DEFAULT nextval('queries_service_pings_id_seq'::regclass);
+
 ALTER TABLE ONLY raw_usage_data ALTER COLUMN id SET DEFAULT nextval('raw_usage_data_id_seq'::regclass);
 
 ALTER TABLE ONLY redirect_routes ALTER COLUMN id SET DEFAULT nextval('redirect_routes_id_seq'::regclass);
@@ -27843,6 +27863,9 @@ ALTER TABLE ONLY push_event_payloads
 
 ALTER TABLE ONLY push_rules
     ADD CONSTRAINT push_rules_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY queries_service_pings
+    ADD CONSTRAINT queries_service_pings_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY raw_usage_data
     ADD CONSTRAINT raw_usage_data_pkey PRIMARY KEY (id);
@@ -33563,6 +33586,10 @@ CREATE INDEX index_push_rules_on_is_sample ON push_rules USING btree (is_sample)
 CREATE INDEX index_push_rules_on_organization_id ON push_rules USING btree (organization_id);
 
 CREATE INDEX index_push_rules_on_project_id ON push_rules USING btree (project_id);
+
+CREATE INDEX index_queries_service_pings_on_organization_id ON queries_service_pings USING btree (organization_id);
+
+CREATE UNIQUE INDEX index_queries_service_pings_on_recorded_at ON queries_service_pings USING btree (recorded_at);
 
 CREATE INDEX index_raw_usage_data_on_organization_id ON raw_usage_data USING btree (organization_id);
 
@@ -39361,6 +39388,9 @@ ALTER TABLE ONLY cluster_providers_aws
 
 ALTER TABLE ONLY grafana_integrations
     ADD CONSTRAINT fk_rails_18d0e2b564 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY queries_service_pings
+    ADD CONSTRAINT fk_rails_18dedc7d8e FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY bulk_import_failures
     ADD CONSTRAINT fk_rails_1964240b8c FOREIGN KEY (bulk_import_entity_id) REFERENCES bulk_import_entities(id) ON DELETE CASCADE;

@@ -967,8 +967,10 @@ Definitions of the batched background migration states:
   - Running batched jobs.
 - **Finalizing:** Running batched jobs.
 - **Failed:** Failed batched background migration.
-- **Finished:** Completed batched background migration.
+- **Finished:** All jobs were executed successfully and the batched background migration is complete.
 - **Paused:** Not visible to the runner.
+- **Finalized:** Batched migration was verified with
+  [`ensure_batched_background_migration_is_finished`](#finalize-a-batched-background-migration) and is complete.
 
 ### Pause a batched background migration
 

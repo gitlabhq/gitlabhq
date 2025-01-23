@@ -97,7 +97,7 @@ export default {
     </div>
     <div
       v-if="isPathSelectionAvailable && (group.flags.isInvalid || validationMessage)"
-      class="gl-m-0 gl-mt-2 gl-text-red-500"
+      class="gl-m-0 gl-mt-2 gl-text-danger"
       role="alert"
     >
       {{ validationMessage }}

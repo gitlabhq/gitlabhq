@@ -460,6 +460,7 @@ RSpec.describe 'Database schema',
         "Packages::Composer::Metadatum" => %w[composer_json],
         "RawUsageData" => %w[payload], # Usage data payload changes often, we cannot use one schema
         "ServicePing::NonSqlServicePing" => %w[payload], # Usage data payload changes often, we cannot use one schema
+        "ServicePing::QueriesServicePing" => %w[payload], # Usage data payload changes often, we cannot use one schema
         "Releases::Evidence" => %w[summary],
         "Vulnerabilities::Finding::Evidence" => %w[data], # Validation work in progress
         "Ai::DuoWorkflows::Checkpoint" => %w[checkpoint metadata], # https://gitlab.com/gitlab-org/gitlab/-/issues/468632
