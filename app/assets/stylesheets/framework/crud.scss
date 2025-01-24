@@ -50,6 +50,7 @@ $crud-header-min-height: px-to-rem(49px);
     }
   }
 
+  table.b-table-fixed,
   table.b-table-stacked-sm,
   table.b-table-stacked-md,
   table.b-table-stacked-lg {
@@ -64,7 +65,7 @@ $crud-header-min-height: px-to-rem(49px);
     }
 
     tr th, tr td {
-      @apply gl-border-section;
+      @apply gl-border-subtle;
     }
   }
 

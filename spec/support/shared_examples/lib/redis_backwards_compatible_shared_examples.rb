@@ -21,18 +21,5 @@ RSpec.shared_examples_for 'using redis backwards compatible methods' do
 
       described_class.pop(table_name, limit)
     end
-
-    context 'when toggle_redis_6_0_compatibility flag is disabled' do
-      before do
-        stub_feature_flags(toggle_redis_6_0_compatibility: false)
-      end
-
-      it 'uses lpop with limit to fetch objects' do
-        expect(pipeline).not_to receive(:lpop)
-        expect(redis).to receive(:lpop).with(buffer_key, limit)
-
-        described_class.pop(table_name, limit)
-      end
-    end
   end
 end

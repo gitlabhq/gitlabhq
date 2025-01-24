@@ -168,7 +168,7 @@ export default {
           <template v-if="enabled">
             <span>
               <gl-icon name="check-circle-filled" />
-              <span class="gl-text-green-700">{{ $options.i18n.enabled }}</span>
+              <span class="gl-text-success">{{ $options.i18n.enabled }}</span>
             </span>
           </template>
 

@@ -171,7 +171,7 @@ export default {
     :class="{ 'gl-mt-5': isCollapsible }"
   >
     <header
-      class="crud-header gl-border-b gl-flex gl-flex-wrap gl-justify-between gl-gap-x-5 gl-gap-y-2 gl-rounded-t-base gl-border-section gl-bg-section gl-px-5 gl-py-4"
+      class="crud-header gl-border-b gl-relative gl-flex gl-flex-wrap gl-justify-between gl-gap-x-5 gl-gap-y-2 gl-rounded-t-base gl-border-section gl-bg-section gl-px-5 gl-py-4"
       :class="[
         headerClass,
         {

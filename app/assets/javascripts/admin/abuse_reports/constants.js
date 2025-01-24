@@ -115,7 +115,7 @@ export const ABUSE_CATEGORIES = {
   },
   copyright: {
     backgroundColor: '#c3e6cd',
-    textColor: 'gl-text-green-700',
+    textColor: 'gl-text-success',
     title: s__('AbuseReport|Copyright or trademark violation'),
   },
   malware: {

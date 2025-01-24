@@ -11,18 +11,9 @@ module Gitlab
             # To keep this compatible with Redis 6.0
             # use a Redis pipeline to pop all objects
             # instead of using lpop with limit.
-            #
-            # rubocop:disable Gitlab/FeatureFlagWithoutActor -- Does not execute with any actor in context
-            # rubocop:disable Cop/FeatureFlagUsage -- Not a monkey patch or Redis code
-            if Feature.enabled?(:toggle_redis_6_0_compatibility, type: :gitlab_com_derisk)
-              redis.pipelined do |pipeline|
-                limit.times { pipeline.lpop(key) }
-              end.compact
-            else
-              redis.lpop(key, limit)
-            end
-            # rubocop:enable Gitlab/FeatureFlagWithoutActor
-            # rubocop:enable Cop/FeatureFlagUsage
+            redis.pipelined do |pipeline|
+              limit.times { pipeline.lpop(key) }
+            end.compact
           end
         end
       end
