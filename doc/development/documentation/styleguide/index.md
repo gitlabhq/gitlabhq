@@ -495,15 +495,22 @@ For example:
 
 ### Inline code
 
+Inline code is text that's wrapped in single backticks (`` ` ``). For example:
+
+```markdown
+In the **Name** text box, enter `test`.
+```
+
 Use inline code for:
 
 - Text a user enters in the UI.
 - Short inputs and outputs like `true`, `false`, `Job succeeded`, and similar.
-- Filenames, configuration parameters, keywords, and code. For example:
+- Filenames, configuration parameters, keywords, and code. For example,
   `.gitlab-ci.yml`, `--version`, or `rules:`.
 - Short error messages.
 - API and HTTP methods (`POST`).
 - HTTP status codes. Full (`404 File Not Found`) and abbreviated (`404`).
+- HTML elements. For example, `<sup>`. Include the angle brackets.
 
 For example:
 
@@ -511,12 +518,6 @@ For example:
 - Use the `rules:` CI/CD keyword to control when to add jobs to a pipeline.
 - Send a `DELETE` request to delete the runner. Send a `POST` request to create one.
 - The job log displays `Job succeeded` when complete.
-
-To use inline code, wrap the text in single backticks (`` ` ``). For example:
-
-```markdown
-In the **Name** text box, enter `test`.
-```
 
 ### Code blocks
 
