@@ -129,7 +129,7 @@ describe('AgentTable', () => {
 
       describe('actions menu', () => {
         it('renders dropdown for the actions', () => {
-          expect(findDisclosureDropdown().attributes('title')).toBe('Actions');
+          expect(findDisclosureDropdown().props('toggleText')).toBe('Actions');
         });
 
         it('renders dropdown item for connecting to cluster action', () => {

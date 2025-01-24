@@ -2,14 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model, feature_category: :virtual_registry do
-  subject(:cached_response) { build(:virtual_registries_packages_maven_cached_response) }
+RSpec.describe VirtualRegistries::Packages::Maven::Cache::Entry, type: :model, feature_category: :virtual_registry do
+  subject(:cache_entry) { build(:virtual_registries_packages_maven_cache_entry) }
 
   it { is_expected.to include_module(FileStoreMounter) }
   it { is_expected.to include_module(::UpdateNamespaceStatistics) }
 
   it_behaves_like 'updates namespace statistics' do
-    let(:statistic_source) { cached_response }
+    let(:statistic_source) { cache_entry }
     let(:non_statistic_attribute) { :relative_path }
   end
 
@@ -31,35 +31,35 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
 
     context 'with persisted cached response' do
       before do
-        cached_response.save!
+        cache_entry.save!
       end
 
       it { is_expected.to validate_uniqueness_of(:relative_path).scoped_to(:upstream_id, :status) }
 
       context 'with a similar cached response in a different status' do
-        let!(:cached_response_in_error) do
+        let!(:cache_entry_in_error) do
           create(
-            :virtual_registries_packages_maven_cached_response,
+            :virtual_registries_packages_maven_cache_entry,
             :error,
-            group_id: cached_response.group_id,
-            upstream_id: cached_response.upstream_id,
-            relative_path: cached_response.relative_path
+            group_id: cache_entry.group_id,
+            upstream_id: cache_entry.upstream_id,
+            relative_path: cache_entry.relative_path
           )
         end
 
-        let(:new_cached_response) do
+        let(:new_cache_entry) do
           build(
-            :virtual_registries_packages_maven_cached_response,
+            :virtual_registries_packages_maven_cache_entry,
             :error,
-            group_id: cached_response.group_id,
-            upstream_id: cached_response.upstream_id,
-            relative_path: cached_response.relative_path
+            group_id: cache_entry.group_id,
+            upstream_id: cache_entry.upstream_id,
+            relative_path: cache_entry.relative_path
           )
         end
 
         it 'does not validate uniqueness of relative_path' do
-          new_cached_response.validate
-          expect(new_cached_response.errors.messages_for(:relative_path)).not_to include 'has already been taken'
+          new_cache_entry.validate
+          expect(new_cache_entry.errors.messages_for(:relative_path)).not_to include 'has already been taken'
         end
       end
     end
@@ -70,99 +70,99 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
       is_expected.to belong_to(:upstream)
         .class_name('VirtualRegistries::Packages::Maven::Upstream')
         .required
-        .inverse_of(:cached_responses)
+        .inverse_of(:cache_entries)
     end
   end
 
   describe 'scopes' do
     describe '.for_group' do
-      let_it_be(:cached_response1) { create(:virtual_registries_packages_maven_cached_response) }
-      let_it_be(:cached_response2) { create(:virtual_registries_packages_maven_cached_response) }
-      let_it_be(:cached_response3) { create(:virtual_registries_packages_maven_cached_response) }
+      let_it_be(:cache_entry1) { create(:virtual_registries_packages_maven_cache_entry) }
+      let_it_be(:cache_entry2) { create(:virtual_registries_packages_maven_cache_entry) }
+      let_it_be(:cache_entry3) { create(:virtual_registries_packages_maven_cache_entry) }
 
-      let(:groups) { [cached_response1.group, cached_response2.group] }
+      let(:groups) { [cache_entry1.group, cache_entry2.group] }
 
       subject { described_class.for_group(groups) }
 
-      it { is_expected.to match_array([cached_response1, cached_response2]) }
+      it { is_expected.to match_array([cache_entry1, cache_entry2]) }
     end
   end
 
   describe '.next_pending_destruction' do
     subject { described_class.next_pending_destruction }
 
-    let_it_be(:cached_response) { create(:virtual_registries_packages_maven_cached_response) }
-    let_it_be(:pending_destruction_cached_response) do
-      create(:virtual_registries_packages_maven_cached_response, :pending_destruction)
+    let_it_be(:cache_entry) { create(:virtual_registries_packages_maven_cache_entry) }
+    let_it_be(:pending_destruction_cache_entry) do
+      create(:virtual_registries_packages_maven_cache_entry, :pending_destruction)
     end
 
-    it { is_expected.to eq(pending_destruction_cached_response) }
+    it { is_expected.to eq(pending_destruction_cache_entry) }
   end
 
   describe 'object storage key' do
     it 'can not be null' do
-      cached_response.object_storage_key = nil
-      cached_response.relative_path = nil
+      cache_entry.object_storage_key = nil
+      cache_entry.relative_path = nil
 
-      expect(cached_response).to be_invalid
-      expect(cached_response.errors.full_messages).to include("Object storage key can't be blank")
+      expect(cache_entry).to be_invalid
+      expect(cache_entry.errors.full_messages).to include("Object storage key can't be blank")
     end
 
     it 'can not be too large' do
-      cached_response.object_storage_key = 'a' * 1025
-      cached_response.relative_path = nil
+      cache_entry.object_storage_key = 'a' * 1025
+      cache_entry.relative_path = nil
 
-      expect(cached_response).to be_invalid
-      expect(cached_response.errors.full_messages)
+      expect(cache_entry).to be_invalid
+      expect(cache_entry.errors.full_messages)
         .to include('Object storage key is too long (maximum is 1024 characters)')
     end
 
     it 'is set before saving' do
-      expect { cached_response.save! }
-        .to change { cached_response.object_storage_key }.from(nil).to(an_instance_of(String))
+      expect { cache_entry.save! }
+        .to change { cache_entry.object_storage_key }.from(nil).to(an_instance_of(String))
     end
 
     context 'with a persisted cached response' do
-      let(:key) { cached_response.object_storage_key }
+      let(:key) { cache_entry.object_storage_key }
 
       before do
-        cached_response.save!
+        cache_entry.save!
       end
 
       it 'does not change after an update' do
         expect(key).to be_present
 
-        cached_response.update!(
+        cache_entry.update!(
           file: CarrierWaveStringFile.new('test'),
           size: 2.kilobytes
         )
 
-        expect(cached_response.object_storage_key).to eq(key)
+        expect(cache_entry.object_storage_key).to eq(key)
       end
 
       it 'is read only' do
         expect(key).to be_present
 
-        cached_response.object_storage_key = 'new-key'
-        cached_response.save!
+        cache_entry.object_storage_key = 'new-key'
+        cache_entry.save!
 
-        expect(cached_response.reload.object_storage_key).to eq(key)
+        expect(cache_entry.reload.object_storage_key).to eq(key)
       end
     end
   end
 
   describe '.search_by_relative_path' do
-    let_it_be(:cached_response) { create(:virtual_registries_packages_maven_cached_response) }
-    let_it_be(:other_cached_response) do
-      create(:virtual_registries_packages_maven_cached_response, relative_path: 'other/path')
+    let_it_be(:cache_entry) { create(:virtual_registries_packages_maven_cache_entry) }
+    let_it_be(:other_cache_entry) do
+      create(:virtual_registries_packages_maven_cache_entry, relative_path: 'other/path')
     end
 
     subject { described_class.search_by_relative_path(relative_path) }
 
     context 'with a matching relative path' do
-      let(:relative_path) { cached_response.relative_path.slice(3, 8) }
+      let(:relative_path) { cache_entry.relative_path.slice(3, 8) }
 
-      it { is_expected.to contain_exactly(cached_response) }
+      it { is_expected.to contain_exactly(cache_entry) }
     end
   end
 
@@ -200,15 +200,15 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
   end
 
   describe '#filename' do
-    let(:cached_response) { build(:virtual_registries_packages_maven_cached_response) }
+    let(:cache_entry) { build(:virtual_registries_packages_maven_cache_entry) }
 
-    subject { cached_response.filename }
+    subject { cache_entry.filename }
 
-    it { is_expected.to eq(File.basename(cached_response.relative_path)) }
+    it { is_expected.to eq(File.basename(cache_entry.relative_path)) }
 
     context 'when relative_path is nil' do
       before do
-        cached_response.relative_path = nil
+        cache_entry.relative_path = nil
       end
 
       it { is_expected.to be_nil }
@@ -216,22 +216,22 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
   end
 
   describe '#stale?' do
-    let(:cached_response) do
-      build(:virtual_registries_packages_maven_cached_response, upstream_checked_at: 10.hours.ago)
+    let(:cache_entry) do
+      build(:virtual_registries_packages_maven_cache_entry, upstream_checked_at: 10.hours.ago)
     end
 
     let(:threshold) do
-      cached_response.upstream_checked_at + cached_response.upstream.cache_validity_hours.hours
+      cache_entry.upstream_checked_at + cache_entry.upstream.cache_validity_hours.hours
     end
 
-    subject { cached_response.stale? }
+    subject { cache_entry.stale? }
 
     context 'when before the threshold' do
       before do
         allow(Time.zone).to receive(:now).and_return(threshold - 1.hour)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when on the threshold' do
@@ -239,7 +239,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
         allow(Time.zone).to receive(:now).and_return(threshold)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when after the threshold' do
@@ -247,40 +247,40 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
         allow(Time.zone).to receive(:now).and_return(threshold + 1.hour)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'with no upstream' do
       before do
-        cached_response.upstream = nil
+        cache_entry.upstream = nil
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'with 0 cache validity hours' do
       before do
-        cached_response.upstream.cache_validity_hours = 0
+        cache_entry.upstream.cache_validity_hours = 0
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
   describe '#mark_as_pending_destruction' do
-    let_it_be_with_refind(:cached_response) { create(:virtual_registries_packages_maven_cached_response, :default) }
+    let_it_be_with_refind(:cache_entry) { create(:virtual_registries_packages_maven_cache_entry, :default) }
 
-    subject(:execute) { cached_response.mark_as_pending_destruction }
+    subject(:execute) { cache_entry.mark_as_pending_destruction }
 
     shared_examples 'updating the status and relative_path properly' do
       it 'updates the status and relative_path' do
-        previous_path = cached_response.relative_path
+        previous_path = cache_entry.relative_path
 
-        expect { execute }.to change { cached_response.status }.from('default').to('pending_destruction')
-          .and not_change { cached_response.object_storage_key }
+        expect { execute }.to change { cache_entry.status }.from('default').to('pending_destruction')
+          .and not_change { cache_entry.object_storage_key }
 
-        expect(cached_response.relative_path).to start_with(previous_path)
-        expect(cached_response.relative_path).to include('/deleted/')
+        expect(cache_entry.relative_path).to start_with(previous_path)
+        expect(cache_entry.relative_path).to include('/deleted/')
       end
     end
 
@@ -289,10 +289,10 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
     context 'with an existing pending destruction record with same relative_path and upstream_id' do
       let_it_be(:already_pending_destruction) do
         create(
-          :virtual_registries_packages_maven_cached_response,
+          :virtual_registries_packages_maven_cache_entry,
           :pending_destruction,
-          upstream: cached_response.upstream,
-          relative_path: cached_response.relative_path
+          upstream: cache_entry.upstream,
+          relative_path: cache_entry.relative_path
         )
       end
 
@@ -300,10 +300,10 @@ RSpec.describe VirtualRegistries::Packages::Maven::CachedResponse, type: :model,
     end
   end
 
-  context 'with loose foreign key on virtual_registries_packages_maven_cached_responses.upstream_id' do
+  context 'with loose foreign key on virtual_registries_packages_maven_cache_entries.upstream_id' do
     it_behaves_like 'update by a loose foreign key' do
       let_it_be(:parent) { create(:virtual_registries_packages_maven_upstream) }
-      let_it_be(:model) { create(:virtual_registries_packages_maven_cached_response, upstream: parent) }
+      let_it_be(:model) { create(:virtual_registries_packages_maven_cache_entry, upstream: parent) }
 
       let(:find_model) { model.reload }
     end

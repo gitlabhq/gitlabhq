@@ -51586,6 +51586,9 @@ msgstr ""
 msgid "SecurityOrchestration|Only owners can update Security Policy Project"
 msgstr ""
 
+msgid "SecurityOrchestration|Open policy actions dropdown"
+msgstr ""
+
 msgid "SecurityOrchestration|Override the following project settings:"
 msgstr ""
 
@@ -52698,6 +52701,9 @@ msgstr ""
 msgid "Select all"
 msgstr ""
 
+msgid "Select all vulnerabilities"
+msgstr ""
+
 msgid "Select an assignee"
 msgstr ""
 
@@ -52843,6 +52849,9 @@ msgid "Select timezone"
 msgstr ""
 
 msgid "Select type"
+msgstr ""
+
+msgid "Select vulnerability"
 msgstr ""
 
 msgid "Selected"

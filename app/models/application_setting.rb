@@ -40,6 +40,7 @@ class ApplicationSetting < ApplicationRecord
     elasticsearch_indexed_field_length_limit
     elasticsearch_indexed_file_size_limit_kb
     elasticsearch_max_code_indexing_concurrency
+    security_policy_scheduled_scans_max_concurrency
   ], remove_with: '17.11', remove_after: '2025-04-17'
 
   INSTANCE_REVIEW_MIN_USERS = 50

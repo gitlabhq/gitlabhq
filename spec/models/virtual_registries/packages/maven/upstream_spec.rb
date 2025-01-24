@@ -13,8 +13,8 @@ RSpec.describe VirtualRegistries::Packages::Maven::Upstream, type: :model, featu
 
   describe 'associations' do
     it do
-      is_expected.to have_many(:cached_responses)
-        .class_name('VirtualRegistries::Packages::Maven::CachedResponse')
+      is_expected.to have_many(:cache_entries)
+        .class_name('VirtualRegistries::Packages::Maven::Cache::Entry')
         .inverse_of(:upstream)
     end
 
@@ -232,19 +232,19 @@ RSpec.describe VirtualRegistries::Packages::Maven::Upstream, type: :model, featu
     it { is_expected.not_to include('username', 'password') }
   end
 
-  describe '#default_cached_responses' do
+  describe '#default_cache_entries' do
     let_it_be(:upstream) { create(:virtual_registries_packages_maven_upstream) }
 
-    let_it_be(:default_cached_response) do
-      create(:virtual_registries_packages_maven_cached_response, upstream: upstream)
+    let_it_be(:default_cache_entry) do
+      create(:virtual_registries_packages_maven_cache_entry, upstream: upstream)
     end
 
-    let_it_be(:pending_destruction_cached_response) do
-      create(:virtual_registries_packages_maven_cached_response, :pending_destruction, upstream: upstream)
+    let_it_be(:pending_destruction_cache_entry) do
+      create(:virtual_registries_packages_maven_cache_entry, :pending_destruction, upstream: upstream)
     end
 
-    subject { upstream.default_cached_responses }
+    subject { upstream.default_cache_entries }
 
-    it { is_expected.to contain_exactly(default_cached_response) }
+    it { is_expected.to contain_exactly(default_cache_entry) }
   end
 end

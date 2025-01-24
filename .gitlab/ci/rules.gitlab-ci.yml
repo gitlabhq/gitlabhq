@@ -397,6 +397,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/index.md"
+  - "doc/api/settings.md"
 
 .search-backend-patterns: &search-backend-patterns
   - "{,jh/}Gemfile.lock"
@@ -503,6 +504,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/index.md"
+  - "doc/api/settings.md"
 
 # .code-patterns + .backstage-patterns
 .code-backstage-patterns: &code-backstage-patterns
@@ -531,6 +533,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/index.md"
+  - "doc/api/settings.md"
   # Backstage changes
   - "Dangerfile"
   - "danger/**/*"
@@ -567,6 +570,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/index.md"
+  - "doc/api/settings.md"
   # QA changes
   - ".dockerignore"
   - "{,jh/}qa/**/*"
@@ -609,6 +613,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/index.md"
+  - "doc/api/settings.md"
 
 # .code-backstage-qa-patterns + .workhorse-patterns
 # NOTE: `setup-test-env-patterns` intentionally does not include docs files, because this would
@@ -640,6 +645,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/index.md"
+  - "doc/api/settings.md"
   # Backstage changes
   - "Dangerfile"
   - "danger/**/*"

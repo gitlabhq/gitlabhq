@@ -15,9 +15,23 @@ DETAILS:
 > - Support for transferring projects with container images within the same top-level namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) on GitLab.com in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `transfer_project_with_tags`. Disabled by default.
 > - Support for transferring projects with container images within the same top-level namespace [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) in GitLab 17.7. Feature flag removed.
 
-When you transfer a project to another namespace, you move the project to a different group.
-All of the project's components (such as issues, merge requests, pipelines, and dashboards)
-move with the transferred project.
+Transfer a project to move it to a different group.
+A project transfer includes:
+
+- Project components:
+  - Issues
+  - Merge requests
+  - Pipelines
+  - Dashboards
+- Project members:
+  - Direct members
+  - Membership invitations
+
+   NOTE:
+   Members who inherited their access from the original group lose access
+   unless they are also members of the target group. The project inherits
+   new member permissions from the group you transfer it to.
+
 The project's [path also changes](../repository/index.md#repository-path-changes), so make sure to update the URLs to the project components where necessary.
 
 New project-level labels are created for issues and merge requests if matching group labels don't already exist in the target namespace.

@@ -209,7 +209,6 @@ class ApplicationSettingsAnalysis
       secret_detection_token_revocation_url
       security_policies
       security_policy_global_group_approvers_enabled
-      security_policy_scheduled_scans_max_concurrency
       security_txt_content
       sentry_clientside_dsn
       sentry_clientside_traces_sample_rate

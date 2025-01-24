@@ -31,8 +31,8 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
           expect(execute.payload[:action_params]).to eq(url: upstream_resource_url, upstream: upstream)
         when :download_file
           action_params = execute.payload[:action_params]
-          expect(action_params[:file]).to be_instance_of(VirtualRegistries::CachedResponseUploader)
-          expect(action_params[:content_type]).to eq(cached_response.content_type)
+          expect(action_params[:file]).to be_instance_of(VirtualRegistries::Cache::EntryUploader)
+          expect(action_params[:content_type]).to eq(cache_entry.content_type)
           expect(action_params[:file_sha1]).to be_instance_of(String)
           expect(action_params[:file_md5]).to be_instance_of(String)
         when :download_digest
@@ -44,9 +44,9 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
     end
 
     context 'with a User' do
-      let_it_be(:processing_cached_response) do
+      let_it_be(:processing_cache_entry) do
         create(
-          :virtual_registries_packages_maven_cached_response,
+          :virtual_registries_packages_maven_cache_entry,
           :upstream_checked,
           :processing,
           upstream: registry.upstream,
@@ -54,7 +54,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
         )
       end
 
-      context 'with no cached response' do
+      context 'with no cache entry' do
         it_behaves_like 'returning a service response success response', action: :workhorse_upload_url
 
         context 'with upstream returning an error' do
@@ -74,9 +74,9 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
         end
       end
 
-      context 'with a cached response' do
-        let_it_be_with_refind(:cached_response) do
-          create(:virtual_registries_packages_maven_cached_response,
+      context 'with a cache entry' do
+        let_it_be_with_refind(:cache_entry) do
+          create(:virtual_registries_packages_maven_cache_entry,
             :upstream_checked,
             upstream: registry.upstream,
             relative_path: "/#{path}"
@@ -87,30 +87,30 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
 
         context 'and is too old' do
           before do
-            cached_response.update!(upstream_checked_at: 1.year.ago)
+            cache_entry.update!(upstream_checked_at: 1.year.ago)
           end
 
           context 'with the same etag as upstream' do
-            let(:etag_returned_by_upstream) { cached_response.upstream_etag }
+            let(:etag_returned_by_upstream) { cache_entry.upstream_etag }
 
             it_behaves_like 'returning a service response success response', action: :download_file
 
             it 'bumps the statistics', :freeze_time do
               stub_external_registry_request(etag: etag_returned_by_upstream)
 
-              expect { execute }.to change { cached_response.reload.upstream_checked_at }.to(Time.zone.now)
+              expect { execute }.to change { cache_entry.reload.upstream_checked_at }.to(Time.zone.now)
             end
           end
 
           context 'with a different etag as upstream' do
-            let(:etag_returned_by_upstream) { "#{cached_response.upstream_etag}_test" }
+            let(:etag_returned_by_upstream) { "#{cache_entry.upstream_etag}_test" }
 
             it_behaves_like 'returning a service response success response', action: :workhorse_upload_url
           end
 
           context 'with a stored blank etag' do
             before do
-              cached_response.update!(upstream_etag: nil)
+              cache_entry.update!(upstream_etag: nil)
             end
 
             it_behaves_like 'returning a service response success response', action: :workhorse_upload_url
@@ -119,11 +119,11 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
 
         context 'when accessing the sha1 digest' do
           let(:path) { "#{super()}.sha1" }
-          let(:expected_digest) { cached_response.file_sha1 }
+          let(:expected_digest) { cache_entry.file_sha1 }
 
           it_behaves_like 'returning a service response success response', action: :download_digest
 
-          context 'when the cached response does not exist' do
+          context 'when the cache entry does not exist' do
             let(:path) { "#{super()}_not_existing.sha1" }
 
             it { is_expected.to eq(described_class::ERRORS[:digest_not_found]) }
@@ -132,11 +132,11 @@ RSpec.describe VirtualRegistries::Packages::Maven::HandleFileRequestService, :ag
 
         context 'when accessing the md5 digest' do
           let(:path) { "#{super()}.md5" }
-          let(:expected_digest) { cached_response.file_md5 }
+          let(:expected_digest) { cache_entry.file_md5 }
 
           it_behaves_like 'returning a service response success response', action: :download_digest
 
-          context 'when the cached response does not exist' do
+          context 'when the cache entry does not exist' do
             let(:path) { "#{super()}_not_existing.md5" }
 
             it { is_expected.to eq(described_class::ERRORS[:digest_not_found]) }

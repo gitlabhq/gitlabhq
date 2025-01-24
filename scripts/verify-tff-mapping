@@ -808,6 +808,11 @@ tests = [
     explanation: 'Verify attributes to be imported/exported',
     changed_file: 'spec/lib/gitlab/import_export/all_models.yml',
     expected: ['spec/lib/gitlab/import_export/model_configuration_spec.rb']
+  },
+  {
+    explanation: 'Verify application settings based on related API doc changes',
+    changed_file: 'doc/api/settings.md',
+    expected: ['spec/scripts/cells/application_settings_analysis_spec.rb']
   }
 ]
 

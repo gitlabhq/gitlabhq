@@ -136,6 +136,9 @@ export const config = {
           },
         },
       },
+      LinkedWorkItemType: {
+        keyFields: ['linkId'],
+      },
       WorkItem: {
         fields: {
           // @todo: Mocking CUSTOM_FIELDS widget while not suported by backend

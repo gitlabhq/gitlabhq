@@ -1513,14 +1513,11 @@ export const workItemResponseFactory = ({
               __typename: 'WorkItemWidgetIteration',
               type: 'ITERATION',
               iteration: {
-                description: null,
                 id: 'gid://gitlab/Iteration/1215',
-                iid: '182',
                 title: 'Iteration default title',
                 startDate: '2022-09-22',
                 dueDate: '2022-09-30',
                 webUrl: 'http://127.0.0.1:3000/groups/flightjs/-/iterations/23205',
-                updatedAt: '2022-09-30',
                 iterationCadence: {
                   id: 'gid://gitlab/Iterations::Cadence/5852',
                   title: 'A dolores assumenda harum non facilis similique delectus quod.',

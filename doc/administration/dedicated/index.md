@@ -40,7 +40,7 @@ The customer tenant account is a single AWS cloud provider account. The single a
 
 The cloud provider account is where a highly resilient GitLab installation resides, in its own isolated VPC. On provisioning, the customer tenant gets access to a High Availability (HA) GitLab primary site and a GitLab Geo secondary site.
 
-![Diagram of GitLab-managed AWS accounts in an isolated VPC containing a highly resilient GitLab installation.](img/tenant_network_diagram_v17_0.png)
+![Diagram of GitLab-managed AWS accounts in an isolated VPC containing a highly resilient GitLab installation.](img/tenant_network_diagram_v18_0.png)
 
 GitLab team members with edit access can update the [source](https://lucid.app/lucidchart/0815dd58-b926-454e-8354-c33fe3e7bff0/edit?invitationId=inv_a6b618ff-6c18-4571-806a-bfb3fe97cb12) files for the diagram in Lucidchart.
 

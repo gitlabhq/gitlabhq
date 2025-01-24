@@ -108,7 +108,7 @@ You can also [use the API to delete a secondary email address](../../api/user_em
 You can make your user profile visible to only you and GitLab administrators.
 
 NOTE:
-A GitLab administrator can [disable](../../administration/settings/account_and_limit_settings.md#allow-users-to-make-their-profiles-private) this setting, forcing all profiles to be made public.
+A GitLab administrator can [disable](../../administration/settings/account_and_limit_settings.md#prevent-users-from-making-their-profiles-private) this setting, forcing all profiles to be made public.
 
 To make your profile private:
 

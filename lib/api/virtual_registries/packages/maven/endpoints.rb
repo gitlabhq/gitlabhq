@@ -136,7 +136,7 @@ module API
               # coherence check
               not_found!('Upstream') unless upstream == GlobalID::Locator.locate(upstream_gid)
 
-              service_response = ::VirtualRegistries::Packages::Maven::CachedResponses::CreateOrUpdateService.new(
+              service_response = ::VirtualRegistries::Packages::Maven::Cache::Entries::CreateOrUpdateService.new(
                 upstream: upstream,
                 current_user: current_user,
                 params: declared_params.merge(etag: etag, content_type: content_type)

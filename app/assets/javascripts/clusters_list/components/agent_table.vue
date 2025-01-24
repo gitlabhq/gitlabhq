@@ -387,7 +387,7 @@ export default {
 
       <template #cell(options)="{ item }">
         <gl-disclosure-dropdown
-          :title="$options.i18n.actions"
+          :toggle-text="$options.i18n.actions"
           text-sr-only
           category="tertiary"
           no-caret

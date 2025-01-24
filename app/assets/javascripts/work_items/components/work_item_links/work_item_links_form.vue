@@ -72,7 +72,7 @@ export default {
     parentIteration: {
       type: Object,
       required: false,
-      default: () => {},
+      default: () => ({}),
     },
     parentMilestone: {
       type: Object,

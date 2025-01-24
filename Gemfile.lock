@@ -728,7 +728,7 @@ GEM
     gitlab-cloud-connector (1.0.0)
       activesupport (~> 7.0)
       jwt (~> 2.9.3)
-    gitlab-dangerfiles (4.8.0)
+    gitlab-dangerfiles (4.8.1)
       danger (>= 9.3.0)
       danger-gitlab (>= 8.0.0)
       rake (~> 13.0)

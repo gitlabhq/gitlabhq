@@ -121,6 +121,16 @@ export default {
       required: false,
       default: null,
     },
+    parentIteration: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    parentMilestone: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -445,6 +455,8 @@ export default {
         :children-type="childType"
         :children-ids="childrenIds"
         :parent-confidential="confidential"
+        :parent-iteration="parentIteration"
+        :parent-milestone="parentMilestone"
         @error="error = $event"
         @success="hideAddForm"
         @cancel="hideAddForm"

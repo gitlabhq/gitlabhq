@@ -21330,19 +21330,24 @@ Represents the Geo replication and verification state of a ci_secure_file.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="cisecurefileregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the CiSecureFileRegistry do not match on the primary and secondary. |
 | <a id="cisecurefileregistrycisecurefileid"></a>`ciSecureFileId` | [`ID!`](#id) | ID of the Ci Secure File. |
 | <a id="cisecurefileregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the CiSecureFileRegistry was created. |
+| <a id="cisecurefileregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
 | <a id="cisecurefileregistryid"></a>`id` | [`ID!`](#id) | ID of the CiSecureFileRegistry. |
 | <a id="cisecurefileregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the CiSecureFileRegistry. |
 | <a id="cisecurefileregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the CiSecureFileRegistry. |
+| <a id="cisecurefileregistrymissingonprimary"></a>`missingOnPrimary` | [`Boolean`](#boolean) | Indicate if the CiSecureFileRegistry is missing on primary. |
+| <a id="cisecurefileregistrymodelrecordid"></a>`modelRecordId` | [`Int`](#int) | ID of the CiSecureFileRegistry's model record. |
 | <a id="cisecurefileregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the CiSecureFileRegistry is resynced. |
 | <a id="cisecurefileregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the CiSecureFileRegistry. |
 | <a id="cisecurefileregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the CiSecureFileRegistry. |
 | <a id="cisecurefileregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the CiSecureFileRegistry. |
+| <a id="cisecurefileregistryverificationchecksummismatched"></a>`verificationChecksumMismatched` | [`String`](#string) | The expected checksum of the CiSecureFileRegistry in case of mismatch. |
 | <a id="cisecurefileregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the CiSecureFileRegistry. |
 | <a id="cisecurefileregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the CiSecureFileRegistry is reverified. |
 | <a id="cisecurefileregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the CiSecureFileRegistry. |
-| <a id="cisecurefileregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of CiSecureFileRegistry. |
+| <a id="cisecurefileregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification of CiSecureFileRegistry started. |
 | <a id="cisecurefileregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the CiSecureFileRegistry. |
 | <a id="cisecurefileregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the CiSecureFileRegistry. |
 
@@ -22157,19 +22162,24 @@ Represents the Geo replication and verification state of an Container Repository
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="containerrepositoryregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the ContainerRepositoryRegistry do not match on the primary and secondary. |
 | <a id="containerrepositoryregistrycontainerrepositoryid"></a>`containerRepositoryId` | [`ID!`](#id) | ID of the ContainerRepository. |
 | <a id="containerrepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the ContainerRepositoryRegistry was created. |
+| <a id="containerrepositoryregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
 | <a id="containerrepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the ContainerRepositoryRegistry. |
 | <a id="containerrepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the ContainerRepositoryRegistry. |
 | <a id="containerrepositoryregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the ContainerRepositoryRegistry. |
+| <a id="containerrepositoryregistrymissingonprimary"></a>`missingOnPrimary` | [`Boolean`](#boolean) | Indicate if the ContainerRepositoryRegistry is missing on primary. |
+| <a id="containerrepositoryregistrymodelrecordid"></a>`modelRecordId` | [`Int`](#int) | ID of the ContainerRepositoryRegistry's model record. |
 | <a id="containerrepositoryregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the ContainerRepositoryRegistry is resynced. |
 | <a id="containerrepositoryregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the ContainerRepositoryRegistry. |
 | <a id="containerrepositoryregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the ContainerRepositoryRegistry. |
 | <a id="containerrepositoryregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the ContainerRepositoryRegistry. |
+| <a id="containerrepositoryregistryverificationchecksummismatched"></a>`verificationChecksumMismatched` | [`String`](#string) | The expected checksum of the ContainerRepositoryRegistry in case of mismatch. |
 | <a id="containerrepositoryregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the ContainerRepositoryRegistry. |
 | <a id="containerrepositoryregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the ContainerRepositoryRegistry is reverified. |
 | <a id="containerrepositoryregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the ContainerRepositoryRegistry. |
-| <a id="containerrepositoryregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of ContainerRepositoryRegistry. |
+| <a id="containerrepositoryregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification of ContainerRepositoryRegistry started. |
 | <a id="containerrepositoryregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the ContainerRepositoryRegistry. |
 | <a id="containerrepositoryregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the ContainerRepositoryRegistry. |
 
@@ -23187,19 +23197,24 @@ Represents the Geo replication and verification state of a dependency_proxy_blob
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="dependencyproxyblobregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the DependencyProxyBlobRegistry do not match on the primary and secondary. |
 | <a id="dependencyproxyblobregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the DependencyProxyBlobRegistry was created. |
 | <a id="dependencyproxyblobregistrydependencyproxyblobid"></a>`dependencyProxyBlobId` | [`ID!`](#id) | ID of the Dependency Proxy Blob. |
+| <a id="dependencyproxyblobregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
 | <a id="dependencyproxyblobregistryid"></a>`id` | [`ID!`](#id) | ID of the DependencyProxyBlobRegistry. |
 | <a id="dependencyproxyblobregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the DependencyProxyBlobRegistry. |
 | <a id="dependencyproxyblobregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the DependencyProxyBlobRegistry. |
+| <a id="dependencyproxyblobregistrymissingonprimary"></a>`missingOnPrimary` | [`Boolean`](#boolean) | Indicate if the DependencyProxyBlobRegistry is missing on primary. |
+| <a id="dependencyproxyblobregistrymodelrecordid"></a>`modelRecordId` | [`Int`](#int) | ID of the DependencyProxyBlobRegistry's model record. |
 | <a id="dependencyproxyblobregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the DependencyProxyBlobRegistry is resynced. |
 | <a id="dependencyproxyblobregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the DependencyProxyBlobRegistry. |
 | <a id="dependencyproxyblobregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the DependencyProxyBlobRegistry. |
 | <a id="dependencyproxyblobregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the DependencyProxyBlobRegistry. |
+| <a id="dependencyproxyblobregistryverificationchecksummismatched"></a>`verificationChecksumMismatched` | [`String`](#string) | The expected checksum of the DependencyProxyBlobRegistry in case of mismatch. |
 | <a id="dependencyproxyblobregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the DependencyProxyBlobRegistry. |
 | <a id="dependencyproxyblobregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the DependencyProxyBlobRegistry is reverified. |
 | <a id="dependencyproxyblobregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the DependencyProxyBlobRegistry. |
-| <a id="dependencyproxyblobregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of DependencyProxyBlobRegistry. |
+| <a id="dependencyproxyblobregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification of DependencyProxyBlobRegistry started. |
 | <a id="dependencyproxyblobregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the DependencyProxyBlobRegistry. |
 | <a id="dependencyproxyblobregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the DependencyProxyBlobRegistry. |
 
@@ -23241,19 +23256,24 @@ Represents the Geo replication and verification state of a dependency_proxy_mani
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="dependencyproxymanifestregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the DependencyProxyManifestRegistry do not match on the primary and secondary. |
 | <a id="dependencyproxymanifestregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the DependencyProxyManifestRegistry was created. |
 | <a id="dependencyproxymanifestregistrydependencyproxymanifestid"></a>`dependencyProxyManifestId` | [`ID!`](#id) | ID of the Dependency Proxy Manifest. |
+| <a id="dependencyproxymanifestregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
 | <a id="dependencyproxymanifestregistryid"></a>`id` | [`ID!`](#id) | ID of the DependencyProxyManifestRegistry. |
 | <a id="dependencyproxymanifestregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the DependencyProxyManifestRegistry. |
 | <a id="dependencyproxymanifestregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the DependencyProxyManifestRegistry. |
+| <a id="dependencyproxymanifestregistrymissingonprimary"></a>`missingOnPrimary` | [`Boolean`](#boolean) | Indicate if the DependencyProxyManifestRegistry is missing on primary. |
+| <a id="dependencyproxymanifestregistrymodelrecordid"></a>`modelRecordId` | [`Int`](#int) | ID of the DependencyProxyManifestRegistry's model record. |
 | <a id="dependencyproxymanifestregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the DependencyProxyManifestRegistry is resynced. |
 | <a id="dependencyproxymanifestregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the DependencyProxyManifestRegistry. |
 | <a id="dependencyproxymanifestregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the DependencyProxyManifestRegistry. |
 | <a id="dependencyproxymanifestregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the DependencyProxyManifestRegistry. |
+| <a id="dependencyproxymanifestregistryverificationchecksummismatched"></a>`verificationChecksumMismatched` | [`String`](#string) | The expected checksum of the DependencyProxyManifestRegistry in case of mismatch. |
 | <a id="dependencyproxymanifestregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the DependencyProxyManifestRegistry. |
 | <a id="dependencyproxymanifestregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the DependencyProxyManifestRegistry is reverified. |
 | <a id="dependencyproxymanifestregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the DependencyProxyManifestRegistry. |
-| <a id="dependencyproxymanifestregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of DependencyProxyManifestRegistry. |
+| <a id="dependencyproxymanifestregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification of DependencyProxyManifestRegistry started. |
 | <a id="dependencyproxymanifestregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the DependencyProxyManifestRegistry. |
 | <a id="dependencyproxymanifestregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the DependencyProxyManifestRegistry. |
 
@@ -23605,19 +23625,24 @@ Represents the Geo replication and verification state of a Design Management Rep
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="designmanagementrepositoryregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the DesignManagementRepositoryRegistry do not match on the primary and secondary. |
 | <a id="designmanagementrepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the DesignManagementRepositoryRegistry was created. |
 | <a id="designmanagementrepositoryregistrydesignmanagementrepositoryid"></a>`designManagementRepositoryId` | [`ID!`](#id) | ID of the Design Management Repository. |
+| <a id="designmanagementrepositoryregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
 | <a id="designmanagementrepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the DesignManagementRepositoryRegistry. |
 | <a id="designmanagementrepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the DesignManagementRepositoryRegistry. |
 | <a id="designmanagementrepositoryregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the DesignManagementRepositoryRegistry. |
+| <a id="designmanagementrepositoryregistrymissingonprimary"></a>`missingOnPrimary` | [`Boolean`](#boolean) | Indicate if the DesignManagementRepositoryRegistry is missing on primary. |
+| <a id="designmanagementrepositoryregistrymodelrecordid"></a>`modelRecordId` | [`Int`](#int) | ID of the DesignManagementRepositoryRegistry's model record. |
 | <a id="designmanagementrepositoryregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the DesignManagementRepositoryRegistry is resynced. |
 | <a id="designmanagementrepositoryregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the DesignManagementRepositoryRegistry. |
 | <a id="designmanagementrepositoryregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the DesignManagementRepositoryRegistry. |
 | <a id="designmanagementrepositoryregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the DesignManagementRepositoryRegistry. |
+| <a id="designmanagementrepositoryregistryverificationchecksummismatched"></a>`verificationChecksumMismatched` | [`String`](#string) | The expected checksum of the DesignManagementRepositoryRegistry in case of mismatch. |
 | <a id="designmanagementrepositoryregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the DesignManagementRepositoryRegistry. |
 | <a id="designmanagementrepositoryregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the DesignManagementRepositoryRegistry is reverified. |
 | <a id="designmanagementrepositoryregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the DesignManagementRepositoryRegistry. |
-| <a id="designmanagementrepositoryregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of DesignManagementRepositoryRegistry. |
+| <a id="designmanagementrepositoryregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification of DesignManagementRepositoryRegistry started. |
 | <a id="designmanagementrepositoryregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the DesignManagementRepositoryRegistry. |
 | <a id="designmanagementrepositoryregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the DesignManagementRepositoryRegistry. |
 
@@ -27170,19 +27195,24 @@ Represents the Geo sync and verification state of a group wiki repository.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupwikirepositoryregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the GroupWikiRepositoryRegistry do not match on the primary and secondary. |
 | <a id="groupwikirepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the GroupWikiRepositoryRegistry was created. |
+| <a id="groupwikirepositoryregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
 | <a id="groupwikirepositoryregistrygroupwikirepositoryid"></a>`groupWikiRepositoryId` | [`ID!`](#id) | ID of the Group Wiki Repository. |
 | <a id="groupwikirepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the GroupWikiRepositoryRegistry. |
 | <a id="groupwikirepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the GroupWikiRepositoryRegistry. |
 | <a id="groupwikirepositoryregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the GroupWikiRepositoryRegistry. |
+| <a id="groupwikirepositoryregistrymissingonprimary"></a>`missingOnPrimary` | [`Boolean`](#boolean) | Indicate if the GroupWikiRepositoryRegistry is missing on primary. |
+| <a id="groupwikirepositoryregistrymodelrecordid"></a>`modelRecordId` | [`Int`](#int) | ID of the GroupWikiRepositoryRegistry's model record. |
 | <a id="groupwikirepositoryregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the GroupWikiRepositoryRegistry is resynced. |
 | <a id="groupwikirepositoryregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the GroupWikiRepositoryRegistry. |
 | <a id="groupwikirepositoryregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the GroupWikiRepositoryRegistry. |
 | <a id="groupwikirepositoryregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the GroupWikiRepositoryRegistry. |
+| <a id="groupwikirepositoryregistryverificationchecksummismatched"></a>`verificationChecksumMismatched` | [`String`](#string) | The expected checksum of the GroupWikiRepositoryRegistry in case of mismatch. |
 | <a id="groupwikirepositoryregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the GroupWikiRepositoryRegistry. |
 | <a id="groupwikirepositoryregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the GroupWikiRepositoryRegistry is reverified. |
 | <a id="groupwikirepositoryregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the GroupWikiRepositoryRegistry. |
-| <a id="groupwikirepositoryregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of GroupWikiRepositoryRegistry. |
+| <a id="groupwikirepositoryregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification of GroupWikiRepositoryRegistry started. |
 | <a id="groupwikirepositoryregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the GroupWikiRepositoryRegistry. |
 | <a id="groupwikirepositoryregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the GroupWikiRepositoryRegistry. |
 
@@ -27871,18 +27901,23 @@ Represents the Geo replication and verification state of a job_artifact.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="jobartifactregistryartifactid"></a>`artifactId` | [`ID!`](#id) | ID of the Job Artifact. |
+| <a id="jobartifactregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the JobArtifactRegistry do not match on the primary and secondary. |
 | <a id="jobartifactregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the JobArtifactRegistry was created. |
+| <a id="jobartifactregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
 | <a id="jobartifactregistryid"></a>`id` | [`ID!`](#id) | ID of the JobArtifactRegistry. |
 | <a id="jobartifactregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the JobArtifactRegistry. |
 | <a id="jobartifactregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the JobArtifactRegistry. |
+| <a id="jobartifactregistrymissingonprimary"></a>`missingOnPrimary` | [`Boolean`](#boolean) | Indicate if the JobArtifactRegistry is missing on primary. |
+| <a id="jobartifactregistrymodelrecordid"></a>`modelRecordId` | [`Int`](#int) | ID of the JobArtifactRegistry's model record. |
 | <a id="jobartifactregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the JobArtifactRegistry is resynced. |
 | <a id="jobartifactregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the JobArtifactRegistry. |
 | <a id="jobartifactregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the JobArtifactRegistry. |
 | <a id="jobartifactregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the JobArtifactRegistry. |
+| <a id="jobartifactregistryverificationchecksummismatched"></a>`verificationChecksumMismatched` | [`String`](#string) | The expected checksum of the JobArtifactRegistry in case of mismatch. |
 | <a id="jobartifactregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the JobArtifactRegistry. |
 | <a id="jobartifactregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the JobArtifactRegistry is reverified. |
 | <a id="jobartifactregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the JobArtifactRegistry. |
-| <a id="jobartifactregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of JobArtifactRegistry. |
+| <a id="jobartifactregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification of JobArtifactRegistry started. |
 | <a id="jobartifactregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the JobArtifactRegistry. |
 | <a id="jobartifactregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the JobArtifactRegistry. |
 
@@ -27970,19 +28005,24 @@ Represents the Geo sync and verification state of an LFS object.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="lfsobjectregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the LfsObjectRegistry do not match on the primary and secondary. |
 | <a id="lfsobjectregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the LfsObjectRegistry was created. |
+| <a id="lfsobjectregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
 | <a id="lfsobjectregistryid"></a>`id` | [`ID!`](#id) | ID of the LfsObjectRegistry. |
 | <a id="lfsobjectregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the LfsObjectRegistry. |
 | <a id="lfsobjectregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the LfsObjectRegistry. |
 | <a id="lfsobjectregistrylfsobjectid"></a>`lfsObjectId` | [`ID!`](#id) | ID of the LFS object. |
+| <a id="lfsobjectregistrymissingonprimary"></a>`missingOnPrimary` | [`Boolean`](#boolean) | Indicate if the LfsObjectRegistry is missing on primary. |
+| <a id="lfsobjectregistrymodelrecordid"></a>`modelRecordId` | [`Int`](#int) | ID of the LfsObjectRegistry's model record. |
 | <a id="lfsobjectregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the LfsObjectRegistry is resynced. |
 | <a id="lfsobjectregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the LfsObjectRegistry. |
 | <a id="lfsobjectregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the LfsObjectRegistry. |
 | <a id="lfsobjectregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the LfsObjectRegistry. |
+| <a id="lfsobjectregistryverificationchecksummismatched"></a>`verificationChecksumMismatched` | [`String`](#string) | The expected checksum of the LfsObjectRegistry in case of mismatch. |
 | <a id="lfsobjectregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the LfsObjectRegistry. |
 | <a id="lfsobjectregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the LfsObjectRegistry is reverified. |
 | <a id="lfsobjectregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the LfsObjectRegistry. |
-| <a id="lfsobjectregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of LfsObjectRegistry. |
+| <a id="lfsobjectregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification of LfsObjectRegistry started. |
 | <a id="lfsobjectregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the LfsObjectRegistry. |
 | <a id="lfsobjectregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the LfsObjectRegistry. |
 
@@ -29206,19 +29246,24 @@ Represents the Geo sync and verification state of a Merge Request diff.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mergerequestdiffregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the MergeRequestDiffRegistry do not match on the primary and secondary. |
 | <a id="mergerequestdiffregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the MergeRequestDiffRegistry was created. |
+| <a id="mergerequestdiffregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
 | <a id="mergerequestdiffregistryid"></a>`id` | [`ID!`](#id) | ID of the MergeRequestDiffRegistry. |
 | <a id="mergerequestdiffregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the MergeRequestDiffRegistry. |
 | <a id="mergerequestdiffregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the MergeRequestDiffRegistry. |
 | <a id="mergerequestdiffregistrymergerequestdiffid"></a>`mergeRequestDiffId` | [`ID!`](#id) | ID of the Merge Request diff. |
+| <a id="mergerequestdiffregistrymissingonprimary"></a>`missingOnPrimary` | [`Boolean`](#boolean) | Indicate if the MergeRequestDiffRegistry is missing on primary. |
+| <a id="mergerequestdiffregistrymodelrecordid"></a>`modelRecordId` | [`Int`](#int) | ID of the MergeRequestDiffRegistry's model record. |
 | <a id="mergerequestdiffregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the MergeRequestDiffRegistry is resynced. |
 | <a id="mergerequestdiffregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the MergeRequestDiffRegistry. |
 | <a id="mergerequestdiffregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the MergeRequestDiffRegistry. |
 | <a id="mergerequestdiffregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the MergeRequestDiffRegistry. |
+| <a id="mergerequestdiffregistryverificationchecksummismatched"></a>`verificationChecksumMismatched` | [`String`](#string) | The expected checksum of the MergeRequestDiffRegistry in case of mismatch. |
 | <a id="mergerequestdiffregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the MergeRequestDiffRegistry. |
 | <a id="mergerequestdiffregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the MergeRequestDiffRegistry is reverified. |
 | <a id="mergerequestdiffregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the MergeRequestDiffRegistry. |
-| <a id="mergerequestdiffregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of MergeRequestDiffRegistry. |
+| <a id="mergerequestdiffregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification of MergeRequestDiffRegistry started. |
 | <a id="mergerequestdiffregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the MergeRequestDiffRegistry. |
 | <a id="mergerequestdiffregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the MergeRequestDiffRegistry. |
 
@@ -31241,19 +31286,24 @@ Represents the Geo sync and verification state of a package file.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="packagefileregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the PackageFileRegistry do not match on the primary and secondary. |
 | <a id="packagefileregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the PackageFileRegistry was created. |
+| <a id="packagefileregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
 | <a id="packagefileregistryid"></a>`id` | [`ID!`](#id) | ID of the PackageFileRegistry. |
 | <a id="packagefileregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the PackageFileRegistry. |
 | <a id="packagefileregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the PackageFileRegistry. |
+| <a id="packagefileregistrymissingonprimary"></a>`missingOnPrimary` | [`Boolean`](#boolean) | Indicate if the PackageFileRegistry is missing on primary. |
+| <a id="packagefileregistrymodelrecordid"></a>`modelRecordId` | [`Int`](#int) | ID of the PackageFileRegistry's model record. |
 | <a id="packagefileregistrypackagefileid"></a>`packageFileId` | [`ID!`](#id) | ID of the PackageFile. |
 | <a id="packagefileregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the PackageFileRegistry is resynced. |
 | <a id="packagefileregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the PackageFileRegistry. |
 | <a id="packagefileregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the PackageFileRegistry. |
 | <a id="packagefileregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the PackageFileRegistry. |
+| <a id="packagefileregistryverificationchecksummismatched"></a>`verificationChecksumMismatched` | [`String`](#string) | The expected checksum of the PackageFileRegistry in case of mismatch. |
 | <a id="packagefileregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the PackageFileRegistry. |
 | <a id="packagefileregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the PackageFileRegistry is reverified. |
 | <a id="packagefileregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the PackageFileRegistry. |
-| <a id="packagefileregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of PackageFileRegistry. |
+| <a id="packagefileregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification of PackageFileRegistry started. |
 | <a id="packagefileregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the PackageFileRegistry. |
 | <a id="packagefileregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the PackageFileRegistry. |
 
@@ -31437,19 +31487,24 @@ Represents the Geo replication and verification state of a pages_deployment.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="pagesdeploymentregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the PagesDeploymentRegistry do not match on the primary and secondary. |
 | <a id="pagesdeploymentregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the PagesDeploymentRegistry was created. |
+| <a id="pagesdeploymentregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
 | <a id="pagesdeploymentregistryid"></a>`id` | [`ID!`](#id) | ID of the PagesDeploymentRegistry. |
 | <a id="pagesdeploymentregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the PagesDeploymentRegistry. |
 | <a id="pagesdeploymentregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the PagesDeploymentRegistry. |
+| <a id="pagesdeploymentregistrymissingonprimary"></a>`missingOnPrimary` | [`Boolean`](#boolean) | Indicate if the PagesDeploymentRegistry is missing on primary. |
+| <a id="pagesdeploymentregistrymodelrecordid"></a>`modelRecordId` | [`Int`](#int) | ID of the PagesDeploymentRegistry's model record. |
 | <a id="pagesdeploymentregistrypagesdeploymentid"></a>`pagesDeploymentId` | [`ID!`](#id) | ID of the Pages Deployment. |
 | <a id="pagesdeploymentregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the PagesDeploymentRegistry is resynced. |
 | <a id="pagesdeploymentregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the PagesDeploymentRegistry. |
 | <a id="pagesdeploymentregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the PagesDeploymentRegistry. |
 | <a id="pagesdeploymentregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the PagesDeploymentRegistry. |
+| <a id="pagesdeploymentregistryverificationchecksummismatched"></a>`verificationChecksumMismatched` | [`String`](#string) | The expected checksum of the PagesDeploymentRegistry in case of mismatch. |
 | <a id="pagesdeploymentregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the PagesDeploymentRegistry. |
 | <a id="pagesdeploymentregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the PagesDeploymentRegistry is reverified. |
 | <a id="pagesdeploymentregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the PagesDeploymentRegistry. |
-| <a id="pagesdeploymentregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of PagesDeploymentRegistry. |
+| <a id="pagesdeploymentregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification of PagesDeploymentRegistry started. |
 | <a id="pagesdeploymentregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the PagesDeploymentRegistry. |
 | <a id="pagesdeploymentregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the PagesDeploymentRegistry. |
 
@@ -31748,19 +31803,24 @@ Represents the Geo sync and verification state of a pipeline artifact.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="pipelineartifactregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the PipelineArtifactRegistry do not match on the primary and secondary. |
 | <a id="pipelineartifactregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the PipelineArtifactRegistry was created. |
+| <a id="pipelineartifactregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
 | <a id="pipelineartifactregistryid"></a>`id` | [`ID!`](#id) | ID of the PipelineArtifactRegistry. |
 | <a id="pipelineartifactregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the PipelineArtifactRegistry. |
 | <a id="pipelineartifactregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the PipelineArtifactRegistry. |
+| <a id="pipelineartifactregistrymissingonprimary"></a>`missingOnPrimary` | [`Boolean`](#boolean) | Indicate if the PipelineArtifactRegistry is missing on primary. |
+| <a id="pipelineartifactregistrymodelrecordid"></a>`modelRecordId` | [`Int`](#int) | ID of the PipelineArtifactRegistry's model record. |
 | <a id="pipelineartifactregistrypipelineartifactid"></a>`pipelineArtifactId` | [`ID!`](#id) | ID of the pipeline artifact. |
 | <a id="pipelineartifactregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the PipelineArtifactRegistry is resynced. |
 | <a id="pipelineartifactregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the PipelineArtifactRegistry. |
 | <a id="pipelineartifactregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the PipelineArtifactRegistry. |
 | <a id="pipelineartifactregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the PipelineArtifactRegistry. |
+| <a id="pipelineartifactregistryverificationchecksummismatched"></a>`verificationChecksumMismatched` | [`String`](#string) | The expected checksum of the PipelineArtifactRegistry in case of mismatch. |
 | <a id="pipelineartifactregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the PipelineArtifactRegistry. |
 | <a id="pipelineartifactregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the PipelineArtifactRegistry is reverified. |
 | <a id="pipelineartifactregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the PipelineArtifactRegistry. |
-| <a id="pipelineartifactregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of PipelineArtifactRegistry. |
+| <a id="pipelineartifactregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification of PipelineArtifactRegistry started. |
 | <a id="pipelineartifactregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the PipelineArtifactRegistry. |
 | <a id="pipelineartifactregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the PipelineArtifactRegistry. |
 
@@ -33576,7 +33636,7 @@ Returns [`PipelineAnalytics`](#pipelineanalytics).
 | ---- | ---- | ----------- |
 | <a id="projectpipelineanalyticsfromtime"></a>`fromTime` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 17.5. **Status**: Experiment. Start of the requested time frame. Defaults to the pipelines started in the past week. |
 | <a id="projectpipelineanalyticsref"></a>`ref` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.5. **Status**: Experiment. Branch that triggered the pipeline. |
-| <a id="projectpipelineanalyticssource"></a>`source` **{warning-solid}** | [`PipelineCiSources`](#pipelinecisources) | **Introduced** in GitLab 17.5. **Status**: Experiment. Source of the pipeline. |
+| <a id="projectpipelineanalyticssource"></a>`source` **{warning-solid}** | [`CiPipelineCiSources`](#cipipelinecisources) | **Introduced** in GitLab 17.5. **Status**: Experiment. Source of the pipeline. |
 | <a id="projectpipelineanalyticstotime"></a>`toTime` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 17.5. **Status**: Experiment. End of the requested time frame. Defaults to pipelines started before the current date. |
 
 ##### `Project.pipelineCounts`
@@ -34418,19 +34478,24 @@ Represents the Geo replication and verification state of a project repository.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectrepositoryregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the ProjectRepositoryRegistry do not match on the primary and secondary. |
 | <a id="projectrepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the ProjectRepositoryRegistry was created. |
+| <a id="projectrepositoryregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
 | <a id="projectrepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the ProjectRepositoryRegistry. |
 | <a id="projectrepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the ProjectRepositoryRegistry. |
 | <a id="projectrepositoryregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the ProjectRepositoryRegistry. |
+| <a id="projectrepositoryregistrymissingonprimary"></a>`missingOnPrimary` | [`Boolean`](#boolean) | Indicate if the ProjectRepositoryRegistry is missing on primary. |
+| <a id="projectrepositoryregistrymodelrecordid"></a>`modelRecordId` | [`Int`](#int) | ID of the ProjectRepositoryRegistry's model record. |
 | <a id="projectrepositoryregistryprojectid"></a>`projectId` | [`ID!`](#id) | ID of the Project. |
 | <a id="projectrepositoryregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the ProjectRepositoryRegistry is resynced. |
 | <a id="projectrepositoryregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the ProjectRepositoryRegistry. |
 | <a id="projectrepositoryregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the ProjectRepositoryRegistry. |
 | <a id="projectrepositoryregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the ProjectRepositoryRegistry. |
+| <a id="projectrepositoryregistryverificationchecksummismatched"></a>`verificationChecksumMismatched` | [`String`](#string) | The expected checksum of the ProjectRepositoryRegistry in case of mismatch. |
 | <a id="projectrepositoryregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the ProjectRepositoryRegistry. |
 | <a id="projectrepositoryregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the ProjectRepositoryRegistry is reverified. |
 | <a id="projectrepositoryregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the ProjectRepositoryRegistry. |
-| <a id="projectrepositoryregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of ProjectRepositoryRegistry. |
+| <a id="projectrepositoryregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification of ProjectRepositoryRegistry started. |
 | <a id="projectrepositoryregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the ProjectRepositoryRegistry. |
 | <a id="projectrepositoryregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the ProjectRepositoryRegistry. |
 
@@ -34701,19 +34766,24 @@ Represents the Geo replication and verification state of a project_wiki_reposito
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectwikirepositoryregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the ProjectWikiRepositoryRegistry do not match on the primary and secondary. |
 | <a id="projectwikirepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the ProjectWikiRepositoryRegistry was created. |
+| <a id="projectwikirepositoryregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
 | <a id="projectwikirepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the ProjectWikiRepositoryRegistry. |
 | <a id="projectwikirepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the ProjectWikiRepositoryRegistry. |
 | <a id="projectwikirepositoryregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the ProjectWikiRepositoryRegistry. |
+| <a id="projectwikirepositoryregistrymissingonprimary"></a>`missingOnPrimary` | [`Boolean`](#boolean) | Indicate if the ProjectWikiRepositoryRegistry is missing on primary. |
+| <a id="projectwikirepositoryregistrymodelrecordid"></a>`modelRecordId` | [`Int`](#int) | ID of the ProjectWikiRepositoryRegistry's model record. |
 | <a id="projectwikirepositoryregistryprojectwikirepositoryid"></a>`projectWikiRepositoryId` | [`ID!`](#id) | ID of the Project Wiki Repository. |
 | <a id="projectwikirepositoryregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the ProjectWikiRepositoryRegistry is resynced. |
 | <a id="projectwikirepositoryregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the ProjectWikiRepositoryRegistry. |
 | <a id="projectwikirepositoryregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the ProjectWikiRepositoryRegistry. |
 | <a id="projectwikirepositoryregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the ProjectWikiRepositoryRegistry. |
+| <a id="projectwikirepositoryregistryverificationchecksummismatched"></a>`verificationChecksumMismatched` | [`String`](#string) | The expected checksum of the ProjectWikiRepositoryRegistry in case of mismatch. |
 | <a id="projectwikirepositoryregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the ProjectWikiRepositoryRegistry. |
 | <a id="projectwikirepositoryregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the ProjectWikiRepositoryRegistry is reverified. |
 | <a id="projectwikirepositoryregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the ProjectWikiRepositoryRegistry. |
-| <a id="projectwikirepositoryregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of ProjectWikiRepositoryRegistry. |
+| <a id="projectwikirepositoryregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification of ProjectWikiRepositoryRegistry started. |
 | <a id="projectwikirepositoryregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the ProjectWikiRepositoryRegistry. |
 | <a id="projectwikirepositoryregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the ProjectWikiRepositoryRegistry. |
 
@@ -35872,19 +35942,24 @@ Represents the Geo sync and verification state of a snippet repository.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="snippetrepositoryregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the SnippetRepositoryRegistry do not match on the primary and secondary. |
 | <a id="snippetrepositoryregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the SnippetRepositoryRegistry was created. |
+| <a id="snippetrepositoryregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
 | <a id="snippetrepositoryregistryid"></a>`id` | [`ID!`](#id) | ID of the SnippetRepositoryRegistry. |
 | <a id="snippetrepositoryregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the SnippetRepositoryRegistry. |
 | <a id="snippetrepositoryregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the SnippetRepositoryRegistry. |
+| <a id="snippetrepositoryregistrymissingonprimary"></a>`missingOnPrimary` | [`Boolean`](#boolean) | Indicate if the SnippetRepositoryRegistry is missing on primary. |
+| <a id="snippetrepositoryregistrymodelrecordid"></a>`modelRecordId` | [`Int`](#int) | ID of the SnippetRepositoryRegistry's model record. |
 | <a id="snippetrepositoryregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the SnippetRepositoryRegistry is resynced. |
 | <a id="snippetrepositoryregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the SnippetRepositoryRegistry. |
 | <a id="snippetrepositoryregistrysnippetrepositoryid"></a>`snippetRepositoryId` | [`ID!`](#id) | ID of the Snippet Repository. |
 | <a id="snippetrepositoryregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the SnippetRepositoryRegistry. |
 | <a id="snippetrepositoryregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the SnippetRepositoryRegistry. |
+| <a id="snippetrepositoryregistryverificationchecksummismatched"></a>`verificationChecksumMismatched` | [`String`](#string) | The expected checksum of the SnippetRepositoryRegistry in case of mismatch. |
 | <a id="snippetrepositoryregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the SnippetRepositoryRegistry. |
 | <a id="snippetrepositoryregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the SnippetRepositoryRegistry is reverified. |
 | <a id="snippetrepositoryregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the SnippetRepositoryRegistry. |
-| <a id="snippetrepositoryregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of SnippetRepositoryRegistry. |
+| <a id="snippetrepositoryregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification of SnippetRepositoryRegistry started. |
 | <a id="snippetrepositoryregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the SnippetRepositoryRegistry. |
 | <a id="snippetrepositoryregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the SnippetRepositoryRegistry. |
 
@@ -36198,19 +36273,24 @@ Represents the Geo sync and verification state of a terraform state version.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="terraformstateversionregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the TerraformStateVersionRegistry do not match on the primary and secondary. |
 | <a id="terraformstateversionregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the TerraformStateVersionRegistry was created. |
+| <a id="terraformstateversionregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
 | <a id="terraformstateversionregistryid"></a>`id` | [`ID!`](#id) | ID of the TerraformStateVersionRegistry. |
 | <a id="terraformstateversionregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the TerraformStateVersionRegistry. |
 | <a id="terraformstateversionregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the TerraformStateVersionRegistry. |
+| <a id="terraformstateversionregistrymissingonprimary"></a>`missingOnPrimary` | [`Boolean`](#boolean) | Indicate if the TerraformStateVersionRegistry is missing on primary. |
+| <a id="terraformstateversionregistrymodelrecordid"></a>`modelRecordId` | [`Int`](#int) | ID of the TerraformStateVersionRegistry's model record. |
 | <a id="terraformstateversionregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the TerraformStateVersionRegistry is resynced. |
 | <a id="terraformstateversionregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the TerraformStateVersionRegistry. |
 | <a id="terraformstateversionregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the TerraformStateVersionRegistry. |
 | <a id="terraformstateversionregistryterraformstateversionid"></a>`terraformStateVersionId` | [`ID!`](#id) | ID of the terraform state version. |
 | <a id="terraformstateversionregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the TerraformStateVersionRegistry. |
+| <a id="terraformstateversionregistryverificationchecksummismatched"></a>`verificationChecksumMismatched` | [`String`](#string) | The expected checksum of the TerraformStateVersionRegistry in case of mismatch. |
 | <a id="terraformstateversionregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the TerraformStateVersionRegistry. |
 | <a id="terraformstateversionregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the TerraformStateVersionRegistry is reverified. |
 | <a id="terraformstateversionregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the TerraformStateVersionRegistry. |
-| <a id="terraformstateversionregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of TerraformStateVersionRegistry. |
+| <a id="terraformstateversionregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification of TerraformStateVersionRegistry started. |
 | <a id="terraformstateversionregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the TerraformStateVersionRegistry. |
 | <a id="terraformstateversionregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the TerraformStateVersionRegistry. |
 
@@ -36514,19 +36594,24 @@ Represents the Geo replication and verification state of an upload.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="uploadregistrychecksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the UploadRegistry do not match on the primary and secondary. |
 | <a id="uploadregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the UploadRegistry was created. |
 | <a id="uploadregistryfileid"></a>`fileId` | [`ID!`](#id) | ID of the Upload. |
+| <a id="uploadregistryforcetoredownload"></a>`forceToRedownload` | [`Boolean`](#boolean) | Indicate if a forced redownload is to be performed. |
 | <a id="uploadregistryid"></a>`id` | [`ID!`](#id) | ID of the UploadRegistry. |
 | <a id="uploadregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the UploadRegistry. |
 | <a id="uploadregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the UploadRegistry. |
+| <a id="uploadregistrymissingonprimary"></a>`missingOnPrimary` | [`Boolean`](#boolean) | Indicate if the UploadRegistry is missing on primary. |
+| <a id="uploadregistrymodelrecordid"></a>`modelRecordId` | [`Int`](#int) | ID of the UploadRegistry's model record. |
 | <a id="uploadregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the UploadRegistry is resynced. |
 | <a id="uploadregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the UploadRegistry. |
 | <a id="uploadregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the UploadRegistry. |
 | <a id="uploadregistryverificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the UploadRegistry. |
+| <a id="uploadregistryverificationchecksummismatched"></a>`verificationChecksumMismatched` | [`String`](#string) | The expected checksum of the UploadRegistry in case of mismatch. |
 | <a id="uploadregistryverificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the UploadRegistry. |
 | <a id="uploadregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the UploadRegistry is reverified. |
 | <a id="uploadregistryverificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the UploadRegistry. |
-| <a id="uploadregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of UploadRegistry. |
+| <a id="uploadregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification of UploadRegistry started. |
 | <a id="uploadregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the UploadRegistry. |
 | <a id="uploadregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the UploadRegistry. |
 
@@ -39308,6 +39393,24 @@ CI_JOB_TOKEN policy.
 | <a id="cijobtokenscopepoliciesread_secure_files"></a>`READ_SECURE_FILES` | Read Secure Files. |
 | <a id="cijobtokenscopepoliciesread_terraform_state"></a>`READ_TERRAFORM_STATE` | Read Terraform State. |
 
+### `CiPipelineCiSources`
+
+Ci Pipeline Ci sources enum.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cipipelinecisourcesapi"></a>`API` | Pipeline created by an API event. |
+| <a id="cipipelinecisourceschat"></a>`CHAT` | Pipeline created by a chat event. |
+| <a id="cipipelinecisourcesexternal"></a>`EXTERNAL` | Pipeline created by an external event. |
+| <a id="cipipelinecisourcesexternal_pull_request_event"></a>`EXTERNAL_PULL_REQUEST_EVENT` | Pipeline created by an external pull request event. |
+| <a id="cipipelinecisourcesmerge_request_event"></a>`MERGE_REQUEST_EVENT` | Pipeline created by a merge request event. |
+| <a id="cipipelinecisourcespipeline"></a>`PIPELINE` | Pipeline created by a pipeline event. |
+| <a id="cipipelinecisourcespush"></a>`PUSH` | Pipeline created by a push event. |
+| <a id="cipipelinecisourcesschedule"></a>`SCHEDULE` | Pipeline created by a schedule event. |
+| <a id="cipipelinecisourcestrigger"></a>`TRIGGER` | Pipeline created by a trigger event. |
+| <a id="cipipelinecisourcesunknown"></a>`UNKNOWN` | Pipeline created by an unknown event. |
+| <a id="cipipelinecisourcesweb"></a>`WEB` | Pipeline created by a web event. |
+
 ### `CiRunnerAccessLevel`
 
 | Value | Description |
@@ -41217,24 +41320,6 @@ Package type of a package protection rule resource.
 | <a id="pipelineanalyticsjobstatusfailed"></a>`FAILED` | Job that failed. |
 | <a id="pipelineanalyticsjobstatusother"></a>`OTHER` | Job that was canceled or skipped. |
 | <a id="pipelineanalyticsjobstatussuccess"></a>`SUCCESS` | Job that succeeded. |
-
-### `PipelineCiSources`
-
-Pipeline CI sources.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="pipelinecisourcesapi"></a>`API` | Pipeline created by an API event. |
-| <a id="pipelinecisourceschat"></a>`CHAT` | Pipeline created by a chat event. |
-| <a id="pipelinecisourcesexternal"></a>`EXTERNAL` | Pipeline created by an external event. |
-| <a id="pipelinecisourcesexternal_pull_request_event"></a>`EXTERNAL_PULL_REQUEST_EVENT` | Pipeline created by an external pull request event. |
-| <a id="pipelinecisourcesmerge_request_event"></a>`MERGE_REQUEST_EVENT` | Pipeline created by a merge request event. |
-| <a id="pipelinecisourcespipeline"></a>`PIPELINE` | Pipeline created by a pipeline event. |
-| <a id="pipelinecisourcespush"></a>`PUSH` | Pipeline created by a push event. |
-| <a id="pipelinecisourcesschedule"></a>`SCHEDULE` | Pipeline created by a schedule event. |
-| <a id="pipelinecisourcestrigger"></a>`TRIGGER` | Pipeline created by a trigger event. |
-| <a id="pipelinecisourcesunknown"></a>`UNKNOWN` | Pipeline created by an unknown event. |
-| <a id="pipelinecisourcesweb"></a>`WEB` | Pipeline created by a web event. |
 
 ### `PipelineConfigSourceEnum`
 

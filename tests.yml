@@ -378,3 +378,7 @@ mapping:
       - 'spec/lib/gitlab/import_export/all_models\.yml'
       - '(?<prefix>ee/)?app/models/.+\.rb'
     test: 'spec/lib/gitlab/import_export/model_configuration_spec.rb'
+
+  # Docs related checks
+  - source: 'doc/api/settings\.md'
+    test: 'spec/scripts/cells/application_settings_analysis_spec.rb'

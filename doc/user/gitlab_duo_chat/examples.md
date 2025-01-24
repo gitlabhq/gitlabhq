@@ -244,7 +244,8 @@ The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 GitLab.com customers must contact their Customer Success Manager to enable this feature.
 
-You can add files in your VS Code workspace to ask GitLab Duo Chat about.
+Add repository files to your Duo Chat conversations in VS Code or JetBrains IDEs by
+typing `/include` and choosing the files. 
 
 Prerequisites:
 

@@ -19,8 +19,8 @@ module VirtualRegistries
             reason: :file_not_found_on_upstreams
           ),
           digest_not_found: ServiceResponse.error(
-            message: 'File of the requested digest not found in cached responses',
-            reason: :digest_not_found_in_cached_responses
+            message: 'File of the requested digest not found in cache entries',
+            reason: :digest_not_found_in_cache_entries
           ),
           fips_unsupported_md5: ServiceResponse.error(
             message: 'MD5 digest is not supported when FIPS is enabled',
@@ -42,40 +42,40 @@ module VirtualRegistries
           return ERRORS[:no_upstreams] unless registry.upstream.present?
 
           if digest_request?
-            download_cached_response_digest
+            download_cache_entry_digest
           elsif cache_response_still_valid?
-            download_cached_response
+            download_cache_entry
           else
             check_upstream(registry.upstream)
           end
 
         rescue *::Gitlab::HTTP::HTTP_ERRORS
-          return download_cached_response if cached_response
+          return download_cache_entry if cache_entry
 
           ERRORS[:upstream_not_available]
         end
 
         private
 
-        def cached_response
+        def cache_entry
           # TODO change this to support multiple upstreams
           # https://gitlab.com/gitlab-org/gitlab/-/issues/480461
-          registry.upstream.default_cached_responses.find_by_relative_path(relative_path)
+          registry.upstream.default_cache_entries.find_by_relative_path(relative_path)
         end
-        strong_memoize_attr :cached_response
+        strong_memoize_attr :cache_entry
 
         def cache_response_still_valid?
-          return false unless cached_response
-          return true unless cached_response.stale?
+          return false unless cache_entry
+          return true unless cache_entry.stale?
 
-          # cached response with no etag can't be checked
-          return false if cached_response.upstream_etag.blank?
+          # cache entry with no etag can't be checked
+          return false if cache_entry.upstream_etag.blank?
 
-          response = head_upstream(upstream: cached_response.upstream)
+          response = head_upstream(upstream: cache_entry.upstream)
 
-          return false unless cached_response.upstream_etag == response.headers['etag']
+          return false unless cache_entry.upstream_etag == response.headers['etag']
 
-          cached_response.update_column(:upstream_checked_at, Time.current)
+          cache_entry.update_column(:upstream_checked_at, Time.current)
           true
         end
 
@@ -96,8 +96,8 @@ module VirtualRegistries
           end
         end
 
-        def download_cached_response_digest
-          return ERRORS[:digest_not_found] unless cached_response
+        def download_cache_entry_digest
+          return ERRORS[:digest_not_found] unless cache_entry
 
           digest_format = File.extname(path)[1..] # file extension without the leading dot
           return ERRORS[:fips_unsupported_md5] if digest_format == 'md5' && Gitlab::FIPS.enabled?
@@ -105,7 +105,7 @@ module VirtualRegistries
           ServiceResponse.success(
             payload: {
               action: :download_digest,
-              action_params: { digest: cached_response["file_#{digest_format}"] }
+              action_params: { digest: cache_entry["file_#{digest_format}"] }
             }
           )
         end
@@ -146,15 +146,15 @@ module VirtualRegistries
           end
         end
 
-        def download_cached_response
+        def download_cache_entry
           ServiceResponse.success(
             payload: {
               action: :download_file,
               action_params: {
-                file: cached_response.file,
-                file_sha1: cached_response.file_sha1,
-                file_md5: cached_response.file_md5,
-                content_type: cached_response.content_type
+                file: cache_entry.file,
+                file_sha1: cache_entry.file_sha1,
+                file_md5: cache_entry.file_md5,
+                content_type: cache_entry.content_type
               }
             }
           )

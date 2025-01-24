@@ -13,7 +13,7 @@ module Resolvers
 
       alias_method :project, :object
 
-      argument :source, Types::PipelineCiSourcesEnum,
+      argument :source, Types::Ci::PipelineCiSourcesEnum,
         required: false,
         description: 'Source of the pipeline.',
         experiment: { milestone: '17.5' }

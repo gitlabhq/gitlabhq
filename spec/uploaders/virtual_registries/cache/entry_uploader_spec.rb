@@ -2,17 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe ::VirtualRegistries::CachedResponseUploader, feature_category: :virtual_registry do
+RSpec.describe ::VirtualRegistries::Cache::EntryUploader, feature_category: :virtual_registry do
   let(:object_storage_key) { 'object/storage/key' }
-  let(:cached_response) do
+  let(:cache_entry) do
     build_stubbed(
-      :virtual_registries_packages_maven_cached_response,
+      :virtual_registries_packages_maven_cache_entry,
       object_storage_key: object_storage_key,
       relative_path: 'relative/path/test.txt'
     )
   end
 
-  let(:uploader) { described_class.new(cached_response, :file) }
+  let(:uploader) { described_class.new(cache_entry, :file) }
 
   describe 'inclusions' do
     subject { uploader }

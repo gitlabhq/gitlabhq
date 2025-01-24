@@ -36,6 +36,8 @@ import {
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_DEVELOPMENT,
   STATE_OPEN,
+  WIDGET_TYPE_ITERATION,
+  WIDGET_TYPE_MILESTONE,
 } from '../constants';
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
@@ -404,6 +406,12 @@ export default {
     },
     workItemDevelopment() {
       return this.findWidget(WIDGET_TYPE_DEVELOPMENT);
+    },
+    workItemIteration() {
+      return this.findWidget(WIDGET_TYPE_ITERATION)?.iteration;
+    },
+    workItemMilestone() {
+      return this.findWidget(WIDGET_TYPE_MILESTONE)?.milestone;
     },
     workItemBodyClass() {
       return {
@@ -1020,6 +1028,8 @@ export default {
               :parent-work-item-type="workItem.workItemType.name"
               :work-item-id="workItem.id"
               :work-item-iid="iid"
+              :parent-iteration="workItemIteration"
+              :parent-milestone="workItemMilestone"
               :active-child-item-id="activeChildItemId"
               :can-update="canUpdate"
               :can-update-children="canUpdateChildren"

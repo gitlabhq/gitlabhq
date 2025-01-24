@@ -76,6 +76,7 @@ To improve your workflow while reviewing code in merge requests, try these featu
 - [Code Review Summary](../project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review): Summarize all the comments in a review.
   <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=Bx6Zajyuy9k)
 - [Merge Commit Message Generation](../project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message): Generate commit messages.
+  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=fUHPNT4uByQ)
 
 ## Testing and deploying code
 

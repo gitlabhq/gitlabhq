@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe VirtualRegistries::Packages::DestroyOrphanCachedResponsesWorker, type: :worker, feature_category: :virtual_registry do
   let(:worker) { described_class.new }
-  let(:model) { ::VirtualRegistries::Packages::Maven::CachedResponse }
+  let(:model) { ::VirtualRegistries::Packages::Maven::Cache::Entry }
 
   it_behaves_like 'an idempotent worker' do
     let(:job_args) { [model.name] }
@@ -24,19 +24,18 @@ RSpec.describe VirtualRegistries::Packages::DestroyOrphanCachedResponsesWorker, 
     end
 
     context 'with work to do' do
-      let_it_be(:cached_response) { create(:virtual_registries_packages_maven_cached_response) }
-      let_it_be(:orphan_cached_response) do
-        create(:virtual_registries_packages_maven_cached_response, :pending_destruction)
+      let_it_be(:cache_entry) { create(:virtual_registries_packages_maven_cache_entry) }
+      let_it_be(:orphan_cache_entry) do
+        create(:virtual_registries_packages_maven_cache_entry, :pending_destruction)
       end
 
-      it 'destroys orphan cached responses' do
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:cached_response_id, orphan_cached_response.id)
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:group_id, orphan_cached_response.group_id)
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:relative_path,
-          orphan_cached_response.relative_path)
+      it 'destroys orphan cache entries' do
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:cache_entry_id, orphan_cache_entry.id)
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:group_id, orphan_cache_entry.group_id)
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:relative_path, orphan_cache_entry.relative_path)
         expect(model).to receive(:next_pending_destruction).and_call_original
         expect { perform_work }.to change { model.count }.by(-1)
-        expect { orphan_cached_response.reset }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { orphan_cache_entry.reset }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
       context 'with an error during deletion' do

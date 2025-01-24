@@ -7,4 +7,4 @@ feature_category: runner
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177271
 milestone: '17.8'
 queued_migration_version: 20250108120138
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: '20250124130232'

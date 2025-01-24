@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :virtual_registries_packages_maven_cached_response,
-    class: 'VirtualRegistries::Packages::Maven::CachedResponse' do
+  factory :virtual_registries_packages_maven_cache_entry,
+    class: 'VirtualRegistries::Packages::Maven::Cache::Entry' do
     upstream { association :virtual_registries_packages_maven_upstream }
     group { upstream.group }
     sequence(:relative_path) { |n| "/a/relative/path/test-#{n}.txt" }

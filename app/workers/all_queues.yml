@@ -1074,6 +1074,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: dependency_proxy_blob:virtual_registries_packages_cache_destroy_orphan_entries
+  :worker_name: VirtualRegistries::Packages::Cache::DestroyOrphanEntriesWorker
+  :feature_category: :virtual_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: dependency_proxy_blob:virtual_registries_packages_destroy_orphan_cached_responses
   :worker_name: VirtualRegistries::Packages::DestroyOrphanCachedResponsesWorker
   :feature_category: :virtual_registry

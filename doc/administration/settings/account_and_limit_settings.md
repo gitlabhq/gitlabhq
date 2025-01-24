@@ -463,7 +463,7 @@ GitLab administrators can prevent this behavior:
 1. Clear the **Allow users with up to Guest role to create groups and personal projects** checkbox.
 1. Select **Save changes**.
 
-## Allow users to make their profiles private
+## Prevent users from making their profiles private
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -471,7 +471,7 @@ DETAILS:
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421310) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `disallow_private_profiles`. Disabled by default.
-> - [Generally Available](https://gitlab.com/gitlab-org/gitlab/-/issues/427400) in GitLab 17.9. Feature flag `disallow_private_profiles` removed.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/427400) in GitLab 17.9. Feature flag `disallow_private_profiles` removed.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -479,7 +479,10 @@ For more information, see the history.
 This feature is available for testing, but not ready for production use.
 
 By default, users can make their profiles private.
-GitLab administrators can disable this setting to prevent users from making their profiles private:
+GitLab administrators can disable this setting to require all user profiles to be public.
+This setting does not affect [internal users](../internal_users.md) (sometimes referred to as "bots").
+
+To prevent users from making their profiles private:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
@@ -487,13 +490,13 @@ GitLab administrators can disable this setting to prevent users from making thei
 1. Clear the **Allow users to make their profiles private** checkbox.
 1. Select **Save changes**.
 
-NOTE:
-If this setting is disabled, [Set profiles of new users to private by default](#set-profiles-of-new-users-to-private-by-default) is also disabled.
+When you turn off this setting:
 
-WARNING:
-When this setting is disabled, it doesn't mark existing private profiles as public.
-GitLab administrators must manually update all existing private profiles back to public.
-For more information, see [issue 461701](https://gitlab.com/gitlab-org/gitlab/-/issues/461701).
+- All private user profiles become public.
+- The option to [set profiles of new users to private by default](#set-profiles-of-new-users-to-private-by-default)
+  is also turned off.
+
+When you re-enable this setting, the user's [previously set profile visibility](../../user/profile/index.md#make-your-user-profile-page-private) is selected.
 
 ## Set profiles of new users to private by default
 
@@ -508,7 +511,7 @@ By default, newly created users have a public profile. GitLab administrators can
 1. Select **Save changes**.
 
 NOTE:
-If [Allow users to make their profiles private](#allow-users-to-make-their-profiles-private) is disabled, this setting is also disabled.
+If [**Allow users to make their profiles private**](#prevent-users-from-making-their-profiles-private) is disabled, this setting is also disabled.
 
 ## Prevent users from deleting their accounts
 

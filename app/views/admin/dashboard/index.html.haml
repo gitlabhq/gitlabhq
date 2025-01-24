@@ -40,7 +40,7 @@
         .gl-flex.gl-flex-col.gl-h-full
           - @projects.each do |project|
             .gl-flex.gl-py-4{ class: ('gl-border-b' if @projects.last != project) }
-              .gl-mr-auto.gl-overflow-hidden.gl-text-ellipsis
+              .gl-mr-auto
                 = link_to project.full_name, admin_project_path(project)
               %span.gl-whitespace-nowrap.gl-text-right.gl-text-sm.gl-text-subtle
                 #{time_ago_with_tooltip(project.created_at)}
@@ -59,7 +59,7 @@
         .gl-flex.gl-flex-col.gl-h-full
           - @users.each do |user|
             .gl-flex.gl-py-4{ class: ('gl-border-b' if @users.last != user) }
-              .gl-mr-auto.gl-overflow-hidden.gl-text-ellipsis
+              .gl-mr-auto
                 = link_to [:admin, user] do
                   = user.name
               %span.gl-whitespace-nowrap.gl-text-right.gl-text-sm.gl-text-subtle
@@ -82,7 +82,7 @@
         .gl-flex.gl-flex-col.gl-h-full
           - @groups.each do |group|
             .gl-flex.gl-py-4{ class: ('gl-border-b' if @groups.last != group) }
-              .gl-mr-auto.gl-overflow-hidden.gl-text-ellipsis
+              .gl-mr-auto
                 = link_to [:admin, group] do
                   = group.full_name
               %span.gl-whitespace-nowrap.gl-text-right.gl-text-sm.gl-text-subtle

@@ -2,21 +2,21 @@
 
 require 'spec_helper'
 
-RSpec.describe API::VirtualRegistries::Packages::Maven::CachedResponses, :aggregate_failures, feature_category: :virtual_registry do
+RSpec.describe API::VirtualRegistries::Packages::Maven::Cache::Entries, :aggregate_failures, feature_category: :virtual_registry do
   using RSpec::Parameterized::TableSyntax
   include_context 'for maven virtual registry api setup'
 
-  describe 'GET /api/v4/virtual_registries/packages/maven/upstreams/:id/cached_responses' do
+  describe 'GET /api/v4/virtual_registries/packages/maven/upstreams/:id/cache_entries' do
     let(:upstream_id) { upstream.id }
-    let(:url) { "/virtual_registries/packages/maven/upstreams/#{upstream_id}/cached_responses" }
+    let(:url) { "/virtual_registries/packages/maven/upstreams/#{upstream_id}/cache_entries" }
 
-    let_it_be(:processing_cached_response) do
+    let_it_be(:processing_cache_entry) do
       create(
-        :virtual_registries_packages_maven_cached_response,
+        :virtual_registries_packages_maven_cache_entry,
         :processing,
         upstream: upstream,
         group: upstream.group,
-        relative_path: cached_response.relative_path
+        relative_path: cache_entry.relative_path
       )
     end
 
@@ -28,9 +28,9 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::CachedResponses, :aggreg
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(Gitlab::Json.parse(response.body)).to contain_exactly(
-          cached_response
+          cache_entry
             .as_json
-            .merge('id' => Base64.urlsafe_encode64("#{upstream.id} #{cached_response.relative_path}"))
+            .merge('id' => Base64.urlsafe_encode64("#{upstream.id} #{cache_entry.relative_path}"))
             .except('object_storage_key', 'file_store', 'status', 'file_final_path')
         )
       end
@@ -88,7 +88,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::CachedResponses, :aggreg
 
     context 'for search param' do
       let(:url) { "#{super()}?search=#{search}" }
-      let(:valid_search) { cached_response.relative_path.slice(0, 5) }
+      let(:valid_search) { cache_entry.relative_path.slice(0, 5) }
 
       where(:search, :status) do
         ref(:valid_search) | :ok
@@ -111,15 +111,15 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::CachedResponses, :aggreg
     end
   end
 
-  describe 'DELETE /api/v4/virtual_registries/packages/maven/cached_responses/:id' do
-    let(:id) { Base64.urlsafe_encode64("#{upstream.id} #{cached_response.relative_path}") }
-    let(:url) { "/virtual_registries/packages/maven/cached_responses/#{id}" }
+  describe 'DELETE /api/v4/virtual_registries/packages/maven/cache_entries/:id' do
+    let(:id) { Base64.urlsafe_encode64("#{upstream.id} #{cache_entry.relative_path}") }
+    let(:url) { "/virtual_registries/packages/maven/cache_entries/#{id}" }
 
     subject(:api_request) { delete api(url), headers: headers }
 
     shared_examples 'successful response' do
       it 'returns a successful response' do
-        expect { api_request }.to change { cached_response.reload.status }.from('default').to('pending_destruction')
+        expect { api_request }.to change { cache_entry.reload.status }.from('default').to('pending_destruction')
         expect(response).to have_gitlab_http_status(:no_content)
       end
     end
@@ -180,8 +180,8 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::CachedResponses, :aggreg
       end
 
       before do
-        allow_next_found_instance_of(cached_response.class) do |instance|
-          errors = ActiveModel::Errors.new(instance).tap { |e| e.add(:cached_response, 'error message') }
+        allow_next_found_instance_of(cache_entry.class) do |instance|
+          errors = ActiveModel::Errors.new(instance).tap { |e| e.add(:cache_entry, 'error message') }
           allow(instance).to receive_messages(mark_as_pending_destruction: false, errors: errors)
         end
       end
@@ -190,7 +190,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::CachedResponses, :aggreg
         api_request
 
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response).to eq({ 'message' => { 'cached_response' => ['error message'] } })
+        expect(json_response).to eq({ 'message' => { 'cache_entry' => ['error message'] } })
       end
     end
   end

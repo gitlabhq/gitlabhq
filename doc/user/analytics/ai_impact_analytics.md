@@ -14,14 +14,16 @@ DETAILS:
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/451873) in GitLab 17.2. Feature flag `ai_impact_analytics_dashboard` removed.
 > - Changed to require GitLab Duo add-on in GitLab 17.6.
 
-AI impact analytics displays software development lifecycle (SDLC) metrics for a project or group in the month-to-date and the past six months.
+The primary goal of AI impact analytics is to measure GitLab Duo's impact on software development lifecycle (SDLC) performance.
+This dashboard provides visibility into key SDLC metrics in the context of AI adoption, helping you measure which metrics have improved as a result of AI investments.
 
-Use AI impact analytics to:
+Use AI impact analytics for:
 
-- Measure the effectiveness and impact of AI on SDLC metrics.
-- Visualize which metrics improved as a result of investments in AI.
-- Track the progress of AI adoption.
-- Compare the performance of teams that are using AI against teams that are not using AI.
+- Correlation observations: Examine how trends in AI usage in a project or group influence other crucial productivity metrics. AI usage metrics are displayed for the last six months, including the current one.
+- Snapshot of GitLab Duo usage: Track the use of seats and features in a project or group over the last 30 days.
+
+To learn how you can optimize your license utilization,
+see [GitLab Duo add-ons](../../subscriptions/subscription-add-ons.md). 
 
 For a click-through demo, see the [AI impact analytics product tour](https://gitlab.navattic.com/ai-impact).
 

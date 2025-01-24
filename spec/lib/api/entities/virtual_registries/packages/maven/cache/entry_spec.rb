@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::VirtualRegistries::Packages::Maven::CachedResponse, feature_category: :virtual_registry do
-  let(:cached_response) { build_stubbed(:virtual_registries_packages_maven_cached_response) }
+RSpec.describe API::Entities::VirtualRegistries::Packages::Maven::Cache::Entry, feature_category: :virtual_registry do
+  let(:cache_entry) { build_stubbed(:virtual_registries_packages_maven_cache_entry) }
 
-  subject { described_class.new(cached_response).as_json }
+  subject { described_class.new(cache_entry).as_json }
 
   it 'has the expected attributes' do
     is_expected.to include(:id, :group_id, :upstream_id, :upstream_checked_at, :created_at, :updated_at,
