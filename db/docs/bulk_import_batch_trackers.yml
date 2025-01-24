@@ -8,6 +8,33 @@ description: Used to store and track the import status of a batch of relations f
   the migration of groups or projects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111708
 milestone: '15.10'
-gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463854
 table_size: small
+gitlab_schema: gitlab_main_cell
+desired_sharding_key:
+  project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: tracker_id
+        table: bulk_import_trackers
+        sharding_key: project_id
+        belongs_to: tracker
+    awaiting_backfill_on_parent: true
+  namespace_id:
+    references: namespaces
+    backfill_via:
+      parent:
+        foreign_key: tracker_id
+        table: bulk_import_trackers
+        sharding_key: namespace_id
+        belongs_to: tracker
+    awaiting_backfill_on_parent: true
+  organization_id:
+    references: organizations
+    backfill_via:
+      parent:
+        foreign_key: tracker_id
+        table: bulk_import_trackers
+        sharding_key: organization_id
+        belongs_to: tracker
+    awaiting_backfill_on_parent: true

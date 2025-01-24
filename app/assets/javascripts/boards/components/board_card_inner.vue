@@ -181,6 +181,7 @@ export default {
       return !this.disabled && this.list.listType !== ListType.closed;
     },
     workItemDrawerEnabled() {
+      if (gon.current_user_use_work_items_view) return true;
       return this.isEpicBoard ? this.glFeatures.epicsListDrawer : this.glFeatures.issuesListDrawer;
     },
   },

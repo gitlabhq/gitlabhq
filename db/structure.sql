@@ -18957,6 +18957,12 @@ CREATE SEQUENCE project_data_transfers_id_seq
 
 ALTER SEQUENCE project_data_transfers_id_seq OWNED BY project_data_transfers.id;
 
+CREATE TABLE project_deletion_schedules (
+    project_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    marked_for_deletion_at timestamp with time zone NOT NULL
+);
+
 CREATE TABLE project_deploy_tokens (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -23264,6 +23270,25 @@ CREATE SEQUENCE work_item_hierarchy_restrictions_id_seq
 
 ALTER SEQUENCE work_item_hierarchy_restrictions_id_seq OWNED BY work_item_hierarchy_restrictions.id;
 
+CREATE TABLE work_item_number_field_values (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    work_item_id bigint NOT NULL,
+    custom_field_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    value numeric NOT NULL
+);
+
+CREATE SEQUENCE work_item_number_field_values_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE work_item_number_field_values_id_seq OWNED BY work_item_number_field_values.id;
+
 CREATE TABLE work_item_parent_links (
     id bigint NOT NULL,
     work_item_id bigint NOT NULL,
@@ -23312,6 +23337,45 @@ CREATE SEQUENCE work_item_related_link_restrictions_id_seq
     CACHE 1;
 
 ALTER SEQUENCE work_item_related_link_restrictions_id_seq OWNED BY work_item_related_link_restrictions.id;
+
+CREATE TABLE work_item_select_field_values (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    work_item_id bigint NOT NULL,
+    custom_field_id bigint NOT NULL,
+    custom_field_select_option_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE work_item_select_field_values_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE work_item_select_field_values_id_seq OWNED BY work_item_select_field_values.id;
+
+CREATE TABLE work_item_text_field_values (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    work_item_id bigint NOT NULL,
+    custom_field_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    value text NOT NULL,
+    CONSTRAINT check_1013631b9d CHECK ((char_length(value) <= 1024))
+);
+
+CREATE SEQUENCE work_item_text_field_values_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE work_item_text_field_values_id_seq OWNED BY work_item_text_field_values.id;
 
 CREATE TABLE work_item_type_custom_fields (
     id bigint NOT NULL,
@@ -25450,9 +25514,15 @@ ALTER TABLE ONLY wiki_repository_states ALTER COLUMN id SET DEFAULT nextval('wik
 
 ALTER TABLE ONLY work_item_hierarchy_restrictions ALTER COLUMN id SET DEFAULT nextval('work_item_hierarchy_restrictions_id_seq'::regclass);
 
+ALTER TABLE ONLY work_item_number_field_values ALTER COLUMN id SET DEFAULT nextval('work_item_number_field_values_id_seq'::regclass);
+
 ALTER TABLE ONLY work_item_parent_links ALTER COLUMN id SET DEFAULT nextval('work_item_parent_links_id_seq'::regclass);
 
 ALTER TABLE ONLY work_item_related_link_restrictions ALTER COLUMN id SET DEFAULT nextval('work_item_related_link_restrictions_id_seq'::regclass);
+
+ALTER TABLE ONLY work_item_select_field_values ALTER COLUMN id SET DEFAULT nextval('work_item_select_field_values_id_seq'::regclass);
+
+ALTER TABLE ONLY work_item_text_field_values ALTER COLUMN id SET DEFAULT nextval('work_item_text_field_values_id_seq'::regclass);
 
 ALTER TABLE ONLY work_item_type_custom_fields ALTER COLUMN id SET DEFAULT nextval('work_item_type_custom_fields_id_seq'::regclass);
 
@@ -27810,6 +27880,9 @@ ALTER TABLE ONLY project_daily_statistics
 ALTER TABLE ONLY project_data_transfers
     ADD CONSTRAINT project_data_transfers_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY project_deletion_schedules
+    ADD CONSTRAINT project_deletion_schedules_pkey PRIMARY KEY (project_id);
+
 ALTER TABLE ONLY project_deploy_tokens
     ADD CONSTRAINT project_deploy_tokens_pkey PRIMARY KEY (id);
 
@@ -28449,6 +28522,9 @@ ALTER TABLE ONLY work_item_dates_sources
 ALTER TABLE ONLY work_item_hierarchy_restrictions
     ADD CONSTRAINT work_item_hierarchy_restrictions_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY work_item_number_field_values
+    ADD CONSTRAINT work_item_number_field_values_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY work_item_parent_links
     ADD CONSTRAINT work_item_parent_links_pkey PRIMARY KEY (id);
 
@@ -28457,6 +28533,12 @@ ALTER TABLE ONLY work_item_progresses
 
 ALTER TABLE ONLY work_item_related_link_restrictions
     ADD CONSTRAINT work_item_related_link_restrictions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY work_item_select_field_values
+    ADD CONSTRAINT work_item_select_field_values_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY work_item_text_field_values
+    ADD CONSTRAINT work_item_text_field_values_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY work_item_type_custom_fields
     ADD CONSTRAINT work_item_type_custom_fields_pkey PRIMARY KEY (id);
@@ -30397,6 +30479,14 @@ CREATE INDEX idx_vulnerability_reads_for_traversal_ids_queries_srt_severity ON v
 CREATE INDEX idx_vulnerability_reads_project_id_scanner_id_vulnerability_id ON vulnerability_reads USING btree (project_id, scanner_id, vulnerability_id);
 
 CREATE INDEX idx_vulnerability_statistics_on_traversal_ids_and_letter_grade ON vulnerability_statistics USING btree (traversal_ids, letter_grade) WHERE (archived = false);
+
+CREATE UNIQUE INDEX idx_wi_number_values_on_work_item_id_custom_field_id ON work_item_number_field_values USING btree (work_item_id, custom_field_id);
+
+CREATE INDEX idx_wi_select_field_values_on_custom_field_select_option_id ON work_item_select_field_values USING btree (custom_field_select_option_id);
+
+CREATE UNIQUE INDEX idx_wi_select_values_on_wi_custom_field_id_select_option_id ON work_item_select_field_values USING btree (work_item_id, custom_field_id, custom_field_select_option_id);
+
+CREATE UNIQUE INDEX idx_wi_text_values_on_work_item_id_custom_field_id ON work_item_text_field_values USING btree (work_item_id, custom_field_id);
 
 CREATE UNIQUE INDEX idx_wi_type_custom_fields_on_ns_id_wi_type_id_custom_field_id ON work_item_type_custom_fields USING btree (namespace_id, work_item_type_id, custom_field_id);
 
@@ -33418,6 +33508,10 @@ CREATE INDEX index_project_data_transfers_on_namespace_id ON project_data_transf
 
 CREATE UNIQUE INDEX index_project_data_transfers_on_project_and_namespace_and_date ON project_data_transfers USING btree (project_id, namespace_id, date);
 
+CREATE INDEX index_project_deletion_schedules_on_user_id ON project_deletion_schedules USING btree (user_id);
+
+CREATE INDEX index_project_deletions_on_marked_for_deletion_at_and_user_id ON project_deletion_schedules USING btree (marked_for_deletion_at, user_id);
+
 CREATE INDEX index_project_deploy_tokens_on_deploy_token_id ON project_deploy_tokens USING btree (deploy_token_id);
 
 CREATE UNIQUE INDEX index_project_deploy_tokens_on_project_id_and_deploy_token_id ON project_deploy_tokens USING btree (project_id, deploy_token_id);
@@ -34654,6 +34748,10 @@ CREATE INDEX index_work_item_hierarchy_restrictions_on_parent_type_id ON work_it
 
 CREATE UNIQUE INDEX index_work_item_link_restrictions_on_source_link_type_target ON work_item_related_link_restrictions USING btree (source_type_id, link_type, target_type_id);
 
+CREATE INDEX index_work_item_number_field_values_on_custom_field_id ON work_item_number_field_values USING btree (custom_field_id);
+
+CREATE INDEX index_work_item_number_field_values_on_namespace_id ON work_item_number_field_values USING btree (namespace_id);
+
 CREATE INDEX index_work_item_parent_links_on_namespace_id ON work_item_parent_links USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_work_item_parent_links_on_work_item_id ON work_item_parent_links USING btree (work_item_id);
@@ -34663,6 +34761,14 @@ CREATE INDEX index_work_item_parent_links_on_work_item_parent_id ON work_item_pa
 CREATE INDEX index_work_item_progresses_on_namespace_id ON work_item_progresses USING btree (namespace_id);
 
 CREATE INDEX index_work_item_related_link_restrictions_on_target_type_id ON work_item_related_link_restrictions USING btree (target_type_id);
+
+CREATE INDEX index_work_item_select_field_values_on_custom_field_id ON work_item_select_field_values USING btree (custom_field_id);
+
+CREATE INDEX index_work_item_select_field_values_on_namespace_id ON work_item_select_field_values USING btree (namespace_id);
+
+CREATE INDEX index_work_item_text_field_values_on_custom_field_id ON work_item_text_field_values USING btree (custom_field_id);
+
+CREATE INDEX index_work_item_text_field_values_on_namespace_id ON work_item_text_field_values USING btree (namespace_id);
 
 CREATE INDEX index_work_item_type_custom_fields_on_custom_field_id ON work_item_type_custom_fields USING btree (custom_field_id);
 
@@ -37707,6 +37813,9 @@ ALTER TABLE ONLY ghost_user_migrations
 ALTER TABLE ONLY coverage_fuzzing_corpuses
     ADD CONSTRAINT fk_204d40056a FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY work_item_select_field_values
+    ADD CONSTRAINT fk_20ae82616c FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY namespace_settings
     ADD CONSTRAINT fk_20cf0eb2f9 FOREIGN KEY (default_compliance_framework_id) REFERENCES compliance_management_frameworks(id) ON DELETE SET NULL;
 
@@ -38244,6 +38353,9 @@ ALTER TABLE ONLY subscription_user_add_on_assignments
 ALTER TABLE ONLY zentao_tracker_data
     ADD CONSTRAINT fk_72a0e59cd8 FOREIGN KEY (instance_integration_id) REFERENCES instance_integrations(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY work_item_number_field_values
+    ADD CONSTRAINT fk_72d475d3cd FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY packages_conan_metadata
     ADD CONSTRAINT fk_7302a29cd9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -38303,6 +38415,9 @@ ALTER TABLE ONLY wiki_page_meta_user_mentions
 
 ALTER TABLE ONLY topics
     ADD CONSTRAINT fk_79ae18bd4b FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_text_field_values
+    ADD CONSTRAINT fk_79c719630f FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_maven_metadata
     ADD CONSTRAINT fk_7a170ee0a3 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -38676,11 +38791,20 @@ ALTER TABLE ONLY fork_network_members
 ALTER TABLE ONLY ml_candidate_metadata
     ADD CONSTRAINT fk_b044692715 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY project_deletion_schedules
+    ADD CONSTRAINT fk_b11f7e2219 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_deletion_schedules
+    ADD CONSTRAINT fk_b140171ca8 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY custom_field_select_options
     ADD CONSTRAINT fk_b16c0bad2c FOREIGN KEY (custom_field_id) REFERENCES custom_fields(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT fk_b1b65d8d17 FOREIGN KEY (source_package_id) REFERENCES sbom_source_packages(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_text_field_values
+    ADD CONSTRAINT fk_b22fe079a2 FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_access_tokens
     ADD CONSTRAINT fk_b27801bfbf FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -38768,6 +38892,9 @@ ALTER TABLE ONLY system_access_group_microsoft_graph_access_tokens
 
 ALTER TABLE ONLY deployments
     ADD CONSTRAINT fk_b9a3851b82 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_select_field_values
+    ADD CONSTRAINT fk_b9a434f5b2 FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY wiki_page_meta_user_mentions
     ADD CONSTRAINT fk_ba8a9d7f95 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
@@ -39036,6 +39163,9 @@ ALTER TABLE ONLY project_control_compliance_statuses
 ALTER TABLE ONLY protected_branches
     ADD CONSTRAINT fk_de9216e774 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY work_item_number_field_values
+    ADD CONSTRAINT fk_df27ad8c35 FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_df75a7c8b8 FOREIGN KEY (promoted_to_epic_id) REFERENCES epics(id) ON DELETE SET NULL;
 
@@ -39189,6 +39319,9 @@ ALTER TABLE ONLY workspaces_agent_configs
 ALTER TABLE p_ci_pipeline_variables
     ADD CONSTRAINT fk_f29c5f4380_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
+ALTER TABLE ONLY work_item_select_field_values
+    ADD CONSTRAINT fk_f2d308e706 FOREIGN KEY (custom_field_select_option_id) REFERENCES custom_field_select_options(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY zoekt_indices
     ADD CONSTRAINT fk_f34800a202 FOREIGN KEY (zoekt_node_id) REFERENCES zoekt_nodes(id) ON DELETE CASCADE;
 
@@ -39317,6 +39450,9 @@ ALTER TABLE ONLY approval_merge_request_rules
 
 ALTER TABLE ONLY namespace_statistics
     ADD CONSTRAINT fk_rails_0062050394 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_number_field_values
+    ADD CONSTRAINT fk_rails_01b9886bb2 FOREIGN KEY (custom_field_id) REFERENCES custom_fields(id) ON DELETE CASCADE;
 
 ALTER TABLE p_ci_build_sources
     ADD CONSTRAINT fk_rails_023578ae70 FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -41040,6 +41176,9 @@ ALTER TABLE ONLY vulnerability_finding_evidences
 ALTER TABLE ONLY approval_policy_rules
     ADD CONSTRAINT fk_rails_e344cb2d35 FOREIGN KEY (security_policy_management_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY work_item_select_field_values
+    ADD CONSTRAINT fk_rails_e3ecc2c14e FOREIGN KEY (custom_field_id) REFERENCES custom_fields(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY clusters_integration_prometheus
     ADD CONSTRAINT fk_rails_e44472034c FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
 
@@ -41075,6 +41214,9 @@ ALTER TABLE ONLY boards_epic_board_recent_visits
 
 ALTER TABLE ONLY audit_events_streaming_instance_event_type_filters
     ADD CONSTRAINT fk_rails_e7bb18c0e1 FOREIGN KEY (instance_external_audit_event_destination_id) REFERENCES audit_events_instance_external_audit_event_destinations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_text_field_values
+    ADD CONSTRAINT fk_rails_e846cf23c6 FOREIGN KEY (custom_field_id) REFERENCES custom_fields(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY group_deploy_keys_groups
     ADD CONSTRAINT fk_rails_e87145115d FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

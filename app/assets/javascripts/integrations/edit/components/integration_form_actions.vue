@@ -74,8 +74,8 @@ export default {
 };
 </script>
 <template>
-  <section class="gl-justify-between lg:gl-flex">
-    <div>
+  <section class="gl-flex gl-flex-wrap gl-justify-between gl-gap-3">
+    <div class="gl-flex gl-flex-wrap gl-gap-3">
       <template v-if="isInstanceOrGroupLevel">
         <gl-button
           v-gl-modal.confirmSaveIntegration

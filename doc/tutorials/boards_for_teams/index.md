@@ -29,8 +29,8 @@ To set up issue boards for multiple teams:
 
 ## Before you begin
 
-- If you're using an existing group for this tutorial, make sure you have at least the Reporter role for the group.
-- If you're using an existing project for this tutorial, make sure you have at least the Reporter role for the project.
+- If you're using an existing group for this tutorial, make sure you have at least the Planner role for the group.
+- If you're using an existing project for this tutorial, make sure you have at least the Planner role for the project.
 
 ## The goal workflow
 

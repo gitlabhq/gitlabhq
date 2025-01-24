@@ -85,13 +85,14 @@ describeSkipVue3(skipReason, () => {
     queryHandler = defaultQueryHandler,
     sortPreferenceMutationResponse = mutationHandler,
     workItemsViewPreference = false,
+    workItemsToggleEnabled = true,
   } = {}) => {
     window.gon = {
       ...window.gon,
       features: {
         workItemsViewPreference,
       },
-      current_user_use_work_items_view: true,
+      current_user_use_work_items_view: workItemsToggleEnabled,
     };
     wrapper = shallowMount(WorkItemsListApp, {
       router: createRouter({ fullPath: '/work_item' }),
@@ -476,6 +477,7 @@ describeSkipVue3(skipReason, () => {
       describe('when issues_list_drawer feature is disabled', () => {
         it('is not rendered when feature is disabled', async () => {
           mountComponent({
+            workItemsToggleEnabled: false,
             provide: {
               glFeatures: {
                 issuesListDrawer: false,
@@ -570,6 +572,7 @@ describeSkipVue3(skipReason, () => {
       describe('when epics_list_drawer feature is disabled', () => {
         it('is not rendered when feature is disabled', async () => {
           mountComponent({
+            workItemsToggleEnabled: false,
             provide: {
               glFeatures: {
                 issuesListDrawer: true,

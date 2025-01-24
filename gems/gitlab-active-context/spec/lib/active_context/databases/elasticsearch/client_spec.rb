@@ -8,6 +8,7 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Client do
   describe '#search' do
     let(:elasticsearch_client) { instance_double(Elasticsearch::Client) }
     let(:search_response) { { 'hits' => { 'total' => 5, 'hits' => [] } } }
+    let(:query) { ActiveContext::Query.filter(project_id: 1) }
 
     before do
       allow(client).to receive(:client).and_return(elasticsearch_client)
@@ -16,11 +17,11 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Client do
 
     it 'calls search on the Elasticsearch client' do
       expect(elasticsearch_client).to receive(:search)
-      client.search('query')
+      client.search(collection: 'test', query: query)
     end
 
     it 'returns a QueryResult object' do
-      result = client.search('query')
+      result = client.search(collection: 'test', query: query)
       expect(result).to be_a(ActiveContext::Databases::Elasticsearch::QueryResult)
     end
   end

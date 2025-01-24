@@ -216,6 +216,7 @@ export default {
       });
     },
     workItemDrawerEnabled() {
+      if (gon.current_user_use_work_items_view) return true;
       return this.isEpicsList ? this.glFeatures.epicsListDrawer : this.glFeatures.issuesListDrawer;
     },
     isEpicsList() {

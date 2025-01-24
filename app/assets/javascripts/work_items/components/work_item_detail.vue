@@ -484,6 +484,9 @@ export default {
     namespaceFullName() {
       return this.workItem?.namespace?.fullName || '';
     },
+    contextualViewEnabled() {
+      return gon.current_user_use_work_items_view || this.workItemsAlphaEnabled;
+    },
   },
   methods: {
     handleWorkItemCreated() {
@@ -535,10 +538,9 @@ export default {
       document.title = s__('404|Not found');
     },
     openContextualView({ event, modalWorkItem, context }) {
-      if (!this.workItemsAlphaEnabled || context === LINKED_ITEMS_ANCHOR || this.isDrawer) {
+      if (!this.contextualViewEnabled || context === LINKED_ITEMS_ANCHOR || this.isDrawer) {
         return;
       }
-
       if (event) {
         event.preventDefault();
       }
@@ -1072,7 +1074,7 @@ export default {
       </section>
     </section>
     <work-item-drawer
-      v-if="workItemsAlphaEnabled && !isDrawer"
+      v-if="contextualViewEnabled && !isDrawer"
       :active-item="activeChildItem"
       :open="isItemSelected"
       :issuable-type="activeChildItemType"

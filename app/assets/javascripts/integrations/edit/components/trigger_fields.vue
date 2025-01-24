@@ -41,12 +41,11 @@ export default {
 
 <template>
   <gl-form-group
-    class="gl-pt-3"
     :label="__('Trigger')"
     label-for="trigger-fields"
     data-testid="trigger-fields-group"
   >
-    <div id="trigger-fields" class="gl-pt-3">
+    <div id="trigger-fields">
       <gl-form-group v-for="event in events" :key="event.name" :description="event.description">
         <input :name="checkboxName(event.name)" type="hidden" :value="event.value || false" />
         <gl-form-checkbox v-model="event.value" :disabled="isInheriting">

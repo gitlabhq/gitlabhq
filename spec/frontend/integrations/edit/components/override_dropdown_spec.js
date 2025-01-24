@@ -91,7 +91,7 @@ describe('OverrideDropdown', () => {
           learnMorePath: '/docs',
         });
 
-        expect(findGlLink().text()).toBe('Learn more');
+        expect(findGlLink().text()).toBe('Learn more.');
         expect(findGlLink().attributes('href')).toBe('/docs');
       });
     });

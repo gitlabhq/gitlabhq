@@ -1,5 +1,5 @@
 <script>
-import { GlCollapsibleListbox, GlLink } from '@gitlab/ui';
+import { GlCard, GlCollapsibleListbox, GlLink } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import { s__ } from '~/locale';
@@ -20,6 +20,7 @@ export default {
   dropdownOptions,
   name: 'OverrideDropdown',
   components: {
+    GlCard,
     GlCollapsibleListbox,
     GlLink,
   },
@@ -66,14 +67,12 @@ export default {
 </script>
 
 <template>
-  <div
-    class="gl-mb-6 gl-mt-5 gl-flex gl-items-baseline gl-justify-between gl-border-b-1 gl-border-t-1 gl-border-default gl-py-4 gl-border-b-solid gl-border-t-solid"
-  >
+  <gl-card body-class="gl-flex gl-flex-wrap gl-gap-3 gl-items-center gl-justify-between">
     <span
       >{{ description }}
-      <gl-link v-if="learnMorePath" :href="learnMorePath" target="_blank">{{
-        __('Learn more')
-      }}</gl-link>
+      <gl-link v-if="learnMorePath" :href="learnMorePath" target="_blank"
+        >{{ __('Learn more') }}.</gl-link
+      >
     </span>
     <input name="service[inherit_from_id]" :value="override ? '' : inheritFromId" type="hidden" />
     <gl-collapsible-listbox
@@ -82,5 +81,5 @@ export default {
       :items="$options.dropdownOptions"
       @select="onSelect"
     />
-  </div>
+  </gl-card>
 </template>

@@ -605,6 +605,11 @@ A runner can have one of the following statuses.
 | `stale`   | The runner has not contacted GitLab in more than 7 days. If the runner was created more than 7 days ago, but it never contacted the instance, it is also considered **stale**. |
 | `never_contacted` | The runner has never contacted GitLab. To make the runner contact GitLab, run `gitlab-runner run`. |
 
+## Stale runner manager cleanup
+
+GitLab periodically deletes stale runner managers to maintain a lean database.
+If a runner contacts the GitLab instance, the connection is recreated.
+
 ## View statistics for runner performance
 
 DETAILS:

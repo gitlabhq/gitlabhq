@@ -233,6 +233,10 @@ Secondary site HTTP proxying is enabled by default on a secondary site when it u
 
 HTTP proxying is enabled by default in GitLab 15.1 on a secondary site even without a unified URL. If proxying needs to be disabled on all secondary sites, it is easiest to disable the feature flag:
 
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
 1. SSH into a node which is running Puma or Sidekiq on your primary Geo site and run:
 
    ```shell
@@ -245,9 +249,55 @@ HTTP proxying is enabled by default in GitLab 15.1 on a secondary site even with
    sudo gitlab-ctl restart puma
    ```
 
-In Kubernetes, you can run the same command in the toolbox pod. Refer to the
-[Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information)
-for details.
+:::TabTitle Helm chart (Kubernetes)
+
+1. On your primary Geo site, run this command in the Toolbox pod:
+
+   ```shell
+   kubectl exec -it <toolbox-pod-name> -- gitlab-rails runner "Feature.disable(:geo_secondary_proxy_separate_urls)"
+   ```
+
+1. Restart the Webservice pods on your secondary Geo site:
+
+   ```shell
+   kubectl rollout restart deployment -l app=webservice
+   ```
+
+::EndTabs
+
+To revert the changes so secondary site proxying is enabled again:
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. SSH into a node which is running Puma or Sidekiq on your primary Geo site and run:
+
+   ```shell
+   sudo gitlab-rails runner "Feature.enable(:geo_secondary_proxy_separate_urls)"
+   ```
+
+1. Restart Puma on all nodes which are running it on your secondary Geo site:
+
+   ```shell
+   sudo gitlab-ctl restart puma
+   ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+1. On your primary Geo site, run this command in the Toolbox pod:
+
+   ```shell
+   kubectl exec -it <toolbox-pod-name> -- gitlab-rails runner "Feature.enable(:geo_secondary_proxy_separate_urls)"
+   ```
+
+1. Restart the Webservice pods on your secondary Geo site:
+
+   ```shell
+   kubectl rollout restart deployment -l app=webservice
+   ```
+
+::EndTabs
 
 ### Disable secondary site HTTP proxying per site
 

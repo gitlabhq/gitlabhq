@@ -225,6 +225,13 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
 
   Multiple node installations should use the settings described in the [documentation](../../administration/clusters/kas.md).
 
+- S3 object storage uploads in Workhorse now only use [AWS SDK v2 for Go](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164597).
+The `workhorse_use_aws_sdk_v2` feature flag has been removed. The AWS SDK v2
+[sets `Accept-Encoding: identity` and includes it as a signed header](https://github.com/aws/aws-sdk-go-v2/issues/2848).
+However, some proxy services, such as Cloudflare, [alter this header, causing a signature mismatch error](https://gitlab.com/gitlab-org/gitlab/-/issues/492973#note_2312726631).
+If you see [SignatureDoesNotMatch errors](https://repost.aws/knowledge-center/s3-presigned-url-signature-mismatch)
+ensure that your proxy server does not alter or remove signed HTTP headers.
+
 ## 17.7.0
 
 - Git 2.47.0 and later is required by Gitaly. For installations from source, you should use the [Git version provided by Gitaly](../../install/installation.md#git).

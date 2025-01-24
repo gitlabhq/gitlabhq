@@ -955,6 +955,8 @@
   - 1
 - - vulnerabilities_update_namespace_ids_of_vulnerability_reads
   - 1
+- - vulnerabilities_update_traversal_ids_of_vulnerability_statistic
+  - 1
 - - vulnerability_exports_export
   - 1
 - - vulnerability_exports_export_deletion
