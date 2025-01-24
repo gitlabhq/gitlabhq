@@ -153,7 +153,7 @@ module QA
       end
 
       def running_on_release?
-        gitlab_host.include?('release.gitlab.net') || gitlab_host.include?('release.gke.gitlab.net')
+        gitlab_host.include?('release.gitlab.net')
       end
 
       def running_on_dev?
