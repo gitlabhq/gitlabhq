@@ -326,7 +326,7 @@ export default {
       return this.glFeatures.notificationsTodosButtons;
     },
     parentWorkItem() {
-      return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
+      return this.findWidget(WIDGET_TYPE_HIERARCHY)?.parent;
     },
     parentWorkItemId() {
       return this.parentWorkItem?.id;
@@ -364,10 +364,10 @@ export default {
       return this.workItem.workItemType?.iconName;
     },
     hasDescriptionWidget() {
-      return this.isWidgetPresent(WIDGET_TYPE_DESCRIPTION);
+      return this.findWidget(WIDGET_TYPE_DESCRIPTION);
     },
     hasDesignWidget() {
-      return this.isWidgetPresent(WIDGET_TYPE_DESIGNS) && this.$router;
+      return this.findWidget(WIDGET_TYPE_DESIGNS) && this.$router;
     },
     showUploadDesign() {
       return this.hasDesignWidget && this.workspacePermissions.createDesign;
@@ -376,10 +376,10 @@ export default {
       return this.hasDesignWidget && this.workspacePermissions.moveDesign;
     },
     workItemNotificationsSubscribed() {
-      return Boolean(this.isWidgetPresent(WIDGET_TYPE_NOTIFICATIONS)?.subscribed);
+      return Boolean(this.findWidget(WIDGET_TYPE_NOTIFICATIONS)?.subscribed);
     },
     workItemCurrentUserTodos() {
-      return this.isWidgetPresent(WIDGET_TYPE_CURRENT_USER_TODOS);
+      return this.findWidget(WIDGET_TYPE_CURRENT_USER_TODOS);
     },
     showWorkItemCurrentUserTodos() {
       return Boolean(this.$options.isLoggedIn && this.workItemCurrentUserTodos);
@@ -388,22 +388,22 @@ export default {
       return this.workItemCurrentUserTodos?.currentUserTodos?.nodes;
     },
     workItemAssignees() {
-      return this.isWidgetPresent(WIDGET_TYPE_ASSIGNEES);
+      return this.findWidget(WIDGET_TYPE_ASSIGNEES);
     },
     workItemAwardEmoji() {
-      return this.isWidgetPresent(WIDGET_TYPE_AWARD_EMOJI);
+      return this.findWidget(WIDGET_TYPE_AWARD_EMOJI);
     },
     workItemHierarchy() {
-      return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY);
+      return this.findWidget(WIDGET_TYPE_HIERARCHY);
     },
     workItemNotes() {
-      return this.isWidgetPresent(WIDGET_TYPE_NOTES);
+      return this.findWidget(WIDGET_TYPE_NOTES);
     },
     workItemWeight() {
-      return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
+      return this.findWidget(WIDGET_TYPE_WEIGHT);
     },
     workItemDevelopment() {
-      return this.isWidgetPresent(WIDGET_TYPE_DEVELOPMENT);
+      return this.findWidget(WIDGET_TYPE_DEVELOPMENT);
     },
     workItemBodyClass() {
       return {
@@ -415,11 +415,11 @@ export default {
     },
     workItemLinkedItems() {
       return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC
-        ? this.isWidgetPresent(WIDGET_TYPE_LINKED_ITEMS) && this.hasLinkedItemsEpicsFeature
-        : this.isWidgetPresent(WIDGET_TYPE_LINKED_ITEMS);
+        ? this.findWidget(WIDGET_TYPE_LINKED_ITEMS) && this.hasLinkedItemsEpicsFeature
+        : this.findWidget(WIDGET_TYPE_LINKED_ITEMS);
     },
     showWorkItemTree() {
-      return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY) && this.allowedChildTypes?.length > 0;
+      return this.findWidget(WIDGET_TYPE_HIERARCHY) && this.allowedChildTypes?.length > 0;
     },
     titleClassHeader() {
       return {
@@ -495,7 +495,7 @@ export default {
     enableEditMode() {
       this.editMode = true;
     },
-    isWidgetPresent(type) {
+    findWidget(type) {
       return this.widgets?.find((widget) => widget.type === type);
     },
     toggleConfidentiality(confidentialStatus) {

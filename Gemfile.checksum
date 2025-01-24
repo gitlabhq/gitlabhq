@@ -123,7 +123,7 @@
 {"name":"devise","version":"4.9.3","platform":"ruby","checksum":"480638d6c51b97f56da6e28d4f3e2a1b8e606681b316aa594b87c6ab94923488"},
 {"name":"devise-two-factor","version":"4.1.1","platform":"ruby","checksum":"c95f5b07533e62217aaed3c386874d94e2d472fb5f2b6598afe8600fc17a8b95"},
 {"name":"diff-lcs","version":"1.5.0","platform":"ruby","checksum":"49b934001c8c6aedb37ba19daec5c634da27b318a7a3c654ae979d6ba1929b67"},
-{"name":"diffy","version":"3.4.2","platform":"ruby","checksum":"36b42ffbe5138ddc56182107c24ad8d6b066ecfd2876829f391e3a4993d89ae1"},
+{"name":"diffy","version":"3.4.3","platform":"ruby","checksum":"4264b9e7db00d1cd426fcd32e36565779163cedc2340a95b0e6f025e71f9aaa7"},
 {"name":"digest-crc","version":"0.6.5","platform":"ruby","checksum":"5ca456f3352dc5ff17eb95deb3dd5a79dc79f8bf751d8005abca5b7b9b252124"},
 {"name":"discordrb-webhooks","version":"3.5.0","platform":"ruby","checksum":"52fba8bce3b08059d4a41a1e73a9a152958e788a9330275450126b44f01c23b1"},
 {"name":"docile","version":"1.4.0","platform":"ruby","checksum":"5f1734bde23721245c20c3d723e76c104208e1aa01277a69901ce770f0ebb8d3"},

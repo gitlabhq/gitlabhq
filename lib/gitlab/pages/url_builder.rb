@@ -10,14 +10,14 @@ module Gitlab
 
       def initialize(project, options = nil)
         @project = project
-        @project_namespace, _, @project_path = project.full_path.downcase.partition('/')
+        namespace, _, @project_path = project.full_path.partition('/')
+        @project_namespace = namespace.downcase
         @options = options || {}
       end
 
       def pages_url
         default_url
           .to_s
-          .downcase
       end
 
       def unique_host
@@ -34,7 +34,7 @@ module Gitlab
       # See https://docs.gitlab.com/ee/user/project/pages/getting_started_part_one.html#user-and-group-website-examples.
       def is_namespace_homepage? # rubocop:disable Naming/PredicateName -- namespace_homepage is not an
         # adjective, so adding "is_" improves understandability
-        project_path == "#{project_namespace}.#{instance_pages_domain}"
+        project_path.downcase == "#{project_namespace}.#{instance_pages_domain}"
       end
 
       def artifact_url(artifact, job)

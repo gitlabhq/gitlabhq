@@ -4,7 +4,7 @@
 
 = gitlab_ui_form_for '', url: import_gitlab_group_path, namespace: 'import_group', class: 'group-form gl-show-field-errors', multipart: true do |f|
   .gl-border-l-solid.gl-border-r-solid.gl-border-default.gl-border-1.gl-p-5
-    %h4
+    %h2.gl-heading-2-fixed.gl-my-3
       = _('Import group from file')
     = render Pajamas::AlertComponent.new(variant: :warning,
       alert_options: { class: 'gl-mb-5' },

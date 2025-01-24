@@ -58,10 +58,6 @@ RSpec.describe AlertManagement::Alerts::Todo::CreateService, feature_category: :
             create(:todo, :pending, **todo_params)
           end
 
-          before do
-            stub_feature_flags(multiple_todos: false)
-          end
-
           it 'does not create a todo' do
             expect { result }.not_to change { Todo.count }
           end

@@ -3825,8 +3825,8 @@ Input type: `createContainerProtectionTagRuleInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatecontainerprotectiontagruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatecontainerprotectiontagruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` | [`ContainerProtectionTagRuleAccessLevel!`](#containerprotectiontagruleaccesslevel) | Minimum GitLab access level required to delete container image tags from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. Introduced in GitLab 17.8: **Status**: Experiment. |
-| <a id="mutationcreatecontainerprotectiontagruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`ContainerProtectionTagRuleAccessLevel!`](#containerprotectiontagruleaccesslevel) | Minimum GitLab access level required to push container image tags to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. Introduced in GitLab 17.8: **Status**: Experiment. |
+| <a id="mutationcreatecontainerprotectiontagruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` | [`ContainerProtectionTagRuleAccessLevel!`](#containerprotectiontagruleaccesslevel) | Minimum GitLab access level required to delete container image tags from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, no minimum access level is enforced. Users with the Developer role or higher can delete tags by default. Introduced in GitLab 17.8: **Status**: Experiment. |
+| <a id="mutationcreatecontainerprotectiontagruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`ContainerProtectionTagRuleAccessLevel!`](#containerprotectiontagruleaccesslevel) | Minimum GitLab access level required to push container image tags to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, no minimum access level is enforced. Users with the Developer role or higher can push tags by default. Introduced in GitLab 17.8: **Status**: Experiment. |
 | <a id="mutationcreatecontainerprotectiontagruleprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project containing the container image tags. |
 | <a id="mutationcreatecontainerprotectiontagruletagnamepattern"></a>`tagNamePattern` | [`String!`](#string) | The pattern that matches container image tags to protect. For example, `v1.*`. Wildcard character `*` allowed. Introduced in GitLab 17.8: **Status**: Experiment. |
 
@@ -19255,6 +19255,8 @@ Extra metadata for AI message.
 
 ### `AiMetrics`
 
+Requires ClickHouse. Premium and Ultimate with GitLab Duo Pro and Enterprise only.
+
 #### Fields
 
 | Name | Type | Description |
@@ -22007,6 +22009,17 @@ A tag expiration policy designed to keep only the images that matter most.
 | <a id="containerexpirationpolicyolderthan"></a>`olderThan` | [`ContainerExpirationPolicyOlderThanEnum`](#containerexpirationpolicyolderthanenum) | Tags older than the given age will expire. |
 | <a id="containerexpirationpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the container expiration policy was updated. |
 
+### `ContainerProtectionAccessLevel`
+
+Represents the most restrictive permissions for a container image tag.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerprotectionaccesslevelminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` **{warning-solid}** | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to delete container image tags from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, no minimum access level is enforced. Users with the Developer role or higher can delete tags by default. |
+| <a id="containerprotectionaccesslevelminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to push container image tags to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, no minimum access level is enforced. Users with the Developer role or higher can push tags by default. |
+
 ### `ContainerProtectionRepositoryRule`
 
 A container repository protection rule designed to prevent users with a certain access level or lower from altering the container registry.
@@ -22029,8 +22042,8 @@ A container repository tag protection rule designed to prevent users with a cert
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="containerprotectiontagruleid"></a>`id` **{warning-solid}** | [`ContainerRegistryProtectionTagRuleID!`](#containerregistryprotectiontagruleid) | **Introduced** in GitLab 17.8. **Status**: Experiment. ID of the container repository tag protection rule. |
-| <a id="containerprotectiontagruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` **{warning-solid}** | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to delete container image tags from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. |
-| <a id="containerprotectiontagruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to push container image tags to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. |
+| <a id="containerprotectiontagruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` **{warning-solid}** | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to delete container image tags from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, no minimum access level is enforced. Users with the Developer role or higher can delete tags by default. |
+| <a id="containerprotectiontagruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to push container image tags to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, no minimum access level is enforced. Users with the Developer role or higher can push tags by default. |
 | <a id="containerprotectiontagruletagnamepattern"></a>`tagNamePattern` **{warning-solid}** | [`String!`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. The pattern that matches container image tags to protect. For example, `v1.*`. Wildcard character `*` allowed. |
 
 ### `ContainerRepository`
@@ -22174,6 +22187,7 @@ A tag from a container repository.
 | <a id="containerrepositorytagmediatype"></a>`mediaType` | [`String`](#string) | Media type of the tag. |
 | <a id="containerrepositorytagname"></a>`name` | [`String!`](#string) | Name of the tag. |
 | <a id="containerrepositorytagpath"></a>`path` | [`String!`](#string) | Path of the tag. |
+| <a id="containerrepositorytagprotection"></a>`protection` **{warning-solid}** | [`ContainerProtectionAccessLevel`](#containerprotectionaccesslevel) | **Introduced** in GitLab 17.9. **Status**: Experiment. Minimum GitLab access level required to push and delete container image tags. If multiple protection rules match an image tag, the highest access levels are applied. |
 | <a id="containerrepositorytagpublishedat"></a>`publishedAt` | [`Time`](#time) | Timestamp when the tag was published. |
 | <a id="containerrepositorytagreferrers"></a>`referrers` | [`[ContainerRepositoryReferrer!]`](#containerrepositoryreferrer) | Referrers for the tag. |
 | <a id="containerrepositorytagrevision"></a>`revision` | [`String`](#string) | Revision of the tag. |
@@ -43724,6 +43738,20 @@ One of:
 - [`VulnerabilityLocationSecretDetection`](#vulnerabilitylocationsecretdetection)
 
 ### Interfaces
+
+#### `AccessLevelInterface`
+
+Implementations:
+
+- [`ContainerProtectionAccessLevel`](#containerprotectionaccesslevel)
+- [`ContainerProtectionTagRule`](#containerprotectiontagrule)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="accesslevelinterfaceminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` **{warning-solid}** | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to delete container image tags from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, no minimum access level is enforced. Users with the Developer role or higher can delete tags by default. |
+| <a id="accesslevelinterfaceminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to push container image tags to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, no minimum access level is enforced. Users with the Developer role or higher can push tags by default. |
 
 #### `AlertManagementIntegration`
 

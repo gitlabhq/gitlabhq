@@ -230,7 +230,6 @@ To set up an instance profile:
        "Version": "2012-10-17",
        "Statement": [
            {
-               "Sid": "VisualEditor0",
                "Effect": "Allow",
                "Action": [
                    "s3:PutObject",
@@ -238,6 +237,13 @@ To set up an instance profile:
                    "s3:DeleteObject"
                ],
                "Resource": "arn:aws:s3:::test-bucket/*"
+           },
+           {
+               "Effect": "Allow",
+               "Action": [
+                   "s3:ListBucket"
+               ],
+               "Resource": "arn:aws:s3:::test-bucket"
            }
        ]
    }

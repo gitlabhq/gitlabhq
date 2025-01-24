@@ -3099,6 +3099,9 @@ msgstr ""
 msgid "Action not allowed."
 msgstr ""
 
+msgid "Action required: %{project_name} is read-only"
+msgstr ""
+
 msgid "Action to take when receiving an alert. %{docsLink}"
 msgstr ""
 
@@ -24740,6 +24743,12 @@ msgid "For individual use, create a separate account under your personal email a
 msgstr ""
 
 msgid "For investigating IT service disruptions or outages"
+msgstr ""
+
+msgid "For more information %{support_link_start}contact support%{link_end}."
+msgstr ""
+
+msgid "For more information contact support: %{support_link}."
 msgstr ""
 
 msgid "For more information on how the number of active users is calculated, see the %{self_managed_subscriptions_doc_link} documentation."
@@ -59083,6 +59092,9 @@ msgstr ""
 msgid "To remove the %{link_start}read-only%{link_end} state and regain write access, you can reduce the number of users in your top-level group to %{free_limit} users or less. You can also upgrade to a paid tier, which do not have user limits. If you need additional time, you can start a free 60-day trial which includes unlimited users."
 msgstr ""
 
+msgid "To remove the read-only state, reduce git repository and git LFS storage."
+msgstr ""
+
 msgid "To resolve the conflicts, either use interactive mode to select %{use_ours} or %{use_theirs}, or edit the files inline. Commit these changes into %{branch_name}."
 msgstr ""
 
@@ -65850,6 +65862,12 @@ msgid "You have been redirected to the only result; see the %{a_start}search res
 msgstr ""
 
 msgid "You have been unsubscribed from this thread."
+msgstr ""
+
+msgid "You have consumed all available storage and you can't push or add large files to %{project_name}"
+msgstr ""
+
+msgid "You have consumed all available storage and you can't push or add large files to %{strong_start}%{project_name}%{strong_end}"
 msgstr ""
 
 msgid "You have declined the invitation to join %{title} %{name}."

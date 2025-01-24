@@ -152,10 +152,10 @@ export default {
     <template v-if="activePanel">
       <div data-testid="active-panel-template" class="gl-flex gl-items-center gl-py-5">
         <div class="col-auto">
-          <img aria-hidden :src="activePanel.imageSrc" />
+          <img :alt="''" :src="activePanel.imageSrc" />
         </div>
         <div class="col">
-          <h4>{{ activePanel.title }}</h4>
+          <h1 class="gl-heading-2-fixed gl-my-3">{{ activePanel.title }}</h1>
 
           <p v-if="hasTextDetails">{{ details }}</p>
           <component :is="details" v-else v-bind="detailProps" />

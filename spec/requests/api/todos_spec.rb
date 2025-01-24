@@ -388,9 +388,14 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
     end
   end
 
-  shared_examples 'an issuable' do |issuable_type|
+  shared_examples 'an issuable' do |param|
+    let(:issuable_type) { param }
+    def create_todo_for_issuable(user, iid = issuable.iid)
+      post api("/projects/#{project_1.id}/#{issuable_type}/#{iid}/todo", user)
+    end
+
     it 'creates a todo on an issuable' do
-      post api("/projects/#{project_1.id}/#{issuable_type}/#{issuable.iid}/todo", john_doe)
+      create_todo_for_issuable(john_doe)
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['project']).to be_a Hash
@@ -406,11 +411,9 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
     end
 
     it 'returns 304 there already exist a todo on that issuable' do
-      stub_feature_flags(multiple_todos: false)
+      create_todo_for_issuable(john_doe)
 
-      create(:todo, project: project_1, author: author_1, user: john_doe, target: issuable)
-
-      post api("/projects/#{project_1.id}/#{issuable_type}/#{issuable.iid}/todo", john_doe)
+      create_todo_for_issuable(john_doe)
 
       expect(response).to have_gitlab_http_status(:not_modified)
     end
@@ -418,7 +421,7 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
     it 'returns 404 if the issuable is not found' do
       unknown_id = 0
 
-      post api("/projects/#{project_1.id}/#{issuable_type}/#{unknown_id}/todo", john_doe)
+      create_todo_for_issuable(john_doe, unknown_id)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
@@ -427,7 +430,7 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
       guest = create(:user)
       project_1.add_guest(guest)
 
-      post api("/projects/#{project_1.id}/#{issuable_type}/#{issuable.iid}/todo", guest)
+      create_todo_for_issuable(guest)
 
       if issuable_type == 'merge_requests'
         expect(response).to have_gitlab_http_status(:forbidden)

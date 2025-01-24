@@ -1,4 +1,8 @@
 {
+  "AccessLevelInterface": [
+    "ContainerProtectionAccessLevel",
+    "ContainerProtectionTagRule"
+  ],
   "AlertManagementIntegration": [
     "AlertManagementHttpIntegration",
     "AlertManagementPrometheusIntegration"

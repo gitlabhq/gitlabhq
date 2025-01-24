@@ -739,14 +739,35 @@ For Linux package (Omnibus):
    gitlab_rails['backup_upload_connection'] = {
      'provider' => 'AWS',
      'region' => 'eu-west-1',
+     # Choose one authentication method
+     # IAM Profile
+     'use_iam_profile' => true
+     # OR AWS Access and Secret key
      'aws_access_key_id' => 'AKIAKIAKI',
      'aws_secret_access_key' => 'secret123'
-     # If using an IAM Profile, don't configure aws_access_key_id & aws_secret_access_key
-     # 'use_iam_profile' => true
    }
    gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
    # Consider using multipart uploads when file size reaches 100MB. Enter a number in bytes.
    # gitlab_rails['backup_multipart_chunk_size'] = 104857600
+   ```
+
+1. If you're using the IAM Profile authentication method, ensure the instance where `backup-utility` is to be run has the following policy set (replace `<backups-bucket>` with the correct bucket name):
+
+   ```json
+   {
+       "Version": "2012-10-17",
+       "Statement": [
+           {
+               "Effect": "Allow",
+               "Action": [
+                   "s3:PutObject",
+                   "s3:GetObject",
+                   "s3:DeleteObject"
+               ],
+               "Resource": "arn:aws:s3:::<backups-bucket>/*"
+           }
+       ]
+   }
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
@@ -888,57 +909,6 @@ For self-compiled installations:
 
 1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect
-
-If you're uploading your backups to S3, you should create a new
-IAM user with restricted access rights. To give the upload user access only for
-uploading backups create the following IAM profile, replacing `my.s3.bucket`
-with the name of your bucket:
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "Stmt1412062044000",
-      "Effect": "Allow",
-      "Action": [
-        "s3:AbortMultipartUpload",
-        "s3:GetBucketAcl",
-        "s3:GetBucketLocation",
-        "s3:GetObject",
-        "s3:GetObjectAcl",
-        "s3:ListBucketMultipartUploads",
-        "s3:PutObject",
-        "s3:PutObjectAcl"
-      ],
-      "Resource": [
-        "arn:aws:s3:::my.s3.bucket/*"
-      ]
-    },
-    {
-      "Sid": "Stmt1412062097000",
-      "Effect": "Allow",
-      "Action": [
-        "s3:GetBucketLocation",
-        "s3:ListAllMyBuckets"
-      ],
-      "Resource": [
-        "*"
-      ]
-    },
-    {
-      "Sid": "Stmt1412062128000",
-      "Effect": "Allow",
-      "Action": [
-        "s3:ListBucket"
-      ],
-      "Resource": [
-        "arn:aws:s3:::my.s3.bucket"
-      ]
-    }
-  ]
-}
-```
 
 ##### Using Google Cloud Storage
 

@@ -786,7 +786,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/models/ee/pages_deployment_spec.rb'
     - 'ee/spec/models/ee/preloaders/group_policy_preloader_spec.rb'
     - 'ee/spec/models/ee/project_authorization_spec.rb'
-    - 'ee/spec/models/ee/project_statistics_spec.rb'
     - 'ee/spec/models/ee/protected_ref_spec.rb'
     - 'ee/spec/models/ee/release_spec.rb'
     - 'ee/spec/models/ee/resource_label_event_spec.rb'

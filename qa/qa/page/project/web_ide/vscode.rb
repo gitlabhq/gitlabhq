@@ -252,14 +252,27 @@ module QA
             within_vscode_editor do
               # VSCode eagerly removes the input[type='file'] from click on Upload.
               # We need to execute a script on the iframe to stub out the iframes body.removeChild to add it back in.
-              page.execute_script("document.body.removeChild = function(){};")
+              page.execute_script(
+                <<~JAVASCRIPT
+                window.__gl_old_remove = HTMLInputElement.prototype.remove;
+                HTMLInputElement.prototype.remove = function(){};
+                JAVASCRIPT
+              )
 
-              # under some conditions the page may not be fully loaded and the right click
-              # context menu can get closed prior to hitting 'upload' leading to failures
-              Support::Retrier.retry_until(retry_on_exception: true, message: "Uploading a file in vscode") do
-                right_click_file_explorer
-                click_upload_menu_item
-                enter_file_input(file_path)
+              begin
+                # under some conditions the page may not be fully loaded and the right click
+                # context menu can get closed prior to hitting 'upload' leading to failures
+                Support::Retrier.retry_until(retry_on_exception: true, message: "Uploading a file in vscode") do
+                  right_click_file_explorer
+                  click_upload_menu_item
+                  enter_file_input(file_path)
+                end
+              ensure
+                page.execute_script(
+                  <<~JAVASCRIPT
+                  HTMLInputElement.prototype.remove = window.__gl_old_remove;
+                  JAVASCRIPT
+                )
               end
             end
           end
@@ -339,6 +352,12 @@ module QA
           end
 
           def right_click_file_explorer
+            # NOTE: Web IDE prompts for clipboard permission to open the file explorer context menu
+            # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177778#note_2295036716
+            # https://gitlab.com/gitlab-org/gitlab-web-ide/-/issues/433
+            page.driver.browser.add_permission("clipboard-read", "granted")
+            page.driver.browser.add_permission("clipboard-write", "granted")
+
             page.find('.explorer-folders-view', visible: true).right_click
           end
 

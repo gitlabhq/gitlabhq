@@ -131,8 +131,6 @@ RSpec.describe 'container repository details', feature_category: :container_regi
     end
   end
 
-  it_behaves_like 'returning proper responses with different permissions', raw_tags: -> { tags }
-
   context 'with a giant size tag' do
     let(:tags) { %w[latest] }
     let(:giant_size) { 1.terabyte }
@@ -215,6 +213,10 @@ RSpec.describe 'container repository details', feature_category: :container_regi
           }
         }
       GQL
+    end
+
+    before do
+      stub_container_registry_gitlab_api_support(supported: false)
     end
 
     it 'sorts the tags', :aggregate_failures do
@@ -385,7 +387,15 @@ RSpec.describe 'container repository details', feature_category: :container_regi
 
   it_behaves_like 'handling graphql network errors with the container registry'
 
-  context 'when list tags API is enabled' do
+  context 'when the Gitlab API is not supported' do
+    before do
+      stub_container_registry_gitlab_api_support(supported: false)
+    end
+
+    it_behaves_like 'returning proper responses with different permissions', raw_tags: -> { tags }
+  end
+
+  context 'when the Gitlab API is supported' do
     before do
       stub_container_registry_config(enabled: true)
       allow_next_instances_of(ContainerRegistry::GitlabApiClient, nil) do |client|
@@ -646,6 +656,81 @@ RSpec.describe 'container repository details', feature_category: :container_regi
       subject
 
       expect(migration_state_response).to eq('')
+    end
+  end
+
+  context 'protection field' do
+    let(:raw_tags_response) { [{ name: 'latest', digest: 'sha256:123' }] }
+    let(:response_body) { { response_body: ::Gitlab::Json.parse(raw_tags_response.to_json) } }
+
+    let(:query) do
+      <<~GQL
+        query($id: ContainerRepositoryID!) {
+          containerRepository(id: $id) {
+            tags(first: 5) {
+              nodes {
+                protection {
+                  minimumAccessLevelForPush
+                  minimumAccessLevelForDelete
+                }
+              }
+            }
+          }
+        }
+      GQL
+    end
+
+    let(:tag_permissions_response) do
+      container_repository_details_response.dig('tags', 'nodes')[0]['protection']
+    end
+
+    before_all do
+      create(
+        :container_registry_protection_tag_rule,
+        project: project,
+        tag_name_pattern: 'latest',
+        minimum_access_level_for_push: 'maintainer',
+        minimum_access_level_for_delete: 'owner'
+      )
+
+      create(
+        :container_registry_protection_tag_rule,
+        project: project,
+        tag_name_pattern: '.*',
+        minimum_access_level_for_push: 'owner',
+        minimum_access_level_for_delete: 'maintainer'
+      )
+
+      create(
+        :container_registry_protection_tag_rule,
+        project: project,
+        tag_name_pattern: 'non-matching-pattern',
+        minimum_access_level_for_push: 'admin',
+        minimum_access_level_for_delete: 'admin'
+      )
+    end
+
+    it 'returns the maximum access fields from the matching protection rules' do
+      subject
+
+      expect(tag_permissions_response).to eq(
+        {
+          'minimumAccessLevelForPush' => 'OWNER',
+          'minimumAccessLevelForDelete' => 'OWNER'
+        }
+      )
+    end
+
+    context 'when the feature container_registry_protected_tags is disabled' do
+      before do
+        stub_feature_flags(container_registry_protected_tags: false)
+      end
+
+      it 'returns nil' do
+        subject
+
+        expect(tag_permissions_response).to be_nil
+      end
     end
   end
 end
