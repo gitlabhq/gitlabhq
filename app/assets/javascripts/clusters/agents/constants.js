@@ -31,7 +31,7 @@ export const EVENT_DETAILS = {
     body: s__('ClusterAgents|Agent %{strongStart}disconnected%{strongEnd}'),
     titleIcon: {
       name: 'severity-critical',
-      class: 'gl-text-red-800',
+      class: 'gl-text-danger',
     },
   },
 };

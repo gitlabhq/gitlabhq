@@ -28,11 +28,6 @@ export default {
       type: String,
       required: true,
     },
-    hideMlflowUsage: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     count: {
       type: Number,
       required: true,
@@ -74,7 +69,6 @@ export default {
     </template>
     <template #right-actions>
       <gl-disclosure-dropdown
-        v-if="!hideMlflowUsage"
         :toggle-text="$options.i18n.createTitle"
         toggle-class="gl-w-full"
         data-testid="create-dropdown"

@@ -1,0 +1,9 @@
+---
+name: conciseness_prompt_change
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/487008
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178771
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514557
+milestone: '17.9'
+group: group::duo chat
+type: beta
+default_enabled: false

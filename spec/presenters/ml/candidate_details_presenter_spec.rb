@@ -186,6 +186,16 @@ RSpec.describe ::Ml::CandidateDetailsPresenter, feature_category: :mlops do
           expect(subject.dig('info', 'canPromote')).to be(false)
         end
       end
+
+      context 'when user is nil' do
+        subject(:present_as_json) do
+          Gitlab::Json.parse(described_class.new(candidate, nil).present_as_json)['candidate']
+        end
+
+        it 'ciJob is nil' do
+          expect(present_as_json.dig('info', 'ciJob')).to be_nil
+        end
+      end
     end
   end
 end
