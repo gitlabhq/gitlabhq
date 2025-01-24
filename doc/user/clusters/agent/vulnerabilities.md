@@ -238,6 +238,23 @@ To do this:
         - Job
   ```
 
+## Configure Trivy report artifact deletion
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/480845) in GitLab 17.9.
+
+By default, the GitLab agent deletes the Trivy report artifact after a scan has completed.
+
+You can configure the GitLab agent to preserve the report artifact, so you can view the report in its raw state.
+
+To do this:
+
+- Set `delete_report_artifact` to `false`:
+
+  ```yaml
+  container_scanning:
+    delete_report_artifact: false
+  ```
+
 ## View cluster vulnerabilities
 
 To view vulnerability information in GitLab:

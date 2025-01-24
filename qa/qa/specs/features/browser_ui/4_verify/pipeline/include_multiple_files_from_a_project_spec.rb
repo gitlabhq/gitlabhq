@@ -15,8 +15,7 @@ module QA
         Flow::Login.sign_in
         add_included_files
         add_main_ci_file
-        project.visit!
-        Flow::Pipeline.visit_latest_pipeline(status: 'Passed')
+        project.visit_latest_pipeline
       end
 
       after do
@@ -47,6 +46,8 @@ module QA
 
       def add_main_ci_file
         create(:commit, project: project, commit_message: 'Add config file', actions: [main_ci_file])
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+        Flow::Pipeline.wait_for_latest_pipeline_to_have_status(project: project, status: 'success')
       end
 
       def add_included_files

@@ -47,7 +47,10 @@ module MergeRequests
       delegate :project, :author_id, :changed_paths, to: :merge_request
 
       def contains_locked_lfs_files?
-        project.lfs_file_locks.for_paths(changed_paths.map(&:path)).not_for_users(author_id).exists?
+        return false unless project.lfs_file_locks.exists?
+
+        paths = changed_paths.map(&:path).uniq
+        project.lfs_file_locks.for_paths(paths).not_for_users(author_id).exists?
       end
 
       def check_inactive?

@@ -15,11 +15,11 @@ module QA
       end
 
       before do
+        Flow::Login.sign_in
         update_runner_policy(allowed_policies)
         add_ci_file
-        Flow::Login.sign_in
-        project.visit!
-        Flow::Pipeline.visit_latest_pipeline
+
+        project.visit_latest_pipeline
       end
 
       after do
@@ -63,7 +63,7 @@ module QA
 
         with_them do
           it 'applies pull policy in job correctly', testcase: params[:testcase] do
-            visit_job
+            project.visit_job(job_name)
 
             if pull_image
               expect(job_log).to have_content(message),
@@ -93,7 +93,7 @@ module QA
             issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/462232"
           }
         ) do
-          visit_job
+          project.visit_job(job_name)
 
           expect(job_log).to include(text1, text2),
             "Expected to find contents #{text1} and #{text2} in #{job_log}, but didn't."
@@ -140,14 +140,9 @@ module QA
             YAML
           }
         ])
-      end
 
-      def visit_job
-        Page::Project::Pipeline::Show.perform do |show|
-          Support::Waiter.wait_until(max_duration: 90) { show.completed? }
-
-          show.click_job(job_name)
-        end
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+        Flow::Pipeline.wait_for_latest_pipeline_to_have_status(project: project, status: 'success')
       end
 
       def job_log

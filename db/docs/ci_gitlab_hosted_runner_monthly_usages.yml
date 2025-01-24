@@ -1,0 +1,13 @@
+---
+table_name: ci_gitlab_hosted_runner_monthly_usages
+classes:
+- Ci::Minutes::GitlabHostedRunnerMonthlyUsage
+feature_categories:
+- continuous_integration
+description: Per month CI usage data at the runner and project level meant to store
+  GitLab hosted runners data on Dedicated installations only.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171336
+milestone: '17.9'
+gitlab_schema: gitlab_ci
+exempt_from_sharding: true
+notes: Exempted from sharding because Dedicated only.

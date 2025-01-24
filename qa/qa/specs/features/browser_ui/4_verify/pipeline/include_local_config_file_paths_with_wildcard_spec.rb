@@ -8,15 +8,11 @@ module QA
       before do
         Flow::Login.sign_in
         add_files_to_project
-        project.visit!
-        Flow::Pipeline.visit_latest_pipeline
+        project.visit_latest_pipeline
       end
 
-      after do
-        project.remove_via_api!
-      end
-
-      it 'runs the pipeline with composed config', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348002' do
+      it 'runs the pipeline with composed config',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348002' do
         Page::Project::Pipeline::Show.perform do |pipeline|
           aggregate_failures 'pipeline has all expected jobs' do
             expect(pipeline).to have_job('build')
@@ -32,6 +28,7 @@ module QA
         create(:commit, project: project, commit_message: 'Add CI and local files', actions: [
           build_config_file, test_config_file, non_detectable_file, main_ci_file
         ])
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
       end
 
       def main_ci_file

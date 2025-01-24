@@ -39,6 +39,13 @@ ci_group_variables:
   - table: namespaces
     column: group_id
     on_delete: async_delete
+ci_instance_runner_monthly_usages:
+  - table: namespaces
+    column: root_namespace_id
+    on_delete: async_delete
+  - table: projects
+    column: project_id
+    on_delete: async_nullify
 ci_job_token_authorizations:
   - table: projects
     column: origin_project_id

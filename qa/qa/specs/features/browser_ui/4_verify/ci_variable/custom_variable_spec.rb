@@ -29,17 +29,16 @@ module QA
       end
 
       before do
-        Flow::Login.sign_in
-
         project.change_pipeline_variables_minimum_override_role('developer')
 
+        Flow::Login.sign_in
         project.visit!
         Page::Project::Menu.perform(&:go_to_pipelines)
         Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
       end
 
       after do
-        runner&.remove_via_api!
+        runner.remove_via_api!
       end
 
       it 'manually creates a pipeline and uses the defined custom variable value',

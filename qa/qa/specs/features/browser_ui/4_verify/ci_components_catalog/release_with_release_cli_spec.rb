@@ -20,7 +20,6 @@ module QA
         Runtime::Feature.disable(:ci_release_cli_catalog_publish_option)
 
         Flow::Login.sign_in
-
         Flow::Project.enable_catalog_resource_feature(project)
       end
 
@@ -34,41 +33,52 @@ module QA
         project.create_repository_tag('1.0.0')
 
         project.visit!
-        visit_job('create-release-with-existing-tag')
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+        project.visit_job('create-release-with-existing-tag')
 
         Page::Project::Job::Show.perform do |show|
-          expect(show.output).to have_content('release created successfully!')
-          expect(show.output).to have_content('Tag: 1.0.0')
-          expect(show.output).to have_content('Name: 1.0.0')
-          expect(show.output).to have_content('Description: A long description of the release')
+          Support::Waiter.wait_until { show.has_passed? }
+
+          aggregate_failures 'Job has expected contents' do
+            expect(show.output).to have_content('release created successfully!')
+            expect(show.output).to have_content('Tag: 1.0.0')
+            expect(show.output).to have_content('Name: 1.0.0')
+            expect(show.output).to have_content('Description: A long description of the release')
+          end
         end
 
         visit_catalog_resource_show_page
 
         Page::Explore::CiCdCatalog::Show.perform do |show|
-          expect(show).to have_version_badge('1.0.0')
-          expect(show).to have_component_name('new_component')
-          expect(show).to have_input(
-            name: 'scanner-output',
-            required: 'false',
-            type: 'string',
-            description: '',
-            default: 'json'
-          )
+          aggregate_failures 'Catalog component has expected contents' do
+            expect(show).to have_version_badge('1.0.0')
+            expect(show).to have_component_name('new_component')
+            expect(show).to have_input(
+              name: 'scanner-output',
+              required: 'false',
+              type: 'string',
+              description: '',
+              default: 'json'
+            )
+          end
 
           show.click_latest_version_badge
         end
 
         Page::Project::Tag::Show.perform do |show|
-          expect(show).to have_tag_name('1.0.0')
-          expect(show).to have_no_tag_message
+          aggregate_failures 'Project tag has expected contents' do
+            expect(show).to have_tag_name('1.0.0')
+            expect(show).to have_no_tag_message
+          end
 
           show.click_release_link
         end
 
         Page::Project::Release::Show.perform do |show|
-          expect(show).to have_release_name('1.0.0')
-          expect(show).to have_release_description('A long description of the release')
+          aggregate_failures 'Project release has expected contents' do
+            expect(show).to have_release_name('1.0.0')
+            expect(show).to have_release_description('A long description of the release')
+          end
         end
       end
 
@@ -78,49 +88,60 @@ module QA
         project.create_repository_tag('1.0.0')
 
         project.visit!
-        visit_job('create-release-with-new-tag-filled-with-information')
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+        project.visit_job('create-release-with-new-tag-filled-with-information')
 
         Page::Project::Job::Show.perform do |show|
-          expect(show.output).to have_content('release created successfully!')
-          expect(show.output).to have_content('Tag: v9.0.2')
-          expect(show.output).to have_content('Name: new release v9.0.2')
-          expect(show.output).to have_content('Description: A long description of the release')
-          expect(show.output).to have_content('Released At: 2026-01-01 00:00:00 +0000 UTC')
-          expect(show.output).to have_content('Asset::Link::Name: Download link')
-          expect(show.output).to have_content('Asset::Link::URL: https://gitlab-runner-downloads.s3.amazonaws.com/v16.9.0-rc2/binaries/gitlab-runner-linux-amd64')
-          expect(show.output).to have_content('Milestone: v1.0 -')
-          expect(show.output).to have_content('Milestone: v2.0 -')
+          Support::Waiter.wait_until { show.has_passed? }
+
+          aggregate_failures 'Job has expected contents' do
+            expect(show.output).to have_content('release created successfully!')
+            expect(show.output).to have_content('Tag: v9.0.2')
+            expect(show.output).to have_content('Name: new release v9.0.2')
+            expect(show.output).to have_content('Description: A long description of the release')
+            expect(show.output).to have_content('Released At: 2026-01-01 00:00:00 +0000 UTC')
+            expect(show.output).to have_content('Asset::Link::Name: Download link')
+            expect(show.output).to have_content('Asset::Link::URL: https://gitlab-runner-downloads.s3.amazonaws.com/v16.9.0-rc2/binaries/gitlab-runner-linux-amd64')
+            expect(show.output).to have_content('Milestone: v1.0 -')
+            expect(show.output).to have_content('Milestone: v2.0 -')
+          end
         end
 
         visit_catalog_resource_show_page
 
         Page::Explore::CiCdCatalog::Show.perform do |show|
-          expect(show).to have_version_badge('9.0.2')
-          expect(show).to have_component_name('new_component')
-          expect(show).to have_input(
-            name: 'scanner-output',
-            required: 'false',
-            type: 'string',
-            description: '',
-            default: 'json'
-          )
+          aggregate_failures 'Catalog component has expected contents' do
+            expect(show).to have_version_badge('9.0.2')
+            expect(show).to have_component_name('new_component')
+            expect(show).to have_input(
+              name: 'scanner-output',
+              required: 'false',
+              type: 'string',
+              description: '',
+              default: 'json'
+            )
+          end
 
           show.click_latest_version_badge
         end
 
         Page::Project::Tag::Show.perform do |show|
-          expect(show).to have_tag_name('v9.0.2')
-          expect(show).to have_tag_message('a new tag')
+          aggregate_failures 'Project tag has expected contents' do
+            expect(show).to have_tag_name('v9.0.2')
+            expect(show).to have_tag_message('a new tag')
+          end
 
           show.click_release_link
         end
 
         Page::Project::Release::Show.perform do |show|
-          expect(show).to have_release_name('new release v9.0.2')
-          expect(show).to have_release_description('A long description of the release')
-          expect(show).to have_milestone_title('v1.0')
-          expect(show).to have_milestone_title('v2.0')
-          expect(show).to have_asset_link('Download link', '/binaries/gitlab-runner-linux-amd64')
+          aggregate_failures 'Project release has expected contents' do
+            expect(show).to have_release_name('new release v9.0.2')
+            expect(show).to have_release_description('A long description of the release')
+            expect(show).to have_milestone_title('v1.0')
+            expect(show).to have_milestone_title('v2.0')
+            expect(show).to have_asset_link('Download link', '/binaries/gitlab-runner-linux-amd64')
+          end
         end
       end
 
@@ -196,17 +217,6 @@ module QA
                     filepath: "/binaries/gitlab-runner-linux-amd64"
                     link_type: "other"
         YAML
-      end
-
-      def visit_job(job_name)
-        Flow::Pipeline.visit_latest_pipeline
-
-        Page::Project::Pipeline::Show.perform do |show|
-          Support::Waiter.wait_until { show.has_passed? }
-
-          expect(show).to have_job(job_name)
-          show.click_job(job_name)
-        end
       end
 
       def visit_catalog_resource_show_page

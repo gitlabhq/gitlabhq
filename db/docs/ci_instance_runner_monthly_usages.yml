@@ -1,0 +1,16 @@
+---
+table_name: ci_instance_runner_monthly_usages
+classes:
+- Ci::Minutes::InstanceRunnerMonthlyUsage
+feature_categories:
+- continuous_integration
+description: Per month CI usage data at the runner and project level meant to store
+  instance runner usage except hosted runners on dedicated
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171336
+milestone: '17.9'
+gitlab_schema: gitlab_ci
+sharding_key:
+  # The table entries belong to a namespace/group only
+  # We don't shard on projects because the usage is recorded as caused by a project but shouldn't move with that project
+  # the usage should stay with it's root namespace even if the project moves
+  root_namespace_id: namespaces

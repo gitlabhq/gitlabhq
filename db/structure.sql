@@ -9905,6 +9905,29 @@ CREATE SEQUENCE ci_freeze_periods_id_seq
 
 ALTER SEQUENCE ci_freeze_periods_id_seq OWNED BY ci_freeze_periods.id;
 
+CREATE TABLE ci_gitlab_hosted_runner_monthly_usages (
+    id bigint NOT NULL,
+    runner_id bigint NOT NULL,
+    runner_duration_seconds bigint DEFAULT 0 NOT NULL,
+    project_id bigint NOT NULL,
+    root_namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    billing_month date NOT NULL,
+    notification_level integer DEFAULT 100 NOT NULL,
+    compute_minutes_used numeric(18,4) DEFAULT 0.0 NOT NULL,
+    CONSTRAINT ci_hosted_runner_monthly_usages_month_constraint CHECK ((billing_month = date_trunc('month'::text, (billing_month)::timestamp with time zone)))
+);
+
+CREATE SEQUENCE ci_gitlab_hosted_runner_monthly_usages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ci_gitlab_hosted_runner_monthly_usages_id_seq OWNED BY ci_gitlab_hosted_runner_monthly_usages.id;
+
 CREATE TABLE ci_group_variables (
     id bigint NOT NULL,
     key character varying NOT NULL,
@@ -9934,6 +9957,29 @@ CREATE SEQUENCE ci_group_variables_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ci_group_variables_id_seq OWNED BY ci_group_variables.id;
+
+CREATE TABLE ci_instance_runner_monthly_usages (
+    id bigint NOT NULL,
+    runner_id bigint,
+    runner_duration_seconds bigint DEFAULT 0 NOT NULL,
+    project_id bigint,
+    root_namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    billing_month date NOT NULL,
+    notification_level integer DEFAULT 100 NOT NULL,
+    compute_minutes_used numeric(18,4) DEFAULT 0.0 NOT NULL,
+    CONSTRAINT ci_instance_runner_monthly_usages_year_month_constraint CHECK ((billing_month = date_trunc('month'::text, (billing_month)::timestamp with time zone)))
+);
+
+CREATE SEQUENCE ci_instance_runner_monthly_usages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ci_instance_runner_monthly_usages_id_seq OWNED BY ci_instance_runner_monthly_usages.id;
 
 CREATE TABLE ci_instance_variables (
     id bigint NOT NULL,
@@ -24346,7 +24392,11 @@ ALTER TABLE ONLY ci_deleted_objects ALTER COLUMN id SET DEFAULT nextval('ci_dele
 
 ALTER TABLE ONLY ci_freeze_periods ALTER COLUMN id SET DEFAULT nextval('ci_freeze_periods_id_seq'::regclass);
 
+ALTER TABLE ONLY ci_gitlab_hosted_runner_monthly_usages ALTER COLUMN id SET DEFAULT nextval('ci_gitlab_hosted_runner_monthly_usages_id_seq'::regclass);
+
 ALTER TABLE ONLY ci_group_variables ALTER COLUMN id SET DEFAULT nextval('ci_group_variables_id_seq'::regclass);
+
+ALTER TABLE ONLY ci_instance_runner_monthly_usages ALTER COLUMN id SET DEFAULT nextval('ci_instance_runner_monthly_usages_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_instance_variables ALTER COLUMN id SET DEFAULT nextval('ci_instance_variables_id_seq'::regclass);
 
@@ -26434,8 +26484,14 @@ ALTER TABLE ONLY ci_deleted_objects
 ALTER TABLE ONLY ci_freeze_periods
     ADD CONSTRAINT ci_freeze_periods_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY ci_gitlab_hosted_runner_monthly_usages
+    ADD CONSTRAINT ci_gitlab_hosted_runner_monthly_usages_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY ci_group_variables
     ADD CONSTRAINT ci_group_variables_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ci_instance_runner_monthly_usages
+    ADD CONSTRAINT ci_instance_runner_monthly_usages_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ci_instance_variables
     ADD CONSTRAINT ci_instance_variables_pkey PRIMARY KEY (id);
@@ -30033,6 +30089,12 @@ CREATE INDEX idx_group_audit_events_on_project_created_at_id ON ONLY group_audit
 
 CREATE INDEX idx_headers_instance_external_audit_event_destination_id ON instance_audit_events_streaming_headers USING btree (instance_external_audit_event_destination_id);
 
+CREATE INDEX idx_hosted_runner_usage_on_namespace_billing_month ON ci_gitlab_hosted_runner_monthly_usages USING btree (root_namespace_id, billing_month);
+
+CREATE INDEX idx_hosted_runner_usage_on_project_billing_month ON ci_gitlab_hosted_runner_monthly_usages USING btree (project_id, billing_month);
+
+CREATE UNIQUE INDEX idx_hosted_runner_usage_unique ON ci_gitlab_hosted_runner_monthly_usages USING btree (runner_id, billing_month, root_namespace_id, project_id);
+
 CREATE UNIQUE INDEX idx_import_placeholder_memberships_on_source_user_group_id ON import_placeholder_memberships USING btree (source_user_id, group_id);
 
 CREATE INDEX idx_import_placeholder_memberships_on_source_user_id_and_id ON import_placeholder_memberships USING btree (source_user_id, id);
@@ -30054,6 +30116,8 @@ CREATE INDEX idx_installable_npm_pkgs_on_project_id_name_version_id ON packages_
 CREATE INDEX idx_instance_audit_events_on_author_id_created_at_id ON ONLY instance_audit_events USING btree (author_id, created_at, id);
 
 CREATE UNIQUE INDEX idx_instance_external_audit_event_destination_id_key_uniq ON instance_audit_events_streaming_headers USING btree (instance_external_audit_event_destination_id, key);
+
+CREATE UNIQUE INDEX idx_instance_runner_usage_unique ON ci_instance_runner_monthly_usages USING btree (runner_id, billing_month, root_namespace_id, project_id);
 
 CREATE INDEX idx_issues_on_health_status_not_null ON issues USING btree (health_status) WHERE (health_status IS NOT NULL);
 
@@ -30960,6 +31024,10 @@ CREATE INDEX index_ci_finished_pipeline_ch_sync_events_for_partitioned_query ON 
 CREATE INDEX index_ci_freeze_periods_on_project_id ON ci_freeze_periods USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ci_group_variables_on_group_id_and_key_and_environment ON ci_group_variables USING btree (group_id, key, environment_scope);
+
+CREATE INDEX index_ci_instance_runner_monthly_usages_on_namespace_and_month ON ci_instance_runner_monthly_usages USING btree (root_namespace_id, billing_month);
+
+CREATE INDEX index_ci_instance_runner_monthly_usages_on_project_and_month ON ci_instance_runner_monthly_usages USING btree (project_id, billing_month);
 
 CREATE UNIQUE INDEX index_ci_instance_variables_on_key ON ci_instance_variables USING btree (key);
 
@@ -39642,6 +39710,9 @@ ALTER TABLE ONLY issue_user_mentions
 
 ALTER TABLE ONLY namespace_settings
     ADD CONSTRAINT fk_rails_3896d4fae5 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_instance_runner_monthly_usages
+    ADD CONSTRAINT fk_rails_38b9dcccc9 FOREIGN KEY (runner_id) REFERENCES ci_runners(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY packages_cleanup_policies
     ADD CONSTRAINT fk_rails_393ba98591 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

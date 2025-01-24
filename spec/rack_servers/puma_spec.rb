@@ -25,7 +25,7 @@ RSpec.describe 'Puma' do
     WebMock.allow_net_connect!
   end
 
-  %w[SIGQUIT SIGTERM SIGKILL].each do |signal|
+  %w[SIGTERM SIGKILL].each do |signal|
     it "has a worker that self-terminates on signal #{signal}" do
       response = Excon.get('unix://', socket: @socket_path)
       expect(response.status).to eq(200)

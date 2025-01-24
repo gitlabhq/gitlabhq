@@ -631,3 +631,15 @@ If you notice any inconsistencies in your merge request approval rules, you can 
 These actions help ensure that your merge request approval policies are correctly applied and consistent across all merge requests.
 
 If you continue to experience issues with merge request approval policies after taking these steps, contact GitLab support for assistance.
+
+### Merge requests that fix a detected vulnerability require approval
+
+If your policy configuration includes the `detected` state, merge requests that
+fix previously detected vulnerabilities still require approval. The merge request
+approval policy evaluates based on vulnerabilities that existed before the changes
+in the merge request, which adds an additional layer of review for any changes that affect
+known vulnerabilities.
+
+If you want to allow merge requests that fix vulnerabilities to proceed without
+any additional approvals due to a detected vulnerability, consider removing the
+`detected` state from your policy configuration.

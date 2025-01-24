@@ -564,6 +564,8 @@ container_repositories:
 - project
 - name
 project:
+- instance_runner_monthly_usages
+- hosted_runner_monthly_usages
 - catalog_resource
 - catalog_resource_sync_events
 - catalog_resource_versions
