@@ -962,29 +962,6 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         end
       end
 
-      context 'filter by review_state' do
-        let_it_be(:requested_changes_mr) do
-          create(:merge_request, :unique_branches, author: user, reviewers: [user2], source_project: project2, target_project: project2)
-        end
-
-        let_it_be(:reviewed_mr) do
-          create(:merge_request, :unique_branches, author: user, reviewers: [user2], source_project: project2, target_project: project2)
-        end
-
-        let(:params) { { scope: :all, review_state: 'requested_changes' } }
-
-        before_all do
-          requested_changes_mr.merge_request_reviewers.update_all(state: :requested_changes)
-          reviewed_mr.merge_request_reviewers.update_all(state: :reviewed)
-        end
-
-        it 'returns merge requests that a reviewer has requested changes on' do
-          get api('/merge_requests', user), params: params
-
-          expect_response_contain_exactly(requested_changes_mr.id)
-        end
-      end
-
       context 'filter by merge_user' do
         let(:params) { { scope: :all } }
 

@@ -19,10 +19,11 @@ By default, merge request diffs are stored in the database, in a table named
 `merge_request_diff_files`. Larger installations may find this table grows too
 large, in which case, switching to external storage is recommended.
 
-Merge request diffs can be stored [on disk](#using-external-storage), or in
-[object storage](#using-object-storage). In general, it
-is better to store the diffs in the database than on disk. A compromise is available
-that only [stores outdated diffs](#alternative-in-database-storage) outside of database.
+Merge request diffs can be stored:
+
+- Completely [on disk](#using-external-storage).
+- Completely [on object storage](#using-object-storage).
+- Current diffs in the database, and [outdated diffs in object storage](#alternative-in-database-storage).
 
 ## Using external storage
 

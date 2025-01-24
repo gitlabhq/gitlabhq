@@ -136,7 +136,7 @@ pre-push:
     verify-tff-mapping:
       tags: backend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: 'tests.yml'
+      glob: '{tests.yml,*.rb,scripts/verify-tff-mapping}'
       run: scripts/verify-tff-mapping
     secrets-detection:
       tags: secrets

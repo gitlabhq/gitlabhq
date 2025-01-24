@@ -22,7 +22,7 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
         allow(search_navigation).to receive(:can?).with(user, :read_code, project_double).and_return(true)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when user does not have ability for tab' do
@@ -30,7 +30,7 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
         allow(search_navigation).to receive(:can?).with(user, :read_code, project_double).and_return(false)
       end
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when an array of projects is provided' do
@@ -40,13 +40,13 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
         allow(search_navigation).to receive(:can?).with(user, :read_code, project_double).and_return(true)
       end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when project is not present' do
       let_it_be(:project) { nil }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -54,9 +54,8 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
     using RSpec::Parameterized::TableSyntax
 
     before do
-      allow(search_navigation).to receive(:can?).and_return(true)
-      allow(search_navigation).to receive(:tab_enabled_for_project?).and_return(false)
-      allow(search_navigation).to receive(:feature_flag_tab_enabled?).and_return(false)
+      allow(search_navigation)
+        .to receive_messages(can?: true, tab_enabled_for_project?: false, feature_flag_tab_enabled?: false)
     end
 
     subject(:tabs) { search_navigation.tabs }

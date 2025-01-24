@@ -6,7 +6,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 # Project access tokens
 
-> - [Became available in trial subscriptions](https://gitlab.com/gitlab-org/gitlab/-/issues/386041) in GitLab 16.1. Default prefix added.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386041) for trial subscriptions in GitLab 16.1.
 
 Project access tokens are similar to passwords, except you can [limit access to resources](#scopes-for-a-project-access-token),
 select a limited role, and provide an expiry date.

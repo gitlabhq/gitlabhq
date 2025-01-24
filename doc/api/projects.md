@@ -1660,6 +1660,7 @@ Supported general project attributes:
 | `jobs_enabled`                                     | boolean           | No       | _(Deprecated)_ Enable jobs for this project. Use `builds_access_level` instead. |
 | `keep_latest_artifact`                             | boolean           | No       | Disable or enable the ability to keep the latest artifact for this project. |
 | `lfs_enabled`                                      | boolean           | No       | Enable LFS. |
+| `max_artifacts_size`                               | integer           | No       | The maximum file size in megabytes for individual job artifacts. |
 | `merge_commit_template`                            | string            | No       | [Template](../user/project/merge_requests/commit_templates.md) used to create merge commit message in merge requests. |
 | `merge_method`                                     | string            | No       | Set the project's [merge method](../user/project/merge_requests/methods/index.md). Can be `merge` (merge commit), `rebase_merge` (merge commit with semi-linear history), or `ff` (fast-forward merge). |
 | `merge_pipelines_enabled`                          | boolean           | No       | Enable or disable merged results pipelines. |

@@ -133,12 +133,12 @@ by an administrator. Users can use their account only after they have been appro
 
 If an administrator increases or removes the user cap, users pending approval are automatically approved.
 
-[View how to set up a user cap for groups](../../user/group/manage.md#user-cap-for-groups).
+You can also set up [user caps for individual groups](../../user/group/manage.md#user-cap-for-groups).
 
 NOTE:
 For instances that use LDAP or OmniAuth, when [administrator approval for new sign-ups](#require-administrator-approval-for-new-sign-ups)
 is enabled or disabled, downtime might occur due to changes in the Rails configuration.
-You can set a user cap to enforce approvals for new users. To ensure the user cap applies immediately, set the cap to a value below the current number of billable users (for example, `1`).
+You can set a user cap to enforce approvals for new users.
 
 ### Set a user cap
 
@@ -146,8 +146,7 @@ Set a user cap to restrict the number of users who can sign up without administr
 
 The number of [billable users](../../subscriptions/self_managed/index.md#billable-users) is updated once a day.
 The user cap might apply only retrospectively after the cap has already been exceeded.
-To ensure the cap is enabled immediately, set the cap to a value below the current number of
-billable users (for example, `1`).
+If the cap is set to a value below the current number of billable users (for example, `1`), the cap is enabled immediately.
 
 Prerequisites:
 
@@ -158,7 +157,7 @@ To set a user cap:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.
-1. Enter a number in **User cap**.
+1. In the **User cap** field, enter a number or leave blank for unlimited.
 1. Select **Save changes**.
 
 ### Remove the user cap
@@ -274,7 +273,7 @@ that are [pending administrator approval](../moderate_users.md#view-users-pendin
 
 - If a user who isn't an administrator adds a user to a group or project:
   - If the user does not have any billable role in any group or project, and is added or promoted to a billable role,
-  their request remains [pending until administrator approval(../moderate_users.md#view-users-pending-role-promotion).
+  their request remains [pending until administrator approval](../moderate_users.md#view-users-pending-role-promotion).
   - If the user already has a billable role, administrator approval is not required.
 
 Prerequisites:

@@ -94,7 +94,6 @@ export default {
     />
     <gl-collapsible-listbox
       :toggle-text="getDropdownSelectedText"
-      :disabled="loading"
       :items="items"
       :selected="sortFilterProp"
       placement="bottom-end"

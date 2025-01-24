@@ -251,6 +251,8 @@ export default {
     <gl-modal
       modal-id="create-work-item-modal"
       modal-class="create-work-item-modal"
+      :aria-label="newWorkItemText"
+      :title="newWorkItemText"
       body-class="!gl-pb-0"
       :visible="isCreateModalVisible"
       scrollable

@@ -15251,6 +15251,9 @@ msgstr ""
 msgid "Confirm your email address"
 msgstr ""
 
+msgid "Confirmation"
+msgstr ""
+
 msgid "Confirmation email sent to %{email}"
 msgstr ""
 
@@ -43148,7 +43151,7 @@ msgstr ""
 msgid "Preview suppressed by a .gitattributes entry or the file's encoding is unsupported."
 msgstr ""
 
-msgid "Preview the new issues experience, with real time updates and refreshed design. Some features are not yet supported, see feedback issue for details."
+msgid "Preview the new issues experience, with real time updates and refreshed design."
 msgstr ""
 
 msgid "Previous commit"

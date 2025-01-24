@@ -98,10 +98,13 @@ const checkProjectName = (projectNameInput) => {
     projectNameError.innerText = msg;
     projectNameError.classList.remove('gl-hidden');
     projectNameDescription.classList.add('gl-hidden');
+    projectNameInput.setAttribute('aria-describedby', projectNameError.id);
   } else {
     projectNameError.classList.add('gl-hidden');
     projectNameDescription.classList.remove('gl-hidden');
+    projectNameInput.setAttribute('aria-describedby', projectNameDescription.id);
   }
+  projectNameInput.setAttribute('aria-invalid', Boolean(msg));
 };
 
 const setProjectNamePathHandlers = ($projectNameInput, $projectPathInput) => {

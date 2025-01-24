@@ -43,17 +43,28 @@ export function waitingForAssigneeBadge({ currentUserAsReviewer }) {
 }
 
 export function approvalBadge({ mergeRequest, currentUserId }) {
-  if (mergeRequest.approvalsLeft > 0) {
+  const reviewersNotApproved = mergeRequest.reviewers.nodes.filter(
+    (r) => r.mergeRequestInteraction.reviewState !== 'APPROVED',
+  );
+
+  if (
+    mergeRequest.approvalsLeft > 0 ||
+    (mergeRequest.approvalsRequired === 0 && reviewersNotApproved.length > 0)
+  ) {
     return {
       icon: 'hourglass',
-      text: n__('%d approval required', '%d approvals required', mergeRequest.approvalsLeft),
+      text: n__(
+        '%d approval required',
+        '%d approvals required',
+        mergeRequest.approvalsLeft || reviewersNotApproved.length,
+      ),
       variant: 'muted',
     };
   }
 
   if (
     mergeRequest.approvedBy?.nodes.find((u) => u.id === currentUserId) ||
-    mergeRequest.approvalsRequired === 0
+    mergeRequest.approvalsLeft === 0
   ) {
     return {
       icon: 'check-circle-filled',
