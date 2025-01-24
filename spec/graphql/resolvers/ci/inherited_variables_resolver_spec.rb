@@ -26,7 +26,7 @@ RSpec.describe Resolvers::Ci::InheritedVariablesResolver, feature_category: :sec
       let_it_be(:obj) { project_without_group }
 
       it 'returns an empty array' do
-        expect(resolve_variables.items.to_a).to match_array([])
+        expect(resolve_variables.items.to_a).to be_empty
       end
     end
 

@@ -52,7 +52,7 @@ RSpec.describe Tooling::GettextExtractor, feature_category: :tooling do
     # Testing with a non-externalized string, as the functionality
     # is properly tested later on
     it '#parse_source' do
-      expect(described_class::HamlParser.new(files[:haml_file]).parse_source('%h1= "Test"')).to match_array([])
+      expect(described_class::HamlParser.new(files[:haml_file]).parse_source('%h1= "Test"')).to be_empty
     end
   end
 
@@ -255,7 +255,7 @@ RSpec.describe Tooling::GettextExtractor, feature_category: :tooling do
         end
 
         it 'never parses the file and returns empty array' do
-          expect(subject).to match_array([])
+          expect(subject).to be_empty
           expect(parser).not_to have_received(:new)
         end
       end

@@ -50,12 +50,15 @@ To see how your language is best supported, review the
 
 ### With the CI/CD component
 
+> - Python support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301111) in GitLab 17.9.
+
 GitLab provides a [CI/CD component](../../ci/components/index.md) to configure code intelligence
 in your `.gitlab-ci.yml` file. The component supports these languages:
 
 - Go version 1.21 or later.
 - TypeScript or JavaScript.
 - Java 8, 11, 17, and 21.
+- Python
 
 To contribute more languages to the component, open a merge request in the
 [Code intelligence component project](https://gitlab.com/components/code-intelligence).

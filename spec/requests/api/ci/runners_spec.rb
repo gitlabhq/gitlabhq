@@ -481,7 +481,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
               it 'filters runners by version_prefix' do
                 perform_request
 
-                expect(json_response).to match_array []
+                expect(json_response).to be_empty
               end
             end
 

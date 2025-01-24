@@ -1,27 +1,23 @@
 - max_project_topic_length = 15
 
 - if project.topics.present?
-  .gl-w-full.gl-inline-flex.gl-flex-wrap.gl-text-base.gl-font-normal.gl-items-center.-gl-mx-2.-gl-my-2{ 'data-testid': 'project_topic_list' }
+  .gl-w-full.gl-inline-flex.gl-flex-wrap.gl-text-base.gl-font-normal.gl-items-center.gl-gap-2{ 'data-testid': 'project_topic_list' }
     - project.topics_to_show.each do |topic|
       - explore_project_topic_path = topic_explore_projects_cleaned_path(topic_name: topic[:name])
       - if topic[:title].length > max_project_topic_length
-        %a.gl-p-2.has-tooltip{ data: { container: "body" }, title: topic[:title], href: explore_project_topic_path, itemprop: 'keywords' }
-          = gl_badge_tag truncate(topic[:title], length: max_project_topic_length)
+        = gl_badge_tag truncate(topic[:title], length: max_project_topic_length), { href: explore_project_topic_path }, { class: 'has-tooltip', data: { container: "body" }, title: topic[:title], itemprop: 'keywords' }
       - else
-        %a.gl-p-2{ href: explore_project_topic_path, itemprop: 'keywords' }
-          = gl_badge_tag topic[:title]
+        = gl_badge_tag topic[:title], { href: explore_project_topic_path }, { itemprop: 'keywords' }
 
     - if project.has_extra_topics?
       - title = _('More topics')
       - content = capture do
-        %span.gl-inline-flex.gl-flex-wrap
+        %span.gl-inline-flex.gl-flex-wrap.gl-gap-2
           - project.topics_not_shown.each do |topic|
             - explore_project_topic_path = topic_explore_projects_cleaned_path(topic_name: topic[:name])
             - if topic[:title].length > max_project_topic_length
-              %a.gl-mr-3.gl-mb-3.has-tooltip{ data: { container: "body" }, title: topic[:title], href: explore_project_topic_path, itemprop: 'keywords' }
-                = gl_badge_tag truncate(topic[:title], length: max_project_topic_length)
+              = gl_badge_tag truncate(topic[:title], length: max_project_topic_length), { href: explore_project_topic_path }, { class: 'has-tooltip', data: { container: "body" }, title: topic[:title], itemprop: 'keywords' }
             - else
-              %a.gl-mr-3.gl-mb-3{ href: explore_project_topic_path, itemprop: 'keywords' }
-                = gl_badge_tag topic[:title]
-      .text-nowrap.gl-p-2{ role: 'button', tabindex: 0, data: { toggle: 'popover', triggers: 'focus hover', html: 'true', placement: 'top', title: title, content: content } }
+              = gl_badge_tag topic[:title], { href: explore_project_topic_path, itemprop: 'keywords' }
+      .text-nowrap{ role: 'button', tabindex: 0, data: { toggle: 'popover', triggers: 'focus hover', html: 'true', placement: 'top', title: title, content: content } }
         = _("+ %{count} more") % { count: project.count_of_extra_topics_not_shown }

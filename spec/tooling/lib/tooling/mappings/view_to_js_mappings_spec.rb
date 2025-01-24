@@ -187,7 +187,7 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
       let(:changed_files) { [] }
 
       it 'returns an empty array' do
-        expect(subject).to match_array([])
+        expect(subject).to be_empty
       end
     end
 
@@ -195,7 +195,7 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
       let(:changed_files) { ["#{js_base_folder}/index.js"] }
 
       it 'returns an empty array' do
-        expect(subject).to match_array([])
+        expect(subject).to be_empty
       end
     end
 
@@ -211,7 +211,7 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
       let(:changed_files) { ["#{js_base_folder}/index.js", "#{view_base_folder}/deleted.html"] }
 
       it 'returns an empty array' do
-        expect(subject).to match_array([])
+        expect(subject).to be_empty
       end
     end
   end
@@ -303,7 +303,7 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
         end
 
         it 'returns an empty array' do
-          expect(subject).to match_array([])
+          expect(subject).to be_empty
         end
       end
     end
@@ -345,7 +345,7 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
       end
 
       it 'returns an empty array' do
-        expect(subject).to match_array([])
+        expect(subject).to be_empty
       end
     end
   end

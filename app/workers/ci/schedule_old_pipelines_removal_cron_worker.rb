@@ -17,8 +17,6 @@ module Ci
     QUEUE_KEY = 'ci_old_pipelines_removal_project_ids_queue{}'
 
     def perform
-      return if Feature.disabled?(:ci_delete_old_pipelines, :instance, type: :beta)
-
       limit = PROJECTS_LIMIT - queued_entries_count
       project_ids = fetch_next_project_ids(limit)
       queue_projects_for_processing(project_ids)

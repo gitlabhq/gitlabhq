@@ -442,7 +442,7 @@ RSpec.describe SearchService, feature_category: :global_search do
 
     it 'returns an empty array when not abusive' do
       allow(params).to receive(:abusive?).and_return false
-      expect(search_service.abuse_messages).to match_array([])
+      expect(search_service.abuse_messages).to be_empty
     end
 
     it 'calls on abuse_detection.errors.full_messages when abusive' do

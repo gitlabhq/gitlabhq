@@ -72,7 +72,7 @@ RSpec.describe 'getting job information', feature_category: :continuous_integrat
       request
 
       expect(graphql_data_at(:jobs, :count)).to eq(0)
-      expect(graphql_data_at(:jobs, :nodes)).to match_array([])
+      expect(graphql_data_at(:jobs, :nodes)).to be_empty
     end
   end
 end

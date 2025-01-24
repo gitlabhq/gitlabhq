@@ -78,7 +78,7 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
       it 'accepts assignee wildcard id ANY' do
         result = resolve_board_list_issues(args: { filters: { assignee_wildcard_id: 'ANY' } })
 
-        expect(result).to match_array([])
+        expect(result).to be_empty
       end
 
       context 'when filtering by confidential' do

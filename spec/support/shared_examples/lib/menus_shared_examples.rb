@@ -46,7 +46,7 @@ RSpec.shared_examples_for 'a panel with uniquely identifiable menu items' do
   it 'all menu_items have an item_id' do
     items_with_nil_id = menu_items.select { |item| item.item_id.nil? }
 
-    expect(items_with_nil_id).to match_array([])
+    expect(items_with_nil_id).to be_empty
   end
 end
 

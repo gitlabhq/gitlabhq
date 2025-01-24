@@ -1401,7 +1401,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           it 'returns no projects' do
             get api("/groups/#{group.id}/projects", project1_guest), params: { owned: true }
             project_ids = json_response.map { |proj| proj['id'] }
-            expect(project_ids).to match_array([])
+            expect(project_ids).to be_empty
           end
         end
 
@@ -1409,7 +1409,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           it 'returns no projects' do
             get api("/groups/#{group.id}/projects", project1_maintainer), params: { owned: true }
             project_ids = json_response.map { |proj| proj['id'] }
-            expect(project_ids).to match_array([])
+            expect(project_ids).to be_empty
           end
         end
 

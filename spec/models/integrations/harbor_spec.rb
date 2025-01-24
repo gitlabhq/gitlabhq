@@ -89,7 +89,7 @@ RSpec.describe Integrations::Harbor do
       let(:harbor_integration) { build_stubbed(:harbor_integration, active: false) }
 
       it 'returns []' do
-        expect(harbor_integration.ci_variables).to match_array([])
+        expect(harbor_integration.ci_variables).to be_empty
       end
     end
 

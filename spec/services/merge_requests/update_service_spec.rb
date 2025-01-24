@@ -82,7 +82,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
         expect(@merge_request).to be_valid
         expect(@merge_request.title).to eq('New title')
         expect(@merge_request.assignees).to match_array([user])
-        expect(@merge_request.reviewers).to match_array([])
+        expect(@merge_request.reviewers).to be_empty
         expect(@merge_request).to be_closed
         expect(@merge_request.labels.count).to eq(1)
         expect(@merge_request.labels.first.title).to eq(label.name)

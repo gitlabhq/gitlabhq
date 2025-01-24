@@ -176,7 +176,7 @@ RSpec.describe User, feature_category: :system_access do
         subject(:owners_and_maintainers) { project_bot.resource_bot_owners_and_maintainers }
 
         it 'returns an empty array when there is no owning resource' do
-          expect(owners_and_maintainers).to match_array([])
+          expect(owners_and_maintainers).to be_empty
         end
 
         it 'returns group owners when owned by a group' do

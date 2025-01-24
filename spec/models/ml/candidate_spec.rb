@@ -328,7 +328,7 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
       let(:name) { non_existing_record_id.to_s }
 
       it 'does not fetch any candidate' do
-        expect(subject).to match_array([])
+        expect(subject).to be_empty
       end
     end
   end

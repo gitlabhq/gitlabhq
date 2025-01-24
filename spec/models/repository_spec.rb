@@ -1274,14 +1274,14 @@ RSpec.describe Repository, feature_category: :source_code_management do
     it 'properly handles when query is not present' do
       results = repository.search_files_by_content('', 'master')
 
-      expect(results).to match_array([])
+      expect(results).to be_empty
     end
 
     it 'properly handles query when repo is empty' do
       repository = create(:project, :empty_repo).repository
       results = repository.search_files_by_content('test', 'master')
 
-      expect(results).to match_array([])
+      expect(results).to be_empty
     end
 
     describe 'when storage is broken', :broken_storage do
@@ -1316,13 +1316,13 @@ RSpec.describe Repository, feature_category: :source_code_management do
     it 'properly handles when query is only slashes' do
       results = repository.search_files_by_name('//', 'master')
 
-      expect(results).to match_array([])
+      expect(results).to be_empty
     end
 
     it 'properly handles when query is not present' do
       results = repository.search_files_by_name('', 'master')
 
-      expect(results).to match_array([])
+      expect(results).to be_empty
     end
 
     it 'properly handles query when repo is empty' do
@@ -1330,7 +1330,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
       results = repository.search_files_by_name('test', 'master')
 
-      expect(results).to match_array([])
+      expect(results).to be_empty
     end
 
     describe 'when storage is broken', :broken_storage do
@@ -2027,7 +2027,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
 
       it 'returns empty array' do
-        expect(repository.blobs_at([%w[master foobar]])).to match_array([])
+        expect(repository.blobs_at([%w[master foobar]])).to be_empty
       end
     end
   end
