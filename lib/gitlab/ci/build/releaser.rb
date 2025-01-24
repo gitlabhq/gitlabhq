@@ -8,11 +8,15 @@ module Gitlab
         CREATE_SINGLE_FLAGS = %i[name description tag_name tag_message ref released_at].freeze
         CREATE_ARRAY_FLAGS = %i[milestones].freeze
 
-        RELEASE_CLI_REQUIRED_VERSION = '0.20.0'
-        GLAB_REQUIRED_VERSION = '1.50.0'
+        # If these versions or error messages are updated, the documentation should be updated as well.
+
+        RELEASE_CLI_REQUIRED_VERSION = '0.21.0'
+        GLAB_REQUIRED_VERSION = '1.52.0'
+        TROUBLE_SHOOTING_URL = Rails.application.routes.url_helpers.help_page_url('user/project/releases/index.md', anchor: 'gitlab-cli-version-requirement')
+
         GLAB_COMMAND_CHECK_COMMAND = <<~BASH.freeze
         if ! command -v glab &> /dev/null; then
-          echo "Error: glab command not found. Please use release-cli image #{RELEASE_CLI_REQUIRED_VERSION} or higher, or install glab #{GLAB_REQUIRED_VERSION} or higher."
+          echo "Error: glab command not found. Please install glab #{GLAB_REQUIRED_VERSION} or higher. Troubleshooting: #{TROUBLE_SHOOTING_URL}"
           exit 1
         fi
         BASH
@@ -21,7 +25,7 @@ module Gitlab
         if [ "$(printf "%s\n%s" "#{GLAB_REQUIRED_VERSION}" "$(glab --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')" | sort -V | head -n1)" = "#{GLAB_REQUIRED_VERSION}" ]; then
           echo "Validating glab version. OK"
         else
-          echo "Error: Please use release-cli image #{RELEASE_CLI_REQUIRED_VERSION} or higher, or install glab #{GLAB_REQUIRED_VERSION} or higher."
+          echo "Error: Please use glab #{GLAB_REQUIRED_VERSION} or higher. Troubleshooting: #{TROUBLE_SHOOTING_URL}"
           exit 1
         fi
         BASH
@@ -29,7 +33,9 @@ module Gitlab
         GLAB_LOGIN_COMMAND = 'glab auth login --job-token $CI_JOB_TOKEN --hostname $CI_SERVER_FQDN --api-protocol $CI_SERVER_PROTOCOL'
         GLAB_MAIN_COMMAND = 'GITLAB_HOST=$CI_SERVER_URL glab -R $CI_PROJECT_PATH'
         GLAB_CREATE_COMMAND = "#{GLAB_MAIN_COMMAND} release create".freeze
-        GLAB_PUBLISH_TO_CATALOG_FLAG = '--publish-to-catalog'
+        GLAB_PUBLISH_TO_CATALOG_FLAG = '--publish-to-catalog' # enables publishing to the catalog after creating the release
+        GLAB_NO_UPDATE_FLAG = '--no-update' # disables updating the release if it already exists
+        GLAB_NO_CLOSE_MILESTONE_FLAG = '--no-close-milestone' # disables closing the milestone after creating the release
 
         attr_reader :job, :config
 
@@ -71,7 +77,7 @@ module Gitlab
           command.concat(" --ref \"#{config[:ref]}\"") if config[:ref].present?
           command.concat(" --tag-message \"#{config[:tag_message]}\"") if config[:tag_message].present?
           command.concat(" --released-at \"#{config[:released_at]}\"") if config[:released_at].present?
-          command.concat(" #{GLAB_PUBLISH_TO_CATALOG_FLAG}")
+          command.concat(" #{GLAB_PUBLISH_TO_CATALOG_FLAG} #{GLAB_NO_UPDATE_FLAG} #{GLAB_NO_CLOSE_MILESTONE_FLAG}")
           command.freeze
         end
 

@@ -83,13 +83,15 @@ RSpec.describe Gitlab::Ci::Build::Step, feature_category: :continuous_integratio
 
       it 'returns glab scripts' do
         expect(subject.script).to eq([
-          "if ! command -v glab &> /dev/null; then\n  echo \"Error: glab command not found. Please use release-cli image 0.20.0 or higher, or install glab 1.50.0 or higher.\"\n  exit 1\nfi\n",
-          "if [ \"$(printf \"%s\n%s\" \"1.50.0\" \"$(glab --version | grep -oE '[0-9]+.[0-9]+.[0-9]+')\" | sort -V | head -n1)\" = \"1.50.0\" ]; then\n  echo \"Validating glab version. OK\"\nelse\n  echo \"Error: Please use release-cli image 0.20.0 or higher, or install glab 1.50.0 or higher.\"\n  exit 1\nfi\n",
+          "if ! command -v glab &> /dev/null; then\n  " \
+            "echo \"Error: glab command not found. Please install glab 1.52.0 or higher. Troubleshooting: http://localhost/help/user/project/releases/index.md#gitlab-cli-version-requirement\"\n  exit 1\nfi\n",
+          "if [ \"$(printf \"%s\n%s\" \"1.52.0\" \"$(glab --version | grep -oE '[0-9]+.[0-9]+.[0-9]+')\" | sort -V | head -n1)\" = \"1.52.0\" ]; " \
+            "then\n  echo \"Validating glab version. OK\"\nelse\n  echo \"Error: Please use glab 1.52.0 or higher. Troubleshooting: http://localhost/help/user/project/releases/index.md#gitlab-cli-version-requirement\"\n  exit 1\nfi\n",
           'glab auth login --job-token $CI_JOB_TOKEN --hostname $CI_SERVER_FQDN --api-protocol $CI_SERVER_PROTOCOL',
           'GITLAB_HOST=$CI_SERVER_URL glab -R $CI_PROJECT_PATH release create "release-$CI_COMMIT_SHA" ' \
             '--assets-links "[{\"name\":\"asset1\",\"url\":\"https://example.com/assets/1\"}]" ' \
             '--name "Release $CI_COMMIT_SHA" --notes "Created using the release-cli $EXTRA_DESCRIPTION" ' \
-            '--ref "$CI_COMMIT_SHA" --publish-to-catalog'
+            '--ref "$CI_COMMIT_SHA" --publish-to-catalog --no-update --no-close-milestone'
         ])
       end
 

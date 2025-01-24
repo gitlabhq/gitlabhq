@@ -61,6 +61,9 @@ default:
 workflow:
   name: '$PIPELINE_NAME'
   rules:
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/514740
+    - if: '$GITLAB_USER_LOGIN == "gitlab-crowdin-bot" && $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_APPROVED != "true"'
+      when: never
     - if: '$CI_PIPELINE_SOURCE == "pipeline" && $GITALY_TEST'
       variables:
         <<: *default-ruby-variables

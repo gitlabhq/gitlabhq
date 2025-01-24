@@ -451,3 +451,21 @@ See [the release permissions](#release-permissions) for more information.
 ### Note about storage
 
 This feature is built on top of Git tags, so virtually no extra data is needed besides to create the release itself. Additional assets and the release evidence that is automatically generated consume storage.
+
+### GitLab CLI version requirement
+
+The way of using the [`release` keyword](../../../ci/yaml/index.md#release) is planned to change.
+The `release-cli` tool is [being replaced](https://gitlab.com/groups/gitlab-org/-/epics/15437) by the [GitLab CLI tool](https://gitlab.com/gitlab-org/cli/).
+
+You must use GitLab CLI tool `v1.52.0` or higher, or you could receive one of these error messages:
+
+- `Error: glab command not found. Please install glab v1.52.0 or higher.`
+- `Error: Please use glab v1.52.0 or higher.`
+
+There are two ways to have the GitLab CLI tool:
+
+- If you use the `registry.gitlab.com/gitlab-org/release-cli:<version>` container image,
+  you can start using either `registry.gitlab.com/gitlab-org/cli:v1.52.0` or
+  `registry.gitlab.com/gitlab-org/release-cli:v0.21.0`, which contains `glab` `v1.52.0`.
+- If you manually installed the release-cli or GitLab CLI tool on your runners,
+  make sure the GitLab CLI version is at least `v1.52.0`.

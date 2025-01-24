@@ -181,7 +181,7 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
   shared_context 'with nuspec extraction service stub' do
     before do
       Grape::Endpoint.before_each do |endpoint|
-        allow(endpoint).to receive(:nuspec_file_service).and_return(service_result)
+        allow(endpoint).to receive(:extracted_metadata).and_return(service_result)
       end
     end
 
@@ -211,23 +211,6 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
 
         package_file = target.packages.last.package_files.reload.last
         expect(package_file.file_name).to eq('dummyproject.withmetadata.1.2.3.nupkg')
-      end
-
-      context 'when create_nuget_packages_on_the_fly feature flag is disabled' do
-        before do
-          stub_feature_flags(create_nuget_packages_on_the_fly: false)
-        end
-
-        it 'calls the extraction worker' do
-          expect(::Packages::Nuget::ExtractionWorker).to receive(:perform_async).once
-          expect { subject }
-              .to change { target.packages.count }.by(1)
-              .and change { Packages::PackageFile.count }.by(1)
-          expect(response).to have_gitlab_http_status(status)
-
-          package_file = target.packages.last.package_files.reload.last
-          expect(package_file.file_name).to eq(file_name)
-        end
       end
     end
 

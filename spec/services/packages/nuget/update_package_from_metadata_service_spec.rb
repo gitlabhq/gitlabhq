@@ -132,16 +132,6 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
         end
 
         it_behaves_like 'raising an', described_class::DuplicatePackageError, with_message: "A package 'DummyProject.DummyPackage' with version '1.0.0' already exists"
-
-        context 'when create_nuget_packages_on_the_fly feature flag is disabled' do
-          before do
-            stub_feature_flags(create_nuget_packages_on_the_fly: false)
-          end
-
-          it 'does not raise an error' do
-            expect { subject }.not_to raise_error
-          end
-        end
       end
     end
 

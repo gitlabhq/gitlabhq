@@ -4,13 +4,17 @@
   "type": "object",
   "additionalProperties": true,
   "properties": {
-    "global_search_work_items_enabled": {
+    "global_search_issues_enabled": {
       "type": "boolean",
-      "description": "Enable global search for work items"
+      "description": "Enable global search for issues"
     },
     "global_search_merge_requests_enabled": {
       "type": "boolean",
       "description": "Enable global search for merge requests"
+    },
+    "global_search_snippet_titles_enabled": {
+      "type": "boolean",
+      "description": "Enable global search for snippets"
     },
     "global_search_users_enabled": {
       "type": "boolean",

@@ -448,8 +448,8 @@ In the UI:
 Your changes are automatically saved.
 
 WARNING:
-If the .nuspec file isn't located in the root of the package, the package might
-not be recognized as a duplicate.
+If the .nuspec file isn't located in the root of the package or the beginning of the archive, the package might
+not be recognized as a duplicate right away. However, it will be rejected later, and an error will be shown in the UI.
 
 ## Install packages
 
