@@ -51378,9 +51378,6 @@ msgstr ""
 msgid "SecurityOrchestration|Merge request approval policies allow a maximum 1 bot message action."
 msgstr ""
 
-msgid "SecurityOrchestration|Merge request approval policies allow a maximum of 1 approver action."
-msgstr ""
-
 msgid "SecurityOrchestration|Merge request approval policies allow a maximum of 5 approver actions."
 msgstr ""
 
