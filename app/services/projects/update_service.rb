@@ -169,6 +169,8 @@ module Projects
       params.delete(:emails_enabled) unless can?(current_user, :set_emails_disabled, project)
 
       params.delete(:runner_registration_enabled) if Gitlab::CurrentSettings.valid_runner_registrars.exclude?('project')
+
+      params.delete(:max_artifacts_size) unless can?(current_user, :update_max_artifacts_size, project)
     end
 
     def after_update

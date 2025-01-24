@@ -50,9 +50,9 @@ RSpec.shared_examples 'enforcing job token policies' do |policies, expected_succ
         it { is_expected.to have_gitlab_http_status(expected_success_status) }
       end
 
-      context 'when the `enforce_job_token_policies` feature flag is disabled' do
+      context 'when the `add_policies_to_ci_job_token` feature flag is disabled' do
         before do
-          stub_feature_flags(enforce_job_token_policies: false)
+          stub_feature_flags(add_policies_to_ci_job_token: false)
         end
 
         it { is_expected.to have_gitlab_http_status(expected_success_status) }

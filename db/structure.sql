@@ -26418,6 +26418,9 @@ ALTER TABLE security_scans
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
 
+ALTER TABLE wiki_repository_states
+    ADD CONSTRAINT check_69aed91301 CHECK ((project_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE p_ci_pipeline_variables
     ADD CONSTRAINT check_6e932dbabf CHECK ((project_id IS NOT NULL)) NOT VALID;
 

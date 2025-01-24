@@ -149,7 +149,7 @@ GitLab can display the results of coverage report in the merge request
 
 ## `artifacts:reports:codequality`
 
-> - Support for multiple reports in diff annotations and full pipeline report [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9014) in 15.7.
+> - Multiple reports in diff annotations and full pipeline report [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9014) in GitLab 15.7.
 
 The `codequality` report collects [code quality issues](../testing/code_quality.md). The
 collected code quality report uploads to GitLab as an artifact.

@@ -165,6 +165,8 @@ module API
 
       expose :autoclose_referenced_issues, documentation: { type: 'boolean' }
 
+      expose :max_artifacts_size, documentation: { type: 'integer' }
+
       # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_resource(project)
         ActiveRecord::Associations::Preloader.new(records: [project], associations: { project_group_links: { group: :route } }).call

@@ -1024,7 +1024,7 @@ module API
 
     def job_token_policies_authorized?(project)
       return true unless current_user&.from_ci_job_token?
-      return true unless Feature.enabled?(:enforce_job_token_policies, current_user)
+      return true unless Feature.enabled?(:add_policies_to_ci_job_token, project)
       return true if skip_job_token_policies?
 
       current_user.ci_job_token_scope.policies_allowed?(project, job_token_policies)

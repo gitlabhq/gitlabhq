@@ -17,7 +17,6 @@ itself: # project
     - last_repository_updated_at
     - marked_for_deletion_at
     - marked_for_deletion_by_user_id
-    - max_artifacts_size
     - max_pages_size
     - merge_requests_author_approval
     - merge_requests_disable_committers_approval

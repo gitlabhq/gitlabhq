@@ -1028,6 +1028,24 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       expect(group1.reload.name).to eq("#{new_group_name}_2")
     end
 
+    it 'updates the max_artifacts_size for admin users' do
+      expect(group1.max_artifacts_size).to be_nil
+
+      put api("/groups/#{group1.id}", admin, admin_mode: true), params: { max_artifacts_size: 1 }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(group1.reload.max_artifacts_size).to eq(1)
+      expect(json_response['max_artifacts_size']).to eq(1)
+    end
+
+    it 'does not update the max_artifacts_size for non admin users' do
+      put api("/groups/#{group1.id}", user1), params: { max_artifacts_size: 1 }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(group1.reload.max_artifacts_size).not_to eq(1)
+      expect(json_response['max_artifacts_size']).not_to eq(1)
+    end
+
     context 'a name is not passed in' do
       it 'does not mark name update throttling' do
         expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)

@@ -4231,6 +4231,26 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(json_response['error']).to match('at least one parameter must be provided')
     end
 
+    it 'changes the max_artifacts_size attribute' do
+      expect(project.max_artifacts_size).to be_nil
+
+      put api(path, admin, admin_mode: true), params: { max_artifacts_size: 1 }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(project.reload.max_artifacts_size).to eq(1)
+      expect(json_response['max_artifacts_size']).to eq(1)
+    end
+
+    it 'does not change the max_artifacts_size attribute when a user does not have permissions' do
+      project.add_maintainer(user2)
+
+      put api(path, user2), params: { max_artifacts_size: 1 }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(project.reload.max_artifacts_size).not_to eq(1)
+      expect(json_response['max_artifacts_size']).not_to eq(1)
+    end
+
     context 'when unauthenticated' do
       it 'returns authentication error' do
         project_param = { name: 'bar' }

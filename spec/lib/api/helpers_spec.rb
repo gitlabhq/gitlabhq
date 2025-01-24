@@ -327,9 +327,9 @@ RSpec.describe API::Helpers, feature_category: :shared do
             it { is_expected.to eq project }
           end
 
-          context 'when the `enforce_job_token_policies` feature flag is disabled' do
+          context 'when the `add_policies_to_ci_job_token` feature flag is disabled' do
             before do
-              stub_feature_flags(enforce_job_token_policies: false)
+              stub_feature_flags(add_policies_to_ci_job_token: false)
             end
 
             it { is_expected.to eq project }
@@ -345,9 +345,9 @@ RSpec.describe API::Helpers, feature_category: :shared do
             find_project!
           end
 
-          context 'when the `enforce_job_token_policies` feature flag is disabled' do
+          context 'when the `add_policies_to_ci_job_token` feature flag is disabled' do
             before do
-              stub_feature_flags(enforce_job_token_policies: false)
+              stub_feature_flags(add_policies_to_ci_job_token: false)
             end
 
             it { is_expected.to eq project }

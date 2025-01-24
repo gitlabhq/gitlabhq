@@ -28,6 +28,7 @@ module API
       expose :parent_id
       expose :organization_id
       expose :shared_runners_setting
+      expose :max_artifacts_size, documentation: { type: 'integer' }
 
       expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
 
