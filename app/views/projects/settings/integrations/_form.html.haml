@@ -16,7 +16,7 @@
 
 = render ::Layouts::PageHeadingComponent.new(@integration.title) do |c|
   - c.with_heading do
-    .gl-flex.gl-items-center.gl-gap-4
+    .gl-flex.gl-items-center.gl-gap-4.integration-logo{ 'entity-name': integration.title }
       = render Pajamas::AvatarComponent.new(integration, size: 48, alt: '')
       = integration.title
       - if integration.operating?

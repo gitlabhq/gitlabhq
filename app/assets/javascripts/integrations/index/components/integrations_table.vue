@@ -129,6 +129,7 @@ export default {
     <template #cell(title)="{ item }">
       <gl-avatar-link :href="item.edit_path" :title="item.title" :data-testid="`${item.name}-link`">
         <gl-avatar-labeled
+          class="integration-logo"
           :label="item.title"
           :sub-label="item.description"
           :entity-id="item.id"

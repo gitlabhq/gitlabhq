@@ -14786,6 +14786,9 @@ msgstr ""
 msgid "ComplianceReport|No violations found. Change search options and try again"
 msgstr ""
 
+msgid "ComplianceReport|Only group owners and maintainers can view the framework details"
+msgstr ""
+
 msgid "ComplianceReport|Please remove the compliance pipeline configuration from the compliance framework so that the new pipeline execution policy can take precedence."
 msgstr ""
 
