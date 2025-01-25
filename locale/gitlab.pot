@@ -34671,6 +34671,9 @@ msgstr ""
 msgid "MemberRole|Example: \"Developer with admin and read access to vulnerability\""
 msgstr ""
 
+msgid "MemberRole|Export role report"
+msgstr ""
+
 msgid "MemberRole|Failed to create role."
 msgstr ""
 
@@ -34749,6 +34752,9 @@ msgstr ""
 msgid "MemberRole|Role is assigned to one or more group members. Remove role from all group members, then delete role."
 msgstr ""
 
+msgid "MemberRole|Role report requested. CSV will be emailed to %{email}."
+msgstr ""
+
 msgid "MemberRole|Role successfully deleted."
 msgstr ""
 
@@ -34768,6 +34774,9 @@ msgid "MemberRole|Select a role"
 msgstr ""
 
 msgid "MemberRole|Select at least one permission."
+msgstr ""
+
+msgid "MemberRole|The CSV report contains a list of users, assigned role and access in all groups, subgroups, and projects. When the export is completed, it will be sent as an attachment to %{email}."
 msgstr ""
 
 msgid "MemberRole|The Developer role gives users access to contribute code while restricting sensitive administrative actions."
@@ -34813,6 +34822,9 @@ msgid "MemberRole|To delete custom role, remove role from all group members."
 msgstr ""
 
 msgid "MemberRole|To delete custom role, remove role from all users."
+msgstr ""
+
+msgid "MemberRole|Unable to export role report. Contact support if this error persists."
 msgstr ""
 
 msgid "MemberRole|Update role"
