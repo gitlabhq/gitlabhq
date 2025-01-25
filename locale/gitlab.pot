@@ -52483,6 +52483,9 @@ msgstr ""
 msgid "SecurityReports|Select a project to add by using the project search field above."
 msgstr ""
 
+msgid "SecurityReports|Select action"
+msgstr ""
+
 msgid "SecurityReports|Select dismissal reason"
 msgstr ""
 
