@@ -981,6 +981,9 @@ Gitlab.ee do
   Settings.cron_jobs['namespaces_enable_descendants_cache_cron_worker'] ||= {}
   Settings.cron_jobs['namespaces_enable_descendants_cache_cron_worker']['cron'] ||= '*/11 * * * *'
   Settings.cron_jobs['namespaces_enable_descendants_cache_cron_worker']['job_class'] = 'Namespaces::EnableDescendantsCacheCronWorker'
+  Settings.cron_jobs['delete_expired_dependency_exports_worker'] ||= {}
+  Settings.cron_jobs['delete_expired_dependency_exports_worker']['cron'] ||= '0 4 * * *'
+  Settings.cron_jobs['delete_expired_dependency_exports_worker']['job_class'] = 'Sbom::DeleteExpiredExportsWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}
