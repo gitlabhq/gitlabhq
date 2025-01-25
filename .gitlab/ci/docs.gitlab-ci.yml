@@ -48,7 +48,7 @@ review-docs-cleanup:
   needs: []
   variables:
     GIT_DEPTH: 1
-    # By default, deploy the Review App using the `main` branch of the `gitlab-org/technical-writing-group/gitlab-docs-hugo` project
+    # By default, deploy the Review App using the `main` branch of the `gitlab-org/technical-writing/docs-gitlab-com` project
     DOCS_BRANCH: main
   environment:
     name: review-docs/mr-${CI_MERGE_REQUEST_IID}-hugo
@@ -59,13 +59,13 @@ review-docs-cleanup:
     - source ./scripts/utils.sh
     - install_gitlab_gem
 
-# Deploy documentation review app by using GitLab Docs Hugo project (gitlab-org/technical-writing-group/gitlab-docs-hugo)
+# Deploy documentation review app by using GitLab Docs Hugo project (gitlab-org/technical-writing/docs-gitlab-com)
 review-docs-hugo-deploy:
   extends: .review-docs-hugo
   script:
     - ./scripts/trigger-build.rb docs-hugo deploy
 
-# Cleanup remote environment of gitlab-org/technical-writing-group/gitlab-docs-hugo
+# Cleanup remote environment of gitlab-org/technical-writing/docs-gitlab-com
 review-docs-hugo-cleanup:
   extends: .review-docs-hugo
   environment:

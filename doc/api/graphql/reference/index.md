@@ -39380,6 +39380,7 @@ Values for sorting inherited variables.
 | <a id="cijobsourceparent_pipeline"></a>`PARENT_PIPELINE` | A job initiated by parent pipeline. |
 | <a id="cijobsourcepipeline"></a>`PIPELINE` | A job initiated by pipeline. |
 | <a id="cijobsourcepipeline_execution_policy"></a>`PIPELINE_EXECUTION_POLICY` | A job initiated by pipeline execution policy. |
+| <a id="cijobsourcepipeline_execution_policy_schedule"></a>`PIPELINE_EXECUTION_POLICY_SCHEDULE` | A job initiated by pipeline execution policy schedule. |
 | <a id="cijobsourcepush"></a>`PUSH` | A job initiated by push. |
 | <a id="cijobsourcescan_execution_policy"></a>`SCAN_EXECUTION_POLICY` | A job initiated by scan execution policy. |
 | <a id="cijobsourceschedule"></a>`SCHEDULE` | A job initiated by schedule. |

@@ -667,7 +667,7 @@ RSpec.describe Trigger, feature_category: :tooling do
   end
 
   describe Trigger::DocsHugo do
-    let(:downstream_project_path) { 'gitlab-org/technical-writing-group/gitlab-docs-hugo' }
+    let(:downstream_project_path) { 'gitlab-org/technical-writing/docs-gitlab-com' }
 
     describe '#variables' do
       describe "BRANCH_CE" do

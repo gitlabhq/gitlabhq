@@ -362,7 +362,7 @@ module Trigger
     end
 
     def downstream_project_path
-      ENV.fetch('DOCS_PROJECT_PATH', 'gitlab-org/technical-writing-group/gitlab-docs-hugo')
+      ENV.fetch('DOCS_PROJECT_PATH', 'gitlab-org/technical-writing/docs-gitlab-com')
     end
 
     def trigger_token

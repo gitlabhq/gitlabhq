@@ -119,7 +119,6 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
 
   describe '#filter_duplicate_findings' do
     before do
-      stub_const('ENV', ENV.to_hash.merge('BOT_USER_ID' => '123'))
       allow(processor).to receive(:get_existing_comments).and_return(existing_comments)
     end
 
@@ -154,13 +153,9 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
     end
 
     it 'returns all findings if no comments from the bot exist' do
-      allow(processor).to receive(:get_existing_comments).and_return([
-        { "body" => "<!-- {\"fingerprint\":\"abc123\"} --> Some comment", "author" => { "id" => 456 } },
-        { "body" => "<!-- {\"fingerprint\":\"def456\"} --> Another comment", "author" => { "id" => 456 } }
-      ])
+      allow(processor).to receive(:get_existing_comments).and_return([])
 
       result = processor.filter_duplicate_findings(new_run_findings)
-
       expect(result).to eq(new_run_findings)
     end
 

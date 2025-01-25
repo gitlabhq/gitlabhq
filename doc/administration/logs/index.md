@@ -1044,7 +1044,7 @@ LLM prompt input and response output can be logged by enabling the `expanded_ai_
 This flag is disabled by default and can only be enabled:
 
 - For GitLab.com, when you provide consent through a GitLab [Support Ticket](https://about.gitlab.com/support/portal/).
-- For self-managed, when you enable this feature flag.
+- For GitLab Self-Managed, when you enable this feature flag.
 
 By default, the log does not contain LLM prompt input and response output to support [data retention policies](../../user/gitlab_duo/data_usage.md#data-retention) of AI feature data.
 
