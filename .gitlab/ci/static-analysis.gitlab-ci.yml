@@ -11,7 +11,6 @@
     # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
     BROWSERSLIST_IGNORE_OLD_DATA: "true"
     GRAPHQL_SCHEMA_APOLLO_FILE: "tmp/tests/graphql/gitlab_schema_apollo.graphql"
-    RUBYOPT: "--yjit"
 
 update-static-analysis-cache:
   extends:
