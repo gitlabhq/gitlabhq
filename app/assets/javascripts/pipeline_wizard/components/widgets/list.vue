@@ -169,6 +169,7 @@ export default {
     >
       <gl-form-input-group
         v-for="(item, i) in value"
+        :id="item.id"
         :key="item.id"
         v-model.trim="value[i].value"
         :placeholder="i === 0 ? placeholder : undefined"
@@ -179,6 +180,9 @@ export default {
         @blur="onTouch"
         @input="onValueUpdate"
       >
+        <template #prepend>
+          <label :for="item.id" class="gl-sr-only">{{ __('Step') }} {{ i + 1 }}</label>
+        </template>
         <template v-if="value.length > 1" #append>
           <gl-button
             :aria-label="$options.i18n.removeStepButtonLabel"
