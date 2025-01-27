@@ -44,7 +44,7 @@ module Mutations
 
         def resolve(project_path:, ref:, async: false, variables: {})
           project = authorized_find!(project_path)
-          creation_params = { ref: ref, variables_attributes: variables }
+          creation_params = { ref: ref, variables_attributes: variables.map(&:to_h) }
           service = ::Ci::CreatePipelineService.new(project, current_user, creation_params)
 
           response = execute_service(service, source, async)

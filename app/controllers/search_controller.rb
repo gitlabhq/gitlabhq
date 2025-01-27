@@ -183,9 +183,9 @@ class SearchController < ApplicationController
     return if params[:scope] == 'blobs'
     return unless params[:search].present?
 
-    if CODE_SEARCH_LITERALS.any? { |literal| literal.in? params[:search] }
-      redirect_to search_path(safe_params.except(:controller, :action).merge(scope: 'blobs'))
-    end
+    return unless CODE_SEARCH_LITERALS.any? { |literal| literal.in? params[:search] }
+
+    redirect_to search_path(safe_params.except(:controller, :action).merge(scope: 'blobs'))
   end
 
   # overridden in EE
@@ -260,10 +260,10 @@ class SearchController < ApplicationController
     payload[:metadata] ||= {}
     payload[:metadata].merge!(payload_metadata)
 
-    if search_service.abuse_detected?
-      payload[:metadata]['abuse.confidence'] = Gitlab::Abuse.confidence(:certain)
-      payload[:metadata]['abuse.messages'] = search_service.abuse_messages
-    end
+    return unless search_service.abuse_detected?
+
+    payload[:metadata]['abuse.confidence'] = Gitlab::Abuse.confidence(:certain)
+    payload[:metadata]['abuse.messages'] = search_service.abuse_messages
   end
 
   def payload_metadata

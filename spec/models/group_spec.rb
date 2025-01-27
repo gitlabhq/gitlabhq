@@ -262,6 +262,9 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe 'validations' do
+    let_it_be(:private_organization) { create(:organization, :private) }
+    let_it_be(:public_organization) { create(:organization, :public) }
+
     it { is_expected.to validate_presence_of :name }
     it { is_expected.not_to allow_value('colon:in:path').for(:path) } # This is to validate that a specially crafted name cannot bypass a pattern match. See !72555
     it { is_expected.to allow_value('group test_4').for(:name) }
@@ -519,6 +522,81 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
           expect(sub_group).to be_invalid
           expect(sub_group.errors[:require_two_factor_authentication]).to include('is forbidden by a top-level group')
+        end
+      end
+    end
+
+    describe '#visibility_level_allowed_by_organization?' do
+      let(:group) { build(:group) }
+
+      subject(:visibility_level_allowed_by_organization) { group.visibility_level_allowed_by_organization? }
+
+      context 'without an organization' do
+        before do
+          group.organization = nil
+        end
+
+        it 'return true but the record is invalid' do
+          expect(group.visibility_level_allowed_by_organization?).to eq(true)
+          expect(group.valid?).to eq(false)
+        end
+      end
+
+      context 'with different visibilities' do
+        where(:organization, :group_visibility, :visibility_level_allowed_by_organization) do
+          lazy { private_organization } | Gitlab::VisibilityLevel::PRIVATE  | true
+          lazy { private_organization } | Gitlab::VisibilityLevel::INTERNAL | false
+          lazy { private_organization } | Gitlab::VisibilityLevel::PUBLIC   | false
+          lazy { public_organization }  | Gitlab::VisibilityLevel::PRIVATE  | true
+          lazy { public_organization }  | Gitlab::VisibilityLevel::INTERNAL | true
+          lazy { public_organization }  | Gitlab::VisibilityLevel::PUBLIC   | true
+        end
+
+        with_them do
+          let(:group) { build(:group, organization: organization, visibility_level: group_visibility) }
+
+          it { is_expected.to eq(visibility_level_allowed_by_organization) }
+        end
+      end
+    end
+
+    describe '#visibility_level_allowed_by_organization' do
+      it 'validates visibility level with visibility changes' do
+        group = create(:group)
+
+        group.visibility_level = Gitlab::VisibilityLevel::PRIVATE
+
+        expect(group).to receive(:visibility_level_allowed_by_organization)
+
+        group.valid?
+      end
+
+      it 'validates visibility level for new records' do
+        group = build(:group)
+
+        expect(group).to receive(:visibility_level_allowed_by_organization)
+
+        group.valid?
+      end
+
+      context 'with different organization and group visibilities' do
+        where(:organization, :group_visibility, :valid?) do
+          lazy { private_organization } | :private  | true
+          lazy { private_organization } | :internal | false
+          lazy { private_organization } | :public   | false
+          lazy { public_organization }  | :private  | true
+          lazy { public_organization }  | :internal | true
+          lazy { public_organization }  | :public   | true
+        end
+
+        with_them do
+          let(:group) { build(:group, group_visibility, organization: organization) }
+          let(:error) { "#{group_visibility} is not allowed since the organization has a private visibility." }
+
+          it 'returns the visibility error' do
+            expect(group.valid?).to eq(valid?)
+            expect(group.errors[:visibility_level]).to include(error) unless valid?
+          end
         end
       end
     end

@@ -8,12 +8,15 @@
     = _('Enable and disable Service Desk. Some additional configuration might be required. %{link_start}Learn more%{link_end}.').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
   - c.with_body do
     - if ::Gitlab::ServiceDesk.supported?
+      - service_desk_enabled = ::Gitlab::ServiceDesk.enabled?(@project)
+      - service_desk_emails = ::ServiceDesk::Emails.new(@project)
+
       -# Data attributes refactoring issue: https://gitlab.com/gitlab-org/gitlab/-/issues/467547
       .js-service-desk-setting-root{ data: { endpoint: project_service_desk_path(@project),
-        enabled: "#{@project.service_desk_enabled}",
+        enabled: "#{service_desk_enabled}",
         issue_tracker_enabled: "#{@project.project_feature.issues_enabled?}",
-        incoming_email: (@project.service_desk_incoming_address if @project.service_desk_enabled),
-        service_desk_email: (@project.service_desk_alias_address if @project.service_desk_enabled),
+        incoming_email: (service_desk_emails.incoming_address if service_desk_enabled),
+        service_desk_email: (service_desk_emails.alias_address if service_desk_enabled),
         service_desk_email_enabled: "#{Gitlab::Email::ServiceDeskEmail.enabled?}",
         selected_template: "#{@project.service_desk_setting&.issue_template_key}",
         selected_file_template_project_id: "#{@project.service_desk_setting&.file_template_project_id}",

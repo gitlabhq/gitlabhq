@@ -205,8 +205,6 @@ Additionally, sometimes the behavior of a pipeline needs to be more dynamic. The
 to choose to start sub-pipelines (or not) is a powerful ability, especially if the
 YAML is dynamically generated.
 
-![Parent pipeline graph expanded](img/parent_pipeline_graph_expanded_v14_3.png)
-
 In the [basic pipeline](#basic-pipelines) and [`needs` pipeline](#pipelines-with-the-needs-keyword)
 examples above, there are two packages that could be built independently.
 These cases are ideal for using [parent-child pipelines](downstream_pipelines.md#parent-child-pipelines).

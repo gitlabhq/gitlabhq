@@ -98,7 +98,10 @@ RSpec.describe WorkItems::DataSync::Handlers::CopyDataHandler, feature_category:
 
   describe '#service_desk_reply_to' do
     it 'returns the target_namespace service_desk_alias_address' do
-      allow(target_namespace).to receive(:service_desk_alias_address).and_return('service_desk@example.com')
+      allow_next_instance_of ::ServiceDesk::Emails do |emails|
+        allow(emails).to receive(:alias_address).and_return('service_desk@example.com')
+      end
+
       expect(copy_data_handler.send(:service_desk_reply_to)).to eq('service_desk@example.com')
     end
   end

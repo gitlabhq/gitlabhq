@@ -123,11 +123,16 @@ module Organizations
         groups_and_projects_organization_path:
           groups_and_projects_organization_path(organization, { display: 'groups' }),
         groups_organization_path: groups_organization_path(organization),
-        available_visibility_levels: available_visibility_levels(Group),
+        available_visibility_levels: available_visibility_levels_for_group(organization),
         restricted_visibility_levels: restricted_visibility_levels,
         path_maxlength: ::Namespace::URL_MAX_LENGTH,
         path_pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS
       }
+    end
+
+    def available_visibility_levels_for_group(organization)
+      group = Group.new(organization: organization)
+      available_visibility_levels(group)
     end
 
     # See UsersHelper#admin_users_paths for inspiration to this method

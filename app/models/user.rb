@@ -413,7 +413,20 @@ class User < ApplicationRecord
   enum layout: { fixed: 0, fluid: 1 }
 
   # User's Dashboard preference
-  enum dashboard: { projects: 0, stars: 1, your_activity: 10, project_activity: 2, starred_project_activity: 3, groups: 4, todos: 5, issues: 6, merge_requests: 7, operations: 8, followed_user_activity: 9 }
+  enum dashboard: {
+    projects: 0,
+    stars: 1,
+    member_projects: 11,
+    your_activity: 10,
+    project_activity: 2,
+    starred_project_activity: 3,
+    groups: 4,
+    todos: 5,
+    issues: 6,
+    merge_requests: 7,
+    operations: 8,
+    followed_user_activity: 9
+  }
 
   # User's Project preference
   enum project_view: { readme: 0, activity: 1, files: 2, wiki: 3 }

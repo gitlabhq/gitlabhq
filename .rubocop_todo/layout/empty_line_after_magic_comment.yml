@@ -281,7 +281,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'ee/spec/requests/ee/application_controller_spec.rb'
     - 'ee/spec/requests/groups/protected_environments_controller_spec.rb'
     - 'ee/spec/requests/groups/roadmap_controller_spec.rb'
-    - 'ee/spec/routing/admin_routing_spec.rb'
     - 'ee/spec/routing/user_routing_spec.rb'
     - 'ee/spec/serializers/ee/blob_entity_spec.rb'
     - 'ee/spec/serializers/ee/build_details_entity_spec.rb'

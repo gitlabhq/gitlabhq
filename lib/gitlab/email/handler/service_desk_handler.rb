@@ -65,7 +65,7 @@ module Gitlab
           strong_memoize(:project) do
             project_record = super
             project_record ||= project_from_key if service_desk_key
-            project_record&.service_desk_enabled? ? project_record : nil
+            project_record && ::Gitlab::ServiceDesk.enabled?(project_record) ? project_record : nil
           end
         end
 
@@ -249,11 +249,7 @@ module Gitlab
         end
 
         def service_desk_addresses
-          [
-            project.service_desk_incoming_address,
-            project.service_desk_alias_address,
-            project.service_desk_custom_address
-          ].compact
+          ::ServiceDesk::Emails.new(project).all_addresses
         end
         strong_memoize_attr :service_desk_addresses
 

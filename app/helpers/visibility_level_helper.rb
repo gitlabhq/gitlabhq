@@ -53,6 +53,12 @@ module VisibilityLevelHelper
     !form_model.visibility_level_allowed?(level)
   end
 
+  def disallowed_visibility_level_by_organization?(form_model, level)
+    return false unless form_model.respond_to?(:visibility_level_allowed_by_organization?)
+
+    !form_model.visibility_level_allowed_by_organization?(level)
+  end
+
   def disallowed_visibility_level_by_parent?(form_model, level)
     return false unless form_model.respond_to?(:visibility_level_allowed_by_parent?)
 

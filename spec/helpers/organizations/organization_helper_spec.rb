@@ -301,6 +301,17 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
         }
       )
     end
+
+    context 'with private organization' do
+      let_it_be(:organization) { build_stubbed(:organization, :private) }
+
+      it 'returns correct available_visibility_levels' do
+        app_data = helper.organization_groups_new_app_data(organization)
+        available_visibility_levels = Gitlab::Json.parse(app_data)['available_visibility_levels']
+
+        expect(available_visibility_levels).to contain_exactly(Gitlab::VisibilityLevel::PRIVATE)
+      end
+    end
   end
 
   describe '#organization_groups_edit_app_data' do
@@ -330,6 +341,18 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
           'path_pattern' => Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS
         }
       )
+    end
+
+    context 'with private organization' do
+      let_it_be(:organization) { build_stubbed(:organization, :private) }
+      let_it_be(:group) { build_stubbed(:group, organization: organization) }
+
+      it 'returns correct available_visibility_levels' do
+        app_data = helper.organization_groups_edit_app_data(organization, group)
+        available_visibility_levels = Gitlab::Json.parse(app_data)['available_visibility_levels']
+
+        expect(available_visibility_levels).to contain_exactly(Gitlab::VisibilityLevel::PRIVATE)
+      end
     end
   end
 
@@ -396,6 +419,30 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
           'organization_activity_all_event' => EventFilter::ALL
         }
       )
+    end
+  end
+
+  describe '#available_visibility_levels_for_group' do
+    context 'with public organization' do
+      let_it_be(:organization) { build(:organization, :public) }
+
+      it 'returns all the visibility levels' do
+        expect(helper.send(:available_visibility_levels_for_group, organization)).to contain_exactly(
+          Gitlab::VisibilityLevel::PRIVATE,
+          Gitlab::VisibilityLevel::INTERNAL,
+          Gitlab::VisibilityLevel::PUBLIC
+        )
+      end
+    end
+
+    context 'with private organization' do
+      let_it_be(:organization) { build(:organization, :private) }
+
+      it 'returns only private visibility level' do
+        expect(helper.send(:available_visibility_levels_for_group, organization)).to contain_exactly(
+          Gitlab::VisibilityLevel::PRIVATE
+        )
+      end
     end
   end
 end

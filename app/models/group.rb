@@ -155,6 +155,7 @@ class Group < Namespace
 
   validate :visibility_level_allowed_by_projects
   validate :visibility_level_allowed_by_sub_groups
+  validate :visibility_level_allowed_by_organization, if: :should_validate_visibility_level?
   validate :visibility_level_allowed_by_parent
   validate :two_factor_authentication_allowed
   validates :variables, nested_attributes_duplicates: { scope: :environment_scope }
@@ -508,6 +509,12 @@ class Group < Namespace
     human_name
   end
 
+  def visibility_level_allowed_by_organization?(level = self.visibility_level)
+    return true unless organization
+
+    level <= organization.visibility_level
+  end
+
   def visibility_level_allowed_by_parent?(level = self.visibility_level)
     return true unless parent_id && parent_id.nonzero?
 
@@ -523,7 +530,8 @@ class Group < Namespace
   end
 
   def visibility_level_allowed?(level = self.visibility_level)
-    visibility_level_allowed_by_parent?(level) &&
+    visibility_level_allowed_by_organization?(level) &&
+      visibility_level_allowed_by_parent?(level) &&
       visibility_level_allowed_by_projects?(level) &&
       visibility_level_allowed_by_sub_groups?(level)
   end
@@ -1133,6 +1141,16 @@ class Group < Namespace
 
   def path_changed_hook
     system_hook_service.execute_hooks_for(self, :rename)
+  end
+
+  def should_validate_visibility_level?
+    new_record? || changes.has_key?(:visibility_level)
+  end
+
+  def visibility_level_allowed_by_organization
+    return if visibility_level_allowed_by_organization?
+
+    errors.add(:visibility_level, "#{visibility} is not allowed since the organization has a #{organization.visibility} visibility.")
   end
 
   def visibility_level_allowed_by_parent

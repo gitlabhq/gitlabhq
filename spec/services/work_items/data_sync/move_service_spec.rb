@@ -99,6 +99,11 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
 
     context 'when moving work item with success', :freeze_time do
       let(:expected_original_work_item_state) { Issue.available_states[:closed] }
+      let(:service_desk_alias_address) do
+        target_namespace.respond_to?(:project) &&
+          ::ServiceDesk::Emails.new(target_namespace.project).alias_address
+      end
+
       let!(:original_work_item_attrs) do
         {
           iid: original_work_item.iid,
@@ -126,7 +131,7 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
           external_key: original_work_item.external_key,
           upvotes_count: original_work_item.upvotes_count,
           blocking_issues_count: original_work_item.blocking_issues_count,
-          service_desk_reply_to: target_namespace.service_desk_alias_address
+          service_desk_reply_to: service_desk_alias_address
         }
       end
 

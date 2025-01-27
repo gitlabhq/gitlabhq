@@ -196,7 +196,7 @@ export default {
   <gl-form
     ref="integrationForm"
     method="post"
-    class="gl-show-field-errors gl-mb-3 gl-mt-6"
+    class="gl-show-field-errors"
     data-testid="integration-settings-form"
     :action="propsSource.formPath"
     :novalidate="!integrationActive"
@@ -251,11 +251,10 @@ export default {
 
     <template v-if="hasSections">
       <integration-form-section
-        v-for="(section, index) in customState.sections"
+        v-for="section in customState.sections"
         :key="section.type"
         :section="section"
         :is-validated="isValidated"
-        :class="{ 'gl-border-b gl-mb-6 gl-pb-3': index !== customState.sections.length - 1 }"
         @toggle-integration-active="onToggleIntegrationState"
         @request-jira-issue-types="onRequestJiraIssueTypes"
       />

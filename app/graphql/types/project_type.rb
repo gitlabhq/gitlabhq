@@ -930,7 +930,11 @@ module Types
     def service_desk_address
       return unless Ability.allowed?(current_user, :admin_issue, project)
 
-      object.service_desk_address
+      ::ServiceDesk::Emails.new(object).address
+    end
+
+    def service_desk_enabled
+      ::Gitlab::ServiceDesk.enabled?(project)
     end
 
     def languages

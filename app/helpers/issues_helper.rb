@@ -102,7 +102,8 @@ module IssuesHelper
     return false unless issue.moved_from
     return false unless issue.from_service_desk?
 
-    issue.moved_from.project.service_desk_enabled? && !issue.project.service_desk_enabled?
+    ::Gitlab::ServiceDesk.enabled?(issue.moved_from.project) &&
+      !::Gitlab::ServiceDesk.enabled?(issue.project)
   end
 
   def issue_header_actions_data(project, issuable, current_user, issuable_sidebar)

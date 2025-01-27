@@ -8,6 +8,7 @@ module Types
 
       argument :key, GraphQL::Types::String, description: 'Name of the variable.'
       argument :value, GraphQL::Types::String, description: 'Value of the variable.'
+      argument :variable_type, Types::Ci::VariableTypeEnum, description: 'Type of variable.', required: false
     end
   end
 end

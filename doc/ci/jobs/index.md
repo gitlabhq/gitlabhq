@@ -244,7 +244,7 @@ You can recognize when a pipeline has grouped jobs if you see a number next to a
 name instead of the retry or cancel buttons. The number indicates the amount of grouped
 jobs. Hovering over them shows you if all jobs have passed or any has failed. Select to expand them.
 
-![A pipeline graph showing several stages and jobs, including three groups of grouped jobs.](img/pipeline_grouped_jobs_v14_2.png)
+![A pipeline graph showing several stages and jobs, including three groups of grouped jobs.](img/pipeline_grouped_jobs_v17_9.png)
 
 To create a group of jobs, in the `.gitlab-ci.yml` file,
 separate each job name with a number and one of the following:
@@ -296,7 +296,7 @@ can find the reason:
 
 In each place, if you hover over the failed job you can see the reason it failed.
 
-![A pipeline graph showing a failed job and the failure-reason.](img/job_failure_reason_v10_7.png)
+![A pipeline graph showing a failed job and the failure-reason.](img/job_failure_reason_v17_9.png)
 
 You can also see the reason it failed on the Job detail page.
 

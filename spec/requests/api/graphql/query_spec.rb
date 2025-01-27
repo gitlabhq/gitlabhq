@@ -123,12 +123,14 @@ RSpec.describe 'Query', feature_category: :shared do
     let(:query) do
       <<~GRAPHQL
         {
-          ciPipelineStage(id: "#{ci_stage.to_global_id}") {
+          ciPipelineStage(id: "#{ci_stage_global_id}") {
             name
           }
         }
       GRAPHQL
     end
+
+    let(:ci_stage_global_id) { ci_stage.to_global_id }
 
     context 'when the current user has access to the stage' do
       it 'fetches the stage for the given ID' do
@@ -137,6 +139,16 @@ RSpec.describe 'Query', feature_category: :shared do
         post_graphql(query, current_user: developer)
 
         expect(graphql_data.dig('ciPipelineStage', 'name')).to eq('graphql test stage')
+      end
+    end
+
+    context 'when requested ci stage is missing' do
+      let(:ci_stage_global_id) { "gid://gitlab/Ci::Stage/#{non_existing_record_id}" }
+
+      it 'returns nil' do
+        post_graphql(query, current_user: developer)
+
+        expect(graphql_data['ciPipelineStage']).to be_nil
       end
     end
 

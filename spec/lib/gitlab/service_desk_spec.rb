@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ServiceDesk do
+RSpec.describe Gitlab::ServiceDesk, feature_category: :service_desk do
   before do
     allow(Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)
     allow(Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
@@ -11,7 +11,7 @@ RSpec.describe Gitlab::ServiceDesk do
   describe 'enabled?' do
     let_it_be(:project) { create(:project) }
 
-    subject { described_class.enabled?(project: project) }
+    subject { described_class.enabled?(project) }
 
     it { is_expected.to be_truthy }
 

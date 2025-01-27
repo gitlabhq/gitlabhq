@@ -1,7 +1,6 @@
 ---
 RSpec/InstanceVariable:
   Exclude:
-    - 'ee/spec/controllers/admin/application_settings_controller_spec.rb'
     - 'ee/spec/controllers/admin/geo/settings_controller_spec.rb'
     - 'ee/spec/controllers/ee/sessions_controller_spec.rb'
     - 'ee/spec/controllers/groups/groups_controller_spec.rb'

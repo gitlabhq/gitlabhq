@@ -297,6 +297,8 @@ module Types
 
     def ci_pipeline_stage(id:)
       stage = ::Gitlab::Graphql::Lazy.force(GitlabSchema.find_by_gid(id))
+      return unless stage
+
       authorized = Ability.allowed?(current_user, :read_build, stage.project)
 
       return unless authorized

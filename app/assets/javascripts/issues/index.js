@@ -18,6 +18,7 @@ import initSidebarBundle from '~/sidebar/sidebar_bundle';
 import initWorkItemLinks from '~/work_items/components/work_item_links';
 import ZenMode from '~/zen_mode';
 import initAwardsApp from '~/emoji/awards_app';
+import { issuableInitialDataById, isLegacyIssueType } from './show/utils/issuable_data';
 
 export function initForm() {
   new IssuableForm($('.issue-form')); // eslint-disable-line no-new
@@ -44,6 +45,9 @@ export function initShow() {
   addShortcutsExtension(ShortcutsIssuable);
   new ZenMode(); // eslint-disable-line no-new
 
+  // data is only available before we initialize the app
+  const issuableData = issuableInitialDataById('js-issuable-app');
+
   initAwardsApp(document.getElementById('js-vue-awards-block'));
   initIssuableApp(store);
   initIssuableSidebar();
@@ -58,7 +62,7 @@ export function initShow() {
     .then((module) => module.default())
     .catch(() => {});
 
-  if (gon.features.workItemsViewPreference) {
+  if (!isLegacyIssueType(issuableData) && gon.features.workItemsViewPreference) {
     import(/* webpackChunkName: 'work_items_feedback' */ '~/work_items_feedback')
       .then(({ initWorkItemsFeedback }) => {
         initWorkItemsFeedback();

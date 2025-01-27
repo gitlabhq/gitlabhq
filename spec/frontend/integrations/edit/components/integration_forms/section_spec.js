@@ -4,6 +4,7 @@ import { billingPlans, billingPlanNames } from '~/integrations/constants';
 import DynamicField from '~/integrations/edit/components/dynamic_field.vue';
 import IntegrationFormSection from '~/integrations/edit/components/integration_forms/section.vue';
 import IntegrationSectionConnection from '~/integrations/edit/components/sections/connection.vue';
+import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 import { createStore } from '~/integrations/edit/store';
 import {
   mockIntegrationProps,
@@ -39,6 +40,7 @@ describe('Integration Form Section', () => {
       },
       stubs: {
         IntegrationSectionConnection,
+        SettingsSection,
       },
     });
   };

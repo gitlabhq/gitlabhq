@@ -29,7 +29,6 @@ Style/GuardClause:
     - 'app/controllers/projects/tree_controller.rb'
     - 'app/controllers/registrations_controller.rb'
     - 'app/controllers/repositories/lfs_api_controller.rb'
-    - 'app/controllers/search_controller.rb'
     - 'app/controllers/users/terms_controller.rb'
     - 'app/finders/award_emojis_finder.rb'
     - 'app/finders/deployments_finder.rb'

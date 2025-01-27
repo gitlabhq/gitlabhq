@@ -10278,7 +10278,8 @@ CREATE TABLE ci_pipeline_messages (
     pipeline_id bigint NOT NULL,
     partition_id bigint NOT NULL,
     project_id bigint,
-    CONSTRAINT check_58ca2981b2 CHECK ((char_length(content) <= 10000))
+    CONSTRAINT check_58ca2981b2 CHECK ((char_length(content) <= 10000)),
+    CONSTRAINT check_fe8ee122a2 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ci_pipeline_messages_id_seq
@@ -11327,7 +11328,8 @@ CREATE TABLE compliance_framework_security_policies (
     updated_at timestamp with time zone NOT NULL,
     policy_index smallint NOT NULL,
     project_id bigint,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_473e5b2da9 CHECK ((num_nonnulls(namespace_id, project_id) = 1))
 );
 
 CREATE SEQUENCE compliance_framework_security_policies_id_seq
@@ -11867,7 +11869,8 @@ ALTER SEQUENCE dast_profiles_id_seq OWNED BY dast_profiles.id;
 CREATE TABLE dast_profiles_pipelines (
     dast_profile_id bigint NOT NULL,
     ci_pipeline_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_39563bc8de CHECK ((project_id IS NOT NULL))
 );
 
 COMMENT ON TABLE dast_profiles_pipelines IS '{"owner":"group::dynamic analysis","description":"Join table between DAST Profiles and CI Pipelines"}';
@@ -26481,6 +26484,9 @@ ALTER TABLE ONLY chat_names
 ALTER TABLE ONLY chat_teams
     ADD CONSTRAINT chat_teams_pkey PRIMARY KEY (id);
 
+ALTER TABLE approval_project_rules_users
+    ADD CONSTRAINT check_26058e3982 CHECK ((project_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;
 
@@ -26511,6 +26517,9 @@ ALTER TABLE group_import_states
 ALTER TABLE packages_packages
     ADD CONSTRAINT check_d6301aedeb CHECK ((char_length(status_message) <= 255)) NOT VALID;
 
+ALTER TABLE packages_build_infos
+    ADD CONSTRAINT check_d979c653e1 CHECK ((project_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE sprints
     ADD CONSTRAINT check_df3816aed7 CHECK ((due_date IS NOT NULL)) NOT VALID;
 
@@ -26520,11 +26529,11 @@ ALTER TABLE web_hook_logs
 ALTER TABLE vulnerability_finding_evidences
     ADD CONSTRAINT check_e8f37f70eb CHECK ((project_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE approval_merge_request_rule_sources
+    ADD CONSTRAINT check_f82666a937 CHECK ((project_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE projects
     ADD CONSTRAINT check_fa75869cb1 CHECK ((project_namespace_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE ci_pipeline_messages
-    ADD CONSTRAINT check_fe8ee122a2 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE ONLY ci_build_needs
     ADD CONSTRAINT ci_build_needs_pkey PRIMARY KEY (id);

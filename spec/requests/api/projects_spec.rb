@@ -3225,7 +3225,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['default_branch']).to eq(project.default_branch)
         expect(json_response['ci_config_path']).to eq(project.ci_config_path)
         expect(json_response['forked_from_project']).to eq(project.forked_from_project)
-        expect(json_response['service_desk_address']).to eq(project.service_desk_address)
+        expect(json_response['service_desk_address']).to eq(::ServiceDesk::Emails.new(project).address)
         expect(json_response).not_to include(
           'ci_default_git_depth',
           'ci_forward_deployment_enabled',

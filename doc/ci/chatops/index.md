@@ -130,4 +130,3 @@ ChatOps schedules a pipeline that contains only the specified job.
 - [GitLab for Slack app](../../user/project/integrations/gitlab_slack_application.md)
 - [Slack slash commands](../../user/project/integrations/slack_slash_commands.md)
 - [Mattermost slash commands](../../user/project/integrations/mattermost_slash_commands.md)
-- [The official GitLab ChatOps icon](img/gitlab-chatops-icon_v11_0.png)

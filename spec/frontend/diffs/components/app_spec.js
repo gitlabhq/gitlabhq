@@ -38,6 +38,7 @@ import { stubPerformanceWebAPI } from 'helpers/performance';
 import { getDiffFileMock } from 'jest/diffs/mock_data/diff_file';
 import waitForPromises from 'helpers/wait_for_promises';
 import { diffMetadata } from 'jest/diffs/mock_data/diff_metadata';
+import { pinia } from '~/pinia/instance';
 import createDiffsStore from '../create_diffs_store';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
@@ -116,6 +117,7 @@ describe('diffs/components/app', () => {
       },
       provide,
       store,
+      pinia,
     });
   };
 

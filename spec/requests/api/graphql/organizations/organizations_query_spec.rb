@@ -19,7 +19,7 @@ RSpec.describe 'getting organizations information', feature_category: :cell do
     FIELDS
   end
 
-  let_it_be(:private_organization) { create(:organization) }
+  let_it_be(:private_organization) { create(:organization, :private) }
 
   let_it_be(:public_organizations) { create_list(:organization, 3, :public) }
 

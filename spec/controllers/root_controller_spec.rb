@@ -44,6 +44,32 @@ RSpec.describe RootController do
         end
       end
 
+      context 'who has customized their dashboard setting for member projects' do
+        before do
+          user.dashboard = 'member_projects'
+        end
+
+        context 'when feature flag your_work_projects_vue is enabled' do
+          it 'redirects to their member projects list' do
+            get :index
+
+            expect(response).to redirect_to member_dashboard_projects_path
+          end
+        end
+
+        context 'when feature flag your_work_projects_vue is disabled' do
+          before do
+            stub_feature_flags(your_work_projects_vue: false)
+          end
+
+          it 'does not redirect' do
+            get :index
+
+            expect(response).not_to redirect_to member_dashboard_projects_path
+          end
+        end
+      end
+
       context 'who has customized their dashboard setting for their own activities' do
         before do
           user.dashboard = 'your_activity'

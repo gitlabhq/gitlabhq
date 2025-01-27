@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Organizations::OrganizationsController, feature_category: :cell do
-  let_it_be(:organization) { create(:organization) }
+  let_it_be(:organization) { create(:organization, :private) }
 
   shared_examples 'when the user is signed in' do
     context 'when the user is signed in' do
@@ -211,7 +211,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
       context 'when most recent activities are from groups inaccessible to user' do
         let_it_be(:limit) { 5 }
 
-        let_it_be(:group) { create(:group, organization: organization) }
+        let_it_be(:group) { create(:group, :private, organization: organization) }
         let_it_be(:events) do
           create_list(:event, limit, :created, target: create(:milestone, group: group), group: group)
         end

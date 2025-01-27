@@ -203,7 +203,7 @@ For example, your pipeline can start automatically, but require a manual action 
 [deploy to production](../environments/deployments.md#configure-manual-deployments).
 In the example below, the `production` stage has a job with a manual action:
 
-![Pipelines example](img/manual_pipeline_v14_2.png)
+![Pipelines example](img/manual_job_v17_9.png)
 
 #### Start all manual jobs in a stage
 
@@ -385,7 +385,7 @@ From this page you can cancel a running pipeline, retry failed jobs, or [delete 
 
 The pipeline details page displays a graph of all the jobs in the pipeline:
 
-![Pipeline detail page](img/pipeline_detail_v16_11.png)
+![Pipeline detail page](img/pipeline_details_v17_9.png)
 
 You can use a standard URL to access the details for specific pipelines:
 
@@ -400,12 +400,12 @@ When you configure jobs with the [`needs`](../yaml/index.md#needs) keyword, you 
 two options for how to group the jobs in the pipeline details page. To group the jobs
 by stage configuration, select **stage** in the **Group jobs by** section:
 
-![jobs grouped by stage](img/pipeline_stage_view_v16_11.png)
+![jobs grouped by stage](img/pipeline_stage_view_v17_9.png)
 
 To group the jobs by [`needs`](../yaml/index.md#needs) configuration, select **Job dependencies**.
 You can optionally select **Show dependencies** to render lines between dependent jobs.
 
-![jobs grouped by job dependencies](img/pipeline_dependency_view_v16_11.png)
+![jobs grouped by job dependencies](img/pipeline_dependency_view_v17_9.png)
 
 Jobs in the leftmost column run first, and jobs that depend on them are grouped in the next columns.
 In this example:
@@ -420,7 +420,7 @@ In this example:
 When you hover over a job in the **Job dependencies** view, every job that must run
 before the selected job is highlighted:
 
-![pipeline dependency view on hover](img/pipeline_dependency_view_on_hover_v16_11.png)
+![pipeline dependency view on hover](img/pipeline_dependency_view_on_hover_v17_9.png)
 
 ### Pipeline mini graphs
 

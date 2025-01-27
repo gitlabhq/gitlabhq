@@ -52,6 +52,9 @@
     "manage_project_access_tokens": {
       "type": "boolean"
     },
+    "manage_protected_tags": {
+      "type": "boolean"
+    },
     "manage_security_policy_link": {
       "type": "boolean"
     },

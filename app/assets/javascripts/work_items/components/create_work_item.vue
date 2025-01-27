@@ -12,9 +12,8 @@ import {
 import { createAlert } from '~/alert';
 import { clearDraft } from '~/lib/utils/autosave';
 import { isMetaEnterKeyPair } from '~/lib/utils/common_utils';
-import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { fetchPolicies } from '~/lib/graphql';
-import { getPreferredLocales, s__, sprintf } from '~/locale';
+import { s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { addHierarchyChild, setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import { findWidget } from '~/issues/list/utils';
@@ -46,6 +45,8 @@ import {
   WIDGET_TYPE_MILESTONE,
   DEFAULT_EPIC_COLORS,
   WIDGET_TYPE_HIERARCHY,
+  WORK_ITEM_TYPE_NAME_LOWERCASE_MAP,
+  WORK_ITEM_TYPE_NAME_MAP,
   WORK_ITEM_TYPE_VALUE_MAP,
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
@@ -265,20 +266,11 @@ export default {
     hasWidgets() {
       return this.workItem?.widgets?.length > 0;
     },
-    relatedItemHelp() {
-      const message = s__(
-        'WorkItem|Adds this %{workItemType} as related to the %{relatedWorkItemType} it was created from',
-      );
-      return sprintf(message, {
-        workItemType: this.selectedWorkItemTypeName.toLocaleLowerCase(),
-        relatedWorkItemType: this.relatedItemType,
-      });
-    },
     relatedItemReference() {
       return getDisplayReference(this.fullPath, this.relatedItem.reference);
     },
     relatedItemType() {
-      return this.relatedItem?.type?.toLocaleLowerCase();
+      return WORK_ITEM_TYPE_NAME_LOWERCASE_MAP[this.relatedItem?.type];
     },
     workItemAssignees() {
       return findWidget(WIDGET_TYPE_ASSIGNEES, this.workItem);
@@ -318,9 +310,7 @@ export default {
 
       return workItemTypes.map((workItemType) => ({
         value: workItemType.id,
-        text: capitalizeFirstCharacter(
-          workItemType.name.toLocaleLowerCase(getPreferredLocales()[0]),
-        ),
+        text: WORK_ITEM_TYPE_NAME_MAP[workItemType.name],
       }));
     },
     selectedWorkItemType() {
@@ -351,7 +341,7 @@ export default {
     makeConfidentialText() {
       return sprintfWorkItem(
         s__(
-          'WorkItem|This %{workItemType} is confidential and should only be visible to users having at least the Planner role.',
+          'WorkItem|This %{workItemType} is confidential and should only be visible to users having at least the Planner role',
         ),
         this.selectedWorkItemTypeName,
       );
@@ -768,7 +758,9 @@ export default {
               data-testid="relates-to-checkbox"
             >
               <gl-sprintf
-                :message="s__('WorkItem|Relates to %{workItemType} %{workItemReference}')"
+                :message="
+                  s__('WorkItem|Mark this item as related to: %{workItemType} %{workItemReference}')
+                "
               >
                 <template #workItemType>
                   {{ relatedItemType }}
@@ -777,9 +769,6 @@ export default {
                   <gl-link :href="relatedItem.webUrl">{{ relatedItemReference }}</gl-link>
                 </template>
               </gl-sprintf>
-              <template #help>
-                {{ relatedItemHelp }}
-              </template>
             </gl-form-checkbox>
           </section>
           <aside

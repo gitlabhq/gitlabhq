@@ -3,8 +3,13 @@ import types from '~/mr_notes/stores/mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
+import mrNotes from '~/mr_notes/stores';
 
 export const useMrNotes = defineStore('legacyMrNotes', {
+  syncWith: {
+    store: mrNotes,
+    namespace: 'page',
+  },
   state() {
     return {
       endpoints: {},

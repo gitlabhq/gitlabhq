@@ -30,10 +30,8 @@ As you edit your pipeline configuration, it is continually validated against the
 pipeline schema. It checks the syntax of your CI YAML configuration, and also runs
 some basic logical validations.
 
-The result of this validation is shown at the top of the editor page. If your configuration
-is invalid, a tip is shown to help you fix the problem:
-
-![Errors in a CI configuration validation](img/pipeline_editor_validate_v13_8.png)
+The result of this validation is shown at the top of the editor page. If the validation fails,
+this section displays a tip to help you fix the problem:
 
 ## Lint CI configuration
 
@@ -46,15 +44,13 @@ you can use the CI lint tool:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Pipeline editor**.
-1. Select the **Lint** tab.
+1. Select the **Validate** tab.
 
 This tool checks for syntax and logical errors but goes into more detail than the
 automatic [validation](#validate-ci-configuration) in the editor.
 
 The results are updated in real-time. Any changes you make to the configuration are
 reflected in the CI lint. It displays the same results as the existing [CI Lint tool](../yaml/lint.md).
-
-![Linting errors in a CI configuration](img/pipeline_editor_lint_v13_8.png)
 
 ## Simulate a CI/CD pipeline
 
@@ -81,13 +77,11 @@ To view a visualization of your `.gitlab-ci.yml` configuration, in your project,
 go to **Build > Pipeline editor**, and then select the **Visualize** tab. The
 visualization shows all stages and jobs. Any [`needs`](../yaml/index.md#needs)
 relationships are displayed as lines connecting jobs together, showing the
-hierarchy of execution:
-
-![CI configuration Visualization](img/ci_config_visualization_v13_7.png)
+hierarchy of execution.
 
 Hover over a job to highlight its `needs` relationships:
 
-![CI configuration visualization on hover](img/ci_config_visualization_hover_v13_7.png)
+![CI/CD configuration visualization on hover](img/ci_config_visualization_hover_v17_9.png)
 
 If the configuration does not have any `needs` relationships, then no lines are drawn because
 each job depends only on the previous stage being completed successfully.

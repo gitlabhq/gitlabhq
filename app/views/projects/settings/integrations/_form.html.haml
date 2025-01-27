@@ -7,7 +7,8 @@
   -# For example, we can get the link to each tracker with scoped_edit_integration_path(tracker, tracker.project)
   = render Pajamas::AlertComponent.new(title: s_('ExternalIssueIntegration|Another issue tracker is already in use'),
     variant: :warning,
-    dismissible: false) do |c|
+    dismissible: false,
+    alert_options: { class: 'gl-mb-5' }) do |c|
     - c.with_body do
       = s_('ExternalIssueIntegration|Only one issue tracker integration can be active at a time. Please disable the active tracker first and try again.')
 

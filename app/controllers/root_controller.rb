@@ -41,6 +41,11 @@ class RootController < Dashboard::ProjectsController
     when 'stars'
       flash.keep
       redirect_to(starred_dashboard_projects_path)
+    when 'member_projects'
+      if Feature.enabled?(:your_work_projects_vue, current_user)
+        flash.keep
+        redirect_to(member_dashboard_projects_path)
+      end
     when 'your_activity'
       redirect_to(activity_dashboard_path)
     when 'project_activity'

@@ -66,7 +66,7 @@ For more information on how runners are authenticating and executing the job pay
 In addition to isolating runners on the network, each ephemeral runner VM only serves a single job and is deleted straight after the job execution.
 In the following example, three jobs are executed in a project's pipeline. Each of these jobs runs in a dedicated ephemeral VM.
 
-![Job isolation](img/build_isolation_v16_1.png)
+![Job isolation](img/build_isolation_v17_9.png)
 
 The build job ran on `runner-ns46nmmj-project-43717858`, test job on `f131a6a2runner-new2m-od-project-43717858` and deploy job on `runner-tmand5m-project-43717858`.
 

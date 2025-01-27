@@ -94,8 +94,9 @@ module Gitlab
                               self.allowed_levels
                             end
 
-        # visibility_level_allowed? is not supporting root-groups, so we have to create a dummy sub-group.
-        subgroup = Group.new(parent_id: subject.id)
+        # visibility_level_allowed? is not supporting root-groups, so we have to create a dummy subgroup in the same
+        # organization.
+        subgroup = Group.new(parent_id: subject.id, organization_id: subject.organization_id)
 
         # return the allowed visibility levels for the subject
         visibility_levels.select { |level| subgroup.visibility_level_allowed?(level) }

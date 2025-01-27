@@ -77,8 +77,8 @@
 - hosted_runners
 - importers
 - incident_management
+- infra_cost_data
 - infrastructure_as_code
-- infrastructure_cost_data
 - insider_threat
 - instance_resiliency
 - integrations
@@ -114,6 +114,7 @@
 - requirements_management
 - review_apps
 - runner
+- runway
 - scalability
 - seat_cost_management
 - secret_detection
@@ -123,6 +124,7 @@
 - service_desk
 - service_ping
 - settings
+- sidekiq
 - software_composition_analysis
 - source_code_management
 - sscs

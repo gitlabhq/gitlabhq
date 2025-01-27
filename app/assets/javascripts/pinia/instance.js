@@ -1,6 +1,11 @@
 import Vue from 'vue';
 import { createPinia, PiniaVuePlugin } from 'pinia';
+import { syncWithVuex } from '~/pinia/plugins';
 
 Vue.use(PiniaVuePlugin);
 
-export const pinia = createPinia();
+const pinia = createPinia();
+
+pinia.use(syncWithVuex);
+
+export { pinia };

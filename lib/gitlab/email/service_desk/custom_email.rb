@@ -47,7 +47,7 @@ module Gitlab
             settings = ServiceDeskSetting.find_by_custom_email(potential_custom_email)
             return unless settings.present?
 
-            settings.project.default_service_desk_subaddress_part
+            ::ServiceDesk::Emails.new(settings.project).default_subaddress_part
           end
 
           private

@@ -625,7 +625,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
     end
 
     context 'when organization is private' do
-      let_it_be(:private_organization) { create(:organization) }
+      let_it_be(:private_organization) { create(:organization, :private) }
 
       context 'when user is authenticated' do
         context 'when user is part of the organization' do

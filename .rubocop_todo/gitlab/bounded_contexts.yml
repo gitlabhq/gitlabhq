@@ -1063,7 +1063,6 @@ Gitlab/BoundedContexts:
     - 'app/models/loose_foreign_keys/deleted_record.rb'
     - 'app/models/loose_foreign_keys/modification_tracker.rb'
     - 'app/models/loose_foreign_keys/turbo_modification_tracker.rb'
-    - 'app/models/main_clusterwide/application_record.rb'
     - 'app/models/member.rb'
     - 'app/models/members/group_member.rb'
     - 'app/models/members/last_group_owner_assigner.rb'

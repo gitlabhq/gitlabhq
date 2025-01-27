@@ -168,7 +168,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
         # Original email contains two CC email addresses
         let(:issue_email_participants_count) { 3 }
-        let(:to_address) { project.service_desk_incoming_address }
+        let(:to_address) { ::ServiceDesk::Emails.new(project).send(:incoming_address) }
 
         it_behaves_like 'a new issue request'
 
@@ -221,7 +221,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
         end
 
         context 'when service desk system address is in CC' do
-          let(:cc_address) { project.service_desk_incoming_address }
+          let(:cc_address) { ::ServiceDesk::Emails.new(project).send(:incoming_address) }
           let(:email_raw) do
             <<~EMAIL
             From: from@example.com
@@ -236,7 +236,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
           it_behaves_like 'does not add CC address'
 
           context 'when service_desk_email is part of CC' do
-            let(:cc_address) { project.service_desk_alias_address }
+            let(:cc_address) { ::ServiceDesk::Emails.new(project).alias_address }
 
             it_behaves_like 'does not add CC address'
           end
@@ -244,7 +244,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
           context 'when custom email is part of CC' do
             let!(:credential) { create(:service_desk_custom_email_credential, project: project) }
             let!(:verification) { create(:service_desk_custom_email_verification, :finished, project: project) }
-            let(:cc_address) { project.service_desk_custom_address }
+            let(:cc_address) { ::ServiceDesk::Emails.new(project).send(:custom_address) }
 
             before do
               project.reset

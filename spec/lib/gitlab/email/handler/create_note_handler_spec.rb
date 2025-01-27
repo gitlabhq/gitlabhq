@@ -236,7 +236,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
     let_it_be(:note) { create(:note, noteable: noteable, project: project) }
 
     let!(:sent_notification) do
-      allow(Gitlab::ServiceDesk).to receive(:enabled?).with(project: project).and_return(true)
+      allow(::Gitlab::ServiceDesk).to receive(:enabled?).with(project).and_return(true)
       SentNotification.record_note(note, Users::Internal.support_bot.id)
     end
 
@@ -267,7 +267,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
       let!(:noteable) { note.noteable }
 
       let!(:sent_notification) do
-        allow(Gitlab::ServiceDesk).to receive(:enabled?).with(project: project).and_return(true)
+        allow(::Gitlab::ServiceDesk).to receive(:enabled?).with(project).and_return(true)
         SentNotification.record_note(note, Users::Internal.support_bot.id)
       end
 

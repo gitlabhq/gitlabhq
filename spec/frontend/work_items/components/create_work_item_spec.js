@@ -540,7 +540,9 @@ describe('Create work item component', () => {
     });
 
     it('renders the correct text for the checkbox', () => {
-      expect(findRelatesToCheckbox().text()).toMatchInterpolatedText('Relates to epic #1');
+      expect(findRelatesToCheckbox().text()).toMatchInterpolatedText(
+        'Mark this item as related to: epic #1',
+      );
     });
 
     it('renders link within checkbox text', () => {

@@ -78,7 +78,7 @@ available, demonstrating manually triggered incremental rollouts.
 Timed rollouts behave in the same way as manual rollouts, except that each job is defined with a
 delay in minutes before it deploys. Selecting the job reveals the countdown.
 
-![A timed rollout in progress.](img/timed_rollout_v12_7.png)
+![A timed rollout in progress.](img/timed_rollout_v17_9.png)
 
 It is possible to combine this functionality with manual incremental rollouts so that the job
 counts down and then deploys.

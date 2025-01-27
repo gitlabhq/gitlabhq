@@ -129,7 +129,7 @@ Now take a look at your pipeline and the jobs within.
 
 1. View a visual representation of your pipeline by selecting the pipeline ID:
 
-   ![The pipeline graph shows each job, its status, and its dependencies across all stages.](img/pipeline_graph_v13_6.png)
+   ![The pipeline graph shows each job, its status, and its dependencies across all stages.](img/pipeline_graph_v17_9.png)
 
 1. View details of a job by selecting the job name. For example, `deploy-prod`:
 

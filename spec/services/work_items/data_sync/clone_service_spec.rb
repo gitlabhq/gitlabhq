@@ -77,6 +77,12 @@ RSpec.describe WorkItems::DataSync::CloneService, feature_category: :team_planni
 
     context 'when cloning work item with success', :freeze_time do
       let(:expected_original_work_item_state) { Issue.available_states[:opened] }
+
+      let(:service_desk_alias_address) do
+        target_namespace.respond_to?(:project) &&
+          ::ServiceDesk::Emails.new(target_namespace.project).alias_address
+      end
+
       let!(:original_work_item_attrs) do
         {
           iid: original_work_item.iid,
@@ -104,7 +110,7 @@ RSpec.describe WorkItems::DataSync::CloneService, feature_category: :team_planni
           external_key: nil,
           upvotes_count: 0,
           blocking_issues_count: 0,
-          service_desk_reply_to: target_namespace.service_desk_alias_address
+          service_desk_reply_to: service_desk_alias_address
         }
       end
 

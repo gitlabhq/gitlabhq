@@ -2830,6 +2830,8 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         end
 
         context 'when organization is private' do
+          let_it_be(:organization) { create(:organization, :private) }
+
           it 'does not create the group' do
             post api('/groups', user3), params: attributes_for_group_api(organization_id: organization.id)
 

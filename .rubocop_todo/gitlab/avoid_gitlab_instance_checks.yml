@@ -34,7 +34,6 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'ee/app/controllers/ee/admin/users_controller.rb'
     - 'ee/app/controllers/ee/application_controller.rb'
     - 'ee/app/controllers/ee/dashboard/projects_controller.rb'
-    - 'ee/app/controllers/ee/search_controller.rb'
     - 'ee/app/controllers/sitemap_controller.rb'
     - 'ee/app/finders/groups_with_templates_finder.rb'
     - 'ee/app/finders/scim_finder.rb'

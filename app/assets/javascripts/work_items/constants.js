@@ -417,6 +417,30 @@ export const WORK_ITEM_ALLOWED_CHANGE_TYPE_MAP = [
   WORK_ITEM_TYPE_ENUM_ISSUE,
 ];
 
+export const WORK_ITEM_TYPE_NAME_MAP = {
+  [WORK_ITEM_TYPE_VALUE_EPIC]: s__('WorkItem|Epic'),
+  [WORK_ITEM_TYPE_VALUE_INCIDENT]: s__('WorkItem|Incident'),
+  [WORK_ITEM_TYPE_VALUE_ISSUE]: s__('WorkItem|Issue'),
+  [WORK_ITEM_TYPE_VALUE_KEY_RESULT]: s__('WorkItem|Key result'),
+  [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: s__('WorkItem|Objective'),
+  [WORK_ITEM_TYPE_VALUE_REQUIREMENTS]: s__('WorkItem|Requirement'),
+  [WORK_ITEM_TYPE_VALUE_TASK]: s__('WorkItem|Task'),
+  [WORK_ITEM_TYPE_VALUE_TEST_CASE]: s__('WorkItem|Test case'),
+  [WORK_ITEM_TYPE_VALUE_TICKET]: s__('WorkItem|Ticket'),
+};
+
+export const WORK_ITEM_TYPE_NAME_LOWERCASE_MAP = {
+  [WORK_ITEM_TYPE_VALUE_EPIC]: s__('WorkItem|epic'),
+  [WORK_ITEM_TYPE_VALUE_INCIDENT]: s__('WorkItem|incident'),
+  [WORK_ITEM_TYPE_VALUE_ISSUE]: s__('WorkItem|issue'),
+  [WORK_ITEM_TYPE_VALUE_KEY_RESULT]: s__('WorkItem|key result'),
+  [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: s__('WorkItem|objective'),
+  [WORK_ITEM_TYPE_VALUE_REQUIREMENTS]: s__('WorkItem|requirement'),
+  [WORK_ITEM_TYPE_VALUE_TASK]: s__('WorkItem|task'),
+  [WORK_ITEM_TYPE_VALUE_TEST_CASE]: s__('WorkItem|test case'),
+  [WORK_ITEM_TYPE_VALUE_TICKET]: s__('WorkItem|ticket'),
+};
+
 export const WORK_ITEM_WIDGETS_NAME_MAP = {
   [WIDGET_TYPE_ASSIGNEES]: s__('WorkItem|Assignees'),
   [WIDGET_TYPE_DESCRIPTION]: s__('WorkItem|Description'),

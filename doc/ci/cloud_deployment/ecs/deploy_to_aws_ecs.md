@@ -75,8 +75,6 @@ and [Container Registry](../../../user/packages/container_registry/index.md).
 1. Select **Commit Changes**. It automatically triggers a new pipeline. In this pipeline, the `build`
    job containerizes the application and pushes the image to [GitLab container registry](../../../user/packages/container_registry/index.md).
 
-   ![A build pipeline running.](img/initial-pipeline_v13_10.png)
-
 1. Visit **Deploy > Container Registry**. Make sure the application image has been
    pushed.
 

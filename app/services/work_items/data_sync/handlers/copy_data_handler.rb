@@ -67,7 +67,9 @@ module WorkItems
         end
 
         def service_desk_reply_to
-          target_namespace.service_desk_alias_address
+          return unless target_namespace.respond_to?(:project) # only for ProjectNamespace
+
+          ::ServiceDesk::Emails.new(target_namespace.project).alias_address
         end
       end
     end

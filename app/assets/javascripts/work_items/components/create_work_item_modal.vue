@@ -10,6 +10,7 @@ import {
   sprintfWorkItem,
   ROUTES,
   RELATED_ITEM_ID_URL_QUERY_PARAM,
+  WORK_ITEM_TYPE_NAME_LOWERCASE_MAP,
 } from '../constants';
 import CreateWorkItem from './create_work_item.vue';
 import CreateWorkItemCancelConfirmationModal from './create_work_item_cancel_confirmation_modal.vue';
@@ -114,7 +115,9 @@ export default {
       });
     },
     selectedWorkItemTypeLowercase() {
-      return convertTypeEnumToName(this.selectedWorkItemTypeName)?.toLocaleLowerCase();
+      return WORK_ITEM_TYPE_NAME_LOWERCASE_MAP[
+        convertTypeEnumToName(this.selectedWorkItemTypeName)
+      ];
     },
     newWorkItemText() {
       return sprintfWorkItem(I18N_NEW_WORK_ITEM_BUTTON_LABEL, this.selectedWorkItemTypeLowercase);

@@ -34485,6 +34485,9 @@ msgstr ""
 msgid "Maximum requests per minute per group / project"
 msgstr ""
 
+msgid "Maximum requests per period per user"
+msgstr ""
+
 msgid "Maximum requests to the %{api_name} API per %{timeframe} per IP address for unauthenticated requests"
 msgstr ""
 
@@ -34564,6 +34567,9 @@ msgid "Medium vulnerabilities present"
 msgstr ""
 
 msgid "Member"
+msgstr ""
+
+msgid "Member Projects"
 msgstr ""
 
 msgid "Member guidelines"
@@ -46559,6 +46565,9 @@ msgstr ""
 msgid "Rate limit access to specified paths."
 msgstr ""
 
+msgid "Rate limit period (in seconds)"
+msgstr ""
+
 msgid "Rate limits can help reduce request volume (like from crawlers or abusive bots)."
 msgstr ""
 
@@ -48169,6 +48178,9 @@ msgid "Revoked impersonation token %{token_name}!"
 msgstr ""
 
 msgid "Revoked personal access token %{personal_access_token_name}!"
+msgstr ""
+
+msgid "Rich text editor"
 msgstr ""
 
 msgid "RightSidebar|Copy email address"
@@ -62862,6 +62874,9 @@ msgstr ""
 msgid "VisibilityLevel|This visibility level is not allowed because a child of %{group_name} has a less restrictive visibility level. %{learn_more_link_start}Learn more%{learn_more_link_end}."
 msgstr ""
 
+msgid "VisibilityLevel|This visibility level is not allowed because the organization has a more restrictive visibility level."
+msgstr ""
+
 msgid "VisibilityLevel|This visibility level is not allowed because the parent group has a more restrictive visibility level."
 msgstr ""
 
@@ -64434,9 +64449,6 @@ msgstr ""
 msgid "WorkItem|Add up to %{MAX_WORK_ITEMS} items at a time."
 msgstr ""
 
-msgid "WorkItem|Adds this %{workItemType} as related to the %{relatedWorkItemType} it was created from"
-msgstr ""
-
 msgid "WorkItem|All activity"
 msgstr ""
 
@@ -64695,6 +64707,9 @@ msgstr ""
 msgid "WorkItem|Mark as done"
 msgstr ""
 
+msgid "WorkItem|Mark this item as related to: %{workItemType} %{workItemReference}"
+msgstr ""
+
 msgid "WorkItem|Merged"
 msgstr ""
 
@@ -64812,9 +64827,6 @@ msgstr ""
 msgid "WorkItem|Related to"
 msgstr ""
 
-msgid "WorkItem|Relates to %{workItemType} %{workItemReference}"
-msgstr ""
-
 msgid "WorkItem|Remove"
 msgstr ""
 
@@ -64822,6 +64834,9 @@ msgid "WorkItem|Reopen %{workItemType}"
 msgstr ""
 
 msgid "WorkItem|Reopening %{workItemType}"
+msgstr ""
+
+msgid "WorkItem|Requirement"
 msgstr ""
 
 msgid "WorkItem|Requirements"
@@ -64998,7 +65013,7 @@ msgstr ""
 msgid "WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least the Planner role"
 msgstr ""
 
-msgid "WorkItem|This %{workItemType} is confidential and should only be visible to users having at least the Planner role."
+msgid "WorkItem|This %{workItemType} is confidential and should only be visible to users having at least the Planner role"
 msgstr ""
 
 msgid "WorkItem|This %{workItemType} is currently blocked by the following items:"
@@ -65011,6 +65026,9 @@ msgid "WorkItem|This %{workItemType} will be closed when the following is merged
 msgstr ""
 
 msgid "WorkItem|This work item is not available. It either doesn't exist or you don't have permission to view it."
+msgstr ""
+
+msgid "WorkItem|Ticket"
 msgstr ""
 
 msgid "WorkItem|Time tracking"
@@ -65088,7 +65106,16 @@ msgstr ""
 msgid "WorkItem|blocks"
 msgstr ""
 
+msgid "WorkItem|epic"
+msgstr ""
+
+msgid "WorkItem|incident"
+msgstr ""
+
 msgid "WorkItem|is blocked by"
+msgstr ""
+
+msgid "WorkItem|issue"
 msgstr ""
 
 msgid "WorkItem|issue weight completed"
@@ -65100,10 +65127,16 @@ msgstr ""
 msgid "WorkItem|items"
 msgstr ""
 
+msgid "WorkItem|key result"
+msgstr ""
+
 msgid "WorkItem|need"
 msgstr ""
 
 msgid "WorkItem|needs"
+msgstr ""
+
+msgid "WorkItem|objective"
 msgstr ""
 
 msgid "WorkItem|on track"
@@ -65112,7 +65145,19 @@ msgstr ""
 msgid "WorkItem|relates to"
 msgstr ""
 
+msgid "WorkItem|requirement"
+msgstr ""
+
+msgid "WorkItem|task"
+msgstr ""
+
+msgid "WorkItem|test case"
+msgstr ""
+
 msgid "WorkItem|the following items"
+msgstr ""
+
+msgid "WorkItem|ticket"
 msgstr ""
 
 msgid "Workspaces"

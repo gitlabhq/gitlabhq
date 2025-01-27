@@ -647,7 +647,6 @@
 - './ee/spec/helpers/container_registry/container_registry_helper_spec.rb'
 - './ee/spec/helpers/ee/access_tokens_helper_spec.rb'
 - './ee/spec/helpers/ee/admin/identities_helper_spec.rb'
-- './ee/spec/helpers/ee/application_settings_helper_spec.rb'
 - './ee/spec/helpers/ee/auth_helper_spec.rb'
 - './ee/spec/helpers/ee/blob_helper_spec.rb'
 - './ee/spec/helpers/ee/branches_helper_spec.rb'

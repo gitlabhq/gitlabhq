@@ -9,6 +9,38 @@ RSpec.describe PreferencesHelper, feature_category: :shared do
     allow(helper).to receive(:current_user).and_return(user)
   end
 
+  describe '#dashboard_value' do
+    context 'when feature flag your_work_projects_vue is enabled' do
+      it 'returns dashboard of current user' do
+        allow(user).to receive(:dashboard).and_return('your_activity')
+
+        expect(helper.dashboard_value).to eq('your_activity')
+      end
+    end
+
+    context 'when feature flag your_work_projects_vue is disabled' do
+      before do
+        stub_feature_flags(your_work_projects_vue: false)
+      end
+
+      context 'when dashboard of current user is member_projects' do
+        it 'returns projects' do
+          allow(user).to receive(:dashboard).and_return('member_projects')
+
+          expect(helper.dashboard_value).to eq('projects')
+        end
+      end
+
+      context 'when dashboard of current user is not member_projects' do
+        it 'returns projects' do
+          allow(user).to receive(:dashboard).and_return('your_activity')
+
+          expect(helper.dashboard_value).to eq('your_activity')
+        end
+      end
+    end
+  end
+
   describe '#dashboard_choices' do
     before do
       allow(helper).to receive(:can?).and_return(false)
@@ -31,6 +63,7 @@ RSpec.describe PreferencesHelper, feature_category: :shared do
         expect(helper.dashboard_choices).to match_array [
           { text: "Your Contributed Projects (default)", value: 'projects' },
           { text: "Starred Projects", value: 'stars' },
+          { text: "Member Projects", value: 'member_projects' },
           { text: "Your Activity", value: 'your_activity' },
           { text: "Your Projects' Activity", value: 'project_activity' },
           { text: "Starred Projects' Activity", value: 'starred_project_activity' },
