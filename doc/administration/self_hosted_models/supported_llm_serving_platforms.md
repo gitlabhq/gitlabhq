@@ -21,24 +21,77 @@ There are multiple platforms available to host your self-hosted Large Language M
 
 ## For self-hosted model deployments
 
-1. [vLLM](https://docs.vllm.ai/en/latest/index.html).
-   A high-performance inference server optimized for serving LLMs with memory efficiency. It supports model parallelism and integrates easily with existing workflows.
-   - [vLLM Installation Guide](https://docs.vllm.ai/en/latest/getting_started/installation.html). We recommend installing version [v0.6.4.post1](https://github.com/vllm-project/vllm/releases/tag/v0.6.4.post1) or later.
-   - [vLLM Supported Models](https://docs.vllm.ai/en/latest/models/supported_models.html)
+### vLLM
 
-   For information on available options when using vLLM to run a model, see the [vLLM documentation on engine arguments](https://docs.vllm.ai/en/stable/usage/engine_args.html).
+[vLLM](https://docs.vllm.ai/en/latest/index.html) is a high-performance inference server optimized for serving LLMs with memory efficiency. It supports model parallelism and integrates easily with existing workflows.
 
-   For example, to set up and run the Mistral model, run the following command:
+To install vLLM, see the [vLLM Installation Guide](https://docs.vllm.ai/en/latest/getting_started/installation.html). You should install [version v0.6.4.post1](https://github.com/vllm-project/vllm/releases/tag/v0.6.4.post1) or later.
+
+For more information on:
+
+- vLLM supported models, see the [vLLM Supported Models documentation](https://docs.vllm.ai/en/latest/models/supported_models.html).
+- Available options when using vLLM to run a model, see the [vLLM documentation on engine arguments](https://docs.vllm.ai/en/stable/usage/engine_args.html).
+
+Examples:
+
+#### Mistral-7B-Instruct-v0.2
+
+Mistral-7B-Instruct-v0.3 requires at least:
+
+- 55GB of disk memory for storage
+- 35 GB of GPU vRAM for serving.
+
+With a `a2-highgpu-2g` machine on GCP or equivalent (2x Nvidia A100 40GB - 150 GB vRAM), the model is expected to infer requests at the rate of 250 tokens per second.
+
+1. Download the model from HuggingFace:
 
    ```shell
-   HF_TOKEN=HUGGING_FACE_TOKEN python -m vllm.entrypoints.openai.api_server \
-      --model mistralai/Mistral-7B-Instruct-v0.3 \
-      --served-model-name Mistral-7B-Instruct-v0.3 \
-      --tensor-parallel-size 8 \
+   git clone https://<your-hugging-face-username>:<your-hugging-face-token>@huggingface.co/mistralai/Mistral-7B-Instruct-v0.3
+   ```
+
+1. Run the server:
+
+   ```shell
+   vllm serve <path-to-model>/Mistral-7B-Instruct-v0.3 \
+      --served_model_name <choose-a-name-for-the-model>  \
       --tokenizer_mode mistral \
+      --tensor_parallel_size <number-of-gpus> \
       --load_format mistral \
       --config_format mistral \
-      --tokenizer mistralai/Mistral-7B-Instruct-v0.3
+      --tokenizer <path-to-model>/Mistral-7B-Instruct-v0.3
+   ```
+
+#### Mixtral-8x7B-Instruct-v0.1
+
+Mistral-7B-Instruct-v0.3 requires at least:
+
+- 355 GB of disk memory for storage
+- 210 GB of GPU vRAM for serving.
+
+You should at least a `a2-highgpu-4g` machine on GCP or equivalent (4x Nvidia A100 40GB - 340 GB vRAM). With this configuration, the model is expected to infer requests at the rate of 25 tokens per second.
+
+1. Download the model from HuggingFace:
+
+   ```shell
+   git clone https://<your-hugging-face-username>:<your-hugging-face-token>@huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1
+   ```
+
+1. Rename the token config:
+   
+   ```shell
+   cd <path-to-model>/Mixtral-8x7B-Instruct-v0.1
+   cp tokenizer.model tokenizer.model.v3
+   ```
+
+1. Run the model:
+   
+   ```shell
+   vllm serve <path-to-model>/Mixtral-8x7B-Instruct-v0.1 \
+     --tensor_parallel_size 4 \
+     --served_model_name <choose-a-name-for-the-model> \
+     --tokenizer_mode mistral \
+     --load_format safetensors \
+     --tokenizer <path-to-model>/Mixtral-8x7B-Instruct-v0.1/
    ```
 
 ## For cloud-hosted model deployments

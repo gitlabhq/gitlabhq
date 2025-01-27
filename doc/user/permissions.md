@@ -202,7 +202,7 @@ Project permissions for [model registry](project/ml/model_registry/index.md) and
 Project permissions for monitoring including [error tracking](../operations/error_tracking.md) and [incident management](../operations/incident_management/index.md):
 
 | Action                                                                                                              | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
-| ------------------------------------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | :---: |
+| ------------------------------------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
 | View an [incident](../operations/incident_management/incidents.md)                                                  |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Assign an [incident management](../operations/incident_management/index.md) alert                                   |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Participate in on-call rotation for [Incident Management](../operations/incident_management/index.md)               |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
@@ -224,18 +224,18 @@ Project permissions for monitoring including [error tracking](../operations/erro
 Project permissions for [issues](project/issues/index.md):
 
 | Action                                                                | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
-| --------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | :---: |
+| --------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
 | View issues                                                           |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Create issues                                                         |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Authors and assignees can modify the title and description even if they don't have the Reporter role. |
+| Create issues                                                         |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | View [confidential issues](project/issues/confidential_issues.md)     |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Update issues, including metadata, item locking, and resolving threads. |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Metadata includes labels, assignees, milestones, epics, weight, confidentiality, time tracking, and more.<br /><br />Guest users can only set metadata when creating an issue. They cannot change the metadata on existing issues. |
+| Edit issues, including metadata, item locking, and resolving threads  |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Metadata includes labels, assignees, milestones, epics, weight, confidentiality, time tracking, and more.<br /><br />Guest users can only set metadata when creating an issue. They cannot change the metadata on existing issues. |
 | Add internal note                                                     |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Close / reopen issues                                                 |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Authors and assignees can close and reopen issues even if they don't have the Reporter role. |
+| Close and reopen issues                                               |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can close and reopen issues that they authored or are assigned to. |
 | Manage [design management](project/issues/design_management.md) files |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Manage [issue boards](project/issue_board.md)                         |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Manage [milestones](project/milestones/index.md)                      |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Archive or reopen [requirements](project/requirements/index.md)       |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Authors and assignees can archive and re-open even if they don't have the Reporter role. |
-| Create or edit [requirements](project/requirements/index.md)          |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Authors and assignees can modify the title and description even if they don't have the Reporter role. |
+| Archive or reopen [requirements](project/requirements/index.md)       |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can archive and reopen issues that they authored or are assigned to. |
+| Create or edit [requirements](project/requirements/index.md)          |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can modify the title and description that they authored or are assigned to. |
 | Import or export [requirements](project/requirements/index.md)        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Archive [test cases](../ci/test_cases/index.md)                       |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Create [test cases](../ci/test_cases/index.md)                        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
@@ -248,29 +248,31 @@ Project permissions for [issues](project/issues/index.md):
 
 Project permissions for [tasks](tasks.md):
 
-| Action                       | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
-| ---------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| View tasks                   |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Create tasks                 |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can create tasks for issues they authored. Authors and assignees can modify the title and description even if they don't have the Reporter role. |
-| Add a linked item            |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Convert to another item type |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Remove from issue            |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Edit tasks                   |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Add internal note            |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Delete tasks                 |       |    ✓    |          |           |            |   ✓   | Authors of tasks can delete them even if they don't have the Owner role. |
+| Action                                                              | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
+| ------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
+| View tasks                                                          |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Create tasks                                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can create tasks for issues they authored. |
+| Edit tasks, including metadata, item locking, and resolving threads |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can modify the title and description that they authored or are assigned to. |
+| Add a linked item                                                   |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Convert to another item type                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Remove from issue                                                   |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Edit tasks                                                          |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Add internal note                                                   |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Delete tasks                                                        |       |    ✓    |          |           |            |   ✓   | Users who don't have the Planner or Owner role can delete the tasks they authored. |
 
 Project permissions for [OKRs](okrs.md):
 
-| Action                        | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
-| ----------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| View OKRs                     |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Create OKRs                   |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Add a child OKR               |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Add a linked item             |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Convert to another item type  |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Edit OKRs                     |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Change confidentiality in OKR |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Add internal note             |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Action                                                             | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
+| ------------------------------------------------------------------ | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
+| View OKRs                                                          |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Create OKRs                                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Edit OKRs, including metadata, item locking, and resolving threads |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Add a child OKR                                                    |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Add a linked item                                                  |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Convert to another item type                                       |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Edit OKRs                                                          |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Change confidentiality in OKR                                      |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Add internal note                                                  |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 
 Project permissions for [wikis](project/wiki/index.md):
 
@@ -517,7 +519,7 @@ Group permissions for [epics](group/epics/index.md):
 | ----------------------------------------------------------------------------- | ----- | ------- | -------- | --------- | ---------- | ----- | ----- |
 | View epic                                                                     | ✓     | ✓       | ✓        | ✓         | ✓          | ✓     |       |
 | Create epic                                                                   |       | ✓       | ✓        | ✓         | ✓          | ✓     |       |
-| Edit epic, including metadata, item locking, and resolving threads.           |       | ✓       | ✓        | ✓         | ✓          | ✓     |       |
+| Edit epic, including metadata, item locking, and resolving threads            |       | ✓       | ✓        | ✓         | ✓          | ✓     |       |
 | Delete epic                                                                   |       | ✓       |          |           |            | ✓     |       |
 | Manage [epic boards](group/epics/epic_boards.md)                              |       | ✓       | ✓        | ✓         | ✓          | ✓     |       |
 | Add issue to an [epic](group/epics/index.md)                                  | ✓     | ✓       | ✓        | ✓         | ✓          | ✓     | You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic) and edit the issue. |
