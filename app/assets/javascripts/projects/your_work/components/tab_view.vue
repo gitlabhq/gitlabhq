@@ -6,7 +6,7 @@ import ProjectsListEmptyState from '~/vue_shared/components/projects_list/projec
 import { DEFAULT_PER_PAGE } from '~/api';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
-import { TIMESTAMP_TYPE_UPDATED_AT } from '~/vue_shared/components/resource_lists/constants';
+import { TIMESTAMP_TYPES } from '~/vue_shared/components/resource_lists/constants';
 import { FILTERED_SEARCH_TERM_KEY } from '~/projects/filtered_search_and_sort/constants';
 import { ACCESS_LEVELS_INTEGER_TO_STRING } from '~/access_level/constants';
 import {
@@ -17,7 +17,6 @@ import { formatProjects } from '../utils';
 
 export default {
   name: 'YourWorkProjectsTabView',
-  TIMESTAMP_TYPE_UPDATED_AT,
   i18n: {
     errorMessage: __(
       'An error occurred loading the projects. Please refresh the page to try again.',
@@ -52,6 +51,13 @@ export default {
     filters: {
       type: Object,
       required: true,
+    },
+    timestampType: {
+      type: String,
+      required: true,
+      validator(value) {
+        return TIMESTAMP_TYPES.includes(value);
+      },
     },
   },
   data() {
@@ -169,7 +175,7 @@ export default {
       :projects="nodes"
       show-project-icon
       list-item-class="gl-px-5"
-      :timestamp-type="$options.TIMESTAMP_TYPE_UPDATED_AT"
+      :timestamp-type="timestampType"
       @refetch="onRefetch"
     />
     <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-mt-5 gl-text-center">

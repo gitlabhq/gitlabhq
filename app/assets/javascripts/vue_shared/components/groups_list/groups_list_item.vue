@@ -9,8 +9,8 @@ import { __ } from '~/locale';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import {
+  TIMESTAMP_TYPES,
   TIMESTAMP_TYPE_CREATED_AT,
-  TIMESTAMP_TYPE_UPDATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
 import ListItem from '~/vue_shared/components/resource_lists/list_item.vue';
 import ListItemStat from '~/vue_shared/components/resource_lists/list_item_stat.vue';
@@ -50,7 +50,7 @@ export default {
       required: false,
       default: TIMESTAMP_TYPE_CREATED_AT,
       validator(value) {
-        return [TIMESTAMP_TYPE_CREATED_AT, TIMESTAMP_TYPE_UPDATED_AT].includes(value);
+        return TIMESTAMP_TYPES.includes(value);
       },
     },
   },

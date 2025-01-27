@@ -16,8 +16,8 @@ import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
 import {
+  TIMESTAMP_TYPES,
   TIMESTAMP_TYPE_CREATED_AT,
-  TIMESTAMP_TYPE_UPDATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
 import { deleteProject } from '~/rest_api';
 import { createAlert } from '~/alert';
@@ -100,7 +100,7 @@ export default {
       required: false,
       default: TIMESTAMP_TYPE_CREATED_AT,
       validator(value) {
-        return [TIMESTAMP_TYPE_CREATED_AT, TIMESTAMP_TYPE_UPDATED_AT].includes(value);
+        return TIMESTAMP_TYPES.includes(value);
       },
     },
   },

@@ -17,6 +17,7 @@ fragment BaseProject on Project {
   descriptionHtml
   createdAt
   updatedAt
+  lastActivityAt
   mergeRequestsAccessLevel {
     stringValue
   }

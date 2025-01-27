@@ -2,7 +2,10 @@
 import { GlTabs, GlTab, GlBadge, GlFilteredSearchToken } from '@gitlab/ui';
 import { isEqual, pick } from 'lodash';
 import { __ } from '~/locale';
-import { TIMESTAMP_TYPE_UPDATED_AT } from '~/vue_shared/components/resource_lists/constants';
+import {
+  TIMESTAMP_TYPE_CREATED_AT,
+  TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
+} from '~/vue_shared/components/resource_lists/constants';
 import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from '~/graphql_shared/constants';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { createAlert } from '~/alert';
@@ -16,6 +19,7 @@ import {
   SORT_DIRECTION_ASC,
   SORT_DIRECTION_DESC,
   SORT_OPTION_UPDATED,
+  SORT_OPTION_CREATED,
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
 } from '~/projects/filtered_search_and_sort/constants';
@@ -33,7 +37,6 @@ import TabView from './tab_view.vue';
 
 export default {
   name: 'YourWorkProjectsApp',
-  TIMESTAMP_TYPE_UPDATED_AT,
   PROJECT_DASHBOARD_TABS,
   i18n: {
     projectCountError: __('An error occurred loading the project counts.'),
@@ -160,6 +163,14 @@ export default {
         FILTERED_SEARCH_TERM_KEY,
       ]);
     },
+    timestampType() {
+      const SORT_MAP = {
+        [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
+        [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
+      };
+
+      return SORT_MAP[this.activeSortOption.value] || TIMESTAMP_TYPE_CREATED_AT;
+    },
   },
   methods: {
     numberToMetricPrefix,
@@ -260,6 +271,7 @@ export default {
         :end-cursor="endCursor"
         :sort="sort"
         :filters="filters"
+        :timestamp-type="timestampType"
         @page-change="onPageChange"
       />
       <template v-else>{{ tab.text }}</template>

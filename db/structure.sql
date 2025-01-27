@@ -11387,6 +11387,8 @@ CREATE TABLE compliance_requirements_controls (
     name smallint NOT NULL,
     control_type smallint NOT NULL,
     expression text,
+    encrypted_secret_token bytea,
+    encrypted_secret_token_iv bytea,
     CONSTRAINT check_110c87ed8d CHECK ((char_length(expression) <= 255))
 );
 

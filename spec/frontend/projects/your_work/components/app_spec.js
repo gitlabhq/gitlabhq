@@ -39,6 +39,10 @@ import { createAlert } from '~/alert';
 import { ACCESS_LEVEL_OWNER_INTEGER } from '~/access_level/constants';
 import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from '~/graphql_shared/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import {
+  TIMESTAMP_TYPE_CREATED_AT,
+  TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
+} from '~/vue_shared/components/resource_lists/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { programmingLanguages } from './mock_data';
@@ -464,6 +468,33 @@ describe('YourWorkProjectsApp', () => {
           start_cursor: mockStartCursor,
         });
       });
+    });
+  });
+
+  describe.each`
+    sort                      | expectedTimestampType
+    ${'name_asc'}             | ${TIMESTAMP_TYPE_CREATED_AT}
+    ${'name_desc'}            | ${TIMESTAMP_TYPE_CREATED_AT}
+    ${'created_asc'}          | ${TIMESTAMP_TYPE_CREATED_AT}
+    ${'created_desc'}         | ${TIMESTAMP_TYPE_CREATED_AT}
+    ${'latest_activity_asc'}  | ${TIMESTAMP_TYPE_LAST_ACTIVITY_AT}
+    ${'latest_activity_desc'} | ${TIMESTAMP_TYPE_LAST_ACTIVITY_AT}
+    ${'stars_asc'}            | ${TIMESTAMP_TYPE_CREATED_AT}
+    ${'stars_desc'}           | ${TIMESTAMP_TYPE_CREATED_AT}
+  `('when sort is $sort', ({ sort, expectedTimestampType }) => {
+    beforeEach(() => {
+      createComponent({
+        route: {
+          ...defaultRoute,
+          query: {
+            sort,
+          },
+        },
+      });
+    });
+
+    it('correctly passes timestampType prop to TabView component', () => {
+      expect(findTabView().props('timestampType')).toBe(expectedTimestampType);
     });
   });
 });

@@ -8,6 +8,7 @@ import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions
 import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
+  TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
 } from '~/vue_shared/components/resource_lists/constants';
 import { groups } from '../groups_list/mock_data';
 
@@ -208,10 +209,11 @@ describe('ListItem', () => {
   });
 
   describe.each`
-    timestampType                | expectedText | expectedTimeProp
-    ${TIMESTAMP_TYPE_CREATED_AT} | ${'Created'} | ${resource.createdAt}
-    ${TIMESTAMP_TYPE_UPDATED_AT} | ${'Updated'} | ${resource.updatedAt}
-    ${undefined}                 | ${'Created'} | ${resource.createdAt}
+    timestampType                      | expectedText | expectedTimeProp
+    ${TIMESTAMP_TYPE_CREATED_AT}       | ${'Created'} | ${resource.createdAt}
+    ${TIMESTAMP_TYPE_UPDATED_AT}       | ${'Updated'} | ${resource.updatedAt}
+    ${TIMESTAMP_TYPE_LAST_ACTIVITY_AT} | ${'Updated'} | ${resource.lastActivityAt}
+    ${undefined}                       | ${'Created'} | ${resource.createdAt}
   `(
     'when `timestampType` prop is $timestampType',
     ({ timestampType, expectedText, expectedTimeProp }) => {

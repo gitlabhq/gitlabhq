@@ -24,6 +24,7 @@ import {
 } from '~/projects/your_work/constants';
 import { FILTERED_SEARCH_TERM_KEY } from '~/projects/filtered_search_and_sort/constants';
 import { ACCESS_LEVEL_OWNER_INTEGER, ACCESS_LEVEL_OWNER_STRING } from '~/access_level/constants';
+import { TIMESTAMP_TYPE_CREATED_AT } from '~/vue_shared/components/resource_lists/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { pageInfoMultiplePages, programmingLanguages } from './mock_data';
@@ -44,6 +45,7 @@ describe('TabView', () => {
       [FILTERED_SEARCH_TOKEN_LANGUAGE]: '8',
       [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ACCESS_LEVEL_OWNER_INTEGER,
     },
+    timestampType: TIMESTAMP_TYPE_CREATED_AT,
   };
 
   const createComponent = ({ handler, propsData = {} } = {}) => {
@@ -111,6 +113,10 @@ describe('TabView', () => {
 
         it('passes projects to `ProjectsList` component', () => {
           expect(findProjectsList().props('projects')).toEqual(formatProjects(expectedProjects));
+        });
+
+        it('passes `timestampType` prop to `ProjectsList` component', () => {
+          expect(findProjectsList().props('timestampType')).toBe(TIMESTAMP_TYPE_CREATED_AT);
         });
 
         describe('when list emits refetch', () => {
