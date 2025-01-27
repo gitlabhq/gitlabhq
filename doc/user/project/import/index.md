@@ -48,6 +48,9 @@ GitLab can import projects from these supported import sources.
 | [Manifest file](manifest.md)                  | Upload a manifest file. |
 | [Repository by URL](repo_by_url.md)           | Provide a Git repository URL to create a new project from. |
 
+After you start a migration, you should not make any changes to imported groups or projects
+on the source instance because these changes might not be copied to the destination instance.
+
 ### Disable unused import sources
 
 Only import projects from sources you trust. If you import a project from an untrusted source,

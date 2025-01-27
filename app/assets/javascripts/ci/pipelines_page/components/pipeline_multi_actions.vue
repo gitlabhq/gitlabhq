@@ -143,7 +143,6 @@ export default {
   >
     <template #header>
       <div
-        aria-hidden="true"
         class="gl-flex gl-min-h-8 gl-items-center gl-border-b-1 gl-border-b-dropdown !gl-p-4 gl-text-sm gl-font-bold gl-text-strong gl-border-b-solid"
       >
         {{ $options.i18n.downloadArtifacts }}

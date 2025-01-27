@@ -1840,18 +1840,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
               pipeline.public_send(action)
             end
-
-            context 'with auto_merge_process_worker_pipeline disabled' do
-              before do
-                stub_feature_flags(auto_merge_process_worker_pipeline: false)
-              end
-
-              it 'performs AutoMergeProcessWorker by passing only the merge request' do
-                expect(AutoMergeProcessWorker).to receive(:perform_async).with(merge_request.id)
-
-                pipeline.succeed!
-              end
-            end
           end
         end
       end

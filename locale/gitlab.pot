@@ -199,6 +199,11 @@ msgid_plural "%d characters remaining"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d character remaining."
+msgid_plural "%d characters remaining."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d child epic"
 msgid_plural "%d child epics"
 msgstr[0] ""
@@ -9562,6 +9567,21 @@ msgid "Blame could not be loaded as a single page."
 msgstr ""
 
 msgid "Blame for binary files is not supported."
+msgstr ""
+
+msgid "Blame|Blame preferences"
+msgstr ""
+
+msgid "Blame|Ignore specific revisions"
+msgstr ""
+
+msgid "Blame|Learn to ignore specific revisions"
+msgstr ""
+
+msgid "Blame|Newer"
+msgstr ""
+
+msgid "Blame|Older"
 msgstr ""
 
 msgid "BlobViewer|If you delete the file, it will be removed from the branch %{branch}."
@@ -22230,6 +22250,9 @@ msgid "Enter number of issues"
 msgstr ""
 
 msgid "Enter one or more user ID separated by commas"
+msgstr ""
+
+msgid "Enter text"
 msgstr ""
 
 msgid "Enter the %{name} description"
@@ -47203,6 +47226,9 @@ msgid "Remove user from group"
 msgstr ""
 
 msgid "Remove user from project"
+msgstr ""
+
+msgid "Remove value"
 msgstr ""
 
 msgid "Remove variable"

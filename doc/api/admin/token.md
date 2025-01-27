@@ -14,9 +14,9 @@ DETAILS:
 
 Use this API to retrieve details about arbitrary tokens and to revoke them. Unlike other APIs that expose token information, this API allows you to retrieve details or revoke tokens without knowing the specific type of token.
 
-## Token Prefixes
+## Token prefixes
 
-When making a request, tokens must begin with `glpat` or the current [custom prefix](../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix). If the token begins with a previous custom prefix, the operation will fail. Interest in support for previous custom prefixes is tracked in [issue 165663](https://gitlab.com/gitlab-org/gitlab/-/issues/165663).
+When making a request, `personal`, `project` or `group access` tokens must begin with `glpat` or the current [custom prefix](../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix). If the token begins with a previous custom prefix, the operation will fail. Interest in support for previous custom prefixes is tracked in [issue 165663](https://gitlab.com/gitlab-org/gitlab/-/issues/165663).
 
 Prerequisites:
 
@@ -53,7 +53,7 @@ Supported attributes:
 
 | Attribute    | Type    | Required | Description                |
 |--------------|---------|----------|----------------------------|
-| `token`      | string  | Yes      | Existing token to identify. Must begin with `glpat` or the current [custom prefix](../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix). |
+| `token`      | string  | Yes      | Existing token to identify. `Personal`, `project` or `group access` tokens must begin with `glpat` or the current [custom prefix](../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix). |
 
 If successful, returns [`200`](../rest/troubleshooting.md#status-codes) and information about the token.
 
@@ -125,7 +125,7 @@ Supported attributes:
 
 | Attribute    | Type    | Required | Description              |
 |--------------|---------|----------|--------------------------|
-| `token`      | string  | Yes      | Existing token to revoke. Must begin with `glpat` or the current [custom prefix](../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix). |
+| `token`      | string  | Yes      | Existing token to revoke. `Personal`, `project` or `group access` tokens must begin with `glpat` or the current [custom prefix](../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix). |
 
 If successful, returns [`204`](../rest/troubleshooting.md#status-codes) without content.
 

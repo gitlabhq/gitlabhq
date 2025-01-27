@@ -52,6 +52,9 @@ Not all group and project resources are copied. See list of copied resources bel
 - [Migrated group items](migrated_items.md#migrated-group-items).
 - [Migrated project items](migrated_items.md#migrated-project-items).
 
+After you start a migration, you should not make any changes to imported groups or projects
+on the source instance because these changes might not be copied to the destination instance.
+
 WARNING:
 Importing groups with projects is in [beta](../../../policy/development_stages_support.md#beta). This feature is not
 ready for production use.
