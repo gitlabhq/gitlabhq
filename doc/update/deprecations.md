@@ -868,6 +868,30 @@ We also plan to make this easier to manage by adding an option to control this f
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Legacy Geo Prometheus repository checks metrics
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.4</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/426659).
+
+</div>
+
+Following the migration of projects to the [Geo self-service framework](https://docs.gitlab.com/ee/development/geo/framework.html) we have removed the support for [repository checks](https://docs.gitlab.com/ee/administration/repository_checks.html) using `git fsck` on Geo secondary sites.
+The following Geo-related [Prometheus](https://docs.gitlab.com/ee/administration/monitoring/prometheus/) metrics are deprecated and will be removed in GitLab 18.0.
+The table below lists the deprecated metrics and their respective replacements. The replacements are available in GitLab 16.3.0 and later.
+
+| Deprecated metric                 |  Replacement metric        |
+| --------------------------------- | -------------------------- |
+| `geo_repositories`                | `geo_project_repositories` |
+| `geo_repositories_checked`        |  None available            |
+| `geo_repositories_checked_failed` |  None available            |
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Legacy Web IDE is deprecated
 
 <div class="deprecation-notes">

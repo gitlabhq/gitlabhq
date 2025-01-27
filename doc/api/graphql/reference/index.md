@@ -794,6 +794,7 @@ Returns [`MemberRole`](#memberrole).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="querymemberroleid"></a>`id` | [`MemberRoleID`](#memberroleid) | Global ID of the member role to look up. |
+| <a id="querymemberroleids"></a>`ids` | [`[MemberRoleID!]`](#memberroleid) | Global IDs of the member role to look up. |
 | <a id="querymemberroleorderby"></a>`orderBy` | [`MemberRolesOrderBy`](#memberrolesorderby) | Ordering column. Default is NAME. |
 | <a id="querymemberrolesort"></a>`sort` | [`SortDirectionEnum`](#sortdirectionenum) | Ordering column. Default is ASC. |
 
@@ -830,6 +831,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="querymemberrolesid"></a>`id` | [`MemberRoleID`](#memberroleid) | Global ID of the member role to look up. |
+| <a id="querymemberrolesids"></a>`ids` | [`[MemberRoleID!]`](#memberroleid) | Global IDs of the member role to look up. |
 | <a id="querymemberrolesorderby"></a>`orderBy` | [`MemberRolesOrderBy`](#memberrolesorderby) | Ordering column. Default is NAME. |
 | <a id="querymemberrolessort"></a>`sort` | [`SortDirectionEnum`](#sortdirectionenum) | Ordering column. Default is ASC. |
 
@@ -26228,6 +26230,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupmemberrolesid"></a>`id` | [`MemberRoleID`](#memberroleid) | Global ID of the member role to look up. |
+| <a id="groupmemberrolesids"></a>`ids` | [`[MemberRoleID!]`](#memberroleid) | Global IDs of the member role to look up. |
 | <a id="groupmemberrolesorderby"></a>`orderBy` | [`MemberRolesOrderBy`](#memberrolesorderby) | Ordering column. Default is NAME. |
 | <a id="groupmemberrolessort"></a>`sort` | [`SortDirectionEnum`](#sortdirectionenum) | Ordering column. Default is ASC. |
 
@@ -33384,6 +33387,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectmemberrolesid"></a>`id` | [`MemberRoleID`](#memberroleid) | Global ID of the member role to look up. |
+| <a id="projectmemberrolesids"></a>`ids` | [`[MemberRoleID!]`](#memberroleid) | Global IDs of the member role to look up. |
 | <a id="projectmemberrolesorderby"></a>`orderBy` | [`MemberRolesOrderBy`](#memberrolesorderby) | Ordering column. Default is NAME. |
 | <a id="projectmemberrolessort"></a>`sort` | [`SortDirectionEnum`](#sortdirectionenum) | Ordering column. Default is ASC. |
 

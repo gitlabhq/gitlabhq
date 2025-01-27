@@ -140,6 +140,8 @@ RSpec.describe Blobs::UnfoldPresenter do
           line = subject.diff_lines.last
 
           expect(line.type).to be_nil
+          expect(line.old_pos).to be_nil
+          expect(line.new_pos).to be_nil
         end
       end
 
@@ -191,6 +193,35 @@ RSpec.describe Blobs::UnfoldPresenter do
         line = subject.diff_lines.last
 
         expect(line.text).to eq(total_lines.to_s)
+      end
+    end
+
+    context 'when include_positions is true' do
+      let(:params) { { since: 2, to: 5 } }
+
+      it 'adds bottom match line' do
+        line = subject.diff_lines(with_positions_and_indent: true)[2]
+
+        expect(line.old_pos).to eq(3)
+        expect(line.new_pos).to eq(3)
+      end
+    end
+
+    context 'when with_positions_and_indent is true' do
+      let(:params) { { since: 10, to: 20, offset: 10, bottom: true } }
+
+      it 'adds old_pos and new_pos to lines' do
+        line = subject.diff_lines(with_positions_and_indent: true).first
+
+        expect(line.type).to be_nil
+        expect(line.old_pos).to eq(0)
+        expect(line.new_pos).to eq(10)
+      end
+
+      it 'indents the line by 1 space by default' do
+        line = subject.diff_lines(with_positions_and_indent: true).first
+
+        expect(line.rich_text[0, 2]).to eq(' <')
       end
     end
   end

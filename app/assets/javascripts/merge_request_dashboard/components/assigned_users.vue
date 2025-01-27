@@ -39,7 +39,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['newListsEnabled'],
   props: {
     users: {
       type: Array,
@@ -114,13 +113,6 @@ export default {
           data-testid="assigned-user"
         >
           <gl-avatar :src="user.avatarUrl" :size="32" class="!gl-bg-white" />
-          <span
-            v-if="!newListsEnabled && isCurrentUser(user)"
-            class="gl-absolute -gl-left-2 -gl-top-2 gl-flex gl-h-5 gl-w-5 gl-items-center gl-justify-center gl-rounded-full gl-bg-blue-500 gl-p-1 gl-text-white"
-            data-testid="current-user"
-          >
-            <gl-icon name="user" class="gl-block" :size="12" />
-          </span>
           <span
             v-if="reviewStateIcon(user)"
             class="gl-absolute -gl-bottom-2 -gl-right-2 gl-flex gl-h-5 gl-w-5 gl-items-center gl-justify-center gl-rounded-full gl-p-1"

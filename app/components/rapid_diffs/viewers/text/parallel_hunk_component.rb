@@ -4,6 +4,8 @@ module RapidDiffs
   module Viewers
     module Text
       class ParallelHunkComponent < ViewComponent::Base
+        with_collection_parameter :diff_hunk
+
         def initialize(diff_hunk:, file_hash:, file_path:)
           @diff_hunk = diff_hunk
           @file_hash = file_hash
@@ -23,6 +25,10 @@ module RapidDiffs
               border: :both
             }
           ]
+        end
+
+        def testid
+          'hunk-lines-parallel'
         end
       end
     end

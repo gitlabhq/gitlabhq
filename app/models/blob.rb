@@ -243,6 +243,10 @@ class Blob < SimpleDelegator
     @expanded = true
   end
 
+  def file_hash
+    OpenSSL::Digest::SHA256.hexdigest(path)
+  end
+
   private
 
   def simple_viewer_class

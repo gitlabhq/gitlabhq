@@ -74,21 +74,6 @@ exports[`Merge request dashboard assigned users component renders user avatars 1
           class="!gl-bg-white gl-avatar gl-avatar-circle gl-avatar-s32"
           src="/root"
         />
-        <span
-          class="-gl-left-2 -gl-top-2 gl-absolute gl-bg-blue-500 gl-flex gl-h-5 gl-items-center gl-justify-center gl-p-1 gl-rounded-full gl-text-white gl-w-5"
-          data-testid="current-user"
-        >
-          <svg
-            aria-hidden="true"
-            class="gl-block gl-fill-current gl-icon s12"
-            data-testid="user-icon"
-            role="img"
-          >
-            <use
-              href="file-mock#user"
-            />
-          </svg>
-        </span>
       </a>
     </div>
   </div>

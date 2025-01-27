@@ -1,0 +1,8 @@
+---
+migration_job_name: UpdateSoftwareLicensePoliciesWithCustomLicenses
+description: Update SoftwareLicensePolicies with CustomLicenses
+feature_category: security_policy_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172406
+milestone: '17.9'
+queued_migration_version: 20241122184608
+finalized_by: # version of the migration that finalized this BBM

@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlIcon, GlAlert, GlTabs, GlTab, GlLink } from '@gitlab/ui';
+import { GlButton, GlAlert, GlTabs, GlTab, GlLink } from '@gitlab/ui';
 import TabTitle from './tab_title.vue';
 import MergeRequestsQuery from './merge_requests_query.vue';
 import CollapsibleSection from './collapsible_section.vue';
@@ -8,7 +8,6 @@ import MergeRequest from './merge_request.vue';
 export default {
   components: {
     GlButton,
-    GlIcon,
     GlAlert,
     GlTabs,
     GlTab,
@@ -18,7 +17,7 @@ export default {
     CollapsibleSection,
     MergeRequest,
   },
-  inject: ['mergeRequestsSearchDashboardPath', 'newListsEnabled'],
+  inject: ['mergeRequestsSearchDashboardPath'],
   props: {
     tabs: {
       type: Array,
@@ -60,7 +59,7 @@ export default {
         </template>
         <div v-for="(lists, i) in tab.lists" :key="`lists_${i}`">
           <div
-            v-if="i === 1 && newListsEnabled"
+            v-if="i === 1"
             class="gl-mb-5 gl-mt-8 gl-rounded-base gl-bg-gray-50 gl-px-4 gl-py-2 gl-font-bold gl-text-subtle"
             data-testid="merge-request-count-explanation"
           >
@@ -81,40 +80,24 @@ export default {
                 :help-content="list.helpContent"
                 :loading="loading"
                 :class="{
-                  '!gl-mt-0': newListsEnabled && listIndex === 0,
-                  '!gl-mt-3': newListsEnabled && listIndex > 0,
+                  '!gl-mt-0': listIndex === 0,
+                  '!gl-mt-3': listIndex > 0,
                 }"
               >
                 <div>
                   <div class="gl-overflow-x-auto">
                     <table class="gl-w-full">
                       <colgroup>
-                        <col v-if="!newListsEnabled" style="width: 60px" />
-                        <col :style="newListsEnabled ? 'width: 210px;' : 'width: 70px;'" />
-                        <col
-                          :style="{ width: newListsEnabled ? '40%' : '47%', minWidth: '200px' }"
-                        />
+                        <col style="width: 210px" />
+                        <col :style="{ width: '40%', minWidth: '200px' }" />
                         <col style="width: 120px" />
                         <col style="width: 120px" />
-                        <col :style="newListsEnabled ? 'width: 220px;' : 'min-width: 200px;'" />
+                        <col style="width: 220px" />
                       </colgroup>
                       <thead class="gl-border-b gl-bg-subtle">
                         <tr>
-                          <th v-if="!newListsEnabled" class="gl-pb-3 gl-pl-5 gl-pr-3">
-                            <gl-icon name="pipeline" />
-                            <span class="gl-sr-only">{{ __('Pipeline status') }}</span>
-                          </th>
-                          <th
-                            class="gl-pb-3 gl-pl-5 gl-pr-3"
-                            :class="{ 'gl-text-sm gl-text-subtle': newListsEnabled }"
-                          >
-                            <template v-if="newListsEnabled">
-                              {{ __('Status') }}
-                            </template>
-                            <template v-else>
-                              <gl-icon name="approval" />
-                              <span class="gl-sr-only">{{ __('Approvals') }}</span>
-                            </template>
+                          <th class="gl-pb-3 gl-pl-5 gl-pr-3 gl-text-sm gl-text-subtle">
+                            {{ __('Status') }}
                           </th>
                           <th class="gl-px-3 gl-pb-3 gl-text-sm gl-text-subtle">
                             {{ __('Title') }}
@@ -128,12 +111,7 @@ export default {
                           <th
                             class="gl-pb-3 gl-pl-3 gl-pr-5 gl-text-right gl-text-sm gl-text-subtle"
                           >
-                            <template v-if="newListsEnabled">
-                              {{ __('Checks') }}
-                            </template>
-                            <template v-else>
-                              {{ __('Activity') }}
-                            </template>
+                            {{ __('Checks') }}
                           </th>
                         </tr>
                       </thead>
@@ -149,10 +127,7 @@ export default {
                           />
                         </template>
                         <tr v-else>
-                          <td
-                            :colspan="newListsEnabled ? 5 : 6"
-                            :class="{ 'gl-py-6 gl-text-center': !error }"
-                          >
+                          <td colspan="5" :class="{ 'gl-py-6 gl-text-center': !error }">
                             <template v-if="loading">
                               {{ __('Loading...') }}
                             </template>
@@ -198,10 +173,7 @@ export default {
       </template>
     </gl-tabs>
     <div class="gl-mt-6 gl-text-center">
-      <gl-link v-if="newListsEnabled" href="https://gitlab.com/gitlab-org/gitlab/-/issues/512314">
-        {{ __('Leave feedback') }}
-      </gl-link>
-      <gl-link v-else href="https://gitlab.com/gitlab-org/gitlab/-/issues/497573">
+      <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/512314">
         {{ __('Leave feedback') }}
       </gl-link>
     </div>

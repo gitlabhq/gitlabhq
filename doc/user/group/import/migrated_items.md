@@ -220,7 +220,11 @@ Some project items are excluded from migration because they:
   - Webhooks
 - Are not supported:
   - Agents
-  - Approval rules
+  - Merge request approval rules
+
+    NOTE:
+    Approval rules related to project settings are imported.
+
   - Container registry
   - Environments
   - Feature flags

@@ -285,6 +285,14 @@ RSpec.describe Blob do
     end
   end
 
+  describe '#file_hash' do
+    it 'returns the file hash' do
+      blob = fake_blob(path: 'README.md')
+
+      expect(blob.file_hash).to include('b3356305')
+    end
+  end
+
   describe '#simple_viewer' do
     context 'when the blob is empty' do
       it 'returns an empty viewer' do

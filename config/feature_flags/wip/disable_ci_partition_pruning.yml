@@ -4,6 +4,6 @@ feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435737
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140355
 rollout_issue_url:
 milestone: '16.8'
-group: group::pipeline execution
+group: group::ci platform
 type: wip
 default_enabled: false

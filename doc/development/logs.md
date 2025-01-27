@@ -58,7 +58,7 @@ Prerequisites:
 
    Use the following values:
 
-   - `gitlab.example.com` - The hostname for your self-managed instance, or `gitlab.com`
+   - `gitlab.example.com` - The hostname for your GitLab Self-Managed instance, or `gitlab.com`
    - `gitlab-project-id` - The project ID
    - `gitlab-access-token` - The access token you created
 

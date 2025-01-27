@@ -35,12 +35,13 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :require_branch_head, only: [:edit, :update]
   before_action :editor_variables, except: [:show, :preview, :diff]
   before_action :validate_diff_params, only: :diff
+
   before_action :set_last_commit_sha, only: [:edit, :update]
 
   track_internal_event :create, :update, name: 'g_edit_by_sfe'
 
   feature_category :source_code_management
-  urgency :low, [:create, :show, :edit, :update, :diff]
+  urgency :low, [:create, :show, :edit, :update, :diff, :diff_lines]
 
   before_action do
     push_frontend_feature_flag(:inline_blame, @project)
@@ -136,9 +137,42 @@ class Projects::BlobController < Projects::ApplicationController
     end
   end
 
+  def diff_lines
+    return render_404 unless rapid_diffs_enabled?
+
+    params.require([:since, :to, :offset])
+
+    bottom = diff_lines_params[:bottom] == 'true'
+    closest_line_number = diff_lines_params[:closest_line_number]&.to_i
+
+    presenter = Blobs::UnfoldPresenter.new(blob, diff_params.merge({ unfold: !!closest_line_number }))
+    diff_hunks = Gitlab::Diff::ViewerHunk.init_from_expanded_lines(
+      presenter.diff_lines(with_positions_and_indent: true),
+      bottom,
+      closest_line_number
+    )
+    return render_404 if diff_hunks.empty?
+
+    hunk_presenter = if diff_view == :inline
+                       RapidDiffs::Viewers::Text::InlineHunkComponent
+                     else
+                       RapidDiffs::Viewers::Text::ParallelHunkComponent
+                     end
+
+    render hunk_presenter.with_collection(
+      diff_hunks,
+      file_hash: blob.file_hash,
+      file_path: blob.path
+    ), layout: false
+  end
+
   private
 
   attr_reader :branch_name
+
+  def rapid_diffs_enabled?
+    ::Feature.enabled?(:rapid_diffs, current_user, type: :wip)
+  end
 
   def blob
     return unless commit
@@ -298,6 +332,10 @@ class Projects::BlobController < Projects::ApplicationController
 
   def diff_params
     params.permit(:full, :since, :to, :bottom, :unfold, :offset, :indent)
+  end
+
+  def diff_lines_params
+    params.permit(:full, :bottom, :since, :to, :offset, :closest_line_number)
   end
 
   override :visitor_id

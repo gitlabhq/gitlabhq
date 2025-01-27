@@ -38,7 +38,7 @@ The subscription is activated.
 
 ### Using one activation code for multiple instances
 
-You can use a single activation code or license key for multiple self-managed instances if the users are:
+You can use a single activation code or license key for multiple GitLab Self-Managed instances if the users are:
 
 - Identical to your licensed production instance.
 - A subset of your licensed production instance.
@@ -87,7 +87,7 @@ If you have questions or need assistance,
 
 ## Troubleshooting
 
-When activating your paid subscription features on self-managed instances, you might encounter the following issues.
+When activating your paid subscription features on GitLab Self-Managed instances, you might encounter the following issues.
 
 ### Error: `An error occurred while adding your subscription`
 

@@ -204,7 +204,7 @@ Next, we'll create a .NET web application that we can instrument. For this tutor
    1. Select **Copy project ID**. Save the copied ID for later.
 
 1. Configure your application with instrumentation.
-   If you're using GitLab Self-Managed, replace `gitlab.com` with your self-managed instance hostname.
+   If you're using GitLab Self-Managed, replace `gitlab.com` with your GitLab Self-Managed instance hostname.
 1. Run your application.
 
    ```shell

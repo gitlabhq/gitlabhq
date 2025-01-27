@@ -88,7 +88,7 @@ DETAILS:
 
 Prerequisites:
 
-- You must be an administrator for your self-managed instance.
+- You must be an administrator for your GitLab Self-Managed instance.
 
 1. [Create a service account](../../api/user_service_accounts.md#create-a-service-account-user).
 
@@ -154,7 +154,7 @@ For more information on the attributes, see the [API documentation on editing a 
 Prerequisites:
 
 - For service accounts created by top-level group Owners, you must have the Owner role in the top-level group or be an administrator.
-- For service accounts created by administrators, you must be an administrator for your self-managed instance.
+- For service accounts created by administrators, you must be an administrator for your GitLab Self-Managed instance.
 
 Use the groups API to [rotate the personal access token](../../api/group_service_accounts.md#rotate-a-personal-access-token-for-a-service-account-user) for a service account user.
 

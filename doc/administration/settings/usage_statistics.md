@@ -13,7 +13,7 @@ DETAILS:
 GitLab Inc. periodically collects information about your instance in order
 to perform various actions.
 
-For free self-managed instances, all usage statistics are [opt-out](#enable-or-disable-service-ping).
+For free GitLab Self-Managed instances, all usage statistics are [opt-out](#enable-or-disable-service-ping).
 For information about other tiers, see [Customer Product Usage Information](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/#service-ping-formerly-known-as-usage-ping).
 
 ## Service Ping
@@ -39,7 +39,7 @@ There are several other benefits to enabling Service Ping:
 
 ## Registration Features Program
 
-In GitLab versions 14.1 and later, GitLab Free customers with a self-managed instance running
+In GitLab versions 14.1 and later, GitLab Free customers with a GitLab Self-Managed instance running
 GitLab Enterprise Edition can receive paid features by registering with GitLab and sending us
 activity data through Service Ping. Features introduced here do not remove the feature from its paid
 tier. Instances on a paid tier are subject to our [Product Usage Data policy](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/) managed by [Cloud Licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).

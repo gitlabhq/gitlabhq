@@ -12,7 +12,7 @@ DETAILS:
 
 NOTE:
 The [next-generation container registry](container_registry_metadata_database.md)
-is now available for upgrade on self-managed instances.
+is now available for upgrade on GitLab Self-Managed instances.
 This upgraded registry supports online garbage collection, and has significant performance
 and reliability improvements.
 
@@ -1463,7 +1463,7 @@ in GitLab 15.8 and the end of support occurred in GitLab 16.0. See the [deprecat
 The integration is not disabled in GitLab 16.0, but support for debugging and fixing issues
 is no longer provided. Additionally, the integration is no longer being developed or
 enhanced with new features. Third-party registry functionality might be completely removed
-after the new GitLab container registry version is available for self-managed (see epic [5521](https://gitlab.com/groups/gitlab-org/-/epics/5521)). Only the GitLab container registry is planned to be supported.
+after the new GitLab container registry version is available for GitLab Self-Managed (see epic [5521](https://gitlab.com/groups/gitlab-org/-/epics/5521)). Only the GitLab container registry is planned to be supported.
 
 This section has guidance for administrators migrating from third-party registries
 to the GitLab container registry. If the third-party container registry you are using is not listed here,

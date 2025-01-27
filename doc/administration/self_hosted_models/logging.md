@@ -19,7 +19,7 @@ DETAILS:
 
 Prerequisites:
 
-- You must be an administrator for your self-managed instance.
+- You must be an administrator.
 
 To enable logging and access the logs, enable the feature flag:
 
@@ -292,7 +292,7 @@ The `:expanded_ai_logging` feature flag controls whether additional debugging in
 ### Behavior by Deployment Setup
 
 - **GitLab Self-Managed and self-hosted AI gateway**: The feature flag enables detailed logging to `llm.log` on the self-hosted instance, capturing inputs and outputs for AI models.
-- **GitLab Self-Managed and GitLab-managed AI gateway**: The feature flag enables logging on your self-managed instance. However, the flag does **not** activate expanded logging for the GitLab-managed AI gateway side. Logging remains disabled for the cloud-connected AI gateway to protect sensitive data.
+- **GitLab Self-Managed and GitLab-managed AI gateway**: The feature flag enables logging on your GitLab Self-Managed instance. However, the flag does **not** activate expanded logging for the GitLab-managed AI gateway side. Logging remains disabled for the cloud-connected AI gateway to protect sensitive data.
 For more information, see the [Feature Flag section under Privacy Considerations](../../development/ai_features/index.md#privacy-considerations) documentation.
 
 ### Logging in cloud-connected AI gateways

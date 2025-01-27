@@ -666,9 +666,6 @@ msgstr ""
 msgid "%{codeStart}$%{codeEnd} will be treated as the start of a reference to another variable."
 msgstr ""
 
-msgid "%{comments}, %{fileAdditions}, %{fileDeletions}"
-msgstr ""
-
 msgid "%{commit_author_link} authored %{commit_authored_timeago}"
 msgstr ""
 
@@ -1203,9 +1200,6 @@ msgid "%{redirect_link_start} Click here to redirect to %{redirect_uri_val} %{re
 msgstr ""
 
 msgid "%{reference} %{author} %{stats} %{milestone}"
-msgstr ""
-
-msgid "%{reference} %{divider} created %{createdAt} by %{author} %{milestone}"
 msgstr ""
 
 msgid "%{ref} cannot be added: %{error}"
@@ -34355,6 +34349,9 @@ msgstr ""
 msgid "Maximum authenticated API requests per rate limit period per user"
 msgstr ""
 
+msgid "Maximum authenticated requests to %{open}project/:id/jobs%{close} per minute"
+msgstr ""
+
 msgid "Maximum authenticated web requests per rate limit period per user"
 msgstr ""
 
@@ -41450,9 +41447,6 @@ msgstr ""
 msgid "Pipeline schedules"
 msgstr ""
 
-msgid "Pipeline status"
-msgstr ""
-
 msgid "Pipeline status emails"
 msgstr ""
 
@@ -48195,9 +48189,6 @@ msgid "Reviewing"
 msgstr ""
 
 msgid "Reviewing (merge request !%{mergeRequestId})"
-msgstr ""
-
-msgid "Reviews requested"
 msgstr ""
 
 msgid "Revoke"
@@ -63423,9 +63414,6 @@ msgid "Waiting for assignee"
 msgstr ""
 
 msgid "Waiting for merge (open and assigned)"
-msgstr ""
-
-msgid "Waiting for others"
 msgstr ""
 
 msgid "Want to see the data? Please ask an administrator for access."

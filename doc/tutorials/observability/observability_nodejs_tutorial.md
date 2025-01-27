@@ -83,7 +83,7 @@ Next, we need to instrument the NodeJS application.
    ```
 
    Be sure to replace the `PROJECT_ID`, and `ACCESS_TOKEN` with the values you obtained earlier.
-   If using GitLab Self-Managed, replace `gitlab.com` with your self-managed instance hostname.
+   If using GitLab Self-Managed, replace `gitlab.com` with your GitLab Self-Managed instance hostname.
 
 ## View traces
 

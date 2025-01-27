@@ -263,7 +263,7 @@ that belong to the group.
 :::TabTitle In 17.4 and later
 
 In GitLab 17.4 and later, follow these instructions to turn on GitLab Duo
-experiment and beta features for your self-managed instance.
+experiment and beta features for your GitLab Self-Managed instance.
 
 Prerequisites:
 

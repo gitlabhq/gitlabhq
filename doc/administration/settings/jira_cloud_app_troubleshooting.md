@@ -109,7 +109,7 @@ Depending on how you installed the app, you might want to check the following:
   Provide your GitLab instance URL and Jira URL. GitLab Support can try to run the following scripts to resolve the issue:
 
   ```ruby
-  # Check if GitLab.com can connect to the self-managed instance
+  # Check if GitLab.com can connect to the GitLab Self-Managed instance
   checker = Gitlab::TcpChecker.new("gitlab.example.com", 443)
 
   # Returns `true` if successful
@@ -120,10 +120,10 @@ Depending on how you installed the app, you might want to check the following:
   ```
 
   ```ruby
-  # Locate the installation record for the self-managed instance
+  # Locate the installation record for the GitLab Self-Managed instance
   installation = JiraConnectInstallation.find_by_instance_url("https://gitlab.example.com")
 
-  # Try to send the token again from GitLab.com to the self-managed instance
+  # Try to send the token again from GitLab.com to the GitLab Self-Managed instance
   ProxyLifecycleEventService.execute(installation, :installed, installation.instance_url)
   ```
 
@@ -134,7 +134,7 @@ Depending on how you installed the app, you might want to check the following:
 
 ## Error: `Failed to update the GitLab instance`
 
-When you set up the GitLab for Jira Cloud app, you might get a `Failed to update the GitLab instance` error after you enter your self-managed instance URL.
+When you set up the GitLab for Jira Cloud app, you might get a `Failed to update the GitLab instance` error after you enter your GitLab Self-Managed instance URL.
 
 To resolve this issue, ensure all prerequisites for your installation method have been met:
 
@@ -188,7 +188,7 @@ You can check the response body for the error.
 If you cannot resolve the issue and you're a GitLab customer, contact [GitLab Support](https://about.gitlab.com/support/) for assistance.
 Provide GitLab Support with:
 
-- Your self-managed instance URL.
+- Your GitLab Self-Managed instance URL.
 - Your GitLab.com username.
 - Optional. The `X-Request-Id` response header for the failed `GET`
   request to `https://gitlab.com/-/jira_connect/installations`.
@@ -230,17 +230,17 @@ For the second log, you might have one of the following scenarios:
 - Scenario 1:
   - `json.message`, `json.jira_status_code`, and `json.jira_body` are present.
   - `json.message` is `Proxy lifecycle event received error response` or similar.
-  - `json.jira_status_code` and `json.jira_body` might contain the response received from the self-managed instance or a proxy in front of the instance.
+  - `json.jira_status_code` and `json.jira_body` might contain the response received from the GitLab Self-Managed instance or a proxy in front of the instance.
   - If `json.jira_status_code` is `401 Unauthorized` and `json.jira_body` is `(empty)`:
     - [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) might not be set to `https://gitlab.com`.
-    - The self-managed instance might be blocking outgoing connections. Ensure that your
-      self-managed instance can connect to both `connect-install-keys.atlassian.com`
+    - The GitLab Self-Managed instance might be blocking outgoing connections. Ensure that your
+      GitLab Self-Managed instance can connect to both `connect-install-keys.atlassian.com`
       and `gitlab.com`.
-    - The self-managed instance is unable to decrypt the JWT token from Jira. [From GitLab 16.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147234),
+    - The GitLab Self-Managed instance is unable to decrypt the JWT token from Jira. [From GitLab 16.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147234),
       the [`exceptions_json.log`](../logs/index.md#exceptions_jsonlog) contains more information about the error.
-    - If a [reverse proxy](jira_cloud_app.md#using-a-reverse-proxy) is in front of your self-managed instance,
-      the `Host` header sent to the self-managed instance might not match the reverse proxy FQDN.
-      Check the [Workhorse logs](../logs/index.md#workhorse-logs) on the self-managed instance:
+    - If a [reverse proxy](jira_cloud_app.md#using-a-reverse-proxy) is in front of your GitLab Self-Managed instance,
+      the `Host` header sent to the GitLab Self-Managed instance might not match the reverse proxy FQDN.
+      Check the [Workhorse logs](../logs/index.md#workhorse-logs) on the GitLab Self-Managed instance:
 
       ```shell
       grep /-/jira_connect/events/installed /var/log/gitlab/gitlab-workhorse/current
@@ -259,7 +259,7 @@ For the second log, you might have one of the following scenarios:
 
 - Scenario 2:
   - `json.exception.class` and `json.exception.message` are present.
-  - `json.exception.class` and `json.exception.message` contain whether an issue occurred while contacting the self-managed instance.
+  - `json.exception.class` and `json.exception.message` contain whether an issue occurred while contacting the GitLab Self-Managed instance.
 
 ## Error: `Failed to link group`
 
@@ -294,7 +294,7 @@ This error can be returned for multiple reasons.
 ## Error: `Failed to load Jira Connect Application ID`
 
 When you sign in to the GitLab for Jira Cloud app after you point the app
-to your self-managed instance, you might get the following error:
+to your GitLab Self-Managed instance, you might get the following error:
 
 ```plaintext
 Failed to load Jira Connect Application ID. Please try again.
@@ -320,7 +320,7 @@ To resolve this issue:
 ## Error: `Missing required parameter: client_id`
 
 When you sign in to the GitLab for Jira Cloud app after you point the app
-to your self-managed instance, you might get the following error:
+to your GitLab Self-Managed instance, you might get the following error:
 
 ```plaintext
 Missing required parameter: client_id
@@ -334,7 +334,7 @@ To resolve this issue, ensure all prerequisites for your installation method hav
 ## Error: `Failed to sign in to GitLab`
 
 When you sign in to the GitLab for Jira Cloud app after you point the app
-to your self-managed instance, you might get the following error:
+to your GitLab Self-Managed instance, you might get the following error:
 
 ```plaintext
 Failed to sign in to GitLab

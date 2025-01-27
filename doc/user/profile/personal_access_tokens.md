@@ -300,7 +300,7 @@ You can now create personal access tokens for a service account user with no exp
 
 Prerequisites:
 
-- You must be an administrator for your self-managed instance.
+- You must be an administrator for your GitLab Self-Managed instance.
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.

@@ -172,11 +172,11 @@ export default {
       </a>
       <span
         v-if="!isSystemNote && !emailParticipant"
-        class="text-nowrap author-username gl-truncate"
+        class="text-nowrap author-username -gl-m-2 gl-truncate gl-p-2"
       >
         <a
           ref="authorUsernameLink"
-          class="author-username-link"
+          class="author-username-link focus:gl-focus"
           :href="authorHref"
           @mouseenter="handleUsernameMouseEnter"
           @mouseleave="handleUsernameMouseLeave"

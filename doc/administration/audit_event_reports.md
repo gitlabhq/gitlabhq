@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Audit events administration
 
-In addition to [audit events](../user/compliance/audit_events.md), self-managed administrators can access additional
+In addition to [audit events](../user/compliance/audit_events.md), as an administrator, you can access additional
 features.
 
 ## Instance audit events

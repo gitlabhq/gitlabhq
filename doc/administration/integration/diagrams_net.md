@@ -22,7 +22,7 @@ On GitLab.com, this integration is enabled for all SaaS users and does not requi
 On GitLab Self-Managed, you can choose to integrate with the free [diagrams.net](https://www.drawio.com/)
 website, or use a self-managed diagrams.net site in offline environments.
 
-To set up the integration on a self-managed instance, you must:
+To set up the integration, you must:
 
 1. Choose to integrate with the free diagrams.net website or
    [configure your diagrams.net server](#configure-your-diagramsnet-server).

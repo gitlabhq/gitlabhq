@@ -101,3 +101,13 @@ To do this:
 1. Enable the **Ignore certificate errors** option.
 1. Select **Verify setup**.
 1. Select **OK** or **Save**.
+
+### Authentication fails in PyCharm
+
+If you encounter problems during the **Verify setup** phase of GitLab authentication, confirm you
+are running a supported version of PyCharm:
+
+1. Go to the [plugin compatibility](https://plugins.jetbrains.com/plugin/22325-gitlab-duo/versions) page.
+1. For **Compatibility**, select `PyCharm Community` or `PyCharm Professional`.
+1. For **Channels**, select your desired stability level for the GitLab plugin.
+1. For your version of PyCharm, select **Download** to download the correct GitLab plugin version, and install it.

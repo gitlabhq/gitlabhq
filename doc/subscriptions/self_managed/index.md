@@ -237,7 +237,7 @@ Prerequisites:
 - [Activated](../../administration/license.md) your instance with an activation code.
 
 Your [subscription data](#subscription-data) is automatically synchronized once
-a day between your self-managed instance and GitLab.
+a day between your GitLab Self-Managed instance and GitLab.
 
 At approximately 3:00 AM (UTC), this daily synchronization job sends
 [subscription data](#subscription-data) to the Customers Portal. For this reason,

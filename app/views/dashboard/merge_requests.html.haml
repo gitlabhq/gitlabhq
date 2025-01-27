@@ -4,7 +4,6 @@
   @breadcrumb_link = merge_requests_dashboard_path(assignee_username: current_user.username)
   add_page_specific_style 'page_bundles/issuable_list'
 
-- new_lists_enabled = ::Feature.enabled?(:merge_request_dashboard_new_lists, current_user, type: :wip)
 = render_dashboard_ultimate_trial(current_user)
 = render_if_exists 'shared/dashboard/saml_reauth_notice',
   groups_requiring_saml_reauth: user_groups_requiring_reauth
@@ -27,7 +26,7 @@
       = render 'shared/new_project_item_vue_select'
 
 - if merge_request_dashboard_enabled?(current_user) && !current_page?(merge_requests_search_dashboard_path)
-  #js-merge-request-dashboard{ data: { base_path: merge_requests_dashboard_path, new_lists_enabled: new_lists_enabled.to_s, merge_requests_search_dashboard_path: merge_requests_search_dashboard_path(assignee_username: current_user.username), initial_data: merge_request_dashboard_data.to_json } }
+  #js-merge-request-dashboard{ data: { base_path: merge_requests_dashboard_path, merge_requests_search_dashboard_path: merge_requests_search_dashboard_path(assignee_username: current_user.username), initial_data: merge_request_dashboard_data.to_json } }
     = gl_loading_icon(size: 'lg')
 
 - if !merge_request_dashboard_enabled?(current_user) || current_page?(merge_requests_search_dashboard_path)

@@ -73,6 +73,7 @@ scope format: false do
 
       scope path: '/blob/*id', as: :blob do
         get :diff
+        get :diff_lines
         get '/', action: :show
         delete '/', action: :destroy
         post '/', action: :create

@@ -1,10 +1,11 @@
 - if @diff_hunk.header
   %tr.rd-hunk-header.rd-hunk-header-inline
-    %td.rd-hunk-header-buttons{ colspan: '2' }= render RapidDiffs::Viewers::Text::ExpandLinesComponent.new(directions: @diff_hunk.expand_directions)
-    %td.rd-hunk-header-content= @diff_hunk.header_text
+    %td.rd-hunk-header-buttons{ colspan: '2' }= render RapidDiffs::Viewers::Text::ExpandLinesComponent.new(directions: @diff_hunk.header.expand_directions)
+    %td.rd-hunk-header-content= @diff_hunk.header.text
 
-- @diff_hunk.lines.each do |line|
-  %tr.rd-hunk-lines.rd-hunk-lines-inline
-    = render RapidDiffs::Viewers::Text::LineNumberComponent.new(file_hash: @file_hash, file_path: @file_path, line: line, position: :old)
-    = render RapidDiffs::Viewers::Text::LineNumberComponent.new(file_hash: @file_hash, file_path: @file_path, line: line, position: :new, border: :right)
-    = render RapidDiffs::Viewers::Text::LineContentComponent.new(line: line, position: nil)
+- if @diff_hunk.lines
+  - @diff_hunk.lines.each do |line|
+    %tr.rd-hunk-lines.rd-hunk-lines-inline{ data: { testid: testid } }
+      = render RapidDiffs::Viewers::Text::LineNumberComponent.new(file_hash: @file_hash, file_path: @file_path, line: line, position: :old)
+      = render RapidDiffs::Viewers::Text::LineNumberComponent.new(file_hash: @file_hash, file_path: @file_path, line: line, position: :new, border: :right)
+      = render RapidDiffs::Viewers::Text::LineContentComponent.new(line: line, position: nil)

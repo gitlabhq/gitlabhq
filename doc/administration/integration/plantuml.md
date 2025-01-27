@@ -12,9 +12,9 @@ DETAILS:
 **Offering:** GitLab Self-Managed
 
 With the [PlantUML](https://plantuml.com) integration, you can create diagrams in snippets, wikis, and repositories.
-This integration is enabled on GitLab.com for all SaaS users and does not require any additional configuration.
+This integration is enabled on GitLab.com for all users and does not require any additional configuration.
 
-To set up the integration on a self-managed instance, you must [configure your PlantUML server](#configure-your-plantuml-server).
+To set up the integration on your GitLab Self-Managed instance, you must [configure your PlantUML server](#configure-your-plantuml-server).
 
 After completing the integration, PlantUML converts `plantuml`
 blocks to an HTML image tag, with the source pointing to the PlantUML instance. The PlantUML

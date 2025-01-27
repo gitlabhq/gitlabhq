@@ -21,15 +21,8 @@ const createMockUsers = () => [
   },
 ];
 
-function createComponent({
-  users = createMockUsers(),
-  type = 'ASSIGNEES',
-  newListsEnabled = false,
-} = {}) {
+function createComponent({ users = createMockUsers(), type = 'ASSIGNEES' } = {}) {
   wrapper = mountExtended(AssignedUsers, {
-    provide: {
-      newListsEnabled,
-    },
     propsData: {
       type,
       users,
@@ -40,7 +33,6 @@ function createComponent({
 describe('Merge request dashboard assigned users component', () => {
   const findAllUsers = () => wrapper.findAllByTestId('assigned-user');
   const findReviewStateIcon = () => wrapper.findByTestId('review-state-icon');
-  const findCurrentUserIcon = () => wrapper.findByTestId('current-user');
 
   beforeEach(() => {
     window.gon = { current_user_id: 1 };
@@ -58,24 +50,10 @@ describe('Merge request dashboard assigned users component', () => {
   });
 
   describe('current user avatar', () => {
-    it('renders icon for current user', () => {
-      createComponent();
-
-      expect(findCurrentUserIcon().exists()).toBe(true);
-    });
-
     it('renders current user last', () => {
       createComponent();
 
-      expect(findAllUsers().at(1).find('[data-testid="current-user"]').exists()).toBe(true);
-    });
-
-    describe('when newListsEnabled is true', () => {
-      it('renders icon for current user', () => {
-        createComponent({ newListsEnabled: true });
-
-        expect(findCurrentUserIcon().exists()).toBe(false);
-      });
+      expect(findAllUsers().at(1).attributes('data-user-id')).toBe('1');
     });
   });
 

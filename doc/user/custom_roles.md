@@ -72,7 +72,7 @@ Prerequisites:
 
 - You must be an administrator for the self-managed instance.
 
-After you create a custom role for your self-managed instance, you can assign that custom role to a user in any group or subgroup in that instance.
+After you create a custom role for your GitLab Self-Managed instance, you can assign that custom role to a user in any group or subgroup in that instance.
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Roles and permissions**.

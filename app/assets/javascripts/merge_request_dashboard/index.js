@@ -2,7 +2,6 @@ import { concatPagination } from '@apollo/client/utilities';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import createDefaultClient from '~/lib/graphql';
 import App from './components/app.vue';
 
@@ -66,7 +65,6 @@ export function initMergeRequestDashboard(el) {
       ),
     }),
     provide: {
-      newListsEnabled: parseBoolean(el.dataset.newListsEnabled),
       mergeRequestsSearchDashboardPath: el.dataset.mergeRequestsSearchDashboardPath,
     },
     render(createElement) {

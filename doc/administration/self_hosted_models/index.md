@@ -81,7 +81,7 @@ For licensing, you must have a GitLab Ultimate subscription, and either [GitLab 
 For more information, see the
 [GitLab.com AI gateway configuration diagram](configuration_types.md#gitlabcom-ai-gateway).
 
-To set up this infrastructure, see [how to configure GitLab Duo on a self-managed instance](../../user/gitlab_duo/setup.md).
+To set up this infrastructure, see [how to configure GitLab Duo on a GitLab Self-Managed instance](../../user/gitlab_duo/setup.md).
 
 ## Set up a self-hosted infrastructure
 

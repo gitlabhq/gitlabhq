@@ -533,6 +533,15 @@ Examples:
 - Use code generation to create code based on your comments.
 - Adjust your code generation results by adding code comments to your file.
 
+## Code Owner, `CODEOWNER`
+
+Use **Code Owner** for:
+
+- A person or group responsible for specific parts of your project's codebase.
+- The feature that defines the responsible person or group.
+
+Use `CODEOWNER` for the filename that define ownership rules.
+
 ## Code Review Summary
 
 Use title case for **Code Review Summary**.
