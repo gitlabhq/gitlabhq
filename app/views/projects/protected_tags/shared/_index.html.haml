@@ -10,7 +10,7 @@
   - c.with_body do
     %p.gl-text-subtle
       = s_("ProtectedTag|By default, protected tags restrict who can modify the tag.")
-      = link_to s_("ProtectedTag|Learn more."), help_page_path("user/project/protected_tags.md", anchor: "who-can-modify-a-protected-tag")
+      = link_to s_("ProtectedTag|Learn more."), help_page_path("user/project/protected_tags.md")
 
     = render ::Layouts::CrudComponent.new(_('Protected tags'),
       icon: 'tag',

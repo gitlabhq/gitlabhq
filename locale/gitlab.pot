@@ -16583,7 +16583,7 @@ msgstr ""
 msgid "Could not revoke impersonation token %{token_name}."
 msgstr ""
 
-msgid "Could not revoke personal access token %{personal_access_token_name}."
+msgid "Could not revoke personal access token \"%{personal_access_token_name}\"."
 msgstr ""
 
 msgid "Could not save configuration. Please refresh the page, or try again later."
@@ -48177,7 +48177,7 @@ msgstr ""
 msgid "Revoked impersonation token %{token_name}!"
 msgstr ""
 
-msgid "Revoked personal access token %{personal_access_token_name}!"
+msgid "Revoked personal access token \"%{personal_access_token_name}\"."
 msgstr ""
 
 msgid "Rich text editor"

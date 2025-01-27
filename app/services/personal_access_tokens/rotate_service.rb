@@ -102,6 +102,7 @@ module PersonalAccessTokens
 
     def create_token_params
       { name: token.name,
+        description: token.description,
         previous_personal_access_token_id: token.id,
         impersonation: token.impersonation,
         scopes: token.scopes,

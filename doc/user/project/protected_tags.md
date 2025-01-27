@@ -23,12 +23,8 @@ Each rule allows you to match either:
 
 This feature evolved out of [protected branches](repository/branches/protected.md).
 
-## Who can modify a protected tag
-
-By default:
-
-- To create or delete tags, you must have the Maintainer role.
-- Protected tags [can only be deleted](#delete-a-protected-tag) using the UI or API.
+NOTE:
+To create or delete a protected tag, you must be in the **Allowed to create or delete** list for that protected tag.
 
 ## Configuring protected tags
 
@@ -204,7 +200,7 @@ GitLab user interface.
 
 Prerequisites:
 
-- You must have at least the Maintainer role in your project.
+- You must be in the **Allowed to create or delete** list.
 
 To do this:
 

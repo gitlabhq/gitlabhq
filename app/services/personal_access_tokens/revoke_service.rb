@@ -32,11 +32,11 @@ module PersonalAccessTokens
     private
 
     def error_message
-      _("Could not revoke personal access token %{personal_access_token_name}.") % { personal_access_token_name: token.name }
+      _('Could not revoke personal access token "%{personal_access_token_name}".') % { personal_access_token_name: token.name }
     end
 
     def success_message
-      _("Revoked personal access token %{personal_access_token_name}!") % { personal_access_token_name: token.name }
+      _('Revoked personal access token "%{personal_access_token_name}".') % { personal_access_token_name: token.name }
     end
 
     def revocation_permitted?
