@@ -16,5 +16,12 @@ module Ci
     belongs_to :tag, class_name: 'Ci::Tag', optional: false
 
     validates :project_id, presence: true
+
+    scope :scoped_builds, -> do
+      where(arel_table[:build_id].eq(Ci::Build.arel_table[Ci::Build.primary_key]))
+        .where(arel_table[:partition_id].eq(Ci::Build.arel_table[:partition_id]))
+    end
+
+    scope :scoped_taggables, -> { scoped_builds }
   end
 end

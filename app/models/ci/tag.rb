@@ -6,7 +6,8 @@ module Ci
 
     self.table_name = :tags
 
-    has_many :taggings, dependent: :destroy, class_name: 'Ci::Tagging' # rubocop:disable Cop/ActiveRecordDependent -- existing
+    has_many :job_taggings, class_name: 'Ci::BuildTag'
+    has_many :runner_taggings, class_name: 'Ci::RunnerTagging'
 
     validates :name, presence: true
     validates :name, uniqueness: { case_sensitive: true }
@@ -17,12 +18,6 @@ module Ci
 
     scope :named_any, ->(list) do
       list.map { |name| named(name) }.reduce(:or)
-    end
-
-    scope :for_context, ->(context) do
-      joins(:taggings)
-        .where(taggings: { context: context })
-        .select("DISTINCT tags.*")
     end
 
     def self.find_or_create_with_like_by_name(name)

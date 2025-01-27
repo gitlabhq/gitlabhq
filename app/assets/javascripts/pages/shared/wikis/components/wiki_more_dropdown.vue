@@ -103,6 +103,7 @@ export default {
   <gl-disclosure-dropdown
     v-gl-tooltip="showDropdownTooltip"
     icon="ellipsis_v"
+    category="tertiary"
     placement="bottom-end"
     no-caret
     data-testid="wiki-more-dropdown"

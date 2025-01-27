@@ -3,6 +3,7 @@
 class AuditEventService
   include AuditEventSaveType
   include ::Gitlab::Audit::Logging
+  include ::Gitlab::Audit::ScopeValidation
 
   # Instantiates a new service
   #
@@ -29,7 +30,7 @@ class AuditEventService
     @save_type = save_type
     @created_at = created_at
 
-    Gitlab::AppLogger.info(message: "AuditEventService initialized", scope_class: @entity.class.name)
+    validate_scope!(@entity)
   end
 
   # Builds the @details attribute for authentication

@@ -41,7 +41,7 @@ describe('GroupsListItem', () => {
   const findListActions = () => wrapper.findComponent(ListActions);
   const findConfirmationModal = () => wrapper.findComponent(GroupListItemDeleteModal);
   const findPreventDeleteModal = () => wrapper.findComponent(GroupListItemPreventDeleteModal);
-  const findAccessLevelBadge = () => wrapper.findByTestId('access-level-badge');
+  const findAccessLevelBadge = () => wrapper.findByTestId('user-access-role');
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const fireDeleteAction = () => findListActions().props('actions')[ACTION_DELETE].action();
 

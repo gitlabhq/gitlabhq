@@ -268,7 +268,6 @@ RSpec/VerifiedDoubles:
     - 'spec/helpers/routing/pseudonymization_helper_spec.rb'
     - 'spec/helpers/sorting_helper_spec.rb'
     - 'spec/helpers/submodule_helper_spec.rb'
-    - 'spec/helpers/todos_helper_spec.rb'
     - 'spec/helpers/version_check_helper_spec.rb'
     - 'spec/initializers/doorkeeper_spec.rb'
     - 'spec/initializers/global_id_spec.rb'

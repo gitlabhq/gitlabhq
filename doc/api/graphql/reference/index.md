@@ -8729,6 +8729,26 @@ Input type: `ProjectSecretCreateInput`
 | <a id="mutationprojectsecretcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationprojectsecretcreateprojectsecret"></a>`projectSecret` | [`ProjectSecret`](#projectsecret) | Project secret. |
 
+### `Mutation.projectSecretDelete`
+
+Input type: `ProjectSecretDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsecretdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsecretdeletename"></a>`name` | [`String!`](#string) | Name of the project secret. |
+| <a id="mutationprojectsecretdeleteprojectpath"></a>`projectPath` | [`ID!`](#id) | Project of the secret. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsecretdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsecretdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationprojectsecretdeleteprojectsecret"></a>`projectSecret` | [`ProjectSecret`](#projectsecret) | Deleted project secret. |
+
 ### `Mutation.projectSecretsManagerInitialize`
 
 Input type: `ProjectSecretsManagerInitializeInput`

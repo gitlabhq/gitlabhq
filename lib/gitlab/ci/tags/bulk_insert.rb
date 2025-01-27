@@ -59,6 +59,7 @@ module Gitlab
             join_model.bulk_insert!(
               monomorphic_taggings,
               validate: false,
+              skip_duplicates: true,
               unique_by: config.unique_by,
               batch_size: TAGGINGS_BATCH_SIZE,
               returns: :id
@@ -93,11 +94,8 @@ module Gitlab
 
             tags = tag_records_by_name.values_at(*tag_list)
             tags.each do |tag|
-              accumulator[:taggings] << tagging_attributes(tag, taggable) if polymorphic_taggings_available?
-
-              if monomorphic_taggings_available?(taggable)
-                accumulator[:monomorphic_taggings] << monomorphic_taggings_record(tag, taggable)
-              end
+              accumulator[:taggings] << tagging_attributes(tag, taggable)
+              accumulator[:monomorphic_taggings] << monomorphic_taggings_record(tag, taggable)
             end
           end
 
@@ -127,14 +125,6 @@ module Gitlab
           else
             []
           end
-        end
-
-        def monomorphic_taggings_available?(taggable)
-          config.monomorphic_taggings?(taggable)
-        end
-
-        def polymorphic_taggings_available?
-          config.polymorphic_taggings?
         end
       end
     end

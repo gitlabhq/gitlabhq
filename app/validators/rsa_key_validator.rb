@@ -10,17 +10,17 @@
 #
 class RsaKeyValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
-    unless valid_rsa_key?(value)
-      record.errors.add(attribute, "is not a valid RSA key")
+    unless valid_rsa_keys?(value)
+      record.errors.add(attribute, "contains invalid RSA keys")
     end
   end
 
   private
 
-  def valid_rsa_key?(value)
-    return false unless value
+  def valid_rsa_keys?(key_or_keys)
+    return false unless key_or_keys
 
-    OpenSSL::PKey::RSA.new(value)
+    Array(key_or_keys).each { |key_data| OpenSSL::PKey::RSA.new(key_data) }
   rescue OpenSSL::PKey::RSAError
     false
   end

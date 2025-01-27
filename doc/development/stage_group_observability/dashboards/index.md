@@ -34,7 +34,7 @@ Some generated dashboards are already available:
 
 ## Time range controls
 
-![Default time filter](img/stage_group_dashboards_time_filter_v14_10.png)
+![Time range selection menu with absolute and relative time range options.](img/stage_group_dashboards_time_filter_v14_10.png)
 
 By default, all the times are in UTC time zone.
 [We use UTC when communicating in Engineering.](https://handbook.gitlab.com/handbook/communication/#writing-style-guidelines)
@@ -54,7 +54,7 @@ Some special events are meaningful to development and operational activities.
 [Grafana annotations](https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/annotate-visualizations/) mark them
 directly on the graphs.
 
-![Filters and annotations](img/stage_group_dashboards_filters_v14_10.png)
+![Dashboard filters and annotation switches.](img/stage_group_dashboards_filters_v14_10.png)
 
 | Name            | Type       | Description |
 | --------------- | ---------- | ----------- |

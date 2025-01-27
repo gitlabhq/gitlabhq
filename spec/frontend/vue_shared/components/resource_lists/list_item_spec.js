@@ -246,4 +246,14 @@ describe('ListItem', () => {
       expect(findTimeAgoTooltip().exists()).toBe(false);
     });
   });
+
+  describe('when contentTestid props is passed', () => {
+    beforeEach(() => {
+      createComponent({ propsData: { contentTestid: 'foo' } });
+    });
+
+    it('adds data-testid attribute to content', () => {
+      expect(wrapper.findByTestId('foo').exists()).toBe(true);
+    });
+  });
 });

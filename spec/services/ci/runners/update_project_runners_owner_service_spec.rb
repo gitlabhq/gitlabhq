@@ -69,6 +69,6 @@ RSpec.describe ::Ci::Runners::UpdateProjectRunnersOwnerService, '#execute', feat
   private
 
   def tagging_sharding_key_id_for_runner(runner)
-    runner.tag_links.pluck(:sharding_key_id).uniq.sole
+    runner.taggings.pluck(:sharding_key_id).uniq.sole
   end
 end

@@ -47,7 +47,7 @@ RSpec.describe 'Dashboard Projects', :js, feature_category: :groups_and_projects
         wait_for_requests
 
         within_testid("projects-list-item-#{project.id}") do
-          expect(find_by_testid('access-level-badge')).to have_content('Developer')
+          expect(find_by_testid('user-access-role')).to have_content('Developer')
         end
       end
     end

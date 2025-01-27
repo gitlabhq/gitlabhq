@@ -59,7 +59,7 @@
         input_id: 'group_crm_source_group_id',
         selected: @group.crm_settings&.source_group_id,
         clearable: 'true',
-        description: s_("GroupSettings|The group from which to source contacts for issues in this group and it's subgroups.")
+        description: s_("GroupSettings|The group from which to source contacts for issues in this group and its subgroups.")
       } }
 
     - if Feature.enabled?(:group_hierarchy_optimization, @group, type: :beta)

@@ -96,16 +96,15 @@ module Ci
 
     has_many :pages_deployments, foreign_key: :ci_build_id, inverse_of: :ci_build
 
-    has_many :tag_links,
-      ->(build) { in_partition(build) },
+    has_many :taggings, ->(build) { in_partition(build) },
       class_name: 'Ci::BuildTag',
       foreign_key: :build_id,
       partition_foreign_key: :partition_id,
       inverse_of: :build
 
-    has_many :simple_tags,
+    has_many :tags,
       class_name: 'Ci::Tag',
-      through: :tag_links,
+      through: :taggings,
       source: :tag
 
     Ci::JobArtifact.file_types.each_key do |key|
@@ -425,16 +424,8 @@ module Ci
       in_merge_request(merge_request_id).pluck(:id)
     end
 
-    def self.arel_tag_names_array
+    def self.taggings_join_model
       ::Ci::BuildTag
-        .joins(:tag)
-        .where(::Ci::BuildTag.arel_table[:build_id].eq(arel_table[:id]))
-        .where(::Ci::BuildTag.arel_table[:partition_id].eq(arel_table[:partition_id]))
-        .select('COALESCE(array_agg(tags.name ORDER BY name), ARRAY[]::text[])')
-    end
-
-    def tags_ids_relation
-      simple_tags
     end
 
     # A Ci::Bridge may transition to `canceling` as a result of strategy: :depend
@@ -797,14 +788,6 @@ module Ci
 
     def remove_token!
       update!(token_encrypted: nil)
-    end
-
-    def tag_list
-      if tags.loaded?
-        tags.map(&:name)
-      else
-        super
-      end
     end
 
     def has_tags?
@@ -1385,30 +1368,6 @@ module Ci
 
     def prefix_and_partition_for_token
       TOKEN_PREFIX + partition_id_prefix_in_16_bit_encode
-    end
-
-    override :save_tags
-    def save_tags
-      super do |new_tags, old_tags|
-        if old_tags.present?
-          tag_links
-            .where(tag_id: old_tags)
-            .delete_all
-        end
-
-        ci_builds_tags = new_tags.map do |tag|
-          Ci::BuildTag.new(
-            build_id: id, partition_id: partition_id,
-            tag_id: tag.id, project_id: project_id)
-        end
-
-        ::Ci::BuildTag.bulk_insert!(
-          ci_builds_tags,
-          validate: false,
-          unique_by: [:tag_id, :build_id, :partition_id],
-          returns: :id
-        )
-      end
     end
   end
 end

@@ -14,7 +14,6 @@ RSpec/BeEmpty:
     - 'spec/helpers/dashboard_helper_spec.rb'
     - 'spec/helpers/nav/new_dropdown_helper_spec.rb'
     - 'spec/helpers/preferences_helper_spec.rb'
-    - 'spec/helpers/todos_helper_spec.rb'
     - 'spec/helpers/users_helper_spec.rb'
     - 'spec/lib/click_house/iterator_spec.rb'
     - 'spec/lib/gitlab/checks/changes_access_spec.rb'

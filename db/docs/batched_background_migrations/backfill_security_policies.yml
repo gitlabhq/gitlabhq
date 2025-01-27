@@ -9,4 +9,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163945
 milestone: '17.6'
 queued_migration_version: 20241118124301
 finalize_after: '2024-12-22'
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: 20241210081707

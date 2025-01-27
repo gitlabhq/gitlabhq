@@ -46,8 +46,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it { is_expected.to have_many(:job_variables).with_foreign_key(:job_id) }
   it { is_expected.to have_many(:report_results).with_foreign_key(:build_id) }
   it { is_expected.to have_many(:pages_deployments).with_foreign_key(:ci_build_id) }
-  it { is_expected.to have_many(:tag_links).with_foreign_key(:build_id).class_name('Ci::BuildTag').inverse_of(:build) }
-  it { is_expected.to have_many(:simple_tags).class_name('Ci::Tag').through(:tag_links).source(:tag) }
+  it { is_expected.to have_many(:taggings).with_foreign_key(:build_id).class_name('Ci::BuildTag').inverse_of(:build) }
+  it { is_expected.to have_many(:tags).class_name('Ci::Tag').through(:taggings).source(:tag) }
 
   it { is_expected.to have_one(:runner_manager).through(:runner_manager_build) }
   it { is_expected.to have_one(:runner_session).with_foreign_key(:build_id) }
@@ -1941,8 +1941,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       expect(build.tags.count).to eq(1)
       expect(build.tags.first.name).to eq('tag')
-      expect(build.tag_links.count).to eq(1)
-      expect(build.tag_links.first.tag.name).to eq('tag')
+      expect(build.taggings.count).to eq(1)
+      expect(build.taggings.first.tag.name).to eq('tag')
     end
 
     it 'strips tags' do
@@ -1959,7 +1959,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         expect(build.tags).to be_empty
-        expect(build.tag_links).to be_empty
+        expect(build.taggings).to be_empty
       end
     end
   end
@@ -6221,16 +6221,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       expect(build.source).to eq('scan_execution_policy')
     end
-  end
-
-  describe '#tags_ids_relation' do
-    let(:tag_list) { %w[ruby postgres docker] }
-
-    before do
-      build.update!(tag_list: tag_list)
-    end
-
-    it { expect(build.tags_ids_relation.pluck(:name)).to match_array(tag_list) }
   end
 
   describe '#token' do

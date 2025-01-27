@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135196
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/429479
 milestone: '16.6'
 type: development
-group: group::optimize
+group: group::database frameworks
 default_enabled: false

@@ -81,15 +81,11 @@ module Gitlab
         @authentication_event = @context.fetch(:authentication_event, false)
         @authentication_provider = @context[:authentication_provider]
 
-        if @is_audit_event_yaml_defined
-          Gitlab::AppLogger.info(message: "Auditor initialized", scope_class: @scope.class.name)
-
-          return
-        end
+        return if @is_audit_event_yaml_defined
 
         raise StandardError, "Audit event type YML file is not defined for #{@name}. Please read " \
-                             "https://docs.gitlab.com/ee/development/audit_event_guide/" \
-                             "#how-to-instrument-new-audit-events for adding a new audit event"
+          "https://docs.gitlab.com/ee/development/audit_event_guide/" \
+          "#how-to-instrument-new-audit-events for adding a new audit event"
       end
 
       def single_audit

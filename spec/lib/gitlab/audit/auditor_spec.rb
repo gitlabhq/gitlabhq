@@ -54,17 +54,6 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
       it 'does not raise an error' do
         expect { audit! }.not_to raise_error
       end
-
-      it 'logs the initialization with correct parameters' do
-        audit!
-
-        expect(Gitlab::AppLogger).to have_received(:info).with(
-          {
-            message: "Auditor initialized",
-            scope_class: group.class.name
-          }
-        )
-      end
     end
 
     context 'when authentication event' do

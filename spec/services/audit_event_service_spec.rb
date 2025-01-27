@@ -11,17 +11,39 @@ RSpec.describe AuditEventService, :with_license, feature_category: :audit_events
   let(:logger) { instance_double(Gitlab::AuditJsonLogger) }
 
   describe '#initialize' do
-    before do
-      allow(Gitlab::AppLogger).to receive(:info).and_call_original
+    context 'when scope is valid' do
+      where(:entity_type) do
+        [
+          [:group],
+          [:project],
+          [:user]
+        ]
+      end
+
+      with_them do
+        let(:entity) do
+          case entity_type
+          when :group then create(:group)
+          when :project then create(:project)
+          when :user then create(:user)
+          end
+        end
+
+        it 'initializes without error' do
+          expect { described_class.new(user, entity) }.not_to raise_error
+        end
+      end
     end
 
-    it 'logs initialization message' do
-      expect(Gitlab::AppLogger).to receive(:info).with(
-        message: "AuditEventService initialized",
-        scope_class: "Project"
-      )
+    context 'with invalid scope' do
+      let(:entity) { create(:user_namespace) }
 
-      described_class.new(user, project, { action: :destroy })
+      it 'raises ArgumentError' do
+        expect { described_class.new(user, entity) }.to raise_error(
+          ArgumentError,
+          "Invalid scope class: Namespaces::UserNamespace"
+        )
+      end
     end
   end
 

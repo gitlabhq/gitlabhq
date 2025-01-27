@@ -21,6 +21,12 @@ module Ci
     validates :runner_type, presence: true
     validates :sharding_key_id, presence: true
 
+    scope :scoped_runners, -> do
+      where(arel_table[:runner_id].eq(Ci::Runner.arel_table[Ci::Runner.primary_key]))
+    end
+
+    scope :scoped_taggables, -> { scoped_runners }
+
     private
 
     def set_runner_type

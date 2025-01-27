@@ -13,31 +13,42 @@ For details about the terms used on this page, see [the terminology](../../updat
 
 ## Minimize the impact of breaking changes
 
-Minimizing the impact to our customers ahead of a breaking change will ensure that disruptions will be minimized as much as possible. Product and Engineering teams should work closely together to understand 1) who would be most impacted and 2) whether tooling may help our users to migrate.
+Minimizing the impact to our customers ahead of a breaking change will ensure that disruptions will be as small as possible. Product and Engineering teams should work closely together to understand 1) who would be most impacted and how and 2) what tooling may help our users to migrate.
 
-It is **strongly recommended** that teams create an issue to track the work for each of the following:
+## Planning
 
-1. Measure product usage of the feature impacted by the breaking change.
-1. Assess how many customers will be impacted by the breaking change.
-1. Create tooling for users to manually migrate their own data or workflows.
-1. Allow them to manually enable the breaking change so that they can control when it takes effect.
-1. Automate the migration process **as much as possible** for users who do not take any manual steps to migrate.
-1. (Optional) Create UI controls for instance admins to disable the breaking change, providing flexibility to Self-Managed / Dedicated customers to plan for their migration path. Optional as this depends on the breaking change.
+If a deprecation or breaking change is unavoidable, then take the following steps:
 
-### Planning
+1. Review the [deprecation guidelines in our documentation](#minimize-the-impact-of-breaking-changes)
+1. Review the [breaking changes best practices](https://docs.google.com/document/d/1ByVZEhGJfjb6XTwiDeaSDRVwUiF6dsEQI01TW4BJA0k/edit?tab=t.0#heading=h.vxhro51h5zxn) (internal link)
+1. Review the [release post process for announcing breaking changes](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes)
+1. **(Required)** Create a [deprecation issue ticket](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Deprecations.md) and begin following the steps documented there 
 
-Each breaking change should have a:
+The [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Deprecations.md) includes checklist that ensure each breaking change has sufficiently planned for:
 
+- Customer impact **(DRI: Engineering or Product, depending on change)**
+  - Measure product usage of the feature impacted by the breaking change
+  - Assess how many customers will be impacted and how, by the breaking change
 - Rollout plan **(DRI: Engineering)**
   - Is there a % roll out on GitLab.com?
   - During that major milestone, when should the roll out begin?
+  - And similar questions related to roll out preparedness
 - Migration plan **(DRI: Engineering)**
   - Are we instrumenting usage? If so, how are we using that data to inform what users will be impacted?
-  - How do we quickly and safely migrate them?
+  - How do we quickly and safely migrate them, preferably before the rollout?
+  - Can we create tooling for users to manually migrate their own data or workflows?
+  - Can we allow users to manually enable the breaking change so that they can control when it takes effect?
+  - Have we automated the migration process **as much as possible** for users who do not take any manual steps to migrate.
+  - Have we (optionally) created UI controls for instance admins to disable the breaking change, providing flexibility to Self-Managed / Dedicated customers to plan for their migration path?
+  - And similar questions related to migration options available to customers
 - Communication plan **(DRI: Product)**
   - Are customers aware of the upcoming changes?
   - Do they know when the changes will go into effect?
-  - Do they know what actions to take?
+  - Do they know what actions to take and when?
+  - Are internal stakeholders supporting affected customers aware of the upcoming changes?
+  - Have we gone beyond a public announcement to ensure that customers have received and acted upon the information?
+  - Have we engaged with customer-supporting teams (CS, Support, AEs, etc) to ensure that they have received and acted upon the information?
+  - And similar questions related to clear and proactive communication
 
 ## When can a feature be deprecated?
 

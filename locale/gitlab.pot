@@ -1104,6 +1104,9 @@ msgstr ""
 msgid "%{name} (Busy)"
 msgstr ""
 
+msgid "%{name} checked"
+msgstr ""
+
 msgid "%{name} is already being used for another emoji"
 msgstr ""
 
@@ -1111,6 +1114,9 @@ msgid "%{name} is reserved for %{type} report type"
 msgstr ""
 
 msgid "%{name} is scheduled for %{action}"
+msgstr ""
+
+msgid "%{name} not checked"
 msgstr ""
 
 msgid "%{name}'s avatar"
@@ -1480,6 +1486,9 @@ msgid "%{title} username."
 msgstr ""
 
 msgid "%{title} webhook (for example, `%{example}`)."
+msgstr ""
+
+msgid "%{tooltipText} image"
 msgstr ""
 
 msgid "%{totalCpu} (%{freeSpacePercentage}%{percentSymbol} free)"
@@ -16396,7 +16405,7 @@ msgstr ""
 msgid "Copy labels and milestone from %{source_issuable_reference}."
 msgstr ""
 
-msgid "Copy labels and milestone from other issue or merge request in this project"
+msgid "Copy labels and milestone from other work item or merge request in the same namespace"
 msgstr ""
 
 msgid "Copy link"
@@ -23954,10 +23963,10 @@ msgstr ""
 msgid "Failed to find import label for Jira import."
 msgstr ""
 
-msgid "Failed to find issue or merge request"
+msgid "Failed to find users for %{missing}"
 msgstr ""
 
-msgid "Failed to find users for %{missing}"
+msgid "Failed to find work item or merge request"
 msgstr ""
 
 msgid "Failed to format markdown."
@@ -27914,7 +27923,7 @@ msgstr ""
 msgid "GroupSettings|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
 msgstr ""
 
-msgid "GroupSettings|The group from which to source contacts for issues in this group and it's subgroups."
+msgid "GroupSettings|The group from which to source contacts for issues in this group and its subgroups."
 msgstr ""
 
 msgid "GroupSettings|There was a problem updating Auto DevOps pipeline: %{error_messages}."
@@ -59244,9 +59253,6 @@ msgstr ""
 msgid "Todos|(removed)"
 msgstr ""
 
-msgid "Todos|Added"
-msgstr ""
-
 msgid "Todos|Added approver"
 msgstr ""
 
@@ -59254,12 +59260,6 @@ msgid "Todos|Alert"
 msgstr ""
 
 msgid "Todos|All"
-msgstr ""
-
-msgid "Todos|Any Action"
-msgstr ""
-
-msgid "Todos|Any Type"
 msgstr ""
 
 msgid "Todos|Approval required"
@@ -59369,9 +59369,6 @@ msgstr[1] ""
 msgid "Todos|Member access request"
 msgstr ""
 
-msgid "Todos|Member access requested"
-msgstr ""
-
 msgid "Todos|Mentioned"
 msgstr ""
 
@@ -59388,9 +59385,6 @@ msgid "Todos|Nothing left to do. High five!"
 msgstr ""
 
 msgid "Todos|OKR checkin requested"
-msgstr ""
-
-msgid "Todos|Pipelines"
 msgstr ""
 
 msgid "Todos|Raw text search is not currently supported"

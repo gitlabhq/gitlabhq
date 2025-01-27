@@ -189,6 +189,8 @@ secret push protection is skipped. Audit event details include:
 - GitLab account name.
 - Date and time at which secret push protection was skipped.
 - Name of project that the secret was pushed to.
+- Target branch. (Introduced in GitLab 17.4)
+- Commits that skipped secret push protection. (Introduced in GitLab 17.9)
 
 If [pipeline secret detection](../pipeline/index.md) is enabled, the content of all commits are
 scanned after they are pushed to the repository.

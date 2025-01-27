@@ -48,7 +48,7 @@ RSpec.describe Ci::RunnerTagging, feature_category: :runner do
         let(:runner_ids) { runners.take(2).map(&:id) }
 
         it 'returns requested runner namespaces' do
-          is_expected.to eq(runners.take(2).flat_map(&:tag_links))
+          is_expected.to eq(runners.take(2).flat_map(&:taggings))
         end
       end
 
@@ -56,7 +56,7 @@ RSpec.describe Ci::RunnerTagging, feature_category: :runner do
         let(:runner_ids) { runners.first }
 
         it 'returns requested runner namespaces' do
-          is_expected.to eq(runners.first.tag_links)
+          is_expected.to eq(runners.first.taggings)
         end
       end
     end

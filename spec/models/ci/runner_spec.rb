@@ -25,7 +25,8 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     it { is_expected.to have_many(:groups).through(:runner_namespaces) }
     it { is_expected.to have_one(:owner_runner_namespace).class_name('Ci::RunnerNamespace') }
 
-    it { is_expected.to have_many(:tag_links).class_name('Ci::RunnerTagging').inverse_of(:runner) }
+    it { is_expected.to have_many(:taggings).class_name('Ci::RunnerTagging').inverse_of(:runner) }
+    it { is_expected.to have_many(:tags).class_name('Ci::Tag') }
   end
 
   it_behaves_like 'having unique enum values'
@@ -112,41 +113,6 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
           runner.save!
 
           expect(described_class.tagged_with(tag_name)).to include(runner)
-        end
-      end
-
-      context 'when runner is not yet synced to partitioned table' do
-        let(:connection) { Ci::ApplicationRecord.connection }
-
-        before do
-          # Simulate legacy runners not present in sharded table (created when FK was not present)
-          runner
-
-          connection.execute(<<~SQL)
-            DELETE FROM ci_runners_e59bb2812d;
-          SQL
-        end
-
-        context 'tag does not exist' do
-          before do
-            runner.tag_list = [tag_name]
-          end
-
-          it 'creates a tag and syncs runner to partitioned table' do
-            expect { runner.save! }
-              .to change(Ci::Tag, :count).by(1)
-              .and change { partitioned_runner_exists?(runner) }.from(false).to(true)
-          end
-        end
-
-        private
-
-        def partitioned_runner_exists?(runner)
-          result = connection.execute(<<~SQL)
-            SELECT COUNT(*) FROM ci_runners_e59bb2812d WHERE id = #{runner.id};
-          SQL
-
-          result.first['count'].positive?
         end
       end
     end
@@ -1328,7 +1294,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
       expect(runner.tags.count).to eq(1)
       expect(runner.tags.first.name).to eq('tag')
-      expect(runner.tag_links.count).to eq(1)
+      expect(runner.taggings.count).to eq(1)
     end
 
     it 'strips tags' do

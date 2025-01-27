@@ -143,19 +143,21 @@ module Gitlab
         #
         # /copy_metadata
         #
-        desc { _('Copy labels and milestone from other issue or merge request in this project') }
+        desc { _('Copy labels and milestone from other work item or merge request in the same namespace') }
         explanation do |source_issuable|
           _("Copy labels and milestone from %{source_issuable_reference}.") % { source_issuable_reference: source_issuable.to_reference }
         end
-        params '#issue | !merge_request'
-        types Issue, MergeRequest
+        params '#item | !merge_request | URL'
+        types Issue, MergeRequest, WorkItem
         condition do
           current_user.can?(:"set_#{quick_action_target.to_ability_name}_metadata", quick_action_target)
         end
         parse_params do |issuable_param|
           extract_references(issuable_param, :issue).first ||
+            extract_references(issuable_param, :work_item).first ||
+            extract_references(issuable_param, :epic).first ||
             extract_references(issuable_param, :merge_request).first ||
-            failed_parse(_("Failed to find issue or merge request"))
+            failed_parse(_("Failed to find work item or merge request"))
         end
         command :copy_metadata do |source_issuable|
           if can_copy_metadata?(source_issuable)
@@ -356,7 +358,26 @@ module Gitlab
         end
 
         def can_copy_metadata?(source_issuable)
-          source_issuable.present? && source_issuable.project_id == quick_action_target.project_id
+          source_issuable.present? && find_namespace(source_issuable) == find_namespace(quick_action_target)
+        end
+
+        def find_namespace(item)
+          case item
+          # WorkItem check should be before Issue, as WorkItem is a subclass of Issue
+          when WorkItem
+            handle_namespace_type(item.namespace)
+          when MergeRequest, Issue
+            item.project
+          end
+        end
+
+        def handle_namespace_type(namespace)
+          case namespace
+          when Project, Group
+            namespace
+          when Namespaces::ProjectNamespace
+            namespace.project
+          end
         end
 
         def format_time_estimate(time_estimate)

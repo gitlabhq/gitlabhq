@@ -78,7 +78,7 @@ describe('ProjectsListItem', () => {
   const findForksStat = () => wrapper.findByTestId('forks-btn');
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
   const findListActions = () => wrapper.findComponent(ProjectListItemActions);
-  const findAccessLevelBadge = () => wrapper.findByTestId('access-level-badge');
+  const findAccessLevelBadge = () => wrapper.findByTestId('user-access-role');
   const findCiCatalogBadge = () => wrapper.findByTestId('ci-catalog-badge');
   const findProjectDescription = () => wrapper.findComponent(ProjectListItemDescription);
   const findInactiveBadge = () => wrapper.findComponent(ProjectListItemInactiveBadge);
@@ -517,5 +517,11 @@ describe('ProjectsListItem', () => {
     it('renders CI icon component', () => {
       expect(wrapper.findComponent(CiIcon).props('status')).toBe(detailedStatus);
     });
+  });
+
+  it('adds data-testid attribute to content', () => {
+    createComponent();
+
+    expect(wrapper.findByTestId('project-content').exists()).toBe(true);
   });
 });

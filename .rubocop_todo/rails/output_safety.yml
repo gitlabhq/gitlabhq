@@ -31,7 +31,6 @@ Rails/OutputSafety:
     - 'app/helpers/sidebars_helper.rb'
     - 'app/helpers/tags_helper.rb'
     - 'app/helpers/timeboxes_helper.rb'
-    - 'app/helpers/todos_helper.rb'
     - 'app/helpers/version_check_helper.rb'
     - 'app/helpers/visibility_level_helper.rb'
     - 'app/mailers/notify.rb'

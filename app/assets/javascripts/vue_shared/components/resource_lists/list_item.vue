@@ -65,6 +65,11 @@ export default {
         return TIMESTAMP_TYPES.includes(value);
       },
     },
+    contentTestid: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     statsPadding() {
@@ -89,7 +94,7 @@ export default {
 <template>
   <li class="gl-border-b gl-flex gl-items-start gl-py-4">
     <div class="gl-grow gl-items-start md:gl-flex">
-      <div class="gl-flex gl-grow">
+      <div class="gl-flex gl-grow" :data-testid="contentTestid">
         <div v-if="showIcon" class="gl-mr-3 gl-flex gl-h-7 gl-shrink-0 gl-items-center">
           <gl-icon variant="subtle" :name="iconName" />
         </div>

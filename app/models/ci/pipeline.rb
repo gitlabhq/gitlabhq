@@ -610,11 +610,11 @@ module Ci
     end
 
     def tags_count
-      Ci::Tagging.where(taggable: builds).count
+      Ci::BuildTag.in_partition(self).where(build: builds).count
     end
 
     def distinct_tags_count
-      Ci::Tagging.where(taggable: builds).count('distinct(tag_id)')
+      Ci::BuildTag.in_partition(self).where(build: builds).count('distinct(tag_id)')
     end
 
     def stages_names

@@ -134,7 +134,7 @@ export default {
         :name="visibilityIcon"
         variant="subtle"
       />
-      <gl-badge v-if="shouldShowAccessLevel" class="gl-block" data-testid="access-level-badge">{{
+      <gl-badge v-if="shouldShowAccessLevel" class="gl-block" data-testid="user-access-role">{{
         accessLevelLabel
       }}</gl-badge>
     </template>

@@ -97,7 +97,7 @@ Prerequisites:
 
 1. [List all service account users](../../api/user_service_accounts.md#list-all-service-account-users).
 
-1. [Create a personal access token](../../api/user_tokens.md#create-a-personal-access-token)
+1. [Create a personal access token](../../api/user_tokens.md#create-a-personal-access-token-for-a-user)
    for the service account user.
 
    You define the scopes for the service account by [setting the scopes for the personal access token](personal_access_tokens.md#personal-access-token-scopes).

@@ -227,6 +227,7 @@ export default {
     icon-name="project"
     :timestamp-type="timestampType"
     :data-testid="dataTestid"
+    content-testid="project-content"
   >
     <template #avatar-meta>
       <gl-icon
@@ -243,7 +244,7 @@ export default {
         :href="project.exploreCatalogPath"
         >{{ $options.i18n.ciCatalogBadge }}</gl-badge
       >
-      <gl-badge v-if="shouldShowAccessLevel" class="gl-block" data-testid="access-level-badge">{{
+      <gl-badge v-if="shouldShowAccessLevel" class="gl-block" data-testid="user-access-role">{{
         accessLevelLabel
       }}</gl-badge>
     </template>

@@ -33,6 +33,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     project.add_developer(current_user)
   end
 
+  before_all { Users::Internal.support_bot_id }
+
   describe '#execute' do
     let_it_be(:work_item) { create(:work_item, :task, project: project) }
     let(:merge_request) { create(:merge_request, source_project: project) }
@@ -1932,6 +1934,28 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         let(:issuable) { issue }
       end
 
+      context "when a work item type issue is passed" do
+        let(:content) { "/copy_metadata #{source_issuable.to_reference(project)}" }
+        let(:issuable) { create(:work_item, project: project) }
+
+        it_behaves_like 'copy_metadata command' do
+          let(:source_issuable) do
+            create(:work_item, project: project, milestone: milestone).tap do |wi|
+              wi.labels << [todo_label, inreview_label]
+            end
+          end
+        end
+
+        it_behaves_like 'failed command' do
+          let(:other_project) { build(:project, :public) }
+          let(:source_issuable) do
+            create(:work_item, project: other_project).tap do |wi|
+              wi.labels << [todo_label, inreview_label]
+            end
+          end
+        end
+      end
+
       context 'when the parent issuable has a milestone' do
         it_behaves_like 'copy_metadata command' do
           let(:source_issuable) { create(:labeled_issue, project: project, labels: [todo_label, inreview_label], milestone: milestone) }
@@ -2834,7 +2858,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           expect(message).to eq(s_('ServiceDesk|Converted issue to Service Desk ticket.'))
           expect(issuable).to have_attributes(
             confidential: expected_confidentiality,
-            author_id: Users::Internal.support_bot.id,
+            author_id: Users::Internal.support_bot_id,
             service_desk_reply_to: 'user@example.com'
           )
         end
@@ -2910,7 +2934,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       context 'when issue is Service Desk issue' do
         before do
           issue.update!(
-            author: Users::Internal.support_bot,
+            author_id: Users::Internal.support_bot_id,
             service_desk_reply_to: 'user@example.com'
           )
         end
@@ -3403,7 +3427,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           _, explanations = service.explain(content, merge_request)
 
           expect(explanations)
-            .to contain_exactly _("Problem with copy_metadata command: Failed to find issue or merge request.")
+            .to contain_exactly _("Problem with copy_metadata command: Failed to find work item or merge request.")
         end
       end
     end

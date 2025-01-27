@@ -87,7 +87,8 @@ module Ci
     has_many :projects, through: :runner_projects, disable_joins: true
     has_many :runner_namespaces, inverse_of: :runner, autosave: true
     has_many :groups, through: :runner_namespaces, disable_joins: true
-    has_many :tag_links, class_name: 'Ci::RunnerTagging', inverse_of: :runner
+    has_many :taggings, class_name: 'Ci::RunnerTagging', inverse_of: :runner
+    has_many :tags, class_name: 'Ci::Tag', through: :taggings, source: :tag
 
     # currently we have only 1 namespace assigned, but order is here for consistency
     has_one :owner_runner_namespace, -> { order(:id) }, class_name: 'Ci::RunnerNamespace'
@@ -338,6 +339,10 @@ module Ci
       end
     end
 
+    def self.taggings_join_model
+      ::Ci::RunnerTagging
+    end
+
     def runner_matcher
       Gitlab::Ci::Matching::RunnerMatcher.new({
         runner_ids: [id],
@@ -441,44 +446,8 @@ module Ci
       token[start_index..start_index + RUNNER_SHORT_SHA_LENGTH - 1]
     end
 
-    def tag_list
-      if tags.loaded?
-        tags.map(&:name)
-      else
-        super
-      end
-    end
-
     def has_tags?
       tag_list.any?
-    end
-
-    override :save_tags
-    def save_tags
-      super do |new_tags, old_tags|
-        if old_tags.present?
-          tag_links
-            .where(tag_id: old_tags)
-            .delete_all
-        end
-
-        # Avoid inserting partitioned taggings that refer to a missing ci_runners partitioned record, since
-        # the backfill is not yet finalized.
-        ensure_partitioned_runner_record_exists if new_tags.any?
-
-        ci_runner_taggings = new_tags.map do |tag|
-          Ci::RunnerTagging.new(
-            runner_id: id, runner_type: runner_type,
-            tag_id: tag.id, sharding_key_id: sharding_key_id)
-        end
-
-        ::Ci::RunnerTagging.bulk_insert!(
-          ci_runner_taggings,
-          validate: false,
-          unique_by: [:tag_id, :runner_id, :runner_type],
-          returns: :id
-        )
-      end
     end
 
     # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/504277 is closed.

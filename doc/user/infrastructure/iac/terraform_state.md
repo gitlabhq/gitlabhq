@@ -252,7 +252,7 @@ You can use a GitLab-managed OpenTofu state backend as an
    example_access_token = "<GitLab personal access token>"
    ```
 
-1. In a `.tf` file, define the data source by using [OpenTofu input variables](https://opentofu.org/docs/language/values/variables/s):
+1. In a `.tf` file, define the data source by using [OpenTofu input variables](https://opentofu.org/docs/language/values/variables/):
 
    ```hcl
    data "terraform_remote_state" "example" {
